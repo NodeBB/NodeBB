@@ -2,17 +2,18 @@
 
 
 const assert = require('assert');
-const async = require('async');
 const nconf = require('nconf');
+const util = require('util');
 
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
 const user = require('../src/user');
 const topics = require('../src/topics');
 const categories = require('../src/categories');
-const groups = require('../src/groups');
 const notifications = require('../src/notifications');
 const socketNotifications = require('../src/socket.io/notifications');
+
+const sleep = util.promisify(setTimeout);
 
 describe('Notifications', () => {
 	let uid;
@@ -226,73 +227,39 @@ describe('Notifications', () => {
 		});
 	});
 
-	it('should link to the first unread post in a watched topic', (done) => {
-		const categories = require('../src/categories');
-		const topics = require('../src/topics');
-		let watcherUid;
-		let cid;
-		let tid;
-		let pid;
-
-		async.waterfall([
-			function (next) {
-				user.create({ username: 'watcher' }, next);
-			},
-			function (_watcherUid, next) {
-				watcherUid = _watcherUid;
-
-				categories.create({
-					name: 'Test Category',
-					description: 'Test category created by testing script',
-				}, next);
-			},
-			function (category, next) {
-				cid = category.cid;
-
-				topics.post({
-					uid: watcherUid,
-					cid: cid,
-					title: 'Test Topic Title',
-					content: 'The content of test topic',
-				}, next);
-			},
-			function (topic, next) {
-				tid = topic.topicData.tid;
-
-				topics.follow(tid, watcherUid, next);
-			},
-			function (next) {
-				topics.reply({
-					uid: uid,
-					content: 'This is the first reply.',
-					tid: tid,
-				}, next);
-			},
-			function (post, next) {
-				pid = post.pid;
-
-				topics.reply({
-					uid: uid,
-					content: 'This is the second reply.',
-					tid: tid,
-				}, next);
-			},
-			function (post, next) {
-				// notifications are sent asynchronously with a 1 second delay.
-				setTimeout(next, 3000);
-			},
-			function (next) {
-				user.notifications.get(watcherUid, next);
-			},
-			function (notifications, next) {
-				assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
-				assert.equal(`${nconf.get('relative_path')}/post/${pid}`, notifications.unread[0].path, 'the notification should link to the first unread post');
-				next();
-			},
-		], (err) => {
-			assert.ifError(err);
-			done();
+	it('should link to the first unread post in a watched topic', async () => {
+		const watcherUid = await user.create({ username: 'watcher' });
+		const { cid } = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
 		});
+
+		const { topicData } = await topics.post({
+			uid: watcherUid,
+			cid: cid,
+			title: 'Test Topic Title',
+			content: 'The content of test topic',
+		});
+		const { tid } = topicData;
+
+		await topics.follow(tid, watcherUid);
+
+		const { pid } = await topics.reply({
+			uid: uid,
+			content: 'This is the first reply.',
+			tid: tid,
+		});
+
+		await topics.reply({
+			uid: uid,
+			content: 'This is the second reply.',
+			tid: tid,
+		});
+		// notifications are sent asynchronously with a 1 second delay.
+		await sleep(3000);
+		const notifications = await user.notifications.get(watcherUid);
+		assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
+		assert.equal(`${nconf.get('relative_path')}/post/${pid}`, notifications.unread[0].path, 'the notification should link to the first unread post');
 	});
 
 	it('should get notification by nid', (done) => {
@@ -403,41 +370,22 @@ describe('Notifications', () => {
 		});
 	});
 
-	it('should send notification to followers of user when he posts', (done) => {
-		let followerUid;
-		async.waterfall([
-			function (next) {
-				user.create({ username: 'follower' }, next);
-			},
-			function (_followerUid, next) {
-				followerUid = _followerUid;
-				user.follow(followerUid, uid, next);
-			},
-			function (next) {
-				categories.create({
-					name: 'Test Category',
-					description: 'Test category created by testing script',
-				}, next);
-			},
-			function (category, next) {
-				topics.post({
-					uid: uid,
-					cid: category.cid,
-					title: 'Test Topic Title',
-					content: 'The content of test topic',
-				}, next);
-			},
-			function (data, next) {
-				setTimeout(next, 1100);
-			},
-			function (next) {
-				user.notifications.getAll(followerUid, '', next);
-			},
-		], (err, data) => {
-			assert.ifError(err);
-			assert(data);
-			done();
+	it('should send notification to followers of user when he posts', async () => {
+		const followerUid = await user.create({ username: 'follower' });
+		await user.follow(followerUid, uid);
+		const { cid } = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
 		});
+		await topics.post({
+			uid: uid,
+			cid: cid,
+			title: 'Test Topic Title',
+			content: 'The content of test topic',
+		});
+		await sleep(1100);
+		const data = await user.notifications.getAll(followerUid, '');
+		assert(data);
 	});
 
 	it('should send welcome notification', (done) => {
