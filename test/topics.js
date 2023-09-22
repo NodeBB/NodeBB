@@ -20,6 +20,7 @@ const privileges = require('../src/privileges');
 const meta = require('../src/meta');
 const User = require('../src/user');
 const groups = require('../src/groups');
+const utils = require('../src/utils');
 const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
@@ -322,6 +323,51 @@ describe('Topic\'s', () => {
 				assert.strictEqual(err.message, '[[error:invalid-pid]]');
 				done();
 			});
+		});
+
+		it('should fail to create new reply with toPid that has been purged', async () => {
+			const { postData } = await topics.post({
+				uid: topic.userId,
+				cid: topic.categoryId,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			await posts.purge(postData.pid, topic.userId);
+
+			await assert.rejects(
+				topics.reply({ uid: topic.userId, content: 'test post', tid: postData.topic.tid, toPid: postData.pid }),
+				{ message: '[[error:invalid-pid]]' }
+			);
+		});
+
+		it('should fail to create a new reply with toPid that has been deleted (user cannot view_deleted)', async () => {
+			const { postData } = await topics.post({
+				uid: topic.userId,
+				cid: topic.categoryId,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			await posts.delete(postData.pid, topic.userId);
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 10) });
+
+			await assert.rejects(
+				topics.reply({ uid, content: 'test post', tid: postData.topic.tid, toPid: postData.pid }),
+				{ message: '[[error:invalid-pid]]' }
+			);
+		});
+
+		it('should properly create a new reply with toPid that has been deleted (user\'s own deleted post)', async () => {
+			const { postData } = await topics.post({
+				uid: topic.userId,
+				cid: topic.categoryId,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			await posts.delete(postData.pid, topic.userId);
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 10) });
+
+			const { pid } = await topics.reply({ uid: topic.userId, content: 'test post', tid: postData.topic.tid, toPid: postData.pid });
+			assert(pid);
 		});
 
 		it('should delete nested relies properly', async () => {
