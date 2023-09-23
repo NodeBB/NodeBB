@@ -12,7 +12,7 @@ services:
       - ./.docker/public/uploads:/usr/src/app/public/uploads
       - ./.docker:/opt/config
   mongo:
-    image: "mongo:5.0.9-focal"
+    image: "mongo:6-jammy"
     restart: unless-stopped
     expose:
       - "27017"
@@ -25,7 +25,7 @@ services:
     profiles:
       - mongo
   postgres:
-    image: postgres:14.4-alpine3.16
+    image: postgres:16.0-alpine
     restart: unless-stopped
     expose:
       - "5432"
@@ -38,7 +38,7 @@ services:
     profiles:
       - postgres
   redis:
-    image: redis:7.0.2-alpine3.16
+    image: redis:7.2.1-alpine
     restart: unless-stopped
     expose:
       - "6379"
