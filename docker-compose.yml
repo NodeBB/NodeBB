@@ -19,9 +19,11 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: nodebb
       MONGO_INITDB_ROOT_PASSWORD: nodebb
+      MONGO_INITDB_DATABASE: nodebb
     volumes:
       - ./.docker/database/mongo/config:/etc/mongo
       - ./.docker/database/mongo/data:/data/db
+      - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
     profiles:
       - mongo
   postgres:
