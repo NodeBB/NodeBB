@@ -10,6 +10,7 @@ services:
       - ./.docker/build:/usr/src/app/build
       - ./.docker/public/uploads:/usr/src/app/public/uploads
       - ./.docker:/opt/config
+      - ./install/docker/setup.json:/usr/src/app/setup.json
   mongo:
     image: "mongo:6-jammy"
     restart: unless-stopped
