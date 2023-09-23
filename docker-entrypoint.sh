@@ -26,7 +26,7 @@ fi
 ln -fs $CONFIG_DIR/package.json package.json
 ln -fs $CONFIG_DIR/package-lock.json package-lock.json
 
-npm install --only=prod
+npm install --omit=dev
 
 if [[ -n $SETUP ]]; then
   echo "Setup environmental variable detected"
