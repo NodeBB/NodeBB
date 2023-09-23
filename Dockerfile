@@ -13,12 +13,21 @@ USER node
 
 RUN npm install --omit=dev
 
-
-FROM node:lts-slim
+FROM node:lts as rebuild
 
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
+RUN mkdir -p /usr/src/build && \
+    chown -R node:node /usr/src/build
+
+COPY --from=npm /usr/src/build /usr/src/build
+
+RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
+    npm rebuild && \
+    npm cache clean --force; fi
+
+FROM node:lts-slim as run
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
@@ -28,14 +37,10 @@ ENV NODE_ENV=$NODE_ENV \
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
 
-COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
+COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
 
 
 WORKDIR /usr/src/app
-
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
-    npm rebuild && \
-    npm cache clean --force; fi
 
 USER node
 
