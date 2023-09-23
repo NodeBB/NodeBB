@@ -27,16 +27,14 @@ function call(options, callback) {
 						}
 					});
 				}
-
 				return reject(err);
 			}
-
 			resolve(data);
 		});
 	});
 }
 
-async function xhr(options, cb) {
+async function xhr_async(options) {
 	// Normalize body based on type
 	const { url } = options;
 	delete options.url;
@@ -79,16 +77,20 @@ async function xhr(options, cb) {
 
 	if (!res.ok) {
 		if (response) {
-			return cb(new Error(isJSON ? response.status.message : response));
+			throw new Error(isJSON ? response.status.message : response);
 		}
-		return cb(new Error(res.statusText));
+		throw new Error(res.statusText);
 	}
 
-	cb(null, (
-		isJSON && response && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
-			response.response :
-			response
-	));
+	return isJSON && response && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
+		response.response :
+		response;
+}
+
+function xhr(options, callback) {
+	// then().catch() is not correct here because callback() is called twice when the first then() throws an exception.
+	// pass onfulfilled and onrejected here, as two parameters of Promise.prototype.then()
+	xhr_async(options).then(result => callback(null, result), error => callback(error));
 }
 
 export function get(route, data, onSuccess) {
