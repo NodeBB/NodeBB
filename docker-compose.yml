@@ -42,6 +42,8 @@ services:
   redis:
     image: redis:7.2.1-alpine
     restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--loglevel", "warning"]
+    # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF
     expose:
       - "6379"
     volumes:
