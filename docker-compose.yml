@@ -7,7 +7,6 @@ services:
     ports:
       - "4567:4567/tcp"
     volumes:
-      - ./.docker/node_modules:/usr/src/app/node_modules
       - ./.docker/build:/usr/src/app/build
       - ./.docker/public/uploads:/usr/src/app/public/uploads
       - ./.docker:/opt/config
