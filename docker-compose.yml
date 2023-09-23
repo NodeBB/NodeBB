@@ -5,7 +5,10 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "4567:4567/tcp"
+      - "4567:4567/tcp" # comment this out if you don't want to expose NodeBB to the host, or change the first number to any port you want
+    # uncomment if you want to use another container as a reverse proxy
+    # expose:
+    #   - 4567
     volumes:
       - ./.docker/build:/usr/src/app/build
       - ./.docker/public/uploads:/usr/src/app/public/uploads
