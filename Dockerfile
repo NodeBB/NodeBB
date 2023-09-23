@@ -11,15 +11,14 @@ COPY --chown=node:node install/package.json /usr/src/build/package.json
 
 USER node
 
-RUN npm install --omit=dev --no-optional
+RUN npm install --omit=dev
 
 
-FROM node:lts-alpine3.18
+FROM node:lts-slim
 
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
-RUN apk add --no-cache git bash vips-dev make g++
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
