@@ -43,4 +43,4 @@ COPY --chown=node:node . /usr/src/app
 
 EXPOSE 4567
 VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config"]
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["./install/docker/entrypoint.sh"]
