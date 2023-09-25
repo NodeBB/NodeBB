@@ -102,7 +102,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			return '';
 		}
 
-		return `<span class="badge px-1 ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important;">
+		return `<span class="badge px-1 ${className} text-truncate" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
 			${category.icon && category.icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
 			${category.name}
 		</span>`;
