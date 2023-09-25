@@ -178,15 +178,6 @@ function getType(privilege) {
 	return global.getType(privilege) || categories.getType(privilege) || 'other';
 }
 
-helpers.getLabelData = function (_privilegeMap) {
-	return Array.from(_privilegeMap.values()).map((priv) => {
-		if (priv) {
-			priv.type = priv.type || 'other';
-		}
-		return priv;
-	});
-};
-
 function moveToFront(groupNames, groupToMove) {
 	const index = groupNames.indexOf(groupToMove);
 	if (index !== -1) {

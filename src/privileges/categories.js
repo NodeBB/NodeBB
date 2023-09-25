@@ -36,6 +36,18 @@ const _privilegeMap = new Map([
 	['moderate', { label: '[[admin/manage/privileges:moderate]]', type: 'moderation' }],
 ]);
 
+privsCategories.init = async () => {
+	privsCategories._coreSize = _privilegeMap.size;
+	await plugins.hooks.fire('static:privileges.categories.init', {
+		privileges: _privilegeMap,
+	});
+	for (const [, value] of _privilegeMap) {
+		if (value && !value.type) {
+			value.type = 'other';
+		}
+	}
+};
+
 privsCategories.getType = function (privilege) {
 	const priv = _privilegeMap.get(privilege);
 	return priv && priv.type ? priv.type : '';
@@ -43,6 +55,7 @@ privsCategories.getType = function (privilege) {
 
 privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', Array.from(_privilegeMap.keys()));
 privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
+
 privsCategories.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
 		privsCategories.getUserPrivilegeList(),
@@ -51,11 +64,10 @@ privsCategories.getPrivilegeList = async () => {
 	return user.concat(group);
 };
 
-privsCategories.init = async () => {
-	privsCategories._coreSize = _privilegeMap.size;
-	await plugins.hooks.fire('static:privileges.categories.init', {
-		privileges: _privilegeMap,
-	});
+privsCategories.getPrivilegesByFilter = function (filter) {
+	return Array.from(_privilegeMap.entries())
+		.filter(priv => priv[1] && (!filter || priv[1].type === filter))
+		.map(priv => priv[0]);
 };
 
 // Method used in admin/category controller to show all users/groups with privs in that given cid
@@ -73,7 +85,7 @@ privsCategories.list = async function (cid) {
 
 	const payload = await utils.promiseParallel({
 		labels,
-		labelData: helpers.getLabelData(_privilegeMap),
+		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(cid, keys.users),
 		groups: helpers.getGroupPrivileges(cid, keys.groups),
 	});
