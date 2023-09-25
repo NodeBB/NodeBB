@@ -480,20 +480,17 @@ define('admin/manage/privileges', [
 	}
 
 	function filterPrivileges(ev) {
-		const [startIdx, endIdx] = ev.target.getAttribute('data-filter').split(',').map(i => parseInt(i, 10));
-		const rows = $(ev.target).closest('table')[0].querySelectorAll('thead tr:last-child, tbody tr ');
-		rows.forEach((tr) => {
-			tr.querySelectorAll('td, th').forEach((el, idx) => {
-				const offset = el.tagName.toUpperCase() === 'TH' ? 1 : 0;
-				if (idx < (SKIP_PRIV_COLS - offset)) {
-					return;
-				}
-				el.classList.toggle('hidden', !(idx >= (startIdx - offset) && idx <= (endIdx - offset)));
-			});
+		const btn = $(ev.target);
+		const filter = btn.attr('data-filter');
+		const rows = btn.closest('table').find('thead tr:last-child, tbody tr ');
+		rows.each((i, tr) => {
+			$(tr).find('[data-type]').addClass('hidden');
+			$(tr).find(`[data-type="${filter}"]`).removeClass('hidden');
 		});
+
 		checkboxRowSelector.updateAll();
-		$(ev.target).siblings('button').toArray().forEach(btn => btn.classList.remove('btn-warning'));
-		ev.target.classList.add('btn-warning');
+		btn.siblings('button').removeClass('btn-warning');
+		btn.addClass('btn-warning');
 	}
 
 	function getPrivilegeFilter() {

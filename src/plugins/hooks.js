@@ -38,6 +38,46 @@ Hooks._deprecated = new Map([
 		since: 'v2.7.0',
 		until: 'v3.0.0',
 	}],
+	['filter:privileges.global.list', {
+		new: 'static:privileges.global.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.global.groups.list', {
+		new: 'static:privileges.global.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.global.list_human', {
+		new: 'static:privileges.global.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.global.groups.list_human', {
+		new: 'static:privileges.global.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.list', {
+		new: 'static:privileges.categories.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.groups.list', {
+		new: 'static:privileges.categories.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.list_human', {
+		new: 'static:privileges.categories.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
+	['filter:privileges.groups.list_human', {
+		new: 'static:privileges.categories.init',
+		since: 'v3.5.0',
+		until: 'v4.0.0',
+	}],
 ]);
 
 Hooks.internals = {
