@@ -8,7 +8,10 @@ const util = require('util');
 
 const meta = require('../meta');
 const user = require('../user');
+const groups = require('../groups');
+const topics = require('../topics');
 const privileges = require('../privileges');
+const privilegeHelpers = require('../privileges/helpers');
 const plugins = require('../plugins');
 const helpers = require('./helpers');
 const auth = require('../routes/authentication');
@@ -239,18 +242,12 @@ module.exports = function (middleware) {
 		 */
 		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
 
-		if (req.uid > 0 && !(path.endsWith('/edit/email') || path.startsWith('/confirm/'))) {
-			const [confirmed, isAdmin] = await Promise.all([
-				user.getUserField(req.uid, 'email:confirmed'),
-				user.isAdministrator(req.uid),
-			]);
-			if (meta.config.requireEmailAddress && !confirmed && !isAdmin) {
-				req.session.registration = {
-					...req.session.registration,
-					uid: req.uid,
-					updateEmail: true,
-				};
-			}
+		if (meta.config.requireEmailAddress && await requiresEmailConfirmation(req)) {
+			req.session.registration = {
+				...req.session.registration,
+				uid: req.uid,
+				updateEmail: true,
+			};
 		}
 
 		if (!req.session.hasOwnProperty('registration')) {
@@ -269,4 +266,42 @@ module.exports = function (middleware) {
 
 		controllers.helpers.redirect(res, '/register/complete');
 	};
+
+	async function requiresEmailConfirmation(req) {
+		/**
+		 * N.B. THIS IS NOT AN AUTHENTICATION MECHANISM
+		 *
+		 * It merely decides whether or not the accessed category is restricted to
+		 * verified users only, and renders a decision (Boolean) based on whether
+		 * the calling user is verified or not.
+		 */
+		if (req.uid <= 0) {
+			return false;
+		}
+
+		// Extract tid or cid
+		const [confirmed, isAdmin] = await Promise.all([
+			groups.isMember(req.uid, 'verified-users'),
+			user.isAdministrator(req.uid),
+		]);
+		if (confirmed || isAdmin) {
+			return false;
+		}
+
+		let cid;
+		if (req.params.hasOwnProperty('category_id')) {
+			cid = req.params.category_id;
+		} else if (req.params.hasOwnProperty('topic_id')) {
+			cid = await topics.getTopicField(req.params.topic_id, 'cid');
+		} else {
+			return false; // not a category or topic url, no check required
+		}
+
+		const [registeredAllowed, verifiedAllowed] = await Promise.all([
+			privilegeHelpers.isAllowedTo(['read'], 'registered-users', cid),
+			privilegeHelpers.isAllowedTo(['read'], 'verified-users', cid),
+		]);
+
+		return !registeredAllowed.pop() && verifiedAllowed.pop();
+	}
 };
