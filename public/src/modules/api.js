@@ -7,34 +7,32 @@ import { confirm } from 'bootbox';
 
 const baseUrl = config.relative_path + '/api/v3';
 
-function call(options, callback) {
+async function call(options, callback) {
 	options.url = options.url.startsWith('/api') ?
 		config.relative_path + options.url :
 		baseUrl + options.url;
 
 	if (typeof callback === 'function') {
-		xhr(options, callback);
+		xhr(options).then(result => callback(null, result), err => callback(err));
 		return;
 	}
 
-	return new Promise((resolve, reject) => {
-		xhr(options, function (err, data) {
-			if (err) {
-				if (err.message === 'A valid login session was not found. Please log in and try again.') {
-					return confirm('[[error:api.reauth-required]]', (ok) => {
-						if (ok) {
-							ajaxify.go('login');
-						}
-					});
+	try {
+		const result = await xhr(options);
+		return result;
+	} catch (err) {
+		if (err.message === 'A valid login session was not found. Please log in and try again.') {
+			return confirm('[[error:api.reauth-required]]', (ok) => {
+				if (ok) {
+					ajaxify.go('login');
 				}
-				return reject(err);
-			}
-			resolve(data);
-		});
-	});
+			});
+		}
+		throw err;
+	}
 }
 
-async function xhr_async(options) {
+async function xhr(options) {
 	// Normalize body based on type
 	const { url } = options;
 	delete options.url;
@@ -85,12 +83,6 @@ async function xhr_async(options) {
 	return isJSON && response && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
 		response.response :
 		response;
-}
-
-function xhr(options, callback) {
-	// then().catch() is not correct here because callback() is called twice when the first then() throws an exception.
-	// pass onfulfilled and onrejected here, as two parameters of Promise.prototype.then()
-	xhr_async(options).then(result => callback(null, result), error => callback(error));
 }
 
 export function get(route, data, onSuccess) {
