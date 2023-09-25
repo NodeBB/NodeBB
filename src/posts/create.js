@@ -25,7 +25,7 @@ module.exports = function (Posts) {
 		}
 
 		if (data.toPid) {
-			await checkToPid(data.toPid);
+			await checkToPid(data.toPid, uid);
 		}
 
 		const pid = await db.incrObjectField('global', 'nextPid');
