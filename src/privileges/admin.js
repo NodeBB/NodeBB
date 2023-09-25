@@ -152,6 +152,7 @@ privsAdmin.list = async function (uid) {
 
 	const payload = await utils.promiseParallel({
 		labels,
+		labelData: helpers.getLabelData(_privilegeMap),
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),
 	});

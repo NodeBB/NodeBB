@@ -73,7 +73,7 @@ privsGlobal.list = async function () {
 
 	const payload = await utils.promiseParallel({
 		labels: getLabels(),
-		labelData: Array.from(_privilegeMap.values()),
+		labelData: helpers.getLabelData(_privilegeMap),
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),
 	});

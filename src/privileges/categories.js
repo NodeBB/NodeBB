@@ -73,7 +73,7 @@ privsCategories.list = async function (cid) {
 
 	const payload = await utils.promiseParallel({
 		labels,
-		labelData: Array.from(_privilegeMap.values()),
+		labelData: helpers.getLabelData(_privilegeMap),
 		users: helpers.getUserPrivileges(cid, keys.users),
 		groups: helpers.getGroupPrivileges(cid, keys.groups),
 	});
