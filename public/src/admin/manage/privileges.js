@@ -17,8 +17,6 @@ define('admin/manage/privileges', [
 	const Privileges = {};
 
 	let cid;
-	// number of columns to skip in category privilege tables
-	const SKIP_PRIV_COLS = 3;
 
 	Privileges.init = function () {
 		cid = isNaN(parseInt(ajaxify.data.selectedCategory.cid, 10)) ? 'admin' : ajaxify.data.selectedCategory.cid;
@@ -296,7 +294,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToChildren = function (cid, group) {
-		const filter = getPrivilegeFilter();
+		const filter = getGroupPrivilegeFilter();
 		socket.emit('admin.categories.copyPrivilegesToChildren', { cid, group, filter }, function (err) {
 			if (err) {
 				return alerts.error(err.message);
@@ -319,7 +317,7 @@ define('admin/manage/privileges', [
 			onSubmit: function (selectedCategory) {
 				socket.emit('admin.categories.copyPrivilegesFrom', {
 					toCid: cid,
-					filter: getPrivilegeFilter(),
+					filter: getGroupPrivilegeFilter(),
 					fromCid: selectedCategory.cid,
 					group: group,
 				}, function (err) {
@@ -333,7 +331,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToAllCategories = function (cid, group) {
-		const filter = getPrivilegeFilter();
+		const filter = getGroupPrivilegeFilter();
 		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid, group, filter }, function (err) {
 			if (err) {
 				return alerts.error(err);
@@ -482,7 +480,7 @@ define('admin/manage/privileges', [
 	function filterPrivileges(ev) {
 		const btn = $(ev.target);
 		const filter = btn.attr('data-filter');
-		const rows = btn.closest('table').find('thead tr:last-child, tbody tr ');
+		const rows = btn.closest('table').find('thead tr:last-child, tbody tr');
 		rows.each((i, tr) => {
 			$(tr).find('[data-type]').addClass('hidden');
 			$(tr).find(`[data-type="${filter}"]`).removeClass('hidden');
@@ -493,14 +491,8 @@ define('admin/manage/privileges', [
 		btn.addClass('btn-warning');
 	}
 
-	function getPrivilegeFilter() {
-		const indices = document.querySelector('.privilege-filters .btn-warning')
-			.getAttribute('data-filter')
-			.split(',')
-			.map(i => parseInt(i, 10));
-		indices[0] -= SKIP_PRIV_COLS;
-		indices[1] = indices[1] - SKIP_PRIV_COLS + 1;
-		return indices;
+	function getGroupPrivilegeFilter() {
+		return $('[component="privileges/groups/filters"] .btn-warning').attr('data-filter');
 	}
 
 	function getPrivilegeSubset() {
