@@ -318,7 +318,7 @@ module.exports = function (Topics) {
 	Topics.markAllRead = async function (uid) {
 		const cutoff = await Topics.unreadCutoff(uid);
 		let tids = await db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', cutoff);
-		tids = await privileges.topics.filterTids('read', tids, uid);
+		tids = await privileges.topics.filterTids('topics:read', tids, uid);
 		Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete(`uid:${uid}:tids_unread`);
