@@ -218,6 +218,7 @@ authenticationController.registerAbort = async (req, res) => {
 
 		const { interstitials } = await user.interstitials.get(req, req.session.registration);
 		if (!interstitials.length) {
+			delete req.session.registration;
 			return res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 		}
 	}
