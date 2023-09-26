@@ -289,17 +289,20 @@ module.exports = function (middleware) {
 		}
 
 		let cid;
+		let privilege;
 		if (req.params.hasOwnProperty('category_id')) {
 			cid = req.params.category_id;
+			privilege = 'read';
 		} else if (req.params.hasOwnProperty('topic_id')) {
 			cid = await topics.getTopicField(req.params.topic_id, 'cid');
+			privilege = 'topics:read';
 		} else {
 			return false; // not a category or topic url, no check required
 		}
 
 		const [registeredAllowed, verifiedAllowed] = await Promise.all([
-			privilegeHelpers.isAllowedTo(['read'], 'registered-users', cid),
-			privilegeHelpers.isAllowedTo(['read'], 'verified-users', cid),
+			privilegeHelpers.isAllowedTo([privilege], 'registered-users', cid),
+			privilegeHelpers.isAllowedTo([privilege], 'verified-users', cid),
 		]);
 
 		return !registeredAllowed.pop() && verifiedAllowed.pop();
