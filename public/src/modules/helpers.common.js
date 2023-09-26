@@ -173,13 +173,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return '';
 	}
 
-	function spawnPrivilegeStates(member, privileges) {
+	function spawnPrivilegeStates(member, privileges, types) {
 		const states = [];
 		for (const priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
 				states.push({
 					name: priv,
 					state: privileges[priv],
+					type: types[priv],
 				});
 			}
 		}
@@ -193,7 +194,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
 
 			return `
-				<td data-privilege="${priv.name}" data-value="${priv.state}">
+				<td data-privilege="${priv.name}" data-value="${priv.state}" data-type="${priv.type}">
 					<div class="form-check text-center">
 						<input class="form-check-input float-none" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled"' : '')} />
 					</div>

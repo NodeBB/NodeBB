@@ -37,6 +37,17 @@ get:
                         items:
                           type: string
                           description: Language key of the privilege name's user-friendly name
+                  labelData:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: the name of the privilege displayed in the ACP dashboard
+                        type:
+                          type: string
+                          description: type of the privilege (one of viewing, posting, moderation or other)
                   users:
                     type: array
                     items:
@@ -69,6 +80,9 @@ get:
                           additionalProperties:
                             type: boolean
                             description: A set of privileges with either true or false
+                        types:
+                          type: object
+                          description: Each privilege will have a key in this object, the value will be the type of the privilege (viewing, posting, moderation or other)
                         isPrivate:
                           type: boolean
                         isSystem:
