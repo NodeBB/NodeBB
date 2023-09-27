@@ -7,5 +7,11 @@
     "enter_tags_here_short": "태그 입력...",
     "no_tags": "아직 태그가 달리지 않았습니다.",
     "select_tags": "태그 선택",
-    "tag-whitelist": "Tag Whitelist"
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

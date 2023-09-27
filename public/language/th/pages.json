@@ -48,6 +48,7 @@
     "account/topics": "กระทู้ถูกสร้างโดย  %1",
     "account/groups": "กลุ่มของ %1",
     "account/watched_categories": "%1's Watched Categories",
+    "account/watched-tags": "%1's Watched Tags",
     "account/bookmarks": "บุ๊กมาร์คโพสต์ของ  %1",
     "account/settings": "การตั้งค่าผู้ใช้",
     "account/settings-of": "Changing settings of %1",

@@ -48,6 +48,7 @@
     "account/topics": "Sujets créés par %1",
     "account/groups": "Groupes auxquels appartient %1",
     "account/watched_categories": "%1's Catégories surveillées",
+    "account/watched-tags": "%1's Watched Tags",
     "account/bookmarks": "Marque-pages de %1",
     "account/settings": "Paramètres d'utilisateur",
     "account/settings-of": "Modifier les paramètres de %1",
