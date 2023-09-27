@@ -178,6 +178,7 @@ async function getCounts(userData, callerUID) {
 		promises.bookmarks = db.sortedSetCard(`uid:${uid}:bookmarks`);
 		promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);
 		promises.categoriesWatched = user.getWatchedCategories(uid);
+		promises.tagsWatched = db.sortedSetCard(`uid:${uid}:followed_tags`);
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}
 	const counts = await utils.promiseParallel(promises);

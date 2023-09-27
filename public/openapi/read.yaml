@@ -262,6 +262,8 @@ paths:
     $ref: 'read/user/userslug/followers.yaml'
   "/api/user/{userslug}/categories":
     $ref: 'read/user/userslug/categories.yaml'
+  "/api/user/{userslug}/tags":
+    $ref: 'read/user/userslug/tags.yaml'
   "/api/user/{userslug}/posts":
     $ref: 'read/user/userslug/posts.yaml'
   "/api/user/{userslug}/topics":

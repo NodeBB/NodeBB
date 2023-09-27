@@ -229,6 +229,9 @@ get:
                     type: string
                   canPost:
                     type: boolean
+                  isFollowing:
+                    type: boolean
+                    description: true is user is following this tag
                   showSelect:
                     type: boolean
                   showTopicTools:

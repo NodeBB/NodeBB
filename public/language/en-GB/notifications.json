@@ -14,6 +14,7 @@
 
 	"all": "All",
 	"topics": "Topics",
+	"tags": "Tags",
 	"replies": "Replies",
 	"chat": "Chats",
 	"group-chat": "Group Chats",
@@ -50,6 +51,12 @@
 	"user_posted_to_multiple" : "<strong>%1</strong>, <strong>%2</strong> and %3 others have posted replies to: <strong>%4</strong>",
 	"user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
 	"user_edited_post" : "<strong>%1</strong> has edited a post in <strong>%2</strong>",
+
+	"user_posted_topic_with_tag": "<strong>%1</strong> has posted a new topic with tag <strong>%2</strong>",
+	"user_posted_topic_with_tag_dual": "<strong>%1</strong> has posted a new topic with tags <strong>%2</strong> and <strong>%3</strong>",
+	"user_posted_topic_with_tag_triple": "<strong>%1</strong> has posted a new topic with tags <strong>%2</strong>, <strong>%3</strong> and <strong>%4</strong>",
+	"user_posted_topic_with_tag_multiple": "<strong>%1</strong> has posted a new topic with tags <strong>%2</strong>",
+
 	"user_started_following_you": "<strong>%1</strong> started following you.",
 	"user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
 	"user_started_following_you_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> started following you.",
@@ -77,6 +84,7 @@
 	"notification_and_email": "Notification & Email",
 	"notificationType_upvote": "When someone upvotes your post",
 	"notificationType_new-topic": "When someone you follow posts a topic",
+	"notificationType_new-topic-with-tag": "When a topic is posted with a tag you follow",
 	"notificationType_new-reply": "When a new reply is posted in a topic you are watching",
 	"notificationType_post-edit": "When a post is edited in a topic you are watching",
 	"notificationType_follow": "When someone starts following you",

@@ -21,6 +21,7 @@ const Notifications = module.exports;
 Notifications.baseTypes = [
 	'notificationType_upvote',
 	'notificationType_new-topic',
+	'notificationType_new-topic-with-tag',
 	'notificationType_new-reply',
 	'notificationType_post-edit',
 	'notificationType_follow',
@@ -395,10 +396,10 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
-			function typeFromUsernames(usernames) {
-				if (usernames.length === 2) {
+			function typeFromLength(items) {
+				if (items.length === 2) {
 					return 'dual';
-				} else if (usernames.length === 3) {
+				} else if (items.length === 3) {
 					return 'triple';
 				}
 				return 'multiple';
@@ -419,9 +420,9 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user_posted_in_public_room': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
 					if (usernames.length === 2 || usernames.length === 3) {
-						notifObj.bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
+						notifObj.bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
 					} else if (usernames.length > 3) {
-						notifObj.bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
+						notifObj.bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
 					}
 
 					notifObj.path = set[set.length - 1].path;
@@ -440,9 +441,9 @@ Notifications.merge = async function (notifications) {
 					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
 
 					if (numUsers === 2 || numUsers === 3) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
 					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
 					}
 
 					notifications[modifyIndex].path = set[set.length - 1].path;
