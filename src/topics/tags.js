@@ -168,6 +168,18 @@ module.exports = function (Topics) {
 				topicData.map(t => [`topic:${t.tid}`, { tags: t.tags.join(',') }]),
 			);
 		}, {});
+		const followers = await db.getSortedSetRangeWithScores(`tag:${tag}:followers`, 0, -1);
+		if (followers.length) {
+			const userKeys = followers.map(item => `uid:${item.value}:followed_tags`);
+			const scores = await db.sortedSetsScore(userKeys, tag);
+			await db.sortedSetsRemove(userKeys, tag);
+			await db.sortedSetsAdd(userKeys, scores, newTagName);
+			await db.sortedSetAdd(
+				`tag:${newTagName}:followers`,
+				followers.map(item => item.score),
+				followers.map(item => item.value),
+			);
+		}
 		await Topics.deleteTag(tag);
 		await updateTagCount(newTagName);
 		await Topics.updateCategoryTagsCount(Object.keys(allCids), [newTagName]);
