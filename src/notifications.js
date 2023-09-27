@@ -373,6 +373,7 @@ Notifications.merge = async function (notifications) {
 		'notifications:user_posted_to',
 		'notifications:user_flagged_post_in',
 		'notifications:user_flagged_user',
+		'new-chat',
 		'notifications:user_posted_in_public_room',
 		'new_register',
 		'post-queue',
@@ -416,6 +417,15 @@ Notifications.merge = async function (notifications) {
 			}
 			const notifObj = notifications[modifyIndex];
 			switch (mergeId) {
+				case 'new-chat': {
+					const { roomId, roomName, type, user } = set[0];
+					const isGroupChat = type === 'new-group-chat';
+					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
+						`[[notifications:new_messages_in, ${set.length}, ${roomName}]]` :
+						`[[notifications:new_messages_from, ${set.length}, ${user.displayname}]]`;
+					break;
+				}
+
 				case 'notifications:user_posted_in_public_room': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
 					if (usernames.length === 2 || usernames.length === 3) {

@@ -201,7 +201,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	await Promise.all(results.roomData.map(async (room, index) => {
 		if (room) {
 			room.users = results.users[index];
-			room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
+			room.groupChat = room.users.length > 2;
 			room.unread = results.unread[index];
 			room.teaser = results.teasers[index];
 
