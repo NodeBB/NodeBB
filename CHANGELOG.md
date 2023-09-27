@@ -1,3 +1,47 @@
+#### v3.4.3 (2023-09-27)
+
+##### Chores
+
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  update changelog for v3.4.2 (f9323de6)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  change priv to topics:read (cddac03a)
+*  #12035, filter tids in mark all read (77d6d0ab)
+*  properly wrap promise to callback-style function (#12030) (aff19a6c)
+*  #12009, check if suggested/current versions are valid (7ca37bd6)
+* **deps:**  update dependency nodebb-plugin-2factor to v7.3.0 (#12021) (c805824f)
+
+##### Refactors
+
+*  remove nested promise (379ed0e2)
+
 #### v3.4.2 (2023-09-12)
 
 ##### Chores
