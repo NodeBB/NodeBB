@@ -1,3 +1,60 @@
+#### v3.4.2 (2023-09-12)
+
+##### Chores
+
+*  up harmony (bd94f263)
+*  up harmony (46f260b5)
+*  up harmony (62afd0bd)
+*  up composer/persona (5c628c56)
+*  up harmony (3e07c18d)
+*  up deps (3f7de1c7)
+*  up harmony (512c44d5)
+*  up harmony (319d3b1f)
+*  up themes (d7a7c355)
+*  incrementing version number - v3.4.1 (01e69574)
+*  update changelog for v3.4.1 (f24a334c)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+* **deps:**  bump 2factor (6bc2b6c5)
+*  move database call used to associate a NodeBB session UUID to its express session id into user.auth.addSession, which is the only time it is called (e1bced8c)
+*  toMid to posts you cant see (53106c00)
+*  closes #11982, fix element in prepEdit (e4ecb96f)
+*  prep edit so textarea isn't below text input (f2c4041f)
+
+##### Refactors
+
+*  reduce socket.emits for typing (aebd9278)
+
+##### Tests
+
+*  remove errant .only() (9dc9d5ef)
+*  fix room count (66251166)
+
 #### v3.4.1 (2023-09-06)
 
 ##### Chores

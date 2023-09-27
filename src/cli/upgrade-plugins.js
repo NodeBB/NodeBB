@@ -106,7 +106,7 @@ async function checkPlugins() {
 		current = plugins[suggestObj.package];
 		suggested = suggestObj.version;
 
-		if (suggestObj.code === 'match-found' && semver.gt(suggested, current)) {
+		if (suggestObj.code === 'match-found' && semver.valid(current) && semver.valid(suggested) && semver.gt(suggested, current)) {
 			return {
 				name: suggestObj.package,
 				current: current,
