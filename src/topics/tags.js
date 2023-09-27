@@ -605,10 +605,6 @@ module.exports = function (Topics) {
 			return;
 		}
 
-		let { title } = postData.topic;
-		if (title) {
-			title = utils.decodeHTMLEntities(title);
-		}
 		const { displayname } = postData.user;
 
 		const notifBase = 'notifications:user_posted_topic_with_tag';
