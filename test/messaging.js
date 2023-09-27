@@ -435,8 +435,8 @@ describe('Messaging Library', () => {
 			const data = await User.notifications.get(mocks.users.herp.uid);
 			assert(data.unread[0]);
 			const notification = data.unread[0];
-			assert.strictEqual(notification.bodyShort, 'New message from <strong>foo</strong>');
-			assert.strictEqual(notification.nid, `chat_${roomId}_${mocks.users.foo.uid}`);
+			assert.strictEqual(notification.bodyShort, `New message in <strong>Room ${roomId}</strong>`);
+			assert(notification.nid.startsWith(`chat_${roomId}_${mocks.users.foo.uid}_`));
 			assert.strictEqual(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
 		});
 
