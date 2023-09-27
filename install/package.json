@@ -121,7 +121,7 @@
         "ioredis": "5.3.2",
         "request": "2.88.2",
         "request-promise-native": "1.0.9",
-        "rimraf": "5.0.1",
+        "rimraf": "5.0.5",
         "rss": "1.2.2",
         "rtlcss": "4.1.1",
         "sanitize-html": "2.11.0",
