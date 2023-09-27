@@ -1,0 +1,30 @@
+get:
+  tags:
+    - users
+  summary: Get user's watched tags
+  description: This route retrieves the list of tags the user is watching
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                  title:
+                    type: string
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
