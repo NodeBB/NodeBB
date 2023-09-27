@@ -152,6 +152,7 @@ module.exports = function (Topics) {
 
 		if (parseInt(uid, 10) && !topicData.scheduled) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+			Topics.notifyTagFollowers(postData, uid);
 		}
 
 		return {
@@ -229,7 +230,7 @@ module.exports = function (Topics) {
 			topicInfo,
 		] = await Promise.all([
 			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled']),
+			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags']),
 			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
 			posts.parsePost(postData),
