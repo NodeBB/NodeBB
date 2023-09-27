@@ -210,7 +210,10 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tags) || !tags.length) {
 			return;
 		}
-		await removeTagsFromTopics(tags);
+		await Promise.all([
+			removeTagsFromTopics(tags),
+			removeTagsFromUsers(tags),
+		]);
 		const keys = tags.map(tag => `tag:${tag}:topics`);
 		await db.deleteAll(keys);
 		await db.sortedSetRemove('tags:topic:count', tags);
@@ -222,6 +225,7 @@ module.exports = function (Topics) {
 		const deleteKeys = [];
 		tags.forEach((tag) => {
 			deleteKeys.push(`tag:${tag}`);
+			deleteKeys.push(`tag:${tag}:followers`);
 			cids.forEach((cid) => {
 				deleteKeys.push(`cid:${cid}:tag:${tag}:topics`);
 			});
@@ -245,6 +249,13 @@ module.exports = function (Topics) {
 					`topic:${tid}`, { tags: topicsTags[index].join(',') },
 				]))
 			);
+		});
+	}
+
+	async function removeTagsFromUsers(tags) {
+		await async.eachLimit(tags, 50, async (tag) => {
+			const uids = await db.getSortedSetRange(`tag:${tag}:followers`, 0, -1);
+			await db.sortedSetsRemove(uids.map(uid => `uid:${uid}:followed_tags`), tag);
 		});
 	}
 
