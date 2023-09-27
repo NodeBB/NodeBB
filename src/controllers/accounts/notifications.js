@@ -12,6 +12,7 @@ notificationsController.get = async function (req, res, next) {
 		{ name: '[[notifications:all]]', filter: '' },
 		{ name: '[[global:topics]]', filter: 'new-topic' },
 		{ name: '[[notifications:replies]]', filter: 'new-reply' },
+		{ name: '[[notifications:tags]]', filter: 'new-topic-with-tag' },
 		{ name: '[[notifications:chat]]', filter: 'new-chat' },
 		{ name: '[[notifications:group-chat]]', filter: 'new-group-chat' },
 		{ name: '[[notifications:public-chat]]', filter: 'new-public-chat' },
