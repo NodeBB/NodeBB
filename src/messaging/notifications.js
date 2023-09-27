@@ -8,12 +8,8 @@ const notifications = require('../notifications');
 const user = require('../user');
 const io = require('../socket.io');
 const plugins = require('../plugins');
-const meta = require('../meta');
 
 module.exports = function (Messaging) {
-	// Only used to notify a user of a new chat message
-	Messaging.notifyQueue = {};
-
 	Messaging.setUserNotificationSetting = async (uid, roomId, value) => {
 		if (parseInt(value, 10) === -1) {
 			// go back to default
@@ -73,26 +69,11 @@ module.exports = function (Messaging) {
 			Messaging.pushUnreadCount(uids, unreadData);
 		}
 
-		// Delayed notifications
-		let queueObj = Messaging.notifyQueue[`${fromUid}:${roomId}`];
-		if (queueObj) {
-			queueObj.message.content += `\n${messageObj.content}`;
-			clearTimeout(queueObj.timeout);
-		} else {
-			queueObj = {
-				message: messageObj,
-			};
-			Messaging.notifyQueue[`${fromUid}:${roomId}`] = queueObj;
+		try {
+			await sendNotification(fromUid, roomId, messageObj);
+		} catch (err) {
+			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 		}
-
-		queueObj.timeout = setTimeout(async () => {
-			try {
-				await sendNotification(fromUid, roomId, queueObj.message);
-				delete Messaging.notifyQueue[`${fromUid}:${roomId}`];
-			} catch (err) {
-				winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
-			}
-		}, meta.config.notificationSendDelay * 1000);
 	};
 
 	async function sendNotification(fromUid, roomId, messageObj) {
@@ -121,21 +102,22 @@ module.exports = function (Messaging) {
 		if (uidsToNotify.length) {
 			const { displayname } = messageObj.fromUser;
 			const isGroupChat = await Messaging.isGroupChat(roomId);
+			const roomName = roomData.roomName || `[[modules:chat.room-id, ${roomId}]]`;
 			const notifData = {
 				type: isGroupChat ? 'new-group-chat' : 'new-chat',
-				subject: `[[email:notif.chat.subject, ${displayname}]]`,
-				bodyShort: `[[notifications:new_message_from, ${displayname}]]`,
+				subject: `[[email:notif.chat.subject, ${roomName}]]`,
+				bodyShort: isGroupChat || roomData.roomName ? `[[notifications:new_message_in, ${roomName}]]` : `[[notifications:new_message_from, ${displayname}]]`,
 				bodyLong: messageObj.content,
-				nid: `chat_${roomId}_${fromUid}`,
+				nid: `chat_${roomId}_${fromUid}_${Date.now()}`,
+				mergeId: `new-chat|${roomId}`, // as roomId is the differentiator, no distinction between direct vs. group req'd.
 				from: fromUid,
-				roomId: roomId,
+				roomId,
+				roomName,
 				path: `/chats/${messageObj.roomId}`,
 			};
 			if (roomData.public) {
 				const icon = Messaging.getRoomIcon(roomData);
-				const roomName = roomData.roomName || `[[modules:chat.room-id, ${roomId}]]`;
 				notifData.type = 'new-public-chat';
-				notifData.roomName = roomName;
 				notifData.roomIcon = icon;
 				notifData.subject = `[[email:notif.chat.public-chat-subject, ${displayname}, ${roomName}]]`;
 				notifData.bodyShort = `[[notifications:user_posted_in_public_room, ${displayname}, ${icon}, ${roomName}]]`;
