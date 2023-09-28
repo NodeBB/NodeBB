@@ -71,6 +71,7 @@
     "view-flag-report": "Vis flaggrapport ",
     "resolve-flag": "Løs flagg",
     "merged_message": "Dette emnet er slått sammen med <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Denne tråden har blitt slettet. Bare brukere med trådhåndterings-privilegier kan se den.",
     "following_topic.message": "Du vil nå motta varsler når noen skriver i denne tråden.",
     "not_following_topic.message": "Du vil se denne tråden i trådlisten, men du vil ikke motta varslinger når noen skriver i den.",

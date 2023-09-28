@@ -71,6 +71,7 @@
     "view-flag-report": "Jelölésekről szóló jelentés megtekintése",
     "resolve-flag": "Megjelölés megoldása",
     "merged_message": "Ezt a témát beolvasztották <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "A  témakör törölve lett. Csak a témakör-kezelési joggal rendelkező felhasználók láthatják.",
     "following_topic.message": "Mostantól értesítést kapsz, mikor valaki hozzászól ehhez a témakörhöz.",
     "not_following_topic.message": "Látni fogod ezt a témakört az olvasatlan témakörök listáján, de nem kapsz értesítést, mikor valaki hozzászól a témakörhöz.",

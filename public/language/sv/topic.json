@@ -71,6 +71,7 @@
     "view-flag-report": "View Flag Report",
     "resolve-flag": "Resolve Flag",
     "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Det här ämnet har raderats. Endast användare med ämneshanterings-privilegier kan se det.",
     "following_topic.message": "Du kommer nu få notiser när någon gör inlägg i detta ämne.",
     "not_following_topic.message": "Du kommer att se det här ämnet i listan olästa ämnen, men du kommer inte att få meddelande när någon gör inlägg till detta ämne.",

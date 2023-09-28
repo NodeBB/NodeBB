@@ -71,6 +71,7 @@
     "view-flag-report": "Shiko analizën e raportimeve",
     "resolve-flag": "Zgjidh raportimin",
     "merged_message": "Kjo temë është bashkuar në <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Kjo temë është fshirë. Vetëm përdoruesit me privilegje mund ta shohin atë.",
     "following_topic.message": "Tani do të merrni njoftime kur dikush poston në këtë temë.",
     "not_following_topic.message": "Ju do ta shihni këtë temë në listën e temave të palexuara, por nuk do të merrni njoftime kur dikush poston në të.",

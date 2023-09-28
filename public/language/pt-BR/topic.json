@@ -71,6 +71,7 @@
     "view-flag-report": "Ver Relatório da Sinalização",
     "resolve-flag": "Resolver marcação",
     "merged_message": "Este tópico foi fundido com <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Este tópico foi deletado. Apenas usuários com privilégios de moderação de tópico podem vê-lo.",
     "following_topic.message": "Agora você receberá notificações quando alguém responder este tópico.",
     "not_following_topic.message": "Você verá este tópico na lista de tópicos não-lidos, mas você não receberá notificações quando alguém postar no tópico.",
