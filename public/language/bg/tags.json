@@ -8,10 +8,10 @@
     "no_tags": "Все още няма етикети.",
     "select_tags": "Изберете етикети",
     "tag-whitelist": "Списък от разрешени етикети",
-    "watching": "Watching",
-    "not-watching": "Not Watching",
-    "watching.description": "Notify me of new topics.",
-    "not-watching.description": "Do not notify me of new topics.",
-    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
-    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
+    "watching": "Следите",
+    "not-watching": "Не следите",
+    "watching.description": "Искам да получавам известия за нови теми.",
+    "not-watching.description": "Не искам да получавам известия за нови теми.",
+    "following-tag.message": "Вече ще получавате известия, когато някой публикува тема с този етикет.",
+    "not-following-tag.message": "Няма да получавате известия, когато някой публикува тема с този етикет."
 }
