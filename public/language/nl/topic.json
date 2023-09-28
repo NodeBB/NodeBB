@@ -71,6 +71,7 @@
     "view-flag-report": "Rapportage inzien",
     "resolve-flag": "Resolve Flag",
     "merged_message": "Dit onderwerp is samengevoegd met <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Dit onderwerp is verwijderd. Alleen gebruikers met beheerrechten op onderwerpniveau kunnen dit inzien.",
     "following_topic.message": "Vanaf nu worden meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",
     "not_following_topic.message": "Dit onderwerp zal verschijnen in de lijst van ongelezen onderwerpen, maar er zullen geen meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",

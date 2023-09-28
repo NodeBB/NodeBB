@@ -71,6 +71,7 @@
     "view-flag-report": "Xem Báo Cáo Gắn Cờ",
     "resolve-flag": "Xử Lý Cờ",
     "merged_message": "Chủ đề này đã được gộp chung thành <a href=\"%1\">%2</a>",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Chủ đề này đã bị xóa. Chỉ người dùng có quyền quản lý chủ đề mới được xem.",
     "following_topic.message": "Bạn sẽ nhận được thông báo khi có ai đó gửi bài viết trong chủ đề này.",
     "not_following_topic.message": "Bạn sẽ thấy chủ đề này trong danh sách chủ đề chưa đọc, nhưng bạn sẽ không nhận được thông báo khi ai đó đăng lên chủ đề này.",

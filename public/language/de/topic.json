@@ -71,6 +71,7 @@
     "view-flag-report": "Meldungs-Report anzeigen",
     "resolve-flag": "Als Gelöst markiert",
     "merged_message": "Diese Thema wurde mit <a href=\"%1\">%2</a> fusioniert",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",
     "following_topic.message": "Du erhältst nun eine Benachrichtigung, wenn jemand einen Beitrag zu diesem Thema verfasst.",
     "not_following_topic.message": "Ungelesene Beiträge in diesem Thema werden angezeigt, aber du erhältst keine Benachrichtigung wenn jemand einen Beitrag zu diesem Thema verfasst.",

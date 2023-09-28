@@ -71,6 +71,7 @@
     "view-flag-report": "View Flag Report",
     "resolve-flag": "Resolve Flag",
     "merged_message": "این تاپیک با <a href=\"%1\">%2</a> ادغام شد ",
+    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted_message": "این موضوع پاک شده است. تنها کاربرانِ با حق مدیریت موضوع می‌توانند آن را ببینند.",
     "following_topic.message": "زمانی که کسی پست جدیدی در این تاپیک بفرستد شما نوتیفیکشن دریافت خواهید کرد.",
     "not_following_topic.message": "شما این تاپیک را در لیست تاپیک‌های خوانده‌نشده می‌بینید، اما وقتی پست جدیدی ارسال می‌شود نوتیفیکشن دریافت نمی‌کنید.",
