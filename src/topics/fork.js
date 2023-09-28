@@ -70,6 +70,9 @@ module.exports = function (Topics) {
 			Topics.setTopicFields(tid, {
 				upvotes: postData.upvotes,
 				downvotes: postData.downvotes,
+				forkedFromTid: fromTid,
+				forkerUid: uid,
+				forkTimestamp: Date.now(),
 			}),
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], postData.votes, tid),
 			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` }),

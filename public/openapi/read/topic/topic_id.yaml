@@ -315,6 +315,8 @@ get:
                     nullable: true
                   merger:
                     nullable: true
+                  forker:
+                    nullable: true
                   related:
                     type: array
                     items:
