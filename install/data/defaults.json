@@ -22,7 +22,7 @@
     "chatDeleteDuration": 0,
     "chatMessageDelay": 2000,
     "newbieChatMessageDelay": 120000,
-    "notificationSendDelay": 10,
+    "notificationSendDelay": 60,
     "newbiePostDelayThreshold": 3,
     "postQueue": 0,
     "postQueueReputationThreshold": 0,
