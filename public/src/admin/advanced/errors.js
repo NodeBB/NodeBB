@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbox, alerts, Chart) {
+define('admin/advanced/errors', [
+	'bootbox', 'alerts', 'chart.js/auto',
+], function (bootbox, alerts, { Chart }) {
 	const Errors = {};
 
 	Errors.init = function () {
@@ -33,7 +35,7 @@ define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbo
 		dailyLabels = dailyLabels.slice(-7);
 
 		if (utils.isMobile()) {
-			Chart.defaults.global.tooltips.enabled = false;
+			Chart.defaults.plugins.tooltip.enabled = false;
 		}
 
 		const data = {
@@ -42,6 +44,8 @@ define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbo
 				datasets: [
 					{
 						label: '',
+						fill: 'origin',
+						tension: 0.25,
 						backgroundColor: 'rgba(186,139,175,0.2)',
 						borderColor: 'rgba(186,139,175,1)',
 						pointBackgroundColor: 'rgba(186,139,175,1)',
@@ -57,6 +61,8 @@ define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbo
 				datasets: [
 					{
 						label: '',
+						fill: 'origin',
+						tension: 0.25,
 						backgroundColor: 'rgba(151,187,205,0.2)',
 						borderColor: 'rgba(151,187,205,1)',
 						pointBackgroundColor: 'rgba(151,187,205,1)',
@@ -69,23 +75,20 @@ define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbo
 			},
 		};
 
-		notFoundCanvas.width = $(notFoundCanvas).parent().width();
-		tooBusyCanvas.width = $(tooBusyCanvas).parent().width();
-
 		new Chart(notFoundCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['not-found'],
 			options: {
 				responsive: true,
-				legend: {
-					display: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
 				},
 				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true,
-						},
-					}],
+					y: {
+						beginAtZero: true,
+					},
 				},
 			},
 		});
@@ -95,15 +98,15 @@ define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbo
 			data: data.toobusy,
 			options: {
 				responsive: true,
-				legend: {
-					display: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
 				},
 				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true,
-						},
-					}],
+					y: {
+						beginAtZero: true,
+					},
 				},
 			},
 		});

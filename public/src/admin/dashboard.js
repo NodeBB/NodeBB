@@ -2,8 +2,8 @@
 
 
 define('admin/dashboard', [
-	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts', 'helpers',
-], function (Chart, translator, Benchpress, bootbox, alerts, helpers) {
+	'chart.js/auto', 'translator', 'benchpress', 'bootbox', 'alerts', 'helpers',
+], function ({ Chart }, translator, Benchpress, bootbox, alerts, helpers) {
 	const Admin = {};
 	const intervals = {
 		rooms: false,
@@ -63,19 +63,19 @@ define('admin/dashboard', [
 
 		graphData.rooms = data;
 
-		const html = '<div class="text-center float-start">' +
+		const html = '<div class="text-center">' +
 						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount) + '</span>' +
 						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
-					'<div class="text-center float-start">' +
+					'<div class="text-center">' +
 						'<span class="fs-5">' + helpers.formattedNumber(data.onlineGuestCount) + '</span>' +
 						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
-					'<div class="text-center float-start">' +
+					'<div class="text-center">' +
 						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
 						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
-					'<div class="text-center float-start">' +
+					'<div class="text-center">' +
 						'<span class="fs-5">' + helpers.formattedNumber(data.socketCount) + '</span>' +
 						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';
@@ -140,7 +140,7 @@ define('admin/dashboard', [
 		const trafficLabels = utils.getHoursArray();
 
 		if (isMobile) {
-			Chart.defaults.global.tooltips.enabled = false;
+			Chart.defaults.plugins.tooltip.enabled = false;
 		}
 
 		const t = translator.Translator.create();
@@ -158,11 +158,14 @@ define('admin/dashboard', [
 			t.translateKey('admin/dashboard:recent', []),
 			t.translateKey('admin/dashboard:unread', []),
 		]).then(function (translations) {
+			const tension = 0.25;
 			const data = {
 				labels: trafficLabels,
 				datasets: [
 					{
 						label: translations[0],
+						fill: 'origin',
+						tension: tension,
 						backgroundColor: 'rgba(220,220,220,0.2)',
 						borderColor: 'rgba(220,220,220,1)',
 						pointBackgroundColor: 'rgba(220,220,220,1)',
@@ -173,6 +176,8 @@ define('admin/dashboard', [
 					},
 					{
 						label: translations[1],
+						fill: 'origin',
+						tension: tension,
 						backgroundColor: '#ab464233',
 						borderColor: '#ab4642',
 						pointBackgroundColor: '#ab4642',
@@ -183,6 +188,8 @@ define('admin/dashboard', [
 					},
 					{
 						label: translations[2],
+						fill: 'origin',
+						tension: tension,
 						backgroundColor: '#ba8baf33',
 						borderColor: '#ba8baf',
 						pointBackgroundColor: '#ba8baf',
@@ -193,6 +200,8 @@ define('admin/dashboard', [
 					},
 					{
 						label: translations[3],
+						fill: 'origin',
+						tension: tension,
 						backgroundColor: '#f7ca8833',
 						borderColor: '#f7ca88',
 						pointBackgroundColor: '#f7ca88',
@@ -203,6 +212,8 @@ define('admin/dashboard', [
 					},
 					{
 						label: translations[4],
+						fill: 'origin',
+						tension: tension,
 						backgroundColor: 'rgba(151,187,205,0.2)',
 						borderColor: 'rgba(151,187,205,1)',
 						pointBackgroundColor: 'rgba(151,187,205,1)',
@@ -227,43 +238,42 @@ define('admin/dashboard', [
 				data: data,
 				options: {
 					responsive: true,
-					legend: {
-						display: true,
-					},
 					scales: {
-						yAxes: [{
-							id: 'left-y-axis',
-							ticks: {
-								beginAtZero: true,
-								precision: 0,
-							},
-							type: 'linear',
+						'left-y-axis': {
 							position: 'left',
-							scaleLabel: {
-								display: true,
-								labelString: translations[0],
-							},
-						}, {
-							id: 'right-y-axis',
-							ticks: {
-								beginAtZero: true,
-								suggestedMax: 10,
-								precision: 0,
-							},
 							type: 'linear',
-							position: 'right',
-							scaleLabel: {
+							title: {
 								display: true,
-								labelString: translations[4],
+								text: translations[0],
 							},
-						}],
+							beginAtZero: true,
+						},
+						'right-y-axis': {
+							position: 'right',
+							type: 'linear',
+							title: {
+								display: true,
+								text: translations[4],
+							},
+							beginAtZero: true,
+						},
 					},
-					tooltips: {
-						mode: 'x',
+					interaction: {
+						intersect: false,
+						mode: 'index',
 					},
 				},
 			});
 
+			const doughnutOpts = {
+				responsive: true,
+				maintainAspectRatio: true,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+			};
 			graphs.registered = new Chart(registeredCtx, {
 				type: 'doughnut',
 				data: {
@@ -274,12 +284,7 @@ define('admin/dashboard', [
 						hoverBackgroundColor: ['#FF5A5E', '#5AD3D1'],
 					}],
 				},
-				options: {
-					responsive: true,
-					legend: {
-						display: false,
-					},
-				},
+				options: doughnutOpts,
 			});
 
 			graphs.presence = new Chart(presenceCtx, {
@@ -292,12 +297,7 @@ define('admin/dashboard', [
 						hoverBackgroundColor: ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#A8B3C5'],
 					}],
 				},
-				options: {
-					responsive: true,
-					legend: {
-						display: false,
-					},
-				},
+				options: doughnutOpts,
 			});
 
 			graphs.topics = new Chart(topicsCtx, {
@@ -310,18 +310,10 @@ define('admin/dashboard', [
 						hoverBackgroundColor: [],
 					}],
 				},
-				options: {
-					responsive: true,
-					legend: {
-						display: false,
-					},
-				},
+				options: doughnutOpts,
 			});
 
 			updateTrafficGraph();
-
-			$(window).on('resize', adjustPieCharts);
-			adjustPieCharts();
 
 			$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
 				let until = new Date();
@@ -395,18 +387,6 @@ define('admin/dashboard', [
 			});
 
 			callback();
-		});
-	}
-
-	function adjustPieCharts() {
-		$('.pie-chart.legend-up').each(function () {
-			const $this = $(this);
-
-			if ($this.width() < 320) {
-				$this.addClass('compact');
-			} else {
-				$this.removeClass('compact');
-			}
 		});
 	}
 

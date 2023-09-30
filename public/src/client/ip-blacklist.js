@@ -1,7 +1,8 @@
 'use strict';
 
-
-define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox', 'alerts'], function (Chart, Benchpress, bootbox, alerts) {
+define('forum/ip-blacklist', [
+	'chart.js/auto', 'benchpress', 'bootbox', 'alerts',
+], function ({ Chart }, Benchpress, bootbox, alerts) {
 	const Blacklist = {};
 
 	Blacklist.init = function () {
@@ -52,7 +53,7 @@ define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox', 'alerts'], funct
 		});
 
 		if (utils.isMobile()) {
-			Chart.defaults.global.tooltips.enabled = false;
+			Chart.defaults.plugins.tooltip.enabled = false;
 		}
 
 		const data = {
@@ -61,6 +62,8 @@ define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox', 'alerts'], funct
 				datasets: [
 					{
 						label: '',
+						fill: 'origin',
+						tension: 0.25,
 						backgroundColor: 'rgba(186,139,175,0.2)',
 						borderColor: 'rgba(186,139,175,1)',
 						pointBackgroundColor: 'rgba(186,139,175,1)',
@@ -88,45 +91,34 @@ define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox', 'alerts'], funct
 			},
 		};
 
-		hourlyCanvas.width = $(hourlyCanvas).parent().width();
-		dailyCanvas.width = $(dailyCanvas).parent().width();
+		const chartOpts = {
+			responsive: true,
+			maintainAspectRatio: true,
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
+			scales: {
+				y: {
+					position: 'left',
+					type: 'linear',
+					beginAtZero: true,
+				},
+			},
+		};
+
 
 		new Chart(hourlyCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['blacklist:hourly'],
-			options: {
-				responsive: true,
-				animation: false,
-				legend: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true,
-						},
-					}],
-				},
-			},
+			options: chartOpts,
 		});
 
 		new Chart(dailyCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['blacklist:daily'],
-			options: {
-				responsive: true,
-				animation: false,
-				legend: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true,
-						},
-					}],
-				},
-			},
+			options: chartOpts,
 		});
 	};
 

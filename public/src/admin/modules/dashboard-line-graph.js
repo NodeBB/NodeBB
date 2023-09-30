@@ -1,6 +1,8 @@
 'use strict';
 
-define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api', 'hooks', 'bootbox'], function (Chart, translator, Benchpress, api, hooks, bootbox) {
+define('admin/modules/dashboard-line-graph', [
+	'chart.js/auto', 'translator', 'benchpress', 'api', 'hooks', 'bootbox',
+], function ({ Chart }, translator, Benchpress, api, hooks, bootbox) {
 	const Graph = {
 		_current: null,
 	};
@@ -13,7 +15,7 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 		if (isMobile) {
-			Chart.defaults.global.tooltips.enabled = false;
+			Chart.defaults.plugins.tooltip.enabled = false;
 		}
 
 		Graph.handleUpdateControls({ set });
@@ -26,6 +28,8 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 					datasets: [
 						{
 							label: key,
+							fill: true,
+							tension: 0.25,
 							backgroundColor: 'rgba(151,187,205,0.2)',
 							borderColor: 'rgba(151,187,205,1)',
 							pointBackgroundColor: 'rgba(151,187,205,1)',
@@ -46,26 +50,20 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 					data: data,
 					options: {
 						responsive: true,
-						legend: {
-							display: true,
-						},
 						scales: {
-							yAxes: [{
-								id: 'left-y-axis',
-								ticks: {
-									beginAtZero: true,
-									precision: 0,
-								},
+							'left-y-axis': {
 								type: 'linear',
 								position: 'left',
-								scaleLabel: {
+								beginAtZero: true,
+								title: {
 									display: true,
-									labelString: key,
+									text: key,
 								},
-							}],
+							},
 						},
-						tooltips: {
-							mode: 'x',
+						interaction: {
+							intersect: false,
+							mode: 'index',
 						},
 					},
 				});

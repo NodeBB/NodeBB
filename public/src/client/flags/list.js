@@ -1,11 +1,11 @@
 'use strict';
 
 define('forum/flags/list', [
-	'components', 'Chart', 'categoryFilter',
+	'components', 'chart.js/auto', 'categoryFilter',
 	'autocomplete', 'api', 'alerts',
 	'userFilter',
 ], function (
-	components, Chart, categoryFilter,
+	components, { Chart }, categoryFilter,
 	autocomplete, api, alerts,
 	userFilter
 ) {
@@ -255,7 +255,7 @@ define('forum/flags/list', [
 		});
 
 		if (utils.isMobile()) {
-			Chart.defaults.global.tooltips.enabled = false;
+			Chart.defaults.plugins.tooltip.enabled = false;
 		}
 		const data = {
 			'flags:daily': {
@@ -282,16 +282,15 @@ define('forum/flags/list', [
 			options: {
 				responsive: true,
 				animation: false,
-				legend: {
-					display: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
 				},
 				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true,
-							precision: 0,
-						},
-					}],
+					y: {
+						beginAtZero: true,
+					},
 				},
 			},
 		});
