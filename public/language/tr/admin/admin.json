@@ -5,14 +5,14 @@
 	"acp-title": "%1 | NodeBB Yönetici Kontrol Paneli",
 	"settings-header-contents": "İçerikler",
 	"changes-saved": "Değişiklikler kaydedildi",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-saved-message": "NodeBB konfigürasyon değişiklikleri kaydedildi.",
 	"changes-not-saved": "Değişiklikler kaydedilmedi",
 	"changes-not-saved-message": "NodeBB değişiklikleri kaydederken bir hata oluştu (%1)",
 	"save-changes": "Değişiklikleri Kaydet",
 	"min": "En az:",
 	"max": "En çok:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"view": "Görüntüle",
+	"edit": "Düzenle",
+	"add": "Ekle",
+	"select-icon": "Ikon Seçin"
 }

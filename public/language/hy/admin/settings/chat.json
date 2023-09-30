@@ -1,16 +1,16 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "Զրույցի սենյակների անունների երկարությունը",
 	"chat-settings": "Զրույցի կարգավորումներ",
 	"disable": "Անջատել զրույցը",
 	"disable-editing": "Անջատել զրույցի հաղորդագրությունների խմբագրումը/ջնջումը",
 	"disable-editing-help": "Ադմինիստրատորները և ամընդհանուր մոդերատորները ազատված են այս սահմանափակումից",
 	"max-length": "Զրույցի հաղորդագրությունների առավելագույն երկարությունը",
-	"max-chat-room-name-length": "Maximum length of chat room names",
+	"max-chat-room-name-length": "Զրույցի սենյակների անունների առավելագույն երկարությունը",
 	"max-room-size": "Զրուցարաններում օգտատերերի առավելագույն քանակը",
-	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
+	"delay": "Ժամանակը զրույցի հաղորդագրությունների միջև (մս)",
+	"newbieDelay": "... նոր օգտվողների համար (ms)",
+	"notification-delay": "Զրույցի հաղորդագրությունների ծանուցման հետաձգում",
+	"notification-delay-help": "Այս ժամանակահատվածում ուղարկված հավելյալ հաղորդագրությունները հավաքվում են, և օգտատերը ծանուցվում է մեկ անգամ ուշացման ժամանակահատվածում: Սահմանեք սա 0՝ ուշացումն անջատելու համար:",
+	"restrictions.seconds-edit-after": "Վայրկյանների քանակը զրույցի հաղորդագրությունը կմնա խմբագրելի:",
+	"restrictions.seconds-delete-after": "Վայրկյանների քանակը զրույցի հաղորդագրությունը կմնա ջնջելի:"
 }

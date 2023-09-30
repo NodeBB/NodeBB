@@ -1,16 +1,16 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "Gebe 0 ein, um diese Einschränkung zu deaktivieren.",
 	"chat-settings": "Chateinstellungen",
 	"disable": "Chat deaktivieren",
 	"disable-editing": "Chatnachrichtenbearbeitung/löschung deaktivieren",
 	"disable-editing-help": "Administratoren und globale Moderatoren sind von dieser Einschränkung ausgenommen",
 	"max-length": "Maximale Länge von Chatnachrichten",
-	"max-chat-room-name-length": "Maximum length of chat room names",
+	"max-chat-room-name-length": "Maximale Länge der Namen von Chaträumen",
 	"max-room-size": "Maximale Anzahl von Benutzern in Chatrooms",
-	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
+	"delay": "Zeit zwischen Chat-Nachrichten (ms)",
+	"newbieDelay": "... für neue Benutzer (ms)",
+	"notification-delay": "Benachrichtigungsverzögerung für Chat-Nachrichten",
+	"notification-delay-help": "Zusätzliche Nachrichten, die zwischen dieser Zeit gesendet werden, werden gesammelt, und der Benutzer wird einmal pro Verzögerungszeitraum benachrichtigt. Setze diesen Wert auf 0, um die Verzögerung zu deaktivieren.",
+	"restrictions.seconds-edit-after": "Anzahl der Sekunden, die eine Chat-Nachricht bearbeitbar bleibt.",
+	"restrictions.seconds-delete-after": "Anzahl der Sekunden, die eine Chat-Nachricht löschbar bleibt."
 }

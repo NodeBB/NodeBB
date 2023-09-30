@@ -8,10 +8,10 @@
     "no_tags": "Il n'y a pas encore de mots-clés.",
     "select_tags": "Sélectionner les mots-clés",
     "tag-whitelist": "Liste blanche de mots-clés",
-    "watching": "Watching",
-    "not-watching": "Not Watching",
-    "watching.description": "Notify me of new topics.",
-    "not-watching.description": "Do not notify me of new topics.",
-    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
-    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
+    "watching": "Abonné",
+    "not-watching": "Ne plus suivre",
+    "watching.description": "Être notifier des nouveaux sujets.",
+    "not-watching.description": "Ne pas être notifier des nouveaux sujets.",
+    "following-tag.message": "Vous recevrez désormais des notifications lorsque quelqu'un publiera un sujet avec ce mot-clés.",
+    "not-following-tag.message": "Vous ne recevrez plus de notifications lorsque quelqu'un publiera un sujet avec ce mot-clés."
 }

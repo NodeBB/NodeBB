@@ -1,10 +1,10 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook"
+	"sign-in-with-twitter": "Մուտք գործեք Twitter-ով",
+	"sign-up-with-twitter": "Գրանցվեք Twitter-ով",
+	"sign-in-with-github": "Մուտք գործեք Githhub-ով",
+	"sign-up-with-github": "Գրանցվեք Githhub-ով",
+	"sign-in-with-google": "Մուտք գործեք Google-ով",
+	"sign-up-with-google": "Գրանցվեք Google-ով",
+	"log-in-with-facebook": "Մուտք գործեք Facebook-ով",
+	"continue-with-facebook": "Շարունակեք Facebook-ով"
 }
