@@ -8,10 +8,10 @@
     "no_tags": "Non ci sono ancora tag.",
     "select_tags": "Seleziona tag",
     "tag-whitelist": "Tag Whitelist",
-    "watching": "Watching",
-    "not-watching": "Not Watching",
-    "watching.description": "Notify me of new topics.",
-    "not-watching.description": "Do not notify me of new topics.",
-    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
-    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
+    "watching": "Seguito",
+    "not-watching": "Non seguito",
+    "watching.description": "Notificami le nuove discussioni.",
+    "not-watching.description": "Non notificatemi le nuove discussioni.",
+    "following-tag.message": "Ora riceverai notifiche quando qualcuno posta una discussione con questo tag.",
+    "not-following-tag.message": "Non riceverai notifiche quando qualcuno posta una discussione con questo tag."
 }
