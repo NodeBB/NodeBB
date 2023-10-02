@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "신선한 화제 지속 기간",
-	"restrictions.stale-help": "게시글이 신선한 화제 지속 기간을 지나면, 지루한 화제로 판단하고 해당 화제에 답글을 작성하는 모든 사용자에게 경고 메세지를 발송합니다.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "시간 표기",
 	"timestamp.cut-off": "상대시간 표기 기간(일)",
 	"timestamp.cut-off-help": "날짜 및 시간을 상대시간으로 표기.(예: \"3시간 전\" / \"5일 전\") 표기 기간이 지나면 지역시간으로 변환.(예: 2016년 11월 5일 15:30) <br /><em>(기본값: <code>30일</code>, 또는 한달). 0으로 지정 시 항상 날짜 표기, 비워둘 경우 항상 상대시간 표기.</em>",
