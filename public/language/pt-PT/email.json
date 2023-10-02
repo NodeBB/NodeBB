@@ -36,7 +36,7 @@
     "digest.title.day": "O teu Resumo Diário",
     "digest.title.week": "O teu Resumo Semanal",
     "digest.title.month": "O teu Resumo Mensal",
-    "notif.chat.subject": "Nova mensagem de %1",
+    "notif.chat.subject": "New chat message received in \"%1\"",
     "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Clique aqui para continuar a conversa",
     "notif.chat.unsub.info": "Esta notificação de chat foi enviada devido às suas definições de subscrição",

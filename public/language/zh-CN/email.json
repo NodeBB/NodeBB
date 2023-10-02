@@ -36,7 +36,7 @@
     "digest.title.day": "您的每日摘要",
     "digest.title.week": "您的每周摘要",
     "digest.title.month": "您的每月摘要",
-    "notif.chat.subject": "收到来自 %1 的新聊天消息",
+    "notif.chat.subject": "New chat message received in \"%1\"",
     "notif.chat.public-chat-subject": "房间 %2 中 %1 的新消息",
     "notif.chat.cta": "点击这里继续会话",
     "notif.chat.unsub.info": "根据您的订阅设置，为您发送此聊天提醒。",
