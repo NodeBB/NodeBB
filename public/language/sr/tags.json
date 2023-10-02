@@ -8,10 +8,10 @@
     "no_tags": "Још увек нема ознака.",
     "select_tags": "Изабери ознаке",
     "tag-whitelist": "Бела листа ознака",
-    "watching": "Watching",
-    "not-watching": "Not Watching",
-    "watching.description": "Notify me of new topics.",
-    "not-watching.description": "Do not notify me of new topics.",
-    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
-    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
+    "watching": "Надгледа се",
+    "not-watching": "Не надгледа се",
+    "watching.description": "Обавести ме о новим темама.",
+    "not-watching.description": "Не обавештавај ме о новим темама.",
+    "following-tag.message": "Сада ћете добијати обавештења када неко објави тему са овом ознаком.",
+    "not-following-tag.message": "Нећете добијати обавештења када неко објави тему са овом ознаком."
 }
