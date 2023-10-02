@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Days until topic is considered stale",
-	"restrictions.stale-help": "スレッドが「古い」とみなされた場合、そのスレッドに返信しようとするユーザーに警告が表示されます。",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "タイムスタンプ",
 	"timestamp.cut-off": "日付のカットオフ(日数)",
 	"timestamp.cut-off-help": "日付&amp;時間は相対的な方法で表示されます(例:「3時間前」/「5日前」)。そしてさまざまな地域にローカライズされています。\n\\t\\t\\t\\t\\t言語。特定のポイントの後、このテキストは、ローカライズされた日付自体を表示するように切り替えることができます。\n\\t\\t\\t\\t\\t(例:2016年11月5日15:30)<br /><em>(デフォルト：<code>30 </code>、または1か月)。日付を常に表示するには0に設定し、常に相対時間を表示するには空白のままにします。</em>",

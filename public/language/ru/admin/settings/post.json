@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Через сколько дней тема будет считаться устаревшей",
-	"restrictions.stale-help": "Если тема считается устаревшей, пользователь увидит соответствующее предупреждение при попытке ответить в ней.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Дата и время",
 	"timestamp.cut-off": "Порог отсечки (в днях)",
 	"timestamp.cut-off-help": "Сначала дата и время сообщения будут отображаться в относительном виде: &laquo;3 часа назад&raquo; / &laquo;5 дней назад&raquo;, локализованным в соответствии с языковыми настройками форума. Затем формат изменится на обычный: 5 Ноября 2016 15:30. <br /><em>(Стандартная отсечка: <code>30</code>, или один месяц). Введите 0, чтобы всегда отображать обычные дату и время, или оставьте поле пустым, чтобы всегда использовать относительный вид</em>",

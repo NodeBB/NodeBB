@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Longueur du titre",
 	"restrictions.post-length": "Longueur du message",
 	"restrictions.days-until-stale": "Jours jusqu'à ce que le sujet soit considéré comme périmé",
-	"restrictions.stale-help": "Si un sujet est considéré comme \"périmé\", un message sera affiché aux utilisateurs tentant de répondre au sujet",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Horodatage",
 	"timestamp.cut-off": "Date de coupure (en jours)",
 	"timestamp.cut-off-help": "Dates & heures seront affichées de façon relative (par exemple \"il y a 3 heures\", \"il y a 5 jours\"), et localisées. Après un certain temps, le texte peut afficher la date elle-même (par exemple 5 Novembre 2016, 15:30).<br /><em>(Défaut : <code>30</code>, ou un mois). Régler à 0 pour toujours afficher des dates, laisser vide pour toujours afficher des dates relatives.</em>",

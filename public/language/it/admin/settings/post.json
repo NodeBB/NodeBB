@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Lunghezza titolo",
 	"restrictions.post-length": "Lunghezza post",
 	"restrictions.days-until-stale": "Giorni prima che l'argomento sia considerato vecchio",
-	"restrictions.stale-help": "Se un argomento è considerato \"non aggiornato\", verrà mostrato un avviso agli utenti che tentano di rispondere a tale argomento.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Data e Ora",
 	"timestamp.cut-off": "Data di interruzione (in giorni)",
 	"timestamp.cut-off-help": "I tempi delle date verranno visualizzati in modo relativo (ad es. \"3 ore fa\" / \"5 giorni fa\") e localizzati in varie\n\t\t\t\t\tlingue. Dopo un certo punto, questo testo può essere cambiato per visualizzare la data localizzata\n\t\t\t\t\t(es. 5 Nov 2016 15:30).<br /><em>(Predefinito: <code>30</code>, o un mese).Impostare su 0 per visualizzare sempre le date, lasciare vuoto per visualizzare sempre i tempi relativi.</em>",

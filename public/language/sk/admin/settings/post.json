@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Počet dní, než je téma považovaná za neaktuálnu",
-	"restrictions.stale-help": "Ak je téma považovaná za „staré” používateľovi sa zobrazí oznámenie pri pokuse o pridanie odpovede.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Časový odtlačok",
 	"timestamp.cut-off": "Dátum ukončenia (v dňoch)",
 	"timestamp.cut-off-help": "Dátum a čas bude zobrazený relatívne (t.j. „pred 3 hodinami“ / „pred 5 dňami“), a podľa tohto lokalizovaný do rôznych\n\t\t\t\t\tjazykov. Za určitých okolností, môže byť tento text prepnutý na lokalizovaný dátum\n\t\t\t\t\t(t.j. 5 Nov 2017 15:30).<br /><em>(predvolené: <code>30</code>, alebo mesiac). Nastavte na 0, pre zobrazenie dátumov, ak ponecháte prázdne, bude vždy zobrazený relatívny čas.</em>",
