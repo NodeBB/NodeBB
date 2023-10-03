@@ -71,7 +71,7 @@
     "view-flag-report": "הצגת דוח דיווחים",
     "resolve-flag": "השלמת דיווח",
     "merged_message": "נושא זה מוזג בתוך <a href=\"%1\">%2</a>",
-    "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
+    "forked-message": "נושא זה פוצל מתוך הנושא <a href=\"%1\">%2</a>",
     "deleted_message": "נושא זה נמחק. רק משתמשים עם הרשאות מתאימות יוכלו לצפות בו.",
     "following_topic.message": "תקבלו התראות כאשר יפורסם פוסט חדש בנושא זה.",
     "not_following_topic.message": "נושא זה יופיע ברשימת הנושאים שלא נקראו, אולם לא תקבלו התראה כשיפורסם פוסט בנושא זה.",

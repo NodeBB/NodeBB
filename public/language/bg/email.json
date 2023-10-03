@@ -36,7 +36,7 @@
     "digest.title.day": "Дневното Ви резюме",
     "digest.title.week": "Седмичното Ви резюме",
     "digest.title.month": "Месечното Ви резюме",
-    "notif.chat.subject": "New chat message received in \"%1\"",
+    "notif.chat.subject": "Получено е ново съобщение „%1“",
     "notif.chat.public-chat-subject": "Ново съобщение от %1 в стая %2",
     "notif.chat.cta": "Натиснете тук, за да продължите дискусията",
     "notif.chat.unsub.info": "Това известие за разговор беше изпратено до Вас поради настройките Ви за абонаментите.",
