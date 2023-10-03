@@ -335,10 +335,11 @@ async function fireStaticHook(hook, hookList, params) {
 			if (err && err.message === 'timeout') {
 				winston.warn(`[plugins] Callback timed out, hook '${hook}' in plugin '${hookObj.id}'`);
 			} else {
-				winston.error(`[plugins] Error executing '${hook}' in plugin '${hookObj.id}'\n${err.stack}`);
 				if (!noErrorHooks.includes(hook)) {
 					throw err;
 				}
+
+				winston.error(`[plugins] Error executing '${hook}' in plugin '${hookObj.id}'\n${err.stack}`);
 			}
 		}
 	}
