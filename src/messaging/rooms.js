@@ -285,8 +285,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.isGroupChat = async function (roomId) {
-		const count = await Messaging.getUserCountInRoom(roomId);
-		return count > 2;
+		return (await Messaging.getRoomData(roomId)).groupChat;
 	};
 
 	async function updateUserCount(roomIds) {
