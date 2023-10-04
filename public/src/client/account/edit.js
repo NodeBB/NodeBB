@@ -27,7 +27,7 @@ define('forum/account/edit', [
 		updateAboutMe();
 		handleGroupSort();
 
-		if (!ajaxify.data.isSelf && app.user.isAdmin) {
+		if (!ajaxify.data.isSelf && ajaxify.data.canEdit) {
 			$(`a[href="${config.relative_path}/user/${ajaxify.data.userslug}/edit/email"]`).on('click', () => {
 				changeEmail.init({
 					uid: ajaxify.data.uid,

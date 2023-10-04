@@ -77,17 +77,20 @@ privsUsers.canEdit = async function (callerUid, uid) {
 	if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 		return true;
 	}
-	const [isAdmin, isGlobalMod, isTargetAdmin] = await Promise.all([
+	const privsAdmin = require('./admin');
+	const [isAdmin, isGlobalMod, isTargetAdmin, canManageUsers] = await Promise.all([
 		privsUsers.isAdministrator(callerUid),
 		privsUsers.isGlobalModerator(callerUid),
 		privsUsers.isAdministrator(uid),
+		privsAdmin.can('admin:users', callerUid),
 	]);
 
 	const data = await plugins.hooks.fire('filter:user.canEdit', {
 		isAdmin: isAdmin,
 		isGlobalMod: isGlobalMod,
 		isTargetAdmin: isTargetAdmin,
-		canEdit: isAdmin || (isGlobalMod && !isTargetAdmin),
+		canManageUsers: canManageUsers,
+		canEdit: isAdmin || ((isGlobalMod || canManageUsers) && !isTargetAdmin),
 		callerUid: callerUid,
 		uid: uid,
 	});
