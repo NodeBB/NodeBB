@@ -4,7 +4,6 @@
 const fs = require('fs');
 const util = require('util');
 const path = require('path');
-const os = require('os');
 const nconf = require('nconf');
 const express = require('express');
 const chalk = require('chalk');
@@ -85,10 +84,7 @@ exports.listen = async function () {
 	await initializeNodeBB();
 	winston.info('🎉 NodeBB Ready');
 
-	require('./socket.io').server.emit('event:nodebb.ready', {
-		'cache-buster': meta.config['cache-buster'],
-		hostname: os.hostname(),
-	});
+	require('./socket.io').server.emit('event:nodebb.ready', {});
 
 	plugins.hooks.fire('action:nodebb.ready');
 
