@@ -1,12 +1,12 @@
 {
     "username-email": "Identifiant ou email",
     "username": "Identifiant",
-    "remember_me": "Se souvenir de moi ?",
-    "forgot_password": "Mot de passe oublié ?",
-    "alternative_logins": "Autres méthodes de connexion",
-    "failed_login_attempt": "Identification échouée",
-    "login_successful": "Vous êtes maintenant connecté !",
-    "dont_have_account": "Vous n'avez pas de compte ?",
+    "remember-me": "Se souvenir de moi ?",
+    "forgot-password": "Mot de passe oublié ?",
+    "alternative-logins": "Autres méthodes de connexion",
+    "failed-login-attempt": "Identification échouée",
+    "login-successful": "Vous êtes maintenant connecté !",
+    "dont-have-account": "Vous n'avez pas de compte ?",
     "logged-out-due-to-inactivity": "Vous avez été déconnecté du <strong>Tableau de bord</strong> en raison de votre inactivité",
     "caps-lock-enabled": "Le verrouillage des majuscules est activé"
 }

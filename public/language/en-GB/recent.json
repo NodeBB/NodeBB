@@ -5,7 +5,7 @@
 	"month": "Month",
 	"year": "Year",
 	"alltime": "All Time",
-	"no_recent_topics": "There are no recent topics.",
-	"no_popular_topics": "There are no popular topics.",
+	"no-recent-topics": "There are no recent topics.",
+	"no-popular-topics": "There are no popular topics.",
 	"load-new-posts": "Load new posts"
 }

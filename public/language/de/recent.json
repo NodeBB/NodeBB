@@ -5,7 +5,7 @@
     "month": "Monat",
     "year": "Jahr",
     "alltime": "Gesamter Zeitraum",
-    "no_recent_topics": "Es gibt keine aktuellen Themen.",
-    "no_popular_topics": "Es gibt keine beliebten Themen.",
+    "no-recent-topics": "Es gibt keine aktuellen Themen.",
+    "no-popular-topics": "Es gibt keine beliebten Themen.",
     "load-new-posts": "Neue Beiträge laden"
 }

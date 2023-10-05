@@ -1,12 +1,12 @@
 {
     "username-email": "Uživatelské jméno / e-mail",
     "username": "Uživatel",
-    "remember_me": "Zapamatovat si mě?",
-    "forgot_password": "Zapomněli jste heslo?",
-    "alternative_logins": "Další způsoby přihlášení",
-    "failed_login_attempt": "Přihlášení neúspěšné",
-    "login_successful": "Přihlášení proběhlo úspěšně!",
-    "dont_have_account": "Nemáte účet?",
+    "remember-me": "Zapamatovat si mě?",
+    "forgot-password": "Zapomněli jste heslo?",
+    "alternative-logins": "Další způsoby přihlášení",
+    "failed-login-attempt": "Přihlášení neúspěšné",
+    "login-successful": "Přihlášení proběhlo úspěšně!",
+    "dont-have-account": "Nemáte účet?",
     "logged-out-due-to-inactivity": "Z důvodu nečinnosti jste byl odhlášen z ovládacího panelu administrátora",
     "caps-lock-enabled": "Máte zapnutý Caps Lock"
 }

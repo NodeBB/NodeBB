@@ -5,7 +5,7 @@
     "month": "Maand",
     "year": "Jaar",
     "alltime": "altijd",
-    "no_recent_topics": "Er zijn geen recente onderwerpen.",
-    "no_popular_topics": "Er zijn geen populaire onderwerpen.",
+    "no-recent-topics": "Er zijn geen recente onderwerpen.",
+    "no-popular-topics": "Er zijn geen populaire onderwerpen.",
     "load-new-posts": "Load new posts"
 }

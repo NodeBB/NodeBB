@@ -1,12 +1,12 @@
 {
     "username-email": "שם משתמש/אימייל",
     "username": "שם משתמש",
-    "remember_me": "זכור אותי?",
-    "forgot_password": "שכחת סיסמתך?",
-    "alternative_logins": "התחבר באמצעות...",
-    "failed_login_attempt": "ההתחברות נכשלה",
-    "login_successful": "התחברת בהצלחה!",
-    "dont_have_account": "אין לך חשבון עדיין?",
+    "remember-me": "זכור אותי?",
+    "forgot-password": "שכחת סיסמתך?",
+    "alternative-logins": "התחבר באמצעות...",
+    "failed-login-attempt": "ההתחברות נכשלה",
+    "login-successful": "התחברת בהצלחה!",
+    "dont-have-account": "אין לך חשבון עדיין?",
     "logged-out-due-to-inactivity": "התנתקת מפאנל האדמין בגלל חוסר אקטיביות",
     "caps-lock-enabled": "Caps Lock מופעל"
 }

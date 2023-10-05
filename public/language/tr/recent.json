@@ -5,7 +5,7 @@
     "month": "Ay",
     "year": "Yıl",
     "alltime": "Hepsi",
-    "no_recent_topics": "Güncel konu yok.",
-    "no_popular_topics": "Popüler konu yok.",
+    "no-recent-topics": "Güncel konu yok.",
+    "no-popular-topics": "Popüler konu yok.",
     "load-new-posts": "Yeni iletileri yükle"
 }

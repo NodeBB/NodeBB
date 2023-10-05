@@ -5,7 +5,7 @@
     "month": "Kuukausi",
     "year": "Vuosi",
     "alltime": "Alusta lähtien",
-    "no_recent_topics": "Ei viimeisimpiä aiheita.",
-    "no_popular_topics": "Ei päivityksiä suosituimmissa aiheissa",
+    "no-recent-topics": "Ei viimeisimpiä aiheita.",
+    "no-popular-topics": "Ei päivityksiä suosituimmissa aiheissa",
     "load-new-posts": "Load new posts"
 }

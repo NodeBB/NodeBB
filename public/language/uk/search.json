@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 збіг(ів) по запиту \"%2\"  (%3 секунд)",
+    "results-matching": "%1 збіг(ів) по запиту \"%2\"  (%3 секунд)",
     "no-matches": "Збіги не знайдено",
     "advanced-search": "Розширений пошук",
     "in": "В",

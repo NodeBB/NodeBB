@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 rezultat(ov) ustreza \"%2\", (%3 sekund)",
+    "results-matching": "%1 rezultat(ov) ustreza \"%2\", (%3 sekund)",
     "no-matches": "Ni najdenih rezultatov",
     "advanced-search": "Napredno iskanje",
     "in": "V",

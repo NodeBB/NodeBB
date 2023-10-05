@@ -1,12 +1,12 @@
 {
     "username-email": "Nome de utilizador / E-mail",
     "username": "Nome de utilizador",
-    "remember_me": "Lembrar-me",
-    "forgot_password": "Esqueceste-te da palavra-passe?",
-    "alternative_logins": "Inícios de sessão alternativos",
-    "failed_login_attempt": "Início de sessão sem sucesso",
-    "login_successful": "Iniciaste sessão com sucesso!",
-    "dont_have_account": "Não tens uma conta?",
+    "remember-me": "Lembrar-me",
+    "forgot-password": "Esqueceste-te da palavra-passe?",
+    "alternative-logins": "Inícios de sessão alternativos",
+    "failed-login-attempt": "Início de sessão sem sucesso",
+    "login-successful": "Iniciaste sessão com sucesso!",
+    "dont-have-account": "Não tens uma conta?",
     "logged-out-due-to-inactivity": "A tua sessão no Painel de Controlo foi terminada devido a inatividade",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

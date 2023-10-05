@@ -1,6 +1,6 @@
 {
     "type-to-search": "Écrivez votre recherche",
-    "results_matching": "%1 résultat(s) correspondant(s) à \"%2\", (%3 secondes)",
+    "results-matching": "%1 résultat(s) correspondant(s) à \"%2\", (%3 secondes)",
     "no-matches": "Aucune réponse trouvée",
     "advanced-search": "Recherche avancée",
     "in": "Dans",

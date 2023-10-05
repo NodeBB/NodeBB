@@ -5,7 +5,7 @@
     "month": "Kuu",
     "year": "Aasta",
     "alltime": "Kogu aja vältel",
-    "no_recent_topics": "Hetkel ei ole hiljutisi teemasid.",
-    "no_popular_topics": "Ühtegi populaarset teemat ei leidu.",
+    "no-recent-topics": "Hetkel ei ole hiljutisi teemasid.",
+    "no-popular-topics": "Ühtegi populaarset teemat ei leidu.",
     "load-new-posts": "Load new posts"
 }

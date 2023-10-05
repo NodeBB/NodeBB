@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 resultat(er) matcher \"%2\", (%3 sekunder)",
+    "results-matching": "%1 resultat(er) matcher \"%2\", (%3 sekunder)",
     "no-matches": "Ingen resultatet fundet",
     "advanced-search": "Advanceret søgning",
     "in": "I",

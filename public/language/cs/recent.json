@@ -5,7 +5,7 @@
     "month": "Měsíc",
     "year": "Rok",
     "alltime": "Pořád",
-    "no_recent_topics": "Nebyly nalezeny žádné nové téma.",
-    "no_popular_topics": "Žádná oblíbená téma.",
+    "no-recent-topics": "Nebyly nalezeny žádné nové téma.",
+    "no-popular-topics": "Žádná oblíbená téma.",
     "load-new-posts": "Load new posts"
 }
