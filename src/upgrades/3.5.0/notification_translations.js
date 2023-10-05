@@ -7,7 +7,7 @@ const batch = require('../../batch');
 
 module.exports = {
 	name: 'Update translation keys in notification bodyShort',
-	timestamp: Date.UTC(2023, 6, 27),
+	timestamp: Date.UTC(2023, 9, 5),
 	method: async function () {
 		const { progress } = this;
 
