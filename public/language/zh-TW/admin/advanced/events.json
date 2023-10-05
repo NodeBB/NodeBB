@@ -9,5 +9,5 @@
 	"filter-type": "事件類型",
 	"filter-start": "開始時間",
 	"filter-end": "結束時間",
-	"filter-perPage": "每頁"
+	"filter-per-page": "每頁"
 }

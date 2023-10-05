@@ -9,5 +9,5 @@
 	"filter-type": "Event Type",
 	"filter-start": "Start datum",
 	"filter-end": "Eind datum",
-	"filter-perPage": "Per pagina"
+	"filter-per-page": "Per pagina"
 }

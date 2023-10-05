@@ -9,5 +9,5 @@
 	"filter-type": "Tapahtuman tyyppi",
 	"filter-start": "Aloituspäivä",
 	"filter-end": "Lopetuspäivä",
-	"filter-perPage": "Per Sivu"
+	"filter-per-page": "Per Sivu"
 }
