@@ -85,7 +85,7 @@ define('forum/groups/details', [
 					break;
 
 				case 'kick':
-					translator.translate('[[groups:details.kick_confirm]]', function (translated) {
+					translator.translate('[[groups:details.kick-confirm]]', function (translated) {
 						bootbox.confirm(translated, function (confirm) {
 							if (!confirm) {
 								return;
@@ -305,7 +305,7 @@ define('forum/groups/details', [
 	}
 
 	function removeCover() {
-		translator.translate('[[groups:remove_group_cover_confirm]]', function (translated) {
+		translator.translate('[[groups:remove-group-cover-confirm]]', function (translated) {
 			bootbox.confirm(translated, function (confirm) {
 				if (!confirm) {
 					return;

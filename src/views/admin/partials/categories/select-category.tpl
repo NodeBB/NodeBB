@@ -2,7 +2,7 @@
 	<div class="form-group">
 		<div component="category-selector" class="btn-group">
 			<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-				<span component="category-selector-selected">[[topic:thread_tools.select_category]]</span> <span class="caret"></span>
+				<span component="category-selector-selected">[[topic:thread-tools.select-category]]</span> <span class="caret"></span>
 			</button>
 			<div component="category-selector-search" class="hidden position-absolute">
 				<input type="text" class="form-control" placeholder="[[search:type-to-search]]" autocomplete="off">

@@ -177,7 +177,7 @@ groupsAPI.leave = async function (caller, data) {
 
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: `[[groups:membership.leave.notification_title, ${displayname}, ${groupName}]]`,
+		bodyShort: `[[groups:membership.leave.notification-title, ${displayname}, ${groupName}]]`,
 		nid: `group:${validator.escape(groupName)}:uid:${data.uid}:group-leave`,
 		path: `/groups/${slugify(groupName)}`,
 		from: data.uid,

@@ -402,7 +402,7 @@ describe('Controllers', () => {
 				});
 
 				assert(!res.body.errors.includes('[[error:invalid-email]]'));
-				assert(!res.body.errors.includes('[[error:gdpr_consent_denied]]'));
+				assert(!res.body.errors.includes('[[error:gdpr-consent-denied]]'));
 
 				meta.config.requireEmailAddress = 1;
 			});
@@ -1716,14 +1716,14 @@ describe('Controllers', () => {
 		it('should load notifications page', (done) => {
 			const notifications = require('../src/notifications');
 			const notifData = {
-				bodyShort: '[[notifications:user_posted_to, test1, test2]]',
+				bodyShort: '[[notifications:user-posted-to, test1, test2]]',
 				bodyLong: 'some post content',
 				pid: 1,
 				path: `/post/${1}`,
 				nid: `new_post:tid:${1}:pid:${1}:uid:${fooUid}`,
 				tid: 1,
 				from: fooUid,
-				mergeId: `notifications:user_posted_to|${1}`,
+				mergeId: `notifications:user-posted-to|${1}`,
 				topicTitle: 'topic title',
 			};
 			async.waterfall([
@@ -2106,7 +2106,7 @@ describe('Controllers', () => {
 				assert.ok(parsed.cookies);
 				assert.equal(translator.escape('[[global:cookies.message]]'), parsed.cookies.message);
 				assert.equal(translator.escape('[[global:cookies.accept]]'), parsed.cookies.dismiss);
-				assert.equal(translator.escape('[[global:cookies.learn_more]]'), parsed.cookies.link);
+				assert.equal(translator.escape('[[global:cookies.learn-more]]'), parsed.cookies.link);
 
 				done();
 			});

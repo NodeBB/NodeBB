@@ -35,7 +35,7 @@ module.exports = function (SocketUser) {
 			list.pictures.push({
 				type: 'uploaded',
 				url: userObj.uploadedpicture,
-				text: '[[user:uploaded_picture]]',
+				text: '[[user:uploaded-picture]]',
 			});
 		}
 
@@ -50,7 +50,7 @@ module.exports = function (SocketUser) {
 			type: 'default',
 			'icon:text': userObj['icon:text'],
 			'icon:bgColor': userObj['icon:bgColor'],
-			username: '[[user:default_picture]]',
+			username: '[[user:default-picture]]',
 		});
 
 		return list.pictures;

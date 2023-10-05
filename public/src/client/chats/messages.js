@@ -335,7 +335,7 @@ define('forum/chats/messages', [
 	}
 
 	messages.delete = function (messageId, roomId) {
-		bootbox.confirm('[[modules:chat.delete_message_confirm]]', function (ok) {
+		bootbox.confirm('[[modules:chat.delete-message-confirm]]', function (ok) {
 			if (!ok) {
 				return;
 			}

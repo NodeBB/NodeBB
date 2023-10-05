@@ -5,7 +5,7 @@
     "month": "Μήνας",
     "year": "Έτος",
     "alltime": "Όλο το Ιστορικό",
-    "no_recent_topics": "Δεν υπάρχουν πρόσφατα θέματα.",
-    "no_popular_topics": "Δεν υπάρχουν δημοφιλή θέματα.",
+    "no-recent-topics": "Δεν υπάρχουν πρόσφατα θέματα.",
+    "no-popular-topics": "Δεν υπάρχουν δημοφιλή θέματα.",
     "load-new-posts": "Load new posts"
 }

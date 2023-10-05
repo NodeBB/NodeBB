@@ -5,7 +5,7 @@
     "month": "Lună",
     "year": "An",
     "alltime": "Tot Timpul",
-    "no_recent_topics": "Nu există subiecte recente.",
-    "no_popular_topics": "Nu sunt subiecte populare.",
+    "no-recent-topics": "Nu există subiecte recente.",
+    "no-popular-topics": "Nu sunt subiecte populare.",
     "load-new-posts": "Load new posts"
 }

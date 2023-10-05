@@ -52,7 +52,7 @@ Email.test = async function (socket, data) {
 			});
 			await emailer.send('notification', socket.uid, {
 				path: notification.path,
-				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
+				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new-notification]]'),
 				intro: utils.stripHTMLTags(notification.bodyShort),
 				body: notification.bodyLong || '',
 				notification,

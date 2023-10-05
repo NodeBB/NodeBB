@@ -5,7 +5,7 @@
     "month": "Mjesec",
     "year": "Godina",
     "alltime": "Sve vrijeme",
-    "no_recent_topics": "Nema nedavnih tema.",
-    "no_popular_topics": "Nema popularnih tema.",
+    "no-recent-topics": "Nema nedavnih tema.",
+    "no-popular-topics": "Nema popularnih tema.",
     "load-new-posts": "Load new posts"
 }

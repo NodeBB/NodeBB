@@ -1,12 +1,12 @@
 {
     "username-email": "Utilizator/Email",
     "username": "Utilizator",
-    "remember_me": "Autentifică-mă automat la fiecare vizită",
-    "forgot_password": "Ai uitat parola?",
-    "alternative_logins": "Autentificare Alternativă",
-    "failed_login_attempt": "Login nereușit",
-    "login_successful": "Te-ai autentificat cu succes!",
-    "dont_have_account": "Nu ai un cont?",
+    "remember-me": "Autentifică-mă automat la fiecare vizită",
+    "forgot-password": "Ai uitat parola?",
+    "alternative-logins": "Autentificare Alternativă",
+    "failed-login-attempt": "Login nereușit",
+    "login-successful": "Te-ai autentificat cu succes!",
+    "dont-have-account": "Nu ai un cont?",
     "logged-out-due-to-inactivity": "Ai fost deconectat din panoul de administrare din cauza inactivității",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

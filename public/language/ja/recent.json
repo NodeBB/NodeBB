@@ -5,7 +5,7 @@
     "month": "1ヶ月以内",
     "year": "年",
     "alltime": "全て",
-    "no_recent_topics": "最近のスレッドはありません。",
-    "no_popular_topics": "人気スレッドはありません。",
+    "no-recent-topics": "最近のスレッドはありません。",
+    "no-popular-topics": "人気スレッドはありません。",
     "load-new-posts": "Load new posts"
 }

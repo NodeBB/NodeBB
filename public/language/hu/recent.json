@@ -5,7 +5,7 @@
     "month": "Hónap",
     "year": "Év",
     "alltime": "Bármikor",
-    "no_recent_topics": "Nincs friss témakör.",
-    "no_popular_topics": "Nincs népszerű témakör.",
+    "no-recent-topics": "Nincs friss témakör.",
+    "no-popular-topics": "Nincs népszerű témakör.",
     "load-new-posts": "Új bejegyzések betöltése"
 }

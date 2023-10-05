@@ -209,9 +209,9 @@ module.exports = function (Topics) {
 
 			Topics.notifyFollowers(postData, uid, {
 				type: 'new-reply',
-				bodyShort: translator.compile('notifications:user_posted_to', displayname, postData.topic.title),
+				bodyShort: translator.compile('notifications:user-posted-to', displayname, postData.topic.title),
 				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
-				mergeId: `notifications:user_posted_to|${postData.topic.tid}`,
+				mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
 			});
 		}
 

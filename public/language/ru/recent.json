@@ -5,7 +5,7 @@
     "month": "За месяц",
     "year": "За год",
     "alltime": "За всё время",
-    "no_recent_topics": "Нет свежих тем.",
-    "no_popular_topics": "Популярные темы отсутствуют.",
+    "no-recent-topics": "Нет свежих тем.",
+    "no-popular-topics": "Популярные темы отсутствуют.",
     "load-new-posts": "Загрузить новые сообщения"
 }

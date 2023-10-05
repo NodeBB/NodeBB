@@ -20,7 +20,7 @@ define('forum/account/edit/username', [
 			}
 
 			if (userData.username === userData.password) {
-				return alerts.error('[[user:username_same_as_password]]');
+				return alerts.error('[[user:username-same-as-password]]');
 			}
 
 			const btn = $(this);

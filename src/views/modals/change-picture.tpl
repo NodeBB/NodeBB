@@ -17,15 +17,15 @@
 		<div class="list-group">
 			{{{ if allowProfileImageUploads }}}
 			<button type="button" class="list-group-item" data-action="upload">
-				[[user:upload_new_picture]]
+				[[user:upload-new-picture]]
 			</button>
 			{{{ end }}}
 			<button type="button" class="list-group-item" data-action="upload-url">
-				[[user:upload_new_picture_from_url]]
+				[[user:upload-new-picture-from-url]]
 			</button>
 			{{{ if uploaded }}}
 			<button type="button" class="list-group-item" data-action="remove-uploaded">
-				[[user:remove_uploaded_picture]]
+				[[user:remove-uploaded-picture]]
 			</button>
 			{{{ end }}}
 		</div>

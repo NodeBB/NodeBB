@@ -5,7 +5,7 @@
     "month": "Месец",
     "year": "Година",
     "alltime": "Цялото време",
-    "no_recent_topics": "Няма скорошни теми.",
-    "no_popular_topics": "Няма популярни теми.",
+    "no-recent-topics": "Няма скорошни теми.",
+    "no-popular-topics": "Няма популярни теми.",
     "load-new-posts": "Зареждане на новите публикации"
 }

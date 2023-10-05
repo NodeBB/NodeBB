@@ -607,14 +607,14 @@ module.exports = function (Topics) {
 
 		const { displayname } = postData.user;
 
-		const notifBase = 'notifications:user_posted_topic_with_tag';
+		const notifBase = 'notifications:user-posted-topic-with-tag';
 		let bodyShort = translator.compile(notifBase, displayname, tags[0]);
 		if (tags.length === 2) {
-			bodyShort = translator.compile(`${notifBase}_dual`, displayname, tags[0], tags[1]);
+			bodyShort = translator.compile(`${notifBase}-dual`, displayname, tags[0], tags[1]);
 		} else if (tags.length === 3) {
-			bodyShort = translator.compile(`${notifBase}_triple`, displayname, tags[0], tags[1], tags[2]);
+			bodyShort = translator.compile(`${notifBase}-triple`, displayname, tags[0], tags[1], tags[2]);
 		} else if (tags.length > 3) {
-			bodyShort = translator.compile(`${notifBase}_multiple`, displayname, tags.join(', '));
+			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, tags.join(', '));
 		}
 
 		const notification = await notifications.create({

@@ -5,7 +5,7 @@
     "month": "Muaj",
     "year": "Vit",
     "alltime": "I gjithë kohërave",
-    "no_recent_topics": "Nuk ka tema të fundit.",
-    "no_popular_topics": "Nuk ka tema të njohura.",
+    "no-recent-topics": "Nuk ka tema të fundit.",
+    "no-popular-topics": "Nuk ka tema të njohura.",
     "load-new-posts": "Load new posts"
 }

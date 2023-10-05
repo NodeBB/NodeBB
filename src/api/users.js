@@ -164,11 +164,11 @@ usersAPI.follow = async function (caller, data) {
 
 	const notifObj = await notifications.create({
 		type: 'follow',
-		bodyShort: `[[notifications:user_started_following_you, ${displayname}]]`,
+		bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
 		nid: `follow:${data.uid}:uid:${caller.uid}`,
 		from: caller.uid,
 		path: `/uid/${data.uid}/followers`,
-		mergeId: 'notifications:user_started_following_you',
+		mergeId: 'notifications:user-started-following-you',
 	});
 	if (!notifObj) {
 		return;

@@ -47,7 +47,7 @@
     "account/latest-posts": "Seneste innlegg skrevet av %1",
     "account/topics": "Emner opprettet av %1",
     "account/groups": "%1 sine grupper",
-    "account/watched_categories": "%1's overvåkede kategorier",
+    "account/watched-categories": "%1's overvåkede kategorier",
     "account/watched-tags": "%1's Watched Tags",
     "account/bookmarks": "%1's bokmerkede innlegg",
     "account/settings": "Brukerinnstillinger",

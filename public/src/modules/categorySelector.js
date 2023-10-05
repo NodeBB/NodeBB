@@ -77,7 +77,7 @@ define('categorySelector', [
 		options.onSubmit = options.onSubmit || function () {};
 		app.parseAndTranslate('admin/partials/categories/select-category', { message: options.message }, function (html) {
 			const modal = bootbox.dialog({
-				title: options.title || '[[modules:composer.select_category]]',
+				title: options.title || '[[modules:composer.select-category]]',
 				message: html,
 				buttons: {
 					save: {

@@ -179,9 +179,9 @@ describe('Utility Methods', () => {
 				assert.strictEqual(err.message, expectedError);
 			}
 		}
-		check('123456', '[[user:weak_password]]');
-		check('', '[[user:change_password_error]]');
-		check('asd', '[[reset_password:password_too_short]]');
+		check('123456', '[[user:weak-password]]');
+		check('', '[[user:change-password-error]]');
+		check('asd', '[[reset_password:password-too-short]]');
 		check(new Array(513).fill('a').join(''), '[[error:password-too-long]]');
 		utils.assertPasswordValidity('Yzsh31j!a', zxcvbn);
 	});

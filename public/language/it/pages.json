@@ -47,7 +47,7 @@
     "account/latest-posts": "Ultimi post creati da %1",
     "account/topics": "Discussioni create da %1",
     "account/groups": "Gruppi di %1",
-    "account/watched_categories": "Categorie seguite da %1'",
+    "account/watched-categories": "Categorie seguite da %1'",
     "account/watched-tags": "%1's Tag seguiti",
     "account/bookmarks": "%1 Post aggiunti ai segnalibri",
     "account/settings": "Impostazioni Utente",

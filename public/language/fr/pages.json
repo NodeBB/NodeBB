@@ -47,7 +47,7 @@
     "account/latest-posts": "Derniers messages publiés par %1",
     "account/topics": "Sujets créés par %1",
     "account/groups": "Groupes auxquels appartient %1",
-    "account/watched_categories": "%1's Catégories surveillées",
+    "account/watched-categories": "%1's Catégories surveillées",
     "account/watched-tags": "%1's Mot-clés surveillés",
     "account/bookmarks": "Marque-pages de %1",
     "account/settings": "Paramètres d'utilisateur",

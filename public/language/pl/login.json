@@ -1,12 +1,12 @@
 {
     "username-email": "Nazwa użytkownika lub adres e-mail",
     "username": "Nazwa użytkownika",
-    "remember_me": "Zapamiętaj mnie",
-    "forgot_password": "Nie pamiętasz hasła?",
-    "alternative_logins": "Alternatywne logowanie",
-    "failed_login_attempt": "Logowanie nie powiodło się.",
-    "login_successful": "Logowanie powiodło się.",
-    "dont_have_account": "Nie masz konta?",
+    "remember-me": "Zapamiętaj mnie",
+    "forgot-password": "Nie pamiętasz hasła?",
+    "alternative-logins": "Alternatywne logowanie",
+    "failed-login-attempt": "Logowanie nie powiodło się.",
+    "login-successful": "Logowanie powiodło się.",
+    "dont-have-account": "Nie masz konta?",
     "logged-out-due-to-inactivity": "Zostałeś wylogowany z Panelu Administratora z powodu braku aktywności.",
     "caps-lock-enabled": "Caps Lock jest włączony"
 }

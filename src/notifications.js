@@ -273,7 +273,7 @@ async function sendEmail({ uids, notification }, mergeId, reason) {
 		await emailer.send('notification', uid, {
 			path: notification.path,
 			notification_url: notification.path.startsWith('http') ? notification.path : nconf.get('url') + notification.path,
-			subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
+			subject: utils.stripHTMLTags(notification.subject || '[[notifications:new-notification]]'),
 			intro: utils.stripHTMLTags(notification.bodyShort),
 			body: body,
 			notification: notification,
@@ -392,14 +392,14 @@ Notifications.prune = async function () {
 Notifications.merge = async function (notifications) {
 	// When passed a set of notification objects, merge any that can be merged
 	const mergeIds = [
-		'notifications:upvoted_your_post_in',
-		'notifications:user_started_following_you',
-		'notifications:user_posted_to',
-		'notifications:user_flagged_post_in',
-		'notifications:user_flagged_user',
+		'notifications:upvoted-your-post-in',
+		'notifications:user-started-following-you',
+		'notifications:user-posted-to',
+		'notifications:user-flagged-post-in',
+		'notifications:user-flagged-user',
 		'new-chat',
-		'notifications:user_posted_in_public_room',
-		'new_register',
+		'notifications:user-posted-in-public-room',
+		'new-register',
 		'post-queue',
 	];
 
@@ -445,27 +445,27 @@ Notifications.merge = async function (notifications) {
 					const { roomId, roomName, type, user } = set[0];
 					const isGroupChat = type === 'new-group-chat';
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
-						`[[notifications:new_messages_in, ${set.length}, ${roomName}]]` :
-						`[[notifications:new_messages_from, ${set.length}, ${user.displayname}]]`;
+						`[[notifications:new-messages-in, ${set.length}, ${roomName}]]` :
+						`[[notifications:new-messages-from, ${set.length}, ${user.displayname}]]`;
 					break;
 				}
 
-				case 'notifications:user_posted_in_public_room': {
+				case 'notifications:user-posted-in-public-room': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
 					if (usernames.length === 2 || usernames.length === 3) {
-						notifObj.bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
+						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
 					} else if (usernames.length > 3) {
-						notifObj.bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
+						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
 					}
 
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}
-				case 'notifications:upvoted_your_post_in':
-				case 'notifications:user_started_following_you':
-				case 'notifications:user_posted_to':
-				case 'notifications:user_flagged_post_in':
-				case 'notifications:user_flagged_user': {
+				case 'notifications:upvoted-your-post-in':
+				case 'notifications:user-started-following-you':
+				case 'notifications:user-posted-to':
+				case 'notifications:user-flagged-post-in':
+				case 'notifications:user-flagged-user': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
 					const numUsers = usernames.length;
 
@@ -474,16 +474,16 @@ Notifications.merge = async function (notifications) {
 					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
 
 					if (numUsers === 2 || numUsers === 3) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
+						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
 					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
+						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
 					}
 
 					notifications[modifyIndex].path = set[set.length - 1].path;
 				} break;
 
-				case 'new_register':
-					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}_multiple, ${set.length}]]`;
+				case 'new-register':
+					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
 			}
 

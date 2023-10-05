@@ -5,7 +5,7 @@
     "month": "Måned",
     "year": "År",
     "alltime": "Al tid",
-    "no_recent_topics": "Der er ingen seneste tråde",
-    "no_popular_topics": "Der er ingen populære tråde.",
+    "no-recent-topics": "Der er ingen seneste tråde",
+    "no-popular-topics": "Der er ingen populære tråde.",
     "load-new-posts": "Load new posts"
 }
