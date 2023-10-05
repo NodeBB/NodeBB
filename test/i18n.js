@@ -38,6 +38,8 @@ describe('i18n', () => {
 		const sourceStrings = new Map();
 
 		describe('source language file structure', () => {
+			const test = /^[0-9a-z.-]+$/;
+
 			it('should only contain valid JSON files', async () => {
 				try {
 					fullPaths.forEach((fullPath) => {
@@ -51,6 +53,27 @@ describe('i18n', () => {
 				} catch (e) {
 					assert(!e, `Invalid JSON found: ${e.message}`);
 				}
+			});
+
+			it('should only contain lowercase or numeric language keys separated by either dashes or periods', async () => {
+				fullPaths.forEach((fullPath) => {
+					if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+						return;
+					}
+
+					const hash = require(fullPath);
+					const keys = Object.keys(hash);
+
+					keys.forEach(key => assert(test.test(key), `${key} contains invalid characters`));
+				});
+			});
+
+			it('regexp used in test should test according to expectations', () => {
+				const valid = ['foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet'];
+				const invalid = ['camelCase', 'PascalCase', 'snake_case', 'badger.badger_badger_badger', 'snnnaaaaaaAAAAAAkeeee'];
+
+				assert(valid.every(key => test.test(key)));
+				assert(!invalid.every(key => test.test(key)));
 			});
 		});
 
