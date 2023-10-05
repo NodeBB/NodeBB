@@ -178,7 +178,7 @@ async function getNotificationSettings(userData) {
 		const setting = userData.settings[type];
 		return {
 			name: type,
-			label: `[[notifications:${type}]]`,
+			label: `[[notifications:${type.replace(/_/g, '-')}]]`,
 			none: setting === 'none',
 			notification: setting === 'notification',
 			email: setting === 'email',
