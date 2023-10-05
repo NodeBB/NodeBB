@@ -105,7 +105,9 @@ module.exports = function (Messaging) {
 			const roomName = roomData.roomName || `[[modules:chat.room-id, ${roomId}]]`;
 			const notifData = {
 				type: isGroupChat ? 'new-group-chat' : 'new-chat',
-				subject: `[[email:notif.chat.subject, ${roomName}]]`,
+				subject: roomData.roomName ?
+					`[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]` :
+					`[[email:notif.chat.new-message-from-user, ${displayname}]]`,
 				bodyShort: isGroupChat || roomData.roomName ? `[[notifications:new_message_in, ${roomName}]]` : `[[notifications:new_message_from, ${displayname}]]`,
 				bodyLong: messageObj.content,
 				nid: `chat_${roomId}_${fromUid}_${Date.now()}`,
@@ -119,7 +121,7 @@ module.exports = function (Messaging) {
 				const icon = Messaging.getRoomIcon(roomData);
 				notifData.type = 'new-public-chat';
 				notifData.roomIcon = icon;
-				notifData.subject = `[[email:notif.chat.public-chat-subject, ${displayname}, ${roomName}]]`;
+				notifData.subject = `[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]`;
 				notifData.bodyShort = `[[notifications:user_posted_in_public_room, ${displayname}, ${icon}, ${roomName}]]`;
 				notifData.mergeId = `notifications:user_posted_in_public_room|${roomId}`;
 			}
