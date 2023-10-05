@@ -35,7 +35,7 @@ postsAPI.get = async function (caller, data) {
 
 	const selfPost = caller.uid && caller.uid === parseInt(post.uid, 10);
 	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
-		post.content = '[[topic:post_is_deleted]]';
+		post.content = '[[topic:post-is-deleted]]';
 	}
 
 	return post;
@@ -295,7 +295,7 @@ postsAPI.move = async function (caller, data) {
 };
 
 postsAPI.upvote = async function (caller, data) {
-	return await apiHelpers.postCommand(caller, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
+	return await apiHelpers.postCommand(caller, 'upvote', 'voted', 'notifications:upvoted-your-post-in', data);
 };
 
 postsAPI.downvote = async function (caller, data) {

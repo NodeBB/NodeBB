@@ -1,4 +1,4 @@
-<h3>[[register:terms_of_use]]</h3>
+<h3>[[register:terms-of-use]]</h3>
 <hr/>
 
 {termsOfUse}

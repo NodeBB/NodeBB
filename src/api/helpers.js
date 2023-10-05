@@ -98,7 +98,7 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 	}
 
 	if (!data.room_id) {
-		throw new Error(`[[error:invalid-room-id, ${data.room_id} ]]`);
+		throw new Error(`[[error:invalid-room-id, ${data.room_id}]]`);
 	}
 	const [exists, deleted] = await Promise.all([
 		posts.exists(data.pid),

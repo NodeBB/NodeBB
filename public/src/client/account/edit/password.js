@@ -27,9 +27,9 @@ define('forum/account/edit/password', [
 				utils.assertPasswordValidity(password.val(), zxcvbn);
 
 				if (password.val() === ajaxify.data.username) {
-					throw new Error('[[user:password_same_as_username]]');
+					throw new Error('[[user:password-same-as-username]]');
 				} else if (password.val() === ajaxify.data.email) {
-					throw new Error('[[user:password_same_as_email]]');
+					throw new Error('[[user:password-same-as-email]]');
 				}
 
 				showSuccess(password_notify);
@@ -41,7 +41,7 @@ define('forum/account/edit/password', [
 
 		function onPasswordConfirmChanged() {
 			if (password.val() !== password_confirm.val()) {
-				showError(password_confirm_notify, '[[user:change_password_error_match]]');
+				showError(password_confirm_notify, '[[user:change-password-error-match]]');
 				passwordsmatch = false;
 			} else {
 				if (password.val()) {
@@ -90,11 +90,11 @@ define('forum/account/edit/password', [
 					});
 			} else {
 				if (!passwordsmatch) {
-					alerts.error('[[user:change_password_error_match]]');
+					alerts.error('[[user:change-password-error-match]]');
 				}
 
 				if (!passwordvalid) {
-					alerts.error('[[user:change_password_error]]');
+					alerts.error('[[user:change-password-error]]');
 				}
 			}
 			return false;

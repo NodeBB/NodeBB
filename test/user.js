@@ -107,7 +107,7 @@ describe('User', () => {
 
 		it('should error with invalid password', (done) => {
 			User.create({ username: 'test', password: '1' }, (err) => {
-				assert.equal(err.message, '[[reset_password:password_too_short]]');
+				assert.equal(err.message, '[[reset_password:password-too-short]]');
 				done();
 			});
 		});
@@ -834,7 +834,7 @@ describe('User', () => {
 				await apiUser.changePassword({ uid: uid }, { uid: regularUserUid, newPassword: '654321', currentPassword: '123456' });
 				assert(false);
 			} catch (err) {
-				assert.equal(err.message, '[[user:change_password_error_privileges]]');
+				assert.equal(err.message, '[[user:change-password-error-privileges]]');
 			}
 		});
 
@@ -846,7 +846,7 @@ describe('User', () => {
 				await apiUser.changePassword({ uid: uid }, { uid: adminUid, newPassword: '654321', currentPassword: '123456' });
 				assert(false);
 			} catch (err) {
-				assert.equal(err.message, '[[user:change_password_error_privileges]]');
+				assert.equal(err.message, '[[user:change-password-error-privileges]]');
 			}
 		});
 
@@ -868,7 +868,7 @@ describe('User', () => {
 				await apiUser.changePassword({ uid: adminUid }, { uid: adminUid, newPassword: '654321', currentPassword: 'wrongpwd' });
 				assert(false);
 			} catch (err) {
-				assert.equal(err.message, '[[user:change_password_error_wrong_current]]');
+				assert.equal(err.message, '[[user:change-password-error-wrong-current]]');
 			}
 		});
 
@@ -1143,9 +1143,9 @@ describe('User', () => {
 					assert(data);
 					assert(Array.isArray(data));
 					assert.equal(data[0].type, 'default');
-					assert.equal(data[0].username, '[[user:default_picture]]');
+					assert.equal(data[0].username, '[[user:default-picture]]');
 					assert.equal(data[1].type, 'uploaded');
-					assert.equal(data[1].username, '[[user:uploaded_picture]]');
+					assert.equal(data[1].username, '[[user:uploaded-picture]]');
 					done();
 				});
 			});

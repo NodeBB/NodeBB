@@ -13,7 +13,7 @@
 					{{{ each topics }}}
 					<tr>
 						<td><a href="{config.relative_path}/topic/{../slug}">{../title}</a></td>
-						<td>[[topic:posted_by, {../user.username}]]</td>
+						<td>[[topic:posted-by, {../user.username}]]</td>
 						<td><span class="timeago" data-title="{../timestampISO}"></span></td>
 					</tr>
 					{{{ end }}}

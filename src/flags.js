@@ -659,7 +659,7 @@ Flags.update = async function (flagId, uid, changeset) {
 		}
 		const notifObj = await notifications.create({
 			type: 'my-flags',
-			bodyShort: `[[notifications:flag_assigned_to_you, ${flagId}]]`,
+			bodyShort: `[[notifications:flag-assigned-to-you, ${flagId}]]`,
 			bodyLong: '',
 			path: `/flags/${flagId}`,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
@@ -845,13 +845,13 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
-			bodyShort: `[[notifications:user_flagged_post_in, ${displayname}, ${titleEscaped}]]`,
+			bodyShort: `[[notifications:user-flagged-post-in, ${displayname}, ${titleEscaped}]]`,
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:post:${flagObj.targetId}:${uid}`,
 			from: uid,
-			mergeId: `notifications:user_flagged_post_in|${flagObj.targetId}`,
+			mergeId: `notifications:user-flagged-post-in|${flagObj.targetId}`,
 			topicTitle: title,
 		});
 		uids = uids.concat(modUids[0]);
@@ -859,12 +859,12 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		const targetDisplayname = flagObj.target && flagObj.target.user ? flagObj.target.user.displayname : '[[global:guest]]';
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
-			bodyShort: `[[notifications:user_flagged_user, ${displayname}, ${targetDisplayname}]]`,
+			bodyShort: `[[notifications:user-flagged-user, ${displayname}, ${targetDisplayname}]]`,
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
-			mergeId: `notifications:user_flagged_user|${flagObj.targetId}`,
+			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');
@@ -938,7 +938,7 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change_username]]',
+					key: '[[user:change-username]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},
@@ -954,7 +954,7 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change_email]]',
+					key: '[[user:change-email]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},

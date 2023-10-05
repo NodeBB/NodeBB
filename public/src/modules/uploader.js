@@ -9,7 +9,7 @@ define('uploader', ['jquery-form'], function () {
 		app.parseAndTranslate('modals/upload-file', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
-			title: data.title || '[[global:upload_file]]',
+			title: data.title || '[[global:upload-file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
 			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',

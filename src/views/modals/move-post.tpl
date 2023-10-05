@@ -1,10 +1,10 @@
 <div class="card tool-modal shadow">
 	<h5 class="card-header">
-		[[topic:thread_tools.move-posts]]
+		[[topic:thread-tools.move-posts]]
 	</h5>
 	<div class="card-body">
 		<p>
-            [[topic:move_posts_instruction]]
+            [[topic:move-posts-instruction]]
         </p>
 		<div>
 			<label class="form-label" for="topicId"><strong>[[topic:topic-id]]</strong></label>

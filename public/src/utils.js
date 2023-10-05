@@ -64,16 +64,16 @@ utils.isMobile = function () {
 utils.assertPasswordValidity = (password, zxcvbn) => {
 	// More checks on top of basic utils.isPasswordValid()
 	if (!utils.isPasswordValid(password)) {
-		throw new Error('[[user:change_password_error]]');
+		throw new Error('[[user:change-password-error]]');
 	} else if (password.length < ajaxify.data.minimumPasswordLength) {
-		throw new Error('[[reset_password:password_too_short]]');
+		throw new Error('[[reset_password:password-too-short]]');
 	} else if (password.length > 512) {
 		throw new Error('[[error:password-too-long]]');
 	}
 
 	const passwordStrength = zxcvbn(password);
 	if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
-		throw new Error('[[user:weak_password]]');
+		throw new Error('[[user:weak-password]]');
 	}
 };
 

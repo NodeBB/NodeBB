@@ -23,7 +23,7 @@ define('forum/unread', [
 					return alerts.error(err);
 				}
 
-				alerts.success('[[unread:topics_marked_as_read.success]]');
+				alerts.success('[[unread:topics-marked-as-read.success]]');
 
 				$('[component="category"]').empty();
 				$('[component="pagination"]').addClass('hidden');
@@ -72,7 +72,7 @@ define('forum/unread', [
 					markCategoryRead(category.cid);
 				}
 			},
-			selectCategoryLabel: ajaxify.data.selectCategoryLabel || '[[unread:mark_as_read]]',
+			selectCategoryLabel: ajaxify.data.selectCategoryLabel || '[[unread:mark-as-read]]',
 			localCategories: [
 				{
 					cid: 'selected',
@@ -91,7 +91,7 @@ define('forum/unread', [
 	function doneRemovingTids(tids) {
 		removeTids(tids);
 
-		alerts.success('[[unread:topics_marked_as_read.success]]');
+		alerts.success('[[unread:topics-marked-as-read.success]]');
 
 		if (!$('[component="category"]').children().length) {
 			$('#category-no-topics').removeClass('hidden');

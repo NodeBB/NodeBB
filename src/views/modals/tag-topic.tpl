@@ -1,6 +1,6 @@
 <div class="card tool-modal shadow">
 	<h5 class="card-header">
-		[[topic:thread_tools.tag]]
+		[[topic:thread-tools.tag]]
 	</h5>
 	<div class="card-body d-flex flex-column gap-2">
 		{{{ if tagWhitelist }}}
@@ -16,7 +16,7 @@
 		{{{ each topics }}}
 		<div class="mb-3">
 			<label class="form-label" for="fork-title"><strong>{./title}</strong></label>
-			<input class="tags" type="text" placeholder="[[tags:enter_tags_here, {config.minimumTagLength}, {config.maximumTagLength}]]" />
+			<input class="tags" type="text" placeholder="[[tags:enter-tags-here, {config.minimumTagLength}, {config.maximumTagLength}]]" />
 		</div>
 		{{{ end }}}
 	</div>

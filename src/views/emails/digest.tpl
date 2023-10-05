@@ -9,7 +9,7 @@
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td style="padding: 40px 40px 6px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 24px; line-height: 27px; color: #333333; font-weight: normal;">[[email:greeting_with_name, {username}]]</h1>
+						<h1 style="margin: 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 24px; line-height: 27px; color: #333333; font-weight: normal;">[[email:greeting-with-name, {username}]]</h1>
 					</td>
 				</tr>
 				<tr>
@@ -83,7 +83,7 @@
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">{topTopics.teaser.content}</p>
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px;">
 												<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; line-height: 16px;" href="{url}/topic/{topTopics.slug}">
-													<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read_more]]</strong></small>
+													<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read-more]]</strong></small>
 												</a>
 											</p>
 										</td>
@@ -118,7 +118,7 @@
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">{popularTopics.teaser.content}</p>
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px;">
 												<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; line-height: 16px;" href="{url}/topic/{popularTopics.slug}">
-													<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read_more]]</strong></small>
+													<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read-more]]</strong></small>
 												</a>
 											</p>
 										</td>
@@ -136,7 +136,7 @@
 				{{{ if recent.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.latest_topics, {site_title}]]</h1>
+						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.latest-topics, {site_title}]]</h1>
 						<ul style="margin: 0; padding: 0;">
 							{{{ each recent }}}
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
@@ -153,7 +153,7 @@
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">{recent.teaser.content}</p>
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px;">
 												<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; line-height: 16px;" href="{url}/topic/{recent.slug}">
-													<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read_more]]</strong></small>
+													<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read-more]]</strong></small>
 												</a>
 											</p>
 										</td>

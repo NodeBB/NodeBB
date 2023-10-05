@@ -26,7 +26,7 @@ define('forum/topic/move', [
 			$('body').append(modal);
 
 			if (Move.moveAll || (Move.tids && Move.tids.length > 1)) {
-				modal.find('.card-header').translateText('[[topic:move_topics]]');
+				modal.find('.card-header').translateText('[[topic:move-topics]]');
 			}
 
 			categorySelector.init(modal.find('[component="category-selector"]'), {
@@ -50,11 +50,11 @@ define('forum/topic/move', [
 		if (!commitEl.prop('disabled') && selectedCategory && selectedCategory.cid) {
 			commitEl.prop('disabled', true);
 			closeMoveModal();
-			let message = '[[topic:topic_move_success, ' + selectedCategory.name + ']]';
+			let message = '[[topic:topic-move-success, ' + selectedCategory.name + ']]';
 			if (Move.tids && Move.tids.length > 1) {
-				message = '[[topic:topic_move_multiple_success, ' + selectedCategory.name + ']]';
+				message = '[[topic:topic-move-multiple-success, ' + selectedCategory.name + ']]';
 			} else if (!Move.tids) {
-				message = '[[topic:topic_move_all_success, ' + selectedCategory.name + ']]';
+				message = '[[topic:topic-move-all-success, ' + selectedCategory.name + ']]';
 			}
 			const data = {
 				tids: Move.tids ? Move.tids.slice() : null,
@@ -65,7 +65,7 @@ define('forum/topic/move', [
 			if (config.undoTimeout > 0) {
 				return alerts.alert({
 					alert_id: 'tids_move_' + (Move.tids ? Move.tids.join('-') : 'all'),
-					title: '[[topic:thread_tools.move]]',
+					title: '[[topic:thread-tools.move]]',
 					message: message,
 					type: 'success',
 					timeout: config.undoTimeout,
@@ -74,7 +74,7 @@ define('forum/topic/move', [
 					},
 					clickfn: function (alert, params) {
 						delete params.timeoutfn;
-						alerts.success('[[topic:topic_move_undone]]');
+						alerts.success('[[topic:topic-move-undone]]');
 					},
 				});
 			}

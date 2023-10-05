@@ -15,8 +15,8 @@
 
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" id="gdpr_enabled" data-field="gdpr_enabled">
-					<label for="gdpr_enabled" class="form-check-label">[[admin/settings/user:gdpr_enabled]]</label>
-					<p class="form-text">[[admin/settings/user:gdpr_enabled_help]]</p>
+					<label for="gdpr_enabled" class="form-check-label">[[admin/settings/user:gdpr-enabled]]</label>
+					<p class="form-text">[[admin/settings/user:gdpr-enabled-help]]</p>
 				</div>
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" id="username:disableEdit" data-field="username:disableEdit">
@@ -313,9 +313,9 @@
 					<div class="mb-3 col-5">
 						<select class="form-select" data-field="{./name}">
 							<option value="none">[[notifications:none]]</option>
-							<option value="notification">[[notifications:notification_only]]</option>
-							<option value="email">[[notifications:email_only]]</option>
-							<option value="notificationemail">[[notifications:notification_and_email]]</option>
+							<option value="notification">[[notifications:notification-only]]</option>
+							<option value="email">[[notifications:email-only]]</option>
+							<option value="notificationemail">[[notifications:notification-and-email]]</option>
 						</select>
 					</div>
 				</div>

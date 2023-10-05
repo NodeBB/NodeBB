@@ -39,7 +39,7 @@
 	<div class="row mt-3">
 		<div class="col-12 col-sm-8 offset-sm-2 d-grid">
 			<button class="btn btn-primary">[[topic:composer.submit]]</button>
-			<button class="btn btn-link" formaction="{config.relative_path}/register/abort">{{{ if register }}}[[register:cancel_registration]]{{{ else }}}[[modules:bootbox.cancel]]{{{ end }}}</button>
+			<button class="btn btn-link" formaction="{config.relative_path}/register/abort">{{{ if register }}}[[register:cancel-registration]]{{{ else }}}[[modules:bootbox.cancel]]{{{ end }}}</button>
 		</div>
 	</div>
 </form>

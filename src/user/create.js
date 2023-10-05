@@ -166,7 +166,7 @@ module.exports = function (User) {
 		}
 
 		if (password.length < meta.config.minimumPasswordLength) {
-			throw new Error('[[reset_password:password_too_short]]');
+			throw new Error('[[reset_password:password-too-short]]');
 		}
 
 		if (password.length > 512) {
@@ -175,7 +175,7 @@ module.exports = function (User) {
 
 		const strength = zxcvbn(password);
 		if (strength.score < minStrength) {
-			throw new Error('[[user:weak_password]]');
+			throw new Error('[[user:weak-password]]');
 		}
 	};
 

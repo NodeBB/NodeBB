@@ -16,10 +16,10 @@ define('forum/reset_code', ['alerts', 'zxcvbn'], function (alerts, zxcvbn) {
 				utils.assertPasswordValidity(password.val(), zxcvbn);
 
 				if (password.val() !== repeat.val()) {
-					throw new Error('[[reset_password:passwords_do_not_match]]');
+					throw new Error('[[reset_password:passwords-do-not-match]]');
 				}
 
-				resetEl.prop('disabled', true).translateHtml('<i class="fa fa-spin fa-refresh"></i> [[reset_password:changing_password]]');
+				resetEl.prop('disabled', true).translateHtml('<i class="fa fa-spin fa-refresh"></i> [[reset_password:changing-password]]');
 				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.val(),

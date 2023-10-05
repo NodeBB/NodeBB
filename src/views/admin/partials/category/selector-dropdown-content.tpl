@@ -6,7 +6,7 @@
 			{selectedCategory.name}
 		{{{ else }}}
 		<i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}}"></i>
-		{{{ if selectCategoryLabel }}}{selectCategoryLabel}{{{ else }}}[[topic:thread_tools.select_category]]{{{ end }}}
+		{{{ if selectCategoryLabel }}}{selectCategoryLabel}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}
 		{{{ end }}}
 		</span>
 	</span> <span class="caret"></span>

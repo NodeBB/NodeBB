@@ -108,7 +108,7 @@ module.exports = function (Messaging) {
 				subject: roomData.roomName ?
 					`[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]` :
 					`[[email:notif.chat.new-message-from-user, ${displayname}]]`,
-				bodyShort: isGroupChat || roomData.roomName ? `[[notifications:new_message_in, ${roomName}]]` : `[[notifications:new_message_from, ${displayname}]]`,
+				bodyShort: isGroupChat || roomData.roomName ? `[[notifications:new-message-in, ${roomName}]]` : `[[notifications:new-message-from, ${displayname}]]`,
 				bodyLong: messageObj.content,
 				nid: `chat_${roomId}_${fromUid}_${Date.now()}`,
 				mergeId: `new-chat|${roomId}`, // as roomId is the differentiator, no distinction between direct vs. group req'd.
@@ -122,8 +122,8 @@ module.exports = function (Messaging) {
 				notifData.type = 'new-public-chat';
 				notifData.roomIcon = icon;
 				notifData.subject = `[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]`;
-				notifData.bodyShort = `[[notifications:user_posted_in_public_room, ${displayname}, ${icon}, ${roomName}]]`;
-				notifData.mergeId = `notifications:user_posted_in_public_room|${roomId}`;
+				notifData.bodyShort = `[[notifications:user-posted-in-public-room, ${displayname}, ${icon}, ${roomName}]]`;
+				notifData.mergeId = `notifications:user-posted-in-public-room|${roomId}`;
 			}
 			const notification = await notifications.create(notifData);
 			await notifications.push(notification, uidsToNotify);
