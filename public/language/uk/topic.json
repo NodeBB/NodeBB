@@ -143,7 +143,7 @@
     "no-posts-selected": "No posts selected!",
     "x-posts-selected": "%1 post(s) selected",
     "x-posts-will-be-moved-to-y": "%1 post(s) will be moved to \"%2\"",
-    "fork-pid-count": "вибрано %1 пост(ів) ",
+    "fork-pid-count": "вибрано %1 пост(ів)",
     "fork-success": "Тему успішно відгалужено. Тисніть тут, щоб перейти до відгалуженої теми.",
     "delete-posts-instruction": "Тисніть пости які ви бажаєте видалити/стерти",
     "merge-topics-instruction": "Click the topics you want to merge or search for them",

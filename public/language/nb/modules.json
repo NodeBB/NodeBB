@@ -77,8 +77,8 @@
     "composer.show-preview": "Vis forhåndsvisning",
     "composer.hide-preview": "Skjul forhåndsvisning",
     "composer.help": "Help",
-    "composer.user-said-in": "%1 sa i %2: ",
-    "composer.user-said": "%1 sa: ",
+    "composer.user-said-in": "%1 sa i %2:",
+    "composer.user-said": "%1 sa:",
     "composer.discard": "Er du sikker på at du vil forkaste dette innlegget?",
     "composer.submit-and-lock": "Send og lås",
     "composer.toggle-dropdown": "Veksle nedtrekksfelt",
@@ -98,7 +98,7 @@
     "composer.formatting.link": "Lenke",
     "composer.formatting.picture": "Bildelenke",
     "composer.upload-picture": "Last opp bilde",
-    "composer.upload-file": "Last opp fil ",
+    "composer.upload-file": "Last opp fil",
     "composer.zen-mode": "Zenmodus",
     "composer.select-category": "Velg en kategori",
     "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
@@ -124,6 +124,6 @@
     "thumbs.modal.no-thumbs": "No thumbnails found.",
     "thumbs.modal.resize-note": "<strong>Note</strong>: This forum is configured to resize topic thumbnails down to a maximum width of %1px",
     "thumbs.modal.add": "Legg til miniatyrbilde",
-    "thumbs.modal.remove": "Fjern miniatyrbilde ",
-    "thumbs.modal.confirm-remove": "Er du sikker på at du vil fjerne dette miniatyrbilde? "
+    "thumbs.modal.remove": "Fjern miniatyrbilde",
+    "thumbs.modal.confirm-remove": "Er du sikker på at du vil fjerne dette miniatyrbilde?"
 }

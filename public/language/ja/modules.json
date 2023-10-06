@@ -82,7 +82,7 @@
     "composer.discard": "本当にこの投稿を破棄しても構いませんか？",
     "composer.submit-and-lock": "送信してロック",
     "composer.toggle-dropdown": "ドロップダウンの表示切り替え",
-    "composer.uploading": " %1をアップロード中",
+    "composer.uploading": "%1をアップロード中",
     "composer.formatting.bold": "太字",
     "composer.formatting.italic": "斜体",
     "composer.formatting.heading": "Heading",

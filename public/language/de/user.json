@@ -194,7 +194,7 @@
     "consent.right-to-erasure": "Du hast das Recht auf Löschung",
     "consent.right-to-erasure-description": "Du kannst deine Zustimmung zur Datensammlung und/oder Verarbeitung von Daten jederzeit widerrufen, indem du dein Konto löschst. Dein Individuelles Profil kann gelöscht werden, jedoch blieben deine Beiträge und sonstigen Inhalte. Wenn du sowohl dein Konto <strong>sowie auch</strong> deine Inhalten löschen willst, kontaktiere bitte die Administratoren dieser Seite.",
     "consent.right-to-data-portability": "Du hast das Recht auf Datenportabilität",
-    "consent.right-to-data-portability-description": "Du kannst von uns eine Maschinen-Lesbare Datei von jeglichen gesammelten Daten von dir und deinem Konto anfordern, indem du unten auf den entsprechenden Knopf drückst. ",
+    "consent.right-to-data-portability-description": "Du kannst von uns eine Maschinen-Lesbare Datei von jeglichen gesammelten Daten von dir und deinem Konto anfordern, indem du unten auf den entsprechenden Knopf drückst.",
     "consent.export-profile": "Profil exportieren (.json)",
     "consent.export-profile-success": "Profil wird exportiert, du bekommst eine Benachrichtigung sobald der Vorgang abgeschlossen ist.",
     "consent.export-uploads": "Hochgeladene Dateien exportieren (.zip)",

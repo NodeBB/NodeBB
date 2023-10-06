@@ -147,7 +147,7 @@
     "no-skin": "No Skin",
     "select-homepage": "Wybierz stronę startową",
     "homepage": "Strona startowa",
-    "homepage-description": "Wybierz preferowaną stronę startową lub „None”, jeśli chcesz używać strony domyślnej. ",
+    "homepage-description": "Wybierz preferowaną stronę startową lub „None”, jeśli chcesz używać strony domyślnej.",
     "custom-route": "Niestandardowa strona startowa",
     "custom-route-help": "Wprowadź ścieżkę bez poprzedzającego slasha (np: \"recent\" albo \"category/2/general-discussion\")",
     "sso.title": "Usługi Pojedynczego Logowania",

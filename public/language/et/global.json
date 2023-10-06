@@ -3,7 +3,7 @@
     "search": "Otsi",
     "buttons.close": "Sulge",
     "403.title": "Ligipääs puudub",
-    "403.message": "Tundub, et sul pole piisvalt õigusi selle lehe vaatamiseks. ",
+    "403.message": "Tundub, et sul pole piisvalt õigusi selle lehe vaatamiseks.",
     "403.login": "Perhaps you should <a class=\"alert-link\" href='%1/login'>try logging in</a>?",
     "404.title": "Ei leitud",
     "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",

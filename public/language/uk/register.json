@@ -2,7 +2,7 @@
     "register": "Реєстрація",
     "already-have-account": "Already have an account?",
     "cancel-registration": "Скасувати реєстрацію",
-    "help.email": "За замовчуванням, ваша email-адреса буде прихована від інших. ",
+    "help.email": "За замовчуванням, ваша email-адреса буде прихована від інших.",
     "help.username-restrictions": "Унікальне ім'я довжиною від %1 до %2 символів. Інші можуть вас згадувати за допомогою @<span id='yourUsername'>ім'я</span>.",
     "help.minimum-password-length": "Довжина паролю має бути щонайменше %1 символів.",
     "email-address": "Електронна адреса",

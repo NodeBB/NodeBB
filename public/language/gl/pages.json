@@ -63,6 +63,6 @@
     "account/sessions": "Login Sessions",
     "confirm": "Enderezo electrónico confirmado",
     "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
-    "maintenance.messageIntro": "A máis, o administrador deixou esta mensaxe: ",
+    "maintenance.messageIntro": "A máis, o administrador deixou esta mensaxe:",
     "throttled.text": "&1 non está dispoñible debido a unha carga excesiva. Por favor, volva noutro momento"
 }

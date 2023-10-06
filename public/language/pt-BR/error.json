@@ -4,7 +4,7 @@
     "wrong-parameter-type": "A value of type %3 was expected for property `%1`, but %2 was received instead",
     "required-parameters-missing": "Required parameters were missing from this API call: %1",
     "not-logged-in": "Você não parece estar logado.",
-    "account-locked": "Sua conta foi temporariamente bloqueada ",
+    "account-locked": "Sua conta foi temporariamente bloqueada",
     "search-requires-login": "É necessário ter uma conta para pesquisar - por favor efetue o login ou cadastre-se.",
     "goback": "Pressione voltar para retornar à página anterior",
     "invalid-cid": "ID de Categoria Inválido",

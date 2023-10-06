@@ -58,7 +58,7 @@
     "membership.leave-group": "退出群组",
     "membership.leave.notification-title": "<strong>%1</strong> 退出了群组：<strong>%2</strong>",
     "membership.reject": "拒绝",
-    "new-group.group-name": "群组名: ",
+    "new-group.group-name": "群组名:",
     "upload-group-cover": "上传群组封面",
     "bulk-invite-instructions": "输入您要邀请加入此群组的用户名，多个用户以逗号分隔",
     "bulk-invite": "批量邀请",

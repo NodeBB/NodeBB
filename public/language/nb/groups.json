@@ -48,7 +48,7 @@
     "details.hidden": "Skjult",
     "details.hidden-help": "Hvis aktivert, vil ikke denne gruppen bli funnet i gruppelisten, og brukere må inviteres manuelt",
     "details.delete-group": "Slett gruppe",
-    "details.private-system-help": "Private grupper er deaktivert på systemnivå, dette alternativet gjør ikke noe ytterligere  ",
+    "details.private-system-help": "Private grupper er deaktivert på systemnivå, dette alternativet gjør ikke noe ytterligere",
     "event.updated": "Gruppedetaljer har blitt oppdatert",
     "event.deleted": "Gruppen \"%1\" har blitt slettet",
     "membership.accept-invitation": "Aksepter invitasjon",
@@ -59,8 +59,8 @@
     "membership.leave.notification-title": "<strong>%1</strong> har forlatt gruppen <strong>%2</strong>",
     "membership.reject": "Avslå",
     "new-group.group-name": "Gruppenavn:",
-    "upload-group-cover": "Last opp et deksel for gruppen ",
+    "upload-group-cover": "Last opp et deksel for gruppen",
     "bulk-invite-instructions": "Skriv inn en liste over kommaseparerte brukernavn for å invitere til denne gruppen",
     "bulk-invite": "Inviter i bulk",
-    "remove-group-cover-confirm": "Er du sikker på at du vil fjerne omslagsbildet? "
+    "remove-group-cover-confirm": "Er du sikker på at du vil fjerne omslagsbildet?"
 }

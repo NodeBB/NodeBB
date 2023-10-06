@@ -75,7 +75,7 @@
     "email-confirm-sent": "Підтвердження по електронній пошті було надіслано.",
     "none": "Немає",
     "notification-only": "Тільки сповіщення",
-    "email-only": "Тільки електронну пошту ",
+    "email-only": "Тільки електронну пошту",
     "notification-and-email": "Сповіщення та пошта",
     "notificationType-upvote": "Коли хтось голосує за ваш пост",
     "notificationType-new-topic": "Коли хтось, кого ви читаєте, публікує тему",

@@ -54,7 +54,7 @@
     "alert.warning": "Warning",
     "alert.info": "Info",
     "alert.banned": "Yasaklı",
-    "alert.banned.message": "Yasaklandınız, erişiminiz kısıtlanmıştır. ",
+    "alert.banned.message": "Yasaklandınız, erişiminiz kısıtlanmıştır.",
     "alert.unbanned": "Yasak kaldırıldı",
     "alert.unbanned.message": "Yasağınız kaldırıldı.",
     "alert.unfollow": "Artık %1'i takip etmiyorsunuz!",

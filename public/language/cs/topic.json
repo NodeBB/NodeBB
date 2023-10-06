@@ -74,7 +74,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Toto téma bylo odstraněno. Jen uživatelé s oprávněním správy témat ho mohou vidět.",
     "following-topic.message": "Nyní budete dostávat upozornění, jakmile někdo přidá příspěvek do tohoto tématu.",
-    "not-following-topic.message": " Toto téma uvidíte v seznamu nepřečtených témat, ale neobdržíte upozornění, přidá-li někdo nový příspěvek.",
+    "not-following-topic.message": "Toto téma uvidíte v seznamu nepřečtených témat, ale neobdržíte upozornění, přidá-li někdo nový příspěvek.",
     "ignoring-topic.message": "Již nadále neuvidíte toto téma v seznamu nepřečtených témat. Budete upozorněn, jakmile se někdo o vás zmíní nebo bude vyjádřen souhlas s příspěvkem.",
     "login-to-subscribe": "Pro sledování tohoto tématu se prosím přihlaste nebo zaregistrujte.",
     "markAsUnreadForAll.success": "Téma označeno jako nepřečtené pro všechny.",

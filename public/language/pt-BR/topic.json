@@ -110,7 +110,7 @@
     "thread-tools.restore": "Restaurar Tópico",
     "thread-tools.restore-confirm": "Tem certeza que deseja restaurar este tópico?",
     "thread-tools.purge": "Expurgar Tópico",
-    "thread-tools.purge-confirm": "Tem certeza que deseja expurgar este tópico? ",
+    "thread-tools.purge-confirm": "Tem certeza que deseja expurgar este tópico?",
     "thread-tools.merge-topics": "Mesclar Tópicos",
     "thread-tools.merge": "Merge Topic",
     "topic-move-success": "Este tópico será movido para '% 1' em breve. Clique aqui para desfazer.",

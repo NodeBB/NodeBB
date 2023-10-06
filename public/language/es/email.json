@@ -56,6 +56,6 @@
     "banned.subject": "Has sido baneado de %1",
     "banned.text1": "El usuario %1 ha sido baneado de %2.",
     "banned.text2": "Este ban dura hasta %1.",
-    "banned.text3": "La razón por la que has sido baneado: ",
+    "banned.text3": "La razón por la que has sido baneado:",
     "closing": "¡Gracias!"
 }

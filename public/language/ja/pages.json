@@ -52,7 +52,7 @@
     "account/bookmarks": "%1のブックマークされた投稿",
     "account/settings": "ユーザー設定",
     "account/settings-of": "Changing settings of %1",
-    "account/watched": " %1がスレッドをウォッチ済みに設定しました",
+    "account/watched": "%1がスレッドをウォッチ済みに設定しました",
     "account/ignored": "%1がスレッドを無視済みに設定しました",
     "account/upvoted": "%1が投稿を高評価しました",
     "account/downvoted": "%1が投稿を低評価しました",

@@ -150,7 +150,7 @@
     "homepage-description": "เลือกหน้าที่จะใช้เป็นหน้าแรกของฟอรั่ม หรือเลือก None เพื่อใช้ค่าเริ่มต้น",
     "custom-route": "กำหนดเส้นทางไปหน้าแรกเอง",
     "custom-route-help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
-    "sso.title": "บริการ Single Sign-on ",
+    "sso.title": "บริการ Single Sign-on",
     "sso.associated": "เกี่ยวข้องกับ",
     "sso.not-associated": "คลิกที่นี่เพื่อเชื่อมโยงกับ",
     "sso.dissociate": "แยกตัวออก",

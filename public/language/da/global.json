@@ -46,7 +46,7 @@
     "notifications.loading": "Indlæser notifikationer",
     "chats.loading": "Indlæser chats",
     "drafts.loading": "Loading Drafts",
-    "motd.welcome": "Velkommen til NodeBB, fremtidens diskussion platform. ",
+    "motd.welcome": "Velkommen til NodeBB, fremtidens diskussion platform.",
     "previouspage": "Forrige side",
     "nextpage": "Næste side",
     "alert.success": "Succes",

@@ -175,7 +175,7 @@
     "info.moderation-note": "Poznámka moderace",
     "info.moderation-note.success": "Poznámka moderace byla uložena",
     "info.moderation-note.add": "Přidat poznámku",
-    "sessions.description": "Tato stránka vám zobrazuje aktivní relace na tomto fóru a umožňuje vám je zrušit. Můžete tak i zrušit vlastní relaci svým odhlášením. ",
+    "sessions.description": "Tato stránka vám zobrazuje aktivní relace na tomto fóru a umožňuje vám je zrušit. Můžete tak i zrušit vlastní relaci svým odhlášením.",
     "revoke-session": "Revoke Session",
     "browser-version-on-platform": "%1 %2 on %3",
     "consent.title": "Váš právní souhlas",

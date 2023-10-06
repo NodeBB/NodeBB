@@ -57,7 +57,7 @@
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",
     "alert.unbanned.message": "Your ban has been lifted.",
-    "alert.unfollow": "Jūs jau nebesekate %1! ",
+    "alert.unfollow": "Jūs jau nebesekate %1!",
     "alert.follow": "Jūs sekate vartotoją %1!",
     "users": "Vartotojai",
     "topics": "Temos",

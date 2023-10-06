@@ -83,7 +83,7 @@
     "notificationType-new-reply": "Lorsqu'une nouvelle réponse est ajoutée dans un sujet que vous suivez",
     "notificationType-post-edit": "Lorsqu'un article est modifié dans un sujet que vous regardez",
     "notificationType-follow": "Lorsque quelqu'un commence à vous suivre",
-    "notificationType-new-chat": "Lorsque vous recevez un message du chat ",
+    "notificationType-new-chat": "Lorsque vous recevez un message du chat",
     "notificationType-new-group-chat": "Lorsque vous recevez un message de discussion de groupe",
     "notificationType-new-public-chat": "Lorsque vous recevez un message du groupe de discussion publique",
     "notificationType-group-invite": "Lorsque vous recevez une invitation d'un groupe",

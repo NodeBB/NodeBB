@@ -84,7 +84,7 @@
     "post-delete-duration-expired-days-hours": "Dozvoljeno vam je brisanje %1 dan %2 sata nakon objave",
     "cant-delete-topic-has-reply": "Ne možete obrisati svoju temu nakon primljenog odgovora",
     "cant-delete-topic-has-replies": "Ne možete obrisati svoju temu nakon što ima %1 odgovora",
-    "content-too-short": "Unesite dužu objavu. Objava mora sadržavati bar %1 znak(ova). ",
+    "content-too-short": "Unesite dužu objavu. Objava mora sadržavati bar %1 znak(ova).",
     "content-too-long": "Unestie kraću objavu. Objave ne mogu biti duže od %1 znak(ova).",
     "title-too-short": "Unesite duži naslov. Naslovi moraju imati najmanje %1 znak(ova).",
     "title-too-long": "Unesite kraći naslov. Naslovi ne mogu imati više od %1 znak(ova).",

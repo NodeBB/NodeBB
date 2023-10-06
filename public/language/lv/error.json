@@ -24,7 +24,7 @@
     "invalid-login-credentials": "Nederīgi ielogošanās dati",
     "invalid-username-or-password": "Lūdzu, norādi gan lietotājvārdu, gan paroli",
     "invalid-search-term": "Nederīga meklēšanas frāze",
-    "invalid-url": "Nederīga saite\n",
+    "invalid-url": "Nederīga saite",
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Vietējā ielogošanās ir atspējota nepriviliģētiem kontiem.",
     "csrf-invalid": "Mēs nevarējām Tevi ielogot, iespējams, beigušās sesijas dēļ. Lūdzu, mēģināt vēlreiz",

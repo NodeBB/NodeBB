@@ -111,7 +111,7 @@
     "composer.set-schedule-date": "Tarihi ayarla",
     "composer.discard-all-drafts": "Tüm taslakları sil",
     "composer.no-drafts": "Taslak yok",
-    "composer.discard-draft-confirm": "Bu taslağı silmek istiyor musunuz? ",
+    "composer.discard-draft-confirm": "Bu taslağı silmek istiyor musunuz?",
     "bootbox.ok": "Kabul",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla",
@@ -122,7 +122,7 @@
     "cover.saved": "Kapak görseli ve pozisyonu kaydedildi",
     "thumbs.modal.title": "Başlık simgelerini yönet",
     "thumbs.modal.no-thumbs": "Başlık simgesi bulunamadı.",
-    "thumbs.modal.resize-note": "<strong>Not</strong>: Forum ayarları başlık simgelerini maksimum %1px genişliğe yeniden ölçülendirecektir. ",
+    "thumbs.modal.resize-note": "<strong>Not</strong>: Forum ayarları başlık simgelerini maksimum %1px genişliğe yeniden ölçülendirecektir.",
     "thumbs.modal.add": "Başlığa simge ekle",
     "thumbs.modal.remove": "Başlığın simgesini sil",
     "thumbs.modal.confirm-remove": "Bu başlık simgesini kaldırmak istediğinizden emin misiniz?"

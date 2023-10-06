@@ -30,7 +30,7 @@
     "user-posted-in-public-room-dual": "<strong>%1</strong> and <strong>%2</strong> wrote in <strong class=\"text-nowrap\"><i class=\"fa %3\"></i>%4</strong>",
     "user-posted-in-public-room-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> wrote in <strong class=\"text-nowrap\"><i class=\"fa %4\"></i>%5</strong>",
     "user-posted-in-public-room-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others wrote in <strong class=\"text-nowrap\"><i class=\"fa %4\"></i>%5</strong>",
-    "upvoted-your-post-in": "<strong>%1</strong> , <strong>%2</strong> এ আপানার পোষ্টকে আপভোট করেছেন। ",
+    "upvoted-your-post-in": "<strong>%1</strong> , <strong>%2</strong> এ আপানার পোষ্টকে আপভোট করেছেন।",
     "upvoted-your-post-in-dual": "<strong>%1</strong> and <strong>%2</strong> have upvoted your post in <strong>%3</strong>.",
     "upvoted-your-post-in-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have upvoted your post in <strong>%4</strong>.",
     "upvoted-your-post-in-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others have upvoted your post in <strong>%4</strong>.",

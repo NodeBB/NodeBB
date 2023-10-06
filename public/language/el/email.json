@@ -39,7 +39,7 @@
     "notif.chat.new-message-from-user": "New message from \"%1\"",
     "notif.chat.new-message-from-user-in-room": "New message from %1 in room %2",
     "notif.chat.cta": "Κάνε κλικ εδώ για να πας στην συνομιλία",
-    "notif.chat.unsub.info": "Αυτή η ειδοποίηση για συνομιλία σου στάλθηκε λόγω των ρυθμίσεών σου. ",
+    "notif.chat.unsub.info": "Αυτή η ειδοποίηση για συνομιλία σου στάλθηκε λόγω των ρυθμίσεών σου.",
     "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "notif.post.unsub.one-click": "Alternatively, unsubscribe from future emails like this, by clicking",
     "notif.cta": "To the forum",

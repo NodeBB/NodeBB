@@ -1,7 +1,7 @@
 {
     "register": "Registrer",
     "already-have-account": "Already have an account?",
-    "cancel-registration": "Avbryt registrering ",
+    "cancel-registration": "Avbryt registrering",
     "help.email": "Som standard, holdes din e-post skjult for offentligheten.",
     "help.username-restrictions": "Et unikt brukernavn mellom %1 og %2 tegn. Andre kan nevne deg med @<span id='yourUsername'>brukernavn</span>.",
     "help.minimum-password-length": "Ditt passord må være minst %1 tegn.",
@@ -25,9 +25,9 @@
     "interstitial.intro-new": "Vi ønsker ytterligere informasjon før vi kan opprette din brukerkonto&hellip;",
     "interstitial.errors-found": "Vennligst gå igjennom oppgitt informasjon:",
     "gdpr-agree-data": "Jeg samtykker til innsamling og behandling av min personlige informasjon på dette nettstedet.",
-    "gdpr-agree-email": "Jeg samtykker i å motta forumsammendrag og varsler på e-postmeldinger fra dette nettstedet. ",
+    "gdpr-agree-email": "Jeg samtykker i å motta forumsammendrag og varsler på e-postmeldinger fra dette nettstedet.",
     "gdpr-consent-denied": "Du må gi samtykke til at dette nettstedet kan samle inn/behandle informasjonen din, og sende deg e-post.",
-    "invite.error-admin-only": "Direkte brukerregistrering er deaktivert. Kontakt en administrator for mer informasjon. ",
-    "invite.error-invite-only": "Direkte brukerregistrering er deaktivert. Du må bli invitert av en eksisterende bruker for å få tilgang til dette forumet. ",
+    "invite.error-admin-only": "Direkte brukerregistrering er deaktivert. Kontakt en administrator for mer informasjon.",
+    "invite.error-invite-only": "Direkte brukerregistrering er deaktivert. Du må bli invitert av en eksisterende bruker for å få tilgang til dette forumet.",
     "invite.error-invalid-data": "Registrerte data som mottas samsvarer ikke med registrene våre. Kontakt en administrator for mer informasjon."
 }

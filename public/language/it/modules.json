@@ -39,7 +39,7 @@
     "chat.unpin-message": "Libera Messaggio",
     "chat.public-rooms": "Stanze pubbliche (%1)",
     "chat.private-rooms": "Stanze private (%1)",
-    "chat.create-room": "Crea stanza chat ",
+    "chat.create-room": "Crea stanza chat",
     "chat.private.option": "Privato (visibile solo agli utenti aggiunti alla stanza)",
     "chat.public.option": "Pubblico (visibile a tutti gli utenti nei gruppi selezionati)",
     "chat.public.groups-help": "Per creare una stanza chat visibile a tutti gli utenti, seleziona gli utenti registrati dall'elenco dei gruppi.",

@@ -195,7 +195,7 @@
     "diffs.original-revision": "원래의 리비전",
     "diffs.restore": "리비전 복구",
     "diffs.restore-description": "초기화 후에 새로운 리비전이 포스트의 편집 기록에 덧붙여집니다.",
-    "diffs.post-restored": "이전 리비전으로의 복구가 완료되었습니다. ",
+    "diffs.post-restored": "이전 리비전으로의 복구가 완료되었습니다.",
     "diffs.delete": "리비전 삭제",
     "diffs.deleted": "리비전 삭제됨",
     "timeago-later": "%1 이후",

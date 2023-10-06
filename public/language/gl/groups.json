@@ -51,7 +51,7 @@
     "details.private-system-help": "Os grupos privados están desactivados ao nivel do sistema, esta opción non trocará nada.",
     "event.updated": "Os detalles do grupo foron actualizados",
     "event.deleted": "O grupo \"%1\" foi borrado.",
-    "membership.accept-invitation": "Aceptar ",
+    "membership.accept-invitation": "Aceptar",
     "membership.accept.notification-title": "You are now a member of <strong>%1</strong>",
     "membership.invitation-pending": "Invitación Pendente",
     "membership.join-group": "Unirse ao grupo",

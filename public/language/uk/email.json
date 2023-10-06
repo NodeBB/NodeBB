@@ -10,7 +10,7 @@
     "email.verify.text2": "For security purposes, we only change or confirm the email address on file once its ownership has been confirmed via email. <strong>If you did not request this, no action is required on your part.</strong>",
     "email.verify.text3": "Once you confirm this email address, we will replace your current email address with this one (%1).",
     "welcome.text1": "Дякуємо за реєстрацію з %1!",
-    "welcome.text2": "Щоб повністю активувати ваш акаунт, нам потрібно перевірити, що вам належить електронна адреса, яку ви вказали при реєстрації  ",
+    "welcome.text2": "Щоб повністю активувати ваш акаунт, нам потрібно перевірити, що вам належить електронна адреса, яку ви вказали при реєстрації",
     "welcome.text3": "Адміністратор схвалив ваш запит на реєстрацію. Ви можете залогінитись, використовуючи свій пароль та назву акаунту",
     "welcome.cta": "Натисніть тут, щоб підтвердити вашу електронну адресу",
     "invitation.text1": "%1 запросив вас приєднатися до %2",

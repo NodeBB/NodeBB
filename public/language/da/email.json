@@ -18,7 +18,7 @@
     "invitation.cta": "Click here to create your account.",
     "reset.text1": "Vi har modtaget en anmodning om at nulstille dit kodeord, måske fordi du har glemt det. Hvis det ikke er tilfældet, venligst ignorer denne email.",
     "reset.text2": "For at fortsætte med at nulstille kodeordet, venligst klik på dette link:",
-    "reset.cta": "Klik her for at nulstille dit kodeord. ",
+    "reset.cta": "Klik her for at nulstille dit kodeord.",
     "reset.notify.subject": "Dit kodeord er nu ændret",
     "reset.notify.text1": "Bemærk:  %1 gang blev dit kodeord ændret.",
     "reset.notify.text2": "Hvis du ikke godkendte dette, kontakt straks en administrator.",

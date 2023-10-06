@@ -31,7 +31,7 @@
     "reset": "Tangiza bundi bushya konte yawe",
     "categories": "Ibyiciro",
     "groups": "Amatsinda",
-    "group": "Itsinda %1 ",
+    "group": "Itsinda %1",
     "chats": "Mu Gikari",
     "chat": "Ukuganira na %1",
     "flags": "Flags",
@@ -63,6 +63,6 @@
     "account/sessions": "Login Sessions",
     "confirm": "Email Yemejwe",
     "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
-    "maintenance.messageIntro": "Byongeye, kandi, umuyobozi yasize ubu butumwa: ",
-    "throttled.text": "% ntibonetse kubera ukunanirwa. Uze kugaruka ikindi gihe. "
+    "maintenance.messageIntro": "Byongeye, kandi, umuyobozi yasize ubu butumwa:",
+    "throttled.text": "% ntibonetse kubera ukunanirwa. Uze kugaruka ikindi gihe."
 }

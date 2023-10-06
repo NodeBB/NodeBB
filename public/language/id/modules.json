@@ -77,7 +77,7 @@
     "composer.show-preview": "Show Preview",
     "composer.hide-preview": "Hide Preview",
     "composer.help": "Help",
-    "composer.user-said-in": "%1 berkata di %2: ",
+    "composer.user-said-in": "%1 berkata di %2:",
     "composer.user-said": "%1 berkata:",
     "composer.discard": "Kamu yakin akan membuang posting ini?",
     "composer.submit-and-lock": "Submit and Lock",

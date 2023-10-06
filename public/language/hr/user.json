@@ -147,7 +147,7 @@
     "no-skin": "No Skin",
     "select-homepage": "Izaberi naslovnu",
     "homepage": "Naslovna",
-    "homepage-description": "Izaberi stranicu ",
+    "homepage-description": "Izaberi stranicu",
     "custom-route": "Uobičajena putanja naslovnice",
     "custom-route-help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Jednokratne usluge prijave",

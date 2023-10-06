@@ -49,7 +49,7 @@
     "user-posted-to-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have posted replies to: <strong>%4</strong>",
     "user-posted-to-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others have posted replies to: <strong>%4</strong>",
     "user-posted-topic": "<strong>%1</strong> založil nové téma: <strong>%2</strong>",
-    "user-edited-post": "Příspěvek <strong>%2</strong> byl upraven uživatelem <strong>%1</strong> ",
+    "user-edited-post": "Příspěvek <strong>%2</strong> byl upraven uživatelem <strong>%1</strong>",
     "user-posted-topic-with-tag": "<strong>%1</strong> has posted a new topic with tag <strong>%2</strong>",
     "user-posted-topic-with-tag-dual": "<strong>%1</strong> has posted a new topic with tags <strong>%2</strong> and <strong>%3</strong>",
     "user-posted-topic-with-tag-triple": "<strong>%1</strong> has posted a new topic with tags <strong>%2</strong>, <strong>%3</strong> and <strong>%4</strong>",

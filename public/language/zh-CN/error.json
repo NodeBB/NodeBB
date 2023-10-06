@@ -161,7 +161,7 @@
     "chat-edit-duration-expired": "您只能在发布 %1 秒后修改聊天信息",
     "chat-delete-duration-expired": "您只能在发布 %1 秒后删除聊天信息",
     "chat-deleted-already": "此聊天消息已经被删除",
-    "chat-restored-already": "此聊天消息已经恢复。\n",
+    "chat-restored-already": "此聊天消息已经恢复。",
     "chat-room-does-not-exist": "聊天室不存在。",
     "cant-add-users-to-chat-room": "无法添加用户到聊天室。",
     "cant-remove-users-from-chat-room": "无法从聊天室删除用户。",

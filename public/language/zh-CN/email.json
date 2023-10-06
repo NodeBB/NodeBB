@@ -26,7 +26,7 @@
     "digest.room-name-unreadcount": "%1 （%2 未读）",
     "digest.latest-topics": "来自 %1 的最新主题",
     "digest.top-topics": "来自 %1 的关注主题",
-    "digest.popular-topics": "来自 %1 的热门主题 ",
+    "digest.popular-topics": "来自 %1 的热门主题",
     "digest.cta": "点击这里访问 %1",
     "digest.unsub.info": "根据您的订阅设置，为您发送此摘要。",
     "digest.day": "天",
