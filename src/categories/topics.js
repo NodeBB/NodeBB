@@ -24,12 +24,8 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getTopicIds = async function (data) {
-		const dataForPinned = { ...data };
-		dataForPinned.start = 0;
-		dataForPinned.stop = -1;
-
 		const [pinnedTids, set, direction] = await Promise.all([
-			Categories.getPinnedTids(dataForPinned),
+			Categories.getPinnedTids({ ...data, start: 0, stop: -1 }),
 			Categories.buildTopicsSortedSet(data),
 			Categories.getSortedSetRangeDirection(data.sort),
 		]);
