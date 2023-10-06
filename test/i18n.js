@@ -71,14 +71,17 @@ describe('i18n', () => {
 					});
 				});
 			});
+			/*
+			it('regexp used in test should test according to expectations', () => {
+				const valid = ['foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet'];
+				const invalid = [
+					'camelCase', 'PascalCase', 'snake_case', 'badger.badger_badger_badger', 'snnnaaaaaaAAAAAAkeeee'
+				];
 
-			// it('regexp used in test should test according to expectations', () => {
-			// 	const valid = ['foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet'];
-			// 	const invalid = ['camelCase', 'PascalCase', 'snake_case', 'badger.badger_badger_badger', 'snnnaaaaaaAAAAAAkeeee'];
-
-			// 	assert(valid.every(key => test.test(key)));
-			// 	assert(!invalid.every(key => test.test(key)));
-			// });
+				assert(valid.every(key => test.test(key)));
+				assert(!invalid.every(key => test.test(key)));
+			});
+			*/
 		});
 
 		folders.forEach((language) => {
