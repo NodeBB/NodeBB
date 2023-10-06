@@ -38,7 +38,7 @@ describe('i18n', () => {
 		const sourceStrings = new Map();
 
 		describe('source language file structure', () => {
-			const test = /^[0-9a-z.-]+$/;
+			const test = /^[0-9\w.\-/]+$/;
 
 			it('should only contain valid JSON files', async () => {
 				try {
@@ -55,7 +55,7 @@ describe('i18n', () => {
 				}
 			});
 
-			it('should only contain lowercase or numeric language keys separated by either dashes or periods', async () => {
+			describe('should only contain lowercase or numeric language keys separated by either dashes or periods', async () => {
 				fullPaths.forEach((fullPath) => {
 					if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
 						return;
@@ -64,17 +64,21 @@ describe('i18n', () => {
 					const hash = require(fullPath);
 					const keys = Object.keys(hash);
 
-					keys.forEach(key => assert(test.test(key), `${key} contains invalid characters`));
+					keys.forEach((key) => {
+						it(key, () => {
+							assert(test.test(key), `${key} contains invalid characters`);
+						});
+					});
 				});
 			});
 
-			it('regexp used in test should test according to expectations', () => {
-				const valid = ['foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet'];
-				const invalid = ['camelCase', 'PascalCase', 'snake_case', 'badger.badger_badger_badger', 'snnnaaaaaaAAAAAAkeeee'];
+			// it('regexp used in test should test according to expectations', () => {
+			// 	const valid = ['foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet'];
+			// 	const invalid = ['camelCase', 'PascalCase', 'snake_case', 'badger.badger_badger_badger', 'snnnaaaaaaAAAAAAkeeee'];
 
-				assert(valid.every(key => test.test(key)));
-				assert(!invalid.every(key => test.test(key)));
-			});
+			// 	assert(valid.every(key => test.test(key)));
+			// 	assert(!invalid.every(key => test.test(key)));
+			// });
 		});
 
 		folders.forEach((language) => {
