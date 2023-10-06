@@ -439,8 +439,10 @@ define('forum/topic/posts', [
 	}
 
 	Posts.addBlockquoteEllipses = function (posts) {
-		const blockquotes = posts.find('[component="post/content"] > blockquote > blockquote');
-		blockquotes.each(function () {
+		const rootBlockQuotes = posts.find('[component="post/content"] blockquote')
+			.filter((i, el) => !$(el).parent().is('blockquote'));
+		const nestedBlockQuote = rootBlockQuotes.find('>blockquote');
+		nestedBlockQuote.each(function () {
 			const $this = $(this);
 			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
 				$this.append('<i class="d-inline-block fa fa-angle-down pointer toggle py-1 px-3 border text-bg-light"></i>');
