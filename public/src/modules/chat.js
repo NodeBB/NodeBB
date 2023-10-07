@@ -278,7 +278,7 @@ define('chat', [
 		const typingTextEl = typingEl.find('[component="chat/composer/typing/text"]');
 		const count = usernames.length > 3 ? 'n' : usernames.length;
 		if (count) {
-			const key = `modules:chat.user_typing_${count}`;
+			const key = `modules:chat.user-typing-${count}`;
 			const compiled = translator.compile.apply(null, [key, ...usernames]);
 			typingTextEl.html(await translator.translate(compiled));
 		}
