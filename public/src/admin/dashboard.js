@@ -9,6 +9,7 @@ import {
 	ArcElement,
 	Tooltip,
 	Filler,
+	Legend,
 } from 'chart.js';
 
 import * as Benchpress from 'benchpressjs';
@@ -26,7 +27,8 @@ Chart.register(
 	PointElement,
 	ArcElement,
 	Tooltip,
-	Filler
+	Filler,
+	Legend
 );
 
 const intervals = {
@@ -287,6 +289,11 @@ function setupGraphs(callback) {
 						beginAtZero: true,
 					},
 				},
+				plugins: {
+					legend: {
+						position: 'bottom',
+					},
+				},
 				interaction: {
 					intersect: false,
 					mode: 'index',
@@ -296,6 +303,11 @@ function setupGraphs(callback) {
 
 		const doughnutOpts = {
 			responsive: true,
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
 		};
 		graphs.registered = new Chart(registeredCtx, {
 			type: 'doughnut',
