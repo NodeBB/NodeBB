@@ -1,5 +1,3 @@
-<!-- IMPORT partials/breadcrumbs.tpl -->
-
 <div class="row col-12 col-sm-6 offset-sm-3">
 	{{{ if valid }}}
 	<div class="card card-body bg-light">

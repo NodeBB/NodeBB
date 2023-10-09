@@ -1,5 +1,3 @@
-<!-- IMPORT partials/breadcrumbs.tpl -->
-
 {{{ if (!singlePost && posts.length) }}}
 <div class="btn-toolbar justify-content-end">
 	<div class="me-2">

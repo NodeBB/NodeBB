@@ -1,5 +1,3 @@
-<!-- IMPORT partials/breadcrumbs.tpl -->
-
 <div class="row">
 	<div class="col-12 col-sm-8 offset-sm-2">
 		<p class="lead text-center">

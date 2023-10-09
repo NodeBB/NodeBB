@@ -1,4 +1,3 @@
-<!-- IMPORT partials/breadcrumbs.tpl -->
 <div class="flex-fill">
 	<div class="alert alert-info">
 		[[reset_password:enter-email]]

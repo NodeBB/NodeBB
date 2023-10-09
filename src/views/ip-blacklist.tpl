@@ -1,5 +1,3 @@
-<!-- IMPORT partials/breadcrumbs.tpl -->
-
 <div class="row ip-blacklist">
 	<div class="col-lg-12">
 		<p class="lead">
