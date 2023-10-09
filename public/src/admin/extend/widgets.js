@@ -35,7 +35,9 @@ define('admin/extend/widgets', [
 	};
 
 	function prepareWidgets() {
-		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
+		$('[data-location="drafts"]').appendTo(
+			$('[component="drafts-container"]')
+		);
 
 		$('#widgets .available-widgets .widget-panel').draggable({
 			helper: function (e) {

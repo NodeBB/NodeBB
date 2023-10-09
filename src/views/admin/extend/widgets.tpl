@@ -1,4 +1,4 @@
-<div class="tags d-flex flex-column gap-2 px-lg-4">
+<div class="d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/extend/widgets:widgets]]</h4>
@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div id="widgets" class="row px-2">
-		<div class="col-md-8" id="active-widgets">
+		<div class="col-9" id="active-widgets">
 			<div class="dropdown mb-3">
 				<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
@@ -21,13 +21,13 @@
 			</div>
 
 			<div class="row">
-				<div class="col-12">
+				<div class="col-6">
 					<div class="tab-content">
 					{{{ each templates }}}
 						<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
 						{{{ each templates.areas }}}
 							<div class="area" data-template="{templates.template}" data-location="{./location}">
-								<h4>{./name} <small>{templates.template} / {./location}</small></h4>
+								<h5>{./name} <span class="fs-6 text-secondary">{templates.template} / {./location}</span></h5>
 								<div class="card card-body text-bg-light widget-area">
 
 								</div>
@@ -37,10 +37,13 @@
 					{{{ end }}}
 					</div>
 				</div>
+				<div class="col-6" component="drafts-container">
+
+				</div>
 			</div>
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-3">
 			<div class="card mb-3">
 				<div class="card-header">[[admin/extend/widgets:available]]</div>
 				<div class="card-body">
