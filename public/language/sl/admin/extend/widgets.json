@@ -5,7 +5,7 @@
 	"none-installed": "Pripomočki niso najdeni! Aktivirajte vtičnik za osnove pripomočkov na nadzorni plošči<a href=\"%1\">vtičnikov</a>.",
 	"clone-from": "Klonirajte pripomočke iz",
 	"containers.available": "Razpoložljivi vsebniki",
-	"containers.explanation": "Povlecite in spustite na kateri koli aktivni gradnik",
+	"containers.explanation": "Drag and drop on top of any widget",
 	"containers.none": "Brez",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",

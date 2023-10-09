@@ -5,7 +5,7 @@
 	"none-installed": "Aucun widget trouvé ! Activez le plugin Widget Essentials dans le panneau de <a href=\"%1\">configuration des plugins</a>.",
 	"clone-from": "Cloner le widget",
 	"containers.available": "Conteneurs disponibles",
-	"containers.explanation": "Glisser & déposer sur n'importe quel widget actif",
+	"containers.explanation": "Drag and drop on top of any widget",
 	"containers.none": "Aucun",
 	"container.well": "Well",
 	"container.jumbotron": "Jombotron",
