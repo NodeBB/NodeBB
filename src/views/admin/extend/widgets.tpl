@@ -28,7 +28,7 @@
 						{{{ each templates.areas }}}
 							<div class="area" data-template="{templates.template}" data-location="{./location}">
 								<h5>{./name} <span class="fs-6 text-secondary">{templates.template} / {./location}</span></h5>
-								<div class="card card-body text-bg-light widget-area">
+								<div class="card card-body text-bg-light widget-area overflow-auto" {{{ if (./location == "drafts")}}}style="max-height: calc(100vh - 200px);"{{{ end }}}>
 
 								</div>
 							</div>
@@ -46,9 +46,9 @@
 		<div class="col-3">
 			<div class="card mb-3">
 				<div class="card-header">[[admin/extend/widgets:available]]</div>
-				<div class="card-body">
+				<div class="card-body pt-0">
 					<div class="available-widgets">
-						<p>[[admin/extend/widgets:explanation]]</p>
+						<p class="text-sm">[[admin/extend/widgets:explanation]]</p>
 						{{{ if !availableWidgets.length }}}
 						<div class="alert alert-info">[[admin/extend/widgets:none-installed, {config.relative_path}/admin/extend/plugins]]</div>
 						{{{ end }}}
@@ -96,8 +96,8 @@
 
 			<div class="card">
 				<div class="card-header">[[admin/extend/widgets:containers.available]]</div>
-				<div class="card-body">
-					<p>[[admin/extend/widgets:containers.explanation]]</p>
+				<div class="card-body pt-0">
+					<p class="text-sm">[[admin/extend/widgets:containers.explanation]]</p>
 					<div class="available-containers">
 						<div class="containers">
 							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
