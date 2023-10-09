@@ -157,6 +157,7 @@ ajaxify.widgets = { render: render };
 					status = 500;
 				}
 				if (data.responseJSON) {
+					ajaxify.data.bodyClass = data.responseJSON.bodyClass;
 					data.responseJSON.config = config;
 				}
 
