@@ -5,7 +5,7 @@
 	"none-installed": "Няма намерени джаджи! Включете добавката с основните джаджи в контролния панел за <a href=\"%1\">добавките</a>.",
 	"clone-from": "Клониране на джаджите от",
 	"containers.available": "Налични контейнери",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "Завлачете и пуснете върху някоя джаджа",
 	"containers.none": "Няма",
 	"container.well": "Кладенец",
 	"container.jumbotron": "Джъмботрон",
