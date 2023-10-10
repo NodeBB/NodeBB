@@ -1,13 +1,13 @@
 {
     "manage-admins-and-mods": "Manage Admins & Mods",
     "administrators": "Quản Trị Viên",
-    "global-moderators": "Người Điều Hành Toàn Quyền",
+    "global-moderators": "Người Quản Lý Chung",
     "moderators": "Người điều hành",
-    "no-global-moderators": "Không Có Người Điều Hành Toàn Quyền",
+    "no-global-moderators": "Không Có Người Quản Lý Chung",
     "no-sub-categories": "Không có danh mục phụ",
-    "view-children": "View children (%1)",
+    "view-children": "Xem con (%1)",
     "no-moderators": "Không Có Người Điều Hành",
     "add-administrator": "Thêm Quản Trị Viên",
-    "add-global-moderator": "Thêm Người Điều Hành Toàn Quyền",
+    "add-global-moderator": "Thêm Người Quản Lý Chung",
     "add-moderator": "Thêm Người Điều Hành"
 }

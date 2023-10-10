@@ -1,16 +1,16 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "Nhập 0 để tắt hạn chế này",
 	"chat-settings": "Cài Đặt Trò Chuyện",
 	"disable": "Tắt trò chuyện",
 	"disable-editing": "Tắt chỉnh sửa / xóa tin nhắn trò chuyện",
-	"disable-editing-help": "Quản trị viên và người kiểm duyệt toàn quyền được miễn hạn chế này",
+	"disable-editing-help": "Quản trị viên và Người Quản Lý Chung được miễn hạn chế này",
 	"max-length": "Độ dài tối đa của tin nhắn trò chuyện",
-	"max-chat-room-name-length": "Maximum length of chat room names",
+	"max-chat-room-name-length": "Độ dài tối đa tên phòng trò chuyện",
 	"max-room-size": "Số lượng người dùng tối đa trong phòng trò chuyện",
-	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
+	"delay": "Thời gian giữa các tin nhắn trò chuyện (ms)",
+	"newbieDelay": "... cho người dùng mới (ms)",
+	"notification-delay": "Độ trễ thông báo cho tin nhắn trò chuyện",
+	"notification-delay-help": "Các tin nhắn bổ sung được gửi trong khoảng thời gian này sẽ được đối chiếu và người dùng sẽ được thông báo một lần trong mỗi khoảng thời gian trì hoãn. Đặt giá trị này thành 0 để tắt độ trễ.",
+	"restrictions.seconds-edit-after": "Số giây mà một tin nhắn trò chuyện sẽ vẫn có thể chỉnh sửa được.",
+	"restrictions.seconds-delete-after": "Số giây một tin nhắn trò chuyện sẽ vẫn có thể bị xóa."
 }
