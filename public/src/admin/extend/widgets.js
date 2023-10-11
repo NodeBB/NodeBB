@@ -35,9 +35,8 @@ define('admin/extend/widgets', [
 	};
 
 	function prepareWidgets() {
-		$('[data-location="drafts"]').appendTo(
-			$('[component="drafts-container"]')
-		);
+		const draftContainer = $('[component="drafts-container"]');
+		$('[data-location="drafts"]').appendTo(draftContainer);
 
 		$('#widgets .available-widgets .widget-panel').draggable({
 			helper: function (e) {
@@ -65,6 +64,12 @@ define('admin/extend/widgets', [
 			update: function (event, ui) {
 				createDatePicker(ui.item);
 				appendToggle(ui.item);
+			},
+			start: function () {
+				draftContainer.find('[data-location="drafts"]>div').removeClass('overflow-auto');
+			},
+			stop: function () {
+				draftContainer.find('[data-location="drafts"]>div').addClass('overflow-auto');
 			},
 			connectWith: 'div',
 		}).on('click', '.delete-widget', function () {
