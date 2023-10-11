@@ -1,0 +1,26 @@
+delete:
+  tags:
+    - flags
+  summary: rescind a flag report
+  description: This operation rescinds the report made for a given flag.
+  parameters:
+    - in: path
+      name: flagId
+      schema:
+        type: number
+      required: true
+      description: a valid flag id
+      example: 2
+  responses:
+    '200':
+      description: Flag report rescinded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

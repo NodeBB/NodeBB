@@ -109,7 +109,7 @@ Flags.get = async function (flagId) {
 		Flags.getReports(flagId),
 	]);
 	if (!base) {
-		return;
+		throw new Error('[[error:no-flag]]');
 	}
 	const flagObj = {
 		state: 'open',

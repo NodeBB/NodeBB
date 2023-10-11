@@ -32,6 +32,11 @@ Flags.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Flags.rescind = async (req, res) => {
+	await api.flags.rescind(req, { flagId: req.params.flagId });
+	helpers.formatApiResponse(200, res);
+};
+
 Flags.appendNote = async (req, res) => {
 	const { note, datetime } = req.body;
 	const payload = await api.flags.appendNote(req, {
