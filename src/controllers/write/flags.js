@@ -13,7 +13,7 @@ Flags.create = async (req, res) => {
 };
 
 Flags.get = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.flags.get(req, req.params.flagId));
+	helpers.formatApiResponse(200, res, await api.flags.get(req, req.params));
 };
 
 Flags.update = async (req, res) => {
