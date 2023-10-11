@@ -211,7 +211,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 	}
 
 	breadcrumbs.unshift({
-		text: '[[global:home]]',
+		text: meta.config.homePageTitle || '[[global:home]]',
 		url: `${relative_path}/`,
 	});
 
@@ -221,7 +221,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 helpers.buildBreadcrumbs = function (crumbs) {
 	const breadcrumbs = [
 		{
-			text: '[[global:home]]',
+			text: meta.config.homePageTitle || '[[global:home]]',
 			url: `${relative_path}/`,
 		},
 	];
