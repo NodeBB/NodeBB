@@ -8,7 +8,7 @@
     "enter-username": "Nhập tên đăng nhập để tìm",
     "search-user-for-chat": "Tìm kiếm người dùng để bắt đầu trò chuyện",
     "load-more": "Tải thêm",
-    "users-found-search-took": "Đã tìm thấy %1 thành viên! Tìm kiếm mất %2 giây.",
+    "users-found-search-took": "Đã tìm thấy %1 người! Tìm kiếm mất %2 giây.",
     "filter-by": "Lọc Bởi",
     "online-only": "Chỉ trực tuyến",
     "invite": "Mời",
@@ -21,5 +21,5 @@
     "unread-topics": "Chủ đề chưa đọc",
     "categories": "Chuyên mục",
     "tags": "Thẻ",
-    "no-users-found": "Không tìm thấy thành viên nào!"
+    "no-users-found": "Không tìm được ai!"
 }

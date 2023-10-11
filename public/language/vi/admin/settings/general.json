@@ -32,7 +32,7 @@
 	"pwa": "Ứng Dụng Web Tiến Bộ",
 	"touch-icon": "Biểu Tượng Cảm Ứng",
 	"touch-icon.upload": "Tải lên",
-	"touch-icon.help": "Kích thước và định dạng được đề xuất: 512x512, chỉ định dạng PNG. Nếu không có biểu tượng cảm ứng nào, NodeBB sẽ quay trở lại sử dụng biểu tượng yêu thích.",
+	"touch-icon.help": "Kích thước và định dạng được đề xuất: 512x512, chỉ định dạng PNG. Nếu không có biểu tượng cảm ứng nào, NodeBB sẽ quay trở lại sử dụng favicon.",
 	"maskable-icon": "Biểu tượng có thể che được (Màn Trang Chủ)",
 	"maskable-icon.help": "Kích thước và định dạng nên là: 512x512, chỉ định dạng PNG. Nếu không có biểu tượng có thể che được nào được chỉ định, NodeBB sẽ trở lại Biểu tượng cảm ứng.",
 	"outgoing-links": "Liên Kết Đi",

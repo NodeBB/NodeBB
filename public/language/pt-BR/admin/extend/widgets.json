@@ -5,7 +5,7 @@
 	"none-installed": "Nenhum widget encontrado! Ative o plug-in de widgets básicos no  <a href=\"%1\"> painel de controle de plugins</a>.",
 	"clone-from": "Copiar widgets de",
 	"containers.available": "Contêineres Disponíveis",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "Arraste e solte sobre algum widget",
 	"containers.none": "Nenhum",
 	"container.well": "Bem",
 	"container.jumbotron": "Jumbotron",

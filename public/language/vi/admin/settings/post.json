@@ -58,7 +58,7 @@
 	"composer.custom-help": "Văn Bản Trợ Giúp Tùy Chỉnh",
 	"backlinks": "Liên kết ngược",
 	"backlinks.enabled": "Bật liên kết ngược chủ đề",
-	"backlinks.help": "Nếu một bài đăng tham chiếu đến chủ đề khác, một liên kết quay lại bài đăng sẽ được chèn vào chủ đề được tham chiếu tại thời điểm đó.",
+	"backlinks.help": "Nếu một bài đăng tham chiếu đến chủ đề khác, một liên kết ngược đến bài đăng sẽ được chèn vào chủ đề được tham chiếu vào lúc đó.",
 	"ip-tracking": "Theo dõi IP",
 	"ip-tracking.each-post": "Theo dõi Địa chỉ IP mỗi bài đăng",
 	"enable-post-history": "Bật Lịch Sử Bài Đăng"
