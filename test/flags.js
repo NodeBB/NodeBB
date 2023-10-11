@@ -126,6 +126,10 @@ describe('Flags', () => {
 			({ flagId } = await Flags.create('post', postData.pid, adminUid, utils.generateUUID()));
 		});
 
+		after(async () => {
+			Flags.purge([flagId]);
+		});
+
 		it('should add a report to an existing flag', async () => {
 			await Flags.addReport(flagId, 'post', postData.pid, uid3, utils.generateUUID(), Date.now());
 
@@ -155,6 +159,10 @@ describe('Flags', () => {
 				content: utils.generateUUID(),
 			}));
 			({ flagId } = await Flags.create('post', postData.pid, adminUid, utils.generateUUID()));
+		});
+
+		after(async () => {
+			Flags.purge([flagId]);
 		});
 
 		it('should remove a report from an existing flag', async () => {
@@ -986,7 +994,7 @@ describe('Flags', () => {
 			it('should update a flag\'s properties', async () => {
 				const { response } = await request({
 					method: 'put',
-					uri: `${nconf.get('url')}/api/v3/flags/2`,
+					uri: `${nconf.get('url')}/api/v3/flags/4`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -1008,7 +1016,7 @@ describe('Flags', () => {
 			it('should remove a flag\'s report', async () => {
 				const response = await request({
 					method: 'delete',
-					uri: `${nconf.get('url')}/api/v3/flags/2/report`,
+					uri: `${nconf.get('url')}/api/v3/flags/4/report`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -1024,7 +1032,7 @@ describe('Flags', () => {
 			it('should append a note to the flag', async () => {
 				const { response } = await request({
 					method: 'post',
-					uri: `${nconf.get('url')}/api/v3/flags/2/notes`,
+					uri: `${nconf.get('url')}/api/v3/flags/4/notes`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -1052,7 +1060,7 @@ describe('Flags', () => {
 			it('should delete a note from a flag', async () => {
 				const { response } = await request({
 					method: 'delete',
-					uri: `${nconf.get('url')}/api/v3/flags/2/notes/1626446956652`,
+					uri: `${nconf.get('url')}/api/v3/flags/4/notes/1626446956652`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
