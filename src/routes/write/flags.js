@@ -12,6 +12,7 @@ module.exports = function () {
 
 	setupApiRoute(router, 'post', '/', [...middlewares], controllers.write.flags.create);
 
+	// Note: access control provided by middleware.assert.flag
 	setupApiRoute(router, 'get', '/:flagId', [...middlewares, middleware.assert.flag], controllers.write.flags.get);
 	setupApiRoute(router, 'put', '/:flagId', [...middlewares, middleware.assert.flag], controllers.write.flags.update);
 	setupApiRoute(router, 'delete', '/:flagId', [...middlewares, middleware.assert.flag], controllers.write.flags.delete);
