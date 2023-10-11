@@ -545,6 +545,7 @@ Flags.getReports = async function (flagId) {
 	return reports;
 };
 
+// Not meant to be called directly, call Flags.create() instead.
 Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 	await db.sortedSetAddBulk([
 		[`flags:byReporter:${uid}`, timestamp, flagId],
