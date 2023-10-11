@@ -197,7 +197,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
 				text: String(data.name),
-				url: `${relative_path}/category/${data.slug}`,
+				url: `${url}/category/${data.slug}`,
 				cid: cid,
 			});
 		}
@@ -206,13 +206,13 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 	if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
 		breadcrumbs.unshift({
 			text: '[[global:header.categories]]',
-			url: `${relative_path}/categories`,
+			url: `${url}/categories`,
 		});
 	}
 
 	breadcrumbs.unshift({
 		text: meta.config.homePageTitle || '[[global:home]]',
-		url: `${relative_path}/`,
+		url: url,
 	});
 
 	return breadcrumbs;
@@ -222,14 +222,14 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	const breadcrumbs = [
 		{
 			text: meta.config.homePageTitle || '[[global:home]]',
-			url: `${relative_path}/`,
+			url: url,
 		},
 	];
 
 	crumbs.forEach((crumb) => {
 		if (crumb) {
 			if (crumb.url) {
-				crumb.url = `${utils.isRelativeUrl(crumb.url) ? relative_path : ''}${crumb.url}`;
+				crumb.url = `${utils.isRelativeUrl(crumb.url) ? `${url}/` : ''}${crumb.url}`;
 			}
 			breadcrumbs.push(crumb);
 		}

@@ -182,7 +182,7 @@ async function buildBreadcrumbs(topicData) {
 	const breadcrumbs = [
 		{
 			text: topicData.category.name,
-			url: `${relative_path}/category/${topicData.category.slug}`,
+			url: `${url}/category/${topicData.category.slug}`,
 			cid: topicData.category.cid,
 		},
 		{
