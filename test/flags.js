@@ -1004,6 +1004,22 @@ describe('Flags', () => {
 			});
 		});
 
+		describe('.rescind()', () => {
+			it('should remove a flag\'s report', async () => {
+				const response = await request({
+					method: 'delete',
+					uri: `${nconf.get('url')}/api/v3/flags/2/report`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					resolveWithFullResponse: true,
+				});
+
+				assert.strictEqual(response.statusCode, 200);
+			});
+		});
+
 		describe('.appendNote()', () => {
 			it('should append a note to the flag', async () => {
 				const { response } = await request({
