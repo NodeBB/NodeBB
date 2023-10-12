@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "Dit bericht is al door anderen gerapporteerd",
     "user-flagged-too-many-times": "Deze gebruiker is al door anderen gerapporteerd",
     "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "Het is niet mogelijk om op je eigen bericht te stemmen",
     "too-many-upvotes-today": "You can only upvote %1 times a day",
     "too-many-upvotes-today-user": "You can only upvote a user %1 times a day",

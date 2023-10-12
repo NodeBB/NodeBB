@@ -1,5 +1,6 @@
 {
 	"state": "Estado",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Fantástico! Não foram encontradas denúncias.",
@@ -8,6 +9,8 @@
 	"update": "Atualizar",
 	"updated": "Atualizado",
 	"resolved": "Resolved",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "The content this flag referred to has been purged and is no longer available.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

@@ -109,7 +109,7 @@ Flags.get = async function (flagId) {
 		Flags.getReports(flagId),
 	]);
 	if (!base) {
-		return;
+		throw new Error('[[error:no-flag]]');
 	}
 	const flagObj = {
 		state: 'open',
@@ -417,7 +417,10 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 		const flagId = await Flags.getFlagIdByTarget(type, id);
 		await Promise.all([
 			Flags.addReport(flagId, type, id, uid, reason, timestamp),
-			Flags.update(flagId, uid, { state: 'open' }),
+			Flags.update(flagId, uid, {
+				state: 'open',
+				report: 'added',
+			}),
 		]);
 
 		return await Flags.get(flagId);
@@ -542,6 +545,7 @@ Flags.getReports = async function (flagId) {
 	return reports;
 };
 
+// Not meant to be called directly, call Flags.create() instead.
 Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 	await db.sortedSetAddBulk([
 		[`flags:byReporter:${uid}`, timestamp, flagId],
@@ -551,6 +555,45 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 	]);
 
 	plugins.hooks.fire('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
+};
+
+Flags.rescindReport = async (type, id, uid) => {
+	const exists = await Flags.exists(type, id, uid);
+	if (!exists) {
+		return true;
+	}
+
+	const flagId = await db.sortedSetScore('flags:hash', [type, id, uid].join(':'));
+	const reports = await db.getSortedSetMembers(`flag:${flagId}:reports`);
+	let reason;
+	reports.forEach((payload) => {
+		if (!reason) {
+			const [payloadUid, payloadReason] = payload.split(';');
+			if (parseInt(payloadUid, 10) === parseInt(uid, 10)) {
+				reason = payloadReason;
+			}
+		}
+	});
+
+	if (!reason) {
+		throw new Error('[[error:cant-locate-flag-report]]');
+	}
+
+	await db.sortedSetRemoveBulk([
+		[`flags:byReporter:${uid}`, flagId],
+		[`flag:${flagId}:reports`, [uid, reason].join(';')],
+
+		['flags:hash', [type, id, uid].join(':')],
+	]);
+
+	// If there are no more reports, consider the flag resolved
+	const reportCount = await db.sortedSetCard(`flag:${flagId}:reports`);
+	if (reportCount < 1) {
+		await Flags.update(flagId, uid, {
+			state: 'resolved',
+			report: 'rescinded',
+		});
+	}
 };
 
 Flags.exists = async function (type, id, uid) {
@@ -765,6 +808,9 @@ Flags.getHistory = async function (flagId) {
 		const changeset = entry.value[1];
 		if (changeset.hasOwnProperty('state')) {
 			changeset.state = changeset.state === undefined ? '' : `[[flags:state-${changeset.state}]]`;
+		}
+		if (changeset.hasOwnProperty('report')) {
+			changeset.report = `[[flags:report-${changeset.report}]]`;
 		}
 
 		return {

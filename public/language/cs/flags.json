@@ -1,5 +1,6 @@
 {
 	"state": "Stav",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Hurá, žádné označení.",
@@ -8,6 +9,8 @@
 	"update": "Aktualizovat",
 	"updated": "Aktualizováno",
 	"resolved": "Resolved",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Obsah, na který se toto označení vztahuje, byl vymazán a již není k dispozici.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

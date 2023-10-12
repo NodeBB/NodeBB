@@ -19,6 +19,7 @@ const User = require('../src/user');
 const Groups = require('../src/groups');
 const Meta = require('../src/meta');
 const Privileges = require('../src/privileges');
+const plugins = require('../src/plugins');
 const utils = require('../src/utils');
 const api = require('../src/api');
 
@@ -31,6 +32,13 @@ describe('Flags', () => {
 	let csrfToken;
 	let category;
 	before(async () => {
+		const dummyEmailerHook = async (data) => {};
+		// Attach an emailer hook so related requests do not error
+		plugins.hooks.register('flags-test', {
+			hook: 'filter:email.send',
+			method: dummyEmailerHook,
+		});
+
 		// Create some stuff to flag
 		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' });
 
@@ -59,6 +67,10 @@ describe('Flags', () => {
 		const login = await helpers.loginUser('moderator', 'abcdef');
 		jar = login.jar;
 		csrfToken = login.csrf_token;
+	});
+
+	after(() => {
+		plugins.hooks.unregister('flags-test', 'filter:email.send');
 	});
 
 	describe('.create()', () => {
@@ -96,6 +108,79 @@ describe('Flags', () => {
 				assert.ok(isMember);
 				done();
 			});
+		});
+	});
+
+	describe('.addReport()', () => {
+		let flagId;
+		let postData;
+
+		before(async () => {
+			// Create a topic and flag it
+			({ postData } = await Topics.post({
+				cid: category.cid,
+				uid: uid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			}));
+			({ flagId } = await Flags.create('post', postData.pid, adminUid, utils.generateUUID()));
+		});
+
+		after(async () => {
+			Flags.purge([flagId]);
+		});
+
+		it('should add a report to an existing flag', async () => {
+			await Flags.addReport(flagId, 'post', postData.pid, uid3, utils.generateUUID(), Date.now());
+
+			const reports = await db.getSortedSetMembers(`flag:${flagId}:reports`);
+			assert.strictEqual(reports.length, 2);
+		});
+
+		it('should add an additional report even if same user calls it again', async () => {
+			// This isn't exposed to the end user, but is possible via direct method call
+			await Flags.addReport(flagId, 'post', postData.pid, uid3, utils.generateUUID(), Date.now());
+
+			const reports = await db.getSortedSetMembers(`flag:${flagId}:reports`);
+			assert.strictEqual(reports.length, 3);
+		});
+	});
+
+	describe('.rescindReport()', () => {
+		let flagId;
+		let postData;
+
+		before(async () => {
+			// Create a topic and flag it
+			({ postData } = await Topics.post({
+				cid: category.cid,
+				uid: uid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			}));
+			({ flagId } = await Flags.create('post', postData.pid, adminUid, utils.generateUUID()));
+		});
+
+		after(async () => {
+			Flags.purge([flagId]);
+		});
+
+		it('should remove a report from an existing flag', async () => {
+			await Flags.create('post', postData.pid, uid3, utils.generateUUID());
+			await Flags.rescindReport('post', postData.pid, uid3);
+			const reports = await Flags.getReports(flagId);
+
+			assert.strictEqual(reports.length, 1);
+			assert(reports.every(({ reporter }) => reporter.uid !== uid3));
+		});
+
+		it('should automatically mark the flag resolved if there are no reports remaining after removal', async () => {
+			await Flags.rescindReport('post', postData.pid, adminUid);
+			const reports = await Flags.getReports(flagId);
+			const { state } = await Flags.get(flagId);
+
+			assert.strictEqual(reports.length, 0);
+			assert.strictEqual(state, 'resolved');
 		});
 	});
 
@@ -909,7 +994,7 @@ describe('Flags', () => {
 			it('should update a flag\'s properties', async () => {
 				const { response } = await request({
 					method: 'put',
-					uri: `${nconf.get('url')}/api/v3/flags/2`,
+					uri: `${nconf.get('url')}/api/v3/flags/4`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -927,11 +1012,27 @@ describe('Flags', () => {
 			});
 		});
 
+		describe('.rescind()', () => {
+			it('should remove a flag\'s report', async () => {
+				const response = await request({
+					method: 'delete',
+					uri: `${nconf.get('url')}/api/v3/flags/4/report`,
+					jar,
+					headers: {
+						'x-csrf-token': csrfToken,
+					},
+					resolveWithFullResponse: true,
+				});
+
+				assert.strictEqual(response.statusCode, 200);
+			});
+		});
+
 		describe('.appendNote()', () => {
 			it('should append a note to the flag', async () => {
 				const { response } = await request({
 					method: 'post',
-					uri: `${nconf.get('url')}/api/v3/flags/2/notes`,
+					uri: `${nconf.get('url')}/api/v3/flags/4/notes`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -959,7 +1060,7 @@ describe('Flags', () => {
 			it('should delete a note from a flag', async () => {
 				const { response } = await request({
 					method: 'delete',
-					uri: `${nconf.get('url')}/api/v3/flags/2/notes/1626446956652`,
+					uri: `${nconf.get('url')}/api/v3/flags/4/notes/1626446956652`,
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,

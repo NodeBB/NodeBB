@@ -192,6 +192,8 @@ paths:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:
     $ref: 'write/flags/flagId.yaml'
+  /flags/{flagId}/report:
+    $ref: 'write/flags/flagId/report.yaml'
   /flags/{flagId}/notes:
     $ref: 'write/flags/flagId/notes.yaml'
   /flags/{flagId}/notes/{datetime}:
