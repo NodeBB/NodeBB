@@ -149,7 +149,7 @@ async function buildBreadcrumbs(req, categoryData) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
-			url: `${relative_path}/category/${categoryData.slug}`,
+			url: `${url}/category/${categoryData.slug}`,
 			cid: categoryData.cid,
 		},
 	];
