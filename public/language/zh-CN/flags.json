@@ -1,5 +1,6 @@
 {
 	"state": "状态",
+	"report": "Report",
 	"reports": "报告",
 	"first-reported": "首次报告",
 	"no-flags": "啊哈！没发现任何的举报。",
@@ -8,6 +9,8 @@
 	"update": "更新",
 	"updated": "已更新",
 	"resolved": "已解决",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "被举报的内容已经被清除，不再可用。",
 	"target-aboutme-empty": "这个用户没有设置 &quot;关于我&quot; 。",
 

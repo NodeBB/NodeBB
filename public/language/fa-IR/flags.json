@@ -1,5 +1,6 @@
 {
 	"state": "وضعیت",
+	"report": "Report",
 	"reports": "گزارش ها",
 	"first-reported": "اولین گزارش",
 	"no-flags": "هووووورا ! هیچ گزارشی یافت نشد.",
@@ -8,6 +9,8 @@
 	"update": "به روزرسانی",
 	"updated": "به روز رسانی شد",
 	"resolved": "حل‌شده ",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "محتوای این گزارش حذف شده است و در دسترس نیست.",
 	"target-aboutme-empty": "این کاربر هیچ &quot;About Me&quot; ننوشته ",
 

@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "התקבל כבר דיווח על פוסט זה.",
     "user-flagged-too-many-times": "התקבל דיווח על משתמש זה.",
     "cant-flag-privileged": "לא ניתן לדווח על מנהלים או על תוכן שנכתב על ידי מנהלים.",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "אי אפשר להצביע על פוסט שיצרתם",
     "too-many-upvotes-today": "ביכולתכם להצביע בעד רק %1 פעמים ביום",
     "too-many-upvotes-today-user": "ביכולתכם להצביע בעד משתמש מסוים רק %1 פעמים ביום",

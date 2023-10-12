@@ -1,5 +1,6 @@
 {
 	"state": "Zustand",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "Zuerst gemeldet",
 	"no-flags": "Hurra! Keine Meldungen gefunden.",
@@ -8,6 +9,8 @@
 	"update": "Aktualisieren",
 	"updated": "Aktualisiert",
 	"resolved": "Gelöst",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Der Inhalt auf den diese Meldung hingewiesen hat, wurde gelöscht und ist nicht mehr verfügbar.",
 	"target-aboutme-empty": "Dieser Benutzer hat kein \"Über mich\" gesetzt.",
 

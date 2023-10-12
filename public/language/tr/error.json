@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "Bu ileti başkaları tarafından halihazırda şikayet edilmiş.",
     "user-flagged-too-many-times": "Bu kullanıcı başkaları tarafından halihazırda şikayet edilmiş.",
     "cant-flag-privileged": "Yöneticilerin profillerini veya içeriklerini bayraklayamazsınız.",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "Kendi iletinize oy veremezsiniz",
     "too-many-upvotes-today": "Bir günde sadece %1 artı oy verebilirsiniz",
     "too-many-upvotes-today-user": "Bir kullanıcıya bir günde sadece %1 artı oy verebilirsiniz",

@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "Ky postim është raportuar tashmë nga të tjerë",
     "user-flagged-too-many-times": "Ky përdorues tashmë është raportuar nga të tjerë",
     "cant-flag-privileged": "Nuk ju lejohet të raportoni profilet ose përmbajtjen e përdoruesve të privilegjuar (moderatorët/administratorët)",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "Ju nuk mund të votoni për postimin tuaj",
     "too-many-upvotes-today": "Ju mund të votoni pro vetëm %1 herë në ditë",
     "too-many-upvotes-today-user": "Ju mund të votoni një përdorues %1 herë në ditë",

@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "Dieser Beitrag wurde bereits von anderen Benutzern gemeldet",
     "user-flagged-too-many-times": "Dieser Benutzer wurde bereits von anderen Benutzern gemeldet",
     "cant-flag-privileged": "Sie dürfen die Profile oder Inhalte von privilegierten Benutzern (Moderatoren/Globalmoderatoren/Admins) nicht kennzeichnen.",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "Du kannst deine eigenen Beiträge nicht bewerten",
     "too-many-upvotes-today": "Du kannst nur %1 Mal pro Tag upvoten",
     "too-many-upvotes-today-user": "Du kannst einen Benutzer nur %1 Mal am Tag positiv bewerten",

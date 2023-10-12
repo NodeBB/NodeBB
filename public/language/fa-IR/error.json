@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "این پست قبلا توسط دیگر کاربران گزارش شده",
     "user-flagged-too-many-times": "این کاربر توسط دیگر کاربران گزارش شده",
     "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "شما نمی توانید به پست خود رای بدهید",
     "too-many-upvotes-today": "شما فقط می توانید %1 بار در روز رأی مثبت بدهید",
     "too-many-upvotes-today-user": "به هر کاربر فقط %1 بار در روز  می‌تولنید رأی مثبت بدهید",

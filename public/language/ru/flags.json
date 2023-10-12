@@ -1,5 +1,6 @@
 {
 	"state": "Состояние",
+	"report": "Report",
 	"reports": "Жалобы",
 	"first-reported": "Первая жалоба",
 	"no-flags": "Ура! Жалоб нет.",
@@ -8,6 +9,8 @@
 	"update": "Обновить",
 	"updated": "Обновлено",
 	"resolved": "Решено",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Сообщение, на которое поступила жалоба, было удалено и больше не доступно.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

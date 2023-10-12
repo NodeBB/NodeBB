@@ -1,5 +1,6 @@
 {
 	"state": "Estado",
+	"report": "Report",
 	"reports": "Reportagens",
 	"first-reported": "Primeiro Reportado",
 	"no-flags": "Ihuul! Nenhuma sinalização encontrada.",
@@ -8,6 +9,8 @@
 	"update": "Atualizar",
 	"updated": "Atualizado",
 	"resolved": "Resolvido",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "O conteúdo ao qual essa sinalização se referia foi removido e não está mais disponível.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 
