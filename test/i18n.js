@@ -59,7 +59,7 @@ describe('i18n', () => {
 				describe('(regexp validation)', () => {
 					const valid = [
 						'foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet', 'foo.barBazQuux', // human generated
-						"example-name.isValid", "kebab-case.isGood", "camelcase.isFine", "camelcase.with-dashes.isAlsoFine", "single-character.is-ok", "abc.def", // chatgpt generated
+						'example-name.isValid', 'kebab-case.isGood', 'camelcase.isFine', 'camelcase.with-dashes.isAlsoFine', 'single-character.is-ok', 'abc.def', // chatgpt generated
 					];
 					const invalid = [
 						// human generated
@@ -68,21 +68,21 @@ describe('i18n', () => {
 						'foo.BarBazQuux',
 
 						// chatgpt generated
-						"!notValid", // Starts with a special character
-						"with space.isInvalid", // Contains a space
-						".startsWithPeriod.isInvalid", // Starts with a period
-						"invalid..case.isInvalid", // Consecutive periods
-						"camelCase.With-Dashes.isAlsoInvalid", // PascalCase "With" is not allowed
+						'!notValid', // Starts with a special character
+						'with space.isInvalid', // Contains a space
+						'.startsWithPeriod.isInvalid', // Starts with a period
+						'invalid..case.isInvalid', // Consecutive periods
+						'camelCase.With-Dashes.isAlsoInvalid', // PascalCase "With" is not allowed
 					];
 
 					valid.forEach((key) => {
 						it(key, () => {
-							assert(test.test(key))
+							assert(test.test(key));
 						});
 					});
 					invalid.forEach((key) => {
 						it(key, () => {
-							assert(!test.test(key))
+							assert(!test.test(key));
 						});
 					});
 				});
