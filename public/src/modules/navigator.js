@@ -606,8 +606,8 @@ define('navigator', [
 	};
 
 	navigator.scrollToIndex = function (index, highlight, duration) {
-		const inTopic = !!components.get('topic').length;
-		const inCategory = !!components.get('category').length;
+		const inTopic = ajaxify.data.template.topic;
+		const inCategory = ajaxify.data.template.category;
 
 		if (!utils.isNumber(index) || (!inTopic && !inCategory)) {
 			return;
