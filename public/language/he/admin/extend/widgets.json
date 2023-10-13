@@ -5,7 +5,7 @@
 	"none-installed": "לא נמצאו ווידג'טים! הפעל את תוספי הווידג'טים ב <a href=\"%1\">תוספים</a> בלוח הבקרה.",
 	"clone-from": "שיבוט ווידג'טים מ",
 	"containers.available": "גורמים מכילים זמינים",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "גרור ושחרר על גבי כל ווידג'ט",
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",

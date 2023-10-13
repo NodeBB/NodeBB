@@ -1,6 +1,6 @@
 {
 	"state": "Stato",
-	"report": "Report",
+	"report": "Segnalazione",
 	"reports": "Segnalazioni",
 	"first-reported": "Prima segnalazione",
 	"no-flags": "Evviva! Nessuna segnalazione trovata.",
@@ -9,8 +9,8 @@
 	"update": "Aggiorna",
 	"updated": "Aggiornato",
 	"resolved": "Risolto",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Aggiunto",
+	"report-rescinded": "Annullato",
 	"target-purged": "Il contenuto di questa segnalazione è stato eliminato definitivamente e non è più disponibile.",
 	"target-aboutme-empty": "Questo utente non ha impostato &quot;Su di me&quot;.",
 
