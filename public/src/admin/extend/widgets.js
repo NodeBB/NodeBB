@@ -66,10 +66,14 @@ define('admin/extend/widgets', [
 				appendToggle(ui.item);
 			},
 			start: function () {
-				draftContainer.find('[data-location="drafts"]>div').removeClass('overflow-auto');
+				draftContainer.find('[data-location="drafts"]>div')
+					.removeClass('overflow-auto')
+					.css({ 'max-height': 'initial' });
 			},
 			stop: function () {
-				draftContainer.find('[data-location="drafts"]>div').addClass('overflow-auto');
+				draftContainer.find('[data-location="drafts"]>div')
+					.addClass('overflow-auto')
+					.css({ 'max-height': 'calc(100vh - 200px)' });
 			},
 			connectWith: 'div',
 		}).on('click', '.delete-widget', function () {
