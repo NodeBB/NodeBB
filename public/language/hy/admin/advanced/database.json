@@ -17,7 +17,7 @@
 	"mongo.file-size": "Ֆայլի չափ",
 	"mongo.resident-memory": " Resident հիշողություն",
 	"mongo.virtual-memory": "Վիրտուալ հիշողություն",
-	"mongo.mapped-memory": "Քարտեզագրված հիշողություն",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "Bytes In",
 	"mongo.bytes-out": "Bytes Out",
 	"mongo.num-requests": "Հարցումների քանակը",

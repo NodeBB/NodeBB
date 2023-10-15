@@ -17,7 +17,7 @@
 	"mongo.file-size": "اندازه فایل",
 	"mongo.resident-memory": "حافظه مقیم",
 	"mongo.virtual-memory": "حافظۀ مجازی",
-	"mongo.mapped-memory": "حافظه نقشه شده",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "بایت های ورودی",
 	"mongo.bytes-out": "بایت های خروجی",
 	"mongo.num-requests": "تعداد درخواست ها",

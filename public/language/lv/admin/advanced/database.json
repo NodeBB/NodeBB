@@ -17,7 +17,7 @@
 	"mongo.file-size": "Faila lielums",
 	"mongo.resident-memory": "Aizņemtā atmiņa",
 	"mongo.virtual-memory": "Virtuālā atmiņa",
-	"mongo.mapped-memory": "Saistītā atmiņa",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "Bytes In",
 	"mongo.bytes-out": "Bytes Out",
 	"mongo.num-requests": "Number of Requests",

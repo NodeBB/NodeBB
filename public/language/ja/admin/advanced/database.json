@@ -17,7 +17,7 @@
 	"mongo.file-size": "ファイルサイズ",
 	"mongo.resident-memory": "常駐メモリ",
 	"mongo.virtual-memory": "仮想メモリ",
-	"mongo.mapped-memory": "マップされたメモリ",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "バイト数",
 	"mongo.bytes-out": "バイトアウト",
 	"mongo.num-requests": "リクエスト数",
