@@ -28,7 +28,6 @@
 						<hr/>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.resident-memory]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.mem.resident}]]</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.mem.virtual}]]</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.mapped-memory]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.mem.mapped}]]</span></div>
 						<hr/>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.bytes-in]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.network.bytesIn}]]</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.bytes-out]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.network.bytesOut}]]</span></div>
