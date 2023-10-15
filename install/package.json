@@ -143,7 +143,7 @@
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
         "validator": "13.11.0",
-        "webpack": "5.88.2",
+        "webpack": "5.89.0",
         "webpack-merge": "5.9.0",
         "winston": "3.11.0",
         "workerpool": "6.5.1",
