@@ -18,6 +18,7 @@ notificationsController.get = async function (req, res, next) {
 		{ name: '[[notifications:public-chat]]', filter: 'new-public-chat' },
 		{ name: '[[notifications:follows]]', filter: 'follow' },
 		{ name: '[[notifications:upvote]]', filter: 'upvote' },
+		{ name: '[[notifications:awards]]', filter: 'new-reward' },
 	];
 
 	const moderatorFilters = [

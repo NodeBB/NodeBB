@@ -40,6 +40,7 @@ Notifications.baseTypes = [
 	'notificationType_group-invite',
 	'notificationType_group-leave',
 	'notificationType_group-request-membership',
+	'notificationType_new-reward',
 ];
 
 Notifications.privilegedTypes = [
