@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "フォロー",
     "upvote": "高評価",
+    "awards": "Awards",
     "new-flags": "新しいフラグ",
     "my-flags": "あなたにフラグがつきました",
     "bans": "Ban",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "誰かが登録キューに追加されたとき",
     "notificationType-post-queue": "新しい投稿がキューに入ったとき",
     "notificationType-new-post-flag": "投稿にフラグが立てられたとき",
-    "notificationType-new-user-flag": "ユーザーにフラグが立てられたとき"
+    "notificationType-new-user-flag": "ユーザーにフラグが立てられたとき",
+    "notificationType-new-reward": "When you earn a new reward"
 }

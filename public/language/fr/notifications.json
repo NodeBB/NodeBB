@@ -19,6 +19,7 @@
     "public-chat": "Discussions publiques",
     "follows": "Suivis",
     "upvote": "Votes positifs",
+    "awards": "Awards",
     "new-flags": "Nouveaux signalements",
     "my-flags": "Signalements qui me sont assignés",
     "bans": "Bannissements",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Lorsque quelqu'un est ajouté à la file d'attente d'inscription",
     "notificationType-post-queue": "Lorsque un nouveau message est mis en file d'attente",
     "notificationType-new-post-flag": "Lorsque un message est marqué",
-    "notificationType-new-user-flag": "Lorsque un utilisateur est marqué"
+    "notificationType-new-user-flag": "Lorsque un utilisateur est marqué",
+    "notificationType-new-reward": "When you earn a new reward"
 }

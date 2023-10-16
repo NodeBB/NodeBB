@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "關注",
     "upvote": "點讚",
+    "awards": "Awards",
     "new-flags": "新舉報",
     "my-flags": "指派舉報給我",
     "bans": "停權",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "當有註冊申請待審核時",
     "notificationType-post-queue": "當有新貼文等待審核時",
     "notificationType-new-post-flag": "當有新的貼文舉報時",
-    "notificationType-new-user-flag": "當有新的使用者資料舉報時"
+    "notificationType-new-user-flag": "當有新的使用者資料舉報時",
+    "notificationType-new-reward": "When you earn a new reward"
 }

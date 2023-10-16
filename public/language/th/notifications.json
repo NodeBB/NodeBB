@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "ติดตาม",
     "upvote": "โหวตขึ้น",
+    "awards": "Awards",
     "new-flags": "ปักธงใหม่",
     "my-flags": "ธงที่ถูกปักให้ฉัน",
     "bans": "แบน",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "เมื่อมีคนถูกเพิ่มในคิวลงทะเบียน",
     "notificationType-post-queue": "เมื่อมีโพสต์ใหม่อยู่ในคิว",
     "notificationType-new-post-flag": "เมื่อโพสต์ถูกตั้งค่าสถานะ",
-    "notificationType-new-user-flag": "เมื่อผู้ใช้ถูกตั้งค่าสถานะ"
+    "notificationType-new-user-flag": "เมื่อผู้ใช้ถูกตั้งค่าสถานะ",
+    "notificationType-new-reward": "When you earn a new reward"
 }

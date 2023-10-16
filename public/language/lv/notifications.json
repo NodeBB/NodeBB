@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Par tiem, kurus sekoju",
     "upvote": "Par balsojumiem \"par\"",
+    "awards": "Awards",
     "new-flags": "Jaunās atzīmes",
     "my-flags": "Atzīmes piešķirtas man",
     "bans": "Bloķēšanas",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Kad kāds tiek ievietots reģistrācijas rindā",
     "notificationType-post-queue": "Kad raksts tiek ievietots apstiprināšanas rindā",
     "notificationType-new-post-flag": "Kad raksts tiek atzīmēts",
-    "notificationType-new-user-flag": "Kad lietotājs tiek atzīmēts"
+    "notificationType-new-user-flag": "Kad lietotājs tiek atzīmēts",
+    "notificationType-new-reward": "When you earn a new reward"
 }

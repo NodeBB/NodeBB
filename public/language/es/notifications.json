@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Seguidores",
     "upvote": "Votos positivos",
+    "awards": "Awards",
     "new-flags": "Nuevos reportes",
     "my-flags": "Reportado asignado a mí",
     "bans": "Baneos",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Cuando alguien es añadido a una cola de registro",
     "notificationType-post-queue": "Cuando un mensaje nuevo entra en la cola",
     "notificationType-new-post-flag": "Cuando un mensaje es denunciado",
-    "notificationType-new-user-flag": "Cuando un usuario es denunciado"
+    "notificationType-new-user-flag": "Cuando un usuario es denunciado",
+    "notificationType-new-reward": "When you earn a new reward"
 }

@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Obserwuje",
     "upvote": "Głosy na tak",
+    "awards": "Awards",
     "new-flags": "Nowe flagi",
     "my-flags": "Flagi przypisane mnie",
     "bans": "Bany",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Kiedy ktoś zostaje dodany do kolejki rejestracyjnej",
     "notificationType-post-queue": "Kiedy nowy post jest kolejkowany",
     "notificationType-new-post-flag": "Kiedy post zostanie oflagowany",
-    "notificationType-new-user-flag": "Kiedy użytkownik zostanie oflagowany"
+    "notificationType-new-user-flag": "Kiedy użytkownik zostanie oflagowany",
+    "notificationType-new-reward": "When you earn a new reward"
 }

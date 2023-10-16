@@ -19,6 +19,7 @@
     "public-chat": "Öffentliche Chats",
     "follows": "Folgt",
     "upvote": "Positive Bewertungen",
+    "awards": "Awards",
     "new-flags": "Neue Meldungen",
     "my-flags": "Mir zugewiesene Markierungen",
     "bans": "Verbannungen",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Wenn jemand der Registrierungswarteschlange hinzugefügt wird",
     "notificationType-post-queue": "Wenn ein neuer Beitrag eingereiht wird",
     "notificationType-new-post-flag": "Wenn ein Beitrag gemeldet wird",
-    "notificationType-new-user-flag": "Wenn ein Benutzer gemeldet wird"
+    "notificationType-new-user-flag": "Wenn ein Benutzer gemeldet wird",
+    "notificationType-new-reward": "When you earn a new reward"
 }

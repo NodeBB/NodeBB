@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "关注",
     "upvote": "顶",
+    "awards": "Awards",
     "new-flags": "新举报",
     "my-flags": "指派举报给我",
     "bans": "封禁",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "当有人被添加到申请队列时",
     "notificationType-post-queue": "当有新帖子等待审核时",
     "notificationType-new-post-flag": "当有新的帖子举报时",
-    "notificationType-new-user-flag": "当有新的用户信息举报时"
+    "notificationType-new-user-flag": "当有新的用户信息举报时",
+    "notificationType-new-reward": "When you earn a new reward"
 }

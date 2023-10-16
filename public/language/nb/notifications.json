@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Følger",
     "upvote": "Oppstemmer",
+    "awards": "Awards",
     "new-flags": "Nye flagg",
     "my-flags": "Flagg som er tildelt til meg",
     "bans": "Forbud",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Når noen blir lag til i kø for å registrere",
     "notificationType-post-queue": "Når et nytt innlegg er satt i kø",
     "notificationType-new-post-flag": "Når ett nytt innlegg er flagget",
-    "notificationType-new-user-flag": "Når en bruker er flagget"
+    "notificationType-new-user-flag": "Når en bruker er flagget",
+    "notificationType-new-reward": "When you earn a new reward"
 }

@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "팔로우",
     "upvote": "추천",
+    "awards": "Awards",
     "new-flags": "새로 들어온 신고",
     "my-flags": "내게 배정된 신고",
     "bans": "차단",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "누군가 회원가입 승인 대기 중",
     "notificationType-post-queue": "새로운 포스트가 게시 대기 중",
     "notificationType-new-post-flag": "포스트 신고",
-    "notificationType-new-user-flag": "사용자 신고"
+    "notificationType-new-user-flag": "사용자 신고",
+    "notificationType-new-reward": "When you earn a new reward"
 }
