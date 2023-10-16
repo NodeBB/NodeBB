@@ -15,8 +15,9 @@ rewards.checkConditionAndRewardUser = async function (params) {
 	}
 	const ids = await getIDsByCondition(condition);
 	let rewardData = await getRewardDataByIDs(ids);
+	// filter disabled
+	rewardData = rewardData.filter(r => r && !(r.disabled === 'true' || r.disabled === true));
 	rewardData = await filterCompletedRewards(uid, rewardData);
-	rewardData = rewardData.filter(Boolean);
 	if (!rewardData || !rewardData.length) {
 		return;
 	}
