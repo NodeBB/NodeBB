@@ -99,7 +99,7 @@ Notifications.getMultiple = async function (nids) {
 			}
 
 			notification.user = usersData[index];
-			if (notification.user) {
+			if (notification.user && notification.from) {
 				notification.image = notification.user.picture || null;
 				if (notification.user.username === '[[global:guest]]') {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');

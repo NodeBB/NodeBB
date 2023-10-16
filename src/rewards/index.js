@@ -72,7 +72,11 @@ async function giveRewards(uid, rewards) {
 	const rewardData = await getRewardsByRewardData(rewards);
 	for (let i = 0; i < rewards.length; i++) {
 		/* eslint-disable no-await-in-loop */
-		await plugins.hooks.fire(`action:rewards.award:${rewards[i].rid}`, { uid: uid, reward: rewardData[i] });
+		await plugins.hooks.fire(`action:rewards.award:${rewards[i].rid}`, {
+			uid: uid,
+			rewardData: rewards[i],
+			reward: rewardData[i],
+		});
 		await db.sortedSetIncrBy(`uid:${uid}:rewards`, 1, rewards[i].id);
 	}
 }
