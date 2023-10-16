@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Követés",
     "upvote": "Kedvelés",
+    "awards": "Awards",
     "new-flags": "Új megjelölés",
     "my-flags": "Hozzám társított megjelölés",
     "bans": "Kitiltás",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Mikor valaki a regisztrációs várólistára kerül",
     "notificationType-post-queue": "Mikor egy új hozzászólás várólistára kerül",
     "notificationType-new-post-flag": "Mikor egy hozzászólás megjelölésre kerül",
-    "notificationType-new-user-flag": "Mikor egy felhasználó megjelölésre kerül"
+    "notificationType-new-user-flag": "Mikor egy felhasználó megjelölésre kerül",
+    "notificationType-new-reward": "When you earn a new reward"
 }

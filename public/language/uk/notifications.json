@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Вістежування",
     "upvote": "Схвалення",
+    "awards": "Awards",
     "new-flags": "Нові Скарги",
     "my-flags": "Скарги, подані на мене",
     "bans": "Бани",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Коли когось додано до черги на реєстрацію",
     "notificationType-post-queue": "Коли новий пост знаходиться в черзі",
     "notificationType-new-post-flag": "Коли повідомлення позначено",
-    "notificationType-new-user-flag": "Коли користувача позначено"
+    "notificationType-new-user-flag": "Коли користувача позначено",
+    "notificationType-new-reward": "When you earn a new reward"
 }

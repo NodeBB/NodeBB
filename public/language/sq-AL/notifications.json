@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Ndjek",
     "upvote": "Votat pro",
+    "awards": "Awards",
     "new-flags": "Raportim i ri",
     "my-flags": "Raportimet u kaluan tek unë",
     "bans": "Të bllokuar",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Kur dikush shtohet në radhën e regjistrimit",
     "notificationType-post-queue": "Kur një postim i ri është në radhë",
     "notificationType-new-post-flag": "Kur një postim është raportuar",
-    "notificationType-new-user-flag": "Kur një përdorues është raportuar"
+    "notificationType-new-user-flag": "Kur një përdorues është raportuar",
+    "notificationType-new-reward": "When you earn a new reward"
 }

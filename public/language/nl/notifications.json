@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Volgt",
     "upvote": "Upvotes",
+    "awards": "Awards",
     "new-flags": "Nieuwe markeringen",
     "my-flags": "Markeringen toegewezen aan mij",
     "bans": "Bans",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Als iemand wordt toegevoegd aan een registratiewachtrij",
     "notificationType-post-queue": "Als een bericht aan de wachtrij wordt toegevoegd",
     "notificationType-new-post-flag": "Als een bericht wordt gevlagd",
-    "notificationType-new-user-flag": "Als een gebruiker wordt gevlagd"
+    "notificationType-new-user-flag": "Als een gebruiker wordt gevlagd",
+    "notificationType-new-reward": "When you earn a new reward"
 }

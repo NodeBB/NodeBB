@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Pratitelji",
     "upvote": "Glasači za",
+    "awards": "Awards",
     "new-flags": "Nove zastave",
     "my-flags": "Zastave označene na mene",
     "bans": "Blokirani",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "When someone gets added to registration queue",
     "notificationType-post-queue": "When a new post is queued",
     "notificationType-new-post-flag": "When a post is flagged",
-    "notificationType-new-user-flag": "When a user is flagged"
+    "notificationType-new-user-flag": "When a user is flagged",
+    "notificationType-new-reward": "When you earn a new reward"
 }

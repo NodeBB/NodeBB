@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Seuratut",
     "upvote": "Tykkäykset",
+    "awards": "Awards",
     "new-flags": "New Flags",
     "my-flags": "Flags assigned to me",
     "bans": "Bans",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Kun joku lisätään rekisteröintijonoon",
     "notificationType-post-queue": "Kun uusi viesti tulee jonoon",
     "notificationType-new-post-flag": "When a post is flagged",
-    "notificationType-new-user-flag": "When a user is flagged"
+    "notificationType-new-user-flag": "When a user is flagged",
+    "notificationType-new-reward": "When you earn a new reward"
 }

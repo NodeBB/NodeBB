@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "دنبال کننده ها",
     "upvote": "رای های مثبت",
+    "awards": "Awards",
     "new-flags": "گزارش های جدید",
     "my-flags": "گزارش های اختصاص یافته به من",
     "bans": "اخراجی ها",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "وقتی کسی به صف ثبت نام اضافه می شود",
     "notificationType-post-queue": "هنگامی که پست جدیدی در صف قرار می گیرد",
     "notificationType-new-post-flag": "هنگامی که پستی گزارش می شود",
-    "notificationType-new-user-flag": "هنگامی که کاربری گزارش می شود"
+    "notificationType-new-user-flag": "هنگامی که کاربری گزارش می شود",
+    "notificationType-new-reward": "When you earn a new reward"
 }

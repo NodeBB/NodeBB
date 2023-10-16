@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Подписки",
     "upvote": "Голоса",
+    "awards": "Awards",
     "new-flags": "Новые жалобы",
     "my-flags": "Назначенные мне жалобы",
     "bans": "Блокировки",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Когда в очереди на регистрацию появляется новый пользователь",
     "notificationType-post-queue": "Когда в очереди на проверку появляется новое сообщение",
     "notificationType-new-post-flag": "Когда поступает жалоба на сообщение",
-    "notificationType-new-user-flag": "Когда поступает жалоба на пользователя"
+    "notificationType-new-user-flag": "Когда поступает жалоба на пользователя",
+    "notificationType-new-reward": "When you earn a new reward"
 }

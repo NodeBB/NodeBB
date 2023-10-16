@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Novos seguidores",
     "upvote": "Votos positivos",
+    "awards": "Awards",
     "new-flags": "Novas denúncias",
     "my-flags": "Denúncias atribuídas a mim",
     "bans": "Banimentos",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Quando alguém é adicionado à fila de espera de registo",
     "notificationType-post-queue": "Quando uma nova publicação está à espera de aprovação",
     "notificationType-new-post-flag": "Quando uma publicação é denunciada",
-    "notificationType-new-user-flag": "Quando um utilizador é denunciado"
+    "notificationType-new-user-flag": "Quando um utilizador é denunciado",
+    "notificationType-new-reward": "When you earn a new reward"
 }

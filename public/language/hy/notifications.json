@@ -19,6 +19,7 @@
     "public-chat": "Հանրային նամակներ",
     "follows": "Հետևորդներ",
     "upvote": "Կողմ ձայներ",
+    "awards": "Awards",
     "new-flags": "Նոր դրոշներ",
     "my-flags": "Ինձ հանձնարարված դրոշներ",
     "bans": "Արգելքներ",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Երբ ինչ-որ մեկը ավելանում է գրանցման հերթում",
     "notificationType-post-queue": "Երբ նոր գրառումը հերթագրվում է",
     "notificationType-new-post-flag": "Երբ գրառումը դրոշակված է",
-    "notificationType-new-user-flag": "Երբ օգտվողը դրոշակված է"
+    "notificationType-new-user-flag": "Երբ օգտվողը դրոշակված է",
+    "notificationType-new-reward": "When you earn a new reward"
 }

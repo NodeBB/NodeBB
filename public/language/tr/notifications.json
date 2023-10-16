@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Takip Edilenler",
     "upvote": "Artı Oylananlar",
+    "awards": "Awards",
     "new-flags": "Yeni Şikayetler",
     "my-flags": "Vekil olarak atandığım şikayetler",
     "bans": "Yasaklamalar",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Biri kayıt kuyruğuna eklendiğinde",
     "notificationType-post-queue": "Yeni bir ileti sıraya alındığında",
     "notificationType-new-post-flag": "Bir ileti şikayet edildiğinde",
-    "notificationType-new-user-flag": "Bir kullanıcı şikayet edildiğinde"
+    "notificationType-new-user-flag": "Bir kullanıcı şikayet edildiğinde",
+    "notificationType-new-reward": "When you earn a new reward"
 }

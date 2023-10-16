@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Nasledovatelia",
     "upvote": "Súhlasy",
+    "awards": "Awards",
     "new-flags": "Nové označenia",
     "my-flags": "Označenia priradené mne",
     "bans": "Zablokované",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "Ak bude niekto pridaný do registračnej fronty",
     "notificationType-post-queue": "Ak bude pridaný nový príspevok do fronty",
     "notificationType-new-post-flag": "Ak bude príspevok označený",
-    "notificationType-new-user-flag": "Ak bude používateľ označený"
+    "notificationType-new-user-flag": "Ak bude používateľ označený",
+    "notificationType-new-reward": "When you earn a new reward"
 }

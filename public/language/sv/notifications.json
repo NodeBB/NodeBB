@@ -19,6 +19,7 @@
     "public-chat": "Public Chats",
     "follows": "Följningar",
     "upvote": "Uppröster",
+    "awards": "Awards",
     "new-flags": "Nya flaggor",
     "my-flags": "Mina tilldelade flaggor",
     "bans": "Bannlysningar",
@@ -92,5 +93,6 @@
     "notificationType-new-register": "När någon läggs till i registreringskön",
     "notificationType-post-queue": "När ett nytt inlägg läggs i kön",
     "notificationType-new-post-flag": "När ett nytt inlägg flaggas",
-    "notificationType-new-user-flag": "När en användare flaggas"
+    "notificationType-new-user-flag": "När en användare flaggas",
+    "notificationType-new-reward": "When you earn a new reward"
 }
