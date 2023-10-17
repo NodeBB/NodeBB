@@ -19,7 +19,7 @@
     "public-chat": "Публични разговори",
     "follows": "Следвания",
     "upvote": "Положителни гласове",
-    "awards": "Awards",
+    "awards": "Награди",
     "new-flags": "Нови докладвания",
     "my-flags": "Докладвания, назначени на мен",
     "bans": "Блокирания",
@@ -94,5 +94,5 @@
     "notificationType-post-queue": "Когато бъде добавена нова публикация в опашката",
     "notificationType-new-post-flag": "Когато публикация бъде докладвана",
     "notificationType-new-user-flag": "Когато потребител бъде докладван",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "Когато получите нова награда"
 }
