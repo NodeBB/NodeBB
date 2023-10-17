@@ -75,18 +75,10 @@ describe('List methods', () => {
 	});
 
 	describe('getListRange()', () => {
-		before((done) => {
-			async.series([
-				function (next) {
-					db.listAppend('testList3', 7, next);
-				},
-				function (next) {
-					db.listPrepend('testList3', 3, next);
-				},
-				function (next) {
-					db.listAppend('testList4', 5, next);
-				},
-			], done);
+		before(async () => {
+			await db.listAppend('testList3', 7);
+			await db.listPrepend('testList3', 3);
+			await db.listAppend('testList4', 5);
 		});
 
 		it('should return an empty list', (done) => {
@@ -124,6 +116,18 @@ describe('List methods', () => {
 				assert.equal(data, undefined);
 				done();
 			});
+		});
+
+		it('should return list elements in reverse order', async () => {
+			await db.listAppend('reverselisttest', ['one', 'two', 'three', 'four']);
+			assert.deepStrictEqual(
+				await db.getListRange('reverselisttest', -4, -3),
+				['one', 'two']
+			);
+			assert.deepStrictEqual(
+				await db.getListRange('reverselisttest', -2, -1),
+				['three', 'four']
+			);
 		});
 	});
 

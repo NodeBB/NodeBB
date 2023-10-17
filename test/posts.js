@@ -386,7 +386,7 @@ describe('Post\'s', () => {
 				async () => {
 					const { jar } = await helpers.loginUser('global mod', '123456');
 					const { posts } = await request(`${nconf.get('url')}/api/topic/${tid}`, { jar, json: true });
-					assert.equal(posts[1].content, '[[topic:post_is_deleted]]');
+					assert.equal(posts[1].content, '[[topic:post-is-deleted]]');
 					await privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators');
 				},
 			], done);

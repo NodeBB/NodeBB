@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Tiada topik untuk tag ini.",
+    "no-tag-topics": "Tiada topik untuk tag ini.",
     "no-tags-found": "No tags found",
     "tags": "Tag",
-    "enter_tags_here": "Masukkan tag sini, masing-masing antara %1 dan %2 aksara.",
-    "enter_tags_here_short": "Masukkan tag ...",
-    "no_tags": "Belum ada tag.",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Masukkan tag sini, masing-masing antara %1 dan %2 aksara.",
+    "enter-tags-here-short": "Masukkan tag ...",
+    "no-tags": "Belum ada tag.",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

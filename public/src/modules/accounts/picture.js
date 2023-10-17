@@ -38,7 +38,7 @@ define('accounts/picture', [
 			}, function (html) {
 				const modal = bootbox.dialog({
 					className: 'picture-switcher',
-					title: '[[user:change_picture]]',
+					title: '[[user:change-picture]]',
 					message: html,
 					show: true,
 					size: 'large',
@@ -49,7 +49,7 @@ define('accounts/picture', [
 							className: 'btn-link',
 						},
 						update: {
-							label: '[[global:save_changes]]',
+							label: '[[global:save-changes]]',
 							callback: saveSelection,
 						},
 					},
@@ -171,8 +171,8 @@ define('accounts/picture', [
 				paramValue: ajaxify.data.theirid,
 				fileSize: ajaxify.data.maximumProfileImageSize,
 				allowSkippingCrop: false,
-				title: '[[user:upload_picture]]',
-				description: '[[user:upload_a_picture]]',
+				title: '[[user:upload-picture]]',
+				description: '[[user:upload-a-picture]]',
 				accept: ajaxify.data.allowedProfileImageExtensions,
 			}, function (url) {
 				onUploadComplete(url);

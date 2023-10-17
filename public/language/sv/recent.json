@@ -5,7 +5,7 @@
     "month": "Månad",
     "year": "År",
     "alltime": "Alltid",
-    "no_recent_topics": "Det finns inga olästa ämnen.",
-    "no_popular_topics": "Det finns inga populära ämnen.",
+    "no-recent-topics": "Det finns inga olästa ämnen.",
+    "no-popular-topics": "Det finns inga populära ämnen.",
     "load-new-posts": "Load new posts"
 }

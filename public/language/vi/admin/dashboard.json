@@ -48,7 +48,7 @@
 	"restart-disabled": "Việc xây dựng lại và khởi động lại NodeBB của bạn đã bị vô hiệu hóa vì bạn dường như không chạy nó qua daemon thích hợp.",
 	"maintenance-mode": "Chế Độ Bảo Trì",
 	"maintenance-mode-title": "Bấm vào đây để thiết lập chế độ bảo trì cho NodeBB",
-	"dark-mode": "Dark Mode",
+	"dark-mode": "Chế Độ Tối",
 	"realtime-chart-updates": "Cập Nhật Biểu Đồ Thời Gian Thực",
 
 	"active-users": "Người Dùng Hoạt Động",
@@ -81,18 +81,18 @@
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
 	"no-users-browsing": "Người không xem bài",
 
-	"back-to-dashboard": "Quay lại Bảng điều khiển",
+	"back-to-dashboard": "Trở về Bảng điều khiển",
 	"details.no-users": "Không có người dùng nào tham gia trong khung thời gian đã chọn",
 	"details.no-topics": "Không có chủ đề nào được đăng trong khung thời gian đã chọn",
 	"details.no-searches": "Không có tìm kiếm nào được thực hiện trong khung thời gian đã chọn",
 	"details.no-logins": "Không có thông tin đăng nhập nào được ghi lại trong khung thời gian đã chọn",
 	"details.logins-static": "NodeBB chỉ lưu dữ liệu phiên trong %1 ngày và do đó, bảng này bên dưới sẽ chỉ hiển thị các phiên hoạt động gần đây nhất",
 	"details.logins-login-time": "Thời gian đăng nhập",
-	"start": "Start",
-	"end": "End",
+	"start": "Bắt đầu",
+	"end": "Kết thúc",
 	"filter": "Bộ lọc",
-	"view-as-json": "View as JSON",
-	"expand-analytics": "Expand analytics",
-	"clear-search-history": "Clear Search History",
-	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
+	"view-as-json": "Xem dưới dạng JSON",
+	"expand-analytics": "Mở rộng phân tích",
+	"clear-search-history": "Xóa lịch sử tìm kiếm",
+	"clear-search-history-confirm": "Bạn có chắc chắn muốn xóa toàn bộ lịch sử tìm kiếm không?"
 }

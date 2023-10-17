@@ -213,16 +213,14 @@ module.exports = function (Categories) {
 		cache.del(`cid:${toCid}:tag:whitelist`);
 	}
 
-	Categories.copyPrivilegesFrom = async function (fromCid, toCid, group, filter = []) {
+	Categories.copyPrivilegesFrom = async function (fromCid, toCid, group, filter) {
 		group = group || '';
-		let privsToCopy;
+		let privsToCopy = privileges.categories.getPrivilegesByFilter(filter);
+
 		if (group) {
-			const groupPrivilegeList = await privileges.categories.getGroupPrivilegeList();
-			privsToCopy = groupPrivilegeList.slice(...filter);
+			privsToCopy = privsToCopy.map(priv => `groups:${priv}`);
 		} else {
-			const privs = await privileges.categories.getPrivilegeList();
-			const halfIdx = privs.length / 2;
-			privsToCopy = privs.slice(0, halfIdx).slice(...filter).concat(privs.slice(halfIdx).slice(...filter));
+			privsToCopy = privsToCopy.concat(privsToCopy.map(priv => `groups:${priv}`));
 		}
 
 		const data = await plugins.hooks.fire('filter:categories.copyPrivilegesFrom', {

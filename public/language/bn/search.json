@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "\"%2\" এর সাথে মিলিয়ে %1 ফলাফল পাওয়া গেছে,  ( %3 seconds সময় লেগেছে )",
+    "results-matching": "\"%2\" এর সাথে মিলিয়ে %1 ফলাফল পাওয়া গেছে,  ( %3 seconds সময় লেগেছে )",
     "no-matches": "কোন মিল খুঁজে পাওয়া যায় নি",
     "advanced-search": "এডভান্সড সার্চ",
     "in": "এর মধ্যে",
@@ -101,7 +101,7 @@
     "clear-preferences": "Clear preferences",
     "search-preferences-saved": "Search preferences saved",
     "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "ফলাফল দেখানো হোক : ",
+    "show-results-as": "ফলাফল দেখানো হোক :",
     "show-results-as-topics": "Show results as topics",
     "show-results-as-posts": "Show results as posts",
     "see-more-results": "See more results (%1)",

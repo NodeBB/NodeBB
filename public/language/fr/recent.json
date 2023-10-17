@@ -5,7 +5,7 @@
     "month": "Mois",
     "year": "An",
     "alltime": "Toujours",
-    "no_recent_topics": "Il n'y a aucun sujet récent.",
-    "no_popular_topics": "Il n'y a pas de sujet populaire.",
+    "no-recent-topics": "Il n'y a aucun sujet récent.",
+    "no-popular-topics": "Il n'y a pas de sujet populaire.",
     "load-new-posts": "Charger les nouveaux messages"
 }

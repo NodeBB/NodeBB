@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 výsledok(ov) vhodný(ch) pre \"%2\", (%3 sekúnd)",
+    "results-matching": "%1 výsledok(ov) vhodný(ch) pre \"%2\", (%3 sekúnd)",
     "no-matches": "Žiadne zhody nenájdené",
     "advanced-search": "Rozšírené vyhľadávanie",
     "in": "v",
@@ -18,7 +18,7 @@
     "tags": "Tags",
     "tags-x": "Tags: %1",
     "type-a-tag": "Type a tag",
-    "match-words": " Zhodné slová",
+    "match-words": "Zhodné slová",
     "match-all-words": "Match all words",
     "match-any-word": "Match any word",
     "all": "Všetko",

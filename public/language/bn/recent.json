@@ -4,8 +4,8 @@
     "week": "সপ্তাহ",
     "month": "মাস",
     "year": "বছর",
-    "alltime": "সবসময় ",
-    "no_recent_topics": "কোন সাম্প্রতিক টপিক নেই। ",
-    "no_popular_topics": "There are no popular topics.",
+    "alltime": "সবসময়",
+    "no-recent-topics": "কোন সাম্প্রতিক টপিক নেই।",
+    "no-popular-topics": "There are no popular topics.",
     "load-new-posts": "Load new posts"
 }

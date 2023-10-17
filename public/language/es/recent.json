@@ -5,7 +5,7 @@
     "month": "Mes",
     "year": "Año",
     "alltime": "Siempre",
-    "no_recent_topics": "No hay publicaciones recientes.",
-    "no_popular_topics": "No hay publicaciones populares",
+    "no-recent-topics": "No hay publicaciones recientes.",
+    "no-popular-topics": "No hay publicaciones populares",
     "load-new-posts": "Load new posts"
 }

@@ -1,5 +1,6 @@
 {
 	"state": "Stan",
+	"report": "Report",
 	"reports": "Zgłoszenia",
 	"first-reported": "Pierwszy zgłoszony",
 	"no-flags": "Hura! Nie znaleziono flag.",
@@ -8,6 +9,8 @@
 	"update": "Zaktualizuj",
 	"updated": "Zaaktualizowano",
 	"resolved": "Resolved",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Treści, do których odnosi się ta flaga, zostały usunięte i nie są już dostępne.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

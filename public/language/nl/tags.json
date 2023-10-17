@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Er zijn geen onderwerpen met deze tag.",
+    "no-tag-topics": "Er zijn geen onderwerpen met deze tag.",
     "no-tags-found": "No tags found",
     "tags": "Tags",
-    "enter_tags_here": "Voeg hier tags toe, tussen de %1 en %2 tekens per stuk.",
-    "enter_tags_here_short": "Voer tags in...",
-    "no_tags": "Er zijn nog geen tags geplaatst",
-    "select_tags": "Selecteer tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Voeg hier tags toe, tussen de %1 en %2 tekens per stuk.",
+    "enter-tags-here-short": "Voer tags in...",
+    "no-tags": "Er zijn nog geen tags geplaatst",
+    "select-tags": "Selecteer tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

@@ -9,5 +9,5 @@
 	"filter-type": "Ereignistyp",
 	"filter-start": "Anfangsdatum",
 	"filter-end": "Enddatum",
-	"filter-perPage": "Pro Seite"
+	"filter-per-page": "Pro Seite"
 }

@@ -41,8 +41,8 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 			})
 			.on('click', '.toggle', function () {
 				const btn = $(this);
-				const disabled = btn.hasClass('btn-success');
-				btn.toggleClass('btn-warning').toggleClass('btn-success').translateHtml('[[admin/extend/rewards:' + (disabled ? 'disable' : 'enable') + ']]');
+				btn.parent().find('.toggle').removeClass('hidden');
+				btn.addClass('hidden');
 				// send disable api call
 				return false;
 			});
@@ -92,16 +92,16 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 		}
 
 		inputs.forEach(function (input) {
-			html += '<label for="' + input.name + '">' + input.label + '<br />';
+			html += `<label class="form-label text-nowrap" for="${input.name}">${input.label}<br />`;
 			switch (input.type) {
 				case 'select':
-					html += '<select class="form-select form-select-sm" name="' + input.name + '">';
+					html += `<select class="form-select form-select-sm" name="${input.name}" >`;
 					input.values.forEach(function (value) {
-						html += '<option value="' + value.value + '">' + value.name + '</option>';
+						html += `<option value="${value.value}">${value.name}</option>`;
 					});
 					break;
 				case 'text':
-					html += '<input type="text" class="form-control form-control-sm" name="' + input.name + '" />';
+					html += `<input type="text" class="form-control form-control-sm" name="${input.name}"  />`;
 					break;
 			}
 			html += '</label>';
@@ -162,7 +162,7 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 			});
 
 			data.id = $(this).attr('data-id');
-			data.disabled = $(this).find('.toggle').hasClass('btn-success');
+			data.disabled = $(this).find('.toggle.disable').hasClass('hidden');
 
 			activeRewards.push(data);
 		});

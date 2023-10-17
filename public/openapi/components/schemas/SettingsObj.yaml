@@ -80,6 +80,9 @@ Settings:
     notificationType_new-topic:
       type: string
       description: Notification type for new topics
+    notificationType_new-topic-with-tag:
+      type: string
+      description: Notification type for new topics with followed tag
     notificationType_follow:
       type: string
       description: Notification type for another user following you
@@ -95,6 +98,9 @@ Settings:
     notificationType_mention:
       type: string
       description: Notification type for mentions in a post
+    notificationType_new-reward:
+      type: string
+      description: Notification type for when you earn a reward
     acpLang:
       type: string
       description: Language localisation for the admin control panel

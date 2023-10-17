@@ -5,7 +5,7 @@
     "month": "Місяць",
     "year": "Рік",
     "alltime": "Весь час",
-    "no_recent_topics": "Немає свіжих тем.",
-    "no_popular_topics": "Немає популярних тем.",
+    "no-recent-topics": "Немає свіжих тем.",
+    "no-popular-topics": "Немає популярних тем.",
     "load-new-posts": "Load new posts"
 }

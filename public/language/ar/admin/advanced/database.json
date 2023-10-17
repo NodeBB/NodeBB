@@ -17,7 +17,7 @@
 	"mongo.file-size": "حجم الملف",
 	"mongo.resident-memory": "الذاكرة الساكنة",
 	"mongo.virtual-memory": "الذاكرة الإفتراضية",
-	"mongo.mapped-memory": "الذاكرة المعينة",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "البايتات الواردة",
 	"mongo.bytes-out": "البايتات الصادرة",
 	"mongo.num-requests": "عدد الطلبات",

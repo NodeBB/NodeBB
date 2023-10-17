@@ -157,13 +157,14 @@ ajaxify.widgets = { render: render };
 					status = 500;
 				}
 				if (data.responseJSON) {
+					ajaxify.data.bodyClass = data.responseJSON.bodyClass;
 					data.responseJSON.config = config;
 				}
 
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
 			} else if (status === 401) {
-				alerts.error('[[global:please_log_in]]');
+				alerts.error('[[global:please-log-in]]');
 				app.previousUrl = url;
 				window.location.href = config.relative_path + '/login';
 			} else if (status === 302 || status === 308) {

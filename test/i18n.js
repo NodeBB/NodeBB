@@ -14,7 +14,7 @@ describe('i18n', () => {
 	let folders;
 
 	before(async function () {
-		if ((process.env.GITHUB_REF && process.env.GITHUB_REF !== 'develop') || process.env.GITHUB_EVENT_NAME === 'pull_request') {
+		if ((process.env.GITHUB_REF && process.env.GITHUB_REF !== 'refs/heads/develop') || process.env.GITHUB_EVENT_NAME === 'pull_request') {
 			this.skip();
 		}
 
@@ -38,6 +38,8 @@ describe('i18n', () => {
 		const sourceStrings = new Map();
 
 		describe('source language file structure', () => {
+			const test = /^[a-zA-Z0-9-/]+(\.([0-9a-z]+([A-Z][0-9a-zA-Z]*)*-*\.?)+)*$/; // enhanced by chatgpt so only it knows what this does.
+
 			it('should only contain valid JSON files', async () => {
 				try {
 					fullPaths.forEach((fullPath) => {
@@ -51,6 +53,54 @@ describe('i18n', () => {
 				} catch (e) {
 					assert(!e, `Invalid JSON found: ${e.message}`);
 				}
+			});
+
+			describe('should only contain lowercase or numeric language keys separated by either dashes or periods', async () => {
+				describe('(regexp validation)', () => {
+					const valid = [
+						'foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet', 'foo.barBazQuux', // human generated
+						'example-name.isValid', 'kebab-case.isGood', 'camelcase.isFine', 'camelcase.with-dashes.isAlsoFine', 'single-character.is-ok', 'abc.def', // chatgpt generated
+					];
+					const invalid = [
+						// human generated
+						'foo.PascalCase', 'foo.snake_case',
+						'badger.badger_badger_badger',
+						'foo.BarBazQuux',
+
+						// chatgpt generated
+						'!notValid', // Starts with a special character
+						'with space.isInvalid', // Contains a space
+						'.startsWithPeriod.isInvalid', // Starts with a period
+						'invalid..case.isInvalid', // Consecutive periods
+						'camelCase.With-Dashes.isAlsoInvalid', // PascalCase "With" is not allowed
+					];
+
+					valid.forEach((key) => {
+						it(key, () => {
+							assert(test.test(key));
+						});
+					});
+					invalid.forEach((key) => {
+						it(key, () => {
+							assert(!test.test(key));
+						});
+					});
+				});
+
+				fullPaths.forEach((fullPath) => {
+					if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+						return;
+					}
+
+					const hash = require(fullPath);
+					const keys = Object.keys(hash);
+
+					keys.forEach((key) => {
+						it(key, () => {
+							assert(test.test(key), `${key} contains invalid characters`);
+						});
+					});
+				});
 			});
 		});
 

@@ -5,7 +5,7 @@
 	"none-installed": "Keine Widgets gefunden! Aktiviere das Widget Essentials-Plugin in der <a href=\"%1\">Plugin</a>-Systemsteuerung.",
 	"clone-from": "Klone Widget von",
 	"containers.available": "Verfügbare Container",
-	"containers.explanation": "Per Drag-and-Drop auf ein beliebiges aktives Widget ziehen",
+	"containers.explanation": "Drag and Drop auf ein beliebiges Widget",
 	"containers.none": "Nichts",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",

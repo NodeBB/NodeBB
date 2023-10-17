@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Hány nap elteltével számítson egy témakör elhagyatottnak",
-	"restrictions.stale-help": "Ha egy témakör \"elhagyatottnak\" számít, akkor a felhasználók hozzászóláskor egy figyelmeztetést fognak kapni róla.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Időbélyegek",
 	"timestamp.cut-off": "Dátum levágása (napokban)",
 	"timestamp.cut-off-help": "A dátumok és idők relatív értelemben jelennek meg (pl.: \"3 órával ezelőtt\" / \"5 nappal ezelőtt\") lefordítva a különböző\n\t\t\t\t\tnyelvekre. Egy bizonyos idő elteltével a szöveg a lokalizált dátumot fogja mutatni\n\t\t\t\t\t(pl.: 5 Nov 2016 15:30).<br /><em>(Alapértelmezett: <code>30</code>, avagy egy hónap). Állítsd 0-ra, hogy mindig a dátumok jelenjenek meg vagy hagyd üresen, hogy mindig a relatív idők jelenjenek meg.</em>",

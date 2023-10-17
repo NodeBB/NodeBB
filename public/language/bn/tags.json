@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "এই ট্যাগ সম্বলিত কোন টপিক নেই",
+    "no-tag-topics": "এই ট্যাগ সম্বলিত কোন টপিক নেই",
     "no-tags-found": "No tags found",
     "tags": "ট্যাগসমূহ",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
-    "enter_tags_here_short": "ট্যাগ বসান",
-    "no_tags": "এখন পর্যন্ত কোন ট্যাগ নেই",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Enter tags here, between %1 and %2 characters each.",
+    "enter-tags-here-short": "ট্যাগ বসান",
+    "no-tags": "এখন পর্যন্ত কোন ট্যাগ নেই",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

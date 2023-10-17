@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 hasil sepadan \"%2\", (%3 saat)",
+    "results-matching": "%1 hasil sepadan \"%2\", (%3 saat)",
     "no-matches": "Tiada padanan dijumpai",
     "advanced-search": "Pencarian Lebih Mendalam",
     "in": "Dalam",

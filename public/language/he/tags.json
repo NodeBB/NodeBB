@@ -1,11 +1,17 @@
 {
     "all-tags": "כל התגיות",
-    "no_tag_topics": "אין פוסטים עם תגית זו.",
+    "no-tag-topics": "אין פוסטים עם תגית זו.",
     "no-tags-found": "לא נמצאו תגיות",
     "tags": "תגיות",
-    "enter_tags_here": "הכנס תגיות כאן, כאשר כל אחת בין %1 ל%2 תווים.",
-    "enter_tags_here_short": "הזן תגיות...",
-    "no_tags": "אין עדיין תגיות.",
-    "select_tags": "בחר תגיות",
-    "tag-whitelist": "רשימה לבנה של תגיות"
+    "enter-tags-here": "הכנס תגיות כאן, כאשר כל אחת בין %1 ל%2 תווים.",
+    "enter-tags-here-short": "הזן תגיות...",
+    "no-tags": "אין עדיין תגיות.",
+    "select-tags": "בחר תגיות",
+    "tag-whitelist": "רשימה לבנה של תגיות",
+    "watching": "עוקב",
+    "not-watching": "לא עוקב",
+    "watching.description": "הודע לי על נושאים חדשים.",
+    "not-watching.description": "אל תודיע לי על נושאים חדשים.",
+    "following-tag.message": "מעכשיו תקבל התראה כאשר מישהו יפרסם נושא עם התג הזה.",
+    "not-following-tag.message": "לא תקבל התראות כאשר מישהו יפרסם נושא עם התג הזה."
 }

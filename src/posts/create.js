@@ -9,7 +9,7 @@ const user = require('../user');
 const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
-const utils = require('../utils');
+const privileges = require('../privileges');
 
 module.exports = function (Posts) {
 	Posts.create = async function (data) {
@@ -24,8 +24,8 @@ module.exports = function (Posts) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
-		if (data.toPid && !utils.isNumber(data.toPid)) {
-			throw new Error('[[error:invalid-pid]]');
+		if (data.toPid) {
+			await checkToPid(data.toPid, uid);
 		}
 
 		const pid = await db.incrObjectField('global', 'nextPid');
@@ -79,5 +79,16 @@ module.exports = function (Posts) {
 			db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
 			db.incrObjectField(`post:${postData.toPid}`, 'replies'),
 		]);
+	}
+
+	async function checkToPid(toPid, uid) {
+		const [toPost, canViewToPid] = await Promise.all([
+			Posts.getPostFields(toPid, ['pid', 'deleted']),
+			privileges.posts.can('posts:view_deleted', toPid, uid),
+		]);
+		const toPidExists = !!toPost.pid;
+		if (!toPidExists || (toPost.deleted && !canViewToPid)) {
+			throw new Error('[[error:invalid-pid]]');
+		}
 	}
 };

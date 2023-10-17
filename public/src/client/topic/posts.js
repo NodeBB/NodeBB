@@ -341,22 +341,18 @@ define('forum/topic/posts', [
 
 			const diff = post.attr('data-timestamp') - prev.attr('data-timestamp');
 			if (Math.abs(diff) >= necroThreshold) {
-				const suffixAgo = $.timeago.settings.strings.suffixAgo;
-				const prefixAgo = $.timeago.settings.strings.prefixAgo;
-				const suffixFromNow = $.timeago.settings.strings.suffixFromNow;
-				const prefixFromNow = $.timeago.settings.strings.prefixFromNow;
+				const props = ['suffixAgo', 'prefixAgo', 'suffixFromNow', 'prefixFromNow'];
+				const savedProps = {};
+				props.forEach((prop) => {
+					savedProps[prop] = $.timeago.settings.strings[prop];
+					$.timeago.settings.strings[prop] = '';
+				});
 
-				$.timeago.settings.strings.suffixAgo = '';
-				$.timeago.settings.strings.prefixAgo = '';
-				$.timeago.settings.strings.suffixFromNow = '';
-				$.timeago.settings.strings.prefixFromNow = '';
+				const translationText = (diff > 0 ? '[[topic:timeago-later,' : '[[topic:timeago-earlier,') + $.timeago.inWords(diff) + ']]';
 
-				const translationText = (diff > 0 ? '[[topic:timeago_later,' : '[[topic:timeago_earlier,') + $.timeago.inWords(diff) + ']]';
-
-				$.timeago.settings.strings.suffixAgo = suffixAgo;
-				$.timeago.settings.strings.prefixAgo = prefixAgo;
-				$.timeago.settings.strings.suffixFromNow = suffixFromNow;
-				$.timeago.settings.strings.prefixFromNow = prefixFromNow;
+				props.forEach((prop) => {
+					$.timeago.settings.strings[prop] = savedProps[prop];
+				});
 				const html = await app.parseAndTranslate('partials/topic/necro-post', { text: translationText });
 				html.attr('data-necro-post-index', prev.attr('data-index'));
 				html.insertBefore(post);
@@ -439,8 +435,10 @@ define('forum/topic/posts', [
 	}
 
 	Posts.addBlockquoteEllipses = function (posts) {
-		const blockquotes = posts.find('[component="post/content"] > blockquote > blockquote');
-		blockquotes.each(function () {
+		const rootBlockQuotes = posts.find('[component="post/content"] blockquote')
+			.filter((i, el) => !$(el).parent().is('blockquote'));
+		const nestedBlockQuote = rootBlockQuotes.find('>blockquote');
+		nestedBlockQuote.each(function () {
 			const $this = $(this);
 			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
 				$this.append('<i class="d-inline-block fa fa-angle-down pointer toggle py-1 px-3 border text-bg-light"></i>');

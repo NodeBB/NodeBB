@@ -145,7 +145,7 @@ define('admin/manage/category', [
 			Benchpress.render('admin/partials/categories/copy-settings', {}).then(function (html) {
 				let selectedCid;
 				const modal = bootbox.dialog({
-					title: '[[modules:composer.select_category]]',
+					title: '[[modules:composer.select-category]]',
 					message: html,
 					buttons: {
 						save: {

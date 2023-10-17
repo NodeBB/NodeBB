@@ -47,8 +47,8 @@ define('forum/topic/move-post', [
 				if (config.undoTimeout > 0) {
 					return alerts.alert({
 						alert_id: 'pids_move_' + postSelect.pids.join('-'),
-						title: '[[topic:thread_tools.move-posts]]',
-						message: '[[topic:topic_move_posts_success]]',
+						title: '[[topic:thread-tools.move-posts]]',
+						message: '[[topic:topic-move-posts-success]]',
 						type: 'success',
 						timeout: config.undoTimeout,
 						timeoutfn: function () {
@@ -56,7 +56,7 @@ define('forum/topic/move-post', [
 						},
 						clickfn: function (alert, params) {
 							delete params.timeoutfn;
-							alerts.success('[[topic:topic_move_posts_undone]]');
+							alerts.success('[[topic:topic-move-posts-undone]]');
 							moveCommit.removeAttr('disabled');
 						},
 					});

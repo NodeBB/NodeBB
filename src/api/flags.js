@@ -49,6 +49,16 @@ flagsApi.update = async (caller, data) => {
 
 flagsApi.delete = async (_, { flagId }) => await flags.purge([flagId]);
 
+flagsApi.rescind = async ({ uid }, { flagId }) => {
+	const { type, targetId } = await flags.get(flagId);
+	const exists = await flags.exists(type, targetId, uid);
+	if (!exists) {
+		throw new Error('[[error:no-flag]]');
+	}
+
+	await flags.rescindReport(type, targetId, uid);
+};
+
 flagsApi.appendNote = async (caller, data) => {
 	const allowed = await user.isPrivileged(caller.uid);
 	if (!allowed) {

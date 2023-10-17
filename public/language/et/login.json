@@ -1,12 +1,12 @@
 {
     "username-email": "Kasutajanimi / E-mail",
     "username": "Kasutajanimi",
-    "remember_me": "Mäleta mind?",
-    "forgot_password": "Unustasid parooli?",
-    "alternative_logins": "Alternatiivsed sisse logimise võimalused",
-    "failed_login_attempt": "Sisselogimine ebaõnnestus",
-    "login_successful": "Edukalt sisse logitud!",
-    "dont_have_account": "Pole veel kasutajat?",
+    "remember-me": "Mäleta mind?",
+    "forgot-password": "Unustasid parooli?",
+    "alternative-logins": "Alternatiivsed sisse logimise võimalused",
+    "failed-login-attempt": "Sisselogimine ebaõnnestus",
+    "login-successful": "Edukalt sisse logitud!",
+    "dont-have-account": "Pole veel kasutajat?",
     "logged-out-due-to-inactivity": "Sind on Administraatori Juhtpaneelist ebaaktiivsuse tõttu välja logitud",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

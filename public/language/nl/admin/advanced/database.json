@@ -17,7 +17,7 @@
 	"mongo.file-size": "Bestandsomvang",
 	"mongo.resident-memory": "Resident geheugen",
 	"mongo.virtual-memory": "Virtueel geheugen",
-	"mongo.mapped-memory": "Mapped geheugen",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "Bytes Inkomend",
 	"mongo.bytes-out": "Bytes Uitgaand",
 	"mongo.num-requests": "Aantal requests",

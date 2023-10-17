@@ -17,20 +17,21 @@ define('forum/chats/messages', [
 		const chatContent = inputEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
 		inputEl.val('').trigger('input');
 
-		messages.updateRemainingLength(inputEl.parent());
+		const chatComposer = inputEl.parents('[component="chat/composer"]');
+		messages.updateRemainingLength(chatComposer);
 		messages.updateTextAreaHeight(chatContent);
 		const payload = { roomId, message };
 		({ roomId, message } = await hooks.fire('filter:chat.send', payload));
-		const replyToEl = inputEl.parents('[component="chat/composer"]')
-			.find('[component="chat/composer/replying-to"]');
+		const replyToEl = chatComposer.find('[component="chat/composer/replying-to"]');
 		const toMid = replyToEl.attr('data-tomid');
+
 		api.post(`/chats/${roomId}`, { message, toMid: toMid }).then(() => {
 			hooks.fire('action:chat.sent', { roomId, message });
 			replyToEl.addClass('hidden');
 			replyToEl.attr('data-tomid', '');
 		}).catch((err) => {
 			inputEl.val(message).trigger('input');
-			messages.updateRemainingLength(inputEl.parent());
+			messages.updateRemainingLength(chatComposer);
 			messages.updateTextAreaHeight(chatContent);
 			if (err.message === '[[error:email-not-confirmed-chat]]') {
 				return messagesModule.showEmailConfirmWarning(err.message);
@@ -115,6 +116,7 @@ define('forum/chats/messages', [
 		messageEls.find('img:not(.emoji)').each(function () {
 			images.wrapImageInLink($(this));
 		});
+		hooks.fire('action:chat.onMessagesAddedToDom', { messageEls });
 	};
 
 	messages.parseMessage = function (data, callback) {
@@ -273,7 +275,13 @@ define('forum/chats/messages', [
 			messages.parseMessage(message, function (html) {
 				const msgEl = components.get('chat/message', message.mid);
 				if (msgEl.length) {
-					msgEl.replaceWith(html);
+					const componentsToReplace = [
+						'[component="chat/message/body"]',
+						'[component="chat/message/edited"]',
+					];
+					componentsToReplace.forEach((cmp) => {
+						msgEl.find(cmp).replaceWith(html.find(cmp));
+					});
 					messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
 				}
 				const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`);
@@ -327,7 +335,7 @@ define('forum/chats/messages', [
 	}
 
 	messages.delete = function (messageId, roomId) {
-		bootbox.confirm('[[modules:chat.delete_message_confirm]]', function (ok) {
+		bootbox.confirm('[[modules:chat.delete-message-confirm]]', function (ok) {
 			if (!ok) {
 				return;
 			}

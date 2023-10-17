@@ -136,6 +136,26 @@ UPDATE "legacy_list" l
 			return;
 		}
 
+		if (start < 0 && stop < 0) {
+			const res = await module.pool.query({
+				name: 'getListRangeReverse',
+				text: `
+	SELECT ARRAY(SELECT m.m
+				   FROM UNNEST(l."array") WITH ORDINALITY m(m, i)
+				  ORDER BY m.i ASC
+				  LIMIT ($3::INTEGER - $2::INTEGER + 1)
+				 OFFSET (array_length(l."array", 1) + $2::INTEGER)) l
+	  FROM "legacy_object_live" o
+	 INNER JOIN "legacy_list" l
+			 ON o."_key" = l."_key"
+			AND o."type" = l."type"
+	 WHERE o."_key" = $1::TEXT`,
+				values: [key, start, stop],
+			});
+
+			return res.rows.length ? res.rows[0].l : [];
+		}
+
 		stop += 1;
 
 		const res = await module.pool.query(stop > 0 ? {

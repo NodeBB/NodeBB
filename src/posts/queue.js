@@ -196,7 +196,7 @@ module.exports = function (Posts) {
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: 'post-queue',
-			bodyShort: '[[notifications:post_awaiting_review]]',
+			bodyShort: '[[notifications:post-awaiting-review]]',
 			bodyLong: bodyLong,
 			path: `/post-queue/${id}`,
 		});

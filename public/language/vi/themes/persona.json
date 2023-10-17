@@ -1,10 +1,10 @@
 {
     "settings.title": "Cài đặt chủ đề",
-    "settings.intro": "Bạn có thể tùy chỉnh cài đặt chủ đề của mình tại đây. Cài đặt được lưu trữ trên cơ sở từng thiết bị, vì vậy bạn có thể có các cài đặt khác nhau trên các thiết bị khác nhau (điện thoại, máy tính bảng, máy tính để bàn, v.v.)",
-    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.intro": "Bạn có thể tự cài đặt chủ đề tại đây. Cài đặt được lưu trên cơ sở từng thiết bị, vì vậy bạn sẽ có các cài đặt khác nhau trên các thiết bị khác nhau (điện thoại, máy tính bảng, máy tính để bàn, v.v.)",
+    "settings.mobile-menu-side": "Chuyển đổi bên nào mỗi menu di động được bật",
+    "settings.autoHidingNavbar": "Tự động ẩn thanh điều hướng khi cuộn",
+    "settings.autoHidingNavbar-xs": "Màn hình rất nhỏ (ví dụ: điện thoại ở chế độ dọc)",
+    "settings.autoHidingNavbar-sm": "Màn hình nhỏ hơn (ví dụ: điện thoại, một số máy tính bảng)",
+    "settings.autoHidingNavbar-md": "Màn hình có kích thước trung bình (ví dụ: máy tính bảng ở chế độ ngang)",
+    "settings.autoHidingNavbar-lg": "Màn hình lớn hơn (ví dụ: máy tính để bàn)"
 }

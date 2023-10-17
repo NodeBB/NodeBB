@@ -1,12 +1,12 @@
 {
     "username-email": "Vartotojo vardas / El. paštas",
     "username": "Vartotojo vardas",
-    "remember_me": "Prisiminti?",
-    "forgot_password": "Užmiršote slaptažodį?",
-    "alternative_logins": "Alternatyvūs prisijungimo būdai",
-    "failed_login_attempt": "Login Unsuccessful",
-    "login_successful": "Jūs sėkmingai prisijungėte!",
-    "dont_have_account": "Neturite paskyros?",
+    "remember-me": "Prisiminti?",
+    "forgot-password": "Užmiršote slaptažodį?",
+    "alternative-logins": "Alternatyvūs prisijungimo būdai",
+    "failed-login-attempt": "Login Unsuccessful",
+    "login-successful": "Jūs sėkmingai prisijungėte!",
+    "dont-have-account": "Neturite paskyros?",
     "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

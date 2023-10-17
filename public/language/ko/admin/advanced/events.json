@@ -9,5 +9,5 @@
 	"filter-type": "이벤트 유형",
 	"filter-start": "시작일",
 	"filter-end": "종료일",
-	"filter-perPage": "페이지 당"
+	"filter-per-page": "페이지 당"
 }

@@ -130,7 +130,7 @@ categoryController.get = async function (req, res, next) {
 		categoryData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
 	}
 
-	addTags(categoryData, res);
+	addTags(categoryData, res, currentPage);
 
 	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
@@ -149,7 +149,7 @@ async function buildBreadcrumbs(req, categoryData) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
-			url: `${relative_path}/category/${categoryData.slug}`,
+			url: `${url}/category/${categoryData.slug}`,
 			cid: categoryData.cid,
 		},
 	];
@@ -159,7 +159,7 @@ async function buildBreadcrumbs(req, categoryData) {
 	}
 }
 
-function addTags(categoryData, res) {
+function addTags(categoryData, res, currentPage) {
 	res.locals.metaTags = [
 		{
 			name: 'title',
@@ -193,10 +193,16 @@ function addTags(categoryData, res) {
 		});
 	}
 
+	const page = currentPage > 1 ? `?page=${currentPage}` : '';
 	res.locals.linkTags = [
 		{
 			rel: 'up',
 			href: url,
+		},
+		{
+			rel: 'canonical',
+			href: `${url}/category/${categoryData.slug}${page}`,
+			noEscape: true,
 		},
 	];
 

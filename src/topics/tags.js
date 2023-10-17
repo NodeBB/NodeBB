@@ -10,6 +10,9 @@ const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
+const privileges = require('../privileges');
+const notifications = require('../notifications');
+const translator = require('../translator');
 const utils = require('../utils');
 const batch = require('../batch');
 const cache = require('../cache');
@@ -165,6 +168,18 @@ module.exports = function (Topics) {
 				topicData.map(t => [`topic:${t.tid}`, { tags: t.tags.join(',') }]),
 			);
 		}, {});
+		const followers = await db.getSortedSetRangeWithScores(`tag:${tag}:followers`, 0, -1);
+		if (followers.length) {
+			const userKeys = followers.map(item => `uid:${item.value}:followed_tags`);
+			const scores = await db.sortedSetsScore(userKeys, tag);
+			await db.sortedSetsRemove(userKeys, tag);
+			await db.sortedSetsAdd(userKeys, scores, newTagName);
+			await db.sortedSetAdd(
+				`tag:${newTagName}:followers`,
+				followers.map(item => item.score),
+				followers.map(item => item.value),
+			);
+		}
 		await Topics.deleteTag(tag);
 		await updateTagCount(newTagName);
 		await Topics.updateCategoryTagsCount(Object.keys(allCids), [newTagName]);
@@ -207,7 +222,10 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tags) || !tags.length) {
 			return;
 		}
-		await removeTagsFromTopics(tags);
+		await Promise.all([
+			removeTagsFromTopics(tags),
+			removeTagsFromUsers(tags),
+		]);
 		const keys = tags.map(tag => `tag:${tag}:topics`);
 		await db.deleteAll(keys);
 		await db.sortedSetRemove('tags:topic:count', tags);
@@ -219,6 +237,7 @@ module.exports = function (Topics) {
 		const deleteKeys = [];
 		tags.forEach((tag) => {
 			deleteKeys.push(`tag:${tag}`);
+			deleteKeys.push(`tag:${tag}:followers`);
 			cids.forEach((cid) => {
 				deleteKeys.push(`cid:${cid}:tag:${tag}:topics`);
 			});
@@ -242,6 +261,13 @@ module.exports = function (Topics) {
 					`topic:${tid}`, { tags: topicsTags[index].join(',') },
 				]))
 			);
+		});
+	}
+
+	async function removeTagsFromUsers(tags) {
+		await async.eachLimit(tags, 50, async (tag) => {
+			const uids = await db.getSortedSetRange(`tag:${tag}:followers`, 0, -1);
+			await db.sortedSetsRemove(uids.map(uid => `uid:${uid}:followed_tags`), tag);
 		});
 	}
 
@@ -527,5 +553,81 @@ module.exports = function (Topics) {
 		tids = _.shuffle(_.uniq(_.flatten(tids))).slice(0, maximumTopics);
 		const topics = await Topics.getTopics(tids, uid);
 		return topics.filter(t => t && !t.deleted && parseInt(t.uid, 10) !== parseInt(uid, 10));
+	};
+
+	Topics.isFollowingTag = async function (tag, uid) {
+		return await db.isSortedSetMember(`tag:${tag}:followers`, uid);
+	};
+
+	Topics.getTagFollowers = async function (tag, start = 0, stop = -1) {
+		return await db.getSortedSetRange(`tag:${tag}:followers`, start, stop);
+	};
+
+	Topics.followTag = async (tag, uid) => {
+		if (!(parseInt(uid, 10) > 0)) {
+			throw new Error('[[error:not-logged-in]]');
+		}
+		const now = Date.now();
+		await db.sortedSetAddBulk([
+			[`tag:${tag}:followers`, now, uid],
+			[`uid:${uid}:followed_tags`, now, tag],
+		]);
+		plugins.hooks.fire('action:tags.follow', { tag, uid });
+	};
+
+	Topics.unfollowTag = async (tag, uid) => {
+		if (!(parseInt(uid, 10) > 0)) {
+			throw new Error('[[error:not-logged-in]]');
+		}
+		await db.sortedSetRemoveBulk([
+			[`tag:${tag}:followers`, uid],
+			[`uid:${uid}:followed_tags`, tag],
+		]);
+		plugins.hooks.fire('action:tags.unfollow', { tag, uid });
+	};
+
+	Topics.notifyTagFollowers = async function (postData, exceptUid) {
+		let { tags } = postData.topic;
+		if (!tags.length) {
+			return;
+		}
+		tags = tags.map(tag => tag.value);
+
+		const [followersOfPoster, allFollowers] = await Promise.all([
+			db.getSortedSetRange(`followers:${exceptUid}`, 0, -1),
+			db.getSortedSetRange(tags.map(tag => `tag:${tag}:followers`), 0, -1),
+		]);
+		const followerSet = new Set(followersOfPoster);
+		// filter out followers of the poster since they get a notification already
+		let followers = _.uniq(allFollowers).filter(uid => !followerSet.has(uid) && uid !== String(exceptUid));
+		followers = await privileges.topics.filterUids('topics:read', postData.topic.tid, followers);
+		if (!followers.length) {
+			return;
+		}
+
+		const { displayname } = postData.user;
+
+		const notifBase = 'notifications:user-posted-topic-with-tag';
+		let bodyShort = translator.compile(notifBase, displayname, tags[0]);
+		if (tags.length === 2) {
+			bodyShort = translator.compile(`${notifBase}-dual`, displayname, tags[0], tags[1]);
+		} else if (tags.length === 3) {
+			bodyShort = translator.compile(`${notifBase}-triple`, displayname, tags[0], tags[1], tags[2]);
+		} else if (tags.length > 3) {
+			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, tags.join(', '));
+		}
+
+		const notification = await notifications.create({
+			type: 'new-topic-with-tag',
+			nid: `new_topic:tid:${postData.topic.tid}:uid:${exceptUid}`,
+			subject: bodyShort,
+			bodyShort: bodyShort,
+			bodyLong: postData.content,
+			pid: postData.pid,
+			path: `/post/${postData.pid}`,
+			tid: postData.topic.tid,
+			from: exceptUid,
+		});
+		notifications.push(notification, followers);
 	};
 };

@@ -51,7 +51,7 @@
 						<input type="date" id="end" name="end" value="{query.end}" class="form-control" />
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="perPage">[[admin/advanced/events:filter-perPage]]</label>
+						<label class="form-label" for="perPage">[[admin/advanced/events:filter-per-page]]</label>
 						<input type="text" id="perPage" name="perPage" value="{query.perPage}" class="form-control" />
 					</div>
 					<div class="d-grid gap-1">

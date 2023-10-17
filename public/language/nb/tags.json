@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Det er ingen emner med dette emneordet.",
+    "no-tag-topics": "Det er ingen emner med dette emneordet.",
     "no-tags-found": "No tags found",
     "tags": "Emneord",
-    "enter_tags_here": "Skriv emneord her, mellom %1 og %2 tegn hver.",
-    "enter_tags_here_short": "Skriv emneord...",
-    "no_tags": "Det finnes ingen emneord enda.",
-    "select_tags": "Velg kode",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Skriv emneord her, mellom %1 og %2 tegn hver.",
+    "enter-tags-here-short": "Skriv emneord...",
+    "no-tags": "Det finnes ingen emneord enda.",
+    "select-tags": "Velg kode",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

@@ -1,9 +1,9 @@
 {
-	"posts": "Posts",
+	"posts": "Post",
 	"orphans": "File orfani",
 	"private": "Rendi privati i file caricati",
 	"strip-exif-data": "Togli EXIF Data",
-	"preserve-orphaned-uploads": "Mantieni i file caricati su disco dopo l'eliminazione di un post",
+	"preserve-orphaned-uploads": "Mantieni i file caricati su disco dopo l'eliminazione definitiva di un post",
 	"orphanExpiryDays": "Giorni di conservazione dei file orfani",
 	"orphanExpiryDays-help": "Dopo questo numero di giorni, i caricamenti orfani saranno eliminati dal file system.<br />Imposta 0 o lascia vuoto per disabilitarla.",
 	"private-extensions": "Estensione dei file da rendere privata",

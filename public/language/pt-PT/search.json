@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 resultado(s) correspondendo \"%2\", (%3 segundos)",
+    "results-matching": "%1 resultado(s) correspondendo \"%2\", (%3 segundos)",
     "no-matches": "Não foram encontradas correspondências",
     "advanced-search": "Pesquisa avançada",
     "in": "Em",

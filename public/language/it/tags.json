@@ -1,11 +1,17 @@
 {
     "all-tags": "Tutti i tag",
-    "no_tag_topics": "Non ci sono discussioni con questo tag.",
+    "no-tag-topics": "Non ci sono discussioni con questo tag.",
     "no-tags-found": "Nessun tag trovato",
     "tags": "Tag",
-    "enter_tags_here": "Inserisci qui i tag, tra %1 e %2 caratteri ciascuno.",
-    "enter_tags_here_short": "Inserisci i tag...",
-    "no_tags": "Non ci sono ancora tag.",
-    "select_tags": "Seleziona tag",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Inserisci qui i tag, tra %1 e %2 caratteri ciascuno.",
+    "enter-tags-here-short": "Inserisci i tag...",
+    "no-tags": "Non ci sono ancora tag.",
+    "select-tags": "Seleziona tag",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Seguito",
+    "not-watching": "Non seguito",
+    "watching.description": "Notificami le nuove discussioni.",
+    "not-watching.description": "Non notificatemi le nuove discussioni.",
+    "following-tag.message": "Ora riceverai notifiche quando qualcuno posta una discussione con questo tag.",
+    "not-following-tag.message": "Non riceverai notifiche quando qualcuno posta una discussione con questo tag."
 }

@@ -164,6 +164,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		postSharing,
 		deleter,
 		merger,
+		forker,
 		related,
 		thumbs,
 		events,
@@ -177,6 +178,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		social.getActivePostSharing(),
 		getDeleter(topicData),
 		getMerger(topicData),
+		getForker(topicData),
 		Topics.getRelatedTopics(topicData, uid),
 		Topics.thumbs.load([topicData]),
 		Topics.events.get(topicData.tid, uid, reverse),
@@ -211,6 +213,10 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	if (merger) {
 		topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 	}
+	topicData.forker = forker;
+	if (forker) {
+		topicData.forkTimestampISO = utils.toISOString(topicData.forkTimestamp);
+	}
 	topicData.related = related || [];
 	topicData.unreplied = topicData.postcount === 1;
 	topicData.icons = [];
@@ -239,6 +245,21 @@ async function getMerger(topicData) {
 	]);
 	merger.mergedIntoTitle = mergedIntoTitle;
 	return merger;
+}
+
+async function getForker(topicData) {
+	if (!parseInt(topicData.forkerUid, 10)) {
+		return null;
+	}
+	const [
+		forker,
+		forkedFromTitle,
+	] = await Promise.all([
+		user.getUserFields(topicData.forkerUid, ['username', 'userslug', 'picture']),
+		Topics.getTopicField(topicData.forkedFromTid, 'title'),
+	]);
+	forker.forkedFromTitle = forkedFromTitle;
+	return forker;
 }
 
 Topics.getMainPost = async function (tid, uid) {

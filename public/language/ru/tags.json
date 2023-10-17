@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Тем с такой меткой сейчас нет.",
+    "no-tag-topics": "Тем с такой меткой сейчас нет.",
     "no-tags-found": "No tags found",
     "tags": "Метки",
-    "enter_tags_here": "Добавьте метки здесь, от %1 до %2 символов каждая.",
-    "enter_tags_here_short": "Введите метки...",
-    "no_tags": "Меток пока нет.",
-    "select_tags": "Выберите метки",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Добавьте метки здесь, от %1 до %2 символов каждая.",
+    "enter-tags-here-short": "Введите метки...",
+    "no-tags": "Меток пока нет.",
+    "select-tags": "Выберите метки",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

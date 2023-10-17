@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Ei viimeisimpiä aiheita tällä tagilla.",
+    "no-tag-topics": "Ei viimeisimpiä aiheita tällä tagilla.",
     "no-tags-found": "No tags found",
     "tags": "Tagit",
-    "enter_tags_here": "Syötä tagit tähän merkkien %1 ja %2 väliin.",
-    "enter_tags_here_short": "Syötä tagit...",
-    "no_tags": "Ei vielä yhtään tagia.",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Syötä tagit tähän merkkien %1 ja %2 väliin.",
+    "enter-tags-here-short": "Syötä tagit...",
+    "no-tags": "Ei vielä yhtään tagia.",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

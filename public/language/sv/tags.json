@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Det finns inga ämnen med denna tagg.",
+    "no-tag-topics": "Det finns inga ämnen med denna tagg.",
     "no-tags-found": "No tags found",
     "tags": "Taggar",
-    "enter_tags_here": "Fyll i taggar på %1 till %2 tecken här.",
-    "enter_tags_here_short": "Ange taggar...",
-    "no_tags": "Det finns inga taggar ännu.",
-    "select_tags": "Välj Etiketter",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Fyll i taggar på %1 till %2 tecken här.",
+    "enter-tags-here-short": "Ange taggar...",
+    "no-tags": "Det finns inga taggar ännu.",
+    "select-tags": "Välj Etiketter",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

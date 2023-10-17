@@ -1,12 +1,12 @@
 {
     "username-email": "ユーザー名またはメールアドレス",
     "username": "ユーザー名",
-    "remember_me": "ログイン情報を記憶",
-    "forgot_password": "パスワードを忘れましたか？",
-    "alternative_logins": "ほかのログイン方法",
-    "failed_login_attempt": "ログインに成功",
-    "login_successful": "ログインしました！",
-    "dont_have_account": "アカウントをもっていませんか?",
+    "remember-me": "ログイン情報を記憶",
+    "forgot-password": "パスワードを忘れましたか？",
+    "alternative-logins": "ほかのログイン方法",
+    "failed-login-attempt": "ログインに成功",
+    "login-successful": "ログインしました！",
+    "dont-have-account": "アカウントをもっていませんか?",
     "logged-out-due-to-inactivity": "しばらく操作されていなかったため、管理パネルよりログアウトされました。",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

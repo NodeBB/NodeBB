@@ -54,13 +54,13 @@ define('forum/topic/votes', [
 			})).show();
 		}
 		let usernames = data.usernames
-			.filter(name => name !== '[[global:former_user]]');
+			.filter(name => name !== '[[global:former-user]]');
 		if (!usernames.length) {
 			return;
 		}
 		if (usernames.length + data.otherCount > data.cutoff) {
 			usernames = usernames.join(', ').replace(/,/g, '|');
-			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function (translated) {
+			translator.translate('[[topic:users-and-others, ' + usernames + ', ' + data.otherCount + ']]', function (translated) {
 				translated = translated.replace(/\|/g, ',');
 				doCreateTooltip(translated);
 			});

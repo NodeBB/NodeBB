@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Liczba dni, po których temat będzie uznany za martwy",
-	"restrictions.stale-help": "Jeśli temat został uznany za „martwy”, użytkownikom próbującym na niego odpowiedzieć wyświetli się stosowany komunikat.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Znacznik czasowy",
 	"timestamp.cut-off": "Termin odcięcia (w dniach)",
 	"timestamp.cut-off-help": "Daty oraz godziny będą wyświetlane w sposób relatywny  (np. \"3 godziny temu\" / \"5 dni temu\"), oraz przetłumaczone na różne\n\t\t\t\t\tjęzyki. Po określonym czasie, ten tekst może zostać zmieniony, aby wyświetlać sformatowane daty.\n\t\t\t\t\t(np. 4 Lut 2017 12:45).<br /><em>(domyślnie: <code>30</code>, lub jeden miesiąc). Ustaw 0, aby zawsze wyświetlać daty; pozostaw puste, aby korzystać z tylko z relatywnych opisów.</em>",

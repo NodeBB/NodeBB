@@ -1,10 +1,10 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
-    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.title": "Գույների կարգավորումներ",
+    "settings.intro": "Այստեղ դուք կարող եք հարմարացնել Ձեր թեմաների կարգավորումները: Կարգավորումները պահվում են յուրաքանչյուր սարքի վրա, այնպես որ դուք կարող եք ունենալ տարբեր կարգավորումներ տարբեր սարքերում (հեռախոս, պլանշետ, աշխատասեղան և այլն):",
+    "settings.mobile-menu-side": "Փոխեք այն կողմը, որտեղ յուրաքանչյուր շարժական մենյուն ակտիվ է",
+    "settings.autoHidingNavbar": "Ավտոմատ թաքցնել ուղղորդիչը ոլորման վրա",
+    "settings.autoHidingNavbar-xs": "Շատ փոքր էկրաններ (օր.՝ հեռախոսը դիմանկարի ռեժիմով)",
+    "settings.autoHidingNavbar-sm": "Ավելի փոքր էկրաններ (օր.՝ հեռախոսներ, պլանշետներ)",
+    "settings.autoHidingNavbar-md": "Միջին չափի էկրաններ (օր.՝ պլանշետները լանդշաֆտային ռեժիմով)",
+    "settings.autoHidingNavbar-lg": "Ավելի մեծ էկրաններ (օր.՝ սեղանի համակարգիչները)"
 }

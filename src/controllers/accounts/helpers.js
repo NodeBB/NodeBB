@@ -192,6 +192,7 @@ async function getCounts(userData, callerUID) {
 		promises.bookmarks = db.sortedSetCard(`uid:${uid}:bookmarks`);
 		promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);
 		promises.categoriesWatched = user.getWatchedCategories(uid);
+		promises.tagsWatched = db.sortedSetCard(`uid:${uid}:followed_tags`);
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}
 	const counts = await utils.promiseParallel(promises);
@@ -209,7 +210,7 @@ async function getProfileMenu(uid, callerUID) {
 	const links = [{
 		id: 'info',
 		route: 'info',
-		name: '[[user:account_info]]',
+		name: '[[user:account-info]]',
 		icon: 'fa-info',
 		visibility: {
 			self: false,

@@ -97,7 +97,9 @@ Interstitials.email = async (data) => {
 						}).catch((err) => {
 							winston.error(`[user.interstitials.email] Validation email failed to send\n[emailer.send] ${err.stack}`);
 						});
-						data.req.session.emailChanged = 1;
+						if (isSelf) {
+							data.req.session.emailChanged = 1;
+						}
 					} else {
 						// User attempting to edit another user's email -- not allowed
 						throw new Error('[[error:no-privileges]]');
@@ -162,7 +164,7 @@ Interstitials.gdpr = async function (data) {
 				userData.gdpr_consent = true;
 			}
 
-			next(userData.gdpr_consent ? null : new Error('[[register:gdpr_consent_denied]]'));
+			next(userData.gdpr_consent ? null : new Error('[[register:gdpr-consent-denied]]'));
 		},
 	});
 	return data;
@@ -200,7 +202,7 @@ Interstitials.tou = async function (data) {
 				userData.acceptTos = true;
 			}
 
-			next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
+			next(userData.acceptTos ? null : new Error('[[register:terms-of-use-error]]'));
 		},
 	});
 	return data;

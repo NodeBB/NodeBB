@@ -496,4 +496,7 @@ get:
                     type: string
                   bodyClasses:
                     type: array
+                  composerActions:
+                    type: array
+                    description: A list of buttons that are added next to the send message button by plugins
               - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

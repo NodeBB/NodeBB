@@ -116,6 +116,11 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 		for (let x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
 			member.privileges[userPrivileges[x]] = memberSets[x].includes(parseInt(member.uid, 10));
 		}
+		const types = {};
+		for (const [key] of Object.entries(member.privileges)) {
+			types[key] = getType(key);
+		}
+		member.types = types;
 	});
 
 	return memberData;
@@ -149,16 +154,29 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 		for (let x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
 			memberPrivs[groupPrivileges[x]] = memberSets[x].includes(member);
 		}
+		const types = {};
+		for (const [key] of Object.entries(memberPrivs)) {
+			types[key] = getType(key);
+		}
 		return {
 			name: validator.escape(member),
 			nameEscaped: translator.escape(validator.escape(member)),
 			privileges: memberPrivs,
+			types: types,
 			isPrivate: groupData[index] && !!groupData[index].private,
 			isSystem: groupData[index] && !!groupData[index].system,
 		};
 	});
 	return memberData;
 };
+
+
+function getType(privilege) {
+	privilege = privilege.replace(/^groups:/, '');
+	const global = require('./global');
+	const categories = require('./categories');
+	return global.getType(privilege) || categories.getType(privilege) || 'other';
+}
 
 function moveToFront(groupNames, groupToMove) {
 	const index = groupNames.indexOf(groupToMove);

@@ -17,7 +17,7 @@
 	"mongo.file-size": "Ukuran File",
 	"mongo.resident-memory": "Pemukim Memori",
 	"mongo.virtual-memory": "Memori Virtual",
-	"mongo.mapped-memory": "Memori Terpetakan",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "Bytes Masuk",
 	"mongo.bytes-out": "Bytes Keluar",
 	"mongo.num-requests": "Jumlah Permintaan",

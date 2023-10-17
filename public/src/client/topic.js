@@ -158,7 +158,7 @@ define('forum/topic', [
 		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
 			alerts.alert({
 				alert_id: 'bookmark',
-				message: '[[topic:bookmark_instructions]]',
+				message: '[[topic:bookmark-instructions]]',
 				timeout: 15000,
 				type: 'info',
 				clickfn: function () {

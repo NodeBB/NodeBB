@@ -248,6 +248,7 @@ module.exports = function (module) {
 				$inc: increment,
 			}, {
 				returnDocument: 'after',
+				includeResultMetadata: true,
 				upsert: true,
 			});
 			cache.del(key);

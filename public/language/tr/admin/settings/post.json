@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Title Length",
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Konu eskimiş sayılana kadar geçen gün sayısı",
-	"restrictions.stale-help": "Bir konu \"eskimiş\" olarak kabul edilirse, o konuya cevap vermeye çalışan kullanıcılara bir uyarı gösterilecektir.",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "Zaman Damgası",
 	"timestamp.cut-off": "Kapanış tarihi (günler)",
 	"timestamp.cut-off-help": "Tarihler ve &amp; zamanlar göreli bir şekilde (ör. \"3 saat önce\" / \"5 gün önce\") gösterilecek ve çeşitli dillerde yerleştirilecektir.\n\t\t\t\t\tBelirli bir noktadan sonra, bu metin yerelleştirilmiş tarihi göstermek için değiştirilebilir.\n\t\t\t\t\t(ör. 5 Kasım 2016 15:30).<br /><em>(Varsayılan: <code>30</code>, veya bir ay). Tarihleri her zaman görüntülemek için 0'a ayarlayın, her zaman göreli zamanları görüntülemek için boş bırakın.</em>",

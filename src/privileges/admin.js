@@ -17,15 +17,27 @@ const privsAdmin = module.exports;
  * in to your listener.
  */
 const _privilegeMap = new Map([
-	['admin:dashboard', { label: '[[admin/manage/privileges:admin-dashboard]]' }],
-	['admin:categories', { label: '[[admin/manage/privileges:admin-categories]]' }],
-	['admin:privileges', { label: '[[admin/manage/privileges:admin-privileges]]' }],
-	['admin:admins-mods', { label: '[[admin/manage/privileges:admin-admins-mods]]' }],
-	['admin:users', { label: '[[admin/manage/privileges:admin-users]]' }],
-	['admin:groups', { label: '[[admin/manage/privileges:admin-groups]]' }],
-	['admin:tags', { label: '[[admin/manage/privileges:admin-tags]]' }],
-	['admin:settings', { label: '[[admin/manage/privileges:admin-settings]]' }],
+	['admin:dashboard', { label: '[[admin/manage/privileges:admin-dashboard]]', type: 'admin' }],
+	['admin:categories', { label: '[[admin/manage/privileges:admin-categories]]', type: 'admin' }],
+	['admin:privileges', { label: '[[admin/manage/privileges:admin-privileges]]', type: 'admin' }],
+	['admin:admins-mods', { label: '[[admin/manage/privileges:admin-admins-mods]]', type: 'admin' }],
+	['admin:users', { label: '[[admin/manage/privileges:admin-users]]', type: 'admin' }],
+	['admin:groups', { label: '[[admin/manage/privileges:admin-groups]]', type: 'admin' }],
+	['admin:tags', { label: '[[admin/manage/privileges:admin-tags]]', type: 'admin' }],
+	['admin:settings', { label: '[[admin/manage/privileges:admin-settings]]', type: 'admin' }],
 ]);
+
+privsAdmin.init = async () => {
+	await plugins.hooks.fire('static:privileges.admin.init', {
+		privileges: _privilegeMap,
+	});
+
+	for (const [, value] of _privilegeMap) {
+		if (value && !value.type) {
+			value.type = 'other';
+		}
+	}
+};
 
 privsAdmin.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.admin.list', Array.from(_privilegeMap.keys()));
 privsAdmin.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.admin.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
@@ -35,12 +47,6 @@ privsAdmin.getPrivilegeList = async () => {
 		privsAdmin.getGroupPrivilegeList(),
 	]);
 	return user.concat(group);
-};
-
-privsAdmin.init = async () => {
-	await plugins.hooks.fire('static:privileges.admin.init', {
-		privileges: _privilegeMap,
-	});
 };
 
 // Mapping for a page route (via direct match or regexp) to a privilege
@@ -152,6 +158,7 @@ privsAdmin.list = async function (uid) {
 
 	const payload = await utils.promiseParallel({
 		labels,
+		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),
 	});

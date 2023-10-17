@@ -21,7 +21,7 @@ define('topicThumbs', [
 
 	Thumbs.upload = id => new Promise((resolve) => {
 		uploader.show({
-			title: '[[topic:composer.thumb_title]]',
+			title: '[[topic:composer.thumb-title]]',
 			method: 'put',
 			route: config.relative_path + `/api/v3/topics/${id}/thumbs`,
 		}, function (url) {

@@ -1,5 +1,6 @@
 {
 	"state": "狀態",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "帥！沒發現任何的舉報。",
@@ -8,6 +9,8 @@
 	"update": "更新",
 	"updated": "已更新",
 	"resolved": "Resolved",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "被舉報的內容已經被清除，不再可用。",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

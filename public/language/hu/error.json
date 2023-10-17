@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "Ez a bejegyzés már meg lett jelölve egy másik felhasználó által",
     "user-flagged-too-many-times": "Ez a felhasználó már meg lett jelölve egy másik felhasználó által",
     "cant-flag-privileged": "Nem jelentheted be felhatalmazott felhasználókat vagy a bejegyzéseik tartalmát (moderátor/globális moderátor/adminok)",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "Nem szavazhatsz a saját hozzászólásodra",
     "too-many-upvotes-today": "Naponta csak %1 alkalommal szavazhat pozitívan",
     "too-many-upvotes-today-user": "Egy felhasználóra naponta csak %1 alkalommal szavazhat pozitívan",

@@ -1,4 +1,5 @@
 {
+	"zero-is-disabled": "Immetti 0 per disabilitare questa restrizione",
 	"chat-settings": "Impostazioni chat",
 	"disable": "Disabilita chat",
 	"disable-editing": "Disabilita modifica/cancellazione messaggio chat",
@@ -6,8 +7,10 @@
 	"max-length": "Lunghezza massima dei messaggi della chat",
 	"max-chat-room-name-length": "Lunghezza massima dei nomi delle stanze chat",
 	"max-room-size": "Numero massimo di utenti nelle stanza chat",
-	"delay": "Tempo tra i messaggi della chat in millisecondi",
-	"notification-delay": "Ritardo di notifica per i messaggi di chat. (0 per nessun ritardo)",
-	"restrictions.seconds-edit-after": "Numero di secondi in cui un messaggio di chat rimane modificabile. (0 disabilitato)",
-	"restrictions.seconds-delete-after": "Numero di secondi in cui un messaggio di chat rimane cancellabile. (0 disabilitato)"
+	"delay": "Tempo tra i messaggi di chat (ms)",
+	"newbieDelay": "... per i nuovi utenti (ms)",
+	"notification-delay": "Ritardo nella notifica dei messaggi di chat",
+	"notification-delay-help": "I messaggi aggiuntivi inviati in questo intervallo di tempo vengono raccolti e l'utente riceve una notifica per ogni periodo di ritardo. Impostalo su 0 per disabilitare il ritardo.",
+	"restrictions.seconds-edit-after": "Numero di secondi in cui un messaggio di chat rimane modificabile.",
+	"restrictions.seconds-delete-after": "Numero di secondi in cui un messaggio di chat rimane cancellabile."
 }

@@ -113,7 +113,7 @@ define('forum/topic/postTools', [
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function () {
-			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
+			translator.translate(`[[topic:link-back, ${ajaxify.data.titleRaw}, ${config.relative_path}/topic/${ajaxify.data.slug}]]`, function (body) {
 				hooks.fire('action:composer.topic.new', {
 					cid: ajaxify.data.cid,
 					body: body,
@@ -375,12 +375,12 @@ define('forum/topic/postTools', [
 					slug = slugify(post.attr('data-username'), true);
 					if (!slug) {
 						if (post.attr('data-uid') !== '0') {
-							slug = '[[global:former_user]]';
+							slug = '[[global:former-user]]';
 						} else {
 							slug = '[[global:guest]]';
 						}
 					}
-					if (slug && slug !== '[[global:former_user]]' && slug !== '[[global:guest]]') {
+					if (slug && slug !== '[[global:former-user]]' && slug !== '[[global:guest]]') {
 						slug = '@' + slug;
 					}
 					resolve(slug);
@@ -410,7 +410,7 @@ define('forum/topic/postTools', [
 			return;
 		}
 
-		bootbox.confirm('[[topic:post_' + action + '_confirm]]', function (confirm) {
+		bootbox.confirm('[[topic:post-' + action + '-confirm]]', function (confirm) {
 			if (!confirm) {
 				return;
 			}
@@ -431,7 +431,14 @@ define('forum/topic/postTools', [
 	}
 
 	function showStaleWarning(callback) {
-		const staleThreshold = Math.min(Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays), 8640000000000000);
+		const topicStaleDays = parseInt(ajaxify.data.topicStaleDays, 10);
+		if (!topicStaleDays) {
+			return callback();
+		}
+		const staleThreshold = Math.min(
+			Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays),
+			8640000000000000
+		);
 		if (staleReplyAnyway || ajaxify.data.lastposttime >= staleThreshold) {
 			return callback();
 		}
@@ -441,7 +448,7 @@ define('forum/topic/postTools', [
 			message: '[[topic:stale.warning]]',
 			buttons: {
 				reply: {
-					label: '[[topic:stale.reply_anyway]]',
+					label: '[[topic:stale.reply-anyway]]',
 					className: 'btn-link',
 					callback: function () {
 						staleReplyAnyway = true;
@@ -452,7 +459,7 @@ define('forum/topic/postTools', [
 					label: '[[topic:stale.create]]',
 					className: 'btn-primary',
 					callback: function () {
-						translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
+						translator.translate(`[[topic:link-back, ${ajaxify.data.title}, ${config.relative_path}/topic/${ajaxify.data.slug}]]`, function (body) {
 							hooks.fire('action:composer.topic.new', {
 								cid: ajaxify.data.cid,
 								body: body,

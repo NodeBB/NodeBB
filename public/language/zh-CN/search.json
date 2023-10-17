@@ -1,6 +1,6 @@
 {
     "type-to-search": "输入内容进行搜索",
-    "results_matching": "共 %1 条结果匹配 \"%2\"，(耗时 %3 秒)",
+    "results-matching": "共 %1 条结果匹配 \"%2\"，(耗时 %3 秒)",
     "no-matches": "无匹配结果",
     "advanced-search": "高级搜索",
     "in": "在",

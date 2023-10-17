@@ -93,7 +93,7 @@ authenticationController.register = async function (req, res) {
 		}
 
 		if (userData.password !== userData['password-confirm']) {
-			throw new Error('[[user:change_password_error_match]]');
+			throw new Error('[[user:change-password-error-match]]');
 		}
 
 		if (userData.password.length > 512) {
@@ -218,6 +218,7 @@ authenticationController.registerAbort = async (req, res) => {
 
 		const { interstitials } = await user.interstitials.get(req, req.session.registration);
 		if (!interstitials.length) {
+			delete req.session.registration;
 			return res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 		}
 	}

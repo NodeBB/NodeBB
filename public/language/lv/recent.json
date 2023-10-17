@@ -5,7 +5,7 @@
     "month": "Šomēnes",
     "year": "Šogad",
     "alltime": "Visu laiku",
-    "no_recent_topics": "Nav neseno tematu.",
-    "no_popular_topics": "Nav populāro tematu.",
+    "no-recent-topics": "Nav neseno tematu.",
+    "no-popular-topics": "Nav populāro tematu.",
     "load-new-posts": "Load new posts"
 }

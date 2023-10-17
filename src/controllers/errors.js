@@ -48,6 +48,12 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 			res.status(403).type('text/plain').send(err.message);
 		},
 	};
+
+	const notFoundHandler = () => {
+		const controllers = require('.');
+		controllers['404'].handle404(req, res);
+	};
+
 	const defaultHandler = async function () {
 		if (res.headersSent) {
 			return;
@@ -87,6 +93,8 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 	try {
 		if (data.cases.hasOwnProperty(err.code)) {
 			data.cases[err.code](err, req, res, defaultHandler);
+		} else if (err.message.startsWith('[[error:no-') && err.message !== '[[error:no-privileges]]') {
+			notFoundHandler();
 		} else {
 			await defaultHandler();
 		}

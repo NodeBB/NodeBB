@@ -103,12 +103,12 @@ usersController.renderUsersPage = async function (set, req, res) {
 
 usersController.getUsers = async function (set, uid, query) {
 	const setToData = {
-		'users:postcount': { title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]' },
-		'users:reputation': { title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]' },
+		'users:postcount': { title: '[[pages:users/sort-posts]]', crumb: '[[users:top-posters]]' },
+		'users:reputation': { title: '[[pages:users/sort-reputation]]', crumb: '[[users:most-reputation]]' },
 		'users:joindate': { title: '[[pages:users/latest]]', crumb: '[[global:users]]' },
 		'users:online': { title: '[[pages:users/online]]', crumb: '[[global:online]]' },
 		'users:banned': { title: '[[pages:users/banned]]', crumb: '[[user:banned]]' },
-		'users:flags': { title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]' },
+		'users:flags': { title: '[[pages:users/most-flags]]', crumb: '[[users:most-flags]]' },
 	};
 
 	if (!setToData[set]) {

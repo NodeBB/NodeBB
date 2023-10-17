@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 rezultatas(ai) atitinka \"%2\", (%3 sekundes)",
+    "results-matching": "%1 rezultatas(ai) atitinka \"%2\", (%3 sekundes)",
     "no-matches": "Atitikmenų nerasta",
     "advanced-search": "Išplėstinė paieška",
     "in": "Į",

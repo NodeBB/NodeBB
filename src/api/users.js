@@ -164,11 +164,11 @@ usersAPI.follow = async function (caller, data) {
 
 	const notifObj = await notifications.create({
 		type: 'follow',
-		bodyShort: `[[notifications:user_started_following_you, ${displayname}]]`,
+		bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
 		nid: `follow:${data.uid}:uid:${caller.uid}`,
 		from: caller.uid,
 		path: `/uid/${data.uid}/followers`,
-		mergeId: 'notifications:user_started_following_you',
+		mergeId: 'notifications:user-started-following-you',
 	});
 	if (!notifObj) {
 		return;
@@ -413,10 +413,9 @@ usersAPI.getInviteGroups = async (caller, { uid }) => {
 };
 
 usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
-	const canManageUsers = await privileges.admin.can('admin:users', caller.uid);
-	skipConfirmation = canManageUsers && skipConfirmation;
-
-	if (skipConfirmation) {
+	const isSelf = parseInt(caller.uid, 10) === parseInt(uid, 10);
+	const canEdit = await privileges.users.canEdit(caller.uid, uid);
+	if (skipConfirmation && canEdit && !isSelf) {
 		if (!email.length) {
 			await user.email.remove(uid);
 		} else {

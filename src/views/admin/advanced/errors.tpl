@@ -17,8 +17,10 @@
 		<div class="row">
 			<div class="col-sm-6 text-center">
 				<div class="card">
-					<div class="card-body">
-						<div><canvas id="not-found" height="250"></canvas></div>
+					<div class="card-body" >
+						<div class="position-relative" style="aspect-ratio: 2;">
+							<canvas id="not-found"></canvas>
+						</div>
 					</div>
 					<div class="card-footer"><small>
 						<strong>[[admin/advanced/errors:figure-x, 1]]</strong> &ndash;
@@ -29,7 +31,9 @@
 			<div class="col-sm-6 text-center">
 				<div class="card">
 					<div class="card-body">
-						<div><canvas id="toobusy" height="250"></canvas></div>
+						<div class="position-relative" style="aspect-ratio: 2;">
+							<canvas id="toobusy"></canvas>
+						</div>
 					</div>
 					<div class="card-footer"><small>
 						<strong>[[admin/advanced/errors:figure-x, 2]]</strong> &ndash;

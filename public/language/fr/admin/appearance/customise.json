@@ -1,20 +1,20 @@
 {
 	"customise": "Personnaliser",
 	"custom-css": "CSS/SASS personnalisé",
-	"custom-css.description": "Entrez vos propres déclarations CSS/SASS ici, qui seront appliquées après tous les autres styles.",
+	"custom-css.description": "Entrer vos propres déclarations CSS/SASS ici, qui seront appliquées après tous les autres styles.",
 	"custom-css.enable": "Activer le CSS/SASS personnalisé",
 
 	"custom-js": "Javascript personnalisé",
-	"custom-js.description": "Entrez votre Javascript ici. Celui-ci sera exécuté après le chargement complet de la page.",
+	"custom-js.description": "Entrer votre Javascript ici. Celui-ci sera exécuté après le chargement complet de la page.",
 	"custom-js.enable": "Activer le Javascript personnalisé",
 
 	"custom-header": "En-tête personnalisé",
-	"custom-header.description": "Saisissez votre code HTML personnalisé ici (par exemple, les balises Meta, etc.), qui sera ajouté au section <code>&lt;head&gt;</code> du balisage de votre forum. Les mots clés sont autorisés, mais sont déconseillés, dans la mesure où le <a href=\"#custom-js\" data-toggle=\"tab\">Javascript personnalisé</a> est disponible.",
+	"custom-header.description": "Saisir du code HTML personnalisé ici (par exemple, les balises Meta, etc.), qui sera ajouté à la section <code><head></code> du balisage de votre forum. Les mots clés sont autorisés, mais sont déconseillés, dans la mesure où le <a href=\"#custom-js\" data-toggle=\"tab\">Javascript personnalisé</a> est disponible.",
 	"custom-header.enable": "Activer les en-têtes personnalisés",
 
 	"custom-css.livereload": "Activer le rechargement en direct",
-	"custom-css.livereload.description": "Activez cette option pour forcer toutes les sessions sur chaque appareil connecté à votre compte à se rafraichir lorsque vous cliquez sur Enregistrer.",
+	"custom-css.livereload.description": "Activer cette option pour forcer toutes les sessions sur chaque appareil connecté à votre compte à se rafraichir lorsque vous cliquez sur Enregistrer.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Remplacez les variables de lancement ici. Vous pouvez également utiliser un outil comme <a href=\"https://bootstrap.build/app\">bootstrap.build</a> et copier coller le code ici.<br/> Les modifications nécessitent une reconstruction et un redémarrage.",
+	"bsvariables.description": "Remplacer les variables de lancement ici. Vous pouvez également utiliser un outil comme <a href=\"https://bootstrap.build/app\">bootstrap.build</a> et copier coller le code ici.<br/> Les modifications nécessitent une régénération et un redémarrage.",
 	"bsvariables.enable": "Activer _variables.scss"
 }

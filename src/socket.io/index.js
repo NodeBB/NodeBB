@@ -211,7 +211,7 @@ async function onMessage(socket, payload) {
 			});
 		}
 	} catch (err) {
-		winston.error(`${event}\n${err.stack ? err.stack : err.message}`);
+		winston.debug(`${event}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
 }
@@ -257,7 +257,6 @@ async function validateSession(socket, errorMsg) {
 	}
 
 	const sessionData = await getSessionAsync(sessionId);
-
 	if (!sessionData) {
 		throw new Error(errorMsg);
 	}

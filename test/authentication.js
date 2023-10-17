@@ -552,36 +552,22 @@ describe('authentication', () => {
 		});
 	});
 
-	it('should lockout account on 3 failed login attempts', (done) => {
+	it('should lockout account on 3 failed login attempts', async () => {
 		meta.config.loginAttempts = 3;
-		let uid;
-		async.waterfall([
-			function (next) {
-				user.create({ username: 'lockme', password: '123456' }, next);
-			},
-			async (_uid) => {
-				uid = _uid;
-				return helpers.loginUser('lockme', 'abcdef');
-			},
-			async data => helpers.loginUser('lockme', 'abcdef'),
-			async data => helpers.loginUser('lockme', 'abcdef'),
-			async data => helpers.loginUser('lockme', 'abcdef'),
-			async (data) => {
-				meta.config.loginAttempts = 5;
-				assert.equal(data.res.statusCode, 403);
-				assert.equal(data.body, '[[error:account-locked]]');
-				return helpers.loginUser('lockme', 'abcdef');
-			},
-			function (data, next) {
-				assert.equal(data.res.statusCode, 403);
-				assert.equal(data.body, '[[error:account-locked]]');
-				db.exists(`lockout:${uid}`, next);
-			},
-			function (locked, next) {
-				assert(locked);
-				next();
-			},
-		], done);
+		const uid = await user.create({ username: 'lockme', password: '123456' });
+		await helpers.loginUser('lockme', 'abcdef');
+		await helpers.loginUser('lockme', 'abcdef');
+		await helpers.loginUser('lockme', 'abcdef');
+		let data = await helpers.loginUser('lockme', 'abcdef');
+
+		meta.config.loginAttempts = 5;
+		assert.equal(data.res.statusCode, 403);
+		assert.equal(data.body, '[[error:account-locked]]');
+		data = await helpers.loginUser('lockme', 'abcdef');
+		assert.equal(data.res.statusCode, 403);
+		assert.equal(data.body, '[[error:account-locked]]');
+		const locked = await db.exists(`lockout:${uid}`);
+		assert(locked);
 	});
 
 	it('should clear all reset tokens upon successful login', async () => {

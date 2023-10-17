@@ -7,10 +7,10 @@
 	</div>
 
 	<div class="card shadow">
-		<h5 class="card-header">[[topic:thread_tools.merge_topics]]</h5>
+		<h5 class="card-header">[[topic:thread-tools.merge-topics]]</h5>
 		<div class="card-body">
 			<p>
-				[[topic:merge_topics_instruction]]
+				[[topic:merge-topics-instruction]]
 			</p>
 			<p>
 				<div class="input-group">
@@ -49,7 +49,7 @@
 		</div>
 		<div class="card-footer text-end">
 			<button class="btn btn-link btn-sm" id="merge_topics_cancel">[[global:buttons.close]]</button>
-			<button class="btn btn-primary btn-sm" id="merge_topics_confirm" disabled>[[topic:thread_tools.merge]]</button>
+			<button class="btn btn-primary btn-sm" id="merge_topics_confirm" disabled>[[topic:thread-tools.merge]]</button>
 		</div>
 	</div>
 </div>

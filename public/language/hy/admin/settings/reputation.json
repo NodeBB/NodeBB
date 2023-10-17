@@ -11,7 +11,7 @@
 	"downvotes-per-day": "Օրական դեմ ձայներ (սահմանված է 0՝ անսահմանափակ դեմ ձայների համար)",
 	"downvotes-per-user-per-day": "Դեմ ձայներ մեկ օգտատիրոջ համար մեկ օրում (սահմանված է 0՝ անսահմանափակ դեմ ձայների համար)",
 	"min-rep-chat": "Զրույցի հաղորդագրություններ ուղարկելու նվազագույն վարկանիշ",
-	"min-rep-post-links": "Minimum reputation to post links",
+	"min-rep-post-links": "Հղումներ տեղադրելու համար նվազագույն հեղինակություն",
 	"min-rep-flag": "Նվազագույն վարկանիշ դրոշի գրառումների համար",
 	"min-rep-website": "«Վեբկայք» օգտատերի պրոֆիլին ավելացնելու նվազագույն վարկանիշ",
 	"min-rep-aboutme": "«Իմ մասին» օգտատիրոջ պրոֆիլին ավելացնելու նվազագույն վարկանիշ",
@@ -28,5 +28,5 @@
 	"flags.action-on-resolve": "Երբ դրոշը լուծվում է, արեք հետևյալը",
 	"flags.action-on-reject": "Երբ դրոշը մերժվում է, արեք հետևյալը",
 	"flags.action.nothing": "Ոչինչ Չանել ",
-	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
+	"flags.action.rescind": "Չեղարկել մոդերատորներին/ադմինիստրատորներին ուղարկված ծանուցումը"
 }

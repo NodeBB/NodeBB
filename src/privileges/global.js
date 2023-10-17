@@ -36,6 +36,24 @@ const _privilegeMap = new Map([
 	['view:users:info', { label: '[[admin/manage/privileges:view-users-info]]', type: 'moderation' }],
 ]);
 
+privsGlobal.init = async () => {
+	privsGlobal._coreSize = _privilegeMap.size;
+	await plugins.hooks.fire('static:privileges.global.init', {
+		privileges: _privilegeMap,
+	});
+
+	for (const [, value] of _privilegeMap) {
+		if (value && !value.type) {
+			value.type = 'other';
+		}
+	}
+};
+
+privsGlobal.getType = function (privilege) {
+	const priv = _privilegeMap.get(privilege);
+	return priv && priv.type ? priv.type : '';
+};
+
 privsGlobal.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.list', Array.from(_privilegeMap.keys()));
 privsGlobal.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
 privsGlobal.getPrivilegeList = async () => {
@@ -44,13 +62,6 @@ privsGlobal.getPrivilegeList = async () => {
 		privsGlobal.getGroupPrivilegeList(),
 	]);
 	return user.concat(group);
-};
-
-privsGlobal.init = async () => {
-	privsGlobal._coreSize = _privilegeMap.size;
-	await plugins.hooks.fire('static:privileges.global.init', {
-		privileges: _privilegeMap,
-	});
 };
 
 privsGlobal.list = async function () {
@@ -69,6 +80,7 @@ privsGlobal.list = async function () {
 
 	const payload = await utils.promiseParallel({
 		labels: getLabels(),
+		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),
 	});

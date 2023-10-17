@@ -5,7 +5,7 @@
     "month": "Mesec",
     "year": "Leto",
     "alltime": "Vse",
-    "no_recent_topics": "Ni nedavnih tem.",
-    "no_popular_topics": "Ni priljubljenih tem.",
+    "no-recent-topics": "Ni nedavnih tem.",
+    "no-popular-topics": "Ni priljubljenih tem.",
     "load-new-posts": "Load new posts"
 }

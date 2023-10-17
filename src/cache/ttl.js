@@ -30,6 +30,14 @@ module.exports = function (opts) {
 		});
 	});
 
+	cache.has = (key) => {
+		if (!cache.enabled) {
+			return false;
+		}
+
+		return ttlCache.has(key);
+	};
+
 	cache.set = function (key, value, ttl) {
 		if (!cache.enabled) {
 			return;

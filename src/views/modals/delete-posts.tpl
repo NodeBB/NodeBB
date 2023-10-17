@@ -1,10 +1,10 @@
 <div class="card tool-modal shadow">
 	<h5 class="card-header">
-		[[topic:thread_tools.delete-posts]]
+		[[topic:thread-tools.delete-posts]]
 	</h5>
 	<div class="card-body">
 		<p>
-			[[topic:delete_posts_instruction]]
+			[[topic:delete-posts-instruction]]
 		</p>
 		<p><strong><span id="pids"></span></strong></p>
 	</div>

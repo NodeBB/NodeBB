@@ -3,20 +3,20 @@
 	<p>[[user:consent.intro]]</p>
 	<div class="form-check mb-3">
 		<input class="form-check-input" type="checkbox" name="gdpr_agree_data" id="gdpr_agree_data">
-		<label class="form-check-label" for="gdpr_agree_data">[[register:gdpr_agree_data]]</label>
+		<label class="form-check-label" for="gdpr_agree_data">[[register:gdpr-agree-data]]</label>
 	</div>
 
 	<p>
-		[[user:consent.email_intro]]
+		[[user:consent.email-intro]]
 		{{{ if digestEnabled }}}
-		[[user:consent.digest_frequency, {digestFrequency}]]
+		[[user:consent.digest-frequency, {digestFrequency}]]
 		{{{ else }}}
-		[[user:consent.digest_off]]
+		[[user:consent.digest-off]]
 		{{{ end }}}
 	</p>
 
 	<div class="form-check">
 		<input class="form-check-input" type="checkbox" name="gdpr_agree_email" id="gdpr_agree_email">
-		<label class="form-check-label" for="gdpr_agree_email">[[register:gdpr_agree_email]]</label>
+		<label class="form-check-label" for="gdpr_agree_email">[[register:gdpr-agree-email]]</label>
 	</div>
 </div>

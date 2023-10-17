@@ -1,6 +1,6 @@
 {
     "type-to-search": "Wpisz aby wyszukać",
-    "results_matching": "%1 wyników pasujących do „%2” (%3 sekund)",
+    "results-matching": "%1 wyników pasujących do „%2” (%3 sekund)",
     "no-matches": "Nie znaleziono pasujących wyników",
     "advanced-search": "Wyszukiwanie zaawansowane",
     "in": "w",
