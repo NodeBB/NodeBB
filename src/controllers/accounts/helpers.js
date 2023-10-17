@@ -82,6 +82,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
+	userData.canChat = results.canChat;
 	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
 	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
@@ -157,8 +158,21 @@ async function getAllData(uid, callerUID) {
 		canMuteUser: privileges.users.canMuteUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
+		canChat: canChat(callerUID, uid),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
 	});
+}
+
+async function canChat(callerUID, uid) {
+	try {
+		await messaging.canMessageUser(callerUID, uid);
+	} catch (err) {
+		if (err.message.startsWith('[[error:')) {
+			return false;
+		}
+		throw err;
+	}
+	return true;
 }
 
 async function getCounts(userData, callerUID) {
