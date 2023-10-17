@@ -441,7 +441,7 @@ module.exports = function (Messaging) {
 		const [room, inRoom, canChat, isAdmin, isGlobalMod] = await Promise.all([
 			Messaging.getRoomData(roomId),
 			Messaging.isUserInRoom(uid, roomId),
-			privileges.global.can('chat', uid),
+			privileges.global.can(['chat', 'chat:privileged'], uid),
 			user.isAdministrator(uid),
 			user.isGlobalModerator(uid),
 		]);
@@ -454,7 +454,7 @@ module.exports = function (Messaging) {
 		) {
 			return null;
 		}
-		if (!canChat) {
+		if (!canChat.includes(true)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 

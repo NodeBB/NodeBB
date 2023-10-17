@@ -8,13 +8,12 @@ const meta = require('../meta');
 const messaging = require('../messaging');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
-const privileges = require('../privileges');
 
 const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
 
-async function rateLimitExceeded(caller) {
+async function rateLimitExceeded(caller, field) {
 	const session = caller.request ? caller.request.session : caller.session; // socket vs req
 	const now = Date.now();
 	const [isPrivileged, reputation] = await Promise.all([
@@ -23,13 +22,13 @@ async function rateLimitExceeded(caller) {
 	]);
 	const newbie = !isPrivileged && meta.config.newbiePostDelayThreshold > reputation;
 	const delay = newbie ? meta.config.newbieChatMessageDelay : meta.config.chatMessageDelay;
-	session.lastChatMessageTime = session.lastChatMessageTime || 0;
+	session[field] = session[field] || 0;
 
-	if (now - session.lastChatMessageTime < delay) {
+	if (now - session[field] < delay) {
 		return true;
 	}
 
-	session.lastChatMessageTime = now;
+	session[field] = now;
 	return false;
 }
 
@@ -42,7 +41,7 @@ chatsAPI.list = async (caller, { page, perPage }) => {
 };
 
 chatsAPI.create = async function (caller, data) {
-	if (await rateLimitExceeded(caller)) {
+	if (await rateLimitExceeded(caller, 'lastChatRoomCreateTime')) {
 		throw new Error('[[error:too-many-messages]]');
 	}
 	if (!data) {
@@ -70,7 +69,7 @@ chatsAPI.create = async function (caller, data) {
 		messaging.notificationSettings.ATMENTION :
 		messaging.notificationSettings.ALLMESSAGES;
 
-	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
+	await Promise.all(data.uids.map(uid => messaging.canMessageUser(caller.uid, uid)));
 	const roomId = await messaging.newRoom(caller.uid, data);
 
 	return await messaging.getRoomData(roomId);
@@ -79,7 +78,7 @@ chatsAPI.create = async function (caller, data) {
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
-	if (await rateLimitExceeded(caller)) {
+	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
 		throw new Error('[[error:too-many-messages]]');
 	}
 	if (!data || !data.roomId || !caller.uid) {
@@ -200,11 +199,7 @@ chatsAPI.users = async (caller, data) => {
 };
 
 chatsAPI.invite = async (caller, data) => {
-	const canChat = await privileges.global.can('chat', caller.uid);
-	if (!canChat) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	if (!data || !data.roomId) {
+	if (!data || !data.roomId || !Array.isArray(data.uids)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const roomData = await messaging.getRoomData(data.roomId);
@@ -221,7 +216,7 @@ chatsAPI.invite = async (caller, data) => {
 	if (!uidsExist.every(Boolean)) {
 		throw new Error('[[error:no-user]]');
 	}
-	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
+	await Promise.all(data.uids.map(uid => messaging.canMessageUser(caller.uid, uid)));
 	await messaging.addUsersToRoom(caller.uid, data.uids, data.roomId);
 
 	delete data.uids;

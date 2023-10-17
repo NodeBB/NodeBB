@@ -449,6 +449,8 @@ UserObjectFull:
       type: boolean
     isFollowing:
       type: boolean
+    canChat:
+      type: boolean
     hasPrivateChat:
       type: number
     showHidden:

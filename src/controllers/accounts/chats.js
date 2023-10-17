@@ -18,8 +18,8 @@ chatsController.get = async function (req, res, next) {
 	if (!uid) {
 		return next();
 	}
-	const canChat = await privileges.global.can('chat', req.uid);
-	if (!canChat) {
+	const canChat = await privileges.global.can(['chat', 'chat:privileged'], req.uid);
+	if (!canChat.includes(true)) {
 		return helpers.notAllowed(req, res);
 	}
 

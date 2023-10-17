@@ -18,6 +18,7 @@ const privsGlobal = module.exports;
  */
 const _privilegeMap = new Map([
 	['chat', { label: '[[admin/manage/privileges:chat]]', type: 'posting' }],
+	['chat:privileged', { label: '[[admin/manage/privileges:chat-with-privileged]]', type: 'posting' }],
 	['upload:post:image', { label: '[[admin/manage/privileges:upload-images]]', type: 'posting' }],
 	['upload:post:file', { label: '[[admin/manage/privileges:upload-files]]', type: 'posting' }],
 	['signature', { label: '[[admin/manage/privileges:signature]]', type: 'posting' }],
@@ -105,11 +106,14 @@ privsGlobal.get = async function (uid) {
 };
 
 privsGlobal.can = async function (privilege, uid) {
+	const isArray = Array.isArray(privilege);
 	const [isAdministrator, isUserAllowedTo] = await Promise.all([
 		user.isAdministrator(uid),
-		helpers.isAllowedTo(privilege, uid, [0]),
+		helpers.isAllowedTo(isArray ? privilege : [privilege], uid, 0),
 	]);
-	return isAdministrator || isUserAllowedTo[0];
+	return isArray ?
+		isUserAllowedTo.map(allowed => isAdministrator || allowed) :
+		isAdministrator || isUserAllowedTo[0];
 };
 
 privsGlobal.canGroup = async function (privilege, groupName) {

@@ -155,8 +155,8 @@ module.exports = function (middleware) {
 	});
 
 	middleware.canChat = helpers.try(async (req, res, next) => {
-		const canChat = await privileges.global.can('chat', req.uid);
-		if (canChat) {
+		const canChat = await privileges.global.can(['chat', 'chat:privileged'], req.uid);
+		if (canChat.includes(true)) {
 			return next();
 		}
 		controllers.helpers.notAllowed(req, res);
