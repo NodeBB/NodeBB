@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "Thanh công cụ trên các trang chủ đề và danh mục sẽ nằm ở đầu trang",
 	"settings.autohideBottombar": "Tự động ẩn thanh dưới cùng",
 	"settings.autohideBottombar.help": "Thanh dưới cùng trên chế độ xem di động sẽ ẩn khi trang được cuộn xuống",
+	"settings.openSidebars": "Open sidebars",
 	"settings.chatModals": "Bật phương thức trò chuyện"
 }

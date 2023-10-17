@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "Թեմայի և կատեգորիայի էջերի գործիքագոտին կմնա էջի վերևում",
 	"settings.autohideBottombar": "Ավտոմատ թաքցնել ներքևի բարը",
 	"settings.autohideBottombar.help": "Բջջային դիտման ներքևի տողը կթաքցվի, երբ էջը ներքև իջացնեք",
+	"settings.openSidebars": "Open sidebars",
 	"settings.chatModals": "Միացնել զրույցի ռեժիմները"
 }
