@@ -8,6 +8,7 @@
 	"edit-privileges": "권한 수정",
   	"select-clear-all": "전체 선택/해제",
 	"chat": "채팅",
+	"chat-with-privileged": "Chat with Privileged",
 	"upload-images": "이미지 업로드",
 	"upload-files": "파일 업로드",
 	"signature": "서명",
