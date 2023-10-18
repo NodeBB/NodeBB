@@ -188,15 +188,81 @@ widgets.setAreas = async function (areas) {
 	);
 };
 
-widgets.reset = async function () {
+widgets.getAvailableAreas = async function () {
 	const defaultAreas = [
-		{ name: 'Draft Zone', template: 'global', location: 'header' },
-		{ name: 'Draft Zone', template: 'global', location: 'footer' },
-		{ name: 'Draft Zone', template: 'global', location: 'sidebar' },
+		{ name: 'Global Header', template: 'global', location: 'header' },
+		{ name: 'Global Footer', template: 'global', location: 'footer' },
+		{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+
+		{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
+		{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
 	];
 
+	return await plugins.hooks.fire('filter:widgets.getAreas', defaultAreas);
+};
+
+widgets.saveLocationsOnThemeReset = async function () {
+	const locations = {};
+	const available = await widgets.getAvailableAreas();
+	for (const area of available) {
+		/* eslint-disable no-await-in-loop */
+		const widgetsAtLocation = await widgets.getArea(area.template, area.location);
+		if (widgetsAtLocation.length) {
+			locations[area.template] = locations[area.template] || [];
+			if (!locations[area.template].includes(area.location)) {
+				locations[area.template].push(area.location);
+			}
+		}
+	}
+
+	if (Object.keys(locations).length) {
+		await db.set('widgets:draft:locations', JSON.stringify(locations));
+	}
+};
+
+widgets.moveMissingAreasToDrafts = async function () {
+	const locationsObj = await db.get('widgets:draft:locations');
+	if (!locationsObj) {
+		return;
+	}
+	try {
+		const locations = JSON.parse(locationsObj);
+		const [available, draftWidgets] = await Promise.all([
+			widgets.getAvailableAreas(),
+			widgets.getArea('global', 'drafts'),
+		]);
+		let saveDraftWidgets = draftWidgets || [];
+		for (const [template, tplLocations] of Object.entries(locations)) {
+			for (const location of tplLocations) {
+				const locationExists = available.find(
+					area => area.template === template && area.location === location
+				);
+				if (!locationExists) {
+					const widgetsAtLocation = await widgets.getArea(template, location);
+					saveDraftWidgets = saveDraftWidgets.concat(widgetsAtLocation);
+					await widgets.setArea({
+						template,
+						location,
+						widgets: [],
+					});
+				}
+			}
+		}
+		await widgets.setArea({
+			template: 'global',
+			location: 'drafts',
+			widgets: saveDraftWidgets,
+		});
+	} catch (err) {
+		winston.error(err.stack);
+	} finally {
+		await db.delete('widgets:draft:locations');
+	}
+};
+
+widgets.reset = async function () {
 	const [areas, drafts] = await Promise.all([
-		plugins.hooks.fire('filter:widgets.getAreas', defaultAreas),
+		widgets.getAvailableAreas(),
 		widgets.getArea('global', 'drafts'),
 	]);
 

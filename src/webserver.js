@@ -106,6 +106,9 @@ async function initializeNodeBB() {
 	await flags.init();
 	await analytics.init();
 	await topicEvents.init();
+	if (nconf.get('runJobs')) {
+		await require('./widgets').moveMissingAreasToDrafts();
+	}
 }
 
 function setupExpressApp(app) {
