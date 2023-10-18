@@ -4,13 +4,17 @@ const categories = require('../categories');
 const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
+const api = require('../api');
+
+const sockets = require('.');
 
 const SocketCategories = module.exports;
 
 require('./categories/search')(SocketCategories);
 
 SocketCategories.getRecentReplies = async function (socket, cid) {
-	return await categories.getRecentReplies(cid, socket.uid, 0, 4);
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid/posts');
+	return await api.categories.getPosts(socket, { cid });
 };
 
 SocketCategories.get = async function (socket) {
