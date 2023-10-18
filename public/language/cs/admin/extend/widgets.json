@@ -5,7 +5,7 @@
 	"none-installed": "Nebyly nalezeny žádné miniaplikace! Aktivujte zásuvný modul miniaplikace v ovládacím panelu <a href=\"%1\">zásuvné moduly</a>.",
 	"clone-from": "Klonovat miniaplikaci z",
 	"containers.available": "Dostupné moduly",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "Přetáhněte a pusťte na libovolnou miniaplikaci",
 	"containers.none": "Nic",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",

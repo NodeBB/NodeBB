@@ -19,7 +19,7 @@
     "public-chat": "Chat pubbliche",
     "follows": "Segui",
     "upvote": "Voti",
-    "awards": "Awards",
+    "awards": "Premi",
     "new-flags": "Nuove segnalazioni",
     "my-flags": "Segnalazioni assegnate a me",
     "bans": "Espulsioni",
@@ -94,5 +94,5 @@
     "notificationType-post-queue": "Quando un nuovo post è in coda",
     "notificationType-new-post-flag": "Quando un post viene segnalato",
     "notificationType-new-user-flag": "Quando un utente viene segnalato",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "Quando guadagni una nuova ricompensa"
 }

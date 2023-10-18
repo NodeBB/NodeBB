@@ -17,7 +17,7 @@
 	"mongo.file-size": "גודל הקובץ",
 	"mongo.resident-memory": "זכרון קיים",
 	"mongo.virtual-memory": "זיכרון וירטואלי",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "זיכרון ממופה",
 	"mongo.bytes-in": "ביטים נכנסים",
 	"mongo.bytes-out": "ביטים יוצאים",
 	"mongo.num-requests": "מספר בקשות",

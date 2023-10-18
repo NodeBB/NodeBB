@@ -1,6 +1,6 @@
 {
 	"state": "Etat",
-	"report": "Report",
+	"report": "Rapport",
 	"reports": "Rapports",
 	"first-reported": "Premier rapport",
 	"no-flags": "Excellent ! Aucun signalement trouvé.",
@@ -9,8 +9,8 @@
 	"update": "Mettre à jour",
 	"updated": "Mis à jour",
 	"resolved": "Résolu",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Ajouté",
+	"report-rescinded": "Résilié",
 	"target-purged": "Le rapport pour ce signalement a été supprimé et n'est plus accessible",
 	"target-aboutme-empty": "Cet utilisateur n'a pas de \"À propos de moi\".",
 

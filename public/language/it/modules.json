@@ -61,7 +61,7 @@
     "chat.leave": "Lascia",
     "chat.leave-room": "Lascia stanza",
     "chat.leave-prompt": "Sei sicuro di volere abbandonare questa chat?",
-    "chat.leave-help": "Abbandonando questa chat perderai ogni sua traccia. Anche dopo un tuo eventuale rientro, non vedrai nessun messaggio precedente.",
+    "chat.leave-help": "Lasciando questa chat verrai rimosso dalla futura corrispondenza in questa chat. Se sarai aggiunto nuovamente in futuro, non vedrai alcuna cronologia chat precedente al tuo nuovo accesso.",
     "chat.delete": "Elimina",
     "chat.delete-room": "Elimina stanza",
     "chat.delete-prompt": "Sei sicuro di voler eliminare questa stanza chat?",

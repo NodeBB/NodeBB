@@ -12,6 +12,6 @@
 	"settings.stickyToolbar.help": "La barre d'outils sur les pages de sujets et de catégories restera en haut de la page",
 	"settings.autohideBottombar": "Masquer automatiquement la barre inférieure",
 	"settings.autohideBottombar.help": "La barre inférieure sur mobile sera masquée lorsque la page défilera vers le bas",
-	"settings.openSidebars": "Open sidebars",
+	"settings.openSidebars": "Barres latérales ouvertes",
 	"settings.chatModals": "Activer les discussions"
 }

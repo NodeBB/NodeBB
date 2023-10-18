@@ -19,7 +19,7 @@
     "public-chat": "צ'אטים ציבוריים",
     "follows": "עוקבים",
     "upvote": "הצבעות בעד",
-    "awards": "Awards",
+    "awards": "פרסים",
     "new-flags": "דיווחים חדשים",
     "my-flags": "דיווחים שהוקצו עבורי",
     "bans": "הרחקות",
@@ -94,5 +94,5 @@
     "notificationType-post-queue": "כאשר פוסט חדש נכנס לתור",
     "notificationType-new-post-flag": "כאשר פוסט מדווח",
     "notificationType-new-user-flag": "כאשר מדווחים על משתמש",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "כאשר אתה מרוויח פרס חדש"
 }

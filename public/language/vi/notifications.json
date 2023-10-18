@@ -19,7 +19,7 @@
     "public-chat": "Trò Chuyện Công Khai",
     "follows": "Lượt theo dõi",
     "upvote": "Ủng hộ",
-    "awards": "Awards",
+    "awards": "Giải thưởng",
     "new-flags": "Cảnh báo mới",
     "my-flags": "Cảnh báo dành cho tôi",
     "bans": "Cấm",
@@ -94,5 +94,5 @@
     "notificationType-post-queue": "Khi bài đăng được thêm vào lượt chờ",
     "notificationType-new-post-flag": "Khi bài đăng bị gắn cờ cảnh báo",
     "notificationType-new-user-flag": "Khi người dùng bị gắn cờ cảnh báo",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "Khi bạn kiếm được phần thưởng mới"
 }

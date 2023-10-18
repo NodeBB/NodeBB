@@ -1,6 +1,6 @@
 {
 	"state": "Trạng thái",
-	"report": "Report",
+	"report": "Báo cáo",
 	"reports": "Báo cáo",
 	"first-reported": "Được báo cáo đầu tiên",
 	"no-flags": "Hoan hô! Không tìm thấy cờ.",
@@ -9,8 +9,8 @@
 	"update": "Cập nhật",
 	"updated": "Đã cập nhật",
 	"resolved": "Đã Xử Lý",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Đã thêm",
+	"report-rescinded": "Đã hủy bỏ",
 	"target-purged": "Nội dung mà cờ này đề cập đến đã bị xóa và không còn nữa.",
 	"target-aboutme-empty": "Người dùng này không có &quot;Giới Thiệu Về Tôi&quot; set.",
 
