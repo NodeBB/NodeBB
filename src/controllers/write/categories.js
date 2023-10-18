@@ -31,6 +31,11 @@ Categories.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Categories.getPosts = async (req, res) => {
+	const posts = await api.categories.getPosts(req, { ...req.params });
+	helpers.formatApiResponse(200, res, posts);
+};
+
 Categories.getPrivileges = async (req, res) => {
 	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
 	helpers.formatApiResponse(200, res, privilegeSet);

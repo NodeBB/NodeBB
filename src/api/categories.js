@@ -61,6 +61,8 @@ categoriesAPI.delete = async function (caller, { cid }) {
 	});
 };
 
+categoriesAPI.getPosts = async (caller, { cid }) => await categories.getRecentReplies(cid, caller.uid, 0, 4);
+
 categoriesAPI.getPrivileges = async (caller, { cid }) => {
 	await hasAdminPrivilege(caller.uid, 'privileges');
 
