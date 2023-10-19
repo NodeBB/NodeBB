@@ -84,19 +84,26 @@ SocketCategories.loadMore = async function (socket, data) {
 
 SocketCategories.getTopicCount = async function (socket, cid) {
 	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid');
+
 	const { count } = await api.categories.getTopicCount(socket, { cid });
 	return count;
 };
 
 SocketCategories.getCategoriesByPrivilege = async function (socket, privilege) {
+	sockets.warnDeprecated(socket);
+
 	return await categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege);
 };
 
 SocketCategories.getMoveCategories = async function (socket, data) {
+	sockets.warnDeprecated(socket);
+
 	return await SocketCategories.getSelectCategories(socket, data);
 };
 
 SocketCategories.getSelectCategories = async function (socket) {
+	sockets.warnDeprecated(socket);
+
 	const [isAdmin, categoriesData] = await Promise.all([
 		user.isAdministrator(socket.uid),
 		categories.buildForSelect(socket.uid, 'find', ['disabled', 'link']),
@@ -114,10 +121,14 @@ SocketCategories.setWatchState = async function (socket, data) {
 };
 
 SocketCategories.watch = async function (socket, data) {
+	sockets.warnDeprecated(socket);
+
 	return await ignoreOrWatch(user.watchCategory, socket, data);
 };
 
 SocketCategories.ignore = async function (socket, data) {
+	sockets.warnDeprecated(socket);
+
 	return await ignoreOrWatch(user.ignoreCategory, socket, data);
 };
 
@@ -146,6 +157,8 @@ async function ignoreOrWatch(fn, socket, data) {
 }
 
 SocketCategories.isModerator = async function (socket, cid) {
+	sockets.warnDeprecated(socket);
+
 	return await user.isModerator(socket.uid, cid);
 };
 
