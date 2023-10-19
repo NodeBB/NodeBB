@@ -124,10 +124,15 @@ categoryController.get = async function (req, res, next) {
 	categoryData.topicIndex = topicIndex;
 	categoryData.selectedTag = tagData.selectedTag;
 	categoryData.selectedTags = tagData.selectedTags;
-	categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;
-	if (parseInt(req.uid, 10)) {
+	if (req.loggedIn) {
 		categories.markAsRead([cid], req.uid);
-		categoryData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
+	}
+
+	if (!meta.config['feeds:disableRSS']) {
+		categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;
+		if (req.loggedIn) {
+			categoryData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
+		}
 	}
 
 	addTags(categoryData, res, currentPage);
