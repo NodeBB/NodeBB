@@ -9,7 +9,8 @@ define('forum/category', [
 	'categorySelector',
 	'hooks',
 	'alerts',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts) {
+	'api',
+], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -118,14 +119,9 @@ define('forum/category', [
 		navigator.scrollTop(0);
 	};
 
-	Category.toBottom = function () {
-		socket.emit('categories.getTopicCount', ajaxify.data.cid, function (err, count) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			navigator.scrollBottom(count - 1);
-		});
+	Category.toBottom = async () => {
+		const { count } = await api.get(`/categories/${ajaxify.data.category.cid}/count`);
+		navigator.scrollBottom(count - 1);
 	};
 
 	function loadTopicsAfter(after, direction, callback) {

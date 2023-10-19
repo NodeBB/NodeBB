@@ -35,6 +35,10 @@ Categories.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Categories.getTopicCount = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.categories.getTopicCount(req, { ...req.params }));
+};
+
 Categories.getPosts = async (req, res) => {
 	const posts = await api.categories.getPosts(req, { ...req.params });
 	helpers.formatApiResponse(200, res, posts);

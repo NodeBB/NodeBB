@@ -24,6 +24,8 @@ SocketCategories.get = async function (socket) {
 };
 
 SocketCategories.getWatchedCategories = async function (socket) {
+	sockets.warnDeprecated(socket);
+
 	const [categoriesData, ignoredCids] = await Promise.all([
 		categories.getCategoriesByPrivilege('cid:0:children', socket.uid, 'find'),
 		user.getIgnoredCategories(socket.uid),
@@ -81,7 +83,9 @@ SocketCategories.loadMore = async function (socket, data) {
 };
 
 SocketCategories.getTopicCount = async function (socket, cid) {
-	return await categories.getCategoryField(cid, 'topic_count');
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid');
+	const { count } = await api.categories.getTopicCount(socket, { cid });
+	return count;
 };
 
 SocketCategories.getCategoriesByPrivilege = async function (socket, privilege) {

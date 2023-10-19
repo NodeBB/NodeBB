@@ -16,6 +16,7 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:cid', [...middlewares], controllers.write.categories.update);
 	setupApiRoute(router, 'delete', '/:cid', [...middlewares], controllers.write.categories.delete);
 
+	setupApiRoute(router, 'get', '/:cid/count', [...middlewares], controllers.write.categories.getTopicCount);
 	setupApiRoute(router, 'get', '/:cid/posts', [...middlewares], controllers.write.categories.getPosts);
 
 	setupApiRoute(router, 'get', '/:cid/privileges', [...middlewares], controllers.write.categories.getPrivileges);

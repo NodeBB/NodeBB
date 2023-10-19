@@ -77,6 +77,11 @@ categoriesAPI.delete = async function (caller, { cid }) {
 	});
 };
 
+categoriesAPI.getTopicCount = async (caller, { cid }) => {
+	const count = await categories.getCategoryField(cid, 'topic_count');
+	return { count };
+};
+
 categoriesAPI.getPosts = async (caller, { cid }) => await categories.getRecentReplies(cid, caller.uid, 0, 4);
 
 categoriesAPI.getPrivileges = async (caller, { cid }) => {
