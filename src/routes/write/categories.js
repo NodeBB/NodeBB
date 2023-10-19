@@ -10,6 +10,7 @@ const { setupApiRoute } = routeHelpers;
 module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn];
 
+	setupApiRoute(router, 'get', '/', [...middlewares], controllers.write.categories.list);
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['name'])], controllers.write.categories.create);
 	setupApiRoute(router, 'get', '/:cid', [], controllers.write.categories.get);
 	setupApiRoute(router, 'put', '/:cid', [...middlewares], controllers.write.categories.update);

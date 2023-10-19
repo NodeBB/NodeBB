@@ -18,15 +18,9 @@ SocketCategories.getRecentReplies = async function (socket, cid) {
 };
 
 SocketCategories.get = async function (socket) {
-	async function getCategories() {
-		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'find');
-		return await categories.getCategoriesData(cids);
-	}
-	const [isAdmin, categoriesData] = await Promise.all([
-		user.isAdministrator(socket.uid),
-		getCategories(),
-	]);
-	return categoriesData.filter(category => category && (!category.disabled || isAdmin));
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories');
+	const { categories } = await api.categories.list(socket);
+	return categories;
 };
 
 SocketCategories.getWatchedCategories = async function (socket) {
