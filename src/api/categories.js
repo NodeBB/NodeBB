@@ -15,6 +15,22 @@ const hasAdminPrivilege = async (uid, privilege = 'categories') => {
 	}
 };
 
+categoriesAPI.list = async (caller) => {
+	async function getCategories() {
+		const cids = await categories.getCidsByPrivilege('categories:cid', caller.uid, 'find');
+		return await categories.getCategoriesData(cids);
+	}
+
+	const [isAdmin, categoriesData] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		getCategories(),
+	]);
+
+	return {
+		categories: categoriesData.filter(category => category && (!category.disabled || isAdmin)),
+	};
+};
+
 categoriesAPI.get = async function (caller, data) {
 	const [userPrivileges, category] = await Promise.all([
 		privileges.categories.get(data.cid, caller.uid),

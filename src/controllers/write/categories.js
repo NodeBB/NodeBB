@@ -7,6 +7,10 @@ const helpers = require('../helpers');
 
 const Categories = module.exports;
 
+Categories.list = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.categories.list(req));
+};
+
 Categories.get = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.categories.get(req, req.params));
 };
