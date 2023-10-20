@@ -19,7 +19,7 @@
     "public-chat": "Јавна ћаскања",
     "follows": "Праћења",
     "upvote": "Гласови",
-    "awards": "Awards",
+    "awards": "Награде",
     "new-flags": "Нове заставице",
     "my-flags": "Заставице додељене мени",
     "bans": "Забране",
@@ -94,5 +94,5 @@
     "notificationType-post-queue": "Када је нова порука на чекању",
     "notificationType-new-post-flag": "Када је порука означена заставицом",
     "notificationType-new-user-flag": "Када је корисник означен заставицом",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "Када зарадите нову награду"
 }
