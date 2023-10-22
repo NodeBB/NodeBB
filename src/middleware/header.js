@@ -1,7 +1,5 @@
 'use strict';
 
-const util = require('util');
-
 const user = require('../user');
 const plugins = require('../plugins');
 const helpers = require('./helpers');
@@ -13,6 +11,15 @@ const controllers = {
 const middleware = module.exports;
 
 middleware.buildHeader = helpers.try(async (req, res, next) => {
+	await doBuildHeader(req, res);
+	next();
+});
+
+middleware.buildHeaderAsync = async (req, res) => {
+	await doBuildHeader(req, res);
+};
+
+async function doBuildHeader(req, res) {
 	res.locals.renderHeader = true;
 	res.locals.isAPI = false;
 	if (req.method === 'GET') {
@@ -33,7 +40,4 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 	}
 
 	res.locals.config = config;
-	next();
-});
-
-middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
+}
