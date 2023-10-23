@@ -69,7 +69,7 @@ define('forum/category', [
 			const $this = $(this);
 			const state = $this.attr('data-state');
 
-			socket.emit('categories.setWatchState', { cid: cid, state: state }, function (err) {
+			api.put(`/categories/${cid}/watch`, { state }, (err) => {
 				if (err) {
 					return alerts.error(err);
 				}

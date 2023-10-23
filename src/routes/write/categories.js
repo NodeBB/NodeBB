@@ -19,6 +19,9 @@ module.exports = function () {
 	setupApiRoute(router, 'get', '/:cid/count', [...middlewares], controllers.write.categories.getTopicCount);
 	setupApiRoute(router, 'get', '/:cid/posts', [...middlewares], controllers.write.categories.getPosts);
 
+	setupApiRoute(router, 'put', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
+	setupApiRoute(router, 'delete', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
+
 	setupApiRoute(router, 'get', '/:cid/privileges', [...middlewares], controllers.write.categories.getPrivileges);
 	setupApiRoute(router, 'put', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
 	setupApiRoute(router, 'delete', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
