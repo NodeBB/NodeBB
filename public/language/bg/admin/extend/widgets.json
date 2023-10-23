@@ -29,5 +29,7 @@
 	"hide-from-groups": "Скриване от групите",
 	"start-date": "Начална дата",
 	"end-date": "Крайна дата",
-	"hide-on-mobile": "Скриване на мобилни устройства"
+	"hide-on-mobile": "Скриване на мобилни устройства",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

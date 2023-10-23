@@ -29,5 +29,7 @@
 	"hide-from-groups": "Skrýt ve skupinách",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "Skrýt na mobilu"
+	"hide-on-mobile": "Skrýt na mobilu",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

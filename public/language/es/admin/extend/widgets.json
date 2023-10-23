@@ -29,5 +29,7 @@
 	"hide-from-groups": "Hide from groups",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "Ocultar en móviles"
+	"hide-on-mobile": "Ocultar en móviles",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }
