@@ -85,6 +85,27 @@ categoriesAPI.getTopicCount = async (caller, { cid }) => {
 
 categoriesAPI.getPosts = async (caller, { cid }) => await categories.getRecentReplies(cid, caller.uid, 0, 4);
 
+categoriesAPI.getChildren = async (caller, { cid, start }) => {
+	if (!start || start < 0) {
+		start = 0;
+	}
+	start = parseInt(start, 10);
+
+	const allowed = await privileges.categories.can('read', cid, caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const category = await categories.getCategoryData(cid);
+	await categories.getChildrenTree(category, caller.uid);
+	const allCategories = [];
+	categories.flattenCategories(allCategories, category.children);
+	await categories.getRecentTopicReplies(allCategories, caller.uid);
+
+	const payload = category.children.slice(start, start + category.subCategoriesPerPage);
+	return { categories: payload };
+};
+
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	let targetUid = caller.uid;
 	const cids = Array.isArray(cid) ? cid.map(cid => parseInt(cid, 10)) : [parseInt(cid, 10)];

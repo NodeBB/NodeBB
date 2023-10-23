@@ -89,28 +89,22 @@ define('forum/category', [
 	}
 
 	function handleLoadMoreSubcategories() {
-		$('[component="category/load-more-subcategories"]').on('click', function () {
+		$('[component="category/load-more-subcategories"]').on('click', async function () {
 			const btn = $(this);
-			socket.emit('categories.loadMoreSubCategories', {
-				cid: ajaxify.data.cid,
-				start: ajaxify.data.nextSubCategoryStart,
-			}, function (err, data) {
-				if (err) {
-					return alerts.error(err);
-				}
-				btn.toggleClass('hidden', !data.length || data.length < ajaxify.data.subCategoriesPerPage);
-				if (!data.length) {
-					return;
-				}
-				app.parseAndTranslate('category', 'children', { children: data }, function (html) {
-					html.find('.timeago').timeago();
-					$('[component="category/subcategory/container"]').append(html);
-					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
-					ajaxify.data.subCategoriesLeft -= data.length;
-					btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
-						.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
-				});
+			const { categories: data } = await api.get(`/categories/${ajaxify.data.cid}/children?start=${ajaxify.data.nextSubCategoryStart}`);
+			btn.toggleClass('hidden', !data.length || data.length < ajaxify.data.subCategoriesPerPage);
+			if (!data.length) {
+				return;
+			}
+			app.parseAndTranslate('category', 'children', { children: data }, function (html) {
+				html.find('.timeago').timeago();
+				$('[component="category/subcategory/container"]').append(html);
+				ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
+				ajaxify.data.subCategoriesLeft -= data.length;
+				btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
+					.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
 			});
+
 			return false;
 		});
 	}

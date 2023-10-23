@@ -45,6 +45,12 @@ Categories.getPosts = async (req, res) => {
 	helpers.formatApiResponse(200, res, posts);
 };
 
+Categories.getChildren = async (req, res) => {
+	const { cid } = req.params;
+	const { start } = req.query;
+	helpers.formatApiResponse(200, res, await api.categories.getChildren(req, { cid, start }));
+};
+
 Categories.setWatchState = async (req, res) => {
 	const { cid } = req.params;
 	let { uid, state } = req.body;

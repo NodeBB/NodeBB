@@ -167,20 +167,14 @@ SocketCategories.isModerator = async function (socket, cid) {
 };
 
 SocketCategories.loadMoreSubCategories = async function (socket, data) {
+	sockets.warnDeprecated(socket, `GET /api/v3/categories/:cid/children`);
+
 	if (!data || !data.cid || !(parseInt(data.start, 10) >= 0)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const allowed = await privileges.categories.can('read', data.cid, socket.uid);
-	if (!allowed) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const category = await categories.getCategoryData(data.cid);
-	await categories.getChildrenTree(category, socket.uid);
-	const allCategories = [];
-	categories.flattenCategories(allCategories, category.children);
-	await categories.getRecentTopicReplies(allCategories, socket.uid);
-	const start = parseInt(data.start, 10);
-	return category.children.slice(start, start + category.subCategoriesPerPage);
+
+	const { categories: children } = await api.categories.getChildren(socket, data);
+	return children;
 };
 
 require('../promisify')(SocketCategories);
