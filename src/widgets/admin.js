@@ -61,7 +61,7 @@ function buildTemplatesFromAreas(areas) {
 			templates.push({
 				template: area.template,
 				areas: [],
-				widgetCount: area.location !== 'drafts' ? area.data.length : 0,
+				widgetCount: 0,
 			});
 
 			index += 1;
