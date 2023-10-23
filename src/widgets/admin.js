@@ -61,6 +61,7 @@ function buildTemplatesFromAreas(areas) {
 			templates.push({
 				template: area.template,
 				areas: [],
+				widgetCount: area.data.length,
 			});
 
 			index += 1;
@@ -70,6 +71,7 @@ function buildTemplatesFromAreas(areas) {
 			name: area.name,
 			location: area.location,
 		});
+		templates[list[area.template]].widgetCount += area.data.length;
 	});
 	return templates;
 }

@@ -32,6 +32,18 @@ define('admin/extend/widgets', [
 
 		loadWidgetData();
 		setupCloneButton();
+		$('#hide-drafts').on('click', function () {
+			$(this).addClass('hidden');
+			$('#show-drafts').removeClass('hidden');
+			$('[component="drafts-container"]').addClass('hidden');
+			$('[component="widgets-container"]').addClass('col-12').removeClass('col-6');
+		});
+		$('#show-drafts').on('click', function () {
+			$(this).addClass('hidden');
+			$('#hide-drafts').removeClass('hidden');
+			$('[component="drafts-container"]').removeClass('hidden');
+			$('[component="widgets-container"]').addClass('col-6').removeClass('col-12');
+		});
 	};
 
 	function prepareWidgets() {

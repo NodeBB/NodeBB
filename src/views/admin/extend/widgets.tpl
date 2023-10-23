@@ -9,19 +9,25 @@
 	</div>
 	<div id="widgets" class="row px-2">
 		<div class="col-9" id="active-widgets">
-			<div class="dropdown mb-3">
-				<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1">
-					{{{ each templates }}}
-					<li><a class="dropdown-item rounded-1" href="#" data-template="{./template}" data-toggle="pill">{./template}</a></li>
-					{{{ end }}}
-				</ul>
+			<div class="d-flex justify-content-between">
+				<div class="dropdown mb-3">
+					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1">
+						{{{ each templates }}}
+						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" data-toggle="pill">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
+						{{{ end }}}
+					</ul>
+				</div>
+				<div>
+					<button id="hide-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:hide-drafts]]</button>
+					<button id="show-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:show-drafts]]</button>
+				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-6">
+				<div class="col-6" component="widgets-container">
 					<div class="tab-content">
 					{{{ each templates }}}
 						<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
