@@ -112,12 +112,16 @@ SocketCategories.getSelectCategories = async function (socket) {
 };
 
 SocketCategories.setWatchState = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/categories/:cid/watch');
+
 	if (!data || !data.cid || !data.state) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await ignoreOrWatch(async (uid, cids) => {
-		await user.setCategoryWatchState(uid, cids, categories.watchStates[data.state]);
-	}, socket, data);
+
+	data.state = categories.watchStates[data.state];
+
+	await api.categories.setWatchState(socket, data);
+	return data.cid;
 };
 
 SocketCategories.watch = async function (socket, data) {

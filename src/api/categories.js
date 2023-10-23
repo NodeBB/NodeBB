@@ -1,6 +1,7 @@
 'use strict';
 
 const categories = require('../categories');
+const topics = require('../topics');
 const events = require('../events');
 const user = require('../user');
 const groups = require('../groups');
@@ -83,6 +84,31 @@ categoriesAPI.getTopicCount = async (caller, { cid }) => {
 };
 
 categoriesAPI.getPosts = async (caller, { cid }) => await categories.getRecentReplies(cid, caller.uid, 0, 4);
+
+categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
+	let targetUid = caller.uid;
+	const cids = Array.isArray(cid) ? cid.map(cid => parseInt(cid, 10)) : [parseInt(cid, 10)];
+	if (uid) {
+		targetUid = uid;
+	}
+	await user.isAdminOrGlobalModOrSelf(caller.uid, targetUid);
+	const allCids = await categories.getAllCidsFromSet('categories:cid');
+	const categoryData = await categories.getCategoriesFields(allCids, ['cid', 'parentCid']);
+
+	// filter to subcategories of cid
+	let cat;
+	do {
+		cat = categoryData.find(c => !cids.includes(c.cid) && cids.includes(c.parentCid));
+		if (cat) {
+			cids.push(cat.cid);
+		}
+	} while (cat);
+
+	await user.setCategoryWatchState(targetUid, cids, state);
+	await topics.pushUnreadCount(targetUid);
+
+	return { cids };
+};
 
 categoriesAPI.getPrivileges = async (caller, { cid }) => {
 	await hasAdminPrivilege(caller.uid, 'privileges');
