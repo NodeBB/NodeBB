@@ -29,5 +29,7 @@
 	"hide-from-groups": "יוסתר מקבוצות",
 	"start-date": "תאריך התחלה",
 	"end-date": "תאריך סיום",
-	"hide-on-mobile": "הסתר במובייל"
+	"hide-on-mobile": "הסתר במובייל",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

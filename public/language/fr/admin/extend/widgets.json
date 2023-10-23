@@ -29,5 +29,7 @@
 	"hide-from-groups": "Masquer pour les groupes",
 	"start-date": "Date de début",
 	"end-date": "Date de fin",
-	"hide-on-mobile": "Masquer sur mobile"
+	"hide-on-mobile": "Masquer sur mobile",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

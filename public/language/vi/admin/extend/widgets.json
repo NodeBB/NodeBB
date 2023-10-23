@@ -29,5 +29,7 @@
 	"hide-from-groups": "Ẩn khỏi nhóm",
 	"start-date": "Ngày bắt đầu",
 	"end-date": "Ngày kết thúc",
-	"hide-on-mobile": "Ẩn trên thiết bị di động"
+	"hide-on-mobile": "Ẩn trên thiết bị di động",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }
