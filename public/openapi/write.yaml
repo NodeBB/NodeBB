@@ -112,6 +112,10 @@ paths:
     $ref: 'write/categories.yaml'
   /categories/{cid}:
     $ref: 'write/categories/cid.yaml'
+  /categories/{cid}/count:
+    $ref: 'write/categories/cid/count.yaml'
+  /categories/{cid}/posts:
+    $ref: 'write/categories/cid/posts.yaml'
   /categories/{cid}/privileges:
     $ref: 'write/categories/cid/privileges.yaml'
   /categories/{cid}/privileges/{privilege}:
