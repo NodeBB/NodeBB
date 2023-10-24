@@ -46,6 +46,10 @@ define('admin/manage/categories', [
 			const el = $(this);
 			el.find('i').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
+			const hasMoreEl = el.closest('[data-cid]').find('> ul.has-more-categories');
+			if (parseInt(hasMoreEl.attr('data-hasmore'), 10) === 1) {
+				hasMoreEl.toggleClass('hidden');
+			}
 		});
 
 		$('.categories').on('click', '.set-order', function () {
