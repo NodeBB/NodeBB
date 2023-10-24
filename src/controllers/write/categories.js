@@ -42,7 +42,7 @@ Categories.getTopicCount = async (req, res) => {
 
 Categories.getPosts = async (req, res) => {
 	const posts = await api.categories.getPosts(req, { ...req.params });
-	helpers.formatApiResponse(200, res, posts);
+	helpers.formatApiResponse(200, res, { posts });
 };
 
 Categories.getChildren = async (req, res) => {
