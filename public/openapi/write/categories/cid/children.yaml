@@ -1,0 +1,36 @@
+get:
+  tags:
+    - categories
+  summary: get subcategories
+  description: |
+    This operation returns the requested category's children (aka subcategories).
+
+    It is important to note that the number of subcategories returned is dependent on the configured value for that category.
+    If a lower number is specified than there are children, then the list will be truncated to that number.
+
+    This is defined by the `subCategoriesPerPage` key in the category's hash.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      example: 1
+  responses:
+    '200':
+      description: categories count successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/CategoryObject.yaml#/CategoryObject

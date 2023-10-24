@@ -61,6 +61,7 @@ Categories.setWatchState = async (req, res) => {
 	} else if (Object.keys(categories.watchStates).includes(state)) {
 		state = categories.watchStates[state]; // convert to integer for backend processing
 	} else {
+		console.log('throwing', cid, uid, state);
 		throw new Error('[[error:invalid-data]]');
 	}
 
