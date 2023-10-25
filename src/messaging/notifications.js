@@ -70,13 +70,13 @@ module.exports = function (Messaging) {
 		}
 
 		try {
-			await sendNotification(fromUid, roomId, messageObj);
+			await sendNotification(fromUid, roomId, isPublic, messageObj);
 		} catch (err) {
 			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 		}
 	};
 
-	async function sendNotification(fromUid, roomId, messageObj) {
+	async function sendNotification(fromUid, roomId, isPublic, messageObj) {
 		fromUid = parseInt(fromUid, 10);
 
 		const [settings, roomData] = await Promise.all([
@@ -100,7 +100,7 @@ module.exports = function (Messaging) {
 		});
 
 		// Suppress notifications for users who are literally present in the room
-		const realtimeUids = await io.getUidsInRoom(`chat_room_${roomId}`);
+		const realtimeUids = await io.getUidsInRoom(`chat_room_${isPublic ? 'public_' : ''}${roomId}`);
 		uidsToNotify = uidsToNotify.filter(uid => !realtimeUids.includes(parseInt(uid, 10)));
 
 		if (uidsToNotify.length) {
