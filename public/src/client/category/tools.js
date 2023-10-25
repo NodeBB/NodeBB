@@ -161,7 +161,7 @@ define('forum/category/tools', [
 			case 'delete':
 			case 'restore':
 			case 'purge':
-				bootbox.confirm(`[[topic:thread_tools.${command}_confirm]]`, execute);
+				bootbox.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
 				break;
 
 			case 'pin':

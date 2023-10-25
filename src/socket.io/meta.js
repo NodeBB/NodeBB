@@ -1,7 +1,9 @@
 'use strict';
 
+const os = require('os');
 
 const user = require('../user');
+const meta = require('../meta');
 const topics = require('../topics');
 
 const SocketMeta = module.exports;
@@ -13,7 +15,10 @@ SocketMeta.reconnected = function (socket, data, callback) {
 		topics.pushUnreadCount(socket.uid);
 		user.notifications.pushCount(socket.uid);
 	}
-	callback();
+	callback(null, {
+		'cache-buster': meta.config['cache-buster'],
+		hostname: os.hostname(),
+	});
 };
 
 /* Rooms */

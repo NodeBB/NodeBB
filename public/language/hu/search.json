@@ -1,6 +1,6 @@
 {
     "type-to-search": "Írjon ide a kereséshez",
-    "results_matching": "%1 eredmény a következőre: \"%2\" (%3 másodperc)",
+    "results-matching": "%1 eredmény a következőre: \"%2\" (%3 másodperc)",
     "no-matches": "Nem található egyezés",
     "advanced-search": "Részletes keresés",
     "in": "Itt:",

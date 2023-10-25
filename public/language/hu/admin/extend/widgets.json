@@ -5,7 +5,7 @@
 	"none-installed": "Nincs elérhető modul! Aktiváld a widget essentials beépülőt a <a href=\"%1\">beépülők</a> oldalon.",
 	"clone-from": "Modul klónozása innen",
 	"containers.available": "Elérhető tárolók",
-	"containers.explanation": "Húzd rá az alábbiakat bármely aktív modulra",
+	"containers.explanation": "Drag and drop on top of any widget",
 	"containers.none": "Nincs",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "Elrejtés csoportoknak",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "Elrejtés mobilon"
+	"hide-on-mobile": "Elrejtés mobilon",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

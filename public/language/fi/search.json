@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 tulosta löytyi hakusanalla \"%2\" (%3 sekunnissa).",
+    "results-matching": "%1 tulosta löytyi hakusanalla \"%2\" (%3 sekunnissa).",
     "no-matches": "Ei hakuosumia",
     "advanced-search": "Laajennettu haku",
     "in": "In",

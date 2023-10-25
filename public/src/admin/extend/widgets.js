@@ -32,10 +32,23 @@ define('admin/extend/widgets', [
 
 		loadWidgetData();
 		setupCloneButton();
+		$('#hide-drafts').on('click', function () {
+			$(this).addClass('hidden');
+			$('#show-drafts').removeClass('hidden');
+			$('[component="drafts-container"]').addClass('hidden');
+			$('[component="widgets-container"]').addClass('col-12').removeClass('col-6');
+		});
+		$('#show-drafts').on('click', function () {
+			$(this).addClass('hidden');
+			$('#hide-drafts').removeClass('hidden');
+			$('[component="drafts-container"]').removeClass('hidden');
+			$('[component="widgets-container"]').addClass('col-6').removeClass('col-12');
+		});
 	};
 
 	function prepareWidgets() {
-		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
+		const draftContainer = $('[component="drafts-container"]');
+		$('[data-location="drafts"]').appendTo(draftContainer);
 
 		$('#widgets .available-widgets .widget-panel').draggable({
 			helper: function (e) {
@@ -63,6 +76,16 @@ define('admin/extend/widgets', [
 			update: function (event, ui) {
 				createDatePicker(ui.item);
 				appendToggle(ui.item);
+			},
+			start: function () {
+				draftContainer.find('[data-location="drafts"]>div')
+					.removeClass('overflow-auto')
+					.css({ 'max-height': 'initial' });
+			},
+			stop: function () {
+				draftContainer.find('[data-location="drafts"]>div')
+					.addClass('overflow-auto')
+					.css({ 'max-height': 'calc(100vh - 200px)' });
 			},
 			connectWith: 'div',
 		}).on('click', '.delete-widget', function () {

@@ -156,13 +156,10 @@ async function generateForTopics(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
 		return next();
 	}
-	let token = null;
-	if (req.query.token && req.query.uid) {
-		token = await db.getObjectField(`user:${req.query.uid}`, 'rss_token');
-	}
+	const uid = await getUidFromToken(req);
 
 	await sendTopicsFeed({
-		uid: token && token === req.query.token ? req.query.uid : req.uid,
+		uid: uid,
 		title: 'Most recently created topics',
 		description: 'A list of topics that have been created recently',
 		feed_url: '/topics.rss',
@@ -212,13 +209,7 @@ async function generateSorted(options, req, res, next) {
 	}
 
 	const term = terms[req.params.term] || options.term;
-
-	let token = null;
-	if (req.query.token && req.query.uid) {
-		token = await db.getObjectField(`user:${req.query.uid}`, 'rss_token');
-	}
-
-	const uid = token && token === req.query.token ? req.query.uid : req.uid;
+	const uid = await getUidFromToken(req);
 
 	const params = {
 		uid: uid,
@@ -402,13 +393,14 @@ async function generateForTag(req, res) {
 	if (meta.config['feeds:disableRSS']) {
 		return controllers404.handle404(req, res);
 	}
+	const uid = await getUidFromToken(req);
 	const tag = validator.escape(String(req.params.tag));
 	const page = parseInt(req.query.page, 10) || 1;
 	const topicsPerPage = meta.config.topicsPerPage || 20;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
 	const stop = start + topicsPerPage - 1;
 	await sendTopicsFeed({
-		uid: req.uid,
+		uid: uid,
 		title: `Topics tagged with ${tag}`,
 		description: `A list of topics that have been tagged with ${tag}`,
 		feed_url: `/tags/${tag}.rss`,
@@ -416,6 +408,15 @@ async function generateForTag(req, res) {
 		start: start,
 		stop: stop,
 	}, `tag:${tag}:topics`, res);
+}
+
+async function getUidFromToken(req) {
+	let token = null;
+	if (req.query.token && req.query.uid) {
+		token = await db.getObjectField(`user:${req.query.uid}`, 'rss_token');
+	}
+
+	return token && token === req.query.token ? req.query.uid : req.uid;
 }
 
 function sendFeed(feed, res) {

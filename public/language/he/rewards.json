@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "הוענק לך <strong>%1</strong> מוניטין",
+	"awarded-group-membership": "נוספת לקבוצה <strong>%1</strong>",
+
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(מוניטין %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(כמות פוסטים %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(מקוון לאחרונה %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(תאריך הצטרפות %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(ימי ותק %1 %2)</span>"
+}

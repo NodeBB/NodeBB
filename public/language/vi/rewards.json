@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "Bạn đã được trao giải thưởng <strong>%1</strong> danh tiếng",
+	"awarded-group-membership": "Bạn đã được thêm vào nhóm <strong>%1</strong>",
+
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Danh tiếng %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Số Bài Đăng %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Trực Tuyến Lần Cuối %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Ngày Tham Gia %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Ngày Đăng Ký %1 %2)</span>"
+}

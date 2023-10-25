@@ -1,5 +1,6 @@
 {
 	"state": "Stato",
+	"report": "Segnalazione",
 	"reports": "Segnalazioni",
 	"first-reported": "Prima segnalazione",
 	"no-flags": "Evviva! Nessuna segnalazione trovata.",
@@ -8,7 +9,9 @@
 	"update": "Aggiorna",
 	"updated": "Aggiornato",
 	"resolved": "Risolto",
-	"target-purged": "Il contenuto di questa segnalazione è stato eliminato e non è più disponibile.",
+	"report-added": "Aggiunto",
+	"report-rescinded": "Annullato",
+	"target-purged": "Il contenuto di questa segnalazione è stato eliminato definitivamente e non è più disponibile.",
 	"target-aboutme-empty": "Questo utente non ha impostato &quot;Su di me&quot;.",
 
 	"graph-label": "Segnalazioni Giornaliere",
@@ -38,7 +41,7 @@
 	"go-to-target": "Visualizza oggetto segnalazione",
 	"assign-to-me": "Assegna a me",
 	"delete-post": "Elimina post",
-	"purge-post": "Elimina Post",
+	"purge-post": "Elimina definitivamente post",
 	"restore-post": "Ripristina post",
 	"delete": "Elimina segnalazione",
 

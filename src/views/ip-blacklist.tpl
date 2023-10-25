@@ -1,5 +1,3 @@
-<!-- IMPORT partials/breadcrumbs.tpl -->
-
 <div class="row ip-blacklist">
 	<div class="col-lg-12">
 		<p class="lead">
@@ -40,14 +38,18 @@
 			<div class="col-sm-6">
 				<div class="card mb-3">
 					<div class="card-body">
-						<div><canvas id="blacklist:hourly" height="250"></canvas></div>
+						<div class="position-relative" style="aspect-ratio: 2; max-height: initial;">
+							<canvas id="blacklist:hourly" style="max-height: initial;"></canvas>
+						</div>
 					</div>
 					<div class="card-footer"><small>[[ip-blacklist:analytics.blacklist-hourly]]</small></div>
 				</div>
 
 				<div class="card">
 					<div class="card-body">
-						<div><canvas id="blacklist:daily" height="250"></canvas></div>
+						<div class="position-relative" style="aspect-ratio: 2; max-height: initial;">
+							<canvas id="blacklist:daily" style="max-height: initial;"></canvas>
+						</div>
 					</div>
 					<div class="card-footer"><small>[[ip-blacklist:analytics.blacklist-daily]]</small></div>
 				</div>

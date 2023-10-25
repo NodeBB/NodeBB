@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "Počet výsledků pro „%2“: %1, (%3 sekund)",
+    "results-matching": "Počet výsledků pro „%2“: %1, (%3 sekund)",
     "no-matches": "Nic nebylo nalezeno",
     "advanced-search": "Pokročilé hledání",
     "in": "v",

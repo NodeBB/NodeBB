@@ -1,5 +1,6 @@
 {
 	"state": "Trạng thái",
+	"report": "Báo cáo",
 	"reports": "Báo cáo",
 	"first-reported": "Được báo cáo đầu tiên",
 	"no-flags": "Hoan hô! Không tìm thấy cờ.",
@@ -8,6 +9,8 @@
 	"update": "Cập nhật",
 	"updated": "Đã cập nhật",
 	"resolved": "Đã Xử Lý",
+	"report-added": "Đã thêm",
+	"report-rescinded": "Đã hủy bỏ",
 	"target-purged": "Nội dung mà cờ này đề cập đến đã bị xóa và không còn nữa.",
 	"target-aboutme-empty": "Người dùng này không có &quot;Giới Thiệu Về Tôi&quot; set.",
 
@@ -15,8 +18,8 @@
 	"quick-filters": "Bộ Lọc Nhanh",
 	"filter-active": "Có một hoặc nhiều bộ lọc đang hoạt động trong danh sách cờ này",
 	"filter-reset": "Xóa Bộ Lọc",
-	"filters": "Tùy Chỉnh Bộ Lọc",
-	"filter-reporterId": "Người báo cáo",
+	"filters": "Tùy Chọn Bộ Lọc",
+	"filter-reporterId": "Phóng viên",
 	"filter-targetUid": "Reportee",
 	"filter-type": "Loại Cờ",
 	"filter-type-all": "Tất Cả Nội Dung",
@@ -47,7 +50,7 @@
 
 	"notes": "Ghi Chú Cờ",
 	"add-note": "Thêm Ghi Chú",
-	"edit-note": "Edit Note",
+	"edit-note": "Sửa Ghi Chú",
 	"no-notes": "Không có chia sẻ ghi chú.",
 	"delete-note-confirm": "Bạn có chắc muốn xóa ghi chú cờ này không?",
 	"delete-flag-confirm": "Bạn có chắc chắn muốn xóa cờ này không?",
@@ -60,7 +63,7 @@
 
 	"state-all": "Tất cả trạng thái",
 	"state-open": "Mới/Mở",
-	"state-wip": "Đang Xử Lý",
+	"state-wip": "Công Việc Đang Tiến Hành",
 	"state-resolved": "Đã Giải Quyết",
 	"state-rejected": "Từ Chối",
 	"no-assignee": "Không có chỉ định",

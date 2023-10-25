@@ -17,7 +17,7 @@
 	"mongo.file-size": "Veľkosť súboru",
 	"mongo.resident-memory": "Rezidentná pamäť",
 	"mongo.virtual-memory": "Virtuálna pamäť",
-	"mongo.mapped-memory": "Namapovaná pamäť",
+	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.bytes-in": "Bytes In",
 	"mongo.bytes-out": "Bytes Out",
 	"mongo.num-requests": "Number of Requests",

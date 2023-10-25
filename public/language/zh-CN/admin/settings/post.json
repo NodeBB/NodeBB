@@ -27,7 +27,7 @@
 	"restrictions.title-length": "标题长度",
 	"restrictions.post-length": "帖子字数",
 	"restrictions.days-until-stale": "主题过时的天数",
-	"restrictions.stale-help": "如果某个主题被视为“过时”，则会向尝试回复该主题的用户显示警告。",
+	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
 	"timestamp": "时间戳",
 	"timestamp.cut-off": "截止日期（天）",
 	"timestamp.cut-off-help": "日期&amp;时间将以相对方式 (例如，“3小时前” / “5天前”) 显示，并且会依照访客语言时区转换。在某一时刻之后，可以切换该文本以显示本地化日期本身 (例如2016年11月5日15:30) 。<br /> <em> (默认值：<code> 30 </code>或一个月) 。 设置为0可始终显示日期，留空以始终显示相对时间。</em>",

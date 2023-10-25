@@ -5,7 +5,7 @@
 	"none-installed": "Nebyly nalezeny žádné miniaplikace! Aktivujte zásuvný modul miniaplikace v ovládacím panelu <a href=\"%1\">zásuvné moduly</a>.",
 	"clone-from": "Klonovat miniaplikaci z",
 	"containers.available": "Dostupné moduly",
-	"containers.explanation": "Přetáhněte na jakoukoliv aktivní miniaplikaci",
+	"containers.explanation": "Přetáhněte a pusťte na libovolnou miniaplikaci",
 	"containers.none": "Nic",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "Skrýt ve skupinách",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "Skrýt na mobilu"
+	"hide-on-mobile": "Skrýt na mobilu",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

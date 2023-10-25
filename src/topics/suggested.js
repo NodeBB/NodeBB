@@ -32,6 +32,7 @@ module.exports = function (Topics) {
 		topicData = await user.blocks.filter(uid, topicData);
 		topicData = topicData.slice(start, stop !== -1 ? stop + 1 : undefined)
 			.sort((t1, t2) => t2.timestamp - t1.timestamp);
+		Topics.calculateTopicIndices(topicData, start);
 		return topicData;
 	};
 

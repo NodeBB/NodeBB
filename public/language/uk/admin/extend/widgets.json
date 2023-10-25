@@ -5,7 +5,7 @@
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Клонувати віджет з",
 	"containers.available": "Доступні контейнери",
-	"containers.explanation": "Перетягніть поверх будь-якого активного віджету",
+	"containers.explanation": "Drag and drop on top of any widget",
 	"containers.none": "Ніякий",
 	"container.well": "Криниця",
 	"container.jumbotron": "Екран",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "Hide from groups",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "Hide on mobile"
+	"hide-on-mobile": "Hide on mobile",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

@@ -14,7 +14,7 @@ Themes.set = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	if (data.type === 'local') {
-		await widgets.reset();
+		await widgets.saveLocationsOnThemeReset();
 	}
 
 	data.ip = socket.ip;

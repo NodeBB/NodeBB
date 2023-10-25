@@ -1,12 +1,12 @@
 {
     "username-email": "用户名 / 邮箱",
     "username": "用户名",
-    "remember_me": "保持登录信息",
-    "forgot_password": "忘记密码？",
-    "alternative_logins": "使用合作网站帐号登录",
-    "failed_login_attempt": "登录失败",
-    "login_successful": "您已成功登录！",
-    "dont_have_account": "没有帐号？",
+    "remember-me": "保持登录信息",
+    "forgot-password": "忘记密码？",
+    "alternative-logins": "使用合作网站帐号登录",
+    "failed-login-attempt": "登录失败",
+    "login-successful": "您已成功登录！",
+    "dont-have-account": "没有帐号？",
     "logged-out-due-to-inactivity": "由于长时间不活动，您的账号已被管理员从控制面板中注销",
     "caps-lock-enabled": "大写锁定已启用"
 }

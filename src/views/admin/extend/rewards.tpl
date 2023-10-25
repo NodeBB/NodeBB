@@ -35,7 +35,7 @@
 									{{{ end }}}
 								</select>
 
-								<input class="form-control form-control-sm" type="text" name="value" value="{active.value}" style="max-width: 64px;"/>
+								<input class="form-control form-control-sm" type="text" name="value" value="{active.value}" style="max-width: 128px;"/>
 							</div>
 						</div>
 						<div class="card card-body m-0 then-block border-primary border border-2">
@@ -47,7 +47,7 @@
 							</select>
 						</div>
 					</form>
-					<form class="rewards">
+					<form class="rewards flex-1">
 						<div class="inputs card card-body m-0 h-100 reward-block border-success border border-2"><div class="d-flex h-100 align-items-center">[[admin/extend/rewards:select-reward]]</div></div>
 					</form>
 				</div>

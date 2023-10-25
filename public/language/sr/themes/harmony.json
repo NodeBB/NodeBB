@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "Трака алата на страницама са темама и категоријама ће бити на врху странице",
 	"settings.autohideBottombar": "Аутоматско сакривање доње траке",
 	"settings.autohideBottombar.help": "Доња трака у приказу за мобилне уређаје биће скривена када се страница помера надоле",
+	"settings.openSidebars": "Open sidebars",
 	"settings.chatModals": "Омогући модале ћаскања"
 }

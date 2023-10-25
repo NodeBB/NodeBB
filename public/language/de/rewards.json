@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "Du hast <strong>%1</strong> Ansehen erhalten",
+	"awarded-group-membership": "Du bist zur Gruppe <strong>%1</strong> hinzugefügt worden",
+
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Ansehen %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Anzahl der Beiträge %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Zuletzt online %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Beitrittsdatum %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Tage registriert %1 %2)</span>"
+}

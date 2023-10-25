@@ -1,12 +1,12 @@
 {
     "username-email": "Namn / Epost",
     "username": "Namn",
-    "remember_me": "Kom ihåg mig?",
-    "forgot_password": "Glömt lösenord?",
-    "alternative_logins": "Alternativa inloggningssätt",
-    "failed_login_attempt": "Misslyckad inloggning",
-    "login_successful": "Du är nu inloggad!",
-    "dont_have_account": "Har du inget konto?",
+    "remember-me": "Kom ihåg mig?",
+    "forgot-password": "Glömt lösenord?",
+    "alternative-logins": "Alternativa inloggningssätt",
+    "failed-login-attempt": "Misslyckad inloggning",
+    "login-successful": "Du är nu inloggad!",
+    "dont-have-account": "Har du inget konto?",
     "logged-out-due-to-inactivity": "Du har loggats ut från Admin Kontrollpanelen på grund av inaktivitet",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

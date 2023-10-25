@@ -5,7 +5,7 @@
 	"none-installed": "Bileşen bulunamadı!  <a href=\"%1\">Eklentiler</a> kontrol panelinden bileşen eklentisini aktifleştirmelisiniz!",
 	"clone-from": "Bileşenleri klonla",
 	"containers.available": "Kullanılabilir Kutucuklar",
-	"containers.explanation": "Aktif olan herhangi bir bileşenin üzerine sürükleyin ve bırakın",
+	"containers.explanation": "Drag and drop on top of any widget",
 	"containers.none": "Kutucuk Yok",
 	"container.well": "Çukur",
 	"container.jumbotron": "Büyük Gösterim",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "Şu gruplara gösterme",
 	"start-date": "Başlangıç tarihi",
 	"end-date": "Bitiş tarihi",
-	"hide-on-mobile": "Mobilde gösterme"
+	"hide-on-mobile": "Mobilde gösterme",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

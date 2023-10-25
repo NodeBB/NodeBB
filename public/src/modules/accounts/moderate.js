@@ -14,7 +14,7 @@ define('forum/account/moderate', [
 		Benchpress.render('modals/temporary-ban', {}).then(function (html) {
 			bootbox.dialog({
 				className: 'ban-modal',
-				title: '[[user:ban_account]]',
+				title: '[[user:ban-account]]',
 				message: html,
 				show: true,
 				buttons: {
@@ -23,7 +23,7 @@ define('forum/account/moderate', [
 						className: 'btn-link',
 					},
 					submit: {
-						label: '[[user:ban_account]]',
+						label: '[[user:ban-account]]',
 						callback: function () {
 							const formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
 								data[cur.name] = cur.value;
@@ -62,7 +62,7 @@ define('forum/account/moderate', [
 		Benchpress.render('modals/temporary-mute', {}).then(function (html) {
 			bootbox.dialog({
 				className: 'mute-modal',
-				title: '[[user:mute_account]]',
+				title: '[[user:mute-account]]',
 				message: html,
 				show: true,
 				buttons: {
@@ -71,7 +71,7 @@ define('forum/account/moderate', [
 						className: 'btn-link',
 					},
 					submit: {
-						label: '[[user:mute_account]]',
+						label: '[[user:mute-account]]',
 						callback: function () {
 							const formData = $('.mute-modal form').serializeArray().reduce(function (data, cur) {
 								data[cur.name] = cur.value;

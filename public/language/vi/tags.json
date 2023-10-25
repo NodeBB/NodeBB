@@ -1,11 +1,17 @@
 {
     "all-tags": "Tất cả các thẻ",
-    "no_tag_topics": "Không có bài viết nào với thẻ này.",
+    "no-tag-topics": "Không có bài viết nào với thẻ này.",
     "no-tags-found": "Không tìm thấy thẻ nào",
     "tags": "Thẻ",
-    "enter_tags_here": "Nhập thẻ ở đây, mỗi thẻ phải có từ %1 tới %2 ký tự.",
-    "enter_tags_here_short": "Nhập thẻ...",
-    "no_tags": "Chưa có thẻ nào.",
-    "select_tags": "Chọn Thẻ",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Nhập thẻ ở đây, mỗi thẻ phải có từ %1 tới %2 ký tự.",
+    "enter-tags-here-short": "Nhập thẻ...",
+    "no-tags": "Chưa có thẻ nào.",
+    "select-tags": "Chọn Thẻ",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

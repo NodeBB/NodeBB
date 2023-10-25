@@ -1,5 +1,6 @@
 {
 	"state": "Stanje",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Huura! Nema pronađenih zastavica.",
@@ -8,6 +9,8 @@
 	"update": "Nadogradnja",
 	"updated": "Nadograđeno",
 	"resolved": "Resolved",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Sadržaj koji je označen zastavom je odbačen i više nije dostupan.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

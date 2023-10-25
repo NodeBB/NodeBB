@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Der er ikke indlæg med dette tag.",
+    "no-tag-topics": "Der er ikke indlæg med dette tag.",
     "no-tags-found": "No tags found",
     "tags": "Tags",
-    "enter_tags_here": "Indsæt tags her, hver på mellem %1 og %2 karakterer.",
-    "enter_tags_here_short": "Skriv tags",
-    "no_tags": "Der er ingen tags endnu.",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Indsæt tags her, hver på mellem %1 og %2 karakterer.",
+    "enter-tags-here-short": "Skriv tags",
+    "no-tags": "Der er ingen tags endnu.",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

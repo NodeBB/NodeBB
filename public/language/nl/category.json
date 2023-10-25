@@ -1,12 +1,12 @@
 {
     "category": "Categorie",
     "subcategories": "Subcategorieën",
-    "new_topic_button": "Nieuw onderwerp",
+    "new-topic-button": "Nieuw onderwerp",
     "guest-login-post": "Log in om een reactie te plaatsen",
-    "no_topics": "<strong>Er zijn geen onderwerpen in deze categorie.</strong><br />Waarom maak je er niet een aan?",
+    "no-topics": "<strong>Er zijn geen onderwerpen in deze categorie.</strong><br />Waarom maak je er niet een aan?",
     "browsing": "browsing",
-    "no_replies": "Niemand heeft gereageerd",
-    "no_new_posts": "Geen nieuwe berichten.",
+    "no-replies": "Niemand heeft gereageerd",
+    "no-new-posts": "Geen nieuwe berichten.",
     "watch": "Volgen",
     "ignore": "Negeren",
     "watching": "Volgend",
@@ -15,9 +15,9 @@
     "watching.description": "Toon ongelezen en recente onderwerpen",
     "not-watching.description": "Toon geen ongelezen onderwerpen, toon wel recente onderwerpen",
     "ignoring.description": "Toon geen onderwerpen onder ongelezen en recent",
-    "watching.message": "Van deze categorie en alle sub-categorieën worden nu meldingen ontvangen ",
+    "watching.message": "Van deze categorie en alle sub-categorieën worden nu meldingen ontvangen",
     "notwatching.message": "Deze categorie en alle sub-categorieën worden niet gevolgd",
-    "ignoring.message": " Er worden geen meldingen van deze categorie en alle sub-categorieën  ontvangen ",
+    "ignoring.message": "Er worden geen meldingen van deze categorie en alle sub-categorieën  ontvangen",
     "watched-categories": "Categorieën die bekeken zijn.",
     "x-more-categories": "%1 meer categorieën"
 }

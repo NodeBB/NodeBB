@@ -5,7 +5,7 @@
     "month": "Mês",
     "year": "Ano",
     "alltime": "Desde sempre",
-    "no_recent_topics": "Não existem tópicos recentes.",
-    "no_popular_topics": "Não existem tópicos populares.",
+    "no-recent-topics": "Não existem tópicos recentes.",
+    "no-popular-topics": "Não existem tópicos populares.",
     "load-new-posts": "Load new posts"
 }

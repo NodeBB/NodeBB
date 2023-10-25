@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Não existem tópicos com estes marcadores.",
+    "no-tag-topics": "Não existem tópicos com estes marcadores.",
     "no-tags-found": "No tags found",
     "tags": "Marcadores",
-    "enter_tags_here": "Insere os marcadores aqui, cada um com %1 a %2 caracteres.",
-    "enter_tags_here_short": "Insere marcadores...",
-    "no_tags": "Ainda não existem marcadores.",
-    "select_tags": "Selecionar Marcadores",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Insere os marcadores aqui, cada um com %1 a %2 caracteres.",
+    "enter-tags-here-short": "Insere marcadores...",
+    "no-tags": "Ainda não existem marcadores.",
+    "select-tags": "Selecionar Marcadores",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

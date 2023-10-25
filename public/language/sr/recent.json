@@ -5,7 +5,7 @@
     "month": "Месец",
     "year": "Година",
     "alltime": "Одувек",
-    "no_recent_topics": "Нема недавних тема.",
-    "no_popular_topics": "Нема популарних тема.",
+    "no-recent-topics": "Нема недавних тема.",
+    "no-popular-topics": "Нема популарних тема.",
     "load-new-posts": "Учитај нове поруке"
 }

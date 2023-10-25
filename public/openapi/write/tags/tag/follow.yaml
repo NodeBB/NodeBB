@@ -1,0 +1,52 @@
+put:
+  tags:
+    - tags
+  summary: follow a tag
+  description: This operation follows (or watches) a tag.
+  parameters:
+    - in: path
+      name: tag
+      schema:
+        type: string
+      required: true
+      description: a valid tag name
+      example: plugins
+  responses:
+    '200':
+      description: Tag successfully followed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - tags
+  summary: unfollow a tag
+  description: This operation unfollows (or unwatches) a tag.
+  parameters:
+    - in: path
+      name: tag
+      schema:
+        type: string
+      required: true
+      description: a valid tag name
+      example: plugins
+  responses:
+    '200':
+      description: Tag successfully unwatched
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

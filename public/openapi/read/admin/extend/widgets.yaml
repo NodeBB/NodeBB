@@ -27,6 +27,9 @@ get:
                                 type: string
                               location:
                                 type: string
+                        widgetCount:
+                          type: number
+                          description: Number of widgets on this template
                   areas:
                     type: array
                     items:

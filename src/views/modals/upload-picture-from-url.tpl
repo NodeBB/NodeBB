@@ -2,7 +2,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="upload-picture-url">[[user:upload_picture]]</h5>
+				<h5 class="modal-title" id="upload-picture-url">[[user:upload-picture]]</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
 			<div class="modal-body">
@@ -10,7 +10,7 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-hidden="true">[[global:close]]</button>
-				<button class="btn btn-primary upload-btn">[[user:upload_picture]]</button>
+				<button class="btn btn-primary upload-btn">[[user:upload-picture]]</button>
 			</div>
 		</div>
 	</div>

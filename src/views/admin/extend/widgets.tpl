@@ -1,4 +1,4 @@
-<div class="tags d-flex flex-column gap-2 px-lg-4">
+<div class="d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/extend/widgets:widgets]]</h4>
@@ -8,27 +8,33 @@
 		</div>
 	</div>
 	<div id="widgets" class="row px-2">
-		<div class="col-md-8" id="active-widgets">
-			<div class="dropdown mb-3">
-				<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1">
-					{{{ each templates }}}
-					<li><a class="dropdown-item rounded-1" href="#" data-template="{./template}" data-toggle="pill">{./template}</a></li>
-					{{{ end }}}
-				</ul>
+		<div class="col-9" id="active-widgets">
+			<div class="d-flex justify-content-between">
+				<div class="dropdown mb-3">
+					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1">
+						{{{ each templates }}}
+						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" data-toggle="pill">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
+						{{{ end }}}
+					</ul>
+				</div>
+				<div>
+					<button id="hide-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:hide-drafts]]</button>
+					<button id="show-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:show-drafts]]</button>
+				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-12">
+				<div class="col-6" component="widgets-container">
 					<div class="tab-content">
 					{{{ each templates }}}
 						<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
 						{{{ each templates.areas }}}
 							<div class="area" data-template="{templates.template}" data-location="{./location}">
-								<h4>{./name} <small>{templates.template} / {./location}</small></h4>
-								<div class="card card-body text-bg-light widget-area">
+								<h5>{./name} <span class="fs-6 text-secondary">{templates.template} / {./location}</span></h5>
+								<div class="card card-body text-bg-light widget-area {{{ if (./location == "drafts")}}} overflow-auto{{{ end }}}" {{{ if (./location == "drafts")}}}style="max-height: calc(100vh - 200px);"{{{ end }}}>
 
 								</div>
 							</div>
@@ -37,15 +43,18 @@
 					{{{ end }}}
 					</div>
 				</div>
+				<div class="col-6" component="drafts-container">
+
+				</div>
 			</div>
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-3">
 			<div class="card mb-3">
 				<div class="card-header">[[admin/extend/widgets:available]]</div>
-				<div class="card-body">
+				<div class="card-body pt-0">
 					<div class="available-widgets">
-						<p>[[admin/extend/widgets:explanation]]</p>
+						<p class="text-sm">[[admin/extend/widgets:explanation]]</p>
 						{{{ if !availableWidgets.length }}}
 						<div class="alert alert-info">[[admin/extend/widgets:none-installed, {config.relative_path}/admin/extend/plugins]]</div>
 						{{{ end }}}
@@ -93,8 +102,8 @@
 
 			<div class="card">
 				<div class="card-header">[[admin/extend/widgets:containers.available]]</div>
-				<div class="card-body">
-					<p>[[admin/extend/widgets:containers.explanation]]</p>
+				<div class="card-body pt-0">
+					<p class="text-sm">[[admin/extend/widgets:containers.explanation]]</p>
 					<div class="available-containers">
 						<div class="containers">
 							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">

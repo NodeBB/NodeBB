@@ -14,30 +14,48 @@ const privsCategories = module.exports;
 
 /**
  * Looking to add a new category privilege via plugin/theme? Attach a hook to
- * `static:privileges.category.init` and call .set() on the privilege map passed
+ * `static:privileges.categories.init` and call .set() on the privilege map passed
  * in to your listener.
  */
 const _privilegeMap = new Map([
-	['find', { label: '[[admin/manage/privileges:find-category]]' }],
-	['read', { label: '[[admin/manage/privileges:access-category]]' }],
-	['topics:read', { label: '[[admin/manage/privileges:access-topics]]' }],
-	['topics:create', { label: '[[admin/manage/privileges:create-topics]]' }],
-	['topics:reply', { label: '[[admin/manage/privileges:reply-to-topics]]' }],
-	['topics:schedule', { label: '[[admin/manage/privileges:schedule-topics]]' }],
-	['topics:tag', { label: '[[admin/manage/privileges:tag-topics]]' }],
-	['posts:edit', { label: '[[admin/manage/privileges:edit-posts]]' }],
-	['posts:history', { label: '[[admin/manage/privileges:view-edit-history]]' }],
-	['posts:delete', { label: '[[admin/manage/privileges:delete-posts]]' }],
-	['posts:upvote', { label: '[[admin/manage/privileges:upvote-posts]]' }],
-	['posts:downvote', { label: '[[admin/manage/privileges:downvote-posts]]' }],
-	['topics:delete', { label: '[[admin/manage/privileges:delete-topics]]' }],
-	['posts:view_deleted', { label: '[[admin/manage/privileges:view_deleted]]' }],
-	['purge', { label: '[[admin/manage/privileges:purge]]' }],
-	['moderate', { label: '[[admin/manage/privileges:moderate]]' }],
+	['find', { label: '[[admin/manage/privileges:find-category]]', type: 'viewing' }],
+	['read', { label: '[[admin/manage/privileges:access-category]]', type: 'viewing' }],
+	['topics:read', { label: '[[admin/manage/privileges:access-topics]]', type: 'viewing' }],
+	['topics:create', { label: '[[admin/manage/privileges:create-topics]]', type: 'posting' }],
+	['topics:reply', { label: '[[admin/manage/privileges:reply-to-topics]]', type: 'posting' }],
+	['topics:schedule', { label: '[[admin/manage/privileges:schedule-topics]]', type: 'posting' }],
+	['topics:tag', { label: '[[admin/manage/privileges:tag-topics]]', type: 'posting' }],
+	['posts:edit', { label: '[[admin/manage/privileges:edit-posts]]', type: 'posting' }],
+	['posts:history', { label: '[[admin/manage/privileges:view-edit-history]]', type: 'posting' }],
+	['posts:delete', { label: '[[admin/manage/privileges:delete-posts]]', type: 'posting' }],
+	['posts:upvote', { label: '[[admin/manage/privileges:upvote-posts]]', type: 'posting' }],
+	['posts:downvote', { label: '[[admin/manage/privileges:downvote-posts]]', type: 'posting' }],
+	['topics:delete', { label: '[[admin/manage/privileges:delete-topics]]', type: 'posting' }],
+	['posts:view_deleted', { label: '[[admin/manage/privileges:view-deleted]]', type: 'moderation' }],
+	['purge', { label: '[[admin/manage/privileges:purge]]', type: 'moderation' }],
+	['moderate', { label: '[[admin/manage/privileges:moderate]]', type: 'moderation' }],
 ]);
+
+privsCategories.init = async () => {
+	privsCategories._coreSize = _privilegeMap.size;
+	await plugins.hooks.fire('static:privileges.categories.init', {
+		privileges: _privilegeMap,
+	});
+	for (const [, value] of _privilegeMap) {
+		if (value && !value.type) {
+			value.type = 'other';
+		}
+	}
+};
+
+privsCategories.getType = function (privilege) {
+	const priv = _privilegeMap.get(privilege);
+	return priv && priv.type ? priv.type : '';
+};
 
 privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', Array.from(_privilegeMap.keys()));
 privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
+
 privsCategories.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
 		privsCategories.getUserPrivilegeList(),
@@ -46,11 +64,10 @@ privsCategories.getPrivilegeList = async () => {
 	return user.concat(group);
 };
 
-privsCategories.init = async () => {
-	privsCategories._coreSize = _privilegeMap.size;
-	await plugins.hooks.fire('static:privileges.categories.init', {
-		privileges: _privilegeMap,
-	});
+privsCategories.getPrivilegesByFilter = function (filter) {
+	return Array.from(_privilegeMap.entries())
+		.filter(priv => priv[1] && (!filter || priv[1].type === filter))
+		.map(priv => priv[0]);
 };
 
 // Method used in admin/category controller to show all users/groups with privs in that given cid
@@ -68,6 +85,7 @@ privsCategories.list = async function (cid) {
 
 	const payload = await utils.promiseParallel({
 		labels,
+		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(cid, keys.users),
 		groups: helpers.getGroupPrivileges(cid, keys.groups),
 	});

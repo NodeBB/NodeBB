@@ -1,11 +1,17 @@
 {
     "all-tags": "Összes címke",
-    "no_tag_topics": "Nem létezik témakör ezzel a címkével.",
+    "no-tag-topics": "Nem létezik témakör ezzel a címkével.",
     "no-tags-found": "Nem találhatók címkék",
     "tags": "Címkék",
-    "enter_tags_here": "%1 és %2 karakterek között itt add meg a címkét.",
-    "enter_tags_here_short": "Címke megadása...",
-    "no_tags": "Még nincsenek címkék.",
-    "select_tags": "Címkék kiválasztása",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "%1 és %2 karakterek között itt add meg a címkét.",
+    "enter-tags-here-short": "Címke megadása...",
+    "no-tags": "Még nincsenek címkék.",
+    "select-tags": "Címkék kiválasztása",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

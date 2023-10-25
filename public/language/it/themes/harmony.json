@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "La barra degli strumenti nelle pagine delle discussioni e delle categorie si attacca alla parte superiore della pagina.",
 	"settings.autohideBottombar": "Nascondi automaticamente la barra inferiore",
 	"settings.autohideBottombar.help": "La barra inferiore nella visualizzazione mobile sarà nascosta quando la pagina viene fatta scorrere verso il basso.",
+	"settings.openSidebars": "Apri le barre laterali",
 	"settings.chatModals": "Abilita i modali della chat"
 }

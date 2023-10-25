@@ -1,11 +1,17 @@
 {
     "all-tags": "Alle Tags",
-    "no_tag_topics": "Es gibt keine Themen mit diesem Schlagwort.",
+    "no-tag-topics": "Es gibt keine Themen mit diesem Schlagwort.",
     "no-tags-found": "Keine Tags gefunden",
     "tags": "Schlagworte",
-    "enter_tags_here": "Hier Schlagworte eingeben. Jeweils %1 bis %2 Zeichen.",
-    "enter_tags_here_short": "Schlagworte eingeben...",
-    "no_tags": "Es gibt noch keine Schlagworte.",
-    "select_tags": "Schlagworte auswählen",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Hier Schlagworte eingeben. Jeweils %1 bis %2 Zeichen.",
+    "enter-tags-here-short": "Schlagworte eingeben...",
+    "no-tags": "Es gibt noch keine Schlagworte.",
+    "select-tags": "Schlagworte auswählen",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Beobachtet",
+    "not-watching": "Nicht Beobachtet",
+    "watching.description": "Benachrichtige mich über neuen Themen.",
+    "not-watching.description": "Benachrichtige mich nicht über neuen Themen",
+    "following-tag.message": "Du wirst nun benachrichtigt, wenn jemand ein Thema mit diesem Tag veröffentlicht.",
+    "not-following-tag.message": "Du wirst nicht benachrichtigt, wenn jemand ein Thema mit diesem Tag veröffentlicht."
 }

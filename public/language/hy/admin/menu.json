@@ -14,7 +14,7 @@
 	"manage/users": "Օգտատերեր",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Գրանցման հերթ",
-	"manage/flagged-content": "Flagged Content",
+	"manage/flagged-content": "Նշված բովանդակություն",
 	"manage/post-queue": "Գրառման Queue",
 	"manage/groups": "Խմբեր",
 	"manage/ip-blacklist": "IP սև ցուցակ",
@@ -73,9 +73,9 @@
 	"development/info": "Տեղեկատվություն",
 
 	"rebuild-and-restart-forum": "Վերակառուցել և վերագործարկել ֆորումը",
-	"rebuild-and-restart": "Rebuild & Restart",
+	"rebuild-and-restart": "Վերակառուցել և վերագործարկել",
 	"restart-forum": "Վերագործարկել Ֆորումը",
-	"restart": "Restart",
+	"restart": "Վերագործարկել",
 	"logout": "Դուրս գալ",
 	"view-forum": "Դիտել ֆորումը",
 

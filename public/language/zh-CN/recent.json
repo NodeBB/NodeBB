@@ -5,7 +5,7 @@
     "month": "月",
     "year": "年",
     "alltime": "总计",
-    "no_recent_topics": "暂无主题。",
-    "no_popular_topics": "暂无热门主题。",
+    "no-recent-topics": "暂无主题。",
+    "no-popular-topics": "暂无热门主题。",
     "load-new-posts": "加载新的帖子"
 }

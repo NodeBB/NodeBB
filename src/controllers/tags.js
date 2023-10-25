@@ -25,12 +25,14 @@ tagsController.getTag = async function (req, res) {
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: `[[pages:tag, ${tag}]]`,
 	};
-	const [settings, cids, categoryData, canPost, isPrivileged] = await Promise.all([
+	const [settings, cids, categoryData, canPost, isPrivileged, rssToken, isFollowing] = await Promise.all([
 		user.getSettings(req.uid),
 		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
 		helpers.getSelectedCategory(cid),
 		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
+		user.auth.getFeedToken(req.uid),
+		topics.isFollowingTag(req.params.tag, req.uid),
 	]);
 	const start = Math.max(0, (page - 1) * settings.topicsPerPage);
 	const stop = start + settings.topicsPerPage - 1;
@@ -44,6 +46,7 @@ tagsController.getTag = async function (req, res) {
 	templateData.canPost = canPost;
 	templateData.showSelect = isPrivileged;
 	templateData.showTopicTools = isPrivileged;
+	templateData.isFollowing = isFollowing;
 	templateData.allCategoriesUrl = `tags/${tag}${helpers.buildQueryString(req.query, 'cid', '')}`;
 	templateData.selectedCategory = categoryData.selectedCategory;
 	templateData.selectedCids = categoryData.selectedCids;
@@ -69,7 +72,13 @@ tagsController.getTag = async function (req, res) {
 	});
 
 	templateData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
-	templateData.rssFeedUrl = `${nconf.get('relative_path')}/tags/${tag}.rss`;
+	if (!meta.config['feeds:disableRSS']) {
+		templateData.rssFeedUrl = `${nconf.get('relative_path')}/tags/${tag}.rss`;
+		if (req.loggedIn) {
+			templateData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
+		}
+	}
+
 	res.render('tag', templateData);
 };
 

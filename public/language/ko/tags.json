@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "이 태그가 달린 게시물이 없습니다.",
+    "no-tag-topics": "이 태그가 달린 게시물이 없습니다.",
     "no-tags-found": "No tags found",
     "tags": "태그 목록",
-    "enter_tags_here": "%1에서 %2자 안으로 태그를 입력하세요.",
-    "enter_tags_here_short": "태그 입력...",
-    "no_tags": "아직 태그가 달리지 않았습니다.",
-    "select_tags": "태그 선택",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "%1에서 %2자 안으로 태그를 입력하세요.",
+    "enter-tags-here-short": "태그 입력...",
+    "no-tags": "아직 태그가 달리지 않았습니다.",
+    "select-tags": "태그 선택",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

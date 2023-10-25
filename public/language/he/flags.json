@@ -1,5 +1,6 @@
 {
 	"state": "מצב",
+	"report": "דיווח",
 	"reports": "דיווחים",
 	"first-reported": "דיווח ראשון",
 	"no-flags": "הידד! לא נמצאו דיווחים.",
@@ -8,6 +9,8 @@
 	"update": "עדכון",
 	"updated": "עודכן",
 	"resolved": "הושלם",
+	"report-added": "נוסף",
+	"report-rescinded": "בוטל",
 	"target-purged": "התוכן שסומן נוקה ולא קיים יותר.",
 	"target-aboutme-empty": "למשתמש זה אין \"אודות\" מוגדר.",
 

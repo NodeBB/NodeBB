@@ -5,7 +5,7 @@
 	"none-installed": "위젯이 없습니다! <a href=\"%1\">플러그인</a> 설정 메뉴에서 widget essentials 플러그인을 설치하세요.",
 	"clone-from": "복제할 위젯 선택",
 	"containers.available": "사용 가능한 컨테이너",
-	"containers.explanation": "활성화된 위젯 위로 드래그&드롭하세요.",
+	"containers.explanation": "Drag and drop on top of any widget",
 	"containers.none": "없음",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "해당 그룹에 숨김",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "모바일에서 숨김"
+	"hide-on-mobile": "모바일에서 숨김",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "Kategori ve konu sayfalarındaki araç çubuğu sayfanın üstünde sabitlenmiş şekilde kalacak",
 	"settings.autohideBottombar": "Alttaki şeridi otomatik olarak gizle",
 	"settings.autohideBottombar.help": "Sayfanın altındaki şerit sayfayı aşağıya doğru kaydırırken mobilde gizlenecek",
+	"settings.openSidebars": "Open sidebars",
 	"settings.chatModals": "Enable chat modals"
 }

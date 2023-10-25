@@ -1,5 +1,6 @@
 {
 	"state": "Állapot",
+	"report": "Report",
 	"reports": "Jelentés",
 	"first-reported": "Először jelentve",
 	"no-flags": "Hurrá! Nincs megjelölés.",
@@ -8,6 +9,8 @@
 	"update": "Frissítés",
 	"updated": "Frissítve",
 	"resolved": "Megoldva",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "A tartalom amire a jelölő mutat már meg lett tiszítva vagy nem létezik.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

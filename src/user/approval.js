@@ -52,10 +52,10 @@ module.exports = function (User) {
 	async function sendNotificationToAdmins(username) {
 		const notifObj = await notifications.create({
 			type: 'new-register',
-			bodyShort: `[[notifications:new_register, ${username}]]`,
-			nid: `new_register:${username}`,
+			bodyShort: `[[notifications:new-register, ${username}]]`,
+			nid: `new-register:${username}`,
 			path: '/admin/manage/registration',
-			mergeId: 'new_register',
+			mergeId: 'new-register',
 		});
 		await notifications.pushGroup(notifObj, 'administrators');
 	}
@@ -87,7 +87,7 @@ module.exports = function (User) {
 	};
 
 	async function markNotificationRead(username) {
-		const nid = `new_register:${username}`;
+		const nid = `new-register:${username}`;
 		const uids = await groups.getMembers('administrators', 0, -1);
 		const promises = uids.map(uid => notifications.markRead(nid, uid));
 		await Promise.all(promises);

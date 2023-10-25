@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Nie sú tu žiadne témy s touto značkou.",
+    "no-tag-topics": "Nie sú tu žiadne témy s touto značkou.",
     "no-tags-found": "No tags found",
     "tags": "Značky",
-    "enter_tags_here": "Sem vložte označenie, každé o dĺžke %1 až %2 znakov.",
-    "enter_tags_here_short": "Zadajte značky...",
-    "no_tags": "Zatiaľ tu nie sú žiadne značky.",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Sem vložte označenie, každé o dĺžke %1 až %2 znakov.",
+    "enter-tags-here-short": "Zadajte značky...",
+    "no-tags": "Zatiaľ tu nie sú žiadne značky.",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

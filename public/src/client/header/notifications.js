@@ -1,25 +1,24 @@
 'use strict';
 
-define('forum/header/notifications', ['components'], function (components) {
+define('forum/header/notifications', function () {
 	const notifications = {};
 
 	notifications.prepareDOM = function () {
-		const notifContainer = components.get('notifications');
-		const notifTrigger = notifContainer.children('a');
-		const notifList = components.get('notifications/list');
+		const notifTrigger = $('[component="notifications"] [data-bs-toggle="dropdown"]');
+		if (!notifTrigger.length) {
+			return;
+		}
 
-		notifTrigger.on('click', function (e) {
-			e.preventDefault();
-			if (notifContainer.hasClass('open')) {
-				return;
-			}
-
-			requireAndCall('loadNotifications', notifList);
+		notifTrigger.on('show.bs.dropdown', (ev) => {
+			requireAndCall('loadNotifications', $(ev.target).parent().find('[component="notifications/list"]'));
 		});
 
-		if (notifTrigger.parents('.dropdown').hasClass('open')) {
-			requireAndCall('loadNotifications', notifList);
-		}
+		notifTrigger.each((index, el) => {
+			const dropdownEl = $(el).parent().find('.dropdown-menu');
+			if (dropdownEl.hasClass('show')) {
+				requireAndCall('loadNotifications', dropdownEl.find('[component="notifications/list"]'));
+			}
+		});
 
 		socket.removeListener('event:new_notification', onNewNotification);
 		socket.on('event:new_notification', onNewNotification);

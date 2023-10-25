@@ -546,7 +546,7 @@ define('navigator', [
 		if (config.usePagination) {
 			paginationTextEl.html(`<i class="fa fa-file"></i> ${ajaxify.data.pagination.currentPage} / ${ajaxify.data.pagination.pageCount}`);
 		} else {
-			paginationTextEl.translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
+			paginationTextEl.translateHtml('[[global:pagination.out-of, ' + index + ', ' + count + ']]');
 		}
 
 		const fraction = (index - 1) / (count - 1 || 1);
@@ -606,8 +606,8 @@ define('navigator', [
 	};
 
 	navigator.scrollToIndex = function (index, highlight, duration) {
-		const inTopic = !!components.get('topic').length;
-		const inCategory = !!components.get('category').length;
+		const inTopic = ajaxify.data.template.topic;
+		const inCategory = ajaxify.data.template.category;
 
 		if (!utils.isNumber(index) || (!inTopic && !inCategory)) {
 			return;

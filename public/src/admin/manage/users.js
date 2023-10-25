@@ -216,7 +216,7 @@ define('admin/manage/users', [
 			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
-					title: '[[user:ban_account]]',
+					title: '[[user:ban-account]]',
 					message: html,
 					show: true,
 					buttons: {
@@ -340,7 +340,7 @@ define('admin/manage/users', [
 				const newPassword = modal.find('#newPassword').val();
 				const confirmPassword = modal.find('#confirmPassword').val();
 				if (newPassword !== confirmPassword) {
-					throw new Error('[[[user:change_password_error_match]]');
+					throw new Error('[[[user:change-password-error-match]]');
 				}
 				await Promise.all(uids.map(uid => api.put('/users/' + uid + '/password', {
 					currentPassword: '',
@@ -350,9 +350,9 @@ define('admin/manage/users', [
 
 			const modal = bootbox.dialog({
 				message: `<div class="d-flex flex-column gap-2">
-					<label class="form-label">[[user:new_password]]</label>
+					<label class="form-label">[[user:new-password]]</label>
 					<input id="newPassword" class="form-control" type="text">
-					<label class="form-label">[[user:confirm_password]]</label>
+					<label class="form-label">[[user:confirm-password]]</label>
 					<input id="confirmPassword" class="form-control" type="text">
 				</div>`,
 				title: '[[admin/manage/users:change-password]]',

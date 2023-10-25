@@ -3,18 +3,18 @@
 	"none": "Votre forum n'a pour l'instant aucun sujet avec mots-clés.",
 	"bg-color": "Couleur d'arrière plan",
 	"text-color": "Couleur du texte",
-	"description": "Pour une sélection multiple :\nSélectionnez des mots-clés en cliquant ou en sélectionnant avec votre souris ou utilisez la touche <code>CTRL</code> .",
-	"create": "Créer le mot-clés",
-	"add-tag": "Ajouter un mots-clés",
+	"description": "Pour une sélection multiple :\nSélectionner des mots-clés en les sélectionnant avec votre souris ou utilisez la touche <code>CTRL</code> .",
+	"create": "Créer le mot-clé",
+	"add-tag": "Ajouter un mot-clé",
 	"modify": "Modifier les mots-clés",
 	"rename": "Renommer les mots-clés",
 	"delete": "Supprimer la sélection",
 	"search": "Chercher des mots-clés...",
 	"settings": "Paramètres",
-	"name": "Nom du mot-clés",
+	"name": "Nom du mot-clé",
 
 	"alerts.editing": "Édition des mots-clés",
 	"alerts.confirm-delete": "Vous-voulez réellement supprimer les mots-clés sélectionnés ?",
-	"alerts.update-success": "Mot-clés mis à jour !",
+	"alerts.update-success": "Mot-clé mis à jour !",
 	"reset-colors": "Réinitialiser les couleurs"
 }

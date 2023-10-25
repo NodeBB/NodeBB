@@ -21,10 +21,12 @@ popularController.get = async function (req, res, next) {
 		data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);
 	}
 
-	const feedQs = data.rssFeedUrl.split('?')[1];
-	data.rssFeedUrl = `${nconf.get('relative_path')}/popular/${validator.escape(String(req.query.term || 'alltime'))}.rss`;
-	if (req.loggedIn) {
-		data.rssFeedUrl += `?${feedQs}`;
+	if (!data['feeds:disableRSS'] && data.rssFeedUrl) {
+		const feedQs = data.rssFeedUrl.split('?')[1];
+		data.rssFeedUrl = `${nconf.get('relative_path')}/popular/${validator.escape(String(req.query.term || 'alltime'))}.rss`;
+		if (req.loggedIn) {
+			data.rssFeedUrl += `?${feedQs}`;
+		}
 	}
 	res.render('popular', data);
 };

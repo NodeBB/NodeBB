@@ -1,12 +1,12 @@
 {
     "username-email": "Uporabniško ime/E-pošta",
     "username": "Uporabniško ime",
-    "remember_me": "Zapomni si me.",
-    "forgot_password": "Ste pozabili geslo?",
-    "alternative_logins": "Alternativne prijave",
-    "failed_login_attempt": "Prijava ni uspela",
-    "login_successful": "Uspešno ste se prijavili.",
-    "dont_have_account": "Ali še nimate uporabniškega računa?",
+    "remember-me": "Zapomni si me.",
+    "forgot-password": "Ste pozabili geslo?",
+    "alternative-logins": "Alternativne prijave",
+    "failed-login-attempt": "Prijava ni uspela",
+    "login-successful": "Uspešno ste se prijavili.",
+    "dont-have-account": "Ali še nimate uporabniškega računa?",
     "logged-out-due-to-inactivity": "Zaradi neaktivnosti ste odjavljeni iz skrbniške nadzorne plošče.",
     "caps-lock-enabled": "Caps Lock is enabled"
 }

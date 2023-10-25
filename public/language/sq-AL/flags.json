@@ -1,5 +1,6 @@
 {
 	"state": "Gjendja",
+	"report": "Report",
 	"reports": "Raportet",
 	"first-reported": "Raportuar për herë të parë",
 	"no-flags": "Juhu! Nuk u gjet asnje gabim.",
@@ -8,6 +9,8 @@
 	"update": "Përditëso",
 	"updated": "I përditësuar",
 	"resolved": "E zgjidhur",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Përmbajtja të cilës i referohet ky raportim është fshire dhe nuk disponohet më.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

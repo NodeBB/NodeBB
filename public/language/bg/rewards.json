@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "Получихте <strong>%1</strong> точки репутация",
+	"awarded-group-membership": "Бяхте добавен/а в групата <strong>%1</strong>",
+
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Репутация %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Брой публикации %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Последно на линия %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Дата на присъединяване %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Брой дни с регистрация %1 %2)</span>"
+}

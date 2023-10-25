@@ -60,11 +60,11 @@ Controllers.reset = async function (req, res) {
 			minimumPasswordStrength: meta.config.minimumPasswordStrength,
 			breadcrumbs: helpers.buildBreadcrumbs([
 				{
-					text: '[[reset_password:reset_password]]',
+					text: '[[reset_password:reset-password]]',
 					url: '/reset',
 				},
 				{
-					text: '[[reset_password:update_password]]',
+					text: '[[reset_password:update-password]]',
 				},
 			]),
 			title: '[[pages:reset]]',
@@ -85,7 +85,7 @@ Controllers.reset = async function (req, res) {
 		res.render('reset', {
 			code: null,
 			breadcrumbs: helpers.buildBreadcrumbs([{
-				text: '[[reset_password:reset_password]]',
+				text: '[[reset_password:reset-password]]',
 			}]),
 			title: '[[pages:reset]]',
 		});
@@ -343,7 +343,7 @@ Controllers.outgoing = function (req, res, next) {
 		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{
-			text: '[[notifications:outgoing_link]]',
+			text: '[[notifications:outgoing-link]]',
 		}]),
 	});
 };

@@ -32,7 +32,7 @@ categoriesController.get = async function (req, res) {
 
 	const payload = {};
 	payload.categories = categoriesData;
-	payload.title = `[[pages:account/watched_categories, ${username}]]`;
+	payload.title = `[[pages:account/watched-categories, ${username}]]`;
 	payload.breadcrumbs = helpers.buildBreadcrumbs([
 		{ text: username, url: `/user/${userslug}` },
 		{ text: '[[pages:categories]]' },

@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 resultat(er) samsvarer med \"%2\", (%3 sekunder)",
+    "results-matching": "%1 resultat(er) samsvarer med \"%2\", (%3 sekunder)",
     "no-matches": "Ingen matcher funnet",
     "advanced-search": "Avansert søk",
     "in": "I",
@@ -44,7 +44,7 @@
     "yesterday": "I går",
     "one-week": "En uke",
     "two-weeks": "To uker",
-    "one-month": "En måned ",
+    "one-month": "En måned",
     "three-months": "Tre måneder",
     "six-months": "Seks måneder",
     "one-year": "Ett år",

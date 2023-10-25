@@ -1,4 +1,5 @@
 {
+	"zero-is-disabled": "Enter 0 to disable this restriction",
 	"chat-settings": "チャット設定",
 	"disable": "チャットは無効です",
 	"disable-editing": "チャットメッセージの編集/削除を無効にする",
@@ -6,8 +7,10 @@
 	"max-length": "チャットメッセージの最大の長さ",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "チャットルームの最大ユーザー数",
-	"delay": "ミリ秒単位のチャットメッセージ間の時間",
-	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
+	"delay": "Time between chat messages (ms)",
+	"newbieDelay": "... for new users (ms)",
+	"notification-delay": "Notification delay for chat messages",
+	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
+	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
+	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
 }

@@ -1,11 +1,17 @@
 {
-    "all-tags": "All tags",
-    "no_tag_topics": "Այս թեգով թեմաներ չկան",
-    "no-tags-found": "No tags found",
+    "all-tags": "Բոլոր պիտակները",
+    "no-tag-topics": "Այս թեգով թեմաներ չկան",
+    "no-tags-found": "Պիտակներ չեն գտնվել",
     "tags": "Թեգեր",
-    "enter_tags_here": "Մուտքագրեք թեգերն այստեղ՝ %1 և %2 քանակությամբ նշանների միջակայքում",
-    "enter_tags_here_short": "Մուտքագրեք թեգերը...",
-    "no_tags": "Դեռևս թեգեր չկան",
-    "select_tags": "Ընտրել թեգեր",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Մուտքագրեք թեգերն այստեղ՝ %1 և %2 քանակությամբ նշանների միջակայքում",
+    "enter-tags-here-short": "Մուտքագրեք թեգերը...",
+    "no-tags": "Դեռևս թեգեր չկան",
+    "select-tags": "Ընտրել թեգեր",
+    "tag-whitelist": "Պիտակների սպիտակ ցանկ",
+    "watching": "Դիտում",
+    "not-watching": "Չի դիտվում",
+    "watching.description": "Ծանուցել ինձ նոր թեմաների մասին:",
+    "not-watching.description": "Չծանուցել ինձ նոր թեմաների մասին:",
+    "following-tag.message": "Այժմ դուք ծանուցումներ կստանաք, երբ ինչ-որ մեկը թեմա կտեղադրի այս պիտակով:",
+    "not-following-tag.message": "Դուք ծանուցումներ չեք ստանա, երբ ինչ-որ մեկը թեմա է փակցնում այս պիտակով:"
 }

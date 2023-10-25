@@ -1,12 +1,12 @@
 {
     "username-email": "Brukernavn / E-post",
     "username": "Brukernavn",
-    "remember_me": "Husk meg?",
-    "forgot_password": "Glemt passord?",
-    "alternative_logins": "Alternativ innlogging",
-    "failed_login_attempt": "Innlogging mislyktes",
-    "login_successful": "Du har blitt logget inn!",
-    "dont_have_account": "Har du ikke en konto?",
+    "remember-me": "Husk meg?",
+    "forgot-password": "Glemt passord?",
+    "alternative-logins": "Alternativ innlogging",
+    "failed-login-attempt": "Innlogging mislyktes",
+    "login-successful": "Du har blitt logget inn!",
+    "dont-have-account": "Har du ikke en konto?",
     "logged-out-due-to-inactivity": "Du har blitt logget ut av administratorsidene fordi du har vært inaktiv for lenge",
     "caps-lock-enabled": "Caps Lock er skrudd på"
 }

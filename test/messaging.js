@@ -137,6 +137,18 @@ describe('Messaging Library', () => {
 	});
 
 	describe('rooms', () => {
+		const _delay1 = meta.config.chatMessageDelay;
+		const _delay2 = meta.config.newbieChatMessageDelay;
+		before(async () => {
+			meta.config.chatMessageDelay = 0;
+			meta.config.newbieChatMessageDelay = 0;
+		});
+
+		after(async () => {
+			meta.config.chatMessageDelay = _delay1;
+			meta.config.newbieChatMessageDelay = _delay2;
+		});
+
 		it('should fail to create a new chat room with invalid data', async () => {
 			const { body } = await callv3API('post', '/chats', {}, 'foo');
 			assert.equal(body.status.message, await translator.translate('[[error:required-parameters-missing, uids]]'));
@@ -423,8 +435,8 @@ describe('Messaging Library', () => {
 			const data = await User.notifications.get(mocks.users.herp.uid);
 			assert(data.unread[0]);
 			const notification = data.unread[0];
-			assert.strictEqual(notification.bodyShort, 'New message from <strong>foo</strong>');
-			assert.strictEqual(notification.nid, `chat_${roomId}_${mocks.users.foo.uid}`);
+			assert.strictEqual(notification.bodyShort, `New message in <strong>Room ${roomId}</strong>`);
+			assert(notification.nid.startsWith(`chat_${roomId}_${mocks.users.foo.uid}_`));
 			assert.strictEqual(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
 		});
 

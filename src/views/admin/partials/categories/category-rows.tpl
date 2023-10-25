@@ -55,8 +55,11 @@
 			</div>
 		</div>
 
-		<ul class="list-unstyled has-more-categories {{{ if !../hasMoreSubCategories}}}hidden{{{ end }}}">
-			<li>
+		<ul class="list-unstyled has-more-categories mt-2 {{{ if !./hasMoreSubCategories}}}hidden{{{ end }}}" data-hasmore="{{{ if ./hasMoreSubCategories}}}1{{{ else }}}0{{{ end }}}">
+			<li class="d-flex gap-2">
+				<div class="invisible toggle text-center text-sm">
+					<i class="fa fa-chevron-down"></i>
+				</div>
 				<a href="{config.relative_path}/admin/manage/categories?cid={categories.cid}&page={categories.showMorePage}" class="btn btn-sm btn-light">[[category:x-more-categories, {../subCategoriesLeft}]]</a>
 			</li>
 		</ul>

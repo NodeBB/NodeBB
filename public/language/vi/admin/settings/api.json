@@ -3,7 +3,7 @@
 	"settings": "Cài đặt",
 	"lead-text": "Từ trang này, bạn có thể cấu hình quyền truy cập vào API Viết trong NodeBB.",
 	"intro": "Mặc định, API Viết xác thực người dùng dựa trên cookie phiên của họ, nhưng NodeBB cũng hỗ trợ xác thực Bearer thông qua mã truy cập được tạo qua trang này.",
-	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
+	"warning": "<strong>Lời khuyên</strong> — coi mã thông báo như mật khẩu. Nếu chúng bị rò rỉ, tài khoản của bạn sẽ được coi là bị xâm phạm.",
 	"docs": "Nhấp vào đây để truy cập thông số kỹ thuật API đầy đủ",
 
 	"require-https": "Chỉ yêu cầu sử dụng API qua HTTPS",
@@ -20,10 +20,10 @@
 	"master-token": "Master token",
 	"last-seen-never": "Khóa này chưa bao giờ được dùng.",
 	"no-description": "Không có mô tả cụ thể.",
-	"actions": "Actions",
-	"edit": "Edit",
-	"roll": "Roll",
+	"actions": "Hành Động",
+	"edit": "Sửa",
+	"roll": "Cuộn",
 
-	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
-	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+	"delete-confirm": "Bạn có chắc chắn muốn xóa mã thông báo này không? Nó sẽ không thể phục hồi được.",
+	"roll-confirm": "Bạn có chắc chắn muốn tạo lại mã thông báo này không? Mã thông báo cũ sẽ bị thu hồi ngay lập tức và không thể phục hồi được."
 }

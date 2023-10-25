@@ -67,13 +67,14 @@ async function getActiveRewards() {
 			db.getObject(`rewards:id:${id}:rewards`),
 		]);
 		if (main) {
-			main.disabled = main.disabled === 'true';
+			main.disabled = main.disabled === 'true' || main.disabled === true;
 			main.rewards = rewards;
 		}
 		return main;
 	}
 
 	const rewardsList = await db.getSetMembers('rewards:list');
+	rewardsList.sort((a, b) => a - b);
 	const rewardData = await Promise.all(rewardsList.map(id => load(id)));
 	return rewardData.filter(Boolean);
 }

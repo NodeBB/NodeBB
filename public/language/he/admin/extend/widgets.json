@@ -5,7 +5,7 @@
 	"none-installed": "לא נמצאו ווידג'טים! הפעל את תוספי הווידג'טים ב <a href=\"%1\">תוספים</a> בלוח הבקרה.",
 	"clone-from": "שיבוט ווידג'טים מ",
 	"containers.available": "גורמים מכילים זמינים",
-	"containers.explanation": "גרור ושחרר מעל כל ווידג'ט פעיל",
+	"containers.explanation": "גרור ושחרר על גבי כל ווידג'ט",
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "יוסתר מקבוצות",
 	"start-date": "תאריך התחלה",
 	"end-date": "תאריך סיום",
-	"hide-on-mobile": "הסתר במובייל"
+	"hide-on-mobile": "הסתר במובייל",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

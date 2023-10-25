@@ -5,7 +5,7 @@
 	"none-installed": "Nessun widget trovato! Attivare il plugin essenziale per i widget nel pannello di controllo dei <a href=\"%1\">plugin</a>.",
 	"clone-from": "Clona i widget da",
 	"containers.available": "Contenitori disponibili",
-	"containers.explanation": "Trascina e rilascia su qualsiasi widget attivo",
+	"containers.explanation": "Trascina e rilascia sopra qualsiasi widget",
 	"containers.none": "Nessuno",
 	"container.well": "Bene",
 	"container.jumbotron": "Jumbotron",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "Nascondi dai gruppi",
 	"start-date": "Data d'inizio",
 	"end-date": "Data di fine",
-	"hide-on-mobile": "Nascondi su mobile"
+	"hide-on-mobile": "Nascondi su mobile",
+	"hide-drafts": "Nascondi bozze",
+	"show-drafts": "Mostra bozze"
 }

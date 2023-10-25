@@ -21,19 +21,12 @@ admin.get = async function () {
 };
 
 admin.getAreas = async function () {
-	const defaultAreas = [
-		{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
-		{ name: 'Global Header', template: 'global', location: 'header' },
-		{ name: 'Global Footer', template: 'global', location: 'footer' },
-
-		{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
-		{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
-	];
-
-	const areas = await plugins.hooks.fire('filter:widgets.getAreas', defaultAreas);
+	const areas = await index.getAvailableAreas();
 
 	areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
-	const areaData = await Promise.all(areas.map(area => index.getArea(area.template, area.location)));
+	const areaData = await Promise.all(
+		areas.map(area => index.getArea(area.template, area.location))
+	);
 	areas.forEach((area, i) => {
 		area.data = areaData[i];
 	});
@@ -68,6 +61,7 @@ function buildTemplatesFromAreas(areas) {
 			templates.push({
 				template: area.template,
 				areas: [],
+				widgetCount: 0,
 			});
 
 			index += 1;
@@ -77,6 +71,9 @@ function buildTemplatesFromAreas(areas) {
 			name: area.name,
 			location: area.location,
 		});
+		if (area.location !== 'drafts') {
+			templates[list[area.template]].widgetCount += area.data.length;
+		}
 	});
 	return templates;
 }

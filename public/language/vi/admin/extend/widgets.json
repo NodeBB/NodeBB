@@ -5,16 +5,16 @@
 	"none-installed": "Không tìm thấy tiện ích nào! Kích hoạt plugin tiện ích cần thiết trong bảng điều khiển<a href=\"%1\">plugins</a> .",
 	"clone-from": "Sao chép tiện ích từ",
 	"containers.available": "Vùng Chứa Có Sẵn",
-	"containers.explanation": "Kéo và thả lên trên bất kỳ tiện ích đang hoạt động",
+	"containers.explanation": "Kéo và thả lên trên bất kỳ tiện ích nào",
 	"containers.none": "Trống",
 	"container.well": "Tốt",
 	"container.jumbotron": "Khung Hiển Thị Lớn",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "Thẻ",
+	"container.card-header": "Đầu Thẻ",
+	"container.card-body": "Thân Thẻ",
 	"container.alert": "Cảnh báo",
 
-	"alert.confirm-delete": "Bạn có chắc chắn muốn xóa tiện ích này không?",
+	"alert.confirm-delete": "Bạn có chắc muốn xóa tiện ích này không?",
 	"alert.updated": "Đã Cập Nhật Tiện Ích",
 	"alert.update-success": "Đã cập nhật thành công các tiện ích",
 	"alert.clone-success": "Đã nhân bản thành công tiện ích",
@@ -29,5 +29,7 @@
 	"hide-from-groups": "Ẩn khỏi nhóm",
 	"start-date": "Ngày bắt đầu",
 	"end-date": "Ngày kết thúc",
-	"hide-on-mobile": "Ẩn trên thiết bị di động"
+	"hide-on-mobile": "Ẩn trên thiết bị di động",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

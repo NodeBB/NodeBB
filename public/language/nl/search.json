@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results_matching": "%1 overeenkomstige resultaten \"%2\", (%3 seconds)",
+    "results-matching": "%1 overeenkomstige resultaten \"%2\", (%3 seconds)",
     "no-matches": "Geen overeenkomstige resultaten gevonden",
     "advanced-search": "Geavanceerd zoeken",
     "in": "in",
@@ -26,7 +26,7 @@
     "posted-by": "Geplaatst door",
     "posted-by-usernames": "Posted by: %1",
     "type-a-username": "Type a username",
-    "search-child-categories": "Doorzoek subcategorieën ",
+    "search-child-categories": "Doorzoek subcategorieën",
     "has-tags": "Is getagged",
     "reply-count": "Aantal reacties",
     "replies": "Replies",

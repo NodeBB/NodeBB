@@ -1,12 +1,12 @@
 {
     "username-email": "Kullanıcı Adı / E-posta Adresi",
     "username": "Kullanıcı Adı",
-    "remember_me": "Beni Hatırla!",
-    "forgot_password": "Şifrenizi mi unuttunuz?",
-    "alternative_logins": "Alternatif Girişler",
-    "failed_login_attempt": "Giriş Başarısız",
-    "login_successful": "Başarıyla giriş yaptınız!",
-    "dont_have_account": "Hesabınız yok mu?",
+    "remember-me": "Beni Hatırla!",
+    "forgot-password": "Şifrenizi mi unuttunuz?",
+    "alternative-logins": "Alternatif Girişler",
+    "failed-login-attempt": "Giriş Başarısız",
+    "login-successful": "Başarıyla giriş yaptınız!",
+    "dont-have-account": "Hesabınız yok mu?",
     "logged-out-due-to-inactivity": "Hareketsizlik nedeniyle yönetici panelinden çıkış yapıldı",
     "caps-lock-enabled": "Caps Lock aktif"
 }

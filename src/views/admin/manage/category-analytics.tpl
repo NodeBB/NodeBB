@@ -14,10 +14,9 @@
 		<div class="col-sm-6 text-center">
 			<div class="card">
 				<div class="card-body">
-					<div><canvas id="pageviews:hourly" height="250"></canvas></div>
-					<p>
-
-					</p>
+					<div class="position-relative" style="aspect-ratio: 2;">
+						<canvas id="pageviews:hourly"></canvas>
+					</div>
 				</div>
 				<div class="card-footer"><small>[[admin/manage/categories:analytics.pageviews-hourly]]</div>
 			</div>
@@ -25,10 +24,9 @@
 		<div class="col-sm-6 text-center">
 			<div class="card">
 				<div class="card-body">
-					<div><canvas id="pageviews:daily" height="250"></canvas></div>
-					<p>
-
-					</p>
+					<div class="position-relative" style="aspect-ratio: 2;">
+						<canvas id="pageviews:daily" height="250"></canvas>
+					</div>
 				</div>
 				<div class="card-footer"><small>[[admin/manage/categories:analytics.pageviews-daily]]</div>
 			</div>
@@ -38,10 +36,9 @@
 		<div class="col-sm-6 text-center">
 			<div class="card">
 				<div class="card-body">
-					<div><canvas id="topics:daily" height="250"></canvas></div>
-					<p>
-
-					</p>
+					<div class="position-relative" style="aspect-ratio: 2;">
+						<canvas id="topics:daily" height="250"></canvas>
+					</div>
 				</div>
 				<div class="card-footer"><small>[[admin/manage/categories:analytics.topics-daily]]</div>
 			</div>
@@ -49,10 +46,9 @@
 		<div class="col-sm-6 text-center">
 			<div class="card">
 				<div class="card-body">
-					<div><canvas id="posts:daily" height="250"></canvas></div>
-					<p>
-
-					</p>
+					<div class="position-relative" style="aspect-ratio: 2;">
+						<canvas id="posts:daily" height="250"></canvas>
+					</div>
 				</div>
 				<div class="card-footer"><small>[[admin/manage/categories:analytics.posts-daily]]</div>
 			</div>

@@ -1,5 +1,6 @@
 {
 	"state": "처리 상태",
+	"report": "Report",
 	"reports": "보고",
 	"first-reported": "최초 보고",
 	"no-flags": "만세! 들어온 신고가 없습니다.",
@@ -8,6 +9,8 @@
 	"update": "업데이트",
 	"updated": "업데이트 완료",
 	"resolved": "해결됨",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "해당 신고된 컨텐츠는 완전 삭제 되었으며, 더 이상 존재하지 않습니다.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

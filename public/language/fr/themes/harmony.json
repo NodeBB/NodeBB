@@ -1,16 +1,17 @@
 {
 	"theme-name": "Thème Harmony",
-	"skins": "Apparence",
+	"skins": "Habillages",
 	"collapse": "Réduire",
 	"expand": "Développer",
 	"login-register-to-search": "Connectez-vous ou inscrivez-vous pour  faire une recherche.",
 	"settings.title": "Configuration du thème",
-	"settings.enableQuickReply": "Activer les réponses rapide",
+	"settings.enableQuickReply": "Activer les réponses rapides",
 	"settings.centerHeaderElements": "Centrer les éléments d'en-tête",
 	"settings.mobileTopicTeasers": "Afficher les teasers de sujet sur mobile",
 	"settings.stickyToolbar": "Barre d'outils",
 	"settings.stickyToolbar.help": "La barre d'outils sur les pages de sujets et de catégories restera en haut de la page",
 	"settings.autohideBottombar": "Masquer automatiquement la barre inférieure",
-	"settings.autohideBottombar.help": "La barre inférieure de la vue mobile sera masquée lorsque la page défilera vers le bas",
+	"settings.autohideBottombar.help": "La barre inférieure sur mobile sera masquée lorsque la page défilera vers le bas",
+	"settings.openSidebars": "Barres latérales ouvertes",
 	"settings.chatModals": "Activer les discussions"
 }

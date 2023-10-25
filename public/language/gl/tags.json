@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Non hai temas con esa etiqueta.",
+    "no-tag-topics": "Non hai temas con esa etiqueta.",
     "no-tags-found": "No tags found",
     "tags": "Etiquetas",
-    "enter_tags_here": "Pon as etiquetas aquí, entre %1 e %2 caracteres cada unha.",
-    "enter_tags_here_short": "Introduce as etiquetas",
-    "no_tags": "Non hai etiquetas todavía.",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Pon as etiquetas aquí, entre %1 e %2 caracteres cada unha.",
+    "enter-tags-here-short": "Introduce as etiquetas",
+    "no-tags": "Non hai etiquetas todavía.",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

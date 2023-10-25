@@ -391,6 +391,8 @@ UserObjectFull:
           type: number
         categoriesWatched:
           type: number
+        tagsWatched:
+          type: number
         downvoted:
           type: number
         followers:
@@ -446,6 +448,8 @@ UserObjectFull:
     isSelf:
       type: boolean
     isFollowing:
+      type: boolean
+    canChat:
       type: boolean
     hasPrivateChat:
       type: number

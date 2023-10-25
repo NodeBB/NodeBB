@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד בעת גלילה",
 	"settings.autohideBottombar": "הסתרה אוטומטית של סרגל תחתון",
 	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה",
+	"settings.openSidebars": "פתח סרגלי צד",
 	"settings.chatModals": "הפעלת צ'אט בחלונית מוקטנת"
 }

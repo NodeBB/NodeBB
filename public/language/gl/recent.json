@@ -5,7 +5,7 @@
     "month": "Mes",
     "year": "Ano",
     "alltime": "Dende o principio",
-    "no_recent_topics": "Non hai temas recentes",
-    "no_popular_topics": "Non hai temas populares",
+    "no-recent-topics": "Non hai temas recentes",
+    "no-popular-topics": "Non hai temas populares",
     "load-new-posts": "Load new posts"
 }

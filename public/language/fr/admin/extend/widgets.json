@@ -1,11 +1,11 @@
 {
 	"widgets": "Widgets",
 	"available": "Widgets disponibles",
-	"explanation": "Sélectionnez un widget depuis le menu puis glissez-déposez le dans une zone template du widget à gauche.",
+	"explanation": "Sélectionner un widget depuis le menu puis glissez & déposez-le dans une zone template du widget à gauche.",
 	"none-installed": "Aucun widget trouvé ! Activez le plugin Widget Essentials dans le panneau de <a href=\"%1\">configuration des plugins</a>.",
 	"clone-from": "Cloner le widget",
 	"containers.available": "Conteneurs disponibles",
-	"containers.explanation": "Glissez-déposez sur n'importe quel widget actif",
+	"containers.explanation": "Glisser et déposer sur n'importe quel widget",
 	"containers.none": "Aucun",
 	"container.well": "Well",
 	"container.jumbotron": "Jombotron",
@@ -24,10 +24,12 @@
 	"title": "Titre",
 	"title.placeholder": "Titre (indiqué uniquement sur certains blocs)",
 	"container": "Bloc",
-	"container.placeholder": "Glissez et déposez un bloc ou entrez HTML ici.",
+	"container.placeholder": "Glisser & déposer un bloc ou entrer HTML ici.",
 	"show-to-groups": "Visible pour les groupes",
 	"hide-from-groups": "Masquer pour les groupes",
 	"start-date": "Date de début",
 	"end-date": "Date de fin",
-	"hide-on-mobile": "Masquer sur mobile"
+	"hide-on-mobile": "Masquer sur mobile",
+	"hide-drafts": "Hide drafts",
+	"show-drafts": "Show drafts"
 }

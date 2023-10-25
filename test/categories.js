@@ -1,7 +1,5 @@
 'use strict';
 
-
-const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request');
@@ -18,20 +16,10 @@ describe('Categories', () => {
 	let posterUid;
 	let adminUid;
 
-	before((done) => {
-		async.series({
-			posterUid: function (next) {
-				User.create({ username: 'poster' }, next);
-			},
-			adminUid: function (next) {
-				User.create({ username: 'admin' }, next);
-			},
-		}, (err, results) => {
-			assert.ifError(err);
-			posterUid = results.posterUid;
-			adminUid = results.adminUid;
-			groups.join('administrators', adminUid, done);
-		});
+	before(async () => {
+		posterUid = await User.create({ username: 'poster' });
+		adminUid = await User.create({ username: 'admin' });
+		await groups.join('administrators', adminUid);
 	});
 
 
@@ -156,32 +144,22 @@ describe('Categories', () => {
 	describe('Categories.moveRecentReplies', () => {
 		let moveCid;
 		let moveTid;
-		before((done) => {
-			async.parallel({
-				category: function (next) {
-					Categories.create({
-						name: 'Test Category 2',
-						description: 'Test category created by testing script',
-					}, next);
-				},
-				topic: function (next) {
-					Topics.post({
-						uid: posterUid,
-						cid: categoryObj.cid,
-						title: 'Test Topic Title',
-						content: 'The content of test topic',
-					}, next);
-				},
-			}, (err, results) => {
-				if (err) {
-					return done(err);
-				}
-				moveCid = results.category.cid;
-				moveTid = results.topic.topicData.tid;
-				Topics.reply({ uid: posterUid, content: 'test post', tid: moveTid }, (err) => {
-					done(err);
-				});
-			});
+		before(async () => {
+			const [category, topic] = await Promise.all([
+				Categories.create({
+					name: 'Test Category 2',
+					description: 'Test category created by testing script',
+				}),
+				Topics.post({
+					uid: posterUid,
+					cid: categoryObj.cid,
+					title: 'Test Topic Title',
+					content: 'The content of test topic',
+				}),
+			]);
+			moveCid = category.cid;
+			moveTid = topic.topicData.tid;
+			await Topics.reply({ uid: posterUid, content: 'test post', tid: moveTid });
 		});
 
 		it('should move posts from one category to another', (done) => {
@@ -270,7 +248,7 @@ describe('Categories', () => {
 
 			assert.deepStrictEqual(
 				data.topics.map(t => t.title),
-				['[[topic:topic_is_deleted]]', 'Test Topic Title', 'Test Topic Title'],
+				['[[topic:topic-is-deleted]]', 'Test Topic Title', 'Test Topic Title'],
 			);
 		});
 
@@ -526,52 +504,24 @@ describe('Categories', () => {
 			assert(canDelete);
 		});
 
-		it('should create category with settings from', (done) => {
-			let child1Cid;
-			let parentCid;
-			async.waterfall([
-				function (next) {
-					Categories.create({ name: 'copy from', description: 'copy me' }, next);
-				},
-				function (category, next) {
-					parentCid = category.cid;
-					Categories.create({ name: 'child1', description: 'will be gone', cloneFromCid: parentCid }, next);
-				},
-				function (category, next) {
-					child1Cid = category.cid;
-					assert.equal(category.description, 'copy me');
-					next();
-				},
-			], done);
+		it('should create category with settings from', async () => {
+			const category = await Categories.create({ name: 'copy from', description: 'copy me' });
+			const parentCid = category.cid;
+			const childCategory = await Categories.create({ name: 'child1', description: 'will be gone', cloneFromCid: parentCid });
+			assert.equal(childCategory.description, 'copy me');
 		});
 
-		it('should copy settings from', (done) => {
-			let child1Cid;
-			let parentCid;
-			async.waterfall([
-				function (next) {
-					Categories.create({ name: 'parent', description: 'copy me' }, next);
-				},
-				function (category, next) {
-					parentCid = category.cid;
-					Categories.create({ name: 'child1' }, next);
-				},
-				function (category, next) {
-					child1Cid = category.cid;
-					socketCategories.copySettingsFrom(
-						{ uid: adminUid },
-						{ fromCid: parentCid, toCid: child1Cid, copyParent: true },
-						next
-					);
-				},
-				function (destinationCategory, next) {
-					Categories.getCategoryField(child1Cid, 'description', next);
-				},
-				function (description, next) {
-					assert.equal(description, 'copy me');
-					next();
-				},
-			], done);
+		it('should copy settings from', async () => {
+			const category = await Categories.create({ name: 'parent', description: 'copy me' });
+			const parentCid = category.cid;
+			const childCategory = await Categories.create({ name: 'child1' });
+			const child1Cid = childCategory.cid;
+			const destinationCategory = await socketCategories.copySettingsFrom(
+				{ uid: adminUid },
+				{ fromCid: parentCid, toCid: child1Cid, copyParent: true },
+			);
+			const description = await Categories.getCategoryField(child1Cid, 'description');
+			assert.equal(description, 'copy me');
 		});
 
 		it('should copy privileges from another category', async () => {
@@ -754,6 +704,7 @@ describe('Categories', () => {
 					mute: false,
 					invite: false,
 					chat: false,
+					'chat:privileged': false,
 					'search:content': false,
 					'search:users': false,
 					'search:tags': false,
@@ -806,6 +757,7 @@ describe('Categories', () => {
 					'groups:mute': false,
 					'groups:invite': false,
 					'groups:chat': true,
+					'groups:chat:privileged': false,
 					'groups:search:content': true,
 					'groups:search:users': true,
 					'groups:search:tags': true,
@@ -852,19 +804,12 @@ describe('Categories', () => {
 				});
 			});
 
-			it('should not fail when there are multiple groups', (done) => {
-				async.series([
-					async.apply(groups.create, { name: 'testGroup2' }),
-					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup2'),
-					async.apply(groups.join, 'testGroup2', 1),
-					function (next) {
-						Categories.getModeratorUids([cid, 2], (err, uids) => {
-							assert.ifError(err);
-							assert(uids[0].includes('1'));
-							next();
-						});
-					},
-				], done);
+			it('should not fail when there are multiple groups', async () => {
+				await groups.create({ name: 'testGroup2' });
+				await groups.join('cid:1:privileges:groups:moderate', 'testGroup2');
+				await groups.join('testGroup2', 1);
+				const uids = await Categories.getModeratorUids([cid, 2]);
+				assert(uids[0].includes('1'));
 			});
 
 			it('should not return moderators of disabled categories', async () => {
@@ -875,13 +820,11 @@ describe('Categories', () => {
 				assert(!uids[0].includes('1'));
 			});
 
-			after((done) => {
-				async.series([
-					async.apply(groups.leave, `cid:${cid}:privileges:groups:moderate`, 'testGroup'),
-					async.apply(groups.leave, `cid:${cid}:privileges:groups:moderate`, 'testGroup2'),
-					async.apply(groups.destroy, 'testGroup'),
-					async.apply(groups.destroy, 'testGroup2'),
-				], done);
+			after(async () => {
+				await groups.leave(`cid:${cid}:privileges:groups:moderate`, 'testGroup');
+				await groups.leave(`cid:${cid}:privileges:groups:moderate`, 'testGroup2');
+				await groups.destroy('testGroup');
+				await groups.destroy('testGroup2');
 			});
 		});
 	});

@@ -1,8 +1,8 @@
 <div class="card tool-modal shadow">
-	<h5 class="card-header">[[topic:thread_tools.change_owner]]</h5>
+	<h5 class="card-header">[[topic:thread-tools.change-owner]]</h5>
 	<div class="card-body">
 		<p>
-			[[topic:change_owner_instruction]]
+			[[topic:change-owner-instruction]]
 		</p>
 		<div class="mb-3">
 			<label class="form-label" for="username"><strong>[[user:username]]</strong></label>

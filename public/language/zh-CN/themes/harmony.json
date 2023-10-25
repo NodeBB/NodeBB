@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "主题和类别页面上的工具条将附着在页面顶部",
 	"settings.autohideBottombar": "自动隐藏底栏",
 	"settings.autohideBottombar.help": "当页面向下滚动时，移动设备视图的底栏将被隐藏",
+	"settings.openSidebars": "Open sidebars",
 	"settings.chatModals": "启用聊天模式"
 }

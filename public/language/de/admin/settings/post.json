@@ -27,7 +27,7 @@
 	"restrictions.title-length": "Titellänge",
 	"restrictions.post-length": "Beitragslänge",
 	"restrictions.days-until-stale": "Tage bis ein Thema als alt angesehen wird",
-	"restrictions.stale-help": "Wenn ein Thema als \"veraltet\" angesehen wird, wird Nutzern die versuchen diesem Thema zu antworten eine Warnung gezeigt",
+	"restrictions.stale-help": "Wenn ein Thema als \"veraltet\" angesehen wird, wird Benutzern, die versuchen, auf dieses Thema zu antworten, eine Warnung angezeigt. (zum Deaktivieren auf 0 setzen)",
 	"timestamp": "Zeitstempel",
 	"timestamp.cut-off": "Tageslimit für Relative Zeitangaben (in Tagen)",
 	"timestamp.cut-off-help": "Tage &amp; Zeiten werden relativ angezeigt (z.B. \"vor 3 Stunden\" / \"vor 5 Tagen\"), und in viele Sprachen übersetzt. Nach einem bestimmten Zeitpunkt, kann dieses Text durch das übersetzte Datum selbst ersetzt werden (z.B. 5 Nov 2016 15:30).<br><em>(Standard: <code>30</code>, oder ein Monat). Auf 0 setzen um immer Daten anzuzeigen, leer lassung um immer relative Zeiten anzuzeigen.</em>",

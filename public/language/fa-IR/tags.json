@@ -1,11 +1,17 @@
 {
     "all-tags": "همه‌ی برچسب‌ها",
-    "no_tag_topics": "جُستاری با این برچسب وجود ندارد.",
+    "no-tag-topics": "جُستاری با این برچسب وجود ندارد.",
     "no-tags-found": "برچسبی پیدا نشد",
     "tags": "برچسب‌ها",
-    "enter_tags_here": "برچسب‌ها را اینجا وارد کنید، هر کدام بین %1 و %2 کاراکتر.",
-    "enter_tags_here_short": "برچسب‌ها را وارد کنید...",
-    "no_tags": "هنوز برچسبی وجود ندارد.",
-    "select_tags": "انتخاب برچسب ها",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "برچسب‌ها را اینجا وارد کنید، هر کدام بین %1 و %2 کاراکتر.",
+    "enter-tags-here-short": "برچسب‌ها را وارد کنید...",
+    "no-tags": "هنوز برچسبی وجود ندارد.",
+    "select-tags": "انتخاب برچسب ها",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

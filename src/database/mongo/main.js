@@ -112,6 +112,7 @@ module.exports = function (module) {
 			$inc: { data: 1 },
 		}, {
 			returnDocument: 'after',
+			includeResultMetadata: true,
 			upsert: true,
 		});
 		return result && result.value ? result.value.data : null;

@@ -1,11 +1,17 @@
 {
     "all-tags": "所有标签",
-    "no_tag_topics": "此标签还没有主题帖。",
+    "no-tag-topics": "此标签还没有主题帖。",
     "no-tags-found": "没有找到标签",
     "tags": "标签",
-    "enter_tags_here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
-    "enter_tags_here_short": "输入标签...",
-    "no_tags": "尚无标签。",
-    "select_tags": "选择标签",
-    "tag-whitelist": "标签白名单"
+    "enter-tags-here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
+    "enter-tags-here-short": "输入标签...",
+    "no-tags": "尚无标签。",
+    "select-tags": "选择标签",
+    "tag-whitelist": "标签白名单",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

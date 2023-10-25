@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "このタグに関連するスレッドはありません。",
+    "no-tag-topics": "このタグに関連するスレッドはありません。",
     "no-tags-found": "No tags found",
     "tags": "タグ",
-    "enter_tags_here": "ここにタグを入力します。一つのタグが%1から%2までの文字にして下さい。",
-    "enter_tags_here_short": "タグを入れます…",
-    "no_tags": "タグがありません",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "ここにタグを入力します。一つのタグが%1から%2までの文字にして下さい。",
+    "enter-tags-here-short": "タグを入れます…",
+    "no-tags": "タグがありません",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

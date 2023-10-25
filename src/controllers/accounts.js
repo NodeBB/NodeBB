@@ -5,6 +5,7 @@ const accountsController = {
 	edit: require('./accounts/edit'),
 	info: require('./accounts/info'),
 	categories: require('./accounts/categories'),
+	tags: require('./accounts/tags'),
 	settings: require('./accounts/settings'),
 	groups: require('./accounts/groups'),
 	follow: require('./accounts/follow'),

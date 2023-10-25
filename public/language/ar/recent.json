@@ -5,7 +5,7 @@
     "month": "شهر",
     "year": "سنة",
     "alltime": "دائمًا",
-    "no_recent_topics": "لايوجد مواضيع جديدة",
-    "no_popular_topics": "لا يوجد مواضيع شائعة",
+    "no-recent-topics": "لايوجد مواضيع جديدة",
+    "no-popular-topics": "لا يوجد مواضيع شائعة",
     "load-new-posts": "Load new posts"
 }

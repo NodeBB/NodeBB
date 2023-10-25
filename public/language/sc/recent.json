@@ -5,7 +5,7 @@
     "month": "Mese",
     "year": "Year",
     "alltime": "All Time",
-    "no_recent_topics": "Non bi sunt ùrtimas arresonadas.",
-    "no_popular_topics": "There are no popular topics.",
+    "no-recent-topics": "Non bi sunt ùrtimas arresonadas.",
+    "no-popular-topics": "There are no popular topics.",
     "load-new-posts": "Load new posts"
 }

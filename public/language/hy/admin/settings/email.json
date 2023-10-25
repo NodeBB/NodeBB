@@ -5,8 +5,8 @@
 	"from": "Ում Անունից",
 	"from-help": "Նամակում ցուցադրվող «ում անունից»:",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "Հաստատում",
+	"confirmation.expiry": "Ժամեր՝ էլ փոստի հաստատման հղումը վավեր պահելու համար",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Enable SMTP Transport",
@@ -42,7 +42,7 @@
 	"subscriptions.hour-help": "Խնդրում ենք մուտքագրել համարը, որը ներկայացնում է պլանավորված էլփոստի ամփոփագրեր ուղարկելու ժամը (օրինակ՝ 0 կեսգիշերին, 17-ը 17:00-ից): Հիշեք, որ սա ժամն է ըստ սերվերի, և կարող է ճիշտ չհամընկնել ձեր համակարգի ժամացույցի հետ: Սերվերի մոտավոր ժամանակը հետևյալն է. նախատեսվում է ուղարկել հաջորդ օրական ամփոփագիրը",
 	"notifications.remove-images": "Հեռացրեք պատկերները էլփոստի ծանուցումներից",
 	"require-email-address": "Պահանջել նոր օգտատերերից նշել էլփոստի հասցե",
-	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means new users will have to enter <strong>and confirm</strong> an email address in order to proceed with registration and subsequent access to the forum. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
+	"require-email-address-warning": "Նախնականորեն, օգտվողները կարող են հրաժարվել էլփոստի հասցե մուտքագրելուց՝ դաշտը դատարկ թողնելով: <strong>և հաստատել </strong> էլփոստի հասցե՝ գրանցումը շարունակելու և ֆորումին հետագա մուտք գործելու համար: <strong>Այն չի ապահովում, որ օգտվողը մուտքագրի իրական էլ փոստի հասցե, ոչ էլ նույնիսկ իր սեփական հասցե:</strong>",
 	"send-validation-email": "Համակարգի ընդհանուր հիշողություն",
 	"include-unverified-emails": "Նամակներ ուղարկեք հասցեատերերին, ովքեր հստակորեն չեն հաստատել իրենց էլ.փոստը",
 	"include-unverified-warning": "Հիմնականում, իրենց հաշվի հետ կապված էլփոստով օգտատերերն արդեն ստուգված են, սակայն կան իրավիճակներ, երբ դա այդպես չէ (օրինակ՝ SSO մուտքեր, մեծահայր օգտատերեր և այլն): Միացնել այս կարգավորումը ձեր սեփական ռիսկով &ndash; Չստուգված հասցեներով էլ-նամակներ ուղարկելը կարող է հակասպամի մասին տարածաշրջանային օրենքների խախտում լինել:",

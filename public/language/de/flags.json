@@ -1,13 +1,16 @@
 {
 	"state": "Zustand",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "Zuerst gemeldet",
 	"no-flags": "Hurra! Keine Meldungen gefunden.",
-	"x-flags-found": "%1 Flags gefunden.",
+	"x-flags-found": "%1 Meldung(en) gefunden.",
 	"assignee": "Zugeordneter Benutzer",
 	"update": "Aktualisieren",
 	"updated": "Aktualisiert",
 	"resolved": "Gelöst",
+	"report-added": "Hinzugefügt",
+	"report-rescinded": "Zurückgezogen",
 	"target-purged": "Der Inhalt auf den diese Meldung hingewiesen hat, wurde gelöscht und ist nicht mehr verfügbar.",
 	"target-aboutme-empty": "Dieser Benutzer hat kein \"Über mich\" gesetzt.",
 
@@ -40,7 +43,7 @@
 	"delete-post": "Post löschen",
 	"purge-post": "Post bereiningen",
 	"restore-post": "Post wiederherstellen",
-	"delete": "Markierung löschen",
+	"delete": "Meldung löschen",
 
 	"user-view": "Profil ansehen",
 	"user-edit": "Profil bearbeiten",
@@ -50,10 +53,10 @@
 	"edit-note": "Notiz bearbeiten",
 	"no-notes": "Keine geteilten Notizen",
 	"delete-note-confirm": "Bist du sicher, dass du diese Notiz löschen möchtest?",
-	"delete-flag-confirm": "Möchtest Du diese Markierung wirklich löschen?",
+	"delete-flag-confirm": "Bist du dir sicher, dass du diese Meldung löschen möchtest?",
 	"note-added": "Notiz hinzugefügt",
 	"note-deleted": "Notiz gelöscht",
-	"flag-deleted": "Markierung gelöscht",
+	"flag-deleted": "Meldung gelöscht",
 
 	"history": "Konto &amp; Markierungsverlauf",
 	"no-history": "Kein Meldungsverlauf",
@@ -69,7 +72,7 @@
 	"sort-newest": "Neuste zuerst",
 	"sort-oldest": "Älteste zuerst",
 	"sort-reports": "Meiste Meldungen",
-	"sort-all": "Alle Markierungstypen ...",
+	"sort-all": "Alle Meldungstypen ...",
 	"sort-posts-only": "Nur Beiträge ...",
 	"sort-downvotes": "Meiste negativen Bewertungen",
 	"sort-upvotes": "Meiste positive Bewertungen",
@@ -85,8 +88,8 @@
 	"modal-submit-success": "Der Inhalt wurde gemeldet.",
 
 	"bulk-actions": "Massenaktionen",
-	"bulk-resolve": "Meldungen bereiningen",
+	"bulk-resolve": "Meldung(en) bereiningen",
 	"bulk-success": "%1 Meldungen aktualisiert",
-	"flagged-timeago-readable": "Markiert <span class=\"timeago\" title=\"%1\"></span>(%2)",
-  	"auto-flagged": "[Automatisch markiert] %1 Abwertungen erhalten."
+	"flagged-timeago-readable": "Gemeldet <span class=\"timeago\" title=\"%1\"></span>(%2)",
+  	"auto-flagged": "[Automatisch gemeldet] %1 Abwertungen erhalten."
 }

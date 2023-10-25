@@ -1,5 +1,6 @@
 {
 	"state": "Status",
+	"report": "Report",
 	"reports": "Rapportages",
 	"first-reported": "Eerste rapportage",
 	"no-flags": "Hoera! Geen markeringen gevonden.",
@@ -8,6 +9,8 @@
 	"update": "Bijwerken",
 	"updated": "Bijgewerkt",
 	"resolved": "Opgelost",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "De inhoud waar deze markering naar verwijst is verwijderd en niet meer beschikbaar.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

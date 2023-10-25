@@ -1,5 +1,6 @@
 {
 	"state": "Стање",
+	"report": "Report",
 	"reports": "Извештаји",
 	"first-reported": "Прво пријављено",
 	"no-flags": "Ура! Нема заставица.",
@@ -8,6 +9,8 @@
 	"update": "Ажурирај",
 	"updated": "Ажурирано",
 	"resolved": "Решено",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Садржај на који се односи ова заставица је очишћен и није више доступан.",
 	"target-aboutme-empty": "Овај корисник није подесио &quot;О мени&quot;.",
 

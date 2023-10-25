@@ -307,7 +307,7 @@ module.exports = function (User) {
 		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
 		if (!isAdmin && !isSelf) {
-			throw new Error('[[user:change_password_error_privileges]]');
+			throw new Error('[[user:change-password-error-privileges]]');
 		}
 
 		await plugins.hooks.fire('filter:password.check', { password: data.newPassword, uid: data.uid });
@@ -315,7 +315,7 @@ module.exports = function (User) {
 		if (isSelf && hasPassword) {
 			const correct = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
 			if (!correct) {
-				throw new Error('[[user:change_password_error_wrong_current]]');
+				throw new Error('[[user:change-password-error-wrong-current]]');
 			}
 		}
 

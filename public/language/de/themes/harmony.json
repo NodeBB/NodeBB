@@ -12,5 +12,6 @@
 	"settings.stickyToolbar.help": "Die Toolbar auf Themen- und Kategorieseiten bleibt oben an der Seite kleben",
 	"settings.autohideBottombar": "Fußzeile automatisch verbergen",
 	"settings.autohideBottombar.help": "Die Fußzeile wird auf Mobilgeräten versteckt, sobald nach unten gescrollt wird",
+	"settings.openSidebars": "Seitennavigation öffnen",
 	"settings.chatModals": "Chatfenster aktivieren"
 }

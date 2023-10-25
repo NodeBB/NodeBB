@@ -1,5 +1,6 @@
 {
 	"state": "Стан",
+	"report": "Report",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Ура! Скарг немає.",
@@ -8,6 +9,8 @@
 	"update": "Оновлення",
 	"updated": "Оновлено",
 	"resolved": "Resolved",
+	"report-added": "Added",
+	"report-rescinded": "Rescinded",
 	"target-purged": "Зміст на який подана ця скарга було стерто і він більше недоступний.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 

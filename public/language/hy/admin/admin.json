@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | NodeBB Կառավարման Վահանակ",
 	"settings-header-contents": "Պարունակություն",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-saved": "Փոփոխությունները պահված են",
+	"changes-saved-message": "NodeBB կոնֆիգուրացիայի ձեր փոփոխությունները պահպանվել են:",
 	"changes-not-saved": "Փոփոխությունները պահպանված չեն",
 	"changes-not-saved-message": "Փոփոխությունների պահպանման հետ խնդիր կա (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"save-changes": "Պահպանել փոփոխությունները",
+	"min": "Մին․՝",
+	"max": "Մաքս․՝",
+	"view": "Դիտել",
+	"edit": "Խմբագրել",
+	"add": "Ավելացնել",
+	"select-icon": "Ընտրեք պատկերակ"
 }

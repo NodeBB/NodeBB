@@ -1,11 +1,17 @@
 {
     "all-tags": "All tags",
-    "no_tag_topics": "Nta biganiro bifite aka kamenyetso bihari. ",
+    "no-tag-topics": "Nta biganiro bifite aka kamenyetso bihari.",
     "no-tags-found": "No tags found",
     "tags": "Utumenyetso",
-    "enter_tags_here": "Andika akamenyetso bijyanye aha. Buri kamenyetso kagomba kuba kagizwe n'inyuguti hagati ya %1 na %2. ",
-    "enter_tags_here_short": "Shyiraho utumenyetso...",
-    "no_tags": "Nta tumenyetso twari twashyirwaho. ",
-    "select_tags": "Select Tags",
-    "tag-whitelist": "Tag Whitelist"
+    "enter-tags-here": "Andika akamenyetso bijyanye aha. Buri kamenyetso kagomba kuba kagizwe n'inyuguti hagati ya %1 na %2.",
+    "enter-tags-here-short": "Shyiraho utumenyetso...",
+    "no-tags": "Nta tumenyetso twari twashyirwaho.",
+    "select-tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist",
+    "watching": "Watching",
+    "not-watching": "Not Watching",
+    "watching.description": "Notify me of new topics.",
+    "not-watching.description": "Do not notify me of new topics.",
+    "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

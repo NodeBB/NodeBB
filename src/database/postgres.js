@@ -1,7 +1,6 @@
 'use strict';
 
 const winston = require('winston');
-const async = require('async');
 const nconf = require('nconf');
 const session = require('express-session');
 const semver = require('semver');
@@ -344,26 +343,20 @@ ALTER TABLE "session"
 	return done(db);
 };
 
-postgresModule.createIndices = function (callback) {
+postgresModule.createIndices = async function () {
 	if (!postgresModule.pool) {
 		winston.warn('[database/createIndices] database not initialized');
-		return callback();
+		return;
 	}
-
-	const query = postgresModule.pool.query.bind(postgresModule.pool);
-
 	winston.info('[database] Checking database indices.');
-	async.series([
-		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC)`),
-		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`),
-	], (err) => {
-		if (err) {
-			winston.error(`Error creating index ${err.message}`);
-			return callback(err);
-		}
+	try {
+		await postgresModule.pool.query(`CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC)`);
+		await postgresModule.pool.query(`CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`);
 		winston.info('[database] Checking database indices done!');
-		callback();
-	});
+	} catch (err) {
+		winston.error(`Error creating index ${err.message}`);
+		throw err;
+	}
 };
 
 postgresModule.checkCompatibility = function (callback) {

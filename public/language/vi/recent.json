@@ -5,7 +5,7 @@
     "month": "Tháng",
     "year": "Năm",
     "alltime": "Mọi Lúc",
-    "no_recent_topics": "Không có chủ đề gần đây.",
-    "no_popular_topics": "Không có chủ đề nào phổ biến.",
+    "no-recent-topics": "Không có chủ đề gần đây.",
+    "no-popular-topics": "Không có chủ đề nào phổ biến.",
     "load-new-posts": "Load new posts"
 }

@@ -217,7 +217,7 @@ define('chat', [
 
 			if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
 				taskbar.push('chat', modal.attr('data-uuid'), {
-					title: '[[modules:chat.chatting_with]] ' + (data.roomName || username),
+					title: '[[modules:chat.chatting-with]] ' + (data.roomName || username),
 					touid: data.message.fromUser.uid,
 					roomId: data.roomId,
 					isSelf: false,
@@ -278,7 +278,7 @@ define('chat', [
 		const typingTextEl = typingEl.find('[component="chat/composer/typing/text"]');
 		const count = usernames.length > 3 ? 'n' : usernames.length;
 		if (count) {
-			const key = `modules:chat.user_typing_${count}`;
+			const key = `modules:chat.user-typing-${count}`;
 			const compiled = translator.compile.apply(null, [key, ...usernames]);
 			typingTextEl.html(await translator.translate(compiled));
 		}
@@ -419,7 +419,7 @@ define('chat', [
 				Chats.addNotificationSettingHandler(roomId, chatModal);
 
 				taskbar.push('chat', chatModal.attr('data-uuid'), {
-					title: '[[modules:chat.chatting_with]] ' + (data.roomName || (data.users.length ? data.users[0].username : '')),
+					title: '[[modules:chat.chatting-with]] ' + (data.roomName || (data.users.length ? data.users[0].username : '')),
 					roomId: data.roomId,
 					icon: 'fa-comment',
 					state: '',

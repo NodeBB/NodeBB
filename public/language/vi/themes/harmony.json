@@ -1,16 +1,17 @@
 {
-	"theme-name": "Harmony Theme",
-	"skins": "Skins",
-	"collapse": "Collapse",
-	"expand": "Expand",
+	"theme-name": "Chủ Đề Hòa Âm",
+	"skins": "Giao diện",
+	"collapse": "Thu gọn",
+	"expand": "Mở rộng",
 	"login-register-to-search": "Đăng nhập hoặc đăng ký để tìm kiếm.",
-	"settings.title": "Theme settings",
+	"settings.title": "Cài đặt chủ đề",
 	"settings.enableQuickReply": "Bật trả lời nhanh",
-	"settings.centerHeaderElements": "Center header elements",
-	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
+	"settings.centerHeaderElements": "Yếu tố tiêu đề trung tâm",
+	"settings.mobileTopicTeasers": "Hiển thị đoạn giới thiệu chủ đề trên di động",
 	"settings.stickyToolbar": "Thanh công cụ cố định",
 	"settings.stickyToolbar.help": "Thanh công cụ trên các trang chủ đề và danh mục sẽ nằm ở đầu trang",
 	"settings.autohideBottombar": "Tự động ẩn thanh dưới cùng",
-	"settings.autohideBottombar.help": "Thanh dưới cùng trên chế độ xem trên thiết bị di động sẽ bị ẩn khi trang được cuộn xuống",
-	"settings.chatModals": "Enable chat modals"
+	"settings.autohideBottombar.help": "Thanh dưới cùng trên chế độ xem di động sẽ ẩn khi trang được cuộn xuống",
+	"settings.openSidebars": "Mở thanh bên",
+	"settings.chatModals": "Bật phương thức trò chuyện"
 }

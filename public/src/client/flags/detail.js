@@ -157,7 +157,7 @@ define('forum/flags/detail', [
 	};
 
 	function postAction(action, method, path) {
-		translator.translate('[[topic:post_' + action + '_confirm]]', function (msg) {
+		translator.translate('[[topic:post-' + action + '-confirm]]', function (msg) {
 			bootbox.confirm(msg, function (confirm) {
 				if (!confirm) {
 					return;

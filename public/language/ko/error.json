@@ -184,6 +184,7 @@
     "post-flagged-too-many-times": "해당 게시물은 다른 사용자에 의해 신고되었습니다.",
     "user-flagged-too-many-times": "해당 사용자는 다른 사용자에 의해 신고되었습니다.",
     "cant-flag-privileged": "관리자를 신고할 수 없습니다. (조정자/통합 조정자/관리자)",
+    "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "자신의 게시물에는 투표할 수 없습니다.",
     "too-many-upvotes-today": "You can only upvote %1 times a day",
     "too-many-upvotes-today-user": "You can only upvote a user %1 times a day",
