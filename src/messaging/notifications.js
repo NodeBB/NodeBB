@@ -84,7 +84,7 @@ module.exports = function (Messaging) {
 			Messaging.getRoomData(roomId),
 		]);
 		const roomDefault = roomData.notificationSetting;
-		const uidsToNotify = [];
+		let uidsToNotify = [];
 		const { ALLMESSAGES } = Messaging.notificationSettings;
 		await batch.processSortedSet(`chat:room:${roomId}:uids:online`, async (uids) => {
 			uids = uids.filter(
@@ -98,6 +98,10 @@ module.exports = function (Messaging) {
 			batch: 500,
 			interval: 100,
 		});
+
+		// Suppress notifications for users who are literally present in the room
+		const realtimeUids = await io.getUidsInRoom(`chat_room_${roomId}`);
+		uidsToNotify = uidsToNotify.filter(uid => !realtimeUids.includes(parseInt(uid, 10)));
 
 		if (uidsToNotify.length) {
 			const { displayname } = messageObj.fromUser;
