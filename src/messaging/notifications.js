@@ -70,7 +70,7 @@ module.exports = function (Messaging) {
 		}
 
 		try {
-			await sendNotification(fromUid, roomId, isPublic, messageObj);
+			await sendNotification(fromUid, roomId, messageObj);
 		} catch (err) {
 			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 		}
