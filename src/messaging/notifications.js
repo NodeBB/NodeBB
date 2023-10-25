@@ -76,20 +76,22 @@ module.exports = function (Messaging) {
 		}
 	};
 
-	async function sendNotification(fromUid, roomId, isPublic, messageObj) {
+	async function sendNotification(fromUid, roomId, messageObj) {
 		fromUid = parseInt(fromUid, 10);
 
-		const [settings, roomData] = await Promise.all([
+		const [settings, roomData, realtimeUids] = await Promise.all([
 			db.getObject(`chat:room:${roomId}:notification:settings`),
 			Messaging.getRoomData(roomId),
+			io.getUidsInRoom(`chat_room_${roomId}`),
 		]);
 		const roomDefault = roomData.notificationSetting;
-		let uidsToNotify = [];
+		const uidsToNotify = [];
 		const { ALLMESSAGES } = Messaging.notificationSettings;
 		await batch.processSortedSet(`chat:room:${roomId}:uids:online`, async (uids) => {
 			uids = uids.filter(
 				uid => (parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
-					fromUid !== parseInt(uid, 10)
+					fromUid !== parseInt(uid, 10) &&
+					!realtimeUids.includes(parseInt(uid, 10))
 			);
 			const hasRead = await Messaging.hasRead(uids, roomId);
 			uidsToNotify.push(...uids.filter((uid, index) => !hasRead[index]));
@@ -98,10 +100,6 @@ module.exports = function (Messaging) {
 			batch: 500,
 			interval: 100,
 		});
-
-		// Suppress notifications for users who are literally present in the room
-		const realtimeUids = await io.getUidsInRoom(`chat_room_${isPublic ? 'public_' : ''}${roomId}`);
-		uidsToNotify = uidsToNotify.filter(uid => !realtimeUids.includes(parseInt(uid, 10)));
 
 		if (uidsToNotify.length) {
 			const { displayname } = messageObj.fromUser;
