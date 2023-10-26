@@ -1,7 +1,6 @@
 'use strict';
 
 const categories = require('../categories');
-const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
 const api = require('../api');
@@ -38,47 +37,15 @@ SocketCategories.loadMore = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	data.query = data.query || {};
-	const [userPrivileges, settings, targetUid] = await Promise.all([
-		privileges.categories.get(data.cid, socket.uid),
-		user.getSettings(socket.uid),
-		user.getUidByUserslug(data.query.author),
-	]);
 
-	if (!userPrivileges.read) {
-		throw new Error('[[error:no-privileges]]');
-	}
+	const result = await api.categories.getTopics(socket, data);
 
-	const infScrollTopicsPerPage = 20;
-	const sort = data.sort || data.categoryTopicSort;
-
-	let start = Math.max(0, parseInt(data.after, 10));
-
-	if (data.direction === -1) {
-		start -= infScrollTopicsPerPage;
-	}
-
-	let stop = start + infScrollTopicsPerPage - 1;
-
-	start = Math.max(0, start);
-	stop = Math.max(0, stop);
-	const result = await categories.getCategoryTopics({
-		uid: socket.uid,
-		cid: data.cid,
-		start: start,
-		stop: stop,
-		sort: sort,
-		settings: settings,
-		query: data.query,
-		tag: data.query.tag,
-		targetUid: targetUid,
-	});
-	categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
-
-	result.privileges = userPrivileges;
+	// Backwards compatibility — unsure of current usage.
 	result.template = {
 		category: true,
 		name: 'category',
 	};
+
 	return result;
 };
 

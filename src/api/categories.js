@@ -1,5 +1,6 @@
 'use strict';
 
+const meta = require('../meta');
 const categories = require('../categories');
 const topics = require('../topics');
 const events = require('../events');
@@ -104,6 +105,47 @@ categoriesAPI.getChildren = async (caller, { cid, start }) => {
 
 	const payload = category.children.slice(start, start + category.subCategoriesPerPage);
 	return { categories: payload };
+};
+
+categoriesAPI.getTopics = async (caller, data) => {
+	data.query = data.query || {};
+	const [userPrivileges, settings, targetUid] = await Promise.all([
+		privileges.categories.get(data.cid, caller.uid),
+		user.getSettings(caller.uid),
+		user.getUidByUserslug(data.query.author),
+	]);
+
+	if (!userPrivileges.read) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const infScrollTopicsPerPage = 20;
+	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
+
+	let start = Math.max(0, parseInt(data.after || 0, 10));
+
+	if (data.direction === -1) {
+		start -= infScrollTopicsPerPage;
+	}
+
+	let stop = start + infScrollTopicsPerPage - 1;
+
+	start = Math.max(0, start);
+	stop = Math.max(0, stop);
+	const result = await categories.getCategoryTopics({
+		uid: caller.uid,
+		cid: data.cid,
+		start,
+		stop,
+		sort,
+		settings,
+		query: data.query,
+		tag: data.query.tag,
+		targetUid,
+	});
+	categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
+
+	return { ...result, privileges: userPrivileges };
 };
 
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
