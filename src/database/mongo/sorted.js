@@ -568,7 +568,17 @@ module.exports = function (module) {
 		if (!options.withScores) {
 			project.score = 0;
 		}
-		const cursor = await module.client.collection('objects').find({ _key: setKey }, { projection: project })
+		const query = { _key: setKey };
+		if (options.min && options.min !== '-inf') {
+			query.score = { $gte: parseFloat(options.min) };
+		}
+		if (options.max && options.max !== '+inf') {
+			query.score = query.score || {};
+			query.score.$lte = parseFloat(options.max);
+		}
+
+		const cursor = await module.client.collection('objects')
+			.find(query, { projection: project })
 			.sort({ score: sort })
 			.batchSize(options.batch);
 

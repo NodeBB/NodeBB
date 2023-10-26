@@ -665,6 +665,8 @@ SELECT z."value",
 		const client = await module.pool.connect();
 		const batchSize = (options || {}).batch || 100;
 		const sort = options.reverse ? 'DESC' : 'ASC';
+		const min = options.min && options.min !== '-inf' ? options.min : null;
+		const max = options.max && options.max !== '+inf' ? options.max : null;
 		const cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
@@ -672,7 +674,9 @@ SELECT z."value", z."score"
          ON o."_key" = z."_key"
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT
- ORDER BY z."score" ${sort}, z."value" ${sort}`, [setKey]));
+   AND (z."score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
+   AND (z."score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)
+ ORDER BY z."score" ${sort}, z."value" ${sort}`, [setKey, min, max]));
 
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
