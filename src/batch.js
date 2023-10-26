@@ -40,23 +40,21 @@ exports.processSortedSet = async function (setKey, process, options) {
 		process = util.promisify(process);
 	}
 
+	const method = options.reverse ? 'getSortedSetRevRange' : 'getSortedSetRange';
 	const isByScore = (options.min && options.min !== '-inf') || (options.max && options.max !== '+inf');
+	const byScore = isByScore ? 'ByScore' : '';
 	const withScores = options.withScores ? 'WithScores' : '';
 	let iteration = 1;
+	const getFn = db[`${method}${byScore}${withScores}`];
 	while (true) {
 		/* eslint-disable no-await-in-loop */
-		let ids = [];
-		if (options.reverse) {
-			if (isByScore) {
-				ids = await db[`getSortedSetRevRangeByScore${withScores}`](setKey, start, stop - start + 1, options.max, options.min);
-			} else {
-				ids = await db[`getSortedSetRevRange${withScores}`](setKey, start, stop);
-			}
-		} else if (isByScore) {
-			ids = await db[`getSortedSetRangeByScore${withScores}`](setKey, start, stop - start + 1, options.min, options.max);
-		} else {
-			ids = await db[`getSortedSetRange${withScores}`](setKey, start, stop);
-		}
+		const ids = await getFn(
+			setKey,
+			start,
+			isByScore ? stop - start + 1 : stop,
+			options.reverse ? options.max : options.min,
+			options.reverse ? options.min : options.max,
+		);
 
 		if (!ids.length || options.doneIf(start, stop, ids)) {
 			return;
