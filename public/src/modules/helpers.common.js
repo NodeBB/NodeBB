@@ -343,8 +343,11 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
 	}
 
-	function isoTimeToLocaleString(isoTime) {
-		return new Date(isoTime).toLocaleString().replace(/,/g, '&#44;');
+	function isoTimeToLocaleString(isoTime, locale = 'en-GB') {
+		return new Date(isoTime).toLocaleString([locale], {
+			dateStyle: 'short',
+			timeStyle: 'short',
+		}).replace(/,/g, '&#44;');
 	}
 
 	function shouldHideReplyContainer(post) {
