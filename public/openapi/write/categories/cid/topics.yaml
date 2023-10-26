@@ -1,0 +1,75 @@
+get:
+  tags:
+    - categories
+  summary: get topics
+  description: |
+    This operation returns a set of topics in the requested category.
+
+    The number of topics returned is defined by the "Topics per Page" (`topicsPerPage`) setting under ACP > Settings > Pagination.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      example: 1
+    - in: query
+      name: 'query'
+      schema:
+        type: string
+      required: false
+      description: Likely unused — a URI-encoded JSON string containing values that are passed to `getCategoryTopics`.
+      example: ''
+    - in: query
+      name: 'after'
+      schema:
+        type: string
+      required: false
+      description: The index to start at when querying for the next set of topics. This parameter would be more aptly named `start`.
+      example: '0'
+    - in: query
+      name: 'sort'
+      schema:
+        type: string
+      required: false
+      description: Likely deprecated — the sorting method of topics (use `categoryTopicSort` instead.)
+      example: ''
+    - in: query
+      name: 'categoryTopicSort'
+      schema:
+        type: string
+      required: false
+      description: The sorting method of topics
+      example: 'newest_to_oldest'
+    - in: query
+      name: 'direction'
+      schema:
+        type: string
+      required: false
+      description: The sorting of returned results (if you scroll up you want the topics reversed). Set to "-1" for reversed results.
+      example: '1'
+  responses:
+    '200':
+      description: categories topics successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/TopicObject.yaml#/TopicObject
+                  nextStart:
+                    type: number
+                  privileges:
+                    type: object
+                    additionalProperties:
+                      type: boolean
+                      description: A set of privileges with either true or false

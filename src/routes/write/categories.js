@@ -19,6 +19,7 @@ module.exports = function () {
 	setupApiRoute(router, 'get', '/:cid/count', [...middlewares, middleware.assert.category], controllers.write.categories.getTopicCount);
 	setupApiRoute(router, 'get', '/:cid/posts', [...middlewares, middleware.assert.category], controllers.write.categories.getPosts);
 	setupApiRoute(router, 'get', '/:cid/children', [...middlewares, middleware.assert.category], controllers.write.categories.getChildren);
+	setupApiRoute(router, 'get', '/:cid/topics', [...middlewares, middleware.assert.category], controllers.write.categories.getTopics);
 
 	setupApiRoute(router, 'put', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
 	setupApiRoute(router, 'delete', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
