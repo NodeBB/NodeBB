@@ -10,6 +10,7 @@ Write.tags = require('./tags');
 Write.posts = require('./posts');
 Write.chats = require('./chats');
 Write.flags = require('./flags');
+Write.search = require('./search');
 Write.admin = require('./admin');
 Write.files = require('./files');
 Write.utilities = require('./utilities');
