@@ -75,16 +75,14 @@ async function runUpgrade(upgrades, options) {
 	const path = require('path');
 	winston.configure({
 		transports: [
+			new winston.transports.Console({
+				handleExceptions: true,
+			}),
 			new winston.transports.File({
 				filename: path.join(__dirname, '../../', nconf.get('logFile') || 'logs/output.log'),
 			}),
 		],
 	});
-	const stdoutWrite = process.stdout.write;
-	process.stdout.write = function (...args) {
-		winston.info(args[0]);
-		stdoutWrite.apply(process.stdout, args);
-	};
 
 	console.log(chalk.cyan('\nUpdating NodeBB...'));
 	options = options || {};
