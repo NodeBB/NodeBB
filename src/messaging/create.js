@@ -127,5 +127,6 @@ module.exports = function (Messaging) {
 
 	Messaging.addMessageToRoom = async (roomId, mid, timestamp) => {
 		await db.sortedSetAdd(`chat:room:${roomId}:mids`, timestamp, mid);
+		await db.incrObjectField(`chat:room:${roomId}`, 'messageCount');
 	};
 };

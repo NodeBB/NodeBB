@@ -68,6 +68,7 @@
 	"chat.in-room": "In this room",
 	"chat.kick": "Kick",
 	"chat.show-ip": "Show IP",
+	"chat.copy-link": "Copy link",
 	"chat.owner": "Room Owner",
 	"chat.grant-rescind-ownership": "Grant/Rescind Ownership",
 

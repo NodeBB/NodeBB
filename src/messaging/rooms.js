@@ -21,7 +21,7 @@ const roomUidCache = cacheCreate({
 });
 
 const intFields = [
-	'roomId', 'timestamp', 'userCount',
+	'roomId', 'timestamp', 'userCount', 'messageCount',
 ];
 
 module.exports = function (Messaging) {
@@ -86,6 +86,7 @@ module.exports = function (Messaging) {
 			roomId: roomId,
 			timestamp: now,
 			notificationSetting: data.notificationSetting,
+			messageCount: 0,
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {
@@ -500,6 +501,7 @@ module.exports = function (Messaging) {
 			Messaging.getUsersInRoomFromSet(`chat:room:${roomId}:uids:online`, roomId, 0, 39, true),
 			Messaging.getMessages({
 				callerUid: uid,
+				start: data.start || 0,
 				uid: data.uid || uid,
 				roomId: roomId,
 				isNew: false,

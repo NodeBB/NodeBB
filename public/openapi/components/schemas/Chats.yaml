@@ -16,6 +16,9 @@ RoomObject:
     userCount:
       type: number
       description: number of users in this chat room
+    messageCount:
+      type: number
+      description: number of messages sent in this chat room
     groups:
       type: array
       description: list of groups that can access the room
