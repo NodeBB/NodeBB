@@ -15,6 +15,12 @@ get:
       schema:
         type: string
       example: 1
+    - name: index
+      in: path
+      required: false
+      schema:
+        type: string
+      example: 1
   responses:
     "200":
       description: ""
@@ -34,6 +40,9 @@ get:
                     type: number
                   messageCount:
                     type: number
+                  scrollToIndex:
+                    type: number
+                    nullable: true
                   icon:
                     type: string
                   groups:
