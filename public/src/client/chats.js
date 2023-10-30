@@ -240,7 +240,7 @@ define('forum/chats', [
 
 	Chats.addCopyLinkHandler = function (container) {
 		container.off('click', '[data-action="copy-link"]')
-			.on('click', '[data-action="copy-link"]', async function () {
+			.on('click', '[data-action="copy-link"]', function () {
 				const copyEl = $(this);
 				const mid = copyEl.attr('data-mid');
 				if (mid) {
