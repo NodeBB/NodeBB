@@ -281,7 +281,12 @@ describe('API', async () => {
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
 		// Create a new chat room
-		await messaging.newRoom(1, { uids: [2] });
+		const roomId = await messaging.newRoom(1, { uids: [2] });
+		await messaging.sendMessage({
+			uid: 1,
+			content: 'test message',
+			roomId: roomId,
+		});
 
 		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));

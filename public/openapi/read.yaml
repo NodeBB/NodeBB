@@ -308,12 +308,16 @@ paths:
     $ref: 'read/user/userslug/session/uuid.yaml'
   /api/notifications:
     $ref: 'read/notifications.yaml'
-  "/api/user/{userslug}/chats/{roomid}/{index}":
-    $ref: 'read/user/userslug/chats/roomid.yaml'
   "/api/user/{userslug}/chats/{roomid}":
+    $ref: 'read/user/userslug/chats/roomid.yaml'
+  "/api/user/{userslug}/chats/{roomid}/{index}":
     $ref: 'read/user/userslug/chats/roomid.yaml'
   "/api/chats/{roomid}":
     $ref: 'read/chats/roomid.yaml'
+  "/api/chats/{roomid}/{index}":
+    $ref: 'read/chats/roomid.yaml'
+  "/api/message/{mid}":
+    $ref: 'read/message/mid.yaml'
   /api/groups:
     $ref: 'read/groups.yaml'
   "/api/groups/{slug}":

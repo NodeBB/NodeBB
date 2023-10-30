@@ -1,0 +1,19 @@
+get:
+  tags:
+    - shorthand
+  summary: Access a specific chat message
+  description: This route comes in handy when all you have is the `mid`, and you want to redirect users to the canonical URL for the chat message, with the appropriate user slug and room id
+  parameters:
+    - name: mid
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "Canonical URL of chat message"
+      content:
+        text/plain:
+          schema:
+            type: string

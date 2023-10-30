@@ -17,7 +17,7 @@ get:
       example: 1
     - name: index
       in: path
-      required: false
+      required: true
       schema:
         type: string
       example: 1
@@ -251,6 +251,8 @@ get:
                         teaser:
                           type: object
                           properties:
+                            roomId:
+                              type: number
                             fromuid:
                               type: number
                             content:
