@@ -91,6 +91,7 @@
     "category-not-selected": "Категория не выбрана",
     "too-many-posts": "Для того, чтобы разместить новое сообщение, нужно подождать %1 сек.",
     "too-many-posts-newbie": "Для того, чтобы разместить новое сообщение, нужно подождать %1 сек. Это время уменьшится, как только ваша репутация вырастет до %2.",
+    "too-many-posts-newbie-minutes": "As a new user, you can only post once every %1 minute(s) until you have earned %2 reputation - please wait before posting again",
     "already-posting": "Вы уже опубликовали запись",
     "tag-too-short": "Слишком короткая метка. Минимум %1 символов.",
     "tag-too-long": "Слишком длинная метка. Максимум %1 символов.",

@@ -91,6 +91,7 @@
     "category-not-selected": "未选择版块。",
     "too-many-posts": "发帖需要间隔 %1 秒以上 - 请稍候再发帖",
     "too-many-posts-newbie": "因为您是新用户，所以限制每隔 %1 秒才能发帖一次，直到您有 %2 点声望为止 —— 请稍候再发帖",
+    "too-many-posts-newbie-minutes": "As a new user, you can only post once every %1 minute(s) until you have earned %2 reputation - please wait before posting again",
     "already-posting": "您已在发布帖子",
     "tag-too-short": "请输入一个更长的标签。标签应当包含不少于 %1 个字符",
     "tag-too-long": "请输入一个更短的标签。标签不能超过 %1 个字符",

@@ -91,6 +91,7 @@
     "category-not-selected": "Categoria non selezionata.",
     "too-many-posts": "Puoi postare solo una volta ogni %1 secondo(i) - attendi prima di postare di nuovo",
     "too-many-posts-newbie": "Come nuovo utente puoi postare solamente una volta ogni %1 secondo(i) finché non hai raggiunto un livello di reputazione %2 - per favore attendi prima di postare nuovamente",
+    "too-many-posts-newbie-minutes": "As a new user, you can only post once every %1 minute(s) until you have earned %2 reputation - please wait before posting again",
     "already-posting": "Stai già postando",
     "tag-too-short": "Inserisci un tag più lungo. I tag devono contenere almeno %1 caratteri.",
     "tag-too-long": "Per favore inserisci un tag più corto. I tags non dovrebbero essere più lunghi di %1 caratteri",

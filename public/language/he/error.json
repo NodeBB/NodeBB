@@ -91,6 +91,7 @@
     "category-not-selected": "לא נבחרה קטגוריה",
     "too-many-posts": "ניתן לפרסם פוסט רק פעם ב-%1 שניות - אנא המתינו לפני פרסום נוסף",
     "too-many-posts-newbie": "כמשתמשים חדשים, אתם יכולים לפרסם פוסט רק פעם ב-%1 שניות עד שיהיו לכם %2 נקודות מוניטין - אנא המתינו לפני פרסום נוסף",
+    "too-many-posts-newbie-minutes": "As a new user, you can only post once every %1 minute(s) until you have earned %2 reputation - please wait before posting again",
     "already-posting": "אתם כבר כותבים פוסט",
     "tag-too-short": "נא להזין תגית ארוכה יותר. על התגית להכיל לפחות %1 תווים",
     "tag-too-long": "נא להזין תגית קצרה יותר. תגיות לא יכולות להיות ארוכות מ-%1 תווים",

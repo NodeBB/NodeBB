@@ -91,6 +91,7 @@
     "category-not-selected": "Није одабрана категорија",
     "too-many-posts": "Можете објављивати поруке само једном у %1 секунди - сачекајте пре него што покушате поново",
     "too-many-posts-newbie": "Као нови корисник, можете објављивати поруке само једном у %1 секунди док не достигнете %2 углед - сачекајте пре него што покушате поново",
+    "too-many-posts-newbie-minutes": "As a new user, you can only post once every %1 minute(s) until you have earned %2 reputation - please wait before posting again",
     "already-posting": "Већ објављујете",
     "tag-too-short": "Унесите дужу ознаку. Ознаке морају садржати најмање %1 знак(ов)а.",
     "tag-too-long": "Унесите краћу ознаку. Ознаке не смеју бити дуже од %1 знак(ов)а.",
