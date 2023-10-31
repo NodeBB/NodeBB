@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
+define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, bootstrap, api) {
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
@@ -70,7 +70,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 		});
 
 		function loadList(search, callback) {
-			socket.emit('categories.categorySearch', {
+			api.get('/search/categories', {
 				search: search,
 				query: utils.params(),
 				parentCid: options.parentCid || 0,
@@ -78,7 +78,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 				privilege: options.privilege,
 				states: options.states,
 				showLinks: options.showLinks,
-			}, function (err, categories) {
+			}, function (err, { categories }) {
 				if (err) {
 					return alerts.error(err);
 				}
