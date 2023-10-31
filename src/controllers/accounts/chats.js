@@ -48,7 +48,19 @@ chatsController.get = async function (req, res, next) {
 		return res.render('chats', payload);
 	}
 
-	const room = await messaging.loadRoom(req.uid, { uid: uid, roomId: req.params.roomid });
+	const { index } = req.params;
+	let start = 0;
+	payload.scrollToIndex = null;
+	if (index) {
+		const msgCount = await db.getObjectField(`chat:room:${req.params.roomid}`, 'messageCount');
+		start = Math.max(0, parseInt(msgCount, 10) - index - 49);
+		payload.scrollToIndex = Math.min(msgCount, Math.max(0, parseInt(index, 10) || 1));
+	}
+	const room = await messaging.loadRoom(req.uid, {
+		uid: uid,
+		roomId: req.params.roomid,
+		start: start,
+	});
 	if (!room) {
 		return next();
 	}
@@ -72,5 +84,26 @@ chatsController.redirectToChat = async function (req, res, next) {
 		return next();
 	}
 	const roomid = parseInt(req.params.roomid, 10);
-	helpers.redirect(res, `/user/${userslug}/chats${roomid ? `/${roomid}` : ''}`);
+	const index = parseInt(req.params.index, 10);
+	helpers.redirect(res, `/user/${userslug}/chats${roomid ? `/${roomid}` : ''}${index ? `/${index}` : ''}`);
+};
+
+chatsController.redirectToMessage = async function (req, res, next) {
+	const mid = parseInt(req.params.mid, 10);
+	if (!mid) {
+		return next();
+	}
+	const [userslug, roomId] = await Promise.all([
+		user.getUserField(req.uid, 'userslug'),
+		messaging.getMessageField(mid, 'roomId'),
+	]);
+	if (!userslug || !roomId) {
+		return next();
+	}
+	const index = await db.sortedSetRank(`chat:room:${roomId}:mids`, mid);
+	if (!(parseInt(index, 10) >= 0)) {
+		return next();
+	}
+
+	helpers.redirect(res, `/user/${userslug}/chats/${roomId}${index ? `/${index + 1}` : ''}`, true);
 };

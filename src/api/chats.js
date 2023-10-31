@@ -244,13 +244,29 @@ chatsAPI.kick = async (caller, data) => {
 	return chatsAPI.users(caller, data);
 };
 
-chatsAPI.listMessages = async (caller, { uid, roomId, start }) => {
+chatsAPI.listMessages = async (caller, { uid, roomId, start, direction = null }) => {
+	const count = 50;
+	let stop = start + count - 1;
+	if (direction === 1 || direction === -1) {
+		const msgCount = await db.getObjectField(`chat:room:${roomId}`, 'messageCount');
+		start = msgCount - start;
+		if (direction === 1) {
+			start -= count + 1;
+		}
+		stop = start + count - 1;
+		start = Math.max(0, start);
+		if (stop <= -1) {
+			return { messages: [] };
+		}
+		stop = Math.max(0, stop);
+	}
+
 	const messages = await messaging.getMessages({
 		callerUid: caller.uid,
 		uid,
 		roomId,
 		start,
-		count: 50,
+		count: stop - start + 1,
 	});
 
 	return { messages };

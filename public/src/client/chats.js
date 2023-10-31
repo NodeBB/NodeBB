@@ -69,9 +69,19 @@ define('forum/chats', [
 		}
 
 		Chats.initialised = true;
-		const changeContentEl = $('[component="chat/message/content"]');
-		messages.wrapImagesInLinks(changeContentEl);
-		messages.scrollToBottomAfterImageLoad(changeContentEl);
+		const chatContentEl = $('[component="chat/message/content"]');
+		messages.wrapImagesInLinks(chatContentEl);
+		if (ajaxify.data.scrollToIndex) {
+			messages.toggleScrollUpAlert(chatContentEl);
+			const scrollToEl = chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`);
+			if (scrollToEl.length) {
+				chatContentEl.scrollTop(
+					chatContentEl.scrollTop() - chatContentEl.offset().top + scrollToEl.offset().top
+				);
+			}
+		} else {
+			messages.scrollToBottomAfterImageLoad(chatContentEl);
+		}
 		create.init();
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
@@ -90,12 +100,13 @@ define('forum/chats', [
 		Chats.addLeaveHandler(roomId, chatControls.find('[data-action="leave"]'));
 		Chats.addDeleteHandler(roomId, chatControls.find('[data-action="delete"]'));
 		Chats.addScrollHandler(roomId, ajaxify.data.uid, chatMessageContent);
-		Chats.addScrollBottomHandler(chatMessageContent);
+		Chats.addScrollBottomHandler(roomId, chatMessageContent);
 		Chats.addParentHandler(mainWrapper);
 		Chats.addCharactersLeftHandler(mainWrapper);
 		Chats.addTextareaResizeHandler(mainWrapper);
 		Chats.addTypingHandler(mainWrapper, roomId);
 		Chats.addIPHandler(mainWrapper);
+		Chats.addCopyLinkHandler(mainWrapper);
 		Chats.createAutoComplete(roomId, $('[component="chat/input"]'));
 		Chats.addUploadHandler({
 			dragDropAreaEl: $('.chats-full'),
@@ -230,6 +241,19 @@ define('forum/chats', [
 			});
 	};
 
+	Chats.addCopyLinkHandler = function (container) {
+		container.off('click', '[data-action="copy-link"]')
+			.on('click', '[data-action="copy-link"]', function () {
+				const copyEl = $(this);
+				const mid = copyEl.attr('data-mid');
+				if (mid) {
+					navigator.clipboard.writeText(`${window.location.origin}/message/${mid}`);
+					copyEl.find('i').addClass('fa-check').removeClass('fa-link');
+					setTimeout(() => copyEl.find('i').removeClass('fa-check').addClass('fa-link'), 2000);
+				}
+			});
+	};
+
 	Chats.addPopoutHandler = function () {
 		$('[data-action="pop-out"]').on('click', function () {
 			const text = components.get('chat/input').val();
@@ -252,49 +276,82 @@ define('forum/chats', [
 
 	Chats.addScrollHandler = function (roomId, uid, el) {
 		let loading = false;
+		let previousScrollTop = el.scrollTop();
+		let currentScrollTop = previousScrollTop;
 		el.off('scroll').on('scroll', utils.debounce(function () {
+			if (parseInt(el.attr('data-ignore-next-scroll'), 10) === 1) {
+				el.removeAttr('data-ignore-next-scroll');
+				previousScrollTop = el.scrollTop();
+				return;
+			}
 			messages.toggleScrollUpAlert(el);
 			if (loading) {
 				return;
 			}
+			currentScrollTop = el.scrollTop();
 
-			const top = (el[0].scrollHeight - el.height()) * 0.1;
-			if (el.scrollTop() >= top) {
+			const direction = currentScrollTop > previousScrollTop ? 1 : -1;
+			previousScrollTop = currentScrollTop;
+			const scrollPercent = 100 * (currentScrollTop / (el[0].scrollHeight - el.height()));
+			const top = 15;
+			const bottom = 85;
+
+			if (direction === 1 && !ajaxify.data.scrollToIndex) {
+				// dont trigger infinitescroll if there is no /index in url
 				return;
 			}
-			loading = true;
-			const start = parseInt(el.children('[data-mid]').length, 10);
-			api.get(`/chats/${roomId}/messages`, { uid, start }).then((data) => {
-				data = data.messages;
 
-				if (!data) {
-					loading = false;
-					return;
-				}
-				data = data.filter(function (chatMsg) {
-					return !$('[component="chat/message"][data-mid="' + chatMsg.messageId + '"]').length;
-				});
-				if (!data.length) {
-					loading = false;
-					return;
-				}
-				messages.parseMessage(data, function (html) {
-					const currentScrollTop = el.scrollTop();
-					const previousHeight = el[0].scrollHeight;
-					el.prepend(html);
-					messages.onMessagesAddedToDom(html);
-					el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
-					loading = false;
-				});
-			}).catch(alerts.error);
+			if ((scrollPercent < top && direction === -1) || (scrollPercent > bottom && direction === 1)) {
+				loading = true;
+
+				const msgEls = el.children('[data-mid]').not('.new');
+				const afterEl = direction > 0 ? msgEls.last() : msgEls.first();
+				const start = parseInt(afterEl.attr('data-index'), 10) || 0;
+
+				api.get(`/chats/${roomId}/messages`, { uid, start, direction }).then((data) => {
+					let messageData = data.messages;
+					if (!messageData) {
+						loading = false;
+						return;
+					}
+					messageData = messageData.filter(function (chatMsg) {
+						const msgOnDom = el.find('[component="chat/message"][data-mid="' + chatMsg.messageId + '"]');
+						msgOnDom.removeClass('new');
+						return !msgOnDom.length;
+					});
+					if (!messageData.length) {
+						loading = false;
+						return;
+					}
+					messages.parseMessage(messageData, function (html) {
+						el.attr('data-ignore-next-scroll', 1);
+						if (direction > 0) {
+							html.insertAfter(afterEl);
+							messages.onMessagesAddedToDom(html);
+						} else {
+							const currentScrollTop = el.scrollTop();
+							const previousHeight = el[0].scrollHeight;
+							el.prepend(html);
+							messages.onMessagesAddedToDom(html);
+							el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
+						}
+
+						loading = false;
+					});
+				}).catch(alerts.error);
+			}
 		}, 100));
 	};
 
-	Chats.addScrollBottomHandler = function (chatContent) {
+	Chats.addScrollBottomHandler = function (roomId, chatContent) {
 		chatContent.parents('[component="chat/message/window"]')
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.off('click').on('click', function () {
-				messages.scrollToBottom(chatContent);
+				if (ajaxify.data.scrollToIndex && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10)) {
+					Chats.switchChat(roomId);
+				} else {
+					messages.scrollToBottom(chatContent);
+				}
 			});
 	};
 

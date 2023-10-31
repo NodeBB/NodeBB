@@ -15,6 +15,12 @@ get:
       schema:
         type: string
       example: 1
+    - name: index
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
   responses:
     "200":
       description: ""
@@ -32,6 +38,11 @@ get:
                     type: boolean
                   userCount:
                     type: number
+                  messageCount:
+                    type: number
+                  scrollToIndex:
+                    type: number
+                    nullable: true
                   icon:
                     type: string
                   groups:
@@ -187,6 +198,8 @@ get:
                           type: boolean
                         userCount:
                           type: number
+                        messageCount:
+                          type: number
                         groups:
                           type: array
                         timestamp:
@@ -238,6 +251,8 @@ get:
                         teaser:
                           type: object
                           properties:
+                            roomId:
+                              type: number
                             fromuid:
                               type: number
                             content:

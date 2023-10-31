@@ -110,7 +110,10 @@ Chats.messages.list = async (req, res) => {
 	const uid = req.query.uid || req.uid;
 	const { roomId } = req.params;
 	const start = parseInt(req.query.start, 10) || 0;
-	const { messages } = await api.chats.listMessages(req, { uid, roomId, start });
+	const direction = parseInt(req.query.direction, 10) || null;
+	const { messages } = await api.chats.listMessages(req, {
+		uid, roomId, start, direction,
+	});
 
 	helpers.formatApiResponse(200, res, { messages });
 };

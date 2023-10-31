@@ -399,7 +399,7 @@ define('chat', [
 				Chats.createAutoComplete(roomId, chatModal.find('[component="chat/input"]'));
 
 				Chats.addScrollHandler(roomId, data.uid, chatModal.find('[component="chat/message/content"]'));
-				Chats.addScrollBottomHandler(chatModal.find('[component="chat/message/content"]'));
+				Chats.addScrollBottomHandler(roomId, chatModal.find('[component="chat/message/content"]'));
 				Chats.addParentHandler(chatModal.find('[component="chat/message/content"]'));
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addTextareaResizeHandler(chatModal);

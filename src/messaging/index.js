@@ -43,13 +43,17 @@ Messaging.getMessages = async (params) => {
 	if (!ok) {
 		return;
 	}
-	const mids = await getMessageIds(roomId, uid, start, stop);
+	const [mids, messageCount] = await Promise.all([
+		getMessageIds(roomId, uid, start, stop),
+		db.getObjectField(`chat:room:${roomId}`, 'messageCount'),
+	]);
 	if (!mids.length) {
 		return [];
 	}
+	const count = parseInt(messageCount, 10) || 0;
 	const indices = {};
 	mids.forEach((mid, index) => {
-		indices[mid] = start + index;
+		indices[mid] = count - start - index - 1;
 	});
 	mids.reverse();
 

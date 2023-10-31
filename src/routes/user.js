@@ -48,6 +48,8 @@ module.exports = function (app, name, middleware, controllers) {
 	setupPageRoute(app, `/${name}/:userslug/sessions`, accountMiddlewares, controllers.accounts.sessions.get);
 
 	setupPageRoute(app, '/notifications', [middleware.ensureLoggedIn], controllers.accounts.notifications.get);
-	setupPageRoute(app, `/${name}/:userslug/chats/:roomid?`, [middleware.exposeUid, middleware.canViewUsers], controllers.accounts.chats.get);
-	setupPageRoute(app, '/chats/:roomid?', [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToChat);
+	setupPageRoute(app, `/${name}/:userslug/chats/:roomid?/:index?`, [middleware.exposeUid, middleware.canViewUsers], controllers.accounts.chats.get);
+	setupPageRoute(app, '/chats/:roomid?/:index?', [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToChat);
+
+	setupPageRoute(app, `/message/:mid`, [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToMessage);
 };
