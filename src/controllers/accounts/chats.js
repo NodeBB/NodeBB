@@ -54,7 +54,7 @@ chatsController.get = async function (req, res, next) {
 	if (index) {
 		const msgCount = await db.getObjectField(`chat:room:${req.params.roomid}`, 'messageCount');
 		start = Math.max(0, parseInt(msgCount, 10) - index - 49);
-		payload.scrollToIndex = parseInt(index, 10) || 1;
+		payload.scrollToIndex = Math.min(msgCount, Math.max(0, parseInt(index, 10) || 1));
 	}
 	const room = await messaging.loadRoom(req.uid, {
 		uid: uid,

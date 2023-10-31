@@ -73,9 +73,12 @@ define('forum/chats', [
 		messages.wrapImagesInLinks(chatContentEl);
 		if (ajaxify.data.scrollToIndex) {
 			messages.toggleScrollUpAlert(chatContentEl);
-			chatContentEl.scrollTop(
-				chatContentEl.scrollTop() - chatContentEl.offset().top + chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`).offset().top
-			);
+			const scrollToEl = chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`);
+			if (scrollToEl.length) {
+				chatContentEl.scrollTop(
+					chatContentEl.scrollTop() - chatContentEl.offset().top + scrollToEl.offset().top
+				);
+			}
 		} else {
 			messages.scrollToBottomAfterImageLoad(chatContentEl);
 		}
