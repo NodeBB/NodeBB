@@ -68,6 +68,7 @@
     "chat.in-room": "Bu odada",
     "chat.kick": "Dışarı At",
     "chat.show-ip": "IP Göster",
+    "chat.copy-link": "Copy link",
     "chat.owner": "Oda Sahibi",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 odaya katıldı <span class=\"timeago\" title=\"%2\"></span>",

@@ -68,6 +68,7 @@
     "chat.in-room": "У цій кімнаті",
     "chat.kick": "Штурхнути",
     "chat.show-ip": "Показати IP",
+    "chat.copy-link": "Copy link",
     "chat.owner": "Власник кімнати",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",
