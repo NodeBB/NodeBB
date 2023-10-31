@@ -208,6 +208,8 @@ paths:
     $ref: 'write/flags/flagId/notes.yaml'
   /flags/{flagId}/notes/{datetime}:
     $ref: 'write/flags/flagId/notes/datetime.yaml'
+  /search/categories:
+    $ref: 'write/search/categories.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /admin/analytics:
