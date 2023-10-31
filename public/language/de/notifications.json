@@ -48,7 +48,7 @@
     "user-posted-to": "<strong>%1</strong> hat auf <strong>%2</strong> geantwortet.",
     "user-posted-to-dual": "<strong>%1</strong> und <strong>%2</strong> haben auf <strong>%3</strong> geantwortet.",
     "user-posted-to-triple": "<strong>%1</strong>, <strong>%2</strong> und <strong>%3</strong> haben geantwortet auf: <strong>%4</strong>",
-    "user-posted-to-multiple": "<strong>%1</strong>, <strong>%2</strong> und %3 andere haben geantwortet auf :<strong>%4</strong>",
+    "user-posted-to-multiple": "<strong>%1</strong>, <strong>%2</strong> und %3 andere haben geantwortet auf: <strong>%4</strong>",
     "user-posted-topic": "<strong>%1</strong> hat ein neues Thema erstellt: <strong>%2</strong>",
     "user-edited-post": "<strong>%1</strong> hat einen Post in <strong>%2</strong> bearbeitet",
     "user-posted-topic-with-tag": "<strong>%1</strong> hat ein neues Thema mit dem Tag <strong>%2</strong> erstellt",
