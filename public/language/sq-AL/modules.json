@@ -68,6 +68,7 @@
     "chat.in-room": "Në këtë dhomë",
     "chat.kick": "Largo",
     "chat.show-ip": "Shfaq IP",
+    "chat.copy-link": "Copy link",
     "chat.owner": "Administratori i hapësirës",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",

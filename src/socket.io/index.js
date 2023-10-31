@@ -333,5 +333,9 @@ Sockets.warnDeprecated = (socket, replacement) => {
 			replacement: replacement,
 		});
 	}
-	winston.warn(`[deprecated]\n ${new Error('-').stack.split('\n').slice(2, 5).join('\n')}\n     use ${replacement}`);
+	winston.warn([
+		'[deprecated]',
+		`${new Error('-').stack.split('\n').slice(2, 5).join('\n')}`,
+		`      ${replacement ? `use ${replacement}` : 'there is no replacement for this call.'}`,
+	].join('\n'));
 };

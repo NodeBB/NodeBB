@@ -68,6 +68,7 @@
     "chat.in-room": "V tejto miestnosti",
     "chat.kick": "Vykopnúť",
     "chat.show-ip": "Zobraziť IP adresu",
+    "chat.copy-link": "Copy link",
     "chat.owner": "Majiteľ miestnosti",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",

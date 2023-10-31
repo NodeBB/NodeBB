@@ -10,10 +10,19 @@ const { setupApiRoute } = routeHelpers;
 module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn];
 
+	setupApiRoute(router, 'get', '/', [...middlewares], controllers.write.categories.list);
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['name'])], controllers.write.categories.create);
 	setupApiRoute(router, 'get', '/:cid', [], controllers.write.categories.get);
 	setupApiRoute(router, 'put', '/:cid', [...middlewares], controllers.write.categories.update);
 	setupApiRoute(router, 'delete', '/:cid', [...middlewares], controllers.write.categories.delete);
+
+	setupApiRoute(router, 'get', '/:cid/count', [...middlewares, middleware.assert.category], controllers.write.categories.getTopicCount);
+	setupApiRoute(router, 'get', '/:cid/posts', [...middlewares, middleware.assert.category], controllers.write.categories.getPosts);
+	setupApiRoute(router, 'get', '/:cid/children', [...middlewares, middleware.assert.category], controllers.write.categories.getChildren);
+	setupApiRoute(router, 'get', '/:cid/topics', [...middlewares, middleware.assert.category], controllers.write.categories.getTopics);
+
+	setupApiRoute(router, 'put', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
+	setupApiRoute(router, 'delete', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
 
 	setupApiRoute(router, 'get', '/:cid/privileges', [...middlewares], controllers.write.categories.getPrivileges);
 	setupApiRoute(router, 'put', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);

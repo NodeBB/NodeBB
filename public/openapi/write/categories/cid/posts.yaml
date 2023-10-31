@@ -1,0 +1,28 @@
+get:
+  tags:
+    - categories
+  summary: get topic posts
+  description: This operation returns a list of posts in the category, across all topics in that category (excluding its subcategories)
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      example: 1
+  responses:
+    '200':
+      description: categories posts successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  posts:
+                    $ref: ../../../components/schemas/PostsObject.yaml#/PostsObject
