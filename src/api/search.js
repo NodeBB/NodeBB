@@ -20,6 +20,7 @@ searchApi.categories = async (caller, data) => {
 	data.states = (data.states || ['watching', 'notwatching', 'ignoring']).map(
 		state => categories.watchStates[state]
 	);
+	data.parentCid = parseInt(data.parentCid || 0, 10);
 
 	if (data.search) {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
