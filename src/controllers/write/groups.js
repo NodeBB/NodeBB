@@ -32,6 +32,11 @@ Groups.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Groups.listMembers = async (req, res) => {
+	const { slug } = req.params;
+	helpers.formatApiResponse(200, res, await api.groups.listMembers(req, { ...req.query, slug }));
+};
+
 Groups.join = async (req, res) => {
 	await api.groups.join(req, req.params);
 	helpers.formatApiResponse(200, res);

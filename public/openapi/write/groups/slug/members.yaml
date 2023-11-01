@@ -1,0 +1,46 @@
+get:
+  tags:
+    - groups
+  summary: list group members
+  description: This operation returns a list of members in a user groups. Group owners (if any) are floated to the top of the returned users.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: group slug (that also acts as its identifier) to check
+      example: administrators
+    - in: query
+      name: 'query'
+      schema:
+        type: string
+      required: false
+      description: A keyword search query
+      example: 'a'
+  responses:
+    '200':
+      description: matching user group members successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectSlim
+                        - type: object
+                          properties:
+                            isOwner:
+                              type: boolean
+                  matchCount:
+                    type: number
+                  timing:
+                    type: string

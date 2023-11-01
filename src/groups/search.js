@@ -53,7 +53,9 @@ module.exports = function (Groups) {
 	Groups.searchMembers = async function (data) {
 		if (!data.query) {
 			const users = await Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19);
-			return { users: users };
+			const matchCount = users.length;
+			const timing = '0.00';
+			return { users, matchCount, timing };
 		}
 
 		const results = await user.search({
