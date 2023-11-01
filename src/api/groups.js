@@ -12,6 +12,15 @@ const slugify = require('../slugify');
 
 const groupsAPI = module.exports;
 
+groupsAPI.list = async (caller, data) => {
+	const groupsPerPage = 10;
+	const start = parseInt(data.after || 0, 10);
+	const stop = start + groupsPerPage - 1;
+	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
+
+	return { groups: groupData, nextStart: stop + 1 };
+};
+
 groupsAPI.create = async function (caller, data) {
 	if (!caller.uid) {
 		throw new Error('[[error:no-privileges]]');

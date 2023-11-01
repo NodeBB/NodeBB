@@ -4,6 +4,9 @@ const groups = require('../groups');
 const user = require('../user');
 const utils = require('../utils');
 const privileges = require('../privileges');
+const api = require('../api');
+
+const sockets = require('.');
 
 const SocketGroups = module.exports;
 
@@ -26,15 +29,14 @@ SocketGroups.search = async (socket, data) => {
 };
 
 SocketGroups.loadMore = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/groups');
+
+	// These restrictions were left behind for websocket specific calls, the API is more flexible and requires no params
 	if (!data.sort || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const groupsPerPage = 10;
-	const start = parseInt(data.after, 10);
-	const stop = start + groupsPerPage - 1;
-	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
-	return { groups: groupData, nextStart: stop + 1 };
+	return api.groups.list(socket, data);
 };
 
 SocketGroups.searchMembers = async (socket, data) => {

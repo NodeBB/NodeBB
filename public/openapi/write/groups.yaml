@@ -1,3 +1,78 @@
+get:
+  tags:
+    - groups
+  summary: list groups
+  description: This operation returns a list of user groups. The number of groups returned is hardcoded to 10.
+  parameters:
+    - in: query
+      name: 'after'
+      schema:
+        type: number
+      required: false
+      description: An offset used to display a different subset of groups.
+      example: '0'
+    - in: query
+      name: 'sort'
+      schema:
+        type: string
+        enum: ['date', 'count']
+      required: false
+      description: Changes how the returned groups are sorted. By default, will return groups in alphanumeric order.
+      example: 'date'
+  responses:
+    '200':
+      description: user groups successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: ../components/schemas/GroupObject.yaml#/GroupDataObject
+                        - type: object
+                          properties:
+                            members:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  uid:
+                                    type: number
+                                    description: A user identifier
+                                    example: 1
+                                  username:
+                                    type: string
+                                    description: A friendly name for a given user account
+                                    example: Dragon Fruit
+                                  userslug:
+                                    type: string
+                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                                    example: dragon-fruit
+                                  displayname:
+                                    type: string
+                                    description: This is either username or fullname depending on forum and user settings
+                                    example: Dragon Fruit
+                                  'icon:text':
+                                    type: string
+                                    description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
+                                    example: D
+                                  'icon:bgColor':
+                                    type: string
+                                    description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
+                                    example: '#9c27b0'
+                            truncated:
+                              type: boolean
+                              description: Whether this returned member list is a subset of the total membership
+                  nextStart:
+                    type: number
 post:
   tags:
     - groups
