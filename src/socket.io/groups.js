@@ -5,6 +5,7 @@ const user = require('../user');
 const utils = require('../utils');
 const privileges = require('../privileges');
 const api = require('../api');
+const slugify = require('../slugify');
 
 const sockets = require('.');
 
@@ -40,18 +41,15 @@ SocketGroups.loadMore = async (socket, data) => {
 };
 
 SocketGroups.searchMembers = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/groups/:groupName/members');
+
 	if (!data.groupName) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await canSearchMembers(socket.uid, data.groupName);
-	if (!await privileges.global.can('search:users', socket.uid)) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	return await groups.searchMembers({
-		uid: socket.uid,
-		query: data.query,
-		groupName: data.groupName,
-	});
+	data.slug = slugify(data.groupName);
+	delete data.groupName;
+
+	return api.groups.listMembers(socket, data);
 };
 
 SocketGroups.loadMoreMembers = async (socket, data) => {

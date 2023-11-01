@@ -73,6 +73,35 @@ groupsAPI.delete = async function (caller, data) {
 	});
 };
 
+groupsAPI.listMembers = async (caller, data) => {
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+
+	await canSearchMembers(caller.uid, groupName);
+	if (!await privileges.global.can('search:users', caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await groups.searchMembers({
+		uid: caller.uid,
+		query: data.query,
+		groupName,
+	});
+};
+
+async function canSearchMembers(uid, groupName) {
+	const [isHidden, isMember, hasAdminPrivilege, isGlobalMod, viewGroups] = await Promise.all([
+		groups.isHidden(groupName),
+		groups.isMember(uid, groupName),
+		privileges.admin.can('admin:groups', uid),
+		user.isGlobalModerator(uid),
+		privileges.global.can('view:groups', uid),
+	]);
+
+	if (!viewGroups || (isHidden && !isMember && !hasAdminPrivilege && !isGlobalMod)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
+
 groupsAPI.join = async function (caller, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
