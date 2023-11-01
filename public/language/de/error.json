@@ -91,7 +91,7 @@
     "category-not-selected": "Kategorie nicht ausgewählt",
     "too-many-posts": "Du kannst nur einen Beitrag innerhalb von %1 Sekunden erstellen - Bitte warte bevor Du erneut einen Beitrag erstellst.",
     "too-many-posts-newbie": "Als neuer Benutzer kannst du nur einmal alle %1 Sekunde(n) posten, bis du %2 Reputation erworben hast - bitte warte, bevor du erneut postest",
-    "too-many-posts-newbie-minutes": "As a new user, you can only post once every %1 minute(s) until you have earned %2 reputation - please wait before posting again",
+    "too-many-posts-newbie-minutes": "Als neuer Benutzer kannst du nur einmal alle %1 Minute(n) posten, bis du %2 Ansehen erworben hast - bitte warte, bevor du erneut postest",
     "already-posting": "Du bist bereits am Posten",
     "tag-too-short": "Bitte gebe ein längeres Schlagwort ein. Schlagworte sollten mindestens %1 Zeichen enthalten.",
     "tag-too-long": "Bitte gebe ein kürzeres Schlagwort ein. Schlagworte können nicht länger als %1 Zeichen sein.",

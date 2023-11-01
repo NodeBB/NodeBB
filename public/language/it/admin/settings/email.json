@@ -14,7 +14,7 @@
 	"smtp-transport.service": "Seleziona un servizio",
 	"smtp-transport.service-custom": "Servizio personalizzato",
 	"smtp-transport.service-help": "Selezionare il nome di un servizio per utilizzare le informazioni note su di esso. In alternativa, selezionare &quot;Servizio personalizzato&quot; e inserire i dettagli qui sotto.",
-	"smtp-transport.gmail-warning1": "Se si utilizza GMail come provider di posta elettronica, è necessario generare una &quot;Password dell'app&quot; affinché NodeBB possa autenticarsi con successo. Puoi generarne una alla pagina <a href=\"https://myaccount.google.com/apppasswords\">Password dell'app <i class=\"fa fa-external-link\"></i></a>.",
+	"smtp-transport.gmail-warning1": "Se si utilizza GMail come provider email, è necessario generare una &quot;Password dell'app&quot; affinché NodeBB possa autenticarsi con successo. Puoi generarne una alla pagina <a href=\"https://myaccount.google.com/apppasswords\">Password dell'app <i class=\"fa fa-external-link\"></i></a>.",
 	"smtp-transport.gmail-warning2": "Per ulteriori informazioni su questa soluzione alternativa, <a href=\"https://nodemailer.com/usage/using-gmail/\">si prega di consultare questo articolo NodeMailer <i class=\"fa fa-external-link\"></i></a> sulla questione. Un'alternativa sarebbe utilizzare un plug-in di posta elettronica di terze parti come SendGrid, Mailgun, ecc. <a href=\"../extend/plugins\">Sfoglia i plugin disponibili qui</a>.",
 	"smtp-transport.auto-enable-toast": "Sembra che tu stia configurando un trasporto SMTP. Abbiamo abilitato l'opzione \"Trasporto SMTP\" per te.",
 	"smtp-transport.host": "Host SMTP",
