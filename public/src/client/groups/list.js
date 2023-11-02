@@ -36,7 +36,7 @@ define('forum/groups/list', [
 			return;
 		}
 
-		infinitescroll.loadMore('groups.loadMore', {
+		infinitescroll.loadMore('/groups', {
 			sort: $('#search-sort').val(),
 			after: $('[component="groups/container"]').attr('data-nextstart'),
 		}, function (data, done) {
