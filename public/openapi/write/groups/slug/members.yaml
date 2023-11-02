@@ -9,18 +9,31 @@ get:
       schema:
         type: string
       required: true
-      description: group slug (that also acts as its identifier) to check
+      description: a group slug (that also acts as its identifier)
       example: administrators
     - in: query
       name: 'query'
       schema:
         type: string
       required: false
-      description: A keyword search query
+      description: >
+        A keyword search query.
+
+        This parameter conflicts with `after`. If both are present, `after` is ignored.
       example: 'a'
+    - in: query
+      name: 'after'
+      schema:
+        type: string
+      required: false
+      description: >
+        Offset returned results.
+
+        This parameter conflicts with `query`. If both are present, this parameter is ignored.
+      example: '0'
   responses:
     '200':
-      description: matching user group members successfully listed
+      description: user group members successfully listed
       content:
         application/json:
           schema:
@@ -42,5 +55,10 @@ get:
                               type: boolean
                   matchCount:
                     type: number
+                    nullable: true
                   timing:
                     type: string
+                    nullable: true
+                  nextStart:
+                    type: number
+                    nullable: true

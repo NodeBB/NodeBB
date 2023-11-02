@@ -74,6 +74,7 @@ groupsAPI.delete = async function (caller, data) {
 };
 
 groupsAPI.listMembers = async (caller, data) => {
+	// v4 wishlist — search should paginate (with lru caching I guess) to match index listing behaviour
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 
 	await canSearchMembers(caller.uid, groupName);
@@ -81,11 +82,26 @@ groupsAPI.listMembers = async (caller, data) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	return await groups.searchMembers({
-		uid: caller.uid,
-		query: data.query,
-		groupName,
-	});
+	const { query } = data;
+	const after = parseInt(data.after || 0, 10);
+	let response;
+	if (query) {
+		response = await groups.searchMembers({
+			uid: caller.uid,
+			query,
+			groupName,
+		});
+		response.nextStart = null;
+	} else {
+		response = {
+			users: await groups.getOwnersAndMembers(groupName, caller.uid, after, after + 19),
+			nextStart: after + 20,
+			matchCount: null,
+			timing: null,
+		};
+	}
+
+	return response;
 };
 
 async function canSearchMembers(uid, groupName) {

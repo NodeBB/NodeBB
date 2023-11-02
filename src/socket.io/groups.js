@@ -53,16 +53,15 @@ SocketGroups.searchMembers = async (socket, data) => {
 };
 
 SocketGroups.loadMoreMembers = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/groups/:groupName/members');
+
 	if (!data.groupName || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await canSearchMembers(socket.uid, data.groupName);
-	data.after = parseInt(data.after, 10);
-	const users = await groups.getOwnersAndMembers(data.groupName, socket.uid, data.after, data.after + 9);
-	return {
-		users: users,
-		nextStart: data.after + 10,
-	};
+	data.slug = slugify(data.groupName);
+	delete data.groupName;
+
+	return api.groups.listMembers(socket, data);
 };
 
 SocketGroups.getChatGroups = async (socket) => {
@@ -75,20 +74,6 @@ SocketGroups.getChatGroups = async (socket) => {
 	groupsList.sort((a, b) => b.system - a.system);
 	return groupsList.map(g => ({ name: g.name, displayName: g.displayName }));
 };
-
-async function canSearchMembers(uid, groupName) {
-	const [isHidden, isMember, hasAdminPrivilege, isGlobalMod, viewGroups] = await Promise.all([
-		groups.isHidden(groupName),
-		groups.isMember(uid, groupName),
-		privileges.admin.can('admin:groups', uid),
-		user.isGlobalModerator(uid),
-		privileges.global.can('view:groups', uid),
-	]);
-
-	if (!viewGroups || (isHidden && !isMember && !hasAdminPrivilege && !isGlobalMod)) {
-		throw new Error('[[error:no-privileges]]');
-	}
-}
 
 SocketGroups.cover = {};
 
