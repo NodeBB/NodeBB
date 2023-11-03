@@ -79,7 +79,7 @@
 	"follow-replied-topics": "关注您回复的主题",
 	"default-notification-settings": "默认通知设置",
 	"categoryWatchState": "默认版块关注状态",
-	"categoryWatchState.watching": "已关注",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "未关注",
 	"categoryWatchState.ignoring": "已忽略"
 }

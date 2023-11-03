@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Cevap verdiğim konuları takip et",
 	"default-notification-settings": "Varsayılan bildirim ayarları",
 	"categoryWatchState": "Varsayılan kategori izlenme durumu",
-	"categoryWatchState.watching": "Takip ediliyor",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Takip edilmiyor",
 	"categoryWatchState.ignoring": "Yok sayılıyor"
 }

@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Minden témakör követése, amire válaszoltál",
 	"default-notification-settings": "Alapértelmezett értesítési beállítások",
 	"categoryWatchState": "Alapértelmezett kategóriafigyelés",
-	"categoryWatchState.watching": "Figyelés",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Nem megfigyelt",
 	"categoryWatchState.ignoring": "Mellőzés"
 }

@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Follow topics that you reply to",
 	"default-notification-settings": "Definições predefinidas das notificações",
 	"categoryWatchState": "Estado predefinido da subscrição de categorias",
-	"categoryWatchState.watching": "A seguir",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "A não seguir",
 	"categoryWatchState.ignoring": "A ignorar"
 }

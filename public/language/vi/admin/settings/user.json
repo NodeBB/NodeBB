@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Theo dõi các chủ đề mà bạn trả lời",
 	"default-notification-settings": "Cài đặt thông báo mặc định",
 	"categoryWatchState": "Trạng thái xem chuyên mục mặc định",
-	"categoryWatchState.watching": "Đang Xem",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Không Xem",
 	"categoryWatchState.ignoring": "Bỏ Qua"
 }

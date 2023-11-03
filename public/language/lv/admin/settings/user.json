@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Sekot tematiem, kuros esi rakstījis(-jusi)",
 	"default-notification-settings": "Noklusējuma ziņojumu iestatījumi",
 	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Not Watching",
 	"categoryWatchState.ignoring": "Ignoring"
 }

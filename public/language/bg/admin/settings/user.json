@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Следване на темите, на които отговаряте",
 	"default-notification-settings": "Настройки по подразбиране за известията",
 	"categoryWatchState": "Състояние по подразбиране за следенето на категории",
-	"categoryWatchState.watching": "Да се следят",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Да не се следят",
 	"categoryWatchState.ignoring": "Да се пренебрегват"
 }

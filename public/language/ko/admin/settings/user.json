@@ -79,7 +79,7 @@
 	"follow-replied-topics": "내가 답글을 작성한 화제 팔로우",
 	"default-notification-settings": "기본 알림 설정",
 	"categoryWatchState": "기본 카테고리 관심 상태",
-	"categoryWatchState.watching": "관심",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "관심 해제",
 	"categoryWatchState.ignoring": "무시"
 }

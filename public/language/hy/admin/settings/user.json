@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Հետևեք այն թեմաներին, որոնց պատասխանում եք",
 	"default-notification-settings": "Հիմնական ծանուցման կարգավորումներ",
 	"categoryWatchState": "Հիմնական կատեգորիայի դիտման վիճակը",
-	"categoryWatchState.watching": "Դիտում  ",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Չեն դիտում ",
 	"categoryWatchState.ignoring": "Անտեսել "
 }

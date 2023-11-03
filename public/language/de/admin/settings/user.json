@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Themen folgen, auf die du antwortest",
 	"default-notification-settings": "Standardbenachrichtigungseinstellungen",
 	"categoryWatchState": "Standardmäßige Beobachtung",
-	"categoryWatchState.watching": "Beobachtet",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Nicht beobachtet",
 	"categoryWatchState.ignoring": "Ignoriert"
 }

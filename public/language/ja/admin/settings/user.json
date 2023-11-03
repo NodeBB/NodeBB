@@ -79,7 +79,7 @@
 	"follow-replied-topics": "返信したスレッドをフォローします",
 	"default-notification-settings": "デフォルトの通知設定",
 	"categoryWatchState": "デフォルトのカテゴリウォッチ状態",
-	"categoryWatchState.watching": "ウォッチ中",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "未ウォッチ",
 	"categoryWatchState.ignoring": "無視中"
 }

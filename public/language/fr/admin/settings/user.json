@@ -79,7 +79,7 @@
 	"follow-replied-topics": "S'abonner aux sujets auxquels vous répondez",
 	"default-notification-settings": "Paramètres des notifications par défaut",
 	"categoryWatchState": "Abonnement par défaut",
-	"categoryWatchState.watching": "Abonné",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Non abonné",
 	"categoryWatchState.ignoring": "Ignoré"
 }

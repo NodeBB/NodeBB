@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Prati teme na koje odgovorim",
 	"default-notification-settings": "Default notification settings",
 	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Not Watching",
 	"categoryWatchState.ignoring": "Ignoring"
 }

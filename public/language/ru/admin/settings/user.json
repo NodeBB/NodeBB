@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Включать отслеживание во всех темах, в которых вы отвечаете",
 	"default-notification-settings": "Стандартные настройки уведомлений",
 	"categoryWatchState": "Стандартные настройки отслеживания категорий",
-	"categoryWatchState.watching": "Отслеживается",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Не отслеживается",
 	"categoryWatchState.ignoring": "Игнорируется"
 }

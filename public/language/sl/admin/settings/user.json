@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Spremljanj teme, na katere si odgovoril",
 	"default-notification-settings": "Privzete nastavitve obveščanja",
 	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Spremljano",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Ni spremljano",
 	"categoryWatchState.ignoring": "Prezrto"
 }
