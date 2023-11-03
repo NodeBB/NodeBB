@@ -83,6 +83,9 @@ Settings:
     notificationType_new-topic-with-tag:
       type: string
       description: Notification type for new topics with followed tag
+    notificationType_new-topic-in-category:
+      type: string
+      description: Notification type for new topics in watched category
     notificationType_follow:
       type: string
       description: Notification type for another user following you
