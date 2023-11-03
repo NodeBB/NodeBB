@@ -31,6 +31,7 @@ Notifications.baseTypes = [
 	'notificationType_upvote',
 	'notificationType_new-topic',
 	'notificationType_new-topic-with-tag',
+	'notificationType_new-topic-in-category',
 	'notificationType_new-reply',
 	'notificationType_post-edit',
 	'notificationType_follow',

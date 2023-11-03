@@ -7,7 +7,8 @@ module.exports = function (Categories) {
 	Categories.watchStates = {
 		ignoring: 1,
 		notwatching: 2,
-		watching: 3,
+		tracking: 3,
+		watching: 4,
 	};
 
 	Categories.isIgnored = async function (cids, uid) {

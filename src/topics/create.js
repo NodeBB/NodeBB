@@ -153,6 +153,7 @@ module.exports = function (Topics) {
 		if (parseInt(uid, 10) && !topicData.scheduled) {
 			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
 			Topics.notifyTagFollowers(postData, uid);
+			categories.notifyCategoryFollowers(postData, uid);
 		}
 
 		return {

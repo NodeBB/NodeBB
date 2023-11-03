@@ -11,7 +11,9 @@ define('forum/account/categories', ['forum/account/header', 'alerts', 'api'], fu
 			handleIgnoreWatch(category.cid);
 		});
 
-		$('[component="category/watch/all"]').find('[component="category/watching"], [component="category/ignoring"], [component="category/notwatching"]').on('click', async (e) => {
+		$('[component="category/watch/all"]').find(
+			'[component="category/watching"], [component="category/tracking"], [component="category/ignoring"], [component="category/notwatching"]'
+		).on('click', async (e) => {
 			const cids = [];
 			const state = e.currentTarget.getAttribute('data-state');
 			const { uid } = ajaxify.data;
@@ -30,7 +32,9 @@ define('forum/account/categories', ['forum/account/header', 'alerts', 'api'], fu
 
 	function handleIgnoreWatch(cid) {
 		const category = $('[data-cid="' + cid + '"]');
-		category.find('[component="category/watching"], [component="category/ignoring"], [component="category/notwatching"]').on('click', async (e) => {
+		category.find(
+			'[component="category/watching"], [component="category/tracking"], [component="category/ignoring"], [component="category/notwatching"]'
+		).on('click', async (e) => {
 			const state = e.currentTarget.getAttribute('data-state');
 			const { uid } = ajaxify.data;
 
@@ -45,6 +49,9 @@ define('forum/account/categories', ['forum/account/header', 'alerts', 'api'], fu
 			const category = $('[data-cid="' + cid + '"]');
 			category.find('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
 			category.find('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
+
+			category.find('[component="category/tracking/menu"]').toggleClass('hidden', state !== 'tracking');
+			category.find('[component="category/tracking/check"]').toggleClass('fa-check', state === 'tracking');
 
 			category.find('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
 			category.find('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');

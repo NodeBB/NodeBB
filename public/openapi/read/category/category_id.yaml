@@ -52,6 +52,8 @@ get:
                     type: number
                   isWatched:
                     type: boolean
+                  isTracked:
+                    type: boolean
                   isNotWatched:
                     type: boolean
                   isIgnored:

@@ -65,7 +65,7 @@ define('forum/category', [
 	}
 
 	function handleIgnoreWatch(cid) {
-		$('[component="category/watching"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
+		$('[component="category/watching"], [component="category/tracking"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
 			const $this = $(this);
 			const state = $this.attr('data-state');
 
@@ -76,6 +76,9 @@ define('forum/category', [
 
 				$('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
 				$('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
+
+				$('[component="category/tracking/menu"]').toggleClass('hidden', state !== 'tracking');
+				$('[component="category/tracking/check"]').toggleClass('fa-check', state === 'tracking');
 
 				$('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
 				$('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');
