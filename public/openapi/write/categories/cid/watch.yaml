@@ -14,14 +14,14 @@ put:
     This API call does not pertain to notifications for new topics in categories.
     That behaviour is handled by a third-party plugin — nodebb-plugin-category-notifications
 
-    N.B. When a category's watch state is updated, all of that category's children also have their watch states updated.
+    Additionally, when a category's watch state is updated, all of that category's children also have their watch states updated.
   parameters:
     - in: path
       name: cid
       schema:
         type: string
       required: true
-      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      description: a valid category id
       example: 1
   requestBody:
     required: true
@@ -69,7 +69,7 @@ delete:
       schema:
         type: string
       required: true
-      description: a valid category id, `0` for global privileges, `admin` for admin privileges
+      description: a valid category id
       example: 1
   requestBody:
     required: true
