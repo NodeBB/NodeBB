@@ -7,7 +7,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 		let categoriesList = null;
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
-		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
 		options.cacheList = options.hasOwnProperty('cacheList') ? options.cacheList : true;
 
 		let localCategories = [];

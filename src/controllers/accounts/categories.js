@@ -24,9 +24,10 @@ categoriesController.get = async function (req, res) {
 
 	categoriesData.forEach((category) => {
 		if (category) {
-			category.isIgnored = states[category.cid] === categories.watchStates.ignoring;
 			category.isWatched = states[category.cid] === categories.watchStates.watching;
+			category.isTracked = states[category.cid] === categories.watchStates.tracking;
 			category.isNotWatched = states[category.cid] === categories.watchStates.notwatching;
+			category.isIgnored = states[category.cid] === categories.watchStates.ignoring;
 		}
 	});
 

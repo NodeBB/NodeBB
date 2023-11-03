@@ -60,10 +60,10 @@ module.exports = function (User) {
 	};
 
 	User.getCategoriesByStates = async function (uid, states) {
-		if (!(parseInt(uid, 10) > 0)) {
-			return await categories.getAllCidsFromSet('categories:cid');
-		}
 		const cids = await categories.getAllCidsFromSet('categories:cid');
+		if (!(parseInt(uid, 10) > 0)) {
+			return cids;
+		}
 		const userState = await categories.getWatchState(cids, uid);
 		return cids.filter((cid, index) => states.includes(userState[index]));
 	};

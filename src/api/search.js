@@ -17,7 +17,7 @@ searchApi.categories = async (caller, data) => {
 	let cids = [];
 	let matchedCids = [];
 	const privilege = data.privilege || 'topics:read';
-	data.states = (data.states || ['watching', 'notwatching', 'ignoring']).map(
+	data.states = (data.states || ['watching', 'tracking', 'notwatching', 'ignoring']).map(
 		state => categories.watchStates[state]
 	);
 	data.parentCid = parseInt(data.parentCid || 0, 10);
