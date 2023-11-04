@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Segui discussioni a cui rispondi tu",
 	"default-notification-settings": "Impostazioni di notifica predefinite",
 	"categoryWatchState": "Stato predefinito della categoria di controllo",
-	"categoryWatchState.tracking": "Tracking",
+	"categoryWatchState.tracking": "Tracciamento",
 	"categoryWatchState.notwatching": "Non seguito",
 	"categoryWatchState.ignoring": "Ignorato"
 }

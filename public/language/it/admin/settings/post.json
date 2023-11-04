@@ -59,7 +59,7 @@
 	"backlinks": "Backlink",
 	"backlinks.enabled": "Abilita backlink discussione",
 	"backlinks.help": "Se un post fa riferimento ad un altra discussione, un link al post sarà inserito nella discussione di riferimento in quel momento.",
-	"ip-tracking": "Monitoraggio IP",
+	"ip-tracking": "Tracciamento IP",
 	"ip-tracking.each-post": "Traccia l'indirizzo IP per ogni post",
 	"enable-post-history": "Abilita cronologia post"
 }
