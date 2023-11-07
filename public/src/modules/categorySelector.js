@@ -12,7 +12,7 @@ define('categorySelector', [
 		options = options || {};
 		const onSelect = options.onSelect || function () {};
 
-		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
 		options.template = options.template || 'partials/category/selector-dropdown-left';
 		hooks.fire('action:category.selector.options', { el: el, options: options });
 
