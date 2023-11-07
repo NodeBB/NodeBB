@@ -36,7 +36,7 @@
         "@popperjs/core": "2.11.8",
         "ace-builds": "1.31.1",
         "archiver": "6.0.1",
-        "async": "3.2.4",
+        "async": "3.2.5",
         "autoprefixer": "10.4.16",
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.5.1",
