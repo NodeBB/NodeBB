@@ -8,7 +8,6 @@
 	"max-chat-room-name-length": "Lunghezza massima dei nomi delle stanze chat",
 	"max-room-size": "Numero massimo di utenti nelle stanza chat",
 	"delay": "Tempo tra i messaggi di chat (ms)",
-	"newbieDelay": "... per i nuovi utenti (ms)",
 	"notification-delay": "Ritardo nella notifica dei messaggi di chat",
 	"notification-delay-help": "I messaggi aggiuntivi inviati in questo intervallo di tempo vengono raccolti e l'utente riceve una notifica per ogni periodo di ritardo. Impostalo su 0 per disabilitare il ritardo.",
 	"restrictions.seconds-edit-after": "Numero di secondi in cui un messaggio di chat rimane modificabile.",

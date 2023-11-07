@@ -82,8 +82,11 @@
 	"categoryWatchState.tracking": "Theo dõi",
 	"categoryWatchState.notwatching": "Không Xem",
 	"categoryWatchState.ignoring": "Bỏ Qua",
-	"restrictions-new": "Giới Hạn Người Dùng Mới",
-	"restrictions.seconds-between-new": "Số giây giữa các bài đăng cho người dùng mới",
-	"restrictions.rep-threshold": "Ngưỡng uy tín trước khi những hạn chế này được dỡ bỏ",
-	"restrictions.seconds-before-new": "Vài giây trước khi người dùng mới có thể đăng bài đầu tiên của họ"
+	"restrictions-new": "New User Restrictions",
+	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
+	"restrictions.seconds-between-new": "Seconds between posts for new users",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
+	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
+	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
 }

@@ -8,7 +8,6 @@
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Número máximo de utilizadores nas salas de conversa",
 	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
 	"notification-delay": "Notification delay for chat messages",
 	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
