@@ -81,5 +81,9 @@
 	"categoryWatchState": "Հիմնական կատեգորիայի դիտման վիճակը",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Չեն դիտում ",
-	"categoryWatchState.ignoring": "Անտեսել "
+	"categoryWatchState.ignoring": "Անտեսել ",
+	"restrictions-new": "Նոր Օգտատիրոջ սահմանափակումներ",
+	"restrictions.seconds-between-new": "Նոր օգտատերերի համար գրառումների միջև ընկած վայրկյաններ",
+	"restrictions.rep-threshold": "Վարկանիշի շեմը՝ մինչև այս սահմանափակումների վերացումը",
+	"restrictions.seconds-before-new": "Վայրկյաններ առաջ, երբ նոր օգտատերը կարող է կատարել իր առաջին գրառումը"
 }

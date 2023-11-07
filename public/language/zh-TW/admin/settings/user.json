@@ -81,5 +81,9 @@
 	"categoryWatchState": "預設版面關注狀態",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "未關注",
-	"categoryWatchState.ignoring": "已忽略"
+	"categoryWatchState.ignoring": "已忽略",
+	"restrictions-new": "新使用者限制",
+	"restrictions.seconds-between-new": "新使用者貼文間隔時間（秒）",
+	"restrictions.rep-threshold": "取消貼文限制所需的聲望值",
+	"restrictions.seconds-before-new": "新使用者可以在第一次發佈之前的秒數"
 }

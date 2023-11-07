@@ -81,5 +81,9 @@
 	"categoryWatchState": "Standardmäßige Beobachtung",
 	"categoryWatchState.tracking": "Verfolgung",
 	"categoryWatchState.notwatching": "Nicht beobachtet",
-	"categoryWatchState.ignoring": "Ignoriert"
+	"categoryWatchState.ignoring": "Ignoriert",
+	"restrictions-new": "Beschränkungen für neue Benutzer",
+	"restrictions.seconds-between-new": "Sekunden zwischen Beiträgen für neue Benutzer",
+	"restrictions.rep-threshold": "Mindesreputation bevor die Beschränkungen aufgehoben werden",
+	"restrictions.seconds-before-new": "Sekunden, bevor ein neuer Benutzer seinen ersten Beitrag schreiben kann"
 }

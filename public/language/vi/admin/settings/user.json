@@ -81,5 +81,9 @@
 	"categoryWatchState": "Trạng thái xem chuyên mục mặc định",
 	"categoryWatchState.tracking": "Theo dõi",
 	"categoryWatchState.notwatching": "Không Xem",
-	"categoryWatchState.ignoring": "Bỏ Qua"
+	"categoryWatchState.ignoring": "Bỏ Qua",
+	"restrictions-new": "Giới Hạn Người Dùng Mới",
+	"restrictions.seconds-between-new": "Số giây giữa các bài đăng cho người dùng mới",
+	"restrictions.rep-threshold": "Ngưỡng uy tín trước khi những hạn chế này được dỡ bỏ",
+	"restrictions.seconds-before-new": "Vài giây trước khi người dùng mới có thể đăng bài đầu tiên của họ"
 }

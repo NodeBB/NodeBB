@@ -81,5 +81,9 @@
 	"categoryWatchState": "기본 카테고리 관심 상태",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "관심 해제",
-	"categoryWatchState.ignoring": "무시"
+	"categoryWatchState.ignoring": "무시",
+	"restrictions-new": "신규 사용자 제한",
+	"restrictions.seconds-between-new": "신규 사용자 포스트 작성 지연(단위: 초)",
+	"restrictions.rep-threshold": "제한이 해제되는 최소 인지도",
+	"restrictions.seconds-before-new": "신규 사용자 첫 포스트 작성 대기 시간(단위: 초)"
 }

@@ -81,5 +81,9 @@
 	"categoryWatchState": "Default category watch state",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Not Watching",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState.ignoring": "Ignoring",
+	"restrictions-new": "Jauno lietotāju ierobežojumi",
+	"restrictions.seconds-between-new": "Jauniem lietotājiem sekundes starp rakstiem",
+	"restrictions.rep-threshold": "Reputācijas slieksnis pirms ierobežojumu atcelšanas",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post"
 }

@@ -81,5 +81,9 @@
 	"categoryWatchState": "Default category watch state",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Ni spremljano",
-	"categoryWatchState.ignoring": "Prezrto"
+	"categoryWatchState.ignoring": "Prezrto",
+	"restrictions-new": "Omejitve novega uporabnika",
+	"restrictions.seconds-between-new": "Sekunde med objavami za novega uporabnika",
+	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
+	"restrictions.seconds-before-new": "Sekunde, preden lahko nov uporabnik objavi svojo prvo objavo"
 }

@@ -81,5 +81,9 @@
 	"categoryWatchState": "デフォルトのカテゴリウォッチ状態",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "未ウォッチ",
-	"categoryWatchState.ignoring": "無視中"
+	"categoryWatchState.ignoring": "無視中",
+	"restrictions-new": "新しいユーザー制限",
+	"restrictions.seconds-between-new": "Seconds between posts for new users",
+	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post"
 }

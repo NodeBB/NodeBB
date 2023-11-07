@@ -81,5 +81,9 @@
 	"categoryWatchState": "Stav sledování výchozí kategorie",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Nesleduji",
-	"categoryWatchState.ignoring": "Ignorace"
+	"categoryWatchState.ignoring": "Ignorace",
+	"restrictions-new": "Omezení nového uživatele",
+	"restrictions.seconds-between-new": "Sekund mezi příspěvky pro nové uživatele",
+	"restrictions.rep-threshold": "Ohraničení reputace než začnou platit tato omezení",
+	"restrictions.seconds-before-new": "Počet sekund, než může nový uživatel vytvořit první příspěvek"
 }

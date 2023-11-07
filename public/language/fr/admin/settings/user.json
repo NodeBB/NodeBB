@@ -81,5 +81,9 @@
 	"categoryWatchState": "Abonnement par défaut",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Non abonné",
-	"categoryWatchState.ignoring": "Ignoré"
+	"categoryWatchState.ignoring": "Ignoré",
+	"restrictions-new": "Restrictions des nouveaux utilisateurs",
+	"restrictions.seconds-between-new": "Secondes entre les messages pour les nouveaux utilisateurs",
+	"restrictions.rep-threshold": "Seuil de réputation avant que ces restrictions ne soient levées",
+	"restrictions.seconds-before-new": "Secondes avant qu'un nouvel utilisateur puisse publier son premier message"
 }

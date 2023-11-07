@@ -81,5 +81,9 @@
 	"categoryWatchState": "Estado predefinido da subscrição de categorias",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "A não seguir",
-	"categoryWatchState.ignoring": "A ignorar"
+	"categoryWatchState.ignoring": "A ignorar",
+	"restrictions-new": "Restrições para Novos Utilizadores",
+	"restrictions.seconds-between-new": "Seconds between posts for new users",
+	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post"
 }

@@ -81,5 +81,9 @@
 	"categoryWatchState": "מצב מעקב על קטגוריה בברירת מחדל",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "לא עוקב",
-	"categoryWatchState.ignoring": "מתעלם"
+	"categoryWatchState.ignoring": "מתעלם",
+	"restrictions-new": "הגבלות משתמש חדש",
+	"restrictions.seconds-between-new": "שניות בין פוסטים עבור משתמשים חדשים",
+	"restrictions.rep-threshold": "סף המוניטין לפני ביטול המגבלות הללו",
+	"restrictions.seconds-before-new": "שניות לפני שמשתמש חדש יוכל לפרסם את הפוסט הראשון שלו"
 }

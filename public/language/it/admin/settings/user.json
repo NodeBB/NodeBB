@@ -81,5 +81,9 @@
 	"categoryWatchState": "Stato predefinito della categoria di controllo",
 	"categoryWatchState.tracking": "Tracciamento",
 	"categoryWatchState.notwatching": "Non seguito",
-	"categoryWatchState.ignoring": "Ignorato"
+	"categoryWatchState.ignoring": "Ignorato",
+	"restrictions-new": "Restrizioni Nuovo Utente",
+	"restrictions.seconds-between-new": "Numero di secondi tra i post per i nuovi utenti",
+	"restrictions.rep-threshold": "Soglia di reputazione dopo la quale queste restrizioni vengono rimosse",
+	"restrictions.seconds-before-new": "Secondi dopo i quali un nuovo utente può creare il suo primo post"
 }

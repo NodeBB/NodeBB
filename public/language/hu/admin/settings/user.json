@@ -81,5 +81,9 @@
 	"categoryWatchState": "Alapértelmezett kategóriafigyelés",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Nem megfigyelt",
-	"categoryWatchState.ignoring": "Mellőzés"
+	"categoryWatchState.ignoring": "Mellőzés",
+	"restrictions-new": "Új felhasználók korlátozása",
+	"restrictions.seconds-between-new": "Hozzászólások közötti kötelező szünet új felhasználóknak (másodpercben)",
+	"restrictions.rep-threshold": "Szükséges hírnév szint ezen korlátozások feloldásához",
+	"restrictions.seconds-before-new": "Szükséges eltelt idő, mielőtt egy új felhasználó hozzászólást írhat (másodpercben)"
 }

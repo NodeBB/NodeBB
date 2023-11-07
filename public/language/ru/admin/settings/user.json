@@ -81,5 +81,9 @@
 	"categoryWatchState": "Стандартные настройки отслеживания категорий",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Не отслеживается",
-	"categoryWatchState.ignoring": "Игнорируется"
+	"categoryWatchState.ignoring": "Игнорируется",
+	"restrictions-new": "Ограничения для новых пользователей",
+	"restrictions.seconds-between-new": "Пауза между сообщениями новых пользователей (в секундах)",
+	"restrictions.rep-threshold": "Минимум репутации, чтобы снять это ограничение",
+	"restrictions.seconds-before-new": "Пауза перед тем, как новый пользователь сможет написать первое сообщение (в секундах)"
 }

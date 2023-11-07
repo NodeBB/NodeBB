@@ -81,5 +81,9 @@
 	"categoryWatchState": "Varsayılan kategori izlenme durumu",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Takip edilmiyor",
-	"categoryWatchState.ignoring": "Yok sayılıyor"
+	"categoryWatchState.ignoring": "Yok sayılıyor",
+	"restrictions-new": "Yeni Kullanıcı Kısıtlamaları",
+	"restrictions.seconds-between-new": "Yeni kullanıcılar için gönderimler arasındaki saniye cinsinden süre",
+	"restrictions.rep-threshold": "Bu kısıtlamalardan önceki itibar eşiği kaldırıldı",
+	"restrictions.seconds-before-new": "Yeni kullanıcılar kaç saniye sonra ilk iletiyi gönderebilir"
 }

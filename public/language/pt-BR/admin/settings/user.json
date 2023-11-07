@@ -81,5 +81,9 @@
 	"categoryWatchState": "Configuração padrão em relação a acompanhar as novidades das categorias",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Não Acompanhar",
-	"categoryWatchState.ignoring": "Ignorar"
+	"categoryWatchState.ignoring": "Ignorar",
+	"restrictions-new": "Restrições a Novos Usuários",
+	"restrictions.seconds-between-new": "Tempo em segundos entre postagens para novos usuários",
+	"restrictions.rep-threshold": "Reputação mínima para que essas restrições sejam desativadas",
+	"restrictions.seconds-before-new": "Segundos necessários antes de um novo usuário poder realizar sua primeira postagem"
 }

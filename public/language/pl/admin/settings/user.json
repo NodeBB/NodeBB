@@ -81,5 +81,9 @@
 	"categoryWatchState": "Domyślny stan oglądania kategorii",
 	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Nie obserwowane",
-	"categoryWatchState.ignoring": "Ignorowane"
+	"categoryWatchState.ignoring": "Ignorowane",
+	"restrictions-new": "Restrykcje dla nowych użytkowników",
+	"restrictions.seconds-between-new": "Liczba sekund pomiędzy wpisami dla nowych użytkowników",
+	"restrictions.rep-threshold": "Próg reputacji wymagany do zdjęcia restrykcji",
+	"restrictions.seconds-before-new": "Sekundy, zanim nowy użytkownik może wykonać swój pierwszy post"
 }
