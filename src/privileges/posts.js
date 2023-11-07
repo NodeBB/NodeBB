@@ -139,7 +139,7 @@ privsPosts.canEdit = async function (pid, uid) {
 	if (
 		!results.isMod &&
 		meta.config.newbiePostEditDuration > 0 &&
-		meta.config.newbiePostDelayThreshold > results.userData.reputation &&
+		meta.config.newbieReputationThreshold > results.userData.reputation &&
 		Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
 	) {
 		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };

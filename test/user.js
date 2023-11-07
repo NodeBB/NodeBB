@@ -317,7 +317,7 @@ describe('User', () => {
 
 		it('should error when a new user posts if the last post time is 10 < 30 seconds', (done) => {
 			meta.config.newbiePostDelay = 30;
-			meta.config.newbiePostDelayThreshold = 3;
+			meta.config.newbieReputationThreshold = 3;
 
 			User.setUserField(testUid, 'lastposttime', +new Date() - (20 * 1000), () => {
 				Topics.post({

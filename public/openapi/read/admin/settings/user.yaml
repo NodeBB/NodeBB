@@ -13,6 +13,10 @@ get:
                 properties:
                   title:
                     type: string
+                  groupsExemptFromNewUserRestrictions:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/GroupObject.yaml#/GroupDataObject
                   notificationSettings:
                     type: array
                     items:

@@ -20,7 +20,7 @@ async function rateLimitExceeded(caller, field) {
 		user.isPrivileged(caller.uid),
 		user.getUserField(caller.uid, 'reputation'),
 	]);
-	const newbie = !isPrivileged && meta.config.newbiePostDelayThreshold > reputation;
+	const newbie = !isPrivileged && meta.config.newbieReputationThreshold > reputation;
 	const delay = newbie ? meta.config.newbieChatMessageDelay : meta.config.chatMessageDelay;
 	session[field] = session[field] || 0;
 

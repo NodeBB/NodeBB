@@ -218,8 +218,8 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:restrictions-new]]</h5>
 
 				<div class="mb-3">
-					<label class="form-label" for="newbiePostDelayThreshold">[[admin/settings/user:restrictions.rep-threshold]]</label>
-					<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+					<label class="form-label" for="newbieReputationThreshold">[[admin/settings/user:restrictions.rep-threshold]]</label>
+					<input id="newbieReputationThreshold" type="text" class="form-control" value="3" data-field="newbieReputationThreshold">
 				</div>
 
 				<div class="mb-3">
@@ -241,6 +241,16 @@
 					<label class="form-label" for="newbieChatMessageDelay">[[admin/settings/user:restrictions.milliseconds-between-messages]]</label>
 					<input id="newbieChatMessageDelay" type="text" class="form-control" data-field="newbieChatMessageDelay">
 				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="groupsExemptFromNewUserRestrictions">[[admin/settings/user:restrictions.groups-exempt-from-new-user-restrictions]]</label>
+					<select id="groupsExemptFromNewUserRestrictions" class="form-select" multiple data-field="groupsExemptFromNewUserRestrictions">
+						{{{ each groupsExemptFromNewUserRestrictions }}}
+						<option value="{groupsExemptFromNewUserRestrictions.displayName}">{groupsExemptFromNewUserRestrictions.displayName}</option>
+						{{{ end }}}
+					</select>
+				</div>
+
 			</div>
 
 			<hr/>
