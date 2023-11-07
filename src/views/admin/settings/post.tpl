@@ -120,33 +120,6 @@
 
 			<hr/>
 
-			<!-- new user restrictions -->
-			<div id="new-user-restrictions" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:restrictions-new]]</h5>
-
-				<div class="mb-3">
-					<label class="form-label" for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
-					<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label" for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
-					<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label" for="initialPostDelay">[[admin/settings/post:restrictions.seconds-before-new]]</label>
-					<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label" for="newbiePostEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
-					<input id="newbiePostEditDuration" type="text" class="form-control" value="120" data-field="newbiePostEditDuration">
-				</div>
-			</div>
-
-			<hr/>
-
 			<!-- post queue settings -->
 			<div id="post-queue" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:post-queue]]</h5>

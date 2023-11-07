@@ -213,6 +213,38 @@
 
 			<hr/>
 
+			<!-- new user restrictions -->
+			<div id="new-user-restrictions" class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:restrictions-new]]</h5>
+
+				<div class="mb-3">
+					<label class="form-label" for="newbiePostDelayThreshold">[[admin/settings/user:restrictions.rep-threshold]]</label>
+					<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="newbiePostDelay">[[admin/settings/user:restrictions.seconds-between-new]]</label>
+					<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="initialPostDelay">[[admin/settings/user:restrictions.seconds-before-new]]</label>
+					<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="newbiePostEditDuration">[[admin/settings/user:restrictions.seconds-edit-after-new]]</label>
+					<input id="newbiePostEditDuration" type="text" class="form-control" value="120" data-field="newbiePostEditDuration">
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="newbieChatMessageDelay">[[admin/settings/user:restrictions.milliseconds-between-messages]]</label>
+					<input id="newbieChatMessageDelay" type="text" class="form-control" data-field="newbieChatMessageDelay">
+				</div>
+			</div>
+
+			<hr/>
+
 			<div id="guest-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/guest:guest-settings]]</h5>
 
