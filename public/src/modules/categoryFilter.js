@@ -8,7 +8,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			return;
 		}
 		options = options || {};
-		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
 		options.template = options.template || 'partials/category/filter-dropdown-left';
 
 		hooks.fire('action:category.filter.options', { el: el, options: options });
