@@ -58,7 +58,7 @@
     "user-restored-topic-on": "%1 đã khôi phục chủ đề này trên %2",
     "user-moved-topic-from-ago": "%1 đã chuyển chủ đề này từ %2 %3",
     "user-moved-topic-from-on": "%1 đã chuyển chủ đề này từ %2 trên %3",
-    "user-queued-post-ago": "%1 <a href=\"%2\">đã xếp hàng</a> bài đăng để được phê duyệt %3",
+    "user-queued-post-ago": "%1 <a href=\"%2\">đã xếp hàng</a> bài đăng để phê duyệt %3",
     "user-queued-post-on": "%1 <a href=\"%2\">queued</a> post for approval on %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">referenced</a> this topic %3",
     "user-referenced-topic-on": "%1 <a href=\"%2\">referenced</a> this topic on %3",
