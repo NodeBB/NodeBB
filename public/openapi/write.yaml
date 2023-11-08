@@ -218,14 +218,16 @@ paths:
     $ref: 'write/admin/analytics.yaml'
   /admin/analytics/{set}:
     $ref: 'write/admin/analytics/set.yaml'
-  /admin/chats/{roomId}:
-    $ref: 'write/admin/chats/roomId.yaml'
   /admin/tokens:
     $ref: 'write/admin/tokens.yaml'
   /admin/tokens/{token}:
     $ref: 'write/admin/tokens/token.yaml'
   /admin/tokens/{token}/roll:
     $ref: 'write/admin/tokens/token/roll.yaml'
+  /admin/chats/{roomId}:
+    $ref: 'write/admin/chats/roomId.yaml'
+  /admin/groups:
+    $ref: 'write/admin/groups.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:

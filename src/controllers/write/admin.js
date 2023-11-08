@@ -78,3 +78,7 @@ Admin.chats.deleteRoom = async (req, res) => {
 	});
 	helpers.formatApiResponse(200, res);
 };
+
+Admin.listGroups = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.admin.listGroups());
+};

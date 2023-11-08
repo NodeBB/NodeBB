@@ -12,7 +12,12 @@ define('forum/chats/manage', [
 		buttonEl.on('click', async function () {
 			let groups = [];
 			if (app.user.isAdmin) {
-				groups = await socket.emit('groups.getChatGroups', {});
+				({ groups } = await api.get('/admin/groups'));
+				groups.sort((a, b) => b.system - a.system).map((g) => {
+					const { name, displayName } = g;
+					return { name, displayName };
+				});
+
 				if (Array.isArray(ajaxify.data.groups)) {
 					groups.forEach((g) => {
 						g.selected = ajaxify.data.groups.includes(g.name);

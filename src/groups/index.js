@@ -84,9 +84,19 @@ Groups.getGroupsBySort = async function (sort, start, stop) {
 	return await Groups.getGroupsFromSet(set, start, stop);
 };
 
-Groups.getNonPrivilegeGroups = async function (set, start, stop) {
+Groups.getNonPrivilegeGroups = async function (set, start, stop, flags) {
+	if (!flags) {
+		flags = {
+			ephemeral: true,
+		};
+	}
+
 	let groupNames = await db.getSortedSetRevRange(set, start, stop);
-	groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
+	groupNames = groupNames.filter(groupName => !Groups.isPrivilegeGroup(groupName));
+	if (flags.ephemeral) {
+		groupNames = groupNames.concat(Groups.ephemeralGroups);
+	}
+
 	const groupsData = await Groups.getGroupsData(groupNames);
 	return groupsData.filter(Boolean);
 };

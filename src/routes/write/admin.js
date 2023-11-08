@@ -23,5 +23,7 @@ module.exports = function () {
 
 	setupApiRoute(router, 'delete', '/chats/:roomId', [...middlewares, middleware.assert.room], controllers.write.admin.chats.deleteRoom);
 
+	setupApiRoute(router, 'get', '/groups', [...middlewares], controllers.write.admin.listGroups);
+
 	return router;
 };
