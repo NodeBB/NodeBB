@@ -1,0 +1,22 @@
+get:
+  tags:
+    - admin
+  summary: list all groups
+  description: This operation returns a full list of user groups, including hidden groups.
+  responses:
+    '200':
+      description: user groups successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/GroupObject.yaml#/GroupDataObject
