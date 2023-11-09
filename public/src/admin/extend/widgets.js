@@ -36,13 +36,13 @@ define('admin/extend/widgets', [
 			$(this).addClass('hidden');
 			$('#show-drafts').removeClass('hidden');
 			$('[component="drafts-container"]').addClass('hidden');
-			$('[component="widgets-container"]').addClass('col-12').removeClass('col-6');
+			$('[component="widgets-container"]').addClass('col-md-12').removeClass('col-md-6');
 		});
 		$('#show-drafts').on('click', function () {
 			$(this).addClass('hidden');
 			$('#hide-drafts').removeClass('hidden');
 			$('[component="drafts-container"]').removeClass('hidden');
-			$('[component="widgets-container"]').addClass('col-6').removeClass('col-12');
+			$('[component="widgets-container"]').addClass('col-md-6').removeClass('col-md-12');
 		});
 	};
 
