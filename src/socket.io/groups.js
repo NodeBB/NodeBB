@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * v4 note — all socket methods here have been deprecated and can be removed for v4
+ *           EXCEPT socketGroups.cover.*
+ */
+
 const groups = require('../groups');
 const user = require('../user');
 const utils = require('../utils');
