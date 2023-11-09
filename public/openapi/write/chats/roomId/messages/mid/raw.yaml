@@ -1,0 +1,35 @@
+get:
+  tags:
+    - chats
+  summary: get raw message content
+  description: This operation retrieves a message's raw markdown (or otherwise) content.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: string
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: string
+      required: true
+      description: a valid chat message id
+      example: 1
+  responses:
+    '200':
+      description: Chat message raw content retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  content:
+                    type: string

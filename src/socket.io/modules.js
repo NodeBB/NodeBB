@@ -11,6 +11,9 @@ const plugins = require('../plugins');
 const privileges = require('../privileges');
 const groups = require('../groups');
 
+const api = require('../api');
+const sockets = require('.');
+
 const SocketModules = module.exports;
 
 SocketModules.chats = {};
@@ -19,21 +22,19 @@ SocketModules.settings = {};
 /* Chat */
 
 SocketModules.chats.getRaw = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/:mid/raw');
+
 	if (!data || !data.hasOwnProperty('mid')) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const roomId = await Messaging.getMessageField(data.mid, 'roomId');
-	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
-		user.isAdministrator(socket.uid),
-		Messaging.canViewMessage(data.mid, roomId, socket.uid),
-		Messaging.isUserInRoom(socket.uid, roomId),
-	]);
 
-	if (!isAdmin && (!inRoom || !canViewMessage)) {
-		throw new Error('[[error:not-allowed]]');
-	}
+	const { content } = await api.chats.getRawMessage(socket, {
+		mid: data.mid,
+		roomId,
+	});
 
-	return await Messaging.getMessageField(data.mid, 'content');
+	return content;
 };
 
 SocketModules.chats.isDnD = async function (socket, uid) {
