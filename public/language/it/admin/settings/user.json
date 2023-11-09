@@ -82,11 +82,11 @@
 	"categoryWatchState.tracking": "Tracciamento",
 	"categoryWatchState.notwatching": "Non seguito",
 	"categoryWatchState.ignoring": "Ignorato",
-	"restrictions-new": "New User Restrictions",
-	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
-	"restrictions.seconds-between-new": "Seconds between posts for new users",
-	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
-	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
-	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions-new": "Restrizioni per i nuovi utenti",
+	"restrictions.rep-threshold": "Soglia di reputazione prima dell'abolizione delle restrizioni",
+	"restrictions.seconds-between-new": "Secondi tra i post per i nuovi utenti",
+	"restrictions.seconds-before-new": "Secondi prima che un nuovo utente possa pubblicare il suo primo post",
+	"restrictions.seconds-edit-after-new": "Numero di secondi per cui un post rimane modificabile per i nuovi utenti (impostare a 0 per disabilitarlo)",
+	"restrictions.milliseconds-between-messages": "Tempo tra i messaggi di chat per i nuovi utenti (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Seleziona i gruppi che devono essere esenti dalle restrizioni dei nuovi utente"
 }
