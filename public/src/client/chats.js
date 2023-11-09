@@ -106,7 +106,7 @@ define('forum/chats', [
 		Chats.addTextareaResizeHandler(mainWrapper);
 		Chats.addTypingHandler(mainWrapper, roomId);
 		Chats.addIPHandler(mainWrapper);
-		Chats.addCopyLinkHandler(mainWrapper);
+		Chats.addCopyTextLinkHandler(mainWrapper);
 		Chats.createAutoComplete(roomId, $('[component="chat/input"]'));
 		Chats.addUploadHandler({
 			dragDropAreaEl: $('.chats-full'),
@@ -168,7 +168,7 @@ define('forum/chats', [
 		});
 
 		containerEl.tooltip({
-			selector: '[component="chat/message/controls"] button',
+			selector: '[component="chat/message/controls"] > .btn-group > button',
 			placement: 'top',
 			container: '#content',
 			animation: false,
@@ -241,15 +241,28 @@ define('forum/chats', [
 			});
 	};
 
-	Chats.addCopyLinkHandler = function (container) {
+	Chats.addCopyTextLinkHandler = function (container) {
+		function doCopy(copyEl, text) {
+			navigator.clipboard.writeText(text);
+			copyEl.find('i').addClass('fa-check').removeClass('fa-link');
+			setTimeout(() => copyEl.find('i').removeClass('fa-check').addClass('fa-link'), 2000);
+		}
+
 		container.off('click', '[data-action="copy-link"]')
 			.on('click', '[data-action="copy-link"]', function () {
 				const copyEl = $(this);
 				const mid = copyEl.attr('data-mid');
 				if (mid) {
-					navigator.clipboard.writeText(`${window.location.origin}/message/${mid}`);
-					copyEl.find('i').addClass('fa-check').removeClass('fa-link');
-					setTimeout(() => copyEl.find('i').removeClass('fa-check').addClass('fa-link'), 2000);
+					doCopy(copyEl, `${window.location.origin}/message/${mid}`);
+				}
+			});
+
+		container.off('click', '[data-action="copy-text"]')
+			.on('click', '[data-action="copy-text"]', function () {
+				const copyEl = $(this);
+				const messageEl = copyEl.parents('[data-mid]');
+				if (messageEl.length) {
+					doCopy(copyEl, messageEl.find('[component="chat/message/body"]').text().trim());
 				}
 			});
 	};
