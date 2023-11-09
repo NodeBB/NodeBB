@@ -277,6 +277,21 @@ chatsAPI.getMessage = async (caller, { mid, roomId }) => {
 	return messages.pop();
 };
 
+chatsAPI.getRawMessage = async (caller, { mid, roomId }) => {
+	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		messaging.canViewMessage(mid, roomId, caller.uid),
+		messaging.isUserInRoom(caller.uid, roomId),
+	]);
+
+	if (!isAdmin && (!inRoom || !canViewMessage)) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
+	const content = await messaging.getMessageField(mid, 'content');
+	return { content };
+};
+
 chatsAPI.editMessage = async (caller, { mid, roomId, message }) => {
 	await messaging.canEdit(mid, caller.uid);
 	await messaging.editMessage(caller.uid, mid, roomId, message);

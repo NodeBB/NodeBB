@@ -196,7 +196,7 @@ define('forum/chats/messages', [
 	};
 
 	messages.prepEdit = async function (msgEl, mid, roomId) {
-		const raw = await socket.emit('modules.chats.getRaw', { mid: mid, roomId: roomId });
+		const { content: raw } = await api.get(`/chats/${roomId}/messages/${mid}/raw`);
 		const editEl = await app.parseAndTranslate('partials/chats/edit-message', {
 			rawContent: raw,
 		});
