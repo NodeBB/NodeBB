@@ -7,7 +7,7 @@ const utils = require('../utils');
 const rewards = module.exports;
 
 rewards.save = async function (data) {
-	async function save(data) {
+	await Promise.all(data.map(async (data, index) => {
 		if (!Object.keys(data.rewards).length) {
 			return;
 		}
@@ -17,19 +17,17 @@ rewards.save = async function (data) {
 			data.id = await db.incrObjectField('global', 'rewards:id');
 		}
 		await rewards.delete(data);
-		await db.setAdd('rewards:list', data.id);
+		await db.sortedSetAdd('rewards:list', index, data.id);
 		await db.setObject(`rewards:id:${data.id}`, data);
 		await db.setObject(`rewards:id:${data.id}:rewards`, rewardsData);
-	}
-
-	await Promise.all(data.map(data => save(data)));
+	}));
 	await saveConditions(data);
 	return data;
 };
 
 rewards.delete = async function (data) {
 	await Promise.all([
-		db.setRemove('rewards:list', data.id),
+		db.sortedSetRemove('rewards:list', data.id),
 		db.delete(`rewards:id:${data.id}`),
 		db.delete(`rewards:id:${data.id}:rewards`),
 	]);
@@ -61,7 +59,8 @@ async function saveConditions(data) {
 }
 
 async function getActiveRewards() {
-	async function load(id) {
+	const rewardsList = await db.getSortedSetRange('rewards:list', 0, -1);
+	const rewardData = await Promise.all(rewardsList.map(async (id) => {
 		const [main, rewards] = await Promise.all([
 			db.getObject(`rewards:id:${id}`),
 			db.getObject(`rewards:id:${id}:rewards`),
@@ -71,11 +70,7 @@ async function getActiveRewards() {
 			main.rewards = rewards;
 		}
 		return main;
-	}
-
-	const rewardsList = await db.getSetMembers('rewards:list');
-	rewardsList.sort((a, b) => a - b);
-	const rewardData = await Promise.all(rewardsList.map(id => load(id)));
+	}));
 	return rewardData.filter(Boolean);
 }
 
