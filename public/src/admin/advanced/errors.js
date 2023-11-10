@@ -92,30 +92,29 @@ function setupCharts() {
 			],
 		},
 	};
+	const chartOptions = {
+		responsive: true,
+		scales: {
+			y: {
+				beginAtZero: true,
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+		},
+	};
 
 	new Chart(notFoundCanvas.getContext('2d'), {
 		type: 'line',
 		data: data['not-found'],
-		options: {
-			responsive: true,
-			scales: {
-				y: {
-					beginAtZero: true,
-				},
-			},
-		},
+		options: chartOptions,
 	});
 
 	new Chart(tooBusyCanvas.getContext('2d'), {
 		type: 'line',
 		data: data.toobusy,
-		options: {
-			responsive: true,
-			scales: {
-				y: {
-					beginAtZero: true,
-				},
-			},
-		},
+		options: chartOptions,
 	});
 }
