@@ -15,7 +15,7 @@ services:
       - ./.docker:/opt/config
       - ./install/docker/setup.json:/usr/src/app/setup.json
   mongo:
-    image: "mongo:6-jammy"
+    image: "mongo:7-jammy"
     restart: unless-stopped
     expose:
       - "27017"
@@ -43,7 +43,7 @@ services:
     profiles:
       - postgres
   redis:
-    image: redis:7.2.1-alpine
+    image: redis:7.2.3-alpine
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes", "--loglevel", "warning"]
     # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF
