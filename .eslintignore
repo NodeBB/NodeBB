@@ -18,3 +18,4 @@ logs/
 .eslintrc
 test/files
 *.min.js
+install/docker/
