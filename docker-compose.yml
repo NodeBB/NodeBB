@@ -15,7 +15,7 @@ services:
       - ./.docker:/opt/config
       - ./install/docker/setup.json:/usr/src/app/setup.json
   mongo:
-    image: "mongo:6-jammy"
+    image: "mongo:7-jammy"
     restart: unless-stopped
     expose:
       - "27017"
