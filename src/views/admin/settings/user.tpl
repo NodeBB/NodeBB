@@ -339,7 +339,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="categoryWatchState">[[admin/settings/user:categoryWatchState]]</label>
 					<select id="categoryWatchState" class="form-select" data-field="categoryWatchState">
-						<option value="tracking">[[admin/settings/user:categoryWatchState.watching]]</option>
+						<option value="tracking">[[admin/settings/user:categoryWatchState.tracking]]</option>
 						<option value="notwatching">[[admin/settings/user:categoryWatchState.notwatching]]</option>
 						<option value="ignoring">[[admin/settings/user:categoryWatchState.ignoring]]</option>
 					</select>
