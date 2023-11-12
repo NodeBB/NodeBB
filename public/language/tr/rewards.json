@@ -1,6 +1,6 @@
 {
-	"awarded-x-reputation": "You have been awarded <strong>%1</strong> reputation",
-	"awarded-group-membership": "You have been added to the group <strong>%1</strong>",
+	"awarded-x-reputation": "<strong>%1</strong> saygınlık puanı ile ödüllendirildiniz",
+	"awarded-group-membership": "Şu gruba eklendiniz: <strong>%1</strong>",
 
 	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",
 	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Post Count %1 %2)</span>",
