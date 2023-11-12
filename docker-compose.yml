@@ -1,24 +1,55 @@
-version: '3.5'
+version: '3.8'
 
 services:
-  node:
+  nodebb:
     build: .
     restart: unless-stopped
-    depends_on:
-      - db
-    expose:
-      - 4567 # use a reverse proxy like Traefik
-
-  db:
-    image: mongo:bionic
+    ports:
+      - "4567:4567/tcp" # comment this out if you don't want to expose NodeBB to the host, or change the first number to any port you want
+    # uncomment if you want to use another container as a reverse proxy
+    # expose:
+    #   - 4567
+    volumes:
+      - ./.docker/build:/usr/src/app/build
+      - ./.docker/public/uploads:/usr/src/app/public/uploads
+      - ./.docker:/opt/config
+      - ./install/docker/setup.json:/usr/src/app/setup.json
+  mongo:
+    image: "mongo:6-jammy"
     restart: unless-stopped
     expose:
-      - 27017
+      - "27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: nodebb
+      MONGO_INITDB_ROOT_PASSWORD: nodebb
+      MONGO_INITDB_DATABASE: nodebb
     volumes:
-      - mongo:/data/db
-
-volumes:
-  mongo:
+      - ./.docker/database/mongo/config:/etc/mongo
+      - ./.docker/database/mongo/data:/data/db
+      - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
+    profiles:
+      - mongo
+  postgres:
+    image: postgres:16.0-alpine
+    restart: unless-stopped
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: nodebb
+      POSTGRES_PASSWORD: nodebb
+      POSTGRES_DB: nodebb
+    volumes:
+      - ./.docker/database/postgresql/data:/var/lib/postgresql/data
+    profiles:
+      - postgres
+  redis:
+    image: redis:7.2.1-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--loglevel", "warning"]
+    # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF
+    expose:
+      - "6379"
+    volumes:
+      - ./.docker/database/redis:/data
+    profiles:
+      - redis

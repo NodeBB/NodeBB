@@ -46,7 +46,8 @@ NodeBB requires the following software to be installed:
 
 ## Installation
 
-[Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os)
+[Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os).
+If installing via the cloud (or using Docker), [please see cloud-based installation documentation](https://docs.nodebb.org/installing/cloud/).
 
 ## Securing NodeBB
 
@@ -58,6 +59,7 @@ It is important to ensure that your NodeBB and database servers are secured. Bea
     * Familiarise yourself with [Redis Security](http://redis.io/topics/security)
 2. Use `iptables` to secure your server from unintended open ports. In Ubuntu, `ufw` provides a friendlier interface to working with `iptables`.
     * e.g. If your NodeBB is proxied, no ports should be open except 80 (and possibly 22, for SSH access)
+
 
 ## Upgrading NodeBB
 

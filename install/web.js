@@ -174,6 +174,8 @@ function install(req, res) {
 	const database = nconf.get('database') || req.body.database || 'mongo';
 	const setupEnvVars = {
 		...process.env,
+		CONFIG: nconf.get('config'),
+		NODEBB_CONFIG: nconf.get('config'),
 		NODEBB_URL: nconf.get('url') || req.body.url || (`${req.protocol}://${req.get('host')}`),
 		NODEBB_PORT: nconf.get('port') || 4567,
 		NODEBB_ADMIN_USERNAME: nconf.get('admin:username') || req.body['admin:username'],
