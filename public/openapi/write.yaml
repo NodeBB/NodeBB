@@ -68,6 +68,8 @@ paths:
     $ref: 'write/users/uid/status.yaml'
   /users/{uid}/status/{status}:
     $ref: 'write/users/uid/status/status.yaml'
+  /users/{uid}/chat:
+    $ref: 'write/users/uid/chat.yaml'
   /users/{uid}/settings:
     $ref: 'write/users/uid/settings.yaml'
   /users/{uid}/password:
