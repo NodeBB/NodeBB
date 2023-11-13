@@ -1,0 +1,24 @@
+head:
+  tags:
+    - users
+  summary: verify user status
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user whose status to check
+      example: 2
+    - in: path
+      name: status
+      schema:
+        type: string
+      required: true
+      description: status of the user to confirm
+      example: 'online'
+  responses:
+    '200':
+      description: user status is the value in path
+    '404':
+      description: user status is not the value in path

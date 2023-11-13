@@ -142,6 +142,11 @@ usersAPI.updateSettings = async function (caller, data) {
 	return await user.saveSettings(data.uid, payload);
 };
 
+usersAPI.getStatus = async (caller, { uid }) => {
+	const status = await db.getObjectField(`user:${uid}`, 'status');
+	return { status };
+};
+
 usersAPI.changePassword = async function (caller, data) {
 	await user.changePassword(caller.uid, Object.assign(data, { ip: caller.ip }));
 	await events.log({

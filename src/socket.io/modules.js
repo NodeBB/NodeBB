@@ -38,7 +38,9 @@ SocketModules.chats.getRaw = async function (socket, data) {
 };
 
 SocketModules.chats.isDnD = async function (socket, uid) {
-	const status = await db.getObjectField(`user:${uid}`, 'status');
+	sockets.warnDeprecated(socket, 'GET /api/v3/users/:uid/status OR HEAD /api/v3/users/:uid/status/:status');
+
+	const { status } = await api.users.getStatus(socket, { uid });
 	return status === 'dnd';
 };
 
