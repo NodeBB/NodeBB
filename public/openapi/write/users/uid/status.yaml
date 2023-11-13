@@ -1,0 +1,28 @@
+get:
+  tags:
+    - users
+  summary: get user status
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user whose status to check
+      example: 2
+  responses:
+    '200':
+      description: successfully retrieved user status
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ['online', 'offline', 'dnd', 'away']

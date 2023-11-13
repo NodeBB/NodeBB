@@ -64,11 +64,9 @@ define('chat', [
 		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
 			return alerts.error('[[error:cant-chat-with-yourself]]');
 		}
-		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
-			if (err) {
-				return alerts.error(err);
-			}
-			if (!isDnD) {
+
+		api.get(`/users/${touid}/status`).then(({ status }) => {
+			if (status !== 'dnd') {
 				return createChat();
 			}
 
@@ -77,7 +75,7 @@ define('chat', [
 					createChat();
 				}
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	module.loadChatsDropdown = function (chatsListEl) {

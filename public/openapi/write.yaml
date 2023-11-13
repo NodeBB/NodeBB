@@ -64,6 +64,10 @@ paths:
     $ref: 'write/users/uid/content.yaml'
   /users/{uid}/account:
     $ref: 'write/users/uid/account.yaml'
+  /users/{uid}/status:
+    $ref: 'write/users/uid/status.yaml'
+  /users/{uid}/status/{status}:
+    $ref: 'write/users/uid/status/status.yaml'
   /users/{uid}/settings:
     $ref: 'write/users/uid/settings.yaml'
   /users/{uid}/password:
