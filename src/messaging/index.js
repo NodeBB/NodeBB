@@ -173,7 +173,7 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
 	if (!ok) {
-		return null;
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);

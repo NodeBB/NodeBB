@@ -29,29 +29,25 @@ define('forum/chats/recent', ['alerts', 'api', 'chat'], function (alerts, api, c
 		});
 	};
 
-	function loadMoreRecentChats() {
+	async function loadMoreRecentChats() {
 		const recentChats = $('[component="chat/recent"]');
 		if (recentChats.attr('loading')) {
 			return;
 		}
 		recentChats.attr('loading', 1);
-		socket.emit('modules.chats.getRecentChats', {
+		app.get(`/chats`, {
 			uid: ajaxify.data.uid,
 			after: recentChats.attr('data-nextstart'),
-		}, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			if (data && data.rooms.length) {
-				onRecentChatsLoaded(data, function () {
+		}).then(({ rooms, nextStart }) => {
+			if (rooms.length) {
+				onRecentChatsLoaded({ rooms, nextStart }, function () {
 					recentChats.removeAttr('loading');
-					recentChats.attr('data-nextstart', data.nextStart);
+					recentChats.attr('data-nextstart', nextStart);
 				});
 			} else {
 				recentChats.removeAttr('loading');
 			}
-		});
+		}).catch(alerts.error);
 	}
 
 	function onRecentChatsLoaded(data, callback) {

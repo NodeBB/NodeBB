@@ -80,7 +80,7 @@ describe('Messaging Library', () => {
 		meta.configs.chatMessageDelay = chatMessageDelay;
 	});
 
-	describe('.canMessage()', () => {
+	describe('.canMessageUser()', () => {
 		it('should allow messages to be sent to an unrestricted user', (done) => {
 			Messaging.canMessageUser(mocks.users.baz.uid, mocks.users.herp.uid, (err) => {
 				assert.ifError(err);

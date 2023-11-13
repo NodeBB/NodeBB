@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -32,12 +33,14 @@ async function rateLimitExceeded(caller, field) {
 	return false;
 }
 
-chatsAPI.list = async (caller, { page, perPage }) => {
-	const start = Math.max(0, page - 1) * perPage;
-	const stop = start + perPage;
-	const { rooms } = await messaging.getRecentChats(caller.uid, caller.uid, start, stop);
+chatsAPI.list = async (caller, { uid, start, stop, page, perPage }) => {
+	if (!start && !stop && page) {
+		winston.warn('[api/chats] Sending `page` and `perPage` to .list() is deprecated in favour of `start` and `stop`. The deprecated parameters will be removed in v4.');
+		start = Math.max(0, page - 1) * perPage;
+		stop = start + perPage - 1;
+	}
 
-	return { rooms };
+	return await messaging.getRecentChats(caller.uid, uid || caller.uid, start, stop);
 };
 
 chatsAPI.create = async function (caller, data) {

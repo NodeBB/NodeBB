@@ -79,13 +79,10 @@ define('chat', [
 	};
 
 	module.loadChatsDropdown = function (chatsListEl) {
-		socket.emit('modules.chats.getRecentChats', {
+		api.get('/chats', {
 			uid: app.user.uid,
 			after: 0,
-		}, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
+		}).then((data) => {
 			const rooms = data.rooms.map((room) => {
 				if (room && room.teaser) {
 					room.teaser.timeagoLong = $.timeago(new Date(parseInt(room.teaser.timestamp, 10)));
@@ -123,15 +120,17 @@ define('chat', [
 				listEl.addEventListener('click', onMarkReadClicked);
 
 				$('[component="chats/mark-all-read"]').off('click').on('click', async function () {
-					await socket.emit('modules.chats.markAllRead');
-					if (ajaxify.data.template.chats) {
-						$('[component="chat/nav-wrapper"] [data-roomid]').each((i, el) => {
+					const chatEls = document.querySelectorAll('[component="chat/list"] [data-roomid]');
+					await Promise.all(Array.prototype.map.call(chatEls, async (el) => {
+						const roomId = el.getAttribute('data-roomid');
+						await api.del(`/chats/${roomId}/state`);
+						if (ajaxify.data.template.chats) {
 							module.markChatElUnread($(el), false);
-						});
-					}
+						}
+					}));
 				});
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	function onMarkReadClicked(e) {
