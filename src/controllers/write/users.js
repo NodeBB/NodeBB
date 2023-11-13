@@ -77,6 +77,10 @@ Users.checkStatus = async (req, res) => {
 	helpers.formatApiResponse(current === status ? 200 : 404, res);
 };
 
+Users.getPrivateRoomId = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.users.getPrivateRoomId(req, { ...req.params }));
+};
+
 Users.updateSettings = async (req, res) => {
 	const settings = await api.users.updateSettings(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res, settings);

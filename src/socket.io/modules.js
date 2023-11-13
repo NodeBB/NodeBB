@@ -71,10 +71,15 @@ SocketModules.chats.getRecentChats = async function (socket, data) {
 };
 
 SocketModules.chats.hasPrivateChat = async function (socket, uid) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/users/:uid/chat');
+
 	if (socket.uid <= 0 || uid <= 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await Messaging.hasPrivateChat(socket.uid, uid);
+
+	// despite the `has` prefix, this method actually did return the roomId.
+	const { roomId } = await api.users.getPrivateRoomId(socket, { uid });
+	return roomId;
 };
 
 SocketModules.chats.getIP = async function (socket, mid) {

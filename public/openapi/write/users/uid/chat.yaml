@@ -1,0 +1,27 @@
+get:
+  tags:
+    - users
+  summary: get chat room
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to query
+      example: 2
+  responses:
+    '200':
+      description: successfully retrieved private chat room with user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  roomId:
+                    type: number
