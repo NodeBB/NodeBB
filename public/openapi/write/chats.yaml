@@ -5,16 +5,28 @@ get:
   description: This operation lists recently used chat rooms that the calling user is a part of
   parameters:
     - in: query
+      name: start
+      schema:
+        type: number
+      description: >
+        The start index from which chat rooms will be displayed.
+        e.g. `start` of `10` with `perPage` of 10 would result in the 10th to 19th chat rooms being returned
+      example: 20
+    - in: query
       name: perPage
       schema:
         type: number
-      description: The number of chat rooms displayed per page
+      description: The number of chat rooms to be displayed per page
+      required: false
       example: 20
     - in: query
       name: page
       schema:
         type: number
-      description: The page number
+      description: >
+        ***Deprecated*** — The page number.
+
+        This parameter is supeceded by `start`, and will stop working in NodeBB v4.
       example: 1
   responses:
     '200':

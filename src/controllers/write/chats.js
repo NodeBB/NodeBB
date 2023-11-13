@@ -6,11 +6,22 @@ const helpers = require('../helpers');
 const Chats = module.exports;
 
 Chats.list = async (req, res) => {
-	const page = (isFinite(req.query.page) && parseInt(req.query.page, 10)) || 1;
-	const perPage = (isFinite(req.query.perPage) && parseInt(req.query.perPage, 10)) || 20;
-	const { rooms } = await api.chats.list(req, { page, perPage });
+	let stop;
+	let { page, perPage, start, uid } = req.query;
+	([page, perPage, start, uid] = [page, perPage, start, uid].map(value => isFinite(value) && parseInt(value, 10)));
+	page = page || 1;
+	perPage = perPage || 20;
 
-	helpers.formatApiResponse(200, res, { rooms });
+	// start supercedes page
+	if (start) {
+		stop = start + perPage - 1;
+	} else {
+		start = Math.max(0, page - 1) * perPage;
+		stop = start + perPage - 1;
+	}
+
+	const { rooms, nextStart } = await api.chats.list(req, { start, stop, uid });
+	helpers.formatApiResponse(200, res, { rooms, nextStart });
 };
 
 Chats.create = async (req, res) => {

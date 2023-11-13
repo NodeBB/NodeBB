@@ -45,22 +45,29 @@ SocketModules.chats.isDnD = async function (socket, uid) {
 };
 
 SocketModules.chats.canMessage = async function (socket, roomId) {
+	sockets.warnDeprecated(socket);
+
 	await Messaging.canMessageRoom(socket.uid, roomId);
 };
 
 SocketModules.chats.markAllRead = async function (socket) {
-	// no v3 method ?
+	sockets.warnDeprecated(socket);
+
 	await Messaging.markAllRead(socket.uid);
 	Messaging.pushUnreadCount(socket.uid);
 };
 
 SocketModules.chats.getRecentChats = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats');
+
 	if (!data || !utils.isNumber(data.after) || !utils.isNumber(data.uid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const start = parseInt(data.after, 10);
 	const stop = start + 9;
-	return await Messaging.getRecentChats(socket.uid, data.uid, start, stop);
+	const { uid } = data;
+
+	return api.chats.list(socket, { uid, start, stop });
 };
 
 SocketModules.chats.hasPrivateChat = async function (socket, uid) {
