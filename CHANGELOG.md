@@ -1,3 +1,49 @@
+#### v3.5.1 (2023-11-14)
+
+##### Chores
+
+*  up mentions (b1b3dcb6)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  update changelog for v3.5.0 (5d7c10f1)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### New Features
+
+*  closes #12123, allow setting hh:mm for pin expiry (1f800747)
+
+##### Bug Fixes
+
+*  update ajaxifyTimer logic to only drop the request if the URL is the same as the one it's already processing (dcb0c4db)
+*  closes #12156, missing data for privilege tables (21e59538)
+*  thumb width (46f6f9ef)
+*  closes #12126, fix language keys (668a355a)
+
 #### v3.5.0 (2023-10-25)
 
 ##### Chores
