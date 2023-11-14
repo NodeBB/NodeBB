@@ -8,6 +8,7 @@ const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
 const notifications = require('../notifications');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -293,6 +294,15 @@ chatsAPI.getRawMessage = async (caller, { mid, roomId }) => {
 
 	const content = await messaging.getMessageField(mid, 'content');
 	return { content };
+};
+
+chatsAPI.getIpAddress = async (caller, { mid }) => {
+	const allowed = await privileges.global.can('view:users:info', caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const ip = await messaging.getMessageField(mid, 'ip');
+	return { ip };
 };
 
 chatsAPI.editMessage = async (caller, { mid, roomId, message }) => {

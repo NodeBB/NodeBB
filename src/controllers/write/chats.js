@@ -139,6 +139,10 @@ Chats.messages.getRaw = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.chats.getRawMessage(req, { ...req.params }));
 };
 
+Chats.messages.getIpAddress = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.chats.getIpAddress(req, { ...req.params }));
+};
+
 Chats.messages.edit = async (req, res) => {
 	const { mid, roomId } = req.params;
 	const { message } = req.body;

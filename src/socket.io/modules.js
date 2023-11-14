@@ -83,11 +83,10 @@ SocketModules.chats.hasPrivateChat = async function (socket, uid) {
 };
 
 SocketModules.chats.getIP = async function (socket, mid) {
-	const allowed = await privileges.global.can('view:users:info', socket.uid);
-	if (!allowed) {
-		throw new Error('[[error:no-privilege]]');
-	}
-	return await Messaging.getMessageField(mid, 'ip');
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/:mid/ip');
+
+	const { ip } = await api.chats.getIpAddress(socket, { mid });
+	return ip;
 };
 
 SocketModules.chats.getUnreadCount = async function (socket) {
