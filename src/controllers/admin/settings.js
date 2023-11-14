@@ -49,7 +49,7 @@ settingsController.user = async (req, res) => {
 	const notificationTypes = await notifications.getAllNotificationTypes();
 	const notificationSettings = notificationTypes.map(type => ({
 		name: type,
-		label: `[[notifications:${type}]]`,
+		label: `[[notifications:${type.replace(/_/g, '-')}]]`,
 	}));
 	res.render('admin/settings/user', {
 		title: '[[admin/menu:settings/user]]',

@@ -413,8 +413,10 @@ define('admin/manage/privileges', [
 			return cb();
 		}
 		// Generate data for new row
-		const privilegeSet = ajaxify.data.privileges.keys.groups.reduce(function (memo, cur) {
+		const typesMap = {};
+		const privilegeSet = ajaxify.data.privileges.keys.groups.reduce(function (memo, cur, index) {
 			memo[cur] = false;
+			typesMap[cur] = ajaxify.data.privileges.labelData[index].type;
 			return memo;
 		}, {});
 
@@ -425,6 +427,7 @@ define('admin/manage/privileges', [
 						name: group,
 						nameEscaped: translator.escape(group),
 						privileges: privilegeSet,
+						types: typesMap,
 					},
 				],
 			},
@@ -434,7 +437,9 @@ define('admin/manage/privileges', [
 			tbodyEl.append(html.get(0));
 			Privileges.exposeAssumedPrivileges();
 			hightlightRowByDataAttr('data-group-name', group);
-			document.querySelector('.privilege-filters').querySelectorAll('button')[btnIdx].click();
+			if (btnIdx >= 0) {
+				document.querySelector('.privilege-filters').querySelectorAll('button')[btnIdx].click();
+			}
 			cb();
 		});
 	}
@@ -447,8 +452,10 @@ define('admin/manage/privileges', [
 			return cb();
 		}
 		// Generate data for new row
-		const privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur) {
+		const typesMap = {};
+		const privilegeSet = ajaxify.data.privileges.keys.users.reduce(function (memo, cur, index) {
 			memo[cur] = false;
+			typesMap[cur] = ajaxify.data.privileges.labelData[index].type;
 			return memo;
 		}, {});
 
@@ -463,6 +470,7 @@ define('admin/manage/privileges', [
 						'icon:text': user['icon:text'],
 						'icon:bgColor': user['icon:bgColor'],
 						privileges: privilegeSet,
+						types: typesMap,
 					},
 				],
 			},
@@ -473,7 +481,9 @@ define('admin/manage/privileges', [
 		tbodyEl[1].append(html.get(0));
 		Privileges.exposeAssumedPrivileges();
 		hightlightRowByDataAttr('data-uid', user.uid);
-		document.querySelectorAll('.privilege-filters')[1].querySelectorAll('button')[btnIdx].click();
+		if (btnIdx >= 0) {
+			document.querySelectorAll('.privilege-filters')[1].querySelectorAll('button')[btnIdx].click();
+		}
 		cb();
 	}
 

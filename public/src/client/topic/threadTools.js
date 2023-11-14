@@ -257,7 +257,6 @@ define('forum/topic/threadTools', [
 				title: '[[topic:thread-tools.pin]]',
 				message: html,
 				onEscape: true,
-				size: 'small',
 				buttons: {
 					cancel: {
 						label: '[[modules:bootbox.cancel]]',
@@ -267,19 +266,19 @@ define('forum/topic/threadTools', [
 						label: '[[global:save]]',
 						className: 'btn-primary',
 						callback: function () {
-							const expiryEl = modal.get(0).querySelector('#expiry');
-							let expiry = expiryEl.value;
-
+							const expiryDateEl = modal.get(0).querySelector('#expiry-date');
+							const expiryTimeEl = modal.get(0).querySelector('#expiry-time');
+							let expiryDate = expiryDateEl.value;
+							let expiryTime = expiryTimeEl.value;
 							// No expiry set
-							if (expiry === '') {
+							if (expiryDate === '' && expiryTime === '') {
 								return onSuccess();
 							}
-
-							// Expiration date set
-							expiry = new Date(expiry);
-
-							if (expiry && expiry.getTime() > Date.now()) {
-								body.expiry = expiry.getTime();
+							expiryDate = expiryDate || new Date().toDateString();
+							expiryTime = expiryTime || new Date().toTimeString();
+							const date = new Date(`${expiryDate} ${expiryTime}`);
+							if (date.getTime() > Date.now()) {
+								body.expiry = date.getTime();
 								onSuccess();
 							} else {
 								alerts.error('[[error:invalid-date]]');
