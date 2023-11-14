@@ -236,7 +236,7 @@ define('forum/chats', [
 					return;
 				}
 				const mid = ipEl.parents('[data-mid]').attr('data-mid');
-				ip = await socket.emit('modules.chats.getIP', mid);
+				({ ip } = await api.get(`/chats/${ajaxify.data.roomId}/messages/${mid}/ip`));
 				ipEl.text(ip).attr('data-ip', ip);
 			});
 	};
