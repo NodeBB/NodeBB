@@ -13,6 +13,8 @@ module.exports = function () {
 	setupApiRoute(router, 'get', '/', [...middlewares], controllers.write.chats.list);
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.create);
 
+	setupApiRoute(router, 'get', '/unread', [...middlewares], controllers.write.chats.getUnread);
+
 	setupApiRoute(router, 'head', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.exists);
 	setupApiRoute(router, 'get', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.get);
 	setupApiRoute(router, 'post', '/:roomId', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['message'])], controllers.write.chats.post);

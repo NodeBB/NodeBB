@@ -192,6 +192,8 @@ paths:
     $ref: 'write/posts/pid/replies.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
+  /chats/unread:
+    $ref: 'write/chats/unread.yaml'
   /chats/{roomId}:
     $ref: 'write/chats/roomId.yaml'
   /chats/{roomId}/state:

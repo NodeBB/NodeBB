@@ -29,6 +29,9 @@ Chats.create = async (req, res) => {
 	helpers.formatApiResponse(200, res, roomObj);
 };
 
+// currently only returns unread count, but open-ended for future additions if warranted.
+Chats.getUnread = async (req, res) => helpers.formatApiResponse(200, res, await api.chats.getUnread(req));
+
 Chats.exists = async (req, res) => {
 	// yes, this is fine. Room existence is checked via middleware :)
 	helpers.formatApiResponse(200, res);

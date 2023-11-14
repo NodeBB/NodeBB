@@ -79,6 +79,11 @@ chatsAPI.create = async function (caller, data) {
 	return await messaging.getRoomData(roomId);
 };
 
+chatsAPI.getUnread = async (caller) => {
+	const count = await messaging.getUnreadCount(caller.uid);
+	return { count };
+};
+
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
