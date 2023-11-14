@@ -90,7 +90,10 @@ SocketModules.chats.getIP = async function (socket, mid) {
 };
 
 SocketModules.chats.getUnreadCount = async function (socket) {
-	return await Messaging.getUnreadCount(socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/unread');
+
+	const { count } = await api.chats.getUnread(socket);
+	return count;
 };
 
 SocketModules.chats.enter = async function (socket, roomIds) {
