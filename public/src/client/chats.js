@@ -141,7 +141,7 @@ define('forum/chats', [
 							data.roomIds.push($(el).attr('data-roomid'));
 							data.scores.push(idx);
 						});
-						await socket.emit('modules.chats.sortPublicRooms', data);
+						await api.put('/chats/sort', data);
 					},
 				});
 			});

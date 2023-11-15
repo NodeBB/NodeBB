@@ -1,0 +1,33 @@
+put:
+  tags:
+    - chats
+  summary: sort public chat rooms
+  description: This operation sorts the publicly available chat rooms. This is a privileged function; only superadmins can call it.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            roomIds:
+              type: array
+              description: A list of room ids.
+              example: [1]
+            scores:
+              type: array
+              description: A list of sort orders associated with the passed-in `roomIds`
+              example: [0]
+  responses:
+    '200':
+      description: Public chat rooms successfully re-ordered.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
