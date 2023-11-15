@@ -1,0 +1,62 @@
+put:
+  tags:
+    - chats
+  summary: add owner to room
+  description: This operation adds a user as a room owner.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a valid user id
+      example: 4
+  responses:
+    '200':
+      description: user successfully added as room owner.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response: {}
+delete:
+  tags:
+    - chats
+  summary: remove owner from room
+  description: This operation removes a user as a room owner.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a valid user id
+      example: 4
+  responses:
+    '200':
+      description: user successfully removed as room owner.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response: {}
