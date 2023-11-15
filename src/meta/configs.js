@@ -178,7 +178,7 @@ async function processConfig(data) {
 	if (data.minimumUsernameLength > data.maximumUsernameLength) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
+	require('../social').postSharing = null;
 	await Promise.all([
 		saveRenderedCss(data),
 		getLogoSize(data),
