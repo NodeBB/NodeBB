@@ -232,15 +232,24 @@ module.exports = function (Messaging) {
 		return isArray ? result : result[0];
 	};
 
-	Messaging.toggleOwner = async (uid, roomId) => {
+	Messaging.toggleOwner = async (uid, roomId, state = null) => {
 		if (!(parseInt(uid, 10) > 0) || !roomId) {
-			return;
+			throw new Error('[[error:invalid-data]]');
 		}
+
 		const isOwner = await Messaging.isRoomOwner(uid, roomId);
-		if (isOwner) {
-			await db.sortedSetRemove(`chat:room:${roomId}:owners`, uid);
+		if (state !== null) {
+			if (state === isOwner) {
+				return false;
+			}
 		} else {
+			state = !isOwner;
+		}
+
+		if (state) {
 			await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), uid);
+		} else {
+			await db.sortedSetRemove(`chat:room:${roomId}:owners`, uid);
 		}
 	};
 
