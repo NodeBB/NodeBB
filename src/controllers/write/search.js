@@ -8,3 +8,8 @@ const Search = module.exports;
 Search.categories = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.search.categories(req, req.query));
 };
+
+Search.roomUsers = async (req, res) => {
+	const { query } = req.query;
+	helpers.formatApiResponse(200, res, await api.search.roomUsers(req, { query, ...req.params }));
+};

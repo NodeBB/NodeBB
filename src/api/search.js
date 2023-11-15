@@ -2,7 +2,9 @@
 
 const _ = require('lodash');
 
+const user = require('../user');
 const categories = require('../categories');
+const messaging = require('../messaging');
 const privileges = require('../privileges');
 const meta = require('../meta');
 const plugins = require('../plugins');
@@ -103,3 +105,50 @@ async function loadCids(uid, parentCid) {
 	await getCidsRecursive(pageCids);
 	return resultCids;
 }
+
+searchApi.roomUsers = async (caller, { query, roomId }) => {
+	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		messaging.isUserInRoom(caller.uid, roomId),
+		messaging.isRoomOwner(caller.uid, roomId),
+	]);
+
+	if (!isAdmin && !inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const results = await user.search({
+		query,
+		paginate: false,
+		hardCap: -1,
+		uid: caller.uid,
+	});
+
+	const { users } = results;
+	const foundUids = users.map(user => user && user.uid);
+	const isUidInRoom = _.zipObject(
+		foundUids,
+		await messaging.isUsersInRoom(foundUids, roomId)
+	);
+
+	const roomUsers = users.filter(user => isUidInRoom[user.uid]);
+	const isOwners = await messaging.isRoomOwner(roomUsers.map(u => u.uid), roomId);
+
+	roomUsers.forEach((user, index) => {
+		if (user) {
+			user.isOwner = isOwners[index];
+			user.canKick = isRoomOwner && (parseInt(user.uid, 10) !== parseInt(caller.uid, 10));
+		}
+	});
+
+	roomUsers.sort((a, b) => {
+		if (a.isOwner && !b.isOwner) {
+			return -1;
+		} else if (!a.isOwner && b.isOwner) {
+			return 1;
+		}
+		return 0;
+	});
+
+	return { users: roomUsers };
+};
