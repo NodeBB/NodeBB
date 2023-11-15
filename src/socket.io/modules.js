@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * v4 note — all methods here are deprecated and can be removed except for:
+ *   - SocketModules.chats.(enter|leave)(Public)?  => related to socket.io rooms
+ */
+
 const _ = require('lodash');
 const validator = require('validator');
 
@@ -8,7 +13,6 @@ const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
 const plugins = require('../plugins');
-const privileges = require('../privileges');
 const groups = require('../groups');
 
 const api = require('../api');
