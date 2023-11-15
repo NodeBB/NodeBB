@@ -147,15 +147,13 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 }
 
 SocketModules.chats.sortPublicRooms = async function (socket, data) {
-	if (!data || !Array.isArray(data.scores) || !Array.isArray(data.roomIds)) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/sort');
+
+	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (!isAdmin) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	await db.sortedSetAdd(`chat:rooms:public:order`, data.scores, data.roomIds);
-	require('../cache').del(`chat:rooms:public:order:all`);
+
+	await api.chats.sortPublicRooms(socket, data);
 };
 
 SocketModules.chats.searchMembers = async function (socket, data) {

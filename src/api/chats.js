@@ -84,6 +84,22 @@ chatsAPI.getUnread = async (caller) => {
 	return { count };
 };
 
+chatsAPI.sortPublicRooms = async (caller, { roomIds, scores }) => {
+	[roomIds, scores].forEach((arr) => {
+		if (!Array.isArray(arr) || !arr.every(value => isFinite(value))) {
+			throw new Error('[[error:invalid-data]]');
+		}
+	});
+
+	const isAdmin = await user.isAdministrator(caller.uid);
+	if (!isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await db.sortedSetAdd(`chat:rooms:public:order`, scores, roomIds);
+	require('../cache').del(`chat:rooms:public:order:all`);
+};
+
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {

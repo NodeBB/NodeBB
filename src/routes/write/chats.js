@@ -14,6 +14,7 @@ module.exports = function () {
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.create);
 
 	setupApiRoute(router, 'get', '/unread', [...middlewares], controllers.write.chats.getUnread);
+	setupApiRoute(router, 'put', '/sort', [...middlewares, middleware.checkRequired.bind(null, ['roomIds', 'scores'])], controllers.write.chats.sortPublicRooms);
 
 	setupApiRoute(router, 'head', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.exists);
 	setupApiRoute(router, 'get', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.get);
