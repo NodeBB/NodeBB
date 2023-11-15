@@ -112,11 +112,11 @@ define('forum/chats/manage', [
 	function addToggleOwnerHandler(roomId, modal) {
 		modal.on('click', '[data-action="toggleOwner"]', async function () {
 			const uid = parseInt(this.getAttribute('data-uid'), 10);
-			const $this = $(this);
-			await socket.emit('modules.chats.toggleOwner', { roomId: roomId, uid: uid });
-			$this.parents('[data-uid]')
-				.find('[component="chat/manage/user/owner/icon"]')
-				.toggleClass('hidden');
+			const iconEl = modal.get(0).querySelector(`[component="chat/manage/user/list"] > [data-uid="${uid}"] [component="chat/manage/user/owner/icon"]`);
+			const current = !iconEl.classList.contains('hidden');
+
+			await api[current ? 'del' : 'put'](`/chats/${roomId}/owners/${uid}`);
+			iconEl.classList.toggle('hidden');
 		});
 	}
 

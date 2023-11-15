@@ -170,20 +170,13 @@ SocketModules.chats.searchMembers = async function (socket, data) {
 };
 
 SocketModules.chats.toggleOwner = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/owners/:uid');
+
 	if (!data || !data.uid || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
-		user.isAdministrator(socket.uid),
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-		Messaging.isRoomOwner(socket.uid, data.roomId),
-	]);
-	if (!isAdmin && (!inRoom || !isRoomOwner)) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	await Messaging.toggleOwner(data.uid, data.roomId);
+	await api.chats.toggleOwner(socket, data);
 };
 
 SocketModules.chats.setNotificationSetting = async (socket, data) => {

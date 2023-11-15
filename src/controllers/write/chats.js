@@ -126,6 +126,12 @@ Chats.kickUser = async (req, res) => {
 	helpers.formatApiResponse(200, res, users);
 };
 
+Chats.toggleOwner = async (req, res) => {
+	const state = req.method === 'PUT';
+	await api.chats.toggleOwner(req, { state, ...req.params });
+	helpers.formatApiResponse(200, res);
+};
+
 Chats.messages = {};
 Chats.messages.list = async (req, res) => {
 	const uid = req.query.uid || req.uid;

@@ -269,6 +269,20 @@ chatsAPI.kick = async (caller, data) => {
 	return chatsAPI.users(caller, data);
 };
 
+chatsAPI.toggleOwner = async (caller, { roomId, uid, state }) => {
+	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		messaging.isUserInRoom(caller.uid, roomId),
+		messaging.isRoomOwner(caller.uid, roomId),
+	]);
+
+	if (!isAdmin && (!inRoom || !isRoomOwner)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await messaging.toggleOwner(uid, roomId, state);
+};
+
 chatsAPI.listMessages = async (caller, { uid, roomId, start, direction = null }) => {
 	const count = 50;
 	let stop = start + count - 1;
