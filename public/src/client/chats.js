@@ -184,8 +184,7 @@ define('forum/chats', [
 			const $this = $(this);
 			$this.find('i.fa-check').removeClass('hidden');
 			notifSettingEl.find('[component="chat/notification/setting/icon"]').attr('class', `fa ${$this.attr('data-icon')}`);
-			await socket.emit('modules.chats.setNotificationSetting', {
-				roomId: roomId,
+			await api.put(`/chats/${roomId}/watch`, {
 				value: $this.attr('data-value'),
 			});
 		});

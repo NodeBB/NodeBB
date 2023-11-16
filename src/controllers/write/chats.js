@@ -88,6 +88,13 @@ Chats.mark = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Chats.watch = async (req, res) => {
+	const state = req.method === 'DELETE' ? -1 : parseInt(req.body.value, 10) || -1;
+
+	await api.chats.watch(req, { state, ...req.params });
+	helpers.formatApiResponse(200, res);
+};
+
 Chats.users = async (req, res) => {
 	const { roomId } = req.params;
 	const start = parseInt(req.query.start, 10) || 0;
