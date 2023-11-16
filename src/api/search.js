@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 
+const db = require('../database');
 const user = require('../user');
 const categories = require('../categories');
 const messaging = require('../messaging');
@@ -151,4 +152,41 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 	});
 
 	return { users: roomUsers };
+};
+
+searchApi.roomMessages = async (caller, { query, roomId, uid }) => {
+	const [roomData, inRoom] = await Promise.all([
+		messaging.getRoomData(roomId),
+		messaging.isUserInRoom(caller.uid, roomId),
+	]);
+
+	if (!roomData) {
+		throw new Error('[[error:no-room]]');
+	}
+	if (!inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const { ids } = await plugins.hooks.fire('filter:messaging.searchMessages', {
+		content: query,
+		roomId: [roomId],
+		uid: [uid],
+		matchWords: 'any',
+		ids: [],
+	});
+
+	let userjoinTimestamp = 0;
+	if (!roomData.public) {
+		userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, caller.uid);
+	}
+	let messageData = await messaging.getMessagesData(ids, caller.uid, roomId, false);
+	messageData = messageData
+		.map((msg) => {
+			if (msg) {
+				msg.newSet = true;
+			}
+			return msg;
+		})
+		.filter(msg => msg && !msg.deleted && msg.timestamp > userjoinTimestamp);
+
+	return { messages: messageData };
 };

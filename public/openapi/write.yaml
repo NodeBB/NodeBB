@@ -232,6 +232,8 @@ paths:
     $ref: 'write/search/categories.yaml'
   /search/chats/{roomId}/users:
     $ref: 'write/search/chats/roomId/users.yaml'
+  /search/chats/{roomId}/messages:
+    $ref: 'write/search/chats/roomId/messages.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /admin/analytics:

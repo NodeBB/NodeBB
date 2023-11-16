@@ -189,40 +189,16 @@ SocketModules.chats.setNotificationSetting = async (socket, data) => {
 };
 
 SocketModules.chats.searchMessages = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/messages');
+
 	if (!data || !utils.isNumber(data.roomId) || !data.content) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [roomData, inRoom] = await Promise.all([
-		Messaging.getRoomData(data.roomId),
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-	]);
 
-	if (!roomData) {
-		throw new Error('[[error:no-room]]');
-	}
-	if (!inRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const { ids } = await plugins.hooks.fire('filter:messaging.searchMessages', {
-		content: data.content,
-		roomId: [data.roomId],
-		uid: [data.uid],
-		matchWords: 'any',
-		ids: [],
-	});
-
-	let userjoinTimestamp = 0;
-	if (!roomData.public) {
-		userjoinTimestamp = await db.sortedSetScore(`chat:room:${data.roomId}:uids`, socket.uid);
-	}
-	const messageData = await Messaging.getMessagesData(ids, socket.uid, data.roomId, false);
-	messageData.forEach((msg) => {
-		if (msg) {
-			msg.newSet = true;
-		}
-	});
-
-	return messageData.filter(msg => msg && !msg.deleted && msg.timestamp > userjoinTimestamp);
+	// parameter renamed; backwards compatibility
+	data.query = data.content;
+	delete data.content;
+	return await api.search.roomMessages(socket, data);
 };
 
 SocketModules.chats.loadPinnedMessages = async (socket, data) => {
