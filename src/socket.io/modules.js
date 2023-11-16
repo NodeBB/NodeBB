@@ -5,7 +5,6 @@
  *   - SocketModules.chats.(enter|leave)(Public)?  => related to socket.io rooms
  */
 
-const _ = require('lodash');
 const validator = require('validator');
 
 const db = require('../database');
