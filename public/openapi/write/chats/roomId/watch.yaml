@@ -1,0 +1,69 @@
+put:
+  tags:
+    - chats
+  summary: set chat room notification setting
+  description: >
+    This operation updates the chat room notification setting for the calling user.
+
+    N.B. The calling user must be in the chat room for this call to succeed.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            value:
+              type: number
+              example: 11
+          required:
+            - value
+  responses:
+    '200':
+      description: Chat room notification setting updated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response: {}
+delete:
+  tags:
+    - chats
+  summary: restore default chat room notification setting
+  description: >
+    This operation restores the default value for notifications for the calling user.
+
+    You can also call the `PUT` variant of this route, and pass in `-1` for `value`.
+    That would accomplish the same thing.
+
+    N.B. The calling user must be in the chat room for this call to succeed.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid room id
+      example: 1
+  responses:
+    '200':
+      description: Chat room notification setting updated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response: {}

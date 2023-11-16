@@ -198,6 +198,15 @@ chatsAPI.mark = async (caller, data) => {
 	messaging.pushUnreadCount(caller.uid);
 };
 
+chatsAPI.watch = async (caller, { roomId, state }) => {
+	const inRoom = await messaging.isUserInRoom(caller.uid, roomId);
+	if (!inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await messaging.setUserNotificationSetting(caller.uid, roomId, state);
+};
+
 chatsAPI.users = async (caller, data) => {
 	const start = data.hasOwnProperty('start') ? data.start : 0;
 	const stop = start + 39;
