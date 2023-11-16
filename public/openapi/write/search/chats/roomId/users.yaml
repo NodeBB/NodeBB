@@ -16,7 +16,7 @@ get:
       schema:
         type: string
       required: false
-      description: The keyword used in the category search
+      description: The keyword used in the user search
       example: 'admin'
   responses:
     '200':
