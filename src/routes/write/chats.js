@@ -36,6 +36,7 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:roomId/owners/:uid', [...middlewares, middleware.assert.room, middleware.assert.user], controllers.write.chats.toggleOwner);
 
 	setupApiRoute(router, 'get', '/:roomId/messages', [...middlewares, middleware.assert.room], controllers.write.chats.messages.list);
+	setupApiRoute(router, 'get', '/:roomId/messages/pinned', [...middlewares, middleware.assert.room], controllers.write.chats.messages.getPinned);
 	setupApiRoute(router, 'get', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.get);
 	setupApiRoute(router, 'put', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.edit);
 	setupApiRoute(router, 'post', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.restore);

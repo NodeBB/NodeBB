@@ -58,11 +58,8 @@ define('forum/chats/pinned-messages', ['api', 'alerts'], function (api, alerts) 
 	}
 
 	async function loadData(start) {
-		const data = await socket.emit('modules.chats.loadPinnedMessages', {
-			roomId: ajaxify.data.roomId,
-			start: start,
-		});
-		return data;
+		const { messages } = await api.get(`/chats/${ajaxify.data.roomId}/messages/pinned`, { start });
+		return messages;
 	}
 
 	pinnedMessages.pin = function (mid, roomId) {

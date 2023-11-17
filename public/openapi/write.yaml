@@ -210,6 +210,8 @@ paths:
     $ref: 'write/chats/roomId/owners/uid.yaml'
   /chats/{roomId}/messages:
     $ref: 'write/chats/roomId/messages.yaml'
+  /chats/{roomId}/messages/pinned:
+    $ref: 'write/chats/roomId/messages/pinned.yaml'
   /chats/{roomId}/messages/{mid}:
     $ref: 'write/chats/roomId/messages/mid.yaml'
   /chats/{roomId}/messages/{mid}/pin:
