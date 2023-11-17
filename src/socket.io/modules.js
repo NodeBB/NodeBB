@@ -202,16 +202,14 @@ SocketModules.chats.searchMessages = async (socket, data) => {
 };
 
 SocketModules.chats.loadPinnedMessages = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/pinned');
+
 	if (!data || !data.roomId || !utils.isNumber(data.start)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
-	if (!isInRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const start = parseInt(data.start, 10) || 0;
-	const pinnedMsgs = await Messaging.getPinnedMessages(data.roomId, socket.uid, start, start + 49);
-	return pinnedMsgs;
+
+	const { messages } = await api.chats.getPinnedMessages(socket, data);
+	return messages;
 };
 
 SocketModules.chats.typing = async (socket, data) => {

@@ -320,6 +320,16 @@ chatsAPI.listMessages = async (caller, { uid, roomId, start, direction = null })
 	return { messages };
 };
 
+chatsAPI.getPinnedMessages = async (caller, { start, roomId }) => {
+	start = parseInt(start, 10) || 0;
+	const isInRoom = await messaging.isUserInRoom(caller.uid, roomId);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const messages = await messaging.getPinnedMessages(roomId, caller.uid, start, start + 49);
+	return { messages };
+};
+
 chatsAPI.getMessage = async (caller, { mid, roomId }) => {
 	const messages = await messaging.getMessagesData([mid], caller.uid, roomId, false);
 	return messages.pop();
