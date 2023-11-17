@@ -213,19 +213,16 @@ SocketModules.chats.loadPinnedMessages = async (socket, data) => {
 };
 
 SocketModules.chats.typing = async (socket, data) => {
-	if (!data || !utils.isNumber(data.roomId) || typeof data.typing !== 'boolean') {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/:roomId/typing');
+
+	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
-	if (!isInRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	socket.to(`chat_room_${data.roomId}`).emit('event:chats.typing', {
-		uid: socket.uid,
-		roomId: data.roomId,
-		typing: data.typing,
-		username: validator.escape(String(data.username)),
-	});
+
+	// `username` is now inferred from caller uid
+	delete data.username;
+
+	await api.chats.toggleTyping(socket, data);
 };
 
 

@@ -27,6 +27,8 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:roomId/watch', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['value'])], controllers.write.chats.watch);
 	setupApiRoute(router, 'delete', '/:roomId/watch', [...middlewares, middleware.assert.room], controllers.write.chats.watch);
 
+	setupApiRoute(router, 'put', '/:roomId/typing', [...middlewares, middleware.assert.room], controllers.write.chats.toggleTyping);
+
 	setupApiRoute(router, 'get', '/:roomId/users', [...middlewares, middleware.assert.room], controllers.write.chats.users);
 	setupApiRoute(router, 'post', '/:roomId/users', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.invite);
 	setupApiRoute(router, 'delete', '/:roomId/users', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.kick);

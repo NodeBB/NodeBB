@@ -95,6 +95,13 @@ Chats.watch = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Chats.toggleTyping = async (req, res) => {
+	const { typing } = req.body;
+
+	await api.chats.toggleTyping(req, { typing, ...req.params });
+	helpers.formatApiResponse(200, res);
+};
+
 Chats.users = async (req, res) => {
 	const { roomId } = req.params;
 	const start = parseInt(req.query.start, 10) || 0;

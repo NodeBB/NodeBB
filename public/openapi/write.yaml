@@ -202,6 +202,8 @@ paths:
     $ref: 'write/chats/roomId/state.yaml'
   /chats/{roomId}/watch:
     $ref: 'write/chats/roomId/watch.yaml'
+  /chats/{roomId}/typing:
+    $ref: 'write/chats/roomId/typing.yaml'
   /chats/{roomId}/users:
     $ref: 'write/chats/roomId/users.yaml'
   /chats/{roomId}/users/{uid}:

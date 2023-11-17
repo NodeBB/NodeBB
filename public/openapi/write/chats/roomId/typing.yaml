@@ -1,0 +1,39 @@
+put:
+  tags:
+    - chats
+  summary: update typing state in chat room
+  description: >
+    This operation updates the typing state in a given chat room, so that other users in the room see that that user is typing.
+
+    N.B. The calling user must be in the chat room for this call to succeed.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            typing:
+              type: boolean
+              example: true
+          required:
+            - typing
+  responses:
+    '200':
+      description: Chat room typing state updated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response: {}

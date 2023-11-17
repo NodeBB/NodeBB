@@ -245,7 +245,7 @@ define('chat', [
 	};
 
 	module.onUserTyping = function (data) {
-		if (module.isFromBlockedUser(data.uid)) {
+		if (data.uid === app.user.uid || module.isFromBlockedUser(data.uid)) {
 			return;
 		}
 		const modal = module.getModal(data.roomId);
