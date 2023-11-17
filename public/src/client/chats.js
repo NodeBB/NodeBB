@@ -391,11 +391,7 @@ define('forum/chats', [
 	Chats.addTypingHandler = function (parent, roomId) {
 		const textarea = parent.find('[component="chat/input"]');
 		function emitTyping(typing) {
-			socket.emit('modules.chats.typing', {
-				roomId: roomId,
-				typing: typing,
-				username: app.user.username,
-			});
+			api.put(`/chats/${roomId}/typing`, { typing }).catch(alerts.error);
 		}
 
 		textarea.on('focus', () => textarea.val() && emitTyping(true));
@@ -744,7 +740,7 @@ define('forum/chats', [
 		});
 
 		socket.on('event:chats.typing', async (data) => {
-			if (chatModule.isFromBlockedUser(data.uid)) {
+			if (data.uid === app.user.uid || chatModule.isFromBlockedUser(data.uid)) {
 				return;
 			}
 			chatModule.updateTypingUserList($(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"]`), data);

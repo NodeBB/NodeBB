@@ -5,6 +5,8 @@ get:
   description: >
     This operation retrieves a list of pinned messages for a given chat room.
     This call will always return a maximum of 50 items, of which the result set can be offset based on the passed-in `start` parameter.
+
+    N.B. The calling user must be in the chat room for this call to succeed.
   parameters:
     - in: path
       name: roomId

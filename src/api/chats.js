@@ -10,7 +10,9 @@ const messaging = require('../messaging');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
+const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
@@ -205,6 +207,27 @@ chatsAPI.watch = async (caller, { roomId, state }) => {
 	}
 
 	await messaging.setUserNotificationSetting(caller.uid, roomId, state);
+};
+
+chatsAPI.toggleTyping = async (caller, { roomId, typing }) => {
+	if (!utils.isNumber(roomId) || typeof typing !== 'boolean') {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const [isInRoom, username] = await Promise.all([
+		messaging.isUserInRoom(caller.uid, roomId),
+		user.getUserField(caller.uid, 'username'),
+	]);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	websockets.in(`chat_room_${roomId}`).emit('event:chats.typing', {
+		uid: caller.uid,
+		roomId,
+		typing,
+		username,
+	});
 };
 
 chatsAPI.users = async (caller, data) => {
