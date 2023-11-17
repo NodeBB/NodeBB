@@ -1,3 +1,17 @@
+{{{ if isAdmin }}}
+{{{ if !enabled }}}
+<div class="alert alert-info">
+	<p>[[post-queue:enabling-help, {config.relative_path}/admin/settings/post#post-queue]]</p>
+</div>
+{{{ end }}}
+{{{ else }}}
+<div>
+	<p class="lead">[[post-queue:public-intro]]</p>
+	<p>[[post-queue:public-description]]</p>
+	<hr />
+</div>
+{{{ end }}}
+
 {{{ if (!singlePost && posts.length) }}}
 <div class="btn-toolbar justify-content-end">
 	<div class="me-2">
@@ -28,18 +42,19 @@
 <div class="row">
 	<div class="col-12">
 		<div class="post-queue preventSlideout posts-list">
-			{{{ if (!posts.length && isAdmin) }}}
-			{{{ if !singlePost }}}
-			<div class="alert alert-info">
-				<p>[[post-queue:no-queued-posts]]</p>
-				{{{ if !enabled }}}<p>[[post-queue:enabling-help, {config.relative_path}/admin/settings/post#post-queue]]</p>{{{ end }}}
-			</div>
-			{{{ else }}}
-			<div class="alert alert-info d-flex align-items-center">
-				<p class="mb-0 me-auto">[[post-queue:no-single-post]]</p>
-				<a class="btn btn-sm btn-primary" href=".">[[post-queue:back-to-list]]</a>
-			</div>
-			{{{ end }}}
+			{{{ if !posts.length }}}
+				{{{ if !singlePost }}}
+				<div class="alert alert-info">
+					[[post-queue:no-queued-posts]]
+				</div>
+				{{{ else }}}
+				<div class="alert alert-info d-flex align-items-md-center d-flex flex-column flex-md-row">
+					<p class="mb-md-0">[[post-queue:no-single-post]]</p>
+					<div class="d-grid ms-md-auto">
+						<a class="btn btn-sm btn-primary flex-shrink text-nowrap" href=".">[[post-queue:back-to-list]]</a>
+					</div>
+				</div>
+				{{{ end }}}
 			{{{ end }}}
 
 			{{{ each posts }}}
