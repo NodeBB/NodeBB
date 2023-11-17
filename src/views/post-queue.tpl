@@ -44,8 +44,13 @@
 		<div class="post-queue preventSlideout posts-list">
 			{{{ if !posts.length }}}
 				{{{ if !singlePost }}}
-				<div class="alert alert-info">
-					[[post-queue:no-queued-posts]]
+				<div class="mx-auto">
+					<div class="d-flex flex-column gap-3 justify-content-center text-center">
+						<div class="mx-auto p-4 bg-light border rounded">
+							<i class="text-secondary fa fa-fw fa-4x fa-seedling"></i>
+						</div>
+						[[post-queue:no-queued-posts]]
+					</div>
 				</div>
 				{{{ else }}}
 				<div class="alert alert-info d-flex align-items-md-center d-flex flex-column flex-md-row">
