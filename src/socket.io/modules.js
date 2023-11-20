@@ -5,13 +5,9 @@
  *   - SocketModules.chats.(enter|leave)(Public)?  => related to socket.io rooms
  */
 
-const validator = require('validator');
-
-const db = require('../database');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
-const plugins = require('../plugins');
 const groups = require('../groups');
 
 const api = require('../api');
