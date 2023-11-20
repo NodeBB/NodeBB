@@ -37,6 +37,8 @@ SocketCategories.getWatchedCategories = async function (socket) {
 };
 
 SocketCategories.loadMore = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid/topics');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
