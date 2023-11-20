@@ -32,6 +32,7 @@ define('forum/chats/manage', [
 			});
 			modal = bootbox.dialog({
 				title: '[[modules:chat.manage-room]]',
+				size: 'large',
 				message: html,
 				onEscape: true,
 			});
