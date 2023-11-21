@@ -609,6 +609,33 @@ UserObjectSlim:
       type: string
       description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
       example: Not Banned
+UserObjectTiny:
+  type: object
+  properties:
+    username:
+      type: string
+      description: A friendly name for a given user account
+    userslug:
+      type: string
+      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+        removed, etc.)
+    picture:
+      type: string
+    uid:
+      type: number
+      description: A user identifier
+    icon:text:
+      type: string
+      description: A single-letter representation of a username. This is used in the
+        auto-generated icon given to users without
+        an avatar
+    icon:bgColor:
+      type: string
+      description: A six-character hexadecimal colour code assigned to the user. This
+        value is used in conjunction with
+        `icon:text` for the user's auto-generated
+        icon
+      example: "#f44336"
 UserObjectACP:
   type: object
   required:
@@ -715,32 +742,7 @@ BanMuteArray:
       fromUid:
         type: number
       user:
-        type: object
-        properties:
-          username:
-            type: string
-            description: A friendly name for a given user account
-          userslug:
-            type: string
-            description: An URL-safe variant of the username (i.e. lower-cased, spaces
-              removed, etc.)
-          picture:
-            type: string
-          uid:
-            type: number
-            description: A user identifier
-          icon:text:
-            type: string
-            description: A single-letter representation of a username. This is used in the
-              auto-generated icon given to users without
-              an avatar
-          icon:bgColor:
-            type: string
-            description: A six-character hexadecimal colour code assigned to the user. This
-              value is used in conjunction with
-              `icon:text` for the user's auto-generated
-              icon
-            example: "#f44336"
+        $ref: '#/UserObjectTiny'
       until:
         type: number
       untilReadable:

@@ -1,0 +1,60 @@
+NotificationObject:
+  allOf:
+    - type: object
+      properties:
+        importance:
+          type: number
+        datetime:
+          type: number
+        path:
+          type: string
+          description: Relative path to the notification target
+        bodyShort:
+          type: string
+        nid:
+          type: string
+        datetimeISO:
+          type: string
+        read:
+          type: boolean
+        readClass:
+          type: string
+    - type: object
+      description: Optional properties that may or may not be present (except for `nid`, which is always present, and is only here as a hack to pass validation)
+      properties:
+        nid:
+          type: string
+        type:
+          type: string
+          description: Used to denote a classification of notification. These types are toggleable in the user ACP (so the user can opt to not receive notifications for certain types, etc.)
+        bodyLong:
+          type: string
+        from:
+          type: number
+        pid:
+          type: number
+          description: A post id, if the notification pertains to a post
+        tid:
+          type: number
+          description: A post id, if the notification pertains to a topic
+        user:
+          $ref: ./UserObject.yaml#/UserObjectTiny
+        subject:
+          type: string
+          description: A language key that would be used as an email subject, otherwise a generic "New Notification" message.
+        icon:
+          type: string
+        roomName:
+          type: string
+          description: The chat room name, if the notification is related to a chat message
+        roomIcon:
+          type: string
+        mergeId:
+          type: string
+          description: A common string used to denote related notifications that can be merged together (e.g. two new chat messages in same room)
+        image:
+          type: string
+          description: A URL to a media image for the notification (supercedes the user avatar if `user` is present)
+          nullable: true
+      required:
+        - nid
