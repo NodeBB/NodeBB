@@ -80,6 +80,10 @@ categoriesAPI.delete = async function (caller, { cid }) {
 };
 
 categoriesAPI.getTopicCount = async (caller, { cid }) => {
+	const allowed = await privileges.categories.can('find', cid, caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const count = await categories.getCategoryField(cid, 'topic_count');
 	return { count };
 };
