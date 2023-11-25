@@ -30,6 +30,6 @@
 	"start-date": "Date de début",
 	"end-date": "Date de fin",
 	"hide-on-mobile": "Masquer sur mobile",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-drafts": "Masquer les brouillons",
+	"show-drafts": "Afficher les brouillons"
 }

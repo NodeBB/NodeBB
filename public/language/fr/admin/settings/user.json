@@ -79,14 +79,14 @@
 	"follow-replied-topics": "S'abonner aux sujets auxquels vous répondez",
 	"default-notification-settings": "Paramètres des notifications par défaut",
 	"categoryWatchState": "Abonnement par défaut",
-	"categoryWatchState.tracking": "Tracking",
+	"categoryWatchState.tracking": "Suivi",
 	"categoryWatchState.notwatching": "Non abonné",
 	"categoryWatchState.ignoring": "Ignoré",
-	"restrictions-new": "New User Restrictions",
-	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
-	"restrictions.seconds-between-new": "Seconds between posts for new users",
-	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
-	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
-	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions-new": "Restrictions des nouveaux utilisateurs",
+	"restrictions.rep-threshold": "Seuil de réputation avant que ces restrictions ne soient levées",
+	"restrictions.seconds-between-new": "Secondes entre les messages pour les nouveaux utilisateurs",
+	"restrictions.seconds-before-new": "Quelques secondes avant qu'un nouvel utilisateur puisse publier son premier message",
+	"restrictions.seconds-edit-after-new": "Nombre de secondes pendant lesquelles une publication reste modifiable (définissez la valeur sur 0 pour la désactiver)",
+	"restrictions.milliseconds-between-messages": "Temps entre chaque message de discussion (en millisecondes)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Sélectionnez les groupes qui devraient être exemptés des nouvelles restrictions d'utilisateur"
 }
