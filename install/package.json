@@ -109,7 +109,7 @@
         "nodebb-widget-essentials": "7.0.14",
         "nodemailer": "6.9.7",
         "nprogress": "0.2.0",
-        "passport": "0.6.0",
+        "passport": "0.7.0",
         "passport-http-bearer": "1.0.1",
         "passport-local": "1.0.0",
         "pg": "8.11.3",
