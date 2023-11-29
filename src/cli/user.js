@@ -77,6 +77,7 @@ let winston;
 async function init() {
 	db = require('../database');
 	await db.init();
+	await db.initSessionStore();
 
 	user = require('../user');
 	groups = require('../groups');

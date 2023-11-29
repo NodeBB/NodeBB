@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -345,10 +344,6 @@ usersAPI.deleteToken = async (caller, { uid, token }) => {
 	return true;
 };
 
-const getSessionAsync = util.promisify((sid, callback) => {
-	db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
-});
-
 usersAPI.revokeSession = async (caller, { uid, uuid }) => {
 	// Only admins or global mods (besides the user themselves) can revoke sessions
 	if (parseInt(uid, 10) !== caller.uid && !await user.isAdminOrGlobalMod(caller.uid)) {
@@ -359,7 +354,7 @@ usersAPI.revokeSession = async (caller, { uid, uuid }) => {
 	let _id;
 	for (const sid of sids) {
 		/* eslint-disable no-await-in-loop */
-		const sessionObj = await getSessionAsync(sid);
+		const sessionObj = await db.sessionStoreGet(sid);
 		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === uuid) {
 			_id = sid;
 			break;
