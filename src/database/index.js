@@ -34,4 +34,26 @@ primaryDB.initSessionStore = async function () {
 	primaryDB.sessionStore = await sessionStoreDB.createSessionStore(sessionStoreConfig);
 };
 
+function promisifySessionStoreMethod(method, sid) {
+	return new Promise((resolve, reject) => {
+		if (!primaryDB.sessionStore) {
+			resolve(method === 'get' ? null : undefined);
+			return;
+		}
+
+		primaryDB.sessionStore[method](sid, (err, result) => {
+			if (err) reject(err);
+			else resolve(method === 'get' ? result || null : undefined);
+		});
+	});
+}
+
+primaryDB.sessionStoreGet = function (sid) {
+	return promisifySessionStoreMethod('get', sid);
+};
+
+primaryDB.sessionStoreDestroy = function (sid) {
+	return promisifySessionStoreMethod('destroy', sid);
+};
+
 module.exports = primaryDB;
