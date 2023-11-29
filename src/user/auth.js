@@ -2,7 +2,6 @@
 
 const winston = require('winston');
 const validator = require('validator');
-const util = require('util');
 const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
@@ -62,17 +61,10 @@ module.exports = function (User) {
 		]);
 	};
 
-	const getSessionFromStore = util.promisify(
-		(sid, callback) => db.sessionStore.get(sid, (err, sessObj) => callback(err, sessObj || null))
-	);
-	const sessionStoreDestroy = util.promisify(
-		(sid, callback) => db.sessionStore.destroy(sid, err => callback(err))
-	);
-
 	User.auth.getSessions = async function (uid, curSessionId) {
 		await cleanExpiredSessions(uid);
 		const sids = await db.getSortedSetRevRange(`uid:${uid}:sessions`, 0, 19);
-		let sessions = await Promise.all(sids.map(sid => getSessionFromStore(sid)));
+		let sessions = await Promise.all(sids.map(sid => db.sessionStoreGet(sid)));
 		sessions = sessions.map((sessObj, idx) => {
 			if (sessObj && sessObj.meta) {
 				sessObj.meta.current = curSessionId === sids[idx];
@@ -93,7 +85,7 @@ module.exports = function (User) {
 		const expiredSids = [];
 		await Promise.all(Object.keys(uuidMapping).map(async (uuid) => {
 			const sid = uuidMapping[uuid];
-			const sessionObj = await getSessionFromStore(sid);
+			const sessionObj = await db.sessionStoreGet(sid);
 			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
 				!sessionObj.passport.hasOwnProperty('user') ||
 				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
@@ -128,13 +120,13 @@ module.exports = function (User) {
 
 	User.auth.revokeSession = async function (sessionId, uid) {
 		winston.verbose(`[user.auth] Revoking session ${sessionId} for user ${uid}`);
-		const sessionObj = await getSessionFromStore(sessionId);
+		const sessionObj = await db.sessionStoreGet(sessionId);
 		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid) {
 			await db.deleteObjectField(`uid:${uid}:sessionUUID:sessionId`, sessionObj.meta.uuid);
 		}
 		await Promise.all([
 			db.sortedSetRemove(`uid:${uid}:sessions`, sessionId),
-			sessionStoreDestroy(sessionId),
+			db.sessionStoreDestroy(sessionId),
 		]);
 	};
 
@@ -159,7 +151,7 @@ module.exports = function (User) {
 
 			await Promise.all([
 				db.deleteAll(sessionKeys.concat(sessionUUIDKeys)),
-				...sids.map(sid => sessionStoreDestroy(sid)),
+				...sids.map(sid => db.sessionStoreDestroy(sid)),
 			]);
 		}, { batch: 1000 });
 	};
