@@ -32,6 +32,8 @@ export interface SortedSet {
   ): Promise<string[]>
 
   getSortedSetMembers(key: string): Promise<string[]>
+  
+  getSortedSetMembersWithScores(key: string): Promise<ValueAndScore[]>
 
   getSortedSetRange(
     key: string | string[],
@@ -138,6 +140,8 @@ export interface SortedSet {
   ): Promise<string[]>
 
   getSortedSetsMembers(keys: string[]): Promise<string[][]>
+
+  getSortedSetsMembersWithScores(keys: string[]): Promise<ValueAndScore[][]>
 
   isMemberOfSortedSets(keys: string[], value: string): Promise<boolean[]>
 
