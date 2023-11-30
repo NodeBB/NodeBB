@@ -1,4 +1,4 @@
-export interface ListQueryable {
+export interface List {
   listPrepend(key: string, value: string): Promise<void>
 
   listAppend(key: string, value: string): Promise<void>

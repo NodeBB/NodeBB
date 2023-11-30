@@ -22,7 +22,7 @@ export type SortedSetScanBaseParameters = {
   limit?: number
 }
 
-export interface SortedSetQueryable {
+export interface SortedSet {
   getSortedSetIntersect(
     params: SortedSetTheoryOperation & { withScores: true },
   ): Promise<ValueAndScore[]>

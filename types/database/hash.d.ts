@@ -1,4 +1,4 @@
-export interface HashQueryable {
+export interface Hash {
   decrObjectField(
     key: string | string[],
     field: string,

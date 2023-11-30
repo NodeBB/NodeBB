@@ -1,16 +1,16 @@
 import { Store } from 'express-session'
 
-export { HashQueryable } from './hash'
-export { ListQueryable } from './list'
-export { HashSetQueryable } from './set'
-export { StringQueryable } from './string'
+export { Hash } from './hash'
+export { List } from './list'
+export { Set } from './set'
+export { Item } from './string'
 export {
-  SortedSetQueryable,
+  SortedSet,
   SortedSetTheoryOperation,
   SortedSetScanBaseParameters,
 } from './zset'
 
-export interface INodeBBDatabaseBackend {
+export interface Database {
   checkCompatibility(callback: () => void): Promise<void>
 
   checkCompatibilityVersion(
@@ -52,11 +52,3 @@ export type ValueAndScore = { value: string; score: number }
 export type RedisStyleAggregate = 'SUM' | 'MIN' | 'MAX'
 export type NumberTowardsMinima = number | '-inf'
 export type NumberTowardsMaxima = number | '+inf'
-
-export {
-  SupportedDatabaseConnectionOptions,
-  RemoteBasedDatabaseConnectionOptions,
-  FileBasedDatabaseConnectionOptions,
-  SqliteFamilyDatabaseConnectionOptions,
-} from './database'
-export { Mutable } from './mutable'

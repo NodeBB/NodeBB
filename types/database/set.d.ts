@@ -1,4 +1,4 @@
-export interface HashSetQueryable {
+export interface Set {
   getSetMembers(key: string): Promise<string[]>
 
   getSetsMembers(keys: string[]): Promise<string[][]>

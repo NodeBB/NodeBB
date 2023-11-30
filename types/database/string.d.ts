@@ -1,6 +1,6 @@
 import { ObjectType, RedisStyleMatchString } from './index'
 
-export interface StringQueryable {
+export interface Item {
   delete(key: string): Promise<void>
 
   deleteAll(keys: string[]): Promise<void>
