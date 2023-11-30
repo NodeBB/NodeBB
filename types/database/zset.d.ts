@@ -148,7 +148,7 @@ export interface SortedSet {
   processSortedSet(
     setKey: string,
     processFn: (ids: number[]) => Promise<void> | void,
-    options: { withScores?: boolean; batch?: number; interval?: number },
+    options: { withScores?: boolean; batch?: number; interval?: number, reverse?: boolean; },
   ): Promise<any>
 
   sortedSetAdd(key: string, score: number, value: string): Promise<void>
