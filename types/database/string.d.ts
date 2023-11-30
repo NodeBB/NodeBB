@@ -31,5 +31,5 @@ export interface StringQueryable {
 
   ttl(key: string): Promise<number>
 
-  type(key: string): Promise<ObjectType>
+  type(key: string): Promise<ObjectType | null>
 }
