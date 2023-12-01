@@ -114,7 +114,8 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	topicData.postIndex = postIndex;
 
-	await Promise.all([
+	const [author] = await Promise.all([
+		user.getUserFields(topicData.uid, ['username', 'userslug']),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res, currentPage),
@@ -123,12 +124,12 @@ topicsController.get = async function getTopic(req, res, next) {
 		analytics.increment([`pageviews:byCid:${topicData.category.cid}`]),
 	]);
 
+	topicData.author = author;
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});
-
 	res.render('topic', topicData);
 };
 
