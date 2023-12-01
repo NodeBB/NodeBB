@@ -122,7 +122,7 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 		}
 
 		members.attr('loading', 1);
-		api.get(`/groups/${groupName}/members`, {
+		api.get(`/groups/${ajaxify.data.group.slug}/members`, {
 			after: members.attr('data-nextstart'),
 		}, function (err, data) {
 			if (err) {
