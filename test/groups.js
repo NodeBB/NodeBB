@@ -759,7 +759,7 @@ describe('Groups', () => {
 		});
 	});
 
-	describe('socket methods', () => {
+	describe('socket/api methods', () => {
 		it('should error if data is null', (done) => {
 			socketGroups.before({ uid: 0 }, 'groups.join', null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -1166,8 +1166,17 @@ describe('Groups', () => {
 			);
 		});
 
-		it('should remove user from group', async () => {
+		it('should remove user from group if caller is admin', async () => {
 			await apiGroups.leave({ uid: adminUid }, { uid: testUid, slug: 'newgroup' });
+			const isMember = await Groups.isMember(testUid, 'newgroup');
+			assert(!isMember);
+		});
+
+		it('should remove user from group if caller is a global moderator', async () => {
+			const globalModUid = await User.getUidByUsername('glomod');
+			await apiGroups.join({ uid: adminUid }, { uid: testUid, slug: 'newgroup' });
+
+			await apiGroups.leave({ uid: globalModUid }, { uid: testUid, slug: 'newgroup' });
 			const isMember = await Groups.isMember(testUid, 'newgroup');
 			assert(!isMember);
 		});
