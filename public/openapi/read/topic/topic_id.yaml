@@ -415,12 +415,15 @@ get:
                         type: string
                       userslug:
                         type: string
+                        required: false
                       uid:
                         type: number
                       fullname:
                         type: string
+                        required: false
                       displayname:
                         type: string
+                        required: false
               - type: object
                 description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
                 properties:
