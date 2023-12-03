@@ -121,3 +121,7 @@ mongodb:
     username: 'nodebb'
     password: 'b47017816776912355883f8ea35c09dcb795e7df'
     database: 'nodebb'
+
+env: []
+#- name: NPM_CONFIG_REGISTRY
+#  value: http://npm-verdaccio:4873/

@@ -56,6 +56,8 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/entrypoint.sh
+        env:          
+          {{- toYaml .Values.env | nindent 12 }}
         volumeMounts:
         - name: data
           mountPath: /usr/src/app/node_modules
@@ -78,6 +80,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:          
+            {{- toYaml .Values.env | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
