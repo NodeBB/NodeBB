@@ -57,6 +57,11 @@ tolerations: []
 affinity: {}
 
 nodebb:
+  admin:
+    username: "admin"
+    email: "test@example.org"
+    password: "hAN3Eg8W"
+
   configYaml:
     bcrypt_rounds: 12
     secret: nodebb

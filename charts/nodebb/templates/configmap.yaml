@@ -31,4 +31,4 @@ data:
               $val
       end)
       );
-      deepmerge({}; .)' /secrets/database.json /configmaps/config.managed.json /configmaps/config.user.json | tee /opt/config/config.json
+      deepmerge({}; .)' /secrets/admin.json /secrets/database.json /configmaps/config.managed.json /configmaps/config.user.json | tee /opt/config/config.json
