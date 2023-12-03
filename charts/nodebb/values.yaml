@@ -76,9 +76,9 @@ nodebb:
     annotations: {}
     labels: {}
     selector: {}
-  # Select the database for content store, valid options: "redis", "mongo" (recommended) and "postgresql"
+  # Select the database for content store, valid options: "redis", "mongo" (recommended) and "postgres"
   database: mongo
-  # Select the database for session store, valid options: "" (use database as session store by default), "redis" (recommended), "mongo" and "postgresql".
+  # Select the database for session store, valid options: "" (use database as session store by default), "redis" (recommended), "mongo" and "postgres".
   #
   sessionStore: ""
   domain: example.com
@@ -86,11 +86,11 @@ nodebb:
 
 global:
   database:
-    managed: true
+    managed: false
   redis:
-    managed: true
+    managed: false
   mongodb:
-    managed: true
+    managed: false
   postgresql:
     managed: false
 
