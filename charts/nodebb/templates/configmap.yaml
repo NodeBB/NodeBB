@@ -9,8 +9,7 @@ data:
     {
       "upload_path": "/usr/src/app/public/uploads",
       "isCluster": {{ .Values.nodebb.singleMode | not }},
-      "url": {{ printf (ternary "https://%s" "http://%s" .Values.nodebb.tls) .Values.nodebb.domain | quote }},
-      "database": {{ .Values.nodebb.database | required "database type is required" | quote }}
+      "url": {{ printf (ternary "https://%s" "http://%s" .Values.nodebb.tls) .Values.nodebb.domain | quote }}
     }
 ---
 apiVersion: v1
