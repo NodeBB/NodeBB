@@ -83,10 +83,23 @@ spec:
             httpGet:
               path: /
               port: http
+            periodSeconds: 10
+            initialDelaySeconds: 30
+            failureThreshold: 60
           readinessProbe:
             httpGet:
               path: /
               port: http
+            periodSeconds: 10
+            initialDelaySeconds: 30
+            failureThreshold: 60
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+            initialDelaySeconds: 30
+            failureThreshold: 60
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
