@@ -63,7 +63,7 @@ data:
 
     if [[ -f $CONFIG ]]; then
       echo "Setting up forum using config file at $CONFIG"
-      config=$CONFIG node app --setup=$CONFIG
+      node app --setup="$(cat /opt/config/config.json)"
     else
       echo "Config file not found at $CONFIG"
       exit 1
