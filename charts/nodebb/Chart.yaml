@@ -1,9 +1,9 @@
 apiVersion: v2
 name: nodebb
-description: A Helm chart for Kubernetes
+description: A Helm chart for NodeBB
 type: application
 version: 0.1.0
-appVersion: "1.16.0"
+appVersion: "3.6.0"
 dependencies:
 - name: redis
   version: 18.4.0
