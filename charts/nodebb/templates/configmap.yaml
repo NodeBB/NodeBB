@@ -19,7 +19,7 @@ metadata:
   name: {{ include "nodebb.fullname" . }}-config-init-script
 data: 
   entrypoint.sh: |-
-    #!/bin/bash
+    #!/bin/sh
     jq -s 'def deepmerge(a;b):
       reduce b[] as $item (a;
       reduce ($item | keys_unsorted[]) as $key (.;
@@ -31,4 +31,4 @@ data:
               $val
       end)
       );
-      deepmerge({}; .)' /secrets/database.json /config.managed.json /configmaps/config.user.json | tee /opt/config/config.json
+      deepmerge({}; .)' /secrets/database.json /configmaps/config.managed.json /configmaps/config.user.json | tee /opt/config/config.json
