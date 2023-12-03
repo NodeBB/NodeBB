@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/nodebb/nodebb:master
+  repository: ghcr.io/nodebb/nodebb
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
