@@ -29,6 +29,11 @@ RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
 
 FROM node:lts-slim as run
 
+RUN apt update && apt install -y --no-install-recommends \
+    jq && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
     daemon=false \
