@@ -99,7 +99,6 @@ redis:
     enabled: false
     host: ""
     port: 6379
-    username: 'default'
     password: ""
     database: 0
 
