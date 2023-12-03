@@ -57,6 +57,7 @@ tolerations: []
 affinity: {}
 
 nodebb:
+  singleMode: false
   admin:
     username: "admin"
     email: "test@example.org"

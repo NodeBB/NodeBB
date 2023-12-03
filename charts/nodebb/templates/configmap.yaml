@@ -8,7 +8,7 @@ data:
   config.managed.json: |
     {
       "upload_path": "/usr/src/app/public/uploads",
-      "isCluster": true,
+      "isCluster": {{ .Values.nodebb.singleMode | not }},
       "url": {{ printf (ternary "https://%s" "http://%s" .Values.nodebb.tls) .Values.nodebb.domain | quote }},
       "database": {{ .Values.nodebb.database | quote }}
     }

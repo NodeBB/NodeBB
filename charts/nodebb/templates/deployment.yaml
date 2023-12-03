@@ -5,8 +5,11 @@ metadata:
   labels:
     {{- include "nodebb.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if and (not .Values.autoscaling.enabled) (not .Values.nodebb.singleMode) }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if .Values.nodebb.singleMode }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
