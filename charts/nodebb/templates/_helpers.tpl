@@ -55,7 +55,7 @@ Create the name of the service account to use
 */}}
 {{- define "nodebb.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "nodebb.fullname" .) .Values.serviceAccount.name }}
+{{- default (printf "%s-sa" (include "nodebb.fullname" .)) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
