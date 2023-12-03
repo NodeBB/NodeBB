@@ -20,6 +20,7 @@ metadata:
 data: 
   config.sh: |-
     #!/bin/sh
+    echo "Generated config:"
     jq -s 'def deepmerge(a;b):
       reduce b[] as $item (a;
       reduce ($item | keys_unsorted[]) as $key (.;
