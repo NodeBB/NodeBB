@@ -75,9 +75,9 @@ nodebb:
     annotations: {}
     labels: {}
     selector: {}
-  # Select the database for content store, valid options: "redis", "mongodb" (recommended) and "postgresql"
-  database: mongodb
-  # Select the database for session store, valid options: "" (use database as session store by default), "redis" (recommended), "mongodb" and "postgresql".
+  # Select the database for content store, valid options: "redis", "mongo" (recommended) and "postgresql"
+  database: mongo
+  # Select the database for session store, valid options: "" (use database as session store by default), "redis" (recommended), "mongo" and "postgresql".
   #
   sessionStore: ""
   domain: example.com
