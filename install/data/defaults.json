@@ -42,7 +42,7 @@
     "registrationApprovalType": "normal",
     "allowAccountDelete": 1,
     "privateUploads": 0,
-    "allowedFileExtensions": "png,jpg,bmp,txt",
+    "allowedFileExtensions": "png,jpg,bmp,txt,webp,webm,mp4,gif",
     "uploadRateLimitThreshold": 10,
     "uploadRateLimitCooldown": 60,
     "allowUserHomePage": 1,
