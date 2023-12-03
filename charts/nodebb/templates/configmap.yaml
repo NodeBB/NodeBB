@@ -18,7 +18,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "nodebb.fullname" . }}-config-init-script
 data: 
-  entrypoint.sh: |-
+  config.sh: |-
     #!/bin/sh
     jq -s 'def deepmerge(a;b):
       reduce b[] as $item (a;
@@ -32,3 +32,39 @@ data:
       end)
       );
       deepmerge({}; .)' /secrets/admin.json /secrets/database.json /configmaps/config.managed.json /configmaps/config.user.json | tee /opt/config/config.json
+  setup.sh: |-
+    #!/bin/bash
+
+    export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
+    export CONFIG=$CONFIG_DIR/config.json
+
+    # Setup variable for backward compatibility, default: <empty>
+    export SETUP="${SETUP:-}"
+
+    mkdir -p $CONFIG_DIR
+
+    # if the folder is mounted as a volume this can fail, the check below is to ensure there is still write access
+    chmod -fR 760 $CONFIG_DIR 2> /dev/null
+
+    if [[ ! -w $CONFIG_DIR ]]; then
+      echo "panic: no write permission for $CONFIG_DIR"
+      exit 1
+    fi
+
+    [[ -f $CONFIG_DIR/package.json ]] || cp install/package.json $CONFIG_DIR/package.json
+    [[ -f $CONFIG_DIR/package-lock.json ]] || touch $CONFIG_DIR/package-lock.json
+
+    ln -fs $CONFIG_DIR/package.json package.json
+    ln -fs $CONFIG_DIR/package-lock.json package-lock.json
+
+    echo "Running npm install"
+    npm install --omit=dev
+    echo "npm install finished"
+
+    if [[ -f $CONFIG ]]; then
+      echo "Setting up forum using config file at $CONFIG"
+      config=$CONFIG node app --setup=$CONFIG
+    else
+      echo "Config file not found at $CONFIG"
+      exit 1
+    fi

@@ -29,7 +29,9 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
       - name: config-init
-        image: relizaio/jq:latest
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         restartPolicy: Always
         command:
         - /bin/entrypoint.sh
@@ -43,8 +45,30 @@ spec:
           mountPath: /configmaps
         - name: config-init-script
           mountPath: /bin/entrypoint.sh
-          readOnly: true
-          subPath: entrypoint.sh
+          subPath: config.sh
+      - name: setup
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /bin/entrypoint.sh
+        volumeMounts:
+        - name: data
+          mountPath: /usr/src/app/node_modules
+          subPath: node_modules
+        - name: data
+          mountPath: /usr/src/app/build
+          subPath: build
+        - name: data
+          mountPath: /usr/src/app/public/uploads
+          subPath: public_uploads
+        - name: data
+          mountPath: /opt/config
+          subPath: config
+        - name: config-init-script
+          mountPath: /bin/entrypoint.sh
+          subPath: setup.sh
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -107,3 +131,4 @@ spec:
       - name: config-init-script
         configMap:
           name: {{ include "nodebb.fullname" . }}-config-init-script
+          defaultMode: 0777
