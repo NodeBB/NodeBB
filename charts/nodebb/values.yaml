@@ -87,7 +87,7 @@ global:
   database:
     managed: true
   redis:
-    managed: false
+    managed: true
   mongodb:
     managed: true
   postgresql:
@@ -96,6 +96,7 @@ global:
 redis:
   architecture: replication
   auth:
+    enabled: false
     host: ""
     port: 6379
     username: 'default'
