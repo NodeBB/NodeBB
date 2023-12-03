@@ -84,24 +84,23 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /ping
               port: http
             periodSeconds: 10
-            initialDelaySeconds: 30
+            initialDelaySeconds: 20
             failureThreshold: 60
           readinessProbe:
             httpGet:
               path: /
               port: http
             periodSeconds: 10
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             failureThreshold: 60
           startupProbe:
             httpGet:
               path: /
               port: http
             periodSeconds: 10
-            initialDelaySeconds: 30
             failureThreshold: 60
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
