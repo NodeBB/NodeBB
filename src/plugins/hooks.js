@@ -8,11 +8,6 @@ const als = require('../als');
 const Hooks = module.exports;
 
 Hooks._deprecated = new Map([
-	['action:post.purge', {
-		new: 'action:posts.purge',
-		since: 'v1.19.6',
-		until: 'v2.1.0',
-	}],
 	['filter:user.verify.code', {
 		new: 'filter:user.verify',
 		since: 'v2.2.0',

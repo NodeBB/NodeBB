@@ -86,10 +86,6 @@ module.exports = function (Posts) {
 
 		await resolveFlags(postData, uid);
 
-		// deprecated hook
-		Promise.all(postData.map(p => plugins.hooks.fire('action:post.purge', { post: p, uid: uid })));
-
-		// new hook
 		plugins.hooks.fire('action:posts.purge', { posts: postData, uid: uid });
 
 		await db.deleteAll(postData.map(p => `post:${p.pid}`));
