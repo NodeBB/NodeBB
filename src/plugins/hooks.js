@@ -7,11 +7,6 @@ const utils = require('../utils');
 const Hooks = module.exports;
 
 Hooks._deprecated = new Map([
-	['filter:flags.getFilters', {
-		new: 'filter:flags.init',
-		since: 'v2.7.0',
-		until: 'v3.0.0',
-	}],
 	['filter:privileges.global.list', {
 		new: 'static:privileges.global.init',
 		since: 'v3.5.0',
