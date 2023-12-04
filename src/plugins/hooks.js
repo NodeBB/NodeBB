@@ -7,21 +7,6 @@ const utils = require('../utils');
 const Hooks = module.exports;
 
 Hooks._deprecated = new Map([
-	['filter:email.send', {
-		new: 'static:email.send',
-		since: 'v1.17.0',
-		until: 'v2.0.0',
-	}],
-	['filter:router.page', {
-		new: 'response:router.page',
-		since: 'v1.15.3',
-		until: 'v2.1.0',
-	}],
-	['filter:post.purge', {
-		new: 'filter:posts.purge',
-		since: 'v1.19.6',
-		until: 'v2.1.0',
-	}],
 	['action:post.purge', {
 		new: 'action:posts.purge',
 		since: 'v1.19.6',
