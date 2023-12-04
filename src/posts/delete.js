@@ -63,10 +63,6 @@ module.exports = function (Posts) {
 			p.cid = tidToTopic[p.tid] && tidToTopic[p.tid].cid;
 		});
 
-		// deprecated hook
-		await Promise.all(postData.map(p => plugins.hooks.fire('filter:post.purge', { post: p, pid: p.pid, uid: uid })));
-
-		// new hook
 		await plugins.hooks.fire('filter:posts.purge', {
 			posts: postData,
 			pids: postData.map(p => p.pid),
