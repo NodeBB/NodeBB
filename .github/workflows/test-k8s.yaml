@@ -69,21 +69,22 @@ jobs:
         cd ./charts/nodebb
         helm upgrade --install redis-test . -f ./values.yaml -f ./values.example.redis.yaml --set env[0].name=NPM_CONFIG_REGISTRY --set env[0].value=http://npm-verdaccio:4873/
         kubectl wait pod --all --for=condition=Ready --timeout=30m
-        helm uninstall redis-test
+        helm uninstall redis-test --wait
     - name: Install example NodeBB chart based on Mongo
       run: |
         cd ./charts/nodebb
         helm upgrade --install mongo-test . -f ./values.yaml -f ./values.example.mongo.yaml --set env[0].name=NPM_CONFIG_REGISTRY --set env[0].value=http://npm-verdaccio:4873/
         kubectl wait pod --all --for=condition=Ready --timeout=30m
-        helm uninstall mongo-test
+        helm uninstall mongo-test --wait
     - name: Install example NodeBB chart based on Postgres
       run: |
         cd ./charts/nodebb
         helm upgrade --install postgres-test . -f ./values.yaml -f ./values.example.postgres.yaml --set env[0].name=NPM_CONFIG_REGISTRY --set env[0].value=http://npm-verdaccio:4873/
         kubectl wait pod --all --for=condition=Ready --timeout=30m
-        helm uninstall postgres-test
+        helm uninstall postgres-test --wait
     - name: Remove all PVC and pods
       if: always()
       run: |
+        helm uninstall npm --wait
         kubectl delete pvc --all
         helm uninstall -n kube-system nfs-provisioner --wait
