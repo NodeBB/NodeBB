@@ -11,6 +11,7 @@ spec:
   {{- if .Values.nodebb.singleMode }}
   replicas: 1
   {{- end }}
+  serviceName: {{ include "nodebb.fullname" . }}
   selector:
     matchLabels:
       {{- include "nodebb.selectorLabels" . | nindent 6 }}
