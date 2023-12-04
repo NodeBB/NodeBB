@@ -8,67 +8,11 @@ const als = require('../als');
 const Hooks = module.exports;
 
 Hooks._deprecated = new Map([
-	['filter:privileges.global.list', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.global.groups.list', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.global.list_human', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.global.groups.list_human', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.list', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.groups.list', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.list_human', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.groups.list_human', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-
-	['filter:privileges.admin.list', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.admin.groups.list', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.admin.list_human', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.admin.groups.list_human', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
+	/* ['filter:old.hook.name', {
+		new: 'filter:new.hook.name',
+		since: 'v4.0.0',
+		until: 'v5.0.0',
+	}], */
 ]);
 
 Hooks.internals = {
