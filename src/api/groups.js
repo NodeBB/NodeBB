@@ -85,7 +85,7 @@ groupsAPI.listMembers = async (caller, data) => {
 	const { query } = data;
 	const after = parseInt(data.after || 0, 10);
 	let response;
-	if (query) {
+	if (query && query.length) {
 		response = await groups.searchMembers({
 			uid: caller.uid,
 			query,
