@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const path = require('path');
 const validator = require('validator');
 const nconf = require('nconf');
