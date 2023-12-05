@@ -6,9 +6,7 @@ on:
     - master
     - develop
   pull_request:
-    branches:
-    - master
-    - develop
+    types: [assigned]
   workflow_dispatch:
 defaults:
   run:
