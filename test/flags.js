@@ -35,7 +35,7 @@ describe('Flags', () => {
 		const dummyEmailerHook = async (data) => {};
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('flags-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
@@ -70,7 +70,7 @@ describe('Flags', () => {
 	});
 
 	after(() => {
-		plugins.hooks.unregister('flags-test', 'filter:email.send');
+		plugins.hooks.unregister('flags-test', 'static:email.send');
 	});
 
 	describe('.create()', () => {

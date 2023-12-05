@@ -236,12 +236,12 @@ describe('socket.io', () => {
 		before(() => {
 			// Attach an emailer hook so related requests do not error
 			plugins.hooks.register('emailer-test', {
-				hook: 'filter:email.send',
+				hook: 'static:email.send',
 				method: dummyEmailerHook,
 			});
 		});
 		after(() => {
-			plugins.hooks.unregister('emailer-test', 'filter:email.send');
+			plugins.hooks.unregister('emailer-test', 'static:email.send');
 		});
 
 		it('should validate emails', (done) => {

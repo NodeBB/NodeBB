@@ -346,7 +346,7 @@ describe('Controllers', () => {
 			before(async () => {
 				// Attach an emailer hook so related requests do not error
 				plugins.hooks.register('emailer-test', {
-					hook: 'filter:email.send',
+					hook: 'static:email.send',
 					method: dummyEmailerHook,
 				});
 
@@ -361,7 +361,7 @@ describe('Controllers', () => {
 
 			after(() => {
 				meta.config.requireEmailAddress = 0;
-				plugins.hooks.unregister('emailer-test', 'filter:email.send');
+				plugins.hooks.unregister('emailer-test', 'static:email.send');
 			});
 
 			it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {

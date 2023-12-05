@@ -38,7 +38,7 @@ describe('User', () => {
 	before((done) => {
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('emailer-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
@@ -56,7 +56,7 @@ describe('User', () => {
 		});
 	});
 	after(() => {
-		plugins.hooks.unregister('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
 	beforeEach(() => {

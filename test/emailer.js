@@ -58,14 +58,14 @@ describe('emailer', () => {
 		};
 
 		Plugins.hooks.register('emailer-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method,
 		});
 
 		Emailer.sendToEmail(template, email, language, params, (err) => {
 			assert.equal(err, error);
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
 			done();
 		});
 	});
@@ -157,14 +157,14 @@ describe('emailer', () => {
 				assert(false); // if thrown, email was sent
 			};
 			Plugins.hooks.register('emailer-test', {
-				hook: 'filter:email.send',
+				hook: 'static:email.send',
 				method,
 			});
 
 			await user.bans.ban(recipientUid);
 			await Emailer.send('test', recipientUid, {});
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
 		});
 
 		it('should return true if the template is "banned"', async () => {
@@ -172,12 +172,12 @@ describe('emailer', () => {
 				assert(true); // if thrown, email was sent
 			};
 			Plugins.hooks.register('emailer-test', {
-				hook: 'filter:email.send',
+				hook: 'static:email.send',
 				method,
 			});
 
 			await Emailer.send('banned', recipientUid, {});
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
 		});
 
 		it('should return true if system settings allow sending to banned users', async () => {
@@ -185,7 +185,7 @@ describe('emailer', () => {
 				assert(true); // if thrown, email was sent
 			};
 			Plugins.hooks.register('emailer-test', {
-				hook: 'filter:email.send',
+				hook: 'static:email.send',
 				method,
 			});
 
@@ -194,7 +194,7 @@ describe('emailer', () => {
 			meta.config.sendEmailToBanned = 0;
 			await user.bans.unban(recipientUid);
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
 		});
 	});
 });

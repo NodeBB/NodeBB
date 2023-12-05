@@ -175,7 +175,7 @@ describe('API', async () => {
 
 	after(async () => {
 		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
-		plugins.hooks.unregister('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
 	async function setupData() {
@@ -306,7 +306,7 @@ describe('API', async () => {
 		});
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('emailer-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 

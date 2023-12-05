@@ -26,7 +26,7 @@ describe('authentication', () => {
 	before((done) => {
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('authentication-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
@@ -39,7 +39,7 @@ describe('authentication', () => {
 	});
 
 	after(() => {
-		plugins.hooks.unregister('authentication-test', 'filter:email.send');
+		plugins.hooks.unregister('authentication-test', 'static:email.send');
 	});
 
 	it('should allow login with email for uid 1', async () => {

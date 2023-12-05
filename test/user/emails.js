@@ -23,7 +23,7 @@ describe('email confirmation (library methods)', () => {
 	before(() => {
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('emailer-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 	});
@@ -36,7 +36,7 @@ describe('email confirmation (library methods)', () => {
 	});
 
 	after(async () => {
-		plugins.hooks.unregister('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
 	describe('isValidationPending', () => {
