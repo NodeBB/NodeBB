@@ -147,7 +147,11 @@ usersAPI.getStatus = async (caller, { uid }) => {
 	return { status };
 };
 
-usersAPI.getPrivateRoomId = async (caller, { uid }) => {
+usersAPI.getPrivateRoomId = async (caller, { uid } = {}) => {
+	if (!uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	let roomId = await messaging.hasPrivateChat(caller.uid, uid);
 	roomId = parseInt(roomId, 10);
 
