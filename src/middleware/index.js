@@ -338,5 +338,11 @@ middleware.validateActivity = helpers.try(async (req, res, next) => {
 		return res.sendStatus(400);
 	}
 
+	// Sanity-check payload schema
+	const required = ['type'];
+	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
+		return res.sendStatus(400);
+	}
+
 	next();
 });
