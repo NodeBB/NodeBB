@@ -132,8 +132,10 @@ Controller.follow = async (req, res) => {
 		});
 
 		const now = Date.now();
-		await db.sortedSetAdd(`followingRemote:${req.uid}`, now, objectId);
-		await recountFollowing(req.uid);
+		await Promise.all([
+			db.sortedSetAdd(`followingRemote:${req.uid}`, now, objectId),
+			db.incrObjectField(`user:${req.uid}`, 'followingRemoteCount'),
+		]);
 
 		helpers.formatApiResponse(200, res);
 	} catch (e) {
@@ -152,19 +154,13 @@ Controller.unfollow = async (req, res) => {
 			},
 		});
 
-		await db.sortedSetRemove(`followingRemote:${req.uid}`, objectId);
-		await recountFollowing(req.uid);
+		await Promise.all([
+			db.sortedSetRemove(`followingRemote:${req.uid}`, objectId),
+			db.decrObjectField(`user:${req.uid}`, 'followingRemoteCount'),
+		]);
 
 		helpers.formatApiResponse(200, res);
 	} catch (e) {
 		helpers.formatApiResponse(400, res, e);
 	}
 };
-
-async function recountFollowing(uid) {
-	const [followingCount, followingRemoteCount] = await Promise.all([
-		db.sortedSetCard(`following:${uid}`),
-		db.sortedSetCard(`followingRemote:${uid}`),
-	]);
-	await user.setUserField(uid, 'followingCount', followingCount + followingRemoteCount);
-}
