@@ -1,6 +1,7 @@
 'use strict';
 
-const { getActor, outbox } = require('../../activitypub');
+const db = require('../../database');
+const { getActor } = require('../../activitypub');
 
 const controller = module.exports;
 
@@ -11,7 +12,7 @@ controller.get = async function (req, res, next) {
 		return next();
 	}
 	const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
-	const isFollowing = await outbox.isFollowing(req.uid, uid);
+	const isFollowing = await db.isSortedSetMember(`followingRemote:${req.uid}`, uid);
 
 	const payload = {
 		uid,

@@ -13,7 +13,6 @@ const ActivityPub = module.exports;
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
-ActivityPub.outbox = require('./outbox');
 
 ActivityPub.getActor = async (id) => {
 	if (actorCache.has(id)) {
