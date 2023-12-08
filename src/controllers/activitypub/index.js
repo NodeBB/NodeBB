@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const db = require('../../database');
 const user = require('../../user');
 const activitypub = require('../../activitypub');
+const api = require('../../api');
 const helpers = require('../helpers');
 
 const Controller = module.exports;
@@ -101,6 +102,7 @@ Controller.getInbox = async (req, res) => {
 };
 
 Controller.postInbox = async (req, res) => {
+	// Note: internal-only, hence no exposure via src/api
 	switch (req.body.type) {
 		case 'Follow': {
 			await activitypub.inbox.follow(req.body.actor.name, req.body.object.name);
@@ -121,46 +123,11 @@ Controller.postInbox = async (req, res) => {
  */
 
 Controller.follow = async (req, res) => {
-	try {
-		const { uid: actorId } = req.params;
-		await activitypub.send(req.uid, actorId, {
-			type: 'Follow',
-			object: {
-				type: 'Person',
-				name: actorId,
-			},
-		});
-
-		const now = Date.now();
-		await Promise.all([
-			db.sortedSetAdd(`followingRemote:${req.uid}`, now, actorId),
-			db.incrObjectField(`user:${req.uid}`, 'followingRemoteCount'),
-		]);
-
-		helpers.formatApiResponse(200, res);
-	} catch (e) {
-		helpers.formatApiResponse(400, res, e);
-	}
+	const { uid: actorId } = req.params;
+	helpers.formatApiResponse(200, res, await api.activitypub.follow(req, { actorId }));
 };
 
 Controller.unfollow = async (req, res) => {
-	try {
-		const { uid: actorId } = req.params;
-		await activitypub.send(req.uid, actorId, {
-			type: 'Unfollow',
-			object: {
-				type: 'Person',
-				name: actorId,
-			},
-		});
-
-		await Promise.all([
-			db.sortedSetRemove(`followingRemote:${req.uid}`, actorId),
-			db.decrObjectField(`user:${req.uid}`, 'followingRemoteCount'),
-		]);
-
-		helpers.formatApiResponse(200, res);
-	} catch (e) {
-		helpers.formatApiResponse(400, res, e);
-	}
+	const { uid: actorId } = req.params;
+	helpers.formatApiResponse(200, res, await api.activitypub.unfollow(req, { actorId }));
 };
