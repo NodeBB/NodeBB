@@ -122,18 +122,18 @@ Controller.postInbox = async (req, res) => {
 
 Controller.follow = async (req, res) => {
 	try {
-		const { uid: objectId } = req.params;
-		await activitypub.send(req.uid, objectId, {
+		const { uid: actorId } = req.params;
+		await activitypub.send(req.uid, actorId, {
 			type: 'Follow',
 			object: {
 				type: 'Person',
-				name: objectId,
+				name: actorId,
 			},
 		});
 
 		const now = Date.now();
 		await Promise.all([
-			db.sortedSetAdd(`followingRemote:${req.uid}`, now, objectId),
+			db.sortedSetAdd(`followingRemote:${req.uid}`, now, actorId),
 			db.incrObjectField(`user:${req.uid}`, 'followingRemoteCount'),
 		]);
 
@@ -145,17 +145,17 @@ Controller.follow = async (req, res) => {
 
 Controller.unfollow = async (req, res) => {
 	try {
-		const { uid: objectId } = req.params;
-		await activitypub.send(req.uid, objectId, {
+		const { uid: actorId } = req.params;
+		await activitypub.send(req.uid, actorId, {
 			type: 'Unfollow',
 			object: {
 				type: 'Person',
-				name: objectId,
+				name: actorId,
 			},
 		});
 
 		await Promise.all([
-			db.sortedSetRemove(`followingRemote:${req.uid}`, objectId),
+			db.sortedSetRemove(`followingRemote:${req.uid}`, actorId),
 			db.decrObjectField(`user:${req.uid}`, 'followingRemoteCount'),
 		]);
 
