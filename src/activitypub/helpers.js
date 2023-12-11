@@ -4,6 +4,7 @@ const request = require('request-promise-native');
 const { generateKeyPairSync } = require('crypto');
 const winston = require('winston');
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const ttl = require('../cache/ttl');
@@ -68,10 +69,26 @@ Helpers.generateKeys = async (uid) => {
 	return { publicKey, privateKey };
 };
 
-Helpers.resolveLocalUid = async (id) => {
-	const [slug, host] = id.split('@');
+Helpers.resolveLocalUid = async (input) => {
+	let slug;
 
-	if (id.indexOf('@') === -1 || host !== nconf.get('url_parsed').host) {
+	if (validator.isURL(input, {
+		require_protocol: true,
+		require_host: true,
+		require_tld: false,
+		protocols: ['https'],
+		require_valid_protocol: true,
+	})) {
+		const { host, pathname } = new URL(input);
+
+		if (host === nconf.get('url_parsed').host) {
+			slug = pathname.split('/').filter(Boolean)[1];
+		} else {
+			throw new Error('[[activitypub:invalid-id]]');
+		}
+	} else if (input.indexOf('@') !== -1) { // Webfinger
+		([slug] = input.replace(/^acct:/, '').split('@'));
+	} else {
 		throw new Error('[[activitypub:invalid-id]]');
 	}
 

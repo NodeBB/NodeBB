@@ -100,6 +100,53 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
+	describe.only('Helpers', () => {
+		describe('.query()', () => {
+
+		});
+
+		describe('.generateKeys()', () => {
+
+		});
+
+		describe('.resolveLocalUid()', () => {
+			let uid;
+			let slug;
+
+			beforeEach(async () => {
+				slug = slugify(utils.generateUUID().slice(0, 8));
+				uid = await user.create({ username: slug });
+			});
+
+			it('should throw when an invalid input is passed in', async () => {
+				await assert.rejects(
+					activitypub.helpers.resolveLocalUid('ncl28h3qwhoiclwnevoinw3u'),
+					{ message: '[[activitypub:invalid-id]]' }
+				);
+			});
+
+			it('should return null when valid input is passed but does not resolve', async () => {
+				const uid = await activitypub.helpers.resolveLocalUid(`acct:foobar@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(uid, null);
+			});
+
+			it('should resolve to a local uid when given a webfinger-style string', async () => {
+				const found = await activitypub.helpers.resolveLocalUid(`acct:${slug}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(found, uid);
+			});
+
+			it('should resolve even without the "acct:" prefix', async () => {
+				const found = await activitypub.helpers.resolveLocalUid(`${slug}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(found, uid);
+			});
+
+			it('should resolve when passed a full URL', async () => {
+				const found = await activitypub.helpers.resolveLocalUid(`${nconf.get('url')}/user/${slug}`);
+				assert.strictEqual(found, uid);
+			});
+		});
+	});
+
 	describe('ActivityPub screener middleware', () => {
 		let uid;
 		let slug;
