@@ -71,18 +71,29 @@ Helpers.generateKeys = async (uid) => {
 
 Helpers.resolveLocalUid = async (input) => {
 	let slug;
+	const protocols = ['https'];
+	if (process.env.CI === 'true') {
+		protocols.push('http');
+	}
+	console.log(input, nconf.get('url'), nconf.get('url_parsed'), protocols, validator.isURL(input, {
+		require_protocol: true,
+		require_host: true,
+		require_tld: false,
+		protocols,
+		require_valid_protocol: true,
+	}), nconf.get('ci'));
 
 	if (validator.isURL(input, {
 		require_protocol: true,
 		require_host: true,
 		require_tld: false,
-		protocols: ['https'],
+		protocols,
 		require_valid_protocol: true,
 	})) {
 		const { host, pathname } = new URL(input);
 
 		if (host === nconf.get('url_parsed').host) {
-			slug = pathname.split('/').filter(Boolean)[1];
+			slug = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean)[1];
 		} else {
 			throw new Error('[[activitypub:invalid-id]]');
 		}

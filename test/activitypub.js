@@ -100,7 +100,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe.only('Helpers', () => {
+	describe('Helpers', () => {
 		describe('.query()', () => {
 
 		});
