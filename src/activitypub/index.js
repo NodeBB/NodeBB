@@ -3,6 +3,7 @@
 const request = require('request-promise-native');
 const nconf = require('nconf');
 const { createHash, createSign, createVerify } = require('crypto');
+const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
@@ -14,14 +15,24 @@ const ActivityPub = module.exports;
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
 
-ActivityPub.getActor = async (id) => {
-	if (actorCache.has(id)) {
-		return actorCache.get(id);
+ActivityPub.getActor = async (input) => {
+	// Can be a webfinger id, uri, or object, handle as appropriate
+	let uri;
+	if (validator.isURL(input, {
+		require_protocol: true,
+		require_host: true,
+		protocols: ['https'],
+		require_valid_protocol: true,
+	})) {
+		uri = input;
+	} else if (input.indexOf('@') !== -1) { // Webfinger
+		({ actorUri: uri } = await ActivityPub.helpers.query(input));
+	} else {
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	const { hostname, actorUri: uri } = await ActivityPub.helpers.query(id);
-	if (!uri) {
-		return false;
+	if (actorCache.has(uri)) {
+		return actorCache.get(uri);
 	}
 
 	const actor = await request({
@@ -32,9 +43,9 @@ ActivityPub.getActor = async (id) => {
 		json: true,
 	});
 
-	actor.hostname = hostname;
+	actor.hostname = new URL(uri).hostname;
 
-	actorCache.set(id, actor);
+	actorCache.set(uri, actor);
 	return actor;
 };
 
@@ -181,7 +192,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 		const { date, digest, signature } = await ActivityPub.sign(uid, uri, payload);
 
 		const response = await request(uri, {
-			method: payload ? 'post' : 'get',
+			method: 'post',
 			headers: {
 				date,
 				digest,
