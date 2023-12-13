@@ -178,12 +178,10 @@ ActivityPub.send = async (uid, targets, payload) => {
 	const inboxes = await ActivityPub.resolveInboxes(targets);
 
 	payload = {
-		...{
-			'@context': 'https://www.w3.org/ns/activitystreams',
-			actor: {
-				type: 'Person',
-				name: `${userslug}@${nconf.get('url_parsed').host}`,
-			},
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		actor: {
+			type: 'Person',
+			name: `${userslug}@${nconf.get('url_parsed').host}`,
 		},
 		...payload,
 	};

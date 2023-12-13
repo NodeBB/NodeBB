@@ -113,6 +113,21 @@ Controller.postInbox = async (req, res) => {
 			await activitypub.inbox.unfollow(req.body.actor.name, req.body.object.name);
 			break;
 		}
+
+		case 'Accept': {
+			await activitypub.inbox.accept(req);
+			break;
+		}
+
+		case 'Undo': {
+			await activitypub.inbox.undo(req);
+			break;
+		}
+
+		default: {
+			console.log('Unhandled Activity!!!');
+			console.log(req.body);
+		}
 	}
 
 	res.sendStatus(201);
