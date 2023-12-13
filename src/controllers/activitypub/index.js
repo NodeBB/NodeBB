@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 
-const db = require('../../database');
 const user = require('../../user');
 const activitypub = require('../../activitypub');
 const api = require('../../api');
