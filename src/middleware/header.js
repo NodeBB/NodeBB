@@ -1,6 +1,5 @@
 'use strict';
 
-const user = require('../user');
 const plugins = require('../plugins');
 const helpers = require('./helpers');
 
@@ -27,17 +26,5 @@ async function doBuildHeader(req, res) {
 	}
 
 	await plugins.hooks.fire('filter:middleware.buildHeader', { req: req, locals: res.locals });
-	const [config, canLoginIfBanned] = await Promise.all([
-		controllers.api.loadConfig(req),
-		user.bans.canLoginIfBanned(req.uid),
-	]);
-
-	if (!canLoginIfBanned && req.loggedIn) {
-		req.logout(() => {
-			res.redirect('/');
-		});
-		return;
-	}
-
-	res.locals.config = config;
+	res.locals.config = await controllers.api.loadConfig(req);
 }

@@ -18,6 +18,7 @@ helpers.setupPageRoute = function (...args) {
 	middlewares = [
 		middleware.applyBlacklist,
 		middleware.authenticateRequest,
+		middleware.redirectToHomeIfBanned,
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
 		middleware.pluginHooks,
