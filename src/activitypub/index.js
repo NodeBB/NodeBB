@@ -31,6 +31,10 @@ ActivityPub.getActor = async (input) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
+	if (!uri) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+
 	if (actorCache.has(uri)) {
 		return actorCache.get(uri);
 	}
