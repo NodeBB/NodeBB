@@ -16,7 +16,7 @@ helpers.getCsrfToken = async (jar) => {
 	return body.csrf_token;
 };
 
-helpers.request = async function (method, uri, options) {
+helpers.request = async function (method, uri, options = {}) {
 	const ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
 	const lowercaseMethod = String(method).toLowerCase();
 	let csrf_token;
