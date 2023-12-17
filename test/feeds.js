@@ -1,7 +1,6 @@
 'use strict';
 
 const assert = require('assert');
-const async = require('async');
 const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
