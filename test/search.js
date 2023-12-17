@@ -3,7 +3,7 @@
 
 const assert = require('assert');
 const async = require('async');
-const request = require('request');
+
 const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
@@ -12,6 +12,7 @@ const categories = require('../src/categories');
 const user = require('../src/user');
 const search = require('../src/search');
 const privileges = require('../src/privileges');
+const request = require('../src/request');
 
 describe('Search', () => {
 	let phoebeUid;
@@ -104,25 +105,19 @@ describe('Search', () => {
 		], done);
 	});
 
-	it('should search term in titles and posts', (done) => {
+	it('should search term in titles and posts', async () => {
 		const meta = require('../src/meta');
 		const qs = `/api/search?term=cucumber&in=titlesposts&categories[]=${cid1}&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts`;
-		privileges.global.give(['groups:search:content'], 'guests', (err) => {
-			assert.ifError(err);
-			request({
-				url: nconf.get('url') + qs,
-				json: true,
-			}, (err, response, body) => {
-				assert.ifError(err);
-				assert(body);
-				assert.equal(body.matchCount, 1);
-				assert.equal(body.posts.length, 1);
-				assert.equal(body.posts[0].pid, post1Data.pid);
-				assert.equal(body.posts[0].uid, phoebeUid);
+		await privileges.global.give(['groups:search:content'], 'guests');
 
-				privileges.global.rescind(['groups:search:content'], 'guests', done);
-			});
-		});
+		const { body } = await request.get(nconf.get('url') + qs);
+		assert(body);
+		assert.equal(body.matchCount, 1);
+		assert.equal(body.posts.length, 1);
+		assert.equal(body.posts[0].pid, post1Data.pid);
+		assert.equal(body.posts[0].uid, phoebeUid);
+
+		await privileges.global.rescind(['groups:search:content'], 'guests');
 	});
 
 	it('should search for a user', (done) => {
@@ -254,40 +249,27 @@ describe('Search', () => {
 		], done);
 	});
 
-	it('should return json search data with no categories', (done) => {
+	it('should return json search data with no categories', async () => {
 		const qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
-		privileges.global.give(['groups:search:content'], 'guests', (err) => {
-			assert.ifError(err);
-			request({
-				url: nconf.get('url') + qs,
-				json: true,
-			}, (err, response, body) => {
-				assert.ifError(err);
-				assert(body);
-				assert(body.hasOwnProperty('matchCount'));
-				assert(body.hasOwnProperty('pagination'));
-				assert(body.hasOwnProperty('pageCount'));
-				assert(body.hasOwnProperty('posts'));
-				assert(!body.hasOwnProperty('categories'));
+		await privileges.global.give(['groups:search:content'], 'guests');
 
-				privileges.global.rescind(['groups:search:content'], 'guests', done);
-			});
-		});
+		const { body } =  await request.get(nconf.get('url') + qs);
+		assert(body);
+		assert(body.hasOwnProperty('matchCount'));
+		assert(body.hasOwnProperty('pagination'));
+		assert(body.hasOwnProperty('pageCount'));
+		assert(body.hasOwnProperty('posts'));
+		assert(!body.hasOwnProperty('categories'));
+
+		await privileges.global.rescind(['groups:search:content'], 'guests');
 	});
 
-	it('should not crash without a search term', (done) => {
+	it('should not crash without a search term', async () => {
 		const qs = '/api/search';
-		privileges.global.give(['groups:search:content'], 'guests', (err) => {
-			assert.ifError(err);
-			request({
-				url: nconf.get('url') + qs,
-				json: true,
-			}, (err, response, body) => {
-				assert.ifError(err);
-				assert(body);
-				assert.strictEqual(response.statusCode, 200);
-				privileges.global.rescind(['groups:search:content'], 'guests', done);
-			});
-		});
+		await privileges.global.give(['groups:search:content'], 'guests');
+		const { response, body } = await request.get(nconf.get('url') + qs);
+		assert(body);
+		assert.strictEqual(response.statusCode, 200);
+		await privileges.global.rescind(['groups:search:content'], 'guests');
 	});
 });
