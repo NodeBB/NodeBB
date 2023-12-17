@@ -34,7 +34,7 @@ module.exports = function (Plugins) {
 				},
 				timeout: 5000,
 			});
-			console.log(response, body);
+
 			if (response.status !== 200) {
 				winston.error(`[plugins.submitUsageData] received ${response.status} ${body}`);
 			}
