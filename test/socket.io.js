@@ -11,9 +11,7 @@ const sleep = util.promisify(setTimeout);
 const assert = require('assert');
 const async = require('async');
 const nconf = require('nconf');
-const request = require('request');
 
-const cookies = request.jar();
 
 const db = require('./mocks/databasemock');
 const user = require('../src/user');
@@ -52,35 +50,11 @@ describe('socket.io', () => {
 	});
 
 
-	it('should connect and auth properly', (done) => {
-		request.get({
-			url: `${nconf.get('url')}/api/config`,
-			jar: cookies,
-			json: true,
-		}, (err, res, body) => {
-			assert.ifError(err);
-
-			request.post(`${nconf.get('url')}/login`, {
-				jar: cookies,
-				form: {
-					username: 'admin',
-					password: 'adminpwd',
-				},
-				headers: {
-					'x-csrf-token': body.csrf_token,
-				},
-				json: true,
-			}, (err, res) => {
-				assert.ifError(err);
-
-				helpers.connectSocketIO(res, body.csrf_token, (err, _io) => {
-					io = _io;
-					assert.ifError(err);
-
-					done();
-				});
-			});
-		});
+	it('should connect and auth properly', async () => {
+		const { response, csrf_token } = await helpers.loginUser('admin', 'adminpwd');
+		io = await helpers.connectSocketIO(response, csrf_token);
+		assert(io);
+		assert(io.emit);
 	});
 
 	it('should return error for unknown event', (done) => {

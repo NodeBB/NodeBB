@@ -63,7 +63,7 @@ helpers.logoutUser = async function (jar) {
 	return { response, body };
 };
 
-helpers.connectSocketIO = function (res, csrf_token, callback) {
+helpers.connectSocketIO = function (res, csrf_token) {
 	const io = require('socket.io-client');
 	let cookies = res.headers['set-cookie'];
 	cookies = cookies.filter(c => /express.sid=[^;]+;/.test(c));
@@ -78,18 +78,20 @@ helpers.connectSocketIO = function (res, csrf_token, callback) {
 			_csrf: csrf_token,
 		},
 	});
-	let error;
-	socket.on('connect', () => {
-		if (error) {
-			return;
-		}
-		callback(null, socket);
-	});
+	return new Promise((resolve, reject) => {
+		let error;
+		socket.on('connect', () => {
+			if (error) {
+				return;
+			}
+			resolve(socket);
+		});
 
-	socket.on('error', (err) => {
-		error = err;
-		console.log('socket.io error', err.stack);
-		callback(err);
+		socket.on('error', (err) => {
+			error = err;
+			console.log('socket.io error', err.stack);
+			reject(err);
+		});
 	});
 };
 
