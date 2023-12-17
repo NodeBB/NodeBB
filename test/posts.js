@@ -3,7 +3,7 @@
 
 const assert = require('assert');
 const async = require('async');
-const request = require('request-promise-native');
+
 const nconf = require('nconf');
 const path = require('path');
 const util = require('util');
@@ -24,6 +24,7 @@ const meta = require('../src/meta');
 const file = require('../src/file');
 const helpers = require('./helpers');
 const utils = require('../src/utils');
+const request = require('../src/request');
 
 describe('Post\'s', () => {
 	let voterUid;
@@ -78,7 +79,7 @@ describe('Post\'s', () => {
 	});
 
 	it('should update category teaser properly', async () => {
-		const getCategoriesAsync = async () => await request(`${nconf.get('url')}/api/categories`, { json: true });
+		const getCategoriesAsync = async () => (await request.get(`${nconf.get('url')}/api/categories`, { })).body;
 		const postResult = await topics.post({ uid: globalModUid, cid: cid, title: 'topic title', content: '123456789' });
 
 		let data = await getCategoriesAsync();
@@ -372,24 +373,14 @@ describe('Post\'s', () => {
 			assert.strictEqual(isDeleted, 1);
 		});
 
-		it('should not see post content if global mod does not have posts:view_deleted privilege', (done) => {
-			async.waterfall([
-				function (next) {
-					user.create({ username: 'global mod', password: '123456' }, next);
-				},
-				function (uid, next) {
-					groups.join('Global Moderators', uid, next);
-				},
-				function (next) {
-					privileges.categories.rescind(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
-				},
-				async () => {
-					const { jar } = await helpers.loginUser('global mod', '123456');
-					const { posts } = await request(`${nconf.get('url')}/api/topic/${tid}`, { jar, json: true });
-					assert.equal(posts[1].content, '[[topic:post-is-deleted]]');
-					await privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators');
-				},
-			], done);
+		it('should not see post content if global mod does not have posts:view_deleted privilege', async () => {
+			const uid = await user.create({ username: 'global mod', password: '123456' });
+			await groups.join('Global Moderators', uid);
+			await privileges.categories.rescind(['groups:posts:view_deleted'], cid, 'Global Moderators');
+			const { jar } = await helpers.loginUser('global mod', '123456');
+			const { body } = await request.get(`${nconf.get('url')}/api/topic/${tid}`, { jar });
+			assert.equal(body.posts[1].content, '[[topic:post-is-deleted]]');
+			await privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators');
 		});
 
 		it('should restore a post', async () => {
@@ -1013,7 +1004,8 @@ describe('Post\'s', () => {
 
 		it('should load queued posts', async () => {
 			({ jar } = await helpers.loginUser('globalmod', 'globalmodpwd'));
-			const { posts } = await request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true });
+			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
+			const { posts } = body;
 			assert.equal(posts[0].type, 'topic');
 			assert.equal(posts[0].data.content, 'queued topic content');
 			assert.equal(posts[1].type, 'reply');
@@ -1029,21 +1021,24 @@ describe('Post\'s', () => {
 
 		it('should edit post in queue', async () => {
 			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: queueId, content: 'newContent' });
-			const { posts } = await request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true });
+			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
+			const { posts } = body;
 			assert.equal(posts[1].type, 'reply');
 			assert.equal(posts[1].data.content, 'newContent');
 		});
 
 		it('should edit topic title in queue', async () => {
 			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, title: 'new topic title' });
-			const { posts } = await request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true });
+			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
+			const { posts } = body;
 			assert.equal(posts[0].type, 'topic');
 			assert.equal(posts[0].data.title, 'new topic title');
 		});
 
 		it('should edit topic category in queue', async () => {
 			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: 2 });
-			const { posts } = await request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true });
+			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
+			const { posts } = body;
 			assert.equal(posts[0].type, 'topic');
 			assert.equal(posts[0].data.cid, 2);
 			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: cid });
