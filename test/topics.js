@@ -6,7 +6,6 @@ const assert = require('assert');
 const validator = require('validator');
 const mockdate = require('mockdate');
 const nconf = require('nconf');
-const request = require('request');
 const util = require('util');
 
 const sleep = util.promisify(setTimeout);
@@ -22,14 +21,10 @@ const User = require('../src/user');
 const groups = require('../src/groups');
 const utils = require('../src/utils');
 const helpers = require('./helpers');
-const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');
 const apiPosts = require('../src/api/posts');
-
-const requestType = util.promisify((type, url, opts, cb) => {
-	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
-});
+const request = require('../src/request');
 
 describe('Topic\'s', () => {
 	let topic;
@@ -142,8 +137,8 @@ describe('Topic\'s', () => {
 			});
 			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
-			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
-				form: {
+			const result = await request.post(`${nconf.get('url')}/api/v3/topics`, {
+				data: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
@@ -151,9 +146,9 @@ describe('Topic\'s', () => {
 				headers: {
 					'x-csrf-token': 'invalid',
 				},
-				json: true,
+				validateStatus: null,
 			});
-			assert.strictEqual(result.res.statusCode, 403);
+			assert.strictEqual(result.response.statusCode, 403);
 			assert.strictEqual(result.body, 'Forbidden');
 		});
 
@@ -164,13 +159,12 @@ describe('Topic\'s', () => {
 			});
 			const jar = request.jar();
 			const result = await helpers.request('post', `/api/v3/topics`, {
-				form: {
+				data: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 				},
 				jar: jar,
-				json: true,
 			});
 			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
 		});
@@ -185,7 +179,7 @@ describe('Topic\'s', () => {
 
 			const jar = request.jar();
 			const result = await helpers.request('post', `/api/v3/topics`, {
-				form: {
+				data: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
@@ -199,7 +193,7 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.user.username, '[[global:guest]]');
 
 			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
-				form: {
+				data: {
 					content: 'a reply by guest',
 				},
 				jar: jar,
@@ -219,14 +213,13 @@ describe('Topic\'s', () => {
 			const oldValue = meta.config.allowGuestHandles;
 			meta.config.allowGuestHandles = 1;
 			const result = await helpers.request('post', `/api/v3/topics`, {
-				form: {
+				data: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 					handle: 'guest123',
 				},
 				jar: request.jar(),
-				json: true,
 			});
 
 			assert.strictEqual(result.body.status.code, 'ok');
@@ -235,12 +228,11 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.user.displayname, 'guest123');
 
 			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
-				form: {
+				data: {
 					content: 'a reply by guest',
 					handle: 'guest124',
 				},
 				jar: request.jar(),
-				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
 			assert.strictEqual(replyResult.body.response.user.username, 'guest124');
@@ -1267,162 +1259,114 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should load topic', (done) => {
-			request(`${nconf.get('url')}/topic/${topicData.slug}`, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				assert(body);
-				done();
-			});
+		it('should load topic', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
+			assert.equal(response.statusCode, 200);
+			assert(body);
 		});
 
-		it('should load topic api data', (done) => {
-			request(`${nconf.get('url')}/api/topic/${topicData.slug}`, { json: true }, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				assert.strictEqual(body._header.tags.meta.find(t => t.name === 'description').content, 'topic content');
-				assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:description').content, 'topic content');
-				done();
-			});
+		it('should load topic api data', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`, { json: true });
+			assert.equal(response.statusCode, 200);
+			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'description').content, 'topic content');
+			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:description').content, 'topic content');
 		});
 
-		it('should 404 if post index is invalid', (done) => {
-			request(`${nconf.get('url')}/topic/${topicData.slug}/derp`, (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
-				done();
-			});
+		it('should 404 if post index is invalid', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}/derp`, { validateStatus: null });
+			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 404 if topic does not exist', (done) => {
-			request(`${nconf.get('url')}/topic/123123/does-not-exist`, (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
-				done();
-			});
+		it('should 404 if topic does not exist', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/topic/123123/does-not-exist`, { validateStatus: null });
+			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 401 if not allowed to read as guest', (done) => {
+		it('should 401 if not allowed to read as guest', async () => {
 			const privileges = require('../src/privileges');
-			privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests', (err) => {
-				assert.ifError(err);
-				request(`${nconf.get('url')}/api/topic/${topicData.slug}`, (err, response, body) => {
-					assert.ifError(err);
-					assert.equal(response.statusCode, 401);
-					assert(body);
-					privileges.categories.give(['groups:topics:read'], topicData.cid, 'guests', done);
-				});
-			});
+			await privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests');
+
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`, { validateStatus: null });
+			assert.equal(response.statusCode, 401);
+			assert(body);
+			await privileges.categories.give(['groups:topics:read'], topicData.cid, 'guests');
 		});
 
-		it('should redirect to correct topic if slug is missing', (done) => {
-			request(`${nconf.get('url')}/topic/${topicData.tid}/herpderp/1?page=2`, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				assert(body);
-				done();
-			});
+		it('should redirect to correct topic if slug is missing', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.tid}/herpderp/1?page=2`);
+			assert.equal(response.statusCode, 200);
+			assert(body);
 		});
 
-		it('should redirect if post index is out of range', (done) => {
-			request(`${nconf.get('url')}/api/topic/${topicData.slug}/-1`, { json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['x-redirect'], `/topic/${topicData.tid}/topic-for-controller-test`);
-				assert.equal(body, `/topic/${topicData.tid}/topic-for-controller-test`);
-				done();
-			});
+		it('should redirect if post index is out of range', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}/-1`);
+			assert.equal(response.statusCode, 200);
+			assert.equal(response.headers['x-redirect'], `/topic/${topicData.tid}/topic-for-controller-test`);
+			assert.equal(body, `/topic/${topicData.tid}/topic-for-controller-test`);
 		});
 
-		it('should 404 if page is out of bounds', (done) => {
+		it('should 404 if page is out of bounds', async () => {
 			const meta = require('../src/meta');
 			meta.config.usePagination = 1;
-			request(`${nconf.get('url')}/topic/${topicData.slug}?page=100`, (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
-				done();
-			});
+			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}?page=100`, { validateStatus: null });
+			assert.equal(response.statusCode, 404);
 		});
 
-		it('should mark topic read', (done) => {
-			request(`${nconf.get('url')}/topic/${topicData.slug}`, {
+		it('should mark topic read', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
 				jar: adminJar,
-			}, (err, res) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				topics.hasReadTopics([topicData.tid], adminUid, (err, hasRead) => {
-					assert.ifError(err);
-					assert.equal(hasRead[0], true);
-					done();
-				});
 			});
+			assert.equal(response.statusCode, 200);
+			const hasRead = await topics.hasReadTopics([topicData.tid], adminUid);
+			assert.equal(hasRead[0], true);
 		});
 
-		it('should 404 if tid is not a number', (done) => {
-			request(`${nconf.get('url')}/api/topic/teaser/nan`, { json: true }, (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
-				done();
-			});
+		it('should 404 if tid is not a number', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/topic/teaser/nan`, { validateStatus: null });
+			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 403 if cant read', (done) => {
-			request(`${nconf.get('url')}/api/topic/teaser/${123123}`, { json: true }, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 403);
-				assert.equal(body, '[[error:no-privileges]]');
-
-				done();
-			});
+		it('should 403 if cant read', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/teaser/${123123}`, { validateStatus: null });
+			assert.equal(response.statusCode, 403);
+			assert.equal(body, '[[error:no-privileges]]');
 		});
 
-		it('should load topic teaser', (done) => {
-			request(`${nconf.get('url')}/api/topic/teaser/${topicData.tid}`, { json: true }, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				assert(body);
-				assert.equal(body.tid, topicData.tid);
-				assert.equal(body.content, 'topic content');
-				assert(body.user);
-				assert(body.topic);
-				assert(body.category);
-				done();
-			});
+		it('should load topic teaser', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/teaser/${topicData.tid}`);
+			assert.equal(response.statusCode, 200);
+			assert(body);
+			assert.equal(body.tid, topicData.tid);
+			assert.equal(body.content, 'topic content');
+			assert(body.user);
+			assert(body.topic);
+			assert(body.category);
 		});
 
 
-		it('should 404 if tid is not a number', (done) => {
-			request(`${nconf.get('url')}/api/topic/pagination/nan`, { json: true }, (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
-				done();
-			});
+		it('should 404 if tid is not a number', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/topic/pagination/nan`, { validateStatus: null });
+			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 404 if tid does not exist', (done) => {
-			request(`${nconf.get('url')}/api/topic/pagination/1231231`, { json: true }, (err, response) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
-				done();
-			});
+		it('should 404 if tid does not exist', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/topic/pagination/1231231`, { validateStatus: null });
+			assert.equal(response.statusCode, 404);
 		});
 
-		it('should load pagination', (done) => {
-			request(`${nconf.get('url')}/api/topic/pagination/${topicData.tid}`, { json: true }, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				assert(body);
-				assert.deepEqual(body.pagination, {
-					prev: { page: 1, active: false },
-					next: { page: 1, active: false },
-					first: { page: 1, active: true },
-					last: { page: 1, active: true },
-					rel: [],
-					pages: [],
-					currentPage: 1,
-					pageCount: 1,
-				});
-				done();
+		it('should load pagination', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/pagination/${topicData.tid}`);
+			assert.equal(response.statusCode, 200);
+			assert(body);
+			assert.deepEqual(body.pagination, {
+				prev: { page: 1, active: false },
+				next: { page: 1, active: false },
+				first: { page: 1, active: true },
+				last: { page: 1, active: true },
+				rel: [],
+				pages: [],
+				currentPage: 1,
+				pageCount: 1,
 			});
 		});
 	});
@@ -2565,14 +2509,11 @@ describe('Topic\'s', () => {
 			assert.equal(topic1.title, 'topic 1');
 		});
 
-		it('should return properly for merged topic', (done) => {
-			request(`${nconf.get('url')}/api/topic/${topic2Data.slug}`, { jar: adminJar, json: true }, (err, response, body) => {
-				assert.ifError(err);
-				assert.equal(response.statusCode, 200);
-				assert(body);
-				assert.deepStrictEqual(body.posts, []);
-				done();
-			});
+		it('should return properly for merged topic', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topic2Data.slug}`, { jar: adminJar });
+			assert.equal(response.statusCode, 200);
+			assert(body);
+			assert.deepStrictEqual(body.posts, []);
 		});
 
 		it('should merge 2 topics with options mainTid', async () => {
@@ -2697,19 +2638,19 @@ describe('Topic\'s', () => {
 		let adminApiOpts;
 		let postData;
 		const replyData = {
-			form: {
+			data: {
 				content: 'a reply by guest',
 			},
-			json: true,
+			validateStatus: null,
 		};
 
 		before(async () => {
 			adminApiOpts = {
-				json: true,
 				jar: adminJar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
+				validateStatus: null,
 			};
 			categoryObj = await categories.create({
 				name: 'Another Test Category',
@@ -2750,85 +2691,85 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not load topic for an unprivileged user', async () => {
-			const response = await requestType('get', `${nconf.get('url')}/topic/${topicData.slug}`);
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, { validateStatus: null });
 			assert.strictEqual(response.statusCode, 404);
-			assert(response.body);
+			assert(body);
 		});
 
 		it('should load topic for a privileged user', async () => {
-			const response = (await requestType('get', `${nconf.get('url')}/topic/${topicData.slug}`, { jar: adminJar })).res;
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, { jar: adminJar });
 			assert.strictEqual(response.statusCode, 200);
-			assert(response.body);
+			assert(body);
 		});
 
 		it('should not be amongst topics of the category for an unprivileged user', async () => {
-			const response = await requestType('get', `${nconf.get('url')}/api/category/${categoryObj.slug}`, { json: true });
-			assert.strictEqual(response.body.topics.filter(topic => topic.tid === topicData.tid).length, 0);
+			const { body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.slug}`);
+			assert.strictEqual(body.topics.filter(topic => topic.tid === topicData.tid).length, 0);
 		});
 
 		it('should be amongst topics of the category for a privileged user', async () => {
-			const response = await requestType('get', `${nconf.get('url')}/api/category/${categoryObj.slug}`, { json: true, jar: adminJar });
-			const topic = response.body.topics.filter(topic => topic.tid === topicData.tid)[0];
+			const { body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.slug}`, { jar: adminJar });
+			const topic = body.topics.filter(topic => topic.tid === topicData.tid)[0];
 			assert.strictEqual(topic && topic.tid, topicData.tid);
 		});
 
 		it('should load topic for guests if privilege is given', async () => {
 			await privileges.categories.give(['groups:topics:schedule'], categoryObj.cid, 'guests');
-			const response = await requestType('get', `${nconf.get('url')}/topic/${topicData.slug}`);
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			assert.strictEqual(response.statusCode, 200);
-			assert(response.body);
+			assert(body);
 		});
 
 		it('should be amongst topics of the category for guests if privilege is given', async () => {
-			const response = await requestType('get', `${nconf.get('url')}/api/category/${categoryObj.slug}`, { json: true });
-			const topic = response.body.topics.filter(topic => topic.tid === topicData.tid)[0];
+			const { body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.slug}`);
+			const topic = body.topics.filter(topic => topic.tid === topicData.tid)[0];
 			assert.strictEqual(topic && topic.tid, topicData.tid);
 		});
 
 		it('should not allow deletion of a scheduled topic', async () => {
-			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}/state`, adminApiOpts);
-			assert.strictEqual(response.res.statusCode, 400);
+			const { response } = await request.delete(`${nconf.get('url')}/api/v3/topics/${topicData.tid}/state`, adminApiOpts);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('should not allow to unpin a scheduled topic', async () => {
-			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}/pin`, adminApiOpts);
-			assert.strictEqual(response.res.statusCode, 400);
+			const { response } = await request.delete(`${nconf.get('url')}/api/v3/topics/${topicData.tid}/pin`, adminApiOpts);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('should not allow to restore a scheduled topic', async () => {
-			const response = await requestType('put', `${nconf.get('url')}/api/v3/topics/${topicData.tid}/state`, adminApiOpts);
-			assert.strictEqual(response.res.statusCode, 400);
+			const { response } = await request.put(`${nconf.get('url')}/api/v3/topics/${topicData.tid}/state`, adminApiOpts);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('should not allow unprivileged to reply', async () => {
 			await privileges.categories.rescind(['groups:topics:schedule'], categoryObj.cid, 'guests');
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
-			const response = await requestType('post', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, replyData);
-			assert.strictEqual(response.res.statusCode, 403);
+			const { response } = await request.post(`${nconf.get('url')}/api/v3/topics/${topicData.tid}`, replyData);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('should allow guests to reply if privilege is given', async () => {
 			await privileges.categories.give(['groups:topics:schedule'], categoryObj.cid, 'guests');
-			const response = await helpers.request('post', `/api/v3/topics/${topicData.tid}`, {
+			const { body } = await helpers.request('post', `/api/v3/topics/${topicData.tid}`, {
 				...replyData,
 				jar: request.jar(),
 			});
-			assert.strictEqual(response.body.response.content, 'a reply by guest');
-			assert.strictEqual(response.body.response.user.username, '[[global:guest]]');
+			assert.strictEqual(body.response.content, 'a reply by guest');
+			assert.strictEqual(body.response.user.username, '[[global:guest]]');
 		});
 
 		it('should have replies with greater timestamp than the scheduled topics itself', async () => {
-			const response = await requestType('get', `${nconf.get('url')}/api/topic/${topicData.slug}`, { json: true });
-			postData = response.body.posts[1];
-			assert(postData.timestamp > response.body.posts[0].timestamp);
+			const { body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
+			postData = body.posts[1];
+			assert(postData.timestamp > body.posts[0].timestamp);
 		});
 
 		it('should have post edits with greater timestamp than the original', async () => {
-			const editData = { ...adminApiOpts, form: { content: 'an edit by the admin' } };
-			const result = await requestType('put', `${nconf.get('url')}/api/v3/posts/${postData.pid}`, editData);
+			const editData = { ...adminApiOpts, data: { content: 'an edit by the admin' } };
+			const result = await request.put(`${nconf.get('url')}/api/v3/posts/${postData.pid}`, editData);
 			assert(result.body.response.edited > postData.timestamp);
 
-			const diffsResult = await requestType('get', `${nconf.get('url')}/api/v3/posts/${postData.pid}/diffs`, adminApiOpts);
+			const diffsResult = await request.get(`${nconf.get('url')}/api/v3/posts/${postData.pid}/diffs`, adminApiOpts);
 			const { revisions } = diffsResult.body.response;
 			// diffs are LIFO
 			assert(revisions[0].timestamp > revisions[1].timestamp);
@@ -2836,8 +2777,8 @@ describe('Topic\'s', () => {
 
 		it('should able to reschedule', async () => {
 			const newDate = new Date(Date.now() + (5 * 86400000)).getTime();
-			const editData = { ...adminApiOpts, form: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
-			const response = await requestType('put', `${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
+			const editData = { ...adminApiOpts, data: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
+			await request.put(`${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
 
 			const editedTopic = await topics.getTopicFields(topicData.tid, ['lastposttime', 'timestamp']);
 			const editedPost = await posts.getPostFields(postData.pid, ['timestamp']);
@@ -2875,17 +2816,16 @@ describe('Topic\'s', () => {
 
 		it('should not be able to schedule a "published" topic', async () => {
 			const newDate = new Date(Date.now() + 86400000).getTime();
-			const editData = { ...adminApiOpts, form: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
-			const response = await requestType('put', `${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
-			assert.strictEqual(response.body.response.timestamp, Date.now());
-
+			const editData = { ...adminApiOpts, data: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
+			const { body } = await request.put(`${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
+			assert.strictEqual(body.response.timestamp, Date.now());
 			mockdate.reset();
 		});
 
 		it('should allow to purge a scheduled topic', async () => {
 			topicData = (await topics.post(topic)).topicData;
-			const response = await requestType('delete', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
-			assert.strictEqual(response.res.statusCode, 200);
+			const { response } = await request.delete(`${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
+			assert.strictEqual(response.statusCode, 200);
 		});
 
 		it('should remove from topics:scheduled on purge', async () => {

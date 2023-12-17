@@ -253,7 +253,7 @@ describe('Search', () => {
 		const qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
 		await privileges.global.give(['groups:search:content'], 'guests');
 
-		const { body } =  await request.get(nconf.get('url') + qs);
+		const { body } = await request.get(nconf.get('url') + qs);
 		assert(body);
 		assert(body.hasOwnProperty('matchCount'));
 		assert(body.hasOwnProperty('pagination'));
