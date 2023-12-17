@@ -363,7 +363,6 @@ describe('Plugins', () => {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				data.forEach((pluginData) => {
-					console.log(pluginData);
 					assert(activePlugins.includes(pluginData));
 				});
 				done();

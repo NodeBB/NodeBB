@@ -163,7 +163,7 @@ helpers.copyFile = function (source, target, callback) {
 };
 
 helpers.invite = async function (data, uid, jar, csrf_token) {
-	const { response, body } = await request.post(`${nconf.get('url')}/api/v3/users/${uid}/invites`, {
+	return await request.post(`${nconf.get('url')}/api/v3/users/${uid}/invites`, {
 		jar: jar,
 		data: data,
 		headers: {
@@ -171,9 +171,6 @@ helpers.invite = async function (data, uid, jar, csrf_token) {
 		},
 		validateStatus: null,
 	});
-	console.log(response.status, body);
-
-	return { response, body };
 };
 
 helpers.createFolder = async function (path, folderName, jar, csrf_token) {
