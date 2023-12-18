@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 
-const request = require('../request');
+
 const { paths, pluginNamePattern } = require('../constants');
 const pkgInstall = require('./package-install');
 
@@ -74,6 +74,7 @@ async function getCurrentVersion() {
 }
 
 async function getSuggestedModules(nbbVersion, toCheck) {
+	const request = require('../request');
 	let { response, body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?version=${nbbVersion}&package[]=${toCheck.join('&package[]=')}`);
 	if (!response.ok) {
 		throw new Error(`Unable to get suggested module for NodeBB(${nbbVersion}) ${toCheck.join(',')}`);
