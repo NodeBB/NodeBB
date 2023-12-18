@@ -6,22 +6,11 @@ const nconf = require('nconf');
 const fs = require('fs').promises;
 const path = require('path');
 
-const request = require('../request');
-
 module.exports = function (app) {
 	const router = express.Router();
 
-	async function getSuggestedModules(nbbVersion, toCheck) {
-		let { body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?version=${nbbVersion}&package[]=${toCheck.join('&package[]=')}`);
-		if (!Array.isArray(body) && toCheck.length === 1) {
-			body = [body];
-		}
-		return body;
-	}
-
 	router.get('/test', async (req, res) => {
-		// res.redirect(404);
-		res.json(await getSuggestedModules('3.5.2', ['nodebb-plugin-markdown']));
+		res.redirect(404);
 	});
 
 	// Redoc
