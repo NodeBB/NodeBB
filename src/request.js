@@ -61,8 +61,6 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 /*
 const { body, response } = await request.get('someurl?foo=1&baz=2')
-or
-const { body, response } = await request.get('someurl', { params: { foo:1, baz: 2 } })
 */
 exports.get = async (url, config) => call(url, 'GET', config);
 
@@ -72,7 +70,7 @@ exports.delete = exports.del;
 exports.options = async (url, config) => call(url, 'OPTIONS', config);
 
 /*
-const { body, response } = await request.post('someurl', { data: { foo: 1, baz: 2}})
+const { body, response } = await request.post('someurl', { body: { foo: 1, baz: 2}})
 */
 exports.post = async (url, config) => call(url, 'POST', config);
 exports.put = async (url, config) => call(url, 'PUT', config);

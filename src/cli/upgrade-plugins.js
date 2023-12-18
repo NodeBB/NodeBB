@@ -76,7 +76,7 @@ async function getCurrentVersion() {
 async function getSuggestedModules(nbbVersion, toCheck) {
 	let { response, body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?version=${nbbVersion}&package[]=${toCheck.join('&package[]=')}`);
 	if (!response.ok) {
-		throw new Error(`Unable to get suggedted module for NodeBB(${nbbVersion}) ${toCheck.join(',')}`);
+		throw new Error(`Unable to get suggested module for NodeBB(${nbbVersion}) ${toCheck.join(',')}`);
 	}
 	if (!Array.isArray(body) && toCheck.length === 1) {
 		body = [body];
