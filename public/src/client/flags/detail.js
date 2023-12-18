@@ -62,9 +62,6 @@ define('forum/flags/detail', [
 								Detail.reloadHistory(payload.history);
 							}).catch(alerts.error);
 						},
-						onShown: (e) => {
-							console.log(e);
-						},
 					});
 					break;
 				}

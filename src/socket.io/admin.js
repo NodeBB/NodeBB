@@ -100,8 +100,8 @@ SocketAdmin.getSearchDict = async function (socket) {
 	return await getAdminSearchDict(lang);
 };
 
-SocketAdmin.deleteAllSessions = function (socket, data, callback) {
-	user.auth.deleteAllSessions(callback);
+SocketAdmin.deleteAllSessions = async function () {
+	await user.auth.deleteAllSessions();
 };
 
 SocketAdmin.reloadAllSessions = function (socket, data, callback) {

@@ -6,8 +6,8 @@ const winston = require('winston');
 const semver = require('semver');
 const nconf = require('nconf');
 const chalk = require('chalk');
-const request = require('request-promise-native');
 
+const request = require('../request');
 const user = require('../user');
 const posts = require('../posts');
 
@@ -153,10 +153,10 @@ Plugins.reloadRoutes = async function (params) {
 
 Plugins.get = async function (id) {
 	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins/${id}`;
-	const body = await request(url, {
-		json: true,
-	});
-
+	const { response, body } = await request.get(url);
+	if (!response.ok) {
+		throw new Error(`[[error:unable-to-load-plugin, ${id}]]`);
+	}
 	let normalised = await Plugins.normalise([body ? body.payload : {}]);
 	normalised = normalised.filter(plugin => plugin.id === id);
 	return normalised.length ? normalised[0] : undefined;
@@ -169,9 +169,10 @@ Plugins.list = async function (matching) {
 	const { version } = require(paths.currentPackage);
 	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugins${matching !== false ? `?version=${version}` : ''}`;
 	try {
-		const body = await request(url, {
-			json: true,
-		});
+		const { response, body } = await request.get(url);
+		if (!response.ok) {
+			throw new Error(`[[error:unable-to-load-plugins-from-nbbpm]]`);
+		}
 		return await Plugins.normalise(body);
 	} catch (err) {
 		winston.error(`Error loading ${url}`, err);
@@ -181,9 +182,11 @@ Plugins.list = async function (matching) {
 
 Plugins.listTrending = async () => {
 	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/analytics/top/week`;
-	return await request(url, {
-		json: true,
-	});
+	const { response, body } = await request.get(url);
+	if (!response.ok) {
+		throw new Error(`[[error:unable-to-load-trending-plugins]]`);
+	}
+	return body;
 };
 
 Plugins.normalise = async function (apiReturn) {

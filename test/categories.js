@@ -2,8 +2,8 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
-const request = require('request');
 
+const request = require('../src/request');
 const db = require('./mocks/databasemock');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
@@ -76,14 +76,11 @@ describe('Categories', () => {
 		});
 	});
 
-	it('should load a category route', (done) => {
-		request(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`, { json: true }, (err, response, body) => {
-			assert.ifError(err);
-			assert.equal(response.statusCode, 200);
-			assert.equal(body.name, 'Test Category &amp; NodeBB');
-			assert(body);
-			done();
-		});
+	it('should load a category route', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`);
+		assert.equal(response.statusCode, 200);
+		assert.equal(body.name, 'Test Category &amp; NodeBB');
+		assert(body);
 	});
 
 	describe('Categories.getRecentTopicReplies', () => {
