@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const path = require('path');
 const assert = require('assert');
 const validator = require('validator');
@@ -641,40 +640,20 @@ describe('Topic\'s', () => {
 		let followerUid;
 		let moveCid;
 
-		before((done) => {
-			async.waterfall([
-				function (next) {
-					topics.post({
-						uid: topic.userId,
-						title: topic.title,
-						content: topic.content,
-						cid: topic.categoryId,
-					}, (err, result) => {
-						assert.ifError(err);
-						newTopic = result.topicData;
-						next();
-					});
-				},
-				function (next) {
-					User.create({ username: 'topicFollower', password: '123456' }, next);
-				},
-				function (_uid, next) {
-					followerUid = _uid;
-					topics.follow(newTopic.tid, _uid, next);
-				},
-				function (next) {
-					categories.create({
-						name: 'Test Category',
-						description: 'Test category created by testing script',
-					}, (err, category) => {
-						if (err) {
-							return next(err);
-						}
-						moveCid = category.cid;
-						next();
-					});
-				},
-			], done);
+		before(async () => {
+			({ topicData: newTopic } = await topics.post({
+				uid: topic.userId,
+				title: topic.title,
+				content: topic.content,
+				cid: topic.categoryId,
+			}));
+			followerUid = await User.create({ username: 'topicFollower', password: '123456' });
+			await topics.follow(newTopic.tid, followerUid);
+
+			({ cid: moveCid } = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			}));
 		});
 
 		it('should load topic tools', (done) => {
@@ -743,118 +722,68 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should properly update sets when post is moved', (done) => {
-			let movedPost;
-			let previousPost;
-			let topic2LastReply;
-			let tid1;
-			let tid2;
+		it('should properly update sets when post is moved', async () => {
 			const cid1 = topic.categoryId;
-			let cid2;
-			function checkCidSets(post1, post2, callback) {
-				async.waterfall([
-					function (next) {
-						async.parallel({
-							topicData: function (next) {
-								topics.getTopicsFields([tid1, tid2], ['lastposttime', 'postcount'], next);
-							},
-							scores1: function (next) {
-								db.sortedSetsScore([
-									`cid:${cid1}:tids`,
-									`cid:${cid1}:tids:lastposttime`,
-									`cid:${cid1}:tids:posts`,
-								], tid1, next);
-							},
-							scores2: function (next) {
-								db.sortedSetsScore([
-									`cid:${cid2}:tids`,
-									`cid:${cid2}:tids:lastposttime`,
-									`cid:${cid2}:tids:posts`,
-								], tid2, next);
-							},
-							posts1: function (next) {
-								db.getSortedSetRangeWithScores(`tid:${tid1}:posts`, 0, -1, next);
-							},
-							posts2: function (next) {
-								db.getSortedSetRangeWithScores(`tid:${tid2}:posts`, 0, -1, next);
-							},
-						}, next);
-					},
-					function (results, next) {
-						const assertMsg = `${JSON.stringify(results.posts1)}\n${JSON.stringify(results.posts2)}`;
-						assert.equal(results.topicData[0].postcount, results.scores1[2], assertMsg);
-						assert.equal(results.topicData[1].postcount, results.scores2[2], assertMsg);
-						assert.equal(results.topicData[0].lastposttime, post1.timestamp, assertMsg);
-						assert.equal(results.topicData[1].lastposttime, post2.timestamp, assertMsg);
-						assert.equal(results.topicData[0].lastposttime, results.scores1[0], assertMsg);
-						assert.equal(results.topicData[1].lastposttime, results.scores2[0], assertMsg);
-						assert.equal(results.topicData[0].lastposttime, results.scores1[1], assertMsg);
-						assert.equal(results.topicData[1].lastposttime, results.scores2[1], assertMsg);
+			const category = await categories.create({
+				name: 'move to this category',
+				description: 'Test category created by testing script',
+			});
+			const cid2 = category.cid;
+			const { topicData } = await topics.post({ uid: adminUid, title: 'topic1', content: 'topic 1 mainPost', cid: cid1 });
+			const tid1 = topicData.tid;
+			const previousPost = await topics.reply({ uid: adminUid, content: 'topic 1 reply 1', tid: tid1 });
+			const movedPost = await topics.reply({ uid: adminUid, content: 'topic 1 reply 2', tid: tid1 });
 
-						next();
-					},
-				], callback);
+			const { topicData: anotherTopic } = await topics.post({ uid: adminUid, title: 'topic2', content: 'topic 2 mainpost', cid: cid2 });
+			const tid2 = anotherTopic.tid;
+			const topic2LastReply = await topics.reply({ uid: adminUid, content: 'topic 2 reply 1', tid: tid2 });
+
+			async function checkCidSets(post1, post2) {
+				const [topicData, scores1, scores2, posts1, posts2] = await Promise.all([
+					topics.getTopicsFields([tid1, tid2], ['lastposttime', 'postcount']),
+					db.sortedSetsScore([
+						`cid:${cid1}:tids`,
+						`cid:${cid1}:tids:lastposttime`,
+						`cid:${cid1}:tids:posts`,
+					], tid1),
+					db.sortedSetsScore([
+						`cid:${cid2}:tids`,
+						`cid:${cid2}:tids:lastposttime`,
+						`cid:${cid2}:tids:posts`,
+					], tid2),
+					db.getSortedSetRangeWithScores(`tid:${tid1}:posts`, 0, -1),
+					db.getSortedSetRangeWithScores(`tid:${tid2}:posts`, 0, -1),
+				]);
+				const assertMsg = `${JSON.stringify(posts1)}\n${JSON.stringify(posts2)}`;
+				assert.equal(topicData[0].postcount, scores1[2], assertMsg);
+				assert.equal(topicData[1].postcount, scores2[2], assertMsg);
+				assert.equal(topicData[0].lastposttime, post1.timestamp, assertMsg);
+				assert.equal(topicData[1].lastposttime, post2.timestamp, assertMsg);
+				assert.equal(topicData[0].lastposttime, scores1[0], assertMsg);
+				assert.equal(topicData[1].lastposttime, scores2[0], assertMsg);
+				assert.equal(topicData[0].lastposttime, scores1[1], assertMsg);
+				assert.equal(topicData[1].lastposttime, scores2[1], assertMsg);
 			}
 
-			async.waterfall([
-				function (next) {
-					categories.create({
-						name: 'move to this category',
-						description: 'Test category created by testing script',
-					}, next);
-				},
-				function (category, next) {
-					cid2 = category.cid;
-					topics.post({ uid: adminUid, title: 'topic1', content: 'topic 1 mainPost', cid: cid1 }, next);
-				},
-				function (result, next) {
-					tid1 = result.topicData.tid;
-					topics.reply({ uid: adminUid, content: 'topic 1 reply 1', tid: tid1 }, next);
-				},
-				function (postData, next) {
-					previousPost = postData;
-					topics.reply({ uid: adminUid, content: 'topic 1 reply 2', tid: tid1 }, next);
-				},
-				function (postData, next) {
-					movedPost = postData;
-					topics.post({ uid: adminUid, title: 'topic2', content: 'topic 2 mainpost', cid: cid2 }, next);
-				},
-				function (results, next) {
-					tid2 = results.topicData.tid;
-					topics.reply({ uid: adminUid, content: 'topic 2 reply 1', tid: tid2 }, next);
-				},
-				function (postData, next) {
-					topic2LastReply = postData;
-					checkCidSets(movedPost, postData, next);
-				},
-				function (next) {
-					db.isMemberOfSortedSets([`cid:${cid1}:pids`, `cid:${cid2}:pids`], movedPost.pid, next);
-				},
-				function (isMember, next) {
-					assert.deepEqual(isMember, [true, false]);
-					categories.getCategoriesFields([cid1, cid2], ['post_count'], next);
-				},
-				function (categoryData, next) {
-					assert.equal(categoryData[0].post_count, 4);
-					assert.equal(categoryData[1].post_count, 2);
-					topics.movePostToTopic(1, movedPost.pid, tid2, next);
-				},
-				function (next) {
-					checkCidSets(previousPost, topic2LastReply, next);
-				},
-				function (next) {
-					db.isMemberOfSortedSets([`cid:${cid1}:pids`, `cid:${cid2}:pids`], movedPost.pid, next);
-				},
-				function (isMember, next) {
-					assert.deepEqual(isMember, [false, true]);
-					categories.getCategoriesFields([cid1, cid2], ['post_count'], next);
-				},
-				function (categoryData, next) {
-					assert.equal(categoryData[0].post_count, 3);
-					assert.equal(categoryData[1].post_count, 3);
-					next();
-				},
-			], done);
+			await checkCidSets(movedPost, topic2LastReply);
+
+			let isMember = await db.isMemberOfSortedSets([`cid:${cid1}:pids`, `cid:${cid2}:pids`], movedPost.pid);
+			assert.deepEqual(isMember, [true, false]);
+
+			let categoryData = await categories.getCategoriesFields([cid1, cid2], ['post_count']);
+			assert.equal(categoryData[0].post_count, 4);
+			assert.equal(categoryData[1].post_count, 2);
+
+			await topics.movePostToTopic(1, movedPost.pid, tid2);
+
+			await checkCidSets(previousPost, topic2LastReply);
+
+			isMember = await db.isMemberOfSortedSets([`cid:${cid1}:pids`, `cid:${cid2}:pids`], movedPost.pid);
+			assert.deepEqual(isMember, [false, true]);
+
+			categoryData = await categories.getCategoriesFields([cid1, cid2], ['post_count']);
+			assert.equal(categoryData[0].post_count, 3);
+			assert.equal(categoryData[1].post_count, 3);
 		});
 
 		it('should fail to purge topic if user does not have privilege', async () => {
@@ -905,42 +834,22 @@ describe('Topic\'s', () => {
 		let tid1;
 		let tid2;
 		let tid3;
-		before((done) => {
-			function createTopic(callback) {
-				topics.post({
+		before(async () => {
+			async function createTopic() {
+				return (await topics.post({
 					uid: topic.userId,
 					title: 'topic for test',
 					content: 'topic content',
 					cid: topic.categoryId,
-				}, callback);
+				})).topicData.tid;
 			}
-			async.series({
-				topic1: function (next) {
-					createTopic(next);
-				},
-				topic2: function (next) {
-					createTopic(next);
-				},
-				topic3: function (next) {
-					createTopic(next);
-				},
-			}, (err, results) => {
-				assert.ifError(err);
-				tid1 = results.topic1.topicData.tid;
-				tid2 = results.topic2.topicData.tid;
-				tid3 = results.topic3.topicData.tid;
-				async.series([
-					function (next) {
-						topics.tools.pin(tid1, adminUid, next);
-					},
-					function (next) {
-						// artificial timeout so pin time is different on redis sometimes scores are indentical
-						setTimeout(() => {
-							topics.tools.pin(tid2, adminUid, next);
-						}, 5);
-					},
-				], done);
-			});
+			tid1 = await createTopic();
+			tid2 = await createTopic();
+			tid3 = await createTopic();
+			await topics.tools.pin(tid1, adminUid);
+			// artificial timeout so pin time is different on redis sometimes scores are indentical
+			await sleep(5);
+			await topics.tools.pin(tid2, adminUid);
 		});
 
 		const socketTopics = require('../src/socket.io/topics');
@@ -999,110 +908,48 @@ describe('Topic\'s', () => {
 		let newTid;
 		let uid;
 		let newTopic;
-		before((done) => {
+		before(async () => {
 			uid = topic.userId;
-			async.waterfall([
-				function (done) {
-					topics.post({ uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId }, (err, result) => {
-						if (err) {
-							return done(err);
-						}
-
-						newTopic = result.topicData;
-						newTid = newTopic.tid;
-						done();
-					});
-				},
-				function (done) {
-					topics.markUnread(newTid, uid, done);
-				},
-			], done);
+			const result = await topics.post({ uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId });
+			newTopic = result.topicData;
+			newTid = newTopic.tid;
+			await topics.markUnread(newTid, uid);
 		});
 
-		it('should not appear in the unread list', (done) => {
-			async.waterfall([
-				function (done) {
-					topics.ignore(newTid, uid, done);
-				},
-				function (done) {
-					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
-				},
-				function (results, done) {
-					const { topics } = results;
-					const tids = topics.map(topic => topic.tid);
-					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
-					done();
-				},
-			], done);
+		it('should not appear in the unread list', async () => {
+			await topics.ignore(newTid, uid);
+			const { topics: topicData } = await topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' });
+			const tids = topicData.map(topic => topic.tid);
+			assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
 		});
 
-		it('should not appear as unread in the recent list', (done) => {
-			async.waterfall([
-				function (done) {
-					topics.ignore(newTid, uid, done);
-				},
-				function (done) {
-					topics.getLatestTopics({
-						uid: uid,
-						start: 0,
-						stop: -1,
-						term: 'year',
-					}, done);
-				},
-				function (results, done) {
-					const { topics } = results;
-					let topic;
-					let i;
-					for (i = 0; i < topics.length; i += 1) {
-						if (topics[i].tid === parseInt(newTid, 10)) {
-							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
-							return done();
-						}
-					}
-					assert.ok(topic, 'topic didn\'t appear in the recent list');
-					done();
-				},
-			], done);
+		it('should not appear as unread in the recent list', async () => {
+			await topics.ignore(newTid, uid);
+			const results = await topics.getLatestTopics({
+				uid: uid,
+				start: 0,
+				stop: -1,
+				term: 'year',
+			});
+
+			const { topics: topicsData } = results;
+			let topic;
+			let i;
+			for (i = 0; i < topicsData.length; i += 1) {
+				if (topicsData[i].tid === parseInt(newTid, 10)) {
+					assert.equal(false, topicsData[i].unread, 'ignored topic was marked as unread in recent list');
+					return;
+				}
+			}
+			assert.ok(topic, 'topic didn\'t appear in the recent list');
 		});
 
-		it('should appear as unread again when marked as reading', (done) => {
-			async.waterfall([
-				function (done) {
-					topics.ignore(newTid, uid, done);
-				},
-				function (done) {
-					topics.follow(newTid, uid, done);
-				},
-				function (done) {
-					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
-				},
-				function (results, done) {
-					const { topics } = results;
-					const tids = topics.map(topic => topic.tid);
-					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
-					done();
-				},
-			], done);
-		});
-
-		it('should appear as unread again when marked as following', (done) => {
-			async.waterfall([
-				function (done) {
-					topics.ignore(newTid, uid, done);
-				},
-				function (done) {
-					topics.follow(newTid, uid, done);
-				},
-				function (done) {
-					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
-				},
-				function (results, done) {
-					const { topics } = results;
-					const tids = topics.map(topic => topic.tid);
-					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
-					done();
-				},
-			], done);
+		it('should appear as unread again when marked as following', async () => {
+			await topics.ignore(newTid, uid);
+			await topics.follow(newTid, uid);
+			const results = await topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' });
+			const tids = results.topics.map(topic => topic.tid);
+			assert.ok(tids.includes(newTid), 'The topic did not appear in the unread list.');
 		});
 	});
 
@@ -1111,49 +958,26 @@ describe('Topic\'s', () => {
 		const replies = [];
 		let topicPids;
 		const originalBookmark = 6;
-		function postReply(next) {
-			topics.reply({ uid: topic.userId, content: `test post ${replies.length}`, tid: newTopic.tid }, (err, result) => {
-				assert.equal(err, null, 'was created with error');
-				assert.ok(result);
-				replies.push(result);
-				next();
-			});
+		async function postReply() {
+			const result = await topics.reply({ uid: topic.userId, content: `test post ${replies.length}`, tid: newTopic.tid });
+			assert.ok(result);
+			replies.push(result);
 		}
 
-		before((done) => {
-			async.waterfall([
-				function (next) {
-					groups.join('administrators', topic.userId, next);
-				},
-				function (next) {
-					topics.post({
-						uid: topic.userId,
-						title: topic.title,
-						content: topic.content,
-						cid: topic.categoryId,
-					}, (err, result) => {
-						assert.ifError(err);
-						newTopic = result.topicData;
-						next();
-					});
-				},
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) { postReply(next); },
-				function (next) {
-					topicPids = replies.map(reply => reply.pid);
-					socketTopics.bookmark({ uid: topic.userId }, { tid: newTopic.tid, index: originalBookmark }, next);
-				},
-			], done);
+		before(async () => {
+			await groups.join('administrators', topic.userId);
+			({ topicData: newTopic } = await topics.post({
+				uid: topic.userId,
+				title: topic.title,
+				content: topic.content,
+				cid: topic.categoryId,
+			}));
+			for (let i = 0; i < 12; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				await postReply();
+			}
+			topicPids = replies.map(reply => reply.pid);
+			await socketTopics.bookmark({ uid: topic.userId }, { tid: newTopic.tid, index: originalBookmark });
 		});
 
 		it('should fail with invalid data', (done) => {
@@ -1182,44 +1006,25 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should not update the user\'s bookmark', (done) => {
-			async.waterfall([
-				function (next) {
-					socketTopics.createTopicFromPosts({ uid: topic.userId }, {
-						title: 'Fork test, no bookmark update',
-						pids: topicPids.slice(-2),
-						fromTid: newTopic.tid,
-					}, next);
-				},
-				function (forkedTopicData, next) {
-					topics.getUserBookmark(newTopic.tid, topic.userId, next);
-				},
-				function (bookmark, next) {
-					assert.equal(originalBookmark, bookmark);
-					next();
-				},
-			], done);
+		it('should not update the user\'s bookmark', async () => {
+			await socketTopics.createTopicFromPosts({ uid: topic.userId }, {
+				title: 'Fork test, no bookmark update',
+				pids: topicPids.slice(-2),
+				fromTid: newTopic.tid,
+			});
+			const bookmark = await topics.getUserBookmark(newTopic.tid, topic.userId);
+			assert.equal(originalBookmark, bookmark);
 		});
 
-		it('should update the user\'s bookmark ', (done) => {
-			async.waterfall([
-				function (next) {
-					topics.createTopicFromPosts(
-						topic.userId,
-						'Fork test, no bookmark update',
-						topicPids.slice(1, 3),
-						newTopic.tid,
-						next
-					);
-				},
-				function (forkedTopicData, next) {
-					topics.getUserBookmark(newTopic.tid, topic.userId, next);
-				},
-				function (bookmark, next) {
-					assert.equal(originalBookmark - 2, bookmark);
-					next();
-				},
-			], done);
+		it('should update the user\'s bookmark ', async () => {
+			await topics.createTopicFromPosts(
+				topic.userId,
+				'Fork test, no bookmark update',
+				topicPids.slice(1, 3),
+				newTopic.tid,
+			);
+			const bookmark = await topics.getUserBookmark(newTopic.tid, topic.userId);
+			assert.equal(originalBookmark - 2, bookmark);
 		});
 
 		it('should properly update topic vote count after forking', async () => {
@@ -1406,23 +1211,12 @@ describe('Topic\'s', () => {
 	describe('suggested topics', () => {
 		let tid1;
 		let tid3;
-		before((done) => {
-			async.series({
-				topic1: function (next) {
-					topics.post({ uid: adminUid, tags: ['nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
-				},
-				topic2: function (next) {
-					topics.post({ uid: adminUid, tags: ['nodebb'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
-				},
-				topic3: function (next) {
-					topics.post({ uid: adminUid, tags: [], title: 'topic title 3', content: 'topic 3 content', cid: topic.categoryId }, next);
-				},
-			}, (err, results) => {
-				assert.ifError(err);
-				tid1 = results.topic1.topicData.tid;
-				tid3 = results.topic3.topicData.tid;
-				done();
-			});
+		before(async () => {
+			const topic1 = await topics.post({ uid: adminUid, tags: ['nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId });
+			const topic2 = await topics.post({ uid: adminUid, tags: ['nodebb'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId });
+			const topic3 = await topics.post({ uid: adminUid, tags: [], title: 'topic title 3', content: 'topic 3 content', cid: topic.categoryId });
+			tid1 = topic1.topicData.tid;
+			tid3 = topic3.topicData.tid;
 		});
 
 		it('should return suggested topics', (done) => {
@@ -1445,23 +1239,11 @@ describe('Topic\'s', () => {
 	describe('unread', () => {
 		const socketTopics = require('../src/socket.io/topics');
 		let tid;
-		let mainPid;
 		let uid;
-		before((done) => {
-			async.parallel({
-				topic: function (next) {
-					topics.post({ uid: topic.userId, title: 'unread topic', content: 'unread topic content', cid: topic.categoryId }, next);
-				},
-				joeUid: function (next) {
-					User.create({ username: 'regularJoe' }, next);
-				},
-			}, (err, results) => {
-				assert.ifError(err);
-				tid = results.topic.topicData.tid;
-				mainPid = results.topic.postData.pid;
-				uid = results.joeUid;
-				done();
-			});
+		before(async () => {
+			const { topicData } = await topics.post({ uid: topic.userId, title: 'unread topic', content: 'unread topic content', cid: topic.categoryId });
+			uid = await User.create({ username: 'regularJoe' });
+			tid = topicData.tid;
 		});
 
 		it('should fail with invalid data', async () => {
@@ -1593,93 +1375,45 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should not return topics in category you cant read', (done) => {
-			let privateCid;
-			let privateTid;
-			async.waterfall([
-				function (next) {
-					categories.create({
-						name: 'private category',
-						description: 'private category',
-					}, next);
-				},
-				function (category, next) {
-					privateCid = category.cid;
-					privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users', next);
-				},
-				function (next) {
-					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: privateCid }, next);
-				},
-				function (data, next) {
-					privateTid = data.topicData.tid;
-					topics.getUnreadTids({ uid: uid }, next);
-				},
-				function (unreadTids, next) {
-					unreadTids = unreadTids.map(String);
-					assert(!unreadTids.includes(String(privateTid)));
-					next();
-				},
-			], done);
+		it('should not return topics in category you cant read', async () => {
+			const { cid: privateCid } = await categories.create({
+				name: 'private category',
+				description: 'private category',
+			});
+			privileges.categories.rescind(['groups:topics:read'], privateCid, 'registered-users');
+
+			const { topicData } = await topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: privateCid });
+			const privateTid = topicData.tid;
+
+			const unreadTids = (await topics.getUnreadTids({ uid: uid })).map(String);
+			assert(!unreadTids.includes(String(privateTid)));
 		});
 
-		it('should not return topics in category you ignored/not watching', (done) => {
-			let ignoredCid;
-			let tid;
-			async.waterfall([
-				function (next) {
-					categories.create({
-						name: 'ignored category',
-						description: 'ignored category',
-					}, next);
-				},
-				function (category, next) {
-					ignoredCid = category.cid;
-					privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users', next);
-				},
-				function (next) {
-					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: ignoredCid }, next);
-				},
-				function (data, next) {
-					tid = data.topicData.tid;
-					User.ignoreCategory(uid, ignoredCid, next);
-				},
-				function (next) {
-					topics.getUnreadTids({ uid: uid }, next);
-				},
-				function (unreadTids, next) {
-					unreadTids = unreadTids.map(String);
-					assert(!unreadTids.includes(String(tid)));
-					next();
-				},
-			], done);
+		it('should not return topics in category you ignored/not watching', async () => {
+			const category = await categories.create({
+				name: 'ignored category',
+				description: 'ignored category',
+			});
+			const ignoredCid = category.cid;
+			await privileges.categories.rescind(['groups:topics:read'], ignoredCid, 'registered-users');
+
+			const { topicData } = await topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: ignoredCid });
+			const { tid } = topicData;
+
+			await User.ignoreCategory(uid, ignoredCid);
+			const unreadTids = (await topics.getUnreadTids({ uid: uid })).map(String);
+			assert(!unreadTids.includes(String(tid)));
 		});
 
-		it('should not return topic as unread if new post is from blocked user', (done) => {
-			let blockedUid;
-			let topic;
-			async.waterfall([
-				function (next) {
-					topics.post({ uid: adminUid, title: 'will not get as unread', content: 'not unread', cid: categoryObj.cid }, next);
-				},
-				function (result, next) {
-					topic = result.topicData;
-					User.create({ username: 'blockedunread' }, next);
-				},
-				function (uid, next) {
-					blockedUid = uid;
-					User.blocks.add(uid, adminUid, next);
-				},
-				function (next) {
-					topics.reply({ uid: blockedUid, content: 'post from blocked user', tid: topic.tid }, next);
-				},
-				function (result, next) {
-					topics.getUnreadTids({ cid: 0, uid: adminUid }, next);
-				},
-				function (unreadTids, next) {
-					assert(!unreadTids.includes(topic.tid));
-					User.blocks.remove(blockedUid, adminUid, next);
-				},
-			], done);
+		it('should not return topic as unread if new post is from blocked user', async () => {
+			const { topicData } = await topics.post({ uid: adminUid, title: 'will not get as unread', content: 'not unread', cid: categoryObj.cid });
+			const blockedUid = await User.create({ username: 'blockedunread' });
+			await User.blocks.add(blockedUid, adminUid);
+			await topics.reply({ uid: blockedUid, content: 'post from blocked user', tid: topic.tid });
+
+			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: adminUid });
+			assert(!unreadTids.includes(topicData.tid));
+			await User.blocks.remove(blockedUid, adminUid);
 		});
 
 		it('should not return topic as unread if topic is deleted', async () => {
@@ -1695,18 +1429,9 @@ describe('Topic\'s', () => {
 		const socketTopics = require('../src/socket.io/topics');
 		const socketAdmin = require('../src/socket.io/admin');
 
-		before((done) => {
-			async.series([
-				function (next) {
-					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb', 'node icon'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
-				},
-				function (next) {
-					topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
-				},
-			], (err) => {
-				assert.ifError(err);
-				done();
-			});
+		before(async () => {
+			await topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb', 'node icon'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId });
+			await topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId });
 		});
 
 		it('should return empty array if query is falsy', (done) => {
@@ -2251,20 +1976,9 @@ describe('Topic\'s', () => {
 	describe('teasers', () => {
 		let topic1;
 		let topic2;
-		before((done) => {
-			async.series([
-				function (next) {
-					topics.post({ uid: adminUid, title: 'topic 1', content: 'content 1', cid: categoryObj.cid }, next);
-				},
-				function (next) {
-					topics.post({ uid: adminUid, title: 'topic 2', content: 'content 2', cid: categoryObj.cid }, next);
-				},
-			], (err, results) => {
-				assert.ifError(err);
-				topic1 = results[0];
-				topic2 = results[1];
-				done();
-			});
+		before(async () => {
+			topic1 = await topics.post({ uid: adminUid, title: 'topic 1', content: 'content 1', cid: categoryObj.cid });
+			topic2 = await topics.post({ uid: adminUid, title: 'topic 2', content: 'content 2', cid: categoryObj.cid });
 		});
 
 		after((done) => {
@@ -2358,47 +2072,23 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should not return teaser if user is blocked', (done) => {
-			let blockedUid;
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'blocked' }, next);
-				},
-				function (uid, next) {
-					blockedUid = uid;
-					User.blocks.add(uid, adminUid, next);
-				},
-				function (next) {
-					topics.reply({ uid: blockedUid, content: 'post from blocked user', tid: topic2.topicData.tid }, next);
-				},
-				function (result, next) {
-					topics.getTeaser(topic2.topicData.tid, adminUid, next);
-				},
-				function (teaser, next) {
-					assert.equal(teaser.content, 'content 2');
-					User.blocks.remove(blockedUid, adminUid, next);
-				},
-			], done);
+		it('should not return teaser if user is blocked', async () => {
+			const blockedUid = await User.create({ username: 'blocked' });
+			await User.blocks.add(blockedUid, adminUid);
+			await topics.reply({ uid: blockedUid, content: 'post from blocked user', tid: topic2.topicData.tid });
+			const teaser = await topics.getTeaser(topic2.topicData.tid, adminUid);
+			assert.equal(teaser.content, 'content 2');
+			await User.blocks.remove(blockedUid, adminUid);
 		});
 	});
 
 	describe('tag privilege', () => {
 		let uid;
 		let cid;
-		before((done) => {
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'tag_poster' }, next);
-				},
-				function (_uid, next) {
-					uid = _uid;
-					categories.create({ name: 'tag category' }, next);
-				},
-				function (categoryObj, next) {
-					cid = categoryObj.cid;
-					next();
-				},
-			], done);
+		before(async () => {
+			uid = await User.create({ username: 'tag_poster' });
+			const category = await categories.create({ name: 'tag category' });
+			cid = category.cid;
 		});
 
 		it('should fail to post if user does not have tag privilege', (done) => {
@@ -2449,27 +2139,14 @@ describe('Topic\'s', () => {
 			return await topics.getTopicWithPosts(topicData, `tid:${topicData.tid}:posts`, adminUid, 0, 19, false);
 		}
 
-		before((done) => {
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'mergevictim' }, next);
-				},
-				function (_uid, next) {
-					uid = _uid;
-					topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 1', content: 'topic 1 OP' }, next);
-				},
-				function (result, next) {
-					topic1Data = result.topicData;
-					topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 2', content: 'topic 2 OP' }, next);
-				},
-				function (result, next) {
-					topic2Data = result.topicData;
-					topics.reply({ uid: uid, content: 'topic 1 reply', tid: topic1Data.tid }, next);
-				},
-				function (postData, next) {
-					topics.reply({ uid: uid, content: 'topic 2 reply', tid: topic2Data.tid }, next);
-				},
-			], done);
+		before(async () => {
+			uid = await User.create({ username: 'mergevictim' });
+			let result = await topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 1', content: 'topic 1 OP' });
+			topic1Data = result.topicData;
+			result = await topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 2', content: 'topic 2 OP' });
+			topic2Data = result.topicData;
+			await topics.reply({ uid: uid, content: 'topic 1 reply', tid: topic1Data.tid });
+			await topics.reply({ uid: uid, content: 'topic 2 reply', tid: topic2Data.tid });
 		});
 
 		it('should error if data is not an array', (done) => {
@@ -2584,26 +2261,24 @@ describe('Topic\'s', () => {
 			await topics.reply({ uid: topic.userId, content: 'topic 2 reply', tid: topic2Result.topicData.tid });
 		});
 
-		it('should get sorted topics in category', (done) => {
+		it('should get sorted topics in category', async () => {
 			const filters = ['', 'watched', 'unreplied', 'new'];
-			async.map(filters, (filter, next) => {
-				topics.getSortedTopics({
+			const data = await Promise.all(filters.map(
+				async filter => topics.getSortedTopics({
 					cids: [category.cid],
 					uid: topic.userId,
 					start: 0,
 					stop: -1,
 					filter: filter,
 					sort: 'votes',
-				}, next);
-			}, (err, data) => {
-				assert.ifError(err);
-				assert(data);
-				data.forEach((filterTopics) => {
-					assert(Array.isArray(filterTopics.topics));
-				});
-				done();
+				})
+			));
+			assert(data);
+			data.forEach((filterTopics) => {
+				assert(Array.isArray(filterTopics.topics));
 			});
 		});
+
 		it('should get topics recent replied first', async () => {
 			const data = await topics.getSortedTopics({
 				cids: [category.cid],

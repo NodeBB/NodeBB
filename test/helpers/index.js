@@ -61,9 +61,7 @@ helpers.logoutUser = async function (jar) {
 
 helpers.connectSocketIO = function (res, csrf_token) {
 	const io = require('socket.io-client');
-	let cookies = res.headers['set-cookie'];
-	cookies = cookies.filter(c => /express.sid=[^;]+;/.test(c));
-	const cookie = cookies[0];
+	const cookie = res.headers['set-cookie'];
 	const socket = io(nconf.get('base_url'), {
 		path: `${nconf.get('relative_path')}/socket.io`,
 		extraHeaders: {
@@ -102,8 +100,7 @@ helpers.uploadFile = async function (uploadEndPoint, filePath, data, jar, csrf_t
 	if (data && data.params) {
 		form.append('params', data.params);
 	}
-	// console.log('form headers', form.getHeaders());
-	console.log('cookie string', await jar.getCookieString(uploadEndPoint));
+
 	const response = await fetch(uploadEndPoint, {
 		method: 'post',
 		body: form,
@@ -112,10 +109,6 @@ helpers.uploadFile = async function (uploadEndPoint, filePath, data, jar, csrf_t
 			cookie: await jar.getCookieString(uploadEndPoint),
 		},
 	});
-
-	if (response.status !== 200) {
-		winston.error(JSON.stringify(data));
-	}
 	const body = await response.json();
 	return {
 		body,

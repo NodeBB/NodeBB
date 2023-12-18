@@ -9,9 +9,7 @@ const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 const assert = require('assert');
-const async = require('async');
 const nconf = require('nconf');
-
 
 const db = require('./mocks/databasemock');
 const user = require('../src/user');
@@ -433,20 +431,38 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should toggle plugin install', function (done) {
-		this.timeout(0);
-		const oldValue = process.env.NODE_ENV;
-		process.env.NODE_ENV = 'development';
-		socketAdmin.plugins.toggleInstall({
-			uid: adminUid,
-		}, {
-			id: 'nodebb-plugin-location-to-map',
-			version: 'latest',
-		}, (err, data) => {
-			assert.ifError(err);
-			assert.equal(data.name, 'nodebb-plugin-location-to-map');
-			process.env.NODE_ENV = oldValue;
-			done();
+	describe('install/upgrade plugin', () => {
+		it('should toggle plugin install', function (done) {
+			this.timeout(0);
+			const oldValue = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'development';
+			socketAdmin.plugins.toggleInstall({
+				uid: adminUid,
+			}, {
+				id: 'nodebb-plugin-location-to-map',
+				version: 'latest',
+			}, (err, data) => {
+				assert.ifError(err);
+				assert.equal(data.name, 'nodebb-plugin-location-to-map');
+				process.env.NODE_ENV = oldValue;
+				done();
+			});
+		});
+
+		it('should upgrade plugin', function (done) {
+			this.timeout(0);
+			const oldValue = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'development';
+			socketAdmin.plugins.upgrade({
+				uid: adminUid,
+			}, {
+				id: 'nodebb-plugin-location-to-map',
+				version: 'latest',
+			}, (err) => {
+				assert.ifError(err);
+				process.env.NODE_ENV = oldValue;
+				done();
+			});
 		});
 	});
 
@@ -472,22 +488,6 @@ describe('socket.io', () => {
 				assert.equal(rank, 1);
 				done();
 			});
-		});
-	});
-
-	it('should upgrade plugin', function (done) {
-		this.timeout(0);
-		const oldValue = process.env.NODE_ENV;
-		process.env.NODE_ENV = 'development';
-		socketAdmin.plugins.upgrade({
-			uid: adminUid,
-		}, {
-			id: 'nodebb-plugin-location-to-map',
-			version: 'latest',
-		}, (err) => {
-			assert.ifError(err);
-			process.env.NODE_ENV = oldValue;
-			done();
 		});
 	});
 
@@ -683,60 +683,43 @@ describe('socket.io', () => {
 			assert(pwExpiry > then && pwExpiry < Date.now());
 		});
 
-		it('should not error on valid email', (done) => {
-			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
-				assert.ifError(err);
+		it('should not error on valid email', async () => {
+			await socketUser.reset.send({ uid: 0 }, 'regular@test.com');
+			const [count, eventsData] = await Promise.all([
+				db.sortedSetCount('reset:issueDate', 0, Date.now()),
+				events.getEvents('', 0, 0),
+			]);
+			assert.strictEqual(count, 2);
 
-				async.parallel({
-					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
-					event: async.apply(events.getEvents, '', 0, 0),
-				}, (err, data) => {
-					assert.ifError(err);
-					assert.strictEqual(data.count, 2);
-
-					// Event validity
-					assert.strictEqual(data.event.length, 1);
-					const event = data.event[0];
-					assert.strictEqual(event.type, 'password-reset');
-					assert.strictEqual(event.text, '[[success:success]]');
-
-					done();
-				});
-			});
+			// Event validity
+			assert.strictEqual(eventsData.length, 1);
+			const event = eventsData[0];
+			assert.strictEqual(event.type, 'password-reset');
+			assert.strictEqual(event.text, '[[success:success]]');
 		});
 
-		it('should not generate code if rate limited', (done) => {
-			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
-				assert(err);
+		it('should not generate code if rate limited', async () => {
+			await assert.rejects(
+				socketUser.reset.send({ uid: 0 }, 'regular@test.com'),
+				{ message: '[[error:reset-rate-limited]]' },
+			);
+			const [count, eventsData] = await Promise.all([
+				db.sortedSetCount('reset:issueDate', 0, Date.now()),
+				events.getEvents('', 0, 0),
+			]);
+			assert.strictEqual(count, 2);
 
-				async.parallel({
-					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
-					event: async.apply(events.getEvents, '', 0, 0),
-				}, (err, data) => {
-					assert.ifError(err);
-					assert.strictEqual(data.count, 2);
-
-					// Event validity
-					assert.strictEqual(data.event.length, 1);
-					const event = data.event[0];
-					assert.strictEqual(event.type, 'password-reset');
-					assert.strictEqual(event.text, '[[error:reset-rate-limited]]');
-
-					done();
-				});
-			});
+			// Event validity
+			assert.strictEqual(eventsData.length, 1);
+			const event = eventsData[0];
+			assert.strictEqual(event.type, 'password-reset');
+			assert.strictEqual(event.text, '[[error:reset-rate-limited]]');
 		});
 
-		it('should not error on invalid email (but not generate reset code)', (done) => {
-			socketUser.reset.send({ uid: 0 }, 'irregular@test.com', (err) => {
-				assert.ifError(err);
-
-				db.sortedSetCount('reset:issueDate', 0, Date.now(), (err, count) => {
-					assert.ifError(err);
-					assert.strictEqual(count, 2);
-					done();
-				});
-			});
+		it('should not error on invalid email (but not generate reset code)', async () => {
+			await socketUser.reset.send({ uid: 0 }, 'irregular@test.com');
+			const count = await db.sortedSetCount('reset:issueDate', 0, Date.now());
+			assert.strictEqual(count, 2);
 		});
 
 		it('should error on no email', (done) => {

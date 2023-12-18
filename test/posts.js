@@ -2,7 +2,6 @@
 
 
 const assert = require('assert');
-const async = require('async');
 
 const nconf = require('nconf');
 const path = require('path');
@@ -34,48 +33,22 @@ describe('Post\'s', () => {
 	let topicData;
 	let cid;
 
-	before((done) => {
-		async.series({
-			voterUid: function (next) {
-				user.create({ username: 'upvoter' }, next);
-			},
-			voteeUid: function (next) {
-				user.create({ username: 'upvotee' }, next);
-			},
-			globalModUid: function (next) {
-				user.create({ username: 'globalmod', password: 'globalmodpwd' }, next);
-			},
-			category: function (next) {
-				categories.create({
-					name: 'Test Category',
-					description: 'Test category created by testing script',
-				}, next);
-			},
-		}, (err, results) => {
-			if (err) {
-				return done(err);
-			}
+	before(async () => {
+		voterUid = await user.create({ username: 'upvoter' });
+		voteeUid = await user.create({ username: 'upvotee' });
+		globalModUid = await user.create({ username: 'globalmod', password: 'globalmodpwd' });
+		({ cid } = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
+		}));
 
-			voterUid = results.voterUid;
-			voteeUid = results.voteeUid;
-			globalModUid = results.globalModUid;
-			cid = results.category.cid;
-
-			topics.post({
-				uid: results.voteeUid,
-				cid: results.category.cid,
-				title: 'Test Topic Title',
-				content: 'The content of test topic',
-			}, (err, data) => {
-				if (err) {
-					return done(err);
-				}
-				postData = data.postData;
-				topicData = data.topicData;
-
-				groups.join('Global Moderators', globalModUid, done);
-			});
-		});
+		({ topicData, postData } = await topics.post({
+			uid: voteeUid,
+			cid: cid,
+			title: 'Test Topic Title',
+			content: 'The content of test topic',
+		}));
+		await groups.join('Global Moderators', globalModUid);
 	});
 
 	it('should update category teaser properly', async () => {
@@ -1058,20 +1031,10 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should accept queued posts and submit', (done) => {
-			let ids;
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRange('post:queue', 0, -1, next);
-				},
-				function (_ids, next) {
-					ids = _ids;
-					socketPosts.accept({ uid: globalModUid }, { id: ids[0] }, next);
-				},
-				function (next) {
-					socketPosts.accept({ uid: globalModUid }, { id: ids[1] }, next);
-				},
-			], done);
+		it('should accept queued posts and submit', async () => {
+			const ids = await db.getSortedSetRange('post:queue', 0, -1);
+			await socketPosts.accept({ uid: globalModUid }, { id: ids[0] });
+			await socketPosts.accept({ uid: globalModUid }, { id: ids[1] });
 		});
 
 		it('should not crash if id does not exist', (done) => {

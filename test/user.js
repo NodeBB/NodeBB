@@ -1,12 +1,12 @@
 'use strict';
 
 const assert = require('assert');
-const async = require('async');
 const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
+const { setTimeout } = require('node:timers/promises');
 
 const db = require('./mocks/databasemock');
 const User = require('../src/user');
@@ -173,7 +173,7 @@ describe('User', () => {
 	});
 
 	describe('.uniqueUsername()', () => {
-		it('should deal with collisions', (done) => {
+		it('should deal with collisions', async () => {
 			const users = [];
 			for (let i = 0; i < 10; i += 1) {
 				users.push({
@@ -181,25 +181,16 @@ describe('User', () => {
 					email: `jane.doe${i}@example.com`,
 				});
 			}
+			for (const user of users) {
+				// eslint-disable-next-line no-await-in-loop
+				await User.create(user);
+			}
 
-			async.series([
-				function (next) {
-					async.eachSeries(users, (user, next) => {
-						User.create(user, next);
-					}, next);
-				},
-				function (next) {
-					User.uniqueUsername({
-						username: 'Jane Doe',
-						userslug: 'jane-doe',
-					}, (err, username) => {
-						assert.ifError(err);
-
-						assert.strictEqual(username, 'Jane Doe 9');
-						next();
-					});
-				},
-			], done);
+			const username = await User.uniqueUsername({
+				username: 'Jane Doe',
+				userslug: 'jane-doe',
+			});
+			assert.strictEqual(username, 'Jane Doe 9');
 		});
 	});
 
@@ -251,12 +242,10 @@ describe('User', () => {
 	});
 
 	describe('.getModeratorUids()', () => {
-		before((done) => {
-			async.series([
-				async.apply(groups.create, { name: 'testGroup' }),
-				async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup'),
-				async.apply(groups.join, 'testGroup', 1),
-			], done);
+		before(async () => {
+			await groups.create({ name: 'testGroup' });
+			await groups.join('cid:1:privileges:groups:moderate', 'testGroup');
+			await groups.join('testGroup', 1);
 		});
 
 		it('should retrieve all users with moderator bit in category privilege', (done) => {
@@ -268,38 +257,13 @@ describe('User', () => {
 			});
 		});
 
-		after((done) => {
-			async.series([
-				async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
-				async.apply(groups.destroy, 'testGroup'),
-			], done);
+		after(async () => {
+			groups.leave('cid:1:privileges:groups:moderate', 'testGroup');
+			groups.destroy('testGroup');
 		});
 	});
 
 	describe('.isReadyToPost()', () => {
-		it('should error when a user makes two posts in quick succession', (done) => {
-			meta.config = meta.config || {};
-			meta.config.postDelay = '10';
-
-			async.series([
-				async.apply(Topics.post, {
-					uid: testUid,
-					title: 'Topic 1',
-					content: 'lorem ipsum',
-					cid: testCid,
-				}),
-				async.apply(Topics.post, {
-					uid: testUid,
-					title: 'Topic 2',
-					content: 'lorem ipsum',
-					cid: testCid,
-				}),
-			], (err) => {
-				assert(err);
-				done();
-			});
-		});
-
 		it('should allow a post if the last post time is > 10 seconds', (done) => {
 			User.setUserField(testUid, 'lastposttime', +new Date() - (11 * 1000), () => {
 				Topics.post({
@@ -354,7 +318,7 @@ describe('User', () => {
 			const titles = new Array(10).fill('topic title');
 			const res = await Promise.allSettled(titles.map(async (title) => {
 				const { body } = await helpers.request('post', '/api/v3/topics', {
-					data: {
+					body: {
 						cid: testCid,
 						title: title,
 						content: 'the content',
@@ -484,32 +448,19 @@ describe('User', () => {
 			assert.equal(data.users[0].username, 'ipsearch_filter');
 		});
 
-		it('should sort results by username', (done) => {
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'brian' }, next);
-				},
-				function (uid, next) {
-					User.create({ username: 'baris' }, next);
-				},
-				function (uid, next) {
-					User.create({ username: 'bzari' }, next);
-				},
-				function (uid, next) {
-					User.search({
-						uid: testUid,
-						query: 'b',
-						sortBy: 'username',
-						paginate: false,
-					}, next);
-				},
-			], (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.users[0].username, 'baris');
-				assert.equal(data.users[1].username, 'brian');
-				assert.equal(data.users[2].username, 'bzari');
-				done();
+		it('should sort results by username', async () => {
+			await User.create({ username: 'brian' });
+			await User.create({ username: 'baris' });
+			await User.create({ username: 'bzari' });
+			const data = await User.search({
+				uid: testUid,
+				query: 'b',
+				sortBy: 'username',
+				paginate: false,
 			});
+			assert.equal(data.users[0].username, 'baris');
+			assert.equal(data.users[1].username, 'brian');
+			assert.equal(data.users[2].username, 'bzari');
 		});
 	});
 
@@ -994,7 +945,7 @@ describe('User', () => {
 				headers: {
 					'x-csrf-token': token,
 				},
-				data: {
+				body: {
 					type: 'external',
 					url: 'https://example.org/picture.jpg',
 				},
@@ -1217,7 +1168,6 @@ describe('User', () => {
 			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
 			await request.post(`${nconf.get('url')}/register/abort`, {
 				jar,
-				validateStatus: null,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
@@ -1264,30 +1214,12 @@ describe('User', () => {
 			assert.equal(data[0].timestamp, now);
 		});
 
-		it('should return the correct ban reason', (done) => {
-			async.series([
-				function (next) {
-					User.bans.ban(testUserUid, 0, '', (err) => {
-						assert.ifError(err);
-						next(err);
-					});
-				},
-				function (next) {
-					User.getModerationHistory(testUserUid, (err, data) => {
-						assert.ifError(err);
-						assert.equal(data.bans.length, 1, 'one ban');
-						assert.equal(data.bans[0].reason, '[[user:info.banned-no-reason]]', 'no ban reason');
-
-						next(err);
-					});
-				},
-			], (err) => {
-				assert.ifError(err);
-				User.bans.unban(testUserUid, (err) => {
-					assert.ifError(err);
-					done();
-				});
-			});
+		it('should return the correct ban reason', async () => {
+			await User.bans.ban(testUserUid, 0, '');
+			const data = await User.getModerationHistory(testUserUid);
+			assert.equal(data.bans.length, 1, 'one ban');
+			assert.equal(data.bans[0].reason, '[[user:info.banned-no-reason]]', 'no ban reason');
+			await User.bans.unban(testUserUid);
 		});
 
 		it('should ban user permanently', (done) => {
@@ -1301,22 +1233,14 @@ describe('User', () => {
 			});
 		});
 
-		it('should ban user temporarily', (done) => {
-			User.bans.ban(testUserUid, Date.now() + 2000, (err) => {
-				assert.ifError(err);
-
-				User.bans.isBanned(testUserUid, (err, isBanned) => {
-					assert.ifError(err);
-					assert.equal(isBanned, true);
-					setTimeout(() => {
-						User.bans.isBanned(testUserUid, (err, isBanned) => {
-							assert.ifError(err);
-							assert.equal(isBanned, false);
-							User.bans.unban(testUserUid, done);
-						});
-					}, 3000);
-				});
-			});
+		it('should ban user temporarily', async () => {
+			await User.bans.ban(testUserUid, Date.now() + 2000);
+			let isBanned = await User.bans.isBanned(testUserUid);
+			assert.equal(isBanned, true);
+			await setTimeout(3000);
+			isBanned = await User.bans.isBanned(testUserUid);
+			assert.equal(isBanned, false);
+			await User.bans.unban(testUserUid);
 		});
 
 		it('should error if until is NaN', (done) => {
@@ -1394,26 +1318,19 @@ describe('User', () => {
 	describe('Digest.getSubscribers', () => {
 		const uidIndex = {};
 
-		before((done) => {
+		before(async () => {
 			const testUsers = ['daysub', 'offsub', 'nullsub', 'weeksub'];
-			async.each(testUsers, (username, next) => {
-				async.waterfall([
-					async.apply(User.create, { username: username, email: `${username}@example.com` }),
-					function (uid, next) {
-						if (username === 'nullsub') {
-							return setImmediate(next);
-						}
+			await Promise.all(testUsers.map(async (username) => {
+				const uid = await User.create({ username, email: `${username}@example.com` });
+				if (username === 'nullsub') {
+					return;
+				}
+				uidIndex[username] = uid;
 
-						uidIndex[username] = uid;
-
-						const sub = username.slice(0, -3);
-						async.parallel([
-							async.apply(User.updateDigestSetting, uid, sub),
-							async.apply(User.setSetting, uid, 'dailyDigestFreq', sub),
-						], next);
-					},
-				], next);
-			}, done);
+				const sub = username.slice(0, -3);
+				await User.updateDigestSetting(uid, sub);
+				await User.setSetting(uid, 'dailyDigestFreq', sub);
+			}));
 		});
 
 		it('should accurately build digest list given ACP default "null" (not set)', (done) => {
@@ -1425,71 +1342,38 @@ describe('User', () => {
 			});
 		});
 
-		it('should accurately build digest list given ACP default "day"', (done) => {
-			async.series([
-				async.apply(meta.configs.set, 'dailyDigestFreq', 'day'),
-				function (next) {
-					User.digest.getSubscribers('day', (err, subs) => {
-						assert.ifError(err);
-						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true); // daysub does get emailed
-						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false); // weeksub does not get emailed
-						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub doesn't get emailed
+		it('should accurately build digest list given ACP default "day"', async () => {
+			await meta.configs.set('dailyDigestFreq', 'day');
+			const subs = await User.digest.getSubscribers('day');
 
-						next();
-					});
-				},
-			], done);
+			assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true); // daysub does get emailed
+			assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false); // weeksub does not get emailed
+			assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub doesn't get emailed
 		});
 
-		it('should accurately build digest list given ACP default "week"', (done) => {
-			async.series([
-				async.apply(meta.configs.set, 'dailyDigestFreq', 'week'),
-				function (next) {
-					User.digest.getSubscribers('week', (err, subs) => {
-						assert.ifError(err);
-						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true); // weeksub gets emailed
-						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false); // daysub gets emailed
-						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub does not get emailed
+		it('should accurately build digest list given ACP default "week"', async () => {
+			await meta.configs.set('dailyDigestFreq', 'week');
+			const subs = await User.digest.getSubscribers('week');
 
-						next();
-					});
-				},
-			], done);
+			assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true); // weeksub gets emailed
+			assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false); // daysub gets emailed
+			assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub does not get emailed
 		});
 
-		it('should accurately build digest list given ACP default "off"', (done) => {
-			async.series([
-				async.apply(meta.configs.set, 'dailyDigestFreq', 'off'),
-				function (next) {
-					User.digest.getSubscribers('day', (err, subs) => {
-						assert.ifError(err);
-						assert.strictEqual(subs.length, 1);
-
-						next();
-					});
-				},
-			], done);
+		it('should accurately build digest list given ACP default "off"', async () => {
+			await meta.configs.set('dailyDigestFreq', 'off');
+			const subs = await User.digest.getSubscribers('day');
+			assert.strictEqual(subs.length, 1);
 		});
 	});
 
 	describe('digests', () => {
 		let uid;
-		before((done) => {
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'digestuser', email: 'test@example.com' }, next);
-				},
-				function (_uid, next) {
-					uid = _uid;
-					User.updateDigestSetting(uid, 'day', next);
-				},
-				function (next) {
-					User.setSetting(uid, 'dailyDigestFreq', 'day', next);
-				},
-				function (next) {
-					User.setSetting(uid, 'notificationType_test', 'notificationemail', next);
-				},
-			], done);
+		before(async () => {
+			uid = await User.create({ username: 'digestuser', email: 'test@example.com' });
+			await User.updateDigestSetting(uid, 'day');
+			await User.setSetting(uid, 'dailyDigestFreq', 'day');
+			await User.setSetting(uid, 'notificationType_test', 'notificationemail');
 		});
 
 		it('should send digests', async () => {
@@ -1565,7 +1449,7 @@ describe('User', () => {
 					uid: uid,
 				}, nconf.get('secret'));
 
-				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/${token}`, { validateStatus: null });
+				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/${token}`);
 				assert.strictEqual(response.statusCode, 404);
 			});
 
@@ -1575,12 +1459,12 @@ describe('User', () => {
 					uid: uid,
 				}, nconf.get('secret'));
 
-				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/${token}`, { validateStatus: null });
+				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/${token}`);
 				assert.strictEqual(response.statusCode, 404);
 			});
 
 			it('should return errors on missing token', async () => {
-				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/`, { validateStatus: null });
+				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/`);
 				assert.strictEqual(response.statusCode, 404);
 			});
 
@@ -1591,7 +1475,7 @@ describe('User', () => {
 					uid: uid,
 				}, `${nconf.get('secret')}aababacaba`);
 
-				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/${token}`, { validateStatus: null });
+				const { response } = await request.post(`${nconf.get('url')}/email/unsubscribe/${token}`);
 				assert.strictEqual(response.statusCode, 403);
 			});
 		});
@@ -1792,36 +1676,17 @@ describe('User', () => {
 			}
 		});
 
-		it('should set moderation note', (done) => {
-			let adminUid;
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'noteadmin' }, next);
-				},
-				function (_adminUid, next) {
-					adminUid = _adminUid;
-					groups.join('administrators', adminUid, next);
-				},
-				function (next) {
-					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, next);
-				},
-				function (next) {
-					setTimeout(next, 50);
-				},
-				function (next) {
-					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: '<svg/onload=alert(document.location);//' }, next);
-				},
-				function (next) {
-					User.getModerationNotes(testUid, 0, -1, next);
-				},
-			], (err, notes) => {
-				assert.ifError(err);
-				assert.equal(notes[0].note, '&lt;svg&#x2F;onload=alert(document.location);&#x2F;&#x2F;');
-				assert.equal(notes[0].uid, adminUid);
-				assert.equal(notes[1].note, 'this is a test user');
-				assert(notes[0].timestamp);
-				done();
-			});
+		it('should set moderation note', async () => {
+			const adminUid = await User.create({ username: 'noteadmin' });
+			await groups.join('administrators', adminUid);
+			await socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' });
+			await setTimeout(50);
+			await socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: '<svg/onload=alert(document.location);//' });
+			const notes = await User.getModerationNotes(testUid, 0, -1);
+			assert.equal(notes[0].note, '&lt;svg&#x2F;onload=alert(document.location);&#x2F;&#x2F;');
+			assert.equal(notes[0].uid, adminUid);
+			assert.equal(notes[1].note, 'this is a test user');
+			assert(notes[0].timestamp);
 		});
 
 		it('should get unread count 0 for guest', async () => {

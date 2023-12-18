@@ -425,14 +425,13 @@ describe('Upload Controllers', () => {
 
 			it('should fail to delete a file as a non-admin', async () => {
 				const { response, body } = await request.delete(`${nconf.get('url')}/api/v3/files`, {
-					data: {
+					body: {
 						path: '/system/test.png',
 					},
 					jar: regularJar,
 					headers: {
 						'x-csrf-token': regular_csrf_token,
 					},
-					validateStatus: null,
 				});
 				assert.strictEqual(response.statusCode, 403);
 				assert.deepStrictEqual(body.status, {

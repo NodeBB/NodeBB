@@ -2,8 +2,6 @@
 
 
 const assert = require('assert');
-const async = require('async');
-
 const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
@@ -27,82 +25,45 @@ describe('Search', () => {
 	let cid2;
 	let cid3;
 
-	before((done) => {
-		async.waterfall([
-			function (next) {
-				async.series({
-					phoebe: function (next) {
-						user.create({ username: 'phoebe' }, next);
-					},
-					ginger: function (next) {
-						user.create({ username: 'ginger' }, next);
-					},
-					category1: function (next) {
-						categories.create({
-							name: 'Test Category',
-							description: 'Test category created by testing script',
-						}, next);
-					},
-					category2: function (next) {
-						categories.create({
-							name: 'Test Category',
-							description: 'Test category created by testing script',
-						}, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				phoebeUid = results.phoebe;
-				gingerUid = results.ginger;
-				cid1 = results.category1.cid;
-				cid2 = results.category2.cid;
+	before(async () => {
+		phoebeUid = await user.create({ username: 'phoebe' });
+		gingerUid = await user.create({ username: 'ginger' });
+		cid1 = (await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
+		})).cid;
 
-				async.waterfall([
-					function (next) {
-						categories.create({
-							name: 'Child Test Category',
-							description: 'Test category created by testing script',
-							parentCid: cid2,
-						}, next);
-					},
-					function (category, next) {
-						cid3 = category.cid;
-						topics.post({
-							uid: phoebeUid,
-							cid: cid1,
-							title: 'nodebb mongodb bugs',
-							content: 'avocado cucumber apple orange fox',
-							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'jquery'],
-						}, next);
-					},
-					function (results, next) {
-						topic1Data = results.topicData;
-						post1Data = results.postData;
+		cid2 = (await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
+		})).cid;
 
-						topics.post({
-							uid: gingerUid,
-							cid: cid2,
-							title: 'java mongodb redis',
-							content: 'avocado cucumber carrot armadillo',
-							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'javascript'],
-						}, next);
-					},
-					function (results, next) {
-						topic2Data = results.topicData;
-						post2Data = results.postData;
-						topics.reply({
-							uid: phoebeUid,
-							content: 'reply post apple',
-							tid: topic2Data.tid,
-						}, next);
-					},
-					function (_post3Data, next) {
-						post3Data = _post3Data;
-						setTimeout(next, 500);
-					},
-				], next);
-			},
-		], done);
+		cid3 = (await categories.create({
+			name: 'Child Test Category',
+			description: 'Test category created by testing script',
+			parentCid: cid2,
+		})).cid;
+
+		({ topicData: topic1Data, postData: post1Data } = await topics.post({
+			uid: phoebeUid,
+			cid: cid1,
+			title: 'nodebb mongodb bugs',
+			content: 'avocado cucumber apple orange fox',
+			tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'jquery'],
+		}));
+
+		({ topicData: topic2Data, postData: post2Data } = await topics.post({
+			uid: gingerUid,
+			cid: cid2,
+			title: 'java mongodb redis',
+			content: 'avocado cucumber carrot armadillo',
+			tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'javascript'],
+		}));
+		post3Data = await topics.reply({
+			uid: phoebeUid,
+			content: 'reply post apple',
+			tid: topic2Data.tid,
+		});
 	});
 
 	it('should search term in titles and posts', async () => {
@@ -220,33 +181,24 @@ describe('Search', () => {
 		});
 	});
 
-	it('should search child categories', (done) => {
-		async.waterfall([
-			function (next) {
-				topics.post({
-					uid: gingerUid,
-					cid: cid3,
-					title: 'child category topic',
-					content: 'avocado cucumber carrot armadillo',
-				}, next);
-			},
-			function (result, next) {
-				search.search({
-					query: 'avocado',
-					searchIn: 'titlesposts',
-					categories: [cid2],
-					searchChildren: true,
-					sortBy: 'topic.timestamp',
-					sortDirection: 'desc',
-				}, next);
-			},
-			function (result, next) {
-				assert(result.posts.length, 2);
-				assert(result.posts[0].topic.title === 'child category topic');
-				assert(result.posts[1].topic.title === 'java mongodb redis');
-				next();
-			},
-		], done);
+	it('should search child categories', async () => {
+		await topics.post({
+			uid: gingerUid,
+			cid: cid3,
+			title: 'child category topic',
+			content: 'avocado cucumber carrot armadillo',
+		});
+		const result = await search.search({
+			query: 'avocado',
+			searchIn: 'titlesposts',
+			categories: [cid2],
+			searchChildren: true,
+			sortBy: 'topic.timestamp',
+			sortDirection: 'desc',
+		});
+		assert(result.posts.length, 2);
+		assert(result.posts[0].topic.title === 'child category topic');
+		assert(result.posts[1].topic.title === 'java mongodb redis');
 	});
 
 	it('should return json search data with no categories', async () => {

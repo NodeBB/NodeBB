@@ -67,6 +67,7 @@
         "express": "4.18.2",
         "express-session": "1.17.3",
         "express-useragent": "1.0.15",
+        "fetch-cookie": "2.1.0",
         "file-loader": "6.2.0",
         "fs-extra": "11.2.0",
         "graceful-fs": "4.2.11",
@@ -180,7 +181,7 @@
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=18"
     },
     "maintainers": [
         {

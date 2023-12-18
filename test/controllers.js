@@ -191,7 +191,7 @@ describe('Controllers', () => {
 
 		it('should 404 if custom does not exist', async () => {
 			await meta.configs.set('homePageRoute', 'this-route-does-not-exist');
-			const { response, body } = await request.get(nconf.get('url'), { validateStatus: null });
+			const { response, body } = await request.get(nconf.get('url'));
 			assert.equal(response.statusCode, 404);
 			assert(body);
 		});
@@ -224,9 +224,7 @@ describe('Controllers', () => {
 		const baseUrl = nconf.get('url');
 		testRoutes.forEach((route) => {
 			it(route.it, async () => {
-				const { response, body } = await request.get(`${baseUrl}/${route.url}`, {
-					validateStatus: null,
-				});
+				const { response, body } = await request.get(`${baseUrl}/${route.url}`);
 				assert.equal(response.statusCode, route.status || 200);
 				if (route.body) {
 					assert.strictEqual(String(body), route.body);
@@ -238,17 +236,15 @@ describe('Controllers', () => {
 	});
 
 	it('should load /register/complete', async () => {
-		const data = {
-			username: 'interstitial',
-			password: '123456',
-			'password-confirm': '123456',
-			email: 'test@me.com',
-		};
-
 		const jar = request.jar();
 		const csrf_token = await helpers.getCsrfToken(jar);
 		const { response, body } = await request.post(`${nconf.get('url')}/register`, {
-			data,
+			body: {
+				username: 'interstitial',
+				password: '123456',
+				'password-confirm': '123456',
+				email: 'test@me.com',
+			},
 			jar,
 			headers: {
 				'x-csrf-token': csrf_token,
@@ -297,12 +293,12 @@ describe('Controllers', () => {
 			it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {
 				const { response: res } = await request.post(`${nconf.get('url')}/register/complete`, {
 					jar,
-					maxRedirects: 0,
-					validateStatus: null,
+					maxRedirect: 0,
+					redirect: 'manual',
 					headers: {
 						'x-csrf-token': token,
 					},
-					data: {
+					body: {
 						email: '',
 					},
 				});
@@ -508,7 +504,6 @@ describe('Controllers', () => {
 				async function abortInterstitial() {
 					await request.post(`${nconf.get('url')}/register/abort`, {
 						jar,
-						validateStatus: null,
 						headers: {
 							'x-csrf-token': token,
 						},
@@ -520,12 +515,12 @@ describe('Controllers', () => {
 
 					const { response } = await request.post(`${nconf.get('url')}/register/complete`, {
 						jar,
-						maxRedirects: 0,
-						validateStatus: null,
+						maxRedirect: 0,
+						redirect: 'manual',
 						headers: {
 							'x-csrf-token': token,
 						},
-						data: {
+						body: {
 							email: `${utils.generateUUID().slice(0, 10)}@example.org`,
 							gdpr_agree_data: 'on',
 							gdpr_agree_email: 'on',
@@ -540,8 +535,7 @@ describe('Controllers', () => {
 				it('should allow access to regular resources after an email is entered, even if unconfirmed', async () => {
 					const { response } = await request.get(`${nconf.get('url')}/recent`, {
 						jar,
-						maxRedirects: 0,
-						validateStatus: null,
+						maxRedirect: 0,
 					});
 
 					assert.strictEqual(response.statusCode, 200);
@@ -554,8 +548,8 @@ describe('Controllers', () => {
 					await privileges.categories.give(['groups:read'], cid, ['verified-users']);
 					const { response } = await request.get(`${nconf.get('url')}/category/${cid}/${slugify(name)}`, {
 						jar,
-						maxRedirects: 0,
-						validateStatus: null,
+						maxRedirect: 0,
+						redirect: 'manual',
 					});
 
 					assert.strictEqual(response.statusCode, 307);
@@ -570,8 +564,8 @@ describe('Controllers', () => {
 					await privileges.categories.give(['groups:topics:read'], cid, 'verified-users');
 					const { response } = await request.get(`${nconf.get('url')}/category/${cid}/${slugify(name)}`, {
 						jar,
-						maxRedirects: 0,
-						validateStatus: null,
+						maxRedirect: 0,
+						redirect: 'manual',
 					});
 
 					assert.strictEqual(response.statusCode, 200);
@@ -581,8 +575,8 @@ describe('Controllers', () => {
 					const { topicData } = await topics.post({ uid, cid, title, content: utils.generateUUID() });
 					const { response: res2 } = await request.get(`${nconf.get('url')}/topic/${topicData.tid}/${slugify(title)}`, {
 						jar,
-						maxRedirects: 0,
-						validateStatus: null,
+						maxRedirect: 0,
+						redirect: 'manual',
 					});
 					assert.strictEqual(res2.statusCode, 307);
 					assert.strictEqual(res2.headers.location, `${nconf.get('relative_path')}/register/complete`);
@@ -607,12 +601,12 @@ describe('Controllers', () => {
 			it('registration should succeed once gdpr prompts are agreed to', async () => {
 				const { response } = await request.post(`${nconf.get('url')}/register/complete`, {
 					jar,
-					maxRedirects: 0,
-					validateStatus: null,
+					maxRedirect: 0,
+					redirect: 'manual',
 					headers: {
 						'x-csrf-token': token,
 					},
-					data: {
+					body: {
 						gdpr_agree_data: 'on',
 						gdpr_agree_email: 'on',
 					},
@@ -638,15 +632,15 @@ describe('Controllers', () => {
 			it('should terminate the session and send user back to index if interstitials remain', async () => {
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
 					jar,
-					maxRedirects: 0,
-					validateStatus: null,
+					maxRedirect: 0,
+					redirect: 'manual',
 					headers: {
 						'x-csrf-token': token,
 					},
 				});
 
 				assert.strictEqual(response.statusCode, 302);
-				assert.strictEqual(response.headers['set-cookie'][0], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`);
+				assert.strictEqual(response.headers['set-cookie'], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`);
 				assert.strictEqual(response.headers.location, `${nconf.get('relative_path')}/`);
 			});
 
@@ -654,12 +648,12 @@ describe('Controllers', () => {
 				// Submit GDPR consent
 				await request.post(`${nconf.get('url')}/register/complete`, {
 					jar,
-					maxRedirects: 0,
-					validateStatus: null,
+					maxRedirect: 0,
+					redirect: 'manual',
 					headers: {
 						'x-csrf-token': token,
 					},
-					data: {
+					body: {
 						gdpr_agree_data: 'on',
 						gdpr_agree_email: 'on',
 					},
@@ -670,8 +664,8 @@ describe('Controllers', () => {
 
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
 					jar,
-					maxRedirects: 0,
-					validateStatus: null,
+					maxRedirect: 0,
+					redirect: 'manual',
 					headers: {
 						'x-csrf-token': token,
 					},
@@ -694,14 +688,14 @@ describe('Controllers', () => {
 
 	it('should return 404 if meta.config.termsOfUse is empty', async () => {
 		meta.config.termsOfUse = '';
-		const { response, body } = await request.get(`${nconf.get('url')}/tos`, { validateStatus: null });
+		const { response, body } = await request.get(`${nconf.get('url')}/tos`);
 		assert.equal(response.statusCode, 404);
 		assert(body);
 	});
 
 
 	it('should error if guests do not have search privilege', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`, { validateStatus: null });
+		const { response, body } = await request.get(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`);
 		assert.equal(response.statusCode, 500);
 		assert(body);
 		assert.equal(body.error, '[[error:no-privileges]]');
@@ -749,7 +743,7 @@ describe('Controllers', () => {
 			description: 'Foobar!',
 			hidden: 1,
 		});
-		const { response } = await request.get(`${nconf.get('url')}/groups/hidden-group/members`, { validateStatus: null });
+		const { response } = await request.get(`${nconf.get('url')}/groups/hidden-group/members`);
 		assert.equal(response.statusCode, 404);
 	});
 
@@ -770,7 +764,6 @@ describe('Controllers', () => {
 		it('should fail to revoke session with missing uuid', async () => {
 			const { response } = await request.del(`${nconf.get('url')}/api/user/revokeme/session`, {
 				jar: jar,
-				validateStatus: null,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
@@ -781,7 +774,6 @@ describe('Controllers', () => {
 		it('should fail if user doesn\'t exist', async () => {
 			const { response, body } = await request.del(`${nconf.get('url')}/api/v3/users/doesnotexist/sessions/1112233`, {
 				jar: jar,
-				validateStatus: null,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
@@ -914,12 +906,12 @@ describe('Controllers', () => {
 		});
 
 		it('should return 503 in maintenance mode', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/recent`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/recent`);
 			assert.equal(response.statusCode, 503);
 		});
 
 		it('should return 503 in maintenance mode', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/recent`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/recent`);
 			assert.equal(response.statusCode, 503);
 			assert(body);
 		});
@@ -956,7 +948,7 @@ describe('Controllers', () => {
 		});
 
 		it('should 404 if uid is not a number', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/uid/test`, { jar, validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/uid/test`, { jar });
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -975,7 +967,7 @@ describe('Controllers', () => {
 		});
 
 		it('should 404 if user does not exist', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/uid/123123`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/uid/123123`);
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -1009,12 +1001,12 @@ describe('Controllers', () => {
 		});
 
 		it('should 401 if user is not logged in', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/admin`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/admin`);
 			assert.equal(response.statusCode, 401);
 		});
 
 		it('should 403 if user is not admin', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/admin`, { jar, validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/admin`, { jar });
 			assert.equal(response.statusCode, 403);
 		});
 
@@ -1025,7 +1017,7 @@ describe('Controllers', () => {
 		});
 
 		it('should 401 if not logged in', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/admin`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/admin`);
 			assert.equal(response.statusCode, 401);
 			assert(body);
 		});
@@ -1172,7 +1164,7 @@ describe('Controllers', () => {
 		});
 
 		it('should 404 if user does not exist', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/email/doesnotexist`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/email/doesnotexist`);
 			assert.equal(response.statusCode, 404);
 			assert(body);
 		});
@@ -1190,18 +1182,14 @@ describe('Controllers', () => {
 		});
 
 		it('should NOT load user by email (by default)', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/user/email/foo@test.com`, {
-				validateStatus: null,
-			});
+			const { response } = await request.get(`${nconf.get('url')}/api/user/email/foo@test.com`);
 
 			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('should load user by email if user has elected to show their email', async () => {
 			await user.setSetting(fooUid, 'showemail', 1);
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/email/foo@test.com`, {
-				resolveWithFullResponse: true,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/email/foo@test.com`);
 			assert.strictEqual(response.statusCode, 200);
 			assert(body);
 			await user.setSetting(fooUid, 'showemail', 0);
@@ -1210,7 +1198,7 @@ describe('Controllers', () => {
 		it('should return 401 if user does not have view:users privilege', async () => {
 			await privileges.global.rescind(['groups:view:users'], 'guests');
 
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 401);
 			assert.deepEqual(body, {
 				response: {},
@@ -1225,9 +1213,9 @@ describe('Controllers', () => {
 		it('should return false if user can not edit user', async () => {
 			await user.create({ username: 'regularJoe', password: 'barbar' });
 			const { jar } = await helpers.loginUser('regularJoe', 'barbar');
-			let { response } = await request.get(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, validateStatus: null });
+			let { response } = await request.get(`${nconf.get('url')}/api/user/foo/info`, { jar });
 			assert.equal(response.statusCode, 403);
-			({ response } = await request.get(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, validateStatus: null }));
+			({ response } = await request.get(`${nconf.get('url')}/api/user/foo/edit`, { jar }));
 			assert.equal(response.statusCode, 403);
 		});
 
@@ -1243,7 +1231,7 @@ describe('Controllers', () => {
 		});
 
 		it('should 404 if user does not exist', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/doesnotexist`, { jar: jar, validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/doesnotexist`, { jar });
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -1318,7 +1306,7 @@ describe('Controllers', () => {
 		it('should 404 if user does not exist', async () => {
 			await groups.join('administrators', fooUid);
 
-			const { response } = await request.get(`${nconf.get('url')}/api/user/doesnotexist/edit`, { jar: jar, validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/user/doesnotexist/edit`, { jar });
 			assert.equal(response.statusCode, 404);
 			await groups.leave('administrators', fooUid);
 		});
@@ -1329,16 +1317,13 @@ describe('Controllers', () => {
 		});
 
 		it('should render edit/email', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/email`, {
-				jar,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/email`, { jar });
 
 			assert.strictEqual(response.statusCode, 200);
 			assert.strictEqual(body, '/register/complete');
 
 			await request.post(`${nconf.get('url')}/register/abort`, {
 				jar,
-				validateStatus: null,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
@@ -1389,13 +1374,13 @@ describe('Controllers', () => {
 		});
 
 		it('should 404 for invalid pid', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/post/fail`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/post/fail`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 403 if user does not have read privilege', async () => {
 			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users');
-			const { response } = await request.get(`${nconf.get('url')}/api/post/${pid}`, { jar: jar, validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/post/${pid}`, { jar });
 			assert.equal(response.statusCode, 403);
 			await privileges.categories.give(['groups:topics:read'], category.cid, 'registered-users');
 		});
@@ -1446,13 +1431,13 @@ describe('Controllers', () => {
 		});
 
 		it('should handle malformed uri ', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/user/a%AFc`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/user/a%AFc`);
 			assert(body);
 			assert.equal(response.statusCode, 400);
 		});
 
 		it('should handle malformed uri in api', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/a%AFc`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/a%AFc`);
 			assert.equal(response.statusCode, 400);
 			assert.equal(body.error, '[[global:400.title]]');
 		});
@@ -1467,7 +1452,7 @@ describe('Controllers', () => {
 				},
 			});
 
-			const { response } = await request.get(`${nconf.get('url')}/users`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/users`);
 			plugins.loadedHooks['filter:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 		});
@@ -1481,7 +1466,7 @@ describe('Controllers', () => {
 					next(err);
 				},
 			});
-			const { response, body } = await request.get(`${nconf.get('url')}/users`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/users`);
 			plugins.loadedHooks['filter:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, 'blacklist error message');
@@ -1528,7 +1513,7 @@ describe('Controllers', () => {
 					next(err);
 				},
 			});
-			const { response, body } = await request.get(`${nconf.get('url')}/users`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/users`);
 			plugins.loadedHooks['filter:router.page'] = [];
 			assert.equal(response.statusCode, 500);
 			assert(body);
@@ -1542,31 +1527,31 @@ describe('Controllers', () => {
 		});
 
 		it('should return 404 if cid is not a number', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/category/fail`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/category/fail`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should return 404 if topic index is not a number', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/category/${category.slug}/invalidtopicindex`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/category/${category.slug}/invalidtopicindex`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 404 if category does not exist', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/category/123123`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/category/123123`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 404 if category is disabled', async () => {
 			const category = await categories.create({ name: 'disabled' });
 			await categories.setCategoryField(category.cid, 'disabled', 1);
-			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should return 401 if not allowed to read', async () => {
 			const category = await categories.create({ name: 'hidden' });
 			await privileges.categories.rescind(['groups:read'], category.cid, 'guests');
-			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}`);
 			assert.equal(response.statusCode, 401);
 		});
 
@@ -1578,7 +1563,7 @@ describe('Controllers', () => {
 
 		it('should 404 if page is not found', async () => {
 			await user.setSetting(fooUid, 'usePagination', 1);
-			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}?page=100`, { jar, validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}?page=100`, { jar });
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -1683,23 +1668,23 @@ describe('Controllers', () => {
 		});
 
 		it('should load unread page', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/unread`, { jar: jar });
+			const { response } = await request.get(`${nconf.get('url')}/api/unread`, { jar });
 			assert.equal(response.statusCode, 200);
 		});
 
 		it('should 404 if filter is invalid', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/unread/doesnotexist`, { jar: jar, validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/unread/doesnotexist`, { jar });
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should return total unread count', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/unread/total?filter=new`, { jar: jar });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/unread/total?filter=new`, { jar });
 			assert.equal(response.statusCode, 200);
 			assert.equal(body, 0);
 		});
 
 		it('should redirect if page is out of bounds', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/unread?page=-1`, { jar: jar });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/unread?page=-1`, { jar });
 			assert.equal(response.statusCode, 200);
 			assert.equal(response.headers['x-redirect'], '/unread?page=1');
 			assert.equal(body, '/unread?page=1');
@@ -1708,7 +1693,7 @@ describe('Controllers', () => {
 
 	describe('admin middlewares', () => {
 		it('should redirect to login', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/admin/advanced/database`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/admin/advanced/database`);
 			assert.equal(response.statusCode, 401);
 		});
 
@@ -1766,51 +1751,48 @@ describe('Controllers', () => {
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			});
 
 			assert.equal(result.response.statusCode, 400);
 			result = await request.post(`${nconf.get('url')}/compose`, {
-				data: {
+				body: {
 					tid: tid,
 				},
 				jar: jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			});
 			assert.equal(result.response.statusCode, 400);
 		});
 
 		it('should create a new topic and reply by composer route', async () => {
-			const data = {
-				cid: cid,
-				title: 'no js is good',
-				content: 'a topic with noscript',
-			};
 			let result = await request.post(`${nconf.get('url')}/compose`, {
-				data: data,
+				body: {
+					cid: cid,
+					title: 'no js is good',
+					content: 'a topic with noscript',
+				},
 				jar: jar,
-				maxRedirects: 0,
+				maxRedirect: 0,
+				redirect: 'manual',
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			});
 
 			assert.equal(result.response.statusCode, 302);
 			result = await request.post(`${nconf.get('url')}/compose`, {
-				data: {
+				body: {
 					tid: tid,
 					content: 'a new reply',
 				},
 				jar: jar,
-				maxRedirects: 0,
+				maxRedirect: 0,
+				redirect: 'manual',
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			});
 			assert.equal(result.response.statusCode, 302);
 		});
@@ -1818,38 +1800,37 @@ describe('Controllers', () => {
 		it('should create a new topic and reply by composer route as a guest', async () => {
 			const jar = request.jar();
 			const csrf_token = await helpers.getCsrfToken(jar);
-			const data = {
-				cid: cid,
-				title: 'no js is good',
-				content: 'a topic with noscript',
-				handle: 'guest1',
-			};
 
 			await privileges.categories.give(['groups:topics:create', 'groups:topics:reply'], cid, 'guests');
 
 			const result = await helpers.request('post', `/compose`, {
-				data: data,
+				body: {
+					cid: cid,
+					title: 'no js is good',
+					content: 'a topic with noscript',
+					handle: 'guest1',
+				},
 				jar,
-				maxRedirects: 0,
+				maxRedirect: 0,
+				redirect: 'manual',
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			});
 			assert.strictEqual(result.response.statusCode, 302);
 
 			const replyResult = await helpers.request('post', `/compose`, {
-				data: {
+				body: {
 					tid: tid,
 					content: 'a new reply',
 					handle: 'guest2',
 				},
 				jar,
-				maxRedirects: 0,
+				maxRedirect: 0,
+				redirect: 'manual',
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			});
 			assert.equal(replyResult.response.statusCode, 302);
 			await privileges.categories.rescind(['groups:topics:post', 'groups:topics:reply'], cid, 'guests');
@@ -1859,7 +1840,7 @@ describe('Controllers', () => {
 	describe('test routes', () => {
 		if (process.env.NODE_ENV === 'development') {
 			it('should load debug route', async () => {
-				const { response, body } = await request.get(`${nconf.get('url')}/debug/test`, { validateStatus: null });
+				const { response, body } = await request.get(`${nconf.get('url')}/debug/test`);
 				assert.equal(response.statusCode, 404);
 				assert(body);
 			});
@@ -1877,7 +1858,7 @@ describe('Controllers', () => {
 			});
 
 			it('should load 404 for invalid type', async () => {
-				const { response, body } = await request.get(`${nconf.get('url')}/debug/spec/doesnotexist`, { validateStatus: null });
+				const { response, body } = await request.get(`${nconf.get('url')}/debug/spec/doesnotexist`);
 				assert.equal(response.statusCode, 404);
 				assert(body);
 			});
