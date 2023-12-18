@@ -39,7 +39,7 @@ helpers.loginUser = async (username, password, payload = {}) => {
 
 	const csrf_token = await helpers.getCsrfToken(jar);
 	const { response, body } = await request.post(`${nconf.get('url')}/login`, {
-		data,
+		body: data,
 		jar: jar,
 		validateStatus: () => true,
 		headers: {
@@ -53,7 +53,7 @@ helpers.loginUser = async (username, password, payload = {}) => {
 helpers.logoutUser = async function (jar) {
 	const csrf_token = await helpers.getCsrfToken(jar);
 	const { response, body } = await request.post(`${nconf.get('url')}/logout`, {
-		data: {},
+		body: {},
 		jar,
 		validateStatus: () => true,
 		headers: {
@@ -96,26 +96,40 @@ helpers.connectSocketIO = function (res, csrf_token) {
 };
 
 helpers.uploadFile = async function (uploadEndPoint, filePath, data, jar, csrf_token) {
-	const FormData = require('form-data');
+	const mime = require('mime');
 	const form = new FormData();
-	form.append('files', fs.createReadStream(filePath), path.basename(filePath));
+	const file = await fs.promises.readFile(filePath);
+	const blob = new Blob([file], { type: mime.getType(filePath) });
+
+	form.append('files', blob, path.basename(filePath));
+
 	if (data && data.params) {
 		form.append('params', data.params);
 	}
-
-	const { response, body } = await request.post(uploadEndPoint, {
-		data: form,
-		jar: jar,
-		validateStatus: null,
+	// console.log('form headers', form.getHeaders());
+	console.log('cookie string', await jar.getCookieString(uploadEndPoint));
+	const response = await fetch(uploadEndPoint, {
+		method: 'post',
+		body: form,
 		headers: {
 			'x-csrf-token': csrf_token,
-			...form.getHeaders(),
+			cookie: await jar.getCookieString(uploadEndPoint),
 		},
 	});
+
 	if (response.status !== 200) {
 		winston.error(JSON.stringify(data));
 	}
-	return { response, body };
+	const body = await response.json();
+	return {
+		body,
+		response: {
+			status: response.status,
+			statusCode: response.status,
+			statusText: response.statusText,
+			headers: Object.fromEntries(response.headers.entries()),
+		},
+	};
 };
 
 helpers.registerUser = async function (data) {
@@ -127,7 +141,7 @@ helpers.registerUser = async function (data) {
 	}
 
 	const { response, body } = await request.post(`${nconf.get('url')}/register`, {
-		data,
+		body: data,
 		jar,
 		validateStatus: () => true,
 		headers: {

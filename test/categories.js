@@ -77,7 +77,7 @@ describe('Categories', () => {
 	});
 
 	it('should load a category route', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`, { json: true });
+		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`);
 		assert.equal(response.statusCode, 200);
 		assert.equal(body.name, 'Test Category &amp; NodeBB');
 		assert(body);

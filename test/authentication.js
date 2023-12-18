@@ -99,7 +99,7 @@ describe('authentication', () => {
 
 		const { body } = await request.post(`${nconf.get('url')}/register`, {
 			jar,
-			data: {
+			body: {
 				email: 'admin@nodebb.org',
 				username: 'admin',
 				password: 'adminpwd',
@@ -168,9 +168,9 @@ describe('authentication', () => {
 		function getCookieExpiry(response) {
 			const { headers } = response;
 			assert(headers['set-cookie']);
-			assert.strictEqual(headers['set-cookie'][0].includes('Expires'), true);
+			assert.strictEqual(headers['set-cookie'].includes('Expires'), true);
 
-			const values = headers['set-cookie'][0].split(';');
+			const values = headers['set-cookie'].split(';');
 			return values.reduce((memo, cur) => {
 				if (!memo) {
 					const [name, value] = cur.split('=');
@@ -206,7 +206,7 @@ describe('authentication', () => {
 
 			assert(response.headers);
 			assert(response.headers['set-cookie']);
-			assert.strictEqual(response.headers['set-cookie'][0].includes('Expires'), false);
+			assert.strictEqual(response.headers['set-cookie'].includes('Expires'), false);
 		});
 
 		it('should set a different expiry if sessionDuration is set', async () => {
@@ -272,12 +272,11 @@ describe('authentication', () => {
 		const csrf_token = await helpers.getCsrfToken(jar);
 
 		const { response } = await request.post(`${nconf.get('url')}/login`, {
-			data: {
+			body: {
 				username: 'regular',
 				password: 'regularpwd',
 			},
 			jar: jar,
-			validateStatus: () => true,
 			headers: {
 				'x-csrf-token': csrf_token,
 				'x-forwarded-for': '<script>alert("xss")</script>',
@@ -542,8 +541,6 @@ describe('authentication', () => {
 
 		it('should fail if _uid is not passed in with master token', async () => {
 			const { response, body } = await helpers.request('get', `/api/self`, {
-				data: {},
-				json: true,
 				headers: {
 					Authorization: `Bearer ${masterToken}`,
 				},
@@ -554,11 +551,7 @@ describe('authentication', () => {
 		});
 
 		it('should use master api token and _uid', async () => {
-			const { response, body } = await helpers.request('get', `/api/self`, {
-				data: {
-					_uid: newUid,
-				},
-				json: true,
+			const { response, body } = await helpers.request('get', `/api/self?_uid=${newUid}`, {
 				headers: {
 					Authorization: `Bearer ${masterToken}`,
 				},

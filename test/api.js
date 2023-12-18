@@ -493,13 +493,13 @@ describe('API', async () => {
 
 					try {
 						if (type === 'json') {
-							result = await request[method](url, {
+							const searchParams = new URLSearchParams(qs);
+							result = await request[method](`${url}?${searchParams}`, {
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
-								maxRedirects: 0,
-								validateStatus: null, // don't throw on non-200 (e.g. 302)
+								maxRedirect: 0,
+								redirect: 'manual',
 								headers: headers,
-								params: qs,
-								data: body,
+								body: body,
 							});
 						} else if (type === 'form') {
 							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);

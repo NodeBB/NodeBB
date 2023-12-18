@@ -27,7 +27,7 @@ module.exports = function (Plugins) {
 		const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/plugin/usage`;
 		try {
 			const { response, body } = await request.post(url, {
-				data: {
+				body: {
 					id: hash.digest('hex'),
 					version: pkg.version,
 					plugins: Plugins.loadedPlugins,
@@ -35,7 +35,7 @@ module.exports = function (Plugins) {
 				timeout: 5000,
 			});
 
-			if (response.status !== 200) {
+			if (!response.ok) {
 				winston.error(`[plugins.submitUsageData] received ${response.status} ${body}`);
 			}
 		} catch (err) {

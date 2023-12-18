@@ -74,8 +74,10 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.checkWhitelist = async function (id, version) {
-		const { body } = await request.get(`https://packages.nodebb.org/api/v1/plugins/${encodeURIComponent(id)}`);
-
+		const { response, body } = await request.get(`https://packages.nodebb.org/api/v1/plugins/${encodeURIComponent(id)}`);
+		if (!response.ok) {
+			throw new Error(`[[error:cant-connect-to-nbbpm]]`);
+		}
 		if (body && body.code === 'ok' && (version === 'latest' || body.payload.valid.includes(version))) {
 			return;
 		}
@@ -84,7 +86,10 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.suggest = async function (pluginId, nbbVersion) {
-		const { body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?package=${encodeURIComponent(pluginId)}&version=${encodeURIComponent(nbbVersion)}`);
+		const { response, body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?package=${encodeURIComponent(pluginId)}&version=${encodeURIComponent(nbbVersion)}`);
+		if (!response.ok) {
+			throw new Error(`[[error:cant-connect-to-nbbpm]]`);
+		}
 		return body;
 	};
 

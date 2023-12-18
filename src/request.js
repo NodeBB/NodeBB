@@ -1,29 +1,60 @@
 'use strict';
 
-const axios = require('axios').default;
 const { CookieJar } = require('tough-cookie');
-const { wrapper } = require('axios-cookiejar-support');
-
-wrapper(axios);
+const fetchCookie = require('fetch-cookie');
 
 exports.jar = function () {
 	return new CookieJar();
 };
 
-async function call(url, method, config = {}) {
-	const result = await axios({
+async function call(url, method, { body, timeout, ...config } = {}) {
+	let fetchImpl = fetch;
+	if (config.jar) {
+		fetchImpl = fetchCookie(fetch, config.jar);
+	}
+
+	const opts = {
 		...config,
-		method,
-		url: url,
-	});
+		method: method.toUpperCase(), // patch=>PATCH
+		headers: {
+			'content-type': 'application/json',
+			...config.headers,
+		},
+	};
+	if (timeout > 0) {
+		opts.signal = AbortSignal.timeout(timeout);
+	}
+
+	if (body && ['post', 'put', 'patch', 'del', 'delete'].includes(method)) {
+		if (opts.headers['content-type'] && opts.headers['content-type'].startsWith('application/json')) {
+			opts.body = JSON.stringify(body);
+		} else {
+			opts.body = body;
+		}
+	}
+
+	const response = await fetchImpl(url, opts);
+
+	const { headers } = response;
+	const contentType = headers.get('content-type');
+	const isJSON = contentType && contentType.indexOf('application/json') !== -1;
+	let respBody = await response.text();
+	if (isJSON && respBody) {
+		try {
+			respBody = JSON.parse(respBody);
+		} catch (err) {
+			throw new Error('invalid json in response body', url);
+		}
+	}
 
 	return {
-		body: result.data,
+		body: respBody,
 		response: {
-			status: result.status,
-			statusCode: result.status,
-			statusText: result.statusText,
-			headers: result.headers,
+			ok: response.ok,
+			status: response.status,
+			statusCode: response.status,
+			statusText: response.statusText,
+			headers: Object.fromEntries(response.headers.entries()),
 		},
 	};
 }
