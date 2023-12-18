@@ -7,15 +7,15 @@ exports.jar = function () {
 	return new CookieJar();
 };
 
-async function call(url, method, { body, timeout, ...config } = {}) {
+async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	let fetchImpl = fetch;
-	if (config.jar) {
-		fetchImpl = fetchCookie(fetch, config.jar);
+	if (jar) {
+		fetchImpl = fetchCookie(fetch, jar);
 	}
 
 	const opts = {
 		...config,
-		method: method.toUpperCase(), // patch=>PATCH
+		method,
 		headers: {
 			'content-type': 'application/json',
 			...config.headers,
@@ -25,7 +25,7 @@ async function call(url, method, { body, timeout, ...config } = {}) {
 		opts.signal = AbortSignal.timeout(timeout);
 	}
 
-	if (body && ['post', 'put', 'patch', 'del', 'delete'].includes(method)) {
+	if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
 		if (opts.headers['content-type'] && opts.headers['content-type'].startsWith('application/json')) {
 			opts.body = JSON.stringify(body);
 		} else {
@@ -64,18 +64,18 @@ const { body, response } = await request.get('someurl?foo=1&baz=2')
 or
 const { body, response } = await request.get('someurl', { params: { foo:1, baz: 2 } })
 */
-exports.get = async (url, config) => call(url, 'get', config);
+exports.get = async (url, config) => call(url, 'GET', config);
 
-exports.head = async (url, config) => call(url, 'head', config);
-exports.del = async (url, config) => call(url, 'delete', config);
+exports.head = async (url, config) => call(url, 'HEAD', config);
+exports.del = async (url, config) => call(url, 'DELETE', config);
 exports.delete = exports.del;
-exports.options = async (url, config) => call(url, 'delete', config);
+exports.options = async (url, config) => call(url, 'OPTIONS', config);
 
 /*
 const { body, response } = await request.post('someurl', { data: { foo: 1, baz: 2}})
 */
-exports.post = async (url, config) => call(url, 'post', config);
-exports.put = async (url, config) => call(url, 'put', config);
-exports.patch = async (url, config) => call(url, 'patch', config);
+exports.post = async (url, config) => call(url, 'POST', config);
+exports.put = async (url, config) => call(url, 'PUT', config);
+exports.patch = async (url, config) => call(url, 'PATCH', config);
 
 

@@ -292,14 +292,14 @@ describe('Plugins', () => {
 
 	describe('static assets', () => {
 		it('should 404 if resource does not exist', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`);
 			assert.equal(response.statusCode, 404);
 			assert(body);
 		});
 
 		it('should 404 if resource does not exist', async () => {
 			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`;
-			const { response, body } = await request.get(url, { validateStatus: null });
+			const { response, body } = await request.get(url);
 			assert.equal(response.statusCode, 404);
 			assert(body);
 		});

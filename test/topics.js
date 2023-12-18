@@ -146,7 +146,6 @@ describe('Topic\'s', () => {
 				headers: {
 					'x-csrf-token': 'invalid',
 				},
-				validateStatus: null,
 			});
 			assert.strictEqual(result.response.statusCode, 403);
 			assert.strictEqual(result.body, 'Forbidden');
@@ -159,7 +158,7 @@ describe('Topic\'s', () => {
 			});
 			const jar = request.jar();
 			const result = await helpers.request('post', `/api/v3/topics`, {
-				data: {
+				body: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
@@ -179,7 +178,7 @@ describe('Topic\'s', () => {
 
 			const jar = request.jar();
 			const result = await helpers.request('post', `/api/v3/topics`, {
-				data: {
+				body: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
@@ -193,11 +192,10 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.user.username, '[[global:guest]]');
 
 			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
-				data: {
+				body: {
 					content: 'a reply by guest',
 				},
 				jar: jar,
-				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
 			assert.strictEqual(replyResult.body.response.user.username, '[[global:guest]]');
@@ -213,7 +211,7 @@ describe('Topic\'s', () => {
 			const oldValue = meta.config.allowGuestHandles;
 			meta.config.allowGuestHandles = 1;
 			const result = await helpers.request('post', `/api/v3/topics`, {
-				data: {
+				body: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
@@ -228,7 +226,7 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.user.displayname, 'guest123');
 
 			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
-				data: {
+				body: {
 					content: 'a reply by guest',
 					handle: 'guest124',
 				},
@@ -1266,19 +1264,19 @@ describe('Topic\'s', () => {
 		});
 
 		it('should load topic api data', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`, { json: true });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
 			assert.equal(response.statusCode, 200);
 			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'description').content, 'topic content');
 			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:description').content, 'topic content');
 		});
 
 		it('should 404 if post index is invalid', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}/derp`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}/derp`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 404 if topic does not exist', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/topic/123123/does-not-exist`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/topic/123123/does-not-exist`);
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -1286,7 +1284,7 @@ describe('Topic\'s', () => {
 			const privileges = require('../src/privileges');
 			await privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests');
 
-			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
 			assert.equal(response.statusCode, 401);
 			assert(body);
 			await privileges.categories.give(['groups:topics:read'], topicData.cid, 'guests');
@@ -1308,7 +1306,7 @@ describe('Topic\'s', () => {
 		it('should 404 if page is out of bounds', async () => {
 			const meta = require('../src/meta');
 			meta.config.usePagination = 1;
-			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}?page=100`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}?page=100`);
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -1322,12 +1320,12 @@ describe('Topic\'s', () => {
 		});
 
 		it('should 404 if tid is not a number', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/topic/teaser/nan`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/topic/teaser/nan`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 403 if cant read', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/teaser/${123123}`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/teaser/${123123}`);
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, '[[error:no-privileges]]');
 		});
@@ -1345,12 +1343,12 @@ describe('Topic\'s', () => {
 
 
 		it('should 404 if tid is not a number', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/topic/pagination/nan`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/topic/pagination/nan`);
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 404 if tid does not exist', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/topic/pagination/1231231`, { validateStatus: null });
+			const { response } = await request.get(`${nconf.get('url')}/api/topic/pagination/1231231`);
 			assert.equal(response.statusCode, 404);
 		});
 
@@ -2638,10 +2636,9 @@ describe('Topic\'s', () => {
 		let adminApiOpts;
 		let postData;
 		const replyData = {
-			data: {
+			body: {
 				content: 'a reply by guest',
 			},
-			validateStatus: null,
 		};
 
 		before(async () => {
@@ -2650,7 +2647,6 @@ describe('Topic\'s', () => {
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-				validateStatus: null,
 			};
 			categoryObj = await categories.create({
 				name: 'Another Test Category',
@@ -2691,7 +2687,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not load topic for an unprivileged user', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, { validateStatus: null });
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			assert.strictEqual(response.statusCode, 404);
 			assert(body);
 		});
@@ -2765,7 +2761,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should have post edits with greater timestamp than the original', async () => {
-			const editData = { ...adminApiOpts, data: { content: 'an edit by the admin' } };
+			const editData = { ...adminApiOpts, body: { content: 'an edit by the admin' } };
 			const result = await request.put(`${nconf.get('url')}/api/v3/posts/${postData.pid}`, editData);
 			assert(result.body.response.edited > postData.timestamp);
 
@@ -2777,7 +2773,7 @@ describe('Topic\'s', () => {
 
 		it('should able to reschedule', async () => {
 			const newDate = new Date(Date.now() + (5 * 86400000)).getTime();
-			const editData = { ...adminApiOpts, data: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
+			const editData = { ...adminApiOpts, body: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
 			await request.put(`${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
 
 			const editedTopic = await topics.getTopicFields(topicData.tid, ['lastposttime', 'timestamp']);
@@ -2816,7 +2812,7 @@ describe('Topic\'s', () => {
 
 		it('should not be able to schedule a "published" topic', async () => {
 			const newDate = new Date(Date.now() + 86400000).getTime();
-			const editData = { ...adminApiOpts, data: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
+			const editData = { ...adminApiOpts, body: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
 			const { body } = await request.put(`${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
 			assert.strictEqual(body.response.timestamp, Date.now());
 			mockdate.reset();

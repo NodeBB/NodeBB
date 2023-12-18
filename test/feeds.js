@@ -50,19 +50,19 @@ describe('feeds', () => {
 		];
 		for (const url of feedUrls) {
 			// eslint-disable-next-line no-await-in-loop
-			const { response } = await request.get(url, { validateStatus: null });
+			const { response } = await request.get(url);
 			assert.equal(response.statusCode, 404);
 		}
 		meta.config['feeds:disableRSS'] = 0;
 	});
 
 	it('should 404 if topic does not exist', async () => {
-		const { response } = await request.get(`${nconf.get('url')}/topic/${1000}.rss`, { validateStatus: null });
+		const { response } = await request.get(`${nconf.get('url')}/topic/${1000}.rss`);
 		assert.equal(response.statusCode, 404);
 	});
 
 	it('should 404 if category id is not a number', async () => {
-		const { response } = await request.get(`${nconf.get('url')}/category/invalid.rss`, { validateStatus: null });
+		const { response } = await request.get(`${nconf.get('url')}/category/invalid.rss`);
 		assert.equal(response.statusCode, 404);
 	});
 
@@ -76,7 +76,7 @@ describe('feeds', () => {
 	});
 
 	it('should 404 if user is not found', async () => {
-		const { response } = await request.get(`${nconf.get('url')}/user/doesnotexist/topics.rss`, { validateStatus: null });
+		const { response } = await request.get(`${nconf.get('url')}/user/doesnotexist/topics.rss`);
 		assert.equal(response.statusCode, 404);
 	});
 

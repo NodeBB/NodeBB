@@ -28,9 +28,7 @@ helpers.request = async function (method, uri, options = {}) {
 	if (csrf_token) {
 		options.headers['x-csrf-token'] = csrf_token;
 	}
-	options.validateStatus = null;
-	const { response, body } = await request[lowercaseMethod](`${nconf.get('url')}${uri}`, options);
-	return { response, body };
+	return await request[lowercaseMethod](`${nconf.get('url')}${uri}`, options);
 };
 
 helpers.loginUser = async (username, password, payload = {}) => {
@@ -41,7 +39,6 @@ helpers.loginUser = async (username, password, payload = {}) => {
 	const { response, body } = await request.post(`${nconf.get('url')}/login`, {
 		body: data,
 		jar: jar,
-		validateStatus: () => true,
 		headers: {
 			'x-csrf-token': csrf_token,
 		},
@@ -55,7 +52,6 @@ helpers.logoutUser = async function (jar) {
 	const { response, body } = await request.post(`${nconf.get('url')}/logout`, {
 		body: {},
 		jar,
-		validateStatus: () => true,
 		headers: {
 			'x-csrf-token': csrf_token,
 		},
@@ -143,7 +139,6 @@ helpers.registerUser = async function (data) {
 	const { response, body } = await request.post(`${nconf.get('url')}/register`, {
 		body: data,
 		jar,
-		validateStatus: () => true,
 		headers: {
 			'x-csrf-token': csrf_token,
 		},
@@ -179,25 +174,23 @@ helpers.copyFile = function (source, target, callback) {
 helpers.invite = async function (data, uid, jar, csrf_token) {
 	return await request.post(`${nconf.get('url')}/api/v3/users/${uid}/invites`, {
 		jar: jar,
-		data: data,
+		body: data,
 		headers: {
 			'x-csrf-token': csrf_token,
 		},
-		validateStatus: null,
 	});
 };
 
 helpers.createFolder = async function (path, folderName, jar, csrf_token) {
 	return await request.put(`${nconf.get('url')}/api/v3/files/folder`, {
 		jar,
-		data: {
+		body: {
 			path,
 			folderName,
 		},
 		headers: {
 			'x-csrf-token': csrf_token,
 		},
-		validateStatus: null,
 	});
 };
 

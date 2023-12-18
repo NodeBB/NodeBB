@@ -894,7 +894,7 @@ describe('Flags', () => {
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					data: {
+					body: {
 						type: 'post',
 						id: pid,
 						reason: 'foobar',
@@ -917,7 +917,7 @@ describe('Flags', () => {
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					data: {
+					body: {
 						type: 'post',
 						id: postData.pid,
 						reason: '"<script>alert(\'ok\');</script>',
@@ -948,12 +948,11 @@ describe('Flags', () => {
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					data: {
+					body: {
 						type: 'post',
 						id: result.postData.pid,
 						reason: 'foobar',
 					},
-					validateStatus: null,
 				});
 				assert.strictEqual(response.statusCode, 403);
 
@@ -977,7 +976,7 @@ describe('Flags', () => {
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					data: {
+					body: {
 						state: 'wip',
 					},
 				});
@@ -1009,7 +1008,7 @@ describe('Flags', () => {
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					data: {
+					body: {
 						note: 'lorem ipsum dolor sit amet',
 						datetime: 1626446956652,
 					},
@@ -1056,7 +1055,7 @@ describe('Flags', () => {
 			before(async () => {
 				uid = await User.create({ username: 'flags-access-control', password: 'abcdef' });
 				({ jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef'));
-
+				console.log('cs', csrfToken);
 				flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
 			});
 
@@ -1079,7 +1078,6 @@ describe('Flags', () => {
 					headers: {
 						'x-csrf-token': csrf_token,
 					},
-					validateStatus: null,
 				};
 				requests = new Set([
 					{
@@ -1091,7 +1089,7 @@ describe('Flags', () => {
 						...commonOpts,
 						method: 'put',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
-						data: {
+						body: {
 							state: 'wip',
 						},
 					},
@@ -1099,7 +1097,7 @@ describe('Flags', () => {
 						...commonOpts,
 						method: 'post',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}/notes`,
-						data: {
+						body: {
 							note: 'test note',
 							datetime: noteTime,
 						},

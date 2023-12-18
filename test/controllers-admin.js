@@ -69,7 +69,6 @@ describe('Admin Controllers', () => {
 		({ jar } = await helpers.loginUser('admin', 'barbar'));
 		const { response, body } = await request.get(`${nconf.get('url')}/admin`, {
 			jar: jar,
-			validateStatus: null,
 		});
 
 		assert.equal(response.statusCode, 403);
@@ -166,7 +165,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should 404 for edit/email page if user does not exist', async () => {
-		const { response } = await request.get(`${nconf.get('url')}/api/user/doesnotexist/edit/email`, { jar: jar, validateStatus: null });
+		const { response } = await request.get(`${nconf.get('url')}/api/user/doesnotexist/edit/email`, { jar });
 		assert.equal(response.statusCode, 404);
 	});
 
@@ -243,9 +242,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should 404 if users is not privileged', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/registration-queue`, {
-			validateStatus: null,
-		});
+		const { response, body } = await request.get(`${nconf.get('url')}/api/registration-queue`);
 		assert.equal(response.statusCode, 404);
 		assert(body);
 	});
@@ -281,10 +278,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should return 403 if no referer', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/groups/administrators/csv`, {
-			jar,
-			validateStatus: null,
-		});
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/groups/administrators/csv`, { jar });
 		assert.equal(response.statusCode, 403);
 		assert.equal(body, '[[error:invalid-origin]]');
 	});
@@ -292,7 +286,6 @@ describe('Admin Controllers', () => {
 	it('should return 403 if referer is not /api/admin/groups/administrators/csv', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/groups/administrators/csv`, {
 			jar: jar,
-			validateStatus: null,
 			headers: {
 				referer: '/topic/1/test',
 			},
@@ -325,16 +318,13 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /api/admin/advanced/cache/dump and 404 with no query param', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache/dump`, {
-			jar,
-			validateStatus: null,
-		});
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache/dump`, { jar });
 		assert.equal(response.statusCode, 404);
 		assert(body);
 	});
 
 	it('should load /api/admin/advanced/cache/dump', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache/dump?name=post`, { jar: jar });
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache/dump?name=post`, { jar });
 		assert.equal(response.statusCode, 200);
 		assert(body);
 	});
@@ -457,9 +447,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('/post-queue should 404 for regular user', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/post-queue`, {
-			validateStatus: null,
-		 });
+		const { response, body } = await request.get(`${nconf.get('url')}/api/post-queue`);
 		assert(body);
 		assert.equal(response.statusCode, 404);
 	});
@@ -471,9 +459,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('/ip-blacklist should 404 for regular user', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/ip-blacklist`, {
-			validateStatus: null,
-		});
+		const { response, body } = await request.get(`${nconf.get('url')}/api/ip-blacklist`);
 		assert(body);
 		assert.equal(response.statusCode, 404);
 	});
@@ -514,9 +500,7 @@ describe('Admin Controllers', () => {
 		});
 
 		it('should error with no privileges', async () => {
-			const { body } = await request.get(`${nconf.get('url')}/api/flags`, {
-				validateStatus: null,
-			});
+			const { body } = await request.get(`${nconf.get('url')}/api/flags`);
 
 			assert.deepStrictEqual(body, {
 				status: {
@@ -541,7 +525,6 @@ describe('Admin Controllers', () => {
 				headers: {
 					Accept: 'text/html, application/json',
 				},
-				validateStatus: null,
 			});
 			assert.strictEqual(response.statusCode, 404);
 		});
@@ -549,7 +532,7 @@ describe('Admin Controllers', () => {
 		it('should error when you attempt to flag a privileged user\'s post', async () => {
 			const { response, body } = await helpers.request('post', '/api/v3/flags', {
 				jar: regularJar,
-				data: {
+				body: {
 					id: pid,
 					type: 'post',
 					reason: 'spam',
@@ -565,7 +548,7 @@ describe('Admin Controllers', () => {
 			meta.config['min:rep:flag'] = 1000;
 			const { response, body } = await helpers.request('post', '/api/v3/flags', {
 				jar: regularJar,
-				data: {
+				body: {
 					id: regularPid,
 					type: 'post',
 					reason: 'spam',
@@ -583,7 +566,7 @@ describe('Admin Controllers', () => {
 			meta.config['min:rep:flag'] = 0;
 			await helpers.request('post', '/api/v3/flags', {
 				jar: regularJar,
-				data: {
+				body: {
 					id: regularPid,
 					type: 'post',
 					reason: 'spam',
@@ -636,9 +619,7 @@ describe('Admin Controllers', () => {
 	describe('admin page privileges', () => {
 		let uid;
 		const privileges = require('../src/privileges');
-		const requestOpts = {
-			validateStatus: null,
-		};
+		const requestOpts = {};
 		before(async () => {
 			uid = await user.create({ username: 'regularjoe', password: 'barbar' });
 			requestOpts.jar = (await helpers.loginUser('regularjoe', 'barbar')).jar;

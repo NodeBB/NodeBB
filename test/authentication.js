@@ -133,7 +133,6 @@ describe('authentication', () => {
 
 		const { response, body } = await request.get(`${nconf.get('url')}/api/me`, {
 			jar: jar,
-			validateStatus: null,
 		});
 		assert.equal(response.statusCode, 401);
 		assert.strictEqual(body.status.code, 'not-authorised');
@@ -317,7 +316,7 @@ describe('authentication', () => {
 	});
 
 	it('should fail to login if password is longer than 4096', async () => {
-		let longPassword;
+		let longPassword = '';
 		for (let i = 0; i < 5000; i++) {
 			longPassword += 'a';
 		}
@@ -514,10 +513,7 @@ describe('authentication', () => {
 		});
 
 		it('should fail with invalid token', async () => {
-			const { response, body } = await helpers.request('get', `/api/self`, {
-				data: {
-					_uid: newUid,
-				},
+			const { response, body } = await helpers.request('get', `/api/self?_uid${newUid}`, {
 				jar: jar,
 				headers: {
 					Authorization: `Bearer sdfhaskfdja-jahfdaksdf`,
@@ -529,7 +525,6 @@ describe('authentication', () => {
 
 		it('should use a token tied to an uid', async () => {
 			const { response, body } = await helpers.request('get', `/api/self`, {
-				json: true,
 				headers: {
 					Authorization: `Bearer ${userToken}`,
 				},

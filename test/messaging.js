@@ -33,9 +33,8 @@ describe('Messaging Library', () => {
 
 	const callv3API = async (method, path, body, user) => {
 		const options = {
-			data: body,
+			body,
 			jar: mocks.users[user].jar,
-			validateStatus: null,
 		};
 
 		if (method !== 'get') {
@@ -302,7 +301,7 @@ describe('Messaging Library', () => {
 			const receiver = await User.create({ username: 'receiver' });
 			const { body } = await request.post(`${nconf.get('url')}/api/v3/chats`, {
 				jar: senderJar,
-				data: {
+				body: {
 					uids: [receiver],
 				},
 				headers: {
@@ -762,29 +761,21 @@ describe('Messaging Library', () => {
 	describe('controller', () => {
 		it('should 404 if chat is disabled', async () => {
 			meta.config.disableChat = 1;
-			const { response } = await request.get(`${nconf.get('url')}/user/baz/chats`, {
-				validateStatus: null,
-			});
+			const { response } = await request.get(`${nconf.get('url')}/user/baz/chats`);
 
 			assert.equal(response.statusCode, 404);
 		});
 
 		it('should 401 for guest with not-authorised status code', async () => {
 			meta.config.disableChat = 0;
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/baz/chats`, {
-				resolveWithFullResponse: true,
-				validateStatus: null,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/baz/chats`);
 
 			assert.equal(response.statusCode, 401);
 			assert.equal(body.status.code, 'not-authorised');
 		});
 
 		it('should 404 for non-existent user', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/user/doesntexist/chats`, {
-				validateStatus: null,
-			});
-
+			const { response } = await request.get(`${nconf.get('url')}/user/doesntexist/chats`);
 			assert.equal(response.statusCode, 404);
 		});
 	});
@@ -796,10 +787,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return chats page data', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/herp/chats`, {
-				validateStatus: null,
-				jar,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/herp/chats`, { jar });
 
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body.rooms));
@@ -808,10 +796,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return room data', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/herp/chats/${roomId}`, {
-				validateStatus: null,
-				jar,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/herp/chats/${roomId}`, { jar });
 
 			assert.equal(response.statusCode, 200);
 			assert.equal(body.roomId, roomId);
@@ -819,10 +804,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should redirect to chats page', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/chats`, {
-				validateStatus: null,
-				jar,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/chats`, { jar });
 
 			assert.equal(response.statusCode, 200);
 			assert.equal(response.headers['x-redirect'], '/user/herp/chats');
@@ -831,10 +813,7 @@ describe('Messaging Library', () => {
 
 		it('should return 404 if user is not in room', async () => {
 			const data = await helpers.loginUser('baz', 'quuxquux');
-			const { response } = await request.get(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, {
-				validateStatus: null,
-				jar: data.jar,
-			});
+			const { response } = await request.get(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { jar: data.jar });
 
 			assert.equal(response.statusCode, 404);
 		});
