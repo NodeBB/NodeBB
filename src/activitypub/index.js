@@ -1,10 +1,10 @@
 'use strict';
 
-const request = require('request-promise-native');
 const nconf = require('nconf');
 const { createHash, createSign, createVerify } = require('crypto');
 const validator = require('validator');
 
+const request = require('../request');
 const db = require('../database');
 const user = require('../user');
 const ttl = require('../cache/ttl');
@@ -39,12 +39,10 @@ ActivityPub.getActor = async (input) => {
 		return actorCache.get(uri);
 	}
 
-	const actor = await request({
-		uri,
+	const { body: actor } = await request.get(uri, {
 		headers: {
 			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 		},
-		json: true,
 	});
 
 	actor.hostname = new URL(uri).hostname;
@@ -84,7 +82,7 @@ ActivityPub.getPrivateKey = async (uid) => {
 
 ActivityPub.fetchPublicKey = async (uri) => {
 	// Used for retrieving the public key from the passed-in keyId uri
-	const { publicKey } = await request({
+	const { body } = await request.get({
 		uri,
 		headers: {
 			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
@@ -92,7 +90,7 @@ ActivityPub.fetchPublicKey = async (uri) => {
 		json: true,
 	});
 
-	return publicKey;
+	return body.publicKey;
 };
 
 ActivityPub.sign = async (uid, url, payload) => {
@@ -193,8 +191,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 	await Promise.all(inboxes.map(async (uri) => {
 		const { date, digest, signature } = await ActivityPub.sign(uid, uri, payload);
 
-		const response = await request(uri, {
-			method: 'post',
+		const response = await request.post(uri, {
 			headers: {
 				date,
 				digest,
@@ -202,10 +199,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 			},
-			json: true,
 			body: payload,
-			simple: false,
-			resolveWithFullResponse: true,
 		});
 
 		if (response.statusCode !== 201) {

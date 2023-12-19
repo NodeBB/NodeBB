@@ -1,11 +1,11 @@
 'use strict';
 
-const request = require('request-promise-native');
 const { generateKeyPairSync } = require('crypto');
 const winston = require('winston');
 const nconf = require('nconf');
 const validator = require('validator');
 
+const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
 const user = require('../user');
@@ -25,24 +25,20 @@ Helpers.query = async (id) => {
 	}
 
 	// Make a webfinger query to retrieve routing information
-	const response = await request(`https://${hostname}/.well-known/webfinger?resource=acct:${id}`, {
-		simple: false,
-		resolveWithFullResponse: true,
-		json: true,
-	});
+	const { response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=acct:${id}`);
 
-	if (response.statusCode !== 200 || !response.body.hasOwnProperty('links')) {
+	if (response.statusCode !== 200 || !body.hasOwnProperty('links')) {
 		return false;
 	}
 
 	// Parse links to find actor endpoint
-	let actorUri = response.body.links.filter(link => link.type === 'application/activity+json' && link.rel === 'self');
+	let actorUri = body.links.filter(link => link.type === 'application/activity+json' && link.rel === 'self');
 	if (actorUri.length) {
 		actorUri = actorUri.pop();
 		({ href: actorUri } = actorUri);
 	}
 
-	const { publicKey } = response.body;
+	const { publicKey } = body;
 
 	webfingerCache.set(id, { username, hostname, actorUri, publicKey });
 	return { username, hostname, actorUri, publicKey };
