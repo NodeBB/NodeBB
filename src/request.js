@@ -37,7 +37,8 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 	const { headers } = response;
 	const contentType = headers.get('content-type');
-	const isJSON = contentType && contentType.indexOf('application/json') !== -1;
+	const jsonTest = /application\/([a-z]+\+)?json/;
+	const isJSON = contentType && jsonTest.test(contentType);
 	let respBody = await response.text();
 	if (isJSON && respBody) {
 		try {
