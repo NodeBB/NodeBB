@@ -32,7 +32,7 @@
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Nombor halaman tidak sah, mesti tidak kurang dari %1 dan tidak lebih dari %2",
     "username-taken": "Nama pengguna telah digunakan",
-    "email-taken": "Emel telah digunakan",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",

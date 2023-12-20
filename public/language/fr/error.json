@@ -32,7 +32,7 @@
     "folder-exists": "Le dossier existe",
     "invalid-pagination-value": "Valeur de pagination invalide. Celle-ci doit être comprise entre %1 et %2.",
     "username-taken": "Ce nom d'utilisateur est déjà pris",
-    "email-taken": "E-mail déjà utilisé",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "Le mail saisi est déjà enregistré.",
     "email-invited": "Cet utilisateur a déjà été invité.",
     "email-not-confirmed": "La publication dans certaines catégories ou sujets sera activée après confirmation de l'e-mail, veuillez cliquer ici pour envoyer un e-mail de confirmation.",

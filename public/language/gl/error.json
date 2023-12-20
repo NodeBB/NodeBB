@@ -32,7 +32,7 @@
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valor de paxinación incorreto, ten que estar entre %1 e %2",
     "username-taken": "Nome de usuario en uso",
-    "email-taken": "Enderezo electrónico en uso",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",

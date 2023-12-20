@@ -32,7 +32,7 @@
     "folder-exists": "Thư mục tồn tại",
     "invalid-pagination-value": "Giá trị phân trang không hợp lệ, tối thiểu phải là %1 và tối đa là %2",
     "username-taken": "Tên đăng nhập đã tồn tại",
-    "email-taken": "Email đã được đăng kí",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "Email đã nhập giống với email đã có trong tệp.",
     "email-invited": "Email đã được mời",
     "email-not-confirmed": "Đăng trong một số danh mục hoặc chủ đề được bật sau khi email của bạn được xác nhận, vui lòng nhấp vào đây để gửi email xác nhận.",

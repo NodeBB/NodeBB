@@ -32,7 +32,7 @@
     "folder-exists": "Ky dokument ekziston",
     "invalid-pagination-value": "Vlera e pasaktë e faqes, duhet të jetë së paku %1 dhe maksimumi %2",
     "username-taken": "Username është i zënë",
-    "email-taken": "Email-i është i zënë",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "Email-i i futur është i njëjtë me emailin ekzistues në sistem.",
     "email-invited": "Email-i është ftuar më herët",
     "email-not-confirmed": "Postimi në disa kategori ose tema aktivizohet pasi emaili juaj të konfirmohet, ju lutemi klikoni këtu për të dërguar një email konfirmimi.",

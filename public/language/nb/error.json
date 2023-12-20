@@ -32,7 +32,7 @@
     "folder-exists": "Mappen eksisterer",
     "invalid-pagination-value": "Ugyldig sidetall, må være minst %1 og maks %2",
     "username-taken": "Brukernavn opptatt",
-    "email-taken": "E-post opptatt",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "E-posten som er angitt er den samme e-posten som allerede er lagret.",
     "email-invited": "E-post har allerede fått invitasjon",
     "email-not-confirmed": "Posting i enkelte kategorier eller emner blir aktivert når e-posten din er bekreftet. Klikk her for å sende en bekreftelses-e-post.",

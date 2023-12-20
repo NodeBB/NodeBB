@@ -32,7 +32,7 @@
     "folder-exists": "文件夹已存在",
     "invalid-pagination-value": "无效的分页数值，必须介于 %1 和 %2 之间",
     "username-taken": "此用户名已被占用",
-    "email-taken": "此电子邮箱已被占用",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "输入的邮件地址和已存档的邮件地址相同。",
     "email-invited": "已通过电子邮件进行邀请",
     "email-not-confirmed": "您需要验证您的邮箱后才能在版块或主题中发布帖子，请点击此处以发送验证邮件。",
