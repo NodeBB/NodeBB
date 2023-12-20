@@ -219,7 +219,10 @@ module.exports = function (Categories) {
 			min: Categories.watchStates.watching,
 			max: Categories.watchStates.watching,
 		});
-
+		const index = followers.indexOf(String(exceptUid));
+		if (index !== -1) {
+			followers.splice(index, 1);
+		}
 		if (!followers.length) {
 			return;
 		}
