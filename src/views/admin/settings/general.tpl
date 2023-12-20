@@ -300,7 +300,7 @@
 						<div class="form-check form-switch mb-3">
 							<input type="checkbox" class="form-check-input" id="{./id}" data-field="post-sharing-{./id}" name="{./id}" {{{ if ./activated }}}checked{{{ end }}} />
 							<label for="{./id}" class="form-check-label">
-								<i class="fa fa-fw {./class}"></i> {./name}
+								<i class="fa-fw {./class}"></i> {./name}
 							</label>
 						</div>
 						{{{ end }}}

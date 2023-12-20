@@ -79,7 +79,14 @@
 	"follow-replied-topics": "Themen folgen, auf die du antwortest",
 	"default-notification-settings": "Standardbenachrichtigungseinstellungen",
 	"categoryWatchState": "Standardmäßige Beobachtung",
-	"categoryWatchState.watching": "Beobachtet",
+	"categoryWatchState.tracking": "Verfolgung",
 	"categoryWatchState.notwatching": "Nicht beobachtet",
-	"categoryWatchState.ignoring": "Ignoriert"
+	"categoryWatchState.ignoring": "Ignoriert",
+	"restrictions-new": "Neue Benutzerbeschränkungen",
+	"restrictions.rep-threshold": "Mindestansehen bevor die Beschränkungen aufgehoben werden",
+	"restrictions.seconds-between-new": "Sekunden zwischen Beiträgen für neue Benutzer",
+	"restrictions.seconds-before-new": "Sekunden, bevor ein neuer Nutzer seinen ersten Beitrag verfassen kann",
+	"restrictions.seconds-edit-after-new": "Anzahl der Sekunden, die ein Beitrag für neue Benutzer bearbeitbar bleibt (zum Deaktivieren auf 0 setzen)",
+	"restrictions.milliseconds-between-messages": "Zeit zwischen Chat-Nachrichten für neue Benutzer (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Gruppen auswählen, die von den neuen Benutzerbeschränkungen ausgenommen werden sollen"
 }

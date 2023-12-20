@@ -1,14 +1,18 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
 const notifications = require('../notifications');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
+const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
@@ -20,7 +24,7 @@ async function rateLimitExceeded(caller, field) {
 		user.isPrivileged(caller.uid),
 		user.getUserField(caller.uid, 'reputation'),
 	]);
-	const newbie = !isPrivileged && meta.config.newbiePostDelayThreshold > reputation;
+	const newbie = !isPrivileged && meta.config.newbieReputationThreshold > reputation;
 	const delay = newbie ? meta.config.newbieChatMessageDelay : meta.config.chatMessageDelay;
 	session[field] = session[field] || 0;
 
@@ -32,12 +36,18 @@ async function rateLimitExceeded(caller, field) {
 	return false;
 }
 
-chatsAPI.list = async (caller, { page, perPage }) => {
-	const start = Math.max(0, page - 1) * perPage;
-	const stop = start + perPage;
-	const { rooms } = await messaging.getRecentChats(caller.uid, caller.uid, start, stop);
+chatsAPI.list = async (caller, { uid = caller.uid, start, stop, page, perPage } = {}) => {
+	if (!start && !stop && !page) {
+		throw new Error('[[error:invalid-data]]');
+	}
 
-	return { rooms };
+	if (!start && !stop && page) {
+		winston.warn('[api/chats] Sending `page` and `perPage` to .list() is deprecated in favour of `start` and `stop`. The deprecated parameters will be removed in v4.');
+		start = Math.max(0, page - 1) * perPage;
+		stop = start + perPage - 1;
+	}
+
+	return await messaging.getRecentChats(caller.uid, uid || caller.uid, start, stop);
 };
 
 chatsAPI.create = async function (caller, data) {
@@ -73,6 +83,27 @@ chatsAPI.create = async function (caller, data) {
 	const roomId = await messaging.newRoom(caller.uid, data);
 
 	return await messaging.getRoomData(roomId);
+};
+
+chatsAPI.getUnread = async (caller) => {
+	const count = await messaging.getUnreadCount(caller.uid);
+	return { count };
+};
+
+chatsAPI.sortPublicRooms = async (caller, { roomIds, scores }) => {
+	[roomIds, scores].forEach((arr) => {
+		if (!Array.isArray(arr) || !arr.every(value => isFinite(value))) {
+			throw new Error('[[error:invalid-data]]');
+		}
+	});
+
+	const isAdmin = await user.isAdministrator(caller.uid);
+	if (!isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await db.sortedSetAdd(`chat:rooms:public:order`, scores, roomIds);
+	require('../cache').del(`chat:rooms:public:order:all`);
 };
 
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
@@ -173,6 +204,36 @@ chatsAPI.mark = async (caller, data) => {
 	messaging.pushUnreadCount(caller.uid);
 };
 
+chatsAPI.watch = async (caller, { roomId, state }) => {
+	const inRoom = await messaging.isUserInRoom(caller.uid, roomId);
+	if (!inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await messaging.setUserNotificationSetting(caller.uid, roomId, state);
+};
+
+chatsAPI.toggleTyping = async (caller, { roomId, typing }) => {
+	if (!utils.isNumber(roomId) || typeof typing !== 'boolean') {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const [isInRoom, username] = await Promise.all([
+		messaging.isUserInRoom(caller.uid, roomId),
+		user.getUserField(caller.uid, 'username'),
+	]);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	websockets.in(`chat_room_${roomId}`).emit('event:chats.typing', {
+		uid: caller.uid,
+		roomId,
+		typing,
+		username,
+	});
+};
+
 chatsAPI.users = async (caller, data) => {
 	const start = data.hasOwnProperty('start') ? data.start : 0;
 	const stop = start + 39;
@@ -244,21 +305,97 @@ chatsAPI.kick = async (caller, data) => {
 	return chatsAPI.users(caller, data);
 };
 
-chatsAPI.listMessages = async (caller, { uid, roomId, start }) => {
+chatsAPI.toggleOwner = async (caller, { roomId, uid, state }) => {
+	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		messaging.isUserInRoom(caller.uid, roomId),
+		messaging.isRoomOwner(caller.uid, roomId),
+	]);
+
+	if (!isAdmin && (!inRoom || !isRoomOwner)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await messaging.toggleOwner(uid, roomId, state);
+};
+
+chatsAPI.listMessages = async (caller, { uid = caller.uid, roomId, start = 0, direction = null } = {}) => {
+	if (!roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const count = 50;
+	let stop = start + count - 1;
+	if (direction === 1 || direction === -1) {
+		const msgCount = await db.getObjectField(`chat:room:${roomId}`, 'messageCount');
+		start = msgCount - start;
+		if (direction === 1) {
+			start -= count + 1;
+		}
+		stop = start + count - 1;
+		start = Math.max(0, start);
+		if (stop <= -1) {
+			return { messages: [] };
+		}
+		stop = Math.max(0, stop);
+	}
+
 	const messages = await messaging.getMessages({
 		callerUid: caller.uid,
 		uid,
 		roomId,
 		start,
-		count: 50,
+		count: stop - start + 1,
 	});
 
 	return { messages };
 };
 
-chatsAPI.getMessage = async (caller, { mid, roomId }) => {
+chatsAPI.getPinnedMessages = async (caller, { start, roomId }) => {
+	start = parseInt(start, 10) || 0;
+	const isInRoom = await messaging.isUserInRoom(caller.uid, roomId);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const messages = await messaging.getPinnedMessages(roomId, caller.uid, start, start + 49);
+	return { messages };
+};
+
+chatsAPI.getMessage = async (caller, { mid, roomId } = {}) => {
+	if (!mid || !roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const messages = await messaging.getMessagesData([mid], caller.uid, roomId, false);
 	return messages.pop();
+};
+
+chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
+	if (!mid || !roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		messaging.canViewMessage(mid, roomId, caller.uid),
+		messaging.isUserInRoom(caller.uid, roomId),
+	]);
+
+	if (!isAdmin && (!inRoom || !canViewMessage)) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
+	const content = await messaging.getMessageField(mid, 'content');
+	return { content };
+};
+
+chatsAPI.getIpAddress = async (caller, { mid }) => {
+	const allowed = await privileges.global.can('view:users:info', caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const ip = await messaging.getMessageField(mid, 'ip');
+	return { ip };
 };
 
 chatsAPI.editMessage = async (caller, { mid, roomId, message }) => {

@@ -79,7 +79,14 @@
 	"follow-replied-topics": "Cevap verdiğim konuları takip et",
 	"default-notification-settings": "Varsayılan bildirim ayarları",
 	"categoryWatchState": "Varsayılan kategori izlenme durumu",
-	"categoryWatchState.watching": "Takip ediliyor",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "Takip edilmiyor",
-	"categoryWatchState.ignoring": "Yok sayılıyor"
+	"categoryWatchState.ignoring": "Yok sayılıyor",
+	"restrictions-new": "Yeni kullanıcı kısıtlamaları",
+	"restrictions.rep-threshold": "Yeni kullanıcı kısıtlamalarının kalkması için gereken minimum saygınlık sınırı",
+	"restrictions.seconds-between-new": "Yeni kullanıcılar için ileti gönderimleri arasındaki saniye miktarı",
+	"restrictions.seconds-before-new": "Yeni kullanıcıların ilk iletilerini göndermesi için geçmesi gereken saniye miktarı",
+	"restrictions.seconds-edit-after-new": "Yeni kullanıcıların iletileri kaç saniye boyunca düzenlenebilir (devre dışı bırakmak için 0 giriniz)",
+	"restrictions.milliseconds-between-messages": "Yeni kullanıcıların sohbet mesajları arasındaki süre (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Yeni kullanıcı kısıtlamalarının uygulanmayacağı grupları seçiniz"
 }

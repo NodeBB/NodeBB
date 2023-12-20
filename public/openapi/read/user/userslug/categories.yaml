@@ -52,6 +52,8 @@ get:
                           type: boolean
                         isWatched:
                           type: boolean
+                        isTracked:
+                          type: boolean
                         isNotWatched:
                           type: boolean
                         imageClass:

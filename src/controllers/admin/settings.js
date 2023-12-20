@@ -46,7 +46,10 @@ settingsController.email = async (req, res) => {
 };
 
 settingsController.user = async (req, res) => {
-	const notificationTypes = await notifications.getAllNotificationTypes();
+	const [notificationTypes, groupData] = await Promise.all([
+		notifications.getAllNotificationTypes(),
+		groups.getNonPrivilegeGroups('groups:createtime', 0, -1),
+	]);
 	const notificationSettings = notificationTypes.map(type => ({
 		name: type,
 		label: `[[notifications:${type.replace(/_/g, '-')}]]`,
@@ -54,6 +57,7 @@ settingsController.user = async (req, res) => {
 	res.render('admin/settings/user', {
 		title: '[[admin/menu:settings/user]]',
 		notificationSettings: notificationSettings,
+		groupsExemptFromNewUserRestrictions: groupData,
 	});
 };
 

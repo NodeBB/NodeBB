@@ -1,6 +1,6 @@
 {
 	"state": "Durum",
-	"report": "Report",
+	"report": "Rapor",
 	"reports": "Raporlar",
 	"first-reported": "İlk rapor tarihi",
 	"no-flags": "Yaşasın! Hiçbir şikayet bulunamadı.",
@@ -9,8 +9,8 @@
 	"update": "Güncelle",
 	"updated": "Güncellendi",
 	"resolved": "Çözüldü",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Eklendi",
+	"report-rescinded": "İptal Edildi",
 	"target-purged": "Şikayet edilen içerik temizlendi ve artık mevcut değil.",
 	"target-aboutme-empty": "Bu kullanıcı için &quot;Hakkımda&quot; bölümü yok.",
 

@@ -6,6 +6,9 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const user = require('../user');
+const notifications = require('../notifications');
+const translator = require('../translator');
+const batch = require('../batch');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
@@ -203,4 +206,41 @@ module.exports = function (Categories) {
 		const now = Date.now();
 		return tids.filter((tid, index) => tid && (!scores[index] || scores[index] <= now));
 	}
+
+	Categories.notifyCategoryFollowers = async (postData, exceptUid) => {
+		const { cid } = postData.topic;
+		const followers = [];
+		await batch.processSortedSet(`cid:${cid}:uid:watch:state`, async (uids) => {
+			followers.push(
+				...await privileges.categories.filterUids('topics:read', cid, uids)
+			);
+		}, {
+			batch: 500,
+			min: Categories.watchStates.watching,
+			max: Categories.watchStates.watching,
+		});
+
+		if (!followers.length) {
+			return;
+		}
+
+		const { displayname } = postData.user;
+		const categoryName = await Categories.getCategoryField(cid, 'name');
+		const notifBase = 'notifications:user-posted-topic-in-category';
+
+		const bodyShort = translator.compile(notifBase, displayname, categoryName);
+
+		const notification = await notifications.create({
+			type: 'new-topic-in-category',
+			nid: `new_topic:tid:${postData.topic.tid}:uid:${exceptUid}`,
+			subject: bodyShort,
+			bodyShort: bodyShort,
+			bodyLong: postData.content,
+			pid: postData.pid,
+			path: `/post/${postData.pid}`,
+			tid: postData.topic.tid,
+			from: exceptUid,
+		});
+		notifications.push(notification, followers);
+	};
 };

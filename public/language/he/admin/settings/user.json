@@ -79,7 +79,14 @@
 	"follow-replied-topics": "עקוב אחר נושאים שהגבת עליהם",
 	"default-notification-settings": "הגדרות התראות ברירת מחדל",
 	"categoryWatchState": "מצב מעקב על קטגוריה בברירת מחדל",
-	"categoryWatchState.watching": "עוקב",
+	"categoryWatchState.tracking": "מעקב",
 	"categoryWatchState.notwatching": "לא עוקב",
-	"categoryWatchState.ignoring": "מתעלם"
+	"categoryWatchState.ignoring": "מתעלם",
+	"restrictions-new": "הגבלות משתמש חדש",
+	"restrictions.rep-threshold": "סף מוניטין לפני הסרת הגבלות אלו",
+	"restrictions.seconds-between-new": "שניות בין פוסטים למשתמשים חדשים",
+	"restrictions.seconds-before-new": "שניות לפני שמשתמש חדש יכול לפרסם את הפוסט הראשון שלו",
+	"restrictions.seconds-edit-after-new": "מספר השניות שפוסט נשאר ניתן לעריכה עבור משתמשים חדשים (הגדר ל-0 כדי להשבית)",
+	"restrictions.milliseconds-between-messages": "זמן בין הודעות צ'אט למשתמשים חדשים (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "בחר קבוצות שיהיו פטורות מהגבלות משתמש חדש"
 }

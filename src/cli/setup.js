@@ -20,11 +20,14 @@ async function setup(initConfig) {
 	console.log('Press enter to accept the default setting (shown in brackets).');
 
 	install.values = initConfig;
-	const data = await install.setup();
 	let configFile = paths.config;
-	if (nconf.get('config')) {
-		configFile = path.resolve(paths.baseDir, nconf.get('config'));
+	const config = nconf.any(['config', 'CONFIG']);
+	if (config) {
+		nconf.set('config', config);
+		configFile = path.resolve(paths.baseDir, config);
 	}
+
+	const data = await install.setup();
 
 	prestart.loadConfig(configFile);
 

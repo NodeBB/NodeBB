@@ -68,6 +68,8 @@
     "chat.in-room": "I detta rum",
     "chat.kick": "Sparka ut",
     "chat.show-ip": "Visa IP",
+    "chat.copy-text": "Copy Text",
+    "chat.copy-link": "Copy Link",
     "chat.owner": "Rummets ägare",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",

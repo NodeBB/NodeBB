@@ -13,13 +13,14 @@
     "all": "Բոլորը",
     "topics": "Թեմաներ",
     "tags": "Պիտակներ",
+    "categories": "Կատեգորիաներ",
     "replies": "Պատասխաններ",
     "chat": "Զրույցներ",
     "group-chat": "Խմբային զրույցներ",
     "public-chat": "Հանրային նամակներ",
     "follows": "Հետևորդներ",
     "upvote": "Կողմ ձայներ",
-    "awards": "Awards",
+    "awards": "Մրցանակներ",
     "new-flags": "Նոր դրոշներ",
     "my-flags": "Ինձ հանձնարարված դրոշներ",
     "bans": "Արգելքներ",
@@ -55,6 +56,7 @@
     "user-posted-topic-with-tag-dual": "<strong>%1</strong> պիտակով նոր թեմա է տեղադրել <strong>%2</strong> և <strong>%3</strong> - ում։",
     "user-posted-topic-with-tag-triple": "<strong>%1</strong> պիտակով նոր թեմա է տեղադրել <strong>%2</strong>, <strong>%3</strong> և <strong>%4</strong> - ում։",
     "user-posted-topic-with-tag-multiple": "<strong>%1</strong> պիտակով նոր թեմա է տեղադրել <strong>%2</strong> - ում։",
+    "user-posted-topic-in-category": "<strong>%1</strong> նոր թեմա է տեղադրել <strong>%2</strong>",
     "user-started-following-you": "%1 սկսեց հետևել ձեզ",
     "user-started-following-you-dual": "%1 և %2 սկսեցին հետևել ձեզ:",
     "user-started-following-you-triple": "<strong>%1</strong>, <strong>%2</strong> և <strong>%3</strong> սկսել են հետևել Ձեզ։",
@@ -81,6 +83,7 @@
     "notificationType-upvote": "Երբ ինչ-որ մեկը կողմ է քվեարկում ձեր գրառմանը",
     "notificationType-new-topic": "Երբ մեկը, ում հետևում եք, թեմա է հրապարակում",
     "notificationType-new-topic-with-tag": "Երբ թեման տեղադրվում է պիտակով, որը դուք հետևում եք",
+    "notificationType-new-topic-in-category": "Երբ թեման տեղադրված է այն կատերգորիայում, որը դուք հետևում եք.",
     "notificationType-new-reply": "Երբ ձեր դիտած թեմայում տեղադրվում է նոր պատասխան",
     "notificationType-post-edit": "When a post is edited in a topic you are watching",
     "notificationType-follow": "Երբ ինչ-որ մեկը սկսում է հետևել քեզ",
@@ -94,5 +97,5 @@
     "notificationType-post-queue": "Երբ նոր գրառումը հերթագրվում է",
     "notificationType-new-post-flag": "Երբ գրառումը դրոշակված է",
     "notificationType-new-user-flag": "Երբ օգտվողը դրոշակված է",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "Երբ դուք ստանում եք մրցանակ."
 }

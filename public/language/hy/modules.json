@@ -68,6 +68,8 @@
     "chat.in-room": "Այս սենյակում",
     "chat.kick": "Kick",
     "chat.show-ip": "Ցույց տալ IP",
+    "chat.copy-text": "Պատճենել տեքստը",
+    "chat.copy-link": "Պատճենել հղումը",
     "chat.owner": "Սենյակի սեփականատեր",
     "chat.grant-rescind-ownership": "Տրամադրել/վերացնել սեփականության իրավունքը",
     "chat.system.user-join": "%1-ը միացել է սենյակին <span class=\"timeago\" title=\"%2\"></span>",

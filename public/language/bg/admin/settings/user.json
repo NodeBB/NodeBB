@@ -78,8 +78,15 @@
 	"follow-created-topics": "Следване на темите, които създавате",
 	"follow-replied-topics": "Следване на темите, на които отговаряте",
 	"default-notification-settings": "Настройки по подразбиране за известията",
-	"categoryWatchState": "Състояние по подразбиране за следенето на категории",
-	"categoryWatchState.watching": "Да се следят",
-	"categoryWatchState.notwatching": "Да не се следят",
-	"categoryWatchState.ignoring": "Да се пренебрегват"
+	"categoryWatchState": "Състояние по подразбиране за наблюдаването на категории",
+	"categoryWatchState.tracking": "Да се следят",
+	"categoryWatchState.notwatching": "Да не се наблюдават",
+	"categoryWatchState.ignoring": "Да се пренебрегват",
+	"restrictions-new": "Ограничения за новите потребители",
+	"restrictions.rep-threshold": "Необходима репутация за премахване на това ограничение",
+	"restrictions.seconds-between-new": "Брой секунди между публикациите за нови потребители",
+	"restrictions.seconds-before-new": "Брой секунди преди новите потребители да могат да публикуват за пръв път",
+	"restrictions.seconds-edit-after-new": "Брой секунди, през които публикациите могат да бъдат редактирани от нови потребители. (0 = изключено)",
+	"restrictions.milliseconds-between-messages": "Време между съобщенията в разговорите за нови потребители (мсек)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Избиране на групи, за които да не важат ограниченията за нови потребители"
 }

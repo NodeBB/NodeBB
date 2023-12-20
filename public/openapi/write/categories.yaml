@@ -1,3 +1,25 @@
+get:
+  tags:
+    - categories
+  summary: list categories
+  description: This operation returns a flat list of categories available to the calling user
+  responses:
+    '200':
+      description: categories successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
 post:
   tags:
     - categories

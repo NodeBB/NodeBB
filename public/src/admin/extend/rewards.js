@@ -1,9 +1,11 @@
 'use strict';
 
 
-define('admin/extend/rewards', ['alerts'], function (alerts) {
+define('admin/extend/rewards', [
+	'alerts',
+	'jquery-ui/widgets/sortable',
+], function (alerts) {
 	const rewards = {};
-
 
 	let available;
 	let active;
@@ -45,6 +47,11 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 				btn.addClass('hidden');
 				// send disable api call
 				return false;
+			})
+			.sortable({
+				handle: '[component="sort/handle"]',
+				axis: 'y',
+				zIndex: 9999,
 			});
 
 		$('#new').on('click', newReward);

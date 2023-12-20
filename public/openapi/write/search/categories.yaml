@@ -1,0 +1,96 @@
+get:
+  tags:
+    - search
+  summary: find categories by keyword
+  description: |
+    This operation returns a set of categories matching the keyword search.
+
+    A number of filtering options are available, and can be passed in via query string.
+  parameters:
+    - in: query
+      name: 'search'
+      schema:
+        type: string
+      required: false
+      description: The keyword used in the category search
+      example: 'announcements'
+    - in: query
+      name: 'query'
+      schema:
+        type: string
+      required: false
+      description: Likely unused — a URI-encoded JSON string containing values that are passed to `getRecentTopicReplies`.
+      example: ''
+    - in: query
+      name: 'parentCid'
+      schema:
+        type: array
+      required: false
+      description: A list of category IDs. The values received are simply reflected back in the results. Matching cids will have "selected" set to true.
+      example: '0'
+    - in: query
+      name: 'selectedCids'
+      schema:
+        type: array
+      required: false
+      description: Likely deprecated — the sorting method of topics (use `categoryTopicSort` instead.)
+      example: ''
+    - in: query
+      name: 'categoryTopicSort'
+      schema:
+        type: string
+      required: false
+      description: The sorting method of topics
+      example: 'newest_to_oldest'
+    - in: query
+      name: 'direction'
+      schema:
+        type: string
+      required: false
+      description: The sorting of returned results (if you scroll up you want the topics reversed). Set to "-1" for reversed results.
+      example: '1'
+  responses:
+    '200':
+      description: matching categories successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cid:
+                          type: number
+                          description: A category identifier assigned upon category creation (this value cannot be changed)
+                        name:
+                          type: string
+                          description: The category's name/title
+                        level:
+                          type: number
+                        icon:
+                          type: string
+                          description: A FontAwesome icon string
+                          example: fa-comments-o
+                        bgColor:
+                          type: string
+                          description: Theme-related, a six-character hexadecimal string representing the background colour of the category
+                        color:
+                          type: string
+                          description: Theme-related, a six-character hexadecimal string representing the foreground/text colour of the category
+                        parentCid:
+                          type: number
+                          description: The category identifier for the category that is the immediate ancestor of the current category
+                        imageClass:
+                          type: string
+                          enum: [auto, cover, contain]
+                          description: The `background-position` of the category background image, if one is set
+                        selected:
+                          type: boolean

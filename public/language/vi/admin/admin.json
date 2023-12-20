@@ -2,7 +2,7 @@
 	"alert.confirm-rebuild-and-restart": "Bạn có chắc chắn muốn xây lại và khởi động lại NodeBB?",
 	"alert.confirm-restart": "Bạn có chắc muốn khởi động lại NodeBB",
 
-	"acp-title": "%1 | Bảng Điểu Khiển Quản Trị Viên NodeBB",
+	"acp-title": "%1 | Bảng Điểu Khiển Quản Trị NodeBB",
 	"settings-header-contents": "Nội dung",
 	"changes-saved": "Changes Saved",
 	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",

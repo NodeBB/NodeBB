@@ -12,11 +12,15 @@ define('forum/chats/create', [
 	async function handleCreate() {
 		let groups = [];
 		if (app.user.isAdmin) {
-			groups = await socket.emit('groups.getChatGroups', {});
+			({ groups } = await api.get('/admin/groups'));
+			groups.sort((a, b) => b.system - a.system).map((g) => {
+				const { name, displayName } = g;
+				return { name, displayName };
+			});
 		}
 		const html = await app.parseAndTranslate('modals/create-room', {
 			user: app.user,
-			groups: groups,
+			groups,
 		});
 
 		const modal = bootbox.dialog({

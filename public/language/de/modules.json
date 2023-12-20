@@ -68,6 +68,8 @@
     "chat.in-room": "In diesem Chat-Room",
     "chat.kick": "Rauswerfen",
     "chat.show-ip": "IP anzeigen",
+    "chat.copy-text": "Text kopieren",
+    "chat.copy-link": "Link kopieren",
     "chat.owner": "Raumbesitzer",
     "chat.grant-rescind-ownership": "Erteilung/Aufhebung des Eigentums",
     "chat.system.user-join": "%1 hat den Raum betreten <span class=\"timeago\" title=\"%2\"></span>",

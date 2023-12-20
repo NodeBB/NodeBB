@@ -79,7 +79,14 @@
 	"follow-replied-topics": "返信したスレッドをフォローします",
 	"default-notification-settings": "デフォルトの通知設定",
 	"categoryWatchState": "デフォルトのカテゴリウォッチ状態",
-	"categoryWatchState.watching": "ウォッチ中",
+	"categoryWatchState.tracking": "Tracking",
 	"categoryWatchState.notwatching": "未ウォッチ",
-	"categoryWatchState.ignoring": "無視中"
+	"categoryWatchState.ignoring": "無視中",
+	"restrictions-new": "New User Restrictions",
+	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
+	"restrictions.seconds-between-new": "Seconds between posts for new users",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
+	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
+	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
 }

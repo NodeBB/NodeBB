@@ -27,6 +27,7 @@ module.exports = function (SocketPosts) {
 			canDelete: privileges.posts.canDelete(data.pid, socket.uid),
 			canPurge: privileges.posts.canPurge(data.pid, socket.uid),
 			canFlag: privileges.posts.canFlag(data.pid, socket.uid),
+			canViewHistory: privileges.posts.can('posts:history', data.pid, socket.uid),
 			flagged: flags.exists('post', data.pid, socket.uid), // specifically, whether THIS calling user flagged
 			bookmarked: posts.hasBookmarked(data.pid, socket.uid),
 			postSharing: social.getActivePostSharing(),
@@ -46,7 +47,7 @@ module.exports = function (SocketPosts) {
 		postData.display_move_tools = results.isAdmin || results.isModerator;
 		postData.display_change_owner_tools = results.isAdmin || results.isModerator;
 		postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
-		postData.display_history = results.history;
+		postData.display_history = results.history && results.canViewHistory;
 		postData.flags = {
 			flagId: parseInt(results.posts.flagId, 10) || null,
 			can: results.canFlag.flag,

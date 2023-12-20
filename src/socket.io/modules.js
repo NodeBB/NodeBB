@@ -1,15 +1,17 @@
 'use strict';
 
-const _ = require('lodash');
-const validator = require('validator');
+/**
+ * v4 note — all methods here are deprecated and can be removed except for:
+ *   - SocketModules.chats.(enter|leave)(Public)?  => related to socket.io rooms
+ */
 
-const db = require('../database');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
 const groups = require('../groups');
+
+const api = require('../api');
+const sockets = require('.');
 
 const SocketModules = module.exports;
 
@@ -19,64 +21,78 @@ SocketModules.settings = {};
 /* Chat */
 
 SocketModules.chats.getRaw = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/:mid/raw');
+
 	if (!data || !data.hasOwnProperty('mid')) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const roomId = await Messaging.getMessageField(data.mid, 'roomId');
-	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
-		user.isAdministrator(socket.uid),
-		Messaging.canViewMessage(data.mid, roomId, socket.uid),
-		Messaging.isUserInRoom(socket.uid, roomId),
-	]);
 
-	if (!isAdmin && (!inRoom || !canViewMessage)) {
-		throw new Error('[[error:not-allowed]]');
-	}
+	const { content } = await api.chats.getRawMessage(socket, {
+		mid: data.mid,
+		roomId,
+	});
 
-	return await Messaging.getMessageField(data.mid, 'content');
+	return content;
 };
 
 SocketModules.chats.isDnD = async function (socket, uid) {
-	const status = await db.getObjectField(`user:${uid}`, 'status');
+	sockets.warnDeprecated(socket, 'GET /api/v3/users/:uid/status OR HEAD /api/v3/users/:uid/status/:status');
+
+	const { status } = await api.users.getStatus(socket, { uid });
 	return status === 'dnd';
 };
 
 SocketModules.chats.canMessage = async function (socket, roomId) {
+	sockets.warnDeprecated(socket);
+
 	await Messaging.canMessageRoom(socket.uid, roomId);
 };
 
 SocketModules.chats.markAllRead = async function (socket) {
-	// no v3 method ?
+	sockets.warnDeprecated(socket);
+
 	await Messaging.markAllRead(socket.uid);
 	Messaging.pushUnreadCount(socket.uid);
 };
 
 SocketModules.chats.getRecentChats = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats');
+
 	if (!data || !utils.isNumber(data.after) || !utils.isNumber(data.uid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const start = parseInt(data.after, 10);
 	const stop = start + 9;
-	return await Messaging.getRecentChats(socket.uid, data.uid, start, stop);
+	const { uid } = data;
+
+	return api.chats.list(socket, { uid, start, stop });
 };
 
 SocketModules.chats.hasPrivateChat = async function (socket, uid) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/users/:uid/chat');
+
 	if (socket.uid <= 0 || uid <= 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await Messaging.hasPrivateChat(socket.uid, uid);
+
+	// despite the `has` prefix, this method actually did return the roomId.
+	const { roomId } = await api.users.getPrivateRoomId(socket, { uid });
+	return roomId;
 };
 
 SocketModules.chats.getIP = async function (socket, mid) {
-	const allowed = await privileges.global.can('view:users:info', socket.uid);
-	if (!allowed) {
-		throw new Error('[[error:no-privilege]]');
-	}
-	return await Messaging.getMessageField(mid, 'ip');
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/:mid/ip');
+
+	const { ip } = await api.chats.getIpAddress(socket, { mid });
+	return ip;
 };
 
 SocketModules.chats.getUnreadCount = async function (socket) {
-	return await Messaging.getUnreadCount(socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/unread');
+
+	const { count } = await api.chats.getUnread(socket);
+	return count;
 };
 
 SocketModules.chats.enter = async function (socket, roomIds) {
@@ -126,159 +142,83 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 }
 
 SocketModules.chats.sortPublicRooms = async function (socket, data) {
-	if (!data || !Array.isArray(data.scores) || !Array.isArray(data.roomIds)) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/sort');
+
+	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (!isAdmin) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	await db.sortedSetAdd(`chat:rooms:public:order`, data.scores, data.roomIds);
-	require('../cache').del(`chat:rooms:public:order:all`);
+
+	await api.chats.sortPublicRooms(socket, data);
 };
 
 SocketModules.chats.searchMembers = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/users?query=');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
-		user.isAdministrator(socket.uid),
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-		Messaging.isRoomOwner(socket.uid, data.roomId),
-	]);
 
-	if (!isAdmin && !inRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const results = await user.search({
-		query: data.username,
-		paginate: false,
-		hardCap: -1,
-	});
-
-	const { users } = results;
-	const foundUids = users.map(user => user && user.uid);
-	const isUidInRoom = _.zipObject(
-		foundUids,
-		await Messaging.isUsersInRoom(foundUids, data.roomId)
-	);
-
-	const roomUsers = users.filter(user => isUidInRoom[user.uid]);
-	const isOwners = await Messaging.isRoomOwner(roomUsers.map(u => u.uid), data.roomId);
-
-	roomUsers.forEach((user, index) => {
-		if (user) {
-			user.isOwner = isOwners[index];
-			user.canKick = isRoomOwner && (parseInt(user.uid, 10) !== parseInt(socket.uid, 10));
-		}
-	});
-
-	roomUsers.sort((a, b) => {
-		if (a.isOwner && !b.isOwner) {
-			return -1;
-		} else if (!a.isOwner && b.isOwner) {
-			return 1;
-		}
-		return 0;
-	});
-	return { users: roomUsers };
+	// parameter renamed; backwards compatibility
+	data.query = data.username;
+	delete data.username;
+	return await api.search.roomUsers(socket, data);
 };
 
 SocketModules.chats.toggleOwner = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/owners/:uid');
+
 	if (!data || !data.uid || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
-		user.isAdministrator(socket.uid),
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-		Messaging.isRoomOwner(socket.uid, data.roomId),
-	]);
-	if (!isAdmin && (!inRoom || !isRoomOwner)) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	await Messaging.toggleOwner(data.uid, data.roomId);
+	await api.chats.toggleOwner(socket, data);
 };
 
 SocketModules.chats.setNotificationSetting = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/watch');
+
 	if (!data || !utils.isNumber(data.value) || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const inRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
-	if (!inRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	await Messaging.setUserNotificationSetting(socket.uid, data.roomId, data.value);
+	await api.chats.watch(socket, data);
 };
 
 SocketModules.chats.searchMessages = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/messages');
+
 	if (!data || !utils.isNumber(data.roomId) || !data.content) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [roomData, inRoom] = await Promise.all([
-		Messaging.getRoomData(data.roomId),
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-	]);
 
-	if (!roomData) {
-		throw new Error('[[error:no-room]]');
-	}
-	if (!inRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const { ids } = await plugins.hooks.fire('filter:messaging.searchMessages', {
-		content: data.content,
-		roomId: [data.roomId],
-		uid: [data.uid],
-		matchWords: 'any',
-		ids: [],
-	});
-
-	let userjoinTimestamp = 0;
-	if (!roomData.public) {
-		userjoinTimestamp = await db.sortedSetScore(`chat:room:${data.roomId}:uids`, socket.uid);
-	}
-	const messageData = await Messaging.getMessagesData(ids, socket.uid, data.roomId, false);
-	messageData.forEach((msg) => {
-		if (msg) {
-			msg.newSet = true;
-		}
-	});
-
-	return messageData.filter(msg => msg && !msg.deleted && msg.timestamp > userjoinTimestamp);
+	// parameter renamed; backwards compatibility
+	data.query = data.content;
+	delete data.content;
+	return await api.search.roomMessages(socket, data);
 };
 
 SocketModules.chats.loadPinnedMessages = async (socket, data) => {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/pinned');
+
 	if (!data || !data.roomId || !utils.isNumber(data.start)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
-	if (!isInRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const start = parseInt(data.start, 10) || 0;
-	const pinnedMsgs = await Messaging.getPinnedMessages(data.roomId, socket.uid, start, start + 49);
-	return pinnedMsgs;
+
+	const { messages } = await api.chats.getPinnedMessages(socket, data);
+	return messages;
 };
 
 SocketModules.chats.typing = async (socket, data) => {
-	if (!data || !utils.isNumber(data.roomId) || typeof data.typing !== 'boolean') {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/:roomId/typing');
+
+	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
-	if (!isInRoom) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	socket.to(`chat_room_${data.roomId}`).emit('event:chats.typing', {
-		uid: socket.uid,
-		roomId: data.roomId,
-		typing: data.typing,
-		username: validator.escape(String(data.username)),
-	});
+
+	// `username` is now inferred from caller uid
+	delete data.username;
+
+	await api.chats.toggleTyping(socket, data);
 };
 
 

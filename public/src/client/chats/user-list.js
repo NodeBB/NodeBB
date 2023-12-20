@@ -72,11 +72,8 @@ define('forum/chats/user-list', ['api'], function (api) {
 
 	userList.addSearchHandler = function (roomId, inputEl, callback) {
 		inputEl.on('keyup', utils.debounce(async () => {
-			const username = inputEl.val();
-			const data = await socket.emit('modules.chats.searchMembers', {
-				username: username,
-				roomId: roomId,
-			});
+			const query = inputEl.val();
+			const data = await api.get(`/search/chats/${roomId}/users`, { query });
 			callback(data);
 		}, 200));
 	};

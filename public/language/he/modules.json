@@ -68,6 +68,8 @@
     "chat.in-room": "בתוך חדר זה",
     "chat.kick": "הוצא",
     "chat.show-ip": "הצג IP",
+    "chat.copy-text": "העתק טקסט",
+    "chat.copy-link": "העתק קישור",
     "chat.owner": "מנהלי החדר",
     "chat.grant-rescind-ownership": "הענק/בטל בעלות",
     "chat.system.user-join": "%1 הצטרף לחדר <span class=\"timeago\" title=\"%2\"></span>",

@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Chỉ Quản Trị Viên Mời",
 	"registration-type.disabled": "Không có đăng ký",
 	"registration-type.help": "Bình thường - Người dùng có thể đăng ký từ trang /register.<br/>\nChỉ mời - Người dùng có thể mời những người khác từ trang <a href=\"%1/users\" target=\"_blank\">người dùng</a>.<br/>\nChỉ Quản Trị Viên mời - Chỉ quản trị viên mới có thể mời người khác từ trang <a href=\"%1/users\" target=\"_blank\">người dùng</a> và <a href=\"%1/admin/manage/users\">admin/manage/users</a>.<br/>\nKhông đăng ký - Không đăng ký người dùng.<br/>",
-	"registration-approval-type.help": "Bình thường - Người dùng được đăng ký ngay lập tức.<br/>\nPhê duyệt của quản trị viên - Đăng ký người dùng được đặt trong một <a href=\"%1/admin/manage/registration\"> hàng đợi phê duyệt </a> cho quản trị viên.<br/>\nPhê duyệt của quản trị viên cho các IP - Bình thường cho người dùng mới, Phê duyệt quản trị cho các địa chỉ IP đã có tài khoản.<br/>",
+	"registration-approval-type.help": "Bình thường - Người dùng được đăng ký ngay lập tức.<br/>\nPhê duyệt của quản trị viên - Đăng ký người dùng được đặt trong <a href=\"%1/admin/manage/registration\"> xếp hàng phê duyệt </a> cho quản trị viên.<br/>\nPhê duyệt của quản trị viên cho các IP - Bình thường cho người dùng mới, Phê duyệt quản trị cho các địa chỉ IP đã có tài khoản.<br/>",
 	"registration-queue-auto-approve-time": "Thời Gian Xét Duyệt Tự Động",
 	"registration-queue-auto-approve-time-help": "Giờ trước khi người dùng được xét duyệt tự động. 0 để tắt.",
 	"registration-queue-show-average-time": "Hiện thời gian xét duyệt cho người dùng mới biết",
@@ -79,7 +79,14 @@
 	"follow-replied-topics": "Theo dõi các chủ đề mà bạn trả lời",
 	"default-notification-settings": "Cài đặt thông báo mặc định",
 	"categoryWatchState": "Trạng thái xem chuyên mục mặc định",
-	"categoryWatchState.watching": "Đang Xem",
+	"categoryWatchState.tracking": "Theo dõi",
 	"categoryWatchState.notwatching": "Không Xem",
-	"categoryWatchState.ignoring": "Bỏ Qua"
+	"categoryWatchState.ignoring": "Bỏ Qua",
+	"restrictions-new": "New User Restrictions",
+	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
+	"restrictions.seconds-between-new": "Seconds between posts for new users",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
+	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
+	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
 }

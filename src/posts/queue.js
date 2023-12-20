@@ -96,9 +96,16 @@ module.exports = function (Posts) {
 
 		if (!isPrivileged && reputation < meta.config['min:rep:post-links']) {
 			const parsed = await plugins.hooks.fire('filter:parse.raw', String(content));
-			if (parsed.match(/<a[^>]*>([^<]+)<\/a>/g)) {
-				return false;
+			const matches = parsed.matchAll(/<a[^>]*href="([^"]+)"[^>]*>/g);
+			let external = 0;
+			for (const [, href] of matches) {
+				const internal = utils.isInternalURI(new URL(href, nconf.get('url')), new URL(nconf.get('url')), nconf.get('relative_path'));
+				if (!internal) {
+					external += 1;
+				}
 			}
+
+			return external === 0;
 		}
 		return true;
 	};

@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/header/chat', [
-	'components', 'hooks',
-], function (components, hooks) {
+	'components', 'hooks', 'api',
+], function (components, hooks, api) {
 	const chat = {};
 
 	chat.prepareDOM = function () {
@@ -44,7 +44,7 @@ define('forum/header/chat', [
 				chatPage.markChatPageElUnread(data);
 			}
 
-			let count = await socket.emit('modules.chats.getUnreadCount', {});
+			let { count } = await api.get('/chats/unread');
 			const chatIcon = components.get('chat/icon');
 			count = Math.max(0, count);
 			chatIcon.toggleClass('fa-comment', count > 0)

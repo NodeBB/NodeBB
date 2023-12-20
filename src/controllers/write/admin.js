@@ -31,25 +31,6 @@ Admin.getAnalyticsData = async (req, res) => {
 	}));
 };
 
-Admin.chats = {};
-
-Admin.chats.deleteRoom = async (req, res) => {
-	const roomData = await messaging.getRoomData(req.params.roomId);
-	if (!roomData) {
-		throw new Error('[[error:no-room]]');
-	}
-	await messaging.deleteRooms([req.params.roomId]);
-
-	events.log({
-		type: 'chat-room-deleted',
-		roomId: req.params.roomId,
-		roomName: roomData.roomName ? roomData.roomName : `No room name`,
-		uid: req.uid,
-		ip: req.ip,
-	});
-	helpers.formatApiResponse(200, res);
-};
-
 Admin.generateToken = async (req, res) => {
 	const { uid, description } = req.body;
 	const token = await api.utils.tokens.generate({ uid, description });
@@ -77,4 +58,27 @@ Admin.rollToken = async (req, res) => {
 Admin.deleteToken = async (req, res) => {
 	const { token } = req.params;
 	helpers.formatApiResponse(200, res, await api.utils.tokens.delete(token));
+};
+
+Admin.chats = {};
+
+Admin.chats.deleteRoom = async (req, res) => {
+	const roomData = await messaging.getRoomData(req.params.roomId);
+	if (!roomData) {
+		throw new Error('[[error:no-room]]');
+	}
+	await messaging.deleteRooms([req.params.roomId]);
+
+	events.log({
+		type: 'chat-room-deleted',
+		roomId: req.params.roomId,
+		roomName: roomData.roomName ? roomData.roomName : `No room name`,
+		uid: req.uid,
+		ip: req.ip,
+	});
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.listGroups = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.admin.listGroups());
 };

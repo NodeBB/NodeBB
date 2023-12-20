@@ -221,6 +221,20 @@ module.exports = function (middleware) {
 		controllers.helpers.redirect(res, path);
 	});
 
+	middleware.redirectToHomeIfBanned = helpers.try(async (req, res, next) => {
+		if (req.loggedIn) {
+			const canLoginIfBanned = await user.bans.canLoginIfBanned(req.uid);
+			if (!canLoginIfBanned) {
+				req.logout(() => {
+					res.redirect('/');
+				});
+				return;
+			}
+		}
+
+		next();
+	});
+
 	middleware.requireUser = function (req, res, next) {
 		if (req.loggedIn) {
 			return next();

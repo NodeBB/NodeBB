@@ -71,6 +71,19 @@ async function runSteps(tasks) {
 }
 
 async function runUpgrade(upgrades, options) {
+	const winston = require('winston');
+	const path = require('path');
+	winston.configure({
+		transports: [
+			new winston.transports.Console({
+				handleExceptions: true,
+			}),
+			new winston.transports.File({
+				filename: path.join(__dirname, '../../', nconf.get('logFile') || 'logs/output.log'),
+			}),
+		],
+	});
+
 	console.log(chalk.cyan('\nUpdating NodeBB...'));
 	options = options || {};
 	// disable mongo timeouts during upgrade

@@ -17,7 +17,7 @@
 	"mongo.file-size": "Kích cỡ tệp",
 	"mongo.resident-memory": "Bộ Nhớ Thường Trú",
 	"mongo.virtual-memory": "Bộ Nhớ Ảo",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "Bộ nhớ được ánh xạ",
 	"mongo.bytes-in": "Byte trong",
 	"mongo.bytes-out": "Byte ngoài",
 	"mongo.num-requests": "Số lượng yêu cầu",

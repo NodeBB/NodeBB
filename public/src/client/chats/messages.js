@@ -83,6 +83,7 @@ define('forum/chats/messages', [
 		if (!Array.isArray(data)) {
 			data.newSet = data.toMid || lastSpeaker !== parseInt(data.fromuid, 10) ||
 				parseInt(data.timestamp, 10) > parseInt(lasttimestamp, 10) + (1000 * 60 * 3);
+			data.index = parseInt(lastMsgEl.attr('data-index'), 10) + 1;
 		}
 
 		messages.parseMessage(data, function (html) {
@@ -93,6 +94,7 @@ define('forum/chats/messages', [
 	function onMessagesParsed(chatContentEl, html, msgData) {
 		const newMessage = $(html);
 		const isAtBottom = messages.isAtBottom(chatContentEl);
+		newMessage.addClass('new');
 		newMessage.appendTo(chatContentEl);
 		messages.onMessagesAddedToDom(newMessage);
 		if (isAtBottom || msgData.self) {
@@ -102,6 +104,7 @@ define('forum/chats/messages', [
 			if (chatMsgEls.length > 150) {
 				const removeCount = chatMsgEls.length - 150;
 				chatMsgEls.slice(0, removeCount).remove();
+				chatContentEl.find('[data-mid].new').removeClass('new');
 			}
 		}
 
@@ -150,6 +153,7 @@ define('forum/chats/messages', [
 
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl && containerEl.length) {
+			containerEl.attr('data-ignore-next-scroll', 1);
 			containerEl.scrollTop(containerEl[0].scrollHeight - containerEl.height());
 			containerEl.parents('[component="chat/message/window"]')
 				.find('[component="chat/messages/scroll-up-alert"]')
@@ -192,7 +196,7 @@ define('forum/chats/messages', [
 	};
 
 	messages.prepEdit = async function (msgEl, mid, roomId) {
-		const raw = await socket.emit('modules.chats.getRaw', { mid: mid, roomId: roomId });
+		const { content: raw } = await api.get(`/chats/${roomId}/messages/${mid}/raw`);
 		const editEl = await app.parseAndTranslate('partials/chats/edit-message', {
 			rawContent: raw,
 		});

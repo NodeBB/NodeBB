@@ -68,6 +68,8 @@
     "chat.in-room": "In deze chat room",
     "chat.kick": "Schop",
     "chat.show-ip": "Geef IP weer",
+    "chat.copy-text": "Copy Text",
+    "chat.copy-link": "Copy Link",
     "chat.owner": "Chatroom-eigenaar",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",

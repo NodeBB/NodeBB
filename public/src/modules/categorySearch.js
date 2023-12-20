@@ -1,13 +1,13 @@
 'use strict';
 
-define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
+define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, bootstrap, api) {
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
 		let categoriesList = null;
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
-		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
 		options.cacheList = options.hasOwnProperty('cacheList') ? options.cacheList : true;
 
 		let localCategories = [];
@@ -70,7 +70,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 		});
 
 		function loadList(search, callback) {
-			socket.emit('categories.categorySearch', {
+			api.get('/search/categories', {
 				search: search,
 				query: utils.params(),
 				parentCid: options.parentCid || 0,
@@ -78,7 +78,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 				privilege: options.privilege,
 				states: options.states,
 				showLinks: options.showLinks,
-			}, function (err, categories) {
+			}, function (err, { categories }) {
 				if (err) {
 					return alerts.error(err);
 				}

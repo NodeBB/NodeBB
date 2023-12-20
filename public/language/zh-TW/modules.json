@@ -68,6 +68,8 @@
     "chat.in-room": "在此房間",
     "chat.kick": "踢出",
     "chat.show-ip": "顯示 IP",
+    "chat.copy-text": "Copy Text",
+    "chat.copy-link": "Copy Link",
     "chat.owner": "房間所有者",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",

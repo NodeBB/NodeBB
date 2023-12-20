@@ -39,11 +39,23 @@ exports.processSortedSet = async function (setKey, process, options) {
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
+
 	const method = options.reverse ? 'getSortedSetRevRange' : 'getSortedSetRange';
+	const isByScore = (options.min && options.min !== '-inf') || (options.max && options.max !== '+inf');
+	const byScore = isByScore ? 'ByScore' : '';
+	const withScores = options.withScores ? 'WithScores' : '';
 	let iteration = 1;
+	const getFn = db[`${method}${byScore}${withScores}`];
 	while (true) {
 		/* eslint-disable no-await-in-loop */
-		const ids = await db[`${method}${options.withScores ? 'WithScores' : ''}`](setKey, start, stop);
+		const ids = await getFn(
+			setKey,
+			start,
+			isByScore ? stop - start + 1 : stop,
+			options.reverse ? options.max : options.min,
+			options.reverse ? options.min : options.max,
+		);
+
 		if (!ids.length || options.doneIf(start, stop, ids)) {
 			return;
 		}

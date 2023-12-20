@@ -11,6 +11,7 @@ const nconf = require('nconf');
 const file = require('../file');
 const user = require('../user');
 const groups = require('../groups');
+const categories = require('../categories');
 const topics = require('../topics');
 const posts = require('../posts');
 const messaging = require('../messaging');
@@ -34,6 +35,14 @@ Assert.group = helpers.try(async (req, res, next) => {
 	const name = await groups.getGroupNameByGroupSlug(req.params.slug);
 	if (!name || !await groups.exists(name)) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-group]]'));
+	}
+
+	next();
+});
+
+Assert.category = helpers.try(async (req, res, next) => {
+	if (!await categories.exists(req.params.cid)) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-category]]'));
 	}
 
 	next();

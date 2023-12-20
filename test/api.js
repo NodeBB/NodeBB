@@ -5,13 +5,13 @@ const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 const SwaggerParser = require('@apidevtools/swagger-parser');
-const request = require('request-promise-native');
 const nconf = require('nconf');
 const jwt = require('jsonwebtoken');
 const util = require('util');
 
 const wait = util.promisify(setTimeout);
 
+const request = require('../src/request');
 const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
@@ -175,7 +175,7 @@ describe('API', async () => {
 
 	after(async () => {
 		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
-		plugins.hooks.unregister('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
 	async function setupData() {
@@ -281,7 +281,7 @@ describe('API', async () => {
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
 		// Create a new chat room
-		await messaging.newRoom(1, { uids: [2] });
+		await messaging.newRoom(adminUid, { uids: [unprivUid] });
 
 		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
@@ -306,7 +306,7 @@ describe('API', async () => {
 		});
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('emailer-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
@@ -314,12 +314,7 @@ describe('API', async () => {
 		({ jar } = await helpers.loginUser('admin', '123456'));
 
 		// Retrieve CSRF token using cookie, to test Write API
-		const config = await request({
-			url: `${nconf.get('url')}/api/config`,
-			json: true,
-			jar: jar,
-		});
-		csrfToken = config.csrf_token;
+		csrfToken = await helpers.getCsrfToken(jar);
 
 		setup = true;
 	}
@@ -409,7 +404,7 @@ describe('API', async () => {
 		paths.forEach((path) => {
 			const context = api.paths[path];
 			let schema;
-			let response;
+			let result;
 			let url;
 			let method;
 			const headers = {};
@@ -498,26 +493,16 @@ describe('API', async () => {
 
 					try {
 						if (type === 'json') {
-							response = await request(url, {
-								method: method,
+							const searchParams = new URLSearchParams(qs);
+							result = await request[method](`${url}?${searchParams}`, {
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
-								json: true,
-								followRedirect: false, // all responses are significant (e.g. 302)
-								simple: false, // don't throw on non-200 (e.g. 302)
-								resolveWithFullResponse: true, // send full request back (to check statusCode)
+								maxRedirect: 0,
+								redirect: 'manual',
 								headers: headers,
-								qs: qs,
 								body: body,
 							});
 						} else if (type === 'form') {
-							response = await new Promise((resolve, reject) => {
-								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, (err, res) => {
-									if (err) {
-										return reject(err);
-									}
-									resolve(res);
-								});
-							});
+							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);
 						}
 					} catch (e) {
 						assert(!e, `${method.toUpperCase()} ${path} errored with: ${e.message}`);
@@ -526,13 +511,18 @@ describe('API', async () => {
 
 				it('response status code should match one of the schema defined responses', () => {
 					// HACK: allow HTTP 418 I am a teapot, for now   👇
-					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+					const { responses } = context[method];
+					assert(
+						responses.hasOwnProperty('418') ||
+						Object.keys(responses).includes(String(result.response.statusCode)),
+						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}`
+					);
 				});
 
 				// Recursively iterate through schema properties, comparing type
 				it('response body should match schema definition', () => {
 					const http302 = context[method].responses['302'];
-					if (http302 && response.statusCode === 302) {
+					if (http302 && result.response.statusCode === 302) {
 						// Compare headers instead
 						const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
 							const value = http302.headers[name].schema.example;
@@ -541,13 +531,13 @@ describe('API', async () => {
 						}, {});
 
 						for (const header of Object.keys(expectedHeaders)) {
-							assert(response.headers[header.toLowerCase()]);
-							assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
+							assert(result.response.headers[header.toLowerCase()]);
+							assert.strictEqual(result.response.headers[header.toLowerCase()], expectedHeaders[header]);
 						}
 						return;
 					}
 
-					if (response.statusCode === 400 && context[method].responses['400']) {
+					if (result.response.statusCode === 400 && context[method].responses['400']) {
 						// TODO: check 400 schema to response.body?
 						return;
 					}
@@ -557,12 +547,12 @@ describe('API', async () => {
 						return;
 					}
 
-					assert.strictEqual(response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
+					assert.strictEqual(result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
 
 					const hasJSON = http200.content && http200.content['application/json'];
 					if (hasJSON) {
 						schema = context[method].responses['200'].content['application/json'].schema;
-						compare(schema, response.body, method.toUpperCase(), path, 'root');
+						compare(schema, result.body, method.toUpperCase(), path, 'root');
 					}
 
 					// TODO someday: text/csv, binary file type checking?
@@ -576,12 +566,7 @@ describe('API', async () => {
 						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
 
 						// Retrieve CSRF token using cookie, to test Write API
-						const config = await request({
-							url: `${nconf.get('url')}/api/config`,
-							json: true,
-							jar: jar,
-						});
-						csrfToken = config.csrf_token;
+						csrfToken = await helpers.getCsrfToken(jar);
 					}
 				});
 			});

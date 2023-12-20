@@ -6,7 +6,6 @@ const path = require('path');
 const os = require('os');
 
 const nconf = require('nconf');
-const async = require('async');
 const crypto = require('crypto');
 
 const db = require('../mocks/databasemock');
@@ -75,24 +74,15 @@ describe('upload methods', () => {
 			});
 		});
 
-		it('should remove an image if it is edited out of the post', (done) => {
-			async.series([
-				function (next) {
-					posts.edit({
-						pid: pid,
-						uid,
-						content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png)... AND NO MORE!',
-					}, next);
-				},
-				async.apply(posts.uploads.sync, pid),
-			], (err) => {
-				assert.ifError(err);
-				db.sortedSetCard(`post:${pid}:uploads`, (err, length) => {
-					assert.ifError(err);
-					assert.strictEqual(1, length);
-					done();
-				});
+		it('should remove an image if it is edited out of the post', async () => {
+			await posts.edit({
+				pid: pid,
+				uid,
+				content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png)... AND NO MORE!',
 			});
+			await posts.uploads.sync(pid);
+			const length = await db.sortedSetCard(`post:${pid}:uploads`);
+			assert.strictEqual(1, length);
 		});
 	});
 
@@ -127,85 +117,52 @@ describe('upload methods', () => {
 	});
 
 	describe('.associate()', () => {
-		it('should add an image to the post\'s maintained list of uploads', (done) => {
-			async.waterfall([
-				async.apply(posts.uploads.associate, pid, 'files/whoa.gif'),
-				async.apply(posts.uploads.list, pid),
-			], (err, uploads) => {
-				assert.ifError(err);
-				assert.strictEqual(2, uploads.length);
-				assert.strictEqual(true, uploads.includes('files/whoa.gif'));
-				done();
-			});
+		it('should add an image to the post\'s maintained list of uploads', async () => {
+			await posts.uploads.associate(pid, 'files/whoa.gif');
+			const uploads = await posts.uploads.list(pid);
+			assert.strictEqual(2, uploads.length);
+			assert.strictEqual(true, uploads.includes('files/whoa.gif'));
 		});
 
-		it('should allow arrays to be passed in', (done) => {
-			async.waterfall([
-				async.apply(posts.uploads.associate, pid, ['files/amazeballs.jpg', 'files/wut.txt']),
-				async.apply(posts.uploads.list, pid),
-			], (err, uploads) => {
-				assert.ifError(err);
-				assert.strictEqual(4, uploads.length);
-				assert.strictEqual(true, uploads.includes('files/amazeballs.jpg'));
-				assert.strictEqual(true, uploads.includes('files/wut.txt'));
-				done();
-			});
+		it('should allow arrays to be passed in', async () => {
+			await posts.uploads.associate(pid, ['files/amazeballs.jpg', 'files/wut.txt']);
+			const uploads = await posts.uploads.list(pid);
+			assert.strictEqual(4, uploads.length);
+			assert.strictEqual(true, uploads.includes('files/amazeballs.jpg'));
+			assert.strictEqual(true, uploads.includes('files/wut.txt'));
 		});
 
-		it('should save a reverse association of md5sum to pid', (done) => {
+		it('should save a reverse association of md5sum to pid', async () => {
 			const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-
-			async.waterfall([
-				async.apply(posts.uploads.associate, pid, ['files/test.bmp']),
-				function (next) {
-					db.getSortedSetRange(`upload:${md5('files/test.bmp')}:pids`, 0, -1, next);
-				},
-			], (err, pids) => {
-				assert.ifError(err);
-				assert.strictEqual(true, Array.isArray(pids));
-				assert.strictEqual(true, pids.length > 0);
-				assert.equal(pid, pids[0]);
-				done();
-			});
+			await posts.uploads.associate(pid, ['files/test.bmp']);
+			const pids = await db.getSortedSetRange(`upload:${md5('files/test.bmp')}:pids`, 0, -1);
+			assert.strictEqual(true, Array.isArray(pids));
+			assert.strictEqual(true, pids.length > 0);
+			assert.equal(pid, pids[0]);
 		});
 
-		it('should not associate a file that does not exist on the local disk', (done) => {
-			async.waterfall([
-				async.apply(posts.uploads.associate, pid, ['files/nonexistant.xls']),
-				async.apply(posts.uploads.list, pid),
-			], (err, uploads) => {
-				assert.ifError(err);
-				assert.strictEqual(uploads.length, 5);
-				assert.strictEqual(false, uploads.includes('files/nonexistant.xls'));
-				done();
-			});
+		it('should not associate a file that does not exist on the local disk', async () => {
+			await posts.uploads.associate(pid, ['files/nonexistant.xls']);
+			const uploads = await posts.uploads.list(pid);
+			assert.strictEqual(uploads.length, 5);
+			assert.strictEqual(false, uploads.includes('files/nonexistant.xls'));
 		});
 	});
 
 	describe('.dissociate()', () => {
-		it('should remove an image from the post\'s maintained list of uploads', (done) => {
-			async.waterfall([
-				async.apply(posts.uploads.dissociate, pid, 'files/whoa.gif'),
-				async.apply(posts.uploads.list, pid),
-			], (err, uploads) => {
-				assert.ifError(err);
-				assert.strictEqual(4, uploads.length);
-				assert.strictEqual(false, uploads.includes('files/whoa.gif'));
-				done();
-			});
+		it('should remove an image from the post\'s maintained list of uploads', async () => {
+			await posts.uploads.dissociate(pid, 'files/whoa.gif');
+			const uploads = await posts.uploads.list(pid);
+			assert.strictEqual(4, uploads.length);
+			assert.strictEqual(false, uploads.includes('files/whoa.gif'));
 		});
 
-		it('should allow arrays to be passed in', (done) => {
-			async.waterfall([
-				async.apply(posts.uploads.dissociate, pid, ['files/amazeballs.jpg', 'files/wut.txt']),
-				async.apply(posts.uploads.list, pid),
-			], (err, uploads) => {
-				assert.ifError(err);
-				assert.strictEqual(2, uploads.length);
-				assert.strictEqual(false, uploads.includes('files/amazeballs.jpg'));
-				assert.strictEqual(false, uploads.includes('files/wut.txt'));
-				done();
-			});
+		it('should allow arrays to be passed in', async () => {
+			await posts.uploads.dissociate(pid, ['files/amazeballs.jpg', 'files/wut.txt']);
+			const uploads = await posts.uploads.list(pid);
+			assert.strictEqual(2, uploads.length);
+			assert.strictEqual(false, uploads.includes('files/amazeballs.jpg'));
+			assert.strictEqual(false, uploads.includes('files/wut.txt'));
 		});
 
 		it('should remove the image\'s user association, if present', async () => {
@@ -397,21 +354,14 @@ describe('post uploads management', () => {
 		});
 	});
 
-	it('should automatically sync uploads on post edit', (done) => {
-		async.waterfall([
-			async.apply(posts.edit, {
-				pid: reply.pid,
-				uid,
-				content: 'no uploads',
-			}),
-			function (postData, next) {
-				posts.uploads.list(reply.pid, next);
-			},
-		], (err, uploads) => {
-			assert.ifError(err);
-			assert.strictEqual(true, Array.isArray(uploads));
-			assert.strictEqual(0, uploads.length);
-			done();
+	it('should automatically sync uploads on post edit', async () => {
+		await posts.edit({
+			pid: reply.pid,
+			uid,
+			content: 'no uploads',
 		});
+		const uploads = await posts.uploads.list(reply.pid);
+		assert.strictEqual(true, Array.isArray(uploads));
+		assert.strictEqual(0, uploads.length);
 	});
 });

@@ -21,7 +21,7 @@ const roomUidCache = cacheCreate({
 });
 
 const intFields = [
-	'roomId', 'timestamp', 'userCount',
+	'roomId', 'timestamp', 'userCount', 'messageCount',
 ];
 
 module.exports = function (Messaging) {
@@ -86,6 +86,7 @@ module.exports = function (Messaging) {
 			roomId: roomId,
 			timestamp: now,
 			notificationSetting: data.notificationSetting,
+			messageCount: 0,
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {
@@ -231,15 +232,24 @@ module.exports = function (Messaging) {
 		return isArray ? result : result[0];
 	};
 
-	Messaging.toggleOwner = async (uid, roomId) => {
+	Messaging.toggleOwner = async (uid, roomId, state = null) => {
 		if (!(parseInt(uid, 10) > 0) || !roomId) {
-			return;
+			throw new Error('[[error:invalid-data]]');
 		}
+
 		const isOwner = await Messaging.isRoomOwner(uid, roomId);
-		if (isOwner) {
-			await db.sortedSetRemove(`chat:room:${roomId}:owners`, uid);
+		if (state !== null) {
+			if (state === isOwner) {
+				return false;
+			}
 		} else {
+			state = !isOwner;
+		}
+
+		if (state) {
 			await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), uid);
+		} else {
+			await db.sortedSetRemove(`chat:room:${roomId}:owners`, uid);
 		}
 	};
 
@@ -500,6 +510,7 @@ module.exports = function (Messaging) {
 			Messaging.getUsersInRoomFromSet(`chat:room:${roomId}:uids:online`, roomId, 0, 39, true),
 			Messaging.getMessages({
 				callerUid: uid,
+				start: data.start || 0,
 				uid: data.uid || uid,
 				roomId: roomId,
 				isNew: false,

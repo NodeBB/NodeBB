@@ -92,10 +92,7 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 		const searchEl = $('[component="groups/members/search"]');
 		searchEl.on('keyup', utils.debounce(function () {
 			const query = searchEl.val();
-			socket.emit('groups.searchMembers', {
-				groupName: groupName,
-				query: query,
-			}, function (err, results) {
+			api.get(`/groups/${groupName}/members`, { query }, function (err, results) {
 				if (err) {
 					return alerts.error(err);
 				}
@@ -125,8 +122,7 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 		}
 
 		members.attr('loading', 1);
-		socket.emit('groups.loadMoreMembers', {
-			groupName: groupName,
+		api.get(`/groups/${ajaxify.data.group.slug}/members`, {
 			after: members.attr('data-nextstart'),
 		}, function (err, data) {
 			if (err) {

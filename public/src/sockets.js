@@ -111,8 +111,8 @@ app = window.app || {};
 				alerts.alert(params);
 			});
 		});
-		socket.on('event:deprecated_call', function (data) {
-			console.warn('[socket.io] ', data.eventName, 'is now deprecated in favour of', data.replacement);
+		socket.on('event:deprecated_call', (data) => {
+			console.warn('[socket.io]', data.eventName, 'is now deprecated', data.replacement ? `in favour of ${data.replacement}` : 'with no alternative planned.');
 		});
 
 		socket.on('event:livereload', function () {

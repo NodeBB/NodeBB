@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function (posts, hooks, alerts) {
+define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts', 'api'], function (posts, hooks, alerts, api) {
 	const Replies = {};
 
 	Replies.init = function (button) {
@@ -14,8 +14,8 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		if (open.is(':not(.hidden)') && loading.is('.hidden')) {
 			open.addClass('hidden');
 			loading.removeClass('hidden');
-
-			socket.emit('posts.getReplies', pid, function (err, postData) {
+			api.get(`/posts/${pid}/replies`, {}, function (err, { replies }) {
+				const postData = replies;
 				loading.addClass('hidden');
 				if (err) {
 					open.removeClass('hidden');

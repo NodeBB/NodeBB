@@ -6,16 +6,37 @@ const helpers = require('../helpers');
 const Chats = module.exports;
 
 Chats.list = async (req, res) => {
-	const page = (isFinite(req.query.page) && parseInt(req.query.page, 10)) || 1;
-	const perPage = (isFinite(req.query.perPage) && parseInt(req.query.perPage, 10)) || 20;
-	const { rooms } = await api.chats.list(req, { page, perPage });
+	let stop;
+	let { page, perPage, start, uid } = req.query;
+	([page, perPage, start, uid] = [page, perPage, start, uid].map(value => isFinite(value) && parseInt(value, 10)));
+	page = page || 1;
+	perPage = perPage || 20;
 
-	helpers.formatApiResponse(200, res, { rooms });
+	// start supercedes page
+	if (start) {
+		stop = start + perPage - 1;
+	} else {
+		start = Math.max(0, page - 1) * perPage;
+		stop = start + perPage - 1;
+	}
+
+	const { rooms, nextStart } = await api.chats.list(req, { start, stop, uid });
+	helpers.formatApiResponse(200, res, { rooms, nextStart });
 };
 
 Chats.create = async (req, res) => {
 	const roomObj = await api.chats.create(req, req.body);
 	helpers.formatApiResponse(200, res, roomObj);
+};
+
+// currently only returns unread count, but open-ended for future additions if warranted.
+Chats.getUnread = async (req, res) => helpers.formatApiResponse(200, res, await api.chats.getUnread(req));
+
+Chats.sortPublicRooms = async (req, res) => {
+	const { roomIds, scores } = req.body;
+	await api.chats.sortPublicRooms(req, { roomIds, scores });
+
+	helpers.formatApiResponse(200, res);
 };
 
 Chats.exists = async (req, res) => {
@@ -67,6 +88,20 @@ Chats.mark = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Chats.watch = async (req, res) => {
+	const state = req.method === 'DELETE' ? -1 : parseInt(req.body.value, 10) || -1;
+
+	await api.chats.watch(req, { state, ...req.params });
+	helpers.formatApiResponse(200, res);
+};
+
+Chats.toggleTyping = async (req, res) => {
+	const { typing } = req.body;
+
+	await api.chats.toggleTyping(req, { typing, ...req.params });
+	helpers.formatApiResponse(200, res);
+};
+
 Chats.users = async (req, res) => {
 	const { roomId } = req.params;
 	const start = parseInt(req.query.start, 10) || 0;
@@ -105,20 +140,43 @@ Chats.kickUser = async (req, res) => {
 	helpers.formatApiResponse(200, res, users);
 };
 
+Chats.toggleOwner = async (req, res) => {
+	const state = req.method === 'PUT';
+	await api.chats.toggleOwner(req, { state, ...req.params });
+	helpers.formatApiResponse(200, res);
+};
+
 Chats.messages = {};
 Chats.messages.list = async (req, res) => {
 	const uid = req.query.uid || req.uid;
 	const { roomId } = req.params;
 	const start = parseInt(req.query.start, 10) || 0;
-	const { messages } = await api.chats.listMessages(req, { uid, roomId, start });
+	const direction = parseInt(req.query.direction, 10) || null;
+	const { messages } = await api.chats.listMessages(req, {
+		uid, roomId, start, direction,
+	});
 
 	helpers.formatApiResponse(200, res, { messages });
+};
+
+Chats.messages.getPinned = async (req, res) => {
+	const { start } = req.query;
+
+	helpers.formatApiResponse(200, res, await api.chats.getPinnedMessages(req, { start, ...req.params }));
 };
 
 Chats.messages.get = async (req, res) => {
 	const { mid, roomId } = req.params;
 
 	helpers.formatApiResponse(200, res, await api.chats.getMessage(req, { mid, roomId }));
+};
+
+Chats.messages.getRaw = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.chats.getRawMessage(req, { ...req.params }));
+};
+
+Chats.messages.getIpAddress = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.chats.getIpAddress(req, { ...req.params }));
 };
 
 Chats.messages.edit = async (req, res) => {

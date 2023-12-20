@@ -1,6 +1,6 @@
 {
-	"queue": "Hàng đợi",
-	"description": "Không có ai xếp hàng đợi đăng ký. <br> Để bật tính năng này, truy cập <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Người dùng đăng ký</a> và đặt <strong>Kiểu Đăng Ký</strong> là \"Phê Duyệt Của Quản Trị Viên\".",
+	"queue": "Xếp hàng",
+	"description": "Không có ai xếp hàng đăng ký. <br> Để bật tính năng này, vào <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Người dùng đăng ký</a> và đặt <strong>Kiểu Đăng Ký</strong> là \"Phê Duyệt Của Quản Trị Viên\".",
 
 	"list.name": "Tên",
 	"list.email": "Thư điện tử",

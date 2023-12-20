@@ -1,0 +1,102 @@
+put:
+  tags:
+    - categories
+  summary: update watch state
+  description: |
+    This operation changes the watch state for the category.
+
+    Note that a category can be watched, not watched, or ignored:
+
+      * A category that is watched will have topics that show up in both `/unread` and `/recent`
+      * A category that is *not* watched will have topics that show up in `/recent` but not `/unread`
+      * A category that is ignored will not have topics that show up in either route.
+
+    This API call does not pertain to notifications for new topics in categories.
+    That behaviour is handled by a third-party plugin — nodebb-plugin-category-notifications
+
+    Additionally, when a category's watch state is updated, all of that category's children also have their watch states updated.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uid:
+              type: number
+              description: This value is optional, it allows privileged uids to use this call to affect other user accounts.
+              example: 1
+            state:
+              type: string
+              enum: ['watching', 'notwatching', 'ignoring']
+              example: 'watching'
+  responses:
+    '200':
+      description: categories watch state successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  modified:
+                    type: array
+                    description: A list of cids that have had their watch states modified.
+                    items:
+                      type: number
+delete:
+  tags:
+    - categories
+  summary: update watch state
+  description: |
+    Like the corresponding `PUT` method, this operation changes the watch state for the category.
+    However, it does not take a `state` parameter. It is assumed to be whatever the system default is (`categoryWatchState`).
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uid:
+              type: number
+              description: This value is optional, it allows privileged uids to use this call to affect other user accounts.
+              example: 1
+  responses:
+    '200':
+      description: categories watch state successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  modified:
+                    type: array
+                    description: A list of cids that have had their watch states modified.
+                    items:
+                      type: number

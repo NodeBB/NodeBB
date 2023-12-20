@@ -18,7 +18,7 @@
     "terms-of-use": "Điều khoản sử dụng",
     "agree-to-terms-of-use": "Tôi đồng ý với các điều khoản sử dụng",
     "terms-of-use-error": "Bạn phải đồng ý với Điều Khoản Sử Dụng",
-    "registration-added-to-queue": "Đăng ký của bạn đã được thêm vào hàng đợi phê duyệt. Bạn sẽ nhận được email khi quản trị viên chấp nhận yêu cầu.",
+    "registration-added-to-queue": "Đăng ký của bạn đã được xếp hàng đợi phê duyệt. Bạn sẽ nhận được email khi quản trị viên chấp nhận yêu cầu.",
     "registration-queue-average-time": "Thời gian chúng tôi phê duyệt tư cách thành viên là %1 giờ %2 phút.",
     "registration-queue-auto-approve-time": "Tư cách thành viên của bạn sẽ được kích hoạt đầy đủ trong tối đa %1 giờ.",
     "interstitial.intro": "Chúng tôi muốn một số thông tin bổ sung để cập nhật tài khoản của bạn&hellip;",

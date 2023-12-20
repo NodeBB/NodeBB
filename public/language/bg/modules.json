@@ -68,6 +68,8 @@
     "chat.in-room": "В тази стая",
     "chat.kick": "Изгонване",
     "chat.show-ip": "Показване на IP адреса",
+    "chat.copy-text": "Копиране на текста",
+    "chat.copy-link": "Копиране на връзката",
     "chat.owner": "Собственик на стаята",
     "chat.grant-rescind-ownership": "Даване/отнемане на собственост",
     "chat.system.user-join": "%1 се присъедини към стаята <span class=\"timeago\" title=\"%2\"></span>",

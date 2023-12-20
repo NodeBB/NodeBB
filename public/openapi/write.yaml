@@ -64,6 +64,12 @@ paths:
     $ref: 'write/users/uid/content.yaml'
   /users/{uid}/account:
     $ref: 'write/users/uid/account.yaml'
+  /users/{uid}/status:
+    $ref: 'write/users/uid/status.yaml'
+  /users/{uid}/status/{status}:
+    $ref: 'write/users/uid/status/status.yaml'
+  /users/{uid}/chat:
+    $ref: 'write/users/uid/chat.yaml'
   /users/{uid}/settings:
     $ref: 'write/users/uid/settings.yaml'
   /users/{uid}/password:
@@ -96,6 +102,8 @@ paths:
     $ref: 'write/groups.yaml'
   /groups/{slug}:
     $ref: 'write/groups/slug.yaml'
+  /groups/{slug}/members:
+    $ref: 'write/groups/slug/members.yaml'
   /groups/{slug}/membership/{uid}:
     $ref: 'write/groups/slug/membership/uid.yaml'
   /groups/{slug}/ownership/{uid}:
@@ -112,6 +120,16 @@ paths:
     $ref: 'write/categories.yaml'
   /categories/{cid}:
     $ref: 'write/categories/cid.yaml'
+  /categories/{cid}/count:
+    $ref: 'write/categories/cid/count.yaml'
+  /categories/{cid}/posts:
+    $ref: 'write/categories/cid/posts.yaml'
+  /categories/{cid}/children:
+    $ref: 'write/categories/cid/children.yaml'
+  /categories/{cid}/topics:
+    $ref: 'write/categories/cid/topics.yaml'
+  /categories/{cid}/watch:
+    $ref: 'write/categories/cid/watch.yaml'
   /categories/{cid}/privileges:
     $ref: 'write/categories/cid/privileges.yaml'
   /categories/{cid}/privileges/{privilege}:
@@ -174,20 +192,36 @@ paths:
     $ref: 'write/posts/pid/replies.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
+  /chats/unread:
+    $ref: 'write/chats/unread.yaml'
+  /chats/sort:
+    $ref: 'write/chats/sort.yaml'
   /chats/{roomId}:
     $ref: 'write/chats/roomId.yaml'
   /chats/{roomId}/state:
     $ref: 'write/chats/roomId/state.yaml'
+  /chats/{roomId}/watch:
+    $ref: 'write/chats/roomId/watch.yaml'
+  /chats/{roomId}/typing:
+    $ref: 'write/chats/roomId/typing.yaml'
   /chats/{roomId}/users:
     $ref: 'write/chats/roomId/users.yaml'
   /chats/{roomId}/users/{uid}:
     $ref: 'write/chats/roomId/users/uid.yaml'
+  /chats/{roomId}/owners/{uid}:
+    $ref: 'write/chats/roomId/owners/uid.yaml'
   /chats/{roomId}/messages:
     $ref: 'write/chats/roomId/messages.yaml'
+  /chats/{roomId}/messages/pinned:
+    $ref: 'write/chats/roomId/messages/pinned.yaml'
   /chats/{roomId}/messages/{mid}:
     $ref: 'write/chats/roomId/messages/mid.yaml'
   /chats/{roomId}/messages/{mid}/pin:
     $ref: 'write/chats/roomId/messages/mid/pin.yaml'
+  /chats/{roomId}/messages/{mid}/raw:
+    $ref: 'write/chats/roomId/messages/mid/raw.yaml'
+  /chats/{roomId}/messages/{mid}/ip:
+    $ref: 'write/chats/roomId/messages/mid/ip.yaml'
   /flags/:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:
@@ -198,20 +232,28 @@ paths:
     $ref: 'write/flags/flagId/notes.yaml'
   /flags/{flagId}/notes/{datetime}:
     $ref: 'write/flags/flagId/notes/datetime.yaml'
+  /search/categories:
+    $ref: 'write/search/categories.yaml'
+  /search/chats/{roomId}/users:
+    $ref: 'write/search/chats/roomId/users.yaml'
+  /search/chats/{roomId}/messages:
+    $ref: 'write/search/chats/roomId/messages.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /admin/analytics:
     $ref: 'write/admin/analytics.yaml'
   /admin/analytics/{set}:
     $ref: 'write/admin/analytics/set.yaml'
-  /admin/chats/{roomId}:
-    $ref: 'write/admin/chats/roomId.yaml'
   /admin/tokens:
     $ref: 'write/admin/tokens.yaml'
   /admin/tokens/{token}:
     $ref: 'write/admin/tokens/token.yaml'
   /admin/tokens/{token}/roll:
     $ref: 'write/admin/tokens/token/roll.yaml'
+  /admin/chats/{roomId}:
+    $ref: 'write/admin/chats/roomId.yaml'
+  /admin/groups:
+    $ref: 'write/admin/groups.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:

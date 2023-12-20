@@ -8,7 +8,6 @@
 	"max-chat-room-name-length": "Maksimum sohbet oda adı uzunluğu",
 	"max-room-size": "Sohbet odalarındaki maksimum kullanıcı sayısı",
 	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
 	"notification-delay": "Geciken sohbet mesajları bildirimi",
 	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",

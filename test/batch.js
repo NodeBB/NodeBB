@@ -77,6 +77,27 @@ describe('batch', () => {
 		assert.strictEqual(total, 490);
 	});
 
+	it('should process sorted set with min/max scores', async () => {
+		await db.sortedSetAddBulk([
+			['processByScore', 1, 'item1'],
+			['processByScore', 2, 'item2'],
+			['processByScore', 3, 'item3'],
+			['processByScore', 3, 'item4'],
+			['processByScore', 4, 'item5'],
+			['processByScore', 5, 'item6'],
+		]);
+		const result = [];
+		await batch.processSortedSet('processByScore', async (items) => {
+			result.push(...items);
+		}, {
+			min: 3,
+			max: 4,
+		});
+		assert(result.includes('item3'));
+		assert(result.includes('item4'));
+		assert(result.includes('item5'));
+	});
+
 	it('should process array with callbacks', (done) => {
 		let total = 0;
 		batch.processArray(scores, (nums, next) => {

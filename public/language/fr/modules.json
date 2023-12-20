@@ -68,6 +68,8 @@
     "chat.in-room": "Dans cet espace de discussion",
     "chat.kick": "Exclure",
     "chat.show-ip": "Voir IP",
+    "chat.copy-text": "Copier le texte",
+    "chat.copy-link": "Copier le lien",
     "chat.owner": "Espace Admin",
     "chat.grant-rescind-ownership": "Promouvoir/rétrograder comme propriétaire",
     "chat.system.user-join": "%1 a rejoint la discussion <span class=\"timeago\" title=\"%2\"></span>",

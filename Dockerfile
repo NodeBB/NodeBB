@@ -13,29 +13,39 @@ USER node
 
 RUN npm install --omit=dev
 
+FROM node:lts as rebuild
 
-FROM node:lts
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
 
-RUN mkdir -p /usr/src/app && \
-    chown -R node:node /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/build && \
+    chown -R node:node /usr/src/build
+
+COPY --from=npm /usr/src/build /usr/src/build
+
+RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
+    npm rebuild && \
+    npm cache clean --force; fi
+
+FROM node:lts-slim as run
 
 ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
-
-COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
-
-USER node
-
-RUN npm rebuild && \
-    npm cache clean --force
-
-COPY --chown=node:node . /usr/src/app
-
-ENV NODE_ENV=production \
+ENV NODE_ENV=$NODE_ENV \
     daemon=false \
     silent=false
 
-EXPOSE 4567
+RUN mkdir -p /usr/src/app && \
+    chown -R node:node /usr/src/app
 
-CMD test -n "${SETUP}" && ./nodebb setup || node ./nodebb build; node ./nodebb start
+COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
+
+
+WORKDIR /usr/src/app
+
+USER node
+
+COPY --chown=node:node . /usr/src/app
+
+EXPOSE 4567
+VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config"]
+ENTRYPOINT ["./install/docker/entrypoint.sh"]

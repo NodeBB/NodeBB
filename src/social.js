@@ -18,12 +18,27 @@ social.getPostSharing = async function () {
 		{
 			id: 'facebook',
 			name: 'Facebook',
-			class: 'fa-facebook',
+			class: 'fa-brands fa-facebook',
 		},
 		{
 			id: 'twitter',
-			name: 'Twitter',
-			class: 'fa-twitter',
+			name: 'X (Twitter)',
+			class: 'fa-brands fa-x-twitter',
+		},
+		{
+			id: 'whatsapp',
+			name: 'Whatsapp',
+			class: 'fa-brands fa-whatsapp',
+		},
+		{
+			id: 'telegram',
+			name: 'Telegram',
+			class: 'fa-brands fa-telegram',
+		},
+		{
+			id: 'linkedin',
+			name: 'LinkedIn',
+			class: 'fa-brands fa-linkedin',
 		},
 	];
 	networks = await plugins.hooks.fire('filter:social.posts', networks);

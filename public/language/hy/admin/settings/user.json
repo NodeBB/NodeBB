@@ -79,7 +79,14 @@
 	"follow-replied-topics": "Հետևեք այն թեմաներին, որոնց պատասխանում եք",
 	"default-notification-settings": "Հիմնական ծանուցման կարգավորումներ",
 	"categoryWatchState": "Հիմնական կատեգորիայի դիտման վիճակը",
-	"categoryWatchState.watching": "Դիտում  ",
+	"categoryWatchState.tracking": "Հետևել",
 	"categoryWatchState.notwatching": "Չեն դիտում ",
-	"categoryWatchState.ignoring": "Անտեսել "
+	"categoryWatchState.ignoring": "Անտեսել ",
+	"restrictions-new": "Նոր Օգտատիրոջ Սահմանափակումներ\n ",
+	"restrictions.rep-threshold": "Վարկանիշի շեմը՝ մինչև այս սահմանափակումների վերացումը\n ",
+	"restrictions.seconds-between-new": "Նոր օգտատերերի համար գրառումների միջև ընկած վայրկյաններ\n ",
+	"restrictions.seconds-before-new": "Վայրկյաններ առաջ, երբ նոր օգտատերը կարող է կատարել իր առաջին գրառումը",
+	"restrictions.seconds-edit-after-new": "Գրառման վայրկյանների քանակը մնում է խմբագրելի (անջատելու համար դնել 0)",
+	"restrictions.milliseconds-between-messages": "Նոր օգտատերերի համար հաղորդագրությունների միջև ընկած ժամանակը (մվ)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Ընտրեք խմբեր, որոնք պետք է ազատվեն նոր օգտատերերի սահմանափակումնեից"
 }

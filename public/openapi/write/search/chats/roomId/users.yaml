@@ -1,0 +1,44 @@
+get:
+  tags:
+    - search
+  summary: find room users by keyword
+  description: This operation returns a set of users in a chat room matching the keyword search.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: room ID to check
+      example: 1
+    - in: query
+      name: 'query'
+      schema:
+        type: string
+      required: false
+      description: The keyword used in the user search
+      example: 'admin'
+  responses:
+    '200':
+      description: matching users successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: ../../../../components/schemas/UserObject.yaml#/UserObjectSlim
+                        - type: object
+                          properties:
+                            isOwner:
+                              type: boolean
+                            canKick:
+                              type: boolean

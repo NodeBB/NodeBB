@@ -49,16 +49,10 @@
 					<input id="maximumUsersInChatRoom" type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
 				</div>
 
-				<fieldset class="row">
-					<div class="mb-3 col-sm-6">
-						<label class="form-label" for="chatMessageDelay">[[admin/settings/chat:delay]]</label>
-						<input id="chatMessageDelay" type="text" class="form-control" data-field="chatMessageDelay">
-					</div>
-					<div class="mb-3 col-sm-6">
-						<label class="form-label" for="newbieChatMessageDelay">[[admin/settings/chat:newbieDelay]]</label>
-						<input id="newbieChatMessageDelay" type="text" class="form-control" data-field="newbieChatMessageDelay">
-					</div>
-				</fieldset>
+				<div class="mb-3">
+					<label class="form-label" for="chatMessageDelay">[[admin/settings/chat:delay]]</label>
+					<input id="chatMessageDelay" type="text" class="form-control" data-field="chatMessageDelay">
+				</div>
 
 				<div class="mb-3">
 					<label class="form-label" for="notificationSendDelay">[[admin/settings/chat:notification-delay]]</label>

@@ -12,6 +12,15 @@ const slugify = require('../slugify');
 
 const groupsAPI = module.exports;
 
+groupsAPI.list = async (caller, data) => {
+	const groupsPerPage = 10;
+	const start = parseInt(data.after || 0, 10);
+	const stop = start + groupsPerPage - 1;
+	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
+
+	return { groups: groupData, nextStart: stop + 1 };
+};
+
 groupsAPI.create = async function (caller, data) {
 	if (!caller.uid) {
 		throw new Error('[[error:no-privileges]]');
@@ -63,6 +72,51 @@ groupsAPI.delete = async function (caller, data) {
 		groupName: groupName,
 	});
 };
+
+groupsAPI.listMembers = async (caller, data) => {
+	// v4 wishlist — search should paginate (with lru caching I guess) to match index listing behaviour
+	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
+
+	await canSearchMembers(caller.uid, groupName);
+	if (!await privileges.global.can('search:users', caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const { query } = data;
+	const after = parseInt(data.after || 0, 10);
+	let response;
+	if (query && query.length) {
+		response = await groups.searchMembers({
+			uid: caller.uid,
+			query,
+			groupName,
+		});
+		response.nextStart = null;
+	} else {
+		response = {
+			users: await groups.getOwnersAndMembers(groupName, caller.uid, after, after + 19),
+			nextStart: after + 20,
+			matchCount: null,
+			timing: null,
+		};
+	}
+
+	return response;
+};
+
+async function canSearchMembers(uid, groupName) {
+	const [isHidden, isMember, hasAdminPrivilege, isGlobalMod, viewGroups] = await Promise.all([
+		groups.isHidden(groupName),
+		groups.isMember(uid, groupName),
+		privileges.admin.can('admin:groups', uid),
+		user.isGlobalModerator(uid),
+		privileges.global.can('view:groups', uid),
+	]);
+
+	if (!viewGroups || (isHidden && !isMember && !hasAdminPrivilege && !isGlobalMod)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
 
 groupsAPI.join = async function (caller, data) {
 	if (!data) {
@@ -147,10 +201,9 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:cant-remove-self-as-admin]]');
 	}
 
-	const [groupData, isCallerAdmin, isCallerOwner, userExists, isMember] = await Promise.all([
+	const [groupData, isCallerOwner, userExists, isMember] = await Promise.all([
 		groups.getGroupData(groupName),
-		user.isAdministrator(caller.uid),
-		groups.ownership.isOwner(caller.uid, groupName),
+		isOwner(caller, groupName, false),
 		user.exists(data.uid),
 		groups.isMember(data.uid, groupName),
 	]);
@@ -167,7 +220,7 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:group-leave-disabled]]');
 	}
 
-	if (isSelf || isCallerAdmin || isCallerOwner) {
+	if (isSelf || isCallerOwner) {
 		await groups.leave(groupName, data.uid);
 	} else {
 		throw new Error('[[error:no-privileges]]');

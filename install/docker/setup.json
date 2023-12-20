@@ -1,0 +1,21 @@
+{
+    "mongo": {
+        "host": "mongo",
+        "port": 27017,
+        "database": "nodebb",
+        "username": "nodebb",
+        "password": "nodebb"
+    },
+    "redis": {
+        "host": "redis",
+        "port": 6379,
+        "database": 0
+    },
+    "postgres": {
+        "host": "postgres",
+        "port": 5432,
+        "database": "nodebb",
+        "username": "nodebb",
+        "password": "nodebb"
+    }
+}

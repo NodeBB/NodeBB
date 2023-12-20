@@ -68,6 +68,8 @@
     "chat.in-room": "In questa stanza",
     "chat.kick": "Butta fuori",
     "chat.show-ip": "Mostra indirizzo IP",
+    "chat.copy-text": "Copia testo",
+    "chat.copy-link": "Copia link",
     "chat.owner": "Propietario stanza",
     "chat.grant-rescind-ownership": "Concedi/Revoca Proprietà",
     "chat.system.user-join": "%1 si è unito alla stanza <span class=\"timeago\" title=\"%2\"></span>",

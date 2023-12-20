@@ -64,11 +64,9 @@ define('chat', [
 		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
 			return alerts.error('[[error:cant-chat-with-yourself]]');
 		}
-		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
-			if (err) {
-				return alerts.error(err);
-			}
-			if (!isDnD) {
+
+		api.get(`/users/${touid}/status`).then(({ status }) => {
+			if (status !== 'dnd') {
 				return createChat();
 			}
 
@@ -77,17 +75,14 @@ define('chat', [
 					createChat();
 				}
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	module.loadChatsDropdown = function (chatsListEl) {
-		socket.emit('modules.chats.getRecentChats', {
+		api.get('/chats', {
 			uid: app.user.uid,
 			after: 0,
-		}, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
+		}).then((data) => {
 			const rooms = data.rooms.map((room) => {
 				if (room && room.teaser) {
 					room.teaser.timeagoLong = $.timeago(new Date(parseInt(room.teaser.timestamp, 10)));
@@ -125,15 +120,17 @@ define('chat', [
 				listEl.addEventListener('click', onMarkReadClicked);
 
 				$('[component="chats/mark-all-read"]').off('click').on('click', async function () {
-					await socket.emit('modules.chats.markAllRead');
-					if (ajaxify.data.template.chats) {
-						$('[component="chat/nav-wrapper"] [data-roomid]').each((i, el) => {
+					const chatEls = document.querySelectorAll('[component="chat/list"] [data-roomid]');
+					await Promise.all(Array.prototype.map.call(chatEls, async (el) => {
+						const roomId = el.getAttribute('data-roomid');
+						await api.del(`/chats/${roomId}/state`);
+						if (ajaxify.data.template.chats) {
 							module.markChatElUnread($(el), false);
-						});
-					}
+						}
+					}));
 				});
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	function onMarkReadClicked(e) {
@@ -248,7 +245,7 @@ define('chat', [
 	};
 
 	module.onUserTyping = function (data) {
-		if (module.isFromBlockedUser(data.uid)) {
+		if (data.uid === app.user.uid || module.isFromBlockedUser(data.uid)) {
 			return;
 		}
 		const modal = module.getModal(data.roomId);
@@ -399,7 +396,7 @@ define('chat', [
 				Chats.createAutoComplete(roomId, chatModal.find('[component="chat/input"]'));
 
 				Chats.addScrollHandler(roomId, data.uid, chatModal.find('[component="chat/message/content"]'));
-				Chats.addScrollBottomHandler(chatModal.find('[component="chat/message/content"]'));
+				Chats.addScrollBottomHandler(roomId, chatModal.find('[component="chat/message/content"]'));
 				Chats.addParentHandler(chatModal.find('[component="chat/message/content"]'));
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addTextareaResizeHandler(chatModal);

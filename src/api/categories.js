@@ -1,6 +1,8 @@
 'use strict';
 
+const meta = require('../meta');
 const categories = require('../categories');
+const topics = require('../topics');
 const events = require('../events');
 const user = require('../user');
 const groups = require('../groups');
@@ -13,6 +15,22 @@ const hasAdminPrivilege = async (uid, privilege = 'categories') => {
 	if (!ok) {
 		throw new Error('[[error:no-privileges]]');
 	}
+};
+
+categoriesAPI.list = async (caller) => {
+	async function getCategories() {
+		const cids = await categories.getCidsByPrivilege('categories:cid', caller.uid, 'find');
+		return await categories.getCategoriesData(cids);
+	}
+
+	const [isAdmin, categoriesData] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		getCategories(),
+	]);
+
+	return {
+		categories: categoriesData.filter(category => category && (!category.disabled || isAdmin)),
+	};
 };
 
 categoriesAPI.get = async function (caller, data) {
@@ -59,6 +77,104 @@ categoriesAPI.delete = async function (caller, { cid }) {
 		cid: cid,
 		name: name,
 	});
+};
+
+categoriesAPI.getTopicCount = async (caller, { cid }) => {
+	const allowed = await privileges.categories.can('find', cid, caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const count = await categories.getCategoryField(cid, 'topic_count');
+	return { count };
+};
+
+categoriesAPI.getPosts = async (caller, { cid }) => await categories.getRecentReplies(cid, caller.uid, 0, 4);
+
+categoriesAPI.getChildren = async (caller, { cid, start }) => {
+	if (!start || start < 0) {
+		start = 0;
+	}
+	start = parseInt(start, 10);
+
+	const allowed = await privileges.categories.can('read', cid, caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const category = await categories.getCategoryData(cid);
+	await categories.getChildrenTree(category, caller.uid);
+	const allCategories = [];
+	categories.flattenCategories(allCategories, category.children);
+	await categories.getRecentTopicReplies(allCategories, caller.uid);
+
+	const payload = category.children.slice(start, start + category.subCategoriesPerPage);
+	return { categories: payload };
+};
+
+categoriesAPI.getTopics = async (caller, data) => {
+	data.query = data.query || {};
+	const [userPrivileges, settings, targetUid] = await Promise.all([
+		privileges.categories.get(data.cid, caller.uid),
+		user.getSettings(caller.uid),
+		user.getUidByUserslug(data.query.author),
+	]);
+
+	if (!userPrivileges.read) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const infScrollTopicsPerPage = 20;
+	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
+
+	let start = Math.max(0, parseInt(data.after || 0, 10));
+
+	if (data.direction === -1) {
+		start -= infScrollTopicsPerPage;
+	}
+
+	let stop = start + infScrollTopicsPerPage - 1;
+
+	start = Math.max(0, start);
+	stop = Math.max(0, stop);
+	const result = await categories.getCategoryTopics({
+		uid: caller.uid,
+		cid: data.cid,
+		start,
+		stop,
+		sort,
+		settings,
+		query: data.query,
+		tag: data.query.tag,
+		targetUid,
+	});
+	categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
+
+	return { ...result, privileges: userPrivileges };
+};
+
+categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
+	let targetUid = caller.uid;
+	const cids = Array.isArray(cid) ? cid.map(cid => parseInt(cid, 10)) : [parseInt(cid, 10)];
+	if (uid) {
+		targetUid = uid;
+	}
+	await user.isAdminOrGlobalModOrSelf(caller.uid, targetUid);
+	const allCids = await categories.getAllCidsFromSet('categories:cid');
+	const categoryData = await categories.getCategoriesFields(allCids, ['cid', 'parentCid']);
+
+	// filter to subcategories of cid
+	let cat;
+	do {
+		cat = categoryData.find(c => !cids.includes(c.cid) && cids.includes(c.parentCid));
+		if (cat) {
+			cids.push(cat.cid);
+		}
+	} while (cat);
+
+	await user.setCategoryWatchState(targetUid, cids, state);
+	await topics.pushUnreadCount(targetUid);
+
+	return { cids };
 };
 
 categoriesAPI.getPrivileges = async (caller, { cid }) => {

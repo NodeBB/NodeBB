@@ -10,6 +10,7 @@ const db = require('../database');
 const user = require('../user');
 const groups = require('../groups');
 const meta = require('../meta');
+const messaging = require('../messaging');
 const flags = require('../flags');
 const privileges = require('../privileges');
 const notifications = require('../notifications');
@@ -139,6 +140,24 @@ usersAPI.updateSettings = async function (caller, data) {
 	delete payload.uid;
 
 	return await user.saveSettings(data.uid, payload);
+};
+
+usersAPI.getStatus = async (caller, { uid }) => {
+	const status = await db.getObjectField(`user:${uid}`, 'status');
+	return { status };
+};
+
+usersAPI.getPrivateRoomId = async (caller, { uid } = {}) => {
+	if (!uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	let roomId = await messaging.hasPrivateChat(caller.uid, uid);
+	roomId = parseInt(roomId, 10);
+
+	return {
+		roomId: roomId > 0 ? roomId : null,
+	};
 };
 
 usersAPI.changePassword = async function (caller, data) {

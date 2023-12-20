@@ -1,10 +1,12 @@
 
 {
-	"post-queue": "Hàng Đợi Bài Đăng",
-	"no-queued-posts": "Không có bài viết trong hàng đợi bài viết.",
-	"no-single-post": "Chủ đề hoặc bài đăng bạn đang tìm kiếm không còn trong hàng đợi. Nó có thể đã được phê duyệt hoặc xóa rồi.",
-	"enabling-help": "Để bật tính năng này, hãy đi tới <a href=\"%1\">Cài Đặt &rarr; Bài Đăng &rarr; Hàng Đợi Đăng</a> và bật <strong>Hàng Đợi Đăng</strong>.",
+	"post-queue": "Xếp Hàng Bài Đăng",
+	"no-queued-posts": "Không có bài trong xếp hàng đăng bài",
+	"no-single-post": "Chủ đề hoặc bài đăng bạn đang tìm kiếm không còn xếp hàng. Có thể đã phê duyệt hoặc xóa rồi.",
+	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"back-to-list": "Trở về Hàng Đợi Đăng",
+	"public-intro": "If you have any queued posts, they will be shown here.",
+	"public-description": "This forum is configured to automatically queue posts from new accounts, pending moderator approval.<br />If you have queued posts awaiting approval, you will be able to see them here.",
 	"user": "Người dùng",
 	"when": "When",
 	"category": "Chuyên mục",

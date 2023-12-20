@@ -1,0 +1,41 @@
+get:
+  tags:
+    - chats
+  summary: get pinned messages
+  description: >
+    This operation retrieves a list of pinned messages for a given chat room.
+    This call will always return a maximum of 50 items, of which the result set can be offset based on the passed-in `start` parameter.
+
+    N.B. The calling user must be in the chat room for this call to succeed.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: start
+      schema:
+        type: number
+      required: true
+      description: index to start returning results from
+      example: 0
+  responses:
+    '200':
+      description: Pinned messages successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: ../../../../components/schemas/Chats.yaml#/MessageObject

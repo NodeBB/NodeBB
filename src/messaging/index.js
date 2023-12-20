@@ -43,13 +43,17 @@ Messaging.getMessages = async (params) => {
 	if (!ok) {
 		return;
 	}
-	const mids = await getMessageIds(roomId, uid, start, stop);
+	const [mids, messageCount] = await Promise.all([
+		getMessageIds(roomId, uid, start, stop),
+		db.getObjectField(`chat:room:${roomId}`, 'messageCount'),
+	]);
 	if (!mids.length) {
 		return [];
 	}
+	const count = parseInt(messageCount, 10) || 0;
 	const indices = {};
 	mids.forEach((mid, index) => {
-		indices[mid] = start + index;
+		indices[mid] = count - start - index - 1;
 	});
 	mids.reverse();
 
@@ -169,7 +173,7 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
 	if (!ok) {
-		return null;
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);

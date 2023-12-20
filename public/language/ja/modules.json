@@ -68,6 +68,8 @@
     "chat.in-room": "この部屋内",
     "chat.kick": "キック",
     "chat.show-ip": "IP表示",
+    "chat.copy-text": "Copy Text",
+    "chat.copy-link": "Copy Link",
     "chat.owner": "部屋の管理者",
     "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 has joined the room <span class=\"timeago\" title=\"%2\"></span>",

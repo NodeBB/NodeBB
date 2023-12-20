@@ -79,7 +79,14 @@
 	"follow-replied-topics": "Segui discussioni a cui rispondi tu",
 	"default-notification-settings": "Impostazioni di notifica predefinite",
 	"categoryWatchState": "Stato predefinito della categoria di controllo",
-	"categoryWatchState.watching": "Seguito",
+	"categoryWatchState.tracking": "Tracciamento",
 	"categoryWatchState.notwatching": "Non seguito",
-	"categoryWatchState.ignoring": "Ignorato"
+	"categoryWatchState.ignoring": "Ignorato",
+	"restrictions-new": "Restrizioni per i nuovi utenti",
+	"restrictions.rep-threshold": "Soglia di reputazione prima dell'abolizione delle restrizioni",
+	"restrictions.seconds-between-new": "Secondi tra i post per i nuovi utenti",
+	"restrictions.seconds-before-new": "Secondi prima che un nuovo utente possa pubblicare il suo primo post",
+	"restrictions.seconds-edit-after-new": "Numero di secondi per cui un post rimane modificabile per i nuovi utenti (impostare a 0 per disabilitarlo)",
+	"restrictions.milliseconds-between-messages": "Tempo tra i messaggi di chat per i nuovi utenti (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Seleziona i gruppi che devono essere esenti dalle restrizioni dei nuovi utente"
 }

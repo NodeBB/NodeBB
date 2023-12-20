@@ -8,7 +8,6 @@
 	"max-chat-room-name-length": "Maximale Länge der Namen von Chaträumen",
 	"max-room-size": "Maximale Anzahl von Benutzern in Chatrooms",
 	"delay": "Zeit zwischen Chat-Nachrichten (ms)",
-	"newbieDelay": "... für neue Benutzer (ms)",
 	"notification-delay": "Benachrichtigungsverzögerung für Chat-Nachrichten",
 	"notification-delay-help": "Zusätzliche Nachrichten, die zwischen dieser Zeit gesendet werden, werden gesammelt, und der Benutzer wird einmal pro Verzögerungszeitraum benachrichtigt. Setze diesen Wert auf 0, um die Verzögerung zu deaktivieren.",
 	"restrictions.seconds-edit-after": "Anzahl der Sekunden, die eine Chat-Nachricht bearbeitbar bleibt.",

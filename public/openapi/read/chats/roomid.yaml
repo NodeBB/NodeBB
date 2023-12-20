@@ -10,6 +10,12 @@ get:
       schema:
         type: string
       example: 1
+    - name: index
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
   responses:
     "200":
       description: "Chat identifier resolved"
