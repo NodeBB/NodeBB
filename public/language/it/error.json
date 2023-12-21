@@ -32,7 +32,7 @@
     "folder-exists": "La cartella esiste",
     "invalid-pagination-value": "Valore di impaginazione non valido, deve essere almeno %1 ed al massimo %2",
     "username-taken": "Nome utente già esistente",
-    "email-taken": "Email address is already taken.",
+    "email-taken": "L'indirizzo email è già stato utilizzato.",
     "email-nochange": "L'email inserita è la stessa dell'email già presente in archivio.",
     "email-invited": "L'email è già stata invitata",
     "email-not-confirmed": "Sarai abilitato a postare in alcune categorie o discussioni una volta che la tua email sarà confermata, per favore clicca qui per inviare una email di conferma.",
