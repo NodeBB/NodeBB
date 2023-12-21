@@ -101,7 +101,7 @@ Controller.getInbox = async (req, res) => {
 };
 
 Controller.postInbox = async (req, res) => {
-	// Note: internal-only, hence no exposure via src/api
+	// Note: underlying methods are internal use only, hence no exposure via src/api
 	switch (req.body.type) {
 		case 'Follow': {
 			await activitypub.inbox.follow(req.body.actor.name, req.body.object.name);

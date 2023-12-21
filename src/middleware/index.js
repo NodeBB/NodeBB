@@ -310,8 +310,8 @@ middleware.handleMultipart = (req, res, next) => {
 middleware.proceedOnActivityPub = (req, res, next) => {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
 	// Therefore, manual header parsing is used here.
-	const { accept } = req.headers;
-	if (!accept || !meta.config.activitypubEnabled) {
+	const { accept, 'content-type': contentType } = req.headers;
+	if (!meta.config.activitypubEnabled || !(accept && contentType)) {
 		return next('route');
 	}
 
@@ -319,10 +319,10 @@ middleware.proceedOnActivityPub = (req, res, next) => {
 		'application/activity+json',
 		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 	];
-	const pass = accept.split(',').some((value) => {
+	const pass = (accept && accept.split(',').some((value) => {
 		const parts = value.split(';').map(v => v.trim());
 		return acceptable.includes(value || parts[0]);
-	});
+	})) || (contentType && acceptable.includes(contentType));
 
 	if (!pass) {
 		return next('route');
