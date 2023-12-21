@@ -189,7 +189,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 	await Promise.all(inboxes.map(async (uri) => {
 		const { date, digest, signature } = await ActivityPub.sign(uid, uri, payload);
 
-		const response = await request.post(uri, {
+		const { response } = await request.post(uri, {
 			headers: {
 				date,
 				digest,
