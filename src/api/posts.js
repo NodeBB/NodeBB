@@ -290,7 +290,7 @@ postsAPI.move = async function (caller, data) {
 	]);
 
 	if (!postDeleted && !topicDeleted) {
-		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved_your_post');
+		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved-your-post');
 	}
 };
 
