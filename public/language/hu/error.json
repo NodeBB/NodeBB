@@ -32,7 +32,7 @@
     "folder-exists": "Mappa létezik",
     "invalid-pagination-value": "Érvénytelen lapozási érték, legalább %1 kell lennie és legfeljebb %2 -nak/nek",
     "username-taken": "Foglalt felhasználónév",
-    "email-taken": "Foglalt e-mail",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Ez az email cím már meg lett hívva",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",

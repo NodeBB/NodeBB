@@ -32,7 +32,7 @@
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "ارزش گذاری صفحه نامعتبر است، کمترین مقدار <strong>%1</strong> و بیشترین مقدار <strong>%2</strong> باید باشد",
     "username-taken": "این نام کاربری گرفته شده است.",
-    "email-taken": "این ایمیل گرفته شده است.",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "ایمیل قبلا دعوت شده‌است",
     "email-not-confirmed": "پس از تایید ایمیل شما، ارسال در برخی دسته ها یا موضوعات فعال می شود، لطفاً برای ارسال ایمیل تایید اینجا را کلیک کنید.",

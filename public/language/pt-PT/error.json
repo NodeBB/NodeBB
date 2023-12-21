@@ -32,7 +32,7 @@
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valor de paginação errado, deve ser no mínimo %1 e no máximo %2",
     "username-taken": "Nome de utilizar já utilizado",
-    "email-taken": "E-mail já utilizado",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",

@@ -32,7 +32,7 @@
     "folder-exists": "Folder istnieje",
     "invalid-pagination-value": "Błędna wartość paginacji, zakres od %1 do %2",
     "username-taken": "Login zajęty",
-    "email-taken": "Email zajęty",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "Podany email jest taki sam jak ten już zapisany.",
     "email-invited": "Ten adres email otrzymał już zaproszenie",
     "email-not-confirmed": "Pisanie w niektórych kategoriach albo tematach jest dozwolone wtedy gdy Twój adres email został zweryfikowany, proszę kliknij tutaj aby wysłać potwierdzający email.",

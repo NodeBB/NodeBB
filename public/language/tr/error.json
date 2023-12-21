@@ -32,7 +32,7 @@
     "folder-exists": "Dosya mevcut",
     "invalid-pagination-value": "Geçersiz sayfa numarası girdiniz, en az %1 ve en fazla %2 olabilir",
     "username-taken": "Kullanıcı İsmi Alınmış",
-    "email-taken": "E-posta Alınmış",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "Girdiğiniz e-posta var olan e-posta ile aynı",
     "email-invited": "E-posta halihazırda davet edilmiş",
     "email-not-confirmed": "Ancak e-postanız onaylandıktan sonra bazı kategorilere veya konulara ileti gönderebilirsiniz; lütfen bir onay e-postası almak için buraya tıklayın.",

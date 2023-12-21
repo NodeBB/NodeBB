@@ -32,7 +32,7 @@
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Ugyldig side værdi, skal mindst være %1 og maks. %2",
     "username-taken": "Brugernavn optaget",
-    "email-taken": "Emailadresse allerede i brug",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",

@@ -32,7 +32,7 @@
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "หมายเลขหน้าไม่ถูกต้อง จำเป็นต้องเป็นตัวเลขอย่างน้อย  %1  และอย่างมาก %2",
     "username-taken": "ชื่อผู้ใช้นี้มีการใช้แล้ว",
-    "email-taken": "อีเมลนี้มีการใช้แล้ว",
+    "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
