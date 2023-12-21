@@ -36,7 +36,7 @@ module.exports = function (SocketTopics) {
 			const notifyUids = await privileges.categories.filterUids('topics:read', topicData.cid, uids);
 			socketHelpers.emitToUids('event:topic_moved', topicData, notifyUids);
 			if (!topicData.deleted) {
-				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
+				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved-your-topic');
 			}
 
 			await events.log({
