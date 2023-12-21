@@ -82,12 +82,10 @@ ActivityPub.getPrivateKey = async (uid) => {
 
 ActivityPub.fetchPublicKey = async (uri) => {
 	// Used for retrieving the public key from the passed-in keyId uri
-	const { body } = await request.get({
-		uri,
+	const { body } = await request.get(uri, {
 		headers: {
 			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 		},
-		json: true,
 	});
 
 	return body.publicKey;

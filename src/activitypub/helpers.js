@@ -71,14 +71,6 @@ Helpers.resolveLocalUid = async (input) => {
 	if (process.env.CI === 'true') {
 		protocols.push('http');
 	}
-	console.log(input, nconf.get('url'), nconf.get('url_parsed'), protocols, validator.isURL(input, {
-		require_protocol: true,
-		require_host: true,
-		require_tld: false,
-		protocols,
-		require_valid_protocol: true,
-	}), nconf.get('ci'));
-
 	if (validator.isURL(input, {
 		require_protocol: true,
 		require_host: true,

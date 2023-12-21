@@ -3,11 +3,11 @@
 const assert = require('assert');
 const { createHash } = require('crypto');
 const nconf = require('nconf');
-const request = require('request-promise-native');
 
 const db = require('./mocks/databasemock');
 const slugify = require('../src/slugify');
 const utils = require('../src/utils');
+const request = require('../src/request');
 
 const meta = require('../src/meta');
 const user = require('../src/user');
@@ -34,26 +34,14 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a 404 Not Found if no user exists by that username', async () => {
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${host}`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
-			});
+			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${host}`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('should return a 400 Bad Request if the request is malformed', async () => {
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
-			});
+			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 400);
@@ -61,13 +49,7 @@ describe('ActivityPub integration', () => {
 
 		it('should return 403 Forbidden if the calling user is not allowed to view the user list/profiles', async () => {
 			await privileges.global.rescind(['groups:view:users'], 'guests');
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
-			});
+			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 403);
@@ -75,28 +57,22 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a valid WebFinger response otherwise', async () => {
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
-			});
+			const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 200);
 
 			['subject', 'aliases', 'links'].forEach((prop) => {
-				assert(response.body.hasOwnProperty(prop));
-				assert(response.body[prop]);
+				assert(body.hasOwnProperty(prop));
+				assert(body[prop]);
 			});
 
-			assert.strictEqual(response.body.subject, `acct:${slug}@${host}`);
+			assert.strictEqual(body.subject, `acct:${slug}@${host}`);
 
-			assert(Array.isArray(response.body.aliases));
-			assert([`${nconf.get('url')}/uid/${uid}`, `${nconf.get('url')}/user/${slug}`].every(url => response.body.aliases.includes(url)));
+			assert(Array.isArray(body.aliases));
+			assert([`${nconf.get('url')}/uid/${uid}`, `${nconf.get('url')}/user/${slug}`].every(url => body.aliases.includes(url)));
 
-			assert(Array.isArray(response.body.links));
+			assert(Array.isArray(body.links));
 		});
 	});
 
@@ -159,11 +135,7 @@ describe('ActivityPub integration', () => {
 		it('should return regular user profile html if federation is disabled', async () => {
 			delete meta.config.activitypubEnabled;
 
-			const response = await request(`${nconf.get('url')}/user/${slug}`, {
-				method: 'get',
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
+			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
 				headers: {
 					Accept: 'text/html',
 				},
@@ -171,17 +143,13 @@ describe('ActivityPub integration', () => {
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 200);
-			assert(response.body.startsWith('<!DOCTYPE html>'));
+			assert(body.startsWith('<!DOCTYPE html>'));
 
 			meta.config.activitypubEnabled = 1;
 		});
 
 		it('should return regular user profile html if Accept header is not ActivityPub-related', async () => {
-			const response = await request(`${nconf.get('url')}/user/${slug}`, {
-				method: 'get',
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
+			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
 				headers: {
 					Accept: 'text/html',
 				},
@@ -189,16 +157,11 @@ describe('ActivityPub integration', () => {
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 200);
-			assert(response.body.startsWith('<!DOCTYPE html>'));
+			assert(body.startsWith('<!DOCTYPE html>'));
 		});
 
 		it('should return the ActivityPub Actor JSON-LD payload if the correct Accept header is provided', async () => {
-			const response = await request(`${nconf.get('url')}/user/${slug}`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
+			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
@@ -206,8 +169,8 @@ describe('ActivityPub integration', () => {
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 200);
-			assert(response.body.hasOwnProperty('@context'));
-			assert(response.body['@context'].includes('https://www.w3.org/ns/activitystreams'));
+			assert(body.hasOwnProperty('@context'));
+			assert(body['@context'].includes('https://www.w3.org/ns/activitystreams'));
 		});
 	});
 
@@ -221,12 +184,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a valid ActivityPub Actor JSON-LD payload', async () => {
-			const response = await request(`${nconf.get('url')}/user/${slug}`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
+			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
@@ -234,32 +192,27 @@ describe('ActivityPub integration', () => {
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 200);
-			assert(response.body.hasOwnProperty('@context'));
-			assert(response.body['@context'].includes('https://www.w3.org/ns/activitystreams'));
+			assert(body.hasOwnProperty('@context'));
+			assert(body['@context'].includes('https://www.w3.org/ns/activitystreams'));
 
 			['id', 'url', 'followers', 'following', 'inbox', 'outbox'].forEach((prop) => {
-				assert(response.body.hasOwnProperty(prop));
-				assert(response.body[prop]);
+				assert(body.hasOwnProperty(prop));
+				assert(body[prop]);
 			});
 
-			assert.strictEqual(response.body.id, response.body.url);
-			assert.strictEqual(response.body.type, 'Person');
+			assert.strictEqual(body.id, body.url);
+			assert.strictEqual(body.type, 'Person');
 		});
 
 		it('should contain a `publicKey` property with a public key', async () => {
-			const response = await request(`${nconf.get('url')}/user/${slug}`, {
-				method: 'get',
-				json: true,
-				followRedirect: true,
-				simple: false,
-				resolveWithFullResponse: true,
+			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
 			});
 
-			assert(response.body.hasOwnProperty('publicKey'));
-			assert(['id', 'owner', 'publicKeyPem'].every(prop => response.body.publicKey.hasOwnProperty(prop)));
+			assert(body.hasOwnProperty('publicKey'));
+			assert(['id', 'owner', 'publicKeyPem'].every(prop => body.publicKey.hasOwnProperty(prop)));
 		});
 	});
 
