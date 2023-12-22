@@ -149,7 +149,7 @@ define('forum/topic/move-post', [
 					$(this).remove();
 				});
 			});
-			if (data.pids.length === 1 && ajaxify.data.template.topic &&
+			if (data.pids.length && ajaxify.data.template.topic &&
 				parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)) {
 				ajaxify.go(`/post/${data.pids[0]}`);
 			}
