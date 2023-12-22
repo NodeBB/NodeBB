@@ -14,16 +14,14 @@ const activitypub = require('../activitypub');
 const activitypubApi = module.exports;
 
 activitypubApi.follow = async (caller, { actorId } = {}) => {
-	if (!actorId) {
+	const object = activitypub.getActor(actorId);
+	if (!object) {
 		throw new Error('[[error:invalid-uid]]'); // should be activitypub-specific
 	}
 
 	await activitypub.send(caller.uid, actorId, {
 		type: 'Follow',
-		object: {
-			type: 'Person',
-			name: actorId,
-		},
+		object: object.actorUri,
 	});
 
 	const now = Date.now();

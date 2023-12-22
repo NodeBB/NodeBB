@@ -172,10 +172,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 
 	payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		actor: {
-			type: 'Person',
-			name: `${userslug}@${nconf.get('url_parsed').host}`,
-		},
+		actor: `${nconf.get('url')}/user/${userslug}`,
 		...payload,
 	};
 
