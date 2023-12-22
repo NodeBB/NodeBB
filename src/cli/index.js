@@ -114,7 +114,9 @@ if (!configExists && process.argv[2] !== 'setup') {
 	return;
 }
 
-process.env.CONFIG = configFile;
+if (configExists) {
+	process.env.CONFIG = configFile;
+}
 
 // running commands
 program

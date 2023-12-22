@@ -146,7 +146,7 @@
         "webpack": "5.89.0",
         "webpack-merge": "5.10.0",
         "winston": "3.11.0",
-        "workerpool": "9.0.3",
+        "workerpool": "9.0.4",
         "xml": "1.0.1",
         "xregexp": "5.1.1",
         "yargs": "17.7.2",
