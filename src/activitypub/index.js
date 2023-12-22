@@ -187,7 +187,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 			body: payload,
 		});
 
-		if (response.statusCode !== 201) {
+		if (!String(response.statusCode).startsWith('2')) {
 			// todo: i18n this
 			throw new Error('activity-failed');
 		}
