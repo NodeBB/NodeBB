@@ -104,12 +104,7 @@ Controller.postInbox = async (req, res) => {
 	// Note: underlying methods are internal use only, hence no exposure via src/api
 	switch (req.body.type) {
 		case 'Follow': {
-			await activitypub.inbox.follow(req.body.actor.name, req.body.object.name);
-			break;
-		}
-
-		case 'Unfollow': {
-			await activitypub.inbox.unfollow(req.body.actor.name, req.body.object.name);
+			await activitypub.inbox.follow(req);
 			break;
 		}
 
