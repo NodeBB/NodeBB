@@ -113,14 +113,10 @@ ActivityPub.sign = async (uid, url, payload) => {
 	}
 
 	// Sign string using private key
-	const signatureHash = createHash('sha256');
-	signatureHash.update(signed_string);
-	const signatureDigest = signatureHash.digest('hex');
 	let signature = createSign('sha256');
-	signature.update(signatureDigest);
+	signature.update(signed_string);
 	signature.end();
-	signature = signature.sign(key, 'hex');
-	signature = btoa(signature);
+	signature = signature.sign(key, 'base64');
 
 	// Construct signature header
 	return {
@@ -156,13 +152,10 @@ ActivityPub.verify = async (req) => {
 
 	// Verify the signature string via public key
 	try {
-		const signatureHash = createHash('sha256');
-		signatureHash.update(signed_string);
-		const signatureDigest = signatureHash.digest('hex');
 		const verify = createVerify('sha256');
-		verify.update(signatureDigest);
+		verify.update(signed_string);
 		verify.end();
-		const verified = verify.verify(publicKeyPem, atob(signature), 'hex');
+		const verified = verify.verify(publicKeyPem, signature, 'base64');
 		return verified;
 	} catch (e) {
 		return false;
