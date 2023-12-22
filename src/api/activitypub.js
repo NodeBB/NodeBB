@@ -8,20 +8,23 @@
  * If you use api methods in this file, be prepared that they may be removed or modified with no warning.
  */
 
+const nconf = require('nconf');
+
 const db = require('../database');
 const activitypub = require('../activitypub');
+const user = require('../user');
 
 const activitypubApi = module.exports;
 
 activitypubApi.follow = async (caller, { actorId } = {}) => {
-	const object = activitypub.getActor(actorId);
+	const object = await activitypub.getActor(actorId);
 	if (!object) {
 		throw new Error('[[error:invalid-uid]]'); // should be activitypub-specific
 	}
 
 	await activitypub.send(caller.uid, actorId, {
 		type: 'Follow',
-		object: object.actorUri,
+		object: object.id,
 	});
 
 	const now = Date.now();
@@ -32,15 +35,18 @@ activitypubApi.follow = async (caller, { actorId } = {}) => {
 };
 
 activitypubApi.unfollow = async (caller, { actorId }) => {
-	if (!actorId) {
+	const object = await activitypub.getActor(actorId);
+	const userslug = await user.getUserField(caller.uid, 'userslug');
+	if (!object) {
 		throw new Error('[[error:invalid-uid]]'); // should be activitypub-specific
 	}
 
 	await activitypub.send(caller.uid, actorId, {
-		type: 'Unfollow',
+		type: 'Undo',
 		object: {
-			type: 'Person',
-			name: actorId,
+			type: 'Follow',
+			actor: `${nconf.get('url')}/user/${userslug}`,
+			object: object.id,
 		},
 	});
 

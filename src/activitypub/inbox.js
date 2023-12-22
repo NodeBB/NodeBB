@@ -32,7 +32,7 @@ inbox.follow = async (req) => {
 		type: 'Accept',
 		object: {
 			type: 'Follow',
-			actor: from.actorUri,
+			actor: from.id,
 		},
 	});
 

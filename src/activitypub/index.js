@@ -23,6 +23,7 @@ ActivityPub.getActor = async (input) => {
 		require_host: true,
 		protocols: ['https'],
 		require_valid_protocol: true,
+		require_tld: false,
 	})) {
 		uri = input;
 	} else if (input.indexOf('@') !== -1) { // Webfinger
@@ -177,15 +178,11 @@ ActivityPub.send = async (uid, targets, payload) => {
 	};
 
 	await Promise.all(inboxes.map(async (uri) => {
-		const { date, digest, signature } = await ActivityPub.sign(uid, uri, payload);
-
+		const headers = await ActivityPub.sign(uid, uri, payload);
 		const { response } = await request.post(uri, {
 			headers: {
-				date,
-				digest,
-				signature,
+				...headers,
 				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-				accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 			},
 			body: payload,
 		});
