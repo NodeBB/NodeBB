@@ -236,7 +236,6 @@ module.exports = function (Categories) {
 		const notification = await notifications.create({
 			type: 'new-topic-in-category',
 			nid: `new_topic:tid:${postData.topic.tid}:uid:${exceptUid}`,
-			subject: bodyShort,
 			bodyShort: bodyShort,
 			bodyLong: postData.content,
 			pid: postData.pid,
