@@ -1,3 +1,47 @@
+#### v3.6.1 (2023-12-22)
+
+##### Chores
+
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  update changelog for v3.6.0 (eb92cee6)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  #12243, don' set process.env.config if it doesnt exist (788404c1)
+*  lang key for move notification closes #12241 (48a2b5f7)
+*  dont send topic notification to poster (e72b26f5)
+
 #### v3.6.0 (2023-12-20)
 
 ##### Chores
