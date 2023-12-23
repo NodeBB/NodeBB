@@ -210,15 +210,13 @@ module.exports = function (Topics) {
 	}
 
 	async function getFollowedTids(params) {
-		let tids = await db.getSortedSetMembers(`uid:${params.uid}:followed_tids`);
-		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
-		if (filterCids) {
-			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
-			tids = topicData.filter(t => filterCids.includes(t.cid)).map(t => t.tid);
-		}
-		const scores = await db.sortedSetScores('topics:recent', tids);
-		const data = tids.map((tid, index) => ({ value: String(tid), score: scores[index] }));
-		return data.filter(item => item.score > params.cutoff);
+		const keys = params.cid ?
+			params.cid.map(cid => `cid:${cid}:tids:lastposttime`) :
+			'topics:recent';
+
+		const recentTopicData = await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+		const isFollowed = await db.isSortedSetMembers(`uid:${params.uid}:followed_tids`, recentTopicData.map(t => t.tid));
+		return recentTopicData.filter((t, i) => isFollowed[i]);
 	}
 
 	async function filterTidsThatHaveBlockedPosts(params) {
