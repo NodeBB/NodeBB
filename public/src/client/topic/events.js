@@ -10,7 +10,8 @@ define('forum/topic/events', [
 	'components',
 	'translator',
 	'hooks',
-], function (postTools, threadTools, posts, images, components, translator, hooks) {
+	'helpers',
+], function (postTools, threadTools, posts, images, components, translator, hooks, helpers) {
 	const Events = {};
 
 	const events = {
@@ -152,7 +153,7 @@ define('forum/topic/events', [
 						editorEl.replaceWith(html);
 						postContainer.find('[component="post/edit-indicator"]')
 							.removeClass('hidden')
-							.translateAttr('title', `[[global:edited-timestamp, ${editData.editedISO}]]`);
+							.translateAttr('title', `[[global:edited-timestamp, ${helpers.isoTimeToLocaleString(editData.editedISO, config.userLang)}]]`);
 						postContainer.find('[component="post/editor"] .timeago').timeago();
 						hooks.fire('action:posts.edited', data);
 					});
