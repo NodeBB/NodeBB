@@ -135,7 +135,7 @@
         "sortablejs": "1.15.1",
         "spdx-license-list": "6.8.0",
         "spider-detector": "2.0.1",
-        "terser-webpack-plugin": "5.3.9",
+        "terser-webpack-plugin": "5.3.10",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
