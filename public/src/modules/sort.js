@@ -12,8 +12,8 @@ define('sort', ['components'], function (components) {
 		currentSetting.find('i').addClass('fa-check');
 
 		$('body')
-			.off('click', '[component="thread/sort"] a')
-			.on('click', '[component="thread/sort"] a', function () {
+			.off('click', '[component="thread/sort"] a[data-sort]')
+			.on('click', '[component="thread/sort"] a[data-sort]', function () {
 				const newSetting = $(this).attr('data-sort');
 				const urlParams = utils.params();
 				urlParams.sort = newSetting;

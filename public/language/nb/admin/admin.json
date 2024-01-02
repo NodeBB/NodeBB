@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | NodeBB Admin Kontrollpanel",
 	"settings-header-contents": "Innhold",
-	"changes-saved": "Changes Saved",
+	"changes-saved": "Endringer lagret",
 	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "Endringer ikke lagret",
 	"changes-not-saved-message": "NodeBB støtte på et problem ved lagring av endringer. (%1)",
-	"save-changes": "Save changes",
+	"save-changes": "Lagre endringer",
 	"min": "Min:",
 	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"view": "Se",
+	"edit": "Rediger",
+	"add": "Legg til",
+	"select-icon": "Velg ikon"
 }

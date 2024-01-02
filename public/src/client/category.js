@@ -127,7 +127,6 @@ define('forum/category', [
 		hooks.fire('action:topics.loading');
 		const params = utils.params();
 		infinitescroll.loadMore(`/categories/${ajaxify.data.cid}/topics`, {
-			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
 			query: params,
