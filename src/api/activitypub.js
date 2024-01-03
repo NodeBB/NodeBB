@@ -26,12 +26,6 @@ activitypubApi.follow = async (caller, { actorId } = {}) => {
 		type: 'Follow',
 		object: object.id,
 	});
-
-	const now = Date.now();
-	await Promise.all([
-		db.sortedSetAdd(`followingRemote:${caller.uid}`, now, actorId),
-		db.incrObjectField(`user:${caller.uid}`, 'followingRemoteCount'),
-	]);
 };
 
 activitypubApi.unfollow = async (caller, { actorId }) => {
@@ -51,7 +45,7 @@ activitypubApi.unfollow = async (caller, { actorId }) => {
 	});
 
 	await Promise.all([
-		db.sortedSetRemove(`followingRemote:${caller.uid}`, actorId),
+		db.sortedSetRemove(`followingRemote:${caller.uid}`, object.id),
 		db.decrObjectField(`user:${caller.uid}`, 'followingRemoteCount'),
 	]);
 };

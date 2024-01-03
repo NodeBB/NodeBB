@@ -48,8 +48,10 @@ inbox.isFollowed = async (actorId, uid) => {
 };
 
 inbox.accept = async (req) => {
-	const { actor, object } = req.body;
+	let { actor, object } = req.body;
 	const { type } = object;
+
+	actor = await activitypub.getActor(actor);
 
 	if (type === 'Follow') {
 		// todo: should check that actor and object.actor are the same person?
@@ -60,25 +62,27 @@ inbox.accept = async (req) => {
 
 		const now = Date.now();
 		await Promise.all([
-			db.sortedSetAdd(`followingRemote:${uid}`, now, actor.name),
+			db.sortedSetAdd(`followingRemote:${uid}`, now, actor.id),
 			db.incrObjectField(`user:${uid}`, 'followingRemoteCount'),
 		]);
 	}
 };
 
 inbox.undo = async (req) => {
-	const { actor, object } = req.body;
+	let { actor, object } = req.body;
 	const { type } = object;
+
+	actor = await activitypub.getActor(actor);
 
 	if (type === 'Follow') {
 		// todo: should check that actor and object.actor are the same person?
-		const uid = await helpers.resolveLocalUid(object.actor);
+		const uid = await helpers.resolveLocalUid(object.object);
 		if (!uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
 		await Promise.all([
-			db.sortedSetRemove(`followingRemote:${uid}`, actor.name),
+			db.sortedSetRemove(`followingRemote:${uid}`, actor.id),
 			db.decrObjectField(`user:${uid}`, 'followingRemoteCount'),
 		]);
 	}
