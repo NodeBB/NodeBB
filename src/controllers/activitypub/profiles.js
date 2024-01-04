@@ -11,6 +11,6 @@ controller.get = async function (req, res, next) {
 		return next();
 	}
 
-	const payload = await mockProfile(req.uid, actor);
+	const payload = await mockProfile(actor, req.uid);
 	res.render('account/profile', payload);
 };
