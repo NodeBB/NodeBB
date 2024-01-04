@@ -14,6 +14,14 @@ const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 
 const Helpers = module.exports;
 
+Helpers.isUri = value => validator.isURL(value, {
+	require_protocol: true,
+	require_host: true,
+	protocols: ['https'],
+	require_valid_protocol: true,
+	require_tld: false, // temporary — for localhost
+});
+
 Helpers.query = async (id) => {
 	const [username, hostname] = id.split('@');
 	if (!username || !hostname) {
@@ -71,13 +79,7 @@ Helpers.resolveLocalUid = async (input) => {
 	if (process.env.CI === 'true') {
 		protocols.push('http');
 	}
-	if (validator.isURL(input, {
-		require_protocol: true,
-		require_host: true,
-		require_tld: false,
-		protocols,
-		require_valid_protocol: true,
-	})) {
+	if (Helpers.isUri(input)) {
 		const { host, pathname } = new URL(input);
 
 		if (host === nconf.get('url_parsed').host) {

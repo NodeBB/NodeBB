@@ -7,6 +7,7 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const relative_path = nconf.get('relative_path');

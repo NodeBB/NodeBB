@@ -18,13 +18,7 @@ ActivityPub.inbox = require('./inbox');
 ActivityPub.getActor = async (input) => {
 	// Can be a webfinger id, uri, or object, handle as appropriate
 	let uri;
-	if (validator.isURL(input, {
-		require_protocol: true,
-		require_host: true,
-		protocols: ['https'],
-		require_valid_protocol: true,
-		require_tld: false,
-	})) {
+	if (ActivityPub.helpers.isUri(input)) {
 		uri = input;
 	} else if (input.indexOf('@') !== -1) { // Webfinger
 		({ actorUri: uri } = await ActivityPub.helpers.query(input));
