@@ -73,7 +73,15 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return [];
 		}
-		const uids = await db.getSortedSetRevRange(`${type}:${uid}`, start, stop);
+		const uids = await db.getSortedSetRevUnion({
+			sets: [
+				`${type}:${uid}`,
+				`${type}Remote:${uid}`,
+			],
+			start,
+			stop,
+		});
+
 		const data = await plugins.hooks.fire(`filter:user.${type}`, {
 			uids: uids,
 			uid: uid,
