@@ -35,9 +35,14 @@ ActivityPub.getActor = async (input) => {
 
 	const actor = await ActivityPub.get(uri);
 
+	// todo: remove this after ActivityPub.get is updated to handle errors more effectively
+	if (typeof actor === 'string' || actor.hasOwnProperty('error')) {
+		return null;
+	}
+
 	const [followers, following] = await Promise.all([
-		ActivityPub.get(actor.followers),
-		ActivityPub.get(actor.following),
+		actor.followers ? ActivityPub.get(actor.followers) : { totalItems: 0 },
+		actor.following ? ActivityPub.get(actor.following) : { totalItems: 0 },
 	]);
 
 	actor.hostname = new URL(uri).hostname;
@@ -56,10 +61,14 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 		actors = [actors];
 	}
 
-	const profiles = await Promise.all(actors.map(async (actor) => {
+	const profiles = (await Promise.all(actors.map(async (actor) => {
 		// convert uri to actor object
 		if (typeof actor === 'string' && ActivityPub.helpers.isUri(actor)) {
 			actor = await ActivityPub.getActor(actor);
+		}
+
+		if (!actor) {
+			return null;
 		}
 
 		const uid = actor.id;
@@ -97,7 +106,7 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 		};
 
 		return payload;
-	}));
+	}))).filter(Boolean);
 
 	return single ? profiles.pop() : profiles;
 };
