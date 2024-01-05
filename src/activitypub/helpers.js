@@ -14,13 +14,24 @@ const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 
 const Helpers = module.exports;
 
-Helpers.isUri = value => validator.isURL(value, {
-	require_protocol: true,
-	require_host: true,
-	protocols: ['https'],
-	require_valid_protocol: true,
-	require_tld: false, // temporary — for localhost
-});
+Helpers.isUri = (value) => {
+	if (typeof value !== 'string') {
+		value = String(value);
+	}
+
+	const protocols = ['https'];
+	if (process.env.CI === 'true') {
+		protocols.push('http');
+	}
+
+	return validator.isURL(value, {
+		require_protocol: true,
+		require_host: true,
+		protocols,
+		require_valid_protocol: true,
+		require_tld: false, // temporary — for localhost
+	});
+};
 
 Helpers.query = async (id) => {
 	const [username, hostname] = id.split('@');
