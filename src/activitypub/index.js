@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const { createHash, createSign, createVerify } = require('crypto');
-const validator = require('validator');
 
 const request = require('../request');
 const db = require('../database');
