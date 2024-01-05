@@ -33,13 +33,16 @@ ActivityPub.getActor = async (input) => {
 		return actorCache.get(uri);
 	}
 
-	const { body: actor } = await request.get(uri, {
-		headers: {
-			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-		},
-	});
+	const actor = await ActivityPub.get(uri);
+
+	const [followers, following] = await Promise.all([
+		ActivityPub.get(actor.followers),
+		ActivityPub.get(actor.following),
+	]);
 
 	actor.hostname = new URL(uri).hostname;
+	actor.followerCount = followers.totalItems;
+	actor.followingCount = following.totalItems;
 
 	actorCache.set(uri, actor);
 	return actor;
@@ -60,7 +63,7 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 		}
 
 		const uid = actor.id;
-		const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
+		const { preferredUsername, published, icon, image, name, summary, hostname, followerCount, followingCount } = actor;
 		const isFollowing = await db.isSortedSetMember(`followingRemote:${callerUid}`, uid);
 
 		let picture;
@@ -87,6 +90,10 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 			aboutmeParsed: summary,
 
 			isFollowing,
+			counts: {
+				following: followingCount,
+				followers: followerCount,
+			},
 		};
 
 		return payload;
@@ -204,6 +211,16 @@ ActivityPub.verify = async (req) => {
 	} catch (e) {
 		return false;
 	}
+};
+
+ActivityPub.get = async (uri) => {
+	const { body } = await request.get(uri, {
+		headers: {
+			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+		},
+	});
+
+	return body;
 };
 
 ActivityPub.send = async (uid, targets, payload) => {

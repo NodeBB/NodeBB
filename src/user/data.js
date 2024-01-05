@@ -204,7 +204,7 @@ module.exports = function (User) {
 				return;
 			}
 
-			if (activitypub.helpers.isUri(String(user.uid))) {
+			if (activitypub.helpers.isUri(user.uid)) {
 				intFields.splice(intFields.indexOf('uid'), 1);
 			}
 			db.parseIntFields(user, intFields, requestedFields);
