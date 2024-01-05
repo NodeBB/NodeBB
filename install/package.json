@@ -103,7 +103,7 @@
         "nodebb-plugin-ntfy": "1.7.3",
         "nodebb-plugin-spam-be-gone": "2.2.0",
         "nodebb-rewards-essentials": "1.0.0",
-        "nodebb-theme-harmony": "1.1.107",
+        "nodebb-theme-harmony": "1.1.108",
         "nodebb-theme-lavender": "7.1.7",
         "nodebb-theme-peace": "2.1.26",
         "nodebb-theme-persona": "13.2.50",
@@ -115,7 +115,7 @@
         "passport-local": "1.0.0",
         "pg": "8.11.3",
         "pg-cursor": "2.10.3",
-        "postcss": "8.4.32",
+        "postcss": "8.4.33",
         "postcss-clean": "1.2.0",
         "progress-webpack-plugin": "1.0.16",
         "prompt": "1.3.0",
@@ -124,13 +124,13 @@
         "rss": "1.2.2",
         "rtlcss": "4.1.1",
         "sanitize-html": "2.11.0",
-        "sass": "1.69.6",
+        "sass": "1.69.7",
         "semver": "7.5.4",
         "serve-favicon": "2.5.0",
         "sharp": "0.33.1",
         "sitemap": "7.1.1",
-        "socket.io": "4.7.2",
-        "socket.io-client": "4.7.2",
+        "socket.io": "4.7.3",
+        "socket.io-client": "4.7.3",
         "@socket.io/redis-adapter": "8.2.1",
         "sortablejs": "1.15.1",
         "spdx-license-list": "6.8.0",
@@ -154,8 +154,8 @@
     },
     "devDependencies": {
         "@apidevtools/swagger-parser": "10.1.0",
-        "@commitlint/cli": "18.4.3",
-        "@commitlint/config-angular": "18.4.3",
+        "@commitlint/cli": "18.4.4",
+        "@commitlint/config-angular": "18.4.4",
         "coveralls": "3.1.1",
         "eslint": "8.56.0",
         "eslint-config-nodebb": "0.2.1",
@@ -172,7 +172,7 @@
         "smtp-server": "3.13.0"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.69.6"
+        "sass-embedded": "1.69.7"
     },
     "resolutions": {
         "*/jquery": "3.7.1"
