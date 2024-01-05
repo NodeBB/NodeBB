@@ -51,18 +51,6 @@
 	}
 }
 
-.btn-outline {
-	@include btn-ghost-base();
-	border-color: $border-color;
-}
-
-.btn-outline-sm {
-	@include btn-ghost-base();
-	border-color: $border-color;
-	font-size: 0.875rem;
-	line-height: 1.25rem;
-}
-
 @include color-mode(dark) {
 	.btn-light {
 		@extend .btn-dark;
@@ -70,7 +58,7 @@
 	.text-bg-light {
 		@extend .text-bg-dark;
 	}
-	.btn-ghost, .btn-ghost-sm, .btn-outline, .btn-outline-sm {
+	.btn-ghost, .btn-ghost-sm {
 		color: $btn-ghost-color-dark;
 		&:hover, &.active {
 			background-color: $btn-ghost-hover-color-dark;
