@@ -51,7 +51,7 @@ module.exports = function (User) {
 		}
 
 		uids = uids.map((uid) => {
-			if (isFinite(uid)) {
+			if (utils.isNumber(uid)) {
 				return parseInt(uid, 10);
 			} else if (activitypub.helpers.isUri(uid)) {
 				return uid;
