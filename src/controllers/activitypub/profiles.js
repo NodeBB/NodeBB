@@ -25,7 +25,9 @@ controller.getFollow = async function (tpl, name, req, res) {
 
 	const page = parseInt(req.query.page, 10) || 1;
 
-	const payload = {};
+	const payload = {
+		...await mockProfile(actor, req.uid),
+	};
 	payload.title = `[[pages:${tpl}, ${username}]]`;
 
 	const collection = await get(`${actor[name]}?page=${page}`);
