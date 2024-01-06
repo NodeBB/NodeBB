@@ -10,14 +10,14 @@ const inbox = module.exports;
 
 inbox.follow = async (req) => {
 	// Sanity checks
-	const from = await activitypub.getActor(req.body.actor);
-	if (!from) {
-		throw new Error('[[error:invalid-uid]]'); // should probably be AP specific
-	}
-
 	const localUid = await helpers.resolveLocalUid(req.body.object);
 	if (!localUid) {
 		throw new Error('[[error:invalid-uid]]');
+	}
+
+	const from = await activitypub.getActor(localUid, req.body.actor);
+	if (!from) {
+		throw new Error('[[error:invalid-uid]]'); // should probably be AP specific
 	}
 
 	const isFollowed = await inbox.isFollowed(from.id, localUid);
@@ -51,15 +51,14 @@ inbox.accept = async (req) => {
 	let { actor, object } = req.body;
 	const { type } = object;
 
-	actor = await activitypub.getActor(actor);
+	const uid = await helpers.resolveLocalUid(object.actor);
+	if (!uid) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+
+	actor = await activitypub.getActor(uid, actor);
 
 	if (type === 'Follow') {
-		// todo: should check that actor and object.actor are the same person?
-		const uid = await helpers.resolveLocalUid(object.actor);
-		if (!uid) {
-			throw new Error('[[error:invalid-uid]]');
-		}
-
 		const now = Date.now();
 		await Promise.all([
 			db.sortedSetAdd(`followingRemote:${uid}`, now, actor.id),
@@ -72,15 +71,14 @@ inbox.undo = async (req) => {
 	let { actor, object } = req.body;
 	const { type } = object;
 
-	actor = await activitypub.getActor(actor);
+	const uid = await helpers.resolveLocalUid(object.object);
+	if (!uid) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+
+	actor = await activitypub.getActor(uid, actor);
 
 	if (type === 'Follow') {
-		// todo: should check that actor and object.actor are the same person?
-		const uid = await helpers.resolveLocalUid(object.object);
-		if (!uid) {
-			throw new Error('[[error:invalid-uid]]');
-		}
-
 		await Promise.all([
 			db.sortedSetRemove(`followingRemote:${uid}`, actor.id),
 			db.decrObjectField(`user:${uid}`, 'followingRemoteCount'),

@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
 const { createHash, createSign, createVerify } = require('crypto');
 
 const request = require('../request');
@@ -14,7 +15,7 @@ const ActivityPub = module.exports;
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
 
-ActivityPub.getActor = async (input) => {
+ActivityPub.getActor = async (uid, input) => {
 	// Can be a webfinger id, uri, or object, handle as appropriate
 	let uri;
 	if (ActivityPub.helpers.isUri(input)) {
@@ -33,7 +34,7 @@ ActivityPub.getActor = async (input) => {
 		return actorCache.get(uri);
 	}
 
-	const actor = await ActivityPub.get(uri);
+	const actor = await ActivityPub.get(uid, uri);
 
 	// todo: remove this after ActivityPub.get is updated to handle errors more effectively
 	if (typeof actor === 'string' || actor.hasOwnProperty('error')) {
@@ -41,8 +42,8 @@ ActivityPub.getActor = async (input) => {
 	}
 
 	const [followers, following] = await Promise.all([
-		actor.followers ? ActivityPub.get(actor.followers) : { totalItems: 0 },
-		actor.following ? ActivityPub.get(actor.following) : { totalItems: 0 },
+		actor.followers ? ActivityPub.get(uid, actor.followers) : { totalItems: 0 },
+		actor.following ? ActivityPub.get(uid, actor.following) : { totalItems: 0 },
 	]);
 
 	actor.hostname = new URL(uri).hostname;
@@ -64,7 +65,7 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 	const profiles = (await Promise.all(actors.map(async (actor) => {
 		// convert uri to actor object
 		if (typeof actor === 'string' && ActivityPub.helpers.isUri(actor)) {
-			actor = await ActivityPub.getActor(actor);
+			actor = await ActivityPub.getActor(callerUid, actor);
 		}
 
 		if (!actor) {
@@ -111,8 +112,8 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 	return single ? profiles.pop() : profiles;
 };
 
-ActivityPub.resolveInboxes = async ids => await Promise.all(ids.map(async (id) => {
-	const actor = await ActivityPub.getActor(id);
+ActivityPub.resolveInboxes = async (uid, ids) => await Promise.all(ids.map(async (id) => {
+	const actor = await ActivityPub.getActor(uid, id);
 	return actor.inbox;
 }));
 
@@ -222,12 +223,21 @@ ActivityPub.verify = async (req) => {
 	}
 };
 
-ActivityPub.get = async (uri) => {
-	const { body } = await request.get(uri, {
+ActivityPub.get = async (uid, uri) => {
+	const headers = uid > 0 ? await ActivityPub.sign(uid, uri) : {};
+	const { response, body } = await request.get(uri, {
 		headers: {
+			...headers,
 			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 		},
 	});
+
+	if (!String(response.statusCode).startsWith('2')) {
+		winston.error(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
+		if (body.hasOwnProperty('error')) {
+			winston.error(`[activitypub/get] Error received: ${body.error}`);
+		}
+	}
 
 	return body;
 };
@@ -238,7 +248,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 	}
 
 	const userslug = await user.getUserField(uid, 'userslug');
-	const inboxes = await ActivityPub.resolveInboxes(targets);
+	const inboxes = await ActivityPub.resolveInboxes(uid, targets);
 
 	payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
