@@ -97,7 +97,7 @@ describe('ActivityPub integration', () => {
 			it('should throw when an invalid input is passed in', async () => {
 				await assert.rejects(
 					activitypub.helpers.resolveLocalUid('ncl28h3qwhoiclwnevoinw3u'),
-					{ message: '[[activitypub:invalid-id]]' }
+					{ message: '[[error:activitypub.invalid-id]]' }
 				);
 			});
 
