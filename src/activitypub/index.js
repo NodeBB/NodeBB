@@ -45,6 +45,8 @@ ActivityPub.getActor = async (uid, input) => {
 		actor.followerCount = followers.totalItems;
 		actor.followingCount = following.totalItems;
 
+		actor.hostname = new URL(uri).hostname;
+
 		actorCache.set(uri, actor);
 		return actor;
 	} catch (e) {
