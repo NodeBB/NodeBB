@@ -19,7 +19,7 @@ const activitypubApi = module.exports;
 activitypubApi.follow = async (caller, { actorId } = {}) => {
 	const object = await activitypub.getActor(caller.uid, actorId);
 	if (!object) {
-		throw new Error('[[error:invalid-uid]]'); // should be activitypub-specific
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	await activitypub.send(caller.uid, actorId, {
@@ -32,7 +32,7 @@ activitypubApi.unfollow = async (caller, { actorId }) => {
 	const object = await activitypub.getActor(caller.uid, actorId);
 	const userslug = await user.getUserField(caller.uid, 'userslug');
 	if (!object) {
-		throw new Error('[[error:invalid-uid]]'); // should be activitypub-specific
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	await activitypub.send(caller.uid, actorId, {

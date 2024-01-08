@@ -34,24 +34,23 @@ ActivityPub.getActor = async (uid, input) => {
 		return actorCache.get(uri);
 	}
 
-	const actor = await ActivityPub.get(uid, uri);
+	try {
+		const actor = await ActivityPub.get(uid, uri);
 
-	// todo: remove this after ActivityPub.get is updated to handle errors more effectively
-	if (typeof actor === 'string' || actor.hasOwnProperty('error')) {
+		// Follow counts
+		const [followers, following] = await Promise.all([
+			actor.followers ? ActivityPub.get(uid, actor.followers) : { totalItems: 0 },
+			actor.following ? ActivityPub.get(uid, actor.following) : { totalItems: 0 },
+		]);
+		actor.followerCount = followers.totalItems;
+		actor.followingCount = following.totalItems;
+
+		actorCache.set(uri, actor);
+		return actor;
+	} catch (e) {
+		winston.warn(`[activitypub/getActor] Unable to retrieve actor "${uri}", error: ${e.message}`);
 		return null;
 	}
-
-	const [followers, following] = await Promise.all([
-		actor.followers ? ActivityPub.get(uid, actor.followers) : { totalItems: 0 },
-		actor.following ? ActivityPub.get(uid, actor.following) : { totalItems: 0 },
-	]);
-
-	actor.hostname = new URL(uri).hostname;
-	actor.followerCount = followers.totalItems;
-	actor.followingCount = following.totalItems;
-
-	actorCache.set(uri, actor);
-	return actor;
 };
 
 ActivityPub.mockProfile = async (actors, callerUid = 0) => {
@@ -237,6 +236,8 @@ ActivityPub.get = async (uid, uri) => {
 		if (body.hasOwnProperty('error')) {
 			winston.error(`[activitypub/get] Error received: ${body.error}`);
 		}
+
+		throw new Error(`[[error:activitypub.get-failed]]`);
 	}
 
 	return body;
