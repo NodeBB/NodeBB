@@ -8,7 +8,7 @@ const controller = module.exports;
 
 controller.get = async function (req, res, next) {
 	const { userslug: uid } = req.params;
-	const actor = await getActor(uid);
+	const actor = await getActor(req.uid, uid);
 	if (!actor) {
 		return next();
 	}
@@ -18,7 +18,7 @@ controller.get = async function (req, res, next) {
 };
 
 controller.getFollow = async function (tpl, name, req, res) {
-	const actor = await getActor(req.params.userslug);
+	const actor = await getActor(req.uid, req.params.userslug);
 
 	const { userslug } = req.params;
 	const { preferredUsername: username, followerCount, followingCount } = actor;
@@ -30,7 +30,7 @@ controller.getFollow = async function (tpl, name, req, res) {
 	};
 	payload.title = `[[pages:${tpl}, ${username}]]`;
 
-	const collection = await get(`${actor[name]}?page=${page}`);
+	const collection = await get(req.uid, `${actor[name]}?page=${page}`);
 	const resultsPerPage = collection.orderedItems.length;
 	payload.users = await mockProfile(collection.orderedItems, req.uid);
 
