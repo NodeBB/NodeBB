@@ -297,6 +297,11 @@ module.exports = function (User) {
 			}
 		}
 
+		// Always show full name for remote users
+		if (!utils.isNumber(user.uid)) {
+			showfullname = true;
+		}
+
 		user.displayname = validator.escape(String(
 			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
 				user.fullname :
