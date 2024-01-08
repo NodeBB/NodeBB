@@ -89,6 +89,7 @@ ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 			uid,
 			username: `${preferredUsername}@${hostname}`,
 			userslug: `${preferredUsername}@${hostname}`,
+			displayname: name,
 			fullname: name,
 			joindate: new Date(published).getTime(),
 			picture,

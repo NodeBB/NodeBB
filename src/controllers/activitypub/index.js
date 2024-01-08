@@ -15,7 +15,7 @@ Controller.getActor = async (req, res) => {
 	// todo: view:users priv gate
 	const { userslug } = req.params;
 	const { uid } = res.locals;
-	const { username, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
+	const { username, displayname: name, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
 	const publicKey = await activitypub.getPublicKey(uid);
 
 	res.status(200).json({
@@ -31,6 +31,7 @@ Controller.getActor = async (req, res) => {
 		outbox: `${nconf.get('url')}/user/${userslug}/outbox`,
 
 		type: 'Person',
+		name,
 		preferredUsername: username,
 		summary: aboutme,
 		icon: picture ? `${nconf.get('url')}${picture}` : null,
