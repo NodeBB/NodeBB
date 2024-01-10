@@ -128,7 +128,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 
 	let start = Math.max(0, parseInt(data.after || 0, 10));
 
-	if (data.direction === -1) {
+	if (parseInt(data.direction, 10) === -1) {
 		start -= infScrollTopicsPerPage;
 	}
 
