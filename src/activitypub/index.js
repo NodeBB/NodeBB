@@ -14,6 +14,7 @@ const ActivityPub = module.exports;
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
+ActivityPub.notes = require('./notes');
 
 ActivityPub.getActor = async (uid, input) => {
 	// Can be a webfinger id, uri, or object, handle as appropriate
@@ -55,6 +56,7 @@ ActivityPub.getActor = async (uid, input) => {
 	}
 };
 
+// todo: move to mocks.js
 ActivityPub.mockProfile = async (actors, callerUid = 0) => {
 	// Accepts an array containing actor objects (the output of getActor()), or uris
 	let single = false;
