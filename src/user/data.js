@@ -80,7 +80,7 @@ module.exports = function (User) {
 
 		const users = [
 			...await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields),
-			...await activitypub.mockProfile(remoteIds, 0, fields),
+			...await activitypub.mocks.profile(remoteIds, 0, fields),
 		];
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
