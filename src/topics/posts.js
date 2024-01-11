@@ -9,6 +9,7 @@ const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
 
@@ -110,7 +111,9 @@ module.exports = function (Topics) {
 		const pids = postData.map(post => post && post.pid);
 
 		async function getPostUserData(field, method) {
-			const uids = _.uniq(postData.filter(p => p && parseInt(p[field], 10) >= 0).map(p => p[field]));
+			const uids = _.uniq(postData
+				.filter(p => p && (activitypub.helpers.isUri(p[field]) || parseInt(p[field], 10) >= 0))
+				.map(p => p[field]));
 			const userData = await method(uids);
 			return _.zipObject(uids, userData);
 		}
@@ -126,7 +129,7 @@ module.exports = function (Topics) {
 			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
 			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
 			getPostReplies(postData, uid),
-			Topics.addParentPosts(postData),
+			Topics.addParentPosts(postData, uid),
 		]);
 
 		postData.forEach((postObj, i) => {
@@ -175,13 +178,16 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.addParentPosts = async function (postData) {
-		let parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
+	Topics.addParentPosts = async function (postData, uid) {
+		let parentPids = postData
+			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
+			.map(postObj => postObj.toPid);
 
 		if (!parentPids.length) {
 			return;
 		}
 		parentPids = _.uniq(parentPids);
+		await activitypub.assertNotes(uid, parentPids.filter(pid => activitypub.helpers.isUri(pid)));
 		const parentPosts = await posts.getPostsFields(parentPids, ['uid']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username']);
