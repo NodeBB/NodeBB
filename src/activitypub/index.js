@@ -61,6 +61,25 @@ ActivityPub.resolveInboxes = async (uid, ids) => await Promise.all(ids.map(async
 	return actor.inbox;
 }));
 
+ActivityPub.assertNotes = async (uid, ids) => {
+	// Ensures that each note has been saved to the database
+	const keys = ids.map(id => `post:${id}`);
+
+	await Promise.all(ids.map(async (id, idx) => {
+		const key = keys[idx];
+		const exists = await db.exists(key);
+		winston.verbose(`[activitypub/assertNotes] Asserting note id ${id}`);
+
+		let postData;
+		if (!exists) {
+			winston.verbose(`[activitypub/assertNotes] Not found, saving note to database`);
+			const object = await ActivityPub.get(uid, id);
+			postData = await ActivityPub.mocks.post(object);
+			await db.setObject(key, postData);
+		}
+	}));
+};
+
 ActivityPub.getPublicKey = async (uid) => {
 	let publicKey;
 
