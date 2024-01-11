@@ -2,6 +2,7 @@
 
 const db = require('../database');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const intFields = [
@@ -57,6 +58,10 @@ module.exports = function (Posts) {
 
 function modifyPost(post, fields) {
 	if (post) {
+		if (activitypub.helpers.isUri(post.pid)) {
+			intFields.splice(intFields.indexOf('pid'), 1);
+			intFields.splice(intFields.indexOf('uid'), 1);
+		}
 		db.parseIntFields(post, intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
 			post.votes = post.upvotes - post.downvotes;

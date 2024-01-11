@@ -7,6 +7,7 @@ const utils = require('../utils');
 const user = require('../user');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 
 const Posts = module.exports;
 
@@ -44,6 +45,9 @@ Posts.getPostsByPids = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
 		return [];
 	}
+
+	const remotePids = pids.filter(pid => !utils.isNumber(pid));
+	await activitypub.assertNotes(uid, remotePids);
 	let posts = await Posts.getPostsData(pids);
 	posts = await Promise.all(posts.map(Posts.parsePost));
 	const data = await plugins.hooks.fire('filter:post.getPosts', { posts: posts, uid: uid });
