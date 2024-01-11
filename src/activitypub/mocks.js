@@ -1,7 +1,5 @@
 'use strict';
 
-const winston = require('winston');
-
 const db = require('../database');
 const user = require('../user');
 
@@ -46,6 +44,7 @@ Mocks.profile = async (actors, callerUid = 0) => {
 			fullname: name,
 			joindate: new Date(published).getTime(),
 			picture,
+			status: 'offline',
 			'icon:text': (preferredUsername[0] || '').toUpperCase(),
 			'icon:bgColor': bgColor,
 			uploadedpicture: undefined,
@@ -68,8 +67,6 @@ Mocks.profile = async (actors, callerUid = 0) => {
 };
 
 Mocks.post = async (objects) => {
-	const postCache = require('../posts/cache');
-
 	let single = false;
 	if (!Array.isArray(objects)) {
 		single = true;
@@ -92,33 +89,21 @@ Mocks.post = async (objects) => {
 			inReplyTo: toPid,
 		} = object;
 
-		const timestamp = new Date(published);
+		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
-		edited = Number.isNaN(edited.valueOf()) ? 0 : edited;
-
-		// If no source content, then `content` is pre-parsed and should be HTML, so cache it
-		if (!sourceContent) {
-			winston.verbose(`[activitypub/mockPost] pid ${pid} already has pre-parsed HTML content, adding to post cache...`);
-			postCache.set(pid, content);
-		}
+		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
 		const payload = {
 			uid,
 			pid,
-			timestamp: timestamp.getTime(),
-			timestampISO: timestamp.toISOString(),
-			content: sourceContent || content,
+			// tid,
+			content,
+			sourceContent,
+			timestamp,
 			toPid,
 
 			edited,
 			editor: edited ? uid : undefined,
-			editedISO: edited ? edited.toISOString() : '',
-
-			deleted: 0,
-			deleterUid: 0,
-			replies: 0, // todo
-			bookmarks: 0,
-			votes: 0, // todo
 		};
 
 		return payload;
