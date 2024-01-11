@@ -47,7 +47,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 	}
 
 	const remotePids = pids.filter(pid => !utils.isNumber(pid));
-	await activitypub.assertNotes(uid, remotePids);
+	await activitypub.notes.assert(uid, remotePids);
 	let posts = await Posts.getPostsData(pids);
 	posts = await Promise.all(posts.map(Posts.parsePost));
 	const data = await plugins.hooks.fire('filter:post.getPosts', { posts: posts, uid: uid });
