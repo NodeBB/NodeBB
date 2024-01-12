@@ -73,7 +73,7 @@ Mocks.post = async (objects) => {
 		objects = [objects];
 	}
 
-	const posts = (await Promise.all(objects.map(async (object) => {
+	const posts = await Promise.all(objects.map(async (object) => {
 		if (object.type !== 'Note') {
 			return null;
 		}
@@ -107,7 +107,7 @@ Mocks.post = async (objects) => {
 		};
 
 		return payload;
-	}))).filter(Boolean);
+	}));
 
 	return single ? posts.pop() : posts;
 };
