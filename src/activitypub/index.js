@@ -9,6 +9,7 @@ const db = require('../database');
 const user = require('../user');
 const ttl = require('../cache/ttl');
 
+const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
 const actorCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 const ActivityPub = module.exports;
 
@@ -169,6 +170,11 @@ ActivityPub.verify = async (req) => {
 };
 
 ActivityPub.get = async (uid, uri) => {
+	const cacheKey = [uid, uri].join(';');
+	if (requestCache.has(cacheKey)) {
+		return requestCache.get(cacheKey);
+	}
+
 	const headers = uid > 0 ? await ActivityPub.sign(uid, uri) : {};
 	const { response, body } = await request.get(uri, {
 		headers: {
@@ -186,6 +192,7 @@ ActivityPub.get = async (uid, uri) => {
 		throw new Error(`[[error:activitypub.get-failed]]`);
 	}
 
+	requestCache.set(cacheKey, body);
 	return body;
 };
 
