@@ -31,7 +31,7 @@
 				{{{ each searches }}}
 				<tr>
 					<td>{searches.value}</td>
-					<td class="text-end" style="width: 1px;">{searches.score}</td>
+					<td class="text-end" style="width: 1px;">{formattedNumber(searches.score)}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>
