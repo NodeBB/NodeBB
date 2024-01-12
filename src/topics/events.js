@@ -30,43 +30,43 @@ const Events = module.exports;
 Events._types = {
 	pin: {
 		icon: 'fa-thumb-tack',
-		translation: async event => translateSimple(event, 'topic:user-pinned-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-pinned-topic'),
 	},
 	unpin: {
 		icon: 'fa-thumb-tack fa-rotate-90',
-		translation: async event => translateSimple(event, 'topic:user-unpinned-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-unpinned-topic'),
 	},
 	lock: {
 		icon: 'fa-lock',
-		translation: async event => translateSimple(event, 'topic:user-locked-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-locked-topic'),
 	},
 	unlock: {
 		icon: 'fa-unlock',
-		translation: async event => translateSimple(event, 'topic:user-unlocked-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-unlocked-topic'),
 	},
 	delete: {
 		icon: 'fa-trash',
-		translation: async event => translateSimple(event, 'topic:user-deleted-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-deleted-topic'),
 	},
 	restore: {
 		icon: 'fa-trash-o',
-		translation: async event => translateSimple(event, 'topic:user-restored-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-restored-topic'),
 	},
 	move: {
 		icon: 'fa-arrow-circle-right',
-		translation: async event => translateEventArgs(event, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
 	},
 	'post-queue': {
 		icon: 'fa-history',
-		translation: async event => translateEventArgs(event, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 	backlink: {
 		icon: 'fa-link',
-		translation: async event => translateEventArgs(event, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 	fork: {
 		icon: 'fa-code-fork',
-		translation: async event => translateEventArgs(event, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 };
 
@@ -76,14 +76,14 @@ Events.init = async () => {
 	Events._types = types;
 };
 
-async function translateEventArgs(event, prefix, ...args) {
+async function translateEventArgs(event, language, prefix, ...args) {
 	const key = getTranslationKey(event, prefix);
 	const compiled = translator.compile.apply(null, [key, ...args]);
-	return utils.decodeHTMLEntities(await translator.translate(compiled));
+	return utils.decodeHTMLEntities(await translator.translate(compiled, language));
 }
 
-async function translateSimple(event, prefix) {
-	return await translateEventArgs(event, prefix, renderUser(event), renderTimeago(event));
+async function translateSimple(event, language, prefix) {
+	return await translateEventArgs(event, language, prefix, renderUser(event), renderTimeago(event));
 }
 
 Events.translateSimple = translateSimple; // so plugins can perform translate
@@ -162,9 +162,10 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		});
 	}
 
-	const [users, fromCategories] = await Promise.all([
+	const [users, fromCategories, userSettings] = await Promise.all([
 		getUserInfo(events.map(event => event.uid).filter(Boolean)),
 		getCategoryInfo(events.map(event => event.fromCid).filter(Boolean)),
+		user.getSettings(uid),
 	]);
 
 	// Remove backlink events if backlinks are disabled
@@ -200,7 +201,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 
 	await Promise.all(events.map(async (event) => {
 		if (Events._types[event.type].translation) {
-			event.text = await Events._types[event.type].translation(event);
+			event.text = await Events._types[event.type].translation(event, userSettings.userLang);
 		}
 	}));
 
