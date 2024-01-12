@@ -94,5 +94,8 @@
 	"view-as-json": "Преглед като JSON",
 	"expand-analytics": "Разгъване на данните за анализ",
 	"clear-search-history": "Изчистване на историята на търсенията",
-	"clear-search-history-confirm": "Наистина ли искате да изчистите историята на търсенията?"
+	"clear-search-history-confirm": "Наистина ли искате да изчистите историята на търсенията?",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }
