@@ -130,13 +130,17 @@ async function searchInBookmarks(data, searchCids, searchUids) {
 		}
 		if (query) {
 			const tokens = String(query).split(' ');
-			const postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['content']);
+			const postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['content', 'tid']);
+			const tids = _.uniq(postData.map(p => p.tid));
+			const topicData = await db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['title']);
+			const tidToTopic = _.zipObject(tids, topicData);
 			pids = pids.filter((pid, i) => {
 				const content = String(postData[i].content);
-				if (matchWords === 'any') {
-					return tokens.some(t => content.includes(t));
-				}
-				return tokens.every(t => content.includes(t));
+				const title = String(tidToTopic[postData[i].tid].title);
+				const method = (matchWords === 'any' ? 'some' : 'every');
+				return tokens[method](
+					token => content.includes(token) || title.includes(token)
+				);
 			});
 		}
 		allPids.push(...pids);
