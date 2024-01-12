@@ -38,17 +38,17 @@ Notes.getParentChain = async (uid, input) => {
 	const traverse = async (uid, id) => {
 		const exists = await db.exists(`post:${id}`);
 		if (exists) {
-			const { toPid, timestamp } = await posts.getPostFields(id, ['toPid', 'timestamp']);
-			chain.add({ id, timestamp });
-			if (toPid) {
-				await traverse(uid, toPid);
+			const postData = await posts.getPostData(id);
+			chain.add(postData);
+			if (postData.toPid) {
+				await traverse(uid, postData.toPid);
 			}
 		} else {
 			let object = await activitypub.get(uid, id);
 			object = await activitypub.mocks.post(object);
 			if (object) {
-				chain.add({ id, timestamp: object.timestamp });
-				if (object.hasOwnProperty('toPid') && object.toPid) {
+				chain.add(object);
+				if (object.toPid) {
 					await traverse(uid, object.toPid);
 				}
 			}
@@ -62,7 +62,7 @@ Notes.getParentChain = async (uid, input) => {
 Notes.assertTopic = async (uid, id) => {
 	// Given the id of any post, traverses up (and soon, down) to cache the entire threaded context
 	const chain = Array.from(await Notes.getParentChain(uid, id));
-	const tid = chain[chain.length - 1].id;
+	const tid = chain[chain.length - 1].pid;
 
 	const sorted = chain.sort((a, b) => a.timestamp - b.timestamp);
 	const [ids, timestamps] = [
@@ -70,13 +70,24 @@ Notes.assertTopic = async (uid, id) => {
 		sorted.map(n => n.timestamp),
 	];
 
-	await db.sortedSetAdd(`topicRemote:${tid}`, timestamps, ids);
-	await Notes.assert(uid, chain);
+	await Promise.all([
+		db.setObject(`topicRemote:${tid}`, {
+			tid,
+			uid,
+			cid: -1,
+			mainPid: tid,
+			title: 'TBD',
+			slug: `remote?resource=${encodeURIComponent(tid)}`,
+			postcount: sorted.length,
+		}),
+		db.sortedSetAdd(`tidRemote:${tid}:posts`, timestamps, ids),
+		Notes.assert(uid, chain),
+	]);
 
 	return tid;
 };
 
 Notes.getTopicPosts = async (tid, uid, start, stop) => {
-	const pids = await db.getSortedSetRange(`topicRemote:${tid}`, start, stop);
+	const pids = await db.getSortedSetRange(`tidRemote:${tid}:posts`, start, stop);
 	return await posts.getPostsByPids(pids, uid);
 };

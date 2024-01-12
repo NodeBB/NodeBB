@@ -23,11 +23,8 @@ controller.get = async function (req, res, next) {
 		// topics.getTopicData(tid),
 	]);
 
-	const topicData = {
-		tid,
-		postCount: 6,
-		category: {}, // todo
-	};
+	const topicData = await topics.getTopicData(tid);
+	topicData.category = {}; // todo
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil((topicData && topicData.postcount) / settings.postsPerPage));
