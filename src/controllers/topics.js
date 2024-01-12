@@ -9,10 +9,13 @@ const topics = require('../topics');
 const categories = require('../categories');
 const posts = require('../posts');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const helpers = require('./helpers');
 const pagination = require('../pagination');
 const utils = require('../utils');
 const analytics = require('../analytics');
+
+const activitypubController = require('./activitypub');
 
 const topicsController = module.exports;
 
@@ -21,6 +24,10 @@ const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 
 topicsController.get = async function getTopic(req, res, next) {
+	if (req.params.topic_id === 'remote' && activitypub.helpers.isUri(req.query.resource)) {
+		return activitypubController.topics.get(req, res, next);
+	}
+
 	const tid = req.params.topic_id;
 	if (
 		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||

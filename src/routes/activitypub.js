@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * These controllers only respond if the sender is making an json+activitypub style call (i.e. S2S-only)
+ */
+
 module.exports = function (app, middleware, controllers) {
 	const middlewares = [middleware.proceedOnActivityPub, middleware.exposeUid];
 

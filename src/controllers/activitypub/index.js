@@ -10,6 +10,7 @@ const helpers = require('../helpers');
 const Controller = module.exports;
 
 Controller.profiles = require('./profiles');
+Controller.topics = require('./topics');
 
 Controller.getActor = async (req, res) => {
 	// todo: view:users priv gate
