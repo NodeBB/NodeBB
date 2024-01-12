@@ -261,4 +261,21 @@ module.exports = function (Posts) {
 			}
 		});
 	}
+
+	Posts.filterPidsByUid = async function (pids, uids) {
+		if (!uids) {
+			return pids;
+		}
+
+		if (!Array.isArray(uids) || uids.length === 1) {
+			return await filterPidsBySingleUid(pids, uids);
+		}
+		const pidsArr = await Promise.all(uids.map(uid => Posts.filterPidsByUid(pids, uid)));
+		return _.union(...pidsArr);
+	};
+
+	async function filterPidsBySingleUid(pids, uid) {
+		const isMembers = await db.isSortedSetMembers(`uid:${parseInt(uid, 10)}:posts`, pids);
+		return pids.filter((pid, index) => pid && isMembers[index]);
+	}
 };

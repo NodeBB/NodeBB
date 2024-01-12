@@ -32,7 +32,7 @@
     "folder-exists": "התיקיה קיימת",
     "invalid-pagination-value": "ערך דף לא חוקי, חייב להיות לפחות %1 ולא מעל %2",
     "username-taken": "שם משתמש תפוס",
-    "email-taken": "Email address is already taken.",
+    "email-taken": "כתובת האימייל כבר תפוסה.",
     "email-nochange": "כתובת דוא\"ל שהוזן זהה לדוא\"ל שנמצא כבר",
     "email-invited": "נשלחה כבר הזמנה לדוא\"ל זה",
     "email-not-confirmed": "פרסום בקטגוריות או בנושאים מסוימים מופעל רק לאחר אישור הדוא\"ל שלכם, אנא לחצו כאן כדי לשלוח אימות לדוא\"ל שלכם.",

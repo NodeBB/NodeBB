@@ -35,7 +35,7 @@ define('forum/chats/recent', ['alerts', 'api', 'chat'], function (alerts, api, c
 			return;
 		}
 		recentChats.attr('loading', 1);
-		app.get(`/chats`, {
+		api.get(`/chats`, {
 			uid: ajaxify.data.uid,
 			after: recentChats.attr('data-nextstart'),
 		}).then(({ rooms, nextStart }) => {
