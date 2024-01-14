@@ -126,7 +126,7 @@ topicsController.get = async function getTopic(req, res, next) {
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res, currentPage),
-		incrementViewCount(req, tid),
+		topics.increaseViewCount(req, tid),
 		markAsRead(req, tid),
 		analytics.increment([`pageviews:byCid:${topicData.category.cid}`]),
 	]);
@@ -162,19 +162,6 @@ function calculateStartStop(page, postIndex, settings) {
 	const start = ((page - 1) * settings.postsPerPage) + startSkip;
 	const stop = start + settings.postsPerPage - 1;
 	return { start: Math.max(0, start), stop: Math.max(0, stop) };
-}
-
-async function incrementViewCount(req, tid) {
-	const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
-	if (allow) {
-		req.session.tids_viewed = req.session.tids_viewed || {};
-		const now = Date.now();
-		const interval = meta.config.incrementTopicViewsInterval * 60000;
-		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
-			await topics.increaseViewCount(tid);
-			req.session.tids_viewed[tid] = now;
-		}
-	}
 }
 
 async function markAsRead(req, tid) {

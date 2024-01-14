@@ -296,13 +296,22 @@ module.exports = function (Topics) {
 		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts');
 	};
 
-	Topics.increaseViewCount = async function (tid) {
-		const cid = await Topics.getTopicField(tid, 'cid');
-		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
+	Topics.increaseViewCount = async function (req, tid) {
+		const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
+		if (allow) {
+			req.session.tids_viewed = req.session.tids_viewed || {};
+			const now = Date.now();
+			const interval = meta.config.incrementTopicViewsInterval * 60000;
+			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
+				const cid = await Topics.getTopicField(tid, 'cid');
+				incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
+				req.session.tids_viewed[tid] = now;
+			}
+		}
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
-		const value = await db.incrObjectFieldBy(`topic:${tid}`, field, by);
+		const value = await db.incrObjectFieldBy(`${activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic'}:${tid}`, field, by);
 		await db[Array.isArray(set) ? 'sortedSetsAdd' : 'sortedSetAdd'](set, value, tid);
 	}
 
