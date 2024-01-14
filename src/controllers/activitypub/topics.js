@@ -1,18 +1,21 @@
 'use strict';
 
+const nconf = require('nconf');
+
+const db = require('../../database');
 const user = require('../../user');
 const topics = require('../../topics');
 
 const { notes } = require('../../activitypub');
 // const helpers = require('../helpers');
-// const pagination = require('../../pagination');
+const pagination = require('../../pagination');
 
 const controller = module.exports;
 
 controller.get = async function (req, res, next) {
 	const tid = await notes.assertTopic(req.uid, req.query.resource);
 
-	let postIndex = parseInt(req.params.post_index, 10) || 1;
+	let postIndex = await db.sortedSetRank(`tidRemote:${tid}:posts`, req.query.resource);
 	const [
 		// userPrivileges,
 		settings,
@@ -51,7 +54,17 @@ controller.get = async function (req, res, next) {
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
 	topicData.posts = await notes.getTopicPosts(tid, req.uid, start, stop);
+	await topics.calculatePostIndices(topicData.posts, start - 1);
 	topicData.posts = await topics.addPostData(topicData.posts, req.uid);
+
+	await topics.increaseViewCount(req, tid);
+
+	topicData.postIndex = postIndex;
+	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
+	topicData.pagination.rel.forEach((rel) => {
+		rel.href = `${nconf.get('url')}/topic/${topicData.slug}${rel.href}`;
+		res.locals.linkTags.push(rel);
+	});
 
 	res.render('topic', topicData);
 };

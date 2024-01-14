@@ -176,6 +176,7 @@ ActivityPub.get = async (uid, uri) => {
 	}
 
 	const headers = uid > 0 ? await ActivityPub.sign(uid, uri) : {};
+	winston.verbose(`[activitypub/get] ${uri}`);
 	const { response, body } = await request.get(uri, {
 		headers: {
 			...headers,

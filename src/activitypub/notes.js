@@ -70,6 +70,11 @@ Notes.assertTopic = async (uid, id) => {
 		sorted.map(n => n.timestamp),
 	];
 
+	const postercount = chain.reduce((set, cur) => {
+		set.add(cur.uid);
+		return set;
+	}, new Set());
+
 	await Promise.all([
 		db.setObject(`topicRemote:${tid}`, {
 			tid,
@@ -79,6 +84,7 @@ Notes.assertTopic = async (uid, id) => {
 			title: 'TBD',
 			slug: `remote?resource=${encodeURIComponent(tid)}`,
 			postcount: sorted.length,
+			postercount,
 		}),
 		db.sortedSetAdd(`tidRemote:${tid}:posts`, timestamps, ids),
 		Notes.assert(uid, chain),
