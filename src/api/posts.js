@@ -12,6 +12,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const events = require('../events');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
@@ -390,7 +391,7 @@ postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
 };
 
 postsAPI.getReplies = async (caller, { pid }) => {
-	if (!utils.isNumber(pid)) {
+	if (!utils.isNumber(pid) && !activitypub.helpers.isUri(pid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { uid } = caller;

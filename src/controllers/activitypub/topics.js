@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const db = require('../../database');
 const user = require('../../user');
 const topics = require('../../topics');
+const privileges = require('../../privileges');
 
 const { notes } = require('../../activitypub');
 // const helpers = require('../helpers');
@@ -23,11 +24,11 @@ controller.get = async function (req, res, next) {
 
 	let postIndex = await db.sortedSetRank(`tidRemote:${tid}:posts`, req.query.resource);
 	const [
-		// userPrivileges,
+		userPrivileges,
 		settings,
 		// topicData,
 	] = await Promise.all([
-		// privileges.topics.get(tid, req.uid),
+		privileges.topics.get(tid, req.uid),
 		user.getSettings(req.uid),
 		// topics.getTopicData(tid),
 	]);
@@ -40,7 +41,7 @@ controller.get = async function (req, res, next) {
 	const invalidPagination = (settings.usePagination && (currentPage < 1 || currentPage > pageCount));
 	if (
 		!topicData ||
-		// userPrivileges.disabled ||
+		userPrivileges.disabled ||
 		invalidPagination// ||
 		// (topicData.scheduled && !userPrivileges.view_scheduled)
 	) {
@@ -62,6 +63,7 @@ controller.get = async function (req, res, next) {
 	topicData.posts = await notes.getTopicPosts(tid, req.uid, start, stop);
 	await topics.calculatePostIndices(topicData.posts, start - 1);
 	topicData.posts = await topics.addPostData(topicData.posts, req.uid);
+	topicData.privileges = userPrivileges;
 
 	await topics.increaseViewCount(req, tid);
 
