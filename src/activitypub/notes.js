@@ -86,7 +86,7 @@ Notes.assertTopic = async (uid, id) => {
 	 */
 
 	const chain = Array.from(await Notes.getParentChain(uid, id));
-	const tid = chain[chain.length - 1].pid;
+	const { pid: tid, uid: authorId } = chain[chain.length - 1];
 
 	const members = await db.isSortedSetMembers(`tidRemote:${tid}:posts`, chain.map(p => p.pid));
 	if (members.every(Boolean)) {
@@ -106,7 +106,7 @@ Notes.assertTopic = async (uid, id) => {
 	await Promise.all([
 		db.setObject(`topicRemote:${tid}`, {
 			tid,
-			uid,
+			uid: authorId,
 			cid: -1,
 			mainPid: tid,
 			title: 'TBD',
