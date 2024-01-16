@@ -8,24 +8,32 @@ const posts = require('../posts');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
+Notes.resolveId = async (uid, id) => {
+	({ id } = await activitypub.get(uid, id));
+	return id;
+};
+
 // todo: when asserted, notes aren't added to a global sorted set
 // also, db.exists call is probably expensive
 Notes.assert = async (uid, input) => {
 	// Ensures that each note has been saved to the database
 	await Promise.all(input.map(async (item) => {
-		const id = activitypub.helpers.isUri(item) ? item : item.id;
+		const id = activitypub.helpers.isUri(item) ? item : item.pid;
 		const key = `post:${id}`;
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
 
-		let postData;
 		if (!exists) {
+			let postData;
 			winston.verbose(`[activitypub/notes.assert] Not found, saving note to database`);
-			const object = activitypub.helpers.isUri(item) ? await activitypub.get(uid, item) : item;
-			postData = await activitypub.mocks.post(object);
-			if (postData) {
-				await db.setObject(key, postData);
+			if (activitypub.helpers.isUri(item)) {
+				const object = await activitypub.get(uid, item);
+				postData = await activitypub.mocks.post(object);
+			} else {
+				postData = item;
 			}
+
+			await db.setObject(key, postData);
 		}
 	}));
 };
@@ -59,21 +67,41 @@ Notes.getParentChain = async (uid, input) => {
 	return chain;
 };
 
+Notes.assertParentChain = async (chain) => {
+	const data = [];
+	chain.reduce((child, parent) => {
+		data.push([`pid:${parent.pid}:replies`, child.timestamp, child.pid]);
+		return parent;
+	});
+
+	await db.sortedSetAddBulk(data);
+};
+
 Notes.assertTopic = async (uid, id) => {
-	// Given the id of any post, traverses up (and soon, down) to cache the entire threaded context
+	/**
+	 * Given the id of any post, traverses up to cache the entire threaded context
+	 *
+	 * Unfortunately, due to limitations and fragmentation of the existing ActivityPub landscape,
+	 * retrieving the entire reply tree is not possible at this time.
+	 */
+
 	const chain = Array.from(await Notes.getParentChain(uid, id));
 	const tid = chain[chain.length - 1].pid;
 
-	const sorted = chain.sort((a, b) => a.timestamp - b.timestamp);
-	const [ids, timestamps] = [
-		sorted.map(n => n.id),
-		sorted.map(n => n.timestamp),
-	];
+	const members = await db.isSortedSetMembers(`tidRemote:${tid}:posts`, chain.map(p => p.pid));
+	if (members.every(Boolean)) {
+		// All cached, return early.
+		winston.info('[notes/assertTopic] No new notes to process.');
+		return tid;
+	}
 
-	const postercount = chain.reduce((set, cur) => {
-		set.add(cur.uid);
-		return set;
-	}, new Set());
+	const unprocessed = chain.filter((p, idx) => !members[idx]);
+	winston.info(`[notes/assertTopic] ${unprocessed.length} new notes found.`);
+
+	const [ids, timestamps] = [
+		unprocessed.map(n => n.pid),
+		unprocessed.map(n => n.timestamp),
+	];
 
 	await Promise.all([
 		db.setObject(`topicRemote:${tid}`, {
@@ -83,14 +111,30 @@ Notes.assertTopic = async (uid, id) => {
 			mainPid: tid,
 			title: 'TBD',
 			slug: `remote?resource=${encodeURIComponent(tid)}`,
-			postcount: sorted.length,
-			postercount,
 		}),
 		db.sortedSetAdd(`tidRemote:${tid}:posts`, timestamps, ids),
-		Notes.assert(uid, chain),
+		Notes.assert(uid, unprocessed),
+	]);
+	await Promise.all([ // must be done after .assert()
+		Notes.assertParentChain(chain),
+		Notes.updateTopicCounts(tid),
 	]);
 
 	return tid;
+};
+
+Notes.updateTopicCounts = async function (tid) {
+	const pids = await db.getSortedSetMembers(`tidRemote:${tid}:posts`);
+	let uids = await db.getObjectsFields(pids.map(p => `post:${p}`), ['uid']);
+	uids = uids.reduce((set, { uid }) => {
+		set.add(uid);
+		return set;
+	}, new Set());
+
+	db.setObject(`topicRemote:${tid}`, {
+		postercount: uids.size,
+		postcount: pids.length,
+	});
 };
 
 Notes.getTopicPosts = async (tid, uid, start, stop) => {

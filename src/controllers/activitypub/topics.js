@@ -9,10 +9,16 @@ const topics = require('../../topics');
 const { notes } = require('../../activitypub');
 // const helpers = require('../helpers');
 const pagination = require('../../pagination');
+const helpers = require('../helpers');
 
 const controller = module.exports;
 
 controller.get = async function (req, res, next) {
+	const pid = await notes.resolveId(req.uid, req.query.resource);
+	if (pid !== req.query.resource) {
+		return helpers.redirect(res, `/topic/remote?resource=${pid}`, true);
+	}
+
 	const tid = await notes.assertTopic(req.uid, req.query.resource);
 
 	let postIndex = await db.sortedSetRank(`tidRemote:${tid}:posts`, req.query.resource);
