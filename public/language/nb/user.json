@@ -206,5 +206,5 @@
     "emailUpdate.required": "<strong>Dette feltet er obligatorisk</strong>",
     "emailUpdate.change-instructions": "En bekreftelses-e-post med en unik lenke vil bli sendt til den angitte e-postadressen. Ved å klikke på lenken, vil du bekrefte at du eier e-postadressen, og den blir aktiv på kontoen din. Du kan når som helst oppdatere e-postadressen på brukerprofilen din.",
     "emailUpdate.password-challenge": "Skriv inn passordet ditt for å verifisere eierskap.",
-    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
+    "emailUpdate.pending": "E-postadressen din er ennå ikke bekreftet, men det er sendt ut en e-post med forespørsel om bekreftelse. Hvis du ønsker å ugyldiggjøre forespørselen og sende en ny bekreftelsesforespørsel, fyll ut skjemaet nedenfor."
 }

@@ -90,28 +90,14 @@ function updateRoomUsage(err, data) {
 
 	graphData.rooms = data;
 
-	const html = '<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.onlineRegisteredCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.users]]</div>' +
-				'</div>' +
-				'<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.onlineGuestCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.guests]]</div>' +
-				'</div>' +
-				'<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.total]]</div>' +
-				'</div>' +
-				'<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.socketCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.connections]]</div>' +
-				'</div>';
-
 	updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 	updatePresenceGraph(data.users);
 	updateTopicsGraph(data.topTenTopics);
 
-	$('#active-users').translateHtml(html);
+	$('#active-users-loggedin').text(formattedNumber(data.onlineRegisteredCount));
+	$('#active-users-guests').text(formattedNumber(data.onlineGuestCount));
+	$('#active-users-total').text(formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount));
+	$('#active-users-connections').text(formattedNumber(data.socketCount));
 }
 
 const graphs = {

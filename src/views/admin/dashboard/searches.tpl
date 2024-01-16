@@ -1,5 +1,5 @@
 <div class="row dashboard px-lg-4">
-	<div class="col-12">
+	<div class="col-8 mx-auto">
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<form class="d-flex flex-wrap gap-3 align-sm-items-center" method="GET">
 				<div class="d-flex align-items-center gap-2">
@@ -19,8 +19,8 @@
 
 		<table class="table table-sm text-sm search-list">
 			<thead>
-				<th class="text-end">Count</th>
-				<th>Term</th>
+				<th>[[admin/dashboard:search-term]]</th>
+				<th class="text-end">[[admin/dashboard:search-count]]</th>
 			</thead>
 			<tbody>
 				{{{ if !searches.length}}}
@@ -30,8 +30,8 @@
 				{{{ end }}}
 				{{{ each searches }}}
 				<tr>
-					<td class="text-end" style="width: 1px;">{searches.score}</td>
-					<td>{searches.value}</a></td>
+					<td>{searches.value}</td>
+					<td class="text-end" style="width: 1px;">{formattedNumber(searches.score)}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>
