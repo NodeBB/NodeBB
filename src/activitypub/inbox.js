@@ -23,6 +23,18 @@ inbox.create = async (req) => {
 	}
 };
 
+inbox.update = async (req) => {
+	const { object } = req.body;
+	const postData = await activitypub.mocks.post(object);
+
+	if (postData) {
+		await activitypub.notes.assert(1, [postData], { update: true });
+		winston.info(`[activitypub/inbox] Updating note ${postData.pid}`);
+	} else {
+		winston.warn('[activitypub/inbox] Received object was not a note');
+	}
+};
+
 inbox.follow = async (req) => {
 	// Sanity checks
 	const localUid = await helpers.resolveLocalUid(req.body.object);

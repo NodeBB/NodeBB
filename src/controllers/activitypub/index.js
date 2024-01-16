@@ -110,6 +110,11 @@ Controller.postInbox = async (req, res) => {
 			break;
 		}
 
+		case 'Update': {
+			await activitypub.inbox.update(req);
+			break;
+		}
+
 		case 'Follow': {
 			await activitypub.inbox.follow(req);
 			break;

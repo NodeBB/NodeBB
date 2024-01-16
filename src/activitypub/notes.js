@@ -15,13 +15,17 @@ Notes.resolveId = async (uid, id) => {
 
 // todo: when asserted, notes aren't added to a global sorted set
 // also, db.exists call is probably expensive
-Notes.assert = async (uid, input) => {
+Notes.assert = async (uid, input, options = {}) => {
 	// Ensures that each note has been saved to the database
 	await Promise.all(input.map(async (item) => {
 		const id = activitypub.helpers.isUri(item) ? item : item.pid;
 		const key = `post:${id}`;
-		const exists = await db.exists(key);
+		let exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
+
+		if (options.update === true) {
+			exists = false;
+		}
 
 		if (!exists) {
 			let postData;
