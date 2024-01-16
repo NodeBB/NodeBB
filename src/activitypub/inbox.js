@@ -16,7 +16,8 @@ inbox.create = async (req) => {
 
 	if (postData) {
 		await activitypub.notes.assert(1, [postData]);
-		await activitypub.notes.assertTopic(1, postData.pid);
+		const tid = await activitypub.notes.assertTopic(1, postData.pid);
+		winston.info(`[activitypub/inbox] Parsing note ${postData.pid} into topic ${tid}`);
 	} else {
 		winston.warn('[activitypub/inbox] Received object was not a note');
 	}
