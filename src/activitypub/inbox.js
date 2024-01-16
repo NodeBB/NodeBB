@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const db = require('../database');
 const user = require('../user');
 const activitypub = require('.');
@@ -7,6 +9,18 @@ const activitypub = require('.');
 const helpers = require('./helpers');
 
 const inbox = module.exports;
+
+inbox.create = async (req) => {
+	const { object } = req.body;
+	const postData = await activitypub.mocks.post(object);
+
+	if (postData) {
+		await activitypub.notes.assert(1, [postData]);
+		await activitypub.notes.assertTopic(1, postData.pid);
+	} else {
+		winston.warn('[activitypub/inbox] Received object was not a note');
+	}
+};
 
 inbox.follow = async (req) => {
 	// Sanity checks
