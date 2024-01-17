@@ -100,7 +100,7 @@ Notes.assertTopic = async (uid, id) => {
 	}
 
 	const unprocessed = chain.filter((p, idx) => !members[idx]);
-	winston.info(`[notes/assertTopic] ${unprocessed.length} new notes found.`);
+	winston.info(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
 
 	const [ids, timestamps] = [
 		unprocessed.map(n => n.pid),
