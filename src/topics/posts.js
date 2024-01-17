@@ -231,15 +231,16 @@ module.exports = function (Topics) {
 	Topics.getLatestUndeletedReply = async function (tid) {
 		let isDeleted = false;
 		let index = 0;
+		const setPrefix = activitypub.helpers.isUri(tid) ? 'tidRemote' : 'tid';
 		do {
 			/* eslint-disable no-await-in-loop */
-			const pids = await db.getSortedSetRevRange(`tid:${tid}:posts`, index, index);
+			const pids = await db.getSortedSetRevRange(`${setPrefix}:${tid}:posts`, index, index);
 			if (!pids.length) {
 				return null;
 			}
 			isDeleted = await posts.getPostField(pids[0], 'deleted');
 			if (!isDeleted) {
-				return parseInt(pids[0], 10);
+				return pids[0];
 			}
 			index += 1;
 		} while (isDeleted);

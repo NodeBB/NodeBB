@@ -22,7 +22,7 @@ controller.get = async function (req, res, next) {
 
 	const tid = await notes.assertTopic(req.uid, req.query.resource);
 
-	let postIndex = await db.sortedSetRank(`tidRemote:${tid}:posts`, req.query.resource);
+	let postIndex = Math.max(1, await db.sortedSetRank(`tidRemote:${tid}:posts`, req.query.resource));
 	const [
 		userPrivileges,
 		settings,

@@ -91,7 +91,7 @@ Notes.assertTopic = async (uid, id) => {
 	 */
 
 	const chain = Array.from(await Notes.getParentChain(uid, id));
-	const { pid: tid, uid: authorId } = chain[chain.length - 1];
+	const { pid: tid, uid: authorId, timestamp } = chain[chain.length - 1];
 
 	const members = await db.isSortedSetMembers(`tidRemote:${tid}:posts`, chain.map(p => p.pid));
 	if (members.every(Boolean)) {
@@ -118,6 +118,7 @@ Notes.assertTopic = async (uid, id) => {
 			mainPid: tid,
 			title: 'TBD',
 			slug: `remote?resource=${encodeURIComponent(tid)}`,
+			timestamp,
 		}),
 		db.sortedSetAdd(`tidRemote:${tid}:posts`, timestamps, ids),
 		Notes.assert(uid, unprocessed),
@@ -125,6 +126,8 @@ Notes.assertTopic = async (uid, id) => {
 	await Promise.all([ // must be done after .assert()
 		Notes.assertParentChain(chain),
 		Notes.updateTopicCounts(tid),
+		topics.updateLastPostTimeFromLastPid(tid),
+		topics.updateTeaser(tid),
 	]);
 
 	return tid;

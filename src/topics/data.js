@@ -64,11 +64,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
-		await db.setObjectField(`topic:${tid}`, field, value);
+		const setPrefix = activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic';
+		await db.setObjectField(`${setPrefix}:${tid}`, field, value);
 	};
 
 	Topics.setTopicFields = async function (tid, data) {
-		await db.setObject(`topic:${tid}`, data);
+		const setPrefix = activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic';
+		await db.setObject(`${setPrefix}:${tid}`, data);
 	};
 
 	Topics.deleteTopicField = async function (tid, field) {
