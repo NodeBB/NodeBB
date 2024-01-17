@@ -3,6 +3,7 @@
 const winston = require('winston');
 
 const db = require('../database');
+const topics = require('../topics');
 const posts = require('../posts');
 
 const activitypub = module.parent.exports;
@@ -99,6 +100,8 @@ Notes.assertTopic = async (uid, id) => {
 		return tid;
 	}
 
+	const cid = await topics.getTopicField(tid, 'cid');
+
 	const unprocessed = chain.filter((p, idx) => !members[idx]);
 	winston.info(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
 
@@ -111,7 +114,7 @@ Notes.assertTopic = async (uid, id) => {
 		db.setObject(`topicRemote:${tid}`, {
 			tid,
 			uid: authorId,
-			cid: -1,
+			cid: cid || -1,
 			mainPid: tid,
 			title: 'TBD',
 			slug: `remote?resource=${encodeURIComponent(tid)}`,
