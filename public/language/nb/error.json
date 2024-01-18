@@ -184,6 +184,8 @@
     "user-already-flagged": "Du har allerede flagget denne brukeren",
     "post-flagged-too-many-times": "Dette innlegget har allerede blitt flagget av andre",
     "user-flagged-too-many-times": "Denne brukeren har allerede blitt flagget av andre",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Du har ikke lov til å flagge profiler eller innhold fra priveligerte burkere (moderatorer/ globale moderatorer/ administratorer)",
     "cant-locate-flag-report": "Kan ikke finne flaggrapporten",
     "self-vote": "Du kan ikke stemme på ditt eget innlegg",

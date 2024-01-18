@@ -184,6 +184,8 @@
     "user-already-flagged": "Bạn đã gắn cờ người dùng này",
     "post-flagged-too-many-times": "Bài đăng này đã bị người khác gắn cờ",
     "user-flagged-too-many-times": "Người dùng này đã bị người khác gắn cờ",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Bạn không có quyền gắn cờ hồ sơ hay nội dung của người dùng đặc biệt (người kiểm duyệt/người quản lý chung/quản trị viên)",
     "cant-locate-flag-report": "Không thể định vị báo cáo cờ",
     "self-vote": "Bạn không thể tự bầu cho bài đăng của mình",

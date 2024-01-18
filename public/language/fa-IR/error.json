@@ -184,6 +184,8 @@
     "user-already-flagged": "شما قبلا این کاربر را گزارش دادید",
     "post-flagged-too-many-times": "این پست قبلا توسط دیگر کاربران گزارش شده",
     "user-flagged-too-many-times": "این کاربر توسط دیگر کاربران گزارش شده",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
     "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "شما نمی توانید به پست خود رای بدهید",

@@ -184,6 +184,8 @@
     "user-already-flagged": "Већ сте означили заставицом овог корисника",
     "post-flagged-too-many-times": "Ову поруку су већ означили заставицом други",
     "user-flagged-too-many-times": "Овог корисника су већ означили заставицом други",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Није вам дозвољено да означавате заставицом профиле или садржај привилегованих корисника (модератори/глобални модератори/администратори)",
     "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "Не можете гласати за своју поруку",

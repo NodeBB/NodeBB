@@ -184,6 +184,8 @@
     "user-already-flagged": "Вече сте докладвали този потребител",
     "post-flagged-too-many-times": "Тази публикация вече е докладвана от други хора",
     "user-flagged-too-many-times": "Този потребител вече е докладван от други хора",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Не можете да докладвате профилите или съдържанието от потребители с по-високи правомощия (модератори, глобални модератори, администратори)",
     "cant-locate-flag-report": "Докладът не може да бъде намерен",
     "self-vote": "Не можете да гласувате за собствената си публикация",
