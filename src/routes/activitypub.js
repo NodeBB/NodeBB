@@ -1,10 +1,14 @@
 'use strict';
 
-/**
- * These controllers only respond if the sender is making an json+activitypub style call (i.e. S2S-only)
- */
+const helpers = require('./helpers');
 
 module.exports = function (app, middleware, controllers) {
+	helpers.setupPageRoute(app, '/world/:view?', controllers.activitypub.topics.list);
+
+	/**
+	 * These controllers only respond if the sender is making an json+activitypub style call (i.e. S2S-only)
+	 */
+
 	const middlewares = [middleware.proceedOnActivityPub, middleware.exposeUid];
 
 	app.get('/user/:userslug', middlewares, controllers.activitypub.getActor);

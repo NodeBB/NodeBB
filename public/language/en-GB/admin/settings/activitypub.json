@@ -1,7 +1,8 @@
 {
-	"intro-lead": "What is Federation?",
-	"intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
+	"no-topics": "This forum doesn't know of any other topics yet.",
 
-	"general": "General",
-	"enabled": "Enable Federation"
+	"acp.intro-lead": "What is Federation?",
+	"acp.intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
+	"acp.general": "General",
+	"acp.enabled": "Enable Federation"
 }

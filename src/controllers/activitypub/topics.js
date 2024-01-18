@@ -14,7 +14,25 @@ const helpers = require('../helpers');
 
 const controller = module.exports;
 
+controller.list = async function (req, res, next) {
+	const { topicsPerPage } = await user.getSettings(req.uid);
+	const page = parseInt(req.query.page, 10) || 1;
+	const start = Math.max(0, (page - 1) * topicsPerPage);
+	const stop = start + topicsPerPage - 1;
+
+	const tids = await db.getSortedSetRevRange('cid:-1:tids', start, stop);
+	const topicData = await topics.getTopicsByTids(tids, { uid: req.uid });
+	topics.calculateTopicIndices(topicData, start);
+	res.render('world', {
+		topics: topicData,
+	});
+};
+
 controller.get = async function (req, res, next) {
+	/**
+	 * Ideally we would use the existing topicsController.get...
+	 * this controller may be a stopgap towards that end goal.
+	 */
 	const pid = await notes.resolveId(req.uid, req.query.resource);
 	if (pid !== req.query.resource) {
 		return helpers.redirect(res, `/topic/remote?resource=${pid}`, true);
