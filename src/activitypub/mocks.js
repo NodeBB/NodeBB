@@ -74,7 +74,8 @@ Mocks.post = async (objects) => {
 	}
 
 	const posts = await Promise.all(objects.map(async (object) => {
-		if (object.type !== 'Note') {
+		const acceptedTypes = ['Note', 'Page', 'Article'];
+		if (!acceptedTypes.includes(object.type)) {
 			return null;
 		}
 
@@ -84,6 +85,7 @@ Mocks.post = async (objects) => {
 			updated,
 			attributedTo: uid,
 			// conversation,
+			name,
 			content,
 			sourceContent,
 			inReplyTo: toPid,
@@ -96,7 +98,8 @@ Mocks.post = async (objects) => {
 		const payload = {
 			uid,
 			pid,
-			// tid,
+			// tid,  --> purposely omitted
+			name,
 			content,
 			sourceContent,
 			timestamp,

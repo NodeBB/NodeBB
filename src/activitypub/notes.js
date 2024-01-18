@@ -5,6 +5,7 @@ const winston = require('winston');
 const db = require('../database');
 const topics = require('../topics');
 const posts = require('../posts');
+const utils = require('../utils');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
@@ -91,13 +92,18 @@ Notes.assertTopic = async (uid, id) => {
 	 */
 
 	const chain = Array.from(await Notes.getParentChain(uid, id));
-	const { pid: tid, uid: authorId, timestamp } = chain[chain.length - 1];
+	const { pid: tid, uid: authorId, timestamp, name, content } = chain[chain.length - 1];
 
 	const members = await db.isSortedSetMembers(`tidRemote:${tid}:posts`, chain.map(p => p.pid));
 	if (members.every(Boolean)) {
 		// All cached, return early.
 		winston.info('[notes/assertTopic] No new notes to process.');
 		return tid;
+	}
+
+	let title = name || utils.stripHTMLTags(content);
+	if (title.length > 256) {
+		title = `${title.slice(0, 256)}...`;
 	}
 
 	const cid = await topics.getTopicField(tid, 'cid');
@@ -116,7 +122,7 @@ Notes.assertTopic = async (uid, id) => {
 			uid: authorId,
 			cid: cid || -1,
 			mainPid: tid,
-			title: 'TBD',
+			title,
 			slug: `remote?resource=${encodeURIComponent(tid)}`,
 			timestamp,
 		}),
