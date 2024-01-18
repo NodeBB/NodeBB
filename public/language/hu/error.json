@@ -221,6 +221,7 @@
     "already-unblocked": "Ennek a felhasználóknak már fel van oldva a tiltása",
     "no-connection": "Probléma van az internet kapcsolatoddal",
     "socket-reconnect-failed": "Nem lehet elérni a szervert. Kattints ide az újra próbáláshoz vagy várj egy kicsit",
+    "invalid-plugin-id": "Invalid plugin ID",
     "plugin-not-whitelisted": "Ez a bővítmény nem telepíthető &ndash; csak olyan bővítmények telepíthetőek amiket a NodeBB Package Manager az ACP-n keresztül tud telepíteni",
     "plugins-set-in-configuration": "You are not allowed to change plugin state as they are defined at runtime (config.json, environmental variables or terminal arguments), please modify the configuration instead.",
     "theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",

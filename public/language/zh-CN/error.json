@@ -221,6 +221,7 @@
     "already-unblocked": "此用户已被取消屏蔽",
     "no-connection": "您的网络连接似乎存在问题",
     "socket-reconnect-failed": "目前无法连接到服务器。请点击这里重试，或稍后再试",
+    "invalid-plugin-id": "Invalid plugin ID",
     "plugin-not-whitelisted": "无法安装插件 &ndash; 只有被NodeBB包管理器列入白名单的插件才能通过ACP安装。",
     "plugins-set-in-configuration": "您不能修改插件状态因为它们在运行时中被定义（config.json，环境变量或终端选项），请转而修改配置。",
     "theme-not-set-in-configuration": "在配置中定义活跃的插件时，需要先将新主题加入活跃插件的列表，才能在管理员控制面板中修改主题",

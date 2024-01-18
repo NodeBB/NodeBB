@@ -221,6 +221,7 @@
     "already-unblocked": "Người dùng này đã được bỏ chặn",
     "no-connection": "Kết nối internet của bạn có vấn đề.",
     "socket-reconnect-failed": "Không thể truy cập máy chủ vào lúc này. Nhấp vào đây để thử lại hoặc thử lại sau",
+    "invalid-plugin-id": "Invalid plugin ID",
     "plugin-not-whitelisted": "Không thể cài đặt plugin &ndash; chỉ những plugin được Trình quản lý gói NodeBB đưa vào danh sách trắng mới có thể được cài đặt qua ACP",
     "plugins-set-in-configuration": "Bạn không được phép thay đổi trạng thái plugin vì chúng được xác định trong thời gian chạy (config.json, biến môi trường hoặc đối số đầu cuối), thay vào đó hãy sửa đổi cấu hình.",
     "theme-not-set-in-configuration": "Khi xác định các plugin hoạt động trong cấu hình, việc thay đổi chủ đề yêu cầu thêm chủ đề mới vào danh sách các plugin hoạt động trước khi cập nhật nó trong ACP",
