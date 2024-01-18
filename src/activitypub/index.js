@@ -89,11 +89,15 @@ ActivityPub.getPrivateKey = async (uid) => {
 
 ActivityPub.fetchPublicKey = async (uri) => {
 	// Used for retrieving the public key from the passed-in keyId uri
-	const { body } = await request.get(uri, {
+	const { res, body } = await request.get(uri, {
 		headers: {
 			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 		},
 	});
+
+	if (!String(res.statusCode).startsWith('2') || !body.hasOwnProperty('publicKey')) {
+		throw new Error('[[error:activitypub.pubKey-not-found]]');
+	}
 
 	return body.publicKey;
 };
@@ -143,9 +147,6 @@ ActivityPub.verify = async (req) => {
 		return memo;
 	}, {});
 
-	// Retrieve public key from remote instance
-	const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
-
 	// Re-construct signature string
 	const signed_string = headers.split(' ').reduce((memo, cur) => {
 		if (cur === '(request-target)') {
@@ -159,6 +160,9 @@ ActivityPub.verify = async (req) => {
 
 	// Verify the signature string via public key
 	try {
+		// Retrieve public key from remote instance
+		const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
+
 		const verify = createVerify('sha256');
 		verify.update(signed_string);
 		verify.end();
