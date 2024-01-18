@@ -184,6 +184,8 @@
     "user-already-flagged": "Hai già segnalato questo utente",
     "post-flagged-too-many-times": "Questo post è già stato segnalato da altri",
     "user-flagged-too-many-times": "Questo utente è già stato segnalato da altri",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Non è consentito contrassegnare i profili o il contenuto degli utenti privilegiati (moderatori/moderatori globali/amministratori)",
     "cant-locate-flag-report": "Impossibile individuare il rapporto delle segnalazioni",
     "self-vote": "Non puoi votare il tuo post",

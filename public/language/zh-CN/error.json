@@ -184,6 +184,8 @@
     "user-already-flagged": "您已举报此用户",
     "post-flagged-too-many-times": "此贴已被其他用户举报",
     "user-flagged-too-many-times": "此用户已被其他用户举报",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "您不能举报特权用户（版主/全局版主/管理员）的内容或资料",
     "cant-locate-flag-report": "Cannot locate flag report",
     "self-vote": "您不能对您自己的帖子投票",

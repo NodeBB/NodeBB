@@ -184,6 +184,8 @@
     "user-already-flagged": "Դուք արդեն նշել եք այս օգտատիրոջը",
     "post-flagged-too-many-times": "Այս գրառումն արդեն նշվել է ուրիշների կողմից",
     "user-flagged-too-many-times": "Այս օգտատերն արդեն դրոշակվել է ուրիշների կողմից",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Ձեզ չի թույլատրվում նշել արտոնյալ օգտատերերի պրոֆիլները կամ բովանդակությունը (մոդերատորներ/համաշխարհային մոդերատորներ/ադմիններ)",
     "cant-locate-flag-report": "Հնարավոր չէ գտնել նշված հաշվետվությունը",
     "self-vote": "Դուք չեք կարող քվեարկել ձեր սեփական գրառման վրա",

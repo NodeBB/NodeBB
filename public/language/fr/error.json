@@ -184,6 +184,8 @@
     "user-already-flagged": "Vous avez déjà signalé cet utilisateur",
     "post-flagged-too-many-times": "Ce message a déjà été signalé par d'autres",
     "user-flagged-too-many-times": "Cet utilisateur a déjà été signalé par d'autres",
+    "too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
+    "too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
     "cant-flag-privileged": "Vous n'êtes pas autorisé à signaler les profils ou le contenu des utilisateurs privilégiés (modérateurs / modérateurs globaux / administrateurs)",
     "cant-locate-flag-report": "Impossible de trouver le signalement",
     "self-vote": "Vous ne pouvez pas voter sur votre propre message",
