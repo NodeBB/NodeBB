@@ -14,7 +14,7 @@ const helpers = require('../helpers');
 
 const controller = module.exports;
 
-controller.list = async function (req, res, next) {
+controller.list = async function (req, res) {
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	const page = parseInt(req.query.page, 10) || 1;
 	const start = Math.max(0, (page - 1) * topicsPerPage);

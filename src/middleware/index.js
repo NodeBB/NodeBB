@@ -69,6 +69,7 @@ middleware.uploads = require('./uploads');
 require('./headers')(middleware);
 require('./expose')(middleware);
 middleware.assert = require('./assert');
+middleware.activitypub = require('./activitypub');
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	const target = req.originalUrl.replace(relative_path, '');
@@ -306,43 +307,3 @@ middleware.handleMultipart = (req, res, next) => {
 
 	multipartMiddleware(req, res, next);
 };
-
-middleware.proceedOnActivityPub = (req, res, next) => {
-	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
-	// Therefore, manual header parsing is used here.
-	const { accept, 'content-type': contentType } = req.headers;
-	if (!meta.config.activitypubEnabled || !(accept || contentType)) {
-		return next('route');
-	}
-
-	const acceptable = [
-		'application/activity+json',
-		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-	];
-	const pass = (accept && accept.split(',').some((value) => {
-		const parts = value.split(';').map(v => v.trim());
-		return acceptable.includes(value || parts[0]);
-	})) || (contentType && acceptable.includes(contentType));
-
-	if (!pass) {
-		return next('route');
-	}
-
-	next();
-};
-
-middleware.validateActivity = helpers.try(async (req, res, next) => {
-	// Checks the validity of the incoming payload against the sender and rejects on failure
-	const verified = await activitypub.verify(req);
-	if (!verified) {
-		return res.sendStatus(400);
-	}
-
-	// Sanity-check payload schema
-	const required = ['type'];
-	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
-		return res.sendStatus(400);
-	}
-
-	next();
-});
