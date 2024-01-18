@@ -94,9 +94,30 @@
 						[[admin/settings/reputation:flags.limit-per-target-help]]
 					</p>
 				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="flags:postFlagsPerDay">[[admin/settings/reputation:flags.limit-post-flags-per-day]]</label>
+					<input type="number" min="0" class="form-control" data-field="flags:postFlagsPerDay" id="flags:postFlagsPerDay">
+					<p class="form-text">
+						[[admin/settings/reputation:flags.limit-post-flags-per-day-help]]
+					</p>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="flags:userFlagsPerDay">[[admin/settings/reputation:flags.limit-user-flags-per-day]]</label>
+					<input type="number" min="0" class="form-control" data-field="flags:userFlagsPerDay" id="flags:userFlagsPerDay">
+					<p class="form-text">
+						[[admin/settings/reputation:flags.limit-user-flags-per-day-help]]
+					</p>
+				</div>
+
+
 				<div class="mb-3">
 					<label class="form-label" for="flags:autoFlagOnDownvoteThreshold">[[admin/settings/reputation:flags.auto-flag-on-downvote-threshold]]</label>
 					<input type="number" min="0" class="form-control" placeholder="0" data-field="flags:autoFlagOnDownvoteThreshold" id="flags:autoFlagOnDownvoteThreshold">
+					<p class="form-text">
+						[[admin/settings/reputation:flags.auto-flag-on-downvote-threshold-help]]
+					</p>
 				</div>
 
 				<div class="mb-3">
