@@ -21,11 +21,22 @@ controller.list = async function (req, res) {
 	const stop = start + topicsPerPage - 1;
 
 	const tids = await db.getSortedSetRevRange('cid:-1:tids', start, stop);
-	const topicData = await topics.getTopicsByTids(tids, { uid: req.uid });
-	topics.calculateTopicIndices(topicData, start);
-	res.render('world', {
-		topics: topicData,
+
+	const data = {};
+	data.topicCount = await db.sortedSetCard('cid:-1:tids');
+	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
+	topics.calculateTopicIndices(data.topics, start);
+
+	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
+	data.pagination = pagination.create(page, pageCount, req.query);
+	helpers.addLinkTags({
+		url: 'world',
+		res: req.res,
+		tags: data.pagination.rel,
+		page: page,
 	});
+
+	res.render('world', data);
 };
 
 controller.get = async function (req, res, next) {
