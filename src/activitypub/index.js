@@ -138,6 +138,10 @@ ActivityPub.sign = async (uid, url, payload) => {
 };
 
 ActivityPub.verify = async (req) => {
+	if (!req.headers.hasOwnProperty('signature')) {
+		return false;
+	}
+
 	// Break the signature apart
 	const { keyId, headers, signature } = req.headers.signature.split(',').reduce((memo, cur) => {
 		const split = cur.split('="');
@@ -181,6 +185,7 @@ ActivityPub.get = async (uid, uri) => {
 
 	const headers = uid > 0 ? await ActivityPub.sign(uid, uri) : {};
 	winston.verbose(`[activitypub/get] ${uri}`);
+	console.log(headers);
 	const { response, body } = await request.get(uri, {
 		headers: {
 			...headers,
