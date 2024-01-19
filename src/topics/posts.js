@@ -231,7 +231,7 @@ module.exports = function (Topics) {
 	Topics.getLatestUndeletedReply = async function (tid) {
 		let isDeleted = false;
 		let index = 0;
-		const setPrefix = activitypub.helpers.isUri(tid) ? 'tidRemote' : 'tid';
+		const setPrefix = validator.isUUID(String(tid)) ? 'tidRemote' : 'tid';
 		do {
 			/* eslint-disable no-await-in-loop */
 			const pids = await db.getSortedSetRevRange(`${setPrefix}:${tid}:posts`, index, index);
@@ -312,7 +312,7 @@ module.exports = function (Topics) {
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
-		const value = await db.incrObjectFieldBy(`${activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic'}:${tid}`, field, by);
+		const value = await db.incrObjectFieldBy(`${validator.isUUID(String(tid)) ? 'topicRemote' : 'topic'}:${tid}`, field, by);
 		await db[Array.isArray(set) ? 'sortedSetsAdd' : 'sortedSetAdd'](set, value, tid);
 	}
 

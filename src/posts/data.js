@@ -61,6 +61,7 @@ function modifyPost(post, fields) {
 		if (activitypub.helpers.isUri(post.pid)) {
 			intFields.splice(intFields.indexOf('pid'), 1);
 			intFields.splice(intFields.indexOf('uid'), 1);
+			intFields.splice(intFields.indexOf('tid'), 1);
 		}
 		db.parseIntFields(post, intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {

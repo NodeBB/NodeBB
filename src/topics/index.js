@@ -72,10 +72,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 		const topics = await Topics.getTopicsData(tids);
 		const uids = _.uniq(topics
 			.map(t => t && t.uid && t.uid.toString())
-			.filter(v => utils.isNumber(v) || activitypub.helpers.isUri(v)));
+			.filter(v => utils.isNumber(v) || validator.isUUID(String(v))));
 		const cids = _.uniq(topics
 			.map(t => t && t.cid && t.cid.toString())
-			.filter(v => utils.isNumber(v) || activitypub.helpers.isUri(v)));
+			.filter(v => utils.isNumber(v) || validator.isUUID(String(v))));
 		const guestTopics = topics.filter(t => t && t.uid === 0);
 
 		async function loadGuestHandles() {

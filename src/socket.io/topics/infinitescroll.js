@@ -1,11 +1,12 @@
 'use strict';
 
+const validator = require('validator');
+
 const topics = require('../../topics');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
 const utils = require('../../utils');
 const social = require('../../social');
-const activitypub = require('../../activitypub');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.loadMore = async function (socket, data) {
@@ -22,7 +23,7 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const setPrefix = activitypub.helpers.isUri(data.tid) ? 'tidRemote' : 'tid';
+		const setPrefix = validator.isUUID(String(data.tid)) ? 'tidRemote' : 'tid';
 		const set = data.topicPostSort === 'most_votes' ? `${setPrefix}:${data.tid}:posts:votes` : `${setPrefix}:${data.tid}:posts`;
 		const reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 		let start = Math.max(0, parseInt(data.after, 10));

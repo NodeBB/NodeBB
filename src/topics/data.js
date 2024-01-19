@@ -7,7 +7,6 @@ const categories = require('../categories');
 const utils = require('../utils');
 const translator = require('../translator');
 const plugins = require('../plugins');
-const activitypub = require('../activitypub');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
@@ -27,7 +26,7 @@ module.exports = function (Topics) {
 			fields.push('timestamp');
 		}
 
-		const keys = tids.map(tid => `${activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic'}:${tid}`);
+		const keys = tids.map(tid => `${validator.isUUID(String(tid)) ? 'topicRemote' : 'topic'}:${tid}`);
 		const topics = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:topic.getFields', {
 			tids: tids,
@@ -64,12 +63,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
-		const setPrefix = activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic';
+		const setPrefix = validator.isUUID(String(tid)) ? 'topicRemote' : 'topic';
 		await db.setObjectField(`${setPrefix}:${tid}`, field, value);
 	};
 
 	Topics.setTopicFields = async function (tid, data) {
-		const setPrefix = activitypub.helpers.isUri(tid) ? 'topicRemote' : 'topic';
+		const setPrefix = validator.isUUID(String(tid)) ? 'topicRemote' : 'topic';
 		await db.setObject(`${setPrefix}:${tid}`, data);
 	};
 
@@ -98,7 +97,7 @@ function modifyTopic(topic, fields) {
 		return;
 	}
 
-	if (activitypub.helpers.isUri(topic.tid)) {
+	if (validator.isUUID(String(topic.tid))) {
 		intFields.splice(intFields.indexOf('uid'), 1);
 		intFields.splice(intFields.indexOf('tid'), 1);
 	}

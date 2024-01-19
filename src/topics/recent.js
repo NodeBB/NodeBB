@@ -1,10 +1,11 @@
 
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../database');
 const plugins = require('../plugins');
 const posts = require('../posts');
-const activitypub = require('../activitypub');
 
 module.exports = function (Topics) {
 	const terms = {
@@ -74,7 +75,7 @@ module.exports = function (Topics) {
 			data = await plugins.hooks.fire('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
 		}
 		if (data && data.tid && data.timestamp) {
-			const setPrefix = activitypub.helpers.isUri(data.tid) ? 'topicsRemote' : 'topics';
+			const setPrefix = validator.isUUID(String(data.tid)) ? 'topicsRemote' : 'topics';
 			await db.sortedSetAdd(`${setPrefix}:recent`, data.timestamp, data.tid);
 		}
 	};

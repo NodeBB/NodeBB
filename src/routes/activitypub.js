@@ -3,7 +3,8 @@
 const helpers = require('./helpers');
 
 module.exports = function (app, middleware, controllers) {
-	helpers.setupPageRoute(app, '/world/:view?', [middleware.activitypub.enabled], controllers.activitypub.topics.list);
+	helpers.setupPageRoute(app, '/world', [middleware.activitypub.enabled], controllers.activitypub.topics.list);
+	helpers.setupPageRoute(app, '/world/:topic_id/:post_index?', [middleware.activitypub.enabled], controllers.activitypub.topics.get);
 
 	/**
 	 * These controllers only respond if the sender is making an json+activitypub style call (i.e. S2S-only)
