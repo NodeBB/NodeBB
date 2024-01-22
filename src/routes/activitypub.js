@@ -14,7 +14,8 @@ module.exports = function (app, middleware, controllers) {
 
 	const middlewares = [middleware.activitypub.enabled, middleware.activitypub.assertS2S, middleware.exposeUid];
 
-	app.get('/user/:userslug', middlewares, controllers.activitypub.getActor);
+	app.get('/', middlewares, controllers.activitypub.actors.application);
+	app.get('/user/:userslug', middlewares, controllers.activitypub.actors.user);
 
 	app.get('/user/:userslug/inbox', middlewares, controllers.activitypub.getInbox);
 	app.post('/user/:userslug/inbox', [...middlewares, middleware.activitypub.validate], controllers.activitypub.postInbox);

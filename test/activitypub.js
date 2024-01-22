@@ -174,7 +174,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe('Actor endpoint', () => {
+	describe('User Actor endpoint', () => {
 		let uid;
 		let slug;
 
@@ -211,6 +211,43 @@ describe('ActivityPub integration', () => {
 				},
 			});
 
+			assert(body.hasOwnProperty('publicKey'));
+			assert(['id', 'owner', 'publicKeyPem'].every(prop => body.publicKey.hasOwnProperty(prop)));
+		});
+	});
+
+	describe('Instance Actor endpoint', () => {
+		let response;
+		let body;
+
+		before(async () => {
+			({ response, body } = await request.get(nconf.get('url'), {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			}));
+		});
+
+		it('should respond properly', async () => {
+			assert(response);
+			assert.strictEqual(response.statusCode, 200);
+		});
+
+		it('should return a valid ActivityPub Actor JSON-LD payload', async () => {
+			console.log(body);
+			assert(body.hasOwnProperty('@context'));
+			assert(body['@context'].includes('https://www.w3.org/ns/activitystreams'));
+
+			['id', 'url', 'inbox', 'outbox'].forEach((prop) => {
+				assert(body.hasOwnProperty(prop));
+				assert(body[prop]);
+			});
+
+			assert.strictEqual(body.id, body.url);
+			assert.strictEqual(body.type, 'Application');
+		});
+
+		it('should contain a `publicKey` property with a public key', async () => {
 			assert(body.hasOwnProperty('publicKey'));
 			assert(['id', 'owner', 'publicKeyPem'].every(prop => body.publicKey.hasOwnProperty(prop)));
 		});
@@ -255,6 +292,33 @@ describe('ActivityPub integration', () => {
 
 				assert(digest);
 				assert.strictEqual(digest, `sha-256=${checksum}`);
+			});
+
+			it('should create a key for NodeBB itself if a uid of 0 is passed in', async () => {
+				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				await activitypub.sign(0, endpoint);
+				const { publicKey, privateKey } = await db.getObject(`uid:0:keys`);
+
+				assert(publicKey);
+				assert(privateKey);
+			});
+
+			it('should return headers with an appropriate key id uri', async () => {
+				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const { signature } = await activitypub.sign(uid, endpoint);
+				const [keyId] = signature.split(',');
+
+				assert(signature);
+				assert.strictEqual(keyId, `keyId="${nconf.get('url')}/user/${username}#key"`);
+			});
+
+			it('should return the instance key id when uid is 0', async () => {
+				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const { signature } = await activitypub.sign(0, endpoint);
+				const [keyId] = signature.split(',');
+
+				assert(signature);
+				assert.strictEqual(keyId, `keyId="${nconf.get('url')}#key"`);
 			});
 		});
 

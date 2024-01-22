@@ -7,6 +7,7 @@ const { createHash, createSign, createVerify } = require('crypto');
 const request = require('../request');
 const db = require('../database');
 const user = require('../user');
+const utils = require('../utils');
 const ttl = require('../cache/ttl');
 
 const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
@@ -103,12 +104,18 @@ ActivityPub.fetchPublicKey = async (uri) => {
 };
 
 ActivityPub.sign = async (uid, url, payload) => {
+	// Sanity checking
+	if (!utils.isNumber(uid) || parseInt(uid, 10) < 0) {
+		throw new Error('[[error:invalid-uid]]');
+	}
+	uid = parseInt(uid, 10);
+
 	// Returns string for use in 'Signature' header
 	const { host, pathname } = new URL(url);
 	const date = new Date().toUTCString();
 	const key = await ActivityPub.getPrivateKey(uid);
 	const userslug = await user.getUserField(uid, 'userslug');
-	const keyId = `${nconf.get('url')}/user/${userslug}#key`;
+	const keyId = `${nconf.get('url')}${uid > 0 ? `/user/${userslug}` : ''}#key`;
 	let digest = null;
 
 	let headers = '(request-target) host date';
@@ -183,7 +190,7 @@ ActivityPub.get = async (uid, uri) => {
 		return requestCache.get(cacheKey);
 	}
 
-	const headers = uid > 0 ? await ActivityPub.sign(uid, uri) : {};
+	const headers = uid >= 0 ? await ActivityPub.sign(uid, uri) : {};
 	winston.verbose(`[activitypub/get] ${uri}`);
 	const { response, body } = await request.get(uri, {
 		headers: {
