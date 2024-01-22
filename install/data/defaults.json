@@ -99,6 +99,8 @@
     "min:rep:aboutme": 0,
     "min:rep:signature": 0,
     "flags:limitPerTarget": 0,
+    "flags:postFlagsPerDay": 10,
+    "flags:userFlagsPerDay": 10,
     "flags:autoFlagOnDownvoteThreshold": 0,
     "flags:actionOnResolve": "rescind",
     "flags:actionOnReject": "rescind",

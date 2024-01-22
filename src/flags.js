@@ -629,8 +629,22 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 			throw new Error(`[[error:${type}-flagged-too-many-times]]`);
 		}
 	}
+	const oneday = 24 * 60 * 60 * 1000;
+	const now = Date.now();
+	const [flagIds, canRead, isPrivileged] = await Promise.all([
+		db.getSortedSetRangeByScore(`flags:byReporter:${uid}`, 0, -1, now - oneday, '+inf'),
+		privileges.posts.can('topics:read', id, uid),
+		user.isPrivileged(uid),
+	]);
+	const allowedFlagsPerDay = meta.config[`flags:${type}FlagsPerDay`];
+	if (!isPrivileged && allowedFlagsPerDay > 0) {
+		const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
+		const flagsOfType = flagData.filter(f => f && f.type === type);
+		if (allowedFlagsPerDay > 0 && flagsOfType.length > allowedFlagsPerDay) {
+			throw new Error(`[[error:too-many-${type}-flags-per-day, ${allowedFlagsPerDay}]]`);
+		}
+	}
 
-	const canRead = await privileges.posts.can('topics:read', id, uid);
 	switch (type) {
 		case 'user':
 			return true;

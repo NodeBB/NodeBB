@@ -12,7 +12,7 @@ const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
 const pubsub = require('../pubsub');
-const { paths } = require('../constants');
+const { paths, pluginNamePattern } = require('../constants');
 const pkgInstall = require('../cli/package-install');
 
 const packageManager = pkgInstall.getPackageManager();
@@ -59,6 +59,9 @@ module.exports = function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			winston.error('Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
 			throw new Error('[[error:plugins-set-in-configuration]]');
+		}
+		if (!pluginNamePattern.test(id)) {
+			throw new Error('[[error:invalid-plugin-id]]');
 		}
 		const isActive = await Plugins.isActive(id);
 		if (isActive) {
