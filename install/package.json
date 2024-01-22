@@ -56,7 +56,7 @@
         "connect-mongo": "5.1.0",
         "connect-multiparty": "2.2.0",
         "connect-pg-simple": "9.0.1",
-        "connect-redis": "7.1.0",
+        "connect-redis": "7.1.1",
         "cookie-parser": "1.4.6",
         "cron": "3.1.6",
         "cropperjs": "1.6.1",
