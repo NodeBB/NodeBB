@@ -7,6 +7,17 @@ exports.jar = function () {
 	return new CookieJar();
 };
 
+// Initialize fetch - required for globalDispatcher to be available
+fetch().catch(() => null);
+// Workaround for https://github.com/nodejs/undici/issues/1305
+class FetchAgent extends global[Symbol.for('undici.globalDispatcher.1')].constructor {
+	dispatch(opts, handler) {
+		delete opts.headers['sec-fetch-mode'];
+		return super.dispatch(opts, handler);
+	}
+}
+const fetchAgent = new FetchAgent();
+
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	let fetchImpl = fetch;
 	if (jar) {
@@ -21,6 +32,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			'content-type': 'application/json',
 			...config.headers,
 		},
+		dispatcher: fetchAgent,
 	};
 	if (timeout > 0) {
 		opts.signal = AbortSignal.timeout(timeout);
