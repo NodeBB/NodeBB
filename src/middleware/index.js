@@ -18,7 +18,6 @@ const privileges = require('../privileges');
 const cacheCreate = require('../cache/lru');
 const helpers = require('./helpers');
 const api = require('../api');
-const activitypub = require('../activitypub');
 
 const controllers = {
 	api: require('../controllers/api'),

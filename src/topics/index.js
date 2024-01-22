@@ -11,7 +11,6 @@ const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const privileges = require('../privileges');
-const activitypub = require('../activitypub');
 const social = require('../social');
 
 const Topics = module.exports;

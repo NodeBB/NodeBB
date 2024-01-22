@@ -44,10 +44,6 @@ controller.get = async function (req, res, next) {
 	 * Ideally we would use the existing topicsController.get...
 	 * this controller may be a stopgap towards that end goal.
 	 */
-	// const pid = await notes.resolveId(req.uid, req.query.resource);
-	// if (pid !== req.query.resource) {
-	// 	return helpers.redirect(res, `/topic/remote?resource=${pid}`, true);
-	// }
 
 	const tid = req.params.topic_id;
 	let postIndex = parseInt(req.params.post_index, 10) || 1;
