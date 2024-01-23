@@ -105,17 +105,3 @@ Controller.postInbox = async (req, res) => {
 
 	res.sendStatus(201);
 };
-
-/**
- * Main ActivityPub verbs
- */
-
-Controller.follow = async (req, res) => {
-	const { uid: actorId } = req.params;
-	helpers.formatApiResponse(200, res, await api.activitypub.follow(req, { actorId }));
-};
-
-Controller.unfollow = async (req, res) => {
-	const { uid: actorId } = req.params;
-	helpers.formatApiResponse(200, res, await api.activitypub.unfollow(req, { actorId }));
-};
