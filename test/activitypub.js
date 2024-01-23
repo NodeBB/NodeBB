@@ -234,7 +234,6 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a valid ActivityPub Actor JSON-LD payload', async () => {
-			console.log(body);
 			assert(body.hasOwnProperty('@context'));
 			assert(body['@context'].includes('https://www.w3.org/ns/activitystreams'));
 
