@@ -24,6 +24,7 @@ Actors.application = async function (req, res) {
 
 		type: 'Application',
 		name,
+		preferredUsername: name,
 
 		publicKey: {
 			id: `${nconf.get('url')}#key`,
