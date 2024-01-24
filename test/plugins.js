@@ -262,6 +262,18 @@ describe('Plugins', () => {
 			});
 		});
 
+		it('should error if plugin id is invalid', async () => {
+			await assert.rejects(
+				plugins.toggleActive('\t\nnodebb-plugin'),
+				{ message: '[[error:invalid-plugin-id]]' }
+			);
+
+			await assert.rejects(
+				plugins.toggleActive('notaplugin'),
+				{ message: '[[error:invalid-plugin-id]]' }
+			);
+		});
+
 		it('should upgrade plugin', function (done) {
 			this.timeout(0);
 			plugins.upgrade(pluginName, 'latest', (err, isActive) => {
