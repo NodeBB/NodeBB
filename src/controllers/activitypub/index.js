@@ -4,8 +4,6 @@ const nconf = require('nconf');
 
 const user = require('../../user');
 const activitypub = require('../../activitypub');
-const api = require('../../api');
-const helpers = require('../helpers');
 
 const Controller = module.exports;
 

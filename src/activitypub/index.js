@@ -7,7 +7,6 @@ const { createHash, createSign, createVerify } = require('crypto');
 const request = require('../request');
 const db = require('../database');
 const user = require('../user');
-const posts = require('../posts');
 const utils = require('../utils');
 const ttl = require('../cache/ttl');
 
