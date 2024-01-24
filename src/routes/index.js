@@ -137,16 +137,16 @@ module.exports = async function (app, middleware) {
 
 	app.use(middleware.stripLeadingSlashes);
 
-	await plugins.reloadRoutes({ router: router });
-	await authRoutes.reloadRoutes({ router: router });
-	await writeRoutes.reload({ router: router });
-	addCoreRoutes(app, router, middleware, mounts);
-
 	// handle custom homepage routes
 	router.use('/', controllers.home.rewrite);
 
 	// homepage handled by `action:homepage.get:[route]`
 	setupPageRoute(router, '/', [], controllers.home.pluginHook);
+
+	await plugins.reloadRoutes({ router: router });
+	await authRoutes.reloadRoutes({ router: router });
+	await writeRoutes.reload({ router: router });
+	addCoreRoutes(app, router, middleware, mounts);
 
 	winston.info('[router] Routes added');
 };

@@ -221,7 +221,7 @@ describe('ActivityPub integration', () => {
 		let body;
 
 		before(async () => {
-			({ response, body } = await request.get(nconf.get('url'), {
+			({ response, body } = await request.get(`${nconf.get('url')}/actor`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
@@ -328,7 +328,7 @@ describe('ActivityPub integration', () => {
 				const [keyId] = signature.split(',');
 
 				assert(signature);
-				assert.strictEqual(keyId, `keyId="${nconf.get('url')}#key"`);
+				assert.strictEqual(keyId, `keyId="${nconf.get('url')}/actor#key"`);
 			});
 		});
 

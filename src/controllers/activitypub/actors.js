@@ -17,8 +17,8 @@ Actors.application = async function (req, res) {
 			'https://www.w3.org/ns/activitystreams',
 			'https://w3id.org/security/v1',
 		],
-		id: `${nconf.get('url')}`,
-		url: `${nconf.get('url')}`,
+		id: `${nconf.get('url')}/actor`,
+		url: `${nconf.get('url')}/actor`,
 		inbox: `${nconf.get('url')}/inbox`,
 		outbox: `${nconf.get('url')}/outbox`,
 
@@ -27,8 +27,8 @@ Actors.application = async function (req, res) {
 		preferredUsername: nconf.get('url_parsed').hostname,
 
 		publicKey: {
-			id: `${nconf.get('url')}#key`,
-			owner: nconf.get('url'),
+			id: `${nconf.get('url')}/actor#key`,
+			owner: `${nconf.get('url')}/actor`,
 			publicKeyPem: publicKey,
 		},
 	});
