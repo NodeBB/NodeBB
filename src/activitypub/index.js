@@ -7,12 +7,17 @@ const { createHash, createSign, createVerify } = require('crypto');
 const request = require('../request');
 const db = require('../database');
 const user = require('../user');
+const posts = require('../posts');
 const utils = require('../utils');
 const ttl = require('../cache/ttl');
 
 const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
 const actorCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 const ActivityPub = module.exports;
+
+ActivityPub._constants = Object.freeze({
+	publicAddress: 'https://www.w3.org/ns/activitystreams#Public',
+});
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
@@ -59,10 +64,19 @@ ActivityPub.getActor = async (uid, input) => {
 	}
 };
 
-ActivityPub.resolveInboxes = async (uid, ids) => await Promise.all(ids.map(async (id) => {
-	const actor = await ActivityPub.getActor(uid, id);
-	return actor.inbox;
-}));
+ActivityPub.resolveInboxes = async (uid, ids) => {
+	const inboxes = new Set();
+
+	await Promise.all(ids.map(async (id) => {
+		const actor = await ActivityPub.getActor(uid, id);
+		const inbox = actor.sharedInbox || actor.inbox;
+		if (inbox) {
+			inboxes.add(inbox);
+		}
+	}));
+
+	return Array.from(inboxes);
+};
 
 ActivityPub.getPublicKey = async (uid) => {
 	let publicKey;
