@@ -353,7 +353,8 @@ define('navigator', [
 	}
 
 	async function updateUnreadIndicator(index) {
-		if (!paginationBlockUnreadEl.length || ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
+		const { bookmarkThreshold } = ajaxify.data;
+		if (!paginationBlockUnreadEl.length || ajaxify.data.postcount <= bookmarkThreshold || !bookmarkThreshold) {
 			return;
 		}
 		const currentBookmark = ajaxify.data.bookmark || storage.getItem('topic:' + ajaxify.data.tid + ':bookmark');
