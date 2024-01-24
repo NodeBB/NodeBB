@@ -458,11 +458,9 @@ define('navigator', [
 	};
 
 	function toggle(flag) {
-		const path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
-		if (flag && (!path.startsWith('topic') && !path.startsWith('category'))) {
+		if (flag && (!ajaxify.data.template.topic && !ajaxify.data.template.category)) {
 			return;
 		}
-
 		paginationBlockEl.toggleClass('ready', flag);
 		paginationBlockEl.toggleClass('noreplies', count <= 1);
 	}
