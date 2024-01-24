@@ -6,6 +6,7 @@ const db = require('../database');
 const topics = require('../topics');
 const posts = require('../posts');
 const utils = require('../utils');
+const pubsub = require('../pubsub');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
@@ -22,14 +23,10 @@ Notes.assert = async (uid, input, options = {}) => {
 	await Promise.all(input.map(async (item) => {
 		const id = activitypub.helpers.isUri(item) ? item : item.pid;
 		const key = `post:${id}`;
-		let exists = await db.exists(key);
+		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
 
-		if (options.update === true) {
-			exists = false;
-		}
-
-		if (!exists) {
+		if (!exists || options.update === true) {
 			let postData;
 			winston.verbose(`[activitypub/notes.assert] Not found, saving note to database`);
 			if (activitypub.helpers.isUri(item)) {
@@ -40,6 +37,11 @@ Notes.assert = async (uid, input, options = {}) => {
 			}
 
 			await db.setObject(key, postData);
+		}
+
+		if (options.update === true) {
+			require('../posts/cache').del(String(id));
+			pubsub.publish('post:edit', String(id));
 		}
 	}));
 };

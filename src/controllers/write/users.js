@@ -9,8 +9,6 @@ const user = require('../../user');
 
 const helpers = require('../helpers');
 
-const activitypubController = require('../activitypub');
-
 const Users = module.exports;
 
 Users.redirectBySlug = async (req, res) => {
