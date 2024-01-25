@@ -259,7 +259,7 @@ describe('ActivityPub integration', () => {
 			assert.strictEqual(response.statusCode, 200);
 			assert(body2 && body2.aliases && body2.links);
 			assert(body2.aliases.includes(nconf.get('url')));
-			assert(body2.links.some(item => item.rel === 'self' && item.type === 'application/activity+json' && item.href === nconf.get('url')));
+			assert(body2.links.some(item => item.rel === 'self' && item.type === 'application/activity+json' && item.href === `${nconf.get('url')}/actor`));
 		});
 	});
 
