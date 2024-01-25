@@ -171,7 +171,7 @@ Mocks.actor = async (uid) => {
 
 Mocks.note = async (post) => {
 	const id = `${nconf.get('url')}/post/${post.pid}`;
-	const published = new Date(post.timestamp).toISOString();
+	const published = new Date(parseInt(post.timestamp, 10)).toISOString();
 
 	const [raw, userslug] = await Promise.all([
 		posts.getPostField(post.pid, 'content'),
