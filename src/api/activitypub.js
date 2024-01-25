@@ -53,52 +53,28 @@ activitypubApi.unfollow = async (caller, { uid: actorId }) => {
 
 activitypubApi.create = {};
 
-activitypubApi.create.post = async (caller, { post }) => {
-	const id = `${nconf.get('url')}/post/${post.pid}`;
-	const published = new Date(post.timestamp).toISOString();
-	const [userslug, raw, followers] = await Promise.all([
-		user.getUserField(caller.uid, 'userslug'),
-		posts.getPostField(post.pid, 'content'),
-		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
-	]);
-
-	// todo: post visibility, category privileges integration
-	const recipients = {
-		to: [activitypub._constants.publicAddress],
-		cc: [`${nconf.get('url')}/user/${userslug}/followers`],
-	};
-	const targets = new Set(followers);
-
-	let inReplyTo = null;
-	if (post.toPid) {
-		inReplyTo = activitypub.helpers.isUri(post.toPid) ? post.toPid : id;
-		const parentId = await posts.getPostField(post.toPid, 'uid');
-		if (activitypub.helpers.isUri(parentId)) {
-			recipients.to.unshift(parentId);
-			targets.add(parentId);
-		}
+activitypubApi.create.post = async (caller, { pid }) => {
+	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
+	if (!post) {
+		return;
 	}
 
-	const object = {
-		id,
-		type: 'Note',
-		...recipients,
-		inReplyTo,
-		published,
-		url: id,
-		attributedTo: `${nconf.get('url')}/user/${post.user.userslug}`,
-		sensitive: false, // todo
-		content: post.content,
-		source: {
-			content: raw,
-			mediaType: 'text/markdown',
-		},
-		// replies: {}  todo...
-	};
+	const [object, followers] = await Promise.all([
+		activitypub.mocks.note(post),
+		db.getSortedSetMembers(`followersRemote:${post.user.uid}`),
+	]);
+
+	const { to, cc } = object;
+	const targets = new Set(followers);
+	const parentId = await posts.getPostField(object.inReplyTo, 'uid');
+	if (activitypub.helpers.isUri(parentId)) {
+		to.unshift(parentId);
+	}
 
 	const payload = {
 		type: 'Create',
-		...recipients,
+		to,
+		cc,
 		object,
 	};
 

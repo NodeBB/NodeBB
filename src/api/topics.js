@@ -80,7 +80,7 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.emitToUids('event:new_post', { posts: [result.postData] }, [caller.uid]);
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
-	activitypubApi.create.post(caller, { post: result.postData });
+	activitypubApi.create.post(caller, { pid: result.postData.pid });
 
 	return result.topicData;
 };
@@ -115,7 +115,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	activitypubApi.create.post(caller, { post: postData });
+	activitypubApi.create.post(caller, { pid: postData.pid });
 
 	return postObj[0];
 };

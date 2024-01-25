@@ -5,6 +5,8 @@ const mime = require('mime');
 
 const db = require('../database');
 const user = require('../user');
+const posts = require('../posts');
+const topics = require('../topics');
 
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
@@ -165,4 +167,52 @@ Mocks.actor = async (uid) => {
 			publicKeyPem: publicKey,
 		},
 	};
+};
+
+Mocks.note = async (post) => {
+	const id = `${nconf.get('url')}/post/${post.pid}`;
+	const published = new Date(post.timestamp).toISOString();
+
+	const [raw, userslug] = await Promise.all([
+		posts.getPostField(post.pid, 'content'),
+		user.getUserField(post.user.uid, 'userslug'),
+	]);
+
+	// todo: post visibility, category privileges integration
+	const to = [activitypub._constants.publicAddress];
+	const cc = [`${nconf.get('url')}/user/${userslug}/followers`];
+
+	let inReplyTo = null;
+	if (post.toPid) {
+		inReplyTo = activitypub.helpers.isUri(post.toPid) ? post.toPid : `${nconf.get('url')}/post/${post.toPid}`;
+		const parentId = await posts.getPostField(post.toPid, 'uid');
+		if (activitypub.helpers.isUri(parentId)) {
+			to.unshift(parentId);
+		}
+	} else {
+		const mainPid = await topics.getTopicFieldByPid('mainPid', post.pid);
+		if (mainPid !== post.pid) {
+			inReplyTo = `${nconf.get('url')}/post/${mainPid}`;
+		}
+	}
+
+	const object = {
+		id,
+		type: 'Note',
+		to,
+		cc,
+		inReplyTo,
+		published,
+		url: id,
+		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+		sensitive: false, // todo
+		content: post.content,
+		source: {
+			content: raw,
+			mediaType: 'text/markdown',
+		},
+		// replies: {}  todo...
+	};
+
+	return object;
 };
