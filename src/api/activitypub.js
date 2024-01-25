@@ -104,3 +104,19 @@ activitypubApi.create.post = async (caller, { post }) => {
 
 	await activitypub.send(caller.uid, Array.from(targets), payload);
 };
+
+activitypubApi.update = {};
+
+activitypubApi.update.profile = async (caller, { uid }) => {
+	const [object, followers] = await Promise.all([
+		activitypub.mocks.actor(uid),
+		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
+	]);
+
+	await activitypub.send(caller.uid, followers, {
+		type: 'Update',
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+		object,
+	});
+};
