@@ -145,7 +145,7 @@ Mocks.actor = async (uid) => {
 			'https://www.w3.org/ns/activitystreams',
 			'https://w3id.org/security/v1',
 		],
-		id: `${nconf.get('url')}/user/${userslug}`,
+		id: `${nconf.get('url')}/uid/${uid}`,
 		url: `${nconf.get('url')}/user/${userslug}`,
 		followers: `${nconf.get('url')}/user/${userslug}/followers`,
 		following: `${nconf.get('url')}/user/${userslug}/following`,
