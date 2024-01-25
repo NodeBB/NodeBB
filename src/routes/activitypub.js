@@ -12,18 +12,20 @@ module.exports = function (app, middleware, controllers) {
 	 * - See middleware.activitypub.assertS2S
 	 */
 
-	const middlewares = [middleware.activitypub.enabled, middleware.activitypub.assertS2S, middleware.exposeUid];
+	const middlewares = [middleware.activitypub.enabled, middleware.activitypub.assertS2S];
 
 	app.get('/actor', middlewares, controllers.activitypub.actors.application);
-	app.get('/uid/:uid', [middleware.activitypub.enabled, middleware.activitypub.assertS2S], controllers.activitypub.actors.user);
-	app.get('/user/:userslug', middlewares, controllers.activitypub.actors.userBySlug);
+	app.get('/uid/:uid', middlewares, controllers.activitypub.actors.user);
+	app.get('/user/:userslug', [...middlewares, middleware.exposeUid], controllers.activitypub.actors.userBySlug);
 
-	app.get('/user/:userslug/inbox', middlewares, controllers.activitypub.getInbox);
-	app.post('/user/:userslug/inbox', [...middlewares, middleware.activitypub.validate], controllers.activitypub.postInbox);
+	app.get('/user/:userslug/inbox', [...middlewares, middleware.exposeUid], controllers.activitypub.getInbox);
+	app.post('/user/:userslug/inbox', [...middlewares, middleware.activitypub.validate, middleware.exposeUid], controllers.activitypub.postInbox);
 
-	app.get('/user/:userslug/outbox', middlewares, controllers.activitypub.getOutbox);
-	app.post('/user/:userslug/outbox', middlewares, controllers.activitypub.postOutbox);
+	app.get('/user/:userslug/outbox', [...middlewares, middleware.exposeUid], controllers.activitypub.getOutbox);
+	app.post('/user/:userslug/outbox', [...middlewares, middleware.exposeUid], controllers.activitypub.postOutbox);
 
-	app.get('/user/:userslug/following', middlewares, controllers.activitypub.getFollowing);
-	app.get('/user/:userslug/followers', middlewares, controllers.activitypub.getFollowers);
+	app.get('/user/:userslug/following', [...middlewares, middleware.exposeUid], controllers.activitypub.getFollowing);
+	app.get('/user/:userslug/followers', [...middlewares, middleware.exposeUid], controllers.activitypub.getFollowers);
+
+	app.get('/post/:pid', middlewares, controllers.activitypub.actors.note);
 };

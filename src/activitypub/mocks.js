@@ -186,14 +186,10 @@ Mocks.note = async (post) => {
 	if (post.toPid) {
 		inReplyTo = activitypub.helpers.isUri(post.toPid) ? post.toPid : `${nconf.get('url')}/post/${post.toPid}`;
 		const parentId = await posts.getPostField(post.toPid, 'uid');
-		if (activitypub.helpers.isUri(parentId)) {
-			to.unshift(parentId);
-		}
-	} else {
-		const mainPid = await topics.getTopicFieldByPid('mainPid', post.pid);
-		if (mainPid !== post.pid) {
-			inReplyTo = `${nconf.get('url')}/post/${mainPid}`;
-		}
+		to.unshift(activitypub.helpers.isUri(parentId) ? parentId : `${nconf.get('url')}/uid/${parentId}`);
+	} else if (!post.isMainPost) {
+		inReplyTo = `${nconf.get('url')}/post/${post.topic.mainPid}`;
+		to.unshift(activitypub.helpers.isUri(post.topic.uid) ? post.topic.uid : `${nconf.get('url')}/uid/${post.topic.uid}`);
 	}
 
 	const object = {
@@ -206,6 +202,7 @@ Mocks.note = async (post) => {
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		sensitive: false, // todo
+		summary: null,
 		content: post.content,
 		source: {
 			content: raw,

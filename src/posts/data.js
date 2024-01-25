@@ -6,7 +6,7 @@ const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const intFields = [
-	'uid', 'pid', 'tid', 'deleted', 'timestamp',
+	'uid', 'pid', 'tid', 'toPid', 'deleted', 'timestamp',
 	'upvotes', 'downvotes', 'deleterUid', 'edited',
 	'replies', 'bookmarks',
 ];
@@ -62,6 +62,9 @@ function modifyPost(post, fields) {
 			intFields.splice(intFields.indexOf('pid'), 1);
 			intFields.splice(intFields.indexOf('uid'), 1);
 			intFields.splice(intFields.indexOf('tid'), 1);
+		}
+		if (activitypub.helpers.isUri(post.toPid)) {
+			intFields.splice(intFields.indexOf('toPid'), 1);
 		}
 		db.parseIntFields(post, intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
