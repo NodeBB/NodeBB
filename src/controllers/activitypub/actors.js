@@ -35,8 +35,14 @@ Actors.application = async function (req, res) {
 
 Actors.user = async function (req, res) {
 	// todo: view:users priv gate
-	const { uid } = res.locals;
-	const payload = await activitypub.mocks.actor(uid);
+	const payload = await activitypub.mocks.actor(req.params.uid);
 
 	res.status(200).json(payload);
+};
+
+Actors.userBySlug = async function (req, res) {
+	const { uid } = res.locals;
+	req.params.uid = uid;
+	delete req.params.userslug;
+	Actors.user(req, res);
 };
