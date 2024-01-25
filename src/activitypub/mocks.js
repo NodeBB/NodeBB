@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const mime = require('mime');
 
 const db = require('../database');
 const user = require('../user');
@@ -118,8 +119,26 @@ Mocks.post = async (objects) => {
 };
 
 Mocks.actor = async (uid) => {
-	const { username, userslug, displayname: name, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
+	let { username, userslug, displayname: name, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
 	const publicKey = await activitypub.getPublicKey(uid);
+
+	if (picture) {
+		const imagePath = await user.getLocalAvatarPath(uid);
+		picture = {
+			type: 'Image',
+			mediaType: mime.getType(imagePath),
+			url: `${nconf.get('url')}${picture}`,
+		};
+	}
+
+	if (cover) {
+		const imagePath = await user.getLocalCoverPath(uid);
+		cover = {
+			type: 'Image',
+			mediaType: mime.getType(imagePath),
+			url: `${nconf.get('url')}${cover}`,
+		};
+	}
 
 	return {
 		'@context': [
@@ -137,8 +156,8 @@ Mocks.actor = async (uid) => {
 		name,
 		preferredUsername: username,
 		summary: aboutme,
-		icon: picture ? `${nconf.get('url')}${picture}` : null,
-		image: cover ? `${nconf.get('url')}${cover}` : null,
+		icon: picture,
+		image: cover,
 
 		publicKey: {
 			id: `${nconf.get('url')}/user/${userslug}#key`,
