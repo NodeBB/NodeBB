@@ -31,12 +31,17 @@ Actors.assert = async (ids) => {
 			const actor = await activitypub.get(0, id);
 
 			// Follow counts
-			const [followers, following] = await Promise.all([
-				actor.followers ? activitypub.get(0, actor.followers) : { totalItems: 0 },
-				actor.following ? activitypub.get(0, actor.following) : { totalItems: 0 },
-			]);
-			actor.followerCount = followers.totalItems;
-			actor.followingCount = following.totalItems;
+			try {
+				const [followers, following] = await Promise.all([
+					actor.followers ? activitypub.get(0, actor.followers) : { totalItems: 0 },
+					actor.following ? activitypub.get(0, actor.following) : { totalItems: 0 },
+				]);
+				actor.followerCount = followers.totalItems;
+				actor.followingCount = following.totalItems;
+			} catch (e) {
+				// no action required
+				winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${id}`);
+			}
 
 			// Post count
 			const outbox = actor.outbox ? await activitypub.get(0, actor.outbox) : { totalItems: 0 };
