@@ -25,13 +25,24 @@ inbox.create = async (req) => {
 
 inbox.update = async (req) => {
 	const { object } = req.body;
-	const postData = await activitypub.mocks.post(object);
 
-	if (postData) {
-		await activitypub.notes.assert(0, [postData], { update: true });
-		winston.info(`[activitypub/inbox] Updating note ${postData.pid}`);
-	} else {
-		winston.warn('[activitypub/inbox] Received object was not a note');
+	switch (object.type) {
+		case 'Note': {
+			const postData = await activitypub.mocks.post(object);
+
+			if (postData) {
+				await activitypub.notes.assert(0, [postData], { update: true });
+				winston.info(`[activitypub/inbox.update] Updating note ${postData.pid}`);
+			} else {
+				winston.warn(`[activitypub/inbox.update] Received note did not parse properly (id: ${object.id})`);
+			}
+			break;
+		}
+
+		case 'Person': {
+			await activitypub.actors.assert(object, { update: true });
+			break;
+		}
 	}
 };
 

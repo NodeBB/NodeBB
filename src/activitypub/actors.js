@@ -9,7 +9,7 @@ const activitypub = module.parent.exports;
 
 const Actors = module.exports;
 
-Actors.assert = async (ids) => {
+Actors.assert = async (ids, options = {}) => {
 	// Handle single values
 	if (!Array.isArray(ids)) {
 		ids = [ids];
@@ -19,8 +19,10 @@ Actors.assert = async (ids) => {
 	ids = ids.filter(id => !utils.isNumber(id));
 
 	// Filter out existing
-	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids);
-	ids = ids.filter((id, idx) => !exists[idx]);
+	if (!options.update) {
+		const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
+		ids = ids.filter((id, idx) => !exists[idx]);
+	}
 
 	if (!ids.length) {
 		return true;
@@ -28,7 +30,7 @@ Actors.assert = async (ids) => {
 
 	const actors = await Promise.all(ids.map(async (id) => {
 		try {
-			const actor = await activitypub.get(0, id);
+			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? await activitypub.get(0, id) : id;
 
 			// Follow counts
 			try {
@@ -40,7 +42,7 @@ Actors.assert = async (ids) => {
 				actor.followingCount = following.totalItems;
 			} catch (e) {
 				// no action required
-				winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${id}`);
+				winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
 
 			// Post count
