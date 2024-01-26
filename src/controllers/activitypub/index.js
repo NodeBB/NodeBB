@@ -97,8 +97,7 @@ Controller.postInbox = async (req, res) => {
 
 		default: {
 			res.sendStatus(501);
+			break;
 		}
 	}
-
-	res.sendStatus(201);
 };
