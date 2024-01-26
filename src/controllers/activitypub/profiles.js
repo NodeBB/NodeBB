@@ -7,6 +7,10 @@ const pagination = require('../../pagination');
 const controller = module.exports;
 
 controller.get = async function (req, res, next) {
+	if (req.uid === -1) {
+		return helpers.notAllowed(req, res);
+	}
+
 	const { userslug: uid } = req.params;
 	const actor = await getActor(req.uid, uid);
 	if (!actor) {
@@ -18,6 +22,10 @@ controller.get = async function (req, res, next) {
 };
 
 controller.getFollow = async function (tpl, name, req, res) {
+	if (req.uid === -1) {
+		return helpers.notAllowed(req, res);
+	}
+
 	const actor = await getActor(req.uid, req.params.userslug);
 
 	const { userslug } = req.params;
