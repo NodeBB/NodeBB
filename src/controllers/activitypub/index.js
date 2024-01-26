@@ -96,8 +96,7 @@ Controller.postInbox = async (req, res) => {
 		}
 
 		default: {
-			console.log('Unhandled Activity!!!');
-			console.log(req.body);
+			res.sendStatus(501);
 		}
 	}
 

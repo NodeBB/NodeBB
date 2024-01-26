@@ -44,7 +44,7 @@ Controller.webfinger = async (req, res) => {
 			{
 				rel: 'self',
 				type: 'application/activity+json',
-				href: `${nconf.get('url')}/user/${slug}`, // actor
+				href: `${nconf.get('url')}/uid/${uid}`, // actor
 			},
 			{
 				rel: 'http://webfinger.net/rel/profile-page',
