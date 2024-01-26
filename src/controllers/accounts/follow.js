@@ -4,8 +4,6 @@ const user = require('../../user');
 const helpers = require('../helpers');
 const pagination = require('../../pagination');
 
-const activitypubController = require('../activitypub');
-
 const followController = module.exports;
 
 followController.getFollowing = async function (req, res, next) {
@@ -17,10 +15,6 @@ followController.getFollowers = async function (req, res, next) {
 };
 
 async function getFollow(tpl, name, req, res) {
-	if (res.locals.uid === -2) {
-		return activitypubController.profiles.getFollow(tpl, name, req, res);
-	}
-
 	const {
 		username, userslug, followerCount, followingCount,
 	} = await user.getUserFields(res.locals.uid, [

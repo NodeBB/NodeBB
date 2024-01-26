@@ -42,24 +42,24 @@ inbox.follow = async (req) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	const from = await activitypub.getActor(localUid, req.body.actor);
-	if (!from) {
-		throw new Error('[[error:invalid-uid]]'); // should probably be AP specific
+	const assertion = await activitypub.actors.assert(req.body.actor);
+	if (!assertion) {
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	const isFollowed = await inbox.isFollowed(from.id, localUid);
+	const isFollowed = await inbox.isFollowed(req.body.actor, localUid);
 	if (isFollowed) {
 		// No additional parsing required
 		return;
 	}
 
 	const now = Date.now();
-	await db.sortedSetAdd(`followersRemote:${localUid}`, now, from.id);
-	await activitypub.send(localUid, from.id, {
+	await db.sortedSetAdd(`followersRemote:${localUid}`, now, req.body.actor);
+	await activitypub.send(localUid, req.body.actor, {
 		type: 'Accept',
 		object: {
 			type: 'Follow',
-			actor: from.id,
+			actor: req.body.actor,
 		},
 	});
 
@@ -75,7 +75,7 @@ inbox.isFollowed = async (actorId, uid) => {
 };
 
 inbox.accept = async (req) => {
-	let { actor, object } = req.body;
+	const { actor, object } = req.body;
 	const { type } = object;
 
 	const uid = await helpers.resolveLocalUid(object.actor);
@@ -83,19 +83,22 @@ inbox.accept = async (req) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	actor = await activitypub.getActor(uid, actor);
+	const assertion = await activitypub.actors.assert(actor);
+	if (!assertion) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
 
 	if (type === 'Follow') {
 		const now = Date.now();
 		await Promise.all([
-			db.sortedSetAdd(`followingRemote:${uid}`, now, actor.id),
+			db.sortedSetAdd(`followingRemote:${uid}`, now, actor),
 			db.incrObjectField(`user:${uid}`, 'followingRemoteCount'),
 		]);
 	}
 };
 
 inbox.undo = async (req) => {
-	let { actor, object } = req.body;
+	const { actor, object } = req.body;
 	const { type } = object;
 
 	const uid = await helpers.resolveLocalUid(object.object);
@@ -103,11 +106,14 @@ inbox.undo = async (req) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	actor = await activitypub.getActor(uid, actor);
+	const assertion = await activitypub.actors.assert(actor);
+	if (!assertion) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
 
 	if (type === 'Follow') {
 		await Promise.all([
-			db.sortedSetRemove(`followingRemote:${uid}`, actor.id),
+			db.sortedSetRemove(`followingRemote:${uid}`, actor),
 			db.decrObjectField(`user:${uid}`, 'followingRemoteCount'),
 		]);
 	}

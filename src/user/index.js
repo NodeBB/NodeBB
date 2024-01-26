@@ -7,6 +7,7 @@ const plugins = require('../plugins');
 const db = require('../database');
 const privileges = require('../privileges');
 const categories = require('../categories');
+const activitypub = require('../activitypub');
 const meta = require('../meta');
 const utils = require('../utils');
 
@@ -109,6 +110,12 @@ User.getUidByUserslug = async function (userslug) {
 	if (!userslug) {
 		return 0;
 	}
+
+	if (userslug.includes('@')) {
+		const { actorUri } = await activitypub.helpers.query(userslug);
+		return actorUri;
+	}
+
 	return await db.sortedSetScore('userslug:uid', userslug);
 };
 

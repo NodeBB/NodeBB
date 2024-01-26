@@ -11,7 +11,6 @@ const utils = require('../utils');
 const ttl = require('../cache/ttl');
 
 const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
-const actorCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 const ActivityPub = module.exports;
 
 ActivityPub._constants = Object.freeze({
@@ -22,55 +21,15 @@ ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
 ActivityPub.mocks = require('./mocks');
 ActivityPub.notes = require('./notes');
+ActivityPub.actors = require('./actors');
 
-ActivityPub.getActor = async (uid, input) => {
-	// Can be a webfinger id, uri, or object, handle as appropriate
-	let uri;
-	if (ActivityPub.helpers.isUri(input)) {
-		uri = input;
-	} else if (input.indexOf('@') !== -1) { // Webfinger
-		({ actorUri: uri } = await ActivityPub.helpers.query(input));
-	} else {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	if (!uri) {
-		throw new Error('[[error:invalid-uid]]');
-	}
-
-	if (actorCache.has(uri)) {
-		return actorCache.get(uri);
-	}
-
-	try {
-		const actor = await ActivityPub.get(uid, uri);
-
-		// Follow counts
-		const [followers, following] = await Promise.all([
-			actor.followers ? ActivityPub.get(uid, actor.followers) : { totalItems: 0 },
-			actor.following ? ActivityPub.get(uid, actor.following) : { totalItems: 0 },
-		]);
-		actor.followerCount = followers.totalItems;
-		actor.followingCount = following.totalItems;
-
-		actor.hostname = new URL(uri).hostname;
-
-		actorCache.set(uri, actor);
-		return actor;
-	} catch (e) {
-		winston.warn(`[activitypub/getActor] Unable to retrieve actor "${uri}", error: ${e.message}`);
-		return null;
-	}
-};
-
-ActivityPub.resolveInboxes = async (uid, ids) => {
+ActivityPub.resolveInboxes = async (ids) => {
 	const inboxes = new Set();
 
 	await Promise.all(ids.map(async (id) => {
-		const actor = await ActivityPub.getActor(uid, id);
-		const inbox = actor.sharedInbox || actor.inbox;
-		if (inbox) {
-			inboxes.add(inbox);
+		const { inbox, sharedInbox } = await user.getUserFields(id, ['inbox', 'sharedInbox']);
+		if (sharedInbox || inbox) {
+			inboxes.add(sharedInbox || inbox);
 		}
 	}));
 

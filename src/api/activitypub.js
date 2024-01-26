@@ -17,36 +17,36 @@ const posts = require('../posts');
 
 const activitypubApi = module.exports;
 
-activitypubApi.follow = async (caller, { uid: actorId } = {}) => {
-	const object = await activitypub.getActor(caller.uid, actorId);
-	if (!object) {
+activitypubApi.follow = async (caller, { uid } = {}) => {
+	const result = await activitypub.helpers.query(uid);
+	if (!result) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send(caller.uid, actorId, {
+	await activitypub.send(caller.uid, uid, {
 		type: 'Follow',
-		object: object.id,
+		object: result.actorUri,
 	});
 };
 
-activitypubApi.unfollow = async (caller, { uid: actorId }) => {
-	const object = await activitypub.getActor(caller.uid, actorId);
+activitypubApi.unfollow = async (caller, { uid }) => {
 	const userslug = await user.getUserField(caller.uid, 'userslug');
-	if (!object) {
+	const result = await activitypub.helpers.query(uid);
+	if (!result) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send(caller.uid, actorId, {
+	await activitypub.send(caller.uid, uid, {
 		type: 'Undo',
 		object: {
 			type: 'Follow',
 			actor: `${nconf.get('url')}/user/${userslug}`,
-			object: object.id,
+			object: result.actorUri,
 		},
 	});
 
 	await Promise.all([
-		db.sortedSetRemove(`followingRemote:${caller.uid}`, object.id),
+		db.sortedSetRemove(`followingRemote:${caller.uid}`, result.actorUri),
 		db.decrObjectField(`user:${caller.uid}`, 'followingRemoteCount'),
 	]);
 };

@@ -13,15 +13,9 @@ const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
 const utils = require('../../utils');
 
-const activitypubController = require('../activitypub');
-
 const profileController = module.exports;
 
 profileController.get = async function (req, res, next) {
-	if (res.locals.uid === -2) {
-		return activitypubController.profiles.get(req, res, next);
-	}
-
 	const lowercaseSlug = req.params.userslug.toLowerCase();
 
 	if (req.params.userslug !== lowercaseSlug) {

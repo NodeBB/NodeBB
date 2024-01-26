@@ -8,7 +8,6 @@ const activitypub = require('../../activitypub');
 const Controller = module.exports;
 
 Controller.actors = require('./actors');
-Controller.profiles = require('./profiles');
 Controller.topics = require('./topics');
 
 Controller.getFollowing = async (req, res) => {

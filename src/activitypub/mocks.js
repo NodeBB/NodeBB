@@ -3,35 +3,27 @@
 const nconf = require('nconf');
 const mime = require('mime');
 
-const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
-const topics = require('../topics');
 
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
 
-Mocks.profile = async (actors, callerUid = 0) => {
-	// Accepts an array containing actor objects (the output of getActor()), or uris
-	let single = false;
-	if (!Array.isArray(actors)) {
-		single = true;
-		actors = [actors];
-	}
-
+Mocks.profile = async (actors) => {
+	// Should only ever be called by activitypub.actors.assert
 	const profiles = (await Promise.all(actors.map(async (actor) => {
-		// convert uri to actor object
-		if (typeof actor === 'string' && activitypub.helpers.isUri(actor)) {
-			actor = await activitypub.getActor(callerUid, actor);
-		}
-
 		if (!actor) {
 			return null;
 		}
 
 		const uid = actor.id;
-		const { preferredUsername, published, icon, image, name, summary, hostname, followerCount, followingCount } = actor;
-		const isFollowing = await db.isSortedSetMember(`followingRemote:${callerUid}`, uid);
+		const {
+			preferredUsername, published, icon, image,
+			name, summary, followerCount, followingCount,
+			postcount, inbox, endpoints,
+		} = actor;
+		const { hostname } = new URL(actor.id);
+		// const isFollowing = await db.isSortedSetMember(`followingRemote:${callerUid}`, uid);
 
 		let picture;
 		if (icon) {
@@ -56,19 +48,18 @@ Mocks.profile = async (actors, callerUid = 0) => {
 			'cover:url': !image || typeof image === 'string' ? image : image.url,
 			'cover:position': '50% 50%',
 			aboutme: summary,
-			aboutmeParsed: summary,
+			postcount,
+			followerCount,
+			followingCount,
 
-			isFollowing,
-			counts: {
-				following: followingCount,
-				followers: followerCount,
-			},
+			inbox,
+			sharedInbox: endpoints.sharedInbox,
 		};
 
 		return payload;
-	}))).filter(Boolean);
+	})));
 
-	return single ? profiles.pop() : profiles;
+	return profiles;
 };
 
 Mocks.post = async (objects) => {
