@@ -99,4 +99,6 @@ Controller.postInbox = async (req, res) => {
 			break;
 		}
 	}
+
+	res.sendStatus(200);
 };

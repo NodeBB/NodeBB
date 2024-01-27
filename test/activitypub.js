@@ -11,6 +11,9 @@ const request = require('../src/request');
 
 const meta = require('../src/meta');
 const user = require('../src/user');
+const categories = require('../src/categories');
+const topics = require('../src/topics');
+const posts = require('../src/posts');
 const privileges = require('../src/privileges');
 const activitypub = require('../src/activitypub');
 
@@ -386,6 +389,59 @@ describe('ActivityPub integration', () => {
 
 				const verified = await activitypub.verify(req);
 				assert.strictEqual(verified, true);
+			});
+		});
+	});
+
+	describe.only('Receipt of ActivityPub events to inboxes (federating IN)', () => {
+		describe('Create', () => {
+			describe('Note', () => {
+				let category;
+				let uid;
+				let note;
+				let topic;
+
+				before(async () => {
+					category = await categories.create({ name: 'test' });
+					const slug = slugify(utils.generateUUID().slice(0, 8));
+					uid = await user.create({ username: slug });
+
+					const { postData, topicData } = await topics.post({
+						uid,
+						cid: category.cid,
+						title: 'Lipsum title',
+						content: 'Lorem ipsum dolor sit amet',
+					});
+
+					const post = (await posts.getPostSummaryByPids([postData.pid], uid, { stripTags: false })).pop();
+					note = await activitypub.mocks.note(post);
+
+					await activitypub.send(uid, [`${nconf.get('url')}/uid/${uid}`], {
+						type: 'Create',
+						object: note,
+					});
+
+					const tid = await posts.getPostField(note.id, 'tid');
+					topic = await topics.getTopicData(tid);
+				});
+
+				it('should create a new topic if Note is at root-level or its parent has not been seen before', async () => {
+					const saved = await db.getObject(`post:${note.id}`);
+
+					assert(saved);
+					assert(topic);
+					assert.strictEqual(saved.uid, `${nconf.get('url')}/uid/${uid}`);
+					assert.strictEqual(saved.content, 'Lorem ipsum dolor sit amet');
+					assert(saved.tid);
+				});
+
+				it('should properly save the topic title in the topic hash', async () => {
+					assert.strictEqual(topic.title, 'Lipsum title');
+				});
+
+				it('should properly save the mainPid in the topic hash', async () => {
+					assert.strictEqual(topic.mainPid, note.id);
+				});
 			});
 		});
 	});

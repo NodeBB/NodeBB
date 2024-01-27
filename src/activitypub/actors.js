@@ -30,7 +30,7 @@ Actors.assert = async (ids, options = {}) => {
 
 	const actors = await Promise.all(ids.map(async (id) => {
 		try {
-			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? await activitypub.get(0, id) : id;
+			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get(0, id);
 
 			// Follow counts
 			try {

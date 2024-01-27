@@ -5,6 +5,7 @@ const mime = require('mime');
 
 const user = require('../user');
 const posts = require('../posts');
+const topics = require('../topics');
 
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
@@ -53,7 +54,7 @@ Mocks.profile = async (actors) => {
 			followingCount,
 
 			inbox,
-			sharedInbox: endpoints.sharedInbox,
+			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 		};
 
 		return payload;
@@ -174,13 +175,16 @@ Mocks.note = async (post) => {
 	const cc = [`${nconf.get('url')}/user/${userslug}/followers`];
 
 	let inReplyTo = null;
-	if (post.toPid) {
+	let name = null;
+	if (post.toPid) { // direct reply
 		inReplyTo = activitypub.helpers.isUri(post.toPid) ? post.toPid : `${nconf.get('url')}/post/${post.toPid}`;
 		const parentId = await posts.getPostField(post.toPid, 'uid');
 		to.unshift(activitypub.helpers.isUri(parentId) ? parentId : `${nconf.get('url')}/uid/${parentId}`);
-	} else if (!post.isMainPost) {
+	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = `${nconf.get('url')}/post/${post.topic.mainPid}`;
 		to.unshift(activitypub.helpers.isUri(post.topic.uid) ? post.topic.uid : `${nconf.get('url')}/uid/${post.topic.uid}`);
+	} else { // new topic
+		name = await topics.getTitleByPid(post.pid);
 	}
 
 	const object = {
@@ -194,6 +198,7 @@ Mocks.note = async (post) => {
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		sensitive: false, // todo
 		summary: null,
+		name,
 		content: post.content,
 		source: {
 			content: raw,

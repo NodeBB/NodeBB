@@ -100,6 +100,7 @@ function modifyTopic(topic, fields) {
 	if (validator.isUUID(String(topic.tid))) {
 		intFields.splice(intFields.indexOf('uid'), 1);
 		intFields.splice(intFields.indexOf('tid'), 1);
+		intFields.splice(intFields.indexOf('mainPid'), 1);
 	}
 	db.parseIntFields(topic, intFields, fields);
 

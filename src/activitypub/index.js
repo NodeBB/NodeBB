@@ -26,6 +26,7 @@ ActivityPub.actors = require('./actors');
 ActivityPub.resolveInboxes = async (ids) => {
 	const inboxes = new Set();
 
+	await ActivityPub.actors.assert(ids);
 	await Promise.all(ids.map(async (id) => {
 		const { inbox, sharedInbox } = await user.getUserFields(id, ['inbox', 'sharedInbox']);
 		if (sharedInbox || inbox) {
@@ -190,7 +191,7 @@ ActivityPub.send = async (uid, targets, payload) => {
 	}
 
 	const userslug = await user.getUserField(uid, 'userslug');
-	const inboxes = await ActivityPub.resolveInboxes(uid, targets);
+	const inboxes = await ActivityPub.resolveInboxes(targets);
 
 	payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
