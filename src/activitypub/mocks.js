@@ -24,7 +24,6 @@ Mocks.profile = async (actors) => {
 			postcount, inbox, endpoints,
 		} = actor;
 		const { hostname } = new URL(actor.id);
-		// const isFollowing = await db.isSortedSetMember(`followingRemote:${callerUid}`, uid);
 
 		let picture;
 		if (icon) {

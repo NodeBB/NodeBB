@@ -124,8 +124,8 @@ inbox.undo = async (req) => {
 
 	if (type === 'Follow') {
 		await Promise.all([
-			db.sortedSetRemove(`followingRemote:${uid}`, actor),
-			db.decrObjectField(`user:${uid}`, 'followingRemoteCount'),
+			db.sortedSetRemove(`followersRemote:${uid}`, actor),
+			db.decrObjectField(`user:${uid}`, 'followerRemoteCount'),
 		]);
 	}
 };

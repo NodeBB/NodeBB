@@ -442,6 +442,8 @@ describe('ActivityPub integration', () => {
 				it('should properly save the mainPid in the topic hash', async () => {
 					assert.strictEqual(topic.mainPid, note.id);
 				});
+
+				// todo: test topic replies, too
 			});
 		});
 	});

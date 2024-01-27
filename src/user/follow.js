@@ -2,6 +2,7 @@
 'use strict';
 
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const db = require('../database');
 
 module.exports = function (User) {
@@ -88,9 +89,11 @@ module.exports = function (User) {
 	}
 
 	User.isFollowing = async function (uid, theirid) {
-		if (parseInt(uid, 10) <= 0 || parseInt(theirid, 10) <= 0) {
+		const isRemote = activitypub.helpers.isUri(theirid);
+		if (parseInt(uid, 10) <= 0 || (!isRemote && (theirid, 10) <= 0)) {
 			return false;
 		}
-		return await db.isSortedSetMember(`following:${uid}`, theirid);
+		const setPrefix = isRemote ? 'followingRemote' : 'following';
+		return await db.isSortedSetMember(`${setPrefix}:${uid}`, theirid);
 	};
 };

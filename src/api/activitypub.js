@@ -12,7 +12,6 @@ const nconf = require('nconf');
 
 const db = require('../database');
 const activitypub = require('../activitypub');
-const user = require('../user');
 const posts = require('../posts');
 
 const activitypubApi = module.exports;
@@ -23,24 +22,23 @@ activitypubApi.follow = async (caller, { uid } = {}) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send(caller.uid, uid, {
+	await activitypub.send(caller.uid, [result.actorUri], {
 		type: 'Follow',
 		object: result.actorUri,
 	});
 };
 
 activitypubApi.unfollow = async (caller, { uid }) => {
-	const userslug = await user.getUserField(caller.uid, 'userslug');
 	const result = await activitypub.helpers.query(uid);
 	if (!result) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send(caller.uid, uid, {
+	await activitypub.send(caller.uid, [result.actorUri], {
 		type: 'Undo',
 		object: {
 			type: 'Follow',
-			actor: `${nconf.get('url')}/user/${userslug}`,
+			actor: `${nconf.get('url')}/uid/${caller.uid}`,
 			object: result.actorUri,
 		},
 	});

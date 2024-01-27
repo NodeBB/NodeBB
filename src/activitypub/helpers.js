@@ -94,10 +94,9 @@ Helpers.resolveLocalUid = async (input) => {
 		const { host, pathname } = new URL(input);
 
 		if (host === nconf.get('url_parsed').host) {
-			slug = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean)[1];
-		} else {
-			throw new Error('[[error:activitypub.invalid-id]]');
+			return pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean)[1];
 		}
+		throw new Error('[[error:activitypub.invalid-id]]');
 	} else if (input.indexOf('@') !== -1) { // Webfinger
 		([slug] = input.replace(/^acct:/, '').split('@'));
 	} else {
