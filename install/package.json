@@ -65,7 +65,7 @@
         "diff": "5.1.0",
         "esbuild": "0.20.0",
         "express": "4.18.2",
-        "express-session": "1.17.3",
+        "express-session": "1.18.0",
         "express-useragent": "1.0.15",
         "fetch-cookie": "2.1.0",
         "file-loader": "6.2.0",
