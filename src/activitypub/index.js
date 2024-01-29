@@ -87,8 +87,7 @@ ActivityPub.sign = async (uid, url, payload) => {
 	const { host, pathname } = new URL(url);
 	const date = new Date().toUTCString();
 	const key = await ActivityPub.getPrivateKey(uid);
-	const userslug = await user.getUserField(uid, 'userslug');
-	const keyId = `${nconf.get('url')}${uid > 0 ? `/user/${userslug}` : '/actor'}#key`;
+	const keyId = `${nconf.get('url')}${uid > 0 ? `/uid/${uid}` : '/actor'}#key`;
 	let digest = null;
 
 	let headers = '(request-target) host date';

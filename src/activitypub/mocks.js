@@ -137,10 +137,10 @@ Mocks.actor = async (uid) => {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id: `${nconf.get('url')}/uid/${uid}`,
 		url: `${nconf.get('url')}/user/${userslug}`,
-		followers: `${nconf.get('url')}/user/${userslug}/followers`,
-		following: `${nconf.get('url')}/user/${userslug}/following`,
-		inbox: `${nconf.get('url')}/user/${userslug}/inbox`,
-		outbox: `${nconf.get('url')}/user/${userslug}/outbox`,
+		followers: `${nconf.get('url')}/uid/${uid}/followers`,
+		following: `${nconf.get('url')}/uid/${uid}/following`,
+		inbox: `${nconf.get('url')}/uid/${uid}/inbox`,
+		outbox: `${nconf.get('url')}/uid/${uid}/outbox`,
 
 		type: 'Person',
 		name,
@@ -150,8 +150,8 @@ Mocks.actor = async (uid) => {
 		image: cover,
 
 		publicKey: {
-			id: `${nconf.get('url')}/user/${userslug}#key`,
-			owner: `${nconf.get('url')}/user/${userslug}`,
+			id: `${nconf.get('url')}/uid/${uid}#key`,
+			owner: `${nconf.get('url')}/uid/${uid}`,
 			publicKeyPem: publicKey,
 		},
 	};
@@ -161,14 +161,11 @@ Mocks.note = async (post) => {
 	const id = `${nconf.get('url')}/post/${post.pid}`;
 	const published = new Date(parseInt(post.timestamp, 10)).toISOString();
 
-	const [raw, userslug] = await Promise.all([
-		posts.getPostField(post.pid, 'content'),
-		user.getUserField(post.user.uid, 'userslug'),
-	]);
+	const raw = await posts.getPostField(post.pid, 'content');
 
 	// todo: post visibility, category privileges integration
 	const to = [activitypub._constants.publicAddress];
-	const cc = [`${nconf.get('url')}/user/${userslug}/followers`];
+	const cc = [`${nconf.get('url')}/uid/${post.user.uid}/followers`];
 
 	let inReplyTo = null;
 	let name = null;

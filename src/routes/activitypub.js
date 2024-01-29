@@ -18,14 +18,14 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/uid/:uid', middlewares, controllers.activitypub.actors.user);
 	app.get('/user/:userslug', [...middlewares, middleware.exposeUid], controllers.activitypub.actors.userBySlug);
 
-	app.get('/user/:userslug/inbox', [...middlewares, middleware.exposeUid], controllers.activitypub.getInbox);
-	app.post('/user/:userslug/inbox', [...middlewares, middleware.activitypub.validate, middleware.exposeUid], controllers.activitypub.postInbox);
+	app.get('/uid/:uid/inbox', middlewares, controllers.activitypub.getInbox);
+	app.post('/uid/:uid/inbox', [...middlewares, middleware.activitypub.validate], controllers.activitypub.postInbox);
 
-	app.get('/user/:userslug/outbox', [...middlewares, middleware.exposeUid], controllers.activitypub.getOutbox);
-	app.post('/user/:userslug/outbox', [...middlewares, middleware.exposeUid], controllers.activitypub.postOutbox);
+	app.get('/uid/:uid/outbox', middlewares, controllers.activitypub.getOutbox);
+	app.post('/uid/:uid/outbox', middlewares, controllers.activitypub.postOutbox);
 
-	app.get('/user/:userslug/following', [...middlewares, middleware.exposeUid], controllers.activitypub.getFollowing);
-	app.get('/user/:userslug/followers', [...middlewares, middleware.exposeUid], controllers.activitypub.getFollowers);
+	app.get('/uid/:uid/following', middlewares, controllers.activitypub.getFollowing);
+	app.get('/uid/:uid/followers', middlewares, controllers.activitypub.getFollowers);
 
 	app.get('/post/:pid', middlewares, controllers.activitypub.actors.note);
 };
