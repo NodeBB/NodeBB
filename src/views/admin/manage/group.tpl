@@ -124,19 +124,19 @@
 
 				<hr />
 
-				<div class="mb-3">
-					<label class="form-label" for="memberPostCids">[[groups:details.member-post-cids]]</label>
+				<div class="d-flex flex-column gap-1 mb-3">
+					<label class="form-label" for="memberPostCids" for="memberPostCids">[[groups:details.member-post-cids]]</label>
 					<div class="d-flex gap-1 align-items-center">
 						<div class="member-post-cids-selector">
 							<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 						</div>
-						<input id="memberPostCids" type="text" class="form-control" value="{group.memberPostCids}">
+						<input id="memberPostCids" type="text" class="form-control form-control-sm" value="{group.memberPostCids}">
 					</div>
 				</div>
 
 				<hr />
 
-				<div>
+				<div class="d-flex flex-column gap-2">
 					<label class="form-label">[[admin/manage/groups:edit.members]]</label>
 
 					<div class="">
