@@ -98,10 +98,15 @@ categoryController.get = async function (req, res, next) {
 	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 	categoryData.tagWhitelist = categories.filterTagWhitelist(categoryData.tagWhitelist, userPrivileges.isAdminOrMod);
 
-	await buildBreadcrumbs(req, categoryData);
+	const allCategories = [];
+	categories.flattenCategories(allCategories, categoryData.children);
+
+	await Promise.all([
+		buildBreadcrumbs(req, categoryData),
+		categories.setUnread([categoryData], allCategories.map(c => c.cid).concat(cid), req.uid),
+	]);
+
 	if (categoryData.children.length) {
-		const allCategories = [];
-		categories.flattenCategories(allCategories, categoryData.children);
 		await categories.getRecentTopicReplies(allCategories, req.uid, req.query);
 		categoryData.subCategoriesLeft = Math.max(0, categoryData.children.length - categoryData.subCategoriesPerPage);
 		categoryData.hasMoreSubCategories = categoryData.children.length > categoryData.subCategoriesPerPage;
@@ -124,9 +129,6 @@ categoryController.get = async function (req, res, next) {
 	categoryData.topicIndex = topicIndex;
 	categoryData.selectedTag = tagData.selectedTag;
 	categoryData.selectedTags = tagData.selectedTags;
-	if (req.loggedIn) {
-		categories.markAsRead([cid], req.uid);
-	}
 
 	if (!meta.config['feeds:disableRSS']) {
 		categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;

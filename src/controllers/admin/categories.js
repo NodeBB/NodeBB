@@ -14,7 +14,7 @@ const categoriesController = module.exports;
 
 categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, selectedData] = await Promise.all([
-		categories.getCategories([req.params.category_id], req.uid),
+		categories.getCategories([req.params.category_id]),
 		categories.getParents([req.params.category_id]),
 		helpers.getSelectedCategory(req.params.category_id),
 	]);

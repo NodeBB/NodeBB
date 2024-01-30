@@ -68,7 +68,7 @@ describe('Categories', () => {
 	});
 
 	it('should get all categories', (done) => {
-		Categories.getAllCategories(1, (err, data) => {
+		Categories.getAllCategories((err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			assert.equal(data[0].cid, categoryObj.cid);
