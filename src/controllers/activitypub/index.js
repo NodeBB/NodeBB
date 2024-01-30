@@ -12,37 +12,51 @@ Controller.topics = require('./topics');
 
 Controller.getFollowing = async (req, res) => {
 	const { followingCount: totalItems } = await user.getUserFields(req.params.uid, ['followingCount']);
+	let orderedItems;
 
-	const page = parseInt(req.query.page, 10) || 1;
-	const resultsPerPage = 50;
-	const start = Math.max(0, page - 1) * resultsPerPage;
-	const stop = start + resultsPerPage - 1;
+	if (req.query.page) {
+		const page = parseInt(req.query.page, 10) || 1;
+		const resultsPerPage = 50;
+		const start = Math.max(0, page - 1) * resultsPerPage;
+		const stop = start + resultsPerPage - 1;
 
-	let orderedItems = await user.getFollowing(req.params.uid, start, stop);
-	orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+		orderedItems = await user.getFollowing(req.params.uid, start, stop);
+		orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+	} else {
+		orderedItems = [];
+	}
+
 	res.status(200).json({
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		type: 'OrderedCollection',
 		totalItems,
 		orderedItems,
+		// next, todo...
 	});
 };
 
 Controller.getFollowers = async (req, res) => {
 	const { followerCount: totalItems } = await user.getUserFields(req.params.uid, ['followerCount']);
+	let orderedItems;
 
-	const page = parseInt(req.query.page, 10) || 1;
-	const resultsPerPage = 50;
-	const start = Math.max(0, page - 1) * resultsPerPage;
-	const stop = start + resultsPerPage - 1;
+	if (req.query.page) {
+		const page = parseInt(req.query.page, 10) || 1;
+		const resultsPerPage = 50;
+		const start = Math.max(0, page - 1) * resultsPerPage;
+		const stop = start + resultsPerPage - 1;
 
-	let orderedItems = await user.getFollowers(req.params.uid, start, stop);
-	orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+		orderedItems = await user.getFollowers(req.params.uid, start, stop);
+		orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+	} else {
+		orderedItems = [];
+	}
+
 	res.status(200).json({
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		type: 'OrderedCollection',
 		totalItems,
 		orderedItems,
+		// next, todo...
 	});
 };
 
