@@ -49,7 +49,7 @@ categoriesAPI.create = async function (caller, data) {
 	await hasAdminPrivilege(caller.uid);
 
 	const response = await categories.create(data);
-	const categoryObjs = await categories.getCategories([response.cid], caller.uid);
+	const categoryObjs = await categories.getCategories([response.cid]);
 	return categoryObjs[0];
 };
 
