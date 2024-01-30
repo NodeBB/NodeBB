@@ -281,5 +281,6 @@
 
 	"activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
 	"activitypub.get-failed": "Unable to retrieve the specified resource.",
-	"activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place."
+	"activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+	"activitypub.origin-mismatch": "The received object's origin does not match the sender's origin"
 }

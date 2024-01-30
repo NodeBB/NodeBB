@@ -24,7 +24,14 @@ inbox.create = async (req) => {
 };
 
 inbox.update = async (req) => {
-	const { object } = req.body;
+	const { actor, object } = req.body;
+
+	// Origin checking
+	const actorHostname = new URL(actor).hostname;
+	const objectHostname = new URL(object.id).hostname;
+	if (actorHostname !== objectHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
 
 	switch (object.type) {
 		case 'Note': {
