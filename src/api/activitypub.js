@@ -51,28 +51,32 @@ activitypubApi.unfollow = async (caller, { uid }) => {
 
 activitypubApi.create = {};
 
-activitypubApi.create.post = async (caller, { pid }) => {
-	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
-	if (!post) {
-		return;
-	}
-
-	const [object, followers] = await Promise.all([
-		activitypub.mocks.note(post),
-		db.getSortedSetMembers(`followersRemote:${post.user.uid}`),
-	]);
-
-	const { to, cc } = object;
+// this might be better genericised... tbd. some of to/cc is built in mocks.
+async function buildRecipients(object, uid) {
+	const followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
+	const { to } = object;
 	const targets = new Set(followers);
 	const parentId = await posts.getPostField(object.inReplyTo, 'uid');
 	if (activitypub.helpers.isUri(parentId)) {
 		to.unshift(parentId);
 	}
 
+	return { targets };
+}
+
+activitypubApi.create.post = async (caller, { pid }) => {
+	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
+	if (!post) {
+		return;
+	}
+
+	const object = await activitypub.mocks.note(post);
+	const { targets } = await buildRecipients(object, post.user.uid);
+
 	const payload = {
 		type: 'Create',
-		to,
-		cc,
+		to: object.to,
+		cc: object.cc,
 		object,
 	};
 
@@ -93,4 +97,18 @@ activitypubApi.update.profile = async (caller, { uid }) => {
 		cc: [],
 		object,
 	});
+};
+
+activitypubApi.update.note = async (caller, { post }) => {
+	const object = await activitypub.mocks.note(post);
+	const { targets } = await buildRecipients(object, post.user.uid);
+
+	const payload = {
+		type: 'Update',
+		to: object.to,
+		cc: object.cc,
+		object,
+	};
+
+	await activitypub.send(caller.uid, Array.from(targets), payload);
 };

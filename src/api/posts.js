@@ -140,6 +140,8 @@ postsAPI.edit = async function (caller, data) {
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
+		await require('.').activitypub.update.note(caller, { post: postObj[0] });
+
 		return returnData;
 	}
 
@@ -152,6 +154,7 @@ postsAPI.edit = async function (caller, data) {
 
 	const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
 	uids.forEach(uid => websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
+
 	return returnData;
 };
 
