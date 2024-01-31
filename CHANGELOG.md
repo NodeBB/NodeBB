@@ -1,3 +1,59 @@
+#### v3.6.4 (2024-01-24)
+
+##### Chores
+
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  update changelog for v3.6.3 (92ffc57c)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### New Features
+
+*  add success hook to quick reply (cb21f28b)
+
+##### Bug Fixes
+
+*  if there is no bookmarkThreshold dont init unread indicator (cf40d681)
+*  remove leftover code from 2.x, closes #12301 (d5f445f1)
+*  copy single line code blocks, closes #12297 (06269cdf)
+*  validate plugin id in toggleActive (76f3efff)
+
+##### Tests
+
+*  add plugin id tests (e8befbcc)
+
 #### v3.6.3 (2024-01-12)
 
 ##### Chores
