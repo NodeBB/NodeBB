@@ -195,7 +195,7 @@ define('admin/extend/plugins', [
 				let html = '';
 				activePlugins.forEach(function (plugin) {
 					html += `
-						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2">
+						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2" data-plugin="${plugin}">
 							${plugin}
 							<div class="d-flex gap-1">
 								<div class="btn-ghost-sm move-up">
@@ -233,7 +233,7 @@ define('admin/extend/plugins', [
 			const plugins = $('#order-active-plugins-modal .plugin-list').children();
 			const data = [];
 			plugins.each(function (index, el) {
-				data.push({ name: $(el).text(), order: index });
+				data.push({ name: $(el).attr('data-plugin'), order: index });
 			});
 
 			socket.emit('admin.plugins.orderActivePlugins', data, function (err) {

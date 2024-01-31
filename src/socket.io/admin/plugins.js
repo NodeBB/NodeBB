@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const plugins = require('../../plugins');
 const events = require('../../events');
 const db = require('../../database');
+const { pluginNamePattern } = require('../../constants');
 
 const Plugins = module.exports;
 
@@ -41,7 +42,14 @@ Plugins.orderActivePlugins = async function (socket, data) {
 		throw new Error('[[error:plugins-set-in-configuration]]');
 	}
 	data = data.filter(plugin => plugin && plugin.name);
-	await Promise.all(data.map(plugin => db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name)));
+
+	data.forEach((plugin) => {
+		if (!pluginNamePattern.test(plugin.name)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
+	});
+
+	await db.sortedSetAdd('plugins:active', data.map(p => p.order || 0), data.map(p => p.name));
 };
 
 Plugins.upgrade = async function (socket, data) {
