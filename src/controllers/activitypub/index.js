@@ -11,19 +11,29 @@ Controller.actors = require('./actors');
 Controller.topics = require('./topics');
 
 Controller.getFollowing = async (req, res) => {
-	const { followingCount: totalItems } = await user.getUserFields(req.params.uid, ['followingCount']);
+	const { followingCount, followingRemoteCount } = await user.getUserFields(req.params.uid, ['followingCount', 'followingRemoteCount']);
+	const totalItems = parseInt(followingCount || 0, 10) + parseInt(followingRemoteCount || 0, 10);
 	let orderedItems;
+	let next = (totalItems && `${nconf.get('url')}/uid/${req.params.uid}/following?page=`) || null;
 
-	if (req.query.page) {
-		const page = parseInt(req.query.page, 10) || 1;
-		const resultsPerPage = 50;
-		const start = Math.max(0, page - 1) * resultsPerPage;
-		const stop = start + resultsPerPage - 1;
+	if (totalItems) {
+		if (req.query.page) {
+			const page = parseInt(req.query.page, 10) || 1;
+			const resultsPerPage = 50;
+			const start = Math.max(0, page - 1) * resultsPerPage;
+			const stop = start + resultsPerPage - 1;
 
-		orderedItems = await user.getFollowing(req.params.uid, start, stop);
-		orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
-	} else {
-		orderedItems = [];
+			orderedItems = await user.getFollowing(req.params.uid, start, stop);
+			orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+			if (stop < totalItems - 1) {
+				next = `${next}${page + 1}`;
+			} else {
+				next = null;
+			}
+		} else {
+			orderedItems = [];
+			next = `${next}1`;
+		}
 	}
 
 	res.status(200).json({
@@ -31,24 +41,34 @@ Controller.getFollowing = async (req, res) => {
 		type: 'OrderedCollection',
 		totalItems,
 		orderedItems,
-		// next, todo...
+		next,
 	});
 };
 
 Controller.getFollowers = async (req, res) => {
-	const { followerCount: totalItems } = await user.getUserFields(req.params.uid, ['followerCount']);
-	let orderedItems;
+	const { followerCount, followerRemoteCount } = await user.getUserFields(req.params.uid, ['followerCount', 'followerRemoteCount']);
+	const totalItems = parseInt(followerCount || 0, 10) + parseInt(followerRemoteCount || 0, 10);
+	let orderedItems = [];
+	let next = (totalItems && `${nconf.get('url')}/uid/${req.params.uid}/followers?page=`) || null;
 
-	if (req.query.page) {
-		const page = parseInt(req.query.page, 10) || 1;
-		const resultsPerPage = 50;
-		const start = Math.max(0, page - 1) * resultsPerPage;
-		const stop = start + resultsPerPage - 1;
+	if (totalItems) {
+		if (req.query.page) {
+			const page = parseInt(req.query.page, 10) || 1;
+			const resultsPerPage = 50;
+			const start = Math.max(0, page - 1) * resultsPerPage;
+			const stop = start + resultsPerPage - 1;
 
-		orderedItems = await user.getFollowers(req.params.uid, start, stop);
-		orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
-	} else {
-		orderedItems = [];
+			orderedItems = await user.getFollowers(req.params.uid, start, stop);
+			orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+			if (stop < totalItems - 1) {
+				next = `${next}${page + 1}`;
+			} else {
+				next = null;
+			}
+		} else {
+			orderedItems = [];
+			next = `${next}1`;
+		}
 	}
 
 	res.status(200).json({
@@ -56,7 +76,7 @@ Controller.getFollowers = async (req, res) => {
 		type: 'OrderedCollection',
 		totalItems,
 		orderedItems,
-		// next, todo...
+		next,
 	});
 };
 
