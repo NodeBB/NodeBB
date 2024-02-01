@@ -4,6 +4,7 @@ const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
+const posts = require('../posts');
 const activitypub = require('.');
 
 const helpers = require('./helpers');
@@ -51,6 +52,13 @@ inbox.update = async (req) => {
 			break;
 		}
 	}
+};
+
+inbox.like = async (req) => {
+	const { actor, object } = req.body;
+	const pid = await activitypub.helpers.resolveLocalPid(object);
+
+	await posts.upvote(pid, actor);
 };
 
 inbox.follow = async (req) => {
@@ -119,20 +127,29 @@ inbox.undo = async (req) => {
 	const { actor, object } = req.body;
 	const { type } = object;
 
-	const uid = await helpers.resolveLocalUid(object.object);
-	if (!uid) {
-		throw new Error('[[error:invalid-uid]]');
-	}
-
 	const assertion = await activitypub.actors.assert(actor);
 	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	if (type === 'Follow') {
-		await Promise.all([
-			db.sortedSetRemove(`followersRemote:${uid}`, actor),
-			db.decrObjectField(`user:${uid}`, 'followerRemoteCount'),
-		]);
+	switch (type) {
+		case 'Follow': {
+			const uid = await helpers.resolveLocalUid(object.object);
+			if (!uid) {
+				throw new Error('[[error:invalid-uid]]');
+			}
+
+			await Promise.all([
+				db.sortedSetRemove(`followersRemote:${uid}`, actor),
+				db.decrObjectField(`user:${uid}`, 'followerRemoteCount'),
+			]);
+			break;
+		}
+
+		case 'Like': {
+			const pid = await helpers.resolveLocalPid(object.object);
+			await posts.unvote(pid, actor);
+			break;
+		}
 	}
 };

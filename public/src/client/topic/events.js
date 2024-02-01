@@ -71,7 +71,7 @@ define('forum/topic/events', [
 
 	function updatePostVotesAndUserReputation(data) {
 		const votes = $('[data-pid="' + data.post.pid + '"] [component="post/vote-count"]').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		});
 		const reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
@@ -225,10 +225,10 @@ define('forum/topic/events', [
 	function togglePostVote(data) {
 		const post = $('[data-pid="' + data.post.pid + '"]');
 		post.find('[component="post/upvote"]').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		}).toggleClass('upvoted', data.upvote);
 		post.find('[component="post/downvote"]').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		}).toggleClass('downvoted', data.downvote);
 	}
 

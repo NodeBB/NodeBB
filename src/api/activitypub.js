@@ -28,6 +28,7 @@ activitypubApi.follow = async (caller, { uid } = {}) => {
 	});
 };
 
+// should be .undo.follow
 activitypubApi.unfollow = async (caller, { uid }) => {
 	const result = await activitypub.helpers.query(uid);
 	if (!result) {
@@ -111,4 +112,46 @@ activitypubApi.update.note = async (caller, { post }) => {
 	};
 
 	await activitypub.send(caller.uid, Array.from(targets), payload);
+};
+
+activitypubApi.like = {};
+
+activitypubApi.like.note = async (caller, { pid }) => {
+	if (!activitypub.helpers.isUri(pid)) {
+		return;
+	}
+
+	const uid = await posts.getPostField(pid, 'uid');
+	if (!activitypub.helpers.isUri(uid)) {
+		return;
+	}
+
+	await activitypub.send(caller.uid, [uid], {
+		type: 'Like',
+		object: pid,
+	});
+};
+
+activitypubApi.undo = {};
+
+// activitypubApi.undo.follow =
+
+activitypubApi.undo.like = async (caller, { pid }) => {
+	if (!activitypub.helpers.isUri(pid)) {
+		return;
+	}
+
+	const uid = await posts.getPostField(pid, 'uid');
+	if (!activitypub.helpers.isUri(uid)) {
+		return;
+	}
+
+	await activitypub.send(caller.uid, [uid], {
+		type: 'Undo',
+		object: {
+			actor: `${nconf.get('url')}/uid/${caller.uid}`,
+			type: 'Like',
+			object: pid,
+		},
+	});
 };

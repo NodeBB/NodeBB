@@ -94,7 +94,7 @@ Helpers.resolveLocalUid = async (input) => {
 		const { host, pathname } = new URL(input);
 
 		if (host === nconf.get('url_parsed').host) {
-			const [type, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean)[1];
+			const [type, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean);
 			if (type === 'uid') {
 				return value;
 			}
@@ -110,4 +110,18 @@ Helpers.resolveLocalUid = async (input) => {
 	}
 
 	return await user.getUidByUserslug(slug);
+};
+
+Helpers.resolveLocalPid = async (uri) => {
+	const { host, pathname } = new URL(uri);
+	if (host === nconf.get('url_parsed').host) {
+		const [type, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean);
+		if (type !== 'post') {
+			throw new Error('[[error:activitypub.invalid-id]]');
+		}
+
+		return value;
+	}
+
+	throw new Error('[[error:activitypub.invalid-id]]');
 };

@@ -77,7 +77,7 @@ define('forum/topic/votes', [
 
 		const method = currentState ? 'del' : 'put';
 		const pid = post.attr('data-pid');
-		api[method](`/posts/${pid}/vote`, {
+		api[method](`/posts/${encodeURIComponent(pid)}/vote`, {
 			delta: delta,
 		}, function (err) {
 			if (err) {
