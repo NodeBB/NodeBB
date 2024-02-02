@@ -22,7 +22,7 @@
 					<option value="500">[[admin/manage/users:500-per-page]]</option>
 				</select>
 				<div class="btn-group" id="filter-by">
-					<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+					<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						[[admin/manage/users:filter-by]] <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
@@ -38,49 +38,49 @@
 					</ul>
 				</div>
 				<div class="btn-group">
-					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
-					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm">
+					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
+					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" role="menu">
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:email]]</h6></li>
-						<li><a href="#" class="dropdown-item rounded-1 change-email"><i class="text-secondary fa fa-fw fa-envelope text-start"></i> [[admin/manage/users:change-email]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 validate-email"><i class="text-secondary fa fa-fw fa-envelope-circle-check"></i> [[admin/manage/users:validate-email]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 send-validation-email"><i class="text-secondary fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 change-email" role="menuitem"><i class="text-secondary fa fa-fw fa-envelope text-start"></i> [[admin/manage/users:change-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 validate-email" role="menuitem"><i class="text-secondary fa fa-fw fa-envelope-circle-check"></i> [[admin/manage/users:validate-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 send-validation-email" role="menuitem"><i class="text-secondary fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
 
 						<li><hr class="dropdown-divider"></li>
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:password]]</h6></li>
-						<li><a href="#" class="dropdown-item rounded-1 change-password"><i class="text-secondary fa fa-fw fa-key"></i> [[admin/manage/users:change-password]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 password-reset-email"><i class="text-secondary fa fa-fw fa-envelope-open-text"></i> [[admin/manage/users:password-reset-email]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 force-password-reset"><i class="text-secondary fa fa-fw fa-user-lock"></i> [[admin/manage/users:force-password-reset]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 reset-lockout"><i class="text-secondary fa fa-fw fa-lock-open"></i> [[admin/manage/users:reset-lockout]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 change-password" role="menuitem"><i class="text-secondary fa fa-fw fa-key"></i> [[admin/manage/users:change-password]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 password-reset-email" role="menuitem"><i class="text-secondary fa fa-fw fa-envelope-open-text"></i> [[admin/manage/users:password-reset-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 force-password-reset" role="menuitem"><i class="text-secondary fa fa-fw fa-user-lock"></i> [[admin/manage/users:force-password-reset]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 reset-lockout" role="menuitem"><i class="text-secondary fa fa-fw fa-lock-open"></i> [[admin/manage/users:reset-lockout]]</a></li>
 
 						<li><hr class="dropdown-divider"></li>
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:manage]]</h6></li>
-						<li><a href="#" class="dropdown-item rounded-1 manage-groups"><i class="text-secondary fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 set-reputation"><i class="text-secondary fa fa-fw fa-star"></i> [[admin/manage/users:set-reputation]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 manage-groups" role="menuitem"><i class="text-secondary fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 set-reputation" role="menuitem"><i class="text-secondary fa fa-fw fa-star"></i> [[admin/manage/users:set-reputation]]</a></li>
 
 						<li><hr class="dropdown-divider"></li>
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:ban]]</h6></li>
-						<li><a href="#" class="dropdown-item rounded-1 ban-user"><i class="text-secondary fa fa-fw fa-gavel"></i> [[admin/manage/users:ban-users]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary"><i class="text-secondary fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 unban-user"><i class="text-secondary fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 ban-user" role="menuitem"><i class="text-secondary fa fa-fw fa-gavel"></i> [[admin/manage/users:ban-users]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary" role="menuitem"><i class="text-secondary fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 unban-user" role="menuitem"><i class="text-secondary fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
 
 						<li><hr class="dropdown-divider"></li>
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:delete]]</h6></li>
-						<li><a href="#" class="dropdown-item rounded-1 delete-user"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-users]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 delete-user-content"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 delete-user-and-content"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 delete-user" role="menuitem"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-users]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 delete-user-content" role="menuitem"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 delete-user-and-content" role="menuitem"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
 					</ul>
 				</div>
 				<div class="btn-group">
-					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="fa fa-gear text-primary"></i></button>
-					<ul class="dropdown-menu dropdown-menu-end p-1">
-						<li><a class="dropdown-item rounded-1" href="#" data-action="create">[[admin/manage/users:create]]</a></li>
-						{{{ if showInviteButton }}}<li><a class="dropdown-item rounded-1" href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
-						<li><a target="_blank" href="#" class="dropdown-item rounded-1 export-csv">[[admin/manage/users:download-csv]]</a></li>
+					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"><i class="fa fa-gear text-primary"></i></button>
+					<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
+						<li><a class="dropdown-item rounded-1" href="#" data-action="create" role="menuitem">[[admin/manage/users:create]]</a></li>
+						{{{ if showInviteButton }}}<li><a class="dropdown-item rounded-1" href="#" component="user/invite" role="menuitem">[[admin/manage/users:invite]]</a></li>{{{ end }}}
+						<li><a target="_blank" href="#" class="dropdown-item rounded-1 export-csv" role="menuitem">[[admin/manage/users:download-csv]]</a></li>
 					</ul>
 				</div>
 			</div>
@@ -156,11 +156,11 @@
 							<td>
 								{{{ if ./ips.length }}}
 								<div class="dropdown">
-									<button class="btn btn-light btn-sm" data-bs-toggle="dropdown"><i class="fa fa-fw fa-list text-muted"></i></button>
-									<ul class="dropdown-menu p-1">
+									<button class="btn btn-light btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-list text-muted"></i></button>
+									<ul class="dropdown-menu p-1" role="menu">
 										{{{ each ./ips }}}
 										<li class="d-flex gap-1 {{{ if !@last }}}mb-1{{{ end }}}">
-											<a class="dropdown-item rounded-1">{@value}</a>
+											<a class="dropdown-item rounded-1" role="menuitem">{@value}</a>
 											<button data-ip="{@value}" onclick="navigator.clipboard.writeText(this.getAttribute('data-ip'))" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
 										</li>
 										{{{ end }}}
