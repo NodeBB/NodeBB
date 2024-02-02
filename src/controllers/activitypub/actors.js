@@ -4,6 +4,7 @@ const nconf = require('nconf');
 
 const meta = require('../../meta');
 const posts = require('../../posts');
+const categories = require('../../categories');
 const activitypub = require('../../activitypub');
 
 const Actors = module.exports;
@@ -33,7 +34,7 @@ Actors.application = async function (req, res) {
 
 Actors.user = async function (req, res) {
 	// todo: view:users priv gate
-	const payload = await activitypub.mocks.actor(req.params.uid);
+	const payload = await activitypub.mocks.actors.user(req.params.uid);
 
 	res.status(200).json(payload);
 };
@@ -54,5 +55,15 @@ Actors.note = async function (req, res, next) {
 	}
 
 	const payload = await activitypub.mocks.note(post);
+	res.status(200).json(payload);
+};
+
+Actors.category = async function (req, res, next) {
+	const exists = await categories.exists(req.params.cid);
+	if (!exists) {
+		return next('route');
+	}
+
+	const payload = await activitypub.mocks.actors.category(req.params.cid);
 	res.status(200).json(payload);
 };

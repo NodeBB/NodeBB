@@ -2,10 +2,13 @@
 
 const nconf = require('nconf');
 const mime = require('mime');
+const path = require('path');
 
 const user = require('../user');
+const categories = require('../categories');
 const posts = require('../posts');
 const topics = require('../topics');
+const utils = require('../utils');
 
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
@@ -111,7 +114,9 @@ Mocks.post = async (objects) => {
 	return single ? posts.pop() : posts;
 };
 
-Mocks.actor = async (uid) => {
+Mocks.actors = {};
+
+Mocks.actors.user = async (uid) => {
 	let { username, userslug, displayname: name, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
 	const publicKey = await activitypub.getPublicKey(uid);
 
@@ -154,6 +159,36 @@ Mocks.actor = async (uid) => {
 			owner: `${nconf.get('url')}/uid/${uid}`,
 			publicKeyPem: publicKey,
 		},
+	};
+};
+
+Mocks.actors.category = async (cid) => {
+	let { name, slug, description: summary, backgroundImage } = await categories.getCategoryData(cid);
+
+	if (backgroundImage) {
+		const filename = utils.decodeHTMLEntities(backgroundImage).split('/').pop();
+		const imagePath = path.join(nconf.get('upload_path'), 'category', filename);
+		backgroundImage = {
+			type: 'Image',
+			mediaType: mime.getType(imagePath),
+			url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
+		};
+	}
+
+	return {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${nconf.get('url')}/category/${cid}`,
+		url: `${nconf.get('url')}/category/${slug}`,
+		// followers: ,
+		//  following: ,
+		inbox: `${nconf.get('url')}/category/${cid}/inbox`,
+		outbox: `${nconf.get('url')}/category/${cid}/outbox`,
+
+		type: 'Group',
+		name,
+		preferredUsername: name,
+		summary,
+		icon: backgroundImage,
 	};
 };
 

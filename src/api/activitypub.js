@@ -88,7 +88,7 @@ activitypubApi.update = {};
 
 activitypubApi.update.profile = async (caller, { uid }) => {
 	const [object, followers] = await Promise.all([
-		activitypub.mocks.actor(uid),
+		activitypub.mocks.actors.user(uid),
 		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
 	]);
 
