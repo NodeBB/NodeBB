@@ -206,5 +206,8 @@
     "no-more-next-post": "אין לכם יותר פוסטים בנושא זה",
     "post-quick-reply": "תגובה מהירה",
     "navigator.index": "פוסט %1 מתוך %2",
-    "navigator.unread": "%1 לא נקראו"
+    "navigator.unread": "%1 לא נקראו",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

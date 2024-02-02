@@ -206,5 +206,8 @@
     "no-more-next-post": "Bạn không có bài viết nào khác trong chủ đề này",
     "post-quick-reply": "Trả lời nhanh",
     "navigator.index": "Post %1 of %2",
-    "navigator.unread": "%1 chưa đọc"
+    "navigator.unread": "%1 chưa đọc",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

@@ -206,5 +206,8 @@
     "no-more-next-post": "您在此主题中没有更多的帖子了",
     "post-quick-reply": "快速回复",
     "navigator.index": "发布 %2 的 %1",
-    "navigator.unread": "未读 %1"
+    "navigator.unread": "未读 %1",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

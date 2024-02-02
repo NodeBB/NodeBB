@@ -206,5 +206,8 @@
     "no-more-next-post": "شما پست بیشتری در این تاپیک ندارید",
     "post-quick-reply": "پاسخ سریع",
     "navigator.index": "پست %1 از %2",
-    "navigator.unread": "%1 خوانده نشده"
+    "navigator.unread": "%1 خوانده نشده",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

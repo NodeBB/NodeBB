@@ -206,5 +206,8 @@
     "no-more-next-post": "Neked nincs több bejegyzésed ebben a témakörben",
     "post-quick-reply": "Gyors válasz",
     "navigator.index": "Bejegyzés %1 / %2",
-    "navigator.unread": "%1 olvasatlan"
+    "navigator.unread": "%1 olvasatlan",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

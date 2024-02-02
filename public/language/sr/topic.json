@@ -206,5 +206,8 @@
     "no-more-next-post": "Немате више порука у овој теми",
     "post-quick-reply": "Брзи одговор",
     "navigator.index": "Објава %1 од %2",
-    "navigator.unread": "%1 непрочитане"
+    "navigator.unread": "%1 непрочитане",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

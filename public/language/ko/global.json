@@ -139,5 +139,6 @@
     "user-search-prompt": "사용자를 찾기 위해 여기에 검색어를 입력하십시오...",
     "hidden": "Hidden",
     "sort": "Sort",
-    "actions": "Actions"
+    "actions": "Actions",
+    "rss-feed": "RSS Feed"
 }

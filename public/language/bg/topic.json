@@ -206,5 +206,8 @@
     "no-more-next-post": "Нямате повече публикации в тази тема",
     "post-quick-reply": "Бърз отговор",
     "navigator.index": "Публикация %1 от %2",
-    "navigator.unread": "%1 непрочетени"
+    "navigator.unread": "%1 непрочетени",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

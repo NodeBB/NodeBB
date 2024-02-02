@@ -139,5 +139,6 @@
     "user-search-prompt": "Введіть щось тут, щоб знайти користувачів...",
     "hidden": "Hidden",
     "sort": "Sort",
-    "actions": "Actions"
+    "actions": "Actions",
+    "rss-feed": "RSS Feed"
 }

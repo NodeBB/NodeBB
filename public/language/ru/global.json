@@ -139,5 +139,6 @@
     "user-search-prompt": "Введите что-нибудь здесь, чтобы найти пользователей...",
     "hidden": "не показывается",
     "sort": "Сортировка",
-    "actions": "Actions"
+    "actions": "Actions",
+    "rss-feed": "RSS Feed"
 }

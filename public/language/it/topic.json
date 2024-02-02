@@ -206,5 +206,8 @@
     "no-more-next-post": "Non hai più post in questa discussione",
     "post-quick-reply": "Risposta rapida",
     "navigator.index": "Post %1 di %2",
-    "navigator.unread": "%1 non letto"
+    "navigator.unread": "%1 non letto",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

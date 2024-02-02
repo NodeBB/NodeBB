@@ -206,5 +206,8 @@
     "no-more-next-post": "Bu başlıkta başka bir iletiniz bulunmamaktadır.",
     "post-quick-reply": "Hızlı Yanıt Gönder",
     "navigator.index": "Post %1 of %2",
-    "navigator.unread": "%1 Okunmamış"
+    "navigator.unread": "%1 Okunmamış",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }

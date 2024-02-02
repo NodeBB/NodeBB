@@ -206,5 +206,8 @@
     "no-more-next-post": "Այս թեմայում այլ գրառումներ չունեք",
     "post-quick-reply": "Արագ պատասխան",
     "navigator.index": "Գրառում %1 %2 - ից",
-    "navigator.unread": "%1 չկարդացված"
+    "navigator.unread": "%1 չկարդացված",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools"
 }
