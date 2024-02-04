@@ -3,7 +3,7 @@
     "no-tag-topics": "Không có bài viết nào với thẻ này.",
     "no-tags-found": "Không tìm thấy thẻ nào",
     "tags": "Thẻ",
-    "enter-tags-here": "Nhập thẻ ở đây, mỗi thẻ phải có từ %1 tới %2 ký tự.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Nhập thẻ...",
     "no-tags": "Chưa có thẻ nào.",
     "select-tags": "Chọn Thẻ",

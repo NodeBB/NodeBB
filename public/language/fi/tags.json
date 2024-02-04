@@ -3,7 +3,7 @@
     "no-tag-topics": "Tällä tunnisteella ei ole merkitty aiheita.",
     "no-tags-found": "Tunnisteita ei löytynyt",
     "tags": "Tunnisteet",
-    "enter-tags-here": "Syötä tunnisteet tähän, yksittäisen pituus %1–%2 merkkiä.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Syötä tunnisteita...",
     "no-tags": "Tunnisteita ei vielä ole.",
     "select-tags": "Valitse tunnisteita",

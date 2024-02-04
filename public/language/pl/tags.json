@@ -3,7 +3,7 @@
     "no-tag-topics": "Nie ma tematów z tym tagiem",
     "no-tags-found": "Nie znaleziono tagów",
     "tags": "Tagi",
-    "enter-tags-here": "Wpisz tagi tutaj, każdy o długości od %1 do %2 znaków.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Wpisz tagi...",
     "no-tags": "Jeszcze nie ma tagów.",
     "select-tags": "Wybierz tagi",
