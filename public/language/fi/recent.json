@@ -1,11 +1,11 @@
 {
-    "title": "Viimeisimmät",
+    "title": "Tuoreimmat",
     "day": "Päivä",
     "week": "Viikko",
     "month": "Kuukausi",
     "year": "Vuosi",
     "alltime": "Alusta lähtien",
-    "no-recent-topics": "Ei viimeisimpiä aiheita.",
+    "no-recent-topics": "Tuoreita aiheita ei ole.",
     "no-popular-topics": "Ei päivityksiä suosituimmissa aiheissa",
     "load-new-posts": "Load new posts"
 }

@@ -1,7 +1,7 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"notifications": "Ilmoitukset",
+	"welcome-notification": "Tervetuloilmoitus",
+	"welcome-notification-link": "Tervetuloilmoituksen linkki",
+	"welcome-notification-uid": "Tervetuloilmoituksen käyttäjä (UID)",
 	"post-queue-notification-uid": "Post Queue User (UID)"
 }
