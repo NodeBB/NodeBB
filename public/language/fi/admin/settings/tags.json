@@ -1,13 +1,13 @@
 {
-    "tag": "Tag Settings",
-    "link-to-manage": "Manage Tags",
-    "system-tags": "System Tags",
+    "tag": "Tunnisteasetukset",
+    "link-to-manage": "Hallitse tunnisteita",
+    "system-tags": "Järjestelmätunnisteet",
     "system-tags-help": "Only privileged users will be able to use these tags.",
-    "tags-per-topic": "Tags per topic",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tags-per-topic": "Tunnisteita aihetta kohden",
+    "min-per-topic": "Tunnisteiden aihekohtainen vähimmäismäärä",
+    "max-per-topic": "Tunnisteiden aihekohtainen enimmäismäärä",
+    "min-length": "Tunnisteen vähimmäispituus",
+    "max-length": "Tunnisteen enimmäispituus",
+    "related-topics": "Liittyvät aiheet",
+    "max-related-topics": "Näytettävien liittyvien aiheiden enimmäismäärä (jos ulkoasuteema tukee)"
 }

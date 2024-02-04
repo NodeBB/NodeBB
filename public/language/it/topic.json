@@ -207,7 +207,7 @@
     "post-quick-reply": "Risposta rapida",
     "navigator.index": "Post %1 di %2",
     "navigator.unread": "%1 non letto",
-    "upvote-post": "Upvote post",
-    "downvote-post": "Downvote post",
-    "post-tools": "Post tools"
+    "upvote-post": "Vota positivamente il post",
+    "downvote-post": "Vota negativamente il post",
+    "post-tools": "Strumenti post"
 }
