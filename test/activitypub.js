@@ -55,7 +55,7 @@ describe('ActivityPub integration', () => {
 			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`);
 
 			assert(response);
-			assert.strictEqual(response.statusCode, 403);
+			assert.strictEqual(response.statusCode, 400);
 			await privileges.global.give(['groups:view:users'], 'guests');
 		});
 
@@ -128,17 +128,15 @@ describe('ActivityPub integration', () => {
 
 	describe('ActivityPub screener middleware', () => {
 		let uid;
-		let slug;
 
 		beforeEach(async () => {
-			slug = slugify(utils.generateUUID().slice(0, 8));
-			uid = await user.create({ username: slug });
+			uid = await user.create({ username: slugify(utils.generateUUID().slice(0, 8)) });
 		});
 
 		it('should return regular user profile html if federation is disabled', async () => {
 			delete meta.config.activitypubEnabled;
 
-			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
+			const { response, body } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
 				headers: {
 					Accept: 'text/html',
 				},
@@ -152,7 +150,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return regular user profile html if Accept header is not ActivityPub-related', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
+			const { response, body } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
 				headers: {
 					Accept: 'text/html',
 				},
@@ -164,7 +162,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return the ActivityPub Actor JSON-LD payload if the correct Accept header is provided', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
+			const { response, body } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
@@ -187,7 +185,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a valid ActivityPub Actor JSON-LD payload', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
+			const { response, body } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
@@ -203,12 +201,12 @@ describe('ActivityPub integration', () => {
 				assert(body[prop]);
 			});
 
-			assert.strictEqual(body.id, body.url);
+			assert.strictEqual(body.id, `${nconf.get('url')}/uid/${uid}`);
 			assert.strictEqual(body.type, 'Person');
 		});
 
 		it('should contain a `publicKey` property with a public key', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/user/${slug}`, {
+			const { response, body } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 				},
@@ -269,15 +267,13 @@ describe('ActivityPub integration', () => {
 	describe('http signature signing and verification', () => {
 		describe('.sign()', () => {
 			let uid;
-			let username;
 
 			before(async () => {
-				username = utils.generateUUID().slice(0, 10);
-				uid = await user.create({ username });
+				uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 			});
 
 			it('should create a key-pair for a user if the user does not have one already', async () => {
-				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				await activitypub.sign(uid, endpoint);
 				const { publicKey, privateKey } = await db.getObject(`uid:${uid}:keys`);
 
@@ -286,7 +282,7 @@ describe('ActivityPub integration', () => {
 			});
 
 			it('should return an object with date, a null digest, and signature, if no payload is passed in', async () => {
-				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				const { date, digest, signature } = await activitypub.sign(uid, endpoint);
 				const dateObj = new Date(date);
 
@@ -296,7 +292,7 @@ describe('ActivityPub integration', () => {
 			});
 
 			it('should also return a digest hash if payload is passed in', async () => {
-				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				const payload = { foo: 'bar' };
 				const { digest } = await activitypub.sign(uid, endpoint, payload);
 				const hash = createHash('sha256');
@@ -308,7 +304,7 @@ describe('ActivityPub integration', () => {
 			});
 
 			it('should create a key for NodeBB itself if a uid of 0 is passed in', async () => {
-				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				await activitypub.sign(0, endpoint);
 				const { publicKey, privateKey } = await db.getObject(`uid:0:keys`);
 
@@ -317,16 +313,16 @@ describe('ActivityPub integration', () => {
 			});
 
 			it('should return headers with an appropriate key id uri', async () => {
-				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				const { signature } = await activitypub.sign(uid, endpoint);
 				const [keyId] = signature.split(',');
 
 				assert(signature);
-				assert.strictEqual(keyId, `keyId="${nconf.get('url')}/user/${username}#key"`);
+				assert.strictEqual(keyId, `keyId="${nconf.get('url')}/uid/${uid}#key"`);
 			});
 
 			it('should return the instance key id when uid is 0', async () => {
-				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				const { signature } = await activitypub.sign(0, endpoint);
 				const [keyId] = signature.split(',');
 
@@ -393,7 +389,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe.only('Receipt of ActivityPub events to inboxes (federating IN)', () => {
+	describe('Receipt of ActivityPub events to inboxes (federating IN)', () => {
 		describe('Create', () => {
 			describe('Note', () => {
 				let category;
@@ -402,7 +398,7 @@ describe('ActivityPub integration', () => {
 				let topic;
 
 				before(async () => {
-					category = await categories.create({ name: 'test' });
+					category = await categories.create({ name: utils.generateUUID().slice(0, 8) });
 					const slug = slugify(utils.generateUUID().slice(0, 8));
 					uid = await user.create({ username: slug });
 
@@ -444,6 +440,57 @@ describe('ActivityPub integration', () => {
 				});
 
 				// todo: test topic replies, too
+			});
+		});
+	});
+
+	describe('Serving of local assets to remote clients', () => {
+		let category;
+		let uid;
+		let postData;
+		let topicData;
+
+		before(async () => {
+			category = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			const slug = slugify(utils.generateUUID().slice(0, 8));
+			uid = await user.create({ username: slug });
+
+			({ postData, topicData } = await topics.post({
+				uid,
+				cid: category.cid,
+				title: 'Lipsum title',
+				content: 'Lorem ipsum dolor sit amet',
+			}));
+		});
+
+		describe('Note', () => {
+			let body;
+			let response;
+
+			before(async () => {
+				({ body, response } = await request.get(`${nconf.get('url')}/post/${postData.pid}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				}));
+			});
+
+			it('should return a 404 on a non-existant post', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/post/${parseInt(postData.pid, 10) + 1}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				});
+
+				assert.strictEqual(response.statusCode, 404);
+			});
+
+			it('should return a 200 response on an existing post', () => {
+				assert.strictEqual(response.statusCode, 200);
+			});
+
+			it('should return the expected Content-Type header', () => {
+				assert.strictEqual(response.headers['content-type'], 'application/activity+json; charset=utf-8');
 			});
 		});
 	});
