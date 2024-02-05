@@ -2,6 +2,7 @@
 
 const db = require('../database');
 const user = require('../user');
+const activitypub = require('../activitypub');
 
 module.exports = function (Categories) {
 	Categories.watchStates = {
@@ -20,7 +21,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getWatchState = async function (cids, uid) {
-		if (!(parseInt(uid, 10) > 0)) {
+		if (!activitypub.helpers.isUri(uid) && !(parseInt(uid, 10) > 0)) {
 			return cids.map(() => Categories.watchStates.notwatching);
 		}
 		if (!Array.isArray(cids) || !cids.length) {

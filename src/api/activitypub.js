@@ -22,7 +22,7 @@ activitypubApi.follow = async (caller, { uid } = {}) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send(caller.uid, [result.actorUri], {
+	await activitypub.send('uid', caller.uid, [result.actorUri], {
 		type: 'Follow',
 		object: result.actorUri,
 	});
@@ -35,7 +35,7 @@ activitypubApi.unfollow = async (caller, { uid }) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send(caller.uid, [result.actorUri], {
+	await activitypub.send('uid', caller.uid, [result.actorUri], {
 		type: 'Undo',
 		object: {
 			type: 'Follow',
@@ -81,7 +81,7 @@ activitypubApi.create.post = async (caller, { pid }) => {
 		object,
 	};
 
-	await activitypub.send(caller.uid, Array.from(targets), payload);
+	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
 };
 
 activitypubApi.update = {};
@@ -92,7 +92,7 @@ activitypubApi.update.profile = async (caller, { uid }) => {
 		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
 	]);
 
-	await activitypub.send(caller.uid, followers, {
+	await activitypub.send('uid', caller.uid, followers, {
 		type: 'Update',
 		to: [activitypub._constants.publicAddress],
 		cc: [],
@@ -111,7 +111,7 @@ activitypubApi.update.note = async (caller, { post }) => {
 		object,
 	};
 
-	await activitypub.send(caller.uid, Array.from(targets), payload);
+	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
 };
 
 activitypubApi.like = {};
@@ -126,7 +126,7 @@ activitypubApi.like.note = async (caller, { pid }) => {
 		return;
 	}
 
-	await activitypub.send(caller.uid, [uid], {
+	await activitypub.send('uid', caller.uid, [uid], {
 		type: 'Like',
 		object: pid,
 	});
@@ -146,7 +146,7 @@ activitypubApi.undo.like = async (caller, { pid }) => {
 		return;
 	}
 
-	await activitypub.send(caller.uid, [uid], {
+	await activitypub.send('uid', caller.uid, [uid], {
 		type: 'Undo',
 		object: {
 			actor: `${nconf.get('url')}/uid/${caller.uid}`,

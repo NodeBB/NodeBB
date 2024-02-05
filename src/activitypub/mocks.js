@@ -118,7 +118,7 @@ Mocks.actors = {};
 
 Mocks.actors.user = async (uid) => {
 	let { username, userslug, displayname: name, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
-	const publicKey = await activitypub.getPublicKey(uid);
+	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	if (picture) {
 		const imagePath = await user.getLocalAvatarPath(uid);

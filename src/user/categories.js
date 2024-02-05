@@ -4,11 +4,12 @@ const _ = require('lodash');
 
 const db = require('../database');
 const categories = require('../categories');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.setCategoryWatchState = async function (uid, cids, state) {
-		if (!(parseInt(uid, 10) > 0)) {
+		if (!activitypub.helpers.isUri(uid) && !(parseInt(uid, 10) > 0)) {
 			return;
 		}
 		const isStateValid = Object.values(categories.watchStates).includes(parseInt(state, 10));

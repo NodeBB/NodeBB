@@ -10,7 +10,7 @@ const activitypub = require('../../activitypub');
 const Actors = module.exports;
 
 Actors.application = async function (req, res) {
-	const publicKey = await activitypub.getPublicKey(0);
+	const publicKey = await activitypub.getPublicKey('uid', 0);
 	const name = meta.config.title || 'NodeBB';
 
 	res.status(200).json({

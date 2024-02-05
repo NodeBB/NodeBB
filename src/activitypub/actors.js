@@ -30,13 +30,13 @@ Actors.assert = async (ids, options = {}) => {
 
 	const actors = await Promise.all(ids.map(async (id) => {
 		try {
-			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get(0, id);
+			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id);
 
 			// Follow counts
 			try {
 				const [followers, following] = await Promise.all([
-					actor.followers ? activitypub.get(0, actor.followers) : { totalItems: 0 },
-					actor.following ? activitypub.get(0, actor.following) : { totalItems: 0 },
+					actor.followers ? activitypub.get('uid', 0, actor.followers) : { totalItems: 0 },
+					actor.following ? activitypub.get('uid', 0, actor.following) : { totalItems: 0 },
 				]);
 				actor.followerCount = followers.totalItems;
 				actor.followingCount = following.totalItems;
@@ -46,7 +46,7 @@ Actors.assert = async (ids, options = {}) => {
 			}
 
 			// Post count
-			const outbox = actor.outbox ? await activitypub.get(0, actor.outbox) : { totalItems: 0 };
+			const outbox = actor.outbox ? await activitypub.get('uid', 0, actor.outbox) : { totalItems: 0 };
 			actor.postcount = outbox.totalItems;
 
 			return actor;

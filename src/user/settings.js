@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const meta = require('../meta');
 const db = require('../database');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 const languages = require('../languages');
@@ -16,6 +17,10 @@ module.exports = function (User) {
 		postsPerPage: 20,
 		topicsPerPage: 20,
 	};
+	const remoteDefaultSettings = Object.freeze({
+		categoryWatchState: 'notwatching',
+	});
+
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
 			const isSpider = parseInt(uid, 10) === -1;
@@ -90,6 +95,8 @@ module.exports = function (User) {
 	function getSetting(settings, key, defaultValue) {
 		if (settings[key] || settings[key] === 0) {
 			return settings[key];
+		} else if (activitypub.helpers.isUri(settings.uid) && remoteDefaultSettings[key]) {
+			return remoteDefaultSettings[key];
 		} else if (meta.config[key] || meta.config[key] === 0) {
 			return meta.config[key];
 		}

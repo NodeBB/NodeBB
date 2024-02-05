@@ -5,6 +5,7 @@ const winston = require('winston');
 const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
+const categories = require('../categories');
 const activitypub = require('.');
 
 const helpers = require('./helpers');
@@ -56,16 +57,19 @@ inbox.update = async (req) => {
 
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
-	const pid = await activitypub.helpers.resolveLocalPid(object);
+	const { type, id } = await activitypub.helpers.resolveLocalId(object);
+	if (type !== 'post' || await posts.exists(id)) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
 
-	await posts.upvote(pid, actor);
+	await posts.upvote(id, actor);
 };
 
 inbox.follow = async (req) => {
 	// Sanity checks
-	const localUid = await helpers.resolveLocalUid(req.body.object);
-	if (!localUid) {
-		throw new Error('[[error:invalid-uid]]');
+	const { type, id } = await helpers.resolveLocalId(req.body.object);
+	if (!['category', 'user'].includes(type)) {
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	const assertion = await activitypub.actors.assert(req.body.actor);
@@ -73,24 +77,53 @@ inbox.follow = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	const isFollowed = await inbox.isFollowed(req.body.actor, localUid);
-	if (isFollowed) {
-		// No additional parsing required
-		return;
+	if (type === 'user') {
+		const exists = await user.exists(id);
+		if (!exists) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
+		const isFollowed = await inbox.isFollowed(req.body.actor, id);
+		if (isFollowed) {
+			// No additional parsing required
+			return;
+		}
+
+		const now = Date.now();
+		await db.sortedSetAdd(`followersRemote:${id}`, now, req.body.actor);
+
+		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
+		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
+
+		await activitypub.send('uid', id, req.body.actor, {
+			type: 'Accept',
+			object: {
+				type: 'Follow',
+				actor: req.body.actor,
+			},
+		});
+	} else if (type === 'category') {
+		const exists = await categories.exists(id);
+		if (!exists) {
+			throw new Error('[[error:invalid-cid]]');
+		}
+
+		const watchState = await categories.getWatchState([id], req.body.actor);
+		if (watchState === categories.watchStates.tracking) {
+			// No additional parsing required
+			return;
+		}
+
+		await user.setCategoryWatchState(req.body.actor, id, categories.watchStates.tracking);
+
+		await activitypub.send('cid', id, req.body.actor, {
+			type: 'Accept',
+			object: {
+				type: 'Follow',
+				actor: req.body.actor,
+			},
+		});
 	}
-
-	const now = Date.now();
-	await db.sortedSetAdd(`followersRemote:${localUid}`, now, req.body.actor);
-	await activitypub.send(localUid, req.body.actor, {
-		type: 'Accept',
-		object: {
-			type: 'Follow',
-			actor: req.body.actor,
-		},
-	});
-
-	const followerRemoteCount = await db.sortedSetCard(`followersRemote:${localUid}`);
-	await user.setUserField(localUid, 'followerRemoteCount', followerRemoteCount);
 };
 
 inbox.isFollowed = async (actorId, uid) => {
@@ -104,8 +137,8 @@ inbox.accept = async (req) => {
 	const { actor, object } = req.body;
 	const { type } = object;
 
-	const uid = await helpers.resolveLocalUid(object.actor);
-	if (!uid) {
+	const { type: localType, id: uid } = await helpers.resolveLocalId(object.actor);
+	if (localType !== 'user' || !uid) {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
@@ -124,6 +157,7 @@ inbox.accept = async (req) => {
 };
 
 inbox.undo = async (req) => {
+	// todo: "actor" in this case should be the one in object, no?
 	const { actor, object } = req.body;
 	const { type } = object;
 
@@ -132,23 +166,45 @@ inbox.undo = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
+	const { type: localType, id } = await helpers.resolveLocalId(object.object);
+
 	switch (type) {
 		case 'Follow': {
-			const uid = await helpers.resolveLocalUid(object.object);
-			if (!uid) {
-				throw new Error('[[error:invalid-uid]]');
+			switch (localType) {
+				case 'user': {
+					const exists = await user.exists(id);
+					if (!exists) {
+						throw new Error('[[error:invalid-uid]]');
+					}
+
+					await Promise.all([
+						db.sortedSetRemove(`followersRemote:${id}`, actor),
+						db.decrObjectField(`user:${id}`, 'followerRemoteCount'),
+					]);
+					break;
+				}
+
+				case 'category': {
+					const exists = await categories.exists(id);
+					if (!exists) {
+						throw new Error('[[error:invalid-cid]]');
+					}
+
+					await user.setCategoryWatchState(actor, id, categories.watchStates.notwatching);
+					break;
+				}
 			}
 
-			await Promise.all([
-				db.sortedSetRemove(`followersRemote:${uid}`, actor),
-				db.decrObjectField(`user:${uid}`, 'followerRemoteCount'),
-			]);
 			break;
 		}
 
 		case 'Like': {
-			const pid = await helpers.resolveLocalPid(object.object);
-			await posts.unvote(pid, actor);
+			const exists = await posts.exists(id);
+			if (localType !== 'post' || !exists) {
+				throw new Error('[[error:invalid-pid]]');
+			}
+
+			await posts.unvote(id, actor);
 			break;
 		}
 	}

@@ -88,7 +88,7 @@ describe('ActivityPub integration', () => {
 
 		});
 
-		describe('.resolveLocalUid()', () => {
+		describe('.resolveLocalId()', () => {
 			let uid;
 			let slug;
 
@@ -99,29 +99,29 @@ describe('ActivityPub integration', () => {
 
 			it('should throw when an invalid input is passed in', async () => {
 				await assert.rejects(
-					activitypub.helpers.resolveLocalUid('ncl28h3qwhoiclwnevoinw3u'),
+					activitypub.helpers.resolveLocalId('ncl28h3qwhoiclwnevoinw3u'),
 					{ message: '[[error:activitypub.invalid-id]]' }
 				);
 			});
 
 			it('should return null when valid input is passed but does not resolve', async () => {
-				const uid = await activitypub.helpers.resolveLocalUid(`acct:foobar@${nconf.get('url_parsed').host}`);
-				assert.strictEqual(uid, null);
+				const { id } = await activitypub.helpers.resolveLocalId(`acct:foobar@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(id, null);
 			});
 
 			it('should resolve to a local uid when given a webfinger-style string', async () => {
-				const found = await activitypub.helpers.resolveLocalUid(`acct:${slug}@${nconf.get('url_parsed').host}`);
-				assert.strictEqual(found, uid);
+				const { id } = await activitypub.helpers.resolveLocalId(`acct:${slug}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(id, uid);
 			});
 
 			it('should resolve even without the "acct:" prefix', async () => {
-				const found = await activitypub.helpers.resolveLocalUid(`${slug}@${nconf.get('url_parsed').host}`);
-				assert.strictEqual(found, uid);
+				const { id } = await activitypub.helpers.resolveLocalId(`${slug}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(id, uid);
 			});
 
 			it('should resolve when passed a full URL', async () => {
-				const found = await activitypub.helpers.resolveLocalUid(`${nconf.get('url')}/user/${slug}`);
-				assert.strictEqual(found, uid);
+				const { id } = await activitypub.helpers.resolveLocalId(`${nconf.get('url')}/user/${slug}`);
+				assert.strictEqual(id, uid);
 			});
 		});
 	});
@@ -274,7 +274,8 @@ describe('ActivityPub integration', () => {
 
 			it('should create a key-pair for a user if the user does not have one already', async () => {
 				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
-				await activitypub.sign(uid, endpoint);
+				const keyData = await activitypub.getPrivateKey('uid', uid);
+				await activitypub.sign(keyData, endpoint);
 				const { publicKey, privateKey } = await db.getObject(`uid:${uid}:keys`);
 
 				assert(publicKey);
@@ -283,7 +284,8 @@ describe('ActivityPub integration', () => {
 
 			it('should return an object with date, a null digest, and signature, if no payload is passed in', async () => {
 				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
-				const { date, digest, signature } = await activitypub.sign(uid, endpoint);
+				const keyData = await activitypub.getPrivateKey('uid', uid);
+				const { date, digest, signature } = await activitypub.sign(keyData, endpoint);
 				const dateObj = new Date(date);
 
 				assert(signature);
@@ -294,7 +296,8 @@ describe('ActivityPub integration', () => {
 			it('should also return a digest hash if payload is passed in', async () => {
 				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 				const payload = { foo: 'bar' };
-				const { digest } = await activitypub.sign(uid, endpoint, payload);
+				const keyData = await activitypub.getPrivateKey('uid', uid);
+				const { digest } = await activitypub.sign(keyData, endpoint, payload);
 				const hash = createHash('sha256');
 				hash.update(JSON.stringify(payload));
 				const checksum = hash.digest('base64');
@@ -305,7 +308,8 @@ describe('ActivityPub integration', () => {
 
 			it('should create a key for NodeBB itself if a uid of 0 is passed in', async () => {
 				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
-				await activitypub.sign(0, endpoint);
+				const keyData = await activitypub.getPrivateKey('uid', 0);
+				await activitypub.sign(keyData, endpoint);
 				const { publicKey, privateKey } = await db.getObject(`uid:0:keys`);
 
 				assert(publicKey);
@@ -314,7 +318,8 @@ describe('ActivityPub integration', () => {
 
 			it('should return headers with an appropriate key id uri', async () => {
 				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
-				const { signature } = await activitypub.sign(uid, endpoint);
+				const keyData = await activitypub.getPrivateKey('uid', uid);
+				const { signature } = await activitypub.sign(keyData, endpoint);
 				const [keyId] = signature.split(',');
 
 				assert(signature);
@@ -323,7 +328,8 @@ describe('ActivityPub integration', () => {
 
 			it('should return the instance key id when uid is 0', async () => {
 				const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
-				const { signature } = await activitypub.sign(0, endpoint);
+				const keyData = await activitypub.getPrivateKey('uid', 0);
+				const { signature } = await activitypub.sign(keyData, endpoint);
 				const [keyId] = signature.split(',');
 
 				assert(signature);
@@ -355,7 +361,8 @@ describe('ActivityPub integration', () => {
 			it('should return true when the proper signature and relevant headers are passed in', async () => {
 				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 				const path = `/user/${username}/inbox`;
-				const signature = await activitypub.sign(uid, endpoint);
+				const keyData = await activitypub.getPrivateKey('uid', uid);
+				const signature = await activitypub.sign(keyData, endpoint);
 				const { host } = nconf.get('url_parsed');
 				const req = {
 					...mockReqBase,
@@ -372,7 +379,8 @@ describe('ActivityPub integration', () => {
 			it('should return true when a digest is also passed in', async () => {
 				const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 				const path = `/user/${username}/inbox`;
-				const signature = await activitypub.sign(uid, endpoint, { foo: 'bar' });
+				const keyData = await activitypub.getPrivateKey('uid', uid);
+				const signature = await activitypub.sign(keyData, endpoint, { foo: 'bar' });
 				const { host } = nconf.get('url_parsed');
 				const req = {
 					...mockReqBase,
@@ -412,7 +420,7 @@ describe('ActivityPub integration', () => {
 					const post = (await posts.getPostSummaryByPids([postData.pid], uid, { stripTags: false })).pop();
 					note = await activitypub.mocks.note(post);
 
-					await activitypub.send(uid, [`${nconf.get('url')}/uid/${uid}`], {
+					await activitypub.send('uid', uid, [`${nconf.get('url')}/uid/${uid}`], {
 						type: 'Create',
 						object: note,
 					});

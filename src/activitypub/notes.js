@@ -12,7 +12,7 @@ const activitypub = module.parent.exports;
 const Notes = module.exports;
 
 Notes.resolveId = async (uid, id) => {
-	({ id } = await activitypub.get(uid, id));
+	({ id } = await activitypub.get('uid', uid, id));
 	return id;
 };
 
@@ -30,7 +30,7 @@ Notes.assert = async (uid, input, options = {}) => {
 			let postData;
 			winston.verbose(`[activitypub/notes.assert] Not found, saving note to database`);
 			if (activitypub.helpers.isUri(item)) {
-				const object = await activitypub.get(uid, item);
+				const object = await activitypub.get('uid', uid, item);
 				postData = await activitypub.mocks.post(object);
 			} else {
 				postData = item;
@@ -60,7 +60,7 @@ Notes.getParentChain = async (uid, input) => {
 				await traverse(uid, postData.toPid);
 			}
 		} else {
-			let object = await activitypub.get(uid, id);
+			let object = await activitypub.get('uid', uid, id);
 			object = await activitypub.mocks.post(object);
 			if (object) {
 				chain.add(object);

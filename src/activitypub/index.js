@@ -37,28 +37,40 @@ ActivityPub.resolveInboxes = async (ids) => {
 	return Array.from(inboxes);
 };
 
-ActivityPub.getPublicKey = async (uid) => {
+ActivityPub.getPublicKey = async (type, id) => {
 	let publicKey;
 
 	try {
-		({ publicKey } = await db.getObject(`uid:${uid}:keys`));
+		({ publicKey } = await db.getObject(`uid:${id}:keys`));
 	} catch (e) {
-		({ publicKey } = await ActivityPub.helpers.generateKeys(uid));
+		({ publicKey } = await ActivityPub.helpers.generateKeys(type, id));
 	}
 
 	return publicKey;
 };
 
-ActivityPub.getPrivateKey = async (uid) => {
+ActivityPub.getPrivateKey = async (type, id) => {
+	// Sanity checking
+	if (!['cid', 'uid'].includes(type) || !utils.isNumber(id) || parseInt(id, 10) < 0) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	id = parseInt(id, 10);
 	let privateKey;
 
 	try {
-		({ privateKey } = await db.getObject(`uid:${uid}:keys`));
+		({ privateKey } = await db.getObject(`${type}:${id}:keys`));
 	} catch (e) {
-		({ privateKey } = await ActivityPub.helpers.generateKeys(uid));
+		({ privateKey } = await ActivityPub.helpers.generateKeys(type, id));
 	}
 
-	return privateKey;
+	let keyId;
+	if (type === 'uid') {
+		keyId = `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}#key`;
+	} else {
+		keyId = `${nconf.get('url')}/category/${id}#key`;
+	}
+
+	return { key: privateKey, keyId };
 };
 
 ActivityPub.fetchPublicKey = async (uri) => {
@@ -76,18 +88,10 @@ ActivityPub.fetchPublicKey = async (uri) => {
 	return body.publicKey;
 };
 
-ActivityPub.sign = async (uid, url, payload) => {
-	// Sanity checking
-	if (!utils.isNumber(uid) || parseInt(uid, 10) < 0) {
-		throw new Error('[[error:invalid-uid]]');
-	}
-	uid = parseInt(uid, 10);
-
+ActivityPub.sign = async ({ key, keyId }, url, payload) => {
 	// Returns string for use in 'Signature' header
 	const { host, pathname } = new URL(url);
 	const date = new Date().toUTCString();
-	const key = await ActivityPub.getPrivateKey(uid);
-	const keyId = `${nconf.get('url')}${uid > 0 ? `/uid/${uid}` : '/actor'}#key`;
 	let digest = null;
 
 	let headers = '(request-target) host date';
@@ -156,13 +160,14 @@ ActivityPub.verify = async (req) => {
 	}
 };
 
-ActivityPub.get = async (uid, uri) => {
-	const cacheKey = [uid, uri].join(';');
+ActivityPub.get = async (type, id, uri) => {
+	const cacheKey = [id, uri].join(';');
 	if (requestCache.has(cacheKey)) {
 		return requestCache.get(cacheKey);
 	}
 
-	const headers = uid >= 0 ? await ActivityPub.sign(uid, uri) : {};
+	const keyData = await ActivityPub.getPrivateKey(type, id);
+	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
 	winston.verbose(`[activitypub/get] ${uri}`);
 	const { response, body } = await request.get(uri, {
 		headers: {
@@ -184,7 +189,7 @@ ActivityPub.get = async (uid, uri) => {
 	return body;
 };
 
-ActivityPub.send = async (uid, targets, payload) => {
+ActivityPub.send = async (type, id, targets, payload) => {
 	if (!Array.isArray(targets)) {
 		targets = [targets];
 	}
@@ -193,12 +198,14 @@ ActivityPub.send = async (uid, targets, payload) => {
 
 	payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		actor: `${nconf.get('url')}/uid/${uid}`,
+		actor: `${nconf.get('url')}/uid/${id}`,
 		...payload,
 	};
 
 	await Promise.all(inboxes.map(async (uri) => {
-		const headers = await ActivityPub.sign(uid, uri, payload);
+		const keyData = await ActivityPub.getPrivateKey(type, id);
+		const headers = await ActivityPub.sign(keyData, uri, payload);
+		winston.verbose(`[activitypub/send] ${uri}`);
 		const { response } = await request.post(uri, {
 			headers: {
 				...headers,

@@ -63,8 +63,8 @@ Helpers.query = async (id) => {
 	return { username, hostname, actorUri, publicKey };
 };
 
-Helpers.generateKeys = async (uid) => {
-	winston.verbose(`[activitypub] Generating RSA key-pair for uid ${uid}`);
+Helpers.generateKeys = async (type, id) => {
+	winston.verbose(`[activitypub] Generating RSA key-pair for ${type} ${id}`);
 	const {
 		publicKey,
 		privateKey,
@@ -80,47 +80,41 @@ Helpers.generateKeys = async (uid) => {
 		},
 	});
 
-	await db.setObject(`uid:${uid}:keys`, { publicKey, privateKey });
+	await db.setObject(`${type}:${id}:keys`, { publicKey, privateKey });
 	return { publicKey, privateKey };
 };
 
-Helpers.resolveLocalUid = async (input) => {
-	let slug;
-	const protocols = ['https'];
-	if (process.env.CI === 'true') {
-		protocols.push('http');
-	}
+Helpers.resolveLocalId = async (input) => {
 	if (Helpers.isUri(input)) {
 		const { host, pathname } = new URL(input);
 
 		if (host === nconf.get('url_parsed').host) {
-			const [type, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean);
-			if (type === 'uid') {
-				return value;
+			const [prefix, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean);
+
+			switch (prefix) {
+				case 'uid':
+					return { type: 'user', id: value };
+
+				case 'post':
+					return { type: 'post', id: value };
+
+				case 'category':
+					return { type: 'category', id: value };
+
+				case 'user': {
+					const uid = await user.getUidByUserslug(value);
+					return { type: 'user', id: uid };
+				}
 			}
 
-			slug = value;
+			throw new Error('[[error:activitypub.invalid-id]]');
 		} else {
 			throw new Error('[[error:activitypub.invalid-id]]');
 		}
 	} else if (input.indexOf('@') !== -1) { // Webfinger
-		([slug] = input.replace(/^acct:/, '').split('@'));
-	} else {
-		throw new Error('[[error:activitypub.invalid-id]]');
-	}
-
-	return await user.getUidByUserslug(slug);
-};
-
-Helpers.resolveLocalPid = async (uri) => {
-	const { host, pathname } = new URL(uri);
-	if (host === nconf.get('url_parsed').host) {
-		const [type, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean);
-		if (type !== 'post') {
-			throw new Error('[[error:activitypub.invalid-id]]');
-		}
-
-		return value;
+		const [slug] = input.replace(/^acct:/, '').split('@');
+		const uid = await user.getUidByUserslug(slug);
+		return { type: 'user', id: uid };
 	}
 
 	throw new Error('[[error:activitypub.invalid-id]]');
