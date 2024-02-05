@@ -26,6 +26,7 @@
     "pagination": "Dalīšana pa lapām",
     "pagination.out-of": "%1 no %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Administrācija",
     "header.categories": "Kategorijas",
     "header.recent": "Nesenie",

@@ -26,6 +26,7 @@
     "pagination": "分页",
     "pagination.out-of": "%1 / %2",
     "pagination.enter-index": "跳转到帖子",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "管理",
     "header.categories": "版块",
     "header.recent": "最新",

@@ -26,6 +26,7 @@
     "pagination": "Paginering",
     "pagination.out-of": "%1 ut av %2",
     "pagination.enter-index": "Gå til indeks for innlegg",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Admin",
     "header.categories": "Kategorier",
     "header.recent": "Seneste",

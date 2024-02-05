@@ -26,6 +26,7 @@
     "pagination": "Странициране",
     "pagination.out-of": "%1 от %2",
     "pagination.enter-index": "Към публикация номер",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Администратор",
     "header.categories": "Категории",
     "header.recent": "Скорошни",

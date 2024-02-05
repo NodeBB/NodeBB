@@ -26,6 +26,7 @@
     "pagination": "Σελιδοποίηση",
     "pagination.out-of": "%1 από %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Διαχειριστής",
     "header.categories": "Κατηγορίες",
     "header.recent": "Πρόσφατα",

@@ -26,6 +26,7 @@
     "pagination": "Sidetal",
     "pagination.out-of": "%1 ud af %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Administrator",
     "header.categories": "Kategorier",
     "header.recent": "Seneste",

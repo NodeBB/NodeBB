@@ -26,6 +26,7 @@
     "pagination": "Seitennummerierung",
     "pagination.out-of": "%1 von %2",
     "pagination.enter-index": "Zum Beitragsindex gehen",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Admin",
     "header.categories": "Kategorien",
     "header.recent": "Aktuell",

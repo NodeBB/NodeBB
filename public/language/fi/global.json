@@ -26,6 +26,7 @@
     "pagination": "Sivutus",
     "pagination.out-of": "%1/%2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Ylläpitäjä",
     "header.categories": "Kategoriat",
     "header.recent": "Tuoreimmat",

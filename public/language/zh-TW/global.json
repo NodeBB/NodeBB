@@ -26,6 +26,7 @@
     "pagination": "分頁",
     "pagination.out-of": "%1 / %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "管理",
     "header.categories": "版面",
     "header.recent": "最新",

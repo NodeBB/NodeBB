@@ -26,6 +26,7 @@
     "pagination": "페이지",
     "pagination.out-of": "현재: %1 / 전체: %2",
     "pagination.enter-index": "포스트 인덱스로",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "관리자",
     "header.categories": "카테고리",
     "header.recent": "최근",

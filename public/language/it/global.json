@@ -26,6 +26,7 @@
     "pagination": "Impaginazione",
     "pagination.out-of": "%1 di %2",
     "pagination.enter-index": "Vai all'indice dei post",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Amministratore",
     "header.categories": "Categorie",
     "header.recent": "Recenti",

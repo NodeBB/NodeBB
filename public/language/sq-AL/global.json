@@ -26,6 +26,7 @@
     "pagination": "Numërim Faqesh",
     "pagination.out-of": "%1 nga %2",
     "pagination.enter-index": "Shkoni te indeksi i postimit",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Administratorët",
     "header.categories": "KATEGORITË",
     "header.recent": "TË FUNDIT",

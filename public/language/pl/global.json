@@ -26,6 +26,7 @@
     "pagination": "Numerowanie stron",
     "pagination.out-of": "%1 z %2",
     "pagination.enter-index": "Skocz do postu",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Administracja",
     "header.categories": "Kategorie",
     "header.recent": "Ostatnie",

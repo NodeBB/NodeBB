@@ -26,6 +26,7 @@
     "pagination": "الصفحات",
     "pagination.out-of": "%1 من %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "مدير النظام",
     "header.categories": "الأقسام",
     "header.recent": "حديث",

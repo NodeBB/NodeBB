@@ -26,6 +26,7 @@
     "pagination": "Lehekülgede numeratsioon",
     "pagination.out-of": "%1 kõigist %2-st",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Admin",
     "header.categories": "Kategooriad",
     "header.recent": "Hiljutised",

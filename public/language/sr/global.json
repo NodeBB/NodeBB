@@ -26,6 +26,7 @@
     "pagination": "Нумерисање страница",
     "pagination.out-of": "%1 од %2",
     "pagination.enter-index": "Иди на индекс порука",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Админ",
     "header.categories": "Категорије",
     "header.recent": "Недавно",

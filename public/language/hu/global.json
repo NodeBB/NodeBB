@@ -26,6 +26,7 @@
     "pagination": "Lapozás",
     "pagination.out-of": "%1 / %2",
     "pagination.enter-index": "Ugrás a bejegyzés indexére",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Admin",
     "header.categories": "Kategóriák",
     "header.recent": "Legutóbbi",

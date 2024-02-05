@@ -26,6 +26,7 @@
     "pagination": "Sayfalara numara koyma",
     "pagination.out-of": "%1 - %2",
     "pagination.enter-index": "İleti dizinine git",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Yönetim",
     "header.categories": "Kategoriler",
     "header.recent": "Güncel",

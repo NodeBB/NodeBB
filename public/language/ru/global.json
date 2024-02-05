@@ -26,6 +26,7 @@
     "pagination": "Разбивка на страницы",
     "pagination.out-of": "%1 из %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Админка",
     "header.categories": "Категории",
     "header.recent": "Последние",

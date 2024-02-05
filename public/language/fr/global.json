@@ -26,6 +26,7 @@
     "pagination": "Pagination",
     "pagination.out-of": "%1 sur %2",
     "pagination.enter-index": "Aller à l'index des messages",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Admin",
     "header.categories": "Catégories",
     "header.recent": "Récent",

@@ -26,6 +26,7 @@
     "pagination": "Numeracija",
     "pagination.out-of": "%1 iš %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Administratorius",
     "header.categories": "Kategorijos",
     "header.recent": "Naujausi",

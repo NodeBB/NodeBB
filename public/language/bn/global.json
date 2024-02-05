@@ -26,6 +26,7 @@
     "pagination": "পাতা নং",
     "pagination.out-of": "%2 এর মাঝে %1",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "অ্যাডমিন",
     "header.categories": "বিভাগ",
     "header.recent": "সাম্প্রতিক",

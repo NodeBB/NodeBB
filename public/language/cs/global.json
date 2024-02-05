@@ -26,6 +26,7 @@
     "pagination": "Stránkování",
     "pagination.out-of": "%1 z %2",
     "pagination.enter-index": "Přejít na n-tý příspěvek",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Administrace",
     "header.categories": "Kategorie",
     "header.recent": "Nejnovější",

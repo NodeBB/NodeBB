@@ -26,6 +26,7 @@
     "pagination": "Розбиття на сторінки",
     "pagination.out-of": "%1 із %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Адмін",
     "header.categories": "Категорії",
     "header.recent": "Недавні",

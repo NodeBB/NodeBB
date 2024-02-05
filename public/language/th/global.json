@@ -26,6 +26,7 @@
     "pagination": "การแบ่งหน้า",
     "pagination.out-of": "%1 จาก %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "ผู้ดูแลระบบ",
     "header.categories": "หมวดหมู่",
     "header.recent": "ล่าสุด",

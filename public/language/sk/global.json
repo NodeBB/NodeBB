@@ -26,6 +26,7 @@
     "pagination": "Stránkovanie",
     "pagination.out-of": "%1 z %2",
     "pagination.enter-index": "Go to post index",
+    "header.brand-logo": "Brand Logo",
     "header.admin": "Správca",
     "header.categories": "Kategórie",
     "header.recent": "Nedávne",
