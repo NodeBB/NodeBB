@@ -32,6 +32,7 @@
 	"pagination.out-of": "%1 out of %2",
 	"pagination.enter-index": "Go to post index",
 
+	"header.brand-logo": "Brand Logo",
 	"header.admin": "Admin",
 	"header.categories": "Categories",
 	"header.recent": "Recent",
