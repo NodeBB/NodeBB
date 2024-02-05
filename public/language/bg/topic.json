@@ -207,7 +207,7 @@
     "post-quick-reply": "Бърз отговор",
     "navigator.index": "Публикация %1 от %2",
     "navigator.unread": "%1 непрочетени",
-    "upvote-post": "Upvote post",
-    "downvote-post": "Downvote post",
-    "post-tools": "Post tools"
+    "upvote-post": "Положително гласуване за публикацията",
+    "downvote-post": "Отрицателно гласуване за публикацията",
+    "post-tools": "Инструменти за публикациите"
 }
