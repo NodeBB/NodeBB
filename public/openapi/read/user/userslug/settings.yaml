@@ -117,7 +117,7 @@ get:
                   categoryWatchState:
                     type: object
                     properties:
-                      watching:
+                      tracking:
                         type: boolean
                   disableCustomUserSkins:
                     type: number
