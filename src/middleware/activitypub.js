@@ -46,3 +46,8 @@ middleware.validate = async function (req, res, next) {
 
 	next();
 };
+
+middleware.configureResponse = async function (req, res, next) {
+	res.header('Content-Type', 'application/activity+json');
+	next();
+};
