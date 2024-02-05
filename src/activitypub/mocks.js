@@ -186,7 +186,7 @@ Mocks.actors.category = async (cid) => {
 
 		type: 'Group',
 		name,
-		preferredUsername: name,
+		preferredUsername: `cid.${cid}`,
 		summary,
 		icon: backgroundImage,
 	};
