@@ -209,5 +209,6 @@
     "navigator.unread": "%1 non letto",
     "upvote-post": "Vota positivamente il post",
     "downvote-post": "Vota negativamente il post",
-    "post-tools": "Strumenti post"
+    "post-tools": "Strumenti post",
+    "unread-posts-link": "Unread posts link"
 }

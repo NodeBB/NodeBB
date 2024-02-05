@@ -209,5 +209,6 @@
     "navigator.unread": "%1 непрочетени",
     "upvote-post": "Положително гласуване за публикацията",
     "downvote-post": "Отрицателно гласуване за публикацията",
-    "post-tools": "Инструменти за публикациите"
+    "post-tools": "Инструменти за публикациите",
+    "unread-posts-link": "Unread posts link"
 }
