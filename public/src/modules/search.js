@@ -27,10 +27,6 @@ define('search', [
 		const quickSearchContainer = searchFields.find('#quick-search-container');
 		const toggleVisibility = searchFields.hasClass('hidden');
 
-		searchForm.find('.advanced-search-link').off('mousedown').on('mousedown', function () {
-			ajaxify.go('/search');
-		});
-
 		if (toggleVisibility) {
 			searchInput.off('blur').on('blur', function dismissSearch() {
 				setTimeout(function () {
