@@ -130,8 +130,8 @@ Events.get = async (tid, uid, reverse = false) => {
 };
 
 async function getUserInfo(uids) {
-	uids = uids.filter((uid, idx) => !isNaN(parseInt(uid, 10)) && uids.indexOf(uid) === idx);
-	const userData = await user.getUsersFields(uids, ['picture', 'username', 'userslug']);
+	uids = new Set(uids); // eliminate dupes
+	const userData = await user.getUsersFields(Array.from(uids), ['picture', 'username', 'userslug']);
 	const userMap = userData.reduce((memo, cur) => memo.set(cur.uid, cur), new Map());
 	userMap.set('system', {
 		system: true,
