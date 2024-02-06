@@ -29,8 +29,14 @@
 	"close": "Close",
 
 	"pagination": "Pagination",
+	"pagination.previouspage": "Previous Page",
+	"pagination.nextpage": "Next Page",
+	"pagination.firstpage": "First Page",
+	"pagination.lastpage": "Last Page",
 	"pagination.out-of": "%1 out of %2",
 	"pagination.enter-index": "Go to post index",
+	"pagination.go-to-page": "Go to page",
+	"pagination.page-x": "Page %1",
 
 	"header.brand-logo": "Brand Logo",
 	"header.admin": "Admin",
@@ -56,9 +62,6 @@
 	"drafts.loading": "Loading Drafts",
 
 	"motd.welcome": "Welcome to NodeBB, the discussion platform of the future.",
-
-	"previouspage": "Previous Page",
-	"nextpage": "Next Page",
 
 	"alert.success": "Success",
 	"alert.error": "Error",
