@@ -59,7 +59,7 @@ inbox.update = async (req) => {
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
 	const { type, id } = await activitypub.helpers.resolveLocalId(object);
-	if (type !== 'post' || await posts.exists(id)) {
+	if (type !== 'post' || !(await posts.exists(id))) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
