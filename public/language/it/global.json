@@ -26,7 +26,7 @@
     "pagination": "Impaginazione",
     "pagination.out-of": "%1 di %2",
     "pagination.enter-index": "Vai all'indice dei post",
-    "header.brand-logo": "Brand Logo",
+    "header.brand-logo": "Logo del marchio",
     "header.admin": "Amministratore",
     "header.categories": "Categorie",
     "header.recent": "Recenti",
@@ -136,12 +136,12 @@
     "edited": "Modificato",
     "disabled": "Disabilitato",
     "select": "Seleziona",
-    "selected": "Selected",
+    "selected": "Selezionato",
     "copied": "Copiato",
     "user-search-prompt": "Scrivi qui per avviare la ricerca utenti",
     "hidden": "Nascosto",
     "sort": "Ordinamento",
     "actions": "Azioni",
     "rss-feed": "Feed RSS",
-    "skip-to-content": "Skip to content"
+    "skip-to-content": "Salta al contenuto"
 }
