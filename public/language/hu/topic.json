@@ -15,6 +15,7 @@
     "replies-to-this-post": "%1 válasz",
     "one-reply-to-this-post": "1 válasz",
     "last-reply-time": "Utolsó válasz",
+    "reply-options": "Reply options",
     "reply-as-topic": "Válasz témakörként",
     "guest-login-reply": "Lépj be a válaszoláshoz",
     "login-to-view": "🔒 Jelentkezz be, hogy megtekinthesd",
@@ -204,11 +205,13 @@
     "last-post": "Utolsó bejegyzés",
     "go-to-my-next-post": "Ugrás a következő bejegyzésemre",
     "no-more-next-post": "Neked nincs több bejegyzésed ebben a témakörben",
+    "open-composer": "Open composer",
     "post-quick-reply": "Gyors válasz",
     "navigator.index": "Bejegyzés %1 / %2",
     "navigator.unread": "%1 olvasatlan",
     "upvote-post": "Upvote post",
     "downvote-post": "Downvote post",
     "post-tools": "Post tools",
-    "unread-posts-link": "Unread posts link"
+    "unread-posts-link": "Unread posts link",
+    "thumb-image": "Topic thumbnail image"
 }
