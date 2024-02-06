@@ -5,6 +5,7 @@ const winston = require('winston');
 const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
+const topics = require('../topics');
 const categories = require('../categories');
 const activitypub = require('.');
 
@@ -63,6 +64,46 @@ inbox.like = async (req) => {
 	}
 
 	await posts.upvote(id, actor);
+};
+
+inbox.announce = async (req) => {
+	const { actor, object, published } = req.body;
+	let timestamp = Date.now();
+	try {
+		timestamp = new Date(published).getTime();
+	} catch (e) {
+		// ok to fail
+	}
+
+	const { type, id } = await activitypub.helpers.resolveLocalId(object);
+	if (type !== 'post' || !(await posts.exists(id))) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
+	const assertion = await activitypub.actors.assert(actor);
+	if (!assertion) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
+	const tid = await posts.getPostField(id, 'tid');
+
+	// No double-announce allowed
+	const existing = await topics.events.find(tid, {
+		type: 'announce',
+		uid: actor,
+		pid: id,
+	});
+	if (existing.length) {
+		await topics.events.purge(tid, existing);
+	}
+
+	await topics.events.log(tid, {
+		type: 'announce',
+		uid: actor,
+		href: `/post/${id}`,
+		pid: id,
+		timestamp,
+	});
 };
 
 inbox.follow = async (req) => {
@@ -157,6 +198,10 @@ inbox.undo = async (req) => {
 	const { actor, object } = req.body;
 	const { type } = object;
 
+	if (actor !== object.actor) {
+		throw new Error('[[error:activitypub.actor-mismatch]]');
+	}
+
 	const assertion = await activitypub.actors.assert(actor);
 	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
@@ -201,6 +246,24 @@ inbox.undo = async (req) => {
 
 			await posts.unvote(id, actor);
 			break;
+		}
+
+		case 'Announce': {
+			const exists = await posts.exists(id);
+			if (localType !== 'post' || !exists) {
+				throw new Error('[[error:invalid-pid]]');
+			}
+
+			const tid = await posts.getPostField(id, 'tid');
+			const existing = await topics.events.find(tid, {
+				type: 'announce',
+				uid: actor,
+				pid: id,
+			});
+
+			if (existing.length) {
+				await topics.events.purge(tid, existing);
+			}
 		}
 	}
 };

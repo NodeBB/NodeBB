@@ -68,6 +68,10 @@ Events._types = {
 		icon: 'fa-code-fork',
 		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
+	announce: {
+		icon: 'fa-share-alt',
+		translation: async (event, language) => translateEventArgs(event, language, 'activitypub:topic-event-announce', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+	},
 };
 
 Events.init = async () => {
@@ -199,8 +203,9 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		event.id = parseInt(eventIds[idx], 10);
 		event.timestamp = timestamps[idx];
 		event.timestampISO = new Date(timestamps[idx]).toISOString();
+		event.uid = utils.isNumber(event.uid) ? parseInt(event.uid, 10) : event.uid;
 		if (event.hasOwnProperty('uid')) {
-			event.user = users.get(event.uid === 'system' ? 'system' : parseInt(event.uid, 10));
+			event.user = users.get(event.uid === 'system' ? 'system' : event.uid);
 		}
 		if (event.hasOwnProperty('fromCid')) {
 			event.fromCategory = fromCategories[event.fromCid];

@@ -112,42 +112,11 @@ Controller.getInbox = async (req, res) => {
 
 Controller.postInbox = async (req, res) => {
 	// Note: underlying methods are internal use only, hence no exposure via src/api
-	switch (req.body.type) {
-		case 'Create': {
-			await activitypub.inbox.create(req);
-			break;
-		}
-
-		case 'Update': {
-			await activitypub.inbox.update(req);
-			break;
-		}
-
-		case 'Like': {
-			await activitypub.inbox.like(req);
-			break;
-		}
-
-		case 'Follow': {
-			await activitypub.inbox.follow(req);
-			break;
-		}
-
-		case 'Accept': {
-			await activitypub.inbox.accept(req);
-			break;
-		}
-
-		case 'Undo': {
-			await activitypub.inbox.undo(req);
-			break;
-		}
-
-		default: {
-			res.sendStatus(501);
-			break;
-		}
+	const method = String(req.body.type).toLowerCase();
+	if (req.body.hasOwnProperty(method)) {
+		return res.sendStatus(501);
 	}
 
+	await activitypub.inbox[method](req);
 	res.sendStatus(200);
 };

@@ -237,3 +237,15 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		}
 	}));
 };
+
+setTimeout(async () => {
+	await ActivityPub.send('uid', 1, 'https://localhost/uid/1', {
+		// type: 'Undo',
+		// object: {
+		type: 'Announce',
+		actor: `https://localhost/uid/1`,
+		object: 'https://localhost/post/1',
+		published: new Date().toISOString(),
+		// },
+	});
+}, 2000);
