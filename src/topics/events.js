@@ -129,6 +129,16 @@ Events.get = async (tid, uid, reverse = false) => {
 	return events;
 };
 
+Events.find = async (tid, match) => {
+	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
+	eventIds = eventIds.map(obj => obj.value);
+	const events = await db.getObjects(keys);
+	eventIds = eventIds.filter((id, idx) => _.isMatch(events[idx], match));
+
+	return eventIds;
+};
+
 async function getUserInfo(uids) {
 	uids = new Set(uids); // eliminate dupes
 	const userData = await user.getUsersFields(Array.from(uids), ['picture', 'username', 'userslug']);
