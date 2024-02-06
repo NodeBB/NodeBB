@@ -41,7 +41,7 @@ ActivityPub.getPublicKey = async (type, id) => {
 	let publicKey;
 
 	try {
-		({ publicKey } = await db.getObject(`uid:${id}:keys`));
+		({ publicKey } = await db.getObject(`${type}:${id}:keys`));
 	} catch (e) {
 		({ publicKey } = await ActivityPub.helpers.generateKeys(type, id));
 	}
@@ -145,6 +145,7 @@ ActivityPub.verify = async (req) => {
 		return memo;
 	}, []).join('\n');
 
+
 	// Verify the signature string via public key
 	try {
 		// Retrieve public key from remote instance
@@ -196,9 +197,25 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 	const inboxes = await ActivityPub.resolveInboxes(targets);
 
+	let actor;
+	switch (type) {
+		case 'uid': {
+			actor = `${nconf.get('url')}/uid/${id}`;
+			break;
+		}
+
+		case 'cid': {
+			actor = `${nconf.get('url')}/category/${id}`;
+			break;
+		}
+
+		default:
+			throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
 	payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		actor: `${nconf.get('url')}/uid/${id}`,
+		actor,
 		...payload,
 	};
 
@@ -220,3 +237,10 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		}
 	}));
 };
+
+setTimeout(async () => {
+	await ActivityPub.send('uid', 1, 'https://localhost/category/1', {
+		type: 'Follow',
+		object: 'https://localhost/category/1',
+	});
+}, 2000);

@@ -109,12 +109,9 @@ inbox.follow = async (req) => {
 		}
 
 		const watchState = await categories.getWatchState([id], req.body.actor);
-		if (watchState === categories.watchStates.tracking) {
-			// No additional parsing required
-			return;
+		if (watchState[0] !== categories.watchStates.tracking) {
+			await user.setCategoryWatchState(req.body.actor, id, categories.watchStates.tracking);
 		}
-
-		await user.setCategoryWatchState(req.body.actor, id, categories.watchStates.tracking);
 
 		await activitypub.send('cid', id, req.body.actor, {
 			type: 'Accept',
@@ -149,10 +146,9 @@ inbox.accept = async (req) => {
 
 	if (type === 'Follow') {
 		const now = Date.now();
-		await Promise.all([
-			db.sortedSetAdd(`followingRemote:${uid}`, now, actor),
-			db.incrObjectField(`user:${uid}`, 'followingRemoteCount'),
-		]);
+		await db.sortedSetAdd(`followingRemote:${uid}`, now, actor);
+		const followingRemoteCount = await db.sortedSetCard(`followingRemote:${uid}`);
+		await user.setUserField(uid, 'followingRemoteCount', followingRemoteCount);
 	}
 };
 
@@ -177,10 +173,9 @@ inbox.undo = async (req) => {
 						throw new Error('[[error:invalid-uid]]');
 					}
 
-					await Promise.all([
-						db.sortedSetRemove(`followersRemote:${id}`, actor),
-						db.decrObjectField(`user:${id}`, 'followerRemoteCount'),
-					]);
+					await db.sortedSetRemove(`followersRemote:${id}`, actor);
+					const followerRemoteCount = await db.sortedSetCard(`followerRemote:${id}`);
+					await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 					break;
 				}
 

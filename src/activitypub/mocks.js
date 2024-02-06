@@ -164,6 +164,7 @@ Mocks.actors.user = async (uid) => {
 
 Mocks.actors.category = async (cid) => {
 	let { name, slug, description: summary, backgroundImage } = await categories.getCategoryData(cid);
+	const publicKey = await activitypub.getPublicKey('cid', cid);
 
 	if (backgroundImage) {
 		const filename = utils.decodeHTMLEntities(backgroundImage).split('/').pop();
@@ -189,6 +190,12 @@ Mocks.actors.category = async (cid) => {
 		preferredUsername: `cid.${cid}`,
 		summary,
 		icon: backgroundImage,
+
+		publicKey: {
+			id: `${nconf.get('url')}/category/${cid}#key`,
+			owner: `${nconf.get('url')}/category/${cid}`,
+			publicKeyPem: publicKey,
+		},
 	};
 };
 
