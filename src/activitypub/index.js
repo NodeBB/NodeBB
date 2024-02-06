@@ -237,10 +237,3 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		}
 	}));
 };
-
-setTimeout(async () => {
-	await ActivityPub.send('uid', 1, 'https://localhost/category/1', {
-		type: 'Follow',
-		object: 'https://localhost/category/1',
-	});
-}, 2000);

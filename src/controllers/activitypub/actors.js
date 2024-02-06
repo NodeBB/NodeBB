@@ -4,6 +4,7 @@ const nconf = require('nconf');
 
 const meta = require('../../meta');
 const posts = require('../../posts');
+const topics = require('../../topics');
 const categories = require('../../categories');
 const activitypub = require('../../activitypub');
 
@@ -55,6 +56,23 @@ Actors.note = async function (req, res, next) {
 	}
 
 	const payload = await activitypub.mocks.note(post);
+	res.status(200).json(payload);
+};
+
+Actors.topic = async function (req, res, next) {
+	// When queried, a topic more or less returns the main pid's note representation
+	const { mainPid, slug } = await topics.getTopicFields(req.params.tid, ['mainPid', 'slug']);
+	const post = (await posts.getPostSummaryByPids([mainPid], req.uid, { stripTags: false })).pop();
+	if (!post) {
+		return next('route');
+	}
+
+	const payload = await activitypub.mocks.note(post);
+	payload.id = `${nconf.get('url')}/topic/${req.params.tid}`;
+	payload.type = 'Page';
+	payload.url = `${nconf.get('url')}/topic/${slug}`;
+	payload.audience = `${nconf.get('url')}/category/${post.category.slug}`;
+
 	res.status(200).json(payload);
 };
 

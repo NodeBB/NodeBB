@@ -31,7 +31,9 @@ module.exports = function (app, middleware, controllers) {
 
 	app.get('/post/:pid', [...middlewares, middleware.assert.post], controllers.activitypub.actors.note);
 
-	app.get('/category/:cid', [...middlewares, middleware.assert.category], controllers.activitypub.actors.category);
+	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], controllers.activitypub.actors.topic);
+
+	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], controllers.activitypub.actors.category);
 	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], controllers.activitypub.getInbox);
 	app.post('/category/:cid/inbox', [...middlewares, middleware.assert.category, middleware.activitypub.validate], controllers.activitypub.postInbox);
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.getCategoryOutbox);

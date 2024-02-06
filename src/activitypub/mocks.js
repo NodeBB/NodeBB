@@ -232,6 +232,7 @@ Mocks.note = async (post) => {
 		published,
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+		audience: `${nconf.get('url')}/topic/${post.topic.slug}`,
 		sensitive: false, // todo
 		summary: null,
 		name,
