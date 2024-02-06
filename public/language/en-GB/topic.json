@@ -18,6 +18,7 @@
 	"replies-to-this-post": "%1 Replies",
 	"one-reply-to-this-post": "1 Reply",
 	"last-reply-time": "Last reply",
+	"reply-options": "Reply options",
 	"reply-as-topic": "Reply as topic",
 	"guest-login-reply": "Log in to reply",
 	"login-to-view": "🔒 Log in to view",
@@ -232,6 +233,7 @@
 	"last-post": "Last post",
 	"go-to-my-next-post": "Go to my next post",
 	"no-more-next-post": "You don't have more posts in this topic",
+	"open-composer": "Open composer",
 	"post-quick-reply": "Quick reply",
 
 	"navigator.index": "Post %1 of %2",
