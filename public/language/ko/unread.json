@@ -3,13 +3,14 @@
     "no-unread-topics": "읽지 않은 화제가 없습니다.",
     "load-more": "더 보기",
     "mark-as-read": "읽음으로 표시",
+    "mark-as-unread": "Mark as Unread",
     "selected": "선택됨",
     "all": "전체",
     "all-categories": "모든 카테고리",
-    "topics-marked-as-read.success": "화제들을 읽음으로 표시했습니다.",
+    "topics-marked-as-read.success": "읽은 것으로 표시한 화제!",
     "all-topics": "모든 화제",
     "new-topics": "새 화제",
     "watched-topics": "읽은 화제",
     "unreplied-topics": "답글이 없는 화제",
-    "multiple-categories-selected": "다중선택됨"
+    "multiple-categories-selected": "여러 개 선택됨"
 }

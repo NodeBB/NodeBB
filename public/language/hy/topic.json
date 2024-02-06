@@ -15,6 +15,7 @@
     "replies-to-this-post": "%1 Պատասխաններ",
     "one-reply-to-this-post": "1 Պատասխան",
     "last-reply-time": "Վերջին պատասխանը",
+    "reply-options": "Reply options",
     "reply-as-topic": "Պատասխանել թեմայի տեսքով",
     "guest-login-reply": "Մուտք գործեք պատասխանելու համար",
     "login-to-view": "🔒 Դիտելու համար մուտք գործեք",
@@ -204,7 +205,13 @@
     "last-post": "Վերջին գրառում",
     "go-to-my-next-post": "Անցնել իմ հաջորդ գրառմանը",
     "no-more-next-post": "Այս թեմայում այլ գրառումներ չունեք",
+    "open-composer": "Open composer",
     "post-quick-reply": "Արագ պատասխան",
     "navigator.index": "Գրառում %1 %2 - ից",
-    "navigator.unread": "%1 չկարդացված"
+    "navigator.unread": "%1 չկարդացված",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools",
+    "unread-posts-link": "Unread posts link",
+    "thumb-image": "Topic thumbnail image"
 }

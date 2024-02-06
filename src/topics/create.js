@@ -224,7 +224,6 @@ module.exports = function (Topics) {
 
 	async function onNewPost(postData, data) {
 		const { tid, uid } = postData;
-		await Topics.markCategoryUnreadForAll(tid);
 		await Topics.markAsRead([tid], uid);
 		const [
 			userInfo,

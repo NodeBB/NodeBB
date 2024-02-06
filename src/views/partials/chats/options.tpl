@@ -13,16 +13,16 @@
 
 	<!-- notification dropdown -->
 	<div class="dropdown d-flex" data-manual-tooltip="1" title="[[modules:chat.notification-settings]]" component="chat/notification/setting">
-		<button class="btn-ghost-sm position-relative" data-bs-toggle="dropdown">
+		<button class="btn-ghost-sm position-relative" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-bell text-muted"></i>
 			<span class="position-absolute top-0 end-0 text-xs text-muted opacity-50" style="font-size: 10px!important; padding: 1px; line-height: 10px;">
 				<i component="chat/notification/setting/icon" class="fa {notificationOptionsIcon}"></i>
 			</span>
 		</button>
-		<ul class="dropdown-menu dropdown-menu-end p-1 text-sm">
+		<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" role="menu">
 			{{{ each notificationOptions }}}
 			<li>
-				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-value="{./value}" data-icon="{./icon}">
+				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-value="{./value}" data-icon="{./icon}" role="menuitem">
 					<div class="d-flex flex-column gap-1">
 						<div class="d-flex align-items-center gap-2">
 							<div class="flex-grow-1">{./label}</div>
@@ -49,30 +49,30 @@
 
 	<!-- manage/options dropdown -->
 	<div class="dropdown d-flex" data-manual-tooltip="1" title="[[modules:chat.options]]">
-		<button class="btn-ghost-sm" data-bs-toggle="dropdown" component="chat/controlsToggle">
+		<button component="chat/controlsToggle" class="btn-ghost-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-gear text-muted"></i>
 		</button>
-		<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" component="chat/controls">
+		<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" component="chat/controls" role="menu">
 			<li>
-				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="manage">
+				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="manage" role="menuitem">
 					<i class="fa fa-fw text-muted fa-cog"></i> [[modules:chat.manage-room]]
 				</a>
 			</li>
 			{{{ if isOwner }}}
 			<li>
-				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="rename">
+				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="rename" role="menuitem">
 					<i class="fa fa-fw text-muted fa-edit"></i> [[modules:chat.rename-room]]
 				</a>
 			</li>
 			{{{ end }}}
 			<li>
-				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="leave">
+				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="leave" role="menuitem">
 					<i class="fa fa-fw text-muted fa-sign-out"></i> [[modules:chat.leave-room]]
 				</a>
 			</li>
 			{{{ if (public && isAdmin) }}}
 			<li>
-				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="delete">
+				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-action="delete" role="menuitem">
 					<i class="fa fa-fw text-danger fa-trash"></i> [[modules:chat.delete-room]]
 				</a>
 			</li>

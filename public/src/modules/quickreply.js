@@ -2,10 +2,10 @@
 
 define('quickreply', [
 	'components', 'composer', 'composer/autocomplete', 'api',
-	'alerts', 'uploadHelpers', 'mousetrap', 'storage',
+	'alerts', 'uploadHelpers', 'mousetrap', 'storage', 'hooks',
 ], function (
 	components, composer, autocomplete, api,
-	alerts, uploadHelpers, mousetrap, storage
+	alerts, uploadHelpers, mousetrap, storage, hooks
 ) {
 	const QuickReply = {};
 
@@ -91,6 +91,7 @@ define('quickreply', [
 				components.get('topic/quickreply/text').val('');
 				storage.removeItem(qrDraftId);
 				autocomplete._active.core_qr.hide();
+				hooks.fire('action:quickreply.success', { data });
 			});
 		});
 

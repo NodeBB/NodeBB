@@ -15,6 +15,7 @@
     "replies-to-this-post": "%1 תגובות",
     "one-reply-to-this-post": "תגובה 1",
     "last-reply-time": "תגובה אחרונה",
+    "reply-options": "Reply options",
     "reply-as-topic": "תגובה כנושא",
     "guest-login-reply": "התחברו כדי לפרסם תגובה",
     "login-to-view": "🔒 יש להתחבר כדי לצפות",
@@ -204,7 +205,13 @@
     "last-post": "פוסט אחרון",
     "go-to-my-next-post": "מעבר לפוסט הבא שלי",
     "no-more-next-post": "אין לכם יותר פוסטים בנושא זה",
+    "open-composer": "Open composer",
     "post-quick-reply": "תגובה מהירה",
     "navigator.index": "פוסט %1 מתוך %2",
-    "navigator.unread": "%1 לא נקראו"
+    "navigator.unread": "%1 לא נקראו",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools",
+    "unread-posts-link": "Unread posts link",
+    "thumb-image": "Topic thumbnail image"
 }

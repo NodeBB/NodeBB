@@ -15,6 +15,7 @@
     "replies-to-this-post": "%1 réponses",
     "one-reply-to-this-post": "1 réponse",
     "last-reply-time": "Dernière réponse",
+    "reply-options": "Reply options",
     "reply-as-topic": "Répondre à l'aide d'un nouveau sujet",
     "guest-login-reply": "Se connecter pour répondre",
     "login-to-view": "🔒 Se connecter pour voir",
@@ -204,7 +205,13 @@
     "last-post": "Dernier message",
     "go-to-my-next-post": "Aller à mon prochain message",
     "no-more-next-post": "Vous n'avez plus de messages dans ce sujet",
+    "open-composer": "Open composer",
     "post-quick-reply": "Réponse rapide",
     "navigator.index": "Message %1 sur %2",
-    "navigator.unread": "%1 non lu"
+    "navigator.unread": "%1 non lu",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools",
+    "unread-posts-link": "Unread posts link",
+    "thumb-image": "Topic thumbnail image"
 }

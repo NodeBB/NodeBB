@@ -15,6 +15,7 @@
     "replies-to-this-post": "%1 svar",
     "one-reply-to-this-post": "Ett svar",
     "last-reply-time": "Senaste svaret",
+    "reply-options": "Reply options",
     "reply-as-topic": "Svara som ämne",
     "guest-login-reply": "Logga in för att posta",
     "login-to-view": "🔒 Logga in för att visa",
@@ -204,7 +205,13 @@
     "last-post": "Sista inlägget",
     "go-to-my-next-post": "Go to my next post",
     "no-more-next-post": "You don't have more posts in this topic",
+    "open-composer": "Open composer",
     "post-quick-reply": "Quick reply",
     "navigator.index": "Post %1 of %2",
-    "navigator.unread": "%1 unread"
+    "navigator.unread": "%1 unread",
+    "upvote-post": "Upvote post",
+    "downvote-post": "Downvote post",
+    "post-tools": "Post tools",
+    "unread-posts-link": "Unread posts link",
+    "thumb-image": "Topic thumbnail image"
 }

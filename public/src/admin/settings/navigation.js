@@ -100,7 +100,6 @@ define('admin/settings/navigation', [
 				translator.translate(li, function (li) {
 					li = $(translator.unescape(li));
 					$('#enabled').append(li);
-					componentHandler.upgradeDom();
 					resolve();
 				});
 			});

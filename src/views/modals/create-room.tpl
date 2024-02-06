@@ -7,12 +7,12 @@
 	<div class="mb-3">
 		<div class="dropdown">
 			<label class="form-label">[[modules:chat.add-user]]</label>
-			<input component="chat/search" class="form-control" type="text" placeholder="[[global:user-search-prompt]]" data-bs-toggle="dropdown"/>
-			<ul component="chat/search/list" class="dropdown-menu p-1 overflow-auto" style="max-height: 400px;">
-				<li component="chat/search/start-typing"><a href="#" class="dropdown-item rounded-1">[[admin/menu:search.start-typing]]</a></li>
-				<li component="chat/search/no-users" class="hidden"><a href="#" class="dropdown-item rounded-1">[[users:no-users-found]]</a></li>
+			<input component="chat/search" class="form-control" type="text" placeholder="[[global:user-search-prompt]]" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+			<ul component="chat/search/list" class="dropdown-menu p-1 overflow-auto" style="max-height: 400px;" role="menu">
+				<li component="chat/search/start-typing"><a href="#" class="dropdown-item rounded-1" role="menuitem">[[admin/menu:search.start-typing]]</a></li>
+				<li component="chat/search/no-users" class="hidden"><a href="#" class="dropdown-item rounded-1" role="menuitem">[[users:no-users-found]]</a></li>
 				{{{ each searchUsers }}}
-				<li component="chat/search/user" data-uid="{./uid}"><a href="#" class="dropdown-item rounded-1">{buildAvatar(@value, "24px", true)} {./username}</a></li>
+				<li component="chat/search/user" data-uid="{./uid}"><a href="#" class="dropdown-item rounded-1" role="menuitem">{buildAvatar(@value, "24px", true)} {./username}</a></li>
 				{{{ end }}}
 			</ul>
 		</div>

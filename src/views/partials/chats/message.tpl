@@ -28,42 +28,42 @@
 				<button class="btn btn-sm btn-link" data-action="reply" title="[[topic:reply]]"><i class="fa fa-reply"></i></button>
 
 				<div class="btn-group d-inline-block">
-					<button class="btn btn-sm btn-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-ellipsis" type="button"></i></button>
-					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm list-unstyled">
+					<button class="btn btn-sm btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis" type="button"></i></button>
+					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm list-unstyled" role="menu">
 						{{{ if (isAdminOrGlobalMod || (!config.disableChatMessageEditing && messages.self)) }}}
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="edit"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-pencil text-muted"></i> [[topic:edit]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="edit" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-pencil text-muted"></i> [[topic:edit]]</span></a>
 						</li>
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="delete"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-trash text-muted"></i> [[topic:delete]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="delete" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-trash text-muted"></i> [[topic:delete]]</span></a>
 						</li>
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="restore"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-repeat text-muted"></i> [[topic:restore]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="restore" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-repeat text-muted"></i> [[topic:restore]]</span></a>
 						</li>
 						{{{ end }}}
 
 						{{{ if (isAdminOrGlobalMod || isOwner )}}}
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="pin"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-thumbtack text-muted"></i> [[modules:chat.pin-message]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="pin" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-thumbtack text-muted"></i> [[modules:chat.pin-message]]</span></a>
 						</li>
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="unpin"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-thumbtack fa-rotate-90 text-muted"></i> [[modules:chat.unpin-message]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="unpin" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-thumbtack fa-rotate-90 text-muted"></i> [[modules:chat.unpin-message]]</span></a>
 						</li>
 						<li class="dropdown-divider"></li>
 						{{{ end }}}
 
 						{{{ if isAdminOrGlobalMod }}}
 						<li>
-							<a href="#" class="dropdown-item rounded-1 chat-ip-button"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-info-circle text-muted"></i> [[modules:chat.show-ip]]</span></a>
+							<a href="#" class="dropdown-item rounded-1 chat-ip-button" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-info-circle text-muted"></i> [[modules:chat.show-ip]]</span></a>
 						</li>
 						{{{ end }}}
 
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="copy-text" data-mid="{messages.mid}"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-copy text-muted"></i> [[modules:chat.copy-text]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="copy-text" data-mid="{messages.mid}" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-copy text-muted"></i> [[modules:chat.copy-text]]</span></a>
 						</li>
 
 						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="copy-link" data-mid="{messages.mid}"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-link text-muted"></i> [[modules:chat.copy-link]]</span></a>
+							<a href="#" class="dropdown-item rounded-1" data-action="copy-link" data-mid="{messages.mid}" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-link text-muted"></i> [[modules:chat.copy-link]]</span></a>
 						</li>
 					</ul>
 				</div>

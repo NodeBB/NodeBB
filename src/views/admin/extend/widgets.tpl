@@ -11,12 +11,12 @@
 		<div class="col-12 col-md-9" id="active-widgets">
 			<div class="d-flex justify-content-between">
 				<div class="dropdown mb-3">
-					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1">
+					<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1" role="menu">
 						{{{ each templates }}}
-						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" data-toggle="pill">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
+						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" data-toggle="pill" role="menuitem">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
 						{{{ end }}}
 					</ul>
 				</div>
@@ -85,13 +85,13 @@
 
 						<div class="btn-group" component="clone">
 							<button type="button" class="btn btn-primary" component="clone/button">[[admin/extend/widgets:clone-from]] ...</button>
-							<button type="button" class="btn btn-primary dropdown-toggle flex-0" data-bs-toggle="dropdown">
+							<button type="button" class="btn btn-primary dropdown-toggle flex-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<span class="caret"></span>
 							</button>
-							<ul class="dropdown-menu dropdown-menu-end">
+							<ul class="dropdown-menu dropdown-menu-end" role="menu">
 								{{{ each templates }}}
 								{{{ if !@first }}}
-								<li><a class="dropdown-item" href="#">{./template}</a></li>
+								<li><a class="dropdown-item" href="#" role="menuitem">{./template}</a></li>
 								{{{ end }}}
 								{{{ end }}}
 							</ul>
