@@ -176,7 +176,7 @@ Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
 	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
-		winston.verbose(`[plugins/fireHook] ${hook}`);
+		winston.debug(`[plugins/fireHook] ${hook}`);
 	}
 
 	if (!hookTypeToMethod[hookType]) {
