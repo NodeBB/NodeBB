@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const nconf = require('nconf');
 
 const db = require('../database');
 const user = require('../user');
@@ -75,35 +76,40 @@ inbox.announce = async (req) => {
 		// ok to fail
 	}
 
-	const { type, id } = await activitypub.helpers.resolveLocalId(object);
-	if (type !== 'post' || !(await posts.exists(id))) {
-		throw new Error('[[error:activitypub.invalid-id]]');
-	}
-
 	const assertion = await activitypub.actors.assert(actor);
 	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	const tid = await posts.getPostField(id, 'tid');
+	if (String(object).startsWith(nconf.get('url'))) {
+		const { type, id } = await activitypub.helpers.resolveLocalId(object);
+		if (type !== 'post' || !(await posts.exists(id))) {
+			throw new Error('[[error:activitypub.invalid-id]]');
+		}
 
-	// No double-announce allowed
-	const existing = await topics.events.find(tid, {
-		type: 'announce',
-		uid: actor,
-		pid: id,
-	});
-	if (existing.length) {
-		await topics.events.purge(tid, existing);
+		const tid = await posts.getPostField(id, 'tid');
+
+		// No double-announce allowed
+		const existing = await topics.events.find(tid, {
+			type: 'announce',
+			uid: actor,
+			pid: id,
+		});
+		if (existing.length) {
+			await topics.events.purge(tid, existing);
+		}
+
+		await topics.events.log(tid, {
+			type: 'announce',
+			uid: actor,
+			href: `/post/${id}`,
+			pid: id,
+			timestamp,
+		});
+	} else {
+		const tid = await activitypub.notes.assertTopic(0, object);
+		await topics.updateLastPostTime(tid, timestamp);
 	}
-
-	await topics.events.log(tid, {
-		type: 'announce',
-		uid: actor,
-		href: `/post/${id}`,
-		pid: id,
-		timestamp,
-	});
 };
 
 inbox.follow = async (req) => {
