@@ -64,6 +64,8 @@ inbox.like = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
+	winston.info(`[activitypub/inbox/like] id ${id} via ${actor}`);
+
 	await posts.upvote(id, actor);
 };
 
@@ -97,6 +99,8 @@ inbox.announce = async (req) => {
 		tid = await activitypub.notes.assertTopic(0, object);
 		await topics.updateLastPostTime(tid, timestamp);
 	}
+
+	winston.info(`[activitypub/inbox/announce] Parsing id ${pid}`);
 
 	// No double-announce allowed
 	const existing = await topics.events.find(tid, {
@@ -219,6 +223,8 @@ inbox.undo = async (req) => {
 	}
 
 	const { type: localType, id } = await helpers.resolveLocalId(object.object);
+
+	winston.info(`[activitypub/inbox/undo] ${type} ${localType} ${id} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
