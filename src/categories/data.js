@@ -32,6 +32,7 @@ module.exports = function (Categories) {
 			return [];
 		}
 
+		cids = cids.map(cid => parseInt(cid, 10));
 		const keys = cids.map(cid => `category:${cid}`);
 		const categories = await db.getObjects(keys, fields);
 
