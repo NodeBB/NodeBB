@@ -35,6 +35,7 @@
     "pinned": "Закачено",
     "pinned-with-expiry": "Закачено до %1",
     "scheduled": "Планирано",
+    "deleted": "Deleted",
     "moved": "Премештено",
     "moved-from": "Премештено из %1",
     "copy-code": "Копирај код",

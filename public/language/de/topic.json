@@ -35,6 +35,7 @@
     "pinned": "Angeheftet",
     "pinned-with-expiry": "Angepinnt bis %1",
     "scheduled": "Geplant",
+    "deleted": "Deleted",
     "moved": "Verschoben",
     "moved-from": "Verschoben von %1",
     "copy-code": "Code kopieren",
