@@ -7,6 +7,7 @@ const topics = require('../topics');
 const posts = require('../posts');
 const utils = require('../utils');
 const pubsub = require('../pubsub');
+const slugify = require('../slugify');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
@@ -98,7 +99,7 @@ Notes.assertTopic = async (uid, id) => {
 
 	const chain = Array.from(await Notes.getParentChain(uid, id));
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = chain[chain.length - 1];
-	const members = await db.isSortedSetMembers(`tidRemote:${tid}:posts`, chain.map(p => p.pid));
+	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.map(p => p.pid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
 		winston.info('[notes/assertTopic] No new notes to process.');
@@ -121,17 +122,21 @@ Notes.assertTopic = async (uid, id) => {
 		unprocessed.map(n => n.timestamp),
 	];
 
+	// mainPid doesn't belong in posts zset
+	ids.pop();
+	timestamps.pop();
+
 	await Promise.all([
-		db.setObject(`topicRemote:${tid}`, {
+		db.setObject(`topic:${tid}`, {
 			tid,
 			uid: authorId,
 			cid: cid || -1,
 			mainPid,
 			title,
-			slug: `../world/${tid}`,
+			slug: `${tid}/${slugify(title)}`,
 			timestamp,
 		}),
-		db.sortedSetAdd(`tidRemote:${tid}:posts`, timestamps, ids),
+		db.sortedSetAdd(`tid:${tid}:posts`, timestamps, ids),
 		Notes.assert(uid, unprocessed),
 	]);
 	await Promise.all([ // must be done after .assert()
@@ -145,20 +150,20 @@ Notes.assertTopic = async (uid, id) => {
 };
 
 Notes.updateTopicCounts = async function (tid) {
-	const pids = await db.getSortedSetMembers(`tidRemote:${tid}:posts`);
+	const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
 	let uids = await db.getObjectsFields(pids.map(p => `post:${p}`), ['uid']);
 	uids = uids.reduce((set, { uid }) => {
 		set.add(uid);
 		return set;
 	}, new Set());
 
-	db.setObject(`topicRemote:${tid}`, {
+	db.setObject(`topic:${tid}`, {
 		postercount: uids.size,
 		postcount: pids.length,
 	});
 };
 
 Notes.getTopicPosts = async (tid, uid, start, stop) => {
-	const pids = await db.getSortedSetRange(`tidRemote:${tid}:posts`, start, stop);
+	const pids = await db.getSortedSetRange(`tid:${tid}:posts`, start, stop);
 	return await posts.getPostsByPids(pids, uid);
 };

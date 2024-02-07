@@ -13,6 +13,19 @@ const intFields = [
 	'minTags', 'maxTags', 'postQueue', 'subCategoriesPerPage',
 ];
 
+const worldCategory = {
+	cid: -1,
+	name: 'World',
+	description: '[[error:invalid-data]]',
+	descriptionParsed: 'what',
+	icon: 'fa-globe',
+	bgColor: '#0000ff',
+	color: '#ffffff',
+	slug: '../world',
+	parentCid: 0,
+	disabled: 0, // todo
+};
+
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = async function (cids, fields) {
 		if (!Array.isArray(cids) || !cids.length) {
@@ -21,6 +34,12 @@ module.exports = function (Categories) {
 
 		const keys = cids.map(cid => `category:${cid}`);
 		const categories = await db.getObjects(keys, fields);
+
+		// Handle cid -1
+		if (cids.includes(-1)) {
+			categories.splice(cids.indexOf(-1), 1, worldCategory);
+		}
+
 		const result = await plugins.hooks.fire('filter:category.getFields', {
 			cids: cids,
 			categories: categories,

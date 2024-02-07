@@ -23,8 +23,7 @@ module.exports = function (SocketTopics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const setPrefix = validator.isUUID(String(data.tid)) ? 'tidRemote' : 'tid';
-		const set = data.topicPostSort === 'most_votes' ? `${setPrefix}:${data.tid}:posts:votes` : `${setPrefix}:${data.tid}:posts`;
+		const set = data.topicPostSort === 'most_votes' ? `tid:${data.tid}:posts:votes` : `tid:${data.tid}:posts`;
 		const reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 		let start = Math.max(0, parseInt(data.after, 10));
 

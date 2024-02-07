@@ -26,7 +26,7 @@ module.exports = function (Topics) {
 			fields.push('timestamp');
 		}
 
-		const keys = tids.map(tid => `${validator.isUUID(String(tid)) ? 'topicRemote' : 'topic'}:${tid}`);
+		const keys = tids.map(tid => `topic:${tid}`);
 		const topics = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:topic.getFields', {
 			tids: tids,
@@ -63,13 +63,11 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
-		const setPrefix = validator.isUUID(String(tid)) ? 'topicRemote' : 'topic';
-		await db.setObjectField(`${setPrefix}:${tid}`, field, value);
+		await db.setObjectField(`topic:${tid}`, field, value);
 	};
 
 	Topics.setTopicFields = async function (tid, data) {
-		const setPrefix = validator.isUUID(String(tid)) ? 'topicRemote' : 'topic';
-		await db.setObject(`${setPrefix}:${tid}`, data);
+		await db.setObject(`topic:${tid}`, data);
 	};
 
 	Topics.deleteTopicField = async function (tid, field) {

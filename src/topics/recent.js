@@ -70,13 +70,19 @@ module.exports = function (Topics) {
 	};
 
 	Topics.updateRecent = async function (tid, timestamp) {
-		let data = { tid: tid, timestamp: timestamp };
+		let data = { tid, timestamp };
+
+		// Topics in /world are excluded from /recent
+		const cid = await Topics.getTopicField(tid, 'cid');
+		if (cid === -1) {
+			return;
+		}
+
 		if (plugins.hooks.hasListeners('filter:topics.updateRecent')) {
-			data = await plugins.hooks.fire('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
+			data = await plugins.hooks.fire('filter:topics.updateRecent', data);
 		}
 		if (data && data.tid && data.timestamp) {
-			const setPrefix = validator.isUUID(String(data.tid)) ? 'topicsRemote' : 'topics';
-			await db.sortedSetAdd(`${setPrefix}:recent`, data.timestamp, data.tid);
+			await db.sortedSetAdd(`topics:recent`, data.timestamp, data.tid);
 		}
 	};
 };
