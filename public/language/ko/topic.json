@@ -35,6 +35,7 @@
     "pinned": "고정된 게시물",
     "pinned-with-expiry": "%1까지 상단 고정",
     "scheduled": "예약됨",
+    "deleted": "Deleted",
     "moved": "이동된 게시물",
     "moved-from": "%1부터 상단 고정 해제",
     "copy-code": "Copy Code",

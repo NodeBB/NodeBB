@@ -35,6 +35,7 @@
     "pinned": "已固定",
     "pinned-with-expiry": "置顶直到 %1",
     "scheduled": "已定时",
+    "deleted": "Deleted",
     "moved": "已移动",
     "moved-from": "移自%1版",
     "copy-code": "复制代码",
