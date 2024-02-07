@@ -35,6 +35,7 @@
     "pinned": "Fixado",
     "pinned-with-expiry": "Fixado até %1",
     "scheduled": "Agendado",
+    "deleted": "Deleted",
     "moved": "Movido",
     "moved-from": "Movido de %1",
     "copy-code": "Copy Code",

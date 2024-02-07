@@ -167,6 +167,7 @@ module.exports = function (Categories) {
 				topic.slug = topic.tid;
 				topic.teaser = null;
 				topic.noAnchor = true;
+				topic.unread = false;
 				topic.tags = [];
 			}
 		});
