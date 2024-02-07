@@ -301,6 +301,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			['title', userObj.username],
 			['data-uid', userObj.uid],
 			['loading', 'lazy'],
+			['aria-label', `User avatar for ${userObj.username}`],
 		]);
 		const styles = [`--avatar-size: ${size};`];
 		const attr2String = attributes => Array.from(attributes).reduce((output, [prop, value]) => {
