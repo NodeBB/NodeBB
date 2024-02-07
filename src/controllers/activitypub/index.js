@@ -113,7 +113,7 @@ Controller.getInbox = async (req, res) => {
 Controller.postInbox = async (req, res) => {
 	// Note: underlying methods are internal use only, hence no exposure via src/api
 	const method = String(req.body.type).toLowerCase();
-	if (req.body.hasOwnProperty(method)) {
+	if (!activitypub.inbox.hasOwnProperty(method)) {
 		return res.sendStatus(501);
 	}
 
