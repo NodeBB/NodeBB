@@ -247,7 +247,7 @@ module.exports = function (Topics) {
 
 	Topics.addPostToTopic = async function (tid, postData) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		if (!parseInt(mainPid, 10)) {
+		if (!mainPid) {
 			await Topics.setTopicField(tid, 'mainPid', postData.pid);
 		} else {
 			const upvotes = parseInt(postData.upvotes, 10) || 0;
