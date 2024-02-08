@@ -62,6 +62,12 @@ Notes.getParentChain = async (uid, input) => {
 			}
 		} else {
 			let object = await activitypub.get('uid', uid, id);
+
+			// Handle incorrect id passed in
+			if (id !== object.id) {
+				return await traverse(uid, object.id);
+			}
+
 			object = await activitypub.mocks.post(object);
 			if (object) {
 				chain.add(object);
