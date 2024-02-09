@@ -212,12 +212,12 @@ Mocks.note = async (post) => {
 	let inReplyTo = null;
 	let name = null;
 	if (post.toPid) { // direct reply
-		inReplyTo = activitypub.helpers.isUri(post.toPid) ? post.toPid : `${nconf.get('url')}/post/${post.toPid}`;
+		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
 		const parentId = await posts.getPostField(post.toPid, 'uid');
-		to.unshift(activitypub.helpers.isUri(parentId) ? parentId : `${nconf.get('url')}/uid/${parentId}`);
+		to.unshift(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
-		inReplyTo = `${nconf.get('url')}/post/${post.topic.mainPid}`;
-		to.unshift(activitypub.helpers.isUri(post.topic.uid) ? post.topic.uid : `${nconf.get('url')}/uid/${post.topic.uid}`);
+		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
+		to.unshift(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 	} else { // new topic
 		name = await topics.getTitleByPid(post.pid);
 	}
