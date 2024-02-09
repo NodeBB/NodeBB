@@ -53,6 +53,12 @@ Notes.getParentChain = async (uid, input) => {
 
 	const chain = new Set();
 	const traverse = async (uid, id) => {
+		// Handle remote reference to local post
+		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
+		if (type === 'post' && localId) {
+			return traverse(uid, localId);
+		}
+
 		const exists = await db.exists(`post:${id}`);
 		if (exists) {
 			const postData = await posts.getPostData(id);
