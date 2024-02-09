@@ -223,18 +223,22 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		const keyData = await ActivityPub.getPrivateKey(type, id);
 		const headers = await ActivityPub.sign(keyData, uri, payload);
 		winston.verbose(`[activitypub/send] ${uri}`);
-		const { response, body } = await request.post(uri, {
-			headers: {
-				...headers,
-				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-			},
-			body: payload,
-		});
+		try {
+			const { response, body } = await request.post(uri, {
+				headers: {
+					...headers,
+					'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+				body: payload,
+			});
 
-		if (String(response.statusCode).startsWith('2')) {
-			winston.verbose(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
-		} else {
-			winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${body}`);
+			if (String(response.statusCode).startsWith('2')) {
+				winston.verbose(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
+			} else {
+				winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${body}`);
+			}
+		} catch (e) {
+			winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
 		}
 	}));
 };
