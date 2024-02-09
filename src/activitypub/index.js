@@ -235,7 +235,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 			if (String(response.statusCode).startsWith('2')) {
 				winston.verbose(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
 			} else {
-				winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${body}`);
+				winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${String(body)}`);
 			}
 		} catch (e) {
 			winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
