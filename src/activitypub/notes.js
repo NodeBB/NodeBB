@@ -29,8 +29,9 @@ Notes.assert = async (uid, input, options = {}) => {
 
 		if (!exists || options.update === true) {
 			let postData;
-			winston.verbose(`[activitypub/notes.assert] Not found, saving note to database`);
+			winston.verbose(`[activitypub/notes.assert] Not found, retrieving note for persistence...`);
 			if (activitypub.helpers.isUri(item)) {
+				// get failure throws for now but should save intermediate object
 				const object = await activitypub.get('uid', uid, item);
 				postData = await activitypub.mocks.post(object);
 			} else {
@@ -38,6 +39,7 @@ Notes.assert = async (uid, input, options = {}) => {
 			}
 
 			await db.setObject(key, postData);
+			winston.verbose(`[activitypub/notes.assert] Note ${id} saved.`);
 		}
 
 		if (options.update === true) {
@@ -67,7 +69,12 @@ Notes.getParentChain = async (uid, input) => {
 				await traverse(uid, postData.toPid);
 			}
 		} else {
-			let object = await activitypub.get('uid', uid, id);
+			let object;
+			try {
+				object = await activitypub.get('uid', uid, id);
+			} catch (e) {
+				winston.warn(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
+			}
 
 			// Handle incorrect id passed in
 			if (id !== object.id) {
