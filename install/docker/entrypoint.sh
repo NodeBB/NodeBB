@@ -27,15 +27,21 @@ ln -fs $CONFIG_DIR/package.json package.json
 ln -fs $CONFIG_DIR/package-lock.json package-lock.json
 
 npm install --omit=dev
-
+package_hash=$(md5sum install/package.json)
 if [[ -n $SETUP ]]; then
   echo "Setup environmental variable detected"
   echo "Starting setup session"
   ./nodebb setup --config=$CONFIG
+  echo $package_hash > $CONFIG_DIR/install_hash.md5
 elif [ -f $CONFIG ]; then
   echo "Config file exist at $CONFIG, assuming it is a valid config"
   echo "Starting forum"
-  if [ "$FORCE_BUILD_BEFORE_START" = true ]; then
+  if [ "$package_hash" != "$(cat $CONFIG_DIR/install_hash.md5)" ]; then
+    echo "The container has been updated, running upgrade"
+    ./nodebb upgrade --config=$CONFIG
+    echo $package_hash > $CONFIG_DIR/install_hash.md5
+  # upgrade also builds, so we don't need to do it again
+  elif [ "$FORCE_BUILD_BEFORE_START" = true ]; then
     ./nodebb build --config=$CONFIG
   fi
   ./nodebb start --config=$CONFIG
@@ -43,4 +49,5 @@ else
   echo "Config file not found at $CONFIG"
   echo "Starting installation session"
   ./nodebb "${NODEBB_INIT_VERB}" --config=$CONFIG
+  echo $package_hash > $CONFIG_DIR/install_hash.md5
 fi
