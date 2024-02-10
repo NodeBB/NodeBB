@@ -10,9 +10,9 @@ services:
     # expose:
     #   - 4567
     volumes:
-      - ./.docker/build:/usr/src/app/build
-      - ./.docker/public/uploads:/usr/src/app/public/uploads
-      - ./.docker:/opt/config
+      - nodebb-build:/usr/src/app/build
+      - nodebb-uploads:/usr/src/app/public/uploads
+      - nodebb-config:/opt/config
       - ./install/docker/setup.json:/usr/src/app/setup.json
   mongo:
     image: "mongo:7-jammy"
@@ -24,8 +24,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: nodebb
       MONGO_INITDB_DATABASE: nodebb
     volumes:
-      - ./.docker/database/mongo/config:/etc/mongo
-      - ./.docker/database/mongo/data:/data/db
+      - mongo-data:/data/db
       - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
     profiles:
       - mongo
@@ -39,7 +38,7 @@ services:
       POSTGRES_PASSWORD: nodebb
       POSTGRES_DB: nodebb
     volumes:
-      - ./.docker/database/postgresql/data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     profiles:
       - postgres
   redis:
@@ -50,6 +49,43 @@ services:
     expose:
       - "6379"
     volumes:
-      - ./.docker/database/redis:/data
+      - redis-data:/data
     profiles:
       - redis
+volumes:
+  mongo-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker/database/mongo/data
+  postgres-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker/database/postgresql/data
+  redis-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker/database/redis
+  nodebb-build:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker/build
+  nodebb-uploads:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker/public/uploads
+  nodebb-config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker
