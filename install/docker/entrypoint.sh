@@ -7,6 +7,8 @@ export FORCE_BUILD_BEFORE_START="${FORCE_BUILD_BEFORE_START:-false}"
 # Supported verbs: install (web install), setup (interactive CLI session). Default: web install
 # TODO: constraint it using a hash set (or hash table)
 export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
+# Supported verbs: build, upgrade. Default: build
+export NODEBB_BUILD_VERB="${NODEBB_BUILD_VERB:-build}"
 # Setup variable for backward compatibility, default: <empty>
 export SETUP="${SETUP:-}"
 
@@ -42,7 +44,7 @@ elif [ -f $CONFIG ]; then
     echo $package_hash > $CONFIG_DIR/install_hash.md5
   # upgrade also builds, so we don't need to do it again
   elif [ "$FORCE_BUILD_BEFORE_START" = true ]; then
-    ./nodebb build --config=$CONFIG
+    ./nodebb "${NODEBB_BUILD_VERB}" --config=$CONFIG
   fi
   ./nodebb start --config=$CONFIG
 else
