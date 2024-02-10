@@ -44,6 +44,10 @@ WORKDIR /usr/src/app
 
 USER node
 
+# npm is mostly ran non-interactively here, and the expectation is to update dependencies with NodeBB versions alongside the container
+# so these are not really useful, but when enabled (which is the default) slow down container startup (especially audit)
+RUN npm config set audit=false fund=false update-notifier=false
+
 COPY --chown=node:node . /usr/src/app
 
 EXPOSE 4567
