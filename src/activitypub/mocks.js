@@ -88,6 +88,8 @@ Mocks.post = async (objects) => {
 			content,
 			sourceContent,
 			inReplyTo: toPid,
+			to,
+			cc,
 		} = object;
 
 		const timestamp = new Date(published).getTime();
@@ -106,6 +108,7 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
+			_activitypub: { to, cc },
 		};
 
 		return payload;

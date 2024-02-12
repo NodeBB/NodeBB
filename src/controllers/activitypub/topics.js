@@ -15,10 +15,20 @@ controller.list = async function (req, res) {
 	const start = Math.max(0, (page - 1) * topicsPerPage);
 	const stop = start + topicsPerPage - 1;
 
-	const tids = await db.getSortedSetRevRange('cid:-1:tids', start, stop);
+	const sets = ['cid:-1:tids', `uid:${req.uid}:inbox`];
+	if (req.params.filter === 'all') {
+		sets.pop();
+	}
+
+	const tids = await db.getSortedSetRevIntersect({
+		sets,
+		start,
+		stop,
+		weights: sets.map((s, index) => (index ? 0 : 1)),
+	});
 
 	const data = {};
-	data.topicCount = await db.sortedSetCard('cid:-1:tids');
+	data.topicCount = await db.sortedSetIntersectCard(sets);
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
 

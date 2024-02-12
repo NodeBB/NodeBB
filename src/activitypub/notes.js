@@ -3,10 +3,11 @@
 const winston = require('winston');
 
 const db = require('../database');
+const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
 const utils = require('../utils');
-const pubsub = require('../pubsub');
+// const pubsub = require('../pubsub');
 const slugify = require('../slugify');
 
 const activitypub = module.parent.exports;
@@ -22,7 +23,8 @@ Notes.resolveId = async (uid, id) => {
 Notes.assert = async (uid, input, options = {}) => {
 	// Ensures that each note has been saved to the database
 	await Promise.all(input.map(async (item) => {
-		const id = activitypub.helpers.isUri(item) ? item : item.pid;
+		let id = activitypub.helpers.isUri(item) ? item : item.pid;
+		id = await Notes.resolveId(uid, id);
 		const key = `post:${id}`;
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
@@ -38,15 +40,48 @@ Notes.assert = async (uid, input, options = {}) => {
 				postData = item;
 			}
 
-			await db.setObject(key, postData);
+			// Parse ActivityPub-specific data
+			const { to, cc } = postData._activitypub;
+			let recipients = new Set([...to, ...cc]);
+			recipients = await Notes.getLocalRecipients(recipients);
+			if (recipients.size > 0) {
+				await db.setAdd(`post:${id}:recipients`, Array.from(recipients));
+			}
+
+			const hash = { ...postData };
+			delete hash._activitypub;
+			await db.setObject(key, hash);
 			winston.verbose(`[activitypub/notes.assert] Note ${id} saved.`);
 		}
 
-		if (options.update === true) {
-			require('../posts/cache').del(String(id));
-			pubsub.publish('post:edit', String(id));
+		// odd circular modular dependency issue here...
+		// if (options.update === true) {
+		// 	require('../posts/cache').del(String(id));
+		// 	pubsub.publish('post:edit', String(id));
+		// }
+	}));
+};
+
+Notes.getLocalRecipients = async (recipients) => {
+	const uids = new Set();
+	await Promise.all(Array.from(recipients).map(async (recipient) => {
+		const { type, id } = await activitypub.helpers.resolveLocalId(recipient);
+		if (type === 'user' && await user.exists(id)) {
+			uids.add(parseInt(id, 10));
+			return;
+		}
+
+		const followedUid = await db.getObjectField('followersUrl:uid', recipient);
+		if (followedUid) {
+			const followers = await db.getSortedSetMembers(`followersRemote:${followedUid}`);
+			if (followers.length) {
+				uids.add(...followers.map(uid => parseInt(uid, 10)));
+			}
+			// return;
 		}
 	}));
+
+	return uids;
 };
 
 Notes.getParentChain = async (uid, input) => {
@@ -161,6 +196,7 @@ Notes.assertTopic = async (uid, id) => {
 	await Promise.all([ // must be done after .assert()
 		Notes.assertParentChain(chain, tid),
 		Notes.updateTopicCounts(tid),
+		Notes.syncUserInboxes(tid),
 		topics.updateLastPostTimeFromLastPid(tid),
 		topics.updateTeaser(tid),
 	]);
@@ -180,6 +216,18 @@ Notes.updateTopicCounts = async function (tid) {
 		postercount: uids.size,
 		postcount: pids.length,
 	});
+};
+
+Notes.syncUserInboxes = async function (tid) {
+	const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
+	const recipients = await db.getSetsMembers(pids.map(id => `post:${id}:recipients`));
+	const uids = recipients.reduce((set, uids) => new Set([...set, ...uids.map(u => parseInt(u, 10))]), new Set());
+	const cid = await topics.getTopicField(tid, 'cid');
+	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
+	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
+
+	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.length} inboxes`);
+	await db.sortedSetsAdd(keys, keys.map(() => score), tid);
 };
 
 Notes.getTopicPosts = async (tid, uid, start, stop) => {
