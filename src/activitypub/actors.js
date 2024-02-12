@@ -28,6 +28,7 @@ Actors.assert = async (ids, options = {}) => {
 		return true;
 	}
 
+	const followersUrlMap = new Map();
 	const actors = await Promise.all(ids.map(async (id) => {
 		try {
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id);
@@ -49,6 +50,11 @@ Actors.assert = async (ids, options = {}) => {
 			const outbox = actor.outbox ? await activitypub.get('uid', 0, actor.outbox) : { totalItems: 0 };
 			actor.postcount = outbox.totalItems;
 
+			// Followers url for backreference
+			if (actor.hasOwnProperty('followers') && activitypub.helpers.isUri(actor.followers)) {
+				followersUrlMap.set(actor.followers, actor.id);
+			}
+
 			return actor;
 		} catch (e) {
 			return null;
@@ -59,14 +65,19 @@ Actors.assert = async (ids, options = {}) => {
 	const profiles = await activitypub.mocks.profile(actors);
 	const now = Date.now();
 
+	const bulkSet = profiles.map((profile) => {
+		if (!profile) {
+			return null;
+		}
+		const key = `userRemote:${profile.uid}`;
+		return [key, profile];
+	}).filter(Boolean);
+	if (followersUrlMap.size) {
+		bulkSet.push(['followersUrl:uid', Object.fromEntries(followersUrlMap)]);
+	}
+
 	await Promise.all([
-		db.setObjectBulk(profiles.map((profile, idx) => {
-			if (!profile) {
-				return null;
-			}
-			const key = `userRemote:${ids[idx]}`;
-			return [key, profile];
-		}).filter(Boolean)),
+		db.setObjectBulk(bulkSet),
 		db.sortedSetAdd('usersRemote:lastCrawled', ids.map((id, idx) => (profiles[idx] ? now : null)).filter(Boolean), ids.filter((id, idx) => profiles[idx])),
 	]);
 

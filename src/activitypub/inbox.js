@@ -204,6 +204,7 @@ inbox.accept = async (req) => {
 	if (type === 'Follow') {
 		const now = Date.now();
 		await db.sortedSetAdd(`followingRemote:${uid}`, now, actor);
+		await db.sortedSetAdd(`followersRemote:${actor}`, now, uid); // for followers backreference
 		const followingRemoteCount = await db.sortedSetCard(`followingRemote:${uid}`);
 		await user.setUserField(uid, 'followingRemoteCount', followingRemoteCount);
 	}
