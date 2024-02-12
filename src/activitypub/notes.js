@@ -221,7 +221,7 @@ Notes.updateTopicCounts = async function (tid) {
 Notes.syncUserInboxes = async function (tid) {
 	const [pids, { cid, mainPid }] = await Promise.all([
 		db.getSortedSetMembers(`tid:${tid}:posts`),
-		topics.getTopicFields(tid, ['cid', 'mainPid']),
+		topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']),
 	]);
 	pids.unshift(mainPid);
 
