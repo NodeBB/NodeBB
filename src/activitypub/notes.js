@@ -219,10 +219,14 @@ Notes.updateTopicCounts = async function (tid) {
 };
 
 Notes.syncUserInboxes = async function (tid) {
-	const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
+	const [pids, { cid, mainPid }] = await Promise.all([
+		db.getSortedSetMembers(`tid:${tid}:posts`),
+		topics.getTopicFields(tid, ['cid', 'mainPid']),
+	]);
+	pids.unshift(mainPid);
+
 	const recipients = await db.getSetsMembers(pids.map(id => `post:${id}:recipients`));
 	const uids = recipients.reduce((set, uids) => new Set([...set, ...uids.map(u => parseInt(u, 10))]), new Set());
-	const cid = await topics.getTopicField(tid, 'cid');
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
