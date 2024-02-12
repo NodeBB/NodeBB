@@ -122,7 +122,6 @@ Notes.getParentChain = async (uid, input) => {
 				}
 			} catch (e) {
 				winston.warn(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
-				chain.delete(id);
 			}
 		}
 	};
@@ -153,6 +152,10 @@ Notes.assertTopic = async (uid, id) => {
 	 */
 
 	const chain = Array.from(await Notes.getParentChain(uid, id));
+	if (!chain.length) {
+		return null;
+	}
+
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = chain[chain.length - 1];
 	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.map(p => p.pid));
 	if (tid && members.every(Boolean)) {

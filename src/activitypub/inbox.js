@@ -98,6 +98,10 @@ inbox.announce = async (req) => {
 	} else {
 		pid = object;
 		tid = await activitypub.notes.assertTopic(0, object);
+		if (!tid) {
+			return;
+		}
+
 		await topics.updateLastPostTime(tid, timestamp);
 	}
 
