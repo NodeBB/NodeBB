@@ -226,7 +226,7 @@ Notes.syncUserInboxes = async function (tid) {
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
-	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.length} inboxes`);
+	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await db.sortedSetsAdd(keys, keys.map(() => score), tid);
 };
 
