@@ -42,11 +42,7 @@ Notes.assert = async (uid, input, options = {}) => {
 
 			// Parse ActivityPub-specific data
 			const { to, cc } = postData._activitypub;
-			let recipients = new Set([...to, ...cc]);
-			recipients = await Notes.getLocalRecipients(recipients);
-			if (recipients.size > 0) {
-				await db.setAdd(`post:${id}:recipients`, Array.from(recipients));
-			}
+			await Notes.updateLocalRecipients(id, { to, cc });
 
 			const hash = { ...postData };
 			delete hash._activitypub;
@@ -62,7 +58,8 @@ Notes.assert = async (uid, input, options = {}) => {
 	}));
 };
 
-Notes.getLocalRecipients = async (recipients) => {
+Notes.updateLocalRecipients = async (id, { to, cc }) => {
+	const recipients = new Set([...to, ...cc]);
 	const uids = new Set();
 	await Promise.all(Array.from(recipients).map(async (recipient) => {
 		const { type, id } = await activitypub.helpers.resolveLocalId(recipient);
@@ -81,7 +78,9 @@ Notes.getLocalRecipients = async (recipients) => {
 		}
 	}));
 
-	return uids;
+	if (uids.size > 0) {
+		await db.setAdd(`post:${id}:recipients`, Array.from(uids));
+	}
 };
 
 Notes.getParentChain = async (uid, input) => {

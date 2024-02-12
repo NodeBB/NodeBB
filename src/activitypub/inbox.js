@@ -71,7 +71,7 @@ inbox.like = async (req) => {
 };
 
 inbox.announce = async (req) => {
-	const { actor, object, published } = req.body;
+	const { actor, object, published, to, cc } = req.body;
 	let timestamp = Date.now();
 	try {
 		timestamp = new Date(published).getTime();
@@ -103,6 +103,8 @@ inbox.announce = async (req) => {
 		}
 
 		await topics.updateLastPostTime(tid, timestamp);
+		await activitypub.notes.updateLocalRecipients(pid, { to, cc });
+		await activitypub.notes.syncUserInboxes(tid);
 	}
 
 	winston.info(`[activitypub/inbox/announce] Parsing id ${pid}`);
