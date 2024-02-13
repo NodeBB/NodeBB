@@ -72,11 +72,9 @@ inbox.like = async (req) => {
 
 inbox.announce = async (req) => {
 	const { actor, object, published, to, cc } = req.body;
-	let timestamp = Date.now();
-	try {
-		timestamp = new Date(published).getTime();
-	} catch (e) {
-		// ok to fail
+	let timestamp = new Date(published);
+	if (timestamp.toString() === 'Invalid Date') {
+		timestamp = Date.now();
 	}
 
 	const assertion = await activitypub.actors.assert(actor);

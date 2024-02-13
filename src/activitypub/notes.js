@@ -59,7 +59,7 @@ Notes.assert = async (uid, input, options = {}) => {
 };
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
-	const recipients = new Set([...to, ...cc]);
+	const recipients = new Set([...(to || []), ...(cc || [])]);
 	const uids = new Set();
 	await Promise.all(Array.from(recipients).map(async (recipient) => {
 		const { type, id } = await activitypub.helpers.resolveLocalId(recipient);
