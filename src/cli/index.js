@@ -238,6 +238,12 @@ program
 	.action(() => {
 		require('./manage').info();
 	});
+program
+	.command('maintenance <toggle>')
+	.description('Toggle maintenance mode true/false')
+	.action((toggle) => {
+		require('./manage').maintenance(toggle);
+	});
 
 // reset
 const resetCommand = program.command('reset');
