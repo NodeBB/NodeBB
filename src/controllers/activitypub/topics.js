@@ -16,7 +16,7 @@ controller.list = async function (req, res) {
 	const stop = start + topicsPerPage - 1;
 
 	const sets = ['cid:-1:tids', `uid:${req.uid}:inbox`];
-	if (req.params.filter === 'all') {
+	if (req.params.filter === 'all' || !req.uid) {
 		sets.pop();
 	}
 
