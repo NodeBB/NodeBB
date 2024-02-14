@@ -208,12 +208,11 @@ Notes.assertTopic = async (uid, id) => {
 };
 
 Notes.updateTopicCounts = async function (tid) {
+	const mainPid = await topics.getTopicField(tid, 'mainPid');
 	const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
+	pids.unshift(mainPid);
 	let uids = await db.getObjectsFields(pids.map(p => `post:${p}`), ['uid']);
-	uids = uids.reduce((set, { uid }) => {
-		set.add(uid);
-		return set;
-	}, new Set());
+	uids = new Set(uids.map(o => o.uid));
 
 	db.setObject(`topic:${tid}`, {
 		postercount: uids.size,
