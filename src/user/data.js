@@ -205,10 +205,12 @@ module.exports = function (User) {
 				return;
 			}
 
+			const _intFields = [...intFields];
+
 			if (activitypub.helpers.isUri(user.uid)) {
-				intFields.splice(intFields.indexOf('uid'), 1);
+				_intFields.splice(_intFields.indexOf('uid'), 1);
 			}
-			db.parseIntFields(user, intFields, requestedFields);
+			db.parseIntFields(user, _intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
 				parseDisplayName(user, uidToSettings);

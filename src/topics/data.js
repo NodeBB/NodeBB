@@ -95,12 +95,13 @@ function modifyTopic(topic, fields) {
 		return;
 	}
 
+	const _intFields = [...intFields];
 	if (validator.isUUID(String(topic.tid))) {
-		intFields.splice(intFields.indexOf('uid'), 1);
-		intFields.splice(intFields.indexOf('tid'), 1);
-		intFields.splice(intFields.indexOf('mainPid'), 1);
+		_intFields.splice(_intFields.indexOf('uid'), 1);
+		_intFields.splice(_intFields.indexOf('tid'), 1);
+		_intFields.splice(_intFields.indexOf('mainPid'), 1);
 	}
-	db.parseIntFields(topic, intFields, fields);
+	db.parseIntFields(topic, _intFields, fields);
 
 	if (topic.hasOwnProperty('title')) {
 		topic.titleRaw = topic.title;

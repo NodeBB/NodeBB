@@ -57,16 +57,18 @@ module.exports = function (Posts) {
 };
 
 function modifyPost(post, fields) {
+	const _intFields = [...intFields];
+
 	if (post) {
 		if (activitypub.helpers.isUri(post.pid)) {
-			intFields.splice(intFields.indexOf('pid'), 1);
-			intFields.splice(intFields.indexOf('uid'), 1);
-			intFields.splice(intFields.indexOf('tid'), 1);
+			_intFields.splice(_intFields.indexOf('pid'), 1);
+			_intFields.splice(_intFields.indexOf('uid'), 1);
+			_intFields.splice(_intFields.indexOf('tid'), 1);
 		}
 		if (activitypub.helpers.isUri(post.toPid)) {
-			intFields.splice(intFields.indexOf('toPid'), 1);
+			_intFields.splice(_intFields.indexOf('toPid'), 1);
 		}
-		db.parseIntFields(post, intFields, fields);
+		db.parseIntFields(post, _intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
 			post.votes = post.upvotes - post.downvotes;
 		}
