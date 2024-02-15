@@ -63,6 +63,8 @@ module.exports = function (Posts) {
 
 		if (!activitypub.helpers.isUri(postData.pid) || postData.hasOwnProperty('sourceContent')) {
 			({ postData } = await plugins.hooks.fire('filter:parse.post', { postData }));
+		} else {
+			postData.content = await Posts.sanitize(postData.content);
 		}
 		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
