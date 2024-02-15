@@ -93,7 +93,10 @@ inbox.announce = async (req) => {
 		tid = await posts.getPostField(id, 'tid');
 	} else {
 		pid = object;
-		tid = await activitypub.notes.assertTopic(0, object);
+		([pid, tid] = await Promise.all([
+			activitypub.notes.resolveId(0, pid),
+			activitypub.notes.assertTopic(0, pid),
+		]));
 		if (!tid) {
 			return;
 		}
