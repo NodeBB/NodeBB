@@ -86,6 +86,10 @@ Notes.updateLocalRecipients = async (id, { to, cc }) => {
 };
 
 Notes.saveAttachments = async (id, attachments) => {
+	if (!attachments) {
+		return;
+	}
+
 	const bulkOps = {
 		hash: [],
 		zset: {
