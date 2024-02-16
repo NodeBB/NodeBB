@@ -61,15 +61,12 @@ module.exports = function (Posts) {
 			return postData;
 		}
 
-		if (!activitypub.helpers.isUri(postData.pid) || postData.hasOwnProperty('sourceContent')) {
-			({ postData } = await plugins.hooks.fire('filter:parse.post', { postData }));
-		} else {
-			postData.content = await Posts.sanitize(postData.content);
-		}
+		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData }));
 		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
 			cache.set(pid, postData.content);
 		}
+
 		return postData;
 	};
 

@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const crypto = require('crypto');
 
 const db = require('../database');
 const user = require('../user');
@@ -41,8 +42,9 @@ Notes.assert = async (uid, input, options = {}) => {
 			}
 
 			// Parse ActivityPub-specific data
-			const { to, cc } = postData._activitypub;
+			const { to, cc, attachment } = postData._activitypub;
 			await Notes.updateLocalRecipients(id, { to, cc });
+			await Notes.saveAttachments(id, attachment);
 
 			const hash = { ...postData };
 			delete hash._activitypub;
@@ -81,6 +83,35 @@ Notes.updateLocalRecipients = async (id, { to, cc }) => {
 	if (uids.size > 0) {
 		await db.setAdd(`post:${id}:recipients`, Array.from(uids));
 	}
+};
+
+Notes.saveAttachments = async (id, attachments) => {
+	const bulkOps = {
+		hash: [],
+		zset: {
+			score: [],
+			value: [],
+		},
+	};
+
+	attachments.filter(Boolean).map(({ mediaType, url, name, width, height }, idx) => {
+		if (!url) { // only required property
+			return;
+		}
+
+		const hash = crypto.createHash('sha256').update(url).digest('hex');
+		const key = `attachment:${hash}`;
+		console.log('attachment key is', key);
+
+		bulkOps.hash.push([key, { mediaType, url, name, width, height }]);
+		bulkOps.zset.score.push(idx);
+		bulkOps.zset.value.push(hash);
+	});
+
+	await Promise.all([
+		db.setObjectBulk(bulkOps.hash),
+		db.sortedSetAdd(`post:${id}:attachments`, bulkOps.zset.score, bulkOps.zset.value),
+	]);
 };
 
 Notes.getParentChain = async (uid, input) => {

@@ -101,15 +101,15 @@ define('forum/topic/events', [
 	}
 
 	function onPostEdited(data) {
-		if (!data || !data.post || parseInt(data.post.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+		if (!data || !data.post || String(data.post.tid) !== String(ajaxify.data.tid)) {
 			return;
 		}
 		const editedPostEl = components.get('post/content', data.post.pid).filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return String($(el).closest('[data-pid]').attr('data-pid')) === String(data.post.pid);
 		});
 		const postContainer = $(`[data-pid="${data.post.pid}"]`);
 		const editorEl = postContainer.find('[component="post/editor"]').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return String($(el).closest('[data-pid]').attr('data-pid')) === String(data.post.pid);
 		});
 		const topicTitle = components.get('topic/title');
 		const navbarTitle = components.get('navbar/title').find('span');
