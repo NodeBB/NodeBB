@@ -28,9 +28,12 @@ Actors.assert = async (ids, options = {}) => {
 		return true;
 	}
 
+	winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
+
 	const followersUrlMap = new Map();
 	const actors = await Promise.all(ids.map(async (id) => {
 		try {
+			winston.verbose(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id);
 
 			// Follow counts

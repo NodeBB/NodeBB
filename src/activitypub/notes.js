@@ -23,6 +23,8 @@ Notes.resolveId = async (uid, id) => {
 // also, db.exists call is probably expensive
 Notes.assert = async (uid, input, options = {}) => {
 	// Ensures that each note has been saved to the database
+	const actors = new Set();
+
 	await Promise.all(input.map(async (item) => {
 		let id = activitypub.helpers.isUri(item) ? item : item.pid;
 		id = await Notes.resolveId(uid, id);
@@ -36,15 +38,19 @@ Notes.assert = async (uid, input, options = {}) => {
 			if (activitypub.helpers.isUri(item)) {
 				// get failure throws for now but should save intermediate object
 				const object = await activitypub.get('uid', uid, item);
+				actors.add(object.attributedTo);
 				postData = await activitypub.mocks.post(object);
 			} else {
 				postData = item;
+				actors.add(item.uid);
 			}
 
-			// Parse ActivityPub-specific data
-			const { to, cc, attachment } = postData._activitypub;
-			await Notes.updateLocalRecipients(id, { to, cc });
-			await Notes.saveAttachments(id, attachment);
+			// Parse ActivityPub-specific data if exists (if not, was parsed already)
+			if (postData.hasOwnProperty('_activityPub')) {
+				const { to, cc, attachment } = postData._activitypub;
+				await Notes.updateLocalRecipients(id, { to, cc });
+				await Notes.saveAttachments(id, attachment);
+			}
 
 			const hash = { ...postData };
 			delete hash._activitypub;
@@ -58,6 +64,10 @@ Notes.assert = async (uid, input, options = {}) => {
 		// 	pubsub.publish('post:edit', String(id));
 		// }
 	}));
+
+	if (actors.size) {
+		activitypub.actors.assert(Array.from(actors));
+	}
 };
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
@@ -98,7 +108,7 @@ Notes.saveAttachments = async (id, attachments) => {
 		},
 	};
 
-	attachments.filter(Boolean).map(({ mediaType, url, name, width, height }, idx) => {
+	attachments.filter(Boolean).forEach(({ mediaType, url, name, width, height }, idx) => {
 		if (!url) { // only required property
 			return;
 		}
