@@ -65,7 +65,7 @@ recentController.getData = async function (req, url, sort) {
 		data.title = meta.config.homePageTitle || '[[pages:home]]';
 	} else {
 		data.title = `[[pages:${url}]]`;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[${url}:title]]` }]);
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[activitypub:world-title]]` }]);
 	}
 
 	const query = { ...req.query };

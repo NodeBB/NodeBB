@@ -59,6 +59,9 @@ get:
                         tid:
                           type: number
                           description: A topic identifier
+                        toPid:
+                          type: number
+                          description: The post that this post is in reply to
                         content:
                           type: string
                         timestamp:
@@ -84,6 +87,13 @@ get:
                           type: string
                         index:
                           type: number
+                        parent:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                            displayname:
+                              type: string
                         user:
                           type: object
                           properties:

@@ -32,6 +32,8 @@ controller.list = async function (req, res) {
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
 
+	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[pages:world]]` }]);
+
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({
