@@ -404,6 +404,8 @@ get:
                     type: boolean
                   showPostPreviewsOnHover:
                     type: boolean
+                  sortOptionLabel:
+                    type: string
                   rssFeedUrl:
                     type: string
                   postIndex:

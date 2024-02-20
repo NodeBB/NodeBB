@@ -63,7 +63,7 @@
     "change-picture": "Zmień zdjęcie",
     "change-username": "Zmień nazwę użytkownika",
     "change-email": "Zmień adres e-mail",
-    "email-updated": "Email Updated",
+    "email-updated": "E-mail zaktualizowany",
     "email-same-as-password": "Wprowadź bieżące hasło, aby kontynuować &ndash; ponownie wprowadziłeś nową wiadomość e-mail",
     "edit": "Edytuj",
     "edit-profile": "Edytuj profil",
@@ -126,7 +126,7 @@
     "acp-language": "Język Strony Administratora",
     "notifications": "Powiadomienia",
     "upvote-notif-freq": "Częstotliwość informowania o pozytywnych głosach",
-    "upvote-notif-freq.all": "Wszystkie głosy",
+    "upvote-notif-freq.all": "Wszystkie głosy za",
     "upvote-notif-freq.first": "Pierwszy dla postu",
     "upvote-notif-freq.everyTen": "Co dziesięć głosów",
     "upvote-notif-freq.threshold": "Po 1, 5, 10, 25, 50, 100, 150, 200...",
@@ -203,9 +203,9 @@
     "consent.export-posts": "Eksportuj wpisy (csv)",
     "consent.export-posts-success": "Eksportowanie postów. Otrzymasz powiadomienie gdy będą gotowe.",
     "emailUpdate.intro": "Proszę wprowadź swój adres email poniżej. To forum używa adresu email do notyfikacji a także do odzyskania konta w razie zapomnienia hasła.",
-    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
+    "emailUpdate.optional": "<strong>To pole jest opcjonalne</strong>. Podanie adresu e-mail nie jest konieczne, ale bez potwierdzonego adresu e-mail nie będziesz w stanie odzyskać swojego konta w razie problemów lub zalogować się za pomocą adresu e-mail.",
     "emailUpdate.required": "<strong>To pole jest wymagane</strong>.",
     "emailUpdate.change-instructions": "Email z unikalnym linkiem zostanie wysłany na wprowadzony adres email. Otwarcie tego linku potwierdzi, że podany adres email należy do Ciebie. W każdej chwili możesz go zmienić w edycji profilu.",
     "emailUpdate.password-challenge": "Proszę wprowadź hasło aby potwierdzić, że to konto należy do Ciebie.",
-    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
+    "emailUpdate.pending": "Twój adres e-mail nie został jeszcze potwierdzony, choć wysłano maila z prośbą o potwierdzenie. Jeśli chcesz odwołać tamtą prośbę i wysłać nową, wypełnij formularz poniżej."
 }

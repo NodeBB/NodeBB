@@ -20,6 +20,7 @@ const topicsController = module.exports;
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
+const validSorts = ['oldest_to_newest', 'newest_to_oldest', 'most_votes'];
 
 topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
@@ -70,7 +71,7 @@ topicsController.get = async function getTopic(req, res, next) {
 		return helpers.redirect(res, `/topic/${tid}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}${generateQueryString(req.query)}`);
 	}
 	postIndex = Math.max(1, postIndex);
-	const sort = req.query.sort || settings.topicPostSort;
+	const sort = validSorts.includes(req.query.sort) ? req.query.sort : settings.topicPostSort;
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
 
@@ -106,6 +107,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	topicData.privateUploads = meta.config.privateUploads === 1;
 	topicData.showPostPreviewsOnHover = meta.config.showPostPreviewsOnHover === 1;
+	topicData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
 	if (!meta.config['feeds:disableRSS']) {
 		topicData.rssFeedUrl = `${relative_path}/topic/${topicData.tid}.rss`;
 		if (req.loggedIn) {
