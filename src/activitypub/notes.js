@@ -46,7 +46,7 @@ Notes.assert = async (uid, input, options = {}) => {
 			}
 
 			// Parse ActivityPub-specific data if exists (if not, was parsed already)
-			if (postData.hasOwnProperty('_activityPub')) {
+			if (postData.hasOwnProperty('_activitypub')) {
 				const { to, cc, attachment } = postData._activitypub;
 				await Notes.updateLocalRecipients(id, { to, cc });
 				await Notes.saveAttachments(id, attachment);
@@ -115,7 +115,6 @@ Notes.saveAttachments = async (id, attachments) => {
 
 		const hash = crypto.createHash('sha256').update(url).digest('hex');
 		const key = `attachment:${hash}`;
-		console.log('attachment key is', key);
 
 		bulkOps.hash.push([key, { mediaType, url, name, width, height }]);
 		bulkOps.zset.score.push(idx);
