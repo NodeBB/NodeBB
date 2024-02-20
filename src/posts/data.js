@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../database');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
@@ -60,14 +62,15 @@ function modifyPost(post, fields) {
 	const _intFields = [...intFields];
 
 	if (post) {
-		if (activitypub.helpers.isUri(post.pid)) {
-			_intFields.splice(_intFields.indexOf('pid'), 1);
-			_intFields.splice(_intFields.indexOf('uid'), 1);
-			_intFields.splice(_intFields.indexOf('tid'), 1);
-		}
-		if (activitypub.helpers.isUri(post.toPid)) {
-			_intFields.splice(_intFields.indexOf('toPid'), 1);
-		}
+		['pid', 'uid', 'tid', 'toPid'].forEach((prop) => {
+			if (
+				post.hasOwnProperty(prop) && post[prop] &&
+				(activitypub.helpers.isUri(post[prop]) || validator.isUUID(post[prop]))
+			) {
+				_intFields.splice(_intFields.indexOf(prop), 1);
+			}
+		});
+
 		db.parseIntFields(post, _intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
 			post.votes = post.upvotes - post.downvotes;
