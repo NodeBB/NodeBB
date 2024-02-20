@@ -64,8 +64,8 @@ function modifyPost(post, fields) {
 	if (post) {
 		['pid', 'uid', 'tid', 'toPid'].forEach((prop) => {
 			if (
-				post.hasOwnProperty(prop) && post[prop] &&
-				(activitypub.helpers.isUri(post[prop]) || validator.isUUID(post[prop]))
+				post.hasOwnProperty(prop) &&
+				(activitypub.helpers.isUri(post[prop]) || validator.isUUID(String(post[prop])))
 			) {
 				_intFields.splice(_intFields.indexOf(prop), 1);
 			}
