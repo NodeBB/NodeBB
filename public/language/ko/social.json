@@ -1,12 +1,12 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook",
-	"sign-in-with-linkedin": "Sign in with LinkedIn",
-	"sign-up-with-linkedin": "Sign up with LinkedIn"
+  "sign-in-with-twitter": "Twitter로 로그인",
+  "sign-up-with-twitter": "Twitter로 가입",
+  "sign-in-with-github": "Github로 로그인",
+  "sign-up-with-github": "Github로 가입",
+  "sign-in-with-google": "Google로 로그인",
+  "sign-up-with-google": "Google로 가입",
+  "log-in-with-facebook": "Facebook으로 로그인",
+  "continue-with-facebook": "Facebook으로 계속하기",
+  "sign-in-with-linkedin": "LinkedIn으로 로그인",
+  "sign-up-with-linkedin": "LinkedIn으로 가입"
 }
