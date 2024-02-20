@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const topics = require('../../topics');
 const privileges = require('../../privileges');
 const meta = require('../../meta');

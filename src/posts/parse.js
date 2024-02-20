@@ -8,7 +8,6 @@ const _ = require('lodash');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
-const activitypub = require('../activitypub');
 const translator = require('../translator');
 const utils = require('../utils');
 

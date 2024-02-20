@@ -54,15 +54,10 @@ Notes.assert = async (uid, input, options = {}) => {
 
 			const hash = { ...postData };
 			delete hash._activitypub;
+			// should call internal method here to create/edit post
 			await db.setObject(key, hash);
 			winston.verbose(`[activitypub/notes.assert] Note ${id} saved.`);
 		}
-
-		// odd circular modular dependency issue here...
-		// if (options.update === true) {
-		// 	require('../posts/cache').del(String(id));
-		// 	pubsub.publish('post:edit', String(id));
-		// }
 	}));
 
 	if (actors.size) {
