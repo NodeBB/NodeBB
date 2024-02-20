@@ -229,9 +229,9 @@ inbox.undo = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	const { type: localType, id } = await helpers.resolveLocalId(object.object);
+	let { type: localType, id } = await helpers.resolveLocalId(object.object);
 
-	winston.info(`[activitypub/inbox/undo] ${type} ${localType} ${id} via ${actor}`);
+	winston.info(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
@@ -273,9 +273,10 @@ inbox.undo = async (req) => {
 		}
 
 		case 'Announce': {
+			id = id || object.object; // remote announces
 			const exists = await posts.exists(id);
-			if (localType !== 'post' || !exists) {
-				throw new Error('[[error:invalid-pid]]');
+			if (!exists) {
+				winston.verbose(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
 			}
 
 			const tid = await posts.getPostField(id, 'tid');
