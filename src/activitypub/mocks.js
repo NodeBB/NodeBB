@@ -150,6 +150,7 @@ Mocks.actors.user = async (uid) => {
 		following: `${nconf.get('url')}/uid/${uid}/following`,
 		inbox: `${nconf.get('url')}/uid/${uid}/inbox`,
 		outbox: `${nconf.get('url')}/uid/${uid}/outbox`,
+		sharedInbox: `${nconf.get('url')}/inbox`,
 
 		type: 'Person',
 		name,
@@ -188,6 +189,7 @@ Mocks.actors.category = async (cid) => {
 		//  following: ,
 		inbox: `${nconf.get('url')}/category/${cid}/inbox`,
 		outbox: `${nconf.get('url')}/category/${cid}/outbox`,
+		sharedInbox: `${nconf.get('url')}/inbox`,
 
 		type: 'Group',
 		name,
