@@ -27,7 +27,9 @@ Notes.assert = async (uid, input, options = {}) => {
 
 	await Promise.all(input.map(async (item) => {
 		let id = activitypub.helpers.isUri(item) ? item : item.pid;
-		id = await Notes.resolveId(uid, id);
+		if (activitypub.helpers.isUri(id)) {
+			id = await Notes.resolveId(uid, id);
+		}
 		const key = `post:${id}`;
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);

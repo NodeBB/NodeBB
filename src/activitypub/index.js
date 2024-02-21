@@ -16,6 +16,7 @@ const ActivityPub = module.exports;
 ActivityPub._constants = Object.freeze({
 	publicAddress: 'https://www.w3.org/ns/activitystreams#Public',
 });
+ActivityPub._cache = requestCache;
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');

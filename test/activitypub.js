@@ -97,15 +97,15 @@ describe('ActivityPub integration', () => {
 				uid = await user.create({ username: slug });
 			});
 
-			it('should throw when an invalid input is passed in', async () => {
-				await assert.rejects(
-					activitypub.helpers.resolveLocalId('ncl28h3qwhoiclwnevoinw3u'),
-					{ message: '[[error:activitypub.invalid-id]]' }
-				);
+			it('should return null when an invalid input is passed in', async () => {
+				const { type, id } = await activitypub.helpers.resolveLocalId('ncl28h3qwhoiclwnevoinw3u');
+				assert.strictEqual(type, null);
+				assert.strictEqual(id, null);
 			});
 
 			it('should return null when valid input is passed but does not resolve', async () => {
-				const { id } = await activitypub.helpers.resolveLocalId(`acct:foobar@${nconf.get('url_parsed').host}`);
+				const { type, id } = await activitypub.helpers.resolveLocalId(`acct:foobar@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(type, 'user');
 				assert.strictEqual(id, null);
 			});
 
@@ -400,51 +400,62 @@ describe('ActivityPub integration', () => {
 	describe('Receipt of ActivityPub events to inboxes (federating IN)', () => {
 		describe('Create', () => {
 			describe('Note', () => {
-				let category;
-				let uid;
-				let note;
+				const slug = utils.generateUUID();
+				const id = `https://example.org/status/${slug}`;
+				const remoteNote = {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id,
+					url: id,
+					type: 'Note',
+					to: ['https://www.w3.org/ns/activitystreams#Public'],
+					cc: ['https://example.org/user/foobar/followers'],
+					inReplyTo: null,
+					attributedTo: 'https://example.org/user/foobar',
+					name: 'Foo Bar',
+					content: '<b>Baz quux</b>',
+					published: new Date().toISOString(),
+					source: {
+						content: '**Baz quux**',
+						mediaType: 'text/markdown',
+					},
+				};
+
 				let topic;
 
 				before(async () => {
-					category = await categories.create({ name: utils.generateUUID().slice(0, 8) });
-					const slug = slugify(utils.generateUUID().slice(0, 8));
-					uid = await user.create({ username: slug });
+					const controllers = require('../src/controllers');
 
-					const { postData, topicData } = await topics.post({
-						uid,
-						cid: category.cid,
-						title: 'Lipsum title',
-						content: 'Lorem ipsum dolor sit amet',
-					});
+					activitypub._cache.set(`0;${id}`, remoteNote);
+					await controllers.activitypub.postInbox({
+						body: {
+							type: 'Create',
+							actor: 'https://example.org/user/foobar',
+							object: remoteNote,
+						},
+					}, { sendStatus: () => {} });
 
-					const post = (await posts.getPostSummaryByPids([postData.pid], uid, { stripTags: false })).pop();
-					note = await activitypub.mocks.note(post);
-
-					await activitypub.send('uid', uid, [`${nconf.get('url')}/uid/${uid}`], {
-						type: 'Create',
-						object: note,
-					});
-
-					const tid = await posts.getPostField(note.id, 'tid');
-					topic = await topics.getTopicData(tid);
+					const tid = await posts.getPostField(id, 'tid');
+					const topic = await topics.getTopicData(tid);
 				});
 
 				it('should create a new topic if Note is at root-level or its parent has not been seen before', async () => {
-					const saved = await db.getObject(`post:${note.id}`);
+					const saved = await db.getObject(`post:${id}`);
 
 					assert(saved);
-					assert(topic);
-					assert.strictEqual(saved.uid, `${nconf.get('url')}/uid/${uid}`);
-					assert.strictEqual(saved.content, 'Lorem ipsum dolor sit amet');
 					assert(saved.tid);
+
+					topic = await topics.getTopicData(saved.tid);
+					assert(topic);
+					assert.strictEqual(saved.uid, 'https://example.org/user/foobar');
+					assert.strictEqual(saved.content, '<b>Baz quux</b>');
 				});
 
 				it('should properly save the topic title in the topic hash', async () => {
-					assert.strictEqual(topic.title, 'Lipsum title');
+					assert.strictEqual(topic.title, 'Foo Bar');
 				});
 
 				it('should properly save the mainPid in the topic hash', async () => {
-					assert.strictEqual(topic.mainPid, note.id);
+					assert.strictEqual(topic.mainPid, id);
 				});
 
 				// todo: test topic replies, too
