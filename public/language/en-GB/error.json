@@ -283,5 +283,6 @@
 	"activitypub.get-failed": "Unable to retrieve the specified resource.",
 	"activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
 	"activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-	"activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected."
+	"activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+	"activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

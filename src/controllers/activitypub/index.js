@@ -4,6 +4,7 @@ const nconf = require('nconf');
 
 const user = require('../../user');
 const activitypub = require('../../activitypub');
+const helpers = require('../helpers');
 
 const Controller = module.exports;
 
@@ -117,6 +118,10 @@ Controller.postInbox = async (req, res) => {
 		return res.sendStatus(501);
 	}
 
-	await activitypub.inbox[method](req);
-	res.sendStatus(200);
+	try {
+		await activitypub.inbox[method](req);
+		helpers.formatApiResponse(200, res);
+	} catch (e) {
+		helpers.formatApiResponse(500, res, e);
+	}
 };

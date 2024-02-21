@@ -19,6 +19,11 @@ inbox.create = async (req) => {
 	const { object } = req.body;
 	const postData = await activitypub.mocks.post(object);
 
+	// Temporary, reject non-public notes.
+	if (![...postData._activitypub.to, ...postData._activitypub.cc].includes(activitypub._constants.publicAddress)) {
+		throw new Error('[[error:activitypub.not-implemented]]');
+	}
+
 	if (postData) {
 		await activitypub.notes.assert(0, [postData]);
 		const tid = await activitypub.notes.assertTopic(0, postData.pid);
