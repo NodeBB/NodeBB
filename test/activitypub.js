@@ -88,7 +88,7 @@ describe('ActivityPub integration', () => {
 
 		});
 
-		describe.only('.resolveId()', () => {
+		describe('.resolveId()', () => {
 			let url;
 			let resolved;
 

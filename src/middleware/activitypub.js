@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../database');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
 
@@ -39,9 +40,27 @@ middleware.validate = async function (req, res, next) {
 	}
 
 	// Sanity-check payload schema
-	const required = ['type'];
+	const required = ['type', 'actor', 'object'];
 	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
 		return res.sendStatus(400);
+	}
+
+	const { actor, object } = req.body;
+
+	// Origin checking
+	const actorHostname = new URL(actor).hostname;
+	const objectHostname = new URL(typeof object === 'string' ? object : object.id).hostname;
+	if (actorHostname !== objectHostname) {
+		return res.sendStatus(403);
+	}
+
+	// Cross-check key ownership against received actor
+	await activitypub.actors.assert(actor);
+	const compare = await db.getObjectField(`userRemote:${actor}:keys`, 'id');
+	const { signature } = req.headers;
+	const keyId = new Map(signature.split(',').filter(Boolean).map(v => v.split('='))).get('keyId');
+	if (`"${compare}"` !== keyId) {
+		return res.sendStatus(403);
 	}
 
 	next();

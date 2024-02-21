@@ -31,6 +31,7 @@ Actors.assert = async (ids, options = {}) => {
 	winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
 	const followersUrlMap = new Map();
+	const pubKeysMap = new Map();
 	const actors = await Promise.all(ids.map(async (id) => {
 		try {
 			winston.verbose(`[activitypub/actors] Processing ${id}`);
@@ -58,6 +59,9 @@ Actors.assert = async (ids, options = {}) => {
 				followersUrlMap.set(actor.followers, actor.id);
 			}
 
+			// Public keys
+			pubKeysMap.set(actor.id, actor.publicKey);
+
 			return actor;
 		} catch (e) {
 			return null;
@@ -68,13 +72,14 @@ Actors.assert = async (ids, options = {}) => {
 	const profiles = await activitypub.mocks.profile(actors);
 	const now = Date.now();
 
-	const bulkSet = profiles.map((profile) => {
-		if (!profile) {
-			return null;
+	const bulkSet = profiles.reduce((memo, profile) => {
+		if (profile) {
+			const key = `userRemote:${profile.uid}`;
+			memo.push([key, profile], [`${key}:keys`, pubKeysMap.get(profile.uid)]);
 		}
-		const key = `userRemote:${profile.uid}`;
-		return [key, profile];
-	}).filter(Boolean);
+
+		return memo;
+	}, []);
 	if (followersUrlMap.size) {
 		bulkSet.push(['followersUrl:uid', Object.fromEntries(followersUrlMap)]);
 	}
