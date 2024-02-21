@@ -30,6 +30,14 @@ describe('Set methods', () => {
 			assert.deepStrictEqual(members, []);
 			assert(!exists);
 		});
+
+		it('should not error with parallel adds', async () => {
+			await Promise.all([
+				db.setAdd('parallelset', 1),
+				db.setAdd('parallelset', 2),
+				db.setAdd('parallelset', 3),
+			]);
+		});
 	});
 
 	describe('getSetMembers()', () => {
