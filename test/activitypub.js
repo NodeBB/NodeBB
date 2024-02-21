@@ -88,6 +88,40 @@ describe('ActivityPub integration', () => {
 
 		});
 
+		describe.only('.resolveId()', () => {
+			let url;
+			let resolved;
+
+			before(() => {
+				url = 'https://example.org/topic/foobar';
+				resolved = 'https://example.org/tid/1234';
+				activitypub._cache.set(`0;${url}`, {
+					id: resolved,
+				});
+			});
+
+			it('should return the resolved id when queried', async () => {
+				const id = await activitypub.resolveId(0, url);
+				assert.strictEqual(id, resolved);
+			});
+
+			it('should return null when the query fails', async () => {
+				const id = await activitypub.resolveId(0, 'https://example.org/sdlknsdfnsd');
+				assert.strictEqual(id, null);
+			});
+
+			it('should return null when the resolved host does not match the queried host', async () => {
+				const url = 'https://example.com/topic/foobar'; // .com attempting to overwrite .org data
+				const resolved = 'https://example.org/tid/1234'; // .org
+				activitypub._cache.set(`0;${url}`, {
+					id: resolved,
+				});
+
+				const id = await activitypub.resolveId(0, url);
+				assert.strictEqual(id, null);
+			});
+		});
+
 		describe('.resolveLocalId()', () => {
 			let uid;
 			let slug;

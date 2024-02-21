@@ -24,6 +24,23 @@ ActivityPub.mocks = require('./mocks');
 ActivityPub.notes = require('./notes');
 ActivityPub.actors = require('./actors');
 
+ActivityPub.resolveId = async (uid, id) => {
+	try {
+		const query = new URL(id);
+		({ id } = await ActivityPub.get('uid', uid, id));
+		const response = new URL(id);
+
+		if (query.host !== response.host) {
+			winston.warn(`[activitypub/resolveId] id resolution domain mismatch: ${query.href} != ${response.href}`);
+			return null;
+		}
+
+		return id;
+	} catch (e) {
+		return null;
+	}
+};
+
 ActivityPub.resolveInboxes = async (ids) => {
 	const inboxes = new Set();
 

@@ -14,11 +14,6 @@ const slugify = require('../slugify');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
-Notes.resolveId = async (uid, id) => {
-	({ id } = await activitypub.get('uid', uid, id));
-	return id;
-};
-
 // todo: when asserted, notes aren't added to a global sorted set
 // also, db.exists call is probably expensive
 Notes.assert = async (uid, input, options = {}) => {
@@ -28,8 +23,13 @@ Notes.assert = async (uid, input, options = {}) => {
 	await Promise.all(input.map(async (item) => {
 		let id = activitypub.helpers.isUri(item) ? item : item.pid;
 		if (activitypub.helpers.isUri(id)) {
-			id = await Notes.resolveId(uid, id);
+			id = await activitypub.resolveId(uid, id);
+			if (!id) {
+				winston.warn(`[activitypub/notes.assert] Not asserting ${id}`);
+				return;
+			}
 		}
+
 		const key = `post:${id}`;
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
