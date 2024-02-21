@@ -37,6 +37,11 @@ describe('Set methods', () => {
 				db.setAdd('parallelset', 2),
 				db.setAdd('parallelset', 3),
 			]);
+			const members = await db.getSetMembers('parallelset');
+			assert.strictEqual(members.length, 3);
+			assert(members.includes('1'));
+			assert(members.includes('2'));
+			assert(members.includes('3'));
 		});
 	});
 
