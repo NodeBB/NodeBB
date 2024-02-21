@@ -44,6 +44,10 @@ module.exports = function (Posts) {
 			if (!uidToUser.hasOwnProperty(post.uid)) {
 				post.uid = 0;
 			}
+
+			// toPid is nullable so it is casted separately
+			post.toPid = utils.isNumber(post.toPid) ? parseInt(post.toPid, 10) : post.toPid;
+
 			post.user = uidToUser[post.uid];
 			Posts.overrideGuestHandle(post, post.handle);
 			post.handle = undefined;

@@ -8,7 +8,7 @@ const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const intFields = [
-	'uid', 'pid', 'tid', 'toPid', 'deleted', 'timestamp',
+	'uid', 'pid', 'tid', 'deleted', 'timestamp',
 	'upvotes', 'downvotes', 'deleterUid', 'edited',
 	'replies', 'bookmarks',
 ];
@@ -62,7 +62,7 @@ function modifyPost(post, fields) {
 	const _intFields = [...intFields];
 
 	if (post) {
-		['pid', 'uid', 'tid', 'toPid'].forEach((prop) => {
+		['pid', 'uid', 'tid'].forEach((prop) => {
 			if (
 				post.hasOwnProperty(prop) &&
 				(activitypub.helpers.isUri(post[prop]) || validator.isUUID(String(post[prop])))
