@@ -48,10 +48,12 @@ middleware.validate = async function (req, res, next) {
 	const { actor, object } = req.body;
 
 	// Origin checking
-	const actorHostname = new URL(actor).hostname;
-	const objectHostname = new URL(typeof object === 'string' ? object : object.id).hostname;
-	if (actorHostname !== objectHostname) {
-		return res.sendStatus(403);
+	if (typeof object !== 'string') {
+		const actorHostname = new URL(actor).hostname;
+		const objectHostname = new URL(object.id).hostname;
+		if (actorHostname !== objectHostname) {
+			return res.sendStatus(403);
+		}
 	}
 
 	// Cross-check key ownership against received actor

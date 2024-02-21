@@ -21,15 +21,16 @@ Notes.assert = async (uid, input, options = {}) => {
 	const actors = new Set();
 
 	await Promise.all(input.map(async (item) => {
-		let id = activitypub.helpers.isUri(item) ? item : item.pid;
-		if (activitypub.helpers.isUri(id)) {
-			id = await activitypub.resolveId(uid, id);
-			if (!id) {
-				winston.warn(`[activitypub/notes.assert] Not asserting ${id}`);
+		// Dereference only if a url is received
+		if (activitypub.helpers.isUri(item)) {
+			item = await activitypub.resolveId(uid, item);
+			if (!item) {
+				winston.warn(`[activitypub/notes.assert] Not asserting ${item}`);
 				return;
 			}
 		}
 
+		const id = activitypub.helpers.isUri(item) ? item : item.pid;
 		const key = `post:${id}`;
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
