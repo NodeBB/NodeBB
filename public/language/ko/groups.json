@@ -50,7 +50,7 @@
     "details.delete-group": "그룹 삭제",
     "details.private-system-help": "시스템 레벨에서 비공개 그룹이 비활성화되었습니다. 이 옵션은 아무것도 수행하지 않습니다",
     "event.updated": "그룹 세부정보가 업데이트되었습니다",
-    "event.deleted": "\"%1\" 그룹이 삭제되었습니다",
+    "event.deleted": "\\\"%1\\\" 그룹이 삭제되었습니다",
     "membership.accept-invitation": "초대 수락",
     "membership.accept.notification-title": "이제 <strong>%1</strong> 그룹의 멤버입니다",
     "membership.invitation-pending": "초대 대기 중",

@@ -15,7 +15,7 @@
 	"resent-week": "주간 다이제스트 재전송",
 	"resent-biweek": "격주간 다이제스트 재전송됨",
 	"resent-month": "월간 다이제스트 재전송됨",
-	"null": "em>없음</em>",
+	"null": "<em>없음</em>",
 	"manual-run": "수동 다이제스트 실행:",
 
 	"no-delivery-data": "전달 데이터가 없습니다"

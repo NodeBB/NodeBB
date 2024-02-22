@@ -1,6 +1,6 @@
 {
     "type-to-search": "검색하세요",
-    "results-matching": "\"%2\"에 대한 결과 %1개 (%3 초)",
+    "results-matching": "\\\"%2\\\"에 대한 결과 %1개 (%3 초)",
     "no-matches": "일치하는 항목이 없습니다",
     "advanced-search": "고급 검색",
     "in": "에서",
