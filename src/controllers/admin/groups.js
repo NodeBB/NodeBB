@@ -42,7 +42,6 @@ groupsController.get = async function (req, res, next) {
 	if (!group || groupName === groups.BANNED_USERS) {
 		return next();
 	}
-	group.isOwner = true;
 
 	const groupNameData = groupNames.map(name => ({
 		encodedName: encodeURIComponent(name),
