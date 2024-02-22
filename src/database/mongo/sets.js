@@ -13,17 +13,25 @@ module.exports = function (module) {
 		}
 		value = value.map(v => helpers.valueToString(v));
 
-		await module.client.collection('objects').updateOne({
-			_key: key,
-		}, {
-			$addToSet: {
-				members: {
-					$each: value,
+		try {
+			await module.client.collection('objects').updateOne({
+				_key: key,
+			}, {
+				$addToSet: {
+					members: {
+						$each: value,
+					},
 				},
-			},
-		}, {
-			upsert: true,
-		});
+			}, {
+				upsert: true,
+			});
+		} catch (err) {
+			if (err && err.message.includes('E11000 duplicate key error')) {
+				console.log(new Error('e11000').stack, key, value);
+				return await module.setAdd(key, value);
+			}
+			throw err;
+		}
 	};
 
 	module.setsAdd = async function (keys, value) {

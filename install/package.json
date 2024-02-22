@@ -103,12 +103,12 @@
         "nodebb-plugin-ntfy": "1.7.3",
         "nodebb-plugin-spam-be-gone": "2.2.1",
         "nodebb-rewards-essentials": "1.0.0",
-        "nodebb-theme-harmony": "1.2.25",
+        "nodebb-theme-harmony": "1.2.26",
         "nodebb-theme-lavender": "7.1.7",
         "nodebb-theme-peace": "2.2.0",
-        "nodebb-theme-persona": "13.3.6",
+        "nodebb-theme-persona": "13.3.7",
         "nodebb-widget-essentials": "7.0.15",
-        "nodemailer": "6.9.9",
+        "nodemailer": "6.9.10",
         "nprogress": "0.2.0",
         "passport": "0.7.0",
         "passport-http-bearer": "1.0.1",
@@ -123,7 +123,7 @@
         "rimraf": "5.0.5",
         "rss": "1.2.2",
         "rtlcss": "4.1.1",
-        "sanitize-html": "2.11.0",
+        "sanitize-html": "2.12.0",
         "sass": "1.71.1",
         "semver": "7.6.0",
         "serve-favicon": "2.5.0",
@@ -172,7 +172,7 @@
         "smtp-server": "3.13.2"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.71.0"
+        "sass-embedded": "1.71.1"
     },
     "resolutions": {
         "*/jquery": "3.7.1"

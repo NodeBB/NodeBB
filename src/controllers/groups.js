@@ -72,7 +72,6 @@ groupsController.details = async function (req, res, next) {
 	if (!groupData) {
 		return next();
 	}
-	groupData.isOwner = groupData.isOwner || isAdmin || (isGlobalMod && !groupData.system);
 
 	res.render('groups/details', {
 		title: `[[pages:group, ${groupData.displayName}]]`,
