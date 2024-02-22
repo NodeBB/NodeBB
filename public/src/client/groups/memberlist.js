@@ -92,7 +92,7 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 		const searchEl = $('[component="groups/members/search"]');
 		searchEl.on('keyup', utils.debounce(function () {
 			const query = searchEl.val();
-			api.get(`/groups/${groupName}/members`, { query }, function (err, results) {
+			api.get(`/groups/${ajaxify.data.group.slug}/members`, { query }, function (err, results) {
 				if (err) {
 					return alerts.error(err);
 				}
