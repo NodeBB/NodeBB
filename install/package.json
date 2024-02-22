@@ -67,7 +67,7 @@
         "express": "4.18.2",
         "express-session": "1.18.0",
         "express-useragent": "1.0.15",
-        "fetch-cookie": "2.2.0",
+        "fetch-cookie": "3.0.0",
         "file-loader": "6.2.0",
         "fs-extra": "11.2.0",
         "graceful-fs": "4.2.11",
