@@ -1,7 +1,7 @@
 'use strict';
 
 const { CookieJar } = require('tough-cookie');
-const fetchCookie = require('fetch-cookie');
+const fetchCookie = require('fetch-cookie').default;
 
 exports.jar = function () {
 	return new CookieJar();
