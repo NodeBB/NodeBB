@@ -41,6 +41,7 @@ get:
                   toPid:
                     type: number
                     description: The post that this post is in reply to
+                    nullable: true
                   content:
                     type: string
                   uid:
