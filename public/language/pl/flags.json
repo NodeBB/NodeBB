@@ -2,7 +2,7 @@
 	"state": "Stan",
 	"report": "Zgłoś",
 	"reports": "Zgłoszenia",
-	"first-reported": "Pierwszy zgłoszony",
+	"first-reported": "Pierwszy raz zgłoszony",
 	"no-flags": "Hura! Nie znaleziono flag.",
 	"x-flags-found": "%1 znalezionych flag.",
 	"assignee": "Oflagowany",
@@ -59,10 +59,10 @@
 	"flag-deleted": "Flaga skasowana",
 
 	"history": "Konto i historia flag",
-	"no-history": "Brak historii flag",
+	"no-history": "Brak historii flag.",
 
 	"state-all": "Wszystkie stany",
-	"state-open": "Nowy/Otwarty",
+	"state-open": "Nowe/Otwarte",
 	"state-wip": "W trakcie prac",
 	"state-resolved": "Rozwiązano",
 	"state-rejected": "Odrzucono",

@@ -70,7 +70,7 @@
 	"privileges.copy-success": "Uprawnienia skopiowane!",
 
 	"analytics.back": "Wróć do listy kategorii",
-	"analytics.title": "Analityka dla \"%1\" kategorii",
+	"analytics.title": "Analityka dla kategorii \"%1\"",
 	"analytics.pageviews-hourly": "<strong>Ilustracja 1</strong>&ndash; Godzinowe wyświetlenia stron dla tej kategorii</small>",
 	"analytics.pageviews-daily": "<strong>Ilustracja </strong>&ndash; Dzienne wyświetlenie strony dla tej kategorii</small>",
 	"analytics.topics-daily": "<strong>Ilustracja 3</strong>&ndash; Dzienne tematy tworzone w tej kategorii</small>",
