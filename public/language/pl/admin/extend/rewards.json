@@ -5,7 +5,7 @@
 	"condition-is": "Jest:",
 	"condition-then": "To:",
 	"max-claims": "Ile razy nagroda może zostać przyznana",
-	"zero-infinite": "Wpisz 0, aby nieskończona liczbę razy",
+	"zero-infinite": "0 będzie oznaczać nieskończoność",
 	"select-reward": "Wybierz nagrodę",
 	"delete": "Usuń",
 	"enable": "Włącz",

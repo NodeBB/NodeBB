@@ -31,7 +31,7 @@
 	"copy-settings": "Skopiuj ustawienia z",
 	"optional-clone-settings": "(Opcjonalnie) Skopiowanie ustawień z kategorii",
 	"clone-children": "Sklonuj podrzędne kategorie i ustawienia",
-	"purge": "Usuń kategorię",
+	"purge": "Wymaż kategorię",
 
 	"enable": "Włącz",
 	"disable": "Wyłącz",
@@ -81,7 +81,7 @@
 	"alert.none-active": "Nie masz aktywnych kategorii.",
 	"alert.create": "Utwórz kategorię",
 	"alert.confirm-purge": "<p class=\"lead\">Czy na pewno chcesz wymazać tą kategorię \"%1\"?</p><h5><strong class=\"text-danger\">Uwaga!</strong> Wszystkie tematy oraz posty z tej kategorii zostaną wymazane!</h5><p class=\"help-block\">Wymazanie kategorii skasuje wszystkie tematy, posty oraz skasuję kategorię z bazy danych.  Jeśli chcesz <em>tymczasowo</em>usunąć kategorię, będziesz musiał \"wyłączyć\" kategorię.</p>",
-	"alert.purge-success": "Kategoria usunięta!",
+	"alert.purge-success": "Kategoria wymazana!",
 	"alert.copy-success": "Ustawienie skopiowane!",
 	"alert.set-parent-category": "Ustaw nadrzędną kategorie",
 	"alert.updated": "Zaktualizuj kategorie",
