@@ -46,7 +46,7 @@
     "uploadRateLimitThreshold": 10,
     "uploadRateLimitCooldown": 60,
     "allowUserHomePage": 1,
-    "allowMultipleBadges": 0,
+    "allowMultipleBadges": 1,
     "maximumFileSize": 2048,
     "stripEXIFData": 1,
     "orphanExpiryDays": 0,
