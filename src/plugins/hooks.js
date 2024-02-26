@@ -229,7 +229,8 @@ function hookHandlerPromise(hook, hookObj, params) {
 			);
 			return;
 		}
-		if (returned) {
+
+		if (hook.startsWith('filter:') && returned) {
 			_resolve(returned);
 		}
 	});
