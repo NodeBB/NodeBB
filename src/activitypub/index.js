@@ -14,6 +14,7 @@ const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
 const ActivityPub = module.exports;
 
 ActivityPub._constants = Object.freeze({
+	uid: -2,
 	publicAddress: 'https://www.w3.org/ns/activitystreams#Public',
 });
 ActivityPub._cache = requestCache;
@@ -163,7 +164,6 @@ ActivityPub.verify = async (req) => {
 		return memo;
 	}, []).join('\n');
 
-
 	// Verify the signature string via public key
 	try {
 		// Retrieve public key from remote instance
@@ -188,24 +188,29 @@ ActivityPub.get = async (type, id, uri) => {
 	const keyData = await ActivityPub.getPrivateKey(type, id);
 	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
 	winston.verbose(`[activitypub/get] ${uri}`);
-	const { response, body } = await request.get(uri, {
-		headers: {
-			...headers,
-			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-		},
-	});
+	try {
+		const { response, body } = await request.get(uri, {
+			headers: {
+				...headers,
+				Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+			},
+		});
 
-	if (!String(response.statusCode).startsWith('2')) {
-		winston.error(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
-		if (body.hasOwnProperty('error')) {
-			winston.error(`[activitypub/get] Error received: ${body.error}`);
+		if (!String(response.statusCode).startsWith('2')) {
+			winston.error(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
+			if (body.hasOwnProperty('error')) {
+				winston.error(`[activitypub/get] Error received: ${body.error}`);
+			}
+
+			throw new Error(`[[error:activitypub.get-failed]]`);
 		}
 
+		requestCache.set(cacheKey, body);
+		return body;
+	} catch (e) {
+		// Handle things like non-json body, etc.
 		throw new Error(`[[error:activitypub.get-failed]]`);
 	}
-
-	requestCache.set(cacheKey, body);
-	return body;
 };
 
 ActivityPub.send = async (type, id, targets, payload) => {
@@ -218,7 +223,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	let actor;
 	switch (type) {
 		case 'uid': {
-			actor = `${nconf.get('url')}/uid/${id}`;
+			actor = `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}`;
 			break;
 		}
 

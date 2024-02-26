@@ -154,11 +154,6 @@ privsCategories.can = async function (privilege, cid, uid) {
 		return false;
 	}
 
-	// temporary
-	if (cid === -1) {
-		return true;
-	}
-
 	const [disabled, isAdmin, isAllowed] = await Promise.all([
 		categories.getCategoryField(cid, 'disabled'),
 		user.isAdministrator(uid),

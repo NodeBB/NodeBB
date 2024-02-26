@@ -436,6 +436,37 @@ async function giveGlobalPrivileges() {
 	]), 'Global Moderators');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
+	await privileges.global.give(['groups:view:users'], 'fediverse');
+}
+
+async function giveWorldPrivileges() {
+	// should match privilege assignment logic in src/categories/create.js EXCEPT commented one liner below
+	const privileges = require('./privileges');
+	const defaultPrivileges = [
+		'groups:find',
+		'groups:read',
+		'groups:topics:read',
+		'groups:topics:create',
+		'groups:topics:reply',
+		'groups:topics:tag',
+		'groups:posts:edit',
+		'groups:posts:history',
+		'groups:posts:delete',
+		'groups:posts:upvote',
+		'groups:posts:downvote',
+		'groups:topics:delete',
+	];
+	const modPrivileges = defaultPrivileges.concat([
+		'groups:topics:schedule',
+		'groups:posts:view_deleted',
+		'groups:purge',
+	]);
+	const guestPrivileges = ['groups:find', 'groups:read', 'groups:topics:read'];
+
+	await privileges.categories.give(defaultPrivileges, -1, ['registered-users']);
+	await privileges.categories.give(defaultPrivileges.slice(3), -1, ['fediverse']); // different priv set for fediverse
+	await privileges.categories.give(modPrivileges, -1, ['administrators', 'Global Moderators']);
+	await privileges.categories.give(guestPrivileges, -1, ['guests', 'spiders']);
 }
 
 async function createCategories() {
@@ -588,6 +619,7 @@ install.setup = async function () {
 		const adminInfo = await createAdministrator();
 		await createGlobalModeratorsGroup();
 		await giveGlobalPrivileges();
+		await giveWorldPrivileges();
 		await createMenuItems();
 		await createWelcomePost();
 		await enableDefaultPlugins();

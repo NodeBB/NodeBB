@@ -4,6 +4,7 @@ const winston = require('winston');
 const crypto = require('crypto');
 
 const db = require('../database');
+const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -205,8 +206,17 @@ Notes.assertTopic = async (uid, id) => {
 		return tid;
 	}
 
+	const cid = tid ? await topics.getTopicField(tid, 'cid') : -1;
+
+	// Privilege check for local categories
+	const privilege = `topics:${tid ? 'reply' : 'create'}`;
+	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
+	console.log(privilege, cid, allowed);
+	if (!allowed) {
+		return null;
+	}
+
 	tid = tid || utils.generateUUID();
-	const cid = await topics.getTopicField(tid, 'cid');
 
 	let title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
 	if (title.length > 64) {
@@ -229,7 +239,7 @@ Notes.assertTopic = async (uid, id) => {
 		db.setObject(`topic:${tid}`, {
 			tid,
 			uid: authorId,
-			cid: cid || -1,
+			cid: cid,
 			mainPid,
 			title,
 			slug: `${tid}/${slugify(title)}`,

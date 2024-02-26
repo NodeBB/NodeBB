@@ -91,7 +91,7 @@ module.exports = function (Categories) {
 			['categories:name', 0, `${data.name.slice(0, 200).toLowerCase()}:${category.cid}`],
 		]);
 
-		await privileges.categories.give(result.defaultPrivileges, category.cid, 'registered-users');
+		await privileges.categories.give(result.defaultPrivileges, category.cid, ['registered-users', 'fediverse']);
 		await privileges.categories.give(result.modPrivileges, category.cid, ['administrators', 'Global Moderators']);
 		await privileges.categories.give(result.guestPrivileges, category.cid, ['guests', 'spiders']);
 

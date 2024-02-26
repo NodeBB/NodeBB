@@ -24,7 +24,7 @@ require('./cache')(Groups);
 
 Groups.BANNED_USERS = 'banned-users';
 
-Groups.ephemeralGroups = ['guests', 'spiders'];
+Groups.ephemeralGroups = ['guests', 'spiders', 'fediverse'];
 
 Groups.systemGroups = [
 	'registered-users',
@@ -55,7 +55,7 @@ Groups.removeEphemeralGroups = function (groups) {
 	return groups;
 };
 
-const isPrivilegeGroupRegex = /^cid:(?:\d+|admin):privileges:[\w\-:]+$/;
+const isPrivilegeGroupRegex = /^cid:(?:-?\d+|admin):privileges:[\w\-:]+$/;
 Groups.isPrivilegeGroup = function (groupName) {
 	return isPrivilegeGroupRegex.test(groupName);
 };

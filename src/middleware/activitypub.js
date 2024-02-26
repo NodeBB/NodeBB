@@ -48,7 +48,7 @@ middleware.validate = async function (req, res, next) {
 	const { actor, object } = req.body;
 
 	// Origin checking
-	if (typeof object !== 'string') {
+	if (typeof object !== 'string' && object.hasOwnProperty('id')) {
 		const actorHostname = new URL(actor).hostname;
 		const objectHostname = new URL(object.id).hostname;
 		if (actorHostname !== objectHostname) {

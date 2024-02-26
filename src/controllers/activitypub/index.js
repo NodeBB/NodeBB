@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
 
 const user = require('../../user');
 const activitypub = require('../../activitypub');
@@ -115,6 +116,7 @@ Controller.postInbox = async (req, res) => {
 	// Note: underlying methods are internal use only, hence no exposure via src/api
 	const method = String(req.body.type).toLowerCase();
 	if (!activitypub.inbox.hasOwnProperty(method)) {
+		winston.warn(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
 		return res.sendStatus(501);
 	}
 

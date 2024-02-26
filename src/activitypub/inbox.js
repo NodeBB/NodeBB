@@ -4,6 +4,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 
 const db = require('../database');
+const privileges = require('../privileges');
 const user = require('../user');
 const posts = require('../posts');
 const topics = require('../topics');
@@ -17,20 +18,14 @@ const inbox = module.exports;
 
 inbox.create = async (req) => {
 	const { object } = req.body;
-	const postData = await activitypub.mocks.post(object);
 
 	// Temporary, reject non-public notes.
-	if (![...postData._activitypub.to, ...postData._activitypub.cc].includes(activitypub._constants.publicAddress)) {
+	if (![...object.to, ...object.cc].includes(activitypub._constants.publicAddress)) {
 		throw new Error('[[error:activitypub.not-implemented]]');
 	}
 
-	if (postData) {
-		await activitypub.notes.assert(0, [postData]);
-		const tid = await activitypub.notes.assertTopic(0, postData.pid);
-		winston.info(`[activitypub/inbox] Parsing note ${postData.pid} into topic ${tid}`);
-	} else {
-		winston.warn('[activitypub/inbox] Received object was not a note');
-	}
+	const tid = await activitypub.notes.assertTopic(0, object.id);
+	winston.info(`[activitypub/inbox] Parsing note ${object.id} into topic ${tid}`);
 };
 
 inbox.update = async (req) => {
@@ -41,6 +36,18 @@ inbox.update = async (req) => {
 	const objectHostname = new URL(object.id).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	const [exists, allowed] = await Promise.all([
+		posts.exists(object.id),
+		privileges.posts.can('posts:edit', object.id, activitypub._constants.uid),
+	]);
+	if (!exists || !allowed) {
+		winston.info(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
+		return activitypub.send('uid', 0, actor, {
+			type: 'Reject',
+			object,
+		});
 	}
 
 	switch (object.type) {
@@ -68,6 +75,15 @@ inbox.like = async (req) => {
 	const { type, id } = await activitypub.helpers.resolveLocalId(object);
 	if (type !== 'post' || !(await posts.exists(id))) {
 		throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
+	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
+	if (!allowed) {
+		winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+		return activitypub.send('uid', 0, actor, {
+			type: 'Reject',
+			object,
+		});
 	}
 
 	winston.info(`[activitypub/inbox/like] id ${id} via ${actor}`);
@@ -172,9 +188,21 @@ inbox.follow = async (req) => {
 			},
 		});
 	} else if (type === 'category') {
-		const exists = await categories.exists(id);
+		const [exists, allowed] = await Promise.all([
+			categories.exists(id),
+			privileges.categories.can('read', id, 'activitypub._constants.uid'),
+		]);
 		if (!exists) {
 			throw new Error('[[error:invalid-cid]]');
+		}
+		if (!allowed) {
+			return activitypub.send('uid', 0, req.body.actor, {
+				type: 'Reject',
+				object: {
+					type: 'Follow',
+					actor: req.body.actor,
+				},
+			});
 		}
 
 		const watchState = await categories.getWatchState([id], req.body.actor);
@@ -182,7 +210,7 @@ inbox.follow = async (req) => {
 			await user.setCategoryWatchState(req.body.actor, id, categories.watchStates.tracking);
 		}
 
-		await activitypub.send('cid', id, req.body.actor, {
+		activitypub.send('cid', id, req.body.actor, {
 			type: 'Accept',
 			object: {
 				type: 'Follow',
@@ -273,6 +301,16 @@ inbox.undo = async (req) => {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
 				throw new Error('[[error:invalid-pid]]');
+			}
+
+			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
+			if (!allowed) {
+				winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+				activitypub.send('uid', 0, actor, {
+					type: 'Reject',
+					object,
+				});
+				break;
 			}
 
 			await posts.unvote(id, actor);
