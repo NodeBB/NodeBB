@@ -1,5 +1,7 @@
 {
 	"post-sort-option": "Opzione ordinamento post, %1",
 	"topic-sort-option": "Opzione ordinamento discussione, %1",
-	"user-avatar-for": "Avatar utente per %1"
+	"user-avatar-for": "Avatar utente per %1",
+	"user-watched-tags": "User watched tags",
+	"delete-upload-button": "Delete upload button"
 }
