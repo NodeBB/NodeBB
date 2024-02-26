@@ -1,6 +1,14 @@
 {
-	"acp.intro-lead": "What is Federation?",
-	"acp.intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
-	"acp.general": "General",
-	"acp.enabled": "Enable Federation"
+	"intro-lead": "What is Federation?",
+	"intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
+	"general": "General",
+	"enabled": "Enable Federation",
+	"enabled-help": "If enabled, will allow this NodeBB will be able to communicate with all Activitypub-enabled clients on the wider fediverse.",
+	"allowLoopback": "Allow loopback processing",
+	"allowLoopback-help": "Useful for debugging purposes only. You should probably leave this disabled.",
+
+	"servers": "Servers",
+	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",
+	"server.filter-help": "Specify servers you would like to bar from federating with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> federation with specific servers, instead. Both options are supported, although they are mutually exclusive.",
+	"server.filter-allow-list": "Use this as an Allow List instead"
 }

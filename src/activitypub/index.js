@@ -6,6 +6,7 @@ const { createHash, createSign, createVerify } = require('crypto');
 
 const request = require('../request');
 const db = require('../database');
+const meta = require('../meta');
 const user = require('../user');
 const utils = require('../utils');
 const ttl = require('../cache/ttl');
@@ -44,6 +45,13 @@ ActivityPub.resolveId = async (uid, id) => {
 
 ActivityPub.resolveInboxes = async (ids) => {
 	const inboxes = new Set();
+
+	if (!meta.config.activitypubAllowLoopback) {
+		ids = ids.filter((id) => {
+			const { hostname } = new URL(id);
+			return hostname !== nconf.get('url_parsed').hostname;
+		});
+	}
 
 	await ActivityPub.actors.assert(ids);
 	await Promise.all(ids.map(async (id) => {
