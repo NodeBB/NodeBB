@@ -230,8 +230,11 @@ function hookHandlerPromise(hook, hookObj, params) {
 			return;
 		}
 
-		if (hook.startsWith('filter:') && returned) {
+		if (hook.startsWith('filter:') && returned !== undefined) {
 			_resolve(returned);
+		} else if (hook.startsWith('static:') && hookObj.method.length <= 1) {
+			// make sure it is resolved if static hook doesn't return anything and doesn't use callback
+			_resolve();
 		}
 	});
 }
