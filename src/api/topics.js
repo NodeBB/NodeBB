@@ -80,7 +80,10 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.emitToUids('event:new_post', { posts: [result.postData] }, [caller.uid]);
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
-	activitypubApi.create.post(caller, { pid: result.postData.pid });
+
+	if (!isScheduling) {
+		activitypubApi.create.post(caller, { pid: result.postData.pid });
+	}
 
 	return result.topicData;
 };

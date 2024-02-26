@@ -10,6 +10,7 @@ const socketHelpers = require('../socket.io/helpers');
 const topics = require('./index');
 const groups = require('../groups');
 const user = require('../user');
+const api = require('../api');
 
 const Scheduled = module.exports;
 
@@ -47,6 +48,7 @@ async function postTids(tids) {
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(uids, topicsData),
+		federatePosts(uids, topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 	));
 }
@@ -147,6 +149,14 @@ async function updateGroupPosts(uids, topicsData) {
 			await groups.onNewPostMade(post);
 		}
 	}));
+}
+
+function federatePosts(uids, topicData) {
+	topicData.forEach(({ mainPid: pid }, idx) => {
+		const uid = uids[idx];
+
+		api.activitypub.create.post({ uid }, { pid });
+	});
 }
 
 async function shiftPostTimes(tid, timestamp) {

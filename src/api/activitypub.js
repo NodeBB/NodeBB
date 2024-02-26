@@ -9,14 +9,29 @@
  */
 
 const nconf = require('nconf');
+const winston = require('winston');
 
 const db = require('../database');
+const meta = require('../meta');
+const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const posts = require('../posts');
 
 const activitypubApi = module.exports;
 
-activitypubApi.follow = async (caller, { uid } = {}) => {
+function noop() {}
+
+function enabledCheck(next) {
+	return async function (caller, params) {
+		if (!meta.config.activitypubEnabled) {
+			return noop;
+		}
+
+		next(caller, params);
+	};
+}
+
+activitypubApi.follow = enabledCheck(async (caller, { uid } = {}) => {
 	const result = await activitypub.helpers.query(uid);
 	if (!result) {
 		throw new Error('[[error:activitypub.invalid-id]]');
@@ -26,10 +41,10 @@ activitypubApi.follow = async (caller, { uid } = {}) => {
 		type: 'Follow',
 		object: result.actorUri,
 	});
-};
+});
 
 // should be .undo.follow
-activitypubApi.unfollow = async (caller, { uid }) => {
+activitypubApi.unfollow = enabledCheck(async (caller, { uid }) => {
 	const result = await activitypub.helpers.query(uid);
 	if (!result) {
 		throw new Error('[[error:activitypub.invalid-id]]');
@@ -48,7 +63,7 @@ activitypubApi.unfollow = async (caller, { uid }) => {
 		db.sortedSetRemove(`followingRemote:${caller.uid}`, result.actorUri),
 		db.decrObjectField(`user:${caller.uid}`, 'followingRemoteCount'),
 	]);
-};
+});
 
 activitypubApi.create = {};
 
@@ -65,9 +80,15 @@ async function buildRecipients(object, uid) {
 	return { targets };
 }
 
-activitypubApi.create.post = async (caller, { pid }) => {
+activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
 	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
 	if (!post) {
+		return;
+	}
+
+	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
+	if (!allowed) {
+		winston.verbose(`[activitypub/api] Not federating creation of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 
@@ -82,11 +103,11 @@ activitypubApi.create.post = async (caller, { pid }) => {
 	};
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
-};
+});
 
 activitypubApi.update = {};
 
-activitypubApi.update.profile = async (caller, { uid }) => {
+activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 	const [object, followers] = await Promise.all([
 		activitypub.mocks.actors.user(uid),
 		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
@@ -98,11 +119,17 @@ activitypubApi.update.profile = async (caller, { uid }) => {
 		cc: [],
 		object,
 	});
-};
+});
 
-activitypubApi.update.note = async (caller, { post }) => {
+activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	const object = await activitypub.mocks.note(post);
 	const { targets } = await buildRecipients(object, post.user.uid);
+
+	const allowed = await privileges.posts.can('topics:read', post.pid, activitypub._constants.uid);
+	if (!allowed) {
+		winston.verbose(`[activitypub/api] Not federating update of pid ${post.pid} to the fediverse due to privileges.`);
+		return;
+	}
 
 	const payload = {
 		type: 'Update',
@@ -112,12 +139,12 @@ activitypubApi.update.note = async (caller, { post }) => {
 	};
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
-};
+});
 
 activitypubApi.like = {};
 
-activitypubApi.like.note = async (caller, { pid }) => {
-	if (!activitypub.helpers.isUri(pid)) {
+activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
+	if (!activitypub.helpers.isUri(pid)) { // remote only
 		return;
 	}
 
@@ -130,13 +157,13 @@ activitypubApi.like.note = async (caller, { pid }) => {
 		type: 'Like',
 		object: pid,
 	});
-};
+});
 
 activitypubApi.undo = {};
 
 // activitypubApi.undo.follow =
 
-activitypubApi.undo.like = async (caller, { pid }) => {
+activitypubApi.undo.like = enabledCheck(async (caller, { pid }) => {
 	if (!activitypub.helpers.isUri(pid)) {
 		return;
 	}
@@ -154,4 +181,4 @@ activitypubApi.undo.like = async (caller, { pid }) => {
 			object: pid,
 		},
 	});
-};
+});

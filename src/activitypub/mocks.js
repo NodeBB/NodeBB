@@ -211,7 +211,7 @@ Mocks.note = async (post) => {
 
 	const raw = await posts.getPostField(post.pid, 'content');
 
-	// todo: post visibility, category privileges integration
+	// todo: post visibility
 	const to = [activitypub._constants.publicAddress];
 	const cc = [`${nconf.get('url')}/uid/${post.user.uid}/followers`];
 
