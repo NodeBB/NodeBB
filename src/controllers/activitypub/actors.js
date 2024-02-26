@@ -48,7 +48,7 @@ Actors.userBySlug = async function (req, res) {
 	Actors.user(req, res);
 };
 
-Actors.note = async function (req, res, next) {
+Actors.note = async function (req, res) {
 	// technically a note isn't an actor, but it is here purely for organizational purposes.
 	// but also, wouldn't it be wild if you could follow a note? lol.
 	const allowed = await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
@@ -61,7 +61,7 @@ Actors.note = async function (req, res, next) {
 	res.status(200).json(payload);
 };
 
-Actors.topic = async function (req, res, next) {
+Actors.topic = async function (req, res) {
 	// When queried, a topic more or less returns the main pid's note representation
 	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
 	const { mainPid, slug } = await topics.getTopicFields(req.params.tid, ['mainPid', 'slug']);
