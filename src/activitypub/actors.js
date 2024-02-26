@@ -51,8 +51,13 @@ Actors.assert = async (ids, options = {}) => {
 			}
 
 			// Post count
-			const outbox = actor.outbox ? await activitypub.get('uid', 0, actor.outbox) : { totalItems: 0 };
-			actor.postcount = outbox.totalItems;
+			try {
+				const outbox = actor.outbox ? await activitypub.get('uid', 0, actor.outbox) : { totalItems: 0 };
+				actor.postcount = outbox.totalItems;
+			} catch (e) {
+				// no action required
+				winston.verbose(`[activitypub/actor.assert] Unable to retrieve post counts for ${actor.id}`);
+			}
 
 			// Followers url for backreference
 			if (actor.hasOwnProperty('followers') && activitypub.helpers.isUri(actor.followers)) {
