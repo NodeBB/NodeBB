@@ -3,6 +3,7 @@
 const user = require('../user');
 const db = require('../database');
 const plugins = require('../plugins');
+const privileges = require('../privileges');
 const slugify = require('../slugify');
 
 const Groups = module.exports;
@@ -130,30 +131,37 @@ Groups.get = async function (groupName, options) {
 		stop = (parseInt(options.userListCount, 10) || 4) - 1;
 	}
 
-	const [groupData, members, pending, invited, isMember, isPending, isInvited, isOwner] = await Promise.all([
+	const [groupData, members, isMember, isPending, isInvited, isOwner, isAdmin, isGlobalMod] = await Promise.all([
 		Groups.getGroupData(groupName),
 		Groups.getOwnersAndMembers(groupName, options.uid, 0, stop),
-		Groups.getPending(groupName),
-		Groups.getInvites(groupName),
 		Groups.isMember(options.uid, groupName),
 		Groups.isPending(options.uid, groupName),
 		Groups.isInvited(options.uid, groupName),
 		Groups.ownership.isOwner(options.uid, groupName),
+		privileges.admin.can('admin:groups', options.uid),
+		user.isGlobalModerator(options.uid),
 	]);
 
 	if (!groupData) {
 		return null;
 	}
+
+	groupData.isOwner = isOwner || isAdmin || (isGlobalMod && !groupData.system);
+	if (groupData.isOwner) {
+		([groupData.pending, groupData.invited] = await Promise.all([
+			Groups.getPending(groupName),
+			Groups.getInvites(groupName),
+		]));
+	}
+
+
 	const descriptionParsed = await plugins.hooks.fire('filter:parse.raw', String(groupData.description || ''));
 	groupData.descriptionParsed = descriptionParsed;
 	groupData.members = members;
 	groupData.membersNextStart = stop + 1;
-	groupData.pending = pending.filter(Boolean);
-	groupData.invited = invited.filter(Boolean);
 	groupData.isMember = isMember;
 	groupData.isPending = isPending;
 	groupData.isInvited = isInvited;
-	groupData.isOwner = isOwner;
 	const results = await plugins.hooks.fire('filter:group.get', { group: groupData });
 	return results.group;
 };

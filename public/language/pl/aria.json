@@ -1,5 +1,8 @@
 {
-	"post-sort-option": "Opcja sortowania postøw, %1",
+	"post-sort-option": "Opcja sortowania postów, %1",
 	"topic-sort-option": "Opcja sortowania tematów, %1",
-	"user-avatar-for": "User avatar for %1"
+	"user-avatar-for": "Awatar dla %1",
+	"user-watched-tags": "User watched tags",
+	"delete-upload-button": "Delete upload button",
+	"group-page-link-for": "Group page link for %1"
 }

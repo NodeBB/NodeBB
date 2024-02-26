@@ -92,10 +92,10 @@
 	"end": "End",
 	"filter": "Filter",
 	"view-as-json": "View as JSON",
-	"expand-analytics": "Expand analytics",
+	"expand-analytics": "Rozwiń analitykę",
 	"clear-search-history": "Clear Search History",
 	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
 	"search-term": "Term",
-	"search-count": "Count",
+	"search-count": "Liczba",
 	"view-all": "Zobacz wszystkie"
 }

@@ -1,6 +1,6 @@
 {
-    "reconnection": "재접속 설정",
-    "max-attempts": "최대 재접속 시도 횟수",
-    "default-placeholder": "기본: %1",
-    "delay": "재접속 지연"
+    "reconnection": "재연결 설정",
+    "max-attempts": "최대 재연결 시도 횟수",
+    "default-placeholder": "기본값: %1",
+    "delay": "재연결 지연"
 }

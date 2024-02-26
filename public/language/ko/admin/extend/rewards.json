@@ -1,17 +1,17 @@
 {
-	"rewards": "보상",
-	"add-reward": "Add reward",
-	"condition-if-users": "만약 사용자의",
+	"rewards": "리워드",
+	"add-reward": "리워드 추가",
+	"condition-if-users": "사용자의 경우",
 	"condition-is": "다음의 조건을 충족한다면:",
 	"condition-then": "다음과 같은 행동을 취합니다:",
-	"max-claims": "보상을 받을 수 있는 횟수",
-	"zero-infinite": "무제한으로 설정하려면 0으로 설정",
-	"select-reward": "Select reward",
+	"max-claims": "리워드를 청구할 수 있는 횟수",
+	"zero-infinite": "무한대로 설정하려면 0을 입력하세요",
+	"select-reward": "리워드 선택",
 	"delete": "삭제",
 	"enable": "활성화",
 	"disable": "비활성화",
 
-	"alert.delete-success": "성공적으로 보상을 삭제했습니다.",
-	"alert.no-inputs-found": "잘못된 보상 - 입력값이 없습니다!",
-	"alert.save-success": "성공적으로 보상을 저장했습니다."
+	"alert.delete-success": "리워드를 성공적으로 삭제했습니다",
+	"alert.no-inputs-found": "부적절한 리워드 - 입력이 없습니다!",
+	"alert.save-success": "리워드를 성공적으로 저장했습니다"
 }
