@@ -76,7 +76,7 @@ module.exports = function (Topics) {
 		return topicData.tid;
 	};
 
-	Topics.post = async function (data) {
+	Topics.post = async function (data, shouldIgnoreDelays) {
 		data = await plugins.hooks.fire('filter:topic.post', data);
 		const { uid } = data;
 
@@ -113,7 +113,7 @@ module.exports = function (Topics) {
 
 		await guestHandleValid(data);
 		if (!data.fromQueue) {
-			await user.isReadyToPost(uid, data.cid);
+			await user.isReadyToPost(uid, data.cid, shouldIgnoreDelays);
 		}
 
 		const tid = await Topics.create(data);

@@ -6,7 +6,7 @@ const privileges = require('../privileges');
 const groups = require('../groups');
 
 module.exports = function (User) {
-	User.isReadyToPost = async function (uid, cid) {
+	User.isReadyToPost = async function (uid, cid, shouldIgnoreDelays) {
 		await isReady(uid, cid, 'lastposttime');
 	};
 
@@ -28,7 +28,7 @@ module.exports = function (User) {
 		}
 	};
 
-	async function isReady(uid, cid, field) {
+	async function isReady(uid, cid, field, shouldIgnoreDelays) {
 		if (parseInt(uid, 10) === 0) {
 			return;
 		}
@@ -47,6 +47,10 @@ module.exports = function (User) {
 		}
 
 		await User.checkMuted(uid);
+
+		if (shouldIgnoreDelays) {
+			return;
+		}
 
 		const now = Date.now();
 		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
