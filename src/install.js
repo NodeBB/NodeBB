@@ -662,3 +662,5 @@ install.save = async function (server_conf) {
 		file: serverConfigPath,
 	});
 };
+
+install.giveWorldPrivileges = giveWorldPrivileges; // exported for upgrade script and test runner

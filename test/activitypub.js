@@ -9,6 +9,7 @@ const slugify = require('../src/slugify');
 const utils = require('../src/utils');
 const request = require('../src/request');
 
+const install = require('../src/install');
 const meta = require('../src/meta');
 const user = require('../src/user');
 const categories = require('../src/categories');
@@ -18,8 +19,9 @@ const privileges = require('../src/privileges');
 const activitypub = require('../src/activitypub');
 
 describe('ActivityPub integration', () => {
-	before(() => {
+	before(async () => {
 		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
 	});
 
 	after(() => {
@@ -467,9 +469,6 @@ describe('ActivityPub integration', () => {
 							object: remoteNote,
 						},
 					}, { sendStatus: () => {} });
-
-					const tid = await posts.getPostField(id, 'tid');
-					const topic = await topics.getTopicData(tid);
 				});
 
 				it('should create a new topic if Note is at root-level or its parent has not been seen before', async () => {

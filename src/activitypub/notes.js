@@ -211,7 +211,6 @@ Notes.assertTopic = async (uid, id) => {
 	// Privilege check for local categories
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
-	console.log(privilege, cid, allowed);
 	if (!allowed) {
 		return null;
 	}
