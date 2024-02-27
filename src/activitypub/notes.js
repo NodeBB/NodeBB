@@ -4,6 +4,7 @@ const winston = require('winston');
 const crypto = require('crypto');
 
 const db = require('../database');
+const meta = require('../meta');
 const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
@@ -215,12 +216,12 @@ Notes.assertTopic = async (uid, id) => {
 		return null;
 	}
 
-	tid = tid || utils.generateUUID();
-
-	let title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
-	if (title.length > 64) {
-		title = `${title.slice(0, 64)}...`;
+	let title = tid ? await topics.getTopicField(tid, 'title') : name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
+	if (title.length > meta.config.maximumTitleLength) {
+		title = `${title.slice(0, meta.config.maximumTitleLength)}...`;
 	}
+
+	tid = tid || utils.generateUUID();
 
 	const unprocessed = chain.filter((p, idx) => !members[idx]);
 	winston.info(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
