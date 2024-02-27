@@ -53,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
