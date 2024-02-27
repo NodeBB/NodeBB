@@ -54,8 +54,8 @@ privsGlobal.getType = function (privilege) {
 	return priv && priv.type ? priv.type : '';
 };
 
-privsGlobal.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.list', Array.from(_privilegeMap.keys()));
-privsGlobal.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
+privsGlobal.getUserPrivilegeList = () => Array.from(_privilegeMap.keys());
+privsGlobal.getGroupPrivilegeList = () => Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`);
 privsGlobal.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
 		privsGlobal.getUserPrivilegeList(),
@@ -65,21 +65,12 @@ privsGlobal.getPrivilegeList = async () => {
 };
 
 privsGlobal.list = async function () {
-	async function getLabels() {
-		const labels = Array.from(_privilegeMap.values()).map(data => data.label);
-		return await utils.promiseParallel({
-			users: plugins.hooks.fire('filter:privileges.global.list_human', labels.slice()),
-			groups: plugins.hooks.fire('filter:privileges.global.groups.list_human', labels.slice()),
-		});
-	}
-
 	const keys = await utils.promiseParallel({
 		users: privsGlobal.getUserPrivilegeList(),
 		groups: privsGlobal.getGroupPrivilegeList(),
 	});
 
 	const payload = await utils.promiseParallel({
-		labels: getLabels(),
 		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),
