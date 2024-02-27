@@ -1,4 +1,4 @@
-<div class="px-lg-4">
+<div class="px-lg-4 digest">
 	<p class="lead">[[admin/manage/digest:lead]]</p>
 	<p>[[admin/manage/digest:disclaimer]]</p>
 	<p>[[admin/manage/digest:disclaimer-continued]]</p>
