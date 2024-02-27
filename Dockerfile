@@ -18,14 +18,15 @@ FROM node:lts as rebuild
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
-RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/build
+RUN mkdir -p /usr/src/rebuild && \
+    chown -R node:node /usr/src/rebuild
 
-RUN --mount=type=cache,target=/usr/src/build/node_modules,source=/usr/src/build/node_modules,from=npm,sharing=private\
-    --mount=type=bind,target=/usr/src/build/package.json,source=/usr/src/build/package.json,from=npm \
+RUN --mount=type=cache,target=/usr/src/rebuild/node_modules,source=/usr/src/build/node_modules,from=npm,sharing=private \
+    --mount=type=bind,target=/usr/src/rebuild/package.json,source=/usr/src/build/package.json,from=npm \
     if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
         npm rebuild && \
-        npm cache clean --force; fi
+        npm cache clean --force; fi && \
+    cp -r /usr/src/rebuild /usr/src/build
 
 FROM node:lts-slim as run
 
@@ -39,14 +40,17 @@ RUN mkdir -p /usr/src/app && \
 
 COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
 
-
 WORKDIR /usr/src/app
 
-USER node
+# Install corepack to allow usage of other package managers
+RUN corepack enable && \
+    # npm is mostly ran non-interactively here, and the expectation is to update dependencies with NodeBB versions alongside the container
+    # so these are not really useful, but when enabled (which is the default) slow down container startup (especially audit)
+    npm config set audit=false fund=false update-notifier=false --userconfig .npmrc && \
+    # ensure that the configuration is owned by the node user
+    chown node:node /usr/src/app/.npmrc
 
-# npm is mostly ran non-interactively here, and the expectation is to update dependencies with NodeBB versions alongside the container
-# so these are not really useful, but when enabled (which is the default) slow down container startup (especially audit)
-RUN npm config set audit=false fund=false update-notifier=false
+USER node
 
 COPY --chown=node:node . /usr/src/app
 

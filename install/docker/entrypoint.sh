@@ -3,7 +3,7 @@
 export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
 export CONFIG=$CONFIG_DIR/config.json
 export FORCE_BUILD_BEFORE_START="${FORCE_BUILD_BEFORE_START:-false}"
-
+export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
 # Supported verbs: install (web install), setup (interactive CLI session). Default: web install
 # TODO: constraint it using a hash set (or hash table)
 export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
@@ -30,7 +30,8 @@ ln -fs $CONFIG_DIR/package-lock.json package-lock.json
 
 echo "Ensuring NodeBB dependencies are installed"
 
-npm install --omit=dev
+corepack $PACKAGE_MANAGER install --omit=dev
+
 package_hash=$(md5sum install/package.json | head -c 32)
 if [[ -n $SETUP ]]; then
   echo "Setup environmental variable detected"
