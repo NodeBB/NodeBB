@@ -21,11 +21,11 @@ ARG TARGETPLATFORM
 RUN mkdir -p /usr/src/build && \
     chown -R node:node /usr/src/build
 
-COPY --from=npm /usr/src/build /usr/src/build
-
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
-    npm rebuild && \
-    npm cache clean --force; fi
+RUN --mount=type=cache,target=/usr/src/build/node_modules,source=/usr/src/build/node_modules,from=npm,sharing=private\
+    --mount=type=bind,target=/usr/src/build/package.json,source=/usr/src/build/package.json,from=npm \
+    if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
+        npm rebuild && \
+        npm cache clean --force; fi
 
 FROM node:lts-slim as run
 
