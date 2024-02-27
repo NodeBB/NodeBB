@@ -25,12 +25,13 @@
 	</div>
 
 	<div class="row settings m-0">
-		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:servers]]</div>
+		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:server-filtering]]</div>
 		<div class="col-sm-10 col-12">
 			<form>
 				<div class="mb-3">
 					<p>[[admin/settings/activitypub:server.filter-help]]</p>
 					<p>[[admin/settings/activitypub:count, 0]]</p>
+					<p class="text-danger fst-italic small">This feature is not available yet</p>
 					<label for="activitypubFilterList" class="form-label">Filtering list</label>
 					<textarea class="form-control" id="activitypubFilterList" rows="10" disabled="disabled"></textarea>
 				</div>
