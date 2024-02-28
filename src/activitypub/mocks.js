@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const mime = require('mime');
 const path = require('path');
 
+const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -171,15 +172,13 @@ Mocks.actors.category = async (cid) => {
 	let { name, slug, description: summary, backgroundImage } = await categories.getCategoryData(cid);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
-	if (backgroundImage) {
-		const filename = utils.decodeHTMLEntities(backgroundImage).split('/').pop();
-		const imagePath = path.join(nconf.get('upload_path'), 'category', filename);
-		backgroundImage = {
-			type: 'Image',
-			mediaType: mime.getType(imagePath),
-			url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
-		};
-	}
+	backgroundImage = backgroundImage || meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
+	const filename = path.basename(utils.decodeHTMLEntities(backgroundImage));
+	backgroundImage = {
+		type: 'Image',
+		mediaType: mime.getType(filename),
+		url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
+	};
 
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
