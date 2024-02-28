@@ -136,7 +136,7 @@ Notes.getParentChain = async (uid, input) => {
 		// Handle remote reference to local post
 		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
 		if (type === 'post' && localId) {
-			return traverse(uid, localId);
+			return await traverse(uid, localId);
 		}
 
 		const exists = await db.exists(`post:${id}`);
@@ -145,6 +145,11 @@ Notes.getParentChain = async (uid, input) => {
 			chain.add(postData);
 			if (postData.toPid) {
 				await traverse(uid, postData.toPid);
+			} else if (utils.isNumber(id)) { // local pid without toPid, could be OP or reply to OP
+				const mainPid = await topics.getTopicField(postData.tid, 'mainPid');
+				if (mainPid !== id) {
+					await traverse(uid, mainPid);
+				}
 			}
 		} else {
 			let object;
