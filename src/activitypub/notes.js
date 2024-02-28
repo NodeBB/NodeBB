@@ -205,6 +205,8 @@ Notes.assertTopic = async (uid, id) => {
 	}
 
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = chain[chain.length - 1];
+	const hasTid = !!tid;
+
 	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.map(p => p.pid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
@@ -212,18 +214,24 @@ Notes.assertTopic = async (uid, id) => {
 		return tid;
 	}
 
-	const cid = tid ? await topics.getTopicField(tid, 'cid') : -1;
+	let cid;
+	let title;
+	if (hasTid) {
+		({ cid, title, mainPid } = await topics.getTopicFields(tid, ['cid', 'title', 'mainPid']));
+	} else {
+		// mainPid ok to leave as-is
+		cid = -1;
+		title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
+		if (title.length > meta.config.maximumTitleLength) {
+			title = `${title.slice(0, meta.config.maximumTitleLength)}...`;
+		}
+	}
 
 	// Privilege check for local categories
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
 	if (!allowed) {
 		return null;
-	}
-
-	let title = tid ? await topics.getTopicField(tid, 'title') : name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
-	if (title.length > meta.config.maximumTitleLength) {
-		title = `${title.slice(0, meta.config.maximumTitleLength)}...`;
 	}
 
 	tid = tid || utils.generateUUID();
@@ -237,11 +245,14 @@ Notes.assertTopic = async (uid, id) => {
 	];
 
 	// mainPid doesn't belong in posts zset
-	ids.pop();
-	timestamps.pop();
+	if (ids.includes(mainPid)) {
+		const idx = ids.indexOf(mainPid);
+		ids.splice(idx, 1);
+		timestamps.splice(idx, 1);
+	}
 
 	await Promise.all([
-		db.setObject(`topic:${tid}`, {
+		!hasTid ? db.setObject(`topic:${tid}`, {
 			tid,
 			uid: authorId,
 			cid: cid,
@@ -249,7 +260,7 @@ Notes.assertTopic = async (uid, id) => {
 			title,
 			slug: `${tid}/${slugify(title)}`,
 			timestamp,
-		}),
+		}) : null,
 		db.sortedSetAdd(`tid:${tid}:posts`, timestamps, ids),
 		Notes.assert(uid, unprocessed),
 	]);
