@@ -1,4 +1,4 @@
-<div class="px-lg-4">
+<div class="px-lg-4 digest">
 	<p class="lead">[[admin/manage/digest:lead]]</p>
 	<p>[[admin/manage/digest:disclaimer]]</p>
 	<p>[[admin/manage/digest:disclaimer-continued]]</p>
@@ -8,7 +8,7 @@
 
 	<div class="mb-3">
 		<div class="mb-2"><em>[[admin/manage/digest:default-help, {default}]]</em></div>
-		<div class="d-flex gap-1">
+		<div class="d-flex gap-1 align-items-center">
 			<div>[[admin/manage/digest:manual-run]]</div>
 			<button class="btn btn-sm btn-outline-secondary" data-action="resend-day">[[admin/settings/user:digest-freq.daily]]</button>
 			<button class="btn btn-sm btn-outline-secondary" data-action="resend-week">[[admin/settings/user:digest-freq.weekly]]</button>
