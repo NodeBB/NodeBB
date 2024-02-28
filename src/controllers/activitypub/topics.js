@@ -9,7 +9,7 @@ const helpers = require('../helpers');
 
 const controller = module.exports;
 
-controller.list = async function (req, res) {
+controller.list = async function (req, res, next) {
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	const page = parseInt(req.query.page, 10) || 1;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
@@ -18,6 +18,8 @@ controller.list = async function (req, res) {
 	const sets = ['cid:-1:tids', `uid:${req.uid}:inbox`];
 	if (req.params.filter === 'all' || !req.uid) {
 		sets.pop();
+	} else if (req.params.filter) {
+		return helpers.redirect(res, '/world', false);
 	}
 
 	const tids = await db.getSortedSetRevIntersect({
