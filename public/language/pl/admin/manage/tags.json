@@ -1,20 +1,20 @@
 {
-	"manage-tags": "Manage Tags",
+	"manage-tags": "Zarządzaj tagami",
 	"none": "Twoje forum nie ma jeszcze żadnych tematów z tagami.",
 	"bg-color": "Kolor tła",
 	"text-color": "Kolor tekstu",
 	"description": "Wybieraj tagi poprzez klikanie lub przeciąganie; użyj przycisku <code>CTRL</code> do zaznaczenia wielu.",
 	"create": "Utwórz tag",
-	"add-tag": "Add tag",
+	"add-tag": "Dodaj tag",
 	"modify": "Modyfikuj tagi",
 	"rename": "Przemianuj tagi",
 	"delete": "Usuń zaznaczone tagi",
-	"search": "Szukanie tagów...",
+	"search": "Szukaj tagów...",
 	"settings": "Ustawienia tagów",
 	"name": "Nazwa taga",
 
-	"alerts.editing": "edytowanie tagu/tagów",
+	"alerts.editing": "Edytowanie tagu/tagów",
 	"alerts.confirm-delete": "Czy na pewno chcesz usunąć zaznaczone tagi?",
-	"alerts.update-success": "Zaktualizowano tag-a!",
+	"alerts.update-success": "Zaktualizowano taga!",
 	"reset-colors": "Zresetuj kolory"
 }

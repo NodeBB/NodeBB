@@ -3,7 +3,7 @@
 	"maintenance-mode.help": "Kiedy forum jest w trybie konserwacji, wszystkie żądania będą przekierowane do statycznej strony oczekiwania. Administratorzy nie są objęci tym przekierowaniem i mogą normalnie korzystać ze strony.",
 	"maintenance-mode.status": "Kod stanu trybu konserwacji",
 	"maintenance-mode.message": "Komunikat na ekranie konserwacji",
-	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Wybierz grupy, które powinny być wyjątkiem od trybu konswerwacji",
 	"headers": "Nagłówki",
 	"headers.allow-from": "Ustaw ALLOW-FROM, aby umieścić NodeBB w ramce iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

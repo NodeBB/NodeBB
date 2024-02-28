@@ -1,9 +1,9 @@
 {
 	"crawlability-settings": "Ustawienia robotów sieciowych",
-	"robots-txt": "Własny Robots.txt<small>Pozostaw puste, aby użyć domyślnego</small>",
+	"robots-txt": "Własny robots.txt<small>Pozostaw puste, aby użyć domyślnego</small>",
 	"sitemap-feed-settings": "Ustawienia mapy strony oraz kanału",
 	"disable-rss-feeds": "Wyłącz kanały RSS",
-	"disable-sitemap-xml": "Wyłącz Sitemap.xml",
+	"disable-sitemap-xml": "Wyłącz sitemap.xml",
 	"sitemap-topics": "Liczba tematów do wyświetlenia w mapie strony",
 	"clear-sitemap-cache": "Wyczyść pamięć podręczną mapy strony",
 	"view-sitemap": "Wyświetl mapę strony"
