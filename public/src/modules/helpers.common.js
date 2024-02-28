@@ -342,8 +342,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		const url = generatePostUrl(post, 'toPid');
-		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${url}, ${displayname}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${generatePostUrl(post, 'toPid')}, ${displayname}, ${generatePostUrl(post, 'pid')}, ${post.timestampISO}]]`;
 	}
 
 	function generateWrote(post, timeagoCutoff) {
