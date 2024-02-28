@@ -38,20 +38,20 @@ inbox.update = async (req) => {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
-	const [exists, allowed] = await Promise.all([
-		posts.exists(object.id),
-		privileges.posts.can('posts:edit', object.id, activitypub._constants.uid),
-	]);
-	if (!exists || !allowed) {
-		winston.info(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
-		return activitypub.send('uid', 0, actor, {
-			type: 'Reject',
-			object,
-		});
-	}
-
 	switch (object.type) {
 		case 'Note': {
+			const [exists, allowed] = await Promise.all([
+				posts.exists(object.id),
+				privileges.posts.can('posts:edit', object.id, activitypub._constants.uid),
+			]);
+			if (!exists || !allowed) {
+				winston.info(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
+				return activitypub.send('uid', 0, actor, {
+					type: 'Reject',
+					object,
+				});
+			}
+
 			const postData = await activitypub.mocks.post(object);
 
 			if (postData) {
