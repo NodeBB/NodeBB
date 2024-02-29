@@ -210,6 +210,7 @@ Mocks.note = async (post) => {
 
 	let inReplyTo = null;
 	let name = null;
+	let tag = null;
 	if (post.toPid) { // direct reply
 		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
 		const parentId = await posts.getPostField(post.toPid, 'uid');
@@ -219,6 +220,11 @@ Mocks.note = async (post) => {
 		to.unshift(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 	} else { // new topic
 		name = await topics.getTitleByPid(post.pid);
+		tag = post.topic.tags.map(tag => ({
+			type: 'Hashtag',
+			href: `${nconf.get('url')}/tags/${tag.valueEncoded}`,
+			name: `#${tag.value}`,
+		}));
 	}
 
 	const object = {
@@ -240,6 +246,7 @@ Mocks.note = async (post) => {
 			content: raw,
 			mediaType: 'text/markdown',
 		},
+		tag,
 		// replies: {}  todo...
 	};
 
