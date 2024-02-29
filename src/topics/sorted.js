@@ -77,7 +77,7 @@ module.exports = function (Topics) {
 			tidToCount[post.tid] += 1;
 		});
 
-		return _.uniq(postObjs.map(post => post.tid)).sort((t1, t2) => tidToCount[t2] - tidToCount[t1]);
+		return _.uniq(postObjs.map(post => String(post.tid))).sort((t1, t2) => tidToCount[t2] - tidToCount[t1]);
 	}
 
 	async function getWatchedTopics(params) {
