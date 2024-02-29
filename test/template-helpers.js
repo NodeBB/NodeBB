@@ -132,7 +132,7 @@ describe('helpers', () => {
 
 	it('should show join button if join requests are not disabled and group is not administrators', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', disableJoinRequests: false });
-		assert.equal(btn, '<button class="btn btn-success" data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
+		assert.equal(btn, '<button class="btn btn-success " data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
 		done();
 	});
 
