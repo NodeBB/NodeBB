@@ -7,6 +7,7 @@
 	"login-register-to-search": "登录或注册以进行搜索。",
 	"settings.title": "主题设置",
 	"settings.enableQuickReply": "启用快速回复",
+	"settings.enableBreadcrumbs": "Enable breadcrumbs",
 	"settings.centerHeaderElements": "标题元素居中",
 	"settings.mobileTopicTeasers": "在移动设备显示话题预告",
 	"settings.stickyToolbar": "附着工具条",
