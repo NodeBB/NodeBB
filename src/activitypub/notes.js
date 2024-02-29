@@ -226,6 +226,7 @@ Notes.assertTopic = async (uid, id) => {
 			title = `${title.slice(0, meta.config.maximumTitleLength)}...`;
 		}
 	}
+	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
 	// Privilege check for local categories
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
@@ -245,8 +246,8 @@ Notes.assertTopic = async (uid, id) => {
 	];
 
 	// mainPid doesn't belong in posts zset
-	if (ids.includes(parseInt(mainPid, 10))) {
-		const idx = ids.indexOf(parseInt(mainPid, 10));
+	if (ids.includes(mainPid)) {
+		const idx = ids.indexOf(mainPid);
 		ids.splice(idx, 1);
 		timestamps.splice(idx, 1);
 	}
