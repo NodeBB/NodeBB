@@ -10,8 +10,6 @@ const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
 const utils = require('../utils');
-// const pubsub = require('../pubsub');
-const slugify = require('../slugify');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
@@ -204,20 +202,22 @@ Notes.assertTopic = async (uid, id) => {
 		return null;
 	}
 
-	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = chain[chain.length - 1];
+	const mainPost = chain[chain.length - 1];
+	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = mainPost;
 	const hasTid = !!tid;
 
-	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.map(p => p.pid));
+	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(0, -1).map(p => p.pid));
+	members.push(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
-		winston.info('[notes/assertTopic] No new notes to process.');
+		winston.verbose('[notes/assertTopic] No new notes to process.');
 		return tid;
 	}
 
 	let cid;
 	let title;
 	if (hasTid) {
-		({ cid, title, mainPid } = await topics.getTopicFields(tid, ['cid', 'title', 'mainPid']));
+		({ cid, title, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'title', 'mainPid']));
 	} else {
 		// mainPid ok to leave as-is
 		cid = -1;
@@ -236,9 +236,10 @@ Notes.assertTopic = async (uid, id) => {
 	}
 
 	tid = tid || utils.generateUUID();
+	mainPost.tid = tid;
 
 	const unprocessed = chain.filter((p, idx) => !members[idx]);
-	winston.info(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
+	winston.verbose(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
 
 	const [ids, timestamps] = [
 		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
@@ -252,16 +253,24 @@ Notes.assertTopic = async (uid, id) => {
 		timestamps.splice(idx, 1);
 	}
 
-	await Promise.all([
-		!hasTid ? db.setObject(`topic:${tid}`, {
+	let tags;
+	if (!hasTid) {
+		tags = (mainPost._activitypub.tag || []).map(o => o.name.slice(1));
+		tags = await topics.filterTags(tags, cid);
+
+		await topics.create({
 			tid,
 			uid: authorId,
-			cid: cid,
+			cid,
 			mainPid,
 			title,
-			slug: `${tid}/${slugify(title)}`,
 			timestamp,
-		}) : null,
+			tags,
+		});
+		topics.onNewPostMade(mainPost);
+	}
+
+	await Promise.all([
 		db.sortedSetAdd(`tid:${tid}:posts`, timestamps, ids),
 		Notes.assert(uid, unprocessed),
 	]);

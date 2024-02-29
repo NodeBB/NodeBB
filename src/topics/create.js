@@ -20,7 +20,7 @@ module.exports = function (Topics) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
 
-		const tid = await db.incrObjectField('global', 'nextTid');
+		const tid = data.tid || await db.incrObjectField('global', 'nextTid');
 
 		let topicData = {
 			tid: tid,

@@ -81,17 +81,11 @@ Mocks.post = async (objects) => {
 
 		const {
 			id: pid,
-			published,
-			updated,
 			attributedTo: uid,
-			// conversation,
-			name,
-			content,
-			sourceContent,
 			inReplyTo: toPid,
-			to,
-			cc,
-			attachment,
+			published, updated, name, content, sourceContent,
+			to, cc, attachment, tag,
+			// conversation, // mastodon-specific, ignored.
 		} = object;
 
 		const timestamp = new Date(published).getTime();
@@ -110,7 +104,7 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
-			_activitypub: { to, cc, attachment },
+			_activitypub: { to, cc, attachment, tag },
 		};
 
 		return payload;
