@@ -9,9 +9,11 @@ const user = require('../user');
 const posts = require('../posts');
 const topics = require('../topics');
 const categories = require('../categories');
+const notifications = require('../notifications');
 const utils = require('../utils');
 const activitypub = require('.');
 
+const socketHelpers = require('../socket.io/helpers');
 const helpers = require('./helpers');
 
 const inbox = module.exports;
@@ -88,7 +90,8 @@ inbox.like = async (req) => {
 
 	winston.info(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
-	await posts.upvote(id, actor);
+	const result = await posts.upvote(id, actor);
+	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
 
 inbox.announce = async (req) => {
@@ -112,6 +115,8 @@ inbox.announce = async (req) => {
 
 		pid = id;
 		tid = await posts.getPostField(id, 'tid');
+
+		socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
 	} else {
 		pid = object;
 		pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
@@ -180,7 +185,8 @@ inbox.follow = async (req) => {
 		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
 		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 
-		await activitypub.send('uid', id, req.body.actor, {
+		user.onFollow(req.body.actor, id);
+		activitypub.send('uid', id, req.body.actor, {
 			type: 'Accept',
 			object: {
 				type: 'Follow',
@@ -280,6 +286,7 @@ inbox.undo = async (req) => {
 					await db.sortedSetRemove(`followersRemote:${id}`, actor);
 					const followerRemoteCount = await db.sortedSetCard(`followerRemote:${id}`);
 					await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
+					notifications.rescind(`follow:${id}:uid:${actor}`);
 					break;
 				}
 
@@ -314,6 +321,7 @@ inbox.undo = async (req) => {
 			}
 
 			await posts.unvote(id, actor);
+			notifications.rescind(`upvote:post:${id}:uid:${actor}`);
 			break;
 		}
 
@@ -334,6 +342,8 @@ inbox.undo = async (req) => {
 			if (existing.length) {
 				await topics.events.purge(tid, existing);
 			}
+
+			notifications.rescind(`announce:post:${id}:uid:${actor}`);
 		}
 	}
 };

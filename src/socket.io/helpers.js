@@ -76,7 +76,7 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
-	fromuid = parseInt(fromuid, 10);
+	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
 	const postData = await posts.getPostFields(pid, ['tid', 'uid', 'content']);
 	const [canRead, isIgnoring] = await Promise.all([
 		privileges.posts.can('topics:read', pid, postData.uid),

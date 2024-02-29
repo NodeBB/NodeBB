@@ -172,27 +172,11 @@ usersAPI.changePassword = async function (caller, data) {
 
 usersAPI.follow = async function (caller, data) {
 	await user.follow(caller.uid, data.uid);
+	await user.onFollow(caller.uid, data.uid);
 	plugins.hooks.fire('action:user.follow', {
 		fromUid: caller.uid,
 		toUid: data.uid,
 	});
-
-	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
-	const { displayname } = userData;
-
-	const notifObj = await notifications.create({
-		type: 'follow',
-		bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
-		nid: `follow:${data.uid}:uid:${caller.uid}`,
-		from: caller.uid,
-		path: `/uid/${data.uid}/followers`,
-		mergeId: 'notifications:user-started-following-you',
-	});
-	if (!notifObj) {
-		return;
-	}
-	notifObj.user = userData;
-	await notifications.push(notifObj, [data.uid]);
 };
 
 usersAPI.unfollow = async function (caller, data) {

@@ -403,6 +403,7 @@ Notifications.merge = async function (notifications) {
 		'notifications:user-posted-in-public-room',
 		'new-register',
 		'post-queue',
+		'notifications:activitypub.announce',
 	];
 
 	notifications = mergeIds.reduce((notifications, mergeId) => {
@@ -467,7 +468,8 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user': {
+				case 'notifications:user-flagged-user':
+				case 'notifications:activitypub.announce': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
 					const numUsers = usernames.length;
 

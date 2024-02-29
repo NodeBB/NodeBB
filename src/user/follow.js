@@ -1,6 +1,7 @@
 
 'use strict';
 
+const notifications = require('../notifications');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
 const db = require('../database');
@@ -95,5 +96,24 @@ module.exports = function (User) {
 		}
 		const setPrefix = isRemote ? 'followingRemote' : 'following';
 		return await db.isSortedSetMember(`${setPrefix}:${uid}`, theirid);
+	};
+
+	User.onFollow = async function (uid, targetUid) {
+		const userData = await User.getUserFields(uid, ['username', 'userslug']);
+		const { displayname } = userData;
+
+		const notifObj = await notifications.create({
+			type: 'follow',
+			bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
+			nid: `follow:${targetUid}:uid:${uid}`,
+			from: uid,
+			path: `/uid/${targetUid}/followers`,
+			mergeId: 'notifications:user-started-following-you',
+		});
+		if (!notifObj) {
+			return;
+		}
+		notifObj.user = userData;
+		await notifications.push(notifObj, [targetUid]);
 	};
 };
