@@ -32,12 +32,15 @@ module.exports = function (Topics) {
 		return { topics: topics, nextStart: options.stop + 1 };
 	};
 
-	Topics.getLatestTidsFromSet = async function (set, start, stop, term) {
-		let since = terms.day;
-		if (terms[term]) {
-			since = terms[term];
+	Topics.getSinceFromTerm = function (term) {
+		if (terms.hasOwnProperty(term)) {
+			return terms[term];
 		}
+		return terms.day;
+	};
 
+	Topics.getLatestTidsFromSet = async function (set, start, stop, term) {
+		const since = Topics.getSinceFromTerm(term);
 		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since);
 	};
