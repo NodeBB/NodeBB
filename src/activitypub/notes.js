@@ -240,13 +240,13 @@ Notes.assertTopic = async (uid, id) => {
 	winston.info(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
 
 	const [ids, timestamps] = [
-		unprocessed.map(n => n.pid),
+		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
 		unprocessed.map(n => n.timestamp),
 	];
 
 	// mainPid doesn't belong in posts zset
-	if (ids.includes(mainPid)) {
-		const idx = ids.indexOf(mainPid);
+	if (ids.includes(parseInt(mainPid, 10))) {
+		const idx = ids.indexOf(parseInt(mainPid, 10));
 		ids.splice(idx, 1);
 		timestamps.splice(idx, 1);
 	}
