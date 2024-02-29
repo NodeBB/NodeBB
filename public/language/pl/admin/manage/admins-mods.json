@@ -1,11 +1,11 @@
 {
-    "manage-admins-and-mods": "Manage Admins & Mods",
+    "manage-admins-and-mods": "Zarządzaj adminami i modami",
     "administrators": "Administratorzy",
     "global-moderators": "Globalni moderatorzy",
     "moderators": "Moderatorzy",
     "no-global-moderators": "Brak globalnych moderatorów",
     "no-sub-categories": "Brak podkategorii",
-    "view-children": "View children (%1)",
+    "view-children": "Pokaż podrzędne (%1)",
     "no-moderators": "Brak moderatorów",
     "add-administrator": "Dodaj administratora",
     "add-global-moderator": "Dodaj globalnego moderatora",

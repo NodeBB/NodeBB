@@ -1,18 +1,19 @@
 {
-	"theme-name": "Harmony Theme",
+	"theme-name": "Styl Harmony",
 	"skins": "Skórki",
 	"collapse": "Zwiń",
 	"expand": "Rozwiń",
-	"sidebar-toggle": "Sidebar Toggle",
-	"login-register-to-search": "Login or register to search.",
+	"sidebar-toggle": "Przełącz panele boczne",
+	"login-register-to-search": "Aby wyszukiwać zaloguj się lub zarejestruj.",
 	"settings.title": "Ustawienia stylu",
 	"settings.enableQuickReply": "Włącz szybkie odpowiadanie",
+	"settings.enableBreadcrumbs": "Enable breadcrumbs",
 	"settings.centerHeaderElements": "Wyśrodkuj elementy nagłówka",
 	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
 	"settings.stickyToolbar": "Sticky toolbar",
 	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
 	"settings.autohideBottombar": "Automatycznie chowaj dolny panel",
 	"settings.autohideBottombar.help": "Dolny panel schowa się w widoku mobilnym, jeśli strona zostanie przesunięta w dół",
-	"settings.openSidebars": "Open sidebars",
+	"settings.openSidebars": "Otwórz panele boczne",
 	"settings.chatModals": "Włącz okienka czatu"
 }
