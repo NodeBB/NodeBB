@@ -7,6 +7,7 @@
 	"login-register-to-search": "Login or register to search.",
 	"settings.title": "Theme settings",
 	"settings.enableQuickReply": "Enable quick reply",
+	"settings.enableBreadcrumbs": "Enable breadcrumbs",
 	"settings.centerHeaderElements": "Center header elements",
 	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
 	"settings.stickyToolbar": "Sticky toolbar",

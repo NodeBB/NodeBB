@@ -7,6 +7,7 @@
 	"login-register-to-search": "Впишете се или се регистрирайте, за да можете да търсите.",
 	"settings.title": "Настройки на темата",
 	"settings.enableQuickReply": "Включване на бързите отговори",
+	"settings.enableBreadcrumbs": "Enable breadcrumbs",
 	"settings.centerHeaderElements": "Центриране на заглавните елементи",
 	"settings.mobileTopicTeasers": "Показване на резюмета на темите на мобилни устройства",
 	"settings.stickyToolbar": "Статична лента с инструменти",
