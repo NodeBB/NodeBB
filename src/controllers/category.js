@@ -20,7 +20,9 @@ const categoryController = module.exports;
 
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
-const validSorts = ['newest_to_oldest', 'oldest_to_newest', 'most_posts', 'most_votes', 'most_views'];
+const validSorts = [
+	'recently_replied', 'recently_created', 'most_posts', 'most_votes', 'most_views',
+];
 
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;

@@ -27,10 +27,9 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getTopicIds = async function (data) {
-		const [pinnedTids, set, direction] = await Promise.all([
+		const [pinnedTids, set] = await Promise.all([
 			Categories.getPinnedTids({ ...data, start: 0, stop: -1 }),
 			Categories.buildTopicsSortedSet(data),
-			Categories.getSortedSetRangeDirection(data.sort),
 		]);
 
 		const totalPinnedCount = pinnedTids.length;
@@ -62,12 +61,11 @@ module.exports = function (Categories) {
 
 		const stop = data.stop === -1 ? data.stop : start + normalTidsToGet - 1;
 		let normalTids;
-		const reverse = direction === 'highest-to-lowest';
 		if (Array.isArray(set)) {
 			const weights = set.map((s, index) => (index ? 0 : 1));
-			normalTids = await db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop, weights: weights });
+			normalTids = await db.getSortedSetRevIntersect({ sets: set, start: start, stop: stop, weights: weights });
 		} else {
-			normalTids = await db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
+			normalTids = await db.getSortedSetRevRange(set, start, stop);
 		}
 		normalTids = normalTids.filter(tid => !pinnedTids.includes(tid));
 		return pinnedTidsOnPage.concat(normalTids);
@@ -92,16 +90,16 @@ module.exports = function (Categories) {
 
 	Categories.buildTopicsSortedSet = async function (data) {
 		const { cid } = data;
-		let set = `cid:${cid}:tids`;
-		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
+		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'recently_replied';
+		const sortToSet = {
+			recently_replied: `cid:${cid}:tids`,
+			recently_created: `cid:${cid}:tids:create`,
+			most_posts: `cid:${cid}:tids:posts`,
+			most_votes: `cid:${cid}:tids:votes`,
+			most_views: `cid:${cid}:tids:views`,
+		};
 
-		if (sort === 'most_posts') {
-			set = `cid:${cid}:tids:posts`;
-		} else if (sort === 'most_votes') {
-			set = `cid:${cid}:tids:votes`;
-		} else if (sort === 'most_views') {
-			set = `cid:${cid}:tids:views`;
-		}
+		let set = sortToSet.hasOwnProperty(sort) ? sortToSet[sort] : `cid:${cid}:tids`;
 
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
@@ -123,7 +121,8 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getSortedSetRangeDirection = async function (sort) {
-		sort = sort || 'newest_to_oldest';
+		console.warn('[deprecated] Will be removed in 4.x');
+		sort = sort || 'recently_replied';
 		const direction = ['newest_to_oldest', 'most_posts', 'most_votes', 'most_views'].includes(sort) ? 'highest-to-lowest' : 'lowest-to-highest';
 		const result = await plugins.hooks.fire('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
