@@ -60,6 +60,7 @@ Scheduled.pin = async function (tid, topicData) {
 		db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid),
 		db.sortedSetsRemove([
 			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
 			`cid:${topicData.cid}:tids:views`,
@@ -98,6 +99,7 @@ function unpin(tid, topicData) {
 		db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid),
 		db.sortedSetAddBulk([
 			[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
+			[`cid:${topicData.cid}:tids:create`, topicData.timestamp, tid],
 			[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
 			[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 			[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],

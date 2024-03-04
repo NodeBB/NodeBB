@@ -125,20 +125,20 @@ module.exports = function (module) {
 		}
 		const cachedData = {};
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
-		let data = [];
+
 		if (unCachedKeys.length >= 1) {
-			data = await module.client.collection('objects').find(
+			let data = await module.client.collection('objects').find(
 				{ _key: unCachedKeys.length === 1 ? unCachedKeys[0] : { $in: unCachedKeys } },
 				{ projection: { _id: 0 } }
 			).toArray();
 			data = data.map(helpers.deserializeData);
-		}
 
-		const map = helpers.toMap(data);
-		unCachedKeys.forEach((key) => {
-			cachedData[key] = map[key] || null;
-			cache.set(key, cachedData[key]);
-		});
+			const map = helpers.toMap(data);
+			unCachedKeys.forEach((key) => {
+				cachedData[key] = map[key] || null;
+				cache.set(key, cachedData[key]);
+			});
+		}
 
 		if (!Array.isArray(fields) || !fields.length) {
 			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
