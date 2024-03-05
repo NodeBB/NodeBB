@@ -9,6 +9,7 @@ const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
+const plugins = require('../plugins');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -59,6 +60,9 @@ Notes.assert = async (uid, input, options = {}) => {
 			delete hash._activitypub;
 			// should call internal method here to create/edit post
 			await db.setObject(key, hash);
+			const post = await posts.getPostData(id);
+			post._activitypub = postData._activitypub;
+			plugins.hooks.fire(`action:post.${(exists && options.update) ? 'edit' : 'save'}`, { post });
 			winston.verbose(`[activitypub/notes.assert] Note ${id} saved.`);
 		}
 	}));
@@ -176,17 +180,14 @@ Notes.getParentChain = async (uid, input) => {
 	return chain;
 };
 
-Notes.assertParentChain = async (chain, tid) => {
+Notes.assertParentChain = async (chain) => {
 	const data = [];
 	chain.reduce((child, parent) => {
 		data.push([`pid:${parent.pid}:replies`, child.timestamp, child.pid]);
 		return parent;
 	});
 
-	await Promise.all([
-		db.sortedSetAddBulk(data),
-		db.setObjectBulk(chain.map(post => [`post:${post.pid}`, { tid }])),
-	]);
+	await db.sortedSetAddBulk(data);
 };
 
 Notes.assertTopic = async (uid, id) => {
@@ -238,7 +239,10 @@ Notes.assertTopic = async (uid, id) => {
 	tid = tid || utils.generateUUID();
 	mainPost.tid = tid;
 
-	const unprocessed = chain.filter((p, idx) => !members[idx]);
+	const unprocessed = chain.map((post) => {
+		post.tid = tid; // add tid to post hash
+		return post;
+	}).filter((p, idx) => !members[idx]);
 	winston.verbose(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
 
 	const [ids, timestamps] = [
@@ -275,7 +279,7 @@ Notes.assertTopic = async (uid, id) => {
 		Notes.assert(uid, unprocessed),
 	]);
 	await Promise.all([ // must be done after .assert()
-		Notes.assertParentChain(chain, tid),
+		Notes.assertParentChain(chain),
 		Notes.updateTopicCounts(tid),
 		Notes.syncUserInboxes(tid),
 		topics.updateLastPostTimeFromLastPid(tid),

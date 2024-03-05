@@ -93,30 +93,39 @@ Actors.assert = async (ids, options = {}) => {
 	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', profiles.map(p => p.uid));
 	const uidsForCurrent = profiles.map((p, idx) => (exists[idx] ? p.uid : 0));
 	const current = await user.getUsersFields(uidsForCurrent, ['username', 'fullname']);
-	const searchQueries = profiles.reduce((memo, profile, idx) => {
+	const queries = profiles.reduce((memo, profile, idx) => {
 		if (profile) {
 			const { username, fullname } = current[idx];
 
 			if (username !== profile.username) {
-				memo.remove.push(['ap.preferredUsername:sorted', `${username.toLowerCase()}:${profile.uid}`]);
-				memo.add.push(['ap.preferredUsername:sorted', 0, `${profile.username.toLowerCase()}:${profile.uid}`]);
+				if (uidsForCurrent[idx] !== 0) {
+					memo.searchRemove.push(['ap.preferredUsername:sorted', `${username.toLowerCase()}:${profile.uid}`]);
+					memo.handleRemove.push(username.toLowerCase());
+				}
+
+				memo.searchAdd.push(['ap.preferredUsername:sorted', 0, `${profile.username.toLowerCase()}:${profile.uid}`]);
+				memo.handleAdd[profile.username.toLowerCase()] = profile.uid;
 			}
 
 			if (fullname !== profile.fullname) {
-				memo.remove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${profile.uid}`]);
-				memo.add.push(['ap.name:sorted', 0, `${profile.fullname.toLowerCase()}:${profile.uid}`]);
+				if (uidsForCurrent[idx] !== 0) {
+					memo.searchRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${profile.uid}`]);
+				}
+
+				memo.searchAdd.push(['ap.name:sorted', 0, `${profile.fullname.toLowerCase()}:${profile.uid}`]);
 			}
 		}
 
 		return memo;
-	}, { remove: [], add: [] });
+	}, { searchRemove: [], searchAdd: [], handleRemove: [], handleAdd: {} });
 
 	await Promise.all([
 		db.setObjectBulk(bulkSet),
-		db.sortedSetAdd('usersRemote:lastCrawled', ids.map((id, idx) => (profiles[idx] ? now : null)).filter(Boolean), ids.filter((id, idx) => profiles[idx])),
-		db.sortedSetRemove('ap.preferredUsername:sorted', searchQueries.remove),
-		db.sortedSetRemoveBulk(searchQueries.remove),
-		db.sortedSetAddBulk(searchQueries.add),
+		db.sortedSetAdd('usersRemote:lastCrawled', profiles.map(p => now), profiles.map(p => p.uid)),
+		db.sortedSetRemoveBulk(queries.searchRemove),
+		db.sortedSetAddBulk(queries.searchAdd),
+		db.deleteObjectFields('handle:uid', queries.handleRemove),
+		db.setObject('handle:uid', queries.handleAdd),
 	]);
 
 	return actors.every(Boolean);

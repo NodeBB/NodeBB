@@ -235,9 +235,17 @@ Mocks.note = async (post) => {
 
 		if (matches.size) {
 			tag = tag || [];
-			Array.from(matches).map(match => ({
-				type: 'Mention',
-				name: match,
+			tag.push(...Array.from(matches).map(({ id: href, slug: name }) => {
+				if (utils.isNumber(href)) { // local ref
+					href = `${nconf.get('url')}/user/${name.slice(1)}`;
+					name = `${name}@${nconf.get('url_parsed').hostname}`;
+				}
+
+				return {
+					type: 'Mention',
+					href,
+					name,
+				};
 			}));
 		}
 	}
