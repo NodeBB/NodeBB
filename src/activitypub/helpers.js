@@ -57,10 +57,16 @@ Helpers.query = async (id) => {
 		({ href: actorUri } = actorUri);
 	}
 
-	const { publicKey } = body;
+	const { subject, publicKey } = body;
+	const payload = { subject, username, hostname, actorUri, publicKey };
 
-	webfingerCache.set(id, { username, hostname, actorUri, publicKey });
-	return { username, hostname, actorUri, publicKey };
+	const claimedId = subject.slice(5);
+	webfingerCache.set(claimedId, payload);
+	if (claimedId !== id) {
+		webfingerCache.set(id, payload);
+	}
+
+	return payload;
 };
 
 Helpers.generateKeys = async (type, id) => {

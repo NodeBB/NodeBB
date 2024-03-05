@@ -9,6 +9,7 @@ const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
 const topics = require('../topics');
+const plugins = require('../plugins');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -225,6 +226,20 @@ Mocks.note = async (post) => {
 			href: `${nconf.get('url')}/tags/${tag.valueEncoded}`,
 			name: `#${tag.value}`,
 		}));
+	}
+
+	const mentionsEnabled = await plugins.isActive('nodebb-plugin-mentions');
+	if (mentionsEnabled) {
+		const mentions = require.main.require('nodebb-plugin-mentions');
+		const matches = await mentions.getMatches(post.content);
+
+		if (matches.size) {
+			tag = tag || [];
+			Array.from(matches).map(match => ({
+				type: 'Mention',
+				name: match,
+			}));
+		}
 	}
 
 	const object = {

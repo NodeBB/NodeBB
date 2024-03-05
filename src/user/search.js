@@ -7,6 +7,7 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
 const groups = require('../groups');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (User) {
@@ -42,9 +43,21 @@ module.exports = function (User) {
 		} else {
 			const searchMethod = data.findUids || findUids;
 			uids = await searchMethod(query, searchBy, data.hardCap);
+
+			const mapping = {
+				username: 'ap.preferredUsername',
+				fullname: 'ap.name',
+			};
+			if (meta.config.activitypubEnabled && mapping.hasOwnProperty(searchBy)) {
+				uids = uids.concat(await searchMethod(query, mapping[searchBy], data.hardCap));
+			}
 		}
 
 		uids = await filterAndSortUids(uids, data);
+		if (data.hardCap > 0) {
+			uids.length = data.hardCap;
+		}
+
 		const result = await plugins.hooks.fire('filter:users.search', { uids: uids, uid: uid });
 		uids = result.uids;
 
@@ -62,7 +75,8 @@ module.exports = function (User) {
 
 		const userData = await User.getUsers(uids, uid);
 		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
-		searchResult.users = userData.filter(user => user && user.uid > 0);
+		searchResult.users = userData.filter(user => (user &&
+			utils.isNumber(user.uid) ? user.uid > 0 : activitypub.helpers.isUri(user.uid)));
 		return searchResult;
 	};
 
@@ -78,12 +92,17 @@ module.exports = function (User) {
 		hardCap = hardCap || resultsPerPage * 10;
 
 		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
-		const uids = data.map(data => data.split(':').pop());
+		// const uids = data.map(data => data.split(':').pop());
+		const uids = data.map((data) => {
+			data = data.split(':');
+			data.shift();
+			return data.join(':');
+		});
 		return uids;
 	}
 
 	async function filterAndSortUids(uids, data) {
-		uids = uids.filter(uid => parseInt(uid, 10));
+		uids = uids.filter(uid => parseInt(uid, 10) || activitypub.helpers.isUri(uid));
 		let filters = data.filters || [];
 		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];

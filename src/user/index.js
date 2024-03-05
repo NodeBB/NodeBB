@@ -111,6 +111,8 @@ User.getUidByUserslug = async function (userslug) {
 		return 0;
 	}
 
+	// fix this! Forces a remote call, this is bad. Should be done in actors.assert
+	// then mentions. should return actor uri or url or something to parsePost.
 	if (userslug.includes('@')) {
 		const { actorUri } = await activitypub.helpers.query(userslug);
 		return actorUri;
