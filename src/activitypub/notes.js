@@ -36,7 +36,7 @@ Notes.assert = async (uid, input, options = {}) => {
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
 
-		if (!exists || options.update === true) {
+		if (id && (!exists || options.update === true)) {
 			let postData;
 			winston.verbose(`[activitypub/notes.assert] Not found, retrieving note for persistence...`);
 			if (activitypub.helpers.isUri(item)) {
