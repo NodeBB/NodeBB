@@ -88,7 +88,9 @@ Notifications.getMultiple = async function (nids) {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
-					notification[field] = parseInt(notification[field], 10) || 0;
+					notification[field] = utils.isNumber(notification[field]) ?
+						parseInt(notification[field], 10) || 0 :
+						notification[field];
 				}
 			});
 			if (notification.path && !notification.path.startsWith('http')) {
