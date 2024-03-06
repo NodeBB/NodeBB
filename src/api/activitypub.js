@@ -86,7 +86,7 @@ activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
 		return;
 	}
 
-	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
+	const allowed = await privileges.posts.can('topics:read', pid, caller.uid);
 	if (!allowed) {
 		winston.verbose(`[activitypub/api] Not federating creation of pid ${pid} to the fediverse due to privileges.`);
 		return;
