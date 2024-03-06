@@ -59,13 +59,29 @@ module.exports = function (Topics) {
 			tids = await getCidTids(params);
 		} else if (params.tags.length) {
 			tids = await getTagTids(params);
-		} else if (params.sort === 'old') {
-			tids = await db.getSortedSetRange(`topics:recent`, 0, meta.config.recentMaxTopics - 1);
 		} else {
-			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.config.recentMaxTopics - 1);
+			const method = params.sort === 'old' ?
+				'getSortedSetRange' :
+				'getSortedSetRevRange';
+			tids = await db[method](sortToSet(params.sort), 0, meta.config.recentMaxTopics - 1);
 		}
 
 		return tids;
+	}
+
+	function sortToSet(sort) {
+		const map = {
+			recent: 'topics:recent',
+			old: 'topics:recent',
+			create: 'topics:tid',
+			posts: 'topics:posts',
+			votes: 'topics:votes',
+			views: 'topics:views',
+		};
+		if (map.hasOwnProperty(sort)) {
+			return map[sort];
+		}
+		return 'topics:recent';
 	}
 
 	async function getTidsWithMostPostsInTerm(term) {
@@ -93,9 +109,7 @@ module.exports = function (Topics) {
 
 	async function getTagTids(params) {
 		const sets = [
-			params.sort === 'old' ?
-				'topics:recent' :
-				`topics:${params.sort}`,
+			sortToSet(params.sort),
 			...params.tags.map(tag => `tag:${tag}:topics`),
 		];
 		const method = params.sort === 'old' ?
@@ -146,11 +160,12 @@ module.exports = function (Topics) {
 		}
 
 		const topicData = await Topics.getTopicsFields(tids, [
-			'tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
+			'tid', 'timestamp', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
 		]);
 		const sortMap = {
 			recent: sortRecent,
 			old: sortOld,
+			create: sortCreate,
 			posts: sortPopular,
 			votes: sortVotes,
 			views: sortViews,
@@ -176,6 +191,10 @@ module.exports = function (Topics) {
 
 	function sortOld(a, b) {
 		return a.lastposttime - b.lastposttime;
+	}
+
+	function sortCreate(a, b) {
+		return b.timestamp - a.timestamp;
 	}
 
 	function sortVotes(a, b) {
