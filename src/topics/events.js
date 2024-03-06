@@ -245,6 +245,7 @@ Events.log = async (tid, payload) => {
 	]);
 
 	let events = await modifyEvent({
+		uid: payload.uid,
 		eventIds: [eventId],
 		timestamps: [timestamp],
 		events: [payload],
