@@ -17,8 +17,8 @@ primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
 		if (!requestedFields || !requestedFields.length || requestedFields.includes(field)) {
 			data[field] = utils.isNumber(data[field]) ?
-				parseInt(data[field], 10) || 0 :
-				data[field];
+				parseInt(data[field], 10) :
+				data[field] || 0;
 		}
 	});
 };
