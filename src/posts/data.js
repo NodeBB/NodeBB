@@ -1,10 +1,7 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../database');
 const plugins = require('../plugins');
-const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const intFields = [

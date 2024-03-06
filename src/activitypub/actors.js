@@ -121,7 +121,7 @@ Actors.assert = async (ids, options = {}) => {
 
 	await Promise.all([
 		db.setObjectBulk(bulkSet),
-		db.sortedSetAdd('usersRemote:lastCrawled', profiles.map(p => now), profiles.map(p => p.uid)),
+		db.sortedSetAdd('usersRemote:lastCrawled', profiles.map(() => now), profiles.map(p => p.uid)),
 		db.sortedSetRemoveBulk(queries.searchRemove),
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.deleteObjectFields('handle:uid', queries.handleRemove),

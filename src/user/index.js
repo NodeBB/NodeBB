@@ -7,7 +7,6 @@ const plugins = require('../plugins');
 const db = require('../database');
 const privileges = require('../privileges');
 const categories = require('../categories');
-const activitypub = require('../activitypub');
 const meta = require('../meta');
 const utils = require('../utils');
 
