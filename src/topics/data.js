@@ -95,13 +95,7 @@ function modifyTopic(topic, fields) {
 		return;
 	}
 
-	const _intFields = [...intFields];
-	if (validator.isUUID(String(topic.tid))) {
-		_intFields.splice(_intFields.indexOf('uid'), 1);
-		_intFields.splice(_intFields.indexOf('tid'), 1);
-		_intFields.splice(_intFields.indexOf('mainPid'), 1);
-	}
-	db.parseIntFields(topic, _intFields, fields);
+	db.parseIntFields(topic, intFields, fields);
 
 	if (topic.hasOwnProperty('title')) {
 		topic.titleRaw = topic.title;

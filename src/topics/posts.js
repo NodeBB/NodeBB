@@ -246,9 +246,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.addPostToTopic = async function (tid, postData) {
+		console.log('now in addPostToTopic', tid, postData);
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
+		console.log(mainPid);
 		if (!mainPid) {
 			await Topics.setTopicField(tid, 'mainPid', postData.pid);
+			console.log('what');
 		} else {
 			const upvotes = parseInt(postData.upvotes, 10) || 0;
 			const downvotes = parseInt(postData.downvotes, 10) || 0;

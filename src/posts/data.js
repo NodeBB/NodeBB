@@ -59,19 +59,8 @@ module.exports = function (Posts) {
 };
 
 function modifyPost(post, fields) {
-	const _intFields = [...intFields];
-
 	if (post) {
-		['pid', 'uid', 'tid'].forEach((prop) => {
-			if (
-				post.hasOwnProperty(prop) &&
-				(activitypub.helpers.isUri(post[prop]) || validator.isUUID(String(post[prop])))
-			) {
-				_intFields.splice(_intFields.indexOf(prop), 1);
-			}
-		});
-
-		db.parseIntFields(post, _intFields, fields);
+		db.parseIntFields(post, intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
 			post.votes = post.upvotes - post.downvotes;
 		}
