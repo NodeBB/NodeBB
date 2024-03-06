@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Zablokován",
     "muted": "Ztlumen",
     "offline": "Nepřipojen",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Sledovat témata, která vytvoříte",
     "grouptitle": "Nadpis skupiny",
     "group-order-help": "Vyberte si skupiny a použijte šipky pro seřazení titulů",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Žádný nadpis skupiny",
     "select-skin": "Vybrat vzhled",
     "default": "Default (%1)",

@@ -1,12 +1,12 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook",
-	"sign-in-with-linkedin": "Sign in with LinkedIn",
-	"sign-up-with-linkedin": "Sign up with LinkedIn"
+	"sign-in-with-twitter": "Zaloguj się przez Twitter",
+	"sign-up-with-twitter": "Zarejestruj się przez Twitter",
+	"sign-in-with-github": "Zaloguj się przez Github",
+	"sign-up-with-github": "Zarejestruj się przez Github",
+	"sign-in-with-google": "Zaloguj się przez Google",
+	"sign-up-with-google": "Zarejestruj się przez Google",
+	"log-in-with-facebook": "Zaloguj się przez Facebook",
+	"continue-with-facebook": "Kontynuuj z Facebook",
+	"sign-in-with-linkedin": "Zaloguj się przez LinkedIn",
+	"sign-up-with-linkedin": "Zarejestruj się przez LinkedIn"
 }

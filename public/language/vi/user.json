@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Bị cấm",
     "muted": "Đã Im Lặng",
     "offline": "Ngoại tuyến",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Xem chủ đề bạn tạo",
     "grouptitle": "Tiêu đề nhóm",
     "group-order-help": "Chọn một nhóm và sử dụng các phím mũi tên để sắp xếp các tiêu đề",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Không có tiêu đề nhóm",
     "select-skin": "Chọn một giao diện",
     "default": "Mặc định (%1)",

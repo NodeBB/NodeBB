@@ -7,7 +7,7 @@
     "greeting-with-name": "Witaj, %1",
     "email.verify-your-email.subject": "Zweryfikuj swój adres e-mail",
     "email.verify.text1": "Zażądałeś zmiany albo potwierdzenia swojego adresu email",
-    "email.verify.text2": "Ze względów bezpieczeństwa, możemy zmienić lub potwierdzić adres email, wtedy gdy został zweryfikowany jako należący do Ciebie. <strong>Jeżeli to nie Ty wysłałeś to żądanie, nie musisz robić nic.</strong>",
+    "email.verify.text2": "Ze względów bezpieczeństwa, możemy zmienić lub potwierdzić adres e-mail, wtedy gdy został zweryfikowany jako należący do Ciebie. <strong>Jeżeli to nie Ty wysłałeś to żądanie, nie musisz robić nic.</strong>",
     "email.verify.text3": "Jak potwierdzisz swój adres email, zamienimy Twój obecny adres email na ten  (%1).",
     "welcome.text1": "Dziękujemy za rejestrację na %1",
     "welcome.text2": "Aby w pełni aktywować konto, musisz potwierdzić, że podany adres e-mail należy do Ciebie.",

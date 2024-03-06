@@ -1,0 +1,51 @@
+$btn-ghost-hover-color: mix($light, $dark, 90%)!default;
+$btn-ghost-active-color: lighten($btn-ghost-hover-color, 5%)!default;
+$btn-ghost-hover-color-dark: mix($dark, $light, 90%)!default;
+$btn-ghost-active-color-dark: lighten($btn-ghost-hover-color-dark, 5%)!default;
+
+:root {
+	--btn-ghost-hover-color: #{$btn-ghost-hover-color};
+	--btn-ghost-active-color: #{$btn-ghost-active-color};
+}
+[data-bs-theme="dark"] {
+	--btn-ghost-hover-color: #{$btn-ghost-hover-color-dark};
+	--btn-ghost-active-color: #{$btn-ghost-active-color-dark};
+}
+
+@mixin btn-ghost-base {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: ($spacer * 0.5);
+	border-radius: $border-radius-sm;
+	border-width: 1px;
+	border-color: transparent;
+	background-color: transparent;
+	box-shadow: none;
+	padding: ($spacer * 0.25) ($spacer * 0.5);
+	text-align: left;
+	--bs-text-opacity: 1;
+	color: inherit !important;
+	cursor: pointer;
+	&:hover, &.active {
+		background-color: var(--btn-ghost-hover-color);
+		text-decoration: none;
+	}
+}
+
+.btn-ghost {
+	@include btn-ghost-base();
+	line-height: 1.5rem;
+	> i {
+		line-height: 1.5rem;
+	}
+}
+
+.btn-ghost-sm {
+	@include btn-ghost-base();
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	> i {
+		line-height: 1.25rem;
+	}
+}

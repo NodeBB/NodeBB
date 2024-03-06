@@ -3,6 +3,7 @@
 const db = require('../database');
 const meta = require('../meta');
 const privileges = require('../privileges');
+const plugins = require('../plugins');
 const groups = require('../groups');
 
 module.exports = function (User) {
@@ -47,6 +48,18 @@ module.exports = function (User) {
 		}
 
 		await User.checkMuted(uid);
+
+		const { shouldIgnoreDelays } = await plugins.hooks.fire('filter:user.posts.isReady', {
+			shouldIgnoreDelays: false,
+			user: userData,
+			cid,
+			field,
+			isAdminOrMod,
+			isMemberOfExempt,
+		});
+		if (shouldIgnoreDelays) {
+			return;
+		}
 
 		const now = Date.now();
 		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {

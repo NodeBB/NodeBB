@@ -49,7 +49,7 @@ categoriesAPI.create = async function (caller, data) {
 	await hasAdminPrivilege(caller.uid);
 
 	const response = await categories.create(data);
-	const categoryObjs = await categories.getCategories([response.cid], caller.uid);
+	const categoryObjs = await categories.getCategories([response.cid]);
 	return categoryObjs[0];
 };
 
@@ -124,7 +124,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 	}
 
 	const infScrollTopicsPerPage = 20;
-	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
+	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'recently_replied';
 
 	let start = Math.max(0, parseInt(data.after || 0, 10));
 

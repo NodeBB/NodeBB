@@ -1,7 +1,7 @@
 'use strict';
 
 const { CookieJar } = require('tough-cookie');
-const fetchCookie = require('fetch-cookie');
+const fetchCookie = require('fetch-cookie').default;
 
 exports.jar = function () {
 	return new CookieJar();
@@ -13,6 +13,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 		fetchImpl = fetchCookie(fetch, jar);
 	}
 
+	const jsonTest = /application\/([a-z]+\+)?json/;
 	const opts = {
 		...config,
 		method,
@@ -26,7 +27,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	}
 
 	if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
-		if (opts.headers['content-type'] && opts.headers['content-type'].startsWith('application/json')) {
+		if (opts.headers['content-type'] && jsonTest.test(opts.headers['content-type'])) {
 			opts.body = JSON.stringify(body);
 		} else {
 			opts.body = body;
@@ -37,7 +38,6 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 	const { headers } = response;
 	const contentType = headers.get('content-type');
-	const jsonTest = /application\/([a-z]+\+)?json/;
 	const isJSON = contentType && jsonTest.test(contentType);
 	let respBody = await response.text();
 	if (isJSON && respBody) {

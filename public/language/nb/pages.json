@@ -48,7 +48,7 @@
     "account/topics": "Emner opprettet av %1",
     "account/groups": "%1 sine grupper",
     "account/watched-categories": "%1's overvåkede kategorier",
-    "account/watched-tags": "%1's Watched Tags",
+    "account/watched-tags": "%1's overvåkede tagger",
     "account/bookmarks": "%1's bokmerkede innlegg",
     "account/settings": "Brukerinnstillinger",
     "account/settings-of": "Changing settings of %1",
@@ -62,7 +62,7 @@
     "account/uploads": "Opplastninger av %1",
     "account/sessions": "Påloggingsøkter",
     "confirm": "E-post bekreftet",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "%1 er for øyeblikket under vedlikehold. <br/>Vennligst kom tilbake en annen gang.",
     "maintenance.messageIntro": "I tillegg har administratoren skrevet denne meldingen:",
     "throttled.text": "%1 er for øyeblikket ikke tilgjengelig på grunn av overdreven belastning. Kom tilbake en annen gang."
 }

@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Yarirukanwe",
     "muted": "Muted",
     "offline": "Ntari ku Murongo",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Watch topics you create",
     "grouptitle": "Group Title",
     "group-order-help": "Select a group and use the arrows to order titles",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Nta mutwe w'itsinda",
     "select-skin": "Hitamo Uruhu",
     "default": "Default (%1)",

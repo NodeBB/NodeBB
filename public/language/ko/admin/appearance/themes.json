@@ -1,13 +1,13 @@
 {
-    "themes": "Themes",
+    "themes": "테마",
     "checking-for-installed": "설치된 테마 확인 중...",
     "homepage": "홈페이지",
     "select-theme": "테마 선택",
-    "revert-theme": "Revert Theme",
+    "revert-theme": "테마 되돌리기",
     "current-theme": "현재 테마",
-    "no-themes": "설치된 테마 없음",
-    "revert-confirm": "정말 NodeBB 기본 테마로 복원하시겠습니까?",
-    "theme-changed": "테마 변경 완료",
-    "revert-success": "성공적으로 NodeBB 기본 테마로 복원됐습니다.",
-    "restart-to-activate": "변경된 테마를 완전히 활성화하기 위해 NodeBB를 리빌드하고 재시작 해주세요."
+    "no-themes": "설치된 테마를 찾을 수 없습니다",
+    "revert-confirm": "기본 NodeBB 테마를 복원하시겠습니까?",
+    "theme-changed": "테마를 변경했습니다",
+    "revert-success": "NodeBB의 기본 테마로 성공적으로 되돌렸습니다.",
+    "restart-to-activate": "이 테마를 완전히 활성화하려면 NodeBB를 다시 빌드하고 다시 시작하세요."
 }

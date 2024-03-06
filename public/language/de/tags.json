@@ -3,7 +3,7 @@
     "no-tag-topics": "Es gibt keine Themen mit diesem Schlagwort.",
     "no-tags-found": "Keine Tags gefunden",
     "tags": "Schlagworte",
-    "enter-tags-here": "Hier Schlagworte eingeben. Jeweils %1 bis %2 Zeichen.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Schlagworte eingeben...",
     "no-tags": "Es gibt noch keine Schlagworte.",
     "select-tags": "Schlagworte auswählen",

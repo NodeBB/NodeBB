@@ -6,24 +6,24 @@ define('forum/groups/details', [
 	'components',
 	'coverPhoto',
 	'pictureCropper',
-	'translator',
 	'api',
 	'slugify',
 	'categorySelector',
 	'bootbox',
 	'alerts',
+	'helpers',
 ], function (
 	memberList,
 	iconSelect,
 	components,
 	coverPhoto,
 	pictureCropper,
-	translator,
 	api,
 	slugify,
 	categorySelector,
 	bootbox,
-	alerts
+	alerts,
+	helpers
 ) {
 	const Details = {};
 	let groupName;
@@ -85,14 +85,19 @@ define('forum/groups/details', [
 					break;
 
 				case 'kick':
-					translator.translate('[[groups:details.kick-confirm]]', function (translated) {
-						bootbox.confirm(translated, function (confirm) {
-							if (!confirm) {
-								return;
-							}
+					bootbox.confirm('[[groups:details.kick-confirm]]', function (confirm) {
+						if (!confirm) {
+							return;
+						}
 
-							api.del(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, undefined).then(() => userRow.slideUp().remove()).catch(alerts.error);
-						});
+						api.del(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, undefined).then(
+							() => {
+								userRow.remove();
+								$('[component="group/member/count"]').text(
+									helpers.humanReadableNumber(ajaxify.data.group.memberCount - 1)
+								);
+							}
+						).catch(alerts.error);
 					});
 					break;
 
@@ -105,29 +110,42 @@ define('forum/groups/details', [
 					break;
 
 				case 'join':
-					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
+					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(
+						() => ajaxify.refresh()
+					).catch(alerts.error);
 					break;
 
 				case 'leave':
-					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
+					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(
+						() => ajaxify.refresh()
+					).catch(alerts.error);
 					break;
 
 				case 'accept':
-					api.put(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
+					api.put(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(
+						() => {
+							userRow.remove();
+							memberList.refresh();
+							updatePendingAlertVisibility();
+						}
+					).catch(alerts.error);
 					break;
 
 				case 'reject':
-					api.del(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
-					break;
-
-				case 'issueInvite':
-					api.post(`/groups/${ajaxify.data.group.slug}/invites/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
+					api.del(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(
+						() => {
+							userRow.remove();
+							memberList.refresh();
+							updatePendingAlertVisibility();
+						}
+					).catch(alerts.error);
 					break;
 
 				case 'acceptInvite':
 					api.put(`/groups/${ajaxify.data.group.slug}/invites/${app.user.uid}`).then(() => {
 						if (uid) {
 							userRow.remove();
+							memberList.refresh();
 						} else {
 							ajaxify.refresh();
 						}
@@ -139,6 +157,8 @@ define('forum/groups/details', [
 					api.del(`/groups/${ajaxify.data.group.slug}/invites/${uid || app.user.uid}`).then(() => {
 						if (uid) {
 							userRow.remove();
+							updateInviteAlertVisibility();
+							memberList.refresh();
 						} else {
 							ajaxify.refresh();
 						}
@@ -268,6 +288,20 @@ define('forum/groups/details', [
 		});
 	};
 
+	function updatePendingAlertVisibility() {
+		$('[component="groups/pending/alert"]').toggleClass(
+			'hidden',
+			$('[component="groups/pending"] tbody tr').length > 0
+		);
+	}
+
+	function updateInviteAlertVisibility() {
+		$('[component="groups/invited/alert"]').toggleClass(
+			'hidden',
+			$('[component="groups/invited"] tbody tr').length > 0
+		);
+	}
+
 	function handleMemberInvitations() {
 		if (!ajaxify.data.group.isOwner) {
 			return;
@@ -275,8 +309,9 @@ define('forum/groups/details', [
 		async function updateList() {
 			const data = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
 			const html = await app.parseAndTranslate('groups/details', 'group.invited', { group: data.group });
-			$('[component="groups/invited"] tbody tr').remove();
 			$('[component="groups/invited"] tbody').html(html);
+			updateInviteAlertVisibility();
+			memberList.refresh();
 		}
 		const searchInput = $('[component="groups/members/invite"]');
 		require(['autocomplete'], function (autocomplete) {
@@ -305,21 +340,19 @@ define('forum/groups/details', [
 	}
 
 	function removeCover() {
-		translator.translate('[[groups:remove-group-cover-confirm]]', function (translated) {
-			bootbox.confirm(translated, function (confirm) {
-				if (!confirm) {
-					return;
-				}
+		bootbox.confirm('[[groups:remove-group-cover-confirm]]', function (confirm) {
+			if (!confirm) {
+				return;
+			}
 
-				socket.emit('groups.cover.remove', {
-					groupName: ajaxify.data.group.name,
-				}, function (err) {
-					if (!err) {
-						ajaxify.refresh();
-					} else {
-						alerts.error(err);
-					}
-				});
+			socket.emit('groups.cover.remove', {
+				groupName: ajaxify.data.group.name,
+			}, function (err) {
+				if (!err) {
+					ajaxify.refresh();
+				} else {
+					alerts.error(err);
+				}
 			});
 		});
 	}

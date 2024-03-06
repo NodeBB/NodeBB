@@ -94,5 +94,8 @@
 	"view-as-json": "Դիտել որպես JSON",
 	"expand-analytics": "Ընդլայնել վերլուծությունը",
 	"clear-search-history": "Մաքրել որոնման պատմությունը",
-	"clear-search-history-confirm": "Վստա՞հ եք, որ ցանկանում եք մաքրել որոնման ողջ պատմությունը:"
+	"clear-search-history-confirm": "Վստա՞հ եք, որ ցանկանում եք մաքրել որոնման ողջ պատմությունը:",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }

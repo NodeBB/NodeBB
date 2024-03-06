@@ -176,7 +176,7 @@ Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
 	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
-		winston.verbose(`[plugins/fireHook] ${hook}`);
+		winston.debug(`[plugins/fireHook] ${hook}`);
 	}
 
 	if (!hookTypeToMethod[hookType]) {
@@ -233,7 +233,7 @@ function hookHandlerPromise(hook, hookObj, params) {
 		if (hook.startsWith('filter:') && returned !== undefined) {
 			_resolve(returned);
 		} else if (hook.startsWith('static:') && hookObj.method.length <= 1) {
-			// make sure it is resolved if static hook doesn't return anything and doesn't use callback
+			// make sure it is resolved if static hook doesn't use callback
 			_resolve();
 		}
 	});

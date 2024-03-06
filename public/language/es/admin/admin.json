@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | Panel de control de administrador NodeBB",
 	"settings-header-contents": "Contenidos",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-saved": "Cambios Guardados",
+	"changes-saved-message": "Los cambios a la configuración de NodeBB han sido guardados.",
 	"changes-not-saved": "Cambios no guardados",
 	"changes-not-saved-message": "NodeBB ha encontrado un problema guardando tus cambios. (%1)",
-	"save-changes": "Save changes",
+	"save-changes": "Guardar cambios",
 	"min": "Min:",
 	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"view": "Vista",
+	"edit": "Editar",
+	"add": "Agregar",
+	"select-icon": "Seleccionar Ícono"
 }

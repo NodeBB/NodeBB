@@ -1,20 +1,20 @@
 {
-	"manage-tags": "Manage Tags",
+	"manage-tags": "Hallitse tunnisteita",
 	"none": "Your forum does not have any topics with tags yet.",
 	"bg-color": "Background Colour",
 	"text-color": "Text Colour",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
-	"create": "Create Tag",
-	"add-tag": "Add tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Tags Settings",
-	"name": "Tag Name",
+	"create": "Luo tunniste",
+	"add-tag": "Lisää tunniste",
+	"modify": "Muokkaa tunnisteita",
+	"rename": "Uudelleennmeä tunnisteita",
+	"delete": "Poista valitut tunnisteet",
+	"search": "Etsi tunnisteita...",
+	"settings": "Tunnisteasetukset",
+	"name": "Tunnisteen nimi",
 
-	"alerts.editing": "Editing tag(s)",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!",
-	"reset-colors": "Reset colors"
+	"alerts.editing": "Muokataan tunnisteita",
+	"alerts.confirm-delete": "Haluatko poistaa valitut tunnisteet?",
+	"alerts.update-success": "Tunnisteet päivitettiin!",
+	"reset-colors": "Palauta värit"
 }

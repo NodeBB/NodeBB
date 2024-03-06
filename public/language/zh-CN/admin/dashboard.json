@@ -94,5 +94,8 @@
 	"view-as-json": "以JSON格式查看",
 	"expand-analytics": "展开统计数据",
 	"clear-search-history": "清空搜索历史",
-	"clear-search-history-confirm": "您确定您要删除搜索历史吗？"
+	"clear-search-history-confirm": "您确定您要删除搜索历史吗？",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }

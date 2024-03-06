@@ -191,6 +191,14 @@ async function info() {
 	process.exit();
 }
 
+async function maintenance(toggle) {
+	const turnOnMaintenance = toggle === 'true';
+	await db.init();
+	await db.setObjectField('config', 'maintenanceMode', turnOnMaintenance ? 1 : 0);
+	console.log(`Maintenance mode turned ${turnOnMaintenance ? 'on' : 'off'}`);
+	process.exit();
+}
+
 async function buildWrapper(targets, options) {
 	try {
 		await build.build(targets, options);
@@ -207,3 +215,4 @@ exports.activate = activate;
 exports.listPlugins = listPlugins;
 exports.listEvents = listEvents;
 exports.info = info;
+exports.maintenance = maintenance;

@@ -171,6 +171,7 @@ module.exports = function (Topics) {
 			promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid));
 			promises.push(db.sortedSetsRemove([
 				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:tids:create`,
 				`cid:${topicData.cid}:tids:posts`,
 				`cid:${topicData.cid}:tids:votes`,
 				`cid:${topicData.cid}:tids:views`,
@@ -180,6 +181,7 @@ module.exports = function (Topics) {
 			promises.push(Topics.deleteTopicField(tid, 'pinExpiry'));
 			promises.push(db.sortedSetAddBulk([
 				[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
+				[`cid:${topicData.cid}:tids:create`, topicData.timestamp, tid],
 				[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
 				[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 				[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
@@ -242,6 +244,7 @@ module.exports = function (Topics) {
 		const tags = await Topics.getTopicTags(tid);
 		await db.sortedSetsRemove([
 			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:tids:pinned`,
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
@@ -264,6 +267,7 @@ module.exports = function (Topics) {
 			bulk.push([`cid:${cid}:tids:pinned`, Date.now(), tid]);
 		} else {
 			bulk.push([`cid:${cid}:tids`, topicData.lastposttime, tid]);
+			bulk.push([`cid:${cid}:tids:create`, topicData.timestamp, tid]);
 			bulk.push([`cid:${cid}:tids:posts`, topicData.postcount, tid]);
 			bulk.push([`cid:${cid}:tids:votes`, votes, tid]);
 			bulk.push([`cid:${cid}:tids:views`, topicData.viewcount, tid]);

@@ -1,5 +1,5 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "Podaj 0, aby wyłączyć to ograniczenie",
 	"chat-settings": "Ustawienia czatu",
 	"disable": "Wyłącz czat",
 	"disable-editing": "Wyłącz edycję/usuwanie wiadomości czat",
@@ -7,8 +7,8 @@
 	"max-length": "Maksymalna długość wiadomości czat",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
-	"delay": "Time between chat messages (ms)",
-	"notification-delay": "Notification delay for chat messages",
+	"delay": "Czas pomiędzy wiadomościami czatu (ms)",
+	"notification-delay": "Opóźnienie powiadomień dla wiadomości czatu",
 	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."

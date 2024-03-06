@@ -372,13 +372,23 @@ define('navigator', [
 		const anchorEl = unreadEl.querySelector('.meta a');
 		remaining = Math.min(remaining, ajaxify.data.postcount - index);
 
+		function toggleAnchor(text) {
+			anchorEl.innerText = text;
+			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
+			if (text) {
+				anchorEl.removeAttribute('tabindex');
+			} else {
+				anchorEl.setAttribute('tabindex', -1);
+			}
+		}
+
 		if (remaining > 0 && (trackHeight - thumbBottom) >= thumbHeight) {
 			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
 			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
-			anchorEl.innerText = text;
+			toggleAnchor(text);
 		} else {
 			anchorEl.href = ajaxify.data.url;
-			anchorEl.innerText = '';
+			toggleAnchor('');
 		}
 	}
 

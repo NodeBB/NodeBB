@@ -3,7 +3,7 @@
     "no-tag-topics": "このタグに関連するスレッドはありません。",
     "no-tags-found": "No tags found",
     "tags": "タグ",
-    "enter-tags-here": "ここにタグを入力します。一つのタグが%1から%2までの文字にして下さい。",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "タグを入れます…",
     "no-tags": "タグがありません",
     "select-tags": "Select Tags",

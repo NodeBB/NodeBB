@@ -1,9 +1,9 @@
 {
-	"navigation": "Navigation",
+	"navigation": "Nawigacja",
 	"icon": "Ikona:",
 	"change-icon": "zmień",
 	"route": "Ścieżka:",
-	"tooltip": "Tooltip:",
+	"tooltip": "Podpowiedź w dymku:",
 	"text": "Tekst:",
 	"text-class": "Klasa tekstu <small>opcjonalnie</small>",
 	"class": "Klasa: <small>opcjonalnie</small>",

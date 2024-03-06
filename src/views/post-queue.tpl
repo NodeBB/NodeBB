@@ -21,16 +21,16 @@
 		<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-clone"></i> [[post-queue:bulk-actions]] <span class="caret"></span>
 		</button>
-		<ul class="dropdown-menu dropdown-menu-end">
+		<ul class="dropdown-menu dropdown-menu-end" role="menu">
 			{{{ if canAccept }}}
-			<li><a class="dropdown-item" href="#" data-action="accept-all">[[post-queue:accept-all]]</a></li>
-			<li><a class="dropdown-item" href="#" data-action="accept-selected">[[post-queue:accept-selected]]</a></li>
+			<li><a class="dropdown-item" href="#" data-action="accept-all" role="menuitem">[[post-queue:accept-all]]</a></li>
+			<li><a class="dropdown-item" href="#" data-action="accept-selected" role="menuitem">[[post-queue:accept-selected]]</a></li>
 			<li class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#" data-action="reject-all">[[post-queue:reject-all]]</a></li>
-			<li><a class="dropdown-item" href="#" data-action="reject-selected">[[post-queue:reject-selected]]</a></li>
+			<li><a class="dropdown-item" href="#" data-action="reject-all" role="menuitem">[[post-queue:reject-all]]</a></li>
+			<li><a class="dropdown-item" href="#" data-action="reject-selected" role="menuitem">[[post-queue:reject-selected]]</a></li>
 			{{{ else }}}
 			<li><a class="dropdown-item" href="#" data-action="reject-all">[[post-queue:remove-all]]</a></li>
-			<li><a class="dropdown-item" href="#" data-action="reject-selected">[[post-queue:remove-selected]]</a></li>
+			<li><a class="dropdown-item" href="#" data-action="reject-selected" role="menuitem">[[post-queue:remove-selected]]</a></li>
 			{{{ end }}}
 		</ul>
 	</div>

@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Banido",
     "muted": "Muted",
     "offline": "Offline",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Acompanhar os tópicos que você cria",
     "grouptitle": "Título do Grupo",
     "group-order-help": "Selecione um grupo e use as setas para ordenar os títulos",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Sem título de grupo",
     "select-skin": "Escolha uma Skin",
     "default": "Default (%1)",

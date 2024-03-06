@@ -3,7 +3,7 @@
 	"chat-messages": "채팅 메시지",
 	"play-sound": "재생",
 	"incoming-message": "수신 메시지",
-	"outgoing-message": "발신 메시지",
-	"upload-new-sound": "새로운 사운드 업로드",
-	"saved": "설정 저장됨"
+	"outgoing-message": "송신 메시지",
+	"upload-new-sound": "새로운 소리 업로드",
+	"saved": "설정을 저장했습니다"
 }

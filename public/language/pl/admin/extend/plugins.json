@@ -1,5 +1,5 @@
 {
-	"plugins": "Plugins",
+	"plugins": "Wtyczki",
 	"trending": "O trendzie",
 	"installed": "Zainstalowane",
 	"active": "Aktywne",
@@ -32,7 +32,7 @@
 	"plugin-item.more-info": "Więcej informacji:",
 	"plugin-item.unknown": "Nieznane",
 	"plugin-item.unknown-explanation": "Nie udało się ustalić stanu tej wtyczki, prawdopodobnie z powodu błędu konfiguracji.",
-	"plugin-item.compatible": "Ten plugin jest zgodny z wersją NodeBB %1",
+	"plugin-item.compatible": "Ta wtyczka jest zgodna z NodeBB w wersji %1",
 	"plugin-item.not-compatible": "Ta wtyczka nie zawiera danych dotyczących zgodności, upewnij się, że działa w środowisku produkcyjnym.",
 
 	"alert.enabled": "Wtyczka włączona",
@@ -40,9 +40,9 @@
 	"alert.upgraded": "Wtyczka zaktualizowana",
 	"alert.installed": "Wtyczka zainstalowana",
 	"alert.uninstalled": "Wtyczka odinstalowana",
-	"alert.activate-success": "Proszę odbudować i zrestartować NodeBB aby w pełni aktywować ten plugin",
+	"alert.activate-success": "Przebuduj i zrestartuj NodeBB, aby w pełni włączyć tę wtyczkę.",
 	"alert.deactivate-success": "Wtyczka została dezaktywowana",
-	"alert.upgrade-success": "Przebuduj i zrestartuj NodeBB, by w pełni zaktualizować tę wtyczkę.",
+	"alert.upgrade-success": "Przebuduj i zrestartuj NodeBB, aby w pełni zaktualizować tę wtyczkę.",
 	"alert.install-success": "Wtyczka została zainstalowana, teraz należy ją aktywować.",
 	"alert.uninstall-success": "Wtyczka została zdezaktywowana i odinstalowana.",
 	"alert.suggest-error": "<p>NodeBB nie może dostać się do menedżera pakietów. Czy kontynuować instalację ostatniej wersji?</p><div class=\"alert alert-danger\"><strong>Serwer zwrócił (%1)</strong>: %2</div>",

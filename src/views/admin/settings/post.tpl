@@ -18,9 +18,11 @@
 				<div class="mb-3">
 					<label class="form-label" for="categoryTopicSort">[[admin/settings/post:sorting.topic-default]]</label>
 					<select id="categoryTopicSort" class="form-select" data-field="categoryTopicSort">
-						<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
-						<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
+						<option value="recently_replied">[[admin/settings/post:sorting.recently-replied]]</option>
+						<option value="recently_created">[[admin/settings/post:sorting.recently-created]]</option>
 						<option value="most_posts">[[admin/settings/post:sorting.most-posts]]</option>
+						<option value="most_votes">[[admin/settings/post:sorting.most-votes]]</option>
+						<option value="most_views">[[admin/settings/post:sorting.most-views]]</option>
 					</select>
 				</div>
 
