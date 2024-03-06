@@ -145,7 +145,7 @@
         "validator": "13.11.0",
         "webpack": "5.90.3",
         "webpack-merge": "5.10.0",
-        "winston": "3.11.0",
+        "winston": "3.12.0",
         "workerpool": "9.1.0",
         "xml": "1.0.1",
         "xregexp": "5.1.1",
