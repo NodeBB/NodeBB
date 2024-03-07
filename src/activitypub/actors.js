@@ -19,6 +19,16 @@ Actors.assert = async (ids, options = {}) => {
 	// Filter out uids if passed in
 	ids = ids.filter(id => !utils.isNumber(id));
 
+	// Translate webfinger handles to uris
+	ids = await Promise.all(ids.map(async (id) => {
+		if (id.includes('@')) {
+			({ actorUri: id } = await activitypub.helpers.query(id));
+		}
+
+		return id;
+	}));
+
+
 	// Filter out existing
 	if (!options.update) {
 		const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
