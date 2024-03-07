@@ -239,6 +239,7 @@ Mocks.note = async (post) => {
 			tag = tag || [];
 			tag.push(...Array.from(matches).map(({ id: href, slug: name }) => {
 				if (utils.isNumber(href)) { // local ref
+					name = name.toLowerCase(); // local slugs are always lowercase
 					href = `${nconf.get('url')}/user/${name.slice(1)}`;
 					name = `${name}@${nconf.get('url_parsed').hostname}`;
 				}
@@ -272,6 +273,7 @@ Mocks.note = async (post) => {
 			mediaType: 'text/markdown',
 		},
 		tag,
+		attachment: [], // todo... requires refactoring of link preview plugin
 		// replies: {}  todo...
 	};
 
