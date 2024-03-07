@@ -10,6 +10,7 @@ const categories = require('../categories');
 const posts = require('../posts');
 const topics = require('../topics');
 const plugins = require('../plugins');
+const slugify = require('../slugify');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -23,11 +24,12 @@ Mocks.profile = async (actors) => {
 		}
 
 		const uid = actor.id;
-		const {
+		let {
 			preferredUsername, published, icon, image,
 			name, summary, followerCount, followingCount,
 			postcount, inbox, endpoints,
 		} = actor;
+		preferredUsername = preferredUsername || slugify(name);
 		const { hostname } = new URL(actor.id);
 
 		let picture;
