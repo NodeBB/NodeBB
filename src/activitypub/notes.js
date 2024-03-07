@@ -259,7 +259,9 @@ Notes.assertTopic = async (uid, id) => {
 
 	let tags;
 	if (!hasTid) {
-		tags = (mainPost._activitypub.tag || []).map(o => o.name.slice(1));
+		tags = (mainPost._activitypub.tag || [])
+			.filter(o => o.type === 'Hashtag')
+			.map(o => o.name.slice(1));
 		tags = await topics.filterTags(tags, cid);
 
 		await topics.create({
