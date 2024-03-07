@@ -54,7 +54,7 @@
 						<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
 					</div>
 				</td>
-				{function.spawnPrivilegeStates, privileges.groups.name, ../privileges, ../types}
+				{function.spawnPrivilegeStates, cid, privileges.groups.name, ../privileges, ../types}
 			</tr>
 			{{{ end }}}
 		</tbody>
@@ -133,7 +133,7 @@
 						<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
 					</div>
 				</td>
-				{function.spawnPrivilegeStates, privileges.users.username, ../privileges, ../types}
+				{function.spawnPrivilegeStates, cid, privileges.users.username, ../privileges, ../types}
 			</tr>
 			{{{ end }}}
 		</tbody>

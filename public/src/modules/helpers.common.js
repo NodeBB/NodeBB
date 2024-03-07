@@ -175,7 +175,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return '';
 	}
 
-	function spawnPrivilegeStates(member, privileges, types) {
+	function spawnPrivilegeStates(cid, member, privileges, types) {
 		const states = [];
 		for (const priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
@@ -189,8 +189,11 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return states.map(function (priv) {
 			const guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
 			const spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
-			const fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete'];
 			const globalModDisabled = ['groups:moderate'];
+			let fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete'];
+			if (cid === -1) {
+				fediverseEnabled = fediverseEnabled.slice(4);
+			}
 			const disabled =
 				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
