@@ -34,7 +34,7 @@
 				<hr class="my-1">
 
 				<div class="d-flex flex-column gap-1 overflow-auto">
-					{{{ if publicRooms.length }}}
+					{{{ if rooms.length }}}
 					<div class="d-flex gap-1 align-items-center justify-content-between justify-content-lg-start">
 						<button class="btn-ghost-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#private-rooms"
 						onclick="$(this).find('i').toggleClass('fa-rotate-180')"><i class="fa fa-fw fa-chevron-up" style="transition: 0.25s ease;"></i></button>
@@ -42,7 +42,7 @@
 					</div>
 					{{{ end }}}
 
-					<div id="private-rooms" component="chat/recent" class="chats-list overflow-auto mb-0 pe-1 pb-5 pb-lg-0 collapse show" data-nextstart="{nextStart}">
+					<div id="private-rooms" component="chat/recent" class="chats-list overflow-auto mb-0 pe-1 pb-5 pb-lg-0 collapse show ghost-scrollbar" data-nextstart="{nextStart}">
 						{{{ each rooms }}}
 						<!-- IMPORT partials/chats/recent_room.tpl -->
 						{{{ end }}}
