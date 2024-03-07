@@ -50,7 +50,11 @@ inbox.update = async (req) => {
 				winston.info(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
 				return activitypub.send('uid', 0, actor, {
 					type: 'Reject',
-					object,
+					object: {
+						type: 'Update',
+						actor,
+						object,
+					},
 				});
 			}
 
@@ -75,17 +79,25 @@ inbox.update = async (req) => {
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
 	const { type, id } = await activitypub.helpers.resolveLocalId(object);
+	const reject = () => {
+		activitypub.send('uid', 0, actor, {
+			type: 'Reject',
+			object: {
+				type: 'Like',
+				actor,
+				object,
+			},
+		});
+	};
+
 	if (type !== 'post' || !(await posts.exists(id))) {
-		throw new Error('[[error:activitypub.invalid-id]]');
+		return reject();
 	}
 
 	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 	if (!allowed) {
 		winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
-		return activitypub.send('uid', 0, actor, {
-			type: 'Reject',
-			object,
-		});
+		return reject();
 	}
 
 	winston.info(`[activitypub/inbox/like] id ${id} via ${actor}`);
@@ -156,13 +168,14 @@ inbox.announce = async (req) => {
 };
 
 inbox.follow = async (req) => {
+	const { actor, object } = req.body;
 	// Sanity checks
-	const { type, id } = await helpers.resolveLocalId(req.body.object);
+	const { type, id } = await helpers.resolveLocalId(object);
 	if (!['category', 'user'].includes(type)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	const assertion = await activitypub.actors.assert(req.body.actor);
+	const assertion = await activitypub.actors.assert(actor);
 	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
@@ -173,24 +186,24 @@ inbox.follow = async (req) => {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
-		const isFollowed = await inbox.isFollowed(req.body.actor, id);
+		const isFollowed = await inbox.isFollowed(actor, id);
 		if (isFollowed) {
 			// No additional parsing required
 			return;
 		}
 
 		const now = Date.now();
-		await db.sortedSetAdd(`followersRemote:${id}`, now, req.body.actor);
+		await db.sortedSetAdd(`followersRemote:${id}`, now, actor);
 
 		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
 		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 
-		user.onFollow(req.body.actor, id);
-		activitypub.send('uid', id, req.body.actor, {
+		user.onFollow(actor, id);
+		activitypub.send('uid', id, actor, {
 			type: 'Accept',
 			object: {
 				type: 'Follow',
-				actor: req.body.actor,
+				actor,
 			},
 		});
 	} else if (type === 'category') {
@@ -202,25 +215,27 @@ inbox.follow = async (req) => {
 			throw new Error('[[error:invalid-cid]]');
 		}
 		if (!allowed) {
-			return activitypub.send('uid', 0, req.body.actor, {
+			return activitypub.send('uid', 0, actor, {
 				type: 'Reject',
 				object: {
 					type: 'Follow',
-					actor: req.body.actor,
+					actor,
+					object,
 				},
 			});
 		}
 
-		const watchState = await categories.getWatchState([id], req.body.actor);
+		const watchState = await categories.getWatchState([id], actor);
 		if (watchState[0] !== categories.watchStates.tracking) {
-			await user.setCategoryWatchState(req.body.actor, id, categories.watchStates.tracking);
+			await user.setCategoryWatchState(actor, id, categories.watchStates.tracking);
 		}
 
-		activitypub.send('cid', id, req.body.actor, {
+		activitypub.send('cid', id, actor, {
 			type: 'Accept',
 			object: {
 				type: 'Follow',
-				actor: req.body.actor,
+				actor,
+				object,
 			},
 		});
 	}
@@ -315,7 +330,11 @@ inbox.undo = async (req) => {
 				winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 				activitypub.send('uid', 0, actor, {
 					type: 'Reject',
-					object,
+					object: {
+						type: 'Like',
+						actor,
+						object,
+					},
 				});
 				break;
 			}
