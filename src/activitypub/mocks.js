@@ -250,6 +250,14 @@ Mocks.note = async (post) => {
 					name,
 				};
 			}));
+
+			to.push(...Array.from(matches).reduce((ids, { id }) => {
+				if (!utils.isNumber(id)) {
+					ids.push(id);
+				}
+
+				return ids;
+			}, []));
 		}
 	}
 
