@@ -122,8 +122,8 @@
 				<div class="card-header">[[admin/settings/navigation:available-menu-items]]</div>
 				<div class="card-body">
 					<ul id="available">
-						<li data-id="custom" class="clearfix">
-							<div data-id="custom" class="drag-item alert alert-success float-start">
+						<li data-id="custom" class="clearfix d-flex align-items-center gap-3 mb-3">
+							<div data-id="custom" class="drag-item alert p-2 mb-0 alert-success">
 								<i class="fa fa-fw fa-plus-circle"></i>
 							</div>
 							<p>
@@ -131,14 +131,23 @@
 							</p>
 						</li>
 						{{{ each available }}}
-						<li data-id="{@index}" class="clearfix">
-							<div data-id="{@index}" class="drag-item alert {{{ if available.core }}}alert-warning{{{ else }}}alert-info{{{ end }}} float-start">
+						<li data-id="{@index}" class="clearfix d-flex align-items-center gap-3 mb-3">
+							<div data-id="{@index}" class="drag-item alert p-2 mb-0 {{{ if available.core }}}alert-warning{{{ else }}}alert-info{{{ end }}}">
 								<i class="fa fa-fw {{{ if available.iconClass }}}{available.iconClass}{{{ else }}}fa-navicon{{{ end }}}"></i>
 							</div>
-							<p>
-								<strong>{available.text}</strong> {available.route} <br/>
-								{{{ if available.core }}} [[admin/settings/navigation:core]] {{{ else }}} [[admin/settings/navigation:plugin]] {{{ end }}}
-							</p>
+							<div class="d-flex flex-column">
+								<p class="mb-0">
+									<strong>{available.text}</strong>
+								</p>
+								<p class="mb-0">
+									{{{ if available.core }}}
+									<span class="badge bg-primary-subtle text-primary">[[admin/settings/navigation:core]]</span>
+									{{{ else }}}
+									<span class="badge bg-secondary-subtle text-secondary">[[admin/settings/navigation:plugin]]</span>
+									{{{ end }}}
+									<span class="badge text-bg-none"><code>{available.route}</code></span>
+								</p>
+							</div>
 						</li>
 						{{{ end }}}
 					</ul>
