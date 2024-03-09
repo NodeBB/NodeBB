@@ -464,7 +464,7 @@ async function giveWorldPrivileges() {
 	const guestPrivileges = ['groups:find', 'groups:read', 'groups:topics:read'];
 
 	await privileges.categories.give(defaultPrivileges, -1, ['registered-users']);
-	await privileges.categories.give(defaultPrivileges.slice(3), -1, ['fediverse']); // different priv set for fediverse
+	await privileges.categories.give(defaultPrivileges.slice(2), -1, ['fediverse']); // different priv set for fediverse
 	await privileges.categories.give(modPrivileges, -1, ['administrators', 'Global Moderators']);
 	await privileges.categories.give(guestPrivileges, -1, ['guests', 'spiders']);
 }

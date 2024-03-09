@@ -200,7 +200,7 @@ define('admin/manage/privileges', [
 			ajaxify.data.privileges = { ...ajaxify.data.privileges, ...privileges };
 			const tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			const isAdminPriv = ajaxify.currentPage.endsWith('admin/manage/privileges/admin');
-			app.parseAndTranslate(tpl, { privileges, isAdminPriv }).then((html) => {
+			app.parseAndTranslate(tpl, { cid, privileges, isAdminPriv }).then((html) => {
 				// Get currently selected filters
 				const btnIndices = $('.privilege-filters button.btn-warning').map((idx, el) => $(el).index()).get();
 				$('.privilege-table-container').html(html);

@@ -192,7 +192,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			const globalModDisabled = ['groups:moderate'];
 			let fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete'];
 			if (cid === -1) {
-				fediverseEnabled = fediverseEnabled.slice(4);
+				fediverseEnabled = fediverseEnabled.slice(3);
 			}
 			const disabled =
 				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
