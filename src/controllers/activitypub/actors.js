@@ -8,6 +8,7 @@ const posts = require('../../posts');
 const topics = require('../../topics');
 const categories = require('../../categories');
 const activitypub = require('../../activitypub');
+const utils = require('../../utils');
 
 const Actors = module.exports;
 
@@ -51,7 +52,7 @@ Actors.userBySlug = async function (req, res) {
 Actors.note = async function (req, res) {
 	// technically a note isn't an actor, but it is here purely for organizational purposes.
 	// but also, wouldn't it be wild if you could follow a note? lol.
-	const allowed = await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
+	const allowed = utils.isNumber(req.params.pid) && await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
 	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, { stripTags: false })).pop();
 	if (!allowed || !post) {
 		return res.sendStatus(404);
@@ -63,7 +64,7 @@ Actors.note = async function (req, res) {
 
 Actors.topic = async function (req, res) {
 	// When queried, a topic more or less returns the main pid's note representation
-	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
+	const allowed = utils.isNumber(req.params.pid) && await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
 	const { mainPid, slug } = await topics.getTopicFields(req.params.tid, ['mainPid', 'slug']);
 	const post = (await posts.getPostSummaryByPids([mainPid], req.uid, { stripTags: false })).pop();
 	if (!allowed || !post) {
