@@ -4,7 +4,7 @@
 	"dashboard/logins": "Logins",
 	"dashboard/users": "Users",
 	"dashboard/topics": "Topics",
-	"dashboard/searches": "Searches",
+	"dashboard/searches": "Wyszukiwania",
 	"section-general": "Ogólne",
 
 	"section-manage": "Zarządzanie",
@@ -72,14 +72,14 @@
 	"development/logger": "Loger",
 	"development/info": "Informacja",
 
-	"rebuild-and-restart-forum": "Odbudowa i restart forum",
-	"rebuild-and-restart": "Rebuild & Restart",
+	"rebuild-and-restart-forum": "Przebudowa i restart forum",
+	"rebuild-and-restart": "Przebudowa i restart",
 	"restart-forum": "Restartuj forum",
 	"restart": "Restart",
 	"logout": "Wyloguj się",
 	"view-forum": "Zobacz forum",
 
-	"search.placeholder": "Search settings",
+	"search.placeholder": "Ustawienia wyszukiwania",
 	"search.no-results": "Brak wyników...",
 	"search.search-forum": "Szukaj w forum <strong></strong>",
 	"search.keep-typing": "Wpisz więcej, aby zobaczyć wyniki ...",

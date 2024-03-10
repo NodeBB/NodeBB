@@ -1,9 +1,9 @@
 {
-	"maintenance-mode": "Tryb konserwacji",
-	"maintenance-mode.help": "Kiedy forum jest w trybie konserwacji, wszystkie żądania będą przekierowane do statycznej strony oczekiwania. Administratorzy nie są objęci tym przekierowaniem i mogą normalnie korzystać ze strony.",
-	"maintenance-mode.status": "Kod stanu trybu konserwacji",
-	"maintenance-mode.message": "Komunikat na ekranie konserwacji",
-	"maintenance-mode.groups-exempt-from-maintenance-mode": "Wybierz grupy, które powinny być wyjątkiem od trybu konswerwacji",
+	"maintenance-mode": "Tryb serwisowy",
+	"maintenance-mode.help": "Kiedy forum jest w trybie serwisowym, wszystkie żądania będą przekierowane do statycznej strony oczekiwania. Administratorzy nie są objęci tym przekierowaniem i mogą normalnie korzystać ze strony.",
+	"maintenance-mode.status": "Kod stanu trybu serwisowego",
+	"maintenance-mode.message": "Komunikat na ekranie serwisowym",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Wybierz grupy, które powinny być wyjątkiem od trybu serwisowego",
 	"headers": "Nagłówki",
 	"headers.allow-from": "Ustaw ALLOW-FROM, aby umieścić NodeBB w ramce iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
@@ -13,7 +13,7 @@
 	"headers.acao-regex": "Kontrola-Dostępu-Zezwól-Źródło Wyrażenie Regularne",
 	"headers.acao-help": "Aby zablokować dostęp do wszystkich stron, pozostaw puste.",
 	"headers.acao-regex-help": "Tutaj wprowadź wyrażenia regularne, aby dopasować dynamiczne źródła. Aby zablokować dostęp do wszystkich stron, pozostaw puste.",
-	"headers.acac": "Kontrola-Dostępu-Zezwól- Dane Logowania",
+	"headers.acac": "Kontrola-Dostępu-Zezwól-Dane Logowania",
 	"headers.acam": "Kontrola-Dostępu-Zezwól-Metody",
 	"headers.acah": "Kontrola-Dostępu-Zezwól-Nagłówki",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
@@ -42,9 +42,9 @@
 	"sockets.delay": "Opóźnienie ponownego łączenia",
 
 	"analytics.settings": "Ustawienia analityki",
-	"analytics.max-cache": "Maksymalna wartość cache analityki",
+	"analytics.max-cache": "Maksymalna wartość pamięci podręcznej analityki",
 	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)",
 	"compression.settings": "Ustawienia Kompresji",
 	"compression.enable": "Włącz Kompresję",
-	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."
+	"compression.help": "To ustawienie włącza kompresję gzip. Na stronach produkcyjnych o dużym ruchu, najlepiej ustawić kompresję na poziomie reverse-proxy. Możesz włączyć je tutaj na cele testów."
 }

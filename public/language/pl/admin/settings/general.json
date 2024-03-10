@@ -1,5 +1,5 @@
 {
-	"general-settings": "General Settings",
+	"general-settings": "Ustawienia ogólne",
 	"on-this-page": "Na tej stronie:",
 	"site-settings": "Ustawienia strony",
 	"title": "Tytuł strony",
@@ -34,13 +34,13 @@
 	"touch-icon.upload": "Prześlij",
 	"touch-icon.help": "Rekomendowana wielkość: 512x512, tylko format PNG. Jeśli nie ustalono ikony dotykowej, użyta zostanie favikona.",
 	"maskable-icon": "Maskable (Homescreen) Icon",
-	"maskable-icon.help": "Recommended size and format: 512x512, PNG format only. If no maskable icon is specified, NodeBB will fall back to the Touch Icon.",
+	"maskable-icon.help": "Rekomendowana wielkość: 512x512, tylko format PNG. Jeśli nie ustalono tej ikony, użyta zostanie ikona dotykowa.",
 	"outgoing-links": "Odnośniki wychodzące",
 	"outgoing-links.warning-page": "Używaj strony ostrzegawczej o odnośnikach wychodzących",
 	"search": "Szukaj",
 	"search-default-in": "Szukaj w",
 	"search-default-in-quick": "Szybkie wyszukiwanie w",
-	"search-default-sort-by": "Sort by",
+	"search-default-sort-by": "Sortuj według",
 	"outgoing-links.whitelist": "Domeny na białej liście pozwalającej ominąć stronę ostrzegawczą",
 	"site-colors": "Metadane kolorów strony",
 	"theme-color": "Kolor przewodni",
@@ -48,5 +48,5 @@
 	"background-color-help": "Kolor wykorzystywany jako tło ekranu ładowania gdy strona jest zainstalowana jako PWA",
 	"undo-timeout": "Czas na cofnięcie",
 	"undo-timeout-help": "Niektóre operacje, jak przenoszenie tematów, pozwolą moderatorowi cofnąć swoje akcje w przeciągu pewnego czasu. Ustaw 0 aby wyłączyć cofanie całkowicie.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Narzędzia tematu"
 }
