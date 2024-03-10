@@ -70,13 +70,23 @@ activitypubApi.create = {};
 // this might be better genericised... tbd. some of to/cc is built in mocks.
 async function buildRecipients(object, uid) {
 	const followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
-	const { to } = object;
-	const targets = new Set(followers);
+	let { to, cc } = object;
+	to = new Set(to);
+	cc = new Set(cc);
+
+
+	// Directly address user if inReplyTo
 	const parentId = await posts.getPostField(object.inReplyTo, 'uid');
-	if (activitypub.helpers.isUri(parentId)) {
-		to.unshift(parentId);
+	if (activitypub.helpers.isUri(parentId) && to.has(parentId)) {
+		to.add(parentId);
 	}
 
+	const targets = new Set([...followers, ...to, ...cc]);
+	targets.delete(`${nconf.get('url')}/uid/${uid}/followers`); // followers URL not targeted
+	targets.delete(activitypub._constants.publicAddress); // public address not targeted
+
+	object.to = Array.from(to);
+	object.cc = Array.from(cc);
 	return { targets };
 }
 
