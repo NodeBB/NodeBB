@@ -27,15 +27,60 @@ define('admin/manage/users', [
 					timeout: 0,
 				});
 			});
-			socket.emit('admin.user.exportUsersCSV', {}, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				alerts.alert({
-					alert_id: 'export-users-start',
-					message: '[[admin/manage/users:export-users-started]]',
-					timeout: (ajaxify.data.userCount / 5000) * 500,
-				});
+
+			const defaultFields = [
+				{ label: '[[admin/manage/users:export-field-email]]', field: 'email', selected: true },
+				{ label: '[[admin/manage/users:export-field-username]]', field: 'username', selected: true },
+				{ label: '[[admin/manage/users:export-field-uid]]', field: 'uid', selected: true },
+				{ label: '[[admin/manage/users:export-field-ip]]', field: 'ip', selected: true },
+				{ label: '[[admin/manage/users:export-field-joindate]]', field: 'joindate', selected: false },
+				{ label: '[[admin/manage/users:export-field-lastonline]]', field: 'lastonline', selected: false },
+				{ label: '[[admin/manage/users:export-field-lastposttime]]', field: 'lastposttime', selected: false },
+				{ label: '[[admin/manage/users:export-field-reputation]]', field: 'reputation', selected: false },
+				{ label: '[[admin/manage/users:export-field-postcount]]', field: 'postcount', selected: false },
+				{ label: '[[admin/manage/users:export-field-topiccount]]', field: 'topiccount', selected: false },
+				{ label: '[[admin/manage/users:export-field-profileviews]]', field: 'profileviews', selected: false },
+				{ label: '[[admin/manage/users:export-field-followercount]]', field: 'followerCount', selected: false },
+				{ label: '[[admin/manage/users:export-field-followingcount]]', field: 'followingCount', selected: false },
+				{ label: '[[admin/manage/users:export-field-fullname]]', field: 'fullname', selected: false },
+				{ label: '[[admin/manage/users:export-field-website]]', field: 'website', selected: false },
+				{ label: '[[admin/manage/users:export-field-location]]', field: 'location', selected: false },
+				{ label: '[[admin/manage/users:export-field-birthday]]', field: 'birthday', selected: false },
+				{ label: '[[admin/manage/users:export-field-signature]]', field: 'signature', selected: false },
+				{ label: '[[admin/manage/users:export-field-aboutme]]', field: 'aboutme', selected: false },
+			];
+			const options = defaultFields.map((field, i) => (`
+				<div class="form-check mb-2">
+					<input data-field="${field.field}" class="form-check-input" type="checkbox" id="option-${i}" ${field.selected ? 'checked' : ''}>
+					<label class="form-check-label" for="option-${i}">
+						${field.label}
+					</label>
+				</div>`
+			)).join('');
+
+			const modal = bootbox.dialog({
+				message: options,
+				title: '[[admin/manage/users:export-users-fields-title]]',
+				buttons: {
+					submit: {
+						label: '[[admin/manage/users:export]]',
+						callback: function () {
+							const fields = modal.find('[data-field]').filter(
+								(index, el) => $(el).is(':checked')
+							).map((index, el) => $(el).attr('data-field')).get();
+							socket.emit('admin.user.exportUsersCSV', { fields }, function (err) {
+								if (err) {
+									return alerts.error(err);
+								}
+								alerts.alert({
+									alert_id: 'export-users-start',
+									message: '[[admin/manage/users:export-users-started]]',
+									timeout: Math.max(5000, (ajaxify.data.userCount / 5000) * 500),
+								});
+							});
+						},
+					},
+				},
 			});
 
 			return false;
