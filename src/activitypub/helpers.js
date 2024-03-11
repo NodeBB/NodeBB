@@ -44,7 +44,13 @@ Helpers.query = async (id) => {
 	}
 
 	// Make a webfinger query to retrieve routing information
-	const { response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=acct:${id}`);
+	let response;
+	let body;
+	try {
+		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=acct:${id}`));
+	} catch (e) {
+		return false;
+	}
 
 	if (response.statusCode !== 200 || !body.hasOwnProperty('links')) {
 		return false;
