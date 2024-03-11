@@ -47,6 +47,6 @@
 	"include-unverified-emails": "Wysyłaj maile odbiorcom, którzy nie potwierdzili wprost swoich adresów",
 	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws.",
 	"prompt": "Proś użytkowników by podawali i potwierdzali swoje adresy e-mail",
-	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen.",
+	"prompt-help": "Jeśli użytkownik nie ma ustawionego adresu e-mail, albo jego adres nie jest potwierdzony, na ekranie zostanie wyświetlone ostrzeżenie.",
 	"sendEmailToBanned": "Wysyłaj maile także do zbanowanych użytkowników"
 }

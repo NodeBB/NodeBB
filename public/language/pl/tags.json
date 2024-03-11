@@ -10,8 +10,8 @@
     "tag-whitelist": "Tag Whitelist",
     "watching": "Watching",
     "not-watching": "Not Watching",
-    "watching.description": "Notify me of new topics.",
-    "not-watching.description": "Do not notify me of new topics.",
+    "watching.description": "Powiadom mnie o nowych tematach.",
+    "not-watching.description": "Nie powiadamiaj mnie o nowych tematach.",
     "following-tag.message": "Teraz będziesz otrzymywać powiadomienia, kiedy ktoś napisze w temacie z takim tagiem.",
     "not-following-tag.message": "Nie będziesz otrzymywać powiadomień, kiedy ktoś napisze w temacie z takim tagiem."
 }

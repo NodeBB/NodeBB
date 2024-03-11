@@ -7,7 +7,7 @@
 	"allow-login-with.username": "사용자 이름만",
 	"account-settings": "계정 설정",
 	"gdpr-enabled": "GDPR 동의 수집 활성화",
-	"gdpr-enabled-help": "활성화하면 모든 신규 가입자는 <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">일반 데이터 보호 규정(GDPR)</a>에 따라서 데이터 수집 및 사용에 대한 명시적 동의를 해야합니다.<br /> <strong>참고</strong>: GDPR를 활성화해도 기존 사용자에게 동의를 강제하지 않습니다. <br/>강제하려면 GDPR 플러그인을 설치해야 합니다.",
+	"gdpr-enabled-help": "활성화하면 모든 신규 가입자는 <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">유럽연합 일반 데이터 보호 규정(GDPR)</a>에 따라서 데이터 수집 및 사용에 대한 명시적 동의를 해야합니다.<br /> <strong>참고</strong>: GDPR를 활성화해도 기존 사용자에게 동의를 강제하지 않습니다. <br/>강제하려면 GDPR 플러그인을 설치해야 합니다.",
 	"disable-username-changes": "사용자 이름 변경 비활성화",
 	"disable-email-changes": "이메일 변경 비활성화",
 	"disable-password-changes": "비밀번호 변경 비활성화",
