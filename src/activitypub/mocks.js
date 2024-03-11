@@ -208,8 +208,8 @@ Mocks.note = async (post) => {
 	const raw = await posts.getPostField(post.pid, 'content');
 
 	// todo: post visibility
-	const to = [activitypub._constants.publicAddress];
-	const cc = [`${nconf.get('url')}/uid/${post.user.uid}/followers`];
+	const to = new Set([activitypub._constants.publicAddress]);
+	const cc = new Set([`${nconf.get('url')}/uid/${post.user.uid}/followers`]);
 
 	let inReplyTo = null;
 	let name = null;
@@ -217,10 +217,10 @@ Mocks.note = async (post) => {
 	if (post.toPid) { // direct reply
 		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
 		const parentId = await posts.getPostField(post.toPid, 'uid');
-		to.unshift(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
+		to.add(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
-		to.unshift(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
+		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 	} else { // new topic
 		name = await topics.getTitleByPid(post.pid);
 		tag = post.topic.tags.map(tag => ({
@@ -251,13 +251,15 @@ Mocks.note = async (post) => {
 				};
 			}));
 
-			to.push(...Array.from(matches).reduce((ids, { id }) => {
-				if (!utils.isNumber(id)) {
-					ids.push(id);
-				}
+			Array.from(matches)
+				.reduce((ids, { id }) => {
+					if (!utils.isNumber(id) && !to.has(id) && !cc.has(id)) {
+						ids.push(id);
+					}
 
-				return ids;
-			}, []));
+					return ids;
+				}, [])
+				.forEach(id => cc.add(id));
 		}
 	}
 
@@ -265,8 +267,8 @@ Mocks.note = async (post) => {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: 'Note',
-		to,
-		cc,
+		to: Array.from(to),
+		cc: Array.from(cc),
 		inReplyTo,
 		published,
 		url: id,
