@@ -46,6 +46,7 @@ module.exports = function (Topics) {
 		const timestampedSortedSetKeys = [
 			'topics:tid',
 			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 		];
 
