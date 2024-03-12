@@ -11,6 +11,7 @@ const groups = require('../groups');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.getUserInfoForPosts = async function (uids, uid) {
@@ -115,10 +116,10 @@ module.exports = function (Posts) {
 	}
 
 	Posts.isOwner = async function (pids, uid) {
-		uid = parseInt(uid, 10);
+		uid = utils.isNumber(uid) ? parseInt(uid, 10) : uid;
 		const isArray = Array.isArray(pids);
 		pids = isArray ? pids : [pids];
-		if (uid <= 0) {
+		if (utils.isNumber(uid) && uid <= 0) {
 			return isArray ? pids.map(() => false) : false;
 		}
 		const postData = await Posts.getPostsFields(pids, ['uid']);

@@ -7,6 +7,7 @@ const meta = require('../meta');
 const posts = require('../posts');
 const topics = require('../topics');
 const user = require('../user');
+const activitypub = require('../activitypub');
 const helpers = require('./helpers');
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -115,6 +116,7 @@ privsPosts.filter = async function (privilege, pids, uid) {
 };
 
 privsPosts.canEdit = async function (pid, uid) {
+	const isRemote = activitypub.helpers.isUri(pid);
 	const results = await utils.promiseParallel({
 		isAdmin: user.isAdministrator(uid),
 		isMod: posts.isModerator([pid], uid),
@@ -130,14 +132,14 @@ privsPosts.canEdit = async function (pid, uid) {
 	}
 
 	if (
-		!results.isMod &&
+		!isRemote && !results.isMod &&
 		meta.config.postEditDuration &&
 		(Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)
 	) {
 		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
 	}
 	if (
-		!results.isMod &&
+		!isRemote && !results.isMod &&
 		meta.config.newbiePostEditDuration > 0 &&
 		meta.config.newbieReputationThreshold > results.userData.reputation &&
 		Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
@@ -154,7 +156,7 @@ privsPosts.canEdit = async function (pid, uid) {
 		return { flag: false, message: '[[error:post-deleted]]' };
 	}
 
-	results.pid = parseInt(pid, 10);
+	results.pid = utils.isNumber(pid) ? parseInt(pid, 10) : pid;
 	results.uid = uid;
 
 	const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);

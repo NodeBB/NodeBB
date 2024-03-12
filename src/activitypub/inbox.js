@@ -42,13 +42,11 @@ inbox.update = async (req) => {
 
 	switch (object.type) {
 		case 'Note': {
-			const [exists, allowed] = await Promise.all([
-				posts.exists(object.id),
-				privileges.posts.can('posts:edit', object.id, activitypub._constants.uid),
-			]);
-			if (!exists || !allowed) {
-				winston.warn(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
-				return activitypub.send('uid', 0, actor, {
+			const postData = await activitypub.mocks.post(object);
+			try {
+				await posts.edit(postData);
+			} catch (e) {
+				activitypub.send('uid', 0, actor, {
 					type: 'Reject',
 					object: {
 						type: 'Update',
@@ -56,15 +54,6 @@ inbox.update = async (req) => {
 						object,
 					},
 				});
-			}
-
-			const postData = await activitypub.mocks.post(object);
-
-			if (postData) {
-				await activitypub.notes.assert(0, [postData], { update: true });
-				winston.verbose(`[activitypub/inbox.update] Updating note ${postData.pid}`);
-			} else {
-				winston.warn(`[activitypub/inbox.update] Received note did not parse properly (id: ${object.id})`);
 			}
 			break;
 		}

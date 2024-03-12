@@ -192,16 +192,6 @@ Notes.getParentChain = async (uid, input) => {
 	return chain;
 };
 
-Notes.assertParentChain = async (chain) => {
-	const data = [];
-	chain.reduce((child, parent) => {
-		data.push([`pid:${parent.pid}:replies`, child.timestamp, child.pid]);
-		return parent;
-	});
-
-	await db.sortedSetAddBulk(data);
-};
-
 Notes.assertTopic = async (uid, id) => {
 	/**
 	 * Given the id of any post, traverses up to cache the entire threaded context
@@ -275,21 +265,17 @@ Notes.assertTopic = async (uid, id) => {
 			.filter(o => o.type === 'Hashtag')
 			.map(o => o.name.slice(1));
 
-		try {
-			await topics.post({
-				tid,
-				uid: authorId,
-				cid,
-				pid: mainPid,
-				title,
-				timestamp,
-				tags,
-				content: mainPost.content,
-				_activitypub: mainPost._activitypub,
-			});
-		} catch (e) {
-			console.log(e);
-		}
+		await topics.post({
+			tid,
+			uid: authorId,
+			cid,
+			pid: mainPid,
+			title,
+			timestamp,
+			tags,
+			content: mainPost.content,
+			_activitypub: mainPost._activitypub,
+		});
 		unprocessed.pop();
 	}
 
@@ -300,32 +286,8 @@ Notes.assertTopic = async (uid, id) => {
 	}
 
 	await Notes.syncUserInboxes(tid);
-	// await Promise.all([
-	// 	db.sortedSetAdd(`tid:${tid}:posts`, timestamps, ids),
-	// 	Notes.assert(uid, unprocessed),
-	// ]);
-	// await Promise.all([ // must be done after .assert()
-	// 	Notes.assertParentChain(chain),
-	// 	Notes.updateTopicCounts(tid),
-	// 	Notes.syncUserInboxes(tid),
-	// 	topics.updateLastPostTimeFromLastPid(tid),
-	// 	topics.updateTeaser(tid),
-	// ]);
 
 	return tid;
-};
-
-Notes.updateTopicCounts = async function (tid) {
-	const mainPid = await topics.getTopicField(tid, 'mainPid');
-	const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
-	pids.unshift(mainPid);
-	let uids = await db.getObjectsFields(pids.map(p => `post:${p}`), ['uid']);
-	uids = new Set(uids.map(o => o.uid));
-
-	db.setObject(`topic:${tid}`, {
-		postercount: uids.size,
-		postcount: pids.length,
-	});
 };
 
 Notes.syncUserInboxes = async function (tid) {
@@ -342,9 +304,4 @@ Notes.syncUserInboxes = async function (tid) {
 
 	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid);
-};
-
-Notes.getTopicPosts = async (tid, uid, start, stop) => {
-	const pids = await db.getSortedSetRange(`tid:${tid}:posts`, start, stop);
-	return await posts.getPostsByPids(pids, uid);
 };
