@@ -230,13 +230,13 @@ Notes.assertTopic = async (uid, id) => {
 	let cid;
 	let title;
 	if (hasTid) {
-		({ cid, title, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'title', 'mainPid']));
+		({ cid, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']));
 	} else {
 		// mainPid ok to leave as-is
 		cid = -1;
 		title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
 		if (title.length > meta.config.maximumTitleLength) {
-			title = `${title.slice(0, meta.config.maximumTitleLength)}...`;
+			title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
 		}
 	}
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
@@ -274,31 +274,43 @@ Notes.assertTopic = async (uid, id) => {
 		tags = (mainPost._activitypub.tag || [])
 			.filter(o => o.type === 'Hashtag')
 			.map(o => o.name.slice(1));
-		tags = await topics.filterTags(tags, cid);
 
-		await topics.create({
-			tid,
-			uid: authorId,
-			cid,
-			mainPid,
-			title,
-			timestamp,
-			tags,
-		});
-		topics.onNewPostMade(mainPost);
+		try {
+			await topics.post({
+				tid,
+				uid: authorId,
+				cid,
+				pid: mainPid,
+				title,
+				timestamp,
+				tags,
+				content: mainPost.content,
+				_activitypub: mainPost._activitypub,
+			});
+		} catch (e) {
+			console.log(e);
+		}
+		unprocessed.pop();
 	}
 
-	await Promise.all([
-		db.sortedSetAdd(`tid:${tid}:posts`, timestamps, ids),
-		Notes.assert(uid, unprocessed),
-	]);
-	await Promise.all([ // must be done after .assert()
-		Notes.assertParentChain(chain),
-		Notes.updateTopicCounts(tid),
-		Notes.syncUserInboxes(tid),
-		topics.updateLastPostTimeFromLastPid(tid),
-		topics.updateTeaser(tid),
-	]);
+	unprocessed.reverse();
+	for (const post of unprocessed) {
+		// eslint-disable-next-line no-await-in-loop
+		await topics.reply(post);
+	}
+
+	await Notes.syncUserInboxes(tid);
+	// await Promise.all([
+	// 	db.sortedSetAdd(`tid:${tid}:posts`, timestamps, ids),
+	// 	Notes.assert(uid, unprocessed),
+	// ]);
+	// await Promise.all([ // must be done after .assert()
+	// 	Notes.assertParentChain(chain),
+	// 	Notes.updateTopicCounts(tid),
+	// 	Notes.syncUserInboxes(tid),
+	// 	topics.updateLastPostTimeFromLastPid(tid),
+	// 	topics.updateTeaser(tid),
+	// ]);
 
 	return tid;
 };

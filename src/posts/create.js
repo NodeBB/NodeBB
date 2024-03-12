@@ -10,12 +10,12 @@ const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.create = async function (data) {
 		// This is an internal method, consider using Topics.reply instead
-		const { uid } = data;
-		const { tid } = data;
+		const { uid, tid, _activitypub } = data;
 		const content = data.content.toString();
 		const timestamp = data.timestamp || Date.now();
 		const isMain = data.isMain || false;
@@ -28,13 +28,14 @@ module.exports = function (Posts) {
 			await checkToPid(data.toPid, uid);
 		}
 
-		const pid = await db.incrObjectField('global', 'nextPid');
+		const pid = data.pid || await db.incrObjectField('global', 'nextPid');
 		let postData = {
 			pid: pid,
 			uid: uid,
 			tid: tid,
 			content: content,
 			timestamp: timestamp,
+			_activitypub,
 		};
 
 		if (data.toPid) {
@@ -56,7 +57,7 @@ module.exports = function (Posts) {
 
 		await Promise.all([
 			db.sortedSetAdd('posts:pid', timestamp, postData.pid),
-			db.incrObjectField('global', 'postCount'),
+			utils.isNumber(pid) ? db.incrObjectField('global', 'postCount') : null,
 			user.onNewPostMade(postData),
 			topics.onNewPostMade(postData),
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),

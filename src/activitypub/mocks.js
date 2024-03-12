@@ -205,7 +205,6 @@ Mocks.note = async (post) => {
 	const id = `${nconf.get('url')}/post/${post.pid}`;
 	const published = new Date(parseInt(post.timestamp, 10)).toISOString();
 
-	const raw = await posts.getPostField(post.pid, 'content');
 
 	// todo: post visibility
 	const to = new Set([activitypub._constants.publicAddress]);
@@ -230,7 +229,18 @@ Mocks.note = async (post) => {
 		}));
 	}
 
-	const mentionsEnabled = await plugins.isActive('nodebb-plugin-mentions');
+	let source = null;
+	const [markdownEnabled, mentionsEnabled] = await Promise.all([
+		plugins.isActive('nodebb-plugin-markdown'),
+		plugins.isActive('nodebb-plugin-mentions'),
+	]);
+	if (markdownEnabled) {
+		const raw = await posts.getPostField(post.pid, 'content');
+		source = {
+			content: raw,
+			mediaType: 'text/markdown',
+		};
+	}
 	if (mentionsEnabled) {
 		const mentions = require.main.require('nodebb-plugin-mentions');
 		const matches = await mentions.getMatches(post.content);
@@ -278,10 +288,7 @@ Mocks.note = async (post) => {
 		summary: null,
 		name,
 		content: post.content,
-		source: {
-			content: raw,
-			mediaType: 'text/markdown',
-		},
+		source,
 		tag,
 		attachment: [], // todo... requires refactoring of link preview plugin
 		// replies: {}  todo...

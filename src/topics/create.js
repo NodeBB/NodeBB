@@ -135,7 +135,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
-		if (uid > 0 && settings.followTopicsOnCreate) {
+		if (utils.isNumber(uid) && uid > 0 && settings.followTopicsOnCreate) {
 			await Topics.follow(postData.tid, uid);
 		}
 		const topicData = topics[0];
