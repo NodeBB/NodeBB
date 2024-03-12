@@ -21,7 +21,7 @@ module.exports = function (app, middleware, controllers) {
 	app.post('/inbox', [...middlewares, middleware.activitypub.validate], controllers.activitypub.postInbox);
 
 	app.get('/uid/:uid', [...middlewares, middleware.assert.user], controllers.activitypub.actors.user);
-	app.get('/user/:userslug', [...middlewares, middleware.assert.user, middleware.exposeUid], controllers.activitypub.actors.userBySlug);
+	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user], controllers.activitypub.actors.userBySlug);
 	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], controllers.activitypub.getInbox);
 	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, middleware.activitypub.validate], controllers.activitypub.postInbox);
 	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], controllers.activitypub.getOutbox);

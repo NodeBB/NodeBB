@@ -17,6 +17,7 @@ const posts = require('../posts');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const slugify = require('../slugify');
+const utils = require('../utils');
 const activitypub = require('../activitypub');
 
 const helpers = require('./helpers');
@@ -25,9 +26,11 @@ const controllerHelpers = require('../controllers/helpers');
 const Assert = module.exports;
 
 Assert.user = helpers.try(async (req, res, next) => {
+	const uid = req.params.uid || res.locals.uid;
+
 	if (
-		(isFinite(req.params.uid) && await user.exists(req.params.uid)) ||
-		(req.params.uid.indexOf('@') !== -1 && await activitypub.helpers.query(req.params.uid))
+		(utils.isNumber(uid) && await user.exists(uid)) ||
+		(uid.indexOf('@') !== -1 && await activitypub.helpers.query(uid))
 	) {
 		return next();
 	}
