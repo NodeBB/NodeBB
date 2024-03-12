@@ -22,21 +22,33 @@ Notes.assert = async (uid, input, options = {}) => {
 	const actors = new Set();
 
 	await Promise.all(input.map(async (item) => {
-		// Dereference only if a url is received
-		if (activitypub.helpers.isUri(item)) {
-			item = await activitypub.resolveId(uid, item);
-			if (!item) {
-				winston.warn(`[activitypub/notes.assert] Not asserting ${item}`);
-				return;
-			}
-		}
-
-		const id = activitypub.helpers.isUri(item) ? item : item.pid;
-		const key = `post:${id}`;
-		const exists = await db.exists(key);
+		let id = activitypub.helpers.isUri(item) ? item : item.pid;
+		let key = `post:${id}`;
+		let exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);
 
 		if (id && (!exists || options.update === true)) {
+			// Dereference only if a url is received
+			if (activitypub.helpers.isUri(item)) {
+				winston.verbose(`[activitypub/notes.assert] Dereference check for ${id}`);
+				const resolvedId = await activitypub.resolveId(uid, item);
+				if (!resolvedId) {
+					winston.warn(`[activitypub/notes.assert] Not asserting ${item}`);
+					return;
+				}
+
+				if (resolvedId !== id) {
+					id = resolvedId;
+					key = `post:${id}`;
+					exists = await db.exists(key);
+					winston.verbose(`[activitypub/notes.assert] Re-asserting note id ${id}`);
+
+					if (exists && options.update !== true) {
+						return;
+					}
+				}
+			}
+
 			let postData;
 			winston.verbose(`[activitypub/notes.assert] Not found, retrieving note for persistence...`);
 			if (activitypub.helpers.isUri(item)) {

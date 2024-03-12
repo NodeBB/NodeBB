@@ -187,7 +187,6 @@ module.exports = function (Topics) {
 			return;
 		}
 		parentPids = _.uniq(parentPids);
-		await activitypub.notes.assert(uid, parentPids.filter(pid => activitypub.helpers.isUri(pid)));
 		const parentPosts = await posts.getPostsFields(parentPids, ['uid']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username']);
