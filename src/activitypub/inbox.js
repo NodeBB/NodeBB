@@ -27,7 +27,7 @@ inbox.create = async (req) => {
 	}
 
 	const tid = await activitypub.notes.assertTopic(0, object.id);
-	winston.info(`[activitypub/inbox] Parsing note ${object.id} into topic ${tid}`);
+	winston.verbose(`[activitypub/inbox] Parsing note ${object.id} into topic ${tid}`);
 };
 
 inbox.update = async (req) => {
@@ -47,7 +47,7 @@ inbox.update = async (req) => {
 				privileges.posts.can('posts:edit', object.id, activitypub._constants.uid),
 			]);
 			if (!exists || !allowed) {
-				winston.info(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
+				winston.warn(`[activitypub/inbox.update] ${object.id} not allowed to be edited.`);
 				return activitypub.send('uid', 0, actor, {
 					type: 'Reject',
 					object: {
@@ -62,7 +62,7 @@ inbox.update = async (req) => {
 
 			if (postData) {
 				await activitypub.notes.assert(0, [postData], { update: true });
-				winston.info(`[activitypub/inbox.update] Updating note ${postData.pid}`);
+				winston.verbose(`[activitypub/inbox.update] Updating note ${postData.pid}`);
 			} else {
 				winston.warn(`[activitypub/inbox.update] Received note did not parse properly (id: ${object.id})`);
 			}

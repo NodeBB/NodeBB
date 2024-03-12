@@ -455,6 +455,20 @@ describe('ActivityPub integration', () => {
 						mediaType: 'text/markdown',
 					},
 				};
+				const remoteUser = {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: 'https://example.org/user/foobar',
+					url: 'https://example.org/user/foobar',
+
+					type: 'Person',
+					name: 'Foo Bar',
+					preferredUsername: 'foobar',
+					publicKey: {
+						id: 'https://example.org/user/foobar#key',
+						owner: 'https://example.org/user/foobar',
+						publicKeyPem: 'publickey',
+					},
+				};
 
 				let topic;
 
@@ -462,6 +476,7 @@ describe('ActivityPub integration', () => {
 					const controllers = require('../src/controllers');
 
 					activitypub._cache.set(`0;${id}`, remoteNote);
+					activitypub._cache.set(`0;https://example.org/user/foobar`, remoteUser);
 					await controllers.activitypub.postInbox({
 						body: {
 							type: 'Create',

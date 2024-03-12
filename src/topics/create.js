@@ -82,7 +82,7 @@ module.exports = function (Topics) {
 		const { uid } = data;
 
 		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
-			categories.exists(data.cid),
+			parseInt(data.cid, 10) > 0 ? categories.exists(data.cid) : true,
 			privileges.categories.can('topics:create', data.cid, uid),
 			privileges.categories.can('topics:tag', data.cid, uid),
 			privileges.users.isAdministrator(uid),
