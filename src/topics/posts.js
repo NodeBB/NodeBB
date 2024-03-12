@@ -129,7 +129,7 @@ module.exports = function (Topics) {
 			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
 			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
 			getPostReplies(postData, uid),
-			Topics.addParentPosts(postData, uid),
+			Topics.addParentPosts(postData),
 		]);
 
 		postData.forEach((postObj, i) => {
@@ -178,7 +178,7 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.addParentPosts = async function (postData, uid) {
+	Topics.addParentPosts = async function (postData) {
 		let parentPids = postData
 			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
 			.map(postObj => postObj.toPid);

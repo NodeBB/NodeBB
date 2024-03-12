@@ -232,7 +232,7 @@ module.exports = function (Topics) {
 		] = await Promise.all([
 			posts.getUserInfoForPosts([postData.uid], uid),
 			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags']),
-			Topics.addParentPosts([postData], uid),
+			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
 			posts.parsePost(postData),
 		]);
