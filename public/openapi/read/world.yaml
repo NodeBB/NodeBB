@@ -3,6 +3,13 @@ get:
     - topics
   summary: Get external topics
   description: Returns a list of external topics known to the local instance
+  parameters:
+    - name: filter
+      in: path
+      required: true
+      schema:
+        type: string
+      example: all
   responses:
     "200":
       description: An array of topic objects sorted by timestamp.
