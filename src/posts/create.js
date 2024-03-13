@@ -35,7 +35,6 @@ module.exports = function (Posts) {
 			tid: tid,
 			content: content,
 			timestamp: timestamp,
-			_activitypub,
 		};
 
 		if (data.toPid) {
@@ -48,8 +47,7 @@ module.exports = function (Posts) {
 			postData.handle = data.handle;
 		}
 
-		let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
-		postData = result.post;
+		({ post: postData } = await plugins.hooks.fire('filter:post.create', { post: postData, data: data }));
 		await db.setObject(`post:${postData.pid}`, postData);
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
@@ -66,9 +64,9 @@ module.exports = function (Posts) {
 			Posts.uploads.sync(postData.pid),
 		]);
 
-		result = await plugins.hooks.fire('filter:post.get', { post: postData, uid: data.uid });
+		const result = await plugins.hooks.fire('filter:post.get', { post: postData, uid: data.uid });
 		result.post.isMain = isMain;
-		plugins.hooks.fire('action:post.save', { post: _.clone(result.post) });
+		plugins.hooks.fire('action:post.save', { post: { ...result.post, _activitypub } });
 		return result.post;
 	};
 

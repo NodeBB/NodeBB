@@ -20,6 +20,7 @@ module.exports = function (Posts) {
 	});
 
 	Posts.edit = async function (data) {
+		const { _activitypub } = data;
 		const canEdit = await privileges.posts.canEdit(data.pid, data.uid);
 		if (!canEdit.flag) {
 			throw new Error(canEdit.message);
@@ -89,7 +90,7 @@ module.exports = function (Posts) {
 		});
 		await topics.syncBacklinks(returnPostData);
 
-		plugins.hooks.fire('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
+		plugins.hooks.fire('action:post.edit', { post: { ...returnPostData, _activitypub }, data: data, uid: data.uid });
 
 		require('./cache').del(String(postData.pid));
 		pubsub.publish('post:edit', String(postData.pid));
