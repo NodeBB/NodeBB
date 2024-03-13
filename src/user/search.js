@@ -94,9 +94,11 @@ module.exports = function (User) {
 		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
 		// const uids = data.map(data => data.split(':').pop());
 		const uids = data.map((data) => {
-			data = data.split(':');
-			data.shift();
-			return data.join(':');
+			if (data.includes(':https:')) {
+				return data.substring(data.indexOf(':https:') + 1);
+			}
+
+			return data.split(':').pop();
 		});
 		return uids;
 	}
