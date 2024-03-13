@@ -1,0 +1,28 @@
+get:
+  tags:
+    - notifications
+  summary: get notification
+  description: This operation returns the content of a single notification
+  parameters:
+    - in: path
+      name: nid
+      schema:
+        type: number
+      required: true
+      description: The notification id to retrieve
+      example: uploads:export:1
+  responses:
+    '200':
+      description: notification successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  notification:
+                    $ref: ../../components/schemas/NotificationObject.yaml#/NotificationObject

@@ -164,6 +164,12 @@ paths:
     $ref: 'write/topics/tid/read.yaml'
   /topics/{tid}/bump:
     $ref: 'write/topics/tid/bump.yaml'
+  /notifications:
+    $ref: 'write/notifications.yaml'
+  /notifications/{nid}:
+    $ref: 'write/notifications/nid.yaml'
+  /notifications/count:
+    $ref: 'write/notifications/count.yaml'
   /tags/{tag}/follow:
     $ref: 'write/tags/tag/follow.yaml'
   /posts/{pid}:
