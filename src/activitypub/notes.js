@@ -245,7 +245,8 @@ Notes.assertTopic = async (uid, id) => {
 		post.tid = tid; // add tid to post hash
 		return post;
 	}).filter((p, idx) => !members[idx]);
-	winston.verbose(`[notes/assertTopic] ${unprocessed.length} new note(s) found.`);
+	const count = unprocessed.length;
+	winston.verbose(`[notes/assertTopic] ${count} new note(s) found.`);
 
 	const [ids, timestamps] = [
 		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
@@ -287,7 +288,7 @@ Notes.assertTopic = async (uid, id) => {
 
 	await Notes.syncUserInboxes(tid);
 
-	return tid;
+	return { tid, count };
 };
 
 Notes.syncUserInboxes = async function (tid) {
