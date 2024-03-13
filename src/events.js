@@ -96,6 +96,8 @@ events.log = async function (data) {
 		db.setObject(`event:${eid}`, data),
 	]);
 	plugins.hooks.fire('action:events.log', { data: data });
+
+	return { eid };
 };
 
 events.getEvents = async function (filter, start, stop, from, to) {
