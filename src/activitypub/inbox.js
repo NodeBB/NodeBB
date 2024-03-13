@@ -43,8 +43,13 @@ inbox.update = async (req) => {
 	switch (object.type) {
 		case 'Note': {
 			const postData = await activitypub.mocks.post(object);
+			const exists = await posts.exists(object.id);
 			try {
-				await posts.edit(postData);
+				if (exists) {
+					await posts.edit(postData);
+				} else {
+					await activitypub.notes.assertTopic(0, object.id);
+				}
 			} catch (e) {
 				activitypub.send('uid', 0, actor, {
 					type: 'Reject',
