@@ -82,7 +82,7 @@ Mocks.post = async (objects) => {
 			return null;
 		}
 
-		const {
+		let {
 			id: pid,
 			attributedTo: uid,
 			inReplyTo: toPid,
@@ -91,6 +91,10 @@ Mocks.post = async (objects) => {
 			// conversation, // mastodon-specific, ignored.
 		} = object;
 
+		const resolved = await activitypub.helpers.resolveLocalId(toPid);
+		if (resolved.type === 'post') {
+			toPid = resolved.id;
+		}
 		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
