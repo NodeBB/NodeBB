@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const db = require('../database');
 const meta = require('../meta');
 const privileges = require('../privileges');
+const categories = require('../categories');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -192,9 +193,15 @@ Notes.assertTopic = async (uid, id) => {
 
 	let tags;
 	if (!hasTid) {
+		const systemTags = (meta.config.systemTags || '').split(',');
+		const maxTags = cid > 0 ? await categories.getCategoryField(cid, 'maxTags') : null;
 		tags = (mainPost._activitypub.tag || [])
-			.filter(o => o.type === 'Hashtag')
+			.filter(o => o.type === 'Hashtag' && !systemTags.include(o.name.slice(1)))
 			.map(o => o.name.slice(1));
+
+		if (maxTags) {
+			tags.length = maxTags;
+		}
 
 		await topics.post({
 			tid,
