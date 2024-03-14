@@ -92,7 +92,7 @@ Notes.getParentChain = async (uid, input) => {
 				await traverse(uid, postData.toPid);
 			} else if (utils.isNumber(id)) { // local pid without toPid, could be OP or reply to OP
 				const mainPid = await topics.getTopicField(postData.tid, 'mainPid');
-				if (mainPid !== id) {
+				if (mainPid !== parseInt(id, 10)) {
 					await traverse(uid, mainPid);
 				}
 			}
