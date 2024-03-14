@@ -31,7 +31,7 @@
 	"prerelease-upgrade-available": "To jest przestarzała wersja NodeBB sprzed wydania. Pojawiła się nowa wersja (v%1). Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.",
 	"prerelease-warning": "To jest NodeBB w wersji <strong>sprzed wydania</strong>. Może zawierać nieoczekiwane błędy. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "Zapasowy e-mailer nie znaleziony!",
-	"running-in-development": "Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator",
+	"running-in-development": "Forum jest uruchomione w trybie rozwojowym (roboczym). Przez to może być podatne na potencjalne zagrożenia. Skontaktuj się z administratorem.",
 	"latest-lookup-failed": "Nie udało się sprawdzić, jaka jest najnowsza dostępna wersja NodeBB",
 
 	"notices": "Powiadomienia",

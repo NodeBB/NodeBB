@@ -18,7 +18,7 @@
     "terms-of-use": "이용 약관",
     "agree-to-terms-of-use": "이용 약관에 동의합니다",
     "terms-of-use-error": "이용 약관에 동의해야 합니다",
-    "registration-added-to-queue": "회원가입이 승인 대기열에 추가되었습니다. 관리자가 승인하면 이메일을 받게 됩니다.",
+    "registration-added-to-queue": "회원가입이 승인 대기열에 추가되었습니다. 관리자가 승인하면 알림 이메일을 받게 됩니다.",
     "registration-queue-average-time": "회원 가입 승인 평균 시간은 %1시간 %2분입니다.",
     "registration-queue-auto-approve-time": "이 포럼의 회원 자격이 최대 %1시간 안에 완전히 활성화됩니다.",
     "interstitial.intro": "계정을 업데이트하기 위해 추가 정보를 요청합니다&hellip;",

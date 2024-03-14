@@ -6,7 +6,7 @@
 	"group-privileges": "Uprawnienia grup",
 	"user-privileges": "Uprawnienia użytkownika",
 	"edit-privileges": "Edytuj uprawnienia",
-  	"select-clear-all": "Select/Clear All",
+  	"select-clear-all": "Wybierz/wyczyść wszystko",
 	"chat": "Dostęp do czatu",
 	"chat-with-privileged": "Czatuj z uprzywilejowanymi",
 	"upload-images": "Przesyłanie zdjęć",
@@ -61,6 +61,6 @@
 	"alert.no-undo": "<em>Tej czynności nie można cofnąć.</em>",
 	"alert.admin-warning": "Administratorzy domyślnie otrzymują wszelkie uprawnienia",
   	"alert.copyPrivilegesFrom-title": "Wybierz kategorię, z której skopiować",
-  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFrom-warning": "To skopiuje <strong>%1</strong> z wybranej kategorii.",
   	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

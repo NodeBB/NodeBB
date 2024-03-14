@@ -41,5 +41,5 @@
 	"keep-all-user-images": "서버에 이전 버전의 아바타와 프로필 커버를 유지",
 	"profile-covers": "프로필 커버",
 	"default-covers": "기본 커버 이미지",
-	"default-covers-help": "업로드된 커버 이미지가 없는 계정에 대한 쉼표로 구분된 기본 커버 이미지 추가"
+	"default-covers-help": "업로드한 커버 이미지가 없는 계정에 대한 쉼표로 구분된 기본 커버 이미지 추가"
 }
