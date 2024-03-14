@@ -9,6 +9,7 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 const analytics = require('../analytics');
 const user = require('../user');
+const activitypub = require('../activitypub');
 const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
@@ -202,11 +203,11 @@ module.exports = function (Topics) {
 			await Topics.follow(postData.tid, uid);
 		}
 
-		if (parseInt(uid, 10)) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid)) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid) || meta.config.allowGuestReplyNotifications) {
 			const { displayname } = postData.user;
 
 			Topics.notifyFollowers(postData, uid, {
