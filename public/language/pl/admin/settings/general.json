@@ -33,7 +33,7 @@
 	"touch-icon": "Ikonka dotykowa",
 	"touch-icon.upload": "Prześlij",
 	"touch-icon.help": "Rekomendowana wielkość: 512x512, tylko format PNG. Jeśli nie ustalono ikony dotykowej, użyta zostanie favikona.",
-	"maskable-icon": "Maskable (Homescreen) Icon",
+	"maskable-icon": "Ikona ekranu głównego",
 	"maskable-icon.help": "Rekomendowana wielkość: 512x512, tylko format PNG. Jeśli nie ustalono tej ikony, użyta zostanie ikona dotykowa.",
 	"outgoing-links": "Odnośniki wychodzące",
 	"outgoing-links.warning-page": "Używaj strony ostrzegawczej o odnośnikach wychodzących",

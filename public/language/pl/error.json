@@ -222,7 +222,7 @@
     "no-connection": "Sprawdź swoje połączenie z internetem",
     "socket-reconnect-failed": "W tej chwili nie można połączyć się z serwerem. Kliknij tutaj, aby spróbować ponownie, lub spróbuj ponownie później",
     "invalid-plugin-id": "Niepoprawny identyfikator wtyczki",
-    "plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP",
+    "plugin-not-whitelisted": "Nie da się zainstalować tej wtyczki &ndash; tylko wtyczki z białej listy menadżera pakietów NodeBB mogą być instalowane przez ACP",
     "plugins-set-in-configuration": "Nie możesz zmienić stanu wtyczki, bo został on zdefiniowany przy uruchamianiu (config.json, zmienne środowiskowe lub argumenty z terminala). Zamiast tego zmień konfigurację.",
     "theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
     "topic-event-unrecognized": "Zdarzenie w temacie '%1' nierozpoznane",
