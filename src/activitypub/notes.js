@@ -196,7 +196,7 @@ Notes.assertTopic = async (uid, id) => {
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const maxTags = cid > 0 ? await categories.getCategoryField(cid, 'maxTags') : null;
 		tags = (mainPost._activitypub.tag || [])
-			.filter(o => o.type === 'Hashtag' && !systemTags.include(o.name.slice(1)))
+			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name.slice(1)))
 			.map(o => o.name.slice(1));
 
 		if (maxTags) {
