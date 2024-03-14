@@ -107,13 +107,13 @@ build_forum() {
           echo "Failed to build NodeBB. Exiting..."
           exit 1
         }
-  elif [ "$force_build" = true ] then
+  elif [ "$force_build" = true ]; then
     echo "Build before start is enabled. Building..."
     /usr/src/app/nodebb "${NODEBB_BUILD_VERB}" --config="$config" || {
         echo "Failed to build NodeBB. Exiting..."
         exit 1
       }
-  else 
+  else
     echo "No changes in package.json. Skipping build..."
     return
   fi
