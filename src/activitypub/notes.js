@@ -193,6 +193,7 @@ Notes.assertTopic = async (uid, id) => {
 
 	let tags;
 	if (!hasTid) {
+		const { to, cc, attachment } = mainPost._activitypub;
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const maxTags = await categories.getCategoryField(cid, 'maxTags');
 		tags = (mainPost._activitypub.tag || [])
@@ -203,24 +204,34 @@ Notes.assertTopic = async (uid, id) => {
 			tags.length = maxTags;
 		}
 
-		await topics.post({
-			tid,
-			uid: authorId,
-			cid,
-			pid: mainPid,
-			title,
-			timestamp,
-			tags,
-			content: mainPost.content,
-			_activitypub: mainPost._activitypub,
-		});
+		await Promise.all([
+			topics.post({
+				tid,
+				uid: authorId,
+				cid,
+				pid: mainPid,
+				title,
+				timestamp,
+				tags,
+				content: mainPost.content,
+				_activitypub: mainPost._activitypub,
+			}),
+			Notes.updateLocalRecipients(mainPid, { to, cc }),
+			Notes.saveAttachments(mainPid, attachment),
+		]);
 		unprocessed.pop();
 	}
 
 	unprocessed.reverse();
 	for (const post of unprocessed) {
+		const { to, cc, attachment } = post._activitypub;
+
 		// eslint-disable-next-line no-await-in-loop
-		await topics.reply(post);
+		await Promise.all([
+			topics.reply(post),
+			Notes.updateLocalRecipients(post.pid, { to, cc }),
+			Notes.saveAttachments(post.pid, attachment),
+		]);
 	}
 
 	await Notes.syncUserInboxes(tid);
