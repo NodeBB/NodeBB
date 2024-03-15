@@ -119,7 +119,7 @@ define('forum/search', [
 			in: $('#search-in').val(),
 		};
 		searchData.term = $('#search-input').val();
-		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
+		if (['posts', 'titlesposts', 'titles', 'bookmarks'].includes(searchData.in)) {
 			searchData.matchWords = form.find('#match-words-filter').val();
 			searchData.by = selectedUsers.length ? selectedUsers.map(u => u.username) : undefined;
 			searchData.categories = selectedCids.length ? selectedCids : undefined;
@@ -143,7 +143,7 @@ define('forum/search', [
 	}
 
 	function updateFormItemVisiblity(searchIn) {
-		const hideTitlePostFilters = !searchIn.includes('posts') && !searchIn.includes('titles');
+		const hideTitlePostFilters = !['posts', 'titles', 'bookmarks'].some(token => searchIn.includes(token));
 		$('.post-search-item').toggleClass('hidden', hideTitlePostFilters);
 	}
 
@@ -252,6 +252,7 @@ define('forum/search', [
 
 	function categoryFilterDropdown(_selectedCids) {
 		ajaxify.data.allCategoriesUrl = '';
+		selectedCids = _selectedCids || [];
 		const dropdownEl = $('[component="category/filter"]');
 		categoryFilter.init(dropdownEl, {
 			selectedCids: _selectedCids,
@@ -290,6 +291,7 @@ define('forum/search', [
 	}
 
 	function userFilterDropdown(el, _selectedUsers) {
+		selectedUsers = _selectedUsers || [];
 		userFilter.init(el, {
 			selectedUsers: _selectedUsers,
 			template: 'partials/search-filters',

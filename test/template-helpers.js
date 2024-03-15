@@ -126,13 +126,13 @@ describe('helpers', () => {
 
 	it('should show reject invite button if isInvited', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isInvited: true });
-		assert.equal(btn, '<button class="btn btn-link" data-action="rejectInvite" data-group="some group">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>');
+		assert.equal(btn, '<button class="btn btn-warning" data-action="rejectInvite" data-group="some group">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>');
 		done();
 	});
 
 	it('should show join button if join requests are not disabled and group is not administrators', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', disableJoinRequests: false });
-		assert.equal(btn, '<button class="btn btn-success" data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
+		assert.equal(btn, '<button class="btn btn-success " data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
 		done();
 	});
 

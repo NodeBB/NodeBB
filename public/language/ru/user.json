@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Заблокирован",
     "muted": "Muted",
     "offline": "Не в сети",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Включать отслеживание всех тем, которые вы создаёте",
     "grouptitle": "Значки групп",
     "group-order-help": "Выберите группу и укажите порядок значков с помощью стрелок",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Не показывать значок группы",
     "select-skin": "Стиль",
     "default": "Default (%1)",

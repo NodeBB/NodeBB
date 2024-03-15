@@ -94,5 +94,8 @@
 	"view-as-json": "Xem dưới dạng JSON",
 	"expand-analytics": "Mở rộng phân tích",
 	"clear-search-history": "Xóa lịch sử tìm kiếm",
-	"clear-search-history-confirm": "Bạn có chắc chắn muốn xóa toàn bộ lịch sử tìm kiếm không?"
+	"clear-search-history-confirm": "Bạn có chắc chắn muốn xóa toàn bộ lịch sử tìm kiếm không?",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }

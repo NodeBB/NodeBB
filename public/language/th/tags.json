@@ -3,7 +3,7 @@
     "no-tag-topics": "ไม่มีหัวข้อสนทนาที่เกี่ยวข้องกับป้ายคำศัพท์นี้",
     "no-tags-found": "No tags found",
     "tags": "ป้ายคำศัพท์",
-    "enter-tags-here": "กรอกแท็กที่นี่  จำนวนอักขระอยู่ระหว่าง  %1 และ %2 ตัวอักษรต่อ 1 แท็ก",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "ใส่ป้ายคำศัพท์ ...",
     "no-tags": "ยังไม่มีป้ายคำศัพท์",
     "select-tags": "Select Tags",

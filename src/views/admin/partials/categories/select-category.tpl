@@ -1,7 +1,7 @@
 <form type="form">
 	<div class="form-group">
 		<div component="category-selector" class="btn-group">
-			<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+			<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<span component="category-selector-selected">[[topic:thread-tools.select-category]]</span> <span class="caret"></span>
 			</button>
 			<div component="category-selector-search" class="hidden position-absolute">

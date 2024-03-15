@@ -1,4 +1,5 @@
 {
+	"user-menu": "User menu",
 	"banned": "Banned",
 	"muted": "Muted",
 	"offline": "Offline",
@@ -154,6 +155,10 @@
 
 	"grouptitle": "Group Title",
 	"group-order-help": "Select a group and use the arrows to order titles",
+	"show-group-title": "Show group title",
+	"hide-group-title": "Hide group title",
+	"order-group-up": "Order group up",
+	"order-group-down": "Order group down",
 	"no-group-title": "No group title",
 
 	"select-skin": "Select a Skin",

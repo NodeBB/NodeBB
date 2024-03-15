@@ -38,6 +38,9 @@ get:
                     type: array
                     items:
                       type: string
+                  unread:
+                    type: boolean
+                    description: True if category or it's children have unread topics
                   unread-class:
                     type: string
                   children:
@@ -111,6 +114,8 @@ get:
                     type: array
                     items:
                       type: string
+                  sortOptionLabel:
+                    type: string
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

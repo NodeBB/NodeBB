@@ -14,7 +14,7 @@
 	"manage/users": "Użytkownicy",
 	"manage/admins-mods": "Administratorzy i Moderatorzy",
 	"manage/registration": "Kolejka rejestracji",
-	"manage/flagged-content": "Flagged Content",
+	"manage/flagged-content": "Oflagowana treść",
 	"manage/post-queue": "Kolejka postów",
 	"manage/groups": "Grupy",
 	"manage/ip-blacklist": "Czarna lista IP",
@@ -34,7 +34,7 @@
 	"settings/languages": "Języki",
 	"settings/post": "Posty",
 	"settings/chat": "Czaty",
-	"settings/pagination": "Paginacja",
+	"settings/pagination": "Dzielenie na strony",
 	"settings/tags": "Tagi",
 	"settings/notifications": "Powiadomienia",
 	"settings/api": "Dostęp do API",
@@ -48,7 +48,7 @@
 	"settings.page-title": "Ustawienia %1",
 
 	"section-appearance": "Wygląd",
-	"appearance/themes": "Motywy",
+	"appearance/themes": "Style",
 	"appearance/skins": "Skórki",
 	"appearance/customise": "Niestandardowy HTML & CSS",
 

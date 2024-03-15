@@ -1,4 +1,5 @@
 {
+    "user-menu": "תפריט משתמש",
     "banned": "מורחק",
     "muted": "מושתק",
     "offline": "לא מחובר",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "עקוב אחר נושאים שייצרת",
     "grouptitle": "כותרת הקבוצה",
     "group-order-help": "בחר קבוצה והשתמש בחצים על מנת לארגן כותרות",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "ללא כותרת לקבוצה",
     "select-skin": "בחר מראה",
     "default": "ברירת מחדל (%1)",

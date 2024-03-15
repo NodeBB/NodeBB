@@ -1,17 +1,34 @@
 'use strict';
 
-define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, bootbox, alerts) {
+define('forum/groups/memberlist', ['api', 'bootbox', 'alerts', 'helpers'], function (api, bootbox, alerts, helpers) {
 	const MemberList = {};
-	let groupName;
 	let templateName;
 
 	MemberList.init = function (_templateName) {
 		templateName = _templateName || 'groups/details';
-		groupName = ajaxify.data.group.name;
 
 		handleMemberAdd();
 		handleMemberSearch();
 		handleMemberInfiniteScroll();
+	};
+
+	MemberList.refresh = async function () {
+		const { group } = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
+		const html = await parseAndTranslate(group.members);
+		$('[component="groups/members"] tbody').html(html);
+		$('[component="group/member/count"]').text(
+			helpers.humanReadableNumber(group.memberCount)
+		);
+		$('[component="group/pending/count"]').text(
+			helpers.humanReadableNumber(group.pending.length)
+		);
+		$('[component="group/invited/count"]').text(
+			helpers.humanReadableNumber(group.invited.length)
+		);
+		ajaxify.data.group.members = group.members;
+		ajaxify.data.group.memberCount = group.memberCount;
+		ajaxify.data.group.invited = group.invited;
+		ajaxify.data.group.pending = group.pending;
 	};
 
 	function handleMemberAdd() {
@@ -29,7 +46,7 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 								modal.find('[data-uid][data-selected]').each(function (index, el) {
 									users.push(foundUsers[$(el).attr('data-uid')]);
 								});
-								addUserToGroup(users, function () {
+								addUsersToGroup(users).then(() => {
 									modal.modal('hide');
 								});
 							},
@@ -65,99 +82,77 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 		});
 	}
 
-	function addUserToGroup(users, callback) {
-		function done() {
-			users = users.filter(function (user) {
-				return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
-			});
-			parseAndTranslate(users, function (html) {
-				$('[component="groups/members"] tbody').prepend(html);
-			});
-			callback();
-		}
-		const uids = users.map(function (user) { return user.uid; });
-		if (groupName === 'administrators') {
-			socket.emit('admin.user.makeAdmins', uids, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				done();
-			});
+	async function addUsersToGroup(users) {
+		const uids = users.map(u => u.uid);
+		if (ajaxify.data.group.name === 'administrators') {
+			await socket.emit('admin.user.makeAdmins', uids).catch(alerts.error);
 		} else {
-			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done).catch(alerts.error);
+			await Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).catch(alerts.error);
 		}
+
+		users = users.filter(user => !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length);
+		const html = await parseAndTranslate(users);
+		$('[component="groups/members"] tbody').prepend(html);
 	}
 
 	function handleMemberSearch() {
 		const searchEl = $('[component="groups/members/search"]');
-		searchEl.on('keyup', utils.debounce(function () {
+		searchEl.on('keyup', utils.debounce(async function () {
 			const query = searchEl.val();
-			api.get(`/groups/${groupName}/members`, { query }, function (err, results) {
-				if (err) {
-					return alerts.error(err);
-				}
-				parseAndTranslate(results.users, function (html) {
-					$('[component="groups/members"] tbody').html(html);
-					$('[component="groups/members"]').attr('data-nextstart', 20);
-				});
-			});
+			const results = await api.get(`/groups/${ajaxify.data.group.slug}/members`, { query });
+			const html = await parseAndTranslate(results.users);
+			$('[component="groups/members"] tbody').html(html);
+			$('[component="groups/members"]').attr('data-nextstart', 20);
 		}, 250));
 	}
 
 	function handleMemberInfiniteScroll() {
-		$('[component="groups/members"]').on('scroll', function () {
+		$('[component="groups/members"]').on('scroll', utils.debounce(function () {
 			const $this = $(this);
 			const bottom = ($this[0].scrollHeight - $this.innerHeight()) * 0.9;
 
 			if ($this.scrollTop() > bottom && !$('[component="groups/members/search"]').val()) {
 				loadMoreMembers();
 			}
-		});
+		}, 250));
 	}
 
-	function loadMoreMembers() {
+	async function loadMoreMembers() {
 		const members = $('[component="groups/members"]');
 		if (members.attr('loading')) {
 			return;
 		}
 
 		members.attr('loading', 1);
-		api.get(`/groups/${ajaxify.data.group.slug}/members`, {
+		const data = await api.get(`/groups/${ajaxify.data.group.slug}/members`, {
 			after: members.attr('data-nextstart'),
-		}, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
+		}).catch(alerts.error);
 
-			if (data && data.users.length) {
-				onMembersLoaded(data.users, function () {
-					members.removeAttr('loading');
-					members.attr('data-nextstart', data.nextStart);
-				});
-			} else {
-				members.removeAttr('loading');
-			}
-		});
+		if (data && data.users.length) {
+			await onMembersLoaded(data.users);
+			members.removeAttr('loading');
+			members.attr('data-nextstart', data.nextStart);
+		} else {
+			members.removeAttr('loading');
+		}
 	}
 
-	function onMembersLoaded(users, callback) {
+	async function onMembersLoaded(users) {
 		users = users.filter(function (user) {
 			return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
 		});
 
-		parseAndTranslate(users, function (html) {
-			$('[component="groups/members"] tbody').append(html);
-			callback();
-		});
+		const html = await parseAndTranslate(users);
+		$('[component="groups/members"] tbody').append(html);
 	}
 
-	function parseAndTranslate(users, callback) {
-		app.parseAndTranslate(templateName, 'group.members', {
+	async function parseAndTranslate(users) {
+		return await app.parseAndTranslate(templateName, 'group.members', {
 			group: {
 				members: users,
 				isOwner: ajaxify.data.group.isOwner,
 			},
-		}, callback);
+		});
 	}
 
 	return MemberList;

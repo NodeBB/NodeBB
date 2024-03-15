@@ -97,9 +97,9 @@ define('forum/account/settings', [
 
 	function toggleCustomRoute() {
 		if ($('[data-property="homePageRoute"]').val() === 'custom') {
-			$('#homePageCustom').show();
+			$('#homePageCustomContainer').show();
 		} else {
-			$('#homePageCustom').hide();
+			$('#homePageCustomContainer').hide();
 			$('[data-property="homePageCustom"]').val('');
 		}
 	}

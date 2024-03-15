@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Забрањен",
     "muted": "Привремено искључен",
     "offline": "Ван мреже",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Надгледај теме које си креирао",
     "grouptitle": "Назив групе",
     "group-order-help": "Изаберите групу и користите стрелице за промену редоследа",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Без назива групе",
     "select-skin": "Изаберите маску",
     "default": "Подразумевано (%1)",

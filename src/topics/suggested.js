@@ -65,7 +65,7 @@ module.exports = function (Topics) {
 		const cid = await Topics.getTopicField(tid, 'cid');
 		const tids = cutoff === 0 ?
 			await db.getSortedSetRevRange(`cid:${cid}:tids:lastposttime`, 0, 9) :
-			await db.getSortedSetRevRangeByScore(`cid:${cid}:tids:lastposttime`, 0, 9, '+inf', Date.now() - cutoff);
+			await db.getSortedSetRevRangeByScore(`cid:${cid}:tids:lastposttime`, 0, 10, '+inf', Date.now() - cutoff);
 		return _.shuffle(tids.map(Number).filter(_tid => _tid !== tid));
 	}
 };

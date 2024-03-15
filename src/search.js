@@ -3,6 +3,7 @@
 const _ = require('lodash');
 
 const db = require('./database');
+const batch = require('./batch');
 const posts = require('./posts');
 const topics = require('./topics');
 const categories = require('./categories');
@@ -18,7 +19,7 @@ search.search = async function (data) {
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
-	if (data.searchIn === 'posts' || data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
+	if (['posts', 'titles', 'titlesposts', 'bookmarks'].includes(data.searchIn)) {
 		result = await searchInContent(data);
 	} else if (data.searchIn === 'users') {
 		result = await user.search(data);
@@ -68,6 +69,8 @@ async function searchInContent(data) {
 		const tid = inTopic[1];
 		const cleanedTerm = data.query.replace(inTopic[0], '');
 		pids = await topics.search(tid, cleanedTerm);
+	} else if (data.searchIn === 'bookmarks') {
+		pids = await searchInBookmarks(data, searchCids, searchUids);
 	} else {
 		[pids, tids] = await Promise.all([
 			doSearch('post', ['posts', 'titlesposts']),
@@ -115,8 +118,46 @@ async function searchInContent(data) {
 	return Object.assign(returnData, metadata);
 }
 
+async function searchInBookmarks(data, searchCids, searchUids) {
+	const { uid, query, matchWords } = data;
+	const allPids = [];
+	await batch.processSortedSet(`uid:${uid}:bookmarks`, async (pids) => {
+		if (Array.isArray(searchCids) && searchCids.length) {
+			pids = await posts.filterPidsByCid(pids, searchCids);
+		}
+		if (Array.isArray(searchUids) && searchUids.length) {
+			pids = await posts.filterPidsByUid(pids, searchUids);
+		}
+		if (query) {
+			const tokens = String(query).split(' ');
+			const postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['content', 'tid']);
+			const tids = _.uniq(postData.map(p => p.tid));
+			const topicData = await db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['title']);
+			const tidToTopic = _.zipObject(tids, topicData);
+			pids = pids.filter((pid, i) => {
+				const content = String(postData[i].content);
+				const title = String(tidToTopic[postData[i].tid].title);
+				const method = (matchWords === 'any' ? 'some' : 'every');
+				return tokens[method](
+					token => content.includes(token) || title.includes(token)
+				);
+			});
+		}
+		allPids.push(...pids);
+	}, {
+		batch: 500,
+	});
+
+	return allPids;
+}
+
 async function filterAndSort(pids, data) {
-	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags && !plugins.hooks.hasListeners('filter:search.filterAndSort')) {
+	if (data.sortBy === 'relevance' &&
+		!data.replies &&
+		!data.timeRange &&
+		!data.hasTags &&
+		data.searchIn !== 'bookmarks' &&
+		!plugins.hooks.hasListeners('filter:search.filterAndSort')) {
 		return pids;
 	}
 	let postsData = await getMatchedPosts(pids, data);

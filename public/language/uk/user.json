@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Заблокований",
     "muted": "Muted",
     "offline": "Не в мережі",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Підписуватися на теми які ви створюєте",
     "grouptitle": "Заголовок групи",
     "group-order-help": "Оберіть групу і використовуйте стрілки для зміни порядку заголовків",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Немає заголовка групи",
     "select-skin": "Обрати стиль сайту",
     "default": "Default (%1)",

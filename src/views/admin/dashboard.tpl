@@ -112,18 +112,44 @@
 		<div class="card mb-3">
 			<div class="card-header">[[admin/dashboard:active-users]]</div>
 			<div class="card-body">
-				<div id="active-users" class="stats row row-cols-2 row-cols-md-1 row-cols-lg-2"></div>
+				<div id="active-users" class="stats">
+					<table class="table table-sm text-sm">
+						<tbody>
+							<tr>
+								<td>[[admin/dashboard:active-users.users]]</td>
+								<td id="active-users-loggedin" class="text-end" style="width: 1px;"></td>
+							</tr>
+							<tr>
+								<td>[[admin/dashboard:active-users.guests]]</td>
+								<td id="active-users-guests" class="text-end" style="width: 1px;"></td>
+							</tr>
+							<tr>
+								<td>[[admin/dashboard:active-users.total]]</td>
+								<td id="active-users-total" class="text-end" style="width: 1px;"></td>
+							</tr>
+							<tr>
+								<td>[[admin/dashboard:active-users.connections]]</td>
+								<td id="active-users-connections" class="text-end" style="width: 1px;"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
 		<div class="card">
-			<div class="card-header">[[admin/dashboard:popular-searches]]</div>
+			<div class="card-header d-flex justify-content-between">[[admin/dashboard:popular-searches]] <a href="{config.relative_path}/admin/dashboard/searches" class="text-xs">[[admin/dashboard:view-all]]</a></div>
 			<div class="card-body">
-				<ul class="list-unstyled text-sm">
-					{{{ each popularSearches}}}
-					<li>({popularSearches.score}) {popularSearches.value}</li>
-					{{{ end }}}
-				</ul>
+				<table class="table table-sm text-sm search-list">
+					<tbody>
+						{{{ each popularSearches }}}
+						<tr>
+							<td>{popularSearches.value}</td>
+							<td class="text-end" style="width: 1px;">{formattedNumber(popularSearches.score)}</td>
+						</tr>
+						{{{ end }}}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

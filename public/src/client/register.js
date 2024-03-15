@@ -48,6 +48,8 @@ define('forum/register', [
 
 		function validateForm(callback) {
 			validationError = false;
+			$('[aria-invalid="true"]').removeAttr('aria-invalid');
+
 			validatePassword(password.val(), password_confirm.val());
 			validatePasswordConfirm(password.val(), password_confirm.val());
 			validateUsername(username.val(), callback);
@@ -59,6 +61,7 @@ define('forum/register', [
 		register.on('click', function (e) {
 			const registerBtn = $(this);
 			const errorEl = $('#register-error-notify');
+
 			errorEl.addClass('hidden');
 			e.preventDefault();
 			validateForm(function () {
@@ -108,29 +111,31 @@ define('forum/register', [
 		});
 
 		// Set initial focus
-		$('#username').focus();
+		$('#username').trigger('focus');
 	};
 
 	function validateUsername(username, callback) {
 		callback = callback || function () {};
 
 		const username_notify = $('#username-notify');
+		username_notify.text('');
+		const usernameInput = $('#username');
 		const userslug = slugify(username);
 		if (username.length < ajaxify.data.minimumUsernameLength || userslug.length < ajaxify.data.minimumUsernameLength) {
-			showError(username_notify, '[[error:username-too-short]]');
+			showError(usernameInput, username_notify, '[[error:username-too-short]]');
 		} else if (username.length > ajaxify.data.maximumUsernameLength) {
-			showError(username_notify, '[[error:username-too-long]]');
+			showError(usernameInput, username_notify, '[[error:username-too-long]]');
 		} else if (!utils.isUserNameValid(username) || !userslug) {
-			showError(username_notify, '[[error:invalid-username]]');
+			showError(usernameInput, username_notify, '[[error:invalid-username]]');
 		} else {
 			Promise.allSettled([
 				api.head(`/users/bySlug/${userslug}`, {}),
 				api.head(`/groups/${username}`, {}),
 			]).then((results) => {
 				if (results.every(obj => obj.status === 'rejected')) {
-					showSuccess(username_notify, successIcon);
+					showSuccess(usernameInput, username_notify, successIcon);
 				} else {
-					showError(username_notify, '[[error:username-taken]]');
+					showError(usernameInput, username_notify, '[[error:username-taken]]');
 				}
 
 				callback();
@@ -139,9 +144,11 @@ define('forum/register', [
 	}
 
 	function validatePassword(password, password_confirm) {
+		const passwordInput = $('#password');
 		const password_notify = $('#password-notify');
 		const password_confirm_notify = $('#password-confirm-notify');
-
+		password_notify.text('');
+		password_confirm_notify.text('');
 		try {
 			utils.assertPasswordValidity(password, zxcvbn);
 
@@ -149,33 +156,35 @@ define('forum/register', [
 				throw new Error('[[user:password-same-as-username]]');
 			}
 
-			showSuccess(password_notify, successIcon);
+			showSuccess(passwordInput, password_notify, successIcon);
 		} catch (err) {
-			showError(password_notify, err.message);
+			showError(passwordInput, password_notify, err.message);
 		}
 
 		if (password !== password_confirm && password_confirm !== '') {
-			showError(password_confirm_notify, '[[user:change-password-error-match]]');
+			showError(passwordInput, password_confirm_notify, '[[user:change-password-error-match]]');
 		}
 	}
 
 	function validatePasswordConfirm(password, password_confirm) {
+		const passwordConfirmInput = $('#password-confirm');
 		const password_notify = $('#password-notify');
 		const password_confirm_notify = $('#password-confirm-notify');
-
+		password_confirm_notify.text('');
 		if (!password || password_notify.hasClass('alert-error')) {
 			return;
 		}
 
 		if (password !== password_confirm) {
-			showError(password_confirm_notify, '[[user:change-password-error-match]]');
+			showError(passwordConfirmInput, password_confirm_notify, '[[user:change-password-error-match]]');
 		} else {
-			showSuccess(password_confirm_notify, successIcon);
+			showSuccess(passwordConfirmInput, password_confirm_notify, successIcon);
 		}
 	}
 
-	function showError(element, msg) {
+	function showError(input, element, msg) {
 		translator.translate(msg, function (msg) {
+			input.attr('aria-invalid', 'true');
 			element.html(msg);
 			element.parent()
 				.removeClass('register-success')
@@ -185,8 +194,9 @@ define('forum/register', [
 		validationError = true;
 	}
 
-	function showSuccess(element, msg) {
+	function showSuccess(input, element, msg) {
 		translator.translate(msg, function (msg) {
+			input.removeAttr('aria-invalid');
 			element.html(msg);
 			element.parent()
 				.removeClass('register-danger')

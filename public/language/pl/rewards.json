@@ -1,10 +1,10 @@
 {
-	"awarded-x-reputation": "You have been awarded <strong>%1</strong> reputation",
-	"awarded-group-membership": "You have been added to the group <strong>%1</strong>",
+	"awarded-x-reputation": "Nagrodzono Cię <strong>%1</strong> reputacją",
+	"awarded-group-membership": "Dodano Cię do grupy <strong>%1</strong>",
 
-	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",
-	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Post Count %1 %2)</span>",
-	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Last Online %1 %2)</span>",
-	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Join Date %1 %2)</span>",
-	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Days Registered %1 %2)</span>"
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputacja %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Liczba postów %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Ostatnio online %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Data dołączenia %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Dni od rejestracji %1 %2)</span>"
 }

@@ -196,6 +196,9 @@ widgets.getAvailableAreas = async function () {
 
 		{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
 		{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
+
+		{ name: 'Chat Header', template: 'chats.tpl', location: 'header' },
+		{ name: 'Chat Sidebar', template: 'chats.tpl', location: 'sidebar' },
 	];
 
 	return await plugins.hooks.fire('filter:widgets.getAreas', defaultAreas);

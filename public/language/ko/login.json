@@ -1,12 +1,12 @@
 {
     "username-email": "사용자명 / 이메일",
     "username": "사용자명",
-    "remember-me": "로그인 유지",
-    "forgot-password": "비밀번호 초기화",
-    "alternative-logins": "다른 방법으로 로그인",
-    "failed-login-attempt": "로그인 실패",
-    "login-successful": "성공적으로 로그인했습니다.",
+    "remember-me": "로그인 정보 저장",
+    "forgot-password": "비밀번호를 잊으셨나요?",
+    "alternative-logins": "대체 로그인",
+    "failed-login-attempt": "로그인에 실패했습니다",
+    "login-successful": "로그인에 성공했습니다!",
     "dont-have-account": "계정이 없으신가요?",
-    "logged-out-due-to-inactivity": "일정시간 활동하지 않아 관리자 제어판에서 로그아웃 되었습니다.",
-    "caps-lock-enabled": "Caps Lock 활성화"
+    "logged-out-due-to-inactivity": "비활성으로 인해 관리자 패널에서 로그아웃되었습니다",
+    "caps-lock-enabled": "Caps Lock이 눌려있습니다"
 }

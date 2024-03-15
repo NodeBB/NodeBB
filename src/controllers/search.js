@@ -36,7 +36,7 @@ searchController.search = async function (req, res, next) {
 	let allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
 					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
 					(req.query.in === 'categories') ||
-					(['titles', 'titlesposts', 'posts'].includes(req.query.in) && userPrivileges['search:content']);
+					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(req.query.in) && userPrivileges['search:content']);
 	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
 		uid: req.uid,
 		query: req.query,

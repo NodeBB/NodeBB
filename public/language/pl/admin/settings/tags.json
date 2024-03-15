@@ -9,5 +9,5 @@
     "min-length": "Minimalna długość tagu",
     "max-length": "Maksymalna długość tagu",
     "related-topics": "Powiązane tematy",
-    "max-related-topics": "Maksymalna liczba powiązanych tematów do wyświetlenia (jeśli możliwe w ramach tematu)"
+    "max-related-topics": "Maksymalna liczba powiązanych tematów do wyświetlenia (jeśli wybrany styl na to pozwala)"
 }

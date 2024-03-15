@@ -6,7 +6,7 @@
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/groups:edit-group]]</h4>
 
 			<div component="group-selector" class="btn-group">
-				<button type="button" class="btn-ghost-sm dropdown-toggle w-100" data-bs-toggle="dropdown">
+				<button type="button" class="btn-ghost-sm dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
 				</button>
 				<div component="group-selector-search" class="hidden position-absolute w-100">
@@ -124,19 +124,19 @@
 
 				<hr />
 
-				<div class="mb-3">
-					<label class="form-label" for="memberPostCids">[[groups:details.member-post-cids]]</label>
+				<div class="d-flex flex-column gap-1 mb-3">
+					<label class="form-label" for="memberPostCids" for="memberPostCids">[[groups:details.member-post-cids]]</label>
 					<div class="d-flex gap-1 align-items-center">
 						<div class="member-post-cids-selector">
 							<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 						</div>
-						<input id="memberPostCids" type="text" class="form-control" value="{group.memberPostCids}">
+						<input id="memberPostCids" type="text" class="form-control form-control-sm" value="{group.memberPostCids}">
 					</div>
 				</div>
 
 				<hr />
 
-				<div>
+				<div class="d-flex flex-column gap-2">
 					<label class="form-label">[[admin/manage/groups:edit.members]]</label>
 
 					<div class="">
@@ -154,7 +154,7 @@
 
 				<div class="edit-privileges-selector w-100">
 					<div component="category-selector" class="btn-group w-100">
-						<button type="button" class="btn-ghost-sm justify-content-start flex-fill dropdown-toggle" data-bs-toggle="dropdown">
+						<button type="button" class="btn-ghost-sm justify-content-start flex-fill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="fa fa-fw fa-lock text-primary"></i> <span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
 						</button>
 						<div component="category-selector-search" class="hidden position-absolute">

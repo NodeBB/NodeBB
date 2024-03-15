@@ -1,13 +1,13 @@
 {
 	"eu-consent": "EU Consent",
 	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
+	"consent.message": "Ilmoitusviesti",
 	"consent.acceptance": "Acceptance message",
 	"consent.link-text": "Policy Link Text",
 	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
+	"consent.blank-localised-default": "Käytä NodeBB:n lokalisoituja oletuksia jättämällä tyhjäksi",
 	"settings": "Settings",
 	"cookie-domain": "Session cookie domain",
 	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "Leave blank for default"
+	"blank-default": "Käytä oletusta jättämällä tyhjäksi"
 }

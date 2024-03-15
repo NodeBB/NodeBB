@@ -1,4 +1,5 @@
 {
+    "user-menu": "User menu",
     "banned": "Verbannen",
     "muted": "Muted",
     "offline": "Offline",
@@ -141,6 +142,10 @@
     "follow-topics-you-create": "Ontvang meldingen van berichten die je hebt gemaakt",
     "grouptitle": "Groepstitel",
     "group-order-help": "Selecteer een groep en gebruik de pijltjes om titels te sorteren",
+    "show-group-title": "Show group title",
+    "hide-group-title": "Hide group title",
+    "order-group-up": "Order group up",
+    "order-group-down": "Order group down",
     "no-group-title": "Geen groepstitel",
     "select-skin": "Selecteer een skin",
     "default": "Default (%1)",

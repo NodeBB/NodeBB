@@ -1,10 +1,10 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
-    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.title": "테마 설정",
+    "settings.intro": "여기에서 테마 설정을 사용자 정의할 수 있습니다. 설정은 기기별로 저장되므로 다른 기기(전화, 태블릿, 데스크톱 등)에서 다른 설정을 사용할 수 있습니다.",
+    "settings.mobile-menu-side": "모바일 메뉴가 표시될 측면 전환",
+    "settings.autoHidingNavbar": "스크롤시 자동으로 네비게이션 바 숨기기",
+    "settings.autoHidingNavbar-xs": "매우 작은 화면 (예: 세로 모드의 휴대전화)",
+    "settings.autoHidingNavbar-sm": "작은 화면 (예: 일부 휴대전화, 일부 태블릿)",
+    "settings.autoHidingNavbar-md": "중간 크기 화면 (예: 가로 모드의 태블릿)",
+    "settings.autoHidingNavbar-lg": "큰 화면 (예: 데스크톱 컴퓨터)"
 }
