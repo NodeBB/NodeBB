@@ -48,4 +48,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ./.docker/config/
+      device: ./.docker/config
