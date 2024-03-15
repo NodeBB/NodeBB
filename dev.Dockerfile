@@ -62,7 +62,7 @@ COPY --from=git --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
 COPY --from=git --chown=${USER}:${USER} /usr/src/app/install/docker/setup.json /usr/src/app/setup.json
 COPY --from=git --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
 
-# TODO: Have docker-compose use environment variables to create files like setup.json.
+# TODO: Have docker-compose use environment variables to create files like setup.json and config.json.
 # COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/local/bin/gomplate
 
 USER ${USER}
