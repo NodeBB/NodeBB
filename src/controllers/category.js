@@ -26,6 +26,9 @@ const validSorts = [
 
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;
+	if (cid === '-1') {
+		return helpers.redirect(res, `/world?${qs.stringify(req.query)}`);
+	}
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	let topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;

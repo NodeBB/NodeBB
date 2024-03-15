@@ -38,7 +38,11 @@ module.exports = function (Categories) {
 
 		// Handle cid -1
 		if (cids.includes(-1)) {
-			categories.splice(cids.indexOf(-1), 1, worldCategory);
+			const subset = fields.reduce((category, field) => {
+				category[field] = worldCategory[field] || undefined;
+				return category;
+			}, {});
+			categories.splice(cids.indexOf(-1), 1, subset);
 		}
 
 		const result = await plugins.hooks.fire('filter:category.getFields', {
