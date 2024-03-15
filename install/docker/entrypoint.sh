@@ -5,16 +5,11 @@ set -e
 # Function to set default values for environment variables
 set_defaults() {
   export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
-  export CONFIG=$CONFIG_DIR/config.json
-  export FORCE_BUILD_BEFORE_START="${FORCE_BUILD_BEFORE_START:-false}"
-  export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
-  # Supported verbs: install (web install), setup (interactive CLI session). Default: web install
-  # TODO: constraint it using a hash set (or hash table)
+  export CONFIG="$CONFIG_DIR/config.json"
   export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
-  # Supported verbs: build, upgrade. Default: build
-  export NODEBB_BUILD_VERB="${NODEBB_BUILD_VERB:-build}"
-  # Setup variable for backward compatibility, default: <empty>
+  export START_BUILD="${START_BUILD:-false}"
   export SETUP="${SETUP:-}"
+  export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
   export OVERRIDE_UPDATE_LOCK="${OVERRIDE_UPDATE_LOCK:-false}"
 }
 
@@ -34,7 +29,6 @@ check_directory() {
   fi
 }
 
-
 # Function to copy or link package.json and lock files based on package manager
 copy_or_link_files() {
   local src_dir="$1"
@@ -52,12 +46,12 @@ copy_or_link_files() {
       ;;
   esac
 
-  # Copy package.json and the appropriate lock file only to dest_dir if they don't exist there
-  if [ "$OVERRIDE_UPDATE_LOCK" = true ] || [ ! -f "$dest_dir/package.json" ]; then
+  # Check if source and destination files are the same
+  if [ "$(realpath "$src_dir/package.json")" != "$(realpath "$dest_dir/package.json")" ]; then
     cp "$src_dir/package.json" "$dest_dir/package.json"
   fi
 
-  if [ "$OVERRIDE_UPDATE_LOCK" = true ] || [ ! -f "$dest_dir/$lock_file" ]; then
+  if [ "$(realpath "$src_dir/$lock_file")" != "$(realpath "$dest_dir/$lock_file")" ]; then
     cp "$src_dir/$lock_file" "$dest_dir/$lock_file"
   fi
 
@@ -91,43 +85,51 @@ install_dependencies() {
   esac
 }
 
+# Function to start setup session
 start_setup_session() {
   local config="$1"
   echo "Starting setup session"
   exec /usr/src/app/nodebb setup --config="$config"
 }
 
-# Handle building and upgrading NodeBB
-build_forum() {
-  local force_build="$1"
-  local package_hash=$(md5sum install/package.json | head -c 32)
-  if [ package_hash = "$(cat $CONFIG_DIR/install_hash.md5)" ]; then
-      echo "package.json was updated. Upgrading..."
-      /usr/src/app/nodebb upgrade --config="$config" || {
-          echo "Failed to build NodeBB. Exiting..."
-          exit 1
-        }
-  elif [ "$force_build" = true ]; then
-    echo "Build before start is enabled. Building..."
-    /usr/src/app/nodebb "${NODEBB_BUILD_VERB}" --config="$config" || {
-        echo "Failed to build NodeBB. Exiting..."
-        exit 1
-      }
-  else
-    echo "No changes in package.json. Skipping build..."
-    return
-  fi
-  echo -n $package_hash > $CONFIG_DIR/install_hash.md5
-}
-
 # Function to start forum
 start_forum() {
   local config="$1"
-  local force_build="$2"
+  local start_build="$2"
 
   echo "Starting forum"
-  build_forum "$force_build"
-  exec "$PACKAGE_MANAGER" start --config="$config" --no-silent --no-daemon
+  if [ "$start_build" = true ]; then
+    echo "Build before start is enabled. Building..."
+    /usr/src/app/nodebb build --config="$config" || {
+      echo "Failed to build NodeBB. Exiting..."
+      exit 1
+    }
+  fi
+
+  case "$PACKAGE_MANAGER" in
+    yarn)
+      yarn start --config="$config" --no-silent --no-daemon || {
+        echo "Failed to start forum with yarn"
+        exit 1
+      }
+      ;;
+    npm)
+      npm start -- --config="$config" --no-silent --no-daemon || {
+        echo "Failed to start forum with npm"
+        exit 1
+      }
+      ;;
+    pnpm)
+      pnpm start -- --config="$config" --no-silent --no-daemon || {
+        echo "Failed to start forum with pnpm"
+        exit 1
+      }
+      ;;
+    *)
+      echo "Unknown package manager: $PACKAGE_MANAGER"
+      exit 1
+      ;;
+  esac
 }
 
 # Function to start installation session
@@ -146,7 +148,7 @@ debug_log() {
   echo "DEBUG: $message"
 }
 
-
+# Main function
 main() {
   set_defaults
   check_directory "$CONFIG_DIR"
@@ -155,14 +157,14 @@ main() {
 
   debug_log "PACKAGE_MANAGER: $PACKAGE_MANAGER"
   debug_log "CONFIG location: $CONFIG"
-  debug_log "FORCE_BUILD: $FORCE_BUILD_BEFORE_START"
+  debug_log "START_BUILD: $START_BUILD"
 
   if [ -n "$SETUP" ]; then
     start_setup_session "$CONFIG"
   fi
 
   if [ -f "$CONFIG" ]; then
-    start_forum "$CONFIG" "$FORCE_BUILD_BEFORE_START"
+    start_forum "$CONFIG" "$START_BUILD"
   else
     start_installation_session "$NODEBB_INIT_VERB" "$CONFIG"
   fi
