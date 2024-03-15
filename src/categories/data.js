@@ -38,11 +38,14 @@ module.exports = function (Categories) {
 
 		// Handle cid -1
 		if (cids.includes(-1)) {
-			const subset = fields.reduce((category, field) => {
-				category[field] = worldCategory[field] || undefined;
-				return category;
-			}, {});
-			categories.splice(cids.indexOf(-1), 1, subset);
+			let subset = null;
+			if (fields && fields.length) {
+				subset = fields.reduce((category, field) => {
+					category[field] = worldCategory[field] || undefined;
+					return category;
+				}, {});
+			}
+			categories.splice(cids.indexOf(-1), 1, subset || worldCategory);
 		}
 
 		const result = await plugins.hooks.fire('filter:category.getFields', {
