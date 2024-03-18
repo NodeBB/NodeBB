@@ -25,12 +25,6 @@ privilegesController.get = async function (req, res) {
 		cid: 'admin',
 		name: '[[admin/manage/privileges:admin]]',
 		icon: 'fa-lock',
-	}, {
-		cid: -1,
-		name: '[[activitypub:category.name]]',
-		icon: 'fa-globe',
-		bgColor: '#0000ff',
-		color: '#ffffff',
 	}];
 
 	let selectedCategory;
