@@ -55,8 +55,8 @@ Tags.parse = async (req, data, meta, link) => {
 		});
 	}
 
-	const faviconPath = `${relative_path}/assets/uploads/system/favicon.ico`;
-	const cacheBuster = `${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`;
+	const faviconPath = Meta.config['brand:favicon'] || `${relative_path}/assets/uploads/system/favicon.ico`;
+	const cacheBuster = Meta.config['cache-buster'] || '';
 
 	// Link Tags
 	const defaultLinks = [{
