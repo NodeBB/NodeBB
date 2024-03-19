@@ -53,6 +53,8 @@ WORKDIR /usr/src/app/
 
 COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
 COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
+COPY --from=node_modules_touch --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
+COPY --from=git --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
 
 RUN corepack enable \
     && groupadd --gid ${GID} ${USER} \
@@ -61,9 +63,6 @@ RUN corepack enable \
     && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/ \
     && chmod +x /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/tini
-
-COPY --from=node_modules_touch --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
-COPY --from=git --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
 
 # TODO: Have docker-compose use environment variables to create files like setup.json and config.json.
 # COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/local/bin/gomplate
