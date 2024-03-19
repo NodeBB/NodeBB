@@ -59,7 +59,7 @@ RUN corepack enable \
     && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
     && mkdir -p /usr/src/app/logs/ /opt/config/ \
     && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/ \
-    && chmod +x /usr/src/app/install/docker/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/tini
 
 COPY --from=node_modules_touch --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
