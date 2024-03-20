@@ -22,7 +22,7 @@
 	"no-description": "Brak opisu.",
 	"actions": "Akcje",
 	"edit": "Edytuj",
-	"roll": "Roll",
+	"roll": "Wygeneruj ponownie",
 
 	"delete-confirm": "Czy na pewno chcesz usunąć ten token? Tego nie da się odwrócić.",
 	"roll-confirm": "Czy na pewno chcesz wygenerować ponownie ten token? Stary token zostanie natychmiast odwołany i będzie nie do odzyskania."
