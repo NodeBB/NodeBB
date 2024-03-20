@@ -5,6 +5,9 @@ const winston = require('winston');
 const db = require('../database');
 const user = require('../user');
 const utils = require('../utils');
+const TTLCache = require('../cache/ttl');
+
+const failedWebfingerCache = TTLCache({ ttl: 1000 * 60 * 10 }); // 10 minutes
 
 const activitypub = module.parent.exports;
 
@@ -17,14 +20,17 @@ Actors.assert = async (ids, options = {}) => {
 	}
 
 	// Filter out uids if passed in
-	ids = ids.filter(id => !utils.isNumber(id));
+	ids = ids.filter(id => !utils.isNumber(id) && !failedWebfingerCache.has(id));
 
 	// Translate webfinger handles to uris
 	ids = await Promise.all(ids.map(async (id) => {
+		const originalId = id;
 		if (id.includes('@')) {
 			({ actorUri: id } = await activitypub.helpers.query(id));
 		}
-
+		if (!id) {
+			failedWebfingerCache.set(originalId, true);
+		}
 		return id;
 	}));
 
