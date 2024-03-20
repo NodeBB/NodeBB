@@ -123,7 +123,7 @@
         "rimraf": "5.0.5",
         "rss": "1.2.2",
         "rtlcss": "4.1.1",
-        "sanitize-html": "2.12.1",
+        "sanitize-html": "2.13.0",
         "sass": "1.72.0",
         "semver": "7.6.0",
         "serve-favicon": "2.5.0",
