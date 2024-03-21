@@ -10,7 +10,6 @@ const posts = require('../posts');
 const topics = require('../topics');
 const categories = require('../categories');
 const notifications = require('../notifications');
-const utils = require('../utils');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -155,7 +154,7 @@ inbox.announce = async (req) => {
 	await topics.events.log(tid, {
 		type: 'announce',
 		uid: actor,
-		href: utils.isNumber(pid) ? `/post/${pid}` : pid,
+		href: `/post/${pid}`,
 		pid,
 		timestamp,
 	});

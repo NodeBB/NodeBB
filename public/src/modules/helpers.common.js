@@ -25,7 +25,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 		userAgentIcons,
 		buildAvatar,
 		increment,
-		generatePostUrl,
 		generateRepliedTo,
 		generateWrote,
 		isoTimeToLocaleString,
@@ -336,24 +335,18 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return String(value + parseInt(inc, 10));
 	}
 
-	function generatePostUrl(post, property = 'pid') {
-		return utils.isNumber(post[property]) ? `${relative_path}/post/${post[property]}` : post[property];
-	}
-
 	function generateRepliedTo(post, timeagoCutoff) {
 		const displayname = post.parent && post.parent.displayname ?
 			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		const url = generatePostUrl(post, 'toPid');
-		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${url}, ${displayname}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${post.toPid}, ${displayname}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
 	}
 
 	function generateWrote(post, timeagoCutoff) {
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		const url = generatePostUrl(post);
-		return `[[topic:wrote-${langSuffix}, ${url}, ${post.timestampISO}]]`;
+		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
 	}
 
 	function isoTimeToLocaleString(isoTime, locale = 'en-GB') {
