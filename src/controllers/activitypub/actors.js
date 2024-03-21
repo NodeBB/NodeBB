@@ -64,7 +64,7 @@ Actors.note = async function (req, res) {
 
 Actors.topic = async function (req, res) {
 	// When queried, a topic more or less returns the main pid's note representation
-	const allowed = utils.isNumber(req.params.pid) && await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
+	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
 	const { mainPid, slug } = await topics.getTopicFields(req.params.tid, ['mainPid', 'slug']);
 	const post = (await posts.getPostSummaryByPids([mainPid], req.uid, { stripTags: false })).pop();
 	if (!allowed || !post) {
