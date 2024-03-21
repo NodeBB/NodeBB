@@ -154,7 +154,7 @@ inbox.announce = async (req) => {
 	await topics.events.log(tid, {
 		type: 'announce',
 		uid: actor,
-		href: `/post/${pid}`,
+		href: `/post/${encodeURIComponent(pid)}`,
 		pid,
 		timestamp,
 	});
