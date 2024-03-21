@@ -15,12 +15,13 @@ const intFields = [
 
 const worldCategory = {
 	cid: -1,
-	name: 'World',
-	description: '[[error:invalid-data]]',
-	descriptionParsed: 'what',
+	name: 'Uncategorized',
+	description: 'tbd',
+	descriptionParsed: 'tbd',
 	icon: 'fa-globe',
-	bgColor: '#0000ff',
-	color: '#ffffff',
+	imageClass: 'cover',
+	bgColor: '#eee',
+	color: '#333',
 	slug: '../world',
 	parentCid: 0,
 	disabled: 0, // todo
