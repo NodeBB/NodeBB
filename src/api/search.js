@@ -29,10 +29,9 @@ searchApi.categories = async (caller, data) => {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
 	} else {
 		cids = await loadCids(caller.uid, data.parentCid);
-	}
-
-	if (meta.config.activitypubEnabled) {
-		cids.unshift(-1);
+		if (meta.config.activitypubEnabled) {
+			cids.unshift(-1);
+		}
 	}
 
 	const visibleCategories = await controllersHelpers.getVisibleCategories({
