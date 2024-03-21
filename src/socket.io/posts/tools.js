@@ -36,7 +36,8 @@ module.exports = function (SocketPosts) {
 		});
 
 		const postData = results.posts;
-		postData.absolute_url = `${nconf.get('url')}/post/${data.pid}`;
+		postData.pid = data.pid;
+		postData.absolute_url = `${nconf.get('url')}/post/${encodeURIComponent(data.pid)}`;
 		postData.bookmarked = results.bookmarked;
 		postData.selfPost = socket.uid && socket.uid === postData.uid;
 		postData.display_edit_tools = results.canEdit.flag;
@@ -48,6 +49,7 @@ module.exports = function (SocketPosts) {
 		postData.display_change_owner_tools = results.isAdmin || results.isModerator;
 		postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
 		postData.display_history = results.history && results.canViewHistory;
+		postData.display_original_url = !utils.isNumber(data.pid);
 		postData.flags = {
 			flagId: parseInt(results.posts.flagId, 10) || null,
 			can: results.canFlag.flag,
