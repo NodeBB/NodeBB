@@ -143,7 +143,7 @@ ActivityPub.sign = async ({ key, keyId }, url, payload) => {
 	return {
 		date,
 		digest,
-		signature: `keyId="${keyId}",headers="${headers}",signature="${signature}"`,
+		signature: `keyId="${keyId}",headers="${headers}",signature="${signature}",algorithm="rsa-sha256"`,
 	};
 };
 
