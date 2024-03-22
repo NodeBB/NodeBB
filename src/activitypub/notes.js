@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 const crypto = require('crypto');
+const nconf = require('nconf');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -15,15 +16,15 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
-Notes.assert = async (uid, id) => {
+Notes.assert = async (uid, id, object) => {
 	/**
-	 * Given the id of any post, traverses up to cache the entire threaded context
+	 * Given the id (or optional AS object) of any post, traverses up to cache the entire threaded context
 	 *
 	 * Unfortunately, due to limitations and fragmentation of the existing ActivityPub landscape,
 	 * retrieving the entire reply tree is not possible at this time.
 	 */
 
-	const chain = Array.from(await Notes.getParentChain(uid, id));
+	const chain = Array.from(await Notes.getParentChain(uid, object || id));
 	if (!chain.length) {
 		return null;
 	}
@@ -124,6 +125,19 @@ Notes.assert = async (uid, id) => {
 			Notes.updateLocalRecipients(post.pid, { to, cc }),
 			Notes.saveAttachments(post.pid, attachment),
 		]);
+
+		// Category announce
+		if (id === post.id) {
+			// eslint-disable-next-line no-await-in-loop
+			const followers = await activitypub.notes.getCategoryFollowers(cid);
+			// eslint-disable-next-line no-await-in-loop
+			await activitypub.send('cid', cid, followers, {
+				type: 'Announce',
+				to: [`${nconf.get('url')}/category/${cid}/followers`],
+				cc: [activitypub._constants.publicAddress],
+				object,
+			});
+		}
 	}
 
 	await Notes.syncUserInboxes(tid);
@@ -213,9 +227,9 @@ Notes.getParentChain = async (uid, input) => {
 				}
 			}
 		} else {
-			let object;
+			let object = !activitypub.helpers.isUri(input) && input.id === id ? input : undefined;
 			try {
-				object = await activitypub.get('uid', uid, id);
+				object = object || await activitypub.get('uid', uid, id);
 
 				// Handle incorrect id passed in
 				if (id !== object.id) {

@@ -123,7 +123,9 @@ activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
 	};
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payloads.create);
-	await activitypub.send('cid', cid, followers, payloads.announce);
+	if (followers.length) {
+		await activitypub.send('cid', cid, followers, payloads.announce);
+	}
 });
 
 activitypubApi.update = {};
