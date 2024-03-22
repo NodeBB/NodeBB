@@ -20,6 +20,16 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="cid-{category.cid}-handle">
+						[[admin/manage/categories:handle]]
+					</label>
+					<input id="cid-{category.cid}-handle" type="text" class="form-control" data-name="handle" value="{category.handle}" />
+					<p class="form-text">
+						[[admin/manage/categories:handle.help]]
+					</p>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-description">
 						[[admin/manage/categories:description]]
 					</label>

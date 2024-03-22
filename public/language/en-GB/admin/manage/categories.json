@@ -7,6 +7,8 @@
 	"privileges": "Privileges",
 	"back-to-categories": "Back to categories",
 	"name": "Category Name",
+	"handle": "Category Handle",
+	"handle.help": "Your category handle is used as a representation of this category across other networks, similar to a username. A category handle must not match an existing username or user group.",
 	"description": "Category Description",
 	"bg-color": "Background Colour",
 	"text-color": "Text Colour",
