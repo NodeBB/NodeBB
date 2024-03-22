@@ -254,3 +254,11 @@ Notes.syncUserInboxes = async function (tid) {
 	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid);
 };
+
+Notes.getCategoryFollowers = async (cid) => {
+	// Retrieves remote users who have followed a category; used to build recipient list
+	let uids = await db.getSortedSetRangeByScore(`cid:${cid}:uid:watch:state`, 0, -1, categories.watchStates.tracking, categories.watchStates.tracking);
+	uids = uids.filter(uid => !utils.isNumber(uid));
+
+	return uids;
+};

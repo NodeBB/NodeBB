@@ -104,15 +104,26 @@ activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
 
 	const object = await activitypub.mocks.note(post);
 	const { targets } = await buildRecipients(object, post.user.uid);
+	const { cid } = post.category;
+	const followers = await activitypub.notes.getCategoryFollowers(cid);
 
-	const payload = {
-		type: 'Create',
-		to: object.to,
-		cc: object.cc,
-		object,
+	const payloads = {
+		create: {
+			type: 'Create',
+			to: object.to,
+			cc: object.cc,
+			object,
+		},
+		announce: {
+			type: 'Announce',
+			to: [`${nconf.get('url')}/category/${cid}/followers`],
+			cc: [activitypub._constants.publicAddress],
+			object,
+		},
 	};
 
-	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
+	await activitypub.send('uid', caller.uid, Array.from(targets), payloads.create);
+	await activitypub.send('cid', cid, followers, payloads.announce);
 });
 
 activitypubApi.update = {};
