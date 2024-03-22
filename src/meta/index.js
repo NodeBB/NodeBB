@@ -24,7 +24,6 @@ Meta.templates = require('./templates');
 Meta.blacklist = require('./blacklist');
 Meta.languages = require('./languages');
 
-
 Meta.slugTaken = async function (slug) {
 	if (!slug) {
 		throw new Error('[[error:invalid-data]]');
@@ -40,6 +39,7 @@ Meta.slugTaken = async function (slug) {
 	]);
 	return exists.some(Boolean);
 };
+Meta.userOrGroupExists = Meta.slugTaken; // backwards compatiblity
 
 if (nconf.get('isPrimary')) {
 	pubsub.on('meta:restart', (data) => {
