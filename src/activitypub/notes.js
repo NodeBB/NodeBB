@@ -16,15 +16,16 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
-Notes.assert = async (uid, id, object) => {
+Notes.assert = async (uid, input) => {
 	/**
-	 * Given the id (or optional AS object) of any post, traverses up to cache the entire threaded context
+	 * Given the id or object of any as:Note, traverses up to cache the entire threaded context
 	 *
 	 * Unfortunately, due to limitations and fragmentation of the existing ActivityPub landscape,
 	 * retrieving the entire reply tree is not possible at this time.
 	 */
 
-	const chain = Array.from(await Notes.getParentChain(uid, object || id));
+	const object = !activitypub.helpers.isUri(input) && input;
+	const chain = Array.from(await Notes.getParentChain(uid, input));
 	if (!chain.length) {
 		return null;
 	}
@@ -127,7 +128,7 @@ Notes.assert = async (uid, id, object) => {
 		]);
 
 		// Category announce
-		if (id === post.pid) {
+		if (object && object.id === post.pid) {
 			// eslint-disable-next-line no-await-in-loop
 			const followers = await activitypub.notes.getCategoryFollowers(cid);
 			// eslint-disable-next-line no-await-in-loop
