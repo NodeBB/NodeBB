@@ -15,6 +15,122 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
+Notes.assert = async (uid, id) => {
+	/**
+	 * Given the id of any post, traverses up to cache the entire threaded context
+	 *
+	 * Unfortunately, due to limitations and fragmentation of the existing ActivityPub landscape,
+	 * retrieving the entire reply tree is not possible at this time.
+	 */
+
+	const chain = Array.from(await Notes.getParentChain(uid, id));
+	if (!chain.length) {
+		return null;
+	}
+
+	const mainPost = chain[chain.length - 1];
+	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = mainPost;
+	const hasTid = !!tid;
+
+	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(0, -1).map(p => p.pid));
+	members.push(await posts.exists(mainPid));
+	if (tid && members.every(Boolean)) {
+		// All cached, return early.
+		winston.verbose('[notes/assert] No new notes to process.');
+		return tid;
+	}
+
+	let cid;
+	let title;
+	if (hasTid) {
+		({ cid, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']));
+	} else {
+		// mainPid ok to leave as-is
+		cid = -1;
+		title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
+		if (title.length > meta.config.maximumTitleLength) {
+			title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
+		}
+	}
+	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
+
+	// Privilege check for local categories
+	const privilege = `topics:${tid ? 'reply' : 'create'}`;
+	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
+	if (!allowed) {
+		return null;
+	}
+
+	tid = tid || utils.generateUUID();
+	mainPost.tid = tid;
+
+	const unprocessed = chain.map((post) => {
+		post.tid = tid; // add tid to post hash
+		return post;
+	}).filter((p, idx) => !members[idx]);
+	const count = unprocessed.length;
+	winston.verbose(`[notes/assert] ${count} new note(s) found.`);
+
+	const [ids, timestamps] = [
+		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
+		unprocessed.map(n => n.timestamp),
+	];
+
+	// mainPid doesn't belong in posts zset
+	if (ids.includes(mainPid)) {
+		const idx = ids.indexOf(mainPid);
+		ids.splice(idx, 1);
+		timestamps.splice(idx, 1);
+	}
+
+	let tags;
+	if (!hasTid) {
+		const { to, cc, attachment } = mainPost._activitypub;
+		const systemTags = (meta.config.systemTags || '').split(',');
+		const maxTags = await categories.getCategoryField(cid, 'maxTags');
+		tags = (mainPost._activitypub.tag || [])
+			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name.slice(1)))
+			.map(o => o.name.slice(1));
+
+		if (maxTags && tags.length > maxTags) {
+			tags.length = maxTags;
+		}
+
+		await Promise.all([
+			topics.post({
+				tid,
+				uid: authorId,
+				cid,
+				pid: mainPid,
+				title,
+				timestamp,
+				tags,
+				content: mainPost.content,
+				_activitypub: mainPost._activitypub,
+			}),
+			Notes.updateLocalRecipients(mainPid, { to, cc }),
+			Notes.saveAttachments(mainPid, attachment),
+		]);
+		unprocessed.pop();
+	}
+
+	unprocessed.reverse();
+	for (const post of unprocessed) {
+		const { to, cc, attachment } = post._activitypub;
+
+		// eslint-disable-next-line no-await-in-loop
+		await Promise.all([
+			topics.reply(post),
+			Notes.updateLocalRecipients(post.pid, { to, cc }),
+			Notes.saveAttachments(post.pid, attachment),
+		]);
+	}
+
+	await Notes.syncUserInboxes(tid);
+
+	return { tid, count };
+};
+
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
 	const recipients = new Set([...(to || []), ...(cc || [])]);
 	const uids = new Set();
@@ -121,122 +237,6 @@ Notes.getParentChain = async (uid, input) => {
 
 	await traverse(uid, id);
 	return chain;
-};
-
-Notes.assertTopic = async (uid, id) => {
-	/**
-	 * Given the id of any post, traverses up to cache the entire threaded context
-	 *
-	 * Unfortunately, due to limitations and fragmentation of the existing ActivityPub landscape,
-	 * retrieving the entire reply tree is not possible at this time.
-	 */
-
-	const chain = Array.from(await Notes.getParentChain(uid, id));
-	if (!chain.length) {
-		return null;
-	}
-
-	const mainPost = chain[chain.length - 1];
-	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = mainPost;
-	const hasTid = !!tid;
-
-	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(0, -1).map(p => p.pid));
-	members.push(await posts.exists(mainPid));
-	if (tid && members.every(Boolean)) {
-		// All cached, return early.
-		winston.verbose('[notes/assertTopic] No new notes to process.');
-		return tid;
-	}
-
-	let cid;
-	let title;
-	if (hasTid) {
-		({ cid, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']));
-	} else {
-		// mainPid ok to leave as-is
-		cid = -1;
-		title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
-		if (title.length > meta.config.maximumTitleLength) {
-			title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
-		}
-	}
-	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
-
-	// Privilege check for local categories
-	const privilege = `topics:${tid ? 'reply' : 'create'}`;
-	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
-	if (!allowed) {
-		return null;
-	}
-
-	tid = tid || utils.generateUUID();
-	mainPost.tid = tid;
-
-	const unprocessed = chain.map((post) => {
-		post.tid = tid; // add tid to post hash
-		return post;
-	}).filter((p, idx) => !members[idx]);
-	const count = unprocessed.length;
-	winston.verbose(`[notes/assertTopic] ${count} new note(s) found.`);
-
-	const [ids, timestamps] = [
-		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
-		unprocessed.map(n => n.timestamp),
-	];
-
-	// mainPid doesn't belong in posts zset
-	if (ids.includes(mainPid)) {
-		const idx = ids.indexOf(mainPid);
-		ids.splice(idx, 1);
-		timestamps.splice(idx, 1);
-	}
-
-	let tags;
-	if (!hasTid) {
-		const { to, cc, attachment } = mainPost._activitypub;
-		const systemTags = (meta.config.systemTags || '').split(',');
-		const maxTags = await categories.getCategoryField(cid, 'maxTags');
-		tags = (mainPost._activitypub.tag || [])
-			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name.slice(1)))
-			.map(o => o.name.slice(1));
-
-		if (maxTags && tags.length > maxTags) {
-			tags.length = maxTags;
-		}
-
-		await Promise.all([
-			topics.post({
-				tid,
-				uid: authorId,
-				cid,
-				pid: mainPid,
-				title,
-				timestamp,
-				tags,
-				content: mainPost.content,
-				_activitypub: mainPost._activitypub,
-			}),
-			Notes.updateLocalRecipients(mainPid, { to, cc }),
-			Notes.saveAttachments(mainPid, attachment),
-		]);
-		unprocessed.pop();
-	}
-
-	unprocessed.reverse();
-	for (const post of unprocessed) {
-		const { to, cc, attachment } = post._activitypub;
-
-		// eslint-disable-next-line no-await-in-loop
-		await Promise.all([
-			topics.reply(post),
-			Notes.updateLocalRecipients(post.pid, { to, cc }),
-			Notes.saveAttachments(post.pid, attachment),
-		]);
-	}
-
-	await Notes.syncUserInboxes(tid);
-
-	return { tid, count };
 };
 
 Notes.syncUserInboxes = async function (tid) {
