@@ -127,7 +127,7 @@ Notes.assert = async (uid, id, object) => {
 		]);
 
 		// Category announce
-		if (id === post.id) {
+		if (id === post.pid) {
 			// eslint-disable-next-line no-await-in-loop
 			const followers = await activitypub.notes.getCategoryFollowers(cid);
 			// eslint-disable-next-line no-await-in-loop
