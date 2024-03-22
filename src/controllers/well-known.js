@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 
+const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const privileges = require('../privileges');
@@ -42,13 +43,15 @@ Controller.webfinger = async (req, res) => {
 
 function application(response) {
 	response.aliases = [nconf.get('url')];
-	response.links = [
-		{
+	response.links = [];
+
+	if (meta.config.activitypubEnabled) {
+		response.links.push({
 			rel: 'self',
 			type: 'application/activity+json',
 			href: `${nconf.get('url')}/actor`, // actor
-		},
-	];
+		});
+	}
 
 	return response;
 }
@@ -67,16 +70,19 @@ async function profile(callerUid, uid, response) {
 
 	response.links = [
 		{
-			rel: 'self',
-			type: 'application/activity+json',
-			href: `${nconf.get('url')}/uid/${uid}`, // actor
-		},
-		{
 			rel: 'http://webfinger.net/rel/profile-page',
 			type: 'text/html',
 			href: `${nconf.get('url')}/user/${slug}`,
 		},
 	];
+
+	if (meta.config.activitypubEnabled) {
+		response.links.push({
+			rel: 'self',
+			type: 'application/activity+json',
+			href: `${nconf.get('url')}/uid/${uid}`, // actor
+		});
+	}
 
 	return response;
 }
@@ -89,13 +95,15 @@ async function category(callerUid, cid, response) {
 	const slug = await categories.getCategoryField(cid, 'slug');
 
 	response.aliases = [`${nconf.get('url')}/category/${slug}`];
-	response.links = [
-		{
+	response.links = [];
+
+	if (meta.config.activitypubEnabled) {
+		response.links.push({
 			rel: 'self',
 			type: 'application/activity+json',
 			href: `${nconf.get('url')}/category/${cid}`, // actor
-		},
-	];
+		});
+	}
 
 	return response;
 }
