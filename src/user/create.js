@@ -184,7 +184,7 @@ module.exports = function (User) {
 		let { username } = userData;
 		while (true) {
 			/* eslint-disable no-await-in-loop */
-			const exists = await meta.userOrGroupExists(username);
+			const exists = await meta.slugTaken(username);
 			if (!exists) {
 				return numTries ? username : null;
 			}

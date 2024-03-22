@@ -19,18 +19,21 @@ Controller.webfinger = async (req, res) => {
 
 	// Get the slug
 	const slug = resource.slice(5, resource.length - (host.length + 1));
-	const uid = await user.getUidByUserslug(slug);
+	const [uid, cid] = await Promise.all([
+		user.getUidByUserslug(slug),
+		categories.getCidByHandle(slug),
+	]);
 	let response = {
 		subject: `acct:${slug}@${host}`,
 	};
 
 	try {
-		if (slug.startsWith('cid.')) {
-			response = await category(req.uid, slug.slice(4), response);
-		} else if (slug === hostname) {
+		if (slug === hostname) {
 			response = application(response);
 		} else if (uid) {
 			response = await profile(req.uid, uid, response);
+		} else if (cid) {
+			response = await category(req.uid, cid, response);
 		} else {
 			return res.sendStatus(404);
 		}

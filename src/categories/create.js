@@ -5,6 +5,7 @@ const _ = require('lodash');
 
 const db = require('../database');
 const plugins = require('../plugins');
+const meta = require('../meta');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -20,6 +21,7 @@ module.exports = function (Categories) {
 
 		data.name = String(data.name || `Category ${cid}`);
 		const slug = `${cid}/${slugify(data.name)}`;
+		const handle = await Categories.generateHandle(slugify(data.name));
 		const smallestOrder = firstChild.length ? firstChild[0].score - 1 : 1;
 		const order = data.order || smallestOrder; // If no order provided, place it at the top
 		const colours = Categories.assignColours();
@@ -27,6 +29,7 @@ module.exports = function (Categories) {
 		let category = {
 			cid: cid,
 			name: data.name,
+			handle,
 			description: data.description ? data.description : '',
 			descriptionParsed: data.descriptionParsed ? data.descriptionParsed : '',
 			icon: data.icon ? data.icon : '',
@@ -145,6 +148,19 @@ module.exports = function (Categories) {
 
 		await async.each(children, Categories.create);
 	}
+
+	async function generateHandle(slug) {
+		let taken = await meta.slugTaken(slug);
+		let suffix;
+		while (taken) {
+			suffix = utils.generateUUID().slice(0, 8);
+			// eslint-disable-next-line no-await-in-loop
+			taken = await meta.slugTaken(`${slug}-${suffix}`);
+		}
+
+		return `${slug}${suffix ? `-${suffix}` : ''}`;
+	}
+	Categories.generateHandle = generateHandle; // exported for upgrade script (4.0.0)
 
 	Categories.assignColours = function () {
 		const backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];

@@ -25,19 +25,20 @@ Meta.blacklist = require('./blacklist');
 Meta.languages = require('./languages');
 
 
-/* Assorted */
-Meta.userOrGroupExists = async function (slug) {
+Meta.slugTaken = async function (slug) {
 	if (!slug) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const user = require('../user');
-	const groups = require('../groups');
+
+	const [user, groups, categories] = [require('../user'), require('../groups'), require('../categories')];
 	slug = slugify(slug);
-	const [userExists, groupExists] = await Promise.all([
+
+	const exists = await Promise.all([
 		user.existsBySlug(slug),
 		groups.existsBySlug(slug),
+		categories.existsByHandle(slug),
 	]);
-	return userExists || groupExists;
+	return exists.some(Boolean);
 };
 
 if (nconf.get('isPrimary')) {
