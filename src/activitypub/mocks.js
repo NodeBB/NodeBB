@@ -170,7 +170,10 @@ Mocks.actors.user = async (uid) => {
 };
 
 Mocks.actors.category = async (cid) => {
-	let { name, slug, description: summary, backgroundImage } = await categories.getCategoryData(cid);
+	let {
+		name, handle: preferredUsername, slug,
+		description: summary, backgroundImage,
+	} = await categories.getCategoryData(cid);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
 	backgroundImage = backgroundImage || meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
@@ -193,7 +196,7 @@ Mocks.actors.category = async (cid) => {
 
 		type: 'Group',
 		name,
-		preferredUsername: `cid.${cid}`,
+		preferredUsername,
 		summary,
 		icon: backgroundImage,
 
