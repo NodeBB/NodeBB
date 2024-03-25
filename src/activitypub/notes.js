@@ -16,6 +16,15 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
+async function lock(value) {
+	const count = await db.incrObjectField('locks', value);
+	return count <= 1;
+}
+
+async function unlock(value) {
+	await db.deleteObjectField('locks', value);
+}
+
 Notes.assert = async (uid, input) => {
 	/**
 	 * Given the id or object of any as:Note, traverses up to cache the entire threaded context
@@ -25,8 +34,16 @@ Notes.assert = async (uid, input) => {
 	 */
 
 	const object = !activitypub.helpers.isUri(input) && input;
+	const id = object ? object.id : input;
+
+	const lockStatus = await lock(id, '[[error:activitypub.already-asserting]]');
+	if (!lockStatus) { // unable to achieve lock, stop processing.
+		return null;
+	}
+
 	const chain = Array.from(await Notes.getParentChain(uid, input));
 	if (!chain.length) {
+		unlock(id);
 		return null;
 	}
 
@@ -39,6 +56,7 @@ Notes.assert = async (uid, input) => {
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
 		winston.verbose('[notes/assert] No new notes to process.');
+		unlock(id);
 		return tid;
 	}
 
@@ -60,6 +78,7 @@ Notes.assert = async (uid, input) => {
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
 	if (!allowed) {
+		unlock(id);
 		return null;
 	}
 
@@ -141,7 +160,10 @@ Notes.assert = async (uid, input) => {
 		}
 	}
 
-	await Notes.syncUserInboxes(tid);
+	await Promise.all([
+		Notes.syncUserInboxes(tid),
+		unlock(id),
+	]);
 
 	return { tid, count };
 };
