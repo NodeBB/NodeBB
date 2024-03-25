@@ -17,6 +17,17 @@ const helpers = require('./helpers');
 
 const inbox = module.exports;
 
+function reject(type, object, target, senderType = 'uid', id = 0) {
+	activitypub.send(senderType, id, target, {
+		type: 'Reject',
+		object: {
+			type,
+			target,
+			object,
+		},
+	});
+}
+
 inbox.create = async (req) => {
 	const { object } = req.body;
 
@@ -50,14 +61,7 @@ inbox.update = async (req) => {
 					await activitypub.notes.assert(0, object.id);
 				}
 			} catch (e) {
-				activitypub.send('uid', 0, actor, {
-					type: 'Reject',
-					object: {
-						type: 'Update',
-						actor,
-						object,
-					},
-				});
+				reject('Update', object, actor);
 			}
 			break;
 		}
@@ -72,25 +76,15 @@ inbox.update = async (req) => {
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
 	const { type, id } = await activitypub.helpers.resolveLocalId(object);
-	const reject = () => {
-		activitypub.send('uid', 0, actor, {
-			type: 'Reject',
-			object: {
-				type: 'Like',
-				actor,
-				object,
-			},
-		});
-	};
 
 	if (type !== 'post' || !(await posts.exists(id))) {
-		return reject();
+		return reject('Like', object, actor);
 	}
 
 	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 	if (!allowed) {
 		winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
-		return reject();
+		return reject('Like', object, actor);
 	}
 
 	winston.info(`[activitypub/inbox/like] id ${id} via ${actor}`);
@@ -208,14 +202,7 @@ inbox.follow = async (req) => {
 			throw new Error('[[error:invalid-cid]]');
 		}
 		if (!allowed) {
-			return activitypub.send('uid', 0, actor, {
-				type: 'Reject',
-				object: {
-					type: 'Follow',
-					actor,
-					object,
-				},
-			});
+			return reject('Follow', object, actor);
 		}
 
 		const watchState = await categories.getWatchState([id], actor);
@@ -321,14 +308,7 @@ inbox.undo = async (req) => {
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 			if (!allowed) {
 				winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
-				activitypub.send('uid', 0, actor, {
-					type: 'Reject',
-					object: {
-						type: 'Like',
-						actor,
-						object,
-					},
-				});
+				reject('Like', object, actor);
 				break;
 			}
 
