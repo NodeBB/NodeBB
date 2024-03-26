@@ -318,15 +318,12 @@ Notes.syncUserInboxes = async function (tid) {
 	]);
 	pids.unshift(mainPid);
 
-	const uids = await db.getSortedSetUnion({
-		sets: pids.map(id => `post:${id}:recipients`),
-		start: 0,
-		stop: -1,
-	});
-	const keys = uids.map(uid => `uid:${uid}:inbox`);
+	const recipients = await db.getSetsMembers(pids.map(id => `post:${id}:recipients`));
+	const uids = recipients.reduce((set, uids) => new Set([...set, ...uids.map(u => parseInt(u, 10))]), new Set());
+	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
-	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.length} inboxes`);
+	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid);
 };
 
