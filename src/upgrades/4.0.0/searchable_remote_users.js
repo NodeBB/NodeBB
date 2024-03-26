@@ -1,3 +1,5 @@
+// REMOVE THIS PRIOR TO 4.0 ALPHA
+
 'use strict';
 
 const db = require('../../database');

@@ -50,6 +50,12 @@ module.exports = function (Topics) {
 			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 		];
+		const countedSortedSetKeys = [
+			...['views', 'posts', 'votes'].map(prop => `${topicData.cid === -1 ? 'topicsRemote' : 'topics'}:${prop}`),
+			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:posts`,
+			`cid:${topicData.cid}:tids:views`,
+		];
 
 		const scheduled = timestamp > Date.now();
 		if (scheduled) {
@@ -58,12 +64,7 @@ module.exports = function (Topics) {
 
 		await Promise.all([
 			db.sortedSetsAdd(timestampedSortedSetKeys, timestamp, topicData.tid),
-			db.sortedSetsAdd([
-				'topics:views', 'topics:posts', 'topics:votes',
-				`cid:${topicData.cid}:tids:votes`,
-				`cid:${topicData.cid}:tids:posts`,
-				`cid:${topicData.cid}:tids:views`,
-			], 0, topicData.tid),
+			db.sortedSetsAdd(countedSortedSetKeys, 0, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
 			db.incrObjectField('global', 'topicCount'),
