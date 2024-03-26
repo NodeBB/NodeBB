@@ -107,6 +107,7 @@ inbox.announce = async (req) => {
 	let pid;
 
 	if (String(object).startsWith(nconf.get('url'))) {
+		// Local object
 		const { type, id } = await activitypub.helpers.resolveLocalId(object);
 		if (type !== 'post' || !(await posts.exists(id))) {
 			throw new Error('[[error:activitypub.invalid-id]]');
@@ -117,13 +118,21 @@ inbox.announce = async (req) => {
 
 		socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
 	} else {
+		// Remote object
+		const isFollowed = await db.sortedSetCard(`followersRemote:${actor}`);
+		if (!isFollowed) {
+			winston.info(`[activitypub/inbox.announce] Rejecting ${object} via ${actor} due to no followers`);
+			reject('Announce', object, actor);
+			return;
+		}
+
 		pid = object;
 		pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
 		if (!pid) {
 			return;
 		}
 
-		({ tid } = await activitypub.notes.assert(0, pid));
+		({ tid } = await activitypub.notes.assert(0, pid, { skipChecks: true })); // checks skipped; done above.
 		if (!tid) {
 			return;
 		}
