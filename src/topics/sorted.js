@@ -159,18 +159,24 @@ module.exports = function (Topics) {
 			return tids;
 		}
 
-		const topicData = await Topics.getTopicsFields(tids, [
-			'tid', 'timestamp', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
-		]);
-		const sortMap = {
-			recent: sortRecent,
-			old: sortOld,
-			create: sortCreate,
-			posts: sortPopular,
-			votes: sortVotes,
-			views: sortViews,
-		};
-		const sortFn = sortMap[params.sort] || sortRecent;
+		const { sortMap, fields } = await plugins.hooks.fire('filter:topics.sortOptions', {
+			params,
+			fields: [
+				'tid', 'timestamp', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
+			],
+			sortMap: {
+				recent: sortRecent,
+				old: sortOld,
+				create: sortCreate,
+				posts: sortPopular,
+				votes: sortVotes,
+				views: sortViews,
+			},
+		});
+		console.log(params.sort);
+		const topicData = await Topics.getTopicsFields(tids, fields);
+		const sortFn = sortMap.hasOwnProperty(params.sort) && sortMap[params.sort] ?
+			sortMap[params.sort] : sortRecent;
 
 		if (params.floatPinned) {
 			floatPinned(topicData, sortFn);
