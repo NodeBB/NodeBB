@@ -173,7 +173,7 @@ module.exports = function (Topics) {
 				views: sortViews,
 			},
 		});
-		console.log(params.sort);
+
 		const topicData = await Topics.getTopicsFields(tids, fields);
 		const sortFn = sortMap.hasOwnProperty(params.sort) && sortMap[params.sort] ?
 			sortMap[params.sort] : sortRecent;
