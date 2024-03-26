@@ -11,6 +11,7 @@ const categories = require('../categories');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
+const plugins = require('../plugins');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -25,7 +26,7 @@ async function unlock(value) {
 	await db.deleteObjectField('locks', value);
 }
 
-Notes.assert = async (uid, input) => {
+Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	/**
 	 * Given the id or object of any as:Note, traverses up to cache the entire threaded context
 	 *
@@ -74,10 +75,15 @@ Notes.assert = async (uid, input) => {
 	}
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
-	// Privilege check for local categories
+	// Relation & privilege check for local categories
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
+	const hasRelation = options.skipChecks || hasTid || await assertRelation(chain[0]);
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
-	if (!allowed) {
+	if (!hasRelation || !allowed) {
+		if (!hasRelation) {
+			winston.info(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
+		}
+
 		unlock(id);
 		return null;
 	}
@@ -167,6 +173,36 @@ Notes.assert = async (uid, input) => {
 
 	return { tid, count };
 };
+
+async function assertRelation(post) {
+	/**
+	 * Given a mocked post object, ensures that it is related to some other object in database
+	 * This check ensures that random content isn't added to the database just because it is received.
+	 */
+
+	// Is followed by at least one local user
+	const isFollowed = await db.sortedSetCard(`followersRemote:${post.uid}`);
+
+	// Local user is mentioned
+	const { tag } = post._activitypub;
+	let uids = [];
+	if (tag.length) {
+		const slugs = tag.reduce((slugs, tag) => {
+			if (tag.type === 'Mention') {
+				const [slug, hostname] = tag.name.slice(1).split('@');
+				if (hostname === nconf.get('url_parsed').hostname) {
+					slugs.push(slug);
+				}
+			}
+			return slugs;
+		}, []);
+
+		uids = slugs.length ? await db.sortedSetScores('userslug:uid', slugs) : [];
+		uids = uids.filter(Boolean);
+	}
+
+	return isFollowed || uids.length;
+}
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
 	const recipients = new Set([...(to || []), ...(cc || [])]);
