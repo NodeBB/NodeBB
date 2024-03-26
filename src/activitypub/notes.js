@@ -11,7 +11,6 @@ const categories = require('../categories');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
-const plugins = require('../plugins');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
