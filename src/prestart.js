@@ -86,7 +86,7 @@ function loadConfig(configFile) {
 
 	// nconf defaults, if not set in config
 	if (!nconf.get('sessionKey')) {
-		nconf.set('sessionKey', 'express.sid');
+		nconf.set('sessionKey', 'nodebb.sid');
 	}
 
 	if (nconf.get('url')) {
