@@ -161,20 +161,20 @@ middleware.privateTagListing = helpers.try(async (req, res, next) => {
 });
 
 middleware.exposeGroupName = helpers.try(async (req, res, next) => {
-	await expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
+	await expose('groupName', groups.getGroupNameByGroupSlug, middleware.canViewGroups, 'slug', req, res, next);
 });
 
 middleware.exposeUid = helpers.try(async (req, res, next) => {
-	await expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
+	await expose('uid', user.getUidByUserslug, middleware.canViewUsers, 'userslug', req, res, next);
 });
 
-async function expose(exposedField, method, field, req, res, next) {
+async function expose(exposedField, method, canViewMethod, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
 	const value = await method(String(req.params[field]).toLowerCase());
 	if (!value) {
-		next('route');
+		canViewMethod(req, res, () => next('route'));
 		return;
 	}
 
