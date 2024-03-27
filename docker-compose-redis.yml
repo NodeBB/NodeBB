@@ -13,35 +13,15 @@ services:
       - nodebb-config:/opt/config
       - ./install/docker/setup.json:/usr/src/app/setup.json
 
-  mongo:
-    image: 'mongo:7-jammy'
-    restart: unless-stopped
-    ports:
-      - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: nodebb
-      MONGO_INITDB_ROOT_PASSWORD: nodebb
-      MONGO_INITDB_DATABASE: nodebb
-    volumes:
-      - mongo-data:/data/db
-      - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
-
   redis:
     image: redis:7.2.3-alpine
     restart: unless-stopped
     command: ['redis-server', '--appendonly', 'yes', '--loglevel', 'warning']
-    # command: ['redis-server', '--save', '60', '1', '--loglevel', 'warning'] # uncomment if you want to use snapshotting instead of AOF
+    # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF
     volumes:
       - redis-data:/data
 
 volumes:
-  mongo-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/database/mongo/data
-
   redis-data:
     driver: local
     driver_opts:
