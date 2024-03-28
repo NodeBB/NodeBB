@@ -26,7 +26,23 @@ controller.list = async function (req, res) {
 	const start = Math.max(0, (page - 1) * topicsPerPage);
 	const stop = start + topicsPerPage - 1;
 
-	const sets = ['cid:-1:tids', `uid:${req.uid}:inbox`];
+	const sortToSet = {
+		recently_replied: `cid:-1:tids`,
+		recently_created: `cid:-1:tids:create`,
+		most_posts: `cid:-1:tids:posts`,
+		most_votes: `cid:-1:tids:votes`,
+		most_views: `cid:-1:tids:views`,
+	};
+
+	const [userPrivileges, tagData, userSettings, rssToken] = await Promise.all([
+		privileges.categories.get('-1', req.uid),
+		helpers.getSelectedTag(req.query.tag),
+		user.getSettings(req.uid),
+		user.auth.getFeedToken(req.uid),
+	]);
+	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
+
+	const sets = [sortToSet[sort], `uid:${req.uid}:inbox`];
 	if (req.params.filter === 'all' || !req.uid) {
 		sets.pop();
 	} else if (req.params.filter) {
@@ -40,14 +56,7 @@ controller.list = async function (req, res) {
 		weights: sets.map((s, index) => (index ? 0 : 1)),
 	});
 
-	const [userPrivileges, tagData, userSettings, rssToken] = await Promise.all([
-		privileges.categories.get('-1', req.uid),
-		helpers.getSelectedTag(req.query.tag),
-		user.getSettings(req.uid),
-		user.auth.getFeedToken(req.uid),
-	]);
 	const targetUid = await user.getUidByUserslug(req.query.author);
-	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
 
 	const data = await categories.getCategoryById({
 		uid: req.uid,
@@ -68,6 +77,8 @@ controller.list = async function (req, res) {
 
 	data.title = translator.escape(data.name);
 	data.privileges = userPrivileges;
+	data.selectedTag = tagData.selectedTag;
+	data.selectedTags = tagData.selectedTags;
 
 	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[pages:world]]` }]);
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
