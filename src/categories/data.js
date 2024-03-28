@@ -24,7 +24,10 @@ const worldCategory = {
 	color: '#333',
 	slug: '../world',
 	parentCid: 0,
-	disabled: 0, // todo
+	disabled: 0,
+	handle: 'world',
+	link: '',
+	class: '', // todo
 };
 
 module.exports = function (Categories) {

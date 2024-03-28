@@ -16,6 +16,10 @@ const meta = require('../../meta');
 
 const controller = module.exports;
 
+const validSorts = [
+	'recently_replied', 'recently_created', 'most_posts', 'most_votes', 'most_views',
+];
+
 controller.list = async function (req, res) {
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	const page = parseInt(req.query.page, 10) || 1;
@@ -36,18 +40,33 @@ controller.list = async function (req, res) {
 		weights: sets.map((s, index) => (index ? 0 : 1)),
 	});
 
-	const [categoryFields, userPrivileges, rssToken] = await Promise.all([
-		categories.getCategoryFields(-1, ['name', 'description', 'icon', 'imageClass', 'color', 'bgColor']),
-		privileges.categories.get(-1, req.uid),
+	const [userPrivileges, tagData, userSettings, rssToken] = await Promise.all([
+		privileges.categories.get('-1', req.uid),
+		helpers.getSelectedTag(req.query.tag),
+		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
 	]);
-	const data = categoryFields;
-	data.cid = -1;
+	const targetUid = await user.getUidByUserslug(req.query.author);
+	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
+
+	const data = await categories.getCategoryById({
+		uid: req.uid,
+		cid: '-1',
+		start: start,
+		stop: stop,
+		sort: sort,
+		settings: userSettings,
+		query: req.query,
+		tag: req.query.tag,
+		targetUid: targetUid,
+	});
+	delete data.children;
+
 	data.topicCount = await db.sortedSetIntersectCard(sets);
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
 
-	data.title = translator.escape(categoryFields.name);
+	data.title = translator.escape(data.name);
 	data.privileges = userPrivileges;
 
 	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[pages:world]]` }]);
