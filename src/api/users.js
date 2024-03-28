@@ -18,8 +18,7 @@ const plugins = require('../plugins');
 const events = require('../events');
 const translator = require('../translator');
 const sockets = require('../socket.io');
-
-// const api = require('.');
+const utils = require('../utils');
 
 const usersAPI = module.exports;
 
@@ -685,6 +684,9 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 	const validTypes = ['profile', 'posts', 'uploads'];
 	if (!validTypes.includes(type)) {
 		throw new Error('[[error:invalid-data]]');
+	}
+	if (!utils.isNumber(uid) || !(parseInt(uid, 10) > 0)) {
+		throw new Error('[[error:invalid-uid]]');
 	}
 	const count = await db.incrObjectField('locks', `export:${uid}${type}`);
 	if (count > 1) {
