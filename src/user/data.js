@@ -7,6 +7,7 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const relative_path = nconf.get('relative_path');
@@ -49,13 +50,22 @@ module.exports = function (User) {
 			return [];
 		}
 
-		uids = uids.map(uid => (isNaN(uid) ? 0 : parseInt(uid, 10)));
+		uids = uids.map((uid) => {
+			if (utils.isNumber(uid)) {
+				return parseInt(uid, 10);
+			} else if (activitypub.helpers.isUri(uid)) {
+				return uid;
+			}
+
+			return 0;
+		});
 
 		const fieldsToRemove = [];
 		fields = fields.slice();
 		ensureRequiredFields(fields, fieldsToRemove);
 
-		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
+		const uniqueUids = _.uniq(uids).filter(uid => isFinite(uid) && uid > 0);
+		const remoteIds = _.uniq(uids).filter(uid => !isFinite(uid));
 
 		const results = await plugins.hooks.fire('filter:user.whitelistFields', {
 			uids: uids,
@@ -68,7 +78,11 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		const users = await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields);
+		await activitypub.actors.assert(remoteIds);
+		const users = [
+			...await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields),
+			...await db.getObjectsFields(remoteIds.map(id => `userRemote:${id}`), fields),
+		];
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
@@ -80,7 +94,7 @@ module.exports = function (User) {
 			}
 		});
 		await modifyUserData(result.users, fields, fieldsToRemove);
-		return uidsToUsers(uids, uniqueUids, result.users);
+		return uidsToUsers(uids, [...uniqueUids, ...remoteIds], result.users);
 	};
 
 	function ensureRequiredFields(fields, fieldsToRemove) {
@@ -116,7 +130,7 @@ module.exports = function (User) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map((uid) => {
 			const user = uidToUser[uid] || { ...User.guestData };
-			if (!parseInt(user.uid, 10)) {
+			if (!parseInt(user.uid, 10) && !activitypub.helpers.isUri(user.uid)) {
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former-user]]' : '[[global:guest]]';
 				user.displayname = user.username;
 			}
@@ -202,7 +216,7 @@ module.exports = function (User) {
 				user.email = validator.escape(user.email ? user.email.toString() : '');
 			}
 
-			if (!parseInt(user.uid, 10)) {
+			if (!parseInt(user.uid, 10) && !activitypub.helpers.isUri(user.uid)) {
 				for (const [key, value] of Object.entries(User.guestData)) {
 					user[key] = value;
 				}
@@ -279,6 +293,11 @@ module.exports = function (User) {
 			} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
 				showfullname = true;
 			}
+		}
+
+		// Always show full name for remote users
+		if (!utils.isNumber(user.uid)) {
+			showfullname = true;
 		}
 
 		user.displayname = validator.escape(String(

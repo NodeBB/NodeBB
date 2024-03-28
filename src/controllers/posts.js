@@ -4,12 +4,14 @@ const querystring = require('querystring');
 
 const posts = require('../posts');
 const privileges = require('../privileges');
+const utils = require('../utils');
+
 const helpers = require('./helpers');
 
 const postsController = module.exports;
 
 postsController.redirectToPost = async function (req, res, next) {
-	const pid = parseInt(req.params.pid, 10);
+	const pid = utils.isNumber(req.params.pid) ? parseInt(req.params.pid, 10) : req.params.pid;
 	if (!pid) {
 		return next();
 	}

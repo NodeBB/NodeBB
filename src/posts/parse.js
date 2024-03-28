@@ -51,7 +51,7 @@ module.exports = function (Posts) {
 		if (!postData) {
 			return postData;
 		}
-		postData.content = String(postData.content || '');
+		postData.content = String(postData.sourceContent || postData.content || '');
 		const cache = require('./cache');
 		const pid = String(postData.pid);
 		const cachedContent = cache.get(pid);
@@ -60,12 +60,13 @@ module.exports = function (Posts) {
 			return postData;
 		}
 
-		const data = await plugins.hooks.fire('filter:parse.post', { postData: postData });
-		data.postData.content = translator.escape(data.postData.content);
-		if (data.postData.pid) {
-			cache.set(pid, data.postData.content);
+		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData }));
+		postData.content = translator.escape(postData.content);
+		if (postData.pid) {
+			cache.set(pid, postData.content);
 		}
-		return data.postData;
+
+		return postData;
 	};
 
 	Posts.parseSignature = async function (userData, uid) {

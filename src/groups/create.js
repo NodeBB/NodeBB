@@ -18,7 +18,7 @@ module.exports = function (Groups) {
 
 		Groups.validateGroupName(data.name);
 
-		const exists = await meta.userOrGroupExists(data.name);
+		const exists = await meta.slugTaken(data.name);
 		if (exists) {
 			throw new Error('[[error:group-already-exists]]');
 		}

@@ -8,6 +8,7 @@ const db = require('../database');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const User = module.exports;
@@ -109,6 +110,12 @@ User.getUidByUserslug = async function (userslug) {
 	if (!userslug) {
 		return 0;
 	}
+
+	if (userslug.includes('@')) {
+		await activitypub.actors.assert(userslug);
+		return (await db.getObjectField('handle:uid', userslug)) || null;
+	}
+
 	return await db.sortedSetScore('userslug:uid', userslug);
 };
 

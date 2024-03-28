@@ -68,6 +68,10 @@ Events._types = {
 		icon: 'fa-code-fork',
 		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
+	announce: {
+		icon: 'fa-share-alt',
+		translation: async (event, language) => translateEventArgs(event, language, 'activitypub:topic-event-announce', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+	},
 };
 
 Events.init = async () => {
@@ -129,9 +133,19 @@ Events.get = async (tid, uid, reverse = false) => {
 	return events;
 };
 
+Events.find = async (tid, match) => {
+	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
+	eventIds = eventIds.map(obj => obj.value);
+	const events = await db.getObjects(keys);
+	eventIds = eventIds.filter((id, idx) => _.isMatch(events[idx], match));
+
+	return eventIds;
+};
+
 async function getUserInfo(uids) {
-	uids = uids.filter((uid, idx) => !isNaN(parseInt(uid, 10)) && uids.indexOf(uid) === idx);
-	const userData = await user.getUsersFields(uids, ['picture', 'username', 'userslug']);
+	uids = new Set(uids); // eliminate dupes
+	const userData = await user.getUsersFields(Array.from(uids), ['picture', 'username', 'userslug']);
 	const userMap = userData.reduce((memo, cur) => memo.set(cur.uid, cur), new Map());
 	userMap.set('system', {
 		system: true,
@@ -189,8 +203,9 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		event.id = parseInt(eventIds[idx], 10);
 		event.timestamp = timestamps[idx];
 		event.timestampISO = new Date(timestamps[idx]).toISOString();
+		event.uid = utils.isNumber(event.uid) ? parseInt(event.uid, 10) : event.uid;
 		if (event.hasOwnProperty('uid')) {
-			event.user = users.get(event.uid === 'system' ? 'system' : parseInt(event.uid, 10));
+			event.user = users.get(event.uid === 'system' ? 'system' : event.uid);
 		}
 		if (event.hasOwnProperty('fromCid')) {
 			event.fromCategory = fromCategories[event.fromCid];

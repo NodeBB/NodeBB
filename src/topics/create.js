@@ -9,6 +9,7 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 const analytics = require('../analytics');
 const user = require('../user');
+const activitypub = require('../activitypub');
 const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
@@ -20,7 +21,7 @@ module.exports = function (Topics) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
 
-		const tid = await db.incrObjectField('global', 'nextTid');
+		const tid = data.tid || await db.incrObjectField('global', 'nextTid');
 
 		let topicData = {
 			tid: tid,
@@ -49,6 +50,12 @@ module.exports = function (Topics) {
 			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 		];
+		const countedSortedSetKeys = [
+			...['views', 'posts', 'votes'].map(prop => `${topicData.cid === -1 ? 'topicsRemote' : 'topics'}:${prop}`),
+			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:posts`,
+			`cid:${topicData.cid}:tids:views`,
+		];
 
 		const scheduled = timestamp > Date.now();
 		if (scheduled) {
@@ -57,12 +64,7 @@ module.exports = function (Topics) {
 
 		await Promise.all([
 			db.sortedSetsAdd(timestampedSortedSetKeys, timestamp, topicData.tid),
-			db.sortedSetsAdd([
-				'topics:views', 'topics:posts', 'topics:votes',
-				`cid:${topicData.cid}:tids:votes`,
-				`cid:${topicData.cid}:tids:posts`,
-				`cid:${topicData.cid}:tids:views`,
-			], 0, topicData.tid),
+			db.sortedSetsAdd(countedSortedSetKeys, 0, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
 			db.incrObjectField('global', 'topicCount'),
@@ -82,7 +84,7 @@ module.exports = function (Topics) {
 		const { uid } = data;
 
 		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
-			categories.exists(data.cid),
+			parseInt(data.cid, 10) > 0 ? categories.exists(data.cid) : true,
 			privileges.categories.can('topics:create', data.cid, uid),
 			privileges.categories.can('topics:tag', data.cid, uid),
 			privileges.users.isAdministrator(uid),
@@ -135,7 +137,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
-		if (uid > 0 && settings.followTopicsOnCreate) {
+		if (utils.isNumber(uid) && uid > 0 && settings.followTopicsOnCreate) {
 			await Topics.follow(postData.tid, uid);
 		}
 		const topicData = topics[0];
@@ -202,11 +204,11 @@ module.exports = function (Topics) {
 			await Topics.follow(postData.tid, uid);
 		}
 
-		if (parseInt(uid, 10)) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid)) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid) || meta.config.allowGuestReplyNotifications) {
 			const { displayname } = postData.user;
 
 			Topics.notifyFollowers(postData, uid, {

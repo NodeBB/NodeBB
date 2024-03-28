@@ -44,6 +44,10 @@ Posts.getPostsByPids = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
 		return [];
 	}
+
+	// todo: remove if not needed (and if this is still commented out after March 2024, then it wasn't needed)
+	// const remotePids = pids.filter(pid => !utils.isNumber(pid));
+	// await activitypub.notes.assert(uid, remotePids);
 	let posts = await Posts.getPostsData(pids);
 	posts = await Promise.all(posts.map(Posts.parsePost));
 	const data = await plugins.hooks.fire('filter:post.getPosts', { posts: posts, uid: uid });

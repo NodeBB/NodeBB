@@ -257,6 +257,7 @@ module.exports = function (Topics) {
 			t &&
 			t.cid &&
 			!isCidIgnored[t.cid] &&
+			(cids || parseInt(t.cid, 10) !== -1) &&
 			(!cids || cids.includes(String(t.cid))) &&
 			(!tags.length || tags.every(tag => t.tags.find(topicTag => topicTag.value === tag)))
 		)).map(t => t.tid);

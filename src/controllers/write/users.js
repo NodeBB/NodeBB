@@ -92,12 +92,16 @@ Users.changePassword = async (req, res) => {
 };
 
 Users.follow = async (req, res) => {
-	await api.users.follow(req, req.params);
+	const remote = String(req.params.uid).includes('@');
+	const controller = remote ? api.activitypub.follow : api.users.follow;
+	await controller(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unfollow = async (req, res) => {
-	await api.users.unfollow(req, req.params);
+	const remote = String(req.params.uid).includes('@');
+	const controller = remote ? api.activitypub.unfollow : api.users.unfollow;
+	await controller(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 

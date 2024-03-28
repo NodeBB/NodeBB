@@ -2,6 +2,7 @@
 
 const categories = require('../../categories');
 const privileges = require('../../privileges');
+const utils = require('../../utils');
 
 const privilegesController = module.exports;
 
@@ -10,10 +11,10 @@ privilegesController.get = async function (req, res) {
 	const isAdminPriv = req.params.cid === 'admin';
 
 	let privilegesData;
-	if (cid > 0) {
-		privilegesData = await privileges.categories.list(cid);
-	} else if (cid === 0) {
+	if (cid === 0) {
 		privilegesData = await (isAdminPriv ? privileges.admin.list(req.uid) : privileges.global.list());
+	} else if (utils.isNumber(cid)) {
+		privilegesData = await privileges.categories.list(cid);
 	}
 
 	const categoriesData = [{

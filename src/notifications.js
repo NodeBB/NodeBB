@@ -88,7 +88,9 @@ Notifications.getMultiple = async function (nids) {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
-					notification[field] = parseInt(notification[field], 10) || 0;
+					notification[field] = utils.isNumber(notification[field]) ?
+						parseInt(notification[field], 10) || 0 :
+						notification[field];
 				}
 			});
 			if (notification.path && !notification.path.startsWith('http')) {
@@ -107,7 +109,7 @@ Notifications.getMultiple = async function (nids) {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
 			} else if (notification.image === 'brand:logo' || !notification.image) {
-				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/logo.png`;
+				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
 			}
 		}
 	});
@@ -403,6 +405,7 @@ Notifications.merge = async function (notifications) {
 		'notifications:user-posted-in-public-room',
 		'new-register',
 		'post-queue',
+		'notifications:activitypub.announce',
 	];
 
 	notifications = mergeIds.reduce((notifications, mergeId) => {
@@ -467,7 +470,8 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user': {
+				case 'notifications:user-flagged-user':
+				case 'notifications:activitypub.announce': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
 					const numUsers = usernames.length;
 

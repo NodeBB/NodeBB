@@ -1865,6 +1865,49 @@ describe('Controllers', () => {
 		}
 	});
 
+	describe('.well-known', () => {
+		describe('webfinger', () => {
+			let uid;
+			let username;
+
+			before(async () => {
+				username = utils.generateUUID().slice(0, 10);
+				uid = await user.create({ username });
+			});
+
+			it('should error if resource parameter is missing', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger`);
+				assert.strictEqual(response.statusCode, 400);
+			});
+
+			it('should error if resource parameter is malformed', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=foobar`);
+				assert.strictEqual(response.statusCode, 400);
+			});
+
+			it('should deny access if view:users privilege is not enabled for guests', async () => {
+				await privileges.global.rescind(['groups:view:users'], 'guests');
+
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(response.statusCode, 400);
+
+				await privileges.global.give(['groups:view:users'], 'guests');
+			});
+
+			it('should respond appropriately if the user requested does not exist locally', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(response.statusCode, 404);
+			});
+
+			it('should return a valid webfinger response if the user exists', async () => {
+				const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(response.statusCode, 200);
+				assert(['subject', 'aliases', 'links'].every(prop => body.hasOwnProperty(prop)));
+				assert(body.subject, `acct:${username}@${nconf.get('url_parsed').host}`);
+			});
+		});
+	});
+
 	after((done) => {
 		const analytics = require('../src/analytics');
 		analytics.writeData(done);

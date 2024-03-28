@@ -13,6 +13,8 @@ const privileges = require('../../privileges');
 const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
+const posts = require('../../posts');
+const activitypub = require('../../activitypub');
 
 const relative_path = nconf.get('relative_path');
 
@@ -177,6 +179,7 @@ async function canChat(callerUID, uid) {
 
 async function getCounts(userData, callerUID) {
 	const { uid } = userData;
+	const isRemote = activitypub.helpers.isUri(uid);
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
@@ -196,6 +199,7 @@ async function getCounts(userData, callerUID) {
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}
 	const counts = await utils.promiseParallel(promises);
+	counts.posts = isRemote ? userData.postcount : counts.posts;
 	counts.best = counts.best.reduce((sum, count) => sum + count, 0);
 	counts.controversial = counts.controversial.reduce((sum, count) => sum + count, 0);
 	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
@@ -271,7 +275,12 @@ async function parseAboutMe(userData) {
 		userData.aboutme = '';
 		userData.aboutmeParsed = '';
 		return;
+	} else if (activitypub.helpers.isUri(userData.uid)) {
+		userData.aboutme = posts.sanitize(userData.aboutme);
+		userData.aboutmeParsed = userData.aboutme;
+		return;
 	}
+
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
 	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
 	userData.aboutme = translator.escape(userData.aboutme);

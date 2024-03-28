@@ -7,6 +7,10 @@ PostObject:
     tid:
       type: number
       description: A topic identifier
+    toPid:
+      type: number
+      description: The post that this post is in reply to
+      nullable: true
     content:
       type: string
     uid:

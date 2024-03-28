@@ -14,7 +14,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts', 'api'], f
 		if (open.is(':not(.hidden)') && loading.is('.hidden')) {
 			open.addClass('hidden');
 			loading.removeClass('hidden');
-			api.get(`/posts/${pid}/replies`, {}, function (err, { replies }) {
+			api.get(`/posts/${encodeURIComponent(pid)}/replies`, {}, function (err, { replies }) {
 				const postData = replies;
 				loading.addClass('hidden');
 				if (err) {

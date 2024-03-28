@@ -12,6 +12,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const events = require('../events');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
@@ -111,16 +112,16 @@ postsAPI.edit = async function (caller, data) {
 	if (editResult.topic.isMainPost) {
 		await topics.thumbs.migrate(data.uuid, editResult.topic.tid);
 	}
-	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
-	if (!selfPost && editResult.post.changed) {
-		await events.log({
+	let eid;
+	if (editResult.post.changed) {
+		({ eid } = await events.log({
 			type: `post-edit`,
 			uid: caller.uid,
 			ip: caller.ip,
 			pid: editResult.post.pid,
 			oldContent: editResult.post.oldContent,
 			newContent: editResult.post.newContent,
-		});
+		}));
 	}
 
 	if (editResult.topic.renamed) {
@@ -139,6 +140,10 @@ postsAPI.edit = async function (caller, data) {
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
+		if (eid) {
+			await require('.').activitypub.update.note(caller, { post: postObj[0], eid });
+		}
+
 		return returnData;
 	}
 
@@ -151,6 +156,7 @@ postsAPI.edit = async function (caller, data) {
 
 	const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
 	uids.forEach(uid => websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
+
 	return returnData;
 };
 
@@ -390,7 +396,7 @@ postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
 };
 
 postsAPI.getReplies = async (caller, { pid }) => {
-	if (!utils.isNumber(pid)) {
+	if (!utils.isNumber(pid) && !activitypub.helpers.isUri(pid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { uid } = caller;

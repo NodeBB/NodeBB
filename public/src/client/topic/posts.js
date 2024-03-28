@@ -256,7 +256,7 @@ define('forum/topic/posts', [
 		const after = parseInt(afterEl.attr('data-index'), 10) || 0;
 
 		const tid = ajaxify.data.tid;
-		if (!utils.isNumber(tid) || !utils.isNumber(after) || (direction < 0 && components.get('post', 'index', 0).length)) {
+		if (!utils.isNumber(after) || (direction < 0 && components.get('post', 'index', 0).length)) {
 			return;
 		}
 

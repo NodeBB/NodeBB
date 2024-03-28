@@ -30,6 +30,13 @@ Categories.exists = async function (cids) {
 	);
 };
 
+Categories.existsByHandle = async function (handle) {
+	if (Array.isArray(handle)) {
+		return await db.isSortedSetMembers('categoryhandle:cid', handle);
+	}
+	return await db.isSortedSetMember('categoryhandle:cid', handle);
+};
+
 Categories.getCategoryById = async function (data) {
 	const categories = await Categories.getCategories([data.cid]);
 	if (!categories[0]) {
@@ -65,6 +72,10 @@ Categories.getCategoryById = async function (data) {
 		...data,
 	});
 	return result.category;
+};
+
+Categories.getCidByHandle = async function (handle) {
+	return await db.sortedSetScore('categoryhandle:cid', handle);
 };
 
 Categories.getAllCidsFromSet = async function (key) {
