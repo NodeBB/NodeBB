@@ -1,10 +1,10 @@
 {
-	"awarded-x-reputation": "You have been awarded <strong>%1</strong> reputation",
-	"awarded-group-membership": "You have been added to the group <strong>%1</strong>",
+	"awarded-x-reputation": "你已经获得<strong>%1</strong>声望",
+	"awarded-group-membership": "你已加入群组<strong>%1</strong>",
 
-	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",
-	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Post Count %1 %2)</span>",
-	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Last Online %1 %2)</span>",
-	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Join Date %1 %2)</span>",
-	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Days Registered %1 %2)</span>"
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">（声望%1 %2）</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">（帖子数%1 %2）</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">（最后在线时间%1 %2）</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">（注册日期%1 %2）</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">（注册天数%1 %2）</span>"
 }
