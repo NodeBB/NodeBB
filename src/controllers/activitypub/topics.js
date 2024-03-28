@@ -1,11 +1,18 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const db = require('../../database');
 const user = require('../../user');
 const topics = require('../../topics');
 
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
+
+const categories = require('../../categories');
+const privileges = require('../../privileges');
+const translator = require('../../translator');
+const meta = require('../../meta');
 
 const controller = module.exports;
 
@@ -29,12 +36,29 @@ controller.list = async function (req, res) {
 		weights: sets.map((s, index) => (index ? 0 : 1)),
 	});
 
-	const data = {};
+	const [categoryFields, userPrivileges, rssToken] = await Promise.all([
+		categories.getCategoryFields(-1, ['name', 'description', 'icon', 'imageClass', 'color', 'bgColor']),
+		privileges.categories.get(-1, req.uid),
+		user.auth.getFeedToken(req.uid),
+	]);
+	const data = categoryFields;
+	data.cid = -1;
 	data.topicCount = await db.sortedSetIntersectCard(sets);
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
 
+	data.title = translator.escape(categoryFields.name);
+	data.privileges = userPrivileges;
+
 	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[pages:world]]` }]);
+	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
+	data['reputation:disabled'] = meta.config['reputation:disabled'];
+	if (!meta.config['feeds:disableRSS']) {
+		data.rssFeedUrl = `${nconf.get('url')}/category/${data.cid}.rss`;
+		if (req.loggedIn) {
+			data.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
+		}
+	}
 
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
