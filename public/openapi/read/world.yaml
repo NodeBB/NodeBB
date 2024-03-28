@@ -17,8 +17,13 @@ get:
         application/json:
           schema:
             allOf:
+              - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
               - type: object
                 properties:
+                  tagWhitelist:
+                    type: array
+                    items:
+                      type: string
                   topicCount:
                     type: number
                   topics:
@@ -61,12 +66,48 @@ get:
                   #   type: array
                   #   items:
                   #     type: string
-                  # feeds:disableRSS:
-                  #   type: number
-                  # rssFeedUrl:
-                  #   type: string
-                  # title:
-                  #   type: string
+                  isWatched:
+                    type: boolean
+                  isTracked:
+                    type: boolean
+                  isNotWatched:
+                    type: boolean
+                  isIgnored:
+                    type: boolean
+                  feeds:disableRSS:
+                    type: number
+                  rssFeedUrl:
+                    type: string
+                  reputation:disabled:
+                    type: number
+                  title:
+                    type: string
+                  privileges:
+                    type: object
+                    properties:
+                      topics:create:
+                        type: boolean
+                      topics:read:
+                        type: boolean
+                      topics:tag:
+                        type: boolean
+                      topics:schedule:
+                        type: boolean
+                      read:
+                        type: boolean
+                      posts:view_deleted:
+                        type: boolean
+                      cid:
+                        type: string
+                      uid:
+                        type: number
+                        description: A user identifier
+                      editable:
+                        type: boolean
+                      view_deleted:
+                        type: boolean
+                      isAdminOrMod:
+                        type: boolean
                   # filters:
                   #   type: array
                   #   items:
