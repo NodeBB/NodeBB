@@ -61,6 +61,11 @@ async function xhr(options) {
 
 	const res = await fetch(url, options);
 	const { headers } = res;
+
+	if (headers.get('x-redirect')) {
+		return xhr({ url: headers.get('x-redirect'), ...options });
+	}
+
 	const contentType = headers.get('content-type');
 	const isJSON = contentType && contentType.startsWith('application/json');
 
