@@ -914,6 +914,19 @@ describe('Groups', () => {
 			assert(!isInvited);
 		});
 
+		it('should fail to rescind last owner', async () => {
+			const uid = await User.create({ username: 'lastgroupowner' });
+			await Groups.create({
+				name: 'last owner',
+				description: 'Foobar!',
+				ownerUid: uid,
+			});
+			await assert.rejects(
+				apiGroups.rescind({ uid: adminUid }, { slug: 'last-owner', uid: uid }),
+				{ message: '[[error:group-needs-owner]]' },
+			);
+		});
+
 		it('should error if user is not invited', async () => {
 			await assert.rejects(
 				apiGroups.acceptInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid: adminUid }),
