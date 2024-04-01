@@ -130,7 +130,11 @@ async function listPlugins() {
 
 async function listEvents(count = 10) {
 	await db.init();
-	const eventData = await events.getEvents('', 0, count - 1);
+	const eventData = await events.getEvents({
+		filter: '',
+		start: 0,
+		stop: count - 1,
+	});
 	console.log(chalk.bold(`\nDisplaying last ${count} administrative events...`));
 	eventData.forEach((event) => {
 		console.log(`  * ${chalk.green(String(event.timestampISO))} ${chalk.yellow(String(event.type))}${event.text ? ` ${event.text}` : ''} (uid: ${event.uid ? event.uid : 0})`);
