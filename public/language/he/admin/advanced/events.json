@@ -9,5 +9,9 @@
 	"filter-type": "סוג אירוע",
 	"filter-start": "מתאריך",
 	"filter-end": "עד תאריך",
+	"filter-user": "Filter by User",
+	"filter-user.placeholder": "Type user name to filter...",
+	"filter-group": "Filter by Group",
+	"filter-group.placeholder": "Type group name to filter...",
 	"filter-per-page": "פריטים בכל דף"
 }

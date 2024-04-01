@@ -9,5 +9,9 @@
 	"filter-type": "Вид събитие",
 	"filter-start": "Начална дата",
 	"filter-end": "Крайна дата",
+	"filter-user": "Filter by User",
+	"filter-user.placeholder": "Type user name to filter...",
+	"filter-group": "Filter by Group",
+	"filter-group.placeholder": "Type group name to filter...",
 	"filter-per-page": "На страница"
 }
