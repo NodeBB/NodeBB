@@ -12,7 +12,7 @@ const batch = require('../../batch');
 
 module.exports = {
 	name: 'Create user upload folders',
-	timestamp: Date.UTC(2024, 4, 28),
+	timestamp: Date.UTC(2024, 2, 28),
 	method: async function () {
 		const { progress } = this;
 
