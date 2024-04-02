@@ -4,10 +4,11 @@ const db = require('../database');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	User.updateLastOnlineTime = async function (uid) {
-		if (!(parseInt(uid, 10) > 0)) {
+		if (utils.isNumber(uid) && !(parseInt(uid, 10) > 0)) {
 			return;
 		}
 		const userData = await db.getObjectFields(`user:${uid}`, ['userslug', 'status', 'lastonline']);
