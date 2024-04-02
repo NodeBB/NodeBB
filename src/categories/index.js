@@ -97,6 +97,10 @@ Categories.getAllCategories = async function () {
 
 Categories.getCidsByPrivilege = async function (set, uid, privilege) {
 	const cids = await Categories.getAllCidsFromSet(set);
+	if (set === 'categories:cid') {
+		cids.unshift(-1);
+	}
+
 	return await privileges.categories.filterCids(privilege, cids, uid);
 };
 
