@@ -477,6 +477,7 @@ describe('ActivityPub integration', () => {
 
 					activitypub._cache.set(`0;${id}`, remoteNote);
 					activitypub._cache.set(`0;https://example.org/user/foobar`, remoteUser);
+					await db.sortedSetAdd(`followersRemote:${remoteUser.id}`, Date.now(), 1); // fake a follow
 					await controllers.activitypub.postInbox({
 						body: {
 							type: 'Create',
@@ -559,6 +560,50 @@ describe('ActivityPub integration', () => {
 			it('should return the expected Content-Type header', () => {
 				assert.strictEqual(response.headers['content-type'], 'application/activity+json; charset=utf-8');
 			});
+		});
+	});
+
+	describe('Actor asserton', () => {
+		let uid;
+		let actorUri;
+
+		before(async () => {
+			uid = utils.generateUUID().slice(0, 8);
+			actorUri = `https://example.org/user/${uid}`;
+			activitypub._cache.set(`0;${actorUri}`, {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: actorUri,
+				url: actorUri,
+
+				type: 'Person',
+				name: 'example',
+				preferredUsername: 'example',
+
+				publicKey: {
+					id: `${actorUri}#key`,
+					owner: actorUri,
+					publicKeyPem: 'somekey',
+				},
+			});
+		});
+
+		it('should return true if successfully asserted', async () => {
+			const result = await activitypub.actors.assert([actorUri]);
+			assert(result);
+		});
+
+		it('should contain a representation of that remote user in the database', async () => {
+			const exists = await db.exists(`userRemote:${actorUri}`);
+			assert(exists);
+
+			const userData = await user.getUserData(actorUri);
+			assert(userData);
+			assert.strictEqual(userData.uid, actorUri);
+		});
+
+		it('should save the actor\'s publicly accessible URL in the hash as well', async () => {
+			const url = await user.getUserField(actorUri, 'url');
+			assert.strictEqual(url, actorUri);
 		});
 	});
 });

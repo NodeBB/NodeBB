@@ -185,7 +185,7 @@ async function assertRelation(post) {
 	// Local user is mentioned
 	const { tag } = post._activitypub;
 	let uids = [];
-	if (tag.length) {
+	if (tag && tag.length) {
 		const slugs = tag.reduce((slugs, tag) => {
 			if (tag.type === 'Mention') {
 				const [slug, hostname] = tag.name.slice(1).split('@');

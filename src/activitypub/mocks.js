@@ -25,7 +25,7 @@ Mocks.profile = async (actors) => {
 
 		const uid = actor.id;
 		let {
-			preferredUsername, published, icon, image,
+			url, preferredUsername, published, icon, image,
 			name, summary, followerCount, followingCount,
 			postcount, inbox, endpoints,
 		} = actor;
@@ -59,6 +59,7 @@ Mocks.profile = async (actors) => {
 			followerCount,
 			followingCount,
 
+			url,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 		};
