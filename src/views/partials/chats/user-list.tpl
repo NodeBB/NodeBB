@@ -1,4 +1,4 @@
-<div component="chat/user/list" class="border-start hidden d-flex flex-column gap-1 p-1 overflow-auto" style="min-width:240px; width: 240px;">
+<div component="chat/user/list" class="border-start hidden d-flex flex-column gap-1 p-1 overflow-auto ghost-scrollbar" style="min-width:240px; width: 240px;">
 	{{{ each users }}}
 	<a data-index="{./index}" data-uid="{./uid}" class="btn-ghost-sm ff-secondary d-flex justify-content-start align-items-center gap-2 {{{ if ./online }}}online{{{ end}}}" href="{config.relative_path}/uid/{./uid}">
 		<div>{buildAvatar(users, "24px", true)}</div>

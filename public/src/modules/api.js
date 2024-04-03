@@ -22,9 +22,10 @@ async function call(options, callback) {
 		return result;
 	} catch (err) {
 		if (err.message === 'A valid login session was not found. Please log in and try again.') {
+			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
 			return confirm('[[error:api.reauth-required]]', (ok) => {
 				if (ok) {
-					ajaxify.go('login');
+					ajaxify.go(url);
 				}
 			});
 		}

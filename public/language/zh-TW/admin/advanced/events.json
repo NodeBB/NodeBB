@@ -9,5 +9,9 @@
 	"filter-type": "事件類型",
 	"filter-start": "開始時間",
 	"filter-end": "結束時間",
+	"filter-user": "Filter by User",
+	"filter-user.placeholder": "Type user name to filter...",
+	"filter-group": "Filter by Group",
+	"filter-group.placeholder": "Type group name to filter...",
 	"filter-per-page": "每頁"
 }

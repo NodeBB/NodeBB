@@ -5,7 +5,7 @@
 	"none-installed": "未发现窗口部件！请在<a href=\"%1\">插件控制面板</a>中启用必要的窗口部件插件。",
 	"clone-from": "从窗口部件克隆",
 	"containers.available": "可用的容器",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "拖放任意组件到顶部",
 	"containers.none": "无",
 	"container.well": "Well",
 	"container.jumbotron": "超大屏幕",
@@ -30,6 +30,6 @@
 	"start-date": "开始日期",
 	"end-date": "结束日期",
 	"hide-on-mobile": "在移动端隐藏",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-drafts": "隐藏草稿",
+	"show-drafts": "显示草稿"
 }

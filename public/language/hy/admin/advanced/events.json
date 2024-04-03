@@ -9,5 +9,9 @@
 	"filter-type": "Իրադարձության տեսակը",
 	"filter-start": "Մեկնարկի ամսաթիվ",
 	"filter-end": "Ավարտի ամսաթիվ",
+	"filter-user": "Filter by User",
+	"filter-user.placeholder": "Type user name to filter...",
+	"filter-group": "Filter by Group",
+	"filter-group.placeholder": "Type group name to filter...",
 	"filter-per-page": "Մեկ էջի համար"
 }
