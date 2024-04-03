@@ -1,3 +1,70 @@
+#### v3.7.2 (2024-03-27)
+
+##### Chores
+
+*  up harmony (0171e73a)
+*  up harmony (c6915398)
+*  incrementing version number - v3.7.1 (712365a5)
+*  update changelog for v3.7.1 (07640389)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### New Features
+
+*  add hook to modify sorting options/fields (168419cf)
+*  add playsinline video attribute (#12419) (5924a6eb)
+
+##### Bug Fixes
+
+*  #12446, fix groups.ownership.rescind (ed41e416)
+*  #12415, fix notification escaping for queued posts (4787d013)
+
+##### Refactors
+
+*  remove log (3b2d8551)
+
+##### Tests
+
+*  add test for #12446 (bf4e257c)
+
 #### v3.7.1 (2024-03-14)
 
 ##### Chores

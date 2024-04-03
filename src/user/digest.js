@@ -183,19 +183,22 @@ async function getTermTopics(term, uid) {
 		start: 0,
 		stop: 199,
 		term: term,
-		sort: 'votes',
+		sort: 'posts',
 		teaserPost: 'first',
 	});
 	data.topics = data.topics.filter(topic => topic && !topic.deleted);
 
-	const top = data.topics.filter(t => t.votes > 0).slice(0, 10);
-	const topTids = top.map(t => t.tid);
-
 	const popular = data.topics
-		.filter(t => t.postcount > 1 && !topTids.includes(t.tid))
+		.filter(t => t.postcount > 1)
 		.sort((a, b) => b.postcount - a.postcount)
 		.slice(0, 10);
 	const popularTids = popular.map(t => t.tid);
+
+	const top = data.topics
+		.filter(t => t.votes > 0 && !popularTids.includes(t.tid))
+		.sort((a, b) => b.votes - a.votes)
+		.slice(0, 10);
+	const topTids = top.map(t => t.tid);
 
 	const recent = data.topics
 		.filter(t => !topTids.includes(t.tid) && !popularTids.includes(t.tid))
