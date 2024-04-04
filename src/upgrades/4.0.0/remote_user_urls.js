@@ -13,10 +13,15 @@ module.exports = {
 		const { progress } = this;
 		const interval = 1500;
 
-		await batch.processSortedSet('usersRemote:lastCrawled', async (ids) => {
-			const exists = await Promise.all(ids.map(async id => await db.isObjectField(`userRemote:${id}`, 'url')));
-			ids = ids.filter((id, idx) => exists[idx]);
+		let actorIds = await db.getSortedSetMembers('usersRemote:lastCrawled');
+		progress.total = actorIds.length;
+		const exists = await Promise.all(actorIds.map(async id => await db.isObjectField(`userRemote:${id}`, 'url')));
+		actorIds = actorIds.filter((id, idx) => exists[idx]);
 
+		// Increment ones that were already completed
+		progress.incr(progress.total - actorIds.length);
+
+		await batch.processArray(actorIds, async (ids) => {
 			try {
 				await activitypub.actors.assert(ids, { update: true });
 			} catch (e) {
