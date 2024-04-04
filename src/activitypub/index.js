@@ -202,6 +202,7 @@ ActivityPub.get = async (type, id, uri) => {
 				...headers,
 				Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 			},
+			timeout: 5000,
 		});
 
 		if (!String(response.statusCode).startsWith('2')) {

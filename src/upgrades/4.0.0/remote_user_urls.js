@@ -12,7 +12,14 @@ module.exports = {
 	method: async () => {
 		const batch = require('../../batch');
 		const { progress } = this;
+		const interval = 5000;
 
-		await batch.processSortedSet('usersRemote:lastCrawled', async ids => await activitypub.actors.assert(ids, { update: true }), { progress });
+		await batch.processSortedSet('usersRemote:lastCrawled', async (ids) => {
+			try {
+				await activitypub.actors.assert(ids, { update: true });
+			} catch (e) {
+				// noop
+			}
+		}, { progress, interval });
 	},
 };
