@@ -2,7 +2,6 @@
 
 'use strict';
 
-// eslint-disable-next-line no-unused-vars
 const db = require('../../database');
 const activitypub = require('../../activitypub');
 
@@ -15,6 +14,9 @@ module.exports = {
 		const interval = 5000;
 
 		await batch.processSortedSet('usersRemote:lastCrawled', async (ids) => {
+			const exists = await Promise.all(ids.map(async id => await db.isObjectField(`userRemote:${id}`, 'url')));
+			ids = ids.filter((id, idx) => exists[idx]);
+
 			try {
 				await activitypub.actors.assert(ids, { update: true });
 			} catch (e) {
