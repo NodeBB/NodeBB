@@ -172,7 +172,7 @@
         "smtp-server": "3.13.3"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.72.0"
+        "sass-embedded": "1.74.1"
     },
     "resolutions": {
         "*/jquery": "3.7.1"
