@@ -8,10 +8,10 @@ const activitypub = require('../../activitypub');
 module.exports = {
 	name: 'Re-assert all existing actors to save URL into hash',
 	timestamp: Date.UTC(2024, 3, 4),
-	method: async () => {
+	method: async function () {
 		const batch = require('../../batch');
 		const { progress } = this;
-		const interval = 5000;
+		const interval = 1500;
 
 		await batch.processSortedSet('usersRemote:lastCrawled', async (ids) => {
 			const exists = await Promise.all(ids.map(async id => await db.isObjectField(`userRemote:${id}`, 'url')));
@@ -22,6 +22,8 @@ module.exports = {
 			} catch (e) {
 				// noop
 			}
+
+			progress.incr(ids.length);
 		}, { progress, interval });
 	},
 };
