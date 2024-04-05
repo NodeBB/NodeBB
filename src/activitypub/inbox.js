@@ -36,8 +36,10 @@ inbox.create = async (req) => {
 		throw new Error('[[error:activitypub.not-implemented]]');
 	}
 
-	const { tid, count } = await activitypub.notes.assert(0, object);
-	winston.verbose(`[activitypub/inbox] Parsing ${count} notes into topic ${tid}`);
+	const response = await activitypub.notes.assert(0, object);
+	if (response) {
+		winston.verbose(`[activitypub/inbox] Parsing ${response.count} notes into topic ${response.tid}`);
+	}
 };
 
 inbox.update = async (req) => {
