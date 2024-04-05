@@ -564,46 +564,77 @@ describe('ActivityPub integration', () => {
 	});
 
 	describe('Actor asserton', () => {
-		let uid;
-		let actorUri;
+		describe('happy path', () => {
+			let uid;
+			let actorUri;
 
-		before(async () => {
-			uid = utils.generateUUID().slice(0, 8);
-			actorUri = `https://example.org/user/${uid}`;
-			activitypub._cache.set(`0;${actorUri}`, {
-				'@context': 'https://www.w3.org/ns/activitystreams',
-				id: actorUri,
-				url: actorUri,
+			before(async () => {
+				uid = utils.generateUUID().slice(0, 8);
+				actorUri = `https://example.org/user/${uid}`;
+				activitypub._cache.set(`0;${actorUri}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: actorUri,
+					url: actorUri,
 
-				type: 'Person',
-				name: 'example',
-				preferredUsername: 'example',
+					type: 'Person',
+					name: 'example',
+					preferredUsername: 'example',
 
-				publicKey: {
-					id: `${actorUri}#key`,
-					owner: actorUri,
-					publicKeyPem: 'somekey',
-				},
+					publicKey: {
+						id: `${actorUri}#key`,
+						owner: actorUri,
+						publicKeyPem: 'somekey',
+					},
+				});
+			});
+
+			it('should return true if successfully asserted', async () => {
+				const result = await activitypub.actors.assert([actorUri]);
+				assert(result);
+			});
+
+			it('should contain a representation of that remote user in the database', async () => {
+				const exists = await db.exists(`userRemote:${actorUri}`);
+				assert(exists);
+
+				const userData = await user.getUserData(actorUri);
+				assert(userData);
+				assert.strictEqual(userData.uid, actorUri);
+			});
+
+			it('should save the actor\'s publicly accessible URL in the hash as well', async () => {
+				const url = await user.getUserField(actorUri, 'url');
+				assert.strictEqual(url, actorUri);
 			});
 		});
 
-		it('should return true if successfully asserted', async () => {
-			const result = await activitypub.actors.assert([actorUri]);
-			assert(result);
-		});
+		describe('edge case: loopback handles and uris', () => {
+			let uid;
+			const userslug = utils.generateUUID().slice(0, 8);
+			before(async () => {
+				uid = await user.create({ username: userslug });
+			});
 
-		it('should contain a representation of that remote user in the database', async () => {
-			const exists = await db.exists(`userRemote:${actorUri}`);
-			assert(exists);
+			it('should return true but not actually assert the handle into the database', async () => {
+				const handle = `${userslug}@${nconf.get('url_parsed').host}`;
+				const result = await activitypub.actors.assert([handle]);
+				assert(result);
 
-			const userData = await user.getUserData(actorUri);
-			assert(userData);
-			assert.strictEqual(userData.uid, actorUri);
-		});
+				const handleExists = await db.isObjectField('handle:uid', handle);
+				assert.strictEqual(handleExists, false);
 
-		it('should save the actor\'s publicly accessible URL in the hash as well', async () => {
-			const url = await user.getUserField(actorUri, 'url');
-			assert.strictEqual(url, actorUri);
+				const userRemoteHashExists = await db.exists(`userRemote:${nconf.get('url')}/uid/${uid}`);
+				assert.strictEqual(userRemoteHashExists, false);
+			});
+
+			it('should return true but not actually assert the uri into the database', async () => {
+				const uri = `${nconf.get('url')}/uid/${uid}`;
+				const result = await activitypub.actors.assert([uri]);
+				assert(result);
+
+				const userRemoteHashExists = await db.exists(`userRemote:${uri}`);
+				assert.strictEqual(userRemoteHashExists, false);
+			});
 		});
 	});
 });

@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const nconf = require('nconf');
 
 const db = require('../database');
 const user = require('../user');
@@ -23,17 +24,27 @@ Actors.assert = async (ids, options = {}) => {
 	ids = ids.filter(id => !utils.isNumber(id) && !failedWebfingerCache.has(id));
 
 	// Translate webfinger handles to uris
-	ids = await Promise.all(ids.map(async (id) => {
+	ids = (await Promise.all(ids.map(async (id) => {
 		const originalId = id;
 		if (id.includes('@')) {
+			const host = id.split('@')[1];
+			if (host === nconf.get('url_parsed').host) { // do not assert loopback ids
+				return null;
+			}
+
 			({ actorUri: id } = await activitypub.helpers.query(id));
 		}
 		if (!id) {
 			failedWebfingerCache.set(originalId, true);
 		}
 		return id;
-	}));
+	}))).filter(Boolean);
 
+	// Filter out loopback uris
+	ids = ids.filter((uri) => {
+		const { host } = new URL(uri);
+		return host !== nconf.get('url_parsed').host;
+	});
 
 	// Filter out existing
 	if (!options.update) {
