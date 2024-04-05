@@ -144,7 +144,7 @@ activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 	});
 });
 
-activitypubApi.update.note = enabledCheck(async (caller, { post, eid }) => {
+activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	const object = await activitypub.mocks.note(post);
 	const { targets } = await buildRecipients(object, post.user.uid);
 
@@ -155,7 +155,6 @@ activitypubApi.update.note = enabledCheck(async (caller, { post, eid }) => {
 	}
 
 	const payload = {
-		id: `${nconf.get('url')}/api/v3/events/${eid}`,
 		type: 'Update',
 		to: object.to,
 		cc: object.cc,

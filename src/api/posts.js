@@ -112,16 +112,16 @@ postsAPI.edit = async function (caller, data) {
 	if (editResult.topic.isMainPost) {
 		await topics.thumbs.migrate(data.uuid, editResult.topic.tid);
 	}
-	let eid;
-	if (editResult.post.changed) {
-		({ eid } = await events.log({
+	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
+	if (!selfPost && editResult.post.changed) {
+		await events.log({
 			type: `post-edit`,
 			uid: caller.uid,
 			ip: caller.ip,
 			pid: editResult.post.pid,
 			oldContent: editResult.post.oldContent,
 			newContent: editResult.post.newContent,
-		}));
+		});
 	}
 
 	if (editResult.topic.renamed) {
@@ -140,9 +140,7 @@ postsAPI.edit = async function (caller, data) {
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
-		if (eid) {
-			await require('.').activitypub.update.note(caller, { post: postObj[0], eid });
-		}
+		await require('.').activitypub.update.note(caller, { post: postObj[0] });
 
 		return returnData;
 	}
