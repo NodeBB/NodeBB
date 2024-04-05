@@ -134,7 +134,7 @@ postsAPI.edit = async function (caller, data) {
 			newTitle: validator.escape(String(editResult.topic.title)),
 		});
 	}
-	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, {});
+	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { extraFields: ['edited']});
 	const returnData = { ...postObj[0], ...editResult.post };
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 

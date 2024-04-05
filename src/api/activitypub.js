@@ -109,12 +109,14 @@ activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
 
 	const payloads = {
 		create: {
+			id: `${object.id}#create`,
 			type: 'Create',
 			to: object.to,
 			cc: object.cc,
 			object,
 		},
 		announce: {
+			id: `${object.id}#announce`,
 			type: 'Announce',
 			to: [`${nconf.get('url')}/category/${cid}/followers`],
 			cc: [activitypub._constants.publicAddress],
@@ -155,6 +157,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	}
 
 	const payload = {
+		id: `${object.id}#update/${post.edited}`,
 		type: 'Update',
 		to: object.to,
 		cc: object.cc,
