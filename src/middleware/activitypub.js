@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const db = require('../database');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
@@ -33,17 +35,22 @@ middleware.assertS2S = async function (req, res, next) {
 };
 
 middleware.validate = async function (req, res, next) {
+	winston.verbose('[middleware/activitypub] Validating incoming payload...');
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	const verified = await activitypub.verify(req);
 	if (!verified) {
+		winston.verbose('[middleware/activitypub] HTTP signature verification failed.');
 		return res.sendStatus(400);
 	}
+	winston.verbose('[middleware/activitypub] HTTP signature verification passed.');
 
 	// Sanity-check payload schema
 	const required = ['type', 'actor', 'object'];
 	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
+		winston.verbose('[middleware/activitypub] Request body missing required properties.');
 		return res.sendStatus(400);
 	}
+	winston.verbose('[middleware/activitypub] Request body check passed.');
 
 	const { actor, object } = req.body;
 
@@ -52,8 +59,10 @@ middleware.validate = async function (req, res, next) {
 		const actorHostname = new URL(actor).hostname;
 		const objectHostname = new URL(object.id).hostname;
 		if (actorHostname !== objectHostname) {
+			winston.verbose('[middleware/activitypub] Origin check failed.');
 			return res.sendStatus(403);
 		}
+		winston.verbose('[middleware/activitypub] Origin check passed.');
 	}
 
 	// Cross-check key ownership against received actor
@@ -62,8 +71,10 @@ middleware.validate = async function (req, res, next) {
 	const { signature } = req.headers;
 	const keyId = new Map(signature.split(',').filter(Boolean).map(v => v.split('='))).get('keyId');
 	if (`"${compare}"` !== keyId) {
+		winston.verbose('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
 	}
+	winston.verbose('[middleware/activitypub] Key ownership cross-check passed.');
 
 	next();
 };
