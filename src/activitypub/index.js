@@ -128,7 +128,7 @@ ActivityPub.sign = async ({ key, keyId }, url, payload) => {
 	if (payload) {
 		const payloadHash = createHash('sha256');
 		payloadHash.update(JSON.stringify(payload));
-		digest = `sha-256=${payloadHash.digest('base64')}`;
+		digest = `SHA-256=${payloadHash.digest('base64')}`;
 		headers += ' digest';
 		signed_string += `\ndigest: ${digest}`;
 	}
