@@ -359,7 +359,7 @@ inbox.flag = async (req) => {
 
 	// Check if the actor is valid
 	if (!await activitypub.actors.assert(actor)) {
-		reject('Flag', objects, actor);
+		return reject('Flag', objects, actor);
 	}
 
 	await Promise.all(subjects.map(async (subject, index) => {
