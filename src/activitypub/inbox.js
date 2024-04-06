@@ -365,7 +365,7 @@ inbox.flag = async (req) => {
 	await Promise.all(subjects.map(async (subject, index) => {
 		const { type, id } = subject;
 		try {
-			await flags.create(type, id, activitypub._constants.uid, content);
+			await flags.create(type, id, actor, content);
 		} catch (e) {
 			reject('Flag', objects[index], actor);
 		}
