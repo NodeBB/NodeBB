@@ -10,6 +10,7 @@ const posts = require('../posts');
 const topics = require('../topics');
 const categories = require('../categories');
 const notifications = require('../notifications');
+const flags = require('../flags');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -349,4 +350,24 @@ inbox.undo = async (req) => {
 			notifications.rescind(`announce:post:${id}:uid:${actor}`);
 		}
 	}
+};
+
+inbox.flag = async (req) => {
+	const { actor, object, content } = req.body;
+	const objects = Array.isArray(object) ? object : [object];
+	const subjects = await Promise.all(objects.map(helpers.resolveLocalId));
+
+	// Check if the actor is valid
+	if (!await activitypub.actors.assert(actor)) {
+		reject('Flag', objects, actor);
+	}
+
+	await Promise.all(subjects.map(async (subject, index) => {
+		const { type, id } = subject;
+		try {
+			await flags.create(type, id, activitypub._constants.uid, content);
+		} catch (e) {
+			reject('Flag', objects[index], actor);
+		}
+	}));
 };
