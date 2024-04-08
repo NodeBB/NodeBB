@@ -62,14 +62,13 @@ groupsController.get = async function (req, res, next) {
 };
 
 async function getGroupNames() {
-	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
+	const groupNames = Object.values(await db.getObject('groupslug:groupname'));
 	return groupNames.filter(name => (
 		name !== 'registered-users' &&
 		name !== 'verified-users' &&
 		name !== 'unverified-users' &&
-		name !== groups.BANNED_USERS &&
-		!groups.isPrivilegeGroup(name)
-	));
+		name !== groups.BANNED_USERS
+	)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 }
 
 groupsController.getCSV = async function (req, res) {
