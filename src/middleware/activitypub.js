@@ -18,14 +18,10 @@ middleware.assertS2S = async function (req, res, next) {
 		return next('route');
 	}
 
-	const acceptable = [
-		'application/activity+json',
-		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-	];
 	const pass = (accept && accept.split(',').some((value) => {
 		const parts = value.split(';').map(v => v.trim());
-		return acceptable.includes(value || parts[0]);
-	})) || (contentType && acceptable.includes(contentType));
+		return activitypub._constants.acceptableTypes.includes(value || parts[0]);
+	})) || (contentType && activitypub._constants.acceptableTypes.includes(contentType));
 
 	if (!pass) {
 		return next('route');

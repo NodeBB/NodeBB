@@ -9,6 +9,7 @@ const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
 const user = require('../user');
+const activitypub = require('.');
 
 const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 
@@ -57,7 +58,7 @@ Helpers.query = async (id) => {
 	}
 
 	// Parse links to find actor endpoint
-	let actorUri = body.links.filter(link => link.type === 'application/activity+json' && link.rel === 'self');
+	let actorUri = body.links.filter(link => activitypub._constants.acceptableTypes.includes(link.type) && link.rel === 'self');
 	if (actorUri.length) {
 		actorUri = actorUri.pop();
 		({ href: actorUri } = actorUri);
