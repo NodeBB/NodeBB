@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const qs = require('querystring');
 const validator = require('validator');
 
+const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
 const topics = require('../topics');
@@ -292,7 +293,10 @@ async function addTags(topicData, req, res, currentPage) {
 	}
 
 	if (meta.config.activitypubEnabled) {
-		const { pid } = topicData.posts[topicData.postIndex - 1];
+		const pid = topicData.postIndex !== 1 ?
+			(await db.getSortedSetRange(`tid:${topicData.tid}:posts`, topicData.postIndex - 2, topicData.postIndex - 2)).pop() :
+			topicData.mainPid;
+
 		res.locals.linkTags.push({
 			rel: 'alternate',
 			type: 'application/activity+json',
