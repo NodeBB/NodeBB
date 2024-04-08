@@ -34,6 +34,9 @@ groupsController.list = async function (req, res) {
 groupsController.get = async function (req, res, next) {
 	const slug = slugify(req.params.name);
 	const groupName = await groups.getGroupNameByGroupSlug(slug);
+	if (!groupName) {
+		return next();
+	}
 	const [groupNames, group] = await Promise.all([
 		getGroupNames(),
 		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
