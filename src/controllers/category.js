@@ -158,6 +158,11 @@ categoryController.get = async function (req, res, next) {
 
 	analytics.increment([`pageviews:byCid:${categoryData.cid}`]);
 
+	if (meta.config.activitypubEnabled) {
+		// Include link header for richer parsing
+		res.set('Link', `<${nconf.get('url')}/actegory/${cid}>; rel="alternate"; type="application/activity+json"`);
+	}
+
 	res.render('category', categoryData);
 };
 
@@ -227,6 +232,14 @@ function addTags(categoryData, res, currentPage) {
 			rel: 'alternate',
 			type: 'application/rss+xml',
 			href: categoryData.rssFeedUrl,
+		});
+	}
+
+	if (meta.config.activitypubEnabled) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/activity+json',
+			href: `${nconf.get('url')}/actegory/${categoryData.cid}`,
 		});
 	}
 }

@@ -133,6 +133,12 @@ topicsController.get = async function getTopic(req, res, next) {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});
+
+	if (meta.config.activitypubEnabled) {
+		// Include link header for richer parsing
+		res.set('Link', `<${nconf.get('url')}/topic/${tid}>; rel="alternate"; type="application/activity+json"`);
+	}
+
 	res.render('topic', topicData);
 };
 
@@ -282,6 +288,15 @@ async function addTags(topicData, req, res, currentPage) {
 		res.locals.linkTags.push({
 			rel: 'author',
 			href: `${url}/user/${postAtIndex.user.userslug}`,
+		});
+	}
+
+	if (meta.config.activitypubEnabled) {
+		const { pid } = topicData.posts[topicData.postIndex - 1];
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/activity+json',
+			href: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
 		});
 	}
 }
