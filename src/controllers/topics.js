@@ -137,7 +137,9 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	if (meta.config.activitypubEnabled) {
 		// Include link header for richer parsing
-		res.set('Link', `<${nconf.get('url')}/topic/${tid}>; rel="alternate"; type="application/activity+json"`);
+		const pid = await topics.getPidByIndex(tid, postIndex);
+		const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
+		res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
 	}
 
 	res.render('topic', topicData);
@@ -293,9 +295,7 @@ async function addTags(topicData, req, res, currentPage) {
 	}
 
 	if (meta.config.activitypubEnabled) {
-		const pid = topicData.postIndex !== 1 ?
-			(await db.getSortedSetRange(`tid:${topicData.tid}:posts`, topicData.postIndex - 2, topicData.postIndex - 2)).pop() :
-			topicData.mainPid;
+		const pid = await topics.getPidByIndex(topicData.tid, topicData.postIndex);
 
 		res.locals.linkTags.push({
 			rel: 'alternate',
