@@ -17,13 +17,18 @@ module.exports = function (app, middleware, controllers) {
 		middleware.activitypub.configureResponse,
 	];
 
+	const inboxMiddlewares = [
+		middleware.activitypub.validate,
+		middleware.activitypub.resolveObjects,
+	];
+
 	app.get('/actor', middlewares, controllers.activitypub.actors.application);
-	app.post('/inbox', [...middlewares, middleware.activitypub.validate], controllers.activitypub.postInbox);
+	app.post('/inbox', [...middlewares, ...inboxMiddlewares], controllers.activitypub.postInbox);
 
 	app.get('/uid/:uid', [...middlewares, middleware.assert.user], controllers.activitypub.actors.user);
 	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user], controllers.activitypub.actors.userBySlug);
 	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], controllers.activitypub.getInbox);
-	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, middleware.activitypub.validate], controllers.activitypub.postInbox);
+	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], controllers.activitypub.postInbox);
 	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], controllers.activitypub.getOutbox);
 	app.post('/uid/:uid/outbox', [...middlewares, middleware.assert.user], controllers.activitypub.postOutbox);
 	app.get('/uid/:uid/following', [...middlewares, middleware.assert.user], controllers.activitypub.getFollowing);
@@ -35,7 +40,7 @@ module.exports = function (app, middleware, controllers) {
 
 	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], controllers.activitypub.actors.category);
 	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], controllers.activitypub.getInbox);
-	app.post('/category/:cid/inbox', [...middlewares, middleware.assert.category, middleware.activitypub.validate], controllers.activitypub.postInbox);
+	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], controllers.activitypub.postInbox);
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.getCategoryOutbox);
 	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.postOutbox);
 };

@@ -5,6 +5,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 const validator = require('validator');
 
+const posts = require('../posts');
 const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
@@ -99,28 +100,34 @@ Helpers.generateKeys = async (type, id) => {
 
 Helpers.resolveLocalId = async (input) => {
 	if (Helpers.isUri(input)) {
-		const { host, pathname } = new URL(input);
+		const { host, pathname, hash } = new URL(input);
 
 		if (host === nconf.get('url_parsed').host) {
 			const [prefix, value] = pathname.replace(nconf.get('relative_path'), '').split('/').filter(Boolean);
 
+			let activityData = {};
+			if (hash.startsWith('#activity')) {
+				const [, activity, data] = hash.split('/', 3);
+				activityData = { activity, data };
+			}
+
 			switch (prefix) {
 				case 'uid':
-					return { type: 'user', id: value };
+					return { type: 'user', id: value, ...activityData };
 
 				case 'post':
-					return { type: 'post', id: value };
+					return { type: 'post', id: value, ...activityData };
 
 				case 'category':
-					return { type: 'category', id: value };
+					return { type: 'category', id: value, ...activityData };
 
 				case 'user': {
 					const uid = await user.getUidByUserslug(value);
-					return { type: 'user', id: uid };
+					return { type: 'user', id: uid, ...activityData };
 				}
 			}
 
-			return { type: null, id: null };
+			return { type: null, id: null, ...activityData };
 		}
 
 		return { type: null, id: null };
@@ -131,4 +138,76 @@ Helpers.resolveLocalId = async (input) => {
 	}
 
 	return { type: null, id: null };
+};
+
+Helpers.resolveActor = (type, id) => {
+	switch (type) {
+		case 'user':
+		case 'uid': {
+			return `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}`;
+		}
+
+		case 'category':
+		case 'cid': {
+			return `${nconf.get('url')}/category/${id}`;
+		}
+
+		default:
+			throw new Error('[[error:activitypub.invalid-id]]');
+	}
+};
+
+Helpers.resolveActivity = async (activity, data, id, resolved) => {
+	switch (activity.toLowerCase()) {
+		case 'follow': {
+			const actor = await Helpers.resolveActor(resolved.type, resolved.id);
+			const { actorUri: targetUri } = await Helpers.query(data);
+			return {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				actor,
+				id,
+				type: 'Follow',
+				object: targetUri,
+			};
+		}
+		default: {
+			throw new Error('[[error:activitypub.not-implemented]]');
+		}
+	}
+};
+
+
+Helpers.resolveObjects = async (ids) => {
+	if (!Array.isArray(ids)) {
+		ids = [ids];
+	}
+	const objects = await Promise.all(ids.map(async (id) => {
+		const { type, id: resolvedId, activity, data: activityData } = await Helpers.resolveLocalId(id);
+		if (activity) {
+			return Helpers.resolveActivity(activity, activityData, id, { type, id: resolvedId });
+		}
+		switch (type) {
+			case 'user': {
+				return activitypub.mocks.actors.user(resolvedId);
+			}
+			case 'post': {
+				const post = (await posts.getPostSummaryByPids(
+					[resolvedId],
+					activitypub._constants.uid,
+					{ stripTags: false }
+				)).pop();
+				if (!post) {
+					return;
+				}
+				return activitypub.mocks.note(post);
+			}
+			case 'category': {
+				return activitypub.mocks.category(resolvedId);
+			}
+			default: {
+				return activitypub.get('uid', 0, id);
+			}
+		}
+	}));
+	return objects.length === 1 ? objects[0] : objects;
 };

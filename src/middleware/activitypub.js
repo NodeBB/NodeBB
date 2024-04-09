@@ -55,8 +55,8 @@ middleware.validate = async function (req, res, next) {
 		const actorHostname = new URL(actor).hostname;
 		const objectHostname = new URL(object.id).hostname;
 		if (actorHostname !== objectHostname) {
-			winston.verbose('[middleware/activitypub] Origin check failed.');
-			return res.sendStatus(403);
+			winston.verbose('[middleware/activitypub] Origin check failed, stripping object down to id.');
+			req.body.object = [object.id];
 		}
 		winston.verbose('[middleware/activitypub] Origin check passed.');
 	}
@@ -72,6 +72,21 @@ middleware.validate = async function (req, res, next) {
 	}
 	winston.verbose('[middleware/activitypub] Key ownership cross-check passed.');
 
+	next();
+};
+
+middleware.resolveObjects = async function (req, res, next) {
+	const { object } = req.body;
+	if (typeof object === 'string' || (Array.isArray(object) && object.every(o => typeof o === 'string'))) {
+		winston.verbose('[middleware/activitypub] Resolving object(s)...');
+		try {
+			req.body.object = await activitypub.helpers.resolveObjects(object);
+			winston.verbose('[middleware/activitypub] Object(s) successfully resolved.');
+		} catch (e) {
+			winston.verbose('[middleware/activitypub] Failed to resolve object(s).');
+			return res.sendStatus(400);
+		}
+	}
 	next();
 };
 
