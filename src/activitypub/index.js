@@ -152,7 +152,9 @@ ActivityPub.sign = async ({ key, keyId }, url, payload) => {
 };
 
 ActivityPub.verify = async (req) => {
+	winston.verbose('[activitypub/verify] Starting signature verification...');
 	if (!req.headers.hasOwnProperty('signature')) {
+		winston.verbose('[activitypub/verify]   Failed, no signature header.');
 		return false;
 	}
 
@@ -179,14 +181,17 @@ ActivityPub.verify = async (req) => {
 	// Verify the signature string via public key
 	try {
 		// Retrieve public key from remote instance
+		winston.verbose(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
 		const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
 
 		const verify = createVerify('sha256');
 		verify.update(signed_string);
 		verify.end();
+		winston.verbose('[activitypub/verify] Attempting signed string verification');
 		const verified = verify.verify(publicKeyPem, signature, 'base64');
 		return verified;
 	} catch (e) {
+		winston.verbose('[activitypub/verify]   Failed, key retrieval or verification failure.');
 		return false;
 	}
 };
