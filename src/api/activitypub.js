@@ -38,9 +38,12 @@ activitypubApi.follow = enabledCheck(async (caller, { uid } = {}) => {
 	}
 
 	await activitypub.send('uid', caller.uid, [result.actorUri], {
+		id: `${nconf.get('url')}/uid/${caller.uid}#activity/follow/${result.username}@${result.hostname}`,
 		type: 'Follow',
 		object: result.actorUri,
 	});
+
+	await db.sortedSetAdd(`followRequests:${caller.uid}`, Date.now(), result.actorUri);
 });
 
 // should be .undo.follow
@@ -109,14 +112,14 @@ activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
 
 	const payloads = {
 		create: {
-			id: `${object.id}#create`,
+			id: `${object.id}#activity/create`,
 			type: 'Create',
 			to: object.to,
 			cc: object.cc,
 			object,
 		},
 		announce: {
-			id: `${object.id}#announce`,
+			id: `${object.id}#activity/announce`,
 			type: 'Announce',
 			to: [`${nconf.get('url')}/category/${cid}/followers`],
 			cc: [activitypub._constants.publicAddress],
@@ -157,7 +160,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	}
 
 	const payload = {
-		id: `${object.id}#update/${post.edited}`,
+		id: `${object.id}#activity/update/${post.edited}`,
 		type: 'Update',
 		to: object.to,
 		cc: object.cc,

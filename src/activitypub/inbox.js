@@ -255,9 +255,15 @@ inbox.accept = async (req) => {
 	}
 
 	if (type === 'Follow') {
+		if (!await db.isSortedSetMember(`followRequests:${uid}`, actor)) {
+			throw new Error('[[error:activitypub.get-failed]]');
+		}
 		const now = Date.now();
-		await db.sortedSetAdd(`followingRemote:${uid}`, now, actor);
-		await db.sortedSetAdd(`followersRemote:${actor}`, now, uid); // for followers backreference and notes assertion checking
+		await Promise.all([
+			db.sortedSetRemove(`followRequests:${uid}`, actor),
+			db.sortedSetAdd(`followingRemote:${uid}`, now, actor),
+			db.sortedSetAdd(`followersRemote:${actor}`, now, uid), // for followers backreference and notes assertion checking
+		]);
 		const followingRemoteCount = await db.sortedSetCard(`followingRemote:${uid}`);
 		await user.setUserField(uid, 'followingRemoteCount', followingRemoteCount);
 	}
@@ -351,7 +357,6 @@ inbox.undo = async (req) => {
 		}
 	}
 };
-
 inbox.flag = async (req) => {
 	const { actor, object, content } = req.body;
 	const objects = Array.isArray(object) ? object : [object];
