@@ -109,9 +109,9 @@ inbox.announce = async (req) => {
 	let tid;
 	let pid;
 
-	if (String(object).startsWith(nconf.get('url'))) {
+	if (String(object.id).startsWith(nconf.get('url'))) {
 		// Local object
-		const { type, id } = await activitypub.helpers.resolveLocalId(object);
+		const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 		if (type !== 'post' || !(await posts.exists(id))) {
 			throw new Error('[[error:activitypub.invalid-id]]');
 		}
@@ -124,12 +124,12 @@ inbox.announce = async (req) => {
 		// Remote object
 		const isFollowed = await db.sortedSetCard(`followersRemote:${actor}`);
 		if (!isFollowed) {
-			winston.info(`[activitypub/inbox.announce] Rejecting ${object} via ${actor} due to no followers`);
+			winston.info(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
 			reject('Announce', object, actor);
 			return;
 		}
 
-		pid = object;
+		pid = object.id;
 		pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
 		if (!pid) {
 			return;
@@ -169,7 +169,7 @@ inbox.announce = async (req) => {
 inbox.follow = async (req) => {
 	const { actor, object } = req.body;
 	// Sanity checks
-	const { type, id } = await helpers.resolveLocalId(object);
+	const { type, id } = await helpers.resolveLocalId(object.id);
 	if (!['category', 'user'].includes(type)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
@@ -227,7 +227,7 @@ inbox.follow = async (req) => {
 			object: {
 				type: 'Follow',
 				actor,
-				object,
+				object: object.id,
 			},
 		});
 	}
