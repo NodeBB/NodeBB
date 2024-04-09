@@ -78,7 +78,7 @@ inbox.update = async (req) => {
 
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
-	const { type, id } = await activitypub.helpers.resolveLocalId(object);
+	const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 
 	if (type !== 'post' || !(await posts.exists(id))) {
 		return reject('Like', object, actor);
