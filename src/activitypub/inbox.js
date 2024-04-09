@@ -256,7 +256,8 @@ inbox.accept = async (req) => {
 
 	if (type === 'Follow') {
 		if (!await db.isSortedSetMember(`followRequests:${uid}`, actor)) {
-			throw new Error('[[error:activitypub.get-failed]]');
+			if (await db.isSortedSetMember(`followingRemote:${uid}`, actor)) return; // already following
+			return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
 		}
 		const now = Date.now();
 		await Promise.all([
