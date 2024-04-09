@@ -54,8 +54,10 @@ activitypubApi.unfollow = enabledCheck(async (caller, { uid }) => {
 	}
 
 	await activitypub.send('uid', caller.uid, [result.actorUri], {
+		id: `${nconf.get('url')}/uid/${caller.uid}#activity/undo:follow/${result.username}@${result.hostname}`,
 		type: 'Undo',
 		object: {
+			id: `${nconf.get('url')}/uid/${caller.uid}#activity/follow/${result.username}@${result.hostname}`,
 			type: 'Follow',
 			actor: `${nconf.get('url')}/uid/${caller.uid}`,
 			object: result.actorUri,
