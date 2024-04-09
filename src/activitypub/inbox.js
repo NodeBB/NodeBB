@@ -167,7 +167,7 @@ inbox.announce = async (req) => {
 };
 
 inbox.follow = async (req) => {
-	const { actor, object } = req.body;
+	const { actor, object, id: followId } = req.body;
 	// Sanity checks
 	const { type, id } = await helpers.resolveLocalId(object.id);
 	if (!['category', 'user'].includes(type)) {
@@ -201,8 +201,10 @@ inbox.follow = async (req) => {
 		activitypub.send('uid', id, actor, {
 			type: 'Accept',
 			object: {
+				id: followId,
 				type: 'Follow',
 				actor,
+				object: object.id,
 			},
 		});
 	} else if (type === 'category') {
@@ -225,6 +227,7 @@ inbox.follow = async (req) => {
 		activitypub.send('cid', id, actor, {
 			type: 'Accept',
 			object: {
+				id: followId,
 				type: 'Follow',
 				actor,
 				object: object.id,
