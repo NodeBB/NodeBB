@@ -236,7 +236,7 @@ module.exports = function (Posts) {
 	}
 
 	async function resolveFlags(postData, uid) {
-		const flaggedPosts = postData.filter(p => parseInt(p.flagId, 10));
+		const flaggedPosts = postData.filter(p => p && parseInt(p.flagId, 10));
 		await Promise.all(flaggedPosts.map(p => flags.update(p.flagId, uid, { state: 'resolved' })));
 	}
 };
