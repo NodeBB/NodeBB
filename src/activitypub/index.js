@@ -106,13 +106,9 @@ ActivityPub.getPrivateKey = async (type, id) => {
 
 ActivityPub.fetchPublicKey = async (uri) => {
 	// Used for retrieving the public key from the passed-in keyId uri
-	const { response, body } = await request.get(uri, {
-		headers: {
-			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-		},
-	});
+	const body = await ActivityPub.get('uid', 0, uri);
 
-	if (!String(response.statusCode).startsWith('2') || !body.hasOwnProperty('publicKey')) {
+	if (!body.hasOwnProperty('publicKey')) {
 		throw new Error('[[error:activitypub.pubKey-not-found]]');
 	}
 
