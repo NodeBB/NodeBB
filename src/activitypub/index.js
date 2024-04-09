@@ -234,21 +234,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 	const inboxes = await ActivityPub.resolveInboxes(targets);
 
-	let actor;
-	switch (type) {
-		case 'uid': {
-			actor = `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}`;
-			break;
-		}
-
-		case 'cid': {
-			actor = `${nconf.get('url')}/category/${id}`;
-			break;
-		}
-
-		default:
-			throw new Error('[[error:activitypub.invalid-id]]');
-	}
+	const actor = ActivityPub.helpers.resolveActor(type, id);
 
 	payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
