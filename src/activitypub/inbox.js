@@ -360,15 +360,14 @@ inbox.undo = async (req) => {
 inbox.flag = async (req) => {
 	const { actor, object, content } = req.body;
 	const objects = Array.isArray(object) ? object : [object];
-	const subjects = await Promise.all(objects.map(helpers.resolveLocalId));
 
 	// Check if the actor is valid
 	if (!await activitypub.actors.assert(actor)) {
 		return reject('Flag', objects, actor);
 	}
 
-	await Promise.all(subjects.map(async (subject, index) => {
-		const { type, id } = subject;
+	await Promise.all(objects.map(async (subject, index) => {
+		const { type, id } = await activitypub.helpers.resolveLocalId(subject.id);
 		try {
 			await flags.create(type, id, actor, content);
 		} catch (e) {
