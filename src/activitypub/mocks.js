@@ -124,7 +124,7 @@ Mocks.post = async (objects) => {
 Mocks.actors = {};
 
 Mocks.actors.user = async (uid) => {
-	let { username, userslug, displayname: name, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
+	let { username, userslug, displayname, fullname, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	if (picture) {
@@ -156,7 +156,7 @@ Mocks.actors.user = async (uid) => {
 		sharedInbox: `${nconf.get('url')}/inbox`,
 
 		type: 'Person',
-		name,
+		name: username !== displayname ? fullname : username, // displayname is escaped, fullname is not
 		preferredUsername: username,
 		summary: aboutme,
 		icon: picture,
