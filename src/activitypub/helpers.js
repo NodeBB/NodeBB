@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const validator = require('validator');
 
 const posts = require('../posts');
+const categories = require('../categories');
 const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
@@ -188,6 +189,9 @@ Helpers.resolveObjects = async (ids) => {
 		}
 		switch (type) {
 			case 'user': {
+				if (!await user.exists(resolvedId)) {
+					throw new Error('[[error:activitypub.invalid-id]]');
+				}
 				return activitypub.mocks.actors.user(resolvedId);
 			}
 			case 'post': {
@@ -197,12 +201,15 @@ Helpers.resolveObjects = async (ids) => {
 					{ stripTags: false }
 				)).pop();
 				if (!post) {
-					return;
+					throw new Error('[[error:activitypub.invalid-id]]');
 				}
 				return activitypub.mocks.note(post);
 			}
 			case 'category': {
-				return activitypub.mocks.category(resolvedId);
+				if (!await categories.exists(resolvedId)) {
+					throw new Error('[[error:activitypub.invalid-id]]');
+				}
+				return activitypub.mocks.actors.category(resolvedId);
 			}
 			default: {
 				return activitypub.get('uid', 0, id);
