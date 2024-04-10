@@ -84,7 +84,7 @@ middleware.resolveObjects = async function (req, res, next) {
 			winston.verbose('[middleware/activitypub] Object(s) successfully resolved.');
 		} catch (e) {
 			winston.verbose('[middleware/activitypub] Failed to resolve object(s).');
-			return res.sendStatus(400);
+			return res.sendStatus(424);
 		}
 	}
 	next();
