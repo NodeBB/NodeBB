@@ -70,7 +70,7 @@ inbox.update = async (req) => {
 		}
 
 		case 'Person': {
-			await activitypub.actors.assert(object, { update: true });
+			await activitypub.actors.assert(object.id, { update: true });
 			break;
 		}
 	}
