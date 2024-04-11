@@ -600,6 +600,7 @@ usersAPI.search = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	return await user.search({
+		uid: caller.uid,
 		query: data.query,
 		searchBy: data.searchBy || 'username',
 		page: data.page || 1,

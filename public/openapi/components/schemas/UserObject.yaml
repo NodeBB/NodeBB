@@ -743,9 +743,7 @@ BanMuteArray:
             example: "#f44336"
       until:
         type: number
-      untilReadable:
-        type: string
-      timestampReadable:
+      untilISO:
         type: string
       timestampISO:
         type: string

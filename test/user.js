@@ -2457,7 +2457,7 @@ describe('User', () => {
 
 		describe('.toggle()', () => {
 			it('should toggle block', (done) => {
-				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, (err) => {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid, action: 'block' }, (err) => {
 					assert.ifError(err);
 					User.blocks.is(blockeeUid, 1, (err, blocked) => {
 						assert.ifError(err);
@@ -2468,7 +2468,7 @@ describe('User', () => {
 			});
 
 			it('should toggle block', (done) => {
-				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, (err) => {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid, action: 'unblock' }, (err) => {
 					assert.ifError(err);
 					User.blocks.is(blockeeUid, 1, (err, blocked) => {
 						assert.ifError(err);
