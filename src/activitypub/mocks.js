@@ -85,6 +85,7 @@ Mocks.post = async (objects) => {
 
 		let {
 			id: pid,
+			url,
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
@@ -112,7 +113,7 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
-			_activitypub: { to, cc, attachment, tag },
+			_activitypub: { to, cc, attachment, tag, url },
 		};
 
 		return payload;

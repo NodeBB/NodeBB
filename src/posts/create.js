@@ -44,6 +44,9 @@ module.exports = function (Posts) {
 		if (data.handle && !parseInt(uid, 10)) {
 			postData.handle = data.handle;
 		}
+		if (_activitypub.url) {
+			postData.url = _activitypub.url;
+		}
 
 		({ post: postData } = await plugins.hooks.fire('filter:post.create', { post: postData, data: data }));
 		await db.setObject(`post:${postData.pid}`, postData);

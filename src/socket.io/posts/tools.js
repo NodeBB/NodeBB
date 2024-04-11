@@ -19,7 +19,7 @@ module.exports = function (SocketPosts) {
 		}
 		const cid = await posts.getCidByPid(data.pid);
 		const results = await utils.promiseParallel({
-			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId']),
+			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId', 'url']),
 			isAdmin: user.isAdministrator(socket.uid),
 			isGlobalMod: user.isGlobalModerator(socket.uid),
 			isModerator: user.isModerator(socket.uid, cid),
