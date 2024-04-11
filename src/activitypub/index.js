@@ -155,7 +155,7 @@ ActivityPub.verify = async (req) => {
 	}
 
 	// Break the signature apart
-	let { keyId, headers, signature, algorithm } = req.headers.signature.split(',').reduce((memo, cur) => {
+	let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
 		const split = cur.split('="');
 		const key = split.shift();
 		const value = split.join('="');
@@ -170,10 +170,26 @@ ActivityPub.verify = async (req) => {
 
 	// Re-construct signature string
 	const signed_string = headers.split(' ').reduce((memo, cur) => {
-		if (cur === '(request-target)') {
-			memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
-		} else if (req.headers.hasOwnProperty(cur)) {
-			memo.push(`${cur}: ${req.headers[cur]}`);
+		switch (cur) {
+			case '(request-target)': {
+				memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
+				break;
+			}
+
+			case '(created)': {
+				memo.push(`(created): ${created}`);
+				break;
+			}
+
+			case '(expires)': {
+				memo.push(`(expires): ${expires}`);
+				break;
+			}
+
+			default: {
+				memo.push(`${cur}: ${req.headers[cur]}`);
+				break;
+			}
 		}
 
 		return memo;
