@@ -225,18 +225,23 @@ define('forum/chats', [
 
 	Chats.addIPHandler = function (container) {
 		container.off('click', '.chat-ip-button')
-			.on('click', '.chat-ip-button', async function () {
+			.on('click', '.chat-ip-button', async function (ev) {
+				ev.stopPropagation();
 				const ipEl = $(this);
+				const ipCopyText = ipEl.find('.copy .copy-ip-text');
 				let ip = ipEl.attr('data-ip');
 				if (ip) {
 					navigator.clipboard.writeText(ip);
-					ipEl.translateText('[[global:copied]]');
-					setTimeout(() => ipEl.text(ip), 2000);
+					ipCopyText.translateText('[[global:copied]]');
+					setTimeout(() => ipCopyText.text(ip), 2000);
 					return;
 				}
 				const mid = ipEl.parents('[data-mid]').attr('data-mid');
 				({ ip } = await api.get(`/chats/${ajaxify.data.roomId}/messages/${mid}/ip`));
-				ipEl.text(ip).attr('data-ip', ip);
+				ipEl.attr('data-ip', ip);
+				ipEl.find('.show').addClass('hidden');
+				ipEl.find('.copy').removeClass('hidden');
+				ipCopyText.text(ip);
 			});
 	};
 
@@ -248,7 +253,8 @@ define('forum/chats', [
 		}
 
 		container.off('click', '[data-action="copy-link"]')
-			.on('click', '[data-action="copy-link"]', function () {
+			.on('click', '[data-action="copy-link"]', function (ev) {
+				ev.stopPropagation();
 				const copyEl = $(this);
 				const mid = copyEl.attr('data-mid');
 				if (mid) {
@@ -257,7 +263,8 @@ define('forum/chats', [
 			});
 
 		container.off('click', '[data-action="copy-text"]')
-			.on('click', '[data-action="copy-text"]', function () {
+			.on('click', '[data-action="copy-text"]', function (ev) {
+				ev.stopPropagation();
 				const copyEl = $(this);
 				const messageEl = copyEl.parents('[data-mid]');
 				if (messageEl.length) {
