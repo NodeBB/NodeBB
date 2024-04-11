@@ -1,5 +1,5 @@
 {
-	"events": "อีเวนท์",
+	"events": "Events",
 	"no-events": "ไม่มีอีเวนท์",
 	"control-panel": "แผงควบคุมอีเวนท์",
 	"delete-events": "ลบอีเว้นท์",
@@ -13,5 +13,5 @@
 	"filter-user.placeholder": "พิมพ์ชื่อผู้ใช้เพื่อฟิลเตอร์",
 	"filter-group": "ฟิลเตอร์โดยกลุ่ม",
 	"filter-group.placeholder": "พิมพ์ชื่อกลุ่มเพื่อฟิลเตอร์",
-	"filter-per-page": "Per Page"
+	"filter-per-page": "ต่อหน้า"
 }

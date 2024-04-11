@@ -37,16 +37,16 @@
 	"redis.total-connections-recieved": "การเชื่อมต่อที่ได้รับทั้งหมด",
 	"redis.total-commands-processed": "คำสั่งที่ประมวลผลแล้วทั้งหมด",
 	"redis.iops": "การทำงานพร้อมกันต่อวินาที",
-	"redis.iinput": "Instantaneous Input Per Second",
-	"redis.ioutput": "Instantaneous Output Per Second",
-	"redis.total-input": "Total Input",
-	"redis.total-output": "Total Ouput",
+	"redis.iinput": "ข้อมูลเข้าต่อวินาที",
+	"redis.ioutput": "ข้อมูลออกต่อวินาที",
+	"redis.total-input": "ข้อมูลเข้าทั้งหมด",
+	"redis.total-output": "ข้อมูลออกทั้งหมด",
 
-	"redis.keyspace-hits": "Keyspace Hits",
-	"redis.keyspace-misses": "Keyspace Misses",
+	"redis.keyspace-hits": "Keyspace ที่พบ",
+	"redis.keyspace-misses": "Keyspace ที่ไม่พบ",
 	"redis.raw-info": "ข้อมูลดิบของ Redis",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "PostgreSQL เวอร์ชัน",
+	"postgres.raw-info": "ข้อมูลดิบของ Postgres"
 }
