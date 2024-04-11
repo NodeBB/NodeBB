@@ -44,7 +44,7 @@ module.exports = function (Posts) {
 		if (data.handle && !parseInt(uid, 10)) {
 			postData.handle = data.handle;
 		}
-		if (_activitypub.url) {
+		if (_activitypub && _activitypub.url) {
 			postData.url = _activitypub.url;
 		}
 

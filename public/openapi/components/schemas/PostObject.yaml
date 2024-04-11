@@ -11,6 +11,11 @@ PostObject:
       type: number
       description: The post that this post is in reply to
       nullable: true
+    url:
+      type: string
+      description: |
+        A permalink to the post content.
+        For posts received via ActivityPub, it is the url of the original piece of content.
     content:
       type: string
     uid:
