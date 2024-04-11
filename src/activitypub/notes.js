@@ -1,7 +1,6 @@
 'use strict';
 
 const winston = require('winston');
-const crypto = require('crypto');
 const nconf = require('nconf');
 
 const db = require('../database');
@@ -135,7 +134,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				_activitypub: mainPost._activitypub,
 			}),
 			Notes.updateLocalRecipients(mainPid, { to, cc }),
-			Notes.saveAttachments(mainPid, attachment),
+			posts.attachments.update(mainPid, attachment),
 		]);
 		unprocessed.pop();
 	}
@@ -148,7 +147,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		await Promise.all([
 			topics.reply(post),
 			Notes.updateLocalRecipients(post.pid, { to, cc }),
-			Notes.saveAttachments(post.pid, attachment),
+			posts.attachments.update(post.pid, attachment),
 		]);
 
 		// Category announce
@@ -226,38 +225,6 @@ Notes.updateLocalRecipients = async (id, { to, cc }) => {
 	if (uids.size > 0) {
 		await db.setAdd(`post:${id}:recipients`, Array.from(uids));
 	}
-};
-
-Notes.saveAttachments = async (id, attachments) => {
-	if (!attachments) {
-		return;
-	}
-
-	const bulkOps = {
-		hash: [],
-		zset: {
-			score: [],
-			value: [],
-		},
-	};
-
-	attachments.filter(Boolean).forEach(({ mediaType, url, name, width, height }, idx) => {
-		if (!url) { // only required property
-			return;
-		}
-
-		const hash = crypto.createHash('sha256').update(url).digest('hex');
-		const key = `attachment:${hash}`;
-
-		bulkOps.hash.push([key, { mediaType, url, name, width, height }]);
-		bulkOps.zset.score.push(idx);
-		bulkOps.zset.value.push(hash);
-	});
-
-	await Promise.all([
-		db.setObjectBulk(bulkOps.hash),
-		db.sortedSetAdd(`post:${id}:attachments`, bulkOps.zset.score, bulkOps.zset.value),
-	]);
 };
 
 Notes.getParentChain = async (uid, input) => {

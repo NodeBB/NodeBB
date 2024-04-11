@@ -27,6 +27,8 @@ require('./queue')(Posts);
 require('./diffs')(Posts);
 require('./uploads')(Posts);
 
+Posts.attachments = require('./attachments');
+
 Posts.exists = async function (pids) {
 	return await db.exists(
 		Array.isArray(pids) ? pids.map(pid => `post:${pid}`) : `post:${pids}`

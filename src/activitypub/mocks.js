@@ -213,7 +213,6 @@ Mocks.note = async (post) => {
 	const id = `${nconf.get('url')}/post/${post.pid}`;
 	const published = new Date(parseInt(post.timestamp, 10)).toISOString();
 
-
 	// todo: post visibility
 	const to = new Set([activitypub._constants.publicAddress]);
 	const cc = new Set([`${nconf.get('url')}/uid/${post.user.uid}/followers`]);
@@ -281,6 +280,13 @@ Mocks.note = async (post) => {
 		}
 	}
 
+	let attachment = await posts.attachments.get(post.pid) || [];
+	attachment = attachment.map(({ mediaType, url }) => ({
+		type: 'Document',
+		mediaType,
+		url,
+	}));
+
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
@@ -298,7 +304,7 @@ Mocks.note = async (post) => {
 		content: post.content,
 		source,
 		tag,
-		attachment: [], // todo... requires refactoring of link preview plugin
+		attachment,
 		// replies: {}  todo...
 	};
 
