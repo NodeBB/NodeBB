@@ -2,7 +2,7 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const { createHash, createSign, createVerify } = require('crypto');
+const { createHash, createSign, createVerify, getHashes } = require('crypto');
 
 const request = require('../request');
 const db = require('../database');
@@ -143,7 +143,7 @@ ActivityPub.sign = async ({ key, keyId }, url, payload) => {
 	return {
 		date,
 		digest,
-		signature: `keyId="${keyId}",headers="${headers}",signature="${signature}",algorithm="rsa-sha256"`,
+		signature: `keyId="${keyId}",headers="${headers}",signature="${signature}",algorithm="hs2019"`,
 	};
 };
 
@@ -155,13 +155,18 @@ ActivityPub.verify = async (req) => {
 	}
 
 	// Break the signature apart
-	const { keyId, headers, signature } = req.headers.signature.split(',').reduce((memo, cur) => {
+	let { keyId, headers, signature, algorithm } = req.headers.signature.split(',').reduce((memo, cur) => {
 		const split = cur.split('="');
 		const key = split.shift();
 		const value = split.join('="');
 		memo[key] = value.slice(0, -1);
 		return memo;
 	}, {});
+
+	const acceptableHashes = getHashes();
+	if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
+		algorithm = 'sha256';
+	}
 
 	// Re-construct signature string
 	const signed_string = headers.split(' ').reduce((memo, cur) => {
