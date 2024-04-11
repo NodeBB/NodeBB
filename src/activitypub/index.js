@@ -177,12 +177,12 @@ ActivityPub.verify = async (req) => {
 			}
 
 			case '(created)': {
-				memo.push(`(created): ${created}`);
+				memo.push(`${cur}: ${created}`);
 				break;
 			}
 
 			case '(expires)': {
-				memo.push(`(expires): ${expires}`);
+				memo.push(`${cur}: ${expires}`);
 				break;
 			}
 
