@@ -113,7 +113,7 @@ User.getUidByUserslug = async function (userslug) {
 
 	if (userslug.includes('@')) {
 		await activitypub.actors.assert(userslug);
-		return (await db.getObjectField('handle:uid', userslug)) || null;
+		return (await db.getObjectField('handle:uid', String(userslug).toLowerCase())) || null;
 	}
 
 	return await db.sortedSetScore('userslug:uid', userslug);

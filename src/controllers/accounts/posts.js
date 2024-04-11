@@ -180,7 +180,7 @@ async function getPostsFromUserSet(template, req, res) {
 	// exposeUid returns -2 for all remote users for ease of processing, restoring uid
 	let { uid } = res.locals;
 	if (uid === -2) {
-		uid = await db.getObjectField('handle:uid', req.params.userslug);
+		uid = await db.getObjectField('handle:uid', req.params.userslug.toLowerCase());
 	}
 
 	const [{ username, userslug }, settings] = await Promise.all([
