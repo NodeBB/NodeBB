@@ -34,7 +34,7 @@
 
 				{{{ if ./teaser }}}
 				<div class="teaser-content text-sm line-clamp-3 text-break">
-					<span href="#" class="text-decoration-none">{buildAvatar(./teaser.user, "14px", true)}</span>
+					{buildAvatar(./teaser.user, "14px", true, "align-middle")}
 					<strong class="text-xs fw-semibold teaser-username">{./teaser.user.username}:</strong>
 					{./teaser.content}
 				</div>
