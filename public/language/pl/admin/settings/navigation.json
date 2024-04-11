@@ -10,7 +10,7 @@
 	"id": "ID: <small>opcjonalnie</small>",
 
 	"properties": "Ustawienia:",
-	"groups": "Grupy:",
+	"show-to-groups": "Show to Groups:",
 	"open-new-window": "Otwórz w nowym oknie",
 	"dropdown": "Lista rozwijana",
 	"dropdown-placeholder": "Umieść pozycje menu rozwijanego poniżej, np.: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
