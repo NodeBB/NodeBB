@@ -237,6 +237,9 @@ Mocks.note = async (post) => {
 		}));
 	}
 
+	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
+	post.content = posts.relativeToAbsolute(post.content, posts.imgRegex);
+
 	let source = null;
 	const [markdownEnabled, mentionsEnabled] = await Promise.all([
 		plugins.isActive('nodebb-plugin-markdown'),
