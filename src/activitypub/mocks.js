@@ -285,7 +285,7 @@ Mocks.note = async (post) => {
 	const uploads = await posts.uploads.listWithSizes(post.pid);
 	uploads.forEach(({ name, width, height }) => {
 		const mediaType = mime.getType(name);
-		const url = `${nconf.get('upload_url')}/${name}`;
+		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
 		attachment.push({ mediaType, url, width, height });
 	});
 
