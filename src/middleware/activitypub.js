@@ -48,14 +48,16 @@ middleware.validate = async function (req, res, next) {
 	}
 	winston.verbose('[middleware/activitypub] Request body check passed.');
 
-	const { actor, object } = req.body;
+	let { actor, object } = req.body;
 
 	// Actor normalization
 	if (typeof actor === 'object' && actor.hasOwnProperty('id')) {
-		req.body.actor = actor.id;
+		actor = actor.id;
+		req.body.actor = actor;
 	}
 	if (Array.isArray(actor)) {
-		req.body.actor = actor.map(a => (typeof a === 'string' ? a : a.id));
+		actor = actor.map(a => (typeof a === 'string' ? a : a.id));
+		req.body.actor = actor;
 	}
 
 	// Origin checking
