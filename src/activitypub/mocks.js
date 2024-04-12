@@ -282,11 +282,27 @@ Mocks.note = async (post) => {
 	}
 
 	let attachment = await posts.attachments.get(post.pid) || [];
-	attachment = attachment.map(({ mediaType, url }) => ({
-		type: 'Document',
-		mediaType,
-		url,
-	}));
+	attachment = attachment.map(({ mediaType, url }) => {
+		let type;
+
+		switch (true) {
+			case mediaType.startsWith('image'): {
+				type = 'Image';
+				break;
+			}
+
+			default: {
+				type = 'Link';
+				break;
+			}
+		}
+
+		return {
+			type,
+			mediaType,
+			url,
+		};
+	});
 
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
