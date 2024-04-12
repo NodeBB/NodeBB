@@ -144,6 +144,7 @@ activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 	]);
 
 	await activitypub.send('uid', caller.uid, followers, {
+		id: `${object.id}#activity/update/${Date.now()}`,
 		type: 'Update',
 		to: [activitypub._constants.publicAddress],
 		cc: [],
