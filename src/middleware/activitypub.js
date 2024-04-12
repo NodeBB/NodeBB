@@ -50,11 +50,20 @@ middleware.validate = async function (req, res, next) {
 
 	const { actor, object } = req.body;
 
+	// Actor normalization
+	if (typeof actor === 'object' && actor.hasOwnProperty('id')) {
+		req.body.actor = actor.id;
+	}
+	if (Array.isArray(actor)) {
+		req.body.actor = actor.map(a => (typeof a === 'string' ? a : a.id));
+	}
+
 	// Origin checking
 	if (typeof object !== 'string' && object.hasOwnProperty('id')) {
-		const actorHostname = new URL(actor).hostname;
+		const actorHostnames = Array.isArray(actor) ? actor.map(a => new URL(a).hostname) : [new URL(actor).hostname];
 		const objectHostname = new URL(object.id).hostname;
-		if (actorHostname !== objectHostname) {
+		// require that all actors have the same hostname as the object for now
+		if (!actorHostnames.every(actorHostname => actorHostname === objectHostname)) {
 			winston.verbose('[middleware/activitypub] Origin check failed, stripping object down to id.');
 			req.body.object = [object.id];
 		}
