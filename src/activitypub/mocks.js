@@ -282,7 +282,14 @@ Mocks.note = async (post) => {
 	}
 
 	let attachment = await posts.attachments.get(post.pid) || [];
-	attachment = attachment.map(({ mediaType, url }) => {
+	const uploads = await posts.uploads.listWithSizes(post.pid);
+	uploads.forEach(({ name, width, height }) => {
+		const mediaType = mime.getType(name);
+		const url = `${nconf.get('upload_url')}/${name}`;
+		attachment.push({ mediaType, url, width, height });
+	});
+
+	attachment = attachment.map(({ mediaType, url, width, height }) => {
 		let type;
 
 		switch (true) {
@@ -297,11 +304,14 @@ Mocks.note = async (post) => {
 			}
 		}
 
-		return {
-			type,
-			mediaType,
-			url,
-		};
+		const payload = { type, mediaType, url };
+
+		if (width || height) {
+			payload.width = width;
+			payload.height = height;
+		}
+
+		return payload;
 	});
 
 	const object = {
