@@ -158,7 +158,7 @@ Mocks.actors.user = async (uid) => {
 
 		type: 'Person',
 		name: username !== displayname ? fullname : username, // displayname is escaped, fullname is not
-		preferredUsername: username,
+		preferredUsername: userslug,
 		summary: aboutme,
 		icon: picture,
 		image: cover,
