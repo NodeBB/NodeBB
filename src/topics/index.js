@@ -316,7 +316,7 @@ Topics.search = async function (tid, term) {
 Topics.getPidByIndex = async function (tid, index) {
 	index -= 2; // zset only stores replies, index is not zero-indexed, so offset by 2.
 	return index > 0 ?
-		(await db.getSortedSetRange(`tid:${tid}:posts`, index - 2, index - 2)).pop() :
+		(await db.getSortedSetRange(`tid:${tid}:posts`, index, index)).pop() :
 		await Topics.getTopicField(tid, 'mainPid');
 };
 
