@@ -203,8 +203,12 @@ module.exports = function (middleware) {
 		if (uid <= 0) {
 			return next();
 		}
-		const userslug = await user.getUserField(uid, 'userslug');
-		if (!userslug) {
+		const [canView, userslug] = await Promise.all([
+			privileges.global.can('view:users', req.uid),
+			user.getUserField(uid, 'userslug'),
+		]);
+
+		if (!userslug || (!canView && req.uid !== uid)) {
 			return next();
 		}
 		const path = req.url.replace(/^\/api/, '')
