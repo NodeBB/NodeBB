@@ -59,6 +59,24 @@ flagsApi.rescind = async ({ uid }, { flagId }) => {
 	await flags.rescindReport(type, targetId, uid);
 };
 
+flagsApi.rescindPost = async ({ uid }, { pid }) => {
+	const exists = await flags.exists('post', pid, uid);
+	if (!exists) {
+		throw new Error('[[error:no-flag]]');
+	}
+
+	await flags.rescindReport('post', pid, uid);
+};
+
+flagsApi.rescindUser = async ({ uid }, { uid: targetUid }) => {
+	const exists = await flags.exists('user', targetUid, uid);
+	if (!exists) {
+		throw new Error('[[error:no-flag]]');
+	}
+
+	await flags.rescindReport('user', targetUid, uid);
+};
+
 flagsApi.appendNote = async (caller, data) => {
 	const allowed = await user.isPrivileged(caller.uid);
 	if (!allowed) {

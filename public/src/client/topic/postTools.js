@@ -147,6 +147,18 @@ define('forum/topic/postTools', [
 			});
 		});
 
+		postContainer.on('click', '[component="post/already-flagged"]', function () {
+			const pid = getData($(this), 'data-pid');
+			require(['flags'], function (flags) {
+				bootbox.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
+					if (!confirm) {
+						return;
+					}
+					flags.rescindByType('post', pid);
+				});
+			});
+		});
+
 		postContainer.on('click', '[component="post/flagUser"]', function () {
 			const uid = getData($(this), 'data-uid');
 			require(['flags'], function (flags) {

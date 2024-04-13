@@ -37,6 +37,16 @@ Flags.rescind = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Flags.rescindPost = async (req, res) => {
+	await api.flags.rescindPost(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res);
+};
+
+Flags.rescindUser = async (req, res) => {
+	await api.flags.rescindUser(req, { uid: req.params.uid });
+	helpers.formatApiResponse(200, res);
+};
+
 Flags.appendNote = async (req, res) => {
 	const { note, datetime } = req.body;
 	const payload = await api.flags.appendNote(req, {

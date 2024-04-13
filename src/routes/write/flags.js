@@ -19,6 +19,9 @@ module.exports = function () {
 
 	setupApiRoute(router, 'delete', '/:flagId/report', middlewares, controllers.write.flags.rescind);
 
+	setupApiRoute(router, 'delete', '/post/:pid/report', middlewares, controllers.write.flags.rescindPost);
+	setupApiRoute(router, 'delete', '/user/:uid/report', middlewares, controllers.write.flags.rescindUser);
+
 	setupApiRoute(router, 'post', '/:flagId/notes', [...middlewares, middleware.assert.flag], controllers.write.flags.appendNote);
 	setupApiRoute(router, 'delete', '/:flagId/notes/:datetime', [...middlewares, middleware.assert.flag], controllers.write.flags.deleteNote);
 
