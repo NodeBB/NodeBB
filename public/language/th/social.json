@@ -1,12 +1,12 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook",
-	"sign-in-with-linkedin": "Sign in with LinkedIn",
-	"sign-up-with-linkedin": "Sign up with LinkedIn"
+	"sign-in-with-twitter": "เข้าสู่ระบบด้วยบัญชี Twitter",
+	"sign-up-with-twitter": "สร้างบัญชีใหม่ด้วยบัญชี Twitter",
+	"sign-in-with-github": "เข้าสู่ระบบด้วยบัญชี Github",
+	"sign-up-with-github": "สร้างบัญชีใหม่ด้วยบัญชี Github",
+	"sign-in-with-google": "เข้าสู่ระบบด้วยบัญชี Google",
+	"sign-up-with-google": "สร้างบัญชีใหม่ด้วยบัญชี Google",
+	"log-in-with-facebook": "เข้าสู่ระบบด้วยบัญชี Facebook",
+	"continue-with-facebook": "ไปต่อโดยใช้บัญชี Facebook",
+	"sign-in-with-linkedin": "เข้าสู่ระบบด้วยบัญชี LinkedIn",
+	"sign-up-with-linkedin": "สร้างบัญชีใหม่ด้วยบัญชี LinkedIn"
 }

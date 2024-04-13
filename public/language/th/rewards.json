@@ -1,5 +1,5 @@
 {
-	"awarded-x-reputation": "คุณได้รับค่าชื่อเสียง <strong>%1</strong>",
+	"awarded-x-reputation": "คุณได้รับชื่อเสียงเพิ่มขึ้น <strong>%1</strong>",
 	"awarded-group-membership": "คุณถูกเพิ่มลงในกลุ่ม <strong>%1</strong>",
 
 	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(ชื่อเสียง %1 %2)</span>",
