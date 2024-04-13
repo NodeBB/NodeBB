@@ -31,9 +31,17 @@
 						</label>
 					</div>
 				</div>
-				<div class="mb-3">
+				<div class="mb-2">
 					<textarea class="form-control" id="flag-reason-custom" placeholder="[[flags:modal-reason-custom]]" disabled="disabled"></textarea>
 				</div>
+				{{{ if remote }}}
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" name="flag-notify-remote" checked="checked">
+					<label class="form-check-label text-sm" for="flag-notify-remote">
+						[[flags:modal-notify-remote, {remote}]]
+					</label>
+				</div>
+				{{{ end }}}
 
 				<button type="button" class="btn btn-primary" id="flag-post-commit" disabled>[[flags:modal-submit]]</button>
 			</div>

@@ -4,6 +4,8 @@ const _ = require('lodash');
 const winston = require('winston');
 const validator = require('validator');
 
+const activitypub = require('./activitypub');
+const activitypubApi = require('./api/activitypub');
 const db = require('./database');
 const user = require('./user');
 const groups = require('./groups');
@@ -389,7 +391,7 @@ Flags.deleteNote = async function (flagId, datetime) {
 	await db.sortedSetRemove(`flag:${flagId}:notes`, note[0]);
 };
 
-Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = false) {
+Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = false, notifyRemote = false) {
 	let doHistoryAppend = false;
 	if (!timestamp) {
 		timestamp = Date.now();
@@ -473,6 +475,11 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 	}
 
 	const flagObj = await Flags.get(flagId);
+
+	if (notifyRemote && activitypub.helpers.isUri(id)) {
+		const caller = await user.getUserData(uid);
+		activitypubApi.flag(caller, flagObj);
+	}
 
 	plugins.hooks.fire('action:flags.create', { flag: flagObj });
 	return flagObj;
@@ -681,6 +688,14 @@ Flags.targetExists = async function (type, id) {
 	if (type === 'post') {
 		return await posts.exists(id);
 	} else if (type === 'user') {
+		if (activitypub.helpers.isUri(id)) {
+			try {
+				const actor = await activitypub.get('uid', 0, id);
+				return !!actor;
+			} catch (_) {
+				return false;
+			}
+		}
 		return await user.exists(id);
 	}
 	throw new Error('[[error:invalid-data]]');

@@ -353,7 +353,8 @@ module.exports = function (User) {
 	};
 
 	User.setUserFields = async function (uid, data) {
-		await db.setObject(`user:${uid}`, data);
+		const userKey = isFinite(uid) ? `user:${uid}` : `userRemote:${uid}`;
+		await db.setObject(userKey, data);
 		for (const [field, value] of Object.entries(data)) {
 			plugins.hooks.fire('action:user.set', { uid, field, value, type: 'set' });
 		}

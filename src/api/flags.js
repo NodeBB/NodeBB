@@ -11,7 +11,7 @@ flagsApi.create = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const { type, id, reason } = data;
+	const { type, id, reason, notifyRemote } = data;
 
 	await flags.validate({
 		uid: caller.uid,
@@ -19,7 +19,7 @@ flagsApi.create = async (caller, data) => {
 		id: id,
 	});
 
-	const flagObj = await flags.create(type, id, caller.uid, reason);
+	const flagObj = await flags.create(type, id, caller.uid, reason, undefined, undefined, notifyRemote);
 	flags.notify(flagObj, caller.uid);
 
 	return flagObj;

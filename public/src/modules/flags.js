@@ -8,6 +8,8 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 	let flagReason;
 
 	Flag.showFlagModal = function (data) {
+		data.remote = URL.canParse(data.id) ? new URL(data.id).hostname : false;
+
 		app.parseAndTranslate('modals/flag', data, function (html) {
 			flagModal = html;
 			flagModal.on('hidden.bs.modal', function () {
@@ -35,18 +37,21 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 				if (selected.attr('id') === 'flag-reason-other') {
 					reason = flagReason.val();
 				}
-				createFlag(data.type, data.id, reason);
+				const notifyRemote = $('input[name="flag-notify-remote"]').is(':checked');
+				createFlag(data.type, data.id, reason, notifyRemote);
 			});
 
 			flagModal.on('click', '#flag-reason-other', function () {
 				flagReason.focus();
 			});
 
+
 			flagModal.modal('show');
 			hooks.fire('action:flag.showModal', {
 				modalEl: flagModal,
 				type: data.type,
 				id: data.id,
+				remote: data.remote,
 			});
 
 			flagModal.find('#flag-reason-custom').on('keyup blur change', checkFlagButtonEnable);
@@ -63,7 +68,7 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 	};
 
 	Flag.rescindByType = function (type, id) {
-		api.del(`/flags/${type}/${id}/report`).then(() => {
+		api.del(`/flags/${type}/${encodeURIComponent(id)}/report`).then(() => {
 			alerts.success('[[flags:rescinded]]');
 			hooks.fire('action:flag.rescinded', { type: type, id: id });
 			if (type === 'post') {
@@ -88,11 +93,11 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 		}).catch(alerts.error);
 	};
 
-	function createFlag(type, id, reason) {
+	function createFlag(type, id, reason, notifyRemote = false) {
 		if (!type || !id || !reason) {
 			return;
 		}
-		const data = { type: type, id: id, reason: reason };
+		const data = { type: type, id: id, reason: reason, notifyRemote: notifyRemote };
 		api.post('/flags', data, function (err, flagId) {
 			if (err) {
 				return alerts.error(err);

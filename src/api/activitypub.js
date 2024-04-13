@@ -214,3 +214,19 @@ activitypubApi.undo.like = enabledCheck(async (caller, { pid }) => {
 		},
 	});
 });
+
+activitypubApi.flag = enabledCheck(async (caller, flag) => {
+	if (!activitypub.helpers.isUri(flag.targetId)) {
+		return;
+	}
+	const reportedIds = [flag.targetId];
+	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
+		reportedIds.push(flag.targetUid);
+	}
+	const reason = flag.reports.filter(report => report.reporter.uid === caller.uid).at(-1);
+	await activitypub.send('uid', caller.uid, reportedIds, {
+		type: 'Flag',
+		object: reportedIds,
+		content: reason ? reason.value : undefined,
+	});
+});

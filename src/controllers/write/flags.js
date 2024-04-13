@@ -7,8 +7,8 @@ const helpers = require('../helpers');
 const Flags = module.exports;
 
 Flags.create = async (req, res) => {
-	const { type, id, reason } = req.body;
-	const flagObj = await api.flags.create(req, { type, id, reason });
+	const { type, id, reason, notifyRemote } = req.body;
+	const flagObj = await api.flags.create(req, { type, id, reason, notifyRemote });
 	helpers.formatApiResponse(200, res, await user.isPrivileged(req.uid) ? flagObj : undefined);
 };
 
@@ -36,12 +36,10 @@ Flags.rescind = async (req, res) => {
 	await api.flags.rescind(req, { flagId: req.params.flagId });
 	helpers.formatApiResponse(200, res);
 };
-
 Flags.rescindPost = async (req, res) => {
 	await api.flags.rescindPost(req, { pid: req.params.pid });
 	helpers.formatApiResponse(200, res);
 };
-
 Flags.rescindUser = async (req, res) => {
 	await api.flags.rescindUser(req, { uid: req.params.uid });
 	helpers.formatApiResponse(200, res);
