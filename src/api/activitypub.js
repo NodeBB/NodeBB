@@ -223,10 +223,37 @@ activitypubApi.flag = enabledCheck(async (caller, flag) => {
 	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
 		reportedIds.push(flag.targetUid);
 	}
-	const reason = flag.reports.filter(report => report.reporter.uid === caller.uid).at(-1);
+	const reason = flag.reason ||
+		(flag.reports && flag.reports.filter(report => report.reporter.uid === caller.uid).at(-1).value);
 	await activitypub.send('uid', caller.uid, reportedIds, {
+		id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/flag/${caller.uid}`,
 		type: 'Flag',
 		object: reportedIds,
-		content: reason ? reason.value : undefined,
+		content: reason,
 	});
+	await db.sortedSetAdd(`flag:${flag.flagId}:remote`, Date.now(), caller.uid);
+});
+
+activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
+	if (!activitypub.helpers.isUri(flag.targetId)) {
+		return;
+	}
+	const reportedIds = [flag.targetId];
+	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
+		reportedIds.push(flag.targetUid);
+	}
+	const reason = flag.reason ||
+		(flag.reports && flag.reports.filter(report => report.reporter.uid === caller.uid).at(-1).value);
+	await activitypub.send('uid', caller.uid, reportedIds, {
+		id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/undo:flag/${caller.uid}`,
+		type: 'Undo',
+		object: {
+			id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/flag/${caller.uid}`,
+			actor: `${nconf.get('url')}/uid/${caller.uid}`,
+			type: 'Flag',
+			object: reportedIds,
+			content: reason,
+		},
+	});
+	await db.sortedSetRemove(`flag:${flag.flagId}:remote`, caller.uid);
 });
