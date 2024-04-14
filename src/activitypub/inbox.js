@@ -358,6 +358,21 @@ inbox.undo = async (req) => {
 			}
 
 			notifications.rescind(`announce:post:${id}:uid:${actor}`);
+			break;
+		}
+		case 'Flag': {
+			if (!Array.isArray(object.object)) {
+				object.object = [object.object];
+			}
+			await Promise.all(object.object.map(async (subject) => {
+				const { type, id } = await activitypub.helpers.resolveLocalId(subject.id);
+				try {
+					await flags.rescindReport(type, id, actor);
+				} catch (e) {
+					reject('Undo', { type: 'Flag', object: [subject] }, actor);
+				}
+			}));
+			break;
 		}
 	}
 };
