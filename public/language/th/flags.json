@@ -8,7 +8,7 @@
 	"assignee": "ผู้ได้รับมอบหมาย",
 	"update": "อัพเดท",
 	"updated": "อัพเดทแล้ว",
-	"resolved": "แก้ไขแล้ว",
+	"resolved": "แก้ปัญหาแล้ว",
 	"report-added": "ถูกเพิ่มแล้ว",
 	"report-rescinded": "ยกเลิกแล้ว",
 	"target-purged": "เนื้อหาที่ถูกรายงาน ถูกลบออกและไม่มีอยู่ในระบบอีกต่อไป",
@@ -88,7 +88,7 @@
 	"modal-submit-success": "เนื้อหาถูกรายงานตามเพื่อรอตรวจสอบแล้ว",
 
 	"bulk-actions": "จัดการทีละมากๆ",
-	"bulk-resolve": "จัดการรายงาน",
+	"bulk-resolve": "แก้ปัญหารายงาน",
 	"bulk-success": "รายงาน %1 อันถูกอัพเดท",
 	"flagged-timeago-readable": "ถูกรายงานเมื่อ <span class=\"timeago\" title=\"%1\"></span> (%2)",
   	"auto-flagged": "[รายงานอัตโนมัติ] ถูกโหวดลง %1 ครั้ง"

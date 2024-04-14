@@ -2,7 +2,7 @@
     "settings.title": "Ustawienia stylu",
     "settings.intro": "Możesz tu ustawić swój styl wyświetlania. Ustawienia są zachowywane osobno dla każdego urządzenia, więc możesz ustawić różne rzeczy na różnych urządzeniach (komputer, telefon, itd.)",
     "settings.mobile-menu-side": "Przełącz, po której stronie jest dane menu mobilne",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
+    "settings.autoHidingNavbar": "Ukryj pasek nawigacyjny przy przewijaniu",
     "settings.autoHidingNavbar-xs": "Malutkie ekrany (np. telefony trzymane pionowo)",
     "settings.autoHidingNavbar-sm": "Małe ekrany (np. telefony, tablety)",
     "settings.autoHidingNavbar-md": "Ekrany średniej wielkości (np. tablety trzymane poziomo)",
