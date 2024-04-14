@@ -386,9 +386,9 @@ inbox.flag = async (req) => {
 	}
 
 	await Promise.all(objects.map(async (subject, index) => {
-		const { type, id } = await activitypub.helpers.resolveLocalId(subject.id);
+		const { type, id } = await activitypub.helpers.resolveObjects(subject.id);
 		try {
-			await flags.create(type, id, actor, content);
+			await flags.create(activitypub.helpers.mapToLocalType(type), id, actor, content);
 		} catch (e) {
 			reject('Flag', objects[index], actor);
 		}

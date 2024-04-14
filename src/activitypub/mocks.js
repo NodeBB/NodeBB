@@ -78,8 +78,7 @@ Mocks.post = async (objects) => {
 	}
 
 	const posts = await Promise.all(objects.map(async (object) => {
-		const acceptedTypes = ['Note', 'Page', 'Article', 'Question'];
-		if (!acceptedTypes.includes(object.type)) {
+		if (!activitypub._constants.acceptedPostTypes.includes(object.type)) {
 			return null;
 		}
 

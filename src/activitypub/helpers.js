@@ -177,6 +177,20 @@ Helpers.resolveActivity = async (activity, data, id, resolved) => {
 	}
 };
 
+Helpers.mapToLocalType = (type) => {
+	if (type === 'Person') {
+		return 'user';
+	}
+	if (type === 'Group') {
+		return 'category';
+	}
+	if (type === 'Hashtag') {
+		return 'tag';
+	}
+	if (activitypub._constants.acceptedPostTypes.includes(type)) {
+		return 'post';
+	}
+};
 
 Helpers.resolveObjects = async (ids) => {
 	if (!Array.isArray(ids)) {
