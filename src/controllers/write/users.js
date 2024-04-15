@@ -93,15 +93,30 @@ Users.changePassword = async (req, res) => {
 
 Users.follow = async (req, res) => {
 	const remote = String(req.params.uid).includes('@');
-	const controller = remote ? api.activitypub.follow : api.users.follow;
-	await controller(req, req.params);
+	if (remote) {
+		await api.activitypub.follow(req, {
+			type: 'uid',
+			id: req.uid,
+			actor: req.params.uid,
+		});
+	} else {
+		await api.users.follow(req, req.params);
+	}
+
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unfollow = async (req, res) => {
 	const remote = String(req.params.uid).includes('@');
-	const controller = remote ? api.activitypub.unfollow : api.users.unfollow;
-	await controller(req, req.params);
+	if (remote) {
+		await api.activitypub.unfollow(req, {
+			type: 'uid',
+			id: req.uid,
+			actor: req.params.uid,
+		});
+	} else {
+		await api.users.unfollow(req, req.params);
+	}
 	helpers.formatApiResponse(200, res);
 };
 

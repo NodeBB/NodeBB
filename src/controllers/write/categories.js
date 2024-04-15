@@ -105,3 +105,29 @@ Categories.setModerator = async (req, res) => {
 	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
 	helpers.formatApiResponse(200, res, privilegeSet);
 };
+
+Categories.follow = async (req, res) => {
+	const { actor } = req.body;
+	const id = req.params.cid;
+
+	await api.activitypub.follow(req, {
+		type: 'cid',
+		id,
+		actor,
+	});
+
+	res.sendStatus(200);
+};
+
+Categories.unfollow = async (req, res) => {
+	const { actor } = req.body;
+	const id = req.params.cid;
+
+	await api.activitypub.unfollow(req, {
+		type: 'cid',
+		id,
+		actor,
+	});
+
+	res.sendStatus(200);
+};

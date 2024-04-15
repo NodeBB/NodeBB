@@ -12,6 +12,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 
 const db = require('../database');
+const user = require('../user');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
@@ -31,43 +32,63 @@ function enabledCheck(next) {
 	};
 }
 
-activitypubApi.follow = enabledCheck(async (caller, { uid } = {}) => {
-	const result = await activitypub.helpers.query(uid);
-	if (!result) {
+activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) => {
+	// Privilege checks should be done upstream
+	const assertion = await activitypub.actors.assert(actor);
+	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send('uid', caller.uid, [result.actorUri], {
-		id: `${nconf.get('url')}/uid/${caller.uid}#activity/follow/${result.username}@${result.hostname}`,
+	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
+	const handle = await user.getUserField(actor, 'username');
+
+	await activitypub.send(type, id, [actor], {
+		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}`,
 		type: 'Follow',
-		object: result.actorUri,
+		object: actor,
 	});
 
-	await db.sortedSetAdd(`followRequests:${caller.uid}`, Date.now(), result.actorUri);
+	await db.sortedSetAdd(`followRequests:${type}.${id}`, Date.now(), actor);
 });
 
 // should be .undo.follow
-activitypubApi.unfollow = enabledCheck(async (caller, { uid }) => {
-	const result = await activitypub.helpers.query(uid);
-	if (!result) {
+activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
+	const assertion = await activitypub.actors.assert(actor);
+	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	await activitypub.send('uid', caller.uid, [result.actorUri], {
-		id: `${nconf.get('url')}/uid/${caller.uid}#activity/undo:follow/${result.username}@${result.hostname}`,
+	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
+	const handle = await user.getUserField(actor, 'username');
+
+	const object = {
+		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}`,
+		type: 'Follow',
+		object: actor,
+	};
+	if (type === 'uid') {
+		object.actor = `${nconf.get('url')}/uid/${id}`;
+	} else if (type === 'cid') {
+		object.actor = `${nconf.get('url')}/category/${id}`;
+	}
+
+	await activitypub.send(type, id, [actor], {
+		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${handle}`,
 		type: 'Undo',
-		object: {
-			id: `${nconf.get('url')}/uid/${caller.uid}#activity/follow/${result.username}@${result.hostname}`,
-			type: 'Follow',
-			actor: `${nconf.get('url')}/uid/${caller.uid}`,
-			object: result.actorUri,
-		},
+		object,
 	});
 
-	await Promise.all([
-		db.sortedSetRemove(`followingRemote:${caller.uid}`, result.actorUri),
-		db.decrObjectField(`user:${caller.uid}`, 'followingRemoteCount'),
-	]);
+	if (type === 'uid') {
+		await Promise.all([
+			db.sortedSetRemove(`followingRemote:${id}`, actor),
+			db.decrObjectField(`user:${id}`, 'followingRemoteCount'),
+		]);
+	} else if (type === 'cid') {
+		await Promise.all([
+			db.sortedSetRemove(`cid:${id}:following`, actor),
+			db.sortedSetRemove(`followRequests:cid.${id}`, actor),
+		]);
+	}
 });
 
 activitypubApi.create = {};

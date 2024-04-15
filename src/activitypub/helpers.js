@@ -112,6 +112,7 @@ Helpers.resolveLocalId = async (input) => {
 				activityData = { activity, data };
 			}
 
+			// https://bb.devnull.land/cid/2#activity/follow/activitypub@community.nodebb.org│
 			switch (prefix) {
 				case 'uid':
 					return { type: 'user', id: value, ...activityData };
@@ -119,6 +120,7 @@ Helpers.resolveLocalId = async (input) => {
 				case 'post':
 					return { type: 'post', id: value, ...activityData };
 
+				case 'cid':
 				case 'category':
 					return { type: 'category', id: value, ...activityData };
 

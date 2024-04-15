@@ -250,9 +250,9 @@ inbox.accept = async (req) => {
 	const { actor, object } = req.body;
 	const { type } = object;
 
-	const { type: localType, id: uid } = await helpers.resolveLocalId(object.actor);
-	if (localType !== 'user' || !uid) {
-		throw new Error('[[error:invalid-uid]]');
+	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
+	if (!['user', 'category'].includes(localType)) {
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	const assertion = await activitypub.actors.assert(actor);
@@ -261,18 +261,30 @@ inbox.accept = async (req) => {
 	}
 
 	if (type === 'Follow') {
-		if (!await db.isSortedSetMember(`followRequests:${uid}`, actor)) {
-			if (await db.isSortedSetMember(`followingRemote:${uid}`, actor)) return; // already following
-			return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
+		if (localType === 'user') {
+			if (!await db.isSortedSetMember(`followRequests:uid.${id}`, actor)) {
+				if (await db.isSortedSetMember(`followingRemote:${id}`, actor)) return; // already following
+				return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
+			}
+			const now = Date.now();
+			await Promise.all([
+				db.sortedSetRemove(`followRequests:uid.${id}`, actor),
+				db.sortedSetAdd(`followingRemote:${id}`, now, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, now, id), // for followers backreference and notes assertion checking
+			]);
+			const followingRemoteCount = await db.sortedSetCard(`followingRemote:${id}`);
+			await user.setUserField(id, 'followingRemoteCount', followingRemoteCount);
+		} else if (localType === 'category') {
+			if (!await db.isSortedSetMember(`followRequests:cid.${id}`, actor)) {
+				if (await db.isSortedSetMember(`cid:${id}:following`, actor)) return; // already following
+				return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
+			}
+			const now = Date.now();
+			await Promise.all([
+				db.sortedSetRemove(`followRequests:cid.${id}`, actor),
+				db.sortedSetAdd(`cid:${id}:following`, now, actor),
+			]);
 		}
-		const now = Date.now();
-		await Promise.all([
-			db.sortedSetRemove(`followRequests:${uid}`, actor),
-			db.sortedSetAdd(`followingRemote:${uid}`, now, actor),
-			db.sortedSetAdd(`followersRemote:${actor}`, now, uid), // for followers backreference and notes assertion checking
-		]);
-		const followingRemoteCount = await db.sortedSetCard(`followingRemote:${uid}`);
-		await user.setUserField(uid, 'followingRemoteCount', followingRemoteCount);
 	}
 };
 

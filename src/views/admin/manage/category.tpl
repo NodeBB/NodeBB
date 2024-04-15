@@ -190,6 +190,8 @@
 					<i class="fa fa-fw fa-lock text-primary"></i> [[admin/manage/categories:privileges]]
 				</a>
 
+				<a class="btn-ghost-sm justify-content-start" href="{config.relative_path}/admin/manage/categories/{category.cid}/federation"><i class="fa fa-fw fa-globe text-primary"></i> [[admin/manage/categories:federation]]</a>
+
 				<a href="{config.relative_path}/category/{category.cid}" class="btn-ghost-sm justify-content-start">
 					<i class="fa fa-fw fa-eye text-primary"></i> [[admin/manage/categories:view-category]]
 				</a>

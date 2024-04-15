@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const nconf = require('nconf');
+const db = require('../../database');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
@@ -143,5 +144,28 @@ categoriesController.getAnalytics = async function (req, res) {
 		name: name,
 		analytics: analyticsData,
 		selectedCategory: selectedData.selectedCategory,
+	});
+};
+
+categoriesController.getFederation = async function (req, res) {
+	const cid = req.params.category_id;
+	const [_following, pending, name, { selectedCategory }] = await Promise.all([
+		db.getSortedSetMembers(`cid:${cid}:following`),
+		db.getSortedSetMembers(`followRequests:cid.${cid}`),
+		categories.getCategoryField(cid, 'name'),
+		helpers.getSelectedCategory(cid),
+	]);
+
+	const following = [..._following, ...pending].map(entry => ({
+		id: entry,
+		approved: !pending.includes(entry),
+	}));
+
+	res.render('admin/manage/category-federation', {
+		cid: cid,
+		enabled: meta.config.activitypubEnabled,
+		name,
+		selectedCategory,
+		following,
 	});
 };
