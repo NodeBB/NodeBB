@@ -283,6 +283,7 @@ inbox.accept = async (req) => {
 			await Promise.all([
 				db.sortedSetRemove(`followRequests:cid.${id}`, actor),
 				db.sortedSetAdd(`cid:${id}:following`, now, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, now, `cid|${id}`), // for notes assertion checking
 			]);
 		}
 	}
