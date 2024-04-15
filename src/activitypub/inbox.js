@@ -178,6 +178,7 @@ inbox.follow = async (req) => {
 	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
+	const handle = await user.getUserField(actor, 'username');
 
 	if (type === 'user') {
 		const exists = await user.exists(id);
@@ -199,6 +200,7 @@ inbox.follow = async (req) => {
 
 		user.onFollow(actor, id);
 		activitypub.send('uid', id, actor, {
+			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}`,
 			type: 'Accept',
 			object: {
 				id: followId,
@@ -225,6 +227,7 @@ inbox.follow = async (req) => {
 		}
 
 		activitypub.send('cid', id, actor, {
+			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}`,
 			type: 'Accept',
 			object: {
 				id: followId,
