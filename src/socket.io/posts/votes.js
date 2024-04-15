@@ -81,16 +81,17 @@ module.exports = function (SocketPosts) {
 		if (!isArray) {
 			cids = [cids];
 		}
+		const uniqCids = _.uniq(cids);
 		const [canRead, isAdmin, isMod] = await Promise.all([
 			privileges.categories.isUserAllowedTo(
-				'topics:read', _.uniq(cids), uid
+				'topics:read', uniqCids, uid
 			),
 			privileges.users.isAdministrator(uid),
 			privileges.users.isModerator(uid, cids),
 		]);
-
+		const cidToAllowed = _.zip(uniqCids, canRead);
 		const checks = cids.map(
-			(cid, index) => isAdmin || isMod[index] || (canRead[index] && !!meta.config.votesArePublic)
+			(cid, index) => isAdmin || isMod[index] || (cidToAllowed[index] && !!meta.config.votesArePublic)
 		);
 		return isArray ? checks : checks[0];
 	}
