@@ -416,6 +416,7 @@ module.exports = function (Topics) {
 
 		tags = await Topics.filterTags(tags, cid);
 		await Topics.addTags(tags, [tid]);
+		plugins.hooks.fire('action:topic.updateTags', { tags, tid });
 	};
 
 	Topics.deleteTopicTags = async function (tid) {
