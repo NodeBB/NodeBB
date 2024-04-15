@@ -20,8 +20,13 @@ Actors.assert = async (ids, options = {}) => {
 		ids = [ids];
 	}
 
+	// Existance in failure cache is automatic assertion failure
+	if (ids.some(id => failedWebfingerCache.has(id))) {
+		return false;
+	}
+
 	// Filter out uids if passed in
-	ids = ids.filter(id => !utils.isNumber(id) && !failedWebfingerCache.has(id));
+	ids = ids.filter(id => !utils.isNumber(id));
 
 	// Translate webfinger handles to uris
 	ids = (await Promise.all(ids.map(async (id) => {
@@ -38,7 +43,12 @@ Actors.assert = async (ids, options = {}) => {
 			failedWebfingerCache.set(originalId, true);
 		}
 		return id;
-	}))).filter(Boolean);
+	})));
+
+	// Webfinger failures = assertion failure
+	if (!ids.every(Boolean)) {
+		return false;
+	}
 
 	// Filter out loopback uris
 	ids = ids.filter((uri) => {
