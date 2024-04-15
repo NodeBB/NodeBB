@@ -40,6 +40,10 @@ usersAPI.create = async function (caller, data) {
 };
 
 usersAPI.get = async (caller, { uid }) => {
+	const canView = await privileges.global.can('view:users', caller.uid);
+	if (!canView) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const userData = await user.getUserData(uid);
 	return await user.hidePrivateData(userData, caller.uid);
 };
