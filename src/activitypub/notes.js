@@ -74,8 +74,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
 	// Relation & privilege check for local categories
-	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const hasRelation = options.skipChecks || hasTid || await assertRelation(chain[0]);
+	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
 		if (!hasRelation) {
