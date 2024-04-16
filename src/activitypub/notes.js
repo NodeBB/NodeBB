@@ -66,7 +66,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (options.cid && cid === -1) {
 			// Move topic
-			await topics.tools.move(tid, { cid: options.cid, uid: 0 });
+			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
 		}
 	} else {
 		// mainPid ok to leave as-is
