@@ -65,7 +65,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		({ cid, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']));
 	} else {
 		// mainPid ok to leave as-is
-		cid = -1;
+		cid = options.cid || -1;
 		title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
 		if (title.length > meta.config.maximumTitleLength) {
 			title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
@@ -179,7 +179,7 @@ async function assertRelation(post) {
 	 */
 
 	// Is followed by at least one local user
-	const isFollowed = await db.sortedSetCard(`followersRemote:${post.uid}`);
+	const numFollowers = await activitypub.actors.getLocalFollowersCount(post.uid);
 
 	// Local user is mentioned
 	const { tag } = post._activitypub;
@@ -199,7 +199,7 @@ async function assertRelation(post) {
 		uids = uids.filter(Boolean);
 	}
 
-	return isFollowed || uids.length;
+	return numFollowers > 0 || uids.length;
 }
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
@@ -214,11 +214,12 @@ Notes.updateLocalRecipients = async (id, { to, cc }) => {
 
 		const followedUid = await db.getObjectField('followersUrl:uid', recipient);
 		if (followedUid) {
-			const followers = await db.getSortedSetMembers(`followersRemote:${followedUid}`);
-			if (followers.length) {
-				uids.add(...followers.map(uid => parseInt(uid, 10)));
+			const { uids: followers } = await activitypub.actors.getLocalFollowers(followedUid);
+			if (followers.size > 0) {
+				followers.forEach((uid) => {
+					uids.add(uid);
+				});
 			}
-			// return;
 		}
 	}));
 

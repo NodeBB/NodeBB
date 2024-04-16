@@ -163,3 +163,34 @@ Actors.assert = async (ids, options = {}) => {
 
 	return actors;
 };
+
+Actors.getLocalFollowers = async (id) => {
+	const response = {
+		uids: new Set(),
+		cids: new Set(),
+	};
+
+	if (!activitypub.helpers.isUri(id)) {
+		return response;
+	}
+
+	const members = await db.getSortedSetMembers(`followersRemote:${id}`);
+
+	members.forEach((id) => {
+		if (utils.isNumber(id)) {
+			response.uids.add(parseInt(id, 10));
+		} else if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
+			response.cids.add(parseInt(id.slice(4), 10));
+		}
+	});
+
+	return response;
+};
+
+Actors.getLocalFollowersCount = async (id) => {
+	if (!activitypub.helpers.isUri(id)) {
+		return false;
+	}
+
+	return await db.sortedSetCard(`followersRemote:${id}`);
+};

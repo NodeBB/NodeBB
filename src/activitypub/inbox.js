@@ -122,8 +122,8 @@ inbox.announce = async (req) => {
 		socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
 	} else {
 		// Remote object
-		const isFollowed = await db.sortedSetCard(`followersRemote:${actor}`);
-		if (!isFollowed) {
+		const numFollowers = await activitypub.actors.getLocalFollowersCount(actor);
+		if (!numFollowers) {
 			winston.info(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
 			reject('Announce', object, actor);
 			return;
@@ -135,7 +135,13 @@ inbox.announce = async (req) => {
 			return;
 		}
 
-		({ tid } = await activitypub.notes.assert(0, pid, { skipChecks: true })); // checks skipped; done above.
+		const { cids } = await activitypub.actors.getLocalFollowers(actor);
+		let cid = null;
+		if (cids.size > 0) {
+			cid = Array.from(cids)[0];
+		}
+
+		({ tid } = await activitypub.notes.assert(0, pid, { cid, skipChecks: true })); // checks skipped; done above.
 		if (!tid) {
 			return;
 		}
