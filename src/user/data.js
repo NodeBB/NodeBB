@@ -246,7 +246,7 @@ module.exports = function (User) {
 			}
 
 			// User Icons
-			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
+			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) !== 0 && !meta.config.defaultAvatar) {
 				const iconBackgrounds = await User.getIconBackgrounds(user.uid);
 				let bgColor = await User.getUserField(user.uid, 'icon:bgColor');
 				if (!iconBackgrounds.includes(bgColor)) {
