@@ -89,7 +89,7 @@ module.exports = function (SocketPosts) {
 			privileges.users.isAdministrator(uid),
 			privileges.users.isModerator(uid, cids),
 		]);
-		const cidToAllowed = _.zip(uniqCids, canRead);
+		const cidToAllowed = _.zipObject(uniqCids, canRead);
 		const checks = cids.map(
 			(cid, index) => isAdmin || isMod[index] || (cidToAllowed[cid] && !!meta.config.votesArePublic)
 		);
