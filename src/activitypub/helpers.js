@@ -173,6 +173,19 @@ Helpers.resolveActivity = async (activity, data, id, resolved) => {
 				object: targetUri,
 			};
 		}
+		case 'announce':
+		case 'create': {
+			const object = await Helpers.resolveObjects(resolved.id);
+			// local create activities are assumed to come from the user who created the underlying object
+			const actor = object.attributedTo || object.actor;
+			return {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				actor,
+				id,
+				type: 'Create',
+				object,
+			};
+		}
 		default: {
 			throw new Error('[[error:activitypub.not-implemented]]');
 		}
@@ -199,7 +212,9 @@ Helpers.resolveObjects = async (ids) => {
 		ids = [ids];
 	}
 	const objects = await Promise.all(ids.map(async (id) => {
+		// try to get a local ID first
 		const { type, id: resolvedId, activity, data: activityData } = await Helpers.resolveLocalId(id);
+		// activity data is only resolved for local IDs - so this will be false for remote posts
 		if (activity) {
 			return Helpers.resolveActivity(activity, activityData, id, { type, id: resolvedId });
 		}
@@ -227,6 +242,7 @@ Helpers.resolveObjects = async (ids) => {
 				}
 				return activitypub.mocks.actors.category(resolvedId);
 			}
+			// if the type is not recognized, assume it's not a local ID and fetch the object from its origin
 			default: {
 				return activitypub.get('uid', 0, id);
 			}
