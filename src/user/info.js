@@ -86,7 +86,6 @@ module.exports = function (User) {
 			flagObj.pid = flagObj.value;
 			flagObj.timestamp = flagObj.score;
 			flagObj.timestampISO = new Date(flagObj.score).toISOString();
-			flagObj.timestampReadable = new Date(flagObj.score).toString();
 
 			delete flagObj.value;
 			delete flagObj.score;
@@ -105,8 +104,7 @@ module.exports = function (User) {
 		return data.map((banObj, index) => {
 			banObj.user = usersData[index];
 			banObj.until = parseInt(banObj.expire, 10);
-			banObj.untilReadable = new Date(banObj.until).toString();
-			banObj.timestampReadable = new Date(parseInt(banObj.timestamp, 10)).toString();
+			banObj.untilISO = utils.toISOString(banObj.until);
 			banObj.timestampISO = utils.toISOString(banObj.timestamp);
 			banObj.reason = validator.escape(String(banObj.reason || '')) || noReasonLangKey;
 			return banObj;

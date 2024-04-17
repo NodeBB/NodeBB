@@ -795,12 +795,10 @@ Flags.resolveUserPostFlags = async function (uid, callerUid) {
 	if (meta.config['flags:autoResolveOnBan']) {
 		await batch.processSortedSet(`uid:${uid}:posts`, async (pids) => {
 			let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
-			postData = postData.filter(p => p && p.flagId);
+			postData = postData.filter(p => p && p.flagId && parseInt(p.flagId, 10));
 			for (const postObj of postData) {
-				if (parseInt(postObj.flagId, 10)) {
-					// eslint-disable-next-line no-await-in-loop
-					await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
-				}
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
 			}
 		}, {
 			batch: 500,
