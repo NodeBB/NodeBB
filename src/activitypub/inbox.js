@@ -109,6 +109,12 @@ inbox.announce = async (req) => {
 	let tid;
 	let pid;
 
+	const { cids } = await activitypub.actors.getLocalFollowers(actor);
+	let cid = null;
+	if (cids.size > 0) {
+		cid = Array.from(cids)[0];
+	}
+
 	if (String(object.id).startsWith(nconf.get('url'))) {
 		// Local object
 		const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
@@ -129,16 +135,16 @@ inbox.announce = async (req) => {
 			return;
 		}
 
-		pid = object.id;
+		// Handle case where Announce(Create(Note)) is received
+		if (object.type === 'Create' && object.object.type === 'Note') {
+			pid = object.object.id;
+		} else {
+			pid = object.id;
+		}
+
 		pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
 		if (!pid) {
 			return;
-		}
-
-		const { cids } = await activitypub.actors.getLocalFollowers(actor);
-		let cid = null;
-		if (cids.size > 0) {
-			cid = Array.from(cids)[0];
 		}
 
 		({ tid } = await activitypub.notes.assert(0, pid, { cid, skipChecks: true })); // checks skipped; done above.
@@ -153,23 +159,25 @@ inbox.announce = async (req) => {
 
 	winston.info(`[activitypub/inbox/announce] Parsing id ${pid}`);
 
-	// No double-announce allowed
-	const existing = await topics.events.find(tid, {
-		type: 'announce',
-		uid: actor,
-		pid,
-	});
-	if (existing.length) {
-		await topics.events.purge(tid, existing);
-	}
+	if (!cid) { // Topic events from actors followed by users only
+		// No double-announce allowed
+		const existing = await topics.events.find(tid, {
+			type: 'announce',
+			uid: actor,
+			pid,
+		});
+		if (existing.length) {
+			await topics.events.purge(tid, existing);
+		}
 
-	await topics.events.log(tid, {
-		type: 'announce',
-		uid: actor,
-		href: `/post/${encodeURIComponent(pid)}`,
-		pid,
-		timestamp,
-	});
+		await topics.events.log(tid, {
+			type: 'announce',
+			uid: actor,
+			href: `/post/${encodeURIComponent(pid)}`,
+			pid,
+			timestamp,
+		});
+	}
 };
 
 inbox.follow = async (req) => {
