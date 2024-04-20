@@ -40,6 +40,19 @@ inbox.create = async (req) => {
 	const response = await activitypub.notes.assert(0, object);
 	if (response) {
 		winston.verbose(`[activitypub/inbox] Parsing ${response.count} notes into topic ${response.tid}`);
+
+		// todo: put this somewhere better if need be... maybe this is better as api.activitypub.announce.note?
+		const cid = await topics.getTopicField(response.tid, 'cid');
+		const followers = await activitypub.notes.getCategoryFollowers(cid);
+		if (followers.length) {
+			await activitypub.send('cid', cid, followers, {
+				id: `${object.id}#activity/announce`,
+				type: 'Announce',
+				to: [`${nconf.get('url')}/category/${cid}/followers`],
+				cc: [activitypub._constants.publicAddress],
+				object,
+			});
+		}
 	}
 };
 
