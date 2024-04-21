@@ -1,10 +1,10 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
-    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.title": "การตั้งค่าธีม",
+    "settings.intro": "คุณสามารถปรับแต่งการตั้งค่าธีมที่นี่ การตั้งค่าจะเก็บแยกแต่ละอุปกรณ์ ดังนั้นคุณสามารถมีการตั้งค่าที่แตกต่างกันบนอุปกรณ์คนละตัว (มือถือ แทปเล็ต เดสก์ท็อป ฯลฯ)",
+    "settings.mobile-menu-side": "สลับว่าเมนูบนมือถืออยู่ด้านไหน",
+    "settings.autoHidingNavbar": "ซ่อนแถบนำทางอัตโนมัติขณะเลื่อนดู",
+    "settings.autoHidingNavbar-xs": "จอขนาดเล็กมาก (มือถือดูในแนวตั้ง)",
+    "settings.autoHidingNavbar-sm": "จอขนาดเล็ก (เช่น มือถือ แท็บเล็ตบางเครื่อง)",
+    "settings.autoHidingNavbar-md": "จอขนาดกลาง (เช่น แท็บเล็ตเมื่อดูในแนวนอน)",
+    "settings.autoHidingNavbar-lg": "จอขนาดใหญ่ (เช่น คอมพิวเตอร์เดสก์ท็อป)"
 }

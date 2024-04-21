@@ -50,7 +50,7 @@
     "details.delete-group": "ลบกลุ่ม",
     "details.private-system-help": "กลุ่มส่วนตัวถูกปิดใช้งานโดยเลเวลระบบ ตัวเลือกนี้จะไม่ได้ทำอะไรทั้งสิ้น",
     "event.updated": "ข้อมูลกลุ่มได้รับการบันทึกแล้ว",
-    "event.deleted": "กลุ่ม  \"%1\"  ได้ถูกลบไปแล้ว",
+    "event.deleted": "กลุ่ม  \"%1\" ได้ถูกลบไปแล้ว",
     "membership.accept-invitation": "ยอมรับคำเชิญ",
     "membership.accept.notification-title": "ตอนนี้คุณเป็นสมาชิกของ <strong>%1</strong>",
     "membership.invitation-pending": "คำเชิญที่รอการอนุมัติ",
