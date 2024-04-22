@@ -207,6 +207,7 @@ activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
 	}
 
 	await activitypub.send('uid', caller.uid, [uid], {
+		id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
 		type: 'Like',
 		object: pid,
 	});
@@ -227,9 +228,11 @@ activitypubApi.undo.like = enabledCheck(async (caller, { pid }) => {
 	}
 
 	await activitypub.send('uid', caller.uid, [uid], {
+		id: `${nconf.get('url')}/uid/${caller.uid}#activity/undo:like/${encodeURIComponent(pid)}`,
 		type: 'Undo',
 		object: {
 			actor: `${nconf.get('url')}/uid/${caller.uid}`,
+			id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
 			type: 'Like',
 			object: pid,
 		},
