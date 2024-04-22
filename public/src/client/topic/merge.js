@@ -66,11 +66,7 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 		callback = callback || function () {};
 		api.get(`/topics/${tid}`, {}).then(function (topicData) {
 			const title = topicData ? topicData.title : 'No title';
-			if (selectedTids[tid]) {
-				delete selectedTids[tid];
-			} else {
-				selectedTids[tid] = title;
-			}
+			selectedTids[tid] = title;
 			checkButtonEnable();
 			showTopicsSelected();
 			callback();
@@ -89,8 +85,14 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 		if (!modal) {
 			return;
 		}
-		const tid = $(this).parents('[component="category/topic"]').attr('data-tid');
-		Merge.addTopic(tid);
+		const topicEl = $(this).parents('[component="category/topic"]');
+		const isSelected = topicEl.hasClass('selected');
+		const tid = topicEl.attr('data-tid');
+		if (isSelected) {
+			Merge.addTopic(tid);
+		} else {
+			Merge.removeTopic(tid);
+		}
 
 		ev.preventDefault();
 		ev.stopPropagation();
