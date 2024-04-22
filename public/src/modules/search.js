@@ -136,6 +136,7 @@ define('search', [
 						text.slice(start, start + 80) +
 						(text.length - start > 80 ? '...' : ''));
 				});
+				data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
 				app.parseAndTranslate('partials/quick-search-results', data, function (html) {
 					if (html.length) {
 						html.find('.timeago').timeago();

@@ -1,10 +1,5 @@
 <div class="tool-modal d-flex">
-	<div class="position-relative">
-		<div class="quick-search-container dropdown-menu d-block p-2 hidden" style="right: 10px;">
-			<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
-			<div class="quick-search-results-container"></div>
-		</div>
-	</div>
+
 
 	<div class="card shadow">
 		<h5 class="card-header">[[topic:thread-tools.merge-topics]]</h5>
@@ -17,13 +12,23 @@
 					<input class="form-control topic-search-input" type="text">
 					<span class="input-group-text"><i class="fa fa-search"></i></span>
 				</div>
+
+				<div class="quick-search-container dropdown-menu d-block p-2 hidden">
+					<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
+					<div class="quick-search-results-container"></div>
+				</div>
 			</p>
 
 			<p><strong>[[topic:merge-topic-list-title]]</strong></p>
 			<ul class="topics-section">
-				{{{each topics}}}
-				<li><a href="{config.relative_path}/topic/{topics.tid}"><strong>{topics.title}</strong></a></li>
-				{{{end}}}
+				{{{ each topics }}}
+				<li class="mb-1">
+					<div class="d-flex justify-content-between align-items-center gap-2">
+						<a href="{config.relative_path}/topic/{./tid}"><strong>{./title}</strong></a>
+						<button class="btn btn-sm btn-light" data-remove-tid="{./tid}"><i class="fa fa-times text-danger"></i></button>
+					</div>
+				</li>
+				{{{ end }}}
 			</ul>
 			<p>
 				<strong>[[topic:merge-options]]</strong>
@@ -34,9 +39,9 @@
 				</p>
 				<p>
 					<select class="form-select merge-main-topic-select">
-						{{{each topics}}}
+						{{{ each topics }}}
 						<option value="{topics.tid}">{topics.title}</option>
-						{{{end}}}
+						{{{ end }}}
 					</select>
 				</p>
 				<p>
