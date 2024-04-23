@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Izločen",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "Odjavljeni",
     "deleted": "Izbrisano",
     "username": "Uporabniško ime",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "This user has never been banned",
     "info.banned-until": "Banned until %1",
     "info.banned-expiry": "Expiry",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Banned permanently",
     "info.banned-reason-label": "Razlog",
     "info.banned-no-reason": "Razlog ni podan.",

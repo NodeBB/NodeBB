@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "BANされた",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "オフライン",
     "deleted": "削除されました",
     "username": "ユーザー名",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "このユーザーは停止されていません",
     "info.banned-until": "%1まで停止",
     "info.banned-expiry": "Expiry",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "永久に停止",
     "info.banned-reason-label": "理由",
     "info.banned-no-reason": "理由なし。",

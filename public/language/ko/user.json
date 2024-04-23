@@ -1,7 +1,9 @@
 {
     "user-menu": "사용자 메뉴",
     "banned": "차단됨",
+    "unbanned": "Unbanned",
     "muted": "음소거됨",
+    "unmuted": "Unmuted",
     "offline": "오프라인",
     "deleted": "삭제됨",
     "username": "사용자 이름",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "이 사용자는 현재까지 차단된 적이 없습니다.",
     "info.banned-until": "%1까지 차단됨",
     "info.banned-expiry": "만료",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "영구 차단됨",
     "info.banned-reason-label": "사유",
     "info.banned-no-reason": "사유를 제공하지 않았습니다.",

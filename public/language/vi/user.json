@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Bị cấm",
+    "unbanned": "Unbanned",
     "muted": "Đã Im Lặng",
+    "unmuted": "Unmuted",
     "offline": "Ngoại tuyến",
     "deleted": "Đã xoá",
     "username": "Tên Đăng Nhập",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Người dùng này chưa bao giờ bị cấm",
     "info.banned-until": "Bị cấm cho đến %1",
     "info.banned-expiry": "Hết hạn",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Bị cấm vĩnh viễn",
     "info.banned-reason-label": "Lý do",
     "info.banned-no-reason": "Không có lí do.",

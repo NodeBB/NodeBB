@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Banido",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "Offline",
     "deleted": "Deletado",
     "username": "Nome de Usuário",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Este usuário nunca foi banido",
     "info.banned-until": "Banido até %1",
     "info.banned-expiry": "Validade",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Banido permanentemente",
     "info.banned-reason-label": "Motivo",
     "info.banned-no-reason": "Sem motivo escolhido.",

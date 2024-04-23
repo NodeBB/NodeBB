@@ -1,7 +1,9 @@
 {
     "user-menu": "תפריט משתמש",
     "banned": "מורחק",
+    "unbanned": "Unbanned",
     "muted": "מושתק",
+    "unmuted": "Unmuted",
     "offline": "לא מחובר",
     "deleted": "נמחק",
     "username": "שם משתמש",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "משתמש זה לא הורחק מעולם",
     "info.banned-until": "הורחק עד %1",
     "info.banned-expiry": "פג תוקף",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "הורחק לצמיתות",
     "info.banned-reason-label": "סיבה",
     "info.banned-no-reason": "לא ניתנה סיבה.",

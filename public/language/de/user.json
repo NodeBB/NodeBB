@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Gesperrt",
+    "unbanned": "Unbanned",
     "muted": "Stummgeschaltet",
+    "unmuted": "Unmuted",
     "offline": "Offline",
     "deleted": "Gelöscht",
     "username": "Benutzername",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Dieser Benutzer wurde noch nie gesperrt",
     "info.banned-until": "Gesperrt bis zum %1",
     "info.banned-expiry": "Ablauf",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Permanent gesperrt",
     "info.banned-reason-label": "Grund",
     "info.banned-no-reason": "Kein Grund angegeben.",

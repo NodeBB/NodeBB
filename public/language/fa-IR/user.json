@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "اخراج شده",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "آفلاین",
     "deleted": "حذف شده",
     "username": "نام کاربری",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "این کاربر هرگز مسدود نشده است",
     "info.banned-until": "مسدود شده تا %1",
     "info.banned-expiry": "Expiry",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "مسدود شده به طور دائم",
     "info.banned-reason-label": "دلیل",
     "info.banned-no-reason": "هیچ دلیلی ارایه نشد.",

@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Բլոկավորված",
+    "unbanned": "Unbanned",
     "muted": "Ձայն անջատված",
+    "unmuted": "Unmuted",
     "offline": "Օֆլայն",
     "deleted": "Ջնջված",
     "username": "Օգտատիրոջ անունը",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Այս օգտատերը երբեք չի արգելափակվել",
     "info.banned-until": "Արգելված է մինչև %1",
     "info.banned-expiry": "Ժամկետը",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Ընդմիշտ արգելված է",
     "info.banned-reason-label": "Պատճառ",
     "info.banned-no-reason": "Ոչ մի պատճառ չի նշվում:",

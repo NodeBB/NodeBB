@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "I ndaluar",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "Jashtë linje",
     "deleted": "Fshirë",
     "username": "Emri i përdoruesit",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Ky përdorues nuk është ndaluar kurrë",
     "info.banned-until": "Ndaluar deri në %1",
     "info.banned-expiry": "Skadimi",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Ndaluar përgjithmonë",
     "info.banned-reason-label": "Arsye",
     "info.banned-no-reason": "Asnjë arsye e dhënë.",

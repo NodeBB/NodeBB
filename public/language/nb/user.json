@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Utestengt",
+    "unbanned": "Unbanned",
     "muted": "Dempet",
+    "unmuted": "Unmuted",
     "offline": "Frakoblet",
     "deleted": "Slettet",
     "username": "Brukernavn",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Denne brukeren har aldri blitt utestengt",
     "info.banned-until": "Utestengt til %1",
     "info.banned-expiry": "Utløp",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Utestengt permanent",
     "info.banned-reason-label": "Årsak",
     "info.banned-no-reason": "ingen årsak oppgitt",

@@ -1,7 +1,9 @@
 {
     "user-menu": "Потребителско меню",
     "banned": "Блокиран",
+    "unbanned": "Unbanned",
     "muted": "Заглушен",
+    "unmuted": "Unmuted",
     "offline": "Извън линия",
     "deleted": "Изтрит",
     "username": "Потребителско име",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Този потребител никога не е бил блокиран",
     "info.banned-until": "Блокиран до %1",
     "info.banned-expiry": "Давност",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Блокиран за постоянно",
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Няма посочена причина.",

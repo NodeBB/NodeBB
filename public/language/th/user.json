@@ -1,7 +1,9 @@
 {
     "user-menu": "เมนูผู้ใช้งาน",
     "banned": "ถูกแบน",
+    "unbanned": "Unbanned",
     "muted": "ถูกจำกัดการโพสต์",
+    "unmuted": "Unmuted",
     "offline": "ออฟไลน์",
     "deleted": "ลบแล้ว",
     "username": "ชื่อผู้ใช้",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "ผู้ใช้นี้ถูกแบนแล้ว",
     "info.banned-until": "แบนจนกว่า  %1",
     "info.banned-expiry": "หมดอายุ",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "แบนอย่างถาวร",
     "info.banned-reason-label": "เหตุผล",
     "info.banned-no-reason": "ไม่ได้ให้เหตุผลไว้",

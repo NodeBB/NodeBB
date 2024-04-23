@@ -1,7 +1,9 @@
 {
     "user-menu": "Felhasználói menü",
     "banned": "Kitiltva",
+    "unbanned": "Unbanned",
     "muted": "Némítva",
+    "unmuted": "Unmuted",
     "offline": "Nem elérhető",
     "deleted": "Törölve",
     "username": "Felhasználónév",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "A felhasználó sosem volt kitiltva",
     "info.banned-until": "Kitiltás lejárata: %1",
     "info.banned-expiry": "Lejárat",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Végleges kitiltás",
     "info.banned-reason-label": "Oka",
     "info.banned-no-reason": "Az oka nincs megadva.",

@@ -1,7 +1,9 @@
 {
     "user-menu": "用户菜单",
     "banned": "已封禁",
+    "unbanned": "Unbanned",
     "muted": "禁言",
+    "unmuted": "Unmuted",
     "offline": "离线",
     "deleted": "已删除",
     "username": "用户名",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "该用户从未被封禁",
     "info.banned-until": "封禁到 %1",
     "info.banned-expiry": "到期",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "永久封禁",
     "info.banned-reason-label": "原因",
     "info.banned-no-reason": "没有原因",

@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Zablokován",
+    "unbanned": "Unbanned",
     "muted": "Ztlumen",
+    "unmuted": "Unmuted",
     "offline": "Nepřipojen",
     "deleted": "Odstraněno",
     "username": "Uživatelské jméno",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Tento uživatel nebyl nikdy zablokován",
     "info.banned-until": "Zablokován do %1",
     "info.banned-expiry": "Expiry",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Trvale zablokován",
     "info.banned-reason-label": "Důvod",
     "info.banned-no-reason": "Bez důvodu",

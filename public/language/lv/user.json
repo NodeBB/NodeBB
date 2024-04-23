@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Bloķētie",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "Bezsaistē",
     "deleted": "Izdzēstie",
     "username": "Vārds",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Šis lietotājs nekad nav bijis bloķēts",
     "info.banned-until": "Bloķēts līdz %1",
     "info.banned-expiry": "Expiry",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Bloķēts pastāvīgi",
     "info.banned-reason-label": "Iemesls",
     "info.banned-no-reason": "Bez iemesla.",

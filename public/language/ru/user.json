@@ -1,7 +1,9 @@
 {
     "user-menu": "User menu",
     "banned": "Заблокирован",
+    "unbanned": "Unbanned",
     "muted": "Muted",
+    "unmuted": "Unmuted",
     "offline": "Не в сети",
     "deleted": "Удалён",
     "username": "Имя пользователя",
@@ -167,6 +169,7 @@
     "info.no-ban-history": "Этот пользователь никогда не был заблокирован",
     "info.banned-until": "Заблокирован до %1",
     "info.banned-expiry": "Истечение",
+    "info.ban-expired": "Ban expired",
     "info.banned-permanently": "Заблокирован навсегда",
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Без объяснения причин.",
