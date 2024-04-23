@@ -7,6 +7,7 @@ const db = require('../database');
 const posts = require('../posts');
 const topics = require('../topics');
 const utils = require('../utils');
+const plugins = require('../plugins');
 const Flags = require('../flags');
 
 module.exports = function (User) {
@@ -114,22 +115,20 @@ module.exports = function (User) {
 		const notes = await db.getObjects(keys);
 		const uids = [];
 
-		const noteData = notes.map((note) => {
+		notes.forEach((note) => {
 			if (note) {
 				uids.push(note.uid);
 				note.timestampISO = utils.toISOString(note.timestamp);
-				note.note = validator.escape(String(note.note));
 			}
-			return note;
 		});
-
 		const userData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
-		noteData.forEach((note, index) => {
+		await Promise.all(notes.map(async (note, index) => {
 			if (note) {
+				note.note = await plugins.hooks.fire('filter:parse.raw', String(note.note));
 				note.user = userData[index];
 			}
-		});
-		return noteData;
+		}));
+		return notes;
 	};
 
 	User.appendModerationNote = async ({ uid, noteData }) => {

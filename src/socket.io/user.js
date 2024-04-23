@@ -152,6 +152,7 @@ SocketUser.setModerationNote = async function (socket, data) {
 	}
 
 	await user.appendModerationNote({ uid: data.uid, noteData });
+	return await user.getModerationNotes(data.uid, 0, 0);
 };
 
 SocketUser.deleteUpload = async function (socket, data) {

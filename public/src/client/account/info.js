@@ -13,20 +13,13 @@ define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/s
 	function handleModerationNote() {
 		$('[component="account/save-moderation-note"]').on('click', function () {
 			const note = $('[component="account/moderation-note"]').val();
-			socket.emit('user.setModerationNote', { uid: ajaxify.data.uid, note: note }, function (err) {
+			socket.emit('user.setModerationNote', { uid: ajaxify.data.uid, note: note }, function (err, notes) {
 				if (err) {
 					return alerts.error(err);
 				}
 				$('[component="account/moderation-note"]').val('');
-				alerts.success('[[user:info.moderation-note.success]]');
-				const timestamp = Date.now();
-				const data = [{
-					note: utils.escapeHTML(note),
-					user: app.user,
-					timestamp: timestamp,
-					timestampISO: utils.toISOString(timestamp),
-				}];
-				app.parseAndTranslate('account/info', 'moderationNotes', { moderationNotes: data }, function (html) {
+
+				app.parseAndTranslate('account/info', 'moderationNotes', { moderationNotes: notes }, function (html) {
 					$('[component="account/moderation-note/list"]').prepend(html);
 					html.find('.timeago').timeago();
 				});
