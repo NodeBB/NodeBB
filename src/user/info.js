@@ -75,8 +75,8 @@ module.exports = function (User) {
 
 		flags.forEach((flag, idx) => {
 			if (flag) {
-				flag.timestamp = flag.datetime;
-				flag.timestampISO = new Date(flag.datetime).toISOString();
+				flag.timestamp = parseInt(flag.datetime, 10);
+				flag.timestampISO = utils.toISOString(flag.datetime);
 				flag.reports = reports[idx];
 			}
 		});
