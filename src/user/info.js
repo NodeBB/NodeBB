@@ -32,8 +32,12 @@ module.exports = function (User) {
 	User.getModerationHistory = async function (uid) {
 		let [flags, bans, mutes] = await Promise.all([
 			db.getSortedSetRevRangeWithScores(`flags:byTargetUid:${uid}`, 0, 19),
-			db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 19),
-			db.getSortedSetRevRange(`uid:${uid}:mutes:timestamp`, 0, 19),
+			db.getSortedSetRevRange([
+				`uid:${uid}:bans:timestamp`, `uid:${uid}:unbans:timestamp`,
+			], 0, 19),
+			db.getSortedSetRevRange([
+				`uid:${uid}:mutes:timestamp`, `uid:${uid}:unmutes:timestamp`,
+			], 0, 19),
 		]);
 
 		// Get pids from flag objects
