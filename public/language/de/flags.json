@@ -90,6 +90,6 @@
 	"bulk-actions": "Massenaktionen",
 	"bulk-resolve": "Meldung(en) bereiningen",
 	"bulk-success": "%1 Meldungen aktualisiert",
-	"flagged-timeago-readable": "Gemeldet <span class=\"timeago\" title=\"%1\"></span>(%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatisch gemeldet] %1 Abwertungen erhalten."
 }
