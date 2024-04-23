@@ -7,6 +7,7 @@ const db = require('../database');
 const posts = require('../posts');
 const topics = require('../topics');
 const utils = require('../utils');
+const Flags = require('../flags');
 
 module.exports = function (User) {
 	User.getLatestBanInfo = async function (uid) {
@@ -40,24 +41,11 @@ module.exports = function (User) {
 			], 0, 19),
 		]);
 
-		// Get pids from flag objects
 		const keys = flags.map(flagObj => `flag:${flagObj.value}`);
-		const payload = await db.getObjectsFields(keys, ['type', 'targetId']);
-
-		// Only pass on flag ids from posts
-		flags = payload.reduce((memo, cur, idx) => {
-			if (cur.type === 'post') {
-				memo.push({
-					value: parseInt(cur.targetId, 10),
-					score: flags[idx].score,
-				});
-			}
-
-			return memo;
-		}, []);
+		const payload = await db.getObjectsFields(keys, ['flagId', 'type', 'targetId', 'datetime']);
 
 		[flags, bans, mutes] = await Promise.all([
-			getFlagMetadata(flags),
+			getFlagMetadata(payload),
 			formatBanMuteData(bans, '[[user:info.banned-no-reason]]'),
 			formatBanMuteData(mutes, '[[user:info.muted-no-reason]]'),
 		]);
@@ -81,18 +69,23 @@ module.exports = function (User) {
 	};
 
 	async function getFlagMetadata(flags) {
-		const pids = flags.map(flagObj => parseInt(flagObj.value, 10));
+		const postFlags = flags.filter(flag => flag && flag.type === 'post');
+		const reports = await Promise.all(flags.map(flag => Flags.getReports(flag.flagId)));
+
+		flags.forEach((flag, idx) => {
+			if (flag) {
+				flag.timestampISO = new Date(flag.datetime).toISOString();
+				flag.reports = reports[idx];
+			}
+		});
+
+		const pids = postFlags.map(flagObj => parseInt(flagObj.targetId, 10));
 		const postData = await posts.getPostsFields(pids, ['tid']);
 		const tids = postData.map(post => post.tid);
 
 		const topicData = await topics.getTopicsFields(tids, ['title']);
-		flags = flags.map((flagObj, idx) => {
-			flagObj.pid = flagObj.value;
-			flagObj.timestamp = flagObj.score;
-			flagObj.timestampISO = new Date(flagObj.score).toISOString();
-
-			delete flagObj.value;
-			delete flagObj.score;
+		postFlags.forEach((flagObj, idx) => {
+			flagObj.pid = flagObj.targetId;
 			if (!tids[idx]) {
 				flagObj.targetPurged = true;
 			}
