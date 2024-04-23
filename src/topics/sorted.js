@@ -85,7 +85,7 @@ module.exports = function (Topics) {
 	}
 
 	async function getTidsWithMostPostsInTerm(term) {
-		const pids = await db.getSortedSetRevRangeByScore('posts:pid', 0, -1, '+inf', Date.now() - Topics.getSinceFromTerm(term));
+		const pids = await db.getSortedSetRevRangeByScore('posts:pid', 0, 1000, '+inf', Date.now() - Topics.getSinceFromTerm(term));
 		const postObjs = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['tid']);
 		const tidToCount = {};
 		postObjs.forEach((post) => {
