@@ -90,6 +90,6 @@
 	"bulk-actions": "Tömeges műveletek",
 	"bulk-resolve": "Megoldott jelölés",
 	"bulk-success": "%1 jelölő frissítve",
-	"flagged-timeago-readable": "Megjelölve <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatikus Megjelölés] %1 negatív szavazatot kapott."
 }
