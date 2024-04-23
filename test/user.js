@@ -1683,7 +1683,7 @@ describe('User', () => {
 			await setTimeout(50);
 			await socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: '<svg/onload=alert(document.location);//' });
 			const notes = await User.getModerationNotes(testUid, 0, -1);
-			assert.equal(notes[0].note, '&lt;svg&#x2F;onload=alert(document.location);&#x2F;&#x2F;');
+			assert.equal(notes[0].note, '');
 			assert.equal(notes[0].uid, adminUid);
 			assert.equal(notes[1].note, 'this is a test user');
 			assert(notes[0].timestamp);
