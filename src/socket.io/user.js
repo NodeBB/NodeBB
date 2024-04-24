@@ -155,6 +155,26 @@ SocketUser.setModerationNote = async function (socket, data) {
 	return await user.getModerationNotes(data.uid, 0, 0);
 };
 
+SocketUser.editModerationNote = async function (socket, data) {
+	if (!socket.uid || !data || !data.uid || !data.note || !data.id) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const noteData = {
+		note: data.note,
+		timestamp: data.id,
+	};
+	let canEdit = await privileges.users.canEdit(socket.uid, data.uid);
+	if (!canEdit) {
+		canEdit = await user.isModeratorOfAnyCategory(socket.uid);
+	}
+	if (!canEdit) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await user.setModerationNote({ uid: data.uid, noteData });
+	return await user.getModerationNotesByIds(data.uid, [data.id]);
+};
+
 SocketUser.deleteUpload = async function (socket, data) {
 	if (!data || !data.name || !data.uid) {
 		throw new Error('[[error:invalid-data]]');

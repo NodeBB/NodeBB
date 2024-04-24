@@ -112,12 +112,17 @@ module.exports = function (User) {
 
 	User.getModerationNotes = async function (uid, start, stop) {
 		const noteIds = await db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, start, stop);
+		return await User.getModerationNotesByIds(uid, noteIds);
+	};
+
+	User.getModerationNotesByIds = async (uid, noteIds) => {
 		const keys = noteIds.map(id => `uid:${uid}:moderation:note:${id}`);
 		const notes = await db.getObjects(keys);
 		const uids = [];
 
-		notes.forEach((note) => {
+		notes.forEach((note, idx) => {
 			if (note) {
+				note.id = noteIds[idx];
 				uids.push(note.uid);
 				note.timestampISO = utils.toISOString(note.timestamp);
 			}
@@ -125,6 +130,7 @@ module.exports = function (User) {
 		const userData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 		await Promise.all(notes.map(async (note, index) => {
 			if (note) {
+				note.rawNote = validator.escape(String(note.note));
 				note.note = await plugins.hooks.fire('filter:parse.raw', String(note.note));
 				note.user = userData[index];
 			}
@@ -134,6 +140,10 @@ module.exports = function (User) {
 
 	User.appendModerationNote = async ({ uid, noteData }) => {
 		await db.sortedSetAdd(`uid:${uid}:moderation:notes`, noteData.timestamp, noteData.timestamp);
+		await db.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, noteData);
+	};
+
+	User.setModerationNote = async ({ uid, noteData }) => {
 		await db.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, noteData);
 	};
 };
