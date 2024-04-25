@@ -31,8 +31,9 @@ Actors.assert = async (ids, options = {}) => {
 	// Translate webfinger handles to uris
 	ids = (await Promise.all(ids.map(async (id) => {
 		const originalId = id;
-		if (id.includes('@')) {
-			const isUri = activitypub.helpers.isUri(id);
+		const isUri = activitypub.helpers.isUri(id);
+		// only look up webfinger if the id is not a supported URI
+		if (id.includes('@') && !(isUri && activitypub._constants.acceptedProtocols.includes(new URL(id).protocol.slice(0, -1)))) {
 			const host = isUri ? new URL(id).host : id.split('@')[1];
 			if (host === nconf.get('url_parsed').host) { // do not assert loopback ids
 				return null;

@@ -24,6 +24,7 @@ ActivityPub._constants = Object.freeze({
 	acceptedPostTypes: [
 		'Note', 'Page', 'Article', 'Question',
 	],
+	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 });
 ActivityPub._cache = requestCache;
 

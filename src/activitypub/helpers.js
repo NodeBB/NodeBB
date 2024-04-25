@@ -22,15 +22,10 @@ Helpers.isUri = (value) => {
 		value = String(value);
 	}
 
-	const protocols = ['https'];
-	if (process.env.CI === 'true') {
-		protocols.push('http');
-	}
-
 	return validator.isURL(value, {
 		require_protocol: true,
 		require_host: true,
-		protocols,
+		protocols: activitypub._constants.acceptedProtocols,
 		require_valid_protocol: true,
 		require_tld: false, // temporary — for localhost
 	});
