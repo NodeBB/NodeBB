@@ -122,7 +122,7 @@
 	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)",
 	"alerts.select-a-single-user-to-change-email": "Select a single user to change email",
 	"export": "Dışa Aktar",
-	"export-users-fields-title": "Select CSV Fields",
+	"export-users-fields-title": "CSV Alanlarını seçin",
 	"export-field-email": "E-posta adresi",
 	"export-field-username": "Kullanıcı Adı",
 	"export-field-uid": "UID",
