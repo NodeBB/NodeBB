@@ -37,9 +37,12 @@ Helpers.isUri = (value) => {
 };
 
 Helpers.query = async (id) => {
-	const [username, hostname] = id.split('@');
 	const isUri = Helpers.isUri(id);
-	if ((!username || !hostname) && !isUri) {
+	// username@host ids use acct: URI schema
+	const uri = isUri ? new URL(id) : new URL(`acct:${id}`);
+	// JS doesn't parse anything other than protocol and pathname from acct: URIs, so we need to just split id manually
+	const [username, hostname] = isUri ? [uri.pathname || uri.href, uri.host] : id.split('@');
+	if (!username || !hostname) {
 		return false;
 	}
 
@@ -47,8 +50,7 @@ Helpers.query = async (id) => {
 		return webfingerCache.get(id);
 	}
 
-	// only add acct: schema if id is not an URI already
-	const query = new URLSearchParams({ resource: `${isUri ? '' : 'acct:'}${id}` });
+	const query = new URLSearchParams({ resource: uri });
 
 	// Make a webfinger query to retrieve routing information
 	let response;
@@ -73,7 +75,7 @@ Helpers.query = async (id) => {
 	const { subject, publicKey } = body;
 	const payload = { subject, username, hostname, actorUri, publicKey };
 
-	const claimedId = subject.slice(5);
+	const claimedId = new URL(subject).pathname;
 	webfingerCache.set(claimedId, payload);
 	if (claimedId !== id) {
 		webfingerCache.set(id, payload);
