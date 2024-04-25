@@ -10,7 +10,7 @@
 	"id": "ID: <small>opzionale</small>",
 
 	"properties": "Proprietà:",
-	"groups": "Gruppi:",
+	"show-to-groups": "Mostra ai gruppi:",
 	"open-new-window": "Apri in una nuova finestra",
 	"dropdown": "Menu a tendina",
 	"dropdown-placeholder": "Posiziona le voci del menu a discesa qui sotto, es.: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

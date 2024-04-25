@@ -90,6 +90,6 @@
 	"bulk-actions": "Operacje masowe",
 	"bulk-resolve": "Oznacz flagi jako rozwiązane",
 	"bulk-success": "Zaktualizowano %1 flag",
-	"flagged-timeago-readable": "Oflagowano <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Oznaczone <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatyczna Flaga] Otrzymano %1 głosów przeciw."
 }

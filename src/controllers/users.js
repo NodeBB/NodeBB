@@ -25,7 +25,7 @@ usersController.index = async function (req, res, next) {
 
 	if (req.query.query) {
 		await usersController.search(req, res, next);
-	} else if (sectionToController[section]) {
+	} else if (sectionToController.hasOwnProperty(section) && sectionToController[section]) {
 		await sectionToController[section](req, res, next);
 	} else {
 		await usersController.getUsersSortedByJoinDate(req, res, next);

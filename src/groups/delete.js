@@ -28,7 +28,9 @@ module.exports = function (Groups) {
 			);
 		});
 		const sets = groupNames.map(groupName => `${groupName.toLowerCase()}:${groupName}`);
-		const fields = groupNames.map(groupName => slugify(groupName));
+		const groupSlugs = groupNames
+			.filter(groupName => !Groups.isPrivilegeGroup(groupName))
+			.map(groupName => slugify(groupName));
 
 		await Promise.all([
 			db.deleteAll(keys),
@@ -38,7 +40,7 @@ module.exports = function (Groups) {
 				'groups:visible:memberCount',
 			], groupNames),
 			db.sortedSetRemove('groups:visible:name', sets),
-			db.deleteObjectFields('groupslug:groupname', fields),
+			db.deleteObjectFields('groupslug:groupname', groupSlugs),
 			removeGroupsFromPrivilegeGroups(groupNames),
 		]);
 		Groups.cache.reset();

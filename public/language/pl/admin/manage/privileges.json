@@ -8,7 +8,7 @@
 	"edit-privileges": "Edytuj uprawnienia",
   	"select-clear-all": "Wybierz/wyczyść wszystko",
 	"chat": "Dostęp do czatu",
-	"chat-with-privileged": "Czatuj z uprzywilejowanymi",
+	"chat-with-privileged": "Czatuj z uprawnionymi",
 	"upload-images": "Przesyłanie zdjęć",
 	"upload-files": "Przesyłanie plików",
 	"signature": "Dodanie podpisu",
@@ -54,13 +54,13 @@
 	"alert.confirm-save": "Potwierdź zamiar zapisania uprawnień",
 	"alert.confirm-discard": "Czy na pewno chcesz odrzucić wprowadzone zmiany w uprawnieniach?",
 	"alert.discarded": "Odrzucono zmiany w uprawnieniach",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToAll": "Czy chcesz wykorzystać nastaw <strong>%1</strong> w <strong>względem wszystkich działów</strong>?",
+	"alert.confirm-copyToAllGroup": "Czy na pewno chcesz nadać właściwości grupy <strong>%1</strong> względem <strong>wszystkich działów</strong>?",
+	"alert.confirm-copyToChildren": "Czy chcesz nadać nastaw <strong>%1</strong> dla <strong>wszystkich podkategorii</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Czy chcesz wykorzystać nastaw <strong>%1</strong> dla <strong>wszystkich podkategorii</strong>?",
 	"alert.no-undo": "<em>Tej czynności nie można cofnąć.</em>",
 	"alert.admin-warning": "Administratorzy domyślnie otrzymują wszelkie uprawnienia",
   	"alert.copyPrivilegesFrom-title": "Wybierz kategorię, z której skopiować",
   	"alert.copyPrivilegesFrom-warning": "To skopiuje <strong>%1</strong> z wybranej kategorii.",
-  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
+  	"alert.copyPrivilegesFromGroup-warning": "Tak nadasz właściwości grupy <strong>%1</strong> z wybranego działu."
 }

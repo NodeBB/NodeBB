@@ -40,6 +40,10 @@ usersAPI.create = async function (caller, data) {
 };
 
 usersAPI.get = async (caller, { uid }) => {
+	const canView = await privileges.global.can('view:users', caller.uid);
+	if (!canView) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const userData = await user.getUserData(uid);
 	return await user.hidePrivateData(userData, caller.uid);
 };
@@ -232,7 +236,8 @@ usersAPI.unban = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	await user.bans.unban(data.uid);
+	const unbanData = await user.bans.unban(data.uid, data.reason);
+	await db.setObjectField(`uid:${data.uid}:unban:${unbanData.timestamp}`, 'fromUid', caller.uid);
 
 	sockets.in(`uid_${data.uid}`).emit('event:unbanned');
 
@@ -263,6 +268,7 @@ usersAPI.mute = async function (caller, data) {
 	const now = Date.now();
 	const muteKey = `uid:${data.uid}:mute:${now}`;
 	const muteData = {
+		type: 'mute',
 		fromUid: caller.uid,
 		uid: data.uid,
 		timestamp: now,
@@ -295,7 +301,19 @@ usersAPI.unmute = async function (caller, data) {
 	}
 
 	await db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
-
+	const now = Date.now();
+	const unmuteKey = `uid:${data.uid}:unmute:${now}`;
+	const unmuteData = {
+		type: 'unmute',
+		fromUid: caller.uid,
+		uid: data.uid,
+		timestamp: now,
+	};
+	if (data.reason) {
+		unmuteData.reason = data.reason;
+	}
+	await db.sortedSetAdd(`uid:${data.uid}:unmutes:timestamp`, now, unmuteKey);
+	await db.setObject(unmuteKey, unmuteData);
 	await events.log({
 		type: 'user-unmute',
 		uid: caller.uid,
@@ -584,6 +602,7 @@ usersAPI.search = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	return await user.search({
+		uid: caller.uid,
 		query: data.query,
 		searchBy: data.searchBy || 'username',
 		page: data.page || 1,

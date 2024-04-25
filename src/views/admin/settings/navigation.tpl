@@ -75,7 +75,7 @@
 
 						<div class="row mb-3">
 							<div class="col-12">
-								<label class="form-label">[[admin/settings/navigation:groups]]</label>
+								<label class="form-label">[[admin/settings/navigation:show-to-groups]]</label>
 
 								<select name="groups" class="form-select" size="10" multiple>
 									{{{ each enabled.groups }}}

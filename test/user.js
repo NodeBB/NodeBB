@@ -1683,7 +1683,7 @@ describe('User', () => {
 			await setTimeout(50);
 			await socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: '<svg/onload=alert(document.location);//' });
 			const notes = await User.getModerationNotes(testUid, 0, -1);
-			assert.equal(notes[0].note, '&lt;svg&#x2F;onload=alert(document.location);&#x2F;&#x2F;');
+			assert.equal(notes[0].note, '');
 			assert.equal(notes[0].uid, adminUid);
 			assert.equal(notes[1].note, 'this is a test user');
 			assert(notes[0].timestamp);
@@ -2457,7 +2457,7 @@ describe('User', () => {
 
 		describe('.toggle()', () => {
 			it('should toggle block', (done) => {
-				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, (err) => {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid, action: 'block' }, (err) => {
 					assert.ifError(err);
 					User.blocks.is(blockeeUid, 1, (err, blocked) => {
 						assert.ifError(err);
@@ -2468,7 +2468,7 @@ describe('User', () => {
 			});
 
 			it('should toggle block', (done) => {
-				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, (err) => {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid, action: 'unblock' }, (err) => {
 					assert.ifError(err);
 					User.blocks.is(blockeeUid, 1, (err, blocked) => {
 						assert.ifError(err);

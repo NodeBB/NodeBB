@@ -259,11 +259,11 @@ define('admin/manage/users', [
 			}
 
 			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
-				bootbox.dialog({
-					className: 'ban-modal',
+				const modal = bootbox.dialog({
 					title: '[[user:ban-account]]',
 					message: html,
 					show: true,
+					onEscape: true,
 					buttons: {
 						close: {
 							label: '[[global:close]]',
@@ -272,7 +272,7 @@ define('admin/manage/users', [
 						submit: {
 							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
 							callback: function () {
-								const formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
+								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
@@ -302,10 +302,37 @@ define('admin/manage/users', [
 				return false; // specifically to keep the menu open
 			}
 
-			Promise.all(uids.map(function (uid) {
-				return api.del('/users/' + uid + '/ban');
-			})).then(() => {
-				onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+			Benchpress.render('modals/unban', {}).then(function (html) {
+				const modal = bootbox.dialog({
+					title: '[[user:unban-account]]',
+					message: html,
+					show: true,
+					onEscape: true,
+					buttons: {
+						close: {
+							label: '[[global:close]]',
+							className: 'btn-link',
+						},
+						submit: {
+							label: '[[user:unban-account]]',
+							callback: function () {
+								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
+									data[cur.name] = cur.value;
+									return data;
+								}, {});
+
+
+								Promise.all(uids.map(function (uid) {
+									return api.del('/users/' + uid + '/ban', {
+										reason: formData.reason || '',
+									});
+								})).then(() => {
+									onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+								}).catch(alerts.error);
+							},
+						},
+					},
+				});
 			});
 		});
 

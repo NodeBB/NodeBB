@@ -1,5 +1,5 @@
 {
-	"customise": "Customise",
+	"customise": "Dostosuj",
 	"custom-css": "Niestandardowe CSS/SASS",
 	"custom-css.description": "Wprowadź tutaj własne deklaracje CSS/SASS, które zostaną zastosowane w wszystkich innych stylach.",
 	"custom-css.enable": "Włącz niestandardowe CSS/SASS",

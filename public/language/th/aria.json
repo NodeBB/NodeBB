@@ -1,8 +1,8 @@
 {
-	"post-sort-option": "Post sort option, %1",
-	"topic-sort-option": "Topic sort option, %1",
-	"user-avatar-for": "User avatar for %1",
-	"user-watched-tags": "User watched tags",
-	"delete-upload-button": "Delete upload button",
-	"group-page-link-for": "Group page link for %1"
+	"post-sort-option": "ตัวเลือกการจัดเรียงโพสต์ %1",
+	"topic-sort-option": "ตัวเลือกการจัดเรียงกระทู้ %1",
+	"user-avatar-for": "อวาตาร์ผู้ใช้สำหรับ %1",
+	"user-watched-tags": "แท็กที่ผู้ใช้เฝ้าดู",
+	"delete-upload-button": "ลบปุ่มอัพโหลด",
+	"group-page-link-for": "ลิงก์ไปหน้ากลุ่มสำหรับ %1"
 }

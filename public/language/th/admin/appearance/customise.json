@@ -1,20 +1,20 @@
 {
 	"customise": "Customise",
-	"custom-css": "Custom CSS/SASS",
-	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"custom-css": "ปรับแต่ง CSS/SASS",
+	"custom-css.description": "ป้อน CSS/SASS ของคุณที่นี่ ซึ่งจะเรียกใช้งานหลังสไตล์อื่นทั้งหมด",
+	"custom-css.enable": "เปิดการปรับแต่ง CSS/SASS",
 
 	"custom-js": "ปรับแต่งจาวาสคริปต์",
 	"custom-js.description": "ป้อนจาวาสคริปต์ของคุณเองที่นี่ จะดำเนินการหลังจากโหลดหน้าเว็บเสร็จสมบูรณ์แล้ว",
 	"custom-js.enable": "เปิดการปรับแต่งจาวาสคริปต์",
 
 	"custom-header": "ปรับแต่งส่วนหัว",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header.description": "ใส่ HTML ที่ปรับแต่งที่นี่ (เช่น แท็ก Meta ฯลฯ) ซึ่งจะต่อท้ายในส่วน  <code>&lt;head&gt;</code> ในมาร์คอัพของฟอรัมคุณ แท็ก Script สามารถใช้ได้แต่ไม่แนะนำ เนื่องจากสามารถปรับแต่งได้ที่แท็บ <a href=\"#custom-js\" data-toggle=\"tab\">ปรับแต่งจาวาสคริปต์</a>",
 	"custom-header.enable": "เปิดการปรับแต่งส่วนหัว",
 
 	"custom-css.livereload": "เปิดการบังคับให้มีผลในทันที",
 	"custom-css.livereload.description": "การเปิดนี้จะบังคับทุกเซสชั่นบนทุกอุปกรณ์ภายใต้บัญชีของคุณให้ถูกรีเฟรชทันทีที่คุณกดบันทึก",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "แทนที่ค่าตัวแปร bootstrap ที่นี่ คุณยังสามารถใช้เครื่องมือ <a href=\"https://bootstrap.build/app\">bootstrap.build</a> และคัดลอกผลลัพธ์ลงในนี้ <br/>การเปลี่ยนแปลงต้องทำ rebuild และเริ่มต้นใหม่",
+	"bsvariables.enable": "เปิด _variables.scss"
 }

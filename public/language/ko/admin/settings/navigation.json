@@ -10,7 +10,7 @@
 	"id": "ID: <small>선택 사항</small>",
 
 	"properties": "속성:",
-	"groups": "그룹:",
+	"show-to-groups": "Show to Groups:",
 	"open-new-window": "새 창에서 열기",
 	"dropdown": "드롭다운",
 	"dropdown-placeholder": "아래에 드롭다운 메뉴 항목을 배치하세요. 예를 들어:<br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

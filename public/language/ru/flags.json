@@ -90,6 +90,6 @@
 	"bulk-actions": "Жалоба %1 обновлена",
 	"bulk-resolve": "Решить жалобы",
 	"bulk-success": "Жалоба %1 обновлена",
-	"flagged-timeago-readable": "Получена жалоба <span class=\"timeago\" title=\"%1\"></span>(%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Автожалоба] Получено %1 голосов против."
 }

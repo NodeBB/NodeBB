@@ -1,8 +1,8 @@
 {
-	"post-sort-option": "Post sort option, %1",
-	"topic-sort-option": "Topic sort option, %1",
-	"user-avatar-for": "User avatar for %1",
-	"user-watched-tags": "User watched tags",
-	"delete-upload-button": "Delete upload button",
-	"group-page-link-for": "Group page link for %1"
+	"post-sort-option": "Option de tri des messages, %1",
+	"topic-sort-option": "Option de tri des sujets, %1",
+	"user-avatar-for": "Avatar de l'utilisateur pour %1",
+	"user-watched-tags": "L'utilisateur a regardé les tags",
+	"delete-upload-button": "Supprimer le bouton de téléchargement",
+	"group-page-link-for": "Lien vers la page de groupe pour %1"
 }

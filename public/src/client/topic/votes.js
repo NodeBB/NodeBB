@@ -37,6 +37,9 @@ define('forum/topic/votes', [
 
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
 			if (err) {
+				if (err.message === '[[error:no-privileges]]') {
+					return;
+				}
 				return alerts.error(err);
 			}
 			if (_showTooltip[pid] && data.length) {
@@ -98,7 +101,7 @@ define('forum/topic/votes', [
 	};
 
 	Votes.showVotes = function (pid) {
-		socket.emit('posts.getVoters', { pid: pid, cid: ajaxify.data.cid }, function (err, data) {
+		socket.emit('posts.getVoters', { pid: pid }, function (err, data) {
 			if (err) {
 				if (err.message === '[[error:no-privileges]]') {
 					return;

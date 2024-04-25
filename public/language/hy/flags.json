@@ -90,6 +90,6 @@
 	"bulk-actions": "Զանգվածային գործողություններ",
 	"bulk-resolve": "Լուծել դրոշակ(ներ)ը",
 	"bulk-success": "%1 դրոշները թարմացվել են",
-	"flagged-timeago-readable": "Նշված (% 2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Ստացել է %1 դեմ ձայն:"
 }

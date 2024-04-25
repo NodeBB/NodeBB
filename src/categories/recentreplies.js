@@ -116,9 +116,10 @@ module.exports = function (Categories) {
 			if (teaser) {
 				teaser.cid = topicData[index].cid;
 				teaser.parentCids = cidToRoot[teaser.cid];
-				teaser.tid = undefined;
-				teaser.uid = undefined;
+				teaser.tid = topicData[index].tid;
+				teaser.uid = topicData[index].uid;
 				teaser.topic = {
+					tid: topicData[index].tid,
 					slug: topicData[index].slug,
 					title: topicData[index].title,
 				};
