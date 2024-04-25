@@ -1,5 +1,7 @@
 {
-	"category.name": "World",
+	"world.name": "World",
+	"world.description": "This forum is federated, and can interact with the social web (or \"fediverse\"). Your corner of the fediverse consists of topics created by — and shared from — from users you follow.",
+	"world.popular": "Popular topics from the past day",
 	"no-topics": "This forum doesn't know of any other topics yet.",
 
 	"topic-event-announce-ago": "%1 shared <a href=\"%2\">this post</a> %3",

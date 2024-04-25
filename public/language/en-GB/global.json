@@ -56,8 +56,7 @@
 	"header.navigation": "Navigation",
 	"header.manage": "Manage",
 	"header.drafts": "Drafts",
-	"header.world": "World (Curated)",
-	"header.world-all": "World (All)",
+	"header.world": "World",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",

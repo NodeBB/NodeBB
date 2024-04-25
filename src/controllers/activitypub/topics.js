@@ -21,6 +21,10 @@ const validSorts = [
 ];
 
 controller.list = async function (req, res) {
+	if (!req.uid) {
+		return helpers.redirect(res, '/recent?cid=-1', false);
+	}
+
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	const page = parseInt(req.query.page, 10) || 1;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
@@ -43,12 +47,6 @@ controller.list = async function (req, res) {
 	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
 
 	const sets = [sortToSet[sort], `uid:${req.uid}:inbox`];
-	if (req.params.filter === 'all' || !req.uid) {
-		sets.pop();
-	} else if (req.params.filter) {
-		return helpers.redirect(res, '/world', false);
-	}
-
 	const tids = await db.getSortedSetRevIntersect({
 		sets,
 		start,
@@ -69,6 +67,9 @@ controller.list = async function (req, res) {
 		tag: req.query.tag,
 		targetUid: targetUid,
 	});
+	data.name = '[[activitypub:world.name]]';
+	data.description = '[[activitypub:world.description]]';
+	data.descriptionParsed = data.description;
 	delete data.children;
 
 	data.topicCount = await db.sortedSetIntersectCard(sets);

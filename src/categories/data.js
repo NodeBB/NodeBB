@@ -16,8 +16,7 @@ const intFields = [
 const worldCategory = {
 	cid: -1,
 	name: 'Uncategorized',
-	description: 'tbd',
-	descriptionParsed: 'tbd',
+	description: 'Pseudo-category containing topics that do not strictly fit in with any existing categories',
 	icon: 'fa-globe',
 	imageClass: 'cover',
 	bgColor: '#eee',
@@ -29,6 +28,7 @@ const worldCategory = {
 	link: '',
 	class: '', // todo
 };
+worldCategory.descriptionParsed = worldCategory.description;
 
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = async function (cids, fields) {
