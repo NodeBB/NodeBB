@@ -47,13 +47,14 @@ Helpers.query = async (id) => {
 		return webfingerCache.get(id);
 	}
 
-	const protocol = isUri ? '' : 'acct:'; // if ID is an URI the protocol is already included
+	// only add acct: schema if id is not an URI already
+	const query = new URLSearchParams({ resource: `${isUri ? '' : 'acct:'}${id}` });
 
 	// Make a webfinger query to retrieve routing information
 	let response;
 	let body;
 	try {
-		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=${encodeURIComponent(protocol)}${encodeURIComponent(id)}`));
+		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?${query}`));
 	} catch (e) {
 		return false;
 	}
