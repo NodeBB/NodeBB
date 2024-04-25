@@ -38,7 +38,8 @@ Helpers.isUri = (value) => {
 
 Helpers.query = async (id) => {
 	const [username, hostname] = id.split('@');
-	if (!username || !hostname) {
+	const isUri = Helpers.isUri(id);
+	if ((!username || !hostname) && !isUri) {
 		return false;
 	}
 
@@ -46,11 +47,13 @@ Helpers.query = async (id) => {
 		return webfingerCache.get(id);
 	}
 
+	const protocol = isUri ? '' : 'acct:'; // if ID is an URI the protocol is already included
+
 	// Make a webfinger query to retrieve routing information
 	let response;
 	let body;
 	try {
-		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=acct%3a${encodeURIComponent(id)}`));
+		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=${encodeURIComponent(protocol)}${encodeURIComponent(id)}`));
 	} catch (e) {
 		return false;
 	}
