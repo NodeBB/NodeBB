@@ -89,6 +89,7 @@ module.exports = function (Topics) {
 			cids = await privileges.categories.filterCids('topics:read', cids, uid);
 		} else {
 			cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
+			cids = cids.filter(cid => cid !== -1);
 		}
 
 		const pids = await db.getSortedSetRevRangeByScore(
