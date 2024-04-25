@@ -50,7 +50,7 @@ Helpers.query = async (id) => {
 	let response;
 	let body;
 	try {
-		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=acct:${id}`));
+		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?resource=acct%3a${encodeURIComponent(id)}`));
 	} catch (e) {
 		return false;
 	}
