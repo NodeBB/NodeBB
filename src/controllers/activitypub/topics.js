@@ -90,8 +90,6 @@ controller.list = async function (req, res) {
 		}
 	}
 
-	data.filter = req.params.filter || undefined;
-
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({

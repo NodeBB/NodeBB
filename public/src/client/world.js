@@ -7,7 +7,7 @@ define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api'], function 
 		app.enterRoom('world');
 		topicList.init('world');
 
-		sort.handleSort('categoryTopicSort', 'world' + (ajaxify.data.filter ? '/' + ajaxify.data.filter : ''));
+		sort.handleSort('categoryTopicSort', 'world');
 
 		handleIgnoreWatch(-1);
 
