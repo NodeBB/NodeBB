@@ -39,14 +39,14 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a 404 Not Found if no user exists by that username', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${host}`);
+			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3afoobar%40${host}`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('should return a 400 Bad Request if the request is malformed', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar`);
+			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3afoobar`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 400);
@@ -54,7 +54,7 @@ describe('ActivityPub integration', () => {
 
 		it('should return 403 Forbidden if the calling user is not allowed to view the user list/profiles', async () => {
 			await privileges.global.rescind(['groups:view:users'], 'guests');
-			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`);
+			const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${slug}%40${host}`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 400);
@@ -62,7 +62,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a valid WebFinger response otherwise', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`);
+			const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${slug}%40${host}`);
 
 			assert(response);
 			assert.strictEqual(response.statusCode, 200);
@@ -140,13 +140,13 @@ describe('ActivityPub integration', () => {
 			});
 
 			it('should return null when valid input is passed but does not resolve', async () => {
-				const { type, id } = await activitypub.helpers.resolveLocalId(`acct:foobar@${nconf.get('url_parsed').host}`);
+				const { type, id } = await activitypub.helpers.resolveLocalId(`acct%3afoobar@${nconf.get('url_parsed').host}`);
 				assert.strictEqual(type, 'user');
 				assert.strictEqual(id, null);
 			});
 
 			it('should resolve to a local uid when given a webfinger-style string', async () => {
-				const { id } = await activitypub.helpers.resolveLocalId(`acct:${slug}@${nconf.get('url_parsed').host}`);
+				const { id } = await activitypub.helpers.resolveLocalId(`acct%3a${slug}@${nconf.get('url_parsed').host}`);
 				assert.strictEqual(id, uid);
 			});
 
@@ -291,7 +291,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should also have a valid WebFinger response tied to `preferredUsername`', async () => {
-			const { response, body: body2 } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${body.preferredUsername}@${nconf.get('url_parsed').host}`);
+			const { response, body: body2 } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${body.preferredUsername}@${nconf.get('url_parsed').host}`);
 
 			assert.strictEqual(response.statusCode, 200);
 			assert(body2 && body2.aliases && body2.links);
