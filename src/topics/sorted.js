@@ -47,7 +47,10 @@ module.exports = function (Topics) {
 			if (params.sort === 'posts') {
 				tids = await getTidsWithMostPostsInTerm(params.cids, params.uid, params.term);
 			} else {
-				tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
+				const cids = await getCids(params.cids, params.uid);
+				tids = await Topics.getLatestTidsFromSet(
+					cids.map(cid => `cid:${cid}:tids:create`), 0, -1, params.term
+				);
 			}
 
 			if (params.filter === 'watched') {
@@ -84,14 +87,18 @@ module.exports = function (Topics) {
 		return 'topics:recent';
 	}
 
-	async function getTidsWithMostPostsInTerm(cids, uid, term) {
+	async function getCids(cids, uid) {
 		if (Array.isArray(cids)) {
 			cids = await privileges.categories.filterCids('topics:read', cids, uid);
 		} else {
 			cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
 			cids = cids.filter(cid => cid !== -1);
 		}
+		return cids;
+	}
 
+	async function getTidsWithMostPostsInTerm(cids, uid, term) {
+		cids = await getCids(cids, uid);
 		const pids = await db.getSortedSetRevRangeByScore(
 			cids.map(cid => `cid:${cid}:pids`),
 			0,
