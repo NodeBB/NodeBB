@@ -370,7 +370,7 @@ async function getSelectData(cids, fields) {
 }
 
 Categories.buildForSelectCategories = function (categories, fields, parentCid) {
-	function recursive(category, categoriesData, level, depth) {
+	function recursive({ ...category }, categoriesData, level, depth) {
 		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
