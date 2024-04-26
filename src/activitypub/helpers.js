@@ -136,6 +136,7 @@ Helpers.resolveLocalId = async (input) => {
 
 		return { type: null, id: null };
 	} else if (String(input).indexOf('@') !== -1) { // Webfinger
+		input = decodeURIComponent(input);
 		const [slug] = input.replace(/^acct:/, '').split('@');
 		const uid = await user.getUidByUserslug(slug);
 		return { type: 'user', id: uid };

@@ -36,7 +36,7 @@ Actors.assert = async (ids, options = {}) => {
 		if (id.includes('@') && !(isUri && activitypub._constants.acceptedProtocols.includes(new URL(id).protocol.slice(0, -1)))) {
 			const host = isUri ? new URL(id).host : id.split('@')[1];
 			if (host === nconf.get('url_parsed').host) { // do not assert loopback ids
-				return null;
+				return 'loopback';
 			}
 
 			({ actorUri: id } = await activitypub.helpers.query(id));
@@ -53,10 +53,7 @@ Actors.assert = async (ids, options = {}) => {
 	}
 
 	// Filter out loopback uris
-	ids = ids.filter((uri) => {
-		const { host } = new URL(uri);
-		return host !== nconf.get('url_parsed').host;
-	});
+	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 
 	// Filter out existing
 	if (!options.update) {

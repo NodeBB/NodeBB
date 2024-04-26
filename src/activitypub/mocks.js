@@ -228,7 +228,7 @@ Mocks.note = async (post) => {
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
 		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 	} else { // new topic
-		name = await topics.getTitleByPid(post.pid);
+		({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
 		tag = post.topic.tags.map(tag => ({
 			type: 'Hashtag',
 			href: `${nconf.get('url')}/tags/${tag.valueEncoded}`,
