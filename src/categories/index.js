@@ -71,7 +71,7 @@ Categories.getCategoryById = async function (data) {
 		category: category,
 		...data,
 	});
-	return result.category;
+	return { ...result.category };
 };
 
 Categories.getCidByHandle = async function (handle) {
