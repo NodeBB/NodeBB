@@ -64,7 +64,7 @@ Categories.getCategoryById = async function (data) {
 		category: category,
 		...data,
 	});
-	return result.category;
+	return { ...result.category };
 };
 
 Categories.getAllCidsFromSet = async function (key) {
