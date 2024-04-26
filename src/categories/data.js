@@ -49,7 +49,7 @@ module.exports = function (Categories) {
 					return category;
 				}, {});
 			}
-			categories.splice(cids.indexOf(-1), 1, subset || worldCategory);
+			categories.splice(cids.indexOf(-1), 1, subset || { ...worldCategory });
 		}
 
 		const result = await plugins.hooks.fire('filter:category.getFields', {

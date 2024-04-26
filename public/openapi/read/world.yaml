@@ -56,16 +56,16 @@ get:
                   #   type: array
                   #   items:
                   #     type: number
-                  # selectedTag:
-                  #   type: object
-                  #   properties:
-                  #     label:
-                  #       type: string
-                  #   nullable: true
-                  # selectedTags:
-                  #   type: array
-                  #   items:
-                  #     type: string
+                  selectedTag:
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                    nullable: true
+                  selectedTags:
+                    type: array
+                    items:
+                      type: string
                   isWatched:
                     type: boolean
                   isTracked:

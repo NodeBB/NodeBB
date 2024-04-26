@@ -326,7 +326,5 @@ paths:
     $ref: 'read/groups/slug/members.yaml'
   "/api/world":
     $ref: 'read/world.yaml'
-  "/api/world/{filter}":
-    $ref: 'read/world.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'
