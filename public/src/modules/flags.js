@@ -67,17 +67,6 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 		}).catch(alerts.error);
 	};
 
-	Flag.rescindByType = function (type, id) {
-		api.del(`/flags/${type}/${encodeURIComponent(id)}/report`).then(() => {
-			alerts.success('[[flags:rescinded]]');
-			hooks.fire('action:flag.rescinded', { type: type, id: id });
-			if (type === 'post') {
-				const postEl = components.get('post', 'pid', id);
-				postEl.find('[component="post/flag"]').removeClass('hidden').parent().attr('hidden', null);
-				postEl.find('[component="post/already-flagged"]').addClass('hidden').parent().attr('hidden', '');
-			}
-		}).catch(alerts.error);
-	};
 
 	Flag.rescind = function (flagId) {
 		api.del(`/flags/${flagId}/report`).then(() => {
