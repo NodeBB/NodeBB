@@ -106,6 +106,35 @@ describe('ActivityPub integration', () => {
 				assert.strictEqual(id, uid);
 			});
 		});
+
+		describe('.generateTitle', () => {
+			it('should take the first paragraph element\'s text', () => {
+				const source = '<p>Lorem ipsum dolor sit amet</p><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
+				const title = activitypub.helpers.generateTitle(source);
+				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
+			});
+
+			it('should take the first line\'s text if no matched elements', () => {
+				const source = 'Lorem ipsum dolor sit amet\n\nconsectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.';
+				const title = activitypub.helpers.generateTitle(source);
+				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
+			});
+
+			it('should trim down the title if it is too long per settings', () => {
+				const value = meta.config.maximumTitleLength;
+				meta.config.maximumTitleLength = 10;
+				const source = '@@@@@@@@@@@@@@@@@@@@';
+				const title = activitypub.helpers.generateTitle(source);
+				assert.strictEqual(title, '@@@@@@@...');
+				meta.config.maximumTitleLength = value;
+			});
+
+			it('should take the first sentence of a matched element/line', () => {
+				const source = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ex pellentesque, fringilla lorem non, blandit est. Nulla facilisi. Curabitur cursus neque vel enim semper, id lacinia elit facilisis. Vestibulum turpis orci, efficitur ut semper eu, faucibus eu turpis. Praesent eu odio non libero gravida tempor. Ut porta pellentesque orci. In porta nunc eget tincidunt interdum. Curabitur vel dui nec libero tempus porttitor. Phasellus tincidunt, diam id viverra suscipit, est diam maximus purus, in vestibulum dui ligula vel libero. Sed tempus finibus ante, sit amet consequat magna facilisis eget. Proin ullamcorper, velit sit amet feugiat varius, massa sem aliquam dui, non aliquam augue velit vel est. Phasellus eu sapien in purus feugiat scelerisque congue id velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.';
+				const title = activitypub.helpers.generateTitle(source);
+				assert.strictEqual(title, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit');
+			});
+		});
 	});
 
 	describe('ActivityPub screener middleware', () => {

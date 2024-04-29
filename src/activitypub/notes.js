@@ -71,10 +71,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	} else {
 		// mainPid ok to leave as-is
 		cid = options.cid || -1;
-		title = name || utils.decodeHTMLEntities(utils.stripHTMLTags(content));
-		if (title.length > meta.config.maximumTitleLength) {
-			title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
-		}
+		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content));
 	}
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 

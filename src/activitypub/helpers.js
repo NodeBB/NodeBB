@@ -4,7 +4,9 @@ const { generateKeyPairSync } = require('crypto');
 const winston = require('winston');
 const nconf = require('nconf');
 const validator = require('validator');
+const cheerio = require('cheerio');
 
+const meta = require('../meta');
 const posts = require('../posts');
 const categories = require('../categories');
 const request = require('../request');
@@ -251,4 +253,29 @@ Helpers.resolveObjects = async (ids) => {
 		}
 	}));
 	return objects.length === 1 ? objects[0] : objects;
+};
+
+Helpers.generateTitle = (html) => {
+	// Given an html string, generates a more appropriate title if possible
+	const $ = cheerio.load(html);
+	let title;
+
+	// Try the first paragraph element
+	title = $('h1, h2, h3, h4, h5, h6, title, p, span').first().text();
+
+	// Fall back to newline splitting (i.e. if no paragraph elements)
+	title = title || html.split('\n').filter(Boolean)[0];
+
+	// Split sentences and use only first one
+	const split = title.split('. ');
+	if (split.length > 1) {
+		title = split.shift();
+	}
+
+	// Truncate down if too long
+	if (title.length > meta.config.maximumTitleLength) {
+		title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
+	}
+
+	return title;
 };
