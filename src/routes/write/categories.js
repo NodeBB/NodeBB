@@ -31,8 +31,8 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:cid/moderator/:uid', [...middlewares, middleware.assert.category], controllers.write.categories.setModerator);
 	setupApiRoute(router, 'delete', '/:cid/moderator/:uid', [...middlewares, middleware.assert.category], controllers.write.categories.setModerator);
 
-	setupApiRoute(router, 'put', '/:cid/follow', [...middlewares, middleware.admin.checkPrivileges, middleware.assert.category], controllers.write.categories.follow);
-	setupApiRoute(router, 'delete', '/:cid/follow', [...middlewares, middleware.admin.checkPrivileges, middleware.assert.category], controllers.write.categories.unfollow);
+	setupApiRoute(router, 'put', '/:cid/follow', [...middlewares, middleware.activitypub.enabled, middleware.admin.checkPrivileges, middleware.assert.category], controllers.write.categories.follow);
+	setupApiRoute(router, 'delete', '/:cid/follow', [...middlewares, middleware.activitypub.enabled, middleware.admin.checkPrivileges, middleware.assert.category], controllers.write.categories.unfollow);
 
 	return router;
 };

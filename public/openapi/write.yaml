@@ -136,6 +136,8 @@ paths:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
   /categories/{cid}/moderator/{uid}:
     $ref: 'write/categories/cid/moderator/uid.yaml'
+  /categories/{cid}/follow:
+    $ref: 'write/categories/cid/follow.yaml'
   /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
