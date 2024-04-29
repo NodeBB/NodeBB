@@ -76,7 +76,10 @@ middleware.validate = async function (req, res, next) {
 	await activitypub.actors.assert(actor);
 	const compare = await db.getObjectField(`userRemote:${actor}:keys`, 'id');
 	const { signature } = req.headers;
-	const keyId = new Map(signature.split(',').filter(Boolean).map(v => v.split('='))).get('keyId');
+	const keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
+		const index = v.indexOf('=');
+		return [v.substring(0, index), v.slice(index + 1)];
+	})).get('keyId');
 	if (`"${compare}"` !== keyId) {
 		winston.verbose('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
