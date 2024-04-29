@@ -70,7 +70,7 @@ User.validateEmail = async function (socket, uids) {
 		if (email) {
 			await user.setUserField(uid, 'email', email);
 		}
-		await user.email.confirmByUid(uid);
+		await user.email.confirmByUid(uid, socket.uid);
 	}
 };
 
