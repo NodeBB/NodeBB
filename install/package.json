@@ -79,7 +79,7 @@
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
-        "jquery-ui": "1.13.2",
+        "jquery-ui": "1.13.3",
         "jsesc": "3.0.2",
         "json2csv": "5.0.7",
         "jsonwebtoken": "9.0.2",
