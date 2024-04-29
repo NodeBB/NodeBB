@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api'], function (topicList, sort, hooks, alerts, api) {
+define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api', 'bootbox'], function (topicList, sort, hooks, alerts, api, bootbox) {
 	const World = {};
 
 	World.init = function () {
@@ -10,6 +10,7 @@ define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api'], function 
 		sort.handleSort('categoryTopicSort', 'world');
 
 		handleIgnoreWatch(-1);
+		handleHelp();
 
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
@@ -38,6 +39,29 @@ define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api'], function 
 				$('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
 
 				alerts.success('[[category:' + state + '.message]]');
+			});
+		});
+	}
+
+	function handleHelp() {
+		const trigger = document.getElementById('world-help');
+		if (!trigger) {
+			return;
+		}
+
+		const content = [
+			'<p class="lead">[[activitypub:help.intro]]</p>',
+			'<p>[[activitypub:help.fediverse]]</p>',
+			'<p>[[activitypub:help.build]]</p>',
+			'<p>[[activitypub:help.federating]]</p>',
+			'<p>[[activitypub:help.next-generation]]</p>',
+		];
+
+		trigger.addEventListener('click', () => {
+			bootbox.dialog({
+				title: '[[activitypub:help.title]]',
+				message: content.join('\n'),
+				size: 'large',
 			});
 		});
 	}

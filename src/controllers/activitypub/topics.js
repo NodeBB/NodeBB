@@ -68,8 +68,6 @@ controller.list = async function (req, res) {
 		targetUid: targetUid,
 	});
 	data.name = '[[activitypub:world.name]]';
-	data.description = '[[activitypub:world.description]]';
-	data.descriptionParsed = data.description;
 	delete data.children;
 
 	data.topicCount = await db.sortedSetIntersectCard(sets);

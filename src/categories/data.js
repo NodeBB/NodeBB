@@ -16,7 +16,7 @@ const intFields = [
 const worldCategory = {
 	cid: -1,
 	name: 'Uncategorized',
-	description: 'Pseudo-category containing topics that do not strictly fit in with any existing categories',
+	description: 'Topics that do not strictly fit in with any existing categories',
 	icon: 'fa-globe',
 	imageClass: 'cover',
 	bgColor: '#eee',
