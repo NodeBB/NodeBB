@@ -15,6 +15,7 @@ const messaging = require('../../messaging');
 const categories = require('../../categories');
 const posts = require('../../posts');
 const activitypub = require('../../activitypub');
+const flags = require('../../flags');
 
 const relative_path = nconf.get('relative_path');
 
@@ -26,7 +27,12 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		return null;
 	}
 
-	const results = await getAllData(uid, callerUID);
+	const [results, canFlag, flagged, flagId] = await Promise.all([
+		getAllData(uid, callerUID),
+		privileges.users.canFlag(callerUID, uid),
+		flags.exists('user', uid, callerUID),
+		flags.getFlagIdByTarget('user', uid),
+	]);
 	if (!results.userData) {
 		throw new Error('[[error:invalid-uid]]');
 	}
@@ -80,7 +86,9 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.canEdit = results.canEdit;
 	userData.canBan = results.canBanUser;
 	userData.canMute = results.canMuteUser;
-	userData.canFlag = (await privileges.users.canFlag(callerUID, userData.uid)).flag;
+	userData.canFlag = canFlag.flag;
+	userData.flagged = flagged;
+	userData.flagId = flagId;
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
