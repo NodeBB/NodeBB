@@ -70,7 +70,7 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 
 	Flag.rescind = function (flagId) {
 		api.del(`/flags/${flagId}/report`).then(() => {
-			alerts.success('[[flags:rescinded]]');
+			alerts.success('[[flags:report-rescinded]]');
 			hooks.fire('action:flag.rescinded', { flagId: flagId });
 		}).catch(alerts.error);
 	};

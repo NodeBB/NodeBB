@@ -443,6 +443,9 @@ UserObjectFull:
       type: boolean
     canFlag:
       type: boolean
+    flagId:
+      type: number
+      nullable: true
     canChangePassword:
       type: boolean
     isSelf:

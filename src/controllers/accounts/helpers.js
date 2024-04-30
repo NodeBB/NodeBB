@@ -87,8 +87,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.canBan = results.canBanUser;
 	userData.canMute = results.canMuteUser;
 	userData.canFlag = canFlag.flag;
-	userData.flagged = flagged;
-	userData.flagId = flagId;
+	userData.flagId = flagged ? flagId : null;
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;

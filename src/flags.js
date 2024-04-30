@@ -354,7 +354,8 @@ Flags.getFlagIdByTarget = async function (type, id) {
 			throw new Error('[[error:invalid-data]]');
 	}
 
-	return await method(id, 'flagId');
+	const flagId = await method(id, 'flagId');
+	return utils.isNumber(flagId) ? parseInt(flagId, 10) : flagId;
 };
 
 async function modifyNotes(notes) {
