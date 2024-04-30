@@ -1,0 +1,41 @@
+get:
+  tags:
+    - admin
+  summary: Get category anayltics
+  parameters:
+    - name: category_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  cid:
+                    type: number
+                  enabled:
+                    type: number
+                    description: Whether ActivityPub integration is enabled in site settings
+                  name:
+                    type: string
+                  following:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The activity+json uri of the followed actor
+                        approved:
+                          type: boolean
+                          description: Whether the follow request has been accepted
+                  selectedCategory:
+                    $ref: ../../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+              - $ref: ../../../../../components/schemas/CommonProps.yaml#/CommonProps
