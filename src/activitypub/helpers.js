@@ -264,12 +264,21 @@ Helpers.generateTitle = (html) => {
 	title = $('h1, h2, h3, h4, h5, h6, title, p, span').first().text();
 
 	// Fall back to newline splitting (i.e. if no paragraph elements)
-	title = title || html.split('\n').filter(Boolean)[0];
+	title = title || html.split('\n').filter(Boolean).shift();
 
 	// Split sentences and use only first one
-	const split = title.split('. ');
-	if (split.length > 1) {
-		title = split.shift();
+	const sentences = title
+		.split(/(\.|\?|!)\s/)
+		.reduce((memo, cur, idx, sentences) => {
+			if (idx % 2) {
+				memo.push(`${sentences[idx - 1]}${cur}`);
+			}
+
+			return memo;
+		}, []);
+
+	if (sentences.length > 1) {
+		title = sentences.shift();
 	}
 
 	// Truncate down if too long
