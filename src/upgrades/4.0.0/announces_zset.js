@@ -25,7 +25,6 @@ module.exports = {
 						}
 					}));
 
-					console.log('piurging', tid);
 					await topics.events.purge(tid, announces);
 				}
 			}));
