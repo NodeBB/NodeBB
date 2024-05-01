@@ -429,7 +429,7 @@ define('forum/topic/postTools', [
 
 			const route = action === 'purge' ? '' : '/state';
 			const method = action === 'restore' ? 'put' : 'del';
-			api[method](`/posts/${pid}${route}`).catch(alerts.error);
+			api[method](`/posts/${encodeURIComponent(pid)}${route}`).catch(alerts.error);
 		});
 	}
 
