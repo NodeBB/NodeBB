@@ -173,23 +173,7 @@ inbox.announce = async (req) => {
 	winston.info(`[activitypub/inbox/announce] Parsing id ${pid}`);
 
 	if (!cid) { // Topic events from actors followed by users only
-		// No double-announce allowed
-		const existing = await topics.events.find(tid, {
-			type: 'announce',
-			uid: actor,
-			pid,
-		});
-		if (existing.length) {
-			await topics.events.purge(tid, existing);
-		}
-
-		await topics.events.log(tid, {
-			type: 'announce',
-			uid: actor,
-			href: `/post/${encodeURIComponent(pid)}`,
-			pid,
-			timestamp,
-		});
+		await activitypub.notes.announce.add(pid, actor, timestamp);
 	}
 };
 
@@ -389,17 +373,7 @@ inbox.undo = async (req) => {
 				winston.verbose(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
 			}
 
-			const tid = await posts.getPostField(id, 'tid');
-			const existing = await topics.events.find(tid, {
-				type: 'announce',
-				uid: actor,
-				pid: id,
-			});
-
-			if (existing.length) {
-				await topics.events.purge(tid, existing);
-			}
-
+			await activitypub.notes.announce.remove(id, actor);
 			notifications.rescind(`announce:post:${id}:uid:${actor}`);
 			break;
 		}

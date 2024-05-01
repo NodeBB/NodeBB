@@ -10,6 +10,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 const helpers = require('../helpers');
 
@@ -175,6 +176,19 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 			timestamps.push(item.data.timestamp || Date.now());
 		});
 	}
+
+	// Add post announces
+	const announces = await activitypub.notes.announce.list({ tid });
+	announces.forEach(({ actor, pid, timestamp }) => {
+		events.push({
+			type: 'announce',
+			uid: actor,
+			href: `/post/${encodeURIComponent(pid)}`,
+			pid,
+			timestamp,
+		});
+		timestamps.push(timestamp);
+	});
 
 	const [users, fromCategories, userSettings] = await Promise.all([
 		getUserInfo(events.map(event => event.uid).filter(Boolean)),

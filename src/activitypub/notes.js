@@ -304,3 +304,49 @@ Notes.getCategoryFollowers = async (cid) => {
 
 	return uids;
 };
+
+Notes.announce = {};
+
+Notes.announce.list = async ({ pid, tid }) => {
+	let pids = [];
+	if (pid) {
+		pids = [pid];
+	} else if (tid) {
+		let mainPid;
+		([pids, mainPid] = await Promise.all([
+			db.getSortedSetMembers(`tid:${tid}:posts`),
+			topics.getTopicField(tid, 'mainPid'),
+		]));
+		pids.unshift(mainPid);
+	}
+
+	if (!pids.length) {
+		return [];
+	}
+
+	const keys = pids.map(pid => `pid:${pid}:announces`);
+	let announces = await db.getSortedSetsMembersWithScores(keys);
+	announces = announces.reduce((memo, cur, idx) => {
+		if (cur.length) {
+			const pid = pids[idx];
+			cur.forEach(({ value: actor, score: timestamp }) => {
+				memo.push({ pid, actor, timestamp });
+			});
+		}
+		return memo;
+	}, []);
+
+	return announces;
+};
+
+Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
+	await db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor);
+};
+
+Notes.announce.remove = async (pid, actor) => {
+	await db.sortedSetRemove(`pid:${pid}:announces`, actor);
+};
+
+Notes.announce.removeAll = async (pid) => {
+	await db.delete(`pid:${pid}:announces`);
+};
