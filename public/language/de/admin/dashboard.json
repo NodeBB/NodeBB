@@ -95,7 +95,7 @@
 	"expand-analytics": "Analytik erweitern",
 	"clear-search-history": "Suchverlauf löschen",
 	"clear-search-history-confirm": "Bist du dir sicher, dass du den gesamten Suchverlauf löschen möchten?",
-	"search-term": "Term",
-	"search-count": "Count",
-	"view-all": "View all"
+	"search-term": "Bezeichnung",
+	"search-count": "Anzahl",
+	"view-all": "Zeige alle"
 }
