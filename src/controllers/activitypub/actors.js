@@ -68,10 +68,16 @@ Actors.topic = async function (req, res, next) {
 		return res.sendStatus(404);
 	}
 
-	const page = parseInt(req.query.page, 10);
+	let page = parseInt(req.query.page, 10);
 	const { cid, mainPid, slug, postcount } = await topics.getTopicFields(req.params.tid, ['cid', 'mainPid', 'slug', 'postcount']);
 	const pageCount = Math.max(1, Math.ceil(postcount / meta.config.postsPerPage));
 	let items;
+	let paginate = true;
+
+	if (!page && pageCount === 1) {
+		page = 1;
+		paginate = false;
+	}
 
 	if (page) {
 		const invalidPagination = page < 1 || page > pageCount;
@@ -91,7 +97,7 @@ Actors.topic = async function (req, res, next) {
 
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${nconf.get('url')}/topic/${req.params.tid}${page ? `?page=${page}` : ''}`,
+		id: `${nconf.get('url')}/topic/${req.params.tid}${paginate && page ? `?page=${page}` : ''}`,
 		url: `${nconf.get('url')}/topic/${slug}`,
 		type: items ? 'OrderedCollectionPage' : 'OrderedCollection',
 		audience: `${nconf.get('url')}/category/${cid}`,
@@ -101,11 +107,17 @@ Actors.topic = async function (req, res, next) {
 	if (items) {
 		object.partOf = `${nconf.get('url')}/topic/${req.params.tid}`;
 		object.items = items;
-		object.next = page < pageCount ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page + 1}` : null;
-		object.prev = page > 1 ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page - 1}` : null;
+
+		if (paginate) {
+			object.next = page < pageCount ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page + 1}` : null;
+			object.prev = page > 1 ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page - 1}` : null;
+		}
 	}
-	object.first = `${nconf.get('url')}/topic/${req.params.tid}?page=1`;
-	object.last = `${nconf.get('url')}/topic/${req.params.tid}?page=${pageCount}`;
+
+	if (paginate) {
+		object.first = `${nconf.get('url')}/topic/${req.params.tid}?page=1`;
+		object.last = `${nconf.get('url')}/topic/${req.params.tid}?page=${pageCount}`;
+	}
 
 	res.status(200).json(object);
 };
