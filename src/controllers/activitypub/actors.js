@@ -69,7 +69,7 @@ Actors.topic = async function (req, res, next) {
 	}
 
 	let page = parseInt(req.query.page, 10);
-	const { cid, mainPid, slug, postcount } = await topics.getTopicFields(req.params.tid, ['cid', 'mainPid', 'slug', 'postcount']);
+	const { cid, titleRaw: name, mainPid, slug, postcount } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'postcount']);
 	const pageCount = Math.max(1, Math.ceil(postcount / meta.config.postsPerPage));
 	let items;
 	let paginate = true;
@@ -99,6 +99,7 @@ Actors.topic = async function (req, res, next) {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id: `${nconf.get('url')}/topic/${req.params.tid}${paginate && page ? `?page=${page}` : ''}`,
 		url: `${nconf.get('url')}/topic/${slug}`,
+		name,
 		type: paginate && items ? 'OrderedCollectionPage' : 'OrderedCollection',
 		audience: `${nconf.get('url')}/category/${cid}`,
 		totalItems: postcount,
