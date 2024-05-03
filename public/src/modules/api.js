@@ -66,7 +66,7 @@ async function xhr(options) {
 	const isJSON = contentType && contentType.startsWith('application/json');
 
 	let response;
-	if (options.method !== 'head') {
+	if (options.method !== 'HEAD') {
 		if (isJSON) {
 			response = await res.json();
 		} else {
@@ -95,14 +95,14 @@ export function get(route, data, onSuccess) {
 export function head(route, data, onSuccess) {
 	return call({
 		url: route + (data && Object.keys(data).length ? ('?' + $.param(data)) : ''),
-		method: 'head',
+		method: 'HEAD',
 	}, onSuccess);
 }
 
 export function post(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'post',
+		method: 'POST',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
@@ -124,7 +124,7 @@ export function patch(route, data, onSuccess) {
 export function put(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'put',
+		method: 'PUT',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
@@ -135,7 +135,7 @@ export function put(route, data, onSuccess) {
 export function del(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'delete',
+		method: 'DELETE',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
