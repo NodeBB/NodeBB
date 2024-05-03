@@ -20,6 +20,7 @@ const inbox = module.exports;
 
 function reject(type, object, target, senderType = 'uid', id = 0) {
 	activitypub.send(senderType, id, target, {
+		id: `${helpers.resolveActor(senderType, id)}#/activity/reject/${encodeURIComponent(object.id)}`,
 		type: 'Reject',
 		object: {
 			type,
