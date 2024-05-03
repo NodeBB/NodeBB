@@ -99,16 +99,16 @@ Actors.topic = async function (req, res, next) {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id: `${nconf.get('url')}/topic/${req.params.tid}${paginate && page ? `?page=${page}` : ''}`,
 		url: `${nconf.get('url')}/topic/${slug}`,
-		type: items ? 'OrderedCollectionPage' : 'OrderedCollection',
+		type: paginate && items ? 'OrderedCollectionPage' : 'OrderedCollection',
 		audience: `${nconf.get('url')}/category/${cid}`,
 		totalItems: postcount,
 	};
 
 	if (items) {
-		object.partOf = `${nconf.get('url')}/topic/${req.params.tid}`;
 		object.items = items;
 
 		if (paginate) {
+			object.partOf = `${nconf.get('url')}/topic/${req.params.tid}`;
 			object.next = page < pageCount ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page + 1}` : null;
 			object.prev = page > 1 ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page - 1}` : null;
 		}
