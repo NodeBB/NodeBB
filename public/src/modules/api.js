@@ -113,7 +113,7 @@ export function post(route, data, onSuccess) {
 export function patch(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'patch',
+		method: 'PATCH',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
