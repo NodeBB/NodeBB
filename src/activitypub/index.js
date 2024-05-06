@@ -12,6 +12,7 @@ const utils = require('../utils');
 const ttl = require('../cache/ttl');
 const lru = require('../cache/lru');
 const batch = require('../batch');
+const pubsub = require('../pubsub');
 
 const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
 const ActivityPub = module.exports;
@@ -255,6 +256,13 @@ ActivityPub.get = async (type, id, uri) => {
 };
 
 ActivityPub.retryQueue = lru({ name: 'activitypub-retry-queue', max: 4000, ttl: 1000 * 60 * 60 * 24 * 60 });
+
+// handle clearing retry queue from another member of the cluster
+pubsub.on(`activitypub-retry-queue:lruCache:del`, (keys) => {
+	if (Array.isArray(keys)) {
+		keys.forEach(key => clearTimeout(ActivityPub.retryQueue.get(key)));
+	}
+});
 
 async function sendMessage(uri, id, type, payload, attempts = 1) {
 	const keyData = await ActivityPub.getPrivateKey(type, id);
