@@ -41,15 +41,26 @@ module.exports = function (User) {
 		} else if (searchBy === 'uid') {
 			uids = [query];
 		} else {
-			const searchMethod = data.findUids || findUids;
-			uids = await searchMethod(query, searchBy, data.hardCap);
+			if (!data.findUids && data.uid && activitypub.helpers.isUri(data.query)) {
+				const assertion = await activitypub.actors.assert([data.query]);
+				if (assertion === true) {
+					uids = [query];
+				} else if (Array.isArray(assertion) && assertion.length) {
+					uids = assertion.map(u => u.id);
+				}
+			}
 
-			const mapping = {
-				username: 'ap.preferredUsername',
-				fullname: 'ap.name',
-			};
-			if (meta.config.activitypubEnabled && mapping.hasOwnProperty(searchBy)) {
-				uids = uids.concat(await searchMethod(query, mapping[searchBy], data.hardCap));
+			if (!uids.length) {
+				const searchMethod = data.findUids || findUids;
+				uids = await searchMethod(query, searchBy, data.hardCap);
+
+				const mapping = {
+					username: 'ap.preferredUsername',
+					fullname: 'ap.name',
+				};
+				if (meta.config.activitypubEnabled && mapping.hasOwnProperty(searchBy)) {
+					uids = uids.concat(await searchMethod(query, mapping[searchBy], data.hardCap));
+				}
 			}
 		}
 

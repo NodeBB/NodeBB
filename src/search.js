@@ -10,6 +10,7 @@ const categories = require('./categories');
 const user = require('./user');
 const plugins = require('./plugins');
 const privileges = require('./privileges');
+const activitypub = require('./activitypub');
 const utils = require('./utils');
 
 const search = module.exports;
@@ -72,10 +73,19 @@ async function searchInContent(data) {
 	} else if (data.searchIn === 'bookmarks') {
 		pids = await searchInBookmarks(data, searchCids, searchUids);
 	} else {
-		[pids, tids] = await Promise.all([
-			doSearch('post', ['posts', 'titlesposts']),
-			doSearch('topic', ['titles', 'titlesposts']),
-		]);
+		let result;
+		if (data.uid && activitypub.helpers.isUri(data.query)) {
+			result = await fetchRemoteObject(data.uid, data.query);
+		}
+
+		if (result) {
+			[pids, tids] = result;
+		} else {
+			[pids, tids] = await Promise.all([
+				doSearch('post', ['posts', 'titlesposts']),
+				doSearch('topic', ['titles', 'titlesposts']),
+			]);
+		}
 	}
 
 	const mainPids = await topics.getMainPids(tids);
@@ -116,6 +126,30 @@ async function searchInContent(data) {
 	delete metadata.pids;
 	delete metadata.data;
 	return Object.assign(returnData, metadata);
+}
+
+async function fetchRemoteObject(uid, uri) {
+	try {
+		let id = uri;
+		let exists = await posts.exists(id);
+		let tid = exists ? await posts.getPostField(id, 'tid') : undefined;
+		if (!exists) {
+			let type;
+			({ id, type } = await activitypub.get('uid', 0, id));
+			if (activitypub._constants.acceptedPostTypes.includes(type)) {
+				exists = await posts.exists(id);
+				if (!exists) {
+					({ tid } = await activitypub.notes.assert(uid, id));
+				} else {
+					tid = await posts.getPostField(id, 'tid');
+				}
+			}
+		}
+
+		return tid ? [[id], []] : null;
+	} catch (e) {
+		return null;
+	}
 }
 
 async function searchInBookmarks(data, searchCids, searchUids) {
