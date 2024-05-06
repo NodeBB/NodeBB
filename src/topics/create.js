@@ -153,8 +153,11 @@ module.exports = function (Topics) {
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (parseInt(uid, 10) && !topicData.scheduled) {
-			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+		if (!topicData.scheduled) {
+			if (utils.isNumber(uid)) {
+				// New topic notifications only sent for local-to-local follows only
+				user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+			}
 			Topics.notifyTagFollowers(postData, uid);
 			categories.notifyCategoryFollowers(postData, uid);
 		}
