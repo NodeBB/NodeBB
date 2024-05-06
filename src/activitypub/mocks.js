@@ -26,7 +26,7 @@ Mocks.profile = async (actors) => {
 		const uid = actor.id;
 		let {
 			url, preferredUsername, published, icon, image,
-			name, summary, followerCount, followingCount,
+			name, summary, followers, followerCount, followingCount,
 			postcount, inbox, endpoints,
 		} = actor;
 		preferredUsername = preferredUsername || slugify(name);
@@ -62,6 +62,7 @@ Mocks.profile = async (actors) => {
 			url,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
+			followersUrl: followers,
 		};
 
 		return payload;
