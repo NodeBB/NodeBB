@@ -284,6 +284,8 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 			ActivityPub.retryQueue.set(queueId, timeoutId);
 
 			winston.verbose(`[activitypub/send] Added ${payload.type} to ${uri} to retry queue for ${timeout}ms`);
+		} else {
+			winston.warn(`[activitypub/send] Max attempts reached for ${payload.type} to ${uri}; giving up on sending`);
 		}
 	}
 }
@@ -305,6 +307,10 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 	await batch.processArray(
 		inboxes,
-		async inboxBatch => Promise.all(inboxBatch.map(async uri => sendMessage(uri, id, type, payload)))
+		async inboxBatch => Promise.all(inboxBatch.map(async uri => sendMessage(uri, id, type, payload))),
+		{
+			batch: 50,
+			interval: 100,
+		},
 	);
 };
