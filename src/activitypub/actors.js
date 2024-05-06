@@ -33,7 +33,7 @@ Actors.assert = async (ids, options = {}) => {
 		const originalId = id;
 		const isUri = activitypub.helpers.isUri(id);
 		// only look up webfinger if the id is not a supported URI
-		if (id.includes('@') && !(isUri && activitypub._constants.acceptedProtocols.includes(new URL(id).protocol.slice(0, -1)))) {
+		if (id.includes('@') && !isUri) {
 			const host = isUri ? new URL(id).host : id.split('@')[1];
 			if (host === nconf.get('url_parsed').host) { // do not assert loopback ids
 				return 'loopback';
@@ -41,8 +41,10 @@ Actors.assert = async (ids, options = {}) => {
 
 			({ actorUri: id } = await activitypub.helpers.query(id));
 		}
-		if (!id) {
+		// ensure the final id is a valid URI
+		if (!id || !activitypub.helpers.isUri(id)) {
 			failedWebfingerCache.set(originalId, true);
+			return;
 		}
 		return id;
 	})));
