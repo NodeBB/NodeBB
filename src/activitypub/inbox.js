@@ -412,3 +412,14 @@ inbox.flag = async (req) => {
 		}
 	}));
 };
+
+inbox.reject = async (req) => {
+	const { actor, object } = req.body;
+	const { type, id } = object;
+	const { hostname } = new URL(actor);
+	const queueId = `${type}:${id}:${hostname}`;
+
+	// stop retrying rejected requests
+	clearTimeout(activitypub.retryQueue.get(queueId));
+	activitypub.retryQueue.delete(queueId);
+};
