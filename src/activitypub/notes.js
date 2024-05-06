@@ -76,7 +76,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
 	// Relation & privilege check for local categories
-	const hasRelation = options.skipChecks || options.cid || hasTid || await assertRelation(chain[0]);
+	const hasRelation = uid || options.skipChecks || options.cid || hasTid || await assertRelation(chain[0]);
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
@@ -168,7 +168,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	await Promise.all([
-		Notes.syncUserInboxes(tid),
+		Notes.syncUserInboxes(tid, uid),
 		unlock(id),
 	]);
 
@@ -282,7 +282,7 @@ Notes.getParentChain = async (uid, input) => {
 	return chain;
 };
 
-Notes.syncUserInboxes = async function (tid) {
+Notes.syncUserInboxes = async function (tid, uid) {
 	const [pids, { cid, mainPid }] = await Promise.all([
 		db.getSortedSetMembers(`tid:${tid}:posts`),
 		topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']),
@@ -291,6 +291,10 @@ Notes.syncUserInboxes = async function (tid) {
 
 	const recipients = await db.getSetsMembers(pids.map(id => `post:${id}:recipients`));
 	const uids = recipients.reduce((set, uids) => new Set([...set, ...uids.map(u => parseInt(u, 10))]), new Set());
+	if (uid) {
+		uids.add(parseInt(uid, 10));
+	}
+
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 

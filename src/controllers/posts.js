@@ -6,6 +6,7 @@ const querystring = require('querystring');
 const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const helpers = require('./helpers');
@@ -16,6 +17,14 @@ postsController.redirectToPost = async function (req, res, next) {
 	const pid = utils.isNumber(req.params.pid) ? parseInt(req.params.pid, 10) : req.params.pid;
 	if (!pid) {
 		return next();
+	}
+
+	// Kickstart note assertion if applicable
+	if (!utils.isNumber(pid) && req.uid) {
+		const exists = await posts.exists(pid);
+		if (!exists) {
+			await activitypub.notes.assert(req.uid, pid);
+		}
 	}
 
 	const [canRead, path] = await Promise.all([
