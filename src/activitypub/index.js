@@ -11,6 +11,7 @@ const user = require('../user');
 const utils = require('../utils');
 const ttl = require('../cache/ttl');
 const lru = require('../cache/lru');
+const batch = require('../batch');
 
 const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
 const ActivityPub = module.exports;
@@ -302,5 +303,8 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		...payload,
 	};
 
-	await Promise.all(inboxes.map(async uri => sendMessage(uri, id, type, payload)));
+	await batch.processArray(
+		inboxes,
+		async inboxBatch => Promise.all(inboxBatch.map(async uri => sendMessage(uri, id, type, payload)))
+	);
 };
