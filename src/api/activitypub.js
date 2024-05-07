@@ -116,7 +116,8 @@ async function buildRecipients(object, { pid, uid }) {
 		const announcersFollowers = (await user.getUsersFields(announcers, ['followersUrl']))
 			.filter(o => o.hasOwnProperty('followersUrl'))
 			.map(({ followersUrl }) => followersUrl);
-		[...announcers, ...announcersFollowers].forEach(uri => targets.add(uri));
+		[...announcers].forEach(uri => targets.add(uri));
+		[...announcers, ...announcersFollowers].forEach(uri => cc.add(uri));
 	}
 
 	object.to = Array.from(to);
