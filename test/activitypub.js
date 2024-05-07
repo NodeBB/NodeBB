@@ -15,6 +15,7 @@ const meta = require('../src/meta');
 const user = require('../src/user');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
+const posts = require('../src/posts');
 const activitypub = require('../src/activitypub');
 
 describe('ActivityPub integration', () => {
@@ -361,7 +362,7 @@ describe('ActivityPub integration', () => {
 	});
 
 	describe('Serving of local assets to remote clients', () => {
-		describe('Note', () => {
+		describe.only('Note', () => {
 			let cid;
 			let uid;
 
@@ -415,7 +416,43 @@ describe('ActivityPub integration', () => {
 			});
 
 			describe('Soft deleted', () => {
+				let body;
+				let response;
+				let postData;
 
+				before(async () => {
+					({ postData } = await topics.post({
+						uid,
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					}));
+
+					await posts.delete(postData.pid, uid);
+
+					({ body, response } = await request.get(`${nconf.get('url')}/post/${postData.pid}`, {
+						headers: {
+							Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+						},
+					}));
+				});
+
+				it('should return a 200 response on an existing post', () => {
+					assert.strictEqual(response.statusCode, 200);
+				});
+
+				it('should return a Tombstone object', () => {
+					assert.strictEqual(body.type, 'Tombstone');
+				});
+
+				it('should still retain the existing id and former type', () => {
+					assert.strictEqual(body.id, `${nconf.get('url')}/post/${postData.pid}`);
+					assert.strictEqual(body.formerType, 'Note');
+				});
+
+				it('should still contain contextual information (context, audience, attributedTo)', () => {
+					assert(['context', 'audience', 'attributedTo'].every(prop => body.hasOwnProperty(prop) && body[prop]));
+				});
 			});
 		});
 	});
