@@ -361,56 +361,61 @@ describe('ActivityPub integration', () => {
 	});
 
 	describe('Serving of local assets to remote clients', () => {
-		let category;
-		let uid;
-		let postData;
-		let topicData;
-
-		before(async () => {
-			category = await categories.create({ name: utils.generateUUID().slice(0, 8) });
-			const slug = slugify(utils.generateUUID().slice(0, 8));
-			uid = await user.create({ username: slug });
-
-			({ postData, topicData } = await topics.post({
-				uid,
-				cid: category.cid,
-				title: 'Lorem "Lipsum" Ipsum',
-				content: 'Lorem ipsum dolor sit amet',
-			}));
-		});
-
 		describe('Note', () => {
-			let body;
-			let response;
+			let cid;
+			let uid;
 
 			before(async () => {
-				({ body, response } = await request.get(`${nconf.get('url')}/post/${postData.pid}`, {
-					headers: {
-						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-					},
-				}));
+				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+				const slug = slugify(utils.generateUUID().slice(0, 8));
+				uid = await user.create({ username: slug });
 			});
 
-			it('should return a 404 on a non-existant post', async () => {
-				const { response } = await request.get(`${nconf.get('url')}/post/${parseInt(postData.pid, 10) + 1}`, {
-					headers: {
-						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-					},
+			describe('Existing and resolvable', () => {
+				let body;
+				let response;
+				let postData;
+
+				before(async () => {
+					({ postData } = await topics.post({
+						uid,
+						cid,
+						title: 'Lorem "Lipsum" Ipsum',
+						content: 'Lorem ipsum dolor sit amet',
+					}));
+
+					({ body, response } = await request.get(`${nconf.get('url')}/post/${postData.pid}`, {
+						headers: {
+							Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+						},
+					}));
 				});
 
-				assert.strictEqual(response.statusCode, 404);
+				it('should return a 404 on a non-existant post', async () => {
+					const { response } = await request.get(`${nconf.get('url')}/post/${parseInt(postData.pid, 10) + 1}`, {
+						headers: {
+							Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+						},
+					});
+
+					assert.strictEqual(response.statusCode, 404);
+				});
+
+				it('should return a 200 response on an existing post', () => {
+					assert.strictEqual(response.statusCode, 200);
+				});
+
+				it('should return the expected Content-Type header', () => {
+					assert.strictEqual(response.headers['content-type'], 'application/activity+json; charset=utf-8');
+				});
+
+				it('Topic title (`name`) should not be escaped', () => {
+					assert.strictEqual(body.name, 'Lorem "Lipsum" Ipsum');
+				});
 			});
 
-			it('should return a 200 response on an existing post', () => {
-				assert.strictEqual(response.statusCode, 200);
-			});
+			describe('Soft deleted', () => {
 
-			it('should return the expected Content-Type header', () => {
-				assert.strictEqual(response.headers['content-type'], 'application/activity+json; charset=utf-8');
-			});
-
-			it('Topic title (`name`) should not be escaped', () => {
-				assert.strictEqual(body.name, 'Lorem "Lipsum" Ipsum');
 			});
 		});
 	});
