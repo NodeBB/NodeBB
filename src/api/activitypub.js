@@ -17,6 +17,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const posts = require('../posts');
+const utils = require('../utils');
 
 const activitypubApi = module.exports;
 
@@ -183,6 +184,11 @@ activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 });
 
 activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
+	// Only applies to local posts
+	if (!utils.isNumber(post.pid)) {
+		return;
+	}
+
 	const object = await activitypub.mocks.note(post);
 	const { targets } = await buildRecipients(object, { pid: post.pid, uid: post.user.uid });
 
