@@ -11,6 +11,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const notifications = require('../notifications');
 const flags = require('../flags');
+const api = require('../api');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -74,6 +75,10 @@ inbox.update = async (req) => {
 			try {
 				if (exists) {
 					await posts.edit(postData);
+					const isDeleted = await posts.getPostField(object.id, 'deleted');
+					if (isDeleted) {
+						await api.posts.restore({ uid: actor }, { pid: object.id });
+					}
 				} else {
 					await activitypub.notes.assert(0, object.id);
 				}
@@ -86,6 +91,25 @@ inbox.update = async (req) => {
 		case 'Person': {
 			await activitypub.actors.assert(object.id, { update: true });
 			break;
+		}
+
+		case 'Tombstone': {
+			const [isNote, isActor] = await Promise.all([
+				posts.exists(object.id),
+				db.isSortedSetMember('usersRemote:lastCrawled', object.id),
+			]);
+
+			switch (true) {
+				case isNote: {
+					await api.posts.delete({ uid: actor }, { pid: object.id });
+					break;
+				}
+
+				// case isActor: {
+				// 	console.log('actor');
+				// 	break;
+				// }
+			}
 		}
 	}
 };
