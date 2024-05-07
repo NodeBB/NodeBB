@@ -41,12 +41,15 @@ module.exports = function (User) {
 		} else if (searchBy === 'uid') {
 			uids = [query];
 		} else {
-			if (!data.findUids && data.uid && activitypub.helpers.isUri(data.query)) {
-				const assertion = await activitypub.actors.assert([data.query]);
-				if (assertion === true) {
-					uids = [query];
-				} else if (Array.isArray(assertion) && assertion.length) {
-					uids = assertion.map(u => u.id);
+			if (!data.findUids && data.uid) {
+				const handle = activitypub.helpers.isWebfinger(data.query);
+				if (handle || activitypub.helpers.isUri(data.query)) {
+					const assertion = await activitypub.actors.assert([handle || data.query]);
+					if (assertion === true) {
+						uids = [handle ? await User.getUidByUserslug(handle) : query];
+					} else if (Array.isArray(assertion) && assertion.length) {
+						uids = assertion.map(u => u.id);
+					}
 				}
 			}
 

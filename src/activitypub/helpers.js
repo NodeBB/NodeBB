@@ -15,6 +15,7 @@ const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
 
+const webfingerRegex = /^(@|acct:)?\w+@.+$/;
 const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 
 const Helpers = module.exports;
@@ -31,6 +32,21 @@ Helpers.isUri = (value) => {
 		require_valid_protocol: true,
 		require_tld: false, // temporary — for localhost
 	});
+};
+
+Helpers.isWebfinger = (value) => {
+	// N.B. returns normalized handle, so truthy check!
+	if (webfingerRegex.test(value) && !Helpers.isUri(value)) {
+		if (value.startsWith('@')) {
+			return value.slice(1);
+		} else if (value.startsWith('acct:')) {
+			return value.slice(5);
+		}
+
+		return value;
+	}
+
+	return false;
 };
 
 Helpers.query = async (id) => {
