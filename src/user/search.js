@@ -44,11 +44,16 @@ module.exports = function (User) {
 			if (!data.findUids && data.uid) {
 				const handle = activitypub.helpers.isWebfinger(data.query);
 				if (handle || activitypub.helpers.isUri(data.query)) {
-					const assertion = await activitypub.actors.assert([handle || data.query]);
-					if (assertion === true) {
-						uids = [handle ? await User.getUidByUserslug(handle) : query];
-					} else if (Array.isArray(assertion) && assertion.length) {
-						uids = assertion.map(u => u.id);
+					const local = await activitypub.helpers.resolveLocalId(data.query);
+					if (local.type === 'user') {
+						uids = [local.id];
+					} else {
+						const assertion = await activitypub.actors.assert([handle || data.query]);
+						if (assertion === true) {
+							uids = [handle ? await User.getUidByUserslug(handle) : query];
+						} else if (Array.isArray(assertion) && assertion.length) {
+							uids = assertion.map(u => u.id);
+						}
 					}
 				}
 			}

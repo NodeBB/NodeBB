@@ -75,7 +75,12 @@ async function searchInContent(data) {
 	} else {
 		let result;
 		if (data.uid && activitypub.helpers.isUri(data.query)) {
-			result = await fetchRemoteObject(data.uid, data.query);
+			const local = await activitypub.helpers.resolveLocalId(data.query);
+			if (local.type === 'post') {
+				result = [[local.id], []];
+			} else {
+				result = await fetchRemoteObject(data.uid, data.query);
+			}
 		}
 
 		if (result) {
