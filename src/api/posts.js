@@ -193,6 +193,11 @@ async function deleteOrRestore(caller, data, params) {
 		tid: postData.tid,
 		ip: caller.ip,
 	});
+
+	// Explicitly non-awaited
+	posts.getPostSummaryByPids([data.pid], caller.uid, {}).then(([post]) => {
+		require('.').activitypub.update.note(caller, { post });
+	});
 }
 
 async function deleteOrRestoreTopicOf(command, pid, caller) {

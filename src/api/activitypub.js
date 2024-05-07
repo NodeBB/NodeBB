@@ -193,7 +193,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	}
 
 	const payload = {
-		id: `${object.id}#activity/update/${post.edited}`,
+		id: `${object.id}#activity/update/${post.edited || Date.now()}`,
 		type: 'Update',
 		to: object.to,
 		cc: object.cc,
