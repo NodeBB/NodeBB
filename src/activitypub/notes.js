@@ -56,7 +56,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		// All cached, return early.
 		winston.verbose('[notes/assert] No new notes to process.');
 		unlock(id);
-		return tid;
+		return { tid, count: 0 };
 	}
 
 	let cid;
