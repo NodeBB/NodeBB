@@ -94,9 +94,9 @@ inbox.update = async (req) => {
 		}
 
 		case 'Tombstone': {
-			const [isNote, isActor] = await Promise.all([
+			const [isNote/* , isActor */] = await Promise.all([
 				posts.exists(object.id),
-				db.isSortedSetMember('usersRemote:lastCrawled', object.id),
+				// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 			]);
 
 			switch (true) {
@@ -106,8 +106,8 @@ inbox.update = async (req) => {
 				}
 
 				// case isActor: {
-				// 	console.log('actor');
-				// 	break;
+				// console.log('actor');
+				// break;
 				// }
 			}
 		}
