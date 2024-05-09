@@ -302,7 +302,7 @@ define('forum/topic', [
 			destroyed = false;
 
 			async function renderPost(pid) {
-				const postData = postCache[pid] || await api.get(`/posts/${pid}/summary`);
+				const postData = postCache[pid] || await api.get(`/posts/${encodeURIComponent(pid)}/summary`);
 				$('#post-tooltip').remove();
 				if (postData && ajaxify.data.template.topic) {
 					postCache[pid] = postData;
@@ -329,11 +329,11 @@ define('forum/topic', [
 			const pathname = location.pathname;
 			const validHref = href && href !== '#' && window.location.hostname === location.hostname;
 			$('#post-tooltip').remove();
-			const postMatch = validHref && pathname && pathname.match(/\/post\/([\d]+)/);
-			const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\d]+)/);
+			const postMatch = validHref && pathname && pathname.match(/\/post\/([\d]+|(?:[\w_.~!$&'()*+,;=:@-]|%[\dA-F]{2})+)/);
+			const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\da-z-]+)/);
 			if (postMatch) {
 				const pid = postMatch[1];
-				if (parseInt(link.parents('[component="post"]').attr('data-pid'), 10) === parseInt(pid, 10)) {
+				if (link.parents('[component="post"]').attr('data-pid') === pid) {
 					return; // dont render self post
 				}
 

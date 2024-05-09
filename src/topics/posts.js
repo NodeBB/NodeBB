@@ -443,7 +443,7 @@ module.exports = function (Topics) {
 			await Topics.events.log(tid, {
 				uid,
 				type: 'backlink',
-				href: `/post/${pid}`,
+				href: `/post/${encodeURIComponent(pid)}`,
 			});
 		}));
 

@@ -35,10 +35,10 @@ define('forum/topic/delete-posts', [
 			showPostsSelected();
 
 			deleteBtn.on('click', function () {
-				deletePosts(deleteBtn, pid => `/posts/${pid}/state`);
+				deletePosts(deleteBtn, pid => `/posts/${encodeURIComponent(pid)}/state`);
 			});
 			purgeBtn.on('click', function () {
-				deletePosts(purgeBtn, pid => `/posts/${pid}`);
+				deletePosts(purgeBtn, pid => `/posts/${encodeURIComponent(pid)}`);
 			});
 		});
 	};

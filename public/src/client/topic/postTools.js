@@ -360,7 +360,7 @@ define('forum/topic/postTools', [
 	function bookmarkPost(button, pid) {
 		const method = button.attr('data-bookmarked') === 'false' ? 'put' : 'del';
 
-		api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
+		api[method](`/posts/${encodeURIComponent(pid)}/bookmark`, undefined, function (err) {
 			if (err) {
 				return alerts.error(err);
 			}

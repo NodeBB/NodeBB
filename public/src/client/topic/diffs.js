@@ -9,7 +9,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 			return;
 		}
 
-		api.get(`/posts/${pid}/diffs`, {}).then((data) => {
+		api.get(`/posts/${encodeURIComponent(pid)}/diffs`, {}).then((data) => {
 			parsePostHistory(data).then(($html) => {
 				const $modal = bootbox.dialog({
 					title: '[[topic:diffs.title]]',
@@ -57,7 +57,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 			return;
 		}
 
-		api.get(`/posts/${pid}/diffs/${since}`, {}).then((data) => {
+		api.get(`/posts/${encodeURIComponent(pid)}/diffs/${since}`, {}).then((data) => {
 			data.deleted = !!parseInt(data.deleted, 10);
 
 			app.parseAndTranslate('partials/posts_list', 'posts', {
@@ -74,14 +74,14 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 			return;
 		}
 
-		api.put(`/posts/${pid}/diffs/${since}`, {}).then(() => {
+		api.put(`/posts/${encodeURIComponent(pid)}/diffs/${since}`, {}).then(() => {
 			$modal.modal('hide');
 			alerts.success('[[topic:diffs.post-restored]]');
 		}).catch(alerts.error);
 	};
 
 	Diffs.delete = function (pid, timestamp, $selectEl, $numberOfDiffCon) {
-		api.del(`/posts/${pid}/diffs/${timestamp}`).then((data) => {
+		api.del(`/posts/${encodeURIComponent(pid)}/diffs/${timestamp}`).then((data) => {
 			parsePostHistory(data, 'diffs').then(($html) => {
 				$selectEl.empty().append($html);
 				$selectEl.trigger('change');
