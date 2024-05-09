@@ -330,7 +330,7 @@ define('forum/topic/postTools', [
 				return quote(selectedNode.text);
 			}
 
-			const { content } = await api.get(`/posts/${toPid}/raw`);
+			const { content } = await api.get(`/posts/${encodeURIComponent(toPid)}/raw`);
 			quote(content);
 		});
 	}
