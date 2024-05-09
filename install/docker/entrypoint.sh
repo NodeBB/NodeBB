@@ -92,19 +92,37 @@ start_setup_session() {
   exec /usr/src/app/nodebb setup --config="$config"
 }
 
+# Handle building and upgrading NodeBB
+build_forum() {
+  local config="$1"
+  local start_build="$2"
+  local package_hash=$(md5sum install/package.json | head -c 32)
+  if [ package_hash = "$(cat $CONFIG_DIR/install_hash.md5)" ]; then
+      echo "package.json was updated. Upgrading..."
+      /usr/src/app/nodebb upgrade --config="$config" || {
+          echo "Failed to build NodeBB. Exiting..."
+          exit 1
+        }
+  elif [ "$start_build" = true ]; then
+    echo "Build before start is enabled. Building..."
+    /usr/src/app/nodebb "${NODEBB_BUILD_VERB}" --config="$config" || {
+        echo "Failed to build NodeBB. Exiting..."
+        exit 1
+      }
+  else
+    echo "No changes in package.json. Skipping build..."
+    return
+  fi
+  echo -n $package_hash > $CONFIG_DIR/install_hash.md5
+}
+
+
 # Function to start forum
 start_forum() {
   local config="$1"
   local start_build="$2"
 
-  echo "Starting forum"
-  if [ "$start_build" = true ]; then
-    echo "Build before start is enabled. Building..."
-    /usr/src/app/nodebb build --config="$config" || {
-      echo "Failed to build NodeBB. Exiting..."
-      exit 1
-    }
-  fi
+  build_forum "$config" "$start_build"
 
   case "$PACKAGE_MANAGER" in
     yarn)
