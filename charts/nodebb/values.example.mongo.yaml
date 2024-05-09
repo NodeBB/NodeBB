@@ -1,0 +1,29 @@
+image:
+  repository: ghcr.io/stevefan1999-personal/nodebb
+  pullPolicy: Always
+  tag: "patch-helm-chart-develop"
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 128m
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "nodebb-session-affinity"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+nodebb:
+  domain: nodebb.local
+  admin:
+    username: "admin"
+    email: "test@example.org"
+    password: "hAN3Eg8W"
+  database: mongo
+global:
+  database:
+    managed: true
+  redis:
+    managed: true
+  mongodb:
+    managed: true
+mongodb:
+  architecture: replicaset

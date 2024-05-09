@@ -1,0 +1,127 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/nodebb/nodebb
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 4567
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+  - paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+nodebb:
+  singleMode: false
+  admin:
+    username: "admin"
+    email: "test@example.org"
+    password: "hAN3Eg8W"
+
+  configYaml:
+    bcrypt_rounds: 12
+    secret: nodebb
+  persistence:
+    # Enables the persistence for node_modules, app build and public uploads
+    enabled: true
+    existingClaim: ""
+    storageClass: ""
+    accessModes: ["ReadWriteMany"]
+    size: 8Gi
+    annotations: {}
+    labels: {}
+    selector: {}
+  # Select the database for content store, valid options: "redis", "mongo" (recommended) and "postgres"
+  database: mongo
+  # Select the database for session store, valid options: "" (use database as session store by default), "redis" (recommended), "mongo" and "postgres".
+  #
+  sessionStore: ""
+  domain: example.com
+  tls: true
+
+global:
+  database:
+    managed: false
+  redis:
+    managed: false
+  mongodb:
+    managed: false
+  postgresql:
+    managed: false
+
+redis:
+  architecture: replication
+  auth:
+    enabled: false
+    host: ""
+    port: 6379
+    password: ""
+    database: 0
+
+postgresql:
+  architecture: replication
+  auth:
+    host: ""
+    port: 5432
+    username: 'nodebb'
+    password: 'b47017816776912355883f8ea35c09dcb795e7df' # SHA1('nodebb')
+    database: 'nodebb'
+
+mongodb:
+  # TODO: replicaset architecture is untested
+  architecture: replicaset
+  auth:
+    host: ""
+    port: 27017
+    username: 'nodebb'
+    password: 'b47017816776912355883f8ea35c09dcb795e7df'
+    database: 'nodebb'
+
+env: []
+#- name: NPM_CONFIG_REGISTRY
+#  value: http://npm-verdaccio:4873/
