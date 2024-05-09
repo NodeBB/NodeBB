@@ -22,8 +22,6 @@ services:
       POSTGRES_DB: nodebb
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    profiles:
-      - postgres
 
   redis:
     image: redis:7.2.3-alpine
