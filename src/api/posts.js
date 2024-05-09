@@ -220,12 +220,18 @@ postsAPI.purge = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const results = await isMainAndLastPost(data.pid);
-	if (results.isMain && !results.isLast) {
+	const [exists, { isMain, isLast }] = await Promise.all([
+		posts.exists(data.pid),
+		isMainAndLastPost(data.pid),
+	]);
+	if (!exists) {
+		throw new Error('[[error:no-post]]');
+	}
+	if (isMain && !isLast) {
 		throw new Error('[[error:cant-purge-main-post]]');
 	}
 
-	const isMainAndLast = results.isMain && results.isLast;
+	const isMainAndLast = isMain && isLast;
 	const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
 	postData.pid = data.pid;
 
@@ -234,7 +240,10 @@ postsAPI.purge = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	require('../posts/cache').del(data.pid);
-	await posts.purge(data.pid, caller.uid);
+	await Promise.all([
+		posts.purge(data.pid, caller.uid),
+		require('.').activitypub.delete.note(caller, { pid: data.pid }),
+	]);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
 	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);

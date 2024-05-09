@@ -90,8 +90,8 @@ middleware.validate = async function (req, res, next) {
 };
 
 middleware.resolveObjects = async function (req, res, next) {
-	const { object } = req.body;
-	if (typeof object === 'string' || (Array.isArray(object) && object.every(o => typeof o === 'string'))) {
+	const { type, object } = req.body;
+	if (type !== 'Delete' && (typeof object === 'string' || (Array.isArray(object) && object.every(o => typeof o === 'string')))) {
 		winston.verbose('[middleware/activitypub] Resolving object(s)...');
 		try {
 			req.body.object = await activitypub.helpers.resolveObjects(object);

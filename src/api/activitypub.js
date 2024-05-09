@@ -103,7 +103,7 @@ async function buildRecipients(object, { pid, uid }) {
 
 	// Directly address user if inReplyTo
 	const parentId = await posts.getPostField(object.inReplyTo, 'uid');
-	if (activitypub.helpers.isUri(parentId) && to.has(parentId)) {
+	if (activitypub.helpers.isUri(parentId)) {
 		to.add(parentId);
 	}
 
@@ -204,6 +204,38 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 		to: object.to,
 		cc: object.cc,
 		object,
+	};
+
+	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
+});
+
+activitypubApi.delete = {};
+
+activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
+	// Only applies to local posts
+	if (!utils.isNumber(pid)) {
+		return;
+	}
+
+	const id = `${nconf.get('url')}/post/${pid}`;
+	const object = { id };
+	const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
+	const origin = `${nconf.get('url')}/topic/${tid}`;
+	const { targets } = await buildRecipients(object, { pid, uid });
+
+	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
+	if (!allowed) {
+		winston.verbose(`[activitypub/api] Not federating update of pid ${pid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const payload = {
+		id: `${id}#activity/delete/${Date.now()}`,
+		type: 'Delete',
+		to: [],
+		cc: [],
+		object: id,
+		origin,
 	};
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);

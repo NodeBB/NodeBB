@@ -299,7 +299,10 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
 	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
-	await db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid);
+	await Promise.all([
+		db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid),
+		db.setAdd(`tid:${tid}:recipients`, Array.from(uids)),
+	]);
 };
 
 Notes.getCategoryFollowers = async (cid) => {
@@ -354,4 +357,22 @@ Notes.announce.remove = async (pid, actor) => {
 
 Notes.announce.removeAll = async (pid) => {
 	await db.delete(`pid:${pid}:announces`);
+};
+
+Notes.delete = async (pids) => {
+	if (!Array.isArray(pids)) {
+		pids = [pids];
+	}
+
+	// Valid and remote content only
+	pids = pids.filter(pid => !utils.isNumber(pid));
+	const exists = await posts.exists(pids);
+	pids = pids.filter((_, idx) => exists[idx]);
+
+	let tids = await posts.getPostsFields(pids, ['tid']);
+	tids = new Set(tids.map(obj => obj.tid));
+
+	const recipientSets = pids.map(id => `post:${id}:recipients`);
+	await db.deleteAll(recipientSets);
+	await Promise.all(Array.from(tids).map(async tid => Notes.syncUserInboxes(tid)));
 };

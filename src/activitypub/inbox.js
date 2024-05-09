@@ -114,6 +114,51 @@ inbox.update = async (req) => {
 	}
 };
 
+inbox.delete = async (req) => {
+	const { actor, object } = req.body;
+
+	// Deletes don't have their objects resolved automatically
+	let method = 'purge';
+	try {
+		const { type } = await activitypub.get('uid', 0, object);
+		if (type === 'Tombstone') {
+			method = 'delete';
+		}
+	} catch (e) {
+		// probably 410/404
+	}
+
+	// Origin checking
+	const actorHostname = new URL(actor).hostname;
+	const objectHostname = new URL(object).hostname;
+	if (actorHostname !== objectHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	const [isNote/* , isActor */] = await Promise.all([
+		posts.exists(object),
+		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
+	]);
+
+	switch (true) {
+		case isNote: {
+			const uid = await posts.getPostField(object, 'uid');
+			await api.posts[method]({ uid }, { pid: object });
+			break;
+		}
+
+		// case isActor: {
+		// console.log('actor');
+		// break;
+		// }
+
+		default: {
+			winston.verbose(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
+			break;
+		}
+	}
+};
+
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
 	const { type, id } = await activitypub.helpers.resolveLocalId(object.id);

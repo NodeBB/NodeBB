@@ -362,7 +362,7 @@ describe('ActivityPub integration', () => {
 	});
 
 	describe('Serving of local assets to remote clients', () => {
-		describe.only('Note', () => {
+		describe('Note', () => {
 			let cid;
 			let uid;
 
@@ -532,7 +532,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe('ActivityPub', async () => {
+	describe.only('ActivityPub', async () => {
 		let files;
 
 		before(async () => {
