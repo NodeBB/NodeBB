@@ -1,15 +1,15 @@
 'use strict';
 
 const db = require('../database');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.isOwner = async function (tid, uid) {
-		uid = parseInt(uid, 10);
-		if (uid <= 0) {
+		if (utils.isNumber(uid) && parseInt(uid, 10) <= 0) {
 			return false;
 		}
 		const author = await Topics.getTopicField(tid, 'uid');
-		return author === uid;
+		return String(author) === String(uid);
 	};
 
 	Topics.getUids = async function (tid) {
