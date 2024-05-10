@@ -216,7 +216,7 @@ async function deleteOrRestoreTopicOf(command, pid, caller) {
 }
 
 postsAPI.purge = async function (caller, data) {
-	if (!data || !parseInt(data.pid, 10)) {
+	if (!data || !data.pid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
