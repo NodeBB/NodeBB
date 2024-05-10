@@ -224,6 +224,12 @@ privsPosts.canPurge = async function (pid, uid) {
 		isAdmin: user.isAdministrator(uid),
 		isModerator: user.isModerator(uid, cid),
 	});
+
+	// Allow remote posts to purge themselves (as:Delete received)
+	if (activitypub.helpers.isUri(pid) && results.owner) {
+		results.purge = true;
+	}
+
 	return (results.purge && (results.owner || results.isModerator)) || results.isAdmin;
 };
 
