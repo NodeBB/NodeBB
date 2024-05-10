@@ -5,6 +5,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const groups = require('../groups');
+const activitypub = require('../activitypub');
 
 module.exports = function (User) {
 	User.isReadyToPost = async function (uid, cid) {
@@ -30,7 +31,7 @@ module.exports = function (User) {
 	};
 
 	async function isReady(uid, cid, field) {
-		if (parseInt(uid, 10) === 0) {
+		if (activitypub.helpers.isUri(uid) || parseInt(uid, 10) === 0) {
 			return;
 		}
 		const [userData, isAdminOrMod, isMemberOfExempt] = await Promise.all([
