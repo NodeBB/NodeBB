@@ -30,6 +30,8 @@ services:
     # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF
     volumes:
       - redis-data:/data
+    profiles:
+      - redis
 
 volumes:
   postgres-data:
