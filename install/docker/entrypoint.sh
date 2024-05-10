@@ -24,8 +24,13 @@ check_directory() {
     }
   fi
   if [ ! -w "$dir" ]; then
-    echo "Error: No write permission for directory $dir"
-    exit 1
+    echo "Warning: No write permission for directory $dir, attempting to fix..."
+    chown -R $USER:$USER "$dir" || true # attempt to change ownership, do not exit on failure
+    chmod -R 760 "$dir" || true # attempt to change permissions, do not exit on failure
+    if [ ! -w "$dir" ]; then
+      echo "Error: No write permission for directory $dir. Exiting..."
+      exit 1
+    fi
   fi
 }
 
