@@ -94,22 +94,25 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 
 activitypubApi.create = {};
 
-// this might be better genericised... tbd. some of to/cc is built in mocks.
 async function buildRecipients(object, { pid, uid }) {
+	/**
+	 * - Builds a list of targets for activitypub.send to consume
+	 * - Extends to and cc since the activity can be addressed more widely
+	 */
 	const followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
 
-	// Directly address user if inReplyTo
-	const parentId = await posts.getPostField(object.inReplyTo, 'uid');
-	if (activitypub.helpers.isUri(parentId)) {
-		to.add(parentId);
-	}
-
 	const targets = new Set([...followers, ...to, ...cc]);
-	targets.delete(`${nconf.get('url')}/uid/${uid}/followers`); // followers URL not targeted
-	targets.delete(activitypub._constants.publicAddress); // public address not targeted
+
+	// Remove any ids that aren't asserted actors
+	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
+	Array.from(targets).forEach((uri, idx) => {
+		if (!exists[idx]) {
+			targets.delete(uri);
+		}
+	});
 
 	// Announcers and their followers
 	if (pid) {
@@ -121,9 +124,11 @@ async function buildRecipients(object, { pid, uid }) {
 		[...announcers, ...announcersFollowers].forEach(uri => cc.add(uri));
 	}
 
-	object.to = Array.from(to);
-	object.cc = Array.from(cc);
-	return { targets };
+	return {
+		to: [...to],
+		cc: [...cc],
+		targets,
+	};
 }
 
 activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
@@ -139,7 +144,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 	}
 
 	const object = await activitypub.mocks.note(post);
-	const { targets } = await buildRecipients(object, { uid: post.user.uid });
+	const { to, cc, targets } = await buildRecipients(object, { uid: post.user.uid });
 	const { cid } = post.category;
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
 
@@ -147,15 +152,15 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 		create: {
 			id: `${object.id}#activity/create`,
 			type: 'Create',
-			to: object.to,
-			cc: object.cc,
+			to,
+			cc,
 			object,
 		},
 		announce: {
 			id: `${object.id}#activity/announce`,
 			type: 'Announce',
-			to: [`${nconf.get('url')}/category/${cid}/followers`],
-			cc: [activitypub._constants.publicAddress],
+			to: [activitypub._constants.publicAddress],
+			cc: [`${nconf.get('url')}/category/${cid}/followers`],
 			object,
 		},
 	};
@@ -190,7 +195,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	}
 
 	const object = await activitypub.mocks.note(post);
-	const { targets } = await buildRecipients(object, { pid: post.pid, uid: post.user.uid });
+	const { to, cc, targets } = await buildRecipients(object, { pid: post.pid, uid: post.user.uid });
 
 	const allowed = await privileges.posts.can('topics:read', post.pid, activitypub._constants.uid);
 	if (!allowed) {
@@ -201,8 +206,8 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	const payload = {
 		id: `${object.id}#activity/update/${post.edited || Date.now()}`,
 		type: 'Update',
-		to: object.to,
-		cc: object.cc,
+		to,
+		cc,
 		object,
 	};
 
@@ -218,10 +223,11 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 	}
 
 	const id = `${nconf.get('url')}/post/${pid}`;
-	const object = { id };
+	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
+	const object = await activitypub.mocks.note(post);
 	const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
 	const origin = `${nconf.get('url')}/topic/${tid}`;
-	const { targets } = await buildRecipients(object, { pid, uid });
+	const { to, cc, targets } = await buildRecipients(object, { pid, uid });
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
@@ -232,8 +238,8 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 	const payload = {
 		id: `${id}#activity/delete/${Date.now()}`,
 		type: 'Delete',
-		to: [],
-		cc: [],
+		to,
+		cc,
 		object: id,
 		origin,
 	};

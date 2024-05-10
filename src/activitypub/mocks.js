@@ -233,13 +233,16 @@ Mocks.note = async (post) => {
 	let inReplyTo = null;
 	let name = null;
 	let tag = null;
+	let followersUrl;
 	if (post.toPid) { // direct reply
 		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
 		const parentId = await posts.getPostField(post.toPid, 'uid');
+		followersUrl = await user.getUserField(parentId, ['followersUrl']);
 		to.add(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
 		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
+		followersUrl = await user.getUserField(post.topic.uid, ['followersUrl']);
 	} else { // new topic
 		({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
 		tag = post.topic.tags.map(tag => ({
@@ -247,6 +250,10 @@ Mocks.note = async (post) => {
 			href: `${nconf.get('url')}/tags/${tag.valueEncoded}`,
 			name: `#${tag.value}`,
 		}));
+	}
+
+	if (followersUrl) {
+		cc.add(followersUrl);
 	}
 
 	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
