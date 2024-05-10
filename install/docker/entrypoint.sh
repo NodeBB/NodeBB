@@ -7,7 +7,7 @@ set_defaults() {
   export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
   export CONFIG="$CONFIG_DIR/config.json"
   export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
-  export START_BUILD="${START_BUILD:-false}"
+  export START_BUILD="${START_BUILD:-${FORCE_BUILD_BEFORE_START:-false}}"
   export SETUP="${SETUP:-}"
   export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
   export OVERRIDE_UPDATE_LOCK="${OVERRIDE_UPDATE_LOCK:-false}"
