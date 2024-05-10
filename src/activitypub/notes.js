@@ -364,15 +364,11 @@ Notes.delete = async (pids) => {
 		pids = [pids];
 	}
 
-	// Valid and remote content only
-	pids = pids.filter(pid => !utils.isNumber(pid));
 	const exists = await posts.exists(pids);
 	pids = pids.filter((_, idx) => exists[idx]);
 
-	let tids = await posts.getPostsFields(pids, ['tid']);
-	tids = new Set(tids.map(obj => obj.tid));
-
 	const recipientSets = pids.map(id => `post:${id}:recipients`);
-	await db.deleteAll(recipientSets);
-	await Promise.all(Array.from(tids).map(async tid => Notes.syncUserInboxes(tid)));
+	const announcerSets = pids.map(id => `pid:${id}:announces`);
+
+	await db.deleteAll([...recipientSets, ...announcerSets]);
 };
