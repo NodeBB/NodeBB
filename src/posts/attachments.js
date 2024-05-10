@@ -55,9 +55,8 @@ Attachments.empty = async (pids) => {
 	winston.verbose(`[posts/attachments] Emptying attachments for ids ${pids.join(', ')}.`);
 	const zsets = pids.map(pid => `post:${pid}:attachments`);
 	const hashes = await db.getSortedSetsMembers(zsets);
-	const keys = hashes
-		.reduce((memo, hashes) => new Set([...memo, ...hashes]), new Set())
-		.map(hash => `attachment:${hash}`);
+	let keys = hashes.reduce((memo, hashes) => new Set([...memo, ...hashes]), new Set());
+	keys = Array.from(keys).map(hash => `attachment:${hash}`);
 
 	await db.deleteAll(keys.concat(zsets));
 };
