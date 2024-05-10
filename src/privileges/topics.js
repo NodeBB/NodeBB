@@ -9,6 +9,7 @@ const user = require('../user');
 const helpers = require('./helpers');
 const categories = require('../categories');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const privsCategories = require('./categories');
 
 const privsTopics = module.exports;
@@ -123,12 +124,18 @@ privsTopics.filterUids = async function (privilege, tid, uids) {
 
 privsTopics.canPurge = async function (tid, uid) {
 	const cid = await topics.getTopicField(tid, 'cid');
-	const [purge, owner, isAdmin, isModerator] = await Promise.all([
+	let [purge, owner, isAdmin, isModerator] = await Promise.all([
 		privsCategories.isUserAllowedTo('purge', cid, uid),
 		topics.isOwner(tid, uid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, cid),
 	]);
+
+	// Allow remote posts to purge themselves (as:Delete received)
+	if (activitypub.helpers.isUri(tid) && owner) {
+		purge = true;
+	}
+
 	return (purge && (owner || isModerator)) || isAdmin;
 };
 
