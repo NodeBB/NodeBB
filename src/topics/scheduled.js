@@ -157,7 +157,7 @@ function federatePosts(uids, topicData) {
 	topicData.forEach(({ mainPid: pid }, idx) => {
 		const uid = uids[idx];
 
-		api.activitypub.create.post({ uid }, { pid });
+		api.activitypub.create.note({ uid }, { pid });
 	});
 }
 

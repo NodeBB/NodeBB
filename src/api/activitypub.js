@@ -126,7 +126,7 @@ async function buildRecipients(object, { pid, uid }) {
 	return { targets };
 }
 
-activitypubApi.create.post = enabledCheck(async (caller, { pid }) => {
+activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
 	if (!post) {
 		return;
