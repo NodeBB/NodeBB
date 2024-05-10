@@ -225,9 +225,7 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 	const id = `${nconf.get('url')}/post/${pid}`;
 	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
 	const object = await activitypub.mocks.note(post);
-	const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
-	const origin = `${nconf.get('url')}/topic/${tid}`;
-	const { to, cc, targets } = await buildRecipients(object, { pid, uid });
+	const { to, cc, targets } = await buildRecipients(object, { pid, uid: post.user.uid });
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
@@ -241,7 +239,7 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 		to,
 		cc,
 		object: id,
-		origin,
+		origin: object.context,
 	};
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
