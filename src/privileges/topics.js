@@ -9,7 +9,7 @@ const user = require('../user');
 const helpers = require('./helpers');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const activitypub = require('../activitypub');
+const utils = require('../utils');
 const privsCategories = require('./categories');
 
 const privsTopics = module.exports;
@@ -132,7 +132,7 @@ privsTopics.canPurge = async function (tid, uid) {
 	]);
 
 	// Allow remote posts to purge themselves (as:Delete received)
-	if (activitypub.helpers.isUri(tid) && owner) {
+	if (!utils.isNumber(tid) && owner) {
 		purge = true;
 	}
 
