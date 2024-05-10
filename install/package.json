@@ -142,7 +142,7 @@
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
         "tough-cookie": "4.1.4",
-        "validator": "13.11.0",
+        "validator": "13.12.0",
         "webpack": "5.91.0",
         "webpack-merge": "5.10.0",
         "winston": "3.13.0",
