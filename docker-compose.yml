@@ -30,7 +30,7 @@ services:
     profiles:
       - mongo
   postgres:
-    image: postgres:16.2-alpine
+    image: postgres:16.3-alpine
     restart: unless-stopped
     expose:
       - "5432"
