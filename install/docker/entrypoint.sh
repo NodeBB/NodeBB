@@ -7,6 +7,7 @@ set_defaults() {
   export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
   export CONFIG="$CONFIG_DIR/config.json"
   export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
+  export NODEBB_BUILD_VERB="${NODEBB_BUILD_VERB:-build}"
   export START_BUILD="${START_BUILD:-${FORCE_BUILD_BEFORE_START:-false}}"
   export SETUP="${SETUP:-}"
   export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
@@ -102,7 +103,7 @@ build_forum() {
   local config="$1"
   local start_build="$2"
   local package_hash=$(md5sum install/package.json | head -c 32)
-  if [ package_hash = "$(cat $CONFIG_DIR/install_hash.md5)" ]; then
+  if [ "$package_hash" = "$(cat $CONFIG_DIR/install_hash.md5 || true)" ]; then
       echo "package.json was updated. Upgrading..."
       /usr/src/app/nodebb upgrade --config="$config" || {
           echo "Failed to build NodeBB. Exiting..."
