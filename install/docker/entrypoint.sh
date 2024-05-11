@@ -7,7 +7,7 @@ set_defaults() {
   export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
   export CONFIG="$CONFIG_DIR/config.json"
   export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
-  export START_BUILD="${START_BUILD:-false}"
+  export START_BUILD="${START_BUILD:-${FORCE_BUILD_BEFORE_START:-false}}"
   export SETUP="${SETUP:-}"
   export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
   export OVERRIDE_UPDATE_LOCK="${OVERRIDE_UPDATE_LOCK:-false}"
@@ -24,8 +24,13 @@ check_directory() {
     }
   fi
   if [ ! -w "$dir" ]; then
-    echo "Error: No write permission for directory $dir"
-    exit 1
+    echo "Warning: No write permission for directory $dir, attempting to fix..."
+    chown -R $USER:$USER "$dir" || true # attempt to change ownership, do not exit on failure
+    chmod -R 760 "$dir" || true # attempt to change permissions, do not exit on failure
+    if [ ! -w "$dir" ]; then
+      echo "Error: No write permission for directory $dir. Exiting..."
+      exit 1
+    fi
   fi
 }
 
