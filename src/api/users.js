@@ -438,7 +438,7 @@ usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
 				throw new Error('[[error:email-taken]]');
 			}
 			await user.setUserField(uid, 'email', email);
-			await user.email.confirmByUid(uid);
+			await user.email.confirmByUid(uid, caller.uid);
 		}
 	} else {
 		await usersAPI.update(caller, { uid, email });
@@ -488,7 +488,7 @@ usersAPI.confirmEmail = async (caller, { uid, email, sessionId }) => {
 		await user.email.confirmByCode(code, sessionId);
 		return true;
 	} else if (current && current === email) { // i.e. old account w/ unconf. email in user hash
-		await user.email.confirmByUid(uid);
+		await user.email.confirmByUid(uid, caller.uid);
 		return true;
 	}
 

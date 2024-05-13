@@ -45,10 +45,10 @@
 	"rebuild-and-restart": "สร้างใหม่ &amp; เริ่มต้นระบบใหม่",
 	"restart": "เริ่มต้นระบบใหม่",
 	"restart-warning": "การสร้างหรือเริ่มต้นระบบ NodeBB ของคุณจะทำให้การเชื่อมต่อถูกตัดเป็นเวลาหลายวินาที",
-	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
+	"restart-disabled": "การสร้างและเริ่มต้นระบบ NodeBB ของคุณไม่เปิดให้ใช้งาน เนื่องจากคุณไม่ได้เรียกใช้จาก daemon ที่ถูกต้อง",
 	"maintenance-mode": "โหมดการซ่อมบำรุง",
 	"maintenance-mode-title": "Click here to set up maintenance mode for NodeBB",
-	"dark-mode": "Dark Mode",
+	"dark-mode": "โหมดมืด",
 	"realtime-chart-updates": "Realtime Chart Updates",
 
 	"active-users": "Active Users",

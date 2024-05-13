@@ -69,6 +69,8 @@ get:
                       properties:
                         value:
                           type: string
+                        byUid:
+                          type: string
                         timestamp:
                           type: number
                         timestampISO:
@@ -81,6 +83,10 @@ get:
                       properties:
                         value:
                           type: string
+                        byUid:
+                          type: string
+                        byUser:
+                          type: object
                         timestamp:
                           type: number
                         timestampISO:

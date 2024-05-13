@@ -60,13 +60,24 @@ module.exports = function (User) {
 
 	User.getHistory = async function (set) {
 		const data = await db.getSortedSetRevRangeWithScores(set, 0, -1);
-		return data.map((set) => {
+		data.forEach((set) => {
 			set.timestamp = set.score;
 			set.timestampISO = utils.toISOString(set.score);
-			set.value = validator.escape(String(set.value.split(':')[0]));
+			const parts = set.value.split(':');
+			set.value = validator.escape(String(parts[0]));
+			set.byUid = validator.escape(String(parts[2] || ''));
 			delete set.score;
-			return set;
 		});
+
+		const uids = _.uniq(data.map(d => d && d.byUid).filter(Boolean));
+		const usersData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
+		const uidToUser = _.zipObject(uids, usersData);
+		data.forEach((d) => {
+			if (d.byUid) {
+				d.byUser = uidToUser[d.byUid];
+			}
+		});
+		return data;
 	};
 
 	async function getFlagMetadata(flags) {

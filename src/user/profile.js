@@ -49,7 +49,7 @@ module.exports = function (User) {
 			if (field === 'email') {
 				return await updateEmail(updateUid, data.email);
 			} else if (field === 'username') {
-				return await updateUsername(updateUid, data.username);
+				return await updateUsername(updateUid, data.username, uid);
 			} else if (field === 'fullname') {
 				return await updateFullname(updateUid, data.fullname);
 			}
@@ -249,7 +249,7 @@ module.exports = function (User) {
 		}
 	}
 
-	async function updateUsername(uid, newUsername) {
+	async function updateUsername(uid, newUsername, callerUid) {
 		if (!newUsername) {
 			return;
 		}
@@ -262,7 +262,7 @@ module.exports = function (User) {
 		await Promise.all([
 			updateUidMapping('username', uid, newUsername, userData.username),
 			updateUidMapping('userslug', uid, newUserslug, userData.userslug),
-			db.sortedSetAdd(`user:${uid}:usernames`, now, `${newUsername}:${now}`),
+			db.sortedSetAdd(`user:${uid}:usernames`, now, `${newUsername}:${now}:${callerUid}`),
 		]);
 		await db.sortedSetRemove('username:sorted', `${userData.username.toLowerCase()}:${uid}`);
 		await db.sortedSetAdd('username:sorted', 0, `${newUsername.toLowerCase()}:${uid}`);
