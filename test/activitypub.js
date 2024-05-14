@@ -532,7 +532,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe.only('ActivityPub', async () => {
+	describe('ActivityPub', async () => {
 		let files;
 
 		before(async () => {
