@@ -47,7 +47,7 @@
 	"restart-warning": "การสร้างหรือเริ่มต้นระบบ NodeBB ของคุณจะทำให้การเชื่อมต่อถูกตัดเป็นเวลาหลายวินาที",
 	"restart-disabled": "การสร้างและเริ่มต้นระบบ NodeBB ของคุณไม่เปิดให้ใช้งาน เนื่องจากคุณไม่ได้เรียกใช้จาก daemon ที่ถูกต้อง",
 	"maintenance-mode": "โหมดการซ่อมบำรุง",
-	"maintenance-mode-title": "Click here to set up maintenance mode for NodeBB",
+	"maintenance-mode-title": "คลิกที่นี่เพื่อเข้าสู่โหมดการซ่อมบำรุงของ NodeBB",
 	"dark-mode": "โหมดมืด",
 	"realtime-chart-updates": "Realtime Chart Updates",
 
