@@ -11,7 +11,7 @@ module.exports = {
 		const { progress } = this;
 		const bulkOp = [];
 
-		await batch.processSortedSet('topics:tid', async (tids, next) => {
+		await batch.processSortedSet('topics:tid', async (tids) => {
 			await Promise.all(tids.map(async (tid) => {
 				const announces = await topics.events.find(tid, {
 					type: 'announce',

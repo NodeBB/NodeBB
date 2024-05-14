@@ -132,7 +132,7 @@ define('forum/account/header', [
 	}
 
 	function rescindAccountFlag() {
-		const flagId = $(this).data('flag-id')
+		const flagId = $(this).data('flag-id');
 		require(['flags'], function (flags) {
 			bootbox.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
 				if (!confirm) {
