@@ -361,7 +361,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe('Serving of local assets to remote clients', () => {
+	describe('Serving of local assets to remote clients (mocking)', () => {
 		describe('Note', () => {
 			let cid;
 			let uid;

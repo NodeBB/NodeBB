@@ -32,6 +32,22 @@ middleware.assertS2S = async function (req, res, next) {
 
 middleware.validate = async function (req, res, next) {
 	winston.verbose('[middleware/activitypub] Validating incoming payload...');
+
+	// Sanity-check payload schema
+	const required = ['id', 'type', 'actor', 'object'];
+	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
+		winston.verbose('[middleware/activitypub] Request body missing required properties.');
+		return res.sendStatus(400);
+	}
+	winston.verbose('[middleware/activitypub] Request body check passed.');
+
+	// History check
+	const seen = await db.isSortedSetMember('activities:datetime', req.body.id);
+	if (seen) {
+		winston.verbose(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
+		return res.sendStatus(200);
+	}
+
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	const verified = await activitypub.verify(req);
 	if (!verified) {
@@ -39,14 +55,6 @@ middleware.validate = async function (req, res, next) {
 		return res.sendStatus(400);
 	}
 	winston.verbose('[middleware/activitypub] HTTP signature verification passed.');
-
-	// Sanity-check payload schema
-	const required = ['type', 'actor', 'object'];
-	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
-		winston.verbose('[middleware/activitypub] Request body missing required properties.');
-		return res.sendStatus(400);
-	}
-	winston.verbose('[middleware/activitypub] Request body check passed.');
 
 	let { actor, object } = req.body;
 

@@ -13,6 +13,7 @@ const ttl = require('../cache/ttl');
 const lru = require('../cache/lru');
 const batch = require('../batch');
 const pubsub = require('../pubsub');
+const analytics = require('../analytics');
 
 const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
 const ActivityPub = module.exports;
@@ -321,4 +322,15 @@ ActivityPub.send = async (type, id, targets, payload) => {
 			interval: 100,
 		},
 	);
+};
+
+ActivityPub.record = async ({ id, type, actor }) => {
+	const now = Date.now();
+	const { hostname } = new URL(actor);
+
+	await Promise.all([
+		db.sortedSetAdd(`activities:datetime`, now, id),
+		db.sortedSetAdd('domains:lastSeen', now, hostname),
+		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
+	]);
 };
