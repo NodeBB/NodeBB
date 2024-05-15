@@ -7,7 +7,8 @@ set_defaults() {
   export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
   export CONFIG="$CONFIG_DIR/config.json"
   export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
-  export START_BUILD="${START_BUILD:-false}"
+  export NODEBB_BUILD_VERB="${NODEBB_BUILD_VERB:-build}"
+  export START_BUILD="${START_BUILD:-${FORCE_BUILD_BEFORE_START:-false}}"
   export SETUP="${SETUP:-}"
   export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
   export OVERRIDE_UPDATE_LOCK="${OVERRIDE_UPDATE_LOCK:-false}"
@@ -24,8 +25,13 @@ check_directory() {
     }
   fi
   if [ ! -w "$dir" ]; then
-    echo "Error: No write permission for directory $dir"
-    exit 1
+    echo "Warning: No write permission for directory $dir, attempting to fix..."
+    chown -R $USER:$USER "$dir" || true # attempt to change ownership, do not exit on failure
+    chmod -R 760 "$dir" || true # attempt to change permissions, do not exit on failure
+    if [ ! -w "$dir" ]; then
+      echo "Error: No write permission for directory $dir. Exiting..."
+      exit 1
+    fi
   fi
 }
 
@@ -47,11 +53,11 @@ copy_or_link_files() {
   esac
 
   # Check if source and destination files are the same
-  if [ "$(realpath "$src_dir/package.json")" != "$(realpath "$dest_dir/package.json")" ]; then
+  if [ "$(realpath "$src_dir/package.json")" != "$(realpath "$dest_dir/package.json")" ] || [ "$OVERRIDE_UPDATE_LOCK" = true ]; then
     cp "$src_dir/package.json" "$dest_dir/package.json"
   fi
 
-  if [ "$(realpath "$src_dir/$lock_file")" != "$(realpath "$dest_dir/$lock_file")" ]; then
+  if [ "$(realpath "$src_dir/$lock_file")" != "$(realpath "$dest_dir/$lock_file")" ] || [ "$OVERRIDE_UPDATE_LOCK" = true ]; then
     cp "$src_dir/$lock_file" "$dest_dir/$lock_file"
   fi
 
@@ -97,7 +103,7 @@ build_forum() {
   local config="$1"
   local start_build="$2"
   local package_hash=$(md5sum install/package.json | head -c 32)
-  if [ package_hash = "$(cat $CONFIG_DIR/install_hash.md5)" ]; then
+  if [ "$package_hash" = "$(cat $CONFIG_DIR/install_hash.md5 || true)" ]; then
       echo "package.json was updated. Upgrading..."
       /usr/src/app/nodebb upgrade --config="$config" || {
           echo "Failed to build NodeBB. Exiting..."
