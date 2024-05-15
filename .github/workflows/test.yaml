@@ -32,14 +32,14 @@ jobs:
         include:
           # only run coverage once
           - os: ubuntu-latest
-            node: 18
+            node: 20
             coverage: true
           # test under development once
           - database: mongo-dev
             test_env: development
           # only run eslint once
           - os: ubuntu-latest
-            node: 18
+            node: 20
             database: mongo-dev
             lint: true
     runs-on: ${{ matrix.os }}
