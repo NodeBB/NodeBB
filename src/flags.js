@@ -914,7 +914,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
-		const targetDisplayname = flagObj.target && flagObj.target.user ? flagObj.target.user.displayname : '[[global:guest]]';
+		const targetDisplayname = flagObj.target && flagObj.target.displayname ? flagObj.target.displayname : '[[global:guest]]';
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
 			bodyShort: `[[notifications:user-flagged-user, ${displayname}, ${targetDisplayname}]]`,

@@ -140,12 +140,12 @@
     "edited": "已编辑",
     "disabled": "禁用",
     "select": "选择",
-    "selected": "Selected",
+    "selected": "已选",
     "copied": "已复制",
     "user-search-prompt": "输入以查找用户",
     "hidden": "隐藏",
     "sort": "排序",
     "actions": "操作",
-    "rss-feed": "RSS Feed",
-    "skip-to-content": "Skip to content"
+    "rss-feed": "RSS 订阅",
+    "skip-to-content": "跳转至内容"
 }

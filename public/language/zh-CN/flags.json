@@ -1,6 +1,6 @@
 {
 	"state": "状态",
-	"report": "Report",
+	"report": "报告",
 	"reports": "报告",
 	"first-reported": "首次报告",
 	"no-flags": "啊哈！没发现任何的举报。",
@@ -9,8 +9,8 @@
 	"update": "更新",
 	"updated": "已更新",
 	"resolved": "已解决",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "已添加",
+	"report-rescinded": "已撤销",
 	"target-purged": "被举报的内容已经被清除，不再可用。",
 	"target-aboutme-empty": "这个用户没有设置 &quot;关于我&quot; 。",
 
@@ -90,6 +90,6 @@
 	"bulk-actions": "批量操作",
 	"bulk-resolve": "处理举报",
 	"bulk-success": "已更新%1个举报",
-	"flagged-timeago-readable": "被举报于 <span class=\\\"timeago\\\" title=\\\"%1\\\"></span> (%2) ",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "【自动举报】收到 %1 个踩"
 }

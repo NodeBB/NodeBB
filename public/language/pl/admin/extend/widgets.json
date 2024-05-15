@@ -7,7 +7,7 @@
 	"containers.available": "Dostępne kontenery",
 	"containers.explanation": "Przeciągnij i upuść na dowolny widget",
 	"containers.none": "Żadna",
-	"container.well": "Well",
+	"container.well": "Studnia",
 	"container.jumbotron": "Jumbotron",
 	"container.card": "Karta",
 	"container.card-header": "Nagłówek karty",
@@ -27,9 +27,9 @@
 	"container.placeholder": "Przeciągnij i upuść kontener lub wpisz tutaj HTML.",
 	"show-to-groups": "Pokaż dla grup",
 	"hide-from-groups": "Ukryj dla grup",
-	"start-date": "Start date",
-	"end-date": "End date",
-	"hide-on-mobile": "Ukraj na urządzeniach mobilnych",
+	"start-date": "Data początku",
+	"end-date": "Data końca",
+	"hide-on-mobile": "Ukryj na urządzeniach mobilnych",
 	"hide-drafts": "Ukryj wersje robocze",
 	"show-drafts": "Pokaż wersje robocze"
 }

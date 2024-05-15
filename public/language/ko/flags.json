@@ -90,6 +90,6 @@
 	"bulk-actions": "대량 작업",
 	"bulk-resolve": "신고 해결",
 	"bulk-success": "%1개의 신고가 업데이트되었습니다",
-	"flagged-timeago-readable": "<span class=\"timeago\" title=\"%1\"></span>에 신고됨 (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[자동 신고] %1개의 반대를 받았습니다."
 }

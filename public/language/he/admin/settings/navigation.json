@@ -10,7 +10,7 @@
 	"id": "id: <small>אופציונאלי</small>",
 
 	"properties": "הרשאות:",
-	"groups": "קבוצות:",
+	"show-to-groups": "הצג לקבוצות:",
 	"open-new-window": "ייפתח בכרטיסייה חדשה",
 	"dropdown": "תפריט נפתח",
 	"dropdown-placeholder": "מקמו את פריטי התפריט הנפתח , באופן הבא:  <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

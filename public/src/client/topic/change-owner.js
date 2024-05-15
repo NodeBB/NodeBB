@@ -73,7 +73,7 @@ define('forum/topic/change-owner', [
 			if (err) {
 				return alerts.error(err);
 			}
-			ajaxify.refresh();
+			ajaxify.go(`/post/${postSelect.pids[0]}`);
 
 			closeModal();
 		});

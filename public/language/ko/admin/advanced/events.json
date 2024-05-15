@@ -9,5 +9,9 @@
 	"filter-type": "이벤트 유형",
 	"filter-start": "시작 날짜",
 	"filter-end": "종료 날짜",
+	"filter-user": "사용자명으로 필터링",
+	"filter-user.placeholder": "필터링할 사용자명 입력...",
+	"filter-group": "그룹명으로 필터링",
+	"filter-group.placeholder": "필터링할 그룹명 입력...",
 	"filter-per-page": "페이지 당"
 }

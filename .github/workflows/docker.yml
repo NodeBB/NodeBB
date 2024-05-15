@@ -21,8 +21,6 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -37,6 +35,9 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get current date in NST
+        run: echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -48,12 +49,22 @@ jobs:
             type=semver,pattern={{major}}.x
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch,enable=${{ github.event.repository.default_branch != github.ref }}
+            type=raw,value=${{ env.CURRENT_DATE_NST }}
+          flavor: |
+            latest=true
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: var-cache-node-modules
+          key: var-cache-node-modules-${{ hashFiles('Dockerfile', 'install/package.json') }}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
         with:
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7

@@ -214,10 +214,11 @@ UserEmail.confirmByCode = async function (code, sessionId) {
 };
 
 // confirm uid's email via ACP
-UserEmail.confirmByUid = async function (uid) {
+UserEmail.confirmByUid = async function (uid, callerUid = 0) {
 	if (!(parseInt(uid, 10) > 0)) {
 		throw new Error('[[error:invalid-uid]]');
 	}
+	callerUid = callerUid || uid;
 	const currentEmail = await user.getUserField(uid, 'email');
 	if (!currentEmail) {
 		throw new Error('[[error:invalid-email]]');
@@ -241,7 +242,7 @@ UserEmail.confirmByUid = async function (uid) {
 		db.sortedSetAddBulk([
 			['email:uid', uid, currentEmail.toLowerCase()],
 			['email:sorted', 0, `${currentEmail.toLowerCase()}:${uid}`],
-			[`user:${uid}:emails`, Date.now(), `${currentEmail}:${Date.now()}`],
+			[`user:${uid}:emails`, Date.now(), `${currentEmail}:${Date.now()}:${callerUid}`],
 		]),
 		user.setUserField(uid, 'email:confirmed', 1),
 		groups.join('verified-users', uid),

@@ -90,6 +90,6 @@
 	"bulk-actions": "Масовне радње",
 	"bulk-resolve": "Реши заставицу/е",
 	"bulk-success": "Ажурираних заставица: %1",
-	"flagged-timeago-readable": "Означено заставицом <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Аутоматски означено заставицом] Примљено је %1 негативних гласова."
 }

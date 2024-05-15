@@ -9,5 +9,9 @@
 	"filter-type": "Esemény típus",
 	"filter-start": "Kezdő dátum",
 	"filter-end": "Befejező dátum",
+	"filter-user": "Szűrés felhasználónként",
+	"filter-user.placeholder": "Írj be egy felhasználónevet a szűréshez...",
+	"filter-group": "Szűrés csoportonként",
+	"filter-group.placeholder": "Írj be egy csoportnevet a szűréshez...",
 	"filter-per-page": "Oldalanként"
 }

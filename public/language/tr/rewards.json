@@ -2,9 +2,9 @@
 	"awarded-x-reputation": "<strong>%1</strong> saygınlık puanı ile ödüllendirildiniz",
 	"awarded-group-membership": "Şu gruba eklendiniz: <strong>%1</strong>",
 
-	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",
-	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Post Count %1 %2)</span>",
-	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Last Online %1 %2)</span>",
-	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Join Date %1 %2)</span>",
-	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Days Registered %1 %2)</span>"
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Saygınlık %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(İleti Sayısı %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Son Çevrimiçi Zamanı %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Kayıt Günü %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Kayıtlı Gün Sayısı %1 %2)</span>"
 }

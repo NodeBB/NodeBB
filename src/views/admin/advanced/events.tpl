@@ -50,6 +50,14 @@
 						<label class="form-label" for="end">[[admin/advanced/events:filter-end]]</label>
 						<input type="date" id="end" name="end" value="{query.end}" class="form-control" />
 					</div>
+					<div class="mb-3 d-flex flex-column gap-3">
+						<select id="user-group-select" class="form-select">
+							<option value="username" {{{ if (query.username != "") }}}selected{{{ end }}}>[[admin/advanced/events:filter-user]]</option>
+							<option value="group" {{{ if (query.group != "") }}}selected{{{ end }}}>[[admin/advanced/events:filter-group]]</option>
+						</select>
+						<input type="text" id="username" name="username" value="{query.username}" class="form-control {{{ if (query.group != "") }}}hidden{{{ end }}}" placeholder="[[admin/advanced/events:filter-user.placeholder]]"/>
+						<input type="text" id="group" name="group" value="{query.group}" class="form-control {{{ if (query.group == "") }}}hidden{{{ end }}} {{{ if (query.username != "") }}}hidden{{{ end }}}" placeholder="[[admin/advanced/events:filter-group.placeholder]]" />
+					</div>
 					<div class="mb-3">
 						<label class="form-label" for="perPage">[[admin/advanced/events:filter-per-page]]</label>
 						<input type="text" id="perPage" name="perPage" value="{query.perPage}" class="form-control" />

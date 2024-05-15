@@ -1,6 +1,6 @@
 {
 	"state": "Állapot",
-	"report": "Report",
+	"report": "Jelentés",
 	"reports": "Jelentés",
 	"first-reported": "Először jelentve",
 	"no-flags": "Hurrá! Nincs megjelölés.",
@@ -9,8 +9,8 @@
 	"update": "Frissítés",
 	"updated": "Frissítve",
 	"resolved": "Megoldva",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Hozzáadva",
+	"report-rescinded": "Visszavont",
 	"target-purged": "A tartalom amire a jelölő mutat már meg lett tiszítva vagy nem létezik.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 
@@ -90,6 +90,6 @@
 	"bulk-actions": "Tömeges műveletek",
 	"bulk-resolve": "Megoldott jelölés",
 	"bulk-success": "%1 jelölő frissítve",
-	"flagged-timeago-readable": "Megjelölve <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatikus Megjelölés] %1 negatív szavazatot kapott."
 }

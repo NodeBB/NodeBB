@@ -70,7 +70,7 @@ User.validateEmail = async function (socket, uids) {
 		if (email) {
 			await user.setUserField(uid, 'email', email);
 		}
-		await user.email.confirmByUid(uid);
+		await user.email.confirmByUid(uid, socket.uid);
 	}
 };
 
@@ -162,7 +162,7 @@ User.setReputation = async function (socket, data) {
 	]);
 };
 
-User.exportUsersCSV = async function (socket) {
+User.exportUsersCSV = async function (socket, data) {
 	await events.log({
 		type: 'exportUsersCSV',
 		uid: socket.uid,
@@ -170,7 +170,7 @@ User.exportUsersCSV = async function (socket) {
 	});
 	setTimeout(async () => {
 		try {
-			await user.exportUsersCSV();
+			await user.exportUsersCSV(data.fields);
 			if (socket.emit) {
 				socket.emit('event:export-users-csv');
 			}

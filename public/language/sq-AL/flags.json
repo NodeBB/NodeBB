@@ -90,6 +90,6 @@
 	"bulk-actions": "Veprime në mas",
 	"bulk-resolve": "Zgjidhja e raportim(eve)",
 	"bulk-success": "%1 raportime u përditësuan",
-	"flagged-timeago-readable": "I raportuar<span class=\"timeago\" title=\"%1\"></span> (% 2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[I vetë Raportuar] Mori %1 vota kundër."
 }

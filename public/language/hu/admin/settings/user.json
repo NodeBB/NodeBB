@@ -79,14 +79,14 @@
 	"follow-replied-topics": "Minden témakör követése, amire válaszoltál",
 	"default-notification-settings": "Alapértelmezett értesítési beállítások",
 	"categoryWatchState": "Alapértelmezett kategóriafigyelés",
-	"categoryWatchState.tracking": "Tracking",
+	"categoryWatchState.tracking": "Követés",
 	"categoryWatchState.notwatching": "Nem megfigyelt",
 	"categoryWatchState.ignoring": "Mellőzés",
-	"restrictions-new": "New User Restrictions",
-	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
-	"restrictions.seconds-between-new": "Seconds between posts for new users",
-	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
-	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
-	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions-new": "Új felhasználók korlátozása",
+	"restrictions.rep-threshold": "Szükséges hírnév szint ezen korlátozások feloldásához",
+	"restrictions.seconds-between-new": "Hozzászólások közötti kötelező szünet új felhasználóknak (másodpercben)",
+	"restrictions.seconds-before-new": "Szükséges eltelt idő, mielőtt egy új felhasználó hozzászólást írhat (másodpercben)",
+	"restrictions.seconds-edit-after-new": "Hány másodpercig maradjanak a hozzászólások szerkeszthetőek az új felhasználóknak (0: nincs korlátozás)",
+	"restrictions.milliseconds-between-messages": "Csevegési üzenetek közötti idő új felhasználóknak ezredmásodpercben",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Válaszd ki azokat a csoportokat, amelyek mentesülnek az új felhasználói korlátozások alól."
 }

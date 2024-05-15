@@ -17,7 +17,7 @@
 	"mongo.file-size": "文件大小",
 	"mongo.resident-memory": "驻留内存",
 	"mongo.virtual-memory": "虚拟内存",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "已映射内存",
 	"mongo.bytes-in": "字节输入",
 	"mongo.bytes-out": "字节输出",
 	"mongo.num-requests": "请求数量",
