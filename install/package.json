@@ -45,7 +45,7 @@
         "bootstrap": "5.3.3",
         "bootswatch": "5.3.3",
         "chalk": "4.1.2",
-        "chart.js": "4.4.2",
+        "chart.js": "4.4.3",
         "cli-graph": "3.2.2",
         "clipboard": "2.0.11",
         "colors": "1.4.0",
