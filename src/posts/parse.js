@@ -35,6 +35,7 @@ let sanitizeConfig = {
 		...sanitize.defaults.allowedClasses,
 	},
 };
+const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article']);
 
 module.exports = function (Posts) {
 	Posts.urlRegex = {
@@ -47,26 +48,36 @@ module.exports = function (Posts) {
 		length: 5,
 	};
 
-	Posts.parsePost = async function (postData) {
+	Posts.parsePost = async function (postData, type) {
 		if (!postData) {
 			return postData;
 		}
+		if (!type || !allowedTypes.has(type)) {
+			type = 'default';
+		}
 		postData.content = String(postData.sourceContent || postData.content || '');
 		const cache = require('./cache');
-		const pid = String(postData.pid);
-		const cachedContent = cache.get(pid);
+		const cacheKey = `${String(postData.pid)}|${type}`;
+		const cachedContent = cache.get(cacheKey);
 		if (postData.pid && cachedContent !== undefined) {
 			postData.content = cachedContent;
 			return postData;
 		}
 
-		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData }));
+		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
 		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
-			cache.set(pid, postData.content);
+			cache.set(cacheKey, postData.content);
 		}
 
 		return postData;
+	};
+
+	Posts.clearCachedPost = function (pid) {
+		const cache = require('./cache');
+		allowedTypes.forEach((type) => {
+			cache.del(`${String(pid)}|${type}`);
+		});
 	};
 
 	Posts.parseSignature = async function (userData, uid) {

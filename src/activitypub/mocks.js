@@ -256,6 +256,12 @@ Mocks.note = async (post) => {
 		cc.add(followersUrl);
 	}
 
+	const content = await posts.getPostField(post.pid, 'content');
+	const { postData: parsed } = await plugins.hooks.fire('filter:parse.post', {
+		postData: { content },
+		type: 'activitypub.note',
+	});
+	post.content = parsed.content;
 	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
 	post.content = posts.relativeToAbsolute(post.content, posts.imgRegex);
 
