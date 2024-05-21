@@ -1,6 +1,6 @@
 {
-    "chat.room-id": "Room %1",
-    "chat.chatting-with": "چت با",
+    "chat.room-id": "اتاق %1",
+    "chat.chatting-with": "گفتوگو با",
     "chat.placeholder": "پیام چت را اینجا بنویس، عکس‌ها را اینجا درگ و دراپ کن، برای ارسال دکمه Enter را بزن",
     "chat.placeholder.mobile": "پیام چت را اینجا بنویس",
     "chat.scroll-up-alert": "Go to most recent message",

@@ -1,10 +1,10 @@
 {
-	"cache": "Cache",
-	"post-cache": "کش دیدگاه ",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
+	"cache": "نهانگاه",
+	"post-cache": "نهانگاه دیدگاه ",
+	"group-cache": "نهانگاه گروه",
+	"local-cache": "نهانگاه محلی",
+	"object-cache": "شئ نهانگاه",
 	"percent-full": "%1% تمام شده",
-	"post-cache-size": "سایز کش دیدگاه",
-	"items-in-cache": "موارد موجود در کش"
+	"post-cache-size": "اندازه نهانگاه فرسته",
+	"items-in-cache": "موارد موجود در نهانگاه"
 }

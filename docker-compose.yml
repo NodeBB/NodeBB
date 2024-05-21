@@ -26,12 +26,26 @@ services:
       - mongo-data:/data/db
       - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
   redis:
-    image: redis:7.2.3-alpine
+    image: redis:7.2.5-alpine
     restart: unless-stopped
     command: ['redis-server', '--appendonly', 'yes', '--loglevel', 'warning']
     # command: ['redis-server', '--save', '60', '1', '--loglevel', 'warning'] # uncomment if you want to use snapshotting instead of AOF
     volumes:
       - redis-data:/data
+    profiles:
+      - redis
+
+  postgres:
+    image: postgres:16.1-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nodebb
+      POSTGRES_PASSWORD: nodebb
+      POSTGRES_DB: nodebb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    profiles:
+      - postgres
 
 volumes:
   mongo-data:
@@ -47,6 +61,13 @@ volumes:
       o: bind
       type: none
       device: ./.docker/database/redis
+
+  postgres-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./.docker/database/postgresql/data
 
   nodebb-build:
     driver: local
