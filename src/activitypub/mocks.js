@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const mime = require('mime');
 const path = require('path');
+const sanitize = require('sanitize-html');
 
 const meta = require('../meta');
 const user = require('../user');
@@ -15,6 +16,16 @@ const utils = require('../utils');
 
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
+
+/**
+ * A more restrictive html sanitization run on top of standard sanitization from core.
+ * Done so the output HTML is stripped of all non-essential items; mainly classes from plugins..
+ */
+const sanitizeConfig = {
+	allowedClasses: {
+		'*': [],
+	},
+};
 
 Mocks.profile = async (actors) => {
 	// Should only ever be called by activitypub.actors.assert
@@ -267,7 +278,7 @@ Mocks.note = async (post) => {
 		postData: { content },
 		type: 'activitypub.note',
 	});
-	post.content = parsed.content;
+	post.content = sanitize(parsed.content, sanitizeConfig);
 	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
 	post.content = posts.relativeToAbsolute(post.content, posts.imgRegex);
 
