@@ -231,20 +231,26 @@ Mocks.note = async (post) => {
 	const cc = new Set([`${nconf.get('url')}/uid/${post.user.uid}/followers`]);
 
 	let inReplyTo = null;
-	let name = null;
 	let tag = null;
 	let followersUrl;
+
+	let name = null;
+	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
+
 	if (post.toPid) { // direct reply
 		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
+		name = `Re: ${name}`;
+
 		const parentId = await posts.getPostField(post.toPid, 'uid');
 		followersUrl = await user.getUserField(parentId, ['followersUrl']);
 		to.add(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
+		name = `Re: ${name}`;
+
 		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 		followersUrl = await user.getUserField(post.topic.uid, ['followersUrl']);
 	} else { // new topic
-		({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
 		tag = post.topic.tags.map(tag => ({
 			type: 'Hashtag',
 			href: `${nconf.get('url')}/tags/${tag.valueEncoded}`,
