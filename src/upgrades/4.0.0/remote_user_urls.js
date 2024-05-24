@@ -15,8 +15,9 @@ module.exports = {
 
 		let actorIds = await db.getSortedSetMembers('usersRemote:lastCrawled');
 		progress.total = actorIds.length;
-		const exists = await Promise.all(actorIds.map(async id => await db.isObjectFields(`userRemote:${id}`, ['url', 'followersUrl'])));
-		actorIds = actorIds.filter((id, idx) => !exists[idx].every(Boolean));
+		const existing = await db.getObjectValues('remoteUrl:uid');
+		const exists = actorIds.map(actorId => existing.includes(actorId));
+		actorIds = actorIds.filter((_, idx) => !exists[idx]);
 
 		// Increment ones that were already completed
 		progress.incr(progress.total - actorIds.length);

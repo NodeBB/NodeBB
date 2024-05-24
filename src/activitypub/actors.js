@@ -67,6 +67,7 @@ Actors.assert = async (ids, options = {}) => {
 
 	winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
+	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
 	let actors = await Promise.all(ids.map(async (id) => {
@@ -96,7 +97,13 @@ Actors.assert = async (ids, options = {}) => {
 				winston.verbose(`[activitypub/actor.assert] Unable to retrieve post counts for ${actor.id}`);
 			}
 
-			// Followers url for backreference
+			// Save url for backreference
+			const url = Array.isArray(actor.url) ? actor.url.shift() : actor.url;
+			if (url && url !== actor.id) {
+				urlMap.set(url, actor.id);
+			}
+
+			// Save followers url for backreference
 			if (actor.hasOwnProperty('followers') && activitypub.helpers.isUri(actor.followers)) {
 				followersUrlMap.set(actor.followers, actor.id);
 			}
@@ -120,6 +127,9 @@ Actors.assert = async (ids, options = {}) => {
 		memo.push([key, profile], [`${key}:keys`, pubKeysMap.get(profile.uid)]);
 		return memo;
 	}, []);
+	if (urlMap.size) {
+		bulkSet.push(['remoteUrl:uid', Object.fromEntries(urlMap)]);
+	}
 	if (followersUrlMap.size) {
 		bulkSet.push(['followersUrl:uid', Object.fromEntries(followersUrlMap)]);
 	}
