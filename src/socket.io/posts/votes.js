@@ -91,7 +91,14 @@ module.exports = function (SocketPosts) {
 		]);
 		const cidToAllowed = _.zipObject(uniqCids, canRead);
 		const checks = cids.map(
-			(cid, index) => isAdmin || isMod[index] || (cidToAllowed[cid] && !!meta.config.votesArePublic)
+			(cid, index) => isAdmin || isMod[index] ||
+			(
+				cidToAllowed[cid] &&
+				(
+					meta.config.voteVisibility === 'all' ||
+					(meta.config.voteVisibility === 'loggedin' && parseInt(uid, 10) > 0)
+				)
+			)
 		);
 		return isArray ? checks : checks[0];
 	}

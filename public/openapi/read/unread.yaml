@@ -176,6 +176,8 @@ get:
                               type: boolean
                             ignored:
                               type: boolean
+                            followed:
+                              type: boolean
                             unread:
                               type: boolean
                             bookmark:
