@@ -128,7 +128,7 @@
         "semver": "7.6.2",
         "serve-favicon": "2.5.0",
         "sharp": "0.32.6",
-        "sitemap": "7.1.1",
+        "sitemap": "8.0.0",
         "socket.io": "4.7.5",
         "socket.io-client": "4.7.5",
         "@socket.io/redis-adapter": "8.3.0",
