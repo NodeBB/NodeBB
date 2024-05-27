@@ -101,12 +101,10 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 	try {
 		if (data.cases.hasOwnProperty(err.code)) {
 			data.cases[err.code](err, req, res, defaultHandler);
-		} else if (err.message) {
-			if (err.message.startsWith('[[error:no-') && err.message !== '[[error:no-privileges]]') {
-				notFoundHandler();
-			} else if (err.message.startsWith('Failed to lookup view')) {
-				notBuiltHandler();
-			}
+		} else if (err.message.startsWith('[[error:no-') && err.message !== '[[error:no-privileges]]') {
+			notFoundHandler();
+		} else if (err.message.startsWith('Failed to lookup view')) {
+			notBuiltHandler();
 		} else {
 			await defaultHandler();
 		}
