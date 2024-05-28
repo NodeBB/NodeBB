@@ -239,7 +239,7 @@ postsAPI.purge = async function (caller, data) {
 	if (!canPurge) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	require('../posts/cache').del(data.pid);
+	posts.clearCachedPost(data.pid);
 	await Promise.all([
 		posts.purge(data.pid, caller.uid),
 		require('.').activitypub.delete.note(caller, { pid: data.pid }),
