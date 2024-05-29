@@ -52,13 +52,21 @@ module.exports = function (middleware) {
 					res.set('cache-control', 'private');
 				}
 
-				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, { req: req, res: res, templateData: options });
+				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, {
+					req: req,
+					res: res,
+					templateData: options,
+				});
 				if (res.headersSent) {
 					return;
 				}
 				const templateToRender = buildResult.templateData.templateToRender || template;
 
-				const renderResult = await plugins.hooks.fire('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
+				const renderResult = await plugins.hooks.fire('filter:middleware.render', {
+					req: req,
+					res: res,
+					templateData: buildResult.templateData,
+				});
 				if (res.headersSent) {
 					return;
 				}

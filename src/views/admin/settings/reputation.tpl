@@ -14,9 +14,13 @@
 					<input type="checkbox" class="form-check-input" id="downvote:disabled" data-field="downvote:disabled">
 					<label for="downvote:disabled" class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 				</div>
-				<div class="form-check form-switch mb-3">
-					<input type="checkbox" class="form-check-input" id="votesArePublic" data-field="votesArePublic">
-					<label for="votesArePublic" class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
+				<div>
+					<label for="voteVisibility" class="form-check-label">[[admin/settings/reputation:vote-visibility]]</label>
+					<select id="voteVisibility" data-field="voteVisibility" class="form-select">
+						<option value="all">[[admin/settings/reputation:vote-visibility-all]]</option>
+						<option value="loggedin">[[admin/settings/reputation:vote-visibility-loggedin]]</option>
+						<option value="privileged">[[admin/settings/reputation:vote-visibility-privileged]]</option>
+					</select>
 				</div>
 			</div>
 

@@ -46,15 +46,16 @@ ENV NODE_ENV=production \
 
 WORKDIR /usr/src/app/
 
-COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
-COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
-
 RUN corepack enable \
     && groupadd --gid ${GID} ${USER} \
     && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
     && mkdir -p /usr/src/app/logs/ /opt/config/ \
-    && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/ \
-    && chmod +x /usr/local/bin/entrypoint.sh \
+    && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/
+
+COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
+COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/tini
 
 # TODO: Have docker-compose use environment variables to create files like setup.json and config.json.

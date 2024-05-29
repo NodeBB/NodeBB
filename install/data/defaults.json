@@ -137,7 +137,7 @@
     "sitemapTopics": 500,
     "maintenanceMode": 0,
     "maintenanceModeStatus": 503,
-    "votesArePublic": 0,
+    "voteVisibility": "privileged",
     "maximumInvites": 0,
     "username:disableEdit": 0,
     "email:disableEdit": 0,
