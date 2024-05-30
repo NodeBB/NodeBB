@@ -112,6 +112,8 @@ Mocks.post = async (objects) => {
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
+		content = sanitize(content, sanitizeConfig);
+
 		const payload = {
 			uid,
 			pid,
