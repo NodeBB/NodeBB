@@ -184,8 +184,8 @@ describe('Post\'s', () => {
 		it('should get upvoters', (done) => {
 			socketPosts.getUpvoters({ uid: globalModUid }, [postData.pid], (err, data) => {
 				assert.ifError(err);
-				assert.equal(data[0].otherCount, 0);
-				assert.equal(data[0].usernames, 'upvoter');
+				assert.equal(data.otherCount, 0);
+				assert.equal(data.usernames, 'upvoter');
 				done();
 			});
 		});
