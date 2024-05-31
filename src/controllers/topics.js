@@ -310,7 +310,7 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 		const thumbs = topicData.thumbs.filter(
 			t => t && images.every(img => path.normalize(img.name) !== path.normalize(url + t.url))
 		);
-		images.push(...thumbs.map(thumbObj => ({ name: url + thumbObj.url })));
+		images.push(...thumbs.map(thumbObj => ({ name: (!thumbObj.url.startsWith('http') && !thumbObj.url.startsWith('https')) ? url + thumbObj.url : thumbObj.url })));
 	}
 	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
 		images.push(topicData.category.backgroundImage);
@@ -323,7 +323,7 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 
 function addOGImageTag(res, image) {
 	let imageUrl;
-	if (typeof image === 'string' && !image.startsWith('http')) {
+	if (typeof image === 'string' && !image.startsWith('http') && !image.startsWith('https')) {
 		imageUrl = url + image.replace(new RegExp(`^${relative_path}`), '');
 	} else if (typeof image === 'object') {
 		imageUrl = image.name;

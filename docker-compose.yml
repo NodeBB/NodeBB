@@ -2,8 +2,9 @@ version: '3.8'
 
 services:
   nodebb:
-    build: .
-    # image: ghcr.io/nodebb/nodebb:latest
+    build:
+      context: . # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - '4567:4567' # comment this out if you don't want to expose NodeBB to the host, or change the first number to any port you want
@@ -12,80 +13,23 @@ services:
       - nodebb-uploads:/usr/src/app/public/uploads
       - nodebb-config:/opt/config
       - ./install/docker/setup.json:/usr/src/app/setup.json
-
-  mongo:
-    image: 'mongo:7-jammy'
-    restart: unless-stopped
-    ports:
-      - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: nodebb
-      MONGO_INITDB_ROOT_PASSWORD: nodebb
-      MONGO_INITDB_DATABASE: nodebb
-    volumes:
-      - mongo-data:/data/db
-      - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
-  redis:
-    image: redis:7.2.4-alpine
-    restart: unless-stopped
-    command: ['redis-server', '--appendonly', 'yes', '--loglevel', 'warning']
-    # command: ['redis-server', '--save', '60', '1', '--loglevel', 'warning'] # uncomment if you want to use snapshotting instead of AOF
-    volumes:
-      - redis-data:/data
-    profiles:
-      - redis
-
-  postgres:
-    image: postgres:16.1-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: nodebb
-      POSTGRES_PASSWORD: nodebb
-      POSTGRES_DB: nodebb
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    profiles:
-      - postgres
+    networks:
+      - dev-net
 
 volumes:
-  mongo-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/database/mongo/data
-
-  redis-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/database/redis
-
-  postgres-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/database/postgresql/data
-
   nodebb-build:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/build
+    external:
+      name: nodebb-build
 
   nodebb-uploads:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/public/uploads
+    external:
+      name: nodebb-uploads
 
   nodebb-config:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/config
+    external:
+      name: nodebb-config
+
+networks:
+  dev-net:
+    name: vivune-dev-network
+    external: true
