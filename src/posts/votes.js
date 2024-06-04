@@ -278,7 +278,7 @@ module.exports = function (Posts) {
 			}
 		}
 
-		if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
+		if (String(topicData.mainPid) !== String(postData.pid)) {
 			return await db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
 		}
 		const promises = [

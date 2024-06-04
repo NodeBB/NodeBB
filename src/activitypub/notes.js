@@ -4,6 +4,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 
 const db = require('../database');
+const batch = require('../batch');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const categories = require('../categories');
@@ -371,4 +372,51 @@ Notes.delete = async (pids) => {
 	const announcerSets = pids.map(id => `pid:${id}:announces`);
 
 	await db.deleteAll([...recipientSets, ...announcerSets]);
+};
+
+Notes.prune = async () => {
+	/**
+	 * Prune topics in cid -1 that have received no engagement.
+	 * Engagement is defined as:
+	 *   - Replied to (contains a local reply)
+	 *   - Post within is liked
+	 */
+	winston.verbose('[notes/prune] Starting scheduled pruning of topics');
+	const start = 0;
+	const stop = Date.now() - (1000 * 60 * 60 * 24 * 30); // 30 days; todo: make configurable?
+	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
+
+	winston.verbose(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);
+
+	const posters = await db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:posters`));
+	const hasLocalVoter = await Promise.all(tids.map(async (tid) => {
+		const mainPid = await db.getObjectField(`topic:${tid}`, 'mainPid');
+		const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
+		pids.unshift(mainPid);
+
+		// Check voters of each pid for a local uid
+		const voters = new Set();
+		await Promise.all(pids.map(async (pid) => {
+			const [upvoters, downvoters] = await db.getSetsMembers([`pid:${pid}:upvote`, `pid:${pid}:downvote`]);
+			upvoters.forEach(uid => voters.add(uid));
+			downvoters.forEach(uid => voters.add(uid));
+		}));
+
+		return Array.from(voters).some(uid => utils.isNumber(uid));
+	}));
+
+	tids = tids.filter((_, idx) => {
+		const localPoster = posters[idx].some(uid => utils.isNumber(uid));
+		const localVoter = hasLocalVoter[idx];
+
+		return !localPoster && !localVoter;
+	});
+
+	winston.verbose(`[notes/prune] ${tids.length} topics eligible for pruning`);
+
+	await batch.processArray(tids, async (tids) => {
+		await Promise.all(tids.map(async (tid) => {
+			topics.purgePostsAndTopic(tid, 0);
+		}));
+	}, { batch: 100 });
 };

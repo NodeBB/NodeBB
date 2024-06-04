@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash, createSign, createVerify, getHashes } = require('crypto');
+const { CronJob } = require('cron');
 
 const request = require('../request');
 const db = require('../database');
@@ -40,6 +41,12 @@ ActivityPub.inbox = require('./inbox');
 ActivityPub.mocks = require('./mocks');
 ActivityPub.notes = require('./notes');
 ActivityPub.actors = require('./actors');
+
+ActivityPub.startJobs = () => {
+	winston.verbose('[activitypub/jobs] Registering jobs.');
+	new CronJob('0 0 * * *', ActivityPub.notes.prune, null, true);
+	// new CronJob(new Date(Date.now() + 2000), ActivityPub.notes.prune, null, true);
+};
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
