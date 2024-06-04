@@ -121,15 +121,15 @@
 								</div>
 							</div>
 							<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
-								<div class="card-header d-flex justify-content-between">
+								<div class="card-header d-flex justify-content-between text-nowrap flex-wrap align-items-center">
 									[[admin/extend/widgets:container.card-header]]
-									<div class="d-flex gap-1 color-selector">
-										<button data-class="text-bg-primary" class="btn btn-sm btn-primary"</button>
-										<button data-class="" class="btn btn-sm btn-secondary"</button>
-										<button data-class="text-bg-success" class="btn btn-sm btn-success"</button>
-										<button data-class="text-bg-info" class="btn btn-sm btn-info"</button>
-										<button data-class="text-bg-warning" class="btn btn-sm btn-warning"</button>
-										<button data-class="text-bg-danger" class="btn btn-sm btn-danger"</button>
+									<div class="d-flex gap-1 color-selector" style="height: 18px;">
+										<button data-class="text-bg-primary" class="btn btn-sm btn-primary"></button>
+										<button data-class="" class="btn btn-sm btn-secondary"></button>
+										<button data-class="text-bg-success" class="btn btn-sm btn-success"></button>
+										<button data-class="text-bg-info" class="btn btn-sm btn-info"></button>
+										<button data-class="text-bg-warning" class="btn btn-sm btn-warning"></button>
+										<button data-class="text-bg-danger" class="btn btn-sm btn-danger"></button>
 									</div>
 								</div>
 								<div class="card-body">
@@ -138,9 +138,9 @@
 							</div>
 
 							<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
-								<div class="d-flex justify-content-between">
+								<div class="d-flex justify-content-between text-nowrap flex-wrap align-items-center">
 									[[admin/extend/widgets:container.alert]]
-									<div class="d-flex gap-1 color-selector">
+									<div class="d-flex gap-1 color-selector" style="height: 18px;">
 										<button data-class="alert-success" class="btn btn-sm btn-success"></button>
 										<button data-class="alert-info" class="btn btn-sm btn-info"></button>
 										<button data-class="alert-warning" class="btn btn-sm btn-warning"></button>
