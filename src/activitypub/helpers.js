@@ -15,7 +15,7 @@ const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
 
-const webfingerRegex = /^(@|acct:)?\w+@.+$/;
+const webfingerRegex = /^(@|acct:)?[\w\-]+@.+$/;
 const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 
 const Helpers = module.exports;
