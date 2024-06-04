@@ -15,7 +15,10 @@ const batch = require('../batch');
 const pubsub = require('../pubsub');
 const analytics = require('../analytics');
 
-const requestCache = ttl({ ttl: 1000 * 60 * 5 }); // 5 minutes
+const requestCache = ttl({
+	max: 5000,
+	ttl: 1000 * 60 * 5, // 5 minutes
+});
 const ActivityPub = module.exports;
 
 ActivityPub._constants = Object.freeze({
@@ -223,8 +226,9 @@ ActivityPub.verify = async (req) => {
 
 ActivityPub.get = async (type, id, uri) => {
 	const cacheKey = [id, uri].join(';');
-	if (requestCache.has(cacheKey)) {
-		return requestCache.get(cacheKey);
+	const cached = requestCache.get(cacheKey);
+	if (cached !== undefined) {
+		return cached;
 	}
 
 	const keyData = await ActivityPub.getPrivateKey(type, id);

@@ -8,7 +8,10 @@ const user = require('../user');
 const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
 
-const failedWebfingerCache = TTLCache({ ttl: 1000 * 60 * 10 }); // 10 minutes
+const failedWebfingerCache = TTLCache({
+	max: 5000,
+	ttl: 1000 * 60 * 10, // 10 minutes
+});
 
 const activitypub = module.parent.exports;
 

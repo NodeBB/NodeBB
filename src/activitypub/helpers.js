@@ -16,7 +16,10 @@ const user = require('../user');
 const activitypub = require('.');
 
 const webfingerRegex = /^(@|acct:)?[\w\-]+@.+$/;
-const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
+const webfingerCache = ttl({
+	max: 5000,
+	ttl: 1000 * 60 * 60 * 24, // 24 hours
+});
 
 const Helpers = module.exports;
 
@@ -59,8 +62,9 @@ Helpers.query = async (id) => {
 		return false;
 	}
 
-	if (webfingerCache.has(id)) {
-		return webfingerCache.get(id);
+	const cached = webfingerCache.get(id);
+	if (cached !== undefined) {
+		return cached;
 	}
 
 	const query = new URLSearchParams({ resource: uri });
