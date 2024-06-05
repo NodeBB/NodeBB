@@ -44,8 +44,7 @@ ActivityPub.actors = require('./actors');
 
 ActivityPub.startJobs = () => {
 	winston.verbose('[activitypub/jobs] Registering jobs.');
-	new CronJob('0 0 * * *', ActivityPub.notes.prune, null, true);
-	// new CronJob(new Date(Date.now() + 2000), ActivityPub.notes.prune, null, true);
+	new CronJob('0 0 * * *', ActivityPub.notes.prune, null, true, null, null, false); // change last argument to true for debugging
 };
 
 ActivityPub.resolveId = async (uid, id) => {
