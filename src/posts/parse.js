@@ -72,9 +72,7 @@ module.exports = function (Posts) {
 
 	Posts.clearCachedPost = function (pid) {
 		const cache = require('./cache');
-		allowedTypes.forEach((type) => {
-			cache.del(`${String(pid)}|${type}`);
-		});
+		cache.del(allowedTypes.map(type => `${String(pid)}|${type}`));
 	};
 
 	Posts.parseSignature = async function (userData, uid) {
