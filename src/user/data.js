@@ -120,6 +120,7 @@ module.exports = function (User) {
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former-user]]' : '[[global:guest]]';
 				user.displayname = user.username;
 			}
+			user.uid = uid;
 
 			return user;
 		});
