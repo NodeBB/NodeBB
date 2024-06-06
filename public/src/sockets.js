@@ -54,7 +54,7 @@ app = window.app || {};
 	});
 
 	window.app.reconnect = () => {
-		if (socket.connected) {
+		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}
 

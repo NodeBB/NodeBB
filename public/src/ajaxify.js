@@ -25,7 +25,7 @@ ajaxify.widgets = { render: render };
 	}
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
-		if (!socket.connected) {
+		if (!socket.connected && parseInt(app.user.uid, 10) >= 0) {
 			app.reconnect();
 
 			if (ajaxify.reconnectAction) {

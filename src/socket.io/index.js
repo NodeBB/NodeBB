@@ -131,7 +131,7 @@ async function onConnect(socket) {
 		return;
 	}
 
-	if (socket.uid) {
+	if (socket.uid > 0) {
 		socket.join(`uid_${socket.uid}`);
 		socket.join('online_users');
 	} else {
