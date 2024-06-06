@@ -35,15 +35,15 @@ define('forum/topic/votes', [
 			$this.attr('title', '');
 		}
 
-		socket.emit('posts.getUpvoters', [pid], function (err, data) {
+		api.get(`/posts/${pid}/upvoters`, {}, function (err, data) {
 			if (err) {
 				if (err.message === '[[error:no-privileges]]') {
 					return;
 				}
 				return alerts.error(err);
 			}
-			if (_showTooltip[pid] && data.length) {
-				createTooltip($this, data[0]);
+			if (_showTooltip[pid] && data) {
+				createTooltip($this, data);
 			}
 		});
 	}
@@ -101,7 +101,7 @@ define('forum/topic/votes', [
 	};
 
 	Votes.showVotes = function (pid) {
-		socket.emit('posts.getVoters', { pid: pid }, function (err, data) {
+		api.get(`/posts/${pid}/voters`, {}, function (err, data) {
 			if (err) {
 				if (err.message === '[[error:no-privileges]]') {
 					return;

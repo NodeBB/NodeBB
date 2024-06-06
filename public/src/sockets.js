@@ -16,6 +16,7 @@ app = window.app || {};
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
 		transports: config.socketioTransports,
+		autoConnect: false,
 		path: config.relative_path + '/socket.io',
 		query: {
 			_csrf: config.csrf_token,
@@ -48,11 +49,12 @@ app = window.app || {};
 		hooks = _hooks;
 		if (parseInt(app.user.uid, 10) >= 0) {
 			addHandlers();
+			socket.connect();
 		}
 	});
 
 	window.app.reconnect = () => {
-		if (socket.connected) {
+		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}
 

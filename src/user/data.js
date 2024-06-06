@@ -134,7 +134,9 @@ module.exports = function (User) {
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former-user]]' : '[[global:guest]]';
 				user.displayname = user.username;
 			}
-
+			if (uid === -1) { // if loading spider set uid to -1 otherwise spiders have uid = 0 like guests
+				user.uid = -1;
+			}
 			return user;
 		});
 		return users;
