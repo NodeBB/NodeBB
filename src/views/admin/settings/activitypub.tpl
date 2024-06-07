@@ -25,6 +25,28 @@
 	</div>
 
 	<div class="row settings m-0">
+		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:pruning]]</div>
+		<div class="col-sm-10 col-12">
+			<form>
+				<div class="mb-3">
+					<label class="form-label" for="activitypubContentPruneDays">[[admin/settings/activitypub:content-pruning]]</label>
+					<input type="number" id="activitypubContentPruneDays" name="activitypubContentPruneDays" data-field="activitypubContentPruneDays" title="[[admin/settings/activitypub:content-pruning]]" class="form-control" />
+					<div class="form-text">
+						[[admin/settings/activitypub:content-pruning-help]]
+					</div>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="activitypubUserPruneDays">[[admin/settings/activitypub:user-pruning]]</label>
+					<input type="number" id="activitypubUserPruneDays" name="activitypubUserPruneDays" data-field="activitypubUserPruneDays" title="[[admin/settings/activitypub:user-pruning]]" class="form-control" />
+					<div class="form-text">
+						[[admin/settings/activitypub:user-pruning-help]]
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row settings m-0">
 		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:server-filtering]]</div>
 		<div class="col-sm-10 col-12">
 			<form>

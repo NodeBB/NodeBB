@@ -191,5 +191,7 @@
     "reconnectionDelay": 1500,
     "disableCustomUserSkins": 0,
     "activitypubEnabled": 1,
-    "activitypubAllowLoopback": 0
+    "activitypubAllowLoopback": 0,
+    "activitypubContentPruneDays": 30,
+    "activitypubUserPruneDays": 7
 }

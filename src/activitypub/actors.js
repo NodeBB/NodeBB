@@ -1,8 +1,11 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
 
 const db = require('../database');
+const meta = require('../meta');
+const batch = require('../batch');
 const user = require('../user');
 const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
@@ -211,6 +214,11 @@ Actors.getLocalFollowersCount = async (id) => {
 };
 
 Actors.remove = async (id) => {
+	/**
+	 * Remove ActivityPub related metadata pertaining to a remote id
+	 *
+	 * Note: don't call this directly! It is called as part of user.deleteAccount
+	 */
 	const exists = await db.isSortedSetMember('usersRemote:lastCrawled', id);
 	if (!exists) {
 		return false;
@@ -234,4 +242,51 @@ Actors.remove = async (id) => {
 		db.delete(`userRemote:${id}`),
 		db.sortedSetRemove('usersRemote:lastCrawled', id),
 	]);
+};
+
+Actors.prune = async () => {
+	/**
+	 * Clear out remote user accounts that do not have content on the forum anywhere
+	 * Re-crawl those that have not been updated recently
+	 */
+	winston.verbose('[actors/prune] Started scheduled pruning of remote user accounts');
+
+	const days = parseInt(meta.config.activitypubUserPruneDays, 10);
+	const timestamp = Date.now() - (1000 * 60 * 60 * 24 * days);
+	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, -1, 0, timestamp);
+	if (!uids.length) {
+		winston.verbose('[actors/prune] No remote users to prune, all done.');
+		return;
+	}
+
+	winston.verbose(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
+	let deletionCount = 0;
+	const reassertionSet = new Set();
+
+	await batch.processArray(uids, async (uids) => {
+		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
+		const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
+		await Promise.all(uids.map(async (uid, idx) => {
+			if (!exists[idx]) {
+				// id in zset but not asserted, handle and return early
+				await db.sortedSetRemove('usersRemote:lastCrawled', uid);
+				return;
+			}
+
+			const count = counts[idx];
+			if (count < 1) {
+				await user.deleteAccount(uid);
+				deletionCount += 1;
+			} else {
+				reassertionSet.add(uid);
+			}
+		}));
+	}, {
+		batch: 50,
+		interval: 1000,
+	});
+
+	winston.verbose(`[actors/prune] ${deletionCount} remote users pruned, re-asserting ${reassertionSet.size} remote users.`);
+
+	await Actors.assert(Array.from(reassertionSet), { update: true });
 };

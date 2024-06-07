@@ -95,6 +95,7 @@ module.exports = function (User) {
 		const userData = await db.getObject(utils.isNumber(uid) ? `user:${uid}` : `userRemote:${uid}`);
 
 		if (!userData || !userData.username) {
+			console.log('ERRORING', uid, userData);
 			delete deletesInProgress[uid];
 			throw new Error('[[error:no-user]]');
 		}
