@@ -21,15 +21,11 @@ const utils = require('../utils');
 
 const activitypubApi = module.exports;
 
-function noop() {}
-
 function enabledCheck(next) {
 	return async function (caller, params) {
-		if (!meta.config.activitypubEnabled) {
-			return noop;
+		if (meta.config.activitypubEnabled) {
+			await next(caller, params);
 		}
-
-		await next(caller, params);
 	};
 }
 
