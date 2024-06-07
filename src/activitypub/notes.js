@@ -415,8 +415,6 @@ Notes.prune = async () => {
 	winston.info(`[notes/prune] ${tids.length} topics eligible for pruning`);
 
 	await batch.processArray(tids, async (tids) => {
-		await Promise.all(tids.map(async (tid) => {
-			topics.purgePostsAndTopic(tid, 0);
-		}));
+		await Promise.all(tids.map(async tid => await topics.purgePostsAndTopic(tid, 0)));
 	}, { batch: 100 });
 };
