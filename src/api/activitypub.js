@@ -9,7 +9,7 @@
  */
 
 const nconf = require('nconf');
-const winston = require('winston');
+// const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -135,7 +135,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
-		winston.verbose(`[activitypub/api] Not federating creation of pid ${pid} to the fediverse due to privileges.`);
+		// winston.verbose(`[activitypub/api] Not federating creation of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 
@@ -195,7 +195,9 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 
 	const allowed = await privileges.posts.can('topics:read', post.pid, activitypub._constants.uid);
 	if (!allowed) {
-		winston.verbose(`[activitypub/api] Not federating update of pid ${post.pid} to the fediverse due to privileges.`);
+		// winston.verbose(
+		// `[activitypub/api] Not federating update of pid ${post.pid} to the fediverse due to privileges.`
+		// );
 		return;
 	}
 
@@ -225,7 +227,7 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
-		winston.verbose(`[activitypub/api] Not federating update of pid ${pid} to the fediverse due to privileges.`);
+		// winston.verbose(`[activitypub/api] Not federating update of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 

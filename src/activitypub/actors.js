@@ -1,6 +1,5 @@
 'use strict';
 
-const winston = require('winston');
 const nconf = require('nconf');
 
 const db = require('../database');
@@ -22,7 +21,9 @@ Actors.assert = async (ids, options = {}) => {
 	if (!Array.isArray(ids)) {
 		ids = [ids];
 	}
-
+	if (!ids.length) {
+		return false;
+	}
 	// Existance in failure cache is automatic assertion failure
 	if (ids.some(id => failedWebfingerCache.has(id))) {
 		return false;

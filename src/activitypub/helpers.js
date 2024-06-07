@@ -1,7 +1,6 @@
 'use strict';
 
 const { generateKeyPairSync } = require('crypto');
-const winston = require('winston');
 const nconf = require('nconf');
 const validator = require('validator');
 const cheerio = require('cheerio');
@@ -15,7 +14,7 @@ const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
 
-const webfingerRegex = /^(@|acct:)?[\w\-]+@.+$/;
+const webfingerRegex = /^(@|acct:)?[\w-]+@.+$/;
 const webfingerCache = ttl({
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours

@@ -440,7 +440,10 @@ inbox.undo = async (req) => {
 			id = id || object.object; // remote announces
 			const exists = await posts.exists(id);
 			if (!exists) {
-				// winston.verbose(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
+				// winston.verbose(
+				// `[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.
+				// `);
+				break;
 			}
 
 			await activitypub.notes.announce.remove(id, actor);
