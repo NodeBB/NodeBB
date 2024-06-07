@@ -116,16 +116,21 @@ module.exports = function (module) {
 		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetsCardSum = async function (keys) {
+	module.sortedSetsCardSum = async function (keys, min = '-inf', max = '+inf') {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
 			return 0;
 		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		const counts = await module.sortedSetsCard(keys);
-		const sum = counts.reduce((acc, val) => acc + val, 0);
-		return sum;
+		const batch = module.client.batch();
+		if (min !== '-inf' || max !== '+inf') {
+			keys.forEach(k => batch.zcount(String(k), min, max));
+		} else {
+			keys.forEach(k => batch.zcard(String(k)));
+		}
+		const counts = await helpers.execBatch(batch);
+		return counts.reduce((acc, val) => acc + val, 0);
 	};
 
 	module.sortedSetRank = async function (key, value) {

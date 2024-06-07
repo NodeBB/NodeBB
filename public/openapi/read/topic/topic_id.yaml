@@ -382,6 +382,8 @@ get:
                     type: number
                   downvote:disabled:
                     type: number
+                  voteVisibility:
+                    type: string
                   feeds:disableRSS:
                     type: number
                   signatures:hideDuplicates:
