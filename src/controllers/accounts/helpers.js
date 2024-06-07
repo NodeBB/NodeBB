@@ -190,8 +190,8 @@ async function getCounts(userData, callerUID) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
-		best: Promise.all(cids.map(async c => db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, 1, '+inf'))),
-		controversial: Promise.all(cids.map(async c => db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, '-inf', -1))),
+		best: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), 1, '+inf'),
+		controversial: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), '-inf', -1),
 		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
 	};
 	if (userData.isAdmin || userData.isSelf) {
@@ -207,8 +207,6 @@ async function getCounts(userData, callerUID) {
 	}
 	const counts = await utils.promiseParallel(promises);
 	counts.posts = isRemote ? userData.postcount : counts.posts;
-	counts.best = counts.best.reduce((sum, count) => sum + count, 0);
-	counts.controversial = counts.controversial.reduce((sum, count) => sum + count, 0);
 	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
 	counts.groups = userData.groups.length;
 	counts.following = userData.followingCount;

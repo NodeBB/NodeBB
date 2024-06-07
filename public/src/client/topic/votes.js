@@ -9,9 +9,18 @@ define('forum/topic/votes', [
 
 	Votes.addVoteHandler = function () {
 		_showTooltip = {};
-		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
-		components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
+		if (canSeeVotes()) {
+			components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+			components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
+		}
 	};
+
+	function canSeeVotes() {
+		const { voteVisibility, privileges } = ajaxify.data;
+		return privileges.isAdminOrMod ||
+			voteVisibility === 'all' ||
+			(voteVisibility === 'loggedin' && config.loggedIn);
+	}
 
 	function destroyTooltip() {
 		const $this = $(this);
@@ -37,9 +46,6 @@ define('forum/topic/votes', [
 
 		api.get(`/posts/${pid}/upvoters`, {}, function (err, data) {
 			if (err) {
-				if (err.message === '[[error:no-privileges]]') {
-					return;
-				}
 				return alerts.error(err);
 			}
 			if (_showTooltip[pid] && data) {
@@ -101,13 +107,11 @@ define('forum/topic/votes', [
 	};
 
 	Votes.showVotes = function (pid) {
+		if (!canSeeVotes()) {
+			return;
+		}
 		api.get(`/posts/${pid}/voters`, {}, function (err, data) {
 			if (err) {
-				if (err.message === '[[error:no-privileges]]') {
-					return;
-				}
-
-				// Only show error if it's an unexpected error.
 				return alerts.error(err);
 			}
 
