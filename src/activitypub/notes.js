@@ -55,7 +55,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	members.push(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
-		winston.verbose('[notes/assert] No new notes to process.');
+		// winston.verbose('[notes/assert] No new notes to process.');
 		unlock(id);
 		return { tid, count: 0 };
 	}
@@ -97,7 +97,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return post;
 	}).filter((p, idx) => !members[idx]);
 	const count = unprocessed.length;
-	winston.verbose(`[notes/assert] ${count} new note(s) found.`);
+	// winston.verbose(`[notes/assert] ${count} new note(s) found.`);
 
 	const [ids, timestamps] = [
 		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
@@ -299,7 +299,7 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
-	winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
+	// winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await Promise.all([
 		db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid),
 		db.setAdd(`tid:${tid}:recipients`, Array.from(uids)),
@@ -381,12 +381,12 @@ Notes.prune = async () => {
 	 *   - Replied to (contains a local reply)
 	 *   - Post within is liked
 	 */
-	winston.verbose('[notes/prune] Starting scheduled pruning of topics');
+	// winston.verbose('[notes/prune] Starting scheduled pruning of topics');
 	const start = 0;
 	const stop = Date.now() - (1000 * 60 * 60 * 24 * 30); // 30 days; todo: make configurable?
 	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
 
-	winston.verbose(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);
+	// winston.verbose(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);
 
 	const posters = await db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:posters`));
 	const hasLocalVoter = await Promise.all(tids.map(async (tid) => {
@@ -412,7 +412,7 @@ Notes.prune = async () => {
 		return !localPoster && !localVoter;
 	});
 
-	winston.verbose(`[notes/prune] ${tids.length} topics eligible for pruning`);
+	// winston.verbose(`[notes/prune] ${tids.length} topics eligible for pruning`);
 
 	await batch.processArray(tids, async (tids) => {
 		await Promise.all(tids.map(async (tid) => {

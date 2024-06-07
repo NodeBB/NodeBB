@@ -41,7 +41,7 @@ inbox.create = async (req) => {
 
 	const response = await activitypub.notes.assert(0, object);
 	if (response) {
-		winston.verbose(`[activitypub/inbox] Parsing ${response.count} notes into topic ${response.tid}`);
+		// winston.verbose(`[activitypub/inbox] Parsing ${response.count} notes into topic ${response.tid}`);
 
 		// todo: put this somewhere better if need be... maybe this is better as api.activitypub.announce.note?
 		const cid = await topics.getTopicField(response.tid, 'cid');
@@ -153,7 +153,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			winston.verbose(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
+			// winston.verbose(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}
@@ -440,7 +440,7 @@ inbox.undo = async (req) => {
 			id = id || object.object; // remote announces
 			const exists = await posts.exists(id);
 			if (!exists) {
-				winston.verbose(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
+				// winston.verbose(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
 			}
 
 			await activitypub.notes.announce.remove(id, actor);

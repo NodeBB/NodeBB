@@ -68,14 +68,14 @@ Actors.assert = async (ids, options = {}) => {
 		return true;
 	}
 
-	winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
+	// winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
-			winston.verbose(`[activitypub/actors] Processing ${id}`);
+			// winston.verbose(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id);
 
 			// Follow counts
@@ -88,7 +88,7 @@ Actors.assert = async (ids, options = {}) => {
 				actor.followingCount = following.totalItems;
 			} catch (e) {
 				// no action required
-				winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
+				// winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
 
 			// Post count
@@ -97,7 +97,7 @@ Actors.assert = async (ids, options = {}) => {
 				actor.postcount = outbox.totalItems;
 			} catch (e) {
 				// no action required
-				winston.verbose(`[activitypub/actor.assert] Unable to retrieve post counts for ${actor.id}`);
+				// winston.verbose(`[activitypub/actor.assert] Unable to retrieve post counts for ${actor.id}`);
 			}
 
 			// Save url for backreference

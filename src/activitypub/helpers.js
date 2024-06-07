@@ -102,7 +102,7 @@ Helpers.query = async (id) => {
 };
 
 Helpers.generateKeys = async (type, id) => {
-	winston.verbose(`[activitypub] Generating RSA key-pair for ${type} ${id}`);
+	// winston.verbose(`[activitypub] Generating RSA key-pair for ${type} ${id}`);
 	const {
 		publicKey,
 		privateKey,

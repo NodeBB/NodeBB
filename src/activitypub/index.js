@@ -43,7 +43,7 @@ ActivityPub.notes = require('./notes');
 ActivityPub.actors = require('./actors');
 
 ActivityPub.startJobs = () => {
-	winston.verbose('[activitypub/jobs] Registering jobs.');
+	// winston.verbose('[activitypub/jobs] Registering jobs.');
 	new CronJob('0 0 * * *', ActivityPub.notes.prune, null, true, null, null, false); // change last argument to true for debugging
 };
 
@@ -165,9 +165,9 @@ ActivityPub.sign = async ({ key, keyId }, url, payload) => {
 };
 
 ActivityPub.verify = async (req) => {
-	winston.verbose('[activitypub/verify] Starting signature verification...');
+	// winston.verbose('[activitypub/verify] Starting signature verification...');
 	if (!req.headers.hasOwnProperty('signature')) {
-		winston.verbose('[activitypub/verify]   Failed, no signature header.');
+		// winston.verbose('[activitypub/verify]   Failed, no signature header.');
 		return false;
 	}
 
@@ -215,17 +215,17 @@ ActivityPub.verify = async (req) => {
 	// Verify the signature string via public key
 	try {
 		// Retrieve public key from remote instance
-		winston.verbose(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
+		// winston.verbose(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
 		const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
 
 		const verify = createVerify('sha256');
 		verify.update(signed_string);
 		verify.end();
-		winston.verbose('[activitypub/verify] Attempting signed string verification');
+		// winston.verbose('[activitypub/verify] Attempting signed string verification');
 		const verified = verify.verify(publicKeyPem, signature, 'base64');
 		return verified;
 	} catch (e) {
-		winston.verbose('[activitypub/verify]   Failed, key retrieval or verification failure.');
+		// winston.verbose('[activitypub/verify]   Failed, key retrieval or verification failure.');
 		return false;
 	}
 };
@@ -239,7 +239,7 @@ ActivityPub.get = async (type, id, uri) => {
 
 	const keyData = await ActivityPub.getPrivateKey(type, id);
 	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
-	winston.verbose(`[activitypub/get] ${uri}`);
+	// winston.verbose(`[activitypub/get] ${uri}`);
 	try {
 		const { response, body } = await request.get(uri, {
 			headers: {
@@ -278,7 +278,7 @@ pubsub.on(`activitypub-retry-queue:lruCache:del`, (keys) => {
 async function sendMessage(uri, id, type, payload, attempts = 1) {
 	const keyData = await ActivityPub.getPrivateKey(type, id);
 	const headers = await ActivityPub.sign(keyData, uri, payload);
-	winston.verbose(`[activitypub/send] ${uri}`);
+	// winston.verbose(`[activitypub/send] ${uri}`);
 	try {
 		const { response, body } = await request.post(uri, {
 			headers: {
@@ -289,7 +289,7 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 		});
 
 		if (String(response.statusCode).startsWith('2')) {
-			winston.verbose(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
+			// winston.verbose(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
 		} else {
 			throw new Error(String(body));
 		}
@@ -302,7 +302,7 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 			const timeoutId = setTimeout(() => sendMessage(uri, id, type, payload, attempts + 1), timeout);
 			ActivityPub.retryQueue.set(queueId, timeoutId);
 
-			winston.verbose(`[activitypub/send] Added ${payload.type} to ${uri} to retry queue for ${timeout}ms`);
+			// winston.verbose(`[activitypub/send] Added ${payload.type} to ${uri} to retry queue for ${timeout}ms`);
 		} else {
 			winston.warn(`[activitypub/send] Max attempts reached for ${payload.type} to ${uri}; giving up on sending`);
 		}
