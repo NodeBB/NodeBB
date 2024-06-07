@@ -515,7 +515,7 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 
 async function processDeletion({ uid, method, password, caller }) {
 	const isTargetAdmin = await user.isAdministrator(uid);
-	const isSelf = parseInt(uid, 10) === parseInt(caller.uid, 10);
+	const isSelf = String(uid) === String(caller.uid);
 	const hasAdminPrivilege = await privileges.admin.can('admin:users', caller.uid);
 
 	if (isSelf && meta.config.allowAccountDelete !== 1) {

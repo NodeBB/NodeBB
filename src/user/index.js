@@ -43,11 +43,13 @@ require('./blocks')(User);
 require('./uploads')(User);
 
 User.exists = async function (uids) {
-	return await (
-		Array.isArray(uids) ?
-			db.isSortedSetMembers('users:joindate', uids) :
-			db.isSortedSetMember('users:joindate', uids)
-	);
+	const singular = !Array.isArray(uids);
+	uids = singular ? [uids] : uids;
+
+	let results = await Promise.all(uids.map(async uid => await db.isMemberOfSortedSets(['users:joindate', 'usersRemote:lastCrawled'], uid)));
+	results = results.map(set => set.some(Boolean));
+
+	return singular ? results.pop() : results;
 };
 
 User.existsBySlug = async function (userslug) {
