@@ -122,7 +122,7 @@ Actors.assert = async (ids, options = {}) => {
 	actors = actors.filter(Boolean); // remove unresolvable actors
 
 	// Build userData object for storage
-	const profiles = await activitypub.mocks.profile(actors);
+	const profiles = (await activitypub.mocks.profile(actors)).filter(Boolean);
 	const now = Date.now();
 
 	const bulkSet = profiles.reduce((memo, profile) => {

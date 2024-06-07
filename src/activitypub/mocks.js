@@ -29,7 +29,7 @@ const sanitizeConfig = {
 
 Mocks.profile = async (actors) => {
 	// Should only ever be called by activitypub.actors.assert
-	const profiles = (await Promise.all(actors.map(async (actor) => {
+	const profiles = await Promise.all(actors.map(async (actor) => {
 		if (!actor) {
 			return null;
 		}
@@ -78,7 +78,7 @@ Mocks.profile = async (actors) => {
 		};
 
 		return payload;
-	})));
+	}));
 
 	return profiles;
 };
