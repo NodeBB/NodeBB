@@ -13,7 +13,9 @@ const topics = require('../topics');
 const groups = require('../groups');
 const messaging = require('../messaging');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const batch = require('../batch');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	const deletesInProgress = {};
@@ -24,7 +26,7 @@ module.exports = function (User) {
 	};
 
 	User.deleteContent = async function (callerUid, uid) {
-		if (parseInt(uid, 10) <= 0) {
+		if (utils.isNumber(uid) && parseInt(uid, 10) <= 0) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 		if (deletesInProgress[uid]) {
@@ -61,7 +63,7 @@ module.exports = function (User) {
 		let deleteIds = [];
 		await batch.processSortedSet('post:queue', async (ids) => {
 			const data = await db.getObjects(ids.map(id => `post:queue:${id}`));
-			const userQueuedIds = data.filter(d => parseInt(d.uid, 10) === parseInt(uid, 10)).map(d => d.id);
+			const userQueuedIds = data.filter(d => String(d.uid) === String(uid)).map(d => d.id);
 			deleteIds = deleteIds.concat(userQueuedIds);
 		}, { batch: 500 });
 		await async.eachSeries(deleteIds, posts.removeFromQueue);
@@ -90,7 +92,7 @@ module.exports = function (User) {
 		deletesInProgress[uid] = 'user.deleteAccount';
 
 		await removeFromSortedSets(uid);
-		const userData = await db.getObject(`user:${uid}`);
+		const userData = await db.getObject(utils.isNumber(uid) ? `user:${uid}` : `userRemote:${uid}`);
 
 		if (!userData || !userData.username) {
 			delete deletesInProgress[uid];
@@ -153,6 +155,7 @@ module.exports = function (User) {
 			flags.resolveFlag('user', uid, uid),
 			User.reset.cleanByUid(uid),
 			User.email.expireValidation(uid),
+			activitypub.actors.remove(uid),
 		]);
 		await db.deleteAll([
 			`followers:${uid}`, `following:${uid}`, `user:${uid}`,

@@ -71,6 +71,8 @@ Actors.assert = async (ids, options = {}) => {
 
 	// winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
+	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
+
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
@@ -206,4 +208,30 @@ Actors.getLocalFollowersCount = async (id) => {
 	}
 
 	return await db.sortedSetCard(`followersRemote:${id}`);
+};
+
+Actors.remove = async (id) => {
+	const exists = await db.isSortedSetMember('usersRemote:lastCrawled', id);
+	if (!exists) {
+		return false;
+	}
+
+	let { username, fullname, url, followersUrl } = await user.getUserFields(id, ['username', 'fullname', 'url', 'followersUrl']);
+	username = username.toLowerCase();
+
+	await Promise.all([
+		db.sortedSetRemoveBulk([
+			['ap.preferredUsername:sorted', `${username}:${id}`],
+			['ap.name:sorted', `${fullname.toLowerCase()}:${id}`],
+		]),
+		db.deleteObjectField('handle:uid', username),
+		db.deleteObjectField('followersUrl:uid', followersUrl),
+		db.deleteObjectField('remoteUrl:uid', url),
+		db.delete(`userRemote:${id}:keys`),
+	]);
+
+	await Promise.all([
+		db.delete(`userRemote:${id}`),
+		db.sortedSetRemove('usersRemote:lastCrawled', id),
+	]);
 };

@@ -29,8 +29,8 @@ Assert.user = helpers.try(async (req, res, next) => {
 	const uid = req.params.uid || res.locals.uid;
 
 	if (
-		(utils.isNumber(uid) && await user.exists(uid)) ||
-		(uid.indexOf('@') !== -1 && await activitypub.helpers.query(uid))
+		((utils.isNumber(uid) || activitypub.helpers.isUri(uid)) && await user.exists(uid)) ||
+		(uid.indexOf('@') !== -1 && await user.existsBySlug(uid))
 	) {
 		return next();
 	}
