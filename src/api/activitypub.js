@@ -29,7 +29,7 @@ function enabledCheck(next) {
 			return noop;
 		}
 
-		next(caller, params);
+		await next(caller, params);
 	};
 }
 

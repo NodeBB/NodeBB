@@ -52,9 +52,9 @@
 						{{{ end }}}
 
 						<div class="mb-3">
-							<label class="form-label" for="syncing.add">[[admin/manage/categories:federation.syncing-add]]</label>
+							<label class="form-label" for="syncing-add">[[admin/manage/categories:federation.syncing-add]]</label>
 							<div class="input-group">
-								<input id="syncing.add" type="url" class="form-control" />
+								<input id="syncing-add" type="url" class="form-control" />
 								<button data-action="follow" type="button" class="btn btn-primary">[[admin/manage/categories:federation.syncing-follow]]</button>
 							</div>
 						</div>

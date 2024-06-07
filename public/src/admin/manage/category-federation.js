@@ -13,18 +13,12 @@ export function init() {
 		template: 'admin/partials/category/selector-dropdown-right',
 	});
 
-	document.getElementById('site-settings').addEventListener('click', async (e) => {
-		const subselector = e.target.closest('[data-action]');
-		if (!subselector) {
-			return;
-		}
-
-		const action = subselector.getAttribute('data-action');
+	$('#site-settings').on('click', '[data-action]', function () {
+		const action = $(this).attr('data-action');
 
 		switch (action) {
 			case 'follow': {
-				const inputEl = document.getElementById('syncing.add');
-				const actor = inputEl.value;
+				const actor = $('#syncing-add').val();
 
 				put(`/categories/${ajaxify.data.cid}/follow`, { actor })
 					.then(ajaxify.refresh)
@@ -34,7 +28,7 @@ export function init() {
 			}
 
 			case 'unfollow': {
-				const actor = subselector.getAttribute('data-actor');
+				const actor = $(this).attr('data-actor');
 
 				del(`/categories/${ajaxify.data.cid}/follow`, { actor })
 					.then(ajaxify.refresh)

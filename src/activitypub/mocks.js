@@ -42,13 +42,7 @@ Mocks.profile = async (actors) => {
 		} = actor;
 		preferredUsername = preferredUsername || slugify(name);
 
-		let hostname;
-		try {
-			({ hostname } = new URL(actor.id));
-		} catch (err) {
-			console.error(err.stack);
-			return null;
-		}
+		const { hostname } = new URL(actor.id);
 
 		let picture;
 		if (icon) {
