@@ -381,12 +381,12 @@ Notes.prune = async () => {
 	 *   - Replied to (contains a local reply)
 	 *   - Post within is liked
 	 */
-	// winston.verbose('[notes/prune] Starting scheduled pruning of topics');
+	winston.info('[notes/prune] Starting scheduled pruning of topics');
 	const start = 0;
 	const stop = Date.now() - (1000 * 60 * 60 * 24 * 30); // 30 days; todo: make configurable?
 	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
 
-	// winston.verbose(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);
+	winston.info(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);
 
 	const posters = await db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:posters`));
 	const hasLocalVoter = await Promise.all(tids.map(async (tid) => {
@@ -412,7 +412,7 @@ Notes.prune = async () => {
 		return !localPoster && !localVoter;
 	});
 
-	// winston.verbose(`[notes/prune] ${tids.length} topics eligible for pruning`);
+	winston.info(`[notes/prune] ${tids.length} topics eligible for pruning`);
 
 	await batch.processArray(tids, async (tids) => {
 		await Promise.all(tids.map(async (tid) => {
