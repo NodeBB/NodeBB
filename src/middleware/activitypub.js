@@ -1,7 +1,5 @@
 'use strict';
 
-const winston = require('winston');
-
 const db = require('../database');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
