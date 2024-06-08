@@ -67,6 +67,7 @@ apiController.loadConfig = async function (req) {
 		userLang: req.query.lang ? validator.escape(String(req.query.lang)) : (meta.config.defaultLang || 'en-GB'),
 		loggedIn: !!req.user,
 		uid: req.uid,
+		isACP: !!(req.res && req.res.locals && req.res.locals.renderAdminHeader),
 		'cache-buster': meta.config['cache-buster'] || '',
 		topicPostSort: meta.config.topicPostSort || 'oldest_to_newest',
 		categoryTopicSort: meta.config.categoryTopicSort || 'recently_replied',

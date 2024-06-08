@@ -14,6 +14,9 @@ module.exports = function (module) {
 
 	module.exists = async function (key) {
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return [];
+			}
 			const batch = module.client.batch();
 			key.forEach(key => batch.exists(key));
 			const data = await helpers.execBatch(batch);

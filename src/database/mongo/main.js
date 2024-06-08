@@ -17,11 +17,14 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return [];
+			}
 			const data = await module.client.collection('objects').find({
 				_key: { $in: key },
 			}, { _id: 0, _key: 1 }).toArray();
 
-			const map = {};
+			const map = Object.create(null);
 			data.forEach((item) => {
 				map[item._key] = true;
 			});
