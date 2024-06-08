@@ -94,6 +94,9 @@ get:
               uid:
                 type: number
                 description: A user identifier
+              isACP:
+                type: boolean
+                description: true if admin page is being loaded, false otherwise
               cache-buster:
                 type: string
               topicPostSort:
