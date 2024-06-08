@@ -16,38 +16,59 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-
-		// Redis/Mongo consider empty zsets as non-existent, match that behaviour
-		const type = await module.type(key);
-		if (type === 'zset') {
-			if (Array.isArray(key)) {
-				const members = await Promise.all(key.map(key => module.getSortedSetRange(key, 0, 0)));
-				return members.map(member => member.length > 0);
-			}
-			const members = await module.getSortedSetRange(key, 0, 0);
-			return members.length > 0;
+		const isArray = Array.isArray(key);
+		if (isArray && !key.length) {
+			return [];
 		}
 
-		if (Array.isArray(key)) {
+		async function checkIfzSetsExist(keys) {
+			const members = await Promise.all(
+				keys.map(key => module.getSortedSetRange(key, 0, 0))
+			);
+			return members.map(member => member.length > 0);
+		}
+
+		async function checkIfKeysExist(keys) {
 			const res = await module.pool.query({
 				name: 'existsArray',
 				text: `
 				SELECT o."_key" k
   				FROM "legacy_object_live" o
  				WHERE o."_key" = ANY($1::TEXT[])`,
-				values: [key],
+				values: [keys],
 			});
-			return key.map(k => res.rows.some(r => r.k === k));
+			return keys.map(k => res.rows.some(r => r.k === k));
+		}
+
+		// Redis/Mongo consider empty zsets as non-existent, match that behaviour
+		if (isArray) {
+			const types = await Promise.all(key.map(module.type));
+			const zsetKeys = key.filter((_key, i) => types[i] === 'zset');
+			const otherKeys = key.filter((_key, i) => types[i] !== 'zset');
+			const [zsetExits, otherExists] = await Promise.all([
+				checkIfzSetsExist(zsetKeys),
+				checkIfKeysExist(otherKeys),
+			]);
+			const existsMap = Object.create(null);
+			zsetKeys.forEach((k, i) => { existsMap[k] = zsetExits[i]; });
+			otherKeys.forEach((k, i) => { existsMap[k] = otherExists[i]; });
+			return key.map(k => existsMap[k]);
+		}
+		const type = await module.type(key);
+		if (type === 'zset') {
+			const members = await module.getSortedSetRange(key, 0, 0);
+			return members.length > 0;
 		}
 		const res = await module.pool.query({
 			name: 'exists',
 			text: `
 			SELECT EXISTS(SELECT *
 					FROM "legacy_object_live"
-				   WHERE "_key" = $1::TEXT
-				   LIMIT 1) e`,
+					WHERE "_key" = $1::TEXT
+					LIMIT 1) e`,
 			values: [key],
 		});
+
 		return res.rows[0].e;
 	};
 
