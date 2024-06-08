@@ -1,8 +1,8 @@
 get:
   tags:
-    - home
-  summary: Get forum settings
-  description: This route retrieves forum settings and user-specific settings for client-side options on the forum.
+    - admin
+  summary: Get forum settings and admin only settings
+  description: This route retrieves forum settings and user-specific settings for client-side and admin-side options on the forum.
   responses:
     "200":
       description: ""

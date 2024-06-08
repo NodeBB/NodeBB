@@ -170,6 +170,8 @@ paths:
     $ref: 'read/admin/upload/file.yaml'
   /api/admin/uploadDefaultAvatar:
     $ref: 'read/admin/uploadDefaultAvatar.yaml'
+  /api/admin/config:
+    $ref: 'read/admin/config.yaml'
   /api/config:
     $ref: 'read/config.yaml'
   /api/users:
