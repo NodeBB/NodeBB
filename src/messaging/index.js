@@ -417,7 +417,8 @@ async function checkReputation(uid) {
 }
 
 Messaging.hasPrivateChat = async (uid, withUid) => {
-	if (parseInt(uid, 10) === parseInt(withUid, 10)) {
+	if (parseInt(uid, 10) === parseInt(withUid, 10) ||
+		parseInt(uid, 10) <= 0 || parseInt(withUid, 10) <= 0) {
 		return 0;
 	}
 
