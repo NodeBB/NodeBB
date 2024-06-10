@@ -126,7 +126,36 @@ User.getUidByUserslug = async function (userslug) {
 };
 
 User.getUidsByUserslugs = async function (userslugs) {
-	return await db.sortedSetScores('userslug:uid', userslugs);
+	const apSlugs = userslugs.filter(slug => slug.includes('@'));
+	const normalSlugs = userslugs.filter(slug => !slug.includes('@'));
+	const slugToUid = Object.create(null);
+	async function getApSlugs() {
+		await Promise.all(apSlugs.map(slug => activitypub.actors.assert(slug)));
+		const apUids = await db.getObjectFields(
+			'handle:uid',
+			apSlugs.map(slug => String(slug).toLowerCase()),
+		);
+		return apUids;
+	}
+
+	const [apUids, normalUids] = await Promise.all([
+		apSlugs.length ? getApSlugs() : [],
+		normalSlugs.length ? db.sortedSetScores('userslug:uid', normalSlugs) : [],
+	]);
+
+	apSlugs.forEach((slug) => {
+		if (apUids[slug]) {
+			slugToUid[slug] = apUids[slug];
+		}
+	});
+
+	normalSlugs.forEach((slug, i) => {
+		if (normalUids[i]) {
+			slugToUid[slug] = normalUids[i];
+		}
+	});
+
+	return userslugs.map(slug => slugToUid[slug] || null);
 };
 
 User.getUsernamesByUids = async function (uids) {
