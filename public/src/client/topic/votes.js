@@ -44,7 +44,7 @@ define('forum/topic/votes', [
 			$this.attr('title', '');
 		}
 
-		api.get(`/posts/${pid}/upvoters`, {}, function (err, data) {
+		api.get(`/posts/${encodeURIComponent(pid)}/upvoters`, {}, function (err, data) {
 			if (err) {
 				return alerts.error(err);
 			}
@@ -110,7 +110,7 @@ define('forum/topic/votes', [
 		if (!canSeeVotes()) {
 			return;
 		}
-		api.get(`/posts/${pid}/voters`, {}, function (err, data) {
+		api.get(`/posts/${encodeURIComponent(pid)}/voters`, {}, function (err, data) {
 			if (err) {
 				return alerts.error(err);
 			}
