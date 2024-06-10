@@ -58,7 +58,7 @@ ActivityPub.startJobs = () => {
 		} catch (err) {
 			winston.error(err.stack);
 		}
-	},, null, true, null, null, false); // change last argument to true for debugging
+	}, null, true, null, null, false); // change last argument to true for debugging
 };
 
 ActivityPub.resolveId = async (uid, id) => {
