@@ -7,6 +7,7 @@ const db = require('../database');
 const utils = require('../utils');
 const user = require('../user');
 const posts = require('../posts');
+const postsCache = require('../posts/cache');
 const topics = require('../topics');
 const groups = require('../groups');
 const plugins = require('../plugins');
@@ -225,7 +226,7 @@ postsAPI.purge = async function (caller, data) {
 	if (!canPurge) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	require('../posts/cache').del(data.pid);
+	postsCache.del(data.pid);
 	await posts.purge(data.pid, caller.uid);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);

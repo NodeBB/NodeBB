@@ -740,7 +740,7 @@ describe('socket.io', () => {
 
 	it('should toggle caches', async () => {
 		const caches = {
-			post: require('../src/posts/cache'),
+			post: require('../src/posts/cache').getOrCreate(),
 			object: require('../src/database').objectCache,
 			group: require('../src/groups').cache,
 			local: require('../src/cache'),

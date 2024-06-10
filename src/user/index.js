@@ -50,8 +50,12 @@ User.exists = async function (uids) {
 };
 
 User.existsBySlug = async function (userslug) {
-	const exists = await User.getUidByUserslug(userslug);
-	return !!exists;
+	if (Array.isArray(userslug)) {
+		const uids = await User.getUidsByUserslugs(userslug);
+		return uids.map(uid => !!uid);
+	}
+	const uid = await User.getUidByUserslug(userslug);
+	return !!uid;
 };
 
 User.getUidsFromSet = async function (set, start, stop) {
@@ -110,6 +114,10 @@ User.getUidByUserslug = async function (userslug) {
 		return 0;
 	}
 	return await db.sortedSetScore('userslug:uid', userslug);
+};
+
+User.getUidsByUserslugs = async function (userslugs) {
+	return await db.sortedSetScores('userslug:uid', userslugs);
 };
 
 User.getUsernamesByUids = async function (uids) {
