@@ -64,6 +64,7 @@ module.exports = function (Topics) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
 		await batch.processSortedSet(`tid:${tid}:posts`, async (pids) => {
 			await posts.purge(pids, uid);
+			await db.sortedSetRemove(`tid:${tid}:posts`, pids); // Guard against infinite loop if pid already does not exist in db
 		}, { alwaysStartAt: 0, batch: 500 });
 		await posts.purge(mainPid, uid);
 		await Topics.purge(tid, uid);
