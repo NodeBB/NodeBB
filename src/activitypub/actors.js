@@ -227,11 +227,15 @@ Actors.remove = async (id) => {
 	let { username, fullname, url, followersUrl } = await user.getUserFields(id, ['username', 'fullname', 'url', 'followersUrl']);
 	username = username.toLowerCase();
 
+	const bulkRemove = [
+		['ap.preferredUsername:sorted', `${username}:${id}`],
+	];
+	if (fullname) {
+		bulkRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${id}`]);
+	}
+
 	await Promise.all([
-		db.sortedSetRemoveBulk([
-			['ap.preferredUsername:sorted', `${username}:${id}`],
-			['ap.name:sorted', `${fullname.toLowerCase()}:${id}`],
-		]),
+		db.sortedSetRemoveBulk(bulkRemove),
 		db.deleteObjectField('handle:uid', username),
 		db.deleteObjectField('followersUrl:uid', followersUrl),
 		db.deleteObjectField('remoteUrl:uid', url),
@@ -249,17 +253,17 @@ Actors.prune = async () => {
 	 * Clear out remote user accounts that do not have content on the forum anywhere
 	 * Re-crawl those that have not been updated recently
 	 */
-	winston.verbose('[actors/prune] Started scheduled pruning of remote user accounts');
+	winston.info('[actors/prune] Started scheduled pruning of remote user accounts');
 
 	const days = parseInt(meta.config.activitypubUserPruneDays, 10);
 	const timestamp = Date.now() - (1000 * 60 * 60 * 24 * days);
 	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, -1, 0, timestamp);
 	if (!uids.length) {
-		winston.verbose('[actors/prune] No remote users to prune, all done.');
+		winston.info('[actors/prune] No remote users to prune, all done.');
 		return;
 	}
 
-	winston.verbose(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
+	winston.info(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
 	let deletionCount = 0;
 	const reassertionSet = new Set();
 
@@ -286,7 +290,7 @@ Actors.prune = async () => {
 		interval: 1000,
 	});
 
-	winston.verbose(`[actors/prune] ${deletionCount} remote users pruned, re-asserting ${reassertionSet.size} remote users.`);
+	winston.info(`[actors/prune] ${deletionCount} remote users pruned, re-asserting ${reassertionSet.size} remote users.`);
 
 	await Actors.assert(Array.from(reassertionSet), { update: true });
 };
