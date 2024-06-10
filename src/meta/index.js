@@ -42,7 +42,7 @@ Meta.userOrGroupExists = async function (slug) {
 	]);
 
 	return isArray ?
-		slug.map((s, i) => userExists[i] || groupExists[i]):
+		slug.map((s, i) => userExists[i] || groupExists[i]) :
 		(userExists || groupExists);
 };
 
