@@ -23,10 +23,10 @@ exports.del = function (pid) {
 	if (cache) {
 		cache.del(pid);
 	}
-}
+};
 
 exports.reset = function () {
 	if (cache) {
 		cache.reset();
 	}
-}
+};
