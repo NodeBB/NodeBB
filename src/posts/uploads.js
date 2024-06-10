@@ -163,7 +163,7 @@ module.exports = function (Posts) {
 		filePaths = await _filterValidPaths(filePaths); // Only process files that exist and are within uploads directory
 
 		const now = Date.now();
-		const scores = filePaths.map(() => now);
+		const scores = filePaths.map((p, i) => now + i);
 		const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
 		await Promise.all([
 			db.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
