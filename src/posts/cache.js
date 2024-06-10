@@ -1,12 +1,11 @@
 'use strict';
 
-const cacheCreate = require('../cache/lru');
-const meta = require('../meta');
-
 let cache = null;
 
 exports.getOrCreate = function () {
 	if (!cache) {
+		const cacheCreate = require('../cache/lru');
+		const meta = require('../meta');
 		cache = cacheCreate({
 			name: 'post',
 			maxSize: meta.config.postCacheSize,
