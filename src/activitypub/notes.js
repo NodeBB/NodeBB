@@ -417,4 +417,6 @@ Notes.prune = async () => {
 	await batch.processArray(tids, async (tids) => {
 		await Promise.all(tids.map(async tid => await topics.purgePostsAndTopic(tid, 0)));
 	}, { batch: 100 });
+
+	winston.info('[notes/prune] Scheduled pruning of topics complete.');
 };

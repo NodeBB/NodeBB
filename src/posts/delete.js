@@ -115,7 +115,7 @@ module.exports = function (Posts) {
 			incrObjectBulk.push([`category:${cid}`, { post_count: -posts.length }]);
 		}
 
-		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
+		const postsByTopic = _.groupBy(postData, p => String(p.tid));
 		const topicPostCountTasks = [];
 		const topicTasks = [];
 		const zsetIncrBulk = [];
