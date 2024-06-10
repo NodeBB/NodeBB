@@ -279,8 +279,12 @@ Actors.prune = async () => {
 
 			const count = counts[idx];
 			if (count < 1) {
-				await user.deleteAccount(uid);
-				deletionCount += 1;
+				try {
+					await user.deleteAccount(uid);
+					deletionCount += 1;
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			} else {
 				reassertionSet.add(uid);
 			}
