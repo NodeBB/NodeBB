@@ -10,6 +10,7 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const utils = require('../utils');
+const postCache = require('./cache');
 
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
@@ -49,13 +50,15 @@ module.exports = function (Posts) {
 		if (!postData) {
 			return postData;
 		}
+
 		if (!type || !allowedTypes.has(type)) {
 			type = 'default';
 		}
 		postData.content = String(postData.sourceContent || postData.content || '');
-		const cache = require('./cache');
+		const cache = postCache.getOrCreate();
 		const cacheKey = `${String(postData.pid)}|${type}`;
 		const cachedContent = cache.get(cacheKey);
+
 		if (postData.pid && cachedContent !== undefined) {
 			postData.content = cachedContent;
 			return postData;

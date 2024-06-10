@@ -194,7 +194,7 @@ async function setupMockDefaults() {
 	meta.config.autoDetectLang = 0;
 
 	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').reset();
+	require('../../src/posts/cache').getOrCreate().reset();
 	require('../../src/cache').reset();
 	require('../../src/middleware/uploads').clearCache();
 	// privileges must be given after cache reset

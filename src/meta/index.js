@@ -24,21 +24,29 @@ Meta.templates = require('./templates');
 Meta.blacklist = require('./blacklist');
 Meta.languages = require('./languages');
 
+const user = require('../user');
+const groups = require('../groups');
+const categories = require('../categories');
+
 Meta.slugTaken = async function (slug) {
-	if (!slug) {
+	const isArray = Array.isArray(slug);
+	if ((isArray && slug.some(slug => !slug)) || (!isArray && !slug)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [user, groups, categories] = [require('../user'), require('../groups'), require('../categories')];
-	slug = slugify(slug);
+	slug = isArray ? slug.map(s => slugify(s, false)) : slugify(slug);
 
-	const exists = await Promise.all([
+	const [userExists, groupExists, categoryExists] = await Promise.all([
 		user.existsBySlug(slug),
 		groups.existsBySlug(slug),
 		categories.existsByHandle(slug),
 	]);
-	return exists.some(Boolean);
+
+	return isArray ?
+		slug.map((s, i) => userExists[i] || groupExists[i] || categoryExists[i]) :
+		(userExists || groupExists || categoryExists);
 };
+
 Meta.userOrGroupExists = Meta.slugTaken; // backwards compatiblity
 
 if (nconf.get('isPrimary')) {

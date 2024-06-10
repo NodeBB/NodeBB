@@ -1492,28 +1492,18 @@ describe('User', () => {
 			});
 		});
 
-		it('should return true if user/group exists', (done) => {
-			meta.userOrGroupExists('registered-users', (err, exists) => {
-				assert.ifError(err);
-				assert(exists);
-				done();
-			});
-		});
+		it('should return true/false if user/group exists or not', async () => {
+			assert.strictEqual(await meta.userOrGroupExists('registered-users'), true);
+			assert.strictEqual(await meta.userOrGroupExists('John Smith'), true);
+			assert.strictEqual(await meta.userOrGroupExists('doesnot exist'), false);
+			assert.deepStrictEqual(await meta.userOrGroupExists(['doesnot exist', 'nope not here']), [false, false]);
+			assert.deepStrictEqual(await meta.userOrGroupExists(['doesnot exist', 'John Smith']), [false, true]);
+			assert.deepStrictEqual(await meta.userOrGroupExists(['administrators', 'John Smith']), [true, true]);
 
-		it('should return true if user/group exists', (done) => {
-			meta.userOrGroupExists('John Smith', (err, exists) => {
-				assert.ifError(err);
-				assert(exists);
-				done();
-			});
-		});
-
-		it('should return false if user/group does not exists', (done) => {
-			meta.userOrGroupExists('doesnot exist', (err, exists) => {
-				assert.ifError(err);
-				assert(!exists);
-				done();
-			});
+			await assert.rejects(
+				meta.userOrGroupExists(['', undefined]),
+				{ message: '[[error:invalid-data]]' },
+			);
 		});
 
 		it('should delete user', async () => {
