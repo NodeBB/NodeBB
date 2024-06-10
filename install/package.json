@@ -101,7 +101,7 @@
         "nodebb-plugin-emoji": "5.1.15",
         "nodebb-plugin-emoji-android": "4.0.0",
         "nodebb-plugin-markdown": "13.0.0-pre.6",
-        "nodebb-plugin-mentions": "4.6.2",
+        "nodebb-plugin-mentions": "4.6.3",
         "nodebb-plugin-ntfy": "1.7.4",
         "nodebb-plugin-spam-be-gone": "2.2.2",
         "nodebb-rewards-essentials": "1.0.0",
