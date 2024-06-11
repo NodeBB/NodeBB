@@ -193,6 +193,7 @@ module.exports = function (User) {
 			iconBackgrounds = await User.getIconBackgrounds();
 		}
 
+		const unbanUids = [];
 		users.forEach((user) => {
 			if (!user) {
 				return;
@@ -258,23 +259,22 @@ module.exports = function (User) {
 			if (user.hasOwnProperty('mutedUntil')) {
 				user.muted = user.mutedUntil > Date.now();
 			}
-		});
 
-		// TODO get rid of single calls
-		// dont do anything if user is not banned?
-		await Promise.all(users.map(async (user) => {
 			if (user.hasOwnProperty('banned') || user.hasOwnProperty('banned:expire')) {
-				const result = await User.bans.calcExpiredFromUserData(user);
+				const result = User.bans.calcExpiredFromUserData(user);
 				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
 				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
 				if (unban) {
-					await User.bans.unban(user.uid, '[[user:info.ban-expired]]');
+					unbanUids.push(user.uid);
 					user.banned = false;
 				}
 			}
-		}));
+		});
+		if (unbanUids.length) {
+			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
+		}
 
 		return await plugins.hooks.fire('filter:users.get', users);
 	}
