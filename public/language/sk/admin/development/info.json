@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 väzieb odpovedalo počas %2ms.",
 	"host": "hosť",
-	"primary": "primary / run jobs",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "pripojený",
@@ -19,6 +19,7 @@
 
 	"registered": "Registrovaný",
 	"sockets": "Sockety",
+	"connection-count": "Connection Count",
 	"guests": "Hostia",
 
 	"info": "Informácie"

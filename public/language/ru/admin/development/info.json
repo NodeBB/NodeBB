@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "Узлов: %1. Время ответа %2мс!",
 	"host": "хост",
-	"primary": "первичный",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "онлайн",
@@ -19,6 +19,7 @@
 
 	"registered": "Авторизованных",
 	"sockets": "Сокеты",
+	"connection-count": "Connection Count",
 	"guests": "Гостей",
 
 	"info": "Сырые данные"
