@@ -58,6 +58,39 @@
 								<button data-action="follow" type="button" class="btn btn-primary">[[admin/manage/categories:federation.syncing-follow]]</button>
 							</div>
 						</div>
+
+						<hr />
+
+						<div class="mb-3">
+							<p>[[admin/manage/categories:federation.followers]]</p>
+							<table class="table small">
+								<tr>
+									<th>[[admin/manage/categories:federation.followers-handle]]</th>
+									<th>[[admin/manage/categories:federation.followers-id]]</th>
+								</tr>
+								{{{ if !followers.length}}}
+								<tr>
+									<td class="text-center border-0" colspan="2">
+										<em>[[admin/manage/categories:federation.followers-none]]</em>
+									</td>
+								</tr>
+								{{{ end }}}
+								{{{ each followers }}}
+								<tr data-uid="{./uid}">
+									<td>
+										{buildAvatar(followers, "24px", true)}
+										{./userslug}
+									</td>
+									<td>
+										<code>{./uid}</code>
+										<button type="button" class="btn btn-link" data-action="autofill">
+											<i class="fa fa-exchange-alt"></i>
+										</button>
+									</td>
+								</tr>
+								{{{ end }}}
+							</table>
+						</div>
 					</form>
 				</div>
 			</div>

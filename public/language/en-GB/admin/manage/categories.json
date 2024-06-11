@@ -90,6 +90,10 @@
 	"federation.syncing-actorUri": "Actor",
 	"federation.syncing-follow": "Follow",
 	"federation.syncing-unfollow": "Unfollow",
+	"federation.followers": "Remote users following this category",
+	"federation.followers-handle": "Handle",
+	"federation.followers-id": "ID",
+	"federation.followers-none": "No followers.",
 
 	"alert.created": "Created",
 	"alert.create-success": "Category successfully created!",

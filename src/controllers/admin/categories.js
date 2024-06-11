@@ -3,11 +3,13 @@
 const _ = require('lodash');
 const nconf = require('nconf');
 const db = require('../../database');
+const user = require('../../user');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
 const meta = require('../../meta');
+const activitypub = require('../../activitypub');
 const helpers = require('../helpers');
 const pagination = require('../../pagination');
 
@@ -149,9 +151,10 @@ categoriesController.getAnalytics = async function (req, res) {
 
 categoriesController.getFederation = async function (req, res) {
 	const cid = req.params.category_id;
-	const [_following, pending, name, { selectedCategory }] = await Promise.all([
+	let [_following, pending, followers, name, { selectedCategory }] = await Promise.all([
 		db.getSortedSetMembers(`cid:${cid}:following`),
 		db.getSortedSetMembers(`followRequests:cid.${cid}`),
+		activitypub.notes.getCategoryFollowers(cid),
 		categories.getCategoryField(cid, 'name'),
 		helpers.getSelectedCategory(cid),
 	]);
@@ -161,11 +164,15 @@ categoriesController.getFederation = async function (req, res) {
 		approved: !pending.includes(entry),
 	}));
 
+	await activitypub.actors.assert(followers);
+	followers = await user.getUsersFields(followers, ['userslug', 'picture']);
+
 	res.render('admin/manage/category-federation', {
 		cid: cid,
 		enabled: meta.config.activitypubEnabled,
 		name,
 		selectedCategory,
 		following,
+		followers,
 	});
 };

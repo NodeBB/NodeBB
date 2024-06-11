@@ -36,6 +36,11 @@ export function init() {
 
 				break;
 			}
+
+			case 'autofill': {
+				const uid = $(this).parents('[data-uid]').attr('data-uid');
+				$('#syncing-add').val(uid);
+			}
 		}
 	});
 }
