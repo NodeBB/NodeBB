@@ -40,11 +40,11 @@ middleware.validate = async function (req, res, next) {
 	// winston.verbose('[middleware/activitypub] Request body check passed.');
 
 	// History check
-	const seen = await db.isSortedSetMember('activities:datetime', req.body.id);
-	if (seen) {
-		// winston.verbose(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
-		return res.sendStatus(200);
-	}
+	// const seen = await db.isSortedSetMember('activities:datetime', req.body.id);
+	// if (seen) {
+	// 	// winston.verbose(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
+	// 	return res.sendStatus(200);
+	// }
 
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	const verified = await activitypub.verify(req);
