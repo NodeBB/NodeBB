@@ -260,6 +260,9 @@ module.exports = function (middleware) {
 		}
 
 		res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		if (!res.locals.userData) {
+			return next('route');
+		}
 		next();
 	};
 
