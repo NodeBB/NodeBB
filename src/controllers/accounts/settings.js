@@ -13,13 +13,12 @@ const plugins = require('../../plugins');
 const notifications = require('../../notifications');
 const db = require('../../database');
 const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
 const slugify = require('../../slugify');
 
 const settingsController = module.exports;
 
 settingsController.get = async function (req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+	const { userData } = res.locals;
 	if (!userData) {
 		return next();
 	}
