@@ -254,7 +254,8 @@ module.exports = function (middleware) {
 			if (res.locals.isAPI) {
 				req.params.userslug = lowercaseSlug;
 			} else {
-				return res.redirect(`${nconf.get('relative_path')}/user/${lowercaseSlug}`);
+				const newPath = req.path.replace(new RegExp(`/${req.params.userslug}/`), () => `/${lowercaseSlug}/`);
+				return res.redirect(`${nconf.get('relative_path')}${newPath}`);
 			}
 		}
 
