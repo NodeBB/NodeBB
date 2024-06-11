@@ -3,6 +3,7 @@
 const winston = require('winston');
 const plugins = require('.');
 const utils = require('../utils');
+const als = require('../als');
 
 const Hooks = module.exports;
 
@@ -185,7 +186,6 @@ Hooks.fire = async function (hook, params) {
 	}
 	let deleteCaller = false;
 	if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
-		const als = require('../als');
 		params.caller = als.getStore();
 		deleteCaller = true;
 	}
