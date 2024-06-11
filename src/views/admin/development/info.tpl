@@ -19,7 +19,7 @@
 						<td class="fw-bold">[[admin/development/info:process-memory]]</td>
 						<td class="fw-bold">[[admin/development/info:system-memory]]</td>
 						<td class="fw-bold">[[admin/development/info:load]]</td>
-						<td class="fw-bold">[[admin/development/info:uptime]]</td>
+						<td class="fw-bold text-end">[[admin/development/info:uptime]]</td>
 					</tr>
 				</thead>
 				<tbody class="text-xs">
@@ -34,7 +34,8 @@
 					<td>
 						<span title="[[admin/development/info:registered]]">{info.stats.onlineRegisteredCount}</span> /
 						<span title="[[admin/development/info:guests]]">{info.stats.onlineGuestCount}</span> /
-						<span title="[[admin/development/info:sockets]]">{info.stats.socketCount}</span>
+						<span title="[[admin/development/info:sockets]]">{info.stats.socketCount}</span> /
+						<span title="[[admin/development/info:connection-count]]">{info.stats.connectionCount}</span>
 					</td>
 					<td>{info.git.branch}@<a href="https://github.com/NodeBB/NodeBB/commit/{info.git.hash}" target="_blank">{info.git.hashShort}</a></td>
 					<td>{info.process.cpuUsage}%</td>
@@ -46,7 +47,7 @@
 						<span title="[[admin/development/info:total-memory-os]]">{info.os.totalmem} gb</span>
 					</td>
 					<td>{info.os.load}</td>
-					<td>{info.process.uptimeHumanReadable}</td>
+					<td class="text-end">{info.process.uptimeHumanReadable}</td>
 				</tr>
 				{{{ end }}}
 				</tbody>

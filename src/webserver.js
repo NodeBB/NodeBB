@@ -76,6 +76,10 @@ exports.destroy = function (callback) {
 	}
 };
 
+exports.getConnectionCount = function () {
+	return Object.keys(connections).length;
+};
+
 exports.listen = async function () {
 	emailer.registerApp(app);
 	setupExpressApp(app);
