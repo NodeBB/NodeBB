@@ -116,7 +116,7 @@ module.exports = function (middleware) {
 			}
 
 			try {
-				await renderMethod(template, { ...res.locals.templateValues, ...options }, fn);
+				await renderMethod(template, options, fn);
 			} catch (err) {
 				next(err);
 			}

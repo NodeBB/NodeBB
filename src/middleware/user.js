@@ -248,7 +248,7 @@ module.exports = function (middleware) {
 	};
 
 	middleware.buildAccountData = async (req, res, next) => {
-		res.locals.templateValues = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 		next();
 	};
 

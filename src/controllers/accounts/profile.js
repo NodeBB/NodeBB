@@ -9,7 +9,6 @@ const posts = require('../../posts');
 const categories = require('../../categories');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
-const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
 const utils = require('../../utils');
 
@@ -26,7 +25,7 @@ profileController.get = async function (req, res, next) {
 		}
 	}
 
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+	const { userData } = res.locals;
 	if (!userData) {
 		return next();
 	}
