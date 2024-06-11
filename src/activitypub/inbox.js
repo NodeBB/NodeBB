@@ -48,7 +48,7 @@ inbox.create = async (req) => {
 		const followers = await activitypub.notes.getCategoryFollowers(cid);
 		if (followers.length) {
 			await activitypub.send('cid', cid, followers, {
-				id: `${object.id}#activity/announce`,
+				id: `${object.id}#activity/announce/${Date.now()}`,
 				type: 'Announce',
 				to: [`${nconf.get('url')}/category/${cid}/followers`],
 				cc: [activitypub._constants.publicAddress],
@@ -281,7 +281,7 @@ inbox.follow = async (req) => {
 
 		user.onFollow(actor, id);
 		activitypub.send('uid', id, actor, {
-			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}`,
+			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
 			object: {
 				id: followId,
@@ -308,7 +308,7 @@ inbox.follow = async (req) => {
 		}
 
 		activitypub.send('cid', id, actor, {
-			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}`,
+			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
 			object: {
 				id: followId,

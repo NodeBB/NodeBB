@@ -70,7 +70,7 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 	}
 
 	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${handle}`,
+		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${handle}/${Date.now()}`,
 		type: 'Undo',
 		object,
 	});
@@ -146,14 +146,14 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 
 	const payloads = {
 		create: {
-			id: `${object.id}#activity/create`,
+			id: `${object.id}#activity/create/${Date.now()}`,
 			type: 'Create',
 			to,
 			cc,
 			object,
 		},
 		announce: {
-			id: `${object.id}#activity/announce`,
+			id: `${object.id}#activity/announce/${Date.now()}`,
 			type: 'Announce',
 			to: [activitypub._constants.publicAddress],
 			cc: [`${nconf.get('url')}/category/${cid}/followers`],
@@ -277,7 +277,7 @@ activitypubApi.undo.like = enabledCheck(async (caller, { pid }) => {
 	}
 
 	await activitypub.send('uid', caller.uid, [uid], {
-		id: `${nconf.get('url')}/uid/${caller.uid}#activity/undo:like/${encodeURIComponent(pid)}`,
+		id: `${nconf.get('url')}/uid/${caller.uid}#activity/undo:like/${encodeURIComponent(pid)}/${Date.now()}`,
 		type: 'Undo',
 		object: {
 			actor: `${nconf.get('url')}/uid/${caller.uid}`,
@@ -318,7 +318,7 @@ activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
 	const reason = flag.reason ||
 		(flag.reports && flag.reports.filter(report => report.reporter.uid === caller.uid).at(-1).value);
 	await activitypub.send('uid', caller.uid, reportedIds, {
-		id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/undo:flag/${caller.uid}`,
+		id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/undo:flag/${caller.uid}/${Date.now()}`,
 		type: 'Undo',
 		object: {
 			id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/flag/${caller.uid}`,

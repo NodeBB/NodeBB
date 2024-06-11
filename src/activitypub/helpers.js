@@ -130,8 +130,8 @@ Helpers.resolveLocalId = async (input) => {
 
 			let activityData = {};
 			if (hash.startsWith('#activity')) {
-				const [, activity, data] = hash.split('/', 3);
-				activityData = { activity, data };
+				const [, activity, data, timestamp] = hash.split('/', 4);
+				activityData = { activity, data, timestamp };
 			}
 
 			// https://bb.devnull.land/cid/2#activity/follow/activitypub@community.nodebb.org│

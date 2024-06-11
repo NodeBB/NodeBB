@@ -159,7 +159,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			const followers = await activitypub.notes.getCategoryFollowers(cid);
 			// eslint-disable-next-line no-await-in-loop
 			await activitypub.send('cid', cid, followers, {
-				id: `${object.id}#activity/announce`,
+				id: `${object.id}#activity/announce/${Date.now()}`,
 				type: 'Announce',
 				to: [`${nconf.get('url')}/category/${cid}/followers`],
 				cc: [activitypub._constants.publicAddress],
