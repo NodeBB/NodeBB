@@ -32,11 +32,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	await parseAboutMe(results.userData);
 
 	let { userData } = results;
-	const { userSettings } = results;
-	const { isAdmin } = results;
-	const { isGlobalModerator } = results;
-	const { isModerator } = results;
-	const { canViewInfo } = results;
+	const { userSettings, isAdmin, isGlobalModerator, isModerator, canViewInfo } = results;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 	if (meta.config['reputation:disabled']) {
@@ -84,6 +80,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.isFollowing = results.isFollowing;
 	userData.canChat = results.canChat;
 	userData.hasPrivateChat = results.hasPrivateChat;
+	userData.iconBackgrounds = results.iconBackgrounds;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
 	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
@@ -160,6 +157,7 @@ async function getAllData(uid, callerUID) {
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
 		canChat: canChat(callerUID, uid),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
+		iconBackgrounds: user.getIconBackgrounds(),
 	});
 }
 
