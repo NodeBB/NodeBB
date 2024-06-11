@@ -3,7 +3,7 @@
 	"ip": "IP<strong>%1</strong>",
 	"nodes-responded": "%1 Knoten antworteten innerhalb von %2ms",
 	"host": "Host",
-	"primary": "Primärer / Laufjob",
+	"primary": "primary / jobs",
 	"pid": "PID",
 	"nodejs": "Node.js Version",
 	"online": "Online",
@@ -19,6 +19,7 @@
 
 	"registered": "Registriert",
 	"sockets": "Sockets",
+	"connection-count": "Connection Count",
 	"guests": "Gäste",
 
 	"info": "Info"

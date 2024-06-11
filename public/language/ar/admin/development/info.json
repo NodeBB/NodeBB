@@ -3,7 +3,7 @@
 	"ip": "رقم الآي بي <strong> %1 </strong>",
 	"nodes-responded": "عدد %1 نقطة/نقاط استجابوا خلال %2 جزء من الثانية.",
 	"host": "المضيف",
-	"primary": "primary / run jobs",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",
@@ -19,6 +19,7 @@
 
 	"registered": "Registered",
 	"sockets": "Sockets",
+	"connection-count": "Connection Count",
 	"guests": "Guests",
 
 	"info": "Info"

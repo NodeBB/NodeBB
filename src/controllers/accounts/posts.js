@@ -177,16 +177,16 @@ async function getPostsFromUserSet(template, req, res) {
 	const data = templateToData[template];
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
-	// exposeUid returns -2 for all remote users for ease of processing, restoring uid
 	let { uid } = res.locals;
 	if (uid === -2) {
 		uid = await db.getObjectField('handle:uid', req.params.userslug.toLowerCase());
 	}
 
-	const [{ username, userslug }, settings] = await Promise.all([
-		user.getUserFields(uid, ['username', 'userslug']),
-		user.getSettings(req.uid),
-	]);
+	const payload = res.locals.userData;
+	const { username, userslug } = uid === -2 ?
+		await user.getUserFields(uid, ['username', 'userslug']) :
+		payload;
+	const settings = await user.getSettings(req.uid);
 
 	const itemsPerPage = data.type === 'topics' ? settings.topicsPerPage : settings.postsPerPage;
 	const start = (page - 1) * itemsPerPage;
@@ -213,7 +213,6 @@ async function getPostsFromUserSet(template, req, res) {
 	}
 	const { itemCount, itemData } = result;
 
-	const payload = {};
 	payload[data.type] = itemData[data.type];
 	payload.nextStart = itemData.nextStart;
 

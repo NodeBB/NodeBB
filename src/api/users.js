@@ -640,7 +640,7 @@ usersAPI.changePicture = async (caller, data) => {
 		picture = returnData && returnData.picture;
 	}
 
-	const validBackgrounds = await user.getIconBackgrounds(caller.uid);
+	const validBackgrounds = await user.getIconBackgrounds();
 	if (!validBackgrounds.includes(data.bgColor)) {
 		data.bgColor = validBackgrounds[0];
 	}

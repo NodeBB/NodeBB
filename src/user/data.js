@@ -45,6 +45,8 @@ module.exports = function (User) {
 		'email:confirmed': 0,
 	};
 
+	let iconBackgrounds;
+
 	User.getUsersFields = async function (uids, fields) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return [];
@@ -201,8 +203,12 @@ module.exports = function (User) {
 				['showfullname']
 			));
 		}
+		if (!iconBackgrounds) {
+			iconBackgrounds = await User.getIconBackgrounds();
+		}
 
-		await Promise.all(users.map(async (user) => {
+		const unbanUids = [];
+		users.forEach((user) => {
 			if (!user) {
 				return;
 			}
@@ -218,7 +224,7 @@ module.exports = function (User) {
 				user.email = validator.escape(user.email ? user.email.toString() : '');
 			}
 
-			if (!parseInt(user.uid, 10) && !activitypub.helpers.isUri(user.uid)) {
+			if (!user.uid && !activitypub.helpers.isUri(user.uid)) {
 				for (const [key, value] of Object.entries(User.guestData)) {
 					user[key] = value;
 				}
@@ -248,15 +254,12 @@ module.exports = function (User) {
 			}
 
 			// User Icons
-			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) !== 0 && !meta.config.defaultAvatar) {
-				const iconBackgrounds = await User.getIconBackgrounds(user.uid);
-				let bgColor = await User.getUserField(user.uid, 'icon:bgColor');
-				if (!iconBackgrounds.includes(bgColor)) {
-					bgColor = Array.prototype.reduce.call(user.username, (cur, next) => cur + next.charCodeAt(), 0);
-					bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
+			if (requestedFields.includes('picture') && user.username && user.uid !== 0 && !meta.config.defaultAvatar) {
+				if (!iconBackgrounds.includes(user['icon:bgColor'])) {
+					const nameAsIndex = Array.from(user.username).reduce((cur, next) => cur + next.charCodeAt(), 0);
+					user['icon:bgColor'] = iconBackgrounds[nameAsIndex % iconBackgrounds.length];
 				}
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
-				user['icon:bgColor'] = bgColor;
 			}
 
 			if (user.hasOwnProperty('joindate')) {
@@ -267,22 +270,25 @@ module.exports = function (User) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 
+			if (user.hasOwnProperty('mutedUntil')) {
+				user.muted = user.mutedUntil > Date.now();
+			}
+
 			if (user.hasOwnProperty('banned') || user.hasOwnProperty('banned:expire')) {
-				const result = await User.bans.calcExpiredFromUserData(user);
+				const result = User.bans.calcExpiredFromUserData(user);
 				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
 				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
 				if (unban) {
-					await User.bans.unban(user.uid, '[[user:info.ban-expired]]');
+					unbanUids.push(user.uid);
 					user.banned = false;
 				}
 			}
-
-			if (user.hasOwnProperty('mutedUntil')) {
-				user.muted = user.mutedUntil > Date.now();
-			}
-		}));
+		});
+		if (unbanUids.length) {
+			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
+		}
 
 		return await plugins.hooks.fire('filter:users.get', users);
 	}
@@ -332,14 +338,20 @@ module.exports = function (User) {
 		}
 	}
 
-	User.getIconBackgrounds = async (uid = 0) => {
-		let iconBackgrounds = [
+
+	User.getIconBackgrounds = async () => {
+		if (iconBackgrounds) {
+			return iconBackgrounds;
+		}
+
+		const _iconBackgrounds = [
 			'#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
 			'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722',
 			'#795548', '#607d8b',
 		];
 
-		({ iconBackgrounds } = await plugins.hooks.fire('filter:user.iconBackgrounds', { uid, iconBackgrounds }));
+		const data = await plugins.hooks.fire('filter:user.iconBackgrounds', { iconBackgrounds: _iconBackgrounds });
+		iconBackgrounds = data.iconBackgrounds;
 		return iconBackgrounds;
 	};
 
