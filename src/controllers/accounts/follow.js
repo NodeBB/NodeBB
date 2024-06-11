@@ -14,8 +14,11 @@ followController.getFollowers = async function (req, res, next) {
 	await getFollow('account/followers', 'followers', req, res, next);
 };
 
-async function getFollow(tpl, name, req, res) {
+async function getFollow(tpl, name, req, res, next) {
 	const { userData: payload } = res.locals;
+	if (!payload) {
+		return next();
+	}
 	const {
 		username, userslug, followerCount, followingCount,
 	} = payload;
