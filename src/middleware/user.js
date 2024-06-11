@@ -248,6 +248,16 @@ module.exports = function (middleware) {
 	};
 
 	middleware.buildAccountData = async (req, res, next) => {
+		// use lowercase slug on api routes, or direct to the user/<lowercaseslug>
+		const lowercaseSlug = req.params.userslug.toLowerCase();
+		if (req.params.userslug !== lowercaseSlug) {
+			if (res.locals.isAPI) {
+				req.params.userslug = lowercaseSlug;
+			} else {
+				return res.redirect(`${nconf.get('relative_path')}/user/${lowercaseSlug}`);
+			}
+		}
+
 		res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 		next();
 	};

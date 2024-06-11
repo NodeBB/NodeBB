@@ -15,16 +15,6 @@ const utils = require('../../utils');
 const profileController = module.exports;
 
 profileController.get = async function (req, res, next) {
-	const lowercaseSlug = req.params.userslug.toLowerCase();
-
-	if (req.params.userslug !== lowercaseSlug) {
-		if (res.locals.isAPI) {
-			req.params.userslug = lowercaseSlug;
-		} else {
-			return res.redirect(`${nconf.get('relative_path')}/user/${lowercaseSlug}`);
-		}
-	}
-
 	const { userData } = res.locals;
 	if (!userData) {
 		return next();
