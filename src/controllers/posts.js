@@ -20,7 +20,7 @@ postsController.redirectToPost = async function (req, res, next) {
 	}
 
 	// Kickstart note assertion if applicable
-	if (!utils.isNumber(pid) && req.uid) {
+	if (!utils.isNumber(pid) && req.uid && meta.config.activitypubEnabled) {
 		const exists = await posts.exists(pid);
 		if (!exists) {
 			await activitypub.notes.assert(req.uid, pid);
