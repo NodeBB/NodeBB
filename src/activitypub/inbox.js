@@ -198,8 +198,7 @@ inbox.announce = async (req) => {
 		cid = Array.from(cids)[0];
 	}
 
-	if (String(object.id).startsWith(nconf.get('url'))) {
-		// Local object
+	if (String(object.id).startsWith(nconf.get('url'))) { // Local object
 		const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 		if (type !== 'post' || !(await posts.exists(id))) {
 			throw new Error('[[error:activitypub.invalid-id]]');
@@ -209,13 +208,15 @@ inbox.announce = async (req) => {
 		tid = await posts.getPostField(id, 'tid');
 
 		socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
-	} else {
-		// Remote object
-		const numFollowers = await activitypub.actors.getLocalFollowersCount(actor);
-		if (!numFollowers) {
-			winston.info(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
-			reject('Announce', object, actor);
-			return;
+	} else { // Remote object
+		// Follower check
+		if (!cid) {
+			const numFollowers = await activitypub.actors.getLocalFollowersCount(actor);
+			if (!numFollowers) {
+				winston.info(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
+				reject('Announce', object, actor);
+				return;
+			}
 		}
 
 		// Handle case where Announce(Create(Note)) is received
