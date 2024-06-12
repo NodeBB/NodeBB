@@ -244,9 +244,8 @@ Notes.getParentChain = async (uid, input) => {
 			return await traverse(uid, localId);
 		}
 
-		const exists = await db.exists(`post:${id}`);
-		if (exists) {
-			const postData = await posts.getPostData(id);
+		const postData = await posts.getPostData(id);
+		if (postData) {
 			chain.add(postData);
 			if (postData.toPid) {
 				await traverse(uid, postData.toPid);
