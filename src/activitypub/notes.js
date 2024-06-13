@@ -51,6 +51,15 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = mainPost;
 	const hasTid = !!tid;
 
+	// Update category if currently uncategorized
+	if (hasTid) {
+		const cid = await topics.getTopicField(tid, 'cid');
+		if (options.cid && cid === -1) {
+			// Move topic
+			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
+		}
+	}
+
 	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(0, -1).map(p => p.pid));
 	members.push(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
@@ -63,12 +72,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	let cid;
 	let title;
 	if (hasTid) {
-		({ cid, mainPid } = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']));
-
-		if (options.cid && cid === -1) {
-			// Move topic
-			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
-		}
+		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
 		// mainPid ok to leave as-is
 		cid = options.cid || -1;
