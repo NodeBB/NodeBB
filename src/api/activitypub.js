@@ -163,7 +163,9 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payloads.create);
 	if (followers.length) {
-		await activitypub.send('cid', cid, followers, payloads.announce);
+		setTimeout(() => { // Delay sending to avoid potential race condition
+			activitypub.send('cid', cid, followers, payloads.announce);
+		}, 5000);
 	}
 });
 
