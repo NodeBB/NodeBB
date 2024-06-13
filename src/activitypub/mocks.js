@@ -114,6 +114,7 @@ Mocks.post = async (objects) => {
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
 		content = sanitize(content, sanitizeConfig);
+		content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
 
 		const payload = {
 			uid,

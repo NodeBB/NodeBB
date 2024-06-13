@@ -307,3 +307,49 @@ Helpers.generateTitle = (html) => {
 
 	return title;
 };
+
+Helpers.remoteAnchorToLocalProfile = async (content) => {
+	const anchorRegex = /<a.*?href=['"](.+?)['"].*?>(.*?)<\/a>/ig;
+	const anchors = content.matchAll(anchorRegex);
+	const urls = new Set();
+	const matches = [];
+	for (const anchor of anchors) {
+		const [match, url] = anchor;
+		matches.push([match, url]);
+		urls.add(url);
+	}
+
+	if (!urls.size) {
+		return content;
+	}
+
+	// Filter out urls that don't backreference to a remote id
+	const urlsArray = Array.from(urls);
+	const [backrefs, urlAsIdExists] = await Promise.all([
+		db.getObjectFields('remoteUrl:uid', urlsArray),
+		db.isSortedSetMembers('usersRemote:lastCrawled', urlsArray),
+	]);
+
+	const urlMap = new Map();
+	urlsArray.forEach((url, index) => {
+		if (backrefs[url] || urlAsIdExists[index]) {
+			urlMap.set(url, backrefs[url] || url);
+		}
+	});
+	let slugs = await user.getUsersFields(Array.from(urlMap.values()), ['userslug']);
+	slugs = slugs.map(({ userslug }) => userslug);
+	Array.from(urlMap.keys()).forEach((url, idx) => {
+		urlMap.set(url, `/user/${encodeURIComponent(slugs[idx])}`);
+	});
+
+	// Modify existing anchors to local profile
+	matches.forEach(([match, href]) => {
+		const replacementHref = urlMap.get(href);
+		if (replacementHref) {
+			const replacement = match.replace(href, replacementHref);
+			content = content.split(match).join(replacement);
+		}
+	});
+
+	return content;
+};
