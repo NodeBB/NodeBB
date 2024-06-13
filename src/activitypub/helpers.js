@@ -353,3 +353,6 @@ Helpers.remoteAnchorToLocalProfile = async (content) => {
 
 	return content;
 };
+
+// eslint-disable-next-line max-len
+Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, property) => memo.concat(Array.isArray(object[property]) ? object[property] : [object[property]]), []));

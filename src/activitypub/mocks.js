@@ -101,7 +101,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
-			to, cc, attachment, tag,
+			to, cc, audience, attachment, tag,
 			// conversation, // mastodon-specific, ignored.
 		} = object;
 
@@ -128,7 +128,7 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
-			_activitypub: { to, cc, attachment, tag, url },
+			_activitypub: { to, cc, audience, attachment, tag, url },
 		};
 
 		return payload;
