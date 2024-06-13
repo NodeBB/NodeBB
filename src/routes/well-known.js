@@ -40,7 +40,7 @@ module.exports = function (app, middleware, controllers) {
 		const sixMonthsAgo = addMonths(new Date(), -6);
 
 		const [{ postCount, userCount }, activeMonth, activeHalfyear] = await Promise.all([
-			db.getObjectFields('global', ['userCount', 'userCount']),
+			db.getObjectFields('global', ['postCount', 'userCount']),
 			db.sortedSetCount('users:online', oneMonthAgo.getTime(), '+inf'),
 			db.sortedSetCount('users:online', sixMonthsAgo.getTime(), '+inf'),
 		]);
