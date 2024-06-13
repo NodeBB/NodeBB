@@ -9,7 +9,7 @@
  */
 
 const nconf = require('nconf');
-// const winston = require('winston');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -164,7 +164,8 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 	await activitypub.send('uid', caller.uid, Array.from(targets), payloads.create);
 	if (followers.length) {
 		setTimeout(() => { // Delay sending to avoid potential race condition
-			activitypub.send('cid', cid, followers, payloads.announce);
+			activitypub.send('cid', cid, followers, payloads.announce)
+				.catch(err => winston.error(err.stack));
 		}, 5000);
 	}
 });

@@ -28,7 +28,7 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 			target,
 			object,
 		},
-	});
+	}).catch(err => winston.error(err.stack));
 }
 
 inbox.create = async (req) => {
@@ -280,7 +280,7 @@ inbox.follow = async (req) => {
 		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
 		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 
-		user.onFollow(actor, id);
+		await user.onFollow(actor, id);
 		activitypub.send('uid', id, actor, {
 			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
@@ -290,7 +290,7 @@ inbox.follow = async (req) => {
 				actor,
 				object: object.id,
 			},
-		});
+		}).catch(err => winston.error(err.stack));
 	} else if (type === 'category') {
 		const [exists, allowed] = await Promise.all([
 			categories.exists(id),
@@ -317,7 +317,7 @@ inbox.follow = async (req) => {
 				actor,
 				object: object.id,
 			},
-		});
+		}).catch(err => winston.error(err.stack));
 	}
 };
 
