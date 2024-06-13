@@ -1,17 +1,21 @@
 'use strict';
 
 const crypto = require('crypto');
+const _ = require('lodash');
 
 const db = require('../database');
 
 const Attachments = module.exports;
+const posts = require('./index');
 
 Attachments.get = async (pid) => {
-	const hashes = await db.getSortedSetMembers(`post:${pid}:attachments`);
-	const keys = hashes.map(hash => `attachment:${hash}`);
-	const attachments = (await db.getObjects(keys)).filter(Boolean);
+	const hashes = await posts.getPostField(pid, `attachments`);
+	return Attachments.getAttachments(hashes);
+};
 
-	return attachments;
+Attachments.getAttachments = async (hashes) => {
+	const keys = hashes.map(hash => `attachment:${hash}`);
+	return (await db.getObjects(keys)).filter(Boolean);
 };
 
 Attachments.update = async (pid, attachments) => {
@@ -21,12 +25,8 @@ Attachments.update = async (pid, attachments) => {
 
 	const bulkOps = {
 		hash: [],
-		zset: {
-			score: [],
-			value: [],
-		},
 	};
-
+	const hashes = [];
 	attachments.filter(Boolean).forEach(({ _type, mediaType, url, name, width, height }, idx) => {
 		if (!url) { // only required property
 			return;
@@ -40,21 +40,21 @@ Attachments.update = async (pid, attachments) => {
 		}
 
 		bulkOps.hash.push([key, { _type, mediaType, url, name, width, height }]);
-		bulkOps.zset.score.push(idx);
-		bulkOps.zset.value.push(hash);
+		hashes.push(hash);
 	});
 
 	await Promise.all([
 		db.setObjectBulk(bulkOps.hash),
-		db.sortedSetAdd(`post:${pid}:attachments`, bulkOps.zset.score, bulkOps.zset.value),
+		db.setObjectField(`post:${pid}`, 'attachments', hashes.join(',')),
 	]);
 };
 
 Attachments.empty = async (pids) => {
-	const zsets = pids.map(pid => `post:${pid}:attachments`);
-	const hashes = await db.getSortedSetsMembers(zsets);
-	let keys = hashes.reduce((memo, hashes) => new Set([...memo, ...hashes]), new Set());
-	keys = Array.from(keys).map(hash => `attachment:${hash}`);
-
-	await db.deleteAll(keys.concat(zsets));
+	const postKeys = pids.map(pid => `post:${pid}`);
+	const hashes = await posts.getPostsFields(postKeys, ['attachments']);
+	const keys = _.uniq(_.flatten(hashes));
+	await Promise.all([
+		db.deleteAll(keys.map(hash => `attachment:${hash}`)),
+		db.deleteObjectFields(postKeys, ['attachments']),
+	]);
 };

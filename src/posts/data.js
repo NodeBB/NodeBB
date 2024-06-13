@@ -67,5 +67,8 @@ function modifyPost(post, fields) {
 		if (post.hasOwnProperty('edited')) {
 			post.editedISO = post.edited !== 0 ? utils.toISOString(post.edited) : '';
 		}
+		if (!fields.length || fields.includes('attachments')) {
+			post.attachments = (post.attachments || '').split(',').filter(Boolean);
+		}
 	}
 }
