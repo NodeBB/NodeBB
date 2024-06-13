@@ -48,7 +48,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	const mainPost = chain[chain.length - 1];
-	let { pid: mainPid, tid, uid: authorId, timestamp, name, content } = mainPost;
+	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, _activitypub } = mainPost;
 	const hasTid = !!tid;
 
 	// Update category if currently uncategorized
@@ -74,8 +74,19 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
+		// Check recipients/audience for local category
+		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
+		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
+		const recipientCids = resolved
+			.filter(Boolean)
+			.filter(({ type }) => type === 'category')
+			.map(obj => obj.id);
+		if (recipientCids.length) {
+			cid = recipientCids.shift();
+		}
+
 		// mainPid ok to leave as-is
-		cid = options.cid || -1;
+		cid = cid || options.cid || -1;
 		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content));
 	}
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
