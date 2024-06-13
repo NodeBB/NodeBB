@@ -264,19 +264,26 @@ ActivityPub.get = async (type, id, uri) => {
 		});
 
 		if (!String(response.statusCode).startsWith('2')) {
-			winston.error(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
+			winston.verbose(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
 			if (body.hasOwnProperty('error')) {
-				winston.error(`[activitypub/get] Error received: ${body.error}`);
+				winston.verbose(`[activitypub/get] Error received: ${body.error}`);
 			}
 
-			throw new Error(`[[error:activitypub.get-failed]]`);
+			const e = new Error(`[[error:activitypub.get-failed]]`);
+			e.code = `ap_get_${response.statusCode}`;
+			throw e;
 		}
 
 		requestCache.set(cacheKey, body);
 		return body;
 	} catch (e) {
+		if (String(e.code).startsWith('ap_get_')) {
+			throw e;
+		}
+
 		// Handle things like non-json body, etc.
-		throw new Error(`[[error:activitypub.get-failed]]`);
+		const { cause } = e;
+		throw new Error(`[[error:activitypub.get-failed]]`, { cause });
 	}
 };
 

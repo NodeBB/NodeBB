@@ -122,6 +122,13 @@ Actors.assert = async (ids, options = {}) => {
 
 			return actor;
 		} catch (e) {
+			if (e.code === 'ap_get_410') {
+				const exists = await user.exists(id);
+				if (exists) {
+					await user.deleteAccount(id);
+				}
+			}
+
 			return null;
 		}
 	}));
