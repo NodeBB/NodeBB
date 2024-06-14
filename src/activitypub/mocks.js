@@ -90,6 +90,9 @@ Mocks.post = async (objects) => {
 		objects = [objects];
 	}
 
+	const actorIds = new Set(objects.map(object => object.attributedTo).filter(Boolean));
+	await activitypub.actors.assert(Array.from(actorIds));
+
 	const posts = await Promise.all(objects.map(async (object) => {
 		if (!activitypub._constants.acceptedPostTypes.includes(object.type)) {
 			return null;
