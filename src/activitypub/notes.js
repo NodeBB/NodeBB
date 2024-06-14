@@ -82,11 +82,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			.filter(({ type }) => type === 'category')
 			.map(obj => obj.id);
 		if (recipientCids.length) {
-			cid = recipientCids.shift();
+			// Overrides passed-in value, respect addressing from main post over booster
+			options.cid = recipientCids.shift();
 		}
 
 		// mainPid ok to leave as-is
-		cid = cid || options.cid || -1;
+		cid = options.cid || -1;
 		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content));
 	}
 	mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
