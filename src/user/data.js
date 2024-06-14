@@ -80,7 +80,7 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		await activitypub.actors.assert(remoteIds);
+		// await activitypub.actors.assert(remoteIds);
 		const users = [
 			...await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields),
 			...await db.getObjectsFields(remoteIds.map(id => `userRemote:${id}`), fields),
