@@ -5,6 +5,7 @@ module.exports = {
 	users: require('./users'),
 	groups: require('./groups'),
 	topics: require('./topics'),
+	notifications: require('./notifications'),
 	tags: require('./tags'),
 	posts: require('./posts'),
 	chats: require('./chats'),

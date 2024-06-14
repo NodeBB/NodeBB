@@ -6,6 +6,7 @@ Write.users = require('./users');
 Write.groups = require('./groups');
 Write.categories = require('./categories');
 Write.topics = require('./topics');
+Write.notifications = require('./notifications');
 Write.tags = require('./tags');
 Write.posts = require('./posts');
 Write.chats = require('./chats');

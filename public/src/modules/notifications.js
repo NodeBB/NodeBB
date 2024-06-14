@@ -8,7 +8,8 @@ define('notifications', [
 	'tinycon',
 	'hooks',
 	'alerts',
-], function (translator, components, navigator, Tinycon, hooks, alerts) {
+	'api',
+], function (translator, components, navigator, Tinycon, hooks, alerts, api) {
 	const Notifications = {};
 
 	let unreadNotifs = {};
@@ -30,11 +31,7 @@ define('notifications', [
 
 	Notifications.loadNotifications = function (notifList, callback) {
 		callback = callback || function () {};
-		socket.emit('notifications.get', null, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
-
+		api.get('/notifications').then((data) => {
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
@@ -68,7 +65,7 @@ define('notifications', [
 					callback();
 				});
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	Notifications.handleUnreadButton = function (notifList) {
@@ -94,13 +91,9 @@ define('notifications', [
 			return;
 		}
 
-		socket.emit('notifications.getCount', function (err, count) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			Notifications.updateNotifCount(count);
-		});
+		api.get('/notifications/count').then(({ unread }) => {
+			Notifications.updateNotifCount(unread);
+		}).catch(alerts.error);
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = true;
