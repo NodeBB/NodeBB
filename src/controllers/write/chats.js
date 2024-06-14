@@ -10,7 +10,7 @@ Chats.list = async (req, res) => {
 	let { page, perPage, start, uid } = req.query;
 	([page, perPage, start, uid] = [page, perPage, start, uid].map(value => isFinite(value) && parseInt(value, 10)));
 	page = page || 1;
-	perPage = perPage || 20;
+	perPage = Math.min(100, perPage || 20);
 
 	// start supercedes page
 	if (start) {
