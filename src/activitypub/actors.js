@@ -62,10 +62,14 @@ Actors.assert = async (ids, options = {}) => {
 	// Filter out loopback uris
 	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 
-	// Filter out existing
+	// Only assert those who haven't been seen recently (configurable), unless update flag passed in (force refresh)
 	if (!options.update) {
-		const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
-		ids = ids.filter((id, idx) => !exists[idx]);
+		const upperBound = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubUserPruneDays);
+		const lastCrawled = await db.sortedSetScores('usersRemote:lastCrawled', ids.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
+		ids = ids.filter((id, idx) => {
+			const timestamp = lastCrawled[idx];
+			return !timestamp || timestamp < upperBound;
+		});
 	}
 
 	if (!ids.length) {
@@ -272,7 +276,6 @@ Actors.prune = async () => {
 
 	winston.info(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
 	let deletionCount = 0;
-	const reassertionSet = new Set();
 
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
@@ -292,8 +295,6 @@ Actors.prune = async () => {
 				} catch (err) {
 					winston.error(err.stack);
 				}
-			} else {
-				reassertionSet.add(uid);
 			}
 		}));
 	}, {
@@ -301,7 +302,5 @@ Actors.prune = async () => {
 		interval: 1000,
 	});
 
-	winston.info(`[actors/prune] ${deletionCount} remote users pruned, re-asserting ${reassertionSet.size} remote users.`);
-
-	await Actors.assert(Array.from(reassertionSet), { update: true });
+	winston.info(`[actors/prune] ${deletionCount} remote users pruned.`);
 };
