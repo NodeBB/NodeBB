@@ -396,7 +396,7 @@ Notes.prune = async () => {
 	 *   - Post within is liked
 	 */
 	winston.info('[notes/prune] Starting scheduled pruning of topics');
-	const start = 0;
+	const start = '-inf';
 	const stop = Date.now() - (1000 * 60 * 60 * 24 * 30); // 30 days; todo: make configurable?
 	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
 
