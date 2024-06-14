@@ -156,7 +156,7 @@ Actors.assert = async (ids, options = {}) => {
 
 	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', profiles.map(p => p.uid));
 	const uidsForCurrent = profiles.map((p, idx) => (exists[idx] ? p.uid : 0));
-	const current = await user.getUsersFields(uidsForCurrent, ['username', 'fullname']);
+	const current = await db.getObjectsFields(uidsForCurrent.map(id => `userRemote:${id}`), ['username', 'fullname']);
 	const queries = profiles.reduce((memo, profile, idx) => {
 		const { username, fullname } = current[idx];
 
