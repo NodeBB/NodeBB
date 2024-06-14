@@ -18,7 +18,7 @@ module.exports = function (Posts) {
 		const [userData, userSettings, signatureUids] = await Promise.all([
 			getUserData(uids, uid),
 			user.getMultipleUserSettings(uids),
-			privileges.global.filterUids('signature', uids),
+			meta.config.disableSignatures ? [] : privileges.categories.filterUids('signature', 0, uids),
 		]);
 		const uidsSignatureSet = new Set(signatureUids.map(uid => parseInt(uid, 10)));
 		const groupsMap = await getGroupsMap(userData);
