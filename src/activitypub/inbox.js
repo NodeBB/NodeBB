@@ -169,11 +169,11 @@ inbox.like = async (req) => {
 
 	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 	if (!allowed) {
-		winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+		winston.verbose(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 		return reject('Like', object, actor);
 	}
 
-	winston.info(`[activitypub/inbox/like] id ${id} via ${actor}`);
+	winston.verbose(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
 	const result = await posts.upvote(id, actor);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
@@ -213,7 +213,7 @@ inbox.announce = async (req) => {
 		if (!cid) {
 			const numFollowers = await activitypub.actors.getLocalFollowersCount(actor);
 			if (!numFollowers) {
-				winston.info(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
+				winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
 				reject('Announce', object, actor);
 				return;
 			}
@@ -241,7 +241,7 @@ inbox.announce = async (req) => {
 		await activitypub.notes.syncUserInboxes(tid);
 	}
 
-	winston.info(`[activitypub/inbox/announce] Parsing id ${pid}`);
+	winston.verbose(`[activitypub/inbox/announce] Parsing id ${pid}`);
 
 	if (!cid) { // Topic events from actors followed by users only
 		await activitypub.notes.announce.add(pid, actor, timestamp);
@@ -387,7 +387,7 @@ inbox.undo = async (req) => {
 
 	let { type: localType, id } = await helpers.resolveLocalId(object.object);
 
-	winston.info(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
+	winston.verbose(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
@@ -427,7 +427,7 @@ inbox.undo = async (req) => {
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 			if (!allowed) {
-				winston.info(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+				winston.verbose(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 				reject('Like', object, actor);
 				break;
 			}
