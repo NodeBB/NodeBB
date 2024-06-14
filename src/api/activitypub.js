@@ -163,10 +163,19 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 			cc: [`${nconf.get('url')}/category/${cid}/followers`],
 			object: payload,
 		};
+		const implicit = {
+			id: `${object.id}#activity/announce/${Date.now()}`,
+			type: 'Announce',
+			to: [activitypub._constants.publicAddress],
+			cc: [`${nconf.get('url')}/category/${cid}/followers`],
+			object: payload.object,
+		};
 
 		setTimeout(() => { // Delay sending to avoid potential race condition
-			activitypub.send('cid', cid, followers, announce)
-				.catch(err => winston.error(err.stack));
+			Promise.all([
+				activitypub.send('cid', cid, followers, announce),
+				activitypub.send('cid', cid, followers, implicit),
+			]).catch(err => winston.error(err.stack));
 		}, 5000);
 	}
 });
