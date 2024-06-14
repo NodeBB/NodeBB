@@ -47,13 +47,15 @@ inbox.create = async (req) => {
 		const cid = await topics.getTopicField(response.tid, 'cid');
 		const followers = await activitypub.notes.getCategoryFollowers(cid);
 		if (followers.length) {
-			await activitypub.send('cid', cid, followers, {
-				id: `${object.id}#activity/announce/${Date.now()}`,
-				type: 'Announce',
-				to: [`${nconf.get('url')}/category/${cid}/followers`],
-				cc: [activitypub._constants.publicAddress],
-				object,
-			});
+			await Promise.all([req.body, object].map(async (object) => {
+				await activitypub.send('cid', cid, followers, {
+					id: `${object.id}#activity/announce/${Date.now()}`,
+					type: 'Announce',
+					to: [`${nconf.get('url')}/category/${cid}/followers`],
+					cc: [activitypub._constants.publicAddress],
+					object,
+				});
+			}));
 		}
 	}
 };

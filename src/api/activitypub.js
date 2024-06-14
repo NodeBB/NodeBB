@@ -155,27 +155,16 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
 
 	if (followers.length) {
-		// The 1b12 announce is just a wrapper around the same payload
-		const announce = {
-			id: `${object.id}#activity/announce/${Date.now()}`,
-			type: 'Announce',
-			to: [activitypub._constants.publicAddress],
-			cc: [`${nconf.get('url')}/category/${cid}/followers`],
-			object: payload,
-		};
-		const implicit = {
-			id: `${object.id}#activity/announce/${Date.now()}`,
-			type: 'Announce',
-			to: [activitypub._constants.publicAddress],
-			cc: [`${nconf.get('url')}/category/${cid}/followers`],
-			object: payload.object,
-		};
-
 		setTimeout(() => { // Delay sending to avoid potential race condition
-			Promise.all([
-				activitypub.send('cid', cid, followers, announce),
-				activitypub.send('cid', cid, followers, implicit),
-			]).catch(err => winston.error(err.stack));
+			Promise.all([payload, payload.object].map(async (object) => {
+				await activitypub.send('cid', cid, followers, {
+					id: `${object.id}#activity/announce/${Date.now()}`,
+					type: 'Announce',
+					to: [activitypub._constants.publicAddress],
+					cc: [`${nconf.get('url')}/category/${cid}/followers`],
+					object,
+				});
+			})).catch(err => winston.error(err.stack));
 		}, 5000);
 	}
 });
