@@ -31,6 +31,27 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 	}).catch(err => winston.error(err.stack));
 }
 
+// FEP 1b12
+async function announce(id, activity) {
+	const cid = await posts.getCidByPid(id);
+
+	const followers = await activitypub.notes.getCategoryFollowers(cid);
+	if (!followers.length) {
+		return;
+	}
+
+	winston.info(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} to followers of cid ${cid}`);
+	await Promise.all([activity, activity.object].map(async (object) => {
+		await activitypub.send('cid', cid, followers, {
+			id: `${id}#activity/announce/${Date.now()}`,
+			type: 'Announce',
+			to: [`${nconf.get('url')}/category/${cid}/followers`],
+			cc: [activitypub._constants.publicAddress],
+			object,
+		});
+	}));
+}
+
 inbox.create = async (req) => {
 	const { object } = req.body;
 
@@ -39,24 +60,9 @@ inbox.create = async (req) => {
 		throw new Error('[[error:activitypub.not-implemented]]');
 	}
 
-	const response = await activitypub.notes.assert(0, object);
-	if (response) {
-		// winston.verbose(`[activitypub/inbox] Parsing ${response.count} notes into topic ${response.tid}`);
-
-		// todo: put this somewhere better if need be... maybe this is better as api.activitypub.announce.note?
-		const cid = await topics.getTopicField(response.tid, 'cid');
-		const followers = await activitypub.notes.getCategoryFollowers(cid);
-		if (followers.length) {
-			await Promise.all([req.body, object].map(async (object) => {
-				await activitypub.send('cid', cid, followers, {
-					id: `${object.id}#activity/announce/${Date.now()}`,
-					type: 'Announce',
-					to: [`${nconf.get('url')}/category/${cid}/followers`],
-					cc: [activitypub._constants.publicAddress],
-					object,
-				});
-			}));
-		}
+	const asserted = await activitypub.notes.assert(0, object);
+	if (asserted) {
+		announce(object.id, req.body);
 	}
 };
 
@@ -82,7 +88,10 @@ inbox.update = async (req) => {
 						await api.posts.restore({ uid: actor }, { pid: object.id });
 					}
 				} else {
-					await activitypub.notes.assert(0, object.id);
+					const asserted = await activitypub.notes.assert(0, object.id);
+					if (asserted) {
+						announce(object.id, req.body);
+					}
 				}
 			} catch (e) {
 				reject('Update', object, actor);
@@ -145,6 +154,7 @@ inbox.delete = async (req) => {
 	switch (true) {
 		case isNote: {
 			const uid = await posts.getPostField(object, 'uid');
+			await announce(object, req.body);
 			await api.posts[method]({ uid }, { pid: object });
 			break;
 		}
@@ -178,6 +188,7 @@ inbox.like = async (req) => {
 	winston.verbose(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
 	const result = await posts.upvote(id, actor);
+	announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
 
@@ -435,6 +446,7 @@ inbox.undo = async (req) => {
 			}
 
 			await posts.unvote(id, actor);
+			announce(object.object, req.body);
 			notifications.rescind(`upvote:post:${id}:uid:${actor}`);
 			break;
 		}
