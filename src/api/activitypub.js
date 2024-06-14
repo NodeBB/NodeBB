@@ -144,27 +144,28 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 	const { cid } = post.category;
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
 
-	const payloads = {
-		create: {
-			id: `${object.id}#activity/create/${Date.now()}`,
-			type: 'Create',
-			to,
-			cc,
-			object,
-		},
-		announce: {
+	const payload = {
+		id: `${object.id}#activity/create/${Date.now()}`,
+		type: 'Create',
+		to,
+		cc,
+		object,
+	};
+
+	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
+
+	if (followers.length) {
+		// The 1b12 announce is just a wrapper around the same payload
+		const announce = {
 			id: `${object.id}#activity/announce/${Date.now()}`,
 			type: 'Announce',
 			to: [activitypub._constants.publicAddress],
 			cc: [`${nconf.get('url')}/category/${cid}/followers`],
-			object,
-		},
-	};
+			object: payload,
+		};
 
-	await activitypub.send('uid', caller.uid, Array.from(targets), payloads.create);
-	if (followers.length) {
 		setTimeout(() => { // Delay sending to avoid potential race condition
-			activitypub.send('cid', cid, followers, payloads.announce)
+			activitypub.send('cid', cid, followers, announce)
 				.catch(err => winston.error(err.stack));
 		}, 5000);
 	}
