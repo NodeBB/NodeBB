@@ -139,12 +139,18 @@ function escape(value) {
 }
 
 async function getAllData(uid, callerUID) {
+	// loading these before caches them, so the big promiseParallel doesn't make extra db calls
+	const [[isTargetAdmin, isCallerAdmin], isGlobalModerator] = await Promise.all([
+		user.isAdministrator([uid, callerUID]),
+		user.isGlobalModerator(callerUID),
+	]);
+
 	return await utils.promiseParallel({
 		userData: user.getUserData(uid),
-		isTargetAdmin: user.isAdministrator(uid),
+		isTargetAdmin: isTargetAdmin,
 		userSettings: user.getSettings(uid),
-		isAdmin: user.isAdministrator(callerUID),
-		isGlobalModerator: user.isGlobalModerator(callerUID),
+		isAdmin: isCallerAdmin,
+		isGlobalModerator: isGlobalModerator,
 		isModerator: user.isModeratorOfAnyCategory(callerUID),
 		isFollowing: user.isFollowing(callerUID, uid),
 		ips: user.getIPs(uid, 4),
