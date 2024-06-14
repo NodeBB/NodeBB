@@ -289,7 +289,7 @@ Notes.getParentChain = async (uid, input) => {
 					}
 				}
 			} catch (e) {
-				winston.warn(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
+				winston.verbose(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
 			}
 		}
 	};
