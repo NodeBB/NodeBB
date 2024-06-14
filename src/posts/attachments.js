@@ -27,7 +27,7 @@ Attachments.update = async (pid, attachments) => {
 		hash: [],
 	};
 	const hashes = [];
-	attachments.filter(Boolean).forEach(({ _type, mediaType, url, name, width, height }, idx) => {
+	attachments.filter(Boolean).forEach(({ _type, mediaType, url, name, width, height }) => {
 		if (!url) { // only required property
 			return;
 		}
