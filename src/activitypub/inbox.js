@@ -33,7 +33,11 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 
 // FEP 1b12
 async function announce(id, activity) {
-	const cid = await posts.getCidByPid(id);
+	let localId;
+	if (id.startsWith(nconf.get('url'))) {
+		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
+	}
+	const cid = await posts.getCidByPid(localId || id);
 
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
 	if (!followers.length) {
