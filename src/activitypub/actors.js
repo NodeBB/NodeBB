@@ -264,7 +264,7 @@ Actors.prune = async () => {
 
 	const days = parseInt(meta.config.activitypubUserPruneDays, 10);
 	const timestamp = Date.now() - (1000 * 60 * 60 * 24 * days);
-	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, -1, 0, timestamp);
+	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, -1, '-inf', timestamp);
 	if (!uids.length) {
 		winston.info('[actors/prune] No remote users to prune, all done.');
 		return;
