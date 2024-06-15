@@ -81,10 +81,10 @@ module.exports = function (User) {
 		}
 
 		// await activitypub.actors.assert(remoteIds);
-		const users = [
-			...await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields),
-			...await db.getObjectsFields(remoteIds.map(id => `userRemote:${id}`), fields),
-		];
+		const users = await db.getObjectsFields(
+			uniqueUids.map(uid => `user:${uid}`).concat(remoteIds.map(id => `userRemote:${id}`)),
+			fields
+		);
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
