@@ -111,10 +111,8 @@ function renderTimeago(event) {
 }
 
 Events.get = async (tid, uid, reverse = false) => {
-	const topics = require('.');
-
-	if (!await topics.exists(tid)) {
-		throw new Error('[[error:no-topic]]');
+	if (!tid) {
+		return [];
 	}
 
 	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
