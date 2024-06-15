@@ -118,12 +118,15 @@ topicsController.get = async function getTopic(req, res, next) {
 	}
 
 	topicData.postIndex = postIndex;
+	const postAtIndex = topicData.posts.find(
+		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
+	);
 
 	const [author] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
-		addTags(topicData, req, res, currentPage),
+		addTags(topicData, req, res, currentPage, postAtIndex),
 		topics.increaseViewCount(req, tid),
 		markAsRead(req, tid),
 		analytics.increment([`pageviews:byCid:${topicData.category.cid}`]),
@@ -136,9 +139,9 @@ topicsController.get = async function getTopic(req, res, next) {
 		res.locals.linkTags.push(rel);
 	});
 
-	if (meta.config.activitypubEnabled) {
+	if (meta.config.activitypubEnabled && postAtIndex) {
 		// Include link header for richer parsing
-		const pid = await topics.getPidByIndex(tid, postIndex);
+		const { pid } = postAtIndex;
 		const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
 		res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
 	}
@@ -204,9 +207,7 @@ async function addOldCategory(topicData, userPrivileges) {
 	}
 }
 
-async function addTags(topicData, req, res, currentPage) {
-	const postIndex = parseInt(req.params.post_index, 10) || 0;
-	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
+async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	let description = '';
 	if (postAtIndex && postAtIndex.content) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content)).trim();
@@ -295,9 +296,8 @@ async function addTags(topicData, req, res, currentPage) {
 		});
 	}
 
-	if (meta.config.activitypubEnabled) {
-		const pid = await topics.getPidByIndex(topicData.tid, topicData.postIndex);
-
+	if (meta.config.activitypubEnabled && postAtIndex) {
+		const { pid } = postAtIndex;
 		res.locals.linkTags.push({
 			rel: 'alternate',
 			type: 'application/activity+json',

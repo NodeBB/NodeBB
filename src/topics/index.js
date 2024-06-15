@@ -314,11 +314,4 @@ Topics.search = async function (tid, term) {
 	return Array.isArray(result) ? result : result.ids;
 };
 
-Topics.getPidByIndex = async function (tid, index) {
-	index -= 2; // zset only stores replies, index is not zero-indexed, so offset by 2.
-	return index > 0 ?
-		(await db.getSortedSetRange(`tid:${tid}:posts`, index, index)).pop() :
-		await Topics.getTopicField(tid, 'mainPid');
-};
-
 require('../promisify')(Topics);
