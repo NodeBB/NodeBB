@@ -137,11 +137,11 @@ mongoModule.info = async function (db) {
 	listCollections = listCollections.map(collectionInfo => ({
 		name: collectionInfo.ns,
 		count: collectionInfo.count,
-		size: collectionInfo.size,
-		avgObjSize: collectionInfo.avgObjSize,
-		storageSize: collectionInfo.storageSize,
-		totalIndexSize: collectionInfo.totalIndexSize,
-		indexSizes: collectionInfo.indexSizes,
+		size: collectionInfo.storageStats && collectionInfo.storageStats.size,
+		avgObjSize: collectionInfo.storageStats && collectionInfo.storageStats.avgObjSize,
+		storageSize: collectionInfo.storageStats && collectionInfo.storageStats.storageSize,
+		totalIndexSize: collectionInfo.storageStats && collectionInfo.storageStats.totalIndexSize,
+		indexSizes: collectionInfo.storageStats && collectionInfo.storageStats.indexSizes,
 	}));
 
 	stats.mem = serverStatus.mem || { resident: 0, virtual: 0 };
@@ -169,11 +169,14 @@ mongoModule.info = async function (db) {
 
 async function getCollectionStats(db) {
 	const items = await db.listCollections().toArray();
-	return await Promise.all(
-		items.map(collection => db.collection(collection.name).aggregate([
-			{ $collStats: { latencyStats: {}, storageStats: {}, count: {} } },
-		]))
+	const cols = await Promise.all(
+		items.map(
+			collection => db.collection(collection.name).aggregate([
+				{ $collStats: { latencyStats: {}, storageStats: {}, count: {} } },
+			]).toArray()
+		)
 	);
+	return cols.map(col => col[0]);
 }
 
 mongoModule.close = async function () {
