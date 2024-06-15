@@ -333,7 +333,7 @@ define('forum/topic', [
 			const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\da-z-]+)/);
 			if (postMatch) {
 				const pid = postMatch[1];
-				if (link.parents('[component="post"]').attr('data-pid') === pid) {
+				if (encodeURIComponent(link.parents('[component="post"]').attr('data-pid')) === encodeURIComponent(pid)) {
 					return; // dont render self post
 				}
 
