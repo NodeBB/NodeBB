@@ -183,7 +183,10 @@ define('navigator', [
 	async function updateThumbTimestampToIndex(thumb, index) {
 		const el = thumb.find('.thumb-timestamp');
 		if (el.length) {
-			const timestamp = await getPostTimestampByIndex(index);
+			const postAtIndex = ajaxify.data.posts.find(
+				p => parseInt(p.index, 10) === Math.max(0, parseInt(index, 10) - 1)
+			);
+			const timestamp = postAtIndex ? postAtIndex.timestamp : await getPostTimestampByIndex(index);
 			el.attr('title', utils.toISOString(timestamp)).timeago();
 		}
 	}
@@ -450,7 +453,6 @@ define('navigator', [
 		}
 		count = value;
 		navigator.updateTextAndProgressBar();
-		setThumbToIndex(index);
 		toggle(count > 0);
 	};
 
