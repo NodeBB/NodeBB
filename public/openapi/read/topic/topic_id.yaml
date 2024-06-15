@@ -184,6 +184,8 @@ get:
                           type: boolean
                         downvoted:
                           type: boolean
+                        attachments:
+                          type: array
                         replies:
                           type: object
                           properties:
