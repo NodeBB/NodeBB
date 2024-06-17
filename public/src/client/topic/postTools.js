@@ -36,7 +36,7 @@ define('forum/topic/postTools', [
 		if (!container) {
 			return;
 		}
-		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
+		$('[component="topic"]').on('show.bs.dropdown', '[component="post/tools"]', function () {
 			const $this = $(this);
 			const dropdownMenu = $this.find('.dropdown-menu');
 			const { top } = this.getBoundingClientRect();
@@ -45,6 +45,10 @@ define('forum/topic/postTools', [
 			if (dropdownMenu.attr('data-loaded')) {
 				return;
 			}
+			dropdownMenu.html(helpers.generatePlaceholderWave([
+				3, 5, 9, 7, 10, 'divider', 10,
+			]));
+
 			const postEl = $this.parents('[data-pid]');
 			const pid = postEl.attr('data-pid');
 			const index = parseInt(postEl.attr('data-index'), 10);

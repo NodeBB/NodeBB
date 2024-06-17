@@ -8,21 +8,22 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts', 'api'], f
 		const post = button.closest('[data-pid]');
 		const pid = post.data('pid');
 		const open = button.find('[component="post/replies/open"]');
-		const loading = button.find('[component="post/replies/loading"]');
-		const close = button.find('[component="post/replies/close"]');
 
-		if (open.is(':not(.hidden)') && loading.is('.hidden')) {
-			open.addClass('hidden');
-			loading.removeClass('hidden');
+		if (open.attr('loading') !== '1' && open.attr('loaded') !== '1') {
+			open.attr('loading', '1')
+				.removeClass('fa-chevron-down')
+				.addClass('fa-spin fa-spinner');
+
 			api.get(`/posts/${encodeURIComponent(pid)}/replies`, {}, function (err, { replies }) {
 				const postData = replies;
-				loading.addClass('hidden');
+				open.removeAttr('loading')
+					.attr('loaded', '1')
+					.removeClass('fa-spin fa-spinner')
+					.addClass('fa-chevron-up');
 				if (err) {
-					open.removeClass('hidden');
 					return alerts.error(err);
 				}
 
-				close.removeClass('hidden');
 				postData.forEach((post, index) => {
 					if (post) {
 						post.index = index;
@@ -50,10 +51,11 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts', 'api'], f
 					hooks.fire('action:posts.loaded', { posts: postData });
 				});
 			});
-		} else if (close.is(':not(.hidden)')) {
-			close.addClass('hidden');
-			open.removeClass('hidden');
-			loading.addClass('hidden');
+		} else if (open.attr('loaded') === '1') {
+			open.removeAttr('loaded')
+				.removeAttr('loading')
+				.removeClass('fa-spin fa-spinner fa-chevron-up')
+				.addClass('fa-chevron-down');
 			post.find('[component="post/replies"]').slideUp('fast', function () {
 				$(this).remove();
 			});
