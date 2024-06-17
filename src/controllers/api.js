@@ -89,7 +89,9 @@ apiController.loadConfig = async function (req) {
 			size: meta.config.topicThumbSize,
 		},
 		emailPrompt: meta.config.emailPrompt,
-		useragent: req.useragent,
+		useragent: {
+			isSafari: req.useragent.isSafari,
+		},
 		fontawesome: {
 			pro: fontawesome_pro,
 			styles: fontawesome_styles,
