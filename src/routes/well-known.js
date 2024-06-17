@@ -25,7 +25,7 @@ module.exports = function (app, middleware, controllers) {
 		});
 	});
 
-	app.get('/nodeinfo/2.0', async (req, res) => {
+	app.get('/nodeinfo/2.0(.json)?', async (req, res) => {
 		const getDaysInMonth = (year, month) => new Date(year, month, 0).getDate();
 
 		function addMonths(input, months) {
