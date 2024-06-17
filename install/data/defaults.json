@@ -193,5 +193,6 @@
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
     "activitypubContentPruneDays": 30,
-    "activitypubUserPruneDays": 7
+    "activitypubUserPruneDays": 7,
+    "activitypubFilter": 0
 }

@@ -70,6 +70,11 @@ middleware.validate = async function (req, res, next) {
 
 	// Domain check
 	const { hostname } = new URL(actor);
+	const allowed = await activitypub.instances.isAllowed(hostname);
+	if (!allowed) {
+		// winston.verbose(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
+		return res.sendStatus(403);
+	}
 	await db.sortedSetAdd('instances:lastSeen', Date.now(), hostname);
 
 	// Origin checking

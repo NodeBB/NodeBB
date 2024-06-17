@@ -41,6 +41,7 @@ ActivityPub.inbox = require('./inbox');
 ActivityPub.mocks = require('./mocks');
 ActivityPub.notes = require('./notes');
 ActivityPub.actors = require('./actors');
+ActivityPub.instances = require('./instances');
 
 ActivityPub.startJobs = () => {
 	// winston.verbose('[activitypub/jobs] Registering jobs.');

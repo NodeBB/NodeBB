@@ -52,14 +52,14 @@
 			<form>
 				<div class="mb-3">
 					<p>[[admin/settings/activitypub:server.filter-help]]</p>
-					<p>[[admin/settings/activitypub:count, 0]]</p>
-					<p class="text-danger fst-italic small">This feature is not available yet</p>
+					<p>[[admin/settings/activitypub:server.filter-help-hostname]]</p>
+					<p>[[admin/settings/activitypub:count, {instanceCount}]]</p>
 					<label for="activitypubFilterList" class="form-label">Filtering list</label>
-					<textarea class="form-control" id="activitypubFilterList" rows="10" disabled="disabled"></textarea>
+					<textarea class="form-control" id="activitypubFilterList" data-field="activitypubFilterList" rows="10"></textarea>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="activitypubFilter" disabled="disabled" />
-					<label class="form-check-label">[[admin/settings/activitypub:server.filter-allow-list]]</label>
+					<input class="form-check-input" type="checkbox" id="activitypubFilter" data-field="activitypubFilter" />
+					<label class="form-check-label" for="activitypubFilter">[[admin/settings/activitypub:server.filter-allow-list]]</label>
 				</div>
 			</form>
 		</div>
