@@ -165,7 +165,10 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	return {
-		'@context': 'https://www.w3.org/ns/activitystreams',
+		'@context': [
+			'https://www.w3.org/ns/activitystreams',
+			'https://w3id.org/security/v1',
+		],
 		id: `${nconf.get('url')}/uid/${uid}`,
 		url: `${nconf.get('url')}/user/${userslug}`,
 		followers: `${nconf.get('url')}/uid/${uid}/followers`,
@@ -205,7 +208,10 @@ Mocks.actors.category = async (cid) => {
 	};
 
 	return {
-		'@context': 'https://www.w3.org/ns/activitystreams',
+		'@context': [
+			'https://www.w3.org/ns/activitystreams',
+			'https://w3id.org/security/v1',
+		],
 		id: `${nconf.get('url')}/category/${cid}`,
 		url: `${nconf.get('url')}/category/${slug}`,
 		// followers: ,
