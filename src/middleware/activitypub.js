@@ -68,6 +68,10 @@ middleware.validate = async function (req, res, next) {
 		req.body.actor = actor;
 	}
 
+	// Domain check
+	const { hostname } = new URL(actor);
+	await db.sortedSetAdd('instances:lastSeen', Date.now(), hostname);
+
 	// Origin checking
 	if (typeof object !== 'string' && object.hasOwnProperty('id')) {
 		const actorHostnames = Array.isArray(actor) ? actor.map(a => new URL(a).hostname) : [new URL(actor).hostname];
