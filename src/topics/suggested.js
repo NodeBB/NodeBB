@@ -11,7 +11,10 @@ const plugins = require('../plugins');
 module.exports = function (Topics) {
 	Topics.getSuggestedTopics = async function (tid, uid, start, stop, cutoff = 0) {
 		let tids;
-		tid = parseInt(tid, 10);
+		if (!tid) {
+			return [];
+		}
+		tid = String(tid);
 		cutoff = cutoff === 0 ? cutoff : (cutoff * 2592000000);
 		const { cid, title, tags } = await Topics.getTopicFields(tid, [
 			'cid', 'title', 'tags',
