@@ -26,7 +26,7 @@ put:
             actor:
               type: string
               description: A valid actor uri or webfinger handle
-              example: 'foobar@example.org'
+              example: 'https://example.org/foobar'
   responses:
     '200':
       description: successfully sent category synchronization request
@@ -69,7 +69,7 @@ delete:
             actor:
               type: string
               description: A valid actor uri or webfinger handle
-              example: 'foobar@example.org'
+              example: 'https://example.org/foobar'
   responses:
     '200':
       description: successfully unsynchronized category
