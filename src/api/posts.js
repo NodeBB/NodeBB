@@ -364,9 +364,13 @@ postsAPI.getUpvoters = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	let upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	const upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	return await getTooltipData(upvotedUids);
+};
+
+async function getTooltipData(uids) {
 	const cutoff = 6;
-	if (!upvotedUids.length) {
+	if (!uids.length) {
 		return {
 			otherCount: 0,
 			usernames: [],
@@ -374,16 +378,40 @@ postsAPI.getUpvoters = async function (caller, data) {
 		};
 	}
 	let otherCount = 0;
-	if (upvotedUids.length > cutoff) {
-		otherCount = upvotedUids.length - (cutoff - 1);
-		upvotedUids = upvotedUids.slice(0, cutoff - 1);
+	if (uids.length > cutoff) {
+		otherCount = uids.length - (cutoff - 1);
+		uids = uids.slice(0, cutoff - 1);
 	}
 
-	const usernames = await user.getUsernamesByUids(upvotedUids);
+	const usernames = await user.getUsernamesByUids(uids);
 	return {
 		otherCount,
 		usernames,
 		cutoff,
+	};
+}
+
+postsAPI.getAnnouncers = async (caller, data) => {
+	if (!data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (!meta.config.activitypubEnabled) {
+		return [];
+	}
+	const { pid } = data;
+	const cid = await posts.getCidByPid(pid);
+	if (!await privileges.categories.isUserAllowedTo('topics:read', cid, caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const notes = require('../activitypub/notes');
+	const announcers = await notes.announce.list({ pid });
+	const uids = announcers.map(ann => ann.actor);
+	if (data.tooltip) {
+		return await getTooltipData(uids);
+	}
+	return {
+		announceCount: uids.length,
+		announcers: await user.getUsersFields(uids, ['username', 'userslug', 'picture']),
 	};
 };
 

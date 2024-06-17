@@ -141,6 +141,10 @@ define('forum/topic/postTools', [
 			votes.showVotes(getData($(this), 'data-pid'));
 		});
 
+		postContainer.on('click', '[component="post/announce-count"]', function () {
+			votes.showAnnouncers(getData($(this), 'data-pid'));
+		});
+
 		postContainer.on('click', '[component="post/flag"]', function () {
 			const pid = getData($(this), 'data-pid');
 			require(['flags'], function (flags) {

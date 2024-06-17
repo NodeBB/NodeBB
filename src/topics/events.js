@@ -10,7 +10,6 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const privileges = require('../privileges');
-const activitypub = require('../activitypub');
 const utils = require('../utils');
 const helpers = require('../helpers');
 
@@ -68,10 +67,6 @@ Events._types = {
 	fork: {
 		icon: 'fa-code-fork',
 		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
-	},
-	announce: {
-		icon: 'fa-share-alt',
-		translation: async (event, language) => translateEventArgs(event, language, 'activitypub:topic-event-announce', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 };
 
@@ -174,19 +169,6 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 			timestamps.push(item.data.timestamp || Date.now());
 		});
 	}
-
-	// Add post announces
-	const announces = await activitypub.notes.announce.list({ tid });
-	announces.forEach(({ actor, pid, timestamp }) => {
-		events.push({
-			type: 'announce',
-			uid: actor,
-			href: `/post/${encodeURIComponent(pid)}`,
-			pid,
-			timestamp,
-		});
-		timestamps.push(timestamp);
-	});
 
 	const [users, fromCategories, userSettings] = await Promise.all([
 		getUserInfo(events.map(event => event.uid).filter(Boolean)),

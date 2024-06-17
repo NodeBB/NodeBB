@@ -13,6 +13,9 @@ define('forum/topic/votes', [
 			components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
 			components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
 		}
+
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/announce-count"]', loadDataAndCreateTooltip);
+		components.get('topic').on('mouseleave', '[data-pid] [component="post/announce-count"]', destroyTooltip);
 	};
 
 	function canSeeVotes() {
@@ -43,8 +46,11 @@ define('forum/topic/votes', [
 			tooltip.dispose();
 			$this.attr('title', '');
 		}
+		const path = $this.attr('component') === 'post/vote-count' ?
+			`/posts/${encodeURIComponent(pid)}/upvoters` :
+			`/posts/${encodeURIComponent(pid)}/announcers/tooltip`;
 
-		api.get(`/posts/${encodeURIComponent(pid)}/upvoters`, {}, function (err, data) {
+		api.get(path, {}, function (err, data) {
 			if (err) {
 				return alerts.error(err);
 			}
@@ -132,6 +138,24 @@ define('forum/topic/votes', [
 		});
 	};
 
+	Votes.showAnnouncers = async function (pid) {
+		const data = await api.get(`/posts/${encodeURIComponent(pid)}/announcers`, {})
+			.catch(err => alerts.error(err));
+
+		const html = await app.parseAndTranslate('modals/announcers', data);
+		const dialog = bootbox.dialog({
+			title: `[[activitypub:announcers-x, ${data.announceCount}]]`,
+			message: html,
+			className: 'announce-modal',
+			show: true,
+			onEscape: true,
+			backdrop: true,
+		});
+
+		dialog.on('click', function () {
+			dialog.modal('hide');
+		});
+	};
 
 	return Votes;
 });

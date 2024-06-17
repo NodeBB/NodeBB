@@ -141,6 +141,16 @@ Posts.getUpvoters = async (req, res) => {
 	helpers.formatApiResponse(200, res, data);
 };
 
+Posts.getAnnouncers = async (req, res) => {
+	const data = await api.posts.getAnnouncers(req, { pid: req.params.pid, tooltip: 0 });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getAnnouncersTooltip = async (req, res) => {
+	const data = await api.posts.getAnnouncers(req, { pid: req.params.pid, tooltip: 1 });
+	helpers.formatApiResponse(200, res, data);
+};
+
 Posts.bookmark = async (req, res) => {
 	const data = await mock(req);
 	await api.posts.bookmark(req, data);

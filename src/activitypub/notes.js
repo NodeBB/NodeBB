@@ -365,14 +365,24 @@ Notes.announce.list = async ({ pid, tid }) => {
 
 Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 	await db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor);
+	await posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`));
 };
 
 Notes.announce.remove = async (pid, actor) => {
 	await db.sortedSetRemove(`pid:${pid}:announces`, actor);
+	const count = await db.sortedSetCard(`pid:${pid}:announces`);
+	if (count > 0) {
+		await posts.setPostField(pid, 'announces', count);
+	} else {
+		await db.deleteObjectField(`post:${pid}`, 'announces');
+	}
 };
 
 Notes.announce.removeAll = async (pid) => {
-	await db.delete(`pid:${pid}:announces`);
+	await Promise.all([
+		db.delete(`pid:${pid}:announces`),
+		db.deleteObjectField(`post:${pid}`, 'announces'),
+	]);
 };
 
 Notes.delete = async (pids) => {
