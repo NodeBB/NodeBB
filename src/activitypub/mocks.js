@@ -22,6 +22,7 @@ const Mocks = module.exports;
  * Done so the output HTML is stripped of all non-essential items; mainly classes from plugins..
  */
 const sanitizeConfig = {
+	allowedTags: sanitize.defaults.allowedTags.concat(['img']),
 	allowedClasses: {
 		'*': [],
 	},
@@ -286,9 +287,8 @@ Mocks.note = async (post) => {
 		cc.add(followersUrl);
 	}
 
-	const content = await posts.getPostField(post.pid, 'content');
 	const { postData: parsed } = await plugins.hooks.fire('filter:parse.post', {
-		postData: { content },
+		postData: post,
 		type: 'activitypub.note',
 	});
 	post.content = sanitize(parsed.content, sanitizeConfig);
