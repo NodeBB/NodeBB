@@ -212,18 +212,22 @@ module.exports = function (User) {
 		]);
 
 		async function updateCount(uids, name, fieldName) {
-			await async.each(uids, async (uid) => {
-				let count = await db.sortedSetCard(name + uid);
-				count = parseInt(count, 10) || 0;
-				await db.setObjectField(`user:${uid}`, fieldName, count);
+			await batch.processArray(uids, async (uids) => {
+				const counts = await db.sortedSetsCard(uids.map(uid => name + uid));
+				const bulkSet = counts.map(
+					(count, index) => ([`user:${uids[index]}`, { [fieldName]: count || 0 }])
+				);
+				await db.setObjectBulk(bulkSet);
+			}, {
+				batch: 500,
 			});
 		}
 
 		const followingSets = followers.map(uid => `following:${uid}`);
 		const followerSets = following.map(uid => `followers:${uid}`);
 
+		await db.sortedSetsRemove(followerSets.concat(followingSets), uid);
 		await Promise.all([
-			db.sortedSetsRemove(followerSets.concat(followingSets), uid),
 			updateCount(following, 'followers:', 'followerCount'),
 			updateCount(followers, 'following:', 'followingCount'),
 		]);
