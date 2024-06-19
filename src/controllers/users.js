@@ -183,7 +183,7 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 		getCount(),
 	]);
 	return {
-		users: usersData.filter(user => user && parseInt(user.uid, 10)),
+		users: usersData.filter(Boolean),
 		count: count,
 	};
 };
