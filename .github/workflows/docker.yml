@@ -61,7 +61,7 @@ jobs:
           key: var-cache-node-modules-${{ hashFiles('Dockerfile', 'install/package.json') }}
 
       - name: Build and push Docker images
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=min
