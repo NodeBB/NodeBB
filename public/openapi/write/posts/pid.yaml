@@ -64,6 +64,11 @@ get:
                     type: boolean
                   downvoted:
                     type: boolean
+                  attachments:
+                    type: array
+                    items:
+                      type: string
+                      description: A sha256 hash of the attachment (tied to the corresponding entry in the database)
 put:
   tags:
     - posts
