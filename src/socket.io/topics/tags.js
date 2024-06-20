@@ -79,6 +79,7 @@ module.exports = function (SocketTopics) {
 			cids = await privileges.categories.filterCids('topics:read', data.cids, socket.uid);
 		} else { // if no cids passed in get all cids we can read
 			cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+			cids = cids.filter(cid => cid !== -1);
 		}
 
 		let tags = [];
