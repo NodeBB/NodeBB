@@ -158,6 +158,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		unprocessed.pop();
 	}
 
+	const cidFollowers = await activitypub.notes.getCategoryFollowers(cid);
+
 	unprocessed.reverse();
 	for (const post of unprocessed) {
 		const { to, cc, attachment } = post._activitypub;
@@ -170,11 +172,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		]);
 
 		// Category announce
-		if (object && object.id === post.pid) {
-			// eslint-disable-next-line no-await-in-loop
-			const followers = await activitypub.notes.getCategoryFollowers(cid);
-			// eslint-disable-next-line no-await-in-loop
-			await activitypub.send('cid', cid, followers, {
+		if (cidFollowers.length && object && object.id === post.pid) {
+			activitypub.send('cid', cid, cidFollowers, {
 				id: `${object.id}#activity/announce/${Date.now()}`,
 				type: 'Announce',
 				to: [`${nconf.get('url')}/category/${cid}/followers`],
