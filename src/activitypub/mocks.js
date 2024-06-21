@@ -287,6 +287,8 @@ Mocks.note = async (post) => {
 		cc.add(followersUrl);
 	}
 
+	const content = await posts.getPostField(post.pid, 'content');
+	post.content = content; // re-send raw content
 	const { postData: parsed } = await plugins.hooks.fire('filter:parse.post', {
 		postData: post,
 		type: 'activitypub.note',
