@@ -82,9 +82,9 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
 	if (!isScheduling) {
-		setTimeout(() => {
+		setImmediate(() => {
 			activitypubApi.create.note(caller, { pid: result.postData.pid });
-		}, 5000);
+		});
 	}
 
 	return result.topicData;
