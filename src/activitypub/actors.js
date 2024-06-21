@@ -101,15 +101,6 @@ Actors.assert = async (ids, options = {}) => {
 				// winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
 
-			// Post count
-			try {
-				const outbox = actor.outbox ? await activitypub.get('uid', 0, actor.outbox) : { totalItems: 0 };
-				actor.postcount = outbox.totalItems;
-			} catch (e) {
-				// no action required
-				// winston.verbose(`[activitypub/actor.assert] Unable to retrieve post counts for ${actor.id}`);
-			}
-
 			// Save url for backreference
 			const url = Array.isArray(actor.url) ? actor.url.shift() : actor.url;
 			if (url && url !== actor.id) {

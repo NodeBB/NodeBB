@@ -39,7 +39,7 @@ Mocks.profile = async (actors) => {
 		let {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, followerCount, followingCount,
-			postcount, inbox, endpoints,
+			inbox, endpoints,
 		} = actor;
 		preferredUsername = preferredUsername || slugify(name);
 
@@ -68,7 +68,6 @@ Mocks.profile = async (actors) => {
 			'cover:url': !image || typeof image === 'string' ? image : image.url,
 			'cover:position': '50% 50%',
 			aboutme: summary,
-			postcount,
 			followerCount,
 			followingCount,
 
