@@ -115,7 +115,7 @@ define('quickreply', [
 			const textEl = components.get('topic/quickreply/text');
 			composer.newReply({
 				tid: ajaxify.data.tid,
-				title: ajaxify.data.title,
+				title: ajaxify.data.titleRaw,
 				body: textEl.val(),
 			});
 			textEl.val('');
