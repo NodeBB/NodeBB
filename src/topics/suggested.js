@@ -35,7 +35,7 @@ module.exports = function (Topics) {
 		tids = await privileges.topics.filterTids('topics:read', tids, uid);
 
 		let topicData = await Topics.getTopicsByTids(tids, uid);
-		topicData = topicData.filter(topic => topic && topic.tid !== tid);
+		topicData = topicData.filter(topic => topic && String(topic.tid) !== tid);
 		topicData = await user.blocks.filter(uid, topicData);
 		topicData = topicData.slice(start, stop !== -1 ? stop + 1 : undefined)
 			.sort((t1, t2) => t2.timestamp - t1.timestamp);
@@ -60,7 +60,7 @@ module.exports = function (Topics) {
 			limit: 20,
 			ids: [],
 		});
-		tids = tids.filter(_tid => _tid !== tid); // remove self
+		tids = tids.filter(_tid => String(_tid) !== tid); // remove self
 		if (cutoff) {
 			const topicData = await Topics.getTopicsFields(tids, ['tid', 'timestamp']);
 			const now = Date.now();
