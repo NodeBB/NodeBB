@@ -29,7 +29,22 @@ define('forum/post-queue', [
 		});
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
+		showLinksInPosts();
 	};
+
+	function showLinksInPosts() {
+		$('.posts-list [data-id]').each((idx, el) => {
+			const $el = $(el);
+			const linkContainer = $el.find('[component="post-queue/link-container"]');
+			const linkList = linkContainer.find('[component="post-queue/link-container/list"]');
+			const linksInPost = $el.find('.post-content a');
+			linksInPost.each((idx, link) => {
+				const href = $(link).attr('href');
+				linkList.append(`<li><a href="${href}">${href}</a></li>`);
+			});
+			linkContainer.toggleClass('hidden', !linksInPost.length);
+		});
+	}
 
 	function confirmReject(msg) {
 		return new Promise((resolve) => {
