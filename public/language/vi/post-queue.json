@@ -38,5 +38,6 @@
 	"remove-selected": "Gỡ Bỏ Đã Chọn",
 	"remove-selected-confirm": "Bạn có muốn xóa %1 bài đăng đã chọn không?",
 	"bulk-accept-success": "%1 bài đăng được chấp nhận",
-	"bulk-reject-success": "%1 bài đăng bị từ chối"
+	"bulk-reject-success": "%1 bài đăng bị từ chối",
+	"links-in-this-post": "Links in this post"
 }

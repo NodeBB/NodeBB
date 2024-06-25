@@ -38,5 +38,6 @@
 	"remove-selected": "Հեռացնել ընտրվածը",
 	"remove-selected-confirm": "Ցանկանու՞մ եք հեռացնել %1 ընտրված գրառումները:",
 	"bulk-accept-success": "Ընդունված է %1 գրառում",
-	"bulk-reject-success": "%1 գրառում մերժվել է"
+	"bulk-reject-success": "%1 գրառում մերժվել է",
+	"links-in-this-post": "Links in this post"
 }

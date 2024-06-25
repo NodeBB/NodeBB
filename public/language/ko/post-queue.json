@@ -38,5 +38,6 @@
 	"remove-selected": "선택된 것 제거",
 	"remove-selected-confirm": "선택된 %1개의 게시물을 제거하시겠습니까?",
 	"bulk-accept-success": "%1개의 게시물이 승인되었습니다.",
-	"bulk-reject-success": "%1개의 게시물이 거부되었습니다."
+	"bulk-reject-success": "%1개의 게시물이 거부되었습니다.",
+	"links-in-this-post": "Links in this post"
 }

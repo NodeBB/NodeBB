@@ -38,5 +38,6 @@
 	"remove-selected": "Kiválasztott eltávolítása ",
 	"remove-selected-confirm": "El szeretné távolítani %1 kijelölt bejegyzést?",
 	"bulk-accept-success": "%1 bejegyzés elfogadva",
-	"bulk-reject-success": "%1 bejegyzés elutasítva"
+	"bulk-reject-success": "%1 bejegyzés elutasítva",
+	"links-in-this-post": "Links in this post"
 }

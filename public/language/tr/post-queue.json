@@ -38,5 +38,6 @@
 	"remove-selected": "Seçili olanları kaldır",
 	"remove-selected-confirm": "Seçili %1 iletiyi kaldırmak istiyor musunuz? ",
 	"bulk-accept-success": "%1 ileti onaylandı",
-	"bulk-reject-success": "%1 ileti reddedildi"
+	"bulk-reject-success": "%1 ileti reddedildi",
+	"links-in-this-post": "Links in this post"
 }

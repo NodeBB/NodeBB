@@ -38,5 +38,6 @@
 	"remove-selected": "移除所选内容",
 	"remove-selected-confirm": "你想删除%1的选定帖子吗？",
 	"bulk-accept-success": "%1个帖子已接受",
-	"bulk-reject-success": "%1个帖子已拒绝"
+	"bulk-reject-success": "%1个帖子已拒绝",
+	"links-in-this-post": "Links in this post"
 }
