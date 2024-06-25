@@ -8,7 +8,7 @@ const categories = require('../categories');
 const flags = require('../flags');
 const plugins = require('../plugins');
 const batch = require('../batch');
-
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.delete = async function (tid, uid) {
@@ -140,7 +140,9 @@ module.exports = function (Topics) {
 
 	async function reduceCounters(tid) {
 		const incr = -1;
-		await db.incrObjectFieldBy('global', 'topicCount', incr);
+		if (utils.isNumber(tid)) {
+			await db.incrObjectFieldBy('global', 'topicCount', incr);
+		}
 		const topicData = await Topics.getTopicFields(tid, ['cid', 'postcount']);
 		const postCountChange = incr * topicData.postcount;
 		await Promise.all([

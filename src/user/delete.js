@@ -142,7 +142,7 @@ module.exports = function (User) {
 
 		await Promise.all([
 			db.sortedSetRemoveBulk(bulkRemove),
-			db.decrObjectField('global', 'userCount'),
+			utils.isNumber(uid) ? db.decrObjectField('global', 'userCount') : null,
 			db.deleteAll(keys),
 			db.setRemove('invitation:uids', uid),
 			deleteUserIps(uid),

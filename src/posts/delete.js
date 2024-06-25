@@ -10,6 +10,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const flags = require('../flags');
 const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.delete = async function (pid, uid) {
@@ -108,7 +109,8 @@ module.exports = function (Posts) {
 		});
 		await db.sortedSetRemoveBulk(bulkRemove);
 
-		const incrObjectBulk = [['global', { postCount: -postData.length }]];
+		const localCount = postData.filter(p => utils.isNumber(p.pid)).length;
+		const incrObjectBulk = [['global', { postCount: -localCount }]];
 
 		const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
 		for (const [cid, posts] of Object.entries(postsByCategory)) {
