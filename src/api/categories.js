@@ -8,6 +8,8 @@ const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
 
+const activitypubApi = require('./activitypub');
+
 const categoriesAPI = module.exports;
 
 const hasAdminPrivilege = async (uid, privilege = 'categories') => {
@@ -63,6 +65,7 @@ categoriesAPI.update = async function (caller, data) {
 	const payload = {};
 	payload[cid] = values;
 	await categories.update(payload);
+	await activitypubApi.update.category(caller, { cid });
 };
 
 categoriesAPI.delete = async function (caller, { cid }) {

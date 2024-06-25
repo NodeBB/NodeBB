@@ -172,12 +172,27 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
 activitypubApi.update = {};
 
 activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
-	const [object, followers] = await Promise.all([
+	const [object, targets] = await Promise.all([
 		activitypub.mocks.actors.user(uid),
-		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
+		db.getSortedSetMembers('usersRemote:lastCrawled'),
 	]);
 
-	await activitypub.send('uid', caller.uid, followers, {
+	await activitypub.send('uid', caller.uid, targets, {
+		id: `${object.id}#activity/update/${Date.now()}`,
+		type: 'Update',
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+		object,
+	});
+});
+
+activitypubApi.update.category = enabledCheck(async (caller, { cid }) => {
+	const [object, targets] = await Promise.all([
+		activitypub.mocks.actors.category(cid),
+		db.getSortedSetMembers('usersRemote:lastCrawled'),
+	]);
+
+	await activitypub.send('cid', cid, targets, {
 		id: `${object.id}#activity/update/${Date.now()}`,
 		type: 'Update',
 		to: [activitypub._constants.publicAddress],
