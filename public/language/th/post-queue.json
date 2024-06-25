@@ -38,5 +38,6 @@
 	"remove-selected": "ลบที่เลือก",
 	"remove-selected-confirm": "คุณต้องการลบโพสต์ที่เลือกจำนวน %1 โพสต์หรือไม่?",
 	"bulk-accept-success": "%1 โพสต์ถูกยอมรับ",
-	"bulk-reject-success": "%1 โพสต์ถูกปฏิเสธ"
+	"bulk-reject-success": "%1 โพสต์ถูกปฏิเสธ",
+	"links-in-this-post": "Links in this post"
 }

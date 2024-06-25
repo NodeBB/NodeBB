@@ -38,5 +38,6 @@
 	"remove-selected": "הסרת נבחרים",
 	"remove-selected-confirm": "האם להסיר %1 פוסטים שנבחרו?",
 	"bulk-accept-success": "%1 פוסטים אושרו",
-	"bulk-reject-success": "%1 פוסטים נדחו"
+	"bulk-reject-success": "%1 פוסטים נדחו",
+	"links-in-this-post": "Links in this post"
 }
