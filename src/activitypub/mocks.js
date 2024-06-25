@@ -175,7 +175,6 @@ Mocks.actors.user = async (uid) => {
 		following: `${nconf.get('url')}/uid/${uid}/following`,
 		inbox: `${nconf.get('url')}/uid/${uid}/inbox`,
 		outbox: `${nconf.get('url')}/uid/${uid}/outbox`,
-		sharedInbox: `${nconf.get('url')}/inbox`,
 
 		type: 'Person',
 		name: username !== displayname ? fullname : username, // displayname is escaped, fullname is not
@@ -188,6 +187,10 @@ Mocks.actors.user = async (uid) => {
 			id: `${nconf.get('url')}/uid/${uid}#key`,
 			owner: `${nconf.get('url')}/uid/${uid}`,
 			publicKeyPem: publicKey,
+		},
+
+		endpoints: {
+			sharedInbox: `${nconf.get('url')}/inbox`,
 		},
 	};
 };
@@ -218,7 +221,6 @@ Mocks.actors.category = async (cid) => {
 		//  following: ,
 		inbox: `${nconf.get('url')}/category/${cid}/inbox`,
 		outbox: `${nconf.get('url')}/category/${cid}/outbox`,
-		sharedInbox: `${nconf.get('url')}/inbox`,
 
 		type: 'Group',
 		name,
@@ -230,6 +232,10 @@ Mocks.actors.category = async (cid) => {
 			id: `${nconf.get('url')}/category/${cid}#key`,
 			owner: `${nconf.get('url')}/category/${cid}`,
 			publicKeyPem: publicKey,
+		},
+
+		endpoints: {
+			sharedInbox: `${nconf.get('url')}/inbox`,
 		},
 	};
 };
