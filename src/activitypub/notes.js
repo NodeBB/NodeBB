@@ -33,9 +33,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	 * retrieving the entire reply tree is not possible at this time.
 	 */
 
-	const object = !activitypub.helpers.isUri(input) && input;
-	const id = object ? object.id : input;
+	if (!input) {
+		return null;
+	}
 
+	const id = !activitypub.helpers.isUri(input) ? input.id : input;
 	const lockStatus = await lock(id, '[[error:activitypub.already-asserting]]');
 	if (!lockStatus) { // unable to achieve lock, stop processing.
 		return null;
@@ -153,8 +155,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		unprocessed.pop();
 	}
 
-	const cidFollowers = await activitypub.notes.getCategoryFollowers(cid);
-
 	unprocessed.reverse();
 	for (const post of unprocessed) {
 		const { to, cc, attachment } = post._activitypub;
@@ -165,17 +165,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			Notes.updateLocalRecipients(post.pid, { to, cc }),
 			posts.attachments.update(post.pid, attachment),
 		]);
-
-		// Category announce
-		if (cidFollowers.length && object && object.id === post.pid) {
-			activitypub.send('cid', cid, cidFollowers, {
-				id: `${object.id}#activity/announce/${Date.now()}`,
-				type: 'Announce',
-				to: [`${nconf.get('url')}/category/${cid}/followers`],
-				cc: [activitypub._constants.publicAddress],
-				object,
-			});
-		}
 	}
 
 	await Promise.all([
