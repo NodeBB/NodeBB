@@ -119,11 +119,11 @@ module.exports = function (User) {
 			return;
 		}
 		const now = Date.now();
-		uidsToClean[uid] = now;
 		await Promise.all([
 			db.sortedSetAdd(`uid:${uid}:sessions`, now, sessionId),
 			db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, sessionId),
 		]);
+		uidsToClean[uid] = now;
 	};
 
 	async function revokeSessionsAboveThreshold(uid) {
