@@ -2,6 +2,8 @@
 
 const validator = require('validator');
 const _ = require('lodash');
+const winston = require('winston');
+const cronJob = require('cron').CronJob;
 const db = require('../database');
 const meta = require('../meta');
 const events = require('../events');
@@ -10,6 +12,21 @@ const utils = require('../utils');
 
 module.exports = function (User) {
 	User.auth = {};
+
+	const uidsToClean = Object.create(null);
+
+	new cronJob('*/30 * * * * *', (async () => {
+		const uids = Object.keys(uidsToClean);
+		try {
+			await Promise.all(uids.map(async (uid) => {
+				await cleanExpiredSessions(uid);
+				await revokeSessionsAboveThreshold(uid);
+				delete uidsToClean[uid];
+			}));
+		} catch (err) {
+			winston.error(err.stack);
+		}
+	}), null, true);
 
 	User.auth.logAttempt = async function (uid, ip) {
 		if (!(parseInt(uid, 10) > 0)) {
@@ -101,12 +118,12 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		await cleanExpiredSessions(uid);
+		const now = Date.now();
+		uidsToClean[uid] = now;
 		await Promise.all([
-			db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId),
+			db.sortedSetAdd(`uid:${uid}:sessions`, now, sessionId),
 			db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, sessionId),
 		]);
-		await revokeSessionsAboveThreshold(uid);
 	};
 
 	async function revokeSessionsAboveThreshold(uid) {
