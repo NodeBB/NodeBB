@@ -19,9 +19,9 @@ module.exports = function (User) {
 		const uids = Object.keys(uidsToClean);
 		try {
 			await Promise.all(uids.map(async (uid) => {
+				delete uidsToClean[uid];
 				await cleanExpiredSessions(uid);
 				await revokeSessionsAboveThreshold(uid);
-				delete uidsToClean[uid];
 			}));
 		} catch (err) {
 			winston.error(err.stack);
