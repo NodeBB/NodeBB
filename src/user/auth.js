@@ -78,10 +78,11 @@ module.exports = function (User) {
 	async function cleanExpiredSessions(uid) {
 		const sids = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
 		if (!sids.length) {
-			return;
+			return [];
 		}
 
 		const expiredSids = [];
+		const activeSids = [];
 		await Promise.all(sids.map(async (sid) => {
 			const sessionObj = await db.sessionStoreGet(sid);
 			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
@@ -89,10 +90,13 @@ module.exports = function (User) {
 				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
 			if (expired) {
 				expiredSids.push(sid);
+			} else {
+				activeSids.push(sid);
 			}
 		}));
 
 		await db.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
+		return activeSids;
 	}
 
 	User.auth.addSession = async function (uid, sessionId) {
@@ -100,13 +104,12 @@ module.exports = function (User) {
 			return;
 		}
 
-		await cleanExpiredSessions(uid);
+		const activeSids = await cleanExpiredSessions(uid);
 		await db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
-		await revokeSessionsAboveThreshold(uid);
+		await revokeSessionsAboveThreshold(activeSids.push(sessionId), uid);
 	};
 
-	async function revokeSessionsAboveThreshold(uid) {
-		const activeSessions = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
+	async function revokeSessionsAboveThreshold(activeSessions, uid) {
 		if (activeSessions.length > meta.config.maxUserSessions) {
 			const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - meta.config.maxUserSessions);
 			await User.auth.revokeSession(sessionsToRevoke, uid);
