@@ -380,7 +380,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			new Promise((resolve) => {
 				req.session.save(resolve);
 			}),
-			user.auth.addSession(uid, req.sessionID, uuid),
+			user.auth.addSession(uid, req.sessionID),
 			user.updateLastOnlineTime(uid),
 			user.onUserOnline(uid, Date.now()),
 			analytics.increment('logins'),
