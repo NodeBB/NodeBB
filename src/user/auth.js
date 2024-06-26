@@ -2,8 +2,6 @@
 
 const validator = require('validator');
 const _ = require('lodash');
-const winston = require('winston');
-const cronJob = require('cron').CronJob;
 const db = require('../database');
 const meta = require('../meta');
 const events = require('../events');
@@ -12,21 +10,6 @@ const utils = require('../utils');
 
 module.exports = function (User) {
 	User.auth = {};
-
-	const uidsToClean = Object.create(null);
-
-	new cronJob('*/30 * * * * *', (async () => {
-		const uids = Object.keys(uidsToClean);
-		try {
-			await Promise.all(uids.map(async (uid) => {
-				delete uidsToClean[uid];
-				await cleanExpiredSessions(uid);
-				await revokeSessionsAboveThreshold(uid);
-			}));
-		} catch (err) {
-			winston.error(err.stack);
-		}
-	}), null, true);
 
 	User.auth.logAttempt = async function (uid, ip) {
 		if (!(parseInt(uid, 10) > 0)) {
@@ -93,37 +76,33 @@ module.exports = function (User) {
 	};
 
 	async function cleanExpiredSessions(uid) {
-		const uuidMapping = await db.getObject(`uid:${uid}:sessionUUID:sessionId`);
-		if (!uuidMapping) {
+		const sids = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
+		if (!sids.length) {
 			return;
 		}
-		const expiredUUIDs = [];
+
 		const expiredSids = [];
-		await Promise.all(Object.keys(uuidMapping).map(async (uuid) => {
-			const sid = uuidMapping[uuid];
+		await Promise.all(sids.map(async (sid) => {
 			const sessionObj = await db.sessionStoreGet(sid);
 			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
 				!sessionObj.passport.hasOwnProperty('user') ||
 				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
 			if (expired) {
-				expiredUUIDs.push(uuid);
 				expiredSids.push(sid);
 			}
 		}));
-		await db.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, expiredUUIDs);
+
 		await db.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
 	}
 
-	User.auth.addSession = async function (uid, sessionId, uuid) {
+	User.auth.addSession = async function (uid, sessionId) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		const now = Date.now();
-		await Promise.all([
-			db.sortedSetAdd(`uid:${uid}:sessions`, now, sessionId),
-			db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, sessionId),
-		]);
-		uidsToClean[uid] = now;
+
+		await cleanExpiredSessions(uid);
+		await db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
+		await revokeSessionsAboveThreshold(uid);
 	};
 
 	async function revokeSessionsAboveThreshold(uid) {
@@ -137,12 +116,10 @@ module.exports = function (User) {
 	User.auth.revokeSession = async function (sessionIds, uid) {
 		sessionIds = Array.isArray(sessionIds) ? sessionIds : [sessionIds];
 		const sessionObjs = await Promise.all(sessionIds.map(db.sessionStoreGet));
-		const sidsToDestroy = sessionObjs.filter(Boolean).map((s, i) => sessionIds[i]);
-		const uuidsToDelete = sessionObjs.filter(s => s && s.meta && s.meta.uuid).map(s => s.meta.uuid);
+		const sidsToDestroy = sessionObjs.map((s, i) => s && sessionIds[i]).filter(Boolean);
 		const destroySids = sids => Promise.all(sids.map(db.sessionStoreDestroy));
 
 		await Promise.all([
-			db.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, uuidsToDelete),
 			db.sortedSetRemove(`uid:${uid}:sessions`, sessionIds),
 			destroySids(sidsToDestroy),
 		]);
@@ -164,11 +141,10 @@ module.exports = function (User) {
 	User.auth.deleteAllSessions = async function () {
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const sessionKeys = uids.map(uid => `uid:${uid}:sessions`);
-			const sessionUUIDKeys = uids.map(uid => `uid:${uid}:sessionUUID:sessionId`);
 			const sids = _.flatten(await db.getSortedSetRange(sessionKeys, 0, -1));
 
 			await Promise.all([
-				db.deleteAll(sessionKeys.concat(sessionUUIDKeys)),
+				db.deleteAll(sessionKeys),
 				...sids.map(sid => db.sessionStoreDestroy(sid)),
 			]);
 		}, { batch: 1000 });
