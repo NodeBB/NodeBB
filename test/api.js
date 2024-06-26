@@ -562,8 +562,10 @@ describe('API', async () => {
 					const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
-						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
-						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
+						const sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+						const sessObj = await db.sessionStoreGet(sessionIds[0]);
+						const { uuid } = sessObj.meta;
+						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = uuid;
 
 						// Retrieve CSRF token using cookie, to test Write API
 						csrfToken = await helpers.getCsrfToken(jar);
