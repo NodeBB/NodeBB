@@ -187,12 +187,7 @@ Tags.parse = async (req, data, meta, link) => {
 };
 
 function addIfNotExists(meta, keyName, tagName, value) {
-	let exists = false;
-	meta.forEach((tag) => {
-		if (tag[keyName] === tagName) {
-			exists = true;
-		}
-	});
+	const exists = meta.some(tag => tag[keyName] === tagName);
 
 	if (!exists && value) {
 		const data = {
