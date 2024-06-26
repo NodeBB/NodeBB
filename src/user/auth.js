@@ -107,26 +107,28 @@ module.exports = function (User) {
 			db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId),
 			db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, sessionId),
 		]);
-		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
+		await revokeSessionsAboveThreshold(uid);
 	};
 
-	async function revokeSessionsAboveThreshold(uid, maxUserSessions) {
+	async function revokeSessionsAboveThreshold(uid) {
 		const activeSessions = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
-		if (activeSessions.length > maxUserSessions) {
-			const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - maxUserSessions);
-			await Promise.all(sessionsToRevoke.map(sessionId => User.auth.revokeSession(sessionId, uid)));
+		if (activeSessions.length > meta.config.maxUserSessions) {
+			const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - meta.config.maxUserSessions);
+			await User.auth.revokeSession(sessionsToRevoke, uid);
 		}
 	}
 
-	User.auth.revokeSession = async function (sessionId, uid) {
-		winston.verbose(`[user.auth] Revoking session ${sessionId} for user ${uid}`);
-		const sessionObj = await db.sessionStoreGet(sessionId);
-		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid) {
-			await db.deleteObjectField(`uid:${uid}:sessionUUID:sessionId`, sessionObj.meta.uuid);
-		}
+	User.auth.revokeSession = async function (sessionIds, uid) {
+		sessionIds = Array.isArray(sessionIds) ? sessionIds : [sessionIds];
+		const sessionObjs = await Promise.all(sessionIds.map(db.sessionStoreGet));
+		const sidsToDestroy = sessionObjs.filter(Boolean).map((s, i) => sessionIds[i]);
+		const uuidsToDelete = sessionObjs.filter(s => s && s.meta && s.meta.uuid).map(s => s.meta.uuid);
+		const destroySids = sids => Promise.all(sids.map(db.sessionStoreDestroy));
+
 		await Promise.all([
-			db.sortedSetRemove(`uid:${uid}:sessions`, sessionId),
-			db.sessionStoreDestroy(sessionId),
+			db.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, uuidsToDelete),
+			db.sortedSetRemove(`uid:${uid}:sessions`, sessionIds),
+			destroySids(sidsToDestroy),
 		]);
 	};
 
@@ -137,7 +139,7 @@ module.exports = function (User) {
 		uids.forEach((uid, index) => {
 			const ids = sids[index].filter(id => id !== except);
 			if (ids.length) {
-				promises.push(ids.map(s => User.auth.revokeSession(s, uid)));
+				promises.push(User.auth.revokeSession(ids, uid));
 			}
 		});
 		await Promise.all(promises);
