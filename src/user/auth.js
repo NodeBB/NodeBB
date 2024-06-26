@@ -110,7 +110,7 @@ module.exports = function (User) {
 	};
 
 	async function revokeSessionsAboveThreshold(activeSids, uid) {
-		if (activeSids.length > meta.config.maxUserSessions) {
+		if (meta.config.maxUserSessions > 0 && activeSids.length > meta.config.maxUserSessions) {
 			const sessionsToRevoke = activeSids.slice(0, activeSids.length - meta.config.maxUserSessions);
 			await User.auth.revokeSession(sessionsToRevoke, uid);
 		}
