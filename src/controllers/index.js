@@ -308,12 +308,14 @@ Controllers.manifest = async function (req, res) {
 	if (meta.config['brand:maskableIcon']) {
 		manifest.icons.push({
 			src: `${nconf.get('relative_path')}/assets/uploads/system/maskableicon-orig.png`,
+			sizes: '512x512',
 			type: 'image/png',
 			purpose: 'maskable',
 		});
 	} else if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
 			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-orig.png`,
+			sizes: '512x512',
 			type: 'image/png',
 			purpose: 'maskable',
 		});
