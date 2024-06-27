@@ -121,7 +121,7 @@ module.exports = function (User) {
 			`uid:${uid}:chat:rooms:read`,
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 			`uid:${uid}:flag:pids`,
-			`uid:${uid}:sessions`, `uid:${uid}:sessionUUID:sessionId`,
+			`uid:${uid}:sessions`,
 			`invitation:uid:${uid}`,
 		];
 

@@ -195,7 +195,7 @@ describe('authentication', () => {
 			});
 			assert(body);
 			assert.equal(body.username, username);
-			const sessions = await db.getObject(`uid:${uid}:sessionUUID:sessionId`);
+			const sessions = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
 			assert(sessions);
 			assert(Object.keys(sessions).length > 0);
 		});
