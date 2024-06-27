@@ -1,6 +1,5 @@
 'use strict';
 
-const winston = require('winston');
 const validator = require('validator');
 const _ = require('lodash');
 const db = require('../database');
@@ -77,56 +76,53 @@ module.exports = function (User) {
 	};
 
 	async function cleanExpiredSessions(uid) {
-		const uuidMapping = await db.getObject(`uid:${uid}:sessionUUID:sessionId`);
-		if (!uuidMapping) {
-			return;
+		const sids = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
+		if (!sids.length) {
+			return [];
 		}
-		const expiredUUIDs = [];
+
 		const expiredSids = [];
-		await Promise.all(Object.keys(uuidMapping).map(async (uuid) => {
-			const sid = uuidMapping[uuid];
+		const activeSids = [];
+		await Promise.all(sids.map(async (sid) => {
 			const sessionObj = await db.sessionStoreGet(sid);
 			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
 				!sessionObj.passport.hasOwnProperty('user') ||
 				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
 			if (expired) {
-				expiredUUIDs.push(uuid);
 				expiredSids.push(sid);
+			} else {
+				activeSids.push(sid);
 			}
 		}));
-		await db.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, expiredUUIDs);
+
 		await db.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
+		return activeSids;
 	}
 
-	User.auth.addSession = async function (uid, sessionId, uuid) {
+	User.auth.addSession = async function (uid, sessionId) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
-		await cleanExpiredSessions(uid);
-		await Promise.all([
-			db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId),
-			db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, sessionId),
-		]);
-		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
+
+		const activeSids = await cleanExpiredSessions(uid);
+		await db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
+		await revokeSessionsAboveThreshold(activeSids.push(sessionId), uid);
 	};
 
-	async function revokeSessionsAboveThreshold(uid, maxUserSessions) {
-		const activeSessions = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
-		if (activeSessions.length > maxUserSessions) {
-			const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - maxUserSessions);
-			await Promise.all(sessionsToRevoke.map(sessionId => User.auth.revokeSession(sessionId, uid)));
+	async function revokeSessionsAboveThreshold(activeSids, uid) {
+		if (meta.config.maxUserSessions > 0 && activeSids.length > meta.config.maxUserSessions) {
+			const sessionsToRevoke = activeSids.slice(0, activeSids.length - meta.config.maxUserSessions);
+			await User.auth.revokeSession(sessionsToRevoke, uid);
 		}
 	}
 
-	User.auth.revokeSession = async function (sessionId, uid) {
-		winston.verbose(`[user.auth] Revoking session ${sessionId} for user ${uid}`);
-		const sessionObj = await db.sessionStoreGet(sessionId);
-		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid) {
-			await db.deleteObjectField(`uid:${uid}:sessionUUID:sessionId`, sessionObj.meta.uuid);
-		}
+	User.auth.revokeSession = async function (sessionIds, uid) {
+		sessionIds = Array.isArray(sessionIds) ? sessionIds : [sessionIds];
+		const destroySids = sids => Promise.all(sids.map(db.sessionStoreDestroy));
+
 		await Promise.all([
-			db.sortedSetRemove(`uid:${uid}:sessions`, sessionId),
-			db.sessionStoreDestroy(sessionId),
+			db.sortedSetRemove(`uid:${uid}:sessions`, sessionIds),
+			destroySids(sessionIds),
 		]);
 	};
 
@@ -137,7 +133,7 @@ module.exports = function (User) {
 		uids.forEach((uid, index) => {
 			const ids = sids[index].filter(id => id !== except);
 			if (ids.length) {
-				promises.push(ids.map(s => User.auth.revokeSession(s, uid)));
+				promises.push(User.auth.revokeSession(ids, uid));
 			}
 		});
 		await Promise.all(promises);
@@ -146,11 +142,10 @@ module.exports = function (User) {
 	User.auth.deleteAllSessions = async function () {
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const sessionKeys = uids.map(uid => `uid:${uid}:sessions`);
-			const sessionUUIDKeys = uids.map(uid => `uid:${uid}:sessionUUID:sessionId`);
 			const sids = _.flatten(await db.getSortedSetRange(sessionKeys, 0, -1));
 
 			await Promise.all([
-				db.deleteAll(sessionKeys.concat(sessionUUIDKeys)),
+				db.deleteAll(sessionKeys),
 				...sids.map(sid => db.sessionStoreDestroy(sid)),
 			]);
 		}, { batch: 1000 });

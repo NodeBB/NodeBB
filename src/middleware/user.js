@@ -41,7 +41,7 @@ module.exports = function (middleware) {
 		async function finishLogin(req, user) {
 			const loginAsync = util.promisify(req.login).bind(req);
 			await loginAsync(user, { keepSessionInfo: true });
-			await controllers.authentication.onSuccessfulLogin(req, user.uid);
+			await controllers.authentication.onSuccessfulLogin(req, user.uid, false);
 			req.uid = parseInt(user.uid, 10);
 			req.loggedIn = req.uid > 0;
 			return true;
