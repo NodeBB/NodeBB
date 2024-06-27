@@ -297,7 +297,7 @@ define('forum/topic', [
 			destroyed = true;
 		}
 		$(window).one('action:ajaxify.start', destroyTooltip);
-		$('[component="topic"]').on('mouseenter', '[component="post/parent"] a, [component="post/content"] a, [component="topic/event"] a', async function () {
+		$('[component="topic"]').on('mouseenter', '[component="post/parent"], [component="post/content"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
 			destroyed = false;
 
