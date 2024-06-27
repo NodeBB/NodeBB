@@ -12,9 +12,9 @@ blocksController.getBlocks = async function (req, res) {
 	const resultsPerPage = 50;
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
+	const payload = res.locals.userData;
+	const { uid, username, userslug, blocksCount } = payload;
 
-	const { uid, username, userslug, blocksCount } = await user.getUserFields(res.locals.uid, ['uid', 'username', 'userslug', 'blocksCount']);
-	const payload = {};
 	const uids = await user.blocks.list(uid);
 	const data = await plugins.hooks.fire('filter:user.getBlocks', {
 		uids: uids,

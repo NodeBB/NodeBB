@@ -180,6 +180,10 @@ paths:
     $ref: 'write/posts/pid/move.yaml'
   /posts/{pid}/vote:
     $ref: 'write/posts/pid/vote.yaml'
+  /posts/{pid}/voters:
+    $ref: 'write/posts/pid/voters.yaml'
+  /posts/{pid}/upvoters:
+    $ref: 'write/posts/pid/upvoters.yaml'
   /posts/{pid}/bookmark:
     $ref: 'write/posts/pid/bookmark.yaml'
   /posts/{pid}/diffs:

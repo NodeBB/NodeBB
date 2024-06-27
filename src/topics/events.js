@@ -111,10 +111,8 @@ function renderTimeago(event) {
 }
 
 Events.get = async (tid, uid, reverse = false) => {
-	const topics = require('.');
-
-	if (!await topics.exists(tid)) {
-		throw new Error('[[error:no-topic]]');
+	if (!tid) {
+		return [];
 	}
 
 	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
@@ -122,7 +120,11 @@ Events.get = async (tid, uid, reverse = false) => {
 	const timestamps = eventIds.map(obj => obj.score);
 	eventIds = eventIds.map(obj => obj.value);
 	let events = await db.getObjects(keys);
-	events = await modifyEvent({ tid, uid, eventIds, timestamps, events });
+	events.forEach((e, idx) => {
+		e.timestamp = timestamps[idx];
+	});
+	await addEventsFromPostQueue(tid, uid, events);
+	events = await modifyEvent({ uid, events });
 	if (reverse) {
 		events.reverse();
 	}
@@ -146,8 +148,7 @@ async function getCategoryInfo(cids) {
 	return _.zipObject(uniqCids, catData);
 }
 
-async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
-	// Add posts from post queue
+async function addEventsFromPostQueue(tid, uid, events) {
 	const isPrivileged = await user.isPrivileged(uid);
 	if (isPrivileged) {
 		const queuedPosts = await posts.getQueuedPosts({ tid }, { metadata: false });
@@ -157,11 +158,10 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 			timestamp: item.data.timestamp || Date.now(),
 			uid: item.data.uid,
 		})));
-		queuedPosts.forEach((item) => {
-			timestamps.push(item.data.timestamp || Date.now());
-		});
 	}
+}
 
+async function modifyEvent({ uid, events }) {
 	const [users, fromCategories, userSettings] = await Promise.all([
 		getUserInfo(events.map(event => event.uid).filter(Boolean)),
 		getCategoryInfo(events.map(event => event.fromCid).filter(Boolean)),
@@ -185,10 +185,8 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
 
 	// Add user & metadata
-	events.forEach((event, idx) => {
-		event.id = parseInt(eventIds[idx], 10);
-		event.timestamp = timestamps[idx];
-		event.timestampISO = new Date(timestamps[idx]).toISOString();
+	events.forEach((event) => {
+		event.timestampISO = utils.toISOString(event.timestamp);
 		if (event.hasOwnProperty('uid')) {
 			event.user = users.get(event.uid === 'system' ? 'system' : parseInt(event.uid, 10));
 		}
@@ -223,16 +221,15 @@ Events.log = async (tid, payload) => {
 	}
 
 	const eventId = await db.incrObjectField('global', 'nextTopicEventId');
+	payload.id = eventId;
 
 	await Promise.all([
 		db.setObject(`topicEvent:${eventId}`, payload),
 		db.sortedSetAdd(`topic:${tid}:events`, timestamp, eventId),
 	]);
-
+	payload.timestamp = timestamp;
 	let events = await modifyEvent({
 		uid: payload.uid,
-		eventIds: [eventId],
-		timestamps: [timestamp],
 		events: [payload],
 	});
 

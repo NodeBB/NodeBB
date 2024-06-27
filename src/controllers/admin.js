@@ -1,7 +1,9 @@
 'use strict';
 
 const privileges = require('../privileges');
+const plugins = require('../plugins');
 const helpers = require('./helpers');
+const apiController = require('./api');
 
 const adminController = {
 	dashboard: require('./admin/dashboard'),
@@ -53,6 +55,17 @@ adminController.routeIndex = async (req, res) => {
 	}
 
 	return helpers.notAllowed(req, res);
+};
+
+adminController.loadConfig = async function (req) {
+	const config = await apiController.loadConfig(req);
+	await plugins.hooks.fire('filter:config.get.admin', config);
+	return config;
+};
+
+adminController.getConfig = async (req, res) => {
+	const config = await adminController.loadConfig(req);
+	res.json(config);
 };
 
 module.exports = adminController;

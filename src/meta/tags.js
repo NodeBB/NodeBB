@@ -14,8 +14,10 @@ const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 
 Tags.parse = async (req, data, meta, link) => {
+	const isAPI = req.res && req.res.locals && req.res.locals.isAPI;
+
 	// Meta tags
-	const defaultTags = [{
+	const defaultTags = isAPI ? [] : [{
 		name: 'viewport',
 		content: 'width=device-width, initial-scale=1.0',
 	}, {
@@ -40,14 +42,14 @@ Tags.parse = async (req, data, meta, link) => {
 		content: Meta.config.themeColor || '#ffffff',
 	}];
 
-	if (Meta.config.keywords) {
+	if (Meta.config.keywords && !isAPI) {
 		defaultTags.push({
 			name: 'keywords',
 			content: Meta.config.keywords,
 		});
 	}
 
-	if (Meta.config['brand:logo']) {
+	if (Meta.config['brand:logo'] && !isAPI) {
 		defaultTags.push({
 			name: 'msapplication-square150x150logo',
 			content: Meta.config['brand:logo'],
@@ -59,7 +61,7 @@ Tags.parse = async (req, data, meta, link) => {
 	const cacheBuster = `${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`;
 
 	// Link Tags
-	const defaultLinks = [{
+	const defaultLinks = isAPI ? [] : [{
 		rel: 'icon',
 		type: 'image/x-icon',
 		href: `${faviconPath}${cacheBuster}`,
@@ -69,7 +71,7 @@ Tags.parse = async (req, data, meta, link) => {
 		crossorigin: `use-credentials`,
 	}];
 
-	if (plugins.hooks.hasListeners('filter:search.query')) {
+	if (plugins.hooks.hasListeners('filter:search.query') && !isAPI) {
 		defaultLinks.push({
 			rel: 'search',
 			type: 'application/opensearchdescription+xml',
@@ -78,7 +80,59 @@ Tags.parse = async (req, data, meta, link) => {
 		});
 	}
 
-	// Touch icons for mobile-devices
+	if (!isAPI) {
+		addTouchIcons(defaultLinks);
+	}
+
+	const results = await utils.promiseParallel({
+		tags: plugins.hooks.fire('filter:meta.getMetaTags', { req: req, data: data, tags: defaultTags }),
+		links: plugins.hooks.fire('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }),
+	});
+
+	meta = results.tags.tags.concat(meta || []).map((tag) => {
+		if (!tag || typeof tag.content !== 'string') {
+			winston.warn('Invalid meta tag. ', tag);
+			return tag;
+		}
+
+		if (!tag.noEscape) {
+			const attributes = Object.keys(tag);
+			attributes.forEach((attr) => {
+				tag[attr] = utils.escapeHTML(String(tag[attr]));
+			});
+		}
+
+		return tag;
+	});
+
+	await addSiteOGImage(meta);
+
+	addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
+	const ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
+	addIfNotExists(meta, 'property', 'og:url', ogUrl);
+	addIfNotExists(meta, 'name', 'description', Meta.config.description);
+	addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
+
+	link = results.links.links.concat(link || []);
+	if (isAPI) {
+		const whitelist = ['canonical', 'alternate', 'up'];
+		link = link.filter(link => whitelist.some(val => val === link.rel));
+	}
+	link = link.map((tag) => {
+		if (!tag.noEscape) {
+			const attributes = Object.keys(tag);
+			attributes.forEach((attr) => {
+				tag[attr] = utils.escapeHTML(String(tag[attr]));
+			});
+		}
+
+		return tag;
+	});
+
+	return { meta, link };
+};
+
+function addTouchIcons(defaultLinks) {
 	if (Meta.config['brand:touchIcon']) {
 		defaultLinks.push({
 			rel: 'apple-touch-icon',
@@ -142,64 +196,16 @@ Tags.parse = async (req, data, meta, link) => {
 			href: `${relative_path}/assets/images/touch/512.png`,
 		});
 	}
-
-	const results = await utils.promiseParallel({
-		tags: plugins.hooks.fire('filter:meta.getMetaTags', { req: req, data: data, tags: defaultTags }),
-		links: plugins.hooks.fire('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }),
-	});
-
-	meta = results.tags.tags.concat(meta || []).map((tag) => {
-		if (!tag || typeof tag.content !== 'string') {
-			winston.warn('Invalid meta tag. ', tag);
-			return tag;
-		}
-
-		if (!tag.noEscape) {
-			const attributes = Object.keys(tag);
-			attributes.forEach((attr) => {
-				tag[attr] = utils.escapeHTML(String(tag[attr]));
-			});
-		}
-
-		return tag;
-	});
-
-	await addSiteOGImage(meta);
-
-	addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
-	const ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
-	addIfNotExists(meta, 'property', 'og:url', ogUrl);
-	addIfNotExists(meta, 'name', 'description', Meta.config.description);
-	addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
-
-	link = results.links.links.concat(link || []).map((tag) => {
-		if (!tag.noEscape) {
-			const attributes = Object.keys(tag);
-			attributes.forEach((attr) => {
-				tag[attr] = utils.escapeHTML(String(tag[attr]));
-			});
-		}
-
-		return tag;
-	});
-
-	return { meta, link };
-};
+}
 
 function addIfNotExists(meta, keyName, tagName, value) {
-	let exists = false;
-	meta.forEach((tag) => {
-		if (tag[keyName] === tagName) {
-			exists = true;
-		}
-	});
+	const exists = meta.some(tag => tag[keyName] === tagName);
 
 	if (!exists && value) {
-		const data = {
+		meta.push({
 			content: utils.escapeHTML(String(value)),
-		};
-		data[keyName] = tagName;
-		meta.push(data);
+			[keyName]: tagName,
+		});
 	}
 }
 

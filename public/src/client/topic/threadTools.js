@@ -11,7 +11,8 @@ define('forum/topic/threadTools', [
 	'bootbox',
 	'alerts',
 	'bootstrap',
-], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap) {
+	'helpers',
+], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap, helpers) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -211,6 +212,7 @@ define('forum/topic/threadTools', [
 			if (dropdownMenu.attr('data-loaded')) {
 				return;
 			}
+			dropdownMenu.html(helpers.generatePlaceholderWave([8, 8, 8]));
 			const data = await socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid });
 			const html = await app.parseAndTranslate('partials/topic/topic-menu-list', data);
 			$(dropdownMenu).attr('data-loaded', 'true').html(html);

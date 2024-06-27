@@ -27,7 +27,7 @@ define('accounts/picture', [
 				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
 				defaultAvatar: ajaxify.data.defaultAvatar,
 				allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
-				iconBackgrounds: config.iconBackgrounds,
+				iconBackgrounds: ajaxify.data.iconBackgrounds,
 				user: {
 					uid: ajaxify.data.uid,
 					username: ajaxify.data.username,

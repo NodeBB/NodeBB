@@ -177,10 +177,9 @@ async function getPostsFromUserSet(template, req, res) {
 	const data = templateToData[template];
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
-	const [{ username, userslug }, settings] = await Promise.all([
-		user.getUserFields(res.locals.uid, ['username', 'userslug']),
-		user.getSettings(req.uid),
-	]);
+	const payload = res.locals.userData;
+	const { username, userslug } = payload;
+	const settings = await user.getSettings(req.uid);
 
 	const itemsPerPage = data.type === 'topics' ? settings.topicsPerPage : settings.postsPerPage;
 	const start = (page - 1) * itemsPerPage;
@@ -207,7 +206,6 @@ async function getPostsFromUserSet(template, req, res) {
 	}
 	const { itemCount, itemData } = result;
 
-	const payload = {};
 	payload[data.type] = itemData[data.type];
 	payload.nextStart = itemData.nextStart;
 

@@ -42,7 +42,7 @@ module.exports = function (User) {
 		await db.sortedSetAdd('users:banned', now, uid);
 		await db.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
 		await db.setObject(banKey, banData);
-		await User.setUserField(uid, 'banned:expire', banData.expire);
+		await User.setUserFields(uid, { banned: 1, 'banned:expire': banData.expire });
 		if (until > now) {
 			await db.sortedSetAdd('users:banned:expire', until, uid);
 		} else {
@@ -69,7 +69,7 @@ module.exports = function (User) {
 		uids = isArray ? uids : [uids];
 		const userData = await User.getUsersFields(uids, ['email:confirmed']);
 
-		await db.setObject(uids.map(uid => `user:${uid}`), { 'banned:expire': 0 });
+		await db.setObject(uids.map(uid => `user:${uid}`), { banned: 0, 'banned:expire': 0 });
 		const now = Date.now();
 		const unbanDataArray = [];
 		/* eslint-disable no-await-in-loop */
@@ -124,16 +124,15 @@ module.exports = function (User) {
 
 	User.bans.unbanIfExpired = async function (uids) {
 		// loading user data will unban if it has expired -barisu
-		const userData = await User.getUsersFields(uids, ['banned:expire']);
+		const userData = await User.getUsersFields(uids, ['banned', 'banned:expire']);
 		return User.bans.calcExpiredFromUserData(userData);
 	};
 
-	User.bans.calcExpiredFromUserData = async function (userData) {
+	User.bans.calcExpiredFromUserData = function (userData) {
 		const isArray = Array.isArray(userData);
 		userData = isArray ? userData : [userData];
-		const banned = await groups.isMembers(userData.map(u => u.uid), groups.BANNED_USERS);
-		userData = userData.map((userData, index) => ({
-			banned: banned[index],
+		userData = userData.map(userData => ({
+			banned: !!(userData && userData.banned),
 			'banned:expire': userData && userData['banned:expire'],
 			banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
 		}));

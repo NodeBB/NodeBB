@@ -6,7 +6,7 @@ const uploadsController = require('../controllers/uploads');
 const helpers = require('./helpers');
 
 module.exports = function (app, middleware, controllers) {
-	const middlewares = [middleware.authenticateRequest];
+	const middlewares = [middleware.autoLocale, middleware.authenticateRequest];
 	const router = express.Router();
 	app.use('/api', router);
 
