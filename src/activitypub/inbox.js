@@ -44,13 +44,16 @@ async function announce(id, activity) {
 		return;
 	}
 
+	const { actor } = activity;
+	followers.unshift(actor);
+
 	winston.info(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} to followers of cid ${cid}`);
 	await Promise.all([activity, activity.object].map(async (object) => {
 		await activitypub.send('cid', cid, followers, {
 			id: `${id}#activity/announce/${Date.now()}`,
 			type: 'Announce',
 			to: [`${nconf.get('url')}/category/${cid}/followers`],
-			cc: [activitypub._constants.publicAddress],
+			cc: [actor, activitypub._constants.publicAddress],
 			object,
 		});
 	}));
