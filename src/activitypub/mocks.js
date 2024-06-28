@@ -103,7 +103,7 @@ Mocks.post = async (objects) => {
 			url,
 			attributedTo: uid,
 			inReplyTo: toPid,
-			published, updated, name, content, sourceContent,
+			published, updated, name, content, source,
 			to, cc, audience, attachment, tag,
 			// conversation, // mastodon-specific, ignored.
 		} = object;
@@ -125,7 +125,7 @@ Mocks.post = async (objects) => {
 			// tid,  --> purposely omitted
 			name,
 			content,
-			sourceContent,
+			sourceContent: source.mediaType === 'text/markdown' ? source.content : undefined,
 			timestamp,
 			toPid,
 
