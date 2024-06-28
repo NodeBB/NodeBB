@@ -107,7 +107,7 @@ Actors.topic = async function (req, res, next) {
 	};
 
 	if (items) {
-		object.items = items;
+		object.orderedItems = items;
 
 		if (paginate) {
 			object.partOf = `${nconf.get('url')}/topic/${req.params.tid}`;

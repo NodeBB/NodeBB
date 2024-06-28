@@ -30,9 +30,13 @@ Contexts.get = async (uid, id) => {
 
 Contexts.getItems = async (uid, id, root = true) => {
 	winston.verbose(`[activitypub/context] Retrieving context ${id}`);
-	let { type, items, first, next } = await activitypub.get('uid', uid, id);
+	let { type, items, orderedItems, first, next } = await activitypub.get('uid', uid, id);
 	if (!acceptableTypes.includes(type)) {
 		return [];
+	}
+
+	if (type.startsWith('Ordered')) {
+		items = orderedItems;
 	}
 
 	if (items) {
