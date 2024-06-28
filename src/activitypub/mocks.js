@@ -125,7 +125,7 @@ Mocks.post = async (objects) => {
 			// tid,  --> purposely omitted
 			name,
 			content,
-			sourceContent: source.mediaType === 'text/markdown' ? source.content : undefined,
+			sourceContent: source && source.mediaType === 'text/markdown' ? source.content : undefined,
 			timestamp,
 			toPid,
 
