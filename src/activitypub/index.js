@@ -40,6 +40,7 @@ ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
 ActivityPub.mocks = require('./mocks');
 ActivityPub.notes = require('./notes');
+ActivityPub.contexts = require('./contexts');
 ActivityPub.actors = require('./actors');
 ActivityPub.instances = require('./instances');
 

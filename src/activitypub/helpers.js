@@ -134,7 +134,6 @@ Helpers.resolveLocalId = async (input) => {
 				activityData = { activity, data, timestamp };
 			}
 
-			// https://bb.devnull.land/cid/2#activity/follow/activitypub@community.nodebb.org│
 			switch (prefix) {
 				case 'uid':
 					return { type: 'user', id: value, ...activityData };

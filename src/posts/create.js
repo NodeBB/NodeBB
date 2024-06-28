@@ -82,6 +82,10 @@ module.exports = function (Posts) {
 	}
 
 	async function checkToPid(toPid, uid) {
+		if (!utils.isNumber(toPid)) {
+			return;
+		}
+
 		const [toPost, canViewToPid] = await Promise.all([
 			Posts.getPostFields(toPid, ['pid', 'deleted']),
 			privileges.posts.can('posts:view_deleted', toPid, uid),

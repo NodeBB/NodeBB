@@ -43,13 +43,23 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return null;
 	}
 
-	const chain = Array.from(await Notes.getParentChain(uid, input));
+	let chain;
+	const context = await activitypub.contexts.get(uid, id);
+	if (context) {
+		chain = Array.from(await activitypub.contexts.getItems(uid, context));
+	} else {
+		// Fall back to inReplyTo traversal
+		chain = Array.from(await Notes.getParentChain(uid, input));
+	}
 	if (!chain.length) {
 		unlock(id);
 		return null;
 	}
 
-	const mainPost = chain[chain.length - 1];
+	// Reorder chain items by timestamp
+	chain = chain.sort((a, b) => a.timestamp - b.timestamp);
+
+	const mainPost = chain[0];
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, _activitypub } = mainPost;
 	const hasTid = !!tid;
 
@@ -133,7 +143,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name.slice(1)))
 			.map(o => o.name.slice(1));
 
-		if (maxTags && tags.length > maxTags) {
+		if (tags.length > maxTags) {
 			tags.length = maxTags;
 		}
 
@@ -152,10 +162,9 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			Notes.updateLocalRecipients(mainPid, { to, cc }),
 			posts.attachments.update(mainPid, attachment),
 		]);
-		unprocessed.pop();
+		unprocessed.shift();
 	}
 
-	unprocessed.reverse();
 	for (const post of unprocessed) {
 		const { to, cc, attachment } = post._activitypub;
 

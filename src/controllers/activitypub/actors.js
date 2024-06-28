@@ -101,7 +101,8 @@ Actors.topic = async function (req, res, next) {
 		url: `${nconf.get('url')}/topic/${slug}`,
 		name,
 		type: paginate && items ? 'OrderedCollectionPage' : 'OrderedCollection',
-		audience: `${nconf.get('url')}/category/${cid}`,
+		attributedTo: `${nconf.get('url')}/category/${cid}`,
+		audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}/followers` : undefined,
 		totalItems: postcount,
 	};
 
