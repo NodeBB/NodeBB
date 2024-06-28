@@ -70,7 +70,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(0, -1).map(p => p.pid));
-	members.push(await posts.exists(mainPid));
+	members.unshift(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
 		// winston.verbose('[notes/assert] No new notes to process.');
@@ -121,18 +121,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}).filter((p, idx) => !members[idx]);
 	const count = unprocessed.length;
 	// winston.verbose(`[notes/assert] ${count} new note(s) found.`);
-
-	const [ids, timestamps] = [
-		unprocessed.map(n => (utils.isNumber(n.pid) ? parseInt(n.pid, 10) : n.pid)),
-		unprocessed.map(n => n.timestamp),
-	];
-
-	// mainPid doesn't belong in posts zset
-	if (ids.includes(mainPid)) {
-		const idx = ids.indexOf(mainPid);
-		ids.splice(idx, 1);
-		timestamps.splice(idx, 1);
-	}
 
 	let tags;
 	if (!hasTid) {
