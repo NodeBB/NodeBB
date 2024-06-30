@@ -7,13 +7,13 @@ const db = require('../database');
 const utils = require('../utils');
 const user = require('../user');
 const posts = require('../posts');
-const postsCache = require('../posts/cache');
 const topics = require('../topics');
 const groups = require('../groups');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const events = require('../events');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
@@ -135,12 +135,14 @@ postsAPI.edit = async function (caller, data) {
 			newTitle: validator.escape(String(editResult.topic.title)),
 		});
 	}
-	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, {});
+	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { extraFields: ['edited'] });
 	const returnData = { ...postObj[0], ...editResult.post };
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
+		await require('.').activitypub.update.note(caller, { post: postObj[0] });
+
 		return returnData;
 	}
 
@@ -153,6 +155,7 @@ postsAPI.edit = async function (caller, data) {
 
 	const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
 	uids.forEach(uid => websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
+
 	return returnData;
 };
 
@@ -191,6 +194,11 @@ async function deleteOrRestore(caller, data, params) {
 		tid: postData.tid,
 		ip: caller.ip,
 	});
+
+	// Explicitly non-awaited
+	posts.getPostSummaryByPids([data.pid], caller.uid, {}).then(([post]) => {
+		require('.').activitypub.update.note(caller, { post });
+	});
 }
 
 async function deleteOrRestoreTopicOf(command, pid, caller) {
@@ -209,16 +217,22 @@ async function deleteOrRestoreTopicOf(command, pid, caller) {
 }
 
 postsAPI.purge = async function (caller, data) {
-	if (!data || !parseInt(data.pid, 10)) {
+	if (!data || !data.pid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const results = await isMainAndLastPost(data.pid);
-	if (results.isMain && !results.isLast) {
+	const [exists, { isMain, isLast }] = await Promise.all([
+		posts.exists(data.pid),
+		isMainAndLastPost(data.pid),
+	]);
+	if (!exists) {
+		throw new Error('[[error:no-post]]');
+	}
+	if (isMain && !isLast) {
 		throw new Error('[[error:cant-purge-main-post]]');
 	}
 
-	const isMainAndLast = results.isMain && results.isLast;
+	const isMainAndLast = isMain && isLast;
 	const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
 	postData.pid = data.pid;
 
@@ -226,8 +240,11 @@ postsAPI.purge = async function (caller, data) {
 	if (!canPurge) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	postsCache.del(data.pid);
-	await posts.purge(data.pid, caller.uid);
+	posts.clearCachedPost(data.pid);
+	await Promise.all([
+		posts.purge(data.pid, caller.uid),
+		require('.').activitypub.delete.note(caller, { pid: data.pid }),
+	]);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
 	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
@@ -347,9 +364,13 @@ postsAPI.getUpvoters = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	let upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	const upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	return await getTooltipData(upvotedUids);
+};
+
+async function getTooltipData(uids) {
 	const cutoff = 6;
-	if (!upvotedUids.length) {
+	if (!uids.length) {
 		return {
 			otherCount: 0,
 			usernames: [],
@@ -357,16 +378,40 @@ postsAPI.getUpvoters = async function (caller, data) {
 		};
 	}
 	let otherCount = 0;
-	if (upvotedUids.length > cutoff) {
-		otherCount = upvotedUids.length - (cutoff - 1);
-		upvotedUids = upvotedUids.slice(0, cutoff - 1);
+	if (uids.length > cutoff) {
+		otherCount = uids.length - (cutoff - 1);
+		uids = uids.slice(0, cutoff - 1);
 	}
 
-	const usernames = await user.getUsernamesByUids(upvotedUids);
+	const usernames = await user.getUsernamesByUids(uids);
 	return {
 		otherCount,
 		usernames,
 		cutoff,
+	};
+}
+
+postsAPI.getAnnouncers = async (caller, data) => {
+	if (!data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (!meta.config.activitypubEnabled) {
+		return [];
+	}
+	const { pid } = data;
+	const cid = await posts.getCidByPid(pid);
+	if (!await privileges.categories.isUserAllowedTo('topics:read', cid, caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const notes = require('../activitypub/notes');
+	const announcers = await notes.announce.list({ pid });
+	const uids = announcers.map(ann => ann.actor);
+	if (data.tooltip) {
+		return await getTooltipData(uids);
+	}
+	return {
+		announceCount: uids.length,
+		announcers: await user.getUsersFields(uids, ['username', 'userslug', 'picture']),
 	};
 };
 
@@ -481,7 +526,7 @@ postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
 };
 
 postsAPI.getReplies = async (caller, { pid }) => {
-	if (!utils.isNumber(pid)) {
+	if (!utils.isNumber(pid) && !activitypub.helpers.isUri(pid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { uid } = caller;

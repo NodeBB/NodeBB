@@ -625,7 +625,7 @@ module.exports = function (Topics) {
 			bodyShort: bodyShort,
 			bodyLong: postData.content,
 			pid: postData.pid,
-			path: `/post/${postData.pid}`,
+			path: `/post/${encodeURIComponent(postData.pid)}`,
 			tid: postData.topic.tid,
 			from: exceptUid,
 		});

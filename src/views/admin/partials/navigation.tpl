@@ -86,6 +86,7 @@
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a>
+				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/activitypub">[[admin/menu:settings/activitypub]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a>

@@ -68,7 +68,7 @@ module.exports = function (Topics) {
 			post.timestampISO = utils.toISOString(post.timestamp);
 			tidToPost[post.tid] = post;
 		});
-		await Promise.all(postData.map(p => posts.parsePost(p)));
+		await Promise.all(postData.map(p => posts.parsePost(p, 'plaintext')));
 
 		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', {
 			tags: utils.stripTags.slice(0),
