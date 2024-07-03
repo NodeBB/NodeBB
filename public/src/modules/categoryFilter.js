@@ -61,11 +61,12 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			}
 		});
 
-		el.on('click', '[component="category/list"] [data-cid]', function () {
+		el.on('click', '[component="category/list"] [data-cid]', function (ev) {
 			const listEl = el.find('[component="category/list"]');
 			const categoryEl = $(this);
 			const link = categoryEl.find('a').attr('href');
 			if (link && link !== '#' && link.length) {
+				ev.stopPropagation();
 				return;
 			}
 			const cid = categoryEl.attr('data-cid');
