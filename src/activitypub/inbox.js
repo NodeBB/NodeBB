@@ -239,8 +239,8 @@ inbox.announce = async (req) => {
 			}
 		}
 
-		// Handle case where Announce(Create(Note)) is received
-		if (object.type === 'Create' && object.object.type === 'Note') {
+		// Handle case where Announce(Create(Note-ish)) is received
+		if (object.type === 'Create' && activitypub._constants.acceptedPostTypes.includes(object.object.type)) {
 			pid = object.object.id;
 		} else {
 			pid = object.id;
