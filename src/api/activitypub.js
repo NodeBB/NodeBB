@@ -40,7 +40,7 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 	const handle = await user.getUserField(actor, 'username');
 
 	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}`,
+		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${Date.now()}`,
 		type: 'Follow',
 		object: actor,
 	});
