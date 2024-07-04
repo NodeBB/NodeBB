@@ -20,6 +20,9 @@ const requestCache = ttl({
 	max: 5000,
 	ttl: 1000 * 60 * 5, // 5 minutes
 });
+
+const urlHostname = nconf.get('url_parsed').hostname;
+
 const ActivityPub = module.exports;
 
 ActivityPub._constants = Object.freeze({
@@ -86,17 +89,21 @@ ActivityPub.resolveInboxes = async (ids) => {
 	if (!meta.config.activitypubAllowLoopback) {
 		ids = ids.filter((id) => {
 			const { hostname } = new URL(id);
-			return hostname !== nconf.get('url_parsed').hostname;
+			return hostname !== urlHostname;
 		});
 	}
 
 	await ActivityPub.actors.assert(ids);
-	await Promise.all(ids.map(async (id) => {
-		const { inbox, sharedInbox } = await user.getUserFields(id, ['inbox', 'sharedInbox']);
-		if (sharedInbox || inbox) {
-			inboxes.add(sharedInbox || inbox);
-		}
-	}));
+	await batch.processArray(ids, async (currentIds) => {
+		const usersData = await user.getUsersFields(currentIds, ['inbox', 'sharedInbox']);
+		usersData.forEach((u) => {
+			if (u && (u.sharedInbox || u.inbox)) {
+				inboxes.add(u.sharedInbox || u.inbox);
+			}
+		});
+	}, {
+		batch: 500,
+	});
 
 	return Array.from(inboxes);
 };
