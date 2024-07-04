@@ -15,6 +15,10 @@ Contexts.get = async (uid, id) => {
 
 	try {
 		({ context } = await activitypub.get('uid', uid, id));
+		if (!context) {
+			winston.verbose(`[activitypub/context] ${id} contains no context.`);
+			return false;
+		}
 		({ type } = await activitypub.get('uid', uid, context));
 	} catch (e) {
 		winston.verbose(`[activitypub/context] ${id} context not resolvable.`);
