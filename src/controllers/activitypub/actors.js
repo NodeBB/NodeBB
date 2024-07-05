@@ -68,58 +68,35 @@ Actors.topic = async function (req, res, next) {
 		return res.sendStatus(404);
 	}
 
-	let page = parseInt(req.query.page, 10);
-	const { cid, titleRaw: name, mainPid, slug, postcount } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'postcount']);
-	const pageCount = Math.max(1, Math.ceil(postcount / meta.config.postsPerPage));
-	let items;
-	let paginate = true;
+	const page = parseInt(req.query.page, 10);
+	const perPage = meta.config.postsPerPage;
+	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
+	const collection = await activitypub.helpers.generateCollection({
+		set: `tid:${req.params.tid}:posts`,
+		method: posts.getPidsFromSet,
+		page,
+		perPage,
+		url: `${nconf.get('url')}/topic/${req.params.tid}`,
+	});
 
-	if (!page && pageCount === 1) {
-		page = 1;
-		paginate = false;
-	}
-
-	if (page) {
-		const invalidPagination = page < 1 || page > pageCount;
-		if (invalidPagination) {
-			return next();
-		}
-
-		const start = Math.max(0, ((page - 1) * meta.config.postsPerPage) - 1);
-		const stop = Math.max(0, start + meta.config.postsPerPage - 1);
-		const pids = await posts.getPidsFromSet(`tid:${req.params.tid}:posts`, start, stop);
+	// Convert pids to urls
+	if (collection.orderedItems) {
 		if (page === 1) {
-			pids.unshift(mainPid);
-			pids.length = Math.min(pids.length, meta.config.postsPerPage);
+			collection.orderedItems.unshift(mainPid);
+			collection.orderedItems.length = Math.min(collection.orderedItems.length, meta.config.postsPerPage);
 		}
-		items = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+		collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 	}
 
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${nconf.get('url')}/topic/${req.params.tid}${paginate && page ? `?page=${page}` : ''}`,
+		id: `${nconf.get('url')}/topic/${req.params.tid}${collection.orderedItems && page ? `?page=${page}` : ''}`,
 		url: `${nconf.get('url')}/topic/${slug}`,
 		name,
-		type: paginate && items ? 'OrderedCollectionPage' : 'OrderedCollection',
 		attributedTo: `${nconf.get('url')}/category/${cid}`,
 		audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}/followers` : undefined,
-		totalItems: postcount,
+		...collection,
 	};
-
-	if (items) {
-		object.orderedItems = items;
-
-		if (paginate) {
-			object.partOf = `${nconf.get('url')}/topic/${req.params.tid}`;
-			object.next = page < pageCount ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page + 1}` : null;
-			object.prev = page > 1 ? `${nconf.get('url')}/topic/${req.params.tid}?page=${page - 1}` : null;
-		}
-	}
-
-	if (paginate) {
-		object.first = `${nconf.get('url')}/topic/${req.params.tid}?page=1`;
-		object.last = `${nconf.get('url')}/topic/${req.params.tid}?page=${pageCount}`;
-	}
 
 	res.status(200).json(object);
 };

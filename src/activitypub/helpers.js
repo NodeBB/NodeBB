@@ -355,3 +355,52 @@ Helpers.remoteAnchorToLocalProfile = async (content) => {
 
 // eslint-disable-next-line max-len
 Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, property) => memo.concat(Array.isArray(object[property]) ? object[property] : [object[property]]), []));
+
+Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
+	if (!method) {
+		method = db.getSortedSetRange;
+	}
+	const count = await db.sortedSetCard(set);
+	// const { cid, titleRaw: name, mainPid, slug, postcount: count } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'postcount']);
+	const pageCount = Math.max(1, Math.ceil(count / perPage));
+	let items;
+	let paginate = true;
+
+	if (!page && pageCount === 1) {
+		page = 1;
+		paginate = false;
+	}
+
+	if (page) {
+		const invalidPagination = page < 1 || page > pageCount;
+		if (invalidPagination) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		const start = Math.max(0, ((page - 1) * perPage) - 1);
+		const stop = Math.max(0, start + perPage - 1);
+		items = await method(set, start, stop);
+	}
+
+	const object = {
+		type: paginate && items ? 'OrderedCollectionPage' : 'OrderedCollection',
+		totalItems: count,
+	};
+
+	if (items) {
+		object.orderedItems = items;
+
+		if (paginate) {
+			object.partOf = url;
+			object.next = page < pageCount ? `${url}?page=${page + 1}` : null;
+			object.prev = page > 1 ? `${url}?page=${page - 1}` : null;
+		}
+	}
+
+	if (paginate) {
+		object.first = `${url}?page=1`;
+		object.last = `${url}?page=${pageCount}`;
+	}
+
+	return object;
+};
