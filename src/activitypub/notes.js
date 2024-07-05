@@ -292,8 +292,13 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
+	const removeKeys = (await db.getSetMembers(`tid:${tid}:recipients`))
+		.filter(uid => !uids.has(parseInt(uid, 10)))
+		.map((uid => `uid:${uid}:inbox`));
+
 	// winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await Promise.all([
+		db.sortedSetsRemove(removeKeys, tid),
 		db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid),
 		db.setAdd(`tid:${tid}:recipients`, Array.from(uids)),
 	]);
@@ -371,10 +376,14 @@ Notes.delete = async (pids) => {
 	const exists = await posts.exists(pids);
 	pids = pids.filter((_, idx) => exists[idx]);
 
+	let tids = await posts.getPostsFields(pids, ['tid']);
+	tids = new Set(tids.map(obj => obj.tid));
+
 	const recipientSets = pids.map(id => `post:${id}:recipients`);
 	const announcerSets = pids.map(id => `pid:${id}:announces`);
 
 	await db.deleteAll([...recipientSets, ...announcerSets]);
+	await Promise.all(Array.from(tids).map(async tid => Notes.syncUserInboxes(tid)));
 };
 
 Notes.prune = async () => {

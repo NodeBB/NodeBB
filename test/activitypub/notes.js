@@ -69,6 +69,14 @@ describe('Notes', () => {
 
 			assert.strictEqual(inboxed, true);
 		});
+
+		it('should remove a topic from a user\'s inbox if that user is no longer a recipient in any contained posts', async () => {
+			await activitypub.notes.syncUserInboxes(topicData.tid, uid);
+			await activitypub.notes.syncUserInboxes(topicData.tid);
+			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
+
+			assert.strictEqual(inboxed, false);
+		});
 	});
 
 	describe('Deletion', () => {
