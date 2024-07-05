@@ -175,7 +175,7 @@ activitypubApi.update = {};
 activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 	const [object, targets] = await Promise.all([
 		activitypub.mocks.actors.user(uid),
-		db.getSortedSetMembers('usersRemote:lastCrawled'),
+		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
 	]);
 
 	await activitypub.send('uid', caller.uid, targets, {
@@ -190,7 +190,7 @@ activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 activitypubApi.update.category = enabledCheck(async (caller, { cid }) => {
 	const [object, targets] = await Promise.all([
 		activitypub.mocks.actors.category(cid),
-		db.getSortedSetMembers('usersRemote:lastCrawled'),
+		activitypub.notes.getCategoryFollowers(cid),
 	]);
 
 	await activitypub.send('cid', cid, targets, {
