@@ -85,12 +85,12 @@ Actors.replies = async function (req, res) {
 		id: `${nconf.get('url')}/post/${req.params.pid}/replies${replies.orderedItems && page ? `?page=${page}` : ''}`,
 		url: `${nconf.get('url')}/post/${req.params.pid}`,
 		...replies,
-	}
+	};
 
 	res.status(200).json(object);
 };
 
-Actors.topic = async function (req, res, next) {
+Actors.topic = async function (req, res) {
 	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
 	if (!allowed) {
 		return res.sendStatus(404);

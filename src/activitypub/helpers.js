@@ -361,7 +361,6 @@ Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 		method = db.getSortedSetRange;
 	}
 	const count = await db.sortedSetCard(set);
-	// const { cid, titleRaw: name, mainPid, slug, postcount: count } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'postcount']);
 	const pageCount = Math.max(1, Math.ceil(count / perPage));
 	let items;
 	let paginate = true;
