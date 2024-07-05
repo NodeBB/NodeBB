@@ -36,6 +36,7 @@ Mocks.profile = async (actors) => {
 		}
 
 		const uid = actor.id;
+		let hostname;
 		let {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, followerCount, followingCount,
@@ -43,7 +44,11 @@ Mocks.profile = async (actors) => {
 		} = actor;
 		preferredUsername = preferredUsername || slugify(name);
 
-		const { hostname } = new URL(actor.id);
+		try {
+			({ hostname } = new URL(actor.id));
+		} catch (e) {
+			return null;
+		}
 
 		let picture;
 		if (icon) {
