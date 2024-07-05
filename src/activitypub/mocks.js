@@ -277,14 +277,14 @@ Mocks.note = async (post) => {
 		name = `Re: ${name}`;
 
 		const parentId = await posts.getPostField(post.toPid, 'uid');
-		followersUrl = await user.getUserField(parentId, ['followersUrl']);
+		followersUrl = await user.getUserField(parentId, 'followersUrl');
 		to.add(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
 		name = `Re: ${name}`;
 
 		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
-		followersUrl = await user.getUserField(post.topic.uid, ['followersUrl']);
+		followersUrl = await user.getUserField(post.topic.uid, 'followersUrl');
 	} else { // new topic
 		tag = post.topic.tags.map(tag => ({
 			type: 'Hashtag',
