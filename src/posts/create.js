@@ -8,6 +8,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (Posts) {
@@ -82,8 +83,8 @@ module.exports = function (Posts) {
 	}
 
 	async function checkToPid(toPid, uid) {
-		if (!utils.isNumber(toPid)) {
-			return;
+		if (!utils.isNumber(toPid) && !activitypub.helpers.isUri(toPid)) {
+			throw new Error('[[error:invalid-pid]]');
 		}
 
 		const [toPost, canViewToPid] = await Promise.all([
