@@ -27,10 +27,8 @@ async function unlock(value) {
 
 Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	/**
-	 * Given the id or object of any as:Note, traverses up to cache the entire threaded context
-	 *
-	 * Unfortunately, due to limitations and fragmentation of the existing ActivityPub landscape,
-	 * retrieving the entire reply tree is not possible at this time.
+	 * Given the id or object of any as:Note, either retrieves the full context (if resolvable),
+	 * or traverses up the reply chain to build a context.
 	 */
 
 	if (!input) {
