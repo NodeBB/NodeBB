@@ -322,7 +322,11 @@ describe('API', async () => {
 		activitypub._cache.set(`0;https://example.org/foobar`, {
 			id: 'https://example.org/foobar',
 			name: 'foobar',
-			publicKey: 'secretcat',
+			publicKey: {
+				id: `https://example.org/foobar#key`,
+				owner: `https://example.org/foobar`,
+				publicKeyPem: 'secretcat',
+			},
 		});
 
 		setup = true;

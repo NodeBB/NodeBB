@@ -64,7 +64,7 @@ Mocks.profile = async (actors) => {
 			userslug: `${preferredUsername}@${hostname}`,
 			displayname: name,
 			fullname: name,
-			joindate: new Date(published).getTime(),
+			joindate: new Date(published).getTime() || Date.now(),
 			picture,
 			status: 'offline',
 			'icon:text': (preferredUsername[0] || '').toUpperCase(),
