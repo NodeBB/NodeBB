@@ -403,7 +403,7 @@ Mocks.note = async (post) => {
 		source,
 		tag,
 		attachment,
-		// replies: {}  todo...
+		replies: `${id}/replies`,
 	};
 
 	return object;

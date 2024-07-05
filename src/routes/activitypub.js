@@ -35,6 +35,7 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/uid/:uid/followers', [...middlewares, middleware.assert.user], controllers.activitypub.getFollowers);
 
 	app.get('/post/:pid', [...middlewares, middleware.assert.post], controllers.activitypub.actors.note);
+	app.get('/post/:pid/replies', [...middlewares, middleware.assert.post], controllers.activitypub.actors.replies);
 
 	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], controllers.activitypub.actors.topic);
 
