@@ -93,11 +93,9 @@ module.exports = function (Topics) {
 			db.sortedSetsRemove([
 				'topics:tid',
 				'topics:recent',
-				'topics:posts',
-				'topics:views',
-				'topics:votes',
 				'topics:scheduled',
 			], tid),
+			db.sortedSetsRemove(['views', 'posts', 'votes'].map(prop => `${utils.isNumber(tid) ? 'topics' : 'topicsRemote'}:${prop}`), tid),
 			deleteTopicFromCategoryAndUser(tid),
 			Topics.deleteTopicTags(tid),
 			Topics.events.purge(tid),
