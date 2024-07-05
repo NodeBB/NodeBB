@@ -63,6 +63,12 @@ Actors.note = async function (req, res) {
 };
 
 Actors.replies = async function (req, res) {
+	const allowed = utils.isNumber(req.params.pid) && await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
+	const exists = await posts.exists(req.params.pid);
+	if (!allowed || !exists) {
+		return res.sendStatus(404);
+	}
+
 	const page = parseInt(req.query.page, 10);
 	const replies = await activitypub.helpers.generateCollection({
 		set: `pid:${req.params.pid}:replies`,
@@ -71,15 +77,15 @@ Actors.replies = async function (req, res) {
 		url: `${nconf.get('url')}/post/${req.params.pid}/replies`,
 	});
 
+	// Convert pids to urls
+	replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id: `${nconf.get('url')}/post/${req.params.pid}/replies${replies.orderedItems && page ? `?page=${page}` : ''}`,
 		url: `${nconf.get('url')}/post/${req.params.pid}`,
 		...replies,
 	}
-
-	// Convert pids to urls
-	replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 
 	res.status(200).json(object);
 };
