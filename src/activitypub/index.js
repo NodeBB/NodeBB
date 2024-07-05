@@ -21,8 +21,6 @@ const requestCache = ttl({
 	ttl: 1000 * 60 * 5, // 5 minutes
 });
 
-const urlHostname = nconf.get('url_parsed').hostname;
-
 const ActivityPub = module.exports;
 
 ActivityPub._constants = Object.freeze({
@@ -89,7 +87,7 @@ ActivityPub.resolveInboxes = async (ids) => {
 	if (!meta.config.activitypubAllowLoopback) {
 		ids = ids.filter((id) => {
 			const { hostname } = new URL(id);
-			return hostname !== urlHostname;
+			return hostname !== nconf.get('url_parsed').hostname;
 		});
 	}
 
