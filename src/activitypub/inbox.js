@@ -106,6 +106,10 @@ inbox.update = async (req) => {
 			break;
 		}
 
+		case 'Application': // falls through
+		case 'Group': // falls through
+		case 'Organization': // falls through
+		case 'Service': // falls through
 		case 'Person': {
 			await activitypub.actors.assert(object.id, { update: true });
 			break;
