@@ -327,10 +327,10 @@ Mocks.note = async (post) => {
 
 		if (matches.size) {
 			tag = tag || [];
-			tag.push(...Array.from(matches).map(({ id: href, slug: name }) => {
+			tag.push(...Array.from(matches).map(({ type, id: href, slug: name }) => {
 				if (utils.isNumber(href)) { // local ref
 					name = name.toLowerCase(); // local slugs are always lowercase
-					href = `${nconf.get('url')}/user/${name.slice(1)}`;
+					href = `${nconf.get('url')}/${type === 'uid' ? 'user' : `category/${href}`}/${name.slice(1)}`;
 					name = `${name}@${nconf.get('url_parsed').hostname}`;
 				}
 
