@@ -251,10 +251,14 @@ ActivityPub.verify = async (req) => {
 	}
 };
 
-ActivityPub.get = async (type, id, uri) => {
+ActivityPub.get = async (type, id, uri, options) => {
+	options = {
+		cache: true,
+		...options,
+	};
 	const cacheKey = [id, uri].join(';');
 	const cached = requestCache.get(cacheKey);
-	if (cached !== undefined) {
+	if (options.cache && cached !== undefined) {
 		return cached;
 	}
 
