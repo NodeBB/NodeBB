@@ -149,7 +149,7 @@ Mocks.post = async (objects) => {
 Mocks.actors = {};
 
 Mocks.actors.user = async (uid) => {
-	let { username, userslug, displayname, fullname, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
+	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	if (picture) {
@@ -188,6 +188,7 @@ Mocks.actors.user = async (uid) => {
 		summary: aboutme,
 		icon: picture,
 		image: cover,
+		published: new Date(joindate).toISOString(),
 
 		publicKey: {
 			id: `${nconf.get('url')}/uid/${uid}#key`,
