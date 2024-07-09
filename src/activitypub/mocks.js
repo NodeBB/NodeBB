@@ -205,7 +205,7 @@ Mocks.actors.user = async (uid) => {
 Mocks.actors.category = async (cid) => {
 	let {
 		name, handle: preferredUsername, slug,
-		description: summary, backgroundImage,
+		descriptionParsed: summary, backgroundImage,
 	} = await categories.getCategoryData(cid);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
