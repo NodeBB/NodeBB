@@ -65,7 +65,7 @@ categoriesAPI.update = async function (caller, data) {
 	const payload = {};
 	payload[cid] = values;
 	await categories.update(payload);
-	await activitypubApi.update.category(caller, { cid });
+	activitypubApi.update.category(caller, { cid }); // background
 };
 
 categoriesAPI.delete = async function (caller, { cid }) {
