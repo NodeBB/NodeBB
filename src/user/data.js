@@ -383,7 +383,8 @@ module.exports = function (User) {
 	};
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {
-		const newValue = await db.incrObjectFieldBy(`user:${uid}`, field, value);
+		const prefix = `user${activitypub.helpers.isUri(uid) ? 'Remote' : ''}`;
+		const newValue = await db.incrObjectFieldBy(`${prefix}:${uid}`, field, value);
 		plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
 		return newValue;
 	}
