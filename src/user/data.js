@@ -285,6 +285,8 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
+
+			user.isLocal = utils.isNumber(user.uid);
 		});
 		if (unbanUids.length) {
 			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');

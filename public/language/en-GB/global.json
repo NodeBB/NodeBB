@@ -132,6 +132,8 @@
 	"invisible": "Invisible",
 	"offline": "Offline",
 
+	"remote-user": "This user is from outside of this forum",
+
 	"email": "Email",
 	"language": "Language",
 

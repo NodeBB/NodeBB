@@ -61,6 +61,9 @@ MessageObject:
         uid:
           type: number
           description: A user identifier
+        isLocal:
+          type: boolean
+          description: Whether the user belongs to the local installation or not.
         username:
           type: string
           description: A friendly name for a given user account
@@ -122,6 +125,9 @@ RoomUserList:
           uid:
             type: number
             description: A user identifier
+          isLocal:
+            type: boolean
+            description: Whether the user belongs to the local installation or not.
           username:
             type: string
             description: A friendly name for a given user account

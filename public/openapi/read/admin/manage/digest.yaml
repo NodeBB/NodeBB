@@ -45,6 +45,9 @@ get:
                           type: string
                         setting:
                           type: boolean
+                        isLocal:
+                          type: boolean
+                          description: Whether the user belongs to the local installation or not.
                   default:
                     type: string
                 required:
