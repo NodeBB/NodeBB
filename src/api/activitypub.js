@@ -24,7 +24,11 @@ const activitypubApi = module.exports;
 function enabledCheck(next) {
 	return async function (caller, params) {
 		if (meta.config.activitypubEnabled) {
-			await next(caller, params);
+			try {
+				await next(caller, params);
+			} catch (e) {
+				winston.error(`[activitypub/api] Error\n${e.stack}`);
+			}
 		}
 	};
 }
