@@ -86,7 +86,7 @@ Actors.assert = async (ids, options = {}) => {
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
 			// winston.verbose(`[activitypub/actors] Processing ${id}`);
-			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: false });
+			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 
 			// Follow counts
 			try {
