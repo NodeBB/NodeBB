@@ -90,7 +90,7 @@ Actors.replies = async function (req, res) {
 	res.status(200).json(object);
 };
 
-Actors.topic = async function (req, res) {
+Actors.topic = async function (req, res, next) {
 	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
 	if (!allowed) {
 		return res.sendStatus(404);
@@ -99,34 +99,39 @@ Actors.topic = async function (req, res) {
 	const page = parseInt(req.query.page, 10);
 	const perPage = meta.config.postsPerPage;
 	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
-	const collection = await activitypub.helpers.generateCollection({
-		set: `tid:${req.params.tid}:posts`,
-		method: posts.getPidsFromSet,
-		page,
-		perPage,
-		url: `${nconf.get('url')}/topic/${req.params.tid}`,
-	});
+	try {
+		const collection = await activitypub.helpers.generateCollection({
+			set: `tid:${req.params.tid}:posts`,
+			method: posts.getPidsFromSet,
+			page,
+			perPage,
+			url: `${nconf.get('url')}/topic/${req.params.tid}`,
+		});
 
-	// Convert pids to urls
-	if (collection.orderedItems) {
-		if (page === 1) {
-			collection.orderedItems.unshift(mainPid);
-			collection.orderedItems.length = Math.min(collection.orderedItems.length, meta.config.postsPerPage);
+		// Convert pids to urls
+		collection.totalItems += 1;
+		if (page || collection.totalItems < meta.config.postsPerPage) {
+			collection.orderedItems = collection.orderedItems || [];
+			if (!page || page === 1) { // add OP to collection
+				collection.orderedItems.unshift(mainPid);
+			}
+			collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		}
-		collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+
+		const object = {
+			'@context': 'https://www.w3.org/ns/activitystreams',
+			id: `${nconf.get('url')}/topic/${req.params.tid}${collection.orderedItems && page ? `?page=${page}` : ''}`,
+			url: `${nconf.get('url')}/topic/${slug}`,
+			name,
+			attributedTo: `${nconf.get('url')}/category/${cid}`,
+			audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}/followers` : undefined,
+			...collection,
+		};
+
+		res.status(200).json(object);
+	} catch (e) {
+		return next();
 	}
-
-	const object = {
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${nconf.get('url')}/topic/${req.params.tid}${collection.orderedItems && page ? `?page=${page}` : ''}`,
-		url: `${nconf.get('url')}/topic/${slug}`,
-		name,
-		attributedTo: `${nconf.get('url')}/category/${cid}`,
-		audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}/followers` : undefined,
-		...collection,
-	};
-
-	res.status(200).json(object);
 };
 
 Actors.category = async function (req, res, next) {

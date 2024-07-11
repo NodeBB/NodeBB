@@ -386,7 +386,7 @@ Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 		totalItems: count,
 	};
 
-	if (items) {
+	if (items.length) {
 		object.orderedItems = items;
 
 		if (paginate) {
