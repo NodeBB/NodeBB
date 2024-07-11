@@ -67,6 +67,7 @@ controller.list = async function (req, res) {
 		tag: req.query.tag,
 		targetUid: targetUid,
 	});
+
 	data.name = '[[activitypub:world.name]]';
 	delete data.children;
 

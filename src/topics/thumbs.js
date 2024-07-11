@@ -13,6 +13,7 @@ const posts = require('../posts');
 const meta = require('../meta');
 const cache = require('../cache');
 
+const topics = module.parent.exports;
 const Thumbs = module.exports;
 
 Thumbs.exists = async function (id, path) {
@@ -23,7 +24,12 @@ Thumbs.exists = async function (id, path) {
 };
 
 Thumbs.load = async function (topicData) {
-	const topicsWithThumbs = topicData.filter(t => t && parseInt(t.numThumbs, 10) > 0);
+	const mainPids = topicData.map(t => t.mainPid);
+	let hashes = await posts.getPostsFields(mainPids, ['attachments']);
+	hashes = hashes.map(o => o.attachments);
+	const topicsWithThumbs = topicData.filter((t, idx) => t &&
+		(parseInt(t.numThumbs, 10) > 0 ||
+		(hashes[idx] && hashes[idx].length)));
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
 	const thumbs = await Thumbs.get(tidsWithThumbs);
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
@@ -44,8 +50,23 @@ Thumbs.get = async function (tids) {
 
 	const hasTimestampPrefix = /^\d+-/;
 	const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
+	const exists = await topics.exists(tids);
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await Promise.all(sets.map(getThumbs));
+
+	// Add attachments to thumb sets
+	await Promise.all(tids.map(async (tid, idx) => {
+		if (exists[idx]) {
+			const mainPid = await topics.getTopicField(tid, 'mainPid');
+			let attachments = await posts.attachments.get(mainPid);
+			attachments = attachments.filter(attachment => attachment.mediaType.startsWith('image/'));
+
+			if (attachments.length) {
+				thumbs[idx].push(...attachments.map(attachment => attachment.url));
+			}
+		}
+	}));
+
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
 		name: (() => {
