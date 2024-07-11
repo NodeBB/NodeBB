@@ -46,7 +46,7 @@ Categories.getCategoryById = async function (data) {
 	data.category = category;
 
 	const promises = [
-		Categories.getCategoryTopics(data),
+		data.cid !== '-1' ? Categories.getCategoryTopics(data) : [],
 		Categories.getTopicCount(data),
 		Categories.getWatchState([data.cid], data.uid),
 		getChildrenTree(category, data.uid),
