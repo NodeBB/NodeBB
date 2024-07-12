@@ -46,13 +46,11 @@ controller.list = async function (req, res) {
 	]);
 	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
 
-	const sets = [sortToSet[sort], `uid:${req.uid}:inbox`];
-	const tids = await db.getSortedSetRevIntersect({
-		sets,
-		start,
-		stop,
-		weights: sets.map((s, index) => (index ? 0 : 1)),
-	});
+	let tids = await db.getSortedSetRevRange(sortToSet[sort], 0, 499);
+	const isMembers = await db.isSortedSetMembers(`uid:${req.uid}:inbox`, tids);
+	tids = tids.filter((tid, idx) => isMembers[idx]);
+	const count = tids.length;
+	tids = tids.slice(start, stop);
 
 	const targetUid = await user.getUidByUserslug(req.query.author);
 
@@ -71,7 +69,7 @@ controller.list = async function (req, res) {
 	data.name = '[[activitypub:world.name]]';
 	delete data.children;
 
-	data.topicCount = await db.sortedSetIntersectCard(sets);
+	data.topicCount = count;
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
 
