@@ -17,7 +17,7 @@ Attachments.get = async (pids) => {
 	const allHashes = _.flatten(postData.map(p => p && p.attachments));
 	const allAttachments = await Attachments.getAttachments(allHashes);
 	const hashToAttachment = _.zipObject(allHashes, allAttachments);
-	const data = postData.map((post, idx) => {
+	const data = postData.map((post) => {
 		const pidHashes = post ? post.attachments : [];
 		return pidHashes.map(hash => hashToAttachment[hash]);
 	});
