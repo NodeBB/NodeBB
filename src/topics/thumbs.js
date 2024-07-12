@@ -54,7 +54,8 @@ Thumbs.get = async function (tids) {
 	const thumbs = await Promise.all(sets.map(getThumbs));
 
 	// Add attachments to thumb sets
-	const mainPids = await topics.getTopicsFields(tids, ['mainPid']);
+	let mainPids = await topics.getTopicsFields(tids, ['mainPid']);
+	mainPids = mainPids.map(o => o.mainPid);
 	const mainPidAttachments = await posts.attachments.get(mainPids);
 	mainPidAttachments.forEach((attachments, idx) => {
 		attachments = attachments.filter(
