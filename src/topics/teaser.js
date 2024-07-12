@@ -70,19 +70,12 @@ module.exports = function (Topics) {
 		});
 		await Promise.all(postData.map(p => posts.parsePost(p, 'plaintext')));
 
-		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', {
-			tags: utils.stripTags.slice(0),
-		});
-
 		const teasers = topics.map((topic, index) => {
 			if (!topic) {
 				return null;
 			}
 			if (tidToPost[topic.tid]) {
 				tidToPost[topic.tid].index = calcTeaserIndex(teaserPost, counts[index], sortNewToOld);
-				if (tidToPost[topic.tid].content) {
-					tidToPost[topic.tid].content = utils.stripHTMLTags(replaceImgWithAltText(tidToPost[topic.tid].content), tags);
-				}
 			}
 			return tidToPost[topic.tid];
 		});

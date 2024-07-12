@@ -126,6 +126,10 @@ module.exports = function (Posts) {
 		});
 	};
 
+	Posts.sanitizePlaintext = content => sanitize(content, {
+		allowedTags: [],
+	});
+
 	Posts.configureSanitize = async () => {
 		// Each allowed tags should have some common global attributes...
 		sanitizeConfig.allowedTags.forEach((tag) => {
@@ -143,7 +147,7 @@ module.exports = function (Posts) {
 		plugins.hooks.register('core', {
 			hook: 'filter:parse.post',
 			method: async (data) => {
-				data.postData.content = Posts.sanitize(data.postData.content);
+				data.postData.content = Posts[data.type !== 'plaintext' ? 'sanitize' : 'sanitizePlaintext'](data.postData.content);
 				return data;
 			},
 		});
