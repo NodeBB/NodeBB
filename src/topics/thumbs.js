@@ -50,22 +50,21 @@ Thumbs.get = async function (tids) {
 
 	const hasTimestampPrefix = /^\d+-/;
 	const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
-	const exists = await topics.exists(tids);
 	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await Promise.all(sets.map(getThumbs));
 
 	// Add attachments to thumb sets
-	await Promise.all(tids.map(async (tid, idx) => {
-		if (exists[idx]) {
-			const mainPid = await topics.getTopicField(tid, 'mainPid');
-			let attachments = await posts.attachments.get(mainPid);
-			attachments = attachments.filter(attachment => attachment.mediaType.startsWith('image/'));
+	const mainPids = await topics.getTopicsFields(tids, ['mainPid']);
+	const mainPidAttachments = await posts.attachments.get(mainPids);
+	mainPidAttachments.forEach((attachments, idx) => {
+		attachments = attachments.filter(
+			attachment => attachment.mediaType.startsWith('image/')
+		);
 
-			if (attachments.length) {
-				thumbs[idx].push(...attachments.map(attachment => attachment.url));
-			}
+		if (attachments.length) {
+			thumbs[idx].push(...attachments.map(attachment => attachment.url));
 		}
-	}));
+	});
 
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],

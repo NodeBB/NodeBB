@@ -8,9 +8,20 @@ const db = require('../database');
 const Attachments = module.exports;
 const posts = require('./index');
 
-Attachments.get = async (pid) => {
-	const hashes = await posts.getPostField(pid, `attachments`);
-	return Attachments.getAttachments(hashes);
+Attachments.get = async (pids) => {
+	const isArray = Array.isArray(pids);
+	if (!isArray) {
+		pids = [pids];
+	}
+	const postData = await posts.getPostsFields(pids, [`attachments`]);
+	const allHashes = _.flatten(postData.map(p => p && p.attachments));
+	const allAttachments = await Attachments.getAttachments(allHashes);
+	const hashToAttachment = _.zipObject(allHashes, allAttachments);
+	const data = postData.map((post, idx) => {
+		const pidHashes = post ? post.attachments : [];
+		return pidHashes.map(hash => hashToAttachment[hash]);
+	});
+	return isArray ? data : data[0];
 };
 
 Attachments.getAttachments = async (hashes) => {
