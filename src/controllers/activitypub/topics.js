@@ -50,7 +50,7 @@ controller.list = async function (req, res) {
 	const isMembers = await db.isSortedSetMembers(`uid:${req.uid}:inbox`, tids);
 	tids = tids.filter((tid, idx) => isMembers[idx]);
 	const count = tids.length;
-	tids = tids.slice(start, stop);
+	tids = tids.slice(start, stop + 1);
 
 	const targetUid = await user.getUidByUserslug(req.query.author);
 
