@@ -1,6 +1,6 @@
 {
-	"awarded-x-reputation": "你已经获得<strong>%1</strong>声望",
-	"awarded-group-membership": "你已加入群组<strong>%1</strong>",
+	"awarded-x-reputation": "您已经获得<strong>%1</strong>声望",
+	"awarded-group-membership": "您已加入群组<strong>%1</strong>",
 
 	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">（声望%1 %2）</span>",
 	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">（帖子数%1 %2）</span>",
