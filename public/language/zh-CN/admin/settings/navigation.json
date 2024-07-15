@@ -10,7 +10,7 @@
 	"id": "ID：<small>可选</small>",
 
 	"properties": "属性：",
-	"show-to-groups": "Show to Groups:",
+	"show-to-groups": "向以下群组展示",
 	"open-new-window": "在新窗口中打开",
 	"dropdown": "下拉列表",
 	"dropdown-placeholder": "将你的下拉菜单项目放在下面，即：<br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

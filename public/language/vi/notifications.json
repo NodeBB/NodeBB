@@ -52,7 +52,7 @@
     "user-posted-to-multiple": "<strong>%1</strong>, <strong>%2</strong> và %3 người khác đã đăng trả lời đến: <strong>%4</strong>",
     "user-posted-topic": "<strong>%1</strong> đã đăng một chủ đề mới: <strong>%2</strong>",
     "user-edited-post": "<strong>%1</strong> đã chỉnh sửa một bài đăng trong <strong>%2</strong>",
-    "user-posted-topic-with-tag": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3)",
+    "user-posted-topic-with-tag": "<strong>%1</strong> đã đăng <strong>%2</strong> (đã gắn thẻ %3)",
     "user-posted-topic-with-tag-dual": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3 and %4)",
     "user-posted-topic-with-tag-triple": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3, %4, and %5)",
     "user-posted-topic-with-tag-multiple": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3)",
