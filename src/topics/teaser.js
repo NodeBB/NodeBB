@@ -95,10 +95,6 @@ module.exports = function (Topics) {
 		return postCountInTopic;
 	}
 
-	function replaceImgWithAltText(str) {
-		return String(str).replace(/<img .*?alt="(.*?)"[^>]*>/gi, '$1');
-	}
-
 	async function handleBlocks(uid, teasers) {
 		const blockedUids = await user.blocks.list(uid);
 		if (!blockedUids.length) {
