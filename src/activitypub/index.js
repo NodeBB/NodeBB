@@ -269,6 +269,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 		const { response, body } = await request.get(uri, {
 			headers: {
 				...headers,
+				...options.headers,
 				Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 			},
 			timeout: 5000,
