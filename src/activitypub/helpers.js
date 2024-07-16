@@ -4,6 +4,7 @@ const { generateKeyPairSync } = require('crypto');
 const nconf = require('nconf');
 const validator = require('validator');
 const cheerio = require('cheerio');
+const crypto = require('crypto');
 
 const meta = require('../meta');
 const posts = require('../posts');
@@ -19,6 +20,7 @@ const webfingerCache = ttl({
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours
 });
+const sha256 = payload => crypto.createHash('sha256').update(payload).digest('hex');
 
 const Helpers = module.exports;
 
@@ -402,4 +404,21 @@ Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 	}
 
 	return object;
+};
+
+Helpers.generateDigest = (set) => {
+	if (!(set instanceof Set)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	return Array
+		.from(set)
+		.map(item => sha256(item))
+		.reduce((memo, cur) => {
+			const a = Buffer.from(memo, 'hex');
+			const b = Buffer.from(cur, 'hex');
+			// eslint-disable-next-line no-bitwise
+			const result = a.map((x, i) => x ^ b[i]);
+			return result.toString('hex');
+		});
 };

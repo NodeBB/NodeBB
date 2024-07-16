@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 
+const db = require('../../database');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
 const posts = require('../../posts');
@@ -100,13 +101,33 @@ Actors.topic = async function (req, res, next) {
 	const perPage = meta.config.postsPerPage;
 	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
 	try {
-		const collection = await activitypub.helpers.generateCollection({
-			set: `tid:${req.params.tid}:posts`,
-			method: posts.getPidsFromSet,
-			page,
-			perPage,
-			url: `${nconf.get('url')}/topic/${req.params.tid}`,
+		let [collection, pids] = await Promise.all([
+			activitypub.helpers.generateCollection({
+				set: `tid:${req.params.tid}:posts`,
+				method: posts.getPidsFromSet,
+				page,
+				perPage,
+				url: `${nconf.get('url')}/topic/${req.params.tid}`,
+			}),
+			db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
+		]);
+
+		// Generate digest for ETag
+		pids.push(mainPid);
+		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+		const digest = activitypub.helpers.generateDigest(new Set(pids));
+		const ifNoneMatch = req.get('If-None-Match').split(',').map((tag) => {
+			tag = tag.trim();
+			if (tag.startsWith('"') && tag.endsWith('"')) {
+				return tag.slice(1, tag.length - 1);
+			}
+
+			return tag;
 		});
+		if (ifNoneMatch.includes(digest)) {
+			return res.sendStatus(304);
+		}
+		res.set('ETag', digest);
 
 		// Convert pids to urls
 		collection.totalItems += 1;

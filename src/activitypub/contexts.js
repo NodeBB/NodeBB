@@ -2,7 +2,9 @@
 
 const winston = require('winston');
 
+const db = require('../database');
 const posts = require('../posts');
+const topics = require('../topics');
 
 const activitypub = module.parent.exports;
 const Contexts = module.exports;
@@ -13,20 +15,38 @@ Contexts.get = async (uid, id) => {
 	let context;
 	let type;
 
+	// Generate digest for If-None-Match if locally cached
+	const tid = await posts.getPostField(id, 'tid');
+	const headers = {};
+	if (tid) {
+		const [mainPid, pids] = await Promise.all([
+			topics.getTopicField(tid, 'mainPid'),
+			db.getSortedSetMembers(`tid:${tid}:posts`),
+		]);
+		pids.push(mainPid);
+		const digest = activitypub.helpers.generateDigest(new Set(pids));
+		headers['If-None-Match'] = `"${digest}"`;
+	}
+
 	try {
-		({ context } = await activitypub.get('uid', uid, id));
+		({ context } = await activitypub.get('uid', uid, id, { headers }));
 		if (!context) {
 			winston.verbose(`[activitypub/context] ${id} contains no context.`);
 			return false;
 		}
 		({ type } = await activitypub.get('uid', uid, context));
 	} catch (e) {
+		if (e.code === 'ap_get_304') {
+			winston.verbose(`[activitypub/context] ${id} context unchanged.`);
+			return { tid };
+		}
+
 		winston.verbose(`[activitypub/context] ${id} context not resolvable.`);
 		return false;
 	}
 
 	if (acceptableTypes.includes(type)) {
-		return context;
+		return { context };
 	}
 
 	return false;
