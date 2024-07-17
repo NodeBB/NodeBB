@@ -314,12 +314,19 @@ postsAPI.getVoters = async function (caller, data) {
 	}
 	const { pid } = data;
 	const cid = await posts.getCidByPid(pid);
-	if (!await canSeeVotes(caller.uid, cid)) {
+	const [canSeeUpvotes, canSeeDownvotes] = await Promise.all([
+		canSeeVotes(caller.uid, cid, 'upvoteVisibility'),
+		canSeeVotes(caller.uid, cid, 'downvoteVisibility'),
+	]);
+
+	if (!canSeeUpvotes && !canSeeDownvotes) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	const showDownvotes = !meta.config['downvote:disabled'];
+	const repSystemDisabled = meta.config['reputation:disabled'];
+	const showUpvotes = canSeeUpvotes && !repSystemDisabled;
+	const showDownvotes = canSeeDownvotes && !meta.config['downvote:disabled'] && !repSystemDisabled;
 	const [upvoteUids, downvoteUids] = await Promise.all([
-		db.getSetMembers(`pid:${data.pid}:upvote`),
+		showUpvotes ? db.getSetMembers(`pid:${data.pid}:upvote`) : [],
 		showDownvotes ? db.getSetMembers(`pid:${data.pid}:downvote`) : [],
 	]);
 
@@ -331,6 +338,7 @@ postsAPI.getVoters = async function (caller, data) {
 	return {
 		upvoteCount: upvoters.length,
 		downvoteCount: downvoters.length,
+		showUpvotes: showUpvotes,
 		showDownvotes: showDownvotes,
 		upvoters: upvoters,
 		downvoters: downvoters,
@@ -343,7 +351,7 @@ postsAPI.getUpvoters = async function (caller, data) {
 	}
 	const { pid } = data;
 	const cid = await posts.getCidByPid(pid);
-	if (!await canSeeVotes(caller.uid, cid)) {
+	if (!await canSeeVotes(caller.uid, cid, 'upvoteVisibility')) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -370,7 +378,7 @@ postsAPI.getUpvoters = async function (caller, data) {
 	};
 };
 
-async function canSeeVotes(uid, cids) {
+async function canSeeVotes(uid, cids, type) {
 	const isArray = Array.isArray(cids);
 	if (!isArray) {
 		cids = [cids];
@@ -389,8 +397,8 @@ async function canSeeVotes(uid, cids) {
 		(
 			cidToAllowed[cid] &&
 			(
-				meta.config.voteVisibility === 'all' ||
-				(meta.config.voteVisibility === 'loggedin' && parseInt(uid, 10) > 0)
+				meta.config[type] === 'all' ||
+				(meta.config[type] === 'loggedin' && parseInt(uid, 10) > 0)
 			)
 		)
 	);
