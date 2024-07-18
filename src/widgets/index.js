@@ -41,11 +41,13 @@ async function renderLocation(location, data, uid, options) {
 		return [];
 	}
 
-	const renderedWidgets = await Promise.all(widgetsAtLocation.map(widget => renderWidget(widget, uid, options)));
+	const renderedWidgets = await Promise.all(
+		widgetsAtLocation.map(widget => renderWidget(widget, uid, options, location))
+	);
 	return renderedWidgets;
 }
 
-async function renderWidget(widget, uid, options) {
+async function renderWidget(widget, uid, options, location) {
 	if (!widget || !widget.data || (!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
 		return;
 	}
@@ -69,6 +71,7 @@ async function renderWidget(widget, uid, options) {
 		data: widget.data,
 		req: options.req,
 		res: options.res,
+		location,
 	});
 
 	if (!data) {
