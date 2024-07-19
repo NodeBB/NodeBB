@@ -48,7 +48,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const { tid } = context;
 		return { tid, count: 0 };
 	} else if (context.context) {
-		chain = Array.from(await activitypub.contexts.getItems(uid, context));
+		chain = Array.from(await activitypub.contexts.getItems(uid, context.context));
 	} else {
 		// Fall back to inReplyTo traversal
 		chain = Array.from(await Notes.getParentChain(uid, input));
@@ -71,7 +71,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
 	}
 
-	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(0, -1).map(p => p.pid));
+	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(1).map(p => p.pid));
 	members.unshift(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
