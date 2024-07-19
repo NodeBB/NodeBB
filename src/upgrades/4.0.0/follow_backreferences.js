@@ -6,7 +6,7 @@ const activitypub = require('../../activitypub');
 
 module.exports = {
 	name: 'Establish follow backreference sorted sets for remote users',
-	timestamp: Date.UTC(2024, 4, 1),
+	timestamp: Date.UTC(2024, 6, 19),
 	method: async function () {
 		const { progress } = this;
 		const bulkOp = [];
