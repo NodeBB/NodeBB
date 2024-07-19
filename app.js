@@ -28,6 +28,7 @@ nconf.argv().env({
 });
 
 const winston = require('winston');
+
 const path = require('path');
 
 const file = require('./src/file');
