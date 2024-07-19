@@ -207,12 +207,19 @@ Actors.getLocalFollowers = async (id) => {
 	return response;
 };
 
-Actors.getLocalFollowersCount = async (id) => {
-	if (!activitypub.helpers.isUri(id)) {
-		return false;
+Actors.getLocalFollowCounts = async (actor) => {
+	let followers = 0; // x local followers
+	let following = 0; // following x local users
+	if (!activitypub.helpers.isUri(actor)) {
+		return { followers, following };
 	}
 
-	return await db.sortedSetCard(`followersRemote:${id}`);
+	[followers, following] = await Promise.all([
+		db.sortedSetCard(`followersRemote:${actor}`),
+		db.sortedSetCard(`followingRemote:${actor}`),
+	]);
+
+	return { followers, following };
 };
 
 Actors.remove = async (id) => {
@@ -270,7 +277,7 @@ Actors.prune = async () => {
 
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
-		const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
+		const postCounts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
 		await Promise.all(uids.map(async (uid, idx) => {
 			if (!exists[idx]) {
 				// id in zset but not asserted, handle and return early
@@ -278,8 +285,9 @@ Actors.prune = async () => {
 				return;
 			}
 
-			const count = counts[idx];
-			if (count < 1) {
+			const { followers, following } = await Actors.getLocalFollowCounts(uid);
+			const postCount = postCounts[idx];
+			if ([postCount, followers, following].every(metric => metric < 1)) {
 				try {
 					await user.deleteAccount(uid);
 					deletionCount += 1;

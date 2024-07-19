@@ -40,10 +40,10 @@ Mocks.profile = async (actors) => {
 		let hostname;
 		let {
 			url, preferredUsername, published, icon, image,
-			name, summary, followers, followerCount, followingCount,
-			inbox, endpoints,
+			name, summary, followers, inbox, endpoints,
 		} = actor;
 		preferredUsername = preferredUsername || slugify(name);
+		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
 
 		try {
 			({ hostname } = new URL(actor.id));

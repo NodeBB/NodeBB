@@ -235,8 +235,8 @@ inbox.announce = async (req) => {
 	} else { // Remote object
 		// Follower check
 		if (!cid) {
-			const numFollowers = await activitypub.actors.getLocalFollowersCount(actor);
-			if (!numFollowers) {
+			const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
+			if (!followers) {
 				winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
 				reject('Announce', object, actor);
 				return;
@@ -300,6 +300,7 @@ inbox.follow = async (req) => {
 
 		const now = Date.now();
 		await db.sortedSetAdd(`followersRemote:${id}`, now, actor);
+		await db.sortedSetAdd(`followingRemote:${actor}`, now, id); // for following backreference (actor pruning)
 
 		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
 		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
@@ -422,7 +423,10 @@ inbox.undo = async (req) => {
 						throw new Error('[[error:invalid-uid]]');
 					}
 
-					await db.sortedSetRemove(`followersRemote:${id}`, actor);
+					await Promise.all([
+						db.sortedSetRemove(`followersRemote:${id}`, actor),
+						db.sortedSetRemove(`followingRemote:${actor}`, id),
+					]);
 					const followerRemoteCount = await db.sortedSetCard(`followerRemote:${id}`);
 					await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 					notifications.rescind(`follow:${id}:uid:${actor}`);

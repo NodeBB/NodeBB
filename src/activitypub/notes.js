@@ -181,7 +181,7 @@ async function assertRelation(post) {
 	 */
 
 	// Is followed by at least one local user
-	const numFollowers = await activitypub.actors.getLocalFollowersCount(post.uid);
+	const { followers } = await activitypub.actors.getLocalFollowCounts(post.uid);
 
 	// Local user is mentioned
 	const { tag } = post._activitypub;
@@ -201,7 +201,7 @@ async function assertRelation(post) {
 		uids = uids.filter(Boolean);
 	}
 
-	return numFollowers > 0 || uids.length;
+	return followers > 0 || uids.length;
 }
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
