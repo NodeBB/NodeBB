@@ -48,7 +48,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const { tid } = context;
 		return { tid, count: 0 };
 	} else if (context.context) {
-		chain = Array.from(await activitypub.contexts.getItems(uid, context.context));
+		chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 	} else {
 		// Fall back to inReplyTo traversal
 		chain = Array.from(await Notes.getParentChain(uid, input));

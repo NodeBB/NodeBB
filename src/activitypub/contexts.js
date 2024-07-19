@@ -52,7 +52,11 @@ Contexts.get = async (uid, id) => {
 	return false;
 };
 
-Contexts.getItems = async (uid, id, root = true) => {
+Contexts.getItems = async (uid, id, options) => {
+	if (!options.hasOwnProperty('root')) {
+		options.root = true;
+	}
+
 	winston.verbose(`[activitypub/context] Retrieving context ${id}`);
 	let { type, items, orderedItems, first, next } = await activitypub.get('uid', uid, id);
 	if (!acceptableTypes.includes(type)) {
@@ -71,17 +75,29 @@ Contexts.getItems = async (uid, id, root = true) => {
 	}
 
 	const chain = new Set(items || []);
-	if (!next && root && first) {
+	if (!next && options.root && first) {
 		next = first;
 	}
 
 	if (next) {
 		winston.verbose('[activitypub/context] Fetching next page...');
 		Array
-			.from(await Contexts.getItems(uid, next, false))
+			.from(await Contexts.getItems(uid, next, {
+				...options,
+				root: false,
+			}))
 			.forEach((item) => {
 				chain.add(item);
 			});
+	}
+
+	// Handle special case where originating object is not actually part of the context collection
+	const inputId = activitypub.helpers.isUri(options.input) ? options.input : options.input.id;
+	const inCollection = Array.from(chain).map(p => p.pid).includes(inputId);
+	if (!inCollection) {
+		chain.add(activitypub.helpers.isUri(options.input) ?
+			parseString(uid, options.input) :
+			parseItem(uid, options.input));
 	}
 
 	return chain;
