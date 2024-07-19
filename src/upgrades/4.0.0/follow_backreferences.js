@@ -19,7 +19,7 @@ module.exports = {
 				db.getSortedSetsMembers(uids.map(uid => `followingRemote:${uid}`)),
 			]);
 
-			const toCheck = Array.from(new Set(_following.flat()));
+			const toCheck = Array.from(new Set(_followers.flat().concat(_following.flat())));
 			const asserted = await db.isSortedSetMembers('usersRemote:lastCrawled', toCheck);
 			reassert.push(...toCheck.filter((actor, idx) => !asserted[idx]));
 
