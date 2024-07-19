@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
 
 const db = require('../../database');
 const meta = require('../../meta');
@@ -151,6 +152,7 @@ Actors.topic = async function (req, res, next) {
 
 		res.status(200).json(object);
 	} catch (e) {
+		winston.error(`[activitypub/actors.topic] Unable to generate topic actor: ${e.message}`);
 		return next();
 	}
 };

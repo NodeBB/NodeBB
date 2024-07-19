@@ -104,7 +104,7 @@ async function parseString(uid, item) {
 		return parseItem(uid, object);
 	} catch (e) {
 		// Unresolvable, either temporarily or permanent, ignore for now.
-		winston.verbose(`[activitypub/context] Cannot retrieve ${id}`);
+		winston.verbose(`[activitypub/context] Cannot retrieve ${pid}`);
 		return null;
 	}
 }
