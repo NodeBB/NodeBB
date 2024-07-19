@@ -59,7 +59,7 @@ Thumbs.get = async function (tids) {
 	const mainPidAttachments = await posts.attachments.get(mainPids);
 	mainPidAttachments.forEach((attachments, idx) => {
 		attachments = attachments.filter(
-			attachment => attachment.mediaType.startsWith('image/')
+			attachment => attachment.mediaType && attachment.mediaType.startsWith('image/')
 		);
 
 		if (attachments.length) {
