@@ -96,8 +96,8 @@ Contexts.getItems = async (uid, id, options) => {
 	const inCollection = Array.from(chain).map(p => p.pid).includes(inputId);
 	if (!inCollection) {
 		chain.add(activitypub.helpers.isUri(options.input) ?
-			parseString(uid, options.input) :
-			parseItem(uid, options.input));
+			await parseString(uid, options.input) :
+			await parseItem(uid, options.input));
 	}
 
 	return chain;
