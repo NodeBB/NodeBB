@@ -116,7 +116,7 @@ Actors.topic = async function (req, res, next) {
 		pids.push(mainPid);
 		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		const digest = activitypub.helpers.generateDigest(new Set(pids));
-		const ifNoneMatch = req.get('If-None-Match').split(',').map((tag) => {
+		const ifNoneMatch = (req.get('If-None-Match') || '').split(',').map((tag) => {
 			tag = tag.trim();
 			if (tag.startsWith('"') && tag.endsWith('"')) {
 				return tag.slice(1, tag.length - 1);
