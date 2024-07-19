@@ -26,7 +26,7 @@ module.exports = {
 			uids.forEach((uid, idx) => {
 				const followers = _followers[idx];
 				if (followers.length) {
-					bulkOp.push(...followers.map(actor => [`followingRemote:${actor}`, now, uid]))
+					bulkOp.push(...followers.map(actor => [`followingRemote:${actor}`, now, uid]));
 				}
 			});
 
