@@ -31,7 +31,7 @@ async function getFollow(tpl, name, req, res, next) {
 	payload.title = `[[pages:${tpl}, ${username}]]`;
 
 	const method = name === 'following' ? 'getFollowing' : 'getFollowers';
-	payload.users = await user[method](res.locals.uid, start, stop);
+	payload.users = await user[method](res.locals.userData.uid, start, stop);
 
 	const count = name === 'following' ? followingCount : followerCount;
 	const pageCount = Math.ceil(count / resultsPerPage);
