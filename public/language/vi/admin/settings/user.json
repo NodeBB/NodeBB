@@ -82,11 +82,11 @@
 	"categoryWatchState.tracking": "Theo dõi",
 	"categoryWatchState.notwatching": "Không Xem",
 	"categoryWatchState.ignoring": "Bỏ Qua",
-	"restrictions-new": "New User Restrictions",
+	"restrictions-new": "Hạn chế người dùng mới",
 	"restrictions.rep-threshold": "Ngưỡng uy tín trước khi những hạn chế này được dỡ bỏ",
 	"restrictions.seconds-between-new": "Giây giữa các bài viết cho người dùng mới",
 	"restrictions.seconds-before-new": "Số giây trước khi người dùng mới có thể đăng bài đầu tiên của họ",
-	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
-	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions.seconds-edit-after-new": "Số giây một bài đăng vẫn có thể chỉnh sửa đối với người dùng mới (đặt thành 0 để tắt)",
+	"restrictions.milliseconds-between-messages": "Thời gian giữa các tin nhắn trò chuyện đối với người dùng mới (ms)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Chọn các nhóm sẽ được miễn các hạn chế mới đối với người dùng"
 }
