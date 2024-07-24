@@ -287,8 +287,11 @@ inbox.follow = async (req) => {
 	const handle = await user.getUserField(actor, 'username');
 
 	if (type === 'user') {
-		const exists = await user.exists(id);
-		if (!exists) {
+		const [exists, allowed] = await Promise.all([
+			user.exists(id),
+			privileges.global.can('view:users', activitypub._constants.uid),
+		]);
+		if (!exists || !allowed) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
