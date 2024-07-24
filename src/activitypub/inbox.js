@@ -319,7 +319,7 @@ inbox.follow = async (req) => {
 	} else if (type === 'category') {
 		const [exists, allowed] = await Promise.all([
 			categories.exists(id),
-			privileges.categories.can('read', id, 'activitypub._constants.uid'),
+			privileges.categories.can('read', id, activitypub._constants.uid),
 		]);
 		if (!exists) {
 			throw new Error('[[error:invalid-cid]]');
