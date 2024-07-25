@@ -111,7 +111,7 @@ module.exports = function (User) {
 		if (uids.length) {
 			const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
 			await Promise.all([
-				db.setObjectBulk(uids.map((uid, index) => ([`user:${uid}`, { postcount: counts[index] }]))),
+				db.setObjectBulk(uids.map((uid, index) => ([`user${activitypub.helpers.isUri(uid) ? 'Remote' : ''}:${uid}`, { postcount: counts[index] }]))),
 				db.sortedSetAdd('users:postcount', counts, uids),
 			]);
 		}
