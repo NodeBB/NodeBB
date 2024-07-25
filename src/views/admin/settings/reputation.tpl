@@ -14,12 +14,20 @@
 					<input type="checkbox" class="form-check-input" id="downvote:disabled" data-field="downvote:disabled">
 					<label for="downvote:disabled" class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 				</div>
+				<div class="mb-3">
+					<label for="upvoteVisibility" class="form-check-label">[[admin/settings/reputation:upvote-visibility]]</label>
+					<select id="upvoteVisibility" data-field="upvoteVisibility" class="form-select">
+						<option value="all">[[admin/settings/reputation:upvote-visibility-all]]</option>
+						<option value="loggedin">[[admin/settings/reputation:upvote-visibility-loggedin]]</option>
+						<option value="privileged">[[admin/settings/reputation:upvote-visibility-privileged]]</option>
+					</select>
+				</div>
 				<div>
-					<label for="voteVisibility" class="form-check-label">[[admin/settings/reputation:vote-visibility]]</label>
-					<select id="voteVisibility" data-field="voteVisibility" class="form-select">
-						<option value="all">[[admin/settings/reputation:vote-visibility-all]]</option>
-						<option value="loggedin">[[admin/settings/reputation:vote-visibility-loggedin]]</option>
-						<option value="privileged">[[admin/settings/reputation:vote-visibility-privileged]]</option>
+					<label for="downvoteVisibility" class="form-check-label">[[admin/settings/reputation:downvote-visibility]]</label>
+					<select id="downvoteVisibility" data-field="downvoteVisibility" class="form-select">
+						<option value="all">[[admin/settings/reputation:downvote-visibility-all]]</option>
+						<option value="loggedin">[[admin/settings/reputation:downvote-visibility-loggedin]]</option>
+						<option value="privileged">[[admin/settings/reputation:downvote-visibility-privileged]]</option>
 					</select>
 				</div>
 			</div>

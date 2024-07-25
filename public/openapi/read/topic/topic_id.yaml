@@ -387,7 +387,9 @@ get:
                     type: number
                   downvote:disabled:
                     type: number
-                  voteVisibility:
+                  upvoteVisibility:
+                    type: string
+                  downvoteVisibility:
                     type: string
                   feeds:disableRSS:
                     type: number

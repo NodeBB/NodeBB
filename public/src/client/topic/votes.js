@@ -9,7 +9,7 @@ define('forum/topic/votes', [
 
 	Votes.addVoteHandler = function () {
 		_showTooltip = {};
-		if (canSeeVotes()) {
+		if (canSeeUpVotes()) {
 			components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
 			components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
 		}
@@ -18,11 +18,18 @@ define('forum/topic/votes', [
 		components.get('topic').on('mouseleave', '[data-pid] [component="post/announce-count"]', destroyTooltip);
 	};
 
-	function canSeeVotes() {
-		const { voteVisibility, privileges } = ajaxify.data;
+	function canSeeUpVotes() {
+		const { upvoteVisibility, privileges } = ajaxify.data;
 		return privileges.isAdminOrMod ||
-			voteVisibility === 'all' ||
-			(voteVisibility === 'loggedin' && config.loggedIn);
+			upvoteVisibility === 'all' ||
+			(upvoteVisibility === 'loggedin' && config.loggedIn);
+	}
+
+	function canSeeVotes() {
+		const { upvoteVisibility, downvoteVisibility, privileges } = ajaxify.data;
+		return privileges.isAdminOrMod ||
+			upvoteVisibility === 'all' || downvoteVisibility === 'all' ||
+			((upvoteVisibility === 'loggedin' || downvoteVisibility === 'loggedin') && config.loggedIn);
 	}
 
 	function destroyTooltip() {
