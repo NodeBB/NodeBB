@@ -146,7 +146,7 @@ Actors.topic = async function (req, res, next) {
 			url: `${nconf.get('url')}/topic/${slug}`,
 			name,
 			attributedTo: `${nconf.get('url')}/category/${cid}`,
-			audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}/followers` : undefined,
+			audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}` : undefined,
 			...collection,
 		};
 
