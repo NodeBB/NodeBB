@@ -58,10 +58,12 @@ Helpers.query = async (id) => {
 	// username@host ids use acct: URI schema
 	const uri = isUri ? new URL(id) : new URL(`acct:${id}`);
 	// JS doesn't parse anything other than protocol and pathname from acct: URIs, so we need to just split id manually
-	const [username, hostname] = isUri ? [uri.pathname || uri.href, uri.host] : id.split('@');
+	let [username, hostname] = isUri ? [uri.pathname || uri.href, uri.host] : id.split('@');
 	if (!username || !hostname) {
 		return false;
 	}
+	username = username.trim();
+	hostname = hostname.trim();
 
 	const cached = webfingerCache.get(id);
 	if (cached !== undefined) {
@@ -159,7 +161,7 @@ Helpers.resolveLocalId = async (input) => {
 		return { type: null, id: null };
 	} else if (String(input).indexOf('@') !== -1) { // Webfinger
 		input = decodeURIComponent(input);
-		const [slug] = input.replace(/^acct:/, '').split('@');
+		const [slug] = input.replace(/^(acct:|@)/, '').split('@');
 		const uid = await user.getUidByUserslug(slug);
 		return { type: 'user', id: uid };
 	}

@@ -39,7 +39,7 @@ Actors.assert = async (ids, options = {}) => {
 	ids = (await Promise.all(ids.map(async (id) => {
 		const originalId = id;
 		if (activitypub.helpers.isWebfinger(id)) {
-			const host = id.split('@')[1];
+			const host = id.replace(/^(acct:|@)/, '').split('@')[1];
 			if (host === nconf.get('url_parsed').host) { // do not assert loopback ids
 				return 'loopback';
 			}

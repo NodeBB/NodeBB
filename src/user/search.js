@@ -45,7 +45,7 @@ module.exports = function (User) {
 				const handle = activitypub.helpers.isWebfinger(data.query);
 				if (handle || activitypub.helpers.isUri(data.query)) {
 					const local = await activitypub.helpers.resolveLocalId(data.query);
-					if (local.type === 'user') {
+					if (local.type === 'user' && utils.isNumber(local.id)) {
 						uids = [local.id];
 					} else {
 						const assertion = await activitypub.actors.assert([handle || data.query]);
