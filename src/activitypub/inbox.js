@@ -376,11 +376,11 @@ inbox.accept = async (req) => {
 				if (await db.isSortedSetMember(`followingRemote:${id}`, actor)) return; // already following
 				return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
 			}
-			const now = Date.now();
+			const timestamp = await db.sortedSetScore(`followRequests:uid.${id}`, actor);
 			await Promise.all([
 				db.sortedSetRemove(`followRequests:uid.${id}`, actor),
-				db.sortedSetAdd(`followingRemote:${id}`, now, actor),
-				db.sortedSetAdd(`followersRemote:${actor}`, now, id), // for followers backreference and notes assertion checking
+				db.sortedSetAdd(`followingRemote:${id}`, timestamp, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, id), // for followers backreference and notes assertion checking
 			]);
 			const followingRemoteCount = await db.sortedSetCard(`followingRemote:${id}`);
 			await user.setUserField(id, 'followingRemoteCount', followingRemoteCount);
@@ -389,11 +389,11 @@ inbox.accept = async (req) => {
 				if (await db.isSortedSetMember(`cid:${id}:following`, actor)) return; // already following
 				return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
 			}
-			const now = Date.now();
+			const timestamp = await db.sortedSetScore(`followRequests:cid.${id}`, actor);
 			await Promise.all([
 				db.sortedSetRemove(`followRequests:cid.${id}`, actor),
-				db.sortedSetAdd(`cid:${id}:following`, now, actor),
-				db.sortedSetAdd(`followersRemote:${actor}`, now, `cid|${id}`), // for notes assertion checking
+				db.sortedSetAdd(`cid:${id}:following`, timestamp, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, `cid|${id}`), // for notes assertion checking
 			]);
 		}
 	}

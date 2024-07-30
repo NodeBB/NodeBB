@@ -42,14 +42,15 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 
 	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
 	const handle = await user.getUserField(actor, 'username');
+	const timestamp = Date.now();
 
 	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${Date.now()}`,
+		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${timestamp}`,
 		type: 'Follow',
 		object: actor,
 	});
 
-	await db.sortedSetAdd(`followRequests:${type}.${id}`, Date.now(), actor);
+	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
 });
 
 // should be .undo.follow
@@ -61,9 +62,14 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 
 	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
 	const handle = await user.getUserField(actor, 'username');
+	const timestamps = await db.sortedSetsScore([
+		`followRequests:${type}.${id}`,
+		type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`,
+	], actor);
+	const timestamp = timestamps[0] || timestamps[1];
 
 	const object = {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}`,
+		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${timestamp}`,
 		type: 'Follow',
 		object: actor,
 	};
@@ -74,7 +80,7 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 	}
 
 	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${handle}/${Date.now()}`,
+		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${handle}/${timestamp}`,
 		type: 'Undo',
 		object,
 	});
