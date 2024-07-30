@@ -38,6 +38,7 @@
 				{{{ end }}}
 				{{{ if user.privileges.admin:users }}}
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a>
+				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="manage-custom-user-fields" href="{relative_path}/admin/manage/users/custom-fields">[[admin/menu:manage/custom-user-fields]]</a>
 				{{{ end }}}
 				{{{ if user.privileges.admin:groups }}}
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a>

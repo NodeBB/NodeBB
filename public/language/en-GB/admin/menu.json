@@ -12,6 +12,7 @@
 	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Users",
+	"manage/custom-user-fields": "Custom User Fields",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Registration Queue",
 	"manage/flagged-content": "Flagged Content",
