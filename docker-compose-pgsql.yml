@@ -24,7 +24,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   redis:
-    image: redis:7.2.5-alpine
+    image: redis:7.4.0-alpine
     restart: unless-stopped
     command: ['redis-server', '--appendonly', 'yes', '--loglevel', 'warning']
     # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF
