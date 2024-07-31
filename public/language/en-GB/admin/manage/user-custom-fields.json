@@ -8,6 +8,7 @@
 	"name": "Name",
 	"type": "Type",
 	"input-type-text": "Input (Text)",
+	"input-type-link": "Input (Link)",
 	"input-type-number": "Input (Number)",
 	"input-type-select": "Select",
 	"select-options": "Options",

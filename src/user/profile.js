@@ -17,6 +17,7 @@ module.exports = function (User) {
 		let fields = [
 			'username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
+			...await db.getSortedSetRange('user-custom-fields', 0, -1),
 		];
 		if (Array.isArray(extraFields)) {
 			fields = _.uniq(fields.concat(extraFields));

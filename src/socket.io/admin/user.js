@@ -201,6 +201,7 @@ User.saveCustomFields = async function (socket, fields) {
 	await db.setObjectBulk(
 		fields.map(field => [`user-custom-field:${field.key}`, field])
 	);
+	await user.reloadCustomFieldWhitelist();
 };
 
 User.deleteCustomField = async function (socket, key) {

@@ -295,7 +295,7 @@ usersController.getCSV = async function (req, res, next) {
 	});
 };
 
-usersController.customFields = async function (req, res, next) {
+usersController.customFields = async function (req, res) {
 	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
 	const fields = await db.getObjects(keys.map(k => `user-custom-field:${k}`));
 	fields.forEach((field) => {

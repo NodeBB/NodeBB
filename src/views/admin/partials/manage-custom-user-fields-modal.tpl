@@ -3,6 +3,7 @@
 		<label class="form-label">[[admin/manage/user-custom-fields:type-of-input]]</label>
 		<select class="form-select" id="type-select" name="type">
 			<option value="input-text" {{{ if (type == "input-text") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-text]]</option>
+			<option value="input-link" {{{ if (type == "input-link") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-link]]</option>
 			<option value="input-number" {{{ if (type == "input-number") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-number]]</option>
 			<option value="select" {{{ if (type == "select") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-select]]</option>
 		</select>

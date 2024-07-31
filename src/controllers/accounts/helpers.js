@@ -134,6 +134,23 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	return hookData.userData;
 };
 
+helpers.getCustomUserFields = async function (userData) {
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	fields.forEach((f) => {
+		f['select-options'] = f['select-options'].split('\n').filter(Boolean).map(
+			opt => ({
+				value: opt,
+				selected: opt === userData[f.key],
+			})
+		);
+		if (userData[f.key]) {
+			f.value = validator.escape(String(userData[f.key]));
+		}
+	});
+	return fields;
+};
+
 function escape(value) {
 	return translator.escape(validator.escape(String(value || '')));
 }
