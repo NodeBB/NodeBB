@@ -22,12 +22,7 @@ define('admin/manage/user/custom-fields', ['bootbox', 'alerts', 'jquery-ui/widge
 				if (!ok) {
 					return;
 				}
-				socket.emit('admin.user.deleteCustomField', key, (err) => {
-					if (err) {
-						return alerts.error(err);
-					}
-					row.remove();
-				});
+				row.remove();
 			});
 		});
 
