@@ -37,7 +37,7 @@ async function rateLimitExceeded(caller, field) {
 }
 
 chatsAPI.list = async (caller, { uid = caller.uid, start, stop, page, perPage } = {}) => {
-	if (!start && !stop && !page) {
+	if ((!utils.isNumber(start) || !utils.isNumber(stop)) && !utils.isNumber(page)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
