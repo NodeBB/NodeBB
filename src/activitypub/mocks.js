@@ -386,8 +386,6 @@ Mocks.note = async (post) => {
 		return payload;
 	});
 
-	const replyCount = await db.sortedSetCard(`pid:${post.pid}:replies`);
-
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
@@ -407,7 +405,7 @@ Mocks.note = async (post) => {
 		source,
 		tag,
 		attachment,
-		replies: replyCount > 0 ? `${id}/replies` : null,
+		replies: `${id}/replies`,
 	};
 
 	return object;

@@ -398,6 +398,8 @@ Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 			object.next = page < pageCount ? `${url}?page=${page + 1}` : null;
 			object.prev = page > 1 ? `${url}?page=${page - 1}` : null;
 		}
+	} else {
+		object.orderedItems = [];
 	}
 
 	if (paginate) {
