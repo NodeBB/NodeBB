@@ -407,7 +407,7 @@ Mocks.note = async (post) => {
 		source,
 		tag,
 		attachment,
-		replies: replyCount > 0 ? `${id}/replies` : [],
+		replies: replyCount > 0 ? `${id}/replies` : null,
 	};
 
 	return object;
