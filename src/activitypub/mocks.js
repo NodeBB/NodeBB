@@ -29,7 +29,7 @@ const sanitizeConfig = {
 	},
 };
 
-Mocks.profile = async (actors) => {
+Mocks.profile = async (actors, hostMap) => {
 	// Should only ever be called by activitypub.actors.assert
 	const profiles = await Promise.all(actors.map(async (actor) => {
 		if (!actor) {
@@ -37,18 +37,20 @@ Mocks.profile = async (actors) => {
 		}
 
 		const uid = actor.id;
-		let hostname;
+		let hostname = hostMap.get(uid);
 		let {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, inbox, endpoints,
 		} = actor;
-		preferredUsername = preferredUsername || slugify(name);
+		preferredUsername = slugify(preferredUsername || name);
 		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
 
-		try {
-			({ hostname } = new URL(actor.id));
-		} catch (e) {
-			return null;
+		if (!hostname) { // if not available via webfinger, infer from id
+			try {
+				({ hostname } = new URL(actor.id));
+			} catch (e) {
+				return null;
+			}
 		}
 
 		let picture;
