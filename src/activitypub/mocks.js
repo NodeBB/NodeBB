@@ -5,7 +5,6 @@ const mime = require('mime');
 const path = require('path');
 const sanitize = require('sanitize-html');
 
-const db = require('../database');
 const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
