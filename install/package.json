@@ -121,7 +121,7 @@
         "progress-webpack-plugin": "1.0.16",
         "prompt": "1.3.0",
         "ioredis": "5.4.1",
-        "rimraf": "5.0.10",
+        "rimraf": "6.0.1",
         "rss": "1.2.2",
         "rtlcss": "4.2.0",
         "sanitize-html": "2.13.0",
