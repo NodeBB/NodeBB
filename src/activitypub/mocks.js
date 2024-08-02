@@ -303,10 +303,7 @@ Mocks.note = async (post) => {
 
 	const content = await posts.getPostField(post.pid, 'content');
 	post.content = content; // re-send raw content
-	const { postData: parsed } = await plugins.hooks.fire('filter:parse.post', {
-		postData: post,
-		type: 'activitypub.note',
-	});
+	const parsed = await posts.parsePost(post, 'activitypub.note');
 	post.content = sanitize(parsed.content, sanitizeConfig);
 	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
 	post.content = posts.relativeToAbsolute(post.content, posts.imgRegex);
