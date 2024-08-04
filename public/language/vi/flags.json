@@ -4,7 +4,7 @@
 	"reports": "Báo cáo",
 	"first-reported": "Được báo cáo đầu tiên",
 	"no-flags": "Hoan hô! Không tìm thấy cờ.",
-	"x-flags-found": "%1 flag(s) found.",
+	"x-flags-found": "%1 cờ tìm thấy.",
 	"assignee": "Người được ủy nhiệm",
 	"update": "Cập nhật",
 	"updated": "Đã cập nhật",
@@ -31,8 +31,8 @@
 	"filter-quick-mine": "Được giao cho tôi",
 	"filter-cid-all": "Tất cả chuyên mục",
 	"apply-filters": "Áp Dụng Bộ Lọc",
-	"more-filters": "Thêm Nhiều Bộ Lọc",
-	"fewer-filters": "Ít bộ lọc hơn",
+	"more-filters": "Thêm Bộ Lọc",
+	"fewer-filters": "Bớt Bộ Lọc",
 
 	"quick-actions": "Hành Động Nhanh",
 	"flagged-user": "Người Dùng Bị Gắn Cờ",
@@ -79,7 +79,7 @@
 	"sort-replies": "Nhiều lượt trả lời",
 
 	"modal-title": "Báo Cáo Nội Dung",
-	"modal-body": "Vui lòng nêu rõ lý do bạn gắn cờ %1 %2 để xem xét. Ngoài ra, hãy sử dụng một trong các nút báo cáo nhanh nếu có.",
+	"modal-body": "Vui lòng nêu rõ lý do bạn gắn cờ %1 %2 để đánh giá. Ngoài ra, hãy sử dụng một trong các nút báo cáo nhanh nếu có.",
 	"modal-reason-spam": "Quấy Rối",
 	"modal-reason-offensive": "Phản Cảm",
 	"modal-reason-other": "Khác (Ghi Rõ Bên Dưới)",
@@ -90,6 +90,6 @@
 	"bulk-actions": "‎Hành động hàng loạt‎",
 	"bulk-resolve": "Xử Lý Cờ",
 	"bulk-success": "%1 cờ đã cập nhật",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
-  	"auto-flagged": "[Tự động được gắn cờ] Đã nhận được %1 phiếu phản đối."
+	"flagged-timeago": "Đã gắn cờ <span class=\"timeago\" title=\"%1\"></span>",
+  	"auto-flagged": "[Cờ Tự Động] Nhận được %1 phản đối."
 }

@@ -13,7 +13,7 @@
     "tracking": "Theo dõi",
     "not-watching": "Không xem",
     "ignoring": "Bỏ qua",
-    "watching.description": "Thông báo tôi về chủ đề mới.<br/>Hiển thị chủ đề chưa đọc và gần đây",
+    "watching.description": "Thông báo tôi chủ đề mới.<br/>Hiển thị chủ đề chưa đọc và gần đây",
     "tracking.description": "Hiển thị chủ đề chưa đọc và gần đây",
     "not-watching.description": "Không hiển thị chủ đề trong chưa đọc, hiển thị gần đây",
     "ignoring.description": "Không hiển thị chủ đề chưa đọc và gần đây",

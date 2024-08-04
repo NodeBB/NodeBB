@@ -10,7 +10,7 @@
 	"id": "ID: <small>không bắt buộc</small>",
 
 	"properties": "Thuộc tính:",
-	"show-to-groups": "Show to Groups:",
+	"show-to-groups": "Hiển thị cho nhóm:",
 	"open-new-window": "Mở trong một cửa sổ mới",
 	"dropdown": "Thả xuống",
 	"dropdown-placeholder": "Đặt các mục menu thả xuống của bạn bên dưới, tức là: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

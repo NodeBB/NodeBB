@@ -1,6 +1,6 @@
 {
 	"section-dashboard": "Bảng điều khiển",
-	"dashboard/overview": "Tổng quát",
+	"dashboard/overview": "Tổng quan",
 	"dashboard/logins": "Đăng nhập",
 	"dashboard/users": "Người dùng",
 	"dashboard/topics": "Chủ đề",
@@ -14,7 +14,7 @@
 	"manage/users": "Người dùng",
 	"manage/admins-mods": "Quản trị viên & Người điều hành",
 	"manage/registration": "Xếp Hàng Đăng Ký",
-	"manage/flagged-content": "Flagged Content",
+	"manage/flagged-content": "Nội Dung Bị Gắn Cờ",
 	"manage/post-queue": "Xếp Hàng Bài Đăng",
 	"manage/groups": "Nhóm",
 	"manage/ip-blacklist": "Danh sách đen IP",
@@ -49,7 +49,7 @@
 
 	"section-appearance": "Trực quan",
 	"appearance/themes": "Giao diện",
-	"appearance/skins": "Giao diện",
+	"appearance/skins": "Trang điểm",
 	"appearance/customise": "Nội dung tùy chỉnh (HTML/JS/CSS)",
 
 	"section-extend": "Mở rộng",
@@ -72,12 +72,12 @@
 	"development/logger": "Ghi nhật ký",
 	"development/info": "Thông tin",
 
-	"rebuild-and-restart-forum": "Xây dựng lại & Khởi động lại diễn đàn",
-	"rebuild-and-restart": "Rebuild & Restart",
-	"restart-forum": "Khởi Động Lại Diễn Đàn",
-	"restart": "Restart",
+	"rebuild-and-restart-forum": "Dựng lại & Chạy lại diễn đàn",
+	"rebuild-and-restart": "Dựng lại & Chạy lại",
+	"restart-forum": "Chạy Lại Diễn Đàn",
+	"restart": "Chạy lại",
 	"logout": "Đăng xuất",
-	"view-forum": "Xem diễn đàn",
+	"view-forum": "Xem Diễn Đàn",
 
 	"search.placeholder": "Cài đặt tìm kiếm",
 	"search.no-results": "Ko có kết quả...",

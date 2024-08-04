@@ -7,7 +7,7 @@
 	"subscription": "Loại đăng ký",
 	"last-delivery": "Gửi thành công lần cuối",
 	"default": "Mặc định hệ thống",
-	"default-help": "<em>Mặc định hệ thống</em> nghĩa là người dùng không đè lên toàn bộ cài đặt thông báo diễn đàn, hiện là: &quot;<strong>%1</strong>&quot;",
+	"default-help": "<em>Mặc định hệ thống</em> nghĩa là người dùng không ghi đè lên toàn bộ cài đặt thông báo diễn đàn, hiện là: &quot;<strong>%1</strong>&quot;",
 	"resend": "Gửi Lại Thông Báo",
 	"resend-all-confirm": "Bạn có muốn thực hiện thủ công lần chạy thông báo này không?",
 	"resent-single": "Đã hoàn tất gửi lại thông báo thủ công",
