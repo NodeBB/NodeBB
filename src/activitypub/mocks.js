@@ -204,18 +204,28 @@ Mocks.actors.user = async (uid) => {
 };
 
 Mocks.actors.category = async (cid) => {
-	let {
+	const {
 		name, handle: preferredUsername, slug,
 		descriptionParsed: summary, backgroundImage,
 	} = await categories.getCategoryData(cid);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
-	backgroundImage = backgroundImage || meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
-	const filename = path.basename(utils.decodeHTMLEntities(backgroundImage));
-	backgroundImage = {
+	let image;
+	if (backgroundImage) {
+		const filename = path.basename(utils.decodeHTMLEntities(backgroundImage));
+		image = {
+			type: 'Image',
+			mediaType: mime.getType(filename),
+			url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
+		};
+	}
+
+	let icon = meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
+	const filename = path.basename(utils.decodeHTMLEntities(icon));
+	icon = {
 		type: 'Image',
 		mediaType: mime.getType(filename),
-		url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
+		url: `${nconf.get('url')}${utils.decodeHTMLEntities(icon)}`,
 	};
 
 	return {
@@ -234,7 +244,8 @@ Mocks.actors.category = async (cid) => {
 		name,
 		preferredUsername,
 		summary,
-		icon: backgroundImage,
+		image,
+		icon,
 
 		publicKey: {
 			id: `${nconf.get('url')}/category/${cid}#key`,
