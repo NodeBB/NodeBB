@@ -10,8 +10,8 @@
 	"filter-start": "Ngày Bắt Đầu",
 	"filter-end": "Ngày Kết Thúc",
 	"filter-user": "Lọc theo Người Dùng",
-	"filter-user.placeholder": "Type user name to filter...",
+	"filter-user.placeholder": "Nhập tên người dùng để lọc...",
 	"filter-group": "Lọc theo Nhóm",
-	"filter-group.placeholder": "Type group name to filter...",
+	"filter-group.placeholder": "Nhập tên nhóm để lọc...",
 	"filter-per-page": "Mỗi Trang"
 }
