@@ -8,6 +8,7 @@ const posts = require('../posts');
 const meta = require('../meta');
 const privileges = require('../privileges');
 
+const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
 
 const { doTopicAction } = apiHelpers;
@@ -80,6 +81,12 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
+	if (!isScheduling) {
+		setImmediate(() => {
+			activitypubApi.create.note(caller, { pid: result.postData.pid });
+		});
+	}
+
 	return result.topicData;
 };
 
@@ -113,6 +120,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
+	activitypubApi.create.note(caller, { pid: postData.pid });
 
 	return postObj[0];
 };

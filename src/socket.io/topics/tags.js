@@ -68,6 +68,7 @@ module.exports = function (SocketTopics) {
 			}
 		}
 		data.cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
+		data.cids = data.cids.filter(cid => cid !== -1);
 		return await method(data);
 	}
 
@@ -78,6 +79,7 @@ module.exports = function (SocketTopics) {
 			cids = await privileges.categories.filterCids('topics:read', data.cids, socket.uid);
 		} else { // if no cids passed in get all cids we can read
 			cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+			cids = cids.filter(cid => cid !== -1);
 		}
 
 		let tags = [];
@@ -106,7 +108,8 @@ module.exports = function (SocketTopics) {
 
 		const start = parseInt(data.after, 10);
 		const stop = start + 99;
-		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		let cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		cids = cids.filter(cid => cid !== -1);
 		const tags = await topics.getCategoryTagsData(cids, start, stop);
 		return { tags: tags.filter(Boolean), nextStart: stop + 1 };
 	};

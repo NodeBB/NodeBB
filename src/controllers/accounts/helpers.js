@@ -13,6 +13,9 @@ const privileges = require('../../privileges');
 const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
+const posts = require('../../posts');
+const activitypub = require('../../activitypub');
+const flags = require('../../flags');
 
 const relative_path = nconf.get('relative_path');
 
@@ -24,7 +27,12 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		return null;
 	}
 
-	const results = await getAllData(uid, callerUID);
+	const [results, canFlag, flagged, flagId] = await Promise.all([
+		getAllData(uid, callerUID),
+		privileges.users.canFlag(callerUID, uid),
+		flags.exists('user', uid, callerUID),
+		flags.getFlagIdByTarget('user', uid),
+	]);
 	if (!results.userData) {
 		throw new Error('[[error:invalid-uid]]');
 	}
@@ -74,7 +82,8 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.canEdit = results.canEdit;
 	userData.canBan = results.canBanUser;
 	userData.canMute = results.canMuteUser;
-	userData.canFlag = (await privileges.users.canFlag(callerUID, userData.uid)).flag;
+	userData.canFlag = canFlag.flag;
+	userData.flagId = flagged ? flagId : null;
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
@@ -181,6 +190,7 @@ async function canChat(callerUID, uid) {
 
 async function getCounts(userData, callerUID) {
 	const { uid } = userData;
+	const isRemote = activitypub.helpers.isUri(uid);
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
@@ -200,6 +210,7 @@ async function getCounts(userData, callerUID) {
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}
 	const counts = await utils.promiseParallel(promises);
+	counts.posts = isRemote ? userData.postcount : counts.posts;
 	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
 	counts.groups = userData.groups.length;
 	counts.following = userData.followingCount;
@@ -273,7 +284,12 @@ async function parseAboutMe(userData) {
 		userData.aboutme = '';
 		userData.aboutmeParsed = '';
 		return;
+	} else if (activitypub.helpers.isUri(userData.uid)) {
+		userData.aboutme = posts.sanitize(userData.aboutme);
+		userData.aboutmeParsed = userData.aboutme;
+		return;
 	}
+
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
 	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
 	userData.aboutme = translator.escape(userData.aboutme);

@@ -23,6 +23,7 @@ const posts = require('../src/posts');
 const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
+const activitypub = require('../src/activitypub');
 const utils = require('../src/utils');
 const api = require('../src/api');
 
@@ -241,6 +242,7 @@ describe('API', async () => {
 		meta.config.allowTopicsThumbnail = 1;
 		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
 		meta.config.chatMessageDelay = 0;
+		meta.config.activitypubEnabled = 1;
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -315,6 +317,17 @@ describe('API', async () => {
 
 		// Retrieve CSRF token using cookie, to test Write API
 		csrfToken = await helpers.getCsrfToken(jar);
+
+		// Pre-seed ActivityPub cache so contrived actor assertions pass
+		activitypub._cache.set(`0;https://example.org/foobar`, {
+			id: 'https://example.org/foobar',
+			name: 'foobar',
+			publicKey: {
+				id: `https://example.org/foobar#key`,
+				owner: `https://example.org/foobar`,
+				publicKeyPem: 'secretcat',
+			},
+		});
 
 		setup = true;
 	}

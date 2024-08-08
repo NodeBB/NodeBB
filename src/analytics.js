@@ -90,6 +90,8 @@ Analytics.increment = function (keys, callback) {
 	}
 };
 
+Analytics.peek = () => local;
+
 Analytics.getKeys = async () => db.getSortedSetRange('analyticsKeys', 0, -1);
 
 Analytics.pageView = async function (payload) {

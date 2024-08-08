@@ -510,7 +510,7 @@ define('admin/manage/users', [
 				if (confirm) {
 					Promise.all(
 						uids.map(
-							uid => api.del(`/users/${uid}${path}`, {}).then(() => {
+							uid => api.del(`/users/${encodeURIComponent(uid)}${path}`, {}).then(() => {
 								if (path !== '/content') {
 									removeRow(uid);
 								}

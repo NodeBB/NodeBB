@@ -33,6 +33,7 @@ let sanitizeConfig = {
 		'tabindex', 'title', 'translate', 'aria-*', 'data-*',
 	],
 };
+const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article']);
 
 module.exports = function (Posts) {
 	Posts.urlRegex = {
@@ -45,25 +46,36 @@ module.exports = function (Posts) {
 		length: 5,
 	};
 
-	Posts.parsePost = async function (postData) {
+	Posts.parsePost = async function (postData, type) {
 		if (!postData) {
 			return postData;
 		}
-		postData.content = String(postData.content || '');
+
+		if (!type || !allowedTypes.has(type)) {
+			type = 'default';
+		}
+		postData.content = String(postData.sourceContent || postData.content || '');
 		const cache = postCache.getOrCreate();
-		const pid = String(postData.pid);
-		const cachedContent = cache.get(pid);
+		const cacheKey = `${String(postData.pid)}|${type}`;
+		const cachedContent = cache.get(cacheKey);
+
 		if (postData.pid && cachedContent !== undefined) {
 			postData.content = cachedContent;
 			return postData;
 		}
 
-		const data = await plugins.hooks.fire('filter:parse.post', { postData: postData });
-		data.postData.content = translator.escape(data.postData.content);
-		if (data.postData.pid) {
-			cache.set(pid, data.postData.content);
+		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
+		postData.content = translator.escape(postData.content);
+		if (postData.pid) {
+			cache.set(cacheKey, postData.content);
 		}
-		return data.postData;
+
+		return postData;
+	};
+
+	Posts.clearCachedPost = function (pid) {
+		const cache = require('./cache');
+		cache.del(Array.from(allowedTypes).map(type => `${String(pid)}|${type}`));
 	};
 
 	Posts.parseSignature = async function (userData, uid) {
@@ -114,6 +126,10 @@ module.exports = function (Posts) {
 		});
 	};
 
+	Posts.sanitizePlaintext = content => sanitize(content, {
+		allowedTags: [],
+	});
+
 	Posts.configureSanitize = async () => {
 		// Each allowed tags should have some common global attributes...
 		sanitizeConfig.allowedTags.forEach((tag) => {
@@ -131,7 +147,7 @@ module.exports = function (Posts) {
 		plugins.hooks.register('core', {
 			hook: 'filter:parse.post',
 			method: async (data) => {
-				data.postData.content = Posts.sanitize(data.postData.content);
+				data.postData.content = Posts[data.type !== 'plaintext' ? 'sanitize' : 'sanitizePlaintext'](data.postData.content);
 				return data;
 			},
 		});

@@ -10,6 +10,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
+const activitypub = require('../activitypub');
 const privileges = require('../privileges');
 const social = require('../social');
 
@@ -69,8 +70,12 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	async function loadTopics() {
 		const topics = await Topics.getTopicsData(tids);
-		const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
-		const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
+		const uids = _.uniq(topics
+			.map(t => t && t.uid && t.uid.toString())
+			.filter(v => utils.isNumber(v) || activitypub.helpers.isUri(v)));
+		const cids = _.uniq(topics
+			.map(t => t && t.cid && t.cid.toString())
+			.filter(v => utils.isNumber(v)));
 		const guestTopics = topics.filter(t => t && t.uid === 0);
 
 		async function loadGuestHandles() {

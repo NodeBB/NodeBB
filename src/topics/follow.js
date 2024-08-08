@@ -166,7 +166,7 @@ module.exports = function (Topics) {
 			subject: title,
 			bodyLong: postData.content,
 			pid: postData.pid,
-			path: `/post/${postData.pid}`,
+			path: `/post/${encodeURIComponent(postData.pid)}`,
 			tid: postData.topic.tid,
 			from: exceptUid,
 			topicTitle: title,
