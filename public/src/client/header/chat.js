@@ -42,6 +42,7 @@ define('forum/header/chat', [
 					return;
 				}
 				chatPage.markChatPageElUnread(data);
+				chatPage.updateTeaser(data.roomId, data.teaser);
 			}
 
 			let { count } = await api.get('/chats/unread');

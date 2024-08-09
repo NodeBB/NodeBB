@@ -11,7 +11,7 @@
 			<div class="d-flex flex-column mt-3 ms-3">
 				{{{ each hooks.methods }}}
 				<div class="mb-3">
-					<strong>{hooks.methods.id}</strong>
+					<span>{hooks.methods.id}</span>
 					<span class="text-secondary text-sm">Priority: {hooks.methods.priority}</span>
 
 					<button class="btn btn-light btn-sm float-end" type="button" data-bs-toggle="collapse" data-bs-target="#{hooks.methods.index}" aria-expanded="false" aria-controls="{hooks.methods.index}">

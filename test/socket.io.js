@@ -15,6 +15,7 @@ const db = require('./mocks/databasemock');
 const user = require('../src/user');
 const groups = require('../src/groups');
 const categories = require('../src/categories');
+const topics = require('../src/topics');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const events = require('../src/events');
@@ -45,6 +46,12 @@ describe('socket.io', () => {
 		await user.email.confirmByUid(regularUid);
 
 		cid = data[2].cid;
+		await topics.post({
+			uid: adminUid,
+			cid: cid,
+			title: 'Test Topic',
+			content: 'Test topic content',
+		});
 	});
 
 
