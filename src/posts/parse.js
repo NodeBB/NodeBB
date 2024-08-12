@@ -22,7 +22,7 @@ let sanitizeConfig = {
 		...sanitize.defaults.allowedAttributes,
 		a: ['href', 'name', 'hreflang', 'media', 'rel', 'target', 'type'],
 		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
-		iframe: ['height', 'name', 'src', 'width'],
+		iframe: ['height', 'name', 'src', 'width', 'allow', 'frameborder'],
 		video: ['autoplay', 'playsinline', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
 		audio: ['autoplay', 'controls', 'loop', 'muted', 'preload', 'src'],
 		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
