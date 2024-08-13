@@ -163,8 +163,9 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const { to, cc, attachment } = post._activitypub;
 
 		// eslint-disable-next-line no-await-in-loop
+		await topics.reply(post);
+		// eslint-disable-next-line no-await-in-loop
 		await Promise.all([
-			topics.reply(post),
 			Notes.updateLocalRecipients(post.pid, { to, cc }),
 			posts.attachments.update(post.pid, attachment),
 		]);
