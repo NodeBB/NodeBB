@@ -13,6 +13,7 @@ const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
 const user = require('../user');
+const utils = require('../utils');
 const activitypub = require('.');
 
 const webfingerRegex = /^(@|acct:)?[\w-]+@.+$/;
@@ -287,6 +288,9 @@ Helpers.generateTitle = (html) => {
 
 	// Fall back to newline splitting (i.e. if no paragraph elements)
 	title = title || html.split('\n').filter(Boolean).shift();
+
+	// Strip html
+	title = utils.stripHTMLTags(title);
 
 	// Split sentences and use only first one
 	const sentences = title
