@@ -90,17 +90,25 @@ postsAPI.edit = async function (caller, data) {
 	if (!caller.uid) {
 		throw new Error('[[error:not-logged-in]]');
 	}
-	// Trim and remove HTML (latter for composers that send in HTML, like redactor)
-	const contentLen = utils.stripHTMLTags(data.content).trim().length;
+
+	// Discard content for non-local posts
+	if (!utils.isNumber(data.pid)) {
+		data.content = null;
+	} else {
+		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
+		const contentLen = utils.stripHTMLTags(data.content).trim().length;
+
+		if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
+			throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
+		} else if (contentLen > meta.config.maximumPostLength) {
+			throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+		}
+	}
 
 	if (data.title && data.title.length < meta.config.minimumTitleLength) {
 		throw new Error(`[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
 	} else if (data.title && data.title.length > meta.config.maximumTitleLength) {
 		throw new Error(`[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
-	} else if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
-		throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
-	} else if (contentLen > meta.config.maximumPostLength) {
-		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 	} else if (!await posts.canUserPostContentWithLinks(caller.uid, data.content)) {
 		throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 	}

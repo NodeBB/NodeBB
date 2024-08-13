@@ -34,6 +34,7 @@ module.exports = function (Posts) {
 
 		await scheduledTopicCheck(data, topicData);
 
+		data.content = data.content === null ? postData.content : data.content;
 		const oldContent = postData.content; // for diffing purposes
 		const editPostData = getEditPostData(data, topicData, postData);
 
@@ -106,7 +107,7 @@ module.exports = function (Posts) {
 		const { tid } = postData;
 		const title = data.title ? data.title.trim() : '';
 
-		const isMain = parseInt(data.pid, 10) === parseInt(topicData.mainPid, 10);
+		const isMain = String(data.pid) === String(topicData.mainPid);
 		if (!isMain) {
 			return {
 				tid: tid,
