@@ -121,8 +121,15 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	tid = tid || utils.generateUUID();
 	mainPost.tid = tid;
 
+	const urlMap = chain.reduce((map, post) => (post.url ? map.set(post.url, post.id) : map), new Map());
 	const unprocessed = chain.map((post) => {
 		post.tid = tid; // add tid to post hash
+
+		// Ensure toPids in replies are ids
+		if (urlMap.has(post.toPid)) {
+			post.toPid = urlMap.get(post.toPid);
+		}
+
 		return post;
 	}).filter((p, idx) => !members[idx]);
 	const count = unprocessed.length;
