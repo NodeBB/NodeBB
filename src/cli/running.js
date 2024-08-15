@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2013-2021 NodeBB Inc
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 'use strict';
 
 const fs = require('fs');
