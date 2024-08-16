@@ -1,11 +1,9 @@
 'use strict';
 
 const async = require('async');
-const user = require('../../user');
 const topics = require('../../topics');
 const categories = require('../../categories');
 const privileges = require('../../privileges');
-const socketHelpers = require('../helpers');
 const events = require('../../events');
 
 const api = require('../../api');
