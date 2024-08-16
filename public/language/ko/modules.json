@@ -1,8 +1,9 @@
 {
     "chat.room-id": "대화방 %1",
     "chat.chatting-with": "대화 중",
-    "chat.placeholder": "여기에 채팅 메시지를 입력하세요. 이미지는 끌어다 놓으세요. 전송하려면 Enter 키를 누르세요.",
-    "chat.placeholder.mobile": "여기에 채팅 메시지를 입력하세요.",
+    "chat.placeholder": "Type chat message here, drag & drop images",
+    "chat.placeholder.mobile": "Type chat message",
+    "chat.placeholder.message-room": "Message #%1",
     "chat.scroll-up-alert": "가장 최근 메시지로 이동",
     "chat.usernames-and-x-others": "%1 및 다른 %2명",
     "chat.chat-with-usernames": "%1과 대화",
