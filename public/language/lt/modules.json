@@ -1,8 +1,9 @@
 {
     "chat.room-id": "Room %1",
     "chat.chatting-with": "Chat with",
-    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
-    "chat.placeholder.mobile": "Type chat message here",
+    "chat.placeholder": "Type chat message here, drag & drop images",
+    "chat.placeholder.mobile": "Type chat message",
+    "chat.placeholder.message-room": "Message #%1",
     "chat.scroll-up-alert": "Go to most recent message",
     "chat.usernames-and-x-others": "%1 & %2 others",
     "chat.chat-with-usernames": "Chat with %1",
