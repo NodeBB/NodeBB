@@ -306,7 +306,6 @@ define('chat', [
 
 			chatModal.on('mousemove keypress click', function () {
 				if (parseInt(chatModal.attr('new-message'), 10) === 1) {
-					console.log('marking chat read');
 					api.del(`/chats/${roomId}/state`, {});
 					chatModal.removeAttr('new-message');
 				}
