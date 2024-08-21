@@ -1,5 +1,5 @@
 {
-	"logger": "Logger",
+	"logger": "Ghi Nhật Ký",
 	"logger-settings": "Cài Đặt Ghi Nhật Ký",
 	"description": "Bật cái này, bạn sẽ nhận nhật ký ở công cụ dòng lệnh của bạn. Nếu có đường dẫn cụ thể, nhật ký sẽ được lưu vào một tệp thay thế. Nhật ký HTTP có lợi để thu thập thống kê ai đó, khi nào và những gì họ làm diễn đàn. Ngoài ghi nhật ký yêu cầu HTTP, chúng ta có thể ghi nhật ký sự kiện socket.io. Ghi nhật ký Socket.io, kết hợp giám sát redis-cli, có thể hữu ích để tìm hiểu bên trong NodeBB.",
 	"explanation": "Chỉ cần chọn/bỏ chọn cài đặt ghi nhật ký để bật hoặc tắt ghi nhật ký một cách nhanh chóng. Không cần khởi động lại.",

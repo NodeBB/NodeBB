@@ -16,5 +16,5 @@
 	"custom-css.livereload.description": "Bật điều này để buộc tất cả các phiên trên mọi thiết bị trong tài khoản của bạn phải làm mới bất cứ khi nào bạn nhấp vào lưu",
 	"bsvariables": "_variables.scss",
 	"bsvariables.description": "Ghi đè các biến bootstrap ở đây. Bạn có thể sử dụng công cụ như <a href=\"https://bootstrap.build/app\">bootstrap.build</a> và dán đầu ra ở đây.<br/>Thay đổi buộc dựng lại và chạy lại.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.enable": "Bật _variables.scss"
 }

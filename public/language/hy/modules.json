@@ -1,8 +1,9 @@
 {
     "chat.room-id": "Սենյակ %1",
     "chat.chatting-with": "Զրուցել",
-    "chat.placeholder": "Գրեք հաղորդագրություն այստեղ, տեղադրեք նկարներ, սեղմեք \"enter\" ուղարկելու համար",
-    "chat.placeholder.mobile": "Գրեք նամակը այստեղ",
+    "chat.placeholder": "Type chat message here, drag & drop images",
+    "chat.placeholder.mobile": "Type chat message",
+    "chat.placeholder.message-room": "Message #%1",
     "chat.scroll-up-alert": "Ցույց տալ վերջին նամակը",
     "chat.usernames-and-x-others": "%1 և %2 ուրիշները",
     "chat.chat-with-usernames": "Գրել %1 - ին",

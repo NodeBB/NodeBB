@@ -1,5 +1,5 @@
 {
-    "all-tags": "Tất cả các thẻ",
+    "all-tags": "Tất cả thẻ",
     "no-tag-topics": "Không có bài viết nào với thẻ này.",
     "no-tags-found": "Không tìm thấy thẻ nào",
     "tags": "Thẻ",
@@ -8,8 +8,8 @@
     "no-tags": "Chưa có thẻ nào.",
     "select-tags": "Chọn Thẻ",
     "tag-whitelist": "Danh Sách Trắng Thẻ",
-    "watching": "Watching",
-    "not-watching": "Not Watching",
+    "watching": "Đang xem",
+    "not-watching": "Chưa xem",
     "watching.description": "Thông báo tôi chủ đề mới.",
     "not-watching.description": "Không thông báo tôi chủ đề mới.",
     "following-tag.message": "Bây giờ bạn sẽ nhận được thông báo khi ai đó đăng chủ đề có thẻ này.",
