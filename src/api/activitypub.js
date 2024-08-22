@@ -301,8 +301,8 @@ activitypubApi.announce = {};
 activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
 
-	// Only remote posts can be announced
-	if (utils.isNumber(pid)) {
+	// Only remote posts can be announced to real categories
+	if (utils.isNumber(pid) || parseInt(cid, 10) === -1) {
 		return;
 	}
 
