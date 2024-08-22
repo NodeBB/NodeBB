@@ -479,7 +479,7 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-flagged-post-in':
 				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.username));
+					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
 					const numUsers = usernames.length;
 
 					const title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
