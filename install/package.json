@@ -143,7 +143,7 @@
         "toobusy-js": "0.5.1",
         "tough-cookie": "4.1.4",
         "validator": "13.12.0",
-        "webpack": "5.93.0",
+        "webpack": "5.94.0",
         "webpack-merge": "6.0.1",
         "winston": "3.14.2",
         "workerpool": "9.1.3",
