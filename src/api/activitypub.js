@@ -17,6 +17,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const posts = require('../posts');
+const topics = require('../topics');
 const utils = require('../utils');
 
 const activitypubApi = module.exports;
@@ -110,6 +111,11 @@ async function buildRecipients(object, { pid, uid }) {
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
+
+	const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
+	if (!to.has(followersUrl)) {
+		cc.add(followersUrl);
+	}
 
 	const targets = new Set([...followers, ...to, ...cc]);
 
@@ -287,6 +293,38 @@ activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
 		id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
 		type: 'Like',
 		object: pid,
+	});
+});
+
+activitypubApi.announce = {};
+
+activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+
+	// Only remote posts can be announced
+	if (utils.isNumber(pid)) {
+		return;
+	}
+
+	const uid = await posts.getPostField(pid, 'uid'); // author
+	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
+	if (!allowed) {
+		// winston.verbose(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await buildRecipients({
+		to: [`${nconf.get('url')}/uid/${caller.uid}/followers`],
+		cc: [uid],
+	}, { uid: caller.uid });
+
+	await activitypub.send('uid', caller.uid, Array.from(targets), {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		to,
+		cc,
+		object: pid,
+		target: `${nconf.get('url')}/category/${cid}`,
 	});
 });
 
