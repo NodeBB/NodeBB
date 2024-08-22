@@ -76,14 +76,14 @@ module.exports = function (Topics) {
 		// Topics in /world are excluded from /recent
 		const cid = await Topics.getTopicField(tid, 'cid');
 		if (cid === -1) {
-			return;
+			return await db.sortedSetRemove('topics:recent', data.tid);
 		}
 
 		if (plugins.hooks.hasListeners('filter:topics.updateRecent')) {
 			data = await plugins.hooks.fire('filter:topics.updateRecent', data);
 		}
 		if (data && data.tid && data.timestamp) {
-			await db.sortedSetAdd(`topics:recent`, data.timestamp, data.tid);
+			await db.sortedSetAdd('topics:recent', data.timestamp, data.tid);
 		}
 	};
 };
