@@ -317,6 +317,9 @@ module.exports = function (User) {
 			if (!correct) {
 				throw new Error('[[user:change-password-error-wrong-current]]');
 			}
+			if (data.currentPassword === data.newPassword) {
+				throw new Error('[[user:change-password-error-same-password]]');
+			}
 		}
 
 		const hashedPassword = await User.hashPassword(data.newPassword);

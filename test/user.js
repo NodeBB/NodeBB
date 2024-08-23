@@ -776,6 +776,18 @@ describe('User', () => {
 			assert(correct);
 		});
 
+		it('should not let user change their password to their current password', async () => {
+			const uid = await User.create({ username: 'changepasswordsame', password: '123456' });
+			await assert.rejects(
+				apiUser.changePassword({ uid: uid }, {
+					uid: uid,
+					newPassword: '123456',
+					currentPassword: '123456',
+				}),
+				{ message: '[[user:change-password-error-same-password]]' },
+			);
+		});
+
 		it('should not let user change another user\'s password', async () => {
 			const regularUserUid = await User.create({ username: 'regularuserpwdchange', password: 'regularuser1234' });
 			const uid = await User.create({ username: 'changeadminpwd1', password: '123456' });
