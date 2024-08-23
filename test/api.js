@@ -562,8 +562,15 @@ describe('API', async () => {
 					const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
-						const sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
-						const sessObj = await db.sessionStoreGet(sessionIds[0]);
+						let sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+						let sessObj = await db.sessionStoreGet(sessionIds[0]);
+						if (!sessObj) {
+							// password changed so login with new pwd
+							({ jar } = await helpers.loginUser('admin', '654321'));
+							sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+							sessObj = await db.sessionStoreGet(sessionIds[0]);
+						}
+
 						const { uuid } = sessObj.meta;
 						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = uuid;
 
