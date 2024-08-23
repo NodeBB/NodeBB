@@ -1,9 +1,9 @@
 {
     "chat.room-id": "Phòng %1",
     "chat.chatting-with": "Trò chuyện với",
-    "chat.placeholder": "Type chat message here, drag & drop images",
-    "chat.placeholder.mobile": "Type chat message",
-    "chat.placeholder.message-room": "Message #%1",
+    "chat.placeholder": "Nhập tin nhắn trò chuyện vào đây, kéo & thả hình ảnh",
+    "chat.placeholder.mobile": "Nhập tin nhắn trò chuyện",
+    "chat.placeholder.message-room": "Tin nhắn #%1",
     "chat.scroll-up-alert": "Đi đến tin nhắn gần đây nhất",
     "chat.usernames-and-x-others": "%1 & %2 khác",
     "chat.chat-with-usernames": "Trò chuyện với %1",
