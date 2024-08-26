@@ -227,7 +227,7 @@ Controllers.confirmEmail = async (req, res) => {
 		});
 	}
 	try {
-		if (req.uid) {
+		if (req.loggedIn) {
 			const emailValidated = await user.getUserField(req.uid, 'email:confirmed');
 			if (emailValidated) {
 				return renderPage({ alreadyValidated: true });
