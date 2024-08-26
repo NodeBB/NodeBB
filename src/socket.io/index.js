@@ -241,10 +241,6 @@ async function checkMaintenance(socket) {
 	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
 }
 
-const getSessionAsync = util.promisify(
-	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
-);
-
 async function validateSession(socket, errorMsg) {
 	const req = socket.request;
 	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
@@ -256,7 +252,7 @@ async function validateSession(socket, errorMsg) {
 		return;
 	}
 
-	const sessionData = await getSessionAsync(sessionId);
+	const sessionData = await db.sessionStoreGet(sessionId);
 	if (!sessionData) {
 		throw new Error(errorMsg);
 	}
@@ -282,7 +278,7 @@ async function authorize(request, callback) {
 		request: request,
 	});
 
-	const sessionData = await getSessionAsync(sessionId);
+	const sessionData = await db.sessionStoreGet(sessionId);
 	request.session = sessionData;
 	let uid = 0;
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
