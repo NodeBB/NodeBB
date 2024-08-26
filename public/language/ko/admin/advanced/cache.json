@@ -1,10 +1,10 @@
 {
-	"cache": "Cache",
+	"cache": "캐시",
 	"post-cache": "포스트 캐시",
 	"group-cache": "그룹 캐시",
-	"local-cache": "자체 캐시",
-	"object-cache": "오프젝트 캐시",
-	"percent-full": "%1%꽉참",
+	"local-cache": "로컬 캐시",
+	"object-cache": "객체 캐시",
+	"percent-full": "%1% 사용됨",
 	"post-cache-size": "포스트 캐시 크기",
-	"items-in-cache": "캐시된 항목들"
+	"items-in-cache": "캐시에 있는 항목"
 }

@@ -20,6 +20,9 @@ const categoryController = module.exports;
 
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
+const validSorts = [
+	'recently_replied', 'recently_created', 'most_posts', 'most_votes', 'most_views',
+];
 
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;
@@ -72,12 +75,14 @@ categoryController.get = async function (req, res, next) {
 	const start = ((currentPage - 1) * userSettings.topicsPerPage) + topicIndex;
 	const stop = start + userSettings.topicsPerPage - 1;
 
+	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
+
 	const categoryData = await categories.getCategoryById({
 		uid: req.uid,
 		cid: cid,
 		start: start,
 		stop: stop,
-		sort: req.query.sort || userSettings.categoryTopicSort,
+		sort: sort,
 		settings: userSettings,
 		query: req.query,
 		tag: req.query.tag,
@@ -98,10 +103,15 @@ categoryController.get = async function (req, res, next) {
 	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 	categoryData.tagWhitelist = categories.filterTagWhitelist(categoryData.tagWhitelist, userPrivileges.isAdminOrMod);
 
-	await buildBreadcrumbs(req, categoryData);
+	const allCategories = [];
+	categories.flattenCategories(allCategories, categoryData.children);
+
+	await Promise.all([
+		buildBreadcrumbs(req, categoryData),
+		categories.setUnread([categoryData], allCategories.map(c => c.cid).concat(cid), req.uid),
+	]);
+
 	if (categoryData.children.length) {
-		const allCategories = [];
-		categories.flattenCategories(allCategories, categoryData.children);
 		await categories.getRecentTopicReplies(allCategories, req.uid, req.query);
 		categoryData.subCategoriesLeft = Math.max(0, categoryData.children.length - categoryData.subCategoriesPerPage);
 		categoryData.hasMoreSubCategories = categoryData.children.length > categoryData.subCategoriesPerPage;
@@ -124,9 +134,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData.topicIndex = topicIndex;
 	categoryData.selectedTag = tagData.selectedTag;
 	categoryData.selectedTags = tagData.selectedTags;
-	if (req.loggedIn) {
-		categories.markAsRead([cid], req.uid);
-	}
+	categoryData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
 
 	if (!meta.config['feeds:disableRSS']) {
 		categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;

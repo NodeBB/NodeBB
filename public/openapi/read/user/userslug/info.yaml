@@ -35,8 +35,6 @@ get:
                             timestampISO:
                               type: string
                               description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            timestampReadable:
-                              type: string
                           additionalProperties:
                             description: Contextual data is added to this object (such as topic data, etc.)
                       bans:
@@ -71,6 +69,8 @@ get:
                       properties:
                         value:
                           type: string
+                        byUid:
+                          type: string
                         timestamp:
                           type: number
                         timestampISO:
@@ -83,6 +83,10 @@ get:
                       properties:
                         value:
                           type: string
+                        byUid:
+                          type: string
+                        byUser:
+                          type: object
                         timestamp:
                           type: number
                         timestampISO:

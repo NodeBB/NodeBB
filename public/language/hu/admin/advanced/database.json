@@ -17,7 +17,7 @@
 	"mongo.file-size": "Fájlméret",
 	"mongo.resident-memory": "Rezidens memória",
 	"mongo.virtual-memory": "Virtuális memória",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "Leképezett memória",
 	"mongo.bytes-in": "Bejövő bájtok",
 	"mongo.bytes-out": "Kimenő bájtok",
 	"mongo.num-requests": "Kérések száma",

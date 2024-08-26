@@ -99,7 +99,9 @@ Loader.start = function () {
 function forkWorker(index, isPrimary) {
 	const ports = getPorts();
 	const args = [];
-
+	if (nconf.get('max-memory')) {
+		args.push(`--max-old-space-size=${nconf.get('max-memory')}`);
+	}
 	if (!ports[index]) {
 		return console.log(`[cluster] invalid port for worker : ${index} ports: ${ports.length}`);
 	}

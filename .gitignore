@@ -71,4 +71,5 @@ package-lock.json
 link-plugins.sh
 test.sh
 
-.docker/
+.docker/**
+!**/.gitkeep

@@ -5,25 +5,38 @@ const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
 const categories = require('../categories');
+const flags = require('../flags');
 const plugins = require('../plugins');
 const batch = require('../batch');
 
 
 module.exports = function (Topics) {
 	Topics.delete = async function (tid, uid) {
-		const cid = await Topics.getTopicField(tid, 'cid');
-		await removeTopicPidsFromCid(tid, cid);
-		await Topics.setTopicFields(tid, {
-			deleted: 1,
-			deleterUid: uid,
-			deletedTimestamp: Date.now(),
-		});
+		const [cid, pids] = await Promise.all([
+			Topics.getTopicField(tid, 'cid'),
+			Topics.getPids(tid),
+		]);
+		await Promise.all([
+			db.sortedSetRemove(`cid:${cid}:pids`, pids),
+			resolveTopicPostFlags(pids, uid),
+			Topics.setTopicFields(tid, {
+				deleted: 1,
+				deleterUid: uid,
+				deletedTimestamp: Date.now(),
+			}),
+		]);
+
 		await categories.updateRecentTidForCid(cid);
 	};
 
-	async function removeTopicPidsFromCid(tid, cid) {
-		const pids = await Topics.getPids(tid);
-		await db.sortedSetRemove(`cid:${cid}:pids`, pids);
+	async function resolveTopicPostFlags(pids, uid) {
+		await batch.processArray(pids, async (pids) => {
+			const postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
+			const flaggedPosts = postData.filter(p => p && parseInt(p.flagId, 10));
+			await Promise.all(flaggedPosts.map(p => flags.update(p.flagId, uid, { state: 'resolved' })));
+		}, {
+			batch: 500,
+		});
 	}
 
 	async function addTopicPidsToCid(tid, cid) {
@@ -110,6 +123,7 @@ module.exports = function (Topics) {
 			db.sortedSetsRemove([
 				`cid:${topicData.cid}:tids`,
 				`cid:${topicData.cid}:tids:pinned`,
+				`cid:${topicData.cid}:tids:create`,
 				`cid:${topicData.cid}:tids:posts`,
 				`cid:${topicData.cid}:tids:lastposttime`,
 				`cid:${topicData.cid}:tids:votes`,

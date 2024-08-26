@@ -52,8 +52,8 @@
 	"add-note": "Add Note",
 	"edit-note": "Edit Note",
 	"no-notes": "No shared notes.",
-	"delete-note-confirm": "Are you sure you want to delete this flag note?",
-	"delete-flag-confirm": "Are you sure you want to delete this flag?",
+	"delete-note-confirm": "Haluatko varmasti poistaa liputusmerkinnän?",
+	"delete-flag-confirm": "Haluatko varmasti poistaa liputuksen?",
 	"note-added": "Note Added",
 	"note-deleted": "Note Deleted",
 	"flag-deleted": "Flag Deleted",
@@ -68,7 +68,7 @@
 	"state-rejected": "Rejected",
 	"no-assignee": "Not Assigned",
 
-	"sort": "Sort by",
+	"sort": "Järjestysperuste",
 	"sort-newest": "Newest first",
 	"sort-oldest": "Oldest first",
 	"sort-reports": "Most reports",
@@ -90,6 +90,6 @@
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
 	"bulk-success": "%1 flags updated",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

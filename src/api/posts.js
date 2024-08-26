@@ -3,9 +3,11 @@
 const validator = require('validator');
 const _ = require('lodash');
 
+const db = require('../database');
 const utils = require('../utils');
 const user = require('../user');
 const posts = require('../posts');
+const postsCache = require('../posts/cache');
 const topics = require('../topics');
 const groups = require('../groups');
 const plugins = require('../plugins');
@@ -224,7 +226,7 @@ postsAPI.purge = async function (caller, data) {
 	if (!canPurge) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	require('../posts/cache').del(data.pid);
+	postsCache.del(data.pid);
 	await posts.purge(data.pid, caller.uid);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
@@ -290,7 +292,7 @@ postsAPI.move = async function (caller, data) {
 	]);
 
 	if (!postDeleted && !topicDeleted) {
-		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved_your_post');
+		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved-your-post');
 	}
 };
 
@@ -305,6 +307,103 @@ postsAPI.downvote = async function (caller, data) {
 postsAPI.unvote = async function (caller, data) {
 	return await apiHelpers.postCommand(caller, 'unvote', 'voted', '', data);
 };
+
+postsAPI.getVoters = async function (caller, data) {
+	if (!data || !data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const { pid } = data;
+	const cid = await posts.getCidByPid(pid);
+	const [canSeeUpvotes, canSeeDownvotes] = await Promise.all([
+		canSeeVotes(caller.uid, cid, 'upvoteVisibility'),
+		canSeeVotes(caller.uid, cid, 'downvoteVisibility'),
+	]);
+
+	if (!canSeeUpvotes && !canSeeDownvotes) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const repSystemDisabled = meta.config['reputation:disabled'];
+	const showUpvotes = canSeeUpvotes && !repSystemDisabled;
+	const showDownvotes = canSeeDownvotes && !meta.config['downvote:disabled'] && !repSystemDisabled;
+	const [upvoteUids, downvoteUids] = await Promise.all([
+		showUpvotes ? db.getSetMembers(`pid:${data.pid}:upvote`) : [],
+		showDownvotes ? db.getSetMembers(`pid:${data.pid}:downvote`) : [],
+	]);
+
+	const [upvoters, downvoters] = await Promise.all([
+		user.getUsersFields(upvoteUids, ['username', 'userslug', 'picture']),
+		user.getUsersFields(downvoteUids, ['username', 'userslug', 'picture']),
+	]);
+
+	return {
+		upvoteCount: upvoters.length,
+		downvoteCount: downvoters.length,
+		showUpvotes: showUpvotes,
+		showDownvotes: showDownvotes,
+		upvoters: upvoters,
+		downvoters: downvoters,
+	};
+};
+
+postsAPI.getUpvoters = async function (caller, data) {
+	if (!data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const { pid } = data;
+	const cid = await posts.getCidByPid(pid);
+	if (!await canSeeVotes(caller.uid, cid, 'upvoteVisibility')) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	let upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	const cutoff = 6;
+	if (!upvotedUids.length) {
+		return {
+			otherCount: 0,
+			usernames: [],
+			cutoff,
+		};
+	}
+	let otherCount = 0;
+	if (upvotedUids.length > cutoff) {
+		otherCount = upvotedUids.length - (cutoff - 1);
+		upvotedUids = upvotedUids.slice(0, cutoff - 1);
+	}
+
+	const usernames = await user.getUsernamesByUids(upvotedUids);
+	return {
+		otherCount,
+		usernames,
+		cutoff,
+	};
+};
+
+async function canSeeVotes(uid, cids, type) {
+	const isArray = Array.isArray(cids);
+	if (!isArray) {
+		cids = [cids];
+	}
+	const uniqCids = _.uniq(cids);
+	const [canRead, isAdmin, isMod] = await Promise.all([
+		privileges.categories.isUserAllowedTo(
+			'topics:read', uniqCids, uid
+		),
+		privileges.users.isAdministrator(uid),
+		privileges.users.isModerator(uid, cids),
+	]);
+	const cidToAllowed = _.zipObject(uniqCids, canRead);
+	const checks = cids.map(
+		(cid, index) => isAdmin || isMod[index] ||
+		(
+			cidToAllowed[cid] &&
+			(
+				meta.config[type] === 'all' ||
+				(meta.config[type] === 'loggedin' && parseInt(uid, 10) > 0)
+			)
+		)
+	);
+	return isArray ? checks : checks[0];
+}
 
 postsAPI.bookmark = async function (caller, data) {
 	return await apiHelpers.postCommand(caller, 'bookmark', 'bookmarked', '', data);

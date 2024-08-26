@@ -64,12 +64,15 @@ describe('Key methods', () => {
 		});
 	});
 
-	it('should work for an array of keys', (done) => {
-		db.exists(['testKey', 'doesnotexist'], (err, exists) => {
-			assert.ifError(err);
-			assert.deepStrictEqual(exists, [true, false]);
-			done();
-		});
+	it('should work for an array of keys', async () => {
+		assert.deepStrictEqual(
+			await db.exists(['testKey', 'doesnotexist']),
+			[true, false]
+		);
+		assert.deepStrictEqual(
+			await db.exists([]),
+			[]
+		);
 	});
 
 	describe('scan', () => {

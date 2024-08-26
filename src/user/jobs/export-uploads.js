@@ -74,14 +74,8 @@ process.on('message', async (msg) => {
 		winston.verbose(`[user/export/uploads] Collating uploads for uid ${targetUid}`);
 		await user.collateUploads(targetUid, archive);
 
-		const uploadedPicture = await user.getUserField(targetUid, 'uploadedpicture');
-		if (uploadedPicture) {
-			const filePath = uploadedPicture.replace(nconf.get('upload_url'), '');
-			archive.file(path.join(nconf.get('upload_path'), filePath), {
-				name: path.basename(filePath),
-			});
-		}
-
+		const profileUploadPath = path.join(nconf.get('upload_path'), `profile/uid-${targetUid}`);
+		archive.directory(profileUploadPath, 'profile');
 		archive.finalize();
 	}
 });

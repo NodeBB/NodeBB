@@ -25,12 +25,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 		userAgentIcons,
 		buildAvatar,
 		increment,
+		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
 		isoTimeToLocaleString,
 		shouldHideReplyContainer,
 		humanReadableNumber,
 		formattedNumber,
+		generatePlaceholderWave,
 		register,
 		__escape: identity,
 	};
@@ -167,9 +169,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
 			return `<button class="btn btn-warning disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
 		} else if (groupObj.isInvited) {
-			return `<button class="btn btn-link" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
+			return `<button class="btn btn-warning" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-success" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
+			return `<button class="btn btn-success ${btnClass}" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
 		}
 		return '';
 	}
@@ -295,38 +297,36 @@ module.exports = function (utils, Benchpress, relative_path) {
 		if (!userObj) {
 			userObj = this;
 		}
-
+		classNames = classNames || '';
 		const attributes = new Map([
-			['alt', userObj.username],
 			['title', userObj.username],
 			['data-uid', userObj.uid],
-			['loading', 'lazy'],
+			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
 		const styles = [`--avatar-size: ${size};`];
 		const attr2String = attributes => Array.from(attributes).reduce((output, [prop, value]) => {
 			output += ` ${prop}="${value}"`;
 			return output;
 		}, '');
-		classNames = classNames || '';
-
-		attributes.set('class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`);
 
 		let output = '';
 
 		if (userObj.picture) {
-			attributes.set('component', component || 'avatar/picture');
-			output += '<img ' + attr2String(attributes) + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" itemprop="image" />';
+			output += `<img${attr2String(attributes)} alt="${userObj.username}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
 		}
-
-		attributes.set('component', component || 'avatar/icon');
-		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
-		output += '<span ' + attr2String(attributes) + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
-
+		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${userObj['icon:bgColor']}">${userObj['icon:text']}</span>`;
 		return output;
 	}
 
 	function increment(value, inc) {
 		return String(value + parseInt(inc, 10));
+	}
+
+	function generateWroteReplied(post, timeagoCutoff) {
+		if (post.toPid) {
+			return generateRepliedTo(post, timeagoCutoff);
+		}
+		return generateWrote(post, timeagoCutoff);
 	}
 
 	function generateRepliedTo(post, timeagoCutoff) {
@@ -364,6 +364,21 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function formattedNumber(number) {
 		return utils.addCommas(number);
+	}
+
+	function generatePlaceholderWave(items) {
+		const html = items.map((i) => {
+			if (i === 'divider') {
+				return '<li class="dropdown-divider"></li>';
+			}
+			return `
+			<li class="dropdown-item placeholder-wave">
+				<div class="placeholder" style="width: 20px;"></div>
+				<div class="placeholder col-${i}"></div>
+			</li>`;
+		});
+
+		return html;
 	}
 
 	function register() {

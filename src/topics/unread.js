@@ -80,6 +80,7 @@ module.exports = function (Topics) {
 			tids: data.tids,
 			counts: data.counts,
 			tidsByFilter: data.tidsByFilter,
+			unreadCids: data.unreadCids,
 			cid: params.cid,
 			filter: params.filter,
 			query: params.query || {},
@@ -90,9 +91,9 @@ module.exports = function (Topics) {
 	async function getTids(params) {
 		const counts = { '': 0, new: 0, watched: 0, unreplied: 0 };
 		const tidsByFilter = { '': [], new: [], watched: [], unreplied: [] };
-
+		const unreadCids = [];
 		if (params.uid <= 0) {
-			return { counts: counts, tids: [], tidsByFilter: tidsByFilter };
+			return { counts, tids: [], tidsByFilter, unreadCids };
 		}
 
 		params.cutoff = await Topics.unreadCutoff(params.uid);
@@ -126,7 +127,7 @@ module.exports = function (Topics) {
 		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);
 
 		if (!tids.length) {
-			return { counts: counts, tids: tids, tidsByFilter: tidsByFilter };
+			return { counts, tids, tidsByFilter, unreadCids };
 		}
 
 		const blockedUids = await user.blocks.list(params.uid);
@@ -157,6 +158,7 @@ module.exports = function (Topics) {
 				if (isTopicsFollowed[topic.tid] ||
 					[categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[topic.cid])) {
 					tidsByFilter[''].push(topic.tid);
+					unreadCids.push(topic.cid);
 				}
 
 				if (isTopicsFollowed[topic.tid]) {
@@ -182,6 +184,7 @@ module.exports = function (Topics) {
 			counts: counts,
 			tids: tidsByFilter[params.filter],
 			tidsByFilter: tidsByFilter,
+			unreadCids: _.uniq(unreadCids),
 		};
 	}
 
@@ -210,15 +213,13 @@ module.exports = function (Topics) {
 	}
 
 	async function getFollowedTids(params) {
-		let tids = await db.getSortedSetMembers(`uid:${params.uid}:followed_tids`);
-		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
-		if (filterCids) {
-			const topicData = await Topics.getTopicsFields(tids, ['tid', 'cid']);
-			tids = topicData.filter(t => filterCids.includes(t.cid)).map(t => t.tid);
-		}
-		const scores = await db.sortedSetScores('topics:recent', tids);
-		const data = tids.map((tid, index) => ({ value: String(tid), score: scores[index] }));
-		return data.filter(item => item.score > params.cutoff);
+		const keys = params.cid ?
+			params.cid.map(cid => `cid:${cid}:tids:lastposttime`) :
+			'topics:recent';
+
+		const recentTopicData = await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+		const isFollowed = await db.isSortedSetMembers(`uid:${params.uid}:followed_tids`, recentTopicData.map(t => t.tid));
+		return recentTopicData.filter((t, i) => isFollowed[i]);
 	}
 
 	async function filterTidsThatHaveBlockedPosts(params) {
@@ -282,7 +283,6 @@ module.exports = function (Topics) {
 	Topics.markAsUnreadForAll = async function (tid) {
 		const now = Date.now();
 		const cid = await Topics.getTopicField(tid, 'cid');
-		await Topics.markCategoryUnreadForAll(tid);
 		await Topics.updateRecent(tid, now);
 		await db.sortedSetAdd(`cid:${cid}:tids:lastposttime`, now, tid);
 		await Topics.setTopicField(tid, 'lastposttime', now);
@@ -314,14 +314,10 @@ module.exports = function (Topics) {
 		}
 
 		const scores = topics.map(topic => (topic.scheduled ? topic.lastposttime : now));
-		const [topicData] = await Promise.all([
-			Topics.getTopicsFields(tids, ['cid']),
+		await Promise.all([
 			db.sortedSetAdd(`uid:${uid}:tids_read`, scores, tids),
 			db.sortedSetRemove(`uid:${uid}:tids_unread`, tids),
 		]);
-
-		const cids = _.uniq(topicData.map(t => t && t.cid).filter(Boolean));
-		await categories.markAsRead(cids, uid);
 
 		plugins.hooks.fire('action:topics.markAsRead', { uid: uid, tids: tids });
 		return true;
@@ -345,9 +341,11 @@ module.exports = function (Topics) {
 		user.notifications.pushCount(uid);
 	};
 
-	Topics.markCategoryUnreadForAll = async function (tid) {
-		const cid = await Topics.getTopicField(tid, 'cid');
-		await categories.markAsUnreadForAll(cid);
+	Topics.markCategoryUnreadForAll = async function (/* tid */) {
+		// TODO: remove in 4.x
+		console.warn('[deprecated] Topics.markCategoryUnreadForAll deprecated');
+		// const cid = await Topics.getTopicField(tid, 'cid');
+		// await categories.markAsUnreadForAll(cid);
 	};
 
 	Topics.hasReadTopics = async function (tids, uid) {

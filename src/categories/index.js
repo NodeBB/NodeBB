@@ -5,6 +5,7 @@ const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
+const topics = require('../topics');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const cache = require('../cache');
@@ -30,7 +31,7 @@ Categories.exists = async function (cids) {
 };
 
 Categories.getCategoryById = async function (data) {
-	const categories = await Categories.getCategories([data.cid], data.uid);
+	const categories = await Categories.getCategories([data.cid]);
 	if (!categories[0]) {
 		return null;
 	}
@@ -63,7 +64,7 @@ Categories.getCategoryById = async function (data) {
 		category: category,
 		...data,
 	});
-	return result.category;
+	return { ...result.category };
 };
 
 Categories.getAllCidsFromSet = async function (key) {
@@ -78,9 +79,9 @@ Categories.getAllCidsFromSet = async function (key) {
 	return cids.slice();
 };
 
-Categories.getAllCategories = async function (uid) {
+Categories.getAllCategories = async function () {
 	const cids = await Categories.getAllCidsFromSet('categories:cid');
-	return await Categories.getCategories(cids, uid);
+	return await Categories.getCategories(cids);
 };
 
 Categories.getCidsByPrivilege = async function (set, uid, privilege) {
@@ -90,7 +91,7 @@ Categories.getCidsByPrivilege = async function (set, uid, privilege) {
 
 Categories.getCategoriesByPrivilege = async function (set, uid, privilege) {
 	const cids = await Categories.getCidsByPrivilege(set, uid, privilege);
-	return await Categories.getCategories(cids, uid);
+	return await Categories.getCategories(cids);
 };
 
 Categories.getModerators = async function (cid) {
@@ -102,7 +103,7 @@ Categories.getModeratorUids = async function (cids) {
 	return await privileges.categories.getUidsWithPrivilege(cids, 'moderate');
 };
 
-Categories.getCategories = async function (cids, uid) {
+Categories.getCategories = async function (cids) {
 	if (!Array.isArray(cids)) {
 		throw new Error('[[error:invalid-cid]]');
 	}
@@ -110,20 +111,44 @@ Categories.getCategories = async function (cids, uid) {
 	if (!cids.length) {
 		return [];
 	}
-	uid = parseInt(uid, 10);
 
-	const [categories, tagWhitelist, hasRead] = await Promise.all([
+	const [categories, tagWhitelist] = await Promise.all([
 		Categories.getCategoriesData(cids),
 		Categories.getTagWhitelist(cids),
-		Categories.hasReadCategories(cids, uid),
 	]);
 	categories.forEach((category, i) => {
 		if (category) {
 			category.tagWhitelist = tagWhitelist[i];
-			category['unread-class'] = (category.topic_count === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 		}
 	});
 	return categories;
+};
+
+Categories.setUnread = async function (tree, cids, uid) {
+	if (uid <= 0) {
+		return;
+	}
+	const { unreadCids } = await topics.getUnreadData({
+		uid: uid,
+		cid: cids,
+	});
+	if (!unreadCids.length) {
+		return;
+	}
+
+	function setCategoryUnread(category) {
+		if (category) {
+			category.unread = false;
+			if (unreadCids.includes(category.cid)) {
+				category.unread = category.topic_count > 0 && true;
+			} else if (category.children.length) {
+				category.children.forEach(setCategoryUnread);
+				category.unread = category.children.some(c => c && c.unread);
+			}
+			category['unread-class'] = category.unread ? 'unread' : '';
+		}
+	}
+	tree.forEach(setCategoryUnread);
 };
 
 Categories.getTagWhitelist = async function (cids) {
@@ -210,10 +235,6 @@ async function getChildrenTree(category, uid) {
 	let childrenData = await Categories.getCategoriesData(childrenCids);
 	childrenData = childrenData.filter(Boolean);
 	childrenCids = childrenData.map(child => child.cid);
-	const hasRead = await Categories.hasReadCategories(childrenCids, uid);
-	childrenData.forEach((child, i) => {
-		child['unread-class'] = (child.topic_count === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
-	});
 	Categories.getTree([category].concat(childrenData), category.parentCid);
 }
 
@@ -349,7 +370,7 @@ async function getSelectData(cids, fields) {
 }
 
 Categories.buildForSelectCategories = function (categories, fields, parentCid) {
-	function recursive(category, categoriesData, level, depth) {
+	function recursive({ ...category }, categoriesData, level, depth) {
 		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;

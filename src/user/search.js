@@ -60,7 +60,19 @@ module.exports = function (User) {
 			uids = uids.slice(start, stop);
 		}
 
-		const userData = await User.getUsers(uids, uid);
+		const [userData, blocks] = await Promise.all([
+			User.getUsers(uids, uid),
+			User.blocks.list(uid),
+		]);
+
+		if (blocks.length) {
+			userData.forEach((user) => {
+				if (user) {
+					user.isBlocked = blocks.includes(user.uid);
+				}
+			});
+		}
+
 		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
 		searchResult.users = userData.filter(user => user && user.uid > 0);
 		return searchResult;

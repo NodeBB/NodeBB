@@ -94,5 +94,8 @@
 	"view-as-json": "Afficher en JSON",
 	"expand-analytics": "Développer les statistiques",
 	"clear-search-history": "Effacer l'historique",
-	"clear-search-history-confirm": "Êtes-vous sûr de vouloir effacer tout l'historique de recherche ?"
+	"clear-search-history-confirm": "Êtes-vous sûr de vouloir effacer tout l'historique de recherche ?",
+	"search-term": "Terme",
+	"search-count": "Nombre",
+	"view-all": "Voir tout"
 }

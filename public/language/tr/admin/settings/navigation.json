@@ -10,7 +10,7 @@
 	"id": "ID: <small>opsiyonel</small>",
 
 	"properties": "Özellikler:",
-	"groups": "Gruplar",
+	"show-to-groups": "Bu gruplara göster:",
 	"open-new-window": "Yeni pencerede aç",
 	"dropdown": "Açılır liste",
 	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

@@ -17,7 +17,7 @@ module.exports = function (Posts) {
 		const [userData, userSettings, signatureUids] = await Promise.all([
 			getUserData(uids, uid),
 			user.getMultipleUserSettings(uids),
-			privileges.global.filterUids('signature', uids),
+			meta.config.disableSignatures ? [] : privileges.categories.filterUids('signature', 0, uids),
 		]);
 		const uidsSignatureSet = new Set(signatureUids.map(uid => parseInt(uid, 10)));
 		const groupsMap = await getGroupsMap(userData);
@@ -260,5 +260,22 @@ module.exports = function (Posts) {
 				await user.incrementUserFieldBy(uid, 'topiccount', -posts.length);
 			}
 		});
+	}
+
+	Posts.filterPidsByUid = async function (pids, uids) {
+		if (!uids) {
+			return pids;
+		}
+
+		if (!Array.isArray(uids) || uids.length === 1) {
+			return await filterPidsBySingleUid(pids, uids);
+		}
+		const pidsArr = await Promise.all(uids.map(uid => Posts.filterPidsByUid(pids, uid)));
+		return _.union(...pidsArr);
+	};
+
+	async function filterPidsBySingleUid(pids, uid) {
+		const isMembers = await db.isSortedSetMembers(`uid:${parseInt(uid, 10)}:posts`, pids);
+		return pids.filter((pid, index) => pid && isMembers[index]);
 	}
 };

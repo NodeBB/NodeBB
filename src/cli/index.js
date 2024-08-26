@@ -114,7 +114,9 @@ if (!configExists && process.argv[2] !== 'setup') {
 	return;
 }
 
-process.env.CONFIG = configFile;
+if (configExists) {
+	process.env.CONFIG = configFile;
+}
 
 // running commands
 program
@@ -235,6 +237,12 @@ program
 	.description('Outputs various system info')
 	.action(() => {
 		require('./manage').info();
+	});
+program
+	.command('maintenance <toggle>')
+	.description('Toggle maintenance mode true/false')
+	.action((toggle) => {
+		require('./manage').maintenance(toggle);
 	});
 
 // reset

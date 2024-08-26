@@ -87,7 +87,7 @@ define('topicThumbs', [
 
 	Thumbs.modal.handleDelete = (payload) => {
 		const modalEl = payload.modal.get(0);
-
+		const { id: uuid } = payload;
 		modalEl.addEventListener('click', (ev) => {
 			if (ev.target.closest('button[data-action="remove"]')) {
 				bootbox.confirm('[[modules:thumbs.modal.confirm-remove]]', (ok) => {
@@ -101,6 +101,9 @@ define('topicThumbs', [
 						path: path,
 					}).then(() => {
 						Thumbs.modal.open(payload);
+						require(['composer'], (composer) => {
+							composer.updateThumbCount(uuid, $(`[component="composer"][data-uuid="${uuid}"]`));
+						});
 					}).catch(alerts.error);
 				});
 			}

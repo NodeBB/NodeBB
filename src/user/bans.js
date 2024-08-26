@@ -26,6 +26,7 @@ module.exports = function (User) {
 
 		const banKey = `uid:${uid}:ban:${now}`;
 		const banData = {
+			type: 'ban',
 			uid: uid,
 			timestamp: now,
 			expire: until > now ? until : 0,
@@ -41,7 +42,7 @@ module.exports = function (User) {
 		await db.sortedSetAdd('users:banned', now, uid);
 		await db.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
 		await db.setObject(banKey, banData);
-		await User.setUserField(uid, 'banned:expire', banData.expire);
+		await User.setUserFields(uid, { banned: 1, 'banned:expire': banData.expire });
 		if (until > now) {
 			await db.sortedSetAdd('users:banned:expire', until, uid);
 		} else {
@@ -63,24 +64,39 @@ module.exports = function (User) {
 		return banData;
 	};
 
-	User.bans.unban = async function (uids) {
-		uids = Array.isArray(uids) ? uids : [uids];
+	User.bans.unban = async function (uids, reason = '') {
+		const isArray = Array.isArray(uids);
+		uids = isArray ? uids : [uids];
 		const userData = await User.getUsersFields(uids, ['email:confirmed']);
 
-		await db.setObject(uids.map(uid => `user:${uid}`), { 'banned:expire': 0 });
-
+		await db.setObject(uids.map(uid => `user:${uid}`), { banned: 0, 'banned:expire': 0 });
+		const now = Date.now();
+		const unbanDataArray = [];
 		/* eslint-disable no-await-in-loop */
 		for (const user of userData) {
 			const systemGroupsToJoin = [
 				'registered-users',
 				(parseInt(user['email:confirmed'], 10) === 1 ? 'verified-users' : 'unverified-users'),
 			];
-			await groups.leave(groups.BANNED_USERS, user.uid);
-			// An unbanned user would lost its previous "Global Moderator" status
-			await groups.join(systemGroupsToJoin, user.uid);
+			const unbanKey = `uid:${user.uid}:unban:${now}`;
+			const unbanData = {
+				type: 'unban',
+				uid: user.uid,
+				reason,
+				timestamp: now,
+			};
+			await Promise.all([
+				db.sortedSetAdd(`uid:${user.uid}:unbans:timestamp`, now, unbanKey),
+				db.setObject(unbanKey, unbanData),
+				groups.leave(groups.BANNED_USERS, user.uid),
+				// An unbanned user would lost its previous "Global Moderator" status
+				groups.join(systemGroupsToJoin, user.uid),
+			]);
+			unbanDataArray.push(unbanData);
 		}
 
 		await db.sortedSetRemove(['users:banned', 'users:banned:expire'], uids);
+		return isArray ? unbanDataArray : unbanDataArray[0];
 	};
 
 	User.bans.isBanned = async function (uids) {
@@ -108,16 +124,15 @@ module.exports = function (User) {
 
 	User.bans.unbanIfExpired = async function (uids) {
 		// loading user data will unban if it has expired -barisu
-		const userData = await User.getUsersFields(uids, ['banned:expire']);
+		const userData = await User.getUsersFields(uids, ['banned', 'banned:expire']);
 		return User.bans.calcExpiredFromUserData(userData);
 	};
 
-	User.bans.calcExpiredFromUserData = async function (userData) {
+	User.bans.calcExpiredFromUserData = function (userData) {
 		const isArray = Array.isArray(userData);
 		userData = isArray ? userData : [userData];
-		const banned = await groups.isMembers(userData.map(u => u.uid), groups.BANNED_USERS);
-		userData = userData.map((userData, index) => ({
-			banned: banned[index],
+		userData = userData.map(userData => ({
+			banned: !!(userData && userData.banned),
 			'banned:expire': userData && userData['banned:expire'],
 			banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
 		}));

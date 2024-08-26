@@ -152,128 +152,12 @@ get:
                 type: boolean
               enableQuickReply:
                 type: boolean
-              iconBackgrounds:
-                type: array
-                items:
-                  type: string
-                  description: A valid CSS colour code
-                  example: '#fff'
               emailPrompt:
                 type: number
               useragent:
                 type: object
                 properties:
-                  isYaBrowser:
-                    type: boolean
-                  isAuthoritative:
-                    type: boolean
-                  isMobile:
-                    type: boolean
-                  isMobileNative:
-                    type: boolean
-                  isTablet:
-                    type: boolean
-                  isiPad:
-                    type: boolean
-                  isiPod:
-                    type: boolean
-                  isiPhone:
-                    type: boolean
-                  isiPhoneNative:
-                    type: boolean
-                  isAndroid:
-                    type: boolean
-                  isAndroidNative:
-                    type: boolean
-                  isBlackberry:
-                    type: boolean
-                  isOpera:
-                    type: boolean
-                  isIE:
-                    type: boolean
-                  isEdge:
-                    type: boolean
-                  isIECompatibilityMode:
-                    type: boolean
                   isSafari:
-                    type: boolean
-                  isFirefox:
-                    type: boolean
-                  isWebkit:
-                    type: boolean
-                  isChrome:
-                    type: boolean
-                  isKonqueror:
-                    type: boolean
-                  isOmniWeb:
-                    type: boolean
-                  isSeaMonkey:
-                    type: boolean
-                  isFlock:
-                    type: boolean
-                  isAmaya:
-                    type: boolean
-                  isPhantomJS:
-                    type: boolean
-                  isEpiphany:
-                    type: boolean
-                  isDesktop:
-                    type: boolean
-                  isWindows:
-                    type: boolean
-                  isLinux:
-                    type: boolean
-                  isLinux64:
-                    type: boolean
-                  isMac:
-                    type: boolean
-                  isChromeOS:
-                    type: boolean
-                  isBada:
-                    type: boolean
-                  isSamsung:
-                    type: boolean
-                  isRaspberry:
-                    type: boolean
-                  isBot:
-                    type: boolean
-                  isCurl:
-                    type: boolean
-                  isAndroidTablet:
-                    type: boolean
-                  isWinJs:
-                    type: boolean
-                  isKindleFire:
-                    type: boolean
-                  isSilk:
-                    type: boolean
-                  isCaptive:
-                    type: boolean
-                  isSmartTV:
-                    type: boolean
-                  isUC:
-                    type: boolean
-                  isFacebook:
-                    type: boolean
-                  isAlamoFire:
-                    type: boolean
-                  isElectron:
-                    type: boolean
-                  silkAccelerated:
-                    type: boolean
-                  browser:
-                    type: string
-                  version:
-                    type: string
-                  os:
-                    type: string
-                  platform:
-                    type: string
-                  geoIp:
-                    type: object
-                  source:
-                    type: string
-                  isWechat:
                     type: boolean
               composer-default:
                 type: object

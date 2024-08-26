@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
 const validator = require('validator');
+const json2csvAsync = require('json2csv').parseAsync;
 
 const { baseDir } = require('../constants').paths;
 const db = require('../database');
@@ -47,41 +48,39 @@ module.exports = function (User) {
 		return csvContent;
 	};
 
-	User.exportUsersCSV = async function () {
+	User.exportUsersCSV = async function (fieldsToExport = ['email', 'username', 'uid', 'ip']) {
 		winston.verbose('[user/exportUsersCSV] Exporting User CSV data');
 
 		const { fields, showIps } = await plugins.hooks.fire('filter:user.csvFields', {
-			fields: ['email', 'username', 'uid'],
-			showIps: true,
+			fields: fieldsToExport,
+			showIps: fieldsToExport.includes('ip'),
 		});
+
+		if (!showIps && fields.includes('ip')) {
+			fields.splice(fields.indexOf('ip'), 1);
+		}
 		const fd = await fs.promises.open(
 			path.join(baseDir, 'build/export', 'users.csv'),
 			'w'
 		);
-		fs.promises.appendFile(fd, `${fields.join(',')}${showIps ? ',ip' : ''}\n`);
+		fs.promises.appendFile(fd, `${fields.map(f => `"${f}"`).join(',')}\n`);
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			const usersData = await User.getUsersFields(uids, fields.slice());
-			let userIPs = '';
-			let ips = [];
-
+			const userFieldsToLoad = fields.filter(field => field !== 'ip' && field !== 'password');
+			const usersData = await User.getUsersFields(uids, userFieldsToLoad);
+			let userIps = [];
 			if (showIps) {
-				ips = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
+				userIps = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
 			}
 
-			let line = '';
 			usersData.forEach((user, index) => {
-				line += `${fields
-					.map(field => (isFinite(user[field]) ? `'${user[field]}'` : user[field]))
-					.join(',')}`;
-				if (showIps) {
-					userIPs = ips[index] ? ips[index].join(',') : '';
-					line += `,"${userIPs}"\n`;
-				} else {
-					line += '\n';
+				if (Array.isArray(userIps[index])) {
+					user.ip = userIps[index].join(',');
 				}
 			});
 
-			await fs.promises.appendFile(fd, line);
+			const opts = { fields, header: false };
+			const csv = await json2csvAsync(usersData, opts);
+			await fs.promises.appendFile(fd, csv);
 		}, {
 			batch: 5000,
 			interval: 250,

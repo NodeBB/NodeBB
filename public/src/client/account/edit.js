@@ -25,7 +25,7 @@ define('forum/account/edit', [
 		handleEmailConfirm();
 		updateSignature();
 		updateAboutMe();
-		handleGroupSort();
+		handleGroupControls();
 
 		if (!ajaxify.data.isSelf && ajaxify.data.canEdit) {
 			$(`a[href="${config.relative_path}/user/${ajaxify.data.userslug}/edit/email"]`).on('click', () => {
@@ -42,12 +42,15 @@ define('forum/account/edit', [
 	};
 
 	function updateProfile() {
+		function getGroupSelection() {
+			const els = $('[component="group/badge/list"] [component="group/badge/item"][data-selected="true"]');
+			return els.map((i, el) => $(el).attr('data-value')).get();
+		}
+
 		const userData = $('form[component="profile/edit/form"]').serializeObject();
 		userData.uid = ajaxify.data.uid;
 		userData.groupTitle = userData.groupTitle || '';
-		userData.groupTitle = JSON.stringify(
-			Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]
-		);
+		userData.groupTitle = JSON.stringify(getGroupSelection());
 
 		hooks.fire('action:profile.update', userData);
 
@@ -142,26 +145,34 @@ define('forum/account/edit', [
 		});
 	}
 
-	function handleGroupSort() {
-		function move(direction) {
-			const selected = $('#groupTitle').val();
-			if (!ajaxify.data.allowMultipleBadges || (Array.isArray(selected) && selected.length > 1)) {
-				return;
+	function handleGroupControls() {
+		const { allowMultipleBadges } = ajaxify.data;
+		$('[component="group/toggle/hide"]').on('click', function () {
+			const groupEl = $(this).parents('[component="group/badge/item"]');
+			groupEl.attr('data-selected', 'false');
+			$(this).addClass('hidden');
+			groupEl.find('[component="group/toggle/show"]').removeClass('hidden');
+		});
+
+		$('[component="group/toggle/show"]').on('click', function () {
+			if (!allowMultipleBadges) {
+				$('[component="group/badge/list"] [component="group/toggle/show"]').removeClass('hidden');
+				$('[component="group/badge/list"] [component="group/toggle/hide"]').addClass('hidden');
+				$('[component="group/badge/list"] [component="group/badge/item"]').attr('data-selected', 'false');
 			}
-			const el = $('#groupTitle').find(':selected');
-			if (el.length && el.val()) {
-				if (direction > 0) {
-					el.insertAfter(el.next());
-				} else if (el.prev().val()) {
-					el.insertBefore(el.prev());
-				}
-			}
-		}
+			const groupEl = $(this).parents('[component="group/badge/item"]');
+			groupEl.attr('data-selected', 'true');
+			$(this).addClass('hidden');
+			groupEl.find('[component="group/toggle/hide"]').removeClass('hidden');
+		});
+
 		$('[component="group/order/up"]').on('click', function () {
-			move(-1);
+			const el = $(this).parents('[component="group/badge/item"]');
+			el.insertBefore(el.prev());
 		});
 		$('[component="group/order/down"]').on('click', function () {
-			move(1);
+			const el = $(this).parents('[component="group/badge/item"]');
+			el.insertAfter(el.next());
 		});
 	}
 

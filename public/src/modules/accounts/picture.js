@@ -27,7 +27,7 @@ define('accounts/picture', [
 				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
 				defaultAvatar: ajaxify.data.defaultAvatar,
 				allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
-				iconBackgrounds: config.iconBackgrounds,
+				iconBackgrounds: ajaxify.data.iconBackgrounds,
 				user: {
 					uid: ajaxify.data.uid,
 					username: ajaxify.data.username,
@@ -94,7 +94,10 @@ define('accounts/picture', [
 					const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
 
 					changeUserPicture(type, iconBgColor).then(() => {
-						Picture.updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'), iconBgColor);
+						Picture.updateHeader(
+							type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'),
+							iconBgColor
+						);
 						ajaxify.refresh();
 					}).catch(alerts.error);
 				}
@@ -139,16 +142,17 @@ define('accounts/picture', [
 
 	function handleImageUpload(modal) {
 		function onUploadComplete(urlOnServer) {
-			urlOnServer = (!urlOnServer.startsWith('http') ? config.relative_path : '') + urlOnServer + '?' + Date.now();
-
-			Picture.updateHeader(urlOnServer);
+			urlOnServer = (!urlOnServer.startsWith('http') ? config.relative_path : '') + urlOnServer;
+			const cacheBustedUrl = urlOnServer + '?' + Date.now();
+			Picture.updateHeader(cacheBustedUrl);
 
 			if (ajaxify.data.picture && ajaxify.data.picture.length) {
-				$('#user-current-picture, img.avatar').attr('src', urlOnServer);
+				$(`#user-current-picture, img[data-uid="${ajaxify.data.theirid}"].avatar`).attr('src', cacheBustedUrl);
 				ajaxify.data.uploadedpicture = urlOnServer;
+				ajaxify.data.picture = urlOnServer;
 			} else {
 				ajaxify.refresh(function () {
-					$('#user-current-picture, img.avatar').attr('src', urlOnServer);
+					$(`#user-current-picture, img[data-uid="${ajaxify.data.theirid}"].avatar`).attr('src', cacheBustedUrl);
 				});
 			}
 		}

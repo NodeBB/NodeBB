@@ -6,14 +6,14 @@ const nconf = require('nconf');
 
 const db = require('../../database');
 const helpers = require('../helpers');
-const user = require('../../user');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
 
 const uploadsController = module.exports;
 
 uploadsController.get = async function (req, res) {
-	const { username, userslug } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
+	const payload = res.locals.userData;
+	const { username, userslug } = payload;
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 	const itemsPerPage = 25;
 	const start = (page - 1) * itemsPerPage;
@@ -23,7 +23,6 @@ uploadsController.get = async function (req, res) {
 		db.getSortedSetRevRange(`uid:${res.locals.uid}:uploads`, start, stop),
 	]);
 
-	const payload = {};
 	payload.uploads = uploadNames.map(uploadName => ({
 		name: uploadName,
 		url: path.resolve(nconf.get('upload_url'), uploadName),

@@ -3,7 +3,7 @@
 	"post-queue": "פוסטים ממתינים",
 	"no-queued-posts": "אין פוסטים ממתינים בתור הפוסטים.",
 	"no-single-post": "הנושא או הפוסט שאתה מחפש כבר לא בתור. כנראה שהוא כבר אושר או נמחק.",
-	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"enabling-help": "תור הפוסטים <strong>מושבת</strong> כרגע. כדי להפוך תכונה זו לזמינה, עבור אל <a href=\"%1\">הגדרות &rarr; פוסטים &rarr; תור פוסטים</a> והפעילו אותו <strong>תור הפוסטים</strong>.",
 	"back-to-list": "חזרה לתור פוסטים",
 	"public-intro": "אם יש לך פוסטים בתור, הם יוצגו כאן.",
 	"public-description": "פורום זה מוגדר לדרוש אישור ידני של פוסטים מחשבונות חדשים על ידי מנהל.<br />אם יש לך פוסטים בתור הממתינים לאישור, תוכל לראות אותם כאן.",
@@ -38,5 +38,6 @@
 	"remove-selected": "הסרת נבחרים",
 	"remove-selected-confirm": "האם להסיר %1 פוסטים שנבחרו?",
 	"bulk-accept-success": "%1 פוסטים אושרו",
-	"bulk-reject-success": "%1 פוסטים נדחו"
+	"bulk-reject-success": "%1 פוסטים נדחו",
+	"links-in-this-post": "Links in this post"
 }

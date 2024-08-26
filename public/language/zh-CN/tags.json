@@ -3,7 +3,7 @@
     "no-tag-topics": "此标签还没有主题帖。",
     "no-tags-found": "没有找到标签",
     "tags": "标签",
-    "enter-tags-here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
+    "enter-tags-here": "输入标签，限制%1 - %2个字符",
     "enter-tags-here-short": "输入标签...",
     "no-tags": "尚无标签。",
     "select-tags": "选择标签",

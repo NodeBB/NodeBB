@@ -14,9 +14,21 @@
 					<input type="checkbox" class="form-check-input" id="downvote:disabled" data-field="downvote:disabled">
 					<label for="downvote:disabled" class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 				</div>
-				<div class="form-check form-switch mb-3">
-					<input type="checkbox" class="form-check-input" id="votesArePublic" data-field="votesArePublic">
-					<label for="votesArePublic" class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
+				<div class="mb-3">
+					<label for="upvoteVisibility" class="form-check-label">[[admin/settings/reputation:upvote-visibility]]</label>
+					<select id="upvoteVisibility" data-field="upvoteVisibility" class="form-select">
+						<option value="all">[[admin/settings/reputation:upvote-visibility-all]]</option>
+						<option value="loggedin">[[admin/settings/reputation:upvote-visibility-loggedin]]</option>
+						<option value="privileged">[[admin/settings/reputation:upvote-visibility-privileged]]</option>
+					</select>
+				</div>
+				<div>
+					<label for="downvoteVisibility" class="form-check-label">[[admin/settings/reputation:downvote-visibility]]</label>
+					<select id="downvoteVisibility" data-field="downvoteVisibility" class="form-select">
+						<option value="all">[[admin/settings/reputation:downvote-visibility-all]]</option>
+						<option value="loggedin">[[admin/settings/reputation:downvote-visibility-loggedin]]</option>
+						<option value="privileged">[[admin/settings/reputation:downvote-visibility-privileged]]</option>
+					</select>
 				</div>
 			</div>
 
@@ -94,9 +106,30 @@
 						[[admin/settings/reputation:flags.limit-per-target-help]]
 					</p>
 				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="flags:postFlagsPerDay">[[admin/settings/reputation:flags.limit-post-flags-per-day]]</label>
+					<input type="number" min="0" class="form-control" data-field="flags:postFlagsPerDay" id="flags:postFlagsPerDay">
+					<p class="form-text">
+						[[admin/settings/reputation:flags.limit-post-flags-per-day-help]]
+					</p>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="flags:userFlagsPerDay">[[admin/settings/reputation:flags.limit-user-flags-per-day]]</label>
+					<input type="number" min="0" class="form-control" data-field="flags:userFlagsPerDay" id="flags:userFlagsPerDay">
+					<p class="form-text">
+						[[admin/settings/reputation:flags.limit-user-flags-per-day-help]]
+					</p>
+				</div>
+
+
 				<div class="mb-3">
 					<label class="form-label" for="flags:autoFlagOnDownvoteThreshold">[[admin/settings/reputation:flags.auto-flag-on-downvote-threshold]]</label>
 					<input type="number" min="0" class="form-control" placeholder="0" data-field="flags:autoFlagOnDownvoteThreshold" id="flags:autoFlagOnDownvoteThreshold">
+					<p class="form-text">
+						[[admin/settings/reputation:flags.auto-flag-on-downvote-threshold-help]]
+					</p>
 				</div>
 
 				<div class="mb-3">

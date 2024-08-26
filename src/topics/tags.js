@@ -416,6 +416,7 @@ module.exports = function (Topics) {
 
 		tags = await Topics.filterTags(tags, cid);
 		await Topics.addTags(tags, [tid]);
+		plugins.hooks.fire('action:topic.updateTags', { tags, tid });
 	};
 
 	Topics.deleteTopicTags = async function (tid) {
@@ -587,6 +588,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.notifyTagFollowers = async function (postData, exceptUid) {
+		console.log();
 		let { tags } = postData.topic;
 		if (!tags.length) {
 			return;
@@ -608,19 +610,18 @@ module.exports = function (Topics) {
 		const { displayname } = postData.user;
 
 		const notifBase = 'notifications:user-posted-topic-with-tag';
-		let bodyShort = translator.compile(notifBase, displayname, tags[0]);
+		let bodyShort = translator.compile(notifBase, displayname, postData.topic.title, tags[0]);
 		if (tags.length === 2) {
-			bodyShort = translator.compile(`${notifBase}-dual`, displayname, tags[0], tags[1]);
+			bodyShort = translator.compile(`${notifBase}-dual`, displayname, postData.topic.title, tags[0], tags[1]);
 		} else if (tags.length === 3) {
-			bodyShort = translator.compile(`${notifBase}-triple`, displayname, tags[0], tags[1], tags[2]);
+			bodyShort = translator.compile(`${notifBase}-triple`, displayname, postData.topic.title, tags[0], tags[1], tags[2]);
 		} else if (tags.length > 3) {
-			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, tags.join(', '));
+			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, postData.topic.title, tags.join(', '));
 		}
 
 		const notification = await notifications.create({
 			type: 'new-topic-with-tag',
 			nid: `new_topic:tid:${postData.topic.tid}:uid:${exceptUid}`,
-			subject: bodyShort,
 			bodyShort: bodyShort,
 			bodyLong: postData.content,
 			pid: postData.pid,

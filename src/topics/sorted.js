@@ -44,30 +44,85 @@ module.exports = function (Topics) {
 		}
 		let tids = [];
 		if (params.term !== 'alltime') {
-			tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
+			if (params.sort === 'posts') {
+				tids = await getTidsWithMostPostsInTerm(params.cids, params.uid, params.term);
+			} else {
+				tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
+			}
+
 			if (params.filter === 'watched') {
 				tids = await Topics.filterWatchedTids(tids, params.uid);
 			}
 		} else if (params.filter === 'watched') {
-			tids = await db.getSortedSetRevRange(`uid:${params.uid}:followed_tids`, 0, -1);
+			tids = await getWatchedTopics(params);
 		} else if (params.cids) {
 			tids = await getCidTids(params);
 		} else if (params.tags.length) {
 			tids = await getTagTids(params);
-		} else if (params.sort === 'old') {
-			tids = await db.getSortedSetRange(`topics:recent`, 0, meta.config.recentMaxTopics - 1);
 		} else {
-			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.config.recentMaxTopics - 1);
+			const method = params.sort === 'old' ?
+				'getSortedSetRange' :
+				'getSortedSetRevRange';
+			tids = await db[method](sortToSet(params.sort), 0, meta.config.recentMaxTopics - 1);
 		}
 
 		return tids;
 	}
 
+	function sortToSet(sort) {
+		const map = {
+			recent: 'topics:recent',
+			old: 'topics:recent',
+			create: 'topics:tid',
+			posts: 'topics:posts',
+			votes: 'topics:votes',
+			views: 'topics:views',
+		};
+		if (map.hasOwnProperty(sort)) {
+			return map[sort];
+		}
+		return 'topics:recent';
+	}
+
+	async function getTidsWithMostPostsInTerm(cids, uid, term) {
+		if (Array.isArray(cids)) {
+			cids = await privileges.categories.filterCids('topics:read', cids, uid);
+		} else {
+			cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
+		}
+
+		const pids = await db.getSortedSetRevRangeByScore(
+			cids.map(cid => `cid:${cid}:pids`),
+			0,
+			1000,
+			'+inf',
+			Date.now() - Topics.getSinceFromTerm(term)
+		);
+		const postObjs = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['tid']);
+		const tidToCount = {};
+		postObjs.forEach((post) => {
+			tidToCount[post.tid] = tidToCount[post.tid] || 0;
+			tidToCount[post.tid] += 1;
+		});
+
+		return _.uniq(postObjs.map(post => String(post.tid)))
+			.sort((t1, t2) => tidToCount[t2] - tidToCount[t1]);
+	}
+
+	async function getWatchedTopics(params) {
+		const sortSet = ['recent', 'old'].includes(params.sort) ? 'topics:recent' : `topics:${params.sort}`;
+		const method = params.sort === 'old' ? 'getSortedSetIntersect' : 'getSortedSetRevIntersect';
+		return await db[method]({
+			sets: [sortSet, `uid:${params.uid}:followed_tids`],
+			weights: [1, 0],
+			start: 0,
+			stop: meta.config.recentMaxTopics - 1,
+		});
+	}
+
 	async function getTagTids(params) {
 		const sets = [
-			params.sort === 'old' ?
-				'topics:recent' :
-				`topics:${params.sort}`,
+			sortToSet(params.sort),
 			...params.tags.map(tag => `tag:${tag}:topics`),
 		];
 		const method = params.sort === 'old' ?
@@ -112,17 +167,29 @@ module.exports = function (Topics) {
 		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned) {
 			return tids;
 		}
-		const topicData = await Topics.getTopicsFields(tids, [
-			'tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
-		]);
-		const sortMap = {
-			recent: sortRecent,
-			old: sortOld,
-			posts: sortPopular,
-			votes: sortVotes,
-			views: sortViews,
-		};
-		const sortFn = sortMap[params.sort] || sortRecent;
+
+		if (params.sort === 'posts' && params.term !== 'alltime') {
+			return tids;
+		}
+
+		const { sortMap, fields } = await plugins.hooks.fire('filter:topics.sortOptions', {
+			params,
+			fields: [
+				'tid', 'timestamp', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
+			],
+			sortMap: {
+				recent: sortRecent,
+				old: sortOld,
+				create: sortCreate,
+				posts: sortPopular,
+				votes: sortVotes,
+				views: sortViews,
+			},
+		});
+
+		const topicData = await Topics.getTopicsFields(tids, fields);
+		const sortFn = sortMap.hasOwnProperty(params.sort) && sortMap[params.sort] ?
+			sortMap[params.sort] : sortRecent;
 
 		if (params.floatPinned) {
 			floatPinned(topicData, sortFn);
@@ -143,6 +210,10 @@ module.exports = function (Topics) {
 
 	function sortOld(a, b) {
 		return a.lastposttime - b.lastposttime;
+	}
+
+	function sortCreate(a, b) {
+		return b.timestamp - a.timestamp;
 	}
 
 	function sortVotes(a, b) {

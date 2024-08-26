@@ -1,0 +1,39 @@
+get:
+  tags:
+    - posts
+  summary: get voters of a post
+  description: This returns the upvoters and downvoters of a post if the user has permission to view them
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 2
+  responses:
+    '200':
+      description: Data about upvoters and downvoters of the post
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  upvoteCount:
+                    type: number
+                  downvoteCount:
+                    type: number
+                  showUpvotes:
+                    type: boolean
+                  showDownvotes:
+                    type: boolean
+                  upvoters:
+                    type: array
+                  downvoters:
+                    type: array
+

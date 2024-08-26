@@ -94,5 +94,8 @@
 	"view-as-json": "הצג כ-JSON",
 	"expand-analytics": "הרחב ניתוח",
 	"clear-search-history": "מחק היסטוריית חיפושים",
-	"clear-search-history-confirm": "האם אתה בטוח שברצונך למחוק את כל היסטוריית החיפושים?"
+	"clear-search-history-confirm": "האם אתה בטוח שברצונך למחוק את כל היסטוריית החיפושים?",
+	"search-term": "מונח",
+	"search-count": "כמות",
+	"view-all": "הצג הכל"
 }

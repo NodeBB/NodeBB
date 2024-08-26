@@ -629,8 +629,22 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 			throw new Error(`[[error:${type}-flagged-too-many-times]]`);
 		}
 	}
+	const oneday = 24 * 60 * 60 * 1000;
+	const now = Date.now();
+	const [flagIds, canRead, isPrivileged] = await Promise.all([
+		db.getSortedSetRangeByScore(`flags:byReporter:${uid}`, 0, -1, now - oneday, '+inf'),
+		privileges.posts.can('topics:read', id, uid),
+		user.isPrivileged(uid),
+	]);
+	const allowedFlagsPerDay = meta.config[`flags:${type}FlagsPerDay`];
+	if (!isPrivileged && allowedFlagsPerDay > 0) {
+		const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
+		const flagsOfType = flagData.filter(f => f && f.type === type);
+		if (allowedFlagsPerDay > 0 && flagsOfType.length > allowedFlagsPerDay) {
+			throw new Error(`[[error:too-many-${type}-flags-per-day, ${allowedFlagsPerDay}]]`);
+		}
+	}
 
-	const canRead = await privileges.posts.can('topics:read', id, uid);
 	switch (type) {
 		case 'user':
 			return true;
@@ -781,12 +795,10 @@ Flags.resolveUserPostFlags = async function (uid, callerUid) {
 	if (meta.config['flags:autoResolveOnBan']) {
 		await batch.processSortedSet(`uid:${uid}:posts`, async (pids) => {
 			let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
-			postData = postData.filter(p => p && p.flagId);
+			postData = postData.filter(p => p && p.flagId && parseInt(p.flagId, 10));
 			for (const postObj of postData) {
-				if (parseInt(postObj.flagId, 10)) {
-					// eslint-disable-next-line no-await-in-loop
-					await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
-				}
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
 			}
 		}, {
 			batch: 500,
@@ -902,7 +914,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
-		const targetDisplayname = flagObj.target && flagObj.target.user ? flagObj.target.user.displayname : '[[global:guest]]';
+		const targetDisplayname = flagObj.target && flagObj.target.displayname ? flagObj.target.displayname : '[[global:guest]]';
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
 			bodyShort: `[[notifications:user-flagged-user, ${displayname}, ${targetDisplayname}]]`,

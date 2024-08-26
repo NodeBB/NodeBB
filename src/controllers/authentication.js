@@ -342,7 +342,7 @@ authenticationController.doLogin = async function (req, uid) {
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
 
-authenticationController.onSuccessfulLogin = async function (req, uid) {
+authenticationController.onSuccessfulLogin = async function (req, uid, trackSession = true) {
 	/*
 	 * Older code required that this method be called from within the SSO plugin.
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
@@ -380,7 +380,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			new Promise((resolve) => {
 				req.session.save(resolve);
 			}),
-			user.auth.addSession(uid, req.sessionID, uuid),
+			trackSession ? user.auth.addSession(uid, req.sessionID) : undefined,
 			user.updateLastOnlineTime(uid),
 			user.onUserOnline(uid, Date.now()),
 			analytics.increment('logins'),

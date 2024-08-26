@@ -36,7 +36,7 @@
 
 					{{{ if files.isFile }}}
 					<td class="align-middle">
-						<i class="fa fa-fw fa-file-text-o"></i> <a href="{config.relative_path}{files.url}" target="_blank">{files.name}</a>
+						<i class="fa fa-fw fa-file-text-o"></i> <a class="text-break" href="{config.relative_path}{files.url}" target="_blank">{files.name}</a>
 					</td>
 					{{{ end }}}
 
@@ -53,7 +53,7 @@
 
 					<td class="text-end align-middle">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
 
-					<td role="button" class=" text-end">
+					<td role="button" class="align-middle text-end">
 						<button class="delete btn btn-sm btn-light {{{ if !files.isFile }}} hidden{{{ end }}}">
 							<i class="fa fa-fw fa-trash-o text-danger"></i>
 						</button>

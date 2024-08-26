@@ -9,5 +9,9 @@
 	"filter-type": "نوع الحدث",
 	"filter-start": "تاريخ البدء",
 	"filter-end": "تاريخ الانتهاء",
+	"filter-user": "Filter by User",
+	"filter-user.placeholder": "Type user name to filter...",
+	"filter-group": "Filter by Group",
+	"filter-group.placeholder": "Type group name to filter...",
 	"filter-per-page": "لكل صفحة"
 }

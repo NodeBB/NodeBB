@@ -1,7 +1,7 @@
 {
 	"manage-privileges": "Quản Lý Đặc Quyền",
 	"discard-changes": "Loại bỏ các thay đổi",
-	"global": "Chung",
+	"global": "Toàn bộ",
 	"admin": "Quản Trị Viên",
 	"group-privileges": "Đặc Quyền Nhóm",
 	"user-privileges": "Đặc Quyền Người Dùng",
@@ -32,7 +32,7 @@
 	"schedule-topics": "Lên Lịch Chủ Đề",
 	"tag-topics": "Gắn Thẻ Chủ Đề",
 	"edit-posts": "Chỉnh Sửa Bài Đăng",
-	"view-edit-history": "Xem Lịch Sử Chỉnh Sửa",
+	"view-edit-history": "Xem Lịch Sử Sửa",
 	"delete-posts": "Xóa Bài Đăng",
 	"view-deleted": "Xem Bài Viết Đã Xóa",
 	"upvote-posts": "Ủng Hộ Bài Đăng",

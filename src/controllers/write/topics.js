@@ -207,3 +207,10 @@ Topics.bump = async (req, res) => {
 
 	helpers.formatApiResponse(200, res);
 };
+
+Topics.move = async (req, res) => {
+	const { cid } = req.body;
+	await api.topics.move(req, { cid, ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};

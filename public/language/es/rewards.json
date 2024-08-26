@@ -1,5 +1,5 @@
 {
-	"awarded-x-reputation": "You have been awarded <strong>%1</strong> reputation",
+	"awarded-x-reputation": "Has sido premiado",
 	"awarded-group-membership": "You have been added to the group <strong>%1</strong>",
 
 	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",

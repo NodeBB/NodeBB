@@ -33,6 +33,9 @@ get:
                               type: array
                               items:
                                 type: string
+                            unread:
+                              type: boolean
+                              description: True if category or it's children have unread topics
                             unread-class:
                               type: string
                             children:
@@ -135,6 +138,8 @@ get:
                                 properties:
                                   pid:
                                     type: number
+                                  tid:
+                                    type: number
                                   timestamp:
                                     type: number
                                   content:
@@ -181,6 +186,8 @@ get:
                                   topic:
                                     type: object
                                     properties:
+                                      tid:
+                                        type: number
                                       slug:
                                         type: string
                                       title:
@@ -195,12 +202,16 @@ get:
                                   description: An ISO 8601 formatted date string (complementing `timestamp`)
                                 pid:
                                   type: number
+                                tid:
+                                  type: number
                                 index:
                                   type: number
                                   description: The index of the post
                                 topic:
                                   type: object
                                   properties:
+                                    tid:
+                                      type: number
                                     slug:
                                       type: string
                                     title:

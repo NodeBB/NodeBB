@@ -1,29 +1,17 @@
 'use strict';
 
-
-const async = require('async');
 const assert = require('assert');
 const db = require('../mocks/databasemock');
 
 describe('Sorted Set methods', () => {
-	before((done) => {
-		async.parallel([
-			function (next) {
-				db.sortedSetAdd('sortedSetTest1', [1.1, 1.2, 1.3], ['value1', 'value2', 'value3'], next);
-			},
-			function (next) {
-				db.sortedSetAdd('sortedSetTest2', [1, 4], ['value1', 'value4'], next);
-			},
-			function (next) {
-				db.sortedSetAdd('sortedSetTest3', [2, 4], ['value2', 'value4'], next);
-			},
-			function (next) {
-				db.sortedSetAdd('sortedSetTest4', [1, 1, 2, 3, 5], ['b', 'a', 'd', 'e', 'c'], next);
-			},
-			function (next) {
-				db.sortedSetAdd('sortedSetLex', [0, 0, 0, 0], ['a', 'b', 'c', 'd'], next);
-			},
-		], done);
+	before(async () => {
+		await Promise.all([
+			db.sortedSetAdd('sortedSetTest1', [1.1, 1.2, 1.3], ['value1', 'value2', 'value3']),
+			db.sortedSetAdd('sortedSetTest2', [1, 4], ['value1', 'value4']),
+			db.sortedSetAdd('sortedSetTest3', [2, 4], ['value2', 'value4']),
+			db.sortedSetAdd('sortedSetTest4', [1, 1, 2, 3, 5], ['b', 'a', 'd', 'e', 'c']),
+			db.sortedSetAdd('sortedSetLex', [0, 0, 0, 0], ['a', 'b', 'c', 'd']),
+		]);
 	});
 
 	describe('sortedSetScan', () => {
@@ -616,6 +604,23 @@ describe('Sorted Set methods', () => {
 				assert.equal(sum, 3);
 				done();
 			});
+		});
+
+		it('should work with min/max', async () => {
+			let count = await db.sortedSetsCardSum([
+				'sortedSetTest1', 'sortedSetTest2', 'sortedSetTest3',
+			], '-inf', 2);
+			assert.strictEqual(count, 5);
+
+			count = await db.sortedSetsCardSum([
+				'sortedSetTest1', 'sortedSetTest2', 'sortedSetTest3',
+			], 2, '+inf');
+			assert.strictEqual(count, 3);
+
+			count = await db.sortedSetsCardSum([
+				'sortedSetTest1', 'sortedSetTest2', 'sortedSetTest3',
+			], '-inf', '+inf');
+			assert.strictEqual(count, 7);
 		});
 	});
 
@@ -1225,11 +1230,11 @@ describe('Sorted Set methods', () => {
 	});
 
 	describe('sortedSetsRemove()', () => {
-		before((done) => {
-			async.parallel([
-				async.apply(db.sortedSetAdd, 'sorted4', [1, 2], ['value1', 'value2']),
-				async.apply(db.sortedSetAdd, 'sorted5', [1, 2], ['value1', 'value3']),
-			], done);
+		before(async () => {
+			await Promise.all([
+				db.sortedSetAdd('sorted4', [1, 2], ['value1', 'value2']),
+				db.sortedSetAdd('sorted5', [1, 2], ['value1', 'value3']),
+			]);
 		});
 
 		it('should remove element from multiple sorted sets', (done) => {
@@ -1278,15 +1283,11 @@ describe('Sorted Set methods', () => {
 	});
 
 	describe('getSortedSetIntersect', () => {
-		before((done) => {
-			async.parallel([
-				function (next) {
-					db.sortedSetAdd('interSet1', [1, 2, 3], ['value1', 'value2', 'value3'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('interSet2', [4, 5, 6], ['value2', 'value3', 'value5'], next);
-				},
-			], done);
+		before(async () => {
+			await Promise.all([
+				db.sortedSetAdd('interSet1', [1, 2, 3], ['value1', 'value2', 'value3']),
+				db.sortedSetAdd('interSet2', [4, 5, 6], ['value2', 'value3', 'value5']),
+			]);
 		});
 
 		it('should return the intersection of two sets', (done) => {
@@ -1446,21 +1447,13 @@ describe('Sorted Set methods', () => {
 	});
 
 	describe('sortedSetIntersectCard', () => {
-		before((done) => {
-			async.parallel([
-				function (next) {
-					db.sortedSetAdd('interCard1', [0, 0, 0], ['value1', 'value2', 'value3'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('interCard2', [0, 0, 0], ['value2', 'value3', 'value4'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('interCard3', [0, 0, 0], ['value3', 'value4', 'value5'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('interCard4', [0, 0, 0], ['value4', 'value5', 'value6'], next);
-				},
-			], done);
+		before(async () => {
+			await Promise.all([
+				db.sortedSetAdd('interCard1', [0, 0, 0], ['value1', 'value2', 'value3']),
+				db.sortedSetAdd('interCard2', [0, 0, 0], ['value2', 'value3', 'value4']),
+				db.sortedSetAdd('interCard3', [0, 0, 0], ['value3', 'value4', 'value5']),
+				db.sortedSetAdd('interCard4', [0, 0, 0], ['value4', 'value5', 'value6']),
+			]);
 		});
 
 		it('should return # of elements in intersection', (done) => {

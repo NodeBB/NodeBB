@@ -1,15 +1,16 @@
 {
     "title": "읽지 않음",
-    "no-unread-topics": "읽지 않은 화제가 없습니다.",
-    "load-more": "더 보기",
+    "no-unread-topics": "읽지 않은 토픽이 없습니다.",
+    "load-more": "더 불러오기",
     "mark-as-read": "읽음으로 표시",
+    "mark-as-unread": "읽지 않은 상태로 표시",
     "selected": "선택됨",
-    "all": "전체",
+    "all": "모두",
     "all-categories": "모든 카테고리",
-    "topics-marked-as-read.success": "화제들을 읽음으로 표시했습니다.",
-    "all-topics": "모든 화제",
-    "new-topics": "새 화제",
-    "watched-topics": "읽은 화제",
-    "unreplied-topics": "답글이 없는 화제",
-    "multiple-categories-selected": "다중선택됨"
+    "topics-marked-as-read.success": "토픽이 읽음으로 표시되었습니다!",
+    "all-topics": "모든 토픽",
+    "new-topics": "새 토픽",
+    "watched-topics": "구독한 토픽",
+    "unreplied-topics": "답글이 없는 토픽",
+    "multiple-categories-selected": "여러 카테고리가 선택됨"
 }

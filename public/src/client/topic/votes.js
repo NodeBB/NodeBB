@@ -9,9 +9,25 @@ define('forum/topic/votes', [
 
 	Votes.addVoteHandler = function () {
 		_showTooltip = {};
-		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
-		components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
+		if (canSeeUpVotes()) {
+			components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+			components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
+		}
 	};
+
+	function canSeeUpVotes() {
+		const { upvoteVisibility, privileges } = ajaxify.data;
+		return privileges.isAdminOrMod ||
+			upvoteVisibility === 'all' ||
+			(upvoteVisibility === 'loggedin' && config.loggedIn);
+	}
+
+	function canSeeVotes() {
+		const { upvoteVisibility, downvoteVisibility, privileges } = ajaxify.data;
+		return privileges.isAdminOrMod ||
+			upvoteVisibility === 'all' || downvoteVisibility === 'all' ||
+			((upvoteVisibility === 'loggedin' || downvoteVisibility === 'loggedin') && config.loggedIn);
+	}
 
 	function destroyTooltip() {
 		const $this = $(this);
@@ -35,12 +51,12 @@ define('forum/topic/votes', [
 			$this.attr('title', '');
 		}
 
-		socket.emit('posts.getUpvoters', [pid], function (err, data) {
+		api.get(`/posts/${pid}/upvoters`, {}, function (err, data) {
 			if (err) {
 				return alerts.error(err);
 			}
-			if (_showTooltip[pid] && data.length) {
-				createTooltip($this, data[0]);
+			if (_showTooltip[pid] && data) {
+				createTooltip($this, data);
 			}
 		});
 	}
@@ -98,13 +114,11 @@ define('forum/topic/votes', [
 	};
 
 	Votes.showVotes = function (pid) {
-		socket.emit('posts.getVoters', { pid: pid, cid: ajaxify.data.cid }, function (err, data) {
+		if (!canSeeVotes()) {
+			return;
+		}
+		api.get(`/posts/${pid}/voters`, {}, function (err, data) {
 			if (err) {
-				if (err.message === '[[error:no-privileges]]') {
-					return;
-				}
-
-				// Only show error if it's an unexpected error.
 				return alerts.error(err);
 			}
 

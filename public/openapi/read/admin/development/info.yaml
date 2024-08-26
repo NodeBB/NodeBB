@@ -116,6 +116,8 @@ get:
                               type: number
                             socketCount:
                               type: number
+                            connectionCount:
+                              type: number
                             users:
                               type: object
                               properties:

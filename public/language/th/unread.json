@@ -1,15 +1,16 @@
 {
     "title": "ไม่ได้อ่าน",
-    "no-unread-topics": "ไม่มีกระทู้ที่ยังไม่ได้อ่านเป็น",
+    "no-unread-topics": "ไม่มีกระทู้ที่ยังไม่ได้อ่าน",
     "load-more": "โหลดเพิ่มเติม",
     "mark-as-read": "ทำเครื่องหมายว่าอ่านแล้ว",
+    "mark-as-unread": "ทำเครื่องหมายว่ายังไม่ได้อ่าน",
     "selected": "เลือก",
     "all": "ทั้งหมด",
     "all-categories": "หมวดหมู่ทั้งหมด",
-    "topics-marked-as-read.success": "Topic ถูกทำเครื่องหมายว่าอ่านแล้วเรียบร้อย",
+    "topics-marked-as-read.success": "กระทู้ทั้งหมดถูกทำเครื่องหมายว่าอ่านแล้วเรียบร้อย",
     "all-topics": "กระทู้ทั้งหมด",
     "new-topics": "ตั้งกระทู้ใหม่",
-    "watched-topics": "กระทู้ที่ดูแล้ว",
+    "watched-topics": "กระทู้ที่เฝ้าดู",
     "unreplied-topics": "กระทู้ที่ไม่ได้ตอบ",
     "multiple-categories-selected": "เลือกหลายรายการ"
 }

@@ -1,13 +1,17 @@
 {
-	"events": "อีเวนท์",
+	"events": "Events",
 	"no-events": "ไม่มีอีเวนท์",
 	"control-panel": "แผงควบคุมอีเวนท์",
-	"delete-events": "Delete Events",
-	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-per-page": "Per Page"
+	"delete-events": "ลบอีเว้นท์",
+	"confirm-delete-all-events": "คุณต้องการจะลบอีเว้นท์ที่เก็บไว้ทั้งหมดหรือไม่?",
+	"filters": "ฟิลเตอร์",
+	"filters-apply": "ใช้งานฟิลเตอร์",
+	"filter-type": "ประเภทอีเว้นท์",
+	"filter-start": "วันที่เริ่มต้น",
+	"filter-end": "วันที่สิ้นสุด",
+	"filter-user": "ฟิลเตอร์โดยผู้ใช้",
+	"filter-user.placeholder": "พิมพ์ชื่อผู้ใช้เพื่อฟิลเตอร์",
+	"filter-group": "ฟิลเตอร์โดยกลุ่ม",
+	"filter-group.placeholder": "พิมพ์ชื่อกลุ่มเพื่อฟิลเตอร์",
+	"filter-per-page": "ต่อหน้า"
 }

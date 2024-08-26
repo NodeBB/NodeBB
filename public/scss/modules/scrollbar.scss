@@ -1,0 +1,18 @@
+.ghost-scrollbar {
+	&::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	&::-webkit-scrollbar-track {
+		border-radius: 8px;
+		background-color: $gray-200;
+		border: none;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		border-radius: 8px;
+		border: 2px solid transparent;
+		background-clip: content-box;
+		background-color: $gray-500;
+	}
+}

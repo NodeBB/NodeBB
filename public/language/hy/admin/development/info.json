@@ -3,7 +3,7 @@
 	"ip": " IP % 1",
 	"nodes-responded": "%1 հանգույցներ արձագանքեցին %2ms-ի սահմաններում:",
 	"host": "host",
-	"primary": "առաջնային / գործարկվող աշխատատեղեր",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "առցանց",
@@ -19,6 +19,7 @@
 
 	"registered": "Գրանցված",
 	"sockets": "Վարդակներ",
+	"connection-count": "Connection Count",
 	"guests": "Հյուրեր",
 
 	"info": "տեղեկատվություն"

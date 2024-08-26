@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const validator = require('validator');
 
 const batch = require('../batch');
 const db = require('../database');
@@ -8,6 +9,7 @@ const notifications = require('../notifications');
 const user = require('../user');
 const io = require('../socket.io');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.setUserNotificationSetting = async (uid, roomId, value) => {
@@ -66,6 +68,13 @@ module.exports = function (Messaging) {
 		// push unread count only for private rooms
 		if (!isPublic) {
 			const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
+			unreadData.teaser = {
+				content: validator.escape(
+					String(utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)))
+				),
+				user: messageObj.fromUser,
+				timestampISO: messageObj.timestampISO,
+			};
 			Messaging.pushUnreadCount(uids, unreadData);
 		}
 

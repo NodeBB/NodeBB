@@ -331,6 +331,12 @@ UserObjectFull:
       example:
         - administrators
         - Staff
+    iconBackgrounds:
+      type: array
+      items:
+        type: string
+        description: A valid CSS colour code
+        example: '#fff'
     muted:
       type: boolean
       description: Whether or not the user has been muted.
@@ -743,9 +749,7 @@ BanMuteArray:
             example: "#f44336"
       until:
         type: number
-      untilReadable:
-        type: string
-      timestampReadable:
+      untilISO:
         type: string
       timestampISO:
         type: string

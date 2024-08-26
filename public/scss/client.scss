@@ -1,8 +1,11 @@
 // core scss files shared by all themes
 @import "flags";
+@import "chats";
 @import "global";
 @import "modals";
+@import "btn-ghost";
 @import "modules/picture-switcher";
 @import "modules/bottom-sheet";
 @import "modules/icon-picker";
 @import "modules/alerts.scss";
+@import "modules/scrollbar.scss";

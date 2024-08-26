@@ -18,7 +18,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const useragent = require('express-useragent');
 const favicon = require('serve-favicon');
-const detector = require('spider-detector');
+const detector = require('@nodebb/spider-detector');
 const helmet = require('helmet');
 
 const Benchpress = require('benchpressjs');
@@ -74,6 +74,10 @@ exports.destroy = function (callback) {
 	for (const connection of Object.values(connections)) {
 		connection.destroy();
 	}
+};
+
+exports.getConnectionCount = function () {
+	return Object.keys(connections).length;
 };
 
 exports.listen = async function () {
@@ -182,7 +186,6 @@ function setupExpressApp(app) {
 			req: apiHelpers.buildReqObject(req),
 		}, next);
 	});
-	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);

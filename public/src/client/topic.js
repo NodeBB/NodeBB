@@ -224,7 +224,7 @@ define('forum/topic', [
 				btn.find('i').removeClass('fa-copy').addClass('fa-check');
 				setTimeout(() => btn.find('i').removeClass('fa-check').addClass('fa-copy'), 2000);
 				const codeEl = btn.parent().find('code');
-				if (codeEl.attr('data-lines')) {
+				if (codeEl.attr('data-lines') && codeEl.find('.hljs-ln-code[data-line-number]').length) {
 					return codeEl.find('.hljs-ln-code[data-line-number]')
 						.map((i, e) => e.textContent).get().join('\n');
 				}
@@ -297,7 +297,7 @@ define('forum/topic', [
 			destroyed = true;
 		}
 		$(window).one('action:ajaxify.start', destroyTooltip);
-		$('[component="topic"]').on('mouseenter', '[component="post"] a, [component="topic/event"] a', async function () {
+		$('[component="topic"]').on('mouseenter', '[component="post/parent"], [component="post/content"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
 			destroyed = false;
 

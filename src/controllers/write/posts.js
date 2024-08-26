@@ -131,6 +131,16 @@ Posts.unvote = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Posts.getVoters = async (req, res) => {
+	const data = await api.posts.getVoters(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getUpvoters = async (req, res) => {
+	const data = await api.posts.getUpvoters(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res, data);
+};
+
 Posts.bookmark = async (req, res) => {
 	const data = await mock(req);
 	await api.posts.bookmark(req, data);

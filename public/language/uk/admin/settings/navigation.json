@@ -10,7 +10,7 @@
 	"id": "ID: <small>необов'язковий</small>",
 
 	"properties": "Властивості:",
-	"groups": "Groups:",
+	"show-to-groups": "Show to Groups:",
 	"open-new-window": "Відкривати у новому вікні",
 	"dropdown": "Dropdown",
 	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",

@@ -3,6 +3,7 @@
 const winston = require('winston');
 const plugins = require('.');
 const utils = require('../utils');
+const als = require('../als');
 
 const Hooks = module.exports;
 
@@ -176,7 +177,7 @@ Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
 	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
-		winston.verbose(`[plugins/fireHook] ${hook}`);
+		winston.debug(`[plugins/fireHook] ${hook}`);
 	}
 
 	if (!hookTypeToMethod[hookType]) {
@@ -185,7 +186,6 @@ Hooks.fire = async function (hook, params) {
 	}
 	let deleteCaller = false;
 	if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
-		const als = require('../als');
 		params.caller = als.getStore();
 		deleteCaller = true;
 	}
@@ -207,6 +207,38 @@ Hooks.hasListeners = function (hook) {
 	return !!(plugins.loadedHooks[hook] && plugins.loadedHooks[hook].length > 0);
 };
 
+function hookHandlerPromise(hook, hookObj, params) {
+	return new Promise((resolve, reject) => {
+		let resolved = false;
+		function _resolve(result) {
+			if (resolved) {
+				winston.warn(`[plugins] ${hook} already resolved in plugin ${hookObj.id}`);
+				return;
+			}
+			resolved = true;
+			resolve(result);
+		}
+		const returned = hookObj.method(params, (err, result) => {
+			if (err) reject(err); else _resolve(result);
+		});
+
+		if (utils.isPromise(returned)) {
+			returned.then(
+				payload => _resolve(payload),
+				err => reject(err)
+			);
+			return;
+		}
+
+		if (hook.startsWith('filter:') && returned !== undefined) {
+			_resolve(returned);
+		} else if (hook.startsWith('static:') && hookObj.method.length <= 1) {
+			// make sure it is resolved if static hook doesn't use callback
+			_resolve();
+		}
+	});
+}
+
 async function fireFilterHook(hook, hookList, params) {
 	if (!Array.isArray(hookList) || !hookList.length) {
 		return params;
@@ -223,31 +255,7 @@ async function fireFilterHook(hook, hookList, params) {
 		if (hookObj.method.constructor && hookObj.method.constructor.name === 'AsyncFunction') {
 			return await hookObj.method(params);
 		}
-		return new Promise((resolve, reject) => {
-			let resolved = false;
-			function _resolve(result) {
-				if (resolved) {
-					winston.warn(`[plugins] ${hook} already resolved in plugin ${hookObj.id}`);
-					return;
-				}
-				resolved = true;
-				resolve(result);
-			}
-			const returned = hookObj.method(params, (err, result) => {
-				if (err) reject(err); else _resolve(result);
-			});
-
-			if (utils.isPromise(returned)) {
-				returned.then(
-					payload => _resolve(payload),
-					err => reject(err)
-				);
-				return;
-			}
-			if (returned) {
-				_resolve(returned);
-			}
-		});
+		return hookHandlerPromise(hook, hookObj, params);
 	}
 
 	for (const hookObj of hookList) {
@@ -303,28 +311,7 @@ async function fireStaticHook(hook, hookList, params) {
 			return timeout(hookObj.method(params), 10000, 'timeout');
 		}
 
-		return new Promise((resolve, reject) => {
-			let resolved = false;
-			function _resolve(result) {
-				if (resolved) {
-					return;
-				}
-				resolved = true;
-				resolve(result);
-			}
-			const returned = hookObj.method(params, (err, result) => {
-				if (err) reject(err); else _resolve(result);
-			});
-
-			if (utils.isPromise(returned)) {
-				returned.then(
-					payload => _resolve(payload),
-					err => reject(err)
-				);
-				return;
-			}
-			_resolve();
-		});
+		return hookHandlerPromise(hook, hookObj, params);
 	}
 
 	for (const hookObj of hookList) {

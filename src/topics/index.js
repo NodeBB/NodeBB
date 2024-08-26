@@ -116,10 +116,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 		};
 	}
 
-	const [result, hasRead, isIgnored, bookmarks, callerSettings] = await Promise.all([
+	const [result, hasRead, followData, bookmarks, callerSettings] = await Promise.all([
 		loadTopics(),
 		Topics.hasReadTopics(tids, uid),
-		Topics.isIgnoring(tids, uid),
+		Topics.getFollowData(tids, uid),
 		Topics.getUserBookmarks(tids, uid),
 		user.getSettings(uid),
 	]);
@@ -136,11 +136,12 @@ Topics.getTopicsByTids = async function (tids, options) {
 			}
 			topic.teaser = result.teasers[i] || null;
 			topic.isOwner = topic.uid === parseInt(uid, 10);
-			topic.ignored = isIgnored[i];
-			topic.unread = parseInt(uid, 10) <= 0 || (!hasRead[i] && !isIgnored[i]);
-			topic.bookmark = sortNewToOld ?
+			topic.ignored = followData[i].ignoring;
+			topic.followed = followData[i].following;
+			topic.unread = parseInt(uid, 10) <= 0 || (!hasRead[i] && !topic.ignored);
+			topic.bookmark = bookmarks[i] && (sortNewToOld ?
 				Math.max(1, topic.postcount + 2 - bookmarks[i]) :
-				Math.min(topic.postcount, bookmarks[i] + 1);
+				Math.min(topic.postcount, bookmarks[i] + 1));
 			topic.unreplied = !topic.teaser;
 
 			topic.icons = [];

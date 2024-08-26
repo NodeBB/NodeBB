@@ -214,7 +214,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 
 		const notifObj = await notifications.create({
 			type: 'new-topic',
-			bodyShort: `[[notifications:user-posted-topic, ${postData.user.displayname}, ${title}]]`,
+			bodyShort: translator.compile('notifications:user-posted-topic', postData.user.displayname, title),
 			bodyLong: postData.content,
 			pid: postData.pid,
 			path: `/post/${postData.pid}`,

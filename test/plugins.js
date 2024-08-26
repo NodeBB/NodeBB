@@ -3,11 +3,12 @@
 const assert = require('assert');
 const path = require('path');
 const nconf = require('nconf');
-const request = require('request');
+
 const fs = require('fs');
 
 const db = require('./mocks/databasemock');
 const plugins = require('../src/plugins');
+const request = require('../src/request');
 
 describe('Plugins', () => {
 	it('should load plugin data', (done) => {
@@ -261,6 +262,18 @@ describe('Plugins', () => {
 			});
 		});
 
+		it('should error if plugin id is invalid', async () => {
+			await assert.rejects(
+				plugins.toggleActive('\t\nnodebb-plugin'),
+				{ message: '[[error:invalid-plugin-id]]' }
+			);
+
+			await assert.rejects(
+				plugins.toggleActive('notaplugin'),
+				{ message: '[[error:invalid-plugin-id]]' }
+			);
+		});
+
 		it('should upgrade plugin', function (done) {
 			this.timeout(0);
 			plugins.upgrade(pluginName, 'latest', (err, isActive) => {
@@ -290,33 +303,24 @@ describe('Plugins', () => {
 	});
 
 	describe('static assets', () => {
-		it('should 404 if resource does not exist', (done) => {
-			request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				assert(body);
-				done();
-			});
+		it('should 404 if resource does not exist', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`);
+			assert.equal(response.statusCode, 404);
+			assert(body);
 		});
 
-		it('should 404 if resource does not exist', (done) => {
+		it('should 404 if resource does not exist', async () => {
 			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`;
-			request.get(url, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				assert(body);
-				done();
-			});
+			const { response, body } = await request.get(url);
+			assert.equal(response.statusCode, 404);
+			assert(body);
 		});
 
-		it('should get resource', (done) => {
+		it('should get resource', async () => {
 			const url = `${nconf.get('url')}/assets/templates/admin/plugins/dbsearch.tpl`;
-			request.get(url, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
+			const { response, body } = await request.get(url);
+			assert.equal(response.statusCode, 200);
+			assert(body);
 		});
 	});
 
@@ -371,7 +375,6 @@ describe('Plugins', () => {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				data.forEach((pluginData) => {
-					console.log(pluginData);
 					assert(activePlugins.includes(pluginData));
 				});
 				done();

@@ -3,9 +3,8 @@
 const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
-const request = require('request');
-const requestAsync = require('request-promise-native');
 
+const request = require('../src/request');
 const db = require('./mocks/databasemock');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
@@ -68,600 +67,427 @@ describe('Admin Controllers', () => {
 
 	it('should 403 if user is not admin', async () => {
 		({ jar } = await helpers.loginUser('admin', 'barbar'));
-		const { statusCode, body } = await requestAsync(`${nconf.get('url')}/admin`, {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin`, {
 			jar: jar,
-			simple: false,
-			resolveWithFullResponse: true,
 		});
 
-		assert.equal(statusCode, 403);
+		assert.equal(response.statusCode, 403);
 		assert(body);
 	});
 
-	it('should load admin dashboard', (done) => {
-		groups.join('administrators', adminUid, (err) => {
-			assert.ifError(err);
-			const dashboards = [
-				'/admin', '/admin/dashboard/logins', '/admin/dashboard/users', '/admin/dashboard/topics', '/admin/dashboard/searches',
-			];
-			async.each(dashboards, (url, next) => {
-				request(`${nconf.get('url')}${url}`, { jar: jar }, (err, res, body) => {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200, url);
-					assert(body);
-
-					next();
-				});
-			}, done);
-		});
-	});
-
-	it('should load admin analytics', (done) => {
-		request(`${nconf.get('url')}/api/admin/analytics?units=hours`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
+	it('should load admin dashboard', async () => {
+		await groups.join('administrators', adminUid);
+		const dashboards = [
+			'/admin', '/admin/dashboard/logins', '/admin/dashboard/users', '/admin/dashboard/topics', '/admin/dashboard/searches',
+		];
+		await async.each(dashboards, async (url) => {
+			const { response, body } = await request.get(`${nconf.get('url')}${url}`, { jar: jar });
+			assert.equal(response.statusCode, 200, url);
 			assert(body);
-			assert(body.query);
-			assert(body.result);
-			done();
 		});
 	});
 
-	it('should load groups page', (done) => {
-		request(`${nconf.get('url')}/admin/manage/groups`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load admin analytics', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/analytics?units=hours`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
+		assert(body.query);
+		assert(body.result);
 	});
 
-	it('should load groups detail page', (done) => {
-		request(`${nconf.get('url')}/admin/manage/groups/administrators`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load groups page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/groups`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load global privileges page', (done) => {
-		request(`${nconf.get('url')}/admin/manage/privileges`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load groups detail page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/groups/administrators`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load admin privileges page', (done) => {
-		request(`${nconf.get('url')}/admin/manage/privileges/admin`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load global privileges page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/privileges`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load privileges page for category 1', (done) => {
-		request(`${nconf.get('url')}/admin/manage/privileges/1`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load admin privileges page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/privileges/admin`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load manage digests', (done) => {
-		request(`${nconf.get('url')}/admin/manage/digest`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load privileges page for category 1', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/privileges/1`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load manage uploads', (done) => {
-		request(`${nconf.get('url')}/admin/manage/uploads`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load manage digests', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/digest`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load general settings page', (done) => {
-		request(`${nconf.get('url')}/admin/settings`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load manage uploads', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/uploads`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load email settings page', (done) => {
-		request(`${nconf.get('url')}/admin/settings/email`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load general settings page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/settings`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load user settings page', (done) => {
-		request(`${nconf.get('url')}/admin/settings/user`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load email settings page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/settings/email`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load info page for a user', (done) => {
-		request(`${nconf.get('url')}/api/user/regular/info`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body.history);
-			assert(Array.isArray(body.history.flags));
-			assert(Array.isArray(body.history.bans));
-			assert(Array.isArray(body.sessions));
-			done();
-		});
+	it('should load user settings page', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/settings/user`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should 404 for edit/email page if user does not exist', (done) => {
-		request(`${nconf.get('url')}/api/user/doesnotexist/edit/email`, { jar: jar, json: true }, (err, res) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 404);
-			done();
-		});
+	it('should load info page for a user', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/user/regular/info`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body.history);
+		assert(Array.isArray(body.history.flags));
+		assert(Array.isArray(body.history.bans));
+		assert(Array.isArray(body.sessions));
 	});
 
-	it('should load /admin/settings/homepage', (done) => {
-		request(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body.routes);
-			done();
-		});
+	it('should 404 for edit/email page if user does not exist', async () => {
+		const { response } = await request.get(`${nconf.get('url')}/api/user/doesnotexist/edit/email`, { jar });
+		assert.equal(response.statusCode, 404);
 	});
 
-	it('should load /admin/advanced/database', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/database`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-
-			if (nconf.get('redis')) {
-				assert(body.redis);
-			} else if (nconf.get('mongo')) {
-				assert(body.mongo);
-			} else if (nconf.get('postgres')) {
-				assert(body.postgres);
-			}
-			done();
-		});
+	it('should load /admin/settings/homepage', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true });
+		assert.equal(response.statusCode, 200);
+		assert(body.routes);
 	});
 
-	it('should load /admin/extend/plugins', function (done) {
+	it('should load /admin/advanced/database', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/database`, { jar: jar, json: true });
+
+		assert.equal(response.statusCode, 200);
+
+		if (nconf.get('redis')) {
+			assert(body.redis);
+		} else if (nconf.get('mongo')) {
+			assert(body.mongo);
+		} else if (nconf.get('postgres')) {
+			assert(body.postgres);
+		}
+	});
+
+	it('should load /admin/extend/plugins', async function () {
 		this.timeout(50000);
-		request(`${nconf.get('url')}/api/admin/extend/plugins`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert(body.hasOwnProperty('installed'));
-			assert(body.hasOwnProperty('upgradeCount'));
-			assert(body.hasOwnProperty('download'));
-			assert(body.hasOwnProperty('incompatible'));
-			done();
-		});
+		const { body } = await request.get(`${nconf.get('url')}/api/admin/extend/plugins`, { jar: jar });
+
+		assert(body.hasOwnProperty('installed'));
+		assert(body.hasOwnProperty('upgradeCount'));
+		assert(body.hasOwnProperty('download'));
+		assert(body.hasOwnProperty('incompatible'));
 	});
 
-	it('should load /admin/manage/users', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/users`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.strictEqual(res.statusCode, 200);
-			assert(body);
-			assert(body.users.length > 0);
-			done();
-		});
+	it('should load /admin/manage/users', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users`, { jar: jar, json: true });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body);
+		assert(body.users.length > 0);
 	});
 
 
-	it('should load /admin/manage/users?filters=banned', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/users?filters=banned`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.strictEqual(res.statusCode, 200);
-			assert(body);
-			assert.strictEqual(body.users.length, 0);
-			done();
-		});
+	it('should load /admin/manage/users?filters=banned', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users?filters=banned`, { jar: jar, json: true });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body);
+		assert.strictEqual(body.users.length, 0);
 	});
 
-	it('should load /admin/manage/users?filters=banned&filters=verified', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/users?filters=banned&filters=verified`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.strictEqual(res.statusCode, 200);
-			assert(body);
-			assert.strictEqual(body.users.length, 0);
-			done();
-		});
+	it('should load /admin/manage/users?filters=banned&filters=verified', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users?filters=banned&filters=verified`, { jar: jar, json: true });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body);
+		assert.strictEqual(body.users.length, 0);
 	});
 
-	it('should load /admin/manage/users?query=admin', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/users?query=admin`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.strictEqual(res.statusCode, 200);
-			assert(body);
-			assert.strictEqual(body.users[0].username, 'admin');
-			done();
-		});
+	it('should load /admin/manage/users?query=admin', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users?query=admin`, { jar: jar, json: true });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body);
+		assert.strictEqual(body.users[0].username, 'admin');
 	});
 
-	it('should return empty results if query is too short', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/users?query=a`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.strictEqual(res.statusCode, 200);
-			assert(body);
-			assert.strictEqual(body.users.length, 0);
-			done();
-		});
+	it('should return empty results if query is too short', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users?query=a`, { jar: jar });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body);
+		assert.strictEqual(body.users.length, 0);
 	});
 
-	it('should load /admin/manage/registration', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/manage/registration', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should 404 if users is not privileged', (done) => {
-		request(`${nconf.get('url')}/api/registration-queue`, { json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 404);
-			assert(body);
-			done();
-		});
+	it('should 404 if users is not privileged', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/registration-queue`);
+		assert.equal(response.statusCode, 404);
+		assert(body);
 	});
 
-	it('should load /api/registration-queue', (done) => {
-		request(`${nconf.get('url')}/api/registration-queue`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /api/registration-queue', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/registration-queue`, { jar: jar, json: true });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/manage/admins-mods', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/admins-mods`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/manage/admins-mods', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/admins-mods`, { jar: jar, json: true });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
 	it('should load /admin/users/csv', (done) => {
 		const socketAdmin = require('../src/socket.io/admin');
 		socketAdmin.user.exportUsersCSV({ uid: adminUid }, {}, (err) => {
 			assert.ifError(err);
-			setTimeout(() => {
-				request(`${nconf.get('url')}/api/admin/users/csv`, {
+			setTimeout(async () => {
+				const { response, body } = await request.get(`${nconf.get('url')}/api/admin/users/csv`, {
 					jar: jar,
 					headers: {
 						referer: `${nconf.get('url')}/admin/manage/users`,
 					},
-				}, (err, res, body) => {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					assert(body);
-					done();
 				});
+				assert.equal(response.statusCode, 200);
+				assert(body);
+				done();
 			}, 2000);
 		});
 	});
 
-	it('should return 403 if no referer', (done) => {
-		request(`${nconf.get('url')}/api/admin/groups/administrators/csv`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 403);
-			assert.equal(body, '[[error:invalid-origin]]');
-			done();
-		});
+	it('should return 403 if no referer', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/groups/administrators/csv`, { jar });
+		assert.equal(response.statusCode, 403);
+		assert.equal(body, '[[error:invalid-origin]]');
 	});
 
-	it('should return 403 if referer is not /api/admin/groups/administrators/csv', (done) => {
-		request(`${nconf.get('url')}/api/admin/groups/administrators/csv`, {
+	it('should return 403 if referer is not /api/admin/groups/administrators/csv', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/groups/administrators/csv`, {
 			jar: jar,
 			headers: {
 				referer: '/topic/1/test',
 			},
-		}, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 403);
-			assert.equal(body, '[[error:invalid-origin]]');
-			done();
 		});
+		assert.equal(response.statusCode, 403);
+		assert.equal(body, '[[error:invalid-origin]]');
 	});
 
-	it('should load /api/admin/groups/administrators/csv', (done) => {
-		request(`${nconf.get('url')}/api/admin/groups/administrators/csv`, {
+	it('should load /api/admin/groups/administrators/csv', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/groups/administrators/csv`, {
 			jar: jar,
 			headers: {
 				referer: `${nconf.get('url')}/admin/manage/groups`,
 			},
-		}, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
 		});
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/advanced/hooks', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/hooks`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/advanced/hooks', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/hooks`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/advanced/cache', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/cache`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/advanced/cache', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /api/admin/advanced/cache/dump and 404 with no query param', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/cache/dump`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 404);
-			assert(body);
-			done();
-		});
+	it('should load /api/admin/advanced/cache/dump and 404 with no query param', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache/dump`, { jar });
+		assert.equal(response.statusCode, 404);
+		assert(body);
 	});
 
-	it('should load /api/admin/advanced/cache/dump', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/cache/dump?name=post`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /api/admin/advanced/cache/dump', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/cache/dump?name=post`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/advanced/errors', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/errors`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/advanced/errors', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/errors`, { jar: jar, json: true });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/advanced/errors/export', (done) => {
-		meta.errors.clear((err) => {
-			assert.ifError(err);
-			request(`${nconf.get('url')}/api/admin/advanced/errors/export`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert.strictEqual(body, '');
-				done();
-			});
-		});
+	it('should load /admin/advanced/errors/export', async () => {
+		await meta.errors.clear();
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/errors/export`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert.strictEqual(body, '');
 	});
 
-	it('should load /admin/advanced/logs', (done) => {
+	it('should load /admin/advanced/logs', async () => {
 		const fs = require('fs');
-		fs.appendFile(meta.logs.path, 'dummy log', (err) => {
-			assert.ifError(err);
-			request(`${nconf.get('url')}/api/admin/advanced/logs`, { jar: jar, json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
+		await fs.promises.appendFile(meta.logs.path, 'dummy log');
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/logs`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/settings/navigation', (done) => {
+	it('should load /admin/settings/navigation', async () => {
 		const navigation = require('../src/navigation/admin');
 		const data = require('../install/data/navigation.json');
+		await navigation.save(data);
 
-		navigation.save(data, (err) => {
-			assert.ifError(err);
-			request(`${nconf.get('url')}/api/admin/settings/navigation`, { jar: jar, json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert(body);
-				assert(body.available);
-				assert(body.enabled);
-				done();
-			});
-		});
+		const { body } = await request.get(`${nconf.get('url')}/api/admin/settings/navigation`, { jar });
+		assert(body);
+		assert(body.available);
+		assert(body.enabled);
 	});
 
-	it('should load /admin/development/info', (done) => {
-		request(`${nconf.get('url')}/api/admin/development/info`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/development/info', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/development/info`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/development/logger', (done) => {
-		request(`${nconf.get('url')}/api/admin/development/logger`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/development/logger', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/development/logger`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/advanced/events', (done) => {
-		request(`${nconf.get('url')}/api/admin/advanced/events`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/advanced/events', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/advanced/events`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/manage/categories', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/categories`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/manage/categories', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/categories`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/manage/categories/1', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/categories/1`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/manage/categories/1', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/categories/1`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
 	it('should load /admin/manage/catgories?cid=<cid>', async () => {
 		const { cid: rootCid } = await categories.create({ name: 'parent category' });
 		const { cid: childCid } = await categories.create({ name: 'child category', parentCid: rootCid });
-		const { res, body } = await helpers.request('get', `/api/admin/manage/categories?cid=${rootCid}`, {
+		const { response, body } = await helpers.request('get', `/api/admin/manage/categories?cid=${rootCid}`, {
 			jar: jar,
 			json: true,
 		});
-		assert.strictEqual(res.statusCode, 200);
+		assert.strictEqual(response.statusCode, 200);
 		assert.strictEqual(body.categoriesTree[0].cid, rootCid);
 		assert.strictEqual(body.categoriesTree[0].children[0].cid, childCid);
 		assert.strictEqual(body.breadcrumbs[0].text, '[[admin/manage/categories:top-level]]');
 		assert.strictEqual(body.breadcrumbs[1].text, 'parent category');
 	});
 
-	it('should load /admin/manage/categories/1/analytics', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/categories/1/analytics`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/manage/categories/1/analytics', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/categories/1/analytics`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/extend/rewards', (done) => {
-		request(`${nconf.get('url')}/api/admin/extend/rewards`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/extend/rewards', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/extend/rewards`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/extend/widgets', (done) => {
-		request(`${nconf.get('url')}/api/admin/extend/widgets`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/extend/widgets', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/extend/widgets`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/settings/languages', (done) => {
-		request(`${nconf.get('url')}/api/admin/settings/languages`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/settings/languages', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/settings/languages`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/settings/social', (done) => {
-		request(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert(body);
-			body = body.postSharing.map(network => network && network.id);
-			assert(body.includes('facebook'));
-			assert(body.includes('twitter'));
-			done();
-		});
+	it('should load /admin/settings/social', async () => {
+		const { body } = await request.get(`${nconf.get('url')}/api/admin/settings/general`, { jar });
+		assert(body);
+		const sharing = body.postSharing.map(network => network && network.id);
+		assert(sharing.includes('facebook'));
+		assert(sharing.includes('twitter'));
+		assert(sharing.includes('linkedin'));
+		assert(sharing.includes('whatsapp'));
+		assert(sharing.includes('telegram'));
 	});
 
-	it('should load /admin/manage/tags', (done) => {
-		request(`${nconf.get('url')}/api/admin/manage/tags`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/manage/tags', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/tags`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('/post-queue should 404 for regular user', (done) => {
-		request(`${nconf.get('url')}/api/post-queue`, { json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert(body);
-			assert.equal(res.statusCode, 404);
-			done();
-		});
+	it('/post-queue should 404 for regular user', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/post-queue`);
+		assert(body);
+		assert.equal(response.statusCode, 404);
 	});
 
-	it('should load /post-queue', (done) => {
-		request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /post-queue', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar: jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('/ip-blacklist should 404 for regular user', (done) => {
-		request(`${nconf.get('url')}/api/ip-blacklist`, { json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert(body);
-			assert.equal(res.statusCode, 404);
-			done();
-		});
+	it('/ip-blacklist should 404 for regular user', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/ip-blacklist`);
+		assert(body);
+		assert.equal(response.statusCode, 404);
 	});
 
-	it('should load /ip-blacklist', (done) => {
-		request(`${nconf.get('url')}/api/ip-blacklist`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /ip-blacklist', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/ip-blacklist`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/appearance/themes', (done) => {
-		request(`${nconf.get('url')}/api/admin/appearance/themes`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/appearance/themes', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/appearance/themes`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /admin/appearance/customise', (done) => {
-		request(`${nconf.get('url')}/api/admin/appearance/customise`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
+	it('should load /admin/appearance/customise', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/appearance/customise`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
-	it('should load /recent in maintenance mode', (done) => {
+	it('should load /recent in maintenance mode', async () => {
 		meta.config.maintenanceMode = 1;
-		request(`${nconf.get('url')}/api/recent`, { jar: jar, json: true }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			meta.config.maintenanceMode = 0;
-			done();
-		});
+		const { response, body } = await request.get(`${nconf.get('url')}/api/recent`, { jar });
+		assert.equal(response.statusCode, 200);
+		meta.config.maintenanceMode = 0;
+		assert(body);
 	});
 
 	describe('mods page', () => {
@@ -673,56 +499,46 @@ describe('Admin Controllers', () => {
 			await groups.join(`cid:${cid}:privileges:moderate`, moderatorUid);
 		});
 
-		it('should error with no privileges', (done) => {
-			request(`${nconf.get('url')}/api/flags`, { json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert.deepStrictEqual(body, {
-					status: {
-						code: 'not-authorised',
-						message: 'A valid login session was not found. Please log in and try again.',
-					},
-					response: {},
-				});
-				done();
+		it('should error with no privileges', async () => {
+			const { body } = await request.get(`${nconf.get('url')}/api/flags`);
+
+			assert.deepStrictEqual(body, {
+				status: {
+					code: 'not-authorised',
+					message: 'A valid login session was not found. Please log in and try again.',
+				},
+				response: {},
 			});
 		});
 
-		it('should load flags page data', (done) => {
-			request(`${nconf.get('url')}/api/flags`, { jar: moderatorJar, json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert(body);
-				assert(body.flags);
-				assert(body.filters);
-				assert.equal(body.filters.cid.indexOf(cid), -1);
-				done();
-			});
+		it('should load flags page data', async () => {
+			const { body } = await request.get(`${nconf.get('url')}/api/flags`, { jar: moderatorJar });
+			assert(body);
+			assert(body.flags);
+			assert(body.filters);
+			assert.equal(body.filters.cid.indexOf(cid), -1);
 		});
 
-		it('should return a 404 if flag does not exist', (done) => {
-			request(`${nconf.get('url')}/api/flags/123123123`, {
+		it('should return a 404 if flag does not exist', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/flags/123123123`, {
 				jar: moderatorJar,
-				json: true,
 				headers: {
 					Accept: 'text/html, application/json',
 				},
-			}, (err, res, body) => {
-				assert.ifError(err);
-				assert.strictEqual(res.statusCode, 404);
-				done();
 			});
+			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('should error when you attempt to flag a privileged user\'s post', async () => {
-			const { res, body } = await helpers.request('post', '/api/v3/flags', {
-				json: true,
+			const { response, body } = await helpers.request('post', '/api/v3/flags', {
 				jar: regularJar,
-				form: {
+				body: {
 					id: pid,
 					type: 'post',
 					reason: 'spam',
 				},
 			});
-			assert.strictEqual(res.statusCode, 400);
+			assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(body.status.code, 'bad-request');
 			assert.strictEqual(body.status.message, 'You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)');
 		});
@@ -730,16 +546,15 @@ describe('Admin Controllers', () => {
 		it('should error with not enough reputation to flag', async () => {
 			const oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 1000;
-			const { res, body } = await helpers.request('post', '/api/v3/flags', {
-				json: true,
+			const { response, body } = await helpers.request('post', '/api/v3/flags', {
 				jar: regularJar,
-				form: {
+				body: {
 					id: regularPid,
 					type: 'post',
 					reason: 'spam',
 				},
 			});
-			assert.strictEqual(res.statusCode, 400);
+			assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(body.status.code, 'bad-request');
 			assert.strictEqual(body.status.message, 'You need 1000 reputation to flag this post');
 
@@ -749,10 +564,9 @@ describe('Admin Controllers', () => {
 		it('should return flag details', async () => {
 			const oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 0;
-			const result = await helpers.request('post', '/api/v3/flags', {
-				json: true,
+			await helpers.request('post', '/api/v3/flags', {
 				jar: regularJar,
-				form: {
+				body: {
 					id: regularPid,
 					type: 'post',
 					reason: 'spam',
@@ -770,7 +584,6 @@ describe('Admin Controllers', () => {
 			const { flagId } = flagsResult.body.flags[0];
 
 			const { body } = await helpers.request('get', `/api/flags/${flagId}`, {
-				json: true,
 				jar: moderatorJar,
 			});
 			assert(body.reports);
@@ -779,7 +592,7 @@ describe('Admin Controllers', () => {
 		});
 	});
 
-	it('should escape special characters in config', (done) => {
+	it('should escape special characters in config', async () => {
 		const plugins = require('../src/plugins');
 		function onConfigGet(config, callback) {
 			config.someValue = '"foo"';
@@ -788,46 +601,34 @@ describe('Admin Controllers', () => {
 			callback(null, config);
 		}
 		plugins.hooks.register('somePlugin', { hook: 'filter:config.get', method: onConfigGet });
-		request(`${nconf.get('url')}/admin`, { jar: jar }, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			assert(body.includes('"someValue":"\\\\"foo\\\\""'));
-			assert(body.includes('"otherValue":"\\\'123\\\'"'));
-			assert(body.includes('"script":"<\\/script>"'));
-			request(nconf.get('url'), { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				assert(body.includes('"someValue":"\\\\"foo\\\\""'));
-				assert(body.includes('"otherValue":"\\\'123\\\'"'));
-				assert(body.includes('"script":"<\\/script>"'));
-				plugins.hooks.unregister('somePlugin', 'filter:config.get', onConfigGet);
-				done();
-			});
-		});
+		const { response, body } = await request.get(`${nconf.get('url')}/admin`, { jar });
+		assert.equal(response.statusCode, 200);
+		assert(body);
+		assert(body.includes('"someValue":"\\\\"foo\\\\""'));
+		assert(body.includes('"otherValue":"\\\'123\\\'"'));
+		assert(body.includes('"script":"<\\/script>"'));
+		const { response: res2, body: body2 } = await request.get(nconf.get('url'), { jar });
+		assert.equal(res2.statusCode, 200);
+		assert(body2);
+		assert(body2.includes('"someValue":"\\\\"foo\\\\""'));
+		assert(body2.includes('"otherValue":"\\\'123\\\'"'));
+		assert(body2.includes('"script":"<\\/script>"'));
+		plugins.hooks.unregister('somePlugin', 'filter:config.get', onConfigGet);
 	});
 
 	describe('admin page privileges', () => {
-		let userJar;
 		let uid;
 		const privileges = require('../src/privileges');
+		const requestOpts = {};
 		before(async () => {
 			uid = await user.create({ username: 'regularjoe', password: 'barbar' });
-			userJar = (await helpers.loginUser('regularjoe', 'barbar')).jar;
+			requestOpts.jar = (await helpers.loginUser('regularjoe', 'barbar')).jar;
 		});
 
 		describe('routeMap parsing', () => {
 			it('should allow normal user access to admin pages', async function () {
 				this.timeout(50000);
-				function makeRequest(url) {
-					return new Promise((resolve, reject) => {
-						request(url, { jar: userJar, json: true }, (err, res, body) => {
-							if (err) reject(err);
-							else resolve(res);
-						});
-					});
-				}
+
 				const uploadRoutes = [
 					'category/uploadpicture',
 					'uploadfavicon',
@@ -842,11 +643,11 @@ describe('Admin Controllers', () => {
 				for (const route of adminRoutes) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
-					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
+					let { response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts);
 					assert.strictEqual(res.statusCode, 403);
 
 					await privileges.admin.give([privileges.admin.routeMap[route]], uid);
-					res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
+					({ response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts));
 					assert.strictEqual(res.statusCode, 200);
 
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
@@ -855,11 +656,11 @@ describe('Admin Controllers', () => {
 				for (const route of adminRoutes) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
-					let res = await makeRequest(`${nconf.get('url')}/api/admin`);
+					let { response: res } = await await request.get(`${nconf.get('url')}/api/admin`, requestOpts);
 					assert.strictEqual(res.statusCode, 403);
 
 					await privileges.admin.give([privileges.admin.routeMap[route]], uid);
-					res = await makeRequest(`${nconf.get('url')}/api/admin`);
+					({ response: res } = await await request.get(`${nconf.get('url')}/api/admin`, requestOpts));
 					assert.strictEqual(res.statusCode, 200);
 
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
@@ -869,23 +670,14 @@ describe('Admin Controllers', () => {
 
 		describe('routePrefixMap parsing', () => {
 			it('should allow normal user access to admin pages', async () => {
-				// this.timeout(50000);
-				function makeRequest(url) {
-					return new Promise((resolve, reject) => {
-						request(url, { jar: userJar, json: true }, (err, res, body) => {
-							if (err) reject(err);
-							else resolve(res);
-						});
-					});
-				}
 				for (const route of Object.keys(privileges.admin.routePrefixMap)) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
-					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar/derp`);
+					let { response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}foobar/derp`, requestOpts);
 					assert.strictEqual(res.statusCode, 403);
 
 					await privileges.admin.give([privileges.admin.routePrefixMap[route]], uid);
-					res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar/derp`);
+					({ response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}foobar/derp`, requestOpts));
 					assert.strictEqual(res.statusCode, 404);
 
 					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);

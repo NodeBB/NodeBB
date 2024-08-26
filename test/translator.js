@@ -309,10 +309,6 @@ describe('Translator static methods', () => {
 	describe('.unescape', () => {
 		it('should unescape escaped translation patterns within text', (done) => {
 			assert.strictEqual(
-				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
-				'some nice text [[global:home]] here'
-			);
-			assert.strictEqual(
 				Translator.unescape('some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'),
 				'some nice text [[global:home]] here'
 			);

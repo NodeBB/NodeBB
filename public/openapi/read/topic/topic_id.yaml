@@ -382,6 +382,10 @@ get:
                     type: number
                   downvote:disabled:
                     type: number
+                  upvoteVisibility:
+                    type: string
+                  downvoteVisibility:
+                    type: string
                   feeds:disableRSS:
                     type: number
                   signatures:hideDuplicates:
@@ -404,10 +408,26 @@ get:
                     type: boolean
                   showPostPreviewsOnHover:
                     type: boolean
+                  sortOptionLabel:
+                    type: string
                   rssFeedUrl:
                     type: string
                   postIndex:
                     type: number
+                  author:
+                    type: object
+                    required: [username, uid]
+                    properties:
+                      username:
+                        type: string
+                      userslug:
+                        type: string
+                      uid:
+                        type: number
+                      fullname:
+                        type: string
+                      displayname:
+                        type: string
               - type: object
                 description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
                 properties:

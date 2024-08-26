@@ -2,7 +2,6 @@
 
 const db = require('../../database');
 const meta = require('../../meta');
-const user = require('../../user');
 const helpers = require('../helpers');
 
 const consentController = module.exports;
@@ -11,11 +10,10 @@ consentController.get = async function (req, res, next) {
 	if (!meta.config.gdpr_enabled) {
 		return next();
 	}
-
-	const { username, userslug } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
+	const payload = res.locals.userData;
+	const { username, userslug } = payload;
 	const consented = await db.getObjectField(`user:${res.locals.uid}`, 'gdpr_consent');
 
-	const payload = {};
 	payload.gdpr_consent = parseInt(consented, 10) === 1;
 	payload.digest = {
 		frequency: meta.config.dailyDigestFreq || 'off',

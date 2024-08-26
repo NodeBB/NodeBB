@@ -1,8 +1,9 @@
 {
     "chat.room-id": "Discussion %1",
     "chat.chatting-with": "Discuter avec",
-    "chat.placeholder": "Écrire vos message ici, glisser & déposer les images, valider sur entrée pour envoyer",
-    "chat.placeholder.mobile": "Saisir ici le message",
+    "chat.placeholder": "Type chat message here, drag & drop images",
+    "chat.placeholder.mobile": "Type chat message",
+    "chat.placeholder.message-room": "Message #%1",
     "chat.scroll-up-alert": "Aller au message le plus récent",
     "chat.usernames-and-x-others": "%1 & %2 autres",
     "chat.chat-with-usernames": "Discuter avec %1",

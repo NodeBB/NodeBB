@@ -1,6 +1,5 @@
 'use strict';
 
-const nconf = require('nconf');
 const _ = require('lodash');
 
 const db = require('../../database');
@@ -9,24 +8,13 @@ const posts = require('../../posts');
 const categories = require('../../categories');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
-const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
 const utils = require('../../utils');
 
 const profileController = module.exports;
 
 profileController.get = async function (req, res, next) {
-	const lowercaseSlug = req.params.userslug.toLowerCase();
-
-	if (req.params.userslug !== lowercaseSlug) {
-		if (res.locals.isAPI) {
-			req.params.userslug = lowercaseSlug;
-		} else {
-			return res.redirect(`${nconf.get('relative_path')}/user/${lowercaseSlug}`);
-		}
-	}
-
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+	const { userData } = res.locals;
 	if (!userData) {
 		return next();
 	}

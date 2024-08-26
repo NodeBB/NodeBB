@@ -3,7 +3,7 @@
     "no-tag-topics": "Il n'y a aucun sujet ayant ce mot-clé",
     "no-tags-found": "Aucun mot-clé trouvé",
     "tags": "Mots-clés",
-    "enter-tags-here": "Entrez les mots-clés ici. Chaque mot doit faire entre %1 et %2 caractères.",
+    "enter-tags-here": "Saisir des tags, %1 - %2 caractères.",
     "enter-tags-here-short": "Entrez des mots-clés...",
     "no-tags": "Il n'y a pas encore de mots-clés.",
     "select-tags": "Sélectionner les mots-clés",

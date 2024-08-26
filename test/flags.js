@@ -2,15 +2,13 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
-const async = require('async');
-const request = require('request-promise-native');
 const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
-
+const request = require('../src/request');
 const Flags = require('../src/flags');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
@@ -35,7 +33,7 @@ describe('Flags', () => {
 		const dummyEmailerHook = async (data) => {};
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('flags-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
@@ -70,7 +68,7 @@ describe('Flags', () => {
 	});
 
 	after(() => {
-		plugins.hooks.unregister('flags-test', 'filter:email.send');
+		plugins.hooks.unregister('flags-test', 'static:email.send');
 	});
 
 	describe('.create()', () => {
@@ -243,13 +241,11 @@ describe('Flags', () => {
 
 		it('should show user history for admins', async () => {
 			await Groups.join('administrators', moderatorUid);
-			const flagData = await request({
-				uri: `${nconf.get('url')}/api/flags/1`,
+			const { body: flagData } = await request.get(`${nconf.get('url')}/api/flags/1`, {
 				jar,
 				headers: {
 					'x-csrf-token': csrfToken,
 				},
-				json: true,
 			});
 
 			assert(flagData.history);
@@ -260,13 +256,11 @@ describe('Flags', () => {
 
 		it('should show user history for global moderators', async () => {
 			await Groups.join('Global Moderators', moderatorUid);
-			const flagData = await request({
-				uri: `${nconf.get('url')}/api/flags/1`,
+			const { body: flagData } = await request.get(`${nconf.get('url')}/api/flags/1`, {
 				jar,
 				headers: {
 					'x-csrf-token': csrfToken,
 				},
-				json: true,
 			});
 
 			assert(flagData.history);
@@ -895,9 +889,7 @@ describe('Flags', () => {
 
 		describe('.create()', () => {
 			it('should create a flag with no errors', async () => {
-				await request({
-					method: 'post',
-					uri: `${nconf.get('url')}/api/v3/flags`,
+				await request.post(`${nconf.get('url')}/api/v3/flags`, {
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -907,7 +899,6 @@ describe('Flags', () => {
 						id: pid,
 						reason: 'foobar',
 					},
-					json: true,
 				});
 
 				const exists = await Flags.exists('post', pid, 2);
@@ -921,9 +912,7 @@ describe('Flags', () => {
 					content: 'This is flaggable content',
 				});
 
-				const { response } = await request({
-					method: 'post',
-					uri: `${nconf.get('url')}/api/v3/flags`,
+				const { body } = await request.post(`${nconf.get('url')}/api/v3/flags`, {
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -933,10 +922,9 @@ describe('Flags', () => {
 						id: postData.pid,
 						reason: '"<script>alert(\'ok\');</script>',
 					},
-					json: true,
 				});
 
-				const flagData = await Flags.get(response.flagId);
+				const flagData = await Flags.get(body.response.flagId);
 				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
 			});
 
@@ -953,15 +941,9 @@ describe('Flags', () => {
 				});
 				const login = await helpers.loginUser('unprivileged', 'abcdef');
 				const jar3 = login.jar;
-				const config = await request({
-					url: `${nconf.get('url')}/api/config`,
-					json: true,
-					jar: jar3,
-				});
-				const csrfToken = config.csrf_token;
-				const { statusCode, body } = await request({
-					method: 'post',
-					uri: `${nconf.get('url')}/api/v3/flags`,
+				const csrfToken = await helpers.getCsrfToken(jar3);
+
+				const { response, body } = await request.post(`${nconf.get('url')}/api/v3/flags`, {
 					jar: jar3,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -971,11 +953,8 @@ describe('Flags', () => {
 						id: result.postData.pid,
 						reason: 'foobar',
 					},
-					json: true,
-					simple: false,
-					resolveWithFullResponse: true,
 				});
-				assert.strictEqual(statusCode, 403);
+				assert.strictEqual(response.statusCode, 403);
 
 				// Handle dev mode test
 				delete body.stack;
@@ -992,9 +971,7 @@ describe('Flags', () => {
 
 		describe('.update()', () => {
 			it('should update a flag\'s properties', async () => {
-				const { response } = await request({
-					method: 'put',
-					uri: `${nconf.get('url')}/api/v3/flags/4`,
+				const { body } = await request.put(`${nconf.get('url')}/api/v3/flags/4`, {
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -1002,10 +979,9 @@ describe('Flags', () => {
 					body: {
 						state: 'wip',
 					},
-					json: true,
 				});
 
-				const { history } = response;
+				const { history } = body.response;
 				assert(Array.isArray(history));
 				assert(history[0].fields.hasOwnProperty('state'));
 				assert.strictEqual('[[flags:state-wip]]', history[0].fields.state);
@@ -1014,14 +990,11 @@ describe('Flags', () => {
 
 		describe('.rescind()', () => {
 			it('should remove a flag\'s report', async () => {
-				const response = await request({
-					method: 'delete',
-					uri: `${nconf.get('url')}/api/v3/flags/4/report`,
+				const { response } = await request.del(`${nconf.get('url')}/api/v3/flags/4/report`, {
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					resolveWithFullResponse: true,
 				});
 
 				assert.strictEqual(response.statusCode, 200);
@@ -1030,9 +1003,7 @@ describe('Flags', () => {
 
 		describe('.appendNote()', () => {
 			it('should append a note to the flag', async () => {
-				const { response } = await request({
-					method: 'post',
-					uri: `${nconf.get('url')}/api/v3/flags/4/notes`,
+				const { body } = await request.post(`${nconf.get('url')}/api/v3/flags/4/notes`, {
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
@@ -1041,9 +1012,8 @@ describe('Flags', () => {
 						note: 'lorem ipsum dolor sit amet',
 						datetime: 1626446956652,
 					},
-					json: true,
 				});
-
+				const { response } = body;
 				assert(response.hasOwnProperty('notes'));
 				assert(Array.isArray(response.notes));
 				assert.strictEqual('lorem ipsum dolor sit amet', response.notes[0].content);
@@ -1058,16 +1028,13 @@ describe('Flags', () => {
 
 		describe('.deleteNote()', () => {
 			it('should delete a note from a flag', async () => {
-				const { response } = await request({
-					method: 'delete',
-					uri: `${nconf.get('url')}/api/v3/flags/4/notes/1626446956652`,
+				const { body } = await request.del(`${nconf.get('url')}/api/v3/flags/4/notes/1626446956652`, {
 					jar,
 					headers: {
 						'x-csrf-token': csrfToken,
 					},
-					json: true,
 				});
-
+				const { response } = body;
 				assert(Array.isArray(response.history));
 				assert(Array.isArray(response.notes));
 				assert.strictEqual(response.notes.length, 0);
@@ -1088,7 +1055,7 @@ describe('Flags', () => {
 			before(async () => {
 				uid = await User.create({ username: 'flags-access-control', password: 'abcdef' });
 				({ jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef'));
-
+				console.log('cs', csrfToken);
 				flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
 			});
 
@@ -1106,68 +1073,44 @@ describe('Flags', () => {
 				});
 
 				({ flagId } = await Flags.create('post', postData.pid, flaggerUid, 'spam'));
+				const commonOpts = {
+					jar,
+					headers: {
+						'x-csrf-token': csrf_token,
+					},
+				};
 				requests = new Set([
 					{
+						...commonOpts,
 						method: 'get',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
-						jar,
-						headers: {
-							'x-csrf-token': csrf_token,
-						},
-						json: true,
-						simple: false,
-						resolveWithFullResponse: true,
 					},
 					{
+						...commonOpts,
 						method: 'put',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
-						jar,
-						headers: {
-							'x-csrf-token': csrf_token,
-						},
 						body: {
 							state: 'wip',
 						},
-						json: true,
-						simple: false,
-						resolveWithFullResponse: true,
 					},
 					{
+						...commonOpts,
 						method: 'post',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}/notes`,
-						jar,
-						headers: {
-							'x-csrf-token': csrf_token,
-						},
 						body: {
 							note: 'test note',
 							datetime: noteTime,
 						},
-						json: true,
-						simple: false,
-						resolveWithFullResponse: true,
 					},
 					{
+						...commonOpts,
 						method: 'delete',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}/notes/${noteTime}`,
-						jar,
-						headers: {
-							'x-csrf-token': csrf_token,
-						},
-						json: true,
-						simple: false,
-						resolveWithFullResponse: true,
 					},
 					{
+						...commonOpts,
 						method: 'delete',
 						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
-						jar,
-						headers: {
-							'x-csrf-token': csrf_token,
-						},
-						json: true,
-						simple: false,
-						resolveWithFullResponse: true,
 					},
 				]);
 			});
@@ -1179,7 +1122,8 @@ describe('Flags', () => {
 					delete opts.headers;
 
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode } = await request(opts);
+					const { response } = await request[opts.method](opts.uri, opts);
+					const { statusCode } = response;
 					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
@@ -1187,7 +1131,8 @@ describe('Flags', () => {
 			it('should not allow access to privileged flag endpoints to regular users', async () => {
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode } = await request(opts);
+					const { response } = await request[opts.method](opts.uri, opts);
+					const { statusCode } = response;
 					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
@@ -1197,7 +1142,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode } = await request(opts);
+					const { response } = await request[opts.method](opts.uri, opts);
+					const { statusCode } = response;
 					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
@@ -1207,7 +1153,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode } = await request(opts);
+					const { response } = await request[opts.method](opts.uri, opts);
+					const { statusCode } = response;
 					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
@@ -1217,7 +1164,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode } = await request(opts);
+					const { response } = await request[opts.method](opts.uri, opts);
+					const { statusCode } = response;
 					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
@@ -1231,7 +1179,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode } = await request(opts);
+					const { response } = await request[opts.method](opts.uri, opts);
+					const { statusCode } = response;
 					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});

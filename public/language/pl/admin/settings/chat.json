@@ -1,15 +1,15 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "Podaj 0, aby wyłączyć to ograniczenie",
 	"chat-settings": "Ustawienia czatu",
 	"disable": "Wyłącz czat",
 	"disable-editing": "Wyłącz edycję/usuwanie wiadomości czat",
 	"disable-editing-help": "Ograniczenie to nie dotyczy administratorów i moderatorów globalnych",
-	"max-length": "Maksymalna długość wiadomości czat",
-	"max-chat-room-name-length": "Maximum length of chat room names",
+	"max-length": "Maksymalna długość wiadomości czatu",
+	"max-chat-room-name-length": "Maksymalna długość nazw pokojów czatu",
 	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
-	"delay": "Time between chat messages (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
+	"delay": "Czas pomiędzy wiadomościami czatu (ms)",
+	"notification-delay": "Opóźnienie powiadomień dla wiadomości czatu",
+	"notification-delay-help": "Kolejne wiadomości wysłane między tym czasem są szeregowane, a użytkownik jest powiadamiany raz na czas opóźnienia. Ustaw 0, aby wyłączyć opóźnienie.",
+	"restrictions.seconds-edit-after": "Liczba sekund, przez którą wiadomość czatu pozostanie edytowalna.",
+	"restrictions.seconds-delete-after": "Liczba sekund, przez którą wiadomość czatu pozostanie usuwalna."
 }

@@ -1,12 +1,12 @@
 'use strict';
 
 const prompt = require('prompt');
-const request = require('request-promise-native');
 const cproc = require('child_process');
 const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+
 
 const { paths, pluginNamePattern } = require('../constants');
 const pkgInstall = require('./package-install');
@@ -74,11 +74,11 @@ async function getCurrentVersion() {
 }
 
 async function getSuggestedModules(nbbVersion, toCheck) {
-	let body = await request({
-		method: 'GET',
-		url: `https://packages.nodebb.org/api/v1/suggest?version=${nbbVersion}&package[]=${toCheck.join('&package[]=')}`,
-		json: true,
-	});
+	const request = require('../request');
+	let { response, body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?version=${nbbVersion}&package[]=${toCheck.join('&package[]=')}`);
+	if (!response.ok) {
+		throw new Error(`Unable to get suggested module for NodeBB(${nbbVersion}) ${toCheck.join(',')}`);
+	}
 	if (!Array.isArray(body) && toCheck.length === 1) {
 		body = [body];
 	}

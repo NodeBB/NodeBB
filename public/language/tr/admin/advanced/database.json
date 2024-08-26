@@ -17,7 +17,7 @@
 	"mongo.file-size": "Dosya Boyutu",
 	"mongo.resident-memory": "Yerleşik Bellek",
 	"mongo.virtual-memory": "Sanal Bellek",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "Planlanan Bellek",
 	"mongo.bytes-in": "alınan bayt",
 	"mongo.bytes-out": "gönderilen bayt",
 	"mongo.num-requests": "İsteklerin Sayısı",

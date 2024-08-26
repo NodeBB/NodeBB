@@ -11,52 +11,64 @@
 
 
 	<div class="row px-2">
-		{{{each caches}}}
+		{{{ each caches }}}
 		<div class="col-xl-3">
 			<div class="card">
-				<div class="card-header">[[admin/advanced/cache:{@key}-cache]]</div>
-				<div class="card-body">
-					<div class="form-check form-switch mb-3" data-name="{@key}">
-						<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
+				<div class="card-header">
+					<div class="d-flex gap-2 justify-content-between align-items-center">
+						<div class="d-flex gap-1 align-items-center">
+							<div class="form-check form-switch text-sm" data-name="{@key}" style="min-height: initial;">
+								<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
+							</div>
+							[[admin/advanced/cache:{@key}-cache]]
+						</div>
+						<div class="d-flex gap-1">
+							<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-light btn-sm"><i class="fa fa-download"></i></a>
+							<a class="btn btn-sm btn-danger clear" data-name="{@key}"><i class="fa fa-trash"></i></a>
+						</div>
 					</div>
-
-					<div class="mb-3">{{{if ./length}}}{./length}{{{else}}}{./itemCount}{{{end}}} / {{{if ./max}}}{./max}{{{else}}}{./maxSize}{{{end}}}</div>
+				</div>
+				<div class="card-body">
 					<div class="progress mb-3" style="height:20px;">
 						<div class="progress-bar" role="progressbar" aria-valuenow="{./percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {./percentFull}%;">
 							[[admin/advanced/cache:percent-full, {./percentFull}]]
 						</div>
 					</div>
+
 					<div class="mb-2">
-						<label>Hits:</label> <span>{./hits}</span>
-					</div>
-					<div class="mb-2">
-						<label>Misses:</label> <span>{./misses}</span>
-					</div>
-					<div class="mb-2">
-						<label>Hit Ratio:</label> <span>{./hitRatio}</span>
-					</div>
-					<div class="mb-2">
-						<label>Hits / Sec:</label> <span>{./hitsPerSecond}</span>
+						<label>Size:</label> <span class="fw-bold">{{{if ./length}}}{./length}{{{else}}}{./itemCount}{{{end}}} / {{{if ./max}}}{./max}{{{else}}}{./maxSize}{{{end}}}</span>
 					</div>
 
-					{{{if ./ttl}}}
 					<div class="mb-2">
-						<label>TTL:</label> <span>{./ttl}</span>
+						<label>Hits:</label> <span class="fw-bold">{./hits}</span>
 					</div>
-					{{{end}}}
-					{{{if (@key == "post")}}}
+					<div class="mb-2">
+						<label>Misses:</label> <span class="fw-bold">{./misses}</span>
+					</div>
+					<div class="mb-2">
+						<label>Hit Ratio:</label> <span class="fw-bold">{./hitRatio}</span>
+					</div>
+					<div class="mb-2">
+						<label>Hits / Sec:</label> <span class="fw-bold">{./hitsPerSecond}</span>
+					</div>
+
+					{{{ if ./ttl }}}
+					<div class="mb-2">
+						<label>TTL:</label> <span class="fw-bold">{./ttl}</span>
+					</div>
+					{{{ end }}}
+					{{{ if (@key == "post") }}}
 					<hr/>
 					<div class="mb-3">
 						<label for="postCacheSize">[[admin/advanced/cache:post-cache-size]]</label>
 						<input id="postCacheSize" type="text" class="form-control" value="" data-field="postCacheSize">
 					</div>
-					{{{end}}}
-					<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-light btn-sm"><i class="fa fa-download"></i></a>
-					<a class="btn btn-sm btn-danger clear" data-name="{@key}"><i class="fa fa-trash"></i></a>
+					{{{ end }}}
+
 				</div>
 			</div>
 		</div>
-		{{{end}}}
+		{{{ end }}}
 	</div>
 </div>
 

@@ -22,31 +22,31 @@ mongoModule.questions = [
 	{
 		name: 'mongo:uri',
 		description: 'MongoDB connection URI: (leave blank if you wish to specify host, port, username/password and database individually)\nFormat: mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]',
-		default: nconf.get('mongo:uri') || '',
+		default: nconf.get('mongo:uri') || nconf.get('defaults:mongo:uri') || '',
 		hideOnWebInstall: true,
 	},
 	{
 		name: 'mongo:host',
 		description: 'Host IP or address of your MongoDB instance',
-		default: nconf.get('mongo:host') || '127.0.0.1',
+		default: nconf.get('mongo:host') || nconf.get('defaults:mongo:host') || '127.0.0.1',
 		ask: isUriNotSpecified,
 	},
 	{
 		name: 'mongo:port',
 		description: 'Host port of your MongoDB instance',
-		default: nconf.get('mongo:port') || 27017,
+		default: nconf.get('mongo:port') || nconf.get('defaults:mongo:port') || 27017,
 		ask: isUriNotSpecified,
 	},
 	{
 		name: 'mongo:username',
 		description: 'MongoDB username',
-		default: nconf.get('mongo:username') || '',
+		default: nconf.get('mongo:username') || nconf.get('defaults:mongo:username') || '',
 		ask: isUriNotSpecified,
 	},
 	{
 		name: 'mongo:password',
 		description: 'Password of your MongoDB database',
-		default: nconf.get('mongo:password') || '',
+		default: nconf.get('mongo:password') || nconf.get('defaults:mongo:password') || '',
 		hidden: true,
 		ask: isUriNotSpecified,
 		before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; },
@@ -54,7 +54,7 @@ mongoModule.questions = [
 	{
 		name: 'mongo:database',
 		description: 'MongoDB database name',
-		default: nconf.get('mongo:database') || 'nodebb',
+		default: nconf.get('mongo:database') || nconf.get('defaults:mongo:database') || 'nodebb',
 		ask: isUriNotSpecified,
 	},
 ];
@@ -137,11 +137,11 @@ mongoModule.info = async function (db) {
 	listCollections = listCollections.map(collectionInfo => ({
 		name: collectionInfo.ns,
 		count: collectionInfo.count,
-		size: collectionInfo.size,
-		avgObjSize: collectionInfo.avgObjSize,
-		storageSize: collectionInfo.storageSize,
-		totalIndexSize: collectionInfo.totalIndexSize,
-		indexSizes: collectionInfo.indexSizes,
+		size: collectionInfo.storageStats && collectionInfo.storageStats.size,
+		avgObjSize: collectionInfo.storageStats && collectionInfo.storageStats.avgObjSize,
+		storageSize: collectionInfo.storageStats && collectionInfo.storageStats.storageSize,
+		totalIndexSize: collectionInfo.storageStats && collectionInfo.storageStats.totalIndexSize,
+		indexSizes: collectionInfo.storageStats && collectionInfo.storageStats.indexSizes,
 	}));
 
 	stats.mem = serverStatus.mem || { resident: 0, virtual: 0 };
@@ -169,11 +169,14 @@ mongoModule.info = async function (db) {
 
 async function getCollectionStats(db) {
 	const items = await db.listCollections().toArray();
-	return await Promise.all(
-		items.map(collection => db.collection(collection.name).aggregate([
-			{ $collStats: { latencyStats: {}, storageStats: {}, count: {} } },
-		]))
+	const cols = await Promise.all(
+		items.map(
+			collection => db.collection(collection.name).aggregate([
+				{ $collStats: { latencyStats: {}, storageStats: {}, count: {} } },
+			]).toArray()
+		)
 	);
+	return cols.map(col => col[0]);
 }
 
 mongoModule.close = async function () {

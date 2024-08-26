@@ -5,11 +5,13 @@ const nconf = require('nconf');
 const plugins = require('../../plugins');
 const events = require('../../events');
 const db = require('../../database');
+const postsCache = require('../../posts/cache');
+const { pluginNamePattern } = require('../../constants');
 
 const Plugins = module.exports;
 
 Plugins.toggleActive = async function (socket, plugin_id) {
-	require('../../posts/cache').reset();
+	postsCache.reset();
 	const data = await plugins.toggleActive(plugin_id);
 	await events.log({
 		type: `plugin-${data.active ? 'activate' : 'deactivate'}`,
@@ -20,7 +22,7 @@ Plugins.toggleActive = async function (socket, plugin_id) {
 };
 
 Plugins.toggleInstall = async function (socket, data) {
-	require('../../posts/cache').reset();
+	postsCache.reset();
 	await plugins.checkWhitelist(data.id, data.version);
 	const pluginData = await plugins.toggleInstall(data.id, data.version);
 	await events.log({
@@ -41,7 +43,14 @@ Plugins.orderActivePlugins = async function (socket, data) {
 		throw new Error('[[error:plugins-set-in-configuration]]');
 	}
 	data = data.filter(plugin => plugin && plugin.name);
-	await Promise.all(data.map(plugin => db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name)));
+
+	data.forEach((plugin) => {
+		if (!pluginNamePattern.test(plugin.name)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
+	});
+
+	await db.sortedSetAdd('plugins:active', data.map(p => p.order || 0), data.map(p => p.name));
 };
 
 Plugins.upgrade = async function (socket, data) {

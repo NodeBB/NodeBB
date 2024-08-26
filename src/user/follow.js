@@ -21,31 +21,37 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) === parseInt(theiruid, 10)) {
 			throw new Error('[[error:you-cant-follow-yourself]]');
 		}
-		const exists = await User.exists(theiruid);
+		const [exists, isFollowing] = await Promise.all([
+			User.exists(theiruid),
+			User.isFollowing(uid, theiruid),
+		]);
 		if (!exists) {
 			throw new Error('[[error:no-user]]');
 		}
-		const isFollowing = await User.isFollowing(uid, theiruid);
+
+		await plugins.hooks.fire('filter:user.toggleFollow', {
+			type,
+			uid,
+			theiruid,
+			isFollowing,
+		});
+
 		if (type === 'follow') {
 			if (isFollowing) {
 				throw new Error('[[error:already-following]]');
 			}
 			const now = Date.now();
-			await Promise.all([
-				db.sortedSetAddBulk([
-					[`following:${uid}`, now, theiruid],
-					[`followers:${theiruid}`, now, uid],
-				]),
+			await db.sortedSetAddBulk([
+				[`following:${uid}`, now, theiruid],
+				[`followers:${theiruid}`, now, uid],
 			]);
 		} else {
 			if (!isFollowing) {
 				throw new Error('[[error:not-following]]');
 			}
-			await Promise.all([
-				db.sortedSetRemoveBulk([
-					[`following:${uid}`, theiruid],
-					[`followers:${theiruid}`, uid],
-				]),
+			await db.sortedSetRemoveBulk([
+				[`following:${uid}`, theiruid],
+				[`followers:${theiruid}`, uid],
 			]);
 		}
 

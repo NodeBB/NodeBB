@@ -1,6 +1,6 @@
 {
 	"state": "Փուլ",
-	"report": "Report",
+	"report": "Հաշվետվություն",
 	"reports": "Զեկույցներ",
 	"first-reported": "Առաջին զեկույցը",
 	"no-flags": "Դրոշներ չեն գտնվել:",
@@ -9,8 +9,8 @@
 	"update": "Թարմացում ",
 	"updated": "Updated",
 	"resolved": "Լուծվել է",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Ավելացված է",
+	"report-rescinded": "Չեղարկված է",
 	"target-purged": "Բովանդակությունը, որին անդրադարձել է այս դրոշը, մաքրվել է և այլևս հասանելի չէ:",
 	"target-aboutme-empty": "Այս օգտատերը չունի &quot;About Me&quot; set.",
 
@@ -90,6 +90,6 @@
 	"bulk-actions": "Զանգվածային գործողություններ",
 	"bulk-resolve": "Լուծել դրոշակ(ներ)ը",
 	"bulk-success": "%1 դրոշները թարմացվել են",
-	"flagged-timeago-readable": "Նշված (% 2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Ստացել է %1 դեմ ձայն:"
 }

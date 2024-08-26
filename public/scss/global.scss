@@ -20,3 +20,20 @@ html[data-dir="rtl"] {
 	}
 }
 /*rtl:end:ignore*/
+
+[component="post/content"], [component="chat/message/body"], [component="composer"] .preview {
+	h1 { font-size: calc(1.15rem + 1vw); }
+	h2 { font-size: calc(1.1rem + 0.8vw); }
+	h3 { font-size: calc(1.075rem + 0.6vw); }
+	h4 { font-size: calc(1.05rem + 0.3vw); }
+	h5 { font-size: 1.125rem; }
+	h6 { font-size: 1rem; }
+	@include media-breakpoint-up(xl) {
+		h1 { font-size: 1.75rem; }
+		h2 { font-size: 1.5rem; }
+		h3 { font-size: 1.375rem; }
+		h4 { font-size: 1.250rem; }
+		h5 { font-size: 1.125rem; }
+		h6 { font-size: 1rem; }
+	}
+}

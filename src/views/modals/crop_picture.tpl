@@ -23,7 +23,7 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary flip" data-option="-1" data-method="scaleX"><i class="fa fa-arrows-h"></i></button>
-					<button class="btn btn-primary flip" data-option="1" data-method="scaleY"><i class="fa fa-arrows-v"></i></button>
+					<button class="btn btn-primary flip" data-option="-1" data-method="scaleY"><i class="fa fa-arrows-v"></i></button>
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary reset"><i class="fa fa-refresh"></i></button>

@@ -79,14 +79,14 @@
 	"follow-replied-topics": "Հետևեք այն թեմաներին, որոնց պատասխանում եք",
 	"default-notification-settings": "Հիմնական ծանուցման կարգավորումներ",
 	"categoryWatchState": "Հիմնական կատեգորիայի դիտման վիճակը",
-	"categoryWatchState.tracking": "Tracking",
+	"categoryWatchState.tracking": "Հետևել",
 	"categoryWatchState.notwatching": "Չեն դիտում ",
 	"categoryWatchState.ignoring": "Անտեսել ",
-	"restrictions-new": "New User Restrictions",
-	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
-	"restrictions.seconds-between-new": "Seconds between posts for new users",
-	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
-	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
-	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions-new": "Նոր Օգտատիրոջ Սահմանափակումներ\n ",
+	"restrictions.rep-threshold": "Վարկանիշի շեմը՝ մինչև այս սահմանափակումների վերացումը\n ",
+	"restrictions.seconds-between-new": "Նոր օգտատերերի համար գրառումների միջև ընկած վայրկյաններ\n ",
+	"restrictions.seconds-before-new": "Վայրկյաններ առաջ, երբ նոր օգտատերը կարող է կատարել իր առաջին գրառումը",
+	"restrictions.seconds-edit-after-new": "Գրառման վայրկյանների քանակը մնում է խմբագրելի (անջատելու համար դնել 0)",
+	"restrictions.milliseconds-between-messages": "Նոր օգտատերերի համար հաղորդագրությունների միջև ընկած ժամանակը (մվ)",
+	"restrictions.groups-exempt-from-new-user-restrictions": "Ընտրեք խմբեր, որոնք պետք է ազատվեն նոր օգտատերերի սահմանափակումնեից"
 }

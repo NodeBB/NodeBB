@@ -15,7 +15,7 @@ function setupWinston() {
 	}
 
 	const formats = [];
-	if (nconf.get('log-colorize') !== 'false') {
+	if (nconf.get('log-colorize') !== 'false' && nconf.get('log-colorize') !== false) {
 		formats.push(winston.format.colorize());
 	}
 

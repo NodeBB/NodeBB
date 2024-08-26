@@ -183,7 +183,10 @@ define('navigator', [
 	async function updateThumbTimestampToIndex(thumb, index) {
 		const el = thumb.find('.thumb-timestamp');
 		if (el.length) {
-			const timestamp = await getPostTimestampByIndex(index);
+			const postAtIndex = ajaxify.data.posts.find(
+				p => parseInt(p.index, 10) === Math.max(0, parseInt(index, 10) - 1)
+			);
+			const timestamp = postAtIndex ? postAtIndex.timestamp : await getPostTimestampByIndex(index);
 			el.attr('title', utils.toISOString(timestamp)).timeago();
 		}
 	}
@@ -353,7 +356,8 @@ define('navigator', [
 	}
 
 	async function updateUnreadIndicator(index) {
-		if (!paginationBlockUnreadEl.length || ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
+		const { bookmarkThreshold } = ajaxify.data;
+		if (!paginationBlockUnreadEl.length || ajaxify.data.postcount <= bookmarkThreshold || !bookmarkThreshold) {
 			return;
 		}
 		const currentBookmark = ajaxify.data.bookmark || storage.getItem('topic:' + ajaxify.data.tid + ':bookmark');
@@ -371,13 +375,23 @@ define('navigator', [
 		const anchorEl = unreadEl.querySelector('.meta a');
 		remaining = Math.min(remaining, ajaxify.data.postcount - index);
 
+		function toggleAnchor(text) {
+			anchorEl.innerText = text;
+			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
+			if (text) {
+				anchorEl.removeAttribute('tabindex');
+			} else {
+				anchorEl.setAttribute('tabindex', -1);
+			}
+		}
+
 		if (remaining > 0 && (trackHeight - thumbBottom) >= thumbHeight) {
 			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
 			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
-			anchorEl.innerText = text;
+			toggleAnchor(text);
 		} else {
 			anchorEl.href = ajaxify.data.url;
-			anchorEl.innerText = '';
+			toggleAnchor('');
 		}
 	}
 
@@ -439,7 +453,6 @@ define('navigator', [
 		}
 		count = value;
 		navigator.updateTextAndProgressBar();
-		setThumbToIndex(index);
 		toggle(count > 0);
 	};
 
@@ -458,11 +471,9 @@ define('navigator', [
 	};
 
 	function toggle(flag) {
-		const path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
-		if (flag && (!path.startsWith('topic') && !path.startsWith('category'))) {
+		if (flag && (!ajaxify.data.template.topic && !ajaxify.data.template.category)) {
 			return;
 		}
-
 		paginationBlockEl.toggleClass('ready', flag);
 		paginationBlockEl.toggleClass('noreplies', count <= 1);
 	}

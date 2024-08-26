@@ -9,6 +9,7 @@ const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
 const Groups = require('../src/groups');
 const User = require('../src/user');
+const plugins = require('../src/plugins');
 const utils = require('../src/utils');
 const socketGroups = require('../src/socket.io/groups');
 const apiGroups = require('../src/api/groups');
@@ -20,6 +21,12 @@ describe('Groups', () => {
 	let adminUid;
 	let testUid;
 	before(async () => {
+		// Attach an emailer hook so related requests do not error
+		plugins.hooks.register('emailer-test', {
+			hook: 'static:email.send',
+			method: dummyEmailerHook,
+		});
+
 		const navData = require('../install/data/navigation.json');
 		await navigation.save(navData);
 
@@ -74,6 +81,14 @@ describe('Groups', () => {
 			password: '123456',
 		});
 		await Groups.join('administrators', adminUid);
+	});
+
+	async function dummyEmailerHook(data) {
+		// pretend to handle sending emails
+	}
+
+	after(async () => {
+		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
 	describe('.list()', () => {
@@ -167,16 +182,13 @@ describe('Groups', () => {
 			}
 			await createAndJoinGroup('newuser', 'newuser@b.com');
 			await createAndJoinGroup('bob', 'bob@b.com');
-			const data = await socketGroups.searchMembers({ uid: adminUid }, { groupName: 'Test', query: '' });
-			assert.equal(data.users.length, 3);
+			const { users } = await apiGroups.listMembers({ uid: adminUid }, { slug: 'test', query: '' });
+			assert.equal(users.length, 3);
 		});
 
-		it('should search group members', (done) => {
-			socketGroups.searchMembers({ uid: adminUid }, { groupName: 'Test', query: 'test' }, (err, data) => {
-				assert.ifError(err);
-				assert.strictEqual('testuser', data.users[0].username);
-				done();
-			});
+		it('should search group members', async () => {
+			const { users } = await apiGroups.listMembers({ uid: adminUid }, { slug: 'test', query: 'test' });
+			assert.strictEqual('testuser', users[0].username);
 		});
 
 		it('should not return hidden groups', async () => {
@@ -759,7 +771,7 @@ describe('Groups', () => {
 		});
 	});
 
-	describe('socket methods', () => {
+	describe('socket/api methods', () => {
 		it('should error if data is null', (done) => {
 			socketGroups.before({ uid: 0 }, 'groups.join', null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -900,6 +912,19 @@ describe('Groups', () => {
 
 			const isInvited = await Groups.isInvited(uid, 'PrivateCanJoin');
 			assert(!isInvited);
+		});
+
+		it('should fail to rescind last owner', async () => {
+			const uid = await User.create({ username: 'lastgroupowner' });
+			await Groups.create({
+				name: 'last owner',
+				description: 'Foobar!',
+				ownerUid: uid,
+			});
+			await assert.rejects(
+				apiGroups.rescind({ uid: adminUid }, { slug: 'last-owner', uid: uid }),
+				{ message: '[[error:group-needs-owner]]' },
+			);
 		});
 
 		it('should error if user is not invited', async () => {
@@ -1050,34 +1075,25 @@ describe('Groups', () => {
 			}
 		});
 
-		it('should fail to load more groups with invalid data', (done) => {
-			socketGroups.loadMore({ uid: adminUid }, {}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should load initial set of groups when passed no arguments', async () => {
+			const { groups } = await apiGroups.list({ uid: adminUid }, {});
+			assert(Array.isArray(groups));
 		});
 
-		it('should load more groups', (done) => {
-			socketGroups.loadMore({ uid: adminUid }, { after: 0, sort: 'count' }, (err, data) => {
-				assert.ifError(err);
-				assert(Array.isArray(data.groups));
-				done();
-			});
+		it('should load more groups', async () => {
+			const { groups } = await apiGroups.list({ uid: adminUid }, { after: 0, sort: 'count' });
+			assert(Array.isArray(groups));
 		});
 
-		it('should fail to load more members with invalid data', (done) => {
-			socketGroups.loadMoreMembers({ uid: adminUid }, {}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should load initial set of group members when passed no arguments', async () => {
+			const { users } = await apiGroups.listMembers({ uid: adminUid }, {});
+			assert(users);
+			assert(Array.isArray(users));
 		});
 
-		it('should load more members', (done) => {
-			socketGroups.loadMoreMembers({ uid: adminUid }, { after: 0, groupName: 'PrivateCanJoin' }, (err, data) => {
-				assert.ifError(err);
-				assert(Array.isArray(data.users));
-				done();
-			});
+		it('should load more members', async () => {
+			const { users } = await apiGroups.listMembers({ uid: adminUid }, { after: 0, groupName: 'PrivateCanJoin' });
+			assert(Array.isArray(users));
 		});
 	});
 
@@ -1166,8 +1182,17 @@ describe('Groups', () => {
 			);
 		});
 
-		it('should remove user from group', async () => {
+		it('should remove user from group if caller is admin', async () => {
 			await apiGroups.leave({ uid: adminUid }, { uid: testUid, slug: 'newgroup' });
+			const isMember = await Groups.isMember(testUid, 'newgroup');
+			assert(!isMember);
+		});
+
+		it('should remove user from group if caller is a global moderator', async () => {
+			const globalModUid = await User.getUidByUsername('glomod');
+			await apiGroups.join({ uid: adminUid }, { uid: testUid, slug: 'newgroup' });
+
+			await apiGroups.leave({ uid: globalModUid }, { uid: testUid, slug: 'newgroup' });
 			const isMember = await Groups.isMember(testUid, 'newgroup');
 			assert(!isMember);
 		});

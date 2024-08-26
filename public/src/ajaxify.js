@@ -25,7 +25,7 @@ ajaxify.widgets = { render: render };
 	}
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
-		if (!socket.connected) {
+		if (!socket.connected && parseInt(app.user.uid, 10) >= 0) {
 			app.reconnect();
 
 			if (ajaxify.reconnectAction) {
@@ -150,7 +150,7 @@ ajaxify.widgets = { render: render };
 
 		if (data) {
 			let status = parseInt(data.status, 10);
-			if ([400, 403, 404, 500, 502, 504].includes(status)) {
+			if ([400, 403, 404, 500, 502, 503].includes(status)) {
 				if (status === 502 && retry) {
 					retry = false;
 					ajaxifyTimer = undefined;

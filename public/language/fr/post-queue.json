@@ -38,5 +38,6 @@
 	"remove-selected": "Supprimer la sélection",
 	"remove-selected-confirm": "Voulez-vous supprimer %1 messages sélectionnés ?",
 	"bulk-accept-success": "%1 messages acceptés",
-	"bulk-reject-success": "%1 messages rejetés"
+	"bulk-reject-success": "%1 messages rejetés",
+	"links-in-this-post": "Links in this post"
 }

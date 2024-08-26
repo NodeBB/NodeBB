@@ -32,11 +32,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	await parseAboutMe(results.userData);
 
 	let { userData } = results;
-	const { userSettings } = results;
-	const { isAdmin } = results;
-	const { isGlobalModerator } = results;
-	const { isModerator } = results;
-	const { canViewInfo } = results;
+	const { userSettings, isAdmin, isGlobalModerator, isModerator, canViewInfo } = results;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 	if (meta.config['reputation:disabled']) {
@@ -84,6 +80,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.isFollowing = results.isFollowing;
 	userData.canChat = results.canChat;
 	userData.hasPrivateChat = results.hasPrivateChat;
+	userData.iconBackgrounds = results.iconBackgrounds;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
 	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
@@ -142,12 +139,18 @@ function escape(value) {
 }
 
 async function getAllData(uid, callerUID) {
+	// loading these before caches them, so the big promiseParallel doesn't make extra db calls
+	const [[isTargetAdmin, isCallerAdmin], isGlobalModerator] = await Promise.all([
+		user.isAdministrator([uid, callerUID]),
+		user.isGlobalModerator(callerUID),
+	]);
+
 	return await utils.promiseParallel({
 		userData: user.getUserData(uid),
-		isTargetAdmin: user.isAdministrator(uid),
+		isTargetAdmin: isTargetAdmin,
 		userSettings: user.getSettings(uid),
-		isAdmin: user.isAdministrator(callerUID),
-		isGlobalModerator: user.isGlobalModerator(callerUID),
+		isAdmin: isCallerAdmin,
+		isGlobalModerator: isGlobalModerator,
 		isModerator: user.isModeratorOfAnyCategory(callerUID),
 		isFollowing: user.isFollowing(callerUID, uid),
 		ips: user.getIPs(uid, 4),
@@ -160,6 +163,7 @@ async function getAllData(uid, callerUID) {
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
 		canChat: canChat(callerUID, uid),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),
+		iconBackgrounds: user.getIconBackgrounds(),
 	});
 }
 
@@ -180,8 +184,8 @@ async function getCounts(userData, callerUID) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
-		best: Promise.all(cids.map(async c => db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, 1, '+inf'))),
-		controversial: Promise.all(cids.map(async c => db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, '-inf', -1))),
+		best: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), 1, '+inf'),
+		controversial: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), '-inf', -1),
 		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
 	};
 	if (userData.isAdmin || userData.isSelf) {
@@ -196,8 +200,6 @@ async function getCounts(userData, callerUID) {
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}
 	const counts = await utils.promiseParallel(promises);
-	counts.best = counts.best.reduce((sum, count) => sum + count, 0);
-	counts.controversial = counts.controversial.reduce((sum, count) => sum + count, 0);
 	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
 	counts.groups = userData.groups.length;
 	counts.following = userData.followingCount;

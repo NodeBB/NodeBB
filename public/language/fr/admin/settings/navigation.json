@@ -10,7 +10,7 @@
 	"id": "ID : <small>optionnel</small>",
 
 	"properties": "Propriétés :",
-	"groups": "Groupes :",
+	"show-to-groups": "Show to Groups:",
 	"open-new-window": "Ouvrir dans une nouvelle fenêtre",
 	"dropdown": "Menu déroulant",
 	"dropdown-placeholder": "Placer vos éléments de menu déroulant ci-dessous, par exemple : <br/>https://myforum.com",

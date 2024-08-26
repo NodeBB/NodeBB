@@ -1,8 +1,9 @@
 {
     "chat.room-id": "Соба %1",
     "chat.chatting-with": "Ћаскај са",
-    "chat.placeholder": "Куцајте поруку ћаскања овде, превуците и отпустите слике, притисните enter за слање",
-    "chat.placeholder.mobile": "Куцајте поруку овде",
+    "chat.placeholder": "Type chat message here, drag & drop images",
+    "chat.placeholder.mobile": "Type chat message",
+    "chat.placeholder.message-room": "Message #%1",
     "chat.scroll-up-alert": "Идите на најновију поруку",
     "chat.usernames-and-x-others": "%1 & %2 осталих",
     "chat.chat-with-usernames": "Ћаскај са %1",

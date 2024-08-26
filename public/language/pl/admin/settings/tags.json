@@ -1,13 +1,13 @@
 {
     "tag": "Ustawienia tagów",
     "link-to-manage": "Zarządzaj tagami",
-    "system-tags": "System tagów",
+    "system-tags": "Systemowe tagi",
     "system-tags-help": "Tylko uprzywilejowani użytkownicy będą mogli używać tych tagów.",
-    "tags-per-topic": "Tags per topic",
+    "tags-per-topic": "Tagów na jeden temat",
     "min-per-topic": "Minimalna liczba tagów na temat",
     "max-per-topic": "Maksymalna liczba tagów na temat",
     "min-length": "Minimalna długość tagu",
     "max-length": "Maksymalna długość tagu",
     "related-topics": "Powiązane tematy",
-    "max-related-topics": "Maksymalna liczba powiązanych tematów do wyświetlenia (jeśli możliwe w ramach tematu)"
+    "max-related-topics": "Maksymalna liczba powiązanych tematów do wyświetlenia (jeśli wybrany styl na to pozwala)"
 }

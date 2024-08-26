@@ -9,7 +9,7 @@ const groupsController = module.exports;
 groupsController.get = async function (req, res) {
 	const { username, userslug } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
 
-	const payload = {};
+	const payload = res.locals.userData;
 
 	let groupsData = await groups.getUserGroups([res.locals.uid]);
 	groupsData = groupsData[0];

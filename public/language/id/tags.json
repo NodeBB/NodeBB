@@ -3,7 +3,7 @@
     "no-tag-topics": "Tidak ada topik dengan tag ini.",
     "no-tags-found": "No tags found",
     "tags": "Tag",
-    "enter-tags-here": "Enter tags here, between %1 and %2 characters each.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Masukkan tag...",
     "no-tags": "Belum ada tag.",
     "select-tags": "Select Tags",

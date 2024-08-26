@@ -34,6 +34,9 @@ groupsController.list = async function (req, res) {
 groupsController.get = async function (req, res, next) {
 	const slug = slugify(req.params.name);
 	const groupName = await groups.getGroupNameByGroupSlug(slug);
+	if (!groupName) {
+		return next();
+	}
 	const [groupNames, group] = await Promise.all([
 		getGroupNames(),
 		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
@@ -42,7 +45,6 @@ groupsController.get = async function (req, res, next) {
 	if (!group || groupName === groups.BANNED_USERS) {
 		return next();
 	}
-	group.isOwner = true;
 
 	const groupNameData = groupNames.map(name => ({
 		encodedName: encodeURIComponent(name),
@@ -60,14 +62,13 @@ groupsController.get = async function (req, res, next) {
 };
 
 async function getGroupNames() {
-	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
+	const groupNames = Object.values(await db.getObject('groupslug:groupname'));
 	return groupNames.filter(name => (
 		name !== 'registered-users' &&
 		name !== 'verified-users' &&
 		name !== 'unverified-users' &&
-		name !== groups.BANNED_USERS &&
-		!groups.isPrivilegeGroup(name)
-	));
+		name !== groups.BANNED_USERS
+	)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 }
 
 groupsController.getCSV = async function (req, res) {
