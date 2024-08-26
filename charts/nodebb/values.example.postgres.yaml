@@ -4,7 +4,7 @@ image:
   tag: "patch-helm-chart-develop"
 ingress:
   enabled: true
-  ingressClassName: nginx
+  className: nginx
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 128m
     nginx.ingress.kubernetes.io/affinity: "cookie"
