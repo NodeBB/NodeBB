@@ -123,7 +123,7 @@
         "ioredis": "5.4.1",
         "rimraf": "5.0.10",
         "rss": "1.2.2",
-        "rtlcss": "4.2.0",
+        "rtlcss": "4.3.0",
         "sanitize-html": "2.13.0",
         "sass": "1.77.8",
         "semver": "7.6.3",
