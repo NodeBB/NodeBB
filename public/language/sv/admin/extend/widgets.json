@@ -26,10 +26,10 @@
 	"container": "Container",
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
 	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
+	"hide-from-groups": "Dölj från grupper",
 	"start-date": "Start date",
 	"end-date": "End date",
 	"hide-on-mobile": "Hide on mobile",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-drafts": "Dölj utkast",
+	"show-drafts": "Visa utkast"
 }
