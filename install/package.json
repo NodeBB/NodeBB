@@ -35,7 +35,7 @@
         "@isaacs/ttlcache": "1.4.1",
         "@nodebb/spider-detector": "2.0.3",
         "@popperjs/core": "2.11.8",
-        "ace-builds": "1.36.0",
+        "ace-builds": "1.36.1",
         "archiver": "7.0.1",
         "async": "3.2.6",
         "autoprefixer": "10.4.20",
