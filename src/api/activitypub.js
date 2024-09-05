@@ -144,10 +144,12 @@ async function buildRecipients(object, { pid, uid }) {
 	};
 }
 
-activitypubApi.create.note = enabledCheck(async (caller, { pid }) => {
-	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
+activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	if (!post) {
-		return;
+		post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
+		if (!post) {
+			return;
+		}
 	}
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);

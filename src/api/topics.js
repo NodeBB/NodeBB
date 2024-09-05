@@ -107,7 +107,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	const postData = await topics.reply(payload); // postData seems to be a subset of postObj, refactor?
-	const postObj = await posts.getPostSummaryByPids([postData.pid], caller.uid, {});
+	const postObj = await posts.getPostSummaryByPids([postData.pid], caller.uid, {}); // standardized API response
 
 	const result = {
 		posts: [postData],
@@ -123,7 +123,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	activitypubApi.create.note(caller, { pid: postData.pid });
+	activitypubApi.create.note(caller, { post: postObj[0] });
 
 	return postObj[0];
 };
