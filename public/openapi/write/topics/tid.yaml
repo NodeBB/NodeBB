@@ -61,7 +61,12 @@ post:
               status:
                 $ref: ../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../components/schemas/PostObject.yaml#/PostObject
+                allOf:
+                  - $ref: ../../components/schemas/PostObject.yaml#/PostObject
+                  - type: object
+                    properties:
+                      index:
+                        type: number
 delete:
   tags:
     - topics

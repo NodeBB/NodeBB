@@ -228,35 +228,22 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost(postData, data) {
-		const { tid, uid } = postData;
-		await Topics.markAsRead([tid], uid);
-		const [
-			userInfo,
-			topicInfo,
-		] = await Promise.all([
-			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags']),
+	async function onNewPost({ pid, tid }, { uid }) {
+		const postData = (await posts.getPostSummaryByPids([pid], uid, {})).pop();
+		await Promise.all([
 			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
-			posts.parsePost(postData),
+			Topics.markAsRead([tid], uid),
 		]);
 
-		postData.user = userInfo[0];
-		postData.topic = topicInfo;
-		postData.index = topicInfo.postcount - 1;
-
-		posts.overrideGuestHandle(postData, data.handle);
-
-		postData.votes = 0;
+		// Returned data is a superset of post summary data
+		postData.index = postData.topic.postcount - 1;
 		postData.bookmarked = false;
 		postData.display_edit_tools = true;
 		postData.display_delete_tools = true;
 		postData.display_moderator_tools = true;
 		postData.display_move_tools = true;
 		postData.selfPost = false;
-		postData.timestampISO = utils.toISOString(postData.timestamp);
-		postData.topic.title = String(postData.topic.title);
 
 		return postData;
 	}
