@@ -54,8 +54,8 @@ module.exports = function (User) {
 		if (unCachedUids.length) {
 			const unCachedData = await db.getSortedSetsMembers(unCachedUids.map(uid => `uid:${uid}:blocked_uids`));
 			unCachedUids.forEach((uid, index) => {
-				cachedData[uid] = (unCachedData[index] || []).map(uid => String(uid));
-				User.blocks._cache.set(uid, cachedData[uid]);
+				cachedData[uid] = (unCachedData[index] || []).map(uid => (utils.isNumber(uid) ? parseInt(uid, 10) : uid));
+				User.blocks._cache.set(String(uid), cachedData[uid]);
 			});
 		}
 		const result = uids.map(uid => cachedData[uid] || []);
