@@ -19,6 +19,7 @@ module.exports = function (Posts) {
 
 		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
+		options.escape = options.hasOwnProperty('escape') ? options.escape : false;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
 		const fields = ['pid', 'tid', 'toPid', 'url', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies', 'handle'].concat(options.extraFields);
@@ -73,14 +74,19 @@ module.exports = function (Posts) {
 
 	async function parsePosts(posts, options) {
 		return await Promise.all(posts.map(async (post) => {
-			if (!post.content || !options.parse) {
-				post.content = post.content ? validator.escape(String(post.content)) : post.content;
+			if (!post.content) {
 				return post;
 			}
-			post = await Posts.parsePost(post);
+			if (options.parse) {
+				post = await Posts.parsePost(post);
+			}
 			if (options.stripTags) {
 				post.content = stripTags(post.content);
 			}
+			if (options.escape) {
+				post.content = post.content ? validator.escape(String(post.content)) : post.content;
+			}
+
 			return post;
 		}));
 	}
