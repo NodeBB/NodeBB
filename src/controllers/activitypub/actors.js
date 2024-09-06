@@ -19,7 +19,10 @@ Actors.application = async function (req, res) {
 	const name = meta.config.title || 'NodeBB';
 
 	res.status(200).json({
-		'@context': 'https://www.w3.org/ns/activitystreams',
+		'@context': [
+			'https://www.w3.org/ns/activitystreams',
+			'https://w3id.org/security/v1',
+		],
 		id: `${nconf.get('url')}/actor`,
 		url: `${nconf.get('url')}/actor`,
 		inbox: `${nconf.get('url')}/inbox`,
