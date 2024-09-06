@@ -316,8 +316,8 @@ activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 	}
 
 	const { to, cc, targets } = await buildRecipients({
-		to: [`${nconf.get('url')}/uid/${caller.uid}/followers`],
-		cc: [uid],
+		to: [activitypub._constants.publicAddress],
+		cc: [`${nconf.get('url')}/uid/${caller.uid}/followers`, uid],
 	}, { uid: caller.uid });
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), {
