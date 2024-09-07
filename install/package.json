@@ -89,7 +89,7 @@
         "lru-cache": "10.4.3",
         "mime": "3.0.0",
         "mkdirp": "3.0.1",
-        "mongodb": "6.8.0",
+        "mongodb": "6.8.1",
         "morgan": "1.10.0",
         "mousetrap": "1.6.5",
         "multiparty": "4.2.3",
