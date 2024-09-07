@@ -150,6 +150,8 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		if (!post) {
 			return;
 		}
+	} else {
+		pid = post.pid;
 	}
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
