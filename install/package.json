@@ -63,7 +63,7 @@
         "cropperjs": "1.6.2",
         "csrf-sync": "4.0.3",
         "daemon": "1.1.0",
-        "diff": "6.0.0",
+        "diff": "7.0.0",
         "esbuild": "0.23.1",
         "express": "4.19.2",
         "express-session": "1.18.0",
