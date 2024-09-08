@@ -11,7 +11,11 @@ const uploadsController = require('../uploads');
 const Topics = module.exports;
 
 Topics.get = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.topics.get(req, req.params));
+	const topicData = await api.topics.get(req, req.params);
+	if (!topicData) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+	}
+	helpers.formatApiResponse(200, res, topicData);
 };
 
 Topics.create = async (req, res) => {
