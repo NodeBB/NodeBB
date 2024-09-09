@@ -78,6 +78,7 @@
     "change-password": "Vaheta parooli",
     "change-password-error": "Vigane parool!",
     "change-password-error-wrong-current": "Su praegune parool on vale!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Paroolid peavad kattuma!",
     "change-password-error-privileges": "Sul ei ole piisavalt õigusi, et vahetada seda parooli.",
     "change-password-success": "Sinu parool on uuendatud!",

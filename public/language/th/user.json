@@ -78,6 +78,7 @@
     "change-password": "เปลี่ยนรหัสผ่าน",
     "change-password-error": "รหัสผ่านใช้ไม่ได้",
     "change-password-error-wrong-current": "รหัสผ่านปัจจุบันไม่ถูกต้อง",
+    "change-password-error-same-password": "รหัสผ่านของคุณเหมือนกับรหัสผ่านปัจจุบัน โปรดเลือกรหัสผ่านใหม่",
     "change-password-error-match": "รหัสผ่านต้องเหมือนกัน",
     "change-password-error-privileges": "คุณไม่มีสิทธิเปลี่ยนรหัสผ่านนี้",
     "change-password-success": "รหัสผ่านของคุณได้รับการแก้ไขแล้ว",

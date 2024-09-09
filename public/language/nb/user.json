@@ -78,6 +78,7 @@
     "change-password": "Endre passord",
     "change-password-error": "Ugyldig passord!",
     "change-password-error-wrong-current": "Ditt gjeldende passord er ikke korrekt!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Passordene må samsvare!",
     "change-password-error-privileges": "Du har ikke rettigheter tli å endre dette passordet.",
     "change-password-success": "Passordet ditt ble oppdatert!",

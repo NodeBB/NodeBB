@@ -78,6 +78,7 @@
     "change-password": "Palavra-passe alterada",
     "change-password-error": "Palavra-passe Inválida!",
     "change-password-error-wrong-current": "A tua palavra-passe atual não está correta!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "As palavras-passe devem coincidir!",
     "change-password-error-privileges": "Não tens os direitos necessários para alterar esta palavra-passe.",
     "change-password-success": "A tua palavra-passe foi atualizada!",

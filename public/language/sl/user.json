@@ -78,6 +78,7 @@
     "change-password": "Spremeni geslo",
     "change-password-error": "Napačno geslo!",
     "change-password-error-wrong-current": "Tvoje trenutno geslo je napačno!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Gesli se morata ujemati!",
     "change-password-error-privileges": "Nimaš pravice do spremembe gesla.",
     "change-password-success": "Geslo je bilo posodobljeno!",

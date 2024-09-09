@@ -78,6 +78,7 @@
     "change-password": "Cambia la Password",
     "change-password-error": "Password non valida!",
     "change-password-error-wrong-current": "La tua password corrente non è corretta!",
+    "change-password-error-same-password": "La tua nuova password corrisponde alla password attuale, utilizza una nuova password.",
     "change-password-error-match": "Le password devono coincidere!",
     "change-password-error-privileges": "Non hai il permesso di cambiare questa password.",
     "change-password-success": "La tua password è stata aggiornata!",

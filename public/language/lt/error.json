@@ -153,6 +153,7 @@
     "about-me-too-long": "Atsiprašome, bet aprašymas apie jus negali būti ilgesnis negu %1 simbolis (ių)",
     "cant-chat-with-yourself": "Jūs negalite susirašinėti su savimi!",
     "chat-restricted": "Šis vartotojas apribojo savo žinutes. Jie turi sekti jus kad jūs galėtumėte pradėti bendrauti su jais",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Susirašinėjimų sistema išjungta",
     "too-many-messages": "Išsiuntėte per daug pranešimų, kurį laiką prašome palaukti.",
     "invalid-chat-message": "Bloga žinutė",

@@ -78,6 +78,7 @@
     "change-password": "Şifre Değiştir",
     "change-password-error": "Geçersiz Şifre",
     "change-password-error-wrong-current": "Şu anki şifre doğru değil!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Şifreler aynı olmalı!",
     "change-password-error-privileges": "Bu şifreyi değiştirme yetkiniz yok.",
     "change-password-success": "Şifreniz güncellendi!",

@@ -78,6 +78,7 @@
     "change-password": "Ganti Kata Sandi",
     "change-password-error": "Kata Sandi Salah!",
     "change-password-error-wrong-current": "Kata Sandi kamu saat ini salah!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Kata Sandi harus sesuai!",
     "change-password-error-privileges": "Kamu tidak memiliki hak untuk mengganti kata sandi ini.",
     "change-password-success": "Kata Sandi kamu telah diperbarui!",

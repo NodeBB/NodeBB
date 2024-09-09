@@ -153,6 +153,7 @@
     "about-me-too-long": "Xin lỗi, giới thiệu bản thân bạn không thể dài hơn %1 ký tự.",
     "cant-chat-with-yourself": "Bạn không thể trò chuyện với chính bạn!",
     "chat-restricted": "Người dùng này đã hạn chế tin nhắn trò chuyện của họ. Họ phải theo dõi bạn trước khi bạn có thể trò chuyện với họ",
+    "chat-user-blocked": "Bạn đã bị chặn bởi người dùng này.",
     "chat-disabled": "Hệ thống trò chuyện bị tắt",
     "too-many-messages": "Bạn đã gửi quá nhiều tin nhắn, vui lòng đợi trong giây lát.",
     "invalid-chat-message": "Tin nhắn trò chuyện không hợp lệ",

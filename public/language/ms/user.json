@@ -78,6 +78,7 @@
     "change-password": "Tukar kata laluan",
     "change-password-error": "Kata laluan salah!",
     "change-password-error-wrong-current": "Kata laluan anda sekarang tidak sah",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Kata laluan mesti padan",
     "change-password-error-privileges": "Anda tidak mempunyai kebenaran untuk mengubah kata laluan ini",
     "change-password-success": "Kata laluan dikemaskini",

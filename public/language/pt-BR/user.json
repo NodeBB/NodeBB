@@ -78,6 +78,7 @@
     "change-password": "Alterar Senha",
     "change-password-error": "Senha Inválida!",
     "change-password-error-wrong-current": "Sua senha atual está incorreta!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "As senhas devem conferir!",
     "change-password-error-privileges": "Você não possui permissões para alterar esta senha.",
     "change-password-success": "Sua senha foi alterada!",
