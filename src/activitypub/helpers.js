@@ -370,7 +370,7 @@ Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 	}
 	const count = await db.sortedSetCard(set);
 	const pageCount = Math.max(1, Math.ceil(count / perPage));
-	let items;
+	let items = [];
 	let paginate = true;
 
 	if (!page && pageCount === 1) {
