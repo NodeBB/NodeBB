@@ -12,6 +12,8 @@
 	"container.card": "Scheda",
 	"container.card-header": "Intestazione della scheda",
 	"container.card-body": "Corpo della scheda",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Avviso",
 
 	"alert.confirm-delete": "Sei sicuro di voler eliminare questo widget?",

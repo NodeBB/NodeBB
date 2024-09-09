@@ -12,6 +12,8 @@
 	"container.card": "כרטיס",
 	"container.card-header": "כותרת כרטיס",
 	"container.card-body": "גוף כרטיס",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "התראה",
 
 	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הווידג'ט?",

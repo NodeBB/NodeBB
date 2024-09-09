@@ -12,6 +12,8 @@
 	"container.card": "Carte",
 	"container.card-header": "En-tête",
 	"container.card-body": "Corps",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Alerte",
 
 	"alert.confirm-delete": "Êtes-vous sûr de vouloir supprimer ce widget ?",
