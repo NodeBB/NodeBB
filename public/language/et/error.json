@@ -153,6 +153,7 @@
     "about-me-too-long": "Vabandage, teie tutvustus ei saa olaa pikem kui %1 tähemärk(i).",
     "cant-chat-with-yourself": "Sa ei saa endaga vestelda!",
     "chat-restricted": "Kasutaja on piiranud sõnumite saatmist. Privaatsõnumi saatmiseks peab kasutaja sind jälgima",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Vestlus süsteem keelatud",
     "too-many-messages": "Oled saatnud liiga palju sõnumeid, oota natukene.",
     "invalid-chat-message": "Vigane vestluse sõnum",

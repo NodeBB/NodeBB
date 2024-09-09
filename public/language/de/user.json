@@ -78,6 +78,7 @@
     "change-password": "Passwort ändern",
     "change-password-error": "Ungültiges Passwort!",
     "change-password-error-wrong-current": "Ihr derzeitiges Passwort ist ungültig!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Passwörter müssen übereinstimmen!",
     "change-password-error-privileges": "Deine Berechtigungen reichen nicht aus, um dieses Passwort zu ändern.",
     "change-password-success": "Ihr Passwort wurde aktualisiert!",

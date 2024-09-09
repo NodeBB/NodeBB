@@ -78,6 +78,7 @@
     "change-password": "Ändra lösenord",
     "change-password-error": "Ogiltigt lösenord.",
     "change-password-error-wrong-current": "Ditt nuvarande lösenord är inte korrekt.",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Lösenorden måste stämma överens.",
     "change-password-error-privileges": "Du har inte rättigheter att ändra det här lösenordet.",
     "change-password-success": "Ditt lösenord är uppdaterat.",

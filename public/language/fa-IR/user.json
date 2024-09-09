@@ -78,6 +78,7 @@
     "change-password": "تغییر گذرواژه",
     "change-password-error": "گذرواژه اشتباه است!",
     "change-password-error-wrong-current": "گذرواژه شما نادرست است.",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "گذارواژه ها باید یکسان باشند.",
     "change-password-error-privileges": "شما اجازه تغییر این گذرواژه را ندارید.",
     "change-password-success": "گذرواژهتان بروز شد.",

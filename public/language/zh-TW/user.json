@@ -78,6 +78,7 @@
     "change-password": "更改密碼",
     "change-password-error": "無效的密碼！",
     "change-password-error-wrong-current": "您的當前密碼不正確！",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "兩次輸入的密碼必須相同！",
     "change-password-error-privileges": "您無權更改此密碼。",
     "change-password-success": "您的密碼已更新！",

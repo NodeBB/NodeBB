@@ -153,6 +153,7 @@
     "about-me-too-long": "죄송합니다. 자기 소개는 최대 %1자보다 길 수 없습니다.",
     "cant-chat-with-yourself": "자기 자신과 채팅할 수 없습니다!",
     "chat-restricted": "이 사용자는 채팅 메시지를 제한했습니다. 채팅할 수 있도록 팔로우해야 합니다",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "채팅 시스템이 비활성화되었습니다",
     "too-many-messages": "너무 많은 메시지를 보냈습니다. 잠시 기다려주세요.",
     "invalid-chat-message": "유효하지 않은 채팅 메시지",

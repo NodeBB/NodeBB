@@ -75,6 +75,7 @@
     "email-confirmed": "E-post bekreftet",
     "email-confirmed-message": "Takk for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
     "email-confirm-error-message": "Det oppsto et problem under validering av e-posten din. Koden kan ha vært ugyldig eller ha utløpt.",
+    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Bekreftelses-e-post sendt.",
     "none": "Ingen",
     "notification-only": "Kun notifikasjon",

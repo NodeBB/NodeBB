@@ -78,6 +78,7 @@
     "change-password": "Pakeisti slaptažodį",
     "change-password-error": "Negalimas slaptažodis!",
     "change-password-error-wrong-current": "Jūsų dabartinis slaptažodis neteisingas!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Slaptažodžiai privalo sutapti!",
     "change-password-error-privileges": "Jūs neturite teisių pakeisti šį slaptažodį.",
     "change-password-success": "Jūsų slaptažodis atnaujintas!",

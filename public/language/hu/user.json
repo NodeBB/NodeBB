@@ -78,6 +78,7 @@
     "change-password": "Jelszó módosítása",
     "change-password-error": "Érvénytelen jelszó!",
     "change-password-error-wrong-current": "A jelenlegi jelszavad nem megfelelő!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "A jelszavak nem egyeznek!",
     "change-password-error-privileges": "Nincs jogod megváltoztatni ezt a jelszót.",
     "change-password-success": "A jelszavad frissítve!",

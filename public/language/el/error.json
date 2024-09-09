@@ -153,6 +153,7 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "Δεν μπορείς να συνομιλήσεις με τον εαυτό σου!",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chat system disabled",
     "too-many-messages": "You have sent too many messages, please wait awhile.",
     "invalid-chat-message": "Invalid chat message",

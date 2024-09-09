@@ -153,6 +153,7 @@
     "about-me-too-long": "A bemutatkozás nem lehet hosszabb %1 karakternél.",
     "cant-chat-with-yourself": "Nem cseveghetsz magaddal!",
     "chat-restricted": "Ez a felhasználó korlátozta a chat beállításait. Csak akkor cseveghetsz vele, miután felvett a követettek közé téged",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Csevegés funkció kikapcsolva",
     "too-many-messages": "Túl sok üzenetet küldtél, kérlek várj egy picit.",
     "invalid-chat-message": "Érvénytelen üzenet",

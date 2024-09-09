@@ -78,6 +78,7 @@
     "change-password": "Αλλαγή Κωδικού",
     "change-password-error": "Άκυρος Κωδικός!",
     "change-password-error-wrong-current": "Ο τωρινός σου κωδικός δεν είναι σωστός!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Οι κωδικοί πρέπει να είναι οι ίδιοι!",
     "change-password-error-privileges": "Δεν έχεις δικαιώματα για να αλλάξεις αυτόν τον κωδικό.",
     "change-password-success": "Ο κωδικός σου ανανεώθηκε!",
