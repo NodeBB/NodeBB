@@ -78,6 +78,7 @@
     "change-password": "Vaihda salasana",
     "change-password-error": "Virheellinen salasana",
     "change-password-error-wrong-current": "Nykyinen salasanasi ei ole oikein!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Salasanojen täytyy olla samat!",
     "change-password-error-privileges": "Sinulla ei ole oikeuksia vaihtaa tätä salasanaa.",
     "change-password-success": "Salasanasi on päivitetty!",

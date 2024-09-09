@@ -115,11 +115,21 @@
 							<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
 								[[admin/extend/widgets:container.jumbotron]]
 							</div>
+
+							<div class="mb-3 pointer" data-container-html='<h5>\{{title}}</h5><hr/><div>\{{body}}</div>'>
+								<h5>[[admin/extend/widgets:container.title]]</h5>
+								<hr/>
+								<div class="">
+									[[admin/extend/widgets:container.body]]
+								</div>
+							</div>
+
 							<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-body pointer">
 									[[admin/extend/widgets:container.card]]
 								</div>
 							</div>
+
 							<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-header d-flex justify-content-between text-nowrap flex-wrap align-items-center">
 									[[admin/extend/widgets:container.card-header]]

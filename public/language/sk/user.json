@@ -78,6 +78,7 @@
     "change-password": "Zmeniť heslo",
     "change-password-error": "Nesprávne heslo!",
     "change-password-error-wrong-current": "Vaše súčasné heslo nie je správne",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Heslá sa musia zhodovať!",
     "change-password-error-privileges": "Nemáte práva na zmenu hesla.",
     "change-password-success": "Vaše heslo je aktualizované.",

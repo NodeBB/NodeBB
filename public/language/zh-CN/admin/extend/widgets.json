@@ -12,6 +12,8 @@
 	"container.card": "卡",
 	"container.card-header": "卡标题",
 	"container.card-body": "卡内容",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "警报",
 
 	"alert.confirm-delete": "确认删除此窗口部件？",

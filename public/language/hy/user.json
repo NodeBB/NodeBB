@@ -78,6 +78,7 @@
     "change-password": "փոխել գաղտնաբառը",
     "change-password-error": "Սխալ գաղտնաբառ",
     "change-password-error-wrong-current": "Ձեր ընթացիկ գաղտնաբառը սխալ է",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Գաղտնաբառը պետք է համընկնի",
     "change-password-error-privileges": "Դուք իրավունք չունեք փոխելու այս գաղտնաբառը:",
     "change-password-success": "Ձեր գաղտնաբառը թարմացվել է:",

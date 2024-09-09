@@ -78,6 +78,7 @@
     "change-password": "تغيير كلمة السر",
     "change-password-error": "كلمة سر غير صحيحة",
     "change-password-error-wrong-current": "كلمة السر الحالية ليست صحيحة",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "كلمة السر غير مطابقة لتأكيد كلمة السر",
     "change-password-error-privileges": "ليس لديك الصلاحيات الكافية لتغيير كلمة السر هذه.",
     "change-password-success": "تم تحديث كلمة السر خاصتك.",

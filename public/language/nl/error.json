@@ -153,6 +153,7 @@
     "about-me-too-long": "Sorry, je beschrijving kan niet langer zijn dan %1 karakter(s).",
     "cant-chat-with-yourself": "Het is niet mogelijk om met jezelf een chatgesprek te houden.",
     "chat-restricted": "Deze gebruiker heeft beperkingen aan de chatfunctie opgelegd waardoor deze eerst iemand moet volgen voordat deze persoon een nieuwe chat mag initiëren.",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chat systeem uitgeschakeld",
     "too-many-messages": "Je hebt in korte tijd veel berichten verstuurd, als je even wacht mag je weer berichten sturen.",
     "invalid-chat-message": "Ongeldig bericht",

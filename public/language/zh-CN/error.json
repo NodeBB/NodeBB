@@ -153,6 +153,7 @@
     "about-me-too-long": "抱歉，您的关于我不能超过 %1 个字符。",
     "cant-chat-with-yourself": "您不能和自己聊天！",
     "chat-restricted": "此用户限制了他的聊天消息。必须他先关注您，您才能和他聊天。",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "聊天系统已关闭",
     "too-many-messages": "您发送了太多消息，请稍等片刻。",
     "invalid-chat-message": "无效的聊天信息",

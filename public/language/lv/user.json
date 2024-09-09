@@ -78,6 +78,7 @@
     "change-password": "Mainīt paroli",
     "change-password-error": "Nederīga parole!",
     "change-password-error-wrong-current": "Pašreizējā parole nav pareiza!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Parolēm jāsakrīt!",
     "change-password-error-privileges": "Tev nav tiesības mainīt šo paroli.",
     "change-password-success": "Parole ir atjaunināta!",

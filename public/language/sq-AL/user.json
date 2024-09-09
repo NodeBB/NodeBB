@@ -78,6 +78,7 @@
     "change-password": "Ndrysho fjalekalimin",
     "change-password-error": "Fjalëkalim i pavlefshëm",
     "change-password-error-wrong-current": "Fjalëkalimi juaj aktual nuk është i saktë!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Fjalekalimet duhet te perputhen!",
     "change-password-error-privileges": "Ju nuk keni të drejtë ta ndryshoni këtë fjalëkalim.",
     "change-password-success": "Fjalëkalimi juaj është përditësuar!",

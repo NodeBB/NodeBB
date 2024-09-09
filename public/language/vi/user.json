@@ -78,6 +78,7 @@
     "change-password": "Đổi Mật Khẩu",
     "change-password-error": "Mật khẩu không hợp lệ!",
     "change-password-error-wrong-current": "Mật khẩu hiện tại của bạn không đúng!",
+    "change-password-error-same-password": "Mật khẩu mới của bạn trùng với mật khẩu hiện tại của bạn, vui lòng sử dụng mật khẩu mới.",
     "change-password-error-match": "Mật khẩu phải trùng khớp!",
     "change-password-error-privileges": "Bạn không có quyền thay đổi mật khẩu này",
     "change-password-success": "Đã cập nhật mật khẩu của bạn!",

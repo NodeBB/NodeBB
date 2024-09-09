@@ -153,6 +153,7 @@
     "about-me-too-long": "Desculpa, o teu \"sobre mim\" não pode ser superior a %1 caracter(es).",
     "cant-chat-with-yourself": "Não podes conversar contigo mesmo!",
     "chat-restricted": "Este utilizador colocou restrições sobre as suas mensagens de chat. Ele deve primeiro seguir-te antes que possas conversar com ele",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Sistema de conversas desativado",
     "too-many-messages": "Enviaste demasiadas mensagens, por favor espera um pouco.",
     "invalid-chat-message": "Mensagem de chat inválida",

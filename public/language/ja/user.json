@@ -78,6 +78,7 @@
     "change-password": "パスワードを変更",
     "change-password-error": "無効のパスワード！",
     "change-password-error-wrong-current": "現在のパスワードは正しくありません！",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "パスワードは一致しません！",
     "change-password-error-privileges": "パスワードを更新する権限はありません。",
     "change-password-success": "パスワードを更新しました！",
