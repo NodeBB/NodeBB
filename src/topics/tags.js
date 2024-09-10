@@ -588,7 +588,6 @@ module.exports = function (Topics) {
 	};
 
 	Topics.notifyTagFollowers = async function (postData, exceptUid) {
-		console.log();
 		let { tags } = postData.topic;
 		if (!tags.length) {
 			return;
