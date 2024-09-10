@@ -29,8 +29,9 @@ Assert.user = helpers.try(async (req, res, next) => {
 	const uid = req.params.uid || res.locals.uid;
 
 	if (
-		((utils.isNumber(uid) || activitypub.helpers.isUri(uid)) && await user.exists(uid)) ||
-		(uid.indexOf('@') !== -1 && await user.existsBySlug(uid))
+		uid !== -2 && // exposeUid middleware was in chain (means route is local user only) and resolved to fediverse user
+		(((utils.isNumber(uid) || activitypub.helpers.isUri(uid)) && await user.exists(uid)) ||
+		(uid.indexOf('@') !== -1 && await user.existsBySlug(uid)))
 	) {
 		return next();
 	}
