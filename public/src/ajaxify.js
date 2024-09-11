@@ -32,10 +32,12 @@ ajaxify.widgets = { render: render };
 		 *   null  (no action)
 		 */
 		let urlObj;
-		let pathname;
+		let pathname = item instanceof Element ? item.getAttribute('href') : undefined;
 		try {
 			urlObj = new URL(item, `${document.location.origin}${config.relative_path}`);
-			({ pathname } = urlObj);
+			if (!pathname) {
+				({ pathname } = urlObj);
+			}
 		} catch (e) {
 			return false;
 		}
@@ -44,34 +46,38 @@ ajaxify.widgets = { render: render };
 		// eslint-disable-next-line no-script-url
 		const hrefEmpty = href => href === undefined || href === '' || href === 'javascript:;';
 
-		if (item instanceof Element && item.getAttribute('data-ajaxify') === 'false') {
-			if (!internalLink) {
-				return;
+		if (item instanceof Element) {
+			if (item.getAttribute('data-ajaxify') === 'false') {
+				if (!internalLink) {
+					return false;
+				}
+
+				return null;
 			}
 
-			return null;
+			// eslint-disable-next-line no-script-url
+			if (hrefEmpty(urlObj.href) || urlObj.protocol === 'javascript:' || pathname === '#' || pathname === '') {
+				return null;
+			}
 		}
 
-		// Default behaviour for rss feeds
-		if (internalLink && pathname.endsWith('.rss')) {
-			return false;
-		}
+		if (internalLink) {
+			// Default behaviour for rss feeds
+			if (pathname.endsWith('.rss')) {
+				return false;
+			}
 
-		// Default behaviour for sitemap
-		if (internalLink && String(pathname).startsWith(config.relative_path + '/sitemap') && pathname.endsWith('.xml')) {
-			return false;
-		}
+			// Default behaviour for sitemap
+			if (String(pathname).startsWith(config.relative_path + '/sitemap') && pathname.endsWith('.xml')) {
+				return false;
+			}
 
-		// Default behaviour for uploads and direct links to API urls
-		if (internalLink && ['/uploads', '/assets/', '/api/'].some(function (prefix) {
-			return String(pathname).startsWith(config.relative_path + prefix);
-		})) {
-			return false;
-		}
-
-		// eslint-disable-next-line no-script-url
-		if (hrefEmpty(urlObj.href) || urlObj.protocol === 'javascript:' || pathname === '#' || pathname === '') {
-			return null;
+			// Default behaviour for uploads and direct links to API urls
+			if (['/uploads', '/assets/', '/api/'].some(function (prefix) {
+				return String(pathname).startsWith(config.relative_path + prefix);
+			})) {
+				return false;
+			}
 		}
 
 		return true;
