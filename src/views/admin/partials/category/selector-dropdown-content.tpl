@@ -1,4 +1,4 @@
-<button type="button" class="btn-ghost-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<button type="button" class="btn btn-ghost btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	<span component="category-selector-selected">
 		<span class="category-item d-inline-flex align-items-center gap-1">
 		{{{ if (selectedCategory && !showCategorySelectLabel) }}}

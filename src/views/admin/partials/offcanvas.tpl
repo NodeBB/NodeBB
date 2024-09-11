@@ -2,7 +2,7 @@
 	<div class="offcanvas-body flex-0 pb-0 overflow-visible d-flex flex-column gap-1 ff-secondary">
 		<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
 
-		<a href="{config.relative_path}/" class="btn-ghost fw-semibold text-decoration-none justify-content-start"><i class="fa fa-fw fa-home"></i> [[admin/menu:view-forum]]</a>
+		<a href="{config.relative_path}/" class="btn btn-ghost btn-sm d-flex gap-2 fw-semibold text-decoration-none align-items-center justify-content-start"><i class="fa fa-fw fa-home"></i> [[admin/menu:view-forum]]</a>
 
 		<!-- IMPORT admin/partials/search.tpl -->
 	</div>
