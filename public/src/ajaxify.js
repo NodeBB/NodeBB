@@ -527,8 +527,7 @@ $(document).ready(function () {
 				return;
 			}
 
-			const $this = $(this);
-			const href = $this.attr('href');
+			const href = this.pathname;
 			const internalLink = utils.isInternalURI(this, window.location, config.relative_path);
 
 			const rootAndPath = new RegExp(`^${rootUrl}${config.relative_path}/?`);
@@ -561,7 +560,7 @@ $(document).ready(function () {
 				}
 			};
 
-			if ($this.attr('data-ajaxify') === 'false') {
+			if (this.getAttribute('data-ajaxify') === 'false') {
 				if (!internalLink) {
 					return;
 				}
