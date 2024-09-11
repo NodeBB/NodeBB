@@ -24,7 +24,7 @@ Thumbs.exists = async function (id, path) {
 };
 
 Thumbs.load = async function (topicData) {
-	const mainPids = topicData.map(t => t.mainPid);
+	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
 	let hashes = await posts.getPostsFields(mainPids, ['attachments']);
 	hashes = hashes.map(o => o.attachments);
 	const topicsWithThumbs = topicData.filter((t, idx) => t &&
