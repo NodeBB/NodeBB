@@ -10,7 +10,7 @@
 
 					<!-- IMPORT partials/chats/options.tpl -->
 
-					<button id="chat-close-btn" type="button" class="btn-close btn-ghost-sm" aria-label="Close"></button>
+					<button id="chat-close-btn" type="button" class="btn-close btn btn-ghost btn-sm" aria-label="Close"></button>
 				</div>
 			</div>
 			<!-- IMPORT partials/chats/scroll-up-alert.tpl -->
