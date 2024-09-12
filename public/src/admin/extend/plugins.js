@@ -198,10 +198,10 @@ define('admin/extend/plugins', [
 						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2" data-plugin="${plugin}">
 							${plugin}
 							<div class="d-flex gap-1">
-								<div class="btn-ghost-sm move-up">
+								<div class="btn btn-ghost btn-sm move-up">
 									<i class="fa fa-chevron-up"></i>
 								</div>
-								<div class="btn-ghost-sm move-down">
+								<div class="btn btn-ghost btn-sm move-down">
 									<i class="fa fa-chevron-down"></i>
 								</div>
 							</div>

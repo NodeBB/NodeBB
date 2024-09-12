@@ -15,7 +15,7 @@
 			<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{admins.members.uid}">
 				{buildAvatar(admins.members, "24px", true)}
 				<a href="{config.relative_path}/user/{admins.members.userslug}">{admins.members.username}</a>
-				<button class="btn-ghost-sm p-0 remove-user-icon">
+				<button class="btn btn-ghost btn-sm p-0 remove-user-icon">
 					<i class="fa fa-fw fa-times"></i>
 				</button>
 			</div>
@@ -35,7 +35,7 @@
 			<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{globalMods.members.uid}">
 				{buildAvatar(globalMods.members, "24px", true)}
 				<a href="{config.relative_path}/user/{globalMods.members.userslug}">{globalMods.members.username}</a>
-				<button class="btn-ghost-sm p-0 remove-user-icon">
+				<button class="btn btn-ghost btn-sm p-0 remove-user-icon">
 					<i class="fa fa-fw fa-times"></i>
 				</button>
 			</div>
@@ -87,7 +87,7 @@
 				<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{categoryMods.moderators.uid}">
 					{buildAvatar(categoryMods.moderators, "24px", true)}
 					<a href="{config.relative_path}/user/{categoryMods.moderators.userslug}">{categoryMods.moderators.username}</a>
-					<button class="btn-ghost-sm p-0 remove-user-icon">
+					<button class="btn btn-ghost btn-sm p-0 remove-user-icon">
 						<i class="fa fa-fw fa-times" role="button"></i>
 					</button>
 				</div>
