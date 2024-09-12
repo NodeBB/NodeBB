@@ -56,10 +56,7 @@ self.addEventListener('notificationclick', (event) => {
 	// This looks to see if the current is already open and focuses if it is
 	event.waitUntil(
 		self.clients
-			.matchAll({
-				type: 'window',
-				includeUncontrolled: true,
-			})
+			.matchAll({ type: 'window' })
 			.then((clientList) => {
 				// eslint-disable-next-line no-restricted-syntax
 				for (const client of clientList) {
