@@ -37,3 +37,10 @@ html[data-dir="rtl"] {
 		h6 { font-size: 1rem; }
 	}
 }
+
+.btn-link {
+	&:hover, &.active {
+		background-color: var(--btn-ghost-hover-color);
+		text-decoration: none;
+	}
+}
