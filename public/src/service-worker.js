@@ -40,10 +40,21 @@ self.addEventListener('fetch', function (event) {
 // Register event listener for the 'push' event.
 self.addEventListener('push', function (event) {
 	// Keep the service worker alive until the notification is created.
-	const { title, body, data } = event.data.json();
-	event.waitUntil(
-		self.registration.showNotification(title, { body, data })
-	);
+	const { title, body, tag, data } = event.data.json();
+
+	if (title && body) {
+		event.waitUntil(
+			self.registration.showNotification(title, { body, tag, data })
+		);
+	} else if (tag) {
+		event.waitUntil(
+			self.registration.getNotifications({ tag }).then((notifications) => {
+				notifications.forEach((notification) => {
+					notification.close();
+				});
+			})
+		);
+	}
 });
 
 self.addEventListener('notificationclick', (event) => {
