@@ -1,10 +1,10 @@
 'use strict';
 
 define('quickreply', [
-	'components', 'composer', 'composer/autocomplete', 'api',
+	'components', 'composer/autocomplete', 'api',
 	'alerts', 'uploadHelpers', 'mousetrap', 'storage', 'hooks',
 ], function (
-	components, composer, autocomplete, api,
+	components, autocomplete, api,
 	alerts, uploadHelpers, mousetrap, storage, hooks
 ) {
 	const QuickReply = {};
@@ -113,7 +113,7 @@ define('quickreply', [
 			e.preventDefault();
 			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
-			composer.newReply({
+			hooks.fire('action:composer.post.new', {
 				tid: ajaxify.data.tid,
 				title: ajaxify.data.titleRaw,
 				body: textEl.val(),
