@@ -113,7 +113,7 @@ module.exports = function (User) {
 			bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
 			nid: `follow:${targetUid}:uid:${uid}`,
 			from: uid,
-			path: `/uid/${targetUid}/followers`,
+			path: `/user/${userData.userslug}`,
 			mergeId: 'notifications:user-started-following-you',
 		});
 		if (!notifObj) {
