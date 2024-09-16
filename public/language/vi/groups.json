@@ -60,7 +60,7 @@
     "membership.reject": "Từ chối",
     "new-group.group-name": "Tên Nhóm:",
     "upload-group-cover": "Tải lên ảnh bìa nhóm",
-    "bulk-invite-instructions": "Nhập danh sách username, ngăn cách bằng dấu phẩy, để mời vào nhóm",
+    "bulk-invite-instructions": "Nhập danh sách tên đăng nhập, phân tách bằng dấu phẩy, để mời vào nhóm",
     "bulk-invite": "Mời nhiều người",
     "remove-group-cover-confirm": "Bạn có chắc rằng muốn xoá ảnh bìa không?"
 }
