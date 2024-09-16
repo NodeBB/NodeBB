@@ -370,6 +370,19 @@ Mocks.note = async (post) => {
 		attachment.push({ mediaType, url, width, height });
 	});
 
+	// Inspect post content for external imagery as well
+	let match = posts.imgRegex.regex.exec(post.content);
+	while (match !== null) {
+		if (match[1]) {
+			const { hostname, pathname, href: url } = new URL(match[1]);
+			if (hostname !== nconf.get('url_parsed').hostname) {
+				const mediaType = mime.getType(pathname);
+				attachment.push({ mediaType, url });
+			}
+		}
+		match = posts.imgRegex.regex.exec(post.content);
+	}
+
 	attachment = attachment.map(({ mediaType, url, width, height }) => {
 		let type;
 
