@@ -143,13 +143,16 @@ postsAPI.edit = async function (caller, data) {
 			newTitle: validator.escape(String(editResult.topic.title)),
 		});
 	}
-	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { extraFields: ['edited'] });
+	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
+	postObj.content = editResult.post.content; // re-use already parsed html
 	const returnData = { ...postObj[0], ...editResult.post };
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
-		await require('.').activitypub.update.note(caller, { post: postObj[0] });
+		setTimeout(() => {
+			require('.').activitypub.update.note(caller, { post: postObj[0] });
+		}, 5000);
 
 		return returnData;
 	}
