@@ -2,6 +2,7 @@
 
 const crypto = require('crypto');
 const _ = require('lodash');
+const mime = require('mime');
 
 const db = require('../database');
 
@@ -48,6 +49,11 @@ Attachments.update = async (pid, attachments) => {
 
 		if (_type) {
 			_type = 'attachment';
+		}
+
+		if (!mediaType) { // MIME type guessing
+			const { pathname } = new URL(url);
+			mediaType = mime.getType(pathname);
 		}
 
 		bulkOps.hash.push([key, { _type, mediaType, url, name, width, height }]);
