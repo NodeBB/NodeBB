@@ -179,7 +179,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		setTimeout(() => { // Delay sending to avoid potential race condition
 			Promise.all([payload, payload.object].map(async (object) => {
 				await activitypub.send('cid', cid, followers, {
-					id: `${object.object ? object.object.id : object.id}#activity/announce/${Date.now()}`,
+					id: `${nconf.get('url')}/post/${encodeURIComponent(object.object ? object.object.id : object.id)}#activity/announce/${Date.now()}`,
 					type: 'Announce',
 					to: [activitypub._constants.publicAddress],
 					cc: [`${nconf.get('url')}/category/${cid}/followers`],
