@@ -78,6 +78,7 @@
     "change-password": "Hindura Ijambobanga",
     "change-password-error": "Ijambobanga Ritari Ryo!",
     "change-password-error-wrong-current": "Ijambobanga ryawe watanze nk'irisanzweho ntabwo ari ryo!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Ijambobanga ugomba kuryandukura mu buryo bumwe inshuro ebyiri!",
     "change-password-error-privileges": "Nta burenganzira ufite bwo guhindura iri jambobanga.",
     "change-password-success": "Ijambobanga ryawe ryavuguruwe!",

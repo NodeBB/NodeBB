@@ -1,18 +1,18 @@
 {
-	"alert.confirm-rebuild-and-restart": "Bạn có chắc chắn muốn xây lại và khởi động lại NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Bạn có chắc chắn muốn xây dựng lại và khởi động lại NodeBB?",
 	"alert.confirm-restart": "Bạn có chắc muốn khởi động lại NodeBB",
 
 	"acp-title": "%1 | Bảng Điểu Khiển Quản Trị NodeBB",
 	"settings-header-contents": "Nội dung",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-saved": "Đã Lưu Thay Đổi",
+	"changes-saved-message": "Những thay đổi của bạn đối với cấu hình NodeBB đã được lưu.",
 	"changes-not-saved": "Thay Đổi Chưa Được Lưu",
 	"changes-not-saved-message": "NodeBB đã gặp sự cố khi lưu các thay đổi của bạn. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"save-changes": "Lưu thay đổi",
+	"min": "Tối thiểu:",
+	"max": "Tối đa:",
+	"view": "Xem",
+	"edit": "Sửa",
+	"add": "Thêm",
+	"select-icon": "Chọn Biểu Tượng"
 }

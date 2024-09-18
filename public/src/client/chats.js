@@ -11,7 +11,7 @@ define('forum/chats', [
 	'forum/chats/user-list',
 	'forum/chats/message-search',
 	'forum/chats/pinned-messages',
-	'composer/autocomplete',
+	'autocomplete',
 	'hooks',
 	'bootbox',
 	'alerts',
@@ -684,31 +684,6 @@ define('forum/chats', [
 	};
 
 	Chats.addSocketListeners = function () {
-		socket.on('event:new_notification', async function (notif) {
-			const { type, roomId } = notif;
-			if (ajaxify.data.template.chats && app.user.userslug && (type === 'new-chat' || type === 'new-group-chat')) {
-				const inRoom = parseInt(roomId, 10) === parseInt(ajaxify.data.roomId, 10);
-				if (inRoom) {
-					return;
-				}
-				const { rooms } = await api.get(`/chats`, { start: 0, perPage: 1 });
-				const room = rooms.find(r => parseInt(r.roomId, 10) === parseInt(roomId, 10));
-				if (room) {
-					const roomEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
-					if (roomEl.length) {
-						updateTeaser(roomId, room.teaser);
-					} else {
-						const recentEl = components.get('chat/recent');
-						const html = await app.parseAndTranslate('chats', 'rooms', {
-							rooms: [room],
-							showBottomHr: true,
-						});
-						recentEl.prepend(html);
-					}
-				}
-			}
-		});
-
 		socket.on('event:chats.receive', function (data) {
 			if (chatModule.isFromBlockedUser(data.fromUid)) {
 				return;
@@ -723,24 +698,13 @@ define('forum/chats', [
 				data.message.timestampISO = utils.toISOString(data.message.timestamp);
 				messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
 
-				updateTeaser(data.roomId, {
+				Chats.updateTeaser(data.roomId, {
 					content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
 					user: data.message.fromUser,
 					timestampISO: data.message.timestampISO,
 				});
 			}
 		});
-
-		async function updateTeaser(roomId, teaser) {
-			const roomEl = $(`[data-roomid="${roomId}"]`);
-			if (roomEl.length) {
-				const html = await app.parseAndTranslate('partials/chats/room-teaser', {
-					teaser: teaser,
-				});
-				roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
-				roomEl.find('.timeago').timeago();
-			}
-		}
 
 		socket.on('event:chats.public.unread', function (data) {
 			if (
@@ -794,6 +758,31 @@ define('forum/chats', [
 			}
 			chatModule.updateTypingUserList($(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"]`), data);
 		});
+	};
+
+	Chats.updateTeaser = async function (roomId, teaser) {
+		if (!ajaxify.data.template.chats || !app.user.userslug) {
+			return;
+		}
+		const roomEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
+		if (roomEl.length) {
+			const html = await app.parseAndTranslate('partials/chats/room-teaser', {
+				teaser: teaser,
+			});
+			roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
+			roomEl.find('.timeago').timeago();
+		} else {
+			const { rooms } = await api.get(`/chats`, { start: 0, perPage: 2 });
+			const room = rooms.find(r => parseInt(r.roomId, 10) === parseInt(roomId, 10));
+			if (room) {
+				const recentEl = components.get('chat/recent');
+				const html = await app.parseAndTranslate('chats', 'rooms', {
+					rooms: [room],
+					showBottomHr: true,
+				});
+				recentEl.prepend(html);
+			}
+		}
 	};
 
 	Chats.markChatPageElUnread = function (data) {

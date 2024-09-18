@@ -153,6 +153,7 @@
     "about-me-too-long": "Maaf, penerangan tentang anda tidak boleh lebih %1 aksara().",
     "cant-chat-with-yourself": "Anda tidak boleh sembang dengan diri sendiri!",
     "chat-restricted": "Pengguna ini menyekat ruangan sembangnya. Dia hendaklah mengikut anda sebelum kalian dapat bersembang",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Sistem borak tidak diaktifkan",
     "too-many-messages": "Anda menghantar terlalu banyak pesanan, sila tunggu seketika.",
     "invalid-chat-message": "Mesej borak tidak sah",

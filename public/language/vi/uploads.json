@@ -4,6 +4,6 @@
     "upload-success": "Tải tệp lên thành công!",
     "maximum-file-size": "Tối đa %1 kb",
     "no-uploads-found": "Không có tải lên được tìm thấy",
-    "public-uploads-info": "Các file tải lên được xuất bản, mọi người đều có thể xem được.",
-    "private-uploads-info": "Các file tải lên được để ở chế độ bí mật, chỉ những người dùng đăng nhập mới có thể xem."
+    "public-uploads-info": "Tải lên là công khai, mọi người đều xem được.",
+    "private-uploads-info": "Tải lên là riêng tư, những ai đã đăng nhập mới có thể xem."
 }

@@ -78,6 +78,7 @@
     "change-password": "Schimbă Parola",
     "change-password-error": "Parola invalidă!",
     "change-password-error-wrong-current": "Parola ta curentă nu este corectă!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Parolele trebuie să se potrivească!",
     "change-password-error-privileges": "Nu ai nici un drept să schimbi această parolă.",
     "change-password-success": "Parola ta a fost actualizată!",

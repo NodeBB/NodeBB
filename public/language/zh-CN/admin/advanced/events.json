@@ -9,9 +9,9 @@
 	"filter-type": "事件类型",
 	"filter-start": "开始时间",
 	"filter-end": "结束时间",
-	"filter-user": "Filter by User",
-	"filter-user.placeholder": "Type user name to filter...",
-	"filter-group": "Filter by Group",
-	"filter-group.placeholder": "Type group name to filter...",
+	"filter-user": "按用户过滤",
+	"filter-user.placeholder": "输入用户名以过滤",
+	"filter-group": "按用户群组过滤",
+	"filter-group.placeholder": "输入群组名以过滤",
 	"filter-per-page": "每页"
 }

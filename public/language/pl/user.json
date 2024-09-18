@@ -78,6 +78,7 @@
     "change-password": "Zmień hasło",
     "change-password-error": "Błędne hasło!",
     "change-password-error-wrong-current": "Twoje aktualne hasło nie jest poprawne!",
+    "change-password-error-same-password": "Nowe hasło jest identyczne co dotychczasowe. Proszę wprowadź hasło po zmianie.",
     "change-password-error-match": "Hasła muszą pasować!",
     "change-password-error-privileges": "Nie masz uprawnień do zmiany tego hasła.",
     "change-password-success": "Twoje hasło zostało zaktualizowane!",

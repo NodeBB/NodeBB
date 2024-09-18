@@ -4,5 +4,5 @@
 	"home-page-route": "เส้นทางหน้าแรก",
 	"custom-route": "เส้นทางที่กำหนดเอง",
 	"allow-user-home-pages": "อนุญาตหน้าแรกของผู้ใช้",
-	"home-page-title": "Title ของหน้าแรก (ค่าเริ่มต้น \"Home\")"
+	"home-page-title": "ชื่อของหน้าแรก (ค่าเริ่มต้นคือ \"Home\")"
 }

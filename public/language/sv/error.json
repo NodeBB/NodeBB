@@ -153,6 +153,7 @@
     "about-me-too-long": "Din text om dig själv kan inte vara längre än %1 tecken.",
     "cant-chat-with-yourself": "Du kan inte chatta med dig själv!",
     "chat-restricted": "Denna användaren har begränsat sina meddelanden. Användaren måste följa dig innan ni kan chatta med varandra",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chatten är inaktiverad",
     "too-many-messages": "Du har skickat för många meddelanden, var god vänta",
     "invalid-chat-message": "Ogiltigt chattmeddelande",

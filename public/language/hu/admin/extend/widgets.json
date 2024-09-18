@@ -12,6 +12,8 @@
 	"container.card": "Kártya",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Riasztás",
 
 	"alert.confirm-delete": "Biztosan szeretnéd törölni ezt a modult?",

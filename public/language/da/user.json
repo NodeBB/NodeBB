@@ -78,6 +78,7 @@
     "change-password": "Skift kodeord",
     "change-password-error": "Ukorrekt kodeord",
     "change-password-error-wrong-current": "Nuværende kodeord er ikke korrekt",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Passwords matcher ikke!",
     "change-password-error-privileges": "Du har ikke rettigheder til at ændre dette password.",
     "change-password-success": "Dit password er opdateret!",

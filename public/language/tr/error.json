@@ -153,6 +153,7 @@
     "about-me-too-long": "Hakkınızda yazdıklarınız en fazla %1 karakter olabilir.",
     "cant-chat-with-yourself": "Kendinizle sohbet edemezsiniz!",
     "chat-restricted": "Bu kullanıcı sohbet ayarlarını kısıtlamış. Bu kişiye mesaj gönderebilmeniz için sizi takip etmeleri gerekiyor",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Sohbet özelliği kapalı",
     "too-many-messages": "Ardı ardına çok fazla mesaj yolladınız, lütfen biraz bekleyiniz.",
     "invalid-chat-message": "Geçersiz sohbet mesajı",

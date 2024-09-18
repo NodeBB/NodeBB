@@ -153,6 +153,7 @@
     "about-me-too-long": "Beklager, men din om mig side kan ikke være længere end %1 karakter(er).",
     "cant-chat-with-yourself": "Du kan ikke chatte med dig selv!",
     "chat-restricted": "Denne bruger har spæret adgangen til chat beskeder. Brugeren må følge dig før du kan chatte med ham/hende",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chat system er deaktiveret",
     "too-many-messages": "Du har sendt for mange beskeder, vent venligt lidt.",
     "invalid-chat-message": "Ugyldig chat besked",

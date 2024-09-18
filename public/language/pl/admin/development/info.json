@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 maszyn odpowiedziało w ciągu %2ms!",
 	"host": "host",
-	"primary": "główne / uruchomione zadania",
+	"primary": "podstawowe / zadania",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "dostępny",
@@ -19,6 +19,7 @@
 
 	"registered": "Zarejestrowane",
 	"sockets": "Sockety",
+	"connection-count": "Liczba połączeń",
 	"guests": "Goście",
 
 	"info": "Informacja"

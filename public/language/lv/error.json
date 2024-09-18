@@ -153,6 +153,7 @@
     "about-me-too-long": "Atvaino, Tavā \"Par mani\" nevar būt vairāk kā %1 rakstzīmes.",
     "cant-chat-with-yourself": "Nevar sarunāties pats ar sevi!",
     "chat-restricted": "Šis lietotājs ir ierobežojis savas sarunas. Viņam ir Tev jāseko, pirms vari sarunāties ar viņu",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Sarunu sistēma ir atspējota",
     "too-many-messages": "Tu esi publicējis pārāk daudz rakstu, lūdzu, kādu laiku uzgaidi.",
     "invalid-chat-message": "Nederīga saruna",

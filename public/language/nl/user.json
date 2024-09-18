@@ -78,6 +78,7 @@
     "change-password": "Wijzig wachtwoord",
     "change-password-error": "Ongeldig wachtwoord!",
     "change-password-error-wrong-current": "Het opgegeven huidige wachtwoord is onjuist!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Het eerder opgegeven wachtwoord komt niet overeen!",
     "change-password-error-privileges": "Niet geautoriseerd om dit wachtwoord te mogen wijzigen.",
     "change-password-success": "Het wachtwoord is gewijzigd!",

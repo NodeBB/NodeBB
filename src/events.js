@@ -75,6 +75,7 @@ events.types = [
 	'export:uploads',
 	'account-locked',
 	'getUsersCSV',
+	'getGroupCSV',
 	'chat-room-deleted',
 	// To add new types from plugins, just Array.push() to this array
 ];

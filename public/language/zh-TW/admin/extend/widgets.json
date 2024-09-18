@@ -12,6 +12,8 @@
 	"container.card": "Card",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "警示",
 
 	"alert.confirm-delete": "確認刪除此小工具？",

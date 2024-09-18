@@ -153,6 +153,7 @@
     "about-me-too-long": "Przepraszamy, Twój tekst „O mnie” nie może być dłuższy niż %1 znaków.",
     "cant-chat-with-yourself": "Nie możesz rozmawiać sam ze sobą!",
     "chat-restricted": "Ten użytkownik korzysta z czatu w ograniczonym zakresie. Mogą z nim rozmawiać tylko te osoby, które obserwuje.",
+    "chat-user-blocked": "Jesteś zablokowany(a) przez tego użytkownika.",
     "chat-disabled": "System rozmów jest wyłączony",
     "too-many-messages": "Wysłałeś zbyt wiele wiadomości, prosimy chwilę poczekać.",
     "invalid-chat-message": "Nieprawidłowa wiadomość",

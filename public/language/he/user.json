@@ -78,6 +78,7 @@
     "change-password": "שנה סיסמה",
     "change-password-error": "סיסמה לא תקינה!",
     "change-password-error-wrong-current": "סיסמתך הנוכחית אינה נכונה!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "הסיסמאות לא תואמות!",
     "change-password-error-privileges": "אין לך את ההרשאות המתאימות לשנות סיסמה זו.",
     "change-password-success": "הסיסמה שלך עודכנה!",

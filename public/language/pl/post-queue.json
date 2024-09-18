@@ -38,5 +38,6 @@
 	"remove-selected": "Usuń wybrane",
 	"remove-selected-confirm": "Czy chcesz usunąć %1 wybranych postów?",
 	"bulk-accept-success": "%1 postów zaakceptowanych",
-	"bulk-reject-success": "%1 postów odrzuconych"
+	"bulk-reject-success": "%1 postów odrzuconych",
+	"links-in-this-post": "Odnośniki w tym wpisie"
 }

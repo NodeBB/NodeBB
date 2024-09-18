@@ -78,6 +78,7 @@
     "change-password": "비밀번호 변경",
     "change-password-error": "유효하지 않은 비밀번호!",
     "change-password-error-wrong-current": "현재 비밀번호가 올바르지 않습니다!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "비밀번호가 일치해야 합니다!",
     "change-password-error-privileges": "이 비밀번호를 변경할 권한이 없습니다.",
     "change-password-success": "비밀번호가 업데이트되었습니다!",

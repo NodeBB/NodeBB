@@ -9,9 +9,9 @@
 	"filter-type": "Loại Sự Kiện",
 	"filter-start": "Ngày Bắt Đầu",
 	"filter-end": "Ngày Kết Thúc",
-	"filter-user": "Filter by User",
-	"filter-user.placeholder": "Type user name to filter...",
-	"filter-group": "Filter by Group",
-	"filter-group.placeholder": "Type group name to filter...",
+	"filter-user": "Lọc theo Người Dùng",
+	"filter-user.placeholder": "Nhập tên người dùng để lọc...",
+	"filter-group": "Lọc theo Nhóm",
+	"filter-group.placeholder": "Nhập tên nhóm để lọc...",
 	"filter-per-page": "Mỗi Trang"
 }

@@ -363,7 +363,10 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		user.blocks.is(uid, toUid),
 	]);
 
-	if (isBlocked || (settings.restrictChat && !isAdmin && !isModerator && !isFollowing)) {
+	if (isBlocked) {
+		throw new Error('[[error:chat-user-blocked]]');
+	}
+	if (settings.restrictChat && !isAdmin && !isModerator && !isFollowing) {
 		throw new Error('[[error:chat-restricted]]');
 	}
 

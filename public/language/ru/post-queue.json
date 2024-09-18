@@ -38,5 +38,6 @@
 	"remove-selected": "Удалить выделенное",
 	"remove-selected-confirm": "Вы хотите удалить %1 выбранные записи?",
 	"bulk-accept-success": "%1 записи одобрены",
-	"bulk-reject-success": "%1 записи отклонены"
+	"bulk-reject-success": "%1 записи отклонены",
+	"links-in-this-post": "Links in this post"
 }

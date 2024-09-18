@@ -78,6 +78,7 @@
     "change-password": "Змінити пароль",
     "change-password-error": "Невірний пароль!",
     "change-password-error-wrong-current": "Ваш поточний пароль не вірний!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Паролі мають співпадати!",
     "change-password-error-privileges": "У вас немає прав змінювати цей пароль.",
     "change-password-success": "Ваш пароль оновлено!",

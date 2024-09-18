@@ -81,6 +81,7 @@
 	"change-password": "Change Password",
 	"change-password-error": "Invalid Password!",
 	"change-password-error-wrong-current": "Your current password is not correct!",
+	"change-password-error-same-password": "Your new password matches your current password, please use a new password.",
 	"change-password-error-match": "Passwords must match!",
 	"change-password-error-privileges": "You do not have the rights to change this password.",
 	"change-password-success": "Your password is updated!",

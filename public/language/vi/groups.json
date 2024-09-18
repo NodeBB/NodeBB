@@ -1,7 +1,7 @@
 {
     "all-groups": "Tất cả các nhóm",
     "groups": "Nhóm",
-    "members": "Members",
+    "members": "Thành Viên",
     "view-group": "Xem nhóm",
     "owner": "Người Sở Hữu Nhóm",
     "new-group": "Tạo nhóm mới",
@@ -21,8 +21,8 @@
     "cover-saving": "Đang lưu",
     "details.title": "Chi Tiết Nhóm",
     "details.members": "Danh Sách Thành Viên",
-    "details.pending": "Thành viên đang chờ trả lời",
-    "details.invited": "Thành viên đã được mời",
+    "details.pending": "Thành Viên Đang Chờ",
+    "details.invited": "Thành Viên Đã Mời",
     "details.has-no-posts": "Thành viên nhóm này chưa đăng bài viết nào.",
     "details.latest-posts": "Bài viết mới nhất",
     "details.private": "Riêng tư",
@@ -35,7 +35,7 @@
     "details.owner-options": "Quản Trị Nhóm",
     "details.group-name": "Tên nhóm",
     "details.member-count": "Số thành viên",
-    "details.creation-date": "Ngày Thành Lập",
+    "details.creation-date": "Ngày Tạo",
     "details.description": "Miêu tả",
     "details.member-post-cids": "ID chuyên mục để hiển thị bài đăng từ",
     "details.badge-preview": "Xem thử huy hiệu",
@@ -60,7 +60,7 @@
     "membership.reject": "Từ chối",
     "new-group.group-name": "Tên Nhóm:",
     "upload-group-cover": "Tải lên ảnh bìa nhóm",
-    "bulk-invite-instructions": "Nhập danh sách username, ngăn cách bằng dấu phẩy, để mời vào nhóm",
+    "bulk-invite-instructions": "Nhập danh sách tên đăng nhập, phân tách bằng dấu phẩy, để mời vào nhóm",
     "bulk-invite": "Mời nhiều người",
     "remove-group-cover-confirm": "Bạn có chắc rằng muốn xoá ảnh bìa không?"
 }

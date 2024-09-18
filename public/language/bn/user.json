@@ -78,6 +78,7 @@
     "change-password": "পাসওয়ার্ড পরিবর্তন",
     "change-password-error": "অগ্রহনযোগ্য পাসওয়ার্ড",
     "change-password-error-wrong-current": "আপনার পাসওয়ার্ড সঠিক নয়",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "পাসওয়ার্ড অবশ্যই একই হতে হবে",
     "change-password-error-privileges": "আপনার পাসওয়ার্ড পরিবর্তন করার অনুমতি নেই",
     "change-password-success": "আপনার পাসওয়ার্ড আপডেট করা হয়েছে",

@@ -78,6 +78,7 @@
     "change-password": "Промяна на паролата",
     "change-password-error": "Грешна парола!",
     "change-password-error-wrong-current": "Текущата Ви парола е грешна!",
+    "change-password-error-same-password": "Новата Ви парола съвпада с текущата. Моля, използвайте нова парола.",
     "change-password-error-match": "Паролите са различни!",
     "change-password-error-privileges": "Нямате права да промените тази парола.",
     "change-password-success": "Паролата ви е обновена!",

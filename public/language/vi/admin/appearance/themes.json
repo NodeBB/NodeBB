@@ -1,13 +1,13 @@
 {
-    "themes": "Themes",
+    "themes": "Giao diện",
     "checking-for-installed": "Đang kiểm tra các giao diện đã cài đặt...",
     "homepage": "Trang chủ",
     "select-theme": "Chọn Giao Diện",
-    "revert-theme": "Revert Theme",
+    "revert-theme": "Hoàn Nguyên Chủ Đề",
     "current-theme": "Giao Diện Hiện Tại",
     "no-themes": "Không tìm thấy giao diện đã cài đặt",
     "revert-confirm": "Bạn có chắc muốn khôi phục giao diện NodeBB mặc định không?",
     "theme-changed": "Đã Đổi Giao Diện",
     "revert-success": "Bạn đã thành công trả lại NodeBB của mình trở về giao diện mặc định.",
-    "restart-to-activate": "Vui lòng xây dựng lại và khởi động lại NodeBB của bạn để kích hoạt đầy đủ giao diện này."
+    "restart-to-activate": "Hãy dựng lại và chạy lại NodeBB để kích hoạt toàn bộ giao diện này."
 }

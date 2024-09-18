@@ -3,7 +3,7 @@
 	"post-queue": "发布队列",
 	"no-queued-posts": "发帖队列中没有帖子。",
 	"no-single-post": "您正在查看的主题或帖子已经不在队列中。它可能已经被批准或删除。",
-	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"enabling-help": "发帖队列已<strong>禁用</strong>，要启用，请转到<a href=\"%1\">设置&rarr;帖子&rarr;发帖队列</a>然后启用<strong>发帖队列</strong>",
 	"back-to-list": "回到发帖队列",
 	"public-intro": "如果你有帖子等待发布，它们会显示在这里",
 	"public-description": "本论坛设置为新用户帖子进入发布队列，等待版主审核。<br />如果你有帖子等待发布，它们会显示在这里。",
@@ -38,5 +38,6 @@
 	"remove-selected": "移除所选内容",
 	"remove-selected-confirm": "你想删除%1的选定帖子吗？",
 	"bulk-accept-success": "%1个帖子已接受",
-	"bulk-reject-success": "%1个帖子已拒绝"
+	"bulk-reject-success": "%1个帖子已拒绝",
+	"links-in-this-post": "帖子中的链接"
 }

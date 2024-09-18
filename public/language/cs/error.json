@@ -153,6 +153,7 @@
     "about-me-too-long": "Omlouváme se, ale \"O mně\" nesmí být delší než %1 znaků.",
     "cant-chat-with-yourself": "Nemůžete konverzovat sami se sebou.",
     "chat-restricted": "Tento uživatel má omezené konverzační zprávy. Nejdříve vás musí začít sledovat, než začnete spolu konverzovat",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Konverzační systém zakázán",
     "too-many-messages": "Odeslal/a jste příliš mnoho zpráv, vyčkejte chvíli.",
     "invalid-chat-message": "Neplatná konverzační zpráva",

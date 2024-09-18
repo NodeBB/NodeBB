@@ -14,7 +14,7 @@ services:
       - ./install/docker/setup.json:/usr/src/app/setup.json
 
   postgres:
-    image: postgres:16.3-alpine
+    image: postgres:16.4-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: nodebb
@@ -24,7 +24,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   redis:
-    image: redis:7.2.4-alpine
+    image: redis:7.4.0-alpine
     restart: unless-stopped
     command: ['redis-server', '--appendonly', 'yes', '--loglevel', 'warning']
     # command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # uncomment if you want to use snapshotting instead of AOF

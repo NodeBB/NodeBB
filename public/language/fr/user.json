@@ -78,6 +78,7 @@
     "change-password": "Changer le mot de passe",
     "change-password-error": "Mot de passe invalide !",
     "change-password-error-wrong-current": "Votre mot de passe est incorrect !",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Les mots de passe doivent être identiques !",
     "change-password-error-privileges": "Vous n'avez pas les droits de changer ce mot de passe.",
     "change-password-success": "Votre mot de passe a été mis à jour.",

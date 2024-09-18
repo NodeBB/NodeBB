@@ -11,7 +11,7 @@
     "500.message": "Oeps! Ziet er naar uit dat iets fout ging!",
     "400.title": "Foutief verzoek",
     "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
-    "register": "Registeren",
+    "register": "Registreren",
     "login": "Login",
     "please-log-in": "Aanmelden",
     "logout": "Uitloggen",

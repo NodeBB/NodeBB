@@ -4,9 +4,12 @@ const validator = require('validator');
 
 const user = require('../user');
 const topics = require('../topics');
+const categories = require('../categories');
 const posts = require('../posts');
 const meta = require('../meta');
 const privileges = require('../privileges');
+const events = require('../events');
+const batch = require('../batch');
 
 const apiHelpers = require('./helpers');
 
@@ -297,4 +300,49 @@ topicsAPI.bump = async (caller, { tid }) => {
 
 	await topics.markAsUnreadForAll(tid);
 	topics.pushUnreadCount(caller.uid);
+};
+
+topicsAPI.move = async (caller, { tid, cid }) => {
+	const canMove = await privileges.categories.isAdminOrMod(cid, caller.uid);
+	if (!canMove) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const tids = Array.isArray(tid) ? tid : [tid];
+	const uids = await user.getUidsFromSet('users:online', 0, -1);
+	const cids = [parseInt(cid, 10)];
+
+	await batch.processArray(tids, async (tids) => {
+		await Promise.all(tids.map(async (tid) => {
+			const canMove = await privileges.topics.isAdminOrMod(tid, caller.uid);
+			if (!canMove) {
+				throw new Error('[[error:no-privileges]]');
+			}
+			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug', 'deleted']);
+			if (!cids.includes(topicData.cid)) {
+				cids.push(topicData.cid);
+			}
+			await topics.tools.move(tid, {
+				cid,
+				uid: caller.uid,
+			});
+
+			const notifyUids = await privileges.categories.filterUids('topics:read', topicData.cid, uids);
+			socketHelpers.emitToUids('event:topic_moved', topicData, notifyUids);
+			if (!topicData.deleted) {
+				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
+			}
+
+			await events.log({
+				type: `topic-move`,
+				uid: caller.uid,
+				ip: caller.ip,
+				tid: tid,
+				fromCid: topicData.cid,
+				toCid: cid,
+			});
+		}));
+	}, { batch: 10 });
+
+	await categories.onTopicsMoved(cids);
 };

@@ -78,6 +78,7 @@
     "change-password": "Promjeni lozinku",
     "change-password-error": "Netočna lozinka!",
     "change-password-error-wrong-current": "Vaša trenutačna lozinka nije točna!",
+    "change-password-error-same-password": "Your new password matches your current password, please use a new password.",
     "change-password-error-match": "Lozinke se moraju podudarati!",
     "change-password-error-privileges": "Nemate pravo mijenjati ovu lozinku.",
     "change-password-success": "Vaša lozinka je promijenjena!",
