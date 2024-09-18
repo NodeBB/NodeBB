@@ -106,6 +106,7 @@ async function buildRecipients(object, { pid, uid }) {
 	/**
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
+	 * - `pid` is optional, but if included, includes announcers and all authors up the toPid chain
 	 */
 	const followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
 	let { to, cc } = object;
@@ -127,14 +128,18 @@ async function buildRecipients(object, { pid, uid }) {
 		}
 	});
 
-	// Announcers and their followers
+	// Topic posters, post announcers and their followers
 	if (pid) {
+		const tid = await posts.getPostField(pid, 'tid');
+		const participants = (await db.getSortedSetMembers(`tid:${tid}:posters`))
+			.filter(uid => !utils.isNumber(uid)); // remote users only
 		const announcers = (await activitypub.notes.announce.list({ pid })).map(({ actor }) => actor);
-		const announcersFollowers = (await user.getUsersFields(announcers, ['followersUrl']))
+		const auxiliaries = Array.from(new Set([...participants, ...announcers]));
+		const auxiliaryFollowers = (await user.getUsersFields(auxiliaries, ['followersUrl']))
 			.filter(o => o.hasOwnProperty('followersUrl'))
 			.map(({ followersUrl }) => followersUrl);
-		[...announcers].forEach(uri => targets.add(uri));
-		[...announcers, ...announcersFollowers].forEach(uri => cc.add(uri));
+		[...auxiliaries].forEach(uri => targets.add(uri));
+		[...auxiliaries, ...auxiliaryFollowers].forEach(uri => cc.add(uri));
 	}
 
 	return {
@@ -161,7 +166,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	}
 
 	const object = await activitypub.mocks.note(post);
-	const { to, cc, targets } = await buildRecipients(object, { uid: post.user.uid });
+	const { to, cc, targets } = await buildRecipients(object, { pid, uid: post.user.uid });
 	const { cid } = post.category;
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
 
@@ -318,6 +323,7 @@ activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 	}
 
 	const { to, cc, targets } = await buildRecipients({
+		id: pid,
 		to: [activitypub._constants.publicAddress],
 		cc: [`${nconf.get('url')}/uid/${caller.uid}/followers`, uid],
 	}, { uid: caller.uid });
