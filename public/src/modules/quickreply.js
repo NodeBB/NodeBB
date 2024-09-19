@@ -8,7 +8,7 @@ define('quickreply', [
 	alerts, uploadHelpers, mousetrap, storage, hooks
 ) {
 	const QuickReply = {
-		_active: {},
+		_autocomplete: null,
 	};
 
 	QuickReply.init = function () {
@@ -29,7 +29,7 @@ define('quickreply', [
 			destroyAutoComplete();
 		});
 		$(window).trigger('composer:autocomplete:init', data);
-		QuickReply._active.core_qr = autocomplete.setup(data);
+		QuickReply._autocomplete = autocomplete.setup(data);
 
 		mousetrap.bind('ctrl+return', (e) => {
 			if (e.target === element.get(0)) {
@@ -92,7 +92,7 @@ define('quickreply', [
 
 				components.get('topic/quickreply/text').val('');
 				storage.removeItem(qrDraftId);
-				autocomplete._active.core_qr.hide();
+				QuickReply._autocomplete.hide();
 				hooks.fire('action:quickreply.success', { data });
 			});
 		});
@@ -125,9 +125,9 @@ define('quickreply', [
 	};
 
 	function destroyAutoComplete() {
-		if (QuickReply._active.core_qr) {
-			QuickReply._active.core_qr.destroy();
-			QuickReply._active.core_qr = null;
+		if (QuickReply._autocomplete) {
+			QuickReply._autocomplete.destroy();
+			QuickReply._autocomplete = null;
 		}
 	}
 
