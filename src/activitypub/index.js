@@ -33,6 +33,8 @@ ActivityPub._constants = Object.freeze({
 	acceptedPostTypes: [
 		'Note', 'Page', 'Article', 'Question',
 	],
+	acceptableActorTypes: new Set(['Application', 'Group', 'Organization', 'Person', 'Service']),
+	requiredActorProps: ['inbox', 'outbox'],
 	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 });
 ActivityPub._cache = requestCache;

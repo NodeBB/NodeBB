@@ -20,6 +20,16 @@ const activitypub = module.parent.exports;
 const Actors = module.exports;
 
 Actors.assert = async (ids, options = {}) => {
+	/**
+	 * Ensures that the passed in ids or webfinger handles are stored in database.
+	 * Options:
+	 *   - update: boolean, forces re-fetch/process of the resolved id
+	 * Return one of:
+	 *   - An array of newly processed ids
+	 *   - false: if input incorrect (or webfinger handle cannot resolve)
+	 *   - true: no new IDs processed; all passed-in IDs present.
+	 */
+
 	// Handle single values
 	if (!Array.isArray(ids)) {
 		ids = [ids];
@@ -89,6 +99,12 @@ Actors.assert = async (ids, options = {}) => {
 		try {
 			// winston.verbose(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+			if (
+				!activitypub._constants.acceptableActorTypes.has(actor.type) ||
+				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
+			) {
+				return null;
+			}
 
 			// Follow counts
 			try {
