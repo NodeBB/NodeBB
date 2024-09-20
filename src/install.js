@@ -528,6 +528,7 @@ async function enableDefaultPlugins() {
 		'nodebb-plugin-composer-default',
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
+		'nodebb-plugin-web-push',
 		'nodebb-widget-essentials',
 		'nodebb-rewards-essentials',
 		'nodebb-plugin-emoji',
