@@ -21,13 +21,13 @@
 					</ul>
 				</div>
 				<div>
-					<button id="hide-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:hide-drafts]]</button>
-					<button id="show-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:show-drafts]]</button>
+					<button id="hide-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:hide-drafts]]</button>
+					<button id="show-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:show-drafts]]</button>
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-12 col-md-6" component="widgets-container">
+				<div class="col-12" component="widgets-container">
 					<div class="tab-content">
 					{{{ each templates }}}
 						<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
@@ -43,7 +43,7 @@
 					{{{ end }}}
 					</div>
 				</div>
-				<div class="col-12 col-md-6" component="drafts-container">
+				<div class="col-12 col-md-6 hidden" component="drafts-container">
 
 				</div>
 			</div>
