@@ -72,7 +72,7 @@
 		</button>
 
 		<div id="collapseSettings" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body p-0">
+			<div class="accordion-body p-0 d-grid">
 				<a class="btn btn-ghost btn-sm text-start" id="settings-general" href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/navigation">[[admin/menu:settings/navigation]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a>
