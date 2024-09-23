@@ -16,7 +16,6 @@ utils.getLanguage = function () {
 
 
 utils.makeNumbersHumanReadable = function (elements) {
-	console.warn('[deprecated] utils.makeNumbersHumanReadable is deprecated! Use {humanReadableNumber(value)} helper directly in the template');
 	elements.each(function () {
 		const $this = $(this);
 		const toFixed = $this.attr('data-toFixed') || 1;
@@ -26,7 +25,6 @@ utils.makeNumbersHumanReadable = function (elements) {
 };
 
 utils.addCommasToNumbers = function (elements) {
-	console.warn('[deprecated] utils.addCommasToNumbers is deprecated! Use {formattedNumber(value)} helper directly in the template');
 	elements.each(function (index, element) {
 		const $element = $(element);
 		$element
