@@ -127,7 +127,7 @@ Notifications.findRelated = async function (mergeIds, set) {
 		return [];
 	}
 	// A related notification is one in a zset that has the same mergeId
-	const nids = await db.getSortedSetRevRange(set, 0, -1);
+	const nids = await db.getSortedSetMembers(set);
 
 	const keys = nids.map(nid => `notifications:${nid}`);
 	const notificationData = await db.getObjectsFields(keys, ['mergeId']);

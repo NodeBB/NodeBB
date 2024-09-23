@@ -105,8 +105,8 @@
         "nodebb-plugin-emoji-android": "4.0.0",
         "nodebb-plugin-markdown": "13.0.0-pre.9",
         "nodebb-plugin-mentions": "4.6.8",
-        "nodebb-plugin-ntfy": "1.7.7",
         "nodebb-plugin-spam-be-gone": "2.2.2",
+        "nodebb-plugin-web-push": "0.6.0",
         "nodebb-rewards-essentials": "1.0.0",
         "nodebb-theme-harmony": "2.0.0-pre.36",
         "nodebb-theme-lavender": "7.1.8",
@@ -129,7 +129,7 @@
         "rss": "1.2.2",
         "rtlcss": "4.3.0",
         "sanitize-html": "2.13.0",
-        "sass": "1.79.1",
+        "sass": "1.79.2",
         "semver": "7.6.3",
         "serve-favicon": "2.5.0",
         "sharp": "0.32.6",
@@ -172,11 +172,11 @@
         "mocha": "10.7.3",
         "mocha-lcov-reporter": "1.3.0",
         "mockdate": "3.0.5",
-        "nyc": "17.0.0",
+        "nyc": "17.1.0",
         "smtp-server": "3.13.5"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.79.1"
+        "sass-embedded": "1.79.2"
     },
     "resolutions": {
         "*/jquery": "3.7.1"

@@ -43,8 +43,13 @@ self.addEventListener('push', function (event) {
 	const { title, body, tag, data } = event.data.json();
 
 	if (title && body) {
+		const icon = data.icon;
+		delete data.icon;
+		const badge = data.badge;
+		delete data.badge;
+
 		event.waitUntil(
-			self.registration.showNotification(title, { body, tag, data })
+			self.registration.showNotification(title, { body, tag, data, icon, badge })
 		);
 	} else if (tag) {
 		event.waitUntil(
