@@ -153,7 +153,7 @@
     "about-me-too-long": "מצטערים, דף האודות שלכם אינו יכול להיות ארוך מ-%1 תווים.",
     "cant-chat-with-yourself": "לא ניתן לעשות צ'אט עם עצמכם!",
     "chat-restricted": "משתמש זה חסם את הודעות הצ'אט שלו ממשתמשים זרים. המשתמש חייב לעקוב אחריכם לפני שתוכלו לשוחח איתו בצ'אט",
-    "chat-user-blocked": "You have been blocked by this user.",
+    "chat-user-blocked": "נחסמתם על ידי משתמש זה.",
     "chat-disabled": "מערכת הצ'אט לא פעילה",
     "too-many-messages": "שלחתם יותר מדי הודעות, אנא המתינו זמן מה.",
     "invalid-chat-message": "הודעת צ'אט לא תקינה",
