@@ -58,7 +58,10 @@ Actors.note = async function (req, res) {
 	// technically a note isn't an actor, but it is here purely for organizational purposes.
 	// but also, wouldn't it be wild if you could follow a note? lol.
 	const allowed = utils.isNumber(req.params.pid) && await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
-	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, { stripTags: false })).pop();
+	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, {
+		stripTags: false,
+		extraFields: ['edited'],
+	})).pop();
 	if (!allowed || !post) {
 		return res.sendStatus(404);
 	}

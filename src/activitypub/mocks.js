@@ -277,7 +277,8 @@ Mocks.note = async (post) => {
 		});
 	}
 
-	const published = new Date(parseInt(post.timestamp, 10)).toISOString();
+	const published = post.timestampISO;
+	const updated = post.edited ? post.editedISO : null;
 
 	// todo: post visibility
 	const to = new Set([activitypub._constants.publicAddress]);
@@ -420,6 +421,7 @@ Mocks.note = async (post) => {
 		cc: Array.from(cc),
 		inReplyTo,
 		published,
+		updated,
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context: `${nconf.get('url')}/topic/${post.topic.tid}`,
