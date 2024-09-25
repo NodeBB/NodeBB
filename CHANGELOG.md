@@ -1,3 +1,83 @@
+#### v3.10.0 (2024-09-25)
+
+##### Chores
+
+*  move service worker generation code to its own controller file (c153c469)
+*  incrementing version number - v3.9.1 (f120c91c)
+*  incrementing version number - v3.9.0 (4880f32d)
+*  incrementing version number - v3.8.4 (4833f9a6)
+*  incrementing version number - v3.8.3 (97ce2c44)
+*  incrementing version number - v3.8.2 (72d91251)
+*  incrementing version number - v3.8.1 (527326f7)
+*  incrementing version number - v3.8.0 (e228a6eb)
+*  incrementing version number - v3.7.5 (6882894d)
+*  incrementing version number - v3.7.4 (6678744c)
+*  incrementing version number - v3.7.3 (2d62b6f6)
+*  incrementing version number - v3.7.2 (cc257e7e)
+*  incrementing version number - v3.7.1 (712365a5)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+* **deps:**
+  *  update dependency jsdom to v25.0.1 (#12816) (9a24eb7e)
+  *  update dependency sass-embedded to v1.79.3 (#12813) (e0cb1d26)
+  *  update dependency sass-embedded to v1.79.2 (#12811) (8a6ced2d)
+  *  update dependency nyc to v17.1.0 (#12806) (d55c3f03)
+
+##### New Features
+
+*  port updated service worker code to `develop`, allow plugins to define scripts to import into service worker (979954c2)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency esbuild to v0.24.0 (#12817) (8c148bc4)
+  *  update dependency commander to v12.1.0 (#12587) (c7d4db8c)
+  *  update dependency sass to v1.79.3 (#12814) (f0cdc249)
+  *  update dependency sass to v1.79.2 (#12812) (2a5d481f)
+  *  update dependency nodebb-widget-essentials to v7.0.29 (#12805) (86c2caed)
+
+##### Refactors
+
+*  silence saas deprecations on prod (3fdec51a)
+
 #### v3.9.1 (2024-09-25)
 
 ##### Chores
