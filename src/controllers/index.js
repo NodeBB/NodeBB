@@ -34,6 +34,7 @@ Controllers.globalMods = require('./globalmods');
 Controllers.mods = require('./mods');
 Controllers.sitemap = require('./sitemap');
 Controllers.osd = require('./osd');
+Controllers['service-worker'] = require('./service-worker');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
