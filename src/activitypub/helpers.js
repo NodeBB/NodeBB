@@ -256,7 +256,10 @@ Helpers.resolveObjects = async (ids) => {
 				const post = (await posts.getPostSummaryByPids(
 					[resolvedId],
 					activitypub._constants.uid,
-					{ stripTags: false }
+					{
+						stripTags: false,
+						extraFields: ['edited'],
+					}
 				)).pop();
 				if (!post) {
 					throw new Error('[[error:activitypub.invalid-id]]');

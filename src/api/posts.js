@@ -207,7 +207,7 @@ async function deleteOrRestore(caller, data, params) {
 	});
 
 	// Explicitly non-awaited
-	posts.getPostSummaryByPids([data.pid], caller.uid, {}).then(([post]) => {
+	posts.getPostSummaryByPids([data.pid], caller.uid, { extraFields: ['edited'] }).then(([post]) => {
 		require('.').activitypub.update.note(caller, { post });
 	});
 }
