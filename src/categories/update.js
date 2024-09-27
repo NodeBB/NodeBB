@@ -39,6 +39,11 @@ module.exports = function (Categories) {
 			// eslint-disable-next-line no-await-in-loop
 			await updateCategoryField(cid, key, category[key]);
 		}
+
+		if (['icon', 'color', 'bgColor'].some(prop => Object.keys(modifiedFields).includes(prop))) {
+			Categories.icons.flush(cid);
+		}
+
 		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });
 	}
 

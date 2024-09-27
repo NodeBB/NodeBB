@@ -224,12 +224,12 @@ Mocks.actors.category = async (cid) => {
 		};
 	}
 
-	let icon = meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
-	const filename = path.basename(utils.decodeHTMLEntities(icon));
+	let icon = await categories.icons.get(cid);
+	icon = icon.get('png');
 	icon = {
 		type: 'Image',
-		mediaType: mime.getType(filename),
-		url: `${nconf.get('url')}${utils.decodeHTMLEntities(icon)}`,
+		mediaType: 'image/png',
+		url: `${nconf.get('url')}${icon}`,
 	};
 
 	return {

@@ -24,6 +24,8 @@ require('./update')(Categories);
 require('./watch')(Categories);
 require('./search')(Categories);
 
+Categories.icons = require('./icon');
+
 Categories.exists = async function (cids) {
 	return await db.exists(
 		Array.isArray(cids) ? cids.map(cid => `category:${cid}`) : `category:${cids}`
