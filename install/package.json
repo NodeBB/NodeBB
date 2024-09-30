@@ -75,7 +75,7 @@
         "file-loader": "6.2.0",
         "fs-extra": "11.2.0",
         "graceful-fs": "4.2.11",
-        "helmet": "7.1.0",
+        "helmet": "7.2.0",
         "html-to-text": "9.0.5",
         "imagesloaded": "5.0.0",
         "ipaddr.js": "2.2.0",
@@ -128,7 +128,7 @@
         "rss": "1.2.2",
         "rtlcss": "4.3.0",
         "sanitize-html": "2.13.0",
-        "sass": "1.79.3",
+        "sass": "1.79.4",
         "semver": "7.6.3",
         "serve-favicon": "2.5.0",
         "sharp": "0.32.6",
@@ -175,7 +175,7 @@
         "smtp-server": "3.13.5"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.79.3"
+        "sass-embedded": "1.79.4"
     },
     "resolutions": {
         "*/jquery": "3.7.1"
