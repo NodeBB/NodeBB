@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const mime = require('mime');
 const path = require('path');
+const validator = require('validator');
 const sanitize = require('sanitize-html');
 
 const meta = require('../meta');
@@ -12,6 +13,7 @@ const posts = require('../posts');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
+const translator = require('../translator');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -157,6 +159,13 @@ Mocks.actors.user = async (uid) => {
 	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
+	let aboutmeParsed = '';
+	if (aboutme) {
+		aboutme = validator.escape(String(aboutme || ''));
+		aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', aboutme);
+		aboutmeParsed = translator.escape(aboutmeParsed);
+	}
+
 	if (picture) {
 		const imagePath = await user.getLocalAvatarPath(uid);
 		picture = {
@@ -190,7 +199,7 @@ Mocks.actors.user = async (uid) => {
 		type: 'Person',
 		name: username !== displayname ? fullname : username, // displayname is escaped, fullname is not
 		preferredUsername: userslug,
-		summary: aboutme,
+		summary: aboutmeParsed,
 		icon: picture,
 		image: cover,
 		published: new Date(joindate).toISOString(),
