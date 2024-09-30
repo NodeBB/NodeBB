@@ -6,7 +6,6 @@ const path = require('path');
 const validator = require('validator');
 const sanitize = require('sanitize-html');
 
-const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
