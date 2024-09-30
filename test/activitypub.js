@@ -473,6 +473,8 @@ describe('ActivityPub integration', () => {
 					type: 'Person',
 					name: 'example',
 					preferredUsername: 'example',
+					inbox: `https://example.org/user/${uid}/inbox`,
+					outbox: `https://example.org/user/${uid}/outbox`,
 
 					publicKey: {
 						id: `${actorUri}#key`,
