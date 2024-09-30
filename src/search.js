@@ -92,7 +92,14 @@ async function searchInContent(data) {
 			if (local.type === 'post') {
 				result = [[local.id], []];
 			} else {
-				result = await fetchRemoteObject(data.uid, data.query);
+				try {
+					result = await fetchRemoteObject(data);
+					if (result.hasOwnProperty('users')) {
+						return result;
+					}
+				} catch (e) {
+					// ...
+				}
 			}
 		}
 
@@ -146,7 +153,9 @@ async function searchInContent(data) {
 	return Object.assign(returnData, metadata);
 }
 
-async function fetchRemoteObject(uid, uri) {
+async function fetchRemoteObject(data) {
+	const { uid, query: uri } = data;
+
 	try {
 		let id = uri;
 		let exists = await posts.exists(id);
@@ -161,6 +170,9 @@ async function fetchRemoteObject(uid, uri) {
 				} else {
 					tid = await posts.getPostField(id, 'tid');
 				}
+			} else if (activitypub._constants.acceptableActorTypes.has(type)) {
+				data.searchIn = 'users';
+				return await user.search(data);
 			}
 		}
 

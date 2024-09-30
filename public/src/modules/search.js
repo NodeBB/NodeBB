@@ -26,6 +26,7 @@ define('search', [
 
 		const quickSearchContainer = searchFields.find('#quick-search-container');
 		const toggleVisibility = searchFields.hasClass('hidden');
+		const webfingerRegex = /^(@|acct:)?[\w-]+@.+$/; // should match src/activitypub/helpers.js
 
 		if (toggleVisibility) {
 			searchInput.off('blur').on('blur', function dismissSearch() {
@@ -70,6 +71,12 @@ define('search', [
 			const data = Search.getSearchPreferences();
 			data.term = input.val();
 			data.in = searchOptions.in;
+
+			// Override search target if webfinger handle entered
+			if (webfingerRegex.test(data.term)) {
+				data.in = 'users';
+			}
+
 			hooks.fire('action:search.submit', {
 				searchOptions: data,
 				searchElements: searchElements,
