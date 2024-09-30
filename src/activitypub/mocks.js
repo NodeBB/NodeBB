@@ -400,7 +400,7 @@ Mocks.note = async (post) => {
 		let type;
 
 		switch (true) {
-			case mediaType.startsWith('image'): {
+			case mediaType && mediaType.startsWith('image'): {
 				type = 'Image';
 				break;
 			}
