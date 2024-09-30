@@ -57,12 +57,21 @@ Actors.userBySlug = async function (req, res) {
 Actors.note = async function (req, res) {
 	// technically a note isn't an actor, but it is here purely for organizational purposes.
 	// but also, wouldn't it be wild if you could follow a note? lol.
-	const allowed = utils.isNumber(req.params.pid) && await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
+	const allowed = await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
+	if (!allowed) {
+		return res.sendStatus(404);
+	}
+
+	// Handle requests for remote content
+	if (!utils.isNumber(req.params.pid)) {
+		return res.set('Location', req.params.pid).sendStatus(308);
+	}
+
 	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, {
 		stripTags: false,
 		extraFields: ['edited'],
 	})).pop();
-	if (!allowed || !post) {
+	if (!post) {
 		return res.sendStatus(404);
 	}
 
