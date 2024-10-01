@@ -79,6 +79,11 @@ Contexts.getItems = async (uid, id, options) => {
 		next = first;
 	}
 
+	// Early breakout on empty collection
+	if (!chain.size) {
+		return [];
+	}
+
 	if (next) {
 		winston.verbose('[activitypub/context] Fetching next page...');
 		Array

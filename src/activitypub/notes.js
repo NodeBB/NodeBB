@@ -49,10 +49,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return { tid, count: 0 };
 	} else if (context.context) {
 		chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
-	} else {
-		// Fall back to inReplyTo traversal
+	}
+
+	if (!chain) {
+		// Fall back to inReplyTo traversal on context retrieval failure
 		chain = Array.from(await Notes.getParentChain(uid, input));
 	}
+
+	// Can't resolve — give up.
 	if (!chain.length) {
 		unlock(id);
 		return null;
