@@ -9,6 +9,7 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 const analytics = require('../analytics');
 const user = require('../user');
+const activitypub = require('../activitypub');
 const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
@@ -20,7 +21,7 @@ module.exports = function (Topics) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
 
-		const tid = await db.incrObjectField('global', 'nextTid');
+		const tid = data.tid || await db.incrObjectField('global', 'nextTid');
 
 		let topicData = {
 			tid: tid,
@@ -49,6 +50,12 @@ module.exports = function (Topics) {
 			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 		];
+		const countedSortedSetKeys = [
+			...['views', 'posts', 'votes'].map(prop => `${utils.isNumber(tid) ? 'topics' : 'topicsRemote'}:${prop}`),
+			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:posts`,
+			`cid:${topicData.cid}:tids:views`,
+		];
 
 		const scheduled = timestamp > Date.now();
 		if (scheduled) {
@@ -57,15 +64,10 @@ module.exports = function (Topics) {
 
 		await Promise.all([
 			db.sortedSetsAdd(timestampedSortedSetKeys, timestamp, topicData.tid),
-			db.sortedSetsAdd([
-				'topics:views', 'topics:posts', 'topics:votes',
-				`cid:${topicData.cid}:tids:votes`,
-				`cid:${topicData.cid}:tids:posts`,
-				`cid:${topicData.cid}:tids:views`,
-			], 0, topicData.tid),
+			db.sortedSetsAdd(countedSortedSetKeys, 0, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
-			db.incrObjectField('global', 'topicCount'),
+			utils.isNumber(tid) ? db.incrObjectField('global', 'topicCount') : null,
 			Topics.createTags(data.tags, topicData.tid, timestamp),
 			scheduled ? Promise.resolve() : categories.updateRecentTid(topicData.cid, topicData.tid),
 		]);
@@ -82,7 +84,7 @@ module.exports = function (Topics) {
 		const { uid } = data;
 
 		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
-			categories.exists(data.cid),
+			parseInt(data.cid, 10) > 0 ? categories.exists(data.cid) : true,
 			privileges.categories.can('topics:create', data.cid, uid),
 			privileges.categories.can('topics:tag', data.cid, uid),
 			privileges.users.isAdministrator(uid),
@@ -135,7 +137,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
-		if (uid > 0 && settings.followTopicsOnCreate) {
+		if (utils.isNumber(uid) && uid > 0 && settings.followTopicsOnCreate) {
 			await Topics.follow(postData.tid, uid);
 		}
 		const topicData = topics[0];
@@ -151,8 +153,11 @@ module.exports = function (Topics) {
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (parseInt(uid, 10) && !topicData.scheduled) {
-			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+		if (!topicData.scheduled) {
+			if (utils.isNumber(uid)) {
+				// New topic notifications only sent for local-to-local follows only
+				user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+			}
 			Topics.notifyTagFollowers(postData, uid);
 			categories.notifyCategoryFollowers(postData, uid);
 		}
@@ -202,11 +207,11 @@ module.exports = function (Topics) {
 			await Topics.follow(postData.tid, uid);
 		}
 
-		if (parseInt(uid, 10)) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid)) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid) || meta.config.allowGuestReplyNotifications) {
 			const { displayname } = postData.user;
 
 			Topics.notifyFollowers(postData, uid, {
@@ -223,35 +228,22 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost(postData, data) {
-		const { tid, uid } = postData;
-		await Topics.markAsRead([tid], uid);
-		const [
-			userInfo,
-			topicInfo,
-		] = await Promise.all([
-			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags']),
+	async function onNewPost({ pid, tid }, { uid }) {
+		const postData = (await posts.getPostSummaryByPids([pid], uid, {})).pop();
+		await Promise.all([
 			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
-			posts.parsePost(postData),
+			Topics.markAsRead([tid], uid),
 		]);
 
-		postData.user = userInfo[0];
-		postData.topic = topicInfo;
-		postData.index = topicInfo.postcount - 1;
-
-		posts.overrideGuestHandle(postData, data.handle);
-
-		postData.votes = 0;
+		// Returned data is a superset of post summary data
+		postData.index = postData.topic.postcount - 1;
 		postData.bookmarked = false;
 		postData.display_edit_tools = true;
 		postData.display_delete_tools = true;
 		postData.display_moderator_tools = true;
 		postData.display_move_tools = true;
 		postData.selfPost = false;
-		postData.timestampISO = utils.toISOString(postData.timestamp);
-		postData.topic.title = String(postData.topic.title);
 
 		return postData;
 	}

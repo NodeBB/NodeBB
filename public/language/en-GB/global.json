@@ -56,6 +56,7 @@
 	"header.navigation": "Navigation",
 	"header.manage": "Manage",
 	"header.drafts": "Drafts",
+	"header.world": "World",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
@@ -130,6 +131,8 @@
 	"dnd": "Do not disturb",
 	"invisible": "Invisible",
 	"offline": "Offline",
+
+	"remote-user": "This user is from outside of this forum",
 
 	"email": "Email",
 	"language": "Language",

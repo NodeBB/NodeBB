@@ -26,6 +26,9 @@ const validSorts = [
 
 categoryController.get = async function (req, res, next) {
 	const cid = req.params.category_id;
+	if (cid === '-1') {
+		return helpers.redirect(res, `${res.locals.isAPI ? '/api' : ''}/world?${qs.stringify(req.query)}`);
+	}
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	let topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
@@ -155,6 +158,11 @@ categoryController.get = async function (req, res, next) {
 
 	analytics.increment([`pageviews:byCid:${categoryData.cid}`]);
 
+	if (meta.config.activitypubEnabled) {
+		// Include link header for richer parsing
+		res.set('Link', `<${nconf.get('url')}/actegory/${cid}>; rel="alternate"; type="application/activity+json"`);
+	}
+
 	res.render('category', categoryData);
 };
 
@@ -224,6 +232,14 @@ function addTags(categoryData, res, currentPage) {
 			rel: 'alternate',
 			type: 'application/rss+xml',
 			href: categoryData.rssFeedUrl,
+		});
+	}
+
+	if (meta.config.activitypubEnabled) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/activity+json',
+			href: `${nconf.get('url')}/actegory/${categoryData.cid}`,
 		});
 	}
 }

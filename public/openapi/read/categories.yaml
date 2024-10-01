@@ -151,6 +151,9 @@ get:
                                       uid:
                                         type: number
                                         description: A user identifier
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         description: A friendly name for a given user account
@@ -220,6 +223,9 @@ get:
                                       uid:
                                         type: number
                                         example: 1
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         example: Dragon Fruit

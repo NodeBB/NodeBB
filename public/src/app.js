@@ -358,6 +358,20 @@ if (document.readyState === 'loading') {
 		if (!config.useragent.isSafari && 'serviceWorker' in navigator) {
 			navigator.serviceWorker.register(config.relative_path + '/service-worker.js', { scope: config.relative_path + '/' })
 				.then(function () {
+					navigator.serviceWorker.addEventListener('message', (event) => {
+						const { action, url } = event.data;
+						switch (action) {
+							case 'ajaxify': {
+								const check = ajaxify.check(url);
+								if (check) {
+									ajaxify.go(url);
+								} else {
+									window.location.href = url;
+								}
+							}
+						}
+					});
+
 					console.info('ServiceWorker registration succeeded.');
 				}).catch(function (err) {
 					console.info('ServiceWorker registration failed: ', err);

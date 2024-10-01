@@ -1,8 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
+const nconf = require('nconf');
 
 const db = require('../../database');
+const meta = require('../../meta');
 const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
@@ -41,7 +43,12 @@ profileController.get = async function (req, res, next) {
 		userData.profileviews = 1;
 	}
 
-	addMetaTags(res, userData);
+	addTags(res, userData);
+
+	if (meta.config.activitypubEnabled) {
+		// Include link header for richer parsing
+		res.set('Link', `<${nconf.get('url')}/uid/${userData.uid}>; rel="alternate"; type="application/activity+json"`);
+	}
 
 	res.render('account/profile', userData);
 };
@@ -112,7 +119,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 	return postData.slice(0, count);
 }
 
-function addMetaTags(res, userData) {
+function addTags(res, userData) {
 	const plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
 	res.locals.metaTags = [
 		{
@@ -148,5 +155,13 @@ function addMetaTags(res, userData) {
 				noEscape: true,
 			}
 		);
+	}
+
+	if (meta.config.activitypubEnabled) {
+		res.locals.linkTags = [{
+			rel: 'alternate',
+			type: 'application/activity+json',
+			href: `${nconf.get('url')}/uid/${userData.uid}`,
+		}];
 	}
 }

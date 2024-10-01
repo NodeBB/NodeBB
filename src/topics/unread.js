@@ -3,6 +3,7 @@
 
 const async = require('async');
 const _ = require('lodash');
+const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
@@ -293,7 +294,7 @@ module.exports = function (Topics) {
 			return false;
 		}
 
-		tids = _.uniq(tids).filter(tid => tid && utils.isNumber(tid));
+		tids = _.uniq(tids).filter(tid => tid && (utils.isNumber(tid) || validator.isUUID(tid)));
 
 		if (!tids.length) {
 			return false;
