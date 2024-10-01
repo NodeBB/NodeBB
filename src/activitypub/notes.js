@@ -51,7 +51,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 	}
 
-	if (!chain) {
+	if (!chain || !chain.length) {
 		// Fall back to inReplyTo traversal on context retrieval failure
 		chain = Array.from(await Notes.getParentChain(uid, input));
 	}
