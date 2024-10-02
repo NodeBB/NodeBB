@@ -76,6 +76,11 @@ inbox.create = async (req) => {
 inbox.update = async (req) => {
 	const { actor, object } = req.body;
 
+	// Temporary, reject non-public notes.
+	if (![...object.to, ...object.cc].includes(activitypub._constants.publicAddress)) {
+		throw new Error('[[error:activitypub.not-implemented]]');
+	}
+
 	// Origin checking
 	const actorHostname = new URL(actor).hostname;
 	const objectHostname = new URL(object.id).hostname;
