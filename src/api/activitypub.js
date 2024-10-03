@@ -102,20 +102,35 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 
 activitypubApi.create = {};
 
-async function buildRecipients(object, { pid, uid }) {
+async function buildRecipients(object, { pid, uid, cid }) {
 	/**
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
-	 * - `pid` is optional, but if included, includes announcers and all authors up the toPid chain
+	 * - Optional parameters:
+	 *     - `cid`: includes followers of the passed-in cid (local only)
+	 *     - `uid`: includes followers of the passed-in uid (local only)
+	 *     - `pid`: includes announcers and all authors up the toPid chain
 	 */
-	const followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
 
-	const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
-	if (!to.has(followersUrl)) {
-		cc.add(followersUrl);
+	let followers = [];
+	if (uid) {
+		followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
+		const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
+		if (!to.has(followersUrl)) {
+			cc.add(followersUrl);
+		}
+	}
+
+	if (cid) {
+		const cidFollowers = await activitypub.notes.getCategoryFollowers(cid);
+		followers = followers.concat(cidFollowers);
+		const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
+		if (!to.has(followersUrl)) {
+			cc.add(followersUrl);
+		}
 	}
 
 	const targets = new Set([...followers, ...to, ...cc]);
@@ -138,8 +153,8 @@ async function buildRecipients(object, { pid, uid }) {
 		const auxiliaryFollowers = (await user.getUsersFields(auxiliaries, ['followersUrl']))
 			.filter(o => o.hasOwnProperty('followersUrl'))
 			.map(({ followersUrl }) => followersUrl);
-		[...auxiliaries].forEach(uri => targets.add(uri));
-		[...auxiliaries, ...auxiliaryFollowers].forEach(uri => cc.add(uri));
+		[...auxiliaries].forEach(uri => uri && targets.add(uri));
+		[...auxiliaries, ...auxiliaryFollowers].forEach(uri => uri && cc.add(uri));
 	}
 
 	return {
@@ -191,6 +206,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 					object,
 				});
 			})).catch(err => winston.error(err.stack));
+			activitypubApi.add(caller, { pid });
 		}, 5000);
 	}
 });
@@ -382,6 +398,33 @@ activitypubApi.flag = enabledCheck(async (caller, flag) => {
 	});
 	await db.sortedSetAdd(`flag:${flag.flagId}:remote`, Date.now(), caller.uid);
 });
+
+activitypubApi.add = enabledCheck((async (_, { pid }) => {
+	let localId;
+	if (String(pid).startsWith(nconf.get('url'))) {
+		({ id: localId } = await activitypub.helpers.resolveLocalId(pid));
+	}
+
+	const tid = await posts.getPostField(localId || pid, 'tid');
+	const cid = await posts.getCidByPid(localId || pid);
+	if (cid <= 0) {
+		return;
+	}
+
+	let to = [activitypub._constants.publicAddress];
+	let cc = [];
+	let targets;
+	({ to, cc, targets } = await buildRecipients({ to, cc }, { pid: localId || pid, cid }));
+
+	await activitypub.send('cid', cid, targets, {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(localId || pid)}#activity/add/${Date.now()}`,
+		type: 'Add',
+		to,
+		cc,
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+		target: `${nconf.get('url')}/topic/${tid}`,
+	});
+}));
 
 activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
 	if (!activitypub.helpers.isUri(flag.targetId)) {
