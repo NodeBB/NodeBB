@@ -112,9 +112,13 @@ define('forum/chats/manage', [
 
 	function addToggleOwnerHandler(roomId, modal) {
 		modal.on('click', '[data-action="toggleOwner"]', async function () {
-			const uid = parseInt(this.getAttribute('data-uid'), 10);
+			const uid = String(this.getAttribute('data-uid'));
 			const iconEl = modal.get(0).querySelector(`[component="chat/manage/user/list"] > [data-uid="${uid}"] [component="chat/manage/user/owner/icon"]`);
 			const current = !iconEl.classList.contains('hidden');
+
+			if (!utils.isNumber(uid)) {
+				return alerts.error('[[error:invalid-uid]]');
+			}
 
 			await api[current ? 'del' : 'put'](`/chats/${roomId}/owners/${uid}`);
 			iconEl.classList.toggle('hidden');
