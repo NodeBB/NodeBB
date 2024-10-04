@@ -84,7 +84,7 @@
     "notificationType-upvote": "Quando alguém vota positivamente numa publicação tua",
     "notificationType-new-topic": "Quando alguém que tu segues publica um tópico",
     "notificationType-new-topic-with-tag": "When a topic is posted with a tag you follow",
-    "notificationType-new-topic-in-category": "When a topic is posted in a category you are watching",
+    "notificationType-new-topic-in-category": "Quando uma nova resposta é publicada numa categoria que tu estás a seguir",
     "notificationType-new-reply": "Quando uma nova resposta é publicada num tópico que tu estás a seguir",
     "notificationType-post-edit": "Quando uma publicação é editada num tópico que estás a seguir",
     "notificationType-follow": "Quando alguém começa a seguir-te",
