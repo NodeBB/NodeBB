@@ -32,6 +32,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		shouldHideReplyContainer,
 		humanReadableNumber,
 		formattedNumber,
+		txEscape,
 		generatePlaceholderWave,
 		register,
 		__escape: identity,
@@ -364,6 +365,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function formattedNumber(number) {
 		return utils.addCommas(number);
+	}
+
+	function txEscape(text) {
+		return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 	}
 
 	function generatePlaceholderWave(items) {
