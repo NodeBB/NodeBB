@@ -80,6 +80,7 @@ module.exports = function (Messaging) {
 
 		try {
 			await sendNotification(fromUid, roomId, messageObj);
+			// await federate(fromUid, roomId, messageObj);
 		} catch (err) {
 			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 		}
@@ -98,7 +99,8 @@ module.exports = function (Messaging) {
 		const { ALLMESSAGES } = Messaging.notificationSettings;
 		await batch.processSortedSet(`chat:room:${roomId}:uids:online`, async (uids) => {
 			uids = uids.filter(
-				uid => (parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
+				uid => utils.isNumber(uid) &&
+					(parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
 					fromUid !== parseInt(uid, 10) &&
 					!realtimeUids.includes(parseInt(uid, 10))
 			);
@@ -140,4 +142,7 @@ module.exports = function (Messaging) {
 			await notifications.push(notification, uidsToNotify);
 		}
 	}
+
+	// async function federate(fromUid, roomId, messageObj) {
+	// }
 };

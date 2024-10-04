@@ -102,7 +102,7 @@ define('forum/chats/manage', [
 
 	function addKickHandler(roomId, modal) {
 		modal.on('click', '[data-action="kick"]', function () {
-			const uid = parseInt(this.getAttribute('data-uid'), 10);
+			const uid = encodeURIComponent(this.getAttribute('data-uid'));
 
 			api.del(`/chats/${roomId}/users/${uid}`, {}).then((body) => {
 				refreshParticipantsList(roomId, modal, body);

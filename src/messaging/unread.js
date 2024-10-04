@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../database');
+const utils = require('../utils');
 const io = require('../socket.io');
 
 module.exports = function (Messaging) {
@@ -26,6 +27,10 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markRead = async (uid, roomId) => {
+		if (!utils.isNumber(uid)) {
+			return;
+		}
+
 		await Promise.all([
 			db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId),
 			db.setObjectField(`uid:${uid}:chat:rooms:read`, roomId, Date.now()),
@@ -64,6 +69,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markUnread = async (uids, roomId) => {
+		// Remote users don't have (un)read states
+		uids = uids.filter(uid => utils.isNumber(uid));
+
 		const exists = await Messaging.roomExists(roomId);
 		if (!exists) {
 			return;
