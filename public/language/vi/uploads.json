@@ -3,7 +3,7 @@
     "select-file-to-upload": "Chọn một tệp để tải lên!",
     "upload-success": "Tải tệp lên thành công!",
     "maximum-file-size": "Tối đa %1 kb",
-    "no-uploads-found": "Không có tải lên được tìm thấy",
+    "no-uploads-found": "Không tìm thấy tải lên",
     "public-uploads-info": "Tải lên là công khai, mọi người đều xem được.",
     "private-uploads-info": "Tải lên là riêng tư, những ai đã đăng nhập mới có thể xem."
 }

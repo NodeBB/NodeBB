@@ -1,7 +1,7 @@
 {
     "register": "Đăng ký",
     "already-have-account": "Đã có tài khoản rồi?",
-    "cancel-registration": "Hủy đăng ký",
+    "cancel-registration": "Hủy Đăng Ký",
     "help.email": "Mặc định, email của bạn sẽ bị ẩn không công khai.",
     "help.username-restrictions": "Một tên đăng nhập duy nhất giữa %1 và %2 ký tự. Người khác có thể nhắc đến bạn với @<span id='yourUsername'>tên đăng nhập</span>.",
     "help.minimum-password-length": "Mật khẩu của bạn phải có ít nhất %1 ký tự",
