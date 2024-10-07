@@ -146,10 +146,15 @@ Assert.room = helpers.try(async (req, res, next) => {
 });
 
 Assert.message = helpers.try(async (req, res, next) => {
+	let roomId;
+	if (!req.params.roomId) {
+		roomId = await messaging.getMessageField(req.params.mid, 'roomId');
+	}
+
 	if (
 		!isFinite(req.params.mid) ||
 		!(await messaging.messageExists(req.params.mid)) ||
-		!(await messaging.canViewMessage(req.params.mid, req.params.roomId, req.uid))
+		!(await messaging.canViewMessage(req.params.mid, roomId || req.params.roomId, req.uid))
 	) {
 		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-mid]]'));
 	}
