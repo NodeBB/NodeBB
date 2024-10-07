@@ -6,6 +6,7 @@ const path = require('path');
 const validator = require('validator');
 const sanitize = require('sanitize-html');
 
+const db = require('../database');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -480,6 +481,14 @@ Mocks.notes.private = async ({ messageObj }) => {
 	if (messageObj.toMid) {
 		inReplyTo = utils.isNumber(messageObj.toMid) ?
 			`${nconf.get('url')}/api/v3/chats/${messageObj.roomId}/messages/${messageObj.toMid}` :
+			messageObj.toMid;
+	}
+	if (!inReplyTo) {
+		// Get immediately preceding message
+		const index = await db.sortedSetRank(`chat:room:${messageObj.roomId}:mids`, messageObj.mid);
+		const previousMid = await db.getSortedSetRange(`chat:room:${messageObj.roomId}:mids`, index - 1, index - 1);
+		inReplyTo = utils.isNumber(previousMid) ?
+			`${nconf.get('url')}/api/v3/chats/${messageObj.roomId}/messages/${previousMid}` :
 			messageObj.toMid;
 	}
 
