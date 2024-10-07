@@ -480,7 +480,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 	let inReplyTo;
 	if (messageObj.toMid) {
 		inReplyTo = utils.isNumber(messageObj.toMid) ?
-			`${nconf.get('url')}/api/v3/chats/${messageObj.roomId}/messages/${messageObj.toMid}` :
+			`${nconf.get('url')}/message/${messageObj.toMid}` :
 			messageObj.toMid;
 	}
 	if (!inReplyTo) {
@@ -488,7 +488,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 		const index = await db.sortedSetRank(`chat:room:${messageObj.roomId}:mids`, messageObj.mid);
 		const previousMid = await db.getSortedSetRange(`chat:room:${messageObj.roomId}:mids`, index - 1, index - 1);
 		inReplyTo = utils.isNumber(previousMid) ?
-			`${nconf.get('url')}/api/v3/chats/${messageObj.roomId}/messages/${previousMid}` :
+			`${nconf.get('url')}/message/${previousMid}` :
 			messageObj.toMid;
 	}
 
