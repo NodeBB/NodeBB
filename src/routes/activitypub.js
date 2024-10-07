@@ -14,11 +14,12 @@ module.exports = function (app, middleware, controllers) {
 	const middlewares = [
 		middleware.activitypub.enabled,
 		middleware.activitypub.assertS2S,
+		middleware.activitypub.verify,
 		middleware.activitypub.configureResponse,
 	];
 
 	const inboxMiddlewares = [
-		middleware.activitypub.validate,
+		middleware.activitypub.assertPayload,
 		middleware.activitypub.resolveObjects,
 	];
 

@@ -86,7 +86,7 @@ describe('Analytics', () => {
 			},
 		}, { sendStatus: () => {} });
 
-		await middleware.activitypub.validate({
+		await middleware.activitypub.assertPayload({
 			body: {
 				id,
 				type: 'Like',

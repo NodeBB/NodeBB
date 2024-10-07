@@ -28,7 +28,33 @@ middleware.assertS2S = async function (req, res, next) {
 	next();
 };
 
-middleware.validate = async function (req, res, next) {
+middleware.verify = async function (req, res, next) {
+	// Verifies the HTTP Signature if present (required for POST)
+	const passthrough = [/\/actor/, /\/uid\/\d+/];
+	if (req.method === 'GET' && passthrough.some(regex => regex.test(req.path))) {
+		return next();
+	}
+
+	const verified = await activitypub.verify(req);
+	if (!verified && req.method === 'POST') {
+		// winston.verbose('[middleware/activitypub] HTTP signature verification failed.');
+		return res.sendStatus(400);
+	}
+
+	// Set calling user
+	if (req.headers.signature) {
+		const keyId = req.headers.signature.split(',').filter(line => line.startsWith('keyId="'));
+		if (keyId.length) {
+			req.uid = keyId.shift().slice(7, -1).replace(/#.*$/, '');
+		}
+	}
+
+	// winston.verbose('[middleware/activitypub] HTTP signature verification passed.');
+	next();
+};
+
+middleware.assertPayload = async function (req, res, next) {
+	// Checks the validity of the incoming payload against the sender and rejects on failure
 	// winston.verbose('[middleware/activitypub] Validating incoming payload...');
 
 	// Sanity-check payload schema
@@ -45,14 +71,6 @@ middleware.validate = async function (req, res, next) {
 		// winston.verbose(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
 		return res.sendStatus(200);
 	}
-
-	// Checks the validity of the incoming payload against the sender and rejects on failure
-	const verified = await activitypub.verify(req);
-	if (!verified) {
-		// winston.verbose('[middleware/activitypub] HTTP signature verification failed.');
-		return res.sendStatus(400);
-	}
-	// winston.verbose('[middleware/activitypub] HTTP signature verification passed.');
 
 	let { actor, object } = req.body;
 
