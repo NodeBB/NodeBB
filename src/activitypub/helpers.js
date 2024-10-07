@@ -264,7 +264,7 @@ Helpers.resolveObjects = async (ids) => {
 				if (!post) {
 					throw new Error('[[error:activitypub.invalid-id]]');
 				}
-				return activitypub.mocks.note(post);
+				return activitypub.mocks.notes.public(post);
 			}
 			case 'category': {
 				if (!await categories.exists(resolvedId)) {

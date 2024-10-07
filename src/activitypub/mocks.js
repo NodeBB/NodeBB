@@ -10,6 +10,7 @@ const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
 const topics = require('../topics');
+const messaging = require('../messaging');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const translator = require('../translator');
@@ -271,7 +272,9 @@ Mocks.actors.category = async (cid) => {
 	};
 };
 
-Mocks.note = async (post) => {
+Mocks.notes = {};
+
+Mocks.notes.public = async (post) => {
 	const id = `${nconf.get('url')}/post/${post.pid}`;
 
 	// Return a tombstone for a deleted post
@@ -434,7 +437,6 @@ Mocks.note = async (post) => {
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context: `${nconf.get('url')}/topic/${post.topic.tid}`,
 		audience: `${nconf.get('url')}/category/${post.category.cid}`,
-		sensitive: false, // todo
 		summary: null,
 		name,
 		content: post.content,
@@ -442,6 +444,66 @@ Mocks.note = async (post) => {
 		tag,
 		attachment,
 		replies: `${id}/replies`,
+	};
+
+	return object;
+};
+
+Mocks.notes.private = async ({ messageObj }) => {
+	// todo: deleted messages
+	let uids = await messaging.getUidsInRoom(messageObj.roomId, 0, -1);
+	const remoteUids = uids.filter(uid => !utils.isNumber(uid));
+	uids = uids.map(uid => (utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid));
+	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
+	const to = new Set(uids);
+	const published = messageObj.timestampISO;
+	const updated = messageObj.edited ? messageObj.editedISO : undefined;
+	const content = await messaging.parse(messageObj.content, messageObj.fromuid, 0, messageObj.roomId, false);
+
+	let source;
+	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
+	if (markdownEnabled) {
+		source = {
+			content: messageObj.content,
+			mediaType: 'text/markdown',
+		};
+	}
+
+	const mentions = await user.getUsersFields(remoteUids, ['uid', 'userslug']);
+	const tag = [];
+	tag.push(...mentions.map(({ uid, userslug }) => ({
+		type: 'Mention',
+		href: uid,
+		name: userslug,
+	})));
+
+	let inReplyTo;
+	if (messageObj.toMid) {
+		inReplyTo = utils.isNumber(messageObj.toMid) ?
+			`${nconf.get('url')}/api/v3/chats/${messageObj.roomId}/messages/${messageObj.toMid}` :
+			messageObj.toMid;
+	}
+
+	const object = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id,
+		type: 'Note',
+		to: Array.from(to),
+		cc: [],
+		inReplyTo,
+		published,
+		updated,
+		url: id,
+		attributedTo: `${nconf.get('url')}/uid/${messageObj.fromuid}`,
+		// context: `${nconf.get('url')}/topic/${post.topic.tid}`,
+		// audience: `${nconf.get('url')}/category/${post.category.cid}`,
+		summary: null,
+		// name,
+		content: content,
+		source,
+		tag,
+		// attachment: [], // todo
+		// replies: `${id}/replies`, // todo
 	};
 
 	return object;

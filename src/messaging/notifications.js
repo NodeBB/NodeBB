@@ -8,6 +8,7 @@ const db = require('../database');
 const notifications = require('../notifications');
 const user = require('../user');
 const io = require('../socket.io');
+const api = require('../api');
 const plugins = require('../plugins');
 const utils = require('../utils');
 
@@ -79,8 +80,10 @@ module.exports = function (Messaging) {
 		}
 
 		try {
-			await sendNotification(fromUid, roomId, messageObj);
-			// await federate(fromUid, roomId, messageObj);
+			await Promise.all([
+				sendNotification(fromUid, roomId, messageObj),
+				!isPublic ? api.activitypub.create.privateNote({ uid: fromUid }, { messageObj }) : null,
+			]);
 		} catch (err) {
 			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 		}
@@ -142,7 +145,4 @@ module.exports = function (Messaging) {
 			await notifications.push(notification, uidsToNotify);
 		}
 	}
-
-	// async function federate(fromUid, roomId, messageObj) {
-	// }
 };

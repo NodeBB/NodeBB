@@ -18,6 +18,7 @@ const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const posts = require('../posts');
 const topics = require('../topics');
+const messaging = require('../messaging');
 const utils = require('../utils');
 
 const activitypubApi = module.exports;
@@ -180,7 +181,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		return;
 	}
 
-	const object = await activitypub.mocks.note(post);
+	const object = await activitypub.mocks.notes.public(post);
 	const { to, cc, targets } = await buildRecipients(object, { pid, uid: post.user.uid });
 	const { cid } = post.category;
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
@@ -209,6 +210,21 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 			activitypubApi.add(caller, { pid });
 		}, 5000);
 	}
+});
+
+activitypubApi.create.privateNote = enabledCheck(async (caller, { mid, messageObj }) => {
+	if (!messageObj) {
+		messageObj = await messaging.getMessageFields(mid, []);
+		if (!messageObj) {
+			throw new Error('[[error:invalid-data]]');
+		}
+	}
+	const { roomId } = messageObj;
+	let targets = await messaging.getUidsInRoom(roomId, 0, -1);
+	targets = targets.filter(uid => !utils.isNumber(uid)); // remote uids only
+
+	const payload = await activitypub.mocks.notes.private({ messageObj });
+	await activitypub.send('uid', messageObj.fromuid, targets, payload);
 });
 
 activitypubApi.update = {};
@@ -249,7 +265,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 		return;
 	}
 
-	const object = await activitypub.mocks.note(post);
+	const object = await activitypub.mocks.notes.public(post);
 	const { to, cc, targets } = await buildRecipients(object, { pid: post.pid, uid: post.user.uid });
 
 	const allowed = await privileges.posts.can('topics:read', post.pid, activitypub._constants.uid);
@@ -281,7 +297,7 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 
 	const id = `${nconf.get('url')}/post/${pid}`;
 	const post = (await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false })).pop();
-	const object = await activitypub.mocks.note(post);
+	const object = await activitypub.mocks.notes.public(post);
 	const { to, cc, targets } = await buildRecipients(object, { pid, uid: post.user.uid });
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);

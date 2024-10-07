@@ -9,6 +9,7 @@ const privileges = require('../../privileges');
 const posts = require('../../posts');
 const topics = require('../../topics');
 const categories = require('../../categories');
+const messaging = require('../../messaging');
 const activitypub = require('../../activitypub');
 const utils = require('../../utils');
 
@@ -75,7 +76,7 @@ Actors.note = async function (req, res) {
 		return res.sendStatus(404);
 	}
 
-	const payload = await activitypub.mocks.note(post);
+	const payload = await activitypub.mocks.notes.public(post);
 	res.status(200).json(payload);
 };
 
@@ -182,5 +183,16 @@ Actors.category = async function (req, res, next) {
 	}
 
 	const payload = await activitypub.mocks.actors.category(req.params.cid);
+	res.status(200).json(payload);
+};
+
+Actors.message = async function (req, res, next) {
+	// Handle requests for remote content
+	if (!utils.isNumber(req.params.mid)) {
+		return res.set('Location', req.params.mid).sendStatus(308);
+	}
+
+	const messageObj = await messaging.getMessageFields(req.params.mid, []);
+	const payload = await activitypub.mocks.notes.private({ messageObj });
 	res.status(200).json(payload);
 };
