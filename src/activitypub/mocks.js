@@ -458,7 +458,6 @@ Mocks.notes.private = async ({ messageObj }) => {
 	const to = new Set(uids);
 	const published = messageObj.timestampISO;
 	const updated = messageObj.edited ? messageObj.editedISO : undefined;
-	const content = await messaging.parse(messageObj.content, messageObj.fromuid, 0, messageObj.roomId, false);
 
 	let source;
 	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
@@ -499,7 +498,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 		// audience: `${nconf.get('url')}/category/${post.category.cid}`,
 		summary: null,
 		// name,
-		content: content,
+		content: messageObj.content,
 		source,
 		tag,
 		// attachment: [], // todo

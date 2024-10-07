@@ -193,6 +193,7 @@ Actors.message = async function (req, res, next) {
 	}
 
 	const messageObj = await messaging.getMessageFields(req.params.mid, []);
+	messageObj.content = await messaging.parse(messageObj.content, messageObj.fromuid, 0, messageObj.roomId, false);
 	const payload = await activitypub.mocks.notes.private({ messageObj });
 	res.status(200).json(payload);
 };

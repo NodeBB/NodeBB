@@ -212,13 +212,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	}
 });
 
-activitypubApi.create.privateNote = enabledCheck(async (caller, { mid, messageObj }) => {
-	if (!messageObj) {
-		messageObj = await messaging.getMessageFields(mid, []);
-		if (!messageObj) {
-			throw new Error('[[error:invalid-data]]');
-		}
-	}
+activitypubApi.create.privateNote = enabledCheck(async (caller, { messageObj }) => {
 	const { roomId } = messageObj;
 	let targets = await messaging.getUidsInRoom(roomId, 0, -1);
 	targets = targets.filter(uid => !utils.isNumber(uid)); // remote uids only
