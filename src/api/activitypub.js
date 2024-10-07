@@ -223,7 +223,15 @@ activitypubApi.create.privateNote = enabledCheck(async (caller, { mid, messageOb
 	let targets = await messaging.getUidsInRoom(roomId, 0, -1);
 	targets = targets.filter(uid => !utils.isNumber(uid)); // remote uids only
 
-	const payload = await activitypub.mocks.notes.private({ messageObj });
+	const object = await activitypub.mocks.notes.private({ messageObj });
+
+	const payload = {
+		id: `${object.id}#activity/create/${Date.now()}`,
+		type: 'Create',
+		to: object.to,
+		object,
+	};
+
 	await activitypub.send('uid', messageObj.fromuid, targets, payload);
 });
 
