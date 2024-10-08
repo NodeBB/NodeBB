@@ -453,7 +453,8 @@ Mocks.notes.public = async (post) => {
 Mocks.notes.private = async ({ messageObj }) => {
 	// todo: deleted messages
 	let uids = await messaging.getUidsInRoom(messageObj.roomId, 0, -1);
-	const remoteUids = uids.filter(uid => !utils.isNumber(uid));
+	uids = uids.filter(uid => String(uid) !== String(messageObj.fromuid)); // no author
+	const remoteUids = uids.filter(uid => !utils.isNumber(uid)); // for mentions
 	uids = uids.map(uid => (utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid));
 	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
 	const to = new Set(uids);
