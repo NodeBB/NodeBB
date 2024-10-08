@@ -225,9 +225,11 @@ Notes.assertPrivate = async (object) => {
 	}
 
 	// Compare room members with object recipients; if someone in-room is omitted, start new chat
+	const participants = await messaging.getUsersInRoom(roomId, 0, -1);
+	const participantUids = participants.map(user => user.uid);
 	if (roomId) {
-		const participants = await messaging.getUsersInRoom(roomId, 0, -1);
 		const omitted = participants.filter((user) => {
+			// todo: this could use recipientsResolved
 			let { uid } = user;
 			uid = utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid;
 			return !recipients.has(uid) && uid !== object.attributedTo;
@@ -248,6 +250,13 @@ Notes.assertPrivate = async (object) => {
 	if (!roomId) {
 		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipientsResolved] });
 		timestamp = Date.now(); // otherwise message can't be seen in room as it pre-dates participants joining
+	}
+
+	// Add any new members to the chat
+	const added = Array.from(recipientsResolved).filter(uid => !participantUids.includes(uid));
+	const assertion = await activitypub.actors.assert(added);
+	if (assertion) {
+		await messaging.addUsersToRoom(object.attributedTo, added, roomId);
 	}
 
 	// Add message to room
