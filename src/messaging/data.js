@@ -50,7 +50,7 @@ module.exports = function (Messaging) {
 		messages = messages
 			.map((msg, idx) => {
 				if (msg) {
-					msg.messageId = parseInt(mids[idx], 10);
+					msg.messageId = utils.isNumber(mids[idx]) ? parseInt(mids[idx], 10) : mids[idx];
 					msg.ip = undefined;
 					msg.isOwner = msg.fromuid === parseInt(uid, 10);
 				}
