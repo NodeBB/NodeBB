@@ -154,6 +154,9 @@ Helpers.resolveLocalId = async (input) => {
 					const uid = await user.getUidByUserslug(value);
 					return { type: 'user', id: uid, ...activityData };
 				}
+
+				case 'message':
+					return { type: 'message', id: value, ...activityData };
 			}
 
 			return { type: null, id: null, ...activityData };

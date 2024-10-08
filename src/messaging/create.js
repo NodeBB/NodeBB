@@ -50,7 +50,7 @@ module.exports = function (Messaging) {
 				throw new Error('[[error:no-privileges]]');
 			}
 		}
-		const mid = await db.incrObjectField('global', 'nextMid');
+		const mid = data.mid || await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
 		let message = {
 			mid: mid,

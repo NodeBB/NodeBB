@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
+const posts = require('../posts');
 const utils = require('../utils');
 const plugins = require('../plugins');
 
@@ -185,6 +186,8 @@ module.exports = function (Messaging) {
 	async function parseMessage(message, uid, roomId, isNew) {
 		if (message.system) {
 			return validator.escape(String(message.content));
+		} else if (!utils.isNumber(message.mid)) {
+			return posts.sanitize(message.content);
 		}
 
 		return await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);

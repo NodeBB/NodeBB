@@ -62,9 +62,9 @@ async function announce(id, activity) {
 inbox.create = async (req) => {
 	const { object } = req.body;
 
-	// Temporary, reject non-public notes.
+	// Alternative logic for non-public objects
 	if (![...object.to, ...object.cc].includes(activitypub._constants.publicAddress)) {
-		throw new Error('[[error:activitypub.not-implemented]]');
+		return await activitypub.notes.assertPrivate(object);
 	}
 
 	const asserted = await activitypub.notes.assert(0, object);

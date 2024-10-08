@@ -8,6 +8,7 @@ const batch = require('../batch');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const categories = require('../categories');
+const messaging = require('../messaging');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -188,6 +189,79 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	]);
 
 	return { tid, count };
+};
+
+Notes.assertPrivate = async (object) => {
+	// Given an object, adds it to an existing chat or creates a new chat otherwise
+	// todo: context stuff
+
+	const recipients = new Set([...object.to, ...object.cc]);
+
+	// Remove follower urls
+	const isFollowerUrl = await db.isObjectFields('followersUrl:uid', Array.from(recipients));
+	Array.from(recipients).forEach((id, idx) => {
+		if (isFollowerUrl[idx]) {
+			recipients.delete(id);
+		}
+	});
+
+	const localUids = [];
+	const recipientsResolved = new Set([...recipients]);
+	await Promise.all(Array.from(recipients).map(async (value) => {
+		const { type, id } = await activitypub.helpers.resolveLocalId(value);
+		if (type === 'user') {
+			localUids.push(id);
+			recipientsResolved.delete(value);
+			recipientsResolved.add(parseInt(id, 10));
+		}
+	}));
+
+	// Locate the roomId based on `inReplyTo`
+	let roomId;
+	const resolved = await activitypub.helpers.resolveLocalId(object.inReplyTo);
+	let toMid = resolved.type === 'message' && resolved.id;
+	if (object.inReplyTo && await messaging.messageExists(toMid || object.inReplyTo)) {
+		roomId = await messaging.getMessageField(toMid || object.inReplyTo, 'roomId');
+	}
+
+	// Compare room members with object recipients; if someone in-room is omitted, start new chat
+	if (roomId) {
+		const participants = await messaging.getUsersInRoom(roomId, 0, -1);
+		const omitted = participants.filter((user) => {
+			let { uid } = user;
+			uid = utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid;
+			return !recipients.has(uid) && uid !== object.attributedTo;
+		});
+		if (omitted.length) {
+			toMid = undefined; // message creation logic fails if toMid is not in room
+			roomId = null;
+		}
+	}
+
+	let timestamp;
+	try {
+		timestamp = new Date(object.published).getTime() || Date.now();
+	} catch (e) {
+		timestamp = Date.now();
+	}
+
+	if (!roomId) {
+		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipientsResolved] });
+		timestamp = Date.now(); // otherwise message can't be seen in room as it pre-dates participants joining
+	}
+
+	// Add message to room
+	await messaging.sendMessage({
+		mid: object.id,
+		uid: object.attributedTo,
+		roomId: roomId,
+		content: object.content,
+		toMid: toMid,
+		timestamp,
+		// ip: caller.ip,
+	});
+
+	return { roomId };
 };
 
 async function assertRelation(post) {
