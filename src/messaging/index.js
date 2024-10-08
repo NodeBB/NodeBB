@@ -9,6 +9,7 @@ const groups = require('../groups');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 const translator = require('../translator');
 const cache = require('../cache');
@@ -214,7 +215,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 					userData.status = user.getStatus(userData);
 				}
 			});
-			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
+			room.users = room.users.filter(user => user && (parseInt(user.uid, 10) || activitypub.helpers.isUri(user.uid)));
 			room.lastUser = room.users[0];
 			room.usernames = Messaging.generateUsernames(room, uid);
 			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
