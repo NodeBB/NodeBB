@@ -454,8 +454,6 @@ Mocks.notes.private = async ({ messageObj }) => {
 	// todo: deleted messages
 	let uids = await messaging.getUidsInRoom(messageObj.roomId, 0, -1);
 	uids = uids.filter(uid => String(uid) !== String(messageObj.fromuid)); // no author
-	const remoteUids = uids.filter(uid => !utils.isNumber(uid)); // for mentions
-	uids = uids.map(uid => (utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid));
 	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
 	const to = new Set(uids);
 	const published = messageObj.timestampISO;
@@ -470,12 +468,12 @@ Mocks.notes.private = async ({ messageObj }) => {
 		};
 	}
 
-	const mentions = await user.getUsersFields(remoteUids, ['uid', 'userslug']);
+	const mentions = await user.getUsersFields(uids, ['uid', 'userslug']);
 	const tag = [];
 	tag.push(...mentions.map(({ uid, userslug }) => ({
 		type: 'Mention',
-		href: uid,
-		name: userslug,
+		href: utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid,
+		name: utils.isNumber(uid) ? `${userslug}@${nconf.get('url_parsed').hostname}` : userslug,
 	})));
 
 	let inReplyTo;
