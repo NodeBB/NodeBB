@@ -259,7 +259,7 @@ Notes.assertPrivate = async (object) => {
 	}
 
 	// Add message to room
-	await messaging.sendMessage({
+	const message = await messaging.sendMessage({
 		mid: object.id,
 		uid: object.attributedTo,
 		roomId: roomId,
@@ -268,6 +268,7 @@ Notes.assertPrivate = async (object) => {
 		timestamp: Date.now(),
 		// ip: caller.ip,
 	});
+	messaging.notifyUsersInRoom(object.attributedTo, roomId, message);
 
 	// Set real timestamp back so that the message shows even though it predates room joining
 	await messaging.setMessageField(object.id, 'timestamp', timestamp);
