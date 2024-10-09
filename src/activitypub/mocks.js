@@ -475,7 +475,6 @@ Mocks.notes.private = async ({ messageObj }) => {
 		href: utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid,
 		name: utils.isNumber(uid) ? `${userslug}@${nconf.get('url_parsed').hostname}` : userslug,
 	})));
-	console.log(tag);
 
 	let inReplyTo;
 	if (messageObj.toMid) {

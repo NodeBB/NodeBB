@@ -6,7 +6,6 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
 const user = require('../user');
-const utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = async (data) => {
