@@ -54,6 +54,7 @@
     "account/settings-of": "กำลังเปลี่ยนแปลงการตั้งค่าของ %1",
     "account/watched": "กระทู้ที่ถูกดูโดย  %1",
     "account/ignored": "กระทู้ที่ถูกละเว้นโดย %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "โพสต์ที่ถูกโหวตขึ้นโดย %1",
     "account/downvoted": "โพสต์ที่โหวตลงโดย %1",
     "account/best": "โพสต์ดีที่สุดที่ถูกสร้างโดย %1",

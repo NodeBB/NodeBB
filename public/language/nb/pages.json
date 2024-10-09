@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Innlegg overvåket av %1",
     "account/ignored": "Emner ignorert av %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Innlegg stemt opp av %1",
     "account/downvoted": "Innlegg nedstemt av %1",
     "account/best": "Beste innlegg skrevet av %1",

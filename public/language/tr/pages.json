@@ -54,6 +54,7 @@
     "account/settings-of": "%1 ayarları değiştiriliyor",
     "account/watched": "%1 tarafından takip edilen başlıklar",
     "account/ignored": "%1 tarafından yok sayılan başlıklar",
+    "account/read": "Topics read by %1",
     "account/upvoted": "%1 tarafından artılanan iletiler",
     "account/downvoted": "%1 tarafından eksilenen iletiler",
     "account/best": "%1 tarafından gönderilen en iyi iletiler",

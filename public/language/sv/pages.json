@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Ämnen som bevakas av %1",
     "account/ignored": "Ämnen som %1 ignorerar",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Inlägg som röstats upp av %1",
     "account/downvoted": "Inlägg som röstats ned av %1",
     "account/best": "Bästa inläggen skapade av %1",

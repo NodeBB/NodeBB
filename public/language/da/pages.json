@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Tråde fulgt af %1",
     "account/ignored": "Topics ignored by %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Indlæg syntes godt om af %1",
     "account/downvoted": "Indlæg syntes ikke godt om af %1",
     "account/best": "Bedste indlæg skrevet af %1",
