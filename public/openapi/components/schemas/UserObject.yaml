@@ -387,19 +387,11 @@ UserObjectFull:
     counts:
       type: object
       properties:
-        best:
-          type: number
-        controversial:
-          type: number
         blocks:
-          type: number
-        bookmarks:
           type: number
         categoriesWatched:
           type: number
         tagsWatched:
-          type: number
-        downvoted:
           type: number
         followers:
           type: number
@@ -407,17 +399,11 @@ UserObjectFull:
           type: number
         groups:
           type: number
-        ignored:
-          type: number
         posts:
           type: number
         topics:
           type: number
         uploaded:
-          type: number
-        upvoted:
-          type: number
-        watched:
           type: number
     isBlocked:
       type: boolean

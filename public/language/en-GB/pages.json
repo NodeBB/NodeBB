@@ -60,6 +60,7 @@
 	"account/settings-of": "Changing settings of %1",
 	"account/watched": "Topics watched by %1",
 	"account/ignored": "Topics ignored by %1",
+	"account/read": "Topics read by %1",
 	"account/upvoted": "Posts upvoted by %1",
 	"account/downvoted": "Posts downvoted by %1",
 	"account/best": "Best posts made by %1",
