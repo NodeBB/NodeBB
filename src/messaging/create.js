@@ -43,7 +43,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:no-room]]');
 		}
 		if (data.toMid) {
-			if (!utils.isNumber(data.toMid)) {
+			if (!await Messaging.messageExists(data.toMid)) {
 				throw new Error('[[error:invalid-mid]]');
 			}
 			if (!await Messaging.canViewMessage(data.toMid, roomId, uid)) {

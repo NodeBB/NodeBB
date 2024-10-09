@@ -453,7 +453,7 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 
 Messaging.canViewMessage = async (mids, roomId, uid) => {
 	let single = false;
-	if (!Array.isArray(mids) && isFinite(mids)) {
+	if (!Array.isArray(mids) && (utils.isNumber(mids) || activitypub.helpers.isUri(mids))) {
 		mids = [mids];
 		single = true;
 	}
