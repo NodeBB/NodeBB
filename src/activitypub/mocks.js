@@ -455,7 +455,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 	let uids = await messaging.getUidsInRoom(messageObj.roomId, 0, -1);
 	uids = uids.filter(uid => String(uid) !== String(messageObj.fromuid)); // no author
 	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
-	const to = new Set(uids);
+	const to = new Set(uids.map(uid => (utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid)));
 	const published = messageObj.timestampISO;
 	const updated = messageObj.edited ? messageObj.editedISO : undefined;
 
@@ -475,6 +475,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 		href: utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid,
 		name: utils.isNumber(uid) ? `${userslug}@${nconf.get('url_parsed').hostname}` : userslug,
 	})));
+	console.log(tag);
 
 	let inReplyTo;
 	if (messageObj.toMid) {
