@@ -195,26 +195,25 @@ Notes.assertPrivate = async (object) => {
 	// Given an object, adds it to an existing chat or creates a new chat otherwise
 	// todo: context stuff
 
-	const recipients = new Set([...object.to, ...object.cc]);
-
-	// Remove follower urls
-	const isFollowerUrl = await db.isObjectFields('followersUrl:uid', Array.from(recipients));
-	Array.from(recipients).forEach((id, idx) => {
-		if (isFollowerUrl[idx]) {
-			recipients.delete(id);
-		}
-	});
-
 	const localUids = [];
-	const recipientsResolved = new Set([...recipients]);
+	const recipients = new Set([...object.to, ...object.cc]);
 	await Promise.all(Array.from(recipients).map(async (value) => {
 		const { type, id } = await activitypub.helpers.resolveLocalId(value);
 		if (type === 'user') {
 			localUids.push(id);
-			recipientsResolved.delete(value);
-			recipientsResolved.add(parseInt(id, 10));
+			recipients.delete(value);
+			recipients.add(parseInt(id, 10));
 		}
 	}));
+
+	// Trim recipient list down to asserted actors (and local users) only
+	await activitypub.actors.assert([...recipients]);
+	const exists = await user.exists([...recipients]);
+	Array.from(recipients).forEach((uid, idx) => {
+		if (!exists[idx]) {
+			recipients.delete(uid);
+		}
+	});
 
 	// Locate the roomId based on `inReplyTo`
 	let roomId;
@@ -229,9 +228,7 @@ Notes.assertPrivate = async (object) => {
 	const participantUids = participants.map(user => user.uid);
 	if (roomId) {
 		const omitted = participants.filter((user) => {
-			// todo: this could use recipientsResolved
-			let { uid } = user;
-			uid = utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid;
+			const { uid } = user;
 			return !recipients.has(uid) && uid !== object.attributedTo;
 		});
 		if (omitted.length) {
@@ -248,11 +245,11 @@ Notes.assertPrivate = async (object) => {
 	}
 
 	if (!roomId) {
-		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipientsResolved] });
+		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipients] });
 	}
 
 	// Add any new members to the chat
-	const added = Array.from(recipientsResolved).filter(uid => !participantUids.includes(uid));
+	const added = Array.from(recipients).filter(uid => !participantUids.includes(uid));
 	const assertion = await activitypub.actors.assert(added);
 	if (assertion) {
 		await messaging.addUsersToRoom(object.attributedTo, added, roomId);
