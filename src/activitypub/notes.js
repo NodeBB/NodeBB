@@ -249,7 +249,6 @@ Notes.assertPrivate = async (object) => {
 
 	if (!roomId) {
 		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipientsResolved] });
-		timestamp = Date.now(); // otherwise message can't be seen in room as it pre-dates participants joining
 	}
 
 	// Add any new members to the chat
@@ -266,9 +265,12 @@ Notes.assertPrivate = async (object) => {
 		roomId: roomId,
 		content: object.content,
 		toMid: toMid,
-		timestamp,
+		timestamp: Date.now(),
 		// ip: caller.ip,
 	});
+
+	// Set real timestamp back so that the message shows even though it predates room joining
+	await messaging.setMessageField(object.id, 'timestamp', timestamp);
 
 	return { roomId };
 };
