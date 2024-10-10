@@ -485,8 +485,13 @@ Mocks.notes.private = async ({ messageObj }) => {
 	if (!inReplyTo) {
 		// Get immediately preceding message
 		const index = await db.sortedSetRank(`chat:room:${messageObj.roomId}:mids`, messageObj.mid);
-		const previousMid = await db.getSortedSetRange(`chat:room:${messageObj.roomId}:mids`, index - 1, index - 1);
-		inReplyTo = utils.isNumber(previousMid) ? `${nconf.get('url')}/message/${previousMid}` : previousMid;
+		if (index > 0) {
+			const mids = await db.getSortedSetRevRange(`chat:room:${messageObj.roomId}:mids`, 1, -1);
+			let isSystem = await messaging.getMessagesFields(mids, ['system']);
+			isSystem = isSystem.map(o => o.system);
+			inReplyTo = mids.reduce((memo, mid, idx) => (memo || (!isSystem[idx] ? mid : undefined)), undefined);
+			inReplyTo = utils.isNumber(inReplyTo) ? `${nconf.get('url')}/message/${inReplyTo}` : inReplyTo;
+		}
 	}
 
 	const object = {
