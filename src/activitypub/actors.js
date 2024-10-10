@@ -278,7 +278,6 @@ Actors.remove = async (id) => {
 Actors.prune = async () => {
 	/**
 	 * Clear out remote user accounts that do not have content on the forum anywhere
-	 * Re-crawl those that have not been updated recently
 	 */
 	winston.info('[actors/prune] Started scheduled pruning of remote user accounts');
 
@@ -295,7 +294,10 @@ Actors.prune = async () => {
 
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
-		const postCounts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
+		const [postCounts, roomCounts] = await Promise.all([
+			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
+			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
+		]);
 		await Promise.all(uids.map(async (uid, idx) => {
 			if (!exists[idx]) {
 				// id in zset but not asserted, handle and return early
@@ -305,7 +307,8 @@ Actors.prune = async () => {
 
 			const { followers, following } = await Actors.getLocalFollowCounts(uid);
 			const postCount = postCounts[idx];
-			if ([postCount, followers, following].every(metric => metric < 1)) {
+			const roomCount = roomCounts[idx];
+			if ([postCount, roomCount, followers, following].every(metric => metric < 1)) {
 				try {
 					await user.deleteAccount(uid);
 					deletionCount += 1;
