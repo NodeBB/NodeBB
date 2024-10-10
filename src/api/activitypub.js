@@ -289,6 +289,23 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
 });
 
+activitypubApi.update.privateNote = enabledCheck(async (caller, { messageObj }) => {
+	const { roomId } = messageObj;
+	let targets = await messaging.getUidsInRoom(roomId, 0, -1);
+	targets = targets.filter(uid => !utils.isNumber(uid)); // remote uids only
+
+	const object = await activitypub.mocks.notes.private({ messageObj });
+
+	const payload = {
+		id: `${object.id}#activity/create/${Date.now()}`,
+		type: 'Update',
+		to: object.to,
+		object,
+	};
+
+	await activitypub.send('uid', messageObj.fromuid, targets, payload);
+});
+
 activitypubApi.delete = {};
 
 activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {

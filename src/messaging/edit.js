@@ -1,8 +1,10 @@
 'use strict';
 
+const db = require('../database');
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
+const api = require('../api');
 const privileges = require('../privileges');
 
 const sockets = require('../socket.io');
@@ -11,6 +13,7 @@ const sockets = require('../socket.io');
 module.exports = function (Messaging) {
 	Messaging.editMessage = async (uid, mid, roomId, content) => {
 		await Messaging.checkContent(content);
+		const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
 		const raw = await Messaging.getMessageField(mid, 'content');
 		if (raw === content) {
 			return;
@@ -33,6 +36,10 @@ module.exports = function (Messaging) {
 			sockets.in(roomName).emit('event:chats.edit', {
 				messages: messages,
 			});
+
+			if (!isPublic) {
+				api.activitypub.update.privateNote({ uid: messages[0].fromuid }, { messageObj: messages[0] });
+			}
 		}
 
 		plugins.hooks.fire('action:messaging.edit', {
