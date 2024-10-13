@@ -88,7 +88,7 @@ Actors.assert = async (ids, options = {}) => {
 		return true;
 	}
 
-	// winston.verbose(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
+	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
 	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
 
@@ -97,7 +97,7 @@ Actors.assert = async (ids, options = {}) => {
 	const pubKeysMap = new Map();
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
-			// winston.verbose(`[activitypub/actors] Processing ${id}`);
+			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 			if (
 				!activitypub._constants.acceptableActorTypes.has(actor.type) ||
@@ -116,7 +116,7 @@ Actors.assert = async (ids, options = {}) => {
 				actor.followingCount = following.totalItems;
 			} catch (e) {
 				// no action required
-				// winston.verbose(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
+				activitypub.helpers.log(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
 
 			// Save url for backreference

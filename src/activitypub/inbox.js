@@ -182,7 +182,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			// winston.verbose(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}
@@ -479,9 +479,7 @@ inbox.undo = async (req) => {
 			id = id || object.object; // remote announces
 			const exists = await posts.exists(id);
 			if (!exists) {
-				// winston.verbose(
-				// `[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.
-				// `);
+				activitypub.helpers.log(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
 				break;
 			}
 

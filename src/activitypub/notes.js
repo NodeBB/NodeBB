@@ -80,7 +80,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	members.unshift(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
-		// winston.verbose('[notes/assert] No new notes to process.');
+		activitypub.helpers.log('[notes/assert] No new notes to process.');
 		unlock(id);
 		return { tid, count: 0 };
 	}
@@ -138,7 +138,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return post;
 	}).filter((p, idx) => !members[idx]);
 	const count = unprocessed.length;
-	// winston.verbose(`[notes/assert] ${count} new note(s) found.`);
+	activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
 	let tags;
 	if (!hasTid) {
@@ -399,7 +399,7 @@ Notes.syncUserInboxes = async function (tid, uid) {
 		.filter(uid => !uids.has(parseInt(uid, 10)))
 		.map((uid => `uid:${uid}:inbox`));
 
-	// winston.verbose(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
+	activitypub.helpers.log(`[activitypub/syncUserInboxes] Syncing tid ${tid} with ${uids.size} inboxes`);
 	await Promise.all([
 		db.sortedSetsRemove(removeKeys, tid),
 		db.sortedSetsAdd(keys, keys.map(() => score || Date.now()), tid),

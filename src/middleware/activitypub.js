@@ -37,7 +37,7 @@ middleware.verify = async function (req, res, next) {
 
 	const verified = await activitypub.verify(req);
 	if (!verified && req.method === 'POST') {
-		// winston.verbose('[middleware/activitypub] HTTP signature verification failed.');
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
 		return res.sendStatus(400);
 	}
 
@@ -49,26 +49,26 @@ middleware.verify = async function (req, res, next) {
 		}
 	}
 
-	// winston.verbose('[middleware/activitypub] HTTP signature verification passed.');
+	activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
 	next();
 };
 
 middleware.assertPayload = async function (req, res, next) {
 	// Checks the validity of the incoming payload against the sender and rejects on failure
-	// winston.verbose('[middleware/activitypub] Validating incoming payload...');
+	activitypub.helpers.log('[middleware/activitypub] Validating incoming payload...');
 
 	// Sanity-check payload schema
 	const required = ['id', 'type', 'actor', 'object'];
 	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
-		// winston.verbose('[middleware/activitypub] Request body missing required properties.');
+		activitypub.helpers.log('[middleware/activitypub] Request body missing required properties.');
 		return res.sendStatus(400);
 	}
-	// winston.verbose('[middleware/activitypub] Request body check passed.');
+	activitypub.helpers.log('[middleware/activitypub] Request body check passed.');
 
 	// History check
 	const seen = await db.isSortedSetMember('activities:datetime', req.body.id);
 	if (seen) {
-		// winston.verbose(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
+		activitypub.helpers.log(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
 		return res.sendStatus(200);
 	}
 
@@ -88,7 +88,7 @@ middleware.assertPayload = async function (req, res, next) {
 	const { hostname } = new URL(actor);
 	const allowed = await activitypub.instances.isAllowed(hostname);
 	if (!allowed) {
-		// winston.verbose(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
+		activitypub.helpers.log(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
 		return res.sendStatus(403);
 	}
 	await db.sortedSetAdd('instances:lastSeen', Date.now(), hostname);
@@ -99,10 +99,10 @@ middleware.assertPayload = async function (req, res, next) {
 		const objectHostname = new URL(object.id).hostname;
 		// require that all actors have the same hostname as the object for now
 		if (!actorHostnames.every(actorHostname => actorHostname === objectHostname)) {
-			// winston.verbose('[middleware/activitypub] Origin check failed, stripping object down to id.');
+			activitypub.helpers.log('[middleware/activitypub] Origin check failed, stripping object down to id.');
 			req.body.object = [object.id];
 		}
-		// winston.verbose('[middleware/activitypub] Origin check passed.');
+		activitypub.helpers.log('[middleware/activitypub] Origin check passed.');
 	}
 
 	// Cross-check key ownership against received actor
@@ -114,10 +114,10 @@ middleware.assertPayload = async function (req, res, next) {
 		return [v.substring(0, index), v.slice(index + 1)];
 	})).get('keyId');
 	if (`"${compare}"` !== keyId) {
-		// winston.verbose('[middleware/activitypub] Key ownership cross-check failed.');
+		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
 	}
-	// winston.verbose('[middleware/activitypub] Key ownership cross-check passed.');
+	activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check passed.');
 
 	next();
 };
@@ -125,12 +125,12 @@ middleware.assertPayload = async function (req, res, next) {
 middleware.resolveObjects = async function (req, res, next) {
 	const { type, object } = req.body;
 	if (type !== 'Delete' && (typeof object === 'string' || (Array.isArray(object) && object.every(o => typeof o === 'string')))) {
-		// winston.verbose('[middleware/activitypub] Resolving object(s)...');
+		activitypub.helpers.log('[middleware/activitypub] Resolving object(s)...');
 		try {
 			req.body.object = await activitypub.helpers.resolveObjects(object);
-			// winston.verbose('[middleware/activitypub] Object(s) successfully resolved.');
+			activitypub.helpers.log('[middleware/activitypub] Object(s) successfully resolved.');
 		} catch (e) {
-			// winston.verbose('[middleware/activitypub] Failed to resolve object(s).');
+			activitypub.helpers.log('[middleware/activitypub] Failed to resolve object(s).');
 			return res.sendStatus(424);
 		}
 	}

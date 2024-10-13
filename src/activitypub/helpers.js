@@ -1,7 +1,9 @@
 'use strict';
 
 const { generateKeyPairSync } = require('crypto');
+const process = require('process');
 const nconf = require('nconf');
+const winston = require('winston');
 const validator = require('validator');
 const cheerio = require('cheerio');
 const crypto = require('crypto');
@@ -24,6 +26,12 @@ const webfingerCache = ttl({
 const sha256 = payload => crypto.createHash('sha256').update(payload).digest('hex');
 
 const Helpers = module.exports;
+
+Helpers.log = (message) => {
+	if (process.env.NODE_ENV === 'development') {
+		winston.verbose(message);
+	}
+};
 
 Helpers.isUri = (value) => {
 	if (typeof value !== 'string') {
@@ -106,7 +114,7 @@ Helpers.query = async (id) => {
 };
 
 Helpers.generateKeys = async (type, id) => {
-	// winston.verbose(`[activitypub] Generating RSA key-pair for ${type} ${id}`);
+	activitypub.helpers.log(`[activitypub] Generating RSA key-pair for ${type} ${id}`);
 	const {
 		publicKey,
 		privateKey,

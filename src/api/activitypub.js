@@ -177,7 +177,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
-		// winston.verbose(`[activitypub/api] Not federating creation of pid ${pid} to the fediverse due to privileges.`);
+		activitypub.helpers.log(`[activitypub/api] Not federating creation of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 
@@ -272,9 +272,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 
 	const allowed = await privileges.posts.can('topics:read', post.pid, activitypub._constants.uid);
 	if (!allowed) {
-		// winston.verbose(
-		// `[activitypub/api] Not federating update of pid ${post.pid} to the fediverse due to privileges.`
-		// );
+		activitypub.helpers.log(`[activitypub/api] Not federating update of pid ${post.pid} to the fediverse due to privileges.`);
 		return;
 	}
 
@@ -321,7 +319,7 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
-		// winston.verbose(`[activitypub/api] Not federating update of pid ${pid} to the fediverse due to privileges.`);
+		activitypub.helpers.log(`[activitypub/api] Not federating update of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 
@@ -369,7 +367,7 @@ activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 	const uid = await posts.getPostField(pid, 'uid'); // author
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
-		// winston.verbose(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
+		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 
