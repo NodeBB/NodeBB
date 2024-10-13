@@ -58,6 +58,15 @@ COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/doc
 RUN chmod +x /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/tini
 
+RUN apt update && apt install -y --no-install-recommends \
+    jq && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG NODE_ENV
+ENV NODE_ENV=$NODE_ENV \
+    daemon=false \
+    silent=false
 # TODO: Have docker-compose use environment variables to create files like setup.json and config.json.
 # COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/local/bin/gomplate
 

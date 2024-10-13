@@ -1,0 +1,20 @@
+set shell := ["pwsh", "-c"]
+
+name := "nodebb"
+chart := "."
+namespace := "nodebb"
+config := "values.yaml"
+
+init:
+    @helm repo add nodebb https://nodebb.github.io/helm-charts
+    @helm repo update
+
+install:
+    @helm upgrade --install --create-namespace -n {{namespace}} {{name}} {{chart}} -f {{config}}
+
+template:
+    @rm -Re -Fo -ErrorAction SilentlyContinue .template; exit 0
+    @helm template -n {{namespace}} {{name}} {{chart}} -f {{config}} --output-dir .template --debug
+
+uninstall:
+    @helm uninstall -n {{namespace}} {{name}}
