@@ -91,10 +91,10 @@ inbox.update = async (req) => {
 
 	switch (object.type) {
 		case 'Note': {
-			const postData = await activitypub.mocks.post(object);
 			const exists = await posts.exists(object.id);
 			try {
 				if (exists) {
+					const postData = await activitypub.mocks.post(object);
 					await posts.edit(postData);
 					const isDeleted = await posts.getPostField(object.id, 'deleted');
 					if (isDeleted) {
