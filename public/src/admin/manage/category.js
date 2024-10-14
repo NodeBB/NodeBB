@@ -134,9 +134,9 @@ define('admin/manage/category', [
 									if (intervalId) {
 										clearInterval(intervalId);
 									}
+									modal.modal('hide');
+									alerts.success('[[admin/manage/categories:alert.purge-success]]');
 									setTimeout(() => {
-										modal.modal('hide');
-										alerts.success('[[admin/manage/categories:alert.purge-success]]');
 										ajaxify.go('admin/manage/categories');
 									}, 2500);
 								}).catch(alerts.error);
