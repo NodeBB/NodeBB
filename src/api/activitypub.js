@@ -301,7 +301,7 @@ activitypubApi.update.privateNote = enabledCheck(async (caller, { messageObj }) 
 		object,
 	};
 
-	await activitypub.send('uid', messageObj.fromuid, targets, payload);
+	await activitypub.send('uid', caller.uid, targets, payload);
 });
 
 activitypubApi.delete = {};

@@ -82,7 +82,8 @@ module.exports = function (Messaging) {
 		try {
 			await Promise.all([
 				sendNotification(fromUid, roomId, messageObj),
-				!isPublic ? api.activitypub.create.privateNote({ uid: fromUid }, { messageObj }) : null,
+				!isPublic && utils.isNumber(fromUid) ?
+					api.activitypub.create.privateNote({ uid: fromUid }, { messageObj }) : null,
 			]);
 		} catch (err) {
 			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);

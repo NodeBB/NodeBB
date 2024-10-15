@@ -10,6 +10,7 @@ const posts = require('../posts');
 const topics = require('../topics');
 const categories = require('../categories');
 const notifications = require('../notifications');
+const messaging = require('../messaging');
 const flags = require('../flags');
 const api = require('../api');
 const activitypub = require('.');
@@ -63,7 +64,8 @@ inbox.create = async (req) => {
 	const { object } = req.body;
 
 	// Alternative logic for non-public objects
-	if (![...object.to, ...object.cc].includes(activitypub._constants.publicAddress)) {
+	const isPublic = [...object.to, ...object.cc].includes(activitypub._constants.publicAddress);
+	if (!isPublic) {
 		return await activitypub.notes.assertPrivate(object);
 	}
 
@@ -76,11 +78,7 @@ inbox.create = async (req) => {
 
 inbox.update = async (req) => {
 	const { actor, object } = req.body;
-
-	// Temporary, reject non-public notes.
-	if (![...object.to, ...object.cc].includes(activitypub._constants.publicAddress)) {
-		throw new Error('[[error:activitypub.not-implemented]]');
-	}
+	const isPublic = [...object.to, ...object.cc].includes(activitypub._constants.publicAddress);
 
 	// Origin checking
 	const actorHostname = new URL(actor).hostname;
@@ -91,19 +89,39 @@ inbox.update = async (req) => {
 
 	switch (object.type) {
 		case 'Note': {
-			const exists = await posts.exists(object.id);
+			const [isNote, isMessage] = await Promise.all([
+				posts.exists(object.id),
+				messaging.messageExists(object.id),
+			]);
+
 			try {
-				if (exists) {
-					const postData = await activitypub.mocks.post(object);
-					await posts.edit(postData);
-					const isDeleted = await posts.getPostField(object.id, 'deleted');
-					if (isDeleted) {
-						await api.posts.restore({ uid: actor }, { pid: object.id });
+				switch (true) {
+					case isNote: {
+						const postData = await activitypub.mocks.post(object);
+						await posts.edit(postData);
+						const isDeleted = await posts.getPostField(object.id, 'deleted');
+						if (isDeleted) {
+							await api.posts.restore({ uid: actor }, { pid: object.id });
+						}
+						break;
 					}
-				} else {
-					const asserted = await activitypub.notes.assert(0, object.id);
-					if (asserted) {
-						announce(object.id, req.body);
+
+					case isMessage: {
+						const roomId = await messaging.getMessageField(object.id, 'roomId');
+						await messaging.editMessage(actor, object.id, roomId, object.content);
+						break;
+					}
+
+					default: {
+						if (!isPublic) {
+							return await activitypub.notes.assertPrivate(object);
+						}
+
+						const asserted = await activitypub.notes.assert(0, object.id);
+						if (asserted) {
+							announce(object.id, req.body);
+						}
+						break;
 					}
 				}
 			} catch (e) {
