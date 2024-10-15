@@ -192,7 +192,7 @@ jobs:
         run: npm run coverage
 
       - name: Test coverage
-        uses: coverallsapp/github-action@643bc377ffa44ace6394b2b5d0d3950076de9f63 # v2.3.0
+        uses: coverallsapp/github-action@43f11c4e058174f808ee9cd63701b6c42fe3f5e3 # v2.3.2
         if: matrix.coverage
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -206,7 +206,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@643bc377ffa44ace6394b2b5d0d3950076de9f63 # v2.3.0
+        uses: coverallsapp/github-action@43f11c4e058174f808ee9cd63701b6c42fe3f5e3 # v2.3.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
