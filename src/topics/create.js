@@ -228,8 +228,11 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost({ pid, tid }, { uid }) {
-		const postData = (await posts.getPostSummaryByPids([pid], uid, {})).pop();
+	async function onNewPost({ pid, tid, uid: postOwner }, { uid }) {
+		const [[postData], [userInfo]] = await Promise.all([
+			posts.getPostSummaryByPids([pid], uid, {}),
+			posts.getUserInfoForPosts([postOwner], uid),
+		]);
 		await Promise.all([
 			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
@@ -237,6 +240,7 @@ module.exports = function (Topics) {
 		]);
 
 		// Returned data is a superset of post summary data
+		postData.user = userInfo;
 		postData.index = postData.topic.postcount - 1;
 		postData.bookmarked = false;
 		postData.display_edit_tools = true;
