@@ -54,6 +54,7 @@
     "account/settings-of": "Zmiana ustawień %1",
     "account/watched": "Tematy obserwowane przez %1",
     "account/ignored": "Tematy zignorowane przez %1",
+    "account/read": "Wątek przejrzany przez %1",
     "account/upvoted": "Posty, za którymi zagłosował %1",
     "account/downvoted": "Posty, przeciw którym zagłosował %1",
     "account/best": "Najlepsze posty napisane przez %1",

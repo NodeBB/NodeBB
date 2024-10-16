@@ -126,6 +126,14 @@ const templateToData = {
 			return `uid:${userData.uid}:ignored_tids`;
 		},
 	},
+	'account/read': {
+		type: 'topics',
+		noItemsFoundKey: '[[user:has-no-read-topics]]',
+		crumb: '[[user:read]]',
+		getSets: function (callerUid, userData) {
+			return `uid:${userData.uid}:tids_read`;
+		},
+	},
 	'account/topics': {
 		type: 'topics',
 		noItemsFoundKey: '[[user:has-no-topics]]',
@@ -167,6 +175,10 @@ postsController.getWatchedTopics = async function (req, res, next) {
 
 postsController.getIgnoredTopics = async function (req, res, next) {
 	await getPostsFromUserSet('account/ignored', req, res, next);
+};
+
+postsController.getReadTopics = async function (req, res, next) {
+	await getPostsFromUserSet('account/read', req, res, next);
 };
 
 postsController.getTopics = async function (req, res, next) {

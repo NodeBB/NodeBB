@@ -54,6 +54,7 @@
     "account/settings-of": "%1 beállításainak módosítása",
     "account/watched": "%1 által figyelt témakörök",
     "account/ignored": "%1 által mellőzött témakörök",
+    "account/read": "Topics read by %1",
     "account/upvoted": "%1 által kedvelt témakörök",
     "account/downvoted": "%1 által utált témakörök",
     "account/best": "%1 által írt legjobb hozzászólások",

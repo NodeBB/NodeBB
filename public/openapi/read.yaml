@@ -286,6 +286,8 @@ paths:
     $ref: 'read/user/userslug/watched.yaml'
   "/api/user/{userslug}/ignored":
     $ref: 'read/user/userslug/ignored.yaml'
+  "/api/user/{userslug}/read":
+    $ref: 'read/user/userslug/read.yaml'
   "/api/user/{userslug}/upvoted":
     $ref: 'read/user/userslug/upvoted.yaml'
   "/api/user/{userslug}/downvoted":

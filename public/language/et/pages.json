@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Teemasid jälgib %1 kasutajat",
     "account/ignored": "Topics ignored by %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Postitused %1 poolt heaks kiidetud",
     "account/downvoted": "Postitused %1 poolt vastu hääletatud",
     "account/best": "Parimad postitused %1 poolt",

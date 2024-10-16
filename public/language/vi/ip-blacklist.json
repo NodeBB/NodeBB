@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Hình 1</strong> &ndash; Danh sách đen truy cập mỗi giờ",
 	"analytics.blacklist-daily": "<strong>Hình 2</strong> &ndash; Danh sách đen truy cập mỗi ngày",
-	"ip-banned": "IP bị chặn"
+	"ip-banned": "IP bị cấm"
 }

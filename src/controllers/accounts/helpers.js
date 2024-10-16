@@ -194,16 +194,9 @@ async function getCounts(userData, callerUID) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
-		best: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), 1, '+inf'),
-		controversial: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), '-inf', -1),
 		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
 	};
 	if (userData.isAdmin || userData.isSelf) {
-		promises.ignored = db.sortedSetCard(`uid:${uid}:ignored_tids`);
-		promises.watched = db.sortedSetCard(`uid:${uid}:followed_tids`);
-		promises.upvoted = db.sortedSetCard(`uid:${uid}:upvote`);
-		promises.downvoted = db.sortedSetCard(`uid:${uid}:downvote`);
-		promises.bookmarks = db.sortedSetCard(`uid:${uid}:bookmarks`);
 		promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);
 		promises.categoriesWatched = user.getWatchedCategories(uid);
 		promises.tagsWatched = db.sortedSetCard(`uid:${uid}:followed_tags`);

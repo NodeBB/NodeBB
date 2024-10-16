@@ -54,6 +54,7 @@
     "account/settings-of": "تغییر تنظیمات از %1",
     "account/watched": "موضوع های دیده شده توسط \"%1\"",
     "account/ignored": "موضوع های نادیده گرفته شده توسط %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "رای مثبت داده شده به پست ها توسط  %1",
     "account/downvoted": "رای منفی داده شده به پست ها توسط %1",
     "account/best": "بهترین پست های %1",

@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | NodeBB 管理控制台",
 	"settings-header-contents": "内容",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"changes-saved": "更動已儲存",
+	"changes-saved-message": "您對 NodeBB 設定檔的更動已儲存。",
+	"changes-not-saved": "更動未儲存",
+	"changes-not-saved-message": "NodeBB 在保存您的更動時出問題。 (%1)",
+	"save-changes": "儲存更動",
+	"min": "最小：",
+	"max": "最大：",
+	"view": "瀏覽",
+	"edit": "編輯",
+	"add": "加入",
+	"select-icon": "選擇圖示"
 }
