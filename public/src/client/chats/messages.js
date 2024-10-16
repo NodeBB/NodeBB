@@ -344,14 +344,14 @@ define('forum/chats/messages', [
 				return;
 			}
 
-			api.del(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+			api.del(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
 				components.get('chat/message', messageId).toggleClass('deleted', true);
 			}).catch(alerts.error);
 		});
 	};
 
 	messages.restore = function (messageId, roomId) {
-		api.post(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+		api.post(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
 			components.get('chat/message', messageId).toggleClass('deleted', false);
 		}).catch(alerts.error);
 	};

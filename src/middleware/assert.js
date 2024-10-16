@@ -152,7 +152,6 @@ Assert.message = helpers.try(async (req, res, next) => {
 	}
 
 	if (
-		!isFinite(req.params.mid) ||
 		!(await messaging.messageExists(req.params.mid)) ||
 		!(await messaging.canViewMessage(req.params.mid, roomId || req.params.roomId, req.uid))
 	) {
