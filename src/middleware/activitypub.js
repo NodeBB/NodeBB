@@ -137,6 +137,21 @@ middleware.resolveObjects = async function (req, res, next) {
 	next();
 };
 
+middleware.normalize = async function (req, res, next) {
+	// Normalizes the received data structure
+	const { body } = req;
+	const { object } = body;
+
+	// Ensure `to` and `cc` are arrays in the object
+	['to', 'cc'].forEach((prop) => {
+		if (object[prop] && typeof object[prop] === 'string') {
+			object[prop] = [object[prop]];
+		}
+	});
+
+	next();
+};
+
 middleware.configureResponse = async function (req, res, next) {
 	res.header('Content-Type', 'application/activity+json');
 	next();

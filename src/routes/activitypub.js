@@ -21,6 +21,7 @@ module.exports = function (app, middleware, controllers) {
 	const inboxMiddlewares = [
 		middleware.activitypub.assertPayload,
 		middleware.activitypub.resolveObjects,
+		middleware.activitypub.normalize,
 	];
 
 	app.get('/actor', middlewares, controllers.activitypub.actors.application);
