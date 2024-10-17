@@ -228,7 +228,7 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost({ pid, tid, uid: postOwner }, { uid }) {
+	async function onNewPost({ pid, tid, uid: postOwner }, { uid, handle }) {
 		const [[postData], [userInfo]] = await Promise.all([
 			posts.getPostSummaryByPids([pid], uid, {}),
 			posts.getUserInfoForPosts([postOwner], uid),
@@ -248,7 +248,7 @@ module.exports = function (Topics) {
 		postData.display_moderator_tools = true;
 		postData.display_move_tools = true;
 		postData.selfPost = false;
-
+		posts.overrideGuestHandle(postData, handle);
 		return postData;
 	}
 
