@@ -1,7 +1,5 @@
 'use strict';
 
-const winston = require('winston');
-
 const db = require('../database');
 const posts = require('../posts');
 const topics = require('../topics');
@@ -31,17 +29,17 @@ Contexts.get = async (uid, id) => {
 	try {
 		({ context } = await activitypub.get('uid', uid, id, { headers }));
 		if (!context) {
-			winston.verbose(`[activitypub/context] ${id} contains no context.`);
+			activitypub.helpers.log(`[activitypub/context] ${id} contains no context.`);
 			return false;
 		}
 		({ type } = await activitypub.get('uid', uid, context));
 	} catch (e) {
 		if (e.code === 'ap_get_304') {
-			winston.verbose(`[activitypub/context] ${id} context unchanged.`);
+			activitypub.helpers.log(`[activitypub/context] ${id} context unchanged.`);
 			return { tid };
 		}
 
-		winston.verbose(`[activitypub/context] ${id} context not resolvable.`);
+		activitypub.helpers.log(`[activitypub/context] ${id} context not resolvable.`);
 		return false;
 	}
 
@@ -57,7 +55,7 @@ Contexts.getItems = async (uid, id, options) => {
 		options.root = true;
 	}
 
-	winston.verbose(`[activitypub/context] Retrieving context ${id}`);
+	activitypub.helpers.log(`[activitypub/context] Retrieving context ${id}`);
 	let { type, items, orderedItems, first, next } = await activitypub.get('uid', uid, id);
 	if (!acceptableTypes.includes(type)) {
 		return [];
@@ -71,7 +69,7 @@ Contexts.getItems = async (uid, id, options) => {
 		items = await Promise.all(items
 			.map(async item => (activitypub.helpers.isUri(item) ? parseString(uid, item) : parseItem(uid, item))));
 		items = items.filter(Boolean);
-		winston.verbose(`[activitypub/context] Found ${items.length} items.`);
+		activitypub.helpers.log(`[activitypub/context] Found ${items.length} items.`);
 	}
 
 	const chain = new Set(items || []);
@@ -85,7 +83,7 @@ Contexts.getItems = async (uid, id, options) => {
 	}
 
 	if (next) {
-		winston.verbose('[activitypub/context] Fetching next page...');
+		activitypub.helpers.log('[activitypub/context] Fetching next page...');
 		Array
 			.from(await Contexts.getItems(uid, next, {
 				...options,
@@ -120,12 +118,12 @@ async function parseString(uid, item) {
 	// No local copy, fetch from source
 	try {
 		const object = await activitypub.get('uid', uid, pid);
-		winston.verbose(`[activitypub/context] Retrieved ${pid}`);
+		activitypub.helpers.log(`[activitypub/context] Retrieved ${pid}`);
 
 		return parseItem(uid, object);
 	} catch (e) {
 		// Unresolvable, either temporarily or permanent, ignore for now.
-		winston.verbose(`[activitypub/context] Cannot retrieve ${pid}`);
+		activitypub.helpers.log(`[activitypub/context] Cannot retrieve ${pid}`);
 		return null;
 	}
 }
@@ -150,6 +148,6 @@ async function parseItem(uid, item) {
 		return null;
 	}
 
-	winston.verbose(`[activitypub/context] Parsing ${pid}`);
+	activitypub.helpers.log(`[activitypub/context] Parsing ${pid}`);
 	return await activitypub.mocks.post(item);
 }
