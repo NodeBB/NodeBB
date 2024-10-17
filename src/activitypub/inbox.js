@@ -78,7 +78,7 @@ inbox.create = async (req) => {
 
 inbox.update = async (req) => {
 	const { actor, object } = req.body;
-	const isPublic = [...object.to, ...object.cc].includes(activitypub._constants.publicAddress);
+	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);
 
 	// Origin checking
 	const actorHostname = new URL(actor).hostname;
