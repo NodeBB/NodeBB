@@ -186,7 +186,7 @@ Actors.category = async function (req, res, next) {
 	res.status(200).json(payload);
 };
 
-Actors.message = async function (req, res, next) {
+Actors.message = async function (req, res) {
 	// Handle requests for remote content
 	if (!utils.isNumber(req.params.mid)) {
 		return res.set('Location', req.params.mid).sendStatus(308);
