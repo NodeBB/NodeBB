@@ -5,6 +5,9 @@ UserObject:
       type: number
       description: A user identifier
       example: 1
+    isLocal:
+      type: boolean
+      description: Whether the user belongs to the local installation or not.
     username:
       type: string
       description: A friendly name for a given user account
@@ -209,6 +212,9 @@ UserObjectFull:
       type: number
       description: A user identifier
       example: 1
+    isLocal:
+      type: boolean
+      description: Whether the user belongs to the local installation or not.
     username:
       type: string
       description: A friendly name for a given user account
@@ -435,6 +441,9 @@ UserObjectFull:
       type: boolean
     canFlag:
       type: boolean
+    flagId:
+      type: number
+      nullable: true
     canChangePassword:
       type: boolean
     isSelf:
@@ -523,6 +532,9 @@ UserObjectSlim:
       type: number
       description: A user identifier
       example: 1
+    isLocal:
+      type: boolean
+      description: Whether the user belongs to the local installation or not.
     username:
       type: string
       description: A friendly name for a given user account
@@ -611,6 +623,9 @@ UserObjectACP:
       type: number
       description: A user identifier
       example: 1
+    isLocal:
+      type: boolean
+      description: Whether the user belongs to the local installation or not.
     username:
       type: string
       description: A friendly name for a given user account

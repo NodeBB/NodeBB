@@ -25,7 +25,7 @@ require('./cache')(Groups);
 
 Groups.BANNED_USERS = 'banned-users';
 
-Groups.ephemeralGroups = ['guests', 'spiders'];
+Groups.ephemeralGroups = ['guests', 'spiders', 'fediverse'];
 
 Groups.systemGroups = [
 	'registered-users',

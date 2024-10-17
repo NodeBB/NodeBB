@@ -19,7 +19,7 @@ module.exports = function (Groups) {
 		Groups.validateGroupName(data.name);
 
 		const [exists, privGroupExists] = await Promise.all([
-			meta.userOrGroupExists(data.name),
+			meta.slugTaken(data.name),
 			privilegeGroupExists(data.name),
 		]);
 		if (exists || privGroupExists) {

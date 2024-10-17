@@ -1,0 +1,59 @@
+get:
+  tags:
+    - admin
+  summary: Get category anayltics
+  parameters:
+    - name: category_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  cid:
+                    type: number
+                  enabled:
+                    type: number
+                    description: Whether ActivityPub integration is enabled in site settings
+                  name:
+                    type: string
+                  following:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The activity+json uri of the followed actor
+                        approved:
+                          type: boolean
+                          description: Whether the follow request has been accepted
+                  followers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userslug:
+                          type: string
+                          description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+                          example: dragon-fruit
+                        picture:
+                          type: string
+                          description: A URL pointing to a picture to be used as the user's avatar
+                          example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+                          nullable: true
+                        uid:
+                          type: number
+                          description: A user identifier
+                          example: 1
+                  selectedCategory:
+                    $ref: ../../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+              - $ref: ../../../../../components/schemas/CommonProps.yaml#/CommonProps

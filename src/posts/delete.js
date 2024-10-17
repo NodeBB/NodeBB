@@ -9,6 +9,8 @@ const user = require('../user');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
 const flags = require('../flags');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.delete = async function (pid, uid) {
@@ -81,6 +83,8 @@ module.exports = function (Posts) {
 			deleteDiffs(pids),
 			deleteFromUploads(pids),
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
+			Posts.attachments.empty(pids),
+			activitypub.notes.delete(pids),
 		]);
 
 		await resolveFlags(postData, uid);
@@ -105,14 +109,15 @@ module.exports = function (Posts) {
 		});
 		await db.sortedSetRemoveBulk(bulkRemove);
 
-		const incrObjectBulk = [['global', { postCount: -postData.length }]];
+		const localCount = postData.filter(p => utils.isNumber(p.pid)).length;
+		const incrObjectBulk = [['global', { postCount: -localCount }]];
 
 		const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
 		for (const [cid, posts] of Object.entries(postsByCategory)) {
 			incrObjectBulk.push([`category:${cid}`, { post_count: -posts.length }]);
 		}
 
-		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
+		const postsByTopic = _.groupBy(postData, p => String(p.tid));
 		const topicPostCountTasks = [];
 		const topicTasks = [];
 		const zsetIncrBulk = [];

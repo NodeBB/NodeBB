@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-
 const meta = require('../meta');
 const db = require('../database');
 const plugins = require('../plugins');
@@ -10,12 +8,13 @@ const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.create = async function (data) {
 		// This is an internal method, consider using Topics.reply instead
-		const { uid } = data;
-		const { tid } = data;
+		const { uid, tid, _activitypub } = data;
 		const content = data.content.toString();
 		const timestamp = data.timestamp || Date.now();
 		const isMain = data.isMain || false;
@@ -28,7 +27,7 @@ module.exports = function (Posts) {
 			await checkToPid(data.toPid, uid);
 		}
 
-		const pid = await db.incrObjectField('global', 'nextPid');
+		const pid = data.pid || await db.incrObjectField('global', 'nextPid');
 		let postData = {
 			pid: pid,
 			uid: uid,
@@ -46,9 +45,11 @@ module.exports = function (Posts) {
 		if (data.handle && !parseInt(uid, 10)) {
 			postData.handle = data.handle;
 		}
+		if (_activitypub && _activitypub.url) {
+			postData.url = _activitypub.url;
+		}
 
-		let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
-		postData = result.post;
+		({ post: postData } = await plugins.hooks.fire('filter:post.create', { post: postData, data: data }));
 		await db.setObject(`post:${postData.pid}`, postData);
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
@@ -56,7 +57,7 @@ module.exports = function (Posts) {
 
 		await Promise.all([
 			db.sortedSetAdd('posts:pid', timestamp, postData.pid),
-			db.incrObjectField('global', 'postCount'),
+			utils.isNumber(pid) ? db.incrObjectField('global', 'postCount') : null,
 			user.onNewPostMade(postData),
 			topics.onNewPostMade(postData),
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
@@ -65,9 +66,9 @@ module.exports = function (Posts) {
 			Posts.uploads.sync(postData.pid),
 		]);
 
-		result = await plugins.hooks.fire('filter:post.get', { post: postData, uid: data.uid });
+		const result = await plugins.hooks.fire('filter:post.get', { post: postData, uid: data.uid });
 		result.post.isMain = isMain;
-		plugins.hooks.fire('action:post.save', { post: _.clone(result.post) });
+		plugins.hooks.fire('action:post.save', { post: { ...result.post, _activitypub } });
 		return result.post;
 	};
 
@@ -82,6 +83,10 @@ module.exports = function (Posts) {
 	}
 
 	async function checkToPid(toPid, uid) {
+		if (!utils.isNumber(toPid) && !activitypub.helpers.isUri(toPid)) {
+			throw new Error('[[error:invalid-pid]]');
+		}
+
 		const [toPost, canViewToPid] = await Promise.all([
 			Posts.getPostFields(toPid, ['pid', 'deleted']),
 			privileges.posts.can('posts:view_deleted', toPid, uid),
