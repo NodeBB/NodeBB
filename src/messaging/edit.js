@@ -89,7 +89,7 @@ module.exports = function (Messaging) {
 			throw new Error(`[[error:chat-${type}-duration-expired, ${meta.config[durationConfig]}]]`);
 		}
 
-		if (messageData.fromuid === parseInt(uid, 10) && !messageData.system) {
+		if (String(messageData.fromuid) === String(uid) && !messageData.system) {
 			return;
 		}
 
