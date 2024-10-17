@@ -107,7 +107,7 @@ inbox.update = async (req) => {
 					}
 
 					case isMessage: {
-						const [roomId, deleted] = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
+						const { roomId, deleted } = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
 						await messaging.editMessage(actor, object.id, roomId, object.content);
 						if (deleted) {
 							await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
