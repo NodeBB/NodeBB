@@ -80,7 +80,7 @@ Contexts.getItems = async (uid, id, options) => {
 	}
 
 	// Early breakout on empty collection
-	if (!chain.size) {
+	if (!next && !chain.size) {
 		return [];
 	}
 
