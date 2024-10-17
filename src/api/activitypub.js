@@ -288,16 +288,22 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 });
 
 activitypubApi.update.privateNote = enabledCheck(async (caller, { messageObj }) => {
+	if (!utils.isNumber(messageObj.mid)) {
+		return;
+	}
+
 	const { roomId } = messageObj;
-	let targets = await messaging.getUidsInRoom(roomId, 0, -1);
-	targets = targets.filter(uid => !utils.isNumber(uid)); // remote uids only
+	let uids = await messaging.getUidsInRoom(roomId, 0, -1);
+	uids = uids.filter(uid => String(uid) !== String(messageObj.fromuid)); // no author
+	const to = uids.map(uid => (utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid));
+	const targets = uids.filter(uid => !utils.isNumber(uid)); // remote uids only
 
 	const object = await activitypub.mocks.notes.private({ messageObj });
 
 	const payload = {
 		id: `${object.id}#activity/create/${Date.now()}`,
 		type: 'Update',
-		to: object.to,
+		to,
 		object,
 	};
 

@@ -451,10 +451,20 @@ Mocks.notes.public = async (post) => {
 };
 
 Mocks.notes.private = async ({ messageObj }) => {
-	// todo: deleted messages
+	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
+
+	// Return a tombstone for a deleted message
+	if (messageObj.deleted === 1) {
+		return Mocks.tombstone({
+			id,
+			formerType: 'Note',
+			attributedTo: `${nconf.get('url')}/uid/${messageObj.fromuid}`,
+			// context: `${nconf.get('url')}/topic/${post.topic.tid}`,
+		});
+	}
+
 	let uids = await messaging.getUidsInRoom(messageObj.roomId, 0, -1);
 	uids = uids.filter(uid => String(uid) !== String(messageObj.fromuid)); // no author
-	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
 	const to = new Set(uids.map(uid => (utils.isNumber(uid) ? `${nconf.get('url')}/uid/${uid}` : uid)));
 	const published = messageObj.timestampISO;
 	const updated = messageObj.edited ? messageObj.editedISO : undefined;

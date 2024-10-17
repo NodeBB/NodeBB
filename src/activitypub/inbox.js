@@ -107,8 +107,11 @@ inbox.update = async (req) => {
 					}
 
 					case isMessage: {
-						const roomId = await messaging.getMessageField(object.id, 'roomId');
+						const [roomId, deleted] = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
 						await messaging.editMessage(actor, object.id, roomId, object.content);
+						if (deleted) {
+							await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
+						}
 						break;
 					}
 
@@ -140,14 +143,20 @@ inbox.update = async (req) => {
 		}
 
 		case 'Tombstone': {
-			const [isNote/* , isActor */] = await Promise.all([
+			const [isNote, isMessage/* , isActor */] = await Promise.all([
 				posts.exists(object.id),
+				messaging.messageExists(object.id),
 				// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 			]);
 
 			switch (true) {
 				case isNote: {
 					await api.posts.delete({ uid: actor }, { pid: object.id });
+					break;
+				}
+
+				case isMessage: {
+					await api.chats.deleteMessage({ uid: actor }, { mid: object.id });
 					break;
 				}
 
