@@ -108,10 +108,20 @@ describe('ActivityPub integration', () => {
 			});
 		});
 
-		describe('.generateTitle', () => {
+		describe.only('.generateTitle', () => {
 			it('should take the first paragraph element\'s text', () => {
 				const source = '<p>Lorem ipsum dolor sit amet</p><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
 				const title = activitypub.helpers.generateTitle(source);
+				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
+			});
+
+			it('should also accept a couple other tags like h1 or span', () => {
+				let source = '<h1>Lorem ipsum dolor sit amet</h1><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
+				let title = activitypub.helpers.generateTitle(source);
+				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
+
+				source = '<span>Lorem ipsum dolor sit amet</span><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
+				title = activitypub.helpers.generateTitle(source);
 				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
 			});
 

@@ -5,7 +5,7 @@ const process = require('process');
 const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
-const cheerio = require('cheerio');
+// const cheerio = require('cheerio');
 const crypto = require('crypto');
 
 const meta = require('../meta');
@@ -292,13 +292,17 @@ Helpers.resolveObjects = async (ids) => {
 	return objects.length === 1 ? objects[0] : objects;
 };
 
+const titleishTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'title', 'p', 'span'];
+const titleRegex = new RegExp(`<(?:${titleishTags.join('|')})>(.+?)</(?:${titleishTags.join('|')})>`);
 Helpers.generateTitle = (html) => {
 	// Given an html string, generates a more appropriate title if possible
-	const $ = cheerio.load(html);
 	let title;
 
-	// Try the first paragraph element
-	title = $('h1, h2, h3, h4, h5, h6, title, p, span').first().text();
+	// Try the first paragraph-like element
+	const match = html.match(titleRegex);
+	if (match) {
+		title = match[1];
+	}
 
 	// Fall back to newline splitting (i.e. if no paragraph elements)
 	title = title || html.split('\n').filter(Boolean).shift();
