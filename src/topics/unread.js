@@ -199,7 +199,7 @@ module.exports = function (Topics) {
 		}
 		const cids = params.cid || await getWatchedTrackedCids(params.uid);
 		const keys = cids.map(cid => `cid:${cid}:tids:lastposttime`);
-		return await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+		return await db.getSortedSetRevRangeByScoreWithScores(keys, 0, 200, '+inf', params.cutoff);
 	}
 
 	async function getWatchedTrackedCids(uid) {
@@ -218,7 +218,7 @@ module.exports = function (Topics) {
 			params.cid.map(cid => `cid:${cid}:tids:lastposttime`) :
 			'topics:recent';
 
-		const recentTopicData = await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+		const recentTopicData = await db.getSortedSetRevRangeByScoreWithScores(keys, 0, 200, '+inf', params.cutoff);
 		const isFollowed = await db.isSortedSetMembers(`uid:${params.uid}:followed_tids`, recentTopicData.map(t => t.tid));
 		return recentTopicData.filter((t, i) => isFollowed[i]);
 	}

@@ -170,8 +170,7 @@ module.exports = function (Topics) {
 
 	Topics.reply = async function (data) {
 		data = await plugins.hooks.fire('filter:topic.reply', data);
-		const { tid } = data;
-		const { uid } = data;
+		const { tid, uid } = data;
 
 		const [topicData, isAdmin] = await Promise.all([
 			Topics.getTopicData(tid),
