@@ -196,7 +196,7 @@
 					{{{ end }}}
 				</button>
 
-				<button class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
+				<button class="btn btn-ghost btn-sm d-flex gap-2 align-items-center purge">
 					<i class="fa fa-fw fa-trash text-danger"></i> [[admin/manage/categories:purge]]
 				</button>
 
