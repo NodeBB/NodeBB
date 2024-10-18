@@ -111,7 +111,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const hasRelation =
 		uid || hasTid ||
 		options.skipChecks || options.cid ||
-		await assertRelation(chain[inputIndex || 0]);
+		await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
