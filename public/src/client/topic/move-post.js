@@ -141,7 +141,7 @@ define('forum/topic/move-post', [
 			return;
 		}
 
-		Promise.all(data.pids.map(pid => api.put(`/posts/${pid}/move`, {
+		Promise.all(data.pids.map(pid => api.put(`/posts/${encodeURIComponent(pid)}/move`, {
 			tid: data.tid,
 		}))).then(() => {
 			data.pids.forEach(function (pid) {

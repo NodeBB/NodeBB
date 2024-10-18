@@ -92,6 +92,8 @@ paths:
     $ref: 'read/admin/settings/user.yaml'
   /api/admin/settings/post:
     $ref: 'read/admin/settings/post.yaml'
+  /api/admin/settings/activitypub:
+    $ref: 'read/admin/settings/activitypub.yaml'
   /api/admin/settings/advanced:
     $ref: 'read/admin/settings/advanced.yaml'
   /api/admin/manage/categories:
@@ -100,6 +102,8 @@ paths:
     $ref: 'read/admin/manage/categories/category_id.yaml'
   "/api/admin/manage/categories/{category_id}/analytics":
     $ref: 'read/admin/manage/categories/category_id/analytics.yaml'
+  "/api/admin/manage/categories/{category_id}/federation":
+    $ref: 'read/admin/manage/categories/category_id/federation.yaml'
   "/api/admin/manage/privileges/{cid}":
     $ref: 'read/admin/manage/privileges/cid.yaml'
   /api/admin/manage/tags:
@@ -328,5 +332,7 @@ paths:
     $ref: 'read/groups/slug.yaml'
   "/api/groups/{slug}/members":
     $ref: 'read/groups/slug/members.yaml'
+  "/api/world":
+    $ref: 'read/world.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'

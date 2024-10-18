@@ -27,6 +27,8 @@ require('./queue')(Posts);
 require('./diffs')(Posts);
 require('./uploads')(Posts);
 
+Posts.attachments = require('./attachments');
+
 Posts.exists = async function (pids) {
 	return await db.exists(
 		Array.isArray(pids) ? pids.map(pid => `post:${pid}`) : `post:${pids}`
@@ -44,6 +46,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
 		return [];
 	}
+
 	let posts = await Posts.getPostsData(pids);
 	posts = await Promise.all(posts.map(Posts.parsePost));
 	const data = await plugins.hooks.fire('filter:post.getPosts', { posts: posts, uid: uid });
