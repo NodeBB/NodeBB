@@ -131,14 +131,14 @@ define('admin/manage/category', [
 								}, 1000);
 
 								api.del('/categories/' + ajaxify.data.category.cid).then(() => {
+									if (intervalId) {
+										clearInterval(intervalId);
+									}
+									modal.modal('hide');
+									alerts.success('[[admin/manage/categories:alert.purge-success]]');
 									setTimeout(() => {
-										if (intervalId) {
-											clearInterval(intervalId);
-										}
-										modal.modal('hide');
-										alerts.success('[[admin/manage/categories:alert.purge-success]]');
 										ajaxify.go('admin/manage/categories');
-									}, 5000);
+									}, 2500);
 								}).catch(alerts.error);
 
 								return false;
