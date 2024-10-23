@@ -609,6 +609,9 @@ $(document).ready(function () {
 								ajaxify.go('outgoing?url=' + encodeURIComponent(href));
 								e.preventDefault();
 							}
+						} else {
+							ajaxify.go(`ap?resource=${encodeURIComponent(this.href)}`);
+							e.preventDefault();
 						}
 					}
 				}

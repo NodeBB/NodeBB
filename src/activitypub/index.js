@@ -22,6 +22,10 @@ const requestCache = ttl({
 	max: 5000,
 	ttl: 1000 * 60 * 5, // 5 minutes
 });
+const probeCache = ttl({
+	max: 500,
+	ttl: 1000 * 60 * 60, // 1 hour
+});
 
 const ActivityPub = module.exports;
 
@@ -442,4 +446,73 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 		cc: [...cc],
 		targets,
 	};
+};
+
+ActivityPub.probe = async ({ uid, url }) => {
+	/**
+	 * Checks whether a passed-in id or URL is an ActivityPub object and can be mapped to a local representation
+	 *   - `uid` is optional (links to private messages won't match without uid)
+	 *   - Returns a relative path if already available, true if not, and false otherwise.
+	 */
+
+	// Known resources
+	const [isNote, isMessage, isActor] = await Promise.all([
+		posts.exists(url),
+		messaging.messageExists(url),
+		db.isObjectField('remoteUrl:uid', url),
+	]);
+	switch (true) {
+		case isNote: {
+			return `/post/${encodeURIComponent(url)}`;
+		}
+
+		case isMessage: {
+			if (uid) {
+				const { roomId } = await messaging.getMessageFields(url, ['roomId']);
+				const canView = await messaging.canViewMessage(url, roomId, uid);
+				if (canView) {
+					return `/message/${encodeURIComponent(url)}`;
+				}
+			}
+			break;
+		}
+
+		case isActor: {
+			const uid = await db.getObjectField('remoteUrl:uid', url);
+			const slug = await user.getUserField(uid, 'userslug');
+			return `/user/${slug}`;
+		}
+	}
+
+	// Cached result
+	if (probeCache.has(url)) {
+		return probeCache.get(url);
+	}
+
+	// Opportunistic HEAD
+	const { response } = await request.head(url);
+	try {
+		const { headers } = response;
+		if (headers && headers.link) {
+			let parts = headers.link.split(';');
+			parts.shift();
+			parts = parts
+				.map(p => p.trim())
+				.reduce((memo, cur) => {
+					cur = cur.split('=');
+					memo[cur[0]] = cur[1].slice(1, -1);
+					return memo;
+				}, {});
+
+			if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
+				probeCache.set(url, true);
+				return true;
+			}
+		}
+	} catch (e) {
+		// ...
+	}
+
+	probeCache.set(url, false);
+	return false;
 };

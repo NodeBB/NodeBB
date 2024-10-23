@@ -12,6 +12,48 @@ const Controller = module.exports;
 Controller.actors = require('./actors');
 Controller.topics = require('./topics');
 
+Controller.fetch = async (req, res, next) => {
+	// Given a `resource` query parameter, attempts to retrieve and parse it
+	if (!req.query.resource) {
+		return next();
+	}
+
+	let url;
+	try {
+		url = new URL(req.query.resource);
+		const result = await activitypub.probe({
+			uid: req.uid,
+			url: url.href,
+		});
+
+		if (typeof result === 'string') {
+			return helpers.redirect(res, result);
+		} else if (result) {
+			const { id, type } = await activitypub.get('uid', req.uid || 0, url.href);
+			switch (true) {
+				case activitypub._constants.acceptedPostTypes.includes(type): {
+					return helpers.redirect(res, `/post/${encodeURIComponent(id)}`);
+				}
+
+				case activitypub._constants.acceptableActorTypes.has(type): {
+					await activitypub.actors.assert(id);
+					const userslug = await user.getUserField(id, 'userslug');
+					return helpers.redirect(res, `/user/${userslug}`);
+				}
+
+				default:
+					return next();
+					// return helpers.redirect(res, result);
+			}
+		}
+
+		helpers.redirect(res, url.href, false);
+	} catch (e) {
+		activitypub.helpers.log(`[activitypub/fetch] Invalid URL received: ${url}`);
+		return next();
+	}
+};
+
 Controller.getFollowing = async (req, res) => {
 	const { followingCount, followingRemoteCount } = await user.getUserFields(req.params.uid, ['followingCount', 'followingRemoteCount']);
 	const totalItems = parseInt(followingCount || 0, 10) + parseInt(followingRemoteCount || 0, 10);
