@@ -155,7 +155,7 @@ helpers.notAllowed = async function (req, res, error) {
 		}
 	} else if (res.locals.isAPI) {
 		req.session.returnTo = req.url.replace(/^\/api/, '');
-		helpers.formatApiResponse(401, res, error);
+		await helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
 		res.redirect(`${relative_path}/login${req.path.startsWith('/admin') ? '?local=1' : ''}`);
