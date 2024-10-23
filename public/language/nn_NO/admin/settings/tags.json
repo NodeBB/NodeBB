@@ -1,0 +1,13 @@
+{
+    "tag": "Stikkord",
+    "link-to-manage": "Lenkje til administrasjon",
+    "system-tags": "Systemstikkord",
+    "system-tags-help": "Systemstikkord vert brukt til spesifikke føremål i forumet.",
+    "tags-per-topic": "Stikkord per emne",
+    "min-per-topic": "Minimum stikkord per emne",
+    "max-per-topic": "Maksimum stikkord per emne",
+    "min-length": "Minimum lengd",
+    "max-length": "Maksimum lengd",
+    "related-topics": "Relaterte emne",
+    "max-related-topics": "Maksimum relaterte emne"
+}
