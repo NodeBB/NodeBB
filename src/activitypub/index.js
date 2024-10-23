@@ -8,6 +8,8 @@ const { CronJob } = require('cron');
 const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
+const posts = require('../posts');
+const messaging = require('../messaging');
 const user = require('../user');
 const utils = require('../utils');
 const ttl = require('../cache/ttl');
@@ -378,4 +380,66 @@ ActivityPub.record = async ({ id, type, actor }) => {
 		db.sortedSetAdd('domains:lastSeen', now, hostname),
 		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
 	]);
+};
+
+ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
+	/**
+	 * - Builds a list of targets for activitypub.send to consume
+	 * - Extends to and cc since the activity can be addressed more widely
+	 * - Optional parameters:
+	 *     - `cid`: includes followers of the passed-in cid (local only)
+	 *     - `uid`: includes followers of the passed-in uid (local only)
+	 *     - `pid`: includes announcers and all authors up the toPid chain
+	 */
+	let { to, cc } = object;
+	to = new Set(to);
+	cc = new Set(cc);
+
+	let followers = [];
+	if (uid) {
+		followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
+		const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
+		if (!to.has(followersUrl)) {
+			cc.add(followersUrl);
+		}
+	}
+
+	if (cid) {
+		const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
+		followers = followers.concat(cidFollowers);
+		const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
+		if (!to.has(followersUrl)) {
+			cc.add(followersUrl);
+		}
+	}
+
+	const targets = new Set([...followers, ...to, ...cc]);
+
+	// Remove any ids that aren't asserted actors
+	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
+	Array.from(targets).forEach((uri, idx) => {
+		if (!exists[idx]) {
+			targets.delete(uri);
+		}
+	});
+
+	// Topic posters, post announcers and their followers
+	if (pid) {
+		const tid = await posts.getPostField(pid, 'tid');
+		const participants = (await db.getSortedSetMembers(`tid:${tid}:posters`))
+			.filter(uid => !utils.isNumber(uid)); // remote users only
+		const announcers = (await ActivityPub.notes.announce.list({ pid })).map(({ actor }) => actor);
+		const auxiliaries = Array.from(new Set([...participants, ...announcers]));
+		const auxiliaryFollowers = (await user.getUsersFields(auxiliaries, ['followersUrl']))
+			.filter(o => o.hasOwnProperty('followersUrl'))
+			.map(({ followersUrl }) => followersUrl);
+		[...auxiliaries].forEach(uri => uri && targets.add(uri));
+		[...auxiliaries, ...auxiliaryFollowers].forEach(uri => uri && cc.add(uri));
+	}
+
+	return {
+		to: [...to],
+		cc: [...cc],
+		targets,
+	};
 };

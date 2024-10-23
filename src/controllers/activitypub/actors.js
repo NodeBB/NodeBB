@@ -77,6 +77,10 @@ Actors.note = async function (req, res) {
 	}
 
 	const payload = await activitypub.mocks.notes.public(post);
+	const { to, cc } = await activitypub.buildRecipients(payload, { pid: post.pid, uid: post.user.uid });
+	payload.to = to;
+	payload.cc = cc;
+
 	res.status(200).json(payload);
 };
 
