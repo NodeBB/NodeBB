@@ -19,9 +19,15 @@ module.exports = {
 		const folder = path.join(nconf.get('upload_path'), 'profile');
 
 		const userPicRegex = /^\d+-profile/;
-		const files = (await fs.promises.readdir(folder, { withFileTypes: true }))
-			.filter(item => !item.isDirectory() && String(item.name).match(userPicRegex))
-			.map(item => item.name);
+		let files = [];
+		try {
+			files = (await fs.promises.readdir(folder, { withFileTypes: true }))
+				.filter(item => !item.isDirectory() && String(item.name).match(userPicRegex))
+				.map(item => item.name);
+		} catch (err) {
+			console.error(err.stack);
+			return;
+		}
 
 		progress.total = files.length;
 		await batch.processArray(files, async (files) => {
