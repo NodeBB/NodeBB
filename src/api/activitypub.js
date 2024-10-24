@@ -397,7 +397,7 @@ activitypubApi.add = enabledCheck((async (_, { pid }) => {
 	let targets;
 	({ to, cc, targets } = await activitypub.buildRecipients({ to, cc }, { pid: localId || pid, cid }));
 
-	await activitypub.send('cid', cid, targets, {
+	await activitypub.send('cid', cid, Array.from(targets), {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(localId || pid)}#activity/add/${Date.now()}`,
 		type: 'Add',
 		to,
