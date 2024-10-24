@@ -206,15 +206,10 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 		if (!followers.length) {
 			return;
 		}
-		let { title } = topicData;
-		if (title) {
-			title = utils.decodeHTMLEntities(title);
-			title = title.replace(/,/g, '\\,');
-		}
 
 		const notifObj = await notifications.create({
 			type: 'new-topic',
-			bodyShort: translator.compile('notifications:user-posted-topic', postData.user.displayname, title),
+			bodyShort: translator.compile('notifications:user-posted-topic', postData.user.displayname, postData.topic.title),
 			bodyLong: postData.content,
 			pid: postData.pid,
 			path: `/post/${postData.pid}`,
