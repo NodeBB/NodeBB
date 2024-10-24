@@ -425,6 +425,9 @@ Mocks.notes.public = async (post) => {
 		return payload;
 	});
 
+	let context = await posts.getPostField(post.pid, 'context');
+	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
+
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
@@ -436,7 +439,7 @@ Mocks.notes.public = async (post) => {
 		updated,
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
-		context: `${nconf.get('url')}/topic/${post.topic.tid}`,
+		context,
 		audience: `${nconf.get('url')}/category/${post.category.cid}`,
 		summary: null,
 		name,

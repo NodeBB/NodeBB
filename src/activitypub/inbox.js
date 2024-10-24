@@ -76,6 +76,22 @@ inbox.create = async (req) => {
 	}
 };
 
+inbox.add = async (req) => {
+	const { object, target } = req.body;
+
+	// Only react on Adds pertaining to local posts
+	const { type, id: pid } = await activitypub.helpers.resolveLocalId(object);
+	if (type === 'post') {
+		// Check context of OP
+		const tid = await posts.getPostField(pid, 'tid');
+		const context = await topics.getTopicField(tid, 'context');
+		if (context && context === target) {
+			activitypub.helpers.log(`[activitypub/inbox/add] Associating pid ${pid} with new context ${target}`);
+			await posts.setPostField(pid, 'context', target);
+		}
+	}
+};
+
 inbox.update = async (req) => {
 	const { actor, object } = req.body;
 	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);

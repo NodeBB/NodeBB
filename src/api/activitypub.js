@@ -388,7 +388,7 @@ activitypubApi.add = enabledCheck((async (_, { pid }) => {
 
 	const tid = await posts.getPostField(localId || pid, 'tid');
 	const cid = await posts.getCidByPid(localId || pid);
-	if (cid <= 0) {
+	if (!utils.isNumber(tid) || cid <= 0) { // `Add` only federated on categorized topics started locally
 		return;
 	}
 
