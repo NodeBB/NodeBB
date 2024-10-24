@@ -393,7 +393,7 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	 * - Optional parameters:
 	 *     - `cid`: includes followers of the passed-in cid (local only)
 	 *     - `uid`: includes followers of the passed-in uid (local only)
-	 *     - `pid`: includes announcers and all authors up the toPid chain
+	 *     - `pid`: includes post announcers and all topic participants
 	 */
 	let { to, cc } = object;
 	to = new Set(to);
