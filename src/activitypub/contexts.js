@@ -58,7 +58,7 @@ Contexts.getItems = async (uid, id, options) => {
 	activitypub.helpers.log(`[activitypub/context] Retrieving context ${id}`);
 	let { type, items, orderedItems, first, next } = await activitypub.get('uid', uid, id);
 	if (!acceptableTypes.includes(type)) {
-		return [];
+		return false;
 	}
 
 	if (type.startsWith('Ordered') && orderedItems) {
@@ -79,7 +79,7 @@ Contexts.getItems = async (uid, id, options) => {
 
 	// Early breakout on empty collection
 	if (!next && !chain.size) {
-		return [];
+		return new Set();
 	}
 
 	if (next) {

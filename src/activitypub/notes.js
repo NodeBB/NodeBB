@@ -43,13 +43,19 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	let chain;
-	const context = await activitypub.contexts.get(uid, id);
+	let context = await activitypub.contexts.get(uid, id);
 	if (context.tid) {
 		unlock(id);
 		const { tid } = context;
 		return { tid, count: 0 };
 	} else if (context.context) {
 		chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
+		if (chain && chain.length) {
+			// Context resolves, use in later topic creation
+			context = context.context;
+		}
+	} else {
+		context = undefined;
 	}
 
 	if (!chain || !chain.length) {
@@ -169,6 +175,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			posts.attachments.update(mainPid, attachment),
 		]);
 		unprocessed.shift();
+
+		if (context) {
+			activitypub.helpers.log(`[activitypub/notes.assert] Associating tid ${tid} with context ${context}`);
+			await topics.setTopicField(tid, 'context', context);
+		}
 	}
 
 	for (const post of unprocessed) {
