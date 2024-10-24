@@ -136,8 +136,8 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 
 	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
 
-	if (followers.length) {
-		setTimeout(() => { // Delay sending to avoid potential race condition
+	setTimeout(() => { // Delay sending to avoid potential race condition
+		if (followers.length) {
 			Promise.all([payload, payload.object].map(async (object) => {
 				await activitypub.send('cid', cid, followers, {
 					id: `${nconf.get('url')}/post/${encodeURIComponent(object.object ? object.object.id : object.id)}#activity/announce/${Date.now()}`,
@@ -147,9 +147,9 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 					object,
 				});
 			})).catch(err => winston.error(err.stack));
-			activitypubApi.add(caller, { pid });
-		}, 5000);
-	}
+		}
+		activitypubApi.add(caller, { pid });
+	}, 5000);
 });
 
 activitypubApi.create.privateNote = enabledCheck(async (caller, { messageObj }) => {
