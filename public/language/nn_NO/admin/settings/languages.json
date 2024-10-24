@@ -1,0 +1,6 @@
+{
+	"language-settings": "Språkinnstillingar",
+	"description": "Vel standardspråk og konfigurer språkalternativ for forumet.",
+	"default-language": "Standardspråk",
+	"auto-detect": "Automatisk oppdaging av språk"
+}

@@ -1,0 +1,20 @@
+{
+	"manage-tags": "Administrer stikkord",
+	"none": "Ingen",
+	"bg-color": "Bakgrunnsfarge",
+	"text-color": "Tekstfarge",
+	"description": "Skildring",
+	"create": "Opprett",
+	"add-tag": "Legg til stikkord",
+	"modify": "Endre",
+	"rename": "Endre namn",
+	"delete": "Slett",
+	"search": "Søk",
+	"settings": "Innstillingar",
+	"name": "Namn",
+
+	"alerts.editing": "Redigerer",
+	"alerts.confirm-delete": "Er du sikker på at du vil slette dette stikkordet?",
+	"alerts.update-success": "Oppdatering lukkast",
+	"reset-colors": "Tilbakestill fargar"
+}

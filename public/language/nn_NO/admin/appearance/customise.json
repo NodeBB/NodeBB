@@ -1,0 +1,20 @@
+{
+	"customise": "Tilpass",
+	"custom-css": "Eigen CSS",
+	"custom-css.description": "Legg til tilpassa CSS for å endre utforminga av forumet.",
+	"custom-css.enable": "Aktiver eige CSS",
+
+	"custom-js": "Eige JavaScript",
+	"custom-js.description": "Legg til tilpassa JavaScript for å utvide funksjonaliteten til forumet.",
+	"custom-js.enable": "Aktiver eige JavaScript",
+
+	"custom-header": "Eige hovud",
+	"custom-header.description": "Legg til eige innhald i hovudet på sida.",
+	"custom-header.enable": "Aktiver eige hovud",
+
+	"custom-css.livereload": "Live Reload CSS",
+	"custom-css.livereload.description": "Aktiver live reload for CSS for rask utvikling.",
+	"bsvariables": "Bootstrap-variablar",
+	"bsvariables.description": "Endre Bootstrap-variablar for å tilpasse temaet.",
+	"bsvariables.enable": "Aktiver Bootstrap-variablar"
+}
