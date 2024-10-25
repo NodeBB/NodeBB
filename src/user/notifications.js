@@ -11,7 +11,6 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const user = require('./index');
-const utils = require('../utils');
 
 const UserNotifications = module.exports;
 
