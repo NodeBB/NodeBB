@@ -12,7 +12,6 @@ const plugins = require('../plugins');
 const translator = require('../translator');
 const topics = require('../topics');
 const user = require('./index');
-const utils = require('../utils');
 
 const UserNotifications = module.exports;
 
