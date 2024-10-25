@@ -49,7 +49,7 @@ Controller.fetch = async (req, res, next) => {
 		helpers.redirect(res, url.href, false);
 	} catch (e) {
 		activitypub.helpers.log(`[activitypub/fetch] Invalid URL received: ${url}`);
-		return next();
+		helpers.redirect(res, url.href, false);
 	}
 };
 
