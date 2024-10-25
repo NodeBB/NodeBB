@@ -42,8 +42,7 @@ Controller.fetch = async (req, res, next) => {
 				}
 
 				default:
-					return next();
-					// return helpers.redirect(res, result);
+					return helpers.redirect(res, url.href, false);
 			}
 		}
 
