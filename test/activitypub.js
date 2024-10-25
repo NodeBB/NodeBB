@@ -108,27 +108,41 @@ describe('ActivityPub integration', () => {
 			});
 		});
 
-		describe.only('.generateTitle', () => {
-			it('should take the first paragraph element\'s text', () => {
-				const source = '<p>Lorem ipsum dolor sit amet</p><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
-				const title = activitypub.helpers.generateTitle(source);
-				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
-			});
+		describe('.generateTitle', () => {
+			describe('test strings', () => {
+				const cases = new Map([
+					// first paragraph element
+					['<p>test title</p><span>abc</span>', 'test title'],
 
-			it('should also accept a couple other tags like h1 or span', () => {
-				let source = '<h1>Lorem ipsum dolor sit amet</h1><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
-				let title = activitypub.helpers.generateTitle(source);
-				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
+					// other tags like h1 or span
+					['<h1>Lorem ipsum dolor sit amet</h1><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>', 'Lorem ipsum dolor sit amet'],
+					['<span>Lorem ipsum dolor sit amet</span><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>', 'Lorem ipsum dolor sit amet'],
 
-				source = '<span>Lorem ipsum dolor sit amet</span><p>consectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.</p>';
-				title = activitypub.helpers.generateTitle(source);
-				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
-			});
+					// first line's text otherwise
+					['Lorem ipsum dolor sit amet\n\nconsectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.', 'Lorem ipsum dolor sit amet'],
 
-			it('should take the first line\'s text if no matched elements', () => {
-				const source = 'Lorem ipsum dolor sit amet\n\nconsectetur adipiscing elit. Integer tincidunt metus scelerisque, dignissim risus a, fermentum leo. Pellentesque eleifend ullamcorper risus tempus vestibulum. Proin mollis ipsum et magna lobortis, at pretium enim pharetra. Ut vel ex metus. Mauris faucibus lectus et nulla iaculis, et pellentesque elit pellentesque. Aliquam rhoncus nec nulla eu lacinia. Maecenas cursus iaculis ligula, eu pharetra ex suscipit sit amet.';
-				const title = activitypub.helpers.generateTitle(source);
-				assert.strictEqual(title, 'Lorem ipsum dolor sit amet');
+					// first sentence of matched line/element
+					['Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ex pellentesque, fringilla lorem non, blandit est. Nulla facilisi. Curabitur cursus neque vel enim semper, id lacinia elit facilisis. Vestibulum turpis orci, efficitur ut semper eu, faucibus eu turpis. Praesent eu odio non libero gravida tempor. Ut porta pellentesque orci. In porta nunc eget tincidunt interdum. Curabitur vel dui nec libero tempus porttitor. Phasellus tincidunt, diam id viverra suscipit, est diam maximus purus, in vestibulum dui ligula vel libero. Sed tempus finibus ante, sit amet consequat magna facilisis eget. Proin ullamcorper, velit sit amet feugiat varius, massa sem aliquam dui, non aliquam augue velit vel est. Phasellus eu sapien in purus feugiat scelerisque congue id velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
+
+					// other sentence ending symbols
+					['Lorem ipsum dolor sit amet, consectetur adipiscing elit? Etiam a ex pellentesque, fringilla lorem non, blandit est. Nulla facilisi. Curabitur cursus neque vel enim semper, id lacinia elit facilisis. Vestibulum turpis orci, efficitur ut semper eu, faucibus eu turpis. Praesent eu odio non libero gravida tempor. Ut porta pellentesque orci. In porta nunc eget tincidunt interdum. Curabitur vel dui nec libero tempus porttitor. Phasellus tincidunt, diam id viverra suscipit, est diam maximus purus, in vestibulum dui ligula vel libero. Sed tempus finibus ante, sit amet consequat magna facilisis eget. Proin ullamcorper, velit sit amet feugiat varius, massa sem aliquam dui, non aliquam augue velit vel est. Phasellus eu sapien in purus feugiat scelerisque congue id velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit?'],
+
+					// should trim non-sentence-ending punctuation
+					['<span>one two three:</span><p>four five six</p>', 'one two three'],
+
+					// Content after line breaks can be discarded
+					['<p>Intro text<br /><a href=\"https://example.org/\">example.org/</span></a></p><p>more text</p>', 'Intro text'],
+
+					// Additional tests?
+					// ['', ''],
+				]);
+
+				cases.forEach((value, key) => {
+					it('should convert as expected', () => {
+						const title = activitypub.helpers.generateTitle(key);
+						assert.strictEqual(title, value);
+					});
+				});
 			});
 
 			it('should trim down the title if it is too long per settings', () => {
@@ -138,18 +152,6 @@ describe('ActivityPub integration', () => {
 				const title = activitypub.helpers.generateTitle(source);
 				assert.strictEqual(title, '@@@@@@@...');
 				meta.config.maximumTitleLength = value;
-			});
-
-			it('should take the first sentence of a matched element/line', () => {
-				const source = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ex pellentesque, fringilla lorem non, blandit est. Nulla facilisi. Curabitur cursus neque vel enim semper, id lacinia elit facilisis. Vestibulum turpis orci, efficitur ut semper eu, faucibus eu turpis. Praesent eu odio non libero gravida tempor. Ut porta pellentesque orci. In porta nunc eget tincidunt interdum. Curabitur vel dui nec libero tempus porttitor. Phasellus tincidunt, diam id viverra suscipit, est diam maximus purus, in vestibulum dui ligula vel libero. Sed tempus finibus ante, sit amet consequat magna facilisis eget. Proin ullamcorper, velit sit amet feugiat varius, massa sem aliquam dui, non aliquam augue velit vel est. Phasellus eu sapien in purus feugiat scelerisque congue id velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.';
-				const title = activitypub.helpers.generateTitle(source);
-				assert.strictEqual(title, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
-			});
-
-			it('should also consider other sentence ending symbols', () => {
-				const source = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit? Etiam a ex pellentesque, fringilla lorem non, blandit est. Nulla facilisi. Curabitur cursus neque vel enim semper, id lacinia elit facilisis. Vestibulum turpis orci, efficitur ut semper eu, faucibus eu turpis. Praesent eu odio non libero gravida tempor. Ut porta pellentesque orci. In porta nunc eget tincidunt interdum. Curabitur vel dui nec libero tempus porttitor. Phasellus tincidunt, diam id viverra suscipit, est diam maximus purus, in vestibulum dui ligula vel libero. Sed tempus finibus ante, sit amet consequat magna facilisis eget. Proin ullamcorper, velit sit amet feugiat varius, massa sem aliquam dui, non aliquam augue velit vel est. Phasellus eu sapien in purus feugiat scelerisque congue id velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.';
-				const title = activitypub.helpers.generateTitle(source);
-				assert.strictEqual(title, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit?');
 			});
 		});
 	});

@@ -306,7 +306,7 @@ Helpers.resolveObjects = async (ids) => {
 };
 
 const titleishTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'title', 'p', 'span'];
-const titleRegex = new RegExp(`<(?:${titleishTags.join('|')})>(.+?)</(?:${titleishTags.join('|')})>`);
+const titleRegex = new RegExp(`<(${titleishTags.join('|')})>(.+?)</\\1>`, 'm');
 Helpers.generateTitle = (html) => {
 	// Given an html string, generates a more appropriate title if possible
 	let title;
@@ -314,11 +314,14 @@ Helpers.generateTitle = (html) => {
 	// Try the first paragraph-like element
 	const match = html.match(titleRegex);
 	if (match) {
-		title = match[1];
+		title = match[2];
 	}
 
 	// Fall back to newline splitting (i.e. if no paragraph elements)
 	title = title || html.split('\n').filter(Boolean).shift();
+
+	// Discard everything after a line break element
+	title = title.replace(/<br(\s\/)?>.*/g, '');
 
 	// Strip html
 	title = utils.stripHTMLTags(title);
@@ -337,6 +340,9 @@ Helpers.generateTitle = (html) => {
 	if (sentences.length > 1) {
 		title = sentences.shift();
 	}
+
+	// Trim certain punctuation marks
+	title = title.trim().replace(/[:]$/, '');
 
 	// Truncate down if too long
 	if (title.length > meta.config.maximumTitleLength) {
