@@ -11,6 +11,7 @@ const crypto = require('crypto');
 const meta = require('../meta');
 const posts = require('../posts');
 const categories = require('../categories');
+const messaging = require('../messaging');
 const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
@@ -263,6 +264,7 @@ Helpers.resolveObjects = async (ids) => {
 				}
 				return activitypub.mocks.actors.user(resolvedId);
 			}
+
 			case 'post': {
 				const post = (await posts.getPostSummaryByPids(
 					[resolvedId],
@@ -277,12 +279,23 @@ Helpers.resolveObjects = async (ids) => {
 				}
 				return activitypub.mocks.notes.public(post);
 			}
+
 			case 'category': {
 				if (!await categories.exists(resolvedId)) {
 					throw new Error('[[error:activitypub.invalid-id]]');
 				}
 				return activitypub.mocks.actors.category(resolvedId);
 			}
+
+			case 'message': {
+				if (!await messaging.messageExists(resolvedId)) {
+					throw new Error('[[error:activitypub.invalid-id]]');
+				}
+				const messageObj = await messaging.getMessageFields(resolvedId, []);
+				messageObj.content = await messaging.parse(messageObj.content, messageObj.fromuid, 0, messageObj.roomId, false);
+				return activitypub.mocks.notes.private({ messageObj });
+			}
+
 			// if the type is not recognized, assume it's not a local ID and fetch the object from its origin
 			default: {
 				return activitypub.get('uid', 0, id);

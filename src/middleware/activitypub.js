@@ -134,6 +134,7 @@ middleware.resolveObjects = async function (req, res, next) {
 			return res.sendStatus(424);
 		}
 	}
+
 	next();
 };
 
