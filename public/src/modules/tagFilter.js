@@ -144,7 +144,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 
 		function loadList(query, callback) {
 			let cids = null;
-			if (ajaxify.data.template.category) {
+			if (ajaxify.data.template.category || ajaxify.data.template.world) {
 				cids = [ajaxify.data.cid];
 			// selectedCids is avaiable on /recent, /unread, /popular etc.
 			} else if (Array.isArray(ajaxify.data.selectedCids) && ajaxify.data.selectedCids.length) {

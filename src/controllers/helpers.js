@@ -166,7 +166,7 @@ helpers.redirect = function (res, url, permanent) {
 	// this is used by sso plugins to redirect to the auth route
 	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
 	if (url.hasOwnProperty('external')) {
-		const redirectUrl = encodeURI(prependRelativePath(url.external));
+		const redirectUrl = prependRelativePath(url.external);
 		if (res.locals.isAPI) {
 			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
 		} else {
@@ -176,10 +176,9 @@ helpers.redirect = function (res, url, permanent) {
 	}
 
 	if (res.locals.isAPI) {
-		url = encodeURI(url);
 		res.set('X-Redirect', url).status(200).json(url);
 	} else {
-		res.redirect(permanent ? 308 : 307, encodeURI(prependRelativePath(url)));
+		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}
 };
 

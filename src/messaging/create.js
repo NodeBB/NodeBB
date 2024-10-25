@@ -6,7 +6,6 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
 const user = require('../user');
-const utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = async (data) => {
@@ -43,14 +42,14 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:no-room]]');
 		}
 		if (data.toMid) {
-			if (!utils.isNumber(data.toMid)) {
+			if (!await Messaging.messageExists(data.toMid)) {
 				throw new Error('[[error:invalid-mid]]');
 			}
 			if (!await Messaging.canViewMessage(data.toMid, roomId, uid)) {
 				throw new Error('[[error:no-privileges]]');
 			}
 		}
-		const mid = await db.incrObjectField('global', 'nextMid');
+		const mid = data.mid || await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
 		let message = {
 			mid: mid,

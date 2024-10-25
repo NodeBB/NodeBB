@@ -189,20 +189,27 @@ async function getPostsFromUserSet(template, req, res) {
 	const data = templateToData[template];
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
+	let { uid } = res.locals;
+	if (uid === -2) {
+		uid = await db.getObjectField('handle:uid', req.params.userslug.toLowerCase());
+	}
+
 	const payload = res.locals.userData;
-	const { username, userslug } = payload;
+	const { username, userslug } = uid === -2 ?
+		await user.getUserFields(uid, ['username', 'userslug']) :
+		payload;
 	const settings = await user.getSettings(req.uid);
 
 	const itemsPerPage = data.type === 'topics' ? settings.topicsPerPage : settings.postsPerPage;
 	const start = (page - 1) * itemsPerPage;
 	const stop = start + itemsPerPage - 1;
-	const sets = await data.getSets(req.uid, { uid: res.locals.uid, username, userslug });
+	const sets = await data.getSets(req.uid, { uid, username, userslug });
 	let result;
 	if (plugins.hooks.hasListeners('filter:account.getPostsFromUserSet')) {
 		result = await plugins.hooks.fire('filter:account.getPostsFromUserSet', {
 			req: req,
 			template: template,
-			userData: { uid: res.locals.uid, username, userslug },
+			userData: { uid, username, userslug },
 			settings: settings,
 			data: data,
 			start: start,

@@ -13,14 +13,45 @@ const intFields = [
 	'minTags', 'maxTags', 'postQueue', 'subCategoriesPerPage',
 ];
 
+const worldCategory = {
+	cid: -1,
+	name: 'Uncategorized',
+	description: 'Topics that do not strictly fit in with any existing categories',
+	icon: 'fa-globe',
+	imageClass: 'cover',
+	bgColor: '#eee',
+	color: '#333',
+	slug: '../world',
+	parentCid: 0,
+	disabled: 0,
+	handle: 'world',
+	link: '',
+	class: '', // todo
+};
+worldCategory.descriptionParsed = worldCategory.description;
+
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = async function (cids, fields) {
 		if (!Array.isArray(cids) || !cids.length) {
 			return [];
 		}
 
+		cids = cids.map(cid => parseInt(cid, 10));
 		const keys = cids.map(cid => `category:${cid}`);
 		const categories = await db.getObjects(keys, fields);
+
+		// Handle cid -1
+		if (cids.includes(-1)) {
+			let subset = null;
+			if (fields && fields.length) {
+				subset = fields.reduce((category, field) => {
+					category[field] = worldCategory[field] || undefined;
+					return category;
+				}, {});
+			}
+			categories.splice(cids.indexOf(-1), 1, subset || { ...worldCategory });
+		}
+
 		const result = await plugins.hooks.fire('filter:category.getFields', {
 			cids: cids,
 			categories: categories,

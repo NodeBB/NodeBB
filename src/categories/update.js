@@ -39,6 +39,11 @@ module.exports = function (Categories) {
 			// eslint-disable-next-line no-await-in-loop
 			await updateCategoryField(cid, key, category[key]);
 		}
+
+		if (['icon', 'color', 'bgColor'].some(prop => Object.keys(modifiedFields).includes(prop))) {
+			Categories.icons.flush(cid);
+		}
+
 		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });
 	}
 
@@ -49,6 +54,8 @@ module.exports = function (Categories) {
 			return await updateTagWhitelist(cid, value);
 		} else if (key === 'name') {
 			return await updateName(cid, value);
+		} else if (key === 'handle') {
+			return await updateHandle(cid, value);
 		} else if (key === 'order') {
 			return await updateOrder(cid, value);
 		}
@@ -141,5 +148,23 @@ module.exports = function (Categories) {
 		await db.sortedSetRemove('categories:name', `${oldName.slice(0, 200).toLowerCase()}:${cid}`);
 		await db.sortedSetAdd('categories:name', 0, `${newName.slice(0, 200).toLowerCase()}:${cid}`);
 		await db.setObjectField(`category:${cid}`, 'name', newName);
+	}
+
+	async function updateHandle(cid, handle) {
+		const existing = await Categories.getCategoryField(cid, 'handle');
+		if (existing === handle) {
+			return;
+		}
+
+		const taken = await meta.slugTaken(handle);
+		if (taken) {
+			throw new Error('[[error:category.handle-taken]]');
+		}
+
+		await Promise.all([
+			db.setObjectField(`category:${cid}`, 'handle', handle),
+			db.sortedSetRemove('categoryhandle:cid', existing),
+			db.sortedSetAdd('categoryhandle:cid', cid, handle),
+		]);
 	}
 };

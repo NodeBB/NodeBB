@@ -253,7 +253,7 @@ chatsAPI.users = async (caller, data) => {
 	users.forEach((user) => {
 		const isSelf = parseInt(user.uid, 10) === parseInt(caller.uid, 10);
 		user.canKick = isOwner && !isSelf;
-		user.canToggleOwner = (isAdmin || isOwner) && !isSelf;
+		user.canToggleOwner = utils.isNumber(user.uid) && (isAdmin || isOwner) && !isSelf;
 		user.online = parseInt(user.uid, 10) === parseInt(caller.uid, 10) || onlineUids.includes(String(user.uid));
 	});
 	return { users };

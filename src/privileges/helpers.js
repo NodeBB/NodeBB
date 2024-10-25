@@ -15,6 +15,7 @@ const helpers = module.exports;
 const uidToSystemGroup = {
 	0: 'guests',
 	'-1': 'spiders',
+	'-2': 'fediverse',
 };
 
 helpers.isUsersAllowedTo = async function (privilege, uids, cid) {

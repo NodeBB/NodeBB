@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
+const posts = require('../posts');
 const utils = require('../utils');
 const plugins = require('../plugins');
 
@@ -49,7 +50,7 @@ module.exports = function (Messaging) {
 		messages = messages
 			.map((msg, idx) => {
 				if (msg) {
-					msg.messageId = parseInt(mids[idx], 10);
+					msg.messageId = utils.isNumber(mids[idx]) ? parseInt(mids[idx], 10) : mids[idx];
 					msg.ip = undefined;
 					msg.isOwner = msg.fromuid === parseInt(uid, 10);
 				}
@@ -185,6 +186,8 @@ module.exports = function (Messaging) {
 	async function parseMessage(message, uid, roomId, isNew) {
 		if (message.system) {
 			return validator.escape(String(message.content));
+		} else if (!utils.isNumber(message.mid)) {
+			return posts.sanitize(message.content);
 		}
 
 		return await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);

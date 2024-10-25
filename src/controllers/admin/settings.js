@@ -9,6 +9,7 @@ const groups = require('../../groups');
 const languages = require('../../languages');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
+const activitypub = require('../../activitypub');
 const api = require('../../api');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
@@ -121,5 +122,14 @@ settingsController.api = async (req, res) => {
 		title: '[[admin/menu:settings/api]]',
 		tokens,
 		pagination: pagination.create(page, pageCount, req.query),
+	});
+};
+
+settingsController.activitypub = async (req, res) => {
+	const instanceCount = await activitypub.instances.getCount();
+
+	res.render('admin/settings/activitypub', {
+		title: `[[admin/menu:settings/activitypub]]`,
+		instanceCount,
 	});
 };
