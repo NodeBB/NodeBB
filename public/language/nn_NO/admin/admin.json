@@ -5,7 +5,7 @@
 	"acp-title": "%1 | Admin Kontrollpanel",
 	"settings-header-contents": "Innhald for innstillingar",
 	"changes-saved": "Endringar lagra",
-	"changes-saved-message": "Endringane dine har blitt lagra med suksess.",
+	"changes-saved-message": "Endringane dine i innstillingar har blitt lagra.",
 	"changes-not-saved": "Endringar ikkje lagra",
 	"changes-not-saved-message": "Det oppstod ein feil, og endringane dine vart ikkje lagra. (%1)",
 	"save-changes": "Lagre endringar",
