@@ -112,7 +112,7 @@
         "nodebb-theme-peace": "2.2.7",
         "nodebb-theme-persona": "13.3.38",
         "nodebb-widget-essentials": "7.0.29",
-        "nodemailer": "6.9.15",
+        "nodemailer": "6.9.16",
         "nprogress": "0.2.0",
         "passport": "0.7.0",
         "passport-http-bearer": "1.0.1",
