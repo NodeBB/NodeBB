@@ -20,6 +20,17 @@ const validSorts = [
 	'recently_replied', 'recently_created', 'most_posts', 'most_votes', 'most_views',
 ];
 
+async function getTids(data) {
+	// Poor man's intersect used instead of getSortedSetIntersect because the zsets are huge
+	const sets = await categories.buildTopicsSortedSet(data);
+	const mainSet = sets.shift();
+	let tids = await db.getSortedSetRevRange(mainSet, 0, 499);
+	let intersection = await Promise.all(sets.map(async set => db.isSortedSetMembers(set, tids)));
+	intersection = intersection.reduce((memo, cur) => memo.map((show, idx) => show && cur[idx]));
+	tids = tids.filter((_, idx) => intersection[idx]);
+	return tids.slice(data.start, data.stop + 1);
+}
+
 controller.list = async function (req, res) {
 	if (!req.uid) {
 		return helpers.redirect(res, '/recent?cid=-1', false);
@@ -30,14 +41,6 @@ controller.list = async function (req, res) {
 	const start = Math.max(0, (page - 1) * topicsPerPage);
 	const stop = start + topicsPerPage - 1;
 
-	const sortToSet = {
-		recently_replied: `cid:-1:tids`,
-		recently_created: `cid:-1:tids:create`,
-		most_posts: `cid:-1:tids:posts`,
-		most_votes: `cid:-1:tids:votes`,
-		most_views: `cid:-1:tids:views`,
-	};
-
 	const [userPrivileges, tagData, userSettings, rssToken] = await Promise.all([
 		privileges.categories.get('-1', req.uid),
 		helpers.getSelectedTag(req.query.tag),
@@ -45,16 +48,8 @@ controller.list = async function (req, res) {
 		user.auth.getFeedToken(req.uid),
 	]);
 	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
-
-	let tids = await db.getSortedSetRevRange(sortToSet[sort], 0, 499);
-	const isMembers = await db.isSortedSetMembers(`uid:${req.uid}:inbox`, tids);
-	tids = tids.filter((tid, idx) => isMembers[idx]);
-	const count = tids.length;
-	tids = tids.slice(start, stop + 1);
-
 	const targetUid = await user.getUidByUserslug(req.query.author);
-
-	const data = await categories.getCategoryById({
+	const cidQuery = {
 		uid: req.uid,
 		cid: '-1',
 		start: start,
@@ -64,12 +59,13 @@ controller.list = async function (req, res) {
 		query: req.query,
 		tag: req.query.tag,
 		targetUid: targetUid,
-	});
-
+	};
+	const data = await categories.getCategoryById(cidQuery);
 	data.name = '[[activitypub:world.name]]';
 	delete data.children;
 
-	data.topicCount = count;
+	const tids = await getTids(cidQuery);
+	data.topicCount = tids.length;
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
 
