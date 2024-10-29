@@ -89,7 +89,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.buildTopicsSortedSet = async function (data) {
-		const { cid } = data;
+		const { cid, uid } = data;
 		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'recently_replied';
 		const sortToSet = {
 			recently_replied: `cid:${cid}:tids`,
@@ -99,22 +99,28 @@ module.exports = function (Categories) {
 			most_views: `cid:${cid}:tids:views`,
 		};
 
-		let set = sortToSet.hasOwnProperty(sort) ? sortToSet[sort] : `cid:${cid}:tids`;
+		const set = new Set([sortToSet.hasOwnProperty(sort) ? sortToSet[sort] : `cid:${cid}:tids`]);
 
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
-				set = [set].concat(data.tag.map(tag => `tag:${tag}:topics`));
+				data.tag.forEach((tag) => {
+					set.add(`tag:${tag}:topics`);
+				});
 			} else {
-				set = [set, `tag:${data.tag}:topics`];
+				set.add(`tag:${data.tag}:topics`);
 			}
 		}
 
 		if (data.targetUid) {
-			set = (Array.isArray(set) ? set : [set]).concat([`cid:${cid}:uid:${data.targetUid}:tids`]);
+			set.add(`cid:${cid}:uid:${data.targetUid}:tids`);
+		}
+
+		if (parseInt(cid, 10) === -1 && uid > 0) {
+			set.add(`uid:${uid}:inbox`);
 		}
 
 		const result = await plugins.hooks.fire('filter:categories.buildTopicsSortedSet', {
-			set: set,
+			set: Array.from(set),
 			data: data,
 		});
 		return result && result.set;
