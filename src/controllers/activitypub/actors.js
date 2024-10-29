@@ -69,7 +69,7 @@ Actors.note = async function (req, res) {
 	}
 
 	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, {
-		stripTags: false,
+		parse: false,
 		extraFields: ['edited'],
 	})).pop();
 	if (!post) {

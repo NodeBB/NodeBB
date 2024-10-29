@@ -349,7 +349,7 @@ Mocks.notes.public = async (post) => {
 	}
 	if (mentionsEnabled) {
 		const mentions = require.main.require('nodebb-plugin-mentions');
-		const matches = await mentions.getMatches(post.content);
+		const matches = await mentions.getMatches(content);
 
 		if (matches.size) {
 			tag = tag || [];
