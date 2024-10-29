@@ -61,6 +61,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (!chain || !chain.length) {
 		// Fall back to inReplyTo traversal on context retrieval failure
 		chain = Array.from(await Notes.getParentChain(uid, input));
+		chain.reverse();
 	}
 
 	// Can't resolve — give up.
@@ -70,7 +71,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	// Reorder chain items by timestamp
-	chain = chain.sort((a, b) => a.timestamp - b.timestamp);
+	// chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 	const mainPost = chain[0];
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, _activitypub } = mainPost;
