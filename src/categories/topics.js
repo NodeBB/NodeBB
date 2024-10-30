@@ -118,9 +118,9 @@ module.exports = function (Categories) {
 		if (parseInt(cid, 10) === -1 && uid > 0) {
 			set.add(`uid:${uid}:inbox`);
 		}
-
+		const setValue = Array.from(set);
 		const result = await plugins.hooks.fire('filter:categories.buildTopicsSortedSet', {
-			set: Array.from(set),
+			set: set.size > 1 ? setValue : setValue[0],
 			data: data,
 		});
 		return result && result.set;
