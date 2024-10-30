@@ -25,6 +25,26 @@
 	</div>
 
 	<div class="row settings m-0">
+		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:probe]]</div>
+		<div class="col-sm-10 col-12">
+			<form>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" data-field="activitypubProbe">
+					<label class="form-check-label">[[admin/settings/activitypub:probe-enabled]]</label>
+					<p class="form-text">[[admin/settings/activitypub:probe-enabled-help]]</p>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="activitypubProbeTimeout">[[admin/settings/activitypub:probe-timeout]]</label>
+					<input type="number" id="activitypubProbeTimeout" name="activitypubProbeTimeout" data-field="activitypubProbeTimeout" title="[[admin/settings/activitypub:probe-timeout]]" class="form-control" />
+					<div class="form-text">
+						[[admin/settings/activitypub:probe-timeout-help]]
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row settings m-0">
 		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:pruning]]</div>
 		<div class="col-sm-10 col-12">
 			<form>

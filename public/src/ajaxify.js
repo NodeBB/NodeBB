@@ -609,7 +609,7 @@ $(document).ready(function () {
 								ajaxify.go('outgoing?url=' + encodeURIComponent(href));
 								e.preventDefault();
 							}
-						} else {
+						} else if (config.activitypub.probe) {
 							ajaxify.go(`ap?resource=${encodeURIComponent(this.href)}`);
 							e.preventDefault();
 						}

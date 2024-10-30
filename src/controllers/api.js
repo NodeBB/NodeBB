@@ -97,6 +97,9 @@ apiController.loadConfig = async function (req) {
 			styles: fontawesome_styles,
 			version: fontawesome_version,
 		},
+		activitypub: {
+			probe: meta.config.activitypubProbe,
+		},
 	};
 
 	let settings = config;

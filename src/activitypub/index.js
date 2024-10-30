@@ -490,8 +490,10 @@ ActivityPub.probe = async ({ uid, url }) => {
 	}
 
 	// Opportunistic HEAD
-	const { response } = await request.head(url);
-	try {
+	async function checkHeader(timeout) {
+		const { response } = await request.head(url, {
+			timeout,
+		});
 		const { headers } = response;
 		if (headers && headers.link) {
 			let parts = headers.link.split(';');
@@ -509,8 +511,19 @@ ActivityPub.probe = async ({ uid, url }) => {
 				return true;
 			}
 		}
+
+		return false;
+	}
+	try {
+		await checkHeader(meta.config.activitypubProbeTimeout || 500);
 	} catch (e) {
-		// ...
+		if (e.name === 'TimeoutError') {
+			// Return early but retry for caching purposes
+			checkHeader(1000 * 60).then((result) => {
+				probeCache.set(url, result);
+			});
+			return false;
+		}
 	}
 
 	probeCache.set(url, false);
