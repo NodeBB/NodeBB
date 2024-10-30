@@ -16,7 +16,7 @@
 	"probe-enabled": "Try to open ActivityPub-enabled resources in NodeBB",
 	"probe-enabled-help": "If enabled, NodeBB will check every external link for an ActivityPub equivalent, and load it in NodeBB instead.",
 	"probe-timeout": "Lookup Timeout (milliseconds)",
-	"probe-timeout-help": "(Default: 500) If the lookup query does not receive a response within the set timeframe, will send the user to the link directly instead. Adjust this number higher if sites are responding slowly and you wish to give extra time.",
+	"probe-timeout-help": "(Default: 2000) If the lookup query does not receive a response within the set timeframe, will send the user to the link directly instead. Adjust this number higher if sites are responding slowly and you wish to give extra time.",
 
 	"server-filtering": "Filtering",
 	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",

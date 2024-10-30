@@ -515,7 +515,7 @@ ActivityPub.probe = async ({ uid, url }) => {
 		return false;
 	}
 	try {
-		await checkHeader(meta.config.activitypubProbeTimeout || 500);
+		await checkHeader(meta.config.activitypubProbeTimeout || 2000);
 	} catch (e) {
 		if (e.name === 'TimeoutError') {
 			// Return early but retry for caching purposes
