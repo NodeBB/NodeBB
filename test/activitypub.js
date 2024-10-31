@@ -133,6 +133,12 @@ describe('ActivityPub integration', () => {
 					// Content after line breaks can be discarded
 					['<p>Intro text<br /><a href=\"https://example.org/\">example.org/</span></a></p><p>more text</p>', 'Intro text'],
 
+					// HTML without outer wrapping element
+					['Lorem ipsum dolor <span>sit amet</span>', 'Lorem ipsum dolor sit amet'],
+
+					// Two sentences with punctuation
+					['Lorem ipsum. Dolor sit amet.', 'Lorem ipsum.'],
+
 					// Additional tests?
 					// ['', ''],
 				]);

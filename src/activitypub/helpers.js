@@ -313,7 +313,7 @@ Helpers.generateTitle = (html) => {
 
 	// Try the first paragraph-like element
 	const match = html.match(titleRegex);
-	if (match) {
+	if (match && match.index === 0) {
 		title = match[2];
 	}
 
@@ -332,6 +332,8 @@ Helpers.generateTitle = (html) => {
 		.reduce((memo, cur, idx, sentences) => {
 			if (idx % 2) {
 				memo.push(`${sentences[idx - 1]}${cur}`);
+			} else if (idx === sentences.length - 1) {
+				memo.push(cur);
 			}
 
 			return memo;
