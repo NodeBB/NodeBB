@@ -29,6 +29,9 @@ const sanitizeConfig = {
 	allowedClasses: {
 		'*': [],
 	},
+	allowedAttributes: {
+		a: ['href', 'rel'],
+	},
 };
 
 Mocks.profile = async (actors, hostMap) => {
