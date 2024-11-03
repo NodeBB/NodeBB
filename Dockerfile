@@ -1,3 +1,31 @@
+# Stage 1: Build the Plugin
+FROM node:lts as plugin-builder
+
+# Install Git and TypeScript
+RUN apt-get update && \
+    apt-get install -y git && \
+    npm install -g typescript && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/plugin
+
+# Clone the plugin repository
+RUN git clone https://github.com/loversama/nodebb-plugin-shadowauth-oidc.git .
+
+# Fix TypeScript errors by modifying the plugin code
+# Specifically, cast 'this' to 'any' to access '_oauth2'
+RUN sed -i 's/this\._oauth2/(this as any)._oauth2/g' src/passport-shadowauth-oidc.ts
+
+# Install dependencies including devDependencies
+RUN npm install
+
+# Build the plugin (runs 'tsc' via 'prepare' script)
+RUN npm run prepare
+
+# Prune devDependencies to reduce image size
+RUN npm prune --omit=dev
+
+# Stage 2: Build the NodeBB Application
 FROM node:lts as build
 
 ENV NODE_ENV=production \
@@ -9,32 +37,34 @@ ENV NODE_ENV=production \
 
 WORKDIR /usr/src/app/
 
+# Copy application source code
 COPY . /usr/src/app/
 
 # Install corepack to allow usage of other package managers
 RUN corepack enable
 
-# Removing unnecessary files for us
+# Remove unnecessary hidden files and directories
 RUN find . -mindepth 1 -maxdepth 1 -name '.*' ! -name '.' ! -name '..' -exec bash -c 'echo "Deleting {}"; rm -rf {}' \;
 
-# Prepage package.json
+# Copy the package.json from the install directory
 RUN cp /usr/src/app/install/package.json /usr/src/app/
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive \
-    apt-get -y --no-install-recommends install \
-        tini
+# Install Tini for signal handling
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install tini && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid ${GID} ${USER} \
-    && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
-    && chown -R ${USER}:${USER} /usr/src/app/
+# Create the nodebb user and group
+RUN groupadd --gid ${GID} ${USER} && \
+    useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} && \
+    chown -R ${USER}:${USER} /usr/src/app/
 
 USER ${USER}
 
+# Install NodeBB dependencies
 RUN npm install --omit=dev
-    # TODO: generate lockfiles for each package manager
-    ## pnpm import \
 
+# Stage 3: Final Image Assembly
 FROM node:lts-slim AS final
 
 ENV NODE_ENV=production \
@@ -46,30 +76,35 @@ ENV NODE_ENV=production \
 
 WORKDIR /usr/src/app/
 
-RUN corepack enable \
-    && groupadd --gid ${GID} ${USER} \
-    && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
-    && mkdir -p /usr/src/app/logs/ /opt/config/ \
-    && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/
+# Enable corepack
+RUN corepack enable
 
-COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
+# Create the nodebb user and group
+RUN groupadd --gid ${GID} ${USER} && \
+    useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} && \
+    mkdir -p /usr/src/app/logs/ /opt/config/ && \
+    chown -R ${USER}:${USER} /usr/src/app/ /opt/config/
+
+# Copy NodeBB application from the build stage
+COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
+
+# Copy Tini and entrypoint script
 COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
 
+# Make entrypoint and Tini executable
 RUN chmod +x /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/tini
 
-# TODO: Have docker-compose use environment variables to create files like setup.json and config.json.
-# COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/local/bin/gomplate
+# Copy the built plugin from the plugin-builder stage into node_modules
+COPY --from=plugin-builder /usr/src/plugin /usr/src/app/node_modules/nodebb-plugin-shadowauth-oidc
 
 USER ${USER}
 
+# Expose the required port
 EXPOSE 4567
 
+# Define volumes
 VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config/"]
 
-# Utilising tini as our init system within the Docker container for graceful start-up and termination.
-# Tini serves as an uncomplicated init system, adept at managing the reaping of zombie processes and forwarding signals.
-# This approach is crucial to circumvent issues with unmanaged subprocesses and signal handling in containerised environments.
-# By integrating tini, we enhance the reliability and stability of our Docker containers.
-# Ensures smooth start-up and shutdown processes, and reliable, safe handling of signal processing.
+# Use Tini as the init system for better signal handling
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]

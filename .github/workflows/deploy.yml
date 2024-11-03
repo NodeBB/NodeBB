@@ -1,0 +1,45 @@
+# .github/workflows/deploy.yml
+
+name: Deploy NodeBB
+
+on:
+  push:
+    branches:
+      - main  # Triggers the workflow on pushes to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Step 2: Setup SSH with Retry
+      - name: Setup SSH with Retry
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 5
+          timeout_seconds: 5
+          command: |
+            mkdir -p ~/.ssh/
+            chmod 700 ~/.ssh/
+            echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+            chmod 600 ~/.ssh/id_ed25519
+            ssh-keyscan -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      # Step 3: Copy Code to Server
+      - name: Copy Code to Server
+        shell: bash
+        run: |
+          shopt -s dotglob
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 -P ${{ secrets.DEPLOY_PORT }} -r ./* ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/application/NodeBB
+
+      # Step 4: Deploy on Server
+      - name: Deploy on Server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
+            cd /application/NodeBB && \
+            docker compose down && \
+            docker compose up --build -d"
