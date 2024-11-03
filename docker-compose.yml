@@ -17,6 +17,8 @@ services:
       - mongo
       - redis
       - postgres
+    networks:
+      - webserver
 
   mongo:
     image: 'mongo:7-jammy'
@@ -30,6 +32,8 @@ services:
     volumes:
       - mongo-data:/data/db
       - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
+    networks:
+      - webserver
 
   redis:
     image: redis:7.4.0-alpine
@@ -39,6 +43,8 @@ services:
       - "${REDIS_PORT}:6379"
     volumes:
       - redis-data:/data
+    networks:
+      - webserver
 
   postgres:
     image: postgres:16.4-alpine
@@ -51,6 +57,8 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - webserver
 
 volumes:
   mongo-data:
@@ -94,3 +102,7 @@ volumes:
       o: bind
       type: none
       device: ${NODEBB_CONFIG_PATH}
+
+networks:
+  webserver:
+    external: true
