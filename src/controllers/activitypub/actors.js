@@ -118,7 +118,7 @@ Actors.topic = async function (req, res, next) {
 		return res.sendStatus(404);
 	}
 
-	const page = parseInt(req.query.page, 10);
+	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
 	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
 	try {
@@ -132,10 +132,11 @@ Actors.topic = async function (req, res, next) {
 			}),
 			db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
 		]);
-
-		// Generate digest for ETag
 		pids.push(mainPid);
 		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+		collection.totalItems += 1; // account for mainPid
+
+		// Generate digest for ETag
 		const digest = activitypub.helpers.generateDigest(new Set(pids));
 		const ifNoneMatch = (req.get('If-None-Match') || '').split(',').map((tag) => {
 			tag = tag.trim();
@@ -151,7 +152,6 @@ Actors.topic = async function (req, res, next) {
 		res.set('ETag', digest);
 
 		// Convert pids to urls
-		collection.totalItems += 1;
 		if (page || collection.totalItems < meta.config.postsPerPage) {
 			collection.orderedItems = collection.orderedItems || [];
 			if (!page || page === 1) { // add OP to collection

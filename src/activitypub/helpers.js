@@ -429,7 +429,7 @@ Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 	}
 
 	const object = {
-		type: paginate && items ? 'OrderedCollectionPage' : 'OrderedCollection',
+		type: paginate && items.length ? 'OrderedCollectionPage' : 'OrderedCollection',
 		totalItems: count,
 	};
 
