@@ -34,6 +34,7 @@ Controllers.globalMods = require('./globalmods');
 Controllers.mods = require('./mods');
 Controllers.sitemap = require('./sitemap');
 Controllers.osd = require('./osd');
+Controllers['service-worker'] = require('./service-worker');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
@@ -219,20 +220,31 @@ Controllers.registerInterstitial = async function (req, res, next) {
 	}
 };
 
-Controllers.confirmEmail = async (req, res, next) => {
+Controllers.confirmEmail = async (req, res) => {
+	function renderPage(opts = {}) {
+		res.render('confirm', {
+			title: '[[pages:confirm]]',
+			...opts,
+		});
+	}
 	try {
+		if (req.loggedIn) {
+			const emailValidated = await user.getUserField(req.uid, 'email:confirmed');
+			if (emailValidated) {
+				return renderPage({ alreadyValidated: true });
+			}
+		}
 		await user.email.confirmByCode(req.params.code, req.session.id);
 		if (req.session.registration) {
 			// After confirmation, no need to send user back to email change form
 			delete req.session.registration.updateEmail;
 		}
 
-		res.render('confirm', {
-			title: '[[pages:confirm]]',
-		});
+		renderPage();
 	} catch (e) {
-		if (e.message === '[[error:invalid-data]]') {
-			return next();
+		if (e.message === '[[error:invalid-data]]' || e.message === '[[error:confirm-email-expired]]') {
+			renderPage({ error: true });
+			return;
 		}
 
 		throw e;

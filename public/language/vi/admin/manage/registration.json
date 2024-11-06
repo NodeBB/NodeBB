@@ -11,7 +11,7 @@
 	"list.ip-spam": "Tần suất: %1 Xuất hiện: %2",
 
 	"invitations": "Lời mời",
-	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách bằng email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ được hiển thị bên phải email cho những người dùng đã đổi lời mời của họ.",
+	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách bằng email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ hiển thị bên phải email cho những người dùng đã đổi lời mời của họ.",
 	"invitations.inviter-username": "Tên Đăng Nhập Người Mời",
 	"invitations.invitee-email": "Email của người được mời",
 	"invitations.invitee-username": "Tên Đăng Nhập Người Được Mời (nếu đã đăng ký)",

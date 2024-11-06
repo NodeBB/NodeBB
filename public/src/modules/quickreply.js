@@ -1,13 +1,15 @@
 'use strict';
 
 define('quickreply', [
-	'components', 'composer', 'composer/autocomplete', 'api',
+	'components', 'autocomplete', 'api',
 	'alerts', 'uploadHelpers', 'mousetrap', 'storage', 'hooks',
 ], function (
-	components, composer, autocomplete, api,
+	components, autocomplete, api,
 	alerts, uploadHelpers, mousetrap, storage, hooks
 ) {
-	const QuickReply = {};
+	const QuickReply = {
+		_autocomplete: null,
+	};
 
 	QuickReply.init = function () {
 		const element = components.get('topic/quickreply/text');
@@ -27,7 +29,7 @@ define('quickreply', [
 			destroyAutoComplete();
 		});
 		$(window).trigger('composer:autocomplete:init', data);
-		autocomplete._active.core_qr = autocomplete.setup(data);
+		QuickReply._autocomplete = autocomplete.setup(data);
 
 		mousetrap.bind('ctrl+return', (e) => {
 			if (e.target === element.get(0)) {
@@ -90,7 +92,7 @@ define('quickreply', [
 
 				components.get('topic/quickreply/text').val('');
 				storage.removeItem(qrDraftId);
-				autocomplete._active.core_qr.hide();
+				QuickReply._autocomplete.hide();
 				hooks.fire('action:quickreply.success', { data });
 			});
 		});
@@ -113,7 +115,7 @@ define('quickreply', [
 			e.preventDefault();
 			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
-			composer.newReply({
+			hooks.fire('action:composer.post.new', {
 				tid: ajaxify.data.tid,
 				title: ajaxify.data.titleRaw,
 				body: textEl.val(),
@@ -123,9 +125,9 @@ define('quickreply', [
 	};
 
 	function destroyAutoComplete() {
-		if (autocomplete._active.core_qr) {
-			autocomplete._active.core_qr.destroy();
-			autocomplete._active.core_qr = null;
+		if (QuickReply._autocomplete) {
+			QuickReply._autocomplete.destroy();
+			QuickReply._autocomplete = null;
 		}
 	}
 

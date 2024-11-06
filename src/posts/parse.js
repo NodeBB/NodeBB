@@ -22,19 +22,16 @@ let sanitizeConfig = {
 		...sanitize.defaults.allowedAttributes,
 		a: ['href', 'name', 'hreflang', 'media', 'rel', 'target', 'type'],
 		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
-		iframe: ['height', 'name', 'src', 'width'],
+		iframe: ['height', 'name', 'src', 'width', 'allow', 'frameborder'],
 		video: ['autoplay', 'playsinline', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
 		audio: ['autoplay', 'controls', 'loop', 'muted', 'preload', 'src'],
 		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
 		embed: ['height', 'src', 'type', 'width'],
 	},
-	globalAttributes: ['accesskey', 'class', 'contenteditable', 'dir',
+	nonBooleanAttributes: ['accesskey', 'class', 'contenteditable', 'dir',
 		'draggable', 'dropzone', 'hidden', 'id', 'lang', 'spellcheck', 'style',
-		'tabindex', 'title', 'translate', 'aria-expanded', 'data-*',
+		'tabindex', 'title', 'translate', 'aria-*', 'data-*',
 	],
-	allowedClasses: {
-		...sanitize.defaults.allowedClasses,
-	},
 };
 
 module.exports = function (Posts) {
@@ -122,7 +119,7 @@ module.exports = function (Posts) {
 		sanitizeConfig.allowedTags.forEach((tag) => {
 			sanitizeConfig.allowedAttributes[tag] = _.union(
 				sanitizeConfig.allowedAttributes[tag],
-				sanitizeConfig.globalAttributes
+				sanitizeConfig.nonBooleanAttributes
 			);
 		});
 

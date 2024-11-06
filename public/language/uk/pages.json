@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Теми за якими стежить %1",
     "account/ignored": "Теми, які ігноруються",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Пости за які проголосував %1",
     "account/downvoted": "Пости проти яких проголосував %1",
     "account/best": "Найкращі пости %1",

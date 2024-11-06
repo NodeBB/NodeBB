@@ -6,7 +6,7 @@
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/groups:edit-group]]</h4>
 
 			<div component="group-selector" class="btn-group">
-				<button type="button" class="btn-ghost-sm dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<button type="button" class="btn btn-ghost btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
 				</button>
 				<div component="group-selector-search" class="hidden position-absolute w-100">
@@ -148,13 +148,13 @@
 
 		<div class="col-12 col-md-4 px-0 px-md-3 acp-sidebar">
 			<div class="p-2 d-flex flex-column text-bg-light border rounded-1 gap-1">
-				<a href="{config.relative_path}/admin/manage/groups" class="btn-ghost-sm justify-content-start"><i class="fa fa-fw fa-chevron-left text-primary"></i> [[admin/manage/groups:back-to-groups]]</a>
+				<a href="{config.relative_path}/admin/manage/groups" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center"><i class="fa fa-fw fa-chevron-left text-primary"></i> [[admin/manage/groups:back-to-groups]]</a>
 
 				<hr class="my-1"/>
 
 				<div class="edit-privileges-selector w-100">
 					<div component="category-selector" class="btn-group w-100">
-						<button type="button" class="btn-ghost-sm justify-content-start flex-fill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<button type="button" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center flex-fill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="fa fa-fw fa-lock text-primary"></i> <span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
 						</button>
 						<div component="category-selector-search" class="hidden position-absolute">
@@ -180,16 +180,16 @@
 					</div>
 				</div>
 
-				<a href="{config.relative_path}/api/admin/groups/{group.nameEncoded}/csv" class="btn-ghost-sm justify-content-start">
+				<a href="{config.relative_path}/api/admin/groups/{group.nameEncoded}/csv" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
 					<i class="fa fa-fw fa-file-csv text-primary"></i>[[admin/manage/groups:members-csv]]</a>
 
-				<a href="{config.relative_path}/groups/{group.slug}" class="btn-ghost-sm justify-content-start">
+				<a href="{config.relative_path}/groups/{group.slug}" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
 					<i class="fa fa-fw fa-eye text-primary"></i> [[admin/manage/groups:view-group]]
 				</a>
 
 				<hr class="my-1"/>
 
-				<button data-action="delete" class="btn-ghost-sm justify-content-start">
+				<button data-action="delete" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
 					<i class="fa fa-fw fa-trash text-danger"></i> [[admin/manage/groups:delete]]
 				</button>
 			</div>

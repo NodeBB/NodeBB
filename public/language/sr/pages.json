@@ -54,6 +54,7 @@
     "account/settings-of": "Промена подешавања од %1",
     "account/watched": "Теме које надгледа %1",
     "account/ignored": "Теме које игнорише %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Поруке које је гласао %1",
     "account/downvoted": "Поруке које је негативно гласао %1",
     "account/best": "Најбоље поруке од %1",

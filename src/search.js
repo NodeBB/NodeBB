@@ -19,20 +19,33 @@ search.search = async function (data) {
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
-	if (['posts', 'titles', 'titlesposts', 'bookmarks'].includes(data.searchIn)) {
-		result = await searchInContent(data);
-	} else if (data.searchIn === 'users') {
-		result = await user.search(data);
-	} else if (data.searchIn === 'categories') {
-		result = await categories.search(data);
-	} else if (data.searchIn === 'tags') {
-		result = await topics.searchAndLoadTags(data);
-	} else if (data.searchIn) {
-		result = await plugins.hooks.fire('filter:search.searchIn', {
-			data,
-		});
-	} else {
-		throw new Error('[[error:unknown-search-filter]]');
+	switch (data.searchIn) {
+		case 'users': {
+			result = await user.search(data);
+			break;
+		}
+
+		case 'categories': {
+			result = await categories.search(data);
+			break;
+		}
+
+		case 'tags': {
+			result = await topics.searchAndLoadTags(data);
+			break;
+		}
+
+		default: {
+			if (['posts', 'titles', 'titlesposts', 'bookmarks'].includes(data.searchIn)) {
+				result = await searchInContent(data);
+			} else if (data.searchIn) {
+				result = await plugins.hooks.fire('filter:search.searchIn', {
+					data,
+				});
+			} else {
+				throw new Error('[[error:unknown-search-filter]]');
+			}
+		}
 	}
 
 	result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);

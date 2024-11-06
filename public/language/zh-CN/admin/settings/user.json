@@ -25,7 +25,7 @@
 	"lockout-duration": "帐户锁定时间(分钟)",
 	"login-days": "记录用户会话天数",
 	"password-expiry-days": "强制重置密码天数",
-	"session-time": "Session 过期时间",
+	"session-time": "会话过期时间",
 	"session-time-days": "天",
 	"session-time-seconds": "秒",
 	"session-time-help": "这些值将用于控制用户在登录时选中&quot;记住我&quot;后能够保持登录的时长。注意以下数值中只有一个将被使用。若<i>秒</i>值为空我们将回退使用<i>天</i>。若<i>天</i>值为空我们将使用默认值<i>14天</i>。",

@@ -90,6 +90,6 @@
 	"bulk-actions": "פעולות כלליות",
 	"bulk-resolve": "השלמת דיווחים",
 	"bulk-success": "%1 דיווחים עודכנו",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "מדווחים <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[דיווח אוטומטי] פוסט זה קיבל %1 הצבעות למטה."
 }

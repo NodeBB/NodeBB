@@ -1553,6 +1553,7 @@ describe('Controllers', () => {
 			await privileges.categories.rescind(['groups:read'], category.cid, 'guests');
 			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}`);
 			assert.equal(response.statusCode, 401);
+			await privileges.categories.give(['groups:read'], category.cid, 'guests');
 		});
 
 		it('should redirect if topic index is negative', async () => {
@@ -1715,7 +1716,9 @@ describe('Controllers', () => {
 		});
 
 		it('should load the composer route', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=1`);
+			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`, {
+				jar,
+			});
 			assert.equal(response.statusCode, 200);
 			assert(body.title);
 			assert(body.template);
@@ -1733,7 +1736,9 @@ describe('Controllers', () => {
 				method: hookMethod,
 			});
 
-			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=1`);
+			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`, {
+				jar,
+			});
 			assert.equal(response.statusCode, 200);
 			assert(body.title);
 			assert.strictEqual(body.template.name, '');
@@ -1834,6 +1839,30 @@ describe('Controllers', () => {
 			});
 			assert.equal(replyResult.response.statusCode, 302);
 			await privileges.categories.rescind(['groups:topics:post', 'groups:topics:reply'], cid, 'guests');
+		});
+
+		it('should not load a topic data that is in private category', async () => {
+			const { cid } = await categories.create({
+				name: 'private',
+				description: 'private',
+			});
+
+			const result = await topics.post({ uid: fooUid, title: 'hidden title', content: 'hidden content', cid: cid });
+
+			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'guests');
+			let { response, body } = await request.get(`${nconf.get('url')}/api/compose?tid=${result.topicData.tid}`);
+			assert.equal(response.statusCode, 401);
+			assert(!body.title);
+
+			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`));
+			assert.equal(response.statusCode, 401);
+			assert(!body.title);
+
+			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?pid=${result.postData.pid}`));
+			assert.equal(response.statusCode, 401);
+			assert(!body.title);
+
+			await privileges.categories.give(['groups:topics:read'], category.cid, 'guests');
 		});
 	});
 

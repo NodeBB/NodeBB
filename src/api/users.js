@@ -188,7 +188,7 @@ usersAPI.follow = async function (caller, data) {
 		bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
 		nid: `follow:${data.uid}:uid:${caller.uid}`,
 		from: caller.uid,
-		path: `/uid/${data.uid}/followers`,
+		path: `/uid/${caller.uid}`,
 		mergeId: 'notifications:user-started-following-you',
 	});
 	if (!notifObj) {

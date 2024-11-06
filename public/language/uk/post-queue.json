@@ -38,5 +38,6 @@
 	"remove-selected": "Remove Selected",
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"bulk-reject-success": "%1 posts rejected",
+	"links-in-this-post": "Links in this post"
 }

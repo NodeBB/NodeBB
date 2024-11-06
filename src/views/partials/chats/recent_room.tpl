@@ -3,7 +3,7 @@
 {{{ end }}}
 <div component="chat/recent/room" data-roomid="{./roomId}" data-full="1" class="rounded-1 {{{ if ./unread }}}unread{{{ end }}}">
 	<div class="d-flex gap-1 justify-content-between">
-		<div class="chat-room-btn position-relative d-flex flex-grow-1 gap-2 justify-content-start align-items-start btn-ghost-sm ff-sans">
+		<div class="chat-room-btn position-relative d-flex flex-grow-1 gap-2 justify-content-start align-items-start btn btn-ghost btn-sm ff-sans text-start">
 			<div class="main-avatar">
 				{{{ if ./users.length }}}
 				{{{ if ./groupChat}}}
@@ -31,19 +31,11 @@
 					{{{ end  }}}
 				{{{ end }}}
 				</div>
-
-				{{{ if ./teaser }}}
-				<div class="teaser-content text-sm line-clamp-3 text-break">
-					{buildAvatar(./teaser.user, "14px", true, "align-middle")}
-					<strong class="text-xs fw-semibold teaser-username">{./teaser.user.username}:</strong>
-					{./teaser.content}
-				</div>
-				<div class="teaser-timestamp text-muted text-xs">{{{ if ./teaser.timeagoLong }}}{./teaser.timeagoLong}{{{ else }}}<span class="timeago" title="{./teaser.timestampISO}"></span>{{{ end }}}</div>
-				{{{ end }}}
+				<!-- IMPORT partials/chats/room-teaser.tpl -->
 			</div>
 		</div>
 		<div>
-			<button class="mark-read btn-ghost-sm" style="width: 1.5rem; height: 1.5rem;">
+			<button class="mark-read btn btn-ghost btn-sm d-flex align-items-center justify-content-center flex-grow-0 flex-shrink-0 p-1" style="width: 1.5rem; height: 1.5rem;">
 				<i class="unread fa fa-2xs fa-circle text-primary {{{ if !./unread }}}hidden{{{ end }}}" aria-label="[[unread:mark-as-read]]"></i>
 				<i class="read fa fa-2xs fa-circle-o text-secondary {{{ if ./unread }}}hidden{{{ end }}}" aria-label="[[unread:mark-as-unread]]"></i>
 			</button>
@@ -52,4 +44,8 @@
 </div>
 {{{ if !@last }}}
 <hr class="my-1" />
+{{{ else }}}
+{{{ if showBottomHr }}}
+<hr class="my-1" />
+{{{ end }}}
 {{{ end }}}

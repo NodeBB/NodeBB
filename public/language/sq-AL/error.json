@@ -153,6 +153,7 @@
     "about-me-too-long": "Na vjen keq, por përshkrimi nuk mund të jetë më i gjatë se %1 karakter(e).",
     "cant-chat-with-yourself": "Nuk mund të bësh bashkëbisedim me veten!",
     "chat-restricted": "Ky përdorues ka kufizuar mesazhet e tij. Duhet t'ju ndjekin përpara se të bisedoni të",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Sistemi i bisedës është çaktivizuar",
     "too-many-messages": "Ju keni dërguar shumë mesazhe, ju lutemi prisni pak.",
     "invalid-chat-message": "Mesazh i pasaktë në bisedë",

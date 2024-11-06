@@ -4,7 +4,7 @@
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:manage-categories]]</h4>
 		</div>
 		<div class="d-flex gap-1">
-			<button id="toggle-collapse-all" class="btn-ghost-sm text-nowrap" data-collapsed="0">[[admin/manage/categories:collapse-all]]</button>
+			<button id="toggle-collapse-all" class="btn btn-ghost btn-sm text-nowrap" data-collapsed="0">[[admin/manage/categories:collapse-all]]</button>
 
 			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 

@@ -153,6 +153,7 @@
     "about-me-too-long": "Жао нам је, информације о вама не смеју бити дуже од %1 знак(ов)а.",
     "cant-chat-with-yourself": "Не можете ћаскати са самим собом!",
     "chat-restricted": "Овај корисник је ограничио њихова ћаскања. Морају вас пратити пре него што можете ћаскати са њима.",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Ћаскања су онемогућена",
     "too-many-messages": "Послали сте превише порука, сачекајте мало.",
     "invalid-chat-message": "Неважећа порука",

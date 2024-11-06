@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Темы, которые %1 отслеживает",
     "account/ignored": "Темы, которые %1 игнорирует",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Понравилось пользователю %1",
     "account/downvoted": "Не понравилось пользователю %1",
     "account/best": "Лучшие сообщения %1",

@@ -12,6 +12,8 @@
 	"container.card": "Card",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Alert",
 
 	"alert.confirm-delete": "Tens a certeza que desejas eliminar este widget?",

@@ -11,7 +11,7 @@ define('forum/chats', [
 	'forum/chats/user-list',
 	'forum/chats/message-search',
 	'forum/chats/pinned-messages',
-	'composer/autocomplete',
+	'autocomplete',
 	'hooks',
 	'bootbox',
 	'alerts',
@@ -697,6 +697,12 @@ define('forum/chats', [
 				data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
 				data.message.timestampISO = utils.toISOString(data.message.timestamp);
 				messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
+
+				Chats.updateTeaser(data.roomId, {
+					content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
+					user: data.message.fromUser,
+					timestampISO: data.message.timestampISO,
+				});
 			}
 		});
 
@@ -752,6 +758,31 @@ define('forum/chats', [
 			}
 			chatModule.updateTypingUserList($(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"]`), data);
 		});
+	};
+
+	Chats.updateTeaser = async function (roomId, teaser) {
+		if (!ajaxify.data.template.chats || !app.user.userslug) {
+			return;
+		}
+		const roomEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
+		if (roomEl.length) {
+			const html = await app.parseAndTranslate('partials/chats/room-teaser', {
+				teaser: teaser,
+			});
+			roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
+			roomEl.find('.timeago').timeago();
+		} else {
+			const { rooms } = await api.get(`/chats`, { start: 0, perPage: 2 });
+			const room = rooms.find(r => parseInt(r.roomId, 10) === parseInt(roomId, 10));
+			if (room) {
+				const recentEl = components.get('chat/recent');
+				const html = await app.parseAndTranslate('chats', 'rooms', {
+					rooms: [room],
+					showBottomHr: true,
+				});
+				recentEl.prepend(html);
+			}
+		}
 	};
 
 	Chats.markChatPageElUnread = function (data) {

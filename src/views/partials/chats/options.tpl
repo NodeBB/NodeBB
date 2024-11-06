@@ -1,6 +1,6 @@
 <div class="d-flex gap-1 align-items-stretch">
 	<!-- search -->
-	<button class="btn-ghost-sm" component="chat/room/search/toggle" data-manual-tooltip="1" title="[[global:header.search]]">
+	<button class="btn btn-ghost btn-sm" component="chat/room/search/toggle" data-manual-tooltip="1" title="[[global:header.search]]">
 		<i class="fa fa-search text-muted"></i>
 	</button>
 	<div component="chat/room/search/container" class="position-relative hidden align-self-center">
@@ -13,7 +13,7 @@
 
 	<!-- notification dropdown -->
 	<div class="dropdown d-flex" data-manual-tooltip="1" title="[[modules:chat.notification-settings]]" component="chat/notification/setting">
-		<button class="btn-ghost-sm position-relative" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<button class="btn btn-ghost btn-sm position-relative" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-bell text-muted"></i>
 			<span class="position-absolute top-0 end-0 text-xs text-muted opacity-50" style="font-size: 10px!important; padding: 1px; line-height: 10px;">
 				<i component="chat/notification/setting/icon" class="fa {notificationOptionsIcon}"></i>
@@ -43,13 +43,13 @@
 	</div>
 
 	<!-- pinned messages -->
-	<button component="chat/pinned/messages/btn" class="btn-ghost-sm d-none d-lg-flex flex-nowrap" title="[[modules:chat.pinned-messages]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+	<button component="chat/pinned/messages/btn" class="btn btn-ghost btn-sm d-none d-lg-block flex-nowrap" title="[[modules:chat.pinned-messages]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 		<i class="fa fa-thumb-tack text-muted"></i>
 	</button>
 
 	<!-- manage/options dropdown -->
 	<div class="dropdown d-flex" data-manual-tooltip="1" title="[[modules:chat.options]]">
-		<button component="chat/controlsToggle" class="btn-ghost-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<button component="chat/controlsToggle" class="btn btn-ghost btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-gear text-muted"></i>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" component="chat/controls" role="menu">
@@ -82,7 +82,7 @@
 
 	<!-- users toggle -->
 	{{{ if users.length }}}
-	<div component="chat/user/list/btn" class="btn-ghost-sm d-none d-lg-flex flex-nowrap gap-3" title="[[modules:chat.view-users-list]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+	<div component="chat/user/list/btn" class="btn btn-ghost btn-sm d-none d-lg-flex flex-nowrap gap-3" title="[[modules:chat.view-users-list]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 		<div class="d-flex text-nowrap">
 			{{{ if ./users.0 }}}
 			<span style="width: 18px; z-index: 3;" class="text-decoration-none" href="{config.relative_path}/user/{./users.0.userslug}">{buildAvatar(./users.0, "24px", true)}</span>

@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "¡%1 nodos respondieron en %2ms!",
 	"host": "host",
-	"primary": "primary / run jobs",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "en-linea",
@@ -19,6 +19,7 @@
 
 	"registered": "Registrado",
 	"sockets": "Toma",
+	"connection-count": "Connection Count",
 	"guests": "Invitados",
 
 	"info": "Información"

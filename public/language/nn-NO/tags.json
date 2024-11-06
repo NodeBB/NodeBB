@@ -1,0 +1,17 @@
+{
+    "all-tags": "Alle stikkord",
+    "no-tag-topics": "Det er ingen emne med dette stikkordet.",
+    "no-tags-found": "Ingen stikkord funne",
+    "tags": "Stikkord",
+    "enter-tags-here": "Skriv inn stikkord, %1 - %2 teikn.",
+    "enter-tags-here-short": "Skriv inn stikkord...",
+    "no-tags": "Det er ingen stikkord enno.",
+    "select-tags": "Vel stikkord",
+    "tag-whitelist": "Stikkord kviteliste",
+    "watching": "Følgjer",
+    "not-watching": "Følgjer ikkje",
+    "watching.description": "Varsle meg om nye emne.",
+    "not-watching.description": "Ikkje varsle meg om nye emne.",
+    "following-tag.message": "Du vil no motta varsel når nokon postar eit emne med dette stikkordet.",
+    "not-following-tag.message": "Du vil ikkje motta varsel når nokon postar eit emne med dette stikkordet."
+}

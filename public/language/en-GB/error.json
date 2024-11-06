@@ -179,6 +179,7 @@
 
 	"cant-chat-with-yourself": "You can't chat with yourself!",
 	"chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+	"chat-user-blocked": "You have been blocked by this user.",
 	"chat-disabled": "Chat system disabled",
 	"too-many-messages": "You have sent too many messages, please wait awhile.",
 	"invalid-chat-message": "Invalid chat message",

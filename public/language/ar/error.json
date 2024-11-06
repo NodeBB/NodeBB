@@ -153,6 +153,7 @@
     "about-me-too-long": "نأسف، ( عني ) لا يمكن أن يكون أكثر من %1 حرف.",
     "cant-chat-with-yourself": "لايمكنك فتح محادثة مع نفسك",
     "chat-restricted": "هذا المستخدم عطل المحادثات الواردة عليه. يجب أن يتبعك حتى تتمكن من فتح محادثة معه.",
+    "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "نظام المحادثة معطل.",
     "too-many-messages": "لقد أرسلت الكثير من الرسائل، الرجاء اﻹنتظار قليلاً",
     "invalid-chat-message": "الرسالة غير صالحة.",

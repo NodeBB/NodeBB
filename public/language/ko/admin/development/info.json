@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1개의 노드가 %2밀리초 안에 응답했습니다!",
 	"host": "호스트",
-	"primary": "primary / run jobs",
+	"primary": "primary / jobs",
 	"pid": "PID",
 	"nodejs": "Node.js",
 	"online": "온라인",
@@ -19,6 +19,7 @@
 
 	"registered": "Registered",
 	"sockets": "소켓",
+	"connection-count": "Connection Count",
 	"guests": "비회원",
 
 	"info": "정보"

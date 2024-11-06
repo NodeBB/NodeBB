@@ -1,16 +1,16 @@
 {
     "title": "نخوانده‌ها",
-    "no-unread-topics": "جستار خوانده نشده‌ای وجود ندارد.",
+    "no-unread-topics": "موضوعات خوانده نشده‌ای وجود ندارد.",
     "load-more": "بارگذاری بیش‌تر",
-    "mark-as-read": "خوانده شده بگیر",
-    "mark-as-unread": "Mark as Unread",
-    "selected": "برگزیده",
+    "mark-as-read": "علامت زدن به عنوان خوانده شده",
+    "mark-as-unread": "علامت زدن به‌ عنوان نخوانده شده",
+    "selected": "انتخاب شده",
     "all": "همه",
-    "all-categories": "تمام دسته ها",
+    "all-categories": "تمام دسته‌بندی‌ها",
     "topics-marked-as-read.success": "همه موضوع ها خوانده شدند",
     "all-topics": "همه موضوع ها",
     "new-topics": "موضوع های جدید",
-    "watched-topics": "موضوع های پیگیری شده",
+    "watched-topics": "موضوع های تماشا شده",
     "unreplied-topics": "موضوع های بدون پاسخ",
     "multiple-categories-selected": "انتخاب چندگانه"
 }

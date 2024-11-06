@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "％1ノードは％2ms以内に応答しました！",
 	"host": "ホスト",
-	"primary": "primary / run jobs",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "オンライン",
@@ -19,6 +19,7 @@
 
 	"registered": "登録数",
 	"sockets": "ソケット数",
+	"connection-count": "Connection Count",
 	"guests": "ゲスト数",
 
 	"info": "情報"

@@ -54,6 +54,7 @@
     "account/settings-of": "Changing settings of %1",
     "account/watched": "Témy sledované používateľom %1",
     "account/ignored": "Témy ignorované používateľom %1",
+    "account/read": "Topics read by %1",
     "account/upvoted": "Príspevky, ktorým používateľ %1 dal hlas",
     "account/downvoted": "Nesúhlasí s príspevkom %1",
     "account/best": "Najlepšie príspevky vytvorené užívateľom %1",

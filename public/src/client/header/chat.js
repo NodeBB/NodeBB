@@ -7,10 +7,6 @@ define('forum/header/chat', [
 
 	chat.prepareDOM = function () {
 		const chatsToggleEl = $('[component="chat/dropdown"]');
-		if (!chatsToggleEl.length) {
-			return;
-		}
-
 		chatsToggleEl.on('show.bs.dropdown', (ev) => {
 			requireAndCall('loadChatsDropdown', $(ev.target).parent().find('[component="chat/list"]'));
 		});
@@ -42,6 +38,7 @@ define('forum/header/chat', [
 					return;
 				}
 				chatPage.markChatPageElUnread(data);
+				chatPage.updateTeaser(data.roomId, data.teaser);
 			}
 
 			let { count } = await api.get('/chats/unread');

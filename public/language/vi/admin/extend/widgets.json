@@ -1,5 +1,5 @@
 {
-	"widgets": "Widgets",
+	"widgets": "Tiện ích",
 	"available": "Tiện ích có sẵn",
 	"explanation": "Chọn một tiện ích từ menu thả xuống, sau đó kéo và thả nó vào khu vực tiện ích của mẫu ở bên trái.",
 	"none-installed": "Không tìm thấy tiện ích nào! Kích hoạt plugin tiện ích cần thiết trong bảng điều khiển<a href=\"%1\">plugins</a> .",
@@ -12,6 +12,8 @@
 	"container.card": "Thẻ",
 	"container.card-header": "Đầu Thẻ",
 	"container.card-body": "Thân Thẻ",
+	"container.title": "Tiêu đề",
+	"container.body": "Thân",
 	"container.alert": "Cảnh báo",
 
 	"alert.confirm-delete": "Bạn có chắc muốn xóa tiện ích này không?",

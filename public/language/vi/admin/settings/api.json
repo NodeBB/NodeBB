@@ -13,17 +13,17 @@
 	"token": "Token",
 	"uid-help-text": "Ghi rõ ID người dùng liên kết với mã truy cập. Nếu ID người dùng là <code>0</code>, nó sẽ là môt mã truy cập <em>cao cấp</em>, có thể giả định danh tính của những người dùng khác dựa trên tham số <code>_uid</code>",
 	"description": "Mô tả",
-	"last-seen": "Last seen",
-	"created": "Created",
-	"create-token": "Create Token",
-	"update-token": "Update Token",
-	"master-token": "Master token",
-	"last-seen-never": "Khóa này chưa bao giờ được dùng.",
+	"last-seen": "Nhìn thấy lần cuối",
+	"created": "Đã tạo",
+	"create-token": "Tạo Token",
+	"update-token": "Cập Nhật Token",
+	"master-token": "Token Chính",
+	"last-seen-never": "Khóa này chưa bao giờ dùng.",
 	"no-description": "Không có mô tả cụ thể.",
 	"actions": "Hành Động",
 	"edit": "Sửa",
 	"roll": "Cuộn",
 
-	"delete-confirm": "Bạn có chắc chắn muốn xóa mã thông báo này không? Nó sẽ không thể phục hồi được.",
-	"roll-confirm": "Bạn có chắc chắn muốn tạo lại mã thông báo này không? Mã thông báo cũ sẽ bị thu hồi ngay lập tức và không thể phục hồi được."
+	"delete-confirm": "Bạn có chắc muốn xóa token này không? Nó không thể phục hồi.",
+	"roll-confirm": "Bạn có chắc muốn tạo lại token này không? Token cũ sẽ bị thu hồi ngay và không thể phục hồi được."
 }

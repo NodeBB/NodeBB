@@ -1,0 +1,13 @@
+{
+	"general": "Generelt",
+	"private-groups": "Private grupper",
+	"private-groups.help": "Aktiver private grupper for å la brukarar be om medlemskap.",
+	"private-groups.warning": "Deaktivering vil påverke eksisterande private grupper.",
+	"allow-multiple-badges": "Tillat fleire merker",
+	"allow-multiple-badges-help": "Tillat brukarar å vise fleire gruppemerker samtidig.",
+	"max-name-length": "Maks namn lengd",
+	"max-title-length": "Maks tittel lengd",
+	"cover-image": "Omslagsbilete",
+	"default-cover": "Standard omslag",
+	"default-cover-help": "Vel eit standard omslagsbilete for grupper."
+}

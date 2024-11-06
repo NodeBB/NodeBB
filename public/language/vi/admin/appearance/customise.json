@@ -1,20 +1,20 @@
 {
-	"customise": "Customise",
+	"customise": "Tùy chỉnh",
 	"custom-css": "CSS/SASS Tùy Chỉnh",
 	"custom-css.description": "Nhập các khai báo CSS/SASS của riêng bạn tại đây, sẽ được áp dụng sau tất cả các kiểu khác.",
 	"custom-css.enable": "Bật CSS/SASS Tùy Chỉnh",
 
 	"custom-js": "Javascript tùy chỉnh",
 	"custom-js.description": "Nhập javascript của riêng bạn ở đây. Nó sẽ được thực hiện sau khi trang được tải hoàn toàn.",
-	"custom-js.enable": "Bật Javascript tùy chỉnh",
+	"custom-js.enable": "Bật Javascript Tùy Chỉnh",
 
 	"custom-header": "Tùy Chỉnh Phần Đầu Trang",
-	"custom-header.description": "Nhập HTML tùy chỉnh tại đây (VD: Thẻ Meta, v.v...), sẽ được thêm vào phần <code>&lt;head&gt;</code>. Thẻ Script được phép, nhưng không được khuyến khích, vì phần <a href=\"#custom-js\" data-toggle=\"tab\">Tùy Chỉnh Javascript</a> đã có sẵn.",
+	"custom-header.description": "Nhập HTML tùy chỉnh ở đây (VD: Thẻ Meta, v.v...), sẽ được thêm vào phần <code>&lt;head&gt;</code>. Thẻ Script được phép, nhưng không được khuyến khích, vì phần <a href=\"#custom-js\" data-toggle=\"tab\">Tùy Chỉnh Javascript</a> đã có sẵn.",
 	"custom-header.enable": "Bật Tùy Chỉnh Phần Đầu Trang",
 
 	"custom-css.livereload": "Bật tải lại trực tiếp",
 	"custom-css.livereload.description": "Bật điều này để buộc tất cả các phiên trên mọi thiết bị trong tài khoản của bạn phải làm mới bất cứ khi nào bạn nhấp vào lưu",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Ghi đè các biến bootstrap ở đây. Bạn có thể sử dụng công cụ như <a href=\"https://bootstrap.build/app\">bootstrap.build</a> và dán đầu ra ở đây.<br/>Thay đổi buộc dựng lại và chạy lại.",
+	"bsvariables.enable": "Bật _variables.scss"
 }

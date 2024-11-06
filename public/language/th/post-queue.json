@@ -26,7 +26,7 @@
 	"notify-user": "แจ้งเตือนผู้ใช้งาน",
 	"confirm-reject": "คุณต้องการปฏิเสธโพสต์นี้หรือไม่?",
 	"confirm-remove": "คุณต้องการลบโพสต์นี้หรือไม่??",
-	"bulk-actions": "คำสั่งทีละมากๆ",
+	"bulk-actions": "จัดการทีละมากๆ",
 	"accept-all": "ยอมรับทั้งหมด",
 	"accept-selected": "ยอมรับที่เลือก",
 	"reject-all": "ปฏิเสธทั้งหมด",
@@ -38,5 +38,6 @@
 	"remove-selected": "ลบที่เลือก",
 	"remove-selected-confirm": "คุณต้องการลบโพสต์ที่เลือกจำนวน %1 โพสต์หรือไม่?",
 	"bulk-accept-success": "%1 โพสต์ถูกยอมรับ",
-	"bulk-reject-success": "%1 โพสต์ถูกปฏิเสธ"
+	"bulk-reject-success": "%1 โพสต์ถูกปฏิเสธ",
+	"links-in-this-post": "ลิงก์ในโพสต์นี้"
 }

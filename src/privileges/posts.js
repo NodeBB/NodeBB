@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 
+const db = require('../database');
 const meta = require('../meta');
 const posts = require('../posts');
 const topics = require('../topics');
@@ -118,7 +119,8 @@ privsPosts.canEdit = async function (pid, uid) {
 	const results = await utils.promiseParallel({
 		isAdmin: user.isAdministrator(uid),
 		isMod: posts.isModerator([pid], uid),
-		owner: posts.isOwner(pid, uid),
+		isOwner: posts.isOwner(pid, uid),
+		isEditor: db.isSetMember(`pid:${pid}:editors`, uid),
 		edit: privsPosts.can('posts:edit', pid, uid),
 		postData: posts.getPostFields(pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
 		userData: user.getUserFields(uid, ['reputation']),
@@ -158,7 +160,10 @@ privsPosts.canEdit = async function (pid, uid) {
 	results.uid = uid;
 
 	const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
-	return { flag: result.edit && (result.owner || result.isMod), message: '[[error:no-privileges]]' };
+	return {
+		flag: result.edit && (result.isOwner || result.isEditor || result.isMod),
+		message: '[[error:no-privileges]]',
+	};
 };
 
 privsPosts.canDelete = async function (pid, uid) {

@@ -15,6 +15,6 @@
 	"custom-css.livereload": "เปิดการบังคับให้มีผลในทันที",
 	"custom-css.livereload.description": "การเปิดนี้จะบังคับทุกเซสชั่นบนทุกอุปกรณ์ภายใต้บัญชีของคุณให้ถูกรีเฟรชทันทีที่คุณกดบันทึก",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "แทนที่ค่าตัวแปร bootstrap ที่นี่ คุณยังสามารถใช้เครื่องมือ <a href=\"https://bootstrap.build/app\">bootstrap.build</a> และคัดลอกผลลัพธ์ลงในนี้ <br/>การเปลี่ยนแปลงต้องทำ rebuild และเริ่มต้นใหม่",
-	"bsvariables.enable": "เปิด _variables.scss"
+	"bsvariables.description": "แทนที่ค่าตัวแปร bootstrap ที่นี่ คุณยังสามารถใช้เครื่องมือ <a href=\"https://bootstrap.build/app\">bootstrap.build</a> และคัดลอกผลลัพธ์ลงในนี้ <br/>การเปลี่ยนแปลงต้องสร้างและเริ่มต้นระบบใหม่",
+	"bsvariables.enable": "เปิดการใช้งาน _variables.scss"
 }

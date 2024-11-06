@@ -3,12 +3,12 @@
 	"post-queue": "Xếp Hàng Bài Đăng",
 	"no-queued-posts": "Không có bài trong xếp hàng đăng bài",
 	"no-single-post": "Chủ đề hoặc bài đăng bạn đang tìm kiếm không còn xếp hàng. Có thể đã phê duyệt hoặc xóa rồi.",
-	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"enabling-help": "Hàng đợi bài đăng hiện tại <strong>đã tắt</strong>. Để bật, đi đến <a href=\"%1\">Cài đặt &rarr; Đăng bài &rarr; Hàng Đợi Đăng Bài</a> và bật <strong>Hàng Đợi Đăng Bài</strong>.",
 	"back-to-list": "Trở về Hàng Đợi Đăng",
-	"public-intro": "If you have any queued posts, they will be shown here.",
-	"public-description": "This forum is configured to automatically queue posts from new accounts, pending moderator approval.<br />If you have queued posts awaiting approval, you will be able to see them here.",
+	"public-intro": "Nếu bạn có bất kỳ bài đăng nào được xếp hàng đợi, chúng sẽ được hiển thị ở đây.",
+	"public-description": "Diễn đàn này được cấu hình tự động xếp hàng các bài đăng từ tài khoản mới, chờ người điều hành phê duyệt.<br />Nếu bạn đã xếp hàng các bài đăng đợi phê duyệt, bạn sẽ có thể xem chúng ở đây.",
 	"user": "Người dùng",
-	"when": "When",
+	"when": "Khi",
 	"category": "Chuyên mục",
 	"title": "Tiêu đề",
 	"content": "Nội dung",
@@ -38,5 +38,6 @@
 	"remove-selected": "Gỡ Bỏ Đã Chọn",
 	"remove-selected-confirm": "Bạn có muốn xóa %1 bài đăng đã chọn không?",
 	"bulk-accept-success": "%1 bài đăng được chấp nhận",
-	"bulk-reject-success": "%1 bài đăng bị từ chối"
+	"bulk-reject-success": "%1 bài đăng bị từ chối",
+	"links-in-this-post": "Liên kết trong bài này"
 }

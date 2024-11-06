@@ -12,14 +12,14 @@
 
 				<div class="d-flex flex-column gap-1">
 					<div class="d-flex gap-1 align-items-center justify-content-between justify-content-lg-start">
-						<button class="btn-ghost-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#public-rooms"
+						<button class="btn btn-ghost btn-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#public-rooms"
 						onclick="$(this).find('i').toggleClass('fa-rotate-180');"><i class="fa fa-fw fa-chevron-up" style="transition: 0.25s ease;"></i></button>
 						<label class="text-sm text-muted lh-1">[[modules:chat.public-rooms, {publicRooms.length}]]</label>
 					</div>
 					<div id="public-rooms" component="chat/public" class="collapse show">
 						<div class="d-flex gap-1 flex-column">
 							{{{ each publicRooms }}}
-							<div component="chat/public/room" class="btn-ghost-sm ff-sans justify-content-between hover-parent {{{ if ./unread}}}unread{{{ end }}}" data-roomid="{./roomId}">
+							<div component="chat/public/room" class="btn btn-ghost btn-sm ff-sans d-flex justify-content-between hover-parent {{{ if ./unread}}}unread{{{ end }}}" data-roomid="{./roomId}">
 								<div class="d-flex gap-1 align-items-center"><i class="fa {./icon} text-muted"></i> {./roomName} <div component="chat/public/room/unread/count" data-count="{./unreadCount}" class="badge border bg-light text-primary {{{ if !./unreadCount }}}hidden{{{ end }}}">{./unreadCountText}</div></div>
 								<div>
 									<div component="chat/public/room/sort/handle" class="text-muted {{{ if isAdmin }}}hover-d-block{{{ else }}}d-none{{{ end }}}" style="cursor:grab;"><i class="fa fa-bars"></i></div>
@@ -36,7 +36,7 @@
 				<div class="d-flex flex-column gap-1 overflow-auto">
 					{{{ if rooms.length }}}
 					<div class="d-flex gap-1 align-items-center justify-content-between justify-content-lg-start">
-						<button class="btn-ghost-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#private-rooms"
+						<button class="btn btn-ghost btn-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#private-rooms"
 						onclick="$(this).find('i').toggleClass('fa-rotate-180')"><i class="fa fa-fw fa-chevron-up" style="transition: 0.25s ease;"></i></button>
 						<label class="text-sm text-muted lh-1">[[modules:chat.private-rooms, {privateRoomCount}]]</label>
 					</div>

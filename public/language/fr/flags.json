@@ -90,6 +90,6 @@
 	"bulk-actions": "Actions en vrac",
 	"bulk-resolve": "Signalement(s) résolu(s)",
 	"bulk-success": "%1 signalements mis à jour",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "Signalé ",
   	"auto-flagged": "[Auto Signalement] A reçu %1 votes négatifs."
 }

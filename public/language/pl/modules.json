@@ -1,8 +1,9 @@
 {
     "chat.room-id": "Pokój %1",
     "chat.chatting-with": "Czatuj z",
-    "chat.placeholder": "Wpisz tutaj wiadomość, przeciągnij i opuść obrazki, wciśnij enter aby wysłać",
-    "chat.placeholder.mobile": "Tutaj napisz wiadomość",
+    "chat.placeholder": "Wpisz treść wiadomości lub przeciągnij i upuść obrazki",
+    "chat.placeholder.mobile": "Wpisz treść wiadomości",
+    "chat.placeholder.message-room": "Wiadomość #%1",
     "chat.scroll-up-alert": "Go to most recent message",
     "chat.usernames-and-x-others": "%1 i %2 innych",
     "chat.chat-with-usernames": "Czatuj z %1",

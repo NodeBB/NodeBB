@@ -4,13 +4,13 @@
 			<div class="modal-header d-flex gap-4 justify-content-between">
 				<div class="fs-6 flex-grow-1 fw-semibold tracking-tight text-truncate text-nowrap" component="chat/room/name" data-icon="{icon}">{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ else }}}{./chatWithMessage}{{{ end}}}</div>
 				<div class="d-flex gap-1 align-items-center">
-					<button type="button" class="btn-ghost-sm d-none d-md-flex" data-action="maximize" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+					<button type="button" class="btn btn-ghost btn-sm d-none d-md-flex align-self-stretch align-items-center" data-action="maximize" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 						<i class="fa fa-fw fa-expand text-muted"></i>
 					</button>
 
 					<!-- IMPORT partials/chats/options.tpl -->
 
-					<button id="chat-close-btn" type="button" class="btn-close btn-ghost-sm" aria-label="Close"></button>
+					<button id="chat-close-btn" type="button" class="btn-close btn btn-ghost btn-sm" aria-label="Close"></button>
 				</div>
 			</div>
 			<!-- IMPORT partials/chats/scroll-up-alert.tpl -->

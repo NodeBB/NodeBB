@@ -1,8 +1,9 @@
 {
     "chat.room-id": "Stanza %1",
     "chat.chatting-with": "Messaggia con",
-    "chat.placeholder": "Digita il messaggio di chat qui, trascina le immagini, premi invio per inviare",
-    "chat.placeholder.mobile": "Digita il messaggio di chat qui",
+    "chat.placeholder": "Digita qui il messaggio di chat, trascina e rilascia le immagini",
+    "chat.placeholder.mobile": "Digita il messaggio di chat",
+    "chat.placeholder.message-room": "Messaggio #%1",
     "chat.scroll-up-alert": "Vai al messaggio più recente",
     "chat.usernames-and-x-others": "%1 & %2 altri",
     "chat.chat-with-usernames": "Chatta con %1",

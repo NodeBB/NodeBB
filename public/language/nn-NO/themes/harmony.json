@@ -1,0 +1,20 @@
+{
+	"theme-name": "Tema-namn",
+	"skins": "Utsjånad",
+	"collapse": "Slå saman",
+	"expand": "Utvid",
+	"sidebar-toggle": "Vis/skjul sidefelt",
+	"login-register-to-search": "Logg inn eller registrer deg for å søkje",
+	"settings.title": "Innstillingar",
+	"settings.enableQuickReply": "Aktiver raskt svar",
+	"settings.enableBreadcrumbs": "Aktiver navigasjonsstiar",
+	"settings.enableBreadcrumbs.why": "Navigasjonsstiar hjelper med å navigere tilbake til tidlegare sider.",
+	"settings.centerHeaderElements": "Sentrer hovudelement",
+	"settings.mobileTopicTeasers": "Vis emneteasere på mobil",
+	"settings.stickyToolbar": "Fast verktøylinje",
+	"settings.stickyToolbar.help": "Gjer verktøylinja fast øvst på sida når du rullar.",
+	"settings.autohideBottombar": "Gøym botnlinja automatisk",
+	"settings.autohideBottombar.help": "Botnlinja vert automatisk gøymd når du rullar nedover.",
+	"settings.openSidebars": "Opne sidefelt",
+	"settings.chatModals": "Chat-modalar"
+}

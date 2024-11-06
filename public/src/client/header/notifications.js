@@ -5,9 +5,6 @@ define('forum/header/notifications', function () {
 
 	notifications.prepareDOM = function () {
 		const notifTrigger = $('[component="notifications"] [data-bs-toggle="dropdown"]');
-		if (!notifTrigger.length) {
-			return;
-		}
 
 		notifTrigger.on('show.bs.dropdown', (ev) => {
 			requireAndCall('loadNotifications', $(ev.target).parent().find('[component="notifications/list"]'));

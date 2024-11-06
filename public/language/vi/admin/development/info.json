@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 nút đã phản hồi trong %2ms!",
 	"host": "máy chủ",
-	"primary": "công việc chính/điều hành",
+	"primary": "chính / công việc",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "trực tuyến",
@@ -19,6 +19,7 @@
 
 	"registered": "Đã đăng ký",
 	"sockets": "Sockets",
+	"connection-count": "Số Lượng Kết Nối",
 	"guests": "Khách",
 
 	"info": "Thông tin"

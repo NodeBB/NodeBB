@@ -253,6 +253,13 @@ define('forum/topic/postTools', [
 			});
 		});
 
+		postContainer.on('click', '[component="post/manage-editors"]', function () {
+			const btn = $(this);
+			require(['forum/topic/manage-editors'], function (manageEditors) {
+				manageEditors.init(btn.parents('[data-pid]'));
+			});
+		});
+
 		postContainer.on('click', '[component="post/ban-ip"]', function () {
 			const ip = $(this).attr('data-ip');
 			socket.emit('blacklist.addRule', ip, function (err) {
