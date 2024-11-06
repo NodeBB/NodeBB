@@ -81,6 +81,8 @@
 						<li><a class="dropdown-item rounded-1" href="#" data-action="create" role="menuitem">[[admin/manage/users:create]]</a></li>
 						{{{ if showInviteButton }}}<li><a class="dropdown-item rounded-1" href="#" component="user/invite" role="menuitem">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="dropdown-item rounded-1 export-csv" role="menuitem">[[admin/manage/users:download-csv]]</a></li>
+						<li><a class="dropdown-item rounded-1" href="{relative_path}/admin/manage/users/custom-fields">[[admin/manage/users:custom-user-fields]]</a>
+						</li>
 					</ul>
 				</div>
 			</div>
