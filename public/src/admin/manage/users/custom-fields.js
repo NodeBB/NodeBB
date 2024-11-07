@@ -1,4 +1,6 @@
-define('admin/manage/user/custom-fields', ['bootbox', 'alerts', 'jquery-ui/widgets/sortable'], function (bootbox, alerts) {
+define('admin/manage/user/custom-fields', [
+	'bootbox', 'alerts', 'jquery-ui/widgets/sortable',
+], function (bootbox, alerts) {
 	const manageUserFields = {};
 
 	manageUserFields.init = function () {
@@ -6,13 +8,7 @@ define('admin/manage/user/custom-fields', ['bootbox', 'alerts', 'jquery-ui/widge
 
 		table.on('click', '[data-action="edit"]', function () {
 			const row = $(this).parents('[data-key]');
-			const field = {
-				key: row.attr('data-key'),
-				name: row.attr('data-name'),
-				type: row.attr('data-type'),
-				'select-options': row.attr('data-select-options'),
-			};
-			showModal(field);
+			showModal(getDataFromEl(row));
 		});
 
 		table.on('click', '[data-action="delete"]', function () {
@@ -37,13 +33,7 @@ define('admin/manage/user/custom-fields', ['bootbox', 'alerts', 'jquery-ui/widge
 		$('#save').on('click', () => {
 			const fields = [];
 			$('tbody tr[data-key]').each((index, el) => {
-				const $el = $(el);
-				fields.push({
-					key: $el.attr('data-key'),
-					name: $el.attr('data-name'),
-					type: $el.attr('data-type'),
-					'select-options': $el.attr('data-select-options'),
-				});
+				fields.push(getDataFromEl($(el)));
 			});
 			socket.emit('admin.user.saveCustomFields', fields, function (err) {
 				if (err) {
@@ -53,6 +43,16 @@ define('admin/manage/user/custom-fields', ['bootbox', 'alerts', 'jquery-ui/widge
 			});
 		});
 	};
+
+	function getDataFromEl(el) {
+		return {
+			key: el.attr('data-key'),
+			name: el.attr('data-name'),
+			type: el.attr('data-type'),
+			'select-options': el.attr('data-select-options'),
+			'min:rep': el.attr('data-min-rep'),
+		};
+	}
 
 	async function showModal(field = null) {
 		const html = await app.parseAndTranslate('admin/partials/manage-custom-user-fields-modal', field);

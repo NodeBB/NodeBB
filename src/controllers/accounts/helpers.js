@@ -136,7 +136,13 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 helpers.getCustomUserFields = async function (userData) {
 	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+
+	const fields = allFields.filter((field) => {
+		const minRep = field['min:rep'] || 0;
+		return userData.reputation >= minRep || meta.config['reputation:disabled'];
+	});
+
 	fields.forEach((f) => {
 		f['select-options'] = f['select-options'].split('\n').filter(Boolean).map(
 			opt => ({

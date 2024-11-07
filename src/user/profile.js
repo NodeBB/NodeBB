@@ -11,6 +11,7 @@ const meta = require('../meta');
 const db = require('../database');
 const groups = require('../groups');
 const plugins = require('../plugins');
+const tx = require('../translator');
 
 module.exports = function (User) {
 	User.updateProfile = async function (uid, data, extraFields) {
@@ -83,6 +84,49 @@ module.exports = function (User) {
 		isLocationValid(data);
 		isBirthdayValid(data);
 		isGroupTitleValid(data);
+		await validateCustomFields(data);
+	}
+
+	async function validateCustomFields(data) {
+		const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+		const reputation = await User.getUserField(data.uid, 'reputation');
+
+		fields.forEach((field) => {
+			const { key, type } = field;
+			if (data.hasOwnProperty(key)) {
+				const value = data[key];
+				const minRep = field['min:rep'] || 0;
+				if (reputation < minRep && !meta.config['reputation:disabled']) {
+					throw new Error(tx.compile(
+						'error:not-enough-reputation-custom-field', minRep, field.name
+					));
+				}
+
+				if (typeof value === 'string' && value.length > 255) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-value-too-long', field.name
+					));
+				}
+
+				if (type === 'input-number' && !utils.isNumber(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-number', field.name
+					));
+				} else if (value && field.type === 'input-link' && !validator.isURL(String(value))) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-link', field.name
+					));
+				} else if (field.type === 'select') {
+					const opts = field['select-options'].split('\n').filter(Boolean);
+					if (!opts.includes(value)) {
+						throw new Error(tx.compile(
+							'error:custom-user-field-select-value-invalid', field.name
+						));
+					}
+				}
+			}
+		});
 	}
 
 	async function isEmailValid(data) {

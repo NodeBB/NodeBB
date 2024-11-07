@@ -8,13 +8,21 @@
 			<option value="select" {{{ if (type == "select") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-select]]</option>
 		</select>
 	</div>
+
 	<div class="mb-3">
 		<label class="form-label">[[admin/manage/user-custom-fields:key]]</label>
 		<input class="form-control" type="text" name="key" value="{./key}">
 	</div>
+
 	<div class="mb-3">
 		<label class="form-label">[[admin/manage/user-custom-fields:name]]</label>
 		<input class="form-control" type="text" name="name" value="{./name}">
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">[[admin/manage/user-custom-fields:minimum-reputation]]</label>
+		<input class="form-control" type="number" name="min:rep" value="{./min:rep}" placeholder="0">
+		<p class="form-text">[[admin/manage/user-custom-fields:minimum-reputation-help]]</p>
 	</div>
 
 	<div class="mb-3 {{{ if (type != "select") }}}hidden{{{ end }}}" data-input-type="select">
