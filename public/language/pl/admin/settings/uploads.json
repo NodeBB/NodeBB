@@ -9,7 +9,7 @@
 	"private-extensions": "Rozszerzenia plików, które mają być prywatne",
 	"private-uploads-extensions-help": "Tutaj wpisz oddzielone przecinkami rozszerzenia plików, które mają być prywatne (np. <code>pdf,xls,doc</code>). Jeśli lista jest pusta, wszystkie pliki są prywatne.",
 	"resize-image-width-threshold": "Zmień rozmiar obrazów, jeśli są szersze niż określona szerokość",
-	"resize-image-width-threshold-help": "(w pikselach, domyślnie: 1520 pixeli, ustaw 0, aby wyłączyć)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Zmień rozmiar obrazów na określoną szerokość",
 	"resize-image-width-help": "(w pikselach, domyślnie: 760 pixeli, ustaw 0, aby wyłączyć)",
 	"resize-image-quality": "Poziom jakości użyty przy zmianie rozmiaru",

@@ -9,7 +9,7 @@
 	"private-extensions": "自訂檔案附檔名",
 	"private-uploads-extensions-help": "在此處輸入以逗號分隔的副檔名列表 (例如<code> pdf，xls，doc </code>）並將其用於自訂。為空則表示允許所有副檔名。",
 	"resize-image-width-threshold": "如果圖片寬度超過指定大小，則對圖片進行縮放",
-	"resize-image-width-threshold-help": "(像素單位，預設 1520 px，設定為0以停用)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "縮小圖片到指定寬度",
 	"resize-image-width-help": "(像素單位，預設 760 px，設定為0以停用)",
 	"resize-image-quality": "調整圖片大小時使用的品質",

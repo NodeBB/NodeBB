@@ -9,7 +9,7 @@
 	"private-extensions": "Rendre privé des extensions de fichier",
 	"private-uploads-extensions-help": "Renseigner ici une liste d'extensions de fichiers séparées par des virgules pour les rendre privées (par exemple : <code>pdf, xls, doc</code>). Une liste vide signifie que tous les fichiers sont privés.",
 	"resize-image-width-threshold": "Redimensionner les images si elles sont plus larges que la valeur spécifiée",
-	"resize-image-width-threshold-help": "(en pixels, valeur par défaut : 1520 pixels, mettez 0 pour désactiver)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Redimensionner les images à la largeur spécifiée",
 	"resize-image-width-help": "(en pixels, valeur par défaut : 760 pixels, mettez 0 pour désactiver)",
 	"resize-image-quality": "Qualité des images redimensionnées",

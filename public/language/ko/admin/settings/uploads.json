@@ -9,7 +9,7 @@
 	"private-extensions": "비공개로 만들 파일 확장자",
 	"private-uploads-extensions-help": "여기에 비공개로 만들 파일 확장자를 쉼표로 구분하여 입력하세요 (예: <code>pdf,xls,doc</code>). 비어 있는 목록은 모든 파일이 비공개임을 의미합니다.",
 	"resize-image-width-threshold": "지정된 너비보다 이미지가 넓으면 크기 조정",
-	"resize-image-width-threshold-help": "(픽셀 단위, 기본값: 1520픽셀, 비활성화하려면 0으로 설정)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "지정된 너비까지 이미지 크기 조정",
 	"resize-image-width-help": "(픽셀 단위, 기본값: 760픽셀, 비활성화하려면 0으로 설정)",
 	"resize-image-quality": "이미지 크기 조정 시 사용할 품질",

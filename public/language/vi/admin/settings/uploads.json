@@ -9,7 +9,7 @@
 	"private-extensions": "Phần mở rộng tệp để đặt ở chế độ riêng tư",
 	"private-uploads-extensions-help": "Nhập danh sách phần mở rộng tệp tại đây phân tách bằng dấu phẩy để đặt ở chế độ riêng tư (VD: <code>pdf,xls,doc</code>). Để trống nghĩa là mọi tệp đều riêng tư.",
 	"resize-image-width-threshold": "Chỉnh kích cỡ ảnh nếu chúng rộng hơn chiều rộng đã đặt",
-	"resize-image-width-threshold-help": "(tính bằng pixel, mặc định: 1520 pixel, đặt thành 0 để tắt)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Giảm kích cỡ ảnh xuống đến chiều rộng đã đặt",
 	"resize-image-width-help": "(tính bằng pixel, mặc định: 760 pixel, đặt thành 0 để tắt)",
 	"resize-image-quality": "Chất lượng để sử dụng khi thay đổi kích thước hình ảnh",
