@@ -22,6 +22,7 @@
 	"delete-content": "Izbrišite <strong>Vsebino</strong> uporabnika(ov)",
 	"purge": "Izbrišite<strong>uporabnika(e)</strong> in <strong>vsebino</strong>",
 	"download-csv": "Prenesite CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Upravljaj skupine",
 	"set-reputation": "Set Reputation",
 	"add-group": "Dodaj skupino",

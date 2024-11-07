@@ -22,6 +22,7 @@
 	"delete-content": "Benutzer-<strong>Inhalte</strong> löschen",
 	"purge": "<strong>Benutzer</strong> und Benutzer-<strong>Inhalte</strong> löschen",
 	"download-csv": "CSV herunterladen",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Gruppen verwalten",
 	"set-reputation": "Ansehen festlegen",
 	"add-group": "Gruppe hinzufügen",

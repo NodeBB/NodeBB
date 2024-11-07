@@ -22,6 +22,7 @@
 	"delete-content": "ลบ<strong>เนื้อหา</strong>ของผู้ใช้งาน",
 	"purge": "ลบ<strong>ผู้ใช้งาน</strong>และ<strong>เนื้อหา</strong>",
 	"download-csv": "ดาวน์โหลด CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "จัดการกลุ่ม",
 	"set-reputation": "ตั้งค่าชื่อเสียง",
 	"add-group": "เพิ่มกลุ่ม",

@@ -22,6 +22,7 @@
 	"delete-content": "מחק <strong>תוכן</strong> משתמש(ים)",
 	"purge": "מחק <strong>משתמש(ים)</strong> ו<strong>תוכן</strong>",
 	"download-csv": "ייצא משתמשים כ-CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "נהל קבוצות",
 	"set-reputation": "הגדר מוניטין",
 	"add-group": "הוסף קבוצה",

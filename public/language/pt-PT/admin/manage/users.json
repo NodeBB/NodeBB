@@ -22,6 +22,7 @@
 	"delete-content": "Eliminar <strong>Conteúdo</strong> do(s) Utilizador(es)",
 	"purge": "Eliminar <strong>Utilizador(es)</strong> e os seus <strong>Conteúdos</strong>",
 	"download-csv": "Transferir CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Gerir Grupos",
 	"set-reputation": "Set Reputation",
 	"add-group": "Adicionar Grupo",
