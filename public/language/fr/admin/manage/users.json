@@ -22,6 +22,7 @@
 	"delete-content": "Supprimer <strong>le contenu</strong> du compte",
 	"purge": "Supprimer <strong>le compte</strong> et <strong>le contenu</strong>",
 	"download-csv": "Exporter en CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Gérer les groupes",
 	"set-reputation": "Définir une réputation",
 	"add-group": "Ajouter un groupe",
