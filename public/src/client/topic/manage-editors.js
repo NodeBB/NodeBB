@@ -47,7 +47,7 @@ define('forum/topic/manage-editors', [
 			modal.on('click', 'button.remove-user-icon', function () {
 				const el = $(this).parents('[data-uid]');
 				const uid = el.attr('data-uid');
-				editors = editors.filter(e => String(e.uid) === String(uid));
+				editors = editors.filter(e => String(e.uid) !== String(uid));
 				el.remove();
 			});
 		});
