@@ -31,6 +31,8 @@ get:
                     type: string
                   allowCoverPicture:
                     type: boolean
+                  customUserFields:
+                    type: array
                   selectedGroup:
                     type: array
                     items:

@@ -294,3 +294,15 @@ usersController.getCSV = async function (req, res, next) {
 		}
 	});
 };
+
+usersController.customFields = async function (req, res) {
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	fields.forEach((field) => {
+		if (field['select-options']) {
+			field.selectOptionsFormatted = field['select-options'].trim().split('\n').join(', ');
+		}
+		field['min:rep'] = field['min:rep'] || 0;
+	});
+	res.render('admin/manage/users/custom-fields', { fields: fields });
+};

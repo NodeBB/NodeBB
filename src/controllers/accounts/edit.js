@@ -7,6 +7,7 @@ const groups = require('../../groups');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const file = require('../../file');
+const accountHelpers = require('./helpers');
 
 const editController = module.exports;
 
@@ -25,11 +26,13 @@ editController.get = async function (req, res, next) {
 		allowMultipleBadges,
 	} = userData;
 
-	const [canUseSignature, canManageUsers] = await Promise.all([
+	const [canUseSignature, canManageUsers, customUserFields] = await Promise.all([
 		privileges.global.can('signature', req.uid),
 		privileges.admin.can('admin:users', req.uid),
+		accountHelpers.getCustomUserFields(userData),
 	]);
 
+	userData.customUserFields = customUserFields;
 	userData.maximumSignatureLength = meta.config.maximumSignatureLength;
 	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
 	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;

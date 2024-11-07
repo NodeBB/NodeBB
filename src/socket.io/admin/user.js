@@ -187,3 +187,20 @@ User.exportUsersCSV = async function (socket, data) {
 		}
 	}, 0);
 };
+
+User.saveCustomFields = async function (socket, fields) {
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	await db.delete('user-custom-fields');
+	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
+
+	await db.sortedSetAdd(
+		`user-custom-fields`,
+		fields.map((f, i) => i),
+		fields.map(f => f.key)
+	);
+	await db.setObjectBulk(
+		fields.map(field => [`user-custom-field:${field.key}`, field])
+	);
+	await user.reloadCustomFieldWhitelist();
+};
+
