@@ -161,7 +161,7 @@ describe('Upload Controllers', () => {
 			assert(body.response.images[0].url);
 			assert(body.response.images[0].url.match(/\/assets\/uploads\/files\/\d+-test-resized\.png/));
 			meta.config.resizeImageWidth = oldValue;
-			meta.config.resizeImageWidthThreshold = 1520;
+			meta.config.resizeImageWidthThreshold = 2000;
 		});
 
 		it('should upload a file to a post', async () => {
