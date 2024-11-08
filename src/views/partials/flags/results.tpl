@@ -2,7 +2,7 @@
 	[[flags:x-flags-found, {count}]]
 </div>
 
-<table class="table table-striped table-hover" component="flags/list">
+<table class="table table-hover" component="flags/list">
 	<thead>
 		<tr>
 			<th></th>
