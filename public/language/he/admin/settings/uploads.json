@@ -9,7 +9,7 @@
 	"private-extensions": "הפיכת סיומות קבצים לפרטיים",
 	"private-uploads-extensions-help": "הכניסו כאן רשימה של פורמטי הקבצים, מופרדים בפסיק, כדי להפוך אותם לפרטיים  (לדוגמא <code>pdf,xls,doc</code>). השארת השורה ללא תוכן פירושו שכל הקבצים יהיו פרטיים.",
 	"resize-image-width-threshold": "שינוי גודל תמונות במידה והם רחבים יותר מהרוחב המוגדר",
-	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
+	"resize-image-width-threshold-help": "(בפיקסלים, ברירת מחדל: 2000 פיקסלים, הגדירו 0 כדי להשבית)",
 	"resize-image-width": "שינוי גודל תמונות לגודל המוגדר",
 	"resize-image-width-help": "(בפיקסלים, ברירת מחדל: 760 פיקסלים, הגדירו 0 כדי להשבית)",
 	"resize-image-quality": "באיזה איכות להשתמש כאשר משנים תמונה",
