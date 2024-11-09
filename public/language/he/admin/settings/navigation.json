@@ -1,7 +1,7 @@
 {
 	"navigation": "ניווט",
 	"icon": "סמליל:",
-	"change-icon": "שנה",
+	"change-icon": "שינוי",
 	"route": "נתיב:",
 	"tooltip": "טולטיפ:",
 	"text": "טקסט:",
@@ -10,7 +10,7 @@
 	"id": "id: <small>אופציונאלי</small>",
 
 	"properties": "הרשאות:",
-	"show-to-groups": "הצג לקבוצות:",
+	"show-to-groups": "הצגה לקבוצות:",
 	"open-new-window": "ייפתח בכרטיסייה חדשה",
 	"dropdown": "תפריט נפתח",
 	"dropdown-placeholder": "מקמו את פריטי התפריט הנפתח , באופן הבא:  <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
