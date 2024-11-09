@@ -1,7 +1,7 @@
 {{{ if isAdmin }}}
 {{{ if !enabled }}}
 <div class="alert alert-info">
-	<p>[[post-queue:enabling-help, {config.relative_path}/admin/settings/post#post-queue]]</p>
+	[[post-queue:enabling-help, {config.relative_path}/admin/settings/post#post-queue]]
 </div>
 {{{ end }}}
 {{{ else }}}
