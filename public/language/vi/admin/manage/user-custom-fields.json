@@ -11,11 +11,11 @@
 	"input-type-text": "Input (Text)",
 	"input-type-link": "Input (Link)",
 	"input-type-number": "Input (Number)",
-	"input-type-select": "Select",
-	"select-options": "Options",
-	"select-options-help": "Add one option per line for the select element",
-	"minimum-reputation": "Minimum reputation",
-	"minimum-reputation-help": "If a user has less than this value they won't be able to use this field",
-	"delete-field-confirm-x": "Do you really want to delete custom field \"%1\"?",
-	"custom-fields-saved": "Custom fields saved"
+	"input-type-select": "Chọn",
+	"select-options": "Tùy chọn",
+	"select-options-help": "Thêm một tùy chọn trên mỗi dòng cho phần tử được chọn",
+	"minimum-reputation": "Uy tín tối thiểu",
+	"minimum-reputation-help": "Nếu người dùng có ít hơn giá trị này, họ sẽ không thể sử dụng trường này",
+	"delete-field-confirm-x": "Bạn có thực sự muốn xóa trường tùy chỉnh \"%1\"?",
+	"custom-fields-saved": "Đã lưu trường tùy chỉnh"
 }
