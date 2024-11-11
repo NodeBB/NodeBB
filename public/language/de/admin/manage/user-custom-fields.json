@@ -6,6 +6,7 @@
 	"type-of-input": "Typ der Eingabe",
 	"key": "Schlüssel",
 	"name": "Name",
+	"icon": "Icon",
 	"type": "Typ",
 	"min-rep": "Minimales Ansehen",
 	"input-type-text": "Eingabe (Text)",

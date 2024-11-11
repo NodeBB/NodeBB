@@ -6,6 +6,7 @@
 	"type-of-input": "Typ danych wsadowych",
 	"key": "Klucz",
 	"name": "Nazwa",
+	"icon": "Icon",
 	"type": "Typ",
 	"min-rep": "Minimalna reputacja",
 	"input-type-text": "Dane (tekst)",
