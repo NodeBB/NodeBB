@@ -1,6 +1,6 @@
 define('admin/manage/user/custom-fields', [
-	'bootbox', 'alerts', 'jquery-ui/widgets/sortable',
-], function (bootbox, alerts) {
+	'bootbox', 'alerts', 'iconSelect', 'jquery-ui/widgets/sortable',
+], function (bootbox, alerts, iconSelect) {
 	const manageUserFields = {};
 
 	manageUserFields.init = function () {
@@ -48,6 +48,7 @@ define('admin/manage/user/custom-fields', [
 		return {
 			key: el.attr('data-key'),
 			name: el.attr('data-name'),
+			icon: el.attr('data-icon'),
 			type: el.attr('data-type'),
 			'select-options': el.attr('data-select-options'),
 			'min:rep': el.attr('data-min-rep'),
@@ -91,6 +92,14 @@ define('admin/manage/user/custom-fields', [
 			const type = $(this).val();
 			modal.find(`[data-input-type]`).addClass('hidden');
 			modal.find(`[data-input-type="${type}"]`).removeClass('hidden');
+		});
+
+		modal.find('#icon-select').on('click', function () {
+			iconSelect.init($(this).find('i'), function (el, icon, styles) {
+				styles.push(icon);
+				modal.find('[name="icon"]').val(styles.join(' '));
+			});
+			return false;
 		});
 	}
 

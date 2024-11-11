@@ -20,6 +20,14 @@
 	</div>
 
 	<div class="mb-3">
+		<label class="form-label">[[admin/manage/user-custom-fields:icon]]</label>
+		<div class=" d-flex gap-1">
+			<input class="form-control" type="text" name="icon" value="{./icon}">
+			<button id="icon-select" class="btn btn-light"><i class="fa fa-search text-primary"></i></button>
+		</div>
+	</div>
+
+	<div class="mb-3">
 		<label class="form-label">[[admin/manage/user-custom-fields:minimum-reputation]]</label>
 		<input class="form-control" type="number" name="min:rep" value="{./min:rep}" placeholder="0">
 		<p class="form-text">[[admin/manage/user-custom-fields:minimum-reputation-help]]</p>

@@ -27,12 +27,12 @@
 					</thead>
 					<tbody>
 						{{{ each fields }}}
-						<tr data-key="{./key}" data-name="{./name}" data-type="{./type}" data-min-rep="{./min:rep}" data-select-options="{./select-options}" class="align-middle">
+						<tr data-key="{./key}" data-name="{./name}" data-icon="{./icon}" data-type="{./type}" data-min-rep="{./min:rep}" data-select-options="{./select-options}" class="align-middle">
 							<td style="width: 32px;">
 								<a href="#" component="sort/handle" class="btn btn-light btn-sm d-none d-md-block ui-sortable-handle" style="cursor:grab;"><i class="fa fa-arrows-up-down text-muted"></i></a>
 							</td>
 							<td class="text-nowrap">{./key}</td>
-							<td class="text-nowrap">{./name}</td>
+							<td class="text-nowrap">{{{ if ./icon }}}<i class="text-muted {./icon}"></i> {{{ end }}}{./name}</td>
 							<td>
 								{./type}
 								{{{ if (./type == "select") }}}
