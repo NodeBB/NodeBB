@@ -24,8 +24,6 @@ define('forum/category', [
 
 		app.enterRoom('category_' + cid);
 
-		share.addShareHandlers(ajaxify.data.name);
-
 		topicList.init('category', loadTopicsAfter);
 
 		sort.handleSort('categoryTopicSort', 'category/' + ajaxify.data.slug);
