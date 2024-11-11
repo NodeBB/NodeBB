@@ -6,6 +6,7 @@
 	"type-of-input": "Type of input",
 	"key": "Key",
 	"name": "名称",
+	"icon": "Icon",
 	"type": "Type",
 	"min-rep": "Minimum Reputation",
 	"input-type-text": "Input (Text)",

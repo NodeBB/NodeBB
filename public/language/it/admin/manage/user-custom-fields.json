@@ -6,6 +6,7 @@
 	"type-of-input": "Tipo di input",
 	"key": "Chiave",
 	"name": "Nome",
+	"icon": "Icon",
 	"type": "TIpo",
 	"min-rep": "Reputazione minima",
 	"input-type-text": "Input (Testo)",

@@ -6,6 +6,7 @@
 	"type-of-input": "סוג קלט",
 	"key": "מפתח",
 	"name": "שם",
+	"icon": "Icon",
 	"type": "סוג",
 	"min-rep": "מינימום מוניטין",
 	"input-type-text": "קלט (טקסט)",
