@@ -431,7 +431,7 @@ Mocks.notes.public = async (post) => {
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
-	const object = {
+	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: 'Note',
@@ -453,6 +453,7 @@ Mocks.notes.public = async (post) => {
 		replies: `${id}/replies`,
 	};
 
+	({ object } = await plugins.hooks.fire('filter:activitypub.mocks.note', { object, post, private: false }));
 	return object;
 };
 
@@ -510,7 +511,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 		}
 	}
 
-	const object = {
+	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: 'Note',
@@ -532,6 +533,7 @@ Mocks.notes.private = async ({ messageObj }) => {
 		// replies: `${id}/replies`, // todo
 	};
 
+	({ object } = await plugins.hooks.fire('filter:activitypub.mocks.note', { object, post: messageObj, private: false }));
 	return object;
 };
 
