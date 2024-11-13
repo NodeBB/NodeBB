@@ -48,7 +48,7 @@ async function postTids(tids) {
 	await Promise.all([].concat(
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
-		updateGroupPosts(uids, topicsData),
+		updateGroupPosts(topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 	));
 }
@@ -151,7 +151,7 @@ async function updateUserLastposttimes(uids, topicsData) {
 	return Promise.all(uidsToUpdate.map(uid => user.setUserField(uid, 'lastposttime', tstampByUid[uid])));
 }
 
-async function updateGroupPosts(uids, topicsData) {
+async function updateGroupPosts(topicsData) {
 	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	await Promise.all(postsData.map(async (post, i) => {
 		if (post && topicsData[i]) {
