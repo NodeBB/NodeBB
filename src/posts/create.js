@@ -11,6 +11,8 @@ const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 
+const isEmojiShortcode = /^:[\w]+:$/;
+
 module.exports = function (Posts) {
 	Posts.create = async function (data) {
 		// This is an internal method, consider using Topics.reply instead
@@ -28,13 +30,7 @@ module.exports = function (Posts) {
 		}
 
 		const pid = data.pid || await db.incrObjectField('global', 'nextPid');
-		let postData = {
-			pid: pid,
-			uid: uid,
-			tid: tid,
-			content: content,
-			timestamp: timestamp,
-		};
+		let postData = { pid, uid, tid, content, timestamp };
 
 		if (data.toPid) {
 			postData.toPid = data.toPid;
@@ -47,6 +43,17 @@ module.exports = function (Posts) {
 		}
 		if (_activitypub && _activitypub.url) {
 			postData.url = _activitypub.url;
+		}
+
+		// Rewrite emoji references to inline image assets
+		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
+			_activitypub.tag
+				.filter(tag => tag.type === 'Emoji' &&
+					isEmojiShortcode.test(tag.name) &&
+					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
+				.forEach((tag) => {
+					postData.content = postData.content.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" />`);
+				});
 		}
 
 		({ post: postData } = await plugins.hooks.fire('filter:post.create', { post: postData, data: data }));
