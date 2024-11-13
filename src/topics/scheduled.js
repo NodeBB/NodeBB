@@ -17,7 +17,13 @@ const Scheduled = module.exports;
 
 Scheduled.startJobs = function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', Scheduled.handleExpired, null, true);
+	new CronJob('*/1 * * * *', async () => {
+		try {
+			await Scheduled.handleExpired();
+		} catch (err) {
+			winston.error(err.stack);
+		}
+	}, null, true);
 };
 
 Scheduled.handleExpired = async function () {
