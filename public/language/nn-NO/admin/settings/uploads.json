@@ -9,7 +9,7 @@
 	"private-extensions": "Privat filtype",
 	"private-uploads-extensions-help": "Angi filtypar som skal vere private ved opplasting.",
 	"resize-image-width-threshold": "Bilete breiddegrense",
-	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
+	"resize-image-width-threshold-help": "( i pixels, standard er 2000 pixler, angi 0 for å avvise) ",
 	"resize-image-width": "Endre bilete breidde",
 	"resize-image-width-help": "Angi ny breidde for bilete som vert endra ved opplasting.",
 	"resize-image-quality": "Biletekvalitet ved endring",
