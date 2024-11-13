@@ -154,7 +154,7 @@ async function updateUserLastposttimes(uids, topicsData) {
 async function updateGroupPosts(uids, topicsData) {
 	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	await Promise.all(postsData.map(async (post, i) => {
-		if (topicsData[i]) {
+		if (post && topicsData[i]) {
 			post.cid = topicsData[i].cid;
 			await groups.onNewPostMade(post);
 		}
