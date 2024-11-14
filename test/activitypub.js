@@ -127,11 +127,8 @@ describe('ActivityPub integration', () => {
 					// other sentence ending symbols
 					['Lorem ipsum dolor sit amet, consectetur adipiscing elit? Etiam a ex pellentesque, fringilla lorem non, blandit est. Nulla facilisi. Curabitur cursus neque vel enim semper, id lacinia elit facilisis. Vestibulum turpis orci, efficitur ut semper eu, faucibus eu turpis. Praesent eu odio non libero gravida tempor. Ut porta pellentesque orci. In porta nunc eget tincidunt interdum. Curabitur vel dui nec libero tempus porttitor. Phasellus tincidunt, diam id viverra suscipit, est diam maximus purus, in vestibulum dui ligula vel libero. Sed tempus finibus ante, sit amet consequat magna facilisis eget. Proin ullamcorper, velit sit amet feugiat varius, massa sem aliquam dui, non aliquam augue velit vel est. Phasellus eu sapien in purus feugiat scelerisque congue id velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit?'],
 
-					// should trim non-sentence-ending punctuation
-					['<span>one two three:</span><p>four five six</p>', 'one two three'],
-
 					// Content after line breaks can be discarded
-					['<p>Intro text<br /><a href=\"https://example.org/\">example.org/</span></a></p><p>more text</p>', 'Intro text'],
+					['<p>Intro text<br /><a href="https://example.org/">example.org/</span></a></p><p>more text</p>', 'Intro text'],
 
 					// HTML without outer wrapping element
 					['Lorem ipsum dolor <span>sit amet</span>', 'Lorem ipsum dolor sit amet'],

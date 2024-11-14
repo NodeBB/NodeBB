@@ -343,9 +343,6 @@ Helpers.generateTitle = (html) => {
 		title = sentences.shift();
 	}
 
-	// Trim certain punctuation marks
-	title = title.trim().replace(/[:]$/, '');
-
 	// Truncate down if too long
 	if (title.length > meta.config.maximumTitleLength) {
 		title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
