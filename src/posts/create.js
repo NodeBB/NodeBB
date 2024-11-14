@@ -52,7 +52,7 @@ module.exports = function (Posts) {
 					isEmojiShortcode.test(tag.name) &&
 					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
 				.forEach((tag) => {
-					postData.content = postData.content.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" />`);
+					postData.content = postData.content.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
 				});
 		}
 
