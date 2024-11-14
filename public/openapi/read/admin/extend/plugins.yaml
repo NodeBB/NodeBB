@@ -107,6 +107,8 @@ get:
                             text:
                               type: string
                           nullable: true
+                        downloads:
+                          type: number
                         outdated:
                           type: boolean
                         settingsRoute:

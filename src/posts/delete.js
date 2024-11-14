@@ -85,6 +85,7 @@ module.exports = function (Posts) {
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
 			Posts.attachments.empty(pids),
 			activitypub.notes.delete(pids),
+			db.deleteAll(pids.map(pid => `pid:${pid}:editors`)),
 		]);
 
 		await resolveFlags(postData, uid);

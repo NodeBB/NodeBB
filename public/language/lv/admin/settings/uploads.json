@@ -9,7 +9,7 @@
 	"private-extensions": "Failu paplašīnājumi, kurus turēt privātus",
 	"private-uploads-extensions-help": "Ievadīt ar komatu atdalītu failu paplašinājumu sarakstu, kurus turēt privātus (piemērām <code>pdf,xls,doc</code>). Tukšais saraksts nozīmē, ka visi faili ir privāti.",
 	"resize-image-width-threshold": "Samazināt blides izmērus, ja ir plašāka par noteikto platumu",
-	"resize-image-width-threshold-help": "(pikseļos, pēc noklusējuma: 1520 pikseļi, iestatīt 0, lai atspējotu)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Samazināt blides izmērus līdz noteiktajam platumam",
 	"resize-image-width-help": "(pikseļos, pēc noklusējuma: 760 pikseļi, iestatīt 0, lai atspējotu)",
 	"resize-image-quality": "Kvalitāte, ko izmantot, pārveidojot bildes",

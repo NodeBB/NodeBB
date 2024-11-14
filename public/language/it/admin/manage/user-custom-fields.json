@@ -1,0 +1,22 @@
+{
+	"title": "Gestisci campi utente personalizzati",
+	"create-field": "Crea campo",
+	"edit-field": "Modifica campo",
+	"manage-custom-fields": "Gestisci campi personalizzati",
+	"type-of-input": "Tipo di input",
+	"key": "Chiave",
+	"name": "Nome",
+	"icon": "Icona",
+	"type": "TIpo",
+	"min-rep": "Reputazione minima",
+	"input-type-text": "Input (Testo)",
+	"input-type-link": "Input (Link)",
+	"input-type-number": "Input (Numbero)",
+	"input-type-select": "Selezione",
+	"select-options": "Opzioni",
+	"select-options-help": "Aggiungere un'opzione per riga per l'elemento selezionato",
+	"minimum-reputation": "Reputazione minima",
+	"minimum-reputation-help": "Se un utente ha un valore inferiore a questo, non potrà utilizzare questo campo",
+	"delete-field-confirm-x": "Vuoi davvero eliminare il campo personalizzato \"%1\"?",
+	"custom-fields-saved": "Campi personalizzati salvati"
+}

@@ -29,6 +29,8 @@ module.exports = function (User) {
 		'cover:position', 'groupTitle', 'mutedUntil', 'mutedReason',
 	];
 
+	let customFieldWhiteList = null;
+
 	User.guestData = {
 		uid: 0,
 		username: '[[global:guest]]',
@@ -46,6 +48,10 @@ module.exports = function (User) {
 	};
 
 	let iconBackgrounds;
+
+	User.reloadCustomFieldWhitelist = async () => {
+		customFieldWhiteList = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	};
 
 	User.getUsersFields = async function (uids, fields) {
 		if (!Array.isArray(uids) || !uids.length) {
@@ -68,10 +74,13 @@ module.exports = function (User) {
 
 		const uniqueUids = _.uniq(uids).filter(uid => isFinite(uid) && uid > 0);
 		const remoteIds = _.uniq(uids).filter(uid => !isFinite(uid));
+		if (!customFieldWhiteList) {
+			await User.reloadCustomFieldWhitelist();
+		}
 
 		const results = await plugins.hooks.fire('filter:user.whitelistFields', {
 			uids: uids,
-			whitelist: fieldWhitelist.slice(),
+			whitelist: _.uniq(fieldWhitelist.concat(customFieldWhiteList)),
 		});
 		if (!fields.length) {
 			fields = results.whitelist;

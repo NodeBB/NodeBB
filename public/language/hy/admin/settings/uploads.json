@@ -9,7 +9,7 @@
 	"private-extensions": "Ֆայլերի ընդարձակումներ՝ մասնավոր դարձնելու համար",
 	"private-uploads-extensions-help": "Մուտքագրեք ստորակետերով բաժանված ֆայլերի ընդլայնումների ցանկը՝ մասնավոր դարձնելու համար այստեղ (օրինակ՝ pdf, xls, doc): Դատարկ ցուցակը նշանակում է, որ բոլոր ֆայլերը մասնավոր են:",
 	"resize-image-width-threshold": "Նկարների չափափոխում, եթե դրանք ավելի լայն են, քան նշված լայնությունը",
-	"resize-image-width-threshold-help": "(in pixels, default: 1520 pixels, set to 0 to disable)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Չափափոխել պատկերները մինչև նշված լայնությունը",
 	"resize-image-width-help": "(in pixels, default: 760 pixels, set to 0 to disable)",
 	"resize-image-quality": "Նկարների չափափոխման ժամանակ օգտագործելու որակ",

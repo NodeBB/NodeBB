@@ -22,6 +22,7 @@
 	"delete-content": "Odstranit <strong>Obsah</strong> uživatele",
 	"purge": "Odstranit <strong>uživatele</strong> a <strong>obsah</strong>",
 	"download-csv": "Stáhnout jako CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Spravovat skupiny",
 	"set-reputation": "Set Reputation",
 	"add-group": "Přidat skupinu",

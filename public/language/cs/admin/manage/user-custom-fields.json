@@ -1,0 +1,22 @@
+{
+	"title": "Správa vlastních uživatelských polí",
+	"create-field": "Vytvořit pole",
+	"edit-field": "Upravit pole",
+	"manage-custom-fields": "Manage Custom Fields",
+	"type-of-input": "Type of input",
+	"key": "Key",
+	"name": "Name",
+	"icon": "Icon",
+	"type": "Type",
+	"min-rep": "Minimum Reputation",
+	"input-type-text": "Input (Text)",
+	"input-type-link": "Input (Link)",
+	"input-type-number": "Input (Number)",
+	"input-type-select": "Select",
+	"select-options": "Options",
+	"select-options-help": "Add one option per line for the select element",
+	"minimum-reputation": "Minimum reputation",
+	"minimum-reputation-help": "If a user has less than this value they won't be able to use this field",
+	"delete-field-confirm-x": "Do you really want to delete custom field \"%1\"?",
+	"custom-fields-saved": "Custom fields saved"
+}

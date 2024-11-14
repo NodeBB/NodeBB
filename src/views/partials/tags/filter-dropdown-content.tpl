@@ -10,7 +10,7 @@
     {{{ end }}}
 </button>
 
-<div component="tag/filter/search" class="hidden position-absolute top-0">
+<div component="tag/filter/search" class="hidden position-absolute" style="min-width: 120px;">
     <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
 </div>
 

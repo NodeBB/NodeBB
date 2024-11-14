@@ -11,6 +11,7 @@ const categories = require('../../categories');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
 const helpers = require('../helpers');
+const accountHelpers = require('./helpers');
 const utils = require('../../utils');
 
 const profileController = module.exports;
@@ -23,12 +24,13 @@ profileController.get = async function (req, res, next) {
 
 	await incrementProfileViews(req, userData);
 
-	const [latestPosts, bestPosts] = await Promise.all([
+	const [latestPosts, bestPosts, customUserFields] = await Promise.all([
 		getLatestPosts(req.uid, userData),
 		getBestPosts(req.uid, userData),
+		accountHelpers.getCustomUserFields(userData),
 		posts.parseSignature(userData, req.uid),
 	]);
-
+	userData.customUserFields = customUserFields;
 	userData.posts = latestPosts; // for backwards compat.
 	userData.latestPosts = latestPosts;
 	userData.bestPosts = bestPosts;
