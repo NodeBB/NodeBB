@@ -18,8 +18,9 @@
 	<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 	</div>
 	<div class="btn-group bottom-sheet" component="post-queue/bulk-actions">
-		<button type="button" class="btn btn-ghost btn-sm dropdown-toggle" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">
-			<i class="fa fa-clone"></i> [[post-queue:bulk-actions]]
+		<button type="button" class="btn btn-ghost btn-sm dropdown-toggle d-flex gap-2 align-items-center" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">
+			<i class="fa fa-clone text-primary"></i>
+			<span class="fw-semibold">[[post-queue:bulk-actions]]</span>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
 			{{{ if canAccept }}}
