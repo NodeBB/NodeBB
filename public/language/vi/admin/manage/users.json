@@ -142,7 +142,7 @@
 	"export-field-location": "Nơi ở",
 	"export-field-birthday": "Ngày sinh",
 	"export-field-signature": "Chữ ký",
-	"export-field-aboutme": "Thông Tin Cá Nhân",
+	"export-field-aboutme": "Về Tôi",
 
 	"export-users-started": "Xuất người dùng dưới dạng csv, sẽ tốn thời gian. Bạn sẽ nhận được thông báo khi hoàn tất.",
 	"export-users-completed": "Đã xuất người dùng ra csv, bấm vào đây tải xuống.",
