@@ -23,8 +23,13 @@ const validSorts = [
 async function getTids(data) {
 	// Poor man's intersect used instead of getSortedSetIntersect because the zsets are huge
 	const sets = await categories.buildTopicsSortedSet(data);
-	const mainSet = sets.shift();
+	const intersect = Array.isArray(sets);
+	const mainSet = intersect ? sets.shift() : sets;
 	let tids = await db.getSortedSetRevRange(mainSet, 0, 499);
+	if (!intersect) {
+		return tids.slice(data.start, data.stop + 1);
+	}
+
 	let intersection = await Promise.all(sets.map(async set => db.isSortedSetMembers(set, tids)));
 	intersection = intersection.reduce((memo, cur) => memo.map((show, idx) => show && cur[idx]));
 	tids = tids.filter((_, idx) => intersection[idx]);
