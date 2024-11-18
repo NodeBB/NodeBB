@@ -73,7 +73,7 @@
     "post-queue-rejected": "Bài đăng đã xếp hàng của bạn đã bị từ chối",
     "post-queue-notify": "Bài đăng đã xếp hàng nhận được thông báo:<br/>\"%1\"",
     "email-confirmed": "Đã Xác Nhận Email",
-    "email-confirmed-message": "Cảm ơn bạn đã xác nhận email của bạn. Tài khoản của bạn đã được kích hoạt đầy đủ.",
+    "email-confirmed-message": "Cảm ơn bạn đã xác nhận email. Tài khoản của bạn được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có lẽ mã không hợp lệ hoặc đã hết hạn.",
     "email-confirm-error-message-already-validated": "Địa chỉ email của bạn đã được xác thực.",
     "email-confirm-sent": "Đã gửi email xác nhận.",
