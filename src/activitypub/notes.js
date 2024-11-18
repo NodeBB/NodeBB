@@ -173,7 +173,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			topics.post({
 				tid,
 				uid: authorId,
-				cid,
+				cid: options.cid || cid,
 				pid: mainPid,
 				title,
 				timestamp,
