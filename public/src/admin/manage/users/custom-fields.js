@@ -37,7 +37,7 @@ define('admin/manage/user/custom-fields', [
 			});
 			socket.emit('admin.user.saveCustomFields', fields, function (err) {
 				if (err) {
-					alerts.error(err);
+					return alerts.error(err);
 				}
 				alerts.success('[[admin/manage/user-custom-fields:custom-fields-saved]]');
 			});

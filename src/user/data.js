@@ -52,6 +52,10 @@ module.exports = function (User) {
 		customFieldWhiteList = await db.getSortedSetRange('user-custom-fields', 0, -1);
 	};
 
+	User.getUserFieldWhitelist = function () {
+		return fieldWhitelist.slice();
+	};
+
 	User.getUsersFields = async function (uids, fields) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return [];
