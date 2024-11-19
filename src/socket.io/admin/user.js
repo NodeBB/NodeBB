@@ -189,6 +189,12 @@ User.exportUsersCSV = async function (socket, data) {
 };
 
 User.saveCustomFields = async function (socket, fields) {
+	const userFields = user.getUserFieldWhitelist();
+	for (const field of fields) {
+		if (userFields.includes(field.key) || userFields.includes(field.key.toLowerCase())) {
+			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
+		}
+	}
 	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
 	await db.delete('user-custom-fields');
 	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
