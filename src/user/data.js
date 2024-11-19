@@ -52,8 +52,12 @@ module.exports = function (User) {
 		customFieldWhiteList = await db.getSortedSetRange('user-custom-fields', 0, -1);
 	};
 
-	User.getUserFieldWhitelist = function () {
-		return fieldWhitelist.slice();
+	User.getUserFieldWhitelist = async function () {
+		const { whitelist } = await plugins.hooks.fire('filter:user.whitelistFields', {
+			uids: [],
+			whitelist: fieldWhitelist.slice(),
+		});
+		return whitelist;
 	};
 
 	User.getUsersFields = async function (uids, fields) {
