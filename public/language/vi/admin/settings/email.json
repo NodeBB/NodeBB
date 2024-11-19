@@ -6,7 +6,7 @@
 	"from-help": "Tên người gửi hiển thị trong email.",
 
 	"confirmation-settings": "Xác nhận",
-	"confirmation.expiry": "Số giờ để giữ cho liên kết xác nhận email hợp lệ",
+	"confirmation.expiry": "Số giờ giữ cho liên kết xác nhận email hợp lệ",
 
 	"smtp-transport": "Truyền Tải SMTP",
 	"smtp-transport.enabled": "Bật truyền tải SMTP",
