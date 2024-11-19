@@ -17,6 +17,8 @@ const slugify = require('../slugify');
 const translator = require('../translator');
 const utils = require('../utils');
 
+const accountHelpers = require('../controllers/accounts/helpers');
+
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
 
@@ -160,7 +162,9 @@ Mocks.post = async (objects) => {
 Mocks.actors = {};
 
 Mocks.actors.user = async (uid) => {
-	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = await user.getUserData(uid);
+	const userData = await user.getUserData(uid);
+	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = userData;
+	const fields = await accountHelpers.getCustomUserFields(userData);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	let aboutmeParsed = '';
@@ -188,6 +192,17 @@ Mocks.actors.user = async (uid) => {
 		};
 	}
 
+	const attachment = [];
+	if (fields.length) {
+		fields.forEach(({ name, value }) => {
+			attachment.push({
+				type: 'PropertyValue',
+				name,
+				value,
+			});
+		});
+	}
+
 	return {
 		'@context': [
 			'https://www.w3.org/ns/activitystreams',
@@ -207,6 +222,7 @@ Mocks.actors.user = async (uid) => {
 		icon: picture,
 		image: cover,
 		published: new Date(joindate).toISOString(),
+		attachment,
 
 		publicKey: {
 			id: `${nconf.get('url')}/uid/${uid}#key`,
