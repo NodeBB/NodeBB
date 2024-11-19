@@ -32,7 +32,7 @@ define('forum/account/header', [
 		components.get('account/unfollow').on('click', () => toggleFollow('unfollow'));
 
 		components.get('account/chat').on('click', async function () {
-			const { roomId } = await api.get(`/users/${ajaxify.data.uid}/chat`);
+			const { roomId } = await api.get(`/users/${encodeURIComponent(ajaxify.data.uid)}/chat`);
 			const chat = await app.require('chat');
 			if (roomId) {
 				chat.openChat(roomId);
