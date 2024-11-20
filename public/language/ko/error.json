@@ -186,6 +186,7 @@
     "custom-user-field-select-value-invalid": "Custom field selected option is invalid, %1",
     "custom-user-field-invalid-link": "Custom field link is invalid, %1",
     "custom-user-field-invalid-number": "Custom field number is invalid, %1",
+    "custom-user-field-invalid-date": "Custom field date is invalid, %1",
     "invalid-custom-user-field": "Invalid custom user field, \"%1\" is already used by NodeBB",
     "post-already-flagged": "이 게시물은 이미 신고되었습니다",
     "user-already-flagged": "이 사용자는 이미 신고되었습니다",
