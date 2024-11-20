@@ -16,6 +16,7 @@ const categories = require('../../categories');
 const posts = require('../../posts');
 const activitypub = require('../../activitypub');
 const flags = require('../../flags');
+const slugify = require('../../slugify');
 
 const relative_path = nconf.get('relative_path');
 
@@ -144,6 +145,27 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 };
 
 helpers.getCustomUserFields = async function (userData) {
+	// Remote users' fields are serialized in hash
+	if (!utils.isNumber(userData.uid)) {
+		const customFields = await user.getUserField(userData.uid, 'customFields');
+		const fields = Array
+			.from(new URLSearchParams(customFields))
+			.reduce((memo, [name, value]) => {
+				memo.push({
+					key: slugify(name),
+					name,
+					value,
+					type: 'input-text',
+					'min-rep': '',
+					icon: 'fa-solid fa-circle-info',
+				});
+
+				return memo;
+			}, []);
+
+		return fields;
+	}
+
 	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
 	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
 

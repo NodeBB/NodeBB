@@ -68,6 +68,11 @@ Mocks.profile = async (actors, hostMap) => {
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
 
+		// Add custom fields into user hash
+		const customFields = actor.attachment
+			.filter(attachment => attachment.type === 'PropertyValue')
+			.reduce((map, { name, value }) => map.set(name, value), new Map());
+
 		const payload = {
 			uid,
 			username: `${preferredUsername}@${hostname}`,
@@ -90,6 +95,7 @@ Mocks.profile = async (actors, hostMap) => {
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
+			customFields: new URLSearchParams(customFields).toString(),
 		};
 
 		return payload;
