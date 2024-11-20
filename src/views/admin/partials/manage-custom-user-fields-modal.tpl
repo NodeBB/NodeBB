@@ -5,7 +5,9 @@
 			<option value="input-text" {{{ if (type == "input-text") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-text]]</option>
 			<option value="input-link" {{{ if (type == "input-link") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-link]]</option>
 			<option value="input-number" {{{ if (type == "input-number") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-number]]</option>
+			<option value="input-date" {{{ if (type == "input-date") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-date]]</option>
 			<option value="select" {{{ if (type == "select") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-select]]</option>
+			<option value="select-multi" {{{ if (type == "select-multi") }}}selected{{{ end }}}>[[admin/manage/user-custom-fields:input-type-select-multi]]</option>
 		</select>
 	</div>
 
@@ -33,7 +35,7 @@
 		<p class="form-text">[[admin/manage/user-custom-fields:minimum-reputation-help]]</p>
 	</div>
 
-	<div class="mb-3 {{{ if (type != "select") }}}hidden{{{ end }}}" data-input-type="select">
+	<div class="mb-3 {{{ if ((type != "select") && (type != "select-multi")) }}}hidden{{{ end }}}" data-input-type data-input-type-select data-input-type-select-multi>
 		<label class="form-label">[[admin/manage/user-custom-fields:select-options]]</label>
 		<textarea class="form-control" name="select-options" rows="6">{./select-options}</textarea>
 		<p class="form-text">[[admin/manage/user-custom-fields:select-options-help]]</p>

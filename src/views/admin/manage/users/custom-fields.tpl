@@ -35,7 +35,7 @@
 							<td class="text-nowrap">{{{ if ./icon }}}<i class="text-muted {./icon}"></i> {{{ end }}}{./name}</td>
 							<td>
 								{./type}
-								{{{ if (./type == "select") }}}
+								{{{ if ((./type == "select") || (./type == "select-multi")) }}}
 								<div class="text-muted">
 								({./selectOptionsFormatted})
 								</div>

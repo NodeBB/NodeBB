@@ -144,14 +144,23 @@ helpers.getCustomUserFields = async function (userData) {
 	});
 
 	fields.forEach((f) => {
+		let userValue = userData[f.key];
+		if (f.type === 'select-multi' && userValue) {
+			userValue = JSON.parse(userValue || '[]');
+		}
 		f['select-options'] = f['select-options'].split('\n').filter(Boolean).map(
 			opt => ({
 				value: opt,
-				selected: opt === userData[f.key],
+				selected: Array.isArray(userValue) ?
+					userValue.includes(opt) :
+					opt === userValue,
 			})
 		);
-		if (userData[f.key]) {
-			f.value = validator.escape(String(userData[f.key]));
+		if (userValue) {
+			if (Array.isArray(userValue)) {
+				userValue = userValue.join(', ');
+			}
+			f.value = validator.escape(String(userValue));
 		}
 	});
 	return fields;

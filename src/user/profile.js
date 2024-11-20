@@ -113,6 +113,10 @@ module.exports = function (User) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-number', field.name
 					));
+				} else if (value && type === 'input-date' && !validator.isDate(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-date', field.name
+					));
 				} else if (value && field.type === 'input-link' && !validator.isURL(String(value))) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-link', field.name
@@ -120,6 +124,14 @@ module.exports = function (User) {
 				} else if (field.type === 'select') {
 					const opts = field['select-options'].split('\n').filter(Boolean);
 					if (!opts.includes(value)) {
+						throw new Error(tx.compile(
+							'error:custom-user-field-select-value-invalid', field.name
+						));
+					}
+				} else if (field.type === 'select-multi') {
+					const opts = field['select-options'].split('\n').filter(Boolean);
+					const values = JSON.parse(value || '[]');
+					if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
 						throw new Error(tx.compile(
 							'error:custom-user-field-select-value-invalid', field.name
 						));
