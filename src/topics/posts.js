@@ -281,8 +281,7 @@ module.exports = function (Topics) {
 			Topics.getTopicField(tid, 'mainPid'),
 			db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
 		]);
-		const mainPidExists = await posts.exists(mainPid);
-		if (mainPidExists) {
+		if (mainPid) {
 			pids = [mainPid].concat(pids);
 		}
 		return pids;
