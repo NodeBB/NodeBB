@@ -1,8 +1,8 @@
 {
-	"home-page": "Home Page",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page": "Hjemmeside",
+	"description": "Velg hvilken side som vises når brukere navigerer til rot-URL-en for forumet ditt.",
+	"home-page-route": "Rute for hjemmeside",
+	"custom-route": "Egendefinert rute",
+	"allow-user-home-pages": "Tillat brukerspesifikke hjemmesider",
+	"home-page-title": "Tittel på hjemmesiden (standard: \"Hjem\")"
 }

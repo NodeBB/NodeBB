@@ -186,7 +186,7 @@
     "custom-user-field-select-value-invalid": "L'opzione selezionata nel campo personalizzato non è valida, %1",
     "custom-user-field-invalid-link": "Il link al campo personalizzato non è valido, %1",
     "custom-user-field-invalid-number": "Il numero del campo personalizzato non è valido, %1",
-    "custom-user-field-invalid-date": "Custom field date is invalid, %1",
+    "custom-user-field-invalid-date": "La data del campo personalizzato non è valida, %1",
     "invalid-custom-user-field": "Campo utente personalizzato non valido, \"%1\" è già utilizzato da NodeBB",
     "post-already-flagged": "Hai già segnalato questo post",
     "user-already-flagged": "Hai già segnalato questo utente",
