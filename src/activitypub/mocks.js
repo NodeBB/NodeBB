@@ -200,15 +200,15 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	const attachment = [];
-	if (fields.length) {
-		fields.forEach(({ name, value }) => {
+	fields.forEach(({ name, value }) => {
+		if (value) {
 			attachment.push({
 				type: 'PropertyValue',
 				name,
 				value,
 			});
-		});
-	}
+		}
+	});
 
 	return {
 		'@context': [
