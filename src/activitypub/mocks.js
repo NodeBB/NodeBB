@@ -69,9 +69,10 @@ Mocks.profile = async (actors, hostMap) => {
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
 
 		// Add custom fields into user hash
-		const customFields = actor.attachment ? actor.attachment
-			.filter(attachment => attachment.type === 'PropertyValue')
-			.reduce((map, { name, value }) => map.set(name, value), new Map()) :
+		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
+			actor.attachment
+				.filter(attachment => attachment.type === 'PropertyValue')
+				.reduce((map, { name, value }) => map.set(name, value), new Map()) :
 			undefined;
 
 		const payload = {
