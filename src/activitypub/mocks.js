@@ -69,9 +69,10 @@ Mocks.profile = async (actors, hostMap) => {
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
 
 		// Add custom fields into user hash
-		const customFields = actor.attachment
+		const customFields = actor.attachment ? actor.attachment
 			.filter(attachment => attachment.type === 'PropertyValue')
-			.reduce((map, { name, value }) => map.set(name, value), new Map());
+			.reduce((map, { name, value }) => map.set(name, value), new Map()) :
+			undefined;
 
 		const payload = {
 			uid,
@@ -95,7 +96,7 @@ Mocks.profile = async (actors, hostMap) => {
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
-			customFields: new URLSearchParams(customFields).toString(),
+			customFields: customFields && new URLSearchParams(customFields).toString(),
 		};
 
 		return payload;
