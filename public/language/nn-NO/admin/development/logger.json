@@ -1,6 +1,6 @@
 {
 	"logger": "Loggførar",
-	"logger-settings": "Loggførarinnstillingar",
+	"logger-settings": "Innstillingar loggførar ",
 	"description": "Konfigurer loggførarinnstillingar for å overvake aktivitetar og førespurnader i NodeBB.",
 	"explanation": "Aktiver loggføring av HTTP- og WebSocket-aktivitet for feilsøking og overvaking.",
 	"enable-http": "Aktiver HTTP-loggføring",
@@ -8,6 +8,6 @@
 	"file-path": "Filsti",
 	"file-path-placeholder": "Skriv inn stien til loggføringsfila",
 
-	"control-panel": "Kontrollpanel",
-	"update-settings": "Oppdater innstillingar"
+	"control-panel": "Kontrollpanel loggførar",
+	"update-settings": "Oppdater loggførar innstillingar"
 }

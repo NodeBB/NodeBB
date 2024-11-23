@@ -50,7 +50,7 @@
     "test.text1": "Dette er ein test-e-post for å sjekke at e-postfunksjonen er riktig konfigurert for din NodeBB.",
     "unsub.cta": "Klikk her for å endre desse innstillingane",
     "unsubscribe": "meld av",
-    "unsub.success": "Du vil ikkje lenger motta e-postar frå <strong>%1</strong>-e-postlista",
+    "unsub.success": "Du vil ikkje lenger motta e-postar frå <strong>%1</strong>- e-postlista",
     "unsub.failure.title": "Kunne ikkje melde av",
     "unsub.failure.message": "Vi klarte dessverre ikkje å melde deg av e-postlista grunna eit problem med lenkja. Men du kan endre e-postinnstillingane dine ved å gå til <a href=\"%2\">brukarinnstillingane dine</a>.<br /><br />(feil: <code>%1</code>)",
     "banned.subject": "Du har blitt utestengt frå %1",

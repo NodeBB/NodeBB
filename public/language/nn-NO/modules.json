@@ -65,7 +65,7 @@
     "chat.leave-help": "Å forlate denne chatten vil fjerne deg frå framtidige samtalar i denne chatten. Om du vert lagt til igjen i framtida, vil du ikkje sjå tidlegare meldingshistorikk.",
     "chat.delete": "Slett",
     "chat.delete-room": "Slett rom",
-    "chat.delete-prompt": "Er du sikker på at du vil slette dette -rommet?",
+    "chat.delete-prompt": "Er du sikker på at du vil slette dette rommet?",
     "chat.in-room": "I dette rommet",
     "chat.kick": "Spark ut",
     "chat.show-ip": "Vis IP",
