@@ -10,8 +10,8 @@
 	"filter-start": "تاريخ البدء",
 	"filter-end": "تاريخ الانتهاء",
 	"filter-user": "Filter by User",
-	"filter-user.placeholder": "Type user name to filter...",
+	"filter-user.placeholder": "قم بكتابة اسم مستخدم للتصفية...",
 	"filter-group": "Filter by Group",
-	"filter-group.placeholder": "Type group name to filter...",
+	"filter-group.placeholder": "قم بكتابة اسم مجموعة للتصفية...",
 	"filter-per-page": "لكل صفحة"
 }
