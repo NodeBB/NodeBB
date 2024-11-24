@@ -91,6 +91,7 @@ define('admin/manage/groups', [
 				query: queryEl.val(),
 				sort: 'date',
 				hideEphemeralGroups: true,
+				excludeGroups: ['registered-users', 'verified-users', 'unverified-users'],
 			}).then(renderSearchResults)
 				.catch(alerts.error);
 		}

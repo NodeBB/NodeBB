@@ -42,6 +42,7 @@ async function getGroups(req, sort, page) {
 			filterHidden: filterHidden,
 			showMembers: req.query.showMembers === 'true',
 			hideEphemeralGroups: req.query.hideEphemeralGroups === 'true',
+			excludeGroups: Array.isArray(req.query.excludeGroups) ? req.query.excludeGroups : [],
 		});
 		const pageCount = Math.ceil(groupData.length / resultsPerPage);
 

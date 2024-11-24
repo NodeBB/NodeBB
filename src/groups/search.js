@@ -14,7 +14,9 @@ module.exports = function (Groups) {
 			groupNames = Groups.ephemeralGroups.concat(groupNames);
 		}
 		groupNames = groupNames.filter(
-			name => name.toLowerCase().includes(query) && name !== Groups.BANNED_USERS // hide banned-users in searches
+			name => name.toLowerCase().includes(query) &&
+				name !== Groups.BANNED_USERS && // hide banned-users in searches
+				!options.excludeGroups.includes(name)
 		);
 		groupNames = groupNames.slice(0, 100);
 
