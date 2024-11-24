@@ -103,8 +103,6 @@ get:
                     type: boolean
                   sort:
                     type: string
-                  nextStart:
-                    type: number
                   title:
                     type: string
               - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
