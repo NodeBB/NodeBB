@@ -56,5 +56,7 @@
 	"home-page-title": "Aloitussivun otsikko (oletus on \"Aloitus\")",
 	"default-language": "Oletuskieli",
 	"auto-detect": "Tunnista vieraiden kieliasetus automaattisesti",
-	"default-language-help": "Oletuskieli määrittää kaikkien keskustelualueesi kävijöiden oletusarvoiset kieliasetukset. <br />Yksittäiset käyttäjät voivat korvata oletuskielen tiliasetuksistaan."
+	"default-language-help": "Oletuskieli määrittää kaikkien keskustelualueesi kävijöiden oletusarvoiset kieliasetukset. <br />Yksittäiset käyttäjät voivat korvata oletuskielen tiliasetuksistaan.",
+	"post-sharing": "Viestin jakaminen",
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
 }

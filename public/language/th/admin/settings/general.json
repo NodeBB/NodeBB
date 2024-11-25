@@ -56,5 +56,7 @@
 	"home-page-title": "ชื่อของหน้าแรก (ค่าเริ่มต้นคือ \"Home\")",
 	"default-language": "Default Language",
 	"auto-detect": "Auto Detect Language Setting for Guests",
-	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page."
+	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"post-sharing": "การแชร์กระทู้",
+	"info-plugins-additional": "ส่วนเสริมสามารถเพิ่มการเชือมต่อโซเชียลมิเดียเพื่อแชร์กระทู้"
 }

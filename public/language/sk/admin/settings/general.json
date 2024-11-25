@@ -56,5 +56,7 @@
 	"home-page-title": "Titulok domovskej stránky (Predvolený „Domov”)",
 	"default-language": "Predvolený jazyk",
 	"auto-detect": "Automaticky rozpoznávať nastavenie jazyka pre hostí",
-	"default-language-help": "Predvolený jazyk určuje nastavenie jazyka pre všetkých používateľov navštevujúcich vaše fórum. <br />Každý používateľ si môže potom nastaviť predvolený jazyk na stránke nastavenia účtu."
+	"default-language-help": "Predvolený jazyk určuje nastavenie jazyka pre všetkých používateľov navštevujúcich vaše fórum. <br />Každý používateľ si môže potom nastaviť predvolený jazyk na stránke nastavenia účtu.",
+	"post-sharing": "Zdieľanie príspevku",
+	"info-plugins-additional": "Doplnky môžu pridávať ďalšie siete na zdieľanie príspevkov."
 }

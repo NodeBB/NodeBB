@@ -56,5 +56,7 @@
 	"home-page-title": "Título da página inicial (predefinido \"Página inicial\")",
 	"default-language": "Idioma Predefinido",
 	"auto-detect": "Auto Detect Language Setting for Guests",
-	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page."
+	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"post-sharing": "Partilhar Publicações",
+	"info-plugins-additional": "Os plugins podem adicionar outras redes sociais para partilhar publicações."
 }

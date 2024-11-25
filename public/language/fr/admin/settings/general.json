@@ -56,5 +56,7 @@
 	"home-page-title": "Titre de la page d'accueil (par défaut \"Accueil\")",
 	"default-language": "Langue par défaut",
 	"auto-detect": "Détection automatique de la langue pour les invités",
-	"default-language-help": "La langue par défaut détermine les réglages pour tous les utilisateurs qui visitent votre forum. <br />Chaque utilisateur peut ensuite modifier la langue par défaut sur sa page de paramètres."
+	"default-language-help": "La langue par défaut détermine les réglages pour tous les utilisateurs qui visitent votre forum. <br />Chaque utilisateur peut ensuite modifier la langue par défaut sur sa page de paramètres.",
+	"post-sharing": "Partage de message",
+	"info-plugins-additional": "Les plugins peuvent ajouter de nouveaux réseaux pour partager des messages."
 }

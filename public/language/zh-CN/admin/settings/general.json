@@ -56,5 +56,7 @@
 	"home-page-title": "首页标题(默认“Home”)",
 	"default-language": "默认语言",
 	"auto-detect": "自动检测游客的语言设置",
-	"default-language-help": "默认语言会决定所有用户的语言设定。 <br />单一用户可以各自在帐户设置中覆盖此项设定。"
+	"default-language-help": "默认语言会决定所有用户的语言设定。 <br />单一用户可以各自在帐户设置中覆盖此项设定。",
+	"post-sharing": "帖子分享",
+	"info-plugins-additional": "插件可以增加可选的用于分享帖子的网络。"
 }

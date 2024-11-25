@@ -56,5 +56,7 @@
 	"home-page-title": "Title of the home page (default \"Home\")",
 	"default-language": "Idioma por defecto",
 	"auto-detect": "Auto Detectar Opcións de Idioma para Invitados",
-	"default-language-help": "O idioma por defecto determina as opcións de idioma para tódolos usuarios que visitan o foro. Os usuarios poden mudar manualmente o idioma nas opcións de conta."
+	"default-language-help": "O idioma por defecto determina as opcións de idioma para tódolos usuarios que visitan o foro. Os usuarios poden mudar manualmente o idioma nas opcións de conta.",
+	"post-sharing": "Post Sharing",
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
 }

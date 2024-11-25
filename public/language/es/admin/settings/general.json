@@ -56,5 +56,7 @@
 	"home-page-title": "Título de la página de inicio (por defecto, \"Home\" o \"Inicio\")",
 	"default-language": "Idioma por defecto",
 	"auto-detect": "Auto Detectar Configuración de Idioma para Visitantes",
-	"default-language-help": "El idioma por defecto determina la configuración del idioma usado para todos los usuarios que visiten el foro. <br />Los usuarios, a nivel individual, pueden sobreescribir el idioma por defecto en la página de configuración de su cuenta."
+	"default-language-help": "El idioma por defecto determina la configuración del idioma usado para todos los usuarios que visiten el foro. <br />Los usuarios, a nivel individual, pueden sobreescribir el idioma por defecto en la página de configuración de su cuenta.",
+	"post-sharing": "Compartir entradas",
+	"info-plugins-additional": "Los plugins pueden añadir redes adicionales para compartir entradas/respuestas."
 }

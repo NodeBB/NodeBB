@@ -56,5 +56,7 @@
 	"home-page-title": "Titulka domovské stránky (výchozí „Domů”)",
 	"default-language": "Výchozí jazyk",
 	"auto-detect": "Automaticky detekovat nastavení jazyka pro hosty",
-	"default-language-help": "Výchozí jazyk určuje nastavení jazyka pro všechny uživatele navštěvující vaše fórum. <br />Každý uživatel si může pak nastavit výchozí jazyk na stránce nastavení účtu."
+	"default-language-help": "Výchozí jazyk určuje nastavení jazyka pro všechny uživatele navštěvující vaše fórum. <br />Každý uživatel si může pak nastavit výchozí jazyk na stránce nastavení účtu.",
+	"post-sharing": "Sdílení příspěvku",
+	"info-plugins-additional": "Rozšíření mohou přidat další dodatečné sítě pro sdílení příspěvků."
 }

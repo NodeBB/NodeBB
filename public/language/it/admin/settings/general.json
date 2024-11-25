@@ -56,5 +56,7 @@
 	"home-page-title": "Titolo della pagina iniziale (impostazione predefinita \"Home\")",
 	"default-language": "Lingua predefinita",
 	"auto-detect": "Rilevazione automatica della lingua impostata per gli Ospiti",
-	"default-language-help": "La lingua predefinita determina le impostazioni della lingua per tutti gli utenti che visitano il tuo forum. <br />I singoli utenti possono sovrascrivere la lingua predefinita nella pagina delle impostazioni dell'account."
+	"default-language-help": "La lingua predefinita determina le impostazioni della lingua per tutti gli utenti che visitano il tuo forum. <br />I singoli utenti possono sovrascrivere la lingua predefinita nella pagina delle impostazioni dell'account.",
+	"post-sharing": "Condivisione post",
+	"info-plugins-additional": "I plugin possono aggiungere reti aggiuntive per la condivisione dei post."
 }

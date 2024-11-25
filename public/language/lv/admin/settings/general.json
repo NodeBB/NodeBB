@@ -56,5 +56,7 @@
 	"home-page-title": "Sākumlapas titulis (pēc noklusējuma \"Sākums\")",
 	"default-language": "Noklusējama valoda",
 	"auto-detect": "Viesiem automātiski izprast valodas iestatījumus",
-	"default-language-help": "Noklusējuma valoda nosaka valodas iestatījumus visiem lietotājiem, kuri apmeklē forumu. <br />Lietotājs savā konta iestatījumu lapā var ignorēt noklusējuma valodu."
+	"default-language-help": "Noklusējuma valoda nosaka valodas iestatījumus visiem lietotājiem, kuri apmeklē forumu. <br />Lietotājs savā konta iestatījumu lapā var ignorēt noklusējuma valodu.",
+	"post-sharing": "Rakstu kopīgošana",
+	"info-plugins-additional": "Spraudņi var pievienot papildu rakstu kopīgošanas tīklus."
 }

@@ -56,5 +56,7 @@
 	"home-page-title": "A főoldal címe (alapértelmezés \"Kezdőlap\")",
 	"default-language": "Alapértelmezett nyelv",
 	"auto-detect": "Nyelvi beállítás automatikus észlelése vendégeknek",
-	"default-language-help": "Az alapértelmezett nyelv meghatározza a nyelvi beállításokat minden fórumot látogató számára. <br />Ezt az egyes felhasználók felülírhatják fiókjuk beállításaiban."
+	"default-language-help": "Az alapértelmezett nyelv meghatározza a nyelvi beállításokat minden fórumot látogató számára. <br />Ezt az egyes felhasználók felülírhatják fiókjuk beállításaiban.",
+	"post-sharing": "Hozzászólások megosztása",
+	"info-plugins-additional": "Beépülőkkel további hálózatok adhatók hozzá hozzászólások megosztásához."
 }

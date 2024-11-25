@@ -56,5 +56,7 @@
 	"home-page-title": "Startsidetittel",
 	"default-language": "Standardspråk",
 	"auto-detect": "Automatisk oppdaging av språk",
-	"default-language-help": "Vel standardspråk og konfigurer språkalternativ for forumet."
+	"default-language-help": "Vel standardspråk og konfigurer språkalternativ for forumet.",
+	"post-sharing": "Deling av innlegg",
+	"info-plugins-additional": "Tilleggsinformasjon om pluginar"
 }
