@@ -15,7 +15,7 @@
 	"title-layout": "제목 레이아웃",
 	"title-layout-help": "브라우저 제목을 구성할 방식을 정의합니다. 예를 들어, {pageTitle} | {browserTitle} 형식으로 구성됩니다.",
 	"description.placeholder": "커뮤니티에 대한 간단한 설명",
-	"description": "사이트 설명",
+	"description": "사용자가 포럼의 루트 URL로 이동할 때 표시되는 페이지를 선택합니다.",
 	"keywords": "사이트 키워드",
 	"keywords-placeholder": "커뮤니티를 설명하는 키워드, 쉼표로 구분",
 	"logo-and-icons": "사이트 로고 & 아이콘",
@@ -48,5 +48,10 @@
 	"background-color-help": "PWA로 설치된 웹사이트의 스플래시 화면 배경색으로 사용되는 색상",
 	"undo-timeout": "실행 취소 시간 제한",
 	"undo-timeout-help": "조정자는 토픽 이동과 같은 일부 작업을 통해 특정 기간 내에 작업을 취소할 수 있습니다. 되돌리기를 완전히 비활성화하려면 0으로 설정합니다.",
-	"topic-tools": "토픽 도구"
+	"topic-tools": "토픽 도구",
+	"home-page": "홈 페이지",
+	"home-page-route": "홈 페이지 경로",
+	"custom-route": "사용자 정의 경로",
+	"allow-user-home-pages": "사용자 홈 페이지 허용",
+	"home-page-title": "홈 페이지 제목 (default \"Home\")"
 }

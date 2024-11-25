@@ -1,8 +1,0 @@
-{
-	"home-page": "Hjemmeside",
-	"description": "Velg hvilken side som vises når brukere navigerer til rot-URL-en for forumet ditt.",
-	"home-page-route": "Rute for hjemmeside",
-	"custom-route": "Egendefinert rute",
-	"allow-user-home-pages": "Tillat brukerspesifikke hjemmesider",
-	"home-page-title": "Tittel på hjemmesiden (standard: \"Hjem\")"
-}

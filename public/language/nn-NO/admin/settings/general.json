@@ -15,7 +15,7 @@
 	"title-layout": "Titteloppsett",
 	"title-layout-help": "Vel korleis tittelen skal visast på forumet.",
 	"description.placeholder": "Skriv inn ei kort skildring av nettstaden",
-	"description": "Skildring",
+	"description": "Konfigurer forumets heimeside og tilpass ruta for brukarane.",
 	"keywords": "Nøkkelord",
 	"keywords-placeholder": "Skriv inn nøkkelord, skilde med komma",
 	"logo-and-icons": "Logo og ikon",
@@ -48,5 +48,10 @@
 	"background-color-help": "Set bakgrunnsfargen til nettstaden.",
 	"undo-timeout": "Angre-tid",
 	"undo-timeout-help": "Kor lang tid brukarane har på seg til å angre handlingar.",
-	"topic-tools": "Emneverktøy"
+	"topic-tools": "Emneverktøy",
+	"home-page": "Startside",
+	"home-page-route": "Startsiderute",
+	"custom-route": "Tilpassa rute",
+	"allow-user-home-pages": "Tillat brukarar å setje eigne heimesider",
+	"home-page-title": "Startsidetittel"
 }

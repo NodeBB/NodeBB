@@ -1,8 +1,0 @@
-{
-	"home-page": "Home Page",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
-}
