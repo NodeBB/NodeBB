@@ -151,11 +151,12 @@ helpers.getCustomUserFields = async function (userData) {
 		const fields = Array
 			.from(new URLSearchParams(customFields))
 			.reduce((memo, [name, value]) => {
+				const isUrl = validator.isURL(value);
 				memo.push({
 					key: slugify(name),
 					name,
 					value,
-					type: 'input-text',
+					type: isUrl ? 'input-link' : 'input-text',
 					'min-rep': '',
 					icon: 'fa-solid fa-circle-info',
 				});

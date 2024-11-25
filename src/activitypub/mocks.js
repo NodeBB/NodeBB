@@ -72,7 +72,11 @@ Mocks.profile = async (actors, hostMap) => {
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
 			actor.attachment
 				.filter(attachment => attachment.type === 'PropertyValue')
-				.reduce((map, { name, value }) => map.set(name, value), new Map()) :
+				.reduce((map, { name, value }) => {
+					// Strip html from received values (for security)
+					value = utils.stripHTMLTags(value);
+					return map.set(name, value);
+				}, new Map()) :
 			undefined;
 
 		const payload = {
