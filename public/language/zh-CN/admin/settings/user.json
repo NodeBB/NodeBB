@@ -88,5 +88,10 @@
 	"restrictions.seconds-before-new": "新用户多少秒后可以发第一帖",
 	"restrictions.seconds-edit-after-new": "帖子保持可编辑的秒数（设置为 0 表示禁用）",
 	"restrictions.milliseconds-between-messages": "聊天信息间的毫秒数",
-	"restrictions.groups-exempt-from-new-user-restrictions": "选择不受新用户限制的分组"
+	"restrictions.groups-exempt-from-new-user-restrictions": "选择不受新用户限制的分组",
+	"guest-settings": "访客设置",
+	"handles.enabled": "允许游客用户名",
+	"handles.enabled-help": "这个选项将允许游客使用一个额外的输入框来设置发帖时的用户名，如果被禁用，仅会统一显示为“游客”",
+	"topic-views.enabled": "将来自游客的浏览记入帖子的浏览数",
+	"reply-notifications.enabled": "允许游客生成回帖通知"
 }

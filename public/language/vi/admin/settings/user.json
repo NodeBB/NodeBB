@@ -88,5 +88,10 @@
 	"restrictions.seconds-before-new": "Số giây trước khi người dùng mới có thể đăng bài đầu tiên của họ",
 	"restrictions.seconds-edit-after-new": "Số giây một bài đăng vẫn có thể chỉnh sửa đối với người dùng mới (đặt thành 0 để tắt)",
 	"restrictions.milliseconds-between-messages": "Thời gian giữa các tin nhắn trò chuyện đối với người dùng mới (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Chọn các nhóm sẽ được miễn các hạn chế mới đối với người dùng"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Chọn các nhóm sẽ được miễn các hạn chế mới đối với người dùng",
+	"guest-settings": "Cài Đặt Khách",
+	"handles.enabled": "Cho phép xử lý khách",
+	"handles.enabled-help": "Tùy chọn này hiển thị một trường mới cho phép khách chọn tên để liên kết với mỗi bài đăng mà họ thực hiện. Nếu bị tắt, họ sẽ chỉ được gọi là \"Khách\"",
+	"topic-views.enabled": "Cho phép khách tăng lượt xem chủ đề",
+	"reply-notifications.enabled": "Cho phép khách tạo thông báo trả lời"
 }

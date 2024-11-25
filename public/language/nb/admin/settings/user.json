@@ -88,5 +88,10 @@
 	"restrictions.seconds-before-new": "Minimum tid før nye brukere kan poste",
 	"restrictions.seconds-edit-after-new": "Antall sekunder en ny bruker kan redigere et innlegg",
 	"restrictions.milliseconds-between-messages": "Millisekunder mellom meldinger",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Grupper unntatt fra nye brukerrestriksjoner"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Grupper unntatt fra nye brukerrestriksjoner",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Allow guest handles",
+	"handles.enabled-help": "Dette alternativet viser et nytt felt som lar gjestene velge et navn som kan knyttes til hvert innlegg de lager. Hvis de er deaktivert, vil de bare bli kalt \"Gjest\"",
+	"topic-views.enabled": "La gjestene øke antall visninger av emner",
+	"reply-notifications.enabled": "La gjestene generere varsler på svar"
 }

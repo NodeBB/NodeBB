@@ -1,8 +1,0 @@
-{
-	"settings": "Innstillingar",
-	"guest-settings": "Gjestinnstillingar",
-	"handles.enabled": "Aktiver handtering av gjestar",
-	"handles.enabled-help": "Aktiver for å la gjestar kunne sjå og interagere med forumet innanfor visse grenser.",
-	"topic-views.enabled": "Aktiver visning av emne for gjestar",
-	"reply-notifications.enabled": "Aktiver svarvarsel for gjestar"
-}
