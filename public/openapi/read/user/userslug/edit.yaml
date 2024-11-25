@@ -37,8 +37,6 @@ get:
                     type: boolean
                   allowAccountDelete:
                     type: boolean
-                  allowWebsite:
-                    type: boolean
                   allowAboutMe:
                     type: boolean
                   allowSignature:
