@@ -136,7 +136,7 @@
         "socket.io": "4.8.1",
         "socket.io-client": "4.8.1",
         "@socket.io/redis-adapter": "8.3.0",
-        "sortablejs": "1.15.3",
+        "sortablejs": "1.15.4",
         "spdx-license-list": "6.9.0",
         "terser-webpack-plugin": "5.3.10",
         "textcomplete": "0.18.2",
