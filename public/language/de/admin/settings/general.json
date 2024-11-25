@@ -53,5 +53,8 @@
 	"home-page-route": "Startseiten Route",
 	"custom-route": "Benutzerdefinierte Route",
 	"allow-user-home-pages": "Benutzer-Startseiten zulassen",
-	"home-page-title": "Titel der Startseite (Standardmäßig \"Home\")"
+	"home-page-title": "Titel der Startseite (Standardmäßig \"Home\")",
+	"default-language": "Standardsprache",
+	"auto-detect": "Sprach-Einstellung bei Gästen automatisch ermitteln",
+	"default-language-help": "Die Standardsprache bestimmt die Spracheinstellungen für alle Benutzer, die dein Forum besuchen. <br />Einzelne Benutzer können die Standardsprache auf ihrer Kontoeinstellungsseite überschreiben."
 }

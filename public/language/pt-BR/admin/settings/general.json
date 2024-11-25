@@ -53,5 +53,8 @@
 	"home-page-route": "Rota da Página Inicial",
 	"custom-route": "Rota Personalizada",
 	"allow-user-home-pages": "Permitir Páginas Iniciais do Usuário",
-	"home-page-title": "Título da página inicial (padrão \"Home\")"
+	"home-page-title": "Título da página inicial (padrão \"Home\")",
+	"default-language": "Idioma Padrão",
+	"auto-detect": "Auto Detectar Configurações de Idioma para Convidados",
+	"default-language-help": "O idioma padrão determina as configurações de idioma para todos os usuários que estiverem visitando o seu fórum. <br />Usuários individuais podem sobrepor o idioma padrão em sua página de configurações de conta."
 }

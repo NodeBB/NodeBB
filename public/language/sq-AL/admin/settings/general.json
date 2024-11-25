@@ -53,5 +53,8 @@
 	"home-page-route": "Home Page Route",
 	"custom-route": "Custom Route",
 	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "Default Language",
+	"auto-detect": "Auto Detect Language Setting for Guests",
+	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page."
 }

@@ -53,5 +53,8 @@
 	"home-page-route": "Putanja naslovnice",
 	"custom-route": "Uobičajna putanja",
 	"allow-user-home-pages": "Dozvoli korisničke naslovnice",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "Zadani jezik",
+	"auto-detect": "Auto Detect Language Setting for Guests",
+	"default-language-help": "Zadani jezik odlučuje o postavkama jezika za sve korisnike foruma. <br/> .Korisnici mogu sami odabrati jezik na stranici postavki jezika."
 }

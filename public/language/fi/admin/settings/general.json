@@ -53,5 +53,8 @@
 	"home-page-route": "Aloitussivun polku",
 	"custom-route": "Mukautettu polku",
 	"allow-user-home-pages": "Salli käyttäjäkohtaiset aloitussivut",
-	"home-page-title": "Aloitussivun otsikko (oletus on \"Aloitus\")"
+	"home-page-title": "Aloitussivun otsikko (oletus on \"Aloitus\")",
+	"default-language": "Oletuskieli",
+	"auto-detect": "Tunnista vieraiden kieliasetus automaattisesti",
+	"default-language-help": "Oletuskieli määrittää kaikkien keskustelualueesi kävijöiden oletusarvoiset kieliasetukset. <br />Yksittäiset käyttäjät voivat korvata oletuskielen tiliasetuksistaan."
 }

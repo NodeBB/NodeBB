@@ -53,5 +53,8 @@
 	"home-page-route": "Startsiderute",
 	"custom-route": "Tilpassa rute",
 	"allow-user-home-pages": "Tillat brukarar å setje eigne heimesider",
-	"home-page-title": "Startsidetittel"
+	"home-page-title": "Startsidetittel",
+	"default-language": "Standardspråk",
+	"auto-detect": "Automatisk oppdaging av språk",
+	"default-language-help": "Vel standardspråk og konfigurer språkalternativ for forumet."
 }

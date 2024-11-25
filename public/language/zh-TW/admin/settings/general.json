@@ -53,5 +53,8 @@
 	"home-page-route": "首頁路徑",
 	"custom-route": "自訂路徑",
 	"allow-user-home-pages": "允許使用者自訂首頁",
-	"home-page-title": "首頁標題(預設為“Home”)"
+	"home-page-title": "首頁標題(預設為“Home”)",
+	"default-language": "預設語言",
+	"auto-detect": "自動檢測訪客的語言設定",
+	"default-language-help": "預設語言會決定所有使用者的語言設定。 <br />單一使用者可以各自在帳戶設定中覆蓋此項設定。"
 }

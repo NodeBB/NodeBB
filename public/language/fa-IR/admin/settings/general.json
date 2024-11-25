@@ -53,5 +53,8 @@
 	"home-page-route": "Home Page Route",
 	"custom-route": "Custom Route",
 	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "زبان پیشفرض",
+	"auto-detect": "تشخیض خودکار تنظیمات زبان برای مهمانان",
+	"default-language-help": "زبان پیشفرض، تنظیمات زبان همه کاربرانی که از انجمن شما بازدید میکنند را مشخص میکند. <br /> کاربران میتونانند زبان پیشفرض را در صفحه تنظیمات شناسه کاربری خود  تغییر دهند."
 }

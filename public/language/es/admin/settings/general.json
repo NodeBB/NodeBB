@@ -53,5 +53,8 @@
 	"home-page-route": "Ruta de la Pagina Principal",
 	"custom-route": "Ruta Personalizada",
 	"allow-user-home-pages": "Permitir Pagina de Perfil del Usuario",
-	"home-page-title": "Título de la página de inicio (por defecto, \"Home\" o \"Inicio\")"
+	"home-page-title": "Título de la página de inicio (por defecto, \"Home\" o \"Inicio\")",
+	"default-language": "Idioma por defecto",
+	"auto-detect": "Auto Detectar Configuración de Idioma para Visitantes",
+	"default-language-help": "El idioma por defecto determina la configuración del idioma usado para todos los usuarios que visiten el foro. <br />Los usuarios, a nivel individual, pueden sobreescribir el idioma por defecto en la página de configuración de su cuenta."
 }

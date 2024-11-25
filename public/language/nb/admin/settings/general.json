@@ -53,5 +53,8 @@
 	"home-page-route": "Rute for hjemmeside",
 	"custom-route": "Egendefinert rute",
 	"allow-user-home-pages": "Tillat brukerspesifikke hjemmesider",
-	"home-page-title": "Tittel på hjemmesiden (standard: \"Hjem\")"
+	"home-page-title": "Tittel på hjemmesiden (standard: \"Hjem\")",
+	"default-language": "Standardspråk",
+	"auto-detect": "Oppdag automatisk språkinnstilling for gjester",
+	"default-language-help": "Det prevalgte språket avgjør språkinnstillingene for alle brukere som besøker forumet ditt. <br />Indiviuelle brukere kan overstyre det prevalgte språket inne på deres kontoinnstillinger."
 }

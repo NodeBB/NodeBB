@@ -53,5 +53,8 @@
 	"home-page-route": "Főoldal útvonala",
 	"custom-route": "Egyéni útvonal",
 	"allow-user-home-pages": "Felhasználói főoldalak engedélyezése",
-	"home-page-title": "A főoldal címe (alapértelmezés \"Kezdőlap\")"
+	"home-page-title": "A főoldal címe (alapértelmezés \"Kezdőlap\")",
+	"default-language": "Alapértelmezett nyelv",
+	"auto-detect": "Nyelvi beállítás automatikus észlelése vendégeknek",
+	"default-language-help": "Az alapértelmezett nyelv meghatározza a nyelvi beállításokat minden fórumot látogató számára. <br />Ezt az egyes felhasználók felülírhatják fiókjuk beállításaiban."
 }

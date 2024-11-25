@@ -53,5 +53,8 @@
 	"home-page-route": "Ana Sayfa Yolu",
 	"custom-route": "Özel Yol",
 	"allow-user-home-pages": "Kullanıcılara ana sayfalarını özelleştirmeleri için izin ver",
-	"home-page-title": "Ana sayfanın başlığı (varsayılan \"Ana Sayfa\")"
+	"home-page-title": "Ana sayfanın başlığı (varsayılan \"Ana Sayfa\")",
+	"default-language": "Varsayılan Dil",
+	"auto-detect": "Ziyaretçiler için dili otomatik tespit et",
+	"default-language-help": "Varsayılan dil, forumunuzu ziyaret eden tüm kullanıcılar için dil ayarlarını belirler. <br />Kullanıcılar, bireysel olarak hesap ayarları sayfasında varsayılan dili geçersiz kılabilir."
 }

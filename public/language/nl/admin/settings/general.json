@@ -53,5 +53,8 @@
 	"home-page-route": "Home Page Route",
 	"custom-route": "Custom Route",
 	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "Standaard taal",
+	"auto-detect": "Detecteer de taalinstellingen voor Gasten automatisch",
+	"default-language-help": "De standaard taal bepaald de taalinstellingen voor alle gebruikers die uw forum bezoeken. <br />Individuele gebruikers kunnen deze standaard instellingen overschrijven op hun gebruikersinstellingen pagina."
 }

@@ -53,5 +53,8 @@
 	"home-page-route": "主页路由",
 	"custom-route": "自定义路由",
 	"allow-user-home-pages": "允许用户主页",
-	"home-page-title": "首页标题(默认“Home”)"
+	"home-page-title": "首页标题(默认“Home”)",
+	"default-language": "默认语言",
+	"auto-detect": "自动检测游客的语言设置",
+	"default-language-help": "默认语言会决定所有用户的语言设定。 <br />单一用户可以各自在帐户设置中覆盖此项设定。"
 }

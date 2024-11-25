@@ -53,5 +53,8 @@
 	"home-page-route": "ホームページのルート",
 	"custom-route": "カスタムルート",
 	"allow-user-home-pages": "ユーザーホームページを有効にする",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "デフォルトの言語",
+	"auto-detect": "ゲストの自動検出言語設定",
+	"default-language-help": "デフォルトの言語は、フォーラムにアクセスしているすべてのユーザーの言語表示を決定します。<br />個々のユーザーは、アカウント設定ページでデフォルトの言語を上書きできます。"
 }

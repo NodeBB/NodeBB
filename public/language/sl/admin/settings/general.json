@@ -53,5 +53,8 @@
 	"home-page-route": "Pot do domače strani",
 	"custom-route": "Pot po meri",
 	"allow-user-home-pages": "Dovoli domače strani uporabnikov",
-	"home-page-title": "Naslov domače strani (privzeto »Domača stran«)"
+	"home-page-title": "Naslov domače strani (privzeto »Domača stran«)",
+	"default-language": "Privzeti jezik",
+	"auto-detect": "Samodejna zaznava nastavitev jezika za goste",
+	"default-language-help": "Privzeti jezik določa jezikovne nastavitve za vse uporabnike, ki obiščejo vaš forum. <br /> Posamezni uporabniki lahko na strani z nastavitvami računa preglasijo privzeti jezik."
 }

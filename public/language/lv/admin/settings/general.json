@@ -53,5 +53,8 @@
 	"home-page-route": "Sākumlapas ceļš",
 	"custom-route": "Pielāgotais ceļš",
 	"allow-user-home-pages": "Atļaut lietotājiem savas mājaslapas",
-	"home-page-title": "Sākumlapas titulis (pēc noklusējuma \"Sākums\")"
+	"home-page-title": "Sākumlapas titulis (pēc noklusējuma \"Sākums\")",
+	"default-language": "Noklusējama valoda",
+	"auto-detect": "Viesiem automātiski izprast valodas iestatījumus",
+	"default-language-help": "Noklusējuma valoda nosaka valodas iestatījumus visiem lietotājiem, kuri apmeklē forumu. <br />Lietotājs savā konta iestatījumu lapā var ignorēt noklusējuma valodu."
 }

@@ -53,5 +53,8 @@
 	"home-page-route": "Percorso Pagina Iniziale",
 	"custom-route": "Percorso personalizzato",
 	"allow-user-home-pages": "Consenti Pagina Iniziale Utente",
-	"home-page-title": "Titolo della pagina iniziale (impostazione predefinita \"Home\")"
+	"home-page-title": "Titolo della pagina iniziale (impostazione predefinita \"Home\")",
+	"default-language": "Lingua predefinita",
+	"auto-detect": "Rilevazione automatica della lingua impostata per gli Ospiti",
+	"default-language-help": "La lingua predefinita determina le impostazioni della lingua per tutti gli utenti che visitano il tuo forum. <br />I singoli utenti possono sovrascrivere la lingua predefinita nella pagina delle impostazioni dell'account."
 }

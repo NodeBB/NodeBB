@@ -53,5 +53,8 @@
 	"home-page-route": "Home Page Route",
 	"custom-route": "Custom Route",
 	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "Idioma por defecto",
+	"auto-detect": "Auto Detectar Opcións de Idioma para Invitados",
+	"default-language-help": "O idioma por defecto determina as opcións de idioma para tódolos usuarios que visitan o foro. Os usuarios poden mudar manualmente o idioma nas opcións de conta."
 }

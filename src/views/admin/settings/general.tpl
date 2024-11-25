@@ -60,7 +60,7 @@
 
 					<div class="mb-3">
 						<div class="mb-2">
-							<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
+							<label class="form-label" for="language">[[admin/settings/general:default-language]]</label>
 							<select id="language" data-field="defaultLang" class="form-select">
 								{{{ each languages }}}
 								<option value="{./code}" {{{ if ./selected }}}selected{{{ end }}}>{./name} ({./code})</option>
@@ -68,13 +68,13 @@
 							</select>
 						</div>
 						<p class="form-text">
-							[[admin/settings/languages:description]]
+							[[admin/settings/general:default-language-help]]
 						</p>
 
 						<div class="">
 							<div class="form-check form-switch">
 								<input id="autoDetectLang" class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
-								<label for="autoDetectLang" class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
+								<label for="autoDetectLang" class="form-check-label">[[admin/settings/general:auto-detect]]</label>
 							</div>
 						</div>
 					</div>

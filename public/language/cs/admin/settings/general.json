@@ -53,5 +53,8 @@
 	"home-page-route": "Cesta k domovské stránce",
 	"custom-route": "Upravit cestu",
 	"allow-user-home-pages": "Povolit uživatelům domovské stránky",
-	"home-page-title": "Titulka domovské stránky (výchozí „Domů”)"
+	"home-page-title": "Titulka domovské stránky (výchozí „Domů”)",
+	"default-language": "Výchozí jazyk",
+	"auto-detect": "Automaticky detekovat nastavení jazyka pro hosty",
+	"default-language-help": "Výchozí jazyk určuje nastavení jazyka pro všechny uživatele navštěvující vaše fórum. <br />Každý uživatel si může pak nastavit výchozí jazyk na stránce nastavení účtu."
 }
