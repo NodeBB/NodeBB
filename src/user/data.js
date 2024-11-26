@@ -298,10 +298,9 @@ module.exports = function (User) {
 	function parseDisplayName(user, uidToSettings) {
 		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
 		if (uidToSettings[user.uid]) {
-			if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
-				showfullname = false;
-			} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
-				showfullname = true;
+			const userSetting = parseInt(uidToSettings[user.uid].showfullname, 10);
+			if (userSetting === 0 || userSetting === 1) {
+				showfullname = userSetting === 1;
 			}
 		}
 
