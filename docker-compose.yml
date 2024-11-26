@@ -36,7 +36,7 @@ services:
       - redis
 
   postgres:
-    image: postgres:17.1-alpine
+    image: postgres:17.2-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: nodebb

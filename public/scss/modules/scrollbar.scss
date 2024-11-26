@@ -16,3 +16,10 @@
 		background-color: $gray-500;
 	}
 }
+
+// https://stackoverflow.com/a/32455002/583363
+@supports (-moz-appearance:none) {
+	.ghost-scrollbar {
+		padding-right: $spacer * 0.75 !important;
+	}
+}

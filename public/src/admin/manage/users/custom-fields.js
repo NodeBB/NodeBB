@@ -69,7 +69,7 @@ define('admin/manage/user/custom-fields', [
 					label: '[[global:save]]',
 					callback: function () {
 						const formData = modal.find('form').serializeObject();
-						if (formData.type === 'select') {
+						if (formData.type === 'select' || formData.type === 'select-multi') {
 							formData.selectOptionsFormatted = formData['select-options'].trim().split('\n').join(', ');
 						}
 
@@ -91,7 +91,7 @@ define('admin/manage/user/custom-fields', [
 		modal.find('#type-select').on('change', function () {
 			const type = $(this).val();
 			modal.find(`[data-input-type]`).addClass('hidden');
-			modal.find(`[data-input-type="${type}"]`).removeClass('hidden');
+			modal.find(`[data-input-type-${type}]`).removeClass('hidden');
 		});
 
 		modal.find('#icon-select').on('click', function () {

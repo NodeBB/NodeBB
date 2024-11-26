@@ -1,5 +1,5 @@
 {
-	"lead": "Một danh sách các số liệu thống kê và thời gian phân phối được hiển thị dưới đây.",
+	"lead": "Danh sách số liệu thống kê và thời gian phân phối thông báo được hiển thị bên dưới.",
 	"disclaimer": "Lưu ý việc gửi email là không đảm bảo, do bản chất của công nghệ email. Nhiều yếu tố ảnh hưởng  đến một email được gửi đến máy chủ người nhận cuối cùng có được gửi đến hộp thư của người dùng hay không, bao gồm danh tiếng máy chủ, địa chỉ IP nằm trong danh sách đen và liệu DKIM/SPF/DMARC được cấu hình.",
 	"disclaimer-continued": "Gửi thành công nghĩa là tin nhắn được NodeBB gửi thành công và máy chủ người nhận nhận được. Nó không có nghĩa là email đã đến hộp thư đến. Để có kết quả tốt nhất, chúng tôi khuyên bạn nên sử dụng dịch vụ gửi email của bên thứ ba, chẳng hạn như <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 

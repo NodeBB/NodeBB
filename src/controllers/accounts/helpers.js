@@ -114,12 +114,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 	userData.banned = Boolean(userData.banned);
 	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
-	userData.website = escape(userData.website);
-	userData.websiteLink = !userData.website.startsWith('http') ? `http://${userData.website}` : userData.website;
-	userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-
 	userData.fullname = escape(userData.fullname);
-	userData.location = escape(userData.location);
 	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
 	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
@@ -176,14 +171,26 @@ helpers.getCustomUserFields = async function (userData) {
 	});
 
 	fields.forEach((f) => {
+		let userValue = userData[f.key];
+		if (f.type === 'select-multi' && userValue) {
+			userValue = JSON.parse(userValue || '[]');
+		}
+		if (f.type === 'input-link' && userValue) {
+			f.linkValue = validator.escape(String(userValue.replace('http://', '').replace('https://', '')));
+		}
 		f['select-options'] = f['select-options'].split('\n').filter(Boolean).map(
 			opt => ({
 				value: opt,
-				selected: opt === userData[f.key],
+				selected: Array.isArray(userValue) ?
+					userValue.includes(opt) :
+					opt === userValue,
 			})
 		);
-		if (userData[f.key]) {
-			f.value = validator.escape(String(userData[f.key]));
+		if (userValue) {
+			if (Array.isArray(userValue)) {
+				userValue = userValue.join(', ');
+			}
+			f.value = validator.escape(String(userValue));
 		}
 	});
 	return fields;

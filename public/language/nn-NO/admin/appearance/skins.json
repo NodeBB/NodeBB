@@ -13,6 +13,6 @@
 	"revert-skin": "Tilbakestill utsjånad",
 	"current-skin": "Gjeldande utsjånad",
 	"skin-updated": "Utsjånad oppdatert",
-	"applied-success": "Lagt til med suksess",
-	"revert-success": "Tilbakestilling utført med suksess"
+	"applied-success": "%1 var lagt til med suksess",
+	"revert-success": "Tilbakestilling til standard farger"
 }

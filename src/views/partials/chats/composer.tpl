@@ -3,7 +3,9 @@
 		<div component="chat/composer/replying-to-text"></div> <button component="chat/composer/replying-to-cancel" class="btn btn-ghost btn-sm px-2 py-1"><i class="fa fa-times"></i></button>
 	</div>
 	<div class="w-100 flex-grow-1 flex-nowrap position-relative d-flex rounded-2 border border-secondary p-1 align-items-end">
+		{{{ if canUpload }}}
 		<button component="chat/upload/button" class="btn btn-ghost btn-sm d-flex p-2" type="button" title="[[global:upload]]" data-bs-toggle="tooltip"><i class="fa fa-fw fa-upload"></i></button>
+		{{{ end }}}
 		<div class="flex-grow-1 align-self-center">
 			<textarea component="chat/input" placeholder="{{{ if roomName }}}[[modules:chat.placeholder.message-room, {roomName}]]{{{ else }}}[[modules:chat.placeholder.mobile]]{{{ end }}}" class="bg-transparent text-body form-control chat-input mousetrap rounded-0 border-0 shadow-none px-1 py-0" style="min-height: 1.5rem;height:0;max-height:30vh;resize:none;"></textarea>
 		</div>

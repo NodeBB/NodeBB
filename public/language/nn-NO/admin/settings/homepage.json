@@ -1,8 +1,0 @@
-{
-	"home-page": "Startside",
-	"description": "Konfigurer forumets heimeside og tilpass ruta for brukarane.",
-	"home-page-route": "Startsiderute",
-	"custom-route": "Tilpassa rute",
-	"allow-user-home-pages": "Tillat brukarar å setje eigne heimesider",
-	"home-page-title": "Startsidetittel"
-}

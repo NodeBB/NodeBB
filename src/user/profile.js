@@ -79,11 +79,9 @@ module.exports = function (User) {
 	async function validateData(callerUid, data) {
 		await isEmailValid(data);
 		await isUsernameAvailable(data, data.uid);
-		await isWebsiteValid(callerUid, data);
 		await isAboutMeValid(callerUid, data);
 		await isSignatureValid(callerUid, data);
 		isFullnameValid(data);
-		isLocationValid(data);
 		isBirthdayValid(data);
 		isGroupTitleValid(data);
 		await validateCustomFields(data);
@@ -115,6 +113,14 @@ module.exports = function (User) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-number', field.name
 					));
+				} else if (value && type === 'input-text' && validator.isURL(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-text', field.name
+					));
+				} else if (value && type === 'input-date' && !validator.isDate(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-date', field.name
+					));
 				} else if (value && field.type === 'input-link' && !validator.isURL(String(value))) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-link', field.name
@@ -122,6 +128,14 @@ module.exports = function (User) {
 				} else if (field.type === 'select') {
 					const opts = field['select-options'].split('\n').filter(Boolean);
 					if (!opts.includes(value)) {
+						throw new Error(tx.compile(
+							'error:custom-user-field-select-value-invalid', field.name
+						));
+					}
+				} else if (field.type === 'select-multi') {
+					const opts = field['select-options'].split('\n').filter(Boolean);
+					const values = JSON.parse(value || '[]');
+					if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
 						throw new Error(tx.compile(
 							'error:custom-user-field-select-value-invalid', field.name
 						));
@@ -187,16 +201,6 @@ module.exports = function (User) {
 	}
 	User.checkUsername = async username => isUsernameAvailable({ username });
 
-	async function isWebsiteValid(callerUid, data) {
-		if (!data.website) {
-			return;
-		}
-		if (data.website.length > 255) {
-			throw new Error('[[error:invalid-website]]');
-		}
-		await User.checkMinReputation(callerUid, data.uid, 'min:rep:website');
-	}
-
 	async function isAboutMeValid(callerUid, data) {
 		if (!data.aboutme) {
 			return;
@@ -222,12 +226,6 @@ module.exports = function (User) {
 	function isFullnameValid(data) {
 		if (data.fullname && (validator.isURL(data.fullname) || data.fullname.length > 255)) {
 			throw new Error('[[error:invalid-fullname]]');
-		}
-	}
-
-	function isLocationValid(data) {
-		if (data.location && (validator.isURL(data.location) || data.location.length > 255)) {
-			throw new Error('[[error:invalid-location]]');
 		}
 	}
 

@@ -164,7 +164,7 @@ actions.buildCSS = async function buildCSS(data) {
 			loadPaths: data.paths,
 		};
 		if (data.minify) {
-			opts.silenceDeprecations = ['mixed-decls'];
+			opts.silenceDeprecations = ['mixed-decls', 'color-functions'];
 		}
 		const scssOutput = await sass.compileStringAsync(data.source, opts);
 		css = scssOutput.css.toString();

@@ -74,10 +74,6 @@
 					<input type="number" class="form-control" placeholder="0" data-field="min:rep:flag" id="min:rep:flag">
 				</div>
 				<div class="mb-3">
-					<label class="form-label" for="min:rep:website">[[admin/settings/reputation:min-rep-website]]</label>
-					<input type="number" class="form-control" placeholder="0" data-field="min:rep:website" id="min:rep:website">
-				</div>
-				<div class="mb-3">
 					<label class="form-label" for="min:rep:aboutme">[[admin/settings/reputation:min-rep-aboutme]]</label>
 					<input type="number" class="form-control" placeholder="0" data-field="min:rep:aboutme" id="min:rep:aboutme">
 				</div>

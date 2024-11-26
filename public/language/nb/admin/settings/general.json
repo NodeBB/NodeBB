@@ -15,7 +15,7 @@
 	"title-layout": "Title Layout",
 	"title-layout-help": "Define how the browser title will be structured ie. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "A short description about your community",
-	"description": "Site Description",
+	"description": "Velg hvilken side som vises når brukere navigerer til rot-URL-en for forumet ditt.",
 	"keywords": "Site Keywords",
 	"keywords-placeholder": "Keywords describing your community, comma-separated",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,15 @@
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "Hjemmeside",
+	"home-page-route": "Rute for hjemmeside",
+	"custom-route": "Egendefinert rute",
+	"allow-user-home-pages": "Tillat brukerspesifikke hjemmesider",
+	"home-page-title": "Tittel på hjemmesiden (standard: \"Hjem\")",
+	"default-language": "Standardspråk",
+	"auto-detect": "Oppdag automatisk språkinnstilling for gjester",
+	"default-language-help": "Det prevalgte språket avgjør språkinnstillingene for alle brukere som besøker forumet ditt. <br />Indiviuelle brukere kan overstyre det prevalgte språket inne på deres kontoinnstillinger.",
+	"post-sharing": "Post Sharing",
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
 }

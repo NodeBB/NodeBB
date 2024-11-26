@@ -103,9 +103,8 @@ get:
                     type: boolean
                   sort:
                     type: string
-                  nextStart:
-                    type: number
                   title:
                     type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

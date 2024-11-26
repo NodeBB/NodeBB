@@ -46,8 +46,18 @@ define('forum/account/edit', [
 			const els = $('[component="group/badge/list"] [component="group/badge/item"][data-selected="true"]');
 			return els.map((i, el) => $(el).attr('data-value')).get();
 		}
+		const editForm = $('form[component="profile/edit/form"]');
+		const userData = editForm.serializeObject();
 
-		const userData = $('form[component="profile/edit/form"]').serializeObject();
+		// stringify multi selects
+		editForm.find('select[multiple]').each((i, el) => {
+			const name = $(el).attr('name');
+			if (userData[name] && !Array.isArray(userData[name])) {
+				userData[name] = [userData[name]];
+			}
+			userData[name] = JSON.stringify(userData[name] || []);
+		});
+
 		userData.uid = ajaxify.data.uid;
 		userData.groupTitle = userData.groupTitle || '';
 		userData.groupTitle = JSON.stringify(getGroupSelection());

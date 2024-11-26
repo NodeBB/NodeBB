@@ -43,12 +43,15 @@ define('admin/manage/users', [
 				{ label: '[[admin/manage/users:export-field-followercount]]', field: 'followerCount', selected: false },
 				{ label: '[[admin/manage/users:export-field-followingcount]]', field: 'followingCount', selected: false },
 				{ label: '[[admin/manage/users:export-field-fullname]]', field: 'fullname', selected: false },
-				{ label: '[[admin/manage/users:export-field-website]]', field: 'website', selected: false },
-				{ label: '[[admin/manage/users:export-field-location]]', field: 'location', selected: false },
 				{ label: '[[admin/manage/users:export-field-birthday]]', field: 'birthday', selected: false },
 				{ label: '[[admin/manage/users:export-field-signature]]', field: 'signature', selected: false },
 				{ label: '[[admin/manage/users:export-field-aboutme]]', field: 'aboutme', selected: false },
-			];
+			].concat(ajaxify.data.customUserFields.map(field => ({
+				label: field.name,
+				field: field.key,
+				selected: false,
+			})));
+
 			const options = defaultFields.map((field, i) => (`
 				<div class="form-check mb-2">
 					<input data-field="${field.field}" class="form-check-input" type="checkbox" id="option-${i}" ${field.selected ? 'checked' : ''}>

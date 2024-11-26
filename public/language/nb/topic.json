@@ -83,13 +83,13 @@
     "markAsUnreadForAll.success": "Tråd markert som ulest for alle.",
     "mark-unread": "Merk som ulest",
     "mark-unread.success": "Tråd merket som ulest.",
-    "watch": "Overvåk",
-    "unwatch": "Ikke overvåk",
+    "watch": "Følg",
+    "unwatch": "Ikke følg",
     "watch.title": "Bli varslet om nye svar i denne tråden",
     "unwatch.title": "Slutt å følge denne tråden",
     "share-this-post": "Del ditt innlegg",
-    "watching": "Overvåker",
-    "not-watching": "Overvåker ikke",
+    "watching": "Følger",
+    "not-watching": "Følger ikke",
     "ignoring": "Ignorerer",
     "watching.description": "Varlse meg om nye svar.<br/> Vis tråd i ulest.",
     "not-watching.description": "Ikke varsle meg om nye svar.<br/> Vis tråd i ulest hvis ikke kategori er ignorert.",
@@ -217,7 +217,7 @@
     "navigator.unread": "%1 ulest",
     "upvote-post": "Stem opp innlegg",
     "downvote-post": "Stem ned innlegg",
-    "post-tools": "Post tools",
-    "unread-posts-link": "Unread posts link",
-    "thumb-image": "Topic thumbnail image"
+    "post-tools": "Innleggsverktøy",
+    "unread-posts-link": "Lenke til uleste innlegg",
+    "thumb-image": "Miniatyrbilde for emne"
 }

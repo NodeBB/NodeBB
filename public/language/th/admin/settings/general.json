@@ -15,7 +15,7 @@
 	"title-layout": "Title Layout",
 	"title-layout-help": "Define how the browser title will be structured ie. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "A short description about your community",
-	"description": "Site Description",
+	"description": "เลือกหน้าเว็บที่จะแสดงเมื่อผู้ใช้ไปที่ URL หลักของฟอรัม",
 	"keywords": "Site Keywords",
 	"keywords-placeholder": "Keywords describing your community, comma-separated",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,15 @@
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "หน้าแรก",
+	"home-page-route": "เส้นทางหน้าแรก",
+	"custom-route": "เส้นทางที่กำหนดเอง",
+	"allow-user-home-pages": "อนุญาตหน้าแรกของผู้ใช้",
+	"home-page-title": "ชื่อของหน้าแรก (ค่าเริ่มต้นคือ \"Home\")",
+	"default-language": "Default Language",
+	"auto-detect": "Auto Detect Language Setting for Guests",
+	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"post-sharing": "การแชร์กระทู้",
+	"info-plugins-additional": "ส่วนเสริมสามารถเพิ่มการเชือมต่อโซเชียลมิเดียเพื่อแชร์กระทู้"
 }

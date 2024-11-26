@@ -1,8 +1,0 @@
-{
-	"home-page": "Domača stran",
-	"description": "Izberite, katera stran se prikaže, ko se uporabniki pomaknejo do korenskega URL-ja vašega foruma.",
-	"home-page-route": "Pot do domače strani",
-	"custom-route": "Pot po meri",
-	"allow-user-home-pages": "Dovoli domače strani uporabnikov",
-	"home-page-title": "Naslov domače strani (privzeto »Domača stran«)"
-}

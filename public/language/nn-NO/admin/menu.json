@@ -37,20 +37,20 @@
 	"settings/pagination": "Paginering",
 	"settings/tags": "Stikkord",
 	"settings/notifications": "Varsel",
-	"settings/api": "API",
+	"settings/api": "API-tilgang",
 	"settings/sounds": "Lydar",
 	"settings/social": "Sosial",
 	"settings/cookies": "Informasjonskapslar",
 	"settings/web-crawler": "Nettgjennomsøking",
-	"settings/sockets": "Soklar",
+	"settings/sockets": "Kontakter",
 	"settings/advanced": "Avansert",
 
-	"settings.page-title": "Sideinnstillingar",
+	"settings.page-title": "%1 Innstillingar",
 
 	"section-appearance": "Utseende",
 	"appearance/themes": "Tema",
-	"appearance/skins": "Skins",
-	"appearance/customise": "Tilpass",
+	"appearance/skins": "Utsjånad",
+	"appearance/customise": "Tilpass innhold (HTML/JS/CSS)",
 
 	"section-extend": "Utvid",
 	"extend/plugins": "Pluginar",
@@ -79,14 +79,14 @@
 	"logout": "Logg ut",
 	"view-forum": "Vis forum",
 
-	"search.placeholder": "Søk...",
-	"search.no-results": "Ingen resultat",
-	"search.search-forum": "Søk i forum",
-	"search.keep-typing": "Fortsett å skrive...",
-	"search.start-typing": "Start å skrive...",
+	"search.placeholder": "Innstilling for søk",
+	"search.no-results": "Ingen resultat...",
+	"search.search-forum": "Søk i forum <strong></strong>",
+	"search.keep-typing": "Fortsett å skrive for å se resultat...",
+	"search.start-typing": "Start å skrive for å se resultat.....",
 
-	"connection-lost": "Tilkobling mistet",
+	"connection-lost": "Tilkobling til %1 mistet, prøver koble til... ",
 
-	"alerts.version": "Versjon",
-	"alerts.upgrade": "Oppgradering tilgjengeleg"
+	"alerts.version": "Kjører <strong>NodeBB versjon %1</strong>",
+	"alerts.upgrade": "Oppgrader til versjon %1"
 }

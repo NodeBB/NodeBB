@@ -88,5 +88,10 @@
 	"restrictions.seconds-before-new": "新用戶幾秒後可發第一篇文章",
 	"restrictions.seconds-edit-after-new": "新用戶在幾秒內可再編輯已發的貼文 (0 為關閉)",
 	"restrictions.milliseconds-between-messages": "新用戶的聊天訊息需間隔時間 (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "選擇有豁免新用戶限制的群組"
+	"restrictions.groups-exempt-from-new-user-restrictions": "選擇有豁免新用戶限制的群組",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "允許訪客使用者名",
+	"handles.enabled-help": "這個選項將允許訪客使用一個額外的輸入框來設置發文時的使用者名，如果被禁用，僅會統一顯示為“訪客”",
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

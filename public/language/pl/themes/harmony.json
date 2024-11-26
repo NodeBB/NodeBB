@@ -8,7 +8,7 @@
 	"settings.title": "Ustawienia stylu",
 	"settings.enableQuickReply": "Włącz szybkie odpowiadanie",
 	"settings.enableBreadcrumbs": "Pokaż łącza na stronach kategorii i wątków",
-	"settings.enableBreadcrumbs.why": "Breadcrumbs are visible in most pages for ease-of-navigation. The base design of the category and topic pages has alternative means to link back to parent pages, but the breadcrumb can be toggled off to reduce clutter.",
+	"settings.enableBreadcrumbs.why": "Okruchy uwagi są widoczne na większości stron w celu ułatwienia nawigacji. Podstawowy projekt kategorii i stron tematycznych ma alternatywne sposoby przechodzenia do stron nadrzędnych, ale okruchy można wyłączyć, aby zmniejszyć bałagan.",
 	"settings.centerHeaderElements": "Wyśrodkuj elementy nagłówka",
 	"settings.mobileTopicTeasers": "Pokazuj zwiastuny tematów na telefonie",
 	"settings.stickyToolbar": "Przyklejaj pasek narzędziowy",
