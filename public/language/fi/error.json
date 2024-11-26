@@ -184,6 +184,7 @@
     "not-enough-reputation-custom-field": "You need %1 reputation for %2",
     "custom-user-field-value-too-long": "Custom field value too long, %1",
     "custom-user-field-select-value-invalid": "Custom field selected option is invalid, %1",
+    "custom-user-field-invalid-text": "Custom field text is invalid, %1",
     "custom-user-field-invalid-link": "Custom field link is invalid, %1",
     "custom-user-field-invalid-number": "Custom field number is invalid, %1",
     "custom-user-field-invalid-date": "Custom field date is invalid, %1",

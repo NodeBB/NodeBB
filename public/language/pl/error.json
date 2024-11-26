@@ -184,6 +184,7 @@
     "not-enough-reputation-custom-field": "Wymagane %1 reputatacji dla %2",
     "custom-user-field-value-too-long": "Zawartość dodatkowego pola za długa, %1",
     "custom-user-field-select-value-invalid": "Zawartość pola niewłaściwa, %1",
+    "custom-user-field-invalid-text": "Dodatkowe pole profilu jest wadliwa, %1",
     "custom-user-field-invalid-link": "Odnośnik jest niewłaściwy, %1",
     "custom-user-field-invalid-number": "Wartość jest niewłaściwa, %1",
     "custom-user-field-invalid-date": "Data dodatkowego pola jest wadliwa, %1",

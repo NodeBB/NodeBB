@@ -20,7 +20,6 @@
 	"min-rep-chat": "Minimalna reputacja pozwalająca wysyłać wiadomości czatu",
 	"min-rep-post-links": "Minimalna reputacja pozwalająca umieszczać linki w postach",
 	"min-rep-flag": "Minimalna reputacja pozwalająca flagować posty",
-	"min-rep-website": "Minimalna reputacja pozwalająca wypełnić sekcję „Strona WWW” w profilu użytkownika",
 	"min-rep-aboutme": "Minimalna reputacja pozwalająca wypełnić sekcję „O mnie” w profilu użytkownika",
 	"min-rep-signature": "Minimalna reputacja pozwalająca wypełnić sekcję „Podpis” w profilu użytkownika",
 	"min-rep-profile-picture": "Minimalny poziom uprawnień, by dodać \"Zdjęcie profilowe\" w profilu użytkownika",

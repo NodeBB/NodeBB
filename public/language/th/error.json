@@ -184,6 +184,7 @@
     "not-enough-reputation-custom-field": "คุณต้องมีชื่อเสียง %1 เพื่อ %2",
     "custom-user-field-value-too-long": "ข้อมูลในฟิลด์ยาวเกินไป %1",
     "custom-user-field-select-value-invalid": "ตัวเลือกในฟิลด์ไม่ถูกต้อง %1",
+    "custom-user-field-invalid-text": "Custom field text is invalid, %1",
     "custom-user-field-invalid-link": "ลิงก์ในฟิลด์ไม่ถูกต้อง %1",
     "custom-user-field-invalid-number": "ตัวเลขในฟิลด์ไม่ถูกต้อง %1",
     "custom-user-field-invalid-date": "Custom field date is invalid, %1",

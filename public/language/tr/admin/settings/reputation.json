@@ -20,7 +20,6 @@
 	"min-rep-chat": "Özel sohbet edebilmek için gerekli minimum itibar",
 	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "İletileri şikayet etmek için gerekli minimum itibar",
-	"min-rep-website": "Kullanıcı profiline \"Web Sitesi\" eklemek için gerekli minimum itibar",
 	"min-rep-aboutme": "Kullanıcı profiline \"Hakkımda\" eklemek için gereken minimum itibar",
 	"min-rep-signature": "Kullanıcı profiline \"İmza\" eklemek için gerekli minimum itibar",
 	"min-rep-profile-picture": "Kullanıcı profiline \"Profil Resmi\" eklemek için gerekli minimum itibar",
