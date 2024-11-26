@@ -71,10 +71,31 @@ Mocks.profile = async (actors, hostMap) => {
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
 			actor.attachment
-				.filter(attachment => attachment.type === 'PropertyValue')
-				.reduce((map, { name, value }) => {
+				.filter(attachment => activitypub._constants.acceptable.customFields.has(attachment.type))
+				.reduce((map, { type, name, value, href, content }) => {
+					// Defer to new style (per FEP fb2a)
+					if (map.has(name) && type === 'PropertyValue') {
+						return map;
+					}
+
 					// Strip html from received values (for security)
-					value = utils.stripHTMLTags(value);
+					switch (type) {
+						case 'Note': {
+							value = utils.stripHTMLTags(content);
+							break;
+						}
+
+						case 'Link': {
+							value = utils.stripHTMLTags(href);
+							break;
+						}
+
+						case 'PropertyValue': {
+							value = utils.stripHTMLTags(value);
+							break;
+						}
+					}
+
 					return map.set(name, value);
 				}, new Map()) :
 			undefined;
@@ -205,8 +226,23 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	const attachment = [];
-	fields.forEach(({ name, value }) => {
+	fields.forEach(({ type, name, value }) => {
 		if (value) {
+			if (type === 'input-link') {
+				attachment.push({
+					type: 'Link',
+					name,
+					href: value,
+				});
+			} else {
+				attachment.push({
+					type: 'Note',
+					name,
+					content: value,
+				});
+			}
+
+			// Backwards compatibility
 			attachment.push({
 				type: 'PropertyValue',
 				name,
