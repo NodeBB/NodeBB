@@ -308,11 +308,12 @@ inbox.announce = async (req) => {
 			return;
 		}
 
-		({ tid } = await activitypub.notes.assert(0, pid, { cid, skipChecks: true })); // checks skipped; done above.
-		if (!tid) {
+		const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true }); // checks skipped; done above.
+		if (!assertion) {
 			return;
 		}
 
+		({ tid } = assertion);
 		await topics.updateLastPostTime(tid, timestamp);
 		await activitypub.notes.updateLocalRecipients(pid, { to, cc });
 		await activitypub.notes.syncUserInboxes(tid);
