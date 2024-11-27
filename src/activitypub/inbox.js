@@ -225,7 +225,7 @@ inbox.delete = async (req) => {
 	switch (true) {
 		case isNote: {
 			const uid = await posts.getPostField(object, 'uid');
-			await announce(object, req.body);
+			await announce(pid, req.body);
 			await api.posts[method]({ uid }, { pid });
 			break;
 		}
