@@ -22,6 +22,7 @@
 	"delete-content": "Excluir <strong>Conteúdo</strong> do(s) Usuário(s)",
 	"purge": "Excluir <strong>Usuário(s)</strong> e <strong>Conteúdo</strong>",
 	"download-csv": "Baixar CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Gerenciar Grupos",
 	"set-reputation": "Set Reputation",
 	"add-group": "Adicionar Grupo",

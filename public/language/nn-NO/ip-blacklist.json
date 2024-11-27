@@ -1,0 +1,19 @@
+{
+	"lead": "IP-svarteliste",
+	"description": "Administrer IP-reglar for å blokkere tilgang basert på IP-adresser.",
+	"active-rules": "Aktive reglar",
+	"validate": "Valider",
+	"apply": "Bruk",
+	"hints": "Tips",
+	"hint-1": "Du kan leggje til enkelt-IP-ar eller eit område med IP-ar.",
+	"hint-2": "Pass på å validere reglane før du tek dei i bruk.",
+
+	"validate.x-valid": "Gyldig regel",
+	"validate.x-invalid": "Ugyldig regel",
+
+	"alerts.applied-success": "Regel vart brukt med suksess.",
+
+	"analytics.blacklist-hourly": "Svarteliste per time",
+	"analytics.blacklist-daily": "Svarteliste per dag",
+	"ip-banned": "IP-adresse blokkert"
+}

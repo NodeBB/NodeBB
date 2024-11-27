@@ -1,12 +1,11 @@
 'use strict';
 
 define('admin/manage/groups', [
-	'categorySelector',
 	'slugify',
 	'api',
 	'bootbox',
 	'alerts',
-], function (categorySelector, slugify, api, bootbox, alerts) {
+], function (slugify, api, bootbox, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -88,30 +87,28 @@ define('admin/manage/groups', [
 				return ajaxify.refresh();
 			}
 			$('.pagination').addClass('hide');
-			const groupsEl = $('.groups-list');
-			socket.emit('groups.search', {
+			api.get('/api/groups', {
 				query: queryEl.val(),
-				options: {
-					sort: 'date',
-				},
-			}, function (err, groups) {
-				if (err) {
-					return alerts.error(err);
-				}
-
-				app.parseAndTranslate('admin/manage/groups', 'groups', {
-					groups: groups,
-					categories: ajaxify.data.categories,
-				}, function (html) {
-					groupsEl.find('[data-groupname]').remove();
-					groupsEl.find('tbody').append(html);
-				});
-			});
+				sort: 'date',
+				hideEphemeralGroups: true,
+				excludeGroups: ['registered-users', 'verified-users', 'unverified-users'],
+			}).then(renderSearchResults)
+				.catch(alerts.error);
 		}
 
 		queryEl.on('keyup', utils.debounce(doSearch, 200));
 	}
 
+	function renderSearchResults(data) {
+		const groupsEl = $('.groups-list');
+		app.parseAndTranslate('admin/manage/groups', 'groups', {
+			groups: data.groups,
+			categories: ajaxify.data.categories,
+		}, function (html) {
+			groupsEl.find('[data-groupname]').remove();
+			groupsEl.find('tbody').append(html);
+		});
+	}
 
 	return Groups;
 });

@@ -1,0 +1,26 @@
+{
+	"navigation": "Navigasjon",
+	"icon": "Ikon:",
+	"change-icon": "Endre ikon",
+	"route": "Rute:",
+	"tooltip": "Verktøytips:",
+	"text": "Tekst:",
+	"text-class": "Tekstklasse",
+	"class": "Klasse",
+	"id": "ID",
+
+	"properties": "Eigenskapar:",
+	"show-to-groups": "Vis til grupper:",
+	"open-new-window": "Opne i nytt vindauge",
+	"dropdown": "Nedtrekksmeny",
+	"dropdown-placeholder": "Skriv inn nedtrekksalternativ",
+
+	"btn.delete": "Slett",
+	"btn.disable": "Deaktiver",
+	"btn.enable": "Aktiver",
+
+	"available-menu-items": "Tilgjengelege menyelement",
+	"custom-route": "Tilpassa rute",
+	"core": "Kjerne",
+	"plugin": "Plugin"
+}

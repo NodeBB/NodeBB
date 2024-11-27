@@ -88,5 +88,10 @@
 	"restrictions.seconds-before-new": "שניות לפני שמשתמש חדש יכול לפרסם את הפוסט הראשון שלו",
 	"restrictions.seconds-edit-after-new": "מספר השניות שפוסט נשאר ניתן לעריכה עבור משתמשים חדשים (הגדר ל-0 כדי להשבית)",
 	"restrictions.milliseconds-between-messages": "זמן בין הודעות צ'אט למשתמשים חדשים (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "בחר קבוצות שיהיו פטורות מהגבלות משתמש חדש"
+	"restrictions.groups-exempt-from-new-user-restrictions": "בחר קבוצות שיהיו פטורות מהגבלות משתמש חדש",
+	"guest-settings": "הגדרות אורחים",
+	"handles.enabled": "אפשר נקודות אחיזה לאורחים",
+	"handles.enabled-help": "אפשרות זו חושפת שדה חדש המאפשר לאורחים לבחור שם שישויך לכל פוסט שהם מבצעים. אם מושבת, הם פשוט יקראו \"אורח\"",
+	"topic-views.enabled": "הגדל מספר צפיות בנושא על-ידי צפיות של אורחים",
+	"reply-notifications.enabled": "אפשר לאורחים ליצור הודעות תשובה"
 }

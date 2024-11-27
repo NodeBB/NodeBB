@@ -7,6 +7,7 @@ const groups = require('../../groups');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const file = require('../../file');
+const accountHelpers = require('./helpers');
 
 const editController = module.exports;
 
@@ -25,17 +26,18 @@ editController.get = async function (req, res, next) {
 		allowMultipleBadges,
 	} = userData;
 
-	const [canUseSignature, canManageUsers] = await Promise.all([
+	const [canUseSignature, canManageUsers, customUserFields] = await Promise.all([
 		privileges.global.can('signature', req.uid),
 		privileges.admin.can('admin:users', req.uid),
+		accountHelpers.getCustomUserFields(userData),
 	]);
 
+	userData.customUserFields = customUserFields;
 	userData.maximumSignatureLength = meta.config.maximumSignatureLength;
 	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
 	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
-	userData.allowWebsite = !isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:website'];
 	userData.allowAboutMe = !isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:aboutme'];
 	userData.allowSignature = canUseSignature && (!isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:signature']);
 	userData.profileImageDimension = meta.config.profileImageDimension;

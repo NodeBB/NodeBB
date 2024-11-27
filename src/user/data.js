@@ -21,12 +21,14 @@ const intFields = [
 module.exports = function (User) {
 	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
-		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'location', 'birthday', 'website',
+		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'birthday',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
 		'cover:position', 'groupTitle', 'mutedUntil', 'mutedReason',
 	];
+
+	let customFieldWhiteList = null;
 
 	User.guestData = {
 		uid: 0,
@@ -46,6 +48,18 @@ module.exports = function (User) {
 
 	let iconBackgrounds;
 
+	User.reloadCustomFieldWhitelist = async () => {
+		customFieldWhiteList = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	};
+
+	User.getUserFieldWhitelist = async function () {
+		const { whitelist } = await plugins.hooks.fire('filter:user.whitelistFields', {
+			uids: [],
+			whitelist: fieldWhitelist.slice(),
+		});
+		return whitelist;
+	};
+
 	User.getUsersFields = async function (uids, fields) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return [];
@@ -58,10 +72,12 @@ module.exports = function (User) {
 		ensureRequiredFields(fields, fieldsToRemove);
 
 		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
-
+		if (!customFieldWhiteList) {
+			await User.reloadCustomFieldWhitelist();
+		}
 		const results = await plugins.hooks.fire('filter:user.whitelistFields', {
 			uids: uids,
-			whitelist: fieldWhitelist.slice(),
+			whitelist: _.uniq(fieldWhitelist.concat(customFieldWhiteList)),
 		});
 		if (!fields.length) {
 			fields = results.whitelist;
@@ -282,10 +298,9 @@ module.exports = function (User) {
 	function parseDisplayName(user, uidToSettings) {
 		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
 		if (uidToSettings[user.uid]) {
-			if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
-				showfullname = false;
-			} else if (parseInt(uidToSettings[user.uid].showfullname, 10) === 1) {
-				showfullname = true;
+			const userSetting = parseInt(uidToSettings[user.uid].showfullname, 10);
+			if (userSetting === 0 || userSetting === 1) {
+				showfullname = userSetting === 1;
 			}
 		}
 

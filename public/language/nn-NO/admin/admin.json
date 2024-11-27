@@ -1,0 +1,18 @@
+{
+	"alert.confirm-rebuild-and-restart": "Er du sikker på at du vil bygge om og starte på nytt?",
+	"alert.confirm-restart": "Er du sikker på at du vil starte på nytt?",
+
+	"acp-title": "%1 | Admin Kontrollpanel",
+	"settings-header-contents": "Innhald for innstillingar",
+	"changes-saved": "Endringar lagra",
+	"changes-saved-message": "Endringane dine i innstillingar har blitt lagra.",
+	"changes-not-saved": "Endringar ikkje lagra",
+	"changes-not-saved-message": "Det oppstod ein feil, og endringane dine vart ikkje lagra. (%1)",
+	"save-changes": "Lagre endringar",
+	"min": "Min:",
+	"max": "Maks:",
+	"view": "Vis",
+	"edit": "Rediger",
+	"add": "Legg til",
+	"select-icon": "Vel ikon"
+}

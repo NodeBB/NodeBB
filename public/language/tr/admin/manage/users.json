@@ -22,6 +22,7 @@
 	"delete-content": "Kullanıcı <strong>İçeriğini</strong> Sil",
 	"purge": "<strong>Kullanıcıyı/ları</strong> ve <strong>İçeriği</strong> Sil",
 	"download-csv": "CSV İndir",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Grupları Düzenle",
 	"set-reputation": "Set Reputation",
 	"add-group": "Grup ekle",

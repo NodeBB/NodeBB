@@ -2,8 +2,8 @@
 
 
 define('forum/users', [
-	'benchpress', 'api', 'alerts', 'accounts/invite',
-], function (Benchpress, api, alerts, AccountInvite) {
+	'api', 'alerts', 'accounts/invite',
+], function (api, alerts, AccountInvite) {
 	const Users = {};
 
 	let searchResultCount = 0;
@@ -88,7 +88,9 @@ define('forum/users', [
 	}
 
 	function renderSearchResults(data) {
-		Benchpress.render('partials/paginator', { pagination: data.pagination }).then(function (html) {
+		app.parseAndTranslate('partials/paginator', {
+			pagination: data.pagination,
+		}).then(function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 

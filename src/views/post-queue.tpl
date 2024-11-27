@@ -1,7 +1,7 @@
 {{{ if isAdmin }}}
 {{{ if !enabled }}}
 <div class="alert alert-info">
-	<p>[[post-queue:enabling-help, {config.relative_path}/admin/settings/post#post-queue]]</p>
+	[[post-queue:enabling-help, {config.relative_path}/admin/settings/post#post-queue]]
 </div>
 {{{ end }}}
 {{{ else }}}
@@ -18,19 +18,20 @@
 	<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 	</div>
 	<div class="btn-group bottom-sheet" component="post-queue/bulk-actions">
-		<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">
-			<i class="fa fa-clone"></i> [[post-queue:bulk-actions]] <span class="caret"></span>
+		<button type="button" class="btn btn-ghost btn-sm dropdown-toggle d-flex gap-2 align-items-center" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">
+			<i class="fa fa-clone text-primary"></i>
+			<span class="fw-semibold">[[post-queue:bulk-actions]]</span>
 		</button>
-		<ul class="dropdown-menu dropdown-menu-end" role="menu">
+		<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
 			{{{ if canAccept }}}
-			<li><a class="dropdown-item" href="#" data-action="accept-all" role="menuitem">[[post-queue:accept-all]]</a></li>
-			<li><a class="dropdown-item" href="#" data-action="accept-selected" role="menuitem">[[post-queue:accept-selected]]</a></li>
+			<li><a class="dropdown-item rounded-1" href="#" data-action="accept-all" role="menuitem">[[post-queue:accept-all]]</a></li>
+			<li><a class="dropdown-item rounded-1" href="#" data-action="accept-selected" role="menuitem">[[post-queue:accept-selected]]</a></li>
 			<li class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#" data-action="reject-all" role="menuitem">[[post-queue:reject-all]]</a></li>
-			<li><a class="dropdown-item" href="#" data-action="reject-selected" role="menuitem">[[post-queue:reject-selected]]</a></li>
+			<li><a class="dropdown-item rounded-1" href="#" data-action="reject-all" role="menuitem">[[post-queue:reject-all]]</a></li>
+			<li><a class="dropdown-item rounded-1" href="#" data-action="reject-selected" role="menuitem">[[post-queue:reject-selected]]</a></li>
 			{{{ else }}}
-			<li><a class="dropdown-item" href="#" data-action="reject-all">[[post-queue:remove-all]]</a></li>
-			<li><a class="dropdown-item" href="#" data-action="reject-selected" role="menuitem">[[post-queue:remove-selected]]</a></li>
+			<li><a class="dropdown-item rounded-1" href="#" data-action="reject-all">[[post-queue:remove-all]]</a></li>
+			<li><a class="dropdown-item rounded-1" href="#" data-action="reject-selected" role="menuitem">[[post-queue:remove-selected]]</a></li>
 			{{{ end }}}
 		</ul>
 	</div>

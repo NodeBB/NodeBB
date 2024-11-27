@@ -1,0 +1,10 @@
+{
+	"cache": "Cache",
+	"post-cache": "Innleggscache",
+	"group-cache": "Gruppecache",
+	"local-cache": "Lokal cache",
+	"object-cache": "Objektcache",
+	"percent-full": "%1% fylt",
+	"post-cache-size": "Storleik på innleggscache",
+	"items-in-cache": "Element i cache"
+}

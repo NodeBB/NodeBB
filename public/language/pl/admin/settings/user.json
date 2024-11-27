@@ -88,5 +88,10 @@
 	"restrictions.seconds-before-new": "Sekund zanim nowy użytkownik może napisać swój pierwszy post",
 	"restrictions.seconds-edit-after-new": "Liczba sekund, w których post pozostaje edytowalny dla nowych użytkowników (ustaw 0, aby wyłączyć)",
 	"restrictions.milliseconds-between-messages": "Czas pomiędzy wiadomościami czatu dla nowych użytkowników (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Wybierz grupy, które powinny być wyjątkiem od ograniczeń nowych użytkowników"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Wybierz grupy, które powinny być wyjątkiem od ograniczeń nowych użytkowników",
+	"guest-settings": "Ustawienia gości",
+	"handles.enabled": "Zezwalaj gościom na podpisywanie się",
+	"handles.enabled-help": "Opcja ta udostępnia gościom nowe pole, w którym mogą wybrać nazwę, pod jaką będą publikować posty. Jeśli opcja jest wyłączona, stosowana będzie po prostu nazwa „Gość”",
+	"topic-views.enabled": "Zezwalaj gościom na zwiększenie liczbę wyświetleń tematu",
+	"reply-notifications.enabled": "Zezwalaj gościom na generowanie powiadomień o odpowiedziach"
 }

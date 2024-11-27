@@ -19,7 +19,7 @@ define('forum/topic/images', [], function () {
 		}
 
 		if (!imageEl.parent().is('a')) {
-			if (utils.isRelativeUrl(src) && suffixRegex.test(src)) {
+			if (utils.isRelativeUrl(src) && suffixRegex.test(src) && imageEl.get(0).naturalWidth >= config.resizeImageWidth) {
 				src = src.replace(suffixRegex, '$1');
 			}
 			const alt = imageEl.attr('alt') || '';

@@ -171,6 +171,8 @@ get:
                           type: number
                   canReply:
                     type: boolean
+                  canUpload:
+                    type: boolean
                   groupChat:
                     type: boolean
                   usernames:

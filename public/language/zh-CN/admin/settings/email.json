@@ -13,7 +13,7 @@
 	"smtp-transport-help": "您可以从列表中选取一个已知的服务或自定义。",
 	"smtp-transport.service": "选择服务",
 	"smtp-transport.service-custom": "自定义",
-	"smtp-transport.service-help": "Select a service name above in order to use the known information about it. Alternatively, select &quot;Custom Service&quot; and enter the details below.",
+	"smtp-transport.service-help": "选取一个上方的服务以便使用已知的信息。或选择 &quot; 自定义 &quot; 并在下方输入详细信息。",
 	"smtp-transport.gmail-warning1": "如果您使用 GMail 作为您的邮件提供商，您需要生成一个“App 密码”让 NodeBB 可以正常鉴权。您可以在<a href=\"https://myaccount.google.com/apppasswords\">App 密码<i class=\"fa fa-external-link\"></i></a>页生成一个。",
 	"smtp-transport.gmail-warning2": "对此替代办法的更多信息，请查阅关于此问题的<a href=\"https://nodemailer.com/usage/using-gmail/\">NodeMailer 文章<i class=\"fa fa-external-link\"></i></a>。一个替代方法可能是使用一种第三方的邮件插件，例如 SendGrid，Mailgun，等等。<a href=\"../extend/plugins\">在此浏览可用的插件</a>。",
 	"smtp-transport.auto-enable-toast": "您似乎在配置一个 SMTP 通信。我们为您启用了 “SMTP 通信” 选项。",

@@ -106,6 +106,8 @@ paths:
     $ref: 'read/admin/manage/tags.yaml'
   /api/admin/manage/users:
     $ref: 'read/admin/manage/users.yaml'
+  /api/admin/manage/users/custom-fields:
+    $ref: 'read/admin/manage/users/custom-fields.yaml'
   /api/admin/manage/registration:
     $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:
@@ -282,6 +284,8 @@ paths:
     $ref: 'read/user/userslug/watched.yaml'
   "/api/user/{userslug}/ignored":
     $ref: 'read/user/userslug/ignored.yaml'
+  "/api/user/{userslug}/read":
+    $ref: 'read/user/userslug/read.yaml'
   "/api/user/{userslug}/upvoted":
     $ref: 'read/user/userslug/upvoted.yaml'
   "/api/user/{userslug}/downvoted":

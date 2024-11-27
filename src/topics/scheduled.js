@@ -17,7 +17,13 @@ const Scheduled = module.exports;
 
 Scheduled.startJobs = function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', Scheduled.handleExpired, null, true);
+	new CronJob('*/1 * * * *', async () => {
+		try {
+			await Scheduled.handleExpired();
+		} catch (err) {
+			winston.error(err.stack);
+		}
+	}, null, true);
 };
 
 Scheduled.handleExpired = async function () {
@@ -48,7 +54,7 @@ async function postTids(tids) {
 	await Promise.all([].concat(
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
-		updateGroupPosts(uids, topicsData),
+		updateGroupPosts(topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 	));
 }
@@ -111,7 +117,9 @@ async function sendNotifications(uids, topicsData) {
 	const userData = await user.getUsersData(uids);
 	const uidToUserData = Object.fromEntries(uids.map((uid, idx) => [uid, userData[idx]]));
 
-	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
+	let postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
+	topicsData = topicsData.filter((t, i) => t && postsData[i]);
+	postsData = postsData.filter(Boolean);
 	postsData.forEach((postData, idx) => {
 		if (postData) {
 			postData.user = uidToUserData[topicsData[idx].uid];
@@ -151,10 +159,10 @@ async function updateUserLastposttimes(uids, topicsData) {
 	return Promise.all(uidsToUpdate.map(uid => user.setUserField(uid, 'lastposttime', tstampByUid[uid])));
 }
 
-async function updateGroupPosts(uids, topicsData) {
+async function updateGroupPosts(topicsData) {
 	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	await Promise.all(postsData.map(async (post, i) => {
-		if (topicsData[i]) {
+		if (post && topicsData[i]) {
 			post.cid = topicsData[i].cid;
 			await groups.onNewPostMade(post);
 		}

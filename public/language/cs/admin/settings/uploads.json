@@ -9,7 +9,7 @@
 	"private-extensions": "Přípona souborů je soukromá",
 	"private-uploads-extensions-help": "Pro nastavení soukromí, zde zadejte seznam souborů oddělený čárkou (tj. <code>pdf, xls,doc</code>). prázdný seznam znamená, že všechny soubory jsou soukromé.",
 	"resize-image-width-threshold": "Změnit velikost obrázků, jsou-li širší než určená šířka",
-	"resize-image-width-threshold-help": "(v pixelech, výchozí: 1520 pixelů, pro zakázání - nastavte 0)",
+	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Změnit velikost obrázků na určenou šířku",
 	"resize-image-width-help": "(v pixelech, výchozí: 760 pixelů, pro zakázání - nastavte 0)",
 	"resize-image-quality": "Kvalita při změně velikosti obrázků",

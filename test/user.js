@@ -737,8 +737,6 @@ describe('User', () => {
 					username: 'updatedUserName',
 					email: 'updatedEmail@me.com',
 					fullname: 'updatedFullname',
-					website: 'http://nodebb.org',
-					location: 'izmir',
 					groupTitle: 'testGroup',
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
@@ -747,7 +745,7 @@ describe('User', () => {
 				const result = await apiUser.update({ uid: uid }, { ...data, password: '123456', invalid: 'field' });
 				assert.equal(result.username, 'updatedUserName');
 				assert.equal(result.userslug, 'updatedusername');
-				assert.equal(result.location, 'izmir');
+				assert.equal(result.fullname, 'updatedFullname');
 
 				const userData = await db.getObject(`user:${uid}`);
 				Object.keys(data).forEach((key) => {

@@ -41,18 +41,10 @@ UserObject:
       type: string
       description: This is either username or fullname depending on forum and user settings
       example: Dragon Fruit
-    location:
-      type: string
-      example: 'Toronto, Canada'
-      nullable: true
     birthday:
       type: string
       description: A birthdate given in an ISO format parseable by the Date object
       example: 03/27/2020
-      nullable: true
-    website:
-      type: string
-      example: 'https://example.org'
       nullable: true
     aboutme:
       type: string
@@ -172,9 +164,7 @@ UserObject:
     - joindate
     - lastonline
     - picture
-    - location
     - birthday
-    - website
     - aboutme
     - signature
     - uploadedpicture
@@ -245,16 +235,10 @@ UserObjectFull:
       type: string
       description: This is either username or fullname depending on forum and user settings
       example: Dragon Fruit
-    location:
-      type: string
-      example: 'Toronto, Canada'
     birthday:
       type: string
       description: A birthdate given in an ISO format parseable by the Date object
       example: 03/27/2020
-    website:
-      type: string
-      example: 'https://example.org'
     aboutme:
       type: string
       example: |
@@ -387,19 +371,11 @@ UserObjectFull:
     counts:
       type: object
       properties:
-        best:
-          type: number
-        controversial:
-          type: number
         blocks:
-          type: number
-        bookmarks:
           type: number
         categoriesWatched:
           type: number
         tagsWatched:
-          type: number
-        downvoted:
           type: number
         followers:
           type: number
@@ -407,17 +383,11 @@ UserObjectFull:
           type: number
         groups:
           type: number
-        ignored:
-          type: number
         posts:
           type: number
         topics:
           type: number
         uploaded:
-          type: number
-        upvoted:
-          type: number
-        watched:
           type: number
     isBlocked:
       type: boolean
@@ -522,10 +492,6 @@ UserObjectFull:
           - name
           - visibility
           - public
-    websiteLink:
-      type: string
-    websiteName:
-      type: string
     username:disableEdit:
       type: number
     email:disableEdit:

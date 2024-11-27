@@ -54,6 +54,7 @@
     "account/settings-of": "שינוי הגדרות של %1",
     "account/watched": "נושאים שנצפו על ידי %1",
     "account/ignored": "נושאים ש%1 התעלמו מהם",
+    "account/read": "נושאים שנקראו על ידי %1",
     "account/upvoted": "פוסטים שהוצבעו לטובה על ידי %1",
     "account/downvoted": "פוסטים שהוצבעו לרעה על ידי %1",
     "account/best": "הפוסטים הטובים ביותר שנוצרו על ידי %1",

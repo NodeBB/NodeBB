@@ -1,6 +1,0 @@
-{
-	"language-settings": "Kieliasetukset",
-	"description": "Oletuskieli määrittää kaikkien keskustelualueesi kävijöiden oletusarvoiset kieliasetukset. <br />Yksittäiset käyttäjät voivat korvata oletuskielen tiliasetuksistaan.",
-	"default-language": "Oletuskieli",
-	"auto-detect": "Tunnista vieraiden kieliasetus automaattisesti"
-}

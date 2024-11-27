@@ -104,12 +104,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 	userData.banned = Boolean(userData.banned);
 	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
-	userData.website = escape(userData.website);
-	userData.websiteLink = !userData.website.startsWith('http') ? `http://${userData.website}` : userData.website;
-	userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-
 	userData.fullname = escape(userData.fullname);
-	userData.location = escape(userData.location);
 	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
 	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
@@ -132,6 +127,41 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		query: query,
 	});
 	return hookData.userData;
+};
+
+helpers.getCustomUserFields = async function (userData) {
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+
+	const fields = allFields.filter((field) => {
+		const minRep = field['min:rep'] || 0;
+		return userData.reputation >= minRep || meta.config['reputation:disabled'];
+	});
+
+	fields.forEach((f) => {
+		let userValue = userData[f.key];
+		if (f.type === 'select-multi' && userValue) {
+			userValue = JSON.parse(userValue || '[]');
+		}
+		if (f.type === 'input-link' && userValue) {
+			f.linkValue = validator.escape(String(userValue.replace('http://', '').replace('https://', '')));
+		}
+		f['select-options'] = f['select-options'].split('\n').filter(Boolean).map(
+			opt => ({
+				value: opt,
+				selected: Array.isArray(userValue) ?
+					userValue.includes(opt) :
+					opt === userValue,
+			})
+		);
+		if (userValue) {
+			if (Array.isArray(userValue)) {
+				userValue = userValue.join(', ');
+			}
+			f.value = validator.escape(String(userValue));
+		}
+	});
+	return fields;
 };
 
 function escape(value) {
@@ -184,16 +214,9 @@ async function getCounts(userData, callerUID) {
 	const cids = await categories.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
-		best: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), 1, '+inf'),
-		controversial: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids:votes`), '-inf', -1),
 		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
 	};
 	if (userData.isAdmin || userData.isSelf) {
-		promises.ignored = db.sortedSetCard(`uid:${uid}:ignored_tids`);
-		promises.watched = db.sortedSetCard(`uid:${uid}:followed_tids`);
-		promises.upvoted = db.sortedSetCard(`uid:${uid}:upvote`);
-		promises.downvoted = db.sortedSetCard(`uid:${uid}:downvote`);
-		promises.bookmarks = db.sortedSetCard(`uid:${uid}:bookmarks`);
 		promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);
 		promises.categoriesWatched = user.getWatchedCategories(uid);
 		promises.tagsWatched = db.sortedSetCard(`uid:${uid}:followed_tags`);

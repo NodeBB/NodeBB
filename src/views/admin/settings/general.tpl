@@ -60,7 +60,7 @@
 
 					<div class="mb-3">
 						<div class="mb-2">
-							<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
+							<label class="form-label" for="language">[[admin/settings/general:default-language]]</label>
 							<select id="language" data-field="defaultLang" class="form-select">
 								{{{ each languages }}}
 								<option value="{./code}" {{{ if ./selected }}}selected{{{ end }}}>{./name} ({./code})</option>
@@ -68,13 +68,13 @@
 							</select>
 						</div>
 						<p class="form-text">
-							[[admin/settings/languages:description]]
+							[[admin/settings/general:default-language-help]]
 						</p>
 
 						<div class="">
 							<div class="form-check form-switch">
 								<input id="autoDetectLang" class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
-								<label for="autoDetectLang" class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
+								<label for="autoDetectLang" class="form-check-label">[[admin/settings/general:auto-detect]]</label>
 							</div>
 						</div>
 					</div>
@@ -158,16 +158,16 @@
 			<hr/>
 
 			<div id="home-page" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/homepage:home-page]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:home-page]]</h5>
 
 				<div class="">
 					<p>
-						[[admin/settings/homepage:description]]
+						[[admin/settings/general:description]]
 					</p>
 					<form class="row">
 						<div class="col-sm-12">
 							<div class="mb-3">
-								<label class="form-label" for="homePageRoute">[[admin/settings/homepage:home-page-route]]</label>
+								<label class="form-label" for="homePageRoute">[[admin/settings/general:home-page-route]]</label>
 								<select id="homePageRoute" class="form-select" data-field="homePageRoute">
 									{{{ each routes }}}
 									<option value="{./route}">{./name}</option>
@@ -175,17 +175,17 @@
 								</select>
 							</div>
 							<div id="homePageCustom" class="mb-3" style="display: none;">
-								<label class="form-label" for="homePageCustomInput">[[admin/settings/homepage:custom-route]]</label>
+								<label class="form-label" for="homePageCustomInput">[[admin/settings/general:custom-route]]</label>
 								<input id="homePageCustomInput" type="text" class="form-control" data-field="homePageCustom"/>
 								<p class="form-text">[[user:custom-route-help]]</p>
 							</div>
 
 							<div class="form-check form-switch mb-3">
 								<input class="form-check-input" type="checkbox" id="allowUserHomePage" data-field="allowUserHomePage">
-								<label for="allowUserHomePage" class="form-check-label">[[admin/settings/homepage:allow-user-home-pages]]</label>
+								<label for="allowUserHomePage" class="form-check-label">[[admin/settings/general:allow-user-home-pages]]</label>
 							</div>
 							<div>
-								<label class="form-label" for="homePageTitle">[[admin/settings/homepage:home-page-title]]</label>
+								<label class="form-label" for="homePageTitle">[[admin/settings/general:home-page-title]]</label>
 								<input id="homePageTitle" class="form-control" type="text" data-field="homePageTitle">
 							</div>
 						</div>

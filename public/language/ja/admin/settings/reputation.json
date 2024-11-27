@@ -20,7 +20,6 @@
 	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "フラグの投稿に低評価",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
 	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
 	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",

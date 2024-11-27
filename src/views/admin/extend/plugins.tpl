@@ -13,7 +13,7 @@
 		{{{ if !canChangeState }}}
 		<div class="alert alert-warning">[[error:plugins-set-in-configuration]]</div>
 		{{{ end }}}
-		<ul class="nav nav-pills mb-3">
+		<ul class="nav nav-pills mb-3" id="plugin-tabs">
 			<li class="nav-item">
 				<button class="nav-link" data-bs-target="#trending" data-bs-toggle="tab">
 					[[admin/extend/plugins:trending]]
@@ -53,7 +53,7 @@
 			<div class="col-lg-9">
 				<div class="tab-content">
 					<div class="tab-pane fade" id="trending">
-						<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
+						<div class="alert alert-info no-plugins {{{ if !trending.length }}}hide{{{ end }}}">[[admin/extend/plugins:none-found]]</div>
 						<ul class="trending list-unstyled">
 							{{{ each trending }}}
 							<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
@@ -61,7 +61,7 @@
 						</ul>
 					</div>
 					<div class="tab-pane fade show active" id="installed">
-						<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
+						<div class="alert alert-info no-plugins {{{ if installed.length }}}hide{{{ end }}}">[[admin/extend/plugins:none-found]]</div>
 						<ul class="installed list-unstyled">
 							{{{ each installed }}}
 							<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
@@ -69,19 +69,31 @@
 						</ul>
 					</div>
 					<div class="tab-pane fade" id="active">
-						<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
-						<ul class="active list-unstyled"></ul>
+						<div class="alert alert-info no-plugins {{{ if active.length }}}hide{{{ end }}}">[[admin/extend/plugins:none-found]]</div>
+						<ul class="active list-unstyled">
+							{{{ each active }}}
+							<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
+							{{{ end }}}
+						</ul>
 					</div>
 					<div class="tab-pane fade" id="deactive">
-						<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
-						<ul class="deactive list-unstyled"></ul>
+						<div class="alert alert-info no-plugins {{{ if inactive.length }}}hide{{{ end }}}">[[admin/extend/plugins:none-found]]</div>
+						<ul class="deactive list-unstyled">
+							{{{ each inactive }}}
+							<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
+							{{{ end }}}
+						</ul>
 					</div>
 					<div class="tab-pane fade" id="upgrade">
-						<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
-						<ul class="upgrade list-unstyled"></ul>
+						<div class="alert alert-info no-plugins {{{ if upgrade.length }}}hide{{{ end }}}">[[admin/extend/plugins:none-found]]</div>
+						<ul class="upgrade list-unstyled">
+							{{{ each upgrade }}}
+							<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
+							{{{ end }}}
+						</ul>
 					</div>
 					<div class="tab-pane fade" id="download">
-						<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
+						<div class="alert alert-info no-plugins {{{ if download.length }}}hide{{{ end }}}">[[admin/extend/plugins:none-found]]</div>
 						<ul class="download list-unstyled">
 							{{{ each download }}}
 							<!-- IMPORT admin/partials/download_plugin_item.tpl -->

@@ -64,7 +64,7 @@
 	"user-presence": "Người Dùng Có Mặt",
 	"on-categories": "Trên danh sách danh mục",
 	"reading-posts": "Đọc bài viết",
-	"browsing-topics": "Duyệt qua chủ đề",
+	"browsing-topics": "Lướt xem chủ đề",
 	"recent": "Gần đây",
 	"unread": "Chưa đọc",
 
@@ -79,7 +79,7 @@
 	"graphs.registered-users": "Thành Viên Chính Thức",
 	"graphs.guest-users": "Người dùng khách",
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
-	"no-users-browsing": "Người không xem bài",
+	"no-users-browsing": "Không ai lướt xem",
 
 	"back-to-dashboard": "Trở về Bảng điều khiển",
 	"details.no-users": "Không có người dùng nào tham gia trong khung thời gian đã chọn",

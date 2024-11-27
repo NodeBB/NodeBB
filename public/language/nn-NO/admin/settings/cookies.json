@@ -1,0 +1,13 @@
+{
+	"eu-consent": "EU-samtykke",
+	"consent.enabled": "Samtykke aktivert",
+	"consent.message": "Dette forumet brukar informasjonskapslar for å sikre at du får den beste opplevinga.",
+	"consent.acceptance": "Godkjenn",
+	"consent.link-text": "Lær meir",
+	"consent.link-url": "/privacy",
+	"consent.blank-localised-default": "Ingen standardtekst spesifisert",
+	"settings": "Innstillingar",
+	"cookie-domain": "Domenenamn for informasjonskapslar",
+	"max-user-sessions": "Maks brukarøkter",
+	"blank-default": "Ingen standardverdi spesifisert"
+}

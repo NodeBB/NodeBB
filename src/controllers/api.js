@@ -78,6 +78,7 @@ apiController.loadConfig = async function (req) {
 		enablePostHistory: meta.config.enablePostHistory === 1,
 		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,
 		timeagoCodes: languages.timeagoCodes,
+		resizeImageWidth: meta.config.resizeImageWidth,
 		cookies: {
 			enabled: meta.config.cookieConsentEnabled === 1,
 			message: translator.escape(validator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]')).replace(/\\/g, '\\\\'),

@@ -54,6 +54,7 @@
     "account/settings-of": "Modifier les paramètres de %1",
     "account/watched": "Sujets auxquels %1 est abonné",
     "account/ignored": "Sujets ignorés par %1",
+    "account/read": "topics lus par %1",
     "account/upvoted": "Avis positifs de %1",
     "account/downvoted": "Avis négatifs de %1",
     "account/best": "Meilleurs messages postés par %1",

@@ -46,6 +46,7 @@ module.exports = function (SocketPosts) {
 		postData.display_moderator_tools = postData.display_edit_tools || postData.display_delete_tools;
 		postData.display_move_tools = results.isAdmin || results.isModerator;
 		postData.display_change_owner_tools = results.isAdmin || results.isModerator;
+		postData.display_manage_editors_tools = results.isAdmin || results.isModerator || postData.selfPost;
 		postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
 		postData.display_history = results.history && results.canViewHistory;
 		postData.flags = {
@@ -92,4 +93,35 @@ module.exports = function (SocketPosts) {
 
 		await Promise.all(logs);
 	};
+
+	SocketPosts.getEditors = async function (socket, data) {
+		if (!data || !data.pid) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		await checkEditorPrivilege(socket.uid, data.pid);
+		const editorUids = await db.getSetMembers(`pid:${data.pid}:editors`);
+		const userData = await user.getUsersFields(editorUids, ['username', 'userslug', 'picture']);
+		return userData;
+	};
+
+	SocketPosts.saveEditors = async function (socket, data) {
+		if (!data || !data.pid || !Array.isArray(data.uids)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		await checkEditorPrivilege(socket.uid, data.pid);
+		await db.delete(`pid:${data.pid}:editors`);
+		await db.setAdd(`pid:${data.pid}:editors`, data.uids);
+	};
+
+	async function checkEditorPrivilege(uid, pid) {
+		const cid = await posts.getCidByPid(pid);
+		const [isAdminOrMod, owner] = await Promise.all([
+			privileges.categories.isAdminOrMod(cid, uid),
+			posts.getPostField(pid, 'uid'),
+		]);
+		const isSelfPost = String(uid) === String(owner);
+		if (!isAdminOrMod && !isSelfPost) {
+			throw new Error('[[error:no-privileges]]');
+		}
+	}
 };

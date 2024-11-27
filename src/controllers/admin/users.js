@@ -94,9 +94,10 @@ async function getUsers(req, res) {
 
 	const set = buildSet();
 	const uids = await getUids(set);
-	const [count, users] = await Promise.all([
+	const [count, users, customUserFields] = await Promise.all([
 		getCount(set),
 		loadUserInfo(req.uid, uids),
+		getCustomUserFields(),
 	]);
 
 	await render(req, res, {
@@ -106,7 +107,13 @@ async function getUsers(req, res) {
 		resultsPerPage: resultsPerPage,
 		reverse: reverse,
 		sortBy: sortBy,
+		customUserFields,
 	});
+}
+
+async function getCustomUserFields() {
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	return (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
 }
 
 usersController.search = async function (req, res) {
@@ -293,4 +300,16 @@ usersController.getCSV = async function (req, res, next) {
 			return next(err);
 		}
 	});
+};
+
+usersController.customFields = async function (req, res) {
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	fields.forEach((field) => {
+		if (field['select-options']) {
+			field.selectOptionsFormatted = field['select-options'].trim().split('\n').join(', ');
+		}
+		field['min:rep'] = field['min:rep'] || 0;
+	});
+	res.render('admin/manage/users/custom-fields', { fields: fields });
 };

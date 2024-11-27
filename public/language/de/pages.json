@@ -54,6 +54,7 @@
     "account/settings-of": "Einstellungen von %1 ändern",
     "account/watched": "Von %1 beobachtete Themen",
     "account/ignored": "Ignorierte Themen von %1",
+    "account/read": "Von %1 gelesene Themen",
     "account/upvoted": "Von %1 positiv bewertete Beiträge",
     "account/downvoted": "Von %1 negativ bewertete Beiträge",
     "account/best": "Bestbewertete Beiträge von %1",
