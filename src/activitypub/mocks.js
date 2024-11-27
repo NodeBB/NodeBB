@@ -197,7 +197,7 @@ Mocks.actors = {};
 Mocks.actors.user = async (uid) => {
 	const userData = await user.getUserData(uid);
 	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = userData;
-	const fields = await accountHelpers.getCustomUserFields(userData);
+	let fields = await accountHelpers.getCustomUserFields(userData);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	let aboutmeParsed = '';
@@ -226,6 +226,15 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	const attachment = [];
+	// Translate field names and values
+	fields = await Promise.all(fields.map(async (field) => {
+		const [name, value] = await Promise.all([
+			translator.translate(field.name),
+			translator.translate(field.value),
+		]);
+		field = { ...field, ...{ name, value } };
+		return field;
+	}));
 	fields.forEach(({ type, name, value }) => {
 		if (value) {
 			if (type === 'input-link') {
