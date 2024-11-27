@@ -211,13 +211,14 @@ inbox.delete = async (req) => {
 			throw new Error('[[error:activitypub.origin-mismatch]]');
 		}
 	}
-	const objectHostname = new URL(object.id || object).hostname;
+	const pid = object.id || object;
+	const objectHostname = new URL(pid).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
 	const [isNote/* , isActor */] = await Promise.all([
-		posts.exists(object),
+		posts.exists(pid),
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
@@ -225,7 +226,7 @@ inbox.delete = async (req) => {
 		case isNote: {
 			const uid = await posts.getPostField(object, 'uid');
 			await announce(object, req.body);
-			await api.posts[method]({ uid }, { pid: object });
+			await api.posts[method]({ uid }, { pid });
 			break;
 		}
 
@@ -235,7 +236,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${object.id || object}) does not exist locally. Doing nothing.`);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${pid}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}
