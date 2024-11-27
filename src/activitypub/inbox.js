@@ -191,11 +191,22 @@ inbox.update = async (req) => {
 
 inbox.delete = async (req) => {
 	const { actor, object } = req.body;
+	if (typeof object !== 'string') {
+		const { id } = object;
+		if (!id) {
+			throw new Error('[[error:invalid-pid]]');
+		}
+	}
+	const pid = object.id || object;
+	let type = object.type || undefined;
 
 	// Deletes don't have their objects resolved automatically
 	let method = 'purge';
 	try {
-		const { type } = await activitypub.get('uid', 0, object);
+		if (!type) {
+			({ type } = await activitypub.get('uid', 0, pid));
+		}
+
 		if (type === 'Tombstone') {
 			method = 'delete';
 		}
@@ -203,23 +214,24 @@ inbox.delete = async (req) => {
 		// probably 410/404
 	}
 
-	// Origin checking
+	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
-	const objectHostname = new URL(object).hostname;
+
+	const objectHostname = new URL(pid).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
 	const [isNote/* , isActor */] = await Promise.all([
-		posts.exists(object),
+		posts.exists(pid),
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
 	switch (true) {
 		case isNote: {
-			const uid = await posts.getPostField(object, 'uid');
-			await announce(object, req.body);
-			await api.posts[method]({ uid }, { pid: object });
+			const uid = await posts.getPostField(pid, 'uid');
+			await announce(pid, req.body);
+			await api.posts[method]({ uid }, { pid });
 			break;
 		}
 
@@ -229,7 +241,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${pid}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}
