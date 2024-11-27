@@ -19,6 +19,8 @@ const utils = require('../utils');
 
 const accountHelpers = require('../controllers/accounts/helpers');
 
+const isEmojiShortcode = /^:[\w]+:$/;
+
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
 
@@ -47,7 +49,7 @@ Mocks.profile = async (actors, hostMap) => {
 		let hostname = hostMap.get(uid);
 		let {
 			url, preferredUsername, published, icon, image,
-			name, summary, followers, inbox, endpoints,
+			name, summary, followers, inbox, endpoints, tag,
 		} = actor;
 		preferredUsername = slugify(preferredUsername || name);
 		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
@@ -67,6 +69,17 @@ Mocks.profile = async (actors, hostMap) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
+
+		// Replace emoji in summary
+		if (tag && Array.isArray(tag)) {
+			tag
+				.filter(tag => tag.type === 'Emoji' &&
+					isEmojiShortcode.test(tag.name) &&
+					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
+				.forEach((tag) => {
+					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
+				});
+		}
 
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
