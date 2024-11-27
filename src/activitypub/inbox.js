@@ -191,11 +191,18 @@ inbox.update = async (req) => {
 
 inbox.delete = async (req) => {
 	const { actor, object } = req.body;
+	if (typeof object !== 'string') {
+		const { id } = object;
+		if (!id) {
+			throw new Error('[[error:invalid-pid]]');
+		}
+	}
+	const pid = object.id || object;
 
 	// Deletes don't have their objects resolved automatically
 	let method = 'purge';
 	try {
-		const { type } = await activitypub.get('uid', 0, object);
+		const { type } = await activitypub.get('uid', 0, pid);
 		if (type === 'Tombstone') {
 			method = 'delete';
 		}
@@ -205,13 +212,7 @@ inbox.delete = async (req) => {
 
 	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
-	if (typeof object !== 'string') {
-		const { id } = object;
-		if (!id) {
-			throw new Error('[[error:activitypub.origin-mismatch]]');
-		}
-	}
-	const pid = object.id || object;
+
 	const objectHostname = new URL(pid).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
