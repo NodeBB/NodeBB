@@ -203,9 +203,15 @@ inbox.delete = async (req) => {
 		// probably 410/404
 	}
 
-	// Origin checking
+	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
-	const objectHostname = new URL(object).hostname;
+	if (typeof object !== 'string') {
+		const { id } = object;
+		if (!id) {
+			throw new Error('[[error:activitypub.origin-mismatch]]');
+		}
+	}
+	const objectHostname = new URL(object.id || object).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
@@ -229,7 +235,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${object}) does not exist locally. Doing nothing.`);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${object.id || object}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}
