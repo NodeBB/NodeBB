@@ -25,7 +25,7 @@ profileController.get = async function (req, res, next) {
 	const [latestPosts, bestPosts, customUserFields] = await Promise.all([
 		getLatestPosts(req.uid, userData),
 		getBestPosts(req.uid, userData),
-		accountHelpers.getCustomUserFields(userData),
+		accountHelpers.getCustomUserFields(req.uid, userData),
 		posts.parseSignature(userData, req.uid),
 	]);
 	userData.customUserFields = customUserFields;
