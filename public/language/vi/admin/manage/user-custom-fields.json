@@ -20,5 +20,9 @@
 	"minimum-reputation": "Uy tín tối thiểu",
 	"minimum-reputation-help": "Nếu người dùng có ít hơn giá trị này, họ sẽ không thể sử dụng trường này",
 	"delete-field-confirm-x": "Bạn có thực sự muốn xóa trường tùy chỉnh \"%1\"?",
-	"custom-fields-saved": "Đã lưu trường tùy chỉnh"
+	"custom-fields-saved": "Đã lưu trường tùy chỉnh",
+	"visibility": "Visibility",
+	"visibility-all": "Everyone can see the field",
+	"visibility-loggedin": "Only logged in users can see the field",
+	"visibility-privileged": "Only privileged users like admins & moderators can see the field"
 }

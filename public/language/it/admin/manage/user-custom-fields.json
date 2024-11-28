@@ -20,5 +20,9 @@
 	"minimum-reputation": "Reputazione minima",
 	"minimum-reputation-help": "Se un utente ha un valore inferiore a questo, non potrà utilizzare questo campo",
 	"delete-field-confirm-x": "Vuoi davvero eliminare il campo personalizzato \"%1\"?",
-	"custom-fields-saved": "Campi personalizzati salvati"
+	"custom-fields-saved": "Campi personalizzati salvati",
+	"visibility": "Visibility",
+	"visibility-all": "Everyone can see the field",
+	"visibility-loggedin": "Only logged in users can see the field",
+	"visibility-privileged": "Only privileged users like admins & moderators can see the field"
 }
