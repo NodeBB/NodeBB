@@ -6,7 +6,7 @@ const ProgressPlugin = require('progress-webpack-plugin');
 
 const common = require('./webpack.common');
 
-module.exports = merge(common, {
+module.exports = merge(common, /** @type { import('webpack').Configuration } */ {
 	mode: 'production',
 	plugins: [
 		new ProgressPlugin(true),
