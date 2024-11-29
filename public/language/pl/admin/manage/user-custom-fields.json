@@ -21,8 +21,8 @@
 	"minimum-reputation-help": "O ile użytkownik nie spełnia warunku to i nie użyje tego pole",
 	"delete-field-confirm-x": "Czy chcesz skasować dodatkowe pole \"%1\"?",
 	"custom-fields-saved": "Dodatkowe pola zapisane",
-	"visibility": "Visibility",
-	"visibility-all": "Everyone can see the field",
-	"visibility-loggedin": "Only logged in users can see the field",
-	"visibility-privileged": "Only privileged users like admins & moderators can see the field"
+	"visibility": "Widoczność",
+	"visibility-all": "Każdy może zobaczyć pole",
+	"visibility-loggedin": "Tylko zalogowani zobaczą pole",
+	"visibility-privileged": "Tylko uprzywilejowani jak moderatorzy zobaczą pole"
 }

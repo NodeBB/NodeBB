@@ -29,7 +29,7 @@
 	"restrictions.stale-help": "Hjelp for utdatert innlegg",
 	"timestamp": "Tidsstempel",
 	"timestamp.cut-off": "Avskjering for tidsstempel",
-	"timestamp.cut-off-help": "Hjelp for avskjering av tidsstempel",
+	"timestamp.cut-off-help": " Datoar og klokkeslett blir vist på ein relativ måte (t.d. \"3 timar sidan\" / \"5 dagar sidan\"), og tilpassa til ulike språk\n\t\t\t\t\t.  Etter eit visst punkt kan denne teksten endrast til å vise den lokaliserte datoen direkte\n\t\t\t\t\t(t.d 5. Nov 2024 15:30).<br /><em>(Standard: <code>30</code>, eller ein månad). Sett til 0 for å alltid vise datoar. La vere tom for å alltid vise relative tider.</em>",
 	"timestamp.necro-threshold": "Grense for inaktiv posting",
 	"timestamp.necro-threshold-help": "Hjelp for grense for inaktiv posting",
 	"timestamp.topic-views-interval": "Intervall for visningar av emne",
