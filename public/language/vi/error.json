@@ -184,7 +184,7 @@
     "not-enough-reputation-custom-field": "Bạn cần uy tín %1 cho %2",
     "custom-user-field-value-too-long": "Giá trị trường tùy chỉnh quá dài, %1",
     "custom-user-field-select-value-invalid": "Tùy chọn đã chọn trường tùy chỉnh không hợp lệ, %1",
-    "custom-user-field-invalid-text": "Custom field text is invalid, %1",
+    "custom-user-field-invalid-text": "Văn bản trường tùy chỉnh không hợp lệ, %1",
     "custom-user-field-invalid-link": "Liên kết trường tùy chỉnh không hợp lệ, %1",
     "custom-user-field-invalid-number": "Số trường tùy chỉnh không hợp lệ, %1",
     "custom-user-field-invalid-date": "Ngày trường tùy chỉnh không hợp lệ, %1",
