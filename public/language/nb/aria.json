@@ -1,8 +1,8 @@
 {
-	"post-sort-option": "Valg for innleggssortering",
-	"topic-sort-option": "Valg for emnesortering",
-	"user-avatar-for": "Brukeravatar for",
+	"post-sort-option": "Valg for innleggssortering, %1",
+	"topic-sort-option": "Valg for emnesortering, %1",
+	"user-avatar-for": "Brukeravatar for %1",
 	"user-watched-tags": "Stikkord fulgt av bruker",
 	"delete-upload-button": "Slett opplastingsknapp",
-	"group-page-link-for": "Gruppesidelink for"
+	"group-page-link-for": "Gruppesidelink for %1"
 }
