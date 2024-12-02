@@ -12,6 +12,7 @@
 	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "Resize images down to specified width",
 	"resize-image-width-help": "(em pixeis, predefinido: 760 pixeis, definir 0 para desativar)",
+	"resize-image-keep-original": "Keep original image after resize",
 	"resize-image-quality": "Qualidade a utilizar quando redimensionar imagens",
 	"resize-image-quality-help": "Use a lower quality setting to reduce the file size of resized images.",
 	"max-file-size": "Maximum File Size (in KiB)",
