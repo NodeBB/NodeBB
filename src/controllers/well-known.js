@@ -31,9 +31,9 @@ Controller.webfinger = async (req, res) => {
 		if (slug === hostname) {
 			response = application(response);
 		} else if (uid) {
-			response = await profile(req.uid, uid, response);
+			response = await profile(uid, response);
 		} else if (cid) {
-			response = await category(req.uid, cid, response);
+			response = await category(cid, response);
 		} else {
 			return res.sendStatus(404);
 		}
@@ -59,8 +59,8 @@ function application(response) {
 	return response;
 }
 
-async function profile(callerUid, uid, response) {
-	const canView = await privileges.global.can('view:users', callerUid);
+async function profile(uid, response) {
+	const canView = await privileges.global.can('view:users', -2);
 	if (!canView) {
 		throw new Error('[[error:no-privileges]]');
 	}
@@ -90,8 +90,8 @@ async function profile(callerUid, uid, response) {
 	return response;
 }
 
-async function category(callerUid, cid, response) {
-	const canFind = await privileges.categories.can('find', cid, callerUid);
+async function category(cid, response) {
+	const canFind = await privileges.categories.can('find', cid, -2);
 	if (!canFind) {
 		throw new Error('[[error:no-privileges]]');
 	}
