@@ -103,7 +103,7 @@
         "nodebb-plugin-dbsearch": "6.2.5",
         "nodebb-plugin-emoji": "6.0.1",
         "nodebb-plugin-emoji-android": "4.1.1",
-        "nodebb-plugin-markdown": "13.0.0-pre.9",
+        "nodebb-plugin-markdown": "13.0.0-pre.10",
         "nodebb-plugin-mentions": "4.6.10",
         "nodebb-plugin-spam-be-gone": "2.2.2",
         "nodebb-plugin-web-push": "0.7.0",
