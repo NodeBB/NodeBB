@@ -12,7 +12,7 @@
 	"resize-image-width-threshold-help": "(w pikselach; domyślnie 2000 pikseli; ustaw 0 aby wyłączyć)",
 	"resize-image-width": "Zmień rozmiar obrazów na określoną szerokość",
 	"resize-image-width-help": "(w pikselach, domyślnie: 760 pixeli, ustaw 0, aby wyłączyć)",
-	"resize-image-keep-original": "Keep original image after resize",
+	"resize-image-keep-original": "Zachowaj oryginał po zmniejszeniu",
 	"resize-image-quality": "Poziom jakości użyty przy zmianie rozmiaru",
 	"resize-image-quality-help": "Użyj niższych ustawień jakości aby zredukować rozmiar pliku zmienionego obrazu.",
 	"max-file-size": "Maksymalny rozmiar plików (w KiB)",
