@@ -12,6 +12,7 @@
 	"resize-image-width-threshold-help": "(i piksler, standard: 2000 piksler, sett til 0 for å deaktivere)",
 	"resize-image-width": "Endre størrelse på bilder til spesifisert bredde",
 	"resize-image-width-help": "(i piksler, standard: 760 piksler, sett til 0 for å deaktivere)",
+	"resize-image-keep-original": "Keep original image after resize",
 	"resize-image-quality": "Kvalitet ved endring av størrelse på bilder",
 	"resize-image-quality-help": "Bruk en lavere kvalitet for å redusere filstørrelsen på bilder med endret størrelse.",
 	"max-file-size": "Maksimal filstørrelse (i KiB)",

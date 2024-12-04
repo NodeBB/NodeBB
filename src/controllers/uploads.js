@@ -110,12 +110,16 @@ async function resizeImage(fileObj) {
 
 	await image.resizeImage({
 		path: fileObj.path,
-		target: file.appendToFileName(fileObj.path, '-resized'),
+		target: meta.config.resizeImageKeepOriginal ?
+			file.appendToFileName(fileObj.path, '-resized') :
+			fileObj.path,
 		width: meta.config.resizeImageWidth,
 		quality: meta.config.resizeImageQuality,
 	});
 	// Return the resized version to the composer/postData
-	fileObj.url = file.appendToFileName(fileObj.url, '-resized');
+	if (meta.config.resizeImageKeepOriginal) {
+		fileObj.url = file.appendToFileName(fileObj.url, '-resized');
+	}
 
 	return fileObj;
 }

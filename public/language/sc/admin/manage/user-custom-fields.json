@@ -20,5 +20,9 @@
 	"minimum-reputation": "Minimum reputation",
 	"minimum-reputation-help": "If a user has less than this value they won't be able to use this field",
 	"delete-field-confirm-x": "Do you really want to delete custom field \"%1\"?",
-	"custom-fields-saved": "Custom fields saved"
+	"custom-fields-saved": "Custom fields saved",
+	"visibility": "Visibility",
+	"visibility-all": "Everyone can see the field",
+	"visibility-loggedin": "Only logged in users can see the field",
+	"visibility-privileged": "Only privileged users like admins & moderators can see the field"
 }

@@ -14,7 +14,7 @@
 	"target-purged": "被举报的内容已经被清除，不再可用。",
 	"target-aboutme-empty": "这个用户没有设置 &quot;关于我&quot; 。",
 
-	"graph-label": "日举报",
+	"graph-label": "每日举报",
 	"quick-filters": "快速过滤器",
 	"filter-active": "该列中有一个或更多激活的过滤器",
 	"filter-reset": "删除过滤器",

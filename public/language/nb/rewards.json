@@ -1,8 +1,8 @@
 {
-	"awarded-x-reputation": "Du har blitt tildelt <strong>1%</strong> rykte",
-	"awarded-group-membership": "Du har blitt lag til i gruppen <strong>1%</strong>",
+	"awarded-x-reputation": "Du har blitt tildelt <strong>%1</strong> omdømme",
+	"awarded-group-membership": "Du har blitt lagt til i gruppen <strong>%1</strong>",
 
-	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Rykte %1 %2)</span>",
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Omdømme %1 %2)</span>",
 	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Antall innlegg %1 %2)</span>",
 	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Sist pålogget %1 %2)</span>",
 	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Innmeldingsdato %1 %2)</span>",
