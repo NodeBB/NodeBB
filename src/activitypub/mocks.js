@@ -213,7 +213,7 @@ Mocks.actors = {};
 Mocks.actors.user = async (uid) => {
 	const userData = await user.getUserData(uid);
 	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = userData;
-	let fields = await accountHelpers.getCustomUserFields(userData);
+	let fields = await accountHelpers.getCustomUserFields(0, userData);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	let aboutmeParsed = '';
