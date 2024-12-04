@@ -18,7 +18,7 @@
     "not-watching.description": "Ikke vis emner i ulest, vis i nylig",
     "ignoring.description": "Ikke vis emner i ulest & nylig",
     "watching.message": "Du ser nå på oppdateringer fra denne kategorien og alle underkategorier",
-    "tracking.message": "Du sporer nå oppdateringer fra denne kategorien og alle underkategorier",
+    "tracking.message": "Du følger nå oppdateringer fra denne kategorien og alle underkategorier",
     "notwatching.message": "Du ser ikke på oppdateringer fra denne kategorien og alle underkategorier",
     "ignoring.message": "Du ignorerer nå oppdateringer fra denne kategorien og alle underkategorier",
     "watched-categories": "Overvåkede kategorier",
