@@ -12,6 +12,7 @@
 	"resize-image-width-threshold-help": "( i pixels, standard er 2000 pixler, angi 0 for å avvise) ",
 	"resize-image-width": "Endre bilete breidde",
 	"resize-image-width-help": "Angi ny breidde for bilete som vert endra ved opplasting.",
+	"resize-image-keep-original": "Keep original image after resize",
 	"resize-image-quality": "Biletekvalitet ved endring",
 	"resize-image-quality-help": "Angi kvaliteten for bilete som vert endra ved opplasting.",
 	"max-file-size": "Maks filstorleik",

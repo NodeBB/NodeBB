@@ -39,9 +39,9 @@ redisModule.init = async function (opts) {
 
 redisModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
-	const sessionStore = require('connect-redis').default;
+	const { RedisStore } = require('connect-redis');
 	const client = await connection.connect(options);
-	const store = new sessionStore({
+	const store = new RedisStore({
 		client: client,
 		ttl: meta.getSessionTTLSeconds(),
 	});

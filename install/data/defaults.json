@@ -52,6 +52,7 @@
     "orphanExpiryDays": 0,
     "resizeImageWidthThreshold": 2000,
     "resizeImageWidth": 760,
+    "resizeImageKeepOriginal": 1,
     "rejectImageWidth": 5000,
     "rejectImageHeight": 5000,
     "resizeImageQuality": 80,

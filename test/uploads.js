@@ -164,6 +164,24 @@ describe('Upload Controllers', () => {
 			meta.config.resizeImageWidthThreshold = 2000;
 		});
 
+		it('should resize and upload an image to a post and replace original', async () => {
+			const oldValue = meta.config.resizeImageWidth;
+			const keepOldValue = meta.config.resizeImageKeepOriginal;
+			meta.config.resizeImageWidth = 10;
+			meta.config.resizeImageWidthThreshold = 10;
+			meta.config.resizeImageKeepOriginal = 0;
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 200);
+			assert(body && body.status && body.response && body.response.images);
+			assert(Array.isArray(body.response.images));
+			assert(body.response.images[0].url);
+			assert(body.response.images[0].url.match(/\/assets\/uploads\/files\/\d+-test.png/));
+			meta.config.resizeImageWidth = oldValue;
+			meta.config.resizeImageWidthThreshold = 2000;
+			meta.config.resizeImageKeepOriginal = keepOldValue;
+		});
+
 		it('should upload a file to a post', async () => {
 			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';

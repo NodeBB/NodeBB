@@ -21,13 +21,14 @@
 							<th class="text-muted">[[admin/manage/user-custom-fields:key]]</th>
 							<th class="text-muted">[[admin/manage/user-custom-fields:name]]</th>
 							<th class="text-muted">[[admin/manage/user-custom-fields:type]]</th>
+							<th class="text-muted">[[admin/manage/user-custom-fields:visibility]]</th>
 							<th class="text-muted text-end">[[admin/manage/user-custom-fields:min-rep]]</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						{{{ each fields }}}
-						<tr data-key="{./key}" data-name="{./name}" data-icon="{./icon}" data-type="{./type}" data-min-rep="{./min:rep}" data-select-options="{./select-options}" class="align-middle">
+						<tr data-key="{./key}" data-name="{./name}" data-icon="{./icon}" data-type="{./type}" data-min-rep="{./min:rep}" data-select-options="{./select-options}" data-visibility="{./visibility}" class="align-middle">
 							<td style="width: 32px;">
 								<a href="#" component="sort/handle" class="btn btn-light btn-sm d-none d-md-block ui-sortable-handle" style="cursor:grab;"><i class="fa fa-arrows-up-down text-muted"></i></a>
 							</td>
@@ -40,6 +41,9 @@
 								({./selectOptionsFormatted})
 								</div>
 								{{{ end }}}
+							</td>
+							<td>
+								{./visibility}
 							</td>
 							<td class="text-end">
 								{./min:rep}

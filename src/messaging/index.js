@@ -234,7 +234,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 
 Messaging.generateUsernames = function (room, excludeUid) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
-	const usernames = users.map(u => u.username);
+	const usernames = users.map(u => u.displayname);
 	if (users.length > 3) {
 		return translator.compile(
 			'modules:chat.usernames-and-x-others',
@@ -248,8 +248,8 @@ Messaging.generateUsernames = function (room, excludeUid) {
 Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
 	const usernames = users.map(u => (utils.isNumber(u.uid) ?
-		`<a href="${relative_path}/uid/${u.uid}">${u.username}</a>` :
-		`<a href="${relative_path}/user/${u.username}">${u.username}</a>`));
+		`<a href="${relative_path}/uid/${u.uid}">${u.displayname}</a>` :
+		`<a href="${relative_path}/user/${u.username}">${u.displayname}</a>`));
 	let compiled = '';
 	if (!users.length) {
 		return '[[modules:chat.no-users-in-room]]';

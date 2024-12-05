@@ -3,7 +3,7 @@
 	<a data-index="{./index}" data-uid="{./uid}" class="btn btn-ghost btn-sm d-flex ff-secondary d-flex justify-content-start align-items-center gap-2 {{{ if ./online }}}online{{{ end}}}" href="{config.relative_path}/uid/{./uid}">
 		<div>{buildAvatar(users, "24px", true)}</div>
 		<div class="d-flex gap-1 flex-grow-1 text-nowrap text-truncate">
-			<span component="chat/user/list/username" class="text-truncate">{./username}</span>
+			<span component="chat/user/list/username" class="text-truncate">{./displayname}</span>
 			{{{ if ./isOwner }}}<span><i class="fa fa-star text-warning" data-bs-toggle="tooltip" title="[[modules:chat.owner]]"></i></span>{{{ end }}}
 		</div>
 	</a>

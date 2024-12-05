@@ -100,7 +100,7 @@ module.exports = function (Topics) {
 		await Topics.validateTags(data.tags, data.cid, uid);
 		data.tags = await Topics.filterTags(data.tags, data.cid);
 		if (!data.fromQueue && !isAdmin) {
-			Topics.checkContent(data.content);
+			Topics.checkContent(data.sourceContent || data.content);
 			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
 				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 			}
@@ -186,7 +186,7 @@ module.exports = function (Topics) {
 
 		if (!data.fromQueue && !isAdmin) {
 			await user.isReadyToPost(uid, data.cid);
-			Topics.checkContent(data.content);
+			Topics.checkContent(data.sourceContent || data.content);
 			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
 				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 			}

@@ -179,6 +179,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				timestamp,
 				tags,
 				content: mainPost.content,
+				sourceContent: mainPost.sourceContent,
 				_activitypub: mainPost._activitypub,
 			}),
 			Notes.updateLocalRecipients(mainPid, { to, cc }),

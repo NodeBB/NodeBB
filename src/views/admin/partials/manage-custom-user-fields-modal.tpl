@@ -30,6 +30,15 @@
 	</div>
 
 	<div class="mb-3">
+		<label class="form-label">[[admin/manage/user-custom-fields:visibility]]</label>
+		<select name="visibility" class="form-select">
+			<option value="all">[[admin/manage/user-custom-fields:visibility-all]]</option>
+			<option value="loggedin">[[admin/manage/user-custom-fields:visibility-loggedin]]</option>
+			<option value="privileged">[[admin/manage/user-custom-fields:visibility-privileged]]</option>
+		</select>
+	</div>
+
+	<div class="mb-3">
 		<label class="form-label">[[admin/manage/user-custom-fields:minimum-reputation]]</label>
 		<input class="form-control" type="number" name="min:rep" value="{./min:rep}" placeholder="0">
 		<p class="form-text">[[admin/manage/user-custom-fields:minimum-reputation-help]]</p>

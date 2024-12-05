@@ -69,7 +69,7 @@
     "posts": "Innlegg",
     "x-posts": "<span class=\"formatted-number\">%1</span> innlegg",
     "x-topics": "<span class=\"formatted-number\">%1</span> emner",
-    "x-reputation": "<span class=\"formatted-number\">%1</span> rykte",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> omdømme",
     "best": "Best",
     "controversial": "Kontroversiell",
     "votes": "Stemmer",

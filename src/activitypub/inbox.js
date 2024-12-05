@@ -198,11 +198,15 @@ inbox.delete = async (req) => {
 		}
 	}
 	const pid = object.id || object;
+	let type = object.type || undefined;
 
 	// Deletes don't have their objects resolved automatically
 	let method = 'purge';
 	try {
-		const { type } = await activitypub.get('uid', 0, pid);
+		if (!type) {
+			({ type } = await activitypub.get('uid', 0, pid));
+		}
+
 		if (type === 'Tombstone') {
 			method = 'delete';
 		}
@@ -225,7 +229,7 @@ inbox.delete = async (req) => {
 
 	switch (true) {
 		case isNote: {
-			const uid = await posts.getPostField(object, 'uid');
+			const uid = await posts.getPostField(pid, 'uid');
 			await announce(pid, req.body);
 			await api.posts[method]({ uid }, { pid });
 			break;

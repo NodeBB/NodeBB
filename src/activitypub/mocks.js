@@ -177,7 +177,10 @@ Mocks.post = async (objects) => {
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
-		if (content && content.length) {
+		const sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
+		if (sourceContent) {
+			content = null;
+		} else if (content && content.length) {
 			content = sanitize(content, sanitizeConfig);
 			content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
 		} else {
@@ -190,7 +193,7 @@ Mocks.post = async (objects) => {
 			// tid,  --> purposely omitted
 			name,
 			content,
-			sourceContent: source && source.mediaType === 'text/markdown' ? source.content : undefined,
+			sourceContent,
 			timestamp,
 			toPid,
 
@@ -210,7 +213,7 @@ Mocks.actors = {};
 Mocks.actors.user = async (uid) => {
 	const userData = await user.getUserData(uid);
 	let { username, userslug, displayname, fullname, joindate, aboutme, picture, 'cover:url': cover } = userData;
-	let fields = await accountHelpers.getCustomUserFields(userData);
+	let fields = await accountHelpers.getCustomUserFields(0, userData);
 	const publicKey = await activitypub.getPublicKey('uid', uid);
 
 	let aboutmeParsed = '';

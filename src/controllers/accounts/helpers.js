@@ -139,7 +139,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	return hookData.userData;
 };
 
-helpers.getCustomUserFields = async function (userData) {
+helpers.getCustomUserFields = async function (callerUID, userData) {
 	// Remote users' fields are serialized in hash
 	if (!utils.isNumber(userData.uid)) {
 		const customFields = await user.getUserField(userData.uid, 'customFields');
@@ -165,9 +165,22 @@ helpers.getCustomUserFields = async function (userData) {
 	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
 	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
 
+	const isSelf = String(callerUID) === String(userData.uid);
+	const [isAdmin, isModOfAny] = await Promise.all([
+		privileges.users.isAdministrator(callerUID),
+		user.isModeratorOfAnyCategory(callerUID),
+	]);
+
 	const fields = allFields.filter((field) => {
+		const visibilityCheck = isAdmin || isModOfAny || isSelf || field.visibility === 'all' ||
+			(
+				field.visibility === 'loggedin' &&
+				String(callerUID) !== '0' &&
+				String(callerUID) !== '-1'
+			);
 		const minRep = field['min:rep'] || 0;
-		return userData.reputation >= minRep || meta.config['reputation:disabled'];
+		const repCheck = userData.reputation >= minRep || meta.config['reputation:disabled'];
+		return visibilityCheck && repCheck;
 	});
 
 	fields.forEach((f) => {

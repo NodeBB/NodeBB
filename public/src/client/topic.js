@@ -181,6 +181,7 @@ define('forum/topic', [
 			const clickedThumb = e.target.closest('a');
 			if (clickedThumb) {
 				const clickedThumbIndex = Array.from(clickedThumb.parentNode.children).indexOf(clickedThumb);
+				e.stopPropagation();
 				e.preventDefault();
 				const thumbs = ajaxify.data.thumbs.map(t => ({ ...t }));
 				thumbs.forEach((t, i) => {

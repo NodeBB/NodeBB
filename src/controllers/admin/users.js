@@ -310,6 +310,7 @@ usersController.customFields = async function (req, res) {
 			field.selectOptionsFormatted = field['select-options'].trim().split('\n').join(', ');
 		}
 		field['min:rep'] = field['min:rep'] || 0;
+		field.visibility = field.visibility || 'all';
 	});
 	res.render('admin/manage/users/custom-fields', { fields: fields });
 };
