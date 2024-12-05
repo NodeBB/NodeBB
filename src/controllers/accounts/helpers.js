@@ -172,9 +172,10 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 	]);
 
 	const fields = allFields.filter((field) => {
-		const visibilityCheck = isAdmin || isModOfAny || isSelf || field.visibility === 'all' ||
+		const visibility = field.visibility || 'all';
+		const visibilityCheck = isAdmin || isModOfAny || isSelf || visibility === 'all' ||
 			(
-				field.visibility === 'loggedin' &&
+				visibility === 'loggedin' &&
 				String(callerUID) !== '0' &&
 				String(callerUID) !== '-1'
 			);
