@@ -9,6 +9,7 @@ const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
 
@@ -110,7 +111,9 @@ module.exports = function (Topics) {
 		const pids = postData.map(post => post && post.pid);
 
 		async function getPostUserData(field, method) {
-			const uids = _.uniq(postData.filter(p => p && parseInt(p[field], 10) >= 0).map(p => p[field]));
+			const uids = _.uniq(postData
+				.filter(p => p && (activitypub.helpers.isUri(p[field]) || parseInt(p[field], 10) >= 0))
+				.map(p => p[field]));
 			const userData = await method(uids);
 			return _.zipObject(uids, userData);
 		}
@@ -176,7 +179,9 @@ module.exports = function (Topics) {
 	};
 
 	Topics.addParentPosts = async function (postData) {
-		let parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
+		let parentPids = postData
+			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
+			.map(postObj => postObj.toPid);
 
 		if (!parentPids.length) {
 			return;
@@ -233,7 +238,7 @@ module.exports = function (Topics) {
 			}
 			isDeleted = await posts.getPostField(pids[0], 'deleted');
 			if (!isDeleted) {
-				return parseInt(pids[0], 10);
+				return pids[0];
 			}
 			index += 1;
 		} while (isDeleted);
@@ -241,7 +246,7 @@ module.exports = function (Topics) {
 
 	Topics.addPostToTopic = async function (tid, postData) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		if (!parseInt(mainPid, 10)) {
+		if (!mainPid) {
 			await Topics.setTopicField(tid, 'mainPid', postData.pid);
 		} else {
 			const upvotes = parseInt(postData.upvotes, 10) || 0;
@@ -276,7 +281,7 @@ module.exports = function (Topics) {
 			Topics.getTopicField(tid, 'mainPid'),
 			db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
 		]);
-		if (parseInt(mainPid, 10)) {
+		if (mainPid) {
 			pids = [mainPid].concat(pids);
 		}
 		return pids;
@@ -290,9 +295,18 @@ module.exports = function (Topics) {
 		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts');
 	};
 
-	Topics.increaseViewCount = async function (tid) {
-		const cid = await Topics.getTopicField(tid, 'cid');
-		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
+	Topics.increaseViewCount = async function (req, tid) {
+		const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
+		if (allow) {
+			req.session.tids_viewed = req.session.tids_viewed || {};
+			const now = Date.now();
+			const interval = meta.config.incrementTopicViewsInterval * 60000;
+			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
+				const cid = await Topics.getTopicField(tid, 'cid');
+				incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
+				req.session.tids_viewed[tid] = now;
+			}
+		}
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
@@ -429,7 +443,7 @@ module.exports = function (Topics) {
 			await Topics.events.log(tid, {
 				uid,
 				type: 'backlink',
-				href: `/post/${pid}`,
+				href: `/post/${encodeURIComponent(pid)}`,
 			});
 		}));
 

@@ -17,7 +17,7 @@ module.exports = function (Posts) {
 		pids = isArray ? pids : [pids];
 		const postData = await Posts.getPostsFields(pids, ['tid']);
 		const topicData = await topics.getTopicsFields(postData.map(t => t.tid), ['mainPid']);
-		const result = pids.map((pid, i) => parseInt(pid, 10) === parseInt(topicData[i].mainPid, 10));
+		const result = pids.map((pid, i) => String(pid) === String(topicData[i].mainPid));
 		return isArray ? result : result[0];
 	};
 

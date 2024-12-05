@@ -20,6 +20,16 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="cid-{category.cid}-handle">
+						[[admin/manage/categories:handle]]
+					</label>
+					<input id="cid-{category.cid}-handle" type="text" class="form-control" data-name="handle" value="{category.handle}" />
+					<p class="form-text">
+						[[admin/manage/categories:handle.help]]
+					</p>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-description">
 						[[admin/manage/categories:description]]
 					</label>
@@ -178,6 +188,10 @@
 
 				<a href="{config.relative_path}/admin/manage/privileges/{category.cid}" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
 					<i class="fa fa-fw fa-lock text-primary"></i> [[admin/manage/categories:privileges]]
+				</a>
+
+				<a class="btn btn-ghost btn-sm d-flex gap-2 align-items-center" href="{config.relative_path}/admin/manage/categories/{category.cid}/federation">
+					<i class="fa fa-fw fa-globe text-primary"></i> [[admin/manage/categories:federation]]
 				</a>
 
 				<a href="{config.relative_path}/category/{category.cid}" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">

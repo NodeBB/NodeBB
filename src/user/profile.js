@@ -11,6 +11,7 @@ const meta = require('../meta');
 const db = require('../database');
 const groups = require('../groups');
 const plugins = require('../plugins');
+const api = require('../api');
 const tx = require('../translator');
 
 module.exports = function (User) {
@@ -67,6 +68,7 @@ module.exports = function (User) {
 			fields: fields,
 			oldData: oldData,
 		});
+		api.activitypub.update.profile({ uid }, { uid: updateUid });
 
 		return await User.getUserFields(updateUid, [
 			'email', 'username', 'userslug',

@@ -11,6 +11,7 @@ const topics = require('./index');
 const categories = require('../categories');
 const groups = require('../groups');
 const user = require('../user');
+const api = require('../api');
 const plugins = require('../plugins');
 
 const Scheduled = module.exports;
@@ -55,6 +56,7 @@ async function postTids(tids) {
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(topicsData),
+		federatePosts(uids, topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 	));
 }
@@ -167,6 +169,14 @@ async function updateGroupPosts(topicsData) {
 			await groups.onNewPostMade(post);
 		}
 	}));
+}
+
+function federatePosts(uids, topicData) {
+	topicData.forEach(({ mainPid: pid }, idx) => {
+		const uid = uids[idx];
+
+		api.activitypub.create.note({ uid }, { pid });
+	});
 }
 
 async function shiftPostTimes(tid, timestamp) {

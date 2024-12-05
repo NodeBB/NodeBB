@@ -9,6 +9,7 @@ const groups = require('../groups');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 const translator = require('../translator');
 const cache = require('../cache');
@@ -214,7 +215,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 					userData.status = user.getStatus(userData);
 				}
 			});
-			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
+			room.users = room.users.filter(user => user && (parseInt(user.uid, 10) || activitypub.helpers.isUri(user.uid)));
 			room.lastUser = room.users[0];
 			room.usernames = Messaging.generateUsernames(room, uid);
 			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
@@ -246,7 +247,9 @@ Messaging.generateUsernames = function (room, excludeUid) {
 
 Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
-	const usernames = users.map(u => `<a href="${relative_path}/uid/${u.uid}">${u.displayname}</a>`);
+	const usernames = users.map(u => (utils.isNumber(u.uid) ?
+		`<a href="${relative_path}/uid/${u.uid}">${u.displayname}</a>` :
+		`<a href="${relative_path}/user/${u.username}">${u.displayname}</a>`));
 	let compiled = '';
 	if (!users.length) {
 		return '[[modules:chat.no-users-in-room]]';
@@ -452,7 +455,7 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 
 Messaging.canViewMessage = async (mids, roomId, uid) => {
 	let single = false;
-	if (!Array.isArray(mids) && isFinite(mids)) {
+	if (!Array.isArray(mids) && (utils.isNumber(mids) || activitypub.helpers.isUri(mids))) {
 		mids = [mids];
 		single = true;
 	}

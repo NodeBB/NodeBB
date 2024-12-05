@@ -7,6 +7,7 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const relative_path = nconf.get('relative_path');
@@ -65,16 +66,26 @@ module.exports = function (User) {
 			return [];
 		}
 
-		uids = uids.map(uid => (isNaN(uid) ? 0 : parseInt(uid, 10)));
+		uids = uids.map((uid) => {
+			if (utils.isNumber(uid)) {
+				return parseInt(uid, 10);
+			} else if (activitypub.helpers.isUri(uid)) {
+				return uid;
+			}
+
+			return 0;
+		});
 
 		const fieldsToRemove = [];
 		fields = fields.slice();
 		ensureRequiredFields(fields, fieldsToRemove);
 
-		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
+		const uniqueUids = _.uniq(uids).filter(uid => isFinite(uid) && uid > 0);
+		const remoteIds = _.uniq(uids).filter(uid => !isFinite(uid));
 		if (!customFieldWhiteList) {
 			await User.reloadCustomFieldWhitelist();
 		}
+
 		const results = await plugins.hooks.fire('filter:user.whitelistFields', {
 			uids: uids,
 			whitelist: _.uniq(fieldWhitelist.concat(customFieldWhiteList)),
@@ -86,7 +97,10 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		const users = await db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields);
+		const users = await db.getObjectsFields(
+			uniqueUids.map(uid => `user:${uid}`).concat(remoteIds.map(id => `userRemote:${id}`)),
+			fields
+		);
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
@@ -98,7 +112,7 @@ module.exports = function (User) {
 			}
 		});
 		await modifyUserData(result.users, fields, fieldsToRemove);
-		return uidsToUsers(uids, uniqueUids, result.users);
+		return uidsToUsers(uids, [...uniqueUids, ...remoteIds], result.users);
 	};
 
 	function ensureRequiredFields(fields, fieldsToRemove) {
@@ -134,7 +148,7 @@ module.exports = function (User) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map((uid) => {
 			const user = uidToUser[uid] || { ...User.guestData };
-			if (!parseInt(user.uid, 10)) {
+			if (!parseInt(user.uid, 10) && !activitypub.helpers.isUri(user.uid)) {
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former-user]]' : '[[global:guest]]';
 				user.displayname = user.username;
 			}
@@ -226,7 +240,7 @@ module.exports = function (User) {
 				user.email = validator.escape(user.email ? user.email.toString() : '');
 			}
 
-			if (!user.uid) {
+			if (!user.uid && !activitypub.helpers.isUri(user.uid)) {
 				for (const [key, value] of Object.entries(User.guestData)) {
 					user[key] = value;
 				}
@@ -256,7 +270,7 @@ module.exports = function (User) {
 			}
 
 			// User Icons
-			if (requestedFields.includes('picture') && user.username && user.uid && !meta.config.defaultAvatar) {
+			if (requestedFields.includes('picture') && user.username && user.uid !== 0 && !meta.config.defaultAvatar) {
 				if (!iconBackgrounds.includes(user['icon:bgColor'])) {
 					const nameAsIndex = Array.from(user.username).reduce((cur, next) => cur + next.charCodeAt(), 0);
 					user['icon:bgColor'] = iconBackgrounds[nameAsIndex % iconBackgrounds.length];
@@ -287,6 +301,8 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
+
+			user.isLocal = utils.isNumber(user.uid);
 		});
 		if (unbanUids.length) {
 			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
@@ -302,6 +318,11 @@ module.exports = function (User) {
 			if (userSetting === 0 || userSetting === 1) {
 				showfullname = userSetting === 1;
 			}
+		}
+
+		// Always show full name for remote users
+		if (!utils.isNumber(user.uid)) {
+			showfullname = true;
 		}
 
 		user.displayname = validator.escape(String(
@@ -363,7 +384,8 @@ module.exports = function (User) {
 	};
 
 	User.setUserFields = async function (uid, data) {
-		await db.setObject(`user:${uid}`, data);
+		const userKey = isFinite(uid) ? `user:${uid}` : `userRemote:${uid}`;
+		await db.setObject(userKey, data);
 		for (const [field, value] of Object.entries(data)) {
 			plugins.hooks.fire('action:user.set', { uid, field, value, type: 'set' });
 		}
@@ -378,7 +400,8 @@ module.exports = function (User) {
 	};
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {
-		const newValue = await db.incrObjectFieldBy(`user:${uid}`, field, value);
+		const prefix = `user${activitypub.helpers.isUri(uid) ? 'Remote' : ''}`;
+		const newValue = await db.incrObjectFieldBy(`${prefix}:${uid}`, field, value);
 		plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
 		return newValue;
 	}

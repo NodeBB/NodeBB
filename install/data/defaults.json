@@ -191,5 +191,12 @@
     "composer:allowPluginHelp": 1,
     "maxReconnectionAttempts": 5,
     "reconnectionDelay": 1500,
-    "disableCustomUserSkins": 0
+    "disableCustomUserSkins": 0,
+    "activitypubEnabled": 1,
+    "activitypubAllowLoopback": 0,
+    "activitypubProbe": 1,
+    "activitypubProbeTimeout": 2000,
+    "activitypubContentPruneDays": 30,
+    "activitypubUserPruneDays": 7,
+    "activitypubFilter": 0
 }
