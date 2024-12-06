@@ -663,6 +663,7 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 Flags.getTarget = async function (type, id, uid) {
 	if (type === 'user') {
 		const userData = await user.getUserData(id);
+		userData.aboutme = validator.escape(String(userData.aboutme));
 		return userData && userData.uid ? userData : {};
 	}
 	if (type === 'post') {
