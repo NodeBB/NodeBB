@@ -8,6 +8,7 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
+const { secureRandom } = require('../utils');
 
 exports.handle404 = helpers.try(async (req, res) => {
 	const relativePath = nconf.get('relative_path');
@@ -64,6 +65,6 @@ exports.send404 = helpers.try(async (req, res) => {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
 		bodyClass: helpers.buildBodyClass(req, res),
-		icon: icons[Math.floor(Math.random() * icons.length)],
+		icon: icons[secureRandom(0, icons.length - 1)],
 	});
 });
