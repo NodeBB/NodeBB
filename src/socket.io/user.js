@@ -24,7 +24,6 @@ require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
 require('./user/registration')(SocketUser);
 
-// Password Reset
 SocketUser.reset = {};
 
 SocketUser.reset.send = async function (socket, email) {

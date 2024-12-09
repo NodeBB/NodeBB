@@ -67,8 +67,8 @@ usersAPI.update = async function (caller, data) {
 		privileges.users.canEdit(caller.uid, data.uid),
 	]);
 
-	// Changing own email/username requires password confirmation
-	if (data.hasOwnProperty('email') || data.hasOwnProperty('username')) {
+	const isChangingEmailOrUsername = data.hasOwnProperty('email') || data.hasOwnProperty('username');
+	if (isChangingEmailOrUsername) {
 		await isPrivilegedOrSelfAndPasswordMatch(caller, data);
 	}
 
@@ -547,7 +547,6 @@ async function processDeletion({ uid, method, password, caller }) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	// Self-deletions require a password
 	const hasPassword = await user.hasPassword(uid);
 	if (isSelf && hasPassword) {
 		const ok = await user.isPasswordCorrect(uid, password, caller.ip);

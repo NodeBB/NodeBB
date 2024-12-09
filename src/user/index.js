@@ -244,7 +244,7 @@ User.addInterstitials = function (callback) {
 	plugins.hooks.register('core', {
 		hook: 'filter:register.interstitial',
 		method: [
-			User.interstitials.email, // Email address (for password reset + digest)
+			User.interstitials.email, // Email address
 			User.interstitials.gdpr, // GDPR information collection/processing consent + email consent
 			User.interstitials.tou, // Forum Terms of Use
 		],
