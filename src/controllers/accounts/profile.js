@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const nconf = require('nconf');
 
 const db = require('../../database');
 const user = require('../../user');
@@ -13,6 +14,8 @@ const accountHelpers = require('./helpers');
 const utils = require('../../utils');
 
 const profileController = module.exports;
+
+const url = nconf.get('url');
 
 profileController.get = async function (req, res, next) {
 	const { userData } = res.locals;
@@ -151,4 +154,11 @@ function addMetaTags(res, userData) {
 			}
 		);
 	}
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}/user/${userData.userslug}`,
+		},
+	];
 }

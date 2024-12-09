@@ -14,6 +14,8 @@ const helpers = require('./helpers');
 
 const tagsController = module.exports;
 
+const url = nconf.get('url');
+
 tagsController.getTag = async function (req, res) {
 	const tag = validator.escape(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength));
 	const page = parseInt(req.query.page, 10) || 1;
@@ -88,6 +90,13 @@ tagsController.getTags = async function (req, res) {
 		privileges.global.can('search:tags', req.uid),
 		topics.getCategoryTagsData(cids, 0, 99),
 	]);
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}/tags`,
+		},
+	];
 
 	res.render('tags', {
 		tags: tags.filter(Boolean),
