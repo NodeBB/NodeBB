@@ -119,7 +119,7 @@ describe('Utility Methods', () => {
 		});
 
 		it('should always return 3', () => {
-			const { secureRandom } = require('../src/utils')
+			const { secureRandom } = require('../src/utils');
 			const r1 = secureRandom(3, 3);
 			assert.strictEqual(r1, 3);
 		});
