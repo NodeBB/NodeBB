@@ -32,13 +32,16 @@ define('forum/users', [
 
 		// Populate box with query if present
 		const searchEl = document.getElementById('search-user');
-		const search = new URLSearchParams(document.location.search);
-		const query = search.get('query');
-		if (query) {
-			searchEl.value = query;
+		if (searchEl) {
+			const search = new URLSearchParams(document.location.search);
+			const query = search.get('query');
+			if (query) {
+				searchEl.value = query;
+			}
+			if (!utils.isMobile()) {
+				searchEl.focus();
+			}
 		}
-
-		searchEl.focus();
 	};
 
 	function doSearch() {
