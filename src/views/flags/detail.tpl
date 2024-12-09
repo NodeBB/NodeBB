@@ -123,7 +123,7 @@
 				{{{ end }}}
 
 				{{{ if type_bool.user }}}
-				<div class="d-flex gap-2">
+				<div class="d-flex gap-2 align-items-center lh-1 mb-2">
 					<a href="{config.relative_path}/user/{./target.userslug}">{buildAvatar(target, "16px", true)}</a>
 					<a href="{config.relative_path}/user/{./target.userslug}">{target.username}</a>
 				</div>
