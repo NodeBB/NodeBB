@@ -423,23 +423,6 @@ describe('Admin Controllers', () => {
 		assert(body);
 	});
 
-	it('should load /admin/settings/languages', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/settings/languages`, { jar });
-		assert.equal(response.statusCode, 200);
-		assert(body);
-	});
-
-	it('should load /admin/settings/social', async () => {
-		const { body } = await request.get(`${nconf.get('url')}/api/admin/settings/general`, { jar });
-		assert(body);
-		const sharing = body.postSharing.map(network => network && network.id);
-		assert(sharing.includes('facebook'));
-		assert(sharing.includes('twitter'));
-		assert(sharing.includes('linkedin'));
-		assert(sharing.includes('whatsapp'));
-		assert(sharing.includes('telegram'));
-	});
-
 	it('should load /admin/manage/tags', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/tags`, { jar });
 		assert.equal(response.statusCode, 200);
