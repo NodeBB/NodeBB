@@ -32,15 +32,27 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/manage/uploads`, middlewares, controllers.admin.uploads.get);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/digest`, middlewares, controllers.admin.digest.get);
 
-	helpers.setupAdminPageRoute(app, `/${name}/settings/email`, middlewares, controllers.admin.settings.email);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/user`, middlewares, controllers.admin.settings.user);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/post`, middlewares, controllers.admin.settings.post);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/general`, middlewares, controllers.admin.settings.general);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/navigation`, middlewares, controllers.admin.settings.navigation);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/user`, middlewares, controllers.admin.settings.user);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/reputation`, middlewares, controllers.admin.settings.reputation);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/group`, middlewares, controllers.admin.settings.group);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/tags`, middlewares, controllers.admin.settings.tags);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/post`, middlewares, controllers.admin.settings.post);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/uploads`, middlewares, controllers.admin.settings.uploads);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/email`, middlewares, controllers.admin.settings.email);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/chat`, middlewares, controllers.admin.settings.chat);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/pagination`, middlewares, controllers.admin.settings.pagination);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/notifications`, middlewares, controllers.admin.settings.notifications);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/api`, middlewares, controllers.admin.settings.api);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/:term?`, middlewares, controllers.admin.settings.get);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/cookies`, middlewares, controllers.admin.settings.cookies);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/web-crawler`, middlewares, controllers.admin.settings.webCrawler);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
 
-	helpers.setupAdminPageRoute(app, `/${name}/appearance/:term?`, middlewares, controllers.admin.appearance.get);
+	helpers.setupAdminPageRoute(app, `/${name}/appearance/themes`, middlewares, controllers.admin.appearance.themes);
+	helpers.setupAdminPageRoute(app, `/${name}/appearance/skins`, middlewares, controllers.admin.appearance.skins);
+	helpers.setupAdminPageRoute(app, `/${name}/appearance/customise`, middlewares, controllers.admin.appearance.customise);
+
 
 	helpers.setupAdminPageRoute(app, `/${name}/extend/plugins`, middlewares, controllers.admin.plugins.get);
 	helpers.setupAdminPageRoute(app, `/${name}/extend/widgets`, middlewares, controllers.admin.extend.widgets.get);
