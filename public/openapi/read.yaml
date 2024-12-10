@@ -80,18 +80,36 @@ paths:
     $ref: 'read/admin/dashboard/topics.yaml'
   /api/admin/dashboard/searches:
     $ref: 'read/admin/dashboard/searches.yaml'
-  "/api/admin/settings/{term}":
-    $ref: 'read/admin/settings/term.yaml'
+  "/api/admin/settings/general":
+    $ref: 'read/admin/settings/general.yaml'
   /api/admin/settings/navigation:
     $ref: 'read/admin/settings/navigation.yaml'
-  /api/admin/settings/api:
-    $ref: 'read/admin/settings/api.yaml'
-  /api/admin/settings/email:
-    $ref: 'read/admin/settings/email.yaml'
   /api/admin/settings/user:
     $ref: 'read/admin/settings/user.yaml'
+  /api/admin/settings/reputation:
+    $ref: 'read/admin/settings/reputation.yaml'
+  /api/admin/settings/group:
+    $ref: 'read/admin/settings/group.yaml'
+  /api/admin/settings/tags:
+    $ref: 'read/admin/settings/tags.yaml'
   /api/admin/settings/post:
     $ref: 'read/admin/settings/post.yaml'
+  /api/admin/settings/uploads:
+    $ref: 'read/admin/settings/uploads.yaml'
+  /api/admin/settings/email:
+    $ref: 'read/admin/settings/email.yaml'
+  /api/admin/settings/chat:
+    $ref: 'read/admin/settings/chat.yaml'
+  /api/admin/settings/pagination:
+    $ref: 'read/admin/settings/pagination.yaml'
+  /api/admin/settings/notifications:
+    $ref: 'read/admin/settings/notifications.yaml'
+  /api/admin/settings/api:
+    $ref: 'read/admin/settings/api.yaml'
+  /api/admin/settings/cookies:
+    $ref: 'read/admin/settings/cookies.yaml'
+  /api/admin/settings/web-crawler:
+    $ref: 'read/admin/settings/web-crawler.yaml'
   /api/admin/settings/advanced:
     $ref: 'read/admin/settings/advanced.yaml'
   /api/admin/manage/categories:
@@ -120,8 +138,12 @@ paths:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
     $ref: 'read/admin/manage/digest.yaml'
-  "/api/admin/appearance/{term}":
-    $ref: 'read/admin/appearance/term.yaml'
+  "/api/admin/appearance/themes":
+    $ref: 'read/admin/appearance/themes.yaml'
+  "/api/admin/appearance/skins":
+    $ref: 'read/admin/appearance/skins.yaml'
+  "/api/admin/appearance/customise":
+    $ref: 'read/admin/appearance/customise.yaml'
   /api/admin/extend/plugins:
     $ref: 'read/admin/extend/plugins.yaml'
   /api/admin/extend/widgets:
