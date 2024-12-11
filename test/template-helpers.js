@@ -151,7 +151,7 @@ describe('helpers', () => {
 			find: 'viewing',
 			read: 'viewing',
 		};
-		const html = helpers.spawnPrivilegeStates('guests', privs, types);
+		const html = helpers.spawnPrivilegeStates(1, 'guests', privs, types);
 		assert.equal(html, `
 				<td data-privilege="find" data-value="true" data-type="viewing">
 					<div class="form-check text-center">

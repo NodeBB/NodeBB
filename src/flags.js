@@ -4,6 +4,8 @@ const _ = require('lodash');
 const winston = require('winston');
 const validator = require('validator');
 
+const activitypub = require('./activitypub');
+const activitypubApi = require('./api/activitypub');
 const db = require('./database');
 const user = require('./user');
 const groups = require('./groups');
@@ -352,7 +354,8 @@ Flags.getFlagIdByTarget = async function (type, id) {
 			throw new Error('[[error:invalid-data]]');
 	}
 
-	return await method(id, 'flagId');
+	const flagId = await method(id, 'flagId');
+	return utils.isNumber(flagId) ? parseInt(flagId, 10) : flagId;
 };
 
 async function modifyNotes(notes) {
@@ -389,7 +392,7 @@ Flags.deleteNote = async function (flagId, datetime) {
 	await db.sortedSetRemove(`flag:${flagId}:notes`, note[0]);
 };
 
-Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = false) {
+Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = false, notifyRemote = false) {
 	let doHistoryAppend = false;
 	if (!timestamp) {
 		timestamp = Date.now();
@@ -416,7 +419,7 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 	if (targetFlagged) {
 		const flagId = await Flags.getFlagIdByTarget(type, id);
 		await Promise.all([
-			Flags.addReport(flagId, type, id, uid, reason, timestamp),
+			Flags.addReport(flagId, type, id, uid, reason, timestamp, targetUid, notifyRemote),
 			Flags.update(flagId, uid, {
 				state: 'open',
 				report: 'added',
@@ -437,7 +440,7 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 			targetUid: targetUid,
 			datetime: timestamp,
 		}),
-		Flags.addReport(flagId, type, id, uid, reason, timestamp),
+		Flags.addReport(flagId, type, id, uid, reason, timestamp, targetUid, notifyRemote),
 		db.sortedSetAdd('flags:datetime', timestamp, flagId), // by time, the default
 		db.sortedSetAdd(`flags:byType:${type}`, timestamp, flagId), // by flag type
 		db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':')), // by flag target (score is count)
@@ -473,6 +476,11 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 	}
 
 	const flagObj = await Flags.get(flagId);
+
+	if (notifyRemote && activitypub.helpers.isUri(id)) {
+		const caller = await user.getUserData(uid);
+		activitypubApi.flag(caller, { ...flagObj, reason });
+	}
 
 	plugins.hooks.fire('action:flags.create', { flag: flagObj });
 	return flagObj;
@@ -521,6 +529,13 @@ Flags.purge = async function (flagIds) {
 			'flags:byTarget',
 			flagData.map(flagObj => [flagObj.type, flagObj.targetId].join(':'))
 		),
+		flagData.flatMap(
+			async (flagObj, i) => allReporterUids[i].map(async (uid) => {
+				if (await db.isSortedSetMember(`flag:${flagObj.flagId}:remote`, uid)) {
+					await activitypubApi.undo.flag({ uid }, flagObj);
+				}
+			})
+		),
 	]);
 };
 
@@ -546,13 +561,17 @@ Flags.getReports = async function (flagId) {
 };
 
 // Not meant to be called directly, call Flags.create() instead.
-Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
+Flags.addReport = async function (flagId, type, id, uid, reason, timestamp, targetUid, notifyRemote) {
 	await db.sortedSetAddBulk([
 		[`flags:byReporter:${uid}`, timestamp, flagId],
 		[`flag:${flagId}:reports`, timestamp, [uid, reason].join(';')],
 
 		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
+
+	if (notifyRemote && activitypub.helpers.isUri(id)) {
+		await activitypubApi.flag({ uid }, { flagId, type, targetId: id, targetUid, uid, reason, timestamp });
+	}
 
 	plugins.hooks.fire('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
 };
@@ -577,6 +596,11 @@ Flags.rescindReport = async (type, id, uid) => {
 
 	if (!reason) {
 		throw new Error('[[error:cant-locate-flag-report]]');
+	}
+
+	if (await db.isSortedSetMember(`flag:${flagId}:remote`, uid)) {
+		const flag = await Flags.get(flagId);
+		await activitypubApi.undo.flag({ uid }, flag);
 	}
 
 	await db.sortedSetRemoveBulk([
@@ -682,6 +706,14 @@ Flags.targetExists = async function (type, id) {
 	if (type === 'post') {
 		return await posts.exists(id);
 	} else if (type === 'user') {
+		if (activitypub.helpers.isUri(id)) {
+			try {
+				const actor = await activitypub.get('uid', 0, id);
+				return !!actor;
+			} catch (_) {
+				return false;
+			}
+		}
 		return await user.exists(id);
 	}
 	throw new Error('[[error:invalid-data]]');

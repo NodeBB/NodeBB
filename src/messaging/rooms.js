@@ -13,6 +13,7 @@ const meta = require('../meta');
 const io = require('../socket.io');
 const cache = require('../cache');
 const cacheCreate = require('../cacheCreate');
+const utils = require('../utils');
 
 const roomUidCache = cacheCreate({
 	name: 'chat:room:uids',
@@ -259,6 +260,13 @@ module.exports = function (Messaging) {
 
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
 		uids = _.uniq(uids);
+
+		// Public rooms must only contain local users
+		const isPublic = await db.getObjectField(`chat:room:${roomId}`, 'public');
+		if (parseInt(isPublic, 10) === 1 && uids.some(uid => !utils.isNumber(uid))) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		const inRoom = await Messaging.isUserInRoom(uid, roomId);
 		const payload = await plugins.hooks.fire('filter:messaging.addUsersToRoom', { uid, uids, roomId, inRoom });
 

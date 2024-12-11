@@ -32,7 +32,7 @@ module.exports = function (opts) {
 		});
 	});
 
-	cache.has = (key) => {
+	cache.has = function (key) {
 		if (!cache.enabled) {
 			return false;
 		}

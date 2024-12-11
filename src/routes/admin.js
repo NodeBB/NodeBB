@@ -16,6 +16,7 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/manage/categories`, middlewares, controllers.admin.categories.getAll);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/categories/:category_id`, middlewares, controllers.admin.categories.get);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/categories/:category_id/analytics`, middlewares, controllers.admin.categories.getAnalytics);
+	helpers.setupAdminPageRoute(app, `/${name}/manage/categories/:category_id/federation`, middlewares, controllers.admin.categories.getFederation);
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/privileges/:cid?`, middlewares, controllers.admin.privileges.get);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/tags`, middlewares, controllers.admin.tags.get);
@@ -45,6 +46,7 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/pagination`, middlewares, controllers.admin.settings.pagination);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/notifications`, middlewares, controllers.admin.settings.notifications);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/api`, middlewares, controllers.admin.settings.api);
+	helpers.setupAdminPageRoute(app, `/${name}/settings/activitypub`, middlewares, controllers.admin.settings.activitypub);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/cookies`, middlewares, controllers.admin.settings.cookies);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/web-crawler`, middlewares, controllers.admin.settings.webCrawler);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);

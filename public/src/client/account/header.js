@@ -32,7 +32,7 @@ define('forum/account/header', [
 		components.get('account/unfollow').on('click', () => toggleFollow('unfollow'));
 
 		components.get('account/chat').on('click', async function () {
-			const { roomId } = await api.get(`/users/${ajaxify.data.uid}/chat`);
+			const { roomId } = await api.get(`/users/${encodeURIComponent(ajaxify.data.uid)}/chat`);
 			const chat = await app.require('chat');
 			if (roomId) {
 				chat.openChat(roomId);
@@ -56,6 +56,7 @@ define('forum/account/header', [
 		components.get('account/delete-content').on('click', () => AccountsDelete.content(ajaxify.data.theirid));
 		components.get('account/delete-all').on('click', () => AccountsDelete.purge(ajaxify.data.theirid));
 		components.get('account/flag').on('click', flagAccount);
+		components.get('account/already-flagged').on('click', rescindAccountFlag);
 		components.get('account/block').on('click', () => toggleBlockAccount('block'));
 		components.get('account/unblock').on('click', () => toggleBlockAccount('unblock'));
 	};
@@ -108,7 +109,8 @@ define('forum/account/header', [
 	}
 
 	function toggleFollow(type) {
-		api[type === 'follow' ? 'put' : 'del']('/users/' + ajaxify.data.uid + '/follow', undefined, function (err) {
+		const target = isFinite(ajaxify.data.uid) ? ajaxify.data.uid : encodeURIComponent(ajaxify.data.userslug);
+		api[type === 'follow' ? 'put' : 'del']('/users/' + target + '/follow', undefined, function (err) {
 			if (err) {
 				return alerts.error(err);
 			}
@@ -125,6 +127,18 @@ define('forum/account/header', [
 			flags.showFlagModal({
 				type: 'user',
 				id: ajaxify.data.uid,
+			});
+		});
+	}
+
+	function rescindAccountFlag() {
+		const flagId = $(this).data('flag-id');
+		require(['flags'], function (flags) {
+			bootbox.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
+				if (!confirm) {
+					return;
+				}
+				flags.rescind(flagId);
 			});
 		});
 	}

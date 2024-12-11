@@ -136,6 +136,8 @@ paths:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
   /categories/{cid}/moderator/{uid}:
     $ref: 'write/categories/cid/moderator/uid.yaml'
+  /categories/{cid}/follow:
+    $ref: 'write/categories/cid/follow.yaml'
   /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
@@ -186,6 +188,10 @@ paths:
     $ref: 'write/posts/pid/voters.yaml'
   /posts/{pid}/upvoters:
     $ref: 'write/posts/pid/upvoters.yaml'
+  /posts/{pid}/announcers:
+    $ref: 'write/posts/pid/announcers.yaml'
+  /posts/{pid}/announcers/tooltip:
+    $ref: 'write/posts/pid/announcers-tooltip.yaml'
   /posts/{pid}/bookmark:
     $ref: 'write/posts/pid/bookmark.yaml'
   /posts/{pid}/diffs:

@@ -283,8 +283,14 @@ module.exports = function (Topics) {
 				oldCid: oldCid,
 			}),
 			Topics.updateCategoryTagsCount([oldCid, cid], tags),
-			Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }),
+			Topics.events.log(tid, { type: oldCid === -1 ? 'share' : 'move', uid: data.uid, fromCid: oldCid }),
 		]);
+
+		// Update entry in recent topics zset — must come after hash update
+		if (oldCid === -1 || cid === -1) {
+			Topics.updateRecent(tid, topicData.lastposttime); // no await req'd
+		}
+
 		const hookData = _.clone(data);
 		hookData.fromCid = oldCid;
 		hookData.toCid = cid;

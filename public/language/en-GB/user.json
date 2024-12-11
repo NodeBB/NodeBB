@@ -61,8 +61,10 @@
 	"chat-with": "Continue chat with %1",
 	"new-chat-with": "Start new chat with %1",
 	"flag-profile": "Flag Profile",
+	"profile-flagged": "Already flagged",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
+	"cancel-follow": "Cancel follow request",
 	"more": "More",
 
 	"profile-update-success": "Profile has been updated successfully!",

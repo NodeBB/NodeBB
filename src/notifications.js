@@ -88,7 +88,9 @@ Notifications.getMultiple = async function (nids) {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
-					notification[field] = parseInt(notification[field], 10) || 0;
+					notification[field] = utils.isNumber(notification[field]) ?
+						parseInt(notification[field], 10) || 0 :
+						notification[field];
 				}
 			});
 			if (notification.path && !notification.path.startsWith('http')) {
@@ -107,7 +109,7 @@ Notifications.getMultiple = async function (nids) {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
 			} else if (notification.image === 'brand:logo' || !notification.image) {
-				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/logo.png`;
+				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
 			}
 		}
 	});
@@ -125,7 +127,7 @@ Notifications.findRelated = async function (mergeIds, set) {
 		return [];
 	}
 	// A related notification is one in a zset that has the same mergeId
-	const nids = await db.getSortedSetRevRange(set, 0, -1);
+	const nids = await db.getSortedSetMembers(set);
 
 	const keys = nids.map(nid => `notifications:${nid}`);
 	const notificationData = await db.getObjectsFields(keys, ['mergeId']);
@@ -315,10 +317,13 @@ Notifications.pushGroups = async function (notification, groupNames) {
 
 Notifications.rescind = async function (nids) {
 	nids = Array.isArray(nids) ? nids : [nids];
+
+	await plugins.hooks.fire('static:notifications.rescind', { nids });
 	await Promise.all([
 		db.sortedSetRemove('notifications', nids),
 		db.deleteAll(nids.map(nid => `notifications:${nid}`)),
 	]);
+	plugins.hooks.fire('action:notifications.rescind', { nids });
 };
 
 Notifications.markRead = async function (nid, uid) {
@@ -410,6 +415,7 @@ Notifications.merge = async function (notifications) {
 		'notifications:user-posted-in-public-room',
 		'new-register',
 		'post-queue',
+		'notifications:activitypub.announce',
 	];
 
 	notifications = mergeIds.reduce((notifications, mergeId) => {
@@ -474,7 +480,8 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user': {
+				case 'notifications:user-flagged-user':
+				case 'notifications:activitypub.announce': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
 					const numUsers = usernames.length;
 
