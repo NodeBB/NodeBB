@@ -196,13 +196,17 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	for (const post of unprocessed) {
 		const { to, cc, attachment } = post._activitypub;
 
-		// eslint-disable-next-line no-await-in-loop
-		await topics.reply(post);
-		// eslint-disable-next-line no-await-in-loop
-		await Promise.all([
-			Notes.updateLocalRecipients(post.pid, { to, cc }),
-			posts.attachments.update(post.pid, attachment),
-		]);
+		try {
+			// eslint-disable-next-line no-await-in-loop
+			await topics.reply(post);
+			// eslint-disable-next-line no-await-in-loop
+			await Promise.all([
+				Notes.updateLocalRecipients(post.pid, { to, cc }),
+				posts.attachments.update(post.pid, attachment),
+			]);
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/notes.assert] Could not add reply (${post.pid}): ${e.message}`);
+		}
 	}
 
 	await Promise.all([
