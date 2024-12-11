@@ -190,12 +190,17 @@ Actors.assert = async (ids, options = {}) => {
 		return memo;
 	}, { searchRemove: [], searchAdd: [], handleRemove: [], handleAdd: {} });
 
+	// Removals
+	await Promise.all([
+		db.sortedSetRemoveBulk(queries.searchRemove),
+		db.deleteObjectFields('handle:uid', queries.handleRemove),
+	]);
+
+	// Additions
 	await Promise.all([
 		db.setObjectBulk(bulkSet),
 		db.sortedSetAdd('usersRemote:lastCrawled', profiles.map(() => now), profiles.map(p => p.uid)),
-		db.sortedSetRemoveBulk(queries.searchRemove),
 		db.sortedSetAddBulk(queries.searchAdd),
-		db.deleteObjectFields('handle:uid', queries.handleRemove),
 		db.setObject('handle:uid', queries.handleAdd),
 	]);
 
