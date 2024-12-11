@@ -54,5 +54,6 @@
 
 	"license.title": "Eklenti Lisans Bilgisi",
 	"license.intro": "<strong>%1</strong> eklentisi, %2 altında lisanslanmıştır. Lütfen bu eklentiyi etkinleştirmeden önce lisans koşullarını okuyun ve anlayın.",
-	"license.cta": "Bu eklentiyi aktifleştirmeye devam etmek istiyor musunuz?"
+	"license.cta": "Bu eklentiyi aktifleştirmeye devam etmek istiyor musunuz?",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }

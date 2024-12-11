@@ -54,5 +54,6 @@
 
 	"license.title": "Beépülő licencinformáció",
 	"license.intro": "A <strong>%1</strong> beépülő a %2 liszensz szerződést használja. Kérjük olvasd el és vedd tudomásul a szerződésben leírtakat, mielőtt használatba veszed a beépülőt.",
-	"license.cta": "Biztosan szeretnéd folytatni a beépülő aktiválását?"
+	"license.cta": "Biztosan szeretnéd folytatni a beépülő aktiválását?",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }

@@ -54,5 +54,6 @@
 
 	"license.title": "Informacje o licencji wtyczki",
 	"license.intro": "Wtyczka <strong>%1</strong> jest licencjonowana według %2. Zapoznaj się z warunkami licencji przed aktywacją tej wtyczki.",
-	"license.cta": "Czy chcesz kontynuować aktywację tej wtyczki?"
+	"license.cta": "Czy chcesz kontynuować aktywację tej wtyczki?",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }

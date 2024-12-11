@@ -54,5 +54,6 @@
 
 	"license.title": "Informacija o licenci vtičnika",
 	"license.intro": "Vtičnik <strong>%1</strong> je licenciran pod %2. Preden aktivirate ta vtičnik, preberite in razumite licenčne pogoje.",
-	"license.cta": "Ali želite nadaljevati z aktiviranjem tega vtičnika?"
+	"license.cta": "Ali želite nadaljevati z aktiviranjem tega vtičnika?",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }

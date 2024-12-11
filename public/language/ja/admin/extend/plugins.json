@@ -54,5 +54,6 @@
 
 	"license.title": "プラグインライセンス情報",
 	"license.intro": "<strong>%1</strong>のプラグインは%2の下でライセンスされています。このプラグインを有効にする前にライセンス条項を熟読してください。",
-	"license.cta": "このプラグインを有効にし続けますか？"
+	"license.cta": "このプラグインを有効にし続けますか？",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }

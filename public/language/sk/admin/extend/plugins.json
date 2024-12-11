@@ -54,5 +54,6 @@
 
 	"license.title": "Licenčná informácie o rozšírení",
 	"license.intro": "Rozšírenie <strong>%1</strong> je licencované pod %2. Pre aktivovanie tohto rozšírenia si prečítajte licenčné podmienky.",
-	"license.cta": "Želáte si pokračovať v aktivovaní tohto rozšírenia?"
+	"license.cta": "Želáte si pokračovať v aktivovaní tohto rozšírenia?",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }

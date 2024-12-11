@@ -54,5 +54,6 @@
 
 	"license.title": "플러그인 라이선스 정보",
 	"license.intro": "플러그인 <strong>%1</strong>은 %2에 따라 라이선스가 부여됩니다. 이 플러그인을 활성화하기 전에 라이선스 약관을 읽고 이해하세요.",
-	"license.cta": "이 플러그인을 활성화하시겠습니까?"
+	"license.cta": "이 플러그인을 활성화하시겠습니까?",
+	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
 }
