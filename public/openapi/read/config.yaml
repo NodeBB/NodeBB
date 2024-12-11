@@ -174,3 +174,8 @@ get:
                       type: string
                   version:
                     type: string
+              activitypub:
+                type: object
+                properties:
+                  probe:
+                    type: number

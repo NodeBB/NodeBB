@@ -142,6 +142,11 @@ get:
                 properties:
                   size:
                     type: number
+              activitypub:
+                type: object
+                properties:
+                  probe:
+                    type: number
               acpLang:
                 type: string
               openOutgoingLinksInNewTab:
