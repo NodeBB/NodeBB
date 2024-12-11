@@ -88,6 +88,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
+	userData.isFollowPending = results.isFollowPending;
 	userData.canChat = results.canChat;
 	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.iconBackgrounds = results.iconBackgrounds;
@@ -230,6 +231,7 @@ async function getAllData(uid, callerUID) {
 		isGlobalModerator: isGlobalModerator,
 		isModerator: user.isModeratorOfAnyCategory(callerUID),
 		isFollowing: user.isFollowing(callerUID, uid),
+		isFollowPending: user.isFollowPending(callerUID, uid),
 		ips: user.getIPs(uid, 4),
 		profile_menu: getProfileMenu(uid, callerUID),
 		groups: groups.getUserGroups([uid]),

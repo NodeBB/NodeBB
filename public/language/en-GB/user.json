@@ -64,6 +64,7 @@
 	"profile-flagged": "Already flagged",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
+	"cancel-follow": "Cancel follow request",
 	"more": "More",
 
 	"profile-update-success": "Profile has been updated successfully!",

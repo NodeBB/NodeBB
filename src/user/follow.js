@@ -5,6 +5,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
 const db = require('../database');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	User.follow = async function (uid, followuid) {
@@ -102,6 +103,14 @@ module.exports = function (User) {
 		}
 		const setPrefix = isRemote ? 'followingRemote' : 'following';
 		return await db.isSortedSetMember(`${setPrefix}:${uid}`, theirid);
+	};
+
+	User.isFollowPending = async function (uid, target) {
+		if (utils.isNumber(target)) {
+			return false;
+		}
+
+		return await db.isSortedSetMember(`followRequests:uid.${uid}`, target);
 	};
 
 	User.onFollow = async function (uid, targetUid) {
