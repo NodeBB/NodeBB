@@ -22,7 +22,6 @@ define('admin/extend/plugins', [
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			const pluginEl = $(this).parents('li');
 			pluginID = pluginEl.attr('data-plugin-id');
-			// const btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
 			const btn = $(this);
 
 			const pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];

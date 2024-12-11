@@ -1,15 +1,22 @@
+{{{ if isStarterPlan}}}
+<div class="px-lg-4">
+	<div class="alert alert-warning">
+	[[admin/extend/plugins:starter-plan-warning]]
+	</div>
+</div>
+{{{ end }}}
 
-<div class="tags d-flex flex-column gap-2 px-lg-4">
+<div class="d-flex flex-column gap-2 px-lg-4 {{{ if isStarterPlan }}}opacity-75 pe-none{{{ end }}}">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/extend/plugins:plugins]]</h4>
 		</div>
 		<div class="d-flex align-items-center gap-1">
-			<input autofocus class="form-control form-control-sm" type="text" id="plugin-search" placeholder="[[admin/extend/plugins:plugin-search-placeholder]]"/><br/>
+			<input {{{ if !isStarterPlan}}} autofocus{{{ end}}} class="form-control form-control-sm" type="text" id="plugin-search" placeholder="[[admin/extend/plugins:plugin-search-placeholder]]"/><br/>
 			<button class="btn btn-primary btn-sm text-nowrap" id="plugin-order">[[admin/extend/plugins:order-active]]</button>
 		</div>
 	</div>
-	<div class="">
+	<div>
 		{{{ if !canChangeState }}}
 		<div class="alert alert-warning">[[error:plugins-set-in-configuration]]</div>
 		{{{ end }}}
