@@ -56,6 +56,10 @@ Events._types = {
 		icon: 'fa-arrow-circle-right',
 		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
 	},
+	share: {
+		icon: 'fa-share-alt',
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-shared-topic', renderUser(event), renderTimeago(event)),
+	},
 	'post-queue': {
 		icon: 'fa-history',
 		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
