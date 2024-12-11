@@ -1,10 +1,14 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const user = require('../../user');
 const helpers = require('../helpers');
 const pagination = require('../../pagination');
 
 const followController = module.exports;
+
+const url = nconf.get('url');
 
 followController.getFollowing = async function (req, res, next) {
 	await getFollow('account/following', 'following', req, res, next);
@@ -38,6 +42,13 @@ async function getFollow(tpl, name, req, res, next) {
 	payload.pagination = pagination.create(page, pageCount);
 
 	payload.breadcrumbs = helpers.buildBreadcrumbs([{ text: username, url: `/user/${userslug}` }, { text: `[[user:${name}]]` }]);
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}${req.url.replace(/^\/api/, '')}`,
+		},
+	];
 
 	res.render(tpl, payload);
 }

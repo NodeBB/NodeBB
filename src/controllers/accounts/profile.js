@@ -16,6 +16,8 @@ const utils = require('../../utils');
 
 const profileController = module.exports;
 
+const url = nconf.get('url');
+
 profileController.get = async function (req, res, next) {
 	const { userData } = res.locals;
 	if (!userData) {
@@ -159,11 +161,18 @@ function addTags(res, userData) {
 		);
 	}
 
+	res.locals.linkTags = [];
+
+	res.locals.linkTags.push({
+		rel: 'canonical',
+		href: `${url}/user/${userData.userslug}`,
+	});
+
 	if (meta.config.activitypubEnabled) {
-		res.locals.linkTags = [{
+		res.locals.linkTags.push({
 			rel: 'alternate',
 			type: 'application/activity+json',
 			href: `${nconf.get('url')}/uid/${userData.uid}`,
-		}];
+		});
 	}
 }

@@ -275,7 +275,7 @@ dashboardController.getLogins = async (req, res) => {
 
 	res.render('admin/dashboard/logins', {
 		set: 'logins',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		sessions,
@@ -303,7 +303,7 @@ dashboardController.getUsers = async (req, res) => {
 
 	res.render('admin/dashboard/users', {
 		set: 'registrations',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		users,
@@ -330,7 +330,7 @@ dashboardController.getTopics = async (req, res) => {
 
 	res.render('admin/dashboard/topics', {
 		set: 'topics',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		topics: topicData,

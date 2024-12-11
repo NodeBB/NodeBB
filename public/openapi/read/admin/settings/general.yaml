@@ -2,13 +2,6 @@ get:
   tags:
     - admin
   summary: Get system settings
-  parameters:
-    - name: term
-      in: path
-      required: true
-      schema:
-        type: string
-      example: general
   responses:
     "200":
       description: ""

@@ -93,7 +93,6 @@ module.exports = function (User) {
 		if (!fields.length) {
 			fields = results.whitelist;
 		} else {
-			// Never allow password retrieval via this method
 			fields = fields.filter(value => value !== 'password');
 		}
 

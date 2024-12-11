@@ -9,7 +9,7 @@
 		</div>
 		<div class="flex-grow-1 ms-3">
 			<p>
-				<code>{./name}</code>
+				<code style="word-break: break-all;">{./name}</code>
 			</p>
 			<button class="btn btn-danger btn-sm text-nowrap" data-action="remove"><i class="fa fa-times"></i> [[modules:thumbs.modal.remove]]</button>
 		</div>

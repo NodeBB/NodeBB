@@ -370,26 +370,21 @@ async function createAdmin() {
 	}
 
 	async function retryPassword(originalResults) {
-		// Ask only the password questions
 		const results = await prompt.get(passwordQuestions);
 
-		// Update the original data with newly collected password
 		originalResults.password = results.password;
 		originalResults['password:confirm'] = results['password:confirm'];
 
-		// Send back to success to handle
 		return await success(originalResults);
 	}
 
-	// Add the password questions
 	questions = questions.concat(passwordQuestions);
 
 	if (!install.values) {
 		const results = await prompt.get(questions);
 		return await success(results);
 	}
-	// If automated setup did not provide a user password, generate one,
-	// it will be shown to the user upon setup completion
+
 	if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
 		console.log('Password was not provided during automated setup, generating one...');
 		password = utils.generateUUID().slice(0, 8);
