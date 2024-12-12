@@ -42,8 +42,6 @@ get:
                           type: boolean
                         version:
                           type: string
-                        isStarterPlan:
-                          type: boolean
                         license:
                           type: object
                           properties:
@@ -356,4 +354,6 @@ get:
                     type: number
                   version:
                     type: string
+                  isStarterPlan:
+                    type: boolean
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
