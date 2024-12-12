@@ -4,7 +4,6 @@
 const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
-const validator = require('validator');
 
 const db = require('../database');
 const file = require('../file');
@@ -17,7 +16,7 @@ const topics = module.parent.exports;
 const Thumbs = module.exports;
 
 Thumbs.exists = async function (id, path) {
-	const isDraft = validator.isUUID(String(id));
+	const isDraft = !await topics.exists(id);
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 
 	return db.isSortedSetMember(set, path);
@@ -44,13 +43,15 @@ Thumbs.get = async function (tids) {
 		singular = true;
 	}
 
+	const isDraft = !await topics.exists(tids);
+
 	if (!meta.config.allowTopicsThumbnail || !tids.length) {
 		return singular ? [] : tids.map(() => []);
 	}
 
 	const hasTimestampPrefix = /^\d+-/;
 	const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
-	const sets = tids.map(tid => `${validator.isUUID(String(tid)) ? 'draft' : 'topic'}:${tid}:thumbs`);
+	const sets = tids.map((tid, idx) => `${isDraft[idx] ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await Promise.all(sets.map(getThumbs));
 
 	// Add attachments to thumb sets
@@ -93,7 +94,7 @@ async function getThumbs(set) {
 
 Thumbs.associate = async function ({ id, path, score }) {
 	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
-	const isDraft = validator.isUUID(String(id));
+	const isDraft = !await topics.exists(id);
 	const isLocal = !path.startsWith('http');
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 	const numThumbs = await db.sortedSetCard(set);
@@ -102,7 +103,6 @@ Thumbs.associate = async function ({ id, path, score }) {
 	if (isLocal) {
 		path = path.replace(nconf.get('upload_path'), '');
 	}
-	const topics = require('.');
 	await db.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
 	if (!isDraft) {
 		const numThumbs = await db.sortedSetCard(set);
@@ -131,7 +131,7 @@ Thumbs.migrate = async function (uuid, id) {
 };
 
 Thumbs.delete = async function (id, relativePaths) {
-	const isDraft = validator.isUUID(String(id));
+	const isDraft = !await topics.exists(id);
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 
 	if (typeof relativePaths === 'string') {
@@ -179,7 +179,7 @@ Thumbs.delete = async function (id, relativePaths) {
 };
 
 Thumbs.deleteAll = async (id) => {
-	const isDraft = validator.isUUID(String(id));
+	const isDraft = !await topics.exists(id);
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
 
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
