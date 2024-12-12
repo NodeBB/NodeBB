@@ -54,6 +54,5 @@
 
 	"license.title": "Plugin-ի լիցենզիայի մասին տեղեկատվություն",
 	"license.intro": "%1 հավելվածը լիցենզավորված է %2-ի ներքո: Խնդրում ենք կարդալ և հասկանալ լիցենզիայի պայմանները նախքան այս փլագինը ակտիվացնելը:",
-	"license.cta": "Ցանկանու՞մ եք շարունակել ակտիվացնել այս plugin-ը:",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "Ցանկանու՞մ եք շարունակել ակտիվացնել այս plugin-ը:"
 }

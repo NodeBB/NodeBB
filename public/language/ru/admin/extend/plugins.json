@@ -54,6 +54,5 @@
 
 	"license.title": "Сведения о лицензии плагина",
 	"license.intro": "Плагин <strong>%1</strong> распространяется под лицензией %2. Пожалуйста, внимательно прочтите условия лицензии перед активацией плагина.",
-	"license.cta": "Вы хотите продолжить и активировать плагин?",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "Вы хотите продолжить и активировать плагин?"
 }

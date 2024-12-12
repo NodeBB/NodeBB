@@ -54,6 +54,5 @@
 
 	"license.title": "ข้อมูลลิขสิทธิ์ปลั๊กอิน",
 	"license.intro": "ปลั๊กอิน <strong>%1</strong>ได้รับอนุญาตภายใต้ %2 โปรดอ่านและทำความเข้าใจข้อกำหนดสิทธิ์การใช้งานก่อนเปิดใช้งานปลั๊กอินนี้",
-	"license.cta": "คุณต้องการจะเปิดใช้ปลั๊กอินนี้ต่อหรือไม่?",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "คุณต้องการจะเปิดใช้ปลั๊กอินนี้ต่อหรือไม่?"
 }

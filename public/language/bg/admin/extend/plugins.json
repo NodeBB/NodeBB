@@ -54,6 +54,5 @@
 
 	"license.title": "Информация за лиценза на добавката",
 	"license.intro": "Добавката „<strong>%1</strong>“ използва лиценза „%2“. Моля, прочетете условията на лиценза и се уверете, че ги разбирате, преди да включите добавката.",
-	"license.cta": "Искате ли да продължите с включването на тази добавка?",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "Искате ли да продължите с включването на тази добавка?"
 }
