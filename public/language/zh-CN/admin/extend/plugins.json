@@ -54,6 +54,5 @@
 
 	"license.title": "插件许可证信息",
 	"license.intro": "插件 <strong>%1</strong> 在 %2 下获得许可。请在激活此插件之前阅读，确认许可条款。",
-	"license.cta": "您希望继续使用此插件吗？",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "您希望继续使用此插件吗？"
 }

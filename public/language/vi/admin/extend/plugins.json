@@ -54,6 +54,5 @@
 
 	"license.title": "Thông Tin Cấp Phép Plugin",
 	"license.intro": "Plugin <strong>%1</strong> được cấp phép theo %2. Vui lòng đọc và hiểu các điều khoản cấp phép trước khi kích hoạt plugin này.",
-	"license.cta": "Bạn có muốn tiếp tục kích hoạt plugin này không?",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "Bạn có muốn tiếp tục kích hoạt plugin này không?"
 }

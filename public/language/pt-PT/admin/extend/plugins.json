@@ -54,6 +54,5 @@
 
 	"license.title": "Informação sobre a licença do plugin",
 	"license.intro": "O plug-in <strong>%1</strong> está licenciado sob %2. Por favor leia e compreenda os termos da licença antes de ativar este plugin.",
-	"license.cta": "Tens a certeza que queres ativar este plugin?",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "Tens a certeza que queres ativar este plugin?"
 }

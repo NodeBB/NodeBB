@@ -54,6 +54,5 @@
 
 	"license.title": "מידע רישיון התוסף",
 	"license.intro": "תוסף <strong>%1</strong> מורשה תחת %2. אנא קראו והבינו את תנאי הרשיון לפני הפעלת תוסף זה.",
-	"license.cta": "האם להמשיך בהפעלת התוסף הזה?",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "האם להמשיך בהפעלת התוסף הזה?"
 }

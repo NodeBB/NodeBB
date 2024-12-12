@@ -54,6 +54,5 @@
 
 	"license.title": "外掛授權資料",
 	"license.intro": "外掛 <strong>%1</strong> 在 %2 下獲得許可。請在啟用此插件之前閱讀，確認授權條款。",
-	"license.cta": "您希望繼續使用此外掛嗎？",
-	"starter-plan-warning": "Plugins page is disabled on \"Starter\" plans, if you wish to upgrade your plan please contact us at <a href=\"mailto:support@nodebb.org\">support@nodebb.org</a>"
+	"license.cta": "您希望繼續使用此外掛嗎？"
 }
