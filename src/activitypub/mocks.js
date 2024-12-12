@@ -165,8 +165,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, source,
-			to, cc, audience, attachment, tag,
-			// conversation, // mastodon-specific, ignored.
+			to, cc, audience, attachment, tag, image,
 		} = object;
 
 		const resolved = await activitypub.helpers.resolveLocalId(toPid);
@@ -187,6 +186,22 @@ Mocks.post = async (objects) => {
 			content = '<em>This post did not contain any content.</em>';
 		}
 
+		switch (true) {
+			case image && image.hasOwnProperty('url') && image.url && mime.getType(image.url).startsWith('image/'): {
+				image = image.url;
+				break;
+			}
+
+			case image && typeof image === 'string' && mime.getType(image).startsWith('image/'): {
+				// no change
+				break;
+			}
+
+			default: {
+				image = null;
+			}
+		}
+
 		const payload = {
 			uid,
 			pid,
@@ -199,7 +214,7 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
-			_activitypub: { to, cc, audience, attachment, tag, url },
+			_activitypub: { to, cc, audience, attachment, tag, url, image },
 		};
 
 		return payload;

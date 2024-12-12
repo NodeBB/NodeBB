@@ -187,6 +187,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		]);
 		unprocessed.shift();
 
+		// These must come after topic is posted
+		await Promise.all([
+			mainPost._activitypub.image ? topics.thumbs.associate({
+				id: tid,
+				path: mainPost._activitypub.image,
+			}) : null,
+		]);
+
 		if (context) {
 			activitypub.helpers.log(`[activitypub/notes.assert] Associating tid ${tid} with context ${context}`);
 			await topics.setTopicField(tid, 'context', context);
