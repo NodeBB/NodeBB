@@ -1,11 +1,3 @@
-{{{ if isStarterPlan}}}
-<div class="px-lg-4">
-	<div class="alert alert-warning">
-	[[admin/extend/plugins:starter-plan-warning]]
-	</div>
-</div>
-{{{ end }}}
-
 <div class="d-flex flex-column gap-2 px-lg-4 {{{ if isStarterPlan }}}opacity-75 pe-none{{{ end }}}">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
