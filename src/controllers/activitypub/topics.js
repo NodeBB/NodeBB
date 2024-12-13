@@ -66,7 +66,7 @@ controller.list = async function (req, res) {
 		targetUid: targetUid,
 	};
 	const data = await categories.getCategoryById(cidQuery);
-	data.name = '[[activitypub:world.name]]';
+	data.name = '[[world:name]]';
 	delete data.children;
 
 	const tids = await getTids(cidQuery);

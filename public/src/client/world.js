@@ -50,16 +50,16 @@ define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api', 'bootbox']
 		}
 
 		const content = [
-			'<p class="lead">[[activitypub:help.intro]]</p>',
-			'<p>[[activitypub:help.fediverse]]</p>',
-			'<p>[[activitypub:help.build]]</p>',
-			'<p>[[activitypub:help.federating]]</p>',
-			'<p>[[activitypub:help.next-generation]]</p>',
+			'<p class="lead">[[world:help.intro]]</p>',
+			'<p>[[world:help.fediverse]]</p>',
+			'<p>[[world:help.build]]</p>',
+			'<p>[[world:help.federating]]</p>',
+			'<p>[[world:help.next-generation]]</p>',
 		];
 
 		trigger.addEventListener('click', () => {
 			bootbox.dialog({
-				title: '[[activitypub:help.title]]',
+				title: '[[world:help.title]]',
 				message: content.join('\n'),
 				size: 'large',
 			});

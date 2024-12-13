@@ -151,7 +151,7 @@ define('forum/topic/votes', [
 
 		const html = await app.parseAndTranslate('modals/announcers', data);
 		const dialog = bootbox.dialog({
-			title: `[[activitypub:announcers-x, ${data.announceCount}]]`,
+			title: `[[topic:announcers-x, ${data.announceCount}]]`,
 			message: html,
 			className: 'announce-modal',
 			show: true,
