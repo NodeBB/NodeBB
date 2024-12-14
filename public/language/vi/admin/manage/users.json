@@ -47,7 +47,7 @@
 	"search.email-placeholder": "Nhập email để tìm kiếm",
 	"search.ip": "Bởi Địa Chỉ IP",
 	"search.ip-placeholder": "Nhập Địa Chỉ IP để tìm kiếm",
-	"search.not-found": "Không tìm thấy người dùng",
+	"search.not-found": "Không có ai!",
 
 	"inactive.3-months": "3 tháng",
 	"inactive.6-months": "6 tháng",
@@ -120,7 +120,7 @@
 
 	"alerts.prompt-email": "Thư điện tử:",
 	"alerts.email-sent-to": "Email mời đã được gửi đến %1",
-	"alerts.x-users-found": "Tìm được %1 người dùng (%2 giây)",
+	"alerts.x-users-found": "Tìm được %1 người, (%2 giây)",
 	"alerts.select-a-single-user-to-change-email": "Chọn một người dùng để thay đổi email",
 	"export": "Xuất",
 	"export-users-fields-title": "Chọn trường CSV",
