@@ -147,6 +147,14 @@ const templateToData = {
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:tids`);
 		},
 	},
+	'account/shares': {
+		type: 'topics',
+		noItemsFoundKey: '[[user:has-no-shares]]',
+		crumb: '[[user:shares]]',
+		getSets: async function (callerUid, userData) {
+			return `uid:${userData.uid}:shares`;
+		},
+	},
 };
 
 postsController.getBookmarks = async function (req, res, next) {
@@ -187,6 +195,10 @@ postsController.getReadTopics = async function (req, res, next) {
 
 postsController.getTopics = async function (req, res, next) {
 	await getPostsFromUserSet('account/topics', req, res, next);
+};
+
+postsController.getShares = async function (req, res, next) {
+	await getPostsFromUserSet('account/shares', req, res, next);
 };
 
 async function getPostsFromUserSet(template, req, res) {

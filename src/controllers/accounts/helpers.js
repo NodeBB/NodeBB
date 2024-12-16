@@ -265,6 +265,7 @@ async function getCounts(userData, callerUID) {
 	const promises = {
 		posts: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:pids`)),
 		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
+		shares: db.sortedSetCard(`uid:${uid}:shares`),
 	};
 	if (userData.isAdmin || userData.isSelf) {
 		promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);

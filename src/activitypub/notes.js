@@ -484,8 +484,12 @@ Notes.announce.list = async ({ pid, tid }) => {
 };
 
 Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
-	await db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor);
-	await posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`));
+	const tid = await posts.getPostField(pid, 'tid');
+	await Promise.all([
+		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
+		posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`)),
+		topics.tools.share(tid, actor, timestamp),
+	]);
 };
 
 Notes.announce.remove = async (pid, actor) => {

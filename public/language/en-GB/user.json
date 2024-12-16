@@ -49,6 +49,7 @@
 	"default-category-watch-state": "Default category watch state",
 	"followers": "Followers",
 	"following": "Following",
+	"shares": "Shares",
 	"blocks": "Blocks",
 	"blocked-users": "Blocked users",
 	"block-toggle": "Toggle Block",
@@ -129,6 +130,7 @@
 	"has-no-downvoted-posts": "This user hasn't downvoted any posts yet.",
 	"has-no-controversial-posts": "This user does not have any downvoted posts yet.",
 	"has-no-blocks": "You have blocked no users.",
+	"has-no-shares": "This user has not shared any topics.",
 
 	"email-hidden": "Email Hidden",
 	"hidden": "hidden",
