@@ -49,7 +49,7 @@ exports.reset = async function (options) {
 		all: async function () {
 			await resetWidgets();
 			await resetThemes();
-			await resetPlugin();
+			await resetPlugins();
 			await resetSettings();
 		},
 	};
