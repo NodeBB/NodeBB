@@ -4,6 +4,7 @@
 const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
+const mime = require('mime');
 
 const db = require('../database');
 const file = require('../file');
@@ -25,10 +26,12 @@ Thumbs.exists = async function (id, path) {
 Thumbs.load = async function (topicData) {
 	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
 	let hashes = await posts.getPostsFields(mainPids, ['attachments']);
+	const hasUploads = await db.exists(mainPids.map(pid => `post:${pid}:uploads`));
 	hashes = hashes.map(o => o.attachments);
 	const topicsWithThumbs = topicData.filter((t, idx) => t &&
 		(parseInt(t.numThumbs, 10) > 0 ||
-		(hashes[idx] && hashes[idx].length)));
+		(hashes[idx] && hashes[idx].length) ||
+		hasUploads[idx]));
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
 	const thumbs = await Thumbs.get(tidsWithThumbs);
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
@@ -54,9 +57,23 @@ Thumbs.get = async function (tids) {
 	const sets = tids.map((tid, idx) => `${isDraft[idx] ? 'draft' : 'topic'}:${tid}:thumbs`);
 	const thumbs = await Promise.all(sets.map(getThumbs));
 
-	// Add attachments to thumb sets
 	let mainPids = await topics.getTopicsFields(tids, ['mainPid']);
 	mainPids = mainPids.map(o => o.mainPid);
+
+	// Add uploaded media to thumb sets
+	const mainPidUploads = await Promise.all(mainPids.map(async pid => await posts.uploads.list(pid)));
+	mainPidUploads.forEach((uploads, idx) => {
+		uploads = uploads.map(path => `/${path}`);
+		uploads = uploads.filter(
+			upload => !thumbs[idx].includes(upload) && mime.getType(upload).startsWith('image/')
+		);
+
+		if (uploads.length) {
+			thumbs[idx].push(...uploads);
+		}
+	});
+
+	// Add attachments to thumb sets
 	const mainPidAttachments = await posts.attachments.get(mainPids);
 	mainPidAttachments.forEach((attachments, idx) => {
 		attachments = attachments.filter(
