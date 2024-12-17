@@ -128,7 +128,7 @@
         "rss": "1.2.2",
         "rtlcss": "4.3.0",
         "sanitize-html": "2.13.1",
-        "sass": "1.82.0",
+        "sass": "1.83.0",
         "semver": "7.6.3",
         "serve-favicon": "2.5.0",
         "sharp": "0.32.6",
@@ -138,7 +138,7 @@
         "@socket.io/redis-adapter": "8.3.0",
         "sortablejs": "1.15.6",
         "spdx-license-list": "6.9.0",
-        "terser-webpack-plugin": "5.3.10",
+        "terser-webpack-plugin": "5.3.11",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
@@ -175,7 +175,7 @@
         "smtp-server": "3.13.6"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.82.0"
+        "sass-embedded": "1.83.0"
     },
     "resolutions": {
         "*/jquery": "3.7.1"
