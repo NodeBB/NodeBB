@@ -28,10 +28,13 @@ Thumbs.load = async function (topicData) {
 	let hashes = await posts.getPostsFields(mainPids, ['attachments']);
 	const hasUploads = await db.exists(mainPids.map(pid => `post:${pid}:uploads`));
 	hashes = hashes.map(o => o.attachments);
-	const topicsWithThumbs = topicData.filter((t, idx) => t &&
+	let hasThumbs = topicData.map((t, idx) => t &&
 		(parseInt(t.numThumbs, 10) > 0 ||
-		(hashes[idx] && hashes[idx].length) ||
+		!!(hashes[idx] && hashes[idx].length) ||
 		hasUploads[idx]));
+	({ hasThumbs } = await plugins.hooks.fire('filter:topics.hasThumbs', { topicData, hasThumbs }));
+
+	const topicsWithThumbs = topicData.filter((tid, idx) => hasThumbs[idx]);
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
 	const thumbs = await Thumbs.get(tidsWithThumbs);
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
