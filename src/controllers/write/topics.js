@@ -127,7 +127,9 @@ Topics.deleteTags = async (req, res) => {
 };
 
 Topics.getThumbs = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.topics.getThumbs(req, { ...req.params }));
+	let { thumbsOnly } = req.query;
+	thumbsOnly = thumbsOnly ? !!parseInt(thumbsOnly, 10) : false;
+	helpers.formatApiResponse(200, res, await api.topics.getThumbs(req, { ...req.params, thumbsOnly }));
 };
 
 Topics.addThumb = async (req, res) => {

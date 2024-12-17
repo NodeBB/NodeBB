@@ -41,12 +41,18 @@ Thumbs.load = async function (topicData) {
 	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));
 };
 
-Thumbs.get = async function (tids) {
+Thumbs.get = async function (tids, options) {
 	// Allow singular or plural usage
 	let singular = false;
 	if (!Array.isArray(tids)) {
 		tids = [tids];
 		singular = true;
+	}
+
+	if (!options) {
+		options = {
+			thumbsOnly: false,
+		};
 	}
 
 	const isDraft = !await topics.exists(tids);
@@ -63,30 +69,32 @@ Thumbs.get = async function (tids) {
 	let mainPids = await topics.getTopicsFields(tids, ['mainPid']);
 	mainPids = mainPids.map(o => o.mainPid);
 
-	// Add uploaded media to thumb sets
-	const mainPidUploads = await Promise.all(mainPids.map(async pid => await posts.uploads.list(pid)));
-	mainPidUploads.forEach((uploads, idx) => {
-		uploads = uploads.map(path => `/${path}`);
-		uploads = uploads.filter(
-			upload => !thumbs[idx].includes(upload) && mime.getType(upload).startsWith('image/')
-		);
+	if (!options.thumbsOnly) {
+		// Add uploaded media to thumb sets
+		const mainPidUploads = await Promise.all(mainPids.map(async pid => await posts.uploads.list(pid)));
+		mainPidUploads.forEach((uploads, idx) => {
+			uploads = uploads.map(path => `/${path}`);
+			uploads = uploads.filter(
+				upload => !thumbs[idx].includes(upload) && mime.getType(upload).startsWith('image/')
+			);
 
-		if (uploads.length) {
-			thumbs[idx].push(...uploads);
-		}
-	});
+			if (uploads.length) {
+				thumbs[idx].push(...uploads);
+			}
+		});
 
-	// Add attachments to thumb sets
-	const mainPidAttachments = await posts.attachments.get(mainPids);
-	mainPidAttachments.forEach((attachments, idx) => {
-		attachments = attachments.filter(
-			attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
-		);
+		// Add attachments to thumb sets
+		const mainPidAttachments = await posts.attachments.get(mainPids);
+		mainPidAttachments.forEach((attachments, idx) => {
+			attachments = attachments.filter(
+				attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
+			);
 
-		if (attachments.length) {
-			thumbs[idx].push(...attachments.map(attachment => attachment.url));
-		}
-	});
+			if (attachments.length) {
+				thumbs[idx].push(...attachments.map(attachment => attachment.url));
+			}
+		});
+	}
 
 	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
 		id: tids[idx],
@@ -98,7 +106,11 @@ Thumbs.get = async function (tids) {
 		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb.replace(/\\/g, '/')),
 	})));
 
-	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', { tids, thumbs: response }));
+	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', {
+		tids,
+		thumbsOnly: options.thumbsOnly,
+		thumbs: response,
+	}));
 	return singular ? response.pop() : response;
 };
 

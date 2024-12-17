@@ -215,7 +215,7 @@ topicsAPI.deleteTags = async (caller, { tid }) => {
 	await topics.deleteTopicTags(tid);
 };
 
-topicsAPI.getThumbs = async (caller, { tid }) => {
+topicsAPI.getThumbs = async (caller, { tid, thumbsOnly }) => {
 	if (isFinite(tid)) { // post_uuids can be passed in occasionally, in that case no checks are necessary
 		const [exists, canRead] = await Promise.all([
 			topics.exists(tid),
@@ -229,7 +229,7 @@ topicsAPI.getThumbs = async (caller, { tid }) => {
 		}
 	}
 
-	return await topics.thumbs.get(tid);
+	return await topics.thumbs.get(tid, { thumbsOnly });
 };
 
 // topicsAPI.addThumb

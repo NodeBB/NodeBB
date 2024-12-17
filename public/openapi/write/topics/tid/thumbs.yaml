@@ -11,6 +11,13 @@ get:
       required: true
       description: a valid topic id
       example: 1
+    - in: query
+      name: thumbsOnly
+      schema:
+        type: boolean
+      required: false
+      description: "(default: false) exclude post attachments, uploaded media, and those added by plugins"
+      example: 0
   responses:
     '200':
       description: Thumbnails successfully retrieved
