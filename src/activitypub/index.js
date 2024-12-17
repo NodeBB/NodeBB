@@ -330,6 +330,7 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 			},
 			body: payload,
+			timeout: 10000, // configurable?
 		});
 
 		if (String(response.statusCode).startsWith('2')) {
