@@ -302,9 +302,15 @@ module.exports = function (Topics) {
 	};
 
 	topicTools.share = async function (tid, uid, timestamp = Date.now()) {
+		const set = `uid:${uid}:shares`;
+		const shared = await db.isSortedSetMember(set, tid);
+		if (shared) {
+			return;
+		}
+
 		await Promise.all([
 			Topics.events.log(tid, { type: 'share', uid: uid }),
-			db.sortedSetAdd(`uid:${uid}:shares`, timestamp, tid),
+			db.sortedSetAdd(set, timestamp, tid),
 		]);
 	};
 };
