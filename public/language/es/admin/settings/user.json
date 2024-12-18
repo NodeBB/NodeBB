@@ -79,7 +79,7 @@
 	"follow-replied-topics": "Seguir los temas a los que contestas",
 	"default-notification-settings": "Configuración de notificación por defecto",
 	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.tracking": "Tracking",
+	"categoryWatchState.tracking": "Seguimiento",
 	"categoryWatchState.notwatching": "Not Watching",
 	"categoryWatchState.ignoring": "Ignorando",
 	"restrictions-new": "New User Restrictions",
