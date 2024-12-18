@@ -29,7 +29,7 @@ editController.get = async function (req, res, next) {
 	const [canUseSignature, canManageUsers, customUserFields] = await Promise.all([
 		privileges.global.can('signature', req.uid),
 		privileges.admin.can('admin:users', req.uid),
-		accountHelpers.getCustomUserFields(userData),
+		accountHelpers.getCustomUserFields(req.uid, userData),
 	]);
 
 	userData.customUserFields = customUserFields;

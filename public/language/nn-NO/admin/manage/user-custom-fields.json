@@ -20,5 +20,9 @@
 	"minimum-reputation": "Minste omdømme",
 	"minimum-reputation-help": "Om ein brukar har mindre enn denne verdien i omdømme, vil dei ikkje kunne bruke dette feltet",
 	"delete-field-confirm-x": "Vil du verkeleg slette det tilpassa feltet \"%1\"?",
-	"custom-fields-saved": "Tilpassa felt lagra"
+	"custom-fields-saved": "Tilpassa felt lagra",
+	"visibility": "Synlegheit",
+	"visibility-all": "Alle kan sjå feltet",
+	"visibility-loggedin": "Berre innlogga brukarar kan sjå feltet",
+	"visibility-privileged": "Berre priviligerte brukarar som administratorar og moderatorar kan sjå feltet"
 }

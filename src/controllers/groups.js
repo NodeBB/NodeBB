@@ -12,6 +12,8 @@ const privileges = require('../privileges');
 
 const groupsController = module.exports;
 
+const url = nconf.get('url');
+
 groupsController.list = async function (req, res) {
 	const sort = req.query.sort || 'alpha';
 	const page = parseInt(req.query.page, 10) || 1;
@@ -19,6 +21,13 @@ groupsController.list = async function (req, res) {
 		privileges.global.can('group:create', req.uid),
 		getGroups(req, sort, page),
 	]);
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}${req.url.replace(/^\/api/, '')}`,
+		},
+	];
 
 	res.render('groups/list', {
 		groups: groupData,
@@ -100,6 +109,13 @@ groupsController.details = async function (req, res, next) {
 	if (!groupData) {
 		return next();
 	}
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}/groups/${lowercaseSlug}`,
+		},
+	];
 
 	res.render('groups/details', {
 		title: `[[pages:group, ${groupData.displayName}]]`,

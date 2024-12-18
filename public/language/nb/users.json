@@ -7,7 +7,7 @@
     "most-flags": "Flest flagg",
     "search": "Søk",
     "enter-username": "Skriv inn et brukernavn for å søke",
-    "search-user-for-chat": "Search for a user to start chat",
+    "search-user-for-chat": "Søk etter en bruker for å starte chat",
     "load-more": "Last flere",
     "users-found-search-took": "%1 bruker(e) funnet. Søket tok %2 sekunder.",
     "filter-by": "Filtrer etter",
@@ -21,6 +21,6 @@
     "popular-topics": "Populære tråder",
     "unread-topics": "Uleste tråder",
     "categories": "Kategorier",
-    "tags": "Tagger",
+    "tags": "Emneord",
     "no-users-found": "Ingen brukere funnet"
 }

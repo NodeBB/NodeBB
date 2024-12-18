@@ -29,7 +29,9 @@ async function getFakeHash() {
 	if (fakeHashCache) {
 		return fakeHashCache;
 	}
-	fakeHashCache = await exports.hash(12, Math.random().toString());
+	const length = 18;
+	fakeHashCache = crypto.randomBytes(Math.ceil(length / 2))
+		.toString('hex').slice(0, length);
 	return fakeHashCache;
 }
 

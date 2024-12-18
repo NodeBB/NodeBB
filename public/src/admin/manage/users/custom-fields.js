@@ -51,6 +51,7 @@ define('admin/manage/user/custom-fields', [
 			icon: el.attr('data-icon'),
 			type: el.attr('data-type'),
 			'select-options': el.attr('data-select-options'),
+			visibility: el.attr('data-visibility'),
 			'min:rep': el.attr('data-min-rep'),
 		};
 	}

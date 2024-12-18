@@ -157,7 +157,7 @@
     "no-skin": "Ingen stil",
     "select-homepage": "Velg ei startside",
     "homepage": "Startside",
-    "homepage-description": "Velg ei side som skal brukast som forumets startside, eller 'Ingen' for å bruke standard startsida.",
+    "homepage-description": "Velg ei side som skal brukast som startside, eller 'Ingen' for å bruke standard startside.",
     "custom-route": "Eigensett startside-rute",
     "custom-route-help": "Skriv inn eit URL her, utan føregåande skråstrek (t.d. \"recent\" eller \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on tenester",

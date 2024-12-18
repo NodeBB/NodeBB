@@ -2,6 +2,8 @@
 
 module.exports = function (opts) {
 	const { LRUCache } = require('lru-cache');
+	const os = require('os');
+
 	const pubsub = require('../pubsub');
 
 	// lru-cache@7 deprecations
@@ -91,7 +93,9 @@ module.exports = function (opts) {
 	cache.delete = cache.del;
 
 	cache.reset = function () {
-		pubsub.publish(`${cache.name}:lruCache:reset`);
+		pubsub.publish(`${cache.name}:lruCache:reset`, {
+			id: `${os.hostname()}:${process.pid}`,
+		});
 		localReset();
 	};
 	cache.clear = cache.reset;
@@ -102,8 +106,10 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:lruCache:reset`, () => {
-		localReset();
+	pubsub.on(`${cache.name}:lruCache:reset`, ({ id }) => {
+		if (id !== `${os.hostname()}:${process.pid}`) {
+			localReset();
+		}
 	});
 
 	pubsub.on(`${cache.name}:lruCache:del`, (keys) => {

@@ -181,7 +181,7 @@ define('forum/chats/messages', [
 		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
 		replyToEl.attr('data-tomid', mid)
 			.find('[component="chat/composer/replying-to-text"]')
-			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-username')}]]`);
+			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-displayname')}]]`);
 		replyToEl.removeClass('hidden');
 		replyToEl.find('[component="chat/composer/replying-to-cancel"]').off('click')
 			.on('click', () => {

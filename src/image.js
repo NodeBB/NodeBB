@@ -122,7 +122,6 @@ image.stripEXIF = async function (path) {
 };
 
 image.checkDimensions = async function (path) {
-	const meta = require('./meta');
 	const result = await image.size(path);
 
 	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {

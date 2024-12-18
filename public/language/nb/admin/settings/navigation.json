@@ -1,7 +1,7 @@
 {
 	"navigation": "Navigasjon",
 	"icon": "Ikon:",
-	"change-icon": "endre",
+	"change-icon": "Endre",
 	"route": "Rute:",
 	"tooltip": "Verktøytips:",
 	"text": "Tekst:",
@@ -21,6 +21,6 @@
 
 	"available-menu-items": "Tilgjengelige menyelementer",
 	"custom-route": "Tilpasset rute",
-	"core": "kjerne",
-	"plugin": "plugin"
+	"core": "Kjerne",
+	"plugin": "Plugin"
 }

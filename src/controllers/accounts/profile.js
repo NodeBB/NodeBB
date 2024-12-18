@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const nconf = require('nconf');
 
 const db = require('../../database');
 const user = require('../../user');
@@ -14,6 +15,8 @@ const utils = require('../../utils');
 
 const profileController = module.exports;
 
+const url = nconf.get('url');
+
 profileController.get = async function (req, res, next) {
 	const { userData } = res.locals;
 	if (!userData) {
@@ -25,7 +28,7 @@ profileController.get = async function (req, res, next) {
 	const [latestPosts, bestPosts, customUserFields] = await Promise.all([
 		getLatestPosts(req.uid, userData),
 		getBestPosts(req.uid, userData),
-		accountHelpers.getCustomUserFields(userData),
+		accountHelpers.getCustomUserFields(req.uid, userData),
 		posts.parseSignature(userData, req.uid),
 	]);
 	userData.customUserFields = customUserFields;
@@ -151,4 +154,11 @@ function addMetaTags(res, userData) {
 			}
 		);
 	}
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}/user/${userData.userslug}`,
+		},
+	];
 }

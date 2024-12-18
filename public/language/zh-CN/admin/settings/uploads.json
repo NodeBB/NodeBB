@@ -12,6 +12,7 @@
 	"resize-image-width-threshold-help": "(in pixels, default: 2000 pixels, set to 0 to disable)",
 	"resize-image-width": "缩小图片到指定宽度",
 	"resize-image-width-help": "(像素单位，默认 760 px，设置为0以禁用)",
+	"resize-image-keep-original": "Keep original image after resize",
 	"resize-image-quality": "调整图像大小时使用的质量",
 	"resize-image-quality-help": "使用较低质量的设置来减小调整过大小的图像的文件大小",
 	"max-file-size": "最大文件尺寸(单位 KiB)",

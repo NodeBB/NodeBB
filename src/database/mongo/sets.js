@@ -3,6 +3,7 @@
 module.exports = function (module) {
 	const _ = require('lodash');
 	const helpers = require('./helpers');
+	const { secureRandom } = require('../../utils');
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
@@ -200,7 +201,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const randomIndex = Math.floor(Math.random() * data.members.length);
+		const randomIndex = secureRandom(0, data.members.length - 1);
 		const value = data.members[randomIndex];
 		await module.setRemove(data._key, value);
 		return value;

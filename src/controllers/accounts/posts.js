@@ -1,5 +1,7 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const db = require('../../database');
 const user = require('../../user');
 const posts = require('../../posts');
@@ -12,6 +14,8 @@ const plugins = require('../../plugins');
 const utils = require('../../utils');
 
 const postsController = module.exports;
+
+const url = nconf.get('url');
 
 const templateToData = {
 	'account/bookmarks': {
@@ -239,6 +243,13 @@ async function getPostsFromUserSet(template, req, res) {
 	payload.sortOptions.forEach((option) => {
 		option.selected = option.url.includes(`sort=${req.query.sort}`);
 	});
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}${req.url.replace(/^\/api/, '')}`,
+		},
+	];
 
 	res.render(template, payload);
 }

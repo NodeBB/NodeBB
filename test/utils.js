@@ -102,13 +102,26 @@ describe('Utility Methods', () => {
 		});
 	});
 
-	describe('UUID generation', () => {
+	describe('UUID generation / secureRandom', () => {
 		it('return unique random value every time', () => {
 			delete require.cache[require.resolve('../src/utils')];
 			const { generateUUID } = require('../src/utils');
 			const uuid1 = generateUUID();
 			const uuid2 = generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');
+		});
+
+		it('should return a random number between 1-10 inclusive', () => {
+			const { secureRandom } = require('../src/utils');
+			const r1 = secureRandom(1, 10);
+			assert(r1 >= 1);
+			assert(r1 <= 10);
+		});
+
+		it('should always return 3', () => {
+			const { secureRandom } = require('../src/utils');
+			const r1 = secureRandom(3, 3);
+			assert.strictEqual(r1, 3);
 		});
 	});
 

@@ -293,7 +293,7 @@
 			<hr/>
 
 			<div id="post-sharing" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/social:post-sharing]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:post-sharing]]</h5>
 				<div class="mb-3">
 					<div class="form-group" id="postSharingNetworks">
 						{{{ each postSharing }}}
@@ -304,7 +304,7 @@
 							</label>
 						</div>
 						{{{ end }}}
-						<p class="form-text">[[admin/settings/social:info-plugins-additional]]</p>
+						<p class="form-text">[[admin/settings/general:info-plugins-additional]]</p>
 					</div>
 				</div>
 			</div>

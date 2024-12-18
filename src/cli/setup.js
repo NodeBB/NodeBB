@@ -51,8 +51,8 @@ async function setup(initConfig) {
 	}
 	console.log('NodeBB Setup Completed. Run "./nodebb start" to manually start your NodeBB server.');
 
-	// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
-	// hosts of auto-generated username/password during headless setups)
+	// If I am a child process, notify the parent of the returned data before exiting
+	// (useful for notifying hosts during headless setups)
 	if (process.send) {
 		process.send(data);
 	}

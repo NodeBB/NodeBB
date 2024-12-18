@@ -38,7 +38,7 @@
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "No puedes usar el chat hasta que confirmes tu dirección de correo electrónico, por favor haz click aquí para confirmar tu correo.",
     "email-not-confirmed-email-sent": "Tu email todavía no ha sido confirmado, por favor verifica tu buzón de entrada para ver si has recibido el email de confirmación. No te será posible comentar en algunas de las categorías hasta que tú email sea confirmado.",
-    "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery, and may be necessary for chatting and posting in some categories. Please click here to enter an email.",
+    "no-email-to-confirm": "Tu cuenta no tiene un correo electrónico configurado. Un correo electrónico es necesario para recuperar la cuenta y puede ser necesario para chatear y publicar en algunas categorías. Por favor, haz clic aquí para ingresar un correo electrónico.",
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "No se ha podido confirmar su email, por favor inténtelo de nuevo más tarde.",
     "confirm-email-already-sent": "El email de confirmación ya ha sido enviado, por favor espera %1 minuto(s) para enviar otro.",

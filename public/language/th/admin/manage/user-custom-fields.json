@@ -20,5 +20,9 @@
 	"minimum-reputation": "ชื่อเสียงขั้นต่ำ",
 	"minimum-reputation-help": "ถ้าผู้ใช้มีค่าน้อยกว่าค่านี้ พวกเขาจะใช้ฟิลด์นี้ไม่ได้",
 	"delete-field-confirm-x": "คุณต้องการจะลบฟิลด์ \"%1\" หรือไม่?",
-	"custom-fields-saved": "ฟิลด์ที่ปรับแต่งได้ถูกบันทึกแล้ว"
+	"custom-fields-saved": "ฟิลด์ที่ปรับแต่งได้ถูกบันทึกแล้ว",
+	"visibility": "Visibility",
+	"visibility-all": "Everyone can see the field",
+	"visibility-loggedin": "Only logged in users can see the field",
+	"visibility-privileged": "Only privileged users like admins & moderators can see the field"
 }

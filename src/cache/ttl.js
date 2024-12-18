@@ -2,6 +2,8 @@
 
 module.exports = function (opts) {
 	const TTLCache = require('@isaacs/ttlcache');
+	const os = require('os');
+
 	const pubsub = require('../pubsub');
 
 	const ttlCache = new TTLCache(opts);
@@ -72,7 +74,9 @@ module.exports = function (opts) {
 	cache.delete = cache.del;
 
 	cache.reset = function () {
-		pubsub.publish(`${cache.name}:ttlCache:reset`);
+		pubsub.publish(`${cache.name}:ttlCache:reset`, {
+			id: `${os.hostname()}:${process.pid}`,
+		});
 		localReset();
 	};
 	cache.clear = cache.reset;
@@ -83,8 +87,10 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:ttlCache:reset`, () => {
-		localReset();
+	pubsub.on(`${cache.name}:ttlCache:reset`, ({ id }) => {
+		if (id !== `${os.hostname()}:${process.pid}`) {
+			localReset();
+		}
 	});
 
 	pubsub.on(`${cache.name}:ttlCache:del`, (keys) => {

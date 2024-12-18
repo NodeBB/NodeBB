@@ -103,7 +103,7 @@
 			<div id="smtp-transport" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:smtp-transport]]</h5>
 
-				<div class="alert alert-warning">
+				<div class="alert alert-warning text-sm p-2">
 					[[admin/settings/email:smtp-transport-help]]
 				</div>
 
