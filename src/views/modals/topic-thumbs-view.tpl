@@ -4,7 +4,7 @@
 	</div>
 	{{{ if (thumbs.length != "1") }}}
 	<hr/>
-	<div class="d-flex justify-content-center mb-3 gap-3">
+	<div class="d-flex justify-content-center mb-3 gap-3 flex-wrap">
 	{{{ each thumbs }}}
 		<div>
 			<img component="topic/thumb/select" class="pointer rounded p-1 border border-3 {{{ if ./selected }}}border-primary{{{ end }}}" height="64px" style="width: auto;" src="{./url}"/>

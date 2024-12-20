@@ -47,6 +47,7 @@ pluginsController.get = async function (req, res) {
 		trending: trendingPlugins,
 		submitPluginUsage: meta.config.submitPluginUsage,
 		version: nconf.get('version'),
+		isStarterPlan: nconf.get('saas_plan') === 'starter',
 	});
 };
 

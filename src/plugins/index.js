@@ -235,7 +235,12 @@ Plugins.normalise = async function (apiReturn) {
 		} else {
 			pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
 		}
-		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
+		try {
+			pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
+		} catch (err) {
+			winston.error(`plugin ID=${plugin.id}, latest=${pluginMap[plugin.id].latest}, version=${pluginMap[plugin.id].version},\n${err.stack}`);
+			throw err;
+		}
 	});
 
 	if (nconf.get('plugins:active')) {

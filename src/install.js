@@ -199,6 +199,11 @@ async function completeConfigSetup(config) {
 	if (nconf.get('package_manager')) {
 		config.package_manager = nconf.get('package_manager');
 	}
+
+	if (install.values.hasOwnProperty('saas_plan')) {
+		config.saas_plan = install.values.saas_plan;
+	}
+
 	nconf.overrides(config);
 	const db = require('./database');
 	await db.init();
@@ -652,7 +657,10 @@ install.save = async function (server_conf) {
 		}
 	}
 
-	await fs.promises.writeFile(serverConfigPath, JSON.stringify({ ...currentConfig, ...server_conf }, null, 4));
+	await fs.promises.writeFile(serverConfigPath, JSON.stringify({
+		...currentConfig,
+		...server_conf,
+	}, null, 4));
 	console.log('Configuration Saved OK');
 	nconf.file({
 		file: serverConfigPath,

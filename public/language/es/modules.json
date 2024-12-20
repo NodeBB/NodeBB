@@ -104,7 +104,7 @@
     "composer.upload-file": "Subir archivo",
     "composer.zen-mode": "Modo Zen",
     "composer.select-category": "Selecciona una categoría",
-    "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
+    "composer.textarea.placeholder": "Escribe el contenido de tu entrada aquí, puedes arrastrar y soltar imágenes",
     "composer.post-queue-alert": "Hello👋!<br/>This forum uses a post queue system, since you are a new user your post will be hidden until it is approved by our moderation team.",
     "composer.schedule-for": "Schedule topic for",
     "composer.schedule-date": "Date",
