@@ -1,7 +1,7 @@
 {
 	"forum-traffic": "Lưu lượng truy cập",
 	"page-views": "Xem Trang",
-	"unique-visitors": "Khách Truy Cập Duy Nhất",
+	"unique-visitors": "Khách Độc Lập",
 	"logins": "Đăng nhập",
 	"new-users": "Người dùng mới",
 	"posts": "Lượt Đăng",
@@ -75,7 +75,7 @@
 	"graphs.page-views-registered": "Đã Đăng Ký Xem Trang",
 	"graphs.page-views-guest": "Khách Xem Trang",
 	"graphs.page-views-bot": "Bot Xem Trang",
-	"graphs.unique-visitors": "Khách Truy Cập Duy Nhất",
+	"graphs.unique-visitors": "Khách Độc Lập",
 	"graphs.registered-users": "Thành Viên Chính Thức",
 	"graphs.guest-users": "Người dùng khách",
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
