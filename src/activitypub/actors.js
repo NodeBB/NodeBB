@@ -179,7 +179,7 @@ Actors.assert = async (ids, options = {}) => {
 			memo.handleAdd[profile.username.toLowerCase()] = profile.uid;
 		}
 
-		if (options.update || profile.fullname && fullname !== profile.fullname) {
+		if (options.update || (profile.fullname && fullname !== profile.fullname)) {
 			if (fullname && uidsForCurrent[idx] !== 0) {
 				memo.searchRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${profile.uid}`]);
 			}
