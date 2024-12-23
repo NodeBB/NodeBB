@@ -28,9 +28,9 @@ define('search', [
 		const toggleVisibility = searchFields.hasClass('hidden');
 
 		if (toggleVisibility) {
-			searchInput.off('blur').on('blur', function dismissSearch() {
+			searchFields.off('focusout').on('focusout', function dismissSearch() {
 				setTimeout(function () {
-					if (!searchInput.is(':focus')) {
+					if (!searchFields.find(':focus').length) {
 						searchFields.addClass('hidden');
 						searchButton.removeClass('hidden');
 					}
@@ -177,30 +177,33 @@ define('search', [
 			doSearch();
 		}, 500));
 
-		let mousedownOnResults = false;
 		quickSearchResults.on('mousedown', '.quick-search-results > *', function () {
 			$(window).one('mouseup', function () {
 				quickSearchResults.addClass('hidden');
 			});
-			mousedownOnResults = true;
 		});
-		inputEl.on('blur', function () {
+
+		const inputParent = inputEl.parent();
+		const resultParent = quickSearchResults.parent();
+		inputParent.on('focusout', hideResults);
+		resultParent.on('focusout', hideResults);
+		function hideResults() {
 			setTimeout(function () {
-				if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
+				if (!inputParent.find(':focus').length && !resultParent.find(':focus').length && !quickSearchResults.hasClass('hidden')) {
 					quickSearchResults.addClass('hidden');
 				}
 			}, 200);
-		});
+		}
 
 		let ajaxified = false;
 		hooks.on('action:ajaxify.end', function () {
 			if (!ajaxify.isCold()) {
 				ajaxified = true;
 			}
+			quickSearchResults.addClass('hidden');
 		});
 
 		inputEl.on('focus', function () {
-			mousedownOnResults = false;
 			const query = inputEl.val();
 			oldValue = query;
 			if (query && quickSearchResults.find('#quick-search-results').children().length) {
