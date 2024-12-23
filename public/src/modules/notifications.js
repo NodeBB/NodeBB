@@ -28,7 +28,7 @@ define('notifications', [
 	});
 	hooks.on('filter:notifications.load', _addTimeagoString);
 
-	Notifications.loadNotifications = function (notifList, callback) {
+	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
 		callback = callback || function () {};
 		socket.emit('notifications.get', null, function (err, data) {
 			if (err) {
@@ -47,7 +47,7 @@ define('notifications', [
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							components.get('notifications/list').dropdown('toggle');
+							triggerEl.dropdown('toggle');
 						}
 
 						const unread = notifEl.hasClass('unread');
