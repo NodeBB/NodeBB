@@ -140,12 +140,12 @@
 		<div class="card">
 			<div class="card-header d-flex justify-content-between">[[admin/dashboard:popular-searches]] <a href="{config.relative_path}/admin/dashboard/searches" class="text-xs">[[admin/dashboard:view-all]]</a></div>
 			<div class="card-body">
-				<table class="table table-sm text-sm search-list">
+				<table class="table table-sm text-sm search-list w-100">
 					<tbody>
 						{{{ each popularSearches }}}
 						<tr>
-							<td>{popularSearches.value}</td>
-							<td class="text-end" style="width: 1px;">{formattedNumber(popularSearches.score)}</td>
+							<td class="w-100 text-truncate" style="max-width:1px;">{popularSearches.value}</td>
+							<td class="w-0 text-end text-nowrap">{formattedNumber(popularSearches.score)}</td>
 						</tr>
 						{{{ end }}}
 					</tbody>
