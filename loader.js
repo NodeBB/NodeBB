@@ -26,7 +26,7 @@ if (!fs.existsSync(logDir)) {
 	mkdirp.sync(path.dirname(outputLogFilePath));
 }
 
-const output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compress: true });
+const output = logrotate({ file: outputLogFilePath, size: '10m', keep: 3, compress: true });
 const silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
 let numProcs;
 const workers = [];
