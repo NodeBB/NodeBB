@@ -41,8 +41,13 @@ module.exports = function (Posts) {
 		if (data.handle && !parseInt(uid, 10)) {
 			postData.handle = data.handle;
 		}
-		if (_activitypub && _activitypub.url) {
-			postData.url = _activitypub.url;
+		if (_activitypub) {
+			if (_activitypub.url) {
+				postData.url = _activitypub.url;
+			}
+			if (_activitypub.audience) {
+				postData.audience = _activitypub.audience;
+			}
 		}
 
 		// Rewrite emoji references to inline image assets
