@@ -535,6 +535,14 @@ Mocks.notes.public = async (post) => {
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
+	let audience = `${nconf.get('url')}/category/${post.category.cid}`; // default
+	if (inReplyTo) {
+		const chain = await activitypub.notes.getParentChain(post.uid, inReplyTo);
+		chain.forEach((post) => {
+			audience = post.audience || audience;
+		});
+	}
+
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
@@ -547,7 +555,7 @@ Mocks.notes.public = async (post) => {
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context,
-		audience: `${nconf.get('url')}/category/${post.category.cid}`,
+		audience,
 		summary: null,
 		name,
 		content: post.content,
@@ -558,6 +566,7 @@ Mocks.notes.public = async (post) => {
 	};
 
 	({ object } = await plugins.hooks.fire('filter:activitypub.mocks.note', { object, post, private: false }));
+	console.log(object);
 	return object;
 };
 
