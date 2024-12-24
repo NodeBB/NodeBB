@@ -200,7 +200,7 @@ async function completeConfigSetup(config) {
 		config.package_manager = nconf.get('package_manager');
 	}
 
-	if (install.values.hasOwnProperty('saas_plan')) {
+	if (install.values && install.values.hasOwnProperty('saas_plan')) {
 		config.saas_plan = install.values.saas_plan;
 	}
 

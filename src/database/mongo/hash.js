@@ -194,14 +194,13 @@ module.exports = function (module) {
 		if (!key || (Array.isArray(key) && !key.length) || !Array.isArray(fields) || !fields.length) {
 			return;
 		}
-		fields = fields.filter(Boolean);
+		fields = fields.map(helpers.fieldToString).filter(Boolean);
 		if (!fields.length) {
 			return;
 		}
 
 		const data = {};
 		fields.forEach((field) => {
-			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
 		if (Array.isArray(key)) {

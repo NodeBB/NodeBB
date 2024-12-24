@@ -39,7 +39,7 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
-					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" role="menu">
+					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm overflow-auto" role="menu" style="max-height:75vh;">
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:email]]</h6></li>
 						<li><a href="#" class="dropdown-item rounded-1 change-email" role="menuitem"><i class="text-secondary fa fa-fw fa-envelope text-start"></i> [[admin/manage/users:change-email]]</a></li>
