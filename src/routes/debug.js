@@ -10,14 +10,7 @@ module.exports = function (app) {
 	const router = express.Router();
 
 	router.get('/test', async (req, res) => {
-		// res.redirect(404);
-		const db = require('../database');
-		await db.setObject('foo', { baz: 1});
-		// await db.deleteObjectField('sdasdasd', '');
-
-		await db.deleteObjectField('foo', '$asdasd');
-		//  await db.deleteObjectField('foo', '$');
-		res.json('ok');
+		res.redirect(404);
 	});
 
 	// Redoc
