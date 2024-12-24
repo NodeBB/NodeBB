@@ -174,11 +174,12 @@ module.exports = function (module) {
 		}
 
 		const data = {};
-		fields.forEach((field) => {
+		fields = fields.map((field) => {
 			field = helpers.fieldToString(field);
 			if (field) {
 				data[field] = 1;
 			}
+			return field;
 		});
 
 		const item = await module.client.collection('objects').findOne({ _key: key }, { projection: data });
