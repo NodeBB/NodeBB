@@ -339,7 +339,7 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 			throw new Error(String(body));
 		}
 	} catch (e) {
-		winston.warn(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
+		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
 		// add to retry queue
 		if (attempts < 12) { // stop attempting after ~2 months
 			const timeout = (4 ** attempts) * 1000; // exponential backoff
