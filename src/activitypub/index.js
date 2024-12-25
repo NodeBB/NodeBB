@@ -525,7 +525,7 @@ ActivityPub.probe = async ({ uid, url }) => {
 			// Return early but retry for caching purposes
 			checkHeader(1000 * 60).then((result) => {
 				probeCache.set(url, result);
-			});
+			}).catch(err => ActivityPub.helpers.log(err.stack));
 			return false;
 		}
 	}
