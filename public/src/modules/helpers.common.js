@@ -306,7 +306,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 		classNames = classNames || '';
 		const attributes = new Map([
-			['title', userObj.username],
+			['title', userObj.displayname],
 			['data-uid', userObj.uid],
 			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
