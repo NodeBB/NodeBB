@@ -132,7 +132,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
 		if (!hasRelation) {
-			winston.info(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
+			activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
 		}
 
 		unlock(id);
