@@ -48,6 +48,9 @@ Controller.fetch = async (req, res, next) => {
 
 		helpers.redirect(res, url.href, false);
 	} catch (e) {
+		if (!url || !url.href) {
+			return next();
+		}
 		activitypub.helpers.log(`[activitypub/fetch] Invalid URL received: ${url}`);
 		helpers.redirect(res, url.href, false);
 	}
