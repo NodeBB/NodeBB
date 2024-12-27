@@ -16,6 +16,7 @@ if (relativePath === undefined) {
 	relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 }
 
+/** @type { import('webpack').Configuration } */
 module.exports = {
 	plugins: [],
 	entry: {
