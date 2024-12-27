@@ -91,7 +91,7 @@ apiController.loadConfig = async function (req) {
 		},
 		emailPrompt: meta.config.emailPrompt,
 		useragent: {
-			isSafari: req.useragent.isSafari,
+			isSafari: req.useragent && req.useragent.isSafari,
 		},
 		fontawesome: {
 			pro: fontawesome_pro,
