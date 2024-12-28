@@ -117,16 +117,21 @@ blockquote {
 	.hover-visible {
 		visibility: hidden;
 	}
+	.hover-opacity-75 {
+		opacity: 0;
+		&:focus { opacity: 0.75 }
+	}
+	.hover-opacity-100 {
+		opacity: 0;
+		&:focus {opacity: 1; }
+	}
+
 	&:hover {
-		.hover-d-block {
-			display: block!important;
-		}
-		.hover-d-flex {
-			display: flex!important;
-		}
-		.hover-visible {
-			visibility: visible;
-		}
+		.hover-d-block { display: block!important; }
+		.hover-d-flex { display: flex!important; }
+		.hover-visible { visibility: visible; }
+		.hover-opacity-100 { opacity: 1; }
+		.hover-opacity-75 { opacity: 0.75; }
 	}
 }
 
