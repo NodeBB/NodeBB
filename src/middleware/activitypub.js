@@ -107,13 +107,13 @@ middleware.assertPayload = async function (req, res, next) {
 
 	// Cross-check key ownership against received actor
 	await activitypub.actors.assert(actor);
-	const compare = await db.getObjectField(`userRemote:${actor}:keys`, 'id');
+	const compare = (await db.getObjectField(`userRemote:${actor}:keys`, 'id')).replace(/#[\w-]+$/, '');
 	const { signature } = req.headers;
 	const keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
 		const index = v.indexOf('=');
 		return [v.substring(0, index), v.slice(index + 1)];
-	})).get('keyId');
-	if (`"${compare}"` !== keyId) {
+	})).get('keyId').slice(1, -1).replace(/#[\w-]+$/, '');
+	if (compare !== keyId) {
 		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
 	}
