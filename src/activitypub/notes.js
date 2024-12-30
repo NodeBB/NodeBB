@@ -74,7 +74,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	// chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 	const mainPost = chain[0];
-	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, _activitypub } = mainPost;
+	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, sourceContent, _activitypub } = mainPost;
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
@@ -109,7 +109,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		// mainPid ok to leave as-is
-		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content));
+		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
 
 		// Remove any custom emoji from title
 		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
