@@ -460,9 +460,10 @@ ActivityPub.probe = async ({ uid, url }) => {
 	 */
 
 	// Known resources
-	const [isNote, isMessage, isActor] = await Promise.all([
+	const [isNote, isMessage, isActor, isActorUrl] = await Promise.all([
 		posts.exists(url),
 		messaging.messageExists(url),
+		db.isSortedSetMember('usersRemote:lastCrawled', url), // if url is same as id
 		db.isObjectField('remoteUrl:uid', url),
 	]);
 	switch (true) {
@@ -482,6 +483,11 @@ ActivityPub.probe = async ({ uid, url }) => {
 		}
 
 		case isActor: {
+			const slug = await user.getUserField(url, 'userslug');
+			return `/user/${slug}`;
+		}
+
+		case isActorUrl: {
 			const uid = await db.getObjectField('remoteUrl:uid', url);
 			const slug = await user.getUserField(uid, 'userslug');
 			return `/user/${slug}`;
