@@ -176,9 +176,9 @@ describe('helpers', () => {
 	});
 
 	it('should render user picture as topic image', (done) => {
-		const topicObj = { thumb: '', user: { uid: 1, username: 'baris', picture: '/uploads/2.png' } };
+		const topicObj = { thumb: '', user: { uid: 1, username: 'baris', displayname: 'Baris Soner Usakli', picture: '/uploads/2.png' } };
 		const html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.username}" />`);
+		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.displayname}" />`);
 		done();
 	});
 
