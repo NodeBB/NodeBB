@@ -169,9 +169,9 @@ describe('helpers', () => {
 	});
 
 	it('should render thumb as topic image', (done) => {
-		const topicObj = { thumb: '/uploads/1.png', user: { username: 'baris' } };
+		const topicObj = { thumb: '/uploads/1.png', user: { username: 'baris', displayname: 'Baris Soner Usakli' } };
 		const html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.username}" />`);
+		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.displayname}" />`);
 		done();
 	});
 
