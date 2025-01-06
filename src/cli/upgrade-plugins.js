@@ -138,7 +138,7 @@ async function upgradePlugins(unattended = false) {
 			prompt.delimiter = '';
 
 			prompt.start();
-			result= await prompt.get({
+			result = await prompt.get({
 				name: 'upgrade',
 				description: '\nProceed with upgrade (y|n)?',
 				type: 'string',
