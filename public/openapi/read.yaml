@@ -298,6 +298,8 @@ paths:
     $ref: 'read/user/userslug/posts.yaml'
   "/api/user/{userslug}/topics":
     $ref: 'read/user/userslug/topics.yaml'
+  "/api/user/{userslug}/shares":
+    $ref: 'read/user/userslug/shares.yaml'
   "/api/user/{userslug}/best":
     $ref: 'read/user/userslug/best.yaml'
   "/api/user/{userslug}/controversial":

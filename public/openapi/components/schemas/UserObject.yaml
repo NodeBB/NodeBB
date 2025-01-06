@@ -395,6 +395,8 @@ UserObjectFull:
           type: number
         uploaded:
           type: number
+        shares:
+          type: number
     isBlocked:
       type: boolean
     blocksCount:
@@ -433,6 +435,8 @@ UserObjectFull:
     isSelf:
       type: boolean
     isFollowing:
+      type: boolean
+    isFollowPending:
       type: boolean
     canChat:
       type: boolean

@@ -85,7 +85,6 @@ inbox.add = async (req) => {
 		// Check context of OP
 		const tid = await posts.getPostField(pid, 'tid');
 		const context = await topics.getTopicField(tid, 'context');
-		console.log(context);
 		if (context) {
 			const { attributedTo } = await activitypub.get('uid', 0, context);
 			if (context === target && attributedTo === actor) {

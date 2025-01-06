@@ -566,7 +566,6 @@ Mocks.notes.public = async (post) => {
 	};
 
 	({ object } = await plugins.hooks.fire('filter:activitypub.mocks.note', { object, post, private: false }));
-	console.log(object);
 	return object;
 };
 
