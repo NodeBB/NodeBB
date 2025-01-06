@@ -6,7 +6,6 @@ const validator = require('validator');
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
-const privileges = require('../privileges');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
 
@@ -125,7 +124,7 @@ Controllers.login = async function (req, res) {
 	data.title = '[[pages:login]]';
 	data.allowPasswordReset = !meta.config['password:disableEdit'];
 
-	const loginPrivileges =  await privilegesHelpers.getGroupPrivileges(0, ['groups:local:login']);
+	const loginPrivileges = await privilegesHelpers.getGroupPrivileges(0, ['groups:local:login']);
 	const hasLoginPrivilege = !!loginPrivileges.find(privilege => privilege.privileges['groups:local:login']);
 	data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
 
