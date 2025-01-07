@@ -1,0 +1,26 @@
+{
+	"intro-lead": "What is Federation?",
+	"intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
+	"general": "General",
+	"pruning": "Content Pruning",
+	"content-pruning": "Days to keep remote content",
+	"content-pruning-help": "Note that remote content that has received engagement (a reply or a upvote/downvote) will be preserved. (0 for disabled)",
+	"user-pruning": "Days to cache remote user accounts",
+	"user-pruning-help": "Remote user accounts will only be pruned if they have no posts. Otherwise they will be re-retrieved. (0 for disabled)",
+	"enabled": "Enable Federation",
+	"enabled-help": "If enabled, will allow this NodeBB will be able to communicate with all Activitypub-enabled clients on the wider fediverse.",
+	"allowLoopback": "Allow loopback processing",
+	"allowLoopback-help": "Useful for debugging purposes only. You should probably leave this disabled.",
+
+	"probe": "Open in App",
+	"probe-enabled": "Try to open ActivityPub-enabled resources in NodeBB",
+	"probe-enabled-help": "If enabled, NodeBB will check every external link for an ActivityPub equivalent, and load it in NodeBB instead.",
+	"probe-timeout": "Lookup Timeout (milliseconds)",
+	"probe-timeout-help": "(Default: 2000) If the lookup query does not receive a response within the set timeframe, will send the user to the link directly instead. Adjust this number higher if sites are responding slowly and you wish to give extra time.",
+
+	"server-filtering": "Filtering",
+	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",
+	"server.filter-help": "Specify servers you would like to bar from federating with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> federation with specific servers, instead. Both options are supported, although they are mutually exclusive.",
+	"server.filter-help-hostname": "Enter just the instance hostname below (e.g. <code>example.org</code>), separated by line breaks.",
+	"server.filter-allow-list": "Use this as an Allow List instead"
+}
