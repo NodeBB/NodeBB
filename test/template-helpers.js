@@ -107,7 +107,7 @@ describe('helpers', () => {
 				imageClass: 'auto',
 				name: 'Category 1',
 			}, 'a', ''),
-			`<a href="/category/undefined" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
+			`<a href="${nconf.get('relative_path')}/category/undefined" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
 		);
 		assert.strictEqual(
 			helpers.buildCategoryLabel({
