@@ -219,6 +219,7 @@ describe('Controllers', () => {
 			{ it: 'should get topic data', url: `/api/v3/topics/1` },
 			{ it: 'should get category data', url: `/api/v3/categories/1` },
 			{ it: 'should return osd data', url: `/osd.xml` },
+			{ it: 'should load service worker', url: '/service-worker.js' },
 		];
 		testRoutes.forEach((route) => {
 			it(route.it, async () => {
