@@ -199,10 +199,9 @@ describe('Utility Methods', () => {
 		utils.assertPasswordValidity('Yzsh31j!a', zxcvbn);
 	});
 
-	// it('should generate UUID', () => {
-	// TODO: add back when nodejs 18 is minimum
-	// assert(validator.isUUID(utils.generateUUID()));
-	// });
+	it('should generate UUID', () => {
+		assert(validator.isUUID(utils.generateUUID()));
+	});
 
 	it('should shallow merge two objects', (done) => {
 		const a = { foo: 1, cat1: 'ginger' };
