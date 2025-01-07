@@ -15,7 +15,7 @@
 	"reorder-plugins": "Omorganiser pluginar",
 	"order-active": "Sorter aktive pluginar",
 	"dev-interested": "Er du ein utviklar?",
-	"docs-info": "Sjå dokumentasjonen for meir informasjon",
+	"docs-info": "Dokumentasjon for utvikling av innstikk kan du sjå i <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "Du kan dra og sleppe pluginar for å endre rekkjefølgja",
 	"order.explanation": "Rekkjefølgja kan påverke korleis pluginar fungerer saman",
@@ -32,7 +32,7 @@
 	"plugin-item.more-info": "Meir informasjon",
 	"plugin-item.unknown": "Ukjent",
 	"plugin-item.unknown-explanation": "Vi kunne ikkje finne informasjon om denne pluginen",
-	"plugin-item.compatible": "Kompatibel",
+	"plugin-item.compatible": "Innstikk er kompatibelt med NodeBB %1",
 	"plugin-item.not-compatible": "Ikkje kompatibel",
 
 	"alert.enabled": "Plugin aktivert",
