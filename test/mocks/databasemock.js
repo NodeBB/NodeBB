@@ -246,6 +246,7 @@ async function giveDefaultGlobalPrivileges() {
 	await privileges.global.give([
 		'groups:view:users', 'groups:view:tags', 'groups:view:groups',
 	], 'guests');
+	await privileges.global.give(['groups:view:users'], 'fediverse');
 }
 
 async function enableDefaultPlugins() {

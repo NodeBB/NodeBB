@@ -11,6 +11,7 @@ const request = require('../src/request');
 
 const file = require('../src/file');
 const install = require('../src/install');
+const privileges = require('../src/privileges');
 const meta = require('../src/meta');
 const user = require('../src/user');
 const categories = require('../src/categories');
@@ -358,9 +359,12 @@ describe('ActivityPub integration', () => {
 					assert(saved.tid);
 
 					topic = await topics.getTopicData(saved.tid);
-					assert(topic);
-					assert.strictEqual(saved.uid, 'https://example.org/user/foobar');
-					assert.strictEqual(saved.content, '<b>Baz quux</b>');
+					const { uid, mainPid } = topic;
+					assert(uid && mainPid);
+					const { content, sourceContent } = await posts.getPostData(mainPid);
+					assert.strictEqual(uid, 'https://example.org/user/foobar');
+					assert.strictEqual(content, '');
+					assert.strictEqual(sourceContent, '**Baz quux**');
 				});
 
 				it('should properly save the topic title in the topic hash', async () => {
@@ -501,7 +505,7 @@ describe('ActivityPub integration', () => {
 
 			it('should return true if successfully asserted', async () => {
 				const result = await activitypub.actors.assert([actorUri]);
-				assert(result);
+				assert(result && result.length);
 			});
 
 			it('should contain a representation of that remote user in the database', async () => {
