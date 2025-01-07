@@ -501,4 +501,58 @@ describe('Utility Methods', () => {
 		assert.strictEqual(result.user1.uid, uid1);
 		assert.strictEqual(result.user2.uid, uid2);
 	});
+
+	describe('debounce/throttle', () => {
+		it('should call function after x milliseconds once', (done) => {
+			let count = 0;
+			const now = Date.now();
+			const fn = utils.debounce(() => {
+				count += 1;
+				assert.strictEqual(count, 1);
+				assert(Date.now() - now > 50);
+			}, 100);
+			fn();
+			fn();
+			setTimeout(() => done(), 200);
+		});
+
+		it('should call function first if immediate=true', (done) => {
+			let count = 0;
+			const now = Date.now();
+			const fn = utils.debounce(() => {
+				count += 1;
+				assert.strictEqual(count, 1);
+				assert(Date.now() - now < 50);
+			}, 100, true);
+			fn();
+			fn();
+			setTimeout(() => done(), 200);
+		});
+
+		it('should call function after x milliseconds once', (done) => {
+			let count = 0;
+			const now = Date.now();
+			const fn = utils.throttle(() => {
+				count += 1;
+				assert.strictEqual(count, 1);
+				assert(Date.now() - now > 50);
+			}, 100);
+			fn();
+			fn();
+			setTimeout(() => done(), 200);
+		});
+
+		it('should call function twice if immediate=true', (done) => {
+			let count = 0;
+			const fn = utils.throttle(() => {
+				count += 1;
+			}, 100, true);
+			fn();
+			fn();
+			setTimeout(() => {
+				assert.strictEqual(count, 2);
+				done();
+			}, 200);
+		});
+	});
 });
