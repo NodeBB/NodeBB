@@ -34,6 +34,10 @@ get:
                     description: A topic identifier
                   content:
                     type: string
+                  sourceContent:
+                    type: string
+                    description: If the pid is a remote post ID, and markdown was received, it will be saved in this property, and `content` will be emptied.
+                    nullable: true
                   timestamp:
                     type: number
                   flagId:
