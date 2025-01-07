@@ -221,7 +221,6 @@ describe('Controllers', () => {
 			{ it: 'should return osd data', url: `/osd.xml` },
 		];
 		testRoutes.forEach((route) => {
-			console.log('route', route);
 			it(route.it, async () => {
 				const { response, body } = await request.get(`${baseUrl}/${route.url}`);
 				assert.equal(response.statusCode, route.status || 200);
