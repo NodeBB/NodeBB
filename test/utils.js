@@ -567,5 +567,11 @@ describe('Utility Methods', () => {
 			assert.strictEqual(el.find('#text').text(), 'Home');
 			assert.strictEqual(el.find('#search').attr('title'), 'Search');
 		});
+
+		it('should not error', (done) => {
+			shim.flush();
+			shim.flushNamespace();
+			done();
+		});
 	});
 });
