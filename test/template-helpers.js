@@ -318,18 +318,18 @@ describe('helpers', () => {
 		const iso = new Date().toISOString();
 		let post = { pid: 2, toPid: 1, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
 		let str = helpers.generateWroteReplied(post, 1);
-		assert.strictEqual(str, `[[topic:replied-to-user-ago, 1, /post/1, baris, /post/2, ${iso}]]`);
+		assert.strictEqual(str, `[[topic:replied-to-user-ago, 1, ${nconf.get('relative_path')}/post/1, baris, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
 
 		post = { pid: 2, toPid: 1, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
 		str = helpers.generateWroteReplied(post, -1);
-		assert.strictEqual(str, `[[topic:replied-to-user-on, 1, /post/1, baris, /post/2, ${iso}]]`);
+		assert.strictEqual(str, `[[topic:replied-to-user-on, 1, ${nconf.get('relative_path')}/post/1, baris, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
 
 		post = { pid: 2, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
 		str = helpers.generateWroteReplied(post, 1);
-		assert.strictEqual(str, `[[topic:wrote-ago, /post/2, ${iso}]]`);
+		assert.strictEqual(str, `[[topic:wrote-ago, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
 
 		str = helpers.generateWroteReplied(post, -1);
-		assert.strictEqual(str, `[[topic:wrote-on, /post/2, ${iso}]]`);
+		assert.strictEqual(str, `[[topic:wrote-on, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
 
 		done();
 	});
