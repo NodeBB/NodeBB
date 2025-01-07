@@ -1915,12 +1915,12 @@ describe('Controllers', () => {
 			});
 
 			it('should deny access if view:users privilege is not enabled for guests', async () => {
-				await privileges.global.rescind(['groups:view:users'], 'guests');
+				await privileges.global.rescind(['groups:view:users'], 'fediverse');
 
 				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
 				assert.strictEqual(response.statusCode, 400);
 
-				await privileges.global.give(['groups:view:users'], 'guests');
+				await privileges.global.give(['groups:view:users'], 'fediverse');
 			});
 
 			it('should respond appropriately if the user requested does not exist locally', async () => {
