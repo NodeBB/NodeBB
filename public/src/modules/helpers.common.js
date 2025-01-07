@@ -383,7 +383,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			</li>`;
 		});
 
-		return html;
+		return html.join('');
 	}
 
 	function register() {
