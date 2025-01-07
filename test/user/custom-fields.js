@@ -69,6 +69,14 @@ describe('custom user fields', () => {
 		await assert.rejects(
 			user.updateProfile(highRepUid, {
 				uid: highRepUid,
+				location: 'https://spam.com',
+			}),
+			{ message: '[[error:custom-user-field-invalid-text, Location]]' },
+		);
+
+		await assert.rejects(
+			user.updateProfile(highRepUid, {
+				uid: highRepUid,
 				favouriteDate: 'not-a-date',
 			}),
 			{ message: '[[error:custom-user-field-invalid-date, Anniversary]]' },
@@ -110,8 +118,7 @@ describe('custom user fields', () => {
 			soccerTeam: 'Galatasaray',
 		});
 
-		const { response, body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
-		//  console.log(body);
+		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
 		assert.strictEqual(body.website, 'https://nodebb.org');
 	});
 });
