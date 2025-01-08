@@ -28,8 +28,10 @@ define('forum/topic/move', [
 			if (Move.moveAll || (Move.tids && Move.tids.length > 1)) {
 				modal.find('.card-header').translateText('[[topic:move-topics]]');
 			}
+			const dropdownEl = modal.find('[component="category-selector"]');
+			dropdownEl.addClass('dropup');
 
-			categorySelector.init(modal.find('[component="category-selector"]'), {
+			categorySelector.init(dropdownEl, {
 				onSelect: onCategorySelected,
 				privilege: 'moderate',
 			});

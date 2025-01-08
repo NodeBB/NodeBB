@@ -86,7 +86,7 @@ describe('Post\'s', () => {
 
 		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [2, null]);
 
-		await posts.changeOwner([pid1, pid2], newUid);
+		await socketPosts.changeOwner({ uid: globalModUid }, { pids: [pid1, pid2], toUid: newUid });
 
 		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [null, 2]);
 
@@ -1069,6 +1069,65 @@ describe('Post\'s', () => {
 			assert.strictEqual(postData.length, 1);
 			assert.strictEqual(postData[0].data.content, 'the moved queued post');
 			assert.strictEqual(postData[0].data.tid, result2.tid);
+		});
+	});
+
+	describe('post editors', () => {
+		it('should fail with invalid data', async () => {
+			await assert.rejects(
+				socketPosts.saveEditors({ uid: 0 }, {
+					pid: 1,
+					uids: [1],
+				}),
+				{ message: '[[error:no-privileges]]' },
+			);
+			await assert.rejects(
+				socketPosts.saveEditors({ uid: 0 }, null),
+				{ message: '[[error:invalid-data]]' },
+			);
+			await assert.rejects(
+				socketPosts.saveEditors({ uid: 0 }, {
+					pid: null,
+					uids: [1],
+				}),
+				{ message: '[[error:invalid-data]]' },
+			);
+			await assert.rejects(
+				socketPosts.saveEditors({ uid: 0 }, {
+					pid: 1,
+					uids: null,
+				}),
+				{ message: '[[error:invalid-data]]' },
+			);
+
+			await assert.rejects(
+				socketPosts.getEditors({ uid: 0 }, null),
+				{ message: '[[error:invalid-data]]' },
+			);
+
+			await assert.rejects(
+				socketPosts.saveEditors({ uid: 0 }, { pid: null }),
+				{ message: '[[error:invalid-data]]' },
+			);
+		});
+
+		it('should add another user to post editors', async () => {
+			const ownerUid = await user.create({ username: 'owner user' });
+			const editorUid = await user.create({ username: 'editor user' });
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'just a topic for multi editor testing',
+				content: `Some text here for the OP`,
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [editorUid],
+			});
+
+			const userData = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.strictEqual(userData[0].username, 'editor user');
 		});
 	});
 

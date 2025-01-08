@@ -113,8 +113,14 @@ const doUnsubscribe = async (payload) => {
 			user.updateDigestSetting(payload.uid, 'off'),
 		]);
 	} else if (payload.template === 'notification') {
+		const currentToNewSetting = {
+			notificationemail: 'notification',
+			email: 'none',
+		};
 		const current = await db.getObjectField(`user:${payload.uid}:settings`, `notificationType_${payload.type}`);
-		await user.setSetting(payload.uid, `notificationType_${payload.type}`, (current === 'notificationemail' ? 'notification' : 'none'));
+		if (currentToNewSetting.hasOwnProperty(current)) {
+			await user.setSetting(payload.uid, `notificationType_${payload.type}`, currentToNewSetting[current]);
+		}
 	}
 	return true;
 };

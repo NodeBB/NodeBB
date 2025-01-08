@@ -1,6 +1,4 @@
 <div class="tool-modal d-flex">
-
-
 	<div class="card shadow">
 		<h5 class="card-header">[[topic:thread-tools.merge-topics]]</h5>
 		<div class="card-body">
@@ -13,7 +11,7 @@
 					<span class="input-group-text"><i class="fa fa-search"></i></span>
 				</div>
 
-				<div class="quick-search-container dropdown-menu d-block p-2 hidden">
+				<div class="quick-search-container dropdown-menu d-block p-2 hidden w-100">
 					<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
 					<div class="quick-search-results-container"></div>
 				</div>

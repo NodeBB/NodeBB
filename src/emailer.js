@@ -354,8 +354,11 @@ Emailer.sendViaFallback = async (data) => {
 	data.text = data.plaintext;
 	delete data.plaintext;
 
-	// NodeMailer uses a combined "from"
-	data.from = `${data.from_name}<${data.from}>`;
+	// use an address object https://nodemailer.com/message/addresses/
+	data.from = {
+		name: data.from_name,
+		address: data.from,
+	};
 	delete data.from_name;
 	await Emailer.fallbackTransport.sendMail(data);
 };

@@ -370,10 +370,10 @@ postsAPI.getUpvoters = async function (caller, data) {
 		upvotedUids = upvotedUids.slice(0, cutoff - 1);
 	}
 
-	const usernames = await user.getUsernamesByUids(upvotedUids);
+	const users = await user.getUsersFields(upvotedUids, ['username']);
 	return {
 		otherCount,
-		usernames,
+		usernames: users.map(user => user.displayname),
 		cutoff,
 	};
 };

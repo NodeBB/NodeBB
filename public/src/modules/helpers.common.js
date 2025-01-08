@@ -214,9 +214,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function renderTopicImage(topicObj) {
 		if (topicObj.thumb) {
-			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
+			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.displayname + '" />';
 		}
-		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
+		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.displayname + '" />';
 	}
 
 	function renderDigestAvatar(block) {
@@ -300,7 +300,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 		classNames = classNames || '';
 		const attributes = new Map([
-			['title', userObj.username],
+			['title', userObj.displayname],
 			['data-uid', userObj.uid],
 			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
@@ -313,7 +313,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			output += `<img${attr2String(attributes)} alt="${userObj.username}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
+			output += `<img${attr2String(attributes)} alt="${userObj.displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
 		}
 		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${userObj['icon:bgColor']}">${userObj['icon:text']}</span>`;
 		return output;
@@ -383,7 +383,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			</li>`;
 		});
 
-		return html;
+		return html.join('');
 	}
 
 	function register() {

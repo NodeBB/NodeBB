@@ -172,8 +172,11 @@ module.exports = function (module) {
 		if (key === undefined || key === null || field === undefined || field === null) {
 			return;
 		}
-		await module.client.hdel(key, field);
-		cache.del(key);
+		field = field.toString();
+		if (field) {
+			await module.client.hdel(key, field);
+			cache.del(key);
+		}
 	};
 
 	module.deleteObjectFields = async function (key, fields) {

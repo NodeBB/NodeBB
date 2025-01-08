@@ -79,6 +79,39 @@
       imageDimensions = getBackgroundImageDimensions($el);
     }
 
+    $(window).on('keydown.dbg', (e) => {
+      var pos = $el.css('background-position').match(/(-?\d+).*?\s(-?\d+)/) || [];
+      var xPos = parseInt(pos[1]) || 0;
+      var yPos = parseInt(pos[2]) || 0;
+      // We must convert percentage back to pixels
+      if (options.units == 'percent') {
+        xPos = Math.round(xPos / -200 * imageDimensions.width);
+        yPos = Math.round(yPos / -200 * imageDimensions.height);
+      }
+
+      var x = 0, y = 0;
+      if (e.which === 37) { // left
+        x = -5
+      } else if (e.which === 39) { // right
+        x = 5
+      } else if (e.which === 38) { // up
+        y = -5
+      } else if (e.which === 40) { // down
+        y = +5
+      }
+      if (options.units === 'percent') {
+        xPos = options.axis === 'y' ? xPos : limit(-imageDimensions.width/2, 0, xPos+x, options.bound);
+        yPos = options.axis === 'x' ? yPos : limit(-imageDimensions.height/2, 0, yPos+y, options.bound);
+
+        // Convert pixels to percentage
+        $el.css('background-position', xPos / imageDimensions.width * -200 + '% ' + yPos / imageDimensions.height * -200 + '%');
+      } else {
+        xPos = options.axis === 'y' ? xPos : limit($el.innerWidth()-imageDimensions.width, 0, xPos+x, options.bound);
+        yPos = options.axis === 'x' ? yPos : limit($el.innerHeight()-imageDimensions.height, 0, yPos+y, options.bound);
+      }
+      return [37, 38, 39, 40].includes(e.which) ? false : undefined;
+    });
+
     $el.on('mousedown.dbg touchstart.dbg', function(e) {
       if (e.target !== $el[0]) {
         return;
@@ -145,7 +178,7 @@
   Plugin.prototype.disable = function() {
     var $el = $(this.element);
     $el.off('mousedown.dbg touchstart.dbg');
-    $window.off('mousemove.dbg touchmove.dbg mouseup.dbg touchend.dbg mouseleave.dbg');
+    $window.off('mousemove.dbg touchmove.dbg mouseup.dbg touchend.dbg mouseleave.dbg keydown.dbg');
   }
 
   $.fn.backgroundDraggable = function(options) {
