@@ -264,9 +264,10 @@ async function listen() {
 		}
 	}
 	port = parseInt(port, 10);
-	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
+	const trust_proxy = nconf.get('trust_proxy');
+	if ((port !== 80 && port !== 443) || trust_proxy) {
 		winston.info('🤝 Enabling \'trust proxy\'');
-		app.enable('trust proxy');
+		app.set('trust proxy', trust_proxy || true);
 	}
 
 	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {
