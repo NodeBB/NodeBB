@@ -122,8 +122,6 @@ get:
                 type: array
                 items:
                   type: string
-              resizeImageWidth:
-                type: number
               cookies:
                 type: object
                 properties:
