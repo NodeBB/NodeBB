@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 กู้คืนกระทู้นี้เมื่อ %2",
     "user-moved-topic-from-ago": "%1 ย้ายกระทู้นี้จาก %2 เมื่อ %3",
     "user-moved-topic-from-on": "%1 ย้ายกระทู้นี้จาก %2 เมื่อ %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 โพสต์ <a href=\"%2\">อยู่ในคิว</a> รออนุมัติเมื่อ %3",
     "user-queued-post-on": "%1 โพสต์ <a href=\"%2\">อยู่ในคิว</a> รออนุมัติเมื่อ %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">อ้างอิง</a> กระทู้นี้เมื่อ %3",
@@ -135,6 +137,7 @@
     "bookmarks": "บุ๊กมาร์ก",
     "bookmarks.has-no-bookmarks": "คุณยังไม่มีบุ๊กมาร์กใดๆเลย",
     "copy-permalink": "คัดลอกลิงก์ถาวร",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "โหลดโพสเพิ่มเติม",
     "move-topic": "ย้ายกระทู้",
     "move-topics": "ย้ายกระทู้",
@@ -219,5 +222,7 @@
     "downvote-post": "โหวดลงโพสต์นี้",
     "post-tools": "เครื่องมือโพสต์",
     "unread-posts-link": "ลิงก์ไปโพสต์ที่ยังไม่ได้อ่าน",
-    "thumb-image": "รูปย่อของกระทู้"
+    "thumb-image": "รูปย่อของกระทู้",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

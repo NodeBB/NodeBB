@@ -7,5 +7,7 @@
     "alltime": "Od początku",
     "no-recent-topics": "Brak ostatnich tematów.",
     "no-popular-topics": "Brak popularnych tematów.",
-    "load-new-posts": "Załaduj nowe posty"
+    "load-new-posts": "Załaduj nowe posty",
+    "uncategorized.title": "All known topics",
+    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
 }

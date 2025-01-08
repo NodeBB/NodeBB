@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 gjenoppretta dette emnet den %2",
     "user-moved-topic-from-ago": "%1 flytta dette emnet frå %2 %3",
     "user-moved-topic-from-on": "%1 flytta dette emnet frå %2 den %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">køyrde</a> innlegget for godkjenning %3",
     "user-queued-post-on": "%1 <a href=\"%2\">køyrde</a> innlegget for godkjenning den %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">refererte</a> til dette emnet %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Bokmerke",
     "bookmarks.has-no-bookmarks": "Du har ikkje bokmerka noko innlegg enno.",
     "copy-permalink": "Kopier permalenkje",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Lastar fleire innlegg",
     "move-topic": "Flytt emne",
     "move-topics": "Flytt emne",
@@ -219,5 +222,7 @@
     "downvote-post": "Stem ned innlegg",
     "post-tools": "Innleggsverktøy",
     "unread-posts-link": "Lenkje til uleste innlegg",
-    "thumb-image": "Emne miniatyrbilete"
+    "thumb-image": "Emne miniatyrbilete",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

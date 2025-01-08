@@ -1,18 +1,18 @@
 {
-	"name": "Свят",
-	"popular": "Популярни теми",
-	"recent": "Всички тем",
-	"help": "Помощ",
+	"name": "World",
+	"popular": "Popular topics",
+	"recent": "All topics",
+	"help": "Help",
 
-	"help.title": "Каква е тази страница?",
-	"help.intro": "Добре дошли в своя ъгъл от федивселената.",
-	"help.fediverse": "„Федивселената“ е мрежа от взаимно свързани приложения и уеб сайтове, които говорят помежду си и чиито потребители могат да се виждат. Този форум е федериран и може да взаимодейства с тази социална мрежа (т.нар. „федивселена“). Тази страница е Вашият ъгъл от федивселената. В него ще виждате само темите създадени или споделени от потребители, които <strong>Вие</strong> следвате.",
-	"help.build": "В началото тук може да няма много теми. Това е нормално. Ще започнете да виждате повече съдържание тук, когато започнете да следвате други потребители.",
-	"help.federating": "По същия начин, ако потребители извън този форум започнат да следват <em>Вас</em>, тогава Вашите публикации ще започнат да се появяват в техните приложения и уеб сайтове.",
-	"help.next-generation": "Това е новото поколение социална мрежа. Започнете да допринасяте още днес!",
+	"help.title": "What is this page?",
+	"help.intro": "Welcome to your corner of the fediverse.",
+	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
+	"help.build": "There might not be a lot of topics here to start; that's normal. You will start to see more content here over time when you start following other users.",
+	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
+	"help.next-generation": "This is the next generation of social media, start contributing today!",
 
-	"onboard.title": "Вашият прозорец към федивселената…",
-	"onboard.what": "Това е Вашата персонализирана категория съставена само от съдържание извън този форум. Тук се появяват неща от хора, които следвате, както и такива споделени от тях.",
-	"onboard.why": "Много неща се случват извън този форум, и не всичко отговаря на Вашите интереси. Затова следването на конкретни хора е най-добрият начин да покажете, че искате да виждате повече от тях.",
-	"onboard.how": "Междувременно можете да използвате бутоните в горната част, за да видите до какво има достъп този форум. Така може да започнете да откривате ново съдържание!"
+	"onboard.title": "Your window to the fediverse...",
+	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
+	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
+	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!"
 }

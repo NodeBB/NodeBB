@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%2에 %1님이 이 토픽을 복원함",
     "user-moved-topic-from-ago": "%3에 %1님이 %2에서 이 토픽을 이동함",
     "user-moved-topic-from-on": "%3에 %1님이 %2에서 이 토픽을 이동함",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%3에 %1님이 <a href=\"%2\">게시물을 대기</a>함",
     "user-queued-post-on": "%3에 %1님이 <a href=\"%2\">게시물을 대기</a>함",
     "user-referenced-topic-ago": "%3에 %1님이 <a href=\"%2\">이 토픽을 참조</a>함",
@@ -135,6 +137,7 @@
     "bookmarks": "북마크",
     "bookmarks.has-no-bookmarks": "현재 북마크한 게시물이 없습니다.",
     "copy-permalink": "퍼머링크 복사",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "게시물 더 불러오는 중",
     "move-topic": "토픽 이동",
     "move-topics": "토픽 이동",
@@ -219,5 +222,7 @@
     "downvote-post": "반대표",
     "post-tools": "게시물 도구",
     "unread-posts-link": "읽지 않은 게시물 링크",
-    "thumb-image": "토픽 썸네일 이미지"
+    "thumb-image": "토픽 썸네일 이미지",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

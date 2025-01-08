@@ -7,5 +7,7 @@
     "alltime": "All tid",
     "no-recent-topics": "Det er ingen nye emner.",
     "no-popular-topics": "Det er ingen populære emner.",
-    "load-new-posts": "Last inn nye innlegg"
+    "load-new-posts": "Last inn nye innlegg",
+    "uncategorized.title": "All known topics",
+    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
 }

@@ -98,5 +98,9 @@
     "notificationType-post-queue": "Når eit nytt innlegg vert lagt i køen",
     "notificationType-new-post-flag": "Når eit innlegg vert rapportert",
     "notificationType-new-user-flag": "Når ein brukar vert rapportert",
-    "notificationType-new-reward": "Når du får ein ny utmerking"
+    "notificationType-new-reward": "Når du får ein ny utmerking",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

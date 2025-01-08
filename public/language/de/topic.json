@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 stellte dieses Thema am %2 wieder her",
     "user-moved-topic-from-ago": "%1 verschob dieses Thema von %2 %3",
     "user-moved-topic-from-on": "%1 verschob dieses Thema von %2 am %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 hat Beitrag für Überprüfung <a href=\"%2\">markiert</a> %3",
     "user-queued-post-on": "%1 hat Beitrag am %3 für Überprüfung <a href=\"%2\">markiert</a>",
     "user-referenced-topic-ago": "%1 hat auf dieses Thema <a href=\"%2\">verwiesen</a> %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Lesezeichen",
     "bookmarks.has-no-bookmarks": "Du hast noch keine Beiträge mit Lesezeichen markiert.",
     "copy-permalink": "Permalink kopieren",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Lade mehr Beiträge",
     "move-topic": "Thema verschieben",
     "move-topics": "Themen verschieben",
@@ -219,5 +222,7 @@
     "downvote-post": "Downvote post",
     "post-tools": "Post tools",
     "unread-posts-link": "Unread posts link",
-    "thumb-image": "Topic thumbnail image"
+    "thumb-image": "Topic thumbnail image",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

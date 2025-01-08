@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 restored this topic on %2",
     "user-moved-topic-from-ago": "%1 moved this topic from %2 %3",
     "user-moved-topic-from-on": "%1 moved this topic from %2 on %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">queued</a> post for approval %3",
     "user-queued-post-on": "%1 <a href=\"%2\">queued</a> post for approval on %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">referenced</a> this topic %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Bookmarks",
     "bookmarks.has-no-bookmarks": "You haven't bookmarked any posts yet.",
     "copy-permalink": "Copy Permalink",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Càrriga Prus Arresonos",
     "move-topic": "Move Arresonada",
     "move-topics": "Move Topics",
@@ -219,5 +222,7 @@
     "downvote-post": "Downvote post",
     "post-tools": "Post tools",
     "unread-posts-link": "Unread posts link",
-    "thumb-image": "Topic thumbnail image"
+    "thumb-image": "Topic thumbnail image",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }
