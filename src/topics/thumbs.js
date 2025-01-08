@@ -74,9 +74,10 @@ Thumbs.get = async function (tids, options) {
 		const mainPidUploads = await Promise.all(mainPids.map(async pid => await posts.uploads.list(pid)));
 		mainPidUploads.forEach((uploads, idx) => {
 			uploads = uploads.map(path => `/${path}`);
-			uploads = uploads.filter(
-				upload => !thumbs[idx].includes(upload) && mime.getType(upload).startsWith('image/')
-			);
+			uploads = uploads.filter((upload) => {
+				const type = mime.getType(upload);
+				return !thumbs[idx].includes(upload) && type && type.startsWith('image/');
+			});
 
 			if (uploads.length) {
 				thumbs[idx].push(...uploads);
