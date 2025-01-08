@@ -38,6 +38,7 @@
 	"settings/tags": "Emneord",
 	"settings/notifications": "Varsler",
 	"settings/api": "API-tilgang",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Lyder",
 	"settings/social": "Sosialt",
 	"settings/cookies": "Informasjonskapsler",

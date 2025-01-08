@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "Није вам дозвољено да мењате стање додатне компоненте онако како је дефинисано у време извршавања (config.json, променљиве окружења или аргументи терминала), уместо тога измените конфигурацију.",
     "theme-not-set-in-configuration": "Приликом дефинисања активних додатних компоненти у конфигурацији, промена тема захтева додавање нове теме на листу активних додатних компоненти пре ажурирања у ACP",
     "topic-event-unrecognized": "Догађај из теме „%1“ није препознат",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "Није могуће поставити подређену категорију као надређену",
     "cant-set-self-as-parent": "Није могуће поставити себе као надређену категорију",
     "api.master-token-no-uid": "Примљен је главни токен без одговарајућег `_uid` у телу захтева",
@@ -247,5 +248,11 @@
     "api.500": "Дошло је до неочекиване грешке приликом покушаја сервисирања вашег захтева.",
     "api.501": "Рута коју покушавате да позовете још увек није примењена, покушајте поново сутра",
     "api.503": "Рута коју покушавате да позовете тренутно није доступна због конфигурације сервера",
-    "api.reauth-required": "Ресурс којем покушавате да приступите захтева (поновну) аутентификацију."
+    "api.reauth-required": "Ресурс којем покушавате да приступите захтева (поновну) аутентификацију.",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

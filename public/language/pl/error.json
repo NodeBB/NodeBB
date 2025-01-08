@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "Nie możesz zmienić stanu wtyczki, bo został on zdefiniowany przy uruchamianiu (config.json, zmienne środowiskowe lub argumenty z terminala). Zamiast tego zmień konfigurację.",
     "theme-not-set-in-configuration": "Pamiętaj o zależności między aktywnymi wtyczkami a wystrojem, który ma z nimi współpracować.",
     "topic-event-unrecognized": "Zdarzenie w temacie '%1' nierozpoznane",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "Nie można ustawić podkategorii jako kategorii nadrzędnej",
     "cant-set-self-as-parent": "Nie można ustawić kategorii nadrzędnej do samej siebie",
     "api.master-token-no-uid": "Otrzymano główny token bez odpowiedniego `_uid` w treści wywołania",
@@ -247,5 +248,11 @@
     "api.500": "Wystąpił nieoczekiwany błąd podczas próby obsługi Twojego żądania.",
     "api.501": "Ścieżka jaką próbujesz wywołać, nie jest jeszcze zaimplementowana. Spróbuj ponownie jutro.",
     "api.503": "Ścieżka z którą próbujesz się połączyć, jest obecnie niedostępna z powodu konfiguracji serwera",
-    "api.reauth-required": "Zasób, do którego próbujesz uzyskać dostęp, wymaga (być może ponownego) uwierzytelnienia."
+    "api.reauth-required": "Zasób, do którego próbujesz uzyskać dostęp, wymaga (być może ponownego) uwierzytelnienia.",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

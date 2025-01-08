@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "פוגעני",
 	"modal-reason-other": "אחר (ציינו למטה)",
 	"modal-reason-custom": "הסיבה לדיווח על התוכן...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "שליחת דיווח",
 	"modal-submit-success": "התוכן סומן לצרכי בקרה",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "פעולות כלליות",
 	"bulk-resolve": "השלמת דיווחים",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 דיווחים עודכנו",
 	"flagged-timeago": "מדווחים <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[דיווח אוטומטי] פוסט זה קיבל %1 הצבעות למטה."

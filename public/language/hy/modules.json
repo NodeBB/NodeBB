@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Հեռացրեք բոլոր սևագրերը",
     "composer.no-drafts": "Սևագրեր չունեք",
     "composer.discard-draft-confirm": "Ցանկանու՞մ եք չեղարկել այս սևագիրը:",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "Լավ",
     "bootbox.cancel": "Չեղարկել",
     "bootbox.confirm": "Հաստատել",

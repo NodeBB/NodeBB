@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "您不能修改插件状态因为它们在运行时中被定义（config.json，环境变量或终端选项），请转而修改配置。",
     "theme-not-set-in-configuration": "在配置中定义活跃的插件时，需要先将新主题加入活跃插件的列表，才能在管理员控制面板中修改主题",
     "topic-event-unrecognized": "无法识别主题事件'%1'",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "无法将子版块设置为父版块",
     "cant-set-self-as-parent": "无法将自身设置为父版块",
     "api.master-token-no-uid": "收到一个在请求体中没有对应 `_uid` 的主令牌",
@@ -247,5 +248,11 @@
     "api.500": "在试图为您的请求提供服务时出现了一个意外的错误。",
     "api.501": "您试图调用的路由还没被实现，请明天重试",
     "api.503": "您试图调用的路由因为服务器配置而目前不可用",
-    "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。"
+    "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

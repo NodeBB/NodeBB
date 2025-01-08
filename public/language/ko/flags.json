@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "모욕적",
 	"modal-reason-other": "기타 (아래 지정)",
 	"modal-reason-custom": "이 콘텐츠를 신고하는 사유...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "신고 제출",
 	"modal-submit-success": "콘텐츠가 신고되었습니다.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "대량 작업",
 	"bulk-resolve": "신고 해결",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1개의 신고가 업데이트되었습니다",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[자동 신고] %1개의 반대를 받았습니다."

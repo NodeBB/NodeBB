@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "אינך רשאי לשנות את מצב הפלאגין כפי שהם מוגדרים בזמן ריצה (config.json, משתני סביבה או ארגומנטים של מסוף), אנא שנה את התצורה במקום זאת.",
     "theme-not-set-in-configuration": "כאשר מגדירים תוספים פעילים בתצורה, שינוי ערכות נושא מחייב הוספת ערכת הנושא החדשה לרשימת התוספים הפעילים לפני עדכון שלו ב-ACP",
     "topic-event-unrecognized": "אירוע הנושא '%1' לא מזוהה",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "לא ניתן להגדיר קטגוריה משנה לקטגוריית אב",
     "cant-set-self-as-parent": "לא ניתן להגדיר את עצמי כקטגוריית אב",
     "api.master-token-no-uid": "token ראשי התקבל ללא corresponding `_uid` בגוף הבקשה",
@@ -247,5 +248,11 @@
     "api.500": "שגיאה בלתי צפויה אירעה בעת ניסיון להגיש את בקשתכם.",
     "api.501": "הנתיב אליו אתם מנסים לתקשר עדיין לא מיושם, אנא נסו שוב מחר",
     "api.503": "הנתיב אליו אתם מנסים לתקשר אינו זמין כעת עקב תצורת שרת",
-    "api.reauth-required": "המשאב שאליו אתה מנסה לגשת דורש אימות (מחודש)."
+    "api.reauth-required": "המשאב שאליו אתה מנסה לגשת דורש אימות (מחודש).",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

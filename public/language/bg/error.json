@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "Не можете да променяте състоянието на добавката, тъй като то се определя по време на работата ѝ (чрез config.json, променливи на средата или аргументи при изпълнение). Вместо това може да промените конфигурацията.",
     "theme-not-set-in-configuration": "Когато определяте активните добавки в конфигурацията, промяната на темите изисква да се добави новата тема към активните добавки, преди актуализирането ѝ в ACP",
     "topic-event-unrecognized": "Събитието „%1“ на темата е неизвестно",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "Дъщерна категория не може да се зададе като базова такава",
     "cant-set-self-as-parent": "Категорията не може да се зададе като базова категория на себе си",
     "api.master-token-no-uid": "Беше получен главен идентификатор без съответстващо поле `_uid` в тялото на заявката",
@@ -247,5 +248,11 @@
     "api.500": "При обработката на заявката Ви възникна неочаквана грешка.",
     "api.501": "Пътят, който се опитвате да извикате, все още не съществува. Моля, опитайте отново утре.",
     "api.503": "Пътят, който се опитвате да извикате, в момента не е достъпен, поради настройките на сървъра.",
-    "api.reauth-required": "Ресурсът, който се опитвате да достъпите, изисква (повторно) удостоверяване."
+    "api.reauth-required": "Ресурсът, който се опитвате да достъпите, изисква (повторно) удостоверяване.",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "Произходът на получения обект не съвпада с произхода на подателя",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "Заявката беше отказана, тъй като тя или част от нея не се поддържа от сървъра, към който е насочена"
 }

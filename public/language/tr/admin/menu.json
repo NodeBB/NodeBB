@@ -38,6 +38,7 @@
 	"settings/tags": "Etiketler",
 	"settings/notifications": "Bildirimler",
 	"settings/api": "API Erişimi",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Sesler",
 	"settings/social": "Sosyal",
 	"settings/cookies": "Çerezler",

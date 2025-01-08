@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "실행 중에 정의된 플러그인 상태를 변경할 수 없습니다 (config.json, 환경 변수 또는 터미널 인수). 대신 구성을 수정하세요.",
     "theme-not-set-in-configuration": "구성에서 활성 플러그인을 정의할 때 새 테마를 추가하기 전에 ACP에서 테마를 업데이트해야 합니다",
     "topic-event-unrecognized": "토픽 이벤트 '%1' 인식되지 않았습니다",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "하위 카테고리를 상위 카테고리로 설정할 수 없습니다",
     "cant-set-self-as-parent": "자신을 상위 카테고리로 설정할 수 없습니다",
     "api.master-token-no-uid": "요청 본문에서 해당하는 `_uid`가없는 마스터 토큰이 수신되었습니다",
@@ -247,5 +248,11 @@
     "api.500": "요청을 처리하는 중 예기치 않은 오류가 발생했습니다.",
     "api.501": "호출하려는 경로가 현재 구현되지 않았습니다. 다음에 다시 시도하세요",
     "api.503": "현재 서버 구성으로 인해 호출하려는 경로를 사용할 수 없습니다",
-    "api.reauth-required": "액세스하려는 리소스에는 (다시)인증이 필요합니다."
+    "api.reauth-required": "액세스하려는 리소스에는 (다시)인증이 필요합니다.",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

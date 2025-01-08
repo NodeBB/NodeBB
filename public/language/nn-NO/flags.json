@@ -75,7 +75,7 @@
 	"sort-all": "Sorter alle",
 	"sort-posts-only": "Berre innlegg",
 	"sort-downvotes": "Sorter etter nedstemmer",
-	"sort-upvotes": "Sorter etter oppstemmer",
+	"sort-upvotes": "Sorter etter tilrådingar",
 	"sort-replies": "Sorter etter svar",
 
 	"modal-title": "Rapporter innlegg",
@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Støytande innhald",
 	"modal-reason-other": "Annan grunn",
 	"modal-reason-custom": "Skriv inn eigen grunn",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Send inn",
 	"modal-submit-success": "Rapport sendt med suksess",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Massehandlingar",
 	"bulk-resolve": "Løys alle",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "Alle vart handsama med suksess",
 	"flagged-timeago": "Rapportert for %1 sidan",
   	"auto-flagged": "Automatisk rapportert"

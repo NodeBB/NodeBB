@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "모든 초안 삭제",
     "composer.no-drafts": "초안이 없습니다.",
     "composer.discard-draft-confirm": "이 초안을 삭제하시겠습니까?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "확인",
     "bootbox.cancel": "취소",
     "bootbox.confirm": "확인",

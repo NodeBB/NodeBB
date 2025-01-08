@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "Ձեզ չի թույլատրվում փոխել plugin-ի վիճակը, քանի որ դրանք սահմանված են գործարկման ժամանակ (config.json, շրջակա միջավայրի փոփոխականներ կամ տերմինալի արգումենտներ), փոխարենը փոխեք կազմաձևը:",
     "theme-not-set-in-configuration": "Կազմաձևում ակտիվ պլագիններ սահմանելիս, թեմաները փոխելիս անհրաժեշտ է ավելացնել նոր թեման ակտիվ հավելումների ցանկում՝ նախքան այն թարմացնելը ACP-ում:",
     "topic-event-unrecognized": "Թեմայի իրադարձությունը «% 1» անհայտ է",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "Հնարավոր չէ երեխային որպես ծնողի/գլխավոր կատեգորիա սահմանել",
     "cant-set-self-as-parent": "Ինքն իրեն որպես ծնողի/գլխավոր կատեգորիա չի կարող սահմանվել",
     "api.master-token-no-uid": "Հիմնական նշան է ստացվել առանց համապատասխան «_uid» հարցման մարմնում",
@@ -247,5 +248,11 @@
     "api.500": "Ձեր հարցումը սպասարկելիս անսպասելի սխալ է տեղի ունեցել:",
     "api.501": "Ուղեգիծը, որով փորձում եք զանգահարել, դեռ չի իրականացվել, խնդրում ենք վաղը նորից փորձեք",
     "api.503": "Երթուղին, որը փորձում եք զանգահարել, ներկայումս հասանելի չէ սերվերի կազմաձևման պատճառով",
-    "api.reauth-required": "Ռեսուրսը, որին փորձում եք միանալ, պահանջում է (վերա) նույնականացում:"
+    "api.reauth-required": "Ռեսուրսը, որին փորձում եք միանալ, պահանջում է (վերա) նույնականացում:",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

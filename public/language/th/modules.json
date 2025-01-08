@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "ลบข้อความร่างทั้งหมด",
     "composer.no-drafts": "คุณไม่มีข้อความร่าง",
     "composer.discard-draft-confirm": "คุณต้องการลบข้อความร่างนี้หรือไม่?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "ตกลง",
     "bootbox.cancel": "ยกเลิก",
     "bootbox.confirm": "ยืนยัน",

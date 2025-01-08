@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Tüm taslakları sil",
     "composer.no-drafts": "Taslak yok",
     "composer.discard-draft-confirm": "Bu taslağı silmek istiyor musunuz?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "Kabul",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla",

@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "توهین آمیز",
 	"modal-reason-other": "دیگر (در زیر مشخص کنید)",
 	"modal-reason-custom": "علت گزارش این محتوا...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "ارسال گزارش",
 	"modal-submit-success": "محتوا برای بررسی گزارش شد",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "عملیات گروهی",
 	"bulk-resolve": "Resolve Flag(s)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 گزارش بروزرسانی شد",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."

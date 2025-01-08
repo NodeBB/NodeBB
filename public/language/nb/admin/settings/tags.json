@@ -4,7 +4,7 @@
     "system-tags": "Systememneord",
     "system-tags-help": "Bare privilegerte brukere vil kunne bruke disse emneordene.",
     "tags-per-topic": "Emneord per tråd",
-    "min-per-topic": "Minimalt antall emneord per tråd",
+    "min-per-topic": "Minimum antall emneord per tråd",
     "max-per-topic": "Maksimalt antall emneord per tråd",
     "min-length": "Minimum lengde på emneord",
     "max-length": "Maksimal lengde på emneord",

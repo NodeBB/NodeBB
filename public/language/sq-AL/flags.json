@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Ofenduese",
 	"modal-reason-other": "Të tjera (specifikoni më poshtë)",
 	"modal-reason-custom": "Arsyeja e raportimit të kësaj përmbajtjeje...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Dërgo raportin",
 	"modal-submit-success": "Përmbajtja është raportuar për moderim",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Veprime në mas",
 	"bulk-resolve": "Zgjidhja e raportim(eve)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 raportime u përditësuan",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[I vetë Raportuar] Mori %1 vota kundër."

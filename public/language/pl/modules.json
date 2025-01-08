@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Wyrzuć wszystkie wersje robocze",
     "composer.no-drafts": "Nie masz wersji roboczych",
     "composer.discard-draft-confirm": "Czy chcesz wyrzucić tę wersję roboczą?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",

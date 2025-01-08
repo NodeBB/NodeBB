@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "מחיקת כל הטיוטות",
     "composer.no-drafts": "אין לכם טיוטות",
     "composer.discard-draft-confirm": "האם למחוק טיוטה זו?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "אישור",
     "bootbox.cancel": "ביטול",
     "bootbox.confirm": "אישור",

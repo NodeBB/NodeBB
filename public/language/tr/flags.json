@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Saldırgan",
 	"modal-reason-other": "Diğer (aşağıda belirtin)",
 	"modal-reason-custom": "Bu içeriği rapor etme nedeni...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Raporu Gönder",
 	"modal-submit-success": "İçerik, denetlemesi için şikayet edildi.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Toplu Aksiyonlar",
 	"bulk-resolve": "Şikayetleri Çözümle",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 şikayet güncellendi",
 	"flagged-timeago": "Şikayet edildi <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Otomatik Şikayet] %1 tane eksi oy aldı."
