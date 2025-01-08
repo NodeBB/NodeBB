@@ -49,7 +49,10 @@ async function registerAndLoginUser(req, res, userData) {
 
 	const uid = await user.create(userData);
 	if (res.locals.processLogin) {
-		await authenticationController.doLogin(req, uid);
+		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
+		if (hasLoginPrivilege) {
+			await authenticationController.doLogin(req, uid);
+		}
 	}
 
 	// Distinguish registrations through invites from direct ones

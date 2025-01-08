@@ -402,10 +402,10 @@ async function getTooltipData(uids) {
 		uids = uids.slice(0, cutoff - 1);
 	}
 
-	const usernames = await user.getUsernamesByUids(uids);
+	const users = await user.getUsersFields(uids, ['username']);
 	return {
 		otherCount,
-		usernames,
+		usernames: users.map(user => user.displayname),
 		cutoff,
 	};
 }

@@ -41,6 +41,36 @@ describe('Translator shim', () => {
 			assert.strictEqual(t, 'secret');
 		});
 	});
+
+	describe('translateKeys', () => {
+		it('should translate each key in array', async () => {
+			const translated = await shim.translateKeys(['[[global:home]]', '[[global:search]]'], 'en-GB');
+			assert.deepStrictEqual(translated, ['Home', 'Search']);
+		});
+
+		it('should translate each key in array using a callback', (done) => {
+			shim.translateKeys(['[[global:save]]', '[[global:close]]'], 'en-GB', (translated) => {
+				assert.deepStrictEqual(translated, ['Save', 'Close']);
+				done();
+			});
+		});
+	});
+
+	it('should load translations for language', (done) => {
+		shim.load('en-GB', 'global', (translations) => {
+			assert(translations);
+			assert(translations['header.profile']);
+			done();
+		});
+	});
+
+	it('should get translations for language', (done) => {
+		shim.getTranslations('en-GB', 'global', (translations) => {
+			assert(translations);
+			assert(translations['header.profile']);
+			done();
+		});
+	});
 });
 
 describe('new Translator(language)', () => {
