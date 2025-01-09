@@ -68,7 +68,7 @@
         "csrf-sync": "4.0.3",
         "daemon": "1.1.0",
         "diff": "7.0.0",
-        "esbuild": "0.24.0",
+        "esbuild": "0.24.2",
         "express": "4.21.2",
         "express-session": "1.18.1",
         "express-useragent": "1.0.15",
