@@ -336,6 +336,9 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 		if (String(response.statusCode).startsWith('2')) {
 			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
 		} else {
+			if (typeof body === 'object') {
+				throw new Error(JSON.stringify(body));
+			}
 			throw new Error(String(body));
 		}
 	} catch (e) {
