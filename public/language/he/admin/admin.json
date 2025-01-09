@@ -1,18 +1,18 @@
 {
-	"alert.confirm-rebuild-and-restart": "האם אתה בטוח שברצונך לבנות ולהפעיל מחדש את NodeBB?",
-	"alert.confirm-restart": "האם אתה בטוח שברצונך להפעיל מחדש את NodeBB?",
+	"alert.confirm-rebuild-and-restart": "האם אתם בטוחים שברצונכם לבנות ולהפעיל מחדש את NodeBB?",
+	"alert.confirm-restart": "האם אתם בטוחים שברצונכם להפעיל מחדש את NodeBB?",
 
-	"acp-title": "%1 | לוח בקרה למנהל פורום NodeBB",
+	"acp-title": "%1 | לוח בקרה למנהלי הפורום NodeBB",
 	"settings-header-contents": "תוכן",
 	"changes-saved": "השינויים נשמרו",
-	"changes-saved-message": "השינויים שלך בתצורת NodeBB נשמרו.",
+	"changes-saved-message": "השינויים שלכם בתצורת NodeBB נשמרו.",
 	"changes-not-saved": "השינויים לא נשמרו",
 	"changes-not-saved-message": "NodeBB נתקל בבעיה בשמירת השינויים שלך. (%1)",
-	"save-changes": "שמור שינויים",
+	"save-changes": "שמירת שינויים",
 	"min": "מינימום:",
 	"max": "מקסימום:",
 	"view": "צפייה",
 	"edit": "עריכה",
 	"add": "הוספה",
-	"select-icon": "בחר סמל"
+	"select-icon": "בחירת סמל"
 }

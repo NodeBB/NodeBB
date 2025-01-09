@@ -235,7 +235,7 @@
     "plugins-set-in-configuration": "Bạn không được phép thay đổi trạng thái plugin vì chúng được xác định trong thời gian chạy (config.json, biến môi trường hoặc đối số đầu cuối), thay vào đó hãy sửa đổi cấu hình.",
     "theme-not-set-in-configuration": "Khi xác định các plugin hoạt động trong cấu hình, thay đổi giao diện buộc phải thêm giao diện mới vào danh sách các plugin hoạt động trước khi cập nhật nó trong ACP",
     "topic-event-unrecognized": "Sự kiện chủ đề '%1' không được công nhận",
-    "category.handle-taken": "Category handle is already taken, please choose another.",
+    "category.handle-taken": "Xử lý danh mục đã được thực hiện, vui lòng chọn danh mục khác.",
     "cant-set-child-as-parent": "Không thể đặt con làm chuyên mục chính",
     "cant-set-self-as-parent": "Không thể tự đặt mình là chuyên mục chính",
     "api.master-token-no-uid": "Mã thông báo chính đã được nhận mà không có `_uid` tương ứng trong nội dung yêu cầu",
@@ -249,10 +249,10 @@
     "api.501": "Định tuyến bạn đang cố gắng gọi chưa được triển khai, vui lòng thử lại vào ngày mai",
     "api.503": "Định tuyến bạn đang cố gọi hiện không khả dụng do cấu hình máy chủ",
     "api.reauth-required": "Tài nguyên bạn đang cố truy cập yêu cầu xác thực (lại).",
-    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
-    "activitypub.get-failed": "Unable to retrieve the specified resource.",
-    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
-    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.invalid-id": "Không thể giải quyết id đầu vào, có thể vì nó không đúng định dạng.",
+    "activitypub.get-failed": "Không thể truy xuất tài nguyên được chỉ định.",
+    "activitypub.pubKey-not-found": "Không thể giải quyết khóa công khai, do đó việc xác minh payload không thể diễn ra.",
+    "activitypub.origin-mismatch": "Nguồn gốc của đối tượng nhận được không khớp với nguồn gốc của người gửi",
+    "activitypub.actor-mismatch": "Hoạt động nhận được đang được thực hiện bởi một tác nhân khác với dự kiến.",
+    "activitypub.not-implemented": "Yêu cầu bị từ chối vì nó hoặc một khía cạnh của nó không được máy chủ người nhận triển khai"
 }

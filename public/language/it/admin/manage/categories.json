@@ -7,7 +7,7 @@
 	"privileges": "Privilegi",
 	"back-to-categories": "Torna alle categorie",
 	"name": "Nome Categoria",
-	"handle": "Category Handle",
+	"handle": "Pseudonimo categoria",
 	"handle.help": "Your category handle is used as a representation of this category across other networks, similar to a username. A category handle must not match an existing username or user group.",
 	"description": "Descrizione categoria",
 	"bg-color": "Colore sfondo",
@@ -39,7 +39,7 @@
 	"disable": "Disabilita",
 	"edit": "Modifica",
 	"analytics": "Analitica",
-	"federation": "Federation",
+	"federation": "Federazione",
 
 	"view-category": "Visualizza categoria",
 	"set-order": "Imposta ordine",
