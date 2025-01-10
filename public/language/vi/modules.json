@@ -116,7 +116,7 @@
     "composer.no-drafts": "Bạn không có bản nháp nào",
     "composer.discard-draft-confirm": "Bạn có muốn hủy bản nháp này không?",
     "composer.remote-pid-editing": "Sửa bài đăng từ xa",
-    "composer.remote-pid-content-immutable": "Nội dung của bài viết từ xa không thể được chỉnh sửa. Tuy nhiên, bạn có thể thay đổi tiêu đề và thẻ chủ đề.",
+    "composer.remote-pid-content-immutable": "Nội dung của bài viết từ xa không thể được chỉnh sửa. Tuy nhiên, bạn có thể thay đổi tiêu đề và gắn thẻ chủ đề.",
     "bootbox.ok": "Đồng ý",
     "bootbox.cancel": "Huỷ",
     "bootbox.confirm": "Xác nhận",
