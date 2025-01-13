@@ -99,8 +99,8 @@
     "notificationType-new-post-flag": "כשמדווחים על פוסט",
     "notificationType-new-user-flag": "כשמדווחים על משתמש",
     "notificationType-new-reward": "כאשר אתם מרוויחים פרס חדש",
-    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
-    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
-    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
-    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
+    "activitypub.announce": "<strong>%1</strong> שיתפו את הפוסט שלך ב <strong>%2</strong> לעוקבים שלהם.",
+    "activitypub.announce-dual": "<strong>%1</strong> ו-<strong>%2</strong> שיתף את הפוסט שלך ב <strong>%3</strong> לעוקבים שלהם.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> ו-<strong>%3</strong> שיתפו את הפוסט שלך ב <strong>%4</strong>לעוקבים שלהם.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> ו- %3 אחרים שיתפו את הפוסט שלך ב <strong>%4</strong> לעוקבים שלהם."
 }

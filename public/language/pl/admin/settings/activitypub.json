@@ -1,26 +1,26 @@
 {
 	"intro-lead": "Czym jest Federacja? ",
 	"intro-body": "NodeBB jest w stanie komunikować się z innymi instancjami NodeBB, które to obsługują. Jest to osiągnięte za pomocą protokołu <a href=\"https://activitypub.rocks/\">ActivityPub</a>. Jeśli włączono, NodeBB będzie też w stanie komunikować się z innymi aplikacjami i stronami, które używają ActivityPub (jak Mastodon, Peertube, itp.)",
-	"general": "General",
+	"general": "Ogólne",
 	"pruning": "Usuwanie Zawartości",
 	"content-pruning": "Dni przechowywania zawartości zdalnej",
 	"content-pruning-help": "Zauważ, że zawartość zdalna, która uzyskała jakąś reakcję (jak odpowiedź, głos) zostanie zachowana. (0 aby wyłączyć)",
 	"user-pruning": "Dni przechowywania użytkowników zdalnych",
 	"user-pruning-help": "Konta użytkowników zdalnych będą usuwane tylko jeśli nie mają postów. W przeciwnych wypadku będą ponownie pobierane. (0 aby wyłączyć)",
 	"enabled": "Włącz Federację",
-	"enabled-help": "If enabled, will allow this NodeBB will be able to communicate with all Activitypub-enabled clients on the wider fediverse.",
-	"allowLoopback": "Allow loopback processing",
+	"enabled-help": "Po włączeniu NodeBB będzie komunikować się ze wszystkimi klientami obsługującymi ActivityPub zapewniając dostęp do fediverse.",
+	"allowLoopback": "Zezwól na przetwarzanie pętli zwrotnej",
 	"allowLoopback-help": "Użyteczne tylko do debugowania. Raczej powinieneś(-aś) zostawić to wyłączone.",
 
 	"probe": "Otwórz w Aplikacji",
-	"probe-enabled": "Try to open ActivityPub-enabled resources in NodeBB",
-	"probe-enabled-help": "If enabled, NodeBB will check every external link for an ActivityPub equivalent, and load it in NodeBB instead.",
-	"probe-timeout": "Lookup Timeout (milliseconds)",
-	"probe-timeout-help": "(Default: 2000) If the lookup query does not receive a response within the set timeframe, will send the user to the link directly instead. Adjust this number higher if sites are responding slowly and you wish to give extra time.",
+	"probe-enabled": "Spróbuj otworzyć zawartość związaną z ActivityPub w NodeBB",
+	"probe-enabled-help": "O ile włączone, NodeBB sprawdzi każdy odnośnik pod kątem odpowiednika ActivityPub, a załaduje w NodeBB.",
+	"probe-timeout": "Czas oczekiwania (milisekundy)",
+	"probe-timeout-help": "(Domyślnie: 2000) O ile zapytanie nie doczeka się odpowiedzi w tym czasie to użytkownik otrzyma odnośnik bezpośredni. Możesz wydłużyć czas oczekiwania o ile strony działają wolno a mimo to chcesz dać im szansę.",
 
 	"server-filtering": "Filtrowanie",
 	"count": "NodeBB obecnie wykrywa <strong>1%</strong> serwerów",
-	"server.filter-help": "Specify servers you would like to bar from federating with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> federation with specific servers, instead. Both options are supported, although they are mutually exclusive.",
-	"server.filter-help-hostname": "Enter just the instance hostname below (e.g. <code>example.org</code>), separated by line breaks.",
-	"server.filter-allow-list": "Use this as an Allow List instead"
+	"server.filter-help": "Określ serwery, z którymi nie chcesz spinać NodeBB w ramach fediverse. Alternatywnie możesz dobrać <em>dozwolone</em> serwery fediverse. Obie opcje są dostępne ale wybierz jedną z nich.",
+	"server.filter-help-hostname": "Poniżej podaj nazwę serwera (np. <code>example.org</code>) i użyj nowej linii dla kolejnych wpisów.",
+	"server.filter-allow-list": "Użyj tego jako listę dozwolonych"
 }

@@ -101,6 +101,6 @@
     "notificationType-new-reward": "Khi bạn kiếm được phần thưởng mới",
     "activitypub.announce": "<strong>%1</strong> đã chia sẻ bài đăng của bạn trong <strong>%2</strong> đến người theo dõi của họ.",
     "activitypub.announce-dual": "<strong>%1</strong> và <strong>%2</strong> đã chia sẻ bài đăng của bạn trong <strong>%3</strong> đến người theo dõi họ.",
-    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
-    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> và <strong>%3</strong> chia sẻ bài đăng của bạn trong <strong>%4</strong> đến người theo dõi họ.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> và %3 người khác chia sẻ bài đăng của bạn trong <strong>%4</strong> đến người theo dõi họ."
 }

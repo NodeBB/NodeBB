@@ -61,8 +61,8 @@
     "user-restored-topic-on": "%1 שחזר נושא זה ב %2",
     "user-moved-topic-from-ago": "%1 העביר נושא זה מ-%2 %3",
     "user-moved-topic-from-on": "%1 העביר נושא זה מ-%2 ב-%3",
-    "user-shared-topic-ago": "%1 shared this topic %2",
-    "user-shared-topic-on": "%1 shared this topic on %2",
+    "user-shared-topic-ago": "%1 שיתף את הנושא הזה %2",
+    "user-shared-topic-on": "%1 שיתף את הנושא הזה ב-%2",
     "user-queued-post-ago": "%1 <a href=\"%2\">עומד בתור</a> פוסט לאישור %3",
     "user-queued-post-on": "%1 <a href=\"%2\">עומד בתור</a> פוסט לאישור ב-%3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">התייחס</a> לנושא זה %3",
@@ -137,7 +137,7 @@
     "bookmarks": "מועדפים",
     "bookmarks.has-no-bookmarks": "לא צירפתם פוסט למועדפים עדיין",
     "copy-permalink": "העתקת קישור לפוסט",
-    "go-to-original": "View Original Post",
+    "go-to-original": "צפו בפוסט המקורי",
     "loading-more-posts": "טוען פוסטים נוספים",
     "move-topic": "העברת נושא",
     "move-topics": "העברת נושאים",
@@ -223,6 +223,6 @@
     "post-tools": "כלי פוסט",
     "unread-posts-link": "קישור לפוסטים שלא נקראו",
     "thumb-image": "תמונה ממוזערת של נושא",
-    "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers": "שיתופים",
+    "announcers-x": "שיתופים (%1)"
 }

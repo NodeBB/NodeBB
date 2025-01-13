@@ -15,7 +15,7 @@
 	"mongo.storage-size": "גודל האחסון",
 	"mongo.index-size": "גודל האינדקס",
 	"mongo.file-size": "גודל הקובץ",
-	"mongo.resident-memory": "זכרון קיים",
+	"mongo.resident-memory": "זיכרון קיים",
 	"mongo.virtual-memory": "זיכרון וירטואלי",
 	"mongo.mapped-memory": "זיכרון ממופה",
 	"mongo.bytes-in": "ביטים נכנסים",
