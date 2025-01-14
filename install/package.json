@@ -106,7 +106,7 @@
         "nodebb-plugin-markdown": "13.0.0-pre.10",
         "nodebb-plugin-mentions": "4.6.10",
         "nodebb-plugin-spam-be-gone": "2.3.0",
-        "nodebb-plugin-web-push": "0.7.0",
+        "nodebb-plugin-web-push": "0.7.2",
         "nodebb-rewards-essentials": "1.0.0",
         "nodebb-theme-harmony": "2.0.0-pre.46",
         "nodebb-theme-lavender": "7.1.17",
