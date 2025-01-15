@@ -40,7 +40,7 @@ Controller.webfinger = async (req, res) => {
 
 		res.status(200).json(response);
 	} catch (e) {
-		res.sendStatus(400);
+		res.sendStatus(404);
 	}
 };
 
