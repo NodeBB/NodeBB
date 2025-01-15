@@ -64,35 +64,40 @@ async function renderWidget(widget, uid, options, location) {
 
 	const userLang = config.userLang || meta.config.defaultLang || 'en-GB';
 	const templateData = _.assign({ }, options.templateData, { config: config });
-	const data = await plugins.hooks.fire(`filter:widget.render:${widget.widget}`, {
-		uid: uid,
-		area: options,
-		templateData: templateData,
-		data: widget.data,
-		req: options.req,
-		res: options.res,
-		location,
-	});
-
-	if (!data) {
-		return;
-	}
-
-	let { html } = data;
-
-	if (widget.data.container && widget.data.container.match('{body}')) {
-		html = await Benchpress.compileRender(widget.data.container, {
-			title: widget.data.title,
-			body: html,
-			template: data.templateData && data.templateData.template,
+	try {
+		const data = await plugins.hooks.fire(`filter:widget.render:${widget.widget}`, {
+			uid: uid,
+			area: options,
+			templateData: templateData,
+			data: widget.data,
+			req: options.req,
+			res: options.res,
+			location,
 		});
-	}
-
-	if (html) {
-		html = await translator.translate(html, userLang);
-	}
-
-	return { html };
+	
+		if (!data) {
+			return;
+		}
+	
+		let { html } = data;
+	
+		if (widget.data.container && widget.data.container.match('{body}')) {
+			html = await Benchpress.compileRender(widget.data.container, {
+				title: widget.data.title,
+				body: html,
+				template: data.templateData && data.templateData.template,
+			});
+		}
+	
+		if (html) {
+			html = await translator.translate(html, userLang);
+		}
+	
+		return { html };
+	} catch (err) {
+		winston.error(err.stack);
+		return { html: '' }
+	}	
 }
 
 widgets.checkVisibility = async function (data, uid) {
