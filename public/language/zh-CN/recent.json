@@ -7,5 +7,7 @@
     "alltime": "总计",
     "no-recent-topics": "暂无主题。",
     "no-popular-topics": "暂无热门主题。",
-    "load-new-posts": "加载新的帖子"
+    "load-new-posts": "加载新的帖子",
+    "uncategorized.title": "All known topics",
+    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
 }

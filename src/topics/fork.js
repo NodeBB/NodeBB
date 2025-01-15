@@ -24,7 +24,14 @@ module.exports = function (Topics) {
 			throw new Error('[[error:invalid-pid]]');
 		}
 
-		pids.sort((a, b) => a - b);
+		if (pids.every(isFinite)) {
+			pids.sort((a, b) => a - b);
+		} else {
+			const pidsDatetime = (await db.sortedSetScores(`tid:${fromTid}:posts`, pids)).map(t => t || 0);
+			const map = pids.reduce((map, pid, idx) => map.set(pidsDatetime[idx], pid), new Map());
+			pidsDatetime.sort((a, b) => a - b);
+			pids = pidsDatetime.map(key => map.get(key));
+		}
 
 		const mainPid = pids[0];
 		if (!cid) {

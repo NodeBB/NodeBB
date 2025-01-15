@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "น่ารังเกียจ",
 	"modal-reason-other": "อื่น ๆ (ระบุด้านล่าง)",
 	"modal-reason-custom": "เหตุผลที่รายงานเนื้อหานี้...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "ส่งรายงาน",
 	"modal-submit-success": "เนื้อหาถูกรายงานตามเพื่อรอตรวจสอบแล้ว",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "จัดการทีละมากๆ",
 	"bulk-resolve": "แก้ปัญหารายงาน",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "รายงาน %1 อันถูกอัพเดท",
 	"flagged-timeago": "ถูกรายงาน <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[รายงานอัตโนมัติ] ถูกโหวดลง %1 ครั้ง"

@@ -46,13 +46,17 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 	const handle = await user.getUserField(actor, 'username');
 	const timestamp = Date.now();
 
-	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${timestamp}`,
-		type: 'Follow',
-		object: actor,
-	});
-
 	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
+	try {
+		await activitypub.send(type, id, [actor], {
+			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${timestamp}`,
+			type: 'Follow',
+			object: actor,
+		});
+	} catch (e) {
+		await db.sortedSetRemove(`followRequests:${type}.${id}`, actor);
+		throw e;
+	}
 });
 
 // should be .undo.follow

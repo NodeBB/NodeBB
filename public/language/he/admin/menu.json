@@ -38,6 +38,7 @@
 	"settings/tags": "תגיות",
 	"settings/notifications": "התראות",
 	"settings/api": "גישת API",
+	"settings/activitypub": "הפדרציה (ActivityPub)",
 	"settings/sounds": "שמע",
 	"settings/social": "חברתי",
 	"settings/cookies": "עוגיות",

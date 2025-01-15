@@ -31,7 +31,6 @@ describe('Controllers', () => {
 	let fooUid;
 	let adminUid;
 	let category;
-	let testRoutes = [];
 
 	before(async () => {
 		category = await categories.create({
@@ -56,48 +55,6 @@ describe('Controllers', () => {
 		tid = result.topicData.tid;
 
 		pid = result.postData.pid;
-
-		testRoutes = [
-			{ it: 'should load /reset without code', url: '/reset' },
-			{ it: 'should load /reset with invalid code', url: '/reset/123123' },
-			{ it: 'should load /login', url: '/login' },
-			{ it: 'should load /register', url: '/register' },
-			{ it: 'should load /robots.txt', url: '/robots.txt' },
-			{ it: 'should load /manifest.webmanifest', url: '/manifest.webmanifest' },
-			{ it: 'should load /outgoing?url=<url>', url: '/outgoing?url=http://youtube.com' },
-			{ it: 'should 404 on /outgoing with no url', url: '/outgoing', status: 404 },
-			{ it: 'should 404 on /outgoing with javascript: protocol', url: '/outgoing?url=javascript:alert(1);', status: 404 },
-			{ it: 'should 404 on /outgoing with invalid url', url: '/outgoing?url=derp', status: 404 },
-			{ it: 'should load /sping', url: '/sping', body: 'healthy' },
-			{ it: 'should load /ping', url: '/ping', body: '200' },
-			{ it: 'should handle 404', url: '/arouteinthevoid', status: 404 },
-			{ it: 'should load topic rss feed', url: `/topic/${tid}.rss` },
-			{ it: 'should load category rss feed', url: `/category/${cid}.rss` },
-			{ it: 'should load topics rss feed', url: `/topics.rss` },
-			{ it: 'should load recent rss feed', url: `/recent.rss` },
-			{ it: 'should load top rss feed', url: `/top.rss` },
-			{ it: 'should load popular rss feed', url: `/popular.rss` },
-			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
-			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
-			{ it: 'should load category recent posts rss feed', url: `/category/${cid}/recentposts.rss` },
-			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
-			{ it: 'should load tag rss feed', url: `/tags/nodebb.rss` },
-			{ it: 'should load client.css', url: `/assets/client.css` },
-			{ it: 'should load admin.css', url: `/assets/admin.css` },
-			{ it: 'should load sitemap.xml', url: `/sitemap.xml` },
-			{ it: 'should load sitemap/pages.xml', url: `/sitemap/pages.xml` },
-			{ it: 'should load sitemap/categories.xml', url: `/sitemap/categories.xml` },
-			{ it: 'should load sitemap/topics.1.xml', url: `/sitemap/topics.1.xml` },
-			{ it: 'should load theme screenshot', url: `/css/previews/nodebb-theme-harmony` },
-			{ it: 'should load users page', url: `/users` },
-			{ it: 'should load users page section', url: `/users?section=online` },
-			{ it: 'should load groups page', url: `/groups` },
-			{ it: 'should get recent posts', url: `/api/recent/posts/month` },
-			{ it: 'should get post data', url: `/api/v3/posts/${pid}` },
-			{ it: 'should get topic data', url: `/api/v3/topics/${tid}` },
-			{ it: 'should get category data', url: `/api/v3/categories/${cid}` },
-			{ it: 'should return osd data', url: `/osd.xml` },
-		];
 	});
 
 	it('should load /config with csrf_token', async () => {
@@ -222,6 +179,48 @@ describe('Controllers', () => {
 
 	describe('routes that should 200/404 etc.', () => {
 		const baseUrl = nconf.get('url');
+		const testRoutes = [
+			{ it: 'should load /reset without code', url: '/reset' },
+			{ it: 'should load /reset with invalid code', url: '/reset/123123' },
+			{ it: 'should load /login', url: '/login' },
+			{ it: 'should load /register', url: '/register' },
+			{ it: 'should load /robots.txt', url: '/robots.txt' },
+			{ it: 'should load /manifest.webmanifest', url: '/manifest.webmanifest' },
+			{ it: 'should load /outgoing?url=<url>', url: '/outgoing?url=http://youtube.com' },
+			{ it: 'should 404 on /outgoing with no url', url: '/outgoing', status: 404 },
+			{ it: 'should 404 on /outgoing with javascript: protocol', url: '/outgoing?url=javascript:alert(1);', status: 404 },
+			{ it: 'should 404 on /outgoing with invalid url', url: '/outgoing?url=derp', status: 404 },
+			{ it: 'should load /sping', url: '/sping', body: 'healthy' },
+			{ it: 'should load /ping', url: '/ping', body: '200' },
+			{ it: 'should handle 404', url: '/arouteinthevoid', status: 404 },
+			{ it: 'should load topic rss feed', url: `/topic/1.rss` },
+			{ it: 'should load category rss feed', url: `/category/1.rss` },
+			{ it: 'should load topics rss feed', url: `/topics.rss` },
+			{ it: 'should load recent rss feed', url: `/recent.rss` },
+			{ it: 'should load top rss feed', url: `/top.rss` },
+			{ it: 'should load popular rss feed', url: `/popular.rss` },
+			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
+			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
+			{ it: 'should load category recent posts rss feed', url: `/category/1/recentposts.rss` },
+			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
+			{ it: 'should load tag rss feed', url: `/tags/nodebb.rss` },
+			{ it: 'should load client.css', url: `/assets/client.css` },
+			{ it: 'should load admin.css', url: `/assets/admin.css` },
+			{ it: 'should load sitemap.xml', url: `/sitemap.xml` },
+			{ it: 'should load sitemap/pages.xml', url: `/sitemap/pages.xml` },
+			{ it: 'should load sitemap/categories.xml', url: `/sitemap/categories.xml` },
+			{ it: 'should load sitemap/topics.1.xml', url: `/sitemap/topics.1.xml` },
+			{ it: 'should load theme screenshot', url: `/css/previews/nodebb-theme-harmony` },
+			{ it: 'should load users page', url: `/users` },
+			{ it: 'should load users page section', url: `/users?section=online` },
+			{ it: 'should load groups page', url: `/groups` },
+			{ it: 'should get recent posts', url: `/api/recent/posts/month` },
+			{ it: 'should get post data', url: `/api/v3/posts/1` },
+			{ it: 'should get topic data', url: `/api/v3/topics/1` },
+			{ it: 'should get category data', url: `/api/v3/categories/1` },
+			{ it: 'should return osd data', url: `/osd.xml` },
+			{ it: 'should load service worker', url: '/service-worker.js' },
+		];
 		testRoutes.forEach((route) => {
 			it(route.it, async () => {
 				const { response, body } = await request.get(`${baseUrl}/${route.url}`);
@@ -1915,12 +1914,12 @@ describe('Controllers', () => {
 			});
 
 			it('should deny access if view:users privilege is not enabled for guests', async () => {
-				await privileges.global.rescind(['groups:view:users'], 'guests');
+				await privileges.global.rescind(['groups:view:users'], 'fediverse');
 
 				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
 				assert.strictEqual(response.statusCode, 400);
 
-				await privileges.global.give(['groups:view:users'], 'guests');
+				await privileges.global.give(['groups:view:users'], 'fediverse');
 			});
 
 			it('should respond appropriately if the user requested does not exist locally', async () => {

@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Изтриване на всички чернови",
     "composer.no-drafts": "Нямате никакви чернови",
     "composer.discard-draft-confirm": "Искате ли да изтриете тази чернова?",
+    "composer.remote-pid-editing": "Редактиране на отдалечена публикация",
+    "composer.remote-pid-content-immutable": "Съдържанието на отдалечени публикации не може да бъде редактирано. Може да промените само заглавието на темата и етикетите.",
     "bootbox.ok": "Добре",
     "bootbox.cancel": "Отказ",
     "bootbox.confirm": "Потвърждаване",

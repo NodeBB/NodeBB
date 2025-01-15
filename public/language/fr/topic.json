@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 a restauré ce sujet sur %2",
     "user-moved-topic-from-ago": "%1 a déplacé ce sujet de %2 %3",
     "user-moved-topic-from-on": "%1 a déplacé ce sujet de %2 sur %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 message <a href=\"%2\">En attente</a> pour approbation %3",
     "user-queued-post-on": "%1 message <a href=\"%2\">En attente</a> pour approbation sur %3",
     "user-referenced-topic-ago": "%1 a <a href=\"%2\">fait référence</a> à ce sujet %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Marque-pages",
     "bookmarks.has-no-bookmarks": "Vous n'avez encore aucun marque-page.",
     "copy-permalink": "Copier le permalien",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Charger plus de messages",
     "move-topic": "Déplacer le sujet",
     "move-topics": "Déplacer les sujets",
@@ -219,5 +222,7 @@
     "downvote-post": "Vote négatif",
     "post-tools": "Outils pour les messages",
     "unread-posts-link": "Lien pour les messages non lus",
-    "thumb-image": "Vignette du sujet"
+    "thumb-image": "Vignette du sujet",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

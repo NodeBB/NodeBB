@@ -38,6 +38,7 @@
 	"settings/tags": "標籤",
 	"settings/notifications": "通知",
 	"settings/api": "API Access",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "聲音",
 	"settings/social": "社交",
 	"settings/cookies": "Cookies",

@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 đã khôi phục chủ đề này trên %2",
     "user-moved-topic-from-ago": "%1 đã chuyển chủ đề này từ %2 %3",
     "user-moved-topic-from-on": "%1 đã chuyển chủ đề này từ %2 trên %3",
+    "user-shared-topic-ago": "%1 đã chia sẻ chủ đề này %2",
+    "user-shared-topic-on": "%1 đã chia sẻ chủ đề này trên %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">đã xếp hàng</a> bài đăng để phê duyệt %3",
     "user-queued-post-on": "%1 <a href=\"%2\">đã xếp hàng</a> đăng bài để được phê duyệt trên %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">đã tham khảo</a> chủ đề này %3",
@@ -98,7 +100,7 @@
     "thread-tools.markAsUnreadForAll": "Đánh Dấu Chưa Đọc Tất Cả",
     "thread-tools.pin": "Ghim chủ đề",
     "thread-tools.unpin": "Bỏ ghim chủ đề",
-    "thread-tools.lock": "Khóa chủ đề",
+    "thread-tools.lock": "Khóa Chủ Đề",
     "thread-tools.unlock": "Mở Khóa Chủ Đề",
     "thread-tools.move": "Di Chuyển Chủ Đề",
     "thread-tools.move-posts": "Di Chuyển Bài Viết",
@@ -107,7 +109,7 @@
     "thread-tools.manage-editors": "Quản Lý Biên Tập Viên",
     "thread-tools.select-category": "Chọn chuyện mục",
     "thread-tools.fork": "Tạo bản sao chủ đề",
-    "thread-tools.tag": "Tag Topic",
+    "thread-tools.tag": "Gắn Thẻ Chủ Đề",
     "thread-tools.delete": "Xóa chủ đề",
     "thread-tools.delete-posts": "Xoá bài viết",
     "thread-tools.delete-confirm": "Bạn có muốn xóa chủ đề này?",
@@ -135,6 +137,7 @@
     "bookmarks": "Đánh dấu trang",
     "bookmarks.has-no-bookmarks": "Bạn chưa đánh dấu trang bài viết nào cả.",
     "copy-permalink": "Sao Chép Liên Kết Tĩnh",
+    "go-to-original": "Xem Bài Đăng Gốc",
     "loading-more-posts": "Tải thêm các bài gửi khác",
     "move-topic": "Di Chuyển Chủ Đề",
     "move-topics": "Di Chuyển Chủ Đề",
@@ -219,5 +222,7 @@
     "downvote-post": "Phản đối bài đăng",
     "post-tools": "Công cụ đăng bài",
     "unread-posts-link": "Liên kết bài đăng chưa đọc",
-    "thumb-image": "Ảnh thumbnail chủ đề"
+    "thumb-image": "Ảnh thumbnail chủ đề",
+    "announcers": "Chia sẻ",
+    "announcers-x": "Chia sẻ (%1)"
 }

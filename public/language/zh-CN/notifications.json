@@ -98,5 +98,9 @@
     "notificationType-post-queue": "当有新帖子等待审核时",
     "notificationType-new-post-flag": "当有新的帖子举报时",
     "notificationType-new-user-flag": "当有新的用户信息举报时",
-    "notificationType-new-reward": "当您获得新奖励时"
+    "notificationType-new-reward": "当您获得新奖励时",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

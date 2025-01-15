@@ -1,10 +1,10 @@
 {
 	"cache": "מטמון",
 	"post-cache": "מטמון פוסטים",
-	"group-cache": "Group Cache",
+	"group-cache": "מטמון קבוצות",
 	"local-cache": "מטמון מקומי",
-	"object-cache": "Object Cache",
-	"percent-full": "%1% Full",
+	"object-cache": "מטמון אובייקטים",
+	"percent-full": "%1% מלא",
 	"post-cache-size": "גודל מטמון פוסטים",
 	"items-in-cache": "פריטים במטמון"
 }

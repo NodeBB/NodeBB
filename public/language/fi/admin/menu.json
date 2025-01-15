@@ -38,6 +38,7 @@
 	"settings/tags": "Tunnisteet",
 	"settings/notifications": "Ilmoitukset",
 	"settings/api": "API Access",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Äänet",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",

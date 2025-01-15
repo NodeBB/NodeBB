@@ -220,7 +220,7 @@ if (document.readyState === 'loading') {
 		if (!isTouchDevice) {
 			els = els || $('body');
 			els.tooltip({
-				selector: '.avatar.avatar-tooltip',
+				selector: '.avatar-tooltip',
 				placement: placement || 'top',
 				container: '#content',
 				animation: false,

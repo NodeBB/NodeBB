@@ -17,7 +17,7 @@ const tx = require('../translator');
 module.exports = function (User) {
 	User.updateProfile = async function (uid, data, extraFields) {
 		let fields = [
-			'username', 'email', 'fullname', 'website', 'location',
+			'username', 'email', 'fullname',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
 			...await db.getSortedSetRange('user-custom-fields', 0, -1),
 		];

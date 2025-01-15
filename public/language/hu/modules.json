@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Dobja el az összes piszkozatot",
     "composer.no-drafts": "Nincs piszkozatod",
     "composer.discard-draft-confirm": "Do you want to discard this draft?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Mégse",
     "bootbox.confirm": "Megerősítés",

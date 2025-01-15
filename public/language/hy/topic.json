@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 վերականգնեց այս թեման %2",
     "user-moved-topic-from-ago": "%1 տեղափոխես այս թեման %2 %3 - ից",
     "user-moved-topic-from-on": "%1 տեղափոխեց այս թեման %2 -ից %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 <a href=\"%2\"> հերթագրված</a> գրառում հաստատման %3",
     "user-queued-post-on": "%1 <a href=\"%2\">հերթագրված</a> գրառում հաստատման %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\"> հղել է </a> այս թեման %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Էջանիշեր",
     "bookmarks.has-no-bookmarks": "Դուք դեռ ոչ մի գրառում չեք էջանշել:",
     "copy-permalink": "Պատճենել մշտական հղումը",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Լրացուցիչ գրառումների բեռնում",
     "move-topic": "Տեղափոխել թեման",
     "move-topics": "Տեղափոխել թեմաները",
@@ -219,5 +222,7 @@
     "downvote-post": "Downvote post",
     "post-tools": "Post tools",
     "unread-posts-link": "Unread posts link",
-    "thumb-image": "Topic thumbnail image"
+    "thumb-image": "Topic thumbnail image",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

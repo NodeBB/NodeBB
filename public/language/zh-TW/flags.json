@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "人身攻擊",
 	"modal-reason-other": "其它（請在下方指定）",
 	"modal-reason-custom": "舉報此內容的理由……",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "提交舉報",
 	"modal-submit-success": "已舉報此內容。",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 flags updated",
 	"flagged-timeago": "標記 <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."

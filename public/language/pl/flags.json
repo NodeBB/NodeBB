@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Treści obraźliwe",
 	"modal-reason-other": "Inne (wybierz poniżej)",
 	"modal-reason-custom": "Powód zgłaszania treści",
+	"modal-notify-remote": "Przekieruj to zgłoszenie do %1",
 	"modal-submit": "Wyślij zgłoszenie",
 	"modal-submit-success": "Treści zostały oflagowane i zgłoszone do moderacji.",
 
+	"modal-confirm-rescind": "Wycofać zgłoszenie?",
+
 	"bulk-actions": "Operacje masowe",
 	"bulk-resolve": "Oznacz flagi jako rozwiązane",
+	"confirm-purge": "Czy jesteś pewien trwałego usunięcia tych flag?",
+	"purge-cancelled": "Wymazywanie flag anulowane",
+	"bulk-purge": "Wymaż flagi",
 	"bulk-success": "Zaktualizowano %1 flag",
 	"flagged-timeago": "Oznaczone <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatyczna Flaga] Otrzymano %1 głosów przeciw."

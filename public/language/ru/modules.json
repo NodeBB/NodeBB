@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Удалить все черновики",
     "composer.no-drafts": "У вас нет черновиков",
     "composer.discard-draft-confirm": "Удалить все черновики?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Отмена",
     "bootbox.confirm": "Подтвердить",

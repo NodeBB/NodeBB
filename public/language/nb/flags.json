@@ -75,7 +75,7 @@
 	"sort-all": "Alle flaggtyper",
 	"sort-posts-only": "Kun innlegg",
 	"sort-downvotes": "Flest nedstemminger",
-	"sort-upvotes": "Flest oppstemminger",
+	"sort-upvotes": "Flest  tilrådinger",
 	"sort-replies": "Flest kommentarer",
 
 	"modal-title": "Rapporter innhold",
@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Støtende",
 	"modal-reason-other": "Annet (spesifiser nedenfor)",
 	"modal-reason-custom": "Årsak til rapportering av dette innholdet ...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Send inn rapporten",
 	"modal-submit-success": "Innholdet er flagget for moderering.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Massehandlinger",
 	"bulk-resolve": "Løs flagg(ene)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 flagg er oppdatert",
 	"flagged-timeago": "Flagget for %1 siden",
   	"auto-flagged": "[Automatisk flagg] Mottok %1 nedstemminger."

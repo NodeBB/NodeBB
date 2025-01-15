@@ -80,7 +80,7 @@
 	"default-notification-settings": "Standard varslingsinnstillinger",
 	"categoryWatchState": "Overvåkingsstatus for kategorier",
 	"categoryWatchState.tracking": "Sporer",
-	"categoryWatchState.notwatching": "Overvåker ikke",
+	"categoryWatchState.notwatching": "Følger ikke",
 	"categoryWatchState.ignoring": "Ignorerer",
 	"restrictions-new": "Nye brukerrestriksjoner",
 	"restrictions.rep-threshold": "Minimum omdømmekrav",

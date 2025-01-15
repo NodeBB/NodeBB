@@ -372,7 +372,7 @@ module.exports = function (Topics) {
 				timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
 			};
 
-			replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+			replyPids.sort((a, b) => pidMap[a].timestamp - pidMap[b].timestamp);
 
 			replyPids.forEach((replyPid) => {
 				const replyData = pidMap[replyPid];

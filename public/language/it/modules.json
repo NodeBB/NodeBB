@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Scarta tutte le bozze",
     "composer.no-drafts": "Non hai bozze",
     "composer.discard-draft-confirm": "Vuoi scartare questa bozza?",
+    "composer.remote-pid-editing": "Modifica di un post remoto",
+    "composer.remote-pid-content-immutable": "Il contenuto dei post remoti non può essere modificato. Tuttavia, puoi modificare il titolo e i tag della discussione.",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annulla",
     "bootbox.confirm": "Conferma",

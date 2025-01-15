@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 је вратио ову тему %2",
     "user-moved-topic-from-ago": "%1 је преместио ову тему из %2 %3",
     "user-moved-topic-from-on": "%1 је преместио ову тему из %2 %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 објава <a href=\"%2\">у реду чекања</a> за одобрење %3",
     "user-queued-post-on": "%1 објава <a href=\"%2\">у реду чекања</a> за одобрење %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">се осврнуо</a> на ову тему %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Обележивачи",
     "bookmarks.has-no-bookmarks": "Нисте додали ниједну поруку у обележиваче",
     "copy-permalink": "Копирај трајну везу",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Учитавање још порука",
     "move-topic": "Премести тему",
     "move-topics": "Премести теме",
@@ -219,5 +222,7 @@
     "downvote-post": "Downvote post",
     "post-tools": "Post tools",
     "unread-posts-link": "Unread posts link",
-    "thumb-image": "Topic thumbnail image"
+    "thumb-image": "Topic thumbnail image",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

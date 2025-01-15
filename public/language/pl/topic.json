@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 przywrócił ten temat dnia %2",
     "user-moved-topic-from-ago": "%1 przeniósł ten temat z %2 %3",
     "user-moved-topic-from-on": "%1 przeniósł ten temat z %2 dnia %3",
+    "user-shared-topic-ago": "%1 podzielił się wątkiem %2",
+    "user-shared-topic-on": "%1 podzielił się tym wątkiem dnia %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">dodał do kolejki</a> post do zatwierdzenia %3",
     "user-queued-post-on": "%1 <a href=\"%2\">dodał do kolejki</a> post do zatwierdzenia dnia %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">odniósł się</a> do tego tematu %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Zakładki",
     "bookmarks.has-no-bookmarks": "Nie masz jeszcze żadnych postów w zakładkach.",
     "copy-permalink": "Skopiuj link",
+    "go-to-original": "Zobacz oryginalny wpis",
     "loading-more-posts": "Załaduj więcej postów",
     "move-topic": "Przenieś temat",
     "move-topics": "Przenieś tematy",
@@ -219,5 +222,7 @@
     "downvote-post": "Nie podoba się",
     "post-tools": "Narzędzia postów",
     "unread-posts-link": "Link nieprzeczytanych postów",
-    "thumb-image": "Obraz miniaturki tematu"
+    "thumb-image": "Obraz miniaturki tematu",
+    "announcers": "Udostępnień",
+    "announcers-x": "Udostępnień (%1)"
 }

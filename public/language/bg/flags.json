@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Обидно",
 	"modal-reason-other": "Друго (опишете по-долу)",
 	"modal-reason-custom": "Причина за докладването на това съдържание…",
+	"modal-notify-remote": "Препращане на този доклад към %1",
 	"modal-submit": "Изпращане на доклада",
 	"modal-submit-success": "Съдържанието беше докладвано на модераторите.",
 
+	"modal-confirm-rescind": "Анулиране на доклада?",
+
 	"bulk-actions": "Групови действия",
 	"bulk-resolve": "Разрешаване на доклад(и)",
+	"confirm-purge": "Наистина ли искате да изтриете завинаги тези доклади?",
+	"purge-cancelled": "Изтриването на доклад е отменено",
+	"bulk-purge": "Изтриване на доклад(и)",
 	"bulk-success": "%1 доклада са обновени",
 	"flagged-timeago": "Докладвано <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Авт. докладвано] Получени %1 отрицателни гласа."

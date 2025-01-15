@@ -92,6 +92,7 @@ module.exports = function (Categories) {
 			['categories:cid', category.order, category.cid],
 			[`cid:${parentCid}:children`, category.order, category.cid],
 			['categories:name', 0, `${data.name.slice(0, 200).toLowerCase()}:${category.cid}`],
+			['categoryhandle:cid', cid, handle],
 		]);
 
 		await privileges.categories.give(result.defaultPrivileges, category.cid, ['registered-users', 'fediverse']);

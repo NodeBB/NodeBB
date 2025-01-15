@@ -366,19 +366,29 @@ Helpers.remoteAnchorToLocalProfile = async (content) => {
 		return content;
 	}
 
-	// Filter out urls that don't backreference to a remote id
+	const urlMap = new Map();
 	const urlsArray = Array.from(urls);
+
+	// Local references
+	const localUrls = urlsArray.filter(url => url.startsWith(nconf.get('url')));
+	await Promise.all(localUrls.map(async (url) => {
+		const { type, id } = await Helpers.resolveLocalId(url);
+		if (type === 'user') {
+			urlMap.set(url, id);
+		} // else if (type === 'category') {
+	}));
+
+	// Remote references
 	const [backrefs, urlAsIdExists] = await Promise.all([
 		db.getObjectFields('remoteUrl:uid', urlsArray),
 		db.isSortedSetMembers('usersRemote:lastCrawled', urlsArray),
 	]);
-
-	const urlMap = new Map();
 	urlsArray.forEach((url, index) => {
 		if (backrefs[url] || urlAsIdExists[index]) {
 			urlMap.set(url, backrefs[url] || url);
 		}
 	});
+
 	let slugs = await user.getUsersFields(Array.from(urlMap.values()), ['userslug']);
 	slugs = slugs.map(({ userslug }) => userslug);
 	Array.from(urlMap.keys()).forEach((url, idx) => {

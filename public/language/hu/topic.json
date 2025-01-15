@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 visszaállította ezt a témakört %2",
     "user-moved-topic-from-ago": "%1 áthelyezte ezt a témakört %2 %3",
     "user-moved-topic-from-on": "%1 áthelyezte ezt a témakört %2 %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">sorba álltak</a> bejegyzés jóváhagyásra %3",
     "user-queued-post-on": "%1 <a href=\"%2\">sorba álltak</a> bejegyzés jóváhagyásra %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">hivatkozott</a> erre a témakörre %3",
@@ -135,6 +137,7 @@
     "bookmarks": "Könyvjelzők",
     "bookmarks.has-no-bookmarks": "Még nem tettél egyetlen hozzászólást sem könyvjelzőbe.",
     "copy-permalink": "Állandó hivatkozás másolása",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "További hozzászólások betöltése",
     "move-topic": "Témakör áthelyezése",
     "move-topics": "Témakörök áthelyezése",
@@ -219,5 +222,7 @@
     "downvote-post": "Bejegyzés nem kedvelése",
     "post-tools": "Bejegyzés eszközök",
     "unread-posts-link": "Olvasatlan bejegyzés link",
-    "thumb-image": "Téma bélyegkép"
+    "thumb-image": "Téma bélyegkép",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

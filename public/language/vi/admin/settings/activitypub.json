@@ -1,0 +1,26 @@
+{
+	"intro-lead": "Liên Đoàn là gì?",
+	"intro-body": "NodeBB có thể giao tiếp với các phiên bản NodeBB khác hỗ trợ nó. Điều này đạt được thông qua một giao thức gọi là <a href=\"https://activitypub.rocks/\">ActivityPub</a>. Nếu được bật, NodeBB cũng sẽ có thể giao tiếp với các ứng dụng và trang web khác sử dụng ActPub (ví dụ: Mastodon, Peertube, v.v.)",
+	"general": "Chung",
+	"pruning": "Cắt tỉa nội dung",
+	"content-pruning": "Số ngày giữ nội dung từ xa",
+	"content-pruning-help": "Lưu ý rằng nội dung từ xa đã nhận được sự tương tác (trả lời hoặc ủng hộ/phản đối) sẽ được giữ nguyên. (0 là tắt)",
+	"user-pruning": "Số ngày nhớ tạm tài khoản người dùng từ xa",
+	"user-pruning-help": "Tài khoản người dùng từ xa sẽ chỉ bị cắt bớt nếu họ không có bài viết. Nếu không chúng sẽ được lấy lại. (0 là tắt)",
+	"enabled": "Bật Liên Đoàn",
+	"enabled-help": "Nếu được bật, sẽ cho phép NodeBB này có thể giao tiếp với tất cả các máy khách đã bật  Activitypub trên toàn bộ liên đoàn rộng hơn.",
+	"allowLoopback": "Cho phép xử lý vòng lặp",
+	"allowLoopback-help": "Chỉ hữu ích cho mục đích gỡ lỗi. Có lẽ bạn nên tắt tính năng này.",
+
+	"probe": "Mở trong Ứng Dụng",
+	"probe-enabled": "Thử mở tài nguyên Kích Hoạt ActivityPub trong NodeBB",
+	"probe-enabled-help": "Nếu được bật, NodeBB sẽ kiểm tra mọi liên kết bên ngoài để tìm tương đương với ActPub và thay vào đó tải nó vào NodeBB.",
+	"probe-timeout": "Hết Thời Gian Tra Cứu (mili giây)",
+	"probe-timeout-help": "(Mặc định: 2000) Nếu truy vấn tra cứu không nhận được phản hồi trong khung thời gian đã đặt, thay vào đó sẽ đưa người dùng đến liên kết trực tiếp. Điều chỉnh con số này cao hơn nếu các trang web phản hồi chậm và bạn muốn dành thêm thời gian.",
+
+	"server-filtering": "Lọc",
+	"count": "NodeBB này hiện đã biết về <strong>%1</strong> máy chủ",
+	"server.filter-help": "Chỉ định các máy chủ mà bạn muốn cấm liên kết với NodeBB của mình. Ngoài ra, bạn có thể chọn tham gia có chọn lọc <em>cho phép</em> liên kết có chọn lọc với các máy chủ cụ thể. Cả hai tùy chọn đều được hỗ trợ, mặc dù chúng loại trừ lẫn nhau.",
+	"server.filter-help-hostname": "Chỉ nhập tên máy chủ bên dưới (vd: <code>example.org</code>), tách nhau bằng ngắt dòng.",
+	"server.filter-allow-list": "Dùng nó làm Danh Sách Cho Phép Thay Thế"
+}

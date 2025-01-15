@@ -158,6 +158,58 @@ describe('ActivityPub integration', () => {
 				meta.config.maximumTitleLength = value;
 			});
 		});
+
+		describe.only('.remoteAnchorToLocalProfile', () => {
+			const uuid1 = utils.generateUUID();
+			const id1 = `https://example.org/uuid/${uuid1}`;
+			const url1 = `https://example.org/test`;
+			const uuid2 = utils.generateUUID();
+			const id2 = `https://example.org/uuid/${uuid2}`;
+			const localUsername = utils.generateUUID();
+			const localSlug = slugify(localUsername);
+			let localUid;
+			before(async () => {
+				// Mock up a fake remote user
+				[,,,, localUid] = await Promise.all([
+					db.setObjectField('remoteUrl:uid', url1, id1),
+					db.sortedSetAdd('usersRemote:lastCrawled', Date.now(), id2),
+					db.setObject(`userRemote:${id1}`, { uid: id1, userslug: uuid1 }),
+					db.setObject(`userRemote:${id2}`, { uid: id2, userslug: id2 }),
+					user.create({ username: localUsername }),
+				]);
+			});
+
+			it('should convert an anchor pointing to a remote user URL', async () => {
+				const content = `adsf <a href="${url1}">@${uuid1}</a> asdf`;
+				const converted = await activitypub.helpers.remoteAnchorToLocalProfile(content);
+				assert.strictEqual(converted, `adsf <a href="/user/${uuid1}">@${uuid1}</a> asdf`);
+			});
+
+			it('should convert an anchor pointing to a remote user id', async () => {
+				const content = `adsf <a href="${id2}">@${uuid2}</a> asdf`;
+				const converted = await activitypub.helpers.remoteAnchorToLocalProfile(content);
+				assert.strictEqual(converted, `adsf <a href="/user/${encodeURIComponent(id2)}">@${uuid2}</a> asdf`);
+			});
+
+			it('should convert an anchor pointing to a local user URL', async () => {
+				const content = `adsf <a href="${nconf.get('url')}/user/${localSlug}">@${localSlug}</a> asdf`;
+				const converted = await activitypub.helpers.remoteAnchorToLocalProfile(content);
+				assert.strictEqual(converted, `adsf <a href="/user/${localSlug}">@${localSlug}</a> asdf`);
+			});
+
+			it('should convert an anchor pointing to a local user URL', async () => {
+				const content = `adsf <a href="${nconf.get('url')}/uid/${localUid}">@${localSlug}</a> asdf`;
+				const converted = await activitypub.helpers.remoteAnchorToLocalProfile(content);
+				assert.strictEqual(converted, `adsf <a href="/user/${localSlug}">@${localSlug}</a> asdf`);
+			});
+
+			after(async () => {
+				await Promise.all([
+					db.deleteObjectField('remoteUrl:uid', url1),
+					db.sortedSetRemove('usersRemote:lastCrawled', id2),
+				]);
+			});
+		});
 	});
 
 	describe('ActivityPub screener middleware', () => {

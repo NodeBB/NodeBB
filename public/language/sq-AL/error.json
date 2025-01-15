@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "You are not allowed to change plugin state as they are defined at runtime (config.json, environmental variables or terminal arguments), please modify the configuration instead.",
     "theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
     "topic-event-unrecognized": "Ngjarja e temës '%1' nuk njihet",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "Nuk mund të vendoset si kategori mëmë",
     "cant-set-self-as-parent": "Nuk mund të vendosësh veten si kategori mëmë",
     "api.master-token-no-uid": "Një token kryesor u mor pa një `_uid` përkatëse në fushën e kërkesës",
@@ -247,5 +248,11 @@
     "api.500": "Një gabim i papritur u ndesh gjatë përpjekjes për të kryer kërkesën tuaj.",
     "api.501": "Itinerari që kërkoni nuk është zbatuar ende, ju lutemi provoni sërish nesër",
     "api.503": "Itinerari që kërkoni nuk është aktualisht i disponueshëm për shkak të një konfigurimi të serverit",
-    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

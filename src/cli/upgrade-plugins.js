@@ -120,7 +120,7 @@ async function checkPlugins() {
 	return upgradable;
 }
 
-async function upgradePlugins() {
+async function upgradePlugins(unattended = false) {
 	try {
 		const found = await checkPlugins();
 		if (found && found.length) {
@@ -132,16 +132,18 @@ async function upgradePlugins() {
 			console.log(chalk.green('\nAll packages up-to-date!'));
 			return;
 		}
+		let result = { upgrade: 'y' };
+		if (!unattended) {
+			prompt.message = '';
+			prompt.delimiter = '';
 
-		prompt.message = '';
-		prompt.delimiter = '';
-
-		prompt.start();
-		const result = await prompt.get({
-			name: 'upgrade',
-			description: '\nProceed with upgrade (y|n)?',
-			type: 'string',
-		});
+			prompt.start();
+			result = await prompt.get({
+				name: 'upgrade',
+				description: '\nProceed with upgrade (y|n)?',
+				type: 'string',
+			});
+		}
 
 		if (['y', 'Y', 'yes', 'YES'].includes(result.upgrade)) {
 			console.log('\nUpgrading packages...');

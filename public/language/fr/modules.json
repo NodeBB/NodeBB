@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "Supprimer tous les brouillons",
     "composer.no-drafts": "Vous n'avez pas de brouillons",
     "composer.discard-draft-confirm": "Voulez-vous supprimer ce brouillon ?",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
     "bootbox.confirm": "Confirmer",

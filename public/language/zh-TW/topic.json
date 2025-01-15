@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 回復了在 %2 的話題",
     "user-moved-topic-from-ago": "%1 移動話題來自 %2 %3",
     "user-moved-topic-from-on": "%1 移動話題來自 %2 的 %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">排隊 </a> 等待審核貼文 %3",
     "user-queued-post-on": "%1 <a href=\"%2\">排隊 </a> 等待審核在 %3 的貼文",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">引用</a> 了話題 %3",
@@ -135,6 +137,7 @@
     "bookmarks": "書籤",
     "bookmarks.has-no-bookmarks": "您還沒有加入任何書籤",
     "copy-permalink": "拷貝固定鏈結",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "正在載入更多貼文",
     "move-topic": "移動主題",
     "move-topics": "移動主題",
@@ -219,5 +222,7 @@
     "downvote-post": "倒讚貼文",
     "post-tools": "貼文工具",
     "unread-posts-link": "未讀貼文鏈結",
-    "thumb-image": "主題縮圖"
+    "thumb-image": "主題縮圖",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

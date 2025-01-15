@@ -61,6 +61,8 @@
     "user-restored-topic-on": "%1 gjenopprettet dette menet på %2",
     "user-moved-topic-from-ago": "%1 flyttet dette emnet fra %2 %3",
     "user-moved-topic-from-on": "%1 flyttet dette emnet fra %2 på %3",
+    "user-shared-topic-ago": "%1 shared this topic %2",
+    "user-shared-topic-on": "%1 shared this topic on %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">i kø</a> post til godkjenning %3",
     "user-queued-post-on": "%1 <a href=\"%2\">i kø</a>post til godkjenning  %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">refererte</a> dette emnet %3",
@@ -107,7 +109,7 @@
     "thread-tools.manage-editors": "Administrer Editor",
     "thread-tools.select-category": "Velg kategori",
     "thread-tools.fork": "Forgren tråd",
-    "thread-tools.tag": "Merk tråd",
+    "thread-tools.tag": "Legg til emneord",
     "thread-tools.delete": "Slett tråd",
     "thread-tools.delete-posts": "Slett innlegg",
     "thread-tools.delete-confirm": "Er du sikker på at du vil slette denne tråden?",
@@ -135,6 +137,7 @@
     "bookmarks": "Bokmerker",
     "bookmarks.has-no-bookmarks": "Du har ikke bokmerket noen innlegg ennå.",
     "copy-permalink": "Kopier permanent lenke",
+    "go-to-original": "View Original Post",
     "loading-more-posts": "Laster flere innlegg",
     "move-topic": "Flytt tråd",
     "move-topics": "Flytt tråder",
@@ -162,7 +165,7 @@
     "manage-editors-instruction": "Administrer brukere som kan redigere dette innlegget nedenfor.",
     "composer.title-placeholder": "Skriv din tråd-tittel her",
     "composer.handle-placeholder": "Skriv inn navnet ditt / signatur her",
-    "composer.hide": "Gjem",
+    "composer.hide": "Skjul",
     "composer.discard": "Forkast",
     "composer.submit": "Send",
     "composer.additional-options": "Ytterligere alternativer",
@@ -219,5 +222,7 @@
     "downvote-post": "Ikke tilrå innlegg",
     "post-tools": "Innleggsverktøy",
     "unread-posts-link": "Lenke til uleste innlegg",
-    "thumb-image": "Miniatyrbilde for emne"
+    "thumb-image": "Miniatyrbilde for emne",
+    "announcers": "Shares",
+    "announcers-x": "Shares (%1)"
 }

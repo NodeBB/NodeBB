@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "您不能修改插件状态因为它们在运行时中被定义（config.json，环境变量或终端选项），请转而修改配置。",
     "theme-not-set-in-configuration": "在配置中定义活跃的插件时，需要先将新主题加入活跃插件的列表，才能在管理员控制面板中修改主题",
     "topic-event-unrecognized": "无法识别主题事件'%1'",
+    "category.handle-taken": "版块句柄已被占用，请另选一个。",
     "cant-set-child-as-parent": "无法将子版块设置为父版块",
     "cant-set-self-as-parent": "无法将自身设置为父版块",
     "api.master-token-no-uid": "收到一个在请求体中没有对应 `_uid` 的主令牌",
@@ -247,5 +248,11 @@
     "api.500": "在试图为您的请求提供服务时出现了一个意外的错误。",
     "api.501": "您试图调用的路由还没被实现，请明天重试",
     "api.503": "您试图调用的路由因为服务器配置而目前不可用",
-    "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。"
+    "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。",
+    "activitypub.invalid-id": "无法解析输入 id，可能是畸形输入。",
+    "activitypub.get-failed": "无法检索指定资源。",
+    "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",
+    "activitypub.origin-mismatch": "接收对象的原点与发送者的原点不一致",
+    "activitypub.actor-mismatch": "接收活动的行为者与预期的不同。",
+    "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面"
 }

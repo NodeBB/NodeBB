@@ -98,5 +98,9 @@
     "notificationType-post-queue": "כשפוסט חדש נכנס לתור",
     "notificationType-new-post-flag": "כשמדווחים על פוסט",
     "notificationType-new-user-flag": "כשמדווחים על משתמש",
-    "notificationType-new-reward": "כאשר אתם מרוויחים פרס חדש"
+    "notificationType-new-reward": "כאשר אתם מרוויחים פרס חדש",
+    "activitypub.announce": "<strong>%1</strong> שיתפו את הפוסט שלך ב <strong>%2</strong> לעוקבים שלהם.",
+    "activitypub.announce-dual": "<strong>%1</strong> ו-<strong>%2</strong> שיתף את הפוסט שלך ב <strong>%3</strong> לעוקבים שלהם.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> ו-<strong>%3</strong> שיתפו את הפוסט שלך ב <strong>%4</strong>לעוקבים שלהם.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> ו- %3 אחרים שיתפו את הפוסט שלך ב <strong>%4</strong> לעוקבים שלהם."
 }

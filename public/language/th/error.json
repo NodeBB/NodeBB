@@ -235,6 +235,7 @@
     "plugins-set-in-configuration": "คุณไม่สามารถเปลี่ยนสถานะของปลั๊กอินเนื่องจากถูกกำหนดตอนรัน (ไฟล์ config.json, ตัวแปร environmental หรือระบุตอนสั่งในบรรทัดคำสั่ง) โปรดปรับที่การตั้งค่าแทน",
     "theme-not-set-in-configuration": "เมื่อกำหนดปลั๊กอันที่กำลังทำงานในส่วนตั้งค่า การเปลี่ยนธีมต้องเพิ่มทีมในรายการปลั๊กอินที่กำลังใช้งานก่อนที่จะเปลี่ยนในแผงควบคุมผู้ดูแล",
     "topic-event-unrecognized": "ไม่รู้จักอีเวนต์กระทู้ '%1'",
+    "category.handle-taken": "Category handle is already taken, please choose another.",
     "cant-set-child-as-parent": "ไม่สามารถตั้งหมวดหมู่ย่อยให้เป็นหมวดหมู่หลักได้",
     "cant-set-self-as-parent": "ไม่สามารถตั้งหมวดนี้ให้เป็นหมวดหมู่หลักได้",
     "api.master-token-no-uid": "A master token was received without a corresponding `_uid` in the request body",
@@ -247,5 +248,11 @@
     "api.500": "An unexpected error was encountered while attempting to service your request.",
     "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
     "api.503": "The route you are trying to call is not currently available due to a server configuration",
-    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
+    "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.get-failed": "Unable to retrieve the specified resource.",
+    "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
+    "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
+    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
 }

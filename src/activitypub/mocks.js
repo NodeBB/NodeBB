@@ -535,6 +535,10 @@ Mocks.notes.public = async (post) => {
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
+	/**
+	 * audience is exposed as part of 1b12 but is now ignored by Lemmy.
+	 * Remove this and most references to audience in 2026.
+	 */
 	let audience = `${nconf.get('url')}/category/${post.category.cid}`; // default
 	if (inReplyTo) {
 		const chain = await activitypub.notes.getParentChain(post.uid, inReplyTo);

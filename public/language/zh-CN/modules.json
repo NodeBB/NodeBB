@@ -115,6 +115,8 @@
     "composer.discard-all-drafts": "丢弃所有的草稿",
     "composer.no-drafts": "你没有草稿",
     "composer.discard-draft-confirm": "你想丢弃这个草案吗？",
+    "composer.remote-pid-editing": "Editing a remote post",
+    "composer.remote-pid-content-immutable": "The content of remote posts cannot be edited. However, you are able change the topic title and tags.",
     "bootbox.ok": "确认",
     "bootbox.cancel": "取消",
     "bootbox.confirm": "确认",
