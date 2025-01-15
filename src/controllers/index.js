@@ -228,6 +228,10 @@ Controllers.confirmEmail = async (req, res) => {
 			...opts,
 		});
 	}
+
+	if (req.method === 'HEAD') {
+		return renderPage();
+	}
 	try {
 		if (req.loggedIn) {
 			const emailValidated = await user.getUserField(req.uid, 'email:confirmed');
