@@ -126,6 +126,9 @@ const doUnsubscribe = async (payload) => {
 };
 
 settingsController.unsubscribe = async (req, res) => {
+	if (req.method === 'HEAD') {
+		return res.sendStatus(204);
+	}
 	try {
 		const payload = await jwtVerifyAsync(req.params.token);
 		if (!payload || !unsubscribable.includes(payload.template)) {
