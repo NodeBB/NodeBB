@@ -249,6 +249,7 @@
     "api.501": "Il percorso che stai cercando di chiamare non è ancora implementato, riprova domani",
     "api.503": "Il percorso che stai cercando di chiamare non è attualmente disponibile a causa di una configurazione del server",
     "api.reauth-required": "La risorsa a cui stai cercando di accedere richiede una (ri)autenticazione.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Impossibile risolvere l'ID di input, probabilmente perché non è valido.",
     "activitypub.get-failed": "Impossibile recuperare la risorsa specificata.",
     "activitypub.pubKey-not-found": "Impossibile risolvere la chiave pubblica, quindi la verifica del payload non può avvenire.",

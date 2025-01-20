@@ -28,7 +28,13 @@ const sha256 = payload => crypto.createHash('sha256').update(payload).digest('he
 
 const Helpers = module.exports;
 
+let _lastLog;
 Helpers.log = (message) => {
+	if (!message) {
+		return _lastLog;
+	}
+
+	_lastLog = message;
 	if (process.env.NODE_ENV === 'development') {
 		winston.verbose(message);
 	}

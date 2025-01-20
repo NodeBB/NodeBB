@@ -249,6 +249,7 @@
     "api.501": "Die Route, die Sie anrufen möchten, ist noch nicht implementiert. Bitte versuchen Sie es morgen erneut",
     "api.503": "Die Route, die Sie anrufen möchten, ist derzeit aufgrund einer Serverkonfiguration nicht verfügbar",
     "api.reauth-required": "Die angeforderte Ressource erfordert eine (Re-)Authentifizierung.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",

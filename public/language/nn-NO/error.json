@@ -249,6 +249,7 @@
     "api.501": "Ruta du prøver å kalle på er ikkje implementert enno, prøv igjen i morgon",
     "api.503": "Ruta du prøver å kalle på er for augneblinken ikkje tilgjengeleg grunna serverkonfigurasjon",
     "api.reauth-required": "Ressursen du prøver å nå krev (re-)autentisering.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",

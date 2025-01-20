@@ -249,6 +249,7 @@
     "api.501": "Định tuyến bạn đang cố gắng gọi chưa được triển khai, vui lòng thử lại vào ngày mai",
     "api.503": "Định tuyến bạn đang cố gọi hiện không khả dụng do cấu hình máy chủ",
     "api.reauth-required": "Tài nguyên bạn đang cố truy cập yêu cầu xác thực (lại).",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Không thể giải quyết id đầu vào, có thể vì nó không đúng định dạng.",
     "activitypub.get-failed": "Không thể truy xuất tài nguyên được chỉ định.",
     "activitypub.pubKey-not-found": "Không thể giải quyết khóa công khai, do đó việc xác minh payload không thể diễn ra.",

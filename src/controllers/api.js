@@ -98,7 +98,7 @@ apiController.loadConfig = async function (req) {
 			version: fontawesome_version,
 		},
 		activitypub: {
-			probe: meta.config.activitypubProbe,
+			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe,
 		},
 	};
 

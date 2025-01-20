@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 
+const meta = require('../../meta');
 const user = require('../../user');
 const activitypub = require('../../activitypub');
 const helpers = require('../helpers');
@@ -14,7 +15,7 @@ Controller.topics = require('./topics');
 
 Controller.fetch = async (req, res, next) => {
 	// Given a `resource` query parameter, attempts to retrieve and parse it
-	if (!req.query.resource) {
+	if (!meta.config.activitypubEnabled || !req.query.resource) {
 		return next();
 	}
 

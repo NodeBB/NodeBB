@@ -249,6 +249,7 @@
     "api.501": "Pyytämääsi polkua ei ole vielä toteutettu. Yritä huomenna uudelleen.",
     "api.503": "Pyytämääsi polku ei ole palvelinasetusten vuoksi tällä hetkellä käytettävissä.",
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
