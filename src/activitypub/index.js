@@ -263,6 +263,10 @@ ActivityPub.verify = async (req) => {
 };
 
 ActivityPub.get = async (type, id, uri, options) => {
+	if (!meta.config.activitypubEnabled) {
+		throw new Error('[[error:activitypub.not-enabled]]');
+	}
+
 	options = {
 		cache: true,
 		...options,
@@ -358,6 +362,10 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 }
 
 ActivityPub.send = async (type, id, targets, payload) => {
+	if (!meta.config.activitypubEnabled) {
+		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
+	}
+
 	if (!Array.isArray(targets)) {
 		targets = [targets];
 	}

@@ -11,7 +11,6 @@ const request = require('../src/request');
 
 const file = require('../src/file');
 const install = require('../src/install');
-const privileges = require('../src/privileges');
 const meta = require('../src/meta');
 const user = require('../src/user');
 const categories = require('../src/categories');
@@ -27,6 +26,52 @@ describe('ActivityPub integration', () => {
 
 	after(() => {
 		delete meta.config.activitypubEnabled;
+	});
+
+	describe.only('Master toggle', () => {
+		before(async () => {
+			delete meta.config.activitypubEnabled;
+		});
+
+		it('calls to activitypub.get should throw', async () => {
+			await assert.rejects(
+				activitypub.get('uid', 0, 'https://example.org'),
+				{ message: '[[error:activitypub.not-enabled]]' },
+			);
+		});
+
+		it('calls to activitypub.send should silently log', async () => {
+			await activitypub.send('uid', 0, ['https://example.org'], { foo: 'bar' });
+			assert.strictEqual(activitypub.helpers.log(), '[activitypub/send] Federation not enabled; not sending.')
+		});
+
+		it('request for an activitypub route should return 404 Not Found', async () => {
+			const uid = user.create({ username: utils.generateUUID() });
+			const { response } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			assert.strictEqual(response.statusCode, 404);
+		});
+
+		it('requests to the /ap endpoint should return 404 Not Found', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/ap?resource=${encodeURIComponent('https://example.org')}`);
+			assert.strictEqual(response.statusCode, 404);
+		});
+
+		it('webfinger requests to a local user should not indicate an application/activity+json endpoint', async () => {
+			const username = utils.generateUUID().slice(0, 8);
+			user.create({ username });
+			const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
+
+			assert.strictEqual(response.statusCode, 200);
+		});
+
+		after(() => {
+			meta.config.activitypubEnabled = 1;
+		});
 	});
 
 	describe('Helpers', () => {
