@@ -61,12 +61,14 @@ describe('ActivityPub integration', () => {
 			assert.strictEqual(response.statusCode, 404);
 		});
 
-		it('webfinger requests to a local user should not indicate an application/activity+json endpoint', async () => {
+		it('webfinger request to a local user should not indicate an application/activity+json endpoint', async () => {
 			const username = utils.generateUUID().slice(0, 8);
-			user.create({ username });
-			const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
+			await user.create({ username });
+			const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${username}%40${nconf.get('url_parsed').host}`);
 
 			assert.strictEqual(response.statusCode, 200);
+			assert(body && body.links && Array.isArray(body.links));
+			assert(!body.links.some(obj => obj.type && obj.type === 'application/activity+json'));
 		});
 
 		after(() => {
