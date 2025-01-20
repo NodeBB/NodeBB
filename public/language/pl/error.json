@@ -249,6 +249,7 @@
     "api.501": "Ścieżka jaką próbujesz wywołać, nie jest jeszcze zaimplementowana. Spróbuj ponownie jutro.",
     "api.503": "Ścieżka z którą próbujesz się połączyć, jest obecnie niedostępna z powodu konfiguracji serwera",
     "api.reauth-required": "Zasób, do którego próbujesz uzyskać dostęp, wymaga (być może ponownego) uwierzytelnienia.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Nie można przetworzyć id na wejściu, czyli pewnie jest zdeformowane.",
     "activitypub.get-failed": "Nie udało się pobrać zadanego zasobu.",
     "activitypub.pubKey-not-found": "Nie udało się uzyskać klucza publicznego, więc nie może zajść weryfikacja zawartości.",

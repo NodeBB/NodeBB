@@ -249,6 +249,7 @@
     "api.501": "Itinerari që kërkoni nuk është zbatuar ende, ju lutemi provoni sërish nesër",
     "api.503": "Itinerari që kërkoni nuk është aktualisht i disponueshëm për shkak të një konfigurimi të serverit",
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",

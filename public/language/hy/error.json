@@ -249,6 +249,7 @@
     "api.501": "Ուղեգիծը, որով փորձում եք զանգահարել, դեռ չի իրականացվել, խնդրում ենք վաղը նորից փորձեք",
     "api.503": "Երթուղին, որը փորձում եք զանգահարել, ներկայումս հասանելի չէ սերվերի կազմաձևման պատճառով",
     "api.reauth-required": "Ռեսուրսը, որին փորձում եք միանալ, պահանջում է (վերա) նույնականացում:",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",

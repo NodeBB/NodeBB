@@ -249,6 +249,7 @@
     "api.501": "호출하려는 경로가 현재 구현되지 않았습니다. 다음에 다시 시도하세요",
     "api.503": "현재 서버 구성으로 인해 호출하려는 경로를 사용할 수 없습니다",
     "api.reauth-required": "액세스하려는 리소스에는 (다시)인증이 필요합니다.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",

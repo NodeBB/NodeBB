@@ -249,6 +249,7 @@
     "api.501": "L'accès n'est pas encore fonctionnel, veuillez réessayer demain",
     "api.503": "L'accès n'est pas disponible actuellement en raison de la configuration du serveur",
     "api.reauth-required": "La ressource à laquelle vous tentez d'accéder nécessite une (ré-)authentification.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",

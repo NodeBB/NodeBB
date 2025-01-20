@@ -249,6 +249,7 @@
     "api.501": "您试图调用的路由还没被实现，请明天重试",
     "api.503": "您试图调用的路由因为服务器配置而目前不可用",
     "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "无法解析输入 id，可能是畸形输入。",
     "activitypub.get-failed": "无法检索指定资源。",
     "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",

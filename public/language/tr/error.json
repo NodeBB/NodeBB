@@ -249,6 +249,7 @@
     "api.501": "Aramaya çalıştığınız rota henüz uygulanmadı, lütfen yarın tekrar deneyin",
     "api.503": "Aramaya çalıştığınız rota sunucu yapılandırması nedeniyle şu anda kullanılamıyor",
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
+    "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
