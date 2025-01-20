@@ -64,7 +64,10 @@ async function registerAndLoginUser(req, res, userData) {
 		]);
 	}
 	await user.deleteInvitationKey(userData.email, userData.token);
-	const next = req.session.returnTo || `${nconf.get('relative_path')}/`;
+	let next = req.session.returnTo || `${nconf.get('relative_path')}/`;
+	if (req.loggedIn && next === `${nconf.get('relative_path')}/login`) {
+		next = `${nconf.get('relative_path')}/`;
+	}
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
 	req.session.returnTo = complete.next;
 	return complete;
