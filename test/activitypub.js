@@ -42,7 +42,7 @@ describe('ActivityPub integration', () => {
 
 		it('calls to activitypub.send should silently log', async () => {
 			await activitypub.send('uid', 0, ['https://example.org'], { foo: 'bar' });
-			assert.strictEqual(activitypub.helpers.log(), '[activitypub/send] Federation not enabled; not sending.')
+			assert.strictEqual(activitypub.helpers.log(), '[activitypub/send] Federation not enabled; not sending.');
 		});
 
 		it('request for an activitypub route should return 404 Not Found', async () => {
