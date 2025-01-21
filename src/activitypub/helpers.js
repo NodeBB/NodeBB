@@ -28,6 +28,16 @@ const sha256 = payload => crypto.createHash('sha256').update(payload).digest('he
 
 const Helpers = module.exports;
 
+Helpers._test = (method, args) => {
+	// because I am lazy and I probably wrote some variant of this below code 1000 times already
+	setTimeout(async () => {
+		console.log(await method.apply(method, args));
+	}, 2500);
+};
+// process.nextTick(() => {
+// 	Helpers._test(activitypub.notes.assert, ['uid', 1, `https://`]);
+// });
+
 let _lastLog;
 Helpers.log = (message) => {
 	if (!message) {
