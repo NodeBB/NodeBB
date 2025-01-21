@@ -7,7 +7,7 @@
 	"privileges": "Uprawnienia",
 	"back-to-categories": "Wróć do kategorii",
 	"name": "Nazwa kategorii",
-	"handle": "Obsługa kategorii",
+	"handle": "Przydział kategorii",
 	"handle.help": "Obsługa kategorii robi za znak rozpoznawczy w innych sieciach na wzór nazwy użytkownika. Z tej racji jej nazwa nie może się pokrywać z nazwą użytkownika lub grupą użytkowników.",
 	"description": "Opis kategorii",
 	"bg-color": "Kolor tła",
@@ -91,7 +91,7 @@
 	"federation.syncing-follow": "Śledź",
 	"federation.syncing-unfollow": "Przestań śledzić",
 	"federation.followers": "Zdalni użytkownicy śledzący tę kategorię",
-	"federation.followers-handle": "Obsługa",
+	"federation.followers-handle": "Przydział",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Brak śledzących.",
 
