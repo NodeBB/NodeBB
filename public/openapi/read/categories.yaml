@@ -142,6 +142,9 @@ get:
                                     type: number
                                   content:
                                     type: string
+                                  sourceContent:
+                                    type: string
+                                    nullable: true
                                   timestampISO:
                                     type: string
                                     description: An ISO 8601 formatted date string (complementing `timestamp`)
