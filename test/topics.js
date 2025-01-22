@@ -1104,7 +1104,7 @@ describe('Topic\'s', () => {
 		it('should redirect if post index is out of range', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}/-1`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], `/topic/${topicData.tid}/topic-for-controller-test`);
+			assert.equal(response.headers['x-redirect'], encodeURIComponent(`/topic/${topicData.tid}/topic-for-controller-test`));
 			assert.equal(body, `/topic/${topicData.tid}/topic-for-controller-test`);
 		});
 

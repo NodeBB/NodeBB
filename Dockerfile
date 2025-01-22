@@ -31,7 +31,8 @@ RUN groupadd --gid ${GID} ${USER} \
 
 USER ${USER}
 
-RUN npm install --omit=dev
+RUN npm install --omit=dev \
+    && rm -rf .npm
     # TODO: generate lockfiles for each package manager
     ## pnpm import \
 

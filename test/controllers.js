@@ -942,7 +942,7 @@ describe('Controllers', () => {
 		it('should redirect to account page with logged in user', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/login`, { jar });
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/foo');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo'));
 			assert.equal(body, '/user/foo');
 		});
 
@@ -954,14 +954,14 @@ describe('Controllers', () => {
 		it('should redirect to userslug', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/uid/${fooUid}`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/foo');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo'));
 			assert.equal(body, '/user/foo');
 		});
 
 		it('should redirect to userslug and keep query params', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/uid/${fooUid}/topics?foo=bar`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/foo/topics?foo=bar');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo/topics?foo=bar'));
 			assert.equal(body, '/user/foo/topics?foo=bar');
 		});
 
@@ -981,14 +981,14 @@ describe('Controllers', () => {
 			it('api should redirect to /user/[userslug]/bookmarks', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/api/me/bookmarks`, { jar });
 				assert.equal(response.statusCode, 200);
-				assert.equal(response.headers['x-redirect'], '/user/foo/bookmarks');
+				assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo/bookmarks'));
 				assert.equal(body, '/user/foo/bookmarks');
 			});
 
 			it('api should redirect to /user/[userslug]/edit/username', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/api/me/edit/username`, { jar });
 				assert.equal(response.statusCode, 200);
-				assert.equal(response.headers['x-redirect'], '/user/foo/edit/username');
+				assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo/edit/username'));
 				assert.equal(body, '/user/foo/edit/username');
 			});
 
@@ -1387,7 +1387,7 @@ describe('Controllers', () => {
 		it('should return correct post path', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/post/${pid}`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/topic/1/test-topic-title');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/topic/1/test-topic-title'));
 			assert.equal(body, '/topic/1/test-topic-title');
 		});
 	});
@@ -1500,7 +1500,7 @@ describe('Controllers', () => {
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/users`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/api/popular');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/api/popular'));
 			assert(body, '/api/popular');
 		});
 
@@ -1605,12 +1605,12 @@ describe('Controllers', () => {
 			const { cid } = category;
 
 			let result = await request.get(`${nconf.get('url')}/api/category/${category.slug}`, { jar });
-			assert.equal(result.response.headers['x-redirect'], 'https://nodebb.org');
+			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('https://nodebb.org'));
 			assert.equal(result.body, 'https://nodebb.org');
 			await categories.setCategoryField(cid, 'link', '/recent');
 
 			result = await request.get(`${nconf.get('url')}/api/category/${category.slug}`, { jar });
-			assert.equal(result.response.headers['x-redirect'], '/recent');
+			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('/recent'));
 			assert.equal(result.body, '/recent');
 		});
 
@@ -1686,7 +1686,7 @@ describe('Controllers', () => {
 		it('should redirect if page is out of bounds', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/unread?page=-1`, { jar });
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/unread?page=1');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/unread?page=1'));
 			assert.equal(body, '/unread?page=1');
 		});
 	});
