@@ -807,7 +807,7 @@ describe('Messaging Library', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/chats`, { jar });
 
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/herp/chats');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/herp/chats'));
 			assert.equal(body, '/user/herp/chats');
 		});
 
