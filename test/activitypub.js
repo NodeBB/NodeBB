@@ -28,7 +28,7 @@ describe('ActivityPub integration', () => {
 		delete meta.config.activitypubEnabled;
 	});
 
-	describe.only('Master toggle', () => {
+	describe('Master toggle', () => {
 		before(async () => {
 			delete meta.config.activitypubEnabled;
 		});
@@ -206,7 +206,7 @@ describe('ActivityPub integration', () => {
 			});
 		});
 
-		describe.only('.remoteAnchorToLocalProfile', () => {
+		describe('.remoteAnchorToLocalProfile', () => {
 			const uuid1 = utils.generateUUID();
 			const id1 = `https://example.org/uuid/${uuid1}`;
 			const url1 = `https://example.org/test`;
