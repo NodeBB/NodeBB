@@ -134,6 +134,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	const payload = {
 		id: `${object.id}#activity/create/${Date.now()}`,
 		type: 'Create',
+		actor: object.attributedTo,
 		to,
 		cc,
 		object,
