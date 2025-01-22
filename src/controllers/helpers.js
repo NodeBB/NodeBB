@@ -168,7 +168,7 @@ helpers.redirect = function (res, url, permanent) {
 	if (url.hasOwnProperty('external')) {
 		const redirectUrl = prependRelativePath(url.external);
 		if (res.locals.isAPI) {
-			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
+			res.set('X-Redirect', encodeURIComponent(redirectUrl)).status(200).json({ external: redirectUrl });
 		} else {
 			res.redirect(permanent ? 308 : 307, redirectUrl);
 		}
@@ -176,7 +176,7 @@ helpers.redirect = function (res, url, permanent) {
 	}
 
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', url).status(200).json(url);
+		res.set('X-Redirect', encodeURIComponent(url)).status(200).json(url);
 	} else {
 		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}

@@ -33,12 +33,12 @@ describe('WebFinger endpoint', () => {
 		assert.strictEqual(response.statusCode, 400);
 	});
 
-	it('should return 403 Forbidden if the calling user is not allowed to view the user list/profiles', async () => {
+	it('should return 404 Not Found if the calling user is not allowed to view the user list/profiles', async () => {
 		await privileges.global.rescind(['groups:view:users'], 'fediverse');
 		const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${slug}%40${host}`);
 
 		assert(response);
-		assert.strictEqual(response.statusCode, 400);
+		assert.strictEqual(response.statusCode, 404);
 		await privileges.global.give(['groups:view:users'], 'fediverse');
 	});
 

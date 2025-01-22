@@ -1917,7 +1917,7 @@ describe('Controllers', () => {
 				await privileges.global.rescind(['groups:view:users'], 'fediverse');
 
 				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
-				assert.strictEqual(response.statusCode, 400);
+				assert.strictEqual(response.statusCode, 404);
 
 				await privileges.global.give(['groups:view:users'], 'fediverse');
 			});
