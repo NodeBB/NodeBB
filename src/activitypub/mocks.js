@@ -436,7 +436,7 @@ Mocks.notes.public = async (post) => {
 	}
 
 	const content = await posts.getPostField(post.pid, 'content');
-	post.content = content; // re-send raw content
+	post.content = content; // re-send raw content into parsePost
 	const parsed = await posts.parsePost(post, 'activitypub.note');
 	post.content = sanitize(parsed.content, sanitizeConfig);
 	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
@@ -448,9 +448,13 @@ Mocks.notes.public = async (post) => {
 		plugins.isActive('nodebb-plugin-mentions'),
 	]);
 	if (markdownEnabled) {
+		// Re-parse for markdown
+		const _post = { ...post };
 		const raw = await posts.getPostField(post.pid, 'content');
+		_post.content = raw;
+		const { content } = await posts.parsePost(_post, 'markdown');
 		source = {
-			content: raw,
+			content,
 			mediaType: 'text/markdown',
 		};
 	}

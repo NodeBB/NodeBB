@@ -33,7 +33,7 @@ let sanitizeConfig = {
 		'tabindex', 'title', 'translate', 'aria-*', 'data-*',
 	],
 };
-const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article']);
+const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article', 'markdown']);
 
 module.exports = function (Posts) {
 	Posts.urlRegex = {
