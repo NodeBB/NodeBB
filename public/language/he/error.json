@@ -249,7 +249,7 @@
     "api.501": "הנתיב אליו אתם מנסים לתקשר עדיין לא מיושם, אנא נסו שוב מחר",
     "api.503": "הנתיב אליו אתם מנסים לתקשר אינו זמין כעת עקב תצורת שרת",
     "api.reauth-required": "המשאב שאליו אתה מנסה לגשת דורש אימות (מחודש).",
-    "activitypub.not-enabled": "Federation is not enabled on this server",
+    "activitypub.not-enabled": "הפדרציה אינה מופעלת בשרת זה",
     "activitypub.invalid-id": "לא ניתן לפתור את מזהה הקלט, ככל הנראה מכיוון שהוא פגום.",
     "activitypub.get-failed": "לא ניתן לאחזר את המשאב שצוין.",
     "activitypub.pubKey-not-found": "לא ניתן לפתור מפתח ציבורי, ולכן לא ניתן לבצע אימות מטען.",
