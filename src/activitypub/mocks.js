@@ -176,9 +176,10 @@ Mocks.post = async (objects) => {
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
-		const sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
+		let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
 		if (sourceContent) {
 			content = null;
+			sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(sourceContent, true);
 		} else if (content && content.length) {
 			content = sanitize(content, sanitizeConfig);
 			content = await activitypub.helpers.remoteAnchorToLocalProfile(content);

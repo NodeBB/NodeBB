@@ -183,7 +183,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				_activitypub: mainPost._activitypub,
 			}),
 			Notes.updateLocalRecipients(mainPid, { to, cc }),
-			posts.attachments.update(mainPid, attachment),
 		]);
 		unprocessed.shift();
 
@@ -193,6 +192,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				id: tid,
 				path: mainPost._activitypub.image,
 			}) : null,
+			posts.attachments.update(mainPid, attachment),
 		]);
 
 		if (context) {
