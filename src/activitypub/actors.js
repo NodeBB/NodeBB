@@ -67,7 +67,7 @@ Actors.assert = async (ids, options = {}) => {
 	})));
 
 	// Webfinger failures = assertion failure
-	if (!ids.every(Boolean)) {
+	if (!ids.length || !ids.every(Boolean)) {
 		return false;
 	}
 
