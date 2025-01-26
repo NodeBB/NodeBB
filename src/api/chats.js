@@ -109,9 +109,6 @@ chatsAPI.sortPublicRooms = async (caller, { roomIds, scores }) => {
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
-	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
-		throw new Error('[[error:too-many-messages]]');
-	}
 	if (!data || !data.roomId || !caller.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -122,7 +119,13 @@ chatsAPI.post = async (caller, data) => {
 	}));
 
 	await messaging.canMessageRoom(caller.uid, data.roomId);
-	const message = await messaging.sendMessage({
+	await messaging.checkContent(data.message);
+
+	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
+		throw new Error('[[error:too-many-messages]]');
+	}
+
+	const message = await messaging.addMessage({
 		uid: caller.uid,
 		roomId: data.roomId,
 		content: data.message,
