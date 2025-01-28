@@ -50,7 +50,7 @@ define('forum/chats/messages', [
 	messages.updateRemainingLength = function (parent) {
 		const element = parent.find('[component="chat/input"]');
 		parent.find('[component="chat/message/length"]').text(element.val().length);
-		const remainingLength = config.maximumChatMessageLength - element.val().length
+		const remainingLength = config.maximumChatMessageLength - element.val().length;
 		parent.find('[component="chat/message/remaining"]').text(remainingLength)
 			.toggleClass('fw-bold text-danger', remainingLength < 0)
 			.toggleClass('text-muted', remainingLength >= 0);
