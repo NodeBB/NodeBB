@@ -453,7 +453,8 @@ Mocks.notes.public = async (post) => {
 		const _post = { ...post };
 		const raw = await posts.getPostField(post.pid, 'content');
 		_post.content = raw;
-		const { content } = await posts.parsePost(_post, 'markdown');
+		let { content } = await posts.parsePost(_post, 'markdown');
+		content = posts.relativeToAbsolute(content, posts.mdImageUrlRegex);
 		source = {
 			content,
 			mediaType: 'text/markdown',
@@ -500,7 +501,7 @@ Mocks.notes.public = async (post) => {
 	});
 
 	// Inspect post content for external imagery as well
-	let match = posts.imgRegex.regex.exec(post.content);
+	let match = posts.imgRegex.exec(post.content);
 	while (match !== null) {
 		if (match[1]) {
 			const { hostname, pathname, href: url } = new URL(match[1]);
@@ -509,7 +510,7 @@ Mocks.notes.public = async (post) => {
 				attachment.push({ mediaType, url });
 			}
 		}
-		match = posts.imgRegex.regex.exec(post.content);
+		match = posts.imgRegex.exec(post.content);
 	}
 
 	attachment = attachment.map(({ mediaType, url, width, height }) => {
@@ -600,8 +601,11 @@ Mocks.notes.private = async ({ messageObj }) => {
 	let source;
 	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
 	if (markdownEnabled) {
+		let { content } = messageObj;
+		content = posts.relativeToAbsolute(content, posts.mdImageUrlRegex);
+
 		source = {
-			content: messageObj.content,
+			content,
 			mediaType: 'text/markdown',
 		};
 	}
