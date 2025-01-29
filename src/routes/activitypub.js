@@ -42,11 +42,11 @@ module.exports = function (app, middleware, controllers) {
 
 	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], controllers.activitypub.actors.topic);
 
-	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], controllers.activitypub.actors.category);
 	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], controllers.activitypub.getInbox);
 	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], controllers.activitypub.postInbox);
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.getCategoryOutbox);
 	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.postOutbox);
+	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], controllers.activitypub.actors.category);
 
 	app.get('/message/:mid', [...middlewares, middleware.assert.message], controllers.activitypub.actors.message);
 };

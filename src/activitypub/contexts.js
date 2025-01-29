@@ -27,11 +27,16 @@ Contexts.get = async (uid, id) => {
 	}
 
 	try {
-		({ context } = await activitypub.get('uid', uid, id, { headers }));
-		if (!context) {
+		({ id, type, context } = await activitypub.get('uid', uid, id, { headers }));
+		if (acceptableTypes.includes(type)) { // is context
+			activitypub.helpers.log(`[activitypub/context] ${id} is the context.`);
+			return { context: id };
+		} else if (!context) {
 			activitypub.helpers.log(`[activitypub/context] ${id} contains no context.`);
 			return false;
 		}
+
+		// context provided; try to resolve it.
 		({ type } = await activitypub.get('uid', uid, context));
 	} catch (e) {
 		if (e.code === 'ap_get_304') {
@@ -98,9 +103,13 @@ Contexts.getItems = async (uid, id, options) => {
 	const inputId = activitypub.helpers.isUri(options.input) ? options.input : options.input.id;
 	const inCollection = Array.from(chain).map(p => p.pid).includes(inputId);
 	if (!inCollection) {
-		chain.add(activitypub.helpers.isUri(options.input) ?
+		const item = activitypub.helpers.isUri(options.input) ?
 			await parseString(uid, options.input) :
-			await parseItem(uid, options.input));
+			await parseItem(uid, options.input);
+
+		if (item) {
+			chain.add(item);
+		}
 	}
 
 	return chain;
