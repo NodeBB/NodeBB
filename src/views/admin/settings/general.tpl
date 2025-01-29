@@ -162,7 +162,7 @@
 
 				<div class="">
 					<p>
-						[[admin/settings/general:description]]
+						[[admin/settings/general:home-page-description]]
 					</p>
 					<form class="row">
 						<div class="col-sm-12">
