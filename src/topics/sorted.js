@@ -243,8 +243,7 @@ module.exports = function (Topics) {
 	}
 
 	async function filterTids(tids, params) {
-		const { filter } = params;
-		const { uid } = params;
+		const { filter, uid } = params;
 
 		if (filter === 'new') {
 			tids = await Topics.filterNewTids(tids, uid);
