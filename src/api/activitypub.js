@@ -38,7 +38,7 @@ function enabledCheck(next) {
 activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) => {
 	// Privilege checks should be done upstream
 	const assertion = await activitypub.actors.assert(actor);
-	if (!assertion) {
+	if (!assertion || !assertion.length) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
@@ -134,6 +134,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	const payload = {
 		id: `${object.id}#activity/create/${Date.now()}`,
 		type: 'Create',
+		actor: object.attributedTo,
 		to,
 		cc,
 		object,

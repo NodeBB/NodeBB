@@ -327,7 +327,7 @@ define('search', [
 			});
 		});
 
-		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-fluid');
+		$('.search-results .content').find('img:not(.not-responsive)').addClass('img-fluid');
 	};
 
 	return Search;

@@ -38,8 +38,9 @@ COPY --from=git --chown=${USER}:${USER} /usr/src/app/install/package.json /usr/s
 
 USER ${USER}
 
-RUN npm install
-  
+RUN npm install \
+    && rm -rf .npm
+
 FROM node:lts-slim AS final
 
 ENV NODE_ENV=development \

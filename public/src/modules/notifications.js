@@ -47,7 +47,9 @@ define('notifications', [
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							triggerEl.dropdown('toggle');
+							if (triggerEl) {
+								triggerEl.dropdown('toggle');
+							}
 						}
 
 						const unread = notifEl.hasClass('unread');
