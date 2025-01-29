@@ -49,7 +49,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const { tid } = context;
 		return { tid, count: 0 };
 	} else if (context.context) {
-		chain = Array.from(await activitypub.contexts.getItems(uid, context.collection, { input }));
+		chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 		if (chain && chain.length) {
 			// Context resolves, use in later topic creation
 			context = context.context;

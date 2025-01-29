@@ -115,52 +115,12 @@ Actors.replies = async function (req, res) {
 Actors.topic = async function (req, res, next) {
 	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
 	if (!allowed) {
-		return next();
-	}
-
-	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
-	let pids = await db.getSortedSetMembers(`tid:${req.params.tid}:posts`);
-	pids.push(mainPid);
-	pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
-
-	// Generate digest for ETag
-	const digest = activitypub.helpers.generateDigest(new Set(pids));
-	const ifNoneMatch = (req.get('If-None-Match') || '').split(',').map((tag) => {
-		tag = tag.trim();
-		if (tag.startsWith('"') && tag.endsWith('"')) {
-			return tag.slice(1, tag.length - 1);
-		}
-
-		return tag;
-	});
-	if (ifNoneMatch.includes(digest)) {
-		return res.sendStatus(304);
-	}
-	res.set('ETag', digest);
-
-	const object = {
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${nconf.get('url')}/topic/${req.params.tid}`,
-		url: `${nconf.get('url')}/topic/${slug}`,
-		type: 'Conversation',
-		name,
-		attributedTo: `${nconf.get('url')}/category/${cid}`,
-		// audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}` : undefined,
-		posts: `${nconf.get('url')}/topic/${req.params.tid}/posts`,
-	};
-
-	res.status(200).json(object);
-};
-
-Actors.topicPosts = async function (req, res, next) {
-	const allowed = await privileges.topics.can('topics:read', req.params.tid, activitypub._constants.uid);
-	if (!allowed) {
-		return next();
+		return res.sendStatus(404);
 	}
 
 	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
-	const mainPid = await topics.getTopicField(req.params.tid, 'mainPid');
+	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
 	try {
 		let [collection, pids] = await Promise.all([
 			activitypub.helpers.generateCollection({
@@ -176,6 +136,21 @@ Actors.topicPosts = async function (req, res, next) {
 		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		collection.totalItems += 1; // account for mainPid
 
+		// Generate digest for ETag
+		const digest = activitypub.helpers.generateDigest(new Set(pids));
+		const ifNoneMatch = (req.get('If-None-Match') || '').split(',').map((tag) => {
+			tag = tag.trim();
+			if (tag.startsWith('"') && tag.endsWith('"')) {
+				return tag.slice(1, tag.length - 1);
+			}
+
+			return tag;
+		});
+		if (ifNoneMatch.includes(digest)) {
+			return res.sendStatus(304);
+		}
+		res.set('ETag', digest);
+
 		// Convert pids to urls
 		if (page || collection.totalItems < meta.config.postsPerPage) {
 			collection.orderedItems = collection.orderedItems || [];
@@ -187,7 +162,11 @@ Actors.topicPosts = async function (req, res, next) {
 
 		const object = {
 			'@context': 'https://www.w3.org/ns/activitystreams',
-			id: `${nconf.get('url')}/topic/${req.params.tid}/posts${collection.orderedItems && page ? `?page=${page}` : ''}`,
+			id: `${nconf.get('url')}/topic/${req.params.tid}${collection.orderedItems && page ? `?page=${page}` : ''}`,
+			url: `${nconf.get('url')}/topic/${slug}`,
+			name,
+			attributedTo: `${nconf.get('url')}/category/${cid}`,
+			audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}` : undefined,
 			...collection,
 		};
 

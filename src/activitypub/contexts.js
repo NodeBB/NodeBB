@@ -12,7 +12,6 @@ const acceptableTypes = ['Collection', 'CollectionPage', 'OrderedCollection', 'O
 Contexts.get = async (uid, id) => {
 	let context;
 	let type;
-	let collection;
 
 	// Generate digest for If-None-Match if locally cached
 	const tid = await posts.getPostField(id, 'tid');
@@ -28,15 +27,12 @@ Contexts.get = async (uid, id) => {
 	}
 
 	try {
-		({ id, type, context, posts: collection } = await activitypub.get('uid', uid, id, { headers }));
-		if (type === 'Conversation' && collection) {
-			activitypub.helpers.log(`[activitypub/context] ${id} is the context.`);
-			return { context: id, collection };
-		} else if (!context) {
+		({ context } = await activitypub.get('uid', uid, id, { headers }));
+		if (!context) {
 			activitypub.helpers.log(`[activitypub/context] ${id} contains no context.`);
 			return false;
 		}
-		({ type, posts: collection } = await activitypub.get('uid', uid, context));
+		({ type } = await activitypub.get('uid', uid, context));
 	} catch (e) {
 		if (e.code === 'ap_get_304') {
 			activitypub.helpers.log(`[activitypub/context] ${id} context unchanged.`);
@@ -47,8 +43,8 @@ Contexts.get = async (uid, id) => {
 		return false;
 	}
 
-	if (type === 'Conversation') {
-		return { context, collection };
+	if (acceptableTypes.includes(type)) {
+		return { context };
 	}
 
 	return false;
@@ -102,13 +98,9 @@ Contexts.getItems = async (uid, id, options) => {
 	const inputId = activitypub.helpers.isUri(options.input) ? options.input : options.input.id;
 	const inCollection = Array.from(chain).map(p => p.pid).includes(inputId);
 	if (!inCollection) {
-		const item = activitypub.helpers.isUri(options.input) ?
+		chain.add(activitypub.helpers.isUri(options.input) ?
 			await parseString(uid, options.input) :
-			await parseItem(uid, options.input);
-
-		if (item) {
-			chain.add(item);
-		}
+			await parseItem(uid, options.input));
 	}
 
 	return chain;
