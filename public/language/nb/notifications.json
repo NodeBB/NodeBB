@@ -99,8 +99,8 @@
     "notificationType-new-post-flag": "Når ett nytt innlegg er flagget",
     "notificationType-new-user-flag": "Når en bruker er flagget",
     "notificationType-new-reward": "Når du får en ny tildelning",
-    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
-    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
-    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
-    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
+    "activitypub.announce": "<strong>%1</strong> delte din post i <strong>%2</strong> til sine følgere.",
+    "activitypub.announce-dual": "<strong>%1</strong> og <strong>%2</strong> delte din post i <strong>%3</strong> til sine følgere.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> og <strong>%3</strong> delte din post i <strong>%4</strong> til sine følgere.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> og %3 andre delte din post i <strong>%4</strong> til sine følgere."
 }

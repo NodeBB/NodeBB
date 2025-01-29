@@ -61,8 +61,8 @@
     "user-restored-topic-on": "%1 gjenopprettet dette menet på %2",
     "user-moved-topic-from-ago": "%1 flyttet dette emnet fra %2 %3",
     "user-moved-topic-from-on": "%1 flyttet dette emnet fra %2 på %3",
-    "user-shared-topic-ago": "%1 shared this topic %2",
-    "user-shared-topic-on": "%1 shared this topic on %2",
+    "user-shared-topic-ago": "%1 delte dette emnet %2",
+    "user-shared-topic-on": "%1 delte dette emnet på %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">i kø</a> post til godkjenning %3",
     "user-queued-post-on": "%1 <a href=\"%2\">i kø</a>post til godkjenning  %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">refererte</a> dette emnet %3",
@@ -137,7 +137,7 @@
     "bookmarks": "Bokmerker",
     "bookmarks.has-no-bookmarks": "Du har ikke bokmerket noen innlegg ennå.",
     "copy-permalink": "Kopier permanent lenke",
-    "go-to-original": "View Original Post",
+    "go-to-original": "Vis innlegg",
     "loading-more-posts": "Laster flere innlegg",
     "move-topic": "Flytt tråd",
     "move-topics": "Flytt tråder",
@@ -223,6 +223,6 @@
     "post-tools": "Innleggsverktøy",
     "unread-posts-link": "Lenke til uleste innlegg",
     "thumb-image": "Miniatyrbilde for emne",
-    "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers": "Delinger",
+    "announcers-x": "Delinger (%1)"
 }
