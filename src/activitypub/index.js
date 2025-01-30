@@ -44,6 +44,7 @@ ActivityPub._constants = Object.freeze({
 	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 	acceptable: {
 		customFields: new Set(['PropertyValue', 'Link', 'Note']),
+		contextTypes: new Set(['Collection', 'CollectionPage', 'OrderedCollection', 'OrderedCollectionPage']),
 	},
 });
 ActivityPub._cache = requestCache;

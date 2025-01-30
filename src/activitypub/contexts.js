@@ -7,8 +7,6 @@ const topics = require('../topics');
 const activitypub = module.parent.exports;
 const Contexts = module.exports;
 
-const acceptableTypes = ['Collection', 'CollectionPage', 'OrderedCollection', 'OrderedCollectionPage'];
-
 Contexts.get = async (uid, id) => {
 	let context;
 	let type;
@@ -28,7 +26,7 @@ Contexts.get = async (uid, id) => {
 
 	try {
 		({ id, type, context } = await activitypub.get('uid', uid, id, { headers }));
-		if (acceptableTypes.includes(type)) { // is context
+		if (activitypub._constants.acceptable.contextTypes.has(type)) { // is context
 			activitypub.helpers.log(`[activitypub/context] ${id} is the context.`);
 			return { context: id };
 		} else if (!context) {
@@ -48,7 +46,7 @@ Contexts.get = async (uid, id) => {
 		return false;
 	}
 
-	if (acceptableTypes.includes(type)) {
+	if (activitypub._constants.acceptable.contextTypes.has(type)) {
 		return { context };
 	}
 
@@ -62,7 +60,7 @@ Contexts.getItems = async (uid, id, options) => {
 
 	activitypub.helpers.log(`[activitypub/context] Retrieving context ${id}`);
 	let { type, items, orderedItems, first, next } = await activitypub.get('uid', uid, id);
-	if (!acceptableTypes.includes(type)) {
+	if (!activitypub._constants.acceptable.contextTypes.has(type)) {
 		return false;
 	}
 
