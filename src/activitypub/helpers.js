@@ -35,7 +35,7 @@ Helpers._test = (method, args) => {
 	}, 2500);
 };
 // process.nextTick(() => {
-// 	Helpers._test(activitypub.notes.assert, [1, `https://`]);
+// Helpers._test(activitypub.notes.assert, [1, `https://`]);
 // });
 
 let _lastLog;
