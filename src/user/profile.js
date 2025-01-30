@@ -127,7 +127,7 @@ module.exports = function (User) {
 					));
 				} else if (field.type === 'select') {
 					const opts = field['select-options'].split('\n').filter(Boolean);
-					if (!opts.includes(value)) {
+					if (!opts.includes(value) && value !== '') {
 						throw new Error(tx.compile(
 							'error:custom-user-field-select-value-invalid', field.name
 						));
