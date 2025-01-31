@@ -196,6 +196,7 @@ module.exports = function (Topics) {
 		parentPosts.forEach((post, i) => {
 			if (usersMap[post.uid]) {
 				parents[parentPids[i]] = {
+					uid: post.uid,
 					username: usersMap[post.uid].username,
 					displayname: usersMap[post.uid].displayname,
 				};
