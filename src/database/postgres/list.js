@@ -81,11 +81,18 @@ RETURNING A."array"[array_length(A."array", 1)] v`,
 				name: 'listRemoveAllMultiple',
 				text: `
 		UPDATE "legacy_list" l
-		   SET "array" = array_remove(l."array", v.val::TEXT)
-		  FROM "legacy_object_live" o, unnest($2::TEXT[]) AS v(val)
+		   SET "array" = (
+			   SELECT ARRAY(
+				   SELECT elem
+				   FROM unnest(l."array") WITH ORDINALITY AS u(elem, ord)
+				   WHERE elem NOT IN (SELECT unnest($2::TEXT[]))
+				   ORDER BY ord
+			   )
+		   )
+		  FROM "legacy_object_live" o
 		 WHERE o."_key" = l."_key"
 		   AND o."type" = l."type"
-		   AND o."_key" = $1::TEXT`,
+		   AND o."_key" = $1::TEXT;`,
 				values: [key, value],
 			});
 			return;
