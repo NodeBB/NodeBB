@@ -574,7 +574,6 @@ DO UPDATE SET "score" = "legacy_zset"."score" + EXCLUDED."score"
 RETURNING "value", "score"`;
 
 			const res = await client.query({
-				name: 'sortedSetIncrByBulk',
 				text: query,
 				values,
 			});
