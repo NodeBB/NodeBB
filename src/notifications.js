@@ -243,20 +243,25 @@ async function pushToUids(uids, notification) {
 	if (notification.type) {
 		results = await getUidsBySettings(data.uids);
 	}
+
 	await sendNotification(results.uidsToNotify);
-	const delayNotificationTypes = ['new-chat', 'new-group-chat', 'new-public-chat'];
-	if (delayNotificationTypes.includes(notification.type)) {
-		const cacheKey = `${notification.mergeId}|${results.uidsToEmail.join(',')}`;
-		const payload = notificationCache.get(cacheKey);
-		if (payload !== undefined) {
-			notification.bodyLong = [payload.notification.bodyLong, notification.bodyLong].join('\n');
+
+	if (results.uidsToEmail.length) {
+		const delayNotificationTypes = ['new-chat', 'new-group-chat', 'new-public-chat'];
+		if (delayNotificationTypes.includes(notification.type)) {
+			const cacheKey = `${notification.mergeId}|${results.uidsToEmail.join(',')}`;
+			const payload = notificationCache.get(cacheKey);
+			let { bodyLong } = notification;
+			if (payload !== undefined) {
+				bodyLong = [payload.notification.bodyLong, bodyLong].join('\n');
+			}
+			notificationCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
+			if (notification.bodyLong.length >= 1000) {
+				notificationCache.delete(cacheKey);
+			}
+		} else {
+			await sendEmail({ uids: results.uidsToEmail, notification });
 		}
-		notificationCache.set(cacheKey, { uids: results.uidsToEmail, notification });
-		if (notification.bodyLong.length >= 1000) {
-			notificationCache.delete(cacheKey);
-		}
-	} else {
-		await sendEmail({ uids: results.uidsToEmail, notification });
 	}
 
 	plugins.hooks.fire('action:notification.pushed', {
@@ -268,7 +273,7 @@ async function pushToUids(uids, notification) {
 }
 
 async function sendEmail({ uids, notification }, mergeId, reason) {
-	if (reason && reason === 'set') {
+	if ((reason && reason === 'set') || !uids.length) {
 		return;
 	}
 
