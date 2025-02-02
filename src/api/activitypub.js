@@ -38,7 +38,7 @@ function enabledCheck(next) {
 activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) => {
 	// Privilege checks should be done upstream
 	const assertion = await activitypub.actors.assert(actor);
-	if (!assertion || !assertion.length) {
+	if (!assertion || (Array.isArray(assertion) && assertion.length)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
