@@ -377,7 +377,7 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		// TODO: perf? https://stackoverflow.com/questions/79405992/how-to-use-values-from-cte-in-on-conflict-update/79406067?noredirect=1#comment140036870_79406067
+		// TODO: perf? https://stackoverflow.com/questions/79405992/how-to-use-values-from-cte-in-on-conflict-update/79406067
 		await Promise.all(data.map(async (item) => {
 			for (const [field, value] of Object.entries(item[1])) {
 				// eslint-disable-next-line no-await-in-loop
