@@ -385,7 +385,7 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 			const dataStrings = data.map(item => JSON.stringify(item[1]));
 
 			await client.query({
-				name: 'setObjectBulk',
+				name: 'incrObjectFieldByBulk',
 				text: `
 INSERT INTO "legacy_hash" ("_key", "data")
 SELECT k, d
