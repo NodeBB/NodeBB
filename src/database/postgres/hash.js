@@ -377,12 +377,34 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		// TODO: perf? https://stackoverflow.com/questions/79405992/how-to-use-values-from-cte-in-on-conflict-update/79406067
-		await Promise.all(data.map(async (item) => {
-			for (const [field, value] of Object.entries(item[1])) {
-				// eslint-disable-next-line no-await-in-loop
-				await module.incrObjectFieldBy(item[0], field, value);
-			}
-		}));
+
+		await module.transaction(async (client) => {
+			await helpers.ensureLegacyObjectsType(client, data.map(item => item[0]), 'hash');
+
+			const keys = data.map(item => item[0]);
+			const dataStrings = data.map(item => JSON.stringify(item[1]));
+
+			await client.query({
+				name: 'setObjectBulk',
+				text: `
+INSERT INTO "legacy_hash" ("_key", "data")
+SELECT k, d
+FROM UNNEST($1::TEXT[], $2::JSONB[]) vs(k, d)
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = (
+    SELECT jsonb_object_agg(
+        key,
+        CASE
+            WHEN jsonb_typeof(legacy_hash.data -> key) = 'number'
+                 AND jsonb_typeof(EXCLUDED.data -> key) = 'number'
+            THEN to_jsonb((legacy_hash.data ->> key)::NUMERIC + (EXCLUDED.data ->> key)::NUMERIC)
+            ELSE COALESCE(EXCLUDED.data -> key, legacy_hash.data -> key)
+        END
+    )
+    FROM jsonb_each(legacy_hash.data || EXCLUDED.data) AS merged(key, value)
+);`,
+				values: [keys, dataStrings],
+			});
+		});
 	};
 };
