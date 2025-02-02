@@ -188,7 +188,7 @@ module.exports = function (module) {
 	};
 
 	module.deleteObjectField = async function (key, field) {
-		await module.deleteObjectFields(key, [field]);
+		await module.deleteObjectFields(key, Array.isArray(field) ? field : [field]);
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
