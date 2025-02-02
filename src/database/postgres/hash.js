@@ -377,12 +377,37 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		// TODO: perf?
-		await Promise.all(data.map(async (item) => {
-			for (const [field, value] of Object.entries(item[1])) {
-				// eslint-disable-next-line no-await-in-loop
-				await module.incrObjectFieldBy(item[0], field, value);
-			}
-		}));
+
+		await module.transaction(async (client) => {
+			await helpers.ensureLegacyObjectsType(client, data.map(item => item[0]), 'hash');
+
+			const keys = [];
+			const fields = [];
+			const values = [];
+
+			data.forEach(([key, fieldsObj]) => {
+				for (const [field, value] of Object.entries(fieldsObj)) {
+					keys.push(key);
+					fields.push(field);
+					values.push(parseInt(value, 10));
+				}
+			});
+
+			await client.query({
+				name: 'incrObjectFieldByBulk',
+				text: `
+	WITH updates AS (
+		SELECT UNNEST($1::TEXT[]) AS _key, 
+			   UNNEST($2::TEXT[]) AS field, 
+			   UNNEST($3::NUMERIC[]) AS value
+	)
+	INSERT INTO "legacy_hash" ("_key", "data")
+	SELECT _key, jsonb_build_object(field, value) FROM updates
+	ON CONFLICT ("_key")
+	DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[updates.field], to_jsonb(COALESCE(("legacy_hash"."data"->>updates.field)::NUMERIC, 0) + updates.value))
+	RETURNING "_key", "data";`,
+				values: [keys, fields, values],
+			});
+		});
 	};
 };
