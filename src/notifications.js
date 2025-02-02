@@ -22,6 +22,7 @@ const Notifications = module.exports;
 
 // ttlcache for email-only chat notifications
 const notificationCache = ttlCache({
+	max: 1000,
 	ttl: (meta.config.notificationSendDelay || 60) * 1000,
 	noDisposeOnSet: true,
 	dispose: sendEmail,
@@ -246,11 +247,14 @@ async function pushToUids(uids, notification) {
 	const delayNotificationTypes = ['new-chat', 'new-group-chat', 'new-public-chat'];
 	if (delayNotificationTypes.includes(notification.type)) {
 		const cacheKey = `${notification.mergeId}|${results.uidsToEmail.join(',')}`;
-		if (notificationCache.has(cacheKey)) {
-			const payload = notificationCache.get(cacheKey);
+		const payload = notificationCache.get(cacheKey);
+		if (payload !== undefined) {
 			notification.bodyLong = [payload.notification.bodyLong, notification.bodyLong].join('\n');
 		}
 		notificationCache.set(cacheKey, { uids: results.uidsToEmail, notification });
+		if (notification.bodyLong.length >= 1000) {
+			notificationCache.delete(cacheKey);
+		}
 	} else {
 		await sendEmail({ uids: results.uidsToEmail, notification });
 	}
@@ -264,8 +268,7 @@ async function pushToUids(uids, notification) {
 }
 
 async function sendEmail({ uids, notification }, mergeId, reason) {
-	// Only act on cache item expiry
-	if (reason && reason !== 'stale') {
+	if (reason && reason === 'set') {
 		return;
 	}
 
