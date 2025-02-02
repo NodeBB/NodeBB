@@ -194,7 +194,11 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		if (f.type === 'input-link' && userValue) {
 			f.linkValue = validator.escape(String(userValue.replace('http://', '').replace('https://', '')));
 		}
-		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean).map(
+		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
+		if (f.type === 'select') {
+			f['select-options'].unshift('');
+		}
+		f['select-options'] = f['select-options'].map(
 			opt => ({
 				value: opt,
 				selected: Array.isArray(userValue) ?

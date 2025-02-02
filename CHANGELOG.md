@@ -1,3 +1,52 @@
+#### v4.0.1 (2025-01-29)
+
+##### Chores
+
+*  up dbsearch (88fa4553)
+*  up benchpress (c9584800)
+*  up harmony (10409e0e)
+*  up themes (6918c3f3)
+*  up themes (050effe2)
+*  up harmony (90e0a2d6)
+*  incrementing version number - v4.0.0 (c1eaee45)
+*  update changelog for v4.0.0 (ae8f58d6)
+
+##### New Features
+
+*  use text-danger if chat over limit (2f5b4b29)
+
+##### Bug Fixes
+
+*  #13087, disallow following cid -1 (ddb6e0f3)
+*  encoding of pid in notifyCategoryFollowers, #13087 (6d88dcb2)
+*  #13084 bump persona (4feda224)
+*  closes #13091, dont show world category (4c66eed9)
+*  #13088, up dbsearch (8644565a)
+*  #13090, update themes fix selector (822bff62)
+*  #13086 move rateLimit check (487d9f73)
+*  null checks for category sync and actor assertions (b3b8b9e9)
+*  #13067, add sourceContent to teasers (679fcb71)
+*  #13065, send missing `actor` property when 1b12 announcing local posts (e61df4de)
+*  closes #13068, encodeURIComponent X-Redirect (f3b8ed27)
+*  #13062 add displayname to email tpl data (f0c2090d)
+
+##### Other Changes
+
+*  missing ; (8b38cb3a)
+*  reduce image size (#12702) (a95a51c6)
+
+##### Refactors
+
+*  🤡 (4ba01d18)
+
+##### Tests
+
+*  adjust webfinger test for updated 404 status code (4a827b7e)
+*  fix x-redirect tests (b80440aa)
+*  add sourceContent to spec (526a9521)
+*  change test to 404 (52f7f0a7)
+*  remove only (0ba4ba65)
+
 #### v4.0.0 (2025-01-20)
 
 ##### Breaking Changes

@@ -106,7 +106,7 @@ topicsAPI.reply = async function (caller, data) {
 		return await posts.addToQueue(payload);
 	}
 
-	const postData = await topics.reply(payload); // postData seems to be a subset of postObj, refactor?
+	const postData = await topics.reply(payload);
 
 	const result = {
 		posts: [postData],
