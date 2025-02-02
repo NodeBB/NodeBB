@@ -401,20 +401,18 @@ WITH updates AS (
 		UNNEST($2::TEXT[]) AS field,
 		UNNEST($3::NUMERIC[]) AS value
 )
-MERGE INTO legacy_hash AS lh
-USING updates AS u
-ON u._key = lh._key
-WHEN NOT MATCHED THEN
-	INSERT (_key, data)
-	VALUES (u._key, jsonb_build_object(u.field, u.value))
-WHEN MATCHED THEN
-	UPDATE SET
-    data = jsonb_set(
-      lh.data,
-      ARRAY[u.field],
-      to_jsonb(COALESCE((lh.data->>u.field)::NUMERIC, 0) + u.value)
-    )
-;`,
+INSERT INTO legacy_hash (_key, data)
+SELECT _key, jsonb_build_object(field, value)
+FROM updates
+ON CONFLICT (_key)
+DO UPDATE SET data = jsonb_set(
+	legacy_hash.data, 
+	ARRAY[jsonb_path_query_first(excluded.data, '$.keyvalue()[0]')->>'key'],
+	to_jsonb(
+  		COALESCE((legacy_hash.data->>(jsonb_path_query_first(excluded.data, '$.keyvalue()[0]')->>'key'::text))::NUMERIC, 0)
+  		+ (jsonb_path_query_first(excluded.data, '$.keyvalue()[0]')->>'value')::NUMERIC
+	)
+);`,
 				values: [keys, fields, values],
 			});
 		});
