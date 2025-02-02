@@ -1,5 +1,5 @@
 'use strict';
-/*
+
 const _ = require('lodash');
 const assert = require('assert');
 const path = require('path');
@@ -26,7 +26,6 @@ const messaging = require('../src/messaging');
 const activitypub = require('../src/activitypub');
 const utils = require('../src/utils');
 const api = require('../src/api');
-
 
 describe('API', async () => {
 	let readApi = false;
@@ -690,4 +689,3 @@ describe('API', async () => {
 		});
 	}
 });
-*/
