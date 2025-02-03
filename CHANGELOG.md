@@ -1,3 +1,34 @@
+#### v4.0.2 (2025-02-02)
+
+##### Chores
+
+*  up persona (0298a3af)
+*  up harmony (d77d2055)
+*  up themes, closes #13102 (6672de00)
+*  incrementing version number - v4.0.1 (a461b758)
+*  update changelog for v4.0.1 (3dbd2b30)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  allow selecting empty for custom selects (be62ae24)
+*  add uid to post.parent (4d733590)
+*  add description and keywords to api/config (933c18f4)
+
+##### Bug Fixes
+
+*  bad logic that invisibly broke outgoing user follows completely (51e660d5)
+*  closes #13096, fix regression from renaming language files (0b92d525)
+
+##### Refactors
+
+*  remove old comment (d4a1b4da)
+
+##### Tests
+
+*  fix schema (ef5ae006)
+*  fix schema (47734d4c)
+
 #### v4.0.1 (2025-01-29)
 
 ##### Chores
