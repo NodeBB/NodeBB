@@ -147,6 +147,6 @@ async function shutdown(code) {
 	} catch (err) {
 		winston.error(err.stack);
 
-		return process.exit(code || 0);
+		process.exit(code || 0);
 	}
 }
