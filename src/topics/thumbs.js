@@ -71,9 +71,10 @@ Thumbs.get = async function (tids, options) {
 
 	if (!options.thumbsOnly) {
 		// Add uploaded media to thumb sets
-		const mainPidUploads = await Promise.all(mainPids.map(async pid => await posts.uploads.list(pid)));
+		const mainPidUploads = await Promise.all(mainPids.map(posts.uploads.list));
 		mainPidUploads.forEach((uploads, idx) => {
-			uploads = uploads.map(path => `/${path}`);
+			uploads = uploads.map(upath => path.join(path.sep, `${upath}`));
+
 			uploads = uploads.filter((upload) => {
 				const type = mime.getType(upload);
 				return !thumbs[idx].includes(upload) && type && type.startsWith('image/');
