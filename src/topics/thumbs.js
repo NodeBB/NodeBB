@@ -55,7 +55,7 @@ Thumbs.get = async function (tids, options) {
 		};
 	}
 
-	const isDraft = !await topics.exists(tids);
+	const isDraft = (await topics.exists(tids)).map(exists => !exists);
 
 	if (!meta.config.allowTopicsThumbnail || !tids.length) {
 		return singular ? [] : tids.map(() => []);
