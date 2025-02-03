@@ -69,11 +69,16 @@ server.on('connection', (conn) => {
 	});
 });
 
-exports.destroy = function (callback) {
-	server.close(callback);
-	for (const connection of Object.values(connections)) {
-		connection.destroy();
-	}
+exports.destroy = function () {
+	return new Promise((resolve, reject) => {
+		server.close((err) => {
+			if (err) reject(err);
+			else resolve();
+		});
+		for (const connection of Object.values(connections)) {
+			connection.destroy();
+		}
+	});
 };
 
 exports.getConnectionCount = function () {
