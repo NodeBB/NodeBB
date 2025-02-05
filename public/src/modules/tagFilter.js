@@ -27,16 +27,12 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 		}
 		initialTags = selectedTags.slice();
 
-		const toggleSearchVisibilty = searchEl.parent('[component="tag/filter"]').length &&
+		const toggleSearchVisibilty = searchEl.parents('[component="tag/filter"]').length &&
 			app.user.privileges['search:tags'];
 
 		el.on('show.bs.dropdown', function () {
 			if (toggleSearchVisibilty) {
-				el.find('.dropdown-toggle').css({ visibility: 'hidden' });
 				searchEl.removeClass('hidden');
-				searchEl.css({
-					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
-				});
 			}
 
 			function doSearch() {
@@ -67,7 +63,6 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 
 		el.on('hidden.bs.dropdown', function () {
 			if (toggleSearchVisibilty) {
-				el.find('.dropdown-toggle').css({ visibility: 'inherit' });
 				searchEl.addClass('hidden');
 			}
 

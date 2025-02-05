@@ -23,11 +23,12 @@
 			{{{ end }}}
 			<span class="caret text-primary opacity-75"></span>
 		</button>
-		<div component="category-selector-search" class="hidden position-absolute">
-			<input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
-		</div>
 
 		<div class="dropdown-menu p-1">
+			<div component="category-selector-search" class="p-1 hidden">
+				<input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+				<hr class="mt-2 mb-0"/>
+			</div>
 			<ul component="category/list" class="list-unstyled mb-0 text-sm category-dropdown-menu ghost-scrollbar" role="menu">
 				{{{each categoryItems}}}
 				<li role="presentation" class="category {{{ if ../disabledClass }}}disabled{{{ end }}}" data-cid="{../cid}" data-parent-cid="{../parentCid}" data-name="{../name}">

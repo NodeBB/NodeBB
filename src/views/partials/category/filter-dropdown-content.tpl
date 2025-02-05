@@ -9,11 +9,12 @@
     <span class="d-none d-md-inline fw-semibold">[[unread:all-categories]]</span>{{{ end }}}
 </button>
 
-<div component="category-selector-search" class="hidden position-absolute" style="min-width: 120px;">
-    <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
-</div>
-
 <div class="dropdown-menu p-1">
+    <div component="category-selector-search" class="p-1 hidden">
+        <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+        <hr class="mt-2 mb-0"/>
+    </div>
+
     <ul component="category/list" class="list-unstyled mb-0 text-sm category-dropdown-menu ghost-scrollbar" role="menu">
         <li role="presentation" class="category" data-cid="all">
             <a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="{{{ if allCategoriesUrl }}}{config.relative_path}/{allCategoriesUrl}{{{ else }}}#{{{ end }}}">
