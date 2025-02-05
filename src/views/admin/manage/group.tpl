@@ -9,19 +9,23 @@
 				<button type="button" class="btn btn-ghost btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
 				</button>
-				<div component="group-selector-search" class="hidden position-absolute w-100">
-					<input type="text" class="form-control" autocomplete="off">
+
+				<div class="dropdown-menu p-1">
+					<div component="group-selector-search" class="p-1 hidden">
+						<input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+						<hr class="mt-2 mb-0"/>
+					</div>
+					<ul component="group-list" class="list-unstyled mb-0 text-sm dropdown-menu-end group-dropdown-menu overflow-auto ghost-scrollbar" role="menu" style="max-height: 500px;">
+						<li component="group-no-matches" role="presentation" class="group hidden">
+							<a class="dropdown-item rounded-1" role="menuitem">[[search:no-matches]]</a>
+						</li>
+						{{{ each groupNames }}}
+						<li role="presentation" class="group" data-name="{groupNames.displayName}">
+							<a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
+						</li>
+						{{{ end }}}
+					</ul>
 				</div>
-				<ul component="group-list" class="dropdown-menu dropdown-menu-end group-dropdown-menu overflow-auto p-1" role="menu" style="max-height: 500px;">
-					<li component="group-no-matches" role="presentation" class="group hidden">
-						<a class="dropdown-item rounded-1" role="menuitem">[[search:no-matches]]</a>
-					</li>
-					{{{ each groupNames }}}
-					<li role="presentation" class="group" data-name="{groupNames.displayName}">
-						<a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
-					</li>
-					{{{ end }}}
-				</ul>
 			</div>
 		</div>
 		<div class="col-12 col-md-4 px-0 px-md-3 ">
@@ -157,26 +161,30 @@
 						<button type="button" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center flex-fill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="fa fa-fw fa-lock text-primary"></i> <span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
 						</button>
-						<div component="category-selector-search" class="hidden position-absolute">
-							<input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+
+						<div class="dropdown-menu p-1">
+							<div component="category-selector-search" class="p-1 hidden">
+								<input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+								<hr class="mt-2 mb-0"/>
+							</div>
+							<ul component="category/list" class="list-unstyled mb-0 text-sm category-dropdown-menu dropdown-menu-end ghost-scrollbar" role="menu">
+								<li component="category/no-matches" role="presentation" class="category hidden">
+									<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
+								</li>
+								{{{each categories}}}
+								<li role="presentation" class="category {{{ if categories.disabledClass }}}disabled{{{ end }}}" data-cid="{categories.cid}" data-name="{categories.name}" data-parent-cid="{categories.parentCid}">
+									<a class="dropdown-item rounded-1" role="menuitem">{categories.level}
+										<span component="category-markup">
+											<div class="category-item d-inline-block">
+												{buildCategoryIcon(@value, "24px", "rounded-circle")}
+												{./name}
+											</div>
+										</span>
+									</a>
+								</li>
+								{{{end}}}
+							</ul>
 						</div>
-						<ul component="category/list" class="dropdown-menu category-dropdown-menu dropdown-menu-end p-1" role="menu">
-							<li component="category/no-matches" role="presentation" class="category hidden">
-								<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
-							</li>
-							{{{each categories}}}
-							<li role="presentation" class="category {{{ if categories.disabledClass }}}disabled{{{ end }}}" data-cid="{categories.cid}" data-name="{categories.name}" data-parent-cid="{categories.parentCid}">
-								<a class="dropdown-item rounded-1" role="menuitem">{categories.level}
-									<span component="category-markup">
-										<div class="category-item d-inline-block">
-											{buildCategoryIcon(@value, "24px", "rounded-circle")}
-											{./name}
-										</div>
-									</span>
-								</a>
-							</li>
-							{{{end}}}
-						</ul>
 					</div>
 				</div>
 

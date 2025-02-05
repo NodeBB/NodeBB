@@ -21,16 +21,12 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 			return;
 		}
 
-		const toggleVisibility = searchEl.parent('[component="category/dropdown"]').length > 0 ||
-			searchEl.parent('[component="category-selector"]').length > 0;
+		const toggleVisibility = searchEl.parents('[component="category/dropdown"]').length > 0 ||
+			searchEl.parents('[component="category-selector"]').length > 0;
 
 		el.on('show.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').css({ visibility: 'hidden' });
 				searchEl.removeClass('hidden');
-				searchEl.css({
-					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
-				});
 			}
 
 			function doSearch() {
@@ -61,7 +57,6 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 
 		el.on('hide.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').css({ visibility: 'inherit' });
 				searchEl.addClass('hidden');
 			}
 
