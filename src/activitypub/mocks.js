@@ -188,12 +188,12 @@ Mocks.post = async (objects) => {
 		}
 
 		switch (true) {
-			case image && image.hasOwnProperty('url') && image.url && mime.getType(image.url).startsWith('image/'): {
+			case image && image.hasOwnProperty('url') && image.url: {
 				image = image.url;
 				break;
 			}
 
-			case image && typeof image === 'string' && mime.getType(image).startsWith('image/'): {
+			case image && typeof image === 'string': {
 				// no change
 				break;
 			}
