@@ -159,6 +159,17 @@ define('forum/topic/events', [
 					});
 				}
 			});
+
+			const parentEl = $(`[component="post/parent"][data-parent-pid="${data.post.pid}"]`);
+			if (parentEl.length) {
+				parentEl.find('[component="post/parent/content"]').html(
+					translator.unescape(data.post.content)
+				);
+				parentEl.find('img:not(.not-responsive)').addClass('img-fluid');
+				parentEl.find('[component="post/parent/content]" img:not(.emoji)').each(function () {
+					images.wrapImageInLink($(this));
+				});
+			}
 		} else {
 			hooks.fire('action:posts.edited', data);
 		}
@@ -185,26 +196,39 @@ define('forum/topic/events', [
 		require(['forum/topic/replies'], function (replies) {
 			replies.onPostPurged(postData);
 		});
+		$(`[component="post/parent"][data-parent-pid="${postData.pid}"]`).remove();
 	}
 
 	function togglePostDeleteState(data) {
 		const postEl = components.get('post', 'pid', data.pid);
 
-		if (!postEl.length) {
-			return;
+		const { isAdminOrMod } = ajaxify.data.privileges;
+		const isSelfPost = String(data.uid) === String(app.user.uid);
+		const isDeleted = !!data.deleted;
+		if (postEl.length) {
+			postEl.toggleClass('deleted');
+			postTools.toggle(data.pid, isDeleted);
+
+			if (!isAdminOrMod && !isSelfPost) {
+				postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
+				if (isDeleted) {
+					postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
+				} else {
+					postEl.find('[component="post/content"]').html(translator.unescape(data.content));
+				}
+			}
 		}
 
-		postEl.toggleClass('deleted');
-		const isDeleted = postEl.hasClass('deleted');
-		postTools.toggle(data.pid, isDeleted);
-
-		if (!ajaxify.data.privileges.isAdminOrMod && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
-			postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
-			if (isDeleted) {
-				postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
-			} else {
-				postEl.find('[component="post/content"]').html(translator.unescape(data.content));
-			}
+		const parentEl = $(`[component="post/parent"][data-parent-pid="${data.pid}"]`);
+		if (parentEl.length) {
+			parentEl.each((i, el) => {
+				const $parent = $(el);
+				if (isDeleted) {
+					$parent.find('[component="post/parent/content"]').translateHtml('[[topic:post-is-deleted]]');
+				} else {
+					$parent.find('[component="post/parent/content"]').html(translator.unescape(data.content));
+				}
+			});
 		}
 	}
 

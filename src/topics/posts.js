@@ -12,6 +12,7 @@ const meta = require('../meta');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const privileges = require('../privileges');
 
 const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
 
@@ -129,7 +130,7 @@ module.exports = function (Topics) {
 			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
 			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
 			getPostReplies(postData, uid),
-			Topics.addParentPosts(postData),
+			Topics.addParentPosts(postData, uid),
 		]);
 
 		postData.forEach((postObj, i) => {
@@ -178,7 +179,7 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.addParentPosts = async function (postData) {
+	Topics.addParentPosts = async function (postData, callerUid) {
 		let parentPids = postData
 			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
 			.map(postObj => postObj.toPid);
@@ -187,16 +188,40 @@ module.exports = function (Topics) {
 			return;
 		}
 		parentPids = _.uniq(parentPids);
-		const parentPosts = await posts.getPostsFields(parentPids, ['uid']);
+		const postPrivileges = await privileges.posts.get(parentPids, callerUid);
+		const pidToPrivs = _.zipObject(parentPids, postPrivileges);
+
+		parentPids = parentPids.filter(p => pidToPrivs[p]['topics:read']);
+		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'deleted']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
-		const userData = await user.getUsersFields(parentUids, ['username']);
+		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
 
 		const usersMap = _.zipObject(parentUids, userData);
+
+		await Promise.all(parentPosts.map(async (parentPost) => {
+			const postPrivs = pidToPrivs[parentPost.pid];
+			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
+				parentPost.content = `<p>[[topic:post-is-deleted]]</p>`;
+				return;
+			}
+			const foundPost = postData.find(p => String(p.pid) === String(parentPost.pid));
+			if (foundPost) {
+				parentPost.content = foundPost.content;
+				return;
+			}
+			parentPost = await posts.parsePost(parentPost);
+		}));
+
 		const parents = {};
 		parentPosts.forEach((post, i) => {
 			if (usersMap[post.uid]) {
 				parents[parentPids[i]] = {
 					uid: post.uid,
+					pid: post.pid,
+					content: post.content,
+					user: usersMap[post.uid],
+					timestamp: post.timestamp,
+					timestampISO: post.timestampISO,
 					username: usersMap[post.uid].username,
 					displayname: usersMap[post.uid].displayname,
 				};

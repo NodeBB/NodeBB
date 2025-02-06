@@ -233,7 +233,7 @@ module.exports = function (Topics) {
 			posts.getUserInfoForPosts([postOwner], uid),
 		]);
 		await Promise.all([
-			Topics.addParentPosts([postData]),
+			Topics.addParentPosts([postData], uid),
 			Topics.syncBacklinks(postData),
 			Topics.markAsRead([tid], uid),
 		]);
