@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "Başlık Önizlemelerini mobilde göster",
 	"settings.stickyToolbar": "Yapışkan Araç Çubuğu",
 	"settings.stickyToolbar.help": "Kategori ve konu sayfalarındaki araç çubuğu sayfanın üstünde sabitlenmiş şekilde kalacak",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "Alttaki şeridi otomatik olarak gizle",
 	"settings.autohideBottombar.help": "Sayfanın altındaki şerit sayfayı aşağıya doğru kaydırırken mobilde gizlenecek",
 	"settings.openSidebars": "Yan menüleri aç",

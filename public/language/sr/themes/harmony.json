@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "Прикажи најавне теме на мобилном телефону",
 	"settings.stickyToolbar": "Лепљива трака алата",
 	"settings.stickyToolbar.help": "Трака алата на страницама са темама и категоријама ће бити на врху странице",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "Аутоматско сакривање доње траке",
 	"settings.autohideBottombar.help": "Доња трака у приказу за мобилне уређаје биће скривена када се страница помера надоле",
 	"settings.openSidebars": "Open sidebars",
