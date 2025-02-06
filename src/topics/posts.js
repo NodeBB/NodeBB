@@ -191,14 +191,14 @@ module.exports = function (Topics) {
 		const postPrivileges = await privileges.posts.get(parentPids, callerUid);
 		const pidToPrivs = _.zipObject(parentPids, postPrivileges);
 
-		parentPids = parentPids.filter((p, i) => pidToPrivs[p]['topics:read']);
+		parentPids = parentPids.filter(p => pidToPrivs[p]['topics:read']);
 		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'deleted']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
 
 		const usersMap = _.zipObject(parentUids, userData);
 
-		await Promise.all(parentPosts.map(async (parentPost, i) => {
+		await Promise.all(parentPosts.map(async (parentPost) => {
 			const postPrivs = pidToPrivs[parentPost.pid];
 			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
 				parentPost.content = `<p>[[topic:post-is-deleted]]</p>`;
