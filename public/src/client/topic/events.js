@@ -159,6 +159,17 @@ define('forum/topic/events', [
 					});
 				}
 			});
+
+			const parentEl = $(`[component="post/parent"][data-parent-pid="${data.post.pid}"]`);
+			if (parentEl.length) {
+				parentEl.find('[component="post/parent/content"]').html(
+					translator.unescape(data.post.content)
+				);
+				parentEl.find('img:not(.not-responsive)').addClass('img-fluid');
+				parentEl.find('[component="post/parent/content]" img:not(.emoji)').each(() => {
+					images.wrapImageInLink($(this));
+				});
+			}
 		} else {
 			hooks.fire('action:posts.edited', data);
 		}

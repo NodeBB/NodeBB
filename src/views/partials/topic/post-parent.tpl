@@ -1,0 +1,13 @@
+<div class="d-flex ms-4 mb-2 align-items-center">
+	<div component="post/parent" data-parent-pid="{./parent.pid}" data-uid="{./parent.uid}" class="btn btn-ghost btn-sm d-flex gap-2 ff-secondary text-start flex-row w-100">
+		<div class="d-flex gap-2 text-sm text-nowrap">
+			<div><i class="fa fa-sm fa-reply opacity-50"></i></div>
+			<div class="d-flex flex-nowrap gap-1 align-items-center">
+				<a href="{config.relative_path}/user/{./parent.user.userslug}" class="text-decoration-none lh-1">{buildAvatar(./parent.user, "14px", true, "not-responsive align-middle")}</a>
+				<a class="fw-semibold" href="{config.relative_path}/user/{./parent.user.userslug}">{./parent.user.displayname}</a>
+			</div>
+			<a href="{config.relative_path}/post/{./parent.pid}" class="text-muted timeago text-nowrap hidden" title="{./parent.timestampISO}"></a>
+		</div>
+		<div component="post/parent/content" class="text-muted line-clamp-1 w-100">{./parent.content}</div>
+	</div>
+</div>

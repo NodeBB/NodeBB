@@ -264,8 +264,15 @@ define('forum/topic', [
 	}
 
 	function addParentHandler() {
-		components.get('topic').on('click', '[component="post/parent"]', function (e) {
-			const toPid = $(this).attr('data-topid');
+		components.get('topic').on('click', '[component="post/parent"]', function () {
+			const parentEl = $(this);
+			parentEl.find('[component="post/parent/content"]').toggleClass('line-clamp-1');
+			parentEl.find('.timeago').toggleClass('hidden');
+			parentEl.toggleClass('flex-column').toggleClass('flex-row');
+		});
+
+		components.get('topic').on('click', '[component="post/parent"] .timeago', function (e) {
+			const toPid = $(this).parents('[data-parent-pid]').attr('data-parent-pid');
 
 			const toPost = $('[component="topic"]>[component="post"][data-pid="' + toPid + '"]');
 			if (toPost.length) {
@@ -298,7 +305,7 @@ define('forum/topic', [
 			destroyed = true;
 		}
 		$(window).one('action:ajaxify.start', destroyTooltip);
-		$('[component="topic"]').on('mouseenter', '[component="post/parent"], [component="post/content"] a, [component="topic/event"] a', async function () {
+		$('[component="topic"]').on('mouseenter', '[component="post/content"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
 			destroyed = false;
 
