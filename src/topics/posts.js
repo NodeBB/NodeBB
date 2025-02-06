@@ -12,6 +12,7 @@ const meta = require('../meta');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const privileges = require('../privileges');
 
 const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
 
@@ -187,14 +188,19 @@ module.exports = function (Topics) {
 			return;
 		}
 		parentPids = _.uniq(parentPids);
+		const postPrivileges = await privileges.posts.get(parentPids, callerUid);
+		const pidToPrivs = _.zipObject(parentPids, postPrivileges);
+
+		parentPids = parentPids.filter((p, i) => pidToPrivs[p]['topics:read']);
 		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'deleted']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
 
 		const usersMap = _.zipObject(parentUids, userData);
 
-		await Promise.all(parentPosts.map(async (parentPost) => {
-			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10)) {
+		await Promise.all(parentPosts.map(async (parentPost, i) => {
+			const postPrivs = pidToPrivs[parentPost.pid];
+			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
 				parentPost.content = `<p>[[topic:post-is-deleted]]</p>`;
 				return;
 			}
@@ -207,19 +213,20 @@ module.exports = function (Topics) {
 		}));
 
 		const parents = {};
-		await Promise.all(parentPosts.map(async (post, i) => {
+		parentPosts.forEach((post, i) => {
 			if (usersMap[post.uid]) {
 				parents[parentPids[i]] = {
 					uid: post.uid,
 					pid: post.pid,
 					content: post.content,
 					user: usersMap[post.uid],
+					timestamp: post.timestamp,
 					timestampISO: post.timestampISO,
 					username: usersMap[post.uid].username,
 					displayname: usersMap[post.uid].displayname,
 				};
 			}
-		}));
+		});
 
 		postData.forEach((post) => {
 			if (parents[post.toPid]) {

@@ -50,6 +50,12 @@ body.page-user-chats {
 	}
 }
 
+[component="chat/message/parent"] {
+	[component="chat/message/parent/content"] > p:last-child {
+		margin-bottom: 0;
+	}
+}
+
 .expanded-chat {
 	.chat-content {
 		.message-body {
