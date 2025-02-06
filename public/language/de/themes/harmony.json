@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "Themen-Vorschau auf Mobilgeräten anzeigen",
 	"settings.stickyToolbar": "Klebrige Toolbar",
 	"settings.stickyToolbar.help": "Die Toolbar auf Themen- und Kategorieseiten bleibt oben an der Seite kleben",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "Fußzeile automatisch verbergen",
 	"settings.autohideBottombar.help": "Die Fußzeile wird auf Mobilgeräten versteckt, sobald nach unten gescrollt wird",
 	"settings.openSidebars": "Seitennavigation öffnen",

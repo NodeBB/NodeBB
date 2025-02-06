@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
 	"settings.stickyToolbar": "Sticky toolbar",
 	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "Auto hide bottom bar",
 	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down",
 	"settings.openSidebars": "Oldalsáv nyitása",

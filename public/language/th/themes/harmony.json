@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "แสดงตัวอย่างเนื้อหากระทู้บนมือถือ",
 	"settings.stickyToolbar": "แถบเครื่องมือแบบ sticky",
 	"settings.stickyToolbar.help": "แถบเครื่องมือในหน้ากระทู้และหมวดหมู่จะอยู่ด้านบนสุดของหน้าเสมอ",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "ซ่อนแถบล่าง",
 	"settings.autohideBottombar.help": "แถบล่างบนมือถือจะถูกซ่อนเมื่อเลื่อนหน้าลง",
 	"settings.openSidebars": "เปิดแถบข้าง",
