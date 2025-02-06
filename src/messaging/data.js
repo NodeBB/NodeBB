@@ -137,7 +137,7 @@ module.exports = function (Messaging) {
 		parentMids = parentMids.filter((mid, idx) => canView[idx]);
 
 		const parentMessages = await Messaging.getMessagesFields(parentMids, [
-			'fromuid', 'content', 'timestamp', 'deleted',
+			'mid', 'fromuid', 'content', 'timestamp', 'deleted',
 		]);
 		const parentUids = _.uniq(parentMessages.map(msg => msg && msg.fromuid));
 		const usersMap = _.zipObject(
