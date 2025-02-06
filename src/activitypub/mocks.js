@@ -201,6 +201,13 @@ Mocks.post = async (objects) => {
 				image = null;
 			}
 		}
+		if (image) {
+			const parsed = new URL(image);
+			if (!mime.getType(parsed.pathname).startsWith('image/')) {
+				activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
+				image = null;
+			}
+		}
 
 		const payload = {
 			uid,
