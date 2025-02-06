@@ -8,5 +8,5 @@
 
 		<a href="{config.relative_path}/post/{./parent.pid}" class="text-muted timeago text-nowrap hidden" title="{./parent.timestampISO}"></a>
 	</div>
-	<div component="post/parent/content" class="text-muted line-clamp-1 w-100">{./parent.content}</div>
+	<div component="post/parent/content" class="text-muted line-clamp-1 text-break w-100">{./parent.content}</div>
 </div>
