@@ -222,8 +222,6 @@ module.exports = function (Topics) {
 					user: usersMap[post.uid],
 					timestamp: post.timestamp,
 					timestampISO: post.timestampISO,
-					username: usersMap[post.uid].username,
-					displayname: usersMap[post.uid].displayname,
 				};
 			}
 		});
