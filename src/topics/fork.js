@@ -91,7 +91,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.movePostToTopic = async function (callerUid, pid, tid, forceScheduled = false) {
-		tid = parseInt(tid, 10);
+		tid = String(tid);
 		const topicData = await Topics.getTopicFields(tid, ['tid', 'scheduled']);
 		if (!topicData.tid) {
 			throw new Error('[[error:no-topic]]');
@@ -109,7 +109,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:cant-move-from-scheduled-to-existing]]');
 		}
 
-		if (postData.tid === tid) {
+		if (String(postData.tid) === String(tid)) {
 			throw new Error('[[error:cant-move-to-same-topic]]');
 		}
 

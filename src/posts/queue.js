@@ -61,9 +61,9 @@ module.exports = function (Posts) {
 			const tid = String(filter.tid);
 			postData = postData.filter(item => item.data.tid && String(item.data.tid) === tid);
 		} else if (Array.isArray(filter.tid)) {
-			const tids = filter.tid.map(tid => parseInt(tid, 10));
+			const tids = filter.tid.map(String);
 			postData = postData.filter(
-				item => item.data.tid && tids.includes(parseInt(item.data.tid, 10))
+				item => item.data.tid && tids.includes(String(item.data.tid))
 			);
 		}
 

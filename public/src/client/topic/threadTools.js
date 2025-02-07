@@ -294,7 +294,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setLockedState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
@@ -322,7 +322,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setDeleteState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
@@ -356,7 +356,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setPinnedState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
