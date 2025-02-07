@@ -38,7 +38,7 @@ define('forum/topic', [
 	});
 
 	Topic.init = async function () {
-		const tidChanged = !tid || String(tid) !== String(ajaxify.data.tid);
+		const tidChanged = tid === '0' || String(tid) !== String(ajaxify.data.tid);
 		tid = String(ajaxify.data.tid);
 		currentUrl = ajaxify.currentPage;
 		hooks.fire('action:topic.loading');
