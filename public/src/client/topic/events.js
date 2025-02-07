@@ -80,7 +80,7 @@ define('forum/topic/events', [
 
 	function updateBookmarkCount(data) {
 		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		}).html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
 	}
 
@@ -88,14 +88,14 @@ define('forum/topic/events', [
 		if (
 			ajaxify.data.category &&
 			ajaxify.data.category.slug &&
-			parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)
+			String(data.tid) === String(ajaxify.data.tid)
 		) {
 			ajaxify.go('category/' + ajaxify.data.category.slug, null, true);
 		}
 	}
 
 	function onTopicMoved(data) {
-		if (data && data.slug && parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)) {
+		if (data && data.slug && String(data.tid) === String(ajaxify.data.tid)) {
 			ajaxify.go('topic/' + data.slug, null, true);
 		}
 	}
@@ -184,7 +184,7 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(postData) {
-		if (!postData || parseInt(postData.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+		if (!postData || String(postData.tid) !== String(ajaxify.data.tid)) {
 			return;
 		}
 		components.get('post', 'pid', postData.pid).fadeOut(500, function () {
@@ -234,7 +234,7 @@ define('forum/topic/events', [
 
 	function togglePostBookmark(data) {
 		const el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		});
 		if (!el.length) {
 			return;
@@ -258,7 +258,7 @@ define('forum/topic/events', [
 
 	function onNewNotification(data) {
 		const tid = ajaxify.data.tid;
-		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
+		if (data && data.tid && String(data.tid) === String(tid)) {
 			socket.emit('topics.markTopicNotificationsRead', [tid]);
 		}
 	}

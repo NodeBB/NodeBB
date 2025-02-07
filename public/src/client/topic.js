@@ -24,7 +24,7 @@ define('forum/topic', [
 	bootbox, clipboard
 ) {
 	const Topic = {};
-	let tid = 0;
+	let tid = '0';
 	let currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -38,8 +38,8 @@ define('forum/topic', [
 	});
 
 	Topic.init = async function () {
-		const tidChanged = !tid || parseInt(tid, 10) !== parseInt(ajaxify.data.tid, 10);
-		tid = ajaxify.data.tid;
+		const tidChanged = !tid || String(tid) !== String(ajaxify.data.tid);
+		tid = String(ajaxify.data.tid);
 		currentUrl = ajaxify.currentPage;
 		hooks.fire('action:topic.loading');
 
