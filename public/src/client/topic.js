@@ -281,7 +281,6 @@ define('forum/topic', [
 				parentEl.find('.timeago').toggleClass('hidden');
 				parentEl.toggleClass('flex-column').toggleClass('flex-row');
 				if (isCollapsed) {
-					console.log('bb')
 					return false;
 				}
 			} else {
