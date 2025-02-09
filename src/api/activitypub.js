@@ -155,6 +155,7 @@ activitypubApi.create.privateNote = enabledCheck(async (caller, { messageObj }) 
 	const payload = {
 		id: `${object.id}#activity/create/${Date.now()}`,
 		type: 'Create',
+		actor: object.attributedTo,
 		to: object.to,
 		object,
 	};
@@ -173,6 +174,7 @@ activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 	await activitypub.send('uid', caller.uid, targets, {
 		id: `${object.id}#activity/update/${Date.now()}`,
 		type: 'Update',
+		actor: object.id,
 		to: [activitypub._constants.publicAddress],
 		cc: [],
 		object,
@@ -188,6 +190,7 @@ activitypubApi.update.category = enabledCheck(async (caller, { cid }) => {
 	await activitypub.send('cid', cid, targets, {
 		id: `${object.id}#activity/update/${Date.now()}`,
 		type: 'Update',
+		actor: object.id,
 		to: [activitypub._constants.publicAddress],
 		cc: [],
 		object,
@@ -214,6 +217,7 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 	const payload = {
 		id: `${object.id}#activity/update/${post.edited || Date.now()}`,
 		type: 'Update',
+		actor: object.attributedTo,
 		to,
 		cc,
 		object,
@@ -241,6 +245,7 @@ activitypubApi.update.privateNote = enabledCheck(async (caller, { messageObj }) 
 	const payload = {
 		id: `${object.id}#activity/create/${Date.now()}`,
 		type: 'Update',
+		actor: object.attributedTo,
 		to,
 		object,
 	};
@@ -270,6 +275,7 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 	const payload = {
 		id: `${id}#activity/delete/${Date.now()}`,
 		type: 'Delete',
+		actor: object.attributedTo,
 		to,
 		cc,
 		object: id,
@@ -333,6 +339,7 @@ activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 	await activitypub.send('uid', caller.uid, Array.from(targets), {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${Date.now()}`,
 		type: 'Announce',
+		actor: `${nconf.get('url')}/uid/${caller.uid}`,
 		to,
 		cc,
 		object: pid,
@@ -385,6 +392,7 @@ activitypubApi.flag = enabledCheck(async (caller, flag) => {
 	await activitypub.send('uid', caller.uid, reportedIds, {
 		id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/flag/${caller.uid}`,
 		type: 'Flag',
+		actor: `${nconf.get('url')}/uid/${caller.uid}`,
 		object: reportedIds,
 		content: reason,
 	});
@@ -431,6 +439,7 @@ activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
 	await activitypub.send('uid', caller.uid, reportedIds, {
 		id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/undo:flag/${caller.uid}/${Date.now()}`,
 		type: 'Undo',
+		actor: `${nconf.get('url')}/uid/${caller.uid}`,
 		object: {
 			id: `${nconf.get('url')}/${flag.type}/${encodeURIComponent(flag.targetId)}#activity/flag/${caller.uid}`,
 			actor: `${nconf.get('url')}/uid/${caller.uid}`,

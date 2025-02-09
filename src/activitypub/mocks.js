@@ -155,7 +155,10 @@ Mocks.post = async (objects) => {
 	await activitypub.actors.assert(Array.from(actorIds));
 
 	const posts = await Promise.all(objects.map(async (object) => {
-		if (!activitypub._constants.acceptedPostTypes.includes(object.type)) {
+		if (
+			!activitypub._constants.acceptedPostTypes.includes(object.type) ||
+			!activitypub.helpers.isUri(object.id) // sanity-check the id
+		) {
 			return null;
 		}
 
