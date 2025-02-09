@@ -136,11 +136,13 @@ define('admin/extend/plugins', [
 
 				require(['compare-versions'], function (compareVersions) {
 					const currentVersion = parent.find('.currentVersion').text();
-					if (payload.version !== 'latest' && compareVersions.compare(payload.version, currentVersion, '>')) {
+					if (payload.version && payload.version !== 'latest' && compareVersions.compare(payload.version, currentVersion, '>')) {
 						upgrade(pluginID, btn, payload.version);
-					} else if (payload.version === 'latest') {
-						confirmInstall(pluginID, function () {
-							upgrade(pluginID, btn, payload.version);
+					} else if (payload.version === 'latest' || payload.version === null) {
+						confirmInstall(pluginID, function (confirm) {
+							if (confirm) {
+								upgrade(pluginID, btn, payload.version);
+							}
 						});
 					} else {
 						bootbox.alert(translator.compile('admin/extend/plugins:alert.incompatible', app.config.version, payload.version));

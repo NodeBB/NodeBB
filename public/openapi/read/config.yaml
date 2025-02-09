@@ -27,6 +27,8 @@ get:
                 type: string
               keywords:
                 type: string
+              brand:logo:
+                type: string
               titleLayout:
                 type: string
               showSiteTitle:

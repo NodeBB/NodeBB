@@ -34,6 +34,7 @@ apiController.loadConfig = async function (req) {
 		browserTitle: validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB')),
 		description: validator.escape(String(meta.config.description || '')),
 		keywords: validator.escape(String(meta.config.keywords || '')),
+		'brand:logo': validator.escape(String(meta.config['brand:logo'])),
 		titleLayout: (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;'),
 		showSiteTitle: meta.config.showSiteTitle === 1,
 		maintenanceMode: meta.config.maintenanceMode === 1,

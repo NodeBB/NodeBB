@@ -276,9 +276,13 @@ define('forum/topic', [
 			const parentEl = $(this);
 			const contentEl = parentEl.find('[component="post/parent/content"]');
 			if (contentEl.length) {
+				const isCollapsed = contentEl.hasClass('line-clamp-1');
 				contentEl.toggleClass('line-clamp-1');
 				parentEl.find('.timeago').toggleClass('hidden');
 				parentEl.toggleClass('flex-column').toggleClass('flex-row');
+				if (isCollapsed) {
+					return false;
+				}
 			} else {
 				return gotoPost(e, parentEl.attr('data-topid'));
 			}
