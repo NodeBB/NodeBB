@@ -50,19 +50,6 @@ get:
                     type: array
                     items:
                       $ref: ../../components/schemas/PostObject.yaml#/PostDataObject
-                  events:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        id:
-                          type: number
-                        timestamp:
-                          type: number
-                        timestampISO:
-                          type: string
                   category:
                     $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
                   tagWhitelist:

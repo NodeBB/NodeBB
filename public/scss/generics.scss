@@ -24,11 +24,9 @@
 	}
 }
 .dropdown-left {
-	[component="category-selector-search"] { left:0!important; }
 	.dropdown-menu { --bs-position: start; }
 }
 .dropdown-right {
-	[component="category-selector-search"] { right:0!important;	}
 	.dropdown-menu { --bs-position: end; }
 }
 

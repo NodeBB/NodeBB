@@ -60,6 +60,7 @@ topicsAPI.create = async function (caller, data) {
 	}
 
 	const payload = { ...data };
+	delete payload.tid;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
@@ -98,6 +99,7 @@ topicsAPI.reply = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const payload = { ...data };
+	delete payload.pid;
 	apiHelpers.setDefaultPostData(caller, payload);
 
 	await meta.blacklist.test(caller.ip);

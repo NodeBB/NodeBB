@@ -11,7 +11,7 @@
 					<span class="input-group-text"><i class="fa fa-search"></i></span>
 				</div>
 
-				<div class="quick-search-container dropdown-menu d-block p-2 hidden w-100">
+				<div class="quick-search-container dropdown-menu d-block p-2 hidden">
 					<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
 					<div class="quick-search-results-container"></div>
 				</div>

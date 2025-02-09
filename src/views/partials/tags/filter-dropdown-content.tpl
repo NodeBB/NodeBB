@@ -10,11 +10,11 @@
     {{{ end }}}
 </button>
 
-<div component="tag/filter/search" class="hidden position-absolute" style="min-width: 120px;">
-    <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
-</div>
-
 <div class="dropdown-menu p-1">
+    <div component="tag/filter/search" class="p-1 hidden">
+        <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+        <hr class="mt-2 mb-0"/>
+    </div>
     <ul component="tag/filter/list" class="list-unstyled mb-0 text-sm overflow-auto ghost-scrollbar" role="menu" style="max-height: 500px;" role="menu">
         <li role="presentation" data-tag="">
             <a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="#">

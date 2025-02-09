@@ -200,9 +200,9 @@ module.exports = function (Posts) {
 	}
 
 	async function updateTopicPosters(postData, toUid) {
-		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
+		const postsByTopic = _.groupBy(postData, p => String(p.tid));
 		await async.eachOf(postsByTopic, async (posts, tid) => {
-			const postsByUser = _.groupBy(posts, p => parseInt(p.uid, 10));
+			const postsByUser = _.groupBy(posts, p => String(p.uid));
 			await db.sortedSetIncrBy(`tid:${tid}:posters`, posts.length, toUid);
 			await async.eachOf(postsByUser, async (posts, uid) => {
 				await db.sortedSetIncrBy(`tid:${tid}:posters`, -posts.length, uid);

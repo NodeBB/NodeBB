@@ -45,7 +45,7 @@ privsPosts.get = async function (pids, uid) {
 
 	const privileges = cids.map((cid, i) => {
 		const isAdminOrMod = results.isAdmin || isModerator[cid];
-		const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin;
+		const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator[i])) || results.isAdmin;
 		const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
 		const viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
 

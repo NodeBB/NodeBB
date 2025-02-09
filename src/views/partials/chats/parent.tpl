@@ -8,6 +8,6 @@
 			</div>
 			<span class="chat-timestamp text-muted timeago text-nowrap hidden" title="{messages.parent.timestampISO}"></span>
 		</div>
-		<div component="chat/message/parent/content" class="text-muted line-clamp-1 w-100">{messages.parent.content}</div>
+		<div component="chat/message/parent/content" class="text-muted line-clamp-1 text-break w-100">{messages.parent.content}</div>
 	</div>
 </div>

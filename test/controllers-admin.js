@@ -77,8 +77,14 @@ describe('Admin Controllers', () => {
 
 	it('should load admin dashboard', async () => {
 		await groups.join('administrators', adminUid);
+		const today = new Date();
+		const end = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+		today.setDate(today.getDate() - 1);
+		const start = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
 		const dashboards = [
-			'/admin', '/admin/dashboard/logins', '/admin/dashboard/users', '/admin/dashboard/topics', '/admin/dashboard/searches',
+			'/admin', '/admin/dashboard/logins', '/admin/dashboard/users', '/admin/dashboard/topics',
+			'/admin/dashboard/searches', `/admin/dashboard/searches?start=${start}&end=${end}`,
 		];
 		await async.each(dashboards, async (url) => {
 			const { response, body } = await request.get(`${nconf.get('url')}${url}`, { jar: jar });

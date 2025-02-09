@@ -192,7 +192,6 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 
 	topicData.thumbs = thumbs[0];
 	topicData.posts = posts;
-	topicData.events = events;
 	topicData.posts.forEach((p) => {
 		p.events = events.filter(
 			event => event.timestamp >= p.eventStart && event.timestamp < p.eventEnd

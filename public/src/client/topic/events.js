@@ -80,7 +80,7 @@ define('forum/topic/events', [
 
 	function updateBookmarkCount(data) {
 		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		}).html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
 	}
 
@@ -88,14 +88,14 @@ define('forum/topic/events', [
 		if (
 			ajaxify.data.category &&
 			ajaxify.data.category.slug &&
-			parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)
+			String(data.tid) === String(ajaxify.data.tid)
 		) {
 			ajaxify.go('category/' + ajaxify.data.category.slug, null, true);
 		}
 	}
 
 	function onTopicMoved(data) {
-		if (data && data.slug && parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)) {
+		if (data && data.slug && String(data.tid) === String(ajaxify.data.tid)) {
 			ajaxify.go('topic/' + data.slug, null, true);
 		}
 	}
@@ -159,6 +159,17 @@ define('forum/topic/events', [
 					});
 				}
 			});
+
+			const parentEl = $(`[component="post/parent"][data-parent-pid="${data.post.pid}"]`);
+			if (parentEl.length) {
+				parentEl.find('[component="post/parent/content"]').html(
+					translator.unescape(data.post.content)
+				);
+				parentEl.find('img:not(.not-responsive)').addClass('img-fluid');
+				parentEl.find('[component="post/parent/content]" img:not(.emoji)').each(function () {
+					images.wrapImageInLink($(this));
+				});
+			}
 		} else {
 			hooks.fire('action:posts.edited', data);
 		}
@@ -173,7 +184,7 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(postData) {
-		if (!postData || parseInt(postData.tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+		if (!postData || String(postData.tid) !== String(ajaxify.data.tid)) {
 			return;
 		}
 		components.get('post', 'pid', postData.pid).fadeOut(500, function () {
@@ -185,32 +196,45 @@ define('forum/topic/events', [
 		require(['forum/topic/replies'], function (replies) {
 			replies.onPostPurged(postData);
 		});
+		$(`[component="post/parent"][data-parent-pid="${postData.pid}"]`).remove();
 	}
 
 	function togglePostDeleteState(data) {
 		const postEl = components.get('post', 'pid', data.pid);
 
-		if (!postEl.length) {
-			return;
+		const { isAdminOrMod } = ajaxify.data.privileges;
+		const isSelfPost = String(data.uid) === String(app.user.uid);
+		const isDeleted = !!data.deleted;
+		if (postEl.length) {
+			postEl.toggleClass('deleted');
+			postTools.toggle(data.pid, isDeleted);
+
+			if (!isAdminOrMod && !isSelfPost) {
+				postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
+				if (isDeleted) {
+					postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
+				} else {
+					postEl.find('[component="post/content"]').html(translator.unescape(data.content));
+				}
+			}
 		}
 
-		postEl.toggleClass('deleted');
-		const isDeleted = postEl.hasClass('deleted');
-		postTools.toggle(data.pid, isDeleted);
-
-		if (!ajaxify.data.privileges.isAdminOrMod && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
-			postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
-			if (isDeleted) {
-				postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
-			} else {
-				postEl.find('[component="post/content"]').html(translator.unescape(data.content));
-			}
+		const parentEl = $(`[component="post/parent"][data-parent-pid="${data.pid}"]`);
+		if (parentEl.length) {
+			parentEl.each((i, el) => {
+				const $parent = $(el);
+				if (isDeleted) {
+					$parent.find('[component="post/parent/content"]').translateHtml('[[topic:post-is-deleted]]');
+				} else {
+					$parent.find('[component="post/parent/content"]').html(translator.unescape(data.content));
+				}
+			});
 		}
 	}
 
 	function togglePostBookmark(data) {
 		const el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]').filter(function (index, el) {
-			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		});
 		if (!el.length) {
 			return;
@@ -234,7 +258,7 @@ define('forum/topic/events', [
 
 	function onNewNotification(data) {
 		const tid = ajaxify.data.tid;
-		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
+		if (data && data.tid && String(data.tid) === String(tid)) {
 			socket.emit('topics.markTopicNotificationsRead', [tid]);
 		}
 	}

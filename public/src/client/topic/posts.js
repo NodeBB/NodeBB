@@ -22,7 +22,7 @@ define('forum/topic/posts', [
 			!data ||
 			!data.posts ||
 			!data.posts.length ||
-			parseInt(data.posts[0].tid, 10) !== parseInt(ajaxify.data.tid, 10)
+			String(data.posts[0].tid) !== String(ajaxify.data.tid)
 		) {
 			return;
 		}
