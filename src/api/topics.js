@@ -59,7 +59,8 @@ topicsAPI.create = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const payload = { ...data, tid: null };
+	const payload = { ...data };
+	delete payload.tid;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
@@ -97,7 +98,8 @@ topicsAPI.reply = async function (caller, data) {
 	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const payload = { ...data, pid: null };
+	const payload = { ...data };
+	delete payload.pid;
 	apiHelpers.setDefaultPostData(caller, payload);
 
 	await meta.blacklist.test(caller.ip);
