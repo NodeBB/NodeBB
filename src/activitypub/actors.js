@@ -231,7 +231,8 @@ Actors.getLocalFollowers = async (id) => {
 };
 
 Actors.getLocalFollowCounts = async (actors) => {
-	if (!Array.isArray(actors)) {
+	const isArray = Array.isArray(actors);
+	if (!isArray) {
 		actors = [actors];
 	}
 
@@ -251,7 +252,7 @@ Actors.getLocalFollowCounts = async (actors) => {
 		return { followers: followersCounts[index], following: followingCounts[index] };
 	});
 
-	return Array.isArray(actors) ? results : results[0];
+	return isArray ? results : results[0];
 };
 
 Actors.remove = async (id) => {
