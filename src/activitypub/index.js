@@ -68,7 +68,7 @@ ActivityPub.startJobs = () => {
 		}
 	}, null, true, null, null, false); // change last argument to true for debugging
 
-	new CronJob('0 1 * * *', async () => {
+	new CronJob('*/30 * * * *', async () => {
 		try {
 			await ActivityPub.actors.prune();
 		} catch (err) {

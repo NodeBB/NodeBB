@@ -230,19 +230,28 @@ Actors.getLocalFollowers = async (id) => {
 	return response;
 };
 
-Actors.getLocalFollowCounts = async (actor) => {
-	let followers = 0; // x local followers
-	let following = 0; // following x local users
-	if (!activitypub.helpers.isUri(actor)) {
-		return { followers, following };
+Actors.getLocalFollowCounts = async (actors) => {
+	if (!Array.isArray(actors)) {
+		actors = [actors];
 	}
 
-	[followers, following] = await Promise.all([
-		db.sortedSetCard(`followersRemote:${actor}`),
-		db.sortedSetCard(`followingRemote:${actor}`),
+	const validActors = actors.filter(actor => activitypub.helpers.isUri(actor));
+	const followerKeys = validActors.map(actor => `followersRemote:${actor}`);
+	const followingKeys = validActors.map(actor => `followingRemote:${actor}`);
+
+	const [followersCounts, followingCounts] = await Promise.all([
+		db.sortedSetsCard(followerKeys),
+		db.sortedSetsCard(followingKeys),
 	]);
 
-	return { followers, following };
+	const results = actors.map((actor, index) => {
+		if (!validActors.includes(actor)) {
+			return { followers: 0, following: 0 };
+		}
+		return { followers: followersCounts[index], following: followingCounts[index] };
+	});
+
+	return Array.isArray(actors) ? results : results[0];
 };
 
 Actors.remove = async (id) => {
@@ -288,7 +297,7 @@ Actors.prune = async () => {
 
 	const days = parseInt(meta.config.activitypubUserPruneDays, 10);
 	const timestamp = Date.now() - (1000 * 60 * 60 * 24 * days);
-	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, -1, '-inf', timestamp);
+	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, 500, '-inf', timestamp);
 	if (!uids.length) {
 		winston.info('[actors/prune] No remote users to prune, all done.');
 		return;
@@ -299,18 +308,19 @@ Actors.prune = async () => {
 
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
-		const [postCounts, roomCounts] = await Promise.all([
-			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
-			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
-		]);
-		await Promise.all(uids.map(async (uid, idx) => {
-			if (!exists[idx]) {
-				// id in zset but not asserted, handle and return early
-				await db.sortedSetRemove('usersRemote:lastCrawled', uid);
-				return;
-			}
 
-			const { followers, following } = await Actors.getLocalFollowCounts(uid);
+		const uidsThatExist = uids.filter((uid, idx) => exists[idx]);
+		const uidsThatDontExist = uids.filter((uid, idx) => !exists[idx]);
+		await db.sortedSetRemove('usersRemote:lastCrawled', uidsThatDontExist);
+
+		const [postCounts, roomCounts, followCounts] = await Promise.all([
+			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:posts`)),
+			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:chat:rooms`)),
+			Actors.getLocalFollowCounts(uidsThatExist),
+		]);
+
+		await Promise.all(uidsThatExist.map(async (uid, idx) => {
+			const { followers, following } = followCounts[idx];
 			const postCount = postCounts[idx];
 			const roomCount = roomCounts[idx];
 			if ([postCount, roomCount, followers, following].every(metric => metric < 1)) {
