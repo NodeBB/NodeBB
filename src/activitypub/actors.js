@@ -314,6 +314,7 @@ Actors.prune = async () => {
 	let deletionCount = 0;
 	let deletionCountNonExisting = 0;
 	let notDeletedDueToLocalContent = 0;
+	const notDeletedUids = [];
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
 
@@ -339,11 +340,16 @@ Actors.prune = async () => {
 				}
 			} else {
 				notDeletedDueToLocalContent += 1;
+				notDeletedUids.push(uid);
 			}
 		}));
 
 		deletionCountNonExisting += uidsThatDontExist.length;
 		await db.sortedSetRemove('usersRemote:lastCrawled', uidsThatDontExist);
+		// update timestamp in usersRemote:lastCrawled so we don't try to delete users
+		// with content over and over
+		const now = Date.now();
+		await db.sortedSetAdd('usersRemote:lastCrawled', notDeletedUids.map(() => now), notDeletedUids);
 	}, {
 		batch: 50,
 		interval: 1000,
