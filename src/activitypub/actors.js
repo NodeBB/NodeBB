@@ -313,6 +313,7 @@ Actors.prune = async () => {
 	winston.info(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
 	let deletionCount = 0;
 	let deletionCountNonExisting = 0;
+	let notDeletedDueToLocalContent = 0;
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
 
@@ -336,6 +337,8 @@ Actors.prune = async () => {
 				} catch (err) {
 					winston.error(err.stack);
 				}
+			} else {
+				notDeletedDueToLocalContent += 1;
 			}
 		}));
 
@@ -346,5 +349,5 @@ Actors.prune = async () => {
 		interval: 1000,
 	});
 
-	winston.info(`[actors/prune] ${deletionCount} remote users pruned. ${deletionCountNonExisting} does not exist`);
+	winston.info(`[actors/prune] ${deletionCount} remote users pruned. ${deletionCountNonExisting} does not exist. ${notDeletedDueToLocalContent} not deleted due to local content`);
 };
