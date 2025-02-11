@@ -2,6 +2,7 @@
 'use strict';
 
 const _ = require('lodash');
+const winston = require('winston');
 
 const db = require('../database');
 const utils = require('../utils');
@@ -154,12 +155,19 @@ module.exports = function (Topics) {
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
 		if (!topicData.scheduled) {
-			if (utils.isNumber(uid)) {
-				// New topic notifications only sent for local-to-local follows only
-				user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
-			}
-			Topics.notifyTagFollowers(postData, uid);
-			categories.notifyCategoryFollowers(postData, uid);
+			setImmediate(async () => {
+				try {
+					if (utils.isNumber(uid)) {
+						// New topic notifications only sent for local-to-local follows only
+						await user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+					}
+
+					await Topics.notifyTagFollowers(postData, uid);
+					await categories.notifyCategoryFollowers(postData, uid);
+				} catch (err) {
+					winston.error(err.stack);
+				}
+			});
 		}
 
 		return {
@@ -211,13 +219,17 @@ module.exports = function (Topics) {
 		}
 
 		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid) || meta.config.allowGuestReplyNotifications) {
-			const { displayname } = postData.user;
-
-			Topics.notifyFollowers(postData, uid, {
-				type: 'new-reply',
-				bodyShort: translator.compile('notifications:user-posted-to', displayname, postData.topic.title),
-				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
-				mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
+			setImmediate(async () => {
+				try {
+					await Topics.notifyFollowers(postData, uid, {
+						type: 'new-reply',
+						bodyShort: translator.compile('notifications:user-posted-to', postData.user.displayname, postData.topic.title),
+						nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
+						mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
+					});
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			});
 		}
 
