@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
+const _ = require('lodash');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -244,12 +245,17 @@ Actors.getLocalFollowCounts = async (actors) => {
 		db.sortedSetsCard(followerKeys),
 		db.sortedSetsCard(followingKeys),
 	]);
-
-	const results = actors.map((actor, index) => {
-		if (!validActors.includes(actor)) {
+	const actorToCounts = _.zipObject(validActors, validActors.map(
+		(a, idx) => ({ followers: followersCounts[idx], following: followingCounts[idx] })
+	));
+	const results = actors.map((actor) => {
+		if (!actorToCounts.hasOwnProperty(actor)) {
 			return { followers: 0, following: 0 };
 		}
-		return { followers: followersCounts[index], following: followingCounts[index] };
+		return {
+			followers: actorToCounts[actor].followers,
+			following: actorToCounts[actor].following,
+		};
 	});
 
 	return isArray ? results : results[0];
@@ -306,13 +312,12 @@ Actors.prune = async () => {
 
 	winston.info(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
 	let deletionCount = 0;
-
+	let deletionCountNonExisting = 0;
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
 
 		const uidsThatExist = uids.filter((uid, idx) => exists[idx]);
 		const uidsThatDontExist = uids.filter((uid, idx) => !exists[idx]);
-		await db.sortedSetRemove('usersRemote:lastCrawled', uidsThatDontExist);
 
 		const [postCounts, roomCounts, followCounts] = await Promise.all([
 			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:posts`)),
@@ -333,10 +338,13 @@ Actors.prune = async () => {
 				}
 			}
 		}));
+
+		deletionCountNonExisting += uidsThatDontExist.length;
+		await db.sortedSetRemove('usersRemote:lastCrawled', uidsThatDontExist);
 	}, {
 		batch: 50,
 		interval: 1000,
 	});
 
-	winston.info(`[actors/prune] ${deletionCount} remote users pruned.`);
+	winston.info(`[actors/prune] ${deletionCount} remote users pruned. ${deletionCountNonExisting} does not exist`);
 };
