@@ -29,6 +29,7 @@ Feps.announce = async function announce(id, activity) {
 	await activitypub.send('cid', cid, followers, {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
 		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
 		to: [`${nconf.get('url')}/category/${cid}/followers`],
 		cc: [actor, activitypub._constants.publicAddress],
 		object: activity,
