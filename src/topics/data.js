@@ -40,7 +40,7 @@ module.exports = function (Topics) {
 
 	Topics.getTopicField = async function (tid, field) {
 		const topic = await Topics.getTopicFields(tid, [field]);
-		return topic ? topic[field] : null;
+		return topic && topic.hasOwnProperty(field) ? topic[field] : null;
 	};
 
 	Topics.getTopicFields = async function (tid, fields) {

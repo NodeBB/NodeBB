@@ -37,7 +37,7 @@ module.exports = function (Posts) {
 
 	Posts.getPostField = async function (pid, field) {
 		const post = await Posts.getPostFields(pid, [field]);
-		return post ? post[field] : null;
+		return post && post.hasOwnProperty(field) ? post[field] : null;
 	};
 
 	Posts.getPostFields = async function (pid, fields) {
