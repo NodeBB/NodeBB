@@ -73,7 +73,7 @@ module.exports = function (Categories) {
 
 	Categories.getCategoryField = async function (cid, field) {
 		const category = await Categories.getCategoryFields(cid, [field]);
-		return category ? category[field] : null;
+		return category && category.hasOwnProperty(field) ? category[field] : null;
 	};
 
 	Categories.getCategoryFields = async function (cid, fields) {
