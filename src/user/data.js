@@ -161,7 +161,7 @@ module.exports = function (User) {
 
 	User.getUserField = async function (uid, field) {
 		const user = await User.getUserFields(uid, [field]);
-		return user ? user[field] : null;
+		return user && user.hasOwnProperty(field) ? user[field] : null;
 	};
 
 	User.getUserFields = async function (uid, fields) {

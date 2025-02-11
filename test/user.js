@@ -680,6 +680,12 @@ describe('User', () => {
 				done();
 			});
 		});
+
+		it('should return null if field or user doesn not exist', async () => {
+			assert.strictEqual(await User.getUserField('1', 'doesnotexist'), null);
+			assert.strictEqual(await User.getUserField('doesnotexistkey', 'doesnotexist'), null);
+			assert.strictEqual(await User.getUserField('0', 'doesnotexist'), null);
+		});
 	});
 
 	describe('profile methods', () => {
