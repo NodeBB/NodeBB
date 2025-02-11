@@ -230,19 +230,29 @@ Actors.getLocalFollowers = async (id) => {
 	return response;
 };
 
-Actors.getLocalFollowCounts = async (actor) => {
-	let followers = 0; // x local followers
-	let following = 0; // following x local users
-	if (!activitypub.helpers.isUri(actor)) {
-		return { followers, following };
+Actors.getLocalFollowCounts = async (actors) => {
+	const isArray = Array.isArray(actors);
+	if (!isArray) {
+		actors = [actors];
 	}
 
-	[followers, following] = await Promise.all([
-		db.sortedSetCard(`followersRemote:${actor}`),
-		db.sortedSetCard(`followingRemote:${actor}`),
+	const validActors = actors.filter(actor => activitypub.helpers.isUri(actor));
+	const followerKeys = validActors.map(actor => `followersRemote:${actor}`);
+	const followingKeys = validActors.map(actor => `followingRemote:${actor}`);
+
+	const [followersCounts, followingCounts] = await Promise.all([
+		db.sortedSetsCard(followerKeys),
+		db.sortedSetsCard(followingKeys),
 	]);
 
-	return { followers, following };
+	const results = actors.map((actor, index) => {
+		if (!validActors.includes(actor)) {
+			return { followers: 0, following: 0 };
+		}
+		return { followers: followersCounts[index], following: followingCounts[index] };
+	});
+
+	return isArray ? results : results[0];
 };
 
 Actors.remove = async (id) => {
