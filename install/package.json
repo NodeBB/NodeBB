@@ -56,7 +56,7 @@
         "colors": "1.4.0",
         "commander": "12.1.0",
         "compare-versions": "6.1.1",
-        "compression": "1.7.5",
+        "compression": "1.8.0",
         "connect-flash": "0.1.1",
         "connect-mongo": "5.1.0",
         "connect-multiparty": "2.2.0",
