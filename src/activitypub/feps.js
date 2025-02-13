@@ -26,12 +26,14 @@ Feps.announce = async function announce(id, activity) {
 	}
 
 	winston.info(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} to followers of cid ${cid}`);
-	await activitypub.send('cid', cid, followers, {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
-		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
-		to: [`${nconf.get('url')}/category/${cid}/followers`],
-		cc: [actor, activitypub._constants.publicAddress],
-		object: activity,
-	});
+	await Promise.all([activity, activity.object].map(async (object) => {
+		await activitypub.send('cid', cid, followers, {
+			id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
+			type: 'Announce',
+			actor: `${nconf.get('url')}/category/${cid}`,
+			to: [`${nconf.get('url')}/category/${cid}/followers`],
+			cc: [actor, activitypub._constants.publicAddress],
+			object,
+		});
+	}));
 };
