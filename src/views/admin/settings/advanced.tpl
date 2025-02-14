@@ -146,20 +146,6 @@
 
 			<hr/>
 
-			<div id="analytics-settings" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:analytics.settings]]</h5>
-
-				<div class="mb-3">
-					<label class="form-label" for="analytics:maxCache">[[admin/settings/advanced:analytics.max-cache]]</label>
-					<input class="form-control" id="analytics:maxCache" type="text" value="500" placeholder="500" data-field="analytics:maxCache" />
-					<p class="form-text">
-						[[admin/settings/advanced:analytics.max-cache-help]]
-					</p>
-				</div>
-			</div>
-
-			<hr/>
-
 			<div id="compression-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:compression.settings]]</h5>
 
