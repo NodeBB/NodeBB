@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Padrão: %1",
 	"sockets.delay": "Espera de Reconexão",
 
-	"analytics.settings": "Configurações de Analytics",
-	"analytics.max-cache": "Valor Máx. do Cache de Analytics",
-	"analytics.max-cache-help": "Em instalações de alto tráfego, o cache pode ser exaurido continuamente se houver mais usuários ativos simultâneos do que o valor Max Cache. (É necessário reiniciar)",
 	"compression.settings": "Configurções de Compressão",
 	"compression.enable": "Habilitar Compreesão",
 	"compression.help": "Esta configuração ativa a compactação gzip. Para um site de alto tráfego em produção, a melhor maneira de implementar a compactação é implementá-la em um nível de proxy reverso. Você pode habilitá-lo aqui para fins de teste."

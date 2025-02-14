@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Standard: %1",
 	"sockets.delay": "Forsinkelse ved tilkobling på nytt",
 
-	"analytics.settings": "Innstillinger for analyse",
-	"analytics.max-cache": "Maksimal verdi for analysedatahurtigbuffer",
-	"analytics.max-cache-help": "På installasjoner med høy trafikk kan hurtigbufferen bli kontinuerlig brukt opp hvis det er flere aktive brukere samtidig enn den maksimale hurtigbufferen tillater. (Omstart kreves)",
 	"compression.settings": "Innstillinger for komprimering",
 	"compression.enable": "Aktiver komprimering",
 	"compression.help": "Denne innstillingen aktiverer gzip-komprimering. For nettsteder med høy trafikk anbefales det å implementere komprimering på omvendt proxy-nivå. Du kan aktivere det her for testformål."

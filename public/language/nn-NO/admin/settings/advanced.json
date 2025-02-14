@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Standardverdi",
 	"sockets.delay": "Forseinking",
 
-	"analytics.settings": "Analyseinnstillingar",
-	"analytics.max-cache": "Maksimal cache for analyse",
-	"analytics.max-cache-help": "Angi kor mykje cache som skal lagrast for analyseformål.",
 	"compression.settings": "Kompresjonsinnstillingar",
 	"compression.enable": "Aktiver kompresjon",
 	"compression.help": "Konfigurer om forumet skal komprimere data for å redusere overføringsstorleiken."
