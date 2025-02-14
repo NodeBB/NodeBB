@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Standard: %1",
 	"sockets.delay": "Wiederverbindungsverzögerung",
 
-	"analytics.settings": "Analytik-Einstellungen",
-	"analytics.max-cache": "Analytik-Cache Max-Wert",
-	"analytics.max-cache-help": "Bei Installationen mit hohem Datenverkehr kann der Cache kontinuierlich erschöpft werden, wenn die Anzahl der gleichzeitig aktiven Benutzer den Wert für \"Max Cache\" überschreitet. (Neustart erforderlich)",
 	"compression.settings": "Komprimierungseinstellungen",
 	"compression.enable": "Komprimierung einschalten",
 	"compression.help": "Diese Einstellung aktiviert die gzip-Komprimierung. Für eine produktive Website mit hohem Datenverkehr ist es am besten, die Komprimierung auf der Ebene des Reverse-Proxys zu implementieren. Sie können sie hier zu Testzwecken aktivieren."

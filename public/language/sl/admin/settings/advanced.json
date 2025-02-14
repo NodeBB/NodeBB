@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Privzeto: %1",
 	"sockets.delay": "Reconnection Delay",
 
-	"analytics.settings": "Analytics Settings",
-	"analytics.max-cache": "Analytics Cache Max Value",
-	"analytics.max-cache-help": "Pri namestitvah z velikim prometom bi se lahko predpomnilnik neprestano izčrpal, če je hkrati aktivnih uporabnikov več kot je največja vrednost predpomnilnika. (Potreben ponovni zagon)",
 	"compression.settings": "Nastavitve stiskanja",
 	"compression.enable": "Omogoči stiskanje",
 	"compression.help": "Ta nastavitev omogoča stiskanje GZIP. Za produkcijsko spletno mesto z velikim prometom je najboljši način za uvedbo stiskanja izvajanje na obratni ravni proxyja. Za namene testiranja ga lahko omogočite tukaj."
