@@ -39,9 +39,7 @@ Analytics.init = async function () {
 
 	if (runJobs) {
 		new cronJob('*/30 * * * *', (async () => {
-			const cutoff = Date.now() - 172800000;
-			const ips = await db.getSortedSetRangeByScore('ip:recent', 0, 500, '-inf', cutoff);
-			await db.sortedSetRemove('ip:recent', ips);
+			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
 		}), null, true);
 	}
 
