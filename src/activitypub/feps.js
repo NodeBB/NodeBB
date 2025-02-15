@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const winston = require('winston');
 
 const posts = require('../posts');
 
@@ -14,6 +13,9 @@ Feps.announce = async function announce(id, activity) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
 	}
 	const cid = await posts.getCidByPid(localId || id);
+	if (cid === -1) {
+		return;
+	}
 
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
 	if (!followers.length) {
@@ -44,6 +46,9 @@ Feps.announceObject = async function announceObject(id) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
 	}
 	const cid = await posts.getCidByPid(localId || id);
+	if (cid === -1) {
+		return;
+	}
 
 	const followers = await activitypub.notes.getCategoryFollowers(cid);
 	if (!followers.length) {
