@@ -564,6 +564,10 @@ module.exports = function (Topics) {
 		return await db.getSortedSetRange(`tag:${tag}:followers`, start, stop);
 	};
 
+	Topics.getTagsFollowers = async function (tags) {
+		return await db.getSortedSetsMembers(tags.map(tag => `tag:${tag}:followers`));
+	};
+
 	Topics.followTag = async (tag, uid) => {
 		if (!(parseInt(uid, 10) > 0)) {
 			throw new Error('[[error:not-logged-in]]');

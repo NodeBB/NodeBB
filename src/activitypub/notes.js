@@ -414,9 +414,9 @@ Notes.getParentChain = async (uid, input) => {
 };
 
 Notes.syncUserInboxes = async function (tid, uid) {
-	const [pids, { cid, mainPid }] = await Promise.all([
+	const [pids, { cid, mainPid, tags }] = await Promise.all([
 		db.getSortedSetMembers(`tid:${tid}:posts`),
-		topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']),
+		topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'tags']),
 	]);
 	pids.unshift(mainPid);
 
@@ -425,6 +425,12 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	if (uid) {
 		uids.add(parseInt(uid, 10));
 	}
+
+	// Tag followers
+	const tagsFollowers = await topics.getTagsFollowers(tags.map(tag => tag.value));
+	new Set(tagsFollowers.flat()).forEach((uid) => {
+		uids.add(uid);
+	});
 
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
