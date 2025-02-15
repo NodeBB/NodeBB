@@ -10,6 +10,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
+const activitypub = require('../activitypub');
 
 const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
@@ -327,7 +328,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!canMove) {
 				throw new Error('[[error:no-privileges]]');
 			}
-			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug', 'deleted']);
+			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'slug', 'deleted']);
 			if (!cids.includes(topicData.cid)) {
 				cids.push(topicData.cid);
 			}
@@ -341,6 +342,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 				activitypubApi.announce.note(caller, { tid });
+				activitypub.feps.announceObject(topicData.mainPid);
 			}
 
 			await events.log({
