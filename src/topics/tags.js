@@ -625,7 +625,7 @@ module.exports = function (Topics) {
 
 		const notification = await notifications.create({
 			type: 'new-topic-with-tag',
-			nid: `new_topic:tid:${postData.topic.tid}:uid:${exceptUid}`,
+			nid: `new_topic:tags:${tags.join('.')}:tid:${postData.topic.tid}:uid:${exceptUid}`,
 			bodyShort: bodyShort,
 			bodyLong: postData.content,
 			pid: postData.pid,
