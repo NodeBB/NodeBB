@@ -15,8 +15,9 @@
 	"settings.stickyToolbar.help": "토픽 및 카테고리 페이지의 툴바가 페이지 상단에 고정됩니다.",
 	"settings.topicSidebarTools": "Topic sidebar tools",
 	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
-	"settings.autohideBottombar": "하단 바 자동 숨기기",
-	"settings.autohideBottombar.help": "모바일 뷰에서 페이지가 아래로 스크롤될 때 하단 막대가 숨겨집니다.",
+	"settings.autohideBottombar": "Auto hide mobile navigation bar",
+	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
+	"settings.topMobilebar": "Move the mobile navigation bar to the top",
 	"settings.openSidebars": "사이드바 열기",
 	"settings.chatModals": "채팅 모달 활성화"
 }

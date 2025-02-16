@@ -15,8 +15,9 @@
 	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד בעת גלילה",
 	"settings.topicSidebarTools": "כלי סרגל הצד",
 	"settings.topicSidebarTools.help": "אפשרות זו תעביר את כלי הנושא לסרגל הצד במחשבים שולחניים",
-	"settings.autohideBottombar": "הסתרה אוטומטית של סרגל תחתון",
-	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה",
+	"settings.autohideBottombar": "Auto hide mobile navigation bar",
+	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
+	"settings.topMobilebar": "Move the mobile navigation bar to the top",
 	"settings.openSidebars": "פתח סרגלי צד",
 	"settings.chatModals": "הפעלת צ'אט בחלונית מוקטנת"
 }
