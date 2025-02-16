@@ -15,9 +15,9 @@
 	"settings.stickyToolbar.help": "Лентата с инструменти в страниците с теми и категории ще стои винаги в горния край на страницата",
 	"settings.topicSidebarTools": "Странична лента с инструменти за темите",
 	"settings.topicSidebarTools.help": "Тази настройка ще премести инструментите за темите в страничната лента, когато се ползва настолната версия на уеб сайта",
-	"settings.autohideBottombar": "Auto hide mobile navigation bar",
-	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
-	"settings.topMobilebar": "Move the mobile navigation bar to the top",
+	"settings.autohideBottombar": "Автоматично скриване на лентата за навигация за мобилни устройства",
+	"settings.autohideBottombar.help": "Лентата за мобилни устройства ще се скрива, когато страницата бъде превъртяна надолу",
+	"settings.topMobilebar": "Преместване на лентата за навигация за мобилни устройства в горната част",
 	"settings.openSidebars": "Отваряне на страничните ленти",
 	"settings.chatModals": "Включване на прозорците за разговори"
 }
