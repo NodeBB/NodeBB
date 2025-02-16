@@ -28,8 +28,6 @@ SocketPosts.getRawPost = async function (socket, pid) {
 };
 
 SocketPosts.getPostSummaryByIndex = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/posts/byIndex/:index/summary?tid=:tid');
-
 	if (data.index < 0) {
 		data.index = 0;
 	}
