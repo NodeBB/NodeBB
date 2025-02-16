@@ -191,7 +191,7 @@ Mocks.post = async (objects) => {
 		}
 
 		switch (true) {
-			case image && image.hasOwnProperty('url') && image.url: {
+			case image && image.hasOwnProperty('url') && !!image.url: {
 				image = image.url;
 				break;
 			}
