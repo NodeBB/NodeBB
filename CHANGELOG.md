@@ -1,3 +1,44 @@
+#### v4.0.4 (2025-02-17)
+
+##### Chores
+
+*  up harmony (0fed9a76)
+*  up harmony (ef2c606d)
+*  up harmony (f1da510f)
+*  up deps (fa366095)
+*  up harmony (df07fcfa)
+*  up harmony (de5caf8f)
+*  up harmony (d1f78295)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  update changelog for v4.0.3 (123e1635)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **i18n:**  fallback strings for new resources: nodebb.themes-harmony (99210918)
+
+##### Bug Fixes
+
+*  clear parsed post cache when updating a post's attachments, #13164 (33d7b9b3)
+*  logic failure causing remote posts with image to not parse properly, #13164 (d936d5c0)
+*  change the passed-in notificatiom id for `notifyTagFollowers` to contain the list of matched tags (04f51cc6)
+*  actor.prune, dont try deleting same users (ffbe4b7b)
+*  getLocalFollowCounts, show non existing deletes (cfbb8ff8)
+*  return null if field isn't in hash (70a9f6d3)
+*  getUserField so that it always returns null (e85662a5)
+*  isArray check (224910b1)
+*  sanity-check the id when mocking a post (5cbf3dd7)
+*  missing actor on some local activities when federating out (040584f0)
+
+##### Performance Improvements
+
+*  closes #13145, reduce calls in actors.prune (d590c2af)
+
+##### Refactors
+
+*  single remove (77dd6dd0)
+*  cleanup ip:recent (d8724708)
+*  hooks button (c4b01330)
+
 #### v4.0.3 (2025-02-09)
 
 ##### Chores
