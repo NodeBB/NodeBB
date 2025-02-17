@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "Vis emneteasere på mobil",
 	"settings.stickyToolbar": "Fast verktøylinje",
 	"settings.stickyToolbar.help": "Gjer verktøylinja fast øvst på sida når du rullar.",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "Gøym botnlinja automatisk",
 	"settings.autohideBottombar.help": "Botnlinja vert automatisk gøymd når du rullar nedover.",
 	"settings.openSidebars": "Opne sidefelt",

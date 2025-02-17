@@ -13,6 +13,8 @@
 	"settings.mobileTopicTeasers": "Vis emneforhåndsvisninger på mobil",
 	"settings.stickyToolbar": "Festet verktøylinje",
 	"settings.stickyToolbar.help": "Verktøylinjen på emne- og kategorisider vil feste seg til toppen av siden",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
 	"settings.autohideBottombar": "Skjul bunnlinjen automatisk",
 	"settings.autohideBottombar.help": "Bunnlinjen i mobilvisning skjules automatisk når siden rulles ned",
 	"settings.openSidebars": "Åpne sidepaneler",

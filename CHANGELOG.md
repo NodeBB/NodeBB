@@ -1,3 +1,53 @@
+#### v4.0.3 (2025-02-09)
+
+##### Chores
+
+*  up harmony (2ee0cda2)
+*  update persona (b6b76639)
+*  bump persona to fix theme description issue (cd88cce0)
+*  up harmony (a01bf73e)
+*  forgot to remove bad code (865c09a5)
+*  up harmony (c3f8222f)
+*  up harmony (f07f3801)
+*  up harmony (67a789ad)
+*  up themes (c1c5cc6e)
+*  up themes (b2b0ed35)
+*  up peace (55eedcbe)
+*  up themes (38a21e29)
+*  up harmony (58e551fe)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  update changelog for v4.0.2 (75588ffe)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  delete from payload instead of setting null (1b4e0c87)
+*  regression :tmi: (f5328aa8)
+*  #13139, payload.version can be null (bfe6d9d8)
+*  tidChanged (1f8e2f9a)
+*  #13135, tids are not numeric for ap topics (d687f081)
+*  handle cases where url passed to mime does not pass because url contained a query string (5baa46d0)
+*  isDraft logic, closes #13119 (21156673)
+*  path on windows, #13119 (36063d1f)
+*  #13115, prevent messages from getting duplicated (1ff8e1e4)
+*  #13115, limit bodyLength length (8e9fdb5f)
+
+##### Other Changes
+
+*  remove log (a8e7bf35)
+
+##### Refactors
+
+*  events are returned inside post objects (3ab22c2c)
+*  move dropdown search inputs into dropdown (b993be6f)
+*  server.destroy (72091ec4)
+*  remove deprecated methods (265e44f0)
+
+##### Tests
+
+*  search endpoint with start & end (c1b630d4)
+
 #### v4.0.2 (2025-02-02)
 
 ##### Chores

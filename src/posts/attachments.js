@@ -63,6 +63,7 @@ Attachments.update = async (pid, attachments) => {
 	await Promise.all([
 		db.setObjectBulk(bulkOps.hash),
 		db.setObjectField(`post:${pid}`, 'attachments', hashes.join(',')),
+		posts.clearCachedPost(pid),
 	]);
 };
 

@@ -29,7 +29,7 @@ module.exports = function (Messaging) {
 
 	Messaging.getMessageField = async (mid, field) => {
 		const fields = await Messaging.getMessageFields(mid, [field]);
-		return fields ? fields[field] : null;
+		return fields && fields.hasOwnProperty(field) ? fields[field] : null;
 	};
 
 	Messaging.getMessageFields = async (mid, fields) => {

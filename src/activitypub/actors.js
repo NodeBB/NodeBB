@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
+const _ = require('lodash');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -230,19 +231,34 @@ Actors.getLocalFollowers = async (id) => {
 	return response;
 };
 
-Actors.getLocalFollowCounts = async (actor) => {
-	let followers = 0; // x local followers
-	let following = 0; // following x local users
-	if (!activitypub.helpers.isUri(actor)) {
-		return { followers, following };
+Actors.getLocalFollowCounts = async (actors) => {
+	const isArray = Array.isArray(actors);
+	if (!isArray) {
+		actors = [actors];
 	}
 
-	[followers, following] = await Promise.all([
-		db.sortedSetCard(`followersRemote:${actor}`),
-		db.sortedSetCard(`followingRemote:${actor}`),
-	]);
+	const validActors = actors.filter(actor => activitypub.helpers.isUri(actor));
+	const followerKeys = validActors.map(actor => `followersRemote:${actor}`);
+	const followingKeys = validActors.map(actor => `followingRemote:${actor}`);
 
-	return { followers, following };
+	const [followersCounts, followingCounts] = await Promise.all([
+		db.sortedSetsCard(followerKeys),
+		db.sortedSetsCard(followingKeys),
+	]);
+	const actorToCounts = _.zipObject(validActors, validActors.map(
+		(a, idx) => ({ followers: followersCounts[idx], following: followingCounts[idx] })
+	));
+	const results = actors.map((actor) => {
+		if (!actorToCounts.hasOwnProperty(actor)) {
+			return { followers: 0, following: 0 };
+		}
+		return {
+			followers: actorToCounts[actor].followers,
+			following: actorToCounts[actor].following,
+		};
+	});
+
+	return isArray ? results : results[0];
 };
 
 Actors.remove = async (id) => {
@@ -288,7 +304,7 @@ Actors.prune = async () => {
 
 	const days = parseInt(meta.config.activitypubUserPruneDays, 10);
 	const timestamp = Date.now() - (1000 * 60 * 60 * 24 * days);
-	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, -1, '-inf', timestamp);
+	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, 500, '-inf', timestamp);
 	if (!uids.length) {
 		winston.info('[actors/prune] No remote users to prune, all done.');
 		return;
@@ -296,21 +312,23 @@ Actors.prune = async () => {
 
 	winston.info(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
 	let deletionCount = 0;
-
+	let deletionCountNonExisting = 0;
+	let notDeletedDueToLocalContent = 0;
+	const notDeletedUids = [];
 	await batch.processArray(uids, async (uids) => {
 		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
-		const [postCounts, roomCounts] = await Promise.all([
-			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
-			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
-		]);
-		await Promise.all(uids.map(async (uid, idx) => {
-			if (!exists[idx]) {
-				// id in zset but not asserted, handle and return early
-				await db.sortedSetRemove('usersRemote:lastCrawled', uid);
-				return;
-			}
 
-			const { followers, following } = await Actors.getLocalFollowCounts(uid);
+		const uidsThatExist = uids.filter((uid, idx) => exists[idx]);
+		const uidsThatDontExist = uids.filter((uid, idx) => !exists[idx]);
+
+		const [postCounts, roomCounts, followCounts] = await Promise.all([
+			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:posts`)),
+			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:chat:rooms`)),
+			Actors.getLocalFollowCounts(uidsThatExist),
+		]);
+
+		await Promise.all(uidsThatExist.map(async (uid, idx) => {
+			const { followers, following } = followCounts[idx];
 			const postCount = postCounts[idx];
 			const roomCount = roomCounts[idx];
 			if ([postCount, roomCount, followers, following].every(metric => metric < 1)) {
@@ -320,12 +338,22 @@ Actors.prune = async () => {
 				} catch (err) {
 					winston.error(err.stack);
 				}
+			} else {
+				notDeletedDueToLocalContent += 1;
+				notDeletedUids.push(uid);
 			}
 		}));
+
+		deletionCountNonExisting += uidsThatDontExist.length;
+		await db.sortedSetRemove('usersRemote:lastCrawled', uidsThatDontExist);
+		// update timestamp in usersRemote:lastCrawled so we don't try to delete users
+		// with content over and over
+		const now = Date.now();
+		await db.sortedSetAdd('usersRemote:lastCrawled', notDeletedUids.map(() => now), notDeletedUids);
 	}, {
 		batch: 50,
 		interval: 1000,
 	});
 
-	winston.info(`[actors/prune] ${deletionCount} remote users pruned.`);
+	winston.info(`[actors/prune] ${deletionCount} remote users pruned. ${deletionCountNonExisting} does not exist. ${notDeletedDueToLocalContent} not deleted due to local content`);
 };

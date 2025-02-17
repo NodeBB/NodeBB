@@ -18,6 +18,8 @@ get:
                   latestVersion:
                     type: string
                     nullable: true
+                  hideAllTime:
+                    type: boolean
                   upgradeAvailable:
                     type: boolean
                     nullable: true

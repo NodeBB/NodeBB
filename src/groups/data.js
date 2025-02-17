@@ -51,7 +51,7 @@ module.exports = function (Groups) {
 
 	Groups.getGroupField = async function (groupName, field) {
 		const groupData = await Groups.getGroupFields(groupName, [field]);
-		return groupData ? groupData[field] : null;
+		return groupData && groupData.hasOwnProperty(field) ? groupData[field] : null;
 	};
 
 	Groups.getGroupFields = async function (groupName, fields) {
