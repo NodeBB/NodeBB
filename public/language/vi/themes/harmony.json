@@ -15,9 +15,9 @@
 	"settings.stickyToolbar.help": "Thanh công cụ trên các trang chủ đề và danh mục sẽ nằm ở đầu trang",
 	"settings.topicSidebarTools": "Công cụ thanh bên chủ đề",
 	"settings.topicSidebarTools.help": "Tùy chọn này sẽ chuyển các công cụ chủ đề sang thanh bên trên máy tính để bàn",
-	"settings.autohideBottombar": "Auto hide mobile navigation bar",
-	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
-	"settings.topMobilebar": "Move the mobile navigation bar to the top",
+	"settings.autohideBottombar": "Tự động ẩn thanh điều hướng di động",
+	"settings.autohideBottombar.help": "Thanh di động sẽ bị ẩn khi trang được cuộn xuống",
+	"settings.topMobilebar": "Di chuyển thanh điều hướng di động lên đỉnh",
 	"settings.openSidebars": "Mở thanh bên",
 	"settings.chatModals": "Bật phương thức trò chuyện"
 }
