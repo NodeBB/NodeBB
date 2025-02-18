@@ -28,8 +28,11 @@ const total = _.cloneDeep(local);
 
 const runJobs = nconf.get('runJobs');
 
+Analytics.pause = false;
+
 Analytics.init = async function () {
 	new cronJob('*/10 * * * * *', (async () => {
+		if (Analytics.pause) return;
 		publishLocalAnalytics();
 		if (runJobs) {
 			await sleep(2000);
