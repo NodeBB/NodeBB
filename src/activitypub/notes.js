@@ -229,6 +229,10 @@ Notes.assertPrivate = async (object) => {
 	// Given an object, adds it to an existing chat or creates a new chat otherwise
 	// todo: context stuff
 
+	if (!object || !object.id || !activitypub.helpers.isUri(object.id)) {
+		return null;
+	}
+
 	const localUids = [];
 	const recipients = new Set([...object.to, ...object.cc]);
 	await Promise.all(Array.from(recipients).map(async (value) => {
