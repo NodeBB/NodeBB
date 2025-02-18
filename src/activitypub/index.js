@@ -63,6 +63,7 @@ ActivityPub.startJobs = () => {
 	new CronJob('0 0 * * *', async () => {
 		try {
 			await ActivityPub.notes.prune();
+			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
 		} catch (err) {
 			winston.error(err.stack);
 		}
