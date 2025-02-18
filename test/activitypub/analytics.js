@@ -128,7 +128,7 @@ describe('Analytics', () => {
 		let counters;
 		({ counters } = analytics.peek());
 		const before = { ...counters };
-
+		const { setTimeout } = require('timers/promises');
 		const id = `https://example.org/activity/${utils.generateUUID()}`;
 		await controllers.activitypub.postInbox({
 			body: {
@@ -141,13 +141,13 @@ describe('Analytics', () => {
 				},
 			},
 		}, { sendStatus: () => {} });
-
+		await setTimeout(2000);
 		({ counters } = analytics.peek());
 		const after = { ...counters };
 
 		const metrics = ['activities', 'activities:byType:Like', 'activities:byHost:example.org'];
 		metrics.forEach((metric) => {
-			assert(before[metric] && after[metric]);
+			assert(before[metric] && after[metric], JSON.stringify({ before, after }, null, 2));
 			assert(before[metric] < after[metric]);
 		});
 	});

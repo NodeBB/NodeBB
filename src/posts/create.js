@@ -11,8 +11,6 @@ const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 
-const isEmojiShortcode = /^:[\w]+:$/;
-
 module.exports = function (Posts) {
 	Posts.create = async function (data) {
 		// This is an internal method, consider using Topics.reply instead
@@ -54,9 +52,15 @@ module.exports = function (Posts) {
 		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
 			_activitypub.tag
 				.filter(tag => tag.type === 'Emoji' &&
-					isEmojiShortcode.test(tag.name) &&
-					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
+					tag.icon && tag.icon.type === 'Image')
 				.forEach((tag) => {
+					if (!tag.name.startsWith(':')) {
+						tag.name = `:${tag.name}`;
+					}
+					if (!tag.name.endsWith(':')) {
+						tag.name = `${tag.name}:`;
+					}
+
 					postData.content = postData.content.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
 				});
 		}
