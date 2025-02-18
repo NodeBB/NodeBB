@@ -71,7 +71,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	// Reorder chain items by timestamp
-	// chain = chain.sort((a, b) => a.timestamp - b.timestamp);
+	chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 	const mainPost = chain[0];
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, sourceContent, _activitypub } = mainPost;

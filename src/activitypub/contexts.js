@@ -58,8 +58,20 @@ Contexts.getItems = async (uid, id, options) => {
 		options.root = true;
 	}
 
-	activitypub.helpers.log(`[activitypub/context] Retrieving context ${id}`);
-	let { type, items, orderedItems, first, next } = await activitypub.get('uid', uid, id);
+	// Page object instead of id
+	let object;
+	if (!id && options.object) {
+		object = options.object;
+	} else {
+		activitypub.helpers.log(`[activitypub/context] Retrieving context/page ${id}`);
+		try {
+			object = await activitypub.get('uid', uid, id);
+		} catch (e) {
+			return false;
+		}
+	}
+	let { type, items, orderedItems, first, next } = object;
+
 	if (!activitypub._constants.acceptable.contextTypes.has(type)) {
 		return false;
 	}
@@ -87,14 +99,18 @@ Contexts.getItems = async (uid, id, options) => {
 
 	if (next) {
 		activitypub.helpers.log('[activitypub/context] Fetching next page...');
+		const isUrl = activitypub.helpers.isUri(next);
 		Array
-			.from(await Contexts.getItems(uid, next, {
+			.from(await Contexts.getItems(uid, isUrl && next, {
 				...options,
 				root: false,
+				object: !isUrl && next,
 			}))
 			.forEach((item) => {
 				chain.add(item);
 			});
+
+		return chain;
 	}
 
 	// Handle special case where originating object is not actually part of the context collection
