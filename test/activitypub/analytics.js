@@ -128,7 +128,7 @@ describe('Analytics', () => {
 		let counters;
 		({ counters } = analytics.peek());
 		const before = { ...counters };
-
+		const { setTimeout } = require('timers/promises');
 		const id = `https://example.org/activity/${utils.generateUUID()}`;
 		await controllers.activitypub.postInbox({
 			body: {
@@ -141,7 +141,7 @@ describe('Analytics', () => {
 				},
 			},
 		}, { sendStatus: () => {} });
-
+		await setTimeout(2000);
 		({ counters } = analytics.peek());
 		const after = { ...counters };
 
