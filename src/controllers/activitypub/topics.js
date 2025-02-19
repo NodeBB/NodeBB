@@ -20,22 +20,6 @@ const validSorts = [
 	'recently_replied', 'recently_created', 'most_posts', 'most_votes', 'most_views',
 ];
 
-async function getTids(data) {
-	// Poor man's intersect used instead of getSortedSetIntersect because the zsets are huge
-	const sets = await categories.buildTopicsSortedSet(data);
-	const intersect = Array.isArray(sets);
-	const mainSet = intersect ? sets.shift() : sets;
-	let tids = await db.getSortedSetRevRange(mainSet, 0, 499);
-	if (!intersect) {
-		return tids.slice(data.start, data.stop + 1);
-	}
-
-	let intersection = await Promise.all(sets.map(async set => db.isSortedSetMembers(set, tids)));
-	intersection = intersection.reduce((memo, cur) => memo.map((show, idx) => show && cur[idx]));
-	tids = tids.filter((_, idx) => intersection[idx]);
-	return tids.slice(data.start, data.stop + 1);
-}
-
 controller.list = async function (req, res) {
 	if (!req.uid) {
 		return helpers.redirect(res, '/recent?cid=-1', false);
@@ -69,7 +53,8 @@ controller.list = async function (req, res) {
 	data.name = '[[world:name]]';
 	delete data.children;
 
-	const tids = await getTids(cidQuery);
+	let tids = await categories.getTopicIds(cidQuery);
+	tids = await categories.sortTidsBySet(tids, -1, sort); // sorting not handled if cid is -1
 	data.topicCount = tids.length;
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);

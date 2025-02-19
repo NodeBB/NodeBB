@@ -99,7 +99,8 @@ module.exports = function (Categories) {
 			most_views: `cid:${cid}:tids:views`,
 		};
 
-		const set = new Set([sortToSet.hasOwnProperty(sort) ? sortToSet[sort] : `cid:${cid}:tids`]);
+		const mainSet = sortToSet.hasOwnProperty(sort) ? sortToSet[sort] : `cid:${cid}:tids`;
+		const set = new Set([mainSet]);
 
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
@@ -116,6 +117,7 @@ module.exports = function (Categories) {
 		}
 
 		if (parseInt(cid, 10) === -1 && uid > 0) {
+			set.delete(mainSet);
 			set.add(`uid:${uid}:inbox`);
 		}
 		const setValue = Array.from(set);
@@ -250,5 +252,25 @@ module.exports = function (Categories) {
 			from: exceptUid,
 		});
 		notifications.push(notification, followers);
+	};
+
+	Categories.sortTidsBySet = async (tids, cid, sort) => {
+		sort = sort || meta.config.categoryTopicSort || 'recently_replied';
+		const sortToSet = {
+			recently_replied: `cid:${cid}:tids`,
+			recently_created: `cid:${cid}:tids:create`,
+			most_posts: `cid:${cid}:tids:posts`,
+			most_votes: `cid:${cid}:tids:votes`,
+			most_views: `cid:${cid}:tids:views`,
+		};
+
+		const orderBy = sortToSet[sort];
+		const scores = await db.sortedSetScores(orderBy, tids);
+		const sorted = tids
+			.map((tid, idx) => [tid, scores[idx]])
+			.sort(([, a], [, b]) => b - a)
+			.map(([tid]) => tid);
+
+		return sorted;
 	};
 };
