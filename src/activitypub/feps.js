@@ -27,17 +27,30 @@ Feps.announce = async function announce(id, activity) {
 		followers.unshift(actor);
 	}
 
+	if (activity.type === 'Create') {
+		const isMain = await posts.isMain(localId || id);
+		if (isMain) {
+			activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing plain object (${activity.id}) to followers of cid ${cid}`);
+			await activitypub.send('cid', cid, followers, {
+				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
+				type: 'Announce',
+				actor: `${nconf.get('url')}/category/${cid}`,
+				to: [`${nconf.get('url')}/category/${cid}/followers`],
+				cc: [actor, activitypub._constants.publicAddress],
+				object: activity.object,
+			});
+		}
+	}
+
 	activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} (${activity.id}) to followers of cid ${cid}`);
-	await Promise.all([activity, activity.object].map(async (object) => {
-		await activitypub.send('cid', cid, followers, {
-			id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
-			type: 'Announce',
-			actor: `${nconf.get('url')}/category/${cid}`,
-			to: [`${nconf.get('url')}/category/${cid}/followers`],
-			cc: [actor, activitypub._constants.publicAddress],
-			object,
-		});
-	}));
+	await activitypub.send('cid', cid, followers, {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to: [`${nconf.get('url')}/category/${cid}/followers`],
+		cc: [actor, activitypub._constants.publicAddress],
+		object: activity,
+	});
 };
 
 Feps.announceObject = async function announceObject(id) {
