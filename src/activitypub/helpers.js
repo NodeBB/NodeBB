@@ -64,6 +64,11 @@ Helpers.isUri = (value) => {
 	});
 };
 
+Helpers.assertAccept = accept => (accept && accept.split(',').some((value) => {
+	const parts = value.split(';').map(v => v.trim());
+	return activitypub._constants.acceptableTypes.includes(value || parts[0]);
+}));
+
 Helpers.isWebfinger = (value) => {
 	// N.B. returns normalized handle, so truthy check!
 	if (webfingerRegex.test(value) && !Helpers.isUri(value)) {
