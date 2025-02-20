@@ -16,7 +16,7 @@ middleware.assertS2S = async function (req, res, next) {
 		return next('route');
 	}
 
-	const pass = activitypub.helpers.assertAccepts(accept) ||
+	const pass = activitypub.helpers.assertAccept(accept) ||
 		(contentType && activitypub._constants.acceptableTypes.includes(contentType));
 
 	if (!pass) {
