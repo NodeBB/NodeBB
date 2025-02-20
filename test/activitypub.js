@@ -350,6 +350,79 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
+	describe.only('Category Actor endpoint', () => {
+		let cid;
+		let slug;
+		let description;
+
+		beforeEach(async () => {
+			slug = slugify(utils.generateUUID().slice(0, 8));
+			description = utils.generateUUID();
+			({ cid } = await categories.create({
+				name: slug,
+				description,
+			}));
+		});
+
+		it('should return a valid ActivityPub Actor JSON-LD payload', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/category/${cid}`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			assert(response);
+			assert.strictEqual(response.statusCode, 200);
+			assert(body.hasOwnProperty('@context'));
+			assert(body['@context'].includes('https://www.w3.org/ns/activitystreams'));
+
+			['id', 'url', /* 'followers', 'following', */ 'inbox', 'outbox'].forEach((prop) => {
+				assert(body.hasOwnProperty(prop));
+				assert(body[prop]);
+			});
+
+			assert.strictEqual(body.id, `${nconf.get('url')}/category/${cid}`);
+			assert.strictEqual(body.type, 'Group');
+			assert.strictEqual(body.summary, description);
+			assert.deepStrictEqual(body.icon, {
+				type: 'Image',
+				mediaType: 'image/png',
+				url: `${nconf.get('url')}/assets/uploads/category/category-${cid}-icon.png`,
+			});
+		});
+
+		it('should contain a `publicKey` property with a public key', async () => {
+			const { body } = await request.get(`${nconf.get('url')}/category/${cid}`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			assert(body.hasOwnProperty('publicKey'));
+			assert(['id', 'owner', 'publicKeyPem'].every(prop => body.publicKey.hasOwnProperty(prop)));
+		});
+
+		it('should serve the the backgroundImage in `icon` if set', async () => {
+			const payload = {};
+			payload[cid] = {
+				backgroundImage: `/assets/uploads/files/test.png`,
+			};
+			await categories.update(payload);
+
+			const { body } = await request.get(`${nconf.get('url')}/category/${cid}`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			assert.deepStrictEqual(body.icon, {
+				type: 'Image',
+				mediaType: 'image/png',
+				url: `${nconf.get('url')}/assets/uploads/files/test.png`,
+			});
+		});
+	});
+
 	describe('Instance Actor endpoint', () => {
 		let response;
 		let body;
