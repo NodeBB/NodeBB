@@ -29,12 +29,14 @@ const Mocks = module.exports;
  * Done so the output HTML is stripped of all non-essential items; mainly classes from plugins..
  */
 const sanitizeConfig = {
-	allowedTags: sanitize.defaults.allowedTags.concat(['img']),
+	allowedTags: sanitize.defaults.allowedTags.concat(['img', 'picture', 'source']),
 	allowedClasses: {
 		'*': [],
 	},
 	allowedAttributes: {
 		a: ['href', 'rel'],
+		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
+		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
 	},
 };
 
