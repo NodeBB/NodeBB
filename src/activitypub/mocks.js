@@ -29,12 +29,14 @@ const Mocks = module.exports;
  * Done so the output HTML is stripped of all non-essential items; mainly classes from plugins..
  */
 const sanitizeConfig = {
-	allowedTags: sanitize.defaults.allowedTags.concat(['img']),
+	allowedTags: sanitize.defaults.allowedTags.concat(['img', 'picture', 'source']),
 	allowedClasses: {
 		'*': [],
 	},
 	allowedAttributes: {
 		a: ['href', 'rel'],
+		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
+		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
 	},
 };
 
@@ -342,23 +344,24 @@ Mocks.actors.category = async (cid) => {
 	} = await categories.getCategoryData(cid);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
-	let image;
+	let icon;
 	if (backgroundImage) {
 		const filename = path.basename(utils.decodeHTMLEntities(backgroundImage));
-		image = {
+		icon = {
 			type: 'Image',
 			mediaType: mime.getType(filename),
 			url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
 		};
+	} else {
+		icon = await categories.icons.get(cid);
+		icon = icon.get('png');
+		icon = {
+			type: 'Image',
+			mediaType: 'image/png',
+			url: `${nconf.get('url')}${icon}`,
+		};
 	}
 
-	let icon = await categories.icons.get(cid);
-	icon = icon.get('png');
-	icon = {
-		type: 'Image',
-		mediaType: 'image/png',
-		url: `${nconf.get('url')}${icon}`,
-	};
 
 	return {
 		'@context': [
@@ -376,7 +379,7 @@ Mocks.actors.category = async (cid) => {
 		name,
 		preferredUsername,
 		summary,
-		image,
+		// image, // todo once categories have cover photos
 		icon,
 
 		publicKey: {

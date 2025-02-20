@@ -16,10 +16,8 @@ middleware.assertS2S = async function (req, res, next) {
 		return next('route');
 	}
 
-	const pass = (accept && accept.split(',').some((value) => {
-		const parts = value.split(';').map(v => v.trim());
-		return activitypub._constants.acceptableTypes.includes(value || parts[0]);
-	})) || (contentType && activitypub._constants.acceptableTypes.includes(contentType));
+	const pass = activitypub.helpers.assertAccept(accept) ||
+		(contentType && activitypub._constants.acceptableTypes.includes(contentType));
 
 	if (!pass) {
 		return next('route');
