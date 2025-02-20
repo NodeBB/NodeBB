@@ -28,6 +28,16 @@ const sha256 = payload => crypto.createHash('sha256').update(payload).digest('he
 
 const Helpers = module.exports;
 
+Helpers._test = (method, args) => {
+	// because I am lazy and I probably wrote some variant of this below code 1000 times already
+	setTimeout(async () => {
+		console.log(await method.apply(method, args));
+	}, 2500);
+};
+// process.nextTick(() => {
+// Helpers._test(activitypub.notes.assert, [1, `https://`]);
+// });
+
 let _lastLog;
 Helpers.log = (message) => {
 	if (!message) {
@@ -53,6 +63,11 @@ Helpers.isUri = (value) => {
 		require_tld: false, // temporary — for localhost
 	});
 };
+
+Helpers.assertAccept = accept => (accept && accept.split(',').some((value) => {
+	const parts = value.split(';').map(v => v.trim());
+	return activitypub._constants.acceptableTypes.includes(value || parts[0]);
+}));
 
 Helpers.isWebfinger = (value) => {
 	// N.B. returns normalized handle, so truthy check!

@@ -59,14 +59,21 @@ ActivityPub.instances = require('./instances');
 ActivityPub.startJobs = () => {
 	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
 	new CronJob('0 0 * * *', async () => {
+		if (!meta.config.activitypubEnabled) {
+			return;
+		}
 		try {
 			await ActivityPub.notes.prune();
+			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
 		} catch (err) {
 			winston.error(err.stack);
 		}
 	}, null, true, null, null, false); // change last argument to true for debugging
 
 	new CronJob('*/30 * * * *', async () => {
+		if (!meta.config.activitypubEnabled) {
+			return;
+		}
 		try {
 			await ActivityPub.actors.prune();
 		} catch (err) {

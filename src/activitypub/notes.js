@@ -71,7 +71,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	// Reorder chain items by timestamp
-	// chain = chain.sort((a, b) => a.timestamp - b.timestamp);
+	chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 	const mainPost = chain[0];
 	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, sourceContent, _activitypub } = mainPost;
@@ -228,6 +228,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 Notes.assertPrivate = async (object) => {
 	// Given an object, adds it to an existing chat or creates a new chat otherwise
 	// todo: context stuff
+
+	if (!object || !object.id || !activitypub.helpers.isUri(object.id)) {
+		return null;
+	}
 
 	const localUids = [];
 	const recipients = new Set([...object.to, ...object.cc]);

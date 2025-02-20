@@ -31,6 +31,9 @@ module.exports = function (Categories) {
 		if (categoryData && categoryData.name) {
 			bulkRemove.push(['categories:name', `${categoryData.name.slice(0, 200).toLowerCase()}:${cid}`]);
 		}
+		if (categoryData && categoryData.handle) {
+			bulkRemove.push(['categoryhandle:cid', categoryData.handle]);
+		}
 		await db.sortedSetRemoveBulk(bulkRemove);
 
 		await removeFromParent(cid);

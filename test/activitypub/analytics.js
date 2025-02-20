@@ -126,9 +126,9 @@ describe('Analytics', () => {
 
 	it('should increment various metrics', async () => {
 		let counters;
+		analytics.pause = true;
 		({ counters } = analytics.peek());
 		const before = { ...counters };
-
 		const id = `https://example.org/activity/${utils.generateUUID()}`;
 		await controllers.activitypub.postInbox({
 			body: {
@@ -147,8 +147,9 @@ describe('Analytics', () => {
 
 		const metrics = ['activities', 'activities:byType:Like', 'activities:byHost:example.org'];
 		metrics.forEach((metric) => {
-			assert(before[metric] && after[metric]);
+			assert(before[metric] && after[metric], JSON.stringify({ before, after }, null, 2));
 			assert(before[metric] < after[metric]);
 		});
+		analytics.pause = false;
 	});
 });

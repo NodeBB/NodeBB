@@ -38,6 +38,7 @@ define('quickreply', [
 		});
 
 		uploadHelpers.init({
+			uploadBtnEl: $('[component="topic/quickreply/upload/button"]'),
 			dragDropAreaEl: $('[component="topic/quickreply/container"] .quickreply-message'),
 			pasteEl: element,
 			uploadFormEl: $('[component="topic/quickreply/upload"]'),
