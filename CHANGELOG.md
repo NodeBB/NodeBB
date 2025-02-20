@@ -1,3 +1,48 @@
+#### v4.0.5 (2025-02-20)
+
+##### Chores
+
+*  bump composer to 10.2.46 for #13132 (7520e4f6)
+*  up harmony (f82f00e5)
+*  up widgets (e23a14c1)
+*  up harmony (c0996a80)
+*  up dbsearch (d0a9ddea)
+*  up dbsearch (310fab65)
+*  add test helper to activitypub file (4bc0031f)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  update changelog for v4.0.4 (d3b69a39)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add upload button to quickreply (f67a0a12)
+*  remove activities older than a week (9997189a)
+
+##### Bug Fixes
+
+*  typo (e63f1234)
+*  #13136, do not log 404s for AP requests (93f48409)
+*  #13129, serve category backgroundImage as actor `icon`, not `image` (b8200095)
+*  escape ip blacklist rules (625f4751)
+*  closes #13180, don't execute cron jobs if ap disabled (a410587c)
+*  #13172, Topics.addParentPosts not sending sourceContent in calling parsePosts (bb9687bd)
+*  #13179, fix context resolution failure bug with frequency (6245e33d)
+*  add back chronological sorting of asserted notes (de6e63bb)
+*  #13170, remove mime-type and regex test for "Emoji" attachment, wrap tag name in colons if not provided (92708d2f)
+*  closes #13176, check if uid is number when creating tokens (80cc1d34)
+*  notes.assertPrivate sanity checks (5e71d597)
+*  page index for single page, closes #13173 (b0e8058f)
+*  remove handle on category purge (4134a075)
+
+##### Tests
+
+*  dont clear local when testing (669755d1)
+*  show objects on fail (f2824073)
+*  wait after post request (64318242)
+
 #### v4.0.4 (2025-02-17)
 
 ##### Chores
