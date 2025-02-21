@@ -88,6 +88,7 @@ async function getNodeInfo() {
 			isPrimary: nconf.get('isPrimary'),
 			runJobs: nconf.get('runJobs'),
 			jobsDisabled: nconf.get('jobsDisabled'),
+			acpPluginInstallDisabled: nconf.get('acpPluginInstallDisabled')
 		},
 	};
 
