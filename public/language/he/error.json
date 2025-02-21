@@ -232,6 +232,7 @@
     "socket-reconnect-failed": "לא ניתן להגיע לשרת בשלב זה. לחצו כאן כדי לנסות שוב, או נסו שוב במועד מאוחר יותר",
     "invalid-plugin-id": "מזהה תוסף לא תקין",
     "plugin-not-whitelisted": "לא ניתן להתקין את התוסף &ndash; ניתן להתקין דרך הניהול רק תוספים שנמצאים ברשימה הלבנה של מנהל החבילות של NodeBB.",
+    "plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
     "plugins-set-in-configuration": "אינך רשאי לשנות את מצב הפלאגין כפי שהם מוגדרים בזמן ריצה (config.json, משתני סביבה או ארגומנטים של מסוף), אנא שנה את התצורה במקום זאת.",
     "theme-not-set-in-configuration": "כאשר מגדירים תוספים פעילים בתצורה, שינוי ערכות נושא מחייב הוספת ערכת הנושא החדשה לרשימת התוספים הפעילים לפני עדכון שלו ב-ACP",
     "topic-event-unrecognized": "אירוע הנושא '%1' לא מזוהה",
