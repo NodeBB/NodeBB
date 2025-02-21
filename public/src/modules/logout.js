@@ -1,6 +1,6 @@
 'use strict';
 
-define('logout', ['hooks'], function (hooks) {
+define('logout', ['hooks', 'alerts'], function (hooks, alerts) {
 	return function logout(redirect) {
 		redirect = redirect === undefined ? true : redirect;
 		hooks.fire('action:app.logout');
@@ -22,6 +22,9 @@ define('logout', ['hooks'], function (hooks) {
 						window.location.reload();
 					}
 				}
+			},
+			error: function (jqXHR) {
+				alerts.error(String(jqXHR.responseText || '[[error:logout-error]]'));
 			},
 		});
 	};

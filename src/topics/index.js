@@ -198,6 +198,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		);
 		p.eventStart = undefined;
 		p.eventEnd = undefined;
+		p.events = mergeConsecutiveShareEvents(p.events);
 	});
 
 	topicData.category = category;
@@ -229,6 +230,23 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
 	return result.topic;
 };
+
+function mergeConsecutiveShareEvents(arr) {
+	return arr.reduce((acc, curr) => {
+		const last = acc[acc.length - 1];
+		if (last && last.type === curr.type && last.type === 'share') {
+			if (!last.items) {
+				last.items = [{ ...last }];
+				['user', 'text', 'timestamp', 'timestampISO'].forEach(field => delete last[field]);
+			}
+			last.items.push(curr);
+		} else {
+			acc.push(curr);
+		}
+		return acc;
+	}, []);
+}
+
 
 async function getDeleter(topicData) {
 	if (!parseInt(topicData.deleterUid, 10)) {
