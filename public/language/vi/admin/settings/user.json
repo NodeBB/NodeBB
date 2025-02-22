@@ -16,7 +16,7 @@
 	"hide-email": "Ẩn email khỏi người dùng",
 	"show-fullname-as-displayname": "Hiển thị tên đầy đủ của người dùng làm tên hiển thị của họ nếu có",
 	"themes": "Giao diện",
-	"disable-user-skins": "Ngăn người dùng chọn trang điểm tùy chỉnh",
+	"disable-user-skins": "Chặn người dùng chọn trang điểm tùy ý",
 	"account-protection": "Bảo Vệ Tài Khoản",
 	"admin-relogin-duration": "Thời lượng đăng nhập lại của quản trị viên (phút)",
 	"admin-relogin-duration-help": "Sau một khoảng thời gian truy cập nhất định vào phần quản trị sẽ yêu cầu đăng nhập lại, hãy đặt thành 0 để tắt",
