@@ -3,7 +3,6 @@
 'use strict';
 
 const db = require('../../database');
-const user = require('../../user');
 const batch = require('../../batch');
 
 module.exports = {
@@ -18,7 +17,7 @@ module.exports = {
 		}
 
 		await batch.processSortedSet(`users:joindate`, async (uids) => {
-			const userSettings = await user.getMultipleUserSettings(uids);
+			const userSettings = await db.getObjects(uids.map(uid => `user:${uid}:settings`));
 			const change = userSettings.filter(s => s && s.categoryWatchState === 'watching');
 			await db.setObjectBulk(
 				change.map(s => [`user:${s.uid}:settings`, { categoryWatchState: 'tracking' }])
