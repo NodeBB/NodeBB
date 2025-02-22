@@ -1,6 +1,8 @@
 {
     "category": "Kategoria",
     "subcategories": "Nënkategoritë",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Temë e re",
     "guest-login-post": "Hyr për të postuar",
     "no-topics": "<strong>Nuk ka tema në këtë kategori.</strong><br />Pse nuk provon të postosh diçka?",

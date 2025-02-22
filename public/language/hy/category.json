@@ -1,6 +1,8 @@
 {
     "category": "Կատեգորիա",
     "subcategories": "Ենթակատեգորիաներ",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Նոր թեմա",
     "guest-login-post": "Մուտք գործեք՝ գրառում կատարելու համար",
     "no-topics": "<strong>Այս բաժնում ոչ մի թեմա չկա։</strong><br />Գուցե հենց Դո՞ւք ստեղծեք մեկը։",

@@ -1,6 +1,8 @@
 {
     "category": "Kategorija",
     "subcategories": "Podkategorije",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Nova Tema",
     "guest-login-post": "Prijavi se za objavu",
     "no-topics": "<strong>Nema tema u ovoj kategoriji. </strong><br />Zašto ne probate napisati novu?",

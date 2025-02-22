@@ -1,6 +1,8 @@
 {
     "category": "หมวดหมู่",
     "subcategories": "หมวดหมู่ย่อย",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "ตั้งกระทู้",
     "guest-login-post": "เข้าสู่ระบบเพื่อโพสต์",
     "no-topics": "<strong>ยังไม่มีกระทู้ในหมวดนี้</strong><br />ลองโพสต์กระทู้แรกดูมั้ย?",

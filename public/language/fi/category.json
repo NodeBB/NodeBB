@@ -1,6 +1,8 @@
 {
     "category": "Kategoria",
     "subcategories": "Alikategoria",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Uusi aihe",
     "guest-login-post": "Kirjaudu sisään julkastaksesi",
     "no-topics": "<strong>Kategoriassa ei ole aiheita.</strong><br />Jospa aloittaisit sellaisen?",

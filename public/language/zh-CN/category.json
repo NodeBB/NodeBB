@@ -1,6 +1,8 @@
 {
     "category": "版块",
     "subcategories": "子版块",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "发表主题",
     "guest-login-post": "登录以发布",
     "no-topics": "<strong>此版块还没有任何内容。</strong><br />赶紧来发帖吧！",

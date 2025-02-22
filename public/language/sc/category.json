@@ -1,6 +1,8 @@
 {
     "category": "Category",
     "subcategories": "Subcategories",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Arresonada Noa",
     "guest-login-post": "Log in to post",
     "no-topics": "<strong>Non bi sunt arresonadas in custa creze.</strong><br />Pro ite non nde pones una?",

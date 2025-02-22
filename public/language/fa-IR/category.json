@@ -1,6 +1,8 @@
 {
     "category": "دسته‌بندی",
     "subcategories": "زیر دسته‌بندی‌",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "تاپیک جدید",
     "guest-login-post": "برای ارسال پست وارد شوید",
     "no-topics": "<strong>هیچ تاپیکی در این دسته‌بندی نیست.</strong><br />چرا شما یکی نمی‌فرستید؟",

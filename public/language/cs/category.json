@@ -1,6 +1,8 @@
 {
     "category": "Kategorie",
     "subcategories": "Podkategorie",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Nové téma",
     "guest-login-post": "Přihlásit se pro přispívání",
     "no-topics": "<strong>V této kategorii zatím nejsou žádné příspěvky.</strong><br />Můžeš být první.",

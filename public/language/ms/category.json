@@ -1,6 +1,8 @@
 {
     "category": "Kategori",
     "subcategories": "Subkategori",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Topik Baru",
     "guest-login-post": "Log masuk untuk kirim",
     "no-topics": "<strong>Tiada topik dalam kategori ini.</strong><br />Cuba hantar topik yang baru?",

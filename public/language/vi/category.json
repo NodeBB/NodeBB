@@ -1,6 +1,8 @@
 {
     "category": "Danh mục",
     "subcategories": "Danh mục phụ",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Chủ Đề Mới",
     "guest-login-post": "Đăng nhập để đăng bài",
     "no-topics": "<strong>Không chủ đề nào trong danh mục này.</strong><br />Tại sao bạn không thử đăng?",

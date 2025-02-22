@@ -1,6 +1,8 @@
 {
     "category": "Kategori",
     "subcategories": "Underkategori",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Nytt ämne",
     "guest-login-post": "Logga in för att posta",
     "no-topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför skapar inte du ett ämne?",
