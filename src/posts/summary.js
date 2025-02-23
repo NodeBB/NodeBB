@@ -74,7 +74,7 @@ module.exports = function (Posts) {
 
 	async function parsePosts(posts, options) {
 		return await Promise.all(posts.map(async (post) => {
-			if (!post.content) {
+			if (!post.content && !post.sourceContent) {
 				return post;
 			}
 			if (options.parse) {
