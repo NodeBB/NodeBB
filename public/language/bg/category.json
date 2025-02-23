@@ -1,8 +1,8 @@
 {
     "category": "Категория",
     "subcategories": "Подкатегории",
-    "uncategorized": "Uncategorized",
-    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "uncategorized": "Без категория",
+    "uncategorized.description": "Теми, които не пасват на никоя конкретна категория",
     "new-topic-button": "Нова тема",
     "guest-login-post": "Впишете се, за да можете да публикувате",
     "no-topics": "<strong>Все още няма теми в тази категория.</strong><br />Защо не създадете някоя?",
