@@ -282,6 +282,9 @@ module.exports = function (User) {
 		if (oldEmail === newEmail) {
 			return;
 		}
+		if (await User.email.isValidationPending(uid, newEmail)) {
+			return;
+		}
 
 		// 👉 Looking for email change logic? src/user/email.js (UserEmail.confirmByUid)
 		if (newEmail) {
