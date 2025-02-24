@@ -99,8 +99,8 @@
     "notificationType-new-post-flag": "当有新的帖子举报时",
     "notificationType-new-user-flag": "当有新的用户信息举报时",
     "notificationType-new-reward": "当您获得新奖励时",
-    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
-    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
-    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
-    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
+    "activitypub.announce": "<strong>%1</strong> 在 <strong>%2</strong> 中向他们的粉丝分享了您的帖子。",
+    "activitypub.announce-dual": "<strong>%1</strong> 和 <strong>%2</strong> 将您的帖子分享给了他们的粉丝 <strong>%3</strong> 。",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> 和 <strong>%3</strong> 将您的帖子分享给了他们的粉丝 <strong>%4</strong> 。 ",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> 和其余 %3 人 将您的帖子分享给了他们的粉丝 <strong>%4</strong> 。"
 }

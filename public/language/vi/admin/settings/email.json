@@ -41,7 +41,7 @@
 	"subscriptions.hour": "Giờ Thông Báo",
 	"subscriptions.hour-help": "Vui lòng nhập một số đại diện cho giờ để gửi thông báo email đã lên lịch (VD: <code>0</code> cho nửa đêm, <code>17</code> cho 5:00 chiều). Hãy nhớ rằng đây là giờ theo chính máy chủ và có thể không khớp chính xác với đồng hồ hệ thống của bạn.<br /> Thời gian máy chủ gần đúng là: <span id=\"serverTime\"></span><br /> Thông báo hàng ngày kế tiếp được lên lịch để gửi <span id=\"nextDigestTime\"></span>",
 	"notifications.remove-images": "Xóa hình ảnh khỏi thông báo email",
-	"require-email-address": "Bắt buộc người dùng mới phải điền địa chỉ email",
+	"require-email-address": "Yêu cầu người dùng mới phải ghi địa chỉ email",
 	"require-email-address-warning": "Mặc định, người dùng có thể từ chối nhập địa chỉ email bằng cách để trống trường này. Bật tùy chọn này nghĩa là người dùng mới sẽ phải nhập <strong>và xác nhận</strong> một địa chỉ email để tiến hành đăng ký và tiếp theo truy cập vào diễn đàn. <strong>Nó không đảm bảo người dùng sẽ nhập địa chỉ email thực, thậm chí không phải là địa chỉ mà họ sở hữu.</strong>",
 	"send-validation-email": "Gửi email xác thực khi một email được thêm vào hoặc thay đổi",
 	"include-unverified-emails": "Gửi email đến những người nhận chưa xác nhận rõ ràng email của họ",

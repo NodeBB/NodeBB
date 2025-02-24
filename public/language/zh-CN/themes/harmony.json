@@ -13,11 +13,11 @@
 	"settings.mobileTopicTeasers": "在移动设备显示话题预告",
 	"settings.stickyToolbar": "附着工具条",
 	"settings.stickyToolbar.help": "主题和类别页面上的工具条将附着在页面顶部",
-	"settings.topicSidebarTools": "Topic sidebar tools",
-	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
-	"settings.autohideBottombar": "Auto hide mobile navigation bar",
-	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
-	"settings.topMobilebar": "Move the mobile navigation bar to the top",
+	"settings.topicSidebarTools": "主题侧栏工具",
+	"settings.topicSidebarTools.help": "该选项将把主题工具移动到侧边",
+	"settings.autohideBottombar": "自动隐藏移动导航栏",
+	"settings.autohideBottombar.help": "页面向下滚动时，移动栏将被隐藏",
+	"settings.topMobilebar": "将移动导航栏移到顶部",
 	"settings.openSidebars": "打开侧栏",
 	"settings.chatModals": "启用聊天模式"
 }
