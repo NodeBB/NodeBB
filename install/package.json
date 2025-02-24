@@ -43,7 +43,7 @@
         "archiver": "7.0.1",
         "async": "3.2.6",
         "autoprefixer": "10.4.20",
-        "bcryptjs": "2.4.3",
+        "bcryptjs": "3.0.2",
         "benchpressjs": "2.5.3",
         "body-parser": "1.20.3",
         "bootbox": "6.0.0",
