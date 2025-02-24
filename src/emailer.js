@@ -223,6 +223,13 @@ Emailer.send = async (template, uid, params) => {
 	// 'welcome' and 'verify-email' explicitly used passed-in email address
 	if (['welcome', 'verify-email'].includes(template)) {
 		userData.email = params.email;
+	} else if (meta.config.includeUnverifiedEmails && !userData.email) {
+		// get unconfirmed email to use
+		const code = await db.get(`confirm:byUid:${uid}`);
+		const confirmObj = code ? await db.getObject(`confirm:${code}`) : null;
+		if (confirmObj && confirmObj.email) {
+			userData.email = String(confirmObj.email);
+		}
 	}
 
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
