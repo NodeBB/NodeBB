@@ -53,7 +53,7 @@ UserEmail.getEmailForValidation = async (uid) => {
 	let email = '';
 	// check email from confirmObj
 	const code = await db.get(`confirm:byUid:${uid}`);
-	const confirmObj = await db.getObject(`confirm:${code}`);
+	const confirmObj = code ? await db.getObject(`confirm:${code}`) : null;
 	if (confirmObj && confirmObj.email && parseInt(uid, 10) === parseInt(confirmObj.uid, 10)) {
 		email = confirmObj.email;
 	}
