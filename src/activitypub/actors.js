@@ -100,8 +100,16 @@ Actors.assert = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			let typeOk = false;
+			if (Array.isArray(actor.type)) {
+				typeOk = actor.type.some(type => activitypub._constants.acceptableActorTypes.has(type));
+			} else {
+				typeOk = activitypub._constants.acceptableActorTypes.has(actor.type);
+			}
+
 			if (
-				!activitypub._constants.acceptableActorTypes.has(actor.type) ||
+				!typeOk ||
 				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
 			) {
 				return null;
