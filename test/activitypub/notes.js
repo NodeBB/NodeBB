@@ -3,6 +3,8 @@
 const assert = require('assert');
 
 const db = require('../../src/database');
+const meta = require('../../src/meta');
+const install = require('../../src/install');
 const user = require('../../src/user');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
@@ -10,6 +12,62 @@ const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
 describe('Notes', () => {
+	describe('Assertion', () => {
+		const baseUrl = 'https://example.org';
+
+		before(async () => {
+			meta.config.activitypubEnabled = 1;
+			await install.giveWorldPrivileges();
+		});
+
+		it('should pull a remote root-level object by its id and create a new topic', async () => {
+			const uuid = utils.generateUUID();
+			const id = `${baseUrl}/resource/${uuid}`;
+			activitypub._cache.set(`0;${id}`, {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id,
+				url: id,
+				type: 'Note',
+				to: ['https://www.w3.org/ns/activitystreams#Public'],
+				cc: ['https://example.org/user/foobar/followers'],
+				inReplyTo: null,
+				attributedTo: 'https://example.org/user/foobar',
+				name: 'Foo Bar',
+				content: '<b>Baz quux</b>',
+				published: new Date().toISOString(),
+			});
+
+			const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
+			assert.strictEqual(count, 1);
+
+			const exists = await topics.exists(tid);
+			assert(exists);
+		});
+
+		it('should assert if the cc property is missing', async () => {
+			const uuid = utils.generateUUID();
+			const id = `${baseUrl}/resource/${uuid}`;
+			activitypub._cache.set(`0;${id}`, {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id,
+				url: id,
+				type: 'Note',
+				to: ['https://www.w3.org/ns/activitystreams#Public'],
+				inReplyTo: null,
+				attributedTo: 'https://example.org/user/foobar',
+				name: 'Foo Bar',
+				content: '<b>Baz quux</b>',
+				published: new Date().toISOString(),
+			});
+
+			const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
+			assert.strictEqual(count, 1);
+
+			const exists = await topics.exists(tid);
+			assert(exists);
+		});
+	});
+
 	describe('Inbox Synchronization', () => {
 		let cid;
 		let uid;
