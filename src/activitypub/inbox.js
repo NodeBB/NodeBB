@@ -36,7 +36,7 @@ inbox.create = async (req) => {
 	const { object } = req.body;
 
 	// Alternative logic for non-public objects
-	const isPublic = [...object.to, ...object.cc].includes(activitypub._constants.publicAddress);
+	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);
 	if (!isPublic) {
 		return await activitypub.notes.assertPrivate(object);
 	}

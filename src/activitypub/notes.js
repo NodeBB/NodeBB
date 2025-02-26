@@ -234,7 +234,7 @@ Notes.assertPrivate = async (object) => {
 	}
 
 	const localUids = [];
-	const recipients = new Set([...object.to, ...object.cc]);
+	const recipients = new Set([...(object.to || []), ...(object.cc || [])]);
 	await Promise.all(Array.from(recipients).map(async (value) => {
 		const { type, id } = await activitypub.helpers.resolveLocalId(value);
 		if (type === 'user') {
