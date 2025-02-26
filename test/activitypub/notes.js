@@ -1,70 +1,78 @@
 'use strict';
 
 const assert = require('assert');
+const nconf = require('nconf');
 
 const db = require('../../src/database');
 const meta = require('../../src/meta');
 const install = require('../../src/install');
 const user = require('../../src/user');
 const categories = require('../../src/categories');
+const posts = require('../../src/posts');
 const topics = require('../../src/topics');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
+const helpers = require('./helpers');
+
 describe('Notes', () => {
 	describe('Assertion', () => {
-		const baseUrl = 'https://example.org';
-
 		before(async () => {
 			meta.config.activitypubEnabled = 1;
 			await install.giveWorldPrivileges();
 		});
 
-		it('should pull a remote root-level object by its id and create a new topic', async () => {
-			const uuid = utils.generateUUID();
-			const id = `${baseUrl}/resource/${uuid}`;
-			activitypub._cache.set(`0;${id}`, {
-				'@context': 'https://www.w3.org/ns/activitystreams',
-				id,
-				url: id,
-				type: 'Note',
-				to: ['https://www.w3.org/ns/activitystreams#Public'],
-				cc: ['https://example.org/user/foobar/followers'],
-				inReplyTo: null,
-				attributedTo: 'https://example.org/user/foobar',
-				name: 'Foo Bar',
-				content: '<b>Baz quux</b>',
-				published: new Date().toISOString(),
+		describe('Public objects', () => {
+			it('should pull a remote root-level object by its id and create a new topic', async () => {
+				const { id } = helpers.mocks.note();
+				const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert.strictEqual(count, 1);
+
+				const exists = await topics.exists(tid);
+				assert(exists);
 			});
 
-			const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
-			assert.strictEqual(count, 1);
+			it('should assert if the cc property is missing', async () => {
+				const { id } = helpers.mocks.note({ cc: 'remove' });
+				const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert.strictEqual(count, 1);
 
-			const exists = await topics.exists(tid);
-			assert(exists);
+				const exists = await topics.exists(tid);
+				assert(exists);
+			});
 		});
 
-		it('should assert if the cc property is missing', async () => {
-			const uuid = utils.generateUUID();
-			const id = `${baseUrl}/resource/${uuid}`;
-			activitypub._cache.set(`0;${id}`, {
-				'@context': 'https://www.w3.org/ns/activitystreams',
-				id,
-				url: id,
-				type: 'Note',
-				to: ['https://www.w3.org/ns/activitystreams#Public'],
-				inReplyTo: null,
-				attributedTo: 'https://example.org/user/foobar',
-				name: 'Foo Bar',
-				content: '<b>Baz quux</b>',
-				published: new Date().toISOString(),
+		describe('Private objects', () => {
+			let recipientUid;
+
+			before(async () => {
+				recipientUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
 			});
 
-			const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
-			assert.strictEqual(count, 1);
+			it('should NOT create a new topic or post when asserting a private note', async () => {
+				const { id, note } = helpers.mocks.note({
+					to: [`${nconf.get('url')}/uid/${recipientUid}`],
+					cc: [],
+				});
+				const { activity } = helpers.mocks.create(note);
+				const { roomId } = await activitypub.inbox.create({ body: activity });
+				assert(roomId);
+				assert(utils.isNumber(roomId));
 
-			const exists = await topics.exists(tid);
-			assert(exists);
+				const exists = await posts.exists(id);
+				assert(!exists);
+			});
+
+			it('should still assert if the cc property is missing', async () => {
+				const { id, note } = helpers.mocks.note({
+					to: [`${nconf.get('url')}/uid/${recipientUid}`],
+					cc: 'remove',
+				});
+				const { activity } = helpers.mocks.create(note);
+				const { roomId } = await activitypub.inbox.create({ body: activity });
+				assert(roomId);
+				assert(utils.isNumber(roomId));
+			});
 		});
 	});
 
