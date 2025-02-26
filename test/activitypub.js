@@ -350,7 +350,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe.only('Category Actor endpoint', () => {
+	describe('Category Actor endpoint', () => {
 		let cid;
 		let slug;
 		let description;
