@@ -34,9 +34,9 @@ Helpers._test = (method, args) => {
 		console.log(await method.apply(method, args));
 	}, 2500);
 };
-// process.nextTick(() => {
-// Helpers._test(activitypub.notes.assert, [1, `https://`]);
-// });
+process.nextTick(() => {
+	Helpers._test(activitypub.notes.assert, [1, `https://spectra.video/w/xwCSYfZh1mJY64zJ9GngbE`]);
+});
 
 let _lastLog;
 Helpers.log = (message) => {
