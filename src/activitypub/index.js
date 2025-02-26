@@ -37,7 +37,7 @@ ActivityPub._constants = Object.freeze({
 		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 	],
 	acceptedPostTypes: [
-		'Note', 'Page', 'Article', 'Question',
+		'Note', 'Page', 'Article', 'Question', 'Video',
 	],
 	acceptableActorTypes: new Set(['Application', 'Group', 'Organization', 'Person', 'Service']),
 	requiredActorProps: ['inbox', 'outbox'],

@@ -153,9 +153,6 @@ Mocks.post = async (objects) => {
 		objects = [objects];
 	}
 
-	const actorIds = new Set(objects.map(object => object.attributedTo).filter(Boolean));
-	await activitypub.actors.assert(Array.from(actorIds));
-
 	const posts = await Promise.all(objects.map(async (object) => {
 		if (
 			!activitypub._constants.acceptedPostTypes.includes(object.type) ||
@@ -170,13 +167,30 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, source,
-			to, cc, audience, attachment, tag, image,
+			type, to, cc, audience, attachment, tag, image,
 		} = object;
+
+		if (Array.isArray(uid)) { // Handle array attributedTo
+			uid = uid.reduce((valid, cur) => {
+				if (typeof cur === 'string') {
+					valid.push(cur);
+				} else if (typeof cur === 'object') {
+					if (cur.type === 'Person' && cur.id) {
+						valid.push(cur.id);
+					}
+				}
+
+				return valid;
+			}, []);
+			uid = uid.shift(); // take first valid uid
+			await activitypub.actors.assert(uid);
+		}
 
 		const resolved = await activitypub.helpers.resolveLocalId(toPid);
 		if (resolved.type === 'post') {
 			toPid = resolved.id;
 		}
+
 		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
@@ -213,6 +227,30 @@ Mocks.post = async (objects) => {
 				activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 				image = null;
 			}
+		}
+
+		if (url) { // Handle url array
+			if (Array.isArray(url)) {
+				url = url.reduce((valid, cur) => {
+					if (typeof cur === 'string') {
+						valid.push(cur);
+					} else if (typeof cur === 'object') {
+						if (cur.type === 'Link' && cur.href) {
+							if (!cur.mediaType || (cur.mediaType && cur.mediaType === 'text/html')) {
+								valid.push(cur.href);
+							}
+						}
+					}
+
+					return valid;
+				}, []);
+				url = url.shift(); // take first valid url
+			}
+		}
+
+		if (type === 'Video') {
+			attachment = attachment || [];
+			attachment.push({ url });
 		}
 
 		const payload = {

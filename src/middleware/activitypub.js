@@ -137,6 +137,7 @@ middleware.resolveObjects = async function (req, res, next) {
 	next();
 };
 
+// todo: deprecate... this should be handled in actor and note assertion methods instead, or perhaps via helper fn
 middleware.normalize = async function (req, res, next) {
 	// Normalizes the received data structure
 	const { body } = req;
