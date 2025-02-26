@@ -162,8 +162,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const maxTags = await categories.getCategoryField(cid, 'maxTags');
 		tags = (mainPost._activitypub.tag || [])
-			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name.slice(1)))
-			.map(o => o.name.slice(1));
+			.map((tag) => {
+				tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
+				return tag;
+			})
+			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
+			.map(t => t.name);
 
 		if (tags.length > maxTags) {
 			tags.length = maxTags;
