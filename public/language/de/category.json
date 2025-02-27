@@ -1,6 +1,8 @@
 {
     "category": "Kategorie",
     "subcategories": "Unterkategorien",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Neues Thema",
     "guest-login-post": "Melde dich an, um einen Beitrag zu erstellen",
     "no-topics": "<strong>Es gibt noch keine Themen in dieser Kategorie.</strong><br />Warum beginnst du nicht eins?",

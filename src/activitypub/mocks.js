@@ -153,9 +153,6 @@ Mocks.post = async (objects) => {
 		objects = [objects];
 	}
 
-	const actorIds = new Set(objects.map(object => object.attributedTo).filter(Boolean));
-	await activitypub.actors.assert(Array.from(actorIds));
-
 	const posts = await Promise.all(objects.map(async (object) => {
 		if (
 			!activitypub._constants.acceptedPostTypes.includes(object.type) ||
@@ -170,20 +167,38 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, source,
-			to, cc, audience, attachment, tag, image,
+			type, to, cc, audience, attachment, tag, image,
 		} = object;
+
+		if (Array.isArray(uid)) { // Handle array attributedTo
+			uid = uid.reduce((valid, cur) => {
+				if (typeof cur === 'string') {
+					valid.push(cur);
+				} else if (typeof cur === 'object') {
+					if (cur.type === 'Person' && cur.id) {
+						valid.push(cur.id);
+					}
+				}
+
+				return valid;
+			}, []);
+			uid = uid.shift(); // take first valid uid
+			await activitypub.actors.assert(uid);
+		}
 
 		const resolved = await activitypub.helpers.resolveLocalId(toPid);
 		if (resolved.type === 'post') {
 			toPid = resolved.id;
 		}
+
 		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
-		const sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
+		let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
 		if (sourceContent) {
 			content = null;
+			sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(sourceContent, true);
 		} else if (content && content.length) {
 			content = sanitize(content, sanitizeConfig);
 			content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
@@ -212,6 +227,30 @@ Mocks.post = async (objects) => {
 				activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 				image = null;
 			}
+		}
+
+		if (url) { // Handle url array
+			if (Array.isArray(url)) {
+				url = url.reduce((valid, cur) => {
+					if (typeof cur === 'string') {
+						valid.push(cur);
+					} else if (typeof cur === 'object') {
+						if (cur.type === 'Link' && cur.href) {
+							if (!cur.mediaType || (cur.mediaType && cur.mediaType === 'text/html')) {
+								valid.push(cur.href);
+							}
+						}
+					}
+
+					return valid;
+				}, []);
+				url = url.shift(); // take first valid url
+			}
+		}
+
+		if (type === 'Video') {
+			attachment = attachment || [];
+			attachment.push({ url });
 		}
 
 		const payload = {
@@ -449,7 +488,7 @@ Mocks.notes.public = async (post) => {
 	}
 
 	const content = await posts.getPostField(post.pid, 'content');
-	post.content = content; // re-send raw content
+	post.content = content; // re-send raw content into parsePost
 	const parsed = await posts.parsePost(post, 'activitypub.note');
 	post.content = sanitize(parsed.content, sanitizeConfig);
 	post.content = posts.relativeToAbsolute(post.content, posts.urlRegex);
@@ -461,9 +500,14 @@ Mocks.notes.public = async (post) => {
 		plugins.isActive('nodebb-plugin-mentions'),
 	]);
 	if (markdownEnabled) {
+		// Re-parse for markdown
+		const _post = { ...post };
 		const raw = await posts.getPostField(post.pid, 'content');
+		_post.content = raw;
+		let { content } = await posts.parsePost(_post, 'markdown');
+		content = posts.relativeToAbsolute(content, posts.mdImageUrlRegex);
 		source = {
-			content: raw,
+			content,
 			mediaType: 'text/markdown',
 		};
 	}
@@ -508,7 +552,7 @@ Mocks.notes.public = async (post) => {
 	});
 
 	// Inspect post content for external imagery as well
-	let match = posts.imgRegex.regex.exec(post.content);
+	let match = posts.imgRegex.exec(post.content);
 	while (match !== null) {
 		if (match[1]) {
 			const { hostname, pathname, href: url } = new URL(match[1]);
@@ -517,7 +561,7 @@ Mocks.notes.public = async (post) => {
 				attachment.push({ mediaType, url });
 			}
 		}
-		match = posts.imgRegex.regex.exec(post.content);
+		match = posts.imgRegex.exec(post.content);
 	}
 
 	attachment = attachment.map(({ mediaType, url, width, height }) => {
@@ -608,8 +652,11 @@ Mocks.notes.private = async ({ messageObj }) => {
 	let source;
 	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
 	if (markdownEnabled) {
+		let { content } = messageObj;
+		content = posts.relativeToAbsolute(content, posts.mdImageUrlRegex);
+
 		source = {
-			content: messageObj.content,
+			content,
 			mediaType: 'text/markdown',
 		};
 	}

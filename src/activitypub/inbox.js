@@ -32,34 +32,6 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 	}).catch(err => winston.error(err.stack));
 }
 
-// FEP 1b12
-async function announce(id, activity) {
-	let localId;
-	if (id.startsWith(nconf.get('url'))) {
-		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
-	}
-	const cid = await posts.getCidByPid(localId || id);
-
-	const followers = await activitypub.notes.getCategoryFollowers(cid);
-	if (!followers.length) {
-		return;
-	}
-
-	const { actor } = activity;
-	followers.unshift(actor);
-
-	winston.info(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} to followers of cid ${cid}`);
-	await Promise.all([activity, activity.object].map(async (object) => {
-		await activitypub.send('cid', cid, followers, {
-			id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
-			type: 'Announce',
-			to: [`${nconf.get('url')}/category/${cid}/followers`],
-			cc: [actor, activitypub._constants.publicAddress],
-			object,
-		});
-	}));
-}
-
 inbox.create = async (req) => {
 	const { object } = req.body;
 
@@ -71,7 +43,7 @@ inbox.create = async (req) => {
 
 	const asserted = await activitypub.notes.assert(0, object);
 	if (asserted) {
-		announce(object.id, req.body);
+		activitypub.feps.announce(object.id, req.body);
 		api.activitypub.add(req, { pid: object.id });
 	}
 };
@@ -141,7 +113,7 @@ inbox.update = async (req) => {
 
 						const asserted = await activitypub.notes.assert(0, object.id);
 						if (asserted) {
-							announce(object.id, req.body);
+							activitypub.feps.announce(object.id, req.body);
 						}
 						break;
 					}
@@ -229,7 +201,7 @@ inbox.delete = async (req) => {
 	switch (true) {
 		case isNote: {
 			const uid = await posts.getPostField(pid, 'uid');
-			await announce(pid, req.body);
+			await activitypub.feps.announce(pid, req.body);
 			await api.posts[method]({ uid }, { pid });
 			break;
 		}
@@ -263,7 +235,7 @@ inbox.like = async (req) => {
 	winston.verbose(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
 	const result = await posts.upvote(id, actor);
-	announce(object.id, req.body);
+	activitypub.feps.announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
 
@@ -529,7 +501,7 @@ inbox.undo = async (req) => {
 			}
 
 			await posts.unvote(id, actor);
-			announce(object.object, req.body);
+			activitypub.feps.announce(object.object, req.body);
 			notifications.rescind(`upvote:post:${id}:uid:${actor}`);
 			break;
 		}

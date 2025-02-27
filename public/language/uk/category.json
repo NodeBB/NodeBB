@@ -1,6 +1,8 @@
 {
     "category": "Категорія",
     "subcategories": "Підкатегорія",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Новий запис",
     "guest-login-post": "Увійдіть, щоб постити",
     "no-topics": "<strong> У цій категорії немає жодної теми.</strong><br />Чому б вам не створити першу?",

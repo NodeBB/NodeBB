@@ -173,6 +173,9 @@ async function fetchRemoteObject(data) {
 			} else if (activitypub._constants.acceptableActorTypes.has(type)) {
 				data.searchIn = 'users';
 				return await user.search(data);
+			} else if (activitypub._constants.acceptable.contextTypes.has(type)) {
+				({ tid } = await activitypub.notes.assert(uid, id));
+				id = await topics.getTopicField(tid, 'mainPid');
 			}
 		}
 

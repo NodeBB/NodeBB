@@ -25,7 +25,11 @@ describe('Notes', () => {
 		describe('Public objects', () => {
 			it('should pull a remote root-level object by its id and create a new topic', async () => {
 				const { id } = helpers.mocks.note();
-				const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
+				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
 				assert.strictEqual(count, 1);
 
 				const exists = await topics.exists(tid);
@@ -34,7 +38,26 @@ describe('Notes', () => {
 
 			it('should assert if the cc property is missing', async () => {
 				const { id } = helpers.mocks.note({ cc: 'remove' });
-				const { tid, count } = await activitypub.notes.assert(0, id, { skipChecks: true });
+				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
+				assert.strictEqual(count, 1);
+
+				const exists = await topics.exists(tid);
+				assert(exists);
+			});
+
+			it('should assert if the object is of type Video', async () => {
+				const { id } = helpers.mocks.note({
+					type: 'Video',
+				});
+				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
 				assert.strictEqual(count, 1);
 
 				const exists = await topics.exists(tid);

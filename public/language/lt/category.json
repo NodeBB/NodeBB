@@ -1,6 +1,8 @@
 {
     "category": "Kategorija",
     "subcategories": "Subkategorijos",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Nauja tema",
     "guest-login-post": "Prisijungti įrašų paskelbimui",
     "no-topics": "<strong>Šioje kategorijoje temų nėra.</strong><br/>Kodėl gi jums nesukūrus naujos?",

@@ -4,7 +4,7 @@
 	"disable-down-voting": "Tắt Phản Đối",
 	"upvote-visibility": "Khả năng hiển thị số ủng hộ",
 	"upvote-visibility-all": "Mọi người có thể xem số ủng hộ",
-	"upvote-visibility-loggedin": "Chỉ người dùng đã đăng nhập mới có thể xem số ủng hộ",
+	"upvote-visibility-loggedin": "Chỉ người đã đăng nhập được xem số ủng hộ",
 	"upvote-visibility-privileged": "Chỉ những ai có đặc quyền như admin và mod được xem số ủng hộ",
 	"downvote-visibility": "Khả năng hiển thị số phản đối",
 	"downvote-visibility-all": "Mọi người có thể xem số phản đối",

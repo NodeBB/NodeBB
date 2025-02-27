@@ -13,10 +13,11 @@
 	"settings.mobileTopicTeasers": "הצגת טיזרים של נושאים בנייד",
 	"settings.stickyToolbar": "הצמד את סרגל הכלים בעת גלילה",
 	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד בעת גלילה",
-	"settings.topicSidebarTools": "Topic sidebar tools",
-	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
-	"settings.autohideBottombar": "הסתרה אוטומטית של סרגל תחתון",
-	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה",
+	"settings.topicSidebarTools": "כלי סרגל הצד",
+	"settings.topicSidebarTools.help": "אפשרות זו תעביר את כלי הנושא לסרגל הצד במחשבים שולחניים",
+	"settings.autohideBottombar": "הסתרה אוטומטי של סרגל ניווט בנייד",
+	"settings.autohideBottombar.help": "הסרגל בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה",
+	"settings.topMobilebar": "העברת סרגל הניווט בנייד לראש הדף",
 	"settings.openSidebars": "פתח סרגלי צד",
 	"settings.chatModals": "הפעלת צ'אט בחלונית מוקטנת"
 }

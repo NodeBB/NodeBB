@@ -1,5 +1,6 @@
 'use strict';
 
+const nconf = require('nconf');
 const { CookieJar } = require('tough-cookie');
 const fetchCookie = require('fetch-cookie').default;
 const { version } = require('../package.json');
@@ -8,7 +9,7 @@ exports.jar = function () {
 	return new CookieJar();
 };
 
-const userAgent = `NodeBB/${version.split('.').shift()}.x`;
+const userAgent = `NodeBB/${version.split('.').shift()}.x (${nconf.get('url')})`;
 
 // Initialize fetch - somewhat hacky, but it's required for globalDispatcher to be available
 async function call(url, method, { body, timeout, jar, ...config } = {}) {

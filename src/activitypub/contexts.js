@@ -7,8 +7,6 @@ const topics = require('../topics');
 const activitypub = module.parent.exports;
 const Contexts = module.exports;
 
-const acceptableTypes = ['Collection', 'CollectionPage', 'OrderedCollection', 'OrderedCollectionPage'];
-
 Contexts.get = async (uid, id) => {
 	let context;
 	let type;
@@ -27,11 +25,16 @@ Contexts.get = async (uid, id) => {
 	}
 
 	try {
-		({ context } = await activitypub.get('uid', uid, id, { headers }));
-		if (!context) {
+		({ id, type, context } = await activitypub.get('uid', uid, id, { headers }));
+		if (activitypub._constants.acceptable.contextTypes.has(type)) { // is context
+			activitypub.helpers.log(`[activitypub/context] ${id} is the context.`);
+			return { context: id };
+		} else if (!context) {
 			activitypub.helpers.log(`[activitypub/context] ${id} contains no context.`);
 			return false;
 		}
+
+		// context provided; try to resolve it.
 		({ type } = await activitypub.get('uid', uid, context));
 	} catch (e) {
 		if (e.code === 'ap_get_304') {
@@ -43,7 +46,7 @@ Contexts.get = async (uid, id) => {
 		return false;
 	}
 
-	if (acceptableTypes.includes(type)) {
+	if (activitypub._constants.acceptable.contextTypes.has(type)) {
 		return { context };
 	}
 
@@ -69,7 +72,7 @@ Contexts.getItems = async (uid, id, options) => {
 	}
 	let { type, items, orderedItems, first, next } = object;
 
-	if (!acceptableTypes.includes(type)) {
+	if (!activitypub._constants.acceptable.contextTypes.has(type)) {
 		return false;
 	}
 
@@ -114,9 +117,13 @@ Contexts.getItems = async (uid, id, options) => {
 	const inputId = activitypub.helpers.isUri(options.input) ? options.input : options.input.id;
 	const inCollection = Array.from(chain).map(p => p.pid).includes(inputId);
 	if (!inCollection) {
-		chain.add(activitypub.helpers.isUri(options.input) ?
+		const item = activitypub.helpers.isUri(options.input) ?
 			await parseString(uid, options.input) :
-			await parseItem(uid, options.input));
+			await parseItem(uid, options.input);
+
+		if (item) {
+			chain.add(item);
+		}
 	}
 
 	return chain;

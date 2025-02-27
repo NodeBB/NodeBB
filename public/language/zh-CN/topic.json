@@ -61,8 +61,8 @@
     "user-restored-topic-on": "%1 恢复了该主题于 %2",
     "user-moved-topic-from-ago": "%1 从 %2 %3 移动了该主题",
     "user-moved-topic-from-on": "%1 从 %3 中的 %2 移动了该主题",
-    "user-shared-topic-ago": "%1 shared this topic %2",
-    "user-shared-topic-on": "%1 shared this topic on %2",
+    "user-shared-topic-ago": "%1 分享此主题 %2",
+    "user-shared-topic-on": "%1 在 %2 上分享了此主题",
     "user-queued-post-ago": "%1 篇 <a href=\"%2\">已排队  </a>  待审批的帖子 %3",
     "user-queued-post-on": "在 %3 中 <a href=\"%2\">已排队  </a>  %1 篇待审批的帖子",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">被引用</a> 于这个主题 %3",
@@ -137,7 +137,7 @@
     "bookmarks": "书签",
     "bookmarks.has-no-bookmarks": "您还没有添加任何书签",
     "copy-permalink": "复制固定链接",
-    "go-to-original": "View Original Post",
+    "go-to-original": "查看原帖",
     "loading-more-posts": "正在加载更多帖子",
     "move-topic": "移动主题",
     "move-topics": "移动主题",
@@ -223,6 +223,6 @@
     "post-tools": "帖子工具",
     "unread-posts-link": "未读帖子链接",
     "thumb-image": "主题缩略图",
-    "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers": "分享",
+    "announcers-x": "分享 (%1)"
 }

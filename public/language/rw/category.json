@@ -1,6 +1,8 @@
 {
     "category": "Icyiciro",
     "subcategories": "Icyiciro gito",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Ikiganiro Gishya",
     "guest-login-post": "Injiramo wandike",
     "no-topics": "<strong>Nta biganiro byo muri iki cyiciro bihari</strong><br />Watangije kimwe hano se?",

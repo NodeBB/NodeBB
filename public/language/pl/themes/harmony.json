@@ -13,10 +13,11 @@
 	"settings.mobileTopicTeasers": "Pokazuj zwiastuny tematów na telefonie",
 	"settings.stickyToolbar": "Przyklejaj pasek narzędziowy",
 	"settings.stickyToolbar.help": "Pasek z narzędziami na stronach tematów i kategorii będzie przyklejony do góry strony",
-	"settings.topicSidebarTools": "Topic sidebar tools",
-	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
-	"settings.autohideBottombar": "Automatycznie chowaj dolny panel",
-	"settings.autohideBottombar.help": "Dolny panel schowa się w widoku mobilnym, jeśli strona zostanie przesunięta w dół",
+	"settings.topicSidebarTools": "Narzędzia paska bocznego",
+	"settings.topicSidebarTools.help": "Ta opcja sprawi, że narzędzia wątku wskoczą do paska bocznego",
+	"settings.autohideBottombar": "Ukryj nawigację dla mobilnych z automatu",
+	"settings.autohideBottombar.help": "Belka dla mobilnych zostanie ukryta przy przewijaniu strony w dół",
+	"settings.topMobilebar": "Przenieś nawigację mobilną na szczyt",
 	"settings.openSidebars": "Otwórz panele boczne",
 	"settings.chatModals": "Włącz okienka czatu"
 }

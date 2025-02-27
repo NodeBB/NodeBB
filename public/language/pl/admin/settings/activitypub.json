@@ -1,8 +1,8 @@
 {
-	"intro-lead": "Czym jest Federacja? ",
+	"intro-lead": "Czym jest Federacja?",
 	"intro-body": "NodeBB jest w stanie komunikować się z innymi instancjami NodeBB, które to obsługują. Jest to osiągnięte za pomocą protokołu <a href=\"https://activitypub.rocks/\">ActivityPub</a>. Jeśli włączono, NodeBB będzie też w stanie komunikować się z innymi aplikacjami i stronami, które używają ActivityPub (jak Mastodon, Peertube, itp.)",
 	"general": "Ogólne",
-	"pruning": "Usuwanie Zawartości",
+	"pruning": "Usuwanie zawartości",
 	"content-pruning": "Dni przechowywania zawartości zdalnej",
 	"content-pruning-help": "Zauważ, że zawartość zdalna, która uzyskała jakąś reakcję (jak odpowiedź, głos) zostanie zachowana. (0 aby wyłączyć)",
 	"user-pruning": "Dni przechowywania użytkowników zdalnych",
@@ -12,7 +12,7 @@
 	"allowLoopback": "Zezwól na przetwarzanie pętli zwrotnej",
 	"allowLoopback-help": "Użyteczne tylko do debugowania. Raczej powinieneś(-aś) zostawić to wyłączone.",
 
-	"probe": "Otwórz w Aplikacji",
+	"probe": "Otwórz w aplikacji",
 	"probe-enabled": "Spróbuj otworzyć zawartość związaną z ActivityPub w NodeBB",
 	"probe-enabled-help": "O ile włączone, NodeBB sprawdzi każdy odnośnik pod kątem odpowiednika ActivityPub, a załaduje w NodeBB.",
 	"probe-timeout": "Czas oczekiwania (milisekundy)",

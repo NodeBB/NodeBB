@@ -162,8 +162,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const maxTags = await categories.getCategoryField(cid, 'maxTags');
 		tags = (mainPost._activitypub.tag || [])
-			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name.slice(1)))
-			.map(o => o.name.slice(1));
+			.map((tag) => {
+				tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
+				return tag;
+			})
+			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
+			.map(t => t.name);
 
 		if (tags.length > maxTags) {
 			tags.length = maxTags;
@@ -183,7 +187,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				_activitypub: mainPost._activitypub,
 			}),
 			Notes.updateLocalRecipients(mainPid, { to, cc }),
-			posts.attachments.update(mainPid, attachment),
 		]);
 		unprocessed.shift();
 
@@ -193,6 +196,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				id: tid,
 				path: mainPost._activitypub.image,
 			}) : null,
+			posts.attachments.update(mainPid, attachment),
 		]);
 
 		if (context) {
@@ -418,9 +422,9 @@ Notes.getParentChain = async (uid, input) => {
 };
 
 Notes.syncUserInboxes = async function (tid, uid) {
-	const [pids, { cid, mainPid }] = await Promise.all([
+	const [pids, { cid, mainPid, tags }] = await Promise.all([
 		db.getSortedSetMembers(`tid:${tid}:posts`),
-		topics.getTopicFields(tid, ['tid', 'cid', 'mainPid']),
+		topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'tags']),
 	]);
 	pids.unshift(mainPid);
 
@@ -429,6 +433,12 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	if (uid) {
 		uids.add(parseInt(uid, 10));
 	}
+
+	// Tag followers
+	const tagsFollowers = await topics.getTagsFollowers(tags.map(tag => tag.value));
+	new Set(tagsFollowers.flat()).forEach((uid) => {
+		uids.add(uid);
+	});
 
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);

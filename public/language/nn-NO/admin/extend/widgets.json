@@ -2,7 +2,7 @@
 	"widgets": "Widgetar",
 	"available": "Tilgjengelege",
 	"explanation": "Dra og slepp widgetar for å tilpasse forumet.",
-	"none-installed": "Ingen widgetar installert",
+	"none-installed": "Ingen widgetar funne! Aktiver innstikket for widget-essensialar i <a href=\"%1\">innstikk</a> kontrollpanelet.",
 	"clone-from": "Klon frå",
 	"containers.available": "Tilgjengelege konteinarar",
 	"containers.explanation": "Konteinarar fungerer som behaldarar for widgetar.",

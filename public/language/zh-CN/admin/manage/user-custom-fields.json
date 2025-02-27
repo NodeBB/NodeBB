@@ -16,7 +16,7 @@
 	"input-type-select": "单选",
 	"input-type-select-multi": "多选",
 	"select-options": "选项",
-	"select-options-help": "为选择元素每行添加一个选项",
+	"select-options-help": "为属性添加一些选项，每行一个",
 	"minimum-reputation": "最低声望",
 	"minimum-reputation-help": "如果用户的声望值小于此值，则无法使用此字段",
 	"delete-field-confirm-x": "您真的要删除自定义字段“ %1 ”吗？",

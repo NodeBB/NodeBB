@@ -13,10 +13,11 @@
 	"settings.mobileTopicTeasers": "Показване на резюмета на темите на мобилни устройства",
 	"settings.stickyToolbar": "Статична лента с инструменти",
 	"settings.stickyToolbar.help": "Лентата с инструменти в страниците с теми и категории ще стои винаги в горния край на страницата",
-	"settings.topicSidebarTools": "Topic sidebar tools",
-	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
-	"settings.autohideBottombar": "Автоматично скриване на долната лента",
-	"settings.autohideBottombar.help": "В изгледа за мобилни устройства долната лента ще се скрива, когато страницата се превърта надолу",
+	"settings.topicSidebarTools": "Странична лента с инструменти за темите",
+	"settings.topicSidebarTools.help": "Тази настройка ще премести инструментите за темите в страничната лента, когато се ползва настолната версия на уеб сайта",
+	"settings.autohideBottombar": "Автоматично скриване на лентата за навигация за мобилни устройства",
+	"settings.autohideBottombar.help": "Лентата за мобилни устройства ще се скрива, когато страницата бъде превъртяна надолу",
+	"settings.topMobilebar": "Преместване на лентата за навигация за мобилни устройства в горната част",
 	"settings.openSidebars": "Отваряне на страничните ленти",
 	"settings.chatModals": "Включване на прозорците за разговори"
 }

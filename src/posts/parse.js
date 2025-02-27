@@ -33,18 +33,12 @@ let sanitizeConfig = {
 		'tabindex', 'title', 'translate', 'aria-*', 'data-*',
 	],
 };
-const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article']);
+const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article', 'markdown']);
 
 module.exports = function (Posts) {
-	Posts.urlRegex = {
-		regex: /href="([^"]+)"/g,
-		length: 6,
-	};
-
-	Posts.imgRegex = {
-		regex: /src="([^"]+)"/g,
-		length: 5,
-	};
+	Posts.urlRegex = /href="([^"]+)"/g;
+	Posts.imgRegex = /src="([^"]+)"/g;
+	Posts.mdImageUrlRegex = /\[.+?\]\(([^\\)]+)\)/g;
 
 	Posts.parsePost = async function (postData, type) {
 		if (!postData) {
@@ -89,7 +83,7 @@ module.exports = function (Posts) {
 			return content;
 		}
 		let parsed;
-		let current = regex.regex.exec(content);
+		let current = regex.exec(content);
 		let absolute;
 		while (current !== null) {
 			if (current[1]) {
@@ -104,15 +98,16 @@ module.exports = function (Posts) {
 							absolute = `//${current[1]}`;
 						}
 
-						content = content.slice(0, current.index + regex.length) +
+						const offset = current[0].indexOf(current[1]);
+						content = content.slice(0, current.index + offset) +
 						absolute +
-						content.slice(current.index + regex.length + current[1].length);
+						content.slice(current.index + offset + current[1].length);
 					}
 				} catch (err) {
 					winston.verbose(err.messsage);
 				}
 			}
-			current = regex.regex.exec(content);
+			current = regex.exec(content);
 		}
 
 		return content;

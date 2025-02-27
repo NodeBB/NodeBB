@@ -760,7 +760,7 @@ describe('User', () => {
 					} else if (key !== 'password') {
 						assert.equal(data[key], userData[key]);
 					} else {
-						assert(userData[key].startsWith('$2a$'));
+						assert(userData[key].startsWith('$2b$'));
 					}
 				});
 				// updateProfile only saves valid fields

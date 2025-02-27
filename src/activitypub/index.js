@@ -37,13 +37,14 @@ ActivityPub._constants = Object.freeze({
 		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 	],
 	acceptedPostTypes: [
-		'Note', 'Page', 'Article', 'Question',
+		'Note', 'Page', 'Article', 'Question', 'Video',
 	],
 	acceptableActorTypes: new Set(['Application', 'Group', 'Organization', 'Person', 'Service']),
 	requiredActorProps: ['inbox', 'outbox'],
 	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 	acceptable: {
 		customFields: new Set(['PropertyValue', 'Link', 'Note']),
+		contextTypes: new Set(['Collection', 'CollectionPage', 'OrderedCollection', 'OrderedCollectionPage']),
 	},
 });
 ActivityPub._cache = requestCache;
@@ -55,6 +56,7 @@ ActivityPub.notes = require('./notes');
 ActivityPub.contexts = require('./contexts');
 ActivityPub.actors = require('./actors');
 ActivityPub.instances = require('./instances');
+ActivityPub.feps = require('./feps');
 
 ActivityPub.startJobs = () => {
 	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');

@@ -1,6 +1,8 @@
 {
     "category": "Categoria",
     "subcategories": "Subcategorias",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
     "new-topic-button": "Novo Tópico",
     "guest-login-post": "Entre para postar",
     "no-topics": "<strong>Não há tópicos nesta categoria.</strong><br />Por que você não tenta postar um?",

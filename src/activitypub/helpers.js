@@ -37,7 +37,6 @@ Helpers._test = (method, args) => {
 // process.nextTick(() => {
 // Helpers._test(activitypub.notes.assert, [1, `https://`]);
 // });
-
 let _lastLog;
 Helpers.log = (message) => {
 	if (!message) {
@@ -372,13 +371,25 @@ Helpers.generateTitle = (html) => {
 	return title;
 };
 
-Helpers.remoteAnchorToLocalProfile = async (content) => {
-	const anchorRegex = /<a.*?href=['"](.+?)['"].*?>(.*?)<\/a>/ig;
+Helpers.remoteAnchorToLocalProfile = async (content, isMarkdown = false) => {
+	let anchorRegex;
+	if (isMarkdown) {
+		anchorRegex = /\[(.*?)\]\((.+?)\)/ig;
+	} else {
+		anchorRegex = /<a.*?href=['"](.+?)['"].*?>(.*?)<\/a>/ig;
+	}
+
 	const anchors = content.matchAll(anchorRegex);
 	const urls = new Set();
 	const matches = [];
 	for (const anchor of anchors) {
-		const [match, url] = anchor;
+		let match;
+		let url;
+		if (isMarkdown) {
+			[match,, url] = anchor;
+		} else {
+			[match, url] = anchor;
+		}
 		matches.push([match, url]);
 		urls.add(url);
 	}

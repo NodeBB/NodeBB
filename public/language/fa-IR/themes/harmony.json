@@ -15,8 +15,9 @@
 	"settings.stickyToolbar.help": "نوار ابزار در تاپیک و صفحه دسته بدی ها در بالای صفحه ثابت می‌ماند",
 	"settings.topicSidebarTools": "Topic sidebar tools",
 	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
-	"settings.autohideBottombar": "مخفی کردن اتوماتیک منوی پایینی ",
-	"settings.autohideBottombar.help": "وقتی صفحه به پایین اسکرول می شود، منوی پایین در نمایش گوشی مخفی خواهد شد  ",
+	"settings.autohideBottombar": "Auto hide mobile navigation bar",
+	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
+	"settings.topMobilebar": "Move the mobile navigation bar to the top",
 	"settings.openSidebars": "Open sidebars",
 	"settings.chatModals": "فعال کردن پنجره کوچک برای چت "
 }

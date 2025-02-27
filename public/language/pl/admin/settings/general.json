@@ -15,7 +15,7 @@
 	"title-layout": "Struktura tytułu karty przeglądarki",
 	"title-layout-help": "Określ strukturę tytułu karty przeglądarki, np. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Krótki opis twojej społeczności",
-	"description": "Wybierz stronę startową dla forum",
+	"description": "Opis strony",
 	"keywords": "Słowa kluczowe strony",
 	"keywords-placeholder": "Słowa kluczowe opisujące społeczność, oddzielone przecinkami",
 	"logo-and-icons": "Logo i ikony strony",
@@ -51,12 +51,13 @@
 	"topic-tools": "Narzędzia tematu",
 	"home-page": "Strona główna",
 	"home-page-route": "Ścieżka strony głównej",
-	"custom-route": "Niestandardowa Ścieżka",
+	"home-page-description": "Wybierz stronę, która ma być dostępna pod startowym URL tego forum.",
+	"custom-route": "Niestandardowa ścieżka",
 	"allow-user-home-pages": "Zezwalaj na strony startowe użytkowników",
-	"home-page-title": "Tytuł strony głównej (domyślnie: „Strona Główna”)",
+	"home-page-title": "Tytuł strony głównej (domyślnie: \"Strona główna\")",
 	"default-language": "Domyślny język",
 	"auto-detect": "Automatycznie wykrywaj język gości",
 	"default-language-help": "Domyślny język określa ustawienia języka dla wszystkich użytkowników, którzy odwiedzają forum. <br /> Użytkownicy mogą zmienić domyślny język w ustawieniach swojego konta.",
-	"post-sharing": "Udostępnianie postów",
-	"info-plugins-additional": "Wtyczki mogą dodać dodatkowe platformy do udostępniania postów"
+	"post-sharing": "Udostępnianie wpisów",
+	"info-plugins-additional": "Wtyczki mogą dodać dodatkowe platformy do udostępniania wpisów."
 }

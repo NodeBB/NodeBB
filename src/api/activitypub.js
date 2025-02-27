@@ -128,8 +128,6 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	const { to, cc, targets } = await activitypub.buildRecipients(object, { pid, uid: post.user.uid });
 	object.to = to;
 	object.cc = cc;
-	const { cid } = post.category;
-	const followers = await activitypub.notes.getCategoryFollowers(cid);
 
 	const payload = {
 		id: `${object.id}#activity/create/${Date.now()}`,
@@ -140,22 +138,11 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		object,
 	};
 
-	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
-
-	setTimeout(() => { // Delay sending to avoid potential race condition
-		if (followers.length) {
-			Promise.all([payload, payload.object].map(async (object) => {
-				await activitypub.send('cid', cid, followers, {
-					id: `${nconf.get('url')}/post/${encodeURIComponent(object.object ? object.object.id : object.id)}#activity/announce/${Date.now()}`,
-					type: 'Announce',
-					to: [activitypub._constants.publicAddress],
-					cc: [`${nconf.get('url')}/category/${cid}/followers`],
-					object,
-				});
-			})).catch(err => winston.error(err.stack));
-		}
-		activitypubApi.add(caller, { pid });
-	}, 5000);
+	await Promise.all([
+		activitypub.send('uid', caller.uid, Array.from(targets), payload),
+		activitypub.feps.announce(pid, payload),
+		activitypubApi.add(caller, { pid }),
+	]);
 });
 
 activitypubApi.create.privateNote = enabledCheck(async (caller, { messageObj }) => {
@@ -236,7 +223,10 @@ activitypubApi.update.note = enabledCheck(async (caller, { post }) => {
 		object,
 	};
 
-	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
+	await Promise.all([
+		activitypub.send('uid', caller.uid, Array.from(targets), payload),
+		activitypub.feps.announce(post.pid, payload),
+	]);
 });
 
 activitypubApi.update.privateNote = enabledCheck(async (caller, { messageObj }) => {
@@ -292,7 +282,10 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 		origin: object.context,
 	};
 
-	await activitypub.send('uid', caller.uid, Array.from(targets), payload);
+	await Promise.all([
+		activitypub.send('uid', caller.uid, Array.from(targets), payload),
+		activitypub.feps.announce(pid, payload),
+	]);
 });
 
 activitypubApi.like = {};
@@ -307,11 +300,17 @@ activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
 		return;
 	}
 
-	await activitypub.send('uid', caller.uid, [uid], {
+	const payload = {
 		id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
 		type: 'Like',
+		actor: `${nconf.get('url')}/uid/${caller.uid}`,
 		object: pid,
-	});
+	};
+
+	await Promise.all([
+		activitypub.send('uid', caller.uid, [uid], payload),
+		activitypub.feps.announce(pid, payload),
+	]);
 });
 
 activitypubApi.announce = {};
@@ -362,16 +361,22 @@ activitypubApi.undo.like = enabledCheck(async (caller, { pid }) => {
 		return;
 	}
 
-	await activitypub.send('uid', caller.uid, [uid], {
+	const payload = {
 		id: `${nconf.get('url')}/uid/${caller.uid}#activity/undo:like/${encodeURIComponent(pid)}/${Date.now()}`,
 		type: 'Undo',
+		actor: `${nconf.get('url')}/uid/${caller.uid}`,
 		object: {
 			actor: `${nconf.get('url')}/uid/${caller.uid}`,
 			id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
 			type: 'Like',
 			object: pid,
 		},
-	});
+	};
+
+	await Promise.all([
+		activitypub.send('uid', caller.uid, [uid], payload),
+		activitypub.feps.announce(pid, payload),
+	]);
 });
 
 activitypubApi.flag = enabledCheck(async (caller, flag) => {
