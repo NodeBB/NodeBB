@@ -459,7 +459,7 @@ authenticationController.localLogin = async function (req, username, password, n
 	}
 };
 
-authenticationController.logout = async function (req, res, next) {
+authenticationController.logout = async function (req, res) {
 	if (!req.loggedIn || !req.sessionID) {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		return res.status(200).send('not-logged-in');
@@ -475,21 +475,22 @@ authenticationController.logout = async function (req, res, next) {
 
 		await user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000));
 		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
-		await plugins.hooks.fire('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
+		await plugins.hooks.fire('static:user.loggedOut', { req, res, uid, sessionID });
 
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in(`sess_${sessionID}`).emit('checkSession', 0);
 		const payload = {
 			next: `${nconf.get('relative_path')}/`,
 		};
-		plugins.hooks.fire('filter:user.logout', payload);
+		await plugins.hooks.fire('filter:user.logout', payload);
 
 		if (req.body.noscript === 'true') {
 			return res.redirect(payload.next);
 		}
 		res.status(200).send(payload);
 	} catch (err) {
-		next(err);
+		winston.error(`${req.method} ${req.originalUrl}\n${err.stack}`);
+		res.status(500).send(err.message);
 	}
 };
 

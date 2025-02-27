@@ -39,8 +39,8 @@ module.exports = function (app, middleware, controllers) {
 		const oneMonthAgo = addMonths(new Date(), -1);
 		const sixMonthsAgo = addMonths(new Date(), -6);
 
-		const [{ postCount, userCount }, activeMonth, activeHalfyear] = await Promise.all([
-			db.getObjectFields('global', ['postCount', 'userCount']),
+		const [{ postCount, topicCount, userCount }, activeMonth, activeHalfyear] = await Promise.all([
+			db.getObjectFields('global', ['postCount', 'topicCount', 'userCount']),
 			db.sortedSetCount('users:online', oneMonthAgo.getTime(), '+inf'),
 			db.sortedSetCount('users:online', sixMonthsAgo.getTime(), '+inf'),
 		]);
@@ -64,7 +64,8 @@ module.exports = function (app, middleware, controllers) {
 					activeMonth: activeMonth,
 					activeHalfyear: activeHalfyear,
 				},
-				localPosts: postCount,
+				localPosts: topicCount,
+				localComments: postCount - topicCount,
 			},
 			openRegistrations: meta.config.registrationType === 'normal',
 			metadata: {

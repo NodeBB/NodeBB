@@ -18,6 +18,9 @@ PostObject:
         For posts received via ActivityPub, it is the url of the original piece of content.
     content:
       type: string
+    sourceContent:
+      type: string
+      nullable: true
     uid:
       type: number
       description: A user identifier

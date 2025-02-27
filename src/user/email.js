@@ -36,8 +36,10 @@ UserEmail.remove = async function (uid, sessionId) {
 			email: '',
 			'email:confirmed': 0,
 		}),
-		db.sortedSetRemove('email:uid', email.toLowerCase()),
-		db.sortedSetRemove('email:sorted', `${email.toLowerCase()}:${uid}`),
+		db.sortedSetRemoveBulk([
+			['email:uid', email.toLowerCase()],
+			['email:sorted', `${email.toLowerCase()}:${uid}`],
+		]),
 		user.email.expireValidation(uid),
 		sessionId ? user.auth.revokeAllSessions(uid, sessionId) : Promise.resolve(),
 		events.log({
@@ -53,7 +55,7 @@ UserEmail.getEmailForValidation = async (uid) => {
 	let email = '';
 	// check email from confirmObj
 	const code = await db.get(`confirm:byUid:${uid}`);
-	const confirmObj = await db.getObject(`confirm:${code}`);
+	const confirmObj = code ? await db.getObject(`confirm:${code}`) : null;
 	if (confirmObj && confirmObj.email && parseInt(uid, 10) === parseInt(confirmObj.uid, 10)) {
 		email = confirmObj.email;
 	}

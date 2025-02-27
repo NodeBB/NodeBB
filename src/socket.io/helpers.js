@@ -17,6 +17,10 @@ const batch = require('../batch');
 const SocketHelpers = module.exports;
 
 SocketHelpers.notifyNew = async function (uid, type, result) {
+	const post = result.posts[0];
+	if (post && post.topic && parseInt(post.topic.cid, 10) === -1) {
+		return;
+	}
 	let uids = await user.getUidsFromSet('users:online', 0, -1);
 	uids = uids.filter(toUid => parseInt(toUid, 10) !== uid);
 	await batch.processArray(uids, async (uids) => {

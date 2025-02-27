@@ -199,7 +199,7 @@ async function loadUserInfo(callerUid, uids) {
 				const confirmObj = confirmObjs[index];
 				user['email:expired'] = !confirmObj.expires || Date.now() >= confirmObj.expires;
 				user['email:pending'] = confirmObj.expires && Date.now() < confirmObj.expires;
-				user.emailToConfirm = confirmObj.email;
+				user.emailToConfirm = validator.escape(String(confirmObj.email));
 			}
 		}
 	});

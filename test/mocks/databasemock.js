@@ -144,6 +144,7 @@ before(async function () {
 	nconf.set('version', packageInfo.version);
 	nconf.set('runJobs', false);
 	nconf.set('jobsDisabled', false);
+	nconf.set('acpPluginInstallDisabled', false);
 
 
 	await db.init();
