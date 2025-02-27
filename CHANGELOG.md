@@ -1,3 +1,65 @@
+#### v4.0.6 (2025-02-27)
+
+##### Chores
+
+*  up dbsearch (9e1a0a13)
+*  add sourceContent to schema (b2cdd5fd)
+*  up harmony (f94cf5ce)
+*  up deps (a9563d75)
+*  up harmony (08014e7c)
+*  up harmony (8385d4ae)
+*  up harmony (0a9d28d5)
+*  up harmony (c920836a)
+*  up esbuild (2ab6a368)
+*  up widgets (02a8d9b6)
+*  up harmony (05bbefd1)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  update changelog for v4.0.5 (f84b9fc7)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  match events and parent style (e38d1531)
+*  merge consecutive share events (9153f8cf)
+* **config:**  add `acpPluginInstallDisabled` option (#13189) (577eee2f)
+
+##### Bug Fixes
+
+*  add missing file (04d5edbb)
+*  #13202, private note assertion failure when cc property is missing (c65e1ebb)
+*  tests for public and private note assertion, failing test for private note assertion with missing cc prop (efb27ce0)
+*  closes #13206, truncate long usernames (51872d54)
+*  closes #13207, add localComments (13a13e1d)
+*  handle multiple types in remote actor payload (d91b80d2)
+*  don't send validation email for pending emails (07957e82)
+*  missing db (52b23313)
+*  #13198, use email from confirmObj (b4dfc48b)
+*  summary post parse (e9d4c7b9)
+*  add sourceContent to getPostSummaryByPids (ad92e931)
+*  #13193, add lang strings (2c830567)
+*  #13194, dont notify about cid=-1 (b8c8ae09)
+*  old upgrade script so it doesn't create settings objects (fe980688)
+*  escape confirm email in acp manage users (9bfa8853)
+*  add missing await on filter:user.logout (c6b8256f)
+*  relaxing strict allowedTags configuration for incoming AP content (allowing picture, source, and additional attributes for img) (2ad48f17)
+
+##### Other Changes
+
+*  fix (ec11b0c2)
+
+##### Refactors
+
+*  use sortedSetRemoveBulk (349084d8)
+*  don't make db request if there is no code (53a2be9d)
+
+##### Tests
+
+*  remove extra .only, add basic tests for public note assertion (64267f7d)
+
 #### v4.0.5 (2025-02-20)
 
 ##### Chores
