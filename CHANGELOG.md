@@ -1,3 +1,133 @@
+#### v4.1.0 (2025-02-27)
+
+##### Chores
+
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  update changelog for v4.0.6 (78bbea30)
+*  comment out testing helper call (bad0a4c2)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  up harmony (ea110a0e)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  bump emoji for #13077 as well (ff0de097)
+*  fix ap dev helper (b14494b0)
+*  add helper method to ease in dev (d7d64a14)
+*  add helper method to ease in dev (7d5482b2)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **deps:**
+  *  update dependency sass-embedded to v1.85.1 (#13208) (3907e6c8)
+  *  update postgres docker tag to v17.4 (#13196) (cba2bc5e)
+  *  update postgres docker tag to v17.3 (#13162) (47e28a0e)
+  *  update dependency sass-embedded to v1.85.0 (#13161) (2258e145)
+  *  update commitlint monorepo to v19.7.1 (#13123) (ca6734b3)
+  *  update coverallsapp/github-action action to v2.3.6 (#13089) (84b28fae)
+  *  update dependency lint-staged to v15.4.3 (#13079) (1d846134)
+  *  update dependency mocha to v11.1.0 (#13069) (8e99c97a)
+  *  update dependency lint-staged to v15.4.1 (#13060) (153e65bc)
+  *  update dependency lint-staged to v15.4.1 (#13060) (37b2b83d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.category (00253821)
+  *  fallback strings for new resources: nodebb.error (589be143)
+  *  fallback strings for new resources: nodebb.themes-harmony (25049714)
+  *  fallback strings for new resources: nodebb.admin-settings-advanced (ad6b6132)
+  *  fallback strings for new resources: nodebb.themes-harmony (fc063bb0)
+  *  fallback strings for new resources: nodebb.admin-settings-general (d41109a0)
+
+##### New Features
+
+*  support remote "Video" type objects in note assertion, #13120 (95f2c4ed)
+*  1b12 compatibility (7dc1e8ab)
+*  remove activities older than a week (d9e86c7b)
+*  federate out Announce of a tid's mainPid if the tid is moved out of cid -1 (b7f9983a)
+*  syncUserInboxes to take into account remote topic tags, closes #13074 (637addc4)
+*  allow search bar to load remote 7888 Conversations, aka nodebb topics (7687da00)
+*  introduce new 'markdown' post parsing type, closes #13077 (b386e4a6)
+*  #13066, report canonical URL in user agent for outgoing requests (c3e9cb68)
+*  changes to how a topic is presented via ActivityPub; conformance with upcoming changes to 7888 (4fd7a9dc)
+*  changes to how a topic is presented via ActivityPub; conformance with upcoming changes to 7888 (adeaff4b)
+
+##### Bug Fixes
+
+*  scheduled topics and posts should return 404 on AP request (428300de)
+*  tag handling when remote objects contain tags without leading # symbol (5c3f1cfe)
+*  handle multiple types in remote actor payload (65895651)
+*  missing db (058befb3)
+*  remove handle on category purge (adb430f2)
+*  restrict feps methods to real cids (8b717d54)
+*  restore old behaviour of 1b12 federating both object and activity (f0ee43dc)
+*  send `actor` with 1b12 announce, fixes #13072 again (86b0e591)
+*  isArray check (5f3ed76d)
+*  delete from payload instead of setting null (489c5ce2)
+*  send `actor` with 1b12 announce, fixes #13072 (3cd87f1b)
+*  #13139, payload.version can be null (be1598d1)
+*  tidChanged (bfd4e68b)
+*  bad logic that invisibly broke outgoing user follows completely (334be721)
+*  #13076, allow pulling in of topics by their topic URL fix: reapply fixes that were part of since-reverted 4fd7a9dc59b65e8654d704c493f2254793e8d6a9 (c6e6ab43)
+*  call relativeToAbsolute helper when generating markdown source content in mocks.notes.public/private (02fb99eb)
+*  extend remoteAnchorToLocalProfile ap helper to handle markdown content (db1f8959)
+*  incorrect `posts` url in topic posts collection (812ec73e)
+*  incorrect `posts` url in topic posts collection (b2530e61)
+* **deps:**
+  *  update dependency sass to v1.85.1 (#13209) (386ab89f)
+  *  update dependency bcryptjs to v3 (#13160) (6ea65678)
+  *  update dependency cron to v4 (#13184) (41eec8d7)
+  *  update dependency xregexp to v5.1.2 (#13195) (23621eca)
+  *  update dependency ace-builds to v1.39.0 (#13197) (a3f5721a)
+  *  update dependency chart.js to v4.4.8 (#13182) (474d267e)
+  *  update dependency postcss to v8.5.3 (#13183) (5fc4c806)
+  *  update dependency mongodb to v6.13.1 (#13187) (77b0160c)
+  *  update dependency nodebb-plugin-web-push to v0.7.3 (#13178) (000ceee4)
+  *  update dependency sass to v1.85.0 (#13163) (75a7188a)
+  *  update dependency pg to v8.13.3 (#13157) (f3c156e9)
+  *  update dependency pg-cursor to v2.12.3 (#13158) (6b8e4b39)
+  *  update dependency webpack to v5.98.0 (#13159) (db74c1e8)
+  *  update dependency nodebb-widget-essentials to v7.0.33 (#13156) (af7f4242)
+  *  update dependency pg-cursor to v2.12.2 (#13150) (b5ce9e14)
+  *  update dependency compression to v1.8.0 (#13152) (1e52cf34)
+  *  update dependency ace-builds to v1.38.0 (#13151) (db0b816c)
+  *  update dependency pg to v8.13.2 (#13149) (bea1367d)
+  *  update dependency postcss to v8.5.2 (#13144) (3449e76d)
+  *  update dependency benchpressjs to v2.5.3 (#13098) (6688edde)
+  *  update dependency esbuild to v0.25.0 (#13141) (d7fdd80c)
+  *  update dependency tough-cookie to v5.1.1 (#13140) (33ce7239)
+  *  update dependency ioredis to v5.5.0 (#13138) (b337e999)
+  *  update dependency sass to v1.84.0 (#13128) (f872a768)
+  *  update dependency semver to v7.7.1 (#13122) (5f3c5a55)
+  *  update dependency mongodb to v6.13.0 (#13106) (31ff6c2e)
+  *  update dependency semver to v7.7.0 (#13099) (a348e808)
+  *  update dependency nodemailer to v6.10.0 (#13073) (8ab71e4f)
+  *  update dependency nodebb-theme-persona to v14.0.2 (#13064) (8ec3ceae)
+  *  update dependency nodebb-theme-harmony to v2.0.3 (#13063) (b98d047a)
+
+##### Other Changes
+
+*  remove unused db (06b3d9ad)
+*  remove tab (54bc54e1)
+*  fix tab (397d28e3)
+
+##### Performance Improvements
+
+*  closes #13145, reduce calls in actors.prune (676acb7e)
+
+##### Refactors
+
+*  remove cid:-1:tids (and variants) from intersection in /world, fixes #13125 (d0561a60)
+*  single remove (0784e11b)
+*  move 1b12 announce logic out of inbox and into separate feps module (9fd6ac6b)
+*  acceptable types in context.js to index.js, allow searching for remote topis by topic url (d644c0f4)
+*  Posts.relativeToAbsolute so that the regexes passed to it no longer need a pre-defined length, it is now calculated from the match result, added new regex for markdown image/anchors (f64e6f0f)
+
+##### Tests
+
+*  moved AP actor tests to separate actors.js file, added failing test for scheduled topics (01be4d79)
+*  update test to assert the note assertion itself (c6ba56a5)
+*  update bcrypt hash for 3.x (bfffbfbe)
+*  update pwd test for bcrypt3.x (ca0fa1d3)
+*  add sourceContent to spec (d1d55461)
+*  adjust webfinger test for updated 404 status code (59afd193)
+
 #### v4.0.6 (2025-02-27)
 
 ##### Chores
