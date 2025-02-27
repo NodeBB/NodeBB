@@ -55,12 +55,12 @@ Actors.userBySlug = async function (req, res) {
 	Actors.user(req, res);
 };
 
-Actors.note = async function (req, res) {
+Actors.note = async function (req, res, next) {
 	// technically a note isn't an actor, but it is here purely for organizational purposes.
 	// but also, wouldn't it be wild if you could follow a note? lol.
 	const allowed = await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
 	if (!allowed) {
-		return res.sendStatus(404);
+		return next();
 	}
 
 	// Handle requests for remote content
@@ -72,8 +72,8 @@ Actors.note = async function (req, res) {
 		parse: false,
 		extraFields: ['edited'],
 	})).pop();
-	if (!post) {
-		return res.sendStatus(404);
+	if (!post || post.timestamp > Date.now()) {
+		return next();
 	}
 
 	const payload = await activitypub.mocks.notes.public(post);
@@ -120,8 +120,12 @@ Actors.topic = async function (req, res, next) {
 
 	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
-	const { cid, titleRaw: name, mainPid, slug } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug']);
+	const { cid, titleRaw: name, mainPid, slug, timestamp } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp']);
 	try {
+		if (timestamp > Date.now()) { // Scheduled topic, no response
+			return next();
+		}
+
 		let [collection, pids] = await Promise.all([
 			activitypub.helpers.generateCollection({
 				set: `tid:${req.params.tid}:posts`,

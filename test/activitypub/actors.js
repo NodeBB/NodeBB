@@ -253,7 +253,7 @@ describe('Controllers', () => {
 		});
 	});
 
-	describe.only('Topic', () => {
+	describe('Topic Collection endpoint', () => {
 		let cid;
 		let uid;
 
@@ -265,12 +265,11 @@ describe('Controllers', () => {
 
 		describe('Live', () => {
 			let topicData;
-			let postData;
 			let response;
 			let body;
 
 			before(async () => {
-				({ topicData, postData } = await topics.post({
+				({ topicData } = await topics.post({
 					uid,
 					cid,
 					title: 'Lorem "Lipsum" Ipsum',
@@ -299,6 +298,74 @@ describe('Controllers', () => {
 
 		describe('Scheduled', () => {
 			let topicData;
+			let response;
+			let body;
+
+			before(async () => {
+				({ topicData } = await topics.post({
+					uid,
+					cid,
+					title: 'Lorem "Lipsum" Ipsum',
+					content: 'Lorem ipsum dolor sit amet',
+					timestamp: Date.now() + (1000 * 60 * 60), // 1 hour in the future
+				}));
+
+				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				}));
+			});
+
+			it('should respond with a 404 Not Found', async () => {
+				assert(response);
+				assert.strictEqual(response.statusCode, 404);
+			});
+		});
+	});
+
+	describe('Post Object endpoint', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			const slug = slugify(utils.generateUUID().slice(0, 8));
+			uid = await user.create({ username: slug });
+		});
+
+		describe('Live', () => {
+			let postData;
+			let response;
+			let body;
+
+			before(async () => {
+				({ postData } = await topics.post({
+					uid,
+					cid,
+					title: 'Lorem "Lipsum" Ipsum',
+					content: 'Lorem ipsum dolor sit amet',
+				}));
+
+				({ response, body } = await request.get(`${nconf.get('url')}/post/${postData.pid}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				}));
+			});
+
+			it('should respond properly', async () => {
+				assert(response);
+				assert.strictEqual(response.statusCode, 200);
+			});
+
+			it('should return a Note type object', () => {
+				assert.strictEqual(body.type, 'Note');
+			});
+		});
+
+		describe('Scheduled', () => {
+			let topicData;
 			let postData;
 			let response;
 			let body;
@@ -312,7 +379,7 @@ describe('Controllers', () => {
 					timestamp: Date.now() + (1000 * 60 * 60), // 1 hour in the future
 				}));
 
-				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
+				({ response, body } = await request.get(`${nconf.get('url')}/post/${postData.pid}`, {
 					headers: {
 						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 					},
