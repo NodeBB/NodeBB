@@ -73,7 +73,9 @@ Actors.assert = async (ids, options = {}) => {
 	}
 
 	// Filter out loopback uris
-	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
+	if (!meta.config.activitypubAllowLoopback) {
+		ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
+	}
 
 	// Only assert those who haven't been seen recently (configurable), unless update flag passed in (force refresh)
 	if (!options.update) {
