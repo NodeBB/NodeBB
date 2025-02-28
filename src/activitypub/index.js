@@ -48,6 +48,7 @@ ActivityPub._constants = Object.freeze({
 	},
 });
 ActivityPub._cache = requestCache;
+ActivityPub._sent = new Map(); // used only in local tests
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
@@ -335,7 +336,12 @@ pubsub.on(`activitypub-retry-queue:lruCache:del`, (keys) => {
 async function sendMessage(uri, id, type, payload, attempts = 1) {
 	const keyData = await ActivityPub.getPrivateKey(type, id);
 	const headers = await ActivityPub.sign(keyData, uri, payload);
+
 	ActivityPub.helpers.log(`[activitypub/send] ${uri}`);
+	if (process.env.CI === 'true') {
+		ActivityPub._sent.set(payload.id, payload);
+	}
+
 	try {
 		const { response, body } = await request.post(uri, {
 			headers: {
