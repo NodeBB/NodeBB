@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 
 const posts = require('../posts');
+const utils = require('../utils');
 
 const activitypub = module.parent.exports;
 const Feps = module.exports;
@@ -69,7 +70,7 @@ Feps.announceObject = async function announceObject(id) {
 	}
 
 	const author = await posts.getPostField(id, 'uid');
-	if (!author.startsWith(nconf.get('url'))) {
+	if (!utils.isNumber(author) && !author.startsWith(nconf.get('url'))) {
 		followers.unshift(author);
 	}
 
