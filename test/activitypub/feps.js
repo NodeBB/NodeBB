@@ -59,9 +59,7 @@ describe('FEPs', () => {
 					cid,
 				});
 
-				setTimeout(() => {
-					assert.strictEqual(activitypub._sent.size, 1);
-				}, 250);
+				assert.strictEqual(activitypub._sent.size, 1);
 			});
 		});
 	});

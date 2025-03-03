@@ -337,11 +337,6 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 	const keyData = await ActivityPub.getPrivateKey(type, id);
 	const headers = await ActivityPub.sign(keyData, uri, payload);
 
-	ActivityPub.helpers.log(`[activitypub/send] ${uri}`);
-	if (process.env.hasOwnProperty('CI')) {
-		ActivityPub._sent.set(payload.id, payload);
-	}
-
 	try {
 		const { response, body } = await request.post(uri, {
 			headers: {
@@ -379,6 +374,11 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 ActivityPub.send = async (type, id, targets, payload) => {
 	if (!meta.config.activitypubEnabled) {
 		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
+	}
+
+	ActivityPub.helpers.log(`[activitypub/send] ${payload.id}`);
+	if (process.env.hasOwnProperty('CI')) {
+		ActivityPub._sent.set(payload.id, payload);
 	}
 
 	if (!Array.isArray(targets)) {

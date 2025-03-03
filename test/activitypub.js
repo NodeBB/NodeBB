@@ -35,7 +35,7 @@ describe('ActivityPub integration', () => {
 			const uid = await user.create({ username: uuid });
 			await activitypub.send('uid', 0, [`https://localhost/uid/${uid}`], { id: `${nconf.get('url')}/activity/${uuid}`, foo: 'bar' });
 
-			assert(activitypub._sent.has(`https://localhost/activity/${uuid}`));
+			assert(activitypub._sent.has(`${nconf.get('url')}/activity/${uuid}`));
 		});
 	});
 
