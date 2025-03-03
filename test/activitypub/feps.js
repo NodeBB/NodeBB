@@ -83,6 +83,12 @@ describe('FEPs', () => {
 				);
 
 				assert.strictEqual(activitypub._sent.size, 1);
+
+				const key = Array.from(activitypub._sent.keys())[0];
+				const activity = activitypub._sent.get(key);
+
+				assert(activity);
+				assert.strictEqual(activity.object, `${nconf.get('url')}/post/${reply1Pid}`);
 			});
 		});
 	});

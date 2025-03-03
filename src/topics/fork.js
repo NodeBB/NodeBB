@@ -7,6 +7,7 @@ const categories = require('../categories');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 
 module.exports = function (Topics) {
 	Topics.createTopicFromPosts = async function (uid, title, pids, fromTid, cid) {
@@ -83,6 +84,7 @@ module.exports = function (Topics) {
 			}),
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], postData.votes, tid),
 			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` }),
+			activitypub.feps.announceObject(pids[0]),
 		]);
 
 		plugins.hooks.fire('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
