@@ -3,6 +3,7 @@
     "subcategories": "Подкатегории",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Создать тему",
     "guest-login-post": "Авторизуйтесь, чтобы написать сообщение",
     "no-topics": "<strong>В этой категории еще нет тем.</strong><br />Почему бы вам не создать первую?",

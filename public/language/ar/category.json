@@ -3,6 +3,7 @@
     "subcategories": "قسم فرعي",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "موضوع جديد",
     "guest-login-post": "سجل الدخول للمشاركة",
     "no-topics": "<strong>لا توجد مواضيع في هذه القسم</strong>لم لا تحاول إنشاء موضوع؟<br />",

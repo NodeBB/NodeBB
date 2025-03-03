@@ -3,6 +3,7 @@
     "subcategories": "Підкатегорія",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Новий запис",
     "guest-login-post": "Увійдіть, щоб постити",
     "no-topics": "<strong> У цій категорії немає жодної теми.</strong><br />Чому б вам не створити першу?",

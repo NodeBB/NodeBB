@@ -3,6 +3,7 @@
     "subcategories": "Underkategorier",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Nyt emne",
     "guest-login-post": "Log ind",
     "no-topics": "<strong>Der er ikke nogen nye emner i denne kategori.</strong><br /> Hvorfor  prøver du ikke at lave et?",

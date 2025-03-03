@@ -3,6 +3,7 @@
     "subcategories": "Sottocategorie",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Nuova Discussione",
     "guest-login-post": "Accedi per postare",
     "no-topics": "<strong>Non ci sono discussioni in questa categoria.</strong><br />Perché non ne posti una?",

@@ -3,6 +3,7 @@
     "subcategories": "Alkategóriák",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Új témakör",
     "guest-login-post": "Lépj be a hozzászóláshoz",
     "no-topics": "<strong>Nincs témakör a kategóriában.</strong>Miért nem próbálsz létrehozni egyet?",

@@ -3,6 +3,7 @@
     "subcategories": "하위 카테고리",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "새 토픽",
     "guest-login-post": "게시물을 작성하려면 로그인하세요.",
     "no-topics": "<strong>이 카테고리에는 토픽이 없습니다.</strong><br />한 가지 올려보는 건 어떨까요?",

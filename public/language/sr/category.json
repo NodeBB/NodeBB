@@ -3,6 +3,7 @@
     "subcategories": "Поткатегорије",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Нова тема",
     "guest-login-post": "Пријавите се да бисте послали поруку",
     "no-topics": "<strong>Нема тема у овој категорији.</strong><br />Зашто не бисте поставили једну?",
