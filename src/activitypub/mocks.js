@@ -170,21 +170,28 @@ Mocks.post = async (objects) => {
 			type, to, cc, audience, attachment, tag, image,
 		} = object;
 
-		if (Array.isArray(uid)) { // Handle array attributedTo
-			uid = uid.reduce((valid, cur) => {
-				if (typeof cur === 'string') {
-					valid.push(cur);
-				} else if (typeof cur === 'object') {
-					if (cur.type === 'Person' && cur.id) {
-						valid.push(cur.id);
+		switch (true) { // non-string attributedTo handling
+			case Array.isArray(uid): {
+				uid = uid.reduce((valid, cur) => {
+					if (typeof cur === 'string') {
+						valid.push(cur);
+					} else if (typeof cur === 'object') {
+						if (cur.type === 'Person' && cur.id) {
+							valid.push(cur.id);
+						}
 					}
-				}
 
-				return valid;
-			}, []);
-			uid = uid.shift(); // take first valid uid
-			await activitypub.actors.assert(uid);
+					return valid;
+				}, []);
+				uid = uid.shift(); // take first valid uid
+				break;
+			}
+
+			case typeof uid === 'object' && uid.hasOwnProperty('id'): {
+				uid = uid.id;
+			}
 		}
+		await activitypub.actors.assert(uid);
 
 		const resolved = await activitypub.helpers.resolveLocalId(toPid);
 		if (resolved.type === 'post') {
