@@ -338,7 +338,7 @@ async function sendMessage(uri, id, type, payload, attempts = 1) {
 	const headers = await ActivityPub.sign(keyData, uri, payload);
 
 	ActivityPub.helpers.log(`[activitypub/send] ${uri}`);
-	if (process.env.CI === 'true') {
+	if (process.env.hasOwnProperty('CI')) {
 		ActivityPub._sent.set(payload.id, payload);
 	}
 

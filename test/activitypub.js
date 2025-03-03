@@ -29,7 +29,7 @@ describe('ActivityPub integration', () => {
 		delete meta.config.activitypubEnabled;
 	});
 
-	describe.only('Outgoing AP logging for test runner', () => {
+	describe('Outgoing AP logging for test runner', () => {
 		it('should log an entry in ActivityPub._sent when .send is called', async () => {
 			const uuid = utils.generateUUID();
 			const uid = await user.create({ username: uuid });
