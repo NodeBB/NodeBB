@@ -22,7 +22,7 @@ describe('FEPs', () => {
 		await install.giveWorldPrivileges();
 	});
 
-	describe('1b12', () => {
+	describe.only('1b12', () => {
 		describe('announceObject()', () => {
 			let cid;
 			let uid;
@@ -44,6 +44,10 @@ describe('FEPs', () => {
 				activitypub._sent.clear();
 			});
 
+			afterEach(() => {
+				activitypub._sent.clear();
+			});
+
 			it('should be called when a topic is moved from uncategorized to another category', async () => {
 				const { topicData } = await topics.post({
 					uid,
@@ -58,6 +62,25 @@ describe('FEPs', () => {
 					tid: topicData.tid,
 					cid,
 				});
+
+				assert.strictEqual(activitypub._sent.size, 1);
+			});
+
+			it('should be called for a newly forked topic', async () => {
+				const { topicData } = await topics.post({
+					uid,
+					cid: -1,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				const { tid } = topicData;
+				const [{ pid: reply1Pid }, { pid: reply2Pid }] = await Promise.all([
+					topics.reply({ uid, tid, content: utils.generateUUID() }),
+					topics.reply({ uid, tid, content: utils.generateUUID() }),
+				]);
+				const forked = await topics.createTopicFromPosts(
+					adminUid, utils.generateUUID(), [reply1Pid, reply2Pid], tid, cid
+				);
 
 				assert.strictEqual(activitypub._sent.size, 1);
 			});
