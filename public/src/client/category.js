@@ -10,7 +10,8 @@ define('forum/category', [
 	'hooks',
 	'alerts',
 	'api',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api) {
+	'clipboard',
+], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -47,6 +48,8 @@ define('forum/category', [
 				ajaxify.go('/category/' + category.cid);
 			},
 		});
+
+		new clipboard('[data-clipboard-text]');
 
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
