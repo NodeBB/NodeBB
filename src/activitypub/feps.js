@@ -69,8 +69,10 @@ Feps.announceObject = async function announceObject(id) {
 		return;
 	}
 
-	const author = await posts.getPostField(id, 'uid');
-	if (!utils.isNumber(author) && !author.startsWith(nconf.get('url'))) {
+	let author = await posts.getPostField(id, 'uid');
+	if (utils.isNumber(author)) {
+		author = `${nconf.get('url')}/uid/${author}`;
+	} else if (!author.startsWith(nconf.get('url'))) {
 		followers.unshift(author);
 	}
 
@@ -81,6 +83,6 @@ Feps.announceObject = async function announceObject(id) {
 		actor: `${nconf.get('url')}/category/${cid}`,
 		to: [`${nconf.get('url')}/category/${cid}/followers`],
 		cc: [author, activitypub._constants.publicAddress],
-		object: id,
+		object: utils.isNumber(id) ? `${nconf.get('url')}/post/${id}` : id,
 	});
 };
