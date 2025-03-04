@@ -40,6 +40,95 @@ const sanitizeConfig = {
 	},
 };
 
+Mocks._normalize = async (object) => {
+	// Normalized incoming AP objects into expected types for easier mocking
+	let { attributedTo, url, image, content, source } = object;
+
+	switch (true) { // non-string attributedTo handling
+		case Array.isArray(attributedTo): {
+			attributedTo = attributedTo.reduce((valid, cur) => {
+				if (typeof cur === 'string') {
+					valid.push(cur);
+				} else if (typeof cur === 'object') {
+					if (cur.type === 'Person' && cur.id) {
+						valid.push(cur.id);
+					}
+				}
+
+				return valid;
+			}, []);
+			attributedTo = attributedTo.shift(); // take first valid uid
+			break;
+		}
+
+		case typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
+			attributedTo = attributedTo.id;
+		}
+	}
+
+	let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
+	if (sourceContent) {
+		content = null;
+		sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(sourceContent, true);
+	} else if (content && content.length) {
+		content = sanitize(content, sanitizeConfig);
+		content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
+	} else {
+		content = '<em>This post did not contain any content.</em>';
+	}
+
+	switch (true) {
+		case image && image.hasOwnProperty('url') && !!image.url: {
+			image = image.url;
+			break;
+		}
+
+		case image && typeof image === 'string': {
+			// no change
+			break;
+		}
+
+		default: {
+			image = null;
+		}
+	}
+	if (image) {
+		const parsed = new URL(image);
+		if (!mime.getType(parsed.pathname).startsWith('image/')) {
+			activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
+			image = null;
+		}
+	}
+
+	if (url) { // Handle url array
+		if (Array.isArray(url)) {
+			url = url.reduce((valid, cur) => {
+				if (typeof cur === 'string') {
+					valid.push(cur);
+				} else if (typeof cur === 'object') {
+					if (cur.type === 'Link' && cur.href) {
+						if (!cur.mediaType || (cur.mediaType && cur.mediaType === 'text/html')) {
+							valid.push(cur.href);
+						}
+					}
+				}
+
+				return valid;
+			}, []);
+			url = url.shift(); // take first valid url
+		}
+	}
+
+	return {
+		...object,
+		attributedTo,
+		content,
+		sourceContent,
+		image,
+		url,
+	};
+};
+
 Mocks.profile = async (actors, hostMap) => {
 	// Should only ever be called by activitypub.actors.assert
 	const profiles = await Promise.all(actors.map(async (actor) => {
@@ -154,6 +243,8 @@ Mocks.post = async (objects) => {
 	}
 
 	const posts = await Promise.all(objects.map(async (object) => {
+		object = await Mocks._normalize(object);
+
 		if (
 			!activitypub._constants.acceptedPostTypes.includes(object.type) ||
 			!activitypub.helpers.isUri(object.id) // sanity-check the id
@@ -166,31 +257,10 @@ Mocks.post = async (objects) => {
 			url,
 			attributedTo: uid,
 			inReplyTo: toPid,
-			published, updated, name, content, source,
+			published, updated, name, content, sourceContent,
 			type, to, cc, audience, attachment, tag, image,
 		} = object;
 
-		switch (true) { // non-string attributedTo handling
-			case Array.isArray(uid): {
-				uid = uid.reduce((valid, cur) => {
-					if (typeof cur === 'string') {
-						valid.push(cur);
-					} else if (typeof cur === 'object') {
-						if (cur.type === 'Person' && cur.id) {
-							valid.push(cur.id);
-						}
-					}
-
-					return valid;
-				}, []);
-				uid = uid.shift(); // take first valid uid
-				break;
-			}
-
-			case typeof uid === 'object' && uid.hasOwnProperty('id'): {
-				uid = uid.id;
-			}
-		}
 		await activitypub.actors.assert(uid);
 
 		const resolved = await activitypub.helpers.resolveLocalId(toPid);
@@ -201,59 +271,6 @@ Mocks.post = async (objects) => {
 		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
-
-		let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
-		if (sourceContent) {
-			content = null;
-			sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(sourceContent, true);
-		} else if (content && content.length) {
-			content = sanitize(content, sanitizeConfig);
-			content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
-		} else {
-			content = '<em>This post did not contain any content.</em>';
-		}
-
-		switch (true) {
-			case image && image.hasOwnProperty('url') && !!image.url: {
-				image = image.url;
-				break;
-			}
-
-			case image && typeof image === 'string': {
-				// no change
-				break;
-			}
-
-			default: {
-				image = null;
-			}
-		}
-		if (image) {
-			const parsed = new URL(image);
-			if (!mime.getType(parsed.pathname).startsWith('image/')) {
-				activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
-				image = null;
-			}
-		}
-
-		if (url) { // Handle url array
-			if (Array.isArray(url)) {
-				url = url.reduce((valid, cur) => {
-					if (typeof cur === 'string') {
-						valid.push(cur);
-					} else if (typeof cur === 'object') {
-						if (cur.type === 'Link' && cur.href) {
-							if (!cur.mediaType || (cur.mediaType && cur.mediaType === 'text/html')) {
-								valid.push(cur.href);
-							}
-						}
-					}
-
-					return valid;
-				}, []);
-				url = url.shift(); // take first valid url
-			}
-		}
 
 		if (type === 'Video') {
 			attachment = attachment || [];
@@ -279,6 +296,19 @@ Mocks.post = async (objects) => {
 	}));
 
 	return single ? posts.pop() : posts;
+};
+
+Mocks.message = async (object) => {
+	object = await Mocks._normalize(object);
+
+	const message = {
+		mid: object.id,
+		uid: object.attributedTo,
+		content: object.content,
+		// ip: caller.ip,
+	};
+
+	return message;
 };
 
 Mocks.actors = {};

@@ -286,31 +286,30 @@ Notes.assertPrivate = async (object) => {
 		timestamp = Date.now();
 	}
 
+	const payload = await activitypub.mocks.message(object);
+
 	if (!roomId) {
-		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipients] });
+		roomId = await messaging.newRoom(payload.uid, { uids: [...recipients] });
 	}
 
 	// Add any new members to the chat
 	const added = Array.from(recipients).filter(uid => !participantUids.includes(uid));
 	const assertion = await activitypub.actors.assert(added);
 	if (assertion) {
-		await messaging.addUsersToRoom(object.attributedTo, added, roomId);
+		await messaging.addUsersToRoom(payload.uid, added, roomId);
 	}
 
 	// Add message to room
 	const message = await messaging.sendMessage({
-		mid: object.id,
-		uid: object.attributedTo,
-		roomId: roomId,
-		content: object.content,
-		toMid: toMid,
+		...payload,
 		timestamp: Date.now(),
-		// ip: caller.ip,
+		roomId: roomId,
+		toMid: toMid,
 	});
-	messaging.notifyUsersInRoom(object.attributedTo, roomId, message);
+	messaging.notifyUsersInRoom(payload.uid, roomId, message);
 
 	// Set real timestamp back so that the message shows even though it predates room joining
-	await messaging.setMessageField(object.id, 'timestamp', timestamp);
+	await messaging.setMessageField(payload.mid, 'timestamp', timestamp);
 
 	return { roomId };
 };
