@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Handle",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "No followers.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Létrehozva",
 	"alert.create-success": "Kategória sikeresen létrehozva!",

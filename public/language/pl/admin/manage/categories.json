@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Przydział",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Brak śledzących.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Utworzony",
 	"alert.create-success": "Kategoria pomyślnie dodana!",

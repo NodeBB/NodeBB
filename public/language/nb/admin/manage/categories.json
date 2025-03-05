@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Handle",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Ingen følgere",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Opprettet",
 	"alert.create-success": "Kategori opprettet!",

@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Sti",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Ingen følgjarar.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Oppretta",
 	"alert.create-success": "Kategori oppretta med suksess",

@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Handle",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "No followers.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "생성됨",
 	"alert.create-success": "카테고리를 성공적으로 생성했습니다!",

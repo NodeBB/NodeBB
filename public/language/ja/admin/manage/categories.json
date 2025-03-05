@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Handle",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "No followers.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "作成されました",
 	"alert.create-success": "カテゴリが正常に作成されました!",

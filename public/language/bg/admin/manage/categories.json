@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Идентификатор",
 	"federation.followers-id": "Ид.",
 	"federation.followers-none": "Няма последователи.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Създадена",
 	"alert.create-success": "Категорията е създадена успешно!",

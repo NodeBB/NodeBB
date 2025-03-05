@@ -94,6 +94,7 @@
 	"federation.followers-handle": "句柄",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "无关注者",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "创建",
 	"alert.create-success": "版块创建成功！",

@@ -94,6 +94,7 @@
 	"federation.followers-handle": "Xử lý",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Không có người theo dõi.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Đã tạo",
 	"alert.create-success": "Đã tạo chuyên mục thành công!",

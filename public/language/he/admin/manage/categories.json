@@ -94,6 +94,7 @@
 	"federation.followers-handle": "קישור",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "אין עוקבים.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "נוצר",
 	"alert.create-success": "קטגוריה נוצרה בהצלחה!",
