@@ -24,6 +24,7 @@
 			<i class="fa fa-fw fa-eye text-primary"></i> [[admin/manage/categories:view-category]]
 		</a>
 
+		{{{ if (template.name == "admin/manage/category") }}}
 		<hr class="my-1"/>
 
 		<button data-action="toggle" data-disabled="{(disabled || category.disabled)}" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
@@ -39,6 +40,6 @@
 		<button class="btn btn-ghost btn-sm d-flex gap-2 align-items-center purge">
 			<i class="fa fa-fw fa-trash text-danger"></i> [[admin/manage/categories:purge]]
 		</button>
-
+		{{{ end }}}
 	</div>
 </div>
