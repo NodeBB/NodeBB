@@ -8,6 +8,10 @@
 		<button class="btn btn-ghost btn-sm d-flex gap-2 align-items-center copy-settings">
 			<i class="fa fa-fw fa-files-o text-primary"></i> [[admin/manage/categories:copy-settings]]
 		</button>
+		{{{ else }}}
+		<a href="{config.relative_path}/admin/manage/categories/{(cid || category.cid)}" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center">
+			<i class="fa fa-fw fa-edit text-primary"></i> [[admin/manage/categories:edit]]
+		</a>
 		{{{ end }}}
 
 		<a class="btn btn-ghost btn-sm d-flex gap-2 align-items-center" href="{config.relative_path}/admin/manage/categories/{(cid || category.cid)}/analytics"><i class="fa fa-fw fa-chart-simple text-primary"></i> [[admin/manage/categories:analytics]]</a>
