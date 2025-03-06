@@ -250,6 +250,21 @@ get:
                           type: boolean
                         active:
                           type: boolean
+                        isTheme:
+                          type: boolean
+                        error:
+                          type: boolean
+                        version:
+                          type: string
+                        license:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            text:
+                              type: string
+                        outdated:
+                          type: boolean
                       required:
                         - name
                         - updated
@@ -260,6 +275,10 @@ get:
                         - id
                         - installed
                         - active
+                        - isTheme
+                        - version
+                        - license
+                        - outdated
                   incompatible:
                     type: array
                     items:
