@@ -1,0 +1,28 @@
+{{- if and .Values.nodebb.persistence.enabled (not .Values.nodebb.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "nodebb.fullname" . }}-data
+  namespace: {{ .Release.Namespace }}
+{{- with .Values.nodebb.persistence.annotations  }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "nodebb.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes: {{ .Values.nodebb.persistence.accessModes | toJson }}
+  resources:
+    requests:
+      storage: {{ .Values.nodebb.persistence.size | quote }}
+{{- if .Values.nodebb.persistence.storageClass }}
+{{- if (eq "-" .Values.nodebb.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.nodebb.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
