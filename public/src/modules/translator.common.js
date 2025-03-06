@@ -260,7 +260,7 @@ module.exports = function (utils, load, warn) {
 				return Promise.all(argsToTranslate).then(function (translatedArgs) {
 					let out = translated;
 					translatedArgs.forEach(function (arg, i) {
-						let escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
+						let escaped = `<bdi>${arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;')}</bdi>`;
 						// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
 						escaped = escaped.replace(/&amp;lsqb;/g, '&lsqb;')
 							.replace(/&amp;rsqb;/g, '&rsqb;');
