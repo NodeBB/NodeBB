@@ -36,6 +36,16 @@
 					<textarea id="cid-{category.cid}-description" data-name="description" class="form-control category_description description" rows="4" />{category.description}</textarea>
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label" for="cid-{category.cid}-federatedDescription">
+						[[admin/manage/categories:federatedDescription]]
+					</label>
+					<textarea id="cid-{category.cid}-federatedDescription" data-name="federatedDescription" class="form-control" rows="2" placeholder="[[admin/manage/categories:federatedDescription.default]]" />{category.federatedDescription}</textarea>
+					<p class="form-text">
+						[[admin/manage/categories:federatedDescription.help]]
+					</p>
+				</div>
+
 				<div class="mb-3 d-flex justify-content-between align-items-center gap-2">
 					<label class="form-label" for="cid-{category.cid}-parentCid">[[admin/manage/categories:parent-category]]</label>
 					<div id="parent-category-selector">

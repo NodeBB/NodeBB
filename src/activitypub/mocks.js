@@ -413,10 +413,11 @@ Mocks.actors.user = async (uid) => {
 };
 
 Mocks.actors.category = async (cid) => {
-	const {
+	let {
 		name, handle: preferredUsername, slug,
-		descriptionParsed: summary, backgroundImage,
-	} = await categories.getCategoryData(cid);
+		descriptionParsed: summary, federatedDescription, backgroundImage,
+	} = await categories.getCategoryFields(cid,
+		['name', 'handle', 'slug', 'description', 'descriptionParsed', 'federatedDescription', 'backgroundImage']);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
 	let icon;
@@ -437,6 +438,9 @@ Mocks.actors.category = async (cid) => {
 		};
 	}
 
+	// Append federated desc.
+	const fallback = await translator.translate('[[admin/manage/categories:federatedDescription.default]]');
+	summary += `<hr /><p dir="auto">${federatedDescription || fallback}</p>\n`;
 
 	return {
 		'@context': [
