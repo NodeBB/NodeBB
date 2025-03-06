@@ -64,7 +64,7 @@
         "connect-redis": "8.0.1",
         "cookie-parser": "1.4.7",
         "cron": "4.1.0",
-        "cropperjs": "1.6.2",
+        "cropperjs": "2.0.0",
         "csrf-sync": "4.0.3",
         "daemon": "1.1.0",
         "diff": "7.0.0",
