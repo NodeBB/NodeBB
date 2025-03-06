@@ -1,6 +1,5 @@
 
-<div class="px-lg-4">
-
+<div class="acp-page-container">
 	<div class="row border-bottom py-2 m-0 mb-3 sticky-top acp-page-main-header align-items-center">
 		<div class="col-12 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:federation.title, {name}]]</h4>
@@ -15,7 +14,7 @@
 	</div>
 	{{{ else }}}
 	<div class="row settings m-0">
-		<div class="col-12 px-0 mb-4" tabindex="0">
+		<div class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<div id="site-settings" class="mb-4">
 				<form role="form">
 					<h5 class="fw-bold settings-header">[[admin/manage/categories:federation.syncing-header]]</h5>
@@ -95,6 +94,8 @@
 				</form>
 			</div>
 		</div>
+
+		<!-- IMPORT admin/partials/category/sidebar.tpl -->
 	</div>
 	{{{ end }}}
 </div>
