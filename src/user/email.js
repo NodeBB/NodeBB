@@ -134,6 +134,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		options.email = await user.getUserField(uid, 'email');
 	}
 	if (!options.email) {
+		winston.warn(`[user/email] No email found for uid ${uid}`);
 		return;
 	}
 
