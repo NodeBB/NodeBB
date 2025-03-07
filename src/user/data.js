@@ -21,7 +21,7 @@ const intFields = [
 
 module.exports = function (User) {
 	const fieldWhitelist = [
-		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
+		'uid', 'username', 'userslug', 'url', 'email', 'email:confirmed', 'joindate',
 		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'birthday',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
@@ -233,6 +233,12 @@ module.exports = function (User) {
 			if (user.hasOwnProperty('username')) {
 				parseDisplayName(user, uidToSettings);
 				user.username = validator.escape(user.username ? user.username.toString() : '');
+			}
+
+			if (user.hasOwnProperty('url')) {
+				// works around renderOverride supplying `url` to templates
+				user.remoteUrl = user.url;
+				delete user.url;
 			}
 
 			if (user.hasOwnProperty('email')) {
