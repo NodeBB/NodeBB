@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Can't add users to chat room.",
     "cant-remove-users-from-chat-room": "Can't remove users from chat room.",
     "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Je hebt al gestemd voor deze post.",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen is uitgeschakeld",

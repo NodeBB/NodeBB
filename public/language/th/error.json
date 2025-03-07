@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "ไม่สามารถเพิ่มผู้ใช้งานลงในห้องแชท",
     "cant-remove-users-from-chat-room": "ไม่สามารถลบผู้ใช้งานจากห้องแชท",
     "chat-room-name-too-long": "ชื่อห้องแชทยาวเกินไป ต้องยาวไม่เกิน %1 ตัวอักษร",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "คุณได้โหวตโพสต์นี้แล้ว",
     "reputation-system-disabled": "ระบบชื่อเสียงถูกปิดใช้งาน",
     "downvoting-disabled": "\"การโหวตลง\" ถูกปิดใช้งาน",

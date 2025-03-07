@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Kan ikke legge til brukere i chatterom.",
     "cant-remove-users-from-chat-room": "Kan ikke fjerne brukere fra chatterom.",
     "chat-room-name-too-long": "Navnet på chatterommet er for langt. Navn kan ikke være lengre enn %1 tegn.",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Du har allerede stemt på dette innlegget",
     "reputation-system-disabled": "Omdømmesystemet er deaktivert.",
     "downvoting-disabled": "Nedstemming er deaktivert",

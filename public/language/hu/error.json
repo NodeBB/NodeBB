@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Nem lehet felhasználókat hozzáadni a csevegőszobához.",
     "cant-remove-users-from-chat-room": "A felhasználókat nem lehet eltávolítani a csevegőszobából.",
     "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Már szavaztál erre a hozzászólásra.",
     "reputation-system-disabled": "Hírnév funkció kikapcsolva.",
     "downvoting-disabled": "Leszavazás funkció kikapcsolva",

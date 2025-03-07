@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Impossibile aggiungere utenti alla stanza chat.",
     "cant-remove-users-from-chat-room": "Impossibile rimuovere gli utenti dalla stanza chat.",
     "chat-room-name-too-long": "Nome della stanza chat troppo lungo. I nomi non possono essere più lunghi di %1 caratteri.",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Hai già votato per questo post",
     "reputation-system-disabled": "Il sistema di reputazione è disabilitato.",
     "downvoting-disabled": "Votata negativamente è disabilitato",
