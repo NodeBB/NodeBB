@@ -45,6 +45,12 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="maximumRemoteChatMessageLength">[[admin/settings/chat:max-length-remote]]</label>
+					<input id="maximumRemoteChatMessageLength" type="text" class="form-control" value="5000" data-field="maximumRemoteChatMessageLength">
+					<p class="form-text">[[admin/settings/chat:max-length-remote-help]]</p>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="maximumUsersInChatRoom">[[admin/settings/chat:max-room-size]]</label>
 					<input id="maximumUsersInChatRoom" type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
 				</div>
