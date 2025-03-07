@@ -5,6 +5,8 @@
 	"disable-editing": "Deaktiver redigering/sletting av chatmeldinger",
 	"disable-editing-help": "Administratorer og globale moderatorer er unntatt fra denne begrensningen",
 	"max-length": "Maksimal lengde på chatmeldinger",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Maksimal lengde på navn på chatrom",
 	"max-room-size": "Maksimalt antall brukere i chatrom",
 	"delay": "Tid mellom chatmeldinger (ms)",

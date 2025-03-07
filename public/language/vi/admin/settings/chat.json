@@ -5,6 +5,8 @@
 	"disable-editing": "Tắt chỉnh sửa / xóa tin nhắn trò chuyện",
 	"disable-editing-help": "Quản trị viên và người điều hành chung được miễn hạn chế này",
 	"max-length": "Độ dài tối đa của tin nhắn trò chuyện",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Độ dài tối đa tên phòng trò chuyện",
 	"max-room-size": "Số lượng người dùng tối đa trong phòng trò chuyện",
 	"delay": "Thời gian giữa các tin nhắn trò chuyện (ms)",

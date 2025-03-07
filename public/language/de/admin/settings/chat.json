@@ -5,6 +5,8 @@
 	"disable-editing": "Chatnachrichtenbearbeitung/löschung deaktivieren",
 	"disable-editing-help": "Administratoren und globale Moderatoren sind von dieser Einschränkung ausgenommen",
 	"max-length": "Maximale Länge von Chatnachrichten",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Maximale Länge der Namen von Chaträumen",
 	"max-room-size": "Maximale Anzahl von Benutzern in Chatrooms",
 	"delay": "Zeit zwischen Chat-Nachrichten (ms)",
