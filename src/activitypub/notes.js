@@ -9,6 +9,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const messaging = require('../messaging');
+const notifications = require('../notifications');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -287,6 +288,20 @@ Notes.assertPrivate = async (object) => {
 	}
 
 	const payload = await activitypub.mocks.message(object);
+
+	try {
+		await messaging.checkContent(payload.content, false);
+	} catch (e) {
+		const { displayname, userslug } = await user.getUserFields(payload.uid, ['displayname', 'userslug']);
+		const notification = await notifications.create({
+			bodyShort: `[[error:remote-chat-received-too-long, ${displayname}]]`,
+			path: `/user/${userslug}`,
+			nid: `error:chat:uid:${payload.uid}`,
+			from: payload.uid,
+		});
+		notifications.push(notification, Array.from(recipients).filter(uid => utils.isNumber(uid)));
+		return null;
+	}
 
 	if (!roomId) {
 		roomId = await messaging.newRoom(payload.uid, { uids: [...recipients] });
