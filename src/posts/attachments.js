@@ -39,9 +39,13 @@ Attachments.update = async (pid, attachments) => {
 		hash: [],
 	};
 	const hashes = [];
-	attachments.filter(Boolean).forEach(({ _type, mediaType, url, name, width, height }) => {
-		if (!url) { // only required property
+	attachments.filter(Boolean).forEach(({ _type, mediaType, href, url, name, width, height }) => {
+		if (!url && !href) { // one or the other are required
 			return;
+		}
+
+		if (!url && href) {
+			url = href;
 		}
 
 		const hash = crypto.createHash('sha256').update(url).digest('hex');
