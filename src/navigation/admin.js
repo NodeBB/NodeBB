@@ -85,6 +85,19 @@ admin.get = async function () {
 	return cache.map(item => ({ ...item }));
 };
 
+admin.update = async function (route, data) {
+	const ids = await db.getSortedSetRange('navigation:enabled', 0, -1);
+	const navItems = await db.getObjects(ids.map(id => `navigation:enabled:${id}`));
+	const matchedRoutes = navItems.filter(item => item && item.route === route);
+	if (matchedRoutes.length) {
+		await db.setObjectBulk(
+			matchedRoutes.map(item => [`navigation:enabled:${item.order}`, data])
+		);
+		cache = null;
+		pubsub.publish('admin:navigation:save');
+	}
+};
+
 async function getAvailable() {
 	const core = require('../../install/data/navigation.json').map((item) => {
 		item.core = true;

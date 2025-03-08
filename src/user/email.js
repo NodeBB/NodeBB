@@ -124,23 +124,22 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		};
 	}
 
-	const confirm_code = utils.generateUUID();
-	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
-
-	const { emailConfirmInterval, emailConfirmExpiry } = meta.config;
-
 	// If no email passed in (default), retrieve email from uid
 	if (!options.email || !options.email.length) {
 		options.email = await user.getUserField(uid, 'email');
 	}
 	if (!options.email) {
+		winston.warn(`[user/email] No email found for uid ${uid}`);
 		return;
 	}
 
+	const { emailConfirmInterval, emailConfirmExpiry } = meta.config;
 	if (!options.force && !await UserEmail.canSendValidation(uid, options.email)) {
 		throw new Error(`[[error:confirm-email-already-sent, ${emailConfirmInterval}]]`);
 	}
 
+	const confirm_code = utils.generateUUID();
+	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
 	const username = await user.getUserField(uid, 'username');
 	const data = await plugins.hooks.fire('filter:user.verify', {
 		uid,
