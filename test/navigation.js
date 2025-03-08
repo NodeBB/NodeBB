@@ -8,9 +8,8 @@ const navAdmin = require('../src/navigation/admin');
 
 describe('Navigation', () => {
 	before(async () => {
-		const navigation = require('../src/navigation/admin');
 		const data = require('../install/data/navigation.json');
-		await navigation.save(data);
+		await navAdmin.save(data);
 	});
 
 	it('should toggle /world route when ap is toggled', async () => {
