@@ -269,12 +269,9 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should push unread notifications on reconnect', (done) => {
+	it('should push unread notifications/chats on reconnect', async () => {
 		const socketMeta = require('../src/socket.io/meta');
-		socketMeta.reconnected({ uid: 1 }, {}, (err) => {
-			assert.ifError(err);
-			done();
-		});
+		await socketMeta.reconnected({ uid: 1 }, {});
 	});
 
 
