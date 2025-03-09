@@ -168,7 +168,7 @@
     "cant-add-users-to-chat-room": "Không thể thêm người dùng vào phòng trò chuyện.",
     "cant-remove-users-from-chat-room": "Không thể xóa người dùng khỏi phòng trò chuyện.",
     "chat-room-name-too-long": "Tên phòng trò chuyện quá dài. Tên không được dài hơn %1 ký tự.",
-    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
+    "remote-chat-received-too-long": "Bạn đã nhận được một tin nhắn từ %1, nhưng nó đã quá dài và đã bị từ chối.",
     "already-voting-for-this-post": "Bạn đã bỏ phiếu cho bài viết này",
     "reputation-system-disabled": "Hệ thống đánh giá uy tính đã tắt.",
     "downvoting-disabled": "Phản đối đã bị tắt",
