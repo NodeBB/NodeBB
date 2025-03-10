@@ -244,6 +244,9 @@ uploadsController.uploadFile = async function (req, res, next) {
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
+	if (!await file.exists(path.join(nconf.get('upload_path'), params.folder))) {
+		return next(new Error('[[error:invalid-path]]'));
+	}
 	try {
 		const data = await file.saveFileToLocal(uploadedFile.name, params.folder, uploadedFile.path);
 		res.json([{ url: data.url }]);
