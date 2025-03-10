@@ -26,13 +26,13 @@ uploadsController.get = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
 	let files = [];
 	try {
-		files = await fs.promises.readdir(currentFolder);
+		await checkSymLinks(req.query.dir)
+		files = await getFilesInFolder(currentFolder);
 	} catch (err) {
 		winston.error(err.stack);
 		return next(new Error('[[error:invalid-path]]'));
 	}
 	try {
-		files = files.filter(filename => filename !== '.gitignore');
 		const itemCount = files.length;
 		const start = Math.max(0, (page - 1) * itemsPerPage);
 		const stop = start + itemsPerPage;
@@ -72,6 +72,30 @@ uploadsController.get = async function (req, res, next) {
 	}
 };
 
+async function checkSymLinks(folder) {
+	let dir = path.normalize(folder || '');
+	while (dir.length && dir !== '.') {
+		const nextPath = path.join(nconf.get('upload_path'), dir);
+		// eslint-disable-next-line no-await-in-loop
+		const stat = await fs.promises.lstat(nextPath);
+		if (stat.isSymbolicLink()) {
+			throw new Error('[[invalid-path]]');
+		}
+		dir = path.dirname(dir);
+	}
+}
+
+async function getFilesInFolder(folder) {
+	const dirents = await fs.promises.readdir(folder, { withFileTypes: true });
+	const files = [];
+	for await (const dirent of dirents) {
+		if (!dirent.isSymbolicLink() && dirent.name !== '.gitignore') {
+			files.push(dirent.name);
+		}
+	}
+	return files;
+}
+
 function buildBreadcrumbs(currentFolder) {
 	const crumbs = [];
 	const parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
@@ -102,14 +126,14 @@ async function getFileData(currentDir, file) {
 	const stat = await fs.promises.stat(pathToFile);
 	let filesInDir = [];
 	if (stat.isDirectory()) {
-		filesInDir = await fs.promises.readdir(pathToFile);
+		filesInDir = await getFilesInFolder(pathToFile);
 	}
 	const url = `${nconf.get('upload_url') + currentDir.replace(nconf.get('upload_path'), '')}/${file}`;
 	return {
 		name: file,
 		path: pathToFile.replace(path.join(nconf.get('upload_path'), '/'), ''),
 		url: url,
-		fileCount: Math.max(0, filesInDir.length - 1), // ignore .gitignore
+		fileCount: filesInDir.length,
 		size: stat.size,
 		sizeHumanReadable: `${(stat.size / 1024).toFixed(1)}KiB`,
 		isDirectory: stat.isDirectory(),
