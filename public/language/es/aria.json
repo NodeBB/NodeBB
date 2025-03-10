@@ -1,9 +1,9 @@
 {
-	"post-sort-option": "Post sort option, %1",
-	"topic-sort-option": "Topic sort option, %1",
-	"user-avatar-for": "User avatar for %1",
-	"profile-page-for": "Profile page for user %1",
-	"user-watched-tags": "User watched tags",
-	"delete-upload-button": "Delete upload button",
-	"group-page-link-for": "Group page link for %1"
+	"post-sort-option": "Ordenar publicación, %1",
+	"topic-sort-option": "Ordenar tema, %1",
+	"user-avatar-for": "Avatar de usuario para %1",
+	"profile-page-for": "Página de perfil para usuario %1",
+	"user-watched-tags": "Etiquetas de usuario seguidas",
+	"delete-upload-button": "Eliminar botón de subida ",
+	"group-page-link-for": "Link de página de grupo para %1"
 }

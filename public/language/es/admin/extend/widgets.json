@@ -5,15 +5,15 @@
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "Clonar widgets de",
 	"containers.available": "Contenedores Disponibles",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "Arrastra y suelta encima de cualquier widget",
 	"containers.none": "Ninguno",
 	"container.well": "Bien",
 	"container.jumbotron": "Jumbotron",
 	"container.card": "Card",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
-	"container.title": "Title",
-	"container.body": "Body",
+	"container.title": "Título",
+	"container.body": "Cuerpo",
 	"container.alert": "Alerta (alert)",
 
 	"alert.confirm-delete": "Estás seguro/a de que deseas borrar este widget?",
@@ -32,6 +32,6 @@
 	"start-date": "Start date",
 	"end-date": "End date",
 	"hide-on-mobile": "Ocultar en móviles",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-drafts": "Ocultar borradores",
+	"show-drafts": "Mostrar borradores"
 }

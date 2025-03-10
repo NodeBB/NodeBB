@@ -9,8 +9,8 @@
 	"update": "Actualizar",
 	"updated": "Actualizado",
 	"resolved": "Resuelto",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Agregado",
+	"report-rescinded": "Anulado",
 	"target-purged": "El contenido al que se refiere este indicador ha sido purgado y ya no está disponible.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 
@@ -84,18 +84,18 @@
 	"modal-reason-offensive": "Ofensivo",
 	"modal-reason-other": "Otro (especificar debajo)",
 	"modal-reason-custom": "Razón para reportar este contenido...",
-	"modal-notify-remote": "Forward this report to %1",
+	"modal-notify-remote": "Envíar este reporte a %1",
 	"modal-submit": "Enviar reporte",
 	"modal-submit-success": "El contenido se ha reportado para moderación.",
 
-	"modal-confirm-rescind": "Rescind Report?",
+	"modal-confirm-rescind": "¿Anular reporte?",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"confirm-purge": "Are you sure you want to permanently delete these flags?",
-	"purge-cancelled": "Flag Purge Cancelled",
-	"bulk-purge": "Purge Flag(s)",
+	"confirm-purge": "¿Estás seguro de que quieres eliminar permanentemente estos reportes?",
+	"purge-cancelled": "Limpieza de reportes cancelada",
+	"bulk-purge": "Limpiar reporte(s)",
 	"bulk-success": "%1 flags updated",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "Marcado <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

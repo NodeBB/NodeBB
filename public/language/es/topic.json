@@ -61,8 +61,8 @@
     "user-restored-topic-on": "%1 restored this topic on %2",
     "user-moved-topic-from-ago": "%1 moved this topic from %2 %3",
     "user-moved-topic-from-on": "%1 moved this topic from %2 on %3",
-    "user-shared-topic-ago": "%1 shared this topic %2",
-    "user-shared-topic-on": "%1 shared this topic on %2",
+    "user-shared-topic-ago": "$1 ha compartido este tema %2",
+    "user-shared-topic-on": "%1 ha compartido este tema en %2",
     "user-queued-post-ago": "%1 <a href=\"%2\">queued</a> post for approval %3",
     "user-queued-post-on": "%1 <a href=\"%2\">queued</a> post for approval on %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">referenced</a> this topic %3",
@@ -137,7 +137,7 @@
     "bookmarks": "Marcadores",
     "bookmarks.has-no-bookmarks": "No tienes ningún marcador aun.",
     "copy-permalink": "Copy Permalink",
-    "go-to-original": "View Original Post",
+    "go-to-original": "Mirar tema original",
     "loading-more-posts": "Cargando más mensajes",
     "move-topic": "Mover tema",
     "move-topics": "Mover temas",
@@ -223,6 +223,6 @@
     "post-tools": "Herramientas de la entrada",
     "unread-posts-link": "Enlace a entradas sin leer",
     "thumb-image": "Imagen miniatura del tema",
-    "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers": "Comparte",
+    "announcers-x": "Comparte (%1)"
 }
