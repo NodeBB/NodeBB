@@ -26,7 +26,7 @@ uploadsController.get = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
 	let files = [];
 	try {
-		await checkSymLinks(req.query.dir)
+		await checkSymLinks(req.query.dir);
 		files = await getFilesInFolder(currentFolder);
 	} catch (err) {
 		winston.error(err.stack);
