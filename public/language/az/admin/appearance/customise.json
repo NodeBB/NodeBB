@@ -1,0 +1,20 @@
+{
+	"customise": "Fərdiləşdirmək",
+	"custom-css": "Fərdi CSS/SASS",
+	"custom-css.description": "Buraya bütün digər üslublardan sonra tətbiq olunacaq öz CSS/SASS bəyannamələrinizi daxil edin.",
+	"custom-css.enable": "Fərdi CSS/SASS-ı aktiv edin",
+
+	"custom-js": "Fərdi JavaScript",
+	"custom-js.description": "Burada öz javascriptinizi daxil edin. Səhifə tamamilə yükləndikdən sonra yerinə yetiriləcək.",
+	"custom-js.enable": "Fərdi Javascript-i aktiv edin",
+
+	"custom-header": "Fərdi başlıq",
+	"custom-header.description": "Bura xüsusi HTML daxil edin (məs. Meta Teqlər və s.), o <code>&lt;head&gt;</code> forumunuzun işarələmə bölməsi. <a href=\"#custom-js\" data-toggle=\"tab\">Xüsusi Javascript</a> nişanı mövcud olduğu üçün skript teqlərinə icazə verilir, lakin bunlar qadağandır.",
+	"custom-header.enable": "Fərdi Başlığı aktivləşdir",
+
+	"custom-css.livereload": "Canlı Yenidən Yükləməni aktiv et",
+	"custom-css.livereload.description": "Hesabınızın altındakı hər bir cihazdakı bütün sessiyaları yadda saxla düyməsini kliklədiyiniz zaman yeniləməyə məcbur etmək üçün bunu aktiv edin",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Bootstrap dəyişənlərini burada ləğv edin. Siz həmçinin <a href=\"https://bootstrap.build/app\">bootstrap.build</a> kimi alətdən istifadə edib nəticəni bura yapışdıra bilərsiniz. <br/>Dəyişikliklər yenidən qurmaq və yenidən işə salmaq tələb olunur.",
+	"bsvariables.enable": "_variables.scss-i aktivləşdirin"
+}

@@ -1,0 +1,13 @@
+{
+    "themes": "Mövzular",
+    "checking-for-installed": "Quraşdırılmış mövzular yoxlanılır...",
+    "homepage": "Əsas səhifə",
+    "select-theme": "Mövzu seç",
+    "revert-theme": "Mövzunu geri qaytar",
+    "current-theme": "Cari mövzu",
+    "no-themes": "Quraşdırılmış mövzu tapılmadı",
+    "revert-confirm": "Defolt NodeBB mövzusunu bərpa etmək istədiyinizə əminsiniz?",
+    "theme-changed": "Mövzu dəyişdirildi",
+    "revert-success": "Siz NodeBB-ni müvəffəqiyyətlə defolt mövzuya qaytardınız.",
+    "restart-to-activate": "Zəhmət olmasa, bu mövzunu tam aktivləşdirmək üçün NodeBB-ni yenidən qurun və başladın."
+}

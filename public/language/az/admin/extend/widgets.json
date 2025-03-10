@@ -1,0 +1,37 @@
+{
+	"widgets": "Vidjetlər",
+	"available": "Mövcud vidjetlər",
+	"explanation": "Açılan menyudan vidceti seçin və sonra onu sol tərəfdəki şablonun widget sahəsinə sürükləyib buraxın.",
+	"none-installed": "Heç bir vidcet tapılmadı! <a href=\"%1\">Pluginlərin</a> idarəetmə panelində əsas vidjet plaginini aktivləşdirin.",
+	"clone-from": "Vidjetləri klonla",
+	"containers.available": "Mövcud konteynerlər",
+	"containers.explanation": "İstənilən vidcetin üzərinə sürükləyin və buraxın",
+	"containers.none": "Heç biri",
+	"container.well": "Yaxşı",
+	"container.jumbotron": "Jumbotron",
+	"container.card": "Kart",
+	"container.card-header": "Kart başlığı",
+	"container.card-body": "Kart gövdəsi",
+	"container.title": "Başlıq",
+	"container.body": "Gövdə",
+	"container.alert": "Xəbərdarlıq",
+
+	"alert.confirm-delete": "Bu vidceti silmək istədiyinizə əminsiniz?",
+	"alert.updated": "Vidjetlər yeniləndi",
+	"alert.update-success": "Vidjetlər uğurla yeniləndi",
+	"alert.clone-success": "Vidjetlər uğurla klonlandı",
+
+	"error.select-clone": "Zəhmət olmasa klonlamaq üçün səhifə seçin",
+
+	"title": "Başlıq",
+	"title.placeholder": "Başlıq (yalnız bəzi konteynerlərdə göstərilir)",
+	"container": "Konteyner",
+	"container.placeholder": "Konteyneri sürükləyib buraxın və ya bura HTML daxil edin.",
+	"show-to-groups": "Qruplara göstər",
+	"hide-from-groups": "Qruplardan gizlət",
+	"start-date": "Başlama tarixi",
+	"end-date": "Bitmə tarixi",
+	"hide-on-mobile": "Mobildə gizlət",
+	"hide-drafts": "Qaralamaları gizlət",
+	"show-drafts": "Qaralamaları göstər"
+}

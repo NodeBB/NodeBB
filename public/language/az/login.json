@@ -1,0 +1,12 @@
+{
+    "username-email": "İstifadəçi adı / E-poçt",
+    "username": "İstifadəçi adı",
+    "remember-me": "Məni xatırlamaq?",
+    "forgot-password": "Şifrəni unutmusunuz?",
+    "alternative-logins": "Alternativ girişlər",
+    "failed-login-attempt": "Giriş uğursuz oldu",
+    "login-successful": "Siz uğurla daxil oldunuz!",
+    "dont-have-account": "Sizin hesabınız yoxdur?",
+    "logged-out-due-to-inactivity": "Siz fəaliyyətsizlik səbəbindən İdarəetmə Panelindən çıxmısınız",
+    "caps-lock-enabled": "Caps Lock aktivdir"
+}
