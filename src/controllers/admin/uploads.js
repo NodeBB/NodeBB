@@ -3,6 +3,7 @@
 const path = require('path');
 const nconf = require('nconf');
 const fs = require('fs');
+const winston = require('winston');
 const sanitizeHtml = require('sanitize-html');
 
 const meta = require('../../meta');
@@ -23,8 +24,14 @@ uploadsController.get = async function (req, res, next) {
 	}
 	const itemsPerPage = 20;
 	const page = parseInt(req.query.page, 10) || 1;
+	let files = [];
 	try {
-		let files = await fs.promises.readdir(currentFolder);
+		files = await fs.promises.readdir(currentFolder);
+	} catch (err) {
+		winston.error(err.stack);
+		return next(new Error('[[error:invalid-path]]'));
+	}
+	try {
 		files = files.filter(filename => filename !== '.gitignore');
 		const itemCount = files.length;
 		const start = Math.max(0, (page - 1) * itemsPerPage);
