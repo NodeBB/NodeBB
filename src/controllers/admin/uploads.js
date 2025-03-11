@@ -81,7 +81,11 @@ async function checkSymLinks(folder) {
 		if (stat.isSymbolicLink()) {
 			throw new Error('[[invalid-path]]');
 		}
-		dir = path.dirname(dir);
+		const newDir = path.dirname(dir);
+		if (newDir === dir) {
+			break;
+		}
+		dir = newDir;
 	}
 }
 
