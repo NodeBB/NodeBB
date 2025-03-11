@@ -22,8 +22,8 @@ describe('FEPs', () => {
 		await install.giveWorldPrivileges();
 	});
 
-	describe.only('1b12', () => {
-		describe('announceObject()', () => {
+	describe('1b12', () => {
+		describe('announce()', () => {
 			let cid;
 			let uid;
 			let adminUid;
@@ -49,7 +49,7 @@ describe('FEPs', () => {
 			});
 
 			it('should be called when a topic is moved from uncategorized to another category', async () => {
-				const { topicData } = await topics.post({
+				const { topicData, postData } = await topics.post({
 					uid,
 					cid: -1,
 					title: utils.generateUUID(),
@@ -63,7 +63,13 @@ describe('FEPs', () => {
 					cid,
 				});
 
-				assert.strictEqual(activitypub._sent.size, 1);
+				assert.strictEqual(activitypub._sent.size, 2);
+
+				const key = Array.from(activitypub._sent.keys())[0];
+				const activity = activitypub._sent.get(key);
+
+				assert(activity && activity.object && typeof activity.object === 'object');
+				assert.strictEqual(activity.object.id, `${nconf.get('url')}/post/${postData.pid}`);
 			});
 
 			it('should be called for a newly forked topic', async () => {
@@ -78,17 +84,47 @@ describe('FEPs', () => {
 					topics.reply({ uid, tid, content: utils.generateUUID() }),
 					topics.reply({ uid, tid, content: utils.generateUUID() }),
 				]);
-				const forked = await topics.createTopicFromPosts(
+				await topics.createTopicFromPosts(
 					adminUid, utils.generateUUID(), [reply1Pid, reply2Pid], tid, cid
 				);
 
-				assert.strictEqual(activitypub._sent.size, 1);
+				assert.strictEqual(activitypub._sent.size, 2);
 
 				const key = Array.from(activitypub._sent.keys())[0];
 				const activity = activitypub._sent.get(key);
 
-				assert(activity);
-				assert.strictEqual(activity.object, `${nconf.get('url')}/post/${reply1Pid}`);
+				assert(activity && activity.object && typeof activity.object === 'object');
+				assert.strictEqual(activity.object.id, `${nconf.get('url')}/post/${reply1Pid}`);
+			});
+
+			// it('should be called when a post is moved to another topic', async () => {
+			//
+			// });
+		});
+
+		describe('announceObject()', () => {
+			let cid;
+			let uid;
+			let adminUid;
+
+			before(async () => {
+				const name = utils.generateUUID();
+				const description = utils.generateUUID();
+				({ cid } = await categories.create({ name, description }));
+
+				adminUid = await user.create({ username: utils.generateUUID() });
+				await groups.join('administrators', adminUid);
+				uid = await user.create({ username: utils.generateUUID() });
+
+				const { id: followerId, actor } = helpers.mocks.actor();
+				activitypub._cache.set(`0;${followerId}`, actor);
+				user.setCategoryWatchState(followerId, [cid], categories.watchStates.tracking);
+
+				activitypub._sent.clear();
+			});
+
+			afterEach(() => {
+				activitypub._sent.clear();
 			});
 		});
 	});

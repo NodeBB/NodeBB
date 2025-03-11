@@ -754,6 +754,38 @@ Mocks.notes.private = async ({ messageObj }) => {
 	return object;
 };
 
+Mocks.activities = {};
+
+Mocks.activities.create = async (pid, uid, post) => {
+	// Local objects only, post optional
+	if (!utils.isNumber(pid)) {
+		throw new Error('[[error:invalid-pid]]');
+	}
+
+	if (!post) {
+		post = (await posts.getPostSummaryByPids([pid], uid, { stripTags: false })).pop();
+		if (!post) {
+			throw new Error('[[error:invalid-pid]]');
+		}
+	}
+
+	const object = await activitypub.mocks.notes.public(post);
+	const { to, cc, targets } = await activitypub.buildRecipients(object, { pid, uid: post.user.uid });
+	object.to = to;
+	object.cc = cc;
+
+	const activity = {
+		id: `${object.id}#activity/create/${Date.now()}`,
+		type: 'Create',
+		actor: object.attributedTo,
+		to,
+		cc,
+		object,
+	};
+
+	return { activity, targets };
+};
+
 Mocks.tombstone = async properties => ({
 	'@context': 'https://www.w3.org/ns/activitystreams',
 	type: 'Tombstone',

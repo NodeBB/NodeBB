@@ -88,8 +88,10 @@ module.exports = function (Topics) {
 			}),
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], mainPost.votes, tid),
 			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` }),
-			activitypub.feps.announceObject(pids[0]),
 		]);
+
+		const { activity } = await activitypub.mocks.activities.create(pids[0], uid);
+		await activitypub.feps.announce(pids[0], activity);
 
 		plugins.hooks.fire('action:topic.fork', { tid, fromTid, uid });
 

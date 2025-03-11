@@ -342,7 +342,8 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 				activitypubApi.announce.note(caller, { tid });
-				activitypub.feps.announceObject(topicData.mainPid);
+				const { activity } = await activitypub.mocks.activities.create(topicData.mainPid, caller.uid);
+				await activitypub.feps.announce(topicData.mainPid, activity);
 			}
 
 			await events.log({
