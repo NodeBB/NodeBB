@@ -16,12 +16,6 @@ UserObject:
       type: string
       description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
       example: dragon-fruit
-    remoteUrl:
-      type: string
-      description: |
-        URL to the remote user's original profile.
-        This value is present only if the requested user is not local to the forum.
-      nullable: true
     email:
       type: string
       description: Email address associated with the user account
@@ -219,12 +213,6 @@ UserObjectFull:
       type: string
       description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
       example: dragon-fruit
-    remoteUrl:
-      type: string
-      description: |
-        URL to the remote user's original profile.
-        This value is present only if the requested user is not local to the forum.
-      nullable: true
     email:
       type: string
       description: Email address associated with the user account
