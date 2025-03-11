@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Mật Khẩu",
 	"smtp-transport.pool": "Bật kết nối gộp",
 	"smtp-transport.pool-help": "Việc gộp các kết nối ngăn NodeBB tạo kết nối mới cho mọi email. Tùy chọn này chỉ áp dụng nếu Truyền tải SMTP được bật.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Sửa Mẫu Email",
 	"template.select": "Chọn Mẫu Email",

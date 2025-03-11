@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Passord",
 	"smtp-transport.pool": "Aktiver pooled-tilkoblinger",
 	"smtp-transport.pool-help": "Pooling forhindrer NodeBB fra å opprette en ny tilkobling for hver e-post. Dette gjelder bare hvis SMTP Transport er aktivert.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Endre e-postmal",
 	"template.select": "Velg e-postmal",

@@ -28,6 +28,8 @@
 	"smtp-transport.password": "비밀번호",
 	"smtp-transport.pool": "연결 풀링 활성화",
 	"smtp-transport.pool-help": "연결을 풀링하면 모든 이메일마다 새로운 연결을 생성하지 않습니다. 이 옵션은 SMTP 전송이 활성화된 경우에만 적용됩니다.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "이메일 템플릿 수정",
 	"template.select": "이메일 템플릿 선택",

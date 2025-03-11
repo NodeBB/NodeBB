@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Jelszó",
 	"smtp-transport.pool": "Kapcsolat megőrzés engedélyezése",
 	"smtp-transport.pool-help": "A kapcsolat megőrzés megakadályozza a NodeBB-t abban, hogy minden email-hez új kapcsolatot nyisson. Ez a beállítás csak akkor érvényesül, ha az SMTP engedélyezett.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Email sablon szerkesztése",
 	"template.select": "Válassz email sablont",

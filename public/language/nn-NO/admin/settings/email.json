@@ -28,6 +28,8 @@
 	"smtp-transport.password": "SMTP-passord",
 	"smtp-transport.pool": "Aktiver tilkoplingspool",
 	"smtp-transport.pool-help": "Bruk pool for å redusere oppstartstid ved fleire e-postutsendingar.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Mal",
 	"template.select": "Vel mal",

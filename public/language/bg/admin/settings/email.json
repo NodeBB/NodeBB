@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Парола",
 	"smtp-transport.pool": "Включване на групираните връзки",
 	"smtp-transport.pool-help": "Групирането на връзките предотвратява създаването на нова връзка за всяко е-писмо. Тази настройка има ефект, само ако е включено „Транспорт чрез SMTP“.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Редактирана не шаблона за е-писма",
 	"template.select": "Изберете шаблон за е-писма",
