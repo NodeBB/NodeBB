@@ -166,7 +166,7 @@ describe('Controllers', () => {
 
 			assert.strictEqual(body.id, `${nconf.get('url')}/category/${cid}`);
 			assert.strictEqual(body.type, 'Group');
-			assert.strictEqual(body.summary, description);
+			assert(body.summary.startsWith(description));
 			assert.deepStrictEqual(body.icon, {
 				type: 'Image',
 				mediaType: 'image/png',

@@ -235,7 +235,7 @@ module.exports = function (User) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
-			if (user.hasOwnProperty('url')) {
+			if (user.hasOwnProperty('url') && !requestedFields.includes('url')) {
 				// works around renderOverride supplying `url` to templates
 				user.remoteUrl = user.url;
 				delete user.url;
