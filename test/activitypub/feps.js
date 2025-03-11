@@ -80,10 +80,8 @@ describe('FEPs', () => {
 					content: utils.generateUUID(),
 				});
 				const { tid } = topicData;
-				const [{ pid: reply1Pid }, { pid: reply2Pid }] = await Promise.all([
-					topics.reply({ uid, tid, content: utils.generateUUID() }),
-					topics.reply({ uid, tid, content: utils.generateUUID() }),
-				]);
+				const { pid: reply1Pid } = await topics.reply({ uid, tid, content: utils.generateUUID() });
+				const { pid: reply2Pid } = await topics.reply({ uid, tid, content: utils.generateUUID() });
 				await topics.createTopicFromPosts(
 					adminUid, utils.generateUUID(), [reply1Pid, reply2Pid], tid, cid
 				);
