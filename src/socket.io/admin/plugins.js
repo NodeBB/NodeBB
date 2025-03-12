@@ -23,7 +23,8 @@ Plugins.toggleActive = async function (socket, plugin_id) {
 
 Plugins.toggleInstall = async function (socket, data) {
 	const isInstalled = await plugins.isInstalled(data.id);
-	if (nconf.get('acpPluginInstallDisabled') && !isInstalled) {
+	const isStarterPlan = nconf.get('saas_plan') === 'starter';
+	if ((isStarterPlan || nconf.get('acpPluginInstallDisabled')) && !isInstalled) {
 		throw new Error('[[error:plugin-installation-via-acp-disabled]]');
 	}
 	postsCache.reset();

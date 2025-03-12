@@ -275,8 +275,12 @@ async function fireActionHook(hook, hookList, params) {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {
-			// eslint-disable-next-line
-			await hookObj.method(params);
+			try {
+				// eslint-disable-next-line
+				await hookObj.method(params);
+			} catch (err) {
+				winston.error(`[plugins] Error in hook ${hookObj.id}@${hookObj.hook} \n${err.stack}`);
+			}
 		}
 	}
 }

@@ -400,6 +400,17 @@ describe('Upload Controllers', () => {
 			assert.strictEqual(body.error, '[[error:invalid-path]]');
 		});
 
+		it('should fail to upload regular file if directory does not exist', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
+				params: JSON.stringify({
+					folder: 'does-not-exist',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:invalid-path]]');
+		});
+
 		describe('ACP uploads screen', () => {
 			it('should create a folder', async () => {
 				const { response } = await helpers.createFolder('', 'myfolder', jar, csrf_token);

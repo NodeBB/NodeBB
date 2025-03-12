@@ -153,7 +153,11 @@ Emailer.setupFallbackTransport = (config) => {
 		} else {
 			smtpOptions.service = String(config['email:smtpTransport:service']);
 		}
-
+		if (config['email:smtpTransport:allow-self-signed']) {
+			smtpOptions.tls = {
+				rejectUnauthorized: false,
+			};
+		}
 		Emailer.transports.smtp = nodemailer.createTransport(smtpOptions);
 		Emailer.fallbackTransport = Emailer.transports.smtp;
 	} else {

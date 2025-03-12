@@ -3,6 +3,8 @@
 const path = require('path');
 const nconf = require('nconf');
 const fs = require('fs');
+const winston = require('winston');
+const sanitizeHtml = require('sanitize-html');
 
 const meta = require('../../meta');
 const posts = require('../../posts');
@@ -22,9 +24,15 @@ uploadsController.get = async function (req, res, next) {
 	}
 	const itemsPerPage = 20;
 	const page = parseInt(req.query.page, 10) || 1;
+	let files = [];
 	try {
-		let files = await fs.promises.readdir(currentFolder);
-		files = files.filter(filename => filename !== '.gitignore');
+		await checkSymLinks(req.query.dir);
+		files = await getFilesInFolder(currentFolder);
+	} catch (err) {
+		winston.error(err.stack);
+		return next(new Error('[[error:invalid-path]]'));
+	}
+	try {
 		const itemCount = files.length;
 		const start = Math.max(0, (page - 1) * itemsPerPage);
 		const stop = start + itemsPerPage;
@@ -64,6 +72,34 @@ uploadsController.get = async function (req, res, next) {
 	}
 };
 
+async function checkSymLinks(folder) {
+	let dir = path.normalize(folder || '');
+	while (dir.length && dir !== '.') {
+		const nextPath = path.join(nconf.get('upload_path'), dir);
+		// eslint-disable-next-line no-await-in-loop
+		const stat = await fs.promises.lstat(nextPath);
+		if (stat.isSymbolicLink()) {
+			throw new Error('[[invalid-path]]');
+		}
+		const newDir = path.dirname(dir);
+		if (newDir === dir) {
+			break;
+		}
+		dir = newDir;
+	}
+}
+
+async function getFilesInFolder(folder) {
+	const dirents = await fs.promises.readdir(folder, { withFileTypes: true });
+	const files = [];
+	for await (const dirent of dirents) {
+		if (!dirent.isSymbolicLink() && dirent.name !== '.gitignore') {
+			files.push(dirent.name);
+		}
+	}
+	return files;
+}
+
 function buildBreadcrumbs(currentFolder) {
 	const crumbs = [];
 	const parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
@@ -94,14 +130,14 @@ async function getFileData(currentDir, file) {
 	const stat = await fs.promises.stat(pathToFile);
 	let filesInDir = [];
 	if (stat.isDirectory()) {
-		filesInDir = await fs.promises.readdir(pathToFile);
+		filesInDir = await getFilesInFolder(pathToFile);
 	}
 	const url = `${nconf.get('upload_url') + currentDir.replace(nconf.get('upload_path'), '')}/${file}`;
 	return {
 		name: file,
 		path: pathToFile.replace(path.join(nconf.get('upload_path'), '/'), ''),
 		url: url,
-		fileCount: Math.max(0, filesInDir.length - 1), // ignore .gitignore
+		fileCount: filesInDir.length,
 		size: stat.size,
 		sizeHumanReadable: `${(stat.size / 1024).toFixed(1)}KiB`,
 		isDirectory: stat.isDirectory(),
@@ -121,10 +157,49 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
+	if (uploadedFile.path.endsWith('.svg')) {
+		await sanitizeSvg(uploadedFile.path);
+	}
+
 	await validateUpload(uploadedFile, allowedImageTypes);
 	const filename = `category-${params.cid}${path.extname(uploadedFile.name)}`;
 	await uploadImage(filename, 'category', uploadedFile, req, res, next);
 };
+
+async function sanitizeSvg(filePath) {
+	const dirty = await fs.promises.readFile(filePath, 'utf8');
+	const clean = sanitizeHtml(dirty, {
+		allowedTags: [
+			'svg', 'g', 'defs', 'linearGradient', 'radialGradient', 'stop',
+			'circle', 'ellipse', 'polygon', 'polyline', 'path', 'rect',
+			'line', 'text', 'tspan', 'use', 'symbol', 'clipPath', 'mask', 'pattern',
+			'filter', 'feGaussianBlur', 'feOffset', 'feBlend', 'feColorMatrix', 'feMerge', 'feMergeNode',
+		],
+		allowedAttributes: {
+			'*': [
+				// Geometry
+				'x', 'y', 'x1', 'x2', 'y1', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
+				'width', 'height', 'd', 'points', 'viewBox', 'transform',
+
+				// Presentation
+				'fill', 'stroke', 'stroke-width', 'opacity',
+				'stop-color', 'stop-opacity', 'offset', 'style', 'class',
+
+				// Text
+				'text-anchor', 'font-size', 'font-family',
+
+				// Misc
+				'id', 'clip-path', 'mask', 'filter', 'gradientUnits', 'gradientTransform',
+				'xmlns', 'preserveAspectRatio',
+			],
+		},
+		parser: {
+			lowerCaseTags: false,
+			lowerCaseAttributeNames: false,
+		},
+	});
+	await fs.promises.writeFile(filePath, clean);
+}
 
 uploadsController.uploadFavicon = async function (req, res, next) {
 	const uploadedFile = req.files.files[0];
@@ -197,6 +272,9 @@ uploadsController.uploadFile = async function (req, res, next) {
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
+	if (!await file.exists(path.join(nconf.get('upload_path'), params.folder))) {
+		return next(new Error('[[error:invalid-path]]'));
+	}
 	try {
 		const data = await file.saveFileToLocal(uploadedFile.name, params.folder, uploadedFile.path);
 		res.json([{ url: data.url }]);

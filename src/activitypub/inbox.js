@@ -297,7 +297,6 @@ inbox.announce = async (req) => {
 		}
 
 		({ tid } = assertion);
-		await topics.updateLastPostTime(tid, timestamp);
 		await activitypub.notes.updateLocalRecipients(pid, { to, cc });
 		await activitypub.notes.syncUserInboxes(tid);
 	}

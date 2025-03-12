@@ -18,9 +18,6 @@ module.exports = function (Messaging) {
 			uids = [uids];
 		}
 		uids = uids.filter(uid => parseInt(uid, 10) > 0);
-		if (!uids.length) {
-			return;
-		}
 		uids.forEach((uid) => {
 			io.in(`uid_${uid}`).emit('event:unread.updateChatCount', data);
 		});
