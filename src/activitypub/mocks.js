@@ -129,7 +129,7 @@ Mocks._normalize = async (object) => {
 	};
 };
 
-Mocks.profile = async (actors, hostMap) => {
+Mocks.profile = async (actors) => {
 	// Should only ever be called by activitypub.actors.assert
 	const profiles = await Promise.all(actors.map(async (actor) => {
 		if (!actor) {
@@ -137,7 +137,7 @@ Mocks.profile = async (actors, hostMap) => {
 		}
 
 		const uid = actor.id;
-		let hostname = hostMap.get(uid);
+		let hostname;
 		let {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, inbox, endpoints, tag,
@@ -145,12 +145,10 @@ Mocks.profile = async (actors, hostMap) => {
 		preferredUsername = slugify(preferredUsername || name);
 		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
 
-		if (!hostname) { // if not available via webfinger, infer from id
-			try {
-				({ hostname } = new URL(actor.id));
-			} catch (e) {
-				return null;
-			}
+		try {
+			({ hostname } = new URL(actor.id));
+		} catch (e) {
+			return null;
 		}
 
 		let picture;

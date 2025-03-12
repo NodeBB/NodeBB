@@ -47,7 +47,6 @@ Actors.assert = async (ids, options = {}) => {
 	ids = ids.filter(id => !utils.isNumber(id));
 
 	// Translate webfinger handles to uris
-	const hostMap = new Map();
 	ids = (await Promise.all(ids.map(async (id) => {
 		const originalId = id;
 		if (activitypub.helpers.isWebfinger(id)) {
@@ -57,7 +56,6 @@ Actors.assert = async (ids, options = {}) => {
 			}
 
 			({ actorUri: id } = await activitypub.helpers.query(id));
-			hostMap.set(id, host);
 		}
 		// ensure the final id is a valid URI
 		if (!id || !activitypub.helpers.isUri(id)) {
@@ -163,7 +161,7 @@ Actors.assert = async (ids, options = {}) => {
 	actors = actors.filter(Boolean); // remove unresolvable actors
 
 	// Build userData object for storage
-	const profiles = (await activitypub.mocks.profile(actors, hostMap)).filter(Boolean);
+	const profiles = (await activitypub.mocks.profile(actors)).filter(Boolean);
 	const now = Date.now();
 
 	const bulkSet = profiles.reduce((memo, profile) => {
