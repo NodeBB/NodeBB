@@ -7,6 +7,7 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const batch = require('../batch');
+const categories = require('../categories');
 const user = require('../user');
 const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
@@ -20,15 +21,12 @@ const activitypub = module.parent.exports;
 
 const Actors = module.exports;
 
-Actors.assert = async (ids, options = {}) => {
+Actors.qualify = async (ids, options = {}) => {
 	/**
-	 * Ensures that the passed in ids or webfinger handles are stored in database.
-	 * Options:
-	 *   - update: boolean, forces re-fetch/process of the resolved id
-	 * Return one of:
-	 *   - An array of newly processed ids
-	 *   - false: if input incorrect (or webfinger handle cannot resolve)
-	 *   - true: no new IDs processed; all passed-in IDs present.
+	 * Sanity-checks, cache handling, webfinger translations, so that only
+	 * an array of actor uris are handled by assert/assertGroup.
+	 *
+	 * This method is only called by assert/assertGroup (at least in core.)
 	 */
 
 	// Handle single values
@@ -85,6 +83,21 @@ Actors.assert = async (ids, options = {}) => {
 		});
 	}
 
+	return ids;
+};
+
+Actors.assert = async (ids, options = {}) => {
+	/**
+	 * Ensures that the passed in ids or webfinger handles are stored in database.
+	 * Options:
+	 *   - update: boolean, forces re-fetch/process of the resolved id
+	 * Return one of:
+	 *   - An array of newly processed ids
+	 *   - false: if input incorrect (or webfinger handle cannot resolve)
+	 *   - true: no new IDs processed; all passed-in IDs present.
+	 */
+
+	ids = await Actors.qualify(ids, options);
 	if (!ids.length) {
 		return true;
 	}
@@ -96,6 +109,7 @@ Actors.assert = async (ids, options = {}) => {
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
+	const categories = new Set();
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
@@ -104,8 +118,14 @@ Actors.assert = async (ids, options = {}) => {
 			let typeOk = false;
 			if (Array.isArray(actor.type)) {
 				typeOk = actor.type.some(type => activitypub._constants.acceptableActorTypes.has(type));
+				if (!typeOk && actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type))) {
+					categories.add(actor.id);
+				}
 			} else {
 				typeOk = activitypub._constants.acceptableActorTypes.has(actor.type);
+				if (!typeOk && activitypub._constants.acceptableGroupTypes.has(actor.type)) {
+					categories.add(actor.id);
+				}
 			}
 
 			if (
@@ -218,6 +238,142 @@ Actors.assert = async (ids, options = {}) => {
 	]);
 
 	return actors;
+};
+
+Actors.assertGroup = async (ids, options = {}) => {
+	/**
+	 * Ensures that the passed in ids or webfinger handles are stored in database.
+	 * Options:
+	 *   - update: boolean, forces re-fetch/process of the resolved id
+	 * Return one of:
+	 *   - An array of newly processed ids
+	 *   - false: if input incorrect (or webfinger handle cannot resolve)
+	 *   - true: no new IDs processed; all passed-in IDs present.
+	 */
+
+	ids = await Actors.qualify(ids, options);
+	if (!ids.length) {
+		return true;
+	}
+
+	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} group(s)`);
+
+	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
+
+	const urlMap = new Map();
+	const followersUrlMap = new Map();
+	const pubKeysMap = new Map();
+	const users = new Set();
+	let groups = await Promise.all(ids.map(async (id) => {
+		try {
+			activitypub.helpers.log(`[activitypub/actors] Processing group ${id}`);
+			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			let typeOk = false;
+			if (Array.isArray(actor.type)) {
+				typeOk = actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type));
+				if (!typeOk && actor.type.some(type => activitypub._constants.acceptableActorTypes.has(type))) {
+					users.add(actor.id);
+				}
+			} else {
+				typeOk = activitypub._constants.acceptableGroupTypes.has(actor.type);
+				if (!typeOk && activitypub._constants.acceptableActorTypes.has(actor.type)) {
+					users.add(actor.id);
+				}
+			}
+
+			if (
+				!typeOk ||
+				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
+			) {
+				return null;
+			}
+
+			// Save url for backreference
+			const url = Array.isArray(actor.url) ? actor.url.shift() : actor.url;
+			if (url && url !== actor.id) {
+				urlMap.set(url, actor.id);
+			}
+
+			// Save followers url for backreference
+			if (actor.hasOwnProperty('followers') && activitypub.helpers.isUri(actor.followers)) {
+				followersUrlMap.set(actor.followers, actor.id);
+			}
+
+			// Public keys
+			pubKeysMap.set(actor.id, actor.publicKey);
+
+			return actor;
+		} catch (e) {
+			if (e.code === 'ap_get_410') {
+				// const exists = await user.exists(id);
+				// if (exists) {
+				// 	await user.deleteAccount(id);
+				// }
+			}
+
+			return null;
+		}
+	}));
+	groups = groups.filter(Boolean); // remove unresolvable actors
+
+	// Build userData object for storage
+	const categoryObjs = (await activitypub.mocks.category(groups)).filter(Boolean);
+	const now = Date.now();
+
+	const bulkSet = categoryObjs.reduce((memo, category) => {
+		const key = `categoryRemote:${category.cid}`;
+		memo.push([key, category], [`${key}:keys`, pubKeysMap.get(category.cid)]);
+		return memo;
+	}, []);
+	if (urlMap.size) {
+		bulkSet.push(['remoteUrl:cid', Object.fromEntries(urlMap)]);
+	}
+	if (followersUrlMap.size) {
+		bulkSet.push(['followersUrl:cid', Object.fromEntries(followersUrlMap)]);
+	}
+
+	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', categoryObjs.map(p => p.cid));
+	const cidsForCurrent = categoryObjs.map((p, idx) => (exists[idx] ? p.cid : 0));
+	const current = await categories.getCategoriesFields(cidsForCurrent, ['slug']);
+	const queries = categoryObjs.reduce((memo, profile, idx) => {
+		const { slug } = current[idx];
+
+		if (options.update || slug !== profile.slug) {
+			if (cidsForCurrent[idx] !== 0 && slug) {
+				// memo.searchRemove.push(['ap.preferredUsername:sorted', `${slug.toLowerCase()}:${profile.uid}`]);
+				memo.handleRemove.push(slug.toLowerCase());
+			}
+
+			// memo.searchAdd.push(['ap.preferredUsername:sorted', 0, `${profile.slug.toLowerCase()}:${profile.uid}`]);
+			memo.handleAdd[profile.slug.toLowerCase()] = profile.cid;
+		}
+
+		// if (options.update || (profile.fullname && fullname !== profile.fullname)) {
+		// 	if (fullname && cidsForCurrent[idx] !== 0) {
+		// 		memo.searchRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${profile.uid}`]);
+		// 	}
+
+		// 	memo.searchAdd.push(['ap.name:sorted', 0, `${profile.fullname.toLowerCase()}:${profile.uid}`]);
+		// }
+
+		return memo;
+	}, { /* searchRemove: [], searchAdd: [], */ handleRemove: [], handleAdd: {} });
+
+	// Removals
+	await Promise.all([
+		// db.sortedSetRemoveBulk(queries.searchRemove),
+		db.deleteObjectFields('handle:cid', queries.handleRemove),
+	]);
+
+	await Promise.all([
+		db.setObjectBulk(bulkSet),
+		db.sortedSetAdd('usersRemote:lastCrawled', groups.map(() => now), groups.map(p => p.uid)),
+		// db.sortedSetAddBulk(queries.searchAdd),
+		db.setObject('handle:cid', queries.handleAdd),
+	]);
+
+	return categoryObjs;
 };
 
 Actors.getLocalFollowers = async (id) => {
