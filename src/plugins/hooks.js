@@ -8,97 +8,11 @@ const als = require('../als');
 const Hooks = module.exports;
 
 Hooks._deprecated = new Map([
-	['filter:email.send', {
-		new: 'static:email.send',
-		since: 'v1.17.0',
-		until: 'v2.0.0',
-	}],
-	['filter:router.page', {
-		new: 'response:router.page',
-		since: 'v1.15.3',
-		until: 'v2.1.0',
-	}],
-	['filter:post.purge', {
-		new: 'filter:posts.purge',
-		since: 'v1.19.6',
-		until: 'v2.1.0',
-	}],
-	['action:post.purge', {
-		new: 'action:posts.purge',
-		since: 'v1.19.6',
-		until: 'v2.1.0',
-	}],
-	['filter:user.verify.code', {
-		new: 'filter:user.verify',
-		since: 'v2.2.0',
-		until: 'v3.0.0',
-	}],
-	['filter:flags.getFilters', {
-		new: 'filter:flags.init',
-		since: 'v2.7.0',
-		until: 'v3.0.0',
-	}],
-	['filter:privileges.global.list', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.global.groups.list', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.global.list_human', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.global.groups.list_human', {
-		new: 'static:privileges.global.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.list', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.groups.list', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.list_human', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.groups.list_human', {
-		new: 'static:privileges.categories.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-
-	['filter:privileges.admin.list', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.admin.groups.list', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.admin.list_human', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
-	['filter:privileges.admin.groups.list_human', {
-		new: 'static:privileges.admin.init',
-		since: 'v3.5.0',
-		until: 'v4.0.0',
-	}],
+	/* ['filter:old.hook.name', {
+		new: 'filter:new.hook.name',
+		since: 'v4.0.0',
+		until: 'v5.0.0',
+	}], */
 ]);
 
 Hooks.internals = {

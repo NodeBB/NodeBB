@@ -96,7 +96,6 @@ Flags.init = async function () {
 	};
 
 	try {
-		({ filters: Flags._filters } = await plugins.hooks.fire('filter:flags.getFilters', hookData));
 		({ filters: Flags._filters, states: Flags._states } = await plugins.hooks.fire('filter:flags.init', hookData));
 	} catch (err) {
 		winston.error(`[flags/init] Could not retrieve filters\n${err.stack}`);
