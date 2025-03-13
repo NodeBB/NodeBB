@@ -216,7 +216,7 @@ Mocks.profile = async (actors) => {
 			uploadedpicture: undefined,
 			'cover:url': !image || typeof image === 'string' ? image : image.url,
 			'cover:position': '50% 50%',
-			aboutme: summary,
+			aboutme: posts.sanitize(summary),
 			followerCount,
 			followingCount,
 
@@ -231,6 +231,73 @@ Mocks.profile = async (actors) => {
 	}));
 
 	return profiles;
+};
+
+Mocks.category = async (actors) => {
+	const categories = await Promise.all(actors.map(async (actor) => {
+		if (!actor) {
+			return null;
+		}
+
+		const cid = actor.id;
+		let hostname;
+		let {
+			url, preferredUsername, /* icon, */ image,
+			name, summary, followers, inbox, endpoints, tag,
+		} = actor;
+		preferredUsername = slugify(preferredUsername || name);
+		// const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
+
+		try {
+			({ hostname } = new URL(actor.id));
+		} catch (e) {
+			return null;
+		}
+
+		// No support for category avatars yet ;(
+		// let picture;
+		// if (icon) {
+		// 	picture = typeof icon === 'string' ? icon : icon.url;
+		// }
+		const iconBackgrounds = await user.getIconBackgrounds();
+		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
+		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
+
+		// Replace emoji in summary
+		if (tag && Array.isArray(tag)) {
+			tag
+				.filter(tag => tag.type === 'Emoji' &&
+					isEmojiShortcode.test(tag.name) &&
+					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
+				.forEach((tag) => {
+					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
+				});
+		}
+
+		const payload = {
+			cid,
+			name,
+			handle: preferredUsername,
+			slug: `${preferredUsername}@${hostname}`,
+			description: summary,
+			descriptionParsed: posts.sanitize(summary),
+			icon: 'fa-comments',
+			color: '#fff',
+			bgColor,
+			backgroundImage: !image || typeof image === 'string' ? image : image.url,
+			// followerCount,
+			// followingCount,
+
+			url,
+			inbox,
+			sharedInbox: endpoints ? endpoints.sharedInbox : null,
+			followersUrl: followers,
+		};
+
+		return payload;
+	}));
+
+	return categories;
 };
 
 Mocks.post = async (objects) => {
