@@ -79,6 +79,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
+
 	if (options.cid && cid === -1) {
 		// Move topic if currently uncategorized
 		await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
