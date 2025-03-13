@@ -10,6 +10,7 @@ const plugins = require('../plugins');
 const privileges = require('../privileges');
 const cache = require('../cache');
 const meta = require('../meta');
+const utils = require('../utils');
 
 const Categories = module.exports;
 
@@ -26,9 +27,14 @@ require('./search')(Categories);
 Categories.icons = require('./icon');
 
 Categories.exists = async function (cids) {
-	return await db.exists(
-		Array.isArray(cids) ? cids.map(cid => `category:${cid}`) : `category:${cids}`
-	);
+	let keys;
+	if (Array.isArray(cids)) {
+		keys = cids.map(cid => (utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`));
+	} else {
+		keys = utils.isNumber(cids) ? `category:${cids}` : `categoryRemote:${cids}`;
+	}
+
+	return await db.exists(keys);
 };
 
 Categories.existsByHandle = async function (handle) {
