@@ -1,7 +1,7 @@
 {
     "all-users": "Alle brukere",
     "followed-users": "Fulgte brukere",
-    "latest-users": "Seneste brukere",
+    "latest-users": "Siste brukere",
     "top-posters": "Flest innlegg",
     "most-reputation": "Best omdømme",
     "most-flags": "Flest flagg",
@@ -17,7 +17,7 @@
     "groups-to-join": "Grupper som en kan bli med i når invitasjonen godtas:",
     "invitation-email-sent": "En invitasjons-e-post ble sendt til %1",
     "user-list": "Brukerliste",
-    "recent-topics": "Seneste tråder",
+    "recent-topics": "Nye tråder",
     "popular-topics": "Populære tråder",
     "unread-topics": "Uleste tråder",
     "categories": "Kategorier",

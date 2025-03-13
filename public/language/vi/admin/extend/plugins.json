@@ -15,7 +15,7 @@
 	"reorder-plugins": "Sắp Xếp Lại Plugin",
 	"order-active": "Sắp Xếp Plugin Hoạt Động",
 	"dev-interested": "Bạn quan tâm đến việc viết plugin cho NodeBB?",
-	"docs-info": "Tài liệu đầy đủ về tác giả plugin có thể được tìm thấy trong <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">Cổng Tài Liệu NodeBB </a>.",
+	"docs-info": "Tài liệu đầy đủ liên quan đến việc tạo plugin có thể tìm được trong <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">Cổng Thông Tin Tài Liệu NodeBB </a>.",
 
 	"order.description": "Một số plugin nhất định hoạt động lý tưởng khi chúng được khởi tạo trước / sau các plugin khác.",
 	"order.explanation": "Các plugin tải theo thứ tự đã đặt ra ở đây, từ trên xuống dưới",

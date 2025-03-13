@@ -108,7 +108,7 @@
 	"alert.copy-success": "Innstillingar kopiert med suksess",
 	"alert.set-parent-category": "Set overordna kategori",
 	"alert.updated": "Oppdatert",
-	"alert.updated-success": "Kategori oppdatert med suksess",
+	"alert.updated-success": "Kategori %1 oppdatert med suksess",
 	"alert.upload-image": "Last opp bilete",
 	"alert.find-user": "Finn brukar",
 	"alert.user-search": "Søk etter brukar",

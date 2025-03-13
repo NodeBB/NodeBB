@@ -17,7 +17,7 @@
 	"dev-interested": "Er du ein utviklar?",
 	"docs-info": "Dokumentasjon for utvikling av innstikk kan du sjå i <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
-	"order.description": "Visse innstikk fungerer best når dei blir initierte før/etter andre innstikk.",
+	"order.description": "Visse plugins fungerer best når dei blir initierte før/etter andre plugins.",
 	"order.explanation": "Innstikk blir lasta inn i rekkjefølgja som er spesifisert her, frå topp til botn.",
 
 	"plugin-item.themes": "Tema",
