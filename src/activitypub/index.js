@@ -39,7 +39,8 @@ ActivityPub._constants = Object.freeze({
 	acceptedPostTypes: [
 		'Note', 'Page', 'Article', 'Question', 'Video',
 	],
-	acceptableActorTypes: new Set(['Application', 'Group', 'Organization', 'Person', 'Service']),
+	acceptableActorTypes: new Set(['Application', 'Organization', 'Person', 'Service']),
+	acceptableGroupTypes: new Set(['Group']),
 	requiredActorProps: ['inbox', 'outbox'],
 	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 	acceptable: {
