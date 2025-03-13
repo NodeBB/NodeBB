@@ -31,6 +31,7 @@ module.exports = function (Categories) {
 			Categories.getPinnedTids({ ...data, start: 0, stop: -1 }),
 			Categories.buildTopicsSortedSet(data),
 		]);
+		console.log(set);
 
 		const totalPinnedCount = pinnedTids.length;
 		const pinnedTidsOnPage = pinnedTids.slice(data.start, data.stop !== -1 ? data.stop + 1 : undefined);

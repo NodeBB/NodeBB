@@ -118,7 +118,7 @@ define('forum/category', [
 	};
 
 	Category.toBottom = async () => {
-		const { count } = await api.get(`/categories/${ajaxify.data.category.cid}/count`);
+		const { count } = await api.get(`/categories/${encodeURIComponent(ajaxify.data.category.cid)}/count`);
 		navigator.scrollBottom(count - 1);
 	};
 
@@ -127,7 +127,7 @@ define('forum/category', [
 
 		hooks.fire('action:topics.loading');
 		const params = utils.params();
-		infinitescroll.loadMore(`/categories/${ajaxify.data.cid}/topics`, {
+		infinitescroll.loadMore(`/categories/${encodeURIComponent(ajaxify.data.cid)}/topics`, {
 			after: after,
 			direction: direction,
 			query: params,
