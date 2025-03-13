@@ -557,7 +557,6 @@ Mocks.notes.public = async (post) => {
 	const published = post.timestampISO;
 	const updated = post.edited ? post.editedISO : null;
 
-	// todo: post visibility
 	const to = new Set([activitypub._constants.publicAddress]);
 	const cc = new Set([`${nconf.get('url')}/uid/${post.user.uid}/followers`]);
 
@@ -728,6 +727,7 @@ Mocks.notes.public = async (post) => {
 			audience = post.audience || audience;
 		});
 	}
+	to.add(audience);
 
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
