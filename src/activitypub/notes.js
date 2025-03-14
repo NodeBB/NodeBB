@@ -98,16 +98,23 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
-		// Check recipients/audience for local category
+		// Check recipients/audience for category (local or remote)
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
+
+		// Local
 		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 		const recipientCids = resolved
 			.filter(Boolean)
 			.filter(({ type }) => type === 'category')
 			.map(obj => obj.id);
-		if (recipientCids.length) {
+
+		// Remote
+		const assertedGroups = await db.exists(Array.from(set).map(id => `categoryRemote:${id}`));
+		const remoteCid = Array.from(set).filter((_, idx) => assertedGroups[idx]).shift();
+
+		if (remoteCid || recipientCids.length) {
 			// Overrides passed-in value, respect addressing from main post over booster
-			options.cid = recipientCids.shift();
+			options.cid = remoteCid || recipientCids.shift();
 		}
 
 		// mainPid ok to leave as-is
@@ -131,7 +138,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		options.skipChecks || options.cid ||
 		await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
-	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
+	const allowed = await privileges.categories.can(privilege, options.cid || cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
 		if (!hasRelation) {
 			activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
