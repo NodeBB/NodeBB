@@ -8,7 +8,7 @@
 	"back-to-categories": "Tilbake til kategoriar",
 	"name": "Namn",
 	"handle": "Kategori-sti",
-	"handle.help": " Kategori-stien din blir brukt som ein representasjon av denne kategorien på andre nettverk, liknande eit brukarnamn. Ein kategori-sti må ikkje samsvare med eit eksisterande brukarnamn eller ei brukargruppe.",
+	"handle.help": " Kategori-stien din blir brukt som ein representasjon av denne kategorien på andre nettverk, som eit brukarnamn. Ein kategori-sti må ikkje samsvare med eit eksisterande brukarnamn eller ei brukargruppe.",
 	"description": "Skildring",
 	"federatedDescription": "Federated Description",
 	"federatedDescription.help": "This text will be appended to the category description when queried by other websites/apps.",
@@ -76,7 +76,7 @@
 	"privileges.copy-success": "Rettar kopiert med suksess",
 
 	"analytics.back": "Tilbake",
-	"analytics.title": "Analyse",
+	"analytics.title": "Analyse for «%1» kategori",
 	"analytics.pageviews-hourly": "Sidevisningar per time",
 	"analytics.pageviews-daily": "Sidevisningar per dag",
 	"analytics.topics-daily": "Emne per dag",

@@ -252,7 +252,7 @@
     "api.503": "Ruta du prøver å kalle på er for augneblinken ikkje tilgjengeleg grunna serverkonfigurasjon",
     "api.reauth-required": "Ressursen du prøver å nå krev (re-)autentisering.",
     "activitypub.not-enabled": " Føderasjon er ikkje aktivert på denne serveren.",
-    "activitypub.invalid-id": "Kan ikkje løyse opp input-ID-en, sannsynlegvis fordi ho er ugyldig.",
+    "activitypub.invalid-id": "Kan ikkje løyse opp input-ID-en, sannsynlegvis fordi den er ugyldig.",
     "activitypub.get-failed": "Kan ikkje hente den spesifiserte ressursen.",
     "activitypub.pubKey-not-found": " Kan ikkje løyse opp den offentlege nøkkelen, så verifisering av nyttelasta kan ikkje gjennomførast.",
     "activitypub.origin-mismatch": "Den mottatte objektet sin opphavsstad samsvarar ikkje med avsendaren sin opphavsstad.",

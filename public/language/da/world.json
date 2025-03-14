@@ -1,18 +1,18 @@
 {
-	"name": "World",
-	"popular": "Popular topics",
-	"recent": "All topics",
-	"help": "Help",
+	"name": "Verden",
+	"popular": "Populære tråde",
+	"recent": "Alle tråde",
+	"help": "Hjælp",
 
-	"help.title": "What is this page?",
-	"help.intro": "Welcome to your corner of the fediverse.",
-	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
-	"help.build": "There might not be a lot of topics here to start; that's normal. You will start to see more content here over time when you start following other users.",
-	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
-	"help.next-generation": "This is the next generation of social media, start contributing today!",
+	"help.title": "Hvad er denne side?",
+	"help.intro": "Velkommen til dit hjørne af fødiverset.",
+	"help.fediverse": "\"Fødiverset\" er et netværk af forbundne programmer og hjemmesider der allesammen taler med hinanden og hvis brugere kan se hinanden. Dette forum er fødereret og kan inteagere med det sociale net (også kaldet \"fødiverset\"). Denne side er dit hjørne af fødiverset. Den indeholder kun tråde skabt af - og delt af - brugere <strong>du</strong> følger.",
+	"help.build": "Der er måske ikke mange tråde her til at starte med; det er helt normalt. Du vil begynde at se mere indhold her med tiden, som du begynder at følge andre brugere.",
+	"help.federating": "Ligeså, hvis brugere udefra dette fourm begynder at følge <em>dig</<em>, så vil dine opslag begynde at dukke op på deres programmer og hjemmesider også.",
+	"help.next-generation": "Dette er den næste generation af sociale medier, bliv en del af det i dag!",
 
-	"onboard.title": "Your window to the fediverse...",
-	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
-	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
-	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!"
+	"onboard.title": "Dit vindue til fødiverset...",
+	"onboard.what": "Dette er din personaliserede kategori som består kun af indhold fra udefra dette forum. Om noget dukker op her eller ej afhænger af om følger personen der lavede indlægget, eller om du følger nogen der har fremhævet indlægget.",
+	"onboard.why": "Der foregår en masse udenfor dette forum, og ikke det hele er relevant for dine interesser. At følge folk er derfor den bedste måde at signalere at du gerne vil se mere fra dem.",
+	"onboard.how": "I mellemtiden kan du klikke på genvejs-knapperne i toppen for at se, hvad forummet kender til og begynd at opdage nyt indhold!"
 }
