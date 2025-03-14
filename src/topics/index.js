@@ -74,8 +74,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			.map(t => t && t.uid && t.uid.toString())
 			.filter(v => utils.isNumber(v) || activitypub.helpers.isUri(v)));
 		const cids = _.uniq(topics
-			.map(t => t && t.cid && t.cid.toString())
-			.filter(v => utils.isNumber(v)));
+			.map(t => t && t.cid && t.cid.toString()));
 		const guestTopics = topics.filter(t => t && t.uid === 0);
 
 		async function loadGuestHandles() {
