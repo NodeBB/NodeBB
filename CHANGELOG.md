@@ -1,3 +1,56 @@
+#### v4.1.1 (2025-03-12)
+
+##### Chores
+
+*  up themes (34414f16)
+*  up mentions (39ff5dde)
+*  up markdown (1d4be475)
+*  incrementing version number - v4.1.0 (36c80850)
+*  update changelog for v4.1.0 (3292a858)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  allow self-signed certs, closes #13238 (de502cd2)
+
+##### Bug Fixes
+
+*  lang typo (fc9cc8d6)
+*  check if folder exists when uploading files in acp (76896859)
+*  sanitize category svg image files (810e8dbb)
+*  #13094, update unread chats on reconnect (1e6c6f4e)
+*  don't update topic lastposttime by announce (6b9f166c)
+*  closes #13078, toggle /world navItem when AP is toggled (bef17920)
+*  closes #13231, add some text-truncate, match width (bb13ea30)
+*  #13228, use timestamp from mainpost/lastpost (48f0f47a)
+*  add starterPlan check (40a5314e)
+*  closes #13219, only delete local user folder (8dbd50d4)
+*  don't crash if there are exceptions in action hooks (30068245)
+
+##### Other Changes
+
+*  missing semi (c4e31395)
+*  fix ) (9549f1fa)
+
+##### Refactors
+
+*  prevent following symlinks (e775564f)
+*  show simple error if path doesn't exist (6d74ee2f)
+*  use navAdmin (b517f05e)
+*  dont generate UUID if no email (c83f91bd)
+*  show warning if there is no email for validation (84d3fe79)
+
+##### Tests
+
+*  fix inf loop if dirname results in same dir, ie \ (1ca7b7ec)
+*  #13078, add nav test (04279718)
+
 #### v4.1.0 (2025-02-27)
 
 ##### Chores
