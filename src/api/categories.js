@@ -7,6 +7,7 @@ const events = require('../events');
 const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const utils = require('../utils');
 
 const activitypubApi = require('./activitypub');
 
@@ -157,7 +158,9 @@ categoriesAPI.getTopics = async (caller, data) => {
 
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	let targetUid = caller.uid;
-	const cids = Array.isArray(cid) ? cid.map(cid => parseInt(cid, 10)) : [parseInt(cid, 10)];
+	let cids = Array.isArray(cid) ? cid : [cid];
+	cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
+
 	if (uid) {
 		targetUid = uid;
 	}
