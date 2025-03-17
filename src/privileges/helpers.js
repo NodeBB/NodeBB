@@ -20,6 +20,11 @@ const uidToSystemGroup = {
 };
 
 helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
+	// Remote categories inherit world pseudo-category privileges
+	if (!utils.isNumber(cid)) {
+		cid = -1;
+	}
+
 	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
 		groups.isMembers(uids, `cid:${cid}:privileges:${privilege}`),
 		groups.isMembersOfGroupList(uids, `cid:${cid}:privileges:groups:${privilege}`),

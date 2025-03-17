@@ -67,7 +67,11 @@ module.exports = function (User) {
 	};
 
 	User.getCategoriesByStates = async function (uid, states) {
-		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const remoteCids = await db.getObjectValues('handle:cid');
+		const cids = [
+			(await categories.getAllCidsFromSet('categories:cid')),
+			...remoteCids,
+		];
 		if (!(parseInt(uid, 10) > 0)) {
 			return cids;
 		}
