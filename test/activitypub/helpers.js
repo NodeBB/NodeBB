@@ -8,7 +8,7 @@ const Helpers = module.exports;
 
 Helpers.mocks = {};
 
-Helpers.mocks.actor = () => {
+Helpers.mocks.person = () => {
 	const baseUrl = 'https://example.org';
 	const uuid = utils.generateUUID();
 	const id = `${baseUrl}/${uuid}`;
@@ -33,6 +33,13 @@ Helpers.mocks.actor = () => {
 			publicKeyPem: 'todo',
 		},
 	};
+
+	return { id, actor };
+};
+
+Helpers.mocks.group = () => {
+	const { id, actor } = Helpers.mocks.person();
+	actor.type = 'Group';
 
 	return { id, actor };
 };
