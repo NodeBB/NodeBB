@@ -9,6 +9,7 @@ const user = require('../user');
 const notifications = require('../notifications');
 const translator = require('../translator');
 const batch = require('../batch');
+const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
@@ -186,7 +187,7 @@ module.exports = function (Categories) {
 		}
 		const promises = [
 			db.sortedSetAdd(`cid:${cid}:pids`, postData.timestamp, postData.pid),
-			db.incrObjectField(`category:${cid}`, 'post_count'),
+			db.incrObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, 'post_count'),
 		];
 		if (!pinned) {
 			promises.push(db.sortedSetIncrBy(`cid:${cid}:tids:posts`, 1, postData.tid));

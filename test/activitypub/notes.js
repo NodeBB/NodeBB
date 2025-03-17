@@ -22,7 +22,7 @@ describe('Notes', () => {
 			await install.giveWorldPrivileges();
 		});
 
-		describe('Public objects', () => {
+		describe.only('Public objects', () => {
 			it('should pull a remote root-level object by its id and create a new topic', async () => {
 				const { id } = helpers.mocks.note();
 				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
@@ -62,6 +62,51 @@ describe('Notes', () => {
 
 				const exists = await topics.exists(tid);
 				assert(exists);
+			});
+
+			it('should slot newly created topic in local category if addressed', async () => {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { id } = helpers.mocks.note({
+					cc: ['https://example.org/user/foobar/followers', `${nconf.get('url')}/category/${cid}`],
+				});
+
+				const assertion = await activitypub.notes.assert(0, id);
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
+				assert.strictEqual(count, 1);
+
+				const topic = await topics.getTopicData(tid);
+				assert.strictEqual(topic.cid, cid);
+			});
+
+			it('should slot newly created topic in remote category if addressed', async () => {
+				const { id: cid, actor } = helpers.mocks.group();
+				activitypub._cache.set(`0;${cid}`, actor);
+				await activitypub.actors.assertGroup([cid]);
+
+				const { id } = helpers.mocks.note({
+					cc: ['https://example.org/user/foobar/followers', cid],
+				});
+
+				const assertion = await activitypub.notes.assert(0, id);
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
+				assert.strictEqual(count, 1);
+
+				const topic = await topics.getTopicData(tid);
+				assert.strictEqual(topic.cid, cid);
+
+				const tids = await db.getSortedSetMembers(`cid:${cid}:tids`);
+				assert(tids.includes(tid));
+
+				const category = await categories.getCategoryData(cid);
+				['topic_count', 'post_count', 'totalPostCount', 'totalTopicCount'].forEach((prop) => {
+					assert.strictEqual(category[prop], 1);
+				});
 			});
 		});
 
