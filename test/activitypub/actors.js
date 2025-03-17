@@ -13,6 +13,8 @@ const utils = require('../../src/utils');
 const request = require('../../src/request');
 const slugify = require('../../src/slugify');
 
+const helpers = require('./helpers');
+
 describe('Actor asserton', () => {
 	describe('happy path', () => {
 		let uid;
@@ -87,6 +89,38 @@ describe('Actor asserton', () => {
 			const userRemoteHashExists = await db.exists(`userRemote:${uri}`);
 			assert.strictEqual(userRemoteHashExists, false);
 		});
+	});
+});
+
+describe.only('Group assertion', () => {
+	let actorUri;
+
+	before(async () => {
+		const { id, actor } = helpers.mocks.group();
+		actorUri = id;
+		activitypub._cache.set(`0;${id}`, actor);
+	});
+
+	it('should assert a uri identifying as "Group" into a remote category', async () => {
+		const assertion = await activitypub.actors.assertGroup([actorUri]);
+
+		assert(assertion, Array.isArray(assertion));
+		assert.strictEqual(assertion.length, 1);
+
+		const category = assertion.pop();
+		assert.strictEqual(category.cid, actorUri);
+	});
+
+	it('should be considered existing when checked', async () => {
+		const exists = await categories.exists(actorUri);
+
+		assert(exists);
+	});
+
+	it('should return category data when getter methods are called', async () => {
+		const category = await categories.getCategoryData(actorUri);
+		assert(category);
+		assert.strictEqual(category.cid, actorUri);
 	});
 });
 
