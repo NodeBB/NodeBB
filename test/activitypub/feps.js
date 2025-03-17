@@ -37,7 +37,7 @@ describe('FEPs', () => {
 				await groups.join('administrators', adminUid);
 				uid = await user.create({ username: utils.generateUUID() });
 
-				const { id: followerId, actor } = helpers.mocks.actor();
+				const { id: followerId, actor } = helpers.mocks.person();
 				activitypub._cache.set(`0;${followerId}`, actor);
 				user.setCategoryWatchState(followerId, [cid], categories.watchStates.tracking);
 
