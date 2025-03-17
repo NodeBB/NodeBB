@@ -10,6 +10,7 @@ const user = require('../../src/user');
 const categories = require('../../src/categories');
 const posts = require('../../src/posts');
 const topics = require('../../src/topics');
+const api = require('../../src/api');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
@@ -22,7 +23,7 @@ describe('Notes', () => {
 			await install.giveWorldPrivileges();
 		});
 
-		describe.only('Public objects', () => {
+		describe('Public objects', () => {
 			it('should pull a remote root-level object by its id and create a new topic', async () => {
 				const { id } = helpers.mocks.note();
 				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
@@ -64,48 +65,118 @@ describe('Notes', () => {
 				assert(exists);
 			});
 
-			it('should slot newly created topic in local category if addressed', async () => {
-				const { cid } = await categories.create({ name: utils.generateUUID() });
-				const { id } = helpers.mocks.note({
-					cc: ['https://example.org/user/foobar/followers', `${nconf.get('url')}/category/${cid}`],
+			describe('Category-specific behaviours', () => {
+				it('should slot newly created topic in local category if addressed', async () => {
+					const { cid } = await categories.create({ name: utils.generateUUID() });
+					const { id } = helpers.mocks.note({
+						cc: [`${nconf.get('url')}/category/${cid}`],
+					});
+
+					const assertion = await activitypub.notes.assert(0, id);
+					assert(assertion);
+
+					const { tid, count } = assertion;
+					assert(tid);
+					assert.strictEqual(count, 1);
+
+					const topic = await topics.getTopicData(tid);
+					assert.strictEqual(topic.cid, cid);
 				});
 
-				const assertion = await activitypub.notes.assert(0, id);
-				assert(assertion);
+				it('should slot newly created topic in remote category if addressed', async () => {
+					const { id: cid, actor } = helpers.mocks.group();
+					activitypub._cache.set(`0;${cid}`, actor);
+					await activitypub.actors.assertGroup([cid]);
 
-				const { tid, count } = assertion;
-				assert(tid);
-				assert.strictEqual(count, 1);
+					const { id } = helpers.mocks.note({
+						cc: [cid],
+					});
 
-				const topic = await topics.getTopicData(tid);
-				assert.strictEqual(topic.cid, cid);
+					const assertion = await activitypub.notes.assert(0, id);
+					assert(assertion);
+
+					const { tid, count } = assertion;
+					assert(tid);
+					assert.strictEqual(count, 1);
+
+					const topic = await topics.getTopicData(tid);
+					assert.strictEqual(topic.cid, cid);
+
+					const tids = await db.getSortedSetMembers(`cid:${cid}:tids`);
+					assert(tids.includes(tid));
+
+					const category = await categories.getCategoryData(cid);
+					['topic_count', 'post_count', 'totalPostCount', 'totalTopicCount'].forEach((prop) => {
+						assert.strictEqual(category[prop], 1);
+					});
+				});
 			});
 
-			it('should slot newly created topic in remote category if addressed', async () => {
-				const { id: cid, actor } = helpers.mocks.group();
-				activitypub._cache.set(`0;${cid}`, actor);
-				await activitypub.actors.assertGroup([cid]);
+			describe('User-specific behaviours', () => {
+				let remoteCid;
+				let uid;
 
-				const { id } = helpers.mocks.note({
-					cc: ['https://example.org/user/foobar/followers', cid],
+				before(async () => {
+					// Remote
+					const { id, actor } = helpers.mocks.group();
+					remoteCid = id;
+					activitypub._cache.set(`0;${id}`, actor);
+					await activitypub.actors.assertGroup([id]);
+
+					// User
+					uid = await user.create({ username: utils.generateUUID() });
+					await topics.markAllRead(uid);
 				});
 
-				const assertion = await activitypub.notes.assert(0, id);
-				assert(assertion);
+				it('should not show up in my unread if it is in cid -1', async () => {
+					const { id } = helpers.mocks.note();
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: 1 });
+					assert(assertion);
 
-				const { tid, count } = assertion;
-				assert(tid);
-				assert.strictEqual(count, 1);
+					const unread = await topics.getTotalUnread(uid);
+					assert.strictEqual(unread, 0);
+				});
 
-				const topic = await topics.getTopicData(tid);
-				assert.strictEqual(topic.cid, cid);
+				it('should show up in my recent/unread if I am tracking the remote category', async () => {
+					await api.categories.setWatchState({ uid }, {
+						cid: remoteCid,
+						state: categories.watchStates.tracking,
+						uid,
+					});
 
-				const tids = await db.getSortedSetMembers(`cid:${cid}:tids`);
-				assert(tids.includes(tid));
+					const { id } = helpers.mocks.note({
+						cc: [remoteCid],
+					});
+					const assertion = await activitypub.notes.assert(0, id);
+					assert(assertion);
 
-				const category = await categories.getCategoryData(cid);
-				['topic_count', 'post_count', 'totalPostCount', 'totalTopicCount'].forEach((prop) => {
-					assert.strictEqual(category[prop], 1);
+					const unread = await topics.getTotalUnread(uid);
+					assert.strictEqual(unread, 1);
+
+					await topics.markAllRead(uid);
+				});
+
+				it('should show up in recent/unread and notify me if I am watching the remote category', async () => {
+					await api.categories.setWatchState({ uid }, {
+						cid: remoteCid,
+						state: categories.watchStates.watching,
+						uid,
+					});
+
+					const { id, note } = helpers.mocks.note({
+						cc: [remoteCid],
+					});
+					const assertion = await activitypub.notes.assert(0, id);
+					assert(assertion);
+
+					const unread = await topics.getTotalUnread(uid);
+					assert.strictEqual(unread, 1);
+
+					// Notification inbox delivery is async so can't test directly
+					const exists = await db.exists(`notifications:new_topic:tid:${assertion.tid}:uid:${note.attributedTo}`);
+					assert(exists);
+
+					await topics.markAllRead(uid);
 				});
 			});
 		});
