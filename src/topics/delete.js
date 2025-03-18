@@ -145,8 +145,8 @@ module.exports = function (Topics) {
 		const postCountChange = incr * topicData.postcount;
 		await Promise.all([
 			db.incrObjectFieldBy('global', 'postCount', postCountChange),
-			db.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),
-			db.incrObjectFieldBy(`category:${topicData.cid}`, 'topic_count', incr),
+			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'post_count', postCountChange),
+			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'topic_count', incr),
 		]);
 	}
 };
