@@ -60,9 +60,18 @@ describe('Actor asserton', () => {
 			const url = await user.getUserField(actorUri, 'url');
 			assert.strictEqual(url, actorUri);
 		});
+
+		it('should assert group actors by calling actors.assertGroup', async () => {
+			assert(false);
+		});
+
+		it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
+			// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
+			assert(false);
+		});
 	});
 
-	describe('edge case: loopback handles and uris', () => {
+	describe('edge cases: loopback handles and uris', () => {
 		let uid;
 		const userslug = utils.generateUUID().slice(0, 8);
 		before(async () => {
@@ -89,6 +98,10 @@ describe('Actor asserton', () => {
 			const userRemoteHashExists = await db.exists(`userRemote:${uri}`);
 			assert.strictEqual(userRemoteHashExists, false);
 		});
+	});
+
+	describe('deletion', () => {
+		// todo...
 	});
 });
 
@@ -121,6 +134,10 @@ describe.only('Group assertion', () => {
 		const category = await categories.getCategoryData(actorUri);
 		assert(category);
 		assert.strictEqual(category.cid, actorUri);
+	});
+
+	it('should assert non-group users by calling actors.assert', async () => {
+		assert(false);
 	});
 });
 
