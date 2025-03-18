@@ -34,12 +34,16 @@ Helpers.mocks.person = () => {
 		},
 	};
 
+	activitypub._cache.set(`0;${id}`, actor);
+
 	return { id, actor };
 };
 
 Helpers.mocks.group = () => {
 	const { id, actor } = Helpers.mocks.person();
 	actor.type = 'Group';
+
+	activitypub._cache.set(`0;${id}`, actor);
 
 	return { id, actor };
 };
