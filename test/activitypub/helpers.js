@@ -8,17 +8,21 @@ const Helpers = module.exports;
 
 Helpers.mocks = {};
 
-Helpers.mocks.person = () => {
+Helpers.mocks.person = (override = {}) => {
 	const baseUrl = 'https://example.org';
 	const uuid = utils.generateUUID();
-	const id = `${baseUrl}/${uuid}`;
+	let id = `${baseUrl}/${uuid}`;
+	if (override.hasOwnProperty('id')) {
+		id = override.id;
+	}
+
 
 	const actor = {
 		'@context': [
 			'https://www.w3.org/ns/activitystreams',
 			'https://w3id.org/security/v1',
 		],
-		id: `${id}`,
+		id,
 		url: `${id}`,
 		inbox: `${id}/inbox`,
 		outbox: `${id}/outbox`,
@@ -32,6 +36,7 @@ Helpers.mocks.person = () => {
 			owner: `${id}`,
 			publicKeyPem: 'todo',
 		},
+		...override,
 	};
 
 	activitypub._cache.set(`0;${id}`, actor);
@@ -39,9 +44,11 @@ Helpers.mocks.person = () => {
 	return { id, actor };
 };
 
-Helpers.mocks.group = () => {
-	const { id, actor } = Helpers.mocks.person();
-	actor.type = 'Group';
+Helpers.mocks.group = (override = {}) => {
+	const { id, actor } = Helpers.mocks.person({
+		type: 'Group',
+		...override,
+	});
 
 	activitypub._cache.set(`0;${id}`, actor);
 
