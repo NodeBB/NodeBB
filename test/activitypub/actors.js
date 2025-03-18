@@ -5,6 +5,7 @@ const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
 const meta = require('../../src/meta');
+const install = require('../../src/install');
 const categories = require('../../src/categories');
 const user = require('../../src/user');
 const topics = require('../../src/topics');
@@ -16,6 +17,11 @@ const slugify = require('../../src/slugify');
 const helpers = require('./helpers');
 
 describe('Actor asserton', () => {
+	before(async () => {
+		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
+	});
+
 	describe('happy path', () => {
 		let uid;
 		let actorUri;
@@ -62,12 +68,37 @@ describe('Actor asserton', () => {
 		});
 
 		it('should assert group actors by calling actors.assertGroup', async () => {
-			assert(false);
+			const { id, actor } = helpers.mocks.group();
+			const assertion = await activitypub.actors.assert([id]);
+
+			assert(assertion);
+			assert.strictEqual(assertion.length, 1);
+			assert.strictEqual(assertion[0].cid, actor.id);
 		});
 
 		it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
 			// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
-			assert(false);
+			const { id } = helpers.mocks.person();
+			await activitypub.actors.assert([id]);
+
+			// Two shares
+			for (let x = 0; x < 2; x++) {
+				const { id: pid } = helpers.mocks.note();
+				// eslint-disable-next-line no-await-in-loop
+				const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+				// eslint-disable-next-line no-await-in-loop
+				await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+			}
+
+			const { actor } = helpers.mocks.group({ id });
+			const assertion = await activitypub.actors.assert([id], { update: true });
+
+			const { topic_count, post_count } = await categories.getCategoryData(id);
+			assert.strictEqual(topic_count, 2);
+			assert.strictEqual(post_count, 2);
+
+			const exists = await user.exists(id);
+			assert.strictEqual(exists, false);
 		});
 	});
 
@@ -101,11 +132,36 @@ describe('Actor asserton', () => {
 	});
 
 	describe('deletion', () => {
-		// todo...
+		it('should delete a remote category when Categories.purge is called', async () => {
+			const { id } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([id]);
+
+			let exists = await categories.exists(id);
+			assert(exists);
+
+			await categories.purge(id, 0);
+
+			exists = await categories.exists(id);
+			assert(!exists);
+
+			exists = await db.exists(`categoryRemote:${id}`);
+			assert(!exists);
+		});
+
+		it('should also delete AP-specific keys that were added by assertGroup', async () => {
+			const { id } = helpers.mocks.group();
+			const assertion = await activitypub.actors.assertGroup([id]);
+			const [{ slug }] = assertion;
+
+			await categories.purge(id, 0);
+
+			const isMember = await db.isObjectField('handle:cid', slug);
+			assert(!isMember);
+		});
 	});
 });
 
-describe.only('Group assertion', () => {
+describe('Group assertion', () => {
 	let actorUri;
 
 	before(async () => {
@@ -135,8 +191,11 @@ describe.only('Group assertion', () => {
 		assert.strictEqual(category.cid, actorUri);
 	});
 
-	it('should assert non-group users by calling actors.assert', async () => {
-		assert(false);
+	it('should not assert non-group users when called', async () => {
+		const { id } = helpers.mocks.person();
+		const assertion = await activitypub.actors.assertGroup([id]);
+
+		assert(Array.isArray(assertion) && !assertion.length);
 	});
 });
 

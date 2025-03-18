@@ -9,6 +9,7 @@ const meta = require('../meta');
 const batch = require('../batch');
 const categories = require('../categories');
 const user = require('../user');
+const topics = require('../topics');
 const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
 
@@ -98,8 +99,8 @@ Actors.assert = async (ids, options = {}) => {
 	 */
 
 	ids = await Actors.qualify(ids, options);
-	if (!ids.length) {
-		return true;
+	if (!ids) {
+		return ids;
 	}
 
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
@@ -179,6 +180,9 @@ Actors.assert = async (ids, options = {}) => {
 		}
 	}));
 	actors = actors.filter(Boolean); // remove unresolvable actors
+	if (!actors.length && !categories.size) {
+		return [];
+	}
 
 	// Build userData object for storage
 	const profiles = (await activitypub.mocks.profile(actors)).filter(Boolean);
@@ -237,6 +241,18 @@ Actors.assert = async (ids, options = {}) => {
 		db.setObject('handle:uid', queries.handleAdd),
 	]);
 
+	// Handle any actors that should be asserted as a group instead
+	if (categories.size) {
+		const assertion = await Actors.assertGroup(Array.from(categories), options);
+		if (assertion === false) {
+			return false;
+		} else if (Array.isArray(assertion)) {
+			return [...actors, ...assertion];
+		}
+
+		// otherwise, assertGroup returned true and output can be safely ignored.
+	}
+
 	return actors;
 };
 
@@ -252,8 +268,8 @@ Actors.assertGroup = async (ids, options = {}) => {
 	 */
 
 	ids = await Actors.qualify(ids, options);
-	if (!ids.length) {
-		return true;
+	if (!ids) {
+		return ids;
 	}
 
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} group(s)`);
@@ -263,24 +279,14 @@ Actors.assertGroup = async (ids, options = {}) => {
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
-	const users = new Set();
 	let groups = await Promise.all(ids.map(async (id) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing group ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 
-			let typeOk = false;
-			if (Array.isArray(actor.type)) {
-				typeOk = actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type));
-				if (!typeOk && actor.type.some(type => activitypub._constants.acceptableActorTypes.has(type))) {
-					users.add(actor.id);
-				}
-			} else {
-				typeOk = activitypub._constants.acceptableGroupTypes.has(actor.type);
-				if (!typeOk && activitypub._constants.acceptableActorTypes.has(actor.type)) {
-					users.add(actor.id);
-				}
-			}
+			const typeOk = Array.isArray(actor.type) ?
+				actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type)) :
+				activitypub._constants.acceptableGroupTypes.has(actor.type);
 
 			if (
 				!typeOk ||
@@ -368,13 +374,40 @@ Actors.assertGroup = async (ids, options = {}) => {
 
 	await Promise.all([
 		db.setObjectBulk(bulkSet),
-		db.sortedSetAdd('usersRemote:lastCrawled', groups.map(() => now), groups.map(p => p.uid)),
+		db.sortedSetAdd('usersRemote:lastCrawled', groups.map(() => now), groups.map(p => p.id)),
 		// db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:cid', queries.handleAdd),
+		_migratePersonToGroup(categoryObjs),
 	]);
 
 	return categoryObjs;
 };
+
+async function _migratePersonToGroup(categoryObjs) {
+	// 4.0.0-4.1.x asserted as:Group as users. This moves relevant stuff over and deletes the now-duplicate user.
+	let ids = categoryObjs.map(category => category.cid);
+	const slugs = categoryObjs.map(category => category.slug);
+	const isUser = await db.isObjectFields('handle:uid', slugs);
+	ids = ids.filter((id, idx) => isUser[idx]);
+	if (!ids.length) {
+		return;
+	}
+
+	await Promise.all(ids.map(async (id) => {
+		const shares = await db.getSortedSetMembers(`uid:${id}:shares`);
+		const exists = await topics.exists(shares);
+		await Promise.all(shares.map(async (share, idx) => {
+			if (exists[idx]) {
+				await topics.tools.move(share, {
+					cid: id,
+					uid: 0,
+				});
+			}
+		}));
+		await user.deleteAccount(id);
+	}));
+	await categories.onTopicsMoved(ids);
+}
 
 Actors.getLocalFollowers = async (id) => {
 	const response = {
@@ -460,6 +493,41 @@ Actors.remove = async (id) => {
 
 	await Promise.all([
 		db.delete(`userRemote:${id}`),
+		db.sortedSetRemove('usersRemote:lastCrawled', id),
+	]);
+};
+
+Actors.removeGroup = async (id) => {
+	/**
+	 * Remove ActivityPub related metadata pertaining to a remote id
+	 *
+	 * Note: don't call this directly! It is called as part of categories.purge
+	 */
+	const exists = await db.isSortedSetMember('usersRemote:lastCrawled', id);
+	if (!exists) {
+		return false;
+	}
+
+	let { slug, /* fullname, */url, followersUrl } = await categories.getCategoryFields(id, ['slug', /* 'fullname', */ 'url', 'followersUrl']);
+	slug = slug.toLowerCase();
+
+	// const bulkRemove = [
+	// 	['ap.preferredUsername:sorted', `${name}:${id}`],
+	// ];
+	// if (fullname) {
+	// 	bulkRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${id}`]);
+	// }
+
+	await Promise.all([
+		// db.sortedSetRemoveBulk(bulkRemove),
+		db.deleteObjectField('handle:cid', slug),
+		db.deleteObjectField('followersUrl:cid', followersUrl),
+		db.deleteObjectField('remoteUrl:cid', url),
+		db.delete(`categoryRemote:${id}:keys`),
+	]);
+
+	await Promise.all([
+		db.delete(`categoryRemote:${id}`),
 		db.sortedSetRemove('usersRemote:lastCrawled', id),
 	]);
 };
