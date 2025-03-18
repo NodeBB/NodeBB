@@ -85,7 +85,6 @@ describe('Notes', () => {
 
 				it('should slot newly created topic in remote category if addressed', async () => {
 					const { id: cid, actor } = helpers.mocks.group();
-					activitypub._cache.set(`0;${cid}`, actor);
 					await activitypub.actors.assertGroup([cid]);
 
 					const { id } = helpers.mocks.note({
@@ -120,7 +119,6 @@ describe('Notes', () => {
 					// Remote
 					const { id, actor } = helpers.mocks.group();
 					remoteCid = id;
-					activitypub._cache.set(`0;${id}`, actor);
 					await activitypub.actors.assertGroup([id]);
 
 					// User
