@@ -122,6 +122,7 @@ module.exports = function (User) {
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`,
+			`uid:${uid}:shares`,
 			`invitation:uid:${uid}`,
 		];
 
