@@ -111,7 +111,6 @@ describe.only('Group assertion', () => {
 	before(async () => {
 		const { id, actor } = helpers.mocks.group();
 		actorUri = id;
-		activitypub._cache.set(`0;${id}`, actor);
 	});
 
 	it('should assert a uri identifying as "Group" into a remote category', async () => {
