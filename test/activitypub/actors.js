@@ -502,3 +502,59 @@ describe('Controllers', () => {
 		});
 	});
 });
+
+describe('Pruning', () => {
+	before(async () => {
+		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
+
+		meta.config.activitypubUserPruneDays = 0; // trigger immediate pruning
+	});
+
+	after(() => {
+		meta.config.activitypubUserPruneDays = 7;
+	});
+
+	describe('Categories', () => {
+		it('should do nothing if the category is newer than the prune cutoff', async () => {
+			const { id: cid } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([cid]);
+
+			meta.config.activitypubUserPruneDays = 1;
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 0);
+			assert.strictEqual(result.counts.missing, 0);
+
+			meta.config.activitypubUserPruneDays = 0;
+			await categories.purge(cid, 0);
+		});
+
+		it('should purge the category if it has no topics in it', async () => {
+			const { id: cid } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([cid]);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 1);
+			assert.strictEqual(result.counts.preserved, 0);
+		});
+
+		it('should do nothing if the category has topics in it', async () => {
+			const { id: cid } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([cid]);
+
+			const { id } = helpers.mocks.note({
+				cc: [cid],
+			});
+			await activitypub.notes.assert(0, id);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 1);
+			assert(result.preserved.has(cid));
+		});
+	});
+});
