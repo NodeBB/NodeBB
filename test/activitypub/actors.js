@@ -515,6 +515,52 @@ describe('Pruning', () => {
 		meta.config.activitypubUserPruneDays = 7;
 	});
 
+	describe('Users', () => {
+		it('should do nothing if the user is newer than the prune cutoff', async () => {
+			const { id: uid } = helpers.mocks.person();
+			await activitypub.actors.assert([uid]);
+
+			meta.config.activitypubUserPruneDays = 1;
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 0);
+			assert.strictEqual(result.counts.missing, 0);
+
+			meta.config.activitypubUserPruneDays = 0;
+			user.deleteAccount(uid);
+		});
+
+		it('should purge the user if they have no content (posts, likes, etc.)', async () => {
+			const { id: uid } = helpers.mocks.person();
+			await activitypub.actors.assert([uid]);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 1);
+			assert.strictEqual(result.counts.preserved, 0);
+			assert.strictEqual(result.counts.missing, 0);
+		});
+
+		it('should do nothing if the user has some content (e.g. a topic)', async () => {
+			const { cid } = await categories.create({ name: utils.generateUUID() });
+			const { id: uid } = helpers.mocks.person();
+			const { id, note } = helpers.mocks.note({
+				attributedTo: uid,
+				cc: [`${nconf.get('url')}/category/${cid}`],
+			});
+
+			const assertion = await activitypub.notes.assert(0, id);
+			assert(assertion);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 1);
+			assert.strictEqual(result.counts.missing, 0);
+		});
+	});
+
 	describe('Categories', () => {
 		it('should do nothing if the category is newer than the prune cutoff', async () => {
 			const { id: cid } = helpers.mocks.group();
