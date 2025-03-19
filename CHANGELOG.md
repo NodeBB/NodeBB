@@ -1,3 +1,103 @@
+#### v4.2.0 (2025-03-19)
+
+##### Chores
+
+* **deps:**
+  *  update commitlint monorepo to v19.8.0 (#13244) (ee3c0bf4)
+  *  update dependency lint-staged to v15.5.0 (#13245) (f4fe3f5f)
+  *  update dependency sass-embedded to v1.86.0 (#13251) (3bb861ae)
+*  up widgets (ed57f896)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  update changelog for v4.1.1 (2c3f8561)
+*  add missing file to az lang (d7116adc)
+*  language labels for az/pl (61d17c95)
+*  alphabetize transifex config file languages (b7bb35f8)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (866cd539)
+  *  fallback strings for new resources: nodebb.error (b4dfd7fe)
+  *  fallback strings for new resources: nodebb.admin-settings-chat (2f957655)
+  *  fallback strings for new resources: nodebb.user (78a2c087)
+  *  fallback strings for new resources: nodebb.admin-manage-categories (c3993018)
+  *  fallback strings for new resources: nodebb.admin-manage-categories (efdb416c)
+  *  fallback strings for new resources: nodebb.category (8314d8ba)
+
+##### Documentation Changes
+
+*  openapi schema for admin/extend/plugins (f2a16422)
+*  update openapi schema from 6c26d9f4a3c398b4d7add0a2d9c91685a0336a74 (128dd2d3)
+
+##### New Features
+
+*  1b12 category announce on post move to a new tid, #13236 (254f0738)
+*  add Azerbaijani localisations, təşəkkür edirəm! (825e4c70)
+*  if an incoming remote message is too long, don't create the room, but notify the local recipients instead (885b83e5)
+*  new ACP config for max length of remote chat messages, #13174 (81509b13)
+*  add `federatedDescription` property to a category. (dfabadbe)
+*  add link to category edit page in acp category sidebar (fa8216f2)
+*  add additional logic that checks whether a cid follows the activity actor, and asserts note into that category if so (3589c570)
+*  move category sidebar to ACP partial, add sidebar to category-federation (dc2dcaf1)
+*  add line to description exposing a category's handle if accessible by fediverse pseudo-user, closes #13126 (6c26d9f4)
+*  call announceObject on topic fork, #13215 (e3edfef8)
+
+##### Bug Fixes
+
+*  wrong property name used (08796a0a)
+*  #13254, configurable ap content prune (80e03c85)
+*  only 1b12 announce topic fork if OP is local, fix race condition in tests (945617cb)
+*  bug where remote post was attempted to be announced on post move (291af926)
+*  handling of `href` in remote object attachments, #13169 (44354dac)
+*  #13100, direct access to a tag page no longer excludes cid -1 (14fd33ce)
+*  expose remote url in user object (78c9239b)
+*  hide disable and purge buttons from category-federation.tpl (43248578)
+*  show 'copy settings from' button in acp category sidebar only on category.tpl (1f6871e5)
+*  improper cc and object fields in announceObject (deb5ee5e)
+*  move AP send logging earlier (dca3c35d)
+*  #13224, handle note attributedTo when it is of type object (d9483347)
+*  allow actor assertion of loopback actors depending on ACP setting (73aaa990)
+* **deps:**
+  *  update dependency mongodb to v6.15.0 (#13253) (1c23d0cf)
+  *  update dependency pg to v8.14.1 (#13247) (4d6d71d8)
+  *  update dependency nodebb-widget-essentials to v7.0.36 (#13250) (dbd0fd22)
+  *  update dependency sass to v1.86.0 (#13252) (a1465268)
+  *  update dependency esbuild to v0.25.1 (#13243) (ce3bb8b5)
+  *  update dependency ioredis to v5.6.0 (#13246) (b96f532b)
+  *  update dependency connect-redis to v8.0.2 (#13242) (e90a8b26)
+  *  update dependency autoprefixer to v10.4.21 (#13241) (4e69ed56)
+  *  update dependency pg-cursor to v2.13.1 (#13248) (92727549)
+  *  update fontsource monorepo to v5.2.5 (#13226) (8ca1d6e6)
+  *  update dependency mongodb to v6.14.2 (#13229) (b39e4d19)
+  *  update dependency terser-webpack-plugin to v5.3.14 (#13230) (7b40e210)
+  *  update dependency mongodb to v6.14.1 (#13225) (a58af228)
+  *  update dependency tough-cookie to v5.1.2 (#13217) (e19109ad)
+  *  update dependency mongodb to v6.14.0 (#13214) (ad680d6a)
+  *  update dependency terser-webpack-plugin to v5.3.12 (#13213) (4c22af8c)
+  *  update dependency cron to v4.1.0 (#13200) (f56838a3)
+
+##### Refactors
+
+*  remove announceObject in favour of feps.announce, added create activity mock to support (74443c3b)
+*  move all input note normalization into helper method, have assertPrivate mock a message object (with said normalization) before sending message (4ec7552c)
+
+##### Tests
+
+*  add url/statusCode to failing test (8982923e)
+*  fix remoteUrl property generation, tests for topic moving (0e1006fb)
+*  fix actor tests (537880d2)
+*  openapi schema for remoteUrl (fc64e89f)
+*  add failing test for #13215 (feb94215)
+*  adjust test runner detection in AP code (7ceb6d69)
+*  new test file for feps (e510e826)
+*  log outgoing AP messages for local test runner (6e872b5f)
+*  allow ap/notes tests to be run in isolation (98aafaaf)
+
 #### v4.1.1 (2025-03-12)
 
 ##### Chores
