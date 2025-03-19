@@ -124,7 +124,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		return;
 	}
 
-	const { payload: activity, targets } = await activitypub.mocks.activities.create(pid, caller.uid, post);
+	const { activity, targets } = await activitypub.mocks.activities.create(pid, caller.uid, post);
 
 	await Promise.all([
 		activitypub.send('uid', caller.uid, Array.from(targets), activity),
