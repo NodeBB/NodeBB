@@ -5,6 +5,8 @@
 	"disable-editing": "Onemogući uređivanje/brisanje poruka razgovora",
 	"disable-editing-help": "Administratori i moderatori su izuzeti od ovih restrikcija",
 	"max-length": "Maksimalna dužina poruka u razgovoru",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maksimalan broj korisnika u sobama za razgovor",
 	"delay": "Time between chat messages (ms)",

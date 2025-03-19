@@ -10,6 +10,7 @@ const privileges = require('../privileges');
 const user = require('../user');
 const categories = require('../categories');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const pagination = require('../pagination');
 const helpers = require('./helpers');
 const utils = require('../utils');
@@ -161,6 +162,12 @@ categoryController.get = async function (req, res, next) {
 	if (meta.config.activitypubEnabled) {
 		// Include link header for richer parsing
 		res.set('Link', `<${nconf.get('url')}/actegory/${cid}>; rel="alternate"; type="application/activity+json"`);
+
+		// Category accessible
+		const remoteOk = await privileges.categories.can('read', cid, activitypub._constants.uid);
+		if (remoteOk) {
+			categoryData.handleFull = `${categoryData.handle}@${nconf.get('url_parsed').host}`;
+		}
 	}
 
 	res.render('category', categoryData);

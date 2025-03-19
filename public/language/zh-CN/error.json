@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "无法添加用户到聊天室。",
     "cant-remove-users-from-chat-room": "无法从聊天室删除用户。",
     "chat-room-name-too-long": "聊天房间名字太长。名字不能超过 %1 个字符。",
+    "remote-chat-received-too-long": "您收到了由 %1 发送的聊天消息，但此消息过长，已拒收。",
     "already-voting-for-this-post": "您已为此帖回复投过票了。",
     "reputation-system-disabled": "声望系统已禁用。",
     "downvoting-disabled": "踩已被禁用",

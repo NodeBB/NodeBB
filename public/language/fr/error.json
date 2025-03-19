@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Impossible d'ajouter des utilisateurs au salon.",
     "cant-remove-users-from-chat-room": "Impossible de supprimer des utilisateurs du salon.",
     "chat-room-name-too-long": "Le nom du salon est trop long. Les noms ne peuvent pas contenir plus de %1 caractères.",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Vous avez déjà voté pour ce message.",
     "reputation-system-disabled": "Le système de réputation est désactivé",
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",

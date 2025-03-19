@@ -1,8 +1,8 @@
 {
 	"manage-tags": "Hallitse tunnisteita",
 	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
+	"bg-color": "Taustaväri",
+	"text-color": "Tekstin väri",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Luo tunniste",
 	"add-tag": "Lisää tunniste",

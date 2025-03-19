@@ -1,0 +1,15 @@
+{
+	"errors": "Xətalar",
+	"figure-x": "Şəkil %1",
+	"error-events-per-day": "Gündə <code>%1</code> hadisə",
+	"error.404": "404 tapılmadı",
+	"error.503": "503 xidmət əlçatan deyil",
+	"manage-error-log": "Xəta qeydlərini idarə et",
+	"export-error-log": "İxrac xətası jurnalı (CSV)",
+	"clear-error-log": "Xəta loqlarını sil",
+	"route": "Marşrut",
+	"count": "Say",
+	"no-routes-not-found": "Yaşasın! 404 səhv yoxdur!",
+	"clear404-confirm": "404 xəta qeydlərini təmizləmək istədiyinizə əminsiniz?",
+	"clear404-success": "\"404 Tapılmadı\" xətaları silindi"
+}

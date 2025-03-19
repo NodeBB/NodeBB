@@ -7,6 +7,8 @@ const categories = require('../categories');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.createTopicFromPosts = async function (uid, title, pids, fromTid, cid) {
@@ -88,6 +90,12 @@ module.exports = function (Topics) {
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], mainPost.votes, tid),
 			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` }),
 		]);
+
+		// ideally we should federate a "move" activity instead, then can capture remote posts too. tbd
+		if (utils.isNumber(pids[0])) {
+			const { activity } = await activitypub.mocks.activities.create(pids[0], uid);
+			await activitypub.feps.announce(pids[0], activity);
+		}
 
 		plugins.hooks.fire('action:topic.fork', { tid, fromTid, uid });
 

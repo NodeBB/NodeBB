@@ -5,6 +5,8 @@
 	"disable-editing": "禁止编辑/删除聊天消息",
 	"disable-editing-help": "管理员和超级管理员不受此限制",
 	"max-length": "聊天信息的最大长度",
+	"max-length-remote": "远程聊天信息的最长长度",
+	"max-length-remote-help": "对于本地用户，该值通常设置为高于聊天消息最大值，因为远程消息往往较长（包含 @ 提及等）。",
 	"max-chat-room-name-length": "聊天室名称最大长度",
 	"max-room-size": "聊天室的最多用户数",
 	"delay": "发言频率（毫秒）",

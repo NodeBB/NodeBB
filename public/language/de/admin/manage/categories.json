@@ -10,6 +10,9 @@
 	"handle": "Category Handle",
 	"handle.help": "Your category handle is used as a representation of this category across other networks, similar to a username. A category handle must not match an existing username or user group.",
 	"description": "Kategorie-Beschreibung",
+	"federatedDescription": "Federated Description",
+	"federatedDescription.help": "This text will be appended to the category description when queried by other websites/apps.",
+	"federatedDescription.default": "This is a forum category containing topical discussion. You can start new discussions by mentioning this category.",
 	"bg-color": "Hintergrundfarbe",
 	"text-color": "Textfarbe",
 	"bg-image-size": "Hintergrundbildgröße",
@@ -94,6 +97,7 @@
 	"federation.followers-handle": "Handle",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "No followers.",
+	"federation.followers-autofill": "Autofill",
 
 	"alert.created": "Erstellt",
 	"alert.create-success": "Kategorie erfolgreich erstellt!",

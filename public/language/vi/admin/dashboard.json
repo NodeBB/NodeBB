@@ -31,7 +31,7 @@
 	"prerelease-upgrade-available": "Đây là phiên bản trước khi phát hành đã lỗi thời của NodeBB. Một phiên bản mới (v%1) đã được phát hành. Cân nhắc <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">nâng cấp NodeBB của bạn</a>.",
 	"prerelease-warning": "Đây là một phiên bản NodeBB <strong>trước khi phát hành</strong>. Lỗi ngoài ý muốn có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "Không tìm thấy trình gửi email dự phòng!",
-	"running-in-development": "Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở ra các lỗ hổng tiềm ẩn; Xin vui lòng liên hệ với quản trị hệ thống của bạn",
+	"running-in-development": "Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở ra các lỗ hổng tiềm ẩn; hãy liên hệ với quản trị hệ thống của bạn",
 	"latest-lookup-failed": "Không tìm được phiên bản mới nhất hiện có của NodeBB",
 
 	"notices": "Thông báo",
@@ -49,7 +49,7 @@
 	"maintenance-mode": "Chế Độ Bảo Trì",
 	"maintenance-mode-title": "Bấm vào đây để thiết lập chế độ bảo trì cho NodeBB",
 	"dark-mode": "Chế Độ Tối",
-	"realtime-chart-updates": "Cập Nhật Biểu Đồ Thời Gian Thực",
+	"realtime-chart-updates": "Biểu Đồ Thời Gian Thực",
 
 	"active-users": "Người Dùng Hoạt Động",
 	"active-users.users": "Người Dùng",
@@ -57,11 +57,11 @@
 	"active-users.total": "Tổng",
 	"active-users.connections": "Kết nối",
 
-	"guest-registered-users": "Khách vs Người dùng đã đăng ký",
+	"guest-registered-users": "Khách vs Người Đã Đăng Ký",
 	"guest": "Khách",
 	"registered": "Đã đăng ký",
 
-	"user-presence": "Người Dùng Có Mặt",
+	"user-presence": "Người Có Mặt",
 	"on-categories": "Trên danh sách danh mục",
 	"reading-posts": "Đọc bài viết",
 	"browsing-topics": "Lướt xem chủ đề",
@@ -69,7 +69,7 @@
 	"unread": "Chưa đọc",
 
 	"high-presence-topics": "Chủ Đề Hiện Diện Cao",
-	"popular-searches": "Tìm kiếm Phổ biến",
+	"popular-searches": "Tìm Kiếm Phổ Biến",
 
 	"graphs.page-views": "Xem Trang",
 	"graphs.page-views-registered": "Đã Đăng Ký Xem Trang",

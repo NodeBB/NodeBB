@@ -25,12 +25,12 @@
 
 	"updates": "Oppdateringar",
 	"running-version": "Køyrer <strong>NodeBB versjon <span id=\"version\"> %1 </span></strong>.",
-	"keep-updated": "Hald oppdatert",
+	"keep-updated": "Sørg alltid for at NodeBB-er oppdatert med dei nyaste tryggleiksoppdateringane og feilrettingane.",
 	"up-to-date": "Oppdatert <i class=\"fa fa-check\"></i>",
 	"upgrade-available": "Oppgradering tilgjengeleg. Vurder å <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">oppgradere din versjon av NodeBB</a>.",
 	"prerelease-upgrade-available": "Førehandsutgåveoppgradering tilgjengeleg. Vurder å <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">oppgradere din versjon av NodeBB</a>.",
 	"prerelease-warning": "Ver varsam når du oppgraderer til førehandsutgåver, dei kan innehalde feil.",
-	"fallback-emailer-not-found": "Fann ikkje tilbakefallse-postar",
+	"fallback-emailer-not-found": "Fallback-e-postar ikkje funne!",
 	"running-in-development": "Køyrer i utviklingsmodus",
 	"latest-lookup-failed": "Henting av siste versjon mislyktes",
 

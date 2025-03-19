@@ -2,7 +2,7 @@
 	"widgets": "Widgetar",
 	"available": "Tilgjengelege",
 	"explanation": "Dra og slepp widgetar for å tilpasse forumet.",
-	"none-installed": "Ingen widgetar funne! Aktiver innstikket for widget-essensialar i <a href=\"%1\">innstikk</a> kontrollpanelet.",
+	"none-installed": "Ingen widgetar funne! Aktiver plugin for widget essentials i <a href=\"%1\">innstikk</a> kontrollpanelet.",
 	"clone-from": "Klon frå",
 	"containers.available": "Tilgjengelege konteinarar",
 	"containers.explanation": "Konteinarar fungerer som behaldarar for widgetar.",
@@ -21,7 +21,7 @@
 	"alert.update-success": "Widget oppdatert med suksess",
 	"alert.clone-success": "Widget klona med suksess",
 
-	"error.select-clone": "Ver venleg å vel ein widget å klone",
+	"error.select-clone": "Vel ein widget å klone",
 
 	"title": "Tittel",
 	"title.placeholder": "Skriv inn tittelen her",

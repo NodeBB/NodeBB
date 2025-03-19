@@ -9,6 +9,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const messaging = require('../messaging');
+const notifications = require('../notifications');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -286,31 +287,44 @@ Notes.assertPrivate = async (object) => {
 		timestamp = Date.now();
 	}
 
+	const payload = await activitypub.mocks.message(object);
+
+	try {
+		await messaging.checkContent(payload.content, false);
+	} catch (e) {
+		const { displayname, userslug } = await user.getUserFields(payload.uid, ['displayname', 'userslug']);
+		const notification = await notifications.create({
+			bodyShort: `[[error:remote-chat-received-too-long, ${displayname}]]`,
+			path: `/user/${userslug}`,
+			nid: `error:chat:uid:${payload.uid}`,
+			from: payload.uid,
+		});
+		notifications.push(notification, Array.from(recipients).filter(uid => utils.isNumber(uid)));
+		return null;
+	}
+
 	if (!roomId) {
-		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipients] });
+		roomId = await messaging.newRoom(payload.uid, { uids: [...recipients] });
 	}
 
 	// Add any new members to the chat
 	const added = Array.from(recipients).filter(uid => !participantUids.includes(uid));
 	const assertion = await activitypub.actors.assert(added);
 	if (assertion) {
-		await messaging.addUsersToRoom(object.attributedTo, added, roomId);
+		await messaging.addUsersToRoom(payload.uid, added, roomId);
 	}
 
 	// Add message to room
 	const message = await messaging.sendMessage({
-		mid: object.id,
-		uid: object.attributedTo,
-		roomId: roomId,
-		content: object.content,
-		toMid: toMid,
+		...payload,
 		timestamp: Date.now(),
-		// ip: caller.ip,
+		roomId: roomId,
+		toMid: toMid,
 	});
-	messaging.notifyUsersInRoom(object.attributedTo, roomId, message);
+	messaging.notifyUsersInRoom(payload.uid, roomId, message);
 
 	// Set real timestamp back so that the message shows even though it predates room joining
-	await messaging.setMessageField(object.id, 'timestamp', timestamp);
+	await messaging.setMessageField(payload.mid, 'timestamp', timestamp);
 
 	return { roomId };
 };
@@ -550,7 +564,7 @@ Notes.prune = async () => {
 	 */
 	winston.info('[notes/prune] Starting scheduled pruning of topics');
 	const start = '-inf';
-	const stop = Date.now() - (1000 * 60 * 60 * 24 * 30); // 30 days; todo: make configurable?
+	const stop = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
 	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
 
 	winston.info(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);

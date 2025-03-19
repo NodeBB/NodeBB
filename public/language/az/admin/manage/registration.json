@@ -1,0 +1,20 @@
+{
+	"queue": "Növbə",
+	"description": "Qeydiyyat növbəsində heç bir istifadəçi yoxdur. <br>Bu funksiyanı aktivləşdirmək üçün <a href=\"%1\">Parametrlərə keçin &rarr; İstifadəçi &rarr;</a> İstifadəçi Qeydiyyatı və <strong>Qeydiyyat Tipini</strong> \"Admin Təsdiqi\" olaraq təyin edin.",
+
+	"list.name": "Adı",
+	"list.email": "E-poçt",
+	"list.ip": "IP",
+	"list.time": "Zaman",
+	"list.username-spam": "Tezlik: %1 Görünür: %2 Etibarlılıq: %3",
+	"list.email-spam": "Tezlik: %1 Görünür: %2",
+	"list.ip-spam": "Tezlik: %1 Görünür: %2",
+
+	"invitations": "Dəvətlər",
+	"invitations.description": "Aşağıda göndərilən dəvətlərin tam siyahısı verilmişdir. Siyahıda e-poçt və ya istifadəçi adı ilə axtarış etmək üçün ctrl-f düymələrindən istifadə edin. <br><br>İstifadəçi adı dəvətnamələrini istifadə etmiş istifadəçilər üçün e-poçtların sağında göstəriləcək.",
+	"invitations.inviter-username": "Dəvət edənin istifadəçi adı",
+	"invitations.invitee-email": "Dəvət olunanın E-poçtu",
+	"invitations.invitee-username": "Dəvət edən istifadəçi adı (qeydiyyatdan keçmişdirsə)",
+
+	"invitations.confirm-delete": "Bu dəvəti silmək istədiyinizə əminsiniz?"
+} 

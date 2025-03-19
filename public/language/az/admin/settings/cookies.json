@@ -1,0 +1,13 @@
+{
+	"eu-consent": "AB Razılığı",
+	"consent.enabled": "Aktivləşdirilib",
+	"consent.message": "Bildiriş mesajı",
+	"consent.acceptance": "Qəbul mesajı",
+	"consent.link-text": "Siyasət linki mətni",
+	"consent.link-url": "Siyasət linki URL",
+	"consent.blank-localised-default": "NodeBB lokallaşdırılmış defoltlarından istifadə etmək üçün boş buraxın",
+	"settings": "Parametrlər",
+	"cookie-domain": "Sessiya kukisi domeni",
+	"max-user-sessions": "Bir istifadəçi üçün maksimum aktiv sessiyalar",
+	"blank-default": "Defolt üçün boş buraxın"
+}

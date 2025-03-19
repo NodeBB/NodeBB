@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Հնարավոր չէ օգտվողներ ավելացնել զրուցարանում:",
     "cant-remove-users-from-chat-room": "Հնարավոր չէ օգտատերերին հեռացնել զրուցասենյակից:",
     "chat-room-name-too-long": "Զրույցի սենյակի անունը չափազանց երկար է: Անունները չեն կարող ավելի երկար լինել, քան %1 նիշ:",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Դուք արդեն քվեարկել եք այս գրառման օգտին:",
     "reputation-system-disabled": "Վարկանիշի համակարգը անջատված է:",
     "downvoting-disabled": "Դեմ քվեարկությունն անջատված է",

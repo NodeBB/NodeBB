@@ -3,6 +3,7 @@
     "subcategories": "子版面",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "發表主題",
     "guest-login-post": "登入以發表",
     "no-topics": "<strong>此版面還沒有任何內容。</strong><br />趕緊來貼文吧！",

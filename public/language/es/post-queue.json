@@ -3,10 +3,10 @@
 	"post-queue": "Cola de Mensajes",
 	"no-queued-posts": "There are no posts in the post queue.",
 	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
-	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"enabling-help": "La cola de publicaciones actualmente está <strong>deshabilitada</strong>. Para activar esta característica, ve a <a href=\"%1\">Ajustes &rarr; Publicación &rarr; Cola de publicaciones",
 	"back-to-list": "Back to Post Queue",
-	"public-intro": "If you have any queued posts, they will be shown here.",
-	"public-description": "This forum is configured to automatically queue posts from new accounts, pending moderator approval.<br />If you have queued posts awaiting approval, you will be able to see them here.",
+	"public-intro": "Si tienes alguna publicación en cola, se mostrarán aquí.",
+	"public-description": "Este foro está configurado para poner en cola automáticamente las publicaciones de cuentas nuevas, en espera de la aprobación del moderador.<br />Si tienes publicaciones en cola en espera de aprobación, podrás verlas aquí. ",
 	"user": "Usuario",
 	"when": "When",
 	"category": "Categoría",
@@ -39,5 +39,5 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links en esta publicación"
 }

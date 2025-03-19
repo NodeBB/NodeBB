@@ -3,6 +3,7 @@
     "subcategories": "子版块",
     "uncategorized": "未分类的",
     "uncategorized.description": "不完全符合任何现有类别的主题",
+    "handle.description": "您可以通过 %1 标签在开放的社交网络上关注这一版块。",
     "new-topic-button": "发表主题",
     "guest-login-post": "登录以发布",
     "no-topics": "<strong>此版块还没有任何内容。</strong><br />赶紧来发帖吧！",

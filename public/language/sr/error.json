@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Не могу се додати корисници у собу за ћаскање.",
     "cant-remove-users-from-chat-room": "Не могу се уклонити корисници из собе за ћаскање.",
     "chat-room-name-too-long": "Име собе за ћаскање је предугачко. Имена не могу бити дужа од %1 знакова.",
+    "remote-chat-received-too-long": "You received a chat message from %1, but it was too long and was rejected.",
     "already-voting-for-this-post": "Већ сте гласали за ову поруку.",
     "reputation-system-disabled": "Угледи су онемогућени.",
     "downvoting-disabled": "Негативно гласање је онемогућено",

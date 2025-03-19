@@ -5,6 +5,8 @@
 	"disable-editing": "채팅 메시지 편집/삭제 비활성화",
 	"disable-editing-help": "관리자 및 전역 중재자는 이 제한에서 제외됩니다",
 	"max-length": "채팅 메시지의 최대 길이",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "채팅 방 이름의 최대 길이",
 	"max-room-size": "채팅 방의 최대 사용자 수",
 	"delay": "채팅 메시지 간의 시간 (밀리초)",

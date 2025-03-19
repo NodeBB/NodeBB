@@ -10,6 +10,9 @@
 	"handle": "版块句柄",
 	"handle.help": "您的版块句柄在其他网络中用作该版块的代表，类似于用户名。版块句柄不得与现有的用户名或用户组相匹配。",
 	"description": "版块描述",
+	"federatedDescription": "“联邦”说明",
+	"federatedDescription.help": "当其他网站/应用程序查询时，该文本将附加到版块描述中。",
+	"federatedDescription.default": "这是一个包含专题讨论的论坛版块。您可以通过提及该版块开始新的讨论。",
 	"bg-color": "背景颜色",
 	"text-color": "图标颜色",
 	"bg-image-size": "背景图片大小",
@@ -94,6 +97,7 @@
 	"federation.followers-handle": "句柄",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "无关注者",
+	"federation.followers-autofill": "自动填充",
 
 	"alert.created": "创建",
 	"alert.create-success": "版块创建成功！",

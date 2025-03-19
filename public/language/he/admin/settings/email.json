@@ -28,6 +28,8 @@
 	"smtp-transport.password": "סיסמה",
 	"smtp-transport.pool": "הפעלת חיבורים מאוגדים",
 	"smtp-transport.pool-help": "איחוד חיבורים מונע מ- NodeBB ליצור חיבור חדש לכל דואר אלקטרוני. אפשרות זו חלה רק אם SMTP תחבורה מופעלת.",
+	"smtp-transport.allow-self-signed": "אפשר אישורים עם חתימה עצמית - self-signed",
+	"smtp-transport.allow-self-signed-help": "הפעלת הגדרה זו תאפשר לכם להשתמש בתעודות TLS עם חתימה עצמית או לא חוקית.",
 
 	"template": "עריכת תבנית דוא\"ל",
 	"template.select": "בחירת תבנית דוא\"ל",

@@ -116,6 +116,11 @@ get:
                       type: string
                   sortOptionLabel:
                     type: string
+                  handleFull:
+                    type: string
+                    description: |
+                      The full webfinger addressable handle for the category.
+                      This property is only present if the category privileges allow it to be accessed by the "fediverse" pseudo-user.
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

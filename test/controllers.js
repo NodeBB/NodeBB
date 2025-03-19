@@ -228,7 +228,7 @@ describe('Controllers', () => {
 				if (route.body) {
 					assert.strictEqual(String(body), route.body);
 				} else {
-					assert(body);
+					assert(body, `No body returned for ${route.url} ${response.statusCode}`);
 				}
 			});
 		});

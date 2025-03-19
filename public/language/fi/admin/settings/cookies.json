@@ -6,7 +6,7 @@
 	"consent.link-text": "Policy Link Text",
 	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Käytä NodeBB:n lokalisoituja oletuksia jättämällä tyhjäksi",
-	"settings": "Settings",
+	"settings": "Asetukset",
 	"cookie-domain": "Session cookie domain",
 	"max-user-sessions": "Max active sessions per user",
 	"blank-default": "Käytä oletusta jättämällä tyhjäksi"

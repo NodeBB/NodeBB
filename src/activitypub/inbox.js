@@ -33,7 +33,7 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 }
 
 inbox.create = async (req) => {
-	const { object } = req.body;
+	const { object, actor } = req.body;
 
 	// Alternative logic for non-public objects
 	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);
@@ -41,7 +41,13 @@ inbox.create = async (req) => {
 		return await activitypub.notes.assertPrivate(object);
 	}
 
-	const asserted = await activitypub.notes.assert(0, object);
+	const { cids } = await activitypub.actors.getLocalFollowers(actor);
+	let cid = null;
+	if (cids.size > 0) {
+		cid = Array.from(cids)[0];
+	}
+
+	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
 		activitypub.feps.announce(object.id, req.body);
 		api.activitypub.add(req, { pid: object.id });
@@ -111,7 +117,13 @@ inbox.update = async (req) => {
 							return await activitypub.notes.assertPrivate(object);
 						}
 
-						const asserted = await activitypub.notes.assert(0, object.id);
+						const { cids } = await activitypub.actors.getLocalFollowers(actor);
+						let cid = null;
+						if (cids.size > 0) {
+							cid = Array.from(cids)[0];
+						}
+
+						const asserted = await activitypub.notes.assert(0, object.id, { cid });
 						if (asserted) {
 							activitypub.feps.announce(object.id, req.body);
 						}
@@ -291,7 +303,7 @@ inbox.announce = async (req) => {
 			return;
 		}
 
-		const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true }); // checks skipped; done above.
+		const assertion = await activitypub.notes.assert(0, pid, { cid });
 		if (!assertion) {
 			return;
 		}

@@ -3,6 +3,7 @@
     "subcategories": "Alt kategoriler",
     "uncategorized": "Uncategorized",
     "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Yeni Başlık",
     "guest-login-post": "Giriş Yap",
     "no-topics": "<strong> Bu kategoride hiç konu yok. </strong> <br /> Yeni bir konu oluşturmak istemez misiniz?",

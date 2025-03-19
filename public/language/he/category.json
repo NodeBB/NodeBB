@@ -1,8 +1,9 @@
 {
     "category": "קטגוריה",
     "subcategories": "קטגוריות משנה",
-    "uncategorized": "Uncategorized",
-    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "uncategorized": "לא מסווג",
+    "uncategorized.description": "נושאים שאינם משתלבים בקפדנות עם קטגוריות קיימות",
+    "handle.description": "ניתן לעקוב אחר קטגוריה זו מהאינטרנט החברתי הפתוח באמצעות הידית %1",
     "new-topic-button": "נושא חדש",
     "guest-login-post": "התחברו כדי לפרסם",
     "no-topics": "<strong>קטגוריה זו ריקה מנושאים.</strong><br />למה שלא תנסו להוסיף נושא חדש?",

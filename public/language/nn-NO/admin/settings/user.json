@@ -70,7 +70,7 @@
 	"digest-freq": "Oppsummeringsfrekvens",
 	"digest-freq.off": "Av",
 	"digest-freq.daily": "Dagleg",
-	"digest-freq.weekly": "Vekentleg",
+	"digest-freq.weekly": "Kvar veke",
 	"digest-freq.biweekly": "Annakvar veke",
 	"digest-freq.monthly": "Månadleg",
 	"email-chat-notifs": "E-postvarsel for chat",

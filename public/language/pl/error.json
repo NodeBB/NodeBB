@@ -168,6 +168,7 @@
     "cant-add-users-to-chat-room": "Nie można dodać użytkowników do pokoju.",
     "cant-remove-users-from-chat-room": "Nie można usuwać użytkowników z pokoju.",
     "chat-room-name-too-long": "Nazwa pokoju jest za długa. Nazwy nie mogą być dłuższe niż %1 znaków.",
+    "remote-chat-received-too-long": "Odebrano wiadomość czatu od %1, która okazała się zbyt długa i w związku z tym została odrzucona.",
     "already-voting-for-this-post": "Już zagłosowałeś na ten post",
     "reputation-system-disabled": "System reputacji jest wyłączony.",
     "downvoting-disabled": "Negatywna ocena postów jest wyłączona",

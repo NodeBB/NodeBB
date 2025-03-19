@@ -5,6 +5,8 @@
 	"disable-editing": "Deshabilitar edición y borrado de mensajes de chat",
 	"disable-editing-help": "Los administradores y los moderadores globales están exentos de esta restricción",
 	"max-length": "Maxima longitud de mensajes de chat",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Máximo numero de usuarios en las salas de chat",
 	"delay": "Time between chat messages (ms)",

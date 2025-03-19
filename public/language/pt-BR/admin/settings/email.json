@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Senha",
 	"smtp-transport.pool": "Habilitar conexões em pool",
 	"smtp-transport.pool-help": "O pool de conexões evita que o NodeBB crie uma nova conexão para cada e-mail. Esta opção se aplica apenas se o Transporte SMTP estiver habilitado.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Editar Modelo do E-mail",
 	"template.select": "Escolher Modelo do E-mail",

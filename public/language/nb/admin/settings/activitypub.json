@@ -1,7 +1,7 @@
 {
 	"intro-lead": "What is Federation?",
 	"intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
-	"general": "General",
+	"general": "Generelt",
 	"pruning": "Content Pruning",
 	"content-pruning": "Days to keep remote content",
 	"content-pruning-help": "Note that remote content that has received engagement (a reply or a upvote/downvote) will be preserved. (0 for disabled)",

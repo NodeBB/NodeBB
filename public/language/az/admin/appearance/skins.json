@@ -1,0 +1,18 @@
+{
+	"skins": "Örtüklər",
+	"bootswatch-skins": "Bootswatch örtükləri",
+	"custom-skins": "Fərdi örtüklər",
+	"add-skin": "Örtük əlavə et",
+	"save-custom-skins": "Fərdi örtüyü saxla",
+	"save-custom-skins-success": "Fərdi örtüklər uğurla yadda saxlanıldı",
+	"custom-skin-name": "Fərdi örtük adı",
+	"custom-skin-variables": "Fərdi örtük dəyişənləri",
+	"loading": "Örtüklər yüklənir...",
+	"homepage": "Əsas səhifə",
+	"select-skin": "Örtüyü seçin",
+	"revert-skin": "Örtüyü bərpa edin",
+	"current-skin": "Cari örtük",
+	"skin-updated": "Örtük yeniləndi",
+	"applied-success": "%1 örtük uğurla tətbiq olundu",
+	"revert-success": "Örtük əsas rənglərə qayıtdı"
+}

@@ -21,11 +21,22 @@ const activitypub = require('../src/activitypub');
 describe('ActivityPub integration', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
+		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
 	});
 
 	after(() => {
 		delete meta.config.activitypubEnabled;
+	});
+
+	describe('Outgoing AP logging for test runner', () => {
+		it('should log an entry in ActivityPub._sent when .send is called', async () => {
+			const uuid = utils.generateUUID();
+			const uid = await user.create({ username: uuid });
+			await activitypub.send('uid', 0, [`https://localhost/uid/${uid}`], { id: `${nconf.get('url')}/activity/${uuid}`, foo: 'bar' });
+
+			assert(activitypub._sent.has(`${nconf.get('url')}/activity/${uuid}`));
+		});
 	});
 
 	describe('Master toggle', () => {

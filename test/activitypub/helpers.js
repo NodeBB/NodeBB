@@ -1,11 +1,41 @@
 'use strict';
 
-const utils = require('../../src/utils');
 const activitypub = require('../../src/activitypub');
+const utils = require('../../src/utils');
+const slugify = require('../../src/slugify');
 
 const Helpers = module.exports;
 
 Helpers.mocks = {};
+
+Helpers.mocks.actor = () => {
+	const baseUrl = 'https://example.org';
+	const uuid = utils.generateUUID();
+	const id = `${baseUrl}/${uuid}`;
+
+	const actor = {
+		'@context': [
+			'https://www.w3.org/ns/activitystreams',
+			'https://w3id.org/security/v1',
+		],
+		id: `${id}`,
+		url: `${id}`,
+		inbox: `${id}/inbox`,
+		outbox: `${id}/outbox`,
+
+		type: 'Person',
+		name: slugify(uuid),
+		preferredUsername: uuid,
+
+		publicKey: {
+			id: `${id}#key`,
+			owner: `${id}`,
+			publicKeyPem: 'todo',
+		},
+	};
+
+	return { id, actor };
+};
 
 Helpers.mocks.note = (override = {}) => {
 	const baseUrl = 'https://example.org';

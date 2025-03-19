@@ -10,6 +10,9 @@
 	"handle": "Przydział kategorii",
 	"handle.help": "Obsługa kategorii robi za znak rozpoznawczy w innych sieciach na wzór nazwy użytkownika. Z tej racji jej nazwa nie może się pokrywać z nazwą użytkownika lub grupą użytkowników.",
 	"description": "Opis kategorii",
+	"federatedDescription": "Opis federacji",
+	"federatedDescription.help": "Ten tekst zostanie użyty dla opisu sekcji widocznej z poziomu innych stron/aplikacji.",
+	"federatedDescription.default": "Ta sekcja forum zawiera dyskusje tematyczne. Możesz rozpocząć nową dyskusję wzmiankując tę kategorię.",
 	"bg-color": "Kolor tła",
 	"text-color": "Kolor tekstu",
 	"bg-image-size": "Wielkość obrazka tła",
@@ -94,6 +97,7 @@
 	"federation.followers-handle": "Przydział",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Brak śledzących.",
+	"federation.followers-autofill": "Autouzupełnianie",
 
 	"alert.created": "Utworzony",
 	"alert.create-success": "Kategoria pomyślnie dodana!",

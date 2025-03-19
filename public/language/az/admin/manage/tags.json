@@ -1,0 +1,20 @@
+{
+	"manage-tags": "Teqləri idarə et",
+	"none": "Forumunuzda hələ teqləri olan mövzu yoxdur.",
+	"bg-color": "Arxa fon rəngi",
+	"text-color": "Mətnin rəngi",
+	"description": "Klikləyərək və ya sürükləyərək teqləri seçin, birdən çox teq seçmək üçün <code>CTRL</code> düyməsini istifadə edin.",
+	"create": "Teq yarat",
+	"add-tag": "Teq əlavə et",
+	"modify": "Teqləri dəyiş",
+	"rename": "Teqlərin adını dəyiş",
+	"delete": "Seçilmiş teqləri sil",
+	"search": "Teqləri axtarın...",
+	"settings": "Teqlər parametrləri",
+	"name": "Teq adı",
+
+	"alerts.editing": "Teq(lər)i redaktə et",
+	"alerts.confirm-delete": "Seçilmiş teqləri silmək istəyirsiniz?",
+	"alerts.update-success": "Teq yeniləndi!",
+	"reset-colors": "Rəngləri sıfırla"
+}

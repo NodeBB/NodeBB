@@ -124,23 +124,11 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		return;
 	}
 
-	const object = await activitypub.mocks.notes.public(post);
-	const { to, cc, targets } = await activitypub.buildRecipients(object, { pid, uid: post.user.uid });
-	object.to = to;
-	object.cc = cc;
-
-	const payload = {
-		id: `${object.id}#activity/create/${Date.now()}`,
-		type: 'Create',
-		actor: object.attributedTo,
-		to,
-		cc,
-		object,
-	};
+	const { activity, targets } = await activitypub.mocks.activities.create(pid, caller.uid, post);
 
 	await Promise.all([
-		activitypub.send('uid', caller.uid, Array.from(targets), payload),
-		activitypub.feps.announce(pid, payload),
+		activitypub.send('uid', caller.uid, Array.from(targets), activity),
+		activitypub.feps.announce(pid, activity),
 		activitypubApi.add(caller, { pid }),
 	]);
 });

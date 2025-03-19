@@ -1,0 +1,26 @@
+{
+	"you-are-on": "Siz <strong>%1:%2</strong>-dəsiniz",
+	"ip": "IP <strong>%1</strong>",
+	"nodes-responded": "%1 nod %2ms ərzində cavab verdi!",
+	"host": "host",
+	"primary": "əsas / iş",
+	"pid": "pid",
+	"nodejs": "nodejs",
+	"online": "onlayn",
+	"git": "git",
+	"process-memory": "proses yaddaşı",
+	"system-memory": "sistem yaddaşı",
+	"used-memory-process": "Proseslər yaddaşdan istifadə edir",
+	"used-memory-os": "İstifadə olunmuş sistem yaddaşı",
+	"total-memory-os": "Ümumi sistem yaddaşı",
+	"load": "sistem yükləməsi",
+	"cpu-usage": "CPU istifadəsi",
+	"uptime": "işləmə müddəti",
+
+	"registered": "Qeydiyyatdan keçib",
+	"sockets": "Sockets",
+	"connection-count": "Bağlantı sayı",
+	"guests": "Qonaqlar",
+
+	"info": "Məlumat"
+}

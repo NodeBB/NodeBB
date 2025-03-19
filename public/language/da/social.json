@@ -1,12 +1,12 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook",
-	"sign-in-with-linkedin": "Sign in with LinkedIn",
-	"sign-up-with-linkedin": "Sign up with LinkedIn"
+	"sign-in-with-twitter": "Log ind med Twitter",
+	"sign-up-with-twitter": "Meld dig in med Twitter",
+	"sign-in-with-github": "Log ind med Github",
+	"sign-up-with-github": "Meld dig ind med Github",
+	"sign-in-with-google": "Log ind med Google",
+	"sign-up-with-google": "Meld dig ind med Google",
+	"log-in-with-facebook": "Log ind med Facebook",
+	"continue-with-facebook": "Fortsæt med Facebook",
+	"sign-in-with-linkedin": "Log ind med LinkedIn",
+	"sign-up-with-linkedin": "Meld dig ind med LinkedIn"
 }

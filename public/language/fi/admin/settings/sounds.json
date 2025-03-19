@@ -1,9 +1,9 @@
 {
 	"notifications": "Ilmoitukset",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
+	"chat-messages": "Pikaviestit",
+	"play-sound": "Toista",
+	"incoming-message": "Saapuva viesti",
+	"outgoing-message": "Lähtevä viesti",
 	"upload-new-sound": "Lisää uusi ääni",
-	"saved": "Settings Saved"
+	"saved": "Asetukset tallennettiin"
 }

@@ -1,0 +1,16 @@
+{
+    "title": "Oxunmamış",
+    "no-unread-topics": "Oxunmamış mövzu yoxdur.",
+    "load-more": "Daha çox yüklə",
+    "mark-as-read": "Oxumuş kimi işarələ",
+    "mark-as-unread": "Oxunmamış kimi işarələ",
+    "selected": "Seçildi",
+    "all": "Hamısı",
+    "all-categories": "Bütün kateqoriyalar",
+    "topics-marked-as-read.success": "Mövzular oxunmuş kimi qeyd edildi!",
+    "all-topics": "Bütün mövzular",
+    "new-topics": "Yeni mövzular",
+    "watched-topics": "İzlənilən mövzular",
+    "unreplied-topics": "Cavabsız mövzular",
+    "multiple-categories-selected": "Çoxlu seçim"
+}

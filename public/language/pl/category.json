@@ -3,6 +3,7 @@
     "subcategories": "Podkategorie",
     "uncategorized": "Nieokreślone",
     "uncategorized.description": "Wątki, które nie do końca pasują do istniejących kategorii",
+    "handle.description": "Tę kategorię można śledzić za pośrednictwem %1",
     "new-topic-button": "Nowy temat",
     "guest-login-post": "Zaloguj się, aby napisać post",
     "no-topics": "<strong>W tej kategorii nie ma jeszcze żadnych tematów.</strong><br />Może pora na napisanie pierwszego?",

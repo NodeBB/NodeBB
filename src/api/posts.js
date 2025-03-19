@@ -321,6 +321,12 @@ postsAPI.move = async function (caller, data) {
 
 	if (!postDeleted && !topicDeleted) {
 		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved-your-post');
+
+		// ideally we should federate a "move" activity instead, then can capture remote posts too. tbd
+		if (utils.isNumber(data.pid)) {
+			const { activity } = await activitypub.mocks.activities.create(data.pid, caller.uid);
+			await activitypub.feps.announce(data.pid, activity);
+		}
 	}
 };
 

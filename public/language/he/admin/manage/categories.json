@@ -10,6 +10,9 @@
 	"handle": "מקשר קטגוריה",
 	"handle.help": "המקשר לקטגוריה שלך משמשת כייצוג של קטגוריה זו ברשתות אחרות, בדומה לשם משתמש. נקודת אחיזה בקטגוריה אינה יכולה להתאים לשם משתמש או קבוצת משתמשים קיימים.",
 	"description": "תיאור קטגוריה",
+	"federatedDescription": "תיאור פדרציה",
+	"federatedDescription.help": "טקסט זה יצורף לתיאור הקטגוריה כאשר הוא יתבקש על ידי אתרים או אפליקציות אחרות.",
+	"federatedDescription.default": "זוהי קטגוריית פורום המכילה דיון אקטואלי. תוכלו להתחיל דיונים חדשים על ידי אזכור קטגוריה זו.",
 	"bg-color": "צבע רקע",
 	"text-color": "צבע טקסט",
 	"bg-image-size": "גודל תמונת רקע",
@@ -94,6 +97,7 @@
 	"federation.followers-handle": "קישור",
 	"federation.followers-id": "ID",
 	"federation.followers-none": "אין עוקבים.",
+	"federation.followers-autofill": "מילוי אוטומטי",
 
 	"alert.created": "נוצר",
 	"alert.create-success": "קטגוריה נוצרה בהצלחה!",

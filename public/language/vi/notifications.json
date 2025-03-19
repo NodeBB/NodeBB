@@ -65,7 +65,7 @@
     "new-register-multiple": "Có <strong>%1</strong> yêu cầu đăng ký đang chờ đánh giá.",
     "flag-assigned-to-you": "<strong>Cờ %1</strong> đã được giao cho bạn",
     "post-awaiting-review": "Bài đăng chờ đánh giá",
-    "profile-exported": "<strong>%1</strong> đã xuất hồ sơ, nhấn tải xuống",
+    "profile-exported": "<strong>%1</strong> đã xuất hồ sơ, bấm để tải xuống",
     "posts-exported": "<strong>%1</strong> đã xuất bài viết, nhấn tải xuống",
     "uploads-exported": "<strong>%1</strong> đã xuất tải lên, nhấn tải xuống",
     "users-csv-exported": "Đã xuất csv người dùng, nhấp để tải xuống",
