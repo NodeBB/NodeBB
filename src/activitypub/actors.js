@@ -536,34 +536,69 @@ Actors.prune = async () => {
 	/**
 	 * Clear out remote user accounts that do not have content on the forum anywhere
 	 */
-	winston.info('[actors/prune] Started scheduled pruning of remote user accounts');
+	activitypub.helpers.log('[actors/prune] Started scheduled pruning of remote user accounts and categories');
 
 	const days = parseInt(meta.config.activitypubUserPruneDays, 10);
 	const timestamp = Date.now() - (1000 * 60 * 60 * 24 * days);
-	const uids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, 500, '-inf', timestamp);
-	if (!uids.length) {
-		winston.info('[actors/prune] No remote users to prune, all done.');
-		return;
+	const ids = await db.getSortedSetRangeByScore('usersRemote:lastCrawled', 0, 500, '-inf', timestamp);
+	if (!ids.length) {
+		activitypub.helpers.log('[actors/prune] No remote actors to prune, all done.');
+		return {
+			counts: {
+				deleted: 0,
+				missing: 0,
+				preserved: 0,
+			},
+			preserved: new Set(),
+		};
 	}
 
-	winston.info(`[actors/prune] Found ${uids.length} remote users last crawled more than ${days} days ago`);
+	activitypub.helpers.log(`[actors/prune] Found ${ids.length} remote actors last crawled more than ${days} days ago`);
 	let deletionCount = 0;
 	let deletionCountNonExisting = 0;
 	let notDeletedDueToLocalContent = 0;
-	const notDeletedUids = [];
-	await batch.processArray(uids, async (uids) => {
-		const exists = await db.exists(uids.map(uid => `userRemote:${uid}`));
-
-		const uidsThatExist = uids.filter((uid, idx) => exists[idx]);
-		const uidsThatDontExist = uids.filter((uid, idx) => !exists[idx]);
-
-		const [postCounts, roomCounts, followCounts] = await Promise.all([
-			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:posts`)),
-			db.sortedSetsCard(uidsThatExist.map(uid => `uid:${uid}:chat:rooms`)),
-			Actors.getLocalFollowCounts(uidsThatExist),
+	const preservedIds = [];
+	await batch.processArray(ids, async (ids) => {
+		const exists = await Promise.all([
+			db.exists(ids.map(id => `userRemote:${id}`)),
+			db.exists(ids.map(id => `categoryRemote:${id}`)),
 		]);
 
-		await Promise.all(uidsThatExist.map(async (uid, idx) => {
+		let uids = new Set();
+		let cids = new Set();
+		const missing = new Set();
+		ids.forEach((id, idx) => {
+			switch (true) {
+				case exists[0][idx]: {
+					uids.add(id);
+					break;
+				}
+
+				case exists[1][idx]: {
+					cids.add(id);
+					break;
+				}
+
+				default: {
+					missing.add(id);
+					break;
+				}
+			}
+		});
+		uids = Array.from(uids);
+		cids = Array.from(cids);
+
+		// const uidsThatExist = ids.filter((uid, idx) => exists[idx]);
+		// const uidsThatDontExist = ids.filter((uid, idx) => !exists[idx]);
+
+		// Remote users
+		const [postCounts, roomCounts, followCounts] = await Promise.all([
+			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
+			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
+			Actors.getLocalFollowCounts(uids),
+		]);
+
+		await Promise.all(uids.map(async (uid, idx) => {
 			const { followers, following } = followCounts[idx];
 			const postCount = postCounts[idx];
 			const roomCount = roomCounts[idx];
@@ -576,20 +611,46 @@ Actors.prune = async () => {
 				}
 			} else {
 				notDeletedDueToLocalContent += 1;
-				notDeletedUids.push(uid);
+				preservedIds.push(uid);
 			}
 		}));
 
-		deletionCountNonExisting += uidsThatDontExist.length;
-		await db.sortedSetRemove('usersRemote:lastCrawled', uidsThatDontExist);
+		// Remote categories
+		let counts = await categories.getCategoriesFields(cids, ['topic_count']);
+		counts = counts.map(count => count.topic_count);
+		await Promise.all(cids.map(async (cid, idx) => {
+			const topicCount = counts[idx];
+			if (topicCount === 0) {
+				try {
+					await categories.purge(cid, 0);
+					deletionCount += 1;
+				} catch (err) {
+					winston.error(err.stack);
+				}
+			} else {
+				notDeletedDueToLocalContent += 1;
+				preservedIds.push(cid);
+			}
+		}));
+
+		deletionCountNonExisting += missing.size;
+		await db.sortedSetRemove('usersRemote:lastCrawled', Array.from(missing));
 		// update timestamp in usersRemote:lastCrawled so we don't try to delete users
 		// with content over and over
 		const now = Date.now();
-		await db.sortedSetAdd('usersRemote:lastCrawled', notDeletedUids.map(() => now), notDeletedUids);
+		await db.sortedSetAdd('usersRemote:lastCrawled', preservedIds.map(() => now), preservedIds);
 	}, {
 		batch: 50,
 		interval: 1000,
 	});
 
-	winston.info(`[actors/prune] ${deletionCount} remote users pruned. ${deletionCountNonExisting} does not exist. ${notDeletedDueToLocalContent} not deleted due to local content`);
+	activitypub.helpers.log(`[actors/prune] ${deletionCount} remote users pruned. ${deletionCountNonExisting} did not exist. ${notDeletedDueToLocalContent} not deleted due to local content`);
+	return {
+		counts: {
+			deleted: deletionCount,
+			missing: deletionCountNonExisting,
+			preserved: notDeletedDueToLocalContent,
+		},
+		preserved: new Set(preservedIds),
+	};
 };
