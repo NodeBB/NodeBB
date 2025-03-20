@@ -274,7 +274,7 @@ Actors.assertGroup = async (ids, options = {}) => {
 
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} group(s)`);
 
-	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
+	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVEGROUP!
 
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
@@ -312,10 +312,10 @@ Actors.assertGroup = async (ids, options = {}) => {
 			return actor;
 		} catch (e) {
 			if (e.code === 'ap_get_410') {
-				// const exists = await user.exists(id);
-				// if (exists) {
-				// 	await user.deleteAccount(id);
-				// }
+				const exists = await categories.exists(id);
+				if (exists) {
+					await categories.purge(id, 0);
+				}
 			}
 
 			return null;
@@ -343,7 +343,7 @@ Actors.assertGroup = async (ids, options = {}) => {
 	const cidsForCurrent = categoryObjs.map((p, idx) => (exists[idx] ? p.cid : 0));
 	const current = await categories.getCategoriesFields(cidsForCurrent, ['slug']);
 	const queries = categoryObjs.reduce((memo, profile, idx) => {
-		const { slug } = current[idx];
+		const { slug, name } = current[idx];
 
 		if (options.update || slug !== profile.slug) {
 			if (cidsForCurrent[idx] !== 0 && slug) {
@@ -351,31 +351,31 @@ Actors.assertGroup = async (ids, options = {}) => {
 				memo.handleRemove.push(slug.toLowerCase());
 			}
 
-			// memo.searchAdd.push(['ap.preferredUsername:sorted', 0, `${profile.slug.toLowerCase()}:${profile.uid}`]);
+			memo.searchAdd.push(['categories:name', 0, `${profile.slug.slice(0, 200).toLowerCase()}:${profile.cid}`]);
 			memo.handleAdd[profile.slug.toLowerCase()] = profile.cid;
 		}
 
-		// if (options.update || (profile.fullname && fullname !== profile.fullname)) {
-		// 	if (fullname && cidsForCurrent[idx] !== 0) {
-		// 		memo.searchRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${profile.uid}`]);
-		// 	}
+		if (options.update || (profile.name && name !== profile.name)) {
+			if (name && cidsForCurrent[idx] !== 0) {
+				memo.searchRemove.push(['categories:name', `${name.toLowerCase()}:${profile.cid}`]);
+			}
 
-		// 	memo.searchAdd.push(['ap.name:sorted', 0, `${profile.fullname.toLowerCase()}:${profile.uid}`]);
-		// }
+			memo.searchAdd.push(['categories:name', 0, `${profile.name.toLowerCase()}:${profile.cid}`]);
+		}
 
 		return memo;
-	}, { /* searchRemove: [], searchAdd: [], */ handleRemove: [], handleAdd: {} });
+	}, { searchRemove: [], searchAdd: [], handleRemove: [], handleAdd: {} });
 
 	// Removals
 	await Promise.all([
-		// db.sortedSetRemoveBulk(queries.searchRemove),
+		db.sortedSetRemoveBulk(queries.searchRemove),
 		db.deleteObjectFields('handle:cid', queries.handleRemove),
 	]);
 
 	await Promise.all([
 		db.setObjectBulk(bulkSet),
 		db.sortedSetAdd('usersRemote:lastCrawled', groups.map(() => now), groups.map(p => p.id)),
-		// db.sortedSetAddBulk(queries.searchAdd),
+		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:cid', queries.handleAdd),
 		_migratePersonToGroup(categoryObjs),
 	]);
@@ -508,18 +508,18 @@ Actors.removeGroup = async (id) => {
 		return false;
 	}
 
-	let { slug, /* fullname, */url, followersUrl } = await categories.getCategoryFields(id, ['slug', /* 'fullname', */ 'url', 'followersUrl']);
+	let { slug, name, url, followersUrl } = await categories.getCategoryFields(id, ['slug', 'name', 'url', 'followersUrl']);
 	slug = slug.toLowerCase();
 
-	// const bulkRemove = [
-	// 	['ap.preferredUsername:sorted', `${name}:${id}`],
-	// ];
-	// if (fullname) {
-	// 	bulkRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${id}`]);
-	// }
+	const bulkRemove = [
+		['categories:name', `${slug}:${id}`],
+	];
+	if (name) {
+		bulkRemove.push(['categories:name', `${name.toLowerCase()}:${id}`]);
+	}
 
 	await Promise.all([
-		// db.sortedSetRemoveBulk(bulkRemove),
+		db.sortedSetRemoveBulk(bulkRemove),
 		db.deleteObjectField('handle:cid', slug),
 		db.deleteObjectField('followersUrl:cid', followersUrl),
 		db.deleteObjectField('remoteUrl:cid', url),
