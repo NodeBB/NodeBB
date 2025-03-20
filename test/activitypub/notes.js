@@ -109,6 +109,22 @@ describe('Notes', () => {
 						assert.strictEqual(category[prop], 1);
 					});
 				});
+
+				it('should add a remote category topic to a user\'s inbox if they are following the category', async () => {
+					const { id: cid, actor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup([cid]);
+
+					const uid = await user.create({ username: utils.generateUUID() });
+					await api.categories.setWatchState({ uid }, { cid, state: categories.watchStates.tracking });
+
+					const { id } = helpers.mocks.note({
+						cc: [cid],
+					});
+					const { tid } = await activitypub.notes.assert(0, id);
+
+					const inInbox = await db.isSortedSetMember(`uid:${uid}:inbox`, tid);
+					assert(inInbox);
+				});
 			});
 
 			describe('User-specific behaviours', () => {

@@ -410,6 +410,7 @@ async function _migratePersonToGroup(categoryObjs) {
 }
 
 Actors.getLocalFollowers = async (id) => {
+	// Returns local uids and cids that follow a remote actor (by id)
 	const response = {
 		uids: new Set(),
 		cids: new Set(),
@@ -419,15 +420,27 @@ Actors.getLocalFollowers = async (id) => {
 		return response;
 	}
 
-	const members = await db.getSortedSetMembers(`followersRemote:${id}`);
+	const [isUser, isCategory] = await Promise.all([
+		user.exists(id),
+		categories.exists(id),
+	]);
 
-	members.forEach((id) => {
-		if (utils.isNumber(id)) {
-			response.uids.add(parseInt(id, 10));
-		} else if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
-			response.cids.add(parseInt(id.slice(4), 10));
-		}
-	});
+	if (isUser) {
+		const members = await db.getSortedSetMembers(`followersRemote:${id}`);
+
+		members.forEach((id) => {
+			if (utils.isNumber(id)) {
+				response.uids.add(parseInt(id, 10));
+			} else if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
+				response.cids.add(parseInt(id.slice(4), 10));
+			}
+		});
+	} else if (isCategory) {
+		const members = await db.getSortedSetRangeByScore(`cid:${id}:uid:watch:state`, 0, -1, categories.watchStates.tracking, categories.watchStates.watching);
+		members.forEach((uid) => {
+			response.uids.add(uid);
+		});
+	}
 
 	return response;
 };
