@@ -28,12 +28,13 @@ dashboardController.get = async function (req, res) {
 		getPopularSearches(),
 	]);
 	const version = nconf.get('version');
+	const latestValidVersion = semver.valid(latestVersion);
 
 	res.render('admin/dashboard', {
 		version: version,
-		lookupFailed: latestVersion === null,
-		latestVersion: latestVersion,
-		upgradeAvailable: latestVersion && semver.gt(latestVersion, version),
+		lookupFailed: latestValidVersion === null,
+		latestVersion: latestValidVersion,
+		upgradeAvailable: latestValidVersion && semver.gt(latestValidVersion, version),
 		currentPrerelease: versions.isPrerelease.test(version),
 		notices: notices,
 		stats: stats,
