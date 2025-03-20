@@ -130,8 +130,54 @@ describe('Actor asserton', () => {
 			assert.strictEqual(userRemoteHashExists, false);
 		});
 	});
+});
 
-	describe('deletion', () => {
+describe('Group assertion', () => {
+	let actorUri;
+	let actorData;
+
+	before(async () => {
+		const { id, actor } = helpers.mocks.group();
+		actorUri = id;
+		actorData = actor;
+	});
+
+	it('should assert a uri identifying as "Group" into a remote category', async () => {
+		const assertion = await activitypub.actors.assertGroup([actorUri]);
+
+		assert(assertion, Array.isArray(assertion));
+		assert.strictEqual(assertion.length, 1);
+
+		const category = assertion.pop();
+		assert.strictEqual(category.cid, actorUri);
+	});
+
+	it('should be considered existing when checked', async () => {
+		const exists = await categories.exists(actorUri);
+
+		assert(exists);
+	});
+
+	it('should contain an entry in categories search zset', async () => {
+		const exists = await db.isSortedSetMember('categories:name', `${actorData.preferredUsername.toLowerCase()}:${actorUri}`);
+
+		assert(exists);
+	});
+
+	it('should return category data when getter methods are called', async () => {
+		const category = await categories.getCategoryData(actorUri);
+		assert(category);
+		assert.strictEqual(category.cid, actorUri);
+	});
+
+	it('should not assert non-group users when called', async () => {
+		const { id } = helpers.mocks.person();
+		const assertion = await activitypub.actors.assertGroup([id]);
+
+		assert(Array.isArray(assertion) && !assertion.length);
+	});
+
+	describe.only('deletion', () => {
 		it('should delete a remote category when Categories.purge is called', async () => {
 			const { id } = helpers.mocks.group();
 			await activitypub.actors.assertGroup([id]);
@@ -151,51 +197,15 @@ describe('Actor asserton', () => {
 		it('should also delete AP-specific keys that were added by assertGroup', async () => {
 			const { id } = helpers.mocks.group();
 			const assertion = await activitypub.actors.assertGroup([id]);
-			const [{ slug }] = assertion;
+			const [{ handle, slug }] = assertion;
 
 			await categories.purge(id, 0);
 
-			const isMember = await db.isObjectField('handle:cid', slug);
+			const isMember = await db.isObjectField('handle:cid', handle);
+			const inSearch = await db.isSortedSetMember('categories:name', `${slug}:${id}`);
 			assert(!isMember);
+			assert(!inSearch);
 		});
-	});
-});
-
-describe('Group assertion', () => {
-	let actorUri;
-
-	before(async () => {
-		const { id, actor } = helpers.mocks.group();
-		actorUri = id;
-	});
-
-	it('should assert a uri identifying as "Group" into a remote category', async () => {
-		const assertion = await activitypub.actors.assertGroup([actorUri]);
-
-		assert(assertion, Array.isArray(assertion));
-		assert.strictEqual(assertion.length, 1);
-
-		const category = assertion.pop();
-		assert.strictEqual(category.cid, actorUri);
-	});
-
-	it('should be considered existing when checked', async () => {
-		const exists = await categories.exists(actorUri);
-
-		assert(exists);
-	});
-
-	it('should return category data when getter methods are called', async () => {
-		const category = await categories.getCategoryData(actorUri);
-		assert(category);
-		assert.strictEqual(category.cid, actorUri);
-	});
-
-	it('should not assert non-group users when called', async () => {
-		const { id } = helpers.mocks.person();
-		const assertion = await activitypub.actors.assertGroup([id]);
-
-		assert(Array.isArray(assertion) && !assertion.length);
 	});
 });
 
