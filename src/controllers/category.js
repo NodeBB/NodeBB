@@ -33,7 +33,10 @@ categoryController.get = async function (req, res, next) {
 
 	if (!utils.isNumber(cid)) {
 		const assertion = await activitypub.actors.assertGroup([cid]);
-		cid = await db.getObjectField('handle:cid', cid);
+		if (!activitypub.helpers.isUri(cid)) {
+			cid = await db.getObjectField('handle:cid', cid);
+		}
+
 		if (!assertion || !cid) {
 			return next();
 		}
