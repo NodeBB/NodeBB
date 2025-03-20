@@ -255,18 +255,29 @@ module.exports = function (Categories) {
 		notifications.push(notification, followers);
 	};
 
-	Categories.sortTidsBySet = async (tids, cid, sort) => {
-		sort = sort || meta.config.categoryTopicSort || 'recently_replied';
-		const sortToSet = {
-			recently_replied: `cid:${cid}:tids`,
-			recently_created: `cid:${cid}:tids:create`,
-			most_posts: `cid:${cid}:tids:posts`,
-			most_votes: `cid:${cid}:tids:votes`,
-			most_views: `cid:${cid}:tids:views`,
-		};
+	Categories.sortTidsBySet = async (tids, sort) => {
+		let cids = await topics.getTopicsFields(tids, ['cid']);
+		cids = cids.map(({ cid }) => cid);
 
-		const orderBy = sortToSet[sort];
-		const scores = await db.sortedSetScores(orderBy, tids);
+		function getSet(cid, sort) {
+			sort = sort || meta.config.categoryTopicSort || 'recently_replied';
+			const sortToSet = {
+				recently_replied: `cid:${cid}:tids`,
+				recently_created: `cid:${cid}:tids:create`,
+				most_posts: `cid:${cid}:tids:posts`,
+				most_votes: `cid:${cid}:tids:votes`,
+				most_views: `cid:${cid}:tids:views`,
+			};
+
+			return sortToSet[sort];
+		}
+
+		const scores = await Promise.all(tids.map(async (tid, idx) => {
+			const cid = cids[idx];
+			const orderBy = getSet(cid, sort);
+			return await db.sortedSetScore(orderBy, tid);
+		}));
+
 		const sorted = tids
 			.map((tid, idx) => [tid, scores[idx]])
 			.sort(([, a], [, b]) => b - a)
