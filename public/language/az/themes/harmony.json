@@ -1,8 +1,8 @@
 {
 	"theme-name": "Harmony Theme",
 	"skins": "Örtüklər",
-	"collapse": "Hamısını yığ",
-	"expand": "Hamısını aç",
+	"collapse": "Yığmaq",
+	"expand": "Açmaq",
 	"sidebar-toggle": "Yan panel aç/bağla",
 	"login-register-to-search": "Axtarış etmək üçün daxil olun və ya qeydiyyatdan keçin.",
 	"settings.title": "Mövzu ayarları",
