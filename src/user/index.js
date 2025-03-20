@@ -46,8 +46,12 @@ User.exists = async function (uids) {
 	const singular = !Array.isArray(uids);
 	uids = singular ? [uids] : uids;
 
-	let results = await Promise.all(uids.map(async uid => await db.isMemberOfSortedSets(['users:joindate', 'usersRemote:lastCrawled'], uid)));
-	results = results.map(set => set.some(Boolean));
+	const local = await db.isSortedSetMembers('users:joindate', uids);
+	const remote = await db.exists(uids.map(uid => `userRemote:${uid}`));
+	const results = local.map((a, idx) => {
+		const b = remote[idx];
+		return a || b;
+	});
 
 	return singular ? results.pop() : results;
 };
