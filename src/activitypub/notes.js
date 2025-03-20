@@ -462,6 +462,12 @@ Notes.syncUserInboxes = async function (tid, uid) {
 		uids.add(uid);
 	});
 
+	// Category followers
+	const categoryFollowers = await activitypub.actors.getLocalFollowers(cid);
+	categoryFollowers.uids.forEach((uid) => {
+		uids.add(uid);
+	});
+
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
