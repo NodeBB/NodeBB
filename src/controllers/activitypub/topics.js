@@ -52,7 +52,7 @@ controller.list = async function (req, res) {
 	delete data.children;
 
 	let tids = await categories.getTopicIds(cidQuery);
-	tids = await categories.sortTidsBySet(tids, -1, sort); // sorting not handled if cid is -1
+	tids = await categories.sortTidsBySet(tids, sort); // sorting not handled if cid is -1
 	data.topicCount = tids.length;
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
