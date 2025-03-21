@@ -17,12 +17,12 @@ const utils = require('../../src/utils');
 const helpers = require('./helpers');
 
 describe('Notes', () => {
-	describe('Assertion', () => {
-		before(async () => {
-			meta.config.activitypubEnabled = 1;
-			await install.giveWorldPrivileges();
-		});
+	before(async () => {
+		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
+	});
 
+	describe('Assertion', () => {
 		describe('Public objects', () => {
 			it('should pull a remote root-level object by its id and create a new topic', async () => {
 				const { id } = helpers.mocks.note();
@@ -225,6 +225,103 @@ describe('Notes', () => {
 				const { roomId } = await activitypub.inbox.create({ body: activity });
 				assert(roomId);
 				assert(utils.isNumber(roomId));
+			});
+		});
+	});
+
+	describe('Creation', () => {
+		let uid;
+
+		before(async () => {
+			uid = await user.create({ username: utils.generateUUID() });
+		});
+
+		describe('Local categories', () => {
+			let cid;
+
+			before(async () => {
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+			});
+
+			afterEach(() => {
+				activitypub._sent.clear();
+			});
+
+			describe('new topics', () => {
+				let activity;
+
+				before(async () => {
+					const { tid } = await api.topics.create({ uid }, {
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					assert(tid);
+					assert.strictEqual(activitypub._sent.size, 1);
+					const key = Array.from(activitypub._sent.keys())[0];
+					activity = activitypub._sent.get(key);
+				});
+
+				it('should federate out a Create activity', () => {
+					assert(activity && activity.to);
+					assert.strictEqual(activity.type, 'Create');
+				});
+
+				it('should have the local category addressed', () => {
+					const addressees = new Set([
+						...(activity.to || []),
+						...(activity.cc || []),
+						...(activity.bcc || []),
+						...(activity.object.to || []),
+						...(activity.object.cc || []),
+						...(activity.object.bcc || []),
+					]);
+
+					assert(addressees.has(`${nconf.get('url')}/category/${cid}`));
+				});
+			});
+		});
+
+		describe('Remote Categories', () => {
+			let cid;
+
+			before(async () => {
+				({ id: cid } = helpers.mocks.group());
+				await activitypub.actors.assert([cid]);
+			});
+
+			afterEach(() => {
+				activitypub._sent.clear();
+			});
+
+			describe('new topics', () => {
+				it('should federate out a Create activity with the remote community addressed', async () => {
+					const { tid } = await api.topics.create({ uid }, {
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					assert(tid);
+					assert.strictEqual(activitypub._sent.size, 1);
+
+					const key = Array.from(activitypub._sent.keys())[0];
+					const activity = activitypub._sent.get(key);
+					assert(activity && activity.to);
+					assert.strictEqual(activity.type, 'Create');
+
+					const addressees = new Set([
+						...(activity.to || []),
+						...(activity.cc || []),
+						...(activity.bcc || []),
+						...(activity.object.to || []),
+						...(activity.object.cc || []),
+						...(activity.object.bcc || []),
+					]);
+
+					assert(addressees.has(cid));
+				});
 			});
 		});
 	});

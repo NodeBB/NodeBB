@@ -159,7 +159,7 @@ describe('Group assertion', () => {
 	});
 
 	it('should contain an entry in categories search zset', async () => {
-		const exists = await db.isSortedSetMember('categories:name', `${actorData.preferredUsername.toLowerCase()}:${actorUri}`);
+		const exists = await db.isSortedSetMember('categories:name', `${actorData.name.toLowerCase()}:${actorUri}`);
 
 		assert(exists);
 	});
@@ -545,9 +545,10 @@ describe('Pruning', () => {
 			const { id: uid } = helpers.mocks.person();
 			await activitypub.actors.assert([uid]);
 
+			const total = await db.sortedSetCard('usersRemote:lastCrawled');
 			const result = await activitypub.actors.prune();
 
-			assert.strictEqual(result.counts.deleted, 1);
+			assert.strictEqual(result.counts.deleted, total);
 			assert.strictEqual(result.counts.preserved, 0);
 			assert.strictEqual(result.counts.missing, 0);
 		});
@@ -591,10 +592,11 @@ describe('Pruning', () => {
 			const { id: cid } = helpers.mocks.group();
 			await activitypub.actors.assertGroup([cid]);
 
+			const total = await db.sortedSetCard('usersRemote:lastCrawled');
 			const result = await activitypub.actors.prune();
 
 			assert.strictEqual(result.counts.deleted, 1);
-			assert.strictEqual(result.counts.preserved, 0);
+			assert.strictEqual(result.counts.preserved, total - 1);
 		});
 
 		it('should do nothing if the category has topics in it', async () => {
@@ -606,10 +608,11 @@ describe('Pruning', () => {
 			});
 			await activitypub.notes.assert(0, id);
 
+			const total = await db.sortedSetCard('usersRemote:lastCrawled');
 			const result = await activitypub.actors.prune();
 
 			assert.strictEqual(result.counts.deleted, 0);
-			assert.strictEqual(result.counts.preserved, 1);
+			assert.strictEqual(result.counts.preserved, total);
 			assert(result.preserved.has(cid));
 		});
 	});
