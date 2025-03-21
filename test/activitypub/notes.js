@@ -323,6 +323,42 @@ describe('Notes', () => {
 					assert(addressees.has(cid));
 				});
 			});
+
+			describe('replies', () => {
+				it('should federate out a Create activity with the remote community addressed', async () => {
+					const { tid } = await api.topics.create({ uid }, {
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					activitypub._sent.clear();
+
+					const postData = await api.topics.reply({ uid }, {
+						tid,
+						content: utils.generateUUID(),
+					});
+
+					assert(postData);
+					assert.strictEqual(activitypub._sent.size, 1);
+
+					const key = Array.from(activitypub._sent.keys())[0];
+					const activity = activitypub._sent.get(key);
+					assert(activity && activity.to);
+					assert.strictEqual(activity.type, 'Create');
+
+					const addressees = new Set([
+						...(activity.to || []),
+						...(activity.cc || []),
+						...(activity.bcc || []),
+						...(activity.object.to || []),
+						...(activity.object.cc || []),
+						...(activity.object.bcc || []),
+					]);
+
+					assert(addressees.has(cid));
+				});
+			});
 		});
 	});
 
