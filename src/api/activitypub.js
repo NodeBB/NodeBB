@@ -129,7 +129,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	await Promise.all([
 		activitypub.send('uid', caller.uid, Array.from(targets), activity),
 		activitypub.feps.announce(pid, activity),
-		// activitypubApi.add(caller, { pid }),
+		// utils.isNumber(post.cid) ? activitypubApi.add(caller, { pid }) : undefined,
 	]);
 });
 
