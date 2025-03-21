@@ -28,8 +28,8 @@ Helpers.mocks.person = (override = {}) => {
 		outbox: `${id}/outbox`,
 
 		type: 'Person',
-		name: slugify(uuid),
-		preferredUsername: uuid,
+		name: slugify(id),
+		preferredUsername: id,
 
 		publicKey: {
 			id: `${id}#key`,
