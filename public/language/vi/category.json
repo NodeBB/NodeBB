@@ -16,14 +16,14 @@
     "tracking": "Theo dõi",
     "not-watching": "Chưa Xem",
     "ignoring": "Bỏ qua",
-    "watching.description": "Thông báo tôi chủ đề mới.<br/>Hiển thị chủ đề chưa đọc và gần đây",
-    "tracking.description": "Hiển thị chủ đề chưa đọc và gần đây",
-    "not-watching.description": "Không hiển thị chủ đề trong chưa đọc, hiển thị gần đây",
-    "ignoring.description": "Không hiển thị chủ đề chưa đọc và gần đây",
-    "watching.message": "Bây giờ bạn đang xem cập nhật từ danh mục này và tất cả các danh mục phụ",
-    "tracking.message": "Bạn hiện đang theo dõi thông tin cập nhật từ danh mục này và tất cả các danh mục phụ",
-    "notwatching.message": "Bạn không xem cập nhật từ danh mục này và tất cả các danh mục phụ",
-    "ignoring.message": "Bây giờ bạn đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
+    "watching.description": "Thông báo tôi chủ đề mới.<br/>Hiển thị chủ đề trong chưa đọc và gần đây",
+    "tracking.description": "Hiển thị các chủ đề trong chưa đọc & gần đây",
+    "not-watching.description": "Không hiển thị các chủ đề trong chưa đọc, hiển thị trong gần đây",
+    "ignoring.description": "Không hiển thị các chủ đề trong chưa đọc & gần đây",
+    "watching.message": "Bạn hiện đang xem các cập nhật từ danh mục này và tất cả các danh mục phụ",
+    "tracking.message": "Bạn hiện đang theo dõi các cập nhật từ danh mục này và tất cả các danh mục phụ",
+    "notwatching.message": "Bạn không xem các cập nhật từ danh mục này và tất cả các danh mục phụ",
+    "ignoring.message": "Bạn hiện đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "watched-categories": "Danh mục đã xem",
-    "x-more-categories": "%1 chuyên mục khác"
+    "x-more-categories": "%1 danh mục khác"
 }

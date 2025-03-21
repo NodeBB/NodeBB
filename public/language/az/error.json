@@ -22,7 +22,7 @@
     "invalid-user-data": "Yanlış istifadəçi məlumatı",
     "invalid-password": "Yanlış şifrə",
     "invalid-login-credentials": "Yanlış giriş məlumatları",
-    "invalid-username-or-password": "Zəhmət olmasa həm istifadəçi adı, həm də şifrənizi göstərin",
+    "invalid-username-or-password": "Zəhmət olmasa istifadəçi adı və şifrənizi daxil edin",
     "invalid-search-term": "Yanlış axtarış termini",
     "invalid-url": "Yanlış URL",
     "invalid-event": "Yanlış hadisə: %1",
