@@ -123,7 +123,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	activitypubApi.create.note(caller, { post: postData });
+	await activitypubApi.create.note(caller, { post: postData });
 
 	return postData;
 };
