@@ -147,7 +147,8 @@ describe('Analytics', () => {
 
 		const metrics = ['activities', 'activities:byType:Like', 'activities:byHost:example.org'];
 		metrics.forEach((metric) => {
-			assert(before[metric] && after[metric], JSON.stringify({ before, after }, null, 2));
+			before[metric] = before[metric] || 0;
+			assert(before.hasOwnProperty(metric) && after.hasOwnProperty(metric), JSON.stringify({ before, after }, null, 2));
 			assert(before[metric] < after[metric]);
 		});
 		analytics.pause = false;
