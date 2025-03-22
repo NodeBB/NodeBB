@@ -468,7 +468,7 @@ const utils = {
 			return new Date(parseInt(timestamp, 10)).toISOString();
 		} catch (err) {
 			console.error(err);
-			return '';
+			return timestamp;
 		}
 	},
 
