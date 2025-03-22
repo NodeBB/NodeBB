@@ -2,11 +2,10 @@
 
 
 define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
-	// eslint-disable-next-line prefer-const
 	let Settings;
 	let onReady = [];
 	let waitingJobs = 0;
-	// eslint-disable-next-line prefer-const
+
 	let helper;
 
 	/**
@@ -30,7 +29,6 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		return null;
 	}
 
-	// eslint-disable-next-line prefer-const
 	helper = {
 		/**
 		 @returns Object A deep clone of the given object.
@@ -326,12 +324,13 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		use: function (settings) {
 			try {
 				settings._ = JSON.parse(settings._);
-			} catch (_error) {}
+			} catch (err) {
+				console.error(err);
+			}
 			Settings.cfg = settings;
 		},
 	};
 
-	// eslint-disable-next-line prefer-const
 	Settings = {
 		helper: helper,
 		plugins: {},
@@ -474,8 +473,8 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 					if (key && values.hasOwnProperty(key)) {
 						try {
 							values[key] = JSON.parse(values[key]);
-						} catch (e) {
-							// Leave the value as is
+						} catch (err) {
+							console.error(err);
 						}
 					}
 				});

@@ -106,8 +106,7 @@ events.log = async function (data) {
 events.getEvents = async function (options) {
 	// backwards compatibility
 	if (arguments.length > 1) {
-		// eslint-disable-next-line prefer-rest-params
-		const args = Array.prototype.slice.call(arguments);
+		const args = [...arguments];
 		options = {
 			filter: args[0],
 			start: args[1],

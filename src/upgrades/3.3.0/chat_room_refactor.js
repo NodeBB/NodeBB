@@ -76,7 +76,7 @@ module.exports = {
 							batch: 500,
 							withScores: true,
 						});
-						// eslint-disable-next-line no-await-in-loop
+
 						await db.deleteAll(`uid:${uid}:chat:room:${roomId}:mids`);
 						progress.incr(1);
 					}

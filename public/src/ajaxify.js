@@ -38,12 +38,13 @@ ajaxify.widgets = { render: render };
 			if (!pathname) {
 				({ pathname } = urlObj);
 			}
-		} catch (e) {
+		} catch (err) {
+			console.error(err);
 			return false;
 		}
 
 		const internalLink = utils.isInternalURI(urlObj, window.location, config.relative_path);
-		// eslint-disable-next-line no-script-url
+
 		const hrefEmpty = href => href === undefined || href === '' || href === 'javascript:;';
 
 		if (item instanceof Element) {
@@ -55,7 +56,6 @@ ajaxify.widgets = { render: render };
 				return null;
 			}
 
-			// eslint-disable-next-line no-script-url
 			if (hrefEmpty(urlObj.href) || urlObj.protocol === 'javascript:' || pathname === '#' || pathname === '') {
 				return null;
 			}
@@ -514,7 +514,6 @@ ajaxify.widgets = { render: render };
 			cache: false,
 			dataType: 'text',
 			success: function (script) {
-				// eslint-disable-next-line no-new-func
 				const renderFunction = new Function('module', script);
 				const moduleObj = { exports: {} };
 				renderFunction(moduleObj);

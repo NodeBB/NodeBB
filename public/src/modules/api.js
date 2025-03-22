@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-
 'use strict';
 
 import { fire as fireHook } from 'hooks';

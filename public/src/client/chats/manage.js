@@ -132,6 +132,7 @@ define('forum/chats/manage', [
 			try {
 				data = await api.get(`/chats/${roomId}/users`, {});
 			} catch (err) {
+				console.error(err);
 				listEl.find('li').text(await translator.translate('[[error:invalid-data]]'));
 			}
 		}
