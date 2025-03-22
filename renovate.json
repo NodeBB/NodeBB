@@ -15,7 +15,6 @@
       ],
       "rangeStrategy": "pin",
       "matchPackageNames": [
-        "!colors"
       ]
     },
     {
