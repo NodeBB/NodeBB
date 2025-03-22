@@ -156,7 +156,7 @@ Categories.setUnread = async function (tree, cids, uid) {
 		if (category) {
 			category.unread = false;
 			if (unreadCids.includes(category.cid)) {
-				category.unread = category.topic_count > 0 && true;
+				category.unread = category.topic_count > 0;
 			} else if (category.children.length) {
 				category.children.forEach(setCategoryUnread);
 				category.unread = category.children.some(c => c && c.unread);
