@@ -68,7 +68,8 @@ define('settings/object', function () {
 			separator = (function () {
 				try {
 					return $(separator);
-				} catch (_error) {
+				} catch (err) {
+					console.error(err);
 					return $(document.createTextNode(separator));
 				}
 			}());

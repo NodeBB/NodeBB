@@ -134,7 +134,7 @@ widgets.getWidgetDataForTemplates = async function (templates) {
 				try {
 					returnData[template][location] = parseWidgetData(templateWidgetData[location]);
 				} catch (err) {
-					winston.error(`can not parse widget data. template:  ${template} location: ${location}`);
+					winston.error(`can not parse widget data. template:  ${template} location: ${location}\n${err.stack}`);
 					returnData[template][location] = [];
 				}
 			} else {

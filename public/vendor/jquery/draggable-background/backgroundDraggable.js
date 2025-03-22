@@ -37,7 +37,7 @@
       if ($el.css('background-size') == "cover") {
         var elementWidth = $el.innerWidth(),
             elementHeight = $el.innerHeight(),
-            elementAspectRatio = elementWidth / elementHeight;
+            elementAspectRatio = elementWidth / elementHeight,
             imageAspectRatio = image.width / image.height,
             scale = 1;
 
@@ -182,18 +182,17 @@
   }
 
   $.fn.backgroundDraggable = function(options) {
-    var options = options;
     var args = Array.prototype.slice.call(arguments, 1);
 
     return this.each(function() {
       var $this = $(this);
-
+      var plugin;
       if (typeof options == 'undefined' || typeof options == 'object') {
         options = $.extend({}, $.fn.backgroundDraggable.defaults, options);
-        var plugin = new Plugin(this, options);
+        plugin = new Plugin(this, options);
         $this.data('dbg', plugin);
       } else if (typeof options == 'string' && $this.data('dbg')) {
-        var plugin = $this.data('dbg');
+        plugin = $this.data('dbg');
         Plugin.prototype[options].apply(plugin, args);
       }
     });
@@ -202,6 +201,6 @@
   $.fn.backgroundDraggable.defaults = {
     bound: true,
     axis: undefined,
-    units: 'pixels'
+    units: 'pixels',
   };
 }(jQuery));

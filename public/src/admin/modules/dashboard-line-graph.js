@@ -30,7 +30,6 @@ Chart.register(
 let _current = null;
 let isMobile = false;
 
-// eslint-disable-next-line import/prefer-default-export
 export function init({ set, dataset }) {
 	const canvas = document.getElementById('analytics-traffic');
 	const canvasCtx = canvas.getContext('2d');

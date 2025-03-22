@@ -222,6 +222,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 		{ id: 'android', label: 'Android (brands)', style: 'brands' },
 		{ id: 'address-book', label: 'Address Book (solid)', style: 'solid' },
 	];
+
 	iconSelect.init = function (el, onModified) {
 		onModified = onModified || function () { };
 		let selected = cleanFAClass(el[0].classList);
@@ -230,6 +231,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			try {
 				$(`#icons .nbb-fa-icons ${selected.styles.length ? '.' + selected.styles.join('.') : ''}.${selected.icon}`).addClass('selected');
 			} catch (err) {
+				console.error(err);
 				selected = {
 					icon: '',
 					style: '',

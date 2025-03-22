@@ -270,7 +270,8 @@ define('search', [
 		let term = data.term.replace(/^[ ?#]*/, '');
 		try {
 			term = encodeURIComponent(term);
-		} catch (e) {
+		} catch (err) {
+			console.error(err);
 			return alerts.error('[[error:invalid-search-term]]');
 		}
 
@@ -291,7 +292,8 @@ define('search', [
 	Search.getSearchPreferences = function () {
 		try {
 			return JSON.parse(storage.getItem('search-preferences') || '{}');
-		} catch (e) {
+		} catch (err) {
+			console.error(err);
 			return {};
 		}
 	};

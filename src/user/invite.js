@@ -4,6 +4,7 @@
 const async = require('async');
 const nconf = require('nconf');
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -88,7 +89,8 @@ module.exports = function (User) {
 
 		try {
 			groupsToJoin = JSON.parse(groupsToJoin);
-		} catch (e) {
+		} catch (err) {
+			winston.error(`[User.joinGroupsFromInvitation] ${err.stack}`);
 			return;
 		}
 

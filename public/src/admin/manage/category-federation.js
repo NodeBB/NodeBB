@@ -3,7 +3,6 @@ import { error } from '../../modules/alerts';
 
 import * as categorySelector from '../../modules/categorySelector';
 
-// eslint-disable-next-line import/prefer-default-export
 export function init() {
 	categorySelector.init($('[component="category-selector"]'), {
 		onSelect: function (selectedCategory) {
