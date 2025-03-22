@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const path = require('path');
 const validator = require('validator');
 const nconf = require('nconf');
@@ -91,11 +90,6 @@ middleware.pageView = helpers.try(async (req, res, next) => {
 });
 
 middleware.pluginHooks = helpers.try(async (req, res, next) => {
-	// TODO: Deprecate in v2.0
-	await async.each(plugins.loadedHooks['filter:router.page'] || [], (hookObj, next) => {
-		hookObj.method(req, res, next);
-	});
-
 	await plugins.hooks.fire('response:router.page', {
 		req: req,
 		res: res,

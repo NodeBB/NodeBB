@@ -344,10 +344,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	const usingFallback = !Plugins.hooks.hasListeners('filter:email.send') &&
 		!Plugins.hooks.hasListeners('static:email.send');
 	try {
-		if (Plugins.hooks.hasListeners('filter:email.send')) {
-			// Deprecated, remove in v1.19.0
-			await Plugins.hooks.fire('filter:email.send', data);
-		} else if (Plugins.hooks.hasListeners('static:email.send')) {
+		if (Plugins.hooks.hasListeners('static:email.send')) {
 			await Plugins.hooks.fire('static:email.send', data);
 		} else {
 			await Emailer.sendViaFallback(data);
