@@ -48,99 +48,71 @@ define('pictureCropper', ['alerts'], function (alerts) {
 			const Cropper = (await import(/* webpackChunkName: "cropperjs" */ 'cropperjs')).default;
 
 			let cropperTool = new Cropper(img, {
-				aspectRatio: data.aspectRatio,
-				autoCropArea: 1,
-				viewMode: 1,
-				checkCrossOrigin: true,
-				cropmove: function () {
-					if (data.restrictImageDimension) {
-						if (cropperTool.cropBoxData.width > data.imageDimension) {
-							cropperTool.setCropBoxData({
-								width: data.imageDimension,
-							});
-						}
-						if (cropperTool.cropBoxData.height > data.imageDimension) {
-							cropperTool.setCropBoxData({
-								height: data.imageDimension,
-							});
-						}
+				template: `<cropper-canvas background style="height: 300px;">
+					<cropper-image rotatable scalable translatable></cropper-image>
+					<cropper-shade hidden></cropper-shade>
+					<cropper-handle action="move" plain></cropper-handle>
+					<cropper-selection initial-coverage="1" movable resizable>
+					<cropper-grid role="grid" bordered covered></cropper-grid><cropper-crosshair centered></cropper-crosshair><cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle><cropper-handle action="n-resize"></cropper-handle><cropper-handle action="e-resize"></cropper-handle><cropper-handle action="s-resize"></cropper-handle><cropper-handle action="w-resize"></cropper-handle><cropper-handle action="ne-resize"></cropper-handle><cropper-handle action="nw-resize"></cropper-handle><cropper-handle action="se-resize"></cropper-handle><cropper-handle action="sw-resize"></cropper-handle></cropper-selection>
+					</cropper-canvas>`,
+			});
+
+			const cropperSelection = cropperTool.getCropperSelection();
+			const cropperImage = cropperTool.getCropperImage();
+
+			cropperSelection.aspectRatio = data.aspectRatio;
+
+			cropperImage.$ready(async function () {
+				if (!await checkCORS(cropperSelection, data)) {
+					return cropperModal.modal('hide');
+				}
+
+				cropperModal.find('.rotate').on('click', function () {
+					const degrees = this.getAttribute('data-degrees');
+					const radians = degrees * Math.PI / 180;
+					cropperImage.$rotate(radians);
+				});
+
+				cropperModal.find('.flip').on('click', function () {
+					const method = this.getAttribute('data-method');
+					if (method === 'scaleX') {
+						cropperImage.$scale(-1, 1);
+					} else {
+						cropperImage.$scale(1, -1);
 					}
-				},
-				ready: function () {
-					if (!checkCORS(cropperTool, data)) {
-						return cropperModal.modal('hide');
+				});
+
+				cropperModal.find('.reset').on('click', function () {
+					cropperImage.$resetTransform();
+					cropperSelection.$reset();
+				});
+
+				cropperModal.find('.crop-btn').on('click', async function () {
+					$(this).addClass('disabled');
+					const imageData = await checkCORS(cropperSelection, data);
+					if (!imageData) {
+						return;
 					}
 
-					if (data.restrictImageDimension) {
-						const origDimension = (img.width < img.height) ? img.width : img.height;
-						const dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
-						cropperTool.setCropBoxData({
-							width: dimension,
-							height: dimension,
-						});
-					}
+					cropperModal.find('#upload-progress-bar').css('width', '0%');
+					cropperModal.find('#upload-progress-box').show().removeClass('hide');
 
-					cropperModal.find('.rotate').on('click', function () {
-						const degrees = this.getAttribute('data-degrees');
-						cropperTool.rotate(degrees);
-					});
-
-					cropperModal.find('.flip').on('click', function () {
-						const option = this.getAttribute('data-option');
-						const method = this.getAttribute('data-method');
-						if (method === 'scaleX') {
-							cropperTool.scaleX(option);
-						} else {
-							cropperTool.scaleY(option);
-						}
-						this.setAttribute('data-option', option * -1);
-					});
-
-					cropperModal.find('.reset').on('click', function () {
-						cropperTool.reset();
-					});
-
-					cropperModal.find('.crop-btn').on('click', function () {
-						$(this).addClass('disabled');
-						const imageData = checkCORS(cropperTool, data);
-						if (!imageData) {
-							return;
+					socketUpload({
+						data: data,
+						imageData: imageData,
+						progressBarEl: cropperModal.find('#upload-progress-bar'),
+					}, function (err, result) {
+						if (err) {
+							cropperModal.find('#upload-progress-box').hide();
+							cropperModal.find('.upload-btn').removeClass('disabled');
+							cropperModal.find('.crop-btn').removeClass('disabled');
+							return alerts.error(err);
 						}
 
-						cropperModal.find('#upload-progress-bar').css('width', '0%');
-						cropperModal.find('#upload-progress-box').show().removeClass('hide');
-
-						socketUpload({
-							data: data,
-							imageData: imageData,
-							progressBarEl: cropperModal.find('#upload-progress-bar'),
-						}, function (err, result) {
-							if (err) {
-								cropperModal.find('#upload-progress-box').hide();
-								cropperModal.find('.upload-btn').removeClass('disabled');
-								cropperModal.find('.crop-btn').removeClass('disabled');
-								return alerts.error(err);
-							}
-
-							callback(result.url);
-							cropperModal.modal('hide');
-						});
+						callback(result.url);
+						cropperModal.modal('hide');
 					});
-
-
-					cropperModal.find('.upload-btn').on('click', async function () {
-						$(this).addClass('disabled');
-						cropperTool.destroy();
-						const Cropper = (await import(/* webpackChunkName: "cropperjs" */ 'cropperjs')).default;
-						cropperTool = new Cropper(img, {
-							viewMode: 1,
-							autoCropArea: 1,
-							ready: function () {
-								cropperModal.find('.crop-btn').trigger('click');
-							},
-						});
-					});
-				},
+				});
 			});
 		});
 	};
@@ -175,12 +147,18 @@ define('pictureCropper', ['alerts'], function (alerts) {
 		doUpload();
 	}
 
-	function checkCORS(cropperTool, data) {
+	async function checkCORS(selection, data) {
 		let imageData;
 		try {
+			const canvasOpts = {
+				beforeDraw: function (context) {
+					context.imageSmoothingQuality = 'high';
+				},
+			};
+			const canvas = await selection.$toCanvas(canvasOpts);
 			imageData = data.imageType ?
-				cropperTool.getCroppedCanvas().toDataURL(data.imageType) :
-				cropperTool.getCroppedCanvas().toDataURL();
+				canvas.toDataURL(data.imageType) :
+				canvas.toDataURL();
 		} catch (err) {
 			const corsErrors = [
 				'The operation is insecure.',
@@ -232,8 +210,6 @@ define('pictureCropper', ['alerts'], function (alerts) {
 				imageType: file.type,
 				socketMethod: data.socketMethod,
 				aspectRatio: data.aspectRatio,
-				allowSkippingCrop: data.allowSkippingCrop,
-				restrictImageDimension: data.restrictImageDimension,
 				imageDimension: data.imageDimension,
 				paramName: data.paramName,
 				paramValue: data.paramValue,

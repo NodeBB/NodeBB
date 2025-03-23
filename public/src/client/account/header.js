@@ -94,8 +94,6 @@ define('forum/account/header', [
 					title: '[[user:upload-cover-picture]]',
 					socketMethod: 'user.updateCover',
 					aspectRatio: NaN,
-					allowSkippingCrop: true,
-					restrictImageDimension: false,
 					paramName: 'uid',
 					paramValue: ajaxify.data.theirid,
 					accept: '.png,.jpg,.bmp',

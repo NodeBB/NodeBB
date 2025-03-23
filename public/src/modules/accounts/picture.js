@@ -171,11 +171,10 @@ define('accounts/picture', [
 			pictureCropper.show({
 				socketMethod: 'user.uploadCroppedPicture',
 				route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture',
-				aspectRatio: 1 / 1,
+				aspectRatio: 1,
 				paramName: 'uid',
 				paramValue: ajaxify.data.theirid,
 				fileSize: ajaxify.data.maximumProfileImageSize,
-				allowSkippingCrop: false,
 				title: '[[user:upload-picture]]',
 				description: '[[user:upload-a-picture]]',
 				accept: ajaxify.data.allowedProfileImageExtensions,
@@ -203,7 +202,6 @@ define('accounts/picture', [
 						url: url,
 						socketMethod: 'user.uploadCroppedPicture',
 						aspectRatio: 1,
-						allowSkippingCrop: false,
 						paramName: 'uid',
 						paramValue: ajaxify.data.theirid,
 					}, onUploadComplete);

@@ -50,8 +50,6 @@ define('forum/groups/details', [
 						title: '[[groups:upload-group-cover]]',
 						socketMethod: 'groups.cover.update',
 						aspectRatio: NaN,
-						allowSkippingCrop: true,
-						restrictImageDimension: false,
 						paramName: 'groupName',
 						paramValue: groupName,
 					}, function (imageUrlOnServer) {
