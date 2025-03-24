@@ -74,13 +74,24 @@ Actors.qualify = async (ids, options = {}) => {
 		ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 	}
 
+	// Separate those who need migration from user to category
+	const migrate = new Set();
+	if (options.qualifyGroup) {
+		const exists = await db.exists(ids.map(id => `userRemote:${id}`));
+		ids.forEach((id, idx) => {
+			if (exists[idx]) {
+				migrate.add(id);
+			}
+		});
+	}
+
 	// Only assert those who haven't been seen recently (configurable), unless update flag passed in (force refresh)
 	if (!options.update) {
 		const upperBound = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubUserPruneDays);
 		const lastCrawled = await db.sortedSetScores('usersRemote:lastCrawled', ids.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
 		ids = ids.filter((id, idx) => {
 			const timestamp = lastCrawled[idx];
-			return !timestamp || timestamp < upperBound;
+			return migrate.has(id) || !timestamp || timestamp < upperBound;
 		});
 	}
 
@@ -267,7 +278,10 @@ Actors.assertGroup = async (ids, options = {}) => {
 	 *   - true: no new IDs processed; all passed-in IDs present.
 	 */
 
-	ids = await Actors.qualify(ids, options);
+	ids = await Actors.qualify(ids, {
+		qualifyGroup: true,
+		...options,
+	});
 	if (!ids) {
 		return ids;
 	}

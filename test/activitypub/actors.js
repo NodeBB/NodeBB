@@ -76,6 +76,20 @@ describe('Actor asserton', () => {
 			assert.strictEqual(assertion[0].cid, actor.id);
 		});
 
+		it('should not migrate a user to a category if .assert is called', async () => {
+			// ... because the user isn't due for an update and so is filtered out during qualification
+			const { id } = helpers.mocks.person();
+			await activitypub.actors.assert([id]);
+
+			const { actor } = helpers.mocks.group({ id });
+			const assertion = await activitypub.actors.assertGroup([id]);
+
+			assert(assertion.length, 0);
+
+			const exists = await user.exists(id);
+			assert.strictEqual(exists, false);
+		});
+
 		it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
 			// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
 			const { id } = helpers.mocks.person();
@@ -91,7 +105,9 @@ describe('Actor asserton', () => {
 			}
 
 			const { actor } = helpers.mocks.group({ id });
-			const assertion = await activitypub.actors.assert([id], { update: true });
+			const assertion = await activitypub.actors.assertGroup([id]);
+
+			assert(assertion && Array.isArray(assertion) && assertion.length === 1);
 
 			const { topic_count, post_count } = await categories.getCategoryData(id);
 			assert.strictEqual(topic_count, 2);
