@@ -3,6 +3,7 @@
 const _ = require('lodash');
 
 const db = require('../database');
+const meta = require('../meta');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const api = require('../api');
@@ -79,11 +80,11 @@ module.exports = function (User) {
 	};
 
 	User.getCategoriesByStates = async function (uid, states) {
-		const remoteCids = await db.getObjectValues('handle:cid');
-		const cids = [
-			(await categories.getAllCidsFromSet('categories:cid')),
-			...remoteCids,
-		];
+		const [localCids, remoteCids] = await Promise.all([
+			categories.getAllCidsFromSet('categories:cid'),
+			meta.config.activitypubEnabled ? db.getObjectValues('handle:cid') : [],
+		]);
+		const cids = localCids.concat(remoteCids);
 		if (!(parseInt(uid, 10) > 0)) {
 			return cids;
 		}
