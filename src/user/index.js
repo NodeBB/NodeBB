@@ -48,7 +48,7 @@ User.exists = async function (uids) {
 
 	const [localExists, remoteExists] = await Promise.all([
 		db.isSortedSetMembers('users:joindate', uids),
-		db.exists(uids.map(uid => `userRemote:${uid}`)),
+		meta.config.activitypubEnabled ? db.exists(uids.map(uid => `userRemote:${uid}`)) : uids.map(() => false),
 	]);
 	const results = localExists.map((local, idx) => local || remoteExists[idx]);
 	return singular ? results.pop() : results;
