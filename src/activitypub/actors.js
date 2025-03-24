@@ -414,7 +414,7 @@ async function _migratePersonToGroup(categoryObjs) {
 			if (exists[idx]) {
 				await topics.tools.move(share, {
 					cid: id,
-					uid: 0,
+					uid: 'system',
 				});
 			}
 		}));
