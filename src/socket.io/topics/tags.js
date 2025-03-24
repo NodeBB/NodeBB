@@ -9,13 +9,13 @@ const utils = require('../../utils');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.isTagAllowed = async function (socket, data) {
-		if (!data || !utils.isNumber(data.cid) || !data.tag) {
+		if (!data || !data.tag) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const [tagWhitelist, isPrivileged] = await Promise.all([
-			categories.getTagWhitelist([data.cid]),
+			utils.isNumber(data.cid) ? categories.getTagWhitelist([data.cid]) : [],
 			user.isPrivileged(socket.uid),
 		]);
 		return isPrivileged ||
