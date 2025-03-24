@@ -418,6 +418,13 @@ async function _migratePersonToGroup(categoryObjs) {
 				});
 			}
 		}));
+
+		const followers = await db.getSortedSetMembersWithScores(`followersRemote:${id}`);
+		await db.sortedSetAdd(
+			`cid:${id}:uid:watch:state`,
+			followers.map(() => categories.watchStates.tracking),
+			followers.map(({ value }) => value),
+		);
 		await user.deleteAccount(id);
 	}));
 	await categories.onTopicsMoved(ids);

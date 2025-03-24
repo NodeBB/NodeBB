@@ -76,46 +76,73 @@ describe('Actor asserton', () => {
 			assert.strictEqual(assertion[0].cid, actor.id);
 		});
 
-		it('should not migrate a user to a category if .assert is called', async () => {
-			// ... because the user isn't due for an update and so is filtered out during qualification
-			const { id } = helpers.mocks.person();
-			await activitypub.actors.assert([id]);
+		describe('remote user to remote category migration', () => {
+			it('should not migrate a user to a category if .assert is called', async () => {
+				// ... because the user isn't due for an update and so is filtered out during qualification
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
 
-			const { actor } = helpers.mocks.group({ id });
-			const assertion = await activitypub.actors.assertGroup([id]);
+				const { actor } = helpers.mocks.group({ id });
+				const assertion = await activitypub.actors.assertGroup([id]);
 
-			assert(assertion.length, 0);
+				assert(assertion.length, 0);
 
-			const exists = await user.exists(id);
-			assert.strictEqual(exists, false);
-		});
+				const exists = await user.exists(id);
+				assert.strictEqual(exists, false);
+			});
 
-		it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
-			// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
-			const { id } = helpers.mocks.person();
-			await activitypub.actors.assert([id]);
+			it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
+				// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
 
-			// Two shares
-			for (let x = 0; x < 2; x++) {
-				const { id: pid } = helpers.mocks.note();
-				// eslint-disable-next-line no-await-in-loop
-				const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
-				// eslint-disable-next-line no-await-in-loop
-				await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
-			}
+				helpers.mocks.group({ id });
+				const assertion = await activitypub.actors.assertGroup([id]);
 
-			const { actor } = helpers.mocks.group({ id });
-			const assertion = await activitypub.actors.assertGroup([id]);
+				assert(assertion && Array.isArray(assertion) && assertion.length === 1);
 
-			assert(assertion && Array.isArray(assertion) && assertion.length === 1);
+				const exists = await user.exists(id);
+				assert.strictEqual(exists, false);
+			});
 
-			const { topic_count, post_count } = await categories.getCategoryData(id);
-			assert.strictEqual(topic_count, 2);
-			assert.strictEqual(post_count, 2);
+			it('should migrate any shares by that user, into topics in the category', async () => {
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
 
-			const exists = await user.exists(id);
-			assert.strictEqual(exists, false);
-		});
+				// Two shares
+				for (let x = 0; x < 2; x++) {
+					const { id: pid } = helpers.mocks.note();
+					// eslint-disable-next-line no-await-in-loop
+					const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+					// eslint-disable-next-line no-await-in-loop
+					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+				}
+
+				helpers.mocks.group({ id });
+				await activitypub.actors.assertGroup([id]);
+
+				const { topic_count, post_count } = await categories.getCategoryData(id);
+				assert.strictEqual(topic_count, 2);
+				assert.strictEqual(post_count, 2);
+			});
+
+			it('should migrate any local followers into category watches', async () => {
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				const followerUid = await user.create({ username: utils.generateUUID() });
+				await Promise.all([
+					db.sortedSetAdd(`followingRemote:${followerUid}`, Date.now(), id),
+					db.sortedSetAdd(`followersRemote:${id}`, Date.now(), followerUid),
+				]);
+
+				helpers.mocks.group({ id });
+				await activitypub.actors.assertGroup([id]);
+
+				const states = await categories.getWatchState([id], followerUid);
+				assert.strictEqual(states[0], categories.watchStates.tracking);
+			})
+		})
 	});
 
 	describe('edge cases: loopback handles and uris', () => {
