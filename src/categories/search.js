@@ -3,6 +3,7 @@
 const _ = require('lodash');
 
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const db = require('../database');
@@ -15,6 +16,10 @@ module.exports = function (Categories) {
 		const paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
 		const startTime = process.hrtime();
+
+		if (activitypub.helpers.isWebfinger(query)) {
+			await activitypub.actors.assertGroup([query]);
+		}
 
 		let cids = await findCids(query, data.hardCap);
 
