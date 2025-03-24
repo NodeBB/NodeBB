@@ -8,6 +8,7 @@ const { CronJob } = require('cron');
 const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
+const categories = require('../categories');
 const posts = require('../posts');
 const messaging = require('../messaging');
 const user = require('../user');
@@ -114,8 +115,15 @@ ActivityPub.resolveInboxes = async (ids) => {
 	}
 
 	await ActivityPub.actors.assert(ids);
+
+	// Remove non-asserted targets
+	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids);
+	ids = ids.filter((_, idx) => exists[idx]);
+
+	const isCategory = await db.exists(ids.map(id => `categoryRemote:${id}`));
 	await batch.processArray(ids, async (currentIds) => {
-		const usersData = await user.getUsersFields(currentIds, ['inbox', 'sharedInbox']);
+		const method = isCategory ? categories.getCategoriesFields  : user.getUsersFields;
+		const usersData = await method(currentIds, ['inbox', 'sharedInbox']);
 		usersData.forEach((u) => {
 			if (u && (u.sharedInbox || u.inbox)) {
 				inboxes.add(u.sharedInbox || u.inbox);
