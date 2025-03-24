@@ -37,13 +37,22 @@ function enabledCheck(next) {
 
 activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) => {
 	// Privilege checks should be done upstream
+	const acceptedTypes = ['uid', 'cid'];
 	const assertion = await activitypub.actors.assert(actor);
-	if (!assertion || (Array.isArray(assertion) && assertion.length)) {
+	if (!acceptedTypes.includes(type) || !assertion || (Array.isArray(assertion) && assertion.length)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const handle = await user.getUserField(actor, 'username');
+	const [handle, isFollowing] = await Promise.all([
+		user.getUserField(actor, 'username'),
+		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
+	]);
+
+	if (isFollowing) { // already following
+		return;
+	}
+
 	const timestamp = Date.now();
 
 	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
@@ -61,13 +70,22 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 
 // should be .undo.follow
 activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
+	const acceptedTypes = ['uid', 'cid'];
 	const assertion = await activitypub.actors.assert(actor);
-	if (!assertion) {
+	if (!acceptedTypes.includes(type) || !assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const handle = await user.getUserField(actor, 'username');
+	const [handle, isFollowing] = await Promise.all([
+		user.getUserField(actor, 'username'),
+		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
+	]);
+
+	if (!isFollowing) { // already not following
+		return;
+	}
+
 	const timestamps = await db.sortedSetsScore([
 		`followRequests:${type}.${id}`,
 		type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`,
