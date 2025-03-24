@@ -46,13 +46,11 @@ User.exists = async function (uids) {
 	const singular = !Array.isArray(uids);
 	uids = singular ? [uids] : uids;
 
-	const local = await db.isSortedSetMembers('users:joindate', uids);
-	const remote = await db.exists(uids.map(uid => `userRemote:${uid}`));
-	const results = local.map((a, idx) => {
-		const b = remote[idx];
-		return a || b;
-	});
-
+	const [localExists, remoteExists] = await Promise.all([
+		db.isSortedSetMembers('users:joindate', uids),
+		db.exists(uids.map(uid => `userRemote:${uid}`)),
+	]);
+	const results = localExists.map((local, idx) => local || remoteExists[idx]);
 	return singular ? results.pop() : results;
 };
 
