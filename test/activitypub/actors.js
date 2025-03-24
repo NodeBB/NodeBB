@@ -148,79 +148,180 @@ describe('Actor asserton', () => {
 	});
 });
 
-describe('Group assertion', () => {
-	let actorUri;
-	let actorData;
+describe('as:Group', () => {
+	describe('assertion', () => {
+		let actorUri;
+		let actorData;
 
-	before(async () => {
-		const { id, actor } = helpers.mocks.group();
-		actorUri = id;
-		actorData = actor;
-	});
-
-	it('should assert a uri identifying as "Group" into a remote category', async () => {
-		const assertion = await activitypub.actors.assertGroup([actorUri]);
-
-		assert(assertion, Array.isArray(assertion));
-		assert.strictEqual(assertion.length, 1);
-
-		const category = assertion.pop();
-		assert.strictEqual(category.cid, actorUri);
-	});
-
-	it('should be considered existing when checked', async () => {
-		const exists = await categories.exists(actorUri);
-
-		assert(exists);
-	});
-
-	it('should contain an entry in categories search zset', async () => {
-		const exists = await db.isSortedSetMember('categories:name', `${actorData.name.toLowerCase()}:${actorUri}`);
-
-		assert(exists);
-	});
-
-	it('should return category data when getter methods are called', async () => {
-		const category = await categories.getCategoryData(actorUri);
-		assert(category);
-		assert.strictEqual(category.cid, actorUri);
-	});
-
-	it('should not assert non-group users when called', async () => {
-		const { id } = helpers.mocks.person();
-		const assertion = await activitypub.actors.assertGroup([id]);
-
-		assert(Array.isArray(assertion) && !assertion.length);
-	});
-
-	describe.only('deletion', () => {
-		it('should delete a remote category when Categories.purge is called', async () => {
-			const { id } = helpers.mocks.group();
-			await activitypub.actors.assertGroup([id]);
-
-			let exists = await categories.exists(id);
-			assert(exists);
-
-			await categories.purge(id, 0);
-
-			exists = await categories.exists(id);
-			assert(!exists);
-
-			exists = await db.exists(`categoryRemote:${id}`);
-			assert(!exists);
+		before(async () => {
+			const { id, actor } = helpers.mocks.group();
+			actorUri = id;
+			actorData = actor;
 		});
 
-		it('should also delete AP-specific keys that were added by assertGroup', async () => {
-			const { id } = helpers.mocks.group();
+		it('should assert a uri identifying as "Group" into a remote category', async () => {
+			const assertion = await activitypub.actors.assertGroup([actorUri]);
+
+			assert(assertion, Array.isArray(assertion));
+			assert.strictEqual(assertion.length, 1);
+
+			const category = assertion.pop();
+			assert.strictEqual(category.cid, actorUri);
+		});
+
+		it('should be considered existing when checked', async () => {
+			const exists = await categories.exists(actorUri);
+
+			assert(exists);
+		});
+
+		it('should contain an entry in categories search zset', async () => {
+			const exists = await db.isSortedSetMember('categories:name', `${actorData.name.toLowerCase()}:${actorUri}`);
+
+			assert(exists);
+		});
+
+		it('should return category data when getter methods are called', async () => {
+			const category = await categories.getCategoryData(actorUri);
+			assert(category);
+			assert.strictEqual(category.cid, actorUri);
+		});
+
+		it('should not assert non-group users when called', async () => {
+			const { id } = helpers.mocks.person();
 			const assertion = await activitypub.actors.assertGroup([id]);
-			const [{ handle, slug }] = assertion;
 
-			await categories.purge(id, 0);
+			assert(Array.isArray(assertion) && !assertion.length);
+		});
 
-			const isMember = await db.isObjectField('handle:cid', handle);
-			const inSearch = await db.isSortedSetMember('categories:name', `${slug}:${id}`);
-			assert(!isMember);
-			assert(!inSearch);
+		describe('deletion', () => {
+			it('should delete a remote category when Categories.purge is called', async () => {
+				const { id } = helpers.mocks.group();
+				await activitypub.actors.assertGroup([id]);
+
+				let exists = await categories.exists(id);
+				assert(exists);
+
+				await categories.purge(id, 0);
+
+				exists = await categories.exists(id);
+				assert(!exists);
+
+				exists = await db.exists(`categoryRemote:${id}`);
+				assert(!exists);
+			});
+
+			it('should also delete AP-specific keys that were added by assertGroup', async () => {
+				const { id } = helpers.mocks.group();
+				const assertion = await activitypub.actors.assertGroup([id]);
+				const [{ handle, slug }] = assertion;
+
+				await categories.purge(id, 0);
+
+				const isMember = await db.isObjectField('handle:cid', handle);
+				const inSearch = await db.isSortedSetMember('categories:name', `${slug}:${id}`);
+				assert(!isMember);
+				assert(!inSearch);
+			});
+		});
+	});
+
+	describe('following', () => {
+		let uid;
+		let cid;
+
+		beforeEach(async () => {
+			uid = await user.create({ username: utils.generateUUID() });
+			({ id: cid } = helpers.mocks.group());
+			await activitypub.actors.assertGroup([cid]);
+		});
+
+		afterEach(async () => {
+			activitypub._sent.clear();
+		});
+
+		describe('user not already following', () => {
+			it('should report a watch state consistent with not following', async () => {
+				const states = await categories.getWatchState([cid], uid);
+				assert(states[0] <= categories.watchStates.notwatching);
+			});
+
+			it('should do nothing when category is a local category', async () => {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.tracking);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should do nothing when watch state changes to "ignoring"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should send out a Follow activity when watch state changes to "tracking"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.tracking);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const activity = Array.from(activitypub._sent.values()).pop();
+				assert.strictEqual(activity.type, 'Follow');
+				assert.strictEqual(activity.object, cid);
+			});
+
+			it('should send out a Follow activity when the watch state changes to "watching"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const activity = Array.from(activitypub._sent.values()).pop();
+				assert(activity && activity.object && typeof activity.object === 'string');
+				assert.strictEqual(activity.type, 'Follow');
+				assert.strictEqual(activity.object, cid);
+			});
+		});
+
+		describe('user already following', () => {
+			beforeEach(async () => {
+				await Promise.all([
+					user.setCategoryWatchState(uid, cid, categories.watchStates.tracking),
+					db.sortedSetAdd(`followingRemote:${uid}`, Date.now(), cid),
+				]);
+
+				activitypub._sent.clear();
+			});
+
+			it('should report a watch state consistent with following', async () => {
+				const states = await categories.getWatchState([cid], uid);
+				assert(states[0] >= categories.watchStates.tracking);
+			});
+
+			it('should do nothing when category is a local category', async () => {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should do nothing when watch state changes to "tracking"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.tracking);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should do nothing when watch state changes to "watching"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should send out an Undo(Follow) activity when watch state changes to "ignoring"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const activity = Array.from(activitypub._sent.values()).pop();
+				assert(activity && activity.object && typeof activity.object === 'object');
+				assert.strictEqual(activity.type, 'Undo');
+				assert.strictEqual(activity.object.type, 'Follow');
+				assert.strictEqual(activity.object.actor, `${nconf.get('url')}/uid/${uid}`);
+				assert.strictEqual(activity.object.object, cid);
+			});
 		});
 	});
 });
