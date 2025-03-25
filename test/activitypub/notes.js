@@ -192,6 +192,23 @@ describe('Notes', () => {
 
 					await topics.markAllRead(uid);
 				});
+
+				it('should not show up in recent/unread if I am ignoring the remote category', async () => {
+					await api.categories.setWatchState({ uid }, {
+						cid: remoteCid,
+						state: categories.watchStates.ignoring,
+						uid,
+					});
+
+					const { id, note } = helpers.mocks.note({
+						cc: [remoteCid],
+					});
+					const assertion = await activitypub.notes.assert(0, id);
+					assert(assertion);
+
+					const unread = await topics.getTotalUnread(uid);
+					assert.strictEqual(unread, 0);
+				})
 			});
 		});
 
