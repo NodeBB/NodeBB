@@ -75,7 +75,7 @@ module.exports = function (Topics) {
 
 		// Topics in /world are excluded from /recent
 		const cid = await Topics.getTopicField(tid, 'cid');
-		if (cid === -1) {
+		if (!utils.isNumber(cid) || cid === -1) {
 			return await db.sortedSetRemove('topics:recent', data.tid);
 		}
 
