@@ -120,13 +120,23 @@ ActivityPub.resolveInboxes = async (ids) => {
 	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids);
 	ids = ids.filter((_, idx) => exists[idx]);
 
-	const isCategory = await db.exists(ids.map(id => `categoryRemote:${id}`));
 	await batch.processArray(ids, async (currentIds) => {
-		const method = isCategory ? categories.getCategoriesFields  : user.getUsersFields;
-		const usersData = await method(currentIds, ['inbox', 'sharedInbox']);
-		usersData.forEach((u) => {
-			if (u && (u.sharedInbox || u.inbox)) {
-				inboxes.add(u.sharedInbox || u.inbox);
+		const isCategory = await db.exists(currentIds.map(id => `categoryRemote:${id}`));
+		const [cids, uids] = currentIds.reduce(([cids, uids], id, idx) => {
+			const array = isCategory[idx] ? cids : uids;
+			array.push(id);
+			return [cids, uids];
+		}, [[], []]);
+		const categoryData = await categories.getCategoriesFields(cids, ['inbox', 'sharedInbox']);
+		const userData = await user.getUsersFields(uids, ['inbox', 'sharedInbox']);
+
+		currentIds.forEach((id) => {
+			if (cids.includes(id)) {
+				const data = categoryData[cids.indexOf(id)];
+				inboxes.add(data.sharedInbox || data.inbox);
+			} else if (uids.includes(id)) {
+				const data = userData[uids.indexOf(id)];
+				inboxes.add(data.sharedInbox || data.inbox);
 			}
 		});
 	}, {
