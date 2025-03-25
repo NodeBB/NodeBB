@@ -353,6 +353,64 @@ describe('as:Group', () => {
 	});
 });
 
+describe('Inbox resolution', () => {
+	describe('remote users', () => {
+		it('should return an inbox if present', async () => {
+			const { id, actor } = helpers.mocks.person();
+			await activitypub.actors.assert(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], actor.inbox);
+		});
+
+		it('should return a shared inbox if present', async () => {
+			const { id, actor } = helpers.mocks.person({
+				endpoints: {
+					sharedInbox: 'https://example.org/inbox',
+				}
+			});
+			await activitypub.actors.assert(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], 'https://example.org/inbox');
+		});
+	});
+
+	describe('remote categories', () => {
+		it('should return an inbox if present', async () => {
+			const { id, actor } = helpers.mocks.group();
+			await activitypub.actors.assertGroup(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], actor.inbox);
+		});
+
+		it('should return a shared inbox if present', async () => {
+			const { id, actor } = helpers.mocks.group({
+				endpoints: {
+					sharedInbox: 'https://example.org/inbox',
+				}
+			});
+			await activitypub.actors.assertGroup(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], 'https://example.org/inbox');
+		});
+	});
+});
+
 describe('Controllers', () => {
 	describe('User Actor endpoint', () => {
 		let uid;
