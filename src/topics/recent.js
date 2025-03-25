@@ -4,6 +4,7 @@
 const db = require('../database');
 const plugins = require('../plugins');
 const posts = require('../posts');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	const terms = {
