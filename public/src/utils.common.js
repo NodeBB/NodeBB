@@ -631,9 +631,8 @@ const utils = {
 
 		try {
 			str = JSON.parse(str);
-		} catch (err) {
-			console.error(err)
-		}
+		// eslint-disable-next-line no-unused-vars
+		} catch (err) { /* empty */ }
 
 		return str;
 	},
