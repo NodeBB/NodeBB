@@ -110,7 +110,7 @@ Actors.assert = async (ids, options = {}) => {
 	 */
 
 	ids = await Actors.qualify(ids, options);
-	if (!ids) {
+	if (!ids || !ids.length) {
 		return ids;
 	}
 
