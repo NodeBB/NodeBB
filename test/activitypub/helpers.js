@@ -106,3 +106,20 @@ Helpers.mocks.create = (object) => {
 
 	return { id, activity };
 };
+
+Helpers.mocks.accept = (actor, object) => {
+	const baseUrl = 'https://example.org';
+	const uuid = utils.generateUUID();
+	const id = `${baseUrl}/activity/${uuid}`;
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id,
+		type: 'Accept',
+		to: ['https://www.w3.org/ns/activitystreams#Public'],
+		actor,
+		object,
+	};
+
+	return { activity };
+}
