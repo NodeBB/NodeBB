@@ -334,6 +334,21 @@ describe('as:Group', () => {
 				assert.strictEqual(activity.type, 'Follow');
 				assert.strictEqual(activity.object, cid);
 			});
+
+			it.only('should not show up in the user\'s following list', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
+
+				// Trigger inbox accept
+				const { activity: body } = helpers.mocks.accept(cid, {
+					type: 'Follow',
+					actor: `${nconf.get('url')}/uid/${uid}`,
+				});
+				await activitypub.inbox.accept({ body });
+
+				const following = await user.getFollowing(uid, 0, 1);
+				assert(Array.isArray(following));
+				assert.strictEqual(following.length, 0);
+			});
 		});
 
 		describe('user already following', () => {
