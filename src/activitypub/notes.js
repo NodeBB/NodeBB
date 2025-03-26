@@ -100,6 +100,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	} else {
 		// Check recipients/audience for category (local or remote)
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
+		await activitypub.actors.assert(Array.from(set));
 
 		// Local
 		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
