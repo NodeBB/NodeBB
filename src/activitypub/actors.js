@@ -149,7 +149,11 @@ Actors.assert = async (ids, options = {}) => {
 			if (e.code === 'ap_get_410') {
 				const exists = await user.exists(id);
 				if (exists) {
-					await user.deleteAccount(id);
+					try {
+						await user.deleteAccount(id);
+					} catch (e) {
+						await activitypub.actors.remove(iid);
+					}
 				}
 			}
 
