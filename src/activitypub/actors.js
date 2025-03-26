@@ -409,9 +409,11 @@ async function _migratePersonToGroup(categoryObjs) {
 
 	await Promise.all(ids.map(async (id) => {
 		const shares = await db.getSortedSetMembers(`uid:${id}:shares`);
-		const exists = await topics.exists(shares);
+		let cids = await topics.getTopicsFields(shares, ['cid']);
+		cids = cids.map(o => o.cid);
 		await Promise.all(shares.map(async (share, idx) => {
-			if (exists[idx]) {
+			const cid = cids[idx];
+			if (cid === -1) {
 				await topics.tools.move(share, {
 					cid: id,
 					uid: 'system',
