@@ -126,6 +126,36 @@ describe('Actor asserton', () => {
 				assert.strictEqual(post_count, 2);
 			});
 
+			it('should not migrate shares by that user that already belong to a local category', async () => {
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+
+				// Two shares, one moved to local cid
+				for (let x = 0; x < 2; x++) {
+					const { id: pid } = helpers.mocks.note();
+					// eslint-disable-next-line no-await-in-loop
+					const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+					// eslint-disable-next-line no-await-in-loop
+					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+
+					if (!x) {
+						await topics.tools.move(tid, {
+							cid,
+							uid: 'system',
+						});
+					}
+				}
+
+				helpers.mocks.group({ id });
+				await activitypub.actors.assertGroup([id]);
+
+				const { topic_count, post_count } = await categories.getCategoryData(id);
+				assert.strictEqual(topic_count, 1);
+				assert.strictEqual(post_count, 1);
+			});
+
 			it('should migrate any local followers into category watches', async () => {
 				const { id } = helpers.mocks.person();
 				await activitypub.actors.assert([id]);
