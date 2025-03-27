@@ -46,7 +46,7 @@ Posts.get = async (req, res) => {
 
 Posts.getIndex = async (req, res) => {
 	const { pid } = req.params;
-	const { sort } = req.body;
+	const { sort } = req.body || {};
 
 	const index = await api.posts.getIndex(req, { pid, sort });
 	if (index === null) {
