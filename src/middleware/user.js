@@ -62,8 +62,9 @@ module.exports = function (middleware) {
 				return await finishLogin(req, user);
 			} else if (user.hasOwnProperty('master') && user.master === true) {
 				// If the token received was a master token, a _uid must also be present for all calls
-				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
-					user.uid = req.body._uid || req.query._uid;
+				const body = req.body || {};
+				if (body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
+					user.uid = body._uid || req.query._uid;
 					delete user.master;
 					return await finishLogin(req, user);
 				}
