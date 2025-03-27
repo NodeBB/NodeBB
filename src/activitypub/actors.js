@@ -152,7 +152,7 @@ Actors.assert = async (ids, options = {}) => {
 					try {
 						await user.deleteAccount(id);
 					} catch (e) {
-						await activitypub.actors.remove(iid);
+						await activitypub.actors.remove(id);
 					}
 				}
 			}
