@@ -62,7 +62,7 @@
         "connect-pg-simple": "10.0.0",
         "connect-redis": "8.0.2",
         "cookie-parser": "1.4.7",
-        "cron": "4.1.0",
+        "cron": "4.1.1",
         "cropperjs": "1.6.2",
         "csrf-sync": "4.1.0",
         "daemon": "1.1.0",
