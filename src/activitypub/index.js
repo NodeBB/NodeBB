@@ -395,7 +395,8 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		...payload,
 	};
 
-	await batch.processArray(
+	// Runs in background... potentially a better queue is required... later.
+	batch.processArray(
 		inboxes,
 		async inboxBatch => Promise.all(inboxBatch.map(async uri => sendMessage(uri, id, type, payload))),
 		{
