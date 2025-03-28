@@ -129,7 +129,7 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 	await Promise.all([
 		activitypub.send('uid', caller.uid, Array.from(targets), activity),
 		activitypub.feps.announce(pid, activity),
-		activitypubApi.add(caller, { pid }),
+		// activitypubApi.add(caller, { pid }),
 	]);
 });
 
@@ -387,32 +387,32 @@ activitypubApi.flag = enabledCheck(async (caller, flag) => {
 	await db.sortedSetAdd(`flag:${flag.flagId}:remote`, Date.now(), caller.uid);
 });
 
-activitypubApi.add = enabledCheck((async (_, { pid }) => {
-	let localId;
-	if (String(pid).startsWith(nconf.get('url'))) {
-		({ id: localId } = await activitypub.helpers.resolveLocalId(pid));
-	}
+// activitypubApi.add = enabledCheck((async (_, { pid }) => {
+// 	let localId;
+// 	if (String(pid).startsWith(nconf.get('url'))) {
+// 		({ id: localId } = await activitypub.helpers.resolveLocalId(pid));
+// 	}
 
-	const tid = await posts.getPostField(localId || pid, 'tid');
-	const cid = await posts.getCidByPid(localId || pid);
-	if (!utils.isNumber(tid) || cid <= 0) { // `Add` only federated on categorized topics started locally
-		return;
-	}
+// 	const tid = await posts.getPostField(localId || pid, 'tid');
+// 	const cid = await posts.getCidByPid(localId || pid);
+// 	if (!utils.isNumber(tid) || cid <= 0) { // `Add` only federated on categorized topics started locally
+// 		return;
+// 	}
 
-	let to = [activitypub._constants.publicAddress];
-	let cc = [];
-	let targets;
-	({ to, cc, targets } = await activitypub.buildRecipients({ to, cc }, { pid: localId || pid, cid }));
+// 	let to = [activitypub._constants.publicAddress];
+// 	let cc = [];
+// 	let targets;
+// 	({ to, cc, targets } = await activitypub.buildRecipients({ to, cc }, { pid: localId || pid, cid }));
 
-	await activitypub.send('cid', cid, Array.from(targets), {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(localId || pid)}#activity/add/${Date.now()}`,
-		type: 'Add',
-		to,
-		cc,
-		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-		target: `${nconf.get('url')}/topic/${tid}`,
-	});
-}));
+// 	await activitypub.send('cid', cid, Array.from(targets), {
+// 		id: `${nconf.get('url')}/post/${encodeURIComponent(localId || pid)}#activity/add/${Date.now()}`,
+// 		type: 'Add',
+// 		to,
+// 		cc,
+// 		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+// 		target: `${nconf.get('url')}/topic/${tid}`,
+// 	});
+// }));
 
 activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
 	if (!activitypub.helpers.isUri(flag.targetId)) {

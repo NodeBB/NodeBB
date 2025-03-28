@@ -50,7 +50,7 @@ inbox.create = async (req) => {
 	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
 		activitypub.feps.announce(object.id, req.body);
-		api.activitypub.add(req, { pid: object.id });
+		// api.activitypub.add(req, { pid: object.id });
 	}
 };
 
