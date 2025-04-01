@@ -175,6 +175,29 @@ describe('Actor asserton', () => {
 		})
 	});
 
+	describe('less happy paths', () => {
+		describe('actor with `preferredUsername` that is not all lowercase', () => {
+			it('should save a handle-to-uid association', async () => {
+				const preferredUsername = 'nameWITHCAPS';
+				const { id } = helpers.mocks.person({ preferredUsername });
+				await activitypub.actors.assert([id]);
+
+				const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
+				assert.strictEqual(uid, id);
+			});
+
+			it('should preserve that association when re-asserted', async () => {
+				const preferredUsername = 'nameWITHCAPS';
+				const { id } = helpers.mocks.person({ preferredUsername });
+				await activitypub.actors.assert([id]);
+				await activitypub.actors.assert([id], { update: true });
+
+				const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
+				assert.strictEqual(uid, id);
+			})
+		});
+	});
+
 	describe('edge cases: loopback handles and uris', () => {
 		let uid;
 		const userslug = utils.generateUUID().slice(0, 8);
@@ -335,7 +358,7 @@ describe('as:Group', () => {
 				assert.strictEqual(activity.object, cid);
 			});
 
-			it.only('should not show up in the user\'s following list', async () => {
+			it('should not show up in the user\'s following list', async () => {
 				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
 
 				// Trigger inbox accept
