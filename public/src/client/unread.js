@@ -68,7 +68,7 @@ define('forum/unread', [
 					markAllRead();
 				} else if (category.cid === 'selected') {
 					markSelectedRead();
-				} else if (parseInt(category.cid, 10) > 0) {
+				} else if (category.cid) {
 					markCategoryRead(category.cid);
 				}
 			},
