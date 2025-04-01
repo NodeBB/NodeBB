@@ -1,4 +1,4 @@
-'use strict';
+i'use strict';
 
 const meta = require('../meta');
 const db = require('../database');
@@ -190,7 +190,10 @@ module.exports = function (Posts) {
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
-		const newReputation = await user.incrementUserReputationBy(postData.uid, type === 'upvote' ? 1 : -1);
+		const isAdmin = await user.isAdministrator(uid);
+		const voteWeight = isAdmin ? 5 : 1;
+		const newReputation = await user.incrementUserReputationBy(postData.uid, type === 'upvote' ? voteWeight : -voteWeight);
+
 
 		await adjustPostVotes(postData, uid, type, unvote);
 
@@ -236,9 +239,13 @@ module.exports = function (Posts) {
 		await db.setRemove(`pid:${postData.pid}:${notType}`, uid);
 
 		const [upvotes, downvotes] = await Promise.all([
-			db.setCount(`pid:${postData.pid}:upvote`),
-			db.setCount(`pid:${postData.pid}:downvote`),
+    			db.getSortedSetScore(`pid:${postData.pid}:upvote`, uid),
+    			db.getSortedSetScore(`pid:${postData.pid}:downvote`, uid),
 		]);
+
+		postData.upvotes = (upvotes || 0) + (isAdmin ? 4 : 0);  // Admins' votes count as 5 total
+		postData.downvotes = (downvotes || 0) + (isAdmin ? 4 : 0);
+
 		postData.upvotes = upvotes;
 		postData.downvotes = downvotes;
 		postData.votes = postData.upvotes - postData.downvotes;
