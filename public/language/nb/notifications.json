@@ -96,7 +96,7 @@
     "notificationType-group-request-membership": "Når noen sender en forespørsel om å bli med i en gruppe du eier",
     "notificationType-new-register": "Når noen blir lag til i kø for å registrere",
     "notificationType-post-queue": "Når et nytt innlegg er satt i kø",
-    "notificationType-new-post-flag": "Når ett nytt innlegg er flagget",
+    "notificationType-new-post-flag": "Når ett innlegg er flagget",
     "notificationType-new-user-flag": "Når en bruker er flagget",
     "notificationType-new-reward": "Når du får en ny tildelning",
     "activitypub.announce": "<strong>%1</strong> delte din post i <strong>%2</strong> til sine følgere.",
