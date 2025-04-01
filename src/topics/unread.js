@@ -148,7 +148,7 @@ module.exports = function (Topics) {
 		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
 		const userCidState = _.zipObject(topicCids, categoryWatchState);
 
-		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
+		const filterCids = params.cid && params.cid.map(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 		const filterTags = params.tag && params.tag.map(tag => String(tag));
 
 		topicData.forEach((topic) => {
