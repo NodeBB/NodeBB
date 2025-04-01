@@ -7,6 +7,7 @@ const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
+	mysql: require('../src/database/mysql').questions,
 };
 
 module.exports = async function (config) {

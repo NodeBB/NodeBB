@@ -105,6 +105,7 @@
 							<option value="mongo">MongoDB</option>
 							<option value="redis">Redis</option>
 							<option value="postgres">PostgreSQL</option>
+							<option value="mysql">MySQL</option>
 						</select>
 					</div>
 					<div class="col-sm-5 form-text" data-help="Leave the fields blank to use the default settings.">{{{ if error }}}There was an error connecting to your database. Please try again.{{{ end }}}</div>
