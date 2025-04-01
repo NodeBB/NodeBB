@@ -16,7 +16,7 @@
 					</button>
 					<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1" role="menu">
 						{{{ each templates }}}
-						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" data-toggle="pill" role="menuitem">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
+						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" role="menuitem">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
 						{{{ end }}}
 					</ul>
 				</div>

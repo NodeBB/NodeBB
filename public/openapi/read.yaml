@@ -136,8 +136,8 @@ paths:
     $ref: 'read/admin/manage/admins-mods.yaml'
   /api/admin/manage/groups:
     $ref: 'read/admin/manage/groups.yaml'
-  "/api/admin/manage/groups/{name}":
-    $ref: 'read/admin/manage/groups/name.yaml'
+  "/api/admin/manage/groups/{slug}":
+    $ref: 'read/admin/manage/groups/slug.yaml'
   /api/admin/manage/uploads:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:

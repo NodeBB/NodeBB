@@ -3,7 +3,7 @@ get:
     - admin
   summary: Get user group details
   parameters:
-    - name: name
+    - name: slug
       in: path
       required: true
       schema:
@@ -28,6 +28,8 @@ get:
                         encodedName:
                           type: string
                         displayName:
+                          type: string
+                        slug:
                           type: string
                         selected:
                           type: boolean
