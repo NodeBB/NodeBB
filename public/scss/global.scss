@@ -21,7 +21,10 @@ html[data-dir="rtl"] {
 }
 /*rtl:end:ignore*/
 
-[component="post/content"], [component="chat/message/body"], [component="composer"] .preview {
+[component="post/content"],
+[component="post/parent/content"],
+[component="chat/message/body"],
+[component="composer"] .preview {
 	h1 { font-size: calc(1.15rem + 1vw); }
 	h2 { font-size: calc(1.1rem + 0.8vw); }
 	h3 { font-size: calc(1.075rem + 0.6vw); }
