@@ -36,6 +36,11 @@ async function getDatabaseConfig(config) {
 			return config;
 		}
 		return await prompt.get(questions.postgres);
+	} else if (config.database === 'mysql') {
+		if (config['mysql:host'] && config['mysql:port']) {
+			return config;
+		}
+		return await prompt.get(questions.postgres);
 	}
 	throw new Error(`unknown database : ${config.database}`);
 }
@@ -75,11 +80,19 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
 		};
+	} else if (config.database === 'mysql') {
+		config.mysql = {
+			host: databaseConfig['mysql:host'],
+			port: databaseConfig['mysql:port'],
+			username: databaseConfig['mysql:username'],
+			password: databaseConfig['mysql:password'],
+			database: databaseConfig['mysql:database'],
+		};
 	} else {
 		throw new Error(`unknown database : ${config.database}`);
 	}
 
-	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
+	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres).concat(questions.mysql);
 	for (let x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}

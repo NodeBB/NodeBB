@@ -1,20 +1,60 @@
 'use strict';
 
+/**
+ * @typedef {import('../../../types/database/hash').Hash} Hash
+ */
+
+/**
+ * @param {Hash & import('../../../types/database').MySQLDatabase} module
+ */
 module.exports = function (module) {
+    const helpers = require('./helpers');
+
     module.setObject = async function (key, data) {
-        if (!key || !data || !Object.keys(data).length) {
+        if (!key || !data) {
             return;
         }
 
-        const fields = Object.keys(data).map(field => `${field} = ?`).join(', ');
-        const values = Object.values(data);
+        if (data.hasOwnProperty('')) {
+            delete data[''];
+        }
+        if (!Object.keys(data).length) {
+            return;
+        }
+        await module.transaction(async (client) => {
+            const dataString = JSON.stringify(data);
 
-        await module.pool.query(
-            `INSERT INTO hash (_key, ${Object.keys(data).join(', ')})
-             VALUES (?, ${values.map(() => '?').join(', ')})
-             ON DUPLICATE KEY UPDATE ${fields}`,
-            [key, ...values, ...values]
-        );
+            if (Array.isArray(key)) {
+                await helpers.ensureLegacyObjectsType(client, key, 'hash');
+                // For array of keys, we'll need to use a different approach since MySQL doesn't have UNNEST
+                await client.query({
+                    name: 'setObjectKeys',
+                    sql: `
+                        INSERT INTO legacy_hash (_key, data)
+                        SELECT k, ? AS data
+                        FROM JSON_TABLE(
+                            ?,
+                            '$[*]' COLUMNS (k VARCHAR(255) PATH '$')
+                        ) AS jt
+                        ON DUPLICATE KEY UPDATE
+                            data = JSON_MERGE_PATCH(legacy_hash.data, ?)
+                    `,
+                    values: [dataString, JSON.stringify(key), dataString],
+                });
+            } else {
+                await helpers.ensureLegacyObjectType(client, key, 'hash');
+                await client.query({
+                    name: 'setObject',
+                    sql: `
+                        INSERT INTO legacy_hash (_key, data)
+                        VALUES (?, ?)
+                        ON DUPLICATE KEY UPDATE
+                            data = JSON_MERGE_PATCH(legacy_hash.data, ?)
+                    `,
+                    values: [key, dataString, dataString],
+                });
+            }
+        });
     };
 
     module.setObjectBulk = async function (data) {
@@ -105,13 +145,53 @@ module.exports = function (module) {
     };
 
     module.getObjectFields = async function (key, fields) {
-        if (!key || !Array.isArray(fields) || !fields.length) {
+        if (!key) {
             return null;
         }
+        if (!Array.isArray(fields) || !fields.length) {
+            return await module.getObject(key);
+        }
 
-        const sql = `SELECT ${fields.join(', ')} FROM hash WHERE _key = ?`;
-        const [rows] = await module.pool.query(sql, [key]);
-        return rows.length ? rows[0] : null;
+        const res = await module.pool.query({
+			name: 'getObjectFields',
+            sql: `
+SELECT JSON_OBJECTAGG(f.field, h.value) AS d
+FROM (
+    SELECT JSON_UNQUOTE(JSON_EXTRACT(f.value, '$[0]')) AS field
+    FROM JSON_TABLE(
+        ?,
+        '$[*]' COLUMNS (value JSON PATH '$')
+    ) f
+) f
+LEFT JOIN (
+    SELECT 
+        JSON_UNQUOTE(k.k) AS \`key\`,
+        JSON_EXTRACT(h.data, CONCAT('$."', JSON_UNQUOTE(k.k), '"')) AS value
+    FROM legacy_hash h
+    INNER JOIN legacy_object_live o
+        ON o._key = h._key
+        AND o.type = h.type
+    CROSS JOIN JSON_TABLE(
+        JSON_KEYS(h.data),
+        '$[*]' COLUMNS (k JSON PATH '$')
+    ) k
+    WHERE o._key = ?
+) h
+ON h.key = f.field
+            `,
+            values: [JSON.stringify(fields), key],
+        });
+
+        if (res.length) {
+            return res[0].d;
+        }
+
+        const obj = {};
+        fields.forEach((f) => {
+            obj[f] = null;
+        });
+
+        return obj;
     };
 
     module.getObjectsFields = async function (keys, fields) {

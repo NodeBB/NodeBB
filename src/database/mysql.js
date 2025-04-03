@@ -21,9 +21,9 @@ mysqlModule.questions = [
         default: nconf.get('mysql:port') || nconf.get('defaults:mysql:port') || 3306,
     },
     {
-        name: 'mysql:user',
+        name: 'mysql:username',
         description: 'MySQL username',
-        default: nconf.get('mysql:user') || nconf.get('defaults:mysql:user') || 'root',
+        default: nconf.get('mysql:username') || nconf.get('defaults:mysql:username') || 'root',
     },
     {
         name: 'mysql:password',
@@ -212,4 +212,41 @@ mysqlModule.createSessionStore = function (sessionOptions) {
     return new MySQLStore(storeOptions, connection);
 };
 
+mysqlModule.createIndices = async function () {
+    if (!mysqlModule.pool) {
+        winston.warn('[database/createIndices] database not initialized');
+        return;
+    }
+    winston.info('[database] Checking database indices.');
+    try {
+        try {
+            await mysqlModule.pool.query(`
+                CREATE INDEX idx__legacy_zset__key__score 
+                ON legacy_zset(_key ASC, score DESC)
+            `);
+        } catch (err) {
+            if (err.errno !== 1061) { // ER_DUP_KEYNAME
+                throw err; // Rethrow if it's not a duplicate key error
+            }
+            // Silently ignore if the index already exists
+        }
+        try {
+            await mysqlModule.pool.query(`
+                CREATE INDEX idx__legacy_object__expireAt 
+                ON legacy_object(expireAt ASC)
+            `);
+        } catch (err) {
+            if (err.errno !== 1061) { // ER_DUP_KEYNAME
+                throw err; // Rethrow if it's not a duplicate key error
+            }
+            // Silently ignore if the index already exists
+        }
+        winston.info('[database] Checking database indices done!');
+    } catch (err) {
+        winston.error(`Error creating index ${err.message}`);
+        throw err;
+    }
+};
+
 require('./mysql/hash')(mysqlModule);
+require('./mysql/transaction')(mysqlModule);

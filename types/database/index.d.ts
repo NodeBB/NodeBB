@@ -30,7 +30,12 @@ export interface Database {
 
   info(db: any): Promise<any>
 
-  init(): Promise<void>
+  init(opts: any): Promise<void>
+}
+
+export interface MySQLDatabase extends Database {
+  pool?: import('mysql2/promise').Pool
+  client?: import('mysql2/promise').Pool
 }
 
 export type RedisStyleMatchString =
