@@ -24,10 +24,11 @@ Errors.writeData = async function () {
 			return;
 		}
 
+		const bulkIncrement = [];
 		for (const key of keys) {
-			/* eslint-disable no-await-in-loop */
-			await db.sortedSetIncrBy('errors:404', _counters[key], key);
+			bulkIncrement.push(['errors:404', _counters[key], key ]);
 		}
+		await db.sortedSetIncrByBulk(bulkIncrement);
 	} catch (err) {
 		winston.error(err.stack);
 	}
