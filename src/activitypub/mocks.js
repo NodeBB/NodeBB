@@ -242,7 +242,7 @@ Mocks.category = async (actors) => {
 		const cid = actor.id;
 		let hostname;
 		let {
-			url, preferredUsername, /* icon, */ image,
+			url, preferredUsername, icon, /* image, */
 			name, summary, followers, inbox, endpoints, tag,
 		} = actor;
 		preferredUsername = slugify(preferredUsername || name);
@@ -256,12 +256,14 @@ Mocks.category = async (actors) => {
 
 		// No support for category avatars yet ;(
 		// let picture;
-		// if (icon) {
-		// 	picture = typeof icon === 'string' ? icon : icon.url;
+		// if (image) {
+		// 	picture = typeof image === 'string' ? image : image.url;
 		// }
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
+
+		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
 
 		// Replace emoji in summary
 		if (tag && Array.isArray(tag)) {
@@ -281,10 +283,11 @@ Mocks.category = async (actors) => {
 			slug: `${preferredUsername}@${hostname}`,
 			description: summary,
 			descriptionParsed: posts.sanitize(summary),
-			icon: 'fa-comments',
+			icon: backgroundImage ? 'fa-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,
-			backgroundImage: !image || typeof image === 'string' ? image : image.url,
+			backgroundImage,
+			imageClass: 'cover',
 			// followerCount,
 			// followingCount,
 
