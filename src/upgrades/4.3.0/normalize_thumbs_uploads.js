@@ -90,6 +90,7 @@ module.exports = {
 
 			const userUploadData = await db.getSortedSetsMembersWithScores(keys);
 			const bulkAdd = [];
+			const bulRemove = [];
 			const promises = [];
 
 			userUploadData.forEach((userUploads, idx) => {
@@ -110,6 +111,7 @@ module.exports = {
 			});
 
 			await Promise.all(promises);
+			await db.sortedSetRemoveBulk(bulkRemove);
 			await db.sortedSetAddBulk(bulkAdd);
 
 			progress.incr(uids.length);
