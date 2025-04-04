@@ -1,8 +1,9 @@
 'use strict';
 
-const _ = require('lodash');
 const db = require('../../database');
 const batch = require('../../batch');
+const crypto = require('crypto');
+
 
 module.exports = {
 	name: 'Normalize topic thumbnails and post uploads to same format',
@@ -23,6 +24,8 @@ module.exports = {
 			}
 			return path;
 		}
+
+		const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			const keys = tids.map(tid => `topic:${tid}:thumbs`);
