@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const pathPrefix = path.join(nconf.get('upload_path'));
-	const searchRegex = /\/assets\/uploads\/(files\/[^\s")]+\.?[\w]*)/g;
+	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
 
 	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
 	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
@@ -67,7 +67,6 @@ module.exports = function (Posts) {
 			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
-			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
 			thumbs.forEach(t => uploads.add(t));
 		}
 

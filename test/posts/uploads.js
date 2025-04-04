@@ -100,17 +100,17 @@ describe('upload methods', () => {
 
 	describe('.isOrphan()', () => {
 		it('should return false if upload is not an orphan', (done) => {
-			posts.uploads.isOrphan('files/abracadabra.png', (err, isOrphan) => {
+			posts.uploads.isOrphan('/files/abracadabra.png', (err, isOrphan) => {
 				assert.ifError(err);
-				assert.equal(isOrphan, false);
+				assert.strictEqual(isOrphan, false);
 				done();
 			});
 		});
 
 		it('should return true if upload is an orphan', (done) => {
-			posts.uploads.isOrphan('files/shazam.jpg', (err, isOrphan) => {
+			posts.uploads.isOrphan('/files/shazam.jpg', (err, isOrphan) => {
 				assert.ifError(err);
-				assert.equal(true, isOrphan);
+				assert.strictEqual(isOrphan, true);
 				done();
 			});
 		});
@@ -299,10 +299,10 @@ describe('upload methods', () => {
 				content: 'this image is not an orphan: ![wut](/assets/uploads/files/wut.txt)',
 			});
 
-			assert.strictEqual(await posts.uploads.isOrphan('files/wut.txt'), false);
-			await posts.uploads.deleteFromDisk(['files/wut.txt']);
+			assert.strictEqual(await posts.uploads.isOrphan('/files/wut.txt'), false);
+			await posts.uploads.deleteFromDisk(['/files/wut.txt']);
 
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files/wut.txt')), false);
+			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), '/files/wut.txt')), false);
 		});
 	});
 });

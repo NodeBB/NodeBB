@@ -73,8 +73,6 @@ Thumbs.get = async function (tids, options) {
 		// Add uploaded media to thumb sets
 		const mainPidUploads = await Promise.all(mainPids.map(posts.uploads.list));
 		mainPidUploads.forEach((uploads, idx) => {
-			uploads = uploads.map(upath => path.join(path.sep, `${upath}`));
-
 			uploads = uploads.filter((upload) => {
 				const type = mime.getType(upload);
 				return !thumbs[idx].includes(upload) && type && type.startsWith('image/');
@@ -135,7 +133,8 @@ Thumbs.associate = async function ({ id, path, score }) {
 
 	// Normalize the path to allow for changes in upload_path (and so upload_url can be appended if needed)
 	if (isLocal) {
-		path = path.replace(nconf.get('upload_path'), '');
+		path = path.replace(nconf.get('relative_path'), '');
+		path = path.replace(nconf.get('upload_url'), '');
 	}
 	await db.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
 	if (!isDraft) {
@@ -147,7 +146,7 @@ Thumbs.associate = async function ({ id, path, score }) {
 	// Associate thumbnails with the main pid (only on local upload)
 	if (!isDraft && isLocal) {
 		const mainPid = (await topics.getMainPids([id]))[0];
-		await posts.uploads.associate(mainPid, path.slice(1));
+		await posts.uploads.associate(mainPid, path);
 	}
 };
 
@@ -195,7 +194,7 @@ Thumbs.delete = async function (id, relativePaths) {
 	await db.sortedSetRemove(set, toRemove);
 
 	if (isDraft && toDelete.length) { // drafts only; post upload dissociation handles disk deletion for topics
-		await Promise.all(toDelete.map(async absolutePath => file.delete(absolutePath)));
+		await Promise.all(toDelete.map(path => file.delete(path)));
 	}
 
 	if (toRemove.length && !isDraft) {
@@ -204,7 +203,7 @@ Thumbs.delete = async function (id, relativePaths) {
 
 		await Promise.all([
 			db.incrObjectFieldBy(`topic:${id}`, 'numThumbs', -toRemove.length),
-			Promise.all(toRemove.map(async relativePath => posts.uploads.dissociate(mainPid, relativePath.slice(1)))),
+			Promise.all(toRemove.map(async relativePath => posts.uploads.dissociate(mainPid, relativePath))),
 		]);
 	}
 	if (toRemove.length) {
