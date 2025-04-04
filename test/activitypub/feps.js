@@ -86,7 +86,7 @@ describe('FEPs', () => {
 					adminUid, utils.generateUUID(), [reply1Pid, reply2Pid], tid, cid
 				);
 
-				assert.strictEqual(activitypub._sent.size, 2, activitypub._sent.keys());
+				assert.strictEqual(activitypub._sent.size, 1, activitypub._sent.keys());
 
 				const key = Array.from(activitypub._sent.keys())[0];
 				const activity = activitypub._sent.get(key);
