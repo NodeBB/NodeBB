@@ -193,7 +193,9 @@ module.exports = function (Posts) {
 				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
 			)).filter(Boolean);
 
-			const uploaderUids = (await db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+			const uploaderUids = (await db.getObjectsFields(
+				deletePaths.map(path => `upload:${md5(path)}`, ['uid']))
+			).map(o => (o ? o.uid || null : null));
 			await Promise.all(uploaderUids.map((uid, idx) => (
 				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
 			)).filter(Boolean));
