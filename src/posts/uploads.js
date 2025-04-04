@@ -103,7 +103,7 @@ module.exports = function (Posts) {
 		const tsPrefix = /^\d{13}-/;
 		files = files.filter(filename => tsPrefix.test(filename));
 
-		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
+		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`/files/${filename}`) ? `/files/${filename}` : null)));
 		files = files.filter(Boolean);
 
 		return files;
