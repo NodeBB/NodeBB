@@ -377,6 +377,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	}
 
 	ActivityPub.helpers.log(`[activitypub/send] ${payload.id}`);
+	console.log('setting _sent', process.env.hasOwnProperty('CI'), ActivityPub._sent.keys())
 	if (process.env.hasOwnProperty('CI')) {
 		ActivityPub._sent.set(payload.id, payload);
 	}
