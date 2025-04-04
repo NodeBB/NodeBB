@@ -143,13 +143,12 @@ module.exports = function (Posts) {
 			filePaths = [filePaths];
 		}
 
-		if (process.platform === 'win32') {
-			// windows path => 'files\\1685368788211-1-profileimg.jpg'
-			// turn it into => 'files/1685368788211-1-profileimg.jpg'
-			filePaths.forEach((file) => {
-				file.path = file.path.split(path.sep).join(path.posix.sep);
-			});
-		}
+		// windows path => 'files\\1685368788211-1-profileimg.jpg'
+		// linux path => files/1685368788211-1-profileimg.jpg
+		// turn them into => '/files/1685368788211-1-profileimg.jpg'
+		filePaths.forEach((file) => {
+			file.path = `/${file.path.split(path.sep).join(path.posix.sep)}`;
+		});
 
 		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);
 		return await Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
