@@ -27,7 +27,7 @@ describe('uploads.js', () => {
 				password: utils.generateUUID(),
 				gdpr_consent: 1,
 			});
-			relativePath = `files/${utils.generateUUID()}`;
+			relativePath = `/files/${utils.generateUUID()}`;
 
 			fs.closeSync(fs.openSync(path.join(nconf.get('upload_path'), relativePath), 'w'));
 		});
@@ -115,7 +115,7 @@ describe('uploads.js', () => {
 		});
 
 		it('should accept multiple paths', async () => {
-			const secondPath = `files/${utils.generateUUID()}`;
+			const secondPath = `/files/${utils.generateUUID()}`;
 			fs.closeSync(fs.openSync(path.join(nconf.get('upload_path'), secondPath), 'w'));
 			await user.associateUpload(uid, secondPath);
 

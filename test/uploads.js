@@ -128,7 +128,7 @@ describe('Upload Controllers', () => {
 			assert(body && body.status && body.response && body.response.images);
 			assert(Array.isArray(body.response.images));
 			assert(body.response.images[0].url);
-			const name = body.response.images[0].url.replace(`${nconf.get('relative_path') + nconf.get('upload_url')}/`, '');
+			const name = body.response.images[0].url.replace(`${nconf.get('relative_path') + nconf.get('upload_url')}`, '');
 			await socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name });
 
 			const uploads = await db.getSortedSetRange(`uid:${regularUid}:uploads`, 0, -1);
