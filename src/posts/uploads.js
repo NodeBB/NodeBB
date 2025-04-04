@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const pathPrefix = path.join(nconf.get('upload_path'));
-	const searchRegex = /\/assets\/uploads\/(files\/[^\s")]+\.?[\w]*)/g;
+	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
 
 	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
 	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
@@ -67,7 +67,6 @@ module.exports = function (Posts) {
 			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
-			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
 			thumbs.forEach(t => uploads.add(t));
 		}
 
@@ -104,7 +103,7 @@ module.exports = function (Posts) {
 		const tsPrefix = /^\d{13}-/;
 		files = files.filter(filename => tsPrefix.test(filename));
 
-		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
+		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`/files/${filename}`) ? `/files/${filename}` : null)));
 		files = files.filter(Boolean);
 
 		return files;
@@ -194,7 +193,9 @@ module.exports = function (Posts) {
 				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
 			)).filter(Boolean);
 
-			const uploaderUids = (await db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+			const uploaderUids = (await db.getObjectsFields(
+				deletePaths.map(path => `upload:${md5(path)}`, ['uid'])
+			)).map(o => (o ? o.uid || null : null));
 			await Promise.all(uploaderUids.map((uid, idx) => (
 				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
 			)).filter(Boolean));
