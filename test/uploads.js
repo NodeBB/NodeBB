@@ -485,7 +485,7 @@ describe('Upload Controllers', () => {
 
 				assert.strictEqual(orphans.length, 1);
 				orphans.forEach((relPath) => {
-					assert(relPath.startsWith('files/'));
+					assert(relPath.startsWith('/files/'));
 					assert(relPath.endsWith('test.png'));
 				});
 			});
