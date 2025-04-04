@@ -194,8 +194,8 @@ module.exports = function (Posts) {
 			)).filter(Boolean);
 
 			const uploaderUids = (await db.getObjectsFields(
-				deletePaths.map(path => `upload:${md5(path)}`, ['uid']))
-			).map(o => (o ? o.uid || null : null));
+				deletePaths.map(path => `upload:${md5(path)}`, ['uid'])
+			)).map(o => (o ? o.uid || null : null));
 			await Promise.all(uploaderUids.map((uid, idx) => (
 				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
 			)).filter(Boolean));

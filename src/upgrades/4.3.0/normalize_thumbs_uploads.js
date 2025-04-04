@@ -90,7 +90,7 @@ module.exports = {
 
 			const userUploadData = await db.getSortedSetsMembersWithScores(keys);
 			const bulkAdd = [];
-			const bulRemove = [];
+			const bulkRemove = [];
 			const promises = [];
 
 			userUploadData.forEach((userUploads, idx) => {
