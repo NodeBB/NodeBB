@@ -11,7 +11,11 @@ const file = require('../file');
 const batch = require('../batch');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-const _getFullPath = relativePath => path.resolve(nconf.get('upload_path'), relativePath);
+
+const pathPrefix = path.join(nconf.get('upload_path'));
+
+const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
+
 const _validatePath = async (relativePaths) => {
 	if (typeof relativePaths === 'string') {
 		relativePaths = [relativePaths];
@@ -22,7 +26,7 @@ const _validatePath = async (relativePaths) => {
 	const fullPaths = relativePaths.map(path => _getFullPath(path));
 	const exists = await Promise.all(fullPaths.map(async fullPath => file.exists(fullPath)));
 
-	if (!fullPaths.every(fullPath => fullPath.startsWith(nconf.get('upload_path'))) || !exists.every(Boolean)) {
+if (!fullPaths.every(fullPath => fullPath.startsWith(nconf.get('upload_path'))) || !exists.every(Boolean)) {
 		throw new Error('[[error:invalid-path]]');
 	}
 };

@@ -11,8 +11,8 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
-		const [topicCount, postCount] = await db.sortedSetsCard(['topics:tid', 'posts:pid']);
-		progress.total = topicCount + postCount;
+		const [topicCount, postCount, userCount] = await db.sortedSetsCard(['topics:tid', 'posts:pid', 'users:joindate']);
+		progress.total = topicCount + postCount + userCount;
 
 		function normalizePath(path) {
 			if (path.startsWith('http')) {
@@ -81,6 +81,38 @@ module.exports = {
 			await db.sortedSetAddBulk(bulkAdd);
 
 			progress.incr(pids.length);
+		}, {
+			batch: 500,
+		});
+
+		await batch.processSortedSet('users:joindate', async (uids) => {
+			const keys = uids.map(uid => `uid:${uid}:uploads`);
+
+			const userUploadData = await db.getSortedSetsMembersWithScores(keys);
+			const bulkAdd = [];
+			const promises = [];
+
+			userUploadData.forEach((userUploads, idx) => {
+				const uid = uids[idx];
+				if (Array.isArray(userUploads)) {
+					userUploads.forEach((userUpload) => {
+						const normalizedPath = normalizePath(userUpload.value);
+						if (normalizedPath !== userUpload.value) {
+							bulkAdd.push([`uid:${uid}:uploads`, userUpload.score, normalizedPath]);
+							promises.push(db.setObjectField(`upload:${md5(normalizedPath)}`, 'uid', uid));
+
+							bulkRemove.push([`uid:${uid}:uploads`, userUpload.value]);
+							promises.push(db.deletObjectField(`upload:${md5(userUpload.value)}`, 'uid'));
+						}
+					});
+
+				}
+			});
+
+			await Promise.all(promises);
+			await db.sortedSetAddBulk(bulkAdd);
+
+			progress.incr(uids.length);
 		}, {
 			batch: 500,
 		});

@@ -118,61 +118,61 @@ describe('upload methods', () => {
 
 	describe('.associate()', () => {
 		it('should add an image to the post\'s maintained list of uploads', async () => {
-			await posts.uploads.associate(pid, 'files/whoa.gif');
+			await posts.uploads.associate(pid, '/files/whoa.gif');
 			const uploads = await posts.uploads.list(pid);
 			assert.strictEqual(2, uploads.length);
-			assert.strictEqual(true, uploads.includes('files/whoa.gif'));
+			assert.strictEqual(true, uploads.includes('/files/whoa.gif'));
 		});
 
 		it('should allow arrays to be passed in', async () => {
-			await posts.uploads.associate(pid, ['files/amazeballs.jpg', 'files/wut.txt']);
+			await posts.uploads.associate(pid, ['/files/amazeballs.jpg', '/files/wut.txt']);
 			const uploads = await posts.uploads.list(pid);
 			assert.strictEqual(4, uploads.length);
-			assert.strictEqual(true, uploads.includes('files/amazeballs.jpg'));
-			assert.strictEqual(true, uploads.includes('files/wut.txt'));
+			assert.strictEqual(true, uploads.includes('/files/amazeballs.jpg'));
+			assert.strictEqual(true, uploads.includes('/files/wut.txt'));
 		});
 
 		it('should save a reverse association of md5sum to pid', async () => {
 			const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-			await posts.uploads.associate(pid, ['files/test.bmp']);
-			const pids = await db.getSortedSetRange(`upload:${md5('files/test.bmp')}:pids`, 0, -1);
+			await posts.uploads.associate(pid, ['/files/test.bmp']);
+			const pids = await db.getSortedSetRange(`upload:${md5('/files/test.bmp')}:pids`, 0, -1);
 			assert.strictEqual(true, Array.isArray(pids));
 			assert.strictEqual(true, pids.length > 0);
 			assert.equal(pid, pids[0]);
 		});
 
 		it('should not associate a file that does not exist on the local disk', async () => {
-			await posts.uploads.associate(pid, ['files/nonexistant.xls']);
+			await posts.uploads.associate(pid, ['/files/nonexistant.xls']);
 			const uploads = await posts.uploads.list(pid);
 			assert.strictEqual(uploads.length, 5);
-			assert.strictEqual(false, uploads.includes('files/nonexistant.xls'));
+			assert.strictEqual(false, uploads.includes('/files/nonexistant.xls'));
 		});
 	});
 
 	describe('.dissociate()', () => {
 		it('should remove an image from the post\'s maintained list of uploads', async () => {
-			await posts.uploads.dissociate(pid, 'files/whoa.gif');
+			await posts.uploads.dissociate(pid, '/files/whoa.gif');
 			const uploads = await posts.uploads.list(pid);
-			assert.strictEqual(4, uploads.length);
-			assert.strictEqual(false, uploads.includes('files/whoa.gif'));
+			assert.strictEqual(4, uploads.length, uploads);
+			assert.strictEqual(false, uploads.includes('/files/whoa.gif'));
 		});
 
 		it('should allow arrays to be passed in', async () => {
-			await posts.uploads.dissociate(pid, ['files/amazeballs.jpg', 'files/wut.txt']);
+			await posts.uploads.dissociate(pid, ['/files/amazeballs.jpg', '/files/wut.txt']);
 			const uploads = await posts.uploads.list(pid);
 			assert.strictEqual(2, uploads.length);
-			assert.strictEqual(false, uploads.includes('files/amazeballs.jpg'));
-			assert.strictEqual(false, uploads.includes('files/wut.txt'));
+			assert.strictEqual(false, uploads.includes('/files/amazeballs.jpg'));
+			assert.strictEqual(false, uploads.includes('/files/wut.txt'));
 		});
 
 		it('should remove the image\'s user association, if present', async () => {
 			_recreateFiles();
-			await posts.uploads.associate(pid, 'files/wut.txt');
-			await user.associateUpload(uid, 'files/wut.txt');
-			await posts.uploads.dissociate(pid, 'files/wut.txt');
+			await posts.uploads.associate(pid, '/files/wut.txt');
+			await user.associateUpload(uid, '/files/wut.txt');
+			await posts.uploads.dissociate(pid, '/files/wut.txt');
 
 			const userUploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
-			assert.strictEqual(userUploads.includes('files/wut.txt'), false);
+			assert.strictEqual(userUploads.includes('/files/wut.txt'), false);
 		});
 	});
 
@@ -254,14 +254,14 @@ describe('upload methods', () => {
 		});
 
 		it('should work if you pass in a string path', async () => {
-			await posts.uploads.deleteFromDisk('files/abracadabra.png');
+			await posts.uploads.deleteFromDisk('/files/abracadabra.png');
 			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files/abracadabra.png')), false);
 		});
 
 		it('should throw an error if a non-string or non-array is passed', async () => {
 			try {
 				await posts.uploads.deleteFromDisk({
-					files: ['files/abracadabra.png'],
+					files: ['/files/abracadabra.png'],
 				});
 			} catch (err) {
 				assert(!!err);
@@ -270,7 +270,7 @@ describe('upload methods', () => {
 		});
 
 		it('should delete the files passed in, from disk', async () => {
-			await posts.uploads.deleteFromDisk(['files/abracadabra.png', 'files/shazam.jpg']);
+			await posts.uploads.deleteFromDisk(['/files/abracadabra.png', '/files/shazam.jpg']);
 
 			const existsOnDisk = await Promise.all(_filenames.map(async (filename) => {
 				const fullPath = path.resolve(nconf.get('upload_path'), 'files', filename);
