@@ -1,4 +1,5 @@
 import { Store } from 'express-session'
+import { PoolConnection } from 'mysql2/promise'
 
 export { Hash } from './hash'
 export { List } from './list'
@@ -11,11 +12,11 @@ export {
 } from './zset'
 
 export interface Database {
-  checkCompatibility(callback: () => void): Promise<void>
+  checkCompatibility(callback?: () => void): Promise<void>
 
   checkCompatibilityVersion(
     version: string,
-    callback: () => void,
+    callback?: () => void,
   ): Promise<void>
 
   close(): Promise<void>
@@ -33,9 +34,15 @@ export interface Database {
   init(opts: any): Promise<void>
 }
 
-export interface MySQLDatabase extends Database {
+export interface MySQLDatabase extends Database, Hash, List, Set, Item {
   pool?: import('mysql2/promise').Pool
   client?: import('mysql2/promise').Pool
+  transaction(perform: (poolConnection: PoolConnection) => Promise<void>, txClient?: PoolConnection): Promise<void>
+}
+
+export interface MySQLDatabaseHelpers {
+  ensureLegacyObjectsType(db: PoolConnection, keys: string[], type: string): Promise<void>
+  ensureLegacyObjectType(db: PoolConnection, key: string, type: string): Promise<void>
 }
 
 export type RedisStyleMatchString =

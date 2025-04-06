@@ -1,10 +1,18 @@
 'use strict';
 
-const mysql = require('mysql');
+/**
+ * @typedef {import ('../../types/database').Database} Database
+ * @typedef {import ('../../types/database').MySQLDatabase} MySQLDatabase
+ */
+
 const winston = require('winston');
 const nconf = require('nconf');
 const MySQLStore = require('express-mysql-session')(require('express-session'));
+const semver = require('semver');
 
+/**
+ * @type {MySQLDatabase}
+ */
 const mysqlModule = module.exports;
 
 const connection = require('./mysql/connection');
@@ -248,5 +256,20 @@ mysqlModule.createIndices = async function () {
     }
 };
 
+mysqlModule.checkCompatibility = async function (callback) {
+    const mysqlPkg = require('mysql2/package.json');
+    await mysqlModule.checkCompatibilityVersion(mysqlPkg.version, callback);
+};
+
+mysqlModule.checkCompatibilityVersion = async function (version, callback) {
+    if (semver.lt(version, '3.10.2')) {
+        return callback(new Error('The `pg` package is out-of-date, please run `./nodebb setup` again.'));
+    }
+
+    if (callback)
+        callback();
+};
+
 require('./mysql/hash')(mysqlModule);
+require('./mysql/sorted')(mysqlModule);
 require('./mysql/transaction')(mysqlModule);

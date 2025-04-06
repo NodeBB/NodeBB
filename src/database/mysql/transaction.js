@@ -1,5 +1,3 @@
-const { PoolConnection } = require('mysql2/promise');
-
 'use strict';
 
 /**

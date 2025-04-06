@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * @typedef {import('../../../types/database').MySQLDatabaseHelpers} MySQLDatabaseHelpers
+ */
+
+/**
+ * @type {MySQLDatabaseHelpers}
+ */
 const helpers = module.exports;
 
 helpers.valueToString = function (value) {
@@ -19,70 +26,68 @@ helpers.removeDuplicateValues = function (values, ...others) {
 };
 
 helpers.ensureLegacyObjectType = async function (db, key, type) {
-	await db.query({
-		name: 'ensureLegacyObjectTypeBefore',
-		sql: `
-			DELETE FROM \`legacy_object\`
-			WHERE \`expireAt\` IS NOT NULL
-			AND \`expireAt\` <= NOW()`
-	});
+    await db.query({
+        sql: `
+        DELETE FROM legacy_object
+        WHERE expireAt IS NOT NULL
+        AND expireAt <= NOW()`
+    });
 
-	await db.query({
-		name: 'ensureLegacyObjectType1',
-		sql: `
-			INSERT IGNORE INTO \`legacy_object\` (\`_key\`, \`type\`)
-			VALUES (?, ?)`,
-		values: [key, type],
-	});
+    await db.query({
+        sql: `
+        INSERT IGNORE INTO legacy_object (_key, type)
+        VALUES (?, ?)`,
+        values: [key, type]
+    });
 
-	const res = await db.query({
-		name: 'ensureLegacyObjectType2',
-		sql: `
-			SELECT \`type\`
-			FROM \`legacy_object_live\`
-			WHERE \`_key\` = ?`,
-		values: [key],
-	});
+    const [rows] = await db.query({
+        sql: `
+        SELECT type
+        FROM legacy_object_live
+        WHERE _key = ?`,
+        values: [key]
+    });
 
-	if (res[0][0].type !== type) {
-		throw new Error(`database: cannot insert ${JSON.stringify(key)} as ${type} because it already exists as ${res.rows[0].type}`);
-	}
+    if (rows[0].type !== type) {
+        throw new Error(`database: cannot insert ${JSON.stringify(key)} as ${type} because it already exists as ${rows[0].type}`);
+    }
 };
 
 helpers.ensureLegacyObjectsType = async function (db, keys, type) {
 	await db.query({
-		name: 'ensureLegacyObjectTypeBefore',
 		sql: `
-			DELETE FROM \`legacy_object\`
-			WHERE \`expireAt\` IS NOT NULL
-			AND \`expireAt\` <= NOW()`
+        DELETE FROM legacy_object
+        WHERE expireAt IS NOT NULL
+        AND expireAt <= NOW()`
 	});
 
 	await db.query({
-		name: 'ensureLegacyObjectsType1',
 		sql: `
-			INSERT IGNORE INTO \`legacy_object\` (\`_key\`, \`type\`)
-			VALUES ${keys.map(() => '(?, ?)').join(', ')}`,
-		values: keys.flatMap(k => [k, type]),
+        INSERT IGNORE INTO legacy_object (_key, type)
+        SELECT k, ?
+        FROM JSON_TABLE(
+            ?,
+            '$[*]' COLUMNS (k VARCHAR(255) PATH '$')
+        ) AS jt`,
+		values: [type, JSON.stringify(keys)]
 	});
 
-	const res = await db.query({
-		name: 'ensureLegacyObjectsType2',
+	const [rows] = await db.query({
 		sql: `
-			SELECT \`_key\`, \`type\`
-			FROM \`legacy_object_live\`
-			WHERE \`_key\` IN (${keys.map(() => '?').join(', ')})`,
-		values: keys,
+        SELECT _key, type
+        FROM legacy_object_live
+        WHERE _key IN (?)`,
+		values: [keys]
 	});
 
-	const invalid = res.rows.filter(r => r.type !== type);
+	const invalid = rows.filter(r => r.type !== type);
 
 	if (invalid.length) {
 		const parts = invalid.map(r => `${JSON.stringify(r._key)} is ${r.type}`);
 		throw new Error(`database: cannot insert multiple objects as ${type} because they already exist: ${parts.join(', ')}`);
 	}
 
-	const missing = keys.filter(k => !res.rows.some(r => r._key === k));
+	const missing = keys.filter(k => !rows.some(r => r._key === k));
 
 	if (missing.length) {
 		throw new Error(`database: failed to insert keys for objects: ${JSON.stringify(missing)}`);

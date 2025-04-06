@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * @typedef {import('../../../types/database/hash').Hash} Hash
+ */
+
+/**
+ * @param {Hash} module
+ */
 module.exports = function (module) {
 	const helpers = require('./helpers');
 

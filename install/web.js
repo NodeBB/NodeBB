@@ -122,6 +122,9 @@ function setupRoutes() {
 }
 
 async function testDatabase(req, res) {
+	/**
+	 * @type {import ('../types/database').Database & import('../types/database').Hash }
+	 */
 	let db;
 	try {
 		const keys = Object.keys(req.query);
