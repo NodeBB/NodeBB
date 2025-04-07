@@ -17,7 +17,7 @@ define('sort', ['components'], function (components) {
 				const newSetting = $(this).attr('data-sort');
 				const urlParams = utils.params();
 				urlParams.sort = newSetting;
-				const qs = decodeURIComponent($.param(urlParams));
+				const qs = $.param(urlParams);
 				ajaxify.go(gotoOnSave + (qs ? '?' + qs : ''));
 			});
 	};

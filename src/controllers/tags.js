@@ -41,8 +41,8 @@ tagsController.getTag = async function (req, res) {
 	const stop = start + settings.topicsPerPage - 1;
 
 	const [topicCount, tids] = await Promise.all([
-		topics.getTagTopicCount(tag, cids),
-		topics.getTagTidsByCids(tag, cids, start, stop),
+		topics.getTagTopicCount(req.params.tag, cids),
+		topics.getTagTidsByCids(req.params.tag, cids, start, stop),
 	]);
 
 	templateData.topics = await topics.getTopics(tids, req.uid);

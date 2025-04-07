@@ -98,7 +98,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 				}
 				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
-					url += '?' + decodeURIComponent($.param(currentParams));
+					url += '?' + $.param(currentParams);
 				}
 				ajaxify.go(url);
 			}
@@ -159,7 +159,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 		function renderList(tags) {
 			const selectedTags = options.selectedTags;
 			tags.forEach(function (tag) {
-				tag.selected = selectedTags.includes(tag.valueEscaped);
+				tag.selected = selectedTags.includes(tag.value);
 			});
 
 			app.parseAndTranslate(options.template, {
