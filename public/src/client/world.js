@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api', 'bootbox'], function (topicList, sort, hooks, alerts, api, bootbox) {
+define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 'bootbox'], function (topicList, search, sort, hooks, alerts, api, bootbox) {
 	const World = {};
 
 	World.init = function () {
@@ -11,6 +11,21 @@ define('forum/world', ['topicList', 'sort', 'hooks', 'alerts', 'api', 'bootbox']
 
 		handleIgnoreWatch(-1);
 		handleHelp();
+
+		search.enableQuickSearch({
+			searchElements: {
+				inputEl: $('[component="category-search"]'),
+				resultEl: $('.world .quick-search-container'),
+			},
+			searchOptions: {
+				in: 'categories',
+			},
+			dropdown: {
+				maxWidth: '400px',
+				maxHeight: '350px',
+			},
+			hideOnNoMatches: false,
+		});
 
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
