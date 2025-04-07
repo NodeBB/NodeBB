@@ -103,7 +103,7 @@ module.exports = {
 							promises.push(db.setObjectField(`upload:${md5(normalizedPath)}`, 'uid', uid));
 
 							bulkRemove.push([`uid:${uid}:uploads`, userUpload.value]);
-							promises.push(db.deletObjectField(`upload:${md5(userUpload.value)}`, 'uid'));
+							promises.push(db.delete(`upload:${md5(userUpload.value)}`));
 						}
 					});
 
