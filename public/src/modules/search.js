@@ -286,7 +286,7 @@ define('search', [
 			data: data,
 		});
 
-		return decodeURIComponent($.param(query));
+		return $.param(query);
 	}
 
 	Search.getSearchPreferences = function () {

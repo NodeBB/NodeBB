@@ -72,12 +72,12 @@ define('forum/search', [
 		let labelText = '[[search:tags]]';
 		if (selectedTags.length) {
 			labelText = translator.compile(
-				'search:tags-x', selectedTags.map(u => u.valueEscaped).join(', ')
+				'search:tags-x', selectedTags.map(u => u.value).join(', ')
 			);
 		}
 		$('[component="tag/filter/button"]').toggleClass(
 			'active-filter', isActive
-		).find('.filter-label').translateText(labelText);
+		).find('.filter-label').translateHtml(labelText);
 	}
 
 	function updateTimeFilter() {
@@ -326,7 +326,7 @@ define('forum/search', [
 			return {
 				value: value,
 				valueEscaped: escapedTag,
-				valueEncoded: encodeURIComponent(escapedTag),
+				valueEncoded: encodeURIComponent(value),
 				class: escapedTag.replace(/\s/g, '-'),
 			};
 		}
@@ -353,7 +353,7 @@ define('forum/search', [
 			result.tags = result.tags.slice(0, 20);
 			const tagMap = {};
 			result.tags.forEach((tag) => {
-				tagMap[tag.valueEscaped] = tag;
+				tagMap[tag.value] = tag;
 			});
 
 			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterResults', {
@@ -374,7 +374,7 @@ define('forum/search', [
 
 		el.on('click', '[component="tag/filter/delete"]', function () {
 			const deleteTag = $(this).attr('data-tag');
-			selectedTags = selectedTags.filter(tag => tag.valueEscaped !== deleteTag);
+			selectedTags = selectedTags.filter(tag => tag.value !== deleteTag);
 			renderSelectedTags();
 		});
 
