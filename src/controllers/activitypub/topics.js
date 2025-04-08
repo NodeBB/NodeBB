@@ -68,6 +68,12 @@ controller.list = async function (req, res) {
 		categories.getRecentTopicReplies(categoryData, req.uid, req.query),
 		categories.setUnread(data.categories, cids, req.uid),
 	]);
+	data.categories.forEach((category) => {
+		if (category) {
+			helpers.trimChildren(category);
+			helpers.setCategoryTeaser(category);
+		}
+	});
 
 	data.title = translator.escape(data.name);
 	data.privileges = userPrivileges;
