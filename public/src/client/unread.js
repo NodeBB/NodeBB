@@ -61,6 +61,17 @@ define('forum/unread', [
 				doneRemovingTids(tids);
 			});
 		}
+
+		// Generate list of default categories based on topic list
+		let defaultCategories = ajaxify.data.topics.reduce((map, topic) => {
+			const { category }= topic;
+			let { cid } = category;
+			cid = utils.isNumber(cid) ? parseInt(cid, 10) : cid;
+			map.set(cid, category);
+			return map;
+		}, new Map());
+		defaultCategories = Array.from(defaultCategories.values());
+
 		const selector = categorySelector.init($('[component="category-selector"]'), {
 			onSelect: function (category) {
 				selector.selectCategory(0);
@@ -85,6 +96,7 @@ define('forum/unread', [
 					icon: '',
 				},
 			],
+			defaultCategories,
 		});
 	}
 
