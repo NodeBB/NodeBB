@@ -624,9 +624,6 @@ Actors.prune = async () => {
 		uids = Array.from(uids);
 		cids = Array.from(cids);
 
-		// const uidsThatExist = ids.filter((uid, idx) => exists[idx]);
-		// const uidsThatDontExist = ids.filter((uid, idx) => !exists[idx]);
-
 		// Remote users
 		const [postCounts, roomCounts, followCounts] = await Promise.all([
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
