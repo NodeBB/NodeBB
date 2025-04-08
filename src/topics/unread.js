@@ -325,8 +325,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.markAllRead = async function (uid) {
-		let tids = await Topics.getUnreadTids({ uid });
-		tids = await privileges.topics.filterTids('topics:read', tids, uid);
+		const tids = await Topics.getUnreadTids({ uid });
 		Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete(`uid:${uid}:tids_unread`);
