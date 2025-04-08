@@ -4,7 +4,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
-		let categoriesList = null;
+		let categoriesList = options.defaultCategories || null;
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
