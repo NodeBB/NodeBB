@@ -288,6 +288,7 @@ Mocks.category = async (actors) => {
 			bgColor,
 			backgroundImage,
 			imageClass: 'cover',
+			numRecentReplies: 1,
 			// followerCount,
 			// followingCount,
 
