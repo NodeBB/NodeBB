@@ -13,6 +13,9 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 		let localCategories = [];
 		if (Array.isArray(options.localCategories)) {
 			localCategories = options.localCategories.map(c => ({ ...c }));
+			if (categoriesList) {
+				categoriesList = [...localCategories, ...categoriesList];
+			}
 		}
 		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 
