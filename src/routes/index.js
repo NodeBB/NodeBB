@@ -135,8 +135,10 @@ module.exports = async function (app, middleware) {
 	// router.all('(/+api|/+api/*?)', middleware.prepareAPI);
 	router.all(['/api/*splat', '/api'], middleware.prepareAPI);
 
+	// eslint-disable-next-line max-len
 	// router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.admin.checkPrivileges);
 
+	// eslint-disable-next-line max-len
 	// router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, middleware.ensureLoggedIn, middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);
