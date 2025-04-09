@@ -51,7 +51,10 @@ module.exports = function () {
 
 	// Shorthand route to access post routes by topic index
 	// TODO: upgrade to express 5
-	// router.all('/+byIndex/:index*?', [middleware.checkRequired.bind(null, ['tid'])], controllers.write.posts.redirectByIndex);
+
+	// router.all('/+byIndex/:index*?', [
+	//   middleware.checkRequired.bind(null, ['tid']),
+	// ], controllers.write.posts.redirectByIndex);
 
 	return router;
 };

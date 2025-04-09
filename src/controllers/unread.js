@@ -59,8 +59,8 @@ unreadController.get = async function (req, res) {
 	});
 
 	if (userSettings.usePagination && (page < 1 || page > data.pageCount)) {
-		req.query.page = Math.max(1, Math.min(data.pageCount, page));
-		return helpers.redirect(res, `/unread?${querystring.stringify(req.query)}`);
+		const query = { ...req.query, page: Math.max(1, Math.min(data.pageCount, page))};
+		return helpers.redirect(res, `/unread?${querystring.stringify(query)}`);
 	}
 	data.canPost = canPost;
 	data.showSelect = true;

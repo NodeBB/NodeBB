@@ -32,10 +32,11 @@ searchController.search = async function (req, res, next) {
 		'search:content': privileges.global.can('search:content', req.uid),
 		'search:tags': privileges.global.can('search:tags', req.uid),
 	});
-	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
-	let allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
-					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
-					(req.query.in === 'categories') ||
+	const query = { ...req.query };
+	query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
+	let allowed = (query.in === 'users' && userPrivileges['search:users']) ||
+					(query.in === 'tags' && userPrivileges['search:tags']) ||
+					(query.in === 'categories') ||
 					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(req.query.in) && userPrivileges['search:content']);
 	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
 		uid: req.uid,
@@ -47,20 +48,20 @@ searchController.search = async function (req, res, next) {
 	}
 
 	if (req.query.categories && !Array.isArray(req.query.categories)) {
-		req.query.categories = [req.query.categories];
+		query.categories = [req.query.categories];
 	}
 	if (req.query.hasTags && !Array.isArray(req.query.hasTags)) {
-		req.query.hasTags = [req.query.hasTags];
+		query.hasTags = [req.query.hasTags];
 	}
 
 	const data = {
 		query: req.query.term,
-		searchIn: req.query.in,
+		searchIn: query.in,
 		matchWords: req.query.matchWords || 'all',
 		postedBy: req.query.by,
-		categories: req.query.categories,
+		categories: query.categories,
 		searchChildren: req.query.searchChildren,
-		hasTags: req.query.hasTags,
+		hasTags: query.hasTags,
 		replies: validator.escape(String(req.query.replies || '')),
 		repliesFilter: validator.escape(String(req.query.repliesFilter || '')),
 		timeRange: validator.escape(String(req.query.timeRange || '')),
@@ -70,7 +71,7 @@ searchController.search = async function (req, res, next) {
 		page: page,
 		itemsPerPage: req.query.itemsPerPage,
 		uid: req.uid,
-		qs: req.query,
+		qs: query,
 	};
 
 	const [searchData] = await Promise.all([
