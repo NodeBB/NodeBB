@@ -364,6 +364,8 @@ describe('API', async () => {
 						path: (prefix || '') + dispatch.route.path,
 					};
 				} else if (dispatch.name === 'router') {
+					console.log(dispatch);
+					// TODO: dispatch.regexp no longer exists
 					const prefix = dispatch.regexp.toString().replace('/^', '').replace('\\/?(?=\\/|$)/i', '').replace(/\\\//g, '/');
 					return buildPaths(dispatch.handle.stack, prefix);
 				}
@@ -375,7 +377,7 @@ describe('API', async () => {
 			return _.flatten(paths);
 		};
 
-		let paths = buildPaths(webserver.app._router.stack).filter(Boolean).map((pathObj) => {
+		let paths = buildPaths(webserver.app.router.stack).filter(Boolean).map((pathObj) => {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
