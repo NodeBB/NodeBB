@@ -11,6 +11,7 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 
 		handleIgnoreWatch(-1);
 		handleHelp();
+		handleCategories();
 
 		search.enableQuickSearch({
 			searchElements: {
@@ -78,6 +79,39 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 				message: content.join('\n'),
 				size: 'large',
 			});
+		});
+	}
+
+	function handleCategories() {
+		// const optionsEl = document.getElementById('category-options');
+		// const dropdownEl = optionsEl.querySelector('ul');
+		const showEl = document.getElementById('show-categories');
+		const hideEl = document.getElementById('hide-categories');
+		const categoriesEl = document.querySelector('.categories-list');
+		if (![showEl, hideEl, categoriesEl].every(Boolean)) {
+			return;
+		}
+
+		const update = () => {
+			showEl.classList.toggle('hidden', visibility);
+			hideEl.classList.toggle('hidden', !visibility);
+			categoriesEl.classList.toggle('hidden', !visibility);
+			localStorage.setItem('world:show-categories', visibility);
+		}
+
+		let visibility = localStorage.getItem('world:show-categories');
+		console.log('got value', visibility);
+		visibility = visibility ? visibility === 'true' : true; // localStorage values are strings
+		update();
+
+		showEl.addEventListener('click', () => {
+			visibility = true;
+			update();
+		});
+
+		hideEl.addEventListener('click', () => {
+			visibility = false;
+			update();
 		});
 	}
 
