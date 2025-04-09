@@ -36,7 +36,7 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/confirm/:code', [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', [], controllers.outgoing);
 	setupPageRoute(app, '/search', [], controllers.search.search);
-	setupPageRoute(app, '/reset/:code?', [middleware.delayLoading], controllers.reset);
+	setupPageRoute(app, '/reset{/:code}', [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', [], controllers.termsOfUse);
 
 	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
@@ -48,7 +48,7 @@ _mounts.main = (app, middleware, controllers) => {
 _mounts.mod = (app, middleware, controllers) => {
 	setupPageRoute(app, '/flags', [], controllers.mods.flags.list);
 	setupPageRoute(app, '/flags/:flagId', [], controllers.mods.flags.detail);
-	setupPageRoute(app, '/post-queue/:id?', [], controllers.mods.postQueue);
+	setupPageRoute(app, '/post-queue{/:id}', [], controllers.mods.postQueue);
 };
 
 _mounts.globalMod = (app, middleware, controllers) => {
@@ -57,8 +57,8 @@ _mounts.globalMod = (app, middleware, controllers) => {
 };
 
 _mounts.topic = (app, name, middleware, controllers) => {
-	setupPageRoute(app, `/${name}/:topic_id/:slug/:post_index?`, [], controllers.topics.get);
-	setupPageRoute(app, `/${name}/:topic_id/:slug?`, [], controllers.topics.get);
+	setupPageRoute(app, `/${name}/:topic_id/:slug{/:post_index}`, [], controllers.topics.get);
+	setupPageRoute(app, `/${name}/:topic_id{/:slug}`, [], controllers.topics.get);
 };
 
 _mounts.post = (app, name, middleware, controllers) => {
@@ -86,7 +86,7 @@ _mounts.categories = (app, name, middleware, controllers) => {
 
 _mounts.category = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, [], controllers.category.get);
-	setupPageRoute(app, `/${name}/:category_id/:slug?`, [], controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id{/:slug}`, [], controllers.category.get);
 };
 
 _mounts.users = (app, name, middleware, controllers) => {
@@ -131,9 +131,13 @@ module.exports = async function (app, middleware) {
 		}
 	});
 
-	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
-	router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.admin.checkPrivileges);
-	router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, middleware.ensureLoggedIn, middleware.applyCSRF, middleware.admin.checkPrivileges);
+	// TODO: upgrade these routes to express 5.x
+	// router.all('(/+api|/+api/*?)', middleware.prepareAPI);
+	router.all(['/api/*splat', '/api'], middleware.prepareAPI);
+
+	// router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.admin.checkPrivileges);
+
+	// router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, middleware.ensureLoggedIn, middleware.applyCSRF, middleware.admin.checkPrivileges);
 
 	app.use(middleware.stripLeadingSlashes);
 
@@ -195,8 +199,8 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		res.redirect(`${relativePath}/assets/plugins${req.path}${req._parsedUrl.search || ''}`);
 	});
 
-	app.use(`${relativePath}/assets/client-*.css`, middleware.buildSkinAsset);
-	app.use(`${relativePath}/assets/client-*-rtl.css`, middleware.buildSkinAsset);
+	app.use(`${relativePath}/assets/client-*splat.css`, middleware.buildSkinAsset);
+	app.use(`${relativePath}/assets/client-*splat-rtl.css`, middleware.buildSkinAsset);
 
 	app.use(controllers['404'].handle404);
 	app.use(controllers.errors.handleURIErrors);

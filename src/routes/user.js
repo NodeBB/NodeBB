@@ -17,8 +17,8 @@ module.exports = function (app, name, middleware, controllers) {
 	];
 
 	setupPageRoute(app, '/me', [], middleware.redirectMeToUserslug);
-	setupPageRoute(app, '/me/*', [], middleware.redirectMeToUserslug);
-	setupPageRoute(app, '/uid/:uid*', [], middleware.redirectUidToUserslug);
+	setupPageRoute(app, '/me/*splat', [], middleware.redirectMeToUserslug);
+	setupPageRoute(app, '/uid{/:uid}', [], middleware.redirectUidToUserslug);
 
 	setupPageRoute(app, `/${name}/:userslug`, middlewares, controllers.accounts.profile.get);
 	setupPageRoute(app, `/${name}/:userslug/following`, middlewares, controllers.accounts.follow.getFollowing);
@@ -51,8 +51,8 @@ module.exports = function (app, name, middleware, controllers) {
 	setupPageRoute(app, `/${name}/:userslug/sessions`, accountMiddlewares, controllers.accounts.sessions.get);
 
 	setupPageRoute(app, '/notifications', [middleware.ensureLoggedIn], controllers.accounts.notifications.get);
-	setupPageRoute(app, `/${name}/:userslug/chats/:roomid?/:index?`, [middleware.exposeUid, middleware.canViewUsers], controllers.accounts.chats.get);
-	setupPageRoute(app, '/chats/:roomid?/:index?', [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToChat);
+	setupPageRoute(app, `/${name}/:userslug/chats{/:roomid}{/:index}`, [middleware.exposeUid, middleware.canViewUsers], controllers.accounts.chats.get);
+	setupPageRoute(app, '/chats{/:roomid}{/:index}', [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToChat);
 
 	setupPageRoute(app, `/message/:mid`, [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToMessage);
 };

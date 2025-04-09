@@ -50,7 +50,8 @@ module.exports = function () {
 	setupApiRoute(router, 'post', '/owner', [middleware.ensureLoggedIn, middleware.checkRequired.bind(null, ['pids', 'uid'])], controllers.write.posts.changeOwner);
 
 	// Shorthand route to access post routes by topic index
-	router.all('/+byIndex/:index*?', [middleware.checkRequired.bind(null, ['tid'])], controllers.write.posts.redirectByIndex);
+	// TODO: upgrade to express 5
+	// router.all('/+byIndex/:index*?', [middleware.checkRequired.bind(null, ['tid'])], controllers.write.posts.redirectByIndex);
 
 	return router;
 };

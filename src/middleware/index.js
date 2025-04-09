@@ -183,7 +183,8 @@ middleware.exposeUid = helpers.try(async (req, res, next) => {
 });
 
 async function expose(exposedField, method, field, req, res, next) {
-	if (!req.params.hasOwnProperty(field)) {
+	const _params = { ...req.params };
+	if (!_params.hasOwnProperty(field)) {
 		return next();
 	}
 	const param = String(req.params[field]).toLowerCase();
