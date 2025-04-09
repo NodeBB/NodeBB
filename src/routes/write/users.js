@@ -62,7 +62,8 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'post', '/:uid/exports/:type', [...middlewares, middleware.assert.user, middleware.checkAccountPermissions], controllers.write.users.generateExportsByType);
 
 	// Shorthand route to access user routes by userslug
-	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
+	// TODO: upgrade to express 5
+ 	// router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
 }
 
 module.exports = function () {

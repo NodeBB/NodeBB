@@ -15,7 +15,7 @@ module.exports = function (Posts) {
 
 	Posts.getRecentPosts = async function (uid, start, stop, term) {
 		let min = 0;
-		if (terms[term]) {
+		if (terms.hasOwnProperty(term) && term[term]) {
 			min = Date.now() - terms[term];
 		}
 
