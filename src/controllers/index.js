@@ -235,12 +235,6 @@ Controllers.confirmEmail = async (req, res) => {
 		return renderPage();
 	}
 	try {
-		if (req.loggedIn) {
-			const emailValidated = await user.getUserField(req.uid, 'email:confirmed');
-			if (emailValidated) {
-				return renderPage({ alreadyValidated: true });
-			}
-		}
 		await user.email.confirmByCode(req.params.code, req.session.id);
 		if (req.session.registration) {
 			// After confirmation, no need to send user back to email change form
