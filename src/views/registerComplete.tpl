@@ -1,8 +1,8 @@
 <div class="row">
 	<div class="col-12 col-sm-8 offset-sm-2">
-		<p class="lead text-center">
+		<h1 class="text-center fs-5">
 			{{{ if register }}}[[register:interstitial.intro-new]]{{{ else }}}[[register:interstitial.intro]]{{{ end }}}
-		</p>
+		</h1>
 
 		{{{ if errors.length }}}
 		<div class="alert alert-warning">

@@ -35,8 +35,9 @@
 <hr />
 
 <h4>[[user:avatar-background-colour]]</h4>
-
-<label><input type="radio" name="icon:bgColor" value="transparent" /><span></span></label>
-{{{ each iconBackgrounds }}}
-<label><input type="radio" name="icon:bgColor" value="{@value}" /><span style="background-color: {@value};"></span></label>
+<div class="d-flex gap-2">
+	<a href="#" class="lh-1 p-1" data-bg-color="transparent"><i class="fa-solid fa-2x fa-ban text-secondary"></i></a>
+	{{{ each iconBackgrounds }}}
+	<a href="#" class="lh-1 p-1" data-bg-color="{@value}" style="color: {@value};"><i class="fa-solid fa-2x fa-circle"></i></a>
 {{{ end }}}
+</div>

@@ -60,8 +60,10 @@ define('accounts/picture', [
 					modal.find('.list-group-item').removeClass('active');
 					$(this).addClass('active');
 				});
-				modal.on('change', 'input[type="radio"][name="icon:bgColor"]', (e) => {
-					const value = e.target.value;
+
+				modal.on('click', '[data-bg-color]', function () {
+					const value = $(this).attr('data-bg-color');
+					$(this).addClass('selected').siblings().removeClass('selected');
 					modal.find('[component="avatar/icon"]').css('background-color', value);
 				});
 
@@ -80,18 +82,17 @@ define('accounts/picture', [
 					}
 
 					// Update avatar background colour
-					const radioEl = document.querySelector(`.modal input[type="radio"][value="${ajaxify.data['icon:bgColor']}"]`);
-					if (radioEl) {
-						radioEl.checked = true;
+					const iconbgEl = modal.find(`[data-bg-color="${ajaxify.data['icon:bgColor']}"]`);
+					if (iconbgEl.length) {
+						iconbgEl.addClass('selected');
 					} else {
-						// Check the first one
-						document.querySelector('.modal input[type="radio"]').checked = true;
+						modal.find('[data-bg-color="transparent"]').addClass('selected');
 					}
 				}
 
 				function saveSelection() {
 					const type = modal.find('.list-group-item.active').attr('data-type');
-					const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
+					const iconBgColor = modal.find('[data-bg-color].selected').attr('data-bg-color') || 'transparent';
 
 					changeUserPicture(type, iconBgColor).then(() => {
 						Picture.updateHeader(
