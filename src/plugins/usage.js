@@ -10,11 +10,23 @@ const pkg = require('../../package.json');
 
 const meta = require('../meta');
 
+/**
+ * @type {cronJob[]}
+ */
+const jobs = [];
+
 module.exports = function (Plugins) {
+	Plugins.stop = function () {
+		jobs.forEach((job) => {
+			job.stop();
+		});
+		jobs.length = 0;
+	};
+
 	Plugins.startJobs = function () {
-		new cronJob('0 0 0 * * *', (async () => {
+		jobs.push(new cronJob('0 0 0 * * *', (async () => {
 			await Plugins.submitUsageData();
-		}), null, true);
+		}), null, true));
 	};
 
 	Plugins.submitUsageData = async function () {

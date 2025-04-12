@@ -10,6 +10,9 @@ if (!databaseName) {
 	process.exit();
 }
 
+/**
+ * @type {import('../../types/database').Database}
+ */
 const primaryDB = require(`./${databaseName}`);
 const utils = require('../utils');
 

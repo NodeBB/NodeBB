@@ -1,4 +1,3 @@
-
 'use strict';
 
 const fs = require('fs');
@@ -72,13 +71,18 @@ server.on('connection', (conn) => {
 
 exports.destroy = function () {
 	return new Promise((resolve, reject) => {
-		server.close((err) => {
-			if (err) reject(err);
-			else resolve();
-		});
+		if (server.listening) {
+			server.close((err) => {
+				if (err) reject(err);
+				else resolve();
+			});
+		} else {
+			resolve();
+		}
 		for (const connection of Object.values(connections)) {
 			connection.destroy();
 		}
+		Object.keys(connections).forEach((key) => delete connections[key]);
 	});
 };
 

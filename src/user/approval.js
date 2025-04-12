@@ -13,14 +13,26 @@ const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
 
+/**
+ * @type {cronJob[]}
+ */
+const jobs = [];
+
 module.exports = function (User) {
-	new cronJob('0 * * * *', (async () => {
+	User.stop = function () {
+		jobs.forEach((job) => {
+			job.stop();
+		});
+		jobs.length = 0;
+	};
+
+	jobs.push(new cronJob('0 * * * *', (async () => {
 		try {
 			await User.autoApprove();
 		} catch (err) {
 			winston.error(err.stack);
 		}
-	}), null, true);
+	}), null, true));
 
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();

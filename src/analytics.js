@@ -30,20 +30,28 @@ const runJobs = nconf.get('runJobs');
 
 Analytics.pause = false;
 
+const jobs = [];
+Analytics.stop = function () {
+	jobs.forEach((job) => {
+		job.stop();
+	});
+	jobs.length = 0;
+};
+
 Analytics.init = async function () {
-	new cronJob('*/10 * * * * *', (async () => {
+	jobs.push(new cronJob('*/10 * * * * *', (async () => {
 		if (Analytics.pause) return;
 		publishLocalAnalytics();
 		if (runJobs) {
 			await sleep(2000);
 			await Analytics.writeData();
 		}
-	}), null, true);
+	}), null, true));
 
 	if (runJobs) {
-		new cronJob('*/30 * * * *', (async () => {
+		jobs.push(new cronJob('*/30 * * * *', (async () => {
 			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
-		}), null, true);
+		}), null, true));
 	}
 
 	if (runJobs) {
