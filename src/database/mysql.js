@@ -7,7 +7,6 @@
 
 const winston = require('winston');
 const nconf = require('nconf');
-const MySQLStore = require('express-mysql-session')(require('express-session'));
 const semver = require('semver');
 
 /**
@@ -111,7 +110,7 @@ async function checkUpgrade(poolConnection) {
         CREATE TABLE IF NOT EXISTS legacy_zset (
             _key VARCHAR(255) NOT NULL,
             value TEXT NOT NULL,
-            score DECIMAL NOT NULL,
+            score BIGINT NOT NULL,
             type ENUM('hash', 'zset', 'set', 'list', 'string') NOT NULL DEFAULT 'zset',
             type_check ENUM('zset') GENERATED ALWAYS AS (type) VIRTUAL,
             PRIMARY KEY (_key, value(191)),
@@ -203,21 +202,77 @@ mysqlModule.query = function (sql, params, callback) {
 mysqlModule.close = async function () {
     if (connection) {
         await connection.close(mysqlModule.pool);
+        winston.verbose('MySQL connection closed.');
     } else {
         winston.error('No MySQL connection to close.');
     }
+    await Promise.all(sessionStores.map((store) => store.close()));
+    sessionStores.length = 0;
+    winston.verbose('MySQL session stores closed.');
+
+    mysqlModule.pool = null;
+    mysqlModule.client = null;
+
+    await Promise.all(sessionStoresPools.map((pool) => {
+        return connection.close(pool);
+    }));
+    sessionStoresPools.length = 0;
 };
 
-mysqlModule.createSessionStore = function (sessionOptions) {
-    const storeOptions = {
-        host: nconf.get('mysql:host') || 'localhost',
-        port: nconf.get('mysql:port') || 3306,
-        user: nconf.get('mysql:user') || 'root',
-        password: nconf.get('mysql:password') || '',
-        database: nconf.get('mysql:database') || 'sessions',
-    };
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
-    return new MySQLStore(storeOptions, connection);
+/**
+ * @type {import('express-mysql-session').MySQLStore[]}
+ */
+const sessionStores = [];
+
+/**
+ * @type {import('mysql2/promise').Pool[]}
+ */
+const sessionStoresPools = [];
+
+mysqlModule.createSessionStore = async function (options) {
+    const meta = require('../meta');
+
+    /**
+     * @param {import('mysql2/promise').Pool} pool 
+     * @returns 
+     */
+    async function createStore(pool) {
+        const store = new MySQLStore({
+            expiration: meta.getSessionTTLSeconds() * 1000,
+            createDatabaseTable: false,
+            schema: {
+                tableName: 'session',
+                columnNames: {
+                    session_id: 'sid',
+                    expires: 'expire',
+                    data: 'sess'
+                }
+            },
+            clearExpired: nconf.get('isPrimary'),
+            checkExpirationInterval: nconf.get('isPrimary') ? 60000 : 0
+        }, pool);
+        sessionStores.push(store);
+        return store;
+    }
+
+    const pool = await connection.connect(options);
+    sessionStoresPools.push(pool);
+
+    if (nconf.get('isPrimary')) {
+        await pool.execute(`
+            CREATE TABLE IF NOT EXISTS session (
+                sid VARCHAR(32) NOT NULL PRIMARY KEY,
+                sess JSON NOT NULL,
+                expire BIGINT NOT NULL,
+                INDEX session_expire_idx (expire)
+            ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        `);
+    }
+
+    return await createStore(pool);
 };
 
 mysqlModule.createIndices = async function () {
@@ -263,13 +318,37 @@ mysqlModule.checkCompatibility = async function (callback) {
 
 mysqlModule.checkCompatibilityVersion = async function (version, callback) {
     if (semver.lt(version, '3.10.2')) {
-        return callback(new Error('The `pg` package is out-of-date, please run `./nodebb setup` again.'));
+        return callback(new Error('The `mysql2` package is out-of-date, please run `./nodebb setup` again.'));
     }
 
     if (callback)
         callback();
 };
 
+mysqlModule.info = async function (db) {
+    if (!db) {
+        db = await connection.connect(nconf.get('mysql'));
+    }
+    const [rows] = await db.query(`
+            SELECT 
+            TRUE AS mysql,
+            VERSION() AS version,
+            (SELECT Variable_value 
+            FROM performance_schema.global_status 
+            WHERE Variable_name = 'Uptime') * 1000 AS uptime
+            `);
+
+    if (mysqlModule.pool !== db)
+        connection.close(db);
+
+    return {
+        ...rows[0],
+        raw: JSON.stringify(rows[0], null, 4),
+    };
+};
+
+require('./mysql/main')(mysqlModule);
 require('./mysql/hash')(mysqlModule);
+require('./mysql/sets')(mysqlModule);
 require('./mysql/sorted')(mysqlModule);
 require('./mysql/transaction')(mysqlModule);
