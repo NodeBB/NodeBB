@@ -1,5 +1,9 @@
 import { Store } from 'express-session'
 import { PoolConnection } from 'mysql2/promise'
+import { Hash } from './hash'
+import { List } from './list'
+import { Set } from './set'
+import { Item } from './string'
 
 export { Hash } from './hash'
 export { List } from './list'
