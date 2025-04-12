@@ -55,3 +55,20 @@ FROM (
     ) jt
     WHERE jt.k IN ('name', 'age', 'price')
 ) t;
+
+-- output:
+-- +---------------------------------------------+
+-- | d                                           |
+-- +---------------------------------------------+
+-- | {"age": 25, "name": "Alice", "price": null} |
+-- +---------------------------------------------+
+SELECT JSON_OBJECT(
+    'name', JSON_EXTRACT(h.data, CONCAT('$.', 'name')),
+    'age', JSON_EXTRACT(h.data, CONCAT('$.', 'age')),
+    'price', JSON_EXTRACT(h.data, CONCAT('$.', 'price'))
+) AS d
+FROM legacy_object_live o
+INNER JOIN legacy_hash h
+ON o._key = h._key
+AND o.type = h.type
+WHERE o._key = 'key1';
