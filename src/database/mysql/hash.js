@@ -5,10 +5,11 @@
  */
 
 /**
- * @param {Hash & import('../../../types/database').MySQLDatabase} module
+ * @param {Hash} module
  */
 module.exports = function (module) {
     const helpers = require('./helpers');
+    const mysql = require('mysql2/promise');
 
     module.setObject = async function (key, data) {
         if (!key || !data) {
@@ -21,38 +22,27 @@ module.exports = function (module) {
         if (!Object.keys(data).length) {
             return;
         }
-        await module.transaction(async (poolConnection) => {
-            const dataString = JSON.stringify(data);
 
+        const dataString = JSON.stringify(data);
+
+        await module.transaction(async (connection) => {
             if (Array.isArray(key)) {
-                await helpers.ensureLegacyObjectsType(poolConnection, key, 'hash');
-                // For array of keys, we'll need to use a different approach since MySQL doesn't have UNNEST
-                await poolConnection.query({
-                    name: 'setObjectKeys',
-                    sql: `
-                        INSERT INTO legacy_hash (_key, data)
-                        SELECT k, ? AS data
-                        FROM JSON_TABLE(
-                            ?,
-                            '$[*]' COLUMNS (k VARCHAR(255) PATH '$')
-                        ) AS jt
-                        ON DUPLICATE KEY UPDATE
-                            data = JSON_MERGE_PATCH(legacy_hash.data, ?)
-                    `,
-                    values: [dataString, JSON.stringify(key), dataString],
-                });
+                await helpers.ensureLegacyObjectsType(connection, key, 'hash');
+                const values = key.map(k => [k, dataString]);
+                await connection.query(`
+                    INSERT INTO legacy_hash (_key, data)
+                    VALUES ?
+                    ON DUPLICATE KEY UPDATE
+                    data = JSON_MERGE_PRESERVE(data, VALUES(data))
+                `, [values]);
             } else {
-                await helpers.ensureLegacyObjectType(poolConnection, key, 'hash');
-                await poolConnection.query({
-                    name: 'setObject',
-                    sql: `
-                        INSERT INTO legacy_hash (_key, data)
-                        VALUES (?, ?)
-                        ON DUPLICATE KEY UPDATE
-                            data = JSON_MERGE_PATCH(legacy_hash.data, ?)
-                    `,
-                    values: [key, dataString, dataString],
-                });
+                await helpers.ensureLegacyObjectType(connection, key, 'hash');
+                await connection.query(`
+                    INSERT INTO legacy_hash (_key, data)
+                    VALUES (?, ?)
+                    ON DUPLICATE KEY UPDATE
+                    data = JSON_MERGE_PRESERVE(data, VALUES(data))
+                `, [key, dataString]);
             }
         });
     };
@@ -64,30 +54,28 @@ module.exports = function (module) {
         }
         if (Array.isArray(args[1])) {
             console.warn('[deprecated] db.setObjectBulk(keys, data) usage is deprecated, please use db.setObjectBulk(data)');
-            // convert old format to new format for backwards compatibility
             data = args[0].map((key, i) => [key, args[1][i]]);
         }
-        await module.transaction(async (poolConnection) => {
+
+        await module.transaction(async (connection) => {
             data = data.filter((item) => {
                 if (item[1].hasOwnProperty('')) {
                     delete item[1][''];
                 }
                 return !!Object.keys(item[1]).length;
             });
-            const keys = data.map(item => item[0]);
-            if (!keys.length) {
+            if (!data.length) {
                 return;
             }
 
-            await helpers.ensureLegacyObjectsType(poolConnection, keys, 'hash');
-            await poolConnection.query({
-                sql: `
+            const values = data.map(item => [item[0], JSON.stringify(item[1])]);
+            await helpers.ensureLegacyObjectsType(connection, data.map(item => item[0]), 'hash');
+            await connection.query(`
                 INSERT INTO legacy_hash (_key, data)
                 VALUES ?
-                ON DUPLICATE KEY UPDATE 
-                data = JSON_MERGE_PATCH(data, VALUES(data))`,
-                values: [data.map(item => [item[0], JSON.stringify(item[1])])]
-            });
+                ON DUPLICATE KEY UPDATE
+                data = JSON_MERGE_PRESERVE(data, VALUES(data))
+            `, [values]);
         });
     };
 
@@ -96,21 +84,18 @@ module.exports = function (module) {
             return;
         }
 
-        await module.transaction(async (client) => {
+        await module.transaction(async (connection) => {
             const valueString = JSON.stringify(value);
             if (Array.isArray(key)) {
                 await module.setObject(key, { [field]: value });
             } else {
-                await helpers.ensureLegacyObjectType(client, key, 'hash');
-                await client.query({
-                    sql: `
-                        INSERT INTO legacy_hash (_key, data)
-                        VALUES (?, JSON_OBJECT(?, ?))
-                        ON DUPLICATE KEY UPDATE
-                        data = JSON_SET(data, CONCAT('$.', ?), ?)
-                    `,
-                    values: [key, field, valueString, field, valueString],
-                });
+                await helpers.ensureLegacyObjectType(connection, key, 'hash');
+                await connection.query(`
+                    INSERT INTO legacy_hash (_key, data)
+                    VALUES (?, JSON_OBJECT(?, ?))
+                    ON DUPLICATE KEY UPDATE
+                    data = JSON_SET(data, CONCAT('$."', ?, '"'), ?)
+                `, [key, field, valueString, field, valueString]);
             }
         });
     };
@@ -122,18 +107,15 @@ module.exports = function (module) {
         if (fields.length) {
             return await module.getObjectFields(key, fields);
         }
-        const [rows] = await module.pool.query({
-            sql: `
+        const [rows] = await module.pool.query(`
             SELECT h.data
             FROM legacy_object_live o
             INNER JOIN legacy_hash h
-                ON o._key = h._key
-                AND o.type = h.type
+            ON o._key = h._key
+            AND o.type = h.type
             WHERE o._key = ?
             LIMIT 1
-            `,
-            values: [key],
-        });
+        `, [key]);
 
         return rows.length ? rows[0].data : null;
     };
@@ -145,19 +127,14 @@ module.exports = function (module) {
         if (fields.length) {
             return await module.getObjectsFields(keys, fields);
         }
-        const [rows] = await module.pool.query({
-            sql: `
-            SELECT o._key, h.data
-            FROM legacy_object_live o
-            LEFT OUTER JOIN legacy_hash h
-                ON o._key = h._key
-                AND o.type = h.type
-            WHERE o._key IN (?)
-            `,
-            values: [keys],
-        });
-        const keyDataMap = new Map(rows.map(row => [row._key, row.data]));
-        return keys.map(key => keyDataMap.has(key) ? keyDataMap.get(key) : null);
+        const [rows] = await module.pool.query(`
+            SELECT h.data
+            FROM legacy_hash h
+            WHERE h._key IN (?)
+            ORDER BY FIELD(h._key, ?)
+        `, [keys, keys]);
+
+        return rows.map(row => row.data);
     };
 
     module.getObjectField = async function (key, field) {
@@ -165,20 +142,17 @@ module.exports = function (module) {
             return null;
         }
 
-        const [rows] = await module.pool.query({
-            sql: `
-            SELECT JSON_UNQUOTE(JSON_EXTRACT(h.data, ?)) AS f
+        const [rows] = await module.pool.query(`
+            SELECT JSON_EXTRACT(h.data, CONCAT('$.', ?)) AS f
             FROM legacy_object_live o
             INNER JOIN legacy_hash h
-                ON o._key = h._key
-                AND o.type = h.type
+            ON o._key = h._key
+            AND o.type = h.type
             WHERE o._key = ?
             LIMIT 1
-            `,
-            values: [`$."${field}"`, key]
-        });
+        `, [field, key]);
 
-        return rows.length ? rows[0].f : null;
+        return rows.length ? JSON.parse(rows[0].f) : null;
     };
 
     module.getObjectFields = async function (key, fields) {
@@ -189,82 +163,65 @@ module.exports = function (module) {
             return await module.getObject(key);
         }
 
-        const [rows] = await module.pool.query({
-            sql: `
-            SELECT 
-                JSON_OBJECTAGG(t.key, t.value) AS d
-            FROM (
-                SELECT
-                    JSON_UNQUOTE(jt.k) AS 'key',
-                    JSON_EXTRACT(f.data, CONCAT('$.', jt.k)) AS 'value'
-                FROM (
-                    SELECT h.data AS 'data'
-                    FROM legacy_object_live o
-                    INNER JOIN legacy_hash h
-                        ON o._key = h._key
-                        AND o.type = h.type
-                    WHERE o._key = ?
-                    LIMIT 1
-                ) f
-                CROSS JOIN JSON_TABLE(
-                    JSON_KEYS(f.data),
-                    '$[*]' COLUMNS (k JSON PATH '$')
-                ) jt
-                WHERE jt.k IN (?)
-            ) t;
-            `,
-            values: [key, fields]
-        });
+        const [rows] = await module.pool.query(`
+            SELECT JSON_OBJECT(
+                ${fields.map(f => `${mysql.escape(f)}, JSON_EXTRACT(h.data, CONCAT('$.', ${mysql.escape(`"${f}"`)}))`).join(',')}
+            ) AS d
+            FROM legacy_object_live o
+            INNER JOIN legacy_hash h
+            ON o._key = h._key
+            AND o.type = h.type
+            WHERE o._key = ?
+        `, [key]);
 
-        const rawData = rows[0].d;
-        if (!rawData) {
-            const obj = {};
-            fields.forEach((f) => {
-                obj[f] = null;
-            });
-
-            return obj;
-        }
-
-        // Filter to only include specified fields
-        const filteredData = {};
-        fields.forEach(field => {
-            filteredData[field] = rawData[field] !== undefined ? rawData[field] : null;
-        });
-
-        return filteredData;
-
+        return rows.length ? rows[0].d : fields.reduce((obj, f) => ({ ...obj, [f]: null }), {});
     };
 
     module.getObjectsFields = async function (keys, fields) {
-        if (!Array.isArray(keys) || !keys.length || !Array.isArray(fields) || !fields.length) {
+        if (!Array.isArray(keys) || !keys.length) {
             return [];
         }
-
-        const sql = `SELECT _key, ${fields.join(', ')} FROM hash WHERE _key IN (?)`;
-        const [rows] = await module.pool.query(sql, [keys]);
-
-        return keys.map(key => {
-            const row = rows.find(r => r._key === key);
-            if (!row) {
-                return fields.reduce((acc, field) => {
-                    acc[field] = null;
-                    return acc;
-                }, {});
-            }
-            return row;
-        });
+        if (!Array.isArray(fields) || !fields.length) {
+            return await module.getObjects(keys);
+        }
+    
+        const sql = `
+            WITH KeyList AS (
+                SELECT _key COLLATE utf8mb4_0900_ai_ci AS _key, ROW_NUMBER() OVER () AS i
+                FROM JSON_TABLE(
+                    ?,
+                    '$[*]' COLUMNS (_key VARCHAR(255) PATH '$')
+                ) AS jt
+            )
+            SELECT JSON_OBJECT(
+                ${fields.map(f => `${mysql.escape(f)}, JSON_EXTRACT(h.data, CONCAT('$."', ${mysql.escape(f)}, '"'))`).join(',')}
+            ) AS d
+            FROM KeyList k
+            LEFT JOIN legacy_object_live o ON o._key = k._key
+            LEFT JOIN legacy_hash h ON h._key = o._key AND h.type = o.type
+            ORDER BY k.i
+        `;
+        const [rows] = await module.pool.query(sql, [JSON.stringify(keys)]);
+    
+        return rows.map(row => row.d);
     };
 
     module.getObjectKeys = async function (key) {
         if (!key) {
-            return [];
+            return;
         }
 
-        const [rows] = await module.pool.query(
-            `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'hash' AND TABLE_SCHEMA = DATABASE()`
-        );
-        return rows.map(row => row.COLUMN_NAME).filter(column => column !== '_key');
+        const [rows] = await module.pool.query(`
+            SELECT JSON_KEYS(h.data) AS k
+            FROM legacy_object_live o
+            INNER JOIN legacy_hash h
+            ON o._key = h._key
+            AND o.type = h.type
+            WHERE o._key = ?
+            LIMIT 1
+        `, [key]);
+
+        return rows.length ? JSON.parse(rows[0].k) : [];
     };
 
     module.getObjectValues = async function (key) {
@@ -273,45 +230,120 @@ module.exports = function (module) {
     };
 
     module.isObjectField = async function (key, field) {
-        if (!key || !field) {
-            return false;
+        if (!key) {
+            return;
         }
 
-        const value = await module.getObjectField(key, field);
-        return value !== null && value !== undefined;
+        const [rows] = await module.pool.query(`
+            SELECT JSON_CONTAINS_PATH(h.data, 'one', CONCAT('$."', ?, '"')) 
+            AND JSON_EXTRACT(h.data, CONCAT('$."', ?, '"')) IS NOT NULL AS b
+            FROM legacy_object_live o
+            INNER JOIN legacy_hash h
+            ON o._key = h._key
+            AND o.type = h.type
+            WHERE o._key = ?
+            LIMIT 1
+        `, [field, field, key]);
+
+        return rows.length ? !!rows[0].b : false;
     };
 
     module.isObjectFields = async function (key, fields) {
-        if (!key || !Array.isArray(fields) || !fields.length) {
-            return [];
+        if (!key) {
+            return;
         }
 
         const data = await module.getObjectFields(key, fields);
-        return fields.map(field => data && data[field] !== null && data[field] !== undefined);
+        if (!data) {
+            return fields.map(() => false);
+        }
+        return fields.map(field => data.hasOwnProperty(field) && data[field] !== null);
     };
 
     module.deleteObjectField = async function (key, field) {
-        if (!key || !field) {
-            return;
-        }
-
-        await module.pool.query(
-            `UPDATE hash SET ${field} = NULL WHERE _key = ?`,
-            [key]
-        );
-    };
+		await module.deleteObjectFields(key, Array.isArray(field) ? field : [field]);
+	};
 
     module.deleteObjectFields = async function (key, fields) {
-        if (!key || !Array.isArray(fields) || !fields.length) {
+        if (!key || (Array.isArray(key) && !key.length) || !Array.isArray(fields) || !fields.length) {
             return;
         }
 
-        const updates = fields.map(field => `${field} = NULL`).join(', ');
-        await module.pool.query(
-            `UPDATE hash SET ${updates} WHERE _key = ?`,
-            [key]
-        );
+        const paths = fields.map(f => `$."${f}"`);
+        if (Array.isArray(key)) {
+            await module.pool.query(`
+                UPDATE legacy_hash
+                SET data = JSON_REMOVE(data, ${paths.map(p => '?').join(',')})
+                WHERE _key IN (?)
+            `, [...paths, key]);
+        } else {
+            await module.pool.query(`
+                UPDATE legacy_hash
+                SET data = JSON_REMOVE(data, ${paths.map(p => '?').join(',')})
+                WHERE _key = ?
+            `, [...paths, key]);
+        }
     };
+
+    module.incrObjectFieldBy = async function (key, field, value) {
+        value = parseInt(value, 10);
+        
+        if (!key || isNaN(value)) {
+            return null;
+        }
+        
+        // Quote the field name to handle special characters
+        const quotedField = `"${field.replace(/"/g, '\\"')}"`; // Escape any existing quotes
+        
+        return await module.transaction(async (connection) => {
+            if (Array.isArray(key)) {
+                await helpers.ensureLegacyObjectsType(connection, key, 'hash');
+                const values = key.map(k => [k, JSON.stringify({ [field]: 0 })]);
+                
+                await connection.query(`
+                    INSERT INTO legacy_hash (_key, data)
+                    VALUES ?
+                    ON DUPLICATE KEY UPDATE
+                    data = JSON_SET(
+                        data,
+                        CONCAT('$."', ?, '"'),
+                        COALESCE(JSON_EXTRACT(data, CONCAT('$."', ?, '"')) + ?, 0 + ?)
+                    )
+                `, [values, field, field, value, value]);
+                
+                const [rows] = await connection.query(`
+                    SELECT JSON_EXTRACT(data, CONCAT('$."', ?, '"')) AS v
+                    FROM legacy_hash
+                    WHERE _key IN (?)
+                `, [field, key]);
+                
+                return rows.map(r => parseFloat(r.v));
+            } else {
+                await helpers.ensureLegacyObjectType(connection, key, 'hash');
+                
+                await connection.query(`
+                    INSERT INTO legacy_hash (_key, data)
+                    VALUES (?, JSON_OBJECT(?, ?))
+                    ON DUPLICATE KEY UPDATE
+                    data = JSON_SET(
+                        data,
+                        CONCAT('$."', ?, '"'),
+                        COALESCE(JSON_EXTRACT(data, CONCAT('$."', ?, '"')) + ?, 0 + ?)
+                    )
+                `, [key, field, 0, field, field, value, value]);
+                
+                const [rows] = await connection.query(`
+                    SELECT JSON_EXTRACT(data, CONCAT('$."', ?, '"')) AS v
+                    FROM legacy_hash
+                    WHERE _key = ?
+                `, [field, key]);
+                
+                return parseFloat(rows[0].v);
+            }
+        });
+    };
+
+    // Add these to the module.exports function after the other methods
 
     module.incrObjectField = async function (key, field) {
         return await module.incrObjectFieldBy(key, field, 1);
@@ -321,18 +353,45 @@ module.exports = function (module) {
         return await module.incrObjectFieldBy(key, field, -1);
     };
 
-    module.incrObjectFieldBy = async function (key, field, value) {
-        if (!key || !field || isNaN(value)) {
-            return null;
+    module.incrObjectFieldByBulk = async function (data) {
+        if (!Array.isArray(data) || !data.length) {
+            return;
         }
 
-        await module.pool.query(
-            `INSERT INTO hash (_key, ${field})
-             VALUES (?, ?)
-             ON DUPLICATE KEY UPDATE ${field} = COALESCE(${field}, 0) + ?`,
-            [key, value, value]
-        );
+        await module.transaction(async (connection) => {
+            await helpers.ensureLegacyObjectsType(connection, data.map(item => item[0]), 'hash');
 
-        return await module.getObjectField(key, field);
+            const values = data.map(item => {
+                const obj = {};
+                for (const [field, value] of Object.entries(item[1])) {
+                    obj[field] = parseInt(value, 10) || 0;
+                }
+                return [item[0], JSON.stringify(obj)];
+            });
+
+            // First, insert or update all records
+            await connection.query(`
+                INSERT INTO legacy_hash (_key, data)
+                VALUES ?
+                ON DUPLICATE KEY UPDATE
+                data = JSON_MERGE_PRESERVE(data, VALUES(data))
+        `, [values]);
+
+            // Then, update each field with the increment/decrement
+            for (const [key, fields] of data) {
+                for (const [field, value] of Object.entries(fields)) {
+                    const numericValue = parseInt(value, 10) || 0;
+                    await connection.query(`
+                        UPDATE legacy_hash
+                        SET data = JSON_SET(
+                            data,
+                            CONCAT('$.', ?),
+                            COALESCE(JSON_EXTRACT(data, CONCAT('$.', ?)) + ?, ?)
+                        )
+                        WHERE _key = ?
+                `, [field, field, numericValue, numericValue, key]);
+                }
+            }
+        });
     };
 };
