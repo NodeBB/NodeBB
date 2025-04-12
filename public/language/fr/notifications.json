@@ -75,7 +75,6 @@
     "email-confirmed": "E-mail vérifié",
     "email-confirmed-message": "Merci pour la validation de votre adresse e-mail. Votre compte est désormais activé.",
     "email-confirm-error-message": "Il y a un un problème dans la vérification de votre adresse e-mail. Le code est peut être invalide ou a expiré.",
-    "email-confirm-error-message-already-validated": "Votre adresse email a déjà été validée",
     "email-confirm-sent": "E-mail de vérification envoyé.",
     "none": "aucun",
     "notification-only": "Seulement une notification",

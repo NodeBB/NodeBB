@@ -75,7 +75,6 @@
     "email-confirmed": "E-post stadfesta",
     "email-confirmed-message": "Takk for at du stadfesta e-posten din. Kontoen din er no fullt aktivert.",
     "email-confirm-error-message": "Det oppstod eit problem med å stadfeste e-postadressa di. Kanskje koden var ugyldig eller utløpt.",
-    "email-confirm-error-message-already-validated": "E-postadressa di var allereie stadfesta.",
     "email-confirm-sent": "Stadfestings-e-post sendt.",
     "none": "Ingen",
     "notification-only": "Berre varsel",

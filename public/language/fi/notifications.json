@@ -75,7 +75,6 @@
     "email-confirmed": "Sähköpostiosoite on vahvistettu",
     "email-confirmed-message": "Kiitos sähköpostiosoitteesi vahvistamisesta. Käyttäjätilisi on nyt täysin aktivoitu.",
     "email-confirm-error-message": "Ongelma sähköpostiosoitteen vahvistamisessa. Ehkäpä koodi oli virheellinen tai vanhentunut.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Vahvistusviesti on lähetetty.",
     "none": "Ei mitään",
     "notification-only": "ilmoita vain sivustolla",

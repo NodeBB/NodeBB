@@ -75,7 +75,6 @@
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",
-    "email-confirm-error-message-already-validated": "Il tuo indirizzo email è già stato convalidato.",
     "email-confirm-sent": "Email di conferma inviata.",
     "none": "Nessuna",
     "notification-only": "Solo Notifiche",

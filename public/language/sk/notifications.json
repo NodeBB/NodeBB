@@ -75,7 +75,6 @@
     "email-confirmed": "E-mail bol potvrdený",
     "email-confirmed-message": "Ďakujeme za potvrdenie Vášho e-mailu. Váš účet je teraz aktivovaný.",
     "email-confirm-error-message": "Vyskytla sa chyba pri overení Vašej e-mailovej adresy.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Potvrdzovací e-mail bol odoslaný.",
     "none": "Nič",
     "notification-only": "Iba oznámenia",

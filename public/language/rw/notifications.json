@@ -75,7 +75,6 @@
     "email-confirmed": "Email Yemejwe",
     "email-confirmed-message": "Urakoze kugaragaza ko email yawe ikora. Ubu ngubu konte yawe irakora nta kabuza.",
     "email-confirm-error-message": "Havutse ikibazo mu gushaka kumenya niba email yawe ikora. Ushobora kuba wakoresheje kode itari yo cyangwa se yarengeje igihe.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Hoherejwe email yo kubyemeza.",
     "none": "None",
     "notification-only": "Notification Only",

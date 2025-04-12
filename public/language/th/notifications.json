@@ -75,7 +75,6 @@
     "email-confirmed": "อีเมลได้รับการยืนยันแล้ว",
     "email-confirmed-message": "ขอบคุณที่ยืนยันอีเมลของคุณ บัญชีของคุณสามารถใช้งานได้แล้ว",
     "email-confirm-error-message": "มีปัญหาในการยืนยันอีเมลของคุณ รหัสอาจไม่ถูกต้องหรือหมดอายุแล้ว",
-    "email-confirm-error-message-already-validated": "อีเมลของคุณได้รับการยืนยันไปแล้ว",
     "email-confirm-sent": "ส่งอีเมลยืนยันแล้ว",
     "none": "ไม่มี",
     "notification-only": "แจ้งเตือนอย่างเดียว",

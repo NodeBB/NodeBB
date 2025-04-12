@@ -75,7 +75,6 @@
     "email-confirmed": "E-poçt təsdiqləndi",
     "email-confirmed-message": "E-poçtunuzu təsdiq etdiyiniz üçün təşəkkür edirik. Artıq hesabınız tam aktivləşdirilib.",
     "email-confirm-error-message": "E-poçt ünvanınızı təsdiqkləyərkən problem baş verdi. Ola bilsin ki, kod etibarsız olub və ya vaxtı keçib.",
-    "email-confirm-error-message-already-validated": "E-poçt ünvanınız artıq təsdiqlənib.",
     "email-confirm-sent": "Təsdiq e-poçtu göndərildi.",
     "none": "Heç biri",
     "notification-only": "Yalnız bildiriş",

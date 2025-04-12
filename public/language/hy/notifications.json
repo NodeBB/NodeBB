@@ -75,7 +75,6 @@
     "email-confirmed": "Էլփոստը հաստատված է",
     "email-confirmed-message": "Շնորհակալություն ձեր էլփոստը հաստատելու համար: Ձեր հաշիվն այժմ ամբողջությամբ ակտիվացված է:",
     "email-confirm-error-message": "Ձեր էլփոստի հասցեն վավերացնելիս խնդիր առաջացավ: Հավանաբար կոդը անվավեր է կամ ժամկետանց է:",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Հաստատման էլփոստը ուղարկվել է",
     "none": "None",
     "notification-only": "Միայն ծանուցում",

@@ -75,7 +75,6 @@
     "email-confirmed": "Eメールが確認されました",
     "email-confirmed-message": "メールアドレス検証をして頂き、ありがとうございます。あなたのアカウントは完全にアクティブになりました。",
     "email-confirm-error-message": "あなたのEメールアドレス検証に問題があります。コードが無効か、期限切れです。",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "確認メールが送信されました。",
     "none": "なし",
     "notification-only": "通知のみ",

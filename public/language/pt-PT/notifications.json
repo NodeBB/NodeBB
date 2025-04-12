@@ -75,7 +75,6 @@
     "email-confirmed": "E-mail confirmado",
     "email-confirmed-message": "Obrigado por validares o teu endereço de e-mail. A tua conta está agora totalmente ativa.",
     "email-confirm-error-message": "Ocorreu um problema a validar o teu endereço de e-mail. Talvez o código seja inválido ou já tenha expirado.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "E-mail de confirmação enviado.",
     "none": "Nada",
     "notification-only": "Apenas Notificação",

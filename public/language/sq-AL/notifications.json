@@ -75,7 +75,6 @@
     "email-confirmed": "Email-i u konfirmua",
     "email-confirmed-message": "Faleminderit për vërtetimin e emailit tuaj. Llogaria juaj tani është plotësisht e aktivizuar.",
     "email-confirm-error-message": "Pati një problem me vërtetimin e adresës tuaj të emailit. Ndoshta kodi ishte i pavlefshëm ose ka skaduar.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Email i konfirmimit u dërgua.",
     "none": "Asnjë",
     "notification-only": "Vetëm njoftime",

@@ -75,7 +75,6 @@
     "email-confirmed": "E-mailadres bevestigd",
     "email-confirmed-message": "Bedankt voor het bevestigen van je e-mailadres. Je account is nu volledig geactiveerd.",
     "email-confirm-error-message": "Er was een probleem met het bevestigen van dit e-mailadres. Misschien is de code niet goed ingevoerd of was de beschikbare tijd inmiddels verstreken.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Bevestigingsmail verstuurd.",
     "none": "Geen",
     "notification-only": "Alleen notificatie",

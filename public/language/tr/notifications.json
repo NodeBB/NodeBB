@@ -75,7 +75,6 @@
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onayladığınız için teşekkürler. Hesabınız tamamen aktif edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Onay e-postası gönderildi.",
     "none": "Hiçbiri",
     "notification-only": "Sadece Bildirim",

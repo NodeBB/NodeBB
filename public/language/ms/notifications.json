@@ -75,7 +75,6 @@
     "email-confirmed": "Emel Disahkan",
     "email-confirmed-message": "Terima kasih kerana mengesahkan emel anda. Akaun anda telah diaktifkan sepenuhnya.",
     "email-confirm-error-message": "Berlaku masalah semasa mengesahkan emel anda. Mungkin kod tidak sah atau tamat tempoh.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Pengesahan emel telah dihantar.",
     "none": "None",
     "notification-only": "Notification Only",

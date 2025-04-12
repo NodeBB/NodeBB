@@ -75,7 +75,6 @@
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",
-    "email-confirm-error-message-already-validated": "כתובת האימייל אומת כבר.",
     "email-confirm-sent": "מייל אישור נשלח.",
     "none": "אף אחד",
     "notification-only": "התראות בלבד",
