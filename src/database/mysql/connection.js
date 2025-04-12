@@ -30,7 +30,7 @@ connection.connect = async function (mysqlConfig) {
 
     try {
         const pool = mysql.createPool(config);
-        winston.info('[mysql] Successfully connected to MySQL database.');
+        winston.verbose('[mysql] Successfully connected to MySQL database.');
         return pool;
     } catch (err) {
         winston.error('[mysql] Error connecting to MySQL:', err.message);
@@ -46,9 +46,10 @@ connection.close = async function (pool) {
     if (pool) {
         try {
             await pool.end();
-            winston.info('[mysql] MySQL connection pool closed.');
+            winston.verbose('[mysql] MySQL connection pool closed.');
         } catch (err) {
-            winston.error('[mysql] Error closing MySQL connection pool:', err.message);
+            winston.error('[mysql] Error closing MySQL connection pool');
+            winston.error(err.stack);
             throw err;
         }
     }
