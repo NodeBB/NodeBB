@@ -45,7 +45,14 @@ mysqlModule.questions = [
     },
 ];
 
+mysqlModule.initialized = false;
 mysqlModule.init = async function (opts) {
+    if (mysqlModule.initialized) {
+        winston.info('[mysql] Already initialized.');
+        return;
+    }
+    mysqlModule.initialized = true;
+
     opts = opts || nconf.get('mysql');
     const pool = await connection.connect(opts);
     mysqlModule.pool = pool;
