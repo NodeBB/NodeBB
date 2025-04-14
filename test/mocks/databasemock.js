@@ -6,6 +6,7 @@
  */
 
 require('../../require-main');
+require('../cleanup.mjs');
 
 const path = require('path');
 const nconf = require('nconf');
@@ -126,26 +127,22 @@ nconf.set(dbType, testDbConfig);
 winston.info('database config %s', dbType, testDbConfig);
 winston.info(`environment ${global.env}`);
 
+nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
+nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
+nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
+nconf.set('bcrypt_rounds', 1);
+nconf.set('socket.io:origins', '*:*');
+nconf.set('version', packageInfo.version);
+nconf.set('runJobs', false);
+nconf.set('jobsDisabled', false);
+nconf.set('acpPluginInstallDisabled', false);
+
 const db = require('../../src/database');
 
 module.exports = db;
 
 before(async function () {
 	this.timeout(30000);
-
-	// Parse out the relative_url and other goodies from the configured URL
-	const urlObject = url.parse(nconf.get('url'));
-
-	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
-	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
-	nconf.set('bcrypt_rounds', 1);
-	nconf.set('socket.io:origins', '*:*');
-	nconf.set('version', packageInfo.version);
-	nconf.set('runJobs', false);
-	nconf.set('jobsDisabled', false);
-	nconf.set('acpPluginInstallDisabled', false);
-
 
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {

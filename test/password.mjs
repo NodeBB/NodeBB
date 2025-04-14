@@ -1,9 +1,11 @@
 'use strict';
 
-const assert = require('assert');
-const bcrypt = require('bcryptjs');
+import assert from 'assert';
+import bcrypt from 'bcryptjs';
 
-const password = require('../src/password');
+import password from '../src/password.js';
+import './cleanup.mjs';
+import('./registerTestFile.mjs').then(module => module.default(Promise.resolve()));
 
 describe('Password', () => {
 	describe('.hash()', () => {
@@ -13,8 +15,13 @@ describe('Password', () => {
 		});
 	});
 
-	describe('.compare()', async () => {
-		const salt = await bcrypt.genSalt(12);
+	describe('.compare()', () => {
+		let salt;
+
+		before(async () => {
+			// Perform asynchronous setup here
+			salt = await bcrypt.genSalt(12);
+		});
 
 		it('should correctly compare a password and a hash', async () => {
 			const hash = await password.hash(12, 'test');

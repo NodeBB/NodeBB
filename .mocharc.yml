@@ -2,3 +2,10 @@ reporter: dot
 timeout: 25000
 exit: true
 bail: true
+delay: true
+spec:
+  - "test/password.mjs"
+  - "test/databasemock.mjs"
+  - "test/dynamicTests.mjs"
+  - "test/database.mjs"
+ignore: "test/files/**"

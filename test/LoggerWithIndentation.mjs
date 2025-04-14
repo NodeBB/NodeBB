@@ -1,6 +1,7 @@
 import winston from 'winston';
 import { DateTime } from 'luxon';
 import Transport from 'winston-transport';
+import util from 'util';
 
 class LoggerRecorder extends Transport {
     isRecording = false;
@@ -33,31 +34,50 @@ class LoggerRecorder extends Transport {
 
 class LoggerWithIndentation {
     recorder = new LoggerRecorder();
-    constructor() {
-        /**
-         * @type {Map<number, import('winston').Logger>}
-         */
+    constructor(indentWidth = 2) {
+        /** @type {Map<number, import('winston').Logger>} */
         this.loggers = new Map();
+
+        /** @type {number} */
+        this.indentWidth = indentWidth;
     }
 
     createLogger(indent) {
-        const indentString = '\t'.repeat(indent);
-        const tabFormat = winston.format.printf(({ level, message, timestamp, ...meta }) => {
-            let metaString = '';
-            if (Object.keys(meta).length > 0) {
-                const transformedMeta = transformErrorMeta(meta);
-                const indentStringJson = `\n${indentString}`;
-                metaString = `${indentStringJson}${JSON.stringify(transformedMeta, null, 2).replace(/\n/g, `${indentStringJson}`)}`;
+        const colorTimestamp = winston.format((info) => {
+            if (process.stdout.isTTY) {
+                info.timestamp = `\x1b[${util.inspect.colors.cyan[0]}m${info.timestamp}\x1b[${util.inspect.colors.cyan[1]}m`;
             }
-            return `${indentString}${timestamp} [${level}] ${message}${metaString}`;
+            return info;
+        });
+
+        const customSplat = winston.format((info) => {
+            const { level, message, timestamp, ...meta } = info;
+
+            if (meta[Symbol.for('splat')] === undefined) {
+                info.formattedMessage = message;
+            } else if (meta[Symbol.for('splat')] === null) {
+                info.formattedMessage = message;
+            }
+            else if (meta[Symbol.for('splat')].length === 0) {
+                info.formattedMessage = message;
+            } else
+                info.formattedMessage = util.formatWithOptions({ colors: process.stdout.isTTY }, message, ...meta[Symbol.for('splat')]);
+            return info;
+        });
+
+        const tabFormat = winston.format.printf(({ level, formattedMessage, timestamp, ...meta }) => {
+            const indentString = ' '.repeat(this.indentWidth).repeat(indent);
+            const resultWithoutIndent = `${timestamp} [${level}] ${formattedMessage}`;
+            const resultWithIndent = resultWithoutIndent.replace(/\n/g, `\n${indentString}`);
+            return `${indentString}${resultWithIndent}`;
         });
 
         const formats = [
             winston.format.timestamp({
                 format: () => DateTime.now().toISO(),
             }),
-            winston.format.errors({ stack: true }),
-            winston.format.splat(),
+            colorTimestamp(),
+            customSplat(),
             tabFormat,
         ];
 
@@ -67,7 +87,6 @@ class LoggerWithIndentation {
 
         return winston.createLogger({
             format: winston.format.combine(...formats),
-            // transports: [new winston.transports.Console()],
             transports: [this.recorder],
         });
     }
@@ -80,32 +99,6 @@ class LoggerWithIndentation {
         }
         return logger;
     }
-}
-
-function transformErrorMeta(meta) {
-    if (meta instanceof Error) {
-        const errorObj = {
-            message: meta.message || '[No error message]',
-            // Split stack into an array of lines for readable JSON output
-            stack: meta.stack ? meta.stack.split('\n') : ['[No stack trace]'],
-            name: meta.name || 'Error',
-        };
-        // Include any additional enumerable properties
-        Object.getOwnPropertyNames(meta).forEach((key) => {
-            if (!(key in errorObj)) {
-                errorObj[key] = transformErrorMeta(meta[key]);
-            }
-        });
-        return errorObj;
-    }
-    if (typeof meta !== 'object' || meta === null) {
-        return meta;
-    }
-    const result = Array.isArray(meta) ? [] : {};
-    for (const [key, value] of Object.entries(meta)) {
-        result[key] = transformErrorMeta(value);
-    }
-    return result;
 }
 
 export default LoggerWithIndentation;
