@@ -499,6 +499,7 @@ Mocks.notes.public = async (post) => {
 	let inReplyTo = null;
 	let tag = null;
 	let followersUrl;
+	const isMainPost = post.pid === post.topic.mainPid;
 
 	let name = null;
 	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
@@ -585,27 +586,7 @@ Mocks.notes.public = async (post) => {
 	}
 
 	let attachment = await posts.attachments.get(post.pid) || [];
-	const uploads = await posts.uploads.listWithSizes(post.pid);
-	uploads.forEach(({ name, width, height }) => {
-		const mediaType = mime.getType(name);
-		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
-		attachment.push({ mediaType, url, width, height });
-	});
-
-	// Inspect post content for external imagery as well
-	let match = posts.imgRegex.exec(post.content);
-	while (match !== null) {
-		if (match[1]) {
-			const { hostname, pathname, href: url } = new URL(match[1]);
-			if (hostname !== nconf.get('url_parsed').hostname) {
-				const mediaType = mime.getType(pathname);
-				attachment.push({ mediaType, url });
-			}
-		}
-		match = posts.imgRegex.exec(post.content);
-	}
-
-	attachment = attachment.map(({ mediaType, url, width, height }) => {
+	const normalizeAttachment = attachment => attachment.map(({ mediaType, url, width, height }) => {
 		let type;
 
 		switch (true) {
@@ -630,6 +611,44 @@ Mocks.notes.public = async (post) => {
 		return payload;
 	});
 
+	// Special handling for main posts (as:Article w/ as:Note preview)
+	const noteAttachment = isMainPost ? [...attachment] : null;
+	const uploads = await posts.uploads.listWithSizes(post.pid);
+	const isThumb = await db.isSortedSetMembers(`topic:${post.tid}:thumbs`, uploads.map(u => u.name));
+	uploads.forEach(({ name, width, height }, idx) => {
+		const mediaType = mime.getType(name);
+		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
+		(noteAttachment || attachment).push({ mediaType, url, width, height });
+		if (isThumb[idx] && noteAttachment) {
+			attachment.push({ mediaType, url, width, height });
+		}
+	});
+
+	// Inspect post content for external imagery as well
+	let match = posts.imgRegex.exec(post.content);
+	while (match !== null) {
+		if (match[1]) {
+			const { hostname, pathname, href: url } = new URL(match[1]);
+			if (hostname !== nconf.get('url_parsed').hostname) {
+				const mediaType = mime.getType(pathname);
+				(noteAttachment || attachment).push({ mediaType, url });
+			}
+		}
+		match = posts.imgRegex.exec(post.content);
+	}
+
+	attachment = normalizeAttachment(attachment);
+	let preview;
+	if (isMainPost) {
+		preview = {
+			type: 'Note',
+			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+			content: post.content,
+			published,
+			attachment: normalizeAttachment(noteAttachment),
+		}
+	}
+
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
@@ -648,7 +667,7 @@ Mocks.notes.public = async (post) => {
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
-		type: 'Note',
+		type: isMainPost ? 'Article' : 'Note',
 		to: Array.from(to),
 		cc: Array.from(cc),
 		inReplyTo,
@@ -660,6 +679,7 @@ Mocks.notes.public = async (post) => {
 		audience,
 		summary: null,
 		name,
+		preview,
 		content: post.content,
 		source,
 		tag,
