@@ -268,12 +268,6 @@ define('search', [
 	function createQueryString(data) {
 		const searchIn = data.in || 'titles';
 		let term = data.term.replace(/^[ ?#]*/, '');
-		try {
-			term = encodeURIComponent(term);
-		} catch (err) {
-			console.error(err);
-			return alerts.error('[[error:invalid-search-term]]');
-		}
 
 		const query = {
 			...data,
