@@ -218,6 +218,8 @@ TopicObjectSlim:
           type: number
         postercount:
           type: number
+        followercount:
+          type: number
         scheduled:
           type: number
         deleted:

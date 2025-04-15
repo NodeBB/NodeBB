@@ -48,29 +48,30 @@ module.exports = function (Topics) {
 	}
 
 	async function follow(tid, uid) {
-		await addToSets(`tid:${tid}:followers`, `uid:${uid}:followed_tids`, tid, uid);
+		await db.setAdd(`tid:${tid}:followers`, uid);
+		await db.sortedSetAdd(`uid:${uid}:followed_tids`, Date.now(), tid);
+		await updateFollowerCount(tid);
 	}
 
 	async function unfollow(tid, uid) {
-		await removeFromSets(`tid:${tid}:followers`, `uid:${uid}:followed_tids`, tid, uid);
+		await db.setRemove(`tid:${tid}:followers`, uid);
+		await db.sortedSetRemove(`uid:${uid}:followed_tids`, tid);
+		await updateFollowerCount(tid);
 	}
 
 	async function ignore(tid, uid) {
-		await addToSets(`tid:${tid}:ignorers`, `uid:${uid}:ignored_tids`, tid, uid);
+		await db.setAdd(`tid:${tid}:ignorers`, uid);
+		await db.sortedSetAdd(`uid:${uid}:ignored_tids`, Date.now(), tid);
 	}
 
 	async function unignore(tid, uid) {
-		await removeFromSets(`tid:${tid}:ignorers`, `uid:${uid}:ignored_tids`, tid, uid);
+		await db.setRemove(`tid:${tid}:ignorers`, uid);
+		await db.sortedSetRemove(`uid:${uid}:ignored_tids`, tid);
 	}
 
-	async function addToSets(set1, set2, tid, uid) {
-		await db.setAdd(set1, uid);
-		await db.sortedSetAdd(set2, Date.now(), tid);
-	}
-
-	async function removeFromSets(set1, set2, tid, uid) {
-		await db.setRemove(set1, uid);
-		await db.sortedSetRemove(set2, tid);
+	async function updateFollowerCount(tid) {
+		const count = await db.setCount(`tid:${tid}:followers`);
+		await Topics.setTopicField(tid, 'followercount', count);
 	}
 
 	Topics.isFollowing = async function (tids, uid) {
