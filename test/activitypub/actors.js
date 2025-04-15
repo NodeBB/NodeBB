@@ -359,8 +359,8 @@ describe('Controllers', () => {
 				assert.strictEqual(response.statusCode, 200);
 			});
 
-			it('should return a Note type object', () => {
-				assert.strictEqual(body.type, 'Note');
+			it('should return a Article type object', () => {
+				assert.strictEqual(body.type, 'Article');
 			});
 		});
 
