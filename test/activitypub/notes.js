@@ -258,6 +258,7 @@ describe('Notes', () => {
 
 			before(async () => {
 				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				activitypub._sent.clear();
 			});
 
 			afterEach(() => {
