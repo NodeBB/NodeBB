@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 module.exports = {
 	name: 'Normalize topic thumbnails, post & user uploads to same format',
-	timestamp: Date.UTC(2021, 1, 7),
+	timestamp: Date.UTC(2025, 3, 4),
 	method: async function () {
 		const { progress } = this;
 
