@@ -145,7 +145,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		uid,
 		username,
 		confirm_link,
-		confirm_code: await plugins.hooks.fire('filter:user.verify.code', confirm_code),
+		confirm_code,
 		email: options.email,
 
 		subject: options.subject || '[[email:email.verify-your-email.subject]]',
