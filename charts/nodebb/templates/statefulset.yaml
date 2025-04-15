@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "nodebb.fullname" . }}
+  labels:
+    {{- include "nodebb.labels" . | nindent 4 }}
+spec:
+  {{- if and (not .Values.autoscaling.enabled) (not .Values.nodebb.singleMode) }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if .Values.nodebb.singleMode }}
+  replicas: 1
+  {{- end }}
+  serviceName: {{ include "nodebb.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "nodebb.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "nodebb.selectorLabels" . | nindent 8 }}
+    spec:
+      enableServiceLinks: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nodebb.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      initContainers:
+      - name: config-init
+        securityContext:
+          {{- toYaml .Values.podSecurityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command:
+        - /bin/entrypoint.sh
+        volumeMounts:
+        - name: data
+          mountPath: /opt/config
+          subPath: config
+        - name: secrets
+          mountPath: /secrets
+        - name: configmaps
+          mountPath: /configmaps
+        - name: config-init-script
+          mountPath: /bin/entrypoint.sh
+          subPath: config.sh
+      - name: setup
+        securityContext:
+          {{- toYaml .Values.podSecurityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /bin/entrypoint.sh
+        env:          
+          {{- toYaml .Values.env | nindent 12 }}
+        volumeMounts:
+        - name: data
+          mountPath: /usr/src/app/node_modules
+          subPath: node_modules
+        - name: data
+          mountPath: /usr/src/app/build
+          subPath: build
+        - name: data
+          mountPath: /usr/src/app/public/uploads
+          subPath: public_uploads
+        - name: data
+          mountPath: /opt/config
+          subPath: config
+        - name: config-init-script
+          mountPath: /bin/entrypoint.sh
+          subPath: setup.sh
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:          
+            {{- toYaml .Values.env | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            periodSeconds: 10
+            initialDelaySeconds: 20
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            failureThreshold: 60
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+            failureThreshold: 60
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: data
+            mountPath: /usr/src/app/node_modules
+            subPath: node_modules
+          - name: data
+            mountPath: /usr/src/app/build
+            subPath: build
+          - name: data
+            mountPath: /usr/src/app/public/uploads
+            subPath: public_uploads
+          - name: data
+            mountPath: /opt/config
+            subPath: config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: data
+        {{- if .Values.nodebb.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "nodebb.fullname" . }}-data
+        {{- else -}}
+        emptyDir: {}
+        {{- end }}
+      - name: secrets
+        secret:
+          secretName: {{ include "nodebb.fullname" . }}
+      - name: configmaps
+        configMap:
+          name: {{ include "nodebb.fullname" . }}
+      - name: config-init-script
+        configMap:
+          name: {{ include "nodebb.fullname" . }}-config-init-script
+          defaultMode: 0777
