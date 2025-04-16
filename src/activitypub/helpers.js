@@ -439,8 +439,12 @@ Helpers.remoteAnchorToLocalProfile = async (content, isMarkdown = false) => {
 	return content;
 };
 
-// eslint-disable-next-line max-len
-Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, property) => memo.concat(Array.isArray(object[property]) ? object[property] : [object[property]]), []));
+Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, property) =>
+	memo.concat(object[property] ?
+		Array.isArray(object[property]) ?
+			object[property] :
+			[object[property]] :
+		[]), []));
 
 Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 	if (!method) {
