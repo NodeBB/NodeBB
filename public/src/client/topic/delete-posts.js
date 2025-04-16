@@ -31,6 +31,8 @@ define('forum/topic/delete-posts', [
 			postSelect.init(function () {
 				checkButtonEnable();
 				showPostsSelected();
+			}, {
+				allowMainPostSelect: true,
 			});
 			showPostsSelected();
 
