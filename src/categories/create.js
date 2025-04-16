@@ -157,7 +157,7 @@ module.exports = function (Categories) {
 		} catch (e) {
 			// invalid slug passed in
 			slug = 'category';
-			taken = true
+			taken = true;
 		}
 
 		let suffix;
