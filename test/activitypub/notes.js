@@ -298,6 +298,37 @@ describe('Notes', () => {
 
 					assert(addressees.has(`${nconf.get('url')}/category/${cid}`));
 				});
+
+				it('should federate out an activity with object of type "Article"', () => {
+					assert(activity.object && activity.object.type);
+					assert.strictEqual(activity.object.type, 'Article');
+				});
+			});
+
+			describe('new reply', () => {
+				let activity;
+
+				before(async () => {
+					const { tid } = await api.topics.create({ uid }, {
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					activitypub._sent.clear();
+
+					const { pid } = await api.topics.reply({ uid }, {
+						tid,
+						content: utils.generateUUID(),
+					});
+
+					const key = Array.from(activitypub._sent.keys())[0];
+					activity = activitypub._sent.get(key);
+				});
+
+				it('should federate out an activity with object of type "Note"', () => {
+					assert(activity.object && activity.object.type);
+					assert.strictEqual(activity.object.type, 'Note');
+				})
 			});
 		});
 
