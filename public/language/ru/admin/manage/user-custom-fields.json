@@ -19,10 +19,10 @@
 	"select-options-help": "Add one option per line for the select element",
 	"minimum-reputation": "Minimum reputation",
 	"minimum-reputation-help": "If a user has less than this value they won't be able to use this field",
-	"delete-field-confirm-x": "Do you really want to delete custom field \"%1\"?",
-	"custom-fields-saved": "Custom fields saved",
-	"visibility": "Visibility",
-	"visibility-all": "Everyone can see the field",
-	"visibility-loggedin": "Only logged in users can see the field",
-	"visibility-privileged": "Only privileged users like admins & moderators can see the field"
+	"delete-field-confirm-x": "Вы действительно хотите удалить пользовательское поле \"%1\"?",
+	"custom-fields-saved": "Пользовательские поля сохранены",
+	"visibility": "Видимость",
+	"visibility-all": "Все могут видеть поле.",
+	"visibility-loggedin": "Только зарегистрированные пользователи могут видеть это поле.",
+	"visibility-privileged": "Только привилегированные пользователи, такие как администраторы и модераторы, могут видеть это поле."
 }
