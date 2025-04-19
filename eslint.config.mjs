@@ -1,11 +1,14 @@
 'use strict';
-const serverConfig = require('eslint-config-nodebb');
-const publicConfig = require('eslint-config-nodebb/public');
 
-const { configs } = require('@eslint/js');
-const globals = require('globals');
+import serverConfig from 'eslint-config-nodebb';
+import publicConfig from 'eslint-config-nodebb/public';
 
-module.exports = [
+import { defineConfig } from 'eslint/config';
+import globals from 'globals';
+
+import js from '@eslint/js';
+
+export default defineConfig([
 	{
 		ignores: [
 			'node_modules/',
@@ -27,7 +30,6 @@ module.exports = [
 			'install/docker/',
 		],
 	},
-	configs.recommended,
 	{
 		rules: {
 			'no-bitwise': 'warn',
@@ -58,5 +60,5 @@ module.exports = [
   	},
 	...publicConfig,
 	...serverConfig
-];
+]);
 

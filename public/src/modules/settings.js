@@ -2,11 +2,8 @@
 
 
 define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
-	let Settings;
 	let onReady = [];
 	let waitingJobs = 0;
-
-	let helper;
 
 	/**
 	 Returns the hook of given name that matches the given type or element.
@@ -29,7 +26,7 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		return null;
 	}
 
-	helper = {
+	const helper = {
 		/**
 		 @returns Object A deep clone of the given object.
 		 */
@@ -48,10 +45,8 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		 */
 		createElement: function (tagName, data, text) {
 			const element = document.createElement(tagName);
-			for (const k in data) {
-				if (data.hasOwnProperty(k)) {
-					element.setAttribute(k, data[k]);
-				}
+			for (const [k, val] of Object.entries(data)) {
+				element.setAttribute(k, val);
 			}
 			if (text) {
 				element.appendChild(document.createTextNode(text));
@@ -331,7 +326,7 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		},
 	};
 
-	Settings = {
+	const Settings = {
 		helper: helper,
 		plugins: {},
 		cfg: {},

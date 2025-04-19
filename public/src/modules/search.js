@@ -267,7 +267,7 @@ define('search', [
 
 	function createQueryString(data) {
 		const searchIn = data.in || 'titles';
-		let term = data.term.replace(/^[ ?#]*/, '');
+		const term = data.term.replace(/^[ ?#]*/, '');
 
 		const query = {
 			...data,

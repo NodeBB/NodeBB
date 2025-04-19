@@ -646,7 +646,7 @@ Mocks.notes.public = async (post) => {
 			content: post.content,
 			published,
 			attachment: normalizeAttachment(noteAttachment),
-		}
+		};
 	}
 
 	let context = await posts.getPostField(post.pid, 'context');

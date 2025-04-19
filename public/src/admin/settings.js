@@ -215,10 +215,8 @@ define('admin/settings', [
 				return callback(err);
 			}
 
-			for (const field in data) {
-				if (data.hasOwnProperty(field)) {
-					app.config[field] = data[field];
-				}
+			for (const [field, value] of Object.entries(data)) {
+				app.config[field] = value;
 			}
 
 			callback();

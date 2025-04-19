@@ -75,17 +75,15 @@ define('forum/account/settings', [
 		api.put(`/users/${ajaxify.data.uid}/settings`, { settings }).then((newSettings) => {
 			alerts.success('[[success:settings-saved]]');
 			let languageChanged = false;
-			for (const key in newSettings) {
-				if (newSettings.hasOwnProperty(key)) {
-					if (key === 'userLang' && config.userLang !== newSettings.userLang) {
-						languageChanged = true;
-					}
-					if (key === 'bootswatchSkin') {
-						savedSkin = newSettings.bootswatchSkin;
-						config.bootswatchSkin = savedSkin === 'noskin' ? '' : savedSkin;
-					} else if (config.hasOwnProperty(key)) {
-						config[key] = newSettings[key];
-					}
+			for (const [key, value] of Object.entries(newSettings)) {
+				if (key === 'userLang' && config.userLang !== newSettings.userLang) {
+					languageChanged = true;
+				}
+				if (key === 'bootswatchSkin') {
+					savedSkin = newSettings.bootswatchSkin;
+					config.bootswatchSkin = savedSkin === 'noskin' ? '' : savedSkin;
+				} else if (config.hasOwnProperty(key)) {
+					config[key] = value;
 				}
 			}
 

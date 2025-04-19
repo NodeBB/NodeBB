@@ -192,7 +192,6 @@ if (document.readyState === 'loading') {
 		const pageParams = utils.params();
 		function queryMatch(search) {
 			const mySearchParams = new URLSearchParams(search);
-			// eslint-disable-next-line no-restricted-syntax
 			for (const [key, value] of mySearchParams) {
 				if (pageParams[key] === value) {
 					return true;

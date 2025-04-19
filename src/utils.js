@@ -46,7 +46,7 @@ utils.getSass = function () {
 		const sass = require('sass-embedded');
 		return sass;
 	} catch (err) {
-		console.error(err.message)
+		console.error(err.message);
 		return require('sass');
 	}
 };

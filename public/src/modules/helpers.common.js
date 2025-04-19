@@ -180,14 +180,12 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function spawnPrivilegeStates(cid, member, privileges, types) {
 		const states = [];
-		for (const priv in privileges) {
-			if (privileges.hasOwnProperty(priv)) {
-				states.push({
-					name: priv,
-					state: privileges[priv],
-					type: types[priv],
-				});
-			}
+		for (const [priv, state] of Object.entries(privileges)) {
+			states.push({
+				name: priv,
+				state: state,
+				type: types[priv],
+			});
 		}
 		return states.map(function (priv) {
 			const guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
