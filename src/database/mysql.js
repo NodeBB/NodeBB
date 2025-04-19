@@ -83,7 +83,6 @@ async function checkUpgrade(poolConnection) {
             UNIQUE KEY (_key, type)
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_object (
@@ -94,7 +93,6 @@ async function checkUpgrade(poolConnection) {
             UNIQUE KEY unique_key_type (_key, type)
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_hash (
@@ -111,7 +109,6 @@ async function checkUpgrade(poolConnection) {
             CONSTRAINT check_type_hash CHECK (type_check = 'hash')
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_zset (
@@ -129,7 +126,6 @@ async function checkUpgrade(poolConnection) {
             CONSTRAINT check_type_zset CHECK (type_check = 'zset')
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_set (
@@ -146,7 +142,6 @@ async function checkUpgrade(poolConnection) {
             CONSTRAINT check_type_set CHECK (type_check = 'set')
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_list (
@@ -163,7 +158,6 @@ async function checkUpgrade(poolConnection) {
             CONSTRAINT check_type_list CHECK (type_check = 'list')
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_string (
@@ -180,7 +174,6 @@ async function checkUpgrade(poolConnection) {
             CONSTRAINT check_type_string CHECK (type_check = 'string')
         )
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 
     queryResult = await poolConnection.query(`
         CREATE OR REPLACE VIEW legacy_object_live AS
@@ -189,7 +182,6 @@ async function checkUpgrade(poolConnection) {
          WHERE expireAt IS NULL
             OR expireAt > NOW()
     `);
-    winston.info(JSON.stringify(queryResult, null, 2));
 }
 
 mysqlModule.query = function (sql, params, callback) {

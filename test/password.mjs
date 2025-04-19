@@ -5,7 +5,6 @@ import bcrypt from 'bcryptjs';
 
 import password from '../src/password.js';
 import './cleanup.mjs';
-import('./registerTestFile.mjs').then(module => module.default(Promise.resolve()));
 
 describe('Password', () => {
 	describe('.hash()', () => {

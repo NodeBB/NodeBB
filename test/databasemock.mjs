@@ -3,7 +3,6 @@
 import './cleanup.mjs';
 import { doesNotThrow } from 'assert';
 import winston from 'winston';
-import('./registerTestFile.mjs').then(module => module.default(Promise.resolve()));
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 

@@ -1,4 +1,14 @@
+/**
+ * This module tracks promises created during the execution of a test file.
+ */
+
+'use strict';
+
 import LoggerWithIndentation from './LoggerWithIndentation.mjs';
+import { DateTime } from 'luxon';
+import stackTrace from 'stack-trace';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 class PromiseInfo {
     /**
@@ -7,7 +17,7 @@ class PromiseInfo {
      * @param {string} file - The file where the promise was registered.
      * @param {string} line - The line number in the file.
      * @param {string} column - The column number in the file.
-     * @param {number} registerTime - The time when the promise was registered.
+     * @param {string} registerTime - The time when the promise was registered.
      */
     constructor(promise, file, line, column, registerTime) {
         /** @type {Promise<any>} */
@@ -16,64 +26,54 @@ class PromiseInfo {
         /** @type {string} */
         this.location = `${file}:${line}:${column}`;
 
-        /** @type {number} */
+        /** @type {string} */
         this.registerTime = registerTime;
+
+        /** @type {boolean} */
+        this.isPending = true;
+        this.promise.finally(() => {
+            this.isPending = false;
+        });
     }
 }
 
 /** @type {PromiseInfo[]} */
-const promises = [];
-let lastCallRegister = Date.now();
+export const promises = [];
+
+const logger = new LoggerWithIndentation();
+const log = (level) => logger.getLogger(level);
 
 /**
  * @param {Promise<any>} promise 
  */
 export default function registerAsyncDynamicTestCreation(promise) {
-    // Parse stack to get the calling file, line, and position
-    const stackLines = new Error().stack.split('\n');
+    // Get stack trace
+    const trace = stackTrace.get();
+
     let callingFile = 'unknown';
     let lineNumber = '';
     let columnNumber = '';
 
-    // Look for the line after registerAsyncDynamicTestCreation
-    for (let i = 1; i < stackLines.length; i++) {
-        if (stackLines[i].includes('registerAsyncDynamicTestCreation')) {
-            // Next line is the caller
-            if (stackLines[i + 1]) {
-                // Extract file path and line/column (handles both file:/// and regular paths)
-                const match = stackLines[i + 1].match(/(file:\/\/\/[^:]+|\/[^:]+):(\d+):(\d+)/);
-                if (match) {
-                    callingFile = match[1]; // File path
-                    callingFile = callingFile.replace(/^file:\/\//, '');
-                    lineNumber = match[2];  // Line number
-                    columnNumber = match[3]; // Column number
-                }
-            }
+    for (let i = 0; i < trace.length; i++) {
+        if (!trace[i].getFunctionName()?.includes('registerAsyncDynamicTestCreation')) {
+            continue;
+        }
+        // Next frame is the caller
+        if (!trace[i + 1]) {
             break;
         }
-    }
-
-    lastCallRegister = Date.now();
-
-    // Check if the promise is already in the array
-    if (promises.includes(promise)) {
-        console.warn('Promise already registered:', promise);
-        return;
+        let rawFile = trace[i + 1].getFileName() || 'unknown';
+        // Handle file:// URLs and convert to canonical path
+        if (rawFile.startsWith('file://')) {
+            rawFile = fileURLToPath(rawFile); // Convert file:// URL to path
+        }
+        // Normalize and resolve to canonical path
+        callingFile = path.resolve(path.normalize(rawFile));
+        lineNumber = trace[i + 1].getLineNumber();
+        columnNumber = trace[i + 1].getColumnNumber();
+        break;
     }
 
     // Register the promise
-    promises.push(new PromiseInfo(promise, callingFile, lineNumber, columnNumber, lastCallRegister));
-}
-
-(async () => {
-    while (Date.now() - lastCallRegister < 1000) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    await Promise.all(promises.map(p => p.promise));
-    const logger = new LoggerWithIndentation();
-    const log = (level) => logger.getLogger(level);
-    log(0).info('All promises resolved', promises);
-    setImmediate(run);
-})().catch(err => {
-    console.log(err);
-});
+    promises.push(new PromiseInfo(promise, callingFile, lineNumber, columnNumber, DateTime.now().toISO()));
+};
