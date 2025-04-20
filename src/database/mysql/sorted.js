@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * 
+ * @param {import('../../../types/database').MySQLDatabase} module 
+ */
 module.exports = function (module) {
     const helpers = require('./helpers');
     const util = require('util');
@@ -301,34 +305,46 @@ module.exports = function (module) {
     };
 
     async function getSortedSetRank(sort, keys, values) {
-        values = values.map(helpers.valueToString);
-        const placeholders = keys.map((_, i) => `(? , ?)`).join(', ');
-        const flatValues = [];
+        values = values.map(String);
+        const keyPlaceholders = keys.map(() => '?').join(', ');
+        // Generate UNION ALL for each key-value pair with index
+        const pairUnions = keys.map((_, i) => `SELECT ${i} AS i, ? AS k, ? AS v`).join(' UNION ALL ');
+        const indexedValues = [];
         for (let i = 0; i < keys.length; i++) {
-            flatValues.push(keys[i], values[i]);
+            indexedValues.push(keys[i], values[i]); // Key, value
         }
-
-        const [rows] = await module.pool.query({
-            sql: `
-                WITH Ranked AS (
-                    SELECT z.value AS v,
-                           ROW_NUMBER() OVER (PARTITION BY o._key ORDER BY z.score ${sort}, z.value ${sort}) - 1 AS r
-                    FROM legacy_object_live o
-                    INNER JOIN legacy_zset z
-                        ON o._key = z._key
-                        AND o.type = z.type
-                    WHERE o._key IN (${keys.map(() => '?').join(', ')})
-                )
-                SELECT r
-                FROM Ranked
-                WHERE (o._key, v) IN (${placeholders})
-            `,
-            values: [...keys, ...flatValues],
-        });
-
-        return rows.map(r => (r.r === null ? null : parseFloat(r.r)));
+    
+        try {
+            const [rows] = await module.pool.query({
+                sql: `
+                    WITH Ranked AS (
+                        SELECT o._key AS k,
+                               z.value AS v,
+                               ROW_NUMBER() OVER (PARTITION BY o._key ORDER BY z.score ${sort}, z.value ${sort}) - 1 AS r
+                        FROM legacy_object_live o
+                        INNER JOIN legacy_zset z
+                            ON o._key = z._key
+                            AND o.type = z.type
+                        WHERE o._key IN (${keyPlaceholders})
+                    ),
+                    InputPairs AS (
+                        ${pairUnions}
+                    )
+                    SELECT r.r
+                    FROM InputPairs ip
+                    LEFT JOIN Ranked r
+                        ON r.k = ip.k AND r.v = ip.v
+                    ORDER BY ip.i ASC
+                `,
+                values: [...keys, ...indexedValues]
+            });
+            return rows.map(row => (row.r === null ? null : parseFloat(row.r)));
+        } catch (err) {
+            console.error('SQL Error:', err);
+            throw err;
+        }
     }
-
+    
     module.sortedSetsRanks = async function (keys, values) {
         if (!Array.isArray(keys) || !keys.length) {
             return [];
@@ -581,27 +597,22 @@ module.exports = function (module) {
         value = helpers.valueToString(value);
         increment = parseFloat(increment);
 
-        return await module.transaction(async (pool) => {
-            const connection = await pool.getConnection();
-            try {
-                await helpers.ensureLegacyObjectType(connection, key, 'zset');
-                const [rows] = await connection.query({
-                    sql: `
+        return await module.transaction(async (connection) => {
+            await helpers.ensureLegacyObjectType(connection, key, 'zset');
+            const [rows] = await connection.query({
+                sql: `
                         INSERT INTO legacy_zset (_key, value, score)
                         VALUES (?, ?, ?)
                         ON DUPLICATE KEY UPDATE
                             score = legacy_zset.score + VALUES(score)
                     `,
-                    values: [key, value, increment],
-                });
-                const [result] = await connection.query({
-                    sql: `SELECT score FROM legacy_zset WHERE _key = ? AND value = ?`,
-                    values: [key, value],
-                });
-                return parseFloat(result[0].score);
-            } finally {
-                connection.release();
-            }
+                values: [key, value, increment],
+            });
+            const [result] = await connection.query({
+                sql: `SELECT score FROM legacy_zset WHERE _key = ? AND value = ?`,
+                values: [key, value],
+            });
+            return parseFloat(result[0].score);
         });
     };
 

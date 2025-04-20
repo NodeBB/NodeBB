@@ -66,7 +66,7 @@ mysqlModule.init = async function (opts) {
         throw err;
     } finally {
         poolConnection.release();
-    }
+    } 
 };
 
 /**
@@ -350,4 +350,5 @@ require('./mysql/main')(mysqlModule);
 require('./mysql/hash')(mysqlModule);
 require('./mysql/sets')(mysqlModule);
 require('./mysql/sorted')(mysqlModule);
+require('./mysql/list')(mysqlModule);
 require('./mysql/transaction')(mysqlModule);

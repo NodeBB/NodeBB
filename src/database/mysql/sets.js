@@ -74,6 +74,9 @@ module.exports = function (module) {
         if (!Array.isArray(value)) {
             value = [value];
         }
+        if (!key.length || !value.length) {
+            return;
+        }
 
         await module.pool.query(`
             DELETE FROM legacy_set
