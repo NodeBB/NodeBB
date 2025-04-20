@@ -4,9 +4,7 @@
 import assert, { fail, ifError, equal } from 'assert';
 import nconf from 'nconf';
 import './cleanup.mjs';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const databasemock = require('./mocks/databasemock');
+import databasemock from './mocks/databasemock.mjs';
 
 describe('Test database', function () {
 	describe('info', () => {

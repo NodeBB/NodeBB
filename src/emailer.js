@@ -165,6 +165,48 @@ Emailer.setupFallbackTransport = (config) => {
 	}
 };
 
+class BuildCustomTemplatesTasks {
+	/**
+	 * @type {BuildCustomTemplatesTask[]}
+	 */
+	promises = [];
+	/**
+	 * 
+	 * @param {Promise<void>} promise 
+	 */
+	push(promise) {
+		this.promises.push(new BuildCustomTemplatesTask(promise));
+		this.clean();
+	}
+	async awaitAll() {
+		await Promise.all(this.promises.map((promise) => promise.promise));
+		this.clean();
+	}
+	clean() {
+		for (let i = this.promises.length - 1; i >= 0; i--) {
+			if (this.promises[i].resolved) {
+				this.promises.splice(i, 1);
+			}
+		}
+	}
+}
+
+class BuildCustomTemplatesTask {
+	resolved = false;
+	/** @type {Promise<void>} */
+	promise = null;
+	/**
+	 * 
+	 * @param {Promise<void>} promise 
+	 */
+	constructor(promise) {
+		this.promise = promise;
+		promise.then(() => this.resolved = true);
+	}
+}
+
+const buildCustomTemplatesTasks = new BuildCustomTemplatesTasks();
+
 Emailer.registerApp = (expressApp) => {
 	app = expressApp;
 
@@ -209,7 +251,7 @@ Emailer.registerApp = (expressApp) => {
 			if (smtpSettingsChanged(config)) {
 				Emailer.setupFallbackTransport(config);
 			}
-			buildCustomTemplates(config);
+			buildCustomTemplatesTasks.push(buildCustomTemplates(config));
 
 			prevConfig = { ...prevConfig, ...config };
 		}
@@ -222,6 +264,7 @@ Emailer.send = async (template, uid, params) => {
 	if (!app) {
 		throw Error('[emailer] App not ready!');
 	}
+	await buildCustomTemplatesTasks.awaitAll();
 
 	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed', 'banned']);
 
@@ -281,6 +324,8 @@ Emailer.send = async (template, uid, params) => {
 };
 
 Emailer.sendToEmail = async (template, email, language, params) => {
+	await buildCustomTemplatesTasks.awaitAll();
+
 	const lang = language || meta.config.defaultLang || 'en-GB';
 	const unsubscribable = ['digest', 'notification'];
 
@@ -377,6 +422,8 @@ Emailer.sendViaFallback = async (data) => {
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
+	await buildCustomTemplatesTasks.awaitAll();
+
 	const html = await app.renderAsync(`emails/${template}`, params);
 	return await translator.translate(html, lang);
 };

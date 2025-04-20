@@ -22,8 +22,8 @@ describe('Static Test', function () {
 // Dynamic test suite with async setup
 try {
     await (async function () {
-        const db = require('./mocks/databasemock.js');
-        const nconf = require('nconf');
+        const db = (await import('./mocks/databasemock.mjs')).default;
+        const nconf = (await import('nconf')).default;
         const dbName = nconf.get('database');
         if (dbName !== 'mysql') {
             log(0).info('Skipping dynamic test suite because database is not MySQL');
@@ -101,7 +101,7 @@ try {
     })();
 } catch (err) {
     log(0).error('Setup failed:', err);
-    process.exit(1);
+    throw err;
 } finally {
     logger.recorder.stopRecording();
 }

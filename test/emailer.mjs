@@ -1,16 +1,22 @@
 'use strict';
 
-const { SMTPServer } = require('smtp-server');
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
+import './cleanup.mjs';
+import { SMTPServer } from 'smtp-server';
+import assert from 'assert';
+import fs from 'fs';
+import path from 'path';
 
-const db = require('./mocks/databasemock');
-const Plugins = require('../src/plugins');
-const Emailer = require('../src/emailer');
-const user = require('../src/user');
-const meta = require('../src/meta');
-const Meta = require('../src/meta');
+import './mocks/databasemock.mjs';
+import Plugins from '../src/plugins/index.js';
+import Emailer from '../src/emailer.js';
+import user from '../src/user/index.js';
+import meta from '../src/meta/index.js';
+import Meta from '../src/meta/index.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('emailer', () => {
 	let onMail = function (address, session, callback) { callback(); };
@@ -23,26 +29,41 @@ describe('emailer', () => {
 		subject: 'Welcome to NodeBB',
 	};
 
-	before((done) => {
-		const server = new SMTPServer({
-			allowInsecureAuth: true,
-			onAuth: function (auth, session, callback) {
-				callback(null, {
-					user: auth.username,
-				});
-			},
-			onMailFrom: function (address, session, callback) {
-				onMail(address, session, callback);
-			},
-			onRcptTo: function (address, session, callback) {
-				onTo(address, session, callback);
-			},
-		});
+	const server = new SMTPServer({
+		allowInsecureAuth: true,
+		onAuth: function (auth, session, callback) {
+			callback(null, {
+				user: auth.username,
+			});
+		},
+		onMailFrom: function (address, session, callback) {
+			onMail(address, session, callback);
+		},
+		onRcptTo: function (address, session, callback) {
+			onTo(address, session, callback);
+		},
+	});
+	server.on('error', (err) => {
+		throw err;
+	});
 
-		server.on('error', (err) => {
-			throw err;
+	async function reset() {
+		const filePath = path.join(__dirname, '../build/public/templates/emails/test.js');
+		if (fs.existsSync(filePath)) {
+			fs.unlinkSync(filePath);
+		}
+		await Meta.configs.setMultiple({
+			'email:smtpTransport:enabled': '0',
+			'email:custom:test': '',
 		});
-		server.listen(4000, done);
+	}
+	before(async function () {
+		server.listen(4000);
+		await reset();
+	});
+	after(async function () {
+		server.close();
+		await reset();
 	});
 
 	// TODO: test sendmail here at some point
@@ -72,7 +93,6 @@ describe('emailer', () => {
 
 	it('should build custom template on config change', (done) => {
 		const text = 'a random string of text';
-
 		// make sure it's not already set
 		Emailer.renderAndTranslate('test', {}, 'en-GB', (err, output) => {
 			assert.ifError(err);
@@ -136,41 +156,54 @@ describe('emailer', () => {
 		});
 	});
 
-	after((done) => {
-		fs.unlinkSync(path.join(__dirname, '../build/public/templates/emails/test.js'));
-		Meta.configs.setMultiple({
-			'email:smtpTransport:enabled': '0',
-			'email:custom:test': '',
-		}, done);
-	});
-
 	describe('emailer.send()', () => {
 		let recipientUid;
 
 		before(async () => {
 			recipientUid = await user.create({ username: 'recipient', email: 'test@example.org' });
 			await user.email.confirmByUid(recipientUid);
-		});
 
-		it('should not send email to a banned user', async () => {
-			const method = async () => {
-				assert(false); // if thrown, email was sent
+			const method = async function () {
 			};
+
 			Plugins.hooks.register('emailer-test', {
 				hook: 'static:email.send',
 				method,
 			});
 
 			await user.bans.ban(recipientUid);
-			await Emailer.send('test', recipientUid, {});
 
 			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
 		});
 
-		it('should return true if the template is "banned"', async () => {
-			const method = async () => {
-				assert(true); // if thrown, email was sent
+		after(async function () {
+			await user.bans.unban(recipientUid);
+		});
+
+		it('should not send email to a banned user', async function () {
+			const templatesSent = [];
+			const method = async function ({ template }) {
+				templatesSent.push(template);
 			};
+
+			Plugins.hooks.register('emailer-test', {
+				hook: 'static:email.send',
+				method,
+			});
+
+			await Emailer.send('test', recipientUid, {});
+
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
+
+			assert.deepStrictEqual(templatesSent, [], 'Email should not be sent to a banned user');
+		});
+
+		it('should return true if the template is "banned"', async function () {
+			const templatesSent = [];
+			const method = async function ({ template }) {
+				templatesSent.push(template);
+			};
+
 			Plugins.hooks.register('emailer-test', {
 				hook: 'static:email.send',
 				method,
@@ -178,12 +211,16 @@ describe('emailer', () => {
 
 			await Emailer.send('banned', recipientUid, {});
 			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
+
+			assert.deepStrictEqual(templatesSent, ["banned"], 'Email "banned" should be allowed to be sent to a banned user');
 		});
 
 		it('should return true if system settings allow sending to banned users', async () => {
-			const method = async () => {
-				assert(true); // if thrown, email was sent
+			const templatesSent = [];
+			const method = async function ({ template }) {
+				templatesSent.push(template);
 			};
+
 			Plugins.hooks.register('emailer-test', {
 				hook: 'static:email.send',
 				method,
@@ -192,9 +229,10 @@ describe('emailer', () => {
 			meta.config.sendEmailToBanned = 1;
 			await Emailer.send('test', recipientUid, {});
 			meta.config.sendEmailToBanned = 0;
-			await user.bans.unban(recipientUid);
+			await Emailer.send('test', recipientUid, {});
 
 			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
+			assert.deepStrictEqual(templatesSent, ["test"], 'Email "test" should be sent to a banned user if system settings allow it');
 		});
 	});
 });

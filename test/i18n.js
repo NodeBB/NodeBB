@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const file = require('../src/file');
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 
 describe('i18n', () => {
 	let folders;

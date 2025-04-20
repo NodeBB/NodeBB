@@ -7,4 +7,6 @@ spec:
   - "test/databasemock.mjs"
   - "test/dynamicTests.mjs"
   - "test/database.mjs"
+  # - "test/api.mjs"
+  - "test/emailer.mjs"
 ignore: "test/files/**"

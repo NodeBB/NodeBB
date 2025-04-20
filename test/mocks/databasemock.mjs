@@ -5,20 +5,23 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
-require('../../require-main');
-require('../cleanup.mjs');
+import '../../require-main.js';
+import '../cleanup.mjs';
 
-const path = require('path');
-const nconf = require('nconf');
-const url = require('url');
-const util = require('util');
+import nconf from 'nconf';
+import { readFileSync } from 'fs';
+import path, { dirname } from 'path';
+import url, { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
 global.env = process.env.NODE_ENV || 'production';
 
 
-const winston = require('winston');
-const packageInfo = require('../../package.json');
+import winston from 'winston';
+import packageInfo from '../../package.json' with { type: 'json' };
 
 winston.add(new winston.transports.Console({
 	format: winston.format.combine(
@@ -28,8 +31,7 @@ winston.add(new winston.transports.Console({
 }));
 
 try {
-	const fs = require('fs');
-	const configJSON = fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
+	const configJSON = readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
 	winston.info('configJSON');
 	winston.info(configJSON);
 } catch (err) {
@@ -137,38 +139,34 @@ nconf.set('runJobs', false);
 nconf.set('jobsDisabled', false);
 nconf.set('acpPluginInstallDisabled', false);
 
-const db = require('../../src/database');
+const db = (await import('../../src/database/index.js')).default;
 
-module.exports = db;
+await db.init();
+if (db.hasOwnProperty('createIndices')) {
+	await db.createIndices();
+}
+await setupMockDefaults();
+await db.initSessionStore();
+
+const meta = (await import('../../src/meta/index.js')).default;
+nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
+// nconf defaults, if not set in config
+if (!nconf.get('sessionKey')) {
+	nconf.set('sessionKey', 'express.sid');
+}
+
+await meta.dependencies.check();
+
+const webserver = (await import('../../src/webserver.js')).default;
+const sockets = (await import('../../src/socket.io/index.js')).default;
+await sockets.init(webserver.server);
+
+(await import('../../src/notifications.js')).default.startJobs();
+(await import('../../src/user/index.js')).default.startJobs();
+
+await webserver.listen();
 
 before(async function () {
-	this.timeout(30000);
-
-	await db.init();
-	if (db.hasOwnProperty('createIndices')) {
-		await db.createIndices();
-	}
-	await setupMockDefaults();
-	await db.initSessionStore();
-
-	const meta = require('../../src/meta');
-	nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
-	// nconf defaults, if not set in config
-	if (!nconf.get('sessionKey')) {
-		nconf.set('sessionKey', 'express.sid');
-	}
-
-	await meta.dependencies.check();
-
-	const webserver = require('../../src/webserver');
-	const sockets = require('../../src/socket.io');
-	await sockets.init(webserver.server);
-
-	require('../../src/notifications').startJobs();
-	require('../../src/user').startJobs();
-
-	await webserver.listen();
-
 	// Iterate over all of the test suites/contexts
 	this.test.parent.suites.forEach((suite) => {
 		// Attach an afterAll listener that resets the defaults
@@ -179,7 +177,7 @@ before(async function () {
 });
 
 async function setupMockDefaults() {
-	const meta = require('../../src/meta');
+	const meta = (await import('../../src/meta/index.js')).default;
 	await db.emptydb();
 
 	winston.info('test_database flushed');
@@ -191,10 +189,10 @@ async function setupMockDefaults() {
 	meta.config.newbiePostDelay = 0;
 	meta.config.autoDetectLang = 0;
 
-	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').getOrCreate().reset();
-	require('../../src/cache').reset();
-	require('../../src/middleware/uploads').clearCache();
+	(await import('../../src/groups/index.js')).default.cache.reset();
+	(await import('../../src/posts/cache.js')).default.getOrCreate().reset();
+	(await import('../../src/cache.js')).default.reset();
+	(await import('../../src/middleware/uploads.js')).default.clearCache();
 	// privileges must be given after cache reset
 	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();
@@ -204,11 +202,11 @@ async function setupMockDefaults() {
 		id: 'nodebb-theme-persona',
 	});
 
-	const fs = require('fs');
+	const fs = await import('fs');
 	await fs.promises.rm('test/uploads', { recursive: true, force: true });
 
 
-	const { mkdirp } = require('mkdirp');
+	const { mkdirp } = await import('mkdirp');
 
 	const folders = [
 		'test/uploads',
@@ -227,7 +225,7 @@ db.setupMockDefaults = setupMockDefaults;
 async function setupDefaultConfigs(meta) {
 	winston.info('Populating database with default configs, if not already set...\n');
 
-	const defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
+	const defaults = (await import(path.join(nconf.get('base_dir'), 'install/data/defaults.json'), { with: { type: 'json' } })).default;
 	defaults.eventLoopCheckEnabled = 0;
 	defaults.minimumPasswordStrength = 0;
 	await meta.configs.setOnEmpty(defaults);
@@ -235,7 +233,7 @@ async function setupDefaultConfigs(meta) {
 
 async function giveDefaultGlobalPrivileges() {
 	winston.info('Giving default global privileges...\n');
-	const privileges = require('../../src/privileges');
+	const privileges = (await import('../../src/privileges/index.js')).default;
 	await privileges.global.give([
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
 		'groups:search:users', 'groups:search:tags', 'groups:local:login', 'groups:view:users',
@@ -260,3 +258,5 @@ async function enableDefaultPlugins() {
 
 	await db.sortedSetAdd('plugins:active', Object.keys(defaultEnabled), defaultEnabled);
 }
+
+export default db;
