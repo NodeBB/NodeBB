@@ -10,22 +10,6 @@ import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 import { fileURLToPath } from 'url';
 
-import request from '../src/request.js';
-import db from './mocks/databasemock.mjs';
-import helpers from './helpers/index.js';
-import meta from '../src/meta/index.js';
-import user from '../src/user/index.js';
-import groups from '../src/groups/index.js';
-import categories from '../src/categories/index.js';
-import topics from '../src/topics/index.js';
-import posts from '../src/posts/index.js';
-import plugins from '../src/plugins/index.js';
-import flags from '../src/flags.js';
-import messaging from '../src/messaging/index.js';
-import activitypub from '../src/activitypub/index.js';
-import utils from '../src/utils.js';
-import api from '../src/api/index.js';
-
 const wait = promisify(setTimeout);
 
 // ESM equivalent of __dirname
@@ -37,7 +21,6 @@ const writeApiPath = pathResolve(__dirname, '../public/openapi/write.yaml');
 const readApi = await SwaggerParser.dereference(readApiPath);
 const writeApi = await SwaggerParser.dereference(writeApiPath);
 
-const webserver = await import('../src/webserver.js');
 const buildPaths = function (stack, prefix) {
 	const paths = stack.map((dispatch) => {
 		if (
@@ -72,6 +55,8 @@ const buildPaths = function (stack, prefix) {
 	return _.flatten(paths);
 };
 
+const db = (await import('./mocks/databasemock.mjs')).default;
+const webserver = (await import('../src/webserver.js')).default;
 let paths = buildPaths(webserver.app._router.stack)
 	.filter(Boolean)
 	.map((pathObj) => {
@@ -92,6 +77,7 @@ paths = paths.filter(
 
 
 
+const utils = (await import('../src/utils.js')).default;
 describe('API', function () {
 	let jar;
 	let csrfToken;
@@ -238,7 +224,16 @@ describe('API', function () {
 		// pretend to handle sending emails
 	}
 
+	before(async function () {
+		const plugins = (await import('../src/plugins/index.js')).default;
+		// Attach an emailer hook so related requests do not error
+		plugins.hooks.register('emailer-test', {
+			hook: 'static:email.send',
+			method: dummyEmailerHook,
+		});
+	});
 	after(async () => {
+		const plugins = (await import('../src/plugins/index.js')).default;
 		plugins.hooks.unregister(
 			'core',
 			'filter:search.query',
@@ -251,6 +246,8 @@ describe('API', function () {
 		if (setup) {
 			return;
 		}
+
+		const user = (await import('../src/user/index.js')).default;
 
 		// Create sample users
 		const adminUid = await user.create({
@@ -276,8 +273,11 @@ describe('API', function () {
 		for (let x = 0; x < 4; x++) {
 			await user.create({ username: 'deleteme', password: '123456' });
 		}
+		const groups = (await import('../src/groups/index.js')).default;
+
 		await groups.join('administrators', adminUid);
 
+		const api = (await import('../src/api/index.js')).default;
 		// Create api token for testing read/updating/deletion
 		const token = await api.utils.tokens.generate({ uid: adminUid });
 		mocks.get['/admin/tokens/{token}'][0].example = token;
@@ -311,6 +311,8 @@ describe('API', function () {
 		await groups.requestMembership('private-group', pending2);
 		await groups.invite('invitations-only', inviteUid);
 
+		const meta = (await import('../src/meta/index.js')).default;
+
 		await meta.settings.set('core.api', {
 			tokens: [
 				{
@@ -328,8 +330,10 @@ describe('API', function () {
 		meta.config.activitypubEnabled = 1;
 
 		// Create a category
+		const categories = (await import('../src/categories/index.js')).default;
 		const testCategory = await categories.create({ name: 'test' });
 
+		const topics = (await import('../src/topics/index.js')).default;
 		// Post a new topic
 		await topics.post({
 			uid: adminUid,
@@ -350,6 +354,7 @@ describe('API', function () {
 			content: 'Test topic 3 content',
 		});
 
+		const posts = (await import('../src/posts/index.js')).default;
 		// Create a post diff
 		await posts.edit({
 			uid: adminUid,
@@ -364,6 +369,7 @@ describe('API', function () {
 		)[0];
 
 		// Create a sample flag
+		const flags = (await import('../src/flags.js')).default;
 		const { flagId } = await flags.create(
 			'post',
 			1,
@@ -374,6 +380,7 @@ describe('API', function () {
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now());
 
+		const messaging = (await import('../src/messaging/index.js')).default;
 		// Create a new chat room
 		await messaging.newRoom(adminUid, { uids: [unprivUid] });
 
@@ -391,7 +398,7 @@ describe('API', function () {
 			path: 'files/test.png',
 		});
 
-		const socketAdmin = await import('../src/socket.io/admin.js');
+		const socketAdmin = (await import('../src/socket.io/admin.js')).default;
 		await Promise.all(
 			['profile', 'posts', 'uploads'].map(async (type) =>
 				api.users.generateExport({ uid: adminUid }, { uid: adminUid, type })
@@ -400,23 +407,21 @@ describe('API', function () {
 		await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
 		await wait(5000);
 
+		const plugins = (await import('../src/plugins/index.js')).default;
 		// Attach a search hook so /api/search is enabled
 		plugins.hooks.register('core', {
 			hook: 'filter:search.query',
 			method: dummySearchHook,
 		});
-		// Attach an emailer hook so related requests do not error
-		plugins.hooks.register('emailer-test', {
-			hook: 'static:email.send',
-			method: dummyEmailerHook,
-		});
 
 		// All tests run as admin user
+		const helpers = (await import('./helpers/index.js')).default;
 		({ jar } = await helpers.loginUser('admin', '123456'));
 
 		// Retrieve CSRF token using cookie, to test Write API
 		csrfToken = await helpers.getCsrfToken(jar);
 
+		const activitypub = (await import('../src/activitypub/index.js')).default;
 		// Pre-seed ActivityPub cache so contrived actor assertions pass
 		activitypub._cache.set(`0;https://example.org/foobar`, {
 			id: 'https://example.org/foobar',
@@ -619,6 +624,7 @@ describe('API', function () {
 								try {
 									if (type === 'json') {
 										const searchParams = new URLSearchParams(qs);
+										const request = (await import('../src/request.js')).default;
 										result = await request[method](
 											`${url}?${searchParams}`,
 											{
@@ -630,6 +636,7 @@ describe('API', function () {
 											}
 										);
 									} else if (type === 'form') {
+										const helpers = (await import('./helpers/index.js')).default;
 										result = await helpers.uploadFile(
 											url,
 											pathJoin(__dirname, './files/test.png'),
@@ -713,6 +720,7 @@ describe('API', function () {
 									'DELETE /users/{uid}/sessions/{uuid}',
 								];
 								if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
+									const helpers = (await import('./helpers/index.js')).default;
 									({ jar } = await helpers.loginUser('admin', '123456'));
 									let sessionIds = await db.getSortedSetRange(
 										'uid:1:sessions',
