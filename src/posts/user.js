@@ -25,7 +25,15 @@ module.exports = function (Posts) {
 
 		userData.forEach((userData, index) => {
 			userData.signature = validator.escape(String(userData.signature || ''));
-			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
+			userData.fullname = userSettings[index]
+				?
+				userSettings[index].showfullname
+					?
+					validator.escape(String(userData.fullname || ''))
+					:
+					undefined
+				:
+				undefined;
 			userData.selectedGroups = [];
 
 			if (meta.config.hideFullname) {
