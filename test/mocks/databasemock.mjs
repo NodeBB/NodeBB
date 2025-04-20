@@ -21,7 +21,6 @@ global.env = process.env.NODE_ENV || 'production';
 
 
 import winston from 'winston';
-import packageInfo from '../../package.json' with { type: 'json' };
 
 winston.add(new winston.transports.Console({
 	format: winston.format.combine(
@@ -129,6 +128,8 @@ nconf.set(dbType, testDbConfig);
 winston.info('database config %s', dbType, testDbConfig);
 winston.info(`environment ${global.env}`);
 
+import packageInfo from '../../package.json' with { type: 'json' };
+
 nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
@@ -140,7 +141,6 @@ nconf.set('jobsDisabled', false);
 nconf.set('acpPluginInstallDisabled', false);
 
 const db = (await import('../../src/database/index.js')).default;
-
 await db.init();
 if (db.hasOwnProperty('createIndices')) {
 	await db.createIndices();

@@ -1,11 +1,5 @@
 'use strict';
 
-import winston from 'winston';
-import LoggerWithIndentation from './LoggerWithIndentation.mjs';
-import password from '../src/password.js';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
 let cleanupCalled = false;
 async function cleanup() {
     let breakCleanup = false;
@@ -14,11 +8,13 @@ async function cleanup() {
     }
     cleanupCalled = true;
 
+    const LoggerWithIndentation = (await import('./LoggerWithIndentation.mjs')).default;
     const logger = new LoggerWithIndentation();
     const log = (level) => logger.getLogger(level);
     try {
         log(0).info('starting cleanup');
     } catch (err) {
+        const winston = (await import('winston')).default;
         winston.error("error creating logger");
         winston.error(err.stack);
         process.exit(1);
@@ -30,6 +26,7 @@ async function cleanup() {
     }
 
     try {
+        const password = (await import('../src/password.js')).default;
         await password.close();
         log(1).info('password workerpool closed');
     } catch (err) {
@@ -37,7 +34,7 @@ async function cleanup() {
     }
 
     try {
-        const webserver = require('../src/webserver.js');
+        const webserver = (await import('../src/webserver.js')).default;
         await webserver.destroy();
         log(1).info('webserver closed');
     } catch (err) {
@@ -45,7 +42,7 @@ async function cleanup() {
     }
 
     try {
-        const db = require('../src/database/index.js');
+        const db = (await import('../src/database/index.js')).default;
         await db.close();
         log(1).info('db closed');
     } catch (err) {
@@ -53,7 +50,7 @@ async function cleanup() {
     }
 
     try {
-        const metaErrors = require('../src/meta/errors.js');
+        const metaErrors = (await import('../src/meta/errors.js')).default;
         metaErrors.stop();
         log(1).info('cron jobs stopped for errors');
     } catch (err) {
@@ -61,7 +58,7 @@ async function cleanup() {
     }
 
     try {
-        const analytics = require('../src/analytics.js');
+        const analytics = (await import('../src/analytics.js')).default;
         analytics.stop();
         log(1).info('cron jobs stopped for analytics');
     } catch (err) {
@@ -69,7 +66,7 @@ async function cleanup() {
     }
 
     try {
-        const notifications = require('../src/notifications.js');
+        const notifications = (await import('../src/notifications.js')).default;
         notifications.stop();
         log(1).info('cron jobs stopped for notifications');
     } catch (err) {
@@ -77,7 +74,7 @@ async function cleanup() {
     }
 
     try {
-        const activitypub = require('../src/activitypub/index.js');
+        const activitypub = (await import('../src/activitypub/index.js')).default;
         activitypub.stop();
         log(1).info('cron jobs stopped for activitypub');
     } catch (err) {
@@ -85,7 +82,7 @@ async function cleanup() {
     }
 
     try {
-        const plugins = require('../src/plugins/index.js');
+        const plugins = (await import('../src/plugins/index.js')).default;
         plugins.stop();
         log(1).info('cron jobs stopped for plugins');
     } catch (err) {
@@ -93,7 +90,7 @@ async function cleanup() {
     }
 
     try {
-        const posts = require('../src/posts/index.js');
+        const posts = (await import('../src/posts/index.js')).default;
         posts.stop();
         log(1).info('cron jobs stopped for posts');
     } catch (err) {
@@ -101,7 +98,7 @@ async function cleanup() {
     }
 
     try {
-        const scheduledTopics = require('../src/topics/scheduled.js');
+        const scheduledTopics = (await import('../src/topics/scheduled.js')).default;
         scheduledTopics.stop();
         log(1).info('cron jobs stopped for scheduled topics');
     } catch (err) {
@@ -109,7 +106,7 @@ async function cleanup() {
     }
 
     try {
-        const User = require('../src/user/index.js');
+        const User = (await import('../src/user/index.js')).default;
         User.stop();
         User.stopJobs();
         log(1).info('cron jobs stopped for user');

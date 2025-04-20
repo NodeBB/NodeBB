@@ -8,7 +8,6 @@ const fs = require('fs');
 
 const file = require('../file');
 const db = require('../database');
-const Meta = require('./index');
 const events = require('../events');
 const utils = require('../utils');
 const { themeNamePattern } = require('../constants');
@@ -86,6 +85,7 @@ async function getThemes(themePath) {
 }
 
 Themes.set = async (data) => {
+	const Meta = require('./index');
 	switch (data.type) {
 		case 'local': {
 			const current = await Meta.configs.get('theme:id');
@@ -145,6 +145,7 @@ Themes.set = async (data) => {
 };
 
 Themes.setupPaths = async () => {
+	const Meta = require('./index');
 	const data = await utils.promiseParallel({
 		themesData: Themes.get(),
 		currentThemeId: Meta.configs.get('theme:id'),

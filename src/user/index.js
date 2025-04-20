@@ -7,7 +7,6 @@ const plugins = require('../plugins');
 const db = require('../database');
 const privileges = require('../privileges');
 const categories = require('../categories');
-const meta = require('../meta');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 
@@ -67,6 +66,7 @@ User.getUidsFromSet = async function (set, start, stop) {
 	if (set === 'users:online') {
 		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		const now = Date.now();
+		const meta = require('../meta');
 		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.config.onlineCutoff * 60000));
 	}
 	return await db.getSortedSetRevRange(set, start, stop);
@@ -99,6 +99,7 @@ User.getStatus = function (userData) {
 	if (userData.uid <= 0) {
 		return 'offline';
 	}
+	const meta = require('../meta');
 	const isOnline = (Date.now() - userData.lastonline) < (meta.config.onlineCutoff * 60000);
 	return isOnline ? (userData.status || 'online') : 'offline';
 };

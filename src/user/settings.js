@@ -3,7 +3,6 @@
 
 const validator = require('validator');
 
-const meta = require('../meta');
 const db = require('../database');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
@@ -51,6 +50,7 @@ module.exports = function (User) {
 		const data = await plugins.hooks.fire('filter:user.getSettings', { uid: uid, settings: settings });
 		settings = data.settings;
 
+		const meta = require('../meta');
 		const defaultTopicsPerPage = meta.config.topicsPerPage;
 		const defaultPostsPerPage = meta.config.postsPerPage;
 
@@ -103,6 +103,7 @@ module.exports = function (User) {
 	}
 
 	function getSetting(settings, key, defaultValue) {
+		const meta = require('../meta');
 		if (settings[key] || settings[key] === 0) {
 			return settings[key];
 		} else if (activitypub.helpers.isUri(settings.uid) && remoteDefaultSettings[key]) {
@@ -114,6 +115,7 @@ module.exports = function (User) {
 	}
 
 	User.saveSettings = async function (uid, data) {
+		const meta = require('../meta');
 		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
 		if (
 			!data.postsPerPage ||

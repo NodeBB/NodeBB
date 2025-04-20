@@ -14,9 +14,9 @@ if (!databaseName) {
  * @type {import('../../types/database').Database}
  */
 const primaryDB = require(`./${databaseName}`);
-const utils = require('../utils');
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
+	const utils = require('../utils');
 	intFields.forEach((field) => {
 		if (!requestedFields || !requestedFields.length || requestedFields.includes(field)) {
 			data[field] = utils.isNumber(data[field]) ?
