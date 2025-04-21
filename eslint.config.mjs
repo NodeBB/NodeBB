@@ -28,12 +28,6 @@ export default defineConfig([
 			'install/docker/',
 		],
 	},
-	{
-		rules: {
-			'no-bitwise': 'warn',
-			'no-await-in-loop': 'warn',
-		}
-	},
 	// tests
 	{
 		files: ['test/**/*.js'],
