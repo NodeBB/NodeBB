@@ -28,6 +28,8 @@ const sha256 = payload => crypto.createHash('sha256').update(payload).digest('he
 
 const Helpers = module.exports;
 
+Helpers._webfingerCache = webfingerCache; // exported for tests
+
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
 	setTimeout(async () => {

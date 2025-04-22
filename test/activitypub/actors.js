@@ -46,6 +46,7 @@ describe('Actor asserton', () => {
 					publicKeyPem: 'somekey',
 				},
 			});
+			activitypub.helpers._webfingerCache.set('example@example.org', { actorUri })
 		});
 
 		it('should return true if successfully asserted', async () => {
@@ -194,6 +195,25 @@ describe('Actor asserton', () => {
 
 				const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
 				assert.strictEqual(uid, id);
+			});
+
+			it('should fail to assert if a passed-in ID\'s webfinger query does not respond with the same ID (gh#13352)', async () => {
+				const { id } = helpers.mocks.person({
+					preferredUsername: 'foobar',
+				});
+
+				const actorUri = `https://example.org/${utils.generateUUID()}`;
+				activitypub.helpers._webfingerCache.set('foobar@example.org', {
+					username: 'foobar',
+					hostname: 'example.org',
+					actorUri,
+				});
+
+				const { actorUri: confirm } = await activitypub.helpers.query('foobar@example.org');
+				assert.strictEqual(confirm, actorUri);
+
+				const response = await activitypub.actors.assert([id]);
+				assert.deepStrictEqual(response, []);
 			})
 		});
 	});
