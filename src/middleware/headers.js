@@ -86,6 +86,7 @@ module.exports = function (middleware) {
 		if (req.query.lang) {
 			const langs = await listCodes();
 			if (!langs.includes(req.query.lang)) {
+				// TODO: cant set req.query.lang
 				req.query.lang = meta.config.defaultLang;
 			}
 			return next();
@@ -97,6 +98,7 @@ module.exports = function (middleware) {
 			if (!lang) {
 				return next();
 			}
+			// TODO: cant set req.query.lang
 			req.query.lang = lang;
 		}
 
