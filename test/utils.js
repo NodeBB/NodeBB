@@ -264,15 +264,7 @@ describe('Utility Methods', () => {
 
 	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('100'), '100');
-		done();
-	});
-
-	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000'), '1,000');
-		done();
-	});
-
-	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000000'), '1,000,000');
 		done();
 	});
