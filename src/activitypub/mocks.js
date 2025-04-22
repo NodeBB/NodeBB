@@ -707,6 +707,7 @@ Mocks.notes.public = async (post) => {
 
 	attachment = normalizeAttachment(attachment);
 	let preview;
+	let summary = null;
 	if (isMainPost) {
 		preview = {
 			type: 'Note',
@@ -715,6 +716,8 @@ Mocks.notes.public = async (post) => {
 			published,
 			attachment: normalizeAttachment(noteAttachment),
 		};
+
+		summary = post.content;
 	}
 
 	let context = await posts.getPostField(post.pid, 'context');
@@ -747,7 +750,7 @@ Mocks.notes.public = async (post) => {
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context,
 		audience,
-		summary: null,
+		summary,
 		name,
 		preview,
 		content: post.content,
