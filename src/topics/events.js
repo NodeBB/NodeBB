@@ -1,5 +1,6 @@
 'use strict';
 
+const validator = require('validator');
 const _ = require('lodash');
 const nconf = require('nconf');
 const db = require('../database');
@@ -107,7 +108,13 @@ function renderUser(event) {
 	if (!event.user || event.user.system) {
 		return '[[global:system-user]]';
 	}
-	return `${helpers.buildAvatar(event.user, '16px', true)} <a href="${relative_path}/user/${event.user.userslug}">${event.user.displayname}</a>`;
+
+	const user = {
+		...event.user,
+		displayname: validator.escape(String(event.user.displayname)),
+	};
+
+	return `${helpers.buildAvatar(user, '16px', true)} <a href="${relative_path}/user/${user.userslug}">${user.displayname}</a>`;
 }
 
 function renderTimeago(event) {
