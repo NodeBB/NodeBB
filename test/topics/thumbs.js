@@ -244,7 +244,7 @@ describe('Topic thumbs', () => {
 		it('should also work with UUIDs', async () => {
 			await topics.thumbs.associate({
 				id: uuid,
-				path: `/files/test.png`
+				path: `/files/test.png`,
 			});
 			await topics.thumbs.delete(uuid, '/files/test.png');
 
@@ -267,13 +267,6 @@ describe('Topic thumbs', () => {
 			await topics.thumbs.delete(uuid, thumbPaths[0]);
 			assert.strictEqual(await file.exists(thumbPaths[0]), true);
 		});
-
-		// it('should handle an array of relative paths', async () => {
-		// 	await topics.thumbs.associate({ id: 1, path: thumbPaths[0] });
-		// 	await topics.thumbs.associate({ id: 1, path: thumbPaths[1] });
-
-		// 	await topics.thumbs.delete(1, [relativeThumbPaths[0], relativeThumbPaths[1]]);
-		// });
 
 		it('should have no more thumbs left', async () => {
 			const associated = await db.isSortedSetMembers(`topic:1:thumbs`, [relativeThumbPaths[0], relativeThumbPaths[1]]);

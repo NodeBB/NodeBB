@@ -2,8 +2,11 @@
 
 import serverConfig from 'eslint-config-nodebb';
 import publicConfig from 'eslint-config-nodebb/public';
+import commonRules from 'eslint-config-nodebb/common';
 
 import { defineConfig } from 'eslint/config';
+import stylisticJs from '@stylistic/eslint-plugin-js'
+import js from '@eslint/js';
 import globals from 'globals';
 
 export default defineConfig([
@@ -30,6 +33,11 @@ export default defineConfig([
 	},
 	// tests
 	{
+		plugins: {
+			js,
+			'@stylistic/js': stylisticJs,
+		},
+		extends: ['js/recommended'],
 		files: ['test/**/*.js'],
 		languageOptions: {
 			ecmaVersion: 2020,
@@ -44,12 +52,13 @@ export default defineConfig([
 				after: 'readonly',
 				afterEach: 'readonly',
 			},
-	  	},
+		},
 		rules: {
-	  		'no-unused-vars': 'off',
+			...commonRules,
+			'no-unused-vars': 'off',
 			'no-prototype-builtins': 'off',
 		}
-  	},
+	},
 	...publicConfig,
 	...serverConfig
 ]);
