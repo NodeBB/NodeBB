@@ -1,3 +1,35 @@
+#### v4.2.2 (2025-04-22)
+
+##### Chores
+
+*  incrementing version number - v4.2.1 (852a270c)
+*  update changelog for v4.2.1 (4cee37b9)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  escape displayname in topic events (42a5a127)
+*  closes #13336, allow main post deletion from "delete posts" tool (4f13eb03)
+*  bug where generateHandle would throw when passed in an invalid slug (2a98a9b3)
+
+##### Other Changes
+
+*  fix semi (6832541c)
+*  fix missing comma (d59a5728)
+
+##### Refactors
+
+*  use sortedSetsCard (46ed56cf)
+
 #### v4.2.1 (2025-04-10)
 
 ##### Chores
