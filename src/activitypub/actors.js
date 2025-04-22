@@ -127,6 +127,13 @@ Actors.assert = async (ids, options = {}) => {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 
+			// webfinger backreference check
+			const { hostname: domain } = new URL(id);
+			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
+			if (id !== canonicalId) {
+				return null;
+			}
+
 			let typeOk = false;
 			if (Array.isArray(actor.type)) {
 				typeOk = actor.type.some(type => activitypub._constants.acceptableActorTypes.has(type));
