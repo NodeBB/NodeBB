@@ -4,6 +4,7 @@ import { Hash } from './hash'
 import { List } from './list'
 import { Set } from './set'
 import { Item } from './string'
+import { SortedSet, SortedSetScanBaseParameters, SortedSetTheoryOperation } from './zset'
 
 export { Hash } from './hash'
 export { List } from './list'
@@ -15,7 +16,7 @@ export {
   SortedSetScanBaseParameters,
 } from './zset'
 
-export interface Database {
+export interface Database extends Hash, List, Set, Item, SortedSet, SortedSetTheoryOperation, SortedSetScanBaseParameters {
   checkCompatibility(callback?: () => void): Promise<void>
 
   checkCompatibilityVersion(

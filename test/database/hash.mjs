@@ -1,9 +1,5 @@
-'use strict';
-
-
-const async = require('async');
-const assert = require('assert');
-const db = require('../mocks/databasemock');
+import assert from 'assert';
+import db from '../mocks/databasemock.mjs';
 
 describe('Hash methods', () => {
 	const testData = {
@@ -12,20 +8,26 @@ describe('Hash methods', () => {
 		age: 99,
 	};
 
-	beforeEach((done) => {
-		db.setObject('hashTestObject', testData, done);
+	beforeEach(async function () {
+		await db.setObject('hashTestObject', testData);
 	});
 
 	describe('setObject()', () => {
-		it('should create a object', (done) => {
-			db.setObject('testObject1', { foo: 'baris', bar: 99 }, function (err) {
-				assert.ifError(err);
-				assert(arguments.length < 2);
-				done();
-			});
+		it('should create a object', async function () {
+			await db.setObject('testObject1', { foo: 'baris', bar: 99 });
+			const testObject1 = await db.getObject('testObject1');
+			assert.deepStrictEqual(testObject1, { foo: 'baris', bar: 99 });
 		});
 
-		it('should set two objects to same data', async () => {
+		it('should overwrite a value', async function () {
+			await db.delete('testObject1');
+			await db.setObject('testObject1', { foo: 'baris', bar: 99 });
+			await db.setObject('testObject1', { foo: 'baris', bar: 100 });
+			const testObject1 = await db.getObject('testObject1');
+			assert.deepStrictEqual(testObject1, { foo: 'baris', bar: 100 });
+		});
+
+		it('should set two objects to same data', async function () {
 			const data = { foo: 'baz', test: '1' };
 			await db.setObject(['multiObject1', 'multiObject2'], data);
 			const result = await db.getObjects(['multiObject1', 'multiObject2']);
@@ -33,46 +35,29 @@ describe('Hash methods', () => {
 			assert.deepStrictEqual(result[1], data);
 		});
 
-		it('should do nothing if key is falsy', (done) => {
-			db.setObject('', { foo: 1, derp: 2 }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should do nothing if key is falsy', async function () {
+			await db.setObject('', { foo: 1, derp: 2 });
 		});
 
-		it('should do nothing if data is falsy', (done) => {
-			db.setObject('falsy', null, (err) => {
-				assert.ifError(err);
-				db.exists('falsy', (err, exists) => {
-					assert.ifError(err);
-					assert.equal(exists, false);
-					done();
-				});
-			});
+		it('should do nothing if data is falsy', async function () {
+			await db.setObject('falsy', null);
+			const exists = await db.exists('falsy');
+			assert.strictEqual(exists, false);
 		});
 
-		it('should not error if a key is empty string', (done) => {
-			db.setObject('emptyField', { '': '', b: 1 }, (err) => {
-				assert.ifError(err);
-				db.getObject('emptyField', (err, data) => {
-					assert.ifError(err);
-					done();
-				});
-			});
+		it('should not error if a key is empty string', async function () {
+			await db.setObject('emptyField', { '': '', b: 1 });
+			const data = await db.getObject('emptyField');
+			assert.deepStrictEqual(data, { b: 1 });
 		});
 
-		it('should work for field names with "." in them', (done) => {
-			db.setObject('dotObject', { 'my.dot.field': 'foo' }, (err) => {
-				assert.ifError(err);
-				db.getObject('dotObject', (err, data) => {
-					assert.ifError(err);
-					assert.equal(data['my.dot.field'], 'foo');
-					done();
-				});
-			});
+		it('should work for field names with "." in them', async function () {
+			await db.setObject('dotObject', { 'my.dot.field': 'foo' });
+			const dotObject = await db.getObject('dotObject');
+			assert.deepStrictEqual(dotObject, { 'my.dot.field': 'foo' });
 		});
 
-		it('should set multiple keys to different objects', async () => {
+		it('should set multiple keys to different objects', async function () {
 			await db.setObjectBulk([
 				['bulkKey1', { foo: '1' }],
 				['bulkKey2', { baz: 'baz' }],
@@ -81,89 +66,118 @@ describe('Hash methods', () => {
 			assert.deepStrictEqual(result, [{ foo: '1' }, { baz: 'baz' }]);
 		});
 
-		it('should not error if object is empty', async () => {
+		it('should not error if object is empty (setObjectBulk, two keys)', async function () {
 			await db.setObjectBulk([
 				['bulkKey3', { foo: '1' }],
-				['bulkKey4', { }],
+				['bulkKey4', {}],
 			]);
 			const result = await db.getObjects(['bulkKey3', 'bulkKey4']);
 			assert.deepStrictEqual(result, [{ foo: '1' }, null]);
 		});
 
-		it('should update existing object on second call', async () => {
-			await db.setObjectBulk([['bulkKey3.5', { foo: '1' }]]);
-			await db.setObjectBulk([['bulkKey3.5', { baz: '2' }]]);
-			const result = await db.getObject('bulkKey3.5');
-			assert.deepStrictEqual(result, { foo: '1', baz: '2' });
-		});
-
-		it('should not error if object is empty', async () => {
-			await db.setObjectBulk([['bulkKey5', {}]]);
+		it('should not error if object is empty (setObjectBulk, one key)', async function () {
+			await db.setObjectBulk([
+				['bulkKey5', {}]
+			]);
 			const result = await db.getObjects(['bulkKey5']);
 			assert.deepStrictEqual(result, [null]);
 		});
 
-		it('should not error if object is empty', async () => {
+		it('should not error if object is empty (setObject, two keys)', async function () {
 			const keys = ['bulkKey6', 'bulkKey7'];
 			const data = {};
-
 			await db.setObject(keys, data);
 			const result = await db.getObjects(keys);
 			assert.deepStrictEqual(result, [null, null]);
 		});
 
-		it('should not error if object is empty', async () => {
+		it('should not error if object is empty, (setObject, one key)', async function () {
 			await db.setObject('emptykey', {});
 			const result = await db.getObject('emptykey');
 			assert.deepStrictEqual(result, null);
 		});
+
+		it('should update existing object on second call', async function () {
+			await db.setObjectBulk([['bulkKey3.5', { foo: '1' }]]);
+			await db.setObjectBulk([['bulkKey3.5', { baz: '2' }]]);
+			const result = await db.getObject('bulkKey3.5');
+			assert.deepStrictEqual(result, { foo: '1', baz: '2' });
+		});
 	});
 
 	describe('setObjectField()', () => {
-		it('should create a new object with field', (done) => {
-			db.setObjectField('testObject2', 'name', 'ginger', function (err) {
-				assert.ifError(err);
-				assert(arguments.length < 2);
-				done();
-			});
+		it('should create a new object with field', async function () {
+			await db.delete('testObject2');
+			assert.deepStrictEqual(await db.getObject('testObject2'), null);
+			await db.setObjectField('testObject2', 'name', 'ginger');
+			const testObject2 = await db.getObject('testObject2');
+			assert.deepStrictEqual(testObject2, { name: 'ginger' });
 		});
 
-		it('should add a new field to an object', (done) => {
-			db.setObjectField('testObject2', 'type', 'cat', function (err) {
-				assert.ifError(err, null);
-				assert(arguments.length < 2);
-				done();
-			});
+		it('should add a new field to an object', async function () {
+			await db.delete('testObject2');
+			assert.deepStrictEqual(await db.getObject('testObject2'), null);
+			await db.setObject('testObject2', { name: 'ginger' });
+			await db.setObjectField('testObject2', 'type', 'cat');
+			const actual = await db.getObject('testObject2');
+			const expected = { name: 'ginger', type: 'cat' };
+			assert.deepStrictEqual(actual, expected);
 		});
 
-		it('should set two objects fields to same data', async () => {
+		it('should overwrite an existing field with new value', async function () {
+			await db.delete('testObject2');
+			assert.deepStrictEqual(await db.getObject('testObject2'), null);
+			await db.setObject('testObject2', { name: 'ginger' });
+			assert.deepStrictEqual(
+				await db.getObject('testObject2'),
+				{ name: 'ginger' }
+			);
+			await db.setObjectField('testObject2', 'name', 'new_ginger');
+			assert.deepStrictEqual(
+				await db.getObject('testObject2'),
+				{ name: 'new_ginger' }
+			);
+		});
+
+		it('should set two objects fields to same data (create new)', async function () {
+			await db.deleteAll(['multiObject1', 'multiObject2']);
+			assert.deepStrictEqual(await db.getObjects(['multiObject1', 'multiObject2']), [null, null]);
+
 			const data = { foo: 'baz', test: '1' };
 			await db.setObjectField(['multiObject1', 'multiObject2'], 'myField', '2');
 			const result = await db.getObjects(['multiObject1', 'multiObject2']);
-			assert.deepStrictEqual(result[0].myField, '2');
-			assert.deepStrictEqual(result[1].myField, '2');
+			assert.strictEqual(result[0].myField, '2');
+			assert.strictEqual(result[1].myField, '2');
 		});
 
-		it('should work for field names with "." in them', (done) => {
-			db.setObjectField('dotObject2', 'my.dot.field', 'foo2', (err) => {
-				assert.ifError(err);
-				db.getObjectField('dotObject2', 'my.dot.field', (err, value) => {
-					assert.ifError(err);
-					assert.equal(value, 'foo2');
-					done();
-				});
-			});
+		it('should set two objects fields to same data (add fields)', async function () {
+			await db.deleteAll(['multiObject1', 'multiObject2']);
+			assert.deepStrictEqual(await db.getObjects(['multiObject1', 'multiObject2']), [null, null]);
+
+			const data = { foo: 'baz', test: '1' };
+			await db.setObject(['multiObject1', 'multiObject2'], data);
+			assert.deepStrictEqual(await db.getObjects(['multiObject1', 'multiObject2']), [data, data]);
+
+			await db.setObjectField(['multiObject1', 'multiObject2'], 'myField', '2');
+			const result = await db.getObjects(['multiObject1', 'multiObject2']);
+			assert.deepStrictEqual(result, [{ ...data, myField: '2' }, { ...data, myField: '2' }]);
 		});
 
-		it('should work for field names with "." in them when they are cached', async () => {
+		it('should work for field names with "." in them', async function () {
+			await db.setObjectField('dotObject2', 'my.dot.field', 'foo2');
+			const value = await db.getObjectField('dotObject2', 'my.dot.field');
+			assert.strictEqual(value, 'foo2');
+		});
+
+		it('should work for field names with "." in them when they are cached', async function () {
 			await db.setObjectField('dotObject3', 'my.dot.field', 'foo2');
 			const data = await db.getObject('dotObject3');
 			assert.strictEqual(data['my.dot.field'], 'foo2');
 			const value = await db.getObjectField('dotObject3', 'my.dot.field');
-			assert.equal(value, 'foo2');
+			assert.strictEqual(value, 'foo2');
 		});
 
-		it('should work for fields that start with $', async () => {
+		it('should work for fields that start with $', async function () {
 			await db.setObjectField('dollarsign', '$someField', 'foo');
 			assert.strictEqual(await db.getObjectField('dollarsign', '$someField'), 'foo');
 			assert.strictEqual(await db.isObjectField('dollarsign', '$someField'), true);
@@ -174,62 +188,44 @@ describe('Hash methods', () => {
 	});
 
 	describe('getObject()', () => {
-		it('should return falsy if object does not exist', (done) => {
-			db.getObject('doesnotexist', function (err, data) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(!!data, false);
-				done();
-			});
+		it('should return falsy if object does not exist', async function () {
+			const data = await db.getObject('doesnotexist');
+			assert.strictEqual(!!data, false);
 		});
 
-		it('should retrieve an object', (done) => {
-			db.getObject('hashTestObject', (err, data) => {
-				assert.equal(err, null);
-				assert.equal(data.name, testData.name);
-				assert.equal(data.age, testData.age);
-				assert.equal(data.lastname, 'usakli');
-				done();
-			});
+		it('should retrieve an object', async function () {
+			const data = await db.getObject('hashTestObject');
+			assert.deepStrictEqual(data, testData);
 		});
 
-		it('should return null if key is falsy', (done) => {
-			db.getObject(null, function (err, data) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 2);
-				assert.equal(data, null);
-				done();
-			});
+		it('should return null if key is falsy', async function () {
+			const data = await db.getObject(null);
+			assert.strictEqual(data, null);
 		});
 
-		it('should return fields if given', async () => {
+		it('should return fields if given', async function () {
 			const data = await db.getObject('hashTestObject', ['name', 'age']);
-			assert.strictEqual(data.name, 'baris');
-			assert.strictEqual(parseInt(data.age, 10), 99);
+			assert.deepStrictEqual(data, { name: 'baris', age: 99 });
 		});
 	});
 
 	describe('getObjects()', () => {
-		before((done) => {
-			async.parallel([
-				async.apply(db.setObject, 'testObject4', { name: 'baris' }),
-				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger'),
-			], done);
+		before(async function () {
+			await Promise.all([
+				db.setObject('testObject4', { name: 'baris' }),
+				db.setObjectField('testObject5', 'name', 'ginger'),
+			]);
 		});
 
-		it('should return 3 objects with correct data', (done) => {
-			db.getObjects(['testObject4', 'testObject5', 'doesnotexist'], function (err, objects) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(objects) && objects.length === 3, true);
-				assert.equal(objects[0].name, 'baris');
-				assert.equal(objects[1].name, 'ginger');
-				assert.equal(!!objects[2], false);
-				done();
-			});
+		it('should return 3 objects with correct data', async function () {
+			const objects = await db.getObjects(['testObject4', 'testObject5', 'doesnotexist']);
+			assert(Array.isArray(objects) && objects.length === 3);
+			assert.strictEqual(objects[0].name, 'baris');
+			assert.strictEqual(objects[1].name, 'ginger');
+			assert.strictEqual(!!objects[2], false);
 		});
 
-		it('should return fields if given', async () => {
+		it('should return fields if given', async function () {
 			await db.setObject('fieldsObj1', { foo: 'foo', baz: 'baz', herp: 'herp' });
 			await db.setObject('fieldsObj2', { foo: 'foo2', baz: 'baz2', herp: 'herp2', onlyin2: 'onlyin2' });
 			const data = await db.getObjects(['fieldsObj1', 'fieldsObj2'], ['baz', 'doesnotexist', 'onlyin2']);
@@ -243,121 +239,85 @@ describe('Hash methods', () => {
 	});
 
 	describe('getObjectField()', () => {
-		it('should return falsy if object does not exist', (done) => {
-			db.getObjectField('doesnotexist', 'fieldName', function (err, value) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(!!value, false);
-				done();
-			});
+		it('should return falsy if object does not exist', async function () {
+			const value = await db.getObjectField('doesnotexist', 'fieldName');
+			assert.strictEqual(!!value, false);
 		});
 
-		it('should return falsy if field does not exist', (done) => {
-			db.getObjectField('hashTestObject', 'fieldName', function (err, value) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(!!value, false);
-				done();
-			});
+		it('should return falsy if field does not exist', async function () {
+			const value = await db.getObjectField('hashTestObject', 'fieldName');
+			assert.strictEqual(!!value, false);
 		});
 
-		it('should get an objects field', (done) => {
-			db.getObjectField('hashTestObject', 'lastname', function (err, value) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(value, 'usakli');
-				done();
-			});
+		it('should get an objects field', async function () {
+			const value = await db.getObjectField('hashTestObject', 'lastname');
+			assert.strictEqual(value, 'usakli');
 		});
 
-		it('should return null if key is falsy', (done) => {
-			db.getObjectField(null, 'test', function (err, data) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 2);
-				assert.equal(data, null);
-				done();
-			});
+		it('should return null if key is falsy', async function () {
+			const data = await db.getObjectField(null, 'test');
+			assert.strictEqual(data, null);
 		});
 
-		it('should return null and not error', async () => {
+		it('should return null and not error', async function () {
 			const data = await db.getObjectField('hashTestObject', ['field1', 'field2']);
 			assert.strictEqual(data, null);
 		});
 	});
 
 	describe('getObjectFields()', () => {
-		it('should return an object with falsy values', (done) => {
-			db.getObjectFields('doesnotexist', ['field1', 'field2'], function (err, object) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(typeof object, 'object');
-				assert.equal(!!object.field1, false);
-				assert.equal(!!object.field2, false);
-				done();
-			});
+		it('should return an object with falsy values', async function () {
+			const object = await db.getObjectFields('doesnotexist', ['field1', 'field2']);
+			assert.strictEqual(typeof object, 'object');
+			assert.strictEqual(!!object.field1, false);
+			assert.strictEqual(!!object.field2, false);
 		});
 
-		it('should return an object with correct fields', (done) => {
-			db.getObjectFields('hashTestObject', ['lastname', 'age', 'field1'], function (err, object) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(typeof object, 'object');
-				assert.equal(object.lastname, 'usakli');
-				assert.equal(object.age, 99);
-				assert.equal(!!object.field1, false);
-				done();
-			});
+		it('should return an object with correct fields', async function () {
+			const object = await db.getObjectFields('hashTestObject', ['lastname', 'age', 'field1']);
+			assert.strictEqual(object.lastname, 'usakli');
+			assert.strictEqual(object.age, 99);
+			assert.strictEqual(!!object.field1, false);
 		});
 
-		it('should return null if key is falsy', (done) => {
-			db.getObjectFields(null, ['test', 'foo'], function (err, data) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 2);
-				assert.equal(data, null);
-				done();
-			});
+		it('should return null if key is falsy', async function () {
+			const data = await db.getObjectFields(null, ['test', 'foo']);
+			assert.strictEqual(data, null);
 		});
 	});
 
 	describe('getObjectsFields()', () => {
-		before((done) => {
-			async.parallel([
-				async.apply(db.setObject, 'testObject8', { name: 'baris', age: 99 }),
-				async.apply(db.setObject, 'testObject9', { name: 'ginger', age: 3 }),
-			], done);
+		before(async function () {
+			await Promise.all([
+				db.setObject('testObject8', { name: 'baris', age: 99 }),
+				db.setObject('testObject9', { name: 'ginger', age: 3 }),
+			]);
 		});
 
-		it('should return an array of objects with correct values', (done) => {
-			db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], ['name', 'age'], function (err, objects) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(objects), true);
-				assert.equal(objects.length, 3);
-				assert.equal(objects[0].name, 'baris');
-				assert.equal(objects[0].age, 99);
-				assert.equal(objects[1].name, 'ginger');
-				assert.equal(objects[1].age, 3);
-				assert.equal(!!objects[2].name, false);
-				done();
-			});
+		it('should return an array of objects with correct values', async function () {
+			const objects = await db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], ['name', 'age']);
+			assert(Array.isArray(objects));
+			assert.strictEqual(objects.length, 3);
+			assert.strictEqual(objects[0].name, 'baris');
+			assert.strictEqual(objects[0].age, 99);
+			assert.strictEqual(objects[1].name, 'ginger');
+			assert.strictEqual(objects[1].age, 3);
+			assert.strictEqual(!!objects[2].name, false);
 		});
 
-		it('should return undefined for all fields if object does not exist', (done) => {
-			db.getObjectsFields(['doesnotexist1', 'doesnotexist2'], ['name', 'age'], (err, data) => {
-				assert.ifError(err);
-				assert(Array.isArray(data));
-				assert.equal(data[0].name, null);
-				assert.equal(data[0].age, null);
-				assert.equal(data[1].name, null);
-				assert.equal(data[1].age, null);
-				done();
-			});
+		it('should return undefined for all fields if object does not exist', async function () {
+			const data = await db.getObjectsFields(['doesnotexist1', 'doesnotexist2'], ['name', 'age']);
+			assert(Array.isArray(data));
+			assert.strictEqual(data[0].name, null);
+			assert.strictEqual(data[0].age, null);
+			assert.strictEqual(data[1].name, null);
+			assert.strictEqual(data[1].age, null);
 		});
 
-		it('should return all fields if fields is empty array', async () => {
+		it('should return all fields if fields is empty array', async function () {
 			const objects = await db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], []);
 			assert(Array.isArray(objects));
-			assert.strict(objects.length, 3);
+			assert.strictEqual(objects.length, 3);
 			assert.strictEqual(objects[0].name, 'baris');
 			assert.strictEqual(Number(objects[0].age), 99);
 			assert.strictEqual(objects[1].name, 'ginger');
@@ -365,7 +325,7 @@ describe('Hash methods', () => {
 			assert.strictEqual(!!objects[2], false);
 		});
 
-		it('should return objects if fields is not an array', async () => {
+		it('should return objects if fields is not an array', async function () {
 			const objects = await db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], undefined);
 			assert.strictEqual(objects[0].name, 'baris');
 			assert.strictEqual(Number(objects[0].age), 99);
@@ -376,306 +336,209 @@ describe('Hash methods', () => {
 	});
 
 	describe('getObjectKeys()', () => {
-		it('should return an empty array for a object that does not exist', (done) => {
-			db.getObjectKeys('doesnotexist', function (err, keys) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(keys) && keys.length === 0, true);
-				done();
-			});
+		it('should return an empty array for a object that does not exist', async function () {
+			const keys = await db.getObjectKeys('doesnotexist');
+			assert(Array.isArray(keys) && keys.length === 0);
 		});
 
-		it('should return an array of keys for the object\'s fields', (done) => {
-			db.getObjectKeys('hashTestObject', function (err, keys) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(keys) && keys.length === 3, true);
-				keys.forEach((key) => {
-					assert.notEqual(['name', 'lastname', 'age'].indexOf(key), -1);
-				});
-				done();
+		it('should return an array of keys for the object\'s fields', async function () {
+			const keys = await db.getObjectKeys('hashTestObject');
+			assert(Array.isArray(keys) && keys.length === 3);
+			keys.forEach((key) => {
+				assert.notStrictEqual(['name', 'lastname', 'age'].indexOf(key), -1);
 			});
 		});
 	});
 
 	describe('getObjectValues()', () => {
-		it('should return an empty array for a object that does not exist', (done) => {
-			db.getObjectValues('doesnotexist', function (err, values) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(values) && values.length === 0, true);
-				done();
-			});
+		it('should return an empty array for a object that does not exist', async function () {
+			const values = await db.getObjectValues('doesnotexist');
+			assert(Array.isArray(values) && values.length === 0);
 		});
 
-		it('should return an array of values for the object\'s fields', (done) => {
-			db.getObjectValues('hashTestObject', function (err, values) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(values) && values.length === 3, true);
-				assert.deepEqual(['baris', 'usakli', 99].sort(), values.sort());
-				done();
-			});
+		it('should return an array of values for the object\'s fields', async function () {
+			const values = await db.getObjectValues('hashTestObject');
+			assert(Array.isArray(values) && values.length === 3);
+			assert.deepStrictEqual(['baris', 'usakli', 99].sort(), values.sort());
 		});
 	});
 
 	describe('isObjectField()', () => {
-		it('should return false if object does not exist', (done) => {
-			db.isObjectField('doesnotexist', 'field1', function (err, value) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(value, false);
-				done();
-			});
+		it('should return false if object does not exist', async function () {
+			const value = await db.isObjectField('doesnotexist', 'field1');
+			assert.strictEqual(value, false);
 		});
 
-		it('should return false if field does not exist', (done) => {
-			db.isObjectField('hashTestObject', 'field1', function (err, value) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(value, false);
-				done();
-			});
+		it('should return false if field does not exist', async function () {
+			const value = await db.isObjectField('hashTestObject', 'field1');
+			assert.strictEqual(value, false);
 		});
 
-		it('should return true if field exists', (done) => {
-			db.isObjectField('hashTestObject', 'name', function (err, value) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(value, true);
-				done();
-			});
+		it('should return true if field exists', async function () {
+			const value = await db.isObjectField('hashTestObject', 'name');
+			assert.strictEqual(value, true);
 		});
 
-		it('should not error if field is falsy', async () => {
+		it('should not error if field is falsy', async function () {
 			const value = await db.isObjectField('hashTestObjectEmpty', '');
 			assert.strictEqual(value, false);
 		});
 	});
 
-
 	describe('isObjectFields()', () => {
-		it('should return an array of false if object does not exist', (done) => {
-			db.isObjectFields('doesnotexist', ['field1', 'field2'], function (err, values) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, [false, false]);
-				done();
-			});
+		it('should return an array of false if object does not exist', async function () {
+			const values = await db.isObjectFields('doesnotexist', ['field1', 'field2']);
+			assert.deepStrictEqual(values, [false, false]);
 		});
 
-		it('should return false if field does not exist', (done) => {
-			db.isObjectFields('hashTestObject', ['name', 'age', 'field1'], function (err, values) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, [true, true, false]);
-				done();
-			});
+		it('should return false if field does not exist', async function () {
+			const values = await db.isObjectFields('hashTestObject', ['name', 'age', 'field1']);
+			assert.deepStrictEqual(values, [true, true, false]);
 		});
 
-		it('should not error if one field is falsy', async () => {
+		it('should not error if one field is falsy', async function () {
 			const values = await db.isObjectFields('hashTestObject', ['name', '']);
 			assert.deepStrictEqual(values, [true, false]);
 		});
 	});
 
 	describe('deleteObjectField()', () => {
-		before((done) => {
-			db.setObject('testObject10', { foo: 'bar', delete: 'this', delete1: 'this', delete2: 'this' }, done);
+		before(async function () {
+			await db.setObject('testObject10', { foo: 'bar', delete: 'this', delete1: 'this', delete2: 'this' });
 		});
 
-		it('should delete an objects field', (done) => {
-			db.deleteObjectField('testObject10', 'delete', function (err) {
-				assert.ifError(err);
-				assert(arguments.length < 2);
-				db.isObjectField('testObject10', 'delete', (err, isField) => {
-					assert.ifError(err);
-					assert.equal(isField, false);
-					done();
-				});
-			});
+		it('should delete an objects field', async function () {
+			await db.deleteObjectField('testObject10', 'delete');
+			const isField = await db.isObjectField('testObject10', 'delete');
+			assert.strictEqual(isField, false);
 		});
 
-		it('should delete multiple fields of the object', (done) => {
-			db.deleteObjectFields('testObject10', ['delete1', 'delete2'], function (err) {
-				assert.ifError(err);
-				assert(arguments.length < 2);
-				async.parallel({
-					delete1: async.apply(db.isObjectField, 'testObject10', 'delete1'),
-					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2'),
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.delete1, false);
-					assert.equal(results.delete2, false);
-					done();
-				});
-			});
+		it('should delete multiple fields of the object', async function () {
+			await db.deleteObjectFields('testObject10', ['delete1', 'delete2']);
+			const results = await Promise.all([
+				db.isObjectField('testObject10', 'delete1'),
+				db.isObjectField('testObject10', 'delete2'),
+			]);
+			assert.strictEqual(results[0], false);
+			assert.strictEqual(results[1], false);
 		});
 
-		it('should delete multiple fields of multiple objects', async () => {
+		it('should delete multiple fields of multiple objects', async function () {
 			await db.setObject('deleteFields1', { foo: 'foo1', baz: '2' });
 			await db.setObject('deleteFields2', { foo: 'foo2', baz: '3' });
 			await db.deleteObjectFields(['deleteFields1', 'deleteFields2'], ['baz']);
-			const obj1 = await db.getObject('deleteFields1');
-			const obj2 = await db.getObject('deleteFields2');
+			const [obj1, obj2] = await db.getObjects(['deleteFields1', 'deleteFields2']);
 			assert.deepStrictEqual(obj1, { foo: 'foo1' });
 			assert.deepStrictEqual(obj2, { foo: 'foo2' });
 		});
 
-		it('should not error if fields is empty array', async () => {
+		it('should not error if fields is empty array', async function () {
 			await db.deleteObjectFields('someKey', []);
 			await db.deleteObjectField('someKey', []);
 		});
 
-		it('should not error if key is undefined', (done) => {
-			db.deleteObjectField(undefined, 'someField', (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should not error if key is undefined', async function () {
+			await db.deleteObjectField(undefined, 'someField');
 		});
 
-		it('should not error if key is null', (done) => {
-			db.deleteObjectField(null, 'someField', (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should not error if key is null', async function () {
+			await db.deleteObjectField(null, 'someField');
 		});
 
-		it('should not error if field is undefined', (done) => {
-			db.deleteObjectField('someKey', undefined, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should not error if field is undefined', async function () {
+			await db.deleteObjectField('someKey', undefined);
 		});
 
-		it('should not error if one of the fields is undefined', async () => {
+		it('should not error if one of the fields is undefined', async function () {
 			await db.deleteObjectFields('someKey', ['best', undefined]);
 		});
 
-		it('should not error if field is null', (done) => {
-			db.deleteObjectField('someKey', null, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should not error if field is null', async function () {
+			await db.deleteObjectField('someKey', null);
 		});
 	});
 
 	describe('incrObjectField()', () => {
-		before((done) => {
-			db.setObject('testObject11', { age: 99 }, done);
+		before(async function () {
+			await db.setObject('testObject11', { age: 99 });
 		});
 
-		it('should set an objects field to 1 if object does not exist', (done) => {
-			db.incrObjectField('testObject12', 'field1', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.strictEqual(newValue, 1);
-				done();
-			});
+		it('should set an objects field to 1 if object does not exist', async function () {
+			const newValue = await db.incrObjectField('testObject12', 'field1');
+			assert.strictEqual(newValue, 1);
 		});
 
-		it('should increment an object fields by 1 and return it', (done) => {
-			db.incrObjectField('testObject11', 'age', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.strictEqual(newValue, 100);
-				done();
-			});
+		it('should increment an object fields by 1 and return it', async function () {
+			const newValue = await db.incrObjectField('testObject11', 'age');
+			assert.strictEqual(newValue, 100);
 		});
 	});
 
 	describe('decrObjectField()', () => {
-		before((done) => {
-			db.setObject('testObject13', { age: 99 }, done);
+		before(async function () {
+			await db.setObject('testObject13', { age: 99 });
 		});
 
-		it('should set an objects field to -1 if object does not exist', (done) => {
-			db.decrObjectField('testObject14', 'field1', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(newValue, -1);
-				done();
-			});
+		it('should set an objects field to -1 if object does not exist', async function () {
+			const newValue = await db.decrObjectField('testObject14', 'field1');
+			assert.strictEqual(newValue, -1);
 		});
 
-		it('should decrement an object fields by 1 and return it', (done) => {
-			db.decrObjectField('testObject13', 'age', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 98);
-				done();
-			});
+		it('should decrement an object fields by 1 and return it', async function () {
+			const newValue = await db.decrObjectField('testObject13', 'age');
+			assert.strictEqual(newValue, 98);
 		});
 
-		it('should decrement multiple objects field by 1 and return an array of new values', (done) => {
-			db.decrObjectField(['testObject13', 'testObject14', 'decrTestObject'], 'age', (err, data) => {
-				assert.ifError(err);
-				assert.equal(data[0], 97);
-				assert.equal(data[1], -1);
-				assert.equal(data[2], -1);
-				done();
-			});
+		it('should decrement multiple objects field by 1 and return an array of new values', async function () {
+			const data = await db.decrObjectField(['testObject13', 'testObject14', 'decrTestObject'], 'age');
+			assert.strictEqual(data[0], 97);
+			assert.strictEqual(data[1], -1);
+			assert.strictEqual(data[2], -1);
 		});
 	});
 
 	describe('incrObjectFieldBy()', () => {
-		before((done) => {
-			db.setObject('testObject15', { age: 100 }, done);
+		before(async function () {
+			await db.setObject('testObject15', { age: 100 });
 		});
 
-		it('should set an objects field to 5 if object does not exist', (done) => {
-			db.incrObjectFieldBy('testObject16', 'field1', 5, function (err, newValue) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 5);
-				done();
-			});
+		it('should set an objects field to 5 if object does not exist', async function () {
+			const newValue = await db.incrObjectFieldBy('testObject16', 'field1', 5);
+			assert.strictEqual(newValue, 5);
 		});
 
-		it('should increment an object fields by passed in value and return it', (done) => {
-			db.incrObjectFieldBy('testObject15', 'age', 11, function (err, newValue) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 111);
-				done();
-			});
+		it('should increment an object fields by passed in value and return it (type integer)', async function () {
+			const newValue = await db.incrObjectFieldBy('testObject15', 'age', 11);
+			assert.strictEqual(newValue, 111);
 		});
 
-		it('should increment an object fields by passed in value and return it', (done) => {
-			db.incrObjectFieldBy('testObject15', 'age', '11', (err, newValue) => {
-				assert.ifError(err);
-				assert.equal(newValue, 122);
-				done();
-			});
+		it('should increment an object fields by passed in value and return it (type string)', async function () {
+			const newValue = await db.incrObjectFieldBy('testObject15', 'age', '11');
+			assert.strictEqual(newValue, 122);
 		});
 
-		it('should return null if value is NaN', (done) => {
-			db.incrObjectFieldBy('testObject15', 'lastonline', 'notanumber', (err, newValue) => {
-				assert.ifError(err);
-				assert.strictEqual(newValue, null);
-				db.isObjectField('testObject15', 'lastonline', (err, isField) => {
-					assert.ifError(err);
-					assert(!isField);
-					done();
-				});
-			});
+		it('should return null if value is NaN', async function () {
+			const newValue = await db.incrObjectFieldBy('testObject15', 'lastonline', 'notanumber');
+			assert.strictEqual(newValue, null);
+			const isField = await db.isObjectField('testObject15', 'lastonline');
+			assert.strictEqual(isField, false);
 		});
 	});
 
 	describe('incrObjectFieldByBulk', () => {
-		before(async () => {
+		before(async function () {
 			await db.setObject('testObject16', { age: 100 });
 		});
 
-		it('should increment multiple object fields', async () => {
+		it('should increment multiple object fields', async function () {
 			await db.incrObjectFieldByBulk([
 				['testObject16', { age: 5, newField: 10 }],
 				['testObject17', { newField: -5 }],
 			]);
 			const d = await db.getObjects(['testObject16', 'testObject17']);
-			assert.equal(d[0].age, 105);
-			assert.equal(d[0].newField, 10);
-			assert.equal(d[1].newField, -5);
+			assert.strictEqual(d[0].age, 105);
+			assert.strictEqual(d[0].newField, 10);
+			assert.strictEqual(d[1].newField, -5);
 		});
 	});
 });

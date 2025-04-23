@@ -3,6 +3,7 @@ timeout: 25000
 exit: true
 bail: true
 spec:
+  - "test/database/hash.mjs"
   - "test/password.mjs"
   - "test/databasemock.mjs"
   - "test/dynamicTests.mjs"

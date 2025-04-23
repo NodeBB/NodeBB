@@ -86,7 +86,7 @@ module.exports = function (module) {
 			`SELECT EXISTS(SELECT 1 FROM legacy_object_live WHERE _key = ? LIMIT 1) AS e`,
 			[key]
 		);
-		return rows[0].e;
+		return !!(rows[0].e);
 	};
 
 	module.scan = async function (params) {
