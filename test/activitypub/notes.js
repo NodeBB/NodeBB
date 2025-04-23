@@ -411,7 +411,7 @@ describe('Notes', () => {
 		});
 	});
 
-	describe.only('Inbox handling', () => {
+	describe('Inbox handling', () => {
 		describe('helper self-check', () => {
 			it('should generate a Like activity', () => {
 				const object = utils.generateUUID();
@@ -542,6 +542,22 @@ describe('Notes', () => {
 
 					({ upvotes } = await posts.getPostFields(id, 'upvotes'));
 					assert.strictEqual(upvotes, 1);
+				});
+			});
+
+			describe('(Update)', () => {
+				it('should update a note\'s content', async () => {
+					const { id: actor } = helpers.mocks.person();
+					const { id, note } = helpers.mocks.note({ attributedTo: actor });
+					await activitypub.notes.assert(0, [id], { skipChecks: true });
+					note.content = utils.generateUUID();
+					const { activity: update } = helpers.mocks.update({ object: note });
+					const { activity } = helpers.mocks.announce({ object: update });
+
+					await activitypub.inbox.announce({ body: activity });
+
+					const content = await posts.getPostField(id, 'content');
+					assert.strictEqual(content, note.content);
 				});
 			});
 		});

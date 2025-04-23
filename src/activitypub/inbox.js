@@ -286,6 +286,12 @@ inbox.announce = async (req) => {
 			break;
 		}
 
+		case object.type === 'Update': {
+			req.body = object;
+			await inbox.update(req);
+			break;
+		}
+
 		case activitypub._constants.acceptedPostTypes.includes(object.type): {
 			if (String(object.id).startsWith(nconf.get('url'))) { // Local object
 				const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
