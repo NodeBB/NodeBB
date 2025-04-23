@@ -176,3 +176,26 @@ Helpers.mocks.announce = (override = {}) => {
 	return { activity };
 };
 
+Helpers.mocks.update = (override = {}) => {
+	let actor = override.actor;
+	let object = override.object;
+	if (!actor) {
+		({ id: actor } = Helpers.mocks.person());
+	}
+	if (!object) {
+		({ id: object } = Helpers.mocks.note());
+	}
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${Helpers.mocks._baseUrl}/update/${encodeURIComponent(object.id || object)}`,
+		type: 'Update',
+		to: [activitypub._constants.publicAddress],
+		cc: [`${actor}/followers`],
+		actor,
+		object,
+	};
+
+	return { activity };
+};
+
