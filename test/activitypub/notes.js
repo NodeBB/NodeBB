@@ -208,7 +208,7 @@ describe('Notes', () => {
 
 					const unread = await topics.getTotalUnread(uid);
 					assert.strictEqual(unread, 0);
-				})
+				});
 			});
 		});
 
@@ -328,7 +328,7 @@ describe('Notes', () => {
 				it('should federate out an activity with object of type "Note"', () => {
 					assert(activity.object && activity.object.type);
 					assert.strictEqual(activity.object.type, 'Note');
-				})
+				});
 			});
 		});
 
@@ -406,6 +406,142 @@ describe('Notes', () => {
 					]);
 
 					assert(addressees.has(cid));
+				});
+			});
+		});
+	});
+
+	describe.only('Inbox handling', () => {
+		describe('helper self-check', () => {
+			it('should generate a Like activity', () => {
+				const object = utils.generateUUID();
+				const { id: actor } = helpers.mocks.person();
+				const { activity } = helpers.mocks.like({
+					object,
+					actor,
+				});
+
+				assert.deepStrictEqual(activity, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: `${helpers.mocks._baseUrl}/like/${encodeURIComponent(object)}`,
+					type: 'Like',
+					actor,
+					object,
+				});
+			});
+
+			it('should generate an Announce activity wrapping a Like activity', () => {
+				const object = utils.generateUUID();
+				const { id: actor } = helpers.mocks.person();
+				const { activity: like } = helpers.mocks.like({
+					object,
+					actor,
+				});
+				const { id: gActor } = helpers.mocks.group();
+				const { activity } = helpers.mocks.announce({
+					actor: gActor,
+					object: like,
+				});
+
+				assert.deepStrictEqual(activity, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: `${helpers.mocks._baseUrl}/announce/${encodeURIComponent(like.id)}`,
+					type: 'Announce',
+					to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
+					cc: [
+						`${gActor}/followers`,
+					],
+					actor: gActor,
+					object: like,
+				});
+			});
+		});
+
+		describe('Announce', () => {
+			let cid;
+
+			before(async () => {
+				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			});
+
+			describe('(Note)', () => {
+				it('should create a new topic in cid -1 if category not addressed', async () => {
+					const { note } = helpers.mocks.note();
+					await activitypub.actors.assert([note.attributedTo]);
+					const { activity } = helpers.mocks.announce({
+						object: note,
+					});
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					await db.sortedSetAdd(`followersRemote:${activity.actor}`, Date.now(), uid);
+
+					const beforeCount = await db.sortedSetCard(`cid:-1:tids`);
+					await activitypub.inbox.announce({ body: activity });
+					const count = await db.sortedSetCard(`cid:-1:tids`);
+
+					assert.strictEqual(count, beforeCount + 1);
+				});
+
+				it('should create a new topic in local category', async () => {
+					const { note } = helpers.mocks.note({
+						cc: [`${nconf.get('url')}/category/${cid}`],
+					});
+					await activitypub.actors.assert([note.attributedTo]);
+					const { activity } = helpers.mocks.announce({
+						object: note,
+					});
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					await db.sortedSetAdd(`followersRemote:${activity.actor}`, Date.now(), uid);
+
+					const beforeCount = await db.sortedSetCard(`cid:${cid}:tids`);
+					await activitypub.inbox.announce({ body: activity });
+					const count = await db.sortedSetCard(`cid:${cid}:tids`);
+
+					assert.strictEqual(count, beforeCount + 1);
+				});
+			});
+
+			describe('(Like)', () => {
+				it('should upvote a local post', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { postData } = await topics.post({
+						cid,
+						uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					const { activity: like } = helpers.mocks.like({
+						object: `${nconf.get('url')}/post/${postData.pid}`,
+					});
+					const { activity } = helpers.mocks.announce({
+						object: like,
+					});
+
+					let { upvotes } = await posts.getPostFields(postData.pid, 'upvotes');
+					assert.strictEqual(upvotes, 0);
+
+					await activitypub.inbox.announce({ body: activity });
+					({ upvotes } = await posts.getPostFields(postData.pid, 'upvotes'));
+					assert.strictEqual(upvotes, 1);
+				});
+
+				it('should upvote an asserted remote post', async () => {
+					const { id } = helpers.mocks.note();
+					await activitypub.notes.assert(0, [id], { skipChecks: true });
+					const { activity: like } = helpers.mocks.like({
+						object: id,
+					});
+					const { activity } = helpers.mocks.announce({
+						object: like,
+					});
+
+					let { upvotes } = await posts.getPostFields(id, 'upvotes');
+					assert.strictEqual(upvotes, 0);
+
+					await activitypub.inbox.announce({ body: activity });
+
+					({ upvotes } = await posts.getPostFields(id, 'upvotes'));
+					assert.strictEqual(upvotes, 1);
 				});
 			});
 		});
