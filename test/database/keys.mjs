@@ -1,36 +1,25 @@
-'use strict';
-
-const assert = require('assert');
-const db = require('../mocks/databasemock');
+// database.test.mjs
+import assert from 'assert';
+import db from '../mocks/databasemock.mjs'; // Adjust path as needed, assuming .js extension
 
 describe('Key methods', () => {
-	beforeEach((done) => {
-		db.set('testKey', 'testValue', done);
+	beforeEach(async () => {
+		await db.set('testKey', 'testValue');
 	});
 
-	it('should set a key without error', (done) => {
-		db.set('testKey', 'testValue', function (err) {
-			assert.ifError(err);
-			assert(arguments.length < 2);
-			done();
-		});
+	it('should set a key without error', async () => {
+		await db.set('testKey', 'testValue');
+		assert.ok(true); // No error means test passes
 	});
 
-	it('should get a key without error', (done) => {
-		db.get('testKey', function (err, value) {
-			assert.ifError(err);
-			assert.equal(arguments.length, 2);
-			assert.strictEqual(value, 'testValue');
-			done();
-		});
+	it('should get a key without error', async () => {
+		const value = await db.get('testKey');
+		assert.strictEqual(value, 'testValue');
 	});
 
-	it('should return null if key does not exist', (done) => {
-		db.get('doesnotexist', (err, value) => {
-			assert.ifError(err);
-			assert.equal(value, null);
-			done();
-		});
+	it('should return null if key does not exist', async () => {
+		const value = await db.get('doesnotexist');
+		assert.strictEqual(value, null);
 	});
 
 	it('should return multiple keys and null if key doesn\'t exist', async () => {
@@ -44,33 +33,19 @@ describe('Key methods', () => {
 		assert.deepStrictEqual(await db.mget(null), []);
 	});
 
-	it('should return true if key exist', (done) => {
-		db.exists('testKey', function (err, exists) {
-			assert.ifError(err);
-			assert.equal(arguments.length, 2);
-			assert.strictEqual(exists, true);
-			done();
-		});
+	it('should return true if key exists', async () => {
+		const exists = await db.exists('testKey');
+		assert.strictEqual(exists, true);
 	});
 
-	it('should return false if key does not exist', (done) => {
-		db.exists('doesnotexist', function (err, exists) {
-			assert.ifError(err);
-			assert.equal(arguments.length, 2);
-			assert.strictEqual(exists, false);
-			done();
-		});
+	it('should return false if key does not exist', async () => {
+		const exists = await db.exists('doesnotexist');
+		assert.strictEqual(exists, false);
 	});
 
 	it('should work for an array of keys', async () => {
-		assert.deepStrictEqual(
-			await db.exists(['testKey', 'doesnotexist']),
-			[true, false]
-		);
-		assert.deepStrictEqual(
-			await db.exists([]),
-			[]
-		);
+		assert.deepStrictEqual(await db.exists(['testKey', 'doesnotexist']), [true, false]);
+		assert.deepStrictEqual(await db.exists([]), []);
 	});
 
 	describe('scan', () => {
@@ -81,36 +56,23 @@ describe('Key methods', () => {
 			await db.sortedSetAdd('ip:1:uid', 1, 'a');
 			await db.sortedSetAdd('ip:23:uid', 1, 'a');
 			const data = await db.scan({ match: 'ip:1*' });
-			assert.equal(data.length, 3);
-			assert(data.includes('ip:123:uid'));
-			assert(data.includes('ip:124:uid'));
-			assert(data.includes('ip:1:uid'));
+			assert.strictEqual(data.length, 3);
+			assert.ok(data.includes('ip:123:uid'));
+			assert.ok(data.includes('ip:124:uid'));
+			assert.ok(data.includes('ip:1:uid'));
 		});
 	});
 
-	it('should delete a key without error', (done) => {
-		db.delete('testKey', function (err) {
-			assert.ifError(err);
-			assert(arguments.length < 2);
-
-			db.get('testKey', (err, value) => {
-				assert.ifError(err);
-				assert.equal(false, !!value);
-				done();
-			});
-		});
+	it('should delete a key without error', async () => {
+		await db.delete('testKey');
+		const value = await db.get('testKey');
+		assert.strictEqual(value, null);
 	});
 
-	it('should return false if key was deleted', (done) => {
-		db.delete('testKey', function (err) {
-			assert.ifError(err);
-			assert(arguments.length < 2);
-			db.exists('testKey', (err, exists) => {
-				assert.ifError(err);
-				assert.strictEqual(exists, false);
-				done();
-			});
-		});
+	it('should return false if key was deleted', async () => {
+		await db.delete('testKey');
+		const exists = await db.exists('testKey');
+		assert.strictEqual(exists, false);
 	});
 
 	it('should delete all keys passed in', async () => {
@@ -133,196 +95,108 @@ describe('Key methods', () => {
 
 		await db.delete('deletezset');
 		const [key1Exists, key2Exists] = await db.isSortedSetMembers('deletezset', ['value1', 'value2']);
-
 		assert.strictEqual(key1Exists, false);
 		assert.strictEqual(key2Exists, false);
 	});
 
 	describe('increment', () => {
-		it('should initialize key to 1', (done) => {
-			db.increment('keyToIncrement', (err, value) => {
-				assert.ifError(err);
-				assert.strictEqual(parseInt(value, 10), 1);
-				done();
-			});
+		it('should initialize key to 1', async () => {
+			const value = await db.increment('keyToIncrement');
+			assert.strictEqual(parseInt(value, 10), 1);
 		});
 
-		it('should increment key to 2', (done) => {
-			db.increment('keyToIncrement', (err, value) => {
-				assert.ifError(err);
-				assert.strictEqual(parseInt(value, 10), 2);
-				done();
-			});
+		it('should increment key to 2', async () => {
+			await db.increment('keyToIncrement'); // Initialize to 1
+			const value = await db.increment('keyToIncrement');
+			assert.strictEqual(parseInt(value, 10), 2);
 		});
 
-		it('should set then increment a key', (done) => {
-			db.set('myIncrement', 1, (err) => {
-				assert.ifError(err);
-				db.increment('myIncrement', (err, value) => {
-					assert.ifError(err);
-					assert.equal(value, 2);
-					db.get('myIncrement', (err, value) => {
-						assert.ifError(err);
-						assert.equal(value, 2);
-						done();
-					});
-				});
-			});
+		it('should set then increment a key', async () => {
+			await db.set('myIncrement', 1);
+			const value = await db.increment('myIncrement');
+			assert.strictEqual(value, 2);
+			const finalValue = await db.get('myIncrement');
+			assert.strictEqual(finalValue, 2);
 		});
 
-		it('should return the correct value', (done) => {
-			db.increment('testingCache', (err) => {
-				assert.ifError(err);
-				db.get('testingCache', (err, value) => {
-					assert.ifError(err);
-					assert.equal(value, 1);
-					db.increment('testingCache', (err) => {
-						assert.ifError(err);
-						db.get('testingCache', (err, value) => {
-							assert.ifError(err);
-							assert.equal(value, 2);
-							done();
-						});
-					});
-				});
-			});
+		it('should return the correct value', async () => {
+			await db.increment('testingCache');
+			assert.strictEqual(await db.get('testingCache'), 1);
+			await db.increment('testingCache');
+			assert.strictEqual(await db.get('testingCache'), 2);
 		});
 	});
 
 	describe('rename', () => {
-		it('should rename key to new name', (done) => {
-			db.set('keyOldName', 'renamedKeyValue', (err) => {
-				if (err) {
-					return done(err);
-				}
-				db.rename('keyOldName', 'keyNewName', function (err) {
-					assert.ifError(err);
-					assert(arguments.length < 2);
-
-					db.get('keyNewName', (err, value) => {
-						assert.ifError(err);
-						assert.equal(value, 'renamedKeyValue');
-						done();
-					});
-				});
-			});
+		it('should rename key to new name', async () => {
+			await db.set('keyOldName', 'renamedKeyValue');
+			await db.rename('keyOldName', 'keyNewName');
+			const value = await db.get('keyNewName');
+			assert.strictEqual(value, 'renamedKeyValue');
 		});
 
-		it('should rename multiple keys', (done) => {
-			db.sortedSetAdd('zsettorename', [1, 2, 3], ['value1', 'value2', 'value3'], (err) => {
-				assert.ifError(err);
-				db.rename('zsettorename', 'newzsetname', (err) => {
-					assert.ifError(err);
-					db.exists('zsettorename', (err, exists) => {
-						assert.ifError(err);
-						assert(!exists);
-						db.getSortedSetRange('newzsetname', 0, -1, (err, values) => {
-							assert.ifError(err);
-							assert.deepEqual(['value1', 'value2', 'value3'], values);
-							done();
-						});
-					});
-				});
-			});
+		it('should rename multiple keys', async () => {
+			await db.sortedSetAdd('zsettorename', [1, 2, 3], ['value1', 'value2', 'value3']);
+			await db.rename('zsettorename', 'newzsetname');
+			const exists = await db.exists('zsettorename');
+			assert.strictEqual(exists, false);
+			const values = await db.getSortedSetRange('newzsetname', 0, -1);
+			assert.deepStrictEqual(values, ['value1', 'value2', 'value3']);
 		});
 
-		it('should not error if old key does not exist', (done) => {
-			db.rename('doesnotexist', 'anotherdoesnotexist', (err) => {
-				assert.ifError(err);
-				db.exists('anotherdoesnotexist', (err, exists) => {
-					assert.ifError(err);
-					assert(!exists);
-					done();
-				});
-			});
+		it('should not error if old key does not exist', async () => {
+			await db.rename('doesnotexist', 'anotherdoesnotexist');
+			const exists = await db.exists('anotherdoesnotexist');
+			assert.strictEqual(exists, false);
 		});
 	});
 
 	describe('type', () => {
-		it('should return null if key does not exist', (done) => {
-			db.type('doesnotexist', (err, type) => {
-				assert.ifError(err);
-				assert.strictEqual(type, null);
-				done();
-			});
+		it('should return null if key does not exist', async () => {
+			const type = await db.type('doesnotexist');
+			assert.strictEqual(type, null);
 		});
 
-		it('should return hash as type', (done) => {
-			db.setObject('typeHash', { foo: 1 }, (err) => {
-				assert.ifError(err);
-				db.type('typeHash', (err, type) => {
-					assert.ifError(err);
-					assert.equal(type, 'hash');
-					done();
-				});
-			});
+		it('should return hash as type', async () => {
+			await db.setObject('typeHash', { foo: 1 });
+			const type = await db.type('typeHash');
+			assert.strictEqual(type, 'hash');
 		});
 
-		it('should return zset as type', (done) => {
-			db.sortedSetAdd('typeZset', 123, 'value1', (err) => {
-				assert.ifError(err);
-				db.type('typeZset', (err, type) => {
-					assert.ifError(err);
-					assert.equal(type, 'zset');
-					done();
-				});
-			});
+		it('should return zset as type', async () => {
+			await db.sortedSetAdd('typeZset', 123, 'value1');
+			const type = await db.type('typeZset');
+			assert.strictEqual(type, 'zset');
 		});
 
-		it('should return set as type', (done) => {
-			db.setAdd('typeSet', 'value1', (err) => {
-				assert.ifError(err);
-				db.type('typeSet', (err, type) => {
-					assert.ifError(err);
-					assert.equal(type, 'set');
-					done();
-				});
-			});
+		it('should return set as type', async () => {
+			await db.setAdd('typeSet', 'value1');
+			const type = await db.type('typeSet');
+			assert.strictEqual(type, 'set');
 		});
 
-		it('should return list as type', (done) => {
-			db.listAppend('typeList', 'value1', (err) => {
-				assert.ifError(err);
-				db.type('typeList', (err, type) => {
-					assert.ifError(err);
-					assert.equal(type, 'list');
-					done();
-				});
-			});
+		it('should return list as type', async () => {
+			await db.listAppend('typeList', 'value1');
+			const type = await db.type('typeList');
+			assert.strictEqual(type, 'list');
 		});
 
-		it('should return string as type', (done) => {
-			db.set('typeString', 'value1', (err) => {
-				assert.ifError(err);
-				db.type('typeString', (err, type) => {
-					assert.ifError(err);
-					assert.equal(type, 'string');
-					done();
-				});
-			});
+		it('should return string as type', async () => {
+			await db.set('typeString', 'value1');
+			const type = await db.type('typeString');
+			assert.strictEqual(type, 'string');
 		});
 
-		it('should expire a key using seconds', (done) => {
-			db.expire('testKey', 86400, (err) => {
-				assert.ifError(err);
-				db.ttl('testKey', (err, ttl) => {
-					assert.ifError(err);
-					assert.equal(Math.round(86400 / 1000), Math.round(ttl / 1000));
-					done();
-				});
-			});
+		it('should expire a key using seconds', async () => {
+			await db.expire('testKey', 86400);
+			const ttl = await db.ttl('testKey');
+			assert.strictEqual(Math.round(86400 / 1000), Math.round(ttl / 1000));
 		});
 
-		it('should expire a key using milliseconds', (done) => {
-			db.pexpire('testKey', 86400000, (err) => {
-				assert.ifError(err);
-				db.pttl('testKey', (err, pttl) => {
-					assert.ifError(err);
-					assert.equal(Math.round(86400000 / 1000000), Math.round(pttl / 1000000));
-					done();
-				});
-			});
+		it('should expire a key using milliseconds', async () => {
+			await db.pexpire('testKey', 86400000);
+			const pttl = await db.pttl('testKey');
+			assert.strictEqual(Math.round(86400000 / 1000000), Math.round(pttl / 1000000));
 		});
 	});
 });
-
