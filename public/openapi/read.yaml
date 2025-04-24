@@ -66,6 +66,10 @@ tags:
   - name: other
     description: Other one-off routes that do not fit in a section of their own
 paths:
+  /sping:
+    $ref: 'read/sping.yaml'
+  /ping:
+    $ref: 'read/ping.yaml'
   /api/:
     $ref: 'read/index.yaml'
   /api/admin:
