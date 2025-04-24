@@ -318,7 +318,6 @@ if (document.readyState === 'loading') {
 			return callback();
 		}
 		require([
-			'jquery-ui/widgets/datepicker',
 			'jquery-ui/widgets/autocomplete',
 			'jquery-ui/widgets/sortable',
 			'jquery-ui/widgets/resizable',

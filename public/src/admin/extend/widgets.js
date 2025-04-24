@@ -7,7 +7,6 @@ define('admin/extend/widgets', [
 	'jquery-ui/widgets/sortable',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
-	'jquery-ui/widgets/datepicker',
 ], function (bootbox, alerts) {
 	const Widgets = {};
 
@@ -74,7 +73,6 @@ define('admin/extend/widgets', [
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
-				createDatePicker(ui.item);
 				appendToggle(ui.item);
 			},
 			start: function () {
@@ -178,15 +176,6 @@ define('admin/extend/widgets', [
 		});
 	}
 
-	function createDatePicker(el) {
-		const currentYear = new Date().getFullYear();
-		el.find('.date-selector').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			yearRange: currentYear + ':' + (currentYear + 100),
-		});
-	}
-
 	function appendToggle(el) {
 		if (!el.hasClass('block')) {
 			el.addClass('block').css('width', '').css('height', '')
@@ -243,7 +232,6 @@ define('admin/extend/widgets', [
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);
-					createDatePicker(widgetEl);
 				}
 			}
 
