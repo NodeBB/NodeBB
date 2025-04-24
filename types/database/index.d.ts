@@ -39,7 +39,7 @@ export interface Database extends Hash, List, Set, Item, SortedSet, SortedSetThe
   init(opts: any): Promise<void>
 }
 
-export interface MySQLDatabase extends Database, Hash, List, Set, Item {
+export interface MySQLDatabase extends Database {
   pool?: import('mysql2/promise').Pool
   client?: import('mysql2/promise').Pool
   transaction(perform: (poolConnection: PoolConnection) => Promise<void>, txClient?: PoolConnection): Promise<void>

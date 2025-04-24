@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * 
+ * @param {import('../../../types/database').Database} module 
+ */
 module.exports = function (module) {
 	const helpers = require('./helpers');
 

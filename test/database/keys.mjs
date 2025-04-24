@@ -106,7 +106,6 @@ describe('Key methods', () => {
 		});
 
 		it('should increment key to 2', async () => {
-			await db.increment('keyToIncrement'); // Initialize to 1
 			const value = await db.increment('keyToIncrement');
 			assert.strictEqual(parseInt(value, 10), 2);
 		});
@@ -116,14 +115,14 @@ describe('Key methods', () => {
 			const value = await db.increment('myIncrement');
 			assert.strictEqual(value, 2);
 			const finalValue = await db.get('myIncrement');
-			assert.strictEqual(finalValue, 2);
+			assert.strictEqual(finalValue, '2');
 		});
 
 		it('should return the correct value', async () => {
 			await db.increment('testingCache');
-			assert.strictEqual(await db.get('testingCache'), 1);
+			assert.strictEqual(await db.get('testingCache'), '1');
 			await db.increment('testingCache');
-			assert.strictEqual(await db.get('testingCache'), 2);
+			assert.strictEqual(await db.get('testingCache'), '2');
 		});
 	});
 

@@ -185,12 +185,19 @@ module.exports = function (module) {
 
 		return await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'string');
+			await client.query(
+				`
+				-- Insert or update the key, incrementing the data value
+				INSERT INTO legacy_string (_key, data)
+				VALUES (?, '1')
+				ON DUPLICATE KEY UPDATE
+				data = CAST(data AS DECIMAL) + 1`,
+				[key]
+			);
 			const [[row]] = await client.query(
-				`INSERT INTO legacy_string (_key, data)
-                 VALUES (?, '1')
-                 ON DUPLICATE KEY UPDATE
-                 data = CAST(CAST(data AS DECIMAL) + 1 AS CHAR)
-                 RETURNING data AS d`,
+				`
+				-- Retrieve the updated data value
+				SELECT data AS d FROM legacy_string WHERE _key = ?;`,
 				[key]
 			);
 			return parseFloat(row.d);

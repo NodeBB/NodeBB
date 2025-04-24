@@ -4,11 +4,11 @@ exit: true
 bail: true
 spec:
   - "test/database/keys.mjs"
-  # - "test/database/hash.mjs"
-  # - "test/password.mjs"
-  # - "test/databasemock.mjs"
-  # - "test/dynamicTests.mjs"
-  # - "test/database.mjs"
+  - "test/database/hash.mjs"
+  - "test/password.mjs"
+  - "test/databasemock.mjs"
+  - "test/dynamicTests.mjs"
+  - "test/database.mjs"
+  - "test/emailer.mjs"
   # - "test/api.mjs"
-  # - "test/emailer.mjs"
 ignore: "test/files/**"
