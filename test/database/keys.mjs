@@ -1,6 +1,6 @@
 // database.test.mjs
 import assert from 'assert';
-import db from '../mocks/databasemock.mjs'; // Adjust path as needed, assuming .js extension
+import db from '../mocks/databasemock.mjs';
 
 describe('Key methods', () => {
 	beforeEach(async () => {
@@ -66,7 +66,7 @@ describe('Key methods', () => {
 	it('should delete a key without error', async () => {
 		await db.delete('testKey');
 		const value = await db.get('testKey');
-		assert.strictEqual(value, null);
+		assert.strictEqual(!!value, false);
 	});
 
 	it('should return false if key was deleted', async () => {

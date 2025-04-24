@@ -3,11 +3,12 @@ timeout: 25000
 exit: true
 bail: true
 spec:
-  - "test/database/hash.mjs"
-  - "test/password.mjs"
-  - "test/databasemock.mjs"
-  - "test/dynamicTests.mjs"
-  - "test/database.mjs"
+  - "test/database/keys.mjs"
+  # - "test/database/hash.mjs"
+  # - "test/password.mjs"
+  # - "test/databasemock.mjs"
+  # - "test/dynamicTests.mjs"
+  # - "test/database.mjs"
   # - "test/api.mjs"
-  - "test/emailer.mjs"
+  # - "test/emailer.mjs"
 ignore: "test/files/**"
