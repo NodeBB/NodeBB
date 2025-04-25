@@ -118,7 +118,7 @@
         "passport-http-bearer": "1.0.1",
         "passport-local": "1.0.0",
         "pg": "8.15.5",
-        "pg-cursor": "2.14.5",
+        "pg-cursor": "2.14.6",
         "postcss": "8.5.3",
         "postcss-clean": "1.2.0",
         "progress-webpack-plugin": "1.0.16",
