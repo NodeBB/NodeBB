@@ -296,8 +296,8 @@
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" id="restrictChat" data-field="restrictChat">
-					<label for="restrictChat" class="form-check-label">[[admin/settings/user:restrict-chat]]</label>
+					<input class="form-check-input" type="checkbox" id="disableIncomingChats" data-field="disableIncomingChats">
+					<label for="disableIncomingChats" class="form-check-label">[[admin/settings/user:disable-incoming-chats]]</label>
 				</div>
 
 				<div class="form-check form-switch mb-3">

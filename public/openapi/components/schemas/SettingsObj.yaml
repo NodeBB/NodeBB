@@ -31,9 +31,25 @@ Settings:
     followTopicsOnReply:
       type: boolean
       description: Automatically be notified of new posts in a topic, when you reply to that topic
-    restrictChat:
+    disableIncomingChats:
       type: boolean
       description: Do not allow other users to start chats with you (or add you to other chat rooms)
+    chatAllowList:
+      type: array
+      items:
+        type: string
+      description: List of uids that can start chats with you
+    chatDenyList:
+      type: array
+      items:
+        type: string
+      description: List of uids that are not allowed to start chats with you
+    chatAllowListUsers:
+      type: array
+      description: List of users that can start chats with you
+    chatDenyListUsers:
+      type: array
+      description: List of users that are not allowed to start chats with you
     topicSearchEnabled:
       type: boolean
       description: Enable keyword searching within topics

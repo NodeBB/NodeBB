@@ -61,7 +61,7 @@ describe('Messaging Library', () => {
 		}));
 
 		await Groups.join('administrators', mocks.users.foo.uid);
-		await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
+		await User.setSetting(mocks.users.baz.uid, 'disableIncomingChats', '1');
 
 		({ jar: mocks.users.foo.jar, csrf_token: mocks.users.foo.csrf } = await helpers.loginUser('foo', 'barbar'));
 		({ jar: mocks.users.bar.jar, csrf_token: mocks.users.bar.csrf } = await helpers.loginUser('bar', 'bazbaz'));
@@ -85,7 +85,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should NOT allow messages to be sent to a restricted user', async () => {
-			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
+			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '1');
 			try {
 				await Messaging.canMessageUser(mocks.users.herp.uid, mocks.users.baz.uid);
 			} catch (err) {
@@ -100,13 +100,25 @@ describe('Messaging Library', () => {
 			});
 		});
 
-		it('should allow messages to be sent to a restricted user if restricted user follows sender', (done) => {
-			User.follow(mocks.users.baz.uid, mocks.users.herp.uid, () => {
-				Messaging.canMessageUser(mocks.users.herp.uid, mocks.users.baz.uid, (err) => {
-					assert.ifError(err);
-					done();
-				});
-			});
+		it('should respect allow/deny list when sending chat messages', async () => {
+			const uid1 = await User.create({ username: 'allowdeny1', password: 'barbar' });
+			const uid2 = await User.create({ username: 'allowdeny2', password: 'bazbaz' });
+			const uid3 = await User.create({ username: 'allowdeny3', password: 'bazbaz' });
+			await Messaging.canMessageUser(uid1, uid2);
+
+			// rejects uid1 only allows uid3 to chat
+			await User.setSetting(uid1, 'chatAllowList', JSON.stringify([uid3]));
+			await assert.rejects(
+				Messaging.canMessageUser(uid2, uid1),
+				{ message: '[[error:chat-restricted]]' },
+			);
+
+			// rejects uid2 denies chat from uid1
+			await User.setSetting(uid2, 'chatDenyList', JSON.stringify([uid1]));
+			await assert.rejects(
+				Messaging.canMessageUser(uid1, uid2),
+				{ message: '[[error:chat-restricted]]' },
+			);
 		});
 
 		it('should not allow messaging room if user is muted', async () => {
@@ -169,11 +181,11 @@ describe('Messaging Library', () => {
 		});
 
 		it('should create a new chat room', async () => {
-			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '0');
+			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '0');
 			const { body } = await callv3API('post', `/chats`, {
 				uids: [mocks.users.baz.uid],
 			}, 'foo');
-			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
+			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '1');
 
 			roomId = body.response.roomId;
 			assert(roomId);
