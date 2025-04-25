@@ -259,8 +259,12 @@ module.exports = function (middleware) {
 				return res.redirect(`${nconf.get('relative_path')}${newPath}`);
 			}
 		}
+		try {
+			res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		} catch (err) {
+			return next(err);
+		}
 
-		res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 		if (!res.locals.userData) {
 			return next('route');
 		}
