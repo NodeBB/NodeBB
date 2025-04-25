@@ -64,6 +64,7 @@
 	"show-email": "Vis e-post",
 	"show-fullname": "Vis fullt namn",
 	"restrict-chat": "Avgrens chat",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Utgåande lenkjer i ny fane",
 	"topic-search": "Emnesøk",
 	"update-url-with-post-index": "Oppdater URL med innleggindeks",

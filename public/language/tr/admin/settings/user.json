@@ -64,6 +64,7 @@
 	"show-email": "E-posta Göster",
 	"show-fullname": "Tam adı göster",
 	"restrict-chat": "Sadece takip ettiğim kişilerden sohbetleri kabul et",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Dışarı giden bağlantıları yeni sekmede aç",
 	"topic-search": "Konu içi aramayı etkinleştir",
 	"update-url-with-post-index": "Sayfayı okurken URL bağlantısındaki ileti numarasını güncelle",

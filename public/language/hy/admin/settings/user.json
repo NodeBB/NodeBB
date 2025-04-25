@@ -64,6 +64,7 @@
 	"show-email": "Ցույց տալ էլ.նամակը",
 	"show-fullname": "Ցույց տալ լրիվ անունը",
 	"restrict-chat": "Թույլատրել զրույցի հաղորդագրությունները միայն այն օգտվողներից, որոնց ես հետևում եմ",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Բացել ելքային հղումները նոր ներդիրում",
 	"topic-search": "Միացնել թեմայում որոնումը",
 	"update-url-with-post-index": "Թեմաներ զննարկելիս թարմացրեք url-ը գրառումների ինդեքսով",

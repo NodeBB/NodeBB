@@ -64,6 +64,7 @@
 	"show-email": "Показывать адрес электронной почты",
 	"show-fullname": "Показывать полное имя",
 	"restrict-chat": "Разрешить чат только с теми, на кого подписаны",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Открывать внешние ссылки в новой вкладке",
 	"topic-search": "Включить поиск по сообщениям внутри тем",
 	"update-url-with-post-index": "Обновлять URL-адрес с индексом публикации при просмотре тем",
