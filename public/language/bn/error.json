@@ -154,6 +154,8 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "আপনি নিজের সাথে চ্যাট করতে পারবেন না!",
     "chat-restricted": "এই সদস্য তার বার্তালাপ সংরক্ষিত রেখেছেন। এই সদস্য আপনাকে ফলো করার পরই কেবলমাত্র আপনি তার সাথে চ্যাট করতে পারবেন",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chat system disabled",
     "too-many-messages": "You have sent too many messages, please wait awhile.",

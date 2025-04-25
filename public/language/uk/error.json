@@ -154,6 +154,8 @@
     "about-me-too-long": "Вибачте, але \"Про мене\" не може бути довшим за %1 символ(и).",
     "cant-chat-with-yourself": "Ви не можете писати самому собі!",
     "chat-restricted": "Цей користувач обмежив повідомлення. Він має стежити за вами, перш ніж ви зможете спілкуватися з ним",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Чат вимкнено",
     "too-many-messages": "Ви надіслали забагато повідомлень, зачекайте трішки.",

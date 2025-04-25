@@ -154,6 +154,8 @@
     "about-me-too-long": "Desculpa, o teu \"sobre min\" non pode supera-los %1 caracteres,",
     "cant-chat-with-yourself": "Non podes falar contigo mesmo!",
     "chat-restricted": "Este usuario restrinxiu as charlas. Debedes seguirvos antes de que poidas falar con el.",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Charlas desactivadas",
     "too-many-messages": "Estás a enviar moitas mensaxes, por favor, agarda un anaco.",

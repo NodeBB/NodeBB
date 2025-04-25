@@ -154,6 +154,8 @@
     "about-me-too-long": "Ներեցեք, ձեր իմ մասին չի կարող լինել ավելի քան %1 նիշ(ներ):",
     "cant-chat-with-yourself": "Դուք չեք կարող զրուցել ինքներդ ձեզ հետ:",
     "chat-restricted": "Նրանք պետք է հետևեն ձեզ, որպեսզի կարողանաք զրուցել նրանց հետ",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Զրույցի համակարգն անջատված է",
     "too-many-messages": "Դուք չափազանց շատ հաղորդագրություններ եք ուղարկել, խնդրում ենք սպասել մի քիչ:",

@@ -154,6 +154,8 @@
     "about-me-too-long": "Beklager, 'Om meg' kan ikkje vere lengre enn %1 teikn.",
     "cant-chat-with-yourself": "Du kan ikkje chatte med deg sjølv!",
     "chat-restricted": "Denne brukaren har avgrensa chatmeldingar. Dei må følgje deg før du kan chatte med dei",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "Du har blitt blokkert av denne brukaren.",
     "chat-disabled": "Chatsystem deaktivert",
     "too-many-messages": "Du har sendt for mange meldingar, ver venleg å vente litt.",

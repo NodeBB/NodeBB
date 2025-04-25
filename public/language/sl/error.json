@@ -154,6 +154,8 @@
     "about-me-too-long": "Rubrika O meni je predolga. Največje število znakov: %1.",
     "cant-chat-with-yourself": "Ne morete klepetati s seboj!",
     "chat-restricted": "Uporabnik je omejil klepetanje. Za možnost klepeta vas mora uporabnik spremljati.",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Klepet je onemogočen.",
     "too-many-messages": "Poslali ste preveč sporočil, prosimo, počakajte nekaj časa.",

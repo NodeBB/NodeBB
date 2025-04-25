@@ -154,6 +154,8 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "Nu poți conversa cu tine!",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chat system disabled",
     "too-many-messages": "You have sent too many messages, please wait awhile.",

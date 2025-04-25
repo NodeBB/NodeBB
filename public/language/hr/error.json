@@ -154,6 +154,8 @@
     "about-me-too-long": "O vama nemože biti duže od %1 znaka",
     "cant-chat-with-yourself": "Nemoguće je razgovarati sam sa sobom!",
     "chat-restricted": "Korisnik je ograničio razgovore. Mora vas pratiti prije nego možete razgovarati",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Razgovor onemogućen",
     "too-many-messages": "Poslali ste previše poruka, pričekajte.",

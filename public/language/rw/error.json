@@ -154,6 +154,8 @@
     "about-me-too-long": "Inshamake y'Ubuzima yawe ntiyemerewe kurenza inyuguti (cyangwa ibimenyetso) %1.",
     "cant-chat-with-yourself": "Ntabwo wakwiganiriza!",
     "chat-restricted": "Uyu muntu yemerera kuganirira mu gikari n'abantu bamwe na bamwe. Agomba kuba yarahisemo kugukurikira kugirango ube wabasha kumuganiriza uciye mu gikari.",
+    "chat-allow-list-user-already-added": "This user is already in your allow list",
+    "chat-deny-list-user-already-added": "This user is already in your deny list",
     "chat-user-blocked": "You have been blocked by this user.",
     "chat-disabled": "Chat system disabled",
     "too-many-messages": "Wohereje ubutumwa bwinshi cyane. Ba utegerejeho gato.",
