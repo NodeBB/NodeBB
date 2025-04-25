@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * 
+ * @param {import('../../../types/database').MySQLDatabase} module 
+ */
 module.exports = function (module) {
     const helpers = require('./helpers');
 
@@ -14,7 +18,8 @@ module.exports = function (module) {
 
         return module.transaction(async (connection) => {
             await helpers.ensureLegacyObjectType(connection, key, 'list');
-            value = toJsonArray(value).reverse(); // Reverse to maintain order for prepend
+            const valueArray = toJsonArray(value);
+            const valueReversed = [...valueArray].reverse(); // Reverse to maintain order for prepend
 
             await connection.query({
                 sql: `
@@ -22,11 +27,10 @@ module.exports = function (module) {
                     VALUES (?, ?)
                     ON DUPLICATE KEY UPDATE array = JSON_ARRAY_INSERT(
                         legacy_list.array,
-                        '$[0]',
-                        ${value.map(() => '?').join(', ')}
+                        ${valueArray.map(() => '"$[0]", ?').join(', ')}
                     )
                 `,
-                values: [key, JSON.stringify(value), ...value],
+                values: [key, JSON.stringify(valueReversed), ...valueArray],
             });
         });
     };
@@ -47,8 +51,7 @@ module.exports = function (module) {
                     VALUES (?, ?)
                     ON DUPLICATE KEY UPDATE array = JSON_ARRAY_APPEND(
                         legacy_list.array,
-                        '$',
-                        ${value.map(() => '?').join(', ')}
+                        ${value.map(() => '"$", ?').join(', ')}
                     )
                 `,
                 values: [key, JSON.stringify(value), ...value],
@@ -56,25 +59,40 @@ module.exports = function (module) {
         });
     };
 
-    // Remove and return the last element of the list
     module.listRemoveLast = async function (key) {
         if (!key) {
             return;
         }
-
+    
         const [rows] = await module.pool.query({
+            sql: `
+                SELECT JSON_EXTRACT(l.array, '$[last]') AS v
+                FROM legacy_list l
+                INNER JOIN legacy_object_live o
+                    ON o._key = l._key AND o.type = l.type
+                WHERE l._key = ?
+            `,
+            values: [key],
+        });
+    
+        if (!rows.length || !rows[0].v) {
+            return null;
+        }
+    
+        const lastElement = rows[0].v;
+    
+        await module.pool.query({
             sql: `
                 UPDATE legacy_list l
                 INNER JOIN legacy_object_live o
                     ON o._key = l._key AND o.type = l.type
                 SET l.array = JSON_REMOVE(l.array, '$[last]')
                 WHERE l._key = ?
-                RETURNING JSON_EXTRACT(l.array, '$[last]') AS v
             `,
             values: [key],
         });
-
-        return rows.length && rows[0].v ? JSON.parse(rows[0].v) : null;
+    
+        return lastElement;
     };
 
     // Remove all occurrences of value(s) from the list
@@ -99,7 +117,7 @@ module.exports = function (module) {
 
                 if (!rows.length) return;
 
-                let array = JSON.parse(rows[0].array);
+                let array = rows[0].array;
                 array = array.filter(item => !value.includes(item));
 
                 await connection.query({
@@ -127,7 +145,7 @@ module.exports = function (module) {
 
                 if (!rows.length) return;
 
-                let array = JSON.parse(rows[0].array);
+                let array = rows[0].array;
                 array = array.filter(item => item !== value);
 
                 await connection.query({
@@ -166,7 +184,7 @@ module.exports = function (module) {
 
             if (!rows.length) return;
 
-            let array = JSON.parse(rows[0].array);
+            let array = rows[0].array;
             const length = array.length;
 
             // Handle negative indices
@@ -215,7 +233,7 @@ module.exports = function (module) {
         // Handle negative indices
         if (start < 0) start = Math.max(0, length + start);
         if (stop < 0) stop = Math.max(0, length + stop);
-        else stop += 1; // Adjust for inclusive stop
+        stop += 1; // Adjust for inclusive stop
 
         // Slice the array
         return array.slice(start, stop);
