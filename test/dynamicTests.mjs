@@ -1,8 +1,6 @@
 import { strictEqual, ok } from 'assert';
 import LoggerWithIndentation from './LoggerWithIndentation.mjs';
-import { createRequire } from 'module';
 import './cleanup.mjs';
-const require = createRequire(import.meta.url);
 
 // Function to simulate your app logic
 function calculate(input) {
