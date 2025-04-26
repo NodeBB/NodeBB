@@ -1,16 +1,21 @@
 import assert from 'node:assert/strict';
-import db from '../mocks/databasemock.js'; // Ensure databasemock is ESM-compatible
+import db from '../mocks/databasemock.mjs'; // Ensure databasemock is ESM-compatible
 
 describe('Set methods', () => {
 	describe('setAdd()', () => {
 		it('should add to a set', async () => {
 			await db.setAdd('testSet1', 5);
-			assert.strictEqual(arguments.length, 0); // No arguments in async context
-		});
+			const members = await db.getSetMembers('testSet1');
+			assert(members.includes('5'));
+	});
 
 		it('should add an array to a set', async () => {
 			await db.setAdd('testSet1', [1, 2, 3, 4]);
-			assert.strictEqual(arguments.length, 0);
+			const members = await db.getSetMembers('testSet1');
+			assert(members.includes('1'));
+			assert(members.includes('2'));
+			assert(members.includes('3'));
+			assert(members.includes('4'));
 		});
 
 		it('should not do anything if values array is empty', async () => {
@@ -58,7 +63,10 @@ describe('Set methods', () => {
 	describe('setsAdd()', () => {
 		it('should add to multiple sets', async () => {
 			await db.setsAdd(['set1', 'set2'], 'value');
-			assert.strictEqual(arguments.length, 0);
+			const members1 = await db.getSetMembers('set1');
+			const members2 = await db.getSetMembers('set2');
+			assert.deepStrictEqual(members1, ['value']);
+			assert.deepStrictEqual(members2, ['value']);
 		});
 
 		it('should not error if keys is empty array', async () => {
@@ -203,7 +211,7 @@ describe('Set methods', () => {
 
 		it('should remove a random element from set', async () => {
 			const element = await db.setRemoveRandom('testSet7');
-			const isMember = await db.isSetMember('testSet7', element); // Fixed typo: 'testSet' to 'testSet7'
+			const isMember = await db.isSetMember('testSet7', element);
 			assert.strictEqual(isMember, false);
 		});
 	});
