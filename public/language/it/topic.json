@@ -61,8 +61,8 @@
     "user-restored-topic-on": "%1 ha ripristinato questa discussione su %2",
     "user-moved-topic-from-ago": "%1 ha spostato questa discussione da %2 %3",
     "user-moved-topic-from-on": "%1 ha spostato questa discussione da %2 su %3",
-    "user-shared-topic-ago": "%1 shared this topic %2",
-    "user-shared-topic-on": "%1 shared this topic on %2",
+    "user-shared-topic-ago": "%1 ha condiviso questa discussione %2",
+    "user-shared-topic-on": "%1 ha condiviso questa discussione su %2",
     "user-queued-post-ago": "%1 post <a href=\"%2\">in coda</a> per l'approvazione %3",
     "user-queued-post-on": "%1 post <a href=\"%2\">in coda</a> per l'approvazione su %3",
     "user-referenced-topic-ago": "%1 <a href=\"%2\">ha fatto riferimento</a> a questa discussione %3",
@@ -137,7 +137,7 @@
     "bookmarks": "Segnalibri",
     "bookmarks.has-no-bookmarks": "Non hai ancora aggiunto alcun post ai segnalibri.",
     "copy-permalink": "Copia link permanente",
-    "go-to-original": "View Original Post",
+    "go-to-original": "Visualizza il post originale",
     "loading-more-posts": "Caricamento altri post",
     "move-topic": "Sposta Discussione",
     "move-topics": "Sposta Discussioni",
@@ -223,6 +223,6 @@
     "post-tools": "Strumenti post",
     "unread-posts-link": "Link ai post non letti",
     "thumb-image": "Immagine anteprima della discussione",
-    "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers": "Condivisioni",
+    "announcers-x": "Condivisioni (%1)"
 }
