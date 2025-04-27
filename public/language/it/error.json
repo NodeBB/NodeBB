@@ -260,5 +260,5 @@
     "activitypub.pubKey-not-found": "Impossibile risolvere la chiave pubblica, quindi la verifica del payload non può avvenire.",
     "activitypub.origin-mismatch": "L'origine dell'oggetto ricevuto non corrisponde all'origine del mittente.",
     "activitypub.actor-mismatch": "L'attività ricevuta viene eseguita da un partecipante diverso da quello previsto.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "La richiesta è stata rifiutata perché la richiesta o un suo aspetto non è implementato dal server del destinatario."
 }
