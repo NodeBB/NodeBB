@@ -114,7 +114,7 @@ async function checkUpgrade(poolConnection) {
         CREATE TABLE IF NOT EXISTS legacy_zset (
             _key VARCHAR(255) NOT NULL,
             value TEXT NOT NULL,
-            score BIGINT NOT NULL,
+            score DECIMAL(30,10) NOT NULL,
             type ENUM('hash', 'zset', 'set', 'list', 'string') NOT NULL DEFAULT 'zset',
             type_check ENUM('zset') GENERATED ALWAYS AS (type) VIRTUAL,
             PRIMARY KEY (_key, value(191)),

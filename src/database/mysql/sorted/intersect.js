@@ -66,17 +66,19 @@ module.exports = function (module) {
         }
 
         // Build weighted score expression
-        const weightCases = weights.map((w, i) => 
+        const weightCases = weights.map((w, i) =>
             `WHEN o._key = ? THEN z.score * ${w}`
         ).join(' ');
-        const values = [
+        let values = [
             ...sets,           // For IN clause
             ...sets,           // For CASE in aggregate
-            ...weights,        // For CASE values (not directly used in query, but kept for consistency)
             sets.length,       // For c = sets.length
             limit,             // LIMIT
             start              // OFFSET
-        ].filter(v => v !== null); // Remove null limit if present
+        ];
+        if (!limit) {
+            values = values.slice(0, -2);
+        }
 
         const [rows] = await module.pool.query({
             sql: `

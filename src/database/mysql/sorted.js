@@ -40,6 +40,10 @@ module.exports = function (module) {
             key = [key];
         }
 
+        if (!key.length) {
+            return [];
+        }
+
         if (start < 0 && start > stop) {
             return [];
         }
@@ -58,7 +62,7 @@ module.exports = function (module) {
 
         let limit = stop - start + 1;
         if (limit <= 0) {
-            limit = null;
+            limit = Number.MAX_SAFE_INTEGER;
         }
 
         const [rows] = await module.pool.query({
@@ -69,11 +73,11 @@ module.exports = function (module) {
                 INNER JOIN legacy_zset z
                     ON o._key = z._key
                     AND o.type = z.type
-                WHERE o._key IN (${key.map(() => '?').join(', ')})
+                WHERE o._key IN (?)
                 ORDER BY z.score ${sort > 0 ? 'ASC' : 'DESC'}
-                ${limit !== null ? 'LIMIT ? OFFSET ?' : ''}
+                LIMIT ? OFFSET ?
             `,
-            values: limit !== null ? [...key, limit, start] : key,
+            values: [key, limit, start],
         });
 
         let result = rows;
@@ -127,7 +131,7 @@ module.exports = function (module) {
         }
 
         const conditions = [];
-        const values = [...key, start];
+        const values = [...key];
         if (min !== null) {
             conditions.push('z.score >= ?');
             values.push(min);
@@ -138,7 +142,10 @@ module.exports = function (module) {
         }
         if (count !== null) {
             values.push(count);
+        } else {
+            values.push(Number.MAX_SAFE_INTEGER)
         }
+        values.push(start);
         const whereClause = conditions.length ? `AND ${conditions.join(' AND ')}` : '';
 
         const [rows] = await module.pool.query({
@@ -152,7 +159,7 @@ module.exports = function (module) {
                 WHERE o._key IN (${key.map(() => '?').join(', ')})
                 ${whereClause}
                 ORDER BY z.score ${sort > 0 ? 'ASC' : 'DESC'}
-                ${count !== null ? 'LIMIT ? OFFSET ?' : ''}
+                LIMIT ? OFFSET ?
             `,
             values,
         });
@@ -262,7 +269,7 @@ module.exports = function (module) {
             }
 
             const conditions = [];
-            const values = keys;
+            const values = [keys];
             if (min !== null) {
                 conditions.push('z.score >= ?');
                 values.push(min);
@@ -281,7 +288,7 @@ module.exports = function (module) {
                     INNER JOIN legacy_zset z
                         ON o._key = z._key
                         AND o.type = z.type
-                    WHERE o._key IN (${keys.map(() => '?').join(', ')})
+                    WHERE o._key IN (?)
                     ${whereClause}
                     GROUP BY o._key
                 `,
@@ -313,7 +320,7 @@ module.exports = function (module) {
         for (let i = 0; i < keys.length; i++) {
             indexedValues.push(keys[i], values[i]); // Key, value
         }
-    
+
         try {
             const [rows] = await module.pool.query({
                 sql: `
@@ -344,7 +351,7 @@ module.exports = function (module) {
             throw err;
         }
     }
-    
+
     module.sortedSetsRanks = async function (keys, values) {
         if (!Array.isArray(keys) || !keys.length) {
             return [];
@@ -585,7 +592,7 @@ module.exports = function (module) {
 
         return keys.map(k => {
             const row = rows.find(r => r.k === k);
-            return row ? JSON.parse(row.m) : [];
+            return row ? row.m : [];
         });
     };
 
@@ -621,44 +628,39 @@ module.exports = function (module) {
             return [];
         }
 
-        return await module.transaction(async (pool) => {
-            const connection = await pool.getConnection();
-            try {
-                await helpers.ensureLegacyObjectsType(connection, data.map(item => item[0]), 'zset');
+        return await module.transaction(async (connection) => {
+            await helpers.ensureLegacyObjectsType(connection, data.map(item => item[0]), 'zset');
 
-                const placeholders = data.map(() => '(?, ?, ?)').join(', ');
-                const flatValues = [];
-                data.forEach(([key, increment, value]) => {
-                    value = helpers.valueToString(value);
-                    increment = parseFloat(increment);
-                    flatValues.push(key, value, increment);
-                });
+            const placeholders = data.map(() => '(?, ?, ?)').join(', ');
+            const flatValues = [];
+            data.forEach(([key, increment, value]) => {
+                value = helpers.valueToString(value);
+                increment = parseFloat(increment);
+                flatValues.push(key, value, increment);
+            });
 
-                await connection.query({
-                    sql: `
-                        INSERT INTO legacy_zset (_key, value, score)
-                        VALUES ${placeholders}
-                        ON DUPLICATE KEY UPDATE
-                            score = legacy_zset.score + VALUES(score)
-                    `,
-                    values: flatValues,
-                });
+            await connection.query({
+                sql: `
+                    INSERT INTO legacy_zset (_key, value, score)
+                    VALUES ${placeholders}
+                    ON DUPLICATE KEY UPDATE
+                        score = legacy_zset.score + VALUES(score)
+                `,
+                values: flatValues,
+            });
 
-                const resultKeys = data.map(d => d[0]);
-                const resultValues = data.map(d => helpers.valueToString(d[2]));
-                const [rows] = await connection.query({
-                    sql: `
-                        SELECT score
-                        FROM legacy_zset
-                        WHERE (_key, value) IN (${data.map(() => '(?, ?)').join(', ')})
-                    `,
-                    values: flatValues.filter((_, i) => i % 3 !== 2),
-                });
+            const resultKeys = data.map(d => d[0]);
+            const resultValues = data.map(d => helpers.valueToString(d[2]));
+            const [rows] = await connection.query({
+                sql: `
+                    SELECT score
+                    FROM legacy_zset
+                    WHERE (_key, value) IN (${data.map(() => '(?, ?)').join(', ')})
+                `,
+                values: flatValues.filter((_, i) => i % 3 !== 2),
+            });
 
-                return rows.map(row => parseFloat(row.score));
-            } finally {
-                connection.release();
-            }
+            return rows.map(row => parseFloat(row.score));
         });
     };
 
@@ -739,15 +741,15 @@ module.exports = function (module) {
             if (min.match(/^\(/)) {
                 q.values.push(min.slice(1));
                 q.suffix += 'GT';
-                q.where += ` AND z.value > ?`;
+                q.where += ` AND z.value > BINARY ?`;
             } else if (min.match(/^\[/)) {
                 q.values.push(min.slice(1));
                 q.suffix += 'GE';
-                q.where += ` AND z.value >= ?`;
+                q.where += ` AND z.value >= BINARY ?`;
             } else {
                 q.values.push(min);
                 q.suffix += 'GE';
-                q.where += ` AND z.value >= ?`;
+                q.where += ` AND z.value >= BINARY ?`;
             }
         }
 
@@ -755,15 +757,15 @@ module.exports = function (module) {
             if (max.match(/^\(/)) {
                 q.values.push(max.slice(1));
                 q.suffix += 'LT';
-                q.where += ` AND z.value < ?`;
+                q.where += ` AND z.value < BINARY ?`;
             } else if (max.match(/^\[/)) {
                 q.values.push(max.slice(1));
                 q.suffix += 'LE';
-                q.where += ` AND z.value <= ?`;
+                q.where += ` AND z.value <= BINARY ?`;
             } else {
                 q.values.push(max);
                 q.suffix += 'LE';
-                q.where += ` AND z.value <= ?`;
+                q.where += ` AND z.value <= BINARY ?`;
             }
         }
 
@@ -780,19 +782,27 @@ module.exports = function (module) {
             match = `${match.substring(0, match.length - 1)}%`;
         }
 
+        // Prepare the SQL query, conditionally adding LIMIT if params.limit is defined
+        let sql = `
+            SELECT z.value,
+                z.score
+            FROM legacy_object_live o
+            INNER JOIN legacy_zset z
+                ON o._key = z._key
+                AND o.type = z.type
+            WHERE o._key = ?
+            AND z.value LIKE ?
+        `;
+        const values = [params.key, match];
+
+        if (params.limit !== undefined && params.limit !== null) {
+            sql += ` LIMIT ?`;
+            values.push(parseInt(params.limit, 10));
+        }
+
         const [rows] = await module.pool.query({
-            sql: `
-                SELECT z.value,
-                       z.score
-                FROM legacy_object_live o
-                INNER JOIN legacy_zset z
-                    ON o._key = z._key
-                    AND o.type = z.type
-                WHERE o._key = ?
-                  AND z.value LIKE ?
-                LIMIT ?
-            `,
-            values: [params.key, match, params.limit],
+            sql,
+            values,
         });
         if (!params.withScores) {
             return rows.map(r => r.value);
