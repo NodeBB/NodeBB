@@ -373,7 +373,7 @@ Mocks.message = async (object) => {
 	const message = {
 		mid: object.id,
 		uid: object.attributedTo,
-		content: object.content,
+		content: object.sourceContent || object.content,
 		// ip: caller.ip,
 	};
 
