@@ -41,6 +41,8 @@ define('forum/category', [
 
 		handleLoadMoreSubcategories();
 
+		handleDescription();
+
 		categorySelector.init($('[component="category-selector"]'), {
 			privilege: 'find',
 			parentCid: ajaxify.data.cid,
@@ -110,6 +112,18 @@ define('forum/category', [
 			});
 
 			return false;
+		});
+	}
+
+	function handleDescription() {
+		const fadeEl = document.querySelector('.description.clamp-fade-4');
+		if (!fadeEl) {
+			return;
+		}
+
+		fadeEl.addEventListener('click', () => {
+			const state = fadeEl.classList.contains('line-clamp-4');
+			fadeEl.classList.toggle('line-clamp-4', !state);
 		});
 	}
 
