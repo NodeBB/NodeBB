@@ -816,6 +816,14 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			assert.strictEqual(isMember, false);
 		});
 
+		it('should not error if key is null', async () => {
+			await db.sortedSetRemove(null, 'arbitraryValue');
+		});
+
+		it('should not error if key is empty', async () => {
+			await db.sortedSetRemove([], 'arbitraryValue');
+		});
+
 		it('should not think the sorted set exists if the last element is removed', async () => {
 			await db.sortedSetRemove('sorted3', 'value1');
 			assert.strictEqual(await db.exists('sorted3'), false);

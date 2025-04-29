@@ -35,8 +35,16 @@ describe('Hash methods', () => {
 			assert.deepStrictEqual(result[1], data);
 		});
 
-		it('should do nothing if key is falsy', async function () {
+		it('should do nothing if key is empty string', async function () {
 			await db.setObject('', { foo: 1, derp: 2 });
+		});
+
+		it('should do nothing if key is null', async function () {
+			await db.setObject(null, { foo: 1, derp: 2 });
+		});
+
+		it('should do nothing if key is empty', async function () {
+			await db.setObject([], { foo: 1, derp: 2 });
 		});
 
 		it('should do nothing if data is falsy', async function () {
@@ -45,7 +53,7 @@ describe('Hash methods', () => {
 			assert.strictEqual(exists, false);
 		});
 
-		it('should not error if a key is empty string', async function () {
+		it('should not error if a key of json is empty string', async function () {
 			await db.setObject('emptyField', { '': '', b: 1 });
 			const data = await db.getObject('emptyField');
 			assert.deepStrictEqual(data, { b: 1 });
@@ -102,6 +110,13 @@ describe('Hash methods', () => {
 			await db.setObjectBulk([['bulkKey3.5', { baz: '2' }]]);
 			const result = await db.getObject('bulkKey3.5');
 			assert.deepStrictEqual(result, { foo: '1', baz: '2' });
+		});
+
+		it('should overwrite existing field on second call', async function () {
+			await db.setObjectBulk([['bulkKey3.6', { foo: '1', baz: '2' }]]);
+			await db.setObjectBulk([['bulkKey3.6', { foo: '2' }]]);
+			const result = await db.getObject('bulkKey3.6');
+			assert.deepStrictEqual(result, { foo: '2', baz: '2' });
 		});
 	});
 
