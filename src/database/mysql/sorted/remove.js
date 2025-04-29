@@ -15,27 +15,31 @@ module.exports = function (module) {
         if (!key) {
             return;
         }
-        const isValueArray = Array.isArray(value);
-        if (!value || (isValueArray && !value.length)) {
-            return;
-        }
-
         if (!Array.isArray(key)) {
             key = [key];
         }
+        if (!key.length) {
+            return;
+        }
 
-        if (!isValueArray) {
+        if (!value) {
+            return;
+        }
+        if (!Array.isArray(value)) {
             value = [value];
+        }
+        if (!value.length) {
+            return;
         }
         value = value.map(helpers.valueToString);
 
         const [rows] = await module.pool.query({
             sql: `
                 DELETE FROM legacy_zset
-                WHERE _key IN (${key.map(() => '?').join(', ')})
-                  AND value IN (${value.map(() => '?').join(', ')})
+                WHERE _key IN (?)
+                  AND value IN (?)
             `,
-            values: [...key, ...value],
+            values: [key, value],
         });
     };
 

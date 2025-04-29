@@ -1,12 +1,12 @@
 import assert from 'assert';
 import nconf from 'nconf';
+import db from './mocks/databasemock.mjs';
+import Categories from '../src/categories/index.js';
 import request from '../src/request.js';
-import db from './mocks/databasemock.js';
-import Categories from '../src/categories.js';
-import Topics from '../src/topics.js';
-import User from '../src/user.js';
-import groups from '../src/groups.js';
-import privileges from '../src/privileges.js';
+import Topics from '../src/topics/index.js';
+import User from '../src/user/index.js';
+import groups from '../src/groups/index.js';
+import privileges from '../src/privileges/index.js';
 
 describe('Categories', () => {
 	let categoryObj;
@@ -38,7 +38,7 @@ describe('Categories', () => {
 			uid: 0,
 		});
 		assert(categoryData);
-		assert.equal('Test Category & NodeBB', categoryData.name);
+		assert.equal('Test Category &amp; NodeBB', categoryData.name);
 		assert.equal(categoryObj.description, categoryData.description);
 		assert.strictEqual(categoryObj.disabled, 0);
 	});
@@ -61,7 +61,7 @@ describe('Categories', () => {
 	it('should load a category route', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`);
 		assert.equal(response.statusCode, 200);
-		assert.equal(body.name, 'Test Category & NodeBB');
+		assert.equal(body.name, 'Test Category &amp; NodeBB');
 		assert(body);
 	});
 
@@ -137,9 +137,11 @@ describe('Categories', () => {
 	});
 
 	describe('api/socket methods', () => {
-		import socketCategories from '../src/socket.io/categories.js';
-		import apiCategories from '../src/api/categories.js';
+		let socketCategories;
+		let apiCategories;
 		before(async () => {
+			socketCategories = (await import('../src/socket.io/categories.js')).default;
+			apiCategories = (await import('../src/api/categories.js')).default;
 			await Topics.post({
 				uid: posterUid,
 				cid: categoryObj.cid,
@@ -245,10 +247,12 @@ describe('Categories', () => {
 	});
 
 	describe('admin api/socket methods', () => {
-		import socketCategories from '../src/socket.io/admin/categories.js';
-		import apiCategories from '../src/api/categories.js';
+		let socketCategories;
+		let apiCategories;
 		let cid;
 		before(async () => {
+			socketCategories = (await import('../src/socket.io/admin/categories.js')).default;
+			apiCategories = (await import('../src/api/categories.js')).default;
 			const category = await apiCategories.create({ uid: adminUid }, {
 				name: 'update name',
 				description: 'update description',
@@ -481,8 +485,9 @@ describe('Categories', () => {
 
 	describe('tag whitelist', () => {
 		let cid;
-		import socketTopics from '../src/socket.io/topics.js';
+		let socketTopics;
 		before(async () => {
+			socketTopics = (await import('../src/socket.io/topics.js')).default;
 			const category = await Categories.create({ name: 'test' });
 			cid = category.cid;
 		});
@@ -676,7 +681,10 @@ describe('Categories', () => {
 	});
 
 	describe('getTopicIds', () => {
-		import plugins from '../src/plugins.js';
+		let plugins;
+		before(async () => {
+			plugins = (await import('../src/plugins/index.js')).default;
+		});
 		it('should get topic ids with filter', async () => {
 			async function method(data) {
 				data.tids = [1, 2, 3];

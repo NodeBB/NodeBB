@@ -27,6 +27,9 @@ module.exports = function (module) {
 
         await module.transaction(async (connection) => {
             if (Array.isArray(key)) {
+                if (!key.length) {
+                    return;
+                }
                 await helpers.ensureLegacyObjectsType(connection, key, 'hash');
                 const values = key.map(k => [k, dataString]);
                 await connection.query(`
@@ -74,7 +77,7 @@ module.exports = function (module) {
                 INSERT INTO legacy_hash (_key, data)
                 VALUES ?
                 ON DUPLICATE KEY UPDATE
-                data = JSON_MERGE_PRESERVE(data, VALUES(data))
+                data = JSON_MERGE_PATCH(data, VALUES(data))
             `, [values]);
         });
     };

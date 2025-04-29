@@ -13,5 +13,6 @@ spec:
   - "test/dynamicTests.mjs"
   - "test/database.mjs"
   - "test/emailer.mjs"
+  - "test/categories.mjs"
   # - "test/api.mjs"
 ignore: "test/files/**"
