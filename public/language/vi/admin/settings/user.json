@@ -64,7 +64,7 @@
 	"show-email": "Hiển thị email",
 	"show-fullname": "Hiển thị tên đầy đủ",
 	"restrict-chat": "Chỉ cho phép tin nhắn trò chuyện từ những người dùng tôi theo dõi",
-	"disable-incoming-chats": "Disable incoming chat messages",
+	"disable-incoming-chats": "Tắt tin nhắn trò chuyện đến",
 	"outgoing-new-tab": "Mở các liên kết đi trong tab mới",
 	"topic-search": "Bật Tìm Kiếm Trong Chủ Đề",
 	"update-url-with-post-index": "Cập nhật url với chỉ mục bài đăng trong khi lướt xem các chủ đề",
