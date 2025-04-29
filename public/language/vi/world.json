@@ -14,5 +14,8 @@
 	"onboard.title": "Cửa sổ của bạn đến với liên đoàn...",
 	"onboard.what": "Đây là danh mục được cá nhân hóa của bạn chỉ bao gồm nội dung được tìm thấy bên ngoài diễn đàn này. Việc nội dung nào đó có hiển thị trên trang này hay không tùy thuộc vào việc bạn có theo dõi họ hay không hoặc liệu bài đăng đó có được chia sẻ bởi người mà bạn theo dõi hay không.",
 	"onboard.why": "Có rất nhiều điều diễn ra bên ngoài diễn đàn này và không phải tất cả đều phù hợp với sở thích của bạn. Đó là lý do tại sao theo dõi mọi người là cách tốt nhất để báo hiệu rằng bạn muốn biết thêm thông tin từ ai đó.",
-	"onboard.how": "Trong thời gian chờ đợi, bạn có thể nhấp vào các nút tắt ở trên cùng để xem diễn đàn này biết thêm những gì và bắt đầu khám phá một số nội dung mới!"
+	"onboard.how": "Trong thời gian chờ đợi, bạn có thể nhấp vào các nút tắt ở trên cùng để xem diễn đàn này biết thêm những gì và bắt đầu khám phá một số nội dung mới!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
 }

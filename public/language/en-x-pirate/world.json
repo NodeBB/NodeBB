@@ -14,5 +14,8 @@
 	"onboard.title": "Your window to the fediverse...",
 	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
 	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
-	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!"
+	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
 }

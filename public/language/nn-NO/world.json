@@ -14,5 +14,8 @@
 	"onboard.title": "Ditt vindauge til fødiverset...",
 	"onboard.what": "Dette er din personlege kategori som berre består av innhald funne utanfor dette forumet. Om noko blir vist på denne sida, avheng av om du følgjer dei, eller om innlegget blei delt av nokon du følgjer.",
 	"onboard.why": "Det skjer mykje utanfor dette forumet, og ikkje alt er relevant for interessene dine. Difor er det å følgje folk den beste måten å signalisere at du ønskjer å sjå meir frå nokon.",
-	"onboard.how": "I mellomtida kan du klikke på snarvegsknappane øvst for å sjå kva anna dette forumet kjenner til, og begynne å oppdage nytt innhald!"
+	"onboard.how": "I mellomtida kan du klikke på snarvegsknappane øvst for å sjå kva anna dette forumet kjenner til, og begynne å oppdage nytt innhald!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
 }
