@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const _ = require('lodash');
 
 const user = require('../../user');
 const topics = require('../../topics');

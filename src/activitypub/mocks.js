@@ -246,7 +246,12 @@ Mocks.category = async (actors) => {
 			name, summary, followers, inbox, endpoints, tag,
 		} = actor;
 		preferredUsername = slugify(preferredUsername || name);
-		// const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
+		/*
+		const {
+			followers: followerCount,
+			following: followingCount
+		} = await activitypub.actors.getLocalFollowCounts(uid);
+		*/
 
 		try {
 			({ hostname } = new URL(actor.id));
@@ -257,7 +262,7 @@ Mocks.category = async (actors) => {
 		// No support for category avatars yet ;(
 		// let picture;
 		// if (image) {
-		// 	picture = typeof image === 'string' ? image : image.url;
+		// picture = typeof image === 'string' ? image : image.url;
 		// }
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);

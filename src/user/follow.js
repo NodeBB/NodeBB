@@ -86,7 +86,7 @@ module.exports = function (User) {
 
 		// Filter out remote categories
 		const isCategory = await db.exists(uids.map(uid => `categoryRemote:${uid}`));
-		uids = uids.filter((uid, idx) => !isCategory[idx])
+		uids = uids.filter((uid, idx) => !isCategory[idx]);
 
 		const data = await plugins.hooks.fire(`filter:user.${type}`, {
 			uids: uids,

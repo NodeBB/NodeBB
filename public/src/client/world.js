@@ -97,7 +97,7 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 			hideEl.classList.toggle('hidden', !visibility);
 			categoriesEl.classList.toggle('hidden', !visibility);
 			localStorage.setItem('world:show-categories', visibility);
-		}
+		};
 
 		let visibility = localStorage.getItem('world:show-categories');
 		console.log('got value', visibility);

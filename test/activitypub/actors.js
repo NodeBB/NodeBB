@@ -46,7 +46,7 @@ describe('Actor asserton', () => {
 					publicKeyPem: 'somekey',
 				},
 			});
-			activitypub.helpers._webfingerCache.set('example@example.org', { actorUri })
+			activitypub.helpers._webfingerCache.set('example@example.org', { actorUri });
 		});
 
 		it('should return true if successfully asserted', async () => {
@@ -142,6 +142,7 @@ describe('Actor asserton', () => {
 					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
 
 					if (!x) {
+						// eslint-disable-next-line no-await-in-loop
 						await topics.tools.move(tid, {
 							cid,
 							uid: 'system',
@@ -172,8 +173,8 @@ describe('Actor asserton', () => {
 
 				const states = await categories.getWatchState([id], followerUid);
 				assert.strictEqual(states[0], categories.watchStates.tracking);
-			})
-		})
+			});
+		});
 	});
 
 	describe('less happy paths', () => {
@@ -214,7 +215,7 @@ describe('Actor asserton', () => {
 
 				const response = await activitypub.actors.assert([id]);
 				assert.deepStrictEqual(response, []);
-			})
+			});
 		});
 	});
 
@@ -458,7 +459,7 @@ describe('Inbox resolution', () => {
 			const { id, actor } = helpers.mocks.person({
 				endpoints: {
 					sharedInbox: 'https://example.org/inbox',
-				}
+				},
 			});
 			await activitypub.actors.assert(id);
 
@@ -486,7 +487,7 @@ describe('Inbox resolution', () => {
 			const { id, actor } = helpers.mocks.group({
 				endpoints: {
 					sharedInbox: 'https://example.org/inbox',
-				}
+				},
 			});
 			await activitypub.actors.assertGroup(id);
 
