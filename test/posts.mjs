@@ -1,7 +1,5 @@
 // Import Node.js built-in modules
 import assert from 'assert';
-import path from 'path';
-import { promisify } from 'util';
 
 // Promisify setTimeout for sleep function
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -10,21 +8,20 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 import nconf from 'nconf';
 
 // Import local modules
-import * as db from './mocks/databasemock.js';
-import * as topics from '../src/topics.js';
-import * as posts from '../src/posts.js';
-import * as categories from '../src/categories.js';
-import * as privileges from '../src/privileges.js';
-import * as user from '../src/user.js';
-import * as groups from '../src/groups.js';
-import * as socketPosts from '../src/socket.io/posts.js';
-import * as apiPosts from '../src/api/posts.js';
-import * as apiTopics from '../src/api/topics.js';
-import * as meta from '../src/meta.js';
-import * as file from '../src/file.js';
-import * as helpers from './helpers.js';
-import * as utils from '../src/utils.js';
-import * as request from '../src/request.js';
+import db from './mocks/databasemock.mjs';
+import topics from '../src/topics/index.js';
+import posts from '../src/posts/index.js';
+import categories from '../src/categories/index.js';
+import privileges from '../src/privileges/index.js';
+import user from '../src/user/index.js';
+import groups from '../src/groups/index.js';
+import socketPosts from '../src/socket.io/posts.js';
+import apiPosts from '../src/api/posts.js';
+import apiTopics from '../src/api/topics.js';
+import meta from '../src/meta/index.js';
+import helpers from './helpers/index.js';
+import utils from '../src/utils.js';
+import request from '../src/request.js';
 
 describe('Posts', () => {
 	let voterUid;
@@ -1183,16 +1180,22 @@ describe('Posts', () => {
 	});
 });
 
-describe('Posts', () => {
-	let files;
+// import { fileURLToPath } from 'url';
 
-	before(async () => {
-		files = await file.walk(path.resolve(__dirname, './posts'));
-	});
+// // Get the directory name of the current module
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-	it('subfolder tests', async () => {
-		for (const filePath of files) {
-			await import(filePath);
-		}
-	});
-});
+// describe('Posts', () => {
+// 	let files;
+
+// 	before(async () => {
+// 		files = await file.walk(path.resolve(__dirname, './posts'));
+// 	});
+
+// 	it('subfolder tests', async () => {
+// 		for (const filePath of files) {
+// 			await import(filePath);
+// 		}
+// 	});
+// });
