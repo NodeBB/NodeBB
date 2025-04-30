@@ -30,32 +30,6 @@ get:
                     type: array
                     items:
                       $ref: ../components/schemas/TopicObject.yaml#/TopicObject
-                  # tids:
-                  #   type: array
-                  #   items:
-                  #     type: number
-                  # canPost:
-                  #   type: boolean
-                  # showSelect:
-                  #   type: boolean
-                  # showTopicTools:
-                  #   type: boolean
-                  # allCategoriesUrl:
-                  #   type: string
-                  # selectedCategory:
-                  #   type: object
-                  #   properties:
-                  #     icon:
-                  #       type: string
-                  #     name:
-                  #       type: string
-                  #     bgColor:
-                  #       type: string
-                  #   nullable: true
-                  # selectedCids:
-                  #   type: array
-                  #   items:
-                  #     type: number
                   selectedTag:
                     type: object
                     properties:
@@ -74,6 +48,9 @@ get:
                     type: boolean
                   isIgnored:
                     type: boolean
+                  hasFollowers:
+                    type: boolean
+                    nullable: true
                   feeds:disableRSS:
                     type: number
                   rssFeedUrl:
@@ -108,58 +85,10 @@ get:
                         type: boolean
                       isAdminOrMod:
                         type: boolean
-                  # filters:
-                  #   type: array
-                  #   items:
-                  #     type: object
-                  #     properties:
-                  #       name:
-                  #         type: string
-                  #       url:
-                  #         type: string
-                  #       selected:
-                  #         type: boolean
-                  #       filter:
-                  #         type: string
-                  #       icon:
-                  #         type: string
-                  # selectedFilter:
-                  #   type: object
-                  #   properties:
-                  #     name:
-                  #       type: string
-                  #     url:
-                  #       type: string
-                  #     selected:
-                  #       type: boolean
-                  #     filter:
-                  #       type: string
-                  #     icon:
-                  #       type: string
-                  # terms:
-                  #   type: array
-                  #   items:
-                  #     type: object
-                  #     properties:
-                  #       name:
-                  #         type: string
-                  #       url:
-                  #         type: string
-                  #       selected:
-                  #         type: boolean
-                  #       term:
-                  #         type: string
-                  # selectedTerm:
-                  #   type: object
-                  #   properties:
-                  #     name:
-                  #       type: string
-                  #     url:
-                  #       type: string
-                  #     selected:
-                  #       type: boolean
-                  #     term:
-                  #       type: string
+                  categories:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
               - $ref: ../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../components/schemas/CommonProps.yaml#/CommonProps
