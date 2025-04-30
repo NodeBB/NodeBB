@@ -1,27 +1,31 @@
-'use strict';
+import assert from 'assert';
+import fs from 'fs/promises';
+import path from 'path';
+import os from 'os';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
 
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+import nconf from 'nconf';
 
-const nconf = require('nconf');
-const crypto = require('crypto');
+import * as db from '../mocks/databasemock.js';
+import * as categories from '../../src/categories.js';
+import * as topics from '../../src/topics.js';
+import * as posts from '../../src/posts.js';
+import * as user from '../../src/user.js';
+import * as meta from '../../src/meta.js';
+import * as file from '../../src/file.js';
+import * as utils from '../../src/utils.js';
 
-const db = require('../mocks/databasemock');
-
-const categories = require('../../src/categories');
-const topics = require('../../src/topics');
-const posts = require('../../src/posts');
-const user = require('../../src/user');
-const meta = require('../../src/meta');
-const file = require('../../src/file');
-const utils = require('../../src/utils');
+// Define __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const _filenames = ['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp'];
-const _recreateFiles = () => {
+const _recreateFiles = async () => {
 	// Create stub files for testing
-	_filenames.forEach(filename => fs.closeSync(fs.openSync(path.join(nconf.get('upload_path'), 'files', filename), 'w')));
+	for (const filename of _filenames) {
+		await fs.writeFile(path.join(nconf.get('upload_path'), 'files', filename), '');
+	}
 };
 
 describe('upload methods', () => {
@@ -31,10 +35,10 @@ describe('upload methods', () => {
 	let uid;
 
 	before(async () => {
-		_recreateFiles();
+		await _recreateFiles();
 
 		uid = await user.create({
-			username: 'uploads user',
+			username: 'Uploads user',
 			password: 'abracadabra',
 			gdpr_consent: 1,
 		});
@@ -62,16 +66,10 @@ describe('upload methods', () => {
 	});
 
 	describe('.sync()', () => {
-		it('should properly add new images to the post\'s zset', (done) => {
-			posts.uploads.sync(pid, (err) => {
-				assert.ifError(err);
-
-				db.sortedSetCard(`post:${pid}:uploads`, (err, length) => {
-					assert.ifError(err);
-					assert.strictEqual(length, 2);
-					done();
-				});
-			});
+		it('should properly add new images to the post\'s zset', async () => {
+			await posts.uploads.sync(pid);
+			const length = await db.sortedSetCard(`post:${pid}:uploads`);
+			assert.strictEqual(length, 2);
 		});
 
 		it('should remove an image if it is edited out of the post', async () => {
@@ -87,32 +85,23 @@ describe('upload methods', () => {
 	});
 
 	describe('.list()', () => {
-		it('should display the uploaded files for a specific post', (done) => {
-			posts.uploads.list(pid, (err, uploads) => {
-				assert.ifError(err);
-				assert.equal(true, Array.isArray(uploads));
-				assert.strictEqual(1, uploads.length);
-				assert.equal('string', typeof uploads[0]);
-				done();
-			});
+		it('should display the uploaded files for a specific post', async () => {
+			const uploads = await posts.uploads.list(pid);
+			assert.equal(true, Array.isArray(uploads));
+			assert.strictEqual(1, uploads.length);
+			assert.equal('string', typeof uploads[0]);
 		});
 	});
 
 	describe('.isOrphan()', () => {
-		it('should return false if upload is not an orphan', (done) => {
-			posts.uploads.isOrphan('/files/abracadabra.png', (err, isOrphan) => {
-				assert.ifError(err);
-				assert.strictEqual(isOrphan, false);
-				done();
-			});
+		it('should return false if upload is not an orphan', async () => {
+			const isOrphan = await posts.uploads.isOrphan('/files/abracadabra.png');
+			assert.strictEqual(isOrphan, false);
 		});
 
-		it('should return true if upload is an orphan', (done) => {
-			posts.uploads.isOrphan('/files/shazam.jpg', (err, isOrphan) => {
-				assert.ifError(err);
-				assert.strictEqual(isOrphan, true);
-				done();
-			});
+		it('should return true if upload is an orphan', async () => {
+			const isOrphan = await posts.uploads.isOrphan('/files/shazam.jpg');
+			assert.strictEqual(isOrphan, true);
 		});
 	});
 
@@ -166,7 +155,7 @@ describe('upload methods', () => {
 		});
 
 		it('should remove the image\'s user association, if present', async () => {
-			_recreateFiles();
+			await _recreateFiles();
 			await posts.uploads.associate(pid, '/files/wut.txt');
 			await user.associateUpload(uid, '/files/wut.txt');
 			await posts.uploads.dissociate(pid, '/files/wut.txt');
@@ -180,7 +169,6 @@ describe('upload methods', () => {
 		it('should remove all images from a post\'s maintained list of uploads', async () => {
 			await posts.uploads.dissociateAll(pid);
 			const uploads = await posts.uploads.list(pid);
-
 			assert.equal(uploads.length, 0);
 		});
 	});
@@ -189,14 +177,12 @@ describe('upload methods', () => {
 		it('should not dissociate images on post deletion', async () => {
 			await posts.delete(purgePid, 1);
 			const uploads = await posts.uploads.list(purgePid);
-
 			assert.equal(uploads.length, 2);
 		});
 
 		it('should dissociate images on post purge', async () => {
 			await posts.purge(purgePid, 1);
 			const uploads = await posts.uploads.list(purgePid);
-
 			assert.equal(uploads.length, 0);
 		});
 	});
@@ -205,7 +191,7 @@ describe('upload methods', () => {
 		let postData;
 
 		beforeEach(async () => {
-			_recreateFiles();
+			await _recreateFiles();
 
 			({ postData } = await topics.post({
 				uid,
@@ -249,8 +235,8 @@ describe('upload methods', () => {
 	});
 
 	describe('.deleteFromDisk()', () => {
-		beforeEach(() => {
-			_recreateFiles();
+		beforeEach(async () => {
+			await _recreateFiles();
 		});
 
 		it('should work if you pass in a string path', async () => {
@@ -282,7 +268,7 @@ describe('upload methods', () => {
 
 		it('should not delete files if they are not in `uploads/files/` (path traversal)', async () => {
 			const tmpFilePath = path.resolve(os.tmpdir(), `derp${utils.generateUUID()}`);
-			await fs.promises.appendFile(tmpFilePath, '');
+			await fs.writeFile(tmpFilePath, '');
 			await posts.uploads.deleteFromDisk(['../files/503.html', tmpFilePath]);
 
 			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), '../files/503.html')), true);
@@ -314,10 +300,10 @@ describe('post uploads management', () => {
 	let cid;
 
 	before(async () => {
-		_recreateFiles();
+		await _recreateFiles();
 
 		uid = await user.create({
-			username: 'uploads user',
+			username: 'Uploads user',
 			password: 'abracadabra',
 			gdpr_consent: 1,
 		});
@@ -345,13 +331,10 @@ describe('post uploads management', () => {
 		reply = replyData;
 	});
 
-	it('should automatically sync uploads on topic create and reply', (done) => {
-		db.sortedSetsCard([`post:${topic.topicData.mainPid}:uploads`, `post:${reply.pid}:uploads`], (err, lengths) => {
-			assert.ifError(err);
-			assert.strictEqual(lengths[0], 1);
-			assert.strictEqual(lengths[1], 1);
-			done();
-		});
+	it('should automatically sync uploads on topic create and reply', async () => {
+		const lengths = await db.sortedSetsCard([`post:${topic.topicData.mainPid}:uploads`, `post:${reply.pid}:uploads`]);
+		assert.strictEqual(lengths[0], 1);
+		assert.strictEqual(lengths[1], 1);
 	});
 
 	it('should automatically sync uploads on post edit', async () => {
