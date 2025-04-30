@@ -1179,23 +1179,3 @@ describe('Posts', () => {
 		});
 	});
 });
-
-// import { fileURLToPath } from 'url';
-
-// // Get the directory name of the current module
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-// describe('Posts', () => {
-// 	let files;
-
-// 	before(async () => {
-// 		files = await file.walk(path.resolve(__dirname, './posts'));
-// 	});
-
-// 	it('subfolder tests', async () => {
-// 		for (const filePath of files) {
-// 			await import(filePath);
-// 		}
-// 	});
-// });

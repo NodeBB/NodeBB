@@ -19,327 +19,329 @@ const _filenames = ['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg
 const _recreateFiles = async () => {
 	// Create stub files for testing
 	for (const filename of _filenames) {
-		await fs.writeFile(path.join(nconf.get('upload_path'), 'files', filename), '');
+		await fs.writeFile(path.join(nconf.get('upload_path'), '/files', filename), '');
 	}
 };
 
-describe('upload methods', () => {
-	let pid;
-	let purgePid;
-	let cid;
-	let uid;
+describe('Posts/uploads', () => {
+	describe('upload methods', () => {
+		let pid;
+		let purgePid;
+		let cid;
+		let uid;
 
-	before(async () => {
-		await _recreateFiles();
+		before(async () => {
+			await _recreateFiles();
 
-		uid = await user.create({
-			username: 'Uploads user',
-			password: 'abracadabra',
-			gdpr_consent: 1,
-		});
-
-		({ cid } = await categories.create({
-			name: 'Test Category',
-			description: 'Test category created by testing script',
-		}));
-
-		const topicPostData = await topics.post({
-			uid,
-			cid,
-			title: 'topic with some images',
-			content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png) and another [alt text](/assets/uploads/files/shazam.jpg)',
-		});
-		pid = topicPostData.postData.pid;
-
-		const purgePostData = await topics.post({
-			uid,
-			cid,
-			title: 'topic with some images, to be purged',
-			content: 'here is an image [alt text](/assets/uploads/files/whoa.gif) and another [alt text](/assets/uploads/files/amazeballs.jpg)',
-		});
-		purgePid = purgePostData.postData.pid;
-	});
-
-	describe('.sync()', () => {
-		it('should properly add new images to the post\'s zset', async () => {
-			await posts.uploads.sync(pid);
-			const length = await db.sortedSetCard(`post:${pid}:uploads`);
-			assert.strictEqual(length, 2);
-		});
-
-		it('should remove an image if it is edited out of the post', async () => {
-			await posts.edit({
-				pid: pid,
-				uid,
-				content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png)... AND NO MORE!',
+			uid = await user.create({
+				username: 'uploads user',
+				password: 'abracadabra',
+				gdpr_consent: 1,
 			});
-			await posts.uploads.sync(pid);
-			const length = await db.sortedSetCard(`post:${pid}:uploads`);
-			assert.strictEqual(1, length);
-		});
-	});
 
-	describe('.list()', () => {
-		it('should display the uploaded files for a specific post', async () => {
-			const uploads = await posts.uploads.list(pid);
-			assert.equal(true, Array.isArray(uploads));
-			assert.strictEqual(1, uploads.length);
-			assert.equal('string', typeof uploads[0]);
-		});
-	});
-
-	describe('.isOrphan()', () => {
-		it('should return false if upload is not an orphan', async () => {
-			const isOrphan = await posts.uploads.isOrphan('/files/abracadabra.png');
-			assert.strictEqual(isOrphan, false);
-		});
-
-		it('should return true if upload is an orphan', async () => {
-			const isOrphan = await posts.uploads.isOrphan('/files/shazam.jpg');
-			assert.strictEqual(isOrphan, true);
-		});
-	});
-
-	describe('.associate()', () => {
-		it('should add an image to the post\'s maintained list of uploads', async () => {
-			await posts.uploads.associate(pid, '/files/whoa.gif');
-			const uploads = await posts.uploads.list(pid);
-			assert.strictEqual(2, uploads.length);
-			assert.strictEqual(true, uploads.includes('/files/whoa.gif'));
-		});
-
-		it('should allow arrays to be passed in', async () => {
-			await posts.uploads.associate(pid, ['/files/amazeballs.jpg', '/files/wut.txt']);
-			const uploads = await posts.uploads.list(pid);
-			assert.strictEqual(4, uploads.length);
-			assert.strictEqual(true, uploads.includes('/files/amazeballs.jpg'));
-			assert.strictEqual(true, uploads.includes('/files/wut.txt'));
-		});
-
-		it('should save a reverse association of md5sum to pid', async () => {
-			const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-			await posts.uploads.associate(pid, ['/files/test.bmp']);
-			const pids = await db.getSortedSetRange(`upload:${md5('/files/test.bmp')}:pids`, 0, -1);
-			assert.strictEqual(true, Array.isArray(pids));
-			assert.strictEqual(true, pids.length > 0);
-			assert.equal(pid, pids[0]);
-		});
-
-		it('should not associate a file that does not exist on the local disk', async () => {
-			await posts.uploads.associate(pid, ['/files/nonexistant.xls']);
-			const uploads = await posts.uploads.list(pid);
-			assert.strictEqual(uploads.length, 5);
-			assert.strictEqual(false, uploads.includes('/files/nonexistant.xls'));
-		});
-	});
-
-	describe('.dissociate()', () => {
-		it('should remove an image from the post\'s maintained list of uploads', async () => {
-			await posts.uploads.dissociate(pid, '/files/whoa.gif');
-			const uploads = await posts.uploads.list(pid);
-			assert.strictEqual(4, uploads.length, uploads);
-			assert.strictEqual(false, uploads.includes('/files/whoa.gif'));
-		});
-
-		it('should allow arrays to be passed in', async () => {
-			await posts.uploads.dissociate(pid, ['/files/amazeballs.jpg', '/files/wut.txt']);
-			const uploads = await posts.uploads.list(pid);
-			assert.strictEqual(2, uploads.length);
-			assert.strictEqual(false, uploads.includes('/files/amazeballs.jpg'));
-			assert.strictEqual(false, uploads.includes('/files/wut.txt'));
-		});
-
-		it('should remove the image\'s user association, if present', async () => {
-			await _recreateFiles();
-			await posts.uploads.associate(pid, '/files/wut.txt');
-			await user.associateUpload(uid, '/files/wut.txt');
-			await posts.uploads.dissociate(pid, '/files/wut.txt');
-
-			const userUploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
-			assert.strictEqual(userUploads.includes('/files/wut.txt'), false);
-		});
-	});
-
-	describe('.dissociateAll()', () => {
-		it('should remove all images from a post\'s maintained list of uploads', async () => {
-			await posts.uploads.dissociateAll(pid);
-			const uploads = await posts.uploads.list(pid);
-			assert.equal(uploads.length, 0);
-		});
-	});
-
-	describe('Dissociation on purge', () => {
-		it('should not dissociate images on post deletion', async () => {
-			await posts.delete(purgePid, 1);
-			const uploads = await posts.uploads.list(purgePid);
-			assert.equal(uploads.length, 2);
-		});
-
-		it('should dissociate images on post purge', async () => {
-			await posts.purge(purgePid, 1);
-			const uploads = await posts.uploads.list(purgePid);
-			assert.equal(uploads.length, 0);
-		});
-	});
-
-	describe('Deletion from disk on purge', () => {
-		let postData;
-
-		beforeEach(async () => {
-			await _recreateFiles();
-
-			({ postData } = await topics.post({
-				uid,
-				cid,
-				title: 'Testing deletion from disk on purge',
-				content: 'these images: ![alt text](/assets/uploads/files/abracadabra.png) and another ![alt text](/assets/uploads/files/test.bmp)',
+			({ cid } = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
 			}));
-		});
 
-		afterEach(async () => {
-			await topics.purge(postData.tid, uid);
-		});
-
-		it('should purge the images from disk if the post is purged', async () => {
-			await posts.purge(postData.pid, uid);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), false);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), false);
-		});
-
-		it('should leave the images behind if `preserveOrphanedUploads` is enabled', async () => {
-			meta.config.preserveOrphanedUploads = 1;
-
-			await posts.purge(postData.pid, uid);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), true);
-
-			delete meta.config.preserveOrphanedUploads;
-		});
-
-		it('should leave images behind if they are used in another post', async () => {
-			const { postData: secondPost } = await topics.post({
+			const topicPostData = await topics.post({
 				uid,
 				cid,
-				title: 'Second topic',
-				content: 'just abracadabra: ![alt text](/assets/uploads/files/abracadabra.png)',
+				title: 'topic with some images',
+				content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png) and another [alt text](/assets/uploads/files/shazam.jpg)',
+			});
+			pid = topicPostData.postData.pid;
+
+			const purgePostData = await topics.post({
+				uid,
+				cid,
+				title: 'topic with some images, to be purged',
+				content: 'here is an image [alt text](/assets/uploads/files/whoa.gif) and another [alt text](/assets/uploads/files/amazeballs.jpg)',
+			});
+			purgePid = purgePostData.postData.pid;
+		});
+
+		describe('.sync()', () => {
+			it('should properly add new images to the post\'s zset', async () => {
+				await posts.uploads.sync(pid);
+				const length = await db.sortedSetCard(`post:${pid}:uploads`);
+				assert.strictEqual(length, 2);
 			});
 
-			await posts.purge(secondPost.pid, uid);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
-		});
-	});
-
-	describe('.deleteFromDisk()', () => {
-		beforeEach(async () => {
-			await _recreateFiles();
-		});
-
-		it('should work if you pass in a string path', async () => {
-			await posts.uploads.deleteFromDisk('/files/abracadabra.png');
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files/abracadabra.png')), false);
-		});
-
-		it('should throw an error if a non-string or non-array is passed', async () => {
-			try {
-				await posts.uploads.deleteFromDisk({
-					files: ['/files/abracadabra.png'],
+			it('should remove an image if it is edited out of the post', async () => {
+				await posts.edit({
+					pid: pid,
+					uid,
+					content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png)... AND NO MORE!',
 				});
-			} catch (err) {
-				assert(!!err);
-				assert.strictEqual(err.message, '[[error:wrong-parameter-type, filePaths, object, array]]');
-			}
+				await posts.uploads.sync(pid);
+				const length = await db.sortedSetCard(`post:${pid}:uploads`);
+				assert.strictEqual(1, length);
+			});
 		});
 
-		it('should delete the files passed in, from disk', async () => {
-			await posts.uploads.deleteFromDisk(['/files/abracadabra.png', '/files/shazam.jpg']);
-
-			const existsOnDisk = await Promise.all(_filenames.map(async (filename) => {
-				const fullPath = path.resolve(nconf.get('upload_path'), 'files', filename);
-				return file.exists(fullPath);
-			}));
-
-			assert.deepStrictEqual(existsOnDisk, [false, false, true, true, true, true]);
+		describe('.list()', () => {
+			it('should display the uploaded files for a specific post', async () => {
+				const uploads = await posts.uploads.list(pid);
+				assert.equal(true, Array.isArray(uploads));
+				assert.strictEqual(1, uploads.length);
+				assert.equal('string', typeof uploads[0]);
+			});
 		});
 
-		it('should not delete files if they are not in `uploads/files/` (path traversal)', async () => {
-			const tmpFilePath = path.resolve(os.tmpdir(), `derp${utils.generateUUID()}`);
-			await fs.writeFile(tmpFilePath, '');
-			await posts.uploads.deleteFromDisk(['../files/503.html', tmpFilePath]);
-
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), '../files/503.html')), true);
-			assert.strictEqual(await file.exists(tmpFilePath), true);
-
-			await file.delete(tmpFilePath);
-		});
-
-		it('should delete files even if they are not orphans', async () => {
-			await topics.post({
-				uid,
-				cid,
-				title: 'To be orphaned',
-				content: 'this image is not an orphan: ![wut](/assets/uploads/files/wut.txt)',
+		describe('.isOrphan()', () => {
+			it('should return false if upload is not an orphan', async () => {
+				const isOrphan = await posts.uploads.isOrphan('/files/abracadabra.png');
+				assert.equal(isOrphan, false);
 			});
 
-			assert.strictEqual(await posts.uploads.isOrphan('/files/wut.txt'), false);
-			await posts.uploads.deleteFromDisk(['/files/wut.txt']);
+			it('should return true if upload is an orphan', async () => {
+				const isOrphan = await posts.uploads.isOrphan('/files/shazam.jpg');
+				assert.equal(isOrphan, true);
+			});
+		});
 
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), '/files/wut.txt')), false);
+		describe('.associate()', () => {
+			it('should add an image to the post\'s maintained list of uploads', async () => {
+				await posts.uploads.associate(pid, '/files/whoa.gif');
+				const uploads = await posts.uploads.list(pid);
+				assert.strictEqual(2, uploads.length);
+				assert.strictEqual(true, uploads.includes('/files/whoa.gif'));
+			});
+
+			it('should allow arrays to be passed in', async () => {
+				await posts.uploads.associate(pid, ['/files/amazeballs.jpg', '/files/wut.txt']);
+				const uploads = await posts.uploads.list(pid);
+				assert.strictEqual(4, uploads.length);
+				assert.strictEqual(true, uploads.includes('/files/amazeballs.jpg'));
+				assert.strictEqual(true, uploads.includes('/files/wut.txt'));
+			});
+
+			it('should save a reverse association of md5sum to pid', async () => {
+				const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
+				await posts.uploads.associate(pid, ['/files/test.bmp']);
+				const pids = await db.getSortedSetRange(`upload:${md5('/files/test.bmp')}:pids`, 0, -1);
+				assert.strictEqual(true, Array.isArray(pids));
+				assert.strictEqual(true, pids.length > 0);
+				assert.equal(pid, pids[0]);
+			});
+
+			it('should not associate a file that does not exist on the local disk', async () => {
+				await posts.uploads.associate(pid, ['/files/nonexistant.xls']);
+				const uploads = await posts.uploads.list(pid);
+				assert.strictEqual(uploads.length, 5);
+				assert.strictEqual(false, uploads.includes('/files/nonexistant.xls'));
+			});
+		});
+
+		describe('.dissociate()', () => {
+			it('should remove an image from the post\'s maintained list of uploads', async () => {
+				await posts.uploads.dissociate(pid, '/files/whoa.gif');
+				const uploads = await posts.uploads.list(pid);
+				assert.strictEqual(4, uploads.length, uploads);
+				assert.strictEqual(false, uploads.includes('/files/whoa.gif'));
+			});
+
+			it('should allow arrays to be passed in', async () => {
+				await posts.uploads.dissociate(pid, ['/files/amazeballs.jpg', '/files/wut.txt']);
+				const uploads = await posts.uploads.list(pid);
+				assert.strictEqual(2, uploads.length);
+				assert.strictEqual(false, uploads.includes('/files/amazeballs.jpg'));
+				assert.strictEqual(false, uploads.includes('/files/wut.txt'));
+			});
+
+			it('should remove the image\'s user association, if present', async () => {
+				await _recreateFiles();
+				await posts.uploads.associate(pid, '/files/wut.txt');
+				await user.associateUpload(uid, '/files/wut.txt');
+				await posts.uploads.dissociate(pid, '/files/wut.txt');
+
+				const userUploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
+				assert.strictEqual(userUploads.includes('/files/wut.txt'), false);
+			});
+		});
+
+		describe('.dissociateAll()', () => {
+			it('should remove all images from a post\'s maintained list of uploads', async () => {
+				await posts.uploads.dissociateAll(pid);
+				const uploads = await posts.uploads.list(pid);
+				assert.equal(uploads.length, 0);
+			});
+		});
+
+		describe('Dissociation on purge', () => {
+			it('should not dissociate images on post deletion', async () => {
+				await posts.delete(purgePid, 1);
+				const uploads = await posts.uploads.list(purgePid);
+				assert.equal(uploads.length, 2);
+			});
+
+			it('should dissociate images on post purge', async () => {
+				await posts.purge(purgePid, 1);
+				const uploads = await posts.uploads.list(purgePid);
+				assert.equal(uploads.length, 0);
+			});
+		});
+
+		describe('Deletion from disk on purge', () => {
+			let postData;
+
+			beforeEach(async () => {
+				await _recreateFiles();
+
+				({ postData } = await topics.post({
+					uid,
+					cid,
+					title: 'Testing deletion from disk on purge',
+					content: 'these images: ![alt text](/assets/uploads/files/abracadabra.png) and another ![alt text](/assets/uploads/files/test.bmp)',
+				}));
+			});
+
+			afterEach(async () => {
+				await topics.purge(postData.tid, uid);
+			});
+
+			it('should purge the images from disk if the post is purged', async () => {
+				await posts.purge(postData.pid, uid);
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), false);
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), false);
+			});
+
+			it('should leave the images behind if `preserveOrphanedUploads` is enabled', async () => {
+				meta.config.preserveOrphanedUploads = 1;
+
+				await posts.purge(postData.pid, uid);
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), true);
+
+				delete meta.config.preserveOrphanedUploads;
+			});
+
+			it('should leave images behind if they are used in another post', async () => {
+				const { postData: secondPost } = await topics.post({
+					uid,
+					cid,
+					title: 'Second topic',
+					content: 'just abracadabra: ![alt text](/assets/uploads/files/abracadabra.png)',
+				});
+
+				await posts.purge(secondPost.pid, uid);
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
+			});
+		});
+
+		describe('.deleteFromDisk()', () => {
+			beforeEach(async () => {
+				await _recreateFiles();
+			});
+
+			it('should work if you pass in a string path', async () => {
+				await posts.uploads.deleteFromDisk('/files/abracadabra.png');
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files/abracadabra.png')), false);
+			});
+
+			it('should throw an error if a non-string or non-array is passed', async () => {
+				try {
+					await posts.uploads.deleteFromDisk({
+						files: ['/files/abracadabra.png'],
+					});
+				} catch (err) {
+					assert(!!err);
+					assert.strictEqual(err.message, '[[error:wrong-parameter-type, filePaths, object, array]]');
+				}
+			});
+
+			it('should delete the files passed in, from disk', async () => {
+				await posts.uploads.deleteFromDisk(['/files/abracadabra.png', '/files/shazam.jpg']);
+
+				const existsOnDisk = await Promise.all(_filenames.map(async (filename) => {
+					const fullPath = path.resolve(nconf.get('upload_path'), 'files', filename);
+					return file.exists(fullPath);
+				}));
+
+				assert.deepStrictEqual(existsOnDisk, [false, false, true, true, true, true]);
+			});
+
+			it('should not delete files if they are not in `uploads/files/` (path traversal)', async () => {
+				const tmpFilePath = path.resolve(os.tmpdir(), `derp${utils.generateUUID()}`);
+				await fs.writeFile(tmpFilePath, '');
+				await posts.uploads.deleteFromDisk(['../files/503.html', tmpFilePath]);
+
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), '../files/503.html')), true);
+				assert.strictEqual(await file.exists(tmpFilePath), true);
+
+				await file.delete(tmpFilePath);
+			});
+
+			it('should delete files even if they are not orphans', async () => {
+				await topics.post({
+					uid,
+					cid,
+					title: 'To be orphaned',
+					content: 'this image is not an orphan: ![wut](/assets/uploads/files/wut.txt)',
+				});
+
+				assert.strictEqual(await posts.uploads.isOrphan('/files/wut.txt'), false);
+				await posts.uploads.deleteFromDisk(['/files/wut.txt']);
+
+				assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), '/files/wut.txt')), false);
+			});
 		});
 	});
-});
 
-describe('post uploads management', () => {
-	let topic;
-	let reply;
-	let uid;
-	let cid;
+	describe('post uploads management', () => {
+		let topic;
+		let reply;
+		let uid;
+		let cid;
 
-	before(async () => {
-		await _recreateFiles();
+		before(async () => {
+			await _recreateFiles();
 
-		uid = await user.create({
-			username: 'Uploads user',
-			password: 'abracadabra',
-			gdpr_consent: 1,
+			uid = await user.create({
+				username: 'uploads user',
+				password: 'abracadabra',
+				gdpr_consent: 1,
+			});
+
+			({ cid } = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			}));
+
+			const topicPostData = await topics.post({
+				uid,
+				cid,
+				title: 'topic to test uploads with',
+				content: '[abcdef](/assets/uploads/files/abracadabra.png)',
+			});
+
+			const replyData = await topics.reply({
+				uid,
+				tid: topicPostData.topicData.tid,
+				timestamp: Date.now(),
+				content: '[abcdef](/assets/uploads/files/shazam.jpg)',
+			});
+
+			topic = topicPostData;
+			reply = replyData;
 		});
 
-		({ cid } = await categories.create({
-			name: 'Test Category',
-			description: 'Test category created by testing script',
-		}));
-
-		const topicPostData = await topics.post({
-			uid,
-			cid,
-			title: 'topic to test uploads with',
-			content: '[abcdef](/assets/uploads/files/abracadabra.png)',
+		it('should automatically sync uploads on topic create and reply', async () => {
+			const lengths = await db.sortedSetsCard([`post:${topic.topicData.mainPid}:uploads`, `post:${reply.pid}:uploads`]);
+			assert.strictEqual(lengths[0], 1);
+			assert.strictEqual(lengths[1], 1);
 		});
 
-		const replyData = await topics.reply({
-			uid,
-			tid: topicPostData.topicData.tid,
-			timestamp: Date.now(),
-			content: '[abcdef](/assets/uploads/files/shazam.jpg)',
+		it('should automatically sync uploads on post edit', async () => {
+			await posts.edit({
+				pid: reply.pid,
+				uid,
+				content: 'no uploads',
+			});
+			const uploads = await posts.uploads.list(reply.pid);
+			assert.strictEqual(true, Array.isArray(uploads));
+			assert.strictEqual(0, uploads.length);
 		});
-
-		topic = topicPostData;
-		reply = replyData;
-	});
-
-	it('should automatically sync uploads on topic create and reply', async () => {
-		const lengths = await db.sortedSetsCard([`post:${topic.topicData.mainPid}:uploads`, `post:${reply.pid}:uploads`]);
-		assert.strictEqual(lengths[0], 1);
-		assert.strictEqual(lengths[1], 1);
-	});
-
-	it('should automatically sync uploads on post edit', async () => {
-		await posts.edit({
-			pid: reply.pid,
-			uid,
-			content: 'no uploads',
-		});
-		const uploads = await posts.uploads.list(reply.pid);
-		assert.strictEqual(true, Array.isArray(uploads));
-		assert.strictEqual(0, uploads.length);
 	});
 });
