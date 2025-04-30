@@ -3,22 +3,17 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
-import { fileURLToPath } from 'url';
 
 import nconf from 'nconf';
 
-import * as db from '../mocks/databasemock.js';
-import * as categories from '../../src/categories.js';
-import * as topics from '../../src/topics.js';
-import * as posts from '../../src/posts.js';
-import * as user from '../../src/user.js';
-import * as meta from '../../src/meta.js';
-import * as file from '../../src/file.js';
-import * as utils from '../../src/utils.js';
-
-// Define __dirname for ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import db from '../mocks/databasemock.mjs';
+import categories from '../../src/categories/index.js';
+import topics from '../../src/topics/index.js';
+import posts from '../../src/posts/index.js';
+import user from '../../src/user/index.js';
+import meta from '../../src/meta/index.js';
+import file from '../../src/file.js';
+import utils from '../../src/utils.js';
 
 const _filenames = ['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp'];
 const _recreateFiles = async () => {

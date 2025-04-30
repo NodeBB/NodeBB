@@ -55,6 +55,12 @@ module.exports = function (module) {
 		}
 
 		async function checkIfKeysExist(keys) {
+			if (!keys) {
+				return [];
+			}
+			if (Array.isArray(keys) && keys.length == 0) {
+				return [];
+			}
 			const [rows] = await module.pool.query(
 				`SELECT _key k FROM legacy_object_live WHERE _key IN (?)`,
 				[keys]
