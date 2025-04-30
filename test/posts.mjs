@@ -1,31 +1,32 @@
-'use strict';
+// Import Node.js built-in modules
+import assert from 'assert';
+import path from 'path';
+import { promisify } from 'util';
 
+// Promisify setTimeout for sleep function
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const assert = require('assert');
+// Import third-party modules
+import nconf from 'nconf';
 
-const nconf = require('nconf');
-const path = require('path');
-const util = require('util');
+// Import local modules
+import * as db from './mocks/databasemock.js';
+import * as topics from '../src/topics.js';
+import * as posts from '../src/posts.js';
+import * as categories from '../src/categories.js';
+import * as privileges from '../src/privileges.js';
+import * as user from '../src/user.js';
+import * as groups from '../src/groups.js';
+import * as socketPosts from '../src/socket.io/posts.js';
+import * as apiPosts from '../src/api/posts.js';
+import * as apiTopics from '../src/api/topics.js';
+import * as meta from '../src/meta.js';
+import * as file from '../src/file.js';
+import * as helpers from './helpers.js';
+import * as utils from '../src/utils.js';
+import * as request from '../src/request.js';
 
-const sleep = util.promisify(setTimeout);
-
-const db = require('./mocks/databasemock');
-const topics = require('../src/topics');
-const posts = require('../src/posts');
-const categories = require('../src/categories');
-const privileges = require('../src/privileges');
-const user = require('../src/user');
-const groups = require('../src/groups');
-const socketPosts = require('../src/socket.io/posts');
-const apiPosts = require('../src/api/posts');
-const apiTopics = require('../src/api/topics');
-const meta = require('../src/meta');
-const file = require('../src/file');
-const helpers = require('./helpers');
-const utils = require('../src/utils');
-const request = require('../src/request');
-
-describe('Post\'s', () => {
+describe('Posts', () => {
 	let voterUid;
 	let voteeUid;
 	let globalModUid;
@@ -52,7 +53,7 @@ describe('Post\'s', () => {
 	});
 
 	it('should update category teaser properly', async () => {
-		const getCategoriesAsync = async () => (await request.get(`${nconf.get('url')}/api/categories`, { })).body;
+		const getCategoriesAsync = async () => (await request.get(`${nconf.get('url')}/api/categories`, {})).body;
 		const postResult = await topics.post({ uid: globalModUid, cid: cid, title: 'topic title', content: '123456789' });
 
 		let data = await getCategoriesAsync();
@@ -124,12 +125,9 @@ describe('Post\'s', () => {
 		}
 	});
 
-	it('should return falsy if post does not exist', (done) => {
-		posts.getPostData(9999, (err, postData) => {
-			assert.ifError(err);
-			assert.equal(postData, null);
-			done();
-		});
+	it('should return falsy if post does not exist', async () => {
+		const postData = await posts.getPostData(9999);
+		assert.equal(postData, null);
 	});
 
 	describe('voting', () => {
@@ -170,24 +168,18 @@ describe('Post\'s', () => {
 			assert.strictEqual(score, 1);
 		});
 
-		it('should get voters', (done) => {
-			socketPosts.getVoters({ uid: globalModUid }, { pid: postData.pid, cid: cid }, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.upvoteCount, 1);
-				assert.equal(data.downvoteCount, 0);
-				assert(Array.isArray(data.upvoters));
-				assert.equal(data.upvoters[0].username, 'upvoter');
-				done();
-			});
+		it('should get voters', async () => {
+			const data = await socketPosts.getVoters({ uid: globalModUid }, { pid: postData.pid, cid: cid });
+			assert.equal(data.upvoteCount, 1);
+			assert.equal(data.downvoteCount, 0);
+			assert(Array.isArray(data.upvoters));
+			assert.equal(data.upvoters[0].username, 'upvoter');
 		});
 
-		it('should get upvoters', (done) => {
-			socketPosts.getUpvoters({ uid: globalModUid }, [postData.pid], (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.otherCount, 0);
-				assert.equal(data.usernames, 'upvoter');
-				done();
-			});
+		it('should get upvoters', async () => {
+			const data = await socketPosts.getUpvoters({ uid: globalModUid }, [postData.pid]);
+			assert.equal(data.otherCount, 0);
+			assert.equal(data.usernames, 'upvoter');
 		});
 
 		it('should fail to get upvoters if user does not have read privilege', async () => {
@@ -282,22 +274,21 @@ describe('Post\'s', () => {
 	});
 
 	describe('post tools', () => {
-		it('should error if data is invalid', (done) => {
-			socketPosts.loadPostTools({ uid: globalModUid }, null, (err) => {
+		it('should error if data is invalid', async () => {
+			try {
+				await socketPosts.loadPostTools({ uid: globalModUid }, null);
+				assert.fail('Expected error');
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
-		it('should load post tools', (done) => {
-			socketPosts.loadPostTools({ uid: globalModUid }, { pid: postData.pid, cid: cid }, (err, data) => {
-				assert.ifError(err);
-				assert(data.posts.display_edit_tools);
-				assert(data.posts.display_delete_tools);
-				assert(data.posts.display_moderator_tools);
-				assert(data.posts.display_move_tools);
-				done();
-			});
+		it('should load post tools', async () => {
+			const data = await socketPosts.loadPostTools({ uid: globalModUid }, { pid: postData.pid, cid: cid });
+			assert(data.posts.display_edit_tools);
+			assert(data.posts.display_delete_tools);
+			assert(data.posts.display_moderator_tools);
+			assert(data.posts.display_move_tools);
 		});
 	});
 
@@ -335,9 +326,8 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.delete({ uid: voterUid }, null);
 			} catch (err) {
-				return assert.equal(err.message, '[[error:invalid-data]]');
+				assert.equal(err.message, '[[error:invalid-data]]');
 			}
-			assert(false);
 		});
 
 		it('should delete a post', async () => {
@@ -384,55 +374,48 @@ describe('Post\'s', () => {
 		let pid;
 		let replyPid;
 		let tid;
-		before((done) => {
-			topics.post({
+		before(async () => {
+			const data = await topics.post({
 				uid: voterUid,
 				cid: cid,
 				title: 'topic to edit',
 				content: 'A post to edit',
 				tags: ['nodebb'],
-			}, (err, data) => {
-				assert.ifError(err);
-				pid = data.postData.pid;
-				tid = data.topicData.tid;
-				topics.reply({
-					uid: voterUid,
-					tid: tid,
-					timestamp: Date.now(),
-					content: 'A reply to edit',
-				}, (err, data) => {
-					assert.ifError(err);
-					replyPid = data.pid;
-					privileges.categories.give(['groups:posts:edit'], cid, 'registered-users', done);
-				});
 			});
+			pid = data.postData.pid;
+			tid = data.topicData.tid;
+			const replyData = await topics.reply({
+				uid: voterUid,
+				tid: tid,
+				timestamp: Date.now(),
+				content: 'A reply to edit',
+			});
+			replyPid = replyData.pid;
+			await privileges.categories.give(['groups:posts:edit'], cid, 'registered-users');
 		});
 
 		it('should error if user is not logged in', async () => {
 			try {
 				await apiPosts.edit({ uid: 0 }, { pid: pid, content: 'gg' });
 			} catch (err) {
-				return assert.equal(err.message, '[[error:not-logged-in]]');
+				assert.equal(err.message, '[[error:not-logged-in]]');
 			}
-			assert(false);
 		});
 
 		it('should error if data is invalid or missing', async () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, {});
 			} catch (err) {
-				return assert.equal(err.message, '[[error:invalid-data]]');
+				assert.equal(err.message, '[[error:invalid-data]]');
 			}
-			assert(false);
 		});
 
 		it('should error if title is too short', async () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' });
 			} catch (err) {
-				return assert.equal(err.message, `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
+				assert.equal(err.message, `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
 			}
-			assert(false);
 		});
 
 		it('should error if title is too long', async () => {
@@ -440,9 +423,8 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle });
 			} catch (err) {
-				return assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
+				assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
 			}
-			assert(false);
 		});
 
 		it('should error with too few tags', async () => {
@@ -453,9 +435,7 @@ describe('Post\'s', () => {
 			} catch (err) {
 				assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
 				meta.config.minimumTagsPerTopic = oldValue;
-				return;
 			}
-			assert(false);
 		});
 
 		it('should error with too many tags', async () => {
@@ -466,18 +446,16 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags });
 			} catch (err) {
-				return assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
+				assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
 			}
-			assert(false);
 		});
 
 		it('should error if content is too short', async () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' });
 			} catch (err) {
-				return assert.equal(err.message, `[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
+				assert.equal(err.message, `[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
 			}
-			assert(false);
 		});
 
 		it('should error if content is too long', async () => {
@@ -485,9 +463,8 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: longContent });
 			} catch (err) {
-				return assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+				assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 			}
-			assert(false);
 		});
 
 		it('should edit post', async () => {
@@ -514,9 +491,7 @@ describe('Post\'s', () => {
 			} catch (err) {
 				assert.equal(err.message, '[[error:post-edit-duration-expired, 1]]');
 				meta.config.newbiePostEditDuration = 3600;
-				return;
 			}
-			assert(false);
 		});
 
 		it('should edit a deleted post', async () => {
@@ -536,46 +511,36 @@ describe('Post\'s', () => {
 			assert.equal(data.topic.renamed, false);
 		});
 
-		it('should return diffs', (done) => {
-			posts.diffs.get(replyPid, 0, (err, data) => {
-				assert.ifError(err);
-				assert(Array.isArray(data));
-				assert(data[0].pid, replyPid);
-				assert(data[0].patch);
-				done();
-			});
+		it('should return diffs', async () => {
+			const data = await posts.diffs.get(replyPid, 0);
+			assert(Array.isArray(data));
+			assert.equal(data[0].pid, replyPid);
+			assert(data[0].patch);
 		});
 
-		it('should load diffs and reconstruct post', (done) => {
-			posts.diffs.load(replyPid, 0, voterUid, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.content, 'A reply to edit');
-				done();
-			});
+		it('should load diffs and reconstruct post', async () => {
+			const data = await posts.diffs.load(replyPid, 0, voterUid);
+			assert.equal(data.content, 'A reply to edit');
 		});
 
 		it('should not allow guests to view diffs', async () => {
-			let err = {};
-			try {
-				await apiPosts.getDiffs({ uid: 0 }, { pid: 1 });
-			} catch (_err) {
-				err = _err;
-			}
-			assert.strictEqual(err.message, '[[error:no-privileges]]');
+			await assert.rejects(apiPosts.getDiffs({ uid: 0 }, { pid: 1 }), {
+				message: '[[error:no-privileges]]',
+			});
 		});
 
 		it('should allow registered-users group to view diffs', async () => {
 			const data = await apiPosts.getDiffs({ uid: 1 }, { pid: 1 });
 
-			assert.strictEqual('boolean', typeof data.editable);
-			assert.strictEqual(false, data.editable);
+			assert.strictEqual(typeof data.editable, 'boolean');
+			assert.strictEqual(data.editable, false);
 
-			assert.equal(true, Array.isArray(data.timestamps));
-			assert.strictEqual(1, data.timestamps.length);
+			assert.equal(Array.isArray(data.timestamps), true);
+			assert.strictEqual(data.timestamps.length, 1);
 
-			assert.equal(true, Array.isArray(data.revisions));
+			assert.equal(Array.isArray(data.revisions), true);
 			assert.strictEqual(data.timestamps.length, data.revisions.length);
-			['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop));
+			assert(['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop)));
 		});
 
 		it('should not delete first diff of a post', async () => {
@@ -635,33 +600,30 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.move({ uid: 0 }, {});
 			} catch (err) {
-				return assert.equal(err.message, '[[error:not-logged-in]]');
+				assert.equal(err.message, '[[error:not-logged-in]]');
 			}
-			assert(false);
 		});
 
 		it('should error if data is invalid', async () => {
 			try {
 				await apiPosts.move({ uid: globalModUid }, {});
 			} catch (err) {
-				return assert.equal(err.message, '[[error:invalid-data]]');
+				assert.equal(err.message, '[[error:invalid-data]]');
 			}
-			assert(false);
 		});
 
 		it('should error if user does not have move privilege', async () => {
 			try {
 				await apiPosts.move({ uid: voterUid }, { pid: replyPid, tid: moveTid });
 			} catch (err) {
-				return assert.equal(err.message, '[[error:no-privileges]]');
+				assert.equal(err.message, '[[error:no-privileges]]');
 			}
-			assert(false);
 		});
 
 		it('should move a post', async () => {
 			await apiPosts.move({ uid: globalModUid }, { pid: replyPid, tid: moveTid });
 			const tid = await posts.getPostField(replyPid, 'tid');
-			assert(tid, moveTid);
+			assert.equal(tid, moveTid);
 		});
 
 		it('should fail to move post if not moderator of target category', async () => {
@@ -682,122 +644,94 @@ describe('Post\'s', () => {
 	});
 
 	describe('getPostSummaryByPids', () => {
-		it('should return empty array for empty pids', (done) => {
-			posts.getPostSummaryByPids([], 0, {}, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.length, 0);
-				done();
-			});
+		it('should return empty array for empty pids', async () => {
+			const data = await posts.getPostSummaryByPids([], 0, {});
+			assert.equal(data.length, 0);
 		});
 
-		it('should get post summaries', (done) => {
-			posts.getPostSummaryByPids([postData.pid], 0, {}, (err, data) => {
-				assert.ifError(err);
-				assert(data[0].user);
-				assert(data[0].topic);
-				assert(data[0].category);
-				done();
-			});
+		it('should get post summaries', async () => {
+			const data = await posts.getPostSummaryByPids([postData.pid], 0, {});
+			assert(data[0].user);
+			assert(data[0].topic);
+			assert(data[0].category);
 		});
 	});
 
-	it('should get recent poster uids', (done) => {
-		topics.reply({
+	it('should get recent poster uids', async () => {
+		await topics.reply({
 			uid: voterUid,
 			tid: topicData.tid,
 			timestamp: Date.now(),
 			content: 'some content',
-		}, (err) => {
-			assert.ifError(err);
-			posts.getRecentPosterUids(0, 1, (err, uids) => {
-				assert.ifError(err);
-				assert(Array.isArray(uids));
-				assert.equal(uids.length, 2);
-				assert.equal(uids[0], voterUid);
-				done();
-			});
 		});
+		const uids = await posts.getRecentPosterUids(0, 1);
+		assert(Array.isArray(uids));
+		assert.equal(uids.length, 2);
+		assert.equal(uids[0], voterUid);
 	});
 
 	describe('parse', () => {
-		it('should not crash and return falsy if post data is falsy', (done) => {
-			posts.parsePost(null, (err, postData) => {
-				assert.ifError(err);
-				assert.strictEqual(postData, null);
-				done();
-			});
+		it('should not crash and return falsy if post data is falsy', async () => {
+			const postData = await posts.parsePost(null);
+			assert.strictEqual(postData, null);
 		});
 
-		it('should store post content in cache', (done) => {
+		it('should store post content in cache', async () => {
 			const oldValue = global.env;
 			global.env = 'production';
 			const postData = {
 				pid: 9999,
 				content: 'some post content',
 			};
-			posts.parsePost(postData, (err) => {
-				assert.ifError(err);
-				posts.parsePost(postData, (err) => {
-					assert.ifError(err);
-					global.env = oldValue;
-					done();
-				});
-			});
+			await posts.parsePost(postData);
+			await posts.parsePost(postData);
+			global.env = oldValue;
 		});
 
-		it('should parse signature and remove links and images', (done) => {
+		it('should parse signature and remove links and images', async () => {
 			meta.config['signatures:disableLinks'] = 1;
 			meta.config['signatures:disableImages'] = 1;
 			const userData = {
 				signature: '<img src="boop"/><a href="link">test</a> derp',
 			};
 
-			posts.parseSignature(userData, 1, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.userData.signature, 'test derp');
-				meta.config['signatures:disableLinks'] = 0;
-				meta.config['signatures:disableImages'] = 0;
-				done();
-			});
+			const data = await posts.parseSignature(userData, 1);
+			assert.equal(data.userData.signature, 'test derp');
+			meta.config['signatures:disableLinks'] = 0;
+			meta.config['signatures:disableImages'] = 0;
 		});
 
-		it('should turn relative links in post body to absolute urls', (done) => {
-			const nconf = require('nconf');
+		it('should turn relative links in post body to absolute urls', () => {
 			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
 			const parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a>`);
-			done();
 		});
 
-		it('should turn relative links in post body to absolute urls', (done) => {
-			const nconf = require('nconf');
+		it('should turn relative links in post body to absolute urls', () => {
 			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
 			let parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
 			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
-			done();
 		});
 	});
 
 	describe('socket methods', () => {
 		let pid;
-		before((done) => {
-			topics.reply({
+		before(async () => {
+			const postData = await topics.reply({
 				uid: voterUid,
 				tid: topicData.tid,
 				timestamp: Date.now(),
 				content: 'raw content',
-			}, (err, postData) => {
-				assert.ifError(err);
-				pid = postData.pid;
-				privileges.categories.rescind(['groups:topics:read'], cid, 'guests', done);
 			});
+			pid = postData.pid;
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
 		});
 
 		it('should error with invalid data', async () => {
 			try {
 				await apiTopics.reply({ uid: 0 }, null);
-				assert(false);
+				assert.fail('Expected error');
 			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 			}
@@ -806,7 +740,7 @@ describe('Post\'s', () => {
 		it('should error with invalid tid', async () => {
 			try {
 				await apiTopics.reply({ uid: 0 }, { tid: 0, content: 'derp' });
-				assert(false);
+				assert.fail('Expected error');
 			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 			}
@@ -866,7 +800,7 @@ describe('Post\'s', () => {
 			assert(utils.isNumber(timestamp));
 		});
 
-		it('should get post timestamp by index', async () => {
+		it('should get post summary by pid', async () => {
 			const summary = await socketPosts.getPostSummaryByPid({ uid: voterUid }, {
 				pid: pid,
 			});
@@ -901,44 +835,33 @@ describe('Post\'s', () => {
 	});
 
 	describe('filterPidsByCid', () => {
-		it('should return pids as is if cid is falsy', (done) => {
-			posts.filterPidsByCid([1, 2, 3], null, (err, pids) => {
-				assert.ifError(err);
-				assert.deepEqual([1, 2, 3], pids);
-				done();
-			});
+		it('should return pids as is if cid is falsy', async () => {
+			const pids = await posts.filterPidsByCid([1, 2, 3], null);
+			assert.deepEqual([1, 2, 3], pids);
 		});
 
-		it('should filter pids by single cid', (done) => {
-			posts.filterPidsByCid([postData.pid, 100, 101], cid, (err, pids) => {
-				assert.ifError(err);
-				assert.deepEqual([postData.pid], pids);
-				done();
-			});
+		it('should filter pids by single cid', async () => {
+			const pids = await posts.filterPidsByCid([postData.pid, 100, 101], cid);
+			assert.deepEqual([postData.pid], pids);
 		});
 
-		it('should filter pids by multiple cids', (done) => {
-			posts.filterPidsByCid([postData.pid, 100, 101], [cid, 2, 3], (err, pids) => {
-				assert.ifError(err);
-				assert.deepEqual([postData.pid], pids);
-				done();
-			});
+		it('should filter pids by multiple cids', async () => {
+			const pids = await posts.filterPidsByCid([postData.pid, 100, 101], [cid, 2, 3]);
+			assert.deepEqual([postData.pid], pids);
 		});
 
-		it('should filter pids by multiple cids', (done) => {
-			posts.filterPidsByCid([postData.pid, 100, 101], [cid], (err, pids) => {
-				assert.ifError(err);
-				assert.deepEqual([postData.pid], pids);
-				done();
-			});
+		it('should filter pids by multiple cids', async () => {
+			const pids = await posts.filterPidsByCid([postData.pid, 100, 101], [cid]);
+			assert.deepEqual([postData.pid], pids);
 		});
 	});
 
-	it('should error if user does not exist', (done) => {
-		user.isReadyToPost(21123123, 1, (err) => {
+	it('should error if user does not exist', async () => {
+		try {
+			await user.isReadyToPost(21123123, 1);
+		} catch (err) {
 			assert.equal(err.message, '[[error:no-user]]');
-			done();
-		});
+		}
 	});
 
 	describe('post queue', () => {
@@ -946,19 +869,14 @@ describe('Post\'s', () => {
 		let queueId;
 		let topicQueueId;
 		let jar;
-		before((done) => {
+		before(async () => {
 			meta.config.postQueue = 1;
-			user.create({ username: 'newuser' }, (err, _uid) => {
-				assert.ifError(err);
-				uid = _uid;
-				done();
-			});
+			uid = await user.create({ username: 'newuser' });
 		});
 
-		after((done) => {
+		after(async () => {
 			meta.config.postQueue = 0;
 			meta.config.groupsExemptFromPostQueue = [];
-			done();
 		});
 
 		it('should add topic to post queue', async () => {
@@ -985,11 +903,12 @@ describe('Post\'s', () => {
 			assert.equal(posts[1].data.content, 'this is a queued reply');
 		});
 
-		it('should error if data is invalid', (done) => {
-			socketPosts.editQueuedContent({ uid: globalModUid }, null, (err) => {
+		it('should error if data is invalid', async () => {
+			try {
+				await socketPosts.editQueuedContent({ uid: globalModUid }, null);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
 		it('should edit post in queue', async () => {
@@ -1017,18 +936,20 @@ describe('Post\'s', () => {
 			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: cid });
 		});
 
-		it('should prevent regular users from approving posts', (done) => {
-			socketPosts.accept({ uid: uid }, { id: queueId }, (err) => {
+		it('should prevent regular users from approving posts', async () => {
+			try {
+				await socketPosts.accept({ uid: uid }, { id: queueId });
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+			}
 		});
 
-		it('should prevent regular users from approving non existing posts', (done) => {
-			socketPosts.accept({ uid: uid }, { id: 123123 }, (err) => {
+		it('should prevent regular users from approving non existing posts', async () => {
+			try {
+				await socketPosts.accept({ uid: uid }, { id: 123123 });
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-post]]');
-				done();
-			});
+			}
 		});
 
 		it('should accept queued posts and submit', async () => {
@@ -1037,18 +958,19 @@ describe('Post\'s', () => {
 			await socketPosts.accept({ uid: globalModUid }, { id: ids[1] });
 		});
 
-		it('should not crash if id does not exist', (done) => {
-			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, (err) => {
+		it('should not crash if id does not exist', async () => {
+			try {
+				await socketPosts.reject({ uid: globalModUid }, { id: '123123123' });
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-post]]');
-				done();
-			});
+			}
 		});
 
 		it('should bypass post queue if user is in exempt group', async () => {
 			const oldValue = meta.config.groupsExemptFromPostQueue;
 			meta.config.groupsExemptFromPostQueue = ['registered-users'];
 			const uid = await user.create({ username: 'mergeexemptuser' });
-			const result = await apiTopics.create({ uid: uid, emit: () => {} }, { title: 'should not be queued', content: 'topic content', cid: cid });
+			const result = await apiTopics.create({ uid: uid, emit: () => { } }, { title: 'should not be queued', content: 'topic content', cid: cid });
 			assert.strictEqual(result.title, 'should not be queued');
 			meta.config.groupsExemptFromPostQueue = oldValue;
 		});
@@ -1079,35 +1001,35 @@ describe('Post\'s', () => {
 					pid: 1,
 					uids: [1],
 				}),
-				{ message: '[[error:no-privileges]]' },
+				{ message: '[[error:no-privileges]]' }
 			);
 			await assert.rejects(
 				socketPosts.saveEditors({ uid: 0 }, null),
-				{ message: '[[error:invalid-data]]' },
+				{ message: '[[error:invalid-data]]' }
 			);
 			await assert.rejects(
 				socketPosts.saveEditors({ uid: 0 }, {
 					pid: null,
 					uids: [1],
 				}),
-				{ message: '[[error:invalid-data]]' },
+				{ message: '[[error:invalid-data]]' }
 			);
 			await assert.rejects(
 				socketPosts.saveEditors({ uid: 0 }, {
 					pid: 1,
 					uids: null,
 				}),
-				{ message: '[[error:invalid-data]]' },
+				{ message: '[[error:invalid-data]]' }
 			);
 
 			await assert.rejects(
 				socketPosts.getEditors({ uid: 0 }, null),
-				{ message: '[[error:invalid-data]]' },
+				{ message: '[[error:invalid-data]]' }
 			);
 
 			await assert.rejects(
 				socketPosts.saveEditors({ uid: 0 }, { pid: null }),
-				{ message: '[[error:invalid-data]]' },
+				{ message: '[[error:invalid-data]]' }
 			);
 		});
 
@@ -1193,14 +1115,14 @@ describe('Post\'s', () => {
 
 			it('should not detect backlinks if they are in quotes', async () => {
 				const content = `
-					@baris said in [ok testing backlinks](/post/32145):
-					> here is a back link to a topic
-					>
-					>
-					> This is a link to [topic 1](${nconf.get('url')}/topic/1/abcdef
+                    @baris said in [ok testing backlinks](/post/32145):
+                    > here is a back link to a topic
+                    >
+                    >
+                    > This is a link to [topic 1](${nconf.get('url')}/topic/1/abcdef
 
-					This should not generate backlink
-				`;
+                    This should not generate backlink
+                `;
 				const count = await topics.syncBacklinks({
 					pid: 2,
 					content: content,
@@ -1220,7 +1142,7 @@ describe('Post\'s', () => {
 					uid: 1,
 					cid,
 					title: 'Topic backlink testing - topic 2',
-					content: `Some text here for the OP &ndash; ${nconf.get('url')}/topic/${tid1}`,
+					content: `Some text here for the OP – ${nconf.get('url')}/topic/${tid1}`,
 				});
 
 				const events = await topics.events.get(tid1, 1);
@@ -1235,7 +1157,7 @@ describe('Post\'s', () => {
 				await topics.reply({
 					uid: 1,
 					tid: tid1,
-					content: `Referencing itself &ndash; ${nconf.get('url')}/topic/${tid1}`,
+					content: `Referencing itself – ${nconf.get('url')}/topic/${tid1}`,
 				});
 
 				const events = await topics.events.get(tid1, 1);
@@ -1250,7 +1172,7 @@ describe('Post\'s', () => {
 					uid: 1,
 					cid,
 					title: 'Topic backlink testing - topic 3',
-					content: `Some text here for the OP &ndash; ${nconf.get('url')}/topic/${tid1}`,
+					content: `Some text here for the OP – ${nconf.get('url')}/topic/${tid1}`,
 				});
 
 				const events = await topics.events.get(tid1, 1);
@@ -1261,16 +1183,16 @@ describe('Post\'s', () => {
 	});
 });
 
-describe('Posts\'', async () => {
+describe('Posts', () => {
 	let files;
 
 	before(async () => {
 		files = await file.walk(path.resolve(__dirname, './posts'));
 	});
 
-	it('subfolder tests', () => {
-		files.forEach((filePath) => {
-			require(filePath);
-		});
+	it('subfolder tests', async () => {
+		for (const filePath of files) {
+			await import(filePath);
+		}
 	});
 });
