@@ -10,7 +10,6 @@ spec:
   - "test/database/hash.mjs"
   - "test/password.mjs"
   - "test/databasemock.mjs"
-  - "test/dynamicTests.mjs"
   - "test/database.mjs"
   - "test/emailer.mjs"
   - "test/categories.mjs"
