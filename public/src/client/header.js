@@ -44,12 +44,24 @@ define('forum/header', [
 			return;
 		}
 
-		$('#header-menu #main-nav').tooltip({
-			selector: '.nav-item',
-			placement: 'bottom',
-			trigger: 'hover',
-			container: 'body',
+		// only affects persona, harmony uses a different structure in harmony.js
+		const tooltipEls = $('#header-menu .nav-item[title]');
+
+		tooltipEls.tooltip({
+			trigger: 'manual',
 			animation: false,
+			placement: 'bottom',
+		});
+
+		tooltipEls.on('mouseenter', function (ev) {
+			const target = $(ev.target);
+			const isDropdown = target.hasClass('dropdown-menu') || !!target.parents('.dropdown-menu').length;
+			if (!isDropdown) {
+				$(this).tooltip('show');
+			}
+		});
+		tooltipEls.on('click mouseleave', function () {
+			$(this).tooltip('hide');
 		});
 	}
 

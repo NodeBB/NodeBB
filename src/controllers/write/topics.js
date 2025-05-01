@@ -143,7 +143,7 @@ Topics.addThumb = async (req, res) => {
 		await Promise.all(files.map(async (fileObj) => {
 			await topics.thumbs.associate({
 				id: req.params.tid,
-				path: fileObj.path || fileObj.url,
+				path: fileObj.url,
 			});
 		}));
 	}

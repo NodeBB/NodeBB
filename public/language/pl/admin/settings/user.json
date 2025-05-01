@@ -64,6 +64,7 @@
 	"show-email": "Pokazuj adres e-mail",
 	"show-fullname": "Pokazuj imię i nazwisko uzytkownika",
 	"restrict-chat": "Przyjmuj wiadomości na czacie tylko od osób, które obserwuję",
+	"disable-incoming-chats": "Wyłącz wiadomości przychodzące czatu",
 	"outgoing-new-tab": "Otwieraj odnośniki wychodzące na nowej karcie",
 	"topic-search": "Włącz wyszukiwanie wewnątrz tematów",
 	"update-url-with-post-index": "Aktualizuj adres w przeglądarce numerem postu, podczas przeglądania tematów",

@@ -87,9 +87,7 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
 	if (!isScheduling) {
-		setTimeout(() => {
-			activitypubApi.create.note(caller, { pid: result.postData.pid });
-		}, 5000);
+		await activitypubApi.create.note(caller, { pid: result.postData.pid });
 	}
 
 	return result.topicData;
@@ -125,7 +123,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	activitypubApi.create.note(caller, { post: postData });
+	await activitypubApi.create.note(caller, { post: postData });
 
 	return postData;
 };

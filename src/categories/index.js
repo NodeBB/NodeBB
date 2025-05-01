@@ -8,8 +8,10 @@ const user = require('../user');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const cache = require('../cache');
 const meta = require('../meta');
+const utils = require('../utils');
 
 const Categories = module.exports;
 
@@ -26,9 +28,14 @@ require('./search')(Categories);
 Categories.icons = require('./icon');
 
 Categories.exists = async function (cids) {
-	return await db.exists(
-		Array.isArray(cids) ? cids.map(cid => `category:${cid}`) : `category:${cids}`
-	);
+	let keys;
+	if (Array.isArray(cids)) {
+		keys = cids.map(cid => (utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`));
+	} else {
+		keys = utils.isNumber(cids) ? `category:${cids}` : `categoryRemote:${cids}`;
+	}
+
+	return await db.exists(keys);
 };
 
 Categories.existsByHandle = async function (handle) {
@@ -51,12 +58,13 @@ Categories.getCategoryById = async function (data) {
 		Categories.getTopicCount(data),
 		Categories.getWatchState([data.cid], data.uid),
 		getChildrenTree(category, data.uid),
+		!utils.isNumber(data.cid) ? activitypub.actors.getLocalFollowers(data.cid) : null,
 	];
 
 	if (category.parentCid) {
 		promises.push(Categories.getCategoryData(category.parentCid));
 	}
-	const [topics, topicCount, watchState, , parent] = await Promise.all(promises);
+	const [topics, topicCount, watchState, , localFollowers, parent] = await Promise.all(promises);
 
 	category.topics = topics.topics;
 	category.nextStart = topics.nextStart;
@@ -65,6 +73,7 @@ Categories.getCategoryById = async function (data) {
 	category.isTracked = watchState[0] === Categories.watchStates.tracking;
 	category.isNotWatched = watchState[0] === Categories.watchStates.notwatching;
 	category.isIgnored = watchState[0] === Categories.watchStates.ignoring;
+	category.hasFollowers = localFollowers ? (localFollowers.uids.size + localFollowers.cids.size) > 0 : localFollowers;
 	category.parent = parent;
 
 	calculateTopicPostCount(category);

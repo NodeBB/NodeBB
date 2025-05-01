@@ -64,6 +64,7 @@
 	"show-email": "הצג כתובת אימייל",
 	"show-fullname": "הצג שם מלא",
 	"restrict-chat": "אשר הודעות צ'אט רק ממשתמשים שאני עוקב אחריהם",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "פתח קישורים חיצוניים בכרטיסייה חדשה",
 	"topic-search": "הפעל חיפוש בתוך נושא",
 	"update-url-with-post-index": "עדכן את כתובת הURL עם מספר הפוסט הנוכחי בזמן גלישה בנושאים",

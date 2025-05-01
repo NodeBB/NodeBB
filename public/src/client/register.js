@@ -85,7 +85,7 @@ define('forum/register', [
 
 							const params = utils.params({ url: data.next });
 							params.registered = true;
-							const qs = decodeURIComponent($.param(params));
+							const qs = $.param(params);
 
 							window.location.href = pathname + '?' + qs;
 						} else if (data.message) {

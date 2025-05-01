@@ -4,14 +4,13 @@ const nconf = require('nconf');
 
 const user = require('../../user');
 const topics = require('../../topics');
-
-const pagination = require('../../pagination');
-const helpers = require('../helpers');
-
 const categories = require('../../categories');
 const privileges = require('../../privileges');
 const translator = require('../../translator');
 const meta = require('../../meta');
+const pagination = require('../../pagination');
+const utils = require('../../utils');
+const helpers = require('../helpers');
 
 const controller = module.exports;
 
@@ -52,10 +51,28 @@ controller.list = async function (req, res) {
 	delete data.children;
 
 	let tids = await categories.getTopicIds(cidQuery);
-	tids = await categories.sortTidsBySet(tids, -1, sort); // sorting not handled if cid is -1
+	tids = await categories.sortTidsBySet(tids, sort); // sorting not handled if cid is -1
 	data.topicCount = tids.length;
 	data.topics = await topics.getTopicsByTids(tids, { uid: req.uid });
 	topics.calculateTopicIndices(data.topics, start);
+
+	// Tracked/watched categories
+	let cids = await user.getCategoriesByStates(req.uid, [
+		categories.watchStates.tracking, categories.watchStates.watching,
+	]);
+	cids = cids.filter(cid => !utils.isNumber(cid));
+	const categoryData = await categories.getCategories(cids);
+	data.categories = categories.getTree(categoryData, 0);
+	await Promise.all([
+		categories.getRecentTopicReplies(categoryData, req.uid, req.query),
+		categories.setUnread(data.categories, cids, req.uid),
+	]);
+	data.categories.forEach((category) => {
+		if (category) {
+			helpers.trimChildren(category);
+			helpers.setCategoryTeaser(category);
+		}
+	});
 
 	data.title = translator.escape(data.name);
 	data.privileges = userPrivileges;

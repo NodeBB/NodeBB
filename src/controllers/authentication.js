@@ -33,7 +33,7 @@ async function registerAndLoginUser(req, res, userData) {
 		userData.register = true;
 		req.session.registration = userData;
 
-		if (req.body.noscript === 'true') {
+		if (req.body?.noscript === 'true') {
 			res.redirect(`${nconf.get('relative_path')}/register/complete`);
 			return;
 		}
@@ -115,7 +115,7 @@ authenticationController.register = async function (req, res) {
 
 		const data = await registerAndLoginUser(req, res, userData);
 		if (data) {
-			if (data.uid && req.body.userLang) {
+			if (data.uid && req.body?.userLang) {
 				await user.setSetting(data.uid, 'userLang', req.body.userLang);
 			}
 			res.json(data);
@@ -293,7 +293,7 @@ function continueLogin(strategy, req, res, next) {
 		}
 
 		// Alter user cookie depending on passed-in option
-		if (req.body.remember === 'on') {
+		if (req.body?.remember === 'on') {
 			const duration = meta.getSessionTTLSeconds() * 1000;
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
@@ -330,7 +330,7 @@ function continueLogin(strategy, req, res, next) {
 }
 
 function redirectAfterLogin(req, res, destination) {
-	if (req.body.noscript === 'true') {
+	if (req.body?.noscript === 'true') {
 		res.redirect(`${destination}?loggedin`);
 	} else {
 		res.status(200).send({
@@ -484,7 +484,7 @@ authenticationController.logout = async function (req, res) {
 		};
 		await plugins.hooks.fire('filter:user.logout', payload);
 
-		if (req.body.noscript === 'true') {
+		if (req.body?.noscript === 'true') {
 			return res.redirect(payload.next);
 		}
 		res.status(200).send(payload);

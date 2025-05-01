@@ -75,7 +75,6 @@
     "email-confirmed": "Email potvrđen",
     "email-confirmed-message": "Hvala na potvrdi emaila. Vaš račun je sada aktivan.",
     "email-confirm-error-message": "Nastao je problem pri potvrdi Vaše email adrese. Provjerite kod ili zatražite novi.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Provjera korisničkog emaila poslana.",
     "none": "None",
     "notification-only": "Obavijest samo",

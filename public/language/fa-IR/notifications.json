@@ -75,7 +75,6 @@
     "email-confirmed": "ایمیل تایید شد",
     "email-confirmed-message": "بابت تایید ایمیلتان سپاس‌گزاریم. حساب کاربری شما اکنون به صورت کامل فعال شده است.",
     "email-confirm-error-message": "خطایی در تایید آدرس ایمیل شما پیش آمده است. ممکن است کد نا‌معتبر و یا منقضی شده باشد.",
-    "email-confirm-error-message-already-validated": "آدرس ایمیل  شما قبلا تایید شده است",
     "email-confirm-sent": "ایمیل تایید ارسال شد.",
     "none": "هیچکدام",
     "notification-only": "فقط اعلان",

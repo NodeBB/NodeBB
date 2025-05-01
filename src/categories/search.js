@@ -3,7 +3,9 @@
 const _ = require('lodash');
 
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
+const utils = require('../utils');
 const db = require('../database');
 
 module.exports = function (Categories) {
@@ -14,6 +16,10 @@ module.exports = function (Categories) {
 		const paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
 		const startTime = process.hrtime();
+
+		if (activitypub.helpers.isWebfinger(query)) {
+			await activitypub.actors.assertGroup([query]);
+		}
 
 		let cids = await findCids(query, data.hardCap);
 
@@ -71,7 +77,12 @@ module.exports = function (Categories) {
 			match: `*${String(query).toLowerCase()}*`,
 			limit: hardCap || 500,
 		});
-		return data.map(data => parseInt(data.split(':').pop(), 10));
+		return data.map((data) => {
+			const split = data.split(':');
+			split.shift();
+			const cid = split.join(':');
+			return utils.isNumber(cid) ? parseInt(cid, 10) : cid;
+		});
 	}
 
 	async function getChildrenCids(cids, uid) {

@@ -222,6 +222,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 		{ id: 'android', label: 'Android (brands)', style: 'brands' },
 		{ id: 'address-book', label: 'Address Book (solid)', style: 'solid' },
 	];
+
 	iconSelect.init = function (el, onModified) {
 		onModified = onModified || function () { };
 		let selected = cleanFAClass(el[0].classList);
@@ -230,6 +231,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			try {
 				$(`#icons .nbb-fa-icons ${selected.styles.length ? '.' + selected.styles.join('.') : ''}.${selected.icon}`).addClass('selected');
 			} catch (err) {
+				console.error(err);
 				selected = {
 					icon: '',
 					style: '',
@@ -253,7 +255,6 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						className: 'btn-default',
 						callback: function () {
 							el.removeClass(selected.icon);
-							// eslint-disable-next-line no-restricted-syntax
 							for (const style of selected.styles) {
 								el.removeClass(style);
 							}
@@ -270,11 +271,9 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 							const newIcon = cleanFAClass(iconClass);
 							if (newIcon.icon) {
 								el.removeClass(selected.icon).addClass(newIcon.icon);
-								// eslint-disable-next-line no-restricted-syntax
 								for (const style of selected.styles || []) {
 									el.removeClass(style);
 								}
-								// eslint-disable-next-line no-restricted-syntax
 								for (const style of newIcon.styles || []) {
 									el.addClass(style);
 								}
@@ -389,7 +388,6 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 	function cleanFAClass(classList) {
 		const styles = [];
 		let icon;
-		// eslint-disable-next-line no-restricted-syntax
 		for (const className of classList) {
 			if (className.startsWith('fa-') && !excludedClassRegex.test(className)) {
 				if (styleRegex.test(className)) {

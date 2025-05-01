@@ -64,6 +64,7 @@
 	"show-email": "Exibir e-mail",
 	"show-fullname": "Exibir nome completo",
 	"restrict-chat": "Permitir apenas mensagens de chat de usuários que eu sigo",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Abrir links externos em nova aba",
 	"topic-search": "Permitir Busca dentro do Tópico",
 	"update-url-with-post-index": "Atualizar url com índice de postagem enquanto navega pelos tópicos",

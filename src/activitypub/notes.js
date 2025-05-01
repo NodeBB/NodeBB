@@ -79,6 +79,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
+
 	if (options.cid && cid === -1) {
 		// Move topic if currently uncategorized
 		await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
@@ -97,16 +98,24 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
-		// Check recipients/audience for local category
+		// Check recipients/audience for category (local or remote)
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
+		await activitypub.actors.assert(Array.from(set));
+
+		// Local
 		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 		const recipientCids = resolved
 			.filter(Boolean)
 			.filter(({ type }) => type === 'category')
 			.map(obj => obj.id);
-		if (recipientCids.length) {
+
+		// Remote
+		const assertedGroups = await db.exists(Array.from(set).map(id => `categoryRemote:${id}`));
+		const remoteCid = Array.from(set).filter((_, idx) => assertedGroups[idx]).shift();
+
+		if (remoteCid || recipientCids.length) {
 			// Overrides passed-in value, respect addressing from main post over booster
-			options.cid = recipientCids.shift();
+			options.cid = remoteCid || recipientCids.shift();
 		}
 
 		// mainPid ok to leave as-is
@@ -130,7 +139,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		options.skipChecks || options.cid ||
 		await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
-	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
+	const allowed = await privileges.categories.can(privilege, options.cid || cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
 		if (!hasRelation) {
 			activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
@@ -454,6 +463,12 @@ Notes.syncUserInboxes = async function (tid, uid) {
 		uids.add(uid);
 	});
 
+	// Category followers
+	const categoryFollowers = await activitypub.actors.getLocalFollowers(cid);
+	categoryFollowers.uids.forEach((uid) => {
+		uids.add(uid);
+	});
+
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
@@ -512,9 +527,11 @@ Notes.announce.list = async ({ pid, tid }) => {
 };
 
 Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
-	const tid = await posts.getPostField(pid, 'tid');
-	await Promise.all([
+	const [tid] = await Promise.all([
+		posts.getPostField(pid, 'tid'),
 		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
+	]);
+	await Promise.all([
 		posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`)),
 		topics.tools.share(tid, actor, timestamp),
 	]);

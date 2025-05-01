@@ -129,7 +129,7 @@ Mocks._normalize = async (object) => {
 	};
 };
 
-Mocks.profile = async (actors, hostMap) => {
+Mocks.profile = async (actors) => {
 	// Should only ever be called by activitypub.actors.assert
 	const profiles = await Promise.all(actors.map(async (actor) => {
 		if (!actor) {
@@ -137,7 +137,7 @@ Mocks.profile = async (actors, hostMap) => {
 		}
 
 		const uid = actor.id;
-		let hostname = hostMap.get(uid);
+		let hostname;
 		let {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, inbox, endpoints, tag,
@@ -145,12 +145,10 @@ Mocks.profile = async (actors, hostMap) => {
 		preferredUsername = slugify(preferredUsername || name);
 		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
 
-		if (!hostname) { // if not available via webfinger, infer from id
-			try {
-				({ hostname } = new URL(actor.id));
-			} catch (e) {
-				return null;
-			}
+		try {
+			({ hostname } = new URL(actor.id));
+		} catch (e) {
+			return null;
 		}
 
 		let picture;
@@ -218,7 +216,7 @@ Mocks.profile = async (actors, hostMap) => {
 			uploadedpicture: undefined,
 			'cover:url': !image || typeof image === 'string' ? image : image.url,
 			'cover:position': '50% 50%',
-			aboutme: summary,
+			aboutme: posts.sanitize(summary),
 			followerCount,
 			followingCount,
 
@@ -233,6 +231,82 @@ Mocks.profile = async (actors, hostMap) => {
 	}));
 
 	return profiles;
+};
+
+Mocks.category = async (actors) => {
+	const categories = await Promise.all(actors.map(async (actor) => {
+		if (!actor) {
+			return null;
+		}
+
+		const cid = actor.id;
+		let hostname;
+		let {
+			url, preferredUsername, icon, /* image, */
+			name, summary, followers, inbox, endpoints, tag,
+		} = actor;
+		preferredUsername = slugify(preferredUsername || name);
+		/*
+		const {
+			followers: followerCount,
+			following: followingCount
+		} = await activitypub.actors.getLocalFollowCounts(uid);
+		*/
+
+		try {
+			({ hostname } = new URL(actor.id));
+		} catch (e) {
+			return null;
+		}
+
+		// No support for category avatars yet ;(
+		// let picture;
+		// if (image) {
+		// picture = typeof image === 'string' ? image : image.url;
+		// }
+		const iconBackgrounds = await user.getIconBackgrounds();
+		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
+		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
+
+		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
+
+		// Replace emoji in summary
+		if (tag && Array.isArray(tag)) {
+			tag
+				.filter(tag => tag.type === 'Emoji' &&
+					isEmojiShortcode.test(tag.name) &&
+					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
+				.forEach((tag) => {
+					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
+				});
+		}
+
+		const payload = {
+			cid,
+			name,
+			handle: preferredUsername,
+			slug: `${preferredUsername}@${hostname}`,
+			description: summary,
+			descriptionParsed: posts.sanitize(summary),
+			icon: backgroundImage ? 'fa-none' : 'fa-comments',
+			color: '#fff',
+			bgColor,
+			backgroundImage,
+			imageClass: 'cover',
+			numRecentReplies: 1,
+			// followerCount,
+			// followingCount,
+
+			url,
+			inbox,
+			sharedInbox: endpoints ? endpoints.sharedInbox : null,
+			followersUrl: followers,
+		};
+
+		return payload;
+	}));
+
+	return categories;
 };
 
 Mocks.post = async (objects) => {
@@ -304,7 +378,7 @@ Mocks.message = async (object) => {
 	const message = {
 		mid: object.id,
 		uid: object.attributedTo,
-		content: object.content,
+		content: object.sourceContent || object.content,
 		// ip: caller.ip,
 	};
 
@@ -492,13 +566,13 @@ Mocks.notes.public = async (post) => {
 	const published = post.timestampISO;
 	const updated = post.edited ? post.editedISO : null;
 
-	// todo: post visibility
 	const to = new Set([activitypub._constants.publicAddress]);
 	const cc = new Set([`${nconf.get('url')}/uid/${post.user.uid}/followers`]);
 
 	let inReplyTo = null;
 	let tag = null;
 	let followersUrl;
+	const isMainPost = post.pid === post.topic.mainPid;
 
 	let name = null;
 	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
@@ -585,27 +659,7 @@ Mocks.notes.public = async (post) => {
 	}
 
 	let attachment = await posts.attachments.get(post.pid) || [];
-	const uploads = await posts.uploads.listWithSizes(post.pid);
-	uploads.forEach(({ name, width, height }) => {
-		const mediaType = mime.getType(name);
-		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
-		attachment.push({ mediaType, url, width, height });
-	});
-
-	// Inspect post content for external imagery as well
-	let match = posts.imgRegex.exec(post.content);
-	while (match !== null) {
-		if (match[1]) {
-			const { hostname, pathname, href: url } = new URL(match[1]);
-			if (hostname !== nconf.get('url_parsed').hostname) {
-				const mediaType = mime.getType(pathname);
-				attachment.push({ mediaType, url });
-			}
-		}
-		match = posts.imgRegex.exec(post.content);
-	}
-
-	attachment = attachment.map(({ mediaType, url, width, height }) => {
+	const normalizeAttachment = attachment => attachment.map(({ mediaType, url, width, height }) => {
 		let type;
 
 		switch (true) {
@@ -630,6 +684,47 @@ Mocks.notes.public = async (post) => {
 		return payload;
 	});
 
+	// Special handling for main posts (as:Article w/ as:Note preview)
+	const noteAttachment = isMainPost ? [...attachment] : null;
+	const uploads = await posts.uploads.listWithSizes(post.pid);
+	const isThumb = await db.isSortedSetMembers(`topic:${post.tid}:thumbs`, uploads.map(u => u.name));
+	uploads.forEach(({ name, width, height }, idx) => {
+		const mediaType = mime.getType(name);
+		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
+		(noteAttachment || attachment).push({ mediaType, url, width, height });
+		if (isThumb[idx] && noteAttachment) {
+			attachment.push({ mediaType, url, width, height });
+		}
+	});
+
+	// Inspect post content for external imagery as well
+	let match = posts.imgRegex.exec(post.content);
+	while (match !== null) {
+		if (match[1]) {
+			const { hostname, pathname, href: url } = new URL(match[1]);
+			if (hostname !== nconf.get('url_parsed').hostname) {
+				const mediaType = mime.getType(pathname);
+				(noteAttachment || attachment).push({ mediaType, url });
+			}
+		}
+		match = posts.imgRegex.exec(post.content);
+	}
+
+	attachment = normalizeAttachment(attachment);
+	let preview;
+	let summary = null;
+	if (isMainPost) {
+		preview = {
+			type: 'Note',
+			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+			content: post.content,
+			published,
+			attachment: normalizeAttachment(noteAttachment),
+		};
+
+		summary = post.content;
+	}
+
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
@@ -637,18 +732,20 @@ Mocks.notes.public = async (post) => {
 	 * audience is exposed as part of 1b12 but is now ignored by Lemmy.
 	 * Remove this and most references to audience in 2026.
 	 */
-	let audience = `${nconf.get('url')}/category/${post.category.cid}`; // default
+	let audience = utils.isNumber(post.category.cid) ? // default
+		`${nconf.get('url')}/category/${post.category.cid}` : post.category.cid;
 	if (inReplyTo) {
 		const chain = await activitypub.notes.getParentChain(post.uid, inReplyTo);
 		chain.forEach((post) => {
 			audience = post.audience || audience;
 		});
 	}
+	to.add(audience);
 
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
-		type: 'Note',
+		type: isMainPost ? 'Article' : 'Note',
 		to: Array.from(to),
 		cc: Array.from(cc),
 		inReplyTo,
@@ -658,8 +755,9 @@ Mocks.notes.public = async (post) => {
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context,
 		audience,
-		summary: null,
+		summary,
 		name,
+		preview,
 		content: post.content,
 		source,
 		tag,

@@ -105,7 +105,11 @@ middleware.assertPayload = async function (req, res, next) {
 
 	// Cross-check key ownership against received actor
 	await activitypub.actors.assert(actor);
-	const compare = ((await db.getObjectField(`userRemote:${actor}:keys`, 'id')) || '').replace(/#[\w-]+$/, '');
+	let compare = await db.getObjectsFields([
+		`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
+	], ['id']);
+	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
+
 	const { signature } = req.headers;
 	let keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
 		const index = v.indexOf('=');

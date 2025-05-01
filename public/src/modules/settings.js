@@ -2,12 +2,8 @@
 
 
 define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
-	// eslint-disable-next-line prefer-const
-	let Settings;
 	let onReady = [];
 	let waitingJobs = 0;
-	// eslint-disable-next-line prefer-const
-	let helper;
 
 	/**
 	 Returns the hook of given name that matches the given type or element.
@@ -30,8 +26,7 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		return null;
 	}
 
-	// eslint-disable-next-line prefer-const
-	helper = {
+	const helper = {
 		/**
 		 @returns Object A deep clone of the given object.
 		 */
@@ -50,10 +45,8 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		 */
 		createElement: function (tagName, data, text) {
 			const element = document.createElement(tagName);
-			for (const k in data) {
-				if (data.hasOwnProperty(k)) {
-					element.setAttribute(k, data[k]);
-				}
+			for (const [k, val] of Object.entries(data)) {
+				element.setAttribute(k, val);
 			}
 			if (text) {
 				element.appendChild(document.createTextNode(text));
@@ -326,13 +319,14 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		use: function (settings) {
 			try {
 				settings._ = JSON.parse(settings._);
-			} catch (_error) {}
+			} catch (err) {
+				console.error(err);
+			}
 			Settings.cfg = settings;
 		},
 	};
 
-	// eslint-disable-next-line prefer-const
-	Settings = {
+	const Settings = {
 		helper: helper,
 		plugins: {},
 		cfg: {},
@@ -474,8 +468,8 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 					if (key && values.hasOwnProperty(key)) {
 						try {
 							values[key] = JSON.parse(values[key]);
-						} catch (e) {
-							// Leave the value as is
+						} catch (err) {
+							console.error(err);
 						}
 					}
 				});

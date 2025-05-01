@@ -10,9 +10,10 @@ const plugins = require('../plugins');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
-	'viewcount', 'postercount', 'deleted', 'locked', 'pinned',
-	'pinExpiry', 'timestamp', 'upvotes', 'downvotes', 'lastposttime',
-	'deleterUid',
+	'viewcount', 'postercount', 'followercount',
+	'deleted', 'locked', 'pinned', 'pinExpiry',
+	'timestamp', 'upvotes', 'downvotes',
+	'lastposttime', 'deleterUid',
 ];
 
 module.exports = function (Topics) {
@@ -134,7 +135,7 @@ function modifyTopic(topic, fields) {
 			return {
 				value: tag,
 				valueEscaped: escaped,
-				valueEncoded: encodeURIComponent(escaped),
+				valueEncoded: encodeURIComponent(tag),
 				class: escaped.replace(/\s/g, '-'),
 			};
 		});

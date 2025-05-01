@@ -28,12 +28,15 @@ describe('Topic thumbs', () => {
 	let fooJar;
 	let fooCSRF;
 	let fooUid;
+
 	const thumbPaths = [
 		`${nconf.get('upload_path')}/files/test.png`,
 		`${nconf.get('upload_path')}/files/test2.png`,
 		'https://example.org',
 	];
+
 	const relativeThumbPaths = thumbPaths.map(path => path.replace(nconf.get('upload_path'), ''));
+
 	const uuid = utils.generateUUID();
 
 	function createFiles() {
@@ -184,13 +187,13 @@ describe('Topic thumbs', () => {
 
 		it('should associate the thumbnail with that topic\'s main pid\'s uploads', async () => {
 			const uploads = await posts.uploads.list(mainPid);
-			assert(uploads.includes(relativeThumbPaths[0].slice(1)));
+			assert(uploads.includes(relativeThumbPaths[0]));
 		});
 
 		it('should maintain state in the topic\'s main pid\'s uploads if posts.uploads.sync() is called', async () => {
 			await posts.uploads.sync(mainPid);
 			const uploads = await posts.uploads.list(mainPid);
-			assert(uploads.includes(relativeThumbPaths[0].slice(1)));
+			assert(uploads.includes(relativeThumbPaths[0]));
 		});
 
 		it('should combine the thumbs uploaded to a UUID zset and combine it with a topic\'s thumb zset', async () => {
@@ -225,11 +228,11 @@ describe('Topic thumbs', () => {
 		it('should remove a file from sorted set', async () => {
 			await topics.thumbs.associate({
 				id: 1,
-				path: thumbPaths[0],
+				path: `/files/test.png`,
 			});
-			await topics.thumbs.delete(1, relativeThumbPaths[0]);
+			await topics.thumbs.delete(1, `/files/test.png`);
 
-			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', relativeThumbPaths[0]), false);
+			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', '/files/test.png'), false);
 		});
 
 		it('should no longer be associated with that topic\'s main pid\'s uploads', async () => {
@@ -241,12 +244,12 @@ describe('Topic thumbs', () => {
 		it('should also work with UUIDs', async () => {
 			await topics.thumbs.associate({
 				id: uuid,
-				path: thumbPaths[1],
+				path: `/files/test.png`,
 			});
-			await topics.thumbs.delete(uuid, relativeThumbPaths[1]);
+			await topics.thumbs.delete(uuid, '/files/test.png');
 
-			assert.strictEqual(await db.isSortedSetMember(`draft:${uuid}:thumbs`, relativeThumbPaths[1]), false);
-			assert.strictEqual(await file.exists(thumbPaths[1]), false);
+			assert.strictEqual(await db.isSortedSetMember(`draft:${uuid}:thumbs`, '/files/test.png'), false);
+			assert.strictEqual(await file.exists(path.join(`${nconf.get('upload_path')}`, '/files/test.png')), false);
 		});
 
 		it('should also work with URLs', async () => {
@@ -265,21 +268,15 @@ describe('Topic thumbs', () => {
 			assert.strictEqual(await file.exists(thumbPaths[0]), true);
 		});
 
-		it('should handle an array of relative paths', async () => {
-			await topics.thumbs.associate({ id: 1, path: thumbPaths[0] });
-			await topics.thumbs.associate({ id: 1, path: thumbPaths[1] });
-
-			await topics.thumbs.delete(1, [relativeThumbPaths[0], relativeThumbPaths[1]]);
-		});
-
 		it('should have no more thumbs left', async () => {
 			const associated = await db.isSortedSetMembers(`topic:1:thumbs`, [relativeThumbPaths[0], relativeThumbPaths[1]]);
 			assert.strictEqual(associated.some(Boolean), false);
 		});
 
 		it('should decrement numThumbs if dissociated one by one', async () => {
-			await topics.thumbs.associate({ id: 1, path: thumbPaths[0] });
-			await topics.thumbs.associate({ id: 1, path: thumbPaths[1] });
+			console.log('before', await db.getSortedSetRange(`topic:1:thumbs`, 0, -1));
+			await topics.thumbs.associate({ id: 1, path: `${nconf.get('relative_path')}${nconf.get('upload_url')}/files/test.png` });
+			await topics.thumbs.associate({ id: 1, path: `${nconf.get('relative_path')}${nconf.get('upload_url')}/files/test2.png` });
 
 			await topics.thumbs.delete(1, [relativeThumbPaths[0]]);
 			let numThumbs = parseInt(await db.getObjectField('topic:1', 'numThumbs'), 10);
@@ -294,14 +291,16 @@ describe('Topic thumbs', () => {
 	describe('.deleteAll()', () => {
 		before(async () => {
 			await Promise.all([
-				topics.thumbs.associate({ id: 1, path: thumbPaths[0] }),
-				topics.thumbs.associate({ id: 1, path: thumbPaths[1] }),
+				topics.thumbs.associate({ id: 1, path: '/files/test.png' }),
+				topics.thumbs.associate({ id: 1, path: '/files/test2.png' }),
 			]);
 			createFiles();
 		});
 
 		it('should have thumbs prior to tests', async () => {
-			const associated = await db.isSortedSetMembers(`topic:1:thumbs`, [relativeThumbPaths[0], relativeThumbPaths[1]]);
+			const associated = await db.isSortedSetMembers(
+				`topic:1:thumbs`, ['/files/test.png', '/files/test2.png']
+			);
 			assert.strictEqual(associated.every(Boolean), true);
 		});
 
@@ -310,7 +309,9 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should remove all associated thumbs with that topic', async () => {
-			const associated = await db.isSortedSetMembers(`topic:1:thumbs`, [relativeThumbPaths[0], relativeThumbPaths[1]]);
+			const associated = await db.isSortedSetMembers(
+				`topic:1:thumbs`, ['/files/test.png', '/files/test2.png']
+			);
 			assert.strictEqual(associated.some(Boolean), false);
 		});
 

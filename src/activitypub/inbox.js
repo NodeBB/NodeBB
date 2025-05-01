@@ -50,7 +50,7 @@ inbox.create = async (req) => {
 	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
 		activitypub.feps.announce(object.id, req.body);
-		api.activitypub.add(req, { pid: object.id });
+		// api.activitypub.add(req, { pid: object.id });
 	}
 };
 
@@ -240,11 +240,11 @@ inbox.like = async (req) => {
 
 	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 	if (!allowed) {
-		winston.verbose(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+		activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 		return reject('Like', object, actor);
 	}
 
-	winston.verbose(`[activitypub/inbox/like] id ${id} via ${actor}`);
+	activitypub.helpers.log(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
 	const result = await posts.upvote(id, actor);
 	activitypub.feps.announce(object.id, req.body);
@@ -253,6 +253,7 @@ inbox.like = async (req) => {
 
 inbox.announce = async (req) => {
 	const { actor, object, published, to, cc } = req.body;
+	activitypub.helpers.log(`[activitypub/inbox/announce] Parsing Announce(${object.type}) from ${actor}`);
 	let timestamp = new Date(published);
 	timestamp = timestamp.toString() !== 'Invalid Date' ? timestamp.getTime() : Date.now();
 
@@ -270,53 +271,76 @@ inbox.announce = async (req) => {
 		cid = Array.from(cids)[0];
 	}
 
-	if (String(object.id).startsWith(nconf.get('url'))) { // Local object
-		const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
-		if (type !== 'post' || !(await posts.exists(id))) {
-			throw new Error('[[error:activitypub.invalid-id]]');
+	switch(true) {
+		case object.type === 'Like': {
+			const id = object.object.id || object.object;
+			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
+			const exists = await posts.exists(localId || id);
+			if (exists) {
+				const result = await posts.upvote(localId || id, object.actor);
+				if (localId) {
+					socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+				}
+			}
+
+			break;
 		}
 
-		pid = id;
-		tid = await posts.getPostField(id, 'tid');
+		case object.type === 'Update': {
+			req.body = object;
+			await inbox.update(req);
+			break;
+		}
 
-		socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
-	} else { // Remote object
-		// Follower check
-		if (!cid) {
-			const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
-			if (!followers) {
-				winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
-				reject('Announce', object, actor);
-				return;
+		case activitypub._constants.acceptedPostTypes.includes(object.type): {
+			if (String(object.id).startsWith(nconf.get('url'))) { // Local object
+				const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
+				if (type !== 'post' || !(await posts.exists(id))) {
+					reject('Announce', object, actor);
+					return;
+				}
+
+				pid = id;
+				tid = await posts.getPostField(id, 'tid');
+
+				socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
+			} else { // Remote object
+				// Follower check
+				if (!cid) {
+					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
+					if (!followers) {
+						winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
+						reject('Announce', object, actor);
+						return;
+					}
+				}
+
+				// Handle case where Announce(Create(Note-ish)) is received
+				if (object.type === 'Create' && activitypub._constants.acceptedPostTypes.includes(object.object.type)) {
+					pid = object.object.id;
+				} else {
+					pid = object.id;
+				}
+
+				pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
+				if (!pid) {
+					return;
+				}
+
+				const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true });
+				if (!assertion) {
+					return;
+				}
+
+				({ tid } = assertion);
+				await activitypub.notes.updateLocalRecipients(pid, { to, cc });
+				await activitypub.notes.syncUserInboxes(tid);
+			}
+
+			if (!cid) { // Topic events from actors followed by users only
+				await activitypub.notes.announce.add(pid, actor, timestamp);
 			}
 		}
-
-		// Handle case where Announce(Create(Note-ish)) is received
-		if (object.type === 'Create' && activitypub._constants.acceptedPostTypes.includes(object.object.type)) {
-			pid = object.object.id;
-		} else {
-			pid = object.id;
-		}
-
-		pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
-		if (!pid) {
-			return;
-		}
-
-		const assertion = await activitypub.notes.assert(0, pid, { cid });
-		if (!assertion) {
-			return;
-		}
-
-		({ tid } = assertion);
-		await activitypub.notes.updateLocalRecipients(pid, { to, cc });
-		await activitypub.notes.syncUserInboxes(tid);
-	}
-
-	winston.verbose(`[activitypub/inbox/announce] Parsing id ${pid}`);
-
-	if (!cid) { // Topic events from actors followed by users only
-		await activitypub.notes.announce.add(pid, actor, timestamp);
 	}
 };
 

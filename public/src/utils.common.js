@@ -272,7 +272,6 @@ const HTMLEntities = Object.freeze({
 	'diams;': 9830,
 });
 
-/* eslint-disable no-redeclare */
 const utils = {
 	// https://github.com/substack/node-ent/blob/master/index.js
 	decodeHTMLEntities: function (html) {
@@ -467,7 +466,8 @@ const utils = {
 
 		try {
 			return new Date(parseInt(timestamp, 10)).toISOString();
-		} catch (e) {
+		} catch (err) {
+			console.error(err);
 			return timestamp;
 		}
 	},
@@ -631,7 +631,7 @@ const utils = {
 
 		try {
 			str = JSON.parse(str);
-		} catch (e) {}
+		} catch (err) { /* empty */ }
 
 		return str;
 	},

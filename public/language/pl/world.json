@@ -14,5 +14,8 @@
 	"onboard.title": "Twoje okno na fediverse...",
 	"onboard.what": "Zawartość tej kategorii jest dostowana do Twoich poczynań i zawiera jedynie dane spoza tego forum. Aby się coś tu pojawiło trzeba zacząć śledzić zdalne źródła informacji.",
 	"onboard.why": "Mnóstwo rzeczy dzieje się poza tym forum ale niekoniecznie zgodnych z Twoimi zainteresowaniami. Dlatego śledzenie konkretnych użytkowników jest dobrą metodą aby uzyskać więcej zawartości przez nich dodawanych.",
-	"onboard.how": "W międzyczasie możesz użyć przycisków skrótów na górze aby przekonać się jak forum jest powiązane a okaże się, że zapewnia wiele dodatkowych treści!"
+	"onboard.how": "W międzyczasie możesz użyć przycisków skrótów na górze aby przekonać się jak forum jest powiązane a okaże się, że zapewnia wiele dodatkowych treści!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
 }

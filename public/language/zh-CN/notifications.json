@@ -75,7 +75,6 @@
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已完全激活。",
     "email-confirm-error-message": "验证的您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",
-    "email-confirm-error-message-already-validated": "您的电子邮件地址已通过验证。",
     "email-confirm-sent": "确认邮件已发送。",
     "none": "无",
     "notification-only": "用通知提醒我",

@@ -20,8 +20,8 @@
 							<a class="dropdown-item rounded-1" role="menuitem">[[search:no-matches]]</a>
 						</li>
 						{{{ each groupNames }}}
-						<li role="presentation" class="group" data-name="{groupNames.displayName}">
-							<a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
+						<li role="presentation" class="group" data-name="{./displayName}">
+							<a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/groups/{./slug}" role="menuitem">{./displayName}</a>
 						</li>
 						{{{ end }}}
 					</ul>

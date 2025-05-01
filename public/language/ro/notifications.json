@@ -75,7 +75,6 @@
     "email-confirmed": "Email confirmat",
     "email-confirmed-message": "Îți mulțumim pentru validarea emailului. Contul tău este acuma activat.",
     "email-confirm-error-message": "A fost o problemă cu activarea adresei tale de email. Poate codul de activare a fost invalid sau expirat.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Un email de confirmare a fost trimis.",
     "none": "None",
     "notification-only": "Notification Only",

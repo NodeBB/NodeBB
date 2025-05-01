@@ -64,6 +64,7 @@
 	"show-email": "Pokaži e-poštni naslov",
 	"show-fullname": "Pokaži polno ime",
 	"restrict-chat": "V klepetu dovoli samo sporočila uporabnikov, ki jih spremljam",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Zunanje povezave odpri na novem zavihku",
 	"topic-search": "Omogoči iskanje v temi",
 	"update-url-with-post-index": "Med brskanjem po temah posodobite URL z indeksom objav",

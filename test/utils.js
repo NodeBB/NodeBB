@@ -96,6 +96,7 @@ describe('Utility Methods', () => {
 			const email = 'sample@example.com';
 			assert(utils.isEmailValid(email), 'invalid email');
 		});
+
 		it('rejects empty address', () => {
 			const email = '';
 			assert.equal(utils.isEmailValid(email), false, 'accepted as valid email');
@@ -263,15 +264,7 @@ describe('Utility Methods', () => {
 
 	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('100'), '100');
-		done();
-	});
-
-	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000'), '1,000');
-		done();
-	});
-
-	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000000'), '1,000,000');
 		done();
 	});
@@ -560,6 +553,7 @@ describe('Utility Methods', () => {
 		const shim = require('../src/translator');
 
 		const { Translator } = shim;
+
 		it('should translate in place', async () => {
 			const translator = Translator.create('en-GB');
 			const el = $(`<div><span id="search" title="[[global:search]]"></span><span id="text">[[global:home]]</span></div>`);

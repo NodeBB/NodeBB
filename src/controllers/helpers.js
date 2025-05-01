@@ -362,11 +362,11 @@ helpers.getSelectedTag = function (tags) {
 		tags = [tags];
 	}
 	tags = tags || [];
-	const tagData = tags.map(t => validator.escape(String(t)));
+	const tagData = tags.map(t => String(t));
 	let selectedTag = null;
 	if (tagData.length) {
 		selectedTag = {
-			label: tagData.join(', '),
+			label: validator.escape(tagData.join(', ')),
 		};
 	}
 	return {

@@ -1,33 +1,65 @@
 'use strict';
 
+const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
+const { setTimeout } = require('timers/promises');
 
 const db = require('../database');
 const analytics = require('../analytics');
+const pubsub = require('../pubsub');
+const utils = require('../utils');
 
 const Errors = module.exports;
 
-let counters = {};
+const runJobs = nconf.get('runJobs');
 
-new cronJob('0 * * * * *', (() => {
-	Errors.writeData();
-}), null, true);
+let counters = {};
+let total = {};
+
+Errors.init = async function () {
+	new cronJob('0 * * * * *', async () => {
+		publishLocalErrors();
+		if (runJobs) {
+			await setTimeout(2000);
+			await Errors.writeData();
+		}
+	}, null, true);
+
+	if (runJobs) {
+		pubsub.on('errors:publish', (data) => {
+			for (const [key, value] of Object.entries(data.local)) {
+				if (utils.isNumber(value)) {
+					total[key] = total[key] || 0;
+					total[key] += value;
+				}
+			}
+		});
+	}
+};
+
+function publishLocalErrors() {
+	pubsub.publish('errors:publish', {
+		local: counters,
+	});
+	counters = {};
+}
 
 Errors.writeData = async function () {
 	try {
-		const _counters = { ...counters };
-		counters = {};
+		const _counters = { ...total };
+		total = {};
 		const keys = Object.keys(_counters);
 		if (!keys.length) {
 			return;
 		}
 
+		const bulkIncrement = [];
 		for (const key of keys) {
-			/* eslint-disable no-await-in-loop */
-			await db.sortedSetIncrBy('errors:404', _counters[key], key);
+			bulkIncrement.push(['errors:404', _counters[key], key ]);
 		}
+		await db.sortedSetIncrByBulk(bulkIncrement);
 	} catch (err) {
 		winston.error(err.stack);
 	}

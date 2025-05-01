@@ -75,7 +75,6 @@
     "email-confirmed": "E-poštni naslov potrjen",
     "email-confirmed-message": "Hvala, da ste potrdili svoj e-naslov. Račun je sedaj aktiviran.",
     "email-confirm-error-message": "Prišlo je do napake pri preverjanju vašega e-poštnega naslova. Morda je bila koda napačna ali pa je potekla.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Potrditveno e-sporočilo je poslano.",
     "none": "None",
     "notification-only": "Notification Only",

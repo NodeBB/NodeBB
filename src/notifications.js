@@ -383,8 +383,17 @@ Notifications.markReadMultiple = async function (nids, uid) {
 };
 
 Notifications.markAllRead = async function (uid) {
-	const nids = await db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
-	await Notifications.markReadMultiple(nids, uid);
+	await batch.processSortedSet(`uid:${uid}:notifications:unread`, async (unreadNotifs) => {
+		const nids = unreadNotifs.map(n => n && n.value);
+		const datetimes = unreadNotifs.map(n => n && n.score);
+		await Promise.all([
+			db.sortedSetRemove(`uid:${uid}:notifications:unread`, nids),
+			db.sortedSetAdd(`uid:${uid}:notifications:read`, datetimes, nids),
+		]);
+	}, {
+		withScores: true,
+		batch: 500,
+	});
 };
 
 Notifications.prune = async function () {

@@ -64,6 +64,7 @@
 	"show-email": "Email cím megjelenítése",
 	"show-fullname": "Teljes név megjelenítése",
 	"restrict-chat": "Csak olyan felhasználó írhasson csevegő üzenetet nekem, akit követek",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Kimenő linkek megnyitása új lapon",
 	"topic-search": "Témakörön belüli keresés engedélyezése",
 	"update-url-with-post-index": "URL frissítése a hozzászólás indexével témakörök böngészése közben",

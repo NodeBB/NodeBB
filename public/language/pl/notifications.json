@@ -75,7 +75,6 @@
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji - kod jest błędny lub przestarzały",
-    "email-confirm-error-message-already-validated": "Ten adres e-mail został już zweryfikowany.",
     "email-confirm-sent": "E-mail potwierdzający wysłany.",
     "none": "Żadna z opcji",
     "notification-only": "Tylko powiadomienie",

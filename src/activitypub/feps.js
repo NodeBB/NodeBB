@@ -26,13 +26,13 @@ Feps.announce = async function announce(id, activity) {
 	if (actor && !actor.startsWith(nconf.get('url'))) {
 		followers.unshift(actor);
 	}
-
+	const now = Date.now();
 	if (activity.type === 'Create') {
 		const isMain = await posts.isMain(localId || id);
 		if (isMain) {
 			activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing plain object (${activity.id}) to followers of cid ${cid}`);
 			await activitypub.send('cid', cid, followers, {
-				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
+				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now}`,
 				type: 'Announce',
 				actor: `${nconf.get('url')}/category/${cid}`,
 				to: [`${nconf.get('url')}/category/${cid}/followers`],
@@ -44,7 +44,7 @@ Feps.announce = async function announce(id, activity) {
 
 	activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} (${activity.id}) to followers of cid ${cid}`);
 	await activitypub.send('cid', cid, followers, {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${Date.now()}`,
+		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now + 1}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/category/${cid}`,
 		to: [`${nconf.get('url')}/category/${cid}/followers`],

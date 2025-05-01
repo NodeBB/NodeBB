@@ -287,7 +287,9 @@ middleware.validateAuth = helpers.try(async (req, res, next) => {
 
 middleware.checkRequired = function (fields, req, res, next) {
 	// Used in API calls to ensure that necessary parameters/data values are present
-	const missing = fields.filter(field => !req.body.hasOwnProperty(field) && !req.query.hasOwnProperty(field));
+	const missing = fields.filter(
+		field => req.body && !req.body.hasOwnProperty(field) && !req.query.hasOwnProperty(field)
+	);
 
 	if (!missing.length) {
 		return next();

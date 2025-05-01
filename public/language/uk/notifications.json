@@ -75,7 +75,6 @@
     "email-confirmed": "Електронну пошту підтверджено",
     "email-confirmed-message": "Дякуємо за підтвердження електронної пошти. Ваш акаунт тепер повністю активовано.",
     "email-confirm-error-message": "При перевірці вашої електронної пошти сталася проблема. Можливо код був недійсним або простроченим.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Підтвердження по електронній пошті було надіслано.",
     "none": "Немає",
     "notification-only": "Тільки сповіщення",

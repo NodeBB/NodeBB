@@ -8,6 +8,7 @@ const { CronJob } = require('cron');
 const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
+const categories = require('../categories');
 const posts = require('../posts');
 const messaging = require('../messaging');
 const user = require('../user');
@@ -39,7 +40,8 @@ ActivityPub._constants = Object.freeze({
 	acceptedPostTypes: [
 		'Note', 'Page', 'Article', 'Question', 'Video',
 	],
-	acceptableActorTypes: new Set(['Application', 'Group', 'Organization', 'Person', 'Service']),
+	acceptableActorTypes: new Set(['Application', 'Organization', 'Person', 'Service']),
+	acceptableGroupTypes: new Set(['Group']),
 	requiredActorProps: ['inbox', 'outbox'],
 	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 	acceptable: {
@@ -113,11 +115,28 @@ ActivityPub.resolveInboxes = async (ids) => {
 	}
 
 	await ActivityPub.actors.assert(ids);
+
+	// Remove non-asserted targets
+	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids);
+	ids = ids.filter((_, idx) => exists[idx]);
+
 	await batch.processArray(ids, async (currentIds) => {
-		const usersData = await user.getUsersFields(currentIds, ['inbox', 'sharedInbox']);
-		usersData.forEach((u) => {
-			if (u && (u.sharedInbox || u.inbox)) {
-				inboxes.add(u.sharedInbox || u.inbox);
+		const isCategory = await db.exists(currentIds.map(id => `categoryRemote:${id}`));
+		const [cids, uids] = currentIds.reduce(([cids, uids], id, idx) => {
+			const array = isCategory[idx] ? cids : uids;
+			array.push(id);
+			return [cids, uids];
+		}, [[], []]);
+		const categoryData = await categories.getCategoriesFields(cids, ['inbox', 'sharedInbox']);
+		const userData = await user.getUsersFields(uids, ['inbox', 'sharedInbox']);
+
+		currentIds.forEach((id) => {
+			if (cids.includes(id)) {
+				const data = categoryData[cids.indexOf(id)];
+				inboxes.add(data.sharedInbox || data.inbox);
+			} else if (uids.includes(id)) {
+				const data = userData[uids.indexOf(id)];
+				inboxes.add(data.sharedInbox || data.inbox);
 			}
 		});
 	}, {
@@ -377,6 +396,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	}
 
 	ActivityPub.helpers.log(`[activitypub/send] ${payload.id}`);
+
 	if (process.env.hasOwnProperty('CI')) {
 		ActivityPub._sent.set(payload.id, payload);
 	}
@@ -395,7 +415,8 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		...payload,
 	};
 
-	await batch.processArray(
+	// Runs in background... potentially a better queue is required... later.
+	batch.processArray(
 		inboxes,
 		async inboxBatch => Promise.all(inboxBatch.map(async uri => sendMessage(uri, id, type, payload))),
 		{

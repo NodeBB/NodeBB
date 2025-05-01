@@ -26,14 +26,25 @@ const validSorts = [
 ];
 
 categoryController.get = async function (req, res, next) {
-	const cid = req.params.category_id;
+	let cid = req.params.category_id;
 	if (cid === '-1') {
 		return helpers.redirect(res, `${res.locals.isAPI ? '/api' : ''}/world?${qs.stringify(req.query)}`);
 	}
 
+	if (!utils.isNumber(cid)) {
+		const assertion = await activitypub.actors.assertGroup([cid]);
+		if (!activitypub.helpers.isUri(cid)) {
+			cid = await db.getObjectField('handle:cid', cid);
+		}
+
+		if (!assertion || !cid) {
+			return next();
+		}
+	}
+
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	let topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
-	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
+	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index))) {
 		return next();
 	}
 
@@ -58,7 +69,7 @@ categoryController.get = async function (req, res, next) {
 		return helpers.notAllowed(req, res);
 	}
 
-	if (!res.locals.isAPI && !req.params.slug && (categoryFields.slug && categoryFields.slug !== `${cid}/`)) {
+	if (utils.isNumber(cid) && !res.locals.isAPI && !req.params.slug && (categoryFields.slug && categoryFields.slug !== `${cid}/`)) {
 		return helpers.redirect(res, `/category/${categoryFields.slug}?${qs.stringify(req.query)}`, true);
 	}
 

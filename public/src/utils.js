@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 
 'use strict';
 

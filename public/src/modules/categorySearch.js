@@ -4,7 +4,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
-		let categoriesList = null;
+		let categoriesList = options.defaultCategories || null;
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
@@ -13,6 +13,9 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 		let localCategories = [];
 		if (Array.isArray(options.localCategories)) {
 			localCategories = options.localCategories.map(c => ({ ...c }));
+			if (categoriesList) {
+				categoriesList = [...localCategories, ...categoriesList];
+			}
 		}
 		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 

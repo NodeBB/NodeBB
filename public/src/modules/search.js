@@ -132,34 +132,56 @@ define('search', [
 			options.searchOptions.searchOnly = 1;
 			Search.api(options.searchOptions, function (data) {
 				quickSearchResults.find('.loading-indicator').addClass('hidden');
-				if (!data.posts || (options.hideOnNoMatches && !data.posts.length)) {
-					return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
-				}
-				data.posts.forEach(function (p) {
-					const text = $('<div>' + p.content + '</div>').text();
-					const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
-					const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
-					p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
-						text.slice(start, start + 80) +
-						(text.length - start > 80 ? '...' : ''));
-				});
-				data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
-				app.parseAndTranslate('partials/quick-search-results', data, function (html) {
-					if (html.length) {
-						html.find('.timeago').timeago();
+
+				if (options.searchOptions.in === 'categories') {
+					if (!data.categories || (options.hideOnNoMatches && !data.categories.length)) {
+						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 					}
-					quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
-						.find('.quick-search-results-container')
-						.html(html.length ? html : '');
-					const highlightEls = quickSearchResults.find(
-						'.quick-search-results .quick-search-title, .quick-search-results .snippet'
-					);
-					Search.highlightMatches(options.searchOptions.term, highlightEls);
-					hooks.fire('action:search.quick.complete', {
-						data: data,
-						options: options,
+
+					data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
+					app.parseAndTranslate('partials/quick-category-search-results', data, (html) => {
+						if (html.length) {
+							html.find('.timeago').timeago();
+						}
+						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
+							.find('.quick-search-results-container')
+							.html(html.length ? html : '');
+
+						hooks.fire('action:search.quick.complete', {
+							data: data,
+							options: options,
+						});
 					});
-				});
+				} else {
+					if (!data.posts || (options.hideOnNoMatches && !data.posts.length)) {
+						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
+					}
+					data.posts.forEach(function (p) {
+						const text = $('<div>' + p.content + '</div>').text();
+						const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
+						const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
+						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
+							text.slice(start, start + 80) +
+							(text.length - start > 80 ? '...' : ''));
+					});
+					data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
+					app.parseAndTranslate('partials/quick-search-results', data, function (html) {
+						if (html.length) {
+							html.find('.timeago').timeago();
+						}
+						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
+							.find('.quick-search-results-container')
+							.html(html.length ? html : '');
+						const highlightEls = quickSearchResults.find(
+							'.quick-search-results .quick-search-title, .quick-search-results .snippet'
+						);
+						Search.highlightMatches(options.searchOptions.term, highlightEls);
+						hooks.fire('action:search.quick.complete', {
+							data: data,
+							options: options,
+						});
+					});
+				}
 			});
 		}
 
@@ -267,12 +289,7 @@ define('search', [
 
 	function createQueryString(data) {
 		const searchIn = data.in || 'titles';
-		let term = data.term.replace(/^[ ?#]*/, '');
-		try {
-			term = encodeURIComponent(term);
-		} catch (e) {
-			return alerts.error('[[error:invalid-search-term]]');
-		}
+		const term = data.term.replace(/^[ ?#]*/, '');
 
 		const query = {
 			...data,
@@ -285,13 +302,14 @@ define('search', [
 			data: data,
 		});
 
-		return decodeURIComponent($.param(query));
+		return $.param(query);
 	}
 
 	Search.getSearchPreferences = function () {
 		try {
 			return JSON.parse(storage.getItem('search-preferences') || '{}');
-		} catch (e) {
+		} catch (err) {
+			console.error(err);
 			return {};
 		}
 	};

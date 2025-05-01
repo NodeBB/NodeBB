@@ -75,7 +75,6 @@
     "email-confirmed": "E-post bekräftad",
     "email-confirmed-message": "Tack för att du bekräftat din e-postadress. Ditt konto är nu fullt ut aktiverat.",
     "email-confirm-error-message": "Det uppstod ett problem med bekräftelsen av din e-postadress. Kanske var koden felaktig eller ogiltig.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Bekräftelsemeddelande skickat.",
     "none": "Inga",
     "notification-only": "Endast notis",

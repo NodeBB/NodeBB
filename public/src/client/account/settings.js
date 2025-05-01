@@ -2,8 +2,8 @@
 
 
 define('forum/account/settings', [
-	'forum/account/header', 'components', 'api', 'alerts', 'hooks',
-], function (header, components, api, alerts, hooks) {
+	'forum/account/header', 'components', 'api', 'alerts', 'hooks', 'autocomplete',
+], function (header, components, api, alerts, hooks, autocomplete) {
 	const AccountSettings = {};
 	let savedSkin = '';
 	// If page skin is changed but not saved, switch the skin back
@@ -45,6 +45,8 @@ define('forum/account/settings', [
 		toggleCustomRoute();
 
 		components.get('user/sessions').find('.timeago').timeago();
+
+		handleChatAllowDenyList();
 	};
 
 	function loadSettings() {
@@ -53,6 +55,9 @@ define('forum/account/settings', [
 		$('.account').find('input, textarea, select').each(function (id, input) {
 			input = $(input);
 			const setting = input.attr('data-property');
+			if (!setting) {
+				return;
+			}
 			if (input.is('select')) {
 				settings[setting] = input.val();
 				return;
@@ -68,6 +73,13 @@ define('forum/account/settings', [
 			}
 		});
 
+		const chatAllowList = $('[component="chat/allow/list/user"][data-uid]')
+			.map((i, el) => $(el).data('uid')).get();
+		const chatDenyList = $('[component="chat/deny/list/user"][data-uid]')
+			.map((i, el) => $(el).data('uid')).get();
+		settings.chatAllowList = JSON.stringify(chatAllowList);
+		settings.chatDenyList = JSON.stringify(chatDenyList);
+
 		return settings;
 	}
 
@@ -75,17 +87,15 @@ define('forum/account/settings', [
 		api.put(`/users/${ajaxify.data.uid}/settings`, { settings }).then((newSettings) => {
 			alerts.success('[[success:settings-saved]]');
 			let languageChanged = false;
-			for (const key in newSettings) {
-				if (newSettings.hasOwnProperty(key)) {
-					if (key === 'userLang' && config.userLang !== newSettings.userLang) {
-						languageChanged = true;
-					}
-					if (key === 'bootswatchSkin') {
-						savedSkin = newSettings.bootswatchSkin;
-						config.bootswatchSkin = savedSkin === 'noskin' ? '' : savedSkin;
-					} else if (config.hasOwnProperty(key)) {
-						config[key] = newSettings[key];
-					}
+			for (const [key, value] of Object.entries(newSettings)) {
+				if (key === 'userLang' && config.userLang !== newSettings.userLang) {
+					languageChanged = true;
+				}
+				if (key === 'bootswatchSkin') {
+					savedSkin = newSettings.bootswatchSkin;
+					config.bootswatchSkin = savedSkin === 'noskin' ? '' : savedSkin;
+				} else if (config.hasOwnProperty(key)) {
+					config[key] = value;
 				}
 			}
 
@@ -160,6 +170,57 @@ define('forum/account/settings', [
 		savedSkin = skin;
 		reskin(skin);
 	};
+
+	function handleChatAllowDenyList() {
+		autocomplete.user($('#chatAllowListAdd'), async function (ev, selected) {
+			const { user } = selected.item;
+			if (!user || String(user.uid) === String(app.user.uid)) {
+				return;
+			}
+			if ($(`[component="chat/allow/list/user"][data-uid="${user.uid}"]`).length) {
+				return alerts.error('[[error:chat-allow-list-user-already-added]]');
+			}
+			const html = await app.parseAndTranslate('account/settings', 'settings.chatAllowListUsers', {
+				settings: { chatAllowListUsers: [selected.item.user] },
+			});
+
+			$('[component="chat/allow/list"]').append(html);
+			$('#chatAllowListAdd').val('');
+			toggleNoUsersElement();
+		});
+
+		autocomplete.user($('#chatDenyListAdd'), async function (ev, selected) {
+			const { user } = selected.item;
+			if (!user || String(user.uid) === String(app.user.uid)) {
+				return;
+			}
+			if ($(`[component="chat/deny/list/user"][data-uid="${user.uid}"]`).length) {
+				return alerts.error('[[error:chat-deny-list-user-already-added]]');
+			}
+			const html = await app.parseAndTranslate('account/settings', 'settings.chatDenyListUsers', {
+				settings: { chatDenyListUsers: [selected.item.user] },
+			});
+
+			$('[component="chat/deny/list"]').append(html);
+			$('#chatDenyListAdd').val('');
+			toggleNoUsersElement();
+		});
+
+		$('[component="chat/allow/list"]').on('click', '[component="chat/allow/delete"]', function () {
+			$(this).parent().remove();
+			toggleNoUsersElement();
+		});
+
+		$('[component="chat/deny/list"]').on('click', '[component="chat/deny/delete"]', function () {
+			$(this).parent().remove();
+			toggleNoUsersElement();
+		});
+
+		function toggleNoUsersElement() {
+			$('[component="chat/allow/list/no-users"]').toggleClass('hidden', !!$('[component="chat/allow/list/user"]').length);
+			$('[component="chat/deny/list/no-users"]').toggleClass('hidden', !!$('[component="chat/deny/list/user"]').length);
+		}
+	}
 
 	return AccountSettings;
 });

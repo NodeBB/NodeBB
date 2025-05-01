@@ -6,7 +6,7 @@ window.overrides = window.overrides || {};
 
 function translate(elements, type, str) {
 	return elements.each(function () {
-		var el = $(this);
+		const el = $(this);
 		translator.translate(str, function (translated) {
 			el[type](translated);
 		});

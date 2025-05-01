@@ -276,7 +276,8 @@ define('forum/topic', [
 			const parentEl = $(this);
 			const contentEl = parentEl.find('[component="post/parent/content"]');
 			if (contentEl.length) {
-				const isCollapsed = contentEl.hasClass('line-clamp-1');
+				const isCollapsed = parentEl.attr('data-collapsed') === 'true';
+				parentEl.attr('data-collapsed', isCollapsed ? 'false' : 'true');
 				contentEl.toggleClass('line-clamp-1');
 				parentEl.find('.timeago').toggleClass('hidden');
 				parentEl.toggleClass('flex-column').toggleClass('flex-row');

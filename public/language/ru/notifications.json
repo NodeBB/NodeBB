@@ -75,7 +75,6 @@
     "email-confirmed": "Электронная почта подтверждена",
     "email-confirmed-message": "Спасибо за подтверждение адреса электронной почты. Ваша учётная запись активирована.",
     "email-confirm-error-message": "Ошибка проверки адреса электронной почты. Возможно, код подтверждения введён неправильно или у него истёк срок действия.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Письмо с проверочным кодом отправлено на ваш электронный адрес",
     "none": "Ничего",
     "notification-only": "Только уведомление",

@@ -79,10 +79,14 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return [];
 		}
-		const uids = await db.getSortedSetRevRange([
+		let uids = await db.getSortedSetRevRange([
 			`${type}:${uid}`,
 			`${type}Remote:${uid}`,
 		], start, stop);
+
+		// Filter out remote categories
+		const isCategory = await db.exists(uids.map(uid => `categoryRemote:${uid}`));
+		uids = uids.filter((uid, idx) => !isCategory[idx]);
 
 		const data = await plugins.hooks.fire(`filter:user.${type}`, {
 			uids: uids,

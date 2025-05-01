@@ -11,7 +11,11 @@ const file = require('../file');
 const batch = require('../batch');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-const _getFullPath = relativePath => path.resolve(nconf.get('upload_path'), relativePath);
+
+const pathPrefix = path.join(nconf.get('upload_path'));
+
+const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
+
 const _validatePath = async (relativePaths) => {
 	if (typeof relativePaths === 'string') {
 		relativePaths = [relativePaths];

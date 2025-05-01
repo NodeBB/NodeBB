@@ -64,7 +64,6 @@ $(window).on('action:ajaxify.start', function () {
 	usedTopicColors.length = 0;
 });
 
-// eslint-disable-next-line import/prefer-default-export
 export function init() {
 	app.enterRoom('admin');
 

@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const assert = require('assert');
-const async = require('async');
 
 const db = require('../mocks/databasemock');
 
@@ -10,7 +9,6 @@ const user = require('../../src/user');
 const groups = require('../../src/groups');
 
 const request = require('../../src/request');
-const socketUser = require('../../src/socket.io/user');
 const adminUser = require('../../src/socket.io/admin/user');
 
 

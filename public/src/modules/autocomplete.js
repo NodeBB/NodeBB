@@ -55,6 +55,7 @@ define('autocomplete', [
 									slug: user.userslug,
 									username: user.username,
 									userslug: user.userslug,
+									displayname: user.displayname,
 									picture: user.picture,
 									banned: user.banned,
 									'icon:text': user['icon:text'],

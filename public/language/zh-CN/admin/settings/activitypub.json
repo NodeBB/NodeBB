@@ -20,7 +20,7 @@
 
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
-	"server.filter-help": "指定您希望禁止与 NodeBB 联合的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器联邦。两者只能选其一。",
+	"server.filter-help": "指定您希望禁止与 NodeBB 联邦化的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器联邦化。两者只能选其一。",
 	"server.filter-help-hostname": "请在下面输入实例主机名（如 <code>example.org</code> ），中间用换行符隔开。",
 	"server.filter-allow-list": "将其用作允许列表"
 }

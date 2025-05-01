@@ -64,6 +64,7 @@
 	"show-email": "Näytä sähköpostiosoite",
 	"show-fullname": "Näytä etu- ja sukunimi",
 	"restrict-chat": "Salli pikaviestit vain seuraamiltani käyttäjiltä",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Open outgoing links in new tab",
 	"topic-search": "Käytä aiheen sisältöhakua",
 	"update-url-with-post-index": "Päivitä viestin järjestysnumero URL-osoitteeseen aihetta selattaessa",

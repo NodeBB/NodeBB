@@ -122,6 +122,7 @@ module.exports = function (User) {
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`,
+			`uid:${uid}:shares`,
 			`invitation:uid:${uid}`,
 		];
 
@@ -158,9 +159,10 @@ module.exports = function (User) {
 			activitypub.actors.remove(uid),
 		]);
 		await db.deleteAll([
-			`followers:${uid}`, `following:${uid}`, `user:${uid}`,
+			`followers:${uid}`, `following:${uid}`,
 			`uid:${uid}:followed_tags`, `uid:${uid}:followed_tids`,
 			`uid:${uid}:ignored_tids`,
+			`${utils.isNumber(uid) ? 'user' : 'userRemote'}:${uid}`,
 		]);
 		delete deletesInProgress[uid];
 		return userData;

@@ -50,18 +50,14 @@ define('forum/topic/events', [
 
 	Events.init = function () {
 		Events.removeListeners();
-		for (const eventName in events) {
-			if (events.hasOwnProperty(eventName)) {
-				socket.on(eventName, events[eventName]);
-			}
+		for (const [eventName, handler] of Object.entries(events)) {
+			socket.on(eventName, handler);
 		}
 	};
 
 	Events.removeListeners = function () {
-		for (const eventName in events) {
-			if (events.hasOwnProperty(eventName)) {
-				socket.removeListener(eventName, events[eventName]);
-			}
+		for (const [eventName, handler] of Object.entries(events)) {
+			socket.removeListener(eventName, handler);
 		}
 	};
 

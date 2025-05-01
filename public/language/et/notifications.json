@@ -75,7 +75,6 @@
     "email-confirmed": "Emaili aadress kinnitatud",
     "email-confirmed-message": "Täname, et kinnitasite oma emaili aadressi. Teie kasutaja on nüüd täielikult aktiveeritud.",
     "email-confirm-error-message": "Emaili aadressi kinnitamisel tekkis viga. Võibolla kinnituskood oli vale või aegunud.",
-    "email-confirm-error-message-already-validated": "Your email address was already validated.",
     "email-confirm-sent": "Kinnituskiri on saadetud.",
     "none": "None",
     "notification-only": "Notification Only",

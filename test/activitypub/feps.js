@@ -37,8 +37,7 @@ describe('FEPs', () => {
 				await groups.join('administrators', adminUid);
 				uid = await user.create({ username: utils.generateUUID() });
 
-				const { id: followerId, actor } = helpers.mocks.actor();
-				activitypub._cache.set(`0;${followerId}`, actor);
+				const { id: followerId, actor } = helpers.mocks.person();
 				user.setCategoryWatchState(followerId, [cid], categories.watchStates.tracking);
 
 				activitypub._sent.clear();
@@ -86,7 +85,7 @@ describe('FEPs', () => {
 					adminUid, utils.generateUUID(), [reply1Pid, reply2Pid], tid, cid
 				);
 
-				assert.strictEqual(activitypub._sent.size, 2);
+				assert.strictEqual(activitypub._sent.size, 2, activitypub._sent.keys());
 
 				const key = Array.from(activitypub._sent.keys())[0];
 				const activity = activitypub._sent.get(key);

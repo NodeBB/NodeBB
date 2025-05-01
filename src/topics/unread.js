@@ -148,7 +148,7 @@ module.exports = function (Topics) {
 		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
 		const userCidState = _.zipObject(topicCids, categoryWatchState);
 
-		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
+		const filterCids = params.cid && params.cid.map(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 		const filterTags = params.tag && params.tag.map(tag => String(tag));
 
 		topicData.forEach((topic) => {
@@ -325,9 +325,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.markAllRead = async function (uid) {
-		const cutoff = await Topics.unreadCutoff(uid);
-		let tids = await db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', cutoff);
-		tids = await privileges.topics.filterTids('topics:read', tids, uid);
+		const tids = await Topics.getUnreadTids({ uid });
 		Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete(`uid:${uid}:tids_unread`);

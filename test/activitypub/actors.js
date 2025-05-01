@@ -5,6 +5,7 @@ const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
 const meta = require('../../src/meta');
+const install = require('../../src/install');
 const categories = require('../../src/categories');
 const user = require('../../src/user');
 const topics = require('../../src/topics');
@@ -13,7 +14,14 @@ const utils = require('../../src/utils');
 const request = require('../../src/request');
 const slugify = require('../../src/slugify');
 
+const helpers = require('./helpers');
+
 describe('Actor asserton', () => {
+	before(async () => {
+		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
+	});
+
 	describe('happy path', () => {
 		let uid;
 		let actorUri;
@@ -38,6 +46,7 @@ describe('Actor asserton', () => {
 					publicKeyPem: 'somekey',
 				},
 			});
+			activitypub.helpers._webfingerCache.set('example@example.org', { actorUri });
 		});
 
 		it('should return true if successfully asserted', async () => {
@@ -58,9 +67,159 @@ describe('Actor asserton', () => {
 			const url = await user.getUserField(actorUri, 'url');
 			assert.strictEqual(url, actorUri);
 		});
+
+		it('should assert group actors by calling actors.assertGroup', async () => {
+			const { id, actor } = helpers.mocks.group();
+			const assertion = await activitypub.actors.assert([id]);
+
+			assert(assertion);
+			assert.strictEqual(assertion.length, 1);
+			assert.strictEqual(assertion[0].cid, actor.id);
+		});
+
+		describe('remote user to remote category migration', () => {
+			it('should not migrate a user to a category if .assert is called', async () => {
+				// ... because the user isn't due for an update and so is filtered out during qualification
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				const { actor } = helpers.mocks.group({ id });
+				const assertion = await activitypub.actors.assertGroup([id]);
+
+				assert(assertion.length, 0);
+
+				const exists = await user.exists(id);
+				assert.strictEqual(exists, false);
+			});
+
+			it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
+				// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				helpers.mocks.group({ id });
+				const assertion = await activitypub.actors.assertGroup([id]);
+
+				assert(assertion && Array.isArray(assertion) && assertion.length === 1);
+
+				const exists = await user.exists(id);
+				assert.strictEqual(exists, false);
+			});
+
+			it('should migrate any shares by that user, into topics in the category', async () => {
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				// Two shares
+				for (let x = 0; x < 2; x++) {
+					const { id: pid } = helpers.mocks.note();
+					// eslint-disable-next-line no-await-in-loop
+					const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+					// eslint-disable-next-line no-await-in-loop
+					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+				}
+
+				helpers.mocks.group({ id });
+				await activitypub.actors.assertGroup([id]);
+
+				const { topic_count, post_count } = await categories.getCategoryData(id);
+				assert.strictEqual(topic_count, 2);
+				assert.strictEqual(post_count, 2);
+			});
+
+			it('should not migrate shares by that user that already belong to a local category', async () => {
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+
+				// Two shares, one moved to local cid
+				for (let x = 0; x < 2; x++) {
+					const { id: pid } = helpers.mocks.note();
+					// eslint-disable-next-line no-await-in-loop
+					const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+					// eslint-disable-next-line no-await-in-loop
+					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+
+					if (!x) {
+						// eslint-disable-next-line no-await-in-loop
+						await topics.tools.move(tid, {
+							cid,
+							uid: 'system',
+						});
+					}
+				}
+
+				helpers.mocks.group({ id });
+				await activitypub.actors.assertGroup([id]);
+
+				const { topic_count, post_count } = await categories.getCategoryData(id);
+				assert.strictEqual(topic_count, 1);
+				assert.strictEqual(post_count, 1);
+			});
+
+			it('should migrate any local followers into category watches', async () => {
+				const { id } = helpers.mocks.person();
+				await activitypub.actors.assert([id]);
+
+				const followerUid = await user.create({ username: utils.generateUUID() });
+				await Promise.all([
+					db.sortedSetAdd(`followingRemote:${followerUid}`, Date.now(), id),
+					db.sortedSetAdd(`followersRemote:${id}`, Date.now(), followerUid),
+				]);
+
+				helpers.mocks.group({ id });
+				await activitypub.actors.assertGroup([id]);
+
+				const states = await categories.getWatchState([id], followerUid);
+				assert.strictEqual(states[0], categories.watchStates.tracking);
+			});
+		});
 	});
 
-	describe('edge case: loopback handles and uris', () => {
+	describe('less happy paths', () => {
+		describe('actor with `preferredUsername` that is not all lowercase', () => {
+			it('should save a handle-to-uid association', async () => {
+				const preferredUsername = 'nameWITHCAPS';
+				const { id } = helpers.mocks.person({ preferredUsername });
+				await activitypub.actors.assert([id]);
+
+				const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
+				assert.strictEqual(uid, id);
+			});
+
+			it('should preserve that association when re-asserted', async () => {
+				const preferredUsername = 'nameWITHCAPS';
+				const { id } = helpers.mocks.person({ preferredUsername });
+				await activitypub.actors.assert([id]);
+				await activitypub.actors.assert([id], { update: true });
+
+				const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
+				assert.strictEqual(uid, id);
+			});
+
+			it('should fail to assert if a passed-in ID\'s webfinger query does not respond with the same ID (gh#13352)', async () => {
+				const { id } = helpers.mocks.person({
+					preferredUsername: 'foobar',
+				});
+
+				const actorUri = `https://example.org/${utils.generateUUID()}`;
+				activitypub.helpers._webfingerCache.set('foobar@example.org', {
+					username: 'foobar',
+					hostname: 'example.org',
+					actorUri,
+				});
+
+				const { actorUri: confirm } = await activitypub.helpers.query('foobar@example.org');
+				assert.strictEqual(confirm, actorUri);
+
+				const response = await activitypub.actors.assert([id]);
+				assert.deepStrictEqual(response, []);
+			});
+		});
+	});
+
+	describe('edge cases: loopback handles and uris', () => {
 		let uid;
 		const userslug = utils.generateUUID().slice(0, 8);
 		before(async () => {
@@ -86,6 +245,257 @@ describe('Actor asserton', () => {
 
 			const userRemoteHashExists = await db.exists(`userRemote:${uri}`);
 			assert.strictEqual(userRemoteHashExists, false);
+		});
+	});
+});
+
+describe('as:Group', () => {
+	describe('assertion', () => {
+		let actorUri;
+		let actorData;
+
+		before(async () => {
+			const { id, actor } = helpers.mocks.group();
+			actorUri = id;
+			actorData = actor;
+		});
+
+		it('should assert a uri identifying as "Group" into a remote category', async () => {
+			const assertion = await activitypub.actors.assertGroup([actorUri]);
+
+			assert(assertion, Array.isArray(assertion));
+			assert.strictEqual(assertion.length, 1);
+
+			const category = assertion.pop();
+			assert.strictEqual(category.cid, actorUri);
+		});
+
+		it('should be considered existing when checked', async () => {
+			const exists = await categories.exists(actorUri);
+
+			assert(exists);
+		});
+
+		it('should contain an entry in categories search zset', async () => {
+			const exists = await db.isSortedSetMember('categories:name', `${actorData.name.toLowerCase()}:${actorUri}`);
+
+			assert(exists);
+		});
+
+		it('should return category data when getter methods are called', async () => {
+			const category = await categories.getCategoryData(actorUri);
+			assert(category);
+			assert.strictEqual(category.cid, actorUri);
+		});
+
+		it('should not assert non-group users when called', async () => {
+			const { id } = helpers.mocks.person();
+			const assertion = await activitypub.actors.assertGroup([id]);
+
+			assert(Array.isArray(assertion) && !assertion.length);
+		});
+
+		describe('deletion', () => {
+			it('should delete a remote category when Categories.purge is called', async () => {
+				const { id } = helpers.mocks.group();
+				await activitypub.actors.assertGroup([id]);
+
+				let exists = await categories.exists(id);
+				assert(exists);
+
+				await categories.purge(id, 0);
+
+				exists = await categories.exists(id);
+				assert(!exists);
+
+				exists = await db.exists(`categoryRemote:${id}`);
+				assert(!exists);
+			});
+
+			it('should also delete AP-specific keys that were added by assertGroup', async () => {
+				const { id } = helpers.mocks.group();
+				const assertion = await activitypub.actors.assertGroup([id]);
+				const [{ handle, slug }] = assertion;
+
+				await categories.purge(id, 0);
+
+				const isMember = await db.isObjectField('handle:cid', handle);
+				const inSearch = await db.isSortedSetMember('categories:name', `${slug}:${id}`);
+				assert(!isMember);
+				assert(!inSearch);
+			});
+		});
+	});
+
+	describe('following', () => {
+		let uid;
+		let cid;
+
+		beforeEach(async () => {
+			uid = await user.create({ username: utils.generateUUID() });
+			({ id: cid } = helpers.mocks.group());
+			await activitypub.actors.assertGroup([cid]);
+		});
+
+		afterEach(async () => {
+			activitypub._sent.clear();
+		});
+
+		describe('user not already following', () => {
+			it('should report a watch state consistent with not following', async () => {
+				const states = await categories.getWatchState([cid], uid);
+				assert(states[0] <= categories.watchStates.notwatching);
+			});
+
+			it('should do nothing when category is a local category', async () => {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.tracking);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should do nothing when watch state changes to "ignoring"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should send out a Follow activity when watch state changes to "tracking"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.tracking);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const activity = Array.from(activitypub._sent.values()).pop();
+				assert.strictEqual(activity.type, 'Follow');
+				assert.strictEqual(activity.object, cid);
+			});
+
+			it('should send out a Follow activity when the watch state changes to "watching"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const activity = Array.from(activitypub._sent.values()).pop();
+				assert(activity && activity.object && typeof activity.object === 'string');
+				assert.strictEqual(activity.type, 'Follow');
+				assert.strictEqual(activity.object, cid);
+			});
+
+			it('should not show up in the user\'s following list', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
+
+				// Trigger inbox accept
+				const { activity: body } = helpers.mocks.accept(cid, {
+					type: 'Follow',
+					actor: `${nconf.get('url')}/uid/${uid}`,
+				});
+				await activitypub.inbox.accept({ body });
+
+				const following = await user.getFollowing(uid, 0, 1);
+				assert(Array.isArray(following));
+				assert.strictEqual(following.length, 0);
+			});
+		});
+
+		describe('user already following', () => {
+			beforeEach(async () => {
+				await Promise.all([
+					user.setCategoryWatchState(uid, cid, categories.watchStates.tracking),
+					db.sortedSetAdd(`followingRemote:${uid}`, Date.now(), cid),
+				]);
+
+				activitypub._sent.clear();
+			});
+
+			it('should report a watch state consistent with following', async () => {
+				const states = await categories.getWatchState([cid], uid);
+				assert(states[0] >= categories.watchStates.tracking);
+			});
+
+			it('should do nothing when category is a local category', async () => {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should do nothing when watch state changes to "tracking"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.tracking);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should do nothing when watch state changes to "watching"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.watching);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should send out an Undo(Follow) activity when watch state changes to "ignoring"', async () => {
+				await user.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const activity = Array.from(activitypub._sent.values()).pop();
+				assert(activity && activity.object && typeof activity.object === 'object');
+				assert.strictEqual(activity.type, 'Undo');
+				assert.strictEqual(activity.object.type, 'Follow');
+				assert.strictEqual(activity.object.actor, `${nconf.get('url')}/uid/${uid}`);
+				assert.strictEqual(activity.object.object, cid);
+			});
+		});
+	});
+});
+
+describe('Inbox resolution', () => {
+	describe('remote users', () => {
+		it('should return an inbox if present', async () => {
+			const { id, actor } = helpers.mocks.person();
+			await activitypub.actors.assert(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], actor.inbox);
+		});
+
+		it('should return a shared inbox if present', async () => {
+			const { id, actor } = helpers.mocks.person({
+				endpoints: {
+					sharedInbox: 'https://example.org/inbox',
+				},
+			});
+			await activitypub.actors.assert(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], 'https://example.org/inbox');
+		});
+	});
+
+	describe('remote categories', () => {
+		it('should return an inbox if present', async () => {
+			const { id, actor } = helpers.mocks.group();
+			await activitypub.actors.assertGroup(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], actor.inbox);
+		});
+
+		it('should return a shared inbox if present', async () => {
+			const { id, actor } = helpers.mocks.group({
+				endpoints: {
+					sharedInbox: 'https://example.org/inbox',
+				},
+			});
+			await activitypub.actors.assertGroup(id);
+
+			const inboxes = await activitypub.resolveInboxes([id]);
+
+			assert(inboxes && Array.isArray(inboxes));
+			assert.strictEqual(inboxes.length, 1);
+			assert.strictEqual(inboxes[0], 'https://example.org/inbox');
 		});
 	});
 });
@@ -359,8 +769,8 @@ describe('Controllers', () => {
 				assert.strictEqual(response.statusCode, 200);
 			});
 
-			it('should return a Note type object', () => {
-				assert.strictEqual(body.type, 'Note');
+			it('should return a Article type object', () => {
+				assert.strictEqual(body.type, 'Article');
 			});
 		});
 
@@ -390,6 +800,109 @@ describe('Controllers', () => {
 				assert(response);
 				assert.strictEqual(response.statusCode, 404);
 			});
+		});
+	});
+});
+
+describe('Pruning', () => {
+	before(async () => {
+		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
+
+		meta.config.activitypubUserPruneDays = 0; // trigger immediate pruning
+	});
+
+	after(() => {
+		meta.config.activitypubUserPruneDays = 7;
+	});
+
+	describe('Users', () => {
+		it('should do nothing if the user is newer than the prune cutoff', async () => {
+			const { id: uid } = helpers.mocks.person();
+			await activitypub.actors.assert([uid]);
+
+			meta.config.activitypubUserPruneDays = 1;
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 0);
+			assert.strictEqual(result.counts.missing, 0);
+
+			meta.config.activitypubUserPruneDays = 0;
+			user.deleteAccount(uid);
+		});
+
+		it('should purge the user if they have no content (posts, likes, etc.)', async () => {
+			const { id: uid } = helpers.mocks.person();
+			await activitypub.actors.assert([uid]);
+
+			const total = await db.sortedSetCard('usersRemote:lastCrawled');
+			const result = await activitypub.actors.prune();
+
+			assert(result.counts.deleted >= 1);
+		});
+
+		it('should do nothing if the user has some content (e.g. a topic)', async () => {
+			const { cid } = await categories.create({ name: utils.generateUUID() });
+			const { id: uid } = helpers.mocks.person();
+			const { id, note } = helpers.mocks.note({
+				attributedTo: uid,
+				cc: [`${nconf.get('url')}/category/${cid}`],
+			});
+
+			const assertion = await activitypub.notes.assert(0, id);
+			assert(assertion);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 1);
+			assert.strictEqual(result.counts.missing, 0);
+		});
+	});
+
+	describe('Categories', () => {
+		it('should do nothing if the category is newer than the prune cutoff', async () => {
+			const { id: cid } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([cid]);
+
+			meta.config.activitypubUserPruneDays = 1;
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, 0);
+			assert.strictEqual(result.counts.missing, 0);
+
+			meta.config.activitypubUserPruneDays = 0;
+			await categories.purge(cid, 0);
+		});
+
+		it('should purge the category if it has no topics in it', async () => {
+			const { id: cid } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([cid]);
+
+			const total = await db.sortedSetCard('usersRemote:lastCrawled');
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 1);
+			assert.strictEqual(result.counts.preserved, total - 1);
+		});
+
+		it('should do nothing if the category has topics in it', async () => {
+			const { id: cid } = helpers.mocks.group();
+			await activitypub.actors.assertGroup([cid]);
+
+			const { id } = helpers.mocks.note({
+				cc: [cid],
+			});
+			await activitypub.notes.assert(0, id);
+
+			const total = await db.sortedSetCard('usersRemote:lastCrawled');
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert.strictEqual(result.counts.preserved, total);
+			assert(result.preserved.has(cid));
 		});
 	});
 });

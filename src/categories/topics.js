@@ -9,6 +9,7 @@ const user = require('../user');
 const notifications = require('../notifications');
 const translator = require('../translator');
 const batch = require('../batch');
+const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
@@ -186,7 +187,7 @@ module.exports = function (Categories) {
 		}
 		const promises = [
 			db.sortedSetAdd(`cid:${cid}:pids`, postData.timestamp, postData.pid),
-			db.incrObjectField(`category:${cid}`, 'post_count'),
+			db.incrObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, 'post_count'),
 		];
 		if (!pinned) {
 			promises.push(db.sortedSetIncrBy(`cid:${cid}:tids:posts`, 1, postData.tid));
@@ -254,18 +255,29 @@ module.exports = function (Categories) {
 		notifications.push(notification, followers);
 	};
 
-	Categories.sortTidsBySet = async (tids, cid, sort) => {
-		sort = sort || meta.config.categoryTopicSort || 'recently_replied';
-		const sortToSet = {
-			recently_replied: `cid:${cid}:tids`,
-			recently_created: `cid:${cid}:tids:create`,
-			most_posts: `cid:${cid}:tids:posts`,
-			most_votes: `cid:${cid}:tids:votes`,
-			most_views: `cid:${cid}:tids:views`,
-		};
+	Categories.sortTidsBySet = async (tids, sort) => {
+		let cids = await topics.getTopicsFields(tids, ['cid']);
+		cids = cids.map(({ cid }) => cid);
 
-		const orderBy = sortToSet[sort];
-		const scores = await db.sortedSetScores(orderBy, tids);
+		function getSet(cid, sort) {
+			sort = sort || meta.config.categoryTopicSort || 'recently_replied';
+			const sortToSet = {
+				recently_replied: `cid:${cid}:tids`,
+				recently_created: `cid:${cid}:tids:create`,
+				most_posts: `cid:${cid}:tids:posts`,
+				most_votes: `cid:${cid}:tids:votes`,
+				most_views: `cid:${cid}:tids:views`,
+			};
+
+			return sortToSet[sort];
+		}
+
+		const scores = await Promise.all(tids.map(async (tid, idx) => {
+			const cid = cids[idx];
+			const orderBy = getSet(cid, sort);
+			return await db.sortedSetScore(orderBy, tid);
+		}));
+
 		const sorted = tids
 			.map((tid, idx) => [tid, scores[idx]])
 			.sort(([, a], [, b]) => b - a)

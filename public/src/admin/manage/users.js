@@ -620,7 +620,7 @@ define('admin/manage/users', [
 		params.query = query.query;
 		params.page = query.page;
 		params.sortBy = params.sortBy || 'lastonline';
-		const qs = decodeURIComponent($.param(params));
+		const qs = $.param(params);
 		$.get(config.relative_path + '/api/admin/manage/users?' + qs, function (data) {
 			renderSearchResults(data);
 			const url = config.relative_path + '/admin/manage/users?' + qs;
@@ -673,7 +673,7 @@ define('admin/manage/users', [
 			delete params.searchBy;
 		}
 
-		return decodeURIComponent($.param(params));
+		return $.param(params);
 	}
 
 	function handleSort() {

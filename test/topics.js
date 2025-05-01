@@ -1432,6 +1432,7 @@ describe('Topic\'s', () => {
 		before(async () => {
 			await topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb', 'node icon'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId });
 			await topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId });
+			await topics.post({ uid: adminUid, tags: ['signal & slot', 'node & c++'], title: 'topic title 3', content: 'topic 3 content', cid: topic.categoryId });
 		});
 
 		it('should return empty array if query is falsy', (done) => {
@@ -1483,10 +1484,11 @@ describe('Topic\'s', () => {
 		it('should search and load tags', (done) => {
 			socketTopics.searchAndLoadTags({ uid: adminUid }, { query: 'no' }, (err, data) => {
 				assert.ifError(err);
-				assert.equal(data.matchCount, 4);
+				assert.equal(data.matchCount, 5);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
 					{ value: 'nodebb', valueEscaped: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
+					{ value: 'node & c++', valueEscaped: 'node &amp; c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&amp;-c++' },
 					{ value: 'node icon', valueEscaped: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
 					{ value: 'nodejs', valueEscaped: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
 					{ value: 'nosql', valueEscaped: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },

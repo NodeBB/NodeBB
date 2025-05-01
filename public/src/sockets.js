@@ -1,10 +1,8 @@
 'use strict';
 
-// eslint-disable-next-line no-redeclare
 const io = require('socket.io-client');
-// eslint-disable-next-line no-redeclare
 const $ = require('jquery');
-// eslint-disable-next-line import/no-unresolved
+
 const { alert } = require('alerts');
 
 app = window.app || {};

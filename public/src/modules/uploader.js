@@ -107,7 +107,8 @@ define('uploader', ['jquery-form'], function () {
 		if (typeof response === 'string') {
 			try {
 				return JSON.parse(response);
-			} catch (e) {
+			} catch (err) {
+				console.error(err);
 				return { error: '[[error:parse-error]]' };
 			}
 		}

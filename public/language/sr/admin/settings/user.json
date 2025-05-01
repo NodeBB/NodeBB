@@ -64,6 +64,7 @@
 	"show-email": "Prikaži email",
 	"show-fullname": "Prikaži puno ime",
 	"restrict-chat": "Samo dozvoli chat poruke korisnika koje ja pratim",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Otvori odlazeće linove u novom tabu",
 	"topic-search": "Omogući pretraživanje u temi",
 	"update-url-with-post-index": "Update url with post index while browsing topics",
