@@ -118,7 +118,7 @@ module.exports = function (module) {
                 if (!rows.length) return;
 
                 let array = rows[0].array;
-                array = array.filter(item => !value.includes(item));
+                array = array.filter(item => !value.includes(item.toString()));
 
                 await connection.query({
                     sql: `
@@ -146,7 +146,7 @@ module.exports = function (module) {
                 if (!rows.length) return;
 
                 let array = rows[0].array;
-                array = array.filter(item => item !== value);
+                array = array.filter(item => item.toString() !== value);
 
                 await connection.query({
                     sql: `
@@ -236,7 +236,7 @@ module.exports = function (module) {
         stop += 1; // Adjust for inclusive stop
 
         // Slice the array
-        return array.slice(start, stop);
+        return array.slice(start, stop).map(element => element.toString());
     };
 
     // Get the length of the list

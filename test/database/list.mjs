@@ -6,7 +6,7 @@ describe('List methods', () => {
 		it('should append to a list', async function () {
 			await db.listAppend('testList1', 5);
 			const actual = await db.getListRange('testList1', 0, -1);
-			assert.deepStrictEqual(actual, [5]);
+			assert.deepStrictEqual(actual, ['5']);
 		});
 
 		it('should not add anything if key is falsy', async function () {
@@ -28,7 +28,7 @@ describe('List methods', () => {
 		it('should prepend to a list', async function () {
 			await db.listPrepend('testList2', 3);
 			const actual = await db.getListRange('testList2', 0, -1);
-			assert.deepStrictEqual(actual, [3]);
+			assert.deepStrictEqual(actual, ['3']);
 		});
 
 		it('should prepend 2 more elements to a list', async function () {
@@ -40,7 +40,7 @@ describe('List methods', () => {
 			await db.listPrepend('testList2', 2);
 			await db.listPrepend('testList2', 1);
 			const actual = await db.getListRange('testList2', 0, -1);
-			assert.deepStrictEqual(actual, [1, 2]);
+			assert.deepStrictEqual(actual, ['1', '2']);
 		});
 
 		it('should not add anything if key is falsy', async function () {

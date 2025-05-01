@@ -362,11 +362,17 @@ describe('API', function () {
 			content: 'Test topic 2 edited content',
 			req: {},
 		});
+		await posts.edit({
+			uid: adminUid,
+			pid: unprivTopic.postData.pid,
+			content: 'Test topic 2 edited content again',
+			req: {},
+		});
 		mocks.delete['/posts/{pid}/diffs/{timestamp}'][0].example =
 			unprivTopic.postData.pid;
 		mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (
 			await posts.diffs.list(unprivTopic.postData.pid)
-		)[0];
+		)[1];
 
 		// Create a sample flag
 		const flags = (await import('../src/flags.js')).default;
@@ -480,6 +486,10 @@ describe('API', function () {
 
 	function generateTests(api, paths, prefix) {
 		describe(`"${api.info.title}" API`, function () {
+			before(async () => {
+				await setupData();
+			});
+			
 			paths.forEach((path) => {
 				const context = api.paths[path];
 				let schema;
@@ -597,8 +607,6 @@ describe('API', function () {
 							});
 
 							it('should not error out when called', async function () {
-								await setupData();
-
 								if (csrfToken) {
 									headers['x-csrf-token'] = csrfToken;
 								}
