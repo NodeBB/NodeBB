@@ -879,7 +879,7 @@ describe('API', function () {
 										typeof item,
 										schema[prop].items.type,
 										`"${prop}" should have ${schema[prop].items.type
-										} items, but found ${typeof items} instead (path: ${method} ${path}, context: ${context})`
+										} items, but found ${typeof item} instead (path: ${method} ${path}, context: ${context})`
 									);
 								});
 							}
