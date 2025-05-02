@@ -3,13 +3,13 @@ timeout: 25000
 exit: true
 bail: true
 spec:
+  - "test/databasemock.mjs"
   - "test/database/sorted.mjs"
   - "test/database/sets.mjs"
   - "test/database/list.mjs"
   - "test/database/keys.mjs"
   - "test/database/hash.mjs"
   - "test/password.mjs"
-  - "test/databasemock.mjs"
   - "test/database.mjs"
   - "test/emailer.mjs"
   - "test/categories.mjs"
