@@ -82,3 +82,14 @@ Interested in a sublicense agreement for use of NodeBB in a non-free/restrictive
 * Unofficial IRC community &ndash; channel `#nodebb` on Libera.chat
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
+
+## development on NodeBB with VSCode
+### install extension
+Install "Mocha Test Explorer" from hbenl
+* add something like this to `settings.json` to make test `should log an entry in ActivityPub._sent when .send is called` work:
+```json
+    "mochaExplorer.env": {
+        "CI": "{\"host\":\"127.0.0.1\",\"port\":\"3306\",\"username\":\"root\",\"password\":\"\",\"database\":\"ci_test\"}"
+    }
+```
+See [here](.github/workflows/test.yaml) how to set `CI` depending on your database you want to use.

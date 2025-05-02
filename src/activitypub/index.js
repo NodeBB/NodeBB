@@ -43,7 +43,7 @@ ActivityPub._constants = Object.freeze({
 	acceptableActorTypes: new Set(['Application', 'Organization', 'Person', 'Service']),
 	acceptableGroupTypes: new Set(['Group']),
 	requiredActorProps: ['inbox', 'outbox'],
-	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
+	acceptedProtocols: ['https', ...(process.env.CI ? ['http'] : [])],
 	acceptable: {
 		customFields: new Set(['PropertyValue', 'Link', 'Note']),
 		contextTypes: new Set(['Collection', 'CollectionPage', 'OrderedCollection', 'OrderedCollectionPage']),

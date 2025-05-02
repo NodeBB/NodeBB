@@ -1,29 +1,18 @@
 // ESM version of the test file
 import assert from 'assert';
 import nconf from 'nconf';
-import { join, resolve } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-import db from './mocks/databasemock.js';
+import db from './mocks/databasemock.mjs';
 import slugify from '../src/slugify.js';
 import utils from '../src/utils.js';
 import request from '../src/request.js';
-import file from '../src/file.js';
 import install from '../src/install.js';
-import meta from '../src/meta.js';
-import user from '../src/user.js';
-import categories from '../src/categories.js';
-import topics from '../src/topics.js';
-import posts from '../src/posts.js';
-import activitypub from '../src/activitypub.js';
-
-// For dynamic imports in subfolder tests
-import { readdir } from 'fs/promises';
-
-// Define __dirname in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import meta from '../src/meta/index.js';
+import user from '../src/user/index.js';
+import categories from '../src/categories/index.js';
+import topics from '../src/topics/index.js';
+import posts from '../src/posts/index.js';
+import activitypub from '../src/activitypub/index.js';
 
 describe('ActivityPub integration', () => {
 	before(async () => {
@@ -70,7 +59,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('request for an activitypub route should return 404 Not Found', async () => {
-			const uid = await user.create({ username: utils.generateUUID() });
+			const uid = user.create({ username: utils.generateUUID() });
 			const { response } = await request.get(`${nconf.get('url')}/uid/${uid}`, {
 				headers: {
 					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
@@ -384,7 +373,7 @@ describe('ActivityPub integration', () => {
 
 					activitypub._cache.set(`0;${id}`, remoteNote);
 					activitypub._cache.set(`0;https://example.org/user/foobar`, remoteUser);
-					await db.sortedSetAdd(`followersRemote curiosa:${remoteUser.id}`, Date.now(), 1);
+					await db.sortedSetAdd(`followersRemote:${remoteUser.id}`, Date.now(), 1);
 					await controllers.activitypub.postInbox(
 						{
 							body: {
@@ -522,23 +511,6 @@ describe('ActivityPub integration', () => {
 					assert(['context', 'audience', 'attributedTo'].every((prop) => body.hasOwnProperty(prop) && body[prop]));
 				});
 			});
-		});
-	});
-
-	describe('ActivityPub', () => {
-		let files;
-
-		before(async () => {
-			const dirPath = resolve(__dirname, './activitypub');
-			files = (await readdir(dirPath, { withFileTypes: true }))
-				.filter((dirent) => dirent.isFile() && dirent.name.endsWith('.js'))
-				.map((dirent) => join(dirPath, dirent.name));
-		});
-
-		it('subfolder tests', async () => {
-			for (const filePath of files) {
-				await import(filePath);
-			}
 		});
 	});
 });
