@@ -89,7 +89,8 @@ Install "Mocha Test Explorer" from hbenl
 * add something like this to `settings.json` to make test `should log an entry in ActivityPub._sent when .send is called` work:
 ```json
     "mochaExplorer.env": {
-        "CI": "{\"host\":\"127.0.0.1\",\"port\":\"3306\",\"username\":\"root\",\"password\":\"\",\"database\":\"ci_test\"}"
+        "ci": "{\"host\":\"127.0.0.1\",\"port\":\"3306\",\"username\":\"root\",\"password\":\"\",\"database\":\"ci_test\"}",
+        "CI": "true"
     }
 ```
-See [here](.github/workflows/test.yaml) how to set `CI` depending on your database you want to use.
+See [here](.github/workflows/test.yaml) how to set `ci` depending on your database you want to use.

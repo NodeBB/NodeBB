@@ -17,4 +17,5 @@ spec:
   - "test/posts/uploads.mjs"
   - "test/api.mjs"
   - "test/activitypub.mjs"
+  - "test/activitypub/actors.mjs"
 ignore: "test/files/**"
