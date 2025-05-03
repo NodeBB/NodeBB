@@ -3,7 +3,6 @@
 const mysql = require('mysql2/promise');
 const nconf = require('nconf');
 const winston = require('winston');
-const _ = require('lodash');
 
 const connection = module.exports;
 

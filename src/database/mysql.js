@@ -8,12 +8,24 @@
 const winston = require('winston');
 const nconf = require('nconf');
 const semver = require('semver');
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
+const connection = require('./mysql/connection');
 
 /**
  * @type {MySQLDatabase}
  */
 const mysqlModule = module.exports;
 
+/**
+ * @type {import('express-mysql-session').MySQLStore[]}
+ */
+const sessionStores = [];
+
+/**
+ * @type {import('mysql2/promise').Pool[]}
+ */
+const sessionStoresPools = [];
 
 mysqlModule.questions = [
 	{
@@ -73,7 +85,7 @@ mysqlModule.init = async function (opts) {
  * @param {import('mysql2/promise').PoolConnection} poolConnection
  */
 async function checkUpgrade(poolConnection) {
-	let queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_object (
             _key VARCHAR(255) NOT NULL,
             type ENUM('hash', 'zset', 'set', 'list', 'string') NOT NULL,
@@ -83,7 +95,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_object (
             _key VARCHAR(255) NOT NULL,
             type ENUM('hash', 'zset', 'set', 'list', 'string') NOT NULL,
@@ -93,7 +105,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_hash (
             _key VARCHAR(255) NOT NULL,
             data JSON NOT NULL,
@@ -109,7 +121,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_zset (
             _key VARCHAR(255) NOT NULL,
             value TEXT NOT NULL,
@@ -126,7 +138,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_set (
             _key VARCHAR(255) NOT NULL,
             member TEXT NOT NULL,
@@ -142,7 +154,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_list (
             _key VARCHAR(255) NOT NULL,
             array JSON NOT NULL,
@@ -158,7 +170,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE TABLE IF NOT EXISTS legacy_string (
             _key VARCHAR(255) NOT NULL,
             data TEXT NOT NULL,
@@ -174,7 +186,7 @@ async function checkUpgrade(poolConnection) {
         )
     `);
 
-	queryResult = await poolConnection.query(`
+	await poolConnection.query(`
         CREATE OR REPLACE VIEW legacy_object_live AS
         SELECT _key, type
           FROM legacy_object
@@ -214,20 +226,6 @@ mysqlModule.close = async function () {
 	await Promise.all(sessionStoresPools.map(pool => connection.close(pool)));
 	sessionStoresPools.length = 0;
 };
-
-const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
-const connection = require('./mysql/connection');
-
-/**
- * @type {import('express-mysql-session').MySQLStore[]}
- */
-const sessionStores = [];
-
-/**
- * @type {import('mysql2/promise').Pool[]}
- */
-const sessionStoresPools = [];
 
 mysqlModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
