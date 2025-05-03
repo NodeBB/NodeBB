@@ -287,13 +287,13 @@ module.exports = function (module) {
 		if (Array.isArray(key)) {
 			await module.pool.query(`
                 UPDATE legacy_hash
-                SET data = JSON_REMOVE(data, ${paths.map(p => '?').join(',')})
+                SET data = JSON_REMOVE(data, ${paths.map(() => '?').join(',')})
                 WHERE _key IN (?)
             `, [...paths, key]);
 		} else {
 			await module.pool.query(`
                 UPDATE legacy_hash
-                SET data = JSON_REMOVE(data, ${paths.map(p => '?').join(',')})
+                SET data = JSON_REMOVE(data, ${paths.map(() => '?').join(',')})
                 WHERE _key = ?
             `, [...paths, key]);
 		}
@@ -305,9 +305,6 @@ module.exports = function (module) {
 		if (!key || isNaN(value)) {
 			return null;
 		}
-
-		// Quote the field name to handle special characters
-		const quotedField = `"${field.replace(/"/g, '\\"')}"`; // Escape any existing quotes
 
 		return await module.transaction(async (connection) => {
 			if (Array.isArray(key)) {

@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const meta = require('../src/meta');
 const navAdmin = require('../src/navigation/admin');
 

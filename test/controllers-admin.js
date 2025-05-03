@@ -5,7 +5,7 @@ const assert = require('assert');
 const nconf = require('nconf');
 
 const request = require('../src/request');
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const user = require('../src/user');

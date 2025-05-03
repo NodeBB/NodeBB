@@ -606,7 +606,7 @@ module.exports = function (module) {
 
 		return await module.transaction(async (connection) => {
 			await helpers.ensureLegacyObjectType(connection, key, 'zset');
-			const [rows] = await connection.query({
+			await connection.query({
 				sql: `
                         INSERT INTO legacy_zset (_key, value, score)
                         VALUES (?, ?, ?)
@@ -649,8 +649,6 @@ module.exports = function (module) {
 				values: flatValues,
 			});
 
-			const resultKeys = data.map(d => d[0]);
-			const resultValues = data.map(d => helpers.valueToString(d[2]));
 			const [rows] = await connection.query({
 				sql: `
                     SELECT score
@@ -837,6 +835,7 @@ module.exports = function (module) {
 			let offset = 0;
 			let iteration = 1;
 			while (true) {
+				/* eslint-disable no-await-in-loop */
 				const [rows] = await connection.query({
 					sql: `
                         SELECT z.value, z.score
@@ -863,16 +862,12 @@ module.exports = function (module) {
 					processedRows = processedRows.map(r => r.value);
 				}
 
-				try {
-					if (iteration > 1 && options.interval) {
-						await sleep(options.interval);
-					}
-					await process(processedRows);
-					iteration += 1;
-					offset += batchSize;
-				} catch (err) {
-					throw err;
+				if (iteration > 1 && options.interval) {
+					await sleep(options.interval);
 				}
+				await process(processedRows);
+				iteration += 1;
+				offset += batchSize;
 			}
 		} finally {
 			connection.release();

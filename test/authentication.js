@@ -6,7 +6,7 @@ const url = require('url');
 const nconf = require('nconf');
 
 const request = require('../src/request');
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const user = require('../src/user');
 const utils = require('../src/utils');
 const meta = require('../src/meta');

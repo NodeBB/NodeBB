@@ -5,7 +5,7 @@ const async = require('async');
 
 const nconf = require('nconf');
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const meta = require('../src/meta');
 const User = require('../src/user');
 const Groups = require('../src/groups');

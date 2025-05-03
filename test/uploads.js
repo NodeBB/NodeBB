@@ -6,7 +6,7 @@ const nconf = require('nconf');
 const path = require('path');
 const fs = require('fs').promises;
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const posts = require('../src/posts');

@@ -7,7 +7,7 @@ const path = require('path');
 const util = require('util');
 
 const request = require('../src/request');
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const api = require('../src/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');

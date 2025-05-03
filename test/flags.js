@@ -6,7 +6,7 @@ const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const helpers = require('./helpers');
 const request = require('../src/request');
 const Flags = require('../src/flags');

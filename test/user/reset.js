@@ -3,7 +3,7 @@
 const assert = require('assert');
 const async = require('async');
 
-const db = require('../mocks/databasemock');
+const db = require('../mocks/databasemock.mjs');
 
 const user = require('../../src/user');
 const groups = require('../../src/groups');

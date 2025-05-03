@@ -6,7 +6,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const nconf = require('nconf');
-const db = require('../mocks/databasemock');
+const db = require('../mocks/databasemock.mjs');
 
 const user = require('../../src/user');
 const topics = require('../../src/topics');

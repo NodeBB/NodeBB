@@ -5,7 +5,7 @@ const path = require('path');
 const assert = require('assert');
 const nconf = require('nconf');
 
-const db = require('../mocks/databasemock');
+const db = require('../mocks/databasemock.mjs');
 
 const meta = require('../../src/meta');
 const user = require('../../src/user');

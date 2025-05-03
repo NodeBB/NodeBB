@@ -19,6 +19,7 @@ const meta = require('./meta');
 const translator = require('./translator');
 const pubsub = require('./pubsub');
 const file = require('./file');
+const { default: BuildCustomTemplatesTasks } = require('./emailer/BuildCustomTemplatesTasks.mjs');
 
 const viewsDir = nconf.get('views_dir');
 const Emailer = module.exports;
@@ -165,45 +166,7 @@ Emailer.setupFallbackTransport = (config) => {
 	}
 };
 
-class BuildCustomTemplatesTasks {
-	/**
-	 * @type {BuildCustomTemplatesTask[]}
-	 */
-	promises = [];
-	/**
-	 * 
-	 * @param {Promise<void>} promise 
-	 */
-	push(promise) {
-		this.promises.push(new BuildCustomTemplatesTask(promise));
-		this.clean();
-	}
-	async awaitAll() {
-		await Promise.all(this.promises.map((promise) => promise.promise));
-		this.clean();
-	}
-	clean() {
-		for (let i = this.promises.length - 1; i >= 0; i--) {
-			if (this.promises[i].resolved) {
-				this.promises.splice(i, 1);
-			}
-		}
-	}
-}
 
-class BuildCustomTemplatesTask {
-	resolved = false;
-	/** @type {Promise<void>} */
-	promise = null;
-	/**
-	 * 
-	 * @param {Promise<void>} promise 
-	 */
-	constructor(promise) {
-		this.promise = promise;
-		promise.then(() => this.resolved = true);
-	}
-}
 
 const buildCustomTemplatesTasks = new BuildCustomTemplatesTasks();
 

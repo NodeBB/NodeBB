@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const helpers = require('./helpers');
 const Groups = require('../src/groups');
 const User = require('../src/user');

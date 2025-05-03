@@ -33,7 +33,7 @@ module.exports = function (module) {
 		}
 		value = value.map(helpers.valueToString);
 
-		const [rows] = await module.pool.query({
+		await module.pool.query({
 			sql: `
                 DELETE FROM legacy_zset
                 WHERE _key IN (?)
@@ -50,7 +50,7 @@ module.exports = function (module) {
 
 		value = helpers.valueToString(value);
 
-		const [rows] = await module.pool.query({
+		await module.pool.query({
 			sql: `
                 DELETE FROM legacy_zset
                 WHERE _key IN (${keys.map(() => '?').join(', ')})
@@ -85,7 +85,7 @@ module.exports = function (module) {
 		}
 		const whereClause = conditions.length ? `AND ${conditions.join(' AND ')}` : '';
 
-		const [rows] = await module.pool.query({
+		await module.pool.query({
 			sql: `
                 DELETE FROM legacy_zset
                 WHERE _key IN (${keys.map(() => '?').join(', ')})
@@ -108,7 +108,7 @@ module.exports = function (module) {
 			flatValues.push(keys[i], values[i]);
 		}
 
-		const [rows] = await module.pool.query({
+		await module.pool.query({
 			sql: `
                 DELETE FROM legacy_zset
                 WHERE (_key, value) IN (${placeholders})

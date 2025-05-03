@@ -3,7 +3,7 @@
 const assert = require('assert');
 const path = require('path');
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const image = require('../src/image');
 const file = require('../src/file');
 

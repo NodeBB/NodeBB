@@ -3,7 +3,7 @@
 const nconf = require('nconf');
 const path = require('path');
 const fs = require('fs');
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 
 const active = nconf.get('test_plugins') || [];
 const toTest = fs.readdirSync(path.join(__dirname, '../node_modules'))

@@ -26,8 +26,6 @@ module.exports = function (module) {
 				const dropStatements = rows.map(row => `DROP TABLE IF EXISTS ${row.table_name}`).join(';');
 				await pool.query(dropStatements);
 			}
-		} catch (err) {
-			throw err; // Re-throw the error after cleanup
 		} finally {
 			// Re-enable foreign key checks, even if an error occurs
 			await pool.query('SET FOREIGN_KEY_CHECKS = 1');
@@ -58,7 +56,7 @@ module.exports = function (module) {
 			if (!keys) {
 				return [];
 			}
-			if (Array.isArray(keys) && keys.length == 0) {
+			if (Array.isArray(keys) && keys.length === 0) {
 				return [];
 			}
 			const [rows] = await module.pool.query(

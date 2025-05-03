@@ -9,7 +9,7 @@ const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const file = require('../src/file');
 const topics = require('../src/topics');
 const posts = require('../src/posts');

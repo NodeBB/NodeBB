@@ -6,7 +6,7 @@ const assert = require('assert');
 const shim = require('../src/translator');
 
 const { Translator } = shim;
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 
 describe('Translator shim', () => {
 	describe('.translate()', () => {

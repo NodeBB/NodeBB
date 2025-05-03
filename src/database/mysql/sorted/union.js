@@ -61,7 +61,7 @@ module.exports = function (module) {
 		}
 
 		// Build weighted score expression
-		const weightCases = weights.map((w, i) => `WHEN o._key = ? THEN z.score * ${w}`).join(' ');
+		const weightCases = weights.map(w => `WHEN o._key = ? THEN z.score * ${w}`).join(' ');
 		const values = [
 			...sets, // For IN clause
 			...sets, // For CASE in aggregate

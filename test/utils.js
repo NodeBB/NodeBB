@@ -5,7 +5,7 @@ const assert = require('assert');
 const validator = require('validator');
 const { JSDOM } = require('jsdom');
 const slugify = require('../src/slugify');
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 
 describe('Utility Methods', () => {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028

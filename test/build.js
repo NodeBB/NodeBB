@@ -5,7 +5,7 @@ const fs = require('fs');
 const assert = require('assert');
 const { mkdirp } = require('mkdirp');
 
-const db = require('./mocks/databasemock');
+const db = require('./mocks/databasemock.mjs');
 const file = require('../src/file');
 
 describe('minifier', () => {
