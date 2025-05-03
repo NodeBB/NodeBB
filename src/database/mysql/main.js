@@ -1,26 +1,26 @@
 'use strict';
 
 /**
- * 
- * @param {import('../mysql').MySQLDatabase} module 
+ *
+ * @param {import('../mysql').MySQLDatabase} module
  */
 module.exports = function (module) {
 	const helpers = require('./helpers');
 
 	module.flushdb = async function () {
-		const pool = module.pool;
-	
+		const { pool } = module;
+
 		try {
 			// Disable foreign key checks
 			await pool.query('SET FOREIGN_KEY_CHECKS = 0');
-	
+
 			// Get list of tables in the current database
 			const [rows] = await pool.query(`
 				SELECT table_name 
 				FROM information_schema.tables 
 				WHERE table_schema = DATABASE()
 			`);
-	
+
 			// Generate DROP TABLE statements for all tables
 			if (rows.length > 0) {
 				const dropStatements = rows.map(row => `DROP TABLE IF EXISTS ${row.table_name}`).join(';');

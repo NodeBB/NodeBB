@@ -82,7 +82,7 @@ exports.destroy = function () {
 		for (const connection of Object.values(connections)) {
 			connection.destroy();
 		}
-		Object.keys(connections).forEach((key) => delete connections[key]);
+		Object.keys(connections).forEach(key => delete connections[key]);
 	});
 };
 

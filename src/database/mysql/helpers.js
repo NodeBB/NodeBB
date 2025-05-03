@@ -26,31 +26,31 @@ helpers.removeDuplicateValues = function (values, ...others) {
 };
 
 helpers.ensureLegacyObjectType = async function (db, key, type) {
-    await db.query({
-        sql: `
+	await db.query({
+		sql: `
         DELETE FROM legacy_object
         WHERE expireAt IS NOT NULL
-        AND expireAt <= NOW()`
-    });
+        AND expireAt <= NOW()`,
+	});
 
-    await db.query({
-        sql: `
+	await db.query({
+		sql: `
         INSERT IGNORE INTO legacy_object (_key, type)
         VALUES (?, ?)`,
-        values: [key, type]
-    });
+		values: [key, type],
+	});
 
-    const [rows] = await db.query({
-        sql: `
+	const [rows] = await db.query({
+		sql: `
         SELECT type
         FROM legacy_object_live
         WHERE _key = ?`,
-        values: [key]
-    });
+		values: [key],
+	});
 
-    if (rows[0].type !== type) {
-        throw new Error(`database: cannot insert ${JSON.stringify(key)} as ${type} because it already exists as ${rows[0].type}`);
-    }
+	if (rows[0].type !== type) {
+		throw new Error(`database: cannot insert ${JSON.stringify(key)} as ${type} because it already exists as ${rows[0].type}`);
+	}
 };
 
 helpers.ensureLegacyObjectsType = async function (db, keys, type) {
@@ -58,7 +58,7 @@ helpers.ensureLegacyObjectsType = async function (db, keys, type) {
 		sql: `
         DELETE FROM legacy_object
         WHERE expireAt IS NOT NULL
-        AND expireAt <= NOW()`
+        AND expireAt <= NOW()`,
 	});
 
 	await db.query({
@@ -69,7 +69,7 @@ helpers.ensureLegacyObjectsType = async function (db, keys, type) {
             ?,
             '$[*]' COLUMNS (k VARCHAR(255) PATH '$')
         ) AS jt`,
-		values: [type, JSON.stringify(keys)]
+		values: [type, JSON.stringify(keys)],
 	});
 
 	const [rows] = await db.query({
@@ -77,7 +77,7 @@ helpers.ensureLegacyObjectsType = async function (db, keys, type) {
         SELECT _key, type
         FROM legacy_object_live
         WHERE _key IN (?)`,
-		values: [keys]
+		values: [keys],
 	});
 
 	const invalid = rows.filter(r => r.type !== type);

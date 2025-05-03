@@ -5,8 +5,8 @@
  */
 
 /**
- * 
- * @param {MySQLDatabase} module 
+ *
+ * @param {MySQLDatabase} module
  */
 module.exports = function (module) {
 	const helpers = require('../helpers');
@@ -94,9 +94,9 @@ module.exports = function (module) {
 
 		await module.transaction(async (poolConnection) => {
 			await helpers.ensureLegacyObjectsType(poolConnection, keys, 'zset');
-			const placeholders = isArrayOfScores
-				? keys.map(() => '(?, ?, ?)').join(', ')
-				: keys.map(() => '(?, ?, ?)').join(', ');
+			const placeholders = isArrayOfScores ?
+				keys.map(() => '(?, ?, ?)').join(', ') :
+				keys.map(() => '(?, ?, ?)').join(', ');
 			const sql = `
 				INSERT INTO legacy_zset (_key, value, score)
 				VALUES ${placeholders}

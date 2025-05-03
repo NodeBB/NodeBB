@@ -5,115 +5,115 @@
  */
 
 /**
- * 
- * @param {MySQLDatabase} module 
+ *
+ * @param {MySQLDatabase} module
  */
 module.exports = function (module) {
-    const helpers = require('../helpers');
+	const helpers = require('../helpers');
 
-    module.sortedSetRemove = async function (key, value) {
-        if (!key) {
-            return;
-        }
-        if (!Array.isArray(key)) {
-            key = [key];
-        }
-        if (!key.length) {
-            return;
-        }
+	module.sortedSetRemove = async function (key, value) {
+		if (!key) {
+			return;
+		}
+		if (!Array.isArray(key)) {
+			key = [key];
+		}
+		if (!key.length) {
+			return;
+		}
 
-        if (!value) {
-            return;
-        }
-        if (!Array.isArray(value)) {
-            value = [value];
-        }
-        if (!value.length) {
-            return;
-        }
-        value = value.map(helpers.valueToString);
+		if (!value) {
+			return;
+		}
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		if (!value.length) {
+			return;
+		}
+		value = value.map(helpers.valueToString);
 
-        const [rows] = await module.pool.query({
-            sql: `
+		const [rows] = await module.pool.query({
+			sql: `
                 DELETE FROM legacy_zset
                 WHERE _key IN (?)
                   AND value IN (?)
             `,
-            values: [key, value],
-        });
-    };
+			values: [key, value],
+		});
+	};
 
-    module.sortedSetsRemove = async function (keys, value) {
-        if (!Array.isArray(keys) || !keys.length) {
-            return;
-        }
+	module.sortedSetsRemove = async function (keys, value) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return;
+		}
 
-        value = helpers.valueToString(value);
+		value = helpers.valueToString(value);
 
-        const [rows] = await module.pool.query({
-            sql: `
+		const [rows] = await module.pool.query({
+			sql: `
                 DELETE FROM legacy_zset
                 WHERE _key IN (${keys.map(() => '?').join(', ')})
                   AND value = ?
             `,
-            values: [...keys, value],
-        });
-    };
+			values: [...keys, value],
+		});
+	};
 
-    module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
-        if (!Array.isArray(keys) || !keys.length) {
-            return;
-        }
+	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return;
+		}
 
-        if (min === '-inf') {
-            min = null;
-        }
-        if (max === '+inf') {
-            max = null;
-        }
+		if (min === '-inf') {
+			min = null;
+		}
+		if (max === '+inf') {
+			max = null;
+		}
 
-        const conditions = [];
-        const values = [...keys];
-        
-        if (min !== null) {
-            conditions.push('score >= ?');
-            values.push(min);
-        }
-        if (max !== null) {
-            conditions.push('score <= ?');
-            values.push(max);
-        }
-        const whereClause = conditions.length ? `AND ${conditions.join(' AND ')}` : '';
+		const conditions = [];
+		const values = [...keys];
 
-        const [rows] = await module.pool.query({
-            sql: `
+		if (min !== null) {
+			conditions.push('score >= ?');
+			values.push(min);
+		}
+		if (max !== null) {
+			conditions.push('score <= ?');
+			values.push(max);
+		}
+		const whereClause = conditions.length ? `AND ${conditions.join(' AND ')}` : '';
+
+		const [rows] = await module.pool.query({
+			sql: `
                 DELETE FROM legacy_zset
                 WHERE _key IN (${keys.map(() => '?').join(', ')})
                 ${whereClause}
             `,
-            values,
-        });
-    };
+			values,
+		});
+	};
 
-    module.sortedSetRemoveBulk = async function (data) {
-        if (!Array.isArray(data) || !data.length) {
-            return;
-        }
-        const keys = data.map(d => d[0]);
-        const values = data.map(d => d[1]);
+	module.sortedSetRemoveBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+		const keys = data.map(d => d[0]);
+		const values = data.map(d => d[1]);
 
-        const placeholders = data.map(() => '(?, ?)').join(', ');
-        const flatValues = [];
-        for (let i = 0; i < data.length; i++) {
-            flatValues.push(keys[i], values[i]);
-        }
+		const placeholders = data.map(() => '(?, ?)').join(', ');
+		const flatValues = [];
+		for (let i = 0; i < data.length; i++) {
+			flatValues.push(keys[i], values[i]);
+		}
 
-        const [rows] = await module.pool.query({
-            sql: `
+		const [rows] = await module.pool.query({
+			sql: `
                 DELETE FROM legacy_zset
                 WHERE (_key, value) IN (${placeholders})
             `,
-            values: flatValues,
-        });
-    };
+			values: flatValues,
+		});
+	};
 };
