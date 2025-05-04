@@ -114,6 +114,14 @@ async function cleanup() {
         log(1).error("error stopping user", err);
     }
 
+    try {
+        const minifier = (await import('../src/meta/minifier.js')).default;
+        minifier.killAll();
+        log(1).info('minifier forks killed');
+    } catch (err) {
+        log(1).error("error stopping user", err);
+    }
+
     log(0).info('cleanup complete');
 }
 

@@ -2,11 +2,16 @@ import path from 'path';
 import fs from 'fs/promises';
 import assert from 'assert';
 import { mkdirp } from 'mkdirp';
-import './mocks/databasemock.mjs';
+import { fileURLToPath } from 'url';
+
+import db from './mocks/databasemock.mjs';
 import file from '../src/file.js';
 import minifier from '../src/meta/minifier.js';
 import build from '../src/meta/build.js';
-import helpers from './helpers/index.js';
+
+// Define __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('minifier', () => {
 	const testPath = path.join(__dirname, '../test/build');
@@ -125,12 +130,7 @@ describe('Build', () => {
 	});
 
 	it('should build client js bundle', async () => {
-		await new Promise((resolve, reject) => {
-			build.build(['client js bundle'], (err) => {
-				if (err) reject(err);
-				else resolve();
-			});
-		});
+		await build.build(['client js bundle']);
 
 		const filename = path.join(__dirname, '../build/public/scripts-client.js');
 		assert(file.existsSync(filename));
@@ -176,7 +176,7 @@ describe('Build', () => {
 
 	/* disabled, doesn't work on GitHub Actions in prod mode
 	it('should build bundle files', async function () {
-	  this.timeout(0);
+		this.timeout(0);
 	  await new Promise((resolve, reject) => {
 		build.buildAll((err) => {
 		  if (err) reject(err);
@@ -184,16 +184,16 @@ describe('Build', () => {
 		});
 	  });
   
-	  assert(file.existsSync(path.join(__dirname, '../build/webpack/nodebb.min.js')));
-	  assert(file.existsSync(path.join(__dirname, '../build/webpack/admin.min.js')));
+			assert(file.existsSync(path.join(__dirname, '../build/webpack/nodebb.min.js')));
+			assert(file.existsSync(path.join(__dirname, '../build/webpack/admin.min.js')));
   
-	  let { res, body } = await helpers.request('GET', `/assets/nodebb.min.js`, {});
+			let { res, body } = await helpers.request('GET', `/assets/nodebb.min.js`, {});
 	  assert.strictEqual(res.statusCode, 200);
-	  assert(body);
+			assert(body);
   
-	  ({ res, body } = await helpers.request('GET', `/assets/admin.min.js`, {}));
+			({ res, body } = await helpers.request('GET', `/assets/admin.min.js`, {}));
 	  assert.strictEqual(res.statusCode, 200);
-	  assert(body);
+			assert(body);
 	});
 	*/
 

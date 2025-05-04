@@ -26,4 +26,5 @@ spec:
   - "test/authentication.mjs"
   - "test/batch.mjs"
   - "test/blacklist.mjs"
+  - "test/build.mjs"
 ignore: "test/files/**"
