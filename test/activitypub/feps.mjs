@@ -1,20 +1,18 @@
-'use strict';
+import assert from 'assert';
+import { strict as assertStrict } from 'assert';
+import nconf from 'nconf';
 
-const assert = require('assert');
-const nconf = require('nconf');
-
-const db = require('../mocks/databasemock.mjs');
-const activitypub = require('../../src/activitypub');
-const utils = require('../../src/utils');
-const meta = require('../../src/meta');
-const install = require('../../src/install');
-const user = require('../../src/user');
-const groups = require('../../src/groups');
-const categories = require('../../src/categories');
-const topics = require('../../src/topics');
-const api = require('../../src/api');
-
-const helpers = require('./helpers');
+import db from '../mocks/databasemock.mjs';
+import * as activitypub from '../../src/activitypub/index.js';
+import * as utils from '../../src/utils.js';
+import * as meta from '../../src/meta.js';
+import * as install from '../../src/install.js';
+import * as user from '../../src/user/index.js';
+import * as groups from '../../src/groups/index.js';
+import * as categories from '../../src/categories/index.js';
+import * as topics from '../../src/topics/index.js';
+import * as api from '../../src/api/index.js';
+import * as helpers from './helpers.js';
 
 describe('FEPs', () => {
 	before(async () => {
@@ -57,18 +55,18 @@ describe('FEPs', () => {
 
 				assert(topicData);
 
-				await api.topics.move({ uid: adminUid }, {
+				await api.topics moving({ uid: adminUid }, {
 					tid: topicData.tid,
 					cid,
 				});
 
-				assert.strictEqual(activitypub._sent.size, 2);
+				assertStrict.strictEqual(activitypub._sent.size, 2);
 
 				const key = Array.from(activitypub._sent.keys())[0];
 				const activity = activitypub._sent.get(key);
 
 				assert(activity && activity.object && typeof activity.object === 'object');
-				assert.strictEqual(activity.object.id, `${nconf.get('url')}/post/${postData.pid}`);
+				assertStrict.strictEqual(activity.object.id, `${nconf.get('url')}/post/${postData.pid}`);
 			});
 
 			it('should be called for a newly forked topic', async () => {
@@ -91,7 +89,7 @@ describe('FEPs', () => {
 				const activity = activitypub._sent.get(key);
 
 				assert(activity && activity.object && typeof activity.object === 'object');
-				assert.strictEqual(activity.object.id, `${nconf.get('url')}/post/${reply1Pid}`);
+				assertStrict.strictEqual(activity.object.id, `${nconf.get('url')}/post/${reply1Pid}`);
 			});
 
 			it('should be called when a post is moved to another topic', async () => {
@@ -116,15 +114,15 @@ describe('FEPs', () => {
 				const { pid } = await topics.reply({ uid, tid: topic1.tid, content: utils.generateUUID() });
 				await api.posts.move({ uid: adminUid }, { pid, tid: topic2.tid });
 
-				assert.strictEqual(activitypub._sent.size, 1);
+				assertStrict.strictEqual(activitypub._sent.size, 1);
 				const activities = Array.from(activitypub._sent.keys()).map(key => activitypub._sent.get(key));
 
 				const activity = activities.pop();
-				assert.strictEqual(activity.type, 'Announce');
+				assertStrict.strictEqual(activity.type, 'Announce');
 				assert(activity.object && activity.object.type);
-				assert.strictEqual(activity.object.type, 'Create');
+				assertStrict.strictEqual(activity.object.type, 'Create');
 				assert(activity.object.object && activity.object.object.type);
-				assert.strictEqual(activity.object.object.type, 'Note');
+				assertStrict.strictEqual(activity.object.object.type, 'Note');
 			});
 		});
 	});
