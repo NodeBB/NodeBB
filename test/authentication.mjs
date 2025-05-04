@@ -1,15 +1,16 @@
 import assert from 'assert';
 import url from 'url';
 import nconf from 'nconf';
+
+import db from './mocks/databasemock.mjs';
 import request from '../src/request.js';
-import * as db from './mocks/databasemock.mjs';
-import * as user from '../src/user.js';
-import * as utils from '../src/utils.js';
-import * as meta from '../src/meta.js';
-import * as plugins from '../src/plugins.js';
-import * as privileges from '../src/privileges.js';
-import * as api from '../src/api.js';
-import * as helpers from './helpers.js';
+import user from '../src/user/index.js';
+import utils from '../src/utils.js';
+import meta from '../src/meta/index.js';
+import plugins from '../src/plugins/index.js';
+import privileges from '../src/privileges/index.js';
+import api from '../src/api/index.js';
+import helpers from './helpers/index.js';
 
 describe('authentication', () => {
 	const jar = request.jar();
