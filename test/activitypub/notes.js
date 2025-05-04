@@ -1,22 +1,20 @@
-'use strict';
+import assert from 'assert';
+import { strict as assertStrict } from 'assert';
+import nconf from 'nconf';
 
-const assert = require('assert');
-const nconf = require('nconf');
+import '../mocks/databasemock.mjs';
+import * as meta from '../../src/meta/index.js';
+import * as install from '../../src/install.js';
+import * as user from '../../src/user/index.js';
+import * as categories from '../../src/categories/index.js';
+import * as posts from '../../src/posts/index.js';
+import * as topics from '../../src/topics/index.js';
+import api from '../../src/api/index.js';
+import * as activitypub from '../../src/activitypub/index.js';
+import * as utils from '../../src/utils.js';
+import helpers from './helpers.js';
 
-const db = require('../mocks/databasemock.mjs');
-const meta = require('../../src/meta');
-const install = require('../../src/install');
-const user = require('../../src/user');
-const categories = require('../../src/categories');
-const posts = require('../../src/posts');
-const topics = require('../../src/topics');
-const api = require('../../src/api');
-const activitypub = require('../../src/activitypub');
-const utils = require('../../src/utils');
-
-const helpers = require('./helpers');
-
-describe('Notes', () => {
+describe('ActivityPub/Notes', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
@@ -31,7 +29,7 @@ describe('Notes', () => {
 
 				const { tid, count } = assertion;
 				assert(tid);
-				assert.strictEqual(count, 1);
+				assertStrict.strictEqual(count, 1);
 
 				const exists = await topics.exists(tid);
 				assert(exists);
@@ -44,7 +42,7 @@ describe('Notes', () => {
 
 				const { tid, count } = assertion;
 				assert(tid);
-				assert.strictEqual(count, 1);
+				assertStrict.strictEqual(count, 1);
 
 				const exists = await topics.exists(tid);
 				assert(exists);
@@ -59,7 +57,7 @@ describe('Notes', () => {
 
 				const { tid, count } = assertion;
 				assert(tid);
-				assert.strictEqual(count, 1);
+				assertStrict.strictEqual(count, 1);
 
 				const exists = await topics.exists(tid);
 				assert(exists);
@@ -447,7 +445,7 @@ describe('Notes', () => {
 					'@context': 'https://www.w3.org/ns/activitystreams',
 					id: `${helpers.mocks._baseUrl}/announce/${encodeURIComponent(like.id)}`,
 					type: 'Announce',
-					to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
+					to: ['https://www.w3.org/ns/activitystreams#Public'],
 					cc: [
 						`${gActor}/followers`,
 					],
@@ -582,15 +580,15 @@ describe('Notes', () => {
 			}));
 		});
 
-		it('should add a topic to a user\'s inbox if user is a recipient in OP', async () => {
+		it("should add a topic to a user's inbox if user is a recipient in OP", async () => {
 			await db.setAdd(`post:${topicData.mainPid}:recipients`, [uid]);
 			await activitypub.notes.syncUserInboxes(topicData.tid);
 			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
 
-			assert.strictEqual(inboxed, true);
+			assertStrict.strictEqual(inboxed, true);
 		});
 
-		it('should add a topic to a user\'s inbox if a user is a recipient in a reply', async () => {
+		it("should add a topic to a user's inbox if a user is a recipient in a reply", async () => {
 			const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 			const { pid } = await topics.reply({
 				tid: topicData.tid,
@@ -601,10 +599,10 @@ describe('Notes', () => {
 			await activitypub.notes.syncUserInboxes(topicData.tid);
 			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
 
-			assert.strictEqual(inboxed, true);
+			assertStrict.strictEqual(inboxed, true);
 		});
 
-		it('should maintain a list of recipients at the topic level', async () => {
+		it("should maintain a list of recipients at the topic level", async () => {
 			await db.setAdd(`post:${topicData.mainPid}:recipients`, [uid]);
 			await activitypub.notes.syncUserInboxes(topicData.tid);
 			const [isRecipient, count] = await Promise.all([
@@ -613,22 +611,22 @@ describe('Notes', () => {
 			]);
 
 			assert(isRecipient);
-			assert.strictEqual(count, 1);
+			assertStrict.strictEqual(count, 1);
 		});
 
-		it('should add topic to a user\'s inbox if it is explicitly passed in as an argument', async () => {
+		it("should add topic to a user's inbox if it is explicitly passed in as an argument", async () => {
 			await activitypub.notes.syncUserInboxes(topicData.tid, uid);
 			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
 
-			assert.strictEqual(inboxed, true);
+			assertStrict.strictEqual(inboxed, true);
 		});
 
-		it('should remove a topic from a user\'s inbox if that user is no longer a recipient in any contained posts', async () => {
+		it("should remove a topic from a user's inbox if that user is no longer a recipient in any contained posts", async () => {
 			await activitypub.notes.syncUserInboxes(topicData.tid, uid);
 			await activitypub.notes.syncUserInboxes(topicData.tid);
 			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
 
-			assert.strictEqual(inboxed, false);
+			assertStrict.strictEqual(inboxed, false);
 		});
 	});
 
