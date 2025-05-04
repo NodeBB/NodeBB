@@ -18,7 +18,7 @@ describe('ActivityPub/Analytics', () => {
 	let postData;
 
 	before(async () => {
-		nconf.set('runJobs', 1);
+		nconf.set('runJobs', true);
 		({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
 		const remoteUser = {
 			'@context': 'https://www.w3.org/ns/activitystreams',
@@ -37,7 +37,7 @@ describe('ActivityPub/Analytics', () => {
 	});
 
 	after(async () => {
-		nconf.set('runJobs', undefined);
+		nconf.set('runJobs', false);
 	});
 
 	beforeEach(async () => {
