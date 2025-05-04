@@ -25,4 +25,5 @@ spec:
   - "test/activitypub/webfinger.mjs"
   - "test/authentication.mjs"
   - "test/batch.mjs"
+  - "test/blacklist.mjs"
 ignore: "test/files/**"

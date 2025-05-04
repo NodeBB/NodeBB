@@ -1,5 +1,6 @@
 import assert from 'assert';
-import db from './mocks/databasemock.mjs';
+
+import './mocks/databasemock.mjs';
 import groups from '../src/groups/index.js';
 import user from '../src/user/index.js';
 import blacklist from '../src/meta/blacklist.js';
