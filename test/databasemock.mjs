@@ -1,6 +1,6 @@
 'use strict';
 
-import './cleanup.mjs';
+import './helpers/cleanup.mjs';
 import { doesNotReject } from 'assert';
 import winston from 'winston';
 

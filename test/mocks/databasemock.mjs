@@ -6,7 +6,7 @@
  */
 
 import '../../require-main.js';
-import '../cleanup.mjs';
+import '../helpers/cleanup.mjs';
 
 import nconf from 'nconf';
 import { readFileSync } from 'fs';

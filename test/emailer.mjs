@@ -1,6 +1,5 @@
 'use strict';
 
-import './cleanup.mjs';
 import { SMTPServer } from 'smtp-server';
 import assert from 'assert';
 import fs from 'fs';

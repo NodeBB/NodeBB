@@ -4,7 +4,7 @@ import assert from 'assert';
 import bcrypt from 'bcryptjs';
 
 import password from '../src/password.js';
-import './cleanup.mjs';
+import './helpers/cleanup.mjs';
 
 describe('Password', () => {
 	describe('.hash()', () => {

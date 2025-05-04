@@ -8,7 +8,7 @@ async function cleanup() {
     }
     cleanupCalled = true;
 
-    const LoggerWithIndentation = (await import('./LoggerWithIndentation.mjs')).default;
+    const LoggerWithIndentation = (await import('../LoggerWithIndentation.mjs')).default;
     const logger = new LoggerWithIndentation();
     const log = (level) => logger.getLogger(level);
     try {
@@ -26,7 +26,7 @@ async function cleanup() {
     }
 
     try {
-        const password = (await import('../src/password.js')).default;
+        const password = (await import('../../src/password.js')).default;
         await password.close();
         log(1).info('password workerpool closed');
     } catch (err) {
@@ -34,7 +34,7 @@ async function cleanup() {
     }
 
     try {
-        const webserver = (await import('../src/webserver.js')).default;
+        const webserver = (await import('../../src/webserver.js')).default;
         await webserver.destroy();
         log(1).info('webserver closed');
     } catch (err) {
@@ -42,7 +42,7 @@ async function cleanup() {
     }
 
     try {
-        const db = (await import('../src/database/index.js')).default;
+        const db = (await import('../../src/database/index.js')).default;
         await db.close();
         log(1).info('db closed');
     } catch (err) {
@@ -50,7 +50,7 @@ async function cleanup() {
     }
 
     try {
-        const metaErrors = (await import('../src/meta/errors.js')).default;
+        const metaErrors = (await import('../../src/meta/errors.js')).default;
         metaErrors.stop();
         log(1).info('cron jobs stopped for errors');
     } catch (err) {
@@ -58,7 +58,7 @@ async function cleanup() {
     }
 
     try {
-        const analytics = (await import('../src/analytics.js')).default;
+        const analytics = (await import('../../src/analytics.js')).default;
         analytics.stop();
         log(1).info('cron jobs stopped for analytics');
     } catch (err) {
@@ -66,7 +66,7 @@ async function cleanup() {
     }
 
     try {
-        const notifications = (await import('../src/notifications.js')).default;
+        const notifications = (await import('../../src/notifications.js')).default;
         notifications.stop();
         log(1).info('cron jobs stopped for notifications');
     } catch (err) {
@@ -74,7 +74,7 @@ async function cleanup() {
     }
 
     try {
-        const activitypub = (await import('../src/activitypub/index.js')).default;
+        const activitypub = (await import('../../src/activitypub/index.js')).default;
         activitypub.stop();
         log(1).info('cron jobs stopped for activitypub');
     } catch (err) {
@@ -82,7 +82,7 @@ async function cleanup() {
     }
 
     try {
-        const plugins = (await import('../src/plugins/index.js')).default;
+        const plugins = (await import('../../src/plugins/index.js')).default;
         plugins.stop();
         log(1).info('cron jobs stopped for plugins');
     } catch (err) {
@@ -90,7 +90,7 @@ async function cleanup() {
     }
 
     try {
-        const posts = (await import('../src/posts/index.js')).default;
+        const posts = (await import('../../src/posts/index.js')).default;
         posts.stop();
         log(1).info('cron jobs stopped for posts');
     } catch (err) {
@@ -98,7 +98,7 @@ async function cleanup() {
     }
 
     try {
-        const scheduledTopics = (await import('../src/topics/scheduled.js')).default;
+        const scheduledTopics = (await import('../../src/topics/scheduled.js')).default;
         scheduledTopics.stop();
         log(1).info('cron jobs stopped for scheduled topics');
     } catch (err) {
@@ -106,7 +106,7 @@ async function cleanup() {
     }
 
     try {
-        const User = (await import('../src/user/index.js')).default;
+        const User = (await import('../../src/user/index.js')).default;
         User.stop();
         User.stopJobs();
         log(1).info('cron jobs stopped for user');
@@ -115,7 +115,7 @@ async function cleanup() {
     }
 
     try {
-        const minifier = (await import('../src/meta/minifier.js')).default;
+        const minifier = (await import('../../src/meta/minifier.js')).default;
         minifier.killAll();
         log(1).info('minifier forks killed');
     } catch (err) {

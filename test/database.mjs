@@ -3,7 +3,6 @@
 
 import assert, { fail, ifError, equal } from 'assert';
 import nconf from 'nconf';
-import './cleanup.mjs';
 import databasemock from './mocks/databasemock.mjs';
 
 describe('Database', function () {
