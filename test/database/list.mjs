@@ -1,7 +1,7 @@
 import assert from 'assert';
 import db from '../mocks/databasemock.mjs';
 
-describe('List methods', () => {
+describe('Database/List', () => {
 	describe('listAppend()', () => {
 		it('should append to a list', async function () {
 			await db.listAppend('testList1', 5);

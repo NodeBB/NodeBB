@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import db from '../mocks/databasemock.mjs'; // Ensure databasemock is ESM-compatible
 
-describe('Set methods', () => {
+describe('Database/Set', () => {
 	describe('setAdd()', () => {
 		it('should add to a set', async () => {
 			await db.setAdd('testSet1', 5);

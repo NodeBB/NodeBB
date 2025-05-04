@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import db from '../mocks/databasemock.mjs';
 
-describe('Sorted Set methods', () => {
+describe('Database/Sorted Set', () => {
 	before(async () => {
 		await Promise.all([
 			db.sortedSetAdd('sortedSetTest1', [1.1, 1.2, 1.3], ['value1', 'value2', 'value3']),

@@ -2,7 +2,7 @@
 import assert from 'assert';
 import db from '../mocks/databasemock.mjs';
 
-describe('Key methods', () => {
+describe('Database/Key', () => {
 	beforeEach(async () => {
 		await db.set('testKey', 'testValue');
 	});

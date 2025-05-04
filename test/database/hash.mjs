@@ -1,7 +1,7 @@
 import assert from 'assert';
 import db from '../mocks/databasemock.mjs';
 
-describe('Hash methods', () => {
+describe('Database/Hash', () => {
 	const testData = {
 		name: 'baris',
 		lastname: 'usakli',

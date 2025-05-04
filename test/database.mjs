@@ -6,7 +6,7 @@ import nconf from 'nconf';
 import './cleanup.mjs';
 import databasemock from './mocks/databasemock.mjs';
 
-describe('Test database', function () {
+describe('Database', function () {
 	describe('info', () => {
 		it('should return info about database', async () => {
 			const info = await databasemock.info(databasemock.client);
