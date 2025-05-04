@@ -1,18 +1,17 @@
-'use strict';
+import nconf from 'nconf';
+import assert from 'assert';
+import { strict as assertStrict } from 'assert';
 
-const nconf = require('nconf');
-const assert = require('assert');
-
-const db = require('../../src/database');
-const controllers = require('../../src/controllers');
-const middleware = require('../../src/middleware');
-const activitypub = require('../../src/activitypub');
-const utils = require('../../src/utils');
-const user = require('../../src/user');
-const categories = require('../../src/categories');
-const topics = require('../../src/topics');
-const analytics = require('../../src/analytics');
-const api = require('../../src/api');
+import * as db from '../../src/database.js';
+import * as controllers from '../../src/controllers.js';
+import * as middleware from '../../src/middleware.js';
+import * as activitypub from '../../src/activitypub.js';
+import * as utils from '../../src/utils.js';
+import * as user from '../../src/user.js';
+import * as categories from '../../src/categories.js';
+import * as topics from '../../src/topics.js';
+import * as analytics from '../../src/analytics.js';
+import * as api from '../../src/api.js';
 
 describe('Analytics', () => {
 	let cid;
@@ -26,7 +25,6 @@ describe('Analytics', () => {
 			'@context': 'https://www.w3.org/ns/activitystreams',
 			id: 'https://example.org/user/foobar',
 			url: 'https://example.org/user/foobar',
-
 			type: 'Person',
 			name: 'Foo Bar',
 			preferredUsername: 'foobar',
@@ -65,14 +63,13 @@ describe('Analytics', () => {
 					id: `${nconf.get('url')}/post/${postData.pid}`,
 				},
 			},
-		}, { sendStatus: () => {} });
+		}, { sendStatus: () => { } });
 		const processed = await db.isSortedSetMember('activities:datetime', id);
 
 		assert(processed);
 	});
 
 	it('should not process the activity if received again', async () => {
-		// Specifically, the controller would update the score, but the request should be caught in middlewares and ignored
 		const id = `https://example.org/activity/${utils.generateUUID()}`;
 		await controllers.activitypub.postInbox({
 			body: {
@@ -84,7 +81,7 @@ describe('Analytics', () => {
 					id: `${nconf.get('url')}/post/${postData.pid}`,
 				},
 			},
-		}, { sendStatus: () => {} });
+		}, { sendStatus: () => { } });
 
 		await middleware.activitypub.assertPayload({
 			body: {
@@ -98,7 +95,7 @@ describe('Analytics', () => {
 			},
 		}, {
 			sendStatus: (statusCode) => {
-				assert.strictEqual(statusCode, 200);
+				assertStrict.strictEqual(statusCode, 200);
 			},
 		});
 	});
@@ -116,7 +113,7 @@ describe('Analytics', () => {
 					id: `${nconf.get('url')}/post/${postData.pid}`,
 				},
 			},
-		}, { sendStatus: () => {} });
+		}, { sendStatus: () => { } });
 
 		const after = await db.sortedSetScore('domains:lastSeen', 'example.org');
 
@@ -140,7 +137,7 @@ describe('Analytics', () => {
 					id: `${nconf.get('url')}/post/${postData.pid}`,
 				},
 			},
-		}, { sendStatus: () => {} });
+		}, { sendStatus: () => { } });
 
 		({ counters } = analytics.peek());
 		const after = { ...counters };
