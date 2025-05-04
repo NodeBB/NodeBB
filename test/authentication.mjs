@@ -1,38 +1,29 @@
-'use strict';
-
-
-const assert = require('assert');
-const url = require('url');
-const nconf = require('nconf');
-
-const request = require('../src/request');
-const db = require('./mocks/databasemock.mjs');
-const user = require('../src/user');
-const utils = require('../src/utils');
-const meta = require('../src/meta');
-const plugins = require('../src/plugins');
-const privileges = require('../src/privileges');
-const api = require('../src/api');
-const helpers = require('./helpers');
+import assert from 'assert';
+import url from 'url';
+import nconf from 'nconf';
+import request from '../src/request.js';
+import * as db from './mocks/databasemock.mjs';
+import * as user from '../src/user.js';
+import * as utils from '../src/utils.js';
+import * as meta from '../src/meta.js';
+import * as plugins from '../src/plugins.js';
+import * as privileges from '../src/privileges.js';
+import * as api from '../src/api.js';
+import * as helpers from './helpers.js';
 
 describe('authentication', () => {
 	const jar = request.jar();
 	let regularUid;
-	const dummyEmailerHook = async (data) => {};
+	const dummyEmailerHook = async (data) => { };
 
-	before((done) => {
-		// Attach an emailer hook so related requests do not error
+	before(async () => {
 		plugins.hooks.register('authentication-test', {
 			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
-		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, (err, uid) => {
-			assert.ifError(err);
-			regularUid = uid;
-			assert.strictEqual(uid, 1);
-			done();
-		});
+		regularUid = await user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' });
+		assert.strictEqual(regularUid, 1);
 	});
 
 	after(() => {
@@ -132,7 +123,7 @@ describe('authentication', () => {
 		await helpers.logoutUser(jar);
 
 		const { response, body } = await request.get(`${nconf.get('url')}/api/me`, {
-			jar: jar,
+			jar,
 		});
 		assert.equal(response.statusCode, 401);
 		assert.strictEqual(body.status.code, 'not-authorised');
@@ -149,12 +140,11 @@ describe('authentication', () => {
 		assert.notStrictEqual(newSid, sid);
 	});
 
-
 	it('should revoke all sessions', async () => {
-		const socketAdmin = require('../src/socket.io/admin');
+		const socketAdmin = await import('../src/socket.io/admin.js');
 		let sessionCount = await db.sortedSetCard(`uid:${regularUid}:sessions`);
 		assert(sessionCount);
-		await socketAdmin.deleteAllSessions({ uid: 1 }, {});
+		await socketAdmin.default.deleteAllSessions({ uid: 1 }, {});
 		sessionCount = await db.sortedSetCard(`uid:${regularUid}:sessions`);
 		assert(!sessionCount);
 	});
@@ -177,7 +167,6 @@ describe('authentication', () => {
 						memo = new Date(value);
 					}
 				}
-
 				return memo;
 			}, undefined);
 		}
@@ -275,7 +264,7 @@ describe('authentication', () => {
 				username: 'regular',
 				password: 'regularpwd',
 			},
-			jar: jar,
+			jar,
 			headers: {
 				'x-csrf-token': csrf_token,
 				'x-forwarded-for': '<script>alert("xss")</script>',
@@ -302,7 +291,7 @@ describe('authentication', () => {
 		assert.equal(body, '[[error:invalid-username-or-password]]');
 	});
 
-	it('should fail to login if username and password are empty', async () => {
+	it('should fail toログイン if username and password are empty', async () => {
 		const { response, body } = await helpers.loginUser('', '');
 		assert.equal(response.statusCode, 403);
 		assert.equal(body, '[[error:invalid-username-or-password]]');
@@ -333,7 +322,7 @@ describe('authentication', () => {
 		await privileges.global.give(['groups:local:login'], 'registered-users');
 	});
 
-	it('should fail to register if registraton is disabled', async () => {
+	it('should fail to register if registration is disabled', async () => {
 		meta.config.registrationType = 'disabled';
 		const { response, body } = await helpers.registerUser({
 			username: 'someuser',
@@ -360,7 +349,6 @@ describe('authentication', () => {
 			{ username: 'a', password: 'somepassword' },
 		];
 		for (const user of userData) {
-			// eslint-disable-next-line no-await-in-loop
 			const { response, body } = await helpers.registerUser(user);
 			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[error:username-too-short]]');
@@ -390,7 +378,6 @@ describe('authentication', () => {
 		assert.equal(body.message, '[[register:registration-added-to-queue]]');
 	});
 
-
 	it('should be able to login with email', async () => {
 		const email = 'ginger@nodebb.org';
 		const uid = await user.create({ username: 'ginger', password: '123456', email });
@@ -414,7 +401,7 @@ describe('authentication', () => {
 
 		const { response, body } = await request.post(`${nconf.get('url')}/logout`, {
 			data: {},
-			jar: jar,
+			jar,
 			headers: {
 				'x-csrf-token': csrf_token,
 			},
@@ -514,7 +501,7 @@ describe('authentication', () => {
 
 		it('should fail with invalid token', async () => {
 			const { response, body } = await helpers.request('get', `/api/self?_uid${newUid}`, {
-				jar: jar,
+				jar,
 				headers: {
 					Authorization: `Bearer sdfhaskfdja-jahfdaksdf`,
 				},
