@@ -1,7 +1,8 @@
 import assert from 'assert';
 import { setImmediate } from 'timers';
+
 import db from './mocks/databasemock.mjs';
-import * as batch from '../src/batch.js';
+import batch from '../src/batch.js';
 
 describe('batch', () => {
 	const scores = [];
