@@ -19,4 +19,5 @@ spec:
   - "test/activitypub.mjs"
   - "test/activitypub/actors.mjs"
   - "test/activitypub/analytics.mjs"
+  - "test/activitypub/feps.mjs"
 ignore: "test/files/**"

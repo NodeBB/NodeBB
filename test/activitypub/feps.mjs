@@ -2,19 +2,19 @@ import assert from 'assert';
 import { strict as assertStrict } from 'assert';
 import nconf from 'nconf';
 
-import db from '../mocks/databasemock.mjs';
-import * as activitypub from '../../src/activitypub/index.js';
-import * as utils from '../../src/utils.js';
-import * as meta from '../../src/meta.js';
-import * as install from '../../src/install.js';
-import * as user from '../../src/user/index.js';
-import * as groups from '../../src/groups/index.js';
-import * as categories from '../../src/categories/index.js';
-import * as topics from '../../src/topics/index.js';
-import * as api from '../../src/api/index.js';
-import * as helpers from './helpers.js';
+import '../mocks/databasemock.mjs';
+import activitypub from '../../src/activitypub/index.js';
+import utils from '../../src/utils.js';
+import meta from '../../src/meta/index.js';
+import install from '../../src/install.js';
+import user from '../../src/user/index.js';
+import groups from '../../src/groups/index.js';
+import categories from '../../src/categories/index.js';
+import topics from '../../src/topics/index.js';
+import api from '../../src/api/index.js';
+import helpers from './helpers.js';
 
-describe('FEPs', () => {
+describe('ActivityPub/FEPs', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
@@ -55,7 +55,7 @@ describe('FEPs', () => {
 
 				assert(topicData);
 
-				await api.topics moving({ uid: adminUid }, {
+				await api.topics.move({ uid: adminUid }, {
 					tid: topicData.tid,
 					cid,
 				});
