@@ -2,17 +2,17 @@ import assert from 'assert';
 import { strict as assertStrict } from 'assert';
 import nconf from 'nconf';
 
-import '../mocks/databasemock.mjs';
-import * as meta from '../../src/meta/index.js';
-import * as install from '../../src/install.js';
-import * as user from '../../src/user/index.js';
-import * as categories from '../../src/categories/index.js';
-import * as posts from '../../src/posts/index.js';
-import * as topics from '../../src/topics/index.js';
+import db from '../mocks/databasemock.mjs';
+import meta from '../../src/meta/index.js';
+import install from '../../src/install.js';
+import user from '../../src/user/index.js';
+import categories from '../../src/categories/index.js';
+import posts from '../../src/posts/index.js';
+import topics from '../../src/topics/index.js';
 import api from '../../src/api/index.js';
-import * as activitypub from '../../src/activitypub/index.js';
-import * as utils from '../../src/utils.js';
-import helpers from './helpers.js';
+import activitypub from '../../src/activitypub/index.js';
+import utils from '../../src/utils.js';
+import helpers from './helpers.mjs';
 
 describe('ActivityPub/Notes', () => {
 	before(async () => {
