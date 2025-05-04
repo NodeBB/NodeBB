@@ -2,16 +2,15 @@ import nconf from 'nconf';
 import assert from 'assert';
 import { strict as assertStrict } from 'assert';
 
-import * as db from '../../src/database.js';
-import * as controllers from '../../src/controllers.js';
-import * as middleware from '../../src/middleware.js';
-import * as activitypub from '../../src/activitypub.js';
-import * as utils from '../../src/utils.js';
-import * as user from '../../src/user.js';
-import * as categories from '../../src/categories.js';
-import * as topics from '../../src/topics.js';
-import * as analytics from '../../src/analytics.js';
-import * as api from '../../src/api.js';
+import db from '../mocks/databasemock.mjs';
+import controllers from '../../src/controllers/index.js';
+import middleware from '../../src/middleware/index.js';
+import activitypub from '../../src/activitypub/index.js';
+import utils from '../../src/utils.js';
+import user from '../../src/user/index.js';
+import categories from '../../src/categories/index.js';
+import topics from '../../src/topics/index.js';
+import analytics from '../../src/analytics.js';
 
 describe('Analytics', () => {
 	let cid;

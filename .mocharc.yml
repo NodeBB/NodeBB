@@ -18,4 +18,5 @@ spec:
   - "test/api.mjs"
   - "test/activitypub.mjs"
   - "test/activitypub/actors.mjs"
+  - "test/activitypub/analytics.mjs"
 ignore: "test/files/**"
