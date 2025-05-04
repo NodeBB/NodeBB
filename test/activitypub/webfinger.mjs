@@ -1,15 +1,14 @@
-'use strict';
+import assert from 'assert';
+import nconf from 'nconf';
 
-const assert = require('assert');
-const nconf = require('nconf');
+import db from '../mocks/databasemock.mjs';
+import * as request from '../../src/request/index.js';
+import * as utils from '../../src/utils.js';
+import * as user from '../../src/user/index.js';
+import slugify from '../../src/slugify.js';
+import * as privileges from '../../src/privileges/index.js';
 
-const request = require('../../src/request');
-const utils = require('../../src/utils');
-const user = require('../../src/user');
-const slugify = require('../../src/slugify');
-const privileges = require('../../src/privileges');
-
-describe('WebFinger endpoint', () => {
+describe('ActivityPub/WebFinger', () => {
 	let uid;
 	let slug;
 	const { host } = nconf.get('url_parsed');
@@ -23,14 +22,14 @@ describe('WebFinger endpoint', () => {
 		const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3afoobar%40${host}`);
 
 		assert(response);
-		assert.strictEqual(response.statusCode, 404);
+		assert.strict.strictEqual(response.statusCode, 404);
 	});
 
 	it('should return a 400 Bad Request if the request is malformed', async () => {
 		const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3afoobar`);
 
 		assert(response);
-		assert.strictEqual(response.statusCode, 400);
+		assert.strict.strictEqual(response.statusCode, 400);
 	});
 
 	it('should return 404 Not Found if the calling user is not allowed to view the user list/profiles', async () => {
@@ -38,7 +37,7 @@ describe('WebFinger endpoint', () => {
 		const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${slug}%40${host}`);
 
 		assert(response);
-		assert.strictEqual(response.statusCode, 404);
+		assert.strict.strictEqual(response.statusCode, 404);
 		await privileges.global.give(['groups:view:users'], 'fediverse');
 	});
 
@@ -46,14 +45,14 @@ describe('WebFinger endpoint', () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct%3a${slug}%40${host}`);
 
 		assert(response);
-		assert.strictEqual(response.statusCode, 200);
+		assert.strict.strictEqual(response.statusCode, 200);
 
 		['subject', 'aliases', 'links'].forEach((prop) => {
 			assert(body.hasOwnProperty(prop));
 			assert(body[prop]);
 		});
 
-		assert.strictEqual(body.subject, `acct:${slug}@${host}`);
+		assert.strict.strictEqual(body.subject, `acct:${slug}@${host}`);
 
 		assert(Array.isArray(body.aliases));
 		assert([`${nconf.get('url')}/uid/${uid}`, `${nconf.get('url')}/user/${slug}`].every(url => body.aliases.includes(url)));
