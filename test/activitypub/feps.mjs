@@ -12,7 +12,7 @@ import groups from '../../src/groups/index.js';
 import categories from '../../src/categories/index.js';
 import topics from '../../src/topics/index.js';
 import api from '../../src/api/index.js';
-import helpers from './helpers.js';
+import helpers from './helpers.mjs';
 
 describe('ActivityPub/FEPs', () => {
 	before(async () => {

@@ -1,5 +1,5 @@
-import * as activitypub from '../../src/activitypub/index.js';
-import * as utils from '../../src/utils.js';
+import activitypub from '../../src/activitypub/index.js';
+import utils from '../../src/utils.js';
 import slugify from '../../src/slugify.js';
 
 const Helpers = {};
