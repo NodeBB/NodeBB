@@ -22,4 +22,5 @@ spec:
   - "test/activitypub/feps.mjs"
   - "test/activitypub/notes.mjs"
   - "test/activitypub/signatures.mjs"
+  - "test/activitypub/webfinger.mjs"
 ignore: "test/files/**"

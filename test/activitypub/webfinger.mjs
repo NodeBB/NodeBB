@@ -1,12 +1,12 @@
 import assert from 'assert';
 import nconf from 'nconf';
 
-import db from '../mocks/databasemock.mjs';
-import * as request from '../../src/request/index.js';
-import * as utils from '../../src/utils.js';
-import * as user from '../../src/user/index.js';
+import '../mocks/databasemock.mjs';
+import request from '../../src/request.js';
+import utils from '../../src/utils.js';
+import user from '../../src/user/index.js';
 import slugify from '../../src/slugify.js';
-import * as privileges from '../../src/privileges/index.js';
+import privileges from '../../src/privileges/index.js';
 
 describe('ActivityPub/WebFinger', () => {
 	let uid;
