@@ -1,12 +1,11 @@
 import assert from 'assert';
-import { strict as assertStrict } from 'assert';
 import nconf from 'nconf';
 import { createHash } from 'crypto';
 
-import * as user from '../../src/user/index.js';
-import * as utils from '../../src/utils.js';
-import * as db from '../../src/database/index.js';
-import * as activitypub from '../../src/activitypub/index.js';
+import db from '../mocks/databasemock.mjs';
+import user from '../../src/user/index.js';
+import utils from '../../src/utils.js';
+import activitypub from '../../src/activitypub/index.js';
 
 describe('ActivityPub/HTTP Signature', () => {
 	describe('.sign()', () => {
@@ -34,7 +33,7 @@ describe('ActivityPub/HTTP Signature', () => {
 
 			assert(signature);
 			assert(dateObj);
-			assertStrict.strictEqual(digest, null);
+			assert.strict.strictEqual(digest, null);
 		});
 
 		it('should also return a digest hash if payload is passed in', async () => {
@@ -47,7 +46,7 @@ describe('ActivityPub/HTTP Signature', () => {
 			const checksum = hash.digest('base64');
 
 			assert(digest);
-			assertStrict.strictEqual(digest, `SHA-256=${checksum}`);
+			assert.strict.strictEqual(digest, `SHA-256=${checksum}`);
 		});
 
 		it('should create a key for NodeBB itself if a uid of 0 is passed in', async () => {
@@ -67,7 +66,7 @@ describe('ActivityPub/HTTP Signature', () => {
 			const [keyId] = signature.split(',');
 
 			assert(signature);
-			assertStrict.strictEqual(keyId, `keyId="${nconf.get('url')}/uid/${uid}#key"`);
+			assert.strict.strictEqual(keyId, `keyId="${nconf.get('url')}/uid/${uid}#key"`);
 		});
 
 		it('should return the instance key id when uid is 0', async () => {
@@ -77,7 +76,7 @@ describe('ActivityPub/HTTP Signature', () => {
 			const [keyId] = signature.split(',');
 
 			assert(signature);
-			assertStrict.strictEqual(keyId, `keyId="${nconf.get('url')}/actor#key"`);
+			assert.strict.strictEqual(keyId, `keyId="${nconf.get('url')}/actor#key"`);
 		});
 	});
 
@@ -109,7 +108,7 @@ describe('ActivityPub/HTTP Signature', () => {
 			};
 
 			const verified = await activitypub.verify(req);
-			assertStrict.strictEqual(verified, true);
+			assert.strict.strictEqual(verified, true);
 		});
 
 		it('should return true when a digest is also passed in', async () => {
@@ -126,7 +125,7 @@ describe('ActivityPub/HTTP Signature', () => {
 			};
 
 			const verified = await activitypub.verify(req);
-			assertStrict.strictEqual(verified, true);
+			assert.strict.strictEqual(verified, true);
 		});
 	});
 });

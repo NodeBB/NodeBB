@@ -21,4 +21,5 @@ spec:
   - "test/activitypub/analytics.mjs"
   - "test/activitypub/feps.mjs"
   - "test/activitypub/notes.mjs"
+  - "test/activitypub/signatures.mjs"
 ignore: "test/files/**"
