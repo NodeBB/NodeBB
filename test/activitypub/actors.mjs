@@ -12,7 +12,7 @@ import request from '../../src/request.js';
 import slugify from '../../src/slugify.js';
 import helpers from './helpers.js';
 
-describe('ActivityPub/actors', () => {
+describe('ActivityPub/Actors', () => {
 	describe('Actor assertion', () => {
 		before(async () => {
 			meta.config.activitypubEnabled = 1;

@@ -12,7 +12,7 @@ import categories from '../../src/categories/index.js';
 import topics from '../../src/topics/index.js';
 import analytics from '../../src/analytics.js';
 
-describe('Analytics', () => {
+describe('ActivityPub/Analytics', () => {
 	let cid;
 	let uid;
 	let postData;
