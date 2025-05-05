@@ -84,8 +84,8 @@ inbox.update = async (req) => {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
-	switch (object.type) {
-		case 'Note': {
+	switch (true) {
+		case activitypub._constants.acceptedPostTypes.includes(object.type): {
 			const [isNote, isMessage] = await Promise.all([
 				posts.exists(object.id),
 				messaging.messageExists(object.id),
@@ -136,16 +136,12 @@ inbox.update = async (req) => {
 			break;
 		}
 
-		case 'Application': // falls through
-		case 'Group': // falls through
-		case 'Organization': // falls through
-		case 'Service': // falls through
-		case 'Person': {
+		case activitypub._constants.acceptableActorTypes.has(object.type): {
 			await activitypub.actors.assert(object.id, { update: true });
 			break;
 		}
 
-		case 'Tombstone': {
+		case object.type === 'Tombstone': {
 			const [isNote, isMessage/* , isActor */] = await Promise.all([
 				posts.exists(object.id),
 				messaging.messageExists(object.id),
