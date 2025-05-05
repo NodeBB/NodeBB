@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs/promises';
 
+import './mocks/databasemock.mjs';
 import request from '../src/request.js';
-import db from './mocks/databasemock.mjs';
 import categories from '../src/categories/index.js';
 import topics from '../src/topics/index.js';
 import user from '../src/user/index.js';
@@ -16,10 +16,6 @@ import meta from '../src/meta/index.js';
 import privileges from '../src/privileges/index.js';
 import plugins from '../src/plugins/index.js';
 import navigation from '../src/navigation/admin.js';
-
-// Define __dirname for ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 describe('Admin Controllers', () => {
 	let tid;
@@ -366,7 +362,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/navigation', async () => {
-		const data = await import('../install/data/navigation.json', { assert: { type: 'json' } });
+		const data = await import('../install/data/navigation.json', { with: { type: 'json' } });
 		await navigation.save(data.default);
 
 		const { body } = await request.get(`${nconf.get('url')}/api/admin/settings/navigation`, { jar });

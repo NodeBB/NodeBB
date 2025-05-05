@@ -27,4 +27,5 @@ spec:
   - "test/batch.mjs"
   - "test/blacklist.mjs"
   - "test/build.mjs"
+  - "test/controllers-admin.mjs"
 ignore: "test/files/**"
