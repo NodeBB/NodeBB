@@ -44,11 +44,8 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 	}
 
 	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const [handle, isFollowing] = await Promise.all([
-		user.getUserField(actor, 'username'),
-		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
-	]);
 
+	const isFollowing = await db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor);
 	if (isFollowing) { // already following
 		return;
 	}
@@ -58,7 +55,7 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
 	try {
 		await activitypub.send(type, id, [actor], {
-			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${timestamp}`,
+			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 			type: 'Follow',
 			object: actor,
 		});
@@ -77,11 +74,8 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 	}
 
 	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const [handle, isFollowing] = await Promise.all([
-		user.getUserField(actor, 'username'),
-		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
-	]);
 
+	const isFollowing = await db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor);
 	if (!isFollowing) { // already not following
 		return;
 	}
@@ -93,7 +87,7 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 	const timestamp = timestamps[0] || timestamps[1];
 
 	const object = {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${handle}/${timestamp}`,
+		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Follow',
 		object: actor,
 	};
