@@ -28,4 +28,5 @@ spec:
   - "test/blacklist.mjs"
   - "test/build.mjs"
   - "test/controllers-admin.mjs"
+  - "test/controllers.mjs"
 ignore: "test/files/**"

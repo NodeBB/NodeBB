@@ -1,28 +1,28 @@
-'use strict';
+// Note: Ensure your package.json has `"type": "module"` or use `.mjs` extension
 
-const assert = require('assert');
-const nconf = require('nconf');
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+import assert from 'assert';
+import nconf from 'nconf';
+import fs from 'fs/promises';
+import path from 'path';
+import { promisify } from 'util';
 
-const request = require('../src/request');
-const db = require('./mocks/databasemock.mjs');
-const api = require('../src/api');
-const categories = require('../src/categories');
-const topics = require('../src/topics');
-const posts = require('../src/posts');
-const user = require('../src/user');
-const groups = require('../src/groups');
-const meta = require('../src/meta');
-const translator = require('../src/translator');
-const privileges = require('../src/privileges');
-const plugins = require('../src/plugins');
-const utils = require('../src/utils');
-const slugify = require('../src/slugify');
-const helpers = require('./helpers');
+import request from '../src/request.js';
+import db from './mocks/databasemock.mjs';
+import api from '../src/api/index.js';
+import categories from '../src/categories/index.js';
+import topics from '../src/topics/index.js';
+import posts from '../src/posts/index.js';
+import user from '../src/user/index.js';
+import groups from '../src/groups/index.js';
+import meta from '../src/meta/index.js';
+import translator from '../src/translator.js';
+import privileges from '../src/privileges/index.js';
+import plugins from '../src/plugins/index.js';
+import utils from '../src/utils.js';
+import slugify from '../src/slugify.js';
+import helpers from './helpers/index.js';
 
-const sleep = util.promisify(setTimeout);
+const sleep = promisify(setTimeout);
 
 describe('Controllers', () => {
 	let tid;
@@ -46,10 +46,10 @@ describe('Controllers', () => {
 		adminUid = await user.create({ username: 'admin', password: 'barbar', gdpr_consent: true });
 		await groups.join('administrators', adminUid);
 
-		const navigation = require('../src/navigation/admin');
-		const data = require('../install/data/navigation.json');
+		const navigation = (await import('../src/navigation/admin.js')).default;
+		const data = await import('../install/data/navigation.json', { with: { type: 'json' } });
 
-		await navigation.save(data);
+		await navigation.save(data.default);
 
 		const result = await topics.post({ uid: fooUid, title: 'test topic title', content: 'test topic content', cid: cid });
 		tid = result.topicData.tid;
@@ -95,7 +95,7 @@ describe('Controllers', () => {
 				method: hookMethod,
 			});
 
-			fs.writeFileSync(tplPath, message);
+			await fs.writeFile(tplPath, message);
 			await meta.templates.compileTemplate(name, message);
 		});
 
@@ -170,10 +170,10 @@ describe('Controllers', () => {
 			assert.ok(body.includes(message));
 		});
 
-		after(() => {
+		after(async () => {
 			plugins.hooks.unregister('myTestPlugin', 'action:homepage.get:custom', hookMethod);
-			fs.unlinkSync(tplPath);
-			fs.unlinkSync(tplPath.replace(/\.tpl$/, '.js'));
+			await fs.unlink(tplPath);
+			await fs.unlink(tplPath.replace(/\.tpl$/, '.js'));
 		});
 	});
 
@@ -266,7 +266,7 @@ describe('Controllers', () => {
 		describe('email update', () => {
 			let jar;
 			let token;
-			const dummyEmailerHook = async (data) => {};
+			const dummyEmailerHook = async (data) => { };
 
 			before(async () => {
 				// Attach an emailer hook so related requests do not error
@@ -526,7 +526,6 @@ describe('Controllers', () => {
 						},
 					});
 
-
 					assert.strictEqual(response.headers.location, `${nconf.get('relative_path')}/`);
 					meta.config.requireEmailAddress = 1;
 				});
@@ -676,14 +675,12 @@ describe('Controllers', () => {
 		});
 	});
 
-
 	it('should load /tos', async () => {
 		meta.config.termsOfUse = 'please accept our tos';
 		const { response, body } = await request.get(`${nconf.get('url')}/tos`);
 		assert.equal(response.statusCode, 200);
 		assert(body);
 	});
-
 
 	it('should return 404 if meta.config.termsOfUse is empty', async () => {
 		meta.config.termsOfUse = '';
@@ -692,9 +689,8 @@ describe('Controllers', () => {
 		assert(body);
 	});
 
-
 	it('should error if guests do not have search privilege', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`);
+		const { response, body } = await request.get(`${nconf.get('url')}/api/users?query=bar§ion=sort-posts`);
 		assert.equal(response.statusCode, 500);
 		assert(body);
 		assert.equal(body.error, '[[error:no-privileges]]');
@@ -702,7 +698,7 @@ describe('Controllers', () => {
 
 	it('should load users search page', async () => {
 		await privileges.global.give(['groups:search:users'], 'guests');
-		const { response, body } = await request.get(`${nconf.get('url')}/users?query=bar&section=sort-posts`);
+		const { response, body } = await request.get(`${nconf.get('url')}/users?query=bar§ion=sort-posts`);
 		assert.equal(response.statusCode, 200);
 		assert(body);
 		await privileges.global.rescind(['groups:search:users'], 'guests');
@@ -736,7 +732,6 @@ describe('Controllers', () => {
 	});
 
 	it('should 404 when trying to load group members of hidden group', async () => {
-		const groups = require('../src/groups');
 		await groups.create({
 			name: 'hidden-group',
 			description: 'Foobar!',
@@ -745,8 +740,6 @@ describe('Controllers', () => {
 		const { response } = await request.get(`${nconf.get('url')}/groups/hidden-group/members`);
 		assert.equal(response.statusCode, 404);
 	});
-
-
 
 	describe('revoke session', () => {
 		let uid;
@@ -779,7 +772,6 @@ describe('Controllers', () => {
 			});
 
 			assert.strictEqual(response.statusCode, 404);
-			// const parsedResponse = JSON.parse(body);
 			assert.deepStrictEqual(body.response, {});
 			assert.deepStrictEqual(body.status, {
 				code: 'not-found',
@@ -811,9 +803,9 @@ describe('Controllers', () => {
 	});
 
 	describe('widgets', () => {
-		const widgets = require('../src/widgets');
-
+		let widgets;
 		before(async () => {
+			widgets = (await import('../src/widgets/index.js')).default;
 			await widgets.reset();
 			const data = {
 				template: 'categories.tpl',
@@ -893,7 +885,6 @@ describe('Controllers', () => {
 		});
 	});
 
-
 	describe('maintenance mode', () => {
 		before((done) => {
 			meta.config.maintenanceMode = 1;
@@ -971,6 +962,9 @@ describe('Controllers', () => {
 		});
 
 		describe('/me/*', () => {
+			/**
+			 * !!!flaky test!!!
+			 */
 			it('should redirect to user profile', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/me`, { jar });
 				assert.equal(response.statusCode, 200);
@@ -978,6 +972,9 @@ describe('Controllers', () => {
 				assert(body.includes('"username":"foo"'));
 			});
 
+			/**
+			 * !!!flaky test!!!
+			 */
 			it('api should redirect to /user/[userslug]/bookmarks', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/api/me/bookmarks`, { jar });
 				assert.equal(response.statusCode, 200);
@@ -985,6 +982,9 @@ describe('Controllers', () => {
 				assert.equal(body, '/user/foo/bookmarks');
 			});
 
+			/**
+			 * !!!flaky test!!!
+			 */
 			it('api should redirect to /user/[userslug]/edit/username', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/api/me/edit/username`, { jar });
 				assert.equal(response.statusCode, 200);
@@ -1134,7 +1134,7 @@ describe('Controllers', () => {
 		});
 
 		it('should load notifications page', async () => {
-			const notifications = require('../src/notifications');
+			const notifications = await import('../src/notifications.js');
 			const notifData = {
 				bodyShort: '[[notifications:user-posted-to, test1, test2]]',
 				bodyLong: 'some post content',
@@ -1146,8 +1146,8 @@ describe('Controllers', () => {
 				mergeId: `notifications:user-posted-to|${1}`,
 				topicTitle: 'topic title',
 			};
-			const notification = await notifications.create(notifData);
-			await notifications.push(notification, fooUid);
+			const notification = await notifications.default.create(notifData);
+			await notifications.default.push(notification, fooUid);
 			await sleep(2500);
 			const { response, body } = await request.get(`${nconf.get('url')}/api/notifications`, {
 				jar,
@@ -1336,13 +1336,15 @@ describe('Controllers', () => {
 	});
 
 	describe('account follow page', () => {
-		const socketUser = require('../src/socket.io/user');
-		const apiUser = require('../src/api/users');
+		let socketUser;
+		let apiUser;
 		let uid;
 		before(async () => {
+			socketUser = await import('../src/socket.io/user.js');
+			apiUser = await import('../src/api/users.js');
 			uid = await user.create({ username: 'follower' });
-			await apiUser.follow({ uid: uid }, { uid: fooUid });
-			const isFollowing = await socketUser.isFollowing({ uid: uid }, { uid: fooUid });
+			await apiUser.default.follow({ uid: uid }, { uid: fooUid });
+			const isFollowing = await socketUser.default.isFollowing({ uid: uid }, { uid: fooUid });
 			assert(isFollowing);
 		});
 
@@ -1359,7 +1361,7 @@ describe('Controllers', () => {
 		});
 
 		it('should return empty after unfollow', async () => {
-			await apiUser.unfollow({ uid: uid }, { uid: fooUid });
+			await apiUser.default.unfollow({ uid: uid }, { uid: fooUid });
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/followers`);
 			assert.equal(response.statusCode, 200);
 			assert.equal(body.users.length, 0);
@@ -1411,7 +1413,6 @@ describe('Controllers', () => {
 	});
 
 	describe('handle errors', () => {
-		const plugins = require('../src/plugins');
 		after((done) => {
 			plugins.loadedHooks['filter:router.page'] = undefined;
 			done();
@@ -1638,23 +1639,23 @@ describe('Controllers', () => {
 		});
 
 		it('should load categories', async () => {
-			const helpers = require('../src/controllers/helpers');
-			const data = await helpers.getCategories('cid:0:children', 1, 'topics:read', 0);
+			const helpers = await import('../src/controllers/helpers.js');
+			const data = await helpers.default.getCategories('cid:0:children', 1, 'topics:read', 0);
 			assert(data.categories.length > 0);
 			assert.strictEqual(data.selectedCategory, null);
 			assert.deepStrictEqual(data.selectedCids, []);
 		});
 
 		it('should load categories by states', async () => {
-			const helpers = require('../src/controllers/helpers');
-			const data = await helpers.getCategoriesByStates(1, 1, Object.values(categories.watchStates), 'topics:read');
+			const helpers = await import('../src/controllers/helpers.js');
+			const data = await helpers.default.getCategoriesByStates(1, 1, Object.values(categories.watchStates), 'topics:read');
 			assert.deepStrictEqual(data.selectedCategory.cid, 1);
 			assert.deepStrictEqual(data.selectedCids, [1]);
 		});
 
 		it('should load categories by states', async () => {
-			const helpers = require('../src/controllers/helpers');
-			const data = await helpers.getCategoriesByStates(1, 0, [categories.watchStates.ignoring], 'topics:read');
+			const helpers = await import('../src/controllers/helpers.js');
+			const data = await helpers.default.getCategoriesByStates(1, 0, [categories.watchStates.ignoring], 'topics:read');
 			assert(data.categories.length === 0);
 			assert.deepStrictEqual(data.selectedCategory, null);
 			assert.deepStrictEqual(data.selectedCids, []);
@@ -1748,10 +1749,10 @@ describe('Controllers', () => {
 
 		it('should error with invalid data', async () => {
 			let result = await request.post(`${nconf.get('url')}/compose`, {
-				data: {
+				body: {
 					content: 'a new reply',
 				},
-				jar: jar,
+				jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
@@ -1762,7 +1763,7 @@ describe('Controllers', () => {
 				body: {
 					tid: tid,
 				},
-				jar: jar,
+				jar,
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
@@ -1777,7 +1778,7 @@ describe('Controllers', () => {
 					title: 'no js is good',
 					content: 'a topic with noscript',
 				},
-				jar: jar,
+				jar,
 				maxRedirect: 0,
 				redirect: 'manual',
 				headers: {
@@ -1791,7 +1792,7 @@ describe('Controllers', () => {
 					tid: tid,
 					content: 'a new reply',
 				},
-				jar: jar,
+				jar,
 				maxRedirect: 0,
 				redirect: 'manual',
 				headers: {
@@ -1807,7 +1808,7 @@ describe('Controllers', () => {
 
 			await privileges.categories.give(['groups:topics:create', 'groups:topics:reply'], cid, 'guests');
 
-			const result = await helpers.request('post', `/compose`, {
+			const result = await request.post(`${nconf.get('url')}/compose`, {
 				body: {
 					cid: cid,
 					title: 'no js is good',
@@ -1823,7 +1824,7 @@ describe('Controllers', () => {
 			});
 			assert.strictEqual(result.response.statusCode, 302);
 
-			const replyResult = await helpers.request('post', `/compose`, {
+			const replyResult = await request.post(`${nconf.get('url')}/compose`, {
 				body: {
 					tid: tid,
 					content: 'a new reply',
@@ -1837,7 +1838,7 @@ describe('Controllers', () => {
 				},
 			});
 			assert.equal(replyResult.response.statusCode, 302);
-			await privileges.categories.rescind(['groups:topics:post', 'groups:topics:reply'], cid, 'guests');
+			await privileges.categories.rescind(['groups:topics:create', 'groups:topics:reply'], cid, 'guests');
 		});
 
 		it('should not load a topic data that is in private category', async () => {
@@ -1848,7 +1849,7 @@ describe('Controllers', () => {
 
 			const result = await topics.post({ uid: fooUid, title: 'hidden title', content: 'hidden content', cid: cid });
 
-			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'guests');
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
 			let { response, body } = await request.get(`${nconf.get('url')}/api/compose?tid=${result.topicData.tid}`);
 			assert.equal(response.statusCode, 401);
 			assert(!body.title);
@@ -1861,11 +1862,12 @@ describe('Controllers', () => {
 			assert.equal(response.statusCode, 401);
 			assert(!body.title);
 
-			await privileges.categories.give(['groups:topics:read'], category.cid, 'guests');
+			await privileges.categories.give(['groups:topics:read'], cid, 'guests');
 		});
 	});
 
 	describe('test routes', () => {
+		console.log("asdf", process.env.NODE_ENV);
 		if (process.env.NODE_ENV === 'development') {
 			it('should load debug route', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/debug/test`);
@@ -1931,13 +1933,13 @@ describe('Controllers', () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
 				assert.strictEqual(response.statusCode, 200);
 				assert(['subject', 'aliases', 'links'].every(prop => body.hasOwnProperty(prop)));
-				assert(body.subject, `acct:${username}@${nconf.get('url_parsed').host}`);
+				assert.equal(body.subject, `acct:${username}@${nconf.get('url_parsed').host}`);
 			});
 		});
 	});
 
-	after((done) => {
-		const analytics = require('../src/analytics');
-		analytics.writeData(done);
+	after(async () => {
+		const analytics = await import('../src/analytics.js');
+		await analytics.default.writeData();
 	});
 });
