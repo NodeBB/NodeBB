@@ -294,7 +294,7 @@ describe('Utility Methods', () => {
 
 	it('should return true if browser is android', (done) => {
 		const navigator = {
-			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Android/58.0.3029.96 Safari/537.36',
+			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Android /58.0.3029.96 Safari/537.36',
 		};
 		assert.equal(utils.isAndroidBrowser(navigator.userAgent), true);
 		done();
