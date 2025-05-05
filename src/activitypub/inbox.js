@@ -252,7 +252,7 @@ inbox.like = async (req) => {
 };
 
 inbox.announce = async (req) => {
-	const { actor, object, published, to, cc } = req.body;
+	let { actor, object, published, to, cc } = req.body;
 	activitypub.helpers.log(`[activitypub/inbox/announce] Parsing Announce(${object.type}) from ${actor}`);
 	let timestamp = new Date(published);
 	timestamp = timestamp.toString() !== 'Invalid Date' ? timestamp.getTime() : Date.now();
@@ -292,6 +292,12 @@ inbox.announce = async (req) => {
 			break;
 		}
 
+		case object.type === 'Create': {
+			object = object.object;
+			// falls through
+		}
+
+		// Announce(Object)
 		case activitypub._constants.acceptedPostTypes.includes(object.type): {
 			if (String(object.id).startsWith(nconf.get('url'))) { // Local object
 				const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
