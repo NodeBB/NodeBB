@@ -451,6 +451,8 @@ Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, prope
 Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) => {
 	if (!method) {
 		method = db.getSortedSetRange.bind(null, set);
+	} else if (set) {
+		method = method.bind(null, set);
 	}
 	count = count || await db.sortedSetCard(set);
 	const pageCount = Math.max(1, Math.ceil(count / perPage));
@@ -486,8 +488,6 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 			object.next = page < pageCount ? `${url}?page=${page + 1}` : null;
 			object.prev = page > 1 ? `${url}?page=${page - 1}` : null;
 		}
-	} else {
-		object.orderedItems = [];
 	}
 
 	if (paginate) {

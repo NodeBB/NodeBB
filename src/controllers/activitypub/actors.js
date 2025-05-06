@@ -156,7 +156,7 @@ Actors.topic = async function (req, res, next) {
 		res.set('ETag', digest);
 
 		// Convert pids to urls
-		if (page || collection.totalItems < meta.config.postsPerPage) {
+		if (page || collection.totalItems < perPage) {
 			collection.orderedItems = collection.orderedItems || [];
 			if (!page || page === 1) { // add OP to collection
 				collection.orderedItems.unshift(mainPid);
