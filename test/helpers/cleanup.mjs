@@ -1,5 +1,3 @@
-'use strict';
-
 let cleanupCalled = false;
 async function cleanup() {
     let breakCleanup = false;
