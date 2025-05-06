@@ -37,4 +37,5 @@ spec:
   - "test/controllers-admin.mjs"
   - "test/controllers.mjs"
   - "test/coverPhoto.mjs"
+  - "test/feeds.mjs"
 ignore: "test/files/**"

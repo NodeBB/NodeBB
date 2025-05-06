@@ -1,13 +1,14 @@
 import assert from 'assert';
 import nconf from 'nconf';
+
 import './mocks/databasemock.mjs';
-import * as request from '../src/request.js';
-import * as topics from '../src/topics.js';
-import * as categories from '../src/categories.js';
-import * as user from '../src/user.js';
-import * as meta from '../src/meta.js';
-import * as privileges from '../src/privileges.js';
-import * as helpers from './helpers.js';
+import request from '../src/request.js';
+import topics from '../src/topics/index.js';
+import categories from '../src/categories/index.js';
+import user from '../src/user/index.js';
+import meta from '../src/meta/index.js';
+import privileges from '../src/privileges/index.js';
+import helpers from './helpers/index.js';
 
 describe('feeds', () => {
 	let tid;
