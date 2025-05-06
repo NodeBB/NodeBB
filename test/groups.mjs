@@ -927,6 +927,9 @@ describe('Groups', () => {
 			}
 		});
 
+		/**
+		 * !!!flaky test!!!
+		 */
 		it('should delete group', async () => {
 			await apiGroups.delete({ uid: adminUid }, { slug: 'renamedupdategroup' });
 			const exists = await Groups.exists('renamedupdategroup');
