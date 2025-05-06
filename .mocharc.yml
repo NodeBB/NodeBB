@@ -40,4 +40,5 @@ spec:
   - "test/feeds.mjs"
   - "test/file.mjs"
   - "test/flags.mjs"
+  - "test/groups.mjs"
 ignore: "test/files/**"
