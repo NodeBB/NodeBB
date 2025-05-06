@@ -1,14 +1,12 @@
-'use strict';
+import assert from 'assert';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
+import file from '../src/file.js';
+import db from './mocks/databasemock.mjs';
 
-// For tests relating to the translator module, check translator.js
-
-const assert = require('assert');
-const path = require('path');
-const fs = require('fs');
-
-const file = require('../src/file');
-
-const db = require('./mocks/databasemock.mjs');
+// ESM equivalent of __dirname
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('i18n', () => {
 	let folders;
@@ -18,19 +16,18 @@ describe('i18n', () => {
 			this.skip();
 		}
 
-		folders = await fs.promises.readdir(path.resolve(__dirname, '../public/language'));
+		folders = await fs.readdir(path.resolve(__dirname, '../public/language'));
 		folders = folders.filter(f => f !== 'README.md');
 	});
 
 	it('should contain folders named after the language code', async () => {
-		const valid = /(?:README.md|^[a-z]{2}(?:-[A-Z]{2})?$|^[a-z]{2}(?:-x-[a-z]+)?$)/; // good luck
+		const valid = /(?:README.md|^[a-z]{2}(?:-[A-Z]{2})?$|^[a-z]{2}(?:-x-[a-z]+)?$)/;
 
 		folders.forEach((folder) => {
 			assert(valid.test(folder));
 		});
 	});
 
-	// There has to be a better way to generate tests asynchronously...
 	it('', async () => {
 		const sourcePath = path.resolve(__dirname, '../public/language/en-GB');
 		const fullPaths = await file.walk(sourcePath);
@@ -38,41 +35,38 @@ describe('i18n', () => {
 		const sourceStrings = new Map();
 
 		describe('source language file structure', () => {
-			const test = /^[a-zA-Z0-9-/]+(\.([0-9a-z]+([A-Z][0-9a-zA-Z]*)*-*\.?)+)*$/; // enhanced by chatgpt so only it knows what this does.
+			const test = /^[a-zA-Z0-9-/]+(\.([0-9a-z]+([A-Z][0-9a-zA-Z]*)*-*\.?)+)*$/;
 
 			it('should only contain valid JSON files', async () => {
 				try {
-					fullPaths.forEach((fullPath) => {
+					for (const fullPath of fullPaths) {
 						if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
-							return;
+							continue;
 						}
 
-						const hash = require(fullPath);
-						sourceStrings.set(fullPath.replace(sourcePath, ''), hash);
-					});
+						const hash = await import(fullPath, { with: { type: 'json' } });
+						sourceStrings.set(fullPath.replace(sourcePath, ''), hash.default);
+					}
 				} catch (e) {
 					assert(!e, `Invalid JSON found: ${e.message}`);
 				}
 			});
 
-			describe('should only contain lowercase or numeric language keys separated by either dashes or periods', async () => {
+			describe('should only contain lowercase or numeric language keys separated by either dashes or periods', () => {
 				describe('(regexp validation)', () => {
 					const valid = [
-						'foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet', 'foo.barBazQuux', // human generated
-						'example-name.isValid', 'kebab-case.isGood', 'camelcase.isFine', 'camelcase.with-dashes.isAlsoFine', 'single-character.is-ok', 'abc.def', // chatgpt generated
+						'foo.bar', 'foo.bar-baz', 'foo.bar.baz-quux-lorem-ipsum-dolor-sit-amet', 'foo.barBazQuux',
+						'example-name.isValid', 'kebab-case.isGood', 'camelcase.isFine', 'camelcase.with-dashes.isAlsoFine', 'single-character.is-ok', 'abc.def',
 					];
 					const invalid = [
-						// human generated
 						'foo.PascalCase', 'foo.snake_case',
 						'badger.badger_badger_badger',
 						'foo.BarBazQuux',
-
-						// chatgpt generated
-						'!notValid', // Starts with a special character
-						'with space.isInvalid', // Contains a space
-						'.startsWithPeriod.isInvalid', // Starts with a period
-						'invalid..case.isInvalid', // Consecutive periods
-						'camelCase.With-Dashes.isAlsoInvalid', // PascalCase "With" is not allowed
+						'!notValid',
+						'with space.isInvalid',
+						'.startsWithPeriod.isInvalid',
+						'invalid..case.isInvalid',
+						'camelCase.With-Dashes.isAlsoInvalid',
 					];
 
 					valid.forEach((key) => {
@@ -92,11 +86,11 @@ describe('i18n', () => {
 						return;
 					}
 
-					const hash = require(fullPath);
-					const keys = Object.keys(hash);
+					it(`keys in ${fullPath}`, async () => {
+						const hash = await import(fullPath, { with: { type: 'json' } });
+						const keys = Object.keys(hash.default);
 
-					keys.forEach((key) => {
-						it(key, () => {
+						keys.forEach((key) => {
 							assert(test.test(key), `${key} contains invalid characters`);
 						});
 					});
@@ -135,16 +129,16 @@ describe('i18n', () => {
 					fullPaths = await file.walk(translationPath);
 				});
 
-				it('should contain only valid JSON files', () => {
+				it('should contain only valid JSON files', async () => {
 					try {
-						fullPaths.forEach((fullPath) => {
+						for (const fullPath of fullPaths) {
 							if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
-								return;
+								continue;
 							}
 
-							const hash = require(fullPath);
-							strings.set(fullPath.replace(translationPath, ''), hash);
-						});
+							const hash = await import(fullPath, { with: { type: 'json' } });
+							strings.set(fullPath.replace(translationPath, ''), hash.default);
+						}
 					} catch (e) {
 						assert(!e, `Invalid JSON found: ${e.message}`);
 					}
