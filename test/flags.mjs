@@ -1,25 +1,27 @@
-'use strict';
+import assert from 'assert';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import nconf from 'nconf';
+import './mocks/databasemock.mjs';
+import helpers from './helpers.js';
+import request from '../src/request.js';
+import Flags from '../src/flags.js';
+import Categories from '../src/categories/index.js';
+import Topics from '../src/topics/index.js';
+import Posts from '../src/posts/index.js';
+import User from '../src/user/index.js';
+import Groups from '../src/groups.js';
+import Meta from '../src/meta/index.js';
+import Privileges from '../src/privileges/index.js';
+import plugins from '../src/plugins.js';
+import utils from '../src/utils.js';
+import api from '../src/api/index.js';
 
-const assert = require('assert');
-const nconf = require('nconf');
-const util = require('util');
+// ESM equivalent of __dirname
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const sleep = util.promisify(setTimeout);
-
-const db = require('./mocks/databasemock.mjs');
-const helpers = require('./helpers');
-const request = require('../src/request');
-const Flags = require('../src/flags');
-const Categories = require('../src/categories');
-const Topics = require('../src/topics');
-const Posts = require('../src/posts');
-const User = require('../src/user');
-const Groups = require('../src/groups');
-const Meta = require('../src/meta');
-const Privileges = require('../src/privileges');
-const plugins = require('../src/plugins');
-const utils = require('../src/utils');
-const api = require('../src/api');
+// Promise-based sleep function
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Flags', () => {
 	let uid1;
@@ -29,8 +31,9 @@ describe('Flags', () => {
 	let jar;
 	let csrfToken;
 	let category;
+
 	before(async () => {
-		const dummyEmailerHook = async (data) => {};
+		const dummyEmailerHook = async (data) => { };
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('flags-test', {
 			hook: 'static:email.send',
@@ -54,11 +57,14 @@ describe('Flags', () => {
 		});
 
 		uid3 = await User.create({
-			username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
+			username: 'unprivileged',
+			password: 'abcdef',
+			email: 'd@e.com',
 		});
 
 		moderatorUid = await User.create({
-			username: 'moderator', password: 'abcdef',
+			username: 'moderator',
+			password: 'abcdef',
 		});
 		await Privileges.categories.give(['moderate'], category.cid, [moderatorUid]);
 
@@ -72,40 +78,30 @@ describe('Flags', () => {
 	});
 
 	describe('.create()', () => {
-		it('should create a flag and return its data', (done) => {
-			Flags.create('post', 1, 1, 'Test flag', (err, flagData) => {
-				assert.ifError(err);
-				const compare = {
-					flagId: 1,
-					targetId: 1,
-					type: 'post',
-					state: 'open',
-					target_readable: 'Post 1',
-				};
-				assert(flagData);
-				for (const key of Object.keys(compare)) {
-					assert.ok(flagData[key], `undefined key ${key}`);
-					assert.equal(flagData[key], compare[key]);
-				}
-
-				done();
-			});
+		it('should create a flag and return its data', async () => {
+			const flagData = await Flags.create('post', 1, 1, 'Test flag');
+			const compare = {
+				flagId: 1,
+				targetId: 1,
+				type: 'post',
+				state: 'open',
+				target_readable: 'Post 1',
+			};
+			assert(flagData);
+			for (const key of Object.keys(compare)) {
+				assert.ok(flagData[key], `undefined key ${key}`);
+				assert.equal(flagData[key], compare[key]);
+			}
 		});
 
-		it('should add the flag to the byCid zset for category 1 if it is of type post', (done) => {
-			db.isSortedSetMember(`flags:byCid:${1}`, 1, (err, isMember) => {
-				assert.ifError(err);
-				assert.ok(isMember);
-				done();
-			});
+		it('should add the flag to the byCid zset for category 1 if it is of type post', async () => {
+			const isMember = await db.isSortedSetMember(`flags:byCid:${1}`, 1);
+			assert.ok(isMember);
 		});
 
-		it('should add the flag to the byPid zset for pid 1 if it is of type post', (done) => {
-			db.isSortedSetMember(`flags:byPid:${1}`, 1, (err, isMember) => {
-				assert.ifError(err);
-				assert.ok(isMember);
-				done();
-			});
+		it('should add the flag to the byPid zset for pid 1 if it is of type post', async () => {
+			const isMember = await db.isSortedSetMember(`flags:byPid:${1}`, 1);
+			assert.ok(isMember);
 		});
 	});
 
@@ -125,20 +121,17 @@ describe('Flags', () => {
 		});
 
 		after(async () => {
-			Flags.purge([flagId]);
+			await Flags.purge([flagId]);
 		});
 
 		it('should add a report to an existing flag', async () => {
 			await Flags.addReport(flagId, 'post', postData.pid, uid3, utils.generateUUID(), Date.now());
-
 			const reports = await db.getSortedSetMembers(`flag:${flagId}:reports`);
 			assert.strictEqual(reports.length, 2);
 		});
 
 		it('should add an additional report even if same user calls it again', async () => {
-			// This isn't exposed to the end user, but is possible via direct method call
 			await Flags.addReport(flagId, 'post', postData.pid, uid3, utils.generateUUID(), Date.now());
-
 			const reports = await db.getSortedSetMembers(`flag:${flagId}:reports`);
 			assert.strictEqual(reports.length, 3);
 		});
@@ -160,14 +153,13 @@ describe('Flags', () => {
 		});
 
 		after(async () => {
-			Flags.purge([flagId]);
+			await Flags.purge([flagId]);
 		});
 
 		it('should remove a report from an existing flag', async () => {
 			await Flags.create('post', postData.pid, uid3, utils.generateUUID());
 			await Flags.rescindReport('post', postData.pid, uid3);
 			const reports = await Flags.getReports(flagId);
-
 			assert.strictEqual(reports.length, 1);
 			assert(reports.every(({ reporter }) => reporter.uid !== uid3));
 		});
@@ -176,67 +168,50 @@ describe('Flags', () => {
 			await Flags.rescindReport('post', postData.pid, adminUid);
 			const reports = await Flags.getReports(flagId);
 			const { state } = await Flags.get(flagId);
-
 			assert.strictEqual(reports.length, 0);
 			assert.strictEqual(state, 'resolved');
 		});
 	});
 
 	describe('.exists()', () => {
-		it('should return Boolean True if a flag matching the flag hash already exists', (done) => {
-			Flags.exists('post', 1, 1, (err, exists) => {
-				assert.ifError(err);
-				assert.strictEqual(true, exists);
-				done();
-			});
+		it('should return Boolean True if a flag matching the flag hash already exists', async () => {
+			const exists = await Flags.exists('post', 1, 1);
+			assert.strictEqual(true, exists);
 		});
 
-		it('should return Boolean False if a flag matching the flag hash does not already exists', (done) => {
-			Flags.exists('post', 1, 2, (err, exists) => {
-				assert.ifError(err);
-				assert.strictEqual(false, exists);
-				done();
-			});
+		it('should return Boolean False if a flag matching the flag hash does not already exists', async () => {
+			const exists = await Flags.exists('post', 1, 2);
+			assert.strictEqual(false, exists);
 		});
 	});
 
 	describe('.targetExists()', () => {
-		it('should return Boolean True if the targeted element exists', (done) => {
-			Flags.targetExists('post', 1, (err, exists) => {
-				assert.ifError(err);
-				assert.strictEqual(true, exists);
-				done();
-			});
+		it('should return Boolean True if the targeted element exists', async () => {
+			const exists = await Flags.targetExists('post', 1);
+			assert.strictEqual(true, exists);
 		});
 
-		it('should return Boolean False if the targeted element does not exist', (done) => {
-			Flags.targetExists('post', 15, (err, exists) => {
-				assert.ifError(err);
-				assert.strictEqual(false, exists);
-				done();
-			});
+		it('should return Boolean False if the targeted element does not exist', async () => {
+			const exists = await Flags.targetExists('post', 15);
+			assert.strictEqual(false, exists);
 		});
 	});
 
 	describe('.get()', () => {
-		it('should retrieve and display a flag\'s data', (done) => {
-			Flags.get(1, (err, flagData) => {
-				assert.ifError(err);
-				const compare = {
-					flagId: 1,
-					targetId: 1,
-					type: 'post',
-					state: 'open',
-					target_readable: 'Post 1',
-				};
-				assert(flagData);
-				for (const key of Object.keys(compare)) {
-					assert.ok(flagData[key], `undefined key ${key}`);
-					assert.equal(flagData[key], compare[key]);
-				}
-
-				done();
-			});
+		it('should retrieve and display a flag\'s data', async () => {
+			const flagData = await Flags.get(1);
+			const compare = {
+				flagId: 1,
+				targetId: 1,
+				type: 'post',
+				state: 'open',
+				target_readable: 'Post 1',
+			};
+			assert(flagData);
+			for (const key of Object.keys(compare)) {
+				assert.ok(flagData[key], `undefined key ${key}`);
+				assert.equal(flagData[key], compare[key]);
+			}
 		});
 
 		it('should show user history for admins', async () => {
@@ -247,10 +222,8 @@ describe('Flags', () => {
 					'x-csrf-token': csrfToken,
 				},
 			});
-
 			assert(flagData.history);
 			assert(Array.isArray(flagData.history));
-
 			await Groups.leave('administrators', moderatorUid);
 		});
 
@@ -262,156 +235,128 @@ describe('Flags', () => {
 					'x-csrf-token': csrfToken,
 				},
 			});
-
 			assert(flagData.history);
 			assert(Array.isArray(flagData.history));
-
 			await Groups.leave('Global Moderators', moderatorUid);
 		});
 	});
 
 	describe('.list()', () => {
-		it('should show a list of flags (with one item)', (done) => {
-			Flags.list({
+		it('should show a list of flags (with one item)', async () => {
+			const payload = await Flags.list({
 				filters: {},
 				uid: 1,
-			}, (err, payload) => {
-				assert.ifError(err);
+			});
+			assert.ok(payload.hasOwnProperty('flags'));
+			assert.ok(payload.hasOwnProperty('page'));
+			assert.ok(payload.hasOwnProperty('pageCount'));
+			assert.ok(Array.isArray(payload.flags));
+			assert.equal(payload.flags.length, 1);
+
+			const flagData = await Flags.get(payload.flags[0].flagId);
+			assert.equal(payload.flags[0].flagId, flagData.flagId);
+			assert.equal(payload.flags[0].description, flagData.description);
+		});
+
+		describe('(with filters)', () => {
+			it('should return a filtered list of flags if said filters are passed in', async () => {
+				const payload = await Flags.list({
+					filters: {
+						state: 'open',
+					},
+					uid: 1,
+				});
 				assert.ok(payload.hasOwnProperty('flags'));
 				assert.ok(payload.hasOwnProperty('page'));
 				assert.ok(payload.hasOwnProperty('pageCount'));
 				assert.ok(Array.isArray(payload.flags));
-				assert.equal(payload.flags.length, 1);
-
-				Flags.get(payload.flags[0].flagId, (err, flagData) => {
-					assert.ifError(err);
-					assert.equal(payload.flags[0].flagId, flagData.flagId);
-					assert.equal(payload.flags[0].description, flagData.description);
-					done();
-				});
-			});
-		});
-
-		describe('(with filters)', () => {
-			it('should return a filtered list of flags if said filters are passed in', (done) => {
-				Flags.list({
-					filters: {
-						state: 'open',
-					},
-					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(1, parseInt(payload.flags[0].flagId, 10));
-					done();
-				});
+				assert.strictEqual(1, parseInt(payload.flags[0].flagId, 10));
 			});
 
-			it('should return no flags if a filter with no matching flags is used', (done) => {
-				Flags.list({
+			it('should return no flags if a filter with no matching flags is used', async () => {
+				const payload = await Flags.list({
 					filters: {
 						state: 'rejected',
 					},
 					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(0, payload.flags.length);
-					done();
 				});
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.strictEqual(0, payload.flags.length);
 			});
 
-			it('should return a flag when filtered by cid 1', (done) => {
-				Flags.list({
+			it('should return a flag when filtered by cid 1', async () => {
+				const payload = await Flags.list({
 					filters: {
 						cid: 1,
 					},
 					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(1, payload.flags.length);
-					done();
 				});
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.strictEqual(1, payload.flags.length);
 			});
 
-			it('shouldn\'t return a flag when filtered by cid 2', (done) => {
-				Flags.list({
+			it('shouldn\'t return a flag when filtered by cid 2', async () => {
+				const payload = await Flags.list({
 					filters: {
 						cid: 2,
 					},
 					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(0, payload.flags.length);
-					done();
 				});
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.strictEqual(0, payload.flags.length);
 			});
 
-			it('should return a flag when filtered by both cid 1 and 2', (done) => {
-				Flags.list({
+			it('should return a flag when filtered by both cid 1 and 2', async () => {
+				const payload = await Flags.list({
 					filters: {
 						cid: [1, 2],
 					},
 					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(1, payload.flags.length);
-					done();
 				});
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.strictEqual(1, payload.flags.length);
 			});
 
-			it('should return one flag if filtered by both cid 1 and 2 and open state', (done) => {
-				Flags.list({
+			it('should return one flag if filtered by both cid 1 and 2 and open state', async () => {
+				const payload = await Flags.list({
 					filters: {
 						cid: [1, 2],
 						state: 'open',
 					},
 					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(1, payload.flags.length);
-					done();
 				});
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.strictEqual(1, payload.flags.length);
 			});
 
-			it('should return no flag if filtered by both cid 1 and 2 and non-open state', (done) => {
-				Flags.list({
+			it('should return no flag if filtered by both cid 1 and 2 and non-open state', async () => {
+				const payload = await Flags.list({
 					filters: {
 						cid: [1, 2],
 						state: 'resolved',
 					},
 					uid: 1,
-				}, (err, payload) => {
-					assert.ifError(err);
-					assert.ok(payload.hasOwnProperty('flags'));
-					assert.ok(payload.hasOwnProperty('page'));
-					assert.ok(payload.hasOwnProperty('pageCount'));
-					assert.ok(Array.isArray(payload.flags));
-					assert.strictEqual(0, payload.flags.length);
-					done();
 				});
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.strictEqual(0, payload.flags.length);
 			});
 		});
 
@@ -431,12 +376,10 @@ describe('Flags', () => {
 				const payload = await Flags.list({
 					uid: adminUid,
 				});
-
 				assert(payload.flags.every((cur, idx) => {
 					if (idx === payload.flags.length - 1) {
 						return true;
 					}
-
 					const next = payload.flags[idx + 1];
 					return parseInt(cur.datetime, 10) > parseInt(next.datetime, 10);
 				}));
@@ -447,12 +390,10 @@ describe('Flags', () => {
 					uid: adminUid,
 					sort: 'oldest',
 				});
-
 				assert(payload.flags.every((cur, idx) => {
 					if (idx === payload.flags.length - 1) {
 						return true;
 					}
-
 					const next = payload.flags[idx + 1];
 					return parseInt(cur.datetime, 10) < parseInt(next.datetime, 10);
 				}));
@@ -463,12 +404,10 @@ describe('Flags', () => {
 					uid: adminUid,
 					sort: 'reports',
 				});
-
 				assert(payload.flags.every((cur, idx) => {
 					if (idx === payload.flags.length - 1) {
 						return true;
 					}
-
 					const next = payload.flags[idx + 1];
 					return parseInt(cur.heat, 10) >= parseInt(next.heat, 10);
 				}));
@@ -477,44 +416,28 @@ describe('Flags', () => {
 	});
 
 	describe('.update()', () => {
-		it('should alter a flag\'s various attributes and persist them to the database', (done) => {
-			Flags.update(1, adminUid, {
+		it('should alter a flag\'s various attributes and persist them to the database', async () => {
+			await Flags.update(1, adminUid, {
 				state: 'wip',
 				assignee: adminUid,
-			}, (err) => {
-				assert.ifError(err);
-				db.getObjectFields('flag:1', ['state', 'assignee'], (err, data) => {
-					if (err) {
-						throw err;
-					}
-
-					assert.strictEqual('wip', data.state);
-					assert.ok(!isNaN(parseInt(data.assignee, 10)));
-					assert.strictEqual(adminUid, parseInt(data.assignee, 10));
-					done();
-				});
 			});
+			const data = await db.getObjectFields('flag:1', ['state', 'assignee']);
+			assert.strictEqual('wip', data.state);
+			assert.ok(!isNaN(parseInt(data.assignee, 10)));
+			assert.strictEqual(adminUid, parseInt(data.assignee, 10));
 		});
 
-		it('should persist to the flag\'s history', (done) => {
-			Flags.getHistory(1, (err, history) => {
-				if (err) {
-					throw err;
+		it('should persist to the flag\'s history', async () => {
+			const history = await Flags.getHistory(1);
+			history.forEach((change) => {
+				switch (change.attribute) {
+					case 'state':
+						assert.strictEqual('[[flags:state-wip]]', change.value);
+						break;
+					case 'assignee':
+						assert.strictEqual(1, change.value);
+						break;
 				}
-
-				history.forEach((change) => {
-					switch (change.attribute) {
-						case 'state':
-							assert.strictEqual('[[flags:state-wip]]', change.value);
-							break;
-
-						case 'assignee':
-							assert.strictEqual(1, change.value);
-							break;
-					}
-				});
-
-				done();
 			});
 		});
 
@@ -534,7 +457,6 @@ describe('Flags', () => {
 
 		it('should allow assignment if user is a global mod and do nothing otherwise', async () => {
 			await Groups.join('Global Moderators', uid3);
-
 			await Flags.update(1, uid3, {
 				assignee: uid3,
 			});
@@ -546,13 +468,11 @@ describe('Flags', () => {
 			});
 			assignee = await db.getObjectField('flag:1', 'assignee');
 			assert.strictEqual(uid3, parseInt(assignee, 10));
-
 			await Groups.leave('Global Moderators', uid3);
 		});
 
 		it('should allow assignment if user is a mod of the category, do nothing otherwise', async () => {
 			await Groups.join(`cid:${category.cid}:privileges:moderate`, uid3);
-
 			await Flags.update(1, uid3, {
 				assignee: uid3,
 			});
@@ -564,7 +484,6 @@ describe('Flags', () => {
 			});
 			assignee = await db.getObjectField('flag:1', 'assignee');
 			assert.strictEqual(uid3, parseInt(assignee, 10));
-
 			await Groups.leave(`cid:${category.cid}:privileges:moderate`, uid3);
 		});
 
@@ -572,7 +491,6 @@ describe('Flags', () => {
 			await Flags.update(1, adminUid, {
 				state: 'hocus pocus',
 			});
-
 			const state = await db.getObjectField('flag:1', 'state');
 			assert.strictEqual('wip', state);
 		});
@@ -580,6 +498,7 @@ describe('Flags', () => {
 		describe('resolve/reject', () => {
 			let result;
 			let flagObj;
+
 			beforeEach(async () => {
 				result = await Topics.post({
 					cid: category.cid,
@@ -594,11 +513,9 @@ describe('Flags', () => {
 			it('should rescind notification if flag is resolved', async () => {
 				let userNotifs = await User.notifications.getAll(adminUid);
 				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
-
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'resolved',
 				});
-
 				userNotifs = await User.notifications.getAll(adminUid);
 				assert(!userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 			});
@@ -606,132 +523,105 @@ describe('Flags', () => {
 			it('should rescind notification if flag is rejected', async () => {
 				let userNotifs = await User.notifications.getAll(adminUid);
 				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
-
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'rejected',
 				});
-
 				userNotifs = await User.notifications.getAll(adminUid);
 				assert(!userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 			});
 
 			it('should do nothing if flag is resolved but ACP action is not "rescind"', async () => {
 				Meta.config['flags:actionOnResolve'] = '';
-
 				let userNotifs = await User.notifications.getAll(adminUid);
 				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
-
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'resolved',
 				});
-
 				userNotifs = await User.notifications.getAll(adminUid);
 				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
-
 				delete Meta.config['flags:actionOnResolve'];
 			});
 
 			it('should do nothing if flag is rejected but ACP action is not "rescind"', async () => {
 				Meta.config['flags:actionOnReject'] = '';
-
 				let userNotifs = await User.notifications.getAll(adminUid);
 				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
-
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'rejected',
 				});
-
 				userNotifs = await User.notifications.getAll(adminUid);
 				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
-
 				delete Meta.config['flags:actionOnReject'];
 			});
 		});
 	});
 
 	describe('.getTarget()', () => {
-		it('should return a post\'s data if queried with type "post"', (done) => {
-			Flags.getTarget('post', 1, 1, (err, data) => {
-				assert.ifError(err);
-				const compare = {
-					uid: 1,
-					pid: 1,
-					content: 'This is flaggable content',
-				};
-
-				for (const key of Object.keys(compare)) {
-					assert.ok(data[key]);
-					assert.equal(data[key], compare[key]);
-				}
-
-				done();
-			});
+		it('should return a post\'s data if queried with type "post"', async () => {
+			const data = await Flags.getTarget('post', 1, 1);
+			const compare = {
+				uid: 1,
+				pid: 1,
+				content: 'This is flaggable content',
+			};
+			for (const key of Object.keys(compare)) {
+				assert.ok(data[key]);
+				assert.equal(data[key], compare[key]);
+			}
 		});
 
-		it('should return a user\'s data if queried with type "user"', (done) => {
-			Flags.getTarget('user', 1, 1, (err, data) => {
-				assert.ifError(err);
-				const compare = {
-					uid: 1,
-					username: 'testUser',
-					email: 'b@c.com',
-				};
-
-				for (const key of Object.keys(compare)) {
-					assert.ok(data[key]);
-					assert.equal(data[key], compare[key]);
-				}
-
-				done();
-			});
+		it('should return a user\'s data if queried with type "user"', async () => {
+			const data = await Flags.getTarget('user', 1, 1);
+			const compare = {
+				uid: 1,
+				username: 'testUser',
+				email: 'b@c.com',
+			};
+			for (const key of Object.keys(compare)) {
+				assert.ok(data[key]);
+				assert.equal(data[key], compare[key]);
+			}
 		});
 
-		it('should return a plain object with no properties if the target no longer exists', (done) => {
-			Flags.getTarget('user', 15, 1, (err, data) => {
-				assert.ifError(err);
-				assert.strictEqual(0, Object.keys(data).length);
-				done();
-			});
+		it('should return a plain object with no properties if the target no longer exists', async () => {
+			const data = await Flags.getTarget('user', 15, 1);
+			assert.strictEqual(0, Object.keys(data).length);
 		});
 	});
 
 	describe('.validate()', () => {
-		it('should error out if type is post and post is deleted', (done) => {
-			Posts.delete(1, 1, (err) => {
-				if (err) {
-					throw err;
-				}
-
-				Flags.validate({
+		it('should error out if type is post and post is deleted', async () => {
+			await Posts.delete(1, 1);
+			try {
+				await Flags.validate({
 					type: 'post',
 					id: 1,
 					uid: 1,
-				}, (err) => {
-					assert.ok(err);
-					assert.strictEqual('[[error:post-deleted]]', err.message);
-					Posts.restore(1, 1, done);
 				});
-			});
+				assert.fail('Expected an error');
+			} catch (err) {
+				assert.strictEqual('[[error:post-deleted]]', err.message);
+			}
+			await Posts.restore(1, 1);
 		});
 
-		it('should not pass validation if flag threshold is set and user rep does not meet it', (done) => {
-			Meta.configs.set('min:rep:flag', '50', (err) => {
-				assert.ifError(err);
-
-				Flags.validate({
+		it('should not pass validation if flag threshold is set and user rep does not meet it', async () => {
+			await Meta.configs.set('min:rep:flag', '50');
+			try {
+				await Flags.validate({
 					type: 'post',
 					id: 1,
 					uid: 3,
-				}, (err) => {
-					assert.ok(err);
-					assert.strictEqual('[[error:not-enough-reputation-to-flag, 50]]', err.message);
-					Meta.configs.set('min:rep:flag', 0, done);
 				});
-			});
+				assert.fail('Expected an error');
+			} catch (err) {
+				assert.strictEqual('[[error:not-enough-reputation-to-flag, 50]]', err.message);
+			}
+			await Meta.configs.set('min:rep:flag', 0);
 		});
 
 		it('should not error if user blocked target', async () => {
-			const apiFlags = require('../src/api/flags');
+			const apiFlags = await import('../src/api/flags.js');
 			const reporterUid = await User.create({ username: 'reporter' });
 			const reporteeUid = await User.create({ username: 'reportee' });
 			await User.blocks.add(reporteeUid, reporterUid);
@@ -741,51 +631,38 @@ describe('Flags', () => {
 				title: 'Another topic',
 				content: 'This is flaggable content',
 			});
-			await apiFlags.create({ uid: reporterUid }, {
+			await apiFlags.default.create({ uid: reporterUid }, {
 				type: 'post',
 				id: data.postData.pid,
 				reason: 'spam',
 			});
 		});
 
-		it('should send back error if reporter does not exist', (done) => {
-			Flags.validate({ uid: 123123123, id: 1, type: 'post' }, (err) => {
+		it('should send back error if reporter does not exist', async () => {
+			try {
+				await Flags.validate({ uid: 123123123, id: 1, type: 'post' });
+				assert.fail('Expected an error');
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-user]]');
-				done();
-			});
+			}
 		});
 	});
 
 	describe('.appendNote()', () => {
-		it('should add a note to a flag', (done) => {
-			Flags.appendNote(1, 1, 'this is my note', (err) => {
-				assert.ifError(err);
-
-				db.getSortedSetRange('flag:1:notes', 0, -1, (err, notes) => {
-					if (err) {
-						throw err;
-					}
-
-					assert.strictEqual('[1,"this is my note"]', notes[0]);
-					setTimeout(done, 10);
-				});
-			});
+		it('should add a note to a flag', async () => {
+			await Flags.appendNote(1, 1, 'this is my note');
+			const notes = await db.getSortedSetRange('flag:1:notes', 0, -1);
+			assert.strictEqual('[1,"this is my note"]', notes[0]);
+			await sleep(10); // Ensure any async operations complete
 		});
 
-		it('should be a JSON string', (done) => {
-			db.getSortedSetRange('flag:1:notes', 0, -1, (err, notes) => {
-				if (err) {
-					throw err;
-				}
-
-				try {
-					JSON.parse(notes[0]);
-				} catch (e) {
-					assert.ifError(e);
-				}
-
-				done();
-			});
+		it('should be a JSON string', async () => {
+			const notes = await db.getSortedSetRange('flag:1:notes', 0, -1);
+			try {
+				JSON.parse(notes[0]);
+			} catch (e) {
+				assert.ifError(e);
+			}
 		});
 
 		it('should insert a note in the past if a datetime is passed in', async () => {
@@ -796,74 +673,50 @@ describe('Flags', () => {
 	});
 
 	describe('.getNotes()', () => {
-		before((done) => {
-			// Add a second note
-			Flags.appendNote(1, 1, 'this is the second note', done);
+		before(async () => {
+			await Flags.appendNote(1, 1, 'this is the second note');
 		});
 
-		it('return should match a predefined spec', (done) => {
-			Flags.getNotes(1, (err, notes) => {
-				assert.ifError(err);
-				const compare = {
-					uid: 1,
-					content: 'this is my note',
-				};
-
-				const data = notes[1];
-				for (const key of Object.keys(compare)) {
-					assert.ok(data[key]);
-					assert.strictEqual(data[key], compare[key]);
-				}
-
-				done();
-			});
+		it('return should match a predefined spec', async () => {
+			const notes = await Flags.getNotes(1);
+			const compare = {
+				uid: 1,
+				content: 'this is my note',
+			};
+			const data = notes[1];
+			for (const key of Object.keys(compare)) {
+				assert.ok(data[key]);
+				assert.strictEqual(data[key], compare[key]);
+			}
 		});
 
-		it('should retrieve a list of notes, from newest to oldest', (done) => {
-			Flags.getNotes(1, (err, notes) => {
-				assert.ifError(err);
-				assert(notes[0].datetime > notes[1].datetime, `${notes[0].datetime}-${notes[1].datetime}`);
-				assert.strictEqual('this is the second note', notes[0].content);
-				done();
-			});
+		it('should retrieve a list of notes, from newest to oldest', async () => {
+			const notes = await Flags.getNotes(1);
+			assert(notes[0].datetime > notes[1].datetime, `${notes[0].datetime}-${notes[1].datetime}`);
+			assert.strictEqual('this is the second note', notes[0].content);
 		});
 	});
 
 	describe('.appendHistory()', () => {
 		let entries;
-		before((done) => {
-			db.sortedSetCard('flag:1:history', (err, count) => {
-				entries = count;
-				done(err);
-			});
+
+		before(async () => {
+			entries = await db.sortedSetCard('flag:1:history');
 		});
 
-		it('should add a new entry into a flag\'s history', (done) => {
-			Flags.appendHistory(1, 1, {
+		it('should add a new entry into a flag\'s history', async () => {
+			await Flags.appendHistory(1, 1, {
 				state: 'rejected',
-			}, (err) => {
-				assert.ifError(err);
-
-				Flags.getHistory(1, (err, history) => {
-					if (err) {
-						throw err;
-					}
-
-					// 1 for the new event appended, 2 for username/email change
-					assert.strictEqual(entries + 3, history.length);
-					done();
-				});
 			});
+			const history = await Flags.getHistory(1);
+			assert.strictEqual(entries + 3, history.length);
 		});
 	});
 
 	describe('.getHistory()', () => {
-		it('should retrieve a flag\'s history', (done) => {
-			Flags.getHistory(1, (err, history) => {
-				assert.ifError(err);
-				assert.strictEqual(history[0].fields.state, '[[flags:state-rejected]]');
-				done();
-			});
+		it('should retrieve a flag\'s history', async () => {
+			const history = await Flags.getHistory(1);
+			assert.strictEqual(history[0].fields.state, '[[flags:state-rejected]]');
 		});
 	});
 
@@ -872,11 +725,11 @@ describe('Flags', () => {
 		let tid;
 		let jar;
 		let csrfToken;
+
 		before(async () => {
 			const login = await helpers.loginUser('testUser2', 'abcdef');
 			jar = login.jar;
 			csrfToken = login.csrf_token;
-
 			const result = await Topics.post({
 				cid: 1,
 				uid: 1,
@@ -900,7 +753,6 @@ describe('Flags', () => {
 						reason: 'foobar',
 					},
 				});
-
 				const exists = await Flags.exists('post', pid, 2);
 				assert(exists);
 			});
@@ -911,7 +763,6 @@ describe('Flags', () => {
 					uid: 1,
 					content: 'This is flaggable content',
 				});
-
 				const { body } = await request.post(`${nconf.get('url')}/api/v3/flags`, {
 					jar,
 					headers: {
@@ -923,9 +774,8 @@ describe('Flags', () => {
 						reason: '"<script>alert(\'ok\');</script>',
 					},
 				});
-
 				const flagData = await Flags.get(body.response.flagId);
-				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
+				assert.strictEqual(flagData.reports[0].value, '"<script>alert('ok');</script>');
 			});
 
 			it('should escape filters', async () => {
@@ -935,7 +785,6 @@ describe('Flags', () => {
 
 			it('should not allow flagging post in private category', async () => {
 				const category = await Categories.create({ name: 'private category' });
-
 				await Privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users');
 				await Groups.join('private category', uid3);
 				const result = await Topics.post({
@@ -947,7 +796,6 @@ describe('Flags', () => {
 				const login = await helpers.loginUser('unprivileged', 'abcdef');
 				const jar3 = login.jar;
 				const csrfToken = await helpers.getCsrfToken(jar3);
-
 				const { response, body } = await request.post(`${nconf.get('url')}/api/v3/flags`, {
 					jar: jar3,
 					headers: {
@@ -960,10 +808,7 @@ describe('Flags', () => {
 					},
 				});
 				assert.strictEqual(response.statusCode, 403);
-
-				// Handle dev mode test
 				delete body.stack;
-
 				assert.deepStrictEqual(body, {
 					status: {
 						code: 'forbidden',
@@ -985,7 +830,6 @@ describe('Flags', () => {
 						state: 'wip',
 					},
 				});
-
 				const { history } = body.response;
 				assert(Array.isArray(history));
 				assert(history[0].fields.hasOwnProperty('state'));
@@ -1001,7 +845,6 @@ describe('Flags', () => {
 						'x-csrf-token': csrfToken,
 					},
 				});
-
 				assert.strictEqual(response.statusCode, 200);
 			});
 		});
@@ -1023,7 +866,6 @@ describe('Flags', () => {
 				assert(Array.isArray(response.notes));
 				assert.strictEqual('lorem ipsum dolor sit amet', response.notes[0].content);
 				assert.strictEqual(2, response.notes[0].uid);
-
 				assert(response.hasOwnProperty('history'));
 				assert(Array.isArray(response.history));
 				assert.strictEqual(1, Object.keys(response.history[response.history.length - 1].fields).length);
@@ -1051,7 +893,6 @@ describe('Flags', () => {
 			let jar;
 			let csrf_token;
 			let requests;
-
 			let flaggerUid;
 			let flagId;
 
@@ -1060,7 +901,6 @@ describe('Flags', () => {
 			before(async () => {
 				uid = await User.create({ username: 'flags-access-control', password: 'abcdef' });
 				({ jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef'));
-				console.log('cs', csrfToken);
 				flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
 			});
 
@@ -1125,8 +965,6 @@ describe('Flags', () => {
 					opts = { ...opts };
 					delete opts.jar;
 					delete opts.headers;
-
-					// eslint-disable-next-line no-await-in-loop
 					const { response } = await request[opts.method](opts.uri, opts);
 					const { statusCode } = response;
 					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
@@ -1135,7 +973,6 @@ describe('Flags', () => {
 
 			it('should not allow access to privileged flag endpoints to regular users', async () => {
 				for (const opts of requests) {
-					// eslint-disable-next-line no-await-in-loop
 					const { response } = await request[opts.method](opts.uri, opts);
 					const { statusCode } = response;
 					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
@@ -1144,9 +981,7 @@ describe('Flags', () => {
 
 			it('should allow access to privileged endpoints to administrators', async () => {
 				await Groups.join('administrators', uid);
-
 				for (const opts of requests) {
-					// eslint-disable-next-line no-await-in-loop
 					const { response } = await request[opts.method](opts.uri, opts);
 					const { statusCode } = response;
 					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
@@ -1155,9 +990,7 @@ describe('Flags', () => {
 
 			it('should allow access to privileged endpoints to global moderators', async () => {
 				await Groups.join('Global Moderators', uid);
-
 				for (const opts of requests) {
-					// eslint-disable-next-line no-await-in-loop
 					const { response } = await request[opts.method](opts.uri, opts);
 					const { statusCode } = response;
 					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
@@ -1166,9 +999,7 @@ describe('Flags', () => {
 
 			it('should allow access to privileged endpoints to moderators if the flag target is a post in a cid they moderate', async () => {
 				await Privileges.categories.give(['moderate'], 1, [uid]);
-
 				for (const opts of requests) {
-					// eslint-disable-next-line no-await-in-loop
 					const { response } = await request[opts.method](opts.uri, opts);
 					const { statusCode } = response;
 					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
@@ -1176,14 +1007,11 @@ describe('Flags', () => {
 			});
 
 			it('should NOT allow access to privileged endpoints to moderators if the flag target is a post in a cid they DO NOT moderate', async () => {
-				// This is a new category the user will moderate, but the flagged post is in a different category
 				const { cid } = await Categories.create({
 					name: utils.generateUUID(),
 				});
 				await Privileges.categories.give(['moderate'], cid, [uid]);
-
 				for (const opts of requests) {
-					// eslint-disable-next-line no-await-in-loop
 					const { response } = await request[opts.method](opts.uri, opts);
 					const { statusCode } = response;
 					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
