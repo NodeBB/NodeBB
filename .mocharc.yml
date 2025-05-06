@@ -3,6 +3,8 @@ timeout: 25000
 exit: true
 bail: true
 spec:
+  - "test/helpers/defer-logger.mjs"
+  - "test/helpers/cleanup.mjs"
   - "test/databasemock.mjs"
   - "test/database/sorted.mjs"
   - "test/database/sets.mjs"

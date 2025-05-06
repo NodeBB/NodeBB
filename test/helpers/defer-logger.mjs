@@ -1,7 +1,5 @@
-'use strict';
-
-const winston = require('winston');
-const Transport = require('winston-transport');
+import winston from 'winston';
+import Transport from 'winston-transport';
 
 const winstonLogged = [];
 
