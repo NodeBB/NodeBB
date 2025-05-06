@@ -39,4 +39,5 @@ spec:
   - "test/coverPhoto.mjs"
   - "test/feeds.mjs"
   - "test/file.mjs"
+  - "test/flags.mjs"
 ignore: "test/files/**"

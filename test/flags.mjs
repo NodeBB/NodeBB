@@ -1,24 +1,20 @@
 import assert from 'assert';
-import { fileURLToPath } from 'url';
-import path from 'path';
 import nconf from 'nconf';
-import './mocks/databasemock.mjs';
-import helpers from './helpers.js';
+
+import db from './mocks/databasemock.mjs';
+import helpers from './helpers/index.js';
 import request from '../src/request.js';
 import Flags from '../src/flags.js';
 import Categories from '../src/categories/index.js';
 import Topics from '../src/topics/index.js';
 import Posts from '../src/posts/index.js';
 import User from '../src/user/index.js';
-import Groups from '../src/groups.js';
+import Groups from '../src/groups/index.js';
 import Meta from '../src/meta/index.js';
 import Privileges from '../src/privileges/index.js';
-import plugins from '../src/plugins.js';
+import plugins from '../src/plugins/index.js';
 import utils from '../src/utils.js';
 import api from '../src/api/index.js';
-
-// ESM equivalent of __dirname
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Promise-based sleep function
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -775,7 +771,7 @@ describe('Flags', () => {
 					},
 				});
 				const flagData = await Flags.get(body.response.flagId);
-				assert.strictEqual(flagData.reports[0].value, '"<script>alert('ok');</script>');
+				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
 			});
 
 			it('should escape filters', async () => {
