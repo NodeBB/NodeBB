@@ -476,9 +476,7 @@ describe('Categories', () => {
 
 		it('should get privilege settings', async () => {
 			const data = await apiCategories.getPrivileges({ uid: adminUid }, categoryObj.cid);
-			assert(data.labels);
-			assert(data.labels.users);
-			assert(data.labels.groups);
+			assert(data.labelData);
 			assert(data.keys.users);
 			assert(data.keys.groups);
 			assert(data.users);
