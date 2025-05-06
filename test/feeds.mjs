@@ -1,21 +1,19 @@
-'use strict';
-
-const assert = require('assert');
-const nconf = require('nconf');
-
-const db = require('./mocks/databasemock.mjs');
-const request = require('../src/request');
-const topics = require('../src/topics');
-const categories = require('../src/categories');
-const user = require('../src/user');
-const meta = require('../src/meta');
-const privileges = require('../src/privileges');
-const helpers = require('./helpers');
+import assert from 'assert';
+import nconf from 'nconf';
+import './mocks/databasemock.mjs';
+import * as request from '../src/request.js';
+import * as topics from '../src/topics.js';
+import * as categories from '../src/categories.js';
+import * as user from '../src/user.js';
+import * as meta from '../src/meta.js';
+import * as privileges from '../src/privileges.js';
+import * as helpers from './helpers.js';
 
 describe('feeds', () => {
 	let tid;
 	let fooUid;
 	let cid;
+
 	before(async () => {
 		meta.config['feeds:disableRSS'] = 1;
 		const category = await categories.create({
@@ -49,7 +47,6 @@ describe('feeds', () => {
 			`${nconf.get('url')}/tags/nodebb.rss`,
 		];
 		for (const url of feedUrls) {
-			// eslint-disable-next-line no-await-in-loop
 			const { response } = await request.get(url);
 			assert.equal(response.statusCode, 404);
 		}
@@ -92,6 +89,7 @@ describe('feeds', () => {
 	describe('private feeds and tokens', () => {
 		let jar;
 		let rssToken;
+
 		before(async () => {
 			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
@@ -102,12 +100,11 @@ describe('feeds', () => {
 			assert(body);
 		});
 
-
 		it('should not allow access if uid or token is missing', async () => {
 			await privileges.categories.rescind(['groups:read'], cid, 'guests');
 			const [test1, test2] = await Promise.all([
-				request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}`, { }),
-				request.get(`${nconf.get('url')}/category/${cid}.rss?token=sometoken`, { }),
+				request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}`, {}),
+				request.get(`${nconf.get('url')}/category/${cid}.rss?token=sometoken`, {}),
 			]);
 
 			assert.equal(test1.response.statusCode, 200);
