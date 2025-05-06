@@ -1,9 +1,13 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import nconf from 'nconf';
+
 import utils from '../src/utils.js';
 import file from '../src/file.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('file', () => {
 	const filename = `${utils.generateUUID()}.png`;
