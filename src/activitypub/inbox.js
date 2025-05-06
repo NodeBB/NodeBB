@@ -95,6 +95,7 @@ inbox.update = async (req) => {
 				switch (true) {
 					case isNote: {
 						const postData = await activitypub.mocks.post(object);
+						postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 						await posts.edit(postData);
 						const isDeleted = await posts.getPostField(object.id, 'deleted');
 						if (isDeleted) {

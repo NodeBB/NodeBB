@@ -27,6 +27,24 @@ async function unlock(value) {
 	await db.deleteObjectField('locks', value);
 }
 
+Notes._normalizeTags = async (tag, cid) => {
+	const systemTags = (meta.config.systemTags || '').split(',');
+	const maxTags = await categories.getCategoryField(cid, 'maxTags');
+	const tags = (tag || [])
+		.map((tag) => {
+			tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
+			return tag;
+		})
+		.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
+		.map(t => t.name);
+
+	if (tags.length > maxTags) {
+		tags.length = maxTags;
+	}
+
+	return tags;
+};
+
 Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	/**
 	 * Given the id or object of any as:Note, either retrieves the full context (if resolvable),
@@ -166,22 +184,9 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const count = unprocessed.length;
 	activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
-	let tags;
 	if (!hasTid) {
 		const { to, cc, attachment } = mainPost._activitypub;
-		const systemTags = (meta.config.systemTags || '').split(',');
-		const maxTags = await categories.getCategoryField(cid, 'maxTags');
-		tags = (mainPost._activitypub.tag || [])
-			.map((tag) => {
-				tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
-				return tag;
-			})
-			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
-			.map(t => t.name);
-
-		if (tags.length > maxTags) {
-			tags.length = maxTags;
-		}
+		const tags = Notes._normalizeTags(mainPost._activitypub.tag || []);
 
 		await Promise.all([
 			topics.post({

@@ -355,11 +355,12 @@ Mocks.post = async (objects) => {
 			uid,
 			pid,
 			// tid,  --> purposely omitted
-			name,
 			content,
 			sourceContent,
 			timestamp,
 			toPid,
+
+			title: name, // used in post.edit
 
 			edited,
 			editor: edited ? uid : undefined,
