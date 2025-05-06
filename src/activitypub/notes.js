@@ -93,7 +93,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 	const mainPost = chain[0];
-	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, sourceContent, _activitypub } = mainPost;
+	let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
@@ -112,7 +112,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return { tid, count: 0 };
 	}
 
-	let title;
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
@@ -137,7 +136,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		// mainPid ok to leave as-is
-		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
+		title = title || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
 
 		// Remove any custom emoji from title
 		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
@@ -186,7 +185,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 	if (!hasTid) {
 		const { to, cc, attachment } = mainPost._activitypub;
-		const tags = Notes._normalizeTags(mainPost._activitypub.tag || []);
+		const tags = await Notes._normalizeTags(mainPost._activitypub.tag || []);
 
 		await Promise.all([
 			topics.post({
