@@ -14,14 +14,16 @@ const fullPaths = await file.walk(sourcePath);
 const sourceFiles = fullPaths.map(path => path.replace(sourcePath, ''));
 const sourceStrings = new Map();
 
-if ((process.env.GITHUB_REF && process.env.GITHUB_REF !== 'refs/heads/develop') || process.env.GITHUB_EVENT_NAME === 'pull_request') {
-	this.skip();
-}
-
 let folders = await fs.readdir(path.resolve(__dirname, '../public/language'));
 folders = folders.filter(f => f !== 'README.md');
 
 describe('i18n', () => {
+	before(function () {
+		if ((process.env.GITHUB_REF && process.env.GITHUB_REF !== 'refs/heads/develop') || process.env.GITHUB_EVENT_NAME === 'pull_request') {
+			this.skip();
+		}
+	});
+	
 	it('should contain folders named after the language code', async () => {
 		const valid = /(?:README.md|^[a-z]{2}(?:-[A-Z]{2})?$|^[a-z]{2}(?:-x-[a-z]+)?$)/;
 
