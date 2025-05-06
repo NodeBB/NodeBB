@@ -5,19 +5,23 @@ bail: true
 spec:
   - "test/helpers/defer-logger.mjs"
   - "test/helpers/cleanup.mjs"
+
   - "test/databasemock.mjs"
+
+  - "test/database.mjs"
   - "test/database/sorted.mjs"
   - "test/database/sets.mjs"
   - "test/database/list.mjs"
   - "test/database/keys.mjs"
   - "test/database/hash.mjs"
+
   - "test/password.mjs"
-  - "test/database.mjs"
   - "test/emailer.mjs"
   - "test/categories.mjs"
   - "test/posts.mjs"
   - "test/posts/uploads.mjs"
   - "test/api.mjs"
+
   - "test/activitypub.mjs"
   - "test/activitypub/actors.mjs"
   - "test/activitypub/analytics.mjs"
@@ -25,10 +29,12 @@ spec:
   - "test/activitypub/notes.mjs"
   - "test/activitypub/signatures.mjs"
   - "test/activitypub/webfinger.mjs"
+
   - "test/authentication.mjs"
   - "test/batch.mjs"
   - "test/blacklist.mjs"
   - "test/build.mjs"
   - "test/controllers-admin.mjs"
   - "test/controllers.mjs"
+  - "test/coverPhoto.mjs"
 ignore: "test/files/**"
