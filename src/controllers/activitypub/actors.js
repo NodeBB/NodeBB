@@ -100,7 +100,9 @@ Actors.replies = async function (req, res) {
 	});
 
 	// Convert pids to urls
-	replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+	if (replies.orderedItems) {
+		replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+	}
 
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
