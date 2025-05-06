@@ -1,12 +1,9 @@
-'use strict';
-
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const nconf = require('nconf');
-
-const utils = require('../src/utils');
-const file = require('../src/file');
+import assert from 'assert';
+import fs from 'fs';
+import path from 'path';
+import nconf from 'nconf';
+import utils from '../src/utils.js';
+import file from '../src/file.js';
 
 describe('file', () => {
 	const filename = `${utils.generateUUID()}.png`;
@@ -14,109 +11,94 @@ describe('file', () => {
 	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	const tempPath = path.join(__dirname, './files/test.png');
 
-	afterEach((done) => {
-		fs.unlink(uploadPath, () => {
-			done();
-		});
+	afterEach(async () => {
+		await fs.promises.unlink(uploadPath).catch(() => { }); // Ignore errors if file doesn't exist
 	});
 
 	describe('copyFile', () => {
-		it('should copy a file', (done) => {
-			fs.copyFile(tempPath, uploadPath, (err) => {
-				assert.ifError(err);
+		it('should copy a file', async () => {
+			await fs.promises.copyFile(tempPath, uploadPath);
 
-				assert(file.existsSync(uploadPath));
+			assert(file.existsSync(uploadPath));
 
-				const srcContent = fs.readFileSync(tempPath, 'utf8');
-				const destContent = fs.readFileSync(uploadPath, 'utf8');
+			const srcContent = await fs.promises.readFile(tempPath, 'utf8');
+			const destContent = await fs.promises.readFile(uploadPath, 'utf8');
 
-				assert.strictEqual(srcContent, destContent);
-				done();
-			});
+			assert.strictEqual(srcContent, destContent);
 		});
 
-		it('should override an existing file', (done) => {
-			fs.writeFileSync(uploadPath, 'hsdkjhgkjsfhkgj');
+		it('should override an existing file', async () => {
+			await fs.promises.writeFile(uploadPath, 'hsdkjhgkjsfhkgj');
 
-			fs.copyFile(tempPath, uploadPath, (err) => {
-				assert.ifError(err);
+			await fs.promises.copyFile(tempPath, uploadPath);
 
-				assert(file.existsSync(uploadPath));
+			assert(file.existsSync(uploadPath));
 
-				const srcContent = fs.readFileSync(tempPath, 'utf8');
-				const destContent = fs.readFileSync(uploadPath, 'utf8');
+			const srcContent = await fs.promises.readFile(tempPath, 'utf8');
+			const destContent = await fs.promises.readFile(uploadPath, 'utf8');
 
-				assert.strictEqual(srcContent, destContent);
-				done();
-			});
+			assert.strictEqual(srcContent, destContent);
 		});
 
-		it('should error if source file does not exist', (done) => {
-			fs.copyFile(`${tempPath}0000000000`, uploadPath, (err) => {
-				assert(err);
+		it('should error if source file does not exist', async () => {
+			try {
+				await fs.promises.copyFile(`${tempPath}0000000000`, uploadPath);
+				assert.fail('Expected an error');
+			} catch (err) {
 				assert.strictEqual(err.code, 'ENOENT');
-
-				done();
-			});
+			}
 		});
 
-		it('should error if existing file is read only', (done) => {
-			fs.writeFileSync(uploadPath, 'hsdkjhgkjsfhkgj');
-			fs.chmodSync(uploadPath, '444');
+		it('should error if existing file is read only', async () => {
+			await fs.promises.writeFile(uploadPath, 'hsdkjhgkjsfhkgj');
+			await fs.promises.chmod(uploadPath, '444');
 
-			fs.copyFile(tempPath, uploadPath, (err) => {
-				assert(err);
+			try {
+				await fs.promises.copyFile(tempPath, uploadPath);
+				assert.fail('Expected an error');
+			} catch (err) {
 				assert(err.code === 'EPERM' || err.code === 'EACCES');
-
-				done();
-			});
+			}
 		});
 	});
 
 	describe('saveFileToLocal', () => {
-		it('should work', (done) => {
-			file.saveFileToLocal(filename, folder, tempPath, (err) => {
-				assert.ifError(err);
+		it('should work', async () => {
+			await file.saveFileToLocal(filename, folder, tempPath);
 
-				assert(file.existsSync(uploadPath));
+			assert(file.existsSync(uploadPath));
 
-				const oldFile = fs.readFileSync(tempPath, 'utf8');
-				const newFile = fs.readFileSync(uploadPath, 'utf8');
-				assert.strictEqual(oldFile, newFile);
-
-				done();
-			});
+			const oldFile = await fs.promises.readFile(tempPath, 'utf8');
+			const newFile = await fs.promises.readFile(uploadPath, 'utf8');
+			assert.strictEqual(oldFile, newFile);
 		});
 
-		it('should error if source does not exist', (done) => {
-			file.saveFileToLocal(filename, folder, `${tempPath}000000000`, (err) => {
-				assert(err);
+		it('should error if source does not exist', async () => {
+			try {
+				await file.saveFileToLocal(filename, folder, `${tempPath}000000000`);
+				assert.fail('Expected an error');
+			} catch (err) {
 				assert.strictEqual(err.code, 'ENOENT');
-
-				done();
-			});
+			}
 		});
 
-		it('should error if folder is relative', (done) => {
-			file.saveFileToLocal(filename, '../../text', `${tempPath}000000000`, (err) => {
-				assert(err);
+		it('should error if folder is relative', async () => {
+			try {
+				await file.saveFileToLocal(filename, '../../text', `${tempPath}000000000`);
+				assert.fail('Expected an error');
+			} catch (err) {
 				assert.strictEqual(err.message, '[[error:invalid-path]]');
-				done();
-			});
+			}
 		});
 	});
 
-	it('should walk directory', (done) => {
-		file.walk(__dirname, (err, data) => {
-			assert.ifError(err);
-			assert(Array.isArray(data));
-			done();
-		});
+	it('should walk directory', async () => {
+		const data = await file.walk(__dirname);
+		assert(Array.isArray(data));
 	});
 
-	it('should convert mime type to extension', (done) => {
+	it('should convert mime type to extension', async () => {
 		assert.equal(file.typeToExtension('image/png'), '.png');
 		assert.equal(file.typeToExtension(''), '');
-		done();
 	});
 });
