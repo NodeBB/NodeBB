@@ -188,7 +188,7 @@
     "not-enough-reputation-custom-field": "Du treng %1 i omdømme for å %2",
     "custom-user-field-value-too-long": "Tilpassa felt er er for langt, %1",
     "custom-user-field-select-value-invalid": "Alternativet i tilpassa felt er ugyldig, %1 ",
-    "custom-user-field-invalid-text": "Tilpassa tekst felt er ugyldig, %1",
+    "custom-user-field-invalid-text": "Tilpassa tekstfelt er ugyldig, %1",
     "custom-user-field-invalid-link": "Tilpassa lenke felt er ugyldig, %1",
     "custom-user-field-invalid-number": "Tilpassa felt for tal er ugyldig, %1",
     "custom-user-field-invalid-date": "Tilpassa felt for dato er ugyldig, %1",
