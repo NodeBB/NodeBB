@@ -1442,44 +1442,44 @@ describe('Controllers', () => {
 		});
 
 		it('should handle CSRF error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('csrf-error');
 					err.code = 'EBADCSRFTOKEN';
-					next(err);
+					throw err;
 				},
 			});
 
 			const { response } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['filter:router.page'] = [];
+			plugins.loadedHooks['response:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 		});
 
 		it('should handle black-list error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('blacklist error message');
 					err.code = 'blacklisted-ip';
-					next(err);
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['filter:router.page'] = [];
+			plugins.loadedHooks['response:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, 'blacklist error message');
 		});
 
 		it('should handle page redirect through error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('redirect');
 					err.status = 302;
 					err.path = '/popular';
-					plugins.loadedHooks['filter:router.page'] = [];
-					next(err);
+					plugins.loadedHooks['response:router.page'] = [];
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
@@ -1488,14 +1488,14 @@ describe('Controllers', () => {
 		});
 
 		it('should handle api page redirect through error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('redirect');
 					err.status = 308;
 					err.path = '/api/popular';
-					plugins.loadedHooks['filter:router.page'] = [];
-					next(err);
+					plugins.loadedHooks['response:router.page'] = [];
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/users`);
@@ -1505,15 +1505,15 @@ describe('Controllers', () => {
 		});
 
 		it('should handle error page', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('regular error');
-					next(err);
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['filter:router.page'] = [];
+			plugins.loadedHooks['response:router.page'] = [];
 			assert.equal(response.statusCode, 500);
 			assert(body);
 		});
