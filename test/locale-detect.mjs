@@ -1,11 +1,8 @@
-'use strict';
-
-const assert = require('assert');
-const nconf = require('nconf');
-
-const db = require('./mocks/databasemock.mjs');
-const meta = require('../src/meta');
-const request = require('../src/request');
+import assert from 'assert';
+import nconf from 'nconf';
+import db from './mocks/databasemock.mjs';
+import meta from '../src/meta.js';
+import request from '../src/request.js';
 
 describe('Language detection', () => {
 	it('should detect the language for a guest', async () => {
