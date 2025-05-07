@@ -6,7 +6,7 @@ async function cleanup() {
     }
     cleanupCalled = true;
 
-    const LoggerWithIndentation = (await import('../LoggerWithIndentation.mjs')).default;
+    const LoggerWithIndentation = (await import('./LoggerWithIndentation.mjs')).default;
     const logger = new LoggerWithIndentation();
     const log = (level) => logger.getLogger(level);
     try {
