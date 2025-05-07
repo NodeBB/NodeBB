@@ -1,7 +1,8 @@
 import assert from 'assert';
 import nconf from 'nconf';
-import db from './mocks/databasemock.mjs';
-import meta from '../src/meta.js';
+
+import './mocks/databasemock.mjs';
+import meta from '../src/meta/index.js';
 import request from '../src/request.js';
 
 describe('Language detection', () => {
