@@ -1,24 +1,19 @@
 import assert from 'assert';
 import nconf from 'nconf';
 import { promisify } from 'util';
-import { fileURLToPath } from 'url';
-import path from 'path';
 
-import './mocks/databasemock.mjs';
+import db from './mocks/databasemock.mjs';
 import meta from '../src/meta/index.js';
-import User from '../src/user.js';
-import Groups from '../src/groups.js';
-import Messaging from '../src/messaging.js';
-import api from '../src/api.js';
-import * as helpers from './helpers.js';
+import User from '../src/user/index.js';
+import Groups from '../src/groups/index.js';
+import Messaging from '../src/messaging/index.js';
+import api from '../src/api/index.js';
+import helpers from './helpers/index.js';
 import request from '../src/request.js';
-import * as utils from '../src/utils.js';
-import * as translator from '../src/translator.js';
+import utils from '../src/utils.js';
+import translator from '../src/translator.js';
 
 const sleep = promisify(setTimeout);
-
-// ESM equivalent of __dirname
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('Messaging Library', () => {
 	const mocks = {
@@ -31,6 +26,7 @@ describe('Messaging Library', () => {
 	};
 	let roomId;
 	let chatMessageDelay;
+	let newbieChatMessageDelay;
 
 	const callv3API = async (method, path, body, user) => {
 		const options = {
@@ -71,10 +67,14 @@ describe('Messaging Library', () => {
 
 		chatMessageDelay = meta.config.chatMessageDelay;
 		meta.config.chatMessageDelay = 0;
+
+		newbieChatMessageDelay = meta.config.newbieChatMessageDelay;
+		meta.config.newbieChatMessageDelay = 0;
 	});
 
 	after(() => {
 		meta.configs.chatMessageDelay = chatMessageDelay;
+		meta.config.newbieChatMessageDelay = newbieChatMessageDelay
 	});
 
 	describe('.canMessageUser()', () => {
@@ -140,10 +140,13 @@ describe('Messaging Library', () => {
 	});
 
 	describe('rooms', () => {
-		const _delay1 = meta.config.chatMessageDelay;
-		const _delay2 = meta.config.newbieChatMessageDelay;
+		let _delay1;
+		let _delay2;
 
 		before(async () => {
+			_delay1 = meta.config.chatMessageDelay;
+			_delay2 = meta.config.newbieChatMessageDelay;
+
 			meta.config.chatMessageDelay = 0;
 			meta.config.newbieChatMessageDelay = 0;
 		});
@@ -215,7 +218,6 @@ describe('Messaging Library', () => {
 		});
 
 		it('should throw error if user is not in room', async () => {
-			const { response, body } = await call - `should throw error if user is not in room`
 			const { response, body } = await callv3API('get', `/chats/${roomId}/users`, {}, 'bar');
 			assert.strictEqual(response.statusCode, 403);
 			assert.equal(body.status.message, await translator.translate('[[error:no-privileges]]'));
@@ -521,7 +523,7 @@ describe('Messaging Library', () => {
 			const { rooms } = await api.chats.list(
 				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
 			);
-			assert.equal(rooms[0].teaser.content, '<svg/onload=alert(document.location);');
+			assert.equal(rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
 		});
 
 		it('should fail to check if user has private chat with invalid data', async () => {

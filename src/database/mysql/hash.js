@@ -284,19 +284,21 @@ module.exports = function (module) {
 		}
 
 		const paths = fields.map(f => `$."${f}"`);
-		if (Array.isArray(key)) {
-			await module.pool.query(`
+		await module.transaction(async (connection) => {
+			if (Array.isArray(key)) {
+				await connection.query(`
                 UPDATE legacy_hash
                 SET data = JSON_REMOVE(data, ${paths.map(() => '?').join(',')})
                 WHERE _key IN (?)
             `, [...paths, key]);
-		} else {
-			await module.pool.query(`
+			} else {
+				await connection.query(`
                 UPDATE legacy_hash
                 SET data = JSON_REMOVE(data, ${paths.map(() => '?').join(',')})
                 WHERE _key = ?
             `, [...paths, key]);
-		}
+			}
+		});
 	};
 
 	module.incrObjectFieldBy = async function (key, field, value) {

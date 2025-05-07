@@ -30,7 +30,7 @@ helpers.ensureLegacyObjectType = async function (db, key, type) {
 		sql: `
         DELETE FROM legacy_object
         WHERE expireAt IS NOT NULL
-        AND expireAt <= NOW()`,
+        AND expireAt < NOW()`,
 	});
 
 	await db.query({

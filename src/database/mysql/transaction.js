@@ -38,7 +38,7 @@ module.exports = function (module) {
 				break; // Exit loop on success
 			} catch (err) {
 				await poolConnection.query('ROLLBACK');
-				if (err.code === 'ER_LOCK_DEADLOCK' && attempt < retries) {
+				if (attempt < retries) {
 					const { ms, promise } = sleepRandom();
 					winston.warn(`Deadlock detected, retrying (${attempt}/${retries}) after ${ms}ms`);
 					await promise; // Sleep for random 0-100 ms
