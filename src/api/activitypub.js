@@ -13,6 +13,7 @@ const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
+const categories = require('../categories');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
@@ -43,7 +44,14 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
+	if (actor.includes('@')) {
+		const [uid, cid] = await Promise.all([
+			user.getUidByUserslug(actor),
+			categories.getCidByHandle(actor),
+		]);
+
+		actor = uid || cid;
+	}
 
 	const isFollowing = await db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor);
 	if (isFollowing) { // already following
@@ -73,10 +81,21 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
+	if (actor.includes('@')) {
+		const [uid, cid] = await Promise.all([
+			user.getUidByUserslug(actor),
+			categories.getCidByHandle(actor),
+		]);
 
-	const isFollowing = await db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor);
-	if (!isFollowing) { // already not following
+		actor = uid || cid;
+	}
+
+	const [isFollowing, isPending] = await Promise.all([
+		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
+		db.isSortedSetMember(`followRequests:${type === 'uid' ? 'uid' : 'cid'}.${id}`, actor),
+	]);
+
+	if (!isFollowing && !isPending) { // already not following/pending
 		return;
 	}
 
