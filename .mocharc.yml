@@ -45,4 +45,5 @@ spec:
   - "test/image.mjs"
   - "test/locale-detect.mjs"
   - "test/messaging.mjs"
+  - "test/meta.mjs"
 ignore: "test/files/**"

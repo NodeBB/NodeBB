@@ -62,7 +62,7 @@ Dependencies.doesSatisfy = function (moduleData, packageJSONVersion) {
 	}
 	const versionOk = !semver.validRange(packageJSONVersion) || semver.satisfies(moduleData.version, packageJSONVersion);
 	const githubRepo = moduleData._resolved && moduleData._resolved.includes('//github.com');
-	const satisfies = versionOk || githubRepo;
+	const satisfies = versionOk || !!githubRepo;
 	if (!satisfies) {
 		winston.warn(`[${chalk.yellow('outdated')}] ${chalk.bold(moduleData.name)} installed v${moduleData.version}, package.json requires ${packageJSONVersion}\n`);
 		depsOutdated = true;

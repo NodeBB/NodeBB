@@ -1,11 +1,16 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 import assert from 'node:assert';
-import { promisify } from 'node:util';
 import nconf from 'nconf';
+import async from 'async';
+
 import db from './mocks/databasemock.mjs';
-import * as meta from '../src/meta.js';
-import * as User from '../src/user.js';
-import * as Groups from '../src/groups.js';
-import * as request from '../src/request.js';
+import meta from '../src/meta/index.js';
+import User from '../src/user/index.js';
+import Groups from '../src/groups/index.js';
+import request from '../src/request.js';
+import socketAdmin from '../src/socket.io/admin.js';
+
 
 describe('meta', () => {
 	let fooUid;
@@ -15,10 +20,10 @@ describe('meta', () => {
 	before(async () => {
 		await Groups.cache.reset();
 		// Create 3 users: 1 admin, 2 regular
-		const uids = await Promise.all([
-			User.create({ username: 'foo', password: 'barbar' }), // admin
-			User.create({ username: 'baz', password: 'quuxquux' }), // restricted user
-			User.create({ username: 'herp', password: 'derpderp' }), // regular user
+		const uids = await async.series([
+			async.apply(User.create, { username: 'foo', password: 'barbar' }), // admin
+			async.apply(User.create, { username: 'baz', password: 'quuxquux' }), // restricted user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }), // regular user
 		]);
 
 		fooUid = uids[0];
@@ -29,261 +34,255 @@ describe('meta', () => {
 	});
 
 	describe('settings', () => {
-		import('../src/socket.io/admin.js').then(({ default: socketAdmin }) => {
-			it('should set setting', async () => {
-				await socketAdmin.settings.set(
-					{ uid: fooUid },
-					{ hash: 'some:hash', values: { foo: '1', derp: 'value' } }
-				);
-				const data = await db.getObject('settings:some:hash');
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-			});
+		it('should set setting', async () => {
+			await socketAdmin.settings.set(
+				{ uid: fooUid },
+				{ hash: 'some:hash', values: { foo: '1', derp: 'value' } }
+			);
+			const data = await db.getObject('settings:some:hash');
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+		});
 
-			it('should get setting', async () => {
-				const data = await socketAdmin.settings.get(
-					{ uid: fooUid },
-					{ hash: 'some:hash' }
-				);
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-			});
+		it('should get setting', async () => {
+			const data = await socketAdmin.settings.get(
+				{ uid: fooUid },
+				{ hash: 'some:hash' }
+			);
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+		});
 
-			it('should not set setting if not empty', async () => {
-				await meta.settings.setOnEmpty('some:hash', { foo: 2 });
-				const data = await db.getObject('settings:some:hash');
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-			});
+		it('should not set setting if not empty', async () => {
+			await meta.settings.setOnEmpty('some:hash', { foo: 2 });
+			const data = await db.getObject('settings:some:hash');
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+		});
 
-			it('should set setting if empty', async () => {
-				await meta.settings.setOnEmpty('some:hash', { empty: '2' });
-				const data = await db.getObject('settings:some:hash');
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-				assert.strictEqual(data.empty, '2');
-			});
+		it('should set setting if empty', async () => {
+			await meta.settings.setOnEmpty('some:hash', { empty: '2' });
+			const data = await db.getObject('settings:some:hash');
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+			assert.strictEqual(data.empty, '2');
+		});
 
-			it('should set one and get one', async () => {
-				await meta.settings.setOne('some:hash', 'myField', 'myValue');
-				const myValue = await meta.settings.getOne('some:hash', 'myField');
-				assert.strictEqual(myValue, 'myValue');
-			});
+		it('should set one and get one', async () => {
+			await meta.settings.setOne('some:hash', 'myField', 'myValue');
+			const myValue = await meta.settings.getOne('some:hash', 'myField');
+			assert.strictEqual(myValue, 'myValue');
+		});
 
-			it('should return null if setting field does not exist', async () => {
-				const val = await meta.settings.getOne('some:hash', 'does not exist');
-				assert.strictEqual(val, null);
-			});
+		it('should return null if setting field does not exist', async () => {
+			const val = await meta.settings.getOne('some:hash', 'does not exist');
+			assert.strictEqual(val, null);
+		});
 
-			const someList = [
-				{ name: 'andrew', status: 'best' },
-				{ name: 'baris', status: 'wurst' },
-			];
-			const anotherList = [];
+		const someList = [
+			{ name: 'andrew', status: 'best' },
+			{ name: 'baris', status: 'wurst' },
+		];
+		const anotherList = [];
 
-			it('should set setting with sorted list', async () => {
-				await socketAdmin.settings.set(
-					{ uid: fooUid },
-					{
-						hash: 'another:hash',
-						values: { foo: '1', derp: 'value', someList, anotherList },
-					}
-				);
-				const data = await db.getObject('settings:another:hash');
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-				assert.strictEqual(data.someList, undefined);
-				assert.strictEqual(data.anotherList, undefined);
-			});
+		it('should set setting with sorted list', async () => {
+			await socketAdmin.settings.set(
+				{ uid: fooUid },
+				{
+					hash: 'another:hash',
+					values: { foo: '1', derp: 'value', someList, anotherList },
+				}
+			);
+			const data = await db.getObject('settings:another:hash');
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+			assert.strictEqual(data.someList, undefined);
+			assert.strictEqual(data.anotherList, undefined);
+		});
 
-			it('should get setting with sorted list', async () => {
-				const data = await socketAdmin.settings.get(
-					{ uid: fooUid },
-					{ hash: 'another:hash' }
-				);
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-				assert.deepStrictEqual(data.someList, someList);
-				assert.deepStrictEqual(data.anotherList, anotherList);
-			});
+		it('should get setting with sorted list', async () => {
+			const data = await socketAdmin.settings.get(
+				{ uid: fooUid },
+				{ hash: 'another:hash' }
+			);
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+			assert.deepStrictEqual(data.someList, someList);
+			assert.deepStrictEqual(data.anotherList, anotherList);
+		});
 
-			it('should not set setting if not empty', async () => {
-				await meta.settings.setOnEmpty('some:hash', { foo: 2 });
-				const data = await db.getObject('settings:some:hash');
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-			});
+		it('should not set setting if not empty', async () => {
+			await meta.settings.setOnEmpty('some:hash', { foo: 2 });
+			const data = await db.getObject('settings:some:hash');
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+		});
 
-			it('should not set setting with sorted list if not empty', async () => {
-				await meta.settings.setOnEmpty('another:hash', { foo: anotherList });
-				const data = await socketAdmin.settings.get(
-					{ uid: fooUid },
-					{ hash: 'another:hash' }
-				);
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-			});
+		it('should not set setting with sorted list if not empty', async () => {
+			await meta.settings.setOnEmpty('another:hash', { foo: anotherList });
+			const data = await socketAdmin.settings.get(
+				{ uid: fooUid },
+				{ hash: 'another:hash' }
+			);
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+		});
 
-			it('should set setting with sorted list if empty', async () => {
-				await meta.settings.setOnEmpty('another:hash', { empty: someList });
-				const data = await socketAdmin.settings.get(
-					{ uid: fooUid },
-					{ hash: 'another:hash' }
-				);
-				assert.strictEqual(data.foo, '1');
-				assert.strictEqual(data.derp, 'value');
-				assert.deepStrictEqual(data.empty, someList);
-			});
+		it('should set setting with sorted list if empty', async () => {
+			await meta.settings.setOnEmpty('another:hash', { empty: someList });
+			const data = await socketAdmin.settings.get(
+				{ uid: fooUid },
+				{ hash: 'another:hash' }
+			);
+			assert.strictEqual(data.foo, '1');
+			assert.strictEqual(data.derp, 'value');
+			assert.deepStrictEqual(data.empty, someList);
+		});
 
-			it('should set one and get one sorted list', async () => {
-				await meta.settings.setOne('another:hash', 'someList', someList);
-				const _someList = await meta.settings.getOne('another:hash', 'someList');
-				assert.deepStrictEqual(_someList, someList);
-			});
+		it('should set one and get one sorted list', async () => {
+			await meta.settings.setOne('another:hash', 'someList', someList);
+			const _someList = await meta.settings.getOne('another:hash', 'someList');
+			assert.deepStrictEqual(_someList, someList);
 		});
 	});
 
-	// Remaining describe blocks
 	describe('config', () => {
-		// Dynamically import socketAdmin for config tests
-		import('../src/socket.io/admin.js').then(({ default: socketAdmin }) => {
-			before(async () => {
-				await db.setObject('config', {
-					minimumTagLength: 3,
-					maximumTagLength: 15,
-				});
+		before(async () => {
+			await db.setObject('config', {
+				minimumTagLength: 3,
+				maximumTagLength: 15,
 			});
+		});
 
-			it('should get config fields', async () => {
-				const data = await meta.configs.getFields([
-					'minimumTagLength',
-					'maximumTagLength',
-				]);
-				assert.strictEqual(data.minimumTagLength, 3);
-				assert.strictEqual(data.maximumTagLength, 15);
-			});
+		it('should get config fields', async () => {
+			const data = await meta.configs.getFields([
+				'minimumTagLength',
+				'maximumTagLength',
+			]);
+			assert.strictEqual(data.minimumTagLength, 3);
+			assert.strictEqual(data.maximumTagLength, 15);
+		});
 
-			it('should get the correct type and default value', async () => {
-				await meta.configs.set('loginAttempts', '');
-				const value = await meta.configs.get('loginAttempts');
-				assert.strictEqual(value, 5);
-			});
+		it('should get the correct type and default value', async () => {
+			await meta.configs.set('loginAttempts', '');
+			const value = await meta.configs.get('loginAttempts');
+			assert.strictEqual(value, 5);
+		});
 
-			it('should get the correct type and correct value', async () => {
-				await meta.configs.set('loginAttempts', '0');
-				const value = await meta.configs.get('loginAttempts');
-				assert.strictEqual(value, 0);
-			});
+		it('should get the correct type and correct value', async () => {
+			await meta.configs.set('loginAttempts', '0');
+			const value = await meta.configs.get('loginAttempts');
+			assert.strictEqual(value, 0);
+		});
 
-			it('should get the correct value', async () => {
-				await meta.configs.set('title', 123);
-				const value = await meta.configs.get('title');
-				assert.strictEqual(value, '123');
-			});
+		it('should get the correct value', async () => {
+			await meta.configs.set('title', 123);
+			const value = await meta.configs.get('title');
+			assert.strictEqual(value, '123');
+		});
 
-			it('should get the correct value', async () => {
-				await meta.configs.set('title', 0);
-				const value = await meta.configs.get('title');
-				assert.strictEqual(value, '0');
-			});
+		it('should get the correct value', async () => {
+			await meta.configs.set('title', 0);
+			const value = await meta.configs.get('title');
+			assert.strictEqual(value, '0');
+		});
 
-			it('should get the correct value', async () => {
-				await meta.configs.set('title', '');
-				const value = await meta.configs.get('title');
-				assert.strictEqual(value, '');
-			});
+		it('should get the correct value', async () => {
+			await meta.configs.set('title', '');
+			const value = await meta.configs.get('title');
+			assert.strictEqual(value, '');
+		});
 
-			it('should use default value if value is null', async () => {
-				await meta.configs.set('teaserPost', null);
-				const value = await meta.configs.get('teaserPost');
-				assert.strictEqual(value, 'last-reply');
-			});
+		it('should use default value if value is null', async () => {
+			await meta.configs.set('teaserPost', null);
+			const value = await meta.configs.get('teaserPost');
+			assert.strictEqual(value, 'last-reply');
+		});
 
-			it('should fail if field is invalid', async () => {
-				await assert.rejects(
-					meta.configs.set('', 'someValue'),
-					{ message: '[[error:invalid-data]]' }
-				);
-			});
+		it('should fail if field is invalid', async () => {
+			await assert.rejects(
+				meta.configs.set('', 'someValue'),
+				{ message: '[[error:invalid-data]]' }
+			);
+		});
 
-			it('should fail if data is invalid', async () => {
-				await assert.rejects(
-					socketAdmin.config.set({ uid: fooUid }, null),
-					{ message: '[[error:invalid-data]]' }
-				);
-			});
+		it('should fail if data is invalid', async () => {
+			await assert.rejects(
+				socketAdmin.config.set({ uid: fooUid }, null),
+				{ message: '[[error:invalid-data]]' }
+			);
+		});
 
-			it('should set multiple config values', async () => {
-				await socketAdmin.config.set(
-					{ uid: fooUid },
-					{ key: 'someKey', value: 'someValue' }
-				);
-				const data = await meta.configs.getFields(['someKey']);
-				assert.strictEqual(data.someKey, 'someValue');
-			});
+		it('should set multiple config values', async () => {
+			await socketAdmin.config.set(
+				{ uid: fooUid },
+				{ key: 'someKey', value: 'someValue' }
+			);
+			const data = await meta.configs.getFields(['someKey']);
+			assert.strictEqual(data.someKey, 'someValue');
+		});
 
-			it('should set config value', async () => {
-				await meta.configs.set('someField', 'someValue');
-				const data = await meta.configs.getFields(['someField']);
-				assert.strictEqual(data.someField, 'someValue');
-			});
+		it('should set config value', async () => {
+			await meta.configs.set('someField', 'someValue');
+			const data = await meta.configs.getFields(['someField']);
+			assert.strictEqual(data.someField, 'someValue');
+		});
 
-			it('should get back string if field is not in defaults', async () => {
-				await meta.configs.set('numericField', 123);
-				const data = await meta.configs.getFields(['numericField']);
-				assert.strictEqual(data.numericField, 123);
-			});
+		it('should get back string if field is not in defaults', async () => {
+			await meta.configs.set('numericField', 123);
+			const data = await meta.configs.getFields(['numericField']);
+			assert.strictEqual(data.numericField, 123);
+		});
 
-			it('should set boolean config value', async () => {
-				await meta.configs.set('booleanField', true);
-				const data = await meta.configs.getFields(['booleanField']);
-				assert.strictEqual(data.booleanField, true);
-			});
+		it('should set boolean config value', async () => {
+			await meta.configs.set('booleanField', true);
+			const data = await meta.configs.getFields(['booleanField']);
+			assert.strictEqual(data.booleanField, true);
+		});
 
-			it('should set boolean config value', async () => {
-				await meta.configs.set('booleanField', 'false');
-				const data = await meta.configs.getFields(['booleanField']);
-				assert.strictEqual(data.booleanField, false);
-			});
+		it('should set boolean config value', async () => {
+			await meta.configs.set('booleanField', 'false');
+			const data = await meta.configs.getFields(['booleanField']);
+			assert.strictEqual(data.booleanField, false);
+		});
 
-			it('should set string config value', async () => {
-				await meta.configs.set('stringField', '123');
-				const data = await meta.configs.getFields(['stringField']);
-				assert.strictEqual(data.stringField, 123);
-			});
+		it('should set string config value', async () => {
+			await meta.configs.set('stringField', '123');
+			const data = await meta.configs.getFields(['stringField']);
+			assert.strictEqual(data.stringField, 123);
+		});
 
-			it('should fail if data is invalid', async () => {
-				await assert.rejects(
-					socketAdmin.config.setMultiple({ uid: fooUid }, null),
-					{ message: '[[error:invalid-data]]' }
-				);
-			});
+		it('should fail if data is invalid', async () => {
+			await assert.rejects(
+				socketAdmin.config.setMultiple({ uid: fooUid }, null),
+				{ message: '[[error:invalid-data]]' }
+			);
+		});
 
-			it('should set multiple values', async () => {
-				await socketAdmin.config.setMultiple(
-					{ uid: fooUid },
-					{
-						someField1: 'someValue1',
-						someField2: 'someValue2',
-						customCSS: '.derp{color:#00ff00;}',
-					}
-				);
-				const data = await meta.configs.getFields(['someField1', 'someField2']);
-				assert.strictEqual(data.someField1, 'someValue1');
-				assert.strictEqual(data.someField2, 'someValue2');
-			});
+		it('should set multiple values', async () => {
+			await socketAdmin.config.setMultiple(
+				{ uid: fooUid },
+				{
+					someField1: 'someValue1',
+					someField2: 'someValue2',
+					customCSS: '.derp{color:#00ff00;}',
+				}
+			);
+			const data = await meta.configs.getFields(['someField1', 'someField2']);
+			assert.strictEqual(data.someField1, 'someValue1');
+			assert.strictEqual(data.someField2, 'someValue2');
+		});
 
-			it('should not set config if not empty', async () => {
-				await meta.configs.setOnEmpty({ someField1: 'foo' });
-				const value = await meta.configs.get('someField1');
-				assert.strictEqual(value, 'someValue1');
-			});
+		it('should not set config if not empty', async () => {
+			await meta.configs.setOnEmpty({ someField1: 'foo' });
+			const value = await meta.configs.get('someField1');
+			assert.strictEqual(value, 'someValue1');
+		});
 
-			it('should remove config field', async () => {
-				await socketAdmin.config.remove({ uid: fooUid }, 'someField1');
-				const isObjectField = await db.isObjectField('config', 'someField1');
-				assert.strictEqual(isObjectField, false);
-			});
+		it('should remove config field', async () => {
+			await socketAdmin.config.remove({ uid: fooUid }, 'someField1');
+			const isObjectField = await db.isObjectField('config', 'someField1');
+			assert.strictEqual(isObjectField, false);
 		});
 	});
 
@@ -368,22 +367,28 @@ describe('meta', () => {
 		let oldArgv;
 		before(() => {
 			oldArgv = process.execArgv;
-			process.execArgv = ['--debug=5858', '--foo=1'];
 		});
 
 		it('should detect debugging', async () => {
-			let debugFork = await import('../src/meta/debugFork.js');
-			assert.strictEqual(debugFork.default.debugging, false);
+			// const oldArgv = process.execArgv;
+			process.execArgv = [];
+			const debugForkPath = require.resolve('../src/meta/debugFork');
+			delete require.cache[debugForkPath];
+			let debugFork = require('../src/meta/debugFork.js');
+			assert.strictEqual(debugFork.debugging, false);
 
 			// Simulate re-importing the module
-			debugFork = await import(
-				`../src/meta/debugFork.js?cacheBust=${Date.now()}`
-			);
-			assert.strictEqual(debugFork.default.debugging, true);
+			process.execArgv = ['--debug=5858', '--foo=1'];
+			delete require.cache[debugForkPath];
+			debugFork = require('../src/meta/debugFork.js');
+			assert.strictEqual(debugFork.debugging, true);
 		});
 
 		after(() => {
 			process.execArgv = oldArgv;
+			const debugForkPath = require.resolve('../src/meta/debugFork');
+			delete require.cache[debugForkPath];
+			require('../src/meta/debugFork.js');
 		});
 	});
 
