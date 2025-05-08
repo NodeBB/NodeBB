@@ -95,13 +95,15 @@ Controller.getFollowers = async (req, res) => {
 		url: `${nconf.get('url')}/uid/${req.params.uid}/followers`,
 	});
 
-	collection.orderedItems = collection.orderedItems.map(({ uid }) => {
-		if (utils.isNumber(uid)) {
-			return `${nconf.get('url')}/uid/${uid}`;
-		}
+	if (collection.hasOwnProperty('orderedItems')) {
+		collection.orderedItems = collection.orderedItems.map(({ uid }) => {
+			if (utils.isNumber(uid)) {
+				return `${nconf.get('url')}/uid/${uid}`;
+			}
 
-		return uid;
-	});
+			return uid;
+		});
+	}
 
 	res.status(200).json(collection);
 };
