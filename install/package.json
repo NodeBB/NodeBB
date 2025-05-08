@@ -158,8 +158,8 @@
     },
     "devDependencies": {
         "@apidevtools/swagger-parser": "10.1.0",
-        "@commitlint/cli": "19.8.0",
-        "@commitlint/config-angular": "19.8.0",
+        "@commitlint/cli": "19.8.1",
+        "@commitlint/config-angular": "19.8.1",
         "coveralls": "3.1.1",
         "@eslint/js": "9.26.0",
         "@stylistic/eslint-plugin-js": "4.2.0",
