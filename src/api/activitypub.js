@@ -84,13 +84,22 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const [handle, isFollowing] = await Promise.all([
+	if (actor.includes('@')) {
+		const [uid, cid] = await Promise.all([
+			user.getUidByUserslug(actor),
+			categories.getCidByHandle(actor),
+		]);
+
+		actor = uid || cid;
+	}
+
+	const [handle, isFollowing, isPending] = await Promise.all([
 		user.getUserField(actor, 'username'),
 		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
+		db.isSortedSetMember(`followRequests:${type === 'uid' ? 'uid' : 'cid'}.${id}`, actor),
 	]);
 
-	if (!isFollowing) { // already not following
+	if (!isFollowing && !isPending) { // already not following/pending
 		return;
 	}
 
