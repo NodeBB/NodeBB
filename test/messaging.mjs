@@ -1,6 +1,7 @@
 import assert from 'assert';
 import nconf from 'nconf';
 import { promisify } from 'util';
+import async from 'async';
 
 import db from './mocks/databasemock.mjs';
 import meta from '../src/meta/index.js';
@@ -10,7 +11,6 @@ import Messaging from '../src/messaging/index.js';
 import api from '../src/api/index.js';
 import helpers from './helpers/index.js';
 import request from '../src/request.js';
-import utils from '../src/utils.js';
 import translator from '../src/translator.js';
 
 const sleep = promisify(setTimeout);
@@ -44,18 +44,19 @@ describe('Messaging Library', () => {
 	};
 
 	before(async () => {
-		// Create 3 users: 1 admin, 2 regular
-		({
-			foo: mocks.users.foo.uid,
-			bar: mocks.users.bar.uid,
-			baz: mocks.users.baz.uid,
-			herp: mocks.users.herp.uid,
-		} = await utils.promiseParallel({
-			foo: User.create({ username: 'foo', password: 'barbar' }), // admin
-			bar: User.create({ username: 'bar', password: 'bazbaz' }), // admin
-			baz: User.create({ username: 'baz', password: 'quuxquux' }), // restricted user
-			herp: User.create({ username: 'herp', password: 'derpderp' }), // a regular user
-		}));
+		await Groups.cache.reset();
+		// Create 4 users: 2 admin, 2 regular
+		const uids = await async.series([
+			async.apply(User.create, { username: 'foo', password: 'barbar' }), // admin
+			async.apply(User.create, { username: 'bar', password: 'bazbaz' }), // admin
+			async.apply(User.create, { username: 'baz', password: 'quuxquux' }), // restricted user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }), // regular user
+		]);
+
+		mocks.users.foo.uid = uids[0];
+		mocks.users.bar.uid = uids[1];
+		mocks.users.baz.uid = uids[2];
+		mocks.users.herp.uid = uids[3];
 
 		await Groups.join('administrators', mocks.users.foo.uid);
 		await User.setSetting(mocks.users.baz.uid, 'disableIncomingChats', '1');
