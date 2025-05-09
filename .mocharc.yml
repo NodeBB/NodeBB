@@ -46,4 +46,5 @@ spec:
   - "test/locale-detect.mjs"
   - "test/messaging.mjs"
   - "test/meta.mjs"
+  - "test/middleware.mjs"
 ignore: "test/files/**"

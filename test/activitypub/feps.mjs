@@ -92,6 +92,9 @@ describe('ActivityPub/FEPs', () => {
 				assertStrict.strictEqual(activity.object.id, `${nconf.get('url')}/post/${reply1Pid}`);
 			});
 
+			/**
+			 * !!!flaky test!!!
+			 */
 			it('should be called when a post is moved to another topic', async () => {
 				const [{ topicData: topic1 }, { topicData: topic2 }] = await Promise.all([
 					topics.post({

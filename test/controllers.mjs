@@ -555,6 +555,9 @@ describe('Controllers', () => {
 					await abortInterstitial();
 				});
 
+				/**
+				 * !!!flaky test!!!
+				 */
 				it('should redirect back to interstitial for topics requiring validated email', async () => {
 					const name = utils.generateUUID();
 					const { cid } = await categories.create({ name });

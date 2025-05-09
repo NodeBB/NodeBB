@@ -119,6 +119,10 @@ module.exports = function (module) {
 			key = [key];
 		}
 
+		if (!key.length) {
+			return [];
+		}
+
 		if (parseInt(count, 10) === -1) {
 			count = null;
 		}
@@ -150,17 +154,17 @@ module.exports = function (module) {
 
 		const [rows] = await module.pool.query({
 			sql: `
-                SELECT z.value,
-                       z.score
-                FROM legacy_object_live o
-                INNER JOIN legacy_zset z
-                    ON o._key = z._key
-                    AND o.type = z.type
-                WHERE o._key IN (${key.map(() => '?').join(', ')})
-                ${whereClause}
-                ORDER BY z.score ${sort > 0 ? 'ASC' : 'DESC'}
-                LIMIT ? OFFSET ?
-            `,
+				SELECT z.value,
+						z.score
+				FROM legacy_object_live o
+				INNER JOIN legacy_zset z
+					ON o._key = z._key
+					AND o.type = z.type
+				WHERE o._key IN (${key.map(() => '?').join(', ')})
+				${whereClause}
+				ORDER BY z.score ${sort > 0 ? 'ASC' : 'DESC'}
+				LIMIT ? OFFSET ?
+			`,
 			values,
 		});
 

@@ -1,20 +1,25 @@
 import assert from 'node:assert';
 import nconf from 'nconf';
-import db from './mocks/databasemock.mjs';
-import * as user from '../src/user/index.js';
-import * as groups from '../src/groups/index.js';
-import * as utils from '../src/utils.js';
-import * as request from '../src/request.js';
-import * as helpers from './helpers.js';
-import * as middleware from '../src/middleware/index.js';
+
+import './mocks/databasemock.mjs';
+
+import user from '../src/user/index.js';
+import groups from '../src/groups/index.js';
+import utils from '../src/utils.js';
+import request from '../src/request.js';
+import helpers from './helpers/index.js';
 
 describe('Middlewares', () => {
 	describe('expose', () => {
 		let adminUid;
+		let middleware;
 
 		before(async () => {
 			adminUid = await user.create({ username: 'admin', password: '123456' });
 			await groups.join('administrators', adminUid);
+			// if the import is done in discovery phase it will not work
+			// check this out if you have time
+			middleware = (await import('../src/middleware/index.js')).default;
 		});
 
 		it('should expose res.locals.isAdmin = false', async () => {
