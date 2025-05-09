@@ -84,7 +84,7 @@ Actors.note = async function (req, res, next) {
 	res.status(200).json(payload);
 };
 
-Actors.replies = async function (req, res) {
+Actors.replies = async function (req, res, next) {
 	const allowed = utils.isNumber(req.params.pid) && await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
 	const exists = await posts.exists(req.params.pid);
 	if (!allowed || !exists) {
@@ -92,12 +92,17 @@ Actors.replies = async function (req, res) {
 	}
 
 	const page = parseInt(req.query.page, 10);
-	const replies = await activitypub.helpers.generateCollection({
-		set: `pid:${req.params.pid}:replies`,
-		page,
-		perPage: meta.config.postsPerPage,
-		url: `${nconf.get('url')}/post/${req.params.pid}/replies`,
-	});
+	let replies;
+	try {
+		replies = await activitypub.helpers.generateCollection({
+			set: `pid:${req.params.pid}:replies`,
+			page,
+			perPage: meta.config.postsPerPage,
+			url: `${nconf.get('url')}/post/${req.params.pid}/replies`,
+		});
+	} catch (e) {
+		return next(); // invalid page; 404
+	}
 
 	// Convert pids to urls
 	if (replies.orderedItems) {
@@ -128,16 +133,22 @@ Actors.topic = async function (req, res, next) {
 			return next();
 		}
 
-		let [collection, pids] = await Promise.all([
-			activitypub.helpers.generateCollection({
-				set: `tid:${req.params.tid}:posts`,
-				method: posts.getPidsFromSet,
-				page,
-				perPage,
-				url: `${nconf.get('url')}/topic/${req.params.tid}/posts`,
-			}),
-			db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
-		]);
+		let collection;
+		let pids;
+		try {
+			([collection, pids] = await Promise.all([
+				activitypub.helpers.generateCollection({
+					set: `tid:${req.params.tid}:posts`,
+					method: posts.getPidsFromSet,
+					page,
+					perPage,
+					url: `${nconf.get('url')}/topic/${req.params.tid}/posts`,
+				}),
+				db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
+			]));
+		} catch (e) {
+			return next(); // invalid page; 404
+		}
 		pids.push(mainPid);
 		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		collection.totalItems += 1; // account for mainPid
