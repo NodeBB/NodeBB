@@ -108,7 +108,11 @@ Helpers.query = async (id) => {
 	let response;
 	let body;
 	try {
-		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?${query}`));
+		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?${query}`, {
+			headers: {
+				accept: 'application/jrd+json',
+			},
+		}));
 	} catch (e) {
 		return false;
 	}
