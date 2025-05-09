@@ -14,7 +14,7 @@ services:
       - ./install/docker/setup.json:/usr/src/app/setup.json
 
   postgres:
-    image: postgres:17.4-alpine
+    image: postgres:17.5-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: nodebb
