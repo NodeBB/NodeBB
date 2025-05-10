@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const db = require('./mocks/databasemock.mjs');
+const db = require('../src/database');
 const upgrade = require('../src/upgrade');
 
 describe('Upgrade', () => {

@@ -2,14 +2,14 @@
 
 const assert = require('assert');
 
-const db = require('../mocks/databasemock.mjs');
+const db = require('../../src/database');
 
 const plugins = require('../../src/plugins');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
 const user = require('../../src/user');
 
-describe('Topic Events', () => {
+describe('Topics/Events', () => {
 	let fooUid;
 	let topic;
 	before(async () => {

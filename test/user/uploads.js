@@ -6,7 +6,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const nconf = require('nconf');
-const db = require('../mocks/databasemock.mjs');
+const db = require('../../src/database');
 
 const user = require('../../src/user');
 const topics = require('../../src/topics');
@@ -16,7 +16,7 @@ const utils = require('../../src/utils');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 
-describe('uploads.js', () => {
+describe('User/uploads.js', () => {
 	describe('.associateUpload()', () => {
 		let uid;
 		let relativePath;

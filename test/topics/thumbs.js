@@ -5,7 +5,7 @@ const path = require('path');
 const assert = require('assert');
 const nconf = require('nconf');
 
-const db = require('../mocks/databasemock.mjs');
+const db = require('../../src/database');
 
 const meta = require('../../src/meta');
 const user = require('../../src/user');
@@ -19,7 +19,7 @@ const utils = require('../../src/utils');
 
 const helpers = require('../helpers');
 
-describe('Topic thumbs', () => {
+describe('Topics/thumbs', () => {
 	let topicObj;
 	let categoryObj;
 	let adminUid;

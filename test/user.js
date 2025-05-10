@@ -8,7 +8,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const { setTimeout } = require('node:timers/promises');
 
-const db = require('./mocks/databasemock.mjs');
+const db = require('../src/database');
 const User = require('../src/user');
 const Topics = require('../src/topics');
 const Categories = require('../src/categories');
@@ -2699,19 +2699,5 @@ describe('User', () => {
 		meta.config.minimumPasswordStrength = 3;
 		await helpers.loginUser('weakpwd', '123456');
 		meta.config.minimumPasswordStrength = oldValue;
-	});
-
-	describe('User\'s', async () => {
-		let files;
-
-		before(async () => {
-			files = await file.walk(path.resolve(__dirname, './user'));
-		});
-
-		it('subfolder tests', () => {
-			files.forEach((filePath) => {
-				require(filePath);
-			});
-		});
 	});
 });

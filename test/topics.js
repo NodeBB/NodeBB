@@ -9,7 +9,7 @@ const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 
-const db = require('./mocks/databasemock.mjs');
+const db = require('../src/database');
 const file = require('../src/file');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
@@ -25,7 +25,7 @@ const apiTopics = require('../src/api/topics');
 const apiPosts = require('../src/api/posts');
 const request = require('../src/request');
 
-describe('Topic\'s', () => {
+describe('Topics', () => {
 	let topic;
 	let categoryObj;
 	let adminUid;
@@ -2504,20 +2504,6 @@ describe('Topic\'s', () => {
 		it('should remove from topics:scheduled on purge', async () => {
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(!score);
-		});
-	});
-});
-
-describe('Topics\'', async () => {
-	let files;
-
-	before(async () => {
-		files = await file.walk(path.resolve(__dirname, './topics'));
-	});
-
-	it('subfolder tests', () => {
-		files.forEach((filePath) => {
-			require(filePath);
 		});
 	});
 });

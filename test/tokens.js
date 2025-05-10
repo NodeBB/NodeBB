@@ -3,7 +3,7 @@
 const assert = require('assert');
 const nconf = require('nconf');
 
-const db = require('./mocks/databasemock.mjs');
+const db = require('../src/database');
 const api = require('../src/api');
 const user = require('../src/user');
 const utils = require('../src/utils');
