@@ -10,7 +10,6 @@ import Plugins from '../src/plugins/index.js';
 import Emailer from '../src/emailer.js';
 import user from '../src/user/index.js';
 import meta from '../src/meta/index.js';
-import Meta from '../src/meta/index.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -51,12 +50,13 @@ describe('emailer', () => {
 		if (fs.existsSync(filePath)) {
 			fs.unlinkSync(filePath);
 		}
-		await Meta.configs.setMultiple({
+		await meta.configs.setMultiple({
 			'email:smtpTransport:enabled': '0',
 			'email:custom:test': '',
 		});
 	}
 	before(async function () {
+		await meta.templates.compile();
 		server.listen(4000);
 		await reset();
 	});
@@ -98,7 +98,7 @@ describe('emailer', () => {
 
 			assert.notEqual(output, text);
 
-			Meta.configs.set('email:custom:test', text, (err) => {
+			meta.configs.set('email:custom:test', text, (err) => {
 				assert.ifError(err);
 
 				// wait for pubsub stuff
@@ -132,7 +132,7 @@ describe('emailer', () => {
 			done();
 		};
 
-		Meta.configs.setMultiple({
+		meta.configs.setMultiple({
 			'email:smtpTransport:enabled': '1',
 			'email:smtpTransport:user': username,
 			'email:smtpTransport:pass': 'anything',
