@@ -1870,7 +1870,6 @@ describe('Controllers', () => {
 	});
 
 	describe('test routes', () => {
-		console.log("asdf", process.env.NODE_ENV);
 		if (process.env.NODE_ENV === 'development') {
 			it('should load debug route', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/debug/test`);
