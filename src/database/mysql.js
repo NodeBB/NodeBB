@@ -346,3 +346,5 @@ require('./mysql/sets')(mysqlModule);
 require('./mysql/sorted')(mysqlModule);
 require('./mysql/list')(mysqlModule);
 require('./mysql/transaction')(mysqlModule);
+
+require('../promisify')(mysqlModule, ['client', 'pool', 'transaction']);

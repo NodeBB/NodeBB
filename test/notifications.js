@@ -5,7 +5,7 @@ const assert = require('assert');
 const nconf = require('nconf');
 const util = require('util');
 
-const db = require('./mocks/databasemock.mjs');
+const db = require('../src/database');
 const meta = require('../src/meta');
 const user = require('../src/user');
 const topics = require('../src/topics');
@@ -37,26 +37,18 @@ describe('Notifications', () => {
 		});
 	});
 
-	it('should create a notification', (done) => {
-		notifications.create({
+	it('should create a notification', async () => {
+		notification = await notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
 			pid: 1,
-		}, (err, _notification) => {
-			notification = _notification;
-			assert.ifError(err);
-			assert(notification);
-			db.exists(`notifications:${notification.nid}`, (err, exists) => {
-				assert.ifError(err);
-				assert(exists);
-				db.isSortedSetMember('notifications', notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			});
 		});
+		assert(notification);
+		const exists = await db.exists(`notifications:${notification.nid}`);
+		assert(exists);
+		const isMember = await db.isSortedSetMember('notifications', notification.nid);
+		assert(isMember);
 	});
 
 	it('should return null if pid is same and importance is lower', (done) => {
@@ -105,17 +97,13 @@ describe('Notifications', () => {
 		});
 	});
 
-	it('should push a notification to uid', (done) => {
-		notifications.push(notification, [uid], (err) => {
-			assert.ifError(err);
-			setTimeout(() => {
-				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			}, 2000);
+	it('should push a notification to uid', async () => {
+		await notifications.push(notification, [uid]);
+		await new Promise((resolve) => {
+			setTimeout(resolve, 2000);
 		});
+		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert(isMember);
 	});
 
 	it('should push a notification to a group', (done) => {

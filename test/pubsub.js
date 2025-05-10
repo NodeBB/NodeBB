@@ -3,7 +3,6 @@
 const assert = require('assert');
 const nconf = require('nconf');
 
-const db = require('./mocks/databasemock.mjs');
 const pubsub = require('../src/pubsub');
 
 describe('pubsub', () => {
@@ -18,7 +17,7 @@ describe('pubsub', () => {
 		pubsub.publish('testEvent', { foo: 1 });
 	});
 
-	it('should use same event emitter', (done) => {
+	it('should use same event emitter (?01?)', (done) => {
 		pubsub.on('dummyEvent', (message) => {
 			assert.equal(message.foo, 2);
 			pubsub.removeAllListeners('dummyEvent');
@@ -40,7 +39,7 @@ describe('pubsub', () => {
 		pubsub.publish('testEvent', { foo: 3 });
 	});
 
-	it('should use same event emitter', (done) => {
+	it('should use same event emitter (?02?)', (done) => {
 		const oldValue = nconf.get('singleHostCluster');
 		pubsub.on('dummyEvent', (message) => {
 			assert.equal(message.foo, 4);

@@ -6,7 +6,6 @@ const nconf = require('nconf');
 
 const fs = require('fs');
 
-const db = require('./mocks/databasemock.mjs');
 const plugins = require('../src/plugins');
 const request = require('../src/request');
 

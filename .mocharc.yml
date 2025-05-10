@@ -3,6 +3,7 @@ timeout: 25000
 exit: true
 bail: true
 spec:
+  - "test/mocks/databasemock.mjs"
   - "test/helpers/defer-logger.mjs"
   - "test/helpers/cleanup.mjs"
 
@@ -47,4 +48,16 @@ spec:
   - "test/messaging.mjs"
   - "test/meta.mjs"
   - "test/middleware.mjs"
+  - "test/navigation.js"
+  - "test/notifications.js"
+  - "test/package-install.js"
+  - "test/pagination.js"
+  - "test/plugins-installed.js"
+  - "test/plugins.js"
+  - "test/pubsub.js"
+  - "test/rewards.js"
+  - "test/search-admin.js"
+  - "test/search.js"
+  - "test/settings.js"
+  - "test/socket.io.js"
 ignore: "test/files/**"
