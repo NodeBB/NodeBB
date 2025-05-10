@@ -109,6 +109,14 @@ if (!testDbConfig) {
 		'    "password": "",\n' +
 		'    "database": "nodebb_test"\n' +
 		'}\n' +
+		' or (mysql):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "3306",\n' +
+		'    "username": "mysql",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
 		'==========================================================='
 	);
 	winston.error(errorText);
