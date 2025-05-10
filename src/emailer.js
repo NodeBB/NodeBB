@@ -190,7 +190,7 @@ Emailer.registerApp = (expressApp) => {
 	};
 
 	Emailer.setupFallbackTransport(meta.config);
-	buildCustomTemplates(meta.config);
+	buildCustomTemplatesTasks.push(buildCustomTemplates(meta.config));
 
 	// need to shallow clone the config object
 	// otherwise prevConfig holds reference to meta.config object,
