@@ -306,12 +306,12 @@ mysqlModule.createIndices = async function () {
 	}
 };
 
-mysqlModule.checkCompatibility = async function (callback) {
+mysqlModule.checkCompatibility = function (callback) {
 	const mysqlPkg = require('mysql2/package.json');
-	await mysqlModule.checkCompatibilityVersion(mysqlPkg.version, callback);
+	mysqlModule.checkCompatibilityVersion(mysqlPkg.version, callback);
 };
 
-mysqlModule.checkCompatibilityVersion = async function (version, callback) {
+mysqlModule.checkCompatibilityVersion = function (version, callback) {
 	if (semver.lt(version, '3.10.2')) {
 		return callback(new Error('The `mysql2` package is out-of-date, please run `./nodebb setup` again.'));
 	}
