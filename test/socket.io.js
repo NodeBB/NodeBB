@@ -1,7 +1,6 @@
 'use strict';
 
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
-// TODO: clean shutdown not working
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -52,6 +51,10 @@ describe('socket.io', () => {
 			title: 'Test Topic',
 			content: 'Test topic content',
 		});
+	});
+
+	after(async () => {
+		io?.close();
 	});
 
 
