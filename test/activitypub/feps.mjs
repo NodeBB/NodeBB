@@ -112,6 +112,7 @@ describe('ActivityPub/FEPs', () => {
 				]);
 
 				assert(topic1 && topic2);
+				assert.notStrictEqual(topic1.tid, topic2.tid);
 
 				// Create new reply and move it to topic 2
 				const { pid } = await topics.reply({ uid, tid: topic1.tid, content: utils.generateUUID() });
