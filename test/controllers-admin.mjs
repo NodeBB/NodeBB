@@ -1,8 +1,6 @@
 import assert from 'assert';
 import async from 'async';
 import nconf from 'nconf';
-import { fileURLToPath } from 'url';
-import path from 'path';
 import fs from 'fs/promises';
 
 import './mocks/databasemock.mjs';
