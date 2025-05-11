@@ -29,25 +29,27 @@ module.exports = function (module) {
 
 		const poolConnection = await module.pool.getConnection();
 
-		for (let attempt = 1; attempt <= retries; attempt++) {
-			/* eslint-disable no-await-in-loop */
-			try {
-				await poolConnection.query('BEGIN');
-				res = await perform(poolConnection);
-				await poolConnection.query('COMMIT');
-				break; // Exit loop on success
-			} catch (err) {
-				await poolConnection.query('ROLLBACK');
-				if (attempt < retries) {
-					const { ms, promise } = sleepRandom();
-					winston.warn(`Deadlock detected, retrying (${attempt}/${retries}) after ${ms}ms`);
-					await promise; // Sleep for random 0-100 ms
-				} else {
-					throw err; // Rethrow if not a deadlock or retries exhausted
+		try {
+			for (let attempt = 1; attempt <= retries; attempt++) {
+				/* eslint-disable no-await-in-loop */
+				try {
+					await poolConnection.query('BEGIN');
+					res = await perform(poolConnection);
+					await poolConnection.query('COMMIT');
+					break; // Exit loop on success
+				} catch (err) {
+					await poolConnection.query('ROLLBACK');
+					if (attempt < retries) {
+						const { ms, promise } = sleepRandom();
+						winston.warn(`Deadlock detected, retrying (${attempt}/${retries}) after ${ms}ms`);
+						await promise; // Sleep for random 0-100 ms
+					} else {
+						throw err; // Rethrow if not a deadlock or retries exhausted
+					}
 				}
-			} finally {
-				poolConnection.release();
 			}
+		} finally {
+			poolConnection.release();
 		}
 		return res;
 	};
