@@ -49,7 +49,7 @@ inbox.create = async (req) => {
 
 	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
-		activitypub.feps.announce(object.id, req.body);
+		await activitypub.feps.announce(object.id, req.body);
 		// api.activitypub.add(req, { pid: object.id });
 	}
 };
@@ -244,7 +244,7 @@ inbox.like = async (req) => {
 	activitypub.helpers.log(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
 	const result = await posts.upvote(id, actor);
-	activitypub.feps.announce(object.id, req.body);
+	await activitypub.feps.announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
 
