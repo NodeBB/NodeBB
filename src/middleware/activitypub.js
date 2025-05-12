@@ -33,10 +33,12 @@ middleware.verify = async function (req, res, next) {
 		return next();
 	}
 
-	const verified = await activitypub.verify(req);
-	if (!verified && req.method === 'POST') {
-		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
-		return res.sendStatus(400);
+	if (req.method === 'POST') {
+		const verified = await activitypub.verify(req);
+		if (!verified) {
+			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
+			return res.sendStatus(400);
+		}
 	}
 
 	// Set calling user

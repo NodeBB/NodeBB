@@ -78,6 +78,21 @@ describe('Sorted Set methods', () => {
 			assert(data.includes('ddb'));
 			assert(data.includes('adb'));
 		});
+
+		it('should not error with invalid input', async () => {
+			const query = `-3217'
+OR 1251=CAST((CHR(113)||CHR(98)||CHR(118)||CHR(98)||CHR(113))||(SELECT
+(CASE WHEN (1251=1251) THEN 1 ELSE 0
+END))::text||(CHR(113)||CHR(113)||CHR(118)||CHR(98)||CHR(113)) AS
+NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:read&states[]=watching&states[]=tracking&states[]=notwatching&showLinks=`;
+			const match = `*${query.toLowerCase()}*`;
+			const data = await db.getSortedSetScan({
+				key: 'categories:name',
+				match: match,
+				limit: 500,
+			});
+			assert.strictEqual(data.length, 0);
+		});
 	});
 
 	describe('sortedSetAdd()', () => {

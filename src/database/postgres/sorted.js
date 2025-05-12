@@ -707,9 +707,9 @@ SELECT z."value",
          ON o."_key" = z."_key"
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT
-  AND z."value" LIKE '${match}'
+  AND z."value" LIKE $3
   LIMIT $2::INTEGER`,
-			values: [params.key, params.limit],
+			values: [params.key, params.limit, match],
 		});
 		if (!params.withScores) {
 			return res.rows.map(r => r.value);

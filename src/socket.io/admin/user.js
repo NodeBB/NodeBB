@@ -2,6 +2,8 @@
 
 const async = require('async');
 const winston = require('winston');
+const nconf = require('nconf');
+const pubsub = require('../../pubsub');
 
 const db = require('../../database');
 const groups = require('../../groups');
@@ -129,8 +131,15 @@ User.forcePasswordReset = async function (socket, uids) {
 	uids.forEach(uid => sockets.in(`uid_${uid}`).emit('event:logout'));
 };
 
+pubsub.on('admin.user.restartJobs', () => {
+	if (nconf.get('runJobs')) {
+		winston.verbose('[user/jobs] Restarting jobs...');
+		user.startJobs();
+	}
+});
+
 User.restartJobs = async function () {
-	user.startJobs();
+	pubsub.publish('admin.user.restartJobs', {});
 };
 
 User.loadGroups = async function (socket, uids) {

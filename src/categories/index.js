@@ -85,7 +85,13 @@ Categories.getCategoryById = async function (data) {
 };
 
 Categories.getCidByHandle = async function (handle) {
-	return await db.sortedSetScore('categoryhandle:cid', handle);
+	let cid = await db.sortedSetScore('categoryhandle:cid', handle);
+	if (!cid) {
+		// remote cids
+		cid = await db.getObjectField('handle:cid', handle);
+	}
+
+	return cid;
 };
 
 Categories.getAllCidsFromSet = async function (key) {
