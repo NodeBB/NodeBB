@@ -27,43 +27,22 @@ describe('Admin Controllers', () => {
 	let jar;
 
 	before(async () => {
-		const results = await new Promise((resolve, reject) => {
-			async.series(
-				{
-					category: next => categories.create({ name: 'Test Category', description: 'Test category created by testing script' }, next),
-					adminUid: next => user.create({ username: 'admin', password: 'barbar' }, next),
-					regularUid: next => user.create({ username: 'regular', password: 'regularpwd' }, next),
-					regular2Uid: next => user.create({ username: 'regular2' }, next),
-					moderatorUid: next => user.create({ username: 'moderator', password: 'modmod' }, next),
-				},
-				(err, results) => {
-					if (err) reject(err);
-					else resolve(results);
-				}
-			);
+		const category = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
 		});
 
-		adminUid = results.adminUid;
-		regularUid = results.regularUid;
-		regular2Uid = results.regular2Uid;
-		moderatorUid = results.moderatorUid;
-		cid = results.category.cid;
+		cid = category.cid;
+		adminUid = await user.create({ username: 'admin', password: 'barbar' });
+		regularUid = await user.create({ username: 'regular', password: 'regularpwd' });
+		regular2Uid = await user.create({ username: 'regular2' });
+		moderatorUid = await user.create({ username: 'moderator', password: 'modmod' });
 
-		const adminPost = await topics.post({
-			uid: adminUid,
-			title: 'test topic title',
-			content: 'test topic content',
-			cid: results.category.cid,
-		});
+		const adminPost = await topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: cid });
 		tid = adminPost.topicData.tid;
 		pid = adminPost.postData.pid;
 
-		const regularPost = await topics.post({
-			uid: regular2Uid,
-			title: "regular user's test topic title",
-			content: 'test topic content',
-			cid: results.category.cid,
-		});
+		const regularPost = await topics.post({ uid: regular2Uid, title: 'regular user\'s test topic title', content: 'test topic content', cid: cid });
 		regularPid = regularPost.postData.pid;
 	});
 
