@@ -3,6 +3,9 @@ timeout: 25000
 exit: true
 bail: true
 spec:
+# databasemock does not contain any tests, but is required for the test suite to run
+# it contains before/after hooks so it can not be loaded with --require
+# before any cjs tests the databasemock must be loaded here because it contains top level await
   - "test/mocks/databasemock.mjs"
   - "test/helpers/defer-logger.mjs"
   - "test/helpers/cleanup.mjs"
