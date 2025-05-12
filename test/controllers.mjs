@@ -1,13 +1,14 @@
-// Note: Ensure your package.json has `"type": "module"` or use `.mjs` extension
-
 import assert from 'assert';
 import nconf from 'nconf';
 import fs from 'fs/promises';
 import path from 'path';
 import { promisify } from 'util';
 
-import request from '../src/request.js';
+// db has to be imported before request
+// I don't know why, but it is what it is
+// or else some flaky tests get even flakier
 import db from './mocks/databasemock.mjs';
+import request from '../src/request.js';
 import api from '../src/api/index.js';
 import categories from '../src/categories/index.js';
 import topics from '../src/topics/index.js';
@@ -563,6 +564,7 @@ describe('Controllers', () => {
 					const { cid } = await categories.create({ name });
 					await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
 					await privileges.categories.give(['groups:topics:read'], cid, 'verified-users');
+					await sleep(2000);
 					const { response } = await request.get(`${nconf.get('url')}/category/${cid}/${slugify(name)}`, {
 						jar,
 						maxRedirect: 0,
@@ -971,7 +973,7 @@ describe('Controllers', () => {
 			it('should redirect to user profile', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/me`, { jar });
 				assert.equal(response.statusCode, 200);
-				assert(body.includes('"template":{"name":"account/profile","account/profile":true}'));
+				assert(body.includes('"template":{"name":"account/profile","account/profile":true}'), body);
 				assert(body.includes('"username":"foo"'));
 			});
 
