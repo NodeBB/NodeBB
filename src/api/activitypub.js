@@ -310,7 +310,15 @@ activitypubApi.delete.note = enabledCheck(async (caller, { pid }) => {
 activitypubApi.like = {};
 
 activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
-	if (!activitypub.helpers.isUri(pid)) { // remote only
+	const payload = {
+		id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
+		type: 'Like',
+		actor: `${nconf.get('url')}/uid/${caller.uid}`,
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+
+	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
+		await activitypub.feps.announce(pid, payload);
 		return;
 	}
 
@@ -318,13 +326,6 @@ activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
 	if (!activitypub.helpers.isUri(uid)) {
 		return;
 	}
-
-	const payload = {
-		id: `${nconf.get('url')}/uid/${caller.uid}#activity/like/${encodeURIComponent(pid)}`,
-		type: 'Like',
-		actor: `${nconf.get('url')}/uid/${caller.uid}`,
-		object: pid,
-	};
 
 	await Promise.all([
 		activitypub.send('uid', caller.uid, [uid], payload),
