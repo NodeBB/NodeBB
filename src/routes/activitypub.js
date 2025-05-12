@@ -25,28 +25,28 @@ module.exports = function (app, middleware, controllers) {
 		middleware.activitypub.normalize,
 	];
 
-	app.get('/actor', middlewares, controllers.activitypub.actors.application);
-	app.post('/inbox', [...middlewares, ...inboxMiddlewares], controllers.activitypub.postInbox);
+	app.get('/actor', middlewares, helpers.tryRoute(controllers.activitypub.actors.application));
+	app.post('/inbox', [...middlewares, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 
-	app.get('/uid/:uid', [...middlewares, middleware.assert.user], controllers.activitypub.actors.user);
-	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user], controllers.activitypub.actors.userBySlug);
-	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], controllers.activitypub.getInbox);
-	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], controllers.activitypub.postInbox);
-	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], controllers.activitypub.getOutbox);
-	app.post('/uid/:uid/outbox', [...middlewares, middleware.assert.user], controllers.activitypub.postOutbox);
-	app.get('/uid/:uid/following', [...middlewares, middleware.assert.user], controllers.activitypub.getFollowing);
-	app.get('/uid/:uid/followers', [...middlewares, middleware.assert.user], controllers.activitypub.getFollowers);
+	app.get('/uid/:uid', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.actors.user));
+	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
+	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getInbox));
+	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
+	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getOutbox));
+	app.post('/uid/:uid/outbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.postOutbox));
+	app.get('/uid/:uid/following', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getFollowing));
+	app.get('/uid/:uid/followers', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getFollowers));
 
-	app.get('/post/:pid', [...middlewares, middleware.assert.post], controllers.activitypub.actors.note);
-	app.get('/post/:pid/replies', [...middlewares, middleware.assert.post], controllers.activitypub.actors.replies);
+	app.get('/post/:pid', [...middlewares, middleware.assert.post], helpers.tryRoute(controllers.activitypub.actors.note));
+	app.get('/post/:pid/replies', [...middlewares, middleware.assert.post], helpers.tryRoute(controllers.activitypub.actors.replies));
 
-	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], controllers.activitypub.actors.topic);
+	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], helpers.tryRoute(controllers.activitypub.actors.topic));
 
-	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], controllers.activitypub.getInbox);
-	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], controllers.activitypub.postInbox);
-	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.getCategoryOutbox);
-	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], controllers.activitypub.postOutbox);
-	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], controllers.activitypub.actors.category);
+	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getInbox));
+	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub).postInbox);
+	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getCategoryOutbox));
+	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.postOutbox));
+	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.category));
 
-	app.get('/message/:mid', [...middlewares, middleware.assert.message], controllers.activitypub.actors.message);
+	app.get('/message/:mid', [...middlewares, middleware.assert.message], helpers.tryRoute(controllers.activitypub.actors.message));
 };
