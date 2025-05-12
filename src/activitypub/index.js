@@ -232,49 +232,49 @@ ActivityPub.verify = async (req) => {
 		return false;
 	}
 
-	// Break the signature apart
-	let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
-		const split = cur.split('="');
-		const key = split.shift();
-		const value = split.join('="');
-		memo[key] = value.slice(0, -1);
-		return memo;
-	}, {});
-
-	const acceptableHashes = getHashes();
-	if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
-		algorithm = 'sha256';
-	}
-
-	// Re-construct signature string
-	const signed_string = headers.split(' ').reduce((memo, cur) => {
-		switch (cur) {
-			case '(request-target)': {
-				memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
-				break;
-			}
-
-			case '(created)': {
-				memo.push(`${cur}: ${created}`);
-				break;
-			}
-
-			case '(expires)': {
-				memo.push(`${cur}: ${expires}`);
-				break;
-			}
-
-			default: {
-				memo.push(`${cur}: ${req.headers[cur]}`);
-				break;
-			}
-		}
-
-		return memo;
-	}, []).join('\n');
-
 	// Verify the signature string via public key
 	try {
+		// Break the signature apart
+		let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
+			const split = cur.split('="');
+			const key = split.shift();
+			const value = split.join('="');
+			memo[key] = value.slice(0, -1);
+			return memo;
+		}, {});
+
+		const acceptableHashes = getHashes();
+		if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
+			algorithm = 'sha256';
+		}
+
+		// Re-construct signature string
+		const signed_string = headers.split(' ').reduce((memo, cur) => {
+			switch (cur) {
+				case '(request-target)': {
+					memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
+					break;
+				}
+
+				case '(created)': {
+					memo.push(`${cur}: ${created}`);
+					break;
+				}
+
+				case '(expires)': {
+					memo.push(`${cur}: ${expires}`);
+					break;
+				}
+
+				default: {
+					memo.push(`${cur}: ${req.headers[cur]}`);
+					break;
+				}
+			}
+
+			return memo;
+		}, []).join('\n');
+
 		// Retrieve public key from remote instance
 		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
 		const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
