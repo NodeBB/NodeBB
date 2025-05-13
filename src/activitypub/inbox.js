@@ -41,6 +41,7 @@ inbox.create = async (req) => {
 		return await activitypub.notes.assertPrivate(object);
 	}
 
+	// Category sync, remove when cross-posting available
 	const { cids } = await activitypub.actors.getLocalFollowers(actor);
 	let cid = null;
 	if (cids.size > 0) {
@@ -262,10 +263,17 @@ inbox.announce = async (req) => {
 	let tid;
 	let pid;
 
+	// Category sync, remove when cross-posting available
 	const { cids } = await activitypub.actors.getLocalFollowers(actor);
 	let cid = null;
 	if (cids.size > 0) {
 		cid = Array.from(cids)[0];
+	}
+
+	// 1b12 announce
+	const categoryActor = await categories.exists(actor);
+	if (categoryActor) {
+		cid = actor;
 	}
 
 	switch(true) {
@@ -318,13 +326,7 @@ inbox.announce = async (req) => {
 					}
 				}
 
-				// Handle case where Announce(Create(Note-ish)) is received
-				if (object.type === 'Create' && activitypub._constants.acceptedPostTypes.includes(object.object.type)) {
-					pid = object.object.id;
-				} else {
-					pid = object.id;
-				}
-
+				pid = object.id;
 				pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
 				if (!pid) {
 					return;

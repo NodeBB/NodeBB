@@ -115,24 +115,18 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
-		// Check recipients/audience for category (local or remote)
+		// Check recipients/audience for local category
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
 		await activitypub.actors.assert(Array.from(set));
-
-		// Local
 		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 		const recipientCids = resolved
 			.filter(Boolean)
 			.filter(({ type }) => type === 'category')
 			.map(obj => obj.id);
 
-		// Remote
-		const assertedGroups = await db.exists(Array.from(set).map(id => `categoryRemote:${id}`));
-		const remoteCid = Array.from(set).filter((_, idx) => assertedGroups[idx]).shift();
-
-		if (remoteCid || recipientCids.length) {
+		if (recipientCids.length) {
 			// Overrides passed-in value, respect addressing from main post over booster
-			options.cid = remoteCid || recipientCids.shift();
+			options.cid = recipientCids.shift();
 		}
 
 		// mainPid ok to leave as-is
