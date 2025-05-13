@@ -8,9 +8,13 @@ const connection = module.exports;
 
 connection.getConnectionConfig = function (mysqlConfig) {
 	mysqlConfig = mysqlConfig || nconf.get('mysql');
+	/**
+	 * @type {import('mysql2/promise').ConnectionOptions}
+	 */
 	const config = {
 		host: mysqlConfig.host || '127.0.0.1',
 		port: mysqlConfig.port || 3306,
+		socketPath: mysqlConfig.socketPath || undefined,
 		user: mysqlConfig.user || 'root',
 		password: mysqlConfig.password || '',
 		database: mysqlConfig.database || 'nodebb',

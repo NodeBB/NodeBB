@@ -84,6 +84,7 @@ function saveDatabaseConfig(config, databaseConfig) {
 		config.mysql = {
 			host: databaseConfig['mysql:host'],
 			port: databaseConfig['mysql:port'],
+			socketPath: databaseConfig['mysql:socketPath'],
 			username: databaseConfig['mysql:username'],
 			password: databaseConfig['mysql:password'],
 			database: databaseConfig['mysql:database'],
