@@ -17,7 +17,19 @@ const topics = require('../topics');
 const file = require('../file');
 const meta = require('../meta');
 
+/**
+ * @type {cronJob[]}
+ */
+const jobs = [];
+
 module.exports = function (Posts) {
+	Posts.stop = function () {
+		jobs.forEach((job) => {
+			job.stop();
+		});
+		jobs.length = 0;
+	};
+
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
@@ -32,7 +44,7 @@ module.exports = function (Posts) {
 
 	const runJobs = nconf.get('runJobs');
 	if (runJobs) {
-		new cronJob('0 2 * * 0', async () => {
+		jobs.push(new cronJob('0 2 * * 0', async () => {
 			const orphans = await Posts.uploads.cleanOrphans();
 			if (orphans.length) {
 				winston.info(`[posts/uploads] Deleting ${orphans.length} orphaned uploads...`);
@@ -40,7 +52,7 @@ module.exports = function (Posts) {
 					process.stdout.write(`${chalk.red('  - ')} ${relPath}`);
 				});
 			}
-		}, null, true);
+		}, null, true));
 	}
 
 	Posts.uploads.sync = async function (pid) {

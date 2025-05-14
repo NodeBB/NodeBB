@@ -1,19 +1,9 @@
 'use strict';
 
-const zxcvbn = require('zxcvbn');
-const winston = require('winston');
-
-const db = require('../database');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const plugins = require('../plugins');
-const groups = require('../groups');
-const meta = require('../meta');
-const analytics = require('../analytics');
-
 module.exports = function (User) {
 	User.create = async function (data) {
 		data.username = data.username.trim();
+		const slugify = require('../slugify');
 		data.userslug = slugify(data.username);
 		if (data.email !== undefined) {
 			data.email = String(data.email).trim();
@@ -29,11 +19,13 @@ module.exports = function (User) {
 		try {
 			return await create(data);
 		} finally {
+			const db = require('../database');
 			await db.deleteObjectFields('locks', [data.username, data.email]);
 		}
 	};
 
 	async function lock(value, error) {
+		const db = require('../database');
 		const count = await db.incrObjectField('locks', value);
 		if (count > 1) {
 			throw new Error(error);
@@ -66,12 +58,15 @@ module.exports = function (User) {
 		const userNameChanged = !!renamedUsername;
 		if (userNameChanged) {
 			userData.username = renamedUsername;
+			const slugify = require('../slugify');
 			userData.userslug = slugify(renamedUsername);
 		}
 
+		const plugins = require('../plugins');
 		const results = await plugins.hooks.fire('filter:user.create', { user: userData, data: data });
 		userData = results.user;
 
+		const db = require('../database');
 		const uid = await db.incrObjectField('global', 'nextUid');
 		const isFirstUser = uid === 1;
 		userData.uid = uid;
@@ -93,6 +88,9 @@ module.exports = function (User) {
 			bulkAdd.push(['fullname:sorted', 0, `${userData.fullname.toLowerCase()}:${userData.uid}`]);
 		}
 
+		const groups = require('../groups');
+		const meta = require('../meta');
+		const analytics = require('../analytics');
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
 			analytics.increment('registrations'),
@@ -109,6 +107,7 @@ module.exports = function (User) {
 		}
 
 		if (data.email && userData.uid > 1) {
+			const winston = require('winston');
 			await User.email.sendValidationEmail(userData.uid, {
 				email: data.email,
 				template: 'welcome',
@@ -137,6 +136,7 @@ module.exports = function (User) {
 	}
 
 	User.isDataValid = async function (userData) {
+		const utils = require('../utils');
 		if (userData.email && !utils.isEmailValid(userData.email)) {
 			throw new Error('[[error:invalid-email]]');
 		}
@@ -158,8 +158,10 @@ module.exports = function (User) {
 	};
 
 	User.isPasswordValid = function (password, minStrength) {
+		const meta = require('../meta');
 		minStrength = (minStrength || minStrength === 0) ? minStrength : meta.config.minimumPasswordStrength;
 
+		const utils = require('../utils');
 		// Sanity checks: Checks if defined and is string
 		if (!password || !utils.isPasswordValid(password)) {
 			throw new Error('[[error:invalid-password]]');
@@ -173,6 +175,7 @@ module.exports = function (User) {
 			throw new Error('[[error:password-too-long]]');
 		}
 
+		const zxcvbn = require('zxcvbn');
 		const strength = zxcvbn(password);
 		if (strength.score < minStrength) {
 			throw new Error('[[user:weak-password]]');
@@ -180,6 +183,7 @@ module.exports = function (User) {
 	};
 
 	User.uniqueUsername = async function (userData) {
+		const meta = require('../meta');
 		let numTries = 0;
 		let { username } = userData;
 		while (true) {

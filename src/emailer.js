@@ -20,6 +20,8 @@ const translator = require('./translator');
 const pubsub = require('./pubsub');
 const file = require('./file');
 
+const { default: BuildCustomTemplatesTasks } = require('./emailer/BuildCustomTemplatesTasks.mjs');
+
 const viewsDir = nconf.get('views_dir');
 const Emailer = module.exports;
 
@@ -165,6 +167,10 @@ Emailer.setupFallbackTransport = (config) => {
 	}
 };
 
+
+
+const buildCustomTemplatesTasks = new BuildCustomTemplatesTasks();
+
 Emailer.registerApp = (expressApp) => {
 	app = expressApp;
 
@@ -184,7 +190,7 @@ Emailer.registerApp = (expressApp) => {
 	};
 
 	Emailer.setupFallbackTransport(meta.config);
-	buildCustomTemplates(meta.config);
+	buildCustomTemplatesTasks.push(buildCustomTemplates(meta.config));
 
 	// need to shallow clone the config object
 	// otherwise prevConfig holds reference to meta.config object,
@@ -209,7 +215,7 @@ Emailer.registerApp = (expressApp) => {
 			if (smtpSettingsChanged(config)) {
 				Emailer.setupFallbackTransport(config);
 			}
-			buildCustomTemplates(config);
+			buildCustomTemplatesTasks.push(buildCustomTemplates(config));
 
 			prevConfig = { ...prevConfig, ...config };
 		}
@@ -222,6 +228,7 @@ Emailer.send = async (template, uid, params) => {
 	if (!app) {
 		throw Error('[emailer] App not ready!');
 	}
+	await buildCustomTemplatesTasks.awaitAll();
 
 	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed', 'banned']);
 
@@ -281,6 +288,8 @@ Emailer.send = async (template, uid, params) => {
 };
 
 Emailer.sendToEmail = async (template, email, language, params) => {
+	await buildCustomTemplatesTasks.awaitAll();
+
 	const lang = language || meta.config.defaultLang || 'en-GB';
 	const unsubscribable = ['digest', 'notification'];
 
@@ -377,6 +386,8 @@ Emailer.sendViaFallback = async (data) => {
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
+	await buildCustomTemplatesTasks.awaitAll();
+
 	const html = await app.renderAsync(`emails/${template}`, params);
 	return await translator.translate(html, lang);
 };

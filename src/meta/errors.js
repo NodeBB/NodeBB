@@ -17,9 +17,10 @@ const runJobs = nconf.get('runJobs');
 
 let counters = {};
 let total = {};
+let job;
 
 Errors.init = async function () {
-	new cronJob('0 * * * * *', async () => {
+	job = new cronJob('0 * * * * *', async () => {
 		publishLocalErrors();
 		if (runJobs) {
 			await setTimeout(2000);
@@ -37,6 +38,10 @@ Errors.init = async function () {
 			}
 		});
 	}
+};
+
+Errors.stop = function () {
+	job?.stop();
 };
 
 function publishLocalErrors() {

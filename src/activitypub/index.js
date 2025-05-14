@@ -61,9 +61,20 @@ ActivityPub.actors = require('./actors');
 ActivityPub.instances = require('./instances');
 ActivityPub.feps = require('./feps');
 
+/**
+ * @type {CronJob[]}
+ */
+const jobs = [];
+ActivityPub.stop = function () {
+	jobs.forEach((job) => {
+		job.stop();
+	});
+	jobs.length = 0;
+};
+
 ActivityPub.startJobs = () => {
 	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
-	new CronJob('0 0 * * *', async () => {
+	jobs.push(new CronJob('0 0 * * *', async () => {
 		if (!meta.config.activitypubEnabled) {
 			return;
 		}
@@ -73,9 +84,9 @@ ActivityPub.startJobs = () => {
 		} catch (err) {
 			winston.error(err.stack);
 		}
-	}, null, true, null, null, false); // change last argument to true for debugging
+	}, null, true, null, null, false)); // change last argument to true for debugging
 
-	new CronJob('*/30 * * * *', async () => {
+	jobs.push(new CronJob('*/30 * * * *', async () => {
 		if (!meta.config.activitypubEnabled) {
 			return;
 		}
@@ -84,7 +95,7 @@ ActivityPub.startJobs = () => {
 		} catch (err) {
 			winston.error(err.stack);
 		}
-	}, null, true, null, null, false); // change last argument to true for debugging
+	}, null, true, null, null, false)); // change last argument to true for debugging
 };
 
 ActivityPub.resolveId = async (uid, id) => {

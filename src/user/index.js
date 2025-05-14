@@ -7,9 +7,9 @@ const plugins = require('../plugins');
 const db = require('../database');
 const privileges = require('../privileges');
 const categories = require('../categories');
-const meta = require('../meta');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
+const meta = require('../meta');
 
 const User = module.exports;
 

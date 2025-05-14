@@ -16,15 +16,26 @@ const plugins = require('../plugins');
 
 const Scheduled = module.exports;
 
+/**
+ * @type {CronJob[]}
+ */
+const jobs = [];
+Scheduled.stop = function () {
+	jobs.forEach((job) => {
+		job.stop();
+	});
+	jobs.length = 0;
+};
+
 Scheduled.startJobs = function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', async () => {
+	jobs.push(new CronJob('*/1 * * * *', async () => {
 		try {
 			await Scheduled.handleExpired();
 		} catch (err) {
 			winston.error(err.stack);
 		}
-	}, null, true);
+	}, null, true));
 };
 
 Scheduled.handleExpired = async function () {
