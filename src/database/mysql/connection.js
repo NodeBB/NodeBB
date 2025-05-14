@@ -15,7 +15,7 @@ connection.getConnectionConfig = function (mysqlConfig) {
 		host: mysqlConfig.host || '127.0.0.1',
 		port: mysqlConfig.port || 3306,
 		socketPath: mysqlConfig.socketPath || undefined,
-		user: mysqlConfig.user || 'root',
+		user: mysqlConfig.username || 'root',
 		password: mysqlConfig.password || '',
 		database: mysqlConfig.database || 'nodebb',
 		connectionLimit: mysqlConfig.connectionLimit || 10,
