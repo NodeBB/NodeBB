@@ -42,7 +42,7 @@ const sanitizeConfig = {
 
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { attributedTo, url, image, content, source } = object;
+	let { type, attributedTo, url, image, content, source, attachment } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -102,6 +102,30 @@ Mocks._normalize = async (object) => {
 
 	if (url) { // Handle url array
 		if (Array.isArray(url)) {
+			// Special handling for Video type (from PeerTube specifically)
+			if (type === 'Video') {
+				const stream = url.reduce((memo, { type, mediaType, tag }) => {
+					if (!memo) {
+						if (type === 'Link' && mediaType === 'application/x-mpegURL') {
+							memo = tag.reduce((memo, { type, mediaType, href }) => {
+								if (!memo && (type === 'Link' && mediaType === 'video/mp4')) {
+									memo = { type, mediaType, href };
+								}
+
+								return memo;
+							}, null);
+						}
+					}
+
+					return memo;
+				}, null);
+
+				if (stream) {
+					attachment = attachment || [];
+					attachment.push(stream);
+				}
+			}
+
 			url = url.reduce((valid, cur) => {
 				if (typeof cur === 'string') {
 					valid.push(cur);
@@ -126,6 +150,7 @@ Mocks._normalize = async (object) => {
 		sourceContent,
 		image,
 		url,
+		attachment,
 	};
 };
 
@@ -332,7 +357,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
-			type, to, cc, audience, attachment, tag, image,
+			to, cc, audience, attachment, tag, image,
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -345,11 +370,6 @@ Mocks.post = async (objects) => {
 		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
-
-		if (type === 'Video') {
-			attachment = attachment || [];
-			attachment.push({ url });
-		}
 
 		const payload = {
 			uid,
