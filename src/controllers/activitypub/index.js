@@ -6,6 +6,7 @@ const winston = require('winston');
 const meta = require('../../meta');
 const user = require('../../user');
 const activitypub = require('../../activitypub');
+const utils = require('../../utils');
 const helpers = require('../helpers');
 
 const Controller = module.exports;
@@ -60,71 +61,53 @@ Controller.fetch = async (req, res, next) => {
 Controller.getFollowing = async (req, res) => {
 	const { followingCount, followingRemoteCount } = await user.getUserFields(req.params.uid, ['followingCount', 'followingRemoteCount']);
 	const totalItems = parseInt(followingCount || 0, 10) + parseInt(followingRemoteCount || 0, 10);
-	let orderedItems;
-	let next = (totalItems && `${nconf.get('url')}/uid/${req.params.uid}/following?page=`) || null;
 
-	if (totalItems) {
-		if (req.query.page) {
-			const page = parseInt(req.query.page, 10) || 1;
-			const resultsPerPage = 50;
-			const start = Math.max(0, page - 1) * resultsPerPage;
-			const stop = start + resultsPerPage - 1;
+	const count = totalItems;
+	const collection = await activitypub.helpers.generateCollection({
+		method: user.getFollowing.bind(null, req.params.uid),
+		count,
+		perPage: 50,
+		page: req.query.page,
+		url: `${nconf.get('url')}/uid/${req.params.uid}/following`,
+	});
 
-			orderedItems = await user.getFollowing(req.params.uid, start, stop);
-			orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
-			if (stop < totalItems - 1) {
-				next = `${next}${page + 1}`;
-			} else {
-				next = null;
+	if (collection.hasOwnProperty('orderedItems')) {
+		collection.orderedItems = collection.orderedItems.map(({ uid }) => {
+			if (utils.isNumber(uid)) {
+				return `${nconf.get('url')}/uid/${uid}`;
 			}
-		} else {
-			orderedItems = [];
-			next = `${next}1`;
-		}
+
+			return uid;
+		});
 	}
 
-	res.status(200).json({
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		type: 'OrderedCollection',
-		totalItems,
-		orderedItems,
-		next,
-	});
+	res.status(200).json(collection);
 };
 
 Controller.getFollowers = async (req, res) => {
 	const { followerCount, followerRemoteCount } = await user.getUserFields(req.params.uid, ['followerCount', 'followerRemoteCount']);
 	const totalItems = parseInt(followerCount || 0, 10) + parseInt(followerRemoteCount || 0, 10);
-	let orderedItems = [];
-	let next = (totalItems && `${nconf.get('url')}/uid/${req.params.uid}/followers?page=`) || null;
 
-	if (totalItems) {
-		if (req.query.page) {
-			const page = parseInt(req.query.page, 10) || 1;
-			const resultsPerPage = 50;
-			const start = Math.max(0, page - 1) * resultsPerPage;
-			const stop = start + resultsPerPage - 1;
+	const count = totalItems;
+	const collection = await activitypub.helpers.generateCollection({
+		method: user.getFollowers.bind(null, req.params.uid),
+		count,
+		perPage: 50,
+		page: req.query.page,
+		url: `${nconf.get('url')}/uid/${req.params.uid}/followers`,
+	});
 
-			orderedItems = await user.getFollowers(req.params.uid, start, stop);
-			orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
-			if (stop < totalItems - 1) {
-				next = `${next}${page + 1}`;
-			} else {
-				next = null;
+	if (collection.hasOwnProperty('orderedItems')) {
+		collection.orderedItems = collection.orderedItems.map(({ uid }) => {
+			if (utils.isNumber(uid)) {
+				return `${nconf.get('url')}/uid/${uid}`;
 			}
-		} else {
-			orderedItems = [];
-			next = `${next}1`;
-		}
+
+			return uid;
+		});
 	}
 
-	res.status(200).json({
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		type: 'OrderedCollection',
-		totalItems,
-		orderedItems,
-		next,
-	});
+	res.status(200).json(collection);
 };
 
 Controller.getOutbox = async (req, res) => {

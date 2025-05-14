@@ -1,3 +1,42 @@
+#### v4.3.2 (2025-05-12)
+
+##### Chores
+
+*  up mentions (fcf9e8b7)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  update changelog for v4.3.1 (2310a7b8)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  sql injection in sortedSetScan (16504bad)
+*  escape flag filters (285d438c)
+*  #13407, don't restart user jobs (31be083e)
+*  closes #13405, catch errors in ap.verify (8174578c)
+*  send proper accept header for outgoing webfinger requests (20ab9069)
+*  wrap generateCollection calls in try..catch to send 404 if thrown (64fdf91b)
+*  #13397, null values in category sync list (26e6a222)
+*  #13392, regression from c6f2c87, unable to unfollow from pending follows (401ff797)
+*  #13397, update getCidByHandle to work with remote categories, fix sync with handles causing issues with null entries (a9a5ab5e)
+*  correct stage name in dev dockerfile (#13393) (10077d0f)
+
+##### Refactors
+
+*  wrap ap routes in try/catch (00668bdc)
+*  call verify if request is POST (dfa21329)
+
 #### v4.3.1 (2025-05-07)
 
 ##### Chores

@@ -895,7 +895,7 @@ describe('Pruning', () => {
 			const { id } = helpers.mocks.note({
 				cc: [cid],
 			});
-			await activitypub.notes.assert(0, id);
+			await activitypub.notes.assert(0, id, { cid });
 
 			const total = await db.sortedSetCard('usersRemote:lastCrawled');
 			const result = await activitypub.actors.prune();

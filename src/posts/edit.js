@@ -35,7 +35,7 @@ module.exports = function (Posts) {
 		await scheduledTopicCheck(data, topicData);
 
 		data.content = data.content === null ? postData.content : data.content;
-		const oldContent = postData.content; // for diffing purposes
+		const oldContent = postData.sourceContent || postData.content; // for diffing purposes
 		const editPostData = getEditPostData(data, topicData, postData);
 
 		if (data.handle) {
@@ -55,7 +55,7 @@ module.exports = function (Posts) {
 		]);
 
 		await Posts.setPostFields(data.pid, result.post);
-		const contentChanged = data.content !== oldContent ||
+		const contentChanged = ((data.sourceContent || data.content) !== oldContent) ||
 			topic.renamed ||
 			topic.tagsupdated;
 
@@ -194,6 +194,7 @@ module.exports = function (Posts) {
 	function getEditPostData(data, topicData, postData) {
 		const editPostData = {
 			content: data.content,
+			sourceContent: data.sourceContent,
 			editor: data.uid,
 		};
 

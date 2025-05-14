@@ -41,6 +41,7 @@ inbox.create = async (req) => {
 		return await activitypub.notes.assertPrivate(object);
 	}
 
+	// Category sync, remove when cross-posting available
 	const { cids } = await activitypub.actors.getLocalFollowers(actor);
 	let cid = null;
 	if (cids.size > 0) {
@@ -49,7 +50,7 @@ inbox.create = async (req) => {
 
 	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
-		activitypub.feps.announce(object.id, req.body);
+		await activitypub.feps.announce(object.id, req.body);
 		// api.activitypub.add(req, { pid: object.id });
 	}
 };
@@ -84,8 +85,8 @@ inbox.update = async (req) => {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
-	switch (object.type) {
-		case 'Note': {
+	switch (true) {
+		case activitypub._constants.acceptedPostTypes.includes(object.type): {
 			const [isNote, isMessage] = await Promise.all([
 				posts.exists(object.id),
 				messaging.messageExists(object.id),
@@ -95,6 +96,7 @@ inbox.update = async (req) => {
 				switch (true) {
 					case isNote: {
 						const postData = await activitypub.mocks.post(object);
+						postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 						await posts.edit(postData);
 						const isDeleted = await posts.getPostField(object.id, 'deleted');
 						if (isDeleted) {
@@ -136,16 +138,12 @@ inbox.update = async (req) => {
 			break;
 		}
 
-		case 'Application': // falls through
-		case 'Group': // falls through
-		case 'Organization': // falls through
-		case 'Service': // falls through
-		case 'Person': {
+		case activitypub._constants.acceptableActorTypes.has(object.type): {
 			await activitypub.actors.assert(object.id, { update: true });
 			break;
 		}
 
-		case 'Tombstone': {
+		case object.type === 'Tombstone': {
 			const [isNote, isMessage/* , isActor */] = await Promise.all([
 				posts.exists(object.id),
 				messaging.messageExists(object.id),
@@ -247,12 +245,12 @@ inbox.like = async (req) => {
 	activitypub.helpers.log(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
 	const result = await posts.upvote(id, actor);
-	activitypub.feps.announce(object.id, req.body);
+	await activitypub.feps.announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
 
 inbox.announce = async (req) => {
-	const { actor, object, published, to, cc } = req.body;
+	let { actor, object, published, to, cc } = req.body;
 	activitypub.helpers.log(`[activitypub/inbox/announce] Parsing Announce(${object.type}) from ${actor}`);
 	let timestamp = new Date(published);
 	timestamp = timestamp.toString() !== 'Invalid Date' ? timestamp.getTime() : Date.now();
@@ -265,10 +263,17 @@ inbox.announce = async (req) => {
 	let tid;
 	let pid;
 
+	// Category sync, remove when cross-posting available
 	const { cids } = await activitypub.actors.getLocalFollowers(actor);
 	let cid = null;
 	if (cids.size > 0) {
 		cid = Array.from(cids)[0];
+	}
+
+	// 1b12 announce
+	const categoryActor = await categories.exists(actor);
+	if (categoryActor) {
+		cid = actor;
 	}
 
 	switch(true) {
@@ -292,6 +297,12 @@ inbox.announce = async (req) => {
 			break;
 		}
 
+		case object.type === 'Create': {
+			object = object.object;
+			// falls through
+		}
+
+		// Announce(Object)
 		case activitypub._constants.acceptedPostTypes.includes(object.type): {
 			if (String(object.id).startsWith(nconf.get('url'))) { // Local object
 				const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
@@ -315,13 +326,7 @@ inbox.announce = async (req) => {
 					}
 				}
 
-				// Handle case where Announce(Create(Note-ish)) is received
-				if (object.type === 'Create' && activitypub._constants.acceptedPostTypes.includes(object.object.type)) {
-					pid = object.object.id;
-				} else {
-					pid = object.id;
-				}
-
+				pid = object.id;
 				pid = await activitypub.resolveId(0, pid); // in case wrong id is passed-in; unlikely, but still.
 				if (!pid) {
 					return;

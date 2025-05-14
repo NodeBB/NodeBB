@@ -16,22 +16,22 @@
 	"container.body": "גוף",
 	"container.alert": "התראה",
 
-	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הווידג'ט?",
+	"alert.confirm-delete": "האם למחוק את הווידג'ט?",
 	"alert.updated": "העלאת ווידג'טים",
 	"alert.update-success": "הווידג'טים הועלו בהצלחה",
 	"alert.clone-success": "הווידג'טים שוכפלו בהצלחה",
 
-	"error.select-clone": "בחר דף לשכפל ממנו",
+	"error.select-clone": "בחרו דף לשכפל ממנו",
 
 	"title": "כותרת",
-	"title.placeholder": "כותרת (מוצגת רק בגורמים מכילים מסוימים)",
-	"container": "גורם מכיל",
-	"container.placeholder": "גרור ושחרר גורם מכיל (container) או הזן HTML כאן.",
+	"title.placeholder": "כותרת (מוצגת רק ב-containers מסוימים)",
+	"container": "גורם מכיל - Container",
+	"container.placeholder": "גררו ושחררו גורם מכיל (container) או הזינו HTML כאן.",
 	"show-to-groups": "יוצג בקבוצות",
 	"hide-from-groups": "יוסתר מקבוצות",
 	"start-date": "תאריך התחלה",
 	"end-date": "תאריך סיום",
-	"hide-on-mobile": "הסתר במובייל",
-	"hide-drafts": "הסתר טיוטות",
-	"show-drafts": "הצג טיוטות"
+	"hide-on-mobile": "הסתרה במובייל",
+	"hide-drafts": "הסתרת טיוטות",
+	"show-drafts": "הצגת טיוטות"
 }

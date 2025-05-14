@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 
 const posts = require('../posts');
+const utils = require('../utils');
 
 const activitypub = module.parent.exports;
 const Feps = module.exports;
@@ -13,7 +14,7 @@ Feps.announce = async function announce(id, activity) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
 	}
 	const cid = await posts.getCidByPid(localId || id);
-	if (cid === -1) {
+	if (cid === -1 || !utils.isNumber(cid)) { // local cids only
 		return;
 	}
 

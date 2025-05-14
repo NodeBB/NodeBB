@@ -1,5 +1,5 @@
 {
-	"you-are-on": "אתה נמצא ב <strong>%1:%2</strong>",
+	"you-are-on": "הינכם נמצאים ב <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 nodes הגיבו בתוך %2 מילי שניות!",
 	"host": "host",
@@ -17,7 +17,7 @@
 	"cpu-usage": "שימוש ב-CPU",
 	"uptime": "משך זמן פעולת המערכת ללא השבתה",
 
-	"registered": "רשום",
+	"registered": "רשומים",
 	"sockets": "Sockets",
 	"connection-count": "כמות חיבורים",
 	"guests": "אורחים",
