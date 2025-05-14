@@ -39,7 +39,7 @@ mysqlModule.questions = [
 		default: nconf.get('mysql:port') || nconf.get('defaults:mysql:port') || 3306,
 	},
 	{
-		name: 'mysql:socket',
+		name: 'mysql:socketPath',
 		description: 'Socket path of your MySQL instance. Overrides host and port',
 		default: undefined,
 	},
