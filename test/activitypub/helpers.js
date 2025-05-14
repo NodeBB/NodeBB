@@ -144,7 +144,7 @@ Helpers.mocks.like = (override = {}) => {
 
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${Helpers.mocks._baseUrl}/like/${encodeURIComponent(object.id)}`,
+		id: `${Helpers.mocks._baseUrl}/like/${encodeURIComponent(object.id || object)}`,
 		type: 'Like',
 		actor,
 		object,
