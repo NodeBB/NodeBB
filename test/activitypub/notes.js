@@ -493,6 +493,83 @@ describe('Notes', () => {
 				});
 			});
 
+			describe('(Create) or (Note) referencing local post', () => {
+				let uid;
+				let topicData;
+				let postData;
+				let localNote;
+				let announces = 0;
+
+				before(async () => {
+					uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					({ topicData, postData } = await topics.post({
+						cid,
+						uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					}));
+					localNote = await activitypub.mocks.notes.public(postData);
+				});
+
+				it('should increment announces counter when a remote user shares', async () => {
+					const { id } = helpers.mocks.person();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+					announces += 1;
+
+					const count = await posts.getPostField(topicData.mainPid, 'announces');
+					assert.strictEqual(count, announces);
+				});
+
+				it('should contain the remote user announcer id in the post announces zset', async () => {
+					const { id } = helpers.mocks.person();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+					announces += 1;
+
+					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
+					assert(exists);
+				});
+
+				it('should NOT increment announces counter when a remote category shares', async () => {
+					const { id } = helpers.mocks.group();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+
+					const count = await posts.getPostField(topicData.mainPid, 'announces');
+					assert.strictEqual(count, announces);
+				});
+
+				it('should NOT contain the remote category announcer id in the post announces zset', async () => {
+					const { id } = helpers.mocks.group();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+
+					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
+					assert(!exists);
+				});
+			});
+
 			describe('(Note)', () => {
 				it('should create a new topic in cid -1 if category not addressed', async () => {
 					const { note } = helpers.mocks.note();
