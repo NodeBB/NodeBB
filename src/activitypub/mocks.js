@@ -42,7 +42,7 @@ const sanitizeConfig = {
 
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { type, attributedTo, url, image, mediaType, content, source, attachment } = object;
+	let { type, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -52,6 +52,10 @@ Mocks._normalize = async (object) => {
 				} else if (typeof cur === 'object') {
 					if (cur.type === 'Person' && cur.id) {
 						valid.push(cur.id);
+					} else if (cur.type === 'Group' && cur.id) {
+						// Add any groups found to cc where it is expected
+						cc = Array.isArray(cc) ? cc : [cc];
+						cc.push(cur.id);
 					}
 				}
 
@@ -148,6 +152,7 @@ Mocks._normalize = async (object) => {
 
 	return {
 		...object,
+		cc,
 		attributedTo,
 		content,
 		sourceContent,
