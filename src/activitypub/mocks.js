@@ -110,9 +110,9 @@ Mocks._normalize = async (object) => {
 				const stream = url.reduce((memo, { type, mediaType, tag }) => {
 					if (!memo) {
 						if (type === 'Link' && mediaType === 'application/x-mpegURL') {
-							memo = tag.reduce((memo, { type, mediaType, href }) => {
+							memo = tag.reduce((memo, { type, mediaType, href, width, height }) => {
 								if (!memo && (type === 'Link' && mediaType === 'video/mp4')) {
-									memo = { type, mediaType, href };
+									memo = { mediaType, href, width, height };
 								}
 
 								return memo;
