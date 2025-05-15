@@ -10,6 +10,7 @@
     },
     "main": "app.js",
     "scripts": {
+        "setup": "node ./nodebb setup",
         "start": "node loader.js",
         "lint": "eslint --cache ./nodebb .",
         "test": "nyc --reporter=html --reporter=text-summary mocha",
