@@ -18,14 +18,18 @@ Analytics.get = async function (socket, data) {
 			data.amount = 24;
 		}
 	}
-	const getStats = data.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
+	const getStats = data.units === 'days' ?
+		analytics.getDailyStatsForSet :
+		analytics.getHourlyStatsForSet;
+
 	if (data.graph === 'traffic') {
+		const until = data.until || Date.now();
 		const result = await utils.promiseParallel({
-			uniqueVisitors: getStats('analytics:uniquevisitors', data.until || Date.now(), data.amount),
-			pageviews: getStats('analytics:pageviews', data.until || Date.now(), data.amount),
-			pageviewsRegistered: getStats('analytics:pageviews:registered', data.until || Date.now(), data.amount),
-			pageviewsGuest: getStats('analytics:pageviews:guest', data.until || Date.now(), data.amount),
-			pageviewsBot: getStats('analytics:pageviews:bot', data.until || Date.now(), data.amount),
+			uniqueVisitors: getStats('analytics:uniquevisitors', until, data.amount),
+			pageviews: getStats('analytics:pageviews', until, data.amount),
+			pageviewsRegistered: getStats('analytics:pageviews:registered', until, data.amount),
+			pageviewsGuest: getStats('analytics:pageviews:guest', until, data.amount),
+			pageviewsBot: getStats('analytics:pageviews:bot', until, data.amount),
 			summary: analytics.getSummary(),
 		});
 		result.pastDay = result.pageviews.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10));

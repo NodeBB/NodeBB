@@ -90,7 +90,7 @@
 	"restrictions.seconds-edit-after-new": "Sekund til redigering for nye brukarar",
 	"restrictions.milliseconds-between-messages": "Millisekund mellom meldingar",
 	"restrictions.groups-exempt-from-new-user-restrictions": "Grupper unnateke frå nye brukarrestriksjonar",
-	"guest-settings": "Gjestinnstillingar",
+	"guest-settings": "Gjesteinnstillingar",
 	"handles.enabled": "Aktiver handtering av gjestar",
 	"handles.enabled-help": "Aktiver for å la gjestar kunne sjå og interagere med forumet innanfor visse grenser.",
 	"topic-views.enabled": "Aktiver visning av emne for gjestar",

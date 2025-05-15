@@ -6,7 +6,7 @@
 	"enable-http": "הפעלת רישום HTTP",
 	"enable-socket": "הפעלת רישום אירועים ב-socket.io",
 	"file-path": "נתיב קובץ לוג",
-	"file-path-placeholder": "/path/to/log/file.log ::: השאירו ריק כדי שהלוג ישמר בטרמינל שלך",
+	"file-path-placeholder": "/path/to/log/file.log ::: השאירו ריק כדי שהלוג ישמר בטרמינל שלכם",
 
 	"control-panel": "ניהול לוגים",
 	"update-settings": "עידכון הגדרות לוגים"

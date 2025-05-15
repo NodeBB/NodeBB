@@ -83,33 +83,6 @@ describe('Notes', () => {
 					assert.strictEqual(topic.cid, cid);
 				});
 
-				it('should slot newly created topic in remote category if addressed', async () => {
-					const { id: cid, actor } = helpers.mocks.group();
-					await activitypub.actors.assertGroup([cid]);
-
-					const { id } = helpers.mocks.note({
-						cc: [cid],
-					});
-
-					const assertion = await activitypub.notes.assert(0, id);
-					assert(assertion);
-
-					const { tid, count } = assertion;
-					assert(tid);
-					assert.strictEqual(count, 1);
-
-					const topic = await topics.getTopicData(tid);
-					assert.strictEqual(topic.cid, cid);
-
-					const tids = await db.getSortedSetMembers(`cid:${cid}:tids`);
-					assert(tids.includes(tid));
-
-					const category = await categories.getCategoryData(cid);
-					['topic_count', 'post_count', 'totalPostCount', 'totalTopicCount'].forEach((prop) => {
-						assert.strictEqual(category[prop], 1);
-					});
-				});
-
 				it('should add a remote category topic to a user\'s inbox if they are following the category', async () => {
 					const { id: cid, actor } = helpers.mocks.group();
 					await activitypub.actors.assertGroup([cid]);
@@ -120,7 +93,7 @@ describe('Notes', () => {
 					const { id } = helpers.mocks.note({
 						cc: [cid],
 					});
-					const { tid } = await activitypub.notes.assert(0, id);
+					const { tid } = await activitypub.notes.assert(0, id, { cid });
 
 					const inInbox = await db.isSortedSetMember(`uid:${uid}:inbox`, tid);
 					assert(inInbox);
@@ -161,7 +134,7 @@ describe('Notes', () => {
 					const { id } = helpers.mocks.note({
 						cc: [remoteCid],
 					});
-					const assertion = await activitypub.notes.assert(0, id);
+					const assertion = await activitypub.notes.assert(0, id, { cid: remoteCid });
 					assert(assertion);
 
 					const unread = await topics.getTotalUnread(uid);
@@ -180,7 +153,7 @@ describe('Notes', () => {
 					const { id, note } = helpers.mocks.note({
 						cc: [remoteCid],
 					});
-					const assertion = await activitypub.notes.assert(0, id);
+					const assertion = await activitypub.notes.assert(0, id, { cid: remoteCid });
 					assert(assertion);
 
 					const unread = await topics.getTotalUnread(uid);
@@ -203,7 +176,7 @@ describe('Notes', () => {
 					const { id, note } = helpers.mocks.note({
 						cc: [remoteCid],
 					});
-					const assertion = await activitypub.notes.assert(0, id);
+					const assertion = await activitypub.notes.assert(0, id, { cid: remoteCid });
 					assert(assertion);
 
 					const unread = await topics.getTotalUnread(uid);
@@ -457,11 +430,144 @@ describe('Notes', () => {
 			});
 		});
 
+		describe('Create', () => {
+			let uid;
+
+			before(async () => {
+				uid = await user.create({ username: utils.generateUUID() });
+			});
+
+			describe('(Note)', () => {
+				it('should create a new topic in cid -1', async () => {
+					const { note, id } = helpers.mocks.note();
+					const { activity } = helpers.mocks.create(note);
+
+					await db.sortedSetAdd(`followersRemote:${note.attributedTo}`, Date.now(), uid);
+					await activitypub.inbox.create({ body: activity });
+
+					assert(await posts.exists(id));
+
+					const cid = await posts.getCidByPid(id);
+					assert.strictEqual(cid, -1);
+				});
+
+				it('should create a new topic in cid -1 even if a remote category is addressed', async () => {
+					const { id: remoteCid } = helpers.mocks.group();
+					const { note, id } = helpers.mocks.note({
+						audience: [remoteCid],
+					});
+					const { activity } = helpers.mocks.create(note);
+
+					await activitypub.inbox.create({ body: activity });
+
+					assert(await posts.exists(id));
+
+					const cid = await posts.getCidByPid(id);
+					assert.strictEqual(cid, -1);
+				});
+			});
+		});
+
 		describe('Announce', () => {
 			let cid;
 
 			before(async () => {
 				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			});
+
+			describe('(Create)', () => {
+				it('should create a new topic in a remote category if addressed', async () => {
+					const { id: remoteCid } = helpers.mocks.group();
+					const { id, note } = helpers.mocks.note({
+						audience: [remoteCid],
+					});
+					let { activity } = helpers.mocks.create(note);
+					({ activity } = helpers.mocks.announce({ actor: remoteCid, object: activity }));
+
+					await activitypub.inbox.announce({ body: activity });
+
+					assert(await posts.exists(id));
+
+					const cid = await posts.getCidByPid(id);
+					assert.strictEqual(cid, remoteCid);
+				});
+			});
+
+			describe('(Create) or (Note) referencing local post', () => {
+				let uid;
+				let topicData;
+				let postData;
+				let localNote;
+				let announces = 0;
+
+				before(async () => {
+					uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					({ topicData, postData } = await topics.post({
+						cid,
+						uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					}));
+					localNote = await activitypub.mocks.notes.public(postData);
+				});
+
+				it('should increment announces counter when a remote user shares', async () => {
+					const { id } = helpers.mocks.person();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+					announces += 1;
+
+					const count = await posts.getPostField(topicData.mainPid, 'announces');
+					assert.strictEqual(count, announces);
+				});
+
+				it('should contain the remote user announcer id in the post announces zset', async () => {
+					const { id } = helpers.mocks.person();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+					announces += 1;
+
+					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
+					assert(exists);
+				});
+
+				it('should NOT increment announces counter when a remote category shares', async () => {
+					const { id } = helpers.mocks.group();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+
+					const count = await posts.getPostField(topicData.mainPid, 'announces');
+					assert.strictEqual(count, announces);
+				});
+
+				it('should NOT contain the remote category announcer id in the post announces zset', async () => {
+					const { id } = helpers.mocks.group();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+
+					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
+					assert(!exists);
+				});
 			});
 
 			describe('(Note)', () => {

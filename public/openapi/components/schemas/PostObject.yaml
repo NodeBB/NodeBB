@@ -180,6 +180,8 @@ PostDataObject:
           type: number
         downvotes:
           type: number
+        announces:
+          type: number
         bookmarks:
           type: number
         deleterUid:

@@ -144,7 +144,7 @@ Helpers.mocks.like = (override = {}) => {
 
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${Helpers.mocks._baseUrl}/like/${encodeURIComponent(object)}`,
+		id: `${Helpers.mocks._baseUrl}/like/${encodeURIComponent(object.id || object)}`,
 		type: 'Like',
 		actor,
 		object,
@@ -162,6 +162,8 @@ Helpers.mocks.announce = (override = {}) => {
 	if (!object) {
 		({ id: object } = Helpers.mocks.note());
 	}
+	delete override.actor;
+	delete override.object;
 
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -171,6 +173,7 @@ Helpers.mocks.announce = (override = {}) => {
 		cc: [`${actor}/followers`],
 		actor,
 		object,
+		...override,
 	};
 
 	return { activity };
