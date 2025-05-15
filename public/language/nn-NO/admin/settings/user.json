@@ -81,7 +81,7 @@
 	"default-notification-settings": "Standard varslingsinnstillingar",
 	"categoryWatchState": "Kategori-overvåking",
 	"categoryWatchState.tracking": "Sporing",
-	"categoryWatchState.notwatching": "Ikkje overvåking",
+	"categoryWatchState.notwatching": "Følgjer ikkje",
 	"categoryWatchState.ignoring": "Ignorerer",
 	"restrictions-new": "Nye restriksjonar",
 	"restrictions.rep-threshold": "Omdømmegrense",

@@ -110,7 +110,7 @@
     "chat-deny-list": "Deny chat messages from the following users",
     "chat-list-add-user": "Add user",
     "digest-label": "Abonner på oppsummering",
-    "digest-description": "Abonner på e-postoppdateringar for dette forumet (nye varsel og emne) etter ei fastsett tidsplan",
+    "digest-description": "Abonner på e-postoppdateringar for dette forumet (nye varsel og innlegg) etter ein fastsett tidsplan",
     "digest-off": "Av",
     "digest-daily": "Dagleg",
     "digest-weekly": "Kvar veke",
