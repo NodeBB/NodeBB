@@ -42,7 +42,7 @@ const sanitizeConfig = {
 
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { type, attributedTo, url, image, content, source, attachment } = object;
+	let { type, attributedTo, url, image, mediaType, content, source, attachment } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -70,6 +70,9 @@ Mocks._normalize = async (object) => {
 	if (sourceContent) {
 		content = null;
 		sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(sourceContent, true);
+	} else if (mediaType === 'text/markdown') {
+		sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(content, true);
+		content = null;
 	} else if (content && content.length) {
 		content = sanitize(content, sanitizeConfig);
 		content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
