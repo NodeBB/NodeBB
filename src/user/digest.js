@@ -88,6 +88,7 @@ Digest.send = async function (data) {
 		return emailsSent;
 	}
 	let errorLogged = false;
+	const date = new Date();
 	await batch.processArray(data.subscribers, async (uids) => {
 		let userData = await user.getUsersFields(uids, [
 			'uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline',
@@ -99,7 +100,6 @@ Digest.send = async function (data) {
 			return;
 		}
 		const userSettings = await user.getMultipleUserSettings(userData.map(u => u.uid));
-		const date = new Date();
 		await Promise.all(userData.map(async (userObj, index) => {
 			const userSetting = userSettings[index];
 			const [publicRooms, notifications, topics] = await Promise.all([
