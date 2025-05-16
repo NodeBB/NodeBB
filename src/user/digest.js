@@ -88,13 +88,20 @@ Digest.send = async function (data) {
 		return emailsSent;
 	}
 	let errorLogged = false;
+	const date = new Date();
 	await batch.processArray(data.subscribers, async (uids) => {
-		let userData = await user.getUsersFields(uids, ['uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline']);
-		userData = userData.filter(u => u && u.email && (meta.config.includeUnverifiedEmails || u['email:confirmed']));
+		let userData = await user.getUsersFields(uids, [
+			'uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline',
+		]);
+		userData = userData.filter(
+			u => u && u.email && (meta.config.includeUnverifiedEmails || u['email:confirmed'])
+		);
 		if (!userData.length) {
 			return;
 		}
-		await Promise.all(userData.map(async (userObj) => {
+		const userSettings = await user.getMultipleUserSettings(userData.map(u => u.uid));
+		await Promise.all(userData.map(async (userObj, index) => {
+			const userSetting = userSettings[index];
 			const [publicRooms, notifications, topics] = await Promise.all([
 				getUnreadPublicRooms(userObj.uid),
 				user.notifications.getUnreadInterval(userObj.uid, data.interval),
@@ -118,9 +125,8 @@ Digest.send = async function (data) {
 			});
 
 			emailsSent += 1;
-			const now = new Date();
 			await emailer.send('digest', userObj.uid, {
-				subject: `[[email:digest.subject, ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}]]`,
+				subject: `[[email:digest.subject, ${date.toLocaleDateString(userSetting.userLang)}]]`,
 				username: userObj.username,
 				userslug: userObj.userslug,
 				notifications: unreadNotifs,
