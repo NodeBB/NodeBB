@@ -10,7 +10,7 @@ import activitypub from '../../src/activitypub/index.js';
 import utils from '../../src/utils.js';
 import request from '../../src/request.js';
 import slugify from '../../src/slugify.js';
-import helpers from './helpers.js';
+import helpers from './helpers.mjs';
 
 describe('ActivityPub/Actors', () => {
 	describe('Actor assertion', () => {
