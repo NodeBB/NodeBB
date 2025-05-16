@@ -451,8 +451,25 @@ describe('Notes', () => {
 					assert.strictEqual(cid, -1);
 				});
 
-				it('should create a new topic in cid -1 even if a remote category is addressed', async () => {
+				it('should create a new topic in a remote category if addressed (category same-origin)', async () => {
 					const { id: remoteCid } = helpers.mocks.group();
+					const { note, id } = helpers.mocks.note({
+						audience: [remoteCid],
+					});
+					const { activity } = helpers.mocks.create(note);
+
+					await activitypub.inbox.create({ body: activity });
+
+					assert(await posts.exists(id));
+
+					const cid = await posts.getCidByPid(id);
+					assert.strictEqual(cid, remoteCid);
+				});
+
+				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async () => {
+					const { id: remoteCid } = helpers.mocks.group({
+						id: `https://example.com/${utils.generateUUID()}`,
+					});
 					const { note, id } = helpers.mocks.note({
 						audience: [remoteCid],
 					});
