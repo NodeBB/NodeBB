@@ -1,3 +1,47 @@
+#### v4.4.1 (2025-05-16)
+
+##### Chores
+
+*  up themes (61a63851)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  update changelog for v4.4.0 (09cc91d5)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  save width and height values into post attachment (3674fa57)
+*  use local date string for digest subject (3d96afb2)
+
+##### Bug Fixes
+
+*  openapi schema to handle additional `attachments` field in postsobject (ce5ef1ab)
+*  group edit url (0a574d72)
+*  add attachments to getpostsummaries call in search, #13324 (8f9f3771)
+*  bring back auto-categorization if group and object are same-origin, handle Peertube putting channel names in `attributedTo` (a460a550)
+*  #13419, handle remote content with mediaType text/markdown (45a11d45)
+
+##### Refactors
+
+*  create date once per digest.send (6c3e2a8e)
+
+##### Tests
+
+*  fix tests to account for a460a55064e1280f36a0021e0510c7c557251030 (948bfe46)
+
 #### v4.4.0 (2025-05-14)
 
 ##### Breaking Changes
