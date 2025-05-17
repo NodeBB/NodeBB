@@ -1633,7 +1633,6 @@ describe('Controllers', () => {
 		it('should create 2 pages of topics', async () => {
 			const category = await categories.create({ name: 'category with 2 pages' });
 			for (let i = 0; i < 30; i++) {
-				// eslint-disable-next-line no-await-in-loop
 				await topics.post({ uid: fooUid, cid: category.cid, title: `topic title ${i}`, content: 'does not really matter' });
 			}
 			const userSettings = await user.getSettings(fooUid);
