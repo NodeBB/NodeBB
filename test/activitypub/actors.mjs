@@ -64,9 +64,159 @@ describe('ActivityPub/Actors', () => {
 				const url = await user.getUserField(actorUri, 'url');
 				assert.strictEqual(url, actorUri);
 			});
+
+			it('should assert group actors by calling actors.assertGroup', async () => {
+				const { id, actor } = helpers.mocks.group();
+				const assertion = await activitypub.actors.assert([id]);
+
+				assert(assertion);
+				assert.strictEqual(assertion.length, 1);
+				assert.strictEqual(assertion[0].cid, actor.id);
+			});
+
+			describe('remote user to remote category migration', () => {
+				it('should not migrate a user to a category if .assert is called', async () => {
+					// ... because the user isn't due for an update and so is filtered out during qualification
+					const { id } = helpers.mocks.person();
+					await activitypub.actors.assert([id]);
+
+					const { actor } = helpers.mocks.group({ id });
+					const assertion = await activitypub.actors.assertGroup([id]);
+
+					assert(assertion.length, 0);
+
+					const exists = await user.exists(id);
+					assert.strictEqual(exists, false);
+				});
+
+				it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
+					// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
+					const { id } = helpers.mocks.person();
+					await activitypub.actors.assert([id]);
+
+					helpers.mocks.group({ id });
+					const assertion = await activitypub.actors.assertGroup([id]);
+
+					assert(assertion && Array.isArray(assertion) && assertion.length === 1);
+
+					const exists = await user.exists(id);
+					assert.strictEqual(exists, false);
+				});
+
+				it('should migrate any shares by that user, into topics in the category', async () => {
+					const { id } = helpers.mocks.person();
+					await activitypub.actors.assert([id]);
+
+					// Two shares
+					for (let x = 0; x < 2; x++) {
+						const { id: pid } = helpers.mocks.note();
+						// eslint-disable-next-line no-await-in-loop
+						const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+						// eslint-disable-next-line no-await-in-loop
+						await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+					}
+
+					helpers.mocks.group({ id });
+					await activitypub.actors.assertGroup([id]);
+
+					const { topic_count, post_count } = await categories.getCategoryData(id);
+					assert.strictEqual(topic_count, 2);
+					assert.strictEqual(post_count, 2);
+				});
+
+				it('should not migrate shares by that user that already belong to a local category', async () => {
+					const { id } = helpers.mocks.person();
+					await activitypub.actors.assert([id]);
+
+					const { cid } = await categories.create({ name: utils.generateUUID() });
+
+					// Two shares, one moved to local cid
+					for (let x = 0; x < 2; x++) {
+						const { id: pid } = helpers.mocks.note();
+						// eslint-disable-next-line no-await-in-loop
+						const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+						// eslint-disable-next-line no-await-in-loop
+						await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
+
+						if (!x) {
+							// eslint-disable-next-line no-await-in-loop
+							await topics.tools.move(tid, {
+								cid,
+								uid: 'system',
+							});
+						}
+					}
+
+					helpers.mocks.group({ id });
+					await activitypub.actors.assertGroup([id]);
+
+					const { topic_count, post_count } = await categories.getCategoryData(id);
+					assert.strictEqual(topic_count, 1);
+					assert.strictEqual(post_count, 1);
+				});
+
+				it('should migrate any local followers into category watches', async () => {
+					const { id } = helpers.mocks.person();
+					await activitypub.actors.assert([id]);
+
+					const followerUid = await user.create({ username: utils.generateUUID() });
+					await Promise.all([
+						db.sortedSetAdd(`followingRemote:${followerUid}`, Date.now(), id),
+						db.sortedSetAdd(`followersRemote:${id}`, Date.now(), followerUid),
+					]);
+
+					helpers.mocks.group({ id });
+					await activitypub.actors.assertGroup([id]);
+
+					const states = await categories.getWatchState([id], followerUid);
+					assert.strictEqual(states[0], categories.watchStates.tracking);
+				});
+			});
 		});
 
-		describe('edge case: loopback handles and uris', () => {
+		describe('less happy paths', () => {
+			describe('actor with `preferredUsername` that is not all lowercase', () => {
+				it('should save a handle-to-uid association', async () => {
+					const preferredUsername = 'nameWITHCAPS';
+					const { id } = helpers.mocks.person({ preferredUsername });
+					await activitypub.actors.assert([id]);
+
+					const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
+					assert.strictEqual(uid, id);
+				});
+
+				it('should preserve that association when re-asserted', async () => {
+					const preferredUsername = 'nameWITHCAPS';
+					const { id } = helpers.mocks.person({ preferredUsername });
+					await activitypub.actors.assert([id]);
+					await activitypub.actors.assert([id], { update: true });
+
+					const uid = await db.getObjectField('handle:uid', `${preferredUsername.toLowerCase()}@example.org`);
+					assert.strictEqual(uid, id);
+				});
+
+				it('should fail to assert if a passed-in ID\'s webfinger query does not respond with the same ID (gh#13352)', async () => {
+					const { id } = helpers.mocks.person({
+						preferredUsername: 'foobar',
+					});
+
+					const actorUri = `https://example.org/${utils.generateUUID()}`;
+					activitypub.helpers._webfingerCache.set('foobar@example.org', {
+						username: 'foobar',
+						hostname: 'example.org',
+						actorUri,
+					});
+
+					const { actorUri: confirm } = await activitypub.helpers.query('foobar@example.org');
+					assert.strictEqual(confirm, actorUri);
+
+					const response = await activitypub.actors.assert([id]);
+					assert.deepStrictEqual(response, []);
+				});
+			});
+		});
+
+		describe('edge cases: loopback handles and uris', () => {
 			let uid;
 			const userslug = utils.generateUUID().slice(0, 8);
 			before(async () => {
@@ -741,7 +891,7 @@ describe('ActivityPub/Actors', () => {
 				const { id } = helpers.mocks.note({
 					cc: [cid],
 				});
-				await activitypub.notes.assert(0, id);
+				await activitypub.notes.assert(0, id, { cid });
 
 				const total = await db.sortedSetCard('usersRemote:lastCrawled');
 				const result = await activitypub.actors.prune();

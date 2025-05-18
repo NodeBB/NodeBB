@@ -1,3 +1,157 @@
+#### v4.4.1 (2025-05-16)
+
+##### Chores
+
+*  up themes (61a63851)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  update changelog for v4.4.0 (09cc91d5)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  save width and height values into post attachment (3674fa57)
+*  use local date string for digest subject (3d96afb2)
+
+##### Bug Fixes
+
+*  openapi schema to handle additional `attachments` field in postsobject (ce5ef1ab)
+*  group edit url (0a574d72)
+*  add attachments to getpostsummaries call in search, #13324 (8f9f3771)
+*  bring back auto-categorization if group and object are same-origin, handle Peertube putting channel names in `attributedTo` (a460a550)
+*  #13419, handle remote content with mediaType text/markdown (45a11d45)
+
+##### Refactors
+
+*  create date once per digest.send (6c3e2a8e)
+
+##### Tests
+
+*  fix tests to account for a460a55064e1280f36a0021e0510c7c557251030 (948bfe46)
+
+#### v4.4.0 (2025-05-14)
+
+##### Breaking Changes
+
+*  removal of deprecated privilege hooks (8ea377a4)
+*  removal of `filter:flags.getFilters` (547fb482)
+*  removal of `filter:user.verify.code` (7e25946c)
+*  removal of `filter:post.purge` (df5c1a93)
+*  removal of `filter:post.purge` (c84b72fb)
+*  removal of `filter:router.page` (9d8061ea)
+*  removal of `filter:email.send` (b73a8d3e)
+
+##### Chores
+
+* **deps:**
+  *  update redis docker tag to v8.0.1 (#13415) (fbe97b4e)
+  *  update redis docker tag to v8 (#13387) (1df7313c)
+  *  update postgres docker tag to v17.5 (#13398) (d319b0aa)
+  *  update dependency sass-embedded to v1.88.0 (#13402) (694c79bc)
+  *  update dependency lint-staged to v16 (#13404) (9d877481)
+  *  update commitlint monorepo to v19.8.1 (#13394) (7a7a4f0a)
+  *  update dependency lint-staged to v15.5.2 (#13383) (96dc5c89)
+  *  update dependency @eslint/js to v9.26.0 (#13371) (450ce3b8)
+  *  update dependency mocha to v11.2.2 (#13366) (e958010f)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  update changelog for v4.3.2 (0aa9c187)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  remove unused require (15b6a2c1)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Documentation Changes
+
+*  remove since-removed `labels` property from api (860ac895)
+
+##### Bug Fixes
+
+*  adjust Peertube-specific handling to shove mp4 into post attachments, #13324 (799b08db)
+*  #13081, don't add mention when you are replying to yourself (d5865613)
+*  add `announces` to postdataobject schema (0f576a42)
+*  #13375, plus additional tests (fe13c755)
+*  missing awaits, more comprehensive 1b12 tests (5802c7dd)
+*  another case (6bfe4e62)
+*  handle missing orderedItems property in followers route (e042201f)
+*  missing await (651ebaaf)
+*  handle missing orderedItems (53bb0bbc)
+*  extra `orderedItems` property in generated paginated OrderedCollection, #13153 (f83b1fbf)
+*  #13153, follower and following collections to use generateCollection helper (a2de7aae)
+*  #13374, updates to posts.edit to handle remote content updates better (b4338489)
+*  leftover `handle` var (625ce96f)
+*  AP inbox update handling for non-note objects (f8d012c8)
+*  1b12 creates being dropped (9f80d10d)
+*  update AP api (un)follow ids to be url encoded id instead of handle (7cf61ab0)
+* **deps:**
+  *  update dependency diff to v8 (#13409) (919d62ab)
+  *  update dependency sanitize-html to v2.17.0 (#13418) (3e18af1e)
+  *  update dependency satori to v0.13.1 (#13408) (f176d6b2)
+  *  update dependency pg-cursor to v2.15.0 (#13414) (7320a858)
+  *  update dependency nodebb-plugin-markdown to v13.2.1 (#13416) (84b8ecc7)
+  *  update dependency semver to v7.7.2 (#13410) (366651d6)
+  *  update dependency pg to v8.16.0 (#13411) (0825c569)
+  *  update dependency nodebb-plugin-mentions to v4.7.6 (#13417) (383a7ce5)
+  *  update dependency lru-cache to v11 (#12685) (23374fd7)
+  *  update dependency rimraf to v6 (#12686) (6a4ffe02)
+  *  update dependency bootswatch to v5.3.6 (#13400) (7a7cf830)
+  *  update dependency csrf-sync to v4.2.1 (#13401) (ecce9998)
+  *  update dependency sass to v1.88.0 (#13403) (7ffba218)
+  *  update dependency nodemailer to v7.0.3 (#13395) (af3afba0)
+  *  update dependency nodemailer to v7 (#13381) (0b4d403c)
+  *  update dependency csrf-sync to v4.2.0 (#13364) (4f0f67a4)
+  *  update dependency webpack to v5.99.8 (#13390) (c7a164ae)
+  *  update dependency bootstrap to v5.3.6 (#13384) (e6a19612)
+  *  update dependency esbuild to v0.25.4 (#13385) (b6f4de5b)
+  *  update dependency @fontsource/poppins to v5.2.6 (#13376) (e2a8cf98)
+  *  update dependency nodebb-plugin-mentions to v4.7.5 (#13386) (2c0aba02)
+  *  update dependency nodebb-widget-essentials to v7.0.38 (#13380) (7f757615)
+  *  update dependency nodebb-theme-persona to v14.1.11 (#13379) (954aa541)
+  *  update dependency nodebb-theme-peace to v2.2.42 (#13378) (2aa0bfc5)
+  *  update dependency nodebb-theme-harmony to v2.1.12 (#13377) (72b3a215)
+  *  update dependency ace-builds to v1.41.0 (#13372) (4b78710b)
+  *  bump markdown (f3bd8590)
+
+##### Other Changes
+
+* //github.com/NodeBB/NodeBB/issues/13367 (39953ee1)
+
+##### Refactors
+
+*  use a single until (1b0b1da6)
+*  Helpers.generateCollection so that total count and a bound function can be passed in, #13153 (7f59238d)
+
+##### Tests
+
+*  a few additional tests for announce handling (61f6806b)
+*  fix regression from 5802c7ddd9506a4e296f6dbdf2d9a32621c7f4ef (5b118904)
+*  fix broken test due to adjusted note assertion relation logic (9dc91f11)
+*  update filter:router.page tests to response:router.page (a819d39c)
+*  adjustment for now-removed labels property (52df41b9)
+
 #### v4.3.2 (2025-05-12)
 
 ##### Chores

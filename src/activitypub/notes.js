@@ -27,6 +27,24 @@ async function unlock(value) {
 	await db.deleteObjectField('locks', value);
 }
 
+Notes._normalizeTags = async (tag, cid) => {
+	const systemTags = (meta.config.systemTags || '').split(',');
+	const maxTags = await categories.getCategoryField(cid, 'maxTags');
+	const tags = (tag || [])
+		.map((tag) => {
+			tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
+			return tag;
+		})
+		.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
+		.map(t => t.name);
+
+	if (tags.length > maxTags) {
+		tags.length = maxTags;
+	}
+
+	return tags;
+};
+
 Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	/**
 	 * Given the id or object of any as:Note, either retrieves the full context (if resolvable),
@@ -75,7 +93,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 	const mainPost = chain[0];
-	let { pid: mainPid, tid, uid: authorId, timestamp, name, content, sourceContent, _activitypub } = mainPost;
+	let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
@@ -94,7 +112,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return { tid, count: 0 };
 	}
 
-	let title;
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
@@ -110,8 +127,17 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			.map(obj => obj.id);
 
 		// Remote
-		const assertedGroups = await db.exists(Array.from(set).map(id => `categoryRemote:${id}`));
-		const remoteCid = Array.from(set).filter((_, idx) => assertedGroups[idx]).shift();
+		let remoteCid;
+		const assertedGroups = await categories.exists(Array.from(set));
+		try {
+			const { hostname } = new URL(mainPid);
+			remoteCid = Array.from(set).filter((id, idx) => {
+				const { hostname: cidHostname } = new URL(id);
+				return assertedGroups[idx] && cidHostname === hostname;
+			}).shift();
+		} catch (e) {
+			// noop
+		}
 
 		if (remoteCid || recipientCids.length) {
 			// Overrides passed-in value, respect addressing from main post over booster
@@ -119,7 +145,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		// mainPid ok to leave as-is
-		title = name || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
+		title = title || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
 
 		// Remove any custom emoji from title
 		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
@@ -166,22 +192,9 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const count = unprocessed.length;
 	activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
-	let tags;
 	if (!hasTid) {
 		const { to, cc, attachment } = mainPost._activitypub;
-		const systemTags = (meta.config.systemTags || '').split(',');
-		const maxTags = await categories.getCategoryField(cid, 'maxTags');
-		tags = (mainPost._activitypub.tag || [])
-			.map((tag) => {
-				tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
-				return tag;
-			})
-			.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
-			.map(t => t.name);
-
-		if (tags.length > maxTags) {
-			tags.length = maxTags;
-		}
+		const tags = await Notes._normalizeTags(mainPost._activitypub.tag || []);
 
 		await Promise.all([
 			topics.post({

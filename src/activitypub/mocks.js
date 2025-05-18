@@ -42,7 +42,7 @@ const sanitizeConfig = {
 
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { attributedTo, url, image, content, source } = object;
+	let { type, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -52,6 +52,10 @@ Mocks._normalize = async (object) => {
 				} else if (typeof cur === 'object') {
 					if (cur.type === 'Person' && cur.id) {
 						valid.push(cur.id);
+					} else if (cur.type === 'Group' && cur.id) {
+						// Add any groups found to cc where it is expected
+						cc = Array.isArray(cc) ? cc : [cc];
+						cc.push(cur.id);
 					}
 				}
 
@@ -70,6 +74,9 @@ Mocks._normalize = async (object) => {
 	if (sourceContent) {
 		content = null;
 		sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(sourceContent, true);
+	} else if (mediaType === 'text/markdown') {
+		sourceContent = await activitypub.helpers.remoteAnchorToLocalProfile(content, true);
+		content = null;
 	} else if (content && content.length) {
 		content = sanitize(content, sanitizeConfig);
 		content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
@@ -102,6 +109,30 @@ Mocks._normalize = async (object) => {
 
 	if (url) { // Handle url array
 		if (Array.isArray(url)) {
+			// Special handling for Video type (from PeerTube specifically)
+			if (type === 'Video') {
+				const stream = url.reduce((memo, { type, mediaType, tag }) => {
+					if (!memo) {
+						if (type === 'Link' && mediaType === 'application/x-mpegURL') {
+							memo = tag.reduce((memo, { type, mediaType, href, width, height }) => {
+								if (!memo && (type === 'Link' && mediaType === 'video/mp4')) {
+									memo = { mediaType, href, width, height };
+								}
+
+								return memo;
+							}, null);
+						}
+					}
+
+					return memo;
+				}, null);
+
+				if (stream) {
+					attachment = attachment || [];
+					attachment.push(stream);
+				}
+			}
+
 			url = url.reduce((valid, cur) => {
 				if (typeof cur === 'string') {
 					valid.push(cur);
@@ -121,11 +152,13 @@ Mocks._normalize = async (object) => {
 
 	return {
 		...object,
+		cc,
 		attributedTo,
 		content,
 		sourceContent,
 		image,
 		url,
+		attachment,
 	};
 };
 
@@ -332,7 +365,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
-			type, to, cc, audience, attachment, tag, image,
+			to, cc, audience, attachment, tag, image,
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -346,20 +379,16 @@ Mocks.post = async (objects) => {
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
 
-		if (type === 'Video') {
-			attachment = attachment || [];
-			attachment.push({ url });
-		}
-
 		const payload = {
 			uid,
 			pid,
 			// tid,  --> purposely omitted
-			name,
 			content,
 			sourceContent,
 			timestamp,
 			toPid,
+
+			title: name, // used in post.edit
 
 			edited,
 			editor: edited ? uid : undefined,

@@ -137,12 +137,12 @@ async function executeCommand(caller, command, eventName, notification, data) {
 	}
 	if (result && command === 'upvote') {
 		socketHelpers.upvote(result, notification);
-		api.activitypub.like.note(caller, { pid: data.pid });
+		await api.activitypub.like.note(caller, { pid: data.pid });
 	} else if (result && notification) {
 		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, command, notification);
 	} else if (result && command === 'unvote') {
 		socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
-		api.activitypub.undo.like(caller, { pid: data.pid });
+		await api.activitypub.undo.like(caller, { pid: data.pid });
 	}
 	return result;
 }

@@ -105,7 +105,9 @@ Actors.replies = async function (req, res, next) {
 	}
 
 	// Convert pids to urls
-	replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+	if (replies.orderedItems) {
+		replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+	}
 
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -167,7 +169,7 @@ Actors.topic = async function (req, res, next) {
 		res.set('ETag', digest);
 
 		// Convert pids to urls
-		if (page || collection.totalItems < meta.config.postsPerPage) {
+		if (page || collection.totalItems < perPage) {
 			collection.orderedItems = collection.orderedItems || [];
 			if (!page || page === 1) { // add OP to collection
 				collection.orderedItems.unshift(mainPid);
