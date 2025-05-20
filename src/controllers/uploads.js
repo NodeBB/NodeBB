@@ -123,7 +123,7 @@ async function resizeImage(fileObj) {
 
 uploadsController.uploadThumb = async function (req, res) {
 	if (!meta.config.allowTopicsThumbnail) {
-		deleteTempFiles(req.files.files);
+		deleteTempFiles(req.files);
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
