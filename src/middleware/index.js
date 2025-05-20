@@ -100,7 +100,6 @@ middleware.pluginHooks = helpers.try(async (req, res, next) => {
 });
 
 middleware.validateFiles = function validateFiles(req, res, next) {
-	console.log('validateFiles', req.files);
 	if (!req.files) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
