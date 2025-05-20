@@ -18,7 +18,7 @@ const uploadsController = module.exports;
 uploadsController.upload = async function (req, res, filesIterator) {
 	let files;
 	try {
-		files = req.files.files;
+		files = req.files;
 	} catch (e) {
 		return helpers.formatApiResponse(400, res);
 	}
@@ -26,9 +26,6 @@ uploadsController.upload = async function (req, res, filesIterator) {
 	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
 		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
-	}
-	if (Array.isArray(files[0])) {
-		files = files[0];
 	}
 
 	try {
@@ -50,7 +47,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
-		const isImage = uploadedFile.type.match(/image./);
+		const isImage = uploadedFile.mimetype.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
 		}
@@ -77,7 +74,7 @@ async function uploadAsImage(req, uploadedFile) {
 
 	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 	// sharp can't save svgs skip resize for them
-	const isSVG = uploadedFile.type === 'image/svg+xml';
+	const isSVG = uploadedFile.mimetype === 'image/svg+xml';
 	if (isSVG || meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
 		return fileObj;
 	}
@@ -131,7 +128,7 @@ uploadsController.uploadThumb = async function (req, res) {
 	}
 
 	return await uploadsController.upload(req, res, async (uploadedFile) => {
-		if (!uploadedFile.type.match(/image./)) {
+		if (!uploadedFile.mimetype.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
 		await image.isFileTypeAllowed(uploadedFile.path);
@@ -174,7 +171,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 
 	const allowed = file.allowedExtensions();
 
-	const extension = path.extname(uploadedFile.name).toLowerCase();
+	const extension = path.extname(uploadedFile.originalname).toLowerCase();
 	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
 		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
 	}
@@ -183,7 +180,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 };
 
 async function saveFileToLocal(uid, folder, uploadedFile) {
-	const name = uploadedFile.name || 'upload';
+	const name = uploadedFile.originalname || 'upload';
 	const extension = path.extname(name) || '';
 
 	const filename = `${Date.now()}-${validator.escape(name.slice(0, -extension.length)).slice(0, 255)}${extension}`;
@@ -192,7 +189,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const storedFile = {
 		url: nconf.get('relative_path') + upload.url,
 		path: upload.path,
-		name: uploadedFile.name,
+		name: uploadedFile.originalname,
 	};
 
 	await user.associateUpload(uid, upload.url.replace(`${nconf.get('upload_url')}`, ''));

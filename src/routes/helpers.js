@@ -54,7 +54,8 @@ helpers.setupApiRoute = function (...args) {
 	const [router, verb, name] = args;
 	let middlewares = args.length > 4 ? args[args.length - 2] : [];
 	const controller = args[args.length - 1];
-
+	const multer = require('multer');
+	const upload = multer();
 	middlewares = [
 		middleware.autoLocale,
 		middleware.applyBlacklist,
@@ -63,7 +64,7 @@ helpers.setupApiRoute = function (...args) {
 		middleware.registrationComplete,
 		middleware.pluginHooks,
 		middleware.logApiUsage,
-		middleware.handleMultipart,
+		upload.any(),
 		...middlewares,
 	];
 
