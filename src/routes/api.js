@@ -25,7 +25,7 @@ module.exports = function (app, middleware, controllers) {
 
 	const multer = require('multer');
 	const storage = multer.diskStorage({});
-	const upload = multer({ storage: storage });
+	const upload = multer({ storage });
 
 	const postMiddlewares = [
 		middleware.maintenanceMode,

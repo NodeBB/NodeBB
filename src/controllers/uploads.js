@@ -47,7 +47,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
-		const isImage = uploadedFile.mimetype.match(/image./);
+		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
 		}
@@ -74,7 +74,7 @@ async function uploadAsImage(req, uploadedFile) {
 
 	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 	// sharp can't save svgs skip resize for them
-	const isSVG = uploadedFile.mimetype === 'image/svg+xml';
+	const isSVG = uploadedFile.type === 'image/svg+xml';
 	if (isSVG || meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
 		return fileObj;
 	}
@@ -128,7 +128,7 @@ uploadsController.uploadThumb = async function (req, res) {
 	}
 
 	return await uploadsController.upload(req, res, async (uploadedFile) => {
-		if (!uploadedFile.mimetype.match(/image./)) {
+		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
 		await image.isFileTypeAllowed(uploadedFile.path);
@@ -171,7 +171,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 
 	const allowed = file.allowedExtensions();
 
-	const extension = path.extname(uploadedFile.originalname).toLowerCase();
+	const extension = path.extname(uploadedFile.name).toLowerCase();
 	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
 		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
 	}
@@ -180,7 +180,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 };
 
 async function saveFileToLocal(uid, folder, uploadedFile) {
-	const name = uploadedFile.originalname || 'upload';
+	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
 	const filename = `${Date.now()}-${validator.escape(name.slice(0, -extension.length)).slice(0, 255)}${extension}`;
@@ -189,7 +189,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const storedFile = {
 		url: nconf.get('relative_path') + upload.url,
 		path: upload.path,
-		name: uploadedFile.originalname,
+		name: uploadedFile.name,
 	};
 
 	await user.associateUpload(uid, upload.url.replace(`${nconf.get('upload_url')}`, ''));

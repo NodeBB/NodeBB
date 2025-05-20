@@ -104,14 +104,27 @@ middleware.validateFiles = function validateFiles(req, res, next) {
 	if (!req.files) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
-
+	function makeFilesCompatible(files) {
+		if (Array.isArray(files)) {
+			// multer uses originalname and mimetype, but we use name and type
+			files.forEach((file) => {
+				if (file.originalname) {
+					file.name = file.originalname;
+				}
+				if (file.mimetype) {
+					file.type = file.mimetype;
+				}
+			});
+		}
+		next();
+	}
 	if (Array.isArray(req.files) && req.files.length) {
-		return next();
+		return makeFilesCompatible(req.files);
 	}
 
 	if (typeof req.files === 'object') {
 		req.files = [req.files];
-		return next();
+		return makeFilesCompatible(req.files);
 	}
 
 	return next(new Error(['[[error:invalid-files]]']));
