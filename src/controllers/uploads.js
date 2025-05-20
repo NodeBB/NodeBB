@@ -198,7 +198,9 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 }
 
 function deleteTempFiles(files) {
-	files.forEach(fileObj => file.delete(fileObj.path));
+	if (Array.isArray(files)) {
+		files.forEach(fileObj => file.delete(fileObj.path));
+	}
 }
 
 require('../promisify')(uploadsController, ['upload', 'uploadPost', 'uploadThumb']);
