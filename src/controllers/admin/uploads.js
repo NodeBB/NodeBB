@@ -13,7 +13,9 @@ const image = require('../../image');
 const plugins = require('../../plugins');
 const pagination = require('../../pagination');
 
-const allowedImageTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
+const allowedImageTypes = [
+	'image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif', 'image/svg+xml',
+];
 
 const uploadsController = module.exports;
 
@@ -147,7 +149,7 @@ async function getFileData(currentDir, file) {
 }
 
 uploadsController.uploadCategoryPicture = async function (req, res, next) {
-	const uploadedFile = req.files.files[0];
+	const uploadedFile = req.files[0];
 	let params = null;
 
 	try {
@@ -202,7 +204,7 @@ async function sanitizeSvg(filePath) {
 }
 
 uploadsController.uploadFavicon = async function (req, res, next) {
-	const uploadedFile = req.files.files[0];
+	const uploadedFile = req.files[0];
 	const allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
 	await validateUpload(uploadedFile, allowedTypes);
@@ -217,7 +219,7 @@ uploadsController.uploadFavicon = async function (req, res, next) {
 };
 
 uploadsController.uploadTouchIcon = async function (req, res, next) {
-	const uploadedFile = req.files.files[0];
+	const uploadedFile = req.files[0];
 	const allowedTypes = ['image/png'];
 	const sizes = [36, 48, 72, 96, 144, 192, 512];
 
@@ -244,7 +246,7 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 
 
 uploadsController.uploadMaskableIcon = async function (req, res, next) {
-	const uploadedFile = req.files.files[0];
+	const uploadedFile = req.files[0];
 	const allowedTypes = ['image/png'];
 
 	await validateUpload(uploadedFile, allowedTypes);
@@ -263,7 +265,7 @@ uploadsController.uploadLogo = async function (req, res, next) {
 };
 
 uploadsController.uploadFile = async function (req, res, next) {
-	const uploadedFile = req.files.files[0];
+	const uploadedFile = req.files[0];
 	let params;
 	try {
 		params = JSON.parse(req.body.params);
@@ -294,7 +296,7 @@ uploadsController.uploadOgImage = async function (req, res, next) {
 };
 
 async function upload(name, req, res, next) {
-	const uploadedFile = req.files.files[0];
+	const uploadedFile = req.files[0];
 
 	await validateUpload(uploadedFile, allowedImageTypes);
 	const filename = name + path.extname(uploadedFile.name);
