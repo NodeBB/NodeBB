@@ -90,6 +90,11 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 // Checks url to ensure it is not in reserved IP range (private, etc.)
 async function check(url) {
+	const { host } = new URL(url);
+	if (host === nconf.get('url_parsed').host) {
+		return true;
+	}
+
 	const cached = checkCache.get(url);
 	if (cached) {
 		return cached;
@@ -99,16 +104,9 @@ async function check(url) {
 	if (ipaddr.isValid(url)) {
 		addresses.add(url);
 	} else {
-		const { host } = new URL(url);
-		const [v4, v6] = await Promise.all([
-			dns.resolve4(host),
-			dns.resolve6(host),
-		]);
-		v4.forEach((ip) => {
-			addresses.add(ip);
-		});
-		v6.forEach((ip) => {
-			addresses.add(ip);
+		const lookup = await dns.lookup(host, { all: true });
+		lookup.forEach(({ address }) => {
+			addresses.add(address);
 		});
 	}
 
@@ -118,7 +116,7 @@ async function check(url) {
 		return parsed.range() === 'unicast';
 	});
 
-	checkCache.set(url, ok);
+	checkCache.set(host, ok);
 	return ok;
 }
 
