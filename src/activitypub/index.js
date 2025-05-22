@@ -27,6 +27,9 @@ const probeCache = ttl({
 	max: 500,
 	ttl: 1000 * 60 * 60, // 1 hour
 });
+const probeRateLimit = ttl({
+	ttl: 1000 * 3, // 3 seconds
+});
 
 const ActivityPub = module.exports;
 
@@ -506,6 +509,13 @@ ActivityPub.probe = async ({ uid, url }) => {
 	 *   - Returns a relative path if already available, true if not, and false otherwise.
 	 */
 
+	// Disable on config setting; restrict lookups to HTTPS-enabled URLs only
+	const { activitypubProbe } = meta.config;
+	const { protocol } = new URL(url);
+	if (!activitypubProbe || protocol !== 'https:') {
+		return false;
+	}
+
 	// Known resources
 	const [isNote, isMessage, isActor, isActorUrl] = await Promise.all([
 		posts.exists(url),
@@ -541,6 +551,17 @@ ActivityPub.probe = async ({ uid, url }) => {
 		}
 	}
 
+	// Guests not allowed to use expensive logic path
+	if (!uid) {
+		return false;
+	}
+
+	// One request allowed every 3 seconds (configured at top)
+	const limited = probeRateLimit.get(uid);
+	if (limited) {
+		return false;
+	}
+
 	// Cached result
 	if (probeCache.has(url)) {
 		return probeCache.get(url);
@@ -572,6 +593,7 @@ ActivityPub.probe = async ({ uid, url }) => {
 		return false;
 	}
 	try {
+		probeRateLimit.set(uid, true);
 		return await checkHeader(meta.config.activitypubProbeTimeout || 2000);
 	} catch (e) {
 		if (e.name === 'TimeoutError') {
