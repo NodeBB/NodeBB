@@ -38,7 +38,7 @@
     "email-not-confirmed": "Вы не сможете отправлять сообщения, пока ваш адрес электронной почты не подтверждён. Пожалуйста, нажмите здесь, чтобы подтвердить его.",
     "email-not-confirmed-chat": "Вы не можете оставлять сообщения, пока ваша электронная почта не подтверждена. Отправить письмо с кодом подтверждения повторно.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You may not be able to post in some categories or chat until your email is confirmed.",
-    "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery, and may be necessary for chatting and posting in some categories. Please click here to enter an email.",
+    "no-email-to-confirm": "В вашей учётной записи не указан адрес электронной почты. Он необходим для восстановления доступа, а также может потребоваться для общения и публикации в некоторых разделах. Пожалуйста, нажмите здесь, чтобы указать адрес электронной почты.",
     "user-doesnt-have-email": "У пользователя %1 не задана электронная почта.",
     "email-confirm-failed": "По техническим причинам мы не можем подтвердить ваш адрес электронной почты. Приносим вам наши извинения, пожалуйста, попробуйте позже.",
     "confirm-email-already-sent": "Сообщение для подтверждения регистрации уже выслано на ваш адрес электронной почты. Повторная отправка возможна через %1 мин.",
