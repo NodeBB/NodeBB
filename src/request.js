@@ -8,16 +8,32 @@ const { CookieJar } = require('tough-cookie');
 const fetchCookie = require('fetch-cookie').default;
 const { version } = require('../package.json');
 
+const plugins = require('./plugins');
 const ttl = require('./cache/ttl');
 const checkCache = ttl({
 	ttl: 1000 * 60 * 60, // 1 hour
 });
+let allowList = new Set();
+let initialized = false;
 
 exports.jar = function () {
 	return new CookieJar();
 };
 
 const userAgent = `NodeBB/${version.split('.').shift()}.x (${nconf.get('url')})`;
+
+async function init() {
+	if (initialized) {
+		return;
+	}
+
+	allowList.add(nconf.get('url_parsed').host);
+	const { allowed } = await plugins.hooks.fire('filter:request.init', { allowed: allowList });
+	if (allowed instanceof Set) {
+		allowList = allowed;
+	}
+	initialized = true;
+}
 
 // Initialize fetch - somewhat hacky, but it's required for globalDispatcher to be available
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
@@ -90,13 +106,15 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 // Checks url to ensure it is not in reserved IP range (private, etc.)
 async function check(url) {
+	await init();
+
 	const { host } = new URL(url);
-	if (host === nconf.get('url_parsed').host) {
+	if (allowList.has(host)) {
 		return true;
 	}
 
 	const cached = checkCache.get(url);
-	if (cached) {
+	if (cached !== undefined) {
 		return cached;
 	}
 
