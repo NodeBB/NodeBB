@@ -31,7 +31,7 @@ Controller.fetch = async (req, res, next) => {
 		if (typeof result === 'string') {
 			return helpers.redirect(res, result);
 		} else if (result) {
-			const { id, type } = await activitypub.get('uid', req.uid || 0, url.href);
+			const { id, type } = await activitypub.get('uid', req.uid, url.href);
 			switch (true) {
 				case activitypub._constants.acceptedPostTypes.includes(type): {
 					return helpers.redirect(res, `/post/${encodeURIComponent(id)}`);
