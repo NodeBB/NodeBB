@@ -1,9 +1,20 @@
 'use strict';
 
+const dns = require('dns').promises;
+
 const nconf = require('nconf');
+const ipaddr = require('ipaddr.js');
 const { CookieJar } = require('tough-cookie');
 const fetchCookie = require('fetch-cookie').default;
 const { version } = require('../package.json');
+
+const plugins = require('./plugins');
+const ttl = require('./cache/ttl');
+const checkCache = ttl({
+	ttl: 1000 * 60 * 60, // 1 hour
+});
+let allowList = new Set();
+let initialized = false;
 
 exports.jar = function () {
 	return new CookieJar();
@@ -11,8 +22,26 @@ exports.jar = function () {
 
 const userAgent = `NodeBB/${version.split('.').shift()}.x (${nconf.get('url')})`;
 
+async function init() {
+	if (initialized) {
+		return;
+	}
+
+	allowList.add(nconf.get('url_parsed').host);
+	const { allowed } = await plugins.hooks.fire('filter:request.init', { allowed: allowList });
+	if (allowed instanceof Set) {
+		allowList = allowed;
+	}
+	initialized = true;
+}
+
 // Initialize fetch - somewhat hacky, but it's required for globalDispatcher to be available
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
+	const ok = await check(url);
+	if (!ok) {
+		throw new Error('[[error:reserved-ip-address]]');
+	}
+
 	let fetchImpl = fetch;
 	if (jar) {
 		fetchImpl = fetchCookie(fetch, jar);
@@ -73,6 +102,40 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			headers: Object.fromEntries(response.headers.entries()),
 		},
 	};
+}
+
+// Checks url to ensure it is not in reserved IP range (private, etc.)
+async function check(url) {
+	await init();
+
+	const { host } = new URL(url);
+	if (allowList.has(host)) {
+		return true;
+	}
+
+	const cached = checkCache.get(url);
+	if (cached !== undefined) {
+		return cached;
+	}
+
+	const addresses = new Set();
+	if (ipaddr.isValid(url)) {
+		addresses.add(url);
+	} else {
+		const lookup = await dns.lookup(host, { all: true });
+		lookup.forEach(({ address }) => {
+			addresses.add(address);
+		});
+	}
+
+	// Every IP address that the host resolves to should be a unicast address
+	const ok = Array.from(addresses).every((ip) => {
+		const parsed = ipaddr.parse(ip);
+		return parsed.range() === 'unicast';
+	});
+
+	checkCache.set(host, ok);
+	return ok;
 }
 
 /*
