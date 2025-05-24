@@ -122,6 +122,9 @@ function setupRoutes() {
 }
 
 async function testDatabase(req, res) {
+	/**
+	 * @type {import ('../types/database').Database & import('../types/database').Hash }
+	 */
 	let db;
 	try {
 		const keys = Object.keys(req.query);
@@ -147,7 +150,7 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	const dbs = ['mongo', 'redis', 'postgres'];
+	const dbs = ['mongo', 'redis', 'postgres', 'mysql'];
 	const databases = dbs.map((databaseName) => {
 		const questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 

@@ -2,7 +2,6 @@
 
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const util = require('util');
@@ -11,7 +10,7 @@ const sleep = util.promisify(setTimeout);
 const assert = require('assert');
 const nconf = require('nconf');
 
-const db = require('./mocks/databasemock');
+const db = require('../src/database');
 const user = require('../src/user');
 const groups = require('../src/groups');
 const categories = require('../src/categories');
@@ -52,6 +51,10 @@ describe('socket.io', () => {
 			title: 'Test Topic',
 			content: 'Test topic content',
 		});
+	});
+
+	after(async () => {
+		io?.close();
 	});
 
 

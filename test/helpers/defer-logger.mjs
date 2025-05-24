@@ -1,0 +1,35 @@
+import winston from 'winston';
+import Transport from 'winston-transport';
+
+const winstonLogged = [];
+
+class DeferLogger extends Transport {
+	constructor(opts) {
+		super(opts);
+		this.logged = opts.logged;
+	}
+
+	log(info, callback) {
+		setImmediate(() => {
+			this.emit('logged', info);
+		});
+
+		this.logged.push([info.level, info.message]);
+		callback();
+	}
+}
+
+before(() => {
+	// defer winston logs until the end
+	winston.clear();
+
+	winston.add(new DeferLogger({ logged: winstonLogged }));
+});
+
+after(() => {
+	console.log('\n\n');
+
+	winstonLogged.forEach((args) => {
+		console.log(`${args[0]} ${args[1]}`);
+	});
+});

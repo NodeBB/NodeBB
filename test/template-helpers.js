@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const assert = require('assert');
 
-const db = require('./mocks/databasemock');
 const helpers = require('../src/helpers');
 
 describe('helpers', () => {

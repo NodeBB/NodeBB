@@ -3,7 +3,7 @@
 
 const async = require('async');
 const winston = require('winston');
-const cron = require('cron').CronJob;
+const cronJob = require('cron').CronJob;
 const nconf = require('nconf');
 const _ = require('lodash');
 
@@ -64,9 +64,20 @@ Notifications.getAllNotificationTypes = async function () {
 	return results.types.concat(results.privilegedTypes);
 };
 
+/**
+ * @type {cronJob[]}
+ */
+const jobs = [];
+Notifications.stop = function () {
+	jobs.forEach((job) => {
+		job.stop();
+	});
+	jobs.length = 0;
+};
+
 Notifications.startJobs = function () {
 	winston.verbose('[notifications.init] Registering jobs.');
-	new cron('*/30 * * * *', Notifications.prune, null, true);
+	jobs.push(new cronJob('*/30 * * * *', Notifications.prune, null, true));
 };
 
 Notifications.get = async function (nid) {

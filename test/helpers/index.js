@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const fs = require('fs');
 const path = require('path');
-const winston = require('winston');
 
 const request = require('../../src/request');
 
