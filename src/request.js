@@ -1,6 +1,7 @@
 'use strict';
 
 const dns = require('dns').promises;
+require('undici'); // keep this here, needed for SSRF (see `lookup()`)
 
 const nconf = require('nconf');
 const ipaddr = require('ipaddr.js');
@@ -35,9 +36,39 @@ async function init() {
 	initialized = true;
 }
 
+/**
+ * This method (alongside `check()`) guards against SSRF via DNS rebinding.
+ *
+ *  - `check()` does a DNS lookup and ensures that all returned IPs do not belong to a reserved IP address space
+ *  - `lookup()` provides additional logic that uses the cached DNS result from `check()`
+ *     instead of doing another lookup (which is where DNS rebinding comes into play.)
+ *  - For whatever reason `undici` needs to be required so that lookup can be overwritten properly.
+ */
+function lookup(hostname, options, callback) {
+	const { ok, lookup } = checkCache.get(hostname);
+	if (!ok) {
+		throw new Error('lookup-failed');
+	}
+
+	if (!lookup) {
+		// trusted, do regular lookup
+		dns.lookup(hostname, options).then((addresses) => {
+			callback(null, addresses);
+		});
+		return;
+	}
+
+	if (options.all === true) {
+		callback(null, lookup);
+	} else {
+		const { address, family } = lookup.shift();
+		callback(null, address, family);
+	}
+}
+
 // Initialize fetch - somewhat hacky, but it's required for globalDispatcher to be available
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
-	const ok = await check(url);
+	const { ok } = await check(url);
 	if (!ok) {
 		throw new Error('[[error:reserved-ip-address]]');
 	}
@@ -75,7 +106,9 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 				return super.dispatch(opts, handler);
 			}
 		}
-		opts.dispatcher = new FetchAgent();
+		opts.dispatcher = new FetchAgent({
+			connect: { lookup },
+		});
 	}
 
 	const response = await fetchImpl(url, opts);
@@ -109,33 +142,36 @@ async function check(url) {
 	await init();
 
 	const { host } = new URL(url);
-	if (allowList.has(host)) {
-		return true;
-	}
-
 	const cached = checkCache.get(url);
 	if (cached !== undefined) {
 		return cached;
 	}
+	if (allowList.has(host)) {
+		const payload = { ok: true };
+		checkCache.set(host, payload);
+		return payload;
+	}
 
 	const addresses = new Set();
+	let lookup;
 	if (ipaddr.isValid(url)) {
 		addresses.add(url);
 	} else {
-		const lookup = await dns.lookup(host, { all: true });
-		lookup.forEach(({ address }) => {
-			addresses.add(address);
+		lookup = await dns.lookup(host, { all: true });
+		lookup.forEach(({ address, family }) => {
+			addresses.add({ address, family });
 		});
 	}
 
 	// Every IP address that the host resolves to should be a unicast address
-	const ok = Array.from(addresses).every((ip) => {
+	const ok = Array.from(addresses).every(({ address: ip }) => {
 		const parsed = ipaddr.parse(ip);
 		return parsed.range() === 'unicast';
 	});
 
-	checkCache.set(host, ok);
-	return ok;
+	const payload = { ok, lookup };
+	checkCache.set(host, payload);
+	return payload;
 }
 
 /*
