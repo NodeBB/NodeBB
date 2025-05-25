@@ -1,7 +1,7 @@
 {
     "category": "Danh mục",
     "subcategories": "Danh mục phụ",
-    "uncategorized": "Chưa có danh mục",
+    "uncategorized": "Chưa phân loại",
     "uncategorized.description": "Các chủ đề không phù hợp với bất kỳ danh mục hiện có nào",
     "handle.description": "Có thể theo dõi danh mục này từ mạng xã hội mở thông qua xử lý %1",
     "new-topic-button": "Chủ Đề Mới",
