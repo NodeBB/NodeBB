@@ -202,3 +202,26 @@ Helpers.mocks.update = (override = {}) => {
 	return { activity };
 };
 
+Helpers.mocks.delete = (override = {}) => {
+	let actor = override.actor;
+	let object = override.object;
+	if (!actor) {
+		({ id: actor } = Helpers.mocks.person());
+	}
+	if (!object) {
+		({ id: object } = Helpers.mocks.note());
+	}
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${Helpers.mocks._baseUrl}/delete/${encodeURIComponent(object.id || object)}`,
+		type: 'Delete',
+		to: [activitypub._constants.publicAddress],
+		cc: [`${actor}/followers`],
+		actor,
+		object,
+	};
+
+	return { activity };
+};
+
