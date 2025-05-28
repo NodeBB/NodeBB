@@ -126,6 +126,7 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 		await Promise.all([
 			db.sortedSetRemove(`followingRemote:${id}`, actor),
 			db.sortedSetRemove(`followRequests:uid.${id}`, actor),
+			db.sortedSetRemove(`followersRemote:${actor}`, id),
 			db.decrObjectField(`user:${id}`, 'followingRemoteCount'),
 		]);
 	} else if (type === 'cid') {
