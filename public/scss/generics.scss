@@ -23,11 +23,13 @@
 		display: block;
 	}
 }
-.dropdown-left {
-	.dropdown-menu { --bs-position: start; }
+html[data-dir="ltr"] {
+	.dropdown-left .dropdown-menu { --bs-position: start; }
+	.dropdown-right .dropdown-menu { --bs-position: end; }
 }
-.dropdown-right {
-	.dropdown-menu { --bs-position: end; }
+html[data-dir="rtl"] {
+	.dropdown-left .dropdown-menu { --bs-position: end; }
+	.dropdown-right .dropdown-menu { --bs-position: start; }
 }
 
 .category-dropdown-menu {
