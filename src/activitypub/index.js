@@ -511,8 +511,8 @@ ActivityPub.probe = async ({ uid, url }) => {
 
 	// Disable on config setting; restrict lookups to HTTPS-enabled URLs only
 	const { activitypubProbe } = meta.config;
-	const { protocol } = new URL(url);
-	if (!activitypubProbe || protocol !== 'https:') {
+	const { protocol, host } = new URL(url);
+	if (!activitypubProbe || protocol !== 'https:' || host === nconf.get('url_parsed').host) {
 		return false;
 	}
 
