@@ -4,6 +4,7 @@ const assert = require('assert');
 const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
+const request = require('../../src/request');
 const user = require('../../src/user');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
@@ -192,11 +193,12 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 
 			describe('groups:find', () => {
 				it('should return webfinger response to a category\'s handle', async () => {
-					const response = await activitypub.helpers.query(`${handle}@${nconf.get('url_parsed').hostname}`);
+					const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${handle}@${nconf.get('url_parsed').host}`);
 
 					assert(response);
-					assert.strictEqual(response.subject, `acct:${handle}@${nconf.get('url_parsed').hostname}`);
-					assert.strictEqual(response.hostname, nconf.get('url_parsed').hostname);
+					assert.strictEqual(response.statusCode, 200);
+					assert(body.links && body.links.length);
+					assert.strictEqual(body.subject, `acct:${handle}@${nconf.get('url_parsed').host}`);
 				});
 			});
 		});
