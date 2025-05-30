@@ -6,9 +6,6 @@ const plugins = require('../../plugins');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.loadTopicTools = async function (socket, data) {
-		if (!socket.uid) {
-			throw new Error('[[error:no-privileges]]');
-		}
 		if (!data) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -21,7 +18,7 @@ module.exports = function (SocketTopics) {
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
 		}
-		if (!userPrivileges['topics:read']) {
+		if (!userPrivileges['topics:read'] || !userPrivileges.view_thread_tools) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		topicData.privileges = userPrivileges;
