@@ -294,9 +294,13 @@ inbox.announce = async (req) => {
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			const exists = await posts.exists(localId || id);
 			if (exists) {
-				const result = await posts.upvote(localId || id, object.actor);
-				if (localId) {
-					socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+				try {
+					const result = await posts.upvote(localId || id, object.actor);
+					if (localId) {
+						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+					}
+				} catch (e) {
+					// vote denied due to local limitations (frequency, privilege, etc.); noop.
 				}
 			}
 
