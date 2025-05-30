@@ -44,7 +44,8 @@ module.exports = function (Categories) {
 
 		const childrenCids = await getChildrenCids(cids, uid);
 		const uniqCids = _.uniq(cids.concat(childrenCids));
-		const categoryData = await Categories.getCategories(uniqCids);
+		let categoryData = await Categories.getCategories(uniqCids);
+		categoryData = categoryData.filter(Boolean);
 
 		Categories.getTree(categoryData, 0);
 		await Categories.getRecentTopicReplies(categoryData, uid, data.qs);
