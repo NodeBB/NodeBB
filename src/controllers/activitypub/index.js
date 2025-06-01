@@ -145,7 +145,7 @@ Controller.postInbox = async (req, res) => {
 	const method = String(req.body.type).toLowerCase();
 	if (!activitypub.inbox.hasOwnProperty(method)) {
 		winston.warn(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
-		return res.sendStatus(501);
+		return res.sendStatus(200);
 	}
 
 	try {
