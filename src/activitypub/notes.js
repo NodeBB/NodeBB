@@ -196,8 +196,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const { to, cc, attachment } = mainPost._activitypub;
 		const tags = await Notes._normalizeTags(mainPost._activitypub.tag || []);
 
-		await Promise.all([
-			topics.post({
+		try {
+			await topics.post({
 				tid,
 				uid: authorId,
 				cid: options.cid || cid,
@@ -208,13 +208,16 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				content: mainPost.content,
 				sourceContent: mainPost.sourceContent,
 				_activitypub: mainPost._activitypub,
-			}),
-			Notes.updateLocalRecipients(mainPid, { to, cc }),
-		]);
-		unprocessed.shift();
+			});
+			unprocessed.shift();
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/notes.assert] Could not post topic (${mainPost.pid}): ${e.message}`);
+			return null;
+		}
 
 		// These must come after topic is posted
 		await Promise.all([
+			Notes.updateLocalRecipients(mainPid, { to, cc }),
 			mainPost._activitypub.image ? topics.thumbs.associate({
 				id: tid,
 				path: mainPost._activitypub.image,
