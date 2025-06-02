@@ -271,6 +271,7 @@
 
 	"invalid-plugin-id": "Invalid plugin ID",
 	"plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP",
+	"cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
 	"plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
 	"plugins-set-in-configuration": "You are not allowed to change plugin state as they are defined at runtime (config.json, environmental variables or terminal arguments), please modify the configuration instead.",
 	"theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
