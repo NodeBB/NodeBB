@@ -3,6 +3,7 @@
     "invalid-json": "Неправилен JSON",
     "wrong-parameter-type": "За свойството `%1` се очакваше стойност от тип %3, но вместо това беше получено %2",
     "required-parameters-missing": "Липсват задължителни параметри от това извикване към ППИ: %1",
+    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Изглежда не сте се вписали в системата.",
     "account-locked": "Вашият акаунт беше заключен временно",
     "search-requires-login": "Търсенето изисква регистриран акаунт! Моля, впишете се или се регистрирайте!",

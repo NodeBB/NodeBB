@@ -3,6 +3,7 @@
     "invalid-json": "אובייקט JSON לא תקין",
     "wrong-parameter-type": "ערך מסוג %3 היה צפוי למאפיין `%1`, אבל %2 התקבל במקום זאת",
     "required-parameters-missing": "פרמטרים נדרשים היו חסרים בקריאת API זו: %1",
+    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "נראה שאינכם מחוברים למערכת.",
     "account-locked": "חשבונכם נחסם באופן זמני",
     "search-requires-login": "חיפוש מצריך חשבון - אנא הירשמו או התחברו.",

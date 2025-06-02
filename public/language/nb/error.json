@@ -3,6 +3,7 @@
     "invalid-json": "Ugyldig JSON",
     "wrong-parameter-type": "En verdi av typen %3 var forventet for egenskapen `%1`, men %2 ble mottatt i stedet",
     "required-parameters-missing": "Nødvendige parametere manglet fra dette API-kallet: %1",
+    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Du ser ikke ut til å være logget inn.",
     "account-locked": "Kontoen din har blitt midlertidig låst",
     "search-requires-login": "Søking krever en konto - vennligst logg inn eller registrer deg.",

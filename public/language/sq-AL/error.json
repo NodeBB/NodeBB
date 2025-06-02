@@ -3,6 +3,7 @@
     "invalid-json": "JSON i pavlefshëm",
     "wrong-parameter-type": "Pritej një vlerë e tipit %3 për vetinë '%1', por në vend të saj u mor %2",
     "required-parameters-missing": "Parametrat e kërkuar mungonin në këtë API: %1",
+    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Mesa duket nuk jeni identifikuar.",
     "account-locked": "Llogaria juaj është bllokuar përkohësisht",
     "search-requires-login": "Për të kërkuar ju duhet të keni një llogari - ju lutemi identifikohuni ose regjistrohuni.",

@@ -3,6 +3,7 @@
     "invalid-json": "Invalid JSON",
     "wrong-parameter-type": "A value of type %3 was expected for property `%1`, but %2 was received instead",
     "required-parameters-missing": "Required parameters were missing from this API call: %1",
+    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Biragaragara ko utinjiyemo.",
     "account-locked": "Konte yawe yabaye ifunze",
     "search-requires-login": "Gushaka ikintu bisaba kuba ufite konte - Injiramo cyangwa wiyandike.",

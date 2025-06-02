@@ -3,6 +3,7 @@
     "invalid-json": "无效 JSON",
     "wrong-parameter-type": "属性 `%1` 要求是类型 %3 的值，却收到了 %2",
     "required-parameters-missing": "此 API 调用必需参数缺少了：%1",
+    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "您还没有登录。",
     "account-locked": "您的帐号已被临时锁定",
     "search-requires-login": "搜索功能仅限会员使用 - 请先登录或者注册。",
