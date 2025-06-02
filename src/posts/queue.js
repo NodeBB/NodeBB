@@ -188,13 +188,16 @@ module.exports = function (Posts) {
 			data: data,
 		};
 		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
-		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);
-		await db.setObject(`post:queue:${id}`, payload);
+		await db.setObject(`post:queue:${id}`, {
+			...payload,
+			data: JSON.stringify(payload.data),
+		});
 		await user.setUserField(data.uid, 'lastqueuetime', now);
 		cache.del('post-queue');
 
+		await plugins.hooks.fire('action:post-queue.save', payload);
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
 		const bodyLong = await parseBodyLong(cid, type, data);

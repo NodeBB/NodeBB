@@ -31,7 +31,7 @@ Controller.fetch = async (req, res, next) => {
 		if (typeof result === 'string') {
 			return helpers.redirect(res, result);
 		} else if (result) {
-			const { id, type } = await activitypub.get('uid', req.uid || 0, url.href);
+			const { id, type } = await activitypub.get('uid', req.uid, url.href);
 			switch (true) {
 				case activitypub._constants.acceptedPostTypes.includes(type): {
 					return helpers.redirect(res, `/post/${encodeURIComponent(id)}`);
@@ -145,7 +145,7 @@ Controller.postInbox = async (req, res) => {
 	const method = String(req.body.type).toLowerCase();
 	if (!activitypub.inbox.hasOwnProperty(method)) {
 		winston.warn(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
-		return res.sendStatus(501);
+		return res.sendStatus(200);
 	}
 
 	try {

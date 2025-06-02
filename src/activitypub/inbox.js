@@ -95,6 +95,12 @@ inbox.update = async (req) => {
 			try {
 				switch (true) {
 					case isNote: {
+						const cid = await posts.getCidByPid(object.id);
+						const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
+						if (!allowed) {
+							throw new Error('[[error:no-privileges]]');
+						}
+
 						const postData = await activitypub.mocks.post(object);
 						postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 						await posts.edit(postData);
@@ -200,7 +206,7 @@ inbox.delete = async (req) => {
 
 	const objectHostname = new URL(pid).hostname;
 	if (actorHostname !== objectHostname) {
-		throw new Error('[[error:activitypub.origin-mismatch]]');
+		return reject('Delete', object, actor);
 	}
 
 	const [isNote/* , isActor */] = await Promise.all([
@@ -210,6 +216,12 @@ inbox.delete = async (req) => {
 
 	switch (true) {
 		case isNote: {
+			const cid = await posts.getCidByPid(pid);
+			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
+			if (!allowed) {
+				return reject('Delete', object, actor);
+			}
+
 			const uid = await posts.getPostField(pid, 'uid');
 			await activitypub.feps.announce(pid, req.body);
 			await api.posts[method]({ uid }, { pid });
@@ -282,9 +294,13 @@ inbox.announce = async (req) => {
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			const exists = await posts.exists(localId || id);
 			if (exists) {
-				const result = await posts.upvote(localId || id, object.actor);
-				if (localId) {
-					socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+				try {
+					const result = await posts.upvote(localId || id, object.actor);
+					if (localId) {
+						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+					}
+				} catch (e) {
+					// vote denied due to local limitations (frequency, privilege, etc.); noop.
 				}
 			}
 
@@ -530,7 +546,8 @@ inbox.undo = async (req) => {
 		case 'Like': {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
-				throw new Error('[[error:invalid-pid]]');
+				reject('Like', object, actor);
+				break;
 			}
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);

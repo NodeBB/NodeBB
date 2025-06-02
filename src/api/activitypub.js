@@ -119,6 +119,7 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 	await activitypub.send(type, id, [actor], {
 		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Undo',
+		actor: object.actor,
 		object,
 	});
 
@@ -126,6 +127,7 @@ activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
 		await Promise.all([
 			db.sortedSetRemove(`followingRemote:${id}`, actor),
 			db.sortedSetRemove(`followRequests:uid.${id}`, actor),
+			db.sortedSetRemove(`followersRemote:${actor}`, id),
 			db.decrObjectField(`user:${id}`, 'followingRemoteCount'),
 		]);
 	} else if (type === 'cid') {
