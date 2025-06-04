@@ -69,14 +69,10 @@ define('forum/post-queue', [
 			const id = textarea.parents('[data-id]').attr('data-id');
 			const titleEdit = triggerClass === '[data-action="editTitle"]';
 
-			socket.emit('posts.editQueuedContent', {
-				id: id,
+			api.put(`/posts/queue/${id}`, {
 				title: titleEdit ? textarea.val() : undefined,
 				content: titleEdit ? undefined : textarea.val(),
-			}, function (err, data) {
-				if (err) {
-					return alerts.error(err);
-				}
+			}).then((data) => {
 				if (titleEdit) {
 					preview.find('.title-text').text(data.postData.title);
 				} else {
@@ -85,7 +81,7 @@ define('forum/post-queue', [
 
 				textarea.parent().addClass('hidden');
 				preview.removeClass('hidden');
-			});
+			}).catch(alerts.error);
 		});
 	}
 
@@ -96,8 +92,7 @@ define('forum/post-queue', [
 			onSubmit: function (selectedCategory) {
 				Promise.all([
 					api.get(`/categories/${selectedCategory.cid}`, {}),
-					socket.emit('posts.editQueuedContent', {
-						id: id,
+					api.put(`/posts/queue/${id}`, {
 						cid: selectedCategory.cid,
 					}),
 				]).then(function (result) {
@@ -174,6 +169,35 @@ define('forum/post-queue', [
 
 	async function handleQueueActions() {
 		// accept, reject, notify
+
+		const parent = $(this).parents('[data-id]');
+		const action = $(this).attr('data-action');
+		const id = parent.attr('data-id');
+		const listContainer = parent.get(0).parentNode;
+
+		if ((!['accept', 'reject', 'notify'].includes(action)) ||
+			(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
+			return;
+		}
+
+		doAction(action, id).then(function () {
+			if (action === 'accept' || action === 'reject') {
+				parent.remove();
+			}
+
+			if (listContainer.childElementCount === 0) {
+				if (ajaxify.data.singlePost) {
+					ajaxify.go('/post-queue' + window.location.search);
+				} else {
+					ajaxify.refresh();
+				}
+			}
+		}).catch(alerts.error);
+
+		return false;
+	}
+
+	async function doAction(action, id) {
 		function getMessage() {
 			return new Promise((resolve) => {
 				const modal = bootbox.dialog({
@@ -194,36 +218,16 @@ define('forum/post-queue', [
 			});
 		}
 
-		const parent = $(this).parents('[data-id]');
-		const action = $(this).attr('data-action');
-		const id = parent.attr('data-id');
-		const listContainer = parent.get(0).parentNode;
-
-		if ((!['accept', 'reject', 'notify'].includes(action)) ||
-			(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
-			return;
+		const actionsMap = {
+			accept: () => api.post(`/posts/queue/${id}`, {}),
+			reject: () => api.del(`/posts/queue/${id}`, {}),
+			notify: async () => api.post(`/posts/queue/${id}/notify`, { message: await getMessage() }),
+		};
+		if (actionsMap[action]) {
+			const result = actionsMap[action]();
+			return (result instanceof Promise ? result : Promise.resolve(result));
 		}
-
-		socket.emit('posts.' + action, {
-			id: id,
-			message: action === 'notify' ? await getMessage() : undefined,
-		}, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-			if (action === 'accept' || action === 'reject') {
-				parent.remove();
-			}
-
-			if (listContainer.childElementCount === 0) {
-				if (ajaxify.data.singlePost) {
-					ajaxify.go('/post-queue' + window.location.search);
-				} else {
-					ajaxify.refresh();
-				}
-			}
-		});
-		return false;
+		throw new Error(`Unknown action: ${action}`);
 	}
 
 	function handleBulkActions() {
@@ -244,7 +248,7 @@ define('forum/post-queue', [
 				return;
 			}
 			const action = bulkAction.split('-')[0];
-			const promises = ids.map(id => socket.emit('posts.' + action, { id: id }));
+			const promises = ids.map(id => doAction(action, id));
 
 			Promise.allSettled(promises).then(function (results) {
 				const fulfilled = results.filter(res => res.status === 'fulfilled').length;
