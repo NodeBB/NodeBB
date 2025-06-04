@@ -237,6 +237,7 @@ modsController.postQueue = async function (req, res, next) {
 		.map((post) => {
 			const isSelf = post.user.uid === req.uid;
 			post.canAccept = !isSelf && (isAdmin || isGlobalMod || !!moderatedCids.length);
+			post.canEdit = isSelf || isAdmin || isGlobalMod;
 			return post;
 		});
 

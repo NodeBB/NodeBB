@@ -166,6 +166,8 @@ get:
                     type: boolean
                   canAccept:
                     type: boolean
+                  canEdit:
+                    type: boolean
                   enabled:
                     type: number
                   singlePost:
