@@ -58,12 +58,15 @@ function lookup(hostname, options, callback) {
 		return;
 	}
 
-	if (options.all === true) {
-		callback(null, lookup);
-	} else {
-		const { address, family } = lookup.shift();
-		callback(null, address, family);
-	}
+	// Lookup needs to behave asynchronously — https://github.com/nodejs/node/issues/28664
+	process.nextTick(() => {
+		if (options.all === true) {
+			callback(null, lookup);
+		} else {
+			const { address, family } = lookup.shift();
+			callback(null, address, family);
+		}
+	});
 }
 
 // Initialize fetch - somewhat hacky, but it's required for globalDispatcher to be available
