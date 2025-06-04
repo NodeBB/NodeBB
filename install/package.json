@@ -94,7 +94,7 @@
         "mongodb": "6.16.0",
         "morgan": "1.10.0",
         "mousetrap": "1.6.5",
-        "multer": "2.0.0",
+        "multer": "2.0.1",
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "7.5.10",
         "nodebb-plugin-composer-default": "10.2.50",
