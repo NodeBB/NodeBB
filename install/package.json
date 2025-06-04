@@ -150,7 +150,7 @@
         "webpack": "5.99.9",
         "webpack-merge": "6.0.1",
         "winston": "3.17.0",
-        "workerpool": "9.2.0",
+        "workerpool": "9.3.2",
         "xml": "1.0.1",
         "xregexp": "5.1.2",
         "yargs": "17.7.2",
