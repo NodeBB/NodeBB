@@ -3,7 +3,7 @@
     "invalid-json": "JSON non valido",
     "wrong-parameter-type": "Era previsto un valore di tipo %3 per la proprietà '%1', ma invece è stato ricevuto %2",
     "required-parameters-missing": "I parametri richiesti sono mancanti in questa chiamata API: %1",
-    "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
+    "reserved-ip-address": "Le richieste di rete agli intervalli IP riservati non sono consentite.",
     "not-logged-in": "Non sembra che tu abbia effettuato l'accesso.",
     "account-locked": "Il tuo account è stato bloccato temporaneamente",
     "search-requires-login": "La ricerca richiede un account! Si prega di effettuare l'accesso o registrarsi!",
