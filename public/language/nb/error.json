@@ -237,6 +237,7 @@
     "socket-reconnect-failed": "Får ikke tilgang til serveren for øyeblikket. Klikk her for å prøve igjen, eller prøv igjen senere",
     "invalid-plugin-id": "Ugyldig innstikk-ID",
     "plugin-not-whitelisted": "Ute av stand til å installere tillegget &ndash; bare tillegg som er hvitelistet av NodeBB sin pakkebehandler kan bli installert via administratorkontrollpanelet",
+    "cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
     "plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
     "plugins-set-in-configuration": "Du har ikke tillatelse til å endre plugin-status da de er definert under kjøring (config.json, miljøvariabler eller terminalargumenter)Vennligst endre konfigurasjonen i stedet.",
     "theme-not-set-in-configuration": "Når aktive plugins er definert i konfigurasjonen, krever endring av tema at det nye temaet legges til i listen over aktive plugins før det oppdateres i ACP.",

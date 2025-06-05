@@ -237,6 +237,7 @@
     "socket-reconnect-failed": "Kan ikkje nå serveren for augneblinken. Klikk her for å prøve igjen, eller prøv seinare",
     "invalid-plugin-id": "Ugyldig plugin-ID",
     "plugin-not-whitelisted": "Kan ikkje installere plugin &ndash; berre pluginar som er kvitelistet av NodeBB Package Manager kan installerast via ACP",
+    "cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
     "plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
     "plugins-set-in-configuration": "Du har ikkje løyve til å endre plugin-status sidan dei er definert ved oppstart (config.json, miljøvariablar eller terminalargument), ver venleg å endre konfigurasjonen i staden.",
     "theme-not-set-in-configuration": "Når ein definerer aktive pluginar i konfigurasjonen, krev endring av tema at det nye temaet vert lagt til i lista over aktive pluginar før det oppdaterast i ACP",

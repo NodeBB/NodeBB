@@ -237,6 +237,7 @@
     "socket-reconnect-failed": "Der Server kann zurzeit nicht erreicht werden. Klicken Sie hier, um es erneut zu versuchen, oder versuchen Sie es später erneut",
     "invalid-plugin-id": "Invalid plugin ID",
     "plugin-not-whitelisted": "Plugin kann nicht installiert werden &ndash; nur Plugins, die vom NodeBB Package Manager in die Whitelist aufgenommen wurden, können über den ACP installiert werden",
+    "cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
     "plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
     "plugins-set-in-configuration": "Du darfst den Status der Plugins nicht ändern, da sie zur Laufzeit definiert werden (config.json, Umgebungsvariablen oder Terminalargumente). Bitte ändere stattdessen die Konfiguration.",
     "theme-not-set-in-configuration": "Wenn in der Konfiguration aktive Plugins definiert werden, muss bei einem Themenwechsel das neue Thema zur Liste der aktiven Plugins hinzugefügt werden, bevor es im ACP aktualisiert wird.",

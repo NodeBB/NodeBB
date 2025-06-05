@@ -237,6 +237,7 @@
     "socket-reconnect-failed": "Тренутно није могуће приступити серверу. Кликните овде да бисте покушали поново или покушајте поново касније",
     "invalid-plugin-id": "Invalid plugin ID",
     "plugin-not-whitelisted": "Инсталација додатне компоненте &ndash није могућа; преко ACP-а могу се инсталирати само додатне компоненте које је на белој листи ставио NodeBB Package Manager",
+    "cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
     "plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
     "plugins-set-in-configuration": "Није вам дозвољено да мењате стање додатне компоненте онако како је дефинисано у време извршавања (config.json, променљиве окружења или аргументи терминала), уместо тога измените конфигурацију.",
     "theme-not-set-in-configuration": "Приликом дефинисања активних додатних компоненти у конфигурацији, промена тема захтева додавање нове теме на листу активних додатних компоненти пре ажурирања у ACP",

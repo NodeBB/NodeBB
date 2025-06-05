@@ -237,6 +237,7 @@
     "socket-reconnect-failed": "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ในขณะนี้ คลิกที่นี่เพื่อลองใหม่ หรือลองอีกครั้งภายหลัง",
     "invalid-plugin-id": "รหัสปลั๊กอินไม่ถูกต้อง",
     "plugin-not-whitelisted": "ไม่สามารถติดตั้งปลั๊กอิน &ndash; เฉพาะปลั๊กอินที่ได้รับอนุญาตจาก NodeBB Package Manager ถึงจะติดตั้งผ่านแผงควบคุมผู้ดูแลระบบได้",
+    "cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
     "plugin-installation-via-acp-disabled": "Plugin installation via ACP is disabled",
     "plugins-set-in-configuration": "คุณไม่สามารถเปลี่ยนสถานะของปลั๊กอินเนื่องจากถูกกำหนดตอนรัน (ไฟล์ config.json, ตัวแปร environmental หรือระบุตอนสั่งในบรรทัดคำสั่ง) โปรดปรับที่การตั้งค่าแทน",
     "theme-not-set-in-configuration": "เมื่อกำหนดปลั๊กอันที่กำลังทำงานในส่วนตั้งค่า การเปลี่ยนธีมต้องเพิ่มทีมในรายการปลั๊กอินที่กำลังใช้งานก่อนที่จะเปลี่ยนในแผงควบคุมผู้ดูแล",
