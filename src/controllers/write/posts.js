@@ -189,3 +189,24 @@ Posts.getReplies = async (req, res) => {
 
 	helpers.formatApiResponse(200, res, { replies });
 };
+
+Posts.acceptQueuedPost = async (req, res) => {
+	const post = await api.posts.acceptQueuedPost(req, { id: req.params.id });
+	helpers.formatApiResponse(200, res, { post });
+};
+
+Posts.removeQueuedPost = async (req, res) => {
+	await api.posts.removeQueuedPost(req, { id: req.params.id });
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.editQueuedPost = async (req, res) => {
+	const result = await api.posts.editQueuedPost(req, { id: req.params.id, ...req.body });
+	helpers.formatApiResponse(200, res, result);
+};
+
+Posts.notifyQueuedPostOwner = async (req, res) => {
+	const { id } = req.params;
+	await api.posts.notifyQueuedPostOwner(req, { id, message: req.body.message });
+	helpers.formatApiResponse(200, res);
+};

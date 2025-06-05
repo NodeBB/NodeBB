@@ -1,3 +1,54 @@
+#### v4.4.2 (2025-06-02)
+
+##### Chores
+
+*  up eslint stylistic (fd2ae726)
+*  up dbsearch (e2de0ec2)
+*  up dbsearch (30aa0fe6)
+*  up harmony (99234b3f)
+*  up harmony (a16bc738)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  update changelog for v4.4.1 (a686cf20)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add action:post-queue.save (ebb88c12)
+*  restrict access to ap.probe method to registered users, add rate limiting protection (e70e990a)
+
+##### Bug Fixes
+
+*  return 200 for non-implemented activities instead of 501 (524a1e8b)
+*  closes #13458, check if plugin is system (b1022566)
+*  add try..catch around topics.post in note assertion logic (cc927026)
+*  don't throw on unknown post on Undo(Like) (83a55f6a)
+*  add try..catch wrapper around Announce(Like) call to internal method so as to not return a 500 — just drop the Like activity (629eec7b)
+*  browser title translation (390f6428)
+*  allow guests to load topic tools if they have privilege to view them (78de8c6d)
+*  closes #13454, align dropdowns to opposite side on rtl (72417d82)
+*  send actor in undo(follow) (49b5268e)
+*  missed handling zset on ap unfollow (b20a6ed0)
+*  additional tests for remote privileges, enforcing privileges for remote edits and deletes (a888b868)
+
+##### Tests
+
+*  fix groups:find webfinger test (0c1a6183)
+
 #### v4.4.1 (2025-05-16)
 
 ##### Chores
