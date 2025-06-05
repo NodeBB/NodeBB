@@ -45,7 +45,8 @@ async function init() {
  *  - For whatever reason `undici` needs to be required so that lookup can be overwritten properly.
  */
 function lookup(hostname, options, callback) {
-	const { ok, lookup } = checkCache.get(hostname);
+	let { ok, lookup } = checkCache.get(hostname);
+	lookup = [...lookup];
 	if (!ok) {
 		throw new Error('lookup-failed');
 	}
@@ -164,6 +165,10 @@ async function check(url) {
 		lookup.forEach(({ address, family }) => {
 			addresses.add({ address, family });
 		});
+	}
+
+	if (addresses.size < 1) {
+		return { ok: false };
 	}
 
 	// Every IP address that the host resolves to should be a unicast address
