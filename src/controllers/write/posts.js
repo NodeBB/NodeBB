@@ -207,6 +207,6 @@ Posts.editQueuedPost = async (req, res) => {
 
 Posts.notifyQueuedPostOwner = async (req, res) => {
 	const { id } = req.params;
-	await api.posts.notifyQueuedPostOwner(req, { id, message: req.body.message  });
+	await api.posts.notifyQueuedPostOwner(req, { id, message: req.body.message });
 	helpers.formatApiResponse(200, res);
 };
