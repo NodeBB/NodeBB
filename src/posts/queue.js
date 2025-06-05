@@ -307,9 +307,11 @@ module.exports = function (Posts) {
 		if (data.type === 'topic') {
 			const result = await createTopic(data.data);
 			data.pid = result.postData.pid;
+			data.tid = result.topicData.tid;
 		} else if (data.type === 'reply') {
 			const result = await createReply(data.data);
 			data.pid = result.pid;
+			data.tid = result.tid;
 		}
 		await removeFromQueue(id);
 		plugins.hooks.fire('action:post-queue:submitFromQueue', { data: data });
