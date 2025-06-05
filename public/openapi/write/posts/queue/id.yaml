@@ -29,6 +29,8 @@ post:
                     type: number
                   tid:
                     type: number
+    '400':
+      description: Bad request, invalid post id
 delete:
   summary: Remove a queued post
   tags:
@@ -43,7 +45,17 @@ delete:
   responses:
     '200':
       description: Post removed successfully
-
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      description: Bad request, invalid post id
 put:
   summary: Edit a queued post
   tags:
@@ -61,8 +73,20 @@ put:
       application/json:
         schema:
           type: object
-          additionalProperties: true
+          properties:
+            content:
+              type: string
+              example: This is a test reply
+            cid:
+              type: number
+              description: Category ID to which the post belongs
+            title:
+              type: string
+              description: Updated Post Title
   responses:
     '200':
       description: Post edited successfully
+    '400':
+      description: Bad request, invalid post id
+
 
