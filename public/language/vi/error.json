@@ -237,7 +237,7 @@
     "socket-reconnect-failed": "Không thể truy cập máy chủ vào lúc này. Nhấp vào đây để thử lại hoặc thử lại sau",
     "invalid-plugin-id": "ID plugin không hợp lệ",
     "plugin-not-whitelisted": "Không thể cài đặt plugin &ndash; chỉ có plugin được Quản Lý Gói NodeBB đưa vào danh sách trắng mới có thể được cài đặt qua ACP",
-    "cannot-toggle-system-plugin": "You cannot toggle the state of a system plugin",
+    "cannot-toggle-system-plugin": "Bạn không thể chuyển đổi trạng thái của một plugin hệ thống",
     "plugin-installation-via-acp-disabled": "Cài đặt plugin qua ACP bị tắt",
     "plugins-set-in-configuration": "Bạn không được phép thay đổi trạng thái plugin vì chúng được xác định trong thời gian chạy (config.json, biến môi trường hoặc đối số đầu cuối), thay vào đó hãy sửa đổi cấu hình.",
     "theme-not-set-in-configuration": "Khi xác định các plugin hoạt động trong cấu hình, thay đổi giao diện buộc phải thêm giao diện mới vào danh sách các plugin hoạt động trước khi cập nhật nó trong ACP",
