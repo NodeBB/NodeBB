@@ -128,7 +128,7 @@
         "rtlcss": "4.3.0",
         "sanitize-html": "2.17.0",
         "sass": "1.89.1",
-        "satori": "0.14.0",
+        "satori": "0.15.2",
         "semver": "7.7.2",
         "serve-favicon": "2.5.0",
         "sharp": "0.32.6",
