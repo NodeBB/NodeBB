@@ -98,7 +98,7 @@
         "multiparty": "4.2.3",
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "7.5.10",
-        "nodebb-plugin-composer-default": "10.2.50",
+        "nodebb-plugin-composer-default": "10.2.51",
         "nodebb-plugin-dbsearch": "6.2.19",
         "nodebb-plugin-emoji": "6.0.2",
         "nodebb-plugin-emoji-android": "4.1.1",
