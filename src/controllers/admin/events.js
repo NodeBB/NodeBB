@@ -1,5 +1,6 @@
 'use strict';
 
+const validator = require('validator');
 const db = require('../../database');
 const events = require('../../events');
 const pagination = require('../../pagination');
@@ -58,6 +59,12 @@ eventsController.get = async function (req, res) {
 		events: eventData,
 		pagination: pagination.create(page, pageCount, req.query),
 		types: types,
-		query: req.query,
+		query: {
+			start: validator.escape(String(req.query.start)),
+			end: validator.escape(String(req.query.end)),
+			username: validator.escape(String(req.query.username)),
+			group: validator.escape(String(req.query.group)),
+			perPage: validator.escape(String(req.query.perPage)),
+		},
 	});
 };
