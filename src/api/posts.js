@@ -17,6 +17,8 @@ const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
+const translator = require('../translator');
+const notifications = require('../notifications');
 
 const postsAPI = module.exports;
 
@@ -574,3 +576,91 @@ postsAPI.getReplies = async (caller, { pid }) => {
 
 	return postData;
 };
+
+postsAPI.acceptQueuedPost = async (caller, data) => {
+	await canEditQueue(caller.uid, data, 'accept');
+	const result = await posts.submitFromQueue(data.id);
+	if (result && caller.uid !== parseInt(result.uid, 10)) {
+		await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
+	}
+	await logQueueEvent(caller, result, 'accept');
+	return { type: result.type, pid: result.pid, tid: result.tid };
+};
+
+postsAPI.removeQueuedPost = async (caller, data) => {
+	await canEditQueue(caller.uid, data, 'reject');
+	const result = await posts.removeFromQueue(data.id);
+	if (result && caller.uid !== parseInt(result.uid, 10)) {
+		await sendQueueNotification('post-queue-rejected', result.uid, '/');
+	}
+	await logQueueEvent(caller, result, 'reject');
+};
+
+postsAPI.editQueuedPost = async (caller, data) => {
+	if (!data || !data.id || (!data.content && !data.title && !data.cid)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	await posts.editQueuedContent(caller.uid, data);
+	if (data.content) {
+		return await plugins.hooks.fire('filter:parse.post', { postData: data });
+	}
+	return { postData: data };
+};
+
+postsAPI.notifyQueuedPostOwner = async (caller, data) => {
+	await canEditQueue(caller.uid, data, 'notify');
+	const result = await posts.getFromQueue(data.id);
+	if (result) {
+		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message)));
+	}
+};
+
+async function canEditQueue(uid, data, action) {
+	const [canEditQueue, queuedPost] = await Promise.all([
+		posts.canEditQueue(uid, data, action),
+		posts.getFromQueue(data.id),
+	]);
+	if (!queuedPost) {
+		throw new Error('[[error:no-post]]');
+	}
+	if (!canEditQueue) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
+
+async function logQueueEvent(caller, result, type) {
+	const eventData = {
+		type: `post-queue-${result.type}-${type}`,
+		uid: caller.uid,
+		ip: caller.ip,
+		content: result.data.content,
+		targetUid: result.uid,
+	};
+	if (result.type === 'topic') {
+		eventData.cid = result.data.cid;
+		eventData.title = result.data.title;
+	} else {
+		eventData.tid = result.data.tid;
+	}
+	if (result.pid) {
+		eventData.pid = result.pid;
+	}
+	await events.log(eventData);
+}
+
+async function sendQueueNotification(type, targetUid, path, notificationText) {
+	const bodyShort = notificationText ?
+		translator.compile(`notifications:${type}`, notificationText) :
+		translator.compile(`notifications:${type}`);
+	const notifData = {
+		type: type,
+		nid: `${type}-${targetUid}-${path}`,
+		bodyShort: bodyShort,
+		path: path,
+	};
+	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
+		notifData.from = meta.config.postQueueNotificationUid;
+	}
+	const notifObj = await notifications.create(notifData);
+	await notifications.push(notifObj, [targetUid]);
+}

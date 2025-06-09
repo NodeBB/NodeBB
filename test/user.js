@@ -748,7 +748,9 @@ describe('User', () => {
 					signature: 'nodebb is good',
 					password: '123456',
 				};
-				const result = await apiUser.update({ uid: uid }, { ...data, password: '123456', invalid: 'field' });
+				const result = await apiUser.update({ uid: uid }, {
+					...data, password: '123456', invalid: 'field',
+				});
 				assert.equal(result.username, 'updatedUserName');
 				assert.equal(result.userslug, 'updatedusername');
 				assert.equal(result.fullname, 'updatedFullname');
@@ -765,6 +767,27 @@ describe('User', () => {
 				});
 				// updateProfile only saves valid fields
 				assert.strictEqual(userData.invalid, undefined);
+			});
+
+			it('should not change the username to escaped version', async () => {
+				const uid = await User.create({
+					username: 'ex\'ample_user', email: '13475@test.com', password: '123456',
+				});
+				await User.setUserField(uid, 'email', '13475@test.com');
+				await User.email.confirmByUid(uid);
+
+				const data = {
+					uid: uid,
+					username: 'ex\'ample_user',
+					password: '123456',
+				};
+				const result = await apiUser.update({ uid: uid }, {
+					...data, password: '123456', invalid: 'field',
+				});
+				const storedUsername = await db.getObjectField(`user:${uid}`, 'username');
+				assert.equal(result.username, 'ex&#x27;ample_user');
+				assert.equal(storedUsername, 'ex\'ample_user');
+				assert.equal(result.userslug, 'ex-ample_user');
 			});
 
 			it('should also generate an email confirmation code for the changed email', async () => {
