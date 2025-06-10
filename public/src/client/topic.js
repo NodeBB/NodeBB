@@ -363,7 +363,7 @@ define('forum/topic', [
 					const { top } = link.get(0).getBoundingClientRect();
 					const dropup = top > window.innerHeight / 2;
 					tooltip.on('mouseenter', function () {
-						onPreviewTooltip = true;
+						cursorOnPreviewTooltip = true;
 					});
 					tooltip.one('mouseleave', destroyTooltip);
 					$(window).off('click', onClickOutside).one('click', onClickOutside);
