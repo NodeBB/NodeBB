@@ -307,16 +307,16 @@ define('forum/topic', [
 		if (!ajaxify.data.showPostPreviewsOnHover || utils.isMobile()) {
 			return;
 		}
-		let timeoutId = 0;
+		let renderTimeout = 0;
 		let destroyed = false;
-		let cursorOnPreviewTooltip = false;
+		let link = null;
+
 		const postCache = {};
 		function destroyTooltip() {
-			clearTimeout(timeoutId);
-			timeoutId = 0;
+			clearTimeout(renderTimeout);
+			renderTimeout = 0;
 			$('#post-tooltip').remove();
 			destroyed = true;
-			cursorOnPreviewTooltip = false;
 		}
 
 		function onClickOutside(ev) {
@@ -327,79 +327,72 @@ define('forum/topic', [
 		}
 
 		$(window).one('action:ajaxify.start', destroyTooltip);
+
 		$('[component="topic"]').on('mouseenter', 'a[component="post/parent"], [component="post/parent/content"] a,[component="post/content"] a, [component="topic/event"] a', async function () {
-			const link = $(this);
+			link = $(this);
+			link.removeAttr('over-tooltip');
 			link.one('mouseleave', function () {
+				clearTimeout(renderTimeout);
+				renderTimeout = 0;
 				setTimeout(() => {
-					// If the mouse leaves the link and it's not on a tooltip, destroy the tooltip after a short delay
-					if (!cursorOnPreviewTooltip) {
+					if (!link.attr('over-tooltip') && !renderTimeout) {
 						destroyTooltip();
 					}
-				}, 300);
-
-				// if mouse leaves the link before the tooltip is rendered, clear the timeout
-				if (timeoutId > 0) {
-					clearTimeout(timeoutId);
-					timeoutId = 0;
-				}
+				}, 100);
 			});
+			clearTimeout(renderTimeout);
 			destroyed = false;
 
-			async function renderPost(pid) {
-				const postData = postCache[pid] || await api.get(`/posts/${encodeURIComponent(pid)}/summary`);
-				$('#post-tooltip').remove();
-				if (postData && ajaxify.data.template.topic) {
-					postCache[pid] = postData;
-					const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
-					if (destroyed) {
-						return;
+			renderTimeout = setTimeout(async () => {
+				async function renderPost(pid) {
+					const postData = postCache[pid] || await api.get(`/posts/${encodeURIComponent(pid)}/summary`);
+					$('#post-tooltip').remove();
+					if (postData && ajaxify.data.template.topic) {
+						postCache[pid] = postData;
+						const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
+						if (destroyed) {
+							return;
+						}
+						tooltip.hide().find('.timeago').timeago();
+						tooltip.appendTo($('body')).fadeIn(300);
+						const postContent = link.parents('[component="topic"]').find('[component="post/content"]').first();
+						const postRect = postContent.offset();
+						const postWidth = postContent.width();
+						const linkRect = link.offset();
+						const { top } = link.get(0).getBoundingClientRect();
+						const dropup = top > window.innerHeight / 2;
+						tooltip.on('mouseenter', function () {
+							link.attr('over-tooltip', 1);
+						});
+						tooltip.one('mouseleave', destroyTooltip);
+						$(window).off('click', onClickOutside).one('click', onClickOutside);
+						tooltip.css({
+							top: dropup ? linkRect.top - tooltip.outerHeight() : linkRect.top + 30,
+							left: postRect.left,
+							width: postWidth,
+						});
 					}
-					tooltip.hide().find('.timeago').timeago();
-					tooltip.appendTo($('body')).fadeIn(300);
-					const postContent = link.parents('[component="topic"]').find('[component="post/content"]').first();
-					const postRect = postContent.offset();
-					const postWidth = postContent.width();
-					const linkRect = link.offset();
-					const { top } = link.get(0).getBoundingClientRect();
-					const dropup = top > window.innerHeight / 2;
-					tooltip.on('mouseenter', function () {
-						cursorOnPreviewTooltip = true;
-					});
-					tooltip.one('mouseleave', destroyTooltip);
-					$(window).off('click', onClickOutside).one('click', onClickOutside);
-					tooltip.css({
-						top: dropup ? linkRect.top - tooltip.outerHeight() : linkRect.top + 30,
-						left: postRect.left,
-						width: postWidth,
-					});
-				}
-			}
-
-			const href = link.attr('href');
-			const location = utils.urlToLocation(href);
-			const pathname = location.pathname;
-			const validHref = href && href !== '#' && window.location.hostname === location.hostname;
-			$('#post-tooltip').remove();
-			const postMatch = validHref && pathname && pathname.match(/\/post\/([\d]+|(?:[\w_.~!$&'()*+,;=:@-]|%[\dA-F]{2})+)/);
-			const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\da-z-]+)/);
-			if (postMatch) {
-				const pid = postMatch[1];
-				if (encodeURIComponent(link.parents('[component="post"]').attr('data-pid')) === encodeURIComponent(pid)) {
-					return; // dont render self post
 				}
 
-				timeoutId = setTimeout(async () => {
-					timeoutId = 0;
+				const href = link.attr('href');
+				const location = utils.urlToLocation(href);
+				const pathname = location.pathname;
+				const validHref = href && href !== '#' && window.location.hostname === location.hostname;
+				$('#post-tooltip').remove();
+				const postMatch = validHref && pathname && pathname.match(/\/post\/([\d]+|(?:[\w_.~!$&'()*+,;=:@-]|%[\dA-F]{2})+)/);
+				const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\da-z-]+)/);
+				if (postMatch) {
+					const pid = postMatch[1];
+					if (encodeURIComponent(link.parents('[component="post"]').attr('data-pid')) === encodeURIComponent(pid)) {
+						return; // dont render self post
+					}
 					renderPost(pid);
-				}, 300);
-			} else if (topicMatch) {
-				timeoutId = setTimeout(async () => {
-					timeoutId = 0;
+				} else if (topicMatch) {
 					const tid = topicMatch[1];
 					const topicData = await api.get('/topics/' + tid, {});
 					renderPost(topicData.mainPid);
-				}, 300);
-			}
+				}
+			}, 300);
 		});
 	}
 
