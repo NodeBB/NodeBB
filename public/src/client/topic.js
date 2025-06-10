@@ -312,12 +312,27 @@ define('forum/topic', [
 		const postCache = {};
 		function destroyTooltip() {
 			clearTimeout(timeoutId);
+			timeoutId = 0;
 			$('#post-tooltip').remove();
 			destroyed = true;
 		}
+
+		function onClickOutside(ev) {
+			// If the click is outside the tooltip, destroy it
+			if (!$(ev.target).closest('#post-tooltip').length) {
+				destroyTooltip();
+			}
+		}
+
 		$(window).one('action:ajaxify.start', destroyTooltip);
-		$('[component="topic"]').on('mouseenter', 'a[component="post/parent"], [component="post/content"] a, [component="topic/event"] a', async function () {
+		$('[component="topic"]').on('mouseenter', 'a[component="post/parent"], [component="post/parent/content"] a,[component="post/content"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
+			link.one('mouseleave', function() {
+				if (timeoutId > 0) {
+					clearTimeout(timeoutId);
+					timeoutId = 0;
+				}
+			});
 			destroyed = false;
 
 			async function renderPost(pid) {
@@ -335,8 +350,13 @@ define('forum/topic', [
 					const postRect = postContent.offset();
 					const postWidth = postContent.width();
 					const linkRect = link.offset();
+					const { top } = link.get(0).getBoundingClientRect();
+					const dropup = top > window.innerHeight / 2;
+
+					tooltip.one('mouseleave', destroyTooltip);
+					$(window).off('click', onClickOutside).one('click', onClickOutside);
 					tooltip.css({
-						top: linkRect.top + 30,
+						top: dropup ? linkRect.top - tooltip.outerHeight()  : linkRect.top + 30,
 						left: postRect.left,
 						width: postWidth,
 					});
@@ -357,16 +377,18 @@ define('forum/topic', [
 				}
 
 				timeoutId = setTimeout(async () => {
+					timeoutId = 0;
 					renderPost(pid);
 				}, 300);
 			} else if (topicMatch) {
 				timeoutId = setTimeout(async () => {
+					timeoutId = 0;
 					const tid = topicMatch[1];
 					const topicData = await api.get('/topics/' + tid, {});
 					renderPost(topicData.mainPid);
 				}, 300);
 			}
-		}).on('mouseleave', '[component="post"] a, [component="topic/event"] a', destroyTooltip);
+		});
 	}
 
 	function setupQuickReply() {
