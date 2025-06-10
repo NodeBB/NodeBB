@@ -327,7 +327,7 @@ define('forum/topic', [
 		$(window).one('action:ajaxify.start', destroyTooltip);
 		$('[component="topic"]').on('mouseenter', 'a[component="post/parent"], [component="post/parent/content"] a,[component="post/content"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
-			link.one('mouseleave', function() {
+			link.one('mouseleave', function () {
 				if (timeoutId > 0) {
 					clearTimeout(timeoutId);
 					timeoutId = 0;
@@ -356,7 +356,7 @@ define('forum/topic', [
 					tooltip.one('mouseleave', destroyTooltip);
 					$(window).off('click', onClickOutside).one('click', onClickOutside);
 					tooltip.css({
-						top: dropup ? linkRect.top - tooltip.outerHeight()  : linkRect.top + 30,
+						top: dropup ? linkRect.top - tooltip.outerHeight() : linkRect.top + 30,
 						left: postRect.left,
 						width: postWidth,
 					});
