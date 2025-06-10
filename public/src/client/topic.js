@@ -309,12 +309,14 @@ define('forum/topic', [
 		}
 		let timeoutId = 0;
 		let destroyed = false;
+		let cursorOnPreviewTooltip = false;
 		const postCache = {};
 		function destroyTooltip() {
 			clearTimeout(timeoutId);
 			timeoutId = 0;
 			$('#post-tooltip').remove();
 			destroyed = true;
+			cursorOnPreviewTooltip = false;
 		}
 
 		function onClickOutside(ev) {
@@ -328,6 +330,14 @@ define('forum/topic', [
 		$('[component="topic"]').on('mouseenter', 'a[component="post/parent"], [component="post/parent/content"] a,[component="post/content"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
 			link.one('mouseleave', function () {
+				setTimeout(() => {
+					// If the mouse leaves the link and it's not on a tooltip, destroy the tooltip after a short delay
+					if (!cursorOnPreviewTooltip) {
+						destroyTooltip();
+					}
+				}, 300);
+
+				// if mouse leaves the link before the tooltip is rendered, clear the timeout
 				if (timeoutId > 0) {
 					clearTimeout(timeoutId);
 					timeoutId = 0;
@@ -352,7 +362,9 @@ define('forum/topic', [
 					const linkRect = link.offset();
 					const { top } = link.get(0).getBoundingClientRect();
 					const dropup = top > window.innerHeight / 2;
-
+					tooltip.on('mouseenter', function () {
+						onPreviewTooltip = true;
+					});
 					tooltip.one('mouseleave', destroyTooltip);
 					$(window).off('click', onClickOutside).one('click', onClickOutside);
 					tooltip.css({
