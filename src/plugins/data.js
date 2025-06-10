@@ -37,15 +37,25 @@ Data.getPluginPaths = async function () {
 };
 
 Data.loadPluginInfo = async function (pluginPath) {
+	const pluginJsonPath = path.join(pluginPath, 'plugin.json');
+	const pluginJsPath = path.join(pluginPath, 'plugin.js');
+
+	const [hasPluginJson, hasPluginJs] = await Promise.all([pluginJsonPath, pluginJsPath].map(file.exists));
+
 	const [packageJson, pluginJson] = await Promise.all([
 		fs.promises.readFile(path.join(pluginPath, 'package.json'), 'utf8'),
-		fs.promises.readFile(path.join(pluginPath, 'plugin.json'), 'utf8'),
+		hasPluginJson ? fs.promises.readFile(pluginJsonPath, 'utf8') : Promise.resolve(null),
 	]);
 
 	let pluginData;
 	let packageData;
 	try {
-		pluginData = JSON.parse(pluginJson);
+		if (hasPluginJson && pluginJson && typeof pluginJson === 'string') {
+			pluginData = JSON.parse(pluginJson);
+		} else if (hasPluginJs) {
+			pluginData = require(pluginJsPath);
+		}
+
 		packageData = JSON.parse(packageJson);
 
 		pluginData.license = parseLicense(packageData);
@@ -59,8 +69,7 @@ Data.loadPluginInfo = async function (pluginPath) {
 		pluginData.path = pluginPath;
 	} catch (err) {
 		const pluginDir = path.basename(pluginPath);
-
-		winston.error(`[plugins/${pluginDir}] Error in plugin.json or package.json!${err.stack}`);
+		winston.error(`[plugins/${pluginDir}] Error in plugin.${hasPluginJson ? 'json' : 'js'} or package.json!${err.stack}`);
 		throw new Error('[[error:parse-error]]');
 	}
 	return pluginData;
@@ -221,6 +230,7 @@ Data.getModules = async function getModules(pluginData) {
 	}
 
 	const modules = {};
+
 	async function processModule(key) {
 		const modulePath = await resolveModulePath(pluginData.path, pluginModules[key]);
 		if (modulePath) {
