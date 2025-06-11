@@ -107,13 +107,24 @@ function addProcessHandlers() {
 		shutdown(1);
 	});
 	process.on('message', (msg) => {
-		if (msg && Array.isArray(msg.compiling)) {
-			if (msg.compiling.includes('tpl')) {
-				const benchpressjs = require('benchpressjs');
-				benchpressjs.flush();
-			} else if (msg.compiling.includes('lang')) {
-				const translator = require('./translator');
-				translator.flush();
+		if (msg) {
+			if (Array.isArray(msg.compiling)) {
+				if (msg.compiling.includes('tpl')) {
+					const benchpressjs = require('benchpressjs');
+					benchpressjs.flush();
+				} else if (msg.compiling.includes('lang')) {
+					const translator = require('./translator');
+					translator.flush();
+				}
+			}
+
+			if (msg.livereload) {
+				// Send livereload event to all connected clients via Socket.IO
+				const websockets = require('./socket.io');
+				if (websockets.server) {
+					websockets.server.emit('event:livereload');
+					winston.info('[livereload] Sent reload event to all clients');
+				}
 			}
 		}
 	});
