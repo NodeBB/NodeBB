@@ -1,8 +1,8 @@
 {
     "category": "Kategori",
     "subcategories": "Underkategoriar",
-    "uncategorized": "Uncategorized",
-    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "uncategorized": "Ukategorisert",
+    "uncategorized.description": "Innlegg som ikkje passar helt inn i nokon av dei eksisterande kategoriane.",
     "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Nytt innlegg",
     "guest-login-post": "Logg inn for å legge inn innlegg",

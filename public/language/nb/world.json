@@ -7,15 +7,15 @@
 	"help.title": "Hva er denne siden?",
 	"help.intro": "Welcome to your corner of the fediverse.",
 	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
-	"help.build": "There might not be a lot of topics here to start; that's normal. You will start to see more content here over time when you start following other users.",
+	"help.build": "Det kan hende det ikke er så mange innlegg her i starten, det er helt normalt. Du vil begynne å se mer innhold her etter hvert som du begynner å følge andre brukere.",
 	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
-	"help.next-generation": "This is the next generation of social media, start contributing today!",
+	"help.next-generation": "Dette er neste generasjon sosiale medier, begynn å bidra i dag!",
 
 	"onboard.title": "Ditt vindu til fødiverset...",
-	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
-	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
-	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!",
+	"onboard.what": "Dette er din personlige kategori, som kun består av innhold funnet utenfor dette forumet. Om noe vises på denne siden, avhenger av om du følger dem, eller om innlegget ble delt av noen du følger.",
+	"onboard.why": "Det skjer mye utenfor dette forumet, og ikke alt er relevant for dine interesser. Derfor er det å følge folk den beste måten å vise at du vil se mer fra noen.",
+	"onboard.how": "I mellomtiden kan du klikke på snarveisknappene øverst for å se hva annet dette forumet inneholder, og begynne å oppdage nytt innhold!",
 
-	"show-categories": "Show categories",
-	"hide-categories": "Hide categories"
+	"show-categories": "Vis kategorier",
+	"hide-categories": "Skjul kategorier"
 }
