@@ -103,7 +103,7 @@ build_forum() {
   local config="$1"
   local start_build="$2"
   local package_hash=$(md5sum install/package.json | head -c 32)
-  if [ "$package_hash" = "$(cat $CONFIG_DIR/install_hash.md5 || true)" ]; then
+  if [ "$package_hash" != "$(cat $CONFIG_DIR/install_hash.md5 || true)" ]; then
       echo "package.json was updated. Upgrading..."
       /usr/src/app/nodebb upgrade --config="$config" || {
           echo "Failed to build NodeBB. Exiting..."
