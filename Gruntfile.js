@@ -174,6 +174,8 @@ module.exports = function (grunt) {
 			}
 			if (worker) {
 				worker.send({ compiling: compiling });
+				// Send livereload event via Socket.IO for instant browser refresh
+				worker.send({ livereload: true });
 			}
 		});
 	});
