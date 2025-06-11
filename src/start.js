@@ -115,6 +115,13 @@ function addProcessHandlers() {
 				const translator = require('./translator');
 				translator.flush();
 			}
+		} else if (msg && msg.livereload) {
+			// Send livereload event to all connected clients via Socket.IO
+			const websockets = require('./socket.io');
+			if (websockets.server) {
+				websockets.server.emit('event:livereload');
+				winston.info('[livereload] Sent reload event to all clients');
+			}
 		}
 	});
 }
