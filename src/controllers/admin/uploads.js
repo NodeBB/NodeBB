@@ -119,10 +119,48 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 	}
 
 	if (validateUpload(res, uploadedFile, allowedImageTypes)) {
+		if (uploadedFile.path.endsWith('.svg')) {
+			await sanitizeSvg(uploadedFile.path);
+		}
 		const filename = `category-${params.cid}${path.extname(uploadedFile.name)}`;
 		await uploadImage(filename, 'category', uploadedFile, req, res, next);
 	}
 };
+
+async function sanitizeSvg(filePath) {
+	const dirty = await fs.promises.readFile(filePath, 'utf8');
+	const clean = sanitizeHtml(dirty, {
+		allowedTags: [
+			'svg', 'g', 'defs', 'linearGradient', 'radialGradient', 'stop',
+			'circle', 'ellipse', 'polygon', 'polyline', 'path', 'rect',
+			'line', 'text', 'tspan', 'use', 'symbol', 'clipPath', 'mask', 'pattern',
+			'filter', 'feGaussianBlur', 'feOffset', 'feBlend', 'feColorMatrix', 'feMerge', 'feMergeNode',
+		],
+		allowedAttributes: {
+			'*': [
+				// Geometry
+				'x', 'y', 'x1', 'x2', 'y1', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
+				'width', 'height', 'd', 'points', 'viewBox', 'transform',
+
+				// Presentation
+				'fill', 'stroke', 'stroke-width', 'opacity',
+				'stop-color', 'stop-opacity', 'offset', 'style', 'class',
+
+				// Text
+				'text-anchor', 'font-size', 'font-family',
+
+				// Misc
+				'id', 'clip-path', 'mask', 'filter', 'gradientUnits', 'gradientTransform',
+				'xmlns', 'preserveAspectRatio',
+			],
+		},
+		parser: {
+			lowerCaseTags: false,
+			lowerCaseAttributeNames: false,
+		},
+	});
+	await fs.promises.writeFile(filePath, clean);
+}
 
 uploadsController.uploadFavicon = async function (req, res, next) {
 	const uploadedFile = req.files.files[0];
