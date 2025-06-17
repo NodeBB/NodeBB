@@ -50,7 +50,7 @@
         "bootstrap": "5.3.6",
         "bootswatch": "5.3.6",
         "chalk": "4.1.2",
-        "chart.js": "4.4.9",
+        "chart.js": "4.5.0",
         "cli-graph": "3.2.2",
         "clipboard": "2.0.11",
         "commander": "14.0.0",
