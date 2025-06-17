@@ -96,26 +96,26 @@ module.exports = function (module) {
 	};
 
 	module.expire = async function (key, seconds) {
-		await module.client.expire(key, seconds);
+		await module.client.EXPIRE(key, seconds);
 	};
 
 	module.expireAt = async function (key, timestamp) {
-		await module.client.expireat(key, timestamp);
+		await module.client.EXPIREAT(key, timestamp);
 	};
 
 	module.pexpire = async function (key, ms) {
-		await module.client.pexpire(key, ms);
+		await module.client.PEXPIRE(key, ms);
 	};
 
 	module.pexpireAt = async function (key, timestamp) {
-		await module.client.pexpireat(key, timestamp);
+		await module.client.PEXPIREAT(key, timestamp);
 	};
 
 	module.ttl = async function (key) {
-		return await module.client.ttl(key);
+		return await module.client.TTL(key);
 	};
 
 	module.pttl = async function (key) {
-		return await module.client.pttl(key);
+		return await module.client.PTTL(key);
 	};
 };

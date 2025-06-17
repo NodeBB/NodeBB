@@ -10,7 +10,7 @@ module.exports = function (module) {
 		if (!value.length) {
 			return;
 		}
-		await module.client.sadd(key, value);
+		await module.client.sAdd(key, value);
 	};
 
 	module.setsAdd = async function (keys, value) {
