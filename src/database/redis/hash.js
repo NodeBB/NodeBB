@@ -90,10 +90,9 @@ module.exports = function (module) {
 			return null;
 		}
 		const cachedData = {};
-		console.log('mmm', cachedData, cachedData.hasOwnProperty('asd'));
 		cache.getUnCachedKeys([key], cachedData);
 		if (cachedData[key]) {
-			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
+			return Object.hasOwn(cachedData[key], field) ? cachedData[key][field] : null;
 		}
 		return await module.client.hGet(key, String(field));
 	};
@@ -128,7 +127,7 @@ module.exports = function (module) {
 			if (!Object.keys(elem).length) {
 				return null;
 			}
-			return {...elem};
+			return elem;
 		});
 
 		unCachedKeys.forEach((key, i) => {
