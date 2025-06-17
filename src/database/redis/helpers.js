@@ -5,13 +5,8 @@ const helpers = module.exports;
 helpers.noop = function () {};
 
 helpers.execBatch = async function (batch) {
-	const results = await batch.exec();
-	return results.map(([err, res]) => {
-		if (err) {
-			throw err;
-		}
-		return res;
-	});
+	const results = await batch.execAsPipeline();
+	return results;
 };
 
 helpers.resultsToBool = function (results) {

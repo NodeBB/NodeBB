@@ -4,7 +4,7 @@ module.exports = function (module) {
 	const helpers = require('./helpers');
 
 	module.flushdb = async function () {
-		await module.client.send_command('flushdb', []);
+		await module.client.sendCommand(['FLUSHDB']);
 	};
 
 	module.emptydb = async function () {
