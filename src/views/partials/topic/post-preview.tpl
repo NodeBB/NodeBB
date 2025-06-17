@@ -6,7 +6,7 @@
                 <a href="{{{ if post.user.userslug }}}{config.relative_path}/user/{post.user.userslug}{{{ else }}}#{{{ end }}}">{post.user.username}</a>
             </div>
             <div>
-                <span class="timeago text-xs text-secondary lh-1" style="vertical-align: middle;" title="{post.timestampISO}"></span>
+                <a href="{config.relative_path}/post/{post.pid}" class="timeago text-xs text-secondary lh-1" style="vertical-align: middle;" title="{post.timestampISO}"></a>
             </div>
         </div>
         <div class="content ghost-scrollbar" style="max-height: 300px; overflow-y:auto;">{post.content}</div>
