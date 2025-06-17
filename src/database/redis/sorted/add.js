@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('../helpers');
 	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
@@ -70,8 +69,8 @@ module.exports = function (module) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
-			batch.zadd(item[0], item[1], item[2]);
+			batch.zAdd(item[0], { score: item[1], value: item[2] });
 		});
-		await helpers.execBatch(batch);
+		await batch.execAsPipeline();
 	};
 };

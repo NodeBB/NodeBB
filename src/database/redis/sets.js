@@ -64,7 +64,7 @@ module.exports = function (module) {
 	};
 
 	module.getSetMembers = async function (key) {
-		return await module.client.smembers(key);
+		return await module.client.sMembers(key);
 	};
 
 	module.getSetsMembers = async function (keys) {

@@ -11,11 +11,13 @@ module.exports = function (module) {
 	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
-		return await sortedSetRange('ZRANGE', key, start, stop, '-inf', '+inf', false);
+		// return await sortedSetRange('ZRANGE', key, start, stop, '-inf', '+inf', false);
+		return await module.client.zRange(key, start, stop);
 	};
 
 	module.getSortedSetRevRange = async function (key, start, stop) {
-		return await sortedSetRange('ZREVRANGE', key, start, stop, '-inf', '+inf', false);
+		// return await sortedSetRange('ZREVRANGE', key, start, stop, '-inf', '+inf', false);
+		return await module.client.zRange(key, start, stop, 'REV');
 	};
 
 	module.getSortedSetRangeWithScores = async function (key, start, stop) {
@@ -49,6 +51,7 @@ module.exports = function (module) {
 		}
 
 		const params = genParams(method, key, start, stop, min, max, withScores);
+		console.log('generated params', params);
 		const data = await module.client[method](params);
 		if (!withScores) {
 			return data;
@@ -177,7 +180,6 @@ module.exports = function (module) {
 		if (!key || value === undefined) {
 			return null;
 		}
-		console.log('mmm', key, value);
 		const score = await module.client.zScore(key, String(value));
 		return score === null ? score : parseFloat(score);
 	};
@@ -223,7 +225,6 @@ module.exports = function (module) {
 		}
 		const batch = module.client.multi();
 		keys.forEach(k => batch.zScore(k, String(value)));
-		console.log('asd', keys, value);
 		const results = await batch.execAsPipeline();
 		return results.map(utils.isNumber);
 	};
