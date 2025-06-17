@@ -50,7 +50,7 @@ module.exports = function (module) {
 		const batch = module.client.batch();
 		data.forEach((item) => {
 			if (Object.keys(item[1]).length) {
-				batch.hmset(item[0], item[1]);
+				batch.hSet(item[0], item[1]);
 			}
 		});
 		await helpers.execBatch(batch);
@@ -63,10 +63,10 @@ module.exports = function (module) {
 		}
 		if (Array.isArray(key)) {
 			const batch = module.client.batch();
-			key.forEach(k => batch.hset(k, field, value));
+			key.forEach(k => batch.hSet(k, field, value));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.hset(key, field, value);
+			await module.client.hSet(key, field, value);
 		}
 
 		cache.del(key);
@@ -90,11 +90,12 @@ module.exports = function (module) {
 			return null;
 		}
 		const cachedData = {};
+		console.log('mmm', cachedData, cachedData.hasOwnProperty('asd'));
 		cache.getUnCachedKeys([key], cachedData);
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
-		return await module.client.hget(key, String(field));
+		return await module.client.hGet(key, String(field));
 	};
 
 	module.getObjectFields = async function (key, fields) {
@@ -127,7 +128,7 @@ module.exports = function (module) {
 			if (!Object.keys(elem).length) {
 				return null;
 			}
-			return elem;
+			return {...elem};
 		});
 
 		unCachedKeys.forEach((key, i) => {
@@ -149,11 +150,11 @@ module.exports = function (module) {
 	};
 
 	module.getObjectKeys = async function (key) {
-		return await module.client.hkeys(key);
+		return await module.client.hKeys(key);
 	};
 
 	module.getObjectValues = async function (key) {
-		return await module.client.hvals(key);
+		return await module.client.hVals(key);
 	};
 
 	module.isObjectField = async function (key, field) {
@@ -163,7 +164,7 @@ module.exports = function (module) {
 
 	module.isObjectFields = async function (key, fields) {
 		const batch = module.client.batch();
-		fields.forEach(f => batch.hexists(String(key), String(f)));
+		fields.forEach(f => batch.hExists(String(key), String(f)));
 		const results = await helpers.execBatch(batch);
 		return Array.isArray(results) ? helpers.resultsToBool(results) : null;
 	};
@@ -174,7 +175,7 @@ module.exports = function (module) {
 		}
 		field = field.toString();
 		if (field) {
-			await module.client.hdel(key, field);
+			await module.client.hDel(key, field);
 			cache.del(key);
 		}
 	};
@@ -189,10 +190,10 @@ module.exports = function (module) {
 		}
 		if (Array.isArray(key)) {
 			const batch = module.client.batch();
-			key.forEach(k => batch.hdel(k, fields));
+			key.forEach(k => batch.hDel(k, fields));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.hdel(key, fields);
+			await module.client.hDel(key, fields);
 		}
 
 		cache.del(key);
@@ -231,7 +232,7 @@ module.exports = function (module) {
 		const batch = module.client.batch();
 		data.forEach((item) => {
 			for (const [field, value] of Object.entries(item[1])) {
-				batch.hincrby(item[0], field, value);
+				batch.hIncrBy(item[0], field, value);
 			}
 		});
 		await helpers.execBatch(batch);
