@@ -61,7 +61,7 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 };
 
 redisModule.close = async function () {
-	await redisModule.client.quit();
+	await redisModule.client.close();
 	if (redisModule.objectCache) {
 		redisModule.objectCache.reset();
 	}
