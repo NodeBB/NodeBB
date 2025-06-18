@@ -49,6 +49,11 @@ module.exports = function (module) {
 
 		const batch = module.client.batch();
 		data.forEach((item) => {
+			Object.keys(item[1]).forEach((key) => {
+				if (item[1][key] === undefined || item[1][key] === null) {
+					delete item[1][key];
+				}
+			});
 			if (Object.keys(item[1]).length) {
 				batch.hSet(item[0], helpers.objectFieldsToString(item[1]));
 			}
@@ -60,6 +65,9 @@ module.exports = function (module) {
 
 	module.setObjectField = async function (key, field, value) {
 		if (!field) {
+			return;
+		}
+		if (value === null || value === undefined) {
 			return;
 		}
 		if (Array.isArray(key)) {
