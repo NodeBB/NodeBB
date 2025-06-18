@@ -27,10 +27,10 @@ module.exports = function (module) {
 		}
 		if (Array.isArray(key)) {
 			const batch = module.client.batch();
-			key.forEach(k => batch.hSet(k, data));
+			key.forEach(k => batch.hSet(k, helpers.objectFieldsToString(data)));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.hSet(key, data);
+			await module.client.hSet(key, helpers.objectFieldsToString(data));
 		}
 
 		cache.del(key);
@@ -50,9 +50,10 @@ module.exports = function (module) {
 		const batch = module.client.batch();
 		data.forEach((item) => {
 			if (Object.keys(item[1]).length) {
-				batch.hSet(item[0], item[1]);
+				batch.hSet(item[0], helpers.objectFieldsToString(item[1]));
 			}
 		});
+
 		await helpers.execBatch(batch);
 		cache.del(data.map(item => item[0]));
 	};
@@ -63,10 +64,10 @@ module.exports = function (module) {
 		}
 		if (Array.isArray(key)) {
 			const batch = module.client.batch();
-			key.forEach(k => batch.hSet(k, field, value));
+			key.forEach(k => batch.hSet(k, field, String(value)));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.hSet(key, field, value);
+			await module.client.hSet(key, field, String(value));
 		}
 
 		cache.del(key);
@@ -157,7 +158,7 @@ module.exports = function (module) {
 	};
 
 	module.isObjectField = async function (key, field) {
-		const exists = await module.client.hExists(key, field);
+		const exists = await module.client.hExists(key, String(field));
 		return exists === 1;
 	};
 

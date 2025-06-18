@@ -256,14 +256,14 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {
-		const newValue = await module.client.zIncrBy(key, increment, value);
+		const newValue = await module.client.zIncrBy(key, increment, String(value));
 		return parseFloat(newValue);
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
 		const multi = module.client.multi();
 		data.forEach((item) => {
-			multi.zIncrBy(item[0], item[1], item[2]);
+			multi.zIncrBy(item[0], item[1], String(item[2]));
 		});
 		const result = await multi.exec();
 		return result;
