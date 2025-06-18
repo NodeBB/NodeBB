@@ -145,6 +145,7 @@ Controller.postInbox = async (req, res) => {
 	const method = String(req.body.type).toLowerCase();
 	if (!activitypub.inbox.hasOwnProperty(method)) {
 		winston.warn(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
+		console.log('[activitypub/inbox] method not found', method, req.body);
 		return res.sendStatus(200);
 	}
 
