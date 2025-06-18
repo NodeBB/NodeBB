@@ -69,7 +69,7 @@ module.exports = function (module) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
-			batch.zAdd(item[0], { score: item[1], value: item[2] });
+			batch.zAdd(item[0], { score: item[1], value: String(item[2]) });
 		});
 		await batch.execAsPipeline();
 	};

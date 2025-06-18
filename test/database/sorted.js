@@ -501,7 +501,9 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 				['byScoreWithScoresKeys1', 1, 'value1'],
 				['byScoreWithScoresKeys2', 2, 'value2'],
 			]);
-			const data = await db.getSortedSetRevRangeByScoreWithScores(['byScoreWithScoresKeys1', 'byScoreWithScoresKeys2'], 0, -1, 5, -5);
+			const data = await db.getSortedSetRevRangeByScoreWithScores([
+				'byScoreWithScoresKeys1', 'byScoreWithScoresKeys2',
+			], 0, -1, 5, -5);
 			assert.deepStrictEqual(data, [{ value: 'value2', score: 2 }, { value: 'value1', score: 1 }]);
 		});
 	});
@@ -1144,23 +1146,17 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			assert.strictEqual(await db.exists('sorted3'), false);
 		});
 
-		it('should remove multiple values from multiple keys', (done) => {
-			db.sortedSetAdd('multiTest1', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], (err) => {
-				assert.ifError(err);
-				db.sortedSetAdd('multiTest2', [3, 4, 5, 6], ['three', 'four', 'five', 'six'], (err) => {
-					assert.ifError(err);
-					db.sortedSetRemove(['multiTest1', 'multiTest2'], ['two', 'three', 'four', 'five', 'doesnt exist'], (err) => {
-						assert.ifError(err);
-						db.getSortedSetsMembers(['multiTest1', 'multiTest2'], (err, members) => {
-							assert.ifError(err);
-							assert.equal(members[0].length, 1);
-							assert.equal(members[1].length, 1);
-							assert.deepEqual(members, [['one'], ['six']]);
-							done();
-						});
-					});
-				});
-			});
+		it('should remove multiple values from multiple keys', async () => {
+			await db.sortedSetAdd('multiTest1', [1, 2, 3, 4], ['one', 'two', 'three', 'four']);
+			await db.sortedSetAdd('multiTest2', [3, 4, 5, 6], ['three', 'four', 'five', 'six']);
+
+			await db.sortedSetRemove(['multiTest1', 'multiTest2'], ['two', 'three', 'four', 'five', 'doesnt exist']);
+
+			const members = await db.getSortedSetsMembers(['multiTest1', 'multiTest2']);
+
+			assert.equal(members[0].length, 1);
+			assert.equal(members[1].length, 1);
+			assert.deepEqual(members, [['one'], ['six']]);
 		});
 
 		it('should remove value from multiple keys', async () => {
@@ -1171,24 +1167,15 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			assert.deepStrictEqual(await db.getSortedSetRange('multiTest4', 0, -1), ['four', 'five', 'six']);
 		});
 
-		it('should remove multiple values from multiple keys', (done) => {
-			db.sortedSetAdd('multiTest5', [1], ['one'], (err) => {
-				assert.ifError(err);
-				db.sortedSetAdd('multiTest6', [2], ['two'], (err) => {
-					assert.ifError(err);
-					db.sortedSetAdd('multiTest7', [3], [333], (err) => {
-						assert.ifError(err);
-						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 333], (err) => {
-							assert.ifError(err);
-							db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7'], (err, members) => {
-								assert.ifError(err);
-								assert.deepEqual(members, [[], [], []]);
-								done();
-							});
-						});
-					});
-				});
-			});
+		it('should remove multiple values from multiple keys', async () => {
+			await db.sortedSetAdd('multiTest5', [1], ['one']);
+			await db.sortedSetAdd('multiTest6', [2], ['two']);
+			await db.sortedSetAdd('multiTest7', [3], [333]);
+
+			await db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 333]);
+
+			const members = await db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7']);
+			assert.deepEqual(members, [[], [], []]);
 		});
 
 		it('should not remove anything if values is empty array', (done) => {
@@ -1379,7 +1366,10 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 				weights: [1, 0.5],
 			}, (err, data) => {
 				assert.ifError(err);
-				assert.deepEqual([{ value: 'value2', score: 4 }, { value: 'value3', score: 5.5 }], data);
+				assert.deepEqual([
+					{ value: 'value2', score: 4 },
+					{ value: 'value3', score: 5.5 },
+				], data);
 				done();
 			});
 		});

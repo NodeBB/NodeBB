@@ -23,3 +23,23 @@ helpers.zsetToObjectArray = function (data) {
 	}
 	return objects;
 };
+
+helpers.normalizeLexRange = function (min, max, reverse) {
+	let minmin;
+	let maxmax;
+	if (reverse) {
+		minmin = '+';
+		maxmax = '-';
+	} else {
+		minmin = '-';
+		maxmax = '+';
+	}
+
+	if (min !== minmin && !min.match(/^[[(]/)) {
+		min = `[${min}`;
+	}
+	if (max !== maxmax && !max.match(/^[[(]/)) {
+		max = `[${max}`;
+	}
+	return { lmin: min, lmax: max };
+};
