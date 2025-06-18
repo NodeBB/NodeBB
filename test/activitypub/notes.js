@@ -650,7 +650,7 @@ describe('Notes', () => {
 
 				it('should upvote an asserted remote post', async () => {
 					const { id } = helpers.mocks.note();
-					await activitypub.notes.assert(0, [id], { skipChecks: true });
+					await activitypub.notes.assert(0, id, { skipChecks: true });
 					const { activity: like } = helpers.mocks.like({
 						object: id,
 					});
@@ -672,7 +672,7 @@ describe('Notes', () => {
 				it('should update a note\'s content', async () => {
 					const { id: actor } = helpers.mocks.person();
 					const { id, note } = helpers.mocks.note({ attributedTo: actor });
-					await activitypub.notes.assert(0, [id], { skipChecks: true });
+					await activitypub.notes.assert(0, id, { skipChecks: true });
 					note.content = utils.generateUUID();
 					const { activity: update } = helpers.mocks.update({ object: note });
 					const { activity } = helpers.mocks.announce({ object: update });

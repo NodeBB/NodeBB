@@ -25,12 +25,13 @@ module.exports = function (module) {
 		if (!Object.keys(data).length) {
 			return;
 		}
+		const strObj = helpers.objectFieldsToString(data);
 		if (Array.isArray(key)) {
 			const batch = module.client.batch();
-			key.forEach(k => batch.hSet(k, helpers.objectFieldsToString(data)));
+			key.forEach(k => batch.hSet(k, strObj));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.hSet(key, helpers.objectFieldsToString(data));
+			await module.client.hSet(key, strObj);
 		}
 
 		cache.del(key);
