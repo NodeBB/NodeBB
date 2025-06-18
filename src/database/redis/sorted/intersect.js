@@ -8,9 +8,6 @@ module.exports = function (module) {
 			return 0;
 		}
 		const tempSetName = `temp_${Date.now()}`;
-
-		// const interParams = [tempSetName, keys.length].concat(keys);
-
 		const multi = module.client.multi();
 		multi.zInterStore(tempSetName, keys);
 		multi.zCard(tempSetName);
