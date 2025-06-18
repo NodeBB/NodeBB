@@ -449,8 +449,6 @@ describe('Inbox resolution', () => {
 			await activitypub.actors.assert(id);
 
 			const inboxes = await activitypub.resolveInboxes([id]);
-			console.log('inboxes', inboxes);
-			console.log('actor', actor);
 			assert(inboxes && Array.isArray(inboxes));
 			assert.strictEqual(inboxes.length, 1);
 			assert.strictEqual(inboxes[0], actor.inbox);
