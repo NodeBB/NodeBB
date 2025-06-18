@@ -18,10 +18,10 @@ module.exports = function (module) {
 
 		if (Array.isArray(key)) {
 			const batch = module.client.batch();
-			key.forEach(k => batch.zrem(k, value));
+			key.forEach(k => batch.zRem(k, value.map(String)));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.zrem(key, value);
+			await module.client.zRem(key, value.map(String));
 		}
 	};
 
@@ -31,7 +31,7 @@ module.exports = function (module) {
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
 		const batch = module.client.batch();
-		keys.forEach(k => batch.zremrangebyscore(k, min, max));
+		keys.forEach(k => batch.zRemRangeByScore(k, min, max));
 		await helpers.execBatch(batch);
 	};
 
@@ -40,7 +40,7 @@ module.exports = function (module) {
 			return;
 		}
 		const batch = module.client.batch();
-		data.forEach(item => batch.zrem(item[0], item[1]));
+		data.forEach(item => batch.zRem(item[0], String(item[1])));
 		await helpers.execBatch(batch);
 	};
 };

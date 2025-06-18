@@ -145,14 +145,15 @@ Controller.postInbox = async (req, res) => {
 	const method = String(req.body.type).toLowerCase();
 	if (!activitypub.inbox.hasOwnProperty(method)) {
 		winston.warn(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
+		console.log('[activitypub/inbox] method not found', method, req.body);
 		return res.sendStatus(200);
 	}
 
 	try {
 		await activitypub.inbox[method](req);
 		await activitypub.record(req.body);
-		helpers.formatApiResponse(202, res);
+		await helpers.formatApiResponse(202, res);
 	} catch (e) {
-		helpers.formatApiResponse(500, res, e);
+		helpers.formatApiResponse(500, res, e).catch(err => winston.error(err.stack));
 	}
 };
