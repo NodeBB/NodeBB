@@ -1,3 +1,49 @@
+#### v4.4.4 (2025-06-18)
+
+##### Chores
+
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  update changelog for v4.4.3 (0c9297f8)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  link to post in preview timestamp (8c69c6a0)
+*  Add live reload functionality with Grunt watch and Socket.IO (#13489) (84d99a0f)
+*  closes #13484, post preview changes (14e30c4b)
+
+##### Bug Fixes
+
+*  sanitize svg when uploading site-logo, default avatar and og:image (da2597f8)
+*  Revise package hash check in Docker entrypoint.sh (#13483) (6c5b2268)
+*  more edge cases (32faaba0)
+*  #13484, clear tooltip if cursor leaves link (0ebb31fe)
+
+##### Other Changes
+
+*  fix lint (8ab034d8)
+
+##### Refactors
+
+*  send single message (dc37789b)
+
 #### v4.4.3 (2025-06-09)
 
 ##### Chores
