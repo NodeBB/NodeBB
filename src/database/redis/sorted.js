@@ -136,11 +136,11 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetRank = async function (key, value) {
-		return await module.client.zRank(key, value);
+		return await module.client.zRank(key, String(value));
 	};
 
 	module.sortedSetRevRank = async function (key, value) {
-		return await module.client.zRevRank(key, value);
+		return await module.client.zRevRank(key, String(value));
 	};
 
 	module.sortedSetsRanks = async function (keys, values) {
