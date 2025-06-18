@@ -104,8 +104,11 @@ redisModule.info = async function (cxn) {
 
 redisModule.socketAdapter = async function () {
 	const redisAdapter = require('@socket.io/redis-adapter');
-	const pub = await connection.connect(nconf.get('redis'));
-	const sub = await connection.connect(nconf.get('redis'));
+	const redisConfig = nconf.get('redis');
+	const [pub, sub] = await Promise.all([
+		connection.connect(redisConfig),
+		connection.connect(redisConfig),
+	]);
 	return redisAdapter(pub, sub, {
 		key: `db:${nconf.get('redis:database')}:adapter_key`,
 	});
