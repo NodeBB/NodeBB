@@ -132,7 +132,7 @@ ActivityPub.resolveInboxes = async (ids) => {
 		}, [[], []]);
 		const categoryData = await categories.getCategoriesFields(cids, ['inbox', 'sharedInbox']);
 		const userData = await user.getUsersFields(uids, ['inbox', 'sharedInbox']);
-
+		console.log('testing redis', categoryData, userData);
 		currentIds.forEach((id) => {
 			if (cids.includes(id)) {
 				const data = categoryData[cids.indexOf(id)];
