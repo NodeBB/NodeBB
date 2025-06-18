@@ -117,6 +117,12 @@ describe('Hash methods', () => {
 			const result = await db.getObject('emptykey');
 			assert.deepStrictEqual(result, null);
 		});
+
+		it('should return null if a field is set to null', async () => {
+			await db.setObject('nullFieldTest', { baz: 'baz', foo: null });
+			const data = await db.getObjectFields('nullFieldTest', ['baz', 'foo']);
+			assert.deepStrictEqual(data, { baz: 'baz', foo: null });
+		});
 	});
 
 	describe('setObjectField()', () => {
