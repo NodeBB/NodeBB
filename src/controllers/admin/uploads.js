@@ -258,10 +258,6 @@ uploadsController.uploadMaskableIcon = async function (req, res, next) {
 	}
 };
 
-uploadsController.uploadLogo = async function (req, res, next) {
-	await upload('site-logo', req, res, next);
-};
-
 uploadsController.uploadFile = async function (req, res, next) {
 	const uploadedFile = req.files.files[0];
 	let params;
@@ -285,6 +281,10 @@ uploadsController.uploadFile = async function (req, res, next) {
 	}
 };
 
+uploadsController.uploadLogo = async function (req, res, next) {
+	await upload('site-logo', req, res, next);
+};
+
 uploadsController.uploadDefaultAvatar = async function (req, res, next) {
 	await upload('avatar-default', req, res, next);
 };
@@ -295,6 +295,10 @@ uploadsController.uploadOgImage = async function (req, res, next) {
 
 async function upload(name, req, res, next) {
 	const uploadedFile = req.files.files[0];
+
+	if (uploadedFile.path.endsWith('.svg')) {
+		await sanitizeSvg(uploadedFile.path);
+	}
 
 	await validateUpload(uploadedFile, allowedImageTypes);
 	const filename = name + path.extname(uploadedFile.name);

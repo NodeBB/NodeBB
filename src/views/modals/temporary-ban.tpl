@@ -12,7 +12,7 @@
 		<div class="col-5">
 			<div class="mb-3">
 				<label class="form-label" for="length">[[admin/manage/users:temp-ban.length]]</label>
-				<input class="form-control" id="length" name="length" type="number" min="0" value="1" />
+				<input class="form-control" id="length" name="length" type="number" min="0" value="0" />
 			</div>
 			<div class="form-check form-check-inline">
 				<label class="form-check-label" for="unit-hours">[[admin/manage/users:temp-ban.hours]]</label>
