@@ -486,7 +486,7 @@ describe('API', async () => {
 					}
 				});
 
-				it('should not error out when called', async () => {
+				it('should not error out when called', async function () {
 					this.timeout(0);
 					await setupData();
 
