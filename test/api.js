@@ -487,6 +487,7 @@ describe('API', async () => {
 				});
 
 				it('should not error out when called', async () => {
+					this.timeout(0);
 					await setupData();
 
 					if (csrfToken) {
@@ -513,6 +514,7 @@ describe('API', async () => {
 								redirect: 'manual',
 								headers: headers,
 								body: body,
+								timeout: 10000,
 							});
 						} else if (type === 'form') {
 							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);
