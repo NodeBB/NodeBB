@@ -116,7 +116,7 @@
         "passport": "0.7.0",
         "passport-http-bearer": "1.0.1",
         "passport-local": "1.0.0",
-        "pg": "8.16.2",
+        "pg": "8.16.3",
         "pg-cursor": "2.15.3",
         "postcss": "8.5.6",
         "postcss-clean": "1.2.0",
