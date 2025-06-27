@@ -88,7 +88,7 @@ module.exports = function (Messaging) {
 			timestamp: now,
 			notificationSetting: data.notificationSetting,
 			messageCount: 0,
-			joinLeaveMessages: 0,
+			joinLeaveMessages: data.joinLeaveMessages || 0,
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {
@@ -127,7 +127,7 @@ module.exports = function (Messaging) {
 			'chat:rooms:public:order:all',
 		]);
 
-		if (!isPublic) {
+		if (!isPublic && parseInt(room.joinLeaveMessages, 10) === 1) {
 			// chat owner should also get the user-join system message
 			await Messaging.addSystemMessage('user-join', uid, roomId);
 		}
