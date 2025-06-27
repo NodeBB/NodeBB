@@ -269,13 +269,13 @@ describe('FEPs', () => {
 				});
 
 				it('should be called when a post is moved to another topic', async () => {
-					const topic1 = await topics.post({
+					const { topicData: topic1 } = await topics.post({
 						uid,
 						cid,
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
 					});
-					const topic2 = await topics.post({
+					const { topicData: topic2 } = await topics.post({
 						uid,
 						cid,
 						title: utils.generateUUID(),
