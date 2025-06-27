@@ -48,6 +48,7 @@
     "chat.add-user": "Legg til bruker",
     "chat.notification-settings": "Varslingsinnstillinger",
     "chat.default-notification-setting": "Standard varslingsinnstilling",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Romstandard",
     "chat.notification-setting-none": "Ingen varsler",
     "chat.notification-setting-at-mention-only": "Kun ved @nevning",

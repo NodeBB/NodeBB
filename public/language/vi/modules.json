@@ -48,6 +48,7 @@
     "chat.add-user": "Thêm Người",
     "chat.notification-settings": "Cài Đặt Thông Báo",
     "chat.default-notification-setting": "Cài Đặt Thông Báo Mặc Định",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Phòng Mặc Định",
     "chat.notification-setting-none": "Không thông báo",
     "chat.notification-setting-at-mention-only": "Chỉ khi @đề cập",

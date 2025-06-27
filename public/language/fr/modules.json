@@ -48,6 +48,7 @@
     "chat.add-user": "Ajouter un utilisateur",
     "chat.notification-settings": "Paramètres de notification",
     "chat.default-notification-setting": "Paramètres de notification par défaut",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Salon par défaut",
     "chat.notification-setting-none": "Aucune notification",
     "chat.notification-setting-at-mention-only": "@mention seulement",

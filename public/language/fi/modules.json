@@ -48,6 +48,7 @@
     "chat.add-user": "Add User",
     "chat.notification-settings": "Ilmoitusasetukset",
     "chat.default-notification-setting": "Ilmoitusten oletusasetukset",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Huoneen oletus",
     "chat.notification-setting-none": "Ilmoituksia ei ole",
     "chat.notification-setting-at-mention-only": "vain @maininta",

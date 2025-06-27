@@ -48,6 +48,7 @@
     "chat.add-user": "사용자 추가",
     "chat.notification-settings": "알림 설정",
     "chat.default-notification-setting": "기본 알림 설정",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "방 기본값",
     "chat.notification-setting-none": "알림 없음",
     "chat.notification-setting-at-mention-only": "@언급만",

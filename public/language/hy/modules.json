@@ -48,6 +48,7 @@
     "chat.add-user": "Ավելացնել օգտատեր",
     "chat.notification-settings": "Ծանուցման կարգավորումներ",
     "chat.default-notification-setting": "Ծանուցման հիմնական կարգավորումներ",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Սենյակի հիմնական վիճակ",
     "chat.notification-setting-none": "Ծանուցումներ չկան",
     "chat.notification-setting-at-mention-only": "@նշում միայն",

@@ -48,6 +48,7 @@
     "chat.add-user": "เพิ่มผู้ใช้งาน",
     "chat.notification-settings": "การตั้งค่าการแจ้งเตือน",
     "chat.default-notification-setting": "ค่าเริ่มต้นการแจ้งเตือน",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "ค่าเริ่มต้นของห้อง",
     "chat.notification-setting-none": "ไม่มีการแจ้งเตือน",
     "chat.notification-setting-at-mention-only": "เฉพาะเมื่อ @ถูกพูดถึง",

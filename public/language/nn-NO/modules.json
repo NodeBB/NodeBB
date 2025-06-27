@@ -48,6 +48,7 @@
     "chat.add-user": "Legg til brukar",
     "chat.notification-settings": "Varslingsinnstillingar",
     "chat.default-notification-setting": "Standard varslingsinnstillinger",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Standard for rommet",
     "chat.notification-setting-none": "Ingen varsel",
     "chat.notification-setting-at-mention-only": "Berre @nemning",
