@@ -164,7 +164,7 @@
         "@eslint/js": "9.29.0",
         "@stylistic/eslint-plugin": "4.4.1",
         "eslint-config-nodebb": "1.1.7",
-        "eslint-plugin-import": "2.31.0",
+        "eslint-plugin-import": "2.32.0",
         "grunt": "1.6.1",
         "grunt-contrib-watch": "1.1.0",
         "husky": "8.0.3",
