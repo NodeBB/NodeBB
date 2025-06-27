@@ -56,6 +56,8 @@ get:
                     type: array
                   notificationOptionsIcon:
                     type: string
+                  joinLeaveMessages:
+                    type: number
                   messages:
                     type: array
                     items:
@@ -359,6 +361,8 @@ get:
                         chatWithMessage:
                           type: string
                         notificationSetting:
+                          type: number
+                        joinLeaveMessages:
                           type: number
                   publicRooms:
                     type: array

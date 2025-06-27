@@ -1,12 +1,18 @@
 <div class="">
 	{{{ if user.isAdmin }}}
-	<div class="d-flex gap-2 mb-3 align-items-center justify-content-between">
+	<div class="d-flex gap-2 mb-3 align-items-center gap-2">
 		<label class="form-label text-nowrap mb-0">[[modules:chat.default-notification-setting]]</label>
 		<select component="chat/room/notification/setting" class="form-select" style="width: 200px;">
 			<option value="1" {{{ if (room.notificationSetting == "1") }}}selected{{{ end }}}>[[modules:chat.notification-setting-none]]</option>
 			<option value="2" {{{ if (room.notificationSetting == "2") }}}selected{{{ end }}}>[[modules:chat.notification-setting-at-mention-only]]</option>
 			<option value="3" {{{ if (room.notificationSetting == "3") }}}selected{{{ end }}}>[[modules:chat.notification-setting-all-messages]]</option>
 		</select>
+	</div>
+	<div class="mb-3 d-flex gap-2 align-items-center">
+		<label class="form-label">[[modules:chat.join-leave-messages]]</label>
+		<div class="form-check form-switch">
+			<input component="chat/room/join-leave-messages" class="form-check-input" type="checkbox" {{{ if room.joinLeaveMessages }}}checked{{{ end }}} />
+		</div>
 	</div>
 	<hr/>
 	{{{ end }}}
