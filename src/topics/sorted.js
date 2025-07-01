@@ -282,7 +282,10 @@ module.exports = function (Topics) {
 			(!tags.length || tags.every(tag => t.tags.find(topicTag => topicTag.value === tag)))
 		)).map(t => t.tid);
 
-		const result = await plugins.hooks.fire('filter:topics.filterSortedTids', { tids: tids, params: params });
+		const result = await plugins.hooks.fire('filter:topics.filterSortedTids', {
+			tids,
+			params,
+		});
 		return result.tids;
 	}
 
