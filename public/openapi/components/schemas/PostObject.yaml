@@ -300,6 +300,8 @@ PostDataObject:
           type: boolean
         attachments:
           type: array
+        uploads:
+          type: array
         replies:
           type: object
           properties:
