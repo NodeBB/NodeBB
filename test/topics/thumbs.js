@@ -416,7 +416,7 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should not leave post upload associations behind', async () => {
-			const uploads = await db.getSortedSetMembers(`post:${topicObj.postData.pid}:uploads`);
+			const uploads = await posts.uploads.list(topicObj.postData.pid);
 			assert.strictEqual(uploads.length, 0);
 		});
 	});

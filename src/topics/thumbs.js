@@ -25,9 +25,9 @@ Thumbs.exists = async function (id, path) {
 
 Thumbs.load = async function (topicData) {
 	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
-	let hashes = await posts.getPostsFields(mainPids, ['attachments']);
-	const hasUploads = await db.exists(mainPids.map(pid => `post:${pid}:uploads`));
-	hashes = hashes.map(o => o.attachments);
+	const mainPostData = await posts.getPostsFields(mainPids, ['attachments', 'uploads']);
+	const hasUploads = mainPostData.map(p => Array.isArray(p.uploads) && p.uploads.length > 0);
+	const hashes = mainPostData.map(o => o.attachments);
 	let hasThumbs = topicData.map((t, idx) => t &&
 		(parseInt(t.numThumbs, 10) > 0 ||
 		!!(hashes[idx] && hashes[idx].length) ||
@@ -71,7 +71,7 @@ Thumbs.get = async function (tids, options) {
 
 	if (!options.thumbsOnly) {
 		// Add uploaded media to thumb sets
-		const mainPidUploads = await Promise.all(mainPids.map(posts.uploads.list));
+		const mainPidUploads = await posts.uploads.list(mainPids);
 		mainPidUploads.forEach((uploads, idx) => {
 			uploads = uploads.filter((upload) => {
 				const type = mime.getType(upload);
