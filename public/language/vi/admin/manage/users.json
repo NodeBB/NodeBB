@@ -119,7 +119,7 @@
 	"alerts.create-success": "Đã tạo người dùng!",
 
 	"alerts.prompt-email": "Thư điện tử:",
-	"alerts.email-sent-to": "Email mời đã được gửi đến %1",
+	"alerts.email-sent-to": "Một email mời đã được gửi đến %1",
 	"alerts.x-users-found": "Tìm được %1 người, (%2 giây)",
 	"alerts.select-a-single-user-to-change-email": "Chọn một người dùng để thay đổi email",
 	"export": "Xuất",
