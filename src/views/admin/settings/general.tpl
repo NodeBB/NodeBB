@@ -120,9 +120,9 @@
 				</div>
 
 				<div class="mb-3">
-					<label class="form-label" for="og_image">[[admin/settings/general:favicon]]</label>
+					<label class="form-label" for="faviconUrl">[[admin/settings/general:favicon]]</label>
 					<div class="d-flex gap-1">
-						<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
+						<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" />
 
 						<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-light" value="[[admin/settings/general:favicon.upload]]" />
 						<button data-action="removeFavicon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
@@ -132,7 +132,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="touchIconUrl">[[admin/settings/general:touch-icon]]</label>
 					<div class="d-flex gap-1">
-						<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" readonly />
+						<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" />
 						<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
 						<button data-action="removeTouchIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
@@ -144,7 +144,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="maskableIconUrl">[[admin/settings/general:maskable-icon]]</label>
 					<div class="d-flex gap-1">
-						<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" readonly />
+						<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" />
 
 						<input data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
 						<button data-action="removeMaskableIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
