@@ -34,6 +34,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		humanReadableNumber,
 		formattedNumber,
 		txEscape,
+		uploadBasename,
 		generatePlaceholderWave,
 		register,
 		__escape: identity,
@@ -377,6 +378,12 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function txEscape(text) {
 		return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+	}
+
+	function uploadBasename(str, sep = '/') {
+		const hasTimestampPrefix = /^\d+-/;
+		const name = str.substr(str.lastIndexOf(sep) + 1);
+		return hasTimestampPrefix.test(name) ? name.slice(14) : name;
 	}
 
 	function generatePlaceholderWave(items) {

@@ -140,4 +140,12 @@ function modifyTopic(topic, fields) {
 			};
 		});
 	}
+
+	if (fields.includes('thumbs') || !fields.length) {
+		try {
+			topic.thumbs = topic.thumbs ? JSON.parse(String(topic.thumbs || '[]')) : [];
+		} catch (e) {
+			topic.thumbs = [];
+		}
+	}
 }
