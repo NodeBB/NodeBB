@@ -41,8 +41,8 @@ Thumbs.load = async function (topicData) {
 };
 
 async function loadFromTopicData(topicData, options = {}) {
-	const tids = topicData.map(t => t.tid);
-	const thumbs = topicData.map(t => t ? t.thumbs : []);
+	const tids = topicData.map(t => t && t.tid);
+	const thumbs = topicData.map(t => t && Array.isArray(t.thumbs) ? t.thumbs : []);
 
 	if (!options.thumbsOnly) {
 		const mainPids = topicData.map(t => t.mainPid);
