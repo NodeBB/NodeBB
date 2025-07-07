@@ -82,7 +82,6 @@ describe('Topic thumbs', () => {
 
 	describe('.get()', () => {
 		it('should return an array of thumbs', async () => {
-			require('../../src/cache').del(`topic:${topicObj.topicData.tid}:thumbs`);
 			const thumbs = await topics.thumbs.get(topicObj.topicData.tid);
 			assert.deepStrictEqual(thumbs, [{
 				id: String(topicObj.topicData.tid),

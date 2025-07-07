@@ -715,8 +715,12 @@ Mocks.notes.public = async (post) => {
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
 	const noteAttachment = isMainPost ? [...attachment] : null;
-	const uploads = await posts.uploads.listWithSizes(post.pid);
-	const isThumb = await db.isSortedSetMembers(`topic:${post.tid}:thumbs`, uploads.map(u => u.name));
+	const [uploads, thumbs] = await Promise.all([
+		posts.uploads.listWithSizes(post.pid),
+		topics.getTopicField(post.tid, 'thumbs'),
+	]);
+	const isThumb = uploads.map(u => Array.isArray(thumbs) ? thumbs.includes(u.name) : false);
+
 	uploads.forEach(({ name, width, height }, idx) => {
 		const mediaType = mime.getType(name);
 		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
