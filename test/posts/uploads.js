@@ -62,13 +62,13 @@ describe('upload methods', () => {
 	});
 
 	describe('.sync()', () => {
-		it('should properly add new images to the post\'s zset', (done) => {
+		it('should properly add new images to the post\'s hash', (done) => {
 			posts.uploads.sync(pid, (err) => {
 				assert.ifError(err);
 
-				db.sortedSetCard(`post:${pid}:uploads`, (err, length) => {
+				posts.uploads.list(pid, (err, uploads) => {
 					assert.ifError(err);
-					assert.strictEqual(length, 2);
+					assert.strictEqual(uploads.length, 2);
 					done();
 				});
 			});
@@ -81,8 +81,8 @@ describe('upload methods', () => {
 				content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png)... AND NO MORE!',
 			});
 			await posts.uploads.sync(pid);
-			const length = await db.sortedSetCard(`post:${pid}:uploads`);
-			assert.strictEqual(1, length);
+			const uploads = await posts.uploads.list(pid);
+			assert.strictEqual(1, uploads.length);
 		});
 	});
 
@@ -345,13 +345,11 @@ describe('post uploads management', () => {
 		reply = replyData;
 	});
 
-	it('should automatically sync uploads on topic create and reply', (done) => {
-		db.sortedSetsCard([`post:${topic.topicData.mainPid}:uploads`, `post:${reply.pid}:uploads`], (err, lengths) => {
-			assert.ifError(err);
-			assert.strictEqual(lengths[0], 1);
-			assert.strictEqual(lengths[1], 1);
-			done();
-		});
+	it('should automatically sync uploads on topic create and reply', async () => {
+		const uploads1 = await posts.uploads.list(topic.topicData.mainPid);
+		const uploads2 = await posts.uploads.list(reply.pid);
+		assert.strictEqual(uploads1.length, 1);
+		assert.strictEqual(uploads2.length, 1);
 	});
 
 	it('should automatically sync uploads on post edit', async () => {

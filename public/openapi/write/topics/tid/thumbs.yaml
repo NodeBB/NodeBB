@@ -83,55 +83,6 @@ post:
                   type: string
                 name:
                   type: string
-put:
-  tags:
-    - topics
-  summary: migrate topic thumbnail
-  description: This operation migrates a thumbnails from a topic or draft, to another tid or draft.
-  parameters:
-    - in: path
-      name: tid
-      schema:
-        type: string
-      required: true
-      description: a valid topic id or draft uuid
-      example: 1
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            tid:
-              type: string
-              description: a valid topic id or draft uuid
-              example: '1'
-  responses:
-    '200':
-      description: Topic thumbnails migrated
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
-              response:
-                type: array
-                description: A list of the topic thumbnails in the destination topic
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                    path:
-                      type: string
-                    url:
-                      type: string
-                      description: Path to a topic thumbnail
 delete:
   tags:
     - topics

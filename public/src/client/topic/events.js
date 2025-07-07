@@ -176,6 +176,12 @@ define('forum/topic/events', [
 			});
 		}
 
+		if (data.topic.thumbsupdated) {
+			require(['topicThumbs'], function (topicThumbs) {
+				topicThumbs.updateTopicThumbs(data.topic.tid);
+			});
+		}
+
 		postTools.removeMenu(components.get('post', 'pid', data.post.pid));
 	}
 

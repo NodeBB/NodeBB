@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const user = require('../user');
 const topics = require('../topics');
 const categories = require('../categories');
@@ -23,17 +21,13 @@ const socketHelpers = require('../socket.io/helpers');
 const topicsAPI = module.exports;
 
 topicsAPI._checkThumbPrivileges = async function ({ tid, uid }) {
-	// req.params.tid could be either a tid (pushing a new thumb to an existing topic)
-	// or a post UUID (a new topic being composed)
-	const isUUID = validator.isUUID(tid);
-
 	// Sanity-check the tid if it's strictly not a uuid
-	if (!isUUID && (isNaN(parseInt(tid, 10)) || !await topics.exists(tid))) {
+	if ((isNaN(parseInt(tid, 10)) || !await topics.exists(tid))) {
 		throw new Error('[[error:no-topic]]');
 	}
 
 	// While drafts are not protected, tids are
-	if (!isUUID && !await privileges.topics.canEdit(tid, uid)) {
+	if (!await privileges.topics.canEdit(tid, uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 };
@@ -80,7 +74,6 @@ topicsAPI.create = async function (caller, data) {
 	}
 
 	const result = await topics.post(payload);
-	await topics.thumbs.migrate(data.uuid, result.topicData.tid);
 
 	socketHelpers.emitToUids('event:new_post', { posts: [result.postData] }, [caller.uid]);
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);
@@ -231,17 +224,6 @@ topicsAPI.getThumbs = async (caller, { tid, thumbsOnly }) => {
 	}
 
 	return await topics.thumbs.get(tid, { thumbsOnly });
-};
-
-// topicsAPI.addThumb
-
-topicsAPI.migrateThumbs = async (caller, { from, to }) => {
-	await Promise.all([
-		topicsAPI._checkThumbPrivileges({ tid: from, uid: caller.uid }),
-		topicsAPI._checkThumbPrivileges({ tid: to, uid: caller.uid }),
-	]);
-
-	await topics.thumbs.migrate(from, to);
 };
 
 topicsAPI.deleteThumb = async (caller, { tid, path }) => {

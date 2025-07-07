@@ -46,11 +46,13 @@ module.exports = function (Posts) {
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads
 
-		const [content, currentUploads, isMainPost] = await Promise.all([
-			Posts.getPostField(pid, 'content'),
-			Posts.uploads.list(pid),
+		const [postData, isMainPost] = await Promise.all([
+			Posts.getPostFields(pid, ['content', 'uploads']),
 			Posts.isMain(pid),
 		]);
+
+		const content = postData.content || '';
+		const currentUploads = postData.uploads || [];
 
 		// Extract upload file paths from post content
 		let match = searchRegex.exec(content);
@@ -75,14 +77,19 @@ module.exports = function (Posts) {
 		// Create add/remove sets
 		const add = uploads.filter(path => !currentUploads.includes(path));
 		const remove = currentUploads.filter(path => !uploads.includes(path));
-		await Promise.all([
-			Posts.uploads.associate(pid, add),
-			Posts.uploads.dissociate(pid, remove),
-		]);
+		await Posts.uploads.associate(pid, add);
+		await Posts.uploads.dissociate(pid, remove);
 	};
 
-	Posts.uploads.list = async function (pid) {
-		return await db.getSortedSetMembers(`post:${pid}:uploads`);
+	Posts.uploads.list = async function (pids) {
+		const isArray = Array.isArray(pids);
+		if (isArray) {
+			const uploads = await Posts.getPostsFields(pids, ['uploads']);
+			return uploads.map(p => p.uploads || []);
+		}
+
+		const uploads = await Posts.getPostField(pids, 'uploads');
+		return uploads;
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {
@@ -157,33 +164,38 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.associate = async function (pid, filePaths) {
-		// Adds an upload to a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
 		if (!filePaths.length) {
 			return;
 		}
 		filePaths = await _filterValidPaths(filePaths); // Only process files that exist and are within uploads directory
+		const currentUploads = await Posts.uploads.list(pid);
+		filePaths.forEach((path) => {
+			if (!currentUploads.includes(path)) {
+				currentUploads.push(path);
+			}
+		});
 
 		const now = Date.now();
-		const scores = filePaths.map((p, i) => now + i);
 		const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
+
 		await Promise.all([
-			db.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
+			db.setObjectField(`post:${pid}`, 'uploads', JSON.stringify(currentUploads)),
 			db.sortedSetAddBulk(bulkAdd),
 			Posts.uploads.saveSize(filePaths),
 		]);
 	};
 
 	Posts.uploads.dissociate = async function (pid, filePaths) {
-		// Removes an upload from a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
 		if (!filePaths.length) {
 			return;
 		}
-
+		let currentUploads = await Posts.uploads.list(pid);
+		currentUploads = currentUploads.filter(upload => !filePaths.includes(upload));
 		const bulkRemove = filePaths.map(path => [`upload:${md5(path)}:pids`, pid]);
 		const promises = [
-			db.sortedSetRemove(`post:${pid}:uploads`, filePaths),
+			db.setObjectField(`post:${pid}`, 'uploads', JSON.stringify(currentUploads)),
 			db.sortedSetRemoveBulk(bulkRemove),
 		];
 
