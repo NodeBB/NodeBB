@@ -22,5 +22,6 @@
 	"connection-count": "Số Lượng Kết Nối",
 	"guests": "Khách",
 
-	"info": "Thông tin"
+	"info": "Thông tin",
+	"heap-dump": "Heap Dump"
 }

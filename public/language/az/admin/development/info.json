@@ -22,5 +22,6 @@
 	"connection-count": "Bağlantı sayı",
 	"guests": "Qonaqlar",
 
-	"info": "Məlumat"
+	"info": "Məlumat",
+	"heap-dump": "Heap Dump"
 }

@@ -22,5 +22,6 @@
 	"connection-count": "Antall tilkoblinger",
 	"guests": "Gjester",
 
-	"info": "Info"
+	"info": "Info",
+	"heap-dump": "Heap Dump"
 }

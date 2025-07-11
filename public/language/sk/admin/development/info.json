@@ -22,5 +22,6 @@
 	"connection-count": "Connection Count",
 	"guests": "Hostia",
 
-	"info": "Informácie"
+	"info": "Informácie",
+	"heap-dump": "Heap Dump"
 }

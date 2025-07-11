@@ -22,5 +22,6 @@
 	"connection-count": "Connection Count",
 	"guests": "Viesi",
 
-	"info": "Info"
+	"info": "Info",
+	"heap-dump": "Heap Dump"
 }

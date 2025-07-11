@@ -22,5 +22,6 @@
 	"connection-count": "Брой връзки",
 	"guests": "Гости",
 
-	"info": "Информация"
+	"info": "Информация",
+	"heap-dump": "Heap Dump"
 }
