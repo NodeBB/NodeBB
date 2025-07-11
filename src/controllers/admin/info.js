@@ -145,6 +145,7 @@ async function getGitInfo() {
 }
 
 infoController.getHeapdump = async function (req, res) {
+	req.timeout(0); // Disable timeout for this request
 	const v8 = require('v8');
 	const path = require('path');
 	const fs = require('fs');
