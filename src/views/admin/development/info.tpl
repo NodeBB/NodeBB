@@ -5,12 +5,7 @@
 		</h5>
 
 		<div class="card-body">
-			<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-				<span>[[admin/development/info:nodes-responded, {nodeCount}, {timeout}]]</span>
-				<a href="{config.relative_path}/api/admin/advanced/heap/dump" class="btn btn-primary btn-sm">
-					<i class="fa fa-download"></i> [[admin/development/info:heap-dump]]
-				</a>
-			</div>
+			<span>[[admin/development/info:nodes-responded, {nodeCount}, {timeout}]]</span>
 			<div class="table-responsive">
 				<table class="table table-sm text-sm">
 					<thead>

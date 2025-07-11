@@ -174,8 +174,6 @@ paths:
     $ref: 'read/admin/advanced/cache.yaml'
   /api/admin/advanced/cache/dump:
     $ref: 'read/admin/advanced/cache/dump.yaml'
-  /api/admin/advanced/heap/dump:
-    $ref: 'read/admin/advanced/heap/dump.yaml'
   /api/admin/development/logger:
     $ref: 'read/admin/development/logger.yaml'
   /api/admin/development/info:
