@@ -81,6 +81,7 @@ function apiRoutes(router, name, middleware, controllers) {
 	router.get(`/api/${name}/groups/:groupname/csv`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.groups.getCSV));
 	router.get(`/api/${name}/analytics`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
 	router.get(`/api/${name}/advanced/cache/dump`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.cache.dump));
+	router.get(`/api/${name}/advanced/heap/dump`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.info.getHeapdump));
 
 	const multer = require('multer');
 	const storage = multer.diskStorage({});

@@ -143,3 +143,21 @@ async function getGitInfo() {
 	]);
 	return { hash: hash, hashShort: hash.slice(0, 6), branch: branch };
 }
+
+infoController.getHeapdump = async function (req, res) {
+	const v8 = require('v8');
+	const path = require('path');
+	const fs = require('fs');
+	const filename = path.join(nconf.get('upload_path'), `heapdump-${Date.now()}.heapsnapshot`);
+	const stored = v8.writeHeapSnapshot(filename, {});
+	res.download(stored, 'heapdump.heapsnapshot', (err) => {
+		if (err) {
+			winston.error(err.stack);
+		}
+		fs.unlink(stored, (unlinkErr) => {
+			if (unlinkErr) {
+				winston.error(unlinkErr.stack);
+			}
+		});
+	});
+};
