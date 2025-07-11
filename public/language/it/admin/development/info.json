@@ -22,5 +22,6 @@
 	"connection-count": "Conteggio connessioni",
 	"guests": "Ospiti",
 
-	"info": "Informazioni"
+	"info": "Informazioni",
+	"heap-dump": "Heap Dump"
 }

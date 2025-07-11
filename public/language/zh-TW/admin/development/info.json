@@ -22,5 +22,6 @@
 	"connection-count": "連線次數",
 	"guests": "訪客",
 
-	"info": "資訊"
+	"info": "資訊",
+	"heap-dump": "Heap Dump"
 }

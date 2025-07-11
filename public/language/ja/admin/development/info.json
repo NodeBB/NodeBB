@@ -22,5 +22,6 @@
 	"connection-count": "Connection Count",
 	"guests": "ゲスト数",
 
-	"info": "情報"
+	"info": "情報",
+	"heap-dump": "Heap Dump"
 }
