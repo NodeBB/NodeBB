@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Sidevisninger for registrerte",
 	"graphs.page-views-guest": "Sidevisninger for gjester",
 	"graphs.page-views-bot": "Sidevisninger for botter",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Unike besøkende",
 	"graphs.registered-users": "Registrerte brukere",
 	"graphs.guest-users": "Gjestebrukere",
