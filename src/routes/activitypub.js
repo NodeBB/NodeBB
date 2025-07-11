@@ -14,6 +14,7 @@ module.exports = function (app, middleware, controllers) {
 
 	const middlewares = [
 		middleware.activitypub.enabled,
+		middleware.activitypub.pageview,
 		middleware.activitypub.assertS2S,
 		middleware.activitypub.verify,
 		middleware.activitypub.configureResponse,

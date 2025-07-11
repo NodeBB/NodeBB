@@ -165,6 +165,7 @@ function setupGraphs(callback) {
 		t.translateKey('admin/dashboard:graphs.page-views-registered', []),
 		t.translateKey('admin/dashboard:graphs.page-views-guest', []),
 		t.translateKey('admin/dashboard:graphs.page-views-bot', []),
+		t.translateKey('admin/dashboard:graphs.page-views-ap', []),
 		t.translateKey('admin/dashboard:graphs.unique-visitors', []),
 		t.translateKey('admin/dashboard:graphs.registered-users', []),
 		t.translateKey('admin/dashboard:graphs.guest-users', []),
@@ -231,6 +232,18 @@ function setupGraphs(callback) {
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: 'rgba(151,187,205,0.2)',
+					borderColor: 'rgba(110, 187, 132, 1)',
+					pointBackgroundColor: 'rgba(110, 187, 132, 1)',
+					pointHoverBackgroundColor: 'rgba(110, 187, 132, 1)',
+					pointBorderColor: '#fff',
+					pointHoverBorderColor: 'rgba(110, 187, 132, 1)',
+					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+				},
+				{
+					label: translations[5],
+					fill: 'origin',
+					tension: tension,
+					backgroundColor: 'rgba(151,187,205,0.2)',
 					borderColor: 'rgba(151,187,205,1)',
 					pointBackgroundColor: 'rgba(151,187,205,1)',
 					pointHoverBackgroundColor: 'rgba(151,187,205,1)',
@@ -247,7 +260,8 @@ function setupGraphs(callback) {
 		data.datasets[1].yAxisID = 'left-y-axis';
 		data.datasets[2].yAxisID = 'left-y-axis';
 		data.datasets[3].yAxisID = 'left-y-axis';
-		data.datasets[4].yAxisID = 'right-y-axis';
+		data.datasets[4].yAxisID = 'left-y-axis';
+		data.datasets[5].yAxisID = 'right-y-axis';
 
 		graphs.traffic = new Chart(trafficCtx, {
 			type: 'line',
@@ -269,7 +283,7 @@ function setupGraphs(callback) {
 						type: 'linear',
 						title: {
 							display: true,
-							text: translations[4],
+							text: translations[5],
 						},
 						beginAtZero: true,
 					},
@@ -446,7 +460,8 @@ function updateTrafficGraph(units, until, amount) {
 		graphs.traffic.data.datasets[1].data = data.pageviewsRegistered;
 		graphs.traffic.data.datasets[2].data = data.pageviewsGuest;
 		graphs.traffic.data.datasets[3].data = data.pageviewsBot;
-		graphs.traffic.data.datasets[4].data = data.uniqueVisitors;
+		graphs.traffic.data.datasets[4].data = data.appageviews;
+		graphs.traffic.data.datasets[5].data = data.uniqueVisitors;
 		graphs.traffic.data.labels = graphs.traffic.data.xLabels;
 
 		graphs.traffic.update();

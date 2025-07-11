@@ -3,10 +3,16 @@
 const db = require('../database');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
+const analytics = require('../analytics');
 
 const middleware = module.exports;
 
 middleware.enabled = async (req, res, next) => next(!meta.config.activitypubEnabled ? 'route' : undefined);
+
+middleware.pageview = async (req, res, next) => {
+	analytics.apPageView();
+	next();
+};
 
 middleware.assertS2S = async function (req, res, next) {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator

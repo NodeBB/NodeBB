@@ -30,6 +30,7 @@ Analytics.get = async function (socket, data) {
 			pageviewsRegistered: getStats('analytics:pageviews:registered', until, data.amount),
 			pageviewsGuest: getStats('analytics:pageviews:guest', until, data.amount),
 			pageviewsBot: getStats('analytics:pageviews:bot', until, data.amount),
+			appageviews: getStats('analytics:pageviews:ap', until, data.amount),
 			summary: analytics.getSummary(),
 		});
 		result.pastDay = result.pageviews.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10));

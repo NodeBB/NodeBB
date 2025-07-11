@@ -21,6 +21,7 @@ let local = {
 	pageViewsRegistered: 0,
 	pageViewsGuest: 0,
 	pageViewsBot: 0,
+	apPageViews: 0,
 	uniquevisitors: 0,
 };
 const empty = _.cloneDeep(local);
@@ -117,6 +118,10 @@ Analytics.pageView = async function (payload) {
 	}
 };
 
+Analytics.apPageView = function () {
+	local.apPageViews += 1;
+};
+
 Analytics.writeData = async function () {
 	const today = new Date();
 	const month = new Date();
@@ -160,6 +165,12 @@ Analytics.writeData = async function () {
 		incrByBulk.push(['analytics:pageviews:bot', total.pageViewsBot, today.getTime()]);
 		incrByBulk.push(['analytics:pageviews:month:bot', total.pageViewsBot, month.getTime()]);
 		total.pageViewsBot = 0;
+	}
+
+	if (total.apPageViews > 0) {
+		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
+		total.apPageViews = 0;
 	}
 
 	if (total.uniquevisitors > 0) {
