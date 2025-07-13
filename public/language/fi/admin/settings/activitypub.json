@@ -1,6 +1,6 @@
 {
 	"intro-lead": "Mikä on federaatio?",
-	"intro-body": "NodeBB is able to communicate with other NodeBB instances that support it. This is achieved through a protocol called <a href=\"https://activitypub.rocks/\">ActivityPub</a>. If enabled, NodeBB will also be able to communicate with other apps and websites that use ActivityPub (e.g. Mastodon, Peertube, etc.)",
+	"intro-body": "NodeBB pystyy yhdistämään muihin NodeBB instansseihin, jotka tukevat tätä ominaisuutta. Tämä on toteutettu<a href=\"https://activitypub.rocks/\">ActivityPub</a> protokollaa käyttäen ja, jos se on aktivoitu, NodeBB pystyy yhdistämään myös toisten sovellusten ja sivustojen kanssa jotka tukevat ActivityPub Protokollaa( esim. Mastodon, Peertube jne.)  ",
 	"general": "Yleinen",
 	"pruning": "Sisällön karsiminen",
 	"content-pruning": "Days to keep remote content",
