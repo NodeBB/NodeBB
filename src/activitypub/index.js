@@ -20,14 +20,17 @@ const pubsub = require('../pubsub');
 const analytics = require('../analytics');
 
 const requestCache = ttl({
+	name: 'ap-request-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 5, // 5 minutes
 });
 const probeCache = ttl({
+	name: 'ap-probe-cache',
 	max: 500,
 	ttl: 1000 * 60 * 60, // 1 hour
 });
 const probeRateLimit = ttl({
+	name: 'ap-probe-rate-limit-cache',
 	ttl: 1000 * 3, // 3 seconds
 });
 

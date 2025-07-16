@@ -12,6 +12,8 @@ const { version } = require('../package.json');
 const plugins = require('./plugins');
 const ttl = require('./cache/ttl');
 const checkCache = ttl({
+	name: 'request-check',
+	max: 1000,
 	ttl: 1000 * 60 * 60, // 1 hour
 });
 let allowList = new Set();

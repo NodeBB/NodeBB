@@ -23,6 +23,7 @@ const controllers = {
 };
 
 const delayCache = cacheCreate({
+	name: 'delay-middleware',
 	ttl: 1000 * 60,
 	max: 200,
 });
