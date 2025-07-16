@@ -14,6 +14,7 @@ const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
 
 const failedWebfingerCache = TTLCache({
+	name: 'ap-failed-webfinger-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 10, // 10 minutes
 });
