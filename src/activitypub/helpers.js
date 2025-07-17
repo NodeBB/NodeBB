@@ -21,6 +21,7 @@ const activitypub = require('.');
 
 const webfingerRegex = /^(@|acct:)?[\w-.]+@.+$/;
 const webfingerCache = ttl({
+	name: 'ap-webfinger-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours
 });
