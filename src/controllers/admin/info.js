@@ -117,14 +117,18 @@ function getCpuUsage() {
 }
 
 function humanReadableUptime(seconds) {
+	const oneHourInSeconds = 3600;
+	const oneDayInSeconds = oneHourInSeconds * 24;
 	if (seconds < 60) {
 		return `${Math.floor(seconds)}s`;
-	} else if (seconds < 3600) {
+	} else if (seconds < oneHourInSeconds) {
 		return `${Math.floor(seconds / 60)}m`;
-	} else if (seconds < 3600 * 24) {
+	} else if (seconds < oneDayInSeconds) {
 		return `${Math.floor(seconds / (60 * 60))}h`;
 	}
-	return `${Math.floor(seconds / (60 * 60 * 24))}d`;
+	const days = Math.floor(seconds / (oneDayInSeconds));
+	const hours = Math.floor((seconds % (oneDayInSeconds)) / oneHourInSeconds);
+	return `${days}d ${hours}h`;
 }
 
 async function getGitInfo() {
