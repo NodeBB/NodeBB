@@ -55,7 +55,7 @@
         "clipboard": "2.0.11",
         "commander": "14.0.0",
         "compare-versions": "6.1.1",
-        "compression": "1.8.0",
+        "compression": "1.8.1",
         "connect-flash": "0.1.1",
         "connect-mongo": "5.1.0",
         "connect-pg-simple": "10.0.0",
