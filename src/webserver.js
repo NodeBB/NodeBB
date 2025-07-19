@@ -239,12 +239,13 @@ function configureBodyParser(app) {
 	}
 	app.use(bodyParser.urlencoded(urlencodedOpts));
 
-	const jsonOpts = nconf.get('bodyParser:json') || {
+	const jsonOpts = {
 		type: [
 			'application/json',
 			'application/ld+json',
 			'application/activity+json',
 		],
+		...nconf.get('bodyParser:json'),
 	};
 	app.use(bodyParser.json(jsonOpts));
 }
