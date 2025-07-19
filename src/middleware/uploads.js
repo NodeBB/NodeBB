@@ -20,6 +20,7 @@ exports.ratelimit = helpers.try(async (req, res, next) => {
 	}
 	if (!cache) {
 		cache = cacheCreate({
+			name: 'upload-rate-limit-cache',
 			ttl: meta.config.uploadRateLimitCooldown * 1000,
 		});
 	}
