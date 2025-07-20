@@ -40,11 +40,11 @@ connection.connect = async function (options) {
 			// Else, connect over tcp/ip
 			cxn = createClient({
 				...options.options,
-				host: redis_socket_or_host,
-				port: options.port,
 				password: options.password,
 				database: options.database,
 				socket: {
+					host: redis_socket_or_host,
+					port: options.port,
 					reconnectStrategy: 3000,
 				},
 			});
