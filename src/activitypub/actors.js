@@ -655,7 +655,7 @@ Actors.prune = async () => {
 					await user.deleteAccount(uid);
 					deletionCount += 1;
 				} catch (err) {
-					winston.error(err.stack);
+					winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
 				}
 			} else {
 				notDeletedDueToLocalContent += 1;
