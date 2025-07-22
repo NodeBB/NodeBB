@@ -257,15 +257,10 @@ describe('meta', () => {
 			});
 		});
 
-		it('should use default value if value is null', (done) => {
-			meta.configs.set('teaserPost', null, (err) => {
-				assert.ifError(err);
-				meta.configs.get('teaserPost', (err, value) => {
-					assert.ifError(err);
-					assert.strictEqual(value, 'last-reply');
-					done();
-				});
-			});
+		it('should use default value if value is null', async () => {
+			await meta.configs.set('teaserPost', null);
+			const value = await meta.configs.get('teaserPost');
+			assert.strictEqual(value, 'last-post');
 		});
 
 		it('should fail if field is invalid', (done) => {
