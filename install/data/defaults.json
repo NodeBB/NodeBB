@@ -76,7 +76,7 @@
     "profile:keepAllUserImages": 0,
     "gdpr_enabled": 1,
     "allowProfileImageUploads": 1,
-    "teaserPost": "last-reply",
+    "teaserPost": "last-post",
     "showPostPreviewsOnHover": 1,
     "allowPrivateGroups": 1,
     "unreadCutoff": 2,
