@@ -9,43 +9,12 @@ require('../../scripts-admin');
 app.onDomReady();
 
 (function () {
-	let logoutTimer = 0;
-	let logoutMessage;
-	function startLogoutTimer() {
-		if (app.config.adminReloginDuration <= 0) {
-			return;
-		}
-		if (logoutTimer) {
-			clearTimeout(logoutTimer);
-		}
-		// pre-translate language string gh#9046
-		if (!logoutMessage) {
-			require(['translator'], function (translator) {
-				translator.translate('[[login:logged-out-due-to-inactivity]]', function (translated) {
-					logoutMessage = translated;
-				});
-			});
-		}
-
-		logoutTimer = setTimeout(function () {
-			require(['bootbox'], function (bootbox) {
-				bootbox.alert({
-					closeButton: false,
-					message: logoutMessage,
-					callback: function () {
-						window.location.reload();
-					},
-				});
-			});
-		}, 3600000);
-	}
-
-	require(['hooks', 'admin/settings'], (hooks, Settings) => {
+	require(['hooks', 'admin/settings', 'admin/modules/relogin-timer'], (hooks, Settings, reloginTimer) => {
 		hooks.on('action:ajaxify.end', (data) => {
 			updatePageTitle(data.url);
 			setupRestartLinks();
 			showCorrectNavTab();
-			startLogoutTimer();
+			reloginTimer.start(app.config.adminReloginDuration);
 
 			$('[data-bs-toggle="tooltip"]').tooltip({
 				animation: false,
@@ -59,6 +28,7 @@ app.onDomReady();
 				Settings.populateTOC();
 			}
 		});
+
 		hooks.on('action:ajaxify.start', function () {
 			require(['bootstrap'], function (boostrap) {
 				const offcanvas = boostrap.Offcanvas.getInstance('#offcanvas');
