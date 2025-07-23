@@ -91,7 +91,7 @@
         "lru-cache": "11.1.0",
         "mime": "3.0.0",
         "mkdirp": "3.0.1",
-        "mongodb": "6.17.0",
+        "mongodb": "6.18.0",
         "morgan": "1.10.1",
         "mousetrap": "1.6.5",
         "multer": "2.0.2",
