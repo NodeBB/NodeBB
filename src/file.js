@@ -28,7 +28,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 
 	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
-	if (tempPath.endsWith('.svg')) {
+	if (filename.endsWith('.svg')) {
 		await sanitizeSvg(tempPath);
 	}
 
