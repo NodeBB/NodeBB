@@ -338,6 +338,15 @@ describe('Upload Controllers', () => {
 			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.png`);
 		});
 
+		it('should upload svg as category image after cleaning it up', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/dirty.svg'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token);
+			assert.equal(response.statusCode, 200);
+			assert(Array.isArray(body));
+			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.svg`);
+			const svgContents = await fs.readFile(path.join(__dirname, '../test/uploads/category/category-1.svg'), 'utf-8');
+			assert.strictEqual(svgContents.includes('<script>'), false);
+		});
+
 		it('should upload default avatar', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadDefaultAvatar`, path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token);
 			assert.equal(response.statusCode, 200);
