@@ -191,7 +191,7 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-
+		summary = summary || '';
 		// Replace emoji in summary
 		if (tag && Array.isArray(tag)) {
 			tag
