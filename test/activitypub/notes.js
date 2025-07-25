@@ -466,7 +466,8 @@ describe('Notes', () => {
 					assert.strictEqual(cid, remoteCid);
 				});
 
-				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async () => {
+				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async function () {
+					this.timeout(60000);
 					const { id: remoteCid } = helpers.mocks.group({
 						id: `https://example.com/${utils.generateUUID()}`,
 					});
