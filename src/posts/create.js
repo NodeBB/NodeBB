@@ -26,12 +26,18 @@ module.exports = function (Posts) {
 		if (data.toPid) {
 			await checkToPid(data.toPid, uid);
 		}
+		if (data.parentPid) {
+			await checkParentPid(data.parentPid, uid, tid);
+		}
 
 		const pid = data.pid || await db.incrObjectField('global', 'nextPid');
 		let postData = { pid, uid, tid, content, sourceContent, timestamp };
 
 		if (data.toPid) {
 			postData.toPid = data.toPid;
+		}
+		if (data.parentPid) {
+			postData.parentPid = data.parentPid;
 		}
 		if (data.ip && meta.config.trackIpPerPost) {
 			postData.ip = data.ip;
@@ -89,13 +95,25 @@ module.exports = function (Posts) {
 	};
 
 	async function addReplyTo(postData, timestamp) {
-		if (!postData.toPid) {
-			return;
+		const promises = [];
+		
+		if (postData.toPid) {
+			promises.push(
+				db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
+				db.incrObjectField(`post:${postData.toPid}`, 'replies')
+			);
 		}
-		await Promise.all([
-			db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
-			db.incrObjectField(`post:${postData.toPid}`, 'replies'),
-		]);
+		
+		if (postData.parentPid) {
+			promises.push(
+				db.sortedSetAdd(`pid:${postData.parentPid}:children`, timestamp, postData.pid),
+				db.incrObjectField(`post:${postData.parentPid}`, 'replies')
+			);
+		}
+		
+		if (promises.length > 0) {
+			await Promise.all(promises);
+		}
 	}
 
 	async function checkToPid(toPid, uid) {
@@ -111,5 +129,49 @@ module.exports = function (Posts) {
 		if (!toPidExists || (toPost.deleted && !canViewToPid)) {
 			throw new Error('[[error:invalid-pid]]');
 		}
+	}
+
+	async function checkParentPid(parentPid, uid, tid) {
+		if (!utils.isNumber(parentPid)) {
+			throw new Error('[[error:invalid-pid]]');
+		}
+
+		const [parentPost, canViewParent] = await Promise.all([
+			Posts.getPostFields(parentPid, ['pid', 'tid', 'deleted', 'parentPid']),
+			privileges.posts.can('posts:view_deleted', parentPid, uid),
+		]);
+		
+		const parentExists = !!parentPost.pid;
+		if (!parentExists || (parentPost.deleted && !canViewParent)) {
+			throw new Error('[[error:invalid-pid]]');
+		}
+
+		// Ensure parent post is in the same topic
+		if (parseInt(parentPost.tid, 10) !== parseInt(tid, 10)) {
+			throw new Error('[[error:parent-post-different-topic]]');
+		}
+
+		// Check for cycles and calculate depth
+		const maxDepth = meta.config.threadingMaxDepth || 5;
+		const depth = await calculateThreadDepth(parentPid);
+		
+		if (depth >= maxDepth) {
+			throw new Error('[[error:thread-max-depth-exceeded]]');
+		}
+	}
+
+	async function calculateThreadDepth(pid, visited = new Set()) {
+		if (visited.has(pid)) {
+			throw new Error('[[error:thread-cycle-detected]]');
+		}
+		
+		visited.add(pid);
+		const post = await Posts.getPostFields(pid, ['parentPid']);
+		
+		if (!post.parentPid || post.parentPid === 0) {
+			return 1;
+		}
+		
+		return 1 + await calculateThreadDepth(post.parentPid, visited);
 	}
 };

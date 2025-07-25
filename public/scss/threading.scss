@@ -1,0 +1,168 @@
+// Threading styles for NodeBB
+.threaded-post {
+	position: relative;
+	
+	&.depth-1 { margin-left: 30px; }
+	&.depth-2 { margin-left: 60px; }
+	&.depth-3 { margin-left: 90px; }
+	&.depth-4 { margin-left: 120px; }
+	&.depth-5 { margin-left: 150px; }
+	
+	// Thread connector lines
+	&:before {
+		content: '';
+		position: absolute;
+		left: -15px;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: var(--bs-border-color);
+		opacity: 0.5;
+	}
+	
+	// Horizontal connector to parent
+	&:after {
+		content: '';
+		position: absolute;
+		left: -15px;
+		top: 25px;
+		width: 15px;
+		height: 2px;
+		background: var(--bs-border-color);
+		opacity: 0.5;
+	}
+	
+	// Hide connector for root posts
+	&[data-depth="0"]:before,
+	&[data-depth="0"]:after {
+		display: none;
+	}
+}
+
+.threaded-children {
+	margin-top: 10px;
+	position: relative;
+}
+
+.thread-toggle {
+	position: absolute;
+	top: 10px;
+	left: -25px;
+	z-index: 10;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border-radius: 50%;
+	background: var(--bs-body-bg);
+	border: 1px solid var(--bs-border-color);
+	
+	i {
+		font-size: 10px;
+		color: var(--bs-text-muted);
+	}
+	
+	&:hover {
+		background: var(--bs-secondary-bg);
+	}
+}
+
+// Threading toggle button
+[data-action="toggle-threading"] {
+	&.active {
+		background-color: var(--bs-primary);
+		color: white;
+		border-color: var(--bs-primary);
+	}
+}
+
+// Reply to post button
+[data-action="reply-to-post"] {
+	font-size: 0.8em;
+	opacity: 0.7;
+	
+	&:hover {
+		opacity: 1;
+	}
+}
+
+// Responsive threading
+@media (max-width: 768px) {
+	.threaded-post {
+		&.depth-1 { margin-left: 15px; }
+		&.depth-2 { margin-left: 30px; }
+		&.depth-3 { margin-left: 45px; }
+		&.depth-4 { margin-left: 60px; }
+		&.depth-5 { margin-left: 75px; }
+		
+		&:before {
+			left: -8px;
+			width: 1px;
+		}
+		
+		&:after {
+			left: -8px;
+			width: 8px;
+			height: 1px;
+		}
+	}
+	
+	.thread-toggle {
+		left: -15px;
+		width: 16px;
+		height: 16px;
+		
+		i {
+			font-size: 8px;
+		}
+	}
+	
+	// Hide deep threading on mobile
+	.threaded-post[data-depth="4"],
+	.threaded-post[data-depth="5"] {
+		margin-left: 45px;
+		
+		&:before,
+		&:after {
+			display: none;
+		}
+	}
+}
+
+// Lazy loading indicator for deep threads
+.thread-loading {
+	padding: 10px;
+	text-align: center;
+	color: var(--bs-text-muted);
+	font-style: italic;
+}
+
+// Thread navigation
+.thread-nav {
+	margin: 5px 0;
+	font-size: 0.85em;
+	
+	a {
+		color: var(--bs-secondary);
+		text-decoration: none;
+		
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+// Parent post indicator
+.parent-post-indicator {
+	font-size: 0.8em;
+	color: var(--bs-text-muted);
+	margin-bottom: 5px;
+	
+	.parent-link {
+		color: var(--bs-link-color);
+		text-decoration: none;
+		
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}

@@ -18,6 +18,14 @@ Topics.get = async (req, res) => {
 	helpers.formatApiResponse(200, res, topicData);
 };
 
+Topics.getPosts = async (req, res) => {
+	const postsData = await api.topics.getPosts(req, { ...req.params, ...req.query });
+	if (!postsData) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+	}
+	helpers.formatApiResponse(200, res, postsData);
+};
+
 Topics.create = async (req, res) => {
 	const id = await lockPosting(req, '[[error:already-posting]]');
 	try {
