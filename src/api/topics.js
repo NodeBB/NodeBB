@@ -55,6 +55,49 @@ topicsAPI.get = async function (caller, data) {
 	return topic;
 };
 
+topicsAPI.getPosts = async function (caller, data) {
+	const [userPrivileges, topic] = await Promise.all([
+		privileges.topics.get(data.tid, caller.uid),
+		topics.getTopicData(data.tid),
+	]);
+	if (
+		!topic ||
+		!userPrivileges.read ||
+		!userPrivileges['topics:read'] ||
+		!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)
+	) {
+		return null;
+	}
+
+	const { flat = 'true', tree = 'false', start = 0, stop = 19 } = data;
+	const isFlat = flat !== 'false';
+	const isTree = tree === 'true';
+	
+	// Default pagination
+	const startIndex = Math.max(0, parseInt(start, 10) || 0);
+	const stopIndex = Math.min(startIndex + 50, parseInt(stop, 10) || 19); // Limit to 50 posts max
+
+	const postData = await topics.getTopicWithPosts(data.tid, caller.uid, startIndex, stopIndex, false);
+	if (!postData) {
+		return null;
+	}
+
+	// If tree view is requested, build the tree structure
+	if (isTree && !isFlat) {
+		postData.posts = buildPostTree(postData.posts);
+	}
+
+	return {
+		posts: postData.posts,
+		pagination: {
+			start: startIndex,
+			stop: stopIndex,
+			total: postData.postcount || 0,
+		},
+		viewType: isTree && !isFlat ? 'tree' : 'flat',
+	};
+};
+
 topicsAPI.create = async function (caller, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
@@ -99,6 +142,12 @@ topicsAPI.reply = async function (caller, data) {
 	}
 	const payload = { ...data };
 	delete payload.pid;
+	
+	// Handle parentPid for threaded replies
+	if (data.parentPid) {
+		payload.parentPid = parseInt(data.parentPid, 10);
+	}
+	
 	apiHelpers.setDefaultPostData(caller, payload);
 
 	await meta.blacklist.test(caller.ip);
@@ -357,3 +406,31 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 
 	await categories.onTopicsMoved(cids);
 };
+
+function buildPostTree(posts) {
+	const postMap = new Map();
+	const rootPosts = [];
+	
+	// First pass: create map of all posts
+	posts.forEach(post => {
+		post.children = [];
+		postMap.set(post.pid, post);
+	});
+	
+	// Second pass: build tree structure
+	posts.forEach(post => {
+		if (post.parentPid && post.parentPid !== 0) {
+			const parent = postMap.get(post.parentPid);
+			if (parent) {
+				parent.children.push(post);
+			} else {
+				// Orphaned post - treat as root level
+				rootPosts.push(post);
+			}
+		} else {
+			rootPosts.push(post);
+		}
+	});
+	
+	return rootPosts;
+}
