@@ -346,7 +346,16 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub.retryQueue = lru({ name: 'activitypub-retry-queue', max: 4000, ttl: 1000 * 60 * 60 * 24 * 60 });
+ActivityPub.retryQueue = lru({
+	name: 'activitypub-retry-queue',
+	max: 4000,
+	ttl: 1000 * 60 * 60 * 24 * 60,
+	dispose: (value) => {
+		if (value) {
+			clearTimeout(value);
+		}
+	},
+});
 
 // handle clearing retry queue from another member of the cluster
 pubsub.on(`activitypub-retry-queue:lruCache:del`, (keys) => {
