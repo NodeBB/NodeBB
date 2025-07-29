@@ -455,7 +455,7 @@ async function retryFailedMessages() {
 			queueIdsToRemove.push(queueId);
 		} else {
 			const nextAttempt = (parseInt(attempts, 10) || 0) + 1;
-			const timeout = (4 ** nextAttempt) * oneMinute; // exponential backoff
+			const timeout = (2 ** nextAttempt) * oneMinute; // exponential backoff
 			const nextTryOn = Date.now() + timeout;
 			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
 			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
