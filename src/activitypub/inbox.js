@@ -617,6 +617,8 @@ inbox.reject = async (req) => {
 	const queueId = `${type}:${id}:${hostname}`;
 
 	// stop retrying rejected requests
-	clearTimeout(activitypub.retryQueue.get(queueId));
-	activitypub.retryQueue.delete(queueId);
+	await Promise.all([
+		db.sortedSetRemove('ap:retry:queue', queueId),
+		db.delete(`ap:retry:queue:${queueId}`),
+	]);
 };
