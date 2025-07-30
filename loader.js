@@ -102,6 +102,9 @@ function forkWorker(index, isPrimary) {
 	if (nconf.get('max-memory')) {
 		args.push(`--max-old-space-size=${nconf.get('max-memory')}`);
 	}
+	if (nconf.get('expose-gc')) {
+		args.push('--expose-gc');
+	}
 	if (!ports[index]) {
 		return console.log(`[cluster] invalid port for worker : ${index} ports: ${ports.length}`);
 	}
