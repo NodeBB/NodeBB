@@ -16,7 +16,7 @@ const utils = require('../utils');
 const CSS = module.exports;
 
 CSS.supportedSkins = [
-	'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera',
+	'brite', 'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera',
 	'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'quartz', 'sandstone',
 	'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united',
 	'vapor', 'yeti', 'zephyr',
@@ -270,7 +270,7 @@ CSS.getSkinSwitcherOptions = async function (uid) {
 		{ name: '[[user:no-skin]]', value: 'noskin', selected: userSettings.bootswatchSkin === 'noskin' },
 	];
 	const lightSkins = [
-		'cerulean', 'cosmo', 'flatly', 'journal', 'litera',
+		'brite', 'cerulean', 'cosmo', 'flatly', 'journal', 'litera',
 		'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'sandstone',
 		'simplex', 'sketchy', 'spacelab', 'united', 'yeti', 'zephyr',
 	];
