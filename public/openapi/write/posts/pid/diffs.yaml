@@ -24,6 +24,10 @@ get:
               response:
                 type: object
                 properties:
+                  uid:
+                    type: number
+                  pid:
+                    type: number
                   timestamps:
                     type: array
                     items:
@@ -37,6 +41,8 @@ get:
                           type: string
                         username:
                           type: string
+                        uid:
+                          type: number
                   editable:
                     type: boolean
                   deletable:

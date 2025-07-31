@@ -35,7 +35,6 @@
         "@isaacs/ttlcache": "1.4.1",
         "@nodebb/spider-detector": "2.0.3",
         "@popperjs/core": "2.11.8",
-        "@resvg/resvg-js": "2.6.2",
         "@textcomplete/contenteditable": "0.1.13",
         "@textcomplete/core": "0.1.13",
         "@textcomplete/textarea": "0.1.13",

@@ -491,10 +491,12 @@ async function diffsPrivilegeCheck(pid, uid) {
 
 postsAPI.getDiffs = async (caller, data) => {
 	await diffsPrivilegeCheck(data.pid, caller.uid);
-	const timestamps = await posts.diffs.list(data.pid);
-	const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
+	const [timestamps, post, diffs] = await Promise.all([
+		posts.diffs.list(data.pid),
+		posts.getPostFields(data.pid, ['timestamp', 'uid']),
+		posts.diffs.get(data.pid),
+	]);
 
-	const diffs = await posts.diffs.get(data.pid);
 	const uids = diffs.map(diff => diff.uid || null);
 	uids.push(post.uid);
 	let usernames = await user.getUsersFields(uids, ['username']);
@@ -508,18 +510,21 @@ postsAPI.getDiffs = async (caller, data) => {
 
 	// timestamps returned by posts.diffs.list are strings
 	timestamps.push(String(post.timestamp));
-
-	return {
+	const result = await plugins.hooks.fire('filter:post.getDiffs', {
+		uid: caller.uid,
+		pid: data.pid,
 		timestamps: timestamps,
 		revisions: timestamps.map((timestamp, idx) => ({
 			timestamp: timestamp,
 			username: usernames[idx],
+			uid: uids[idx],
 		})),
 		// Only admins, global mods and moderator of that cid can delete a diff
 		deletable: isAdmin || isModerator,
 		// These and post owners can restore to a different post version
 		editable: isAdmin || isModerator || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
-	};
+	});
+	return result;
 };
 
 postsAPI.loadDiff = async (caller, data) => {
