@@ -491,10 +491,12 @@ async function diffsPrivilegeCheck(pid, uid) {
 
 postsAPI.getDiffs = async (caller, data) => {
 	await diffsPrivilegeCheck(data.pid, caller.uid);
-	const timestamps = await posts.diffs.list(data.pid);
-	const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
+	const [timestamps, post, diffs] = await Promise.all([
+		posts.diffs.list(data.pid),
+		posts.getPostFields(data.pid, ['timestamp', 'uid']),
+		posts.diffs.get(data.pid),
+	]);
 
-	const diffs = await posts.diffs.get(data.pid);
 	const uids = diffs.map(diff => diff.uid || null);
 	uids.push(post.uid);
 	let usernames = await user.getUsersFields(uids, ['username']);
