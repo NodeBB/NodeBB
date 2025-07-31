@@ -24,6 +24,10 @@ get:
               response:
                 type: object
                 properties:
+                  uid:
+                    type: number
+                  pid:
+                    type: number
                   timestamps:
                     type: array
                     items:
