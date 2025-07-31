@@ -508,8 +508,9 @@ postsAPI.getDiffs = async (caller, data) => {
 
 	// timestamps returned by posts.diffs.list are strings
 	timestamps.push(String(post.timestamp));
-
-	return {
+	const result = await plugins.hooks.fire('filter:post.getDiffs', {
+		uid: caller.uid,
+		pid: data.pid,
 		timestamps: timestamps,
 		revisions: timestamps.map((timestamp, idx) => ({
 			timestamp: timestamp,
@@ -519,7 +520,8 @@ postsAPI.getDiffs = async (caller, data) => {
 		deletable: isAdmin || isModerator,
 		// These and post owners can restore to a different post version
 		editable: isAdmin || isModerator || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
-	};
+	});
+	return result;
 };
 
 postsAPI.loadDiff = async (caller, data) => {
