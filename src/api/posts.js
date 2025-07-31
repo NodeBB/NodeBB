@@ -515,6 +515,7 @@ postsAPI.getDiffs = async (caller, data) => {
 		revisions: timestamps.map((timestamp, idx) => ({
 			timestamp: timestamp,
 			username: usernames[idx],
+			uid: uids[idx],
 		})),
 		// Only admins, global mods and moderator of that cid can delete a diff
 		deletable: isAdmin || isModerator,

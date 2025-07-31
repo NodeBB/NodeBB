@@ -37,6 +37,8 @@ get:
                           type: string
                         username:
                           type: string
+                        uid:
+                          type: string
                   editable:
                     type: boolean
                   deletable:
