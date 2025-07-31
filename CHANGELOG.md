@@ -1,3 +1,52 @@
+#### v4.4.5 (2025-07-31)
+
+##### Chores
+
+* **config:**  migrate config renovate.json (#13565) (5a864150)
+*  incrementing version number - v4.4.4 (d323af44)
+*  update changelog for v4.4.4 (7b14e267)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add filter:post.getDiffs (bbb9a460)
+
+##### Bug Fixes
+
+*  clearTimeout if item is evicted from cache (5f696176)
+*  use sharp to convert svg to png, closes #13534 (b74c7898)
+*  use filename to check for svg, tempPath doesn't always have extension (5bcf078a)
+*  apply sanitizeSvg to regular uploads and uploads from manage uploads acp page (a8f4c5e6)
+
+##### Refactors
+
+*  use promise.all (7c00e814)
+
+##### Tests
+
+*  one more fix (5f5a6972)
+*  fix spec (3b609316)
+*  fix openapi (c7c83e0e)
+*  increase timeout of failing test (fe9b49e3)
+
 #### v4.4.4 (2025-06-18)
 
 ##### Chores
