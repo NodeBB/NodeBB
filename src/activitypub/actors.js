@@ -609,6 +609,8 @@ Actors.prune = async () => {
 	let deletionCountNonExisting = 0;
 	let notDeletedDueToLocalContent = 0;
 	const preservedIds = [];
+	const cleanupUids = [];
+
 	await batch.processArray(ids, async (ids) => {
 		const exists = await Promise.all([
 			db.exists(ids.map(id => `userRemote:${id}`)),
@@ -656,12 +658,23 @@ Actors.prune = async () => {
 					deletionCount += 1;
 				} catch (err) {
 					winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
+					if (err.message === '[[error:no-user]]') {
+						cleanupUids.push(uid);
+					}
 				}
 			} else {
 				notDeletedDueToLocalContent += 1;
 				preservedIds.push(uid);
 			}
 		}));
+
+		if (cleanupUids.length) {
+			await Promise.all([
+				db.sortedSetRemove('usersRemote:lastCrawled', cleanupUids),
+				db.deleteAll(cleanupUids.map(uid => `userRemote:${uid}`)),
+			]);
+			winston.info(`[actors/prune] Cleaned up ${cleanupUids.length} remote users that were not found in the database.`);
+		}
 
 		// Remote categories
 		let counts = await categories.getCategoriesFields(cids, ['topic_count']);
