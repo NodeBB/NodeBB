@@ -70,6 +70,9 @@ module.exports = function (opts) {
 	};
 
 	cache.del = function (keys) {
+		if (!cache.enabled) {
+			return;
+		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
