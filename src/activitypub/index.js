@@ -409,7 +409,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		await Promise.all(inboxBatch.map(async (uri) => {
 			const ok = await sendMessage(uri, id, type, payload);
 			if (!ok) {
-				const queueId = `${type}:${id}:${new URL(uri).hostname}`;
+				const queueId = `${payload.type}:${payload.id}:${new URL(uri).hostname}`;
 				const nextTryOn = Date.now() + oneMinute;
 				retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
 				retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
