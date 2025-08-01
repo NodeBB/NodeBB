@@ -99,8 +99,12 @@ Loader.start = function () {
 function forkWorker(index, isPrimary) {
 	const ports = getPorts();
 	const args = [];
+	const execArgv = [];
 	if (nconf.get('max-memory')) {
-		args.push(`--max-old-space-size=${nconf.get('max-memory')}`);
+		execArgv.push(`--max-old-space-size=${nconf.get('max-memory')}`);
+	}
+	if (nconf.get('expose-gc')) {
+		execArgv.push('--expose-gc');
 	}
 	if (nconf.get('expose-gc')) {
 		args.push('--expose-gc');
@@ -112,10 +116,10 @@ function forkWorker(index, isPrimary) {
 	process.env.isPrimary = isPrimary;
 	process.env.isCluster = nconf.get('isCluster') || ports.length > 1;
 	process.env.port = ports[index];
-
 	const worker = fork(appPath, args, {
 		silent: silent,
 		env: process.env,
+		execArgv: execArgv,
 	});
 
 	worker.index = index;
