@@ -52,6 +52,10 @@ profileController.get = async function (req, res, next) {
 	if (meta.config.activitypubEnabled) {
 		// Include link header for richer parsing
 		res.set('Link', `<${nconf.get('url')}/uid/${userData.uid}>; rel="alternate"; type="application/activity+json"`);
+
+		if (!utils.isNumber(userData.uid)) {
+			res.set('Link', `<${userData.url || userData.uid}>; rel="canonical"`);
+		}
 	}
 
 	res.render('account/profile', userData);
@@ -174,5 +178,12 @@ function addTags(res, userData) {
 			type: 'application/activity+json',
 			href: `${nconf.get('url')}/uid/${userData.uid}`,
 		});
+
+		if (!utils.isNumber(userData.uid)) {
+			res.locals.linkTags.push({
+				rel: 'canonical',
+				href: userData.url || userData.uid,
+			});
+		}
 	}
 }
