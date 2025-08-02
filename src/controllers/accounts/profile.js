@@ -167,10 +167,17 @@ function addTags(res, userData) {
 
 	res.locals.linkTags = [];
 
-	res.locals.linkTags.push({
-		rel: 'canonical',
-		href: `${url}/user/${userData.userslug}`,
-	});
+	if (utils.isNumber(userData.uid)) {
+		res.locals.linkTags.push({
+			rel: 'canonical',
+			href: `${url}/user/${userData.userslug}`,
+		});
+	} else {
+		res.locals.linkTags.push({
+			rel: 'canonical',
+			href: userData.url || userData.uid,
+		});
+	}
 
 	if (meta.config.activitypubEnabled) {
 		res.locals.linkTags.push({
@@ -178,12 +185,5 @@ function addTags(res, userData) {
 			type: 'application/activity+json',
 			href: `${nconf.get('url')}/uid/${userData.uid}`,
 		});
-
-		if (!utils.isNumber(userData.uid)) {
-			res.locals.linkTags.push({
-				rel: 'canonical',
-				href: userData.url || userData.uid,
-			});
-		}
 	}
 }
