@@ -464,7 +464,10 @@ async function retryFailedMessages() {
 			}]);
 		}
 	}));
+
 	await Promise.all([
+		db.sortedSetAddBulk(retryQueueAdd),
+		db.setObjectBulk(retryQueuedSet),
 		db.sortedSetRemove('ap:retry:queue', queueIdsToRemove),
 		db.deleteAll(queueIdsToRemove.map(id => `ap:retry:queue:${id}`)),
 	]);
