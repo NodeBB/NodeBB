@@ -55,6 +55,7 @@ profileController.get = async function (req, res, next) {
 
 		if (!utils.isNumber(userData.uid)) {
 			res.set('Link', `<${userData.url || userData.uid}>; rel="canonical"`);
+			res.set('x-robots-tag', 'noindex');
 		}
 	}
 
@@ -176,6 +177,10 @@ function addTags(res, userData) {
 		res.locals.linkTags.push({
 			rel: 'canonical',
 			href: userData.url || userData.uid,
+		});
+		res.locals.metaTags.push({
+			name: 'robots',
+			content: 'noindex',
 		});
 	}
 
