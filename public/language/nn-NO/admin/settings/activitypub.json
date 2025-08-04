@@ -4,7 +4,7 @@
 	"general": "Generelt",
 	"pruning": "Innhaldsbeskjæring",
 	"content-pruning": "Dagar å behalde eksternt innhald",
-	"content-pruning-help": " Merk at eksternt innhald som har fått engasjement (eit svar eller ei opp-/nedstemming) vil bli bevart. (0 for deaktivert)",
+	"content-pruning-help": " Merk at eksternt innhald som har fått engasjement (eit svar eller ei anbefaling) vil bli bevart. (0 for deaktivert)",
 	"user-pruning": "Dagar å mellomlagre eksterne brukarkontoar",
 	"user-pruning-help": "Eksterne brukarkontoar vil berre bli fjerna dersom dei ikkje har innlegg. Elles vil dei bli henta på nytt. (0 for deaktivert)",
 	"enabled": "Aktiver føderering",

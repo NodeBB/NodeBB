@@ -4,7 +4,7 @@
 	"general": "Generelt",
 	"pruning": "Content Pruning",
 	"content-pruning": "Days to keep remote content",
-	"content-pruning-help": "Note that remote content that has received engagement (a reply or a upvote/downvote) will be preserved. (0 for disabled)",
+	"content-pruning-help": "Merk at eksternt innhold som har fått respons (et svar eller en anbefaling), vil bli bevart. (0 for å deaktivere)",
 	"user-pruning": "Days to cache remote user accounts",
 	"user-pruning-help": "Remote user accounts will only be pruned if they have no posts. Otherwise they will be re-retrieved. (0 for disabled)",
 	"enabled": "Enable Federation",
