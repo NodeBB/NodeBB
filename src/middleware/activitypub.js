@@ -10,7 +10,7 @@ const middleware = module.exports;
 middleware.enabled = async (req, res, next) => next(!meta.config.activitypubEnabled ? 'route' : undefined);
 
 middleware.pageview = async (req, res, next) => {
-	analytics.apPageView();
+	await analytics.apPageView({ ip: req.ip });
 	next();
 };
 

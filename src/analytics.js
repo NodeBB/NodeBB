@@ -102,8 +102,17 @@ Analytics.pageView = async function (payload) {
 		local.pageViewsGuest += 1;
 	}
 
-	if (payload.ip) {
-		const score = await db.sortedSetScore('ip:recent', payload.ip);
+	await incrementUniqueVisitors(payload.ip);
+};
+
+Analytics.apPageView = async function ({ ip }) {
+	local.apPageViews += 1;
+	await incrementUniqueVisitors(ip);
+};
+
+async function incrementUniqueVisitors(ip) {
+	if (ip) {
+		const score = await db.sortedSetScore('ip:recent', ip);
 		let record = !score;
 		if (score) {
 			const today = new Date();
@@ -113,14 +122,10 @@ Analytics.pageView = async function (payload) {
 
 		if (record) {
 			local.uniquevisitors += 1;
-			await db.sortedSetAdd('ip:recent', Date.now(), payload.ip);
+			await db.sortedSetAdd('ip:recent', Date.now(), ip);
 		}
 	}
-};
-
-Analytics.apPageView = function () {
-	local.apPageViews += 1;
-};
+}
 
 Analytics.writeData = async function () {
 	const today = new Date();
