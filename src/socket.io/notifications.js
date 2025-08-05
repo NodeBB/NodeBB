@@ -34,8 +34,8 @@ SocketNotifs.markUnread = async function (socket, nid) {
 	user.notifications.pushCount(socket.uid);
 };
 
-SocketNotifs.markAllRead = async function (socket) {
-	await notifications.markAllRead(socket.uid);
+SocketNotifs.markAllRead = async function (socket, data) {
+	await notifications.markAllRead(socket.uid, data.filter);
 	user.notifications.pushCount(socket.uid);
 };
 
