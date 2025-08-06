@@ -106,10 +106,6 @@ function forkWorker(index, isPrimary) {
 	if (nconf.get('expose-gc')) {
 		execArgv.push('--expose-gc');
 	}
-	if (nconf.get('inspect')) {
-		execArgv.push('--inspect');
-	}
-
 	if (!ports[index]) {
 		return console.log(`[cluster] invalid port for worker : ${index} ports: ${ports.length}`);
 	}
