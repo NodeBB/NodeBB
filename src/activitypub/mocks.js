@@ -84,7 +84,7 @@ Mocks._normalize = async (object) => {
 		content = '<em>This post did not contain any content.</em>';
 	}
 
-	switch (true) {
+	switch (true) { // image handling
 		case image && image.hasOwnProperty('url') && !!image.url: {
 			image = image.url;
 			break;
@@ -101,7 +101,8 @@ Mocks._normalize = async (object) => {
 	}
 	if (image) {
 		const parsed = new URL(image);
-		if (!mime.getType(parsed.pathname).startsWith('image/')) {
+		const type = mime.getType(parsed.pathname);
+		if (!type || type.startsWith('image/')) {
 			activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 			image = null;
 		}
