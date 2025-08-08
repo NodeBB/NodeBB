@@ -152,6 +152,40 @@
 
 			<hr/>
 
+			<!-- threading settings -->
+			<div id="threading" class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:threading]]</h5>
+
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="threadingEnabled" data-field="threadingEnabled">
+					<label for="threadingEnabled" class="form-check-label">[[admin/settings/post:threading.enabled]]</label>
+					<p class="form-text">[[admin/settings/post:threading.enabled-help]]</p>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="threadingMaxDepth">[[admin/settings/post:threading.max-depth]]</label>
+					<input id="threadingMaxDepth" type="number" min="1" max="10" class="form-control" value="5" data-field="threadingMaxDepth">
+					<p class="form-text">[[admin/settings/post:threading.max-depth-help]]</p>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="threadingDefaultMode">[[admin/settings/post:threading.default-mode]]</label>
+					<select id="threadingDefaultMode" class="form-select" data-field="threadingDefaultMode">
+						<option value="flat">[[admin/settings/post:threading.mode-flat]]</option>
+						<option value="threaded">[[admin/settings/post:threading.mode-threaded]]</option>
+					</select>
+					<p class="form-text">[[admin/settings/post:threading.default-mode-help]]</p>
+				</div>
+
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="threadingAllowMigration" data-field="threadingAllowMigration">
+					<label for="threadingAllowMigration" class="form-check-label">[[admin/settings/post:threading.allow-migration]]</label>
+					<p class="form-text">[[admin/settings/post:threading.allow-migration-help]]</p>
+				</div>
+			</div>
+
+			<hr/>
+
 			<!-- timestamp settings -->
 			<div id="timestamp" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:timestamp]]</h5>
