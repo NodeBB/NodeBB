@@ -1,6 +1,6 @@
 {
     "all-users": "Alle brukarar",
-    "followed-users": "Brukarar du følgjer",
+    "followed-users": "Brukarar du følger",
     "latest-users": "Siste brukarar",
     "top-posters": "Mest aktive",
     "most-reputation": "Best omdømme",
@@ -17,7 +17,7 @@
     "groups-to-join": "Grupper å bli med i når invitasjonen vert akseptert:",
     "invitation-email-sent": "Ein invitasjons-e-post har blitt sendt til %1",
     "user-list": "Brukarliste",
-    "recent-topics": "Nye emne",
+    "recent-topics": "Siste innlegg",
     "popular-topics": "Populære emne",
     "unread-topics": "Uleste emne",
     "categories": "Kategoriar",
