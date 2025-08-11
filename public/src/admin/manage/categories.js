@@ -27,6 +27,7 @@ define('admin/manage/categories', [
 		Categories.render(ajaxify.data.categoriesTree);
 
 		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
+		$('button[data-action="add"]').on('click', Categories.throwAddModal);
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {
@@ -146,6 +147,30 @@ define('admin/manage/categories', [
 					parentSelect.removeAttr('disabled');
 				}
 			});
+
+			modal.find('form').on('submit', submit);
+		});
+	};
+
+	Categories.throwAddModal = function () {
+		Benchpress.render('admin/partials/categories/add', {}).then(function (html) {
+			const modal = bootbox.dialog({
+				title: '[[admin/manage/categories:alert.add]]',
+				message: html,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: submit,
+					},
+				},
+			});
+
+			function submit() {
+				// const formData = modal.find('form').serializeObject();
+				modal.modal('hide');
+				return false;
+			}
 
 			modal.find('form').on('submit', submit);
 		});
