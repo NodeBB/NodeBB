@@ -1,8 +1,8 @@
 {
     "category": "Kategoria",
     "subcategories": "Alikategoria",
-    "uncategorized": "Uncategorized",
-    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "uncategorized": "Kategoroimattomat",
+    "uncategorized.description": "Aiheet jotka eivät suoraan sovi minkään kategorian alle.",
     "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Uusi aihe",
     "guest-login-post": "Kirjaudu sisään julkastaksesi",
