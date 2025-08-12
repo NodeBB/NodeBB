@@ -187,6 +187,11 @@ activitypubApi.create.privateNote = enabledCheck(async (caller, { messageObj }) 
 activitypubApi.update = {};
 
 activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
+	// Local users only
+	if (!utils.isNumber(uid)) {
+		return;
+	}
+
 	const [object, targets] = await Promise.all([
 		activitypub.mocks.actors.user(uid),
 		db.getSortedSetMembers(`followersRemote:${caller.uid}`),
@@ -203,6 +208,11 @@ activitypubApi.update.profile = enabledCheck(async (caller, { uid }) => {
 });
 
 activitypubApi.update.category = enabledCheck(async (caller, { cid }) => {
+	// Local categories only
+	if (!utils.isNumber(cid)) {
+		return;
+	}
+
 	const [object, targets] = await Promise.all([
 		activitypub.mocks.actors.category(cid),
 		activitypub.notes.getCategoryFollowers(cid),

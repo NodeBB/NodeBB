@@ -101,7 +101,7 @@ Categories.getAllCidsFromSet = async function (key) {
 	}
 
 	cids = await db.getSortedSetRange(key, 0, -1);
-	cids = cids.map(cid => parseInt(cid, 10));
+	cids = cids.map(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 	cache.set(key, cids);
 	return cids.slice();
 };
@@ -274,7 +274,7 @@ Categories.getChildrenTree = getChildrenTree;
 Categories.getParentCids = async function (currentCid) {
 	let cid = currentCid;
 	const parents = [];
-	while (parseInt(cid, 10)) {
+	while (utils.isNumber(cid) ? parseInt(cid, 10) : cid) {
 		// eslint-disable-next-line
 		cid = await Categories.getCategoryField(cid, 'parentCid');
 		if (cid) {
@@ -289,12 +289,12 @@ Categories.getChildrenCids = async function (rootCid) {
 	async function recursive(keys) {
 		let childrenCids = await db.getSortedSetRange(keys, 0, -1);
 
-		childrenCids = childrenCids.filter(cid => !allCids.includes(parseInt(cid, 10)));
+		childrenCids = childrenCids.filter(cid => !allCids.includes(utils.isNumber(cid) ? parseInt(cid, 10) : cid));
 		if (!childrenCids.length) {
 			return;
 		}
 		keys = childrenCids.map(cid => `cid:${cid}:children`);
-		childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
+		childrenCids.forEach(cid => allCids.push(utils.isNumber(cid) ? parseInt(cid, 10) : cid));
 		await recursive(keys);
 	}
 	const key = `cid:${rootCid}:children`;
