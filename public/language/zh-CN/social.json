@@ -8,5 +8,7 @@
 	"log-in-with-facebook": "通过 Facebook 登录",
 	"continue-with-facebook": "继续使用 Facebook 登录",
 	"sign-in-with-linkedin": "通过LinkedIn登录",
-	"sign-up-with-linkedin": "通过LinkedIn注册"
+	"sign-up-with-linkedin": "通过LinkedIn注册",
+	"sign-in-with-wordpress": "Sign in with WordPress",
+	"sign-up-with-wordpress": "Sign up with WordPress"
 }
