@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const url = require('url');
 const winston = require('winston');
 const sanitize = require('sanitize-html');
 const _ = require('lodash');
