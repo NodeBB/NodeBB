@@ -1,0 +1,135 @@
+{
+    "chat.room-id": "کمرہ %1",
+    "chat.chatting-with": "کے ساتھ گفتگو",
+    "chat.placeholder": "یہاں پیغام درج کریں یا تصاویر ڈریگ اینڈ ڈراپ کریں",
+    "chat.placeholder.mobile": "پیغام درج کریں",
+    "chat.placeholder.message-room": "پیغام #%1",
+    "chat.scroll-up-alert": "تازہ ترین پیغامات کی طرف",
+    "chat.usernames-and-x-others": "%1 اور %2 دیگر",
+    "chat.chat-with-usernames": "%1 کے ساتھ گفتگو",
+    "chat.chat-with-usernames-and-x-others": "%1 اور %2 دیگر کے ساتھ گفتگو",
+    "chat.send": "بھیجیں",
+    "chat.no-active": "آپ کے کوئی جاری گفتگو نہیں ہیں۔",
+    "chat.user-typing-1": "<strong>%1</strong> لکھ رہا ہے…",
+    "chat.user-typing-2": "<strong>%1</strong> اور <strong>%2</strong> لکھ رہے ہیں…",
+    "chat.user-typing-3": "<strong>%1</strong>، <strong>%2</strong> اور <strong>%3</strong> لکھ رہے ہیں…",
+    "chat.user-typing-n": "<strong>%1</strong>، <strong>%2</strong> اور <strong>%3</strong> دیگر لکھ رہے ہیں…",
+    "chat.user-has-messaged-you": "%1 نے آپ کو پیغام بھیجا۔",
+    "chat.replying-to": "%1 کو جواب",
+    "chat.see-all": "تمام گفتگو",
+    "chat.mark-all-read": "سب کو پڑھا ہوا نشان زد کریں",
+    "chat.no-messages": "براہ کرم پیغامات کی تاریخ دیکھنے کے لیے وصول کنندہ منتخب کریں",
+    "chat.no-users-in-room": "اس کمرے میں کوئی صارفین نہیں ہیں",
+    "chat.recent-chats": "حالیہ گفتگو",
+    "chat.contacts": "رابطے",
+    "chat.message-history": "پیغامات کی تاریخ",
+    "chat.message-deleted": "پیغام حذف کر دیا گیا",
+    "chat.options": "گفتگو کی ترتیبات",
+    "chat.pop-out": "گفتگو کو ونڈو میں کھولیں",
+    "chat.minimize": "چھوٹا کریں",
+    "chat.maximize": "بڑا کریں",
+    "chat.seven-days": "7 دن",
+    "chat.thirty-days": "30 دن",
+    "chat.three-months": "3 ماہ",
+    "chat.delete-message-confirm": "کیا آپ واقعی اس پیغام کو حذف کرنا چاہتے ہیں؟",
+    "chat.retrieving-users": "صارفین حاصل کیے جا رہے ہیں…",
+    "chat.view-users-list": "صارفین کی فہرست دیکھیں",
+    "chat.pinned-messages": "پن کیے گئے پیغامات",
+    "chat.no-pinned-messages": "کوئی پن کیے گئے پیغامات نہیں",
+    "chat.pin-message": "پیغام پن کریں",
+    "chat.unpin-message": "پیغام ان پن کریں",
+    "chat.public-rooms": "عوامی کمرے (%1)",
+    "chat.private-rooms": "نجی کمرے (%1)",
+    "chat.create-room": "گفتگو کا کمرہ بنائیں",
+    "chat.private.option": "نجی (صرف کمرے میں شامل کیے گئے صارفین کے لیے نظر آتا ہے)",
+    "chat.public.option": "عوامی (منتخب گروپس کے تمام صارفین کے لیے نظر آتا ہے)",
+    "chat.public.groups-help": "تمام صارفین کے لیے نظر آنے والا گفتگو کا کمرہ بنانے کے لیے فہرست سے رجسٹرڈ صارفین کا گروپ منتخب کریں۔",
+    "chat.manage-room": "گفتگو کے کمرے کا انتظام",
+    "chat.add-user": "صارف شامل کریں",
+    "chat.notification-settings": "اطلاعات کی ترتیبات",
+    "chat.default-notification-setting": "طے شدہ اطلاعاتی ترتیبات",
+    "chat.join-leave-messages": "شامل ہونے/چھوڑنے کے پیغامات",
+    "chat.notification-setting-room-default": "کمرے کے لیے طے شدہ",
+    "chat.notification-setting-none": "کوئی اطلاعات نہیں",
+    "chat.notification-setting-at-mention-only": "صرف @مینشنز",
+    "chat.notification-setting-all-messages": "تمام پیغامات",
+    "chat.select-groups": "گروپس منتخب کریں",
+    "chat.add-user-help": "یہاں آپ صارفین کو تلاش کر سکتے ہیں۔ جب کوئی صارف منتخب کیا جاتا ہے، اسے گفتگو میں شامل کیا جائے گا۔ نیا صارف اس سے پہلے کے پیغامات نہیں دیکھ سکے گا جو اس کے شامل ہونے سے پہلے لکھے گئے تھے۔ صرف کمرے کے مالکان (<i class=\"fa fa-star text-warning\"></i>) صارفین کو کمرے سے ہٹا سکتے ہیں۔",
+    "chat.confirm-chat-with-dnd-user": "یہ صارف 'تنگ نہ کریں' حالت میں ہے۔ کیا آپ واقعی اس سے گفتگو کرنا چاہتے ہیں؟",
+    "chat.room-name-optional": "کمرے کا نام (اختیاری)",
+    "chat.rename-room": "کمرہ دوبارہ نام دیں",
+    "chat.rename-placeholder": "اپنے کمرے کا نام یہاں درج کریں",
+    "chat.rename-help": "یہاں متعین کیا گیا کمرے کا نام اس کے تمام شرکاء کو نظر آئے گا۔",
+    "chat.leave": "چھوڑیں",
+    "chat.leave-room": "کمرہ چھوڑیں",
+    "chat.leave-prompt": "کیا آپ واقعی اس گفتگو کو چھوڑنا چاہتے ہیں؟",
+    "chat.leave-help": "اگر آپ اس گفتگو کو چھوڑتے ہیں تو آپ اس کے بعد کے پیغامات نہیں دیکھ سکیں گے۔ اگر آپ کو دوبارہ شامل کیا جاتا ہے تو آپ اس سے پہلے کی گفتگو کی تاریخ نہیں دیکھ سکیں گے۔",
+    "chat.delete": "حذف کریں",
+    "chat.delete-room": "گفتگو کا کمرہ حذف کریں",
+    "chat.delete-prompt": "کیا آپ واقعی اس گفتگو کے کمرے کو حذف کرنا چاہتے ہیں؟",
+    "chat.in-room": "اس کمرے میں",
+    "chat.kick": "نکالیں",
+    "chat.show-ip": "IP ایڈریس دکھائیں",
+    "chat.copy-text": "متن کاپی کریں",
+    "chat.copy-link": "لنک کاپی کریں",
+    "chat.owner": "کمرے کا مالک",
+    "chat.grant-rescind-ownership": "مالکانہ حقوق دینا/واپس لینا",
+    "chat.system.user-join": "%1 کمرے میں شامل ہوا <span class=\"timeago\" title=\"%2\"></span>",
+    "chat.system.user-leave": "%1 نے کمرہ چھوڑ دیا <span class=\"timeago\" title=\"%2\"></span>",
+    "chat.system.room-rename": "%2 نے اس کمرے کا نام تبدیل کر کے '%1' کر دیا <span class=\"timeago\" title=\"%3\"></span>",
+    "composer.compose": "تحریر کریں",
+    "composer.show-preview": "پیش نظارہ دکھائیں",
+    "composer.hide-preview": "پیش نظارہ چھپائیں",
+    "composer.help": "مدد",
+    "composer.user-said-in": "%1 نے %2 میں کہا:",
+    "composer.user-said": "%1 نے کہا:",
+    "composer.discard": "کیا آپ واقعی اس پوسٹ کو مسترد کرنا چاہتے ہیں؟",
+    "composer.submit-and-lock": "پوسٹ کریں اور لاک کریں",
+    "composer.toggle-dropdown": "ڈراپ ڈاؤن ٹوگل کریں",
+    "composer.uploading": "%1 اپ لوڈ ہو رہا ہے",
+    "composer.formatting.bold": "بولڈ",
+    "composer.formatting.italic": "ایتھیلک",
+    "composer.formatting.heading": "ہیڈنگ",
+    "composer.formatting.heading1": "ہیڈنگ 1",
+    "composer.formatting.heading2": "ہیڈنگ 2",
+    "composer.formatting.heading3": "ہیڈنگ 3",
+    "composer.formatting.heading4": "ہیڈنگ 4",
+    "composer.formatting.heading5": "ہیڈنگ 5",
+    "composer.formatting.heading6": "ہیڈنگ 6",
+    "composer.formatting.list": "فہرست",
+    "composer.formatting.strikethrough": "سٹرائیک تھرو",
+    "composer.formatting.code": "کوڈ",
+    "composer.formatting.link": "لنک",
+    "composer.formatting.picture": "تصویر کا لنک",
+    "composer.upload-picture": "تصویر اپ لوڈ کریں",
+    "composer.upload-file": "فائل اپ لوڈ کریں",
+    "composer.zen-mode": "زین موڈ",
+    "composer.select-category": "زمرہ منتخب کریں",
+    "composer.textarea.placeholder": "اپنی پوسٹ کا مواد یہاں درج کریں۔ آپ تصاویر کو بھی ڈریگ اینڈ ڈراپ کر سکتے ہیں۔",
+    "composer.post-queue-alert": "ہیلو👋!<br/>یہ فورم ایک ایسی سسٹم استعمال کرتا ہے جس میں پوسٹس کو قطار میں شامل کیا جاتا ہے۔ چونکہ آپ ایک نئے صارف ہیں، آپ کی پوسٹ اس وقت تک چھپی رہے گی جب تک کہ اسے ماڈریٹر کی طرف سے منظور نہ کر لیا جائے۔",
+    "composer.schedule-for": "موضوع کے لیے شیڈول کریں",
+    "composer.schedule-date": "تاریخ",
+    "composer.schedule-time": "وقت",
+    "composer.cancel-scheduling": "شیڈولنگ منسوخ کریں",
+    "composer.change-schedule-date": "تاریخ تبدیل کریں",
+    "composer.set-schedule-date": "تاریخ متعین کریں",
+    "composer.discard-all-drafts": "تمام مسودات حذف کریں",
+    "composer.no-drafts": "آپ کے پاس کوئی مسودات نہیں ہیں",
+    "composer.discard-draft-confirm": "کیا آپ اس مسودے کو حذف کرنا چاہتے ہیں؟",
+    "composer.remote-pid-editing": "دور دراز پوسٹ کی ترمیم",
+    "composer.remote-pid-content-immutable": "دور دراز پوسٹس کا مواد ترمیم نہیں کیا جا سکتا۔ آپ صرف موضوع کا عنوان اور ٹیگز تبدیل کر سکتے ہیں۔",
+    "bootbox.ok": "ٹھیک ہے",
+    "bootbox.cancel": "منسوخ",
+    "bootbox.confirm": "تصدیق",
+    "bootbox.submit": "جمع کرائیں",
+    "bootbox.send": "بھیجیں",
+    "cover.dragging-title": "تصویر کی ترتیب",
+    "cover.dragging-message": "تصویر کو مطلوبہ پوزیشن پر منتقل کریں اور 'محفوظ کریں' دبائیں",
+    "cover.saved": "تصویر اور اس کی پوزیشن محفوظ کر دی گئی",
+    "thumbs.modal.title": "موضوعات کی آئیکنز کا انتظام",
+    "thumbs.modal.no-thumbs": "کوئی آئیکنز نہیں ملیں۔",
+    "thumbs.modal.resize-note": "<strong>نوٹ</strong>: یہ فورم موضوعات کی آئیکنز کو زیادہ سے زیادہ %1px چوڑائی تک ری سائز کرنے کے لیے ترتیب دیا گیا ہے",
+    "thumbs.modal.add": "آئیکن شامل کریں",
+    "thumbs.modal.remove": "آئیکن ہٹائیں",
+    "thumbs.modal.confirm-remove": "کیا آپ واقعی اس آئیکن کو ہٹانا چاہتے ہیں؟"
+}
