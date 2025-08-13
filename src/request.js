@@ -48,7 +48,7 @@ async function init() {
  */
 function lookup(hostname, options, callback) {
 	let { ok, lookup } = checkCache.get(hostname);
-	lookup = [...lookup];
+	lookup = lookup && [...lookup];
 	if (!ok) {
 		throw new Error('lookup-failed');
 	}
