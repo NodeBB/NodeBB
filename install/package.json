@@ -2,7 +2,7 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "4.4.6",
+    "version": "4.5.0",
     "homepage": "https://www.nodebb.org",
     "repository": {
         "type": "git",
@@ -10,6 +10,7 @@
     },
     "main": "app.js",
     "scripts": {
+        "setup": "node ./nodebb setup",
         "start": "node loader.js",
         "lint": "eslint --cache ./nodebb .",
         "test": "nyc --reporter=html --reporter=text-summary mocha",
@@ -68,6 +69,7 @@
         "diff": "8.0.1",
         "esbuild": "0.25.4",
         "express": "4.21.2",
+        "express-mysql-session": "^3.0.3",
         "express-session": "1.18.1",
         "express-useragent": "1.0.15",
         "fetch-cookie": "3.1.0",
@@ -95,10 +97,11 @@
         "morgan": "1.10.0",
         "mousetrap": "1.6.5",
         "multiparty": "4.2.3",
+        "mysql2": "^3.14.0",
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "7.5.10",
         "nodebb-plugin-composer-default": "10.2.51",
-        "nodebb-plugin-dbsearch": "6.2.19",
+        "nodebb-plugin-dbsearch": "github:MBanucu/nodebb-plugin-dbsearch#mysql",
         "nodebb-plugin-emoji": "6.0.2",
         "nodebb-plugin-emoji-android": "4.1.1",
         "nodebb-plugin-markdown": "13.2.1",
@@ -185,7 +188,7 @@
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=20.19.0"
     },
     "maintainers": [
         {

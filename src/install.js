@@ -165,12 +165,14 @@ async function setupConfig() {
 		const redisQuestions = require('./database/redis').questions;
 		const mongoQuestions = require('./database/mongo').questions;
 		const postgresQuestions = require('./database/postgres').questions;
+		const mysqlQuestions = require('./database/mysql').questions;
 		const allQuestions = [
 			...questions.main,
 			...questions.optional,
 			...redisQuestions,
 			...mongoQuestions,
 			...postgresQuestions,
+			...mysqlQuestions,
 		];
 
 		allQuestions.forEach((question) => {
