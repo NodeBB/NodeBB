@@ -88,7 +88,7 @@ module.exports = function (Posts) {
 		while (current !== null) {
 			if (current[1]) {
 				try {
-					parsed = url.parse(current[1]);
+					parsed = new URL(current[1]);
 					if (!parsed.protocol) {
 						if (current[1].startsWith('/')) {
 							// Internal link
