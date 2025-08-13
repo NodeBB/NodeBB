@@ -53,6 +53,11 @@ describe('Test database', () => {
 					assert.equal(err.message, 'The `pg` package is out-of-date, please run `./nodebb setup` again.');
 					done();
 				});
+			} else if (dbName === 'mysql') {
+				databasemock.checkCompatibilityVersion('3.10.1', (err) => {
+					equal(err.message, 'The `mysql2` package is out-of-date, please run `./nodebb setup` again.');
+					done();
+				});
 			}
 		});
 	});

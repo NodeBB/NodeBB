@@ -41,7 +41,14 @@ utils.secureRandom = function (low, high) {
 	return low + (randomInt % range);
 };
 
+function isNixOS() {
+	return require('fs').existsSync('/etc/NIXOS');
+}
+
 utils.getSass = function () {
+	if (isNixOS()) {
+		return require('sass');
+	}
 	try {
 		const sass = require('sass-embedded');
 		return sass;
