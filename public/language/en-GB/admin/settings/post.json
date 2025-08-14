@@ -60,5 +60,16 @@
 	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "Enable Post History",
+	"threading": "Threading Settings",
+	"threading.enabled": "Enable threaded replies",
+	"threading.enabled-help": "Allow users to reply to specific posts creating nested conversation threads",
+	"threading.max-depth": "Maximum thread depth",
+	"threading.max-depth-help": "How many levels deep replies can be nested (1-10, recommended: 5)",
+	"threading.default-mode": "Default view mode",
+	"threading.default-mode-help": "Whether new topics default to flat or threaded view",
+	"threading.mode-flat": "Flat (chronological)",
+	"threading.mode-threaded": "Threaded (nested)",
+	"threading.allow-migration": "Allow topic structure migration",
+	"threading.allow-migration-help": "Allow administrators to convert existing flat topics to threaded structure"
 }
