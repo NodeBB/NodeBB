@@ -143,7 +143,7 @@
         "timeago": "1.6.7",
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
-        "tough-cookie": "5.1.2",
+        "tough-cookie": "6.0.0",
         "undici": "^7.10.0",
         "validator": "13.15.15",
         "webpack": "5.101.1",
