@@ -467,20 +467,24 @@ describe('Notes', () => {
 				});
 
 				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async function () {
-					this.timeout(60000);
+					this.timeout(30000);
+					const start = Date.now();
 					const { id: remoteCid } = helpers.mocks.group({
 						id: `https://example.com/${utils.generateUUID()}`,
 					});
+					console.log('1', Date.now() - start);
 					const { note, id } = helpers.mocks.note({
 						audience: [remoteCid],
 					});
+					console.log('2', Date.now() - start);
 					const { activity } = helpers.mocks.create(note);
-
+					console.log('3', Date.now() - start);
 					await activitypub.inbox.create({ body: activity });
-
+					console.log('4', Date.now() - start);
 					assert(await posts.exists(id));
-
+					console.log('5', Date.now() - start);
 					const cid = await posts.getCidByPid(id);
+					console.log('6', Date.now() - start);
 					assert.strictEqual(cid, -1);
 				});
 			});
