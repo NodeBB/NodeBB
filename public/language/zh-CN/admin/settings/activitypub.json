@@ -18,6 +18,16 @@
 	"probe-timeout": "查询超时（毫秒）",
 	"probe-timeout-help": "(默认值：2000）如果查询在设定的时间内没有收到回复，将直接把用户发送到链接。如果网站响应速度较慢，您希望给予更多时间，则可将此数字调高。",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
 	"server.filter-help": "指定您希望禁止与 NodeBB 联邦化的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器联邦化。两者只能选其一。",

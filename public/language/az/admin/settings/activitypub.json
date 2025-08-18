@@ -18,6 +18,16 @@
 	"probe-timeout": "Axtarış vaxtı (millisaniyə)",
 	"probe-timeout-help": "(Defolt: 2000) Əgər axtarış sorğusu müəyyən edilmiş vaxt çərçivəsində cavab almazsa, onun əvəzinə istifadəçi birbaşa linkə göndəriləcək. Saytlar ləng cavab verirsə və əlavə vaxt vermək istəyirsinizsə, bu rəqəmi daha yüksək tənzimləyin.",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "Filtrlə",
 	"count": "Bu NodeBB hazırda <strong>%1</strong> server(lər)dən xəbərdardır",
 	"server.filter-help": "NodeBB ilə federasiyaya mane olmaq istədiyiniz serverləri göstərin. Alternativ olaraq, bunun əvəzinə xüsusi serverlərlə federasiyaya seçimlə <em>icazə verə bilərsiniz</em>. Hər iki variant bir-birini istisna etsə də, dəstəklənir.",

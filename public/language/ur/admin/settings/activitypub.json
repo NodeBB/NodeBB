@@ -18,6 +18,16 @@
 	"probe-timeout": "پروب ٹائم آؤٹ (ملی سیکنڈز)",
 	"probe-timeout-help": "(طے شدہ: 2000) اگر پروب کو مقررہ وقت کے اندر جواب نہ ملے، تو صارف کو براہ راست لنک کے ایڈریس پر بھیجا جائے گا۔ اگر ویب سائٹس سست جواب دیتی ہیں اور آپ انہیں زیادہ وقت دینا چاہتے ہیں تو بڑا نمبر سیٹ کریں۔",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "فلٹرنگ",
 	"count": "یہ نوڈ بی بی فی الحال <strong>%1</strong> سرور(ز) کے بارے میں جانتا ہے",
 	"server.filter-help": "ان سرورز کی نشاندہی کریں جن کے ساتھ آپ نہیں چاہتے کہ آپ کا نوڈ بی بی رابطہ قائم کرے۔ یا آپ اس کے بجائے مخصوص سرورز کی نشاندہی کر سکتے ہیں جن کے ساتھ رابطہ <em>کی اجازت</em> ہے۔ دونوں اختیارات دستیاب ہیں، لیکن آپ صرف ایک کا انتخاب کر سکتے ہیں۔",

@@ -18,6 +18,16 @@
 	"probe-timeout": "Време за изчакване на проверката (милисекунди)",
 	"probe-timeout-help": "(По подразбиране: 2000) Ако проверката не получи отговор в рамките на зададеното време, потребителят ще бъде изпратен директно на адреса на връзката. Задайте по-голямо число, ако уеб сайтовете отговарят по-бавно и искате да им дадете повече време.",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "Филтриране",
 	"count": "Този NodeBB в момента знае за наличието на <strong>%1</strong> сървър(а)",
 	"server.filter-help": "Посочете сървърите, с които не искате Вашият NodeBB да осъществява връзка. Или можете вместо това да посочите конкретни сървъри, с които <em>разрешавате</em> връзката. И двете възможности са налични, но може да изберете само една от тях.",

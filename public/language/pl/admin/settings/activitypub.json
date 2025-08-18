@@ -18,6 +18,16 @@
 	"probe-timeout": "Czas oczekiwania (milisekundy)",
 	"probe-timeout-help": "(Domyślnie: 2000) O ile zapytanie nie doczeka się odpowiedzi w tym czasie to użytkownik otrzyma odnośnik bezpośredni. Możesz wydłużyć czas oczekiwania o ile strony działają wolno a mimo to chcesz dać im szansę.",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "Filtrowanie",
 	"count": "NodeBB obecnie wykrywa <strong>1%</strong> serwerów",
 	"server.filter-help": "Określ serwery, z którymi nie chcesz spinać NodeBB w ramach fediverse. Alternatywnie możesz dobrać <em>dozwolone</em> serwery fediverse. Obie opcje są dostępne ale wybierz jedną z nich.",

@@ -18,6 +18,16 @@
 	"probe-timeout": "Hết Thời Gian Tra Cứu (mili giây)",
 	"probe-timeout-help": "(Mặc định: 2000) Nếu truy vấn tra cứu không nhận được phản hồi trong khung thời gian đã đặt, thay vào đó sẽ đưa người dùng đến liên kết trực tiếp. Điều chỉnh con số này cao hơn nếu các trang web phản hồi chậm và bạn muốn dành thêm thời gian.",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "Lọc",
 	"count": "NodeBB này hiện đã biết về <strong>%1</strong> máy chủ",
 	"server.filter-help": "Chỉ định các máy chủ mà bạn muốn cấm liên kết với NodeBB của mình. Ngoài ra, bạn có thể chọn tham gia có chọn lọc <em>cho phép</em> liên kết có chọn lọc với các máy chủ cụ thể. Cả hai tùy chọn đều được hỗ trợ, mặc dù chúng loại trừ lẫn nhau.",

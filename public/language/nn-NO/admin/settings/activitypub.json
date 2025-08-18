@@ -18,6 +18,16 @@
 	"probe-timeout": "Oppslagstimeout (millisekund)",
 	"probe-timeout-help": "(Standard: 2000) Dersom oppslagsførespurnaden ikkje får eit svar innan den angitte tidsramma, vil brukaren bli sendt direkte til lenkja i staden. Juster dette talet oppover dersom nettsider responderer sakte, og du ønskjer å gi ekstra tid.",
 
+	"rules": "Categorization",
+	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules.modal.title": "How it works",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.values-multiple": "To match multiple values, separate entries with a comma (e.g. <code>one,two,three</code>)",
+	"rules.add": "Add New Rule",
+	"rules.type": "Type",
+	"rules.value": "Value",
+	"rules.cid": "Category",
+
 	"server-filtering": "Filtrer etter",
 	"count": "Denne NodeBB-en er for tida klar over <strong>%1</strong> server(ar)",
 	"server.filter-help": "Spesifiser serverar du ønskjer å hindre frå å føderere med din NodeBB. Alternativt kan du velje å <em>tillate</em> føderasjon berre med spesifikke serverar. Begge alternativ er støtta, men dei er gjensidig utelukkande.",
