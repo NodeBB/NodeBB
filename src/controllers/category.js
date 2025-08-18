@@ -222,12 +222,13 @@ function addTags(categoryData, res, currentPage) {
 	];
 
 	if (categoryData.backgroundImage) {
-		if (!categoryData.backgroundImage.startsWith('http')) {
-			categoryData.backgroundImage = url + categoryData.backgroundImage;
+		const backgroundImage = categoryData.backgroundImage;
+		if (!backgroundImage.startsWith('http')) {
+			backgroundImage = url + backgroundImage;
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
-			content: categoryData.backgroundImage,
+			content: backgroundImage,
 			noEscape: true,
 		});
 	}
