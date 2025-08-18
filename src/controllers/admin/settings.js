@@ -159,11 +159,15 @@ settingsController.api = async (req, res) => {
 };
 
 settingsController.activitypub = async (req, res) => {
-	const instanceCount = await activitypub.instances.getCount();
+	const [instanceCount, rules] = await Promise.all([
+		activitypub.instances.getCount(),
+		activitypub.rules.list(),
+	]);
 
 	res.render('admin/settings/activitypub', {
 		title: `[[admin/menu:settings/activitypub]]`,
 		instanceCount,
+		rules,
 	});
 };
 
@@ -186,7 +190,3 @@ settingsController.advanced = async (req, res) => {
 		groupsExemptFromMaintenanceMode: groupData,
 	});
 };
-
-
-
-

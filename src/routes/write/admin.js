@@ -25,5 +25,8 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/groups', [...middlewares], controllers.write.admin.listGroups);
 
+	setupApiRoute(router, 'post', '/activitypub/rules', [...middlewares, middleware.checkRequired.bind(null, ['cid', 'value', 'type'])], controllers.write.admin.activitypub.addRule);
+	setupApiRoute(router, 'delete', '/activitypub/rules/:rid', [...middlewares], controllers.write.admin.activitypub.deleteRule);
+
 	return router;
 };

@@ -45,6 +45,40 @@
 	</div>
 
 	<div class="row settings m-0">
+		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:rules]]</div>
+		<div class="col-sm-10 col-12">
+			<div class="mb-3">
+				<p>[[admin/settings/activitypub:rules-intro]]</p>
+				<table class="table table-striped" id="rules">
+					<thead>
+						<th>[[admin/settings/activitypub:rules.type]]</th>
+						<th>[[admin/settings/activitypub:rules.value]]</th>
+						<th>[[admin/settings/activitypub:rules.cid]]</th>
+						<th></th>
+					</thead>
+					<tbody>
+						{{{ each rules }}}
+						<tr data-rid="{./rid}">
+							<td>{./type}</td>
+							<td>{./value}</td>
+							<td>{./cid}</td>
+							<td><a href="#" data-action="rules.delete"><i class="fa fa-trash link-danger"></i></a></td>
+						</tr>
+						{{{ end }}}
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="3">
+								<button class="btn btn-sm btn-primary" data-action="rules.add">[[admin/settings/activitypub:rules.add]]</button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row settings m-0">
 		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:pruning]]</div>
 		<div class="col-sm-10 col-12">
 			<form>

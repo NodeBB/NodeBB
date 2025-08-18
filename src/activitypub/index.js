@@ -64,6 +64,7 @@ ActivityPub.contexts = require('./contexts');
 ActivityPub.actors = require('./actors');
 ActivityPub.instances = require('./instances');
 ActivityPub.feps = require('./feps');
+ActivityPub.rules = require('./rules');
 
 ActivityPub.startJobs = () => {
 	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
