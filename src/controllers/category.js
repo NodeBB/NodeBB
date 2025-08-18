@@ -222,7 +222,7 @@ function addTags(categoryData, res, currentPage) {
 	];
 
 	if (categoryData.backgroundImage) {
-		const backgroundImage = categoryData.backgroundImage;
+		var backgroundImage = categoryData.backgroundImage;
 		if (!backgroundImage.startsWith('http')) {
 			backgroundImage = url + backgroundImage;
 		}
