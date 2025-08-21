@@ -222,12 +222,14 @@ function addTags(categoryData, res, currentPage) {
 	];
 
 	if (categoryData.backgroundImage) {
-		if (!categoryData.backgroundImage.startsWith('http')) {
-			categoryData.backgroundImage = url + categoryData.backgroundImage;
+		let {backgroundImage} = categoryData;
+		backgroundImage = utils.decodeHTMLEntities(backgroundImage);
+		if (!backgroundImage.startsWith('http')) {
+			backgroundImage = url + backgroundImage.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
-			content: categoryData.backgroundImage,
+			content: backgroundImage,
 			noEscape: true,
 		});
 	}
