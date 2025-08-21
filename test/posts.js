@@ -380,6 +380,40 @@ describe('Post\'s', () => {
 		});
 	});
 
+	describe('list', () => {
+		let pid;
+		let replyPid;
+		let tid;
+		before(async () => {
+			const data = await topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic to list',
+				content: 'A post to list',
+				tags: ['nodebb'],
+			});
+			pid = data.postData.pid;
+			tid = data.topicData.tid;
+			const replyData = await topics.reply({
+				uid: voterUid,
+				tid: tid,
+				timestamp: Date.now(),
+				content: 'A reply to list',
+			});
+			replyPid = replyData.pid;
+		});
+
+		it('should list creation timestamp of a post', async () => {
+			const timestamps = await posts.diffs.list(pid);
+			assert.notDeepStrictEqual(timestamps, []);
+		});
+
+		it('should list creation timestamp of a reply', async () => {
+			const timestamps = await posts.diffs.list(replyPid);
+			assert.notDeepStrictEqual(timestamps, []);
+		});
+	});
+
 	describe('edit', () => {
 		let pid;
 		let replyPid;
