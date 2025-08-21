@@ -222,7 +222,7 @@ function addTags(categoryData, res, currentPage) {
 	];
 
 	if (categoryData.backgroundImage) {
-		let {backgroundImage} = categoryData;
+		let { backgroundImage } = categoryData;
 		backgroundImage = utils.decodeHTMLEntities(backgroundImage);
 		if (!backgroundImage.startsWith('http')) {
 			backgroundImage = url + backgroundImage.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
