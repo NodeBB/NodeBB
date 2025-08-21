@@ -19,7 +19,7 @@
 	"probe-timeout-help": "(Predefinito: 2000) Se la query di ricerca non riceve una risposta entro l'intervallo di tempo  impostato, l'utente l'utente sarà indirizzato direttamente al link. Aumenta questo numero se i siti rispondono lentamente e desideri concedere più tempo.",
 
 	"rules": "Categorizzazione",
-	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
+	"rules-intro": "I contenuti scoperti tramite ActivityPub possono essere categorizzati automaticamente in base a determinate regole (ad es. hashtag)",
 	"rules.modal.title": "Come funziona",
 	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
 	"rules.modal.values-multiple": "Per abbinare più valori, separa le voci con una virgola (es. <code>uno,due,tre</code>)",
