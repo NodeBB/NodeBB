@@ -172,7 +172,7 @@ categoryController.get = async function (req, res, next) {
 
 	if (meta.config.activitypubEnabled) {
 		// Include link header for richer parsing
-		res.set('Link', `<${nconf.get('url')}/actegory/${cid}>; rel="alternate"; type="application/activity+json"`);
+		res.set('Link', `<${nconf.get('url')}/category/${cid}>; rel="alternate"; type="application/activity+json"`);
 
 		// Category accessible
 		const remoteOk = await privileges.categories.can('read', cid, activitypub._constants.uid);
@@ -259,7 +259,7 @@ function addTags(categoryData, res, currentPage) {
 		res.locals.linkTags.push({
 			rel: 'alternate',
 			type: 'application/activity+json',
-			href: `${nconf.get('url')}/actegory/${categoryData.cid}`,
+			href: `${nconf.get('url')}/category/${categoryData.cid}`,
 		});
 	}
 }
