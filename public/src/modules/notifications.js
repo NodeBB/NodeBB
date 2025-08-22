@@ -59,7 +59,9 @@ define('notifications', [
 						const nid = notifEl.attr('data-nid');
 						markNotification(nid, true);
 					});
-					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
+					components.get('notifications').on('click', '.mark-all-read', () => {
+						Notifications.markAllRead();
+					});
 
 					Notifications.handleUnreadButton(notifList);
 
