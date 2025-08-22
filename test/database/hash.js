@@ -285,6 +285,16 @@ describe('Hash methods', () => {
 			});
 		});
 
+		it('should return null if field is falsy', async () => {
+			const values = await Promise.all([
+				db.getObjectField('hashTestObject', ''),
+				db.getObjectField('hashTestObject', null),
+				db.getObjectField('hashTestObject', false),
+				db.getObjectField('hashTestObject', undefined),
+			]);
+			assert.deepStrictEqual(values, [null, null, null, null]);
+		});
+
 		it('should return null and not error', async () => {
 			const data = await db.getObjectField('hashTestObject', ['field1', 'field2']);
 			assert.strictEqual(data, null);

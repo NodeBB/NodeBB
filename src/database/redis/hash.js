@@ -96,7 +96,7 @@ module.exports = function (module) {
 	};
 
 	module.getObjectField = async function (key, field) {
-		if (!key) {
+		if (!key || !field) {
 			return null;
 		}
 		const cachedData = {};
