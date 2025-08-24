@@ -108,7 +108,7 @@
 	"alert.none-active": "Hai una categoria non attiva.",
 	"alert.create": "Crea una Categoria",
 	"alert.add": "Aggiungi una categoria",
-	"alert.add-help": "Remote categories can be added to the categories listing by specifying their handle.<br /><br /><strong>Note</strong> — The remote category may not reflect all topics published unless at least one local user tracks/watches it.",
+	"alert.add-help": "Le categorie remote possono essere aggiunte all'elenco delle categorie specificando il loro identificatore.<br /><br /><strong>Nota</strong> — La categoria remota potrebbe non riflettere tutte le discussioni pubblicate a meno che almeno un utente locale non ne tenga traccia.",
 	"alert.confirm-purge": "<p class=\"lead\">Vuoi davvero eliminare definitivamente questa categoria \"%1\"?</p><h5><strong class=\"text-danger\">Attenzione!</strong>Tutte le discussioni e i post in questa categoria saranno eliminati definitivamente!</h5> <p class=\"help-block\">Eliminare definitivamente una categoria rimuoverà tutte le discussioni e i post ed eliminerà la categoria dal database. Se vuoi rimuovere una categoria <em>temporaneamente</em>, puoi invece \"disabilitare\" la categoria.",
 	"alert.purge-success": "Categoria eliminata definitivamente!",
 	"alert.copy-success": "Impostazioni copiate!",
