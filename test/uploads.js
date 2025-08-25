@@ -205,7 +205,7 @@ describe('Upload Controllers', () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
 			assert(body && body.status && body.status.message);
-			assert.strictEqual(body.status.message, 'Input file contains unsupported image format');
+			assert.strictEqual(body.status.message, 'pngload_buffer: end of stream');
 		});
 
 		it('should fail if file is not an image', (done) => {
