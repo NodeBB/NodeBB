@@ -27,6 +27,8 @@ module.exports = function () {
 
 	setupApiRoute(router, 'post', '/activitypub/rules', [...middlewares, middleware.checkRequired.bind(null, ['cid', 'value', 'type'])], controllers.write.admin.activitypub.addRule);
 	setupApiRoute(router, 'delete', '/activitypub/rules/:rid', [...middlewares], controllers.write.admin.activitypub.deleteRule);
+	setupApiRoute(router, 'post', '/activitypub/relays', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addRelay);
+	setupApiRoute(router, 'delete', '/activitypub/relays/:url', [...middlewares], controllers.write.admin.activitypub.removeRelay);
 
 	return router;
 };

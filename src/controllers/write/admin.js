@@ -91,7 +91,7 @@ Admin.activitypub.addRule = async (req, res) => {
 	const { type, value, cid } = req.body;
 	const exists = await categories.exists(cid);
 	if (!value || !exists) {
-		helpers.formatApiResponse(400, res);
+		return helpers.formatApiResponse(400, res);
 	}
 
 	await activitypub.rules.add(type, value, cid);
@@ -102,4 +102,18 @@ Admin.activitypub.deleteRule = async (req, res) => {
 	const { rid } = req.params;
 	await activitypub.rules.delete(rid);
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
+};
+
+Admin.activitypub.addRelay = async (req, res) => {
+	const { url } = req.body;
+
+	await activitypub.relays.add(url);
+	helpers.formatApiResponse(200, res, await activitypub.relays.list());
+};
+
+Admin.activitypub.removeRelay = async (req, res) => {
+	const { url } = req.params;
+
+	await activitypub.relays.remove(url);
+	helpers.formatApiResponse(200, res, await activitypub.relays.list());
 };

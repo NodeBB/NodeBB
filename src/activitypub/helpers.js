@@ -38,7 +38,7 @@ Helpers._test = (method, args) => {
 	}, 2500);
 };
 // process.nextTick(() => {
-// Helpers._test(activitypub.notes.assert, [1, `https://`]);
+// 	Helpers._test(activitypub.relays.add, ['https://relay.publicsquare.global/actor']);
 // });
 let _lastLog;
 Helpers.log = (message) => {
