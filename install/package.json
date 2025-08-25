@@ -161,7 +161,7 @@
         "@commitlint/cli": "19.8.1",
         "@commitlint/config-angular": "19.8.1",
         "coveralls": "3.1.1",
-        "@eslint/js": "9.33.0",
+        "@eslint/js": "9.34.0",
         "@stylistic/eslint-plugin": "^5.x",
         "eslint-config-nodebb": "1.1.11",
         "eslint-plugin-import": "2.32.0",
