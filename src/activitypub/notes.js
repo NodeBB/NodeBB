@@ -144,6 +144,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			options.cid = remoteCid || recipientCids.shift();
 		}
 
+		// Auto-categorization (takes place only if all other categorization efforts fail)
+		if (!options.cid) {
+			options.cid = await assignCategory(mainPost);
+		}
+
 		// mainPid ok to leave as-is
 		title = title || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
 
@@ -382,6 +387,29 @@ async function assertRelation(post) {
 	}
 
 	return followers > 0 || uids.length;
+}
+
+async function assignCategory(post) {
+	let cid = undefined;
+	const rules = await activitypub.rules.list();
+	const tags = await Notes._normalizeTags(post._activitypub.tag || []);
+
+	cid = rules.reduce((cid, { type, value, cid: target }) => {
+		if (!cid) {
+			switch (type) {
+				case 'hashtag': {
+					if (tags.includes(value)) {
+						return target;
+					}
+					break;
+				}
+			}
+		}
+
+		return cid;
+	}, cid);
+
+	return cid;
 }
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {
