@@ -72,7 +72,6 @@ categoriesController.getAll = async function (req, res) {
 	let categoriesData = await categories.getCategoriesFields(cids, fields);
 	({ categories: categoriesData } = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields }));
 
-	// Append remote categories
 	categoriesData = categoriesData.map((category) => {
 		category.isLocal = utils.isNumber(category.cid);
 		return category;
