@@ -5,7 +5,8 @@ define('admin/settings/activitypub', [
 	'bootbox',
 	'categorySelector',
 	'api',
-], function (Benchpress, bootbox, categorySelector, api) {
+	'alerts',
+], function (Benchpress, bootbox, categorySelector, api, alerts) {
 	const Module = {};
 
 	Module.init = function () {
@@ -29,7 +30,34 @@ define('admin/settings/activitypub', [
 								if (tbodyEl) {
 									tbodyEl.innerHTML = html;
 								}
-							});
+							}).catch(alerts.error);
+						}
+					}
+				}
+			});
+		}
+
+		const relaysEl = document.getElementById('relays');
+		if (relaysEl) {
+			relaysEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[data-action]');
+				if (subselector) {
+					const action = subselector.getAttribute('data-action');
+					switch (action) {
+						case 'relays.add': {
+							Module.throwRelaysModal();
+							break;
+						}
+
+						case 'relays.remove': {
+							const url = subselector.closest('tr').getAttribute('data-url');
+							api.del(`/admin/activitypub/relays/${encodeURIComponent(url)}`, {}).then(async (data) => {
+								const html = await Benchpress.render('admin/settings/activitypub', { relays: data }, 'relays');
+								const tbodyEl = document.querySelector('#relays tbody');
+								if (tbodyEl) {
+									tbodyEl.innerHTML = html;
+								}
+							}).catch(alerts.error);
 						}
 					}
 				}
@@ -49,7 +77,7 @@ define('admin/settings/activitypub', [
 					if (tbodyEl) {
 						tbodyEl.innerHTML = html;
 					}
-				});
+				}).catch(alerts.error);
 			};
 			const modal = bootbox.dialog({
 				title: '[[admin/settings/activitypub:rules.add]]',
@@ -71,6 +99,34 @@ define('admin/settings/activitypub', [
 				cacheList: false,
 				showLinks: true,
 				template: 'admin/partials/category/selector-dropdown-right',
+			});
+		});
+	};
+
+	Module.throwRelaysModal = function () {
+		Benchpress.render('admin/partials/activitypub/relays', {}).then(function (html) {
+			const submit = function () {
+				const formEl = modal.find('form').get(0);
+				const payload = Object.fromEntries(new FormData(formEl));
+
+				api.post('/admin/activitypub/relays', payload).then(async (data) => {
+					const html = await Benchpress.render('admin/settings/activitypub', { relays: data }, 'relays');
+					const tbodyEl = document.querySelector('#relays tbody');
+					if (tbodyEl) {
+						tbodyEl.innerHTML = html;
+					}
+				}).catch(alerts.error);
+			};
+			const modal = bootbox.dialog({
+				title: '[[admin/settings/activitypub:relays.add]]',
+				message: html,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: submit,
+					},
+				},
 			});
 		});
 	};

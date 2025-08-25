@@ -159,15 +159,17 @@ settingsController.api = async (req, res) => {
 };
 
 settingsController.activitypub = async (req, res) => {
-	const [instanceCount, rules] = await Promise.all([
+	const [instanceCount, rules, relays] = await Promise.all([
 		activitypub.instances.getCount(),
 		activitypub.rules.list(),
+		activitypub.relays.list(),
 	]);
 
 	res.render('admin/settings/activitypub', {
 		title: `[[admin/menu:settings/activitypub]]`,
 		instanceCount,
 		rules,
+		relays,
 	});
 };
 
