@@ -288,6 +288,9 @@ inbox.announce = async (req) => {
 		cid = actor;
 	}
 
+	// Received via relay?
+	const fromRelay = await activitypub.relays.is(actor);
+
 	switch(true) {
 		case object.type === 'Like': {
 			const id = object.object.id || object.object;
@@ -333,7 +336,7 @@ inbox.announce = async (req) => {
 				socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
 			} else { // Remote object
 				// Follower check
-				if (!cid) {
+				if (!fromRelay && !cid) {
 					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
 					if (!followers) {
 						winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
