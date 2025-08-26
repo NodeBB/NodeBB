@@ -91,6 +91,10 @@ define('admin/settings/activitypub', [
 				},
 			});
 
+			modal.on('shown.bs.modal', function () {
+				modal.find('input').focus();
+			});
+
 			// category switcher
 			categorySelector.init(modal.find('[component="category-selector"]'), {
 				onSelect: function (selectedCategory) {
@@ -127,6 +131,10 @@ define('admin/settings/activitypub', [
 						callback: submit,
 					},
 				},
+			});
+
+			modal.on('shown.bs.modal', function () {
+				modal.find('input').focus();
 			});
 		});
 	};
