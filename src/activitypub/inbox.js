@@ -367,9 +367,12 @@ inbox.announce = async (req) => {
 
 inbox.follow = async (req) => {
 	const { actor, object, id: followId } = req.body;
+
 	// Sanity checks
 	const { type, id } = await helpers.resolveLocalId(object.id);
-	if (!['category', 'user'].includes(type)) {
+	if (type === 'application') {
+		return activitypub.relays.handshake(req.body);
+	} else if (!['category', 'user'].includes(type)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
@@ -454,7 +457,9 @@ inbox.accept = async (req) => {
 	const { type } = object;
 
 	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
-	if (!['user', 'category'].includes(localType)) {
+	if (object.id === `${nconf.get('url')}/actor`) {
+		return activitypub.relays.handshake(req.body);
+	} else if (!['user', 'category'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
