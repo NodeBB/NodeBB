@@ -56,15 +56,16 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	const id = !activitypub.helpers.isUri(input) ? input.id : input;
-	const lockStatus = await lock(id, '[[error:activitypub.already-asserting]]');
+	const lockStatus = await lock(id);
 	if (!lockStatus) { // unable to achieve lock, stop processing.
+		winston.warn('[activitypub/notes.assert] Unable to acquire lock, skipping processing of', id);
 		return null;
 	}
 
 	let chain;
 	let context = await activitypub.contexts.get(uid, id);
 	if (context.tid) {
-		unlock(id);
+		await unlock(id);
 		const { tid } = context;
 		return { tid, count: 0 };
 	} else if (context.context) {
@@ -85,7 +86,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 	// Can't resolve — give up.
 	if (!chain.length) {
-		unlock(id);
+		await unlock(id);
 		return null;
 	}
 
@@ -108,7 +109,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
 		activitypub.helpers.log('[notes/assert] No new notes to process.');
-		unlock(id);
+		await unlock(id);
 		return { tid, count: 0 };
 	}
 
@@ -137,6 +138,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}).shift();
 		} catch (e) {
 			// noop
+			winston.error('[activitypub/notes.assert] Could not parse URL of mainPid', e.stack);
 		}
 
 		if (remoteCid || recipientCids.length) {
@@ -169,6 +171,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		uid || hasTid ||
 		options.skipChecks || options.cid ||
 		await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
+
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, options.cid || cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
@@ -176,7 +179,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
 		}
 
-		unlock(id);
+		await unlock(id);
 		return null;
 	}
 
