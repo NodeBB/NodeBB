@@ -7,6 +7,10 @@ const db = require('../database');
 const activitypub = module.parent.exports;
 const Relays = module.exports;
 
+Relays.is = async (actor) => {
+	return db.isSortedSetMember('relays:createtime', actor);
+};
+
 Relays.list = async () => {
 	let relays = await db.getSortedSetMembersWithScores('relays:state');
 	relays = relays.reduce((memo, { value, score }) => {
