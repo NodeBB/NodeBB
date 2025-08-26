@@ -31,6 +31,6 @@ post:
             type: object
             properties:
               status:
-                $ref: ../../components/schemas/Status.yaml#/Status
+                $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../components/schemas/admin/rulesObject.yaml#/RulesObject
+                $ref: ../../../components/schemas/admin/rulesObject.yaml#/RulesObject
