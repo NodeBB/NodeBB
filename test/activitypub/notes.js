@@ -479,7 +479,13 @@ describe('Notes', () => {
 					console.log('2', Date.now() - start);
 					const { activity } = helpers.mocks.create(note);
 					console.log('3', Date.now() - start);
-					await activitypub.inbox.create({ body: activity });
+					try {
+						await activitypub.inbox.create({ body: activity });
+					} catch (err) {
+						console.log('error in test', err.stack);
+						assert(false);
+					}
+
 					console.log('4', Date.now() - start);
 					assert(await posts.exists(id));
 					console.log('5', Date.now() - start);
