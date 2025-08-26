@@ -198,6 +198,9 @@ Helpers.resolveLocalId = async (input) => {
 
 				case 'message':
 					return { type: 'message', id: value, ...activityData };
+
+				case 'actor':
+					return { type: 'application', id: null };
 			}
 
 			return { type: null, id: null, ...activityData };

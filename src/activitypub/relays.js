@@ -90,6 +90,32 @@ Relays.remove = async (url) => {
 	]);
 };
 
-Relays.handshake = async (activity) => {
-	console.log(activity);
+Relays.handshake = async (object) => {
+	const now = new Date();
+	const { type, actor } = object;
+
+	// Confirm relay was added
+	const exists = await db.isSortedSetMember('relays:createtime', actor);
+	if (!exists) {
+		throw new Error('[[error:api.400]]');
+	}
+
+	if (type === 'Follow') {
+		await db.sortedSetIncrBy('relays:state', 1, actor);
+		await activitypub.send('uid', 0, actor, {
+			'@context': [
+				'https://www.w3.org/ns/activitystreams',
+				'https://pleroma.example/schemas/litepub-0.1.jsonld',
+			],
+			id: `${nconf.get('url')}/actor#activity/accept/${encodeURIComponent(actor)}/${now.getTime()}`,
+			type: 'Accept',
+			to: [actor],
+			published: now.toISOString(),
+			object,
+		});
+	} else if (type === 'Accept') {
+		await db.sortedSetIncrBy('relays:state', 1, actor);
+	} else {
+		throw new Error('[[error:api.400]]');
+	}
 };
