@@ -129,9 +129,12 @@ Helpers.query = async (id) => {
 		({ href: actorUri } = actorUri);
 	}
 
-	const { subject, publicKey } = body;
+	let { subject, publicKey } = body;
+	// Fix missing scheme
+	if (!subject.startsWith('acct:') && !subject.startsWith('did:')) {
+		subject = `acct:${subject}`;
+	}
 	const payload = { subject, username, hostname, actorUri, publicKey };
-
 	const claimedId = new URL(subject).pathname;
 	webfingerCache.set(claimedId, payload);
 	if (claimedId !== id) {
