@@ -94,7 +94,7 @@
 						{{{ each relays }}}
 						<tr data-url="{./url}">
 							<td>{./url}</td>
-							<td>{./state}</td>
+							<td>{./label}</td>
 							<td><a href="#" data-action="relays.remove"><i class="fa fa-trash link-danger"></i></a></td>
 						</tr>
 						{{{ end }}}
