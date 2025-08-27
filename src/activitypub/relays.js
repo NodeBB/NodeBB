@@ -14,15 +14,15 @@ Relays.is = async (actor) => {
 Relays.list = async () => {
 	let relays = await db.getSortedSetMembersWithScores('relays:state');
 	relays = relays.reduce((memo, { value, score }) => {
-		let state = 'Pending';
+		let state = '[[admin/settings/activitypub:relays.state-0]]';
 		switch(score) {
 			case 1: {
-				state = 'Establishing';
+				state = '[[admin/settings/activitypub:relays.state-1]]';
 				break;
 			}
 
 			case 2: {
-				state = 'Active';
+				state = '[[admin/settings/activitypub:relays.state-2]]';
 				break;
 			}
 		}
