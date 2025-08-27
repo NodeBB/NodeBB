@@ -54,16 +54,17 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (!input) {
 		return null;
 	}
-
+	const start = Date.now();
 	const id = !activitypub.helpers.isUri(input) ? input.id : input;
 	const lockStatus = await lock(id);
 	if (!lockStatus) { // unable to achieve lock, stop processing.
 		winston.warn('[activitypub/notes.assert] Unable to acquire lock, skipping processing of', id);
 		return null;
 	}
-
+	console.log('  4b1', Date.now() - start);
 	let chain;
 	let context = await activitypub.contexts.get(uid, id);
+	console.log('  4b2', Date.now() - start);
 	if (context.tid) {
 		await unlock(id);
 		const { tid } = context;
@@ -77,13 +78,13 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	} else {
 		context = undefined;
 	}
-
+	console.log('  4b3', Date.now() - start);
 	if (!chain || !chain.length) {
 		// Fall back to inReplyTo traversal on context retrieval failure
 		chain = Array.from(await Notes.getParentChain(uid, input));
 		chain.reverse();
 	}
-
+	console.log('  4b4', Date.now() - start);
 	// Can't resolve — give up.
 	if (!chain.length) {
 		await unlock(id);
@@ -98,12 +99,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
-
+	console.log('  4b5', Date.now() - start);
 	if (options.cid && cid === -1) {
 		// Move topic if currently uncategorized
 		await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
 	}
-
+	console.log('  4b6', Date.now() - start);
 	const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(1).map(p => p.pid));
 	members.unshift(await posts.exists(mainPid));
 	if (tid && members.every(Boolean)) {
@@ -112,14 +113,16 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		await unlock(id);
 		return { tid, count: 0 };
 	}
-
+	console.log('  4b7', Date.now() - start);
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
 		// Check recipients/audience for category (local or remote)
+		console.log('  4b8', Date.now() - start);
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
+		console.log('  4b9', Date.now() - start);
 		await activitypub.actors.assert(Array.from(set));
-
+		console.log('  4b10', Date.now() - start);
 		// Local
 		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 		const recipientCids = resolved
@@ -270,7 +273,7 @@ Notes.assertPrivate = async (object) => {
 	if (!object || !object.id || !activitypub.helpers.isUri(object.id)) {
 		return null;
 	}
-
+	
 	const localUids = [];
 	const recipients = new Set([...(object.to || []), ...(object.cc || [])]);
 	await Promise.all(Array.from(recipients).map(async (value) => {
