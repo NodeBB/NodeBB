@@ -4,7 +4,6 @@ const nconf = require('nconf');
 
 const posts = require('../posts');
 const utils = require('../utils');
-const { default: PG } = require('pg');
 
 const activitypub = module.parent.exports;
 const Feps = module.exports;
