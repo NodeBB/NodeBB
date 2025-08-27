@@ -120,7 +120,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		// Check recipients/audience for category (local or remote)
 		console.log('  4b8', Date.now() - start);
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
-		console.log('  4b9', Date.now() - start);
+		console.log('  4b9', Date.now() - start, Array.from(set));
 		await activitypub.actors.assert(Array.from(set));
 		console.log('  4b10', Date.now() - start);
 		// Local

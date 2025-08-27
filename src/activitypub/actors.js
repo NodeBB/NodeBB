@@ -118,11 +118,13 @@ Actors.assert = async (ids, options = {}) => {
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
 	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
+	const start = Date.now();
 
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
 	const categories = new Set();
+	console.log('   4b9a', Date.now() - start);
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
@@ -198,6 +200,7 @@ Actors.assert = async (ids, options = {}) => {
 			return null;
 		}
 	}));
+	console.log('   4b9b', Date.now() - start);
 	actors = actors.filter(Boolean); // remove unresolvable actors
 	if (!actors.length && !categories.size) {
 		return [];
@@ -206,7 +209,7 @@ Actors.assert = async (ids, options = {}) => {
 	// Build userData object for storage
 	const profiles = (await activitypub.mocks.profile(actors)).filter(Boolean);
 	const now = Date.now();
-
+	console.log('   4b9c', Date.now() - start);
 	const bulkSet = profiles.reduce((memo, profile) => {
 		const key = `userRemote:${profile.uid}`;
 		memo.push([key, profile], [`${key}:keys`, pubKeysMap.get(profile.uid)]);
@@ -245,7 +248,7 @@ Actors.assert = async (ids, options = {}) => {
 
 		return memo;
 	}, { searchRemove: [], searchAdd: [], handleRemove: [], handleAdd: {} });
-
+	console.log('   4b9d', Date.now() - start);
 	// Removals
 	await Promise.all([
 		db.sortedSetRemoveBulk(queries.searchRemove),
@@ -259,7 +262,7 @@ Actors.assert = async (ids, options = {}) => {
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:uid', queries.handleAdd),
 	]);
-
+	console.log('   4b9e', Date.now() - start);
 	// Handle any actors that should be asserted as a group instead
 	if (categories.size) {
 		const assertion = await Actors.assertGroup(Array.from(categories), options);
@@ -271,7 +274,7 @@ Actors.assert = async (ids, options = {}) => {
 
 		// otherwise, assertGroup returned true and output can be safely ignored.
 	}
-
+	console.log('   4b9f', Date.now() - start);
 	return actors;
 };
 
