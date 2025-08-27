@@ -34,25 +34,27 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 
 inbox.create = async (req) => {
 	const { object, actor } = req.body;
-
+	const start = Date.now();
 	// Alternative logic for non-public objects
 	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);
 	if (!isPublic) {
 		return await activitypub.notes.assertPrivate(object);
 	}
-
+	console.log(' 4a', Date.now() - start);
 	// Category sync, remove when cross-posting available
 	const { cids } = await activitypub.actors.getLocalFollowers(actor);
 	let cid = null;
 	if (cids.size > 0) {
 		cid = Array.from(cids)[0];
 	}
-
+	console.log(' 4b', Date.now() - start);
 	const asserted = await activitypub.notes.assert(0, object, { cid });
+	console.log(' 4c', Date.now() - start);
 	if (asserted) {
 		await activitypub.feps.announce(object.id, req.body);
 		// api.activitypub.add(req, { pid: object.id });
 	}
+	console.log(' 4d', Date.now() - start);
 };
 
 inbox.add = async (req) => {
