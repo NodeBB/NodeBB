@@ -28,6 +28,17 @@
 	"rules.value": "值",
 	"rules.cid": "版块",
 
+	"relays": "Relays",
+	"relays.intro": "A relay improves discovery of content to and from your NodeBB. Subscribing to a relay means content received by the relay is forwarded here, and content posted here is syndicated outward by the relay.",
+	"relays.warning": "Note: Relays can send larges amounts of traffic in, and may increase storage and processing costs.",
+	"relays.litepub": "NodeBB follows the LitePub-style relay standard. The URL you enter here should end with <code>/actor</code>.",
+	"relays.add": "Add New Relay",
+	"relays.relay": "Relay",
+	"relays.state": "State",
+	"relays.state-0": "Pending",
+	"relays.state-1": "Receiving only",
+	"relays.state-2": "Active",
+
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
 	"server.filter-help": "指定您希望禁止与 NodeBB 联邦化的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器联邦化。两者只能选其一。",

@@ -28,6 +28,17 @@
 	"rules.value": "Value",
 	"rules.cid": "Category",
 
+	"relays": "Relays",
+	"relays.intro": "A relay improves discovery of content to and from your NodeBB. Subscribing to a relay means content received by the relay is forwarded here, and content posted here is syndicated outward by the relay.",
+	"relays.warning": "Note: Relays can send larges amounts of traffic in, and may increase storage and processing costs.",
+	"relays.litepub": "NodeBB follows the LitePub-style relay standard. The URL you enter here should end with <code>/actor</code>.",
+	"relays.add": "Add New Relay",
+	"relays.relay": "Relay",
+	"relays.state": "State",
+	"relays.state-0": "Pending",
+	"relays.state-1": "Receiving only",
+	"relays.state-2": "Active",
+
 	"server-filtering": "Фильтрация",
 	"count": "В настоящее время NodeBB знает о <strong>%1</strong> сервере(ах)",
 	"server.filter-help": "Укажите серверы, для которых вы хотели бы запретить объединение с вашим NodeBB. В качестве альтернативы вы можете выборочно <em>разрешить</em> объединение с определенными серверами. Поддерживаются оба варианта, хотя они и являются взаимоисключающими.",

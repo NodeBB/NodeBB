@@ -28,6 +28,17 @@
 	"rules.value": "Value",
 	"rules.cid": "Category",
 
+	"relays": "Relays",
+	"relays.intro": "A relay improves discovery of content to and from your NodeBB. Subscribing to a relay means content received by the relay is forwarded here, and content posted here is syndicated outward by the relay.",
+	"relays.warning": "Note: Relays can send larges amounts of traffic in, and may increase storage and processing costs.",
+	"relays.litepub": "NodeBB follows the LitePub-style relay standard. The URL you enter here should end with <code>/actor</code>.",
+	"relays.add": "Add New Relay",
+	"relays.relay": "Relay",
+	"relays.state": "State",
+	"relays.state-0": "Pending",
+	"relays.state-1": "Receiving only",
+	"relays.state-2": "Active",
+
 	"server-filtering": "過濾...",
 	"count": "本 NodeBB 已發現 <strong>%1</strong> 台伺服器。",
 	"server.filter-help": "Specify servers you would like to bar from federating with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> federation with specific servers, instead. Both options are supported, although they are mutually exclusive.",

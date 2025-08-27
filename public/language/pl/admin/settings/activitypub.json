@@ -28,6 +28,17 @@
 	"rules.value": "Wartość",
 	"rules.cid": "Kategoria",
 
+	"relays": "Relays",
+	"relays.intro": "A relay improves discovery of content to and from your NodeBB. Subscribing to a relay means content received by the relay is forwarded here, and content posted here is syndicated outward by the relay.",
+	"relays.warning": "Note: Relays can send larges amounts of traffic in, and may increase storage and processing costs.",
+	"relays.litepub": "NodeBB follows the LitePub-style relay standard. The URL you enter here should end with <code>/actor</code>.",
+	"relays.add": "Add New Relay",
+	"relays.relay": "Relay",
+	"relays.state": "State",
+	"relays.state-0": "Pending",
+	"relays.state-1": "Receiving only",
+	"relays.state-2": "Active",
+
 	"server-filtering": "Filtrowanie",
 	"count": "NodeBB obecnie wykrywa <strong>1%</strong> serwerów",
 	"server.filter-help": "Określ serwery, z którymi nie chcesz spinać NodeBB w ramach fediverse. Alternatywnie możesz dobrać <em>dozwolone</em> serwery fediverse. Obie opcje są dostępne ale wybierz jedną z nich.",
