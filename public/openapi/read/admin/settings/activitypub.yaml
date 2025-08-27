@@ -19,5 +19,5 @@ get:
                   rules:
                     $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray
                   relays:
-                    $ref: ../../../components/schemas/admin/relays.yaml#/RelayArray
+                    $ref: ../../../components/schemas/admin/relays.yaml#/RelaysArray
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

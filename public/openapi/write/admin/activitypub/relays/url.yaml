@@ -22,4 +22,4 @@ delete:
               status:
                 $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../../../components/schemas/admin/relays.yaml#/RelayArray
+                $ref: ../../../../components/schemas/admin/relays.yaml#/RelaysArray
