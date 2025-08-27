@@ -35,8 +35,9 @@
 	"relays.add": "Add New Relay",
 	"relays.relay": "Relay",
 	"relays.state": "State",
-	"relays.state-pending": "Pending",
-	"relays.state-active": "Active",
+	"relays.state-0": "Pending",
+	"relays.state-1": "Receiving only",
+	"relays.state-2": "Active",
 
 	"server-filtering": "Filtering",
 	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",
