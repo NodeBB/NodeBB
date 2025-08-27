@@ -14,22 +14,23 @@ Relays.is = async (actor) => {
 Relays.list = async () => {
 	let relays = await db.getSortedSetMembersWithScores('relays:state');
 	relays = relays.reduce((memo, { value, score }) => {
-		let state = '[[admin/settings/activitypub:relays.state-0]]';
+		let label = '[[admin/settings/activitypub:relays.state-0]]';
 		switch(score) {
 			case 1: {
-				state = '[[admin/settings/activitypub:relays.state-1]]';
+				label = '[[admin/settings/activitypub:relays.state-1]]';
 				break;
 			}
 
 			case 2: {
-				state = '[[admin/settings/activitypub:relays.state-2]]';
+				label = '[[admin/settings/activitypub:relays.state-2]]';
 				break;
 			}
 		}
 
 		memo.push({
 			url: value,
-			state,
+			state: score,
+			label,
 		});
 
 		return memo;
