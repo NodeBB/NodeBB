@@ -124,18 +124,21 @@ Actors.assert = async (ids, options = {}) => {
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
 	const categories = new Set();
-	console.log('   4b9a', Date.now() - start);
+	console.log('   4b9a', Date.now() - start, ids);
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
+			console.log('   4b9a1', Date.now() - start, id);
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
-
+			console.log('   4b9a2', Date.now() - start, id);
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
 			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
+			console.log('   4b9a3', Date.now() - start, id);
 			if (id !== canonicalId) {
 				return null;
 			}
+
 
 			let typeOk = false;
 			if (Array.isArray(actor.type)) {
@@ -149,7 +152,7 @@ Actors.assert = async (ids, options = {}) => {
 					categories.add(actor.id);
 				}
 			}
-
+			console.log('   4b9a4', Date.now() - start, id);
 			if (
 				!typeOk ||
 				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
@@ -169,7 +172,7 @@ Actors.assert = async (ids, options = {}) => {
 				// no action required
 				activitypub.helpers.log(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
-
+			console.log('   4b9a5', Date.now() - start, id);
 			// Save url for backreference
 			const url = Array.isArray(actor.url) ? actor.url.shift() : actor.url;
 			if (url && url !== actor.id) {
@@ -186,6 +189,7 @@ Actors.assert = async (ids, options = {}) => {
 
 			return actor;
 		} catch (e) {
+			console.log('any errors?', e.message);
 			if (e.code === 'ap_get_410') {
 				const exists = await user.exists(id);
 				if (exists) {
