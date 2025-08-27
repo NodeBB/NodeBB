@@ -280,7 +280,9 @@ async function listen() {
 	port = parseInt(port, 10);
 
 	let trust_proxy = nconf.get('trust_proxy');
-	if (trust_proxy == null && ![80, 443].includes(port)) trust_proxy = true;
+	if (trust_proxy == null && ![80, 443].includes(port)) {
+		trust_proxy = true;
+	}
 	if (trust_proxy) {
 		winston.info(`🤝 Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
 		app.set('trust proxy', trust_proxy);
