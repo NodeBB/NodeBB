@@ -191,12 +191,19 @@ Actors.assert = async (ids, options = {}) => {
 		} catch (e) {
 			console.log('any errors?', e.message);
 			if (e.code === 'ap_get_410') {
+				console.log('ap_get_410 1', id);
+
 				const exists = await user.exists(id);
+				console.log('ap_get_410 2 exists', exists);
 				if (exists) {
 					try {
+						console.log('ap_get_410 3', id);
 						await user.deleteAccount(id);
+						console.log('ap_get_410 4', id);
 					} catch (e) {
+						console.log('ap_get_410 5', id, e.message);
 						await activitypub.actors.remove(id);
+						console.log('ap_get_410 6', id);
 					}
 				}
 			}
