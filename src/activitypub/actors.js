@@ -118,23 +118,18 @@ Actors.assert = async (ids, options = {}) => {
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
 
 	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
-	const start = Date.now();
 
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
 	const categories = new Set();
-	console.log('   4b9a', Date.now() - start, ids);
 	let actors = await Promise.all(ids.map(async (id) => {
 		try {
-			console.log('   4b9a1', Date.now() - start, id);
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
-			console.log('   4b9a2', Date.now() - start, id);
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
 			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
-			console.log('   4b9a3', Date.now() - start, id);
 			if (id !== canonicalId) {
 				return null;
 			}
@@ -152,7 +147,7 @@ Actors.assert = async (ids, options = {}) => {
 					categories.add(actor.id);
 				}
 			}
-			console.log('   4b9a4', Date.now() - start, id);
+			
 			if (
 				!typeOk ||
 				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
@@ -172,7 +167,6 @@ Actors.assert = async (ids, options = {}) => {
 				// no action required
 				activitypub.helpers.log(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
-			console.log('   4b9a5', Date.now() - start, id);
 			// Save url for backreference
 			const url = Array.isArray(actor.url) ? actor.url.shift() : actor.url;
 			if (url && url !== actor.id) {
@@ -189,21 +183,13 @@ Actors.assert = async (ids, options = {}) => {
 
 			return actor;
 		} catch (e) {
-			console.log('any errors?', e.message);
 			if (e.code === 'ap_get_410') {
-				console.log('ap_get_410 1', id);
-
 				const exists = await user.exists(id);
-				console.log('ap_get_410 2 exists', exists);
 				if (exists) {
 					try {
-						console.log('ap_get_410 3', id);
 						await user.deleteAccount(id);
-						console.log('ap_get_410 4', id);
 					} catch (e) {
-						console.log('ap_get_410 5', id, e.message);
 						await activitypub.actors.remove(id);
-						console.log('ap_get_410 6', id);
 					}
 				}
 			}
@@ -211,7 +197,6 @@ Actors.assert = async (ids, options = {}) => {
 			return null;
 		}
 	}));
-	console.log('   4b9b', Date.now() - start);
 	actors = actors.filter(Boolean); // remove unresolvable actors
 	if (!actors.length && !categories.size) {
 		return [];
@@ -220,7 +205,7 @@ Actors.assert = async (ids, options = {}) => {
 	// Build userData object for storage
 	const profiles = (await activitypub.mocks.profile(actors)).filter(Boolean);
 	const now = Date.now();
-	console.log('   4b9c', Date.now() - start);
+
 	const bulkSet = profiles.reduce((memo, profile) => {
 		const key = `userRemote:${profile.uid}`;
 		memo.push([key, profile], [`${key}:keys`, pubKeysMap.get(profile.uid)]);
@@ -259,7 +244,7 @@ Actors.assert = async (ids, options = {}) => {
 
 		return memo;
 	}, { searchRemove: [], searchAdd: [], handleRemove: [], handleAdd: {} });
-	console.log('   4b9d', Date.now() - start);
+
 	// Removals
 	await Promise.all([
 		db.sortedSetRemoveBulk(queries.searchRemove),
@@ -273,7 +258,7 @@ Actors.assert = async (ids, options = {}) => {
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:uid', queries.handleAdd),
 	]);
-	console.log('   4b9e', Date.now() - start);
+
 	// Handle any actors that should be asserted as a group instead
 	if (categories.size) {
 		const assertion = await Actors.assertGroup(Array.from(categories), options);
@@ -285,7 +270,7 @@ Actors.assert = async (ids, options = {}) => {
 
 		// otherwise, assertGroup returned true and output can be safely ignored.
 	}
-	console.log('   4b9f', Date.now() - start);
+
 	return actors;
 };
 
