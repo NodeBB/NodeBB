@@ -14,7 +14,9 @@ const util = require('util');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
 global.env = process.env.NODE_ENV || 'production';
-
+if (!process.env.hasOwnProperty('CI')) {
+	process.env.CI = 'true';
+}
 const winston = require('winston');
 const packageInfo = require('../../package.json');
 
