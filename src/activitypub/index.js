@@ -16,6 +16,7 @@ const utils = require('../utils');
 const ttl = require('../cache/ttl');
 const batch = require('../batch');
 const analytics = require('../analytics');
+const crypto = require('crypto');
 
 const requestCache = ttl({
 	name: 'ap-request-cache',
@@ -410,7 +411,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		await Promise.all(inboxBatch.map(async (uri) => {
 			const ok = await sendMessage(uri, id, type, payload);
 			if (!ok) {
-				const queueId = `${payload.type}:${payload.id}:${new URL(uri).hostname}`;
+				const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 				const nextTryOn = Date.now() + oneMinute;
 				retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
 				retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
