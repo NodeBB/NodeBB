@@ -52,10 +52,10 @@ define('admin/settings/activitypub', [
 						case 'relays.remove': {
 							const url = subselector.closest('tr').getAttribute('data-url');
 							api.del(`/admin/activitypub/relays/${encodeURIComponent(url)}`, {}).then(async (data) => {
-								const html = await Benchpress.render('admin/settings/activitypub', { relays: data }, 'relays');
+								const html = await app.parseAndTranslate('admin/settings/activitypub', 'relays', { relays: data });
 								const tbodyEl = document.querySelector('#relays tbody');
 								if (tbodyEl) {
-									tbodyEl.innerHTML = html;
+									$(tbodyEl).html(html);
 								}
 							}).catch(alerts.error);
 						}
@@ -114,10 +114,10 @@ define('admin/settings/activitypub', [
 				const payload = Object.fromEntries(new FormData(formEl));
 
 				api.post('/admin/activitypub/relays', payload).then(async (data) => {
-					const html = await Benchpress.render('admin/settings/activitypub', { relays: data }, 'relays');
+					const html = await app.parseAndTranslate('admin/settings/activitypub', 'relays', { relays: data });
 					const tbodyEl = document.querySelector('#relays tbody');
 					if (tbodyEl) {
-						tbodyEl.innerHTML = html;
+						$(tbodyEl).html(html);
 					}
 				}).catch(alerts.error);
 			};
