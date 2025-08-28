@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 const nconf = require('nconf');
+const tokenizer = require('sbd');
 
 const db = require('../database');
 const batch = require('../batch');
@@ -152,7 +153,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		// mainPid ok to leave as-is
-		title = title || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
+		if (!title) {
+			const sentences = tokenizer.sentences(content || sourceContent, { sanitize: true });
+			title = sentences.shift();
+		}
 
 		// Remove any custom emoji from title
 		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
