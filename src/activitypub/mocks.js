@@ -5,6 +5,7 @@ const mime = require('mime');
 const path = require('path');
 const validator = require('validator');
 const sanitize = require('sanitize-html');
+const tokenizer = require('sbd');
 
 const db = require('../database');
 const user = require('../user');
@@ -756,7 +757,17 @@ Mocks.notes.public = async (post) => {
 			attachment: normalizeAttachment(noteAttachment),
 		};
 
-		summary = post.content;
+		const sentences = tokenizer.sentences(post.content, { sanitize: true });
+		// Append sentences to summary until it contains just under 500 characters of content
+		const limit = 500;
+		summary = sentences.reduce((memo, sentence) => {
+			const remaining = limit - memo.length;
+			if (sentence.length < remaining) {
+				memo += ` ${sentence}`;
+			}
+
+			return memo;
+		}, '');
 	}
 
 	let context = await posts.getPostField(post.pid, 'context');
