@@ -441,20 +441,34 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 async function retryFailedMessages() {
 	const queueIds = await db.getSortedSetRangeByScore('ap:retry:queue', 0, 50, '-inf', Date.now());
-	const queuedData = (await db.getObjects(queueIds.map(id => `ap:retry:queue:${id}`))).filter(Boolean);
+	const queuedData = (await db.getObjects(queueIds.map(id => `ap:retry:queue:${id}`)));
 
 	const retryQueueAdd = [];
 	const retryQueuedSet = [];
 	const queueIdsToRemove = [];
 
 	const oneMinute = 1000 * 60;
-	await Promise.all(queuedData.map(async (data) => {
-		const { queueId, uri, id, type, attempts, payload } = data;
-		const payloadObj = JSON.parse(payload);
+	await Promise.all(queuedData.map(async (data, index) => {
+		const queueId = queueIds[index];
+		if (!data) {
+			queueIdsToRemove.push(queueId);
+			return;
+		}
 
+		const { uri, id, type, attempts, payload } = data;
+		if (!uri || !id || !type || !payload || attempts > 10) {
+			queueIdsToRemove.push(queueId);
+			return;
+		}
+		let payloadObj;
+		try {
+			payloadObj = JSON.parse(payload);
+		} catch (err) {
+			queueIdsToRemove.push(queueId);
+			return;
+		}
 		const ok = await sendMessage(uri, id, type, payloadObj);
-
-		if (ok || attempts > 10) {
+		if (ok) {
 			queueIdsToRemove.push(queueId);
 		} else {
 			const nextAttempt = (parseInt(attempts, 10) || 0) + 1;
