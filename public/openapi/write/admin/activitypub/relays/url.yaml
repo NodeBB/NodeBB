@@ -9,8 +9,8 @@ delete:
       schema:
         type: string
       required: true
-      description: The relay actor endpoint
-      example: https://example.org/actor
+      description: The relay actor endpoint, URL encoded.
+      example: https%3A%2F%2Fexample.org%2Factor
   responses:
     '200':
       description: rule successfully deleted
