@@ -11,9 +11,9 @@ post:
           type: object
           properties:
             url:
-            type: string
-            description: The relay actor endpoint
-            example: https://example.org/actor
+              type: string
+              description: The relay actor endpoint
+              example: https://example.org/actor
   responses:
     '200':
       description: rule successfully created
