@@ -11,8 +11,8 @@ const util = require('util');
 
 const wait = util.promisify(setTimeout);
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const user = require('../src/user');
