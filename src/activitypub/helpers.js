@@ -116,7 +116,6 @@ Helpers.query = async (id) => {
 			timeout: 5000,
 		}));
 	} catch (e) {
-		console.log('webfinger error', e.message);
 		return false;
 	}
 
