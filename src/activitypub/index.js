@@ -563,6 +563,43 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	};
 };
 
+ActivityPub.checkHeader = async (url, timeout) => {
+	timeout = timeout || meta.config.activitypubProbeTimeout || 2000;
+	const { response } = await request.head(url, {
+		timeout,
+	});
+	const { headers } = response;
+	if (headers && headers.link) {
+		// Multiple link headers could be combined
+		const links = headers.link.split(',');
+		let apLink = false;
+
+		links.forEach((link) => {
+			let parts = link.split(';');
+			const url = parts.shift().match(/<(.+)>/)[1];
+			if (!url || apLink) {
+				return;
+			}
+
+			parts = parts
+				.map(p => p.trim())
+				.reduce((memo, cur) => {
+					cur = cur.split('=');
+					memo[cur[0]] = cur[1].slice(1, -1);
+					return memo;
+				}, {});
+
+			if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
+				apLink = url;
+			}
+		});
+
+		return apLink;
+	}
+
+	return false;
+};
+
 ActivityPub.probe = async ({ uid, url }) => {
 	/**
 	 * Checks whether a passed-in id or URL is an ActivityPub object and can be mapped to a local representation
@@ -629,37 +666,18 @@ ActivityPub.probe = async ({ uid, url }) => {
 	}
 
 	// Opportunistic HEAD
-	async function checkHeader(timeout) {
-		const { response } = await request.head(url, {
-			timeout,
-		});
-		const { headers } = response;
-		if (headers && headers.link) {
-			let parts = headers.link.split(';');
-			parts.shift();
-			parts = parts
-				.map(p => p.trim())
-				.reduce((memo, cur) => {
-					cur = cur.split('=');
-					memo[cur[0]] = cur[1].slice(1, -1);
-					return memo;
-				}, {});
-
-			if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
-				probeCache.set(url, true);
-				return true;
-			}
-		}
-
-		return false;
-	}
 	try {
 		probeRateLimit.set(uid, true);
-		return await checkHeader(meta.config.activitypubProbeTimeout || 2000);
+		const probe = await ActivityPub.checkHeader(url).then((result) => {
+			probeCache.set(url, result);
+			return !!result;
+		});
+
+		return !!probe;
 	} catch (e) {
 		if (e.name === 'TimeoutError') {
 			// Return early but retry for caching purposes
-			checkHeader(1000 * 60).then((result) => {
+			ActivityPub.checkHeader(url, 1000 * 60).then((result) => {
 				probeCache.set(url, result);
 			}).catch(err => ActivityPub.helpers.log(err.stack));
 			return false;
