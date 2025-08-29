@@ -570,12 +570,7 @@ const utils = {
 	params: function (options = {}) {
 		let url;
 		if (options.url && !options.url.startsWith('http')) {
-			// relative path passed in
-			const cleanurl = options.url.replace(new RegExp(`/^${(options.relative_path || '')}/`, 'g'), '');
-			url = new URL(document.location);
-			const queryIndex = cleanurl.indexOf('?');
-			url.search = queryIndex !== -1 ? cleanurl.slice(queryIndex) : '';
-			url.pathname = cleanurl;
+			url = new URL(options.url, 'http://dummybase');
 		} else {
 			url = new URL(options.url || document.location);
 		}
