@@ -571,9 +571,11 @@ const utils = {
 		let url;
 		if (options.url && !options.url.startsWith('http')) {
 			// relative path passed in
-			options.url = options.url.replace(new RegExp(`/?${config.relative_path.slice(1)}/`, 'g'), '');
+			const cleanurl = options.url.replace(new RegExp(`/^${(options.relative_path || '')}/`, 'g'), '');
 			url = new URL(document.location);
-			url.pathname = options.url;
+			const queryIndex = cleanurl.indexOf('?');
+			url.search = queryIndex !== -1 ? cleanurl.slice(queryIndex) : '';
+			url.pathname = cleanurl;
 		} else {
 			url = new URL(options.url || document.location);
 		}

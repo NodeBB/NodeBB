@@ -83,7 +83,10 @@ define('forum/register', [
 						if (data.next) {
 							const pathname = utils.urlToLocation(data.next).pathname;
 
-							const params = utils.params({ url: data.next });
+							const params = utils.params({
+								url: data.next,
+								relative_path: config.relative_path,
+							});
 							params.registered = true;
 							const qs = $.param(params);
 

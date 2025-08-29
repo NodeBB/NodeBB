@@ -56,7 +56,10 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 				success: function (data) {
 					hooks.fire('action:app.loggedIn', data);
 					const pathname = utils.urlToLocation(data.next).pathname;
-					const params = utils.params({ url: data.next });
+					const params = utils.params({
+						url: data.next,
+						relative_path: config.relative_path,
+					});
 					params.loggedin = true;
 					delete params.register; // clear register message incase it exists
 					const qs = $.param(params);
