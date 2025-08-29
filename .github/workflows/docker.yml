@@ -36,6 +36,7 @@ jobs:
         run: |
           platform=${{ matrix.platforms }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
       - uses: actions/checkout@v4
 
       - name: Set up QEMU
@@ -50,12 +51,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ env.IMAGE }}
           
       - name: Cache node_modules
         id: cache-node-modules
@@ -63,7 +63,7 @@ jobs:
         with:
           path: var-cache-node-modules
           key: var-cache-node-modules-${{ hashFiles('Dockerfile', 'install/package.json') }}
-
+      
       - name: Build and push Docker images
         id: build
         uses: docker/build-push-action@v6
@@ -74,7 +74,7 @@ jobs:
           file: ./Dockerfile
           platforms: ${{ matrix.platforms }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ghcr.io/${{ github.repository }}
+          tags: ${{ env.IMAGE }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         run: |
@@ -94,6 +94,10 @@ jobs:
     needs:
       - build
     steps:
+      - name: Prepare
+        run: |
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
+          echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
@@ -109,14 +113,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get current date in NST
-        run: echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ env.IMAGE }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -130,7 +131,7 @@ jobs:
         working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+            $(printf '${{ env.IMAGE }}@sha256:%s ' *)
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.IMAGE }}:${{ steps.meta.outputs.version }}
