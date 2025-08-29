@@ -51,24 +51,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get current date in NST
-        run: echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.x
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=branch,enable=${{ github.event.repository.default_branch != github.ref }}
-            type=raw,value=${{ env.CURRENT_DATE_NST }}
-          flavor: |
-            latest=true
-
+          
       - name: Cache node_modules
         id: cache-node-modules
         uses: actions/cache@v4
@@ -85,8 +73,8 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: ${{ matrix.platforms }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/${{ github.repository }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         run: |
