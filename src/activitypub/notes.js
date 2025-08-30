@@ -59,7 +59,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	let id = !activitypub.helpers.isUri(input) ? input.id : input;
 	const lockStatus = await lock(id);
 	if (!lockStatus) { // unable to achieve lock, stop processing.
-		winston.warn('[activitypub/notes.assert] Unable to acquire lock, skipping processing of', id);
+		winston.warn(`[activitypub/notes.assert] Unable to acquire lock, skipping processing of ${id}`);
 		return null;
 	}
 
