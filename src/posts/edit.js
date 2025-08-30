@@ -49,12 +49,14 @@ module.exports = function (Posts) {
 			uid: data.uid,
 		});
 
+		// needs to be before editMainPost, otherwise scheduled topics use wrong timestamp
+		await Posts.setPostFields(data.pid, result.post);
+
 		const [editor, topic] = await Promise.all([
 			user.getUserFields(data.uid, ['username', 'userslug']),
 			editMainPost(data, postData, topicData),
 		]);
 
-		await Posts.setPostFields(data.pid, result.post);
 		const contentChanged = ((data.sourceContent || data.content) !== oldContent) ||
 			topic.renamed ||
 			topic.tagsupdated;
