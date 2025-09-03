@@ -11,7 +11,7 @@ const sockets = require('..');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.move = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'GET /api/v3/topics/:tid/move');
+		sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/move');
 
 		if (!data || !Array.isArray(data.tids) || !data.cid) {
 			throw new Error('[[error:invalid-data]]');
