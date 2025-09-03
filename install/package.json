@@ -39,7 +39,7 @@
         "@textcomplete/contenteditable": "0.1.13",
         "@textcomplete/core": "0.1.13",
         "@textcomplete/textarea": "0.1.13",
-        "ace-builds": "1.43.2",
+        "ace-builds": "1.43.3",
         "archiver": "7.0.1",
         "async": "3.2.6",
         "autoprefixer": "10.4.21",
