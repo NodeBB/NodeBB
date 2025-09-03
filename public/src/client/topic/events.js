@@ -162,7 +162,7 @@ define('forum/topic/events', [
 					translator.unescape(data.post.content)
 				);
 				parentEl.find('img:not(.not-responsive)').addClass('img-fluid');
-				parentEl.find('[component="post/parent/content]" img:not(.emoji)').each(function () {
+				parentEl.find('[component="post/parent/content"] img:not(.emoji)').each(function () {
 					images.wrapImageInLink($(this));
 				});
 			}
@@ -173,6 +173,12 @@ define('forum/topic/events', [
 		if (data.topic.tags && data.topic.tagsupdated) {
 			require(['forum/topic/tag'], function (tag) {
 				tag.updateTopicTags([data.topic]);
+			});
+		}
+
+		if (data.topic.thumbsupdated) {
+			require(['topicThumbs'], function (topicThumbs) {
+				topicThumbs.updateTopicThumbs(data.topic.tid);
 			});
 		}
 

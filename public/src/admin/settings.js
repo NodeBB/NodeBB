@@ -2,8 +2,8 @@
 
 
 define('admin/settings', [
-	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap',
-], function (uploader, mousetrap, hooks, alerts, settings, bootstrap) {
+	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap', 'admin/modules/relogin-timer',
+], function (uploader, mousetrap, hooks, alerts, settings, bootstrap, reloginTimer) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
@@ -217,6 +217,9 @@ define('admin/settings', [
 
 			for (const [field, value] of Object.entries(data)) {
 				app.config[field] = value;
+				if (field === 'adminReloginDuration') {
+					reloginTimer.start(parseInt(value, 10));
+				}
 			}
 
 			callback();

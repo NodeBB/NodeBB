@@ -35,7 +35,7 @@ exports.buildReqObject = (req, payload) => {
 		params: req.params,
 		method: req.method,
 		body: payload || req.body,
-		session: session,
+		session: JSON.parse(JSON.stringify(session)),
 		ip: req.ip,
 		host: host,
 		protocol: encrypted ? 'https' : 'http',
@@ -44,7 +44,7 @@ exports.buildReqObject = (req, payload) => {
 		path: referer.slice(referer.indexOf(host) + host.length),
 		baseUrl: req.baseUrl,
 		originalUrl: req.originalUrl,
-		headers: headers,
+		headers: { ...headers },
 	};
 };
 

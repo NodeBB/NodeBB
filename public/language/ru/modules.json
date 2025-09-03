@@ -48,6 +48,7 @@
     "chat.add-user": "Добавить пользователя",
     "chat.notification-settings": "Настройки уведомлений",
     "chat.default-notification-setting": "Настройка уведомлений по умолчанию",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Комната по умолчанию",
     "chat.notification-setting-none": "Нет уведомлений",
     "chat.notification-setting-at-mention-only": "только @упоминание",

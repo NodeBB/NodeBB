@@ -1,0 +1,23 @@
+RuleObject:
+  type: object
+  properties:
+    rid:
+      type: string
+      description: a valid rule ID
+      example: 4eb506f8-a173-4693-a41b-e23604bc973a
+    type:
+      type: string
+      description: The auto-categorization rule type
+      example: hashtag
+    value:
+      type: string
+      description: The value that incoming content will be matched against (used alongside `type`)
+      example: 'example'
+    cid:
+      type: number
+      description: The category ID of a local category
+      example: 1
+RulesArray:
+  type: array
+  items:
+    $ref: '#/RuleObject'

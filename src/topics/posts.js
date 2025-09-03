@@ -442,7 +442,7 @@ module.exports = function (Topics) {
 
 		let { content } = postData;
 		// ignore lines that start with `>`
-		content = content.split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
+		content = (content || '').split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
 		const matches = [...content.matchAll(backlinkRegex)];
 		if (!matches) {

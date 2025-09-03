@@ -526,6 +526,7 @@ async function enableDefaultPlugins() {
 
 	let defaultEnabled = [
 		'nodebb-plugin-composer-default',
+		'nodebb-plugin-dbsearch',
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
 		'nodebb-plugin-web-push',

@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const url = require('url');
 const winston = require('winston');
 const sanitize = require('sanitize-html');
 const _ = require('lodash');
@@ -88,16 +87,9 @@ module.exports = function (Posts) {
 		while (current !== null) {
 			if (current[1]) {
 				try {
-					parsed = url.parse(current[1]);
-					if (!parsed.protocol) {
-						if (current[1].startsWith('/')) {
-							// Internal link
-							absolute = nconf.get('base_url') + current[1];
-						} else {
-							// External link
-							absolute = `//${current[1]}`;
-						}
-
+					parsed = new URL(current[1], nconf.get('url'));
+					absolute = parsed.toString();
+					if (absolute !== current[1]) {
 						const offset = current[0].indexOf(current[1]);
 						content = content.slice(0, current.index + offset) +
 						absolute +

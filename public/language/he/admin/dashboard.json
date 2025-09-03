@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "צפיות בדפים-רשומים",
 	"graphs.page-views-guest": "צפיות בדפים-אורחים",
 	"graphs.page-views-bot": "צפיות בדפים-בוטים",
+	"graphs.page-views-ap": "ActivityPub תצוגת דפים",
 	"graphs.unique-visitors": "מבקרים ייחודיים",
 	"graphs.registered-users": "משתמשים רשומים",
 	"graphs.guest-users": "משתמשים אורחים",

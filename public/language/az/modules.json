@@ -48,6 +48,7 @@
     "chat.add-user": "İstifadəçi əlavə et",
     "chat.notification-settings": "Bildiriş parametrləri",
     "chat.default-notification-setting": "Defolt bildiriş parametri",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Defolt otaq",
     "chat.notification-setting-none": "Bildiriş yoxdur",
     "chat.notification-setting-at-mention-only": "yalnız @qeyd",

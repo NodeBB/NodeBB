@@ -24,7 +24,8 @@ module.exports = function (Posts) {
 		if (!postData) {
 			const ids = await db.getSortedSetRange('post:queue', 0, -1);
 			const keys = ids.map(id => `post:queue:${id}`);
-			postData = await db.getObjects(keys);
+			postData = (await db.getObjects(keys)).filter(Boolean);
+
 			postData.forEach((data) => {
 				if (data) {
 					data.data = JSON.parse(data.data);
@@ -50,7 +51,7 @@ module.exports = function (Posts) {
 			cache.set('post-queue', _.cloneDeep(postData));
 		}
 		if (filter.id) {
-			postData = postData.filter(p => p.id === filter.id);
+			postData = postData.filter(p => p && p.id === filter.id);
 		}
 		if (options.metadata) {
 			await Promise.all(postData.map(addMetaData));
@@ -59,11 +60,11 @@ module.exports = function (Posts) {
 		// Filter by tid if present
 		if (filter.tid) {
 			const tid = String(filter.tid);
-			postData = postData.filter(item => item.data.tid && String(item.data.tid) === tid);
+			postData = postData.filter(item => item && item.data.tid && String(item.data.tid) === tid);
 		} else if (Array.isArray(filter.tid)) {
 			const tids = filter.tid.map(String);
 			postData = postData.filter(
-				item => item.data.tid && tids.includes(String(item.data.tid))
+				item => item && item.data.tid && tids.includes(String(item.data.tid))
 			);
 		}
 

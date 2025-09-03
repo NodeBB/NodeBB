@@ -5,7 +5,6 @@ const validator = require('validator');
 const nconf = require('nconf');
 const toobusy = require('toobusy-js');
 const util = require('util');
-const multipart = require('connect-multiparty');
 const { csrfSynchronisedProtection } = require('./csrf');
 
 const plugins = require('../plugins');
@@ -24,10 +23,11 @@ const controllers = {
 };
 
 const delayCache = cacheCreate({
+	name: 'delay-middleware',
 	ttl: 1000 * 60,
 	max: 200,
 });
-const multipartMiddleware = multipart();
+
 
 const middleware = module.exports;
 
@@ -101,17 +101,30 @@ middleware.pluginHooks = helpers.try(async (req, res, next) => {
 });
 
 middleware.validateFiles = function validateFiles(req, res, next) {
-	if (!req.files.files) {
+	if (!req.files) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
-
-	if (Array.isArray(req.files.files) && req.files.files.length) {
-		return next();
+	function makeFilesCompatible(files) {
+		if (Array.isArray(files)) {
+			// multer uses originalname and mimetype, but we use name and type
+			files.forEach((file) => {
+				if (file.originalname) {
+					file.name = file.originalname;
+				}
+				if (file.mimetype) {
+					file.type = file.mimetype;
+				}
+			});
+		}
+		next();
+	}
+	if (Array.isArray(req.files) && req.files.length) {
+		return makeFilesCompatible(req.files);
 	}
 
-	if (typeof req.files.files === 'object') {
-		req.files.files = [req.files.files];
-		return next();
+	if (typeof req.files === 'object') {
+		req.files = [req.files];
+		return makeFilesCompatible(req.files);
 	}
 
 	return next(new Error(['[[error:invalid-files]]']));
@@ -290,15 +303,4 @@ middleware.checkRequired = function (fields, req, res, next) {
 	}
 
 	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
-};
-
-middleware.handleMultipart = (req, res, next) => {
-	// Applies multipart handler on applicable content-type
-	const { 'content-type': contentType } = req.headers;
-
-	if (contentType && !contentType.startsWith('multipart/form-data')) {
-		return next();
-	}
-
-	multipartMiddleware(req, res, next);
 };

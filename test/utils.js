@@ -320,6 +320,39 @@ describe('Utility Methods', () => {
 		done();
 	});
 
+	it('should get url params for relative url', (done) => {
+		const params = utils.params({
+			url: '/page?foo=1&bar=test&herp=2',
+			relative_path: '',
+		});
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
+		done();
+	});
+
+	it('should get url params for relative url', (done) => {
+		const params = utils.params({
+			url: '/page?foo=1&bar=test&herp=2',
+			relative_path: '/forum',
+		});
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
+		done();
+	});
+
+	it('should get url params for relative url', (done) => {
+		const params = utils.params({
+			url: '/forum/page?foo=1&bar=test&herp=2',
+			relative_path: '/forum',
+		});
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
+		done();
+	});
+
 	it('should get url params as arrays', (done) => {
 		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp[]=2&herp[]=3' });
 		assert.strictEqual(params.foo, 1);

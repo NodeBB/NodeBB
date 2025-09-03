@@ -5,7 +5,6 @@ const _ = require('lodash');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
-const utils = require('../utils');
 const db = require('../database');
 
 module.exports = function (Categories) {
@@ -44,7 +43,8 @@ module.exports = function (Categories) {
 
 		const childrenCids = await getChildrenCids(cids, uid);
 		const uniqCids = _.uniq(cids.concat(childrenCids));
-		const categoryData = await Categories.getCategories(uniqCids);
+		let categoryData = await Categories.getCategories(uniqCids);
+		categoryData = categoryData.filter(Boolean);
 
 		Categories.getTree(categoryData, 0);
 		await Categories.getRecentTopicReplies(categoryData, uid, data.qs);
@@ -64,7 +64,7 @@ module.exports = function (Categories) {
 			return c1.order - c2.order;
 		});
 		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
-		searchResult.categories = categoryData.filter(c => cids.includes(c.cid));
+		searchResult.categories = categoryData.filter(c => cids.includes(String(c.cid)));
 		return searchResult;
 	};
 
@@ -81,7 +81,7 @@ module.exports = function (Categories) {
 			const split = data.split(':');
 			split.shift();
 			const cid = split.join(':');
-			return utils.isNumber(cid) ? parseInt(cid, 10) : cid;
+			return cid;
 		});
 	}
 

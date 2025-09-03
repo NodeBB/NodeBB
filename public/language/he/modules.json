@@ -48,6 +48,7 @@
     "chat.add-user": "הוספת משתמש",
     "chat.notification-settings": "הגדרות התראות",
     "chat.default-notification-setting": "הגדרת ברירת מחדל להתראות",
+    "chat.join-leave-messages": "הצטרפות/השארת הודעות",
     "chat.notification-setting-room-default": "ברירת המחדל של החדר",
     "chat.notification-setting-none": "ללא התראות",
     "chat.notification-setting-at-mention-only": "@אזכור בלבד",

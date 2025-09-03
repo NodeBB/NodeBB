@@ -202,7 +202,7 @@ define('forum/topic', [
 					$('[component="topic/thumb/select"]').removeClass('border-primary');
 					$(this).addClass('border-primary');
 					$('[component="topic/thumb/current"]')
-						.attr('src', $(this).attr('src'));
+						.attr('src', $(this).find('img').attr('src'));
 				});
 			}
 		});

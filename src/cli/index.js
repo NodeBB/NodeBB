@@ -42,7 +42,7 @@ try {
 	checkVersion('lru-cache');
 } catch (e) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
-		console.warn('Dependencies outdated or not yet installed.');
+		console.warn(`Dependencies outdated or not yet installed. Error Code: ${e.code}\n${e.stack}`);
 		console.log('Installing them now...\n');
 
 		packageInstall.updatePackageFile();

@@ -5,6 +5,7 @@ const mime = require('mime');
 const path = require('path');
 const validator = require('validator');
 const sanitize = require('sanitize-html');
+const tokenizer = require('sbd');
 
 const db = require('../database');
 const user = require('../user');
@@ -84,7 +85,7 @@ Mocks._normalize = async (object) => {
 		content = '<em>This post did not contain any content.</em>';
 	}
 
-	switch (true) {
+	switch (true) { // image handling
 		case image && image.hasOwnProperty('url') && !!image.url: {
 			image = image.url;
 			break;
@@ -101,7 +102,8 @@ Mocks._normalize = async (object) => {
 	}
 	if (image) {
 		const parsed = new URL(image);
-		if (!mime.getType(parsed.pathname).startsWith('image/')) {
+		const type = mime.getType(parsed.pathname);
+		if (!type || type.startsWith('image/')) {
 			activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 			image = null;
 		}
@@ -191,7 +193,7 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-
+		summary = summary || '';
 		// Replace emoji in summary
 		if (tag && Array.isArray(tag)) {
 			tag
@@ -715,8 +717,12 @@ Mocks.notes.public = async (post) => {
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
 	const noteAttachment = isMainPost ? [...attachment] : null;
-	const uploads = await posts.uploads.listWithSizes(post.pid);
-	const isThumb = await db.isSortedSetMembers(`topic:${post.tid}:thumbs`, uploads.map(u => u.name));
+	const [uploads, thumbs] = await Promise.all([
+		posts.uploads.listWithSizes(post.pid),
+		topics.getTopicField(post.tid, 'thumbs'),
+	]);
+	const isThumb = uploads.map(u => Array.isArray(thumbs) ? thumbs.includes(u.name) : false);
+
 	uploads.forEach(({ name, width, height }, idx) => {
 		const mediaType = mime.getType(name);
 		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
@@ -751,7 +757,17 @@ Mocks.notes.public = async (post) => {
 			attachment: normalizeAttachment(noteAttachment),
 		};
 
-		summary = post.content;
+		const sentences = tokenizer.sentences(post.content, { sanitize: true });
+		// Append sentences to summary until it contains just under 500 characters of content
+		const limit = 500;
+		summary = sentences.reduce((memo, sentence) => {
+			const remaining = limit - memo.length;
+			if (sentence.length < remaining) {
+				memo += ` ${sentence}`;
+			}
+
+			return memo;
+		}, '');
 	}
 
 	let context = await posts.getPostField(post.pid, 'context');

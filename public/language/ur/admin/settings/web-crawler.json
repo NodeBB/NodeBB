@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "کرال ایبلٹی کی ترتیبات",
+	"robots-txt": "حسب ضرورت 'Robots.txt' فائل <small>طے شدہ فائل استعمال کرنے کے لیے خالی چھوڑ دیں</small>",
+	"sitemap-feed-settings": "ویب سائٹ کے نقشے اور فیڈز کی ترتیبات",
+	"disable-rss-feeds": "RSS فیڈز کو غیر فعال کریں",
+	"disable-sitemap-xml": "ویب سائٹ کا نقشہ ('Sitemap.xml') غیر فعال کریں",
+	"sitemap-topics": "ویب سائٹ کے نقشے میں دکھائے جانے والے موضوعات کی تعداد",
+	"clear-sitemap-cache": "ویب سائٹ کے نقشے کا کیش صاف کریں",
+	"view-sitemap": "ویب سائٹ کا نقشہ دیکھیں"
+}

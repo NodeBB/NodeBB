@@ -1,0 +1,26 @@
+{
+	"you-are-on": "آپ <strong>%1:%2</strong> پر ہیں",
+	"ip": "آئی پی <strong>%1</strong>",
+	"nodes-responded": "%1 نوڈز نے %2 ملی سیکنڈز میں جواب دیا!",
+	"host": "سرور",
+	"primary": "بنیادی / ٹاسکس",
+	"pid": "پروسیس آئی ڈی",
+	"nodejs": "نوڈ جے ایس",
+	"online": "آن لائن",
+	"git": "گٹ",
+	"process-memory": "پروسیس میموری",
+	"system-memory": "سسٹم میموری",
+	"used-memory-process": "پروسیس کی استعمال شدہ میموری",
+	"used-memory-os": "سسٹم کی استعمال شدہ میموری",
+	"total-memory-os": "کل سسٹم میموری",
+	"load": "سسٹم کا بوجھ",
+	"cpu-usage": "سی پی یو کا استعمال",
+	"uptime": "فعال وقت",
+
+	"registered": "رجسٹرڈ",
+	"sockets": "ساکٹس",
+	"connection-count": "کنکشنز کی تعداد",
+	"guests": "مہمان",
+
+	"info": "معلومات"
+}

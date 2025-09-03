@@ -288,6 +288,9 @@ inbox.announce = async (req) => {
 		cid = actor;
 	}
 
+	// Received via relay?
+	const fromRelay = await activitypub.relays.is(actor);
+
 	switch(true) {
 		case object.type === 'Like': {
 			const id = object.object.id || object.object;
@@ -333,7 +336,7 @@ inbox.announce = async (req) => {
 				socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
 			} else { // Remote object
 				// Follower check
-				if (!cid) {
+				if (!fromRelay && !cid) {
 					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
 					if (!followers) {
 						winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
@@ -367,9 +370,12 @@ inbox.announce = async (req) => {
 
 inbox.follow = async (req) => {
 	const { actor, object, id: followId } = req.body;
+
 	// Sanity checks
 	const { type, id } = await helpers.resolveLocalId(object.id);
-	if (!['category', 'user'].includes(type)) {
+	if (type === 'application') {
+		return activitypub.relays.handshake(req.body);
+	} else if (!['category', 'user'].includes(type)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
@@ -454,7 +460,9 @@ inbox.accept = async (req) => {
 	const { type } = object;
 
 	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
-	if (!['user', 'category'].includes(localType)) {
+	if (object.id === `${nconf.get('url')}/actor`) {
+		return activitypub.relays.handshake(req.body);
+	} else if (!['user', 'category'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -617,6 +625,8 @@ inbox.reject = async (req) => {
 	const queueId = `${type}:${id}:${hostname}`;
 
 	// stop retrying rejected requests
-	clearTimeout(activitypub.retryQueue.get(queueId));
-	activitypub.retryQueue.delete(queueId);
+	await Promise.all([
+		db.sortedSetRemove('ap:retry:queue', queueId),
+		db.delete(`ap:retry:queue:${queueId}`),
+	]);
 };

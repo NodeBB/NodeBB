@@ -351,8 +351,23 @@ module.exports = function (Topics) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return tids.map(() => false);
 		}
-		const [topicScores, userScores, tids_unread, blockedUids] = await Promise.all([
+
+		// Remote tids do not get slotted into topics:recent; separate calculation follows
+		async function getRemoteTopicScores(tids) {
+			let cids = await Topics.getTopicsFields(tids, ['cid']);
+			cids = cids.map(({ cid }) => cid);
+			return await Promise.all(tids.map(async (tid, idx) => {
+				const cid = cids[idx];
+				if (utils.isNumber(tid) || !cid) {
+					return null;
+				}
+				return await db.sortedSetScore(`cid:${cid}:tids`, tid);
+			}));
+		}
+
+		const [topicScores, remoteTopicScores, userScores, tids_unread, blockedUids] = await Promise.all([
 			db.sortedSetScores('topics:recent', tids),
+			getRemoteTopicScores(tids),
 			db.sortedSetScores(`uid:${uid}:tids_read`, tids),
 			db.sortedSetScores(`uid:${uid}:tids_unread`, tids),
 			user.blocks.list(uid),
@@ -361,7 +376,7 @@ module.exports = function (Topics) {
 		const cutoff = await Topics.unreadCutoff(uid);
 		const result = tids.map((tid, index) => {
 			const read = !tids_unread[index] &&
-				(topicScores[index] < cutoff ||
+				((topicScores[index] || remoteTopicScores[index]) < cutoff ||
 				!!(userScores[index] && userScores[index] >= topicScores[index]));
 			return { tid: tid, read: read, index: index };
 		});

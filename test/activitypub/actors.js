@@ -449,7 +449,6 @@ describe('Inbox resolution', () => {
 			await activitypub.actors.assert(id);
 
 			const inboxes = await activitypub.resolveInboxes([id]);
-
 			assert(inboxes && Array.isArray(inboxes));
 			assert.strictEqual(inboxes.length, 1);
 			assert.strictEqual(inboxes[0], actor.inbox);
@@ -829,7 +828,7 @@ describe('Pruning', () => {
 			assert.strictEqual(result.counts.missing, 0);
 
 			meta.config.activitypubUserPruneDays = 0;
-			user.deleteAccount(uid);
+			await user.deleteAccount(uid);
 		});
 
 		it('should purge the user if they have no content (posts, likes, etc.)', async () => {

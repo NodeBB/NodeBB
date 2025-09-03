@@ -8,5 +8,7 @@
 	"log-in-with-facebook": "Вписване с Facebook",
 	"continue-with-facebook": "Продължаване с Facebook",
 	"sign-in-with-linkedin": "Вписване с LinkedIn",
-	"sign-up-with-linkedin": "Регистриране с LinkedIn"
+	"sign-up-with-linkedin": "Регистриране с LinkedIn",
+	"sign-in-with-wordpress": "Вписване с WordPress",
+	"sign-up-with-wordpress": "Регистриране с WordPress"
 }

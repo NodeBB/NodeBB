@@ -5,7 +5,7 @@ import publicConfig from 'eslint-config-nodebb/public';
 import commonRules from 'eslint-config-nodebb/common';
 
 import { defineConfig } from 'eslint/config';
-import stylisticJs from '@stylistic/eslint-plugin-js'
+import stylisticJs from '@stylistic/eslint-plugin'
 import js from '@eslint/js';
 import globals from 'globals';
 

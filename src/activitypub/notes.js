@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 const nconf = require('nconf');
+const tokenizer = require('sbd');
 
 const db = require('../database');
 const batch = require('../batch');
@@ -55,16 +56,19 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return null;
 	}
 
-	const id = !activitypub.helpers.isUri(input) ? input.id : input;
-	const lockStatus = await lock(id, '[[error:activitypub.already-asserting]]');
+	let id = !activitypub.helpers.isUri(input) ? input.id : input;
+	const lockStatus = await lock(id);
 	if (!lockStatus) { // unable to achieve lock, stop processing.
+		winston.warn(`[activitypub/notes.assert] Unable to acquire lock, skipping processing of ${id}`);
 		return null;
 	}
+
+	id = await activitypub.checkHeader(id);
 
 	let chain;
 	let context = await activitypub.contexts.get(uid, id);
 	if (context.tid) {
-		unlock(id);
+		await unlock(id);
 		const { tid } = context;
 		return { tid, count: 0 };
 	} else if (context.context) {
@@ -85,7 +89,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 	// Can't resolve — give up.
 	if (!chain.length) {
-		unlock(id);
+		await unlock(id);
 		return null;
 	}
 
@@ -108,7 +112,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (tid && members.every(Boolean)) {
 		// All cached, return early.
 		activitypub.helpers.log('[notes/assert] No new notes to process.');
-		unlock(id);
+		await unlock(id);
 		return { tid, count: 0 };
 	}
 
@@ -137,6 +141,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}).shift();
 		} catch (e) {
 			// noop
+			winston.error('[activitypub/notes.assert] Could not parse URL of mainPid', e.stack);
 		}
 
 		if (remoteCid || recipientCids.length) {
@@ -144,8 +149,16 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			options.cid = remoteCid || recipientCids.shift();
 		}
 
+		// Auto-categorization (takes place only if all other categorization efforts fail)
+		if (!options.cid) {
+			options.cid = await assignCategory(mainPost);
+		}
+
 		// mainPid ok to leave as-is
-		title = title || activitypub.helpers.generateTitle(utils.decodeHTMLEntities(content || sourceContent));
+		if (!title) {
+			const sentences = tokenizer.sentences(content || sourceContent, { sanitize: true });
+			title = sentences.shift();
+		}
 
 		// Remove any custom emoji from title
 		if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
@@ -164,6 +177,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		uid || hasTid ||
 		options.skipChecks || options.cid ||
 		await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
+
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
 	const allowed = await privileges.categories.can(privilege, options.cid || cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
@@ -171,7 +185,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
 		}
 
-		unlock(id);
+		await unlock(id);
 		return null;
 	}
 
@@ -382,6 +396,29 @@ async function assertRelation(post) {
 	}
 
 	return followers > 0 || uids.length;
+}
+
+async function assignCategory(post) {
+	let cid = undefined;
+	const rules = await activitypub.rules.list();
+	const tags = await Notes._normalizeTags(post._activitypub.tag || []);
+
+	cid = rules.reduce((cid, { type, value, cid: target }) => {
+		if (!cid) {
+			switch (type) {
+				case 'hashtag': {
+					if (tags.includes(value)) {
+						return target;
+					}
+					break;
+				}
+			}
+		}
+
+		return cid;
+	}, cid);
+
+	return cid;
 }
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {

@@ -27,6 +27,7 @@ define('admin/manage/categories', [
 		Categories.render(ajaxify.data.categoriesTree);
 
 		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
+		$('button[data-action="add"]').on('click', Categories.throwAddModal);
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {
@@ -68,7 +69,7 @@ define('admin/manage/categories', [
 							if (val && cid) {
 								const modified = {};
 								modified[cid] = { order: Math.max(1, parseInt(val, 10)) };
-								api.put('/categories/' + cid, modified[cid]).then(function () {
+								api.put('/categories/' + encodeURIComponent(cid), modified[cid]).then(function () {
 									ajaxify.refresh();
 								}).catch(alerts.error);
 							} else {
@@ -79,6 +80,8 @@ define('admin/manage/categories', [
 				},
 			});
 		});
+
+		$('.categories').on('click', 'a[data-action="remove"]', Categories.removeCategory);
 
 		$('#toggle-collapse-all').on('click', function () {
 			const $this = $(this);
@@ -151,6 +154,38 @@ define('admin/manage/categories', [
 		});
 	};
 
+	Categories.throwAddModal = function () {
+		Benchpress.render('admin/partials/categories/add', {}).then(function (html) {
+			const modal = bootbox.dialog({
+				title: '[[admin/manage/categories:alert.add]]',
+				message: html,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: submit,
+					},
+				},
+			});
+
+			function submit() {
+				const formData = modal.find('form').serializeObject();
+				api.post('/api/admin/manage/categories', formData).then(() => {
+					ajaxify.refresh();
+					modal.modal('hide');
+				}).catch(alerts.error);
+				return false;
+			}
+
+			modal.find('form').on('submit', submit);
+		});
+	};
+
+	Categories.removeCategory = function () {
+		const cid = this.getAttribute('data-cid');
+		api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
+	};
+
 	Categories.create = function (payload) {
 		api.post('/categories', payload, function (err, data) {
 			if (err) {
@@ -187,7 +222,7 @@ define('admin/manage/categories', [
 
 	Categories.toggle = function (cids, disabled) {
 		const listEl = document.querySelector('.categories [data-cid="0"]');
-		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
+		Promise.all(cids.map(cid => api.put('/categories/' + encodeURIComponent(cid), {
 			disabled: disabled ? 1 : 0,
 		}).then(() => {
 			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
@@ -239,7 +274,7 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			api.put('/categories/' + cid, modified[cid]).catch(alerts.error);
+			api.put('/categories/' + encodeURIComponent(cid), modified[cid]).catch(alerts.error);
 		}
 	}
 

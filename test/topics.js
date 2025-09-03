@@ -2000,7 +2000,8 @@ describe('Topic\'s', () => {
 		it('should get teasers with 2 params', (done) => {
 			topics.getTeasers([topic1.topicData, topic2.topicData], 1, (err, teasers) => {
 				assert.ifError(err);
-				assert.deepEqual([undefined, undefined], teasers);
+				assert(teasers[0]);
+				assert(teasers[1]);
 				done();
 			});
 		});
@@ -2504,6 +2505,35 @@ describe('Topic\'s', () => {
 		it('should remove from topics:scheduled on purge', async () => {
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(!score);
+		});
+
+		it('should properly update timestamp in cid:<cid>:pids after editing and posting immediately', async () => {
+			const scheduleTimestamp = Date.now() + (86400000 * 365);
+			const result = await topics.post({
+				cid: categoryObj.cid,
+				title: 'testing cid:<cid>:pids',
+				content: 'some content here',
+				uid: adminUid,
+				timestamp: scheduleTimestamp,
+			});
+			const { mainPid } = result.topicData;
+
+			assert.strictEqual(
+				await db.isSortedSetMember(`cid:${categoryObj.cid}:pids`, mainPid),
+				false,
+			);
+
+			// edit main post and publish
+			await posts.edit({
+				uid: adminUid,
+				pid: mainPid,
+				content: 'some content here - edited',
+				timestamp: Date.now(),
+			});
+
+			// the score in cid:<cid>:pids should be less than Date.now()
+			const score = await db.sortedSetScore(`cid:${categoryObj.cid}:pids`, mainPid);
+			assert(score < Date.now(), 'Post in cid:<cid>:pids has wrong score, it should not be in the future');
 		});
 	});
 });

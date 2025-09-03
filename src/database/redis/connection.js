@@ -1,7 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
-const Redis = require('ioredis');
+const { createClient, createCluster, createSentinel } = require('redis');
 const winston = require('winston');
 
 const connection = module.exports;
@@ -13,28 +13,40 @@ connection.connect = async function (options) {
 
 		let cxn;
 		if (options.cluster) {
-			cxn = new Redis.Cluster(options.cluster, options.options);
-		} else if (options.sentinels) {
-			cxn = new Redis({
-				sentinels: options.sentinels,
+			const rootNodes = options.cluster.map(node => ({ url : `redis://${node.host}:${node.port}` }));
+			cxn = createCluster({
 				...options.options,
+				rootNodes: rootNodes,
+			});
+		} else if (options.sentinels) {
+			const sentinelRootNodes = options.sentinels.map(sentinel => ({ host: sentinel.host, port: sentinel.port }));
+			cxn = createSentinel({
+				...options.options,
+				name: 'sentinel-db',
+				sentinelRootNodes,
 			});
 		} else if (redis_socket_or_host && String(redis_socket_or_host).indexOf('/') >= 0) {
 			// If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock
-			cxn = new Redis({
+			cxn = createClient({
 				...options.options,
-				path: redis_socket_or_host,
 				password: options.password,
-				db: options.database,
+				database: options.database,
+				socket: {
+					path: redis_socket_or_host,
+					reconnectStrategy: 3000,
+				},
 			});
 		} else {
 			// Else, connect over tcp/ip
-			cxn = new Redis({
+			cxn = createClient({
 				...options.options,
-				host: redis_socket_or_host,
-				port: options.port,
 				password: options.password,
-				db: options.database,
+				database: options.database,
+				socket: {
+					host: redis_socket_or_host,
+					port: options.port,
+					reconnectStrategy: 3000,
+				},
 			});
 		}
 
@@ -49,8 +61,13 @@ connection.connect = async function (options) {
 		});
 		cxn.on('ready', () => {
 			// back-compat with node_redis
-			cxn.batch = cxn.pipeline;
+			cxn.batch = cxn.multi;
 			resolve(cxn);
+		});
+		cxn.connect().then(() => {
+			winston.info('Connected to Redis successfully');
+		}).catch((err) => {
+			winston.error('Error connecting to Redis:', err);
 		});
 
 		if (options.password) {

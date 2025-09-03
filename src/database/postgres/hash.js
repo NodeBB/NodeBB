@@ -153,7 +153,7 @@ SELECT h."data"
 	};
 
 	module.getObjectField = async function (key, field) {
-		if (!key) {
+		if (!key || !field) {
 			return null;
 		}
 

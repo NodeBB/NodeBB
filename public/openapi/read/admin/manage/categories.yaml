@@ -48,6 +48,8 @@ get:
                           type: string
                         order:
                           type: number
+                        isLocal:
+                          type: boolean
                         subCategoriesPerPage:
                           type: number
                         children:

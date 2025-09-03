@@ -138,25 +138,18 @@ Topics.addThumb = async (req, res) => {
 
 	const files = await uploadsController.uploadThumb(req, res); // response is handled here
 
-	// Add uploaded files to topic zset
+	// Add uploaded files to topic hash
 	if (files && files.length) {
-		await Promise.all(files.map(async (fileObj) => {
+		for (const fileObj of files) {
+			// eslint-disable-next-line no-await-in-loop
 			await topics.thumbs.associate({
 				id: req.params.tid,
 				path: fileObj.url,
 			});
-		}));
+		}
 	}
 };
 
-Topics.migrateThumbs = async (req, res) => {
-	await api.topics.migrateThumbs(req, {
-		from: req.params.tid,
-		to: req.body.tid,
-	});
-
-	helpers.formatApiResponse(200, res, await api.topics.getThumbs(req, { tid: req.body.tid }));
-};
 
 Topics.deleteThumb = async (req, res) => {
 	if (!req.body.path.startsWith('http')) {

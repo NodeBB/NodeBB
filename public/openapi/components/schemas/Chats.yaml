@@ -27,6 +27,10 @@ RoomObject:
       description: Timestamp of when room was created
     notificationSetting:
       type: number
+      description: The notification setting for the room, 0 = no notifications, 1 = only mentions, 2 = all messages
+    joinLeaveMessages:
+      type: number
+      description: Whether join/leave messages are enabled in the room
 MessageObject:
   type: object
   properties:

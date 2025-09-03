@@ -108,7 +108,7 @@
     "disable-incoming-chats": "Disable incoming chat messages <a data-bs-toggle=\"tooltip\" href=\"#\" title=\"Admins and moderators can still send you messages\"><i class=\"fa-solid fa-circle-info\"></i></a>",
     "chat-allow-list": "Allow chat messages from the following users",
     "chat-deny-list": "Deny chat messages from the following users",
-    "chat-list-add-user": "Add user",
+    "chat-list-add-user": "Добавить участника",
     "digest-label": "Подписка на дайджест",
     "digest-description": "Подписаться на рассылку уведомлений о событиях и новых темах на форуме с указанной периодичностью",
     "digest-off": "Отключена",

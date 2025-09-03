@@ -1,11 +1,11 @@
 {
-    "title": "Nylige",
+    "title": "Siste",
     "day": "Dag",
     "week": "Uke",
     "month": "Måned",
     "year": "År",
     "alltime": "All tid",
-    "no-recent-topics": "Det er ingen nye emner.",
+    "no-recent-topics": "Det er ingen nye innlegg.",
     "no-popular-topics": "Det er ingen populære emner.",
     "load-new-posts": "Last inn nye innlegg",
     "uncategorized.title": "Alle kjente emner",

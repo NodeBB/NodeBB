@@ -162,6 +162,7 @@ actions.buildCSS = async function buildCSS(data) {
 	try {
 		const opts = {
 			loadPaths: data.paths,
+			importers: [new sass.NodePackageImporter()],
 		};
 		if (data.minify) {
 			opts.silenceDeprecations = [

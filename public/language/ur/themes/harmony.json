@@ -1,0 +1,23 @@
+{
+	"theme-name": "ہارمنی تھیم",
+	"skins": "سکنز",
+	"collapse": "سمیٹیں",
+	"expand": "پھیلائیں",
+	"sidebar-toggle": "سائڈبار ٹوگل",
+	"login-register-to-search": "تلاش کرنے کے لیے لاگ ان کریں یا رجسٹر کریں۔",
+	"settings.title": "تھیم کی ترتیبات",
+	"settings.enableQuickReply": "فوری جوابات فعال کریں",
+	"settings.enableBreadcrumbs": "زمرہ جات اور موضوعات کے صفحات پر بریڈ کرمبس دکھائیں",
+	"settings.enableBreadcrumbs.why": "بریڈ کرمبس زیادہ تر صفحات پر آسان نیویگیشن کے لیے دکھائی دیتے ہیں۔ زمرہ جات اور موضوعات کے صفحات کا بنیادی ڈیزائن زیادہ عمومی صفحات پر واپس جانے کے دیگر طریقے فراہم کرتا ہے، لیکن اگر آپ چاہیں تو بصری بھرتی کو کم کرنے کے لیے بریڈ کرمبس کا ڈسپلے بند کر سکتے ہیں۔",
+	"settings.centerHeaderElements": "ہیڈر عناصر کو وسط میں رکھیں",
+	"settings.mobileTopicTeasers": "موبائل ڈیوائسز پر موضوعات کے ٹیززر دکھائیں",
+	"settings.stickyToolbar": "سٹیٹک ٹولبار",
+	"settings.stickyToolbar.help": "موضوعات اور زمرہ جات کے صفحات پر ٹولبار ہمیشہ صفحہ کے اوپری حصے میں رہے گی",
+	"settings.topicSidebarTools": "موضوعات کے لیے سائڈبار ٹولز",
+	"settings.topicSidebarTools.help": "یہ ترتیب ویب سائٹ کے ڈیسک ٹاپ ورژن کے استعمال کے دوران موضوعات کے ٹولز کو سائڈبار میں منتقل کر دے گی",
+	"settings.autohideBottombar": "موبائل ڈیوائسز کے لیے نیویگیشن بار کو خودکار طور پر چھپائیں",
+	"settings.autohideBottombar.help": "جب صفحہ نیچے سکرول کیا جائے گا تو موبائل نیویگیشن بار چھپ جائے گی",
+	"settings.topMobilebar": "موبائل نیویگیشن بار کو اوپر منتقل کریں",
+	"settings.openSidebars": "سائڈبارز کھولیں",
+	"settings.chatModals": "گفتگو کے ونڈوز فعال کریں"
+}

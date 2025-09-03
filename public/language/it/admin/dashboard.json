@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Pagine viste Registrati",
 	"graphs.page-views-guest": "Pagine viste Ospite",
 	"graphs.page-views-bot": "Pagine viste Bot",
+	"graphs.page-views-ap": "Visualizzazioni della pagina ActivityPub",
 	"graphs.unique-visitors": "Visitatori Unici",
 	"graphs.registered-users": "Utenti Registrati",
 	"graphs.guest-users": "Utenti ospiti",

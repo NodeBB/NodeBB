@@ -3,10 +3,17 @@
 const db = require('../database');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
+const analytics = require('../analytics');
+const helpers = require('./helpers');
 
 const middleware = module.exports;
 
 middleware.enabled = async (req, res, next) => next(!meta.config.activitypubEnabled ? 'route' : undefined);
+
+middleware.pageview = async (req, res, next) => {
+	await analytics.apPageView({ ip: req.ip });
+	next();
+};
 
 middleware.assertS2S = async function (req, res, next) {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
@@ -53,7 +60,7 @@ middleware.verify = async function (req, res, next) {
 	next();
 };
 
-middleware.assertPayload = async function (req, res, next) {
+middleware.assertPayload = helpers.try(async function (req, res, next) {
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	activitypub.helpers.log('[middleware/activitypub] Validating incoming payload...');
 
@@ -125,7 +132,7 @@ middleware.assertPayload = async function (req, res, next) {
 	activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check passed.');
 
 	next();
-};
+});
 
 middleware.resolveObjects = async function (req, res, next) {
 	const { type, object } = req.body;

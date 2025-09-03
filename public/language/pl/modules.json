@@ -48,6 +48,7 @@
     "chat.add-user": "Dodaj użytkownika",
     "chat.notification-settings": "Ustawienia powiadomień",
     "chat.default-notification-setting": "Domyślne ustawienia powiadomień",
+    "chat.join-leave-messages": "Dołącz/Odłącz wiadomości",
     "chat.notification-setting-room-default": "Domyślne dla pokoju",
     "chat.notification-setting-none": "Brak powiadomień",
     "chat.notification-setting-at-mention-only": "Tylko zawołania z użyciem @",

@@ -11,8 +11,8 @@ const util = require('util');
 
 const wait = util.promisify(setTimeout);
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const user = require('../src/user');
@@ -282,8 +282,13 @@ describe('API', async () => {
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
-		// Create a new chat room
-		await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		// Create a new chat room & send a message
+		const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		await messaging.sendMessage({
+			roomId,
+			uid: adminUid,
+			content: 'this is a chat message',
+		});
 
 		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
@@ -486,7 +491,8 @@ describe('API', async () => {
 					}
 				});
 
-				it('should not error out when called', async () => {
+				it('should not error out when called', async function () {
+					this.timeout(0);
 					await setupData();
 
 					if (csrfToken) {
@@ -513,6 +519,7 @@ describe('API', async () => {
 								redirect: 'manual',
 								headers: headers,
 								body: body,
+								timeout: 30000,
 							});
 						} else if (type === 'form') {
 							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);

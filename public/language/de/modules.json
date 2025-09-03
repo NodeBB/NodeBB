@@ -48,6 +48,7 @@
     "chat.add-user": "Benutzer hinzufügen",
     "chat.notification-settings": "Benachrichtigungseinstellungen",
     "chat.default-notification-setting": "Standardeinstellung für die Benachrichtigung",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Raum Standard",
     "chat.notification-setting-none": "Keine Benachrichtigungen",
     "chat.notification-setting-at-mention-only": "@nur Erwähnung",

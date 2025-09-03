@@ -128,8 +128,9 @@ User.getUidByUserslug = async function (userslug) {
 };
 
 User.getUidsByUserslugs = async function (userslugs) {
-	const apSlugs = userslugs.filter(slug => slug.includes('@'));
-	const normalSlugs = userslugs.filter(slug => !slug.includes('@'));
+	const uniqueSlugs = _.uniq(userslugs);
+	const apSlugs = uniqueSlugs.filter(slug => slug.includes('@'));
+	const normalSlugs = uniqueSlugs.filter(slug => !slug.includes('@'));
 	const slugToUid = Object.create(null);
 	async function getApSlugs() {
 		await Promise.all(apSlugs.map(slug => activitypub.actors.assert(slug)));

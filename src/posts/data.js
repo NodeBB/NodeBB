@@ -70,5 +70,13 @@ function modifyPost(post, fields) {
 		if (!fields.length || fields.includes('attachments')) {
 			post.attachments = (post.attachments || '').split(',').filter(Boolean);
 		}
+
+		if (!fields.length || fields.includes('uploads')) {
+			try {
+				post.uploads = post.uploads ? JSON.parse(post.uploads) : [];
+			} catch (err) {
+				post.uploads = [];
+			}
+		}
 	}
 }

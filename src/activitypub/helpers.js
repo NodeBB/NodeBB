@@ -21,6 +21,7 @@ const activitypub = require('.');
 
 const webfingerRegex = /^(@|acct:)?[\w-.]+@.+$/;
 const webfingerCache = ttl({
+	name: 'ap-webfinger-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours
 });
@@ -112,6 +113,7 @@ Helpers.query = async (id) => {
 			headers: {
 				accept: 'application/jrd+json',
 			},
+			timeout: 5000,
 		}));
 	} catch (e) {
 		return false;
@@ -128,9 +130,12 @@ Helpers.query = async (id) => {
 		({ href: actorUri } = actorUri);
 	}
 
-	const { subject, publicKey } = body;
+	let { subject, publicKey } = body;
+	// Fix missing scheme
+	if (!subject.startsWith('acct:') && !subject.startsWith('did:')) {
+		subject = `acct:${subject}`;
+	}
 	const payload = { subject, username, hostname, actorUri, publicKey };
-
 	const claimedId = new URL(subject).pathname;
 	webfingerCache.set(claimedId, payload);
 	if (claimedId !== id) {
@@ -192,6 +197,9 @@ Helpers.resolveLocalId = async (input) => {
 
 				case 'message':
 					return { type: 'message', id: value, ...activityData };
+
+				case 'actor':
+					return { type: 'application', id: null };
 			}
 
 			return { type: null, id: null, ...activityData };

@@ -184,6 +184,7 @@ describe('Messaging Library', () => {
 			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '0');
 			const { body } = await callv3API('post', `/chats`, {
 				uids: [mocks.users.baz.uid],
+				joinLeaveMessages: 1,
 			}, 'foo');
 			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '1');
 
@@ -803,7 +804,7 @@ describe('Messaging Library', () => {
 
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body.rooms));
-			assert.equal(body.rooms.length, 3);
+			assert.equal(body.rooms.length, 2);
 			assert.equal(body.title, '[[pages:chats]]');
 		});
 

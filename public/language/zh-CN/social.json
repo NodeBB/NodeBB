@@ -7,6 +7,8 @@
 	"sign-up-with-google": "通过 Google 注册",
 	"log-in-with-facebook": "通过 Facebook 登录",
 	"continue-with-facebook": "继续使用 Facebook 登录",
-	"sign-in-with-linkedin": "通过LinkedIn登录",
-	"sign-up-with-linkedin": "通过LinkedIn注册"
+	"sign-in-with-linkedin": "通过 LinkedIn 登录",
+	"sign-up-with-linkedin": "通过 LinkedIn 注册",
+	"sign-in-with-wordpress": "通过 WordPress 登录",
+	"sign-up-with-wordpress": "通过 WordPress 注册"
 }

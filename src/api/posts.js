@@ -120,9 +120,7 @@ postsAPI.edit = async function (caller, data) {
 	data.timestamp = parseInt(data.timestamp, 10) || Date.now();
 
 	const editResult = await posts.edit(data);
-	if (editResult.topic.isMainPost) {
-		await topics.thumbs.migrate(data.uuid, editResult.topic.tid);
-	}
+
 	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
 	if (!selfPost && editResult.post.changed) {
 		await events.log({

@@ -172,7 +172,7 @@ categoryController.get = async function (req, res, next) {
 
 	if (meta.config.activitypubEnabled) {
 		// Include link header for richer parsing
-		res.set('Link', `<${nconf.get('url')}/actegory/${cid}>; rel="alternate"; type="application/activity+json"`);
+		res.set('Link', `<${nconf.get('url')}/category/${cid}>; rel="alternate"; type="application/activity+json"`);
 
 		// Category accessible
 		const remoteOk = await privileges.categories.can('read', cid, activitypub._constants.uid);
@@ -222,12 +222,14 @@ function addTags(categoryData, res, currentPage) {
 	];
 
 	if (categoryData.backgroundImage) {
-		if (!categoryData.backgroundImage.startsWith('http')) {
-			categoryData.backgroundImage = url + categoryData.backgroundImage;
+		let { backgroundImage } = categoryData;
+		backgroundImage = utils.decodeHTMLEntities(backgroundImage);
+		if (!backgroundImage.startsWith('http')) {
+			backgroundImage = url + backgroundImage.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
-			content: categoryData.backgroundImage,
+			content: backgroundImage,
 			noEscape: true,
 		});
 	}
@@ -257,7 +259,7 @@ function addTags(categoryData, res, currentPage) {
 		res.locals.linkTags.push({
 			rel: 'alternate',
 			type: 'application/activity+json',
-			href: `${nconf.get('url')}/actegory/${categoryData.cid}`,
+			href: `${nconf.get('url')}/category/${categoryData.cid}`,
 		});
 	}
 }

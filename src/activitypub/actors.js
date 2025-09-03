@@ -14,6 +14,7 @@ const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
 
 const failedWebfingerCache = TTLCache({
+	name: 'ap-failed-webfinger-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 10, // 10 minutes
 });
@@ -126,13 +127,13 @@ Actors.assert = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
-
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
 			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
 			if (id !== canonicalId) {
 				return null;
 			}
+
 
 			let typeOk = false;
 			if (Array.isArray(actor.type)) {
@@ -146,7 +147,7 @@ Actors.assert = async (ids, options = {}) => {
 					categories.add(actor.id);
 				}
 			}
-
+			
 			if (
 				!typeOk ||
 				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
@@ -166,7 +167,6 @@ Actors.assert = async (ids, options = {}) => {
 				// no action required
 				activitypub.helpers.log(`[activitypub/actor.assert] Unable to retrieve follower counts for ${actor.id}`);
 			}
-
 			// Save url for backreference
 			const url = Array.isArray(actor.url) ? actor.url.shift() : actor.url;
 			if (url && url !== actor.id) {
@@ -608,6 +608,8 @@ Actors.prune = async () => {
 	let deletionCountNonExisting = 0;
 	let notDeletedDueToLocalContent = 0;
 	const preservedIds = [];
+	const cleanupUids = [];
+
 	await batch.processArray(ids, async (ids) => {
 		const exists = await Promise.all([
 			db.exists(ids.map(id => `userRemote:${id}`)),
@@ -654,13 +656,24 @@ Actors.prune = async () => {
 					await user.deleteAccount(uid);
 					deletionCount += 1;
 				} catch (err) {
-					winston.error(err.stack);
+					winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
+					if (err.message === '[[error:no-user]]') {
+						cleanupUids.push(uid);
+					}
 				}
 			} else {
 				notDeletedDueToLocalContent += 1;
 				preservedIds.push(uid);
 			}
 		}));
+
+		if (cleanupUids.length) {
+			await Promise.all([
+				db.sortedSetRemove('usersRemote:lastCrawled', cleanupUids),
+				db.deleteAll(cleanupUids.map(uid => `userRemote:${uid}`)),
+			]);
+			winston.info(`[actors/prune] Cleaned up ${cleanupUids.length} remote users that were not found in the database.`);
+		}
 
 		// Remote categories
 		let counts = await categories.getCategoriesFields(cids, ['topic_count']);

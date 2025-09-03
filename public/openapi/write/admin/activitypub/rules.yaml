@@ -1,0 +1,36 @@
+post:
+  tags:
+    - admin
+  summary: create auto-categorization rule
+  description: This operation creates a new auto-categorization rule that is applied to new remote content received via ActivityPub.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            type:
+              type: string
+              description: The auto-categorization rule type
+              example: hashtag
+            value:
+              type: string
+              description: The value that incoming content will be matched against (used alongside `type`)
+              example: 'example'
+            cid:
+              type: number
+              description: The category ID of a local category
+              example: 1
+  responses:
+    '200':
+      description: rule successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray

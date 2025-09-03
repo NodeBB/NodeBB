@@ -1,0 +1,28 @@
+post:
+  tags:
+    - admin
+  summary: add relay
+  description: This operation establishes a connection to a remote relay for content discovery purposes
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            url:
+              type: string
+              description: The relay actor endpoint
+              example: https://example.org/actor
+  responses:
+    '200':
+      description: rule successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/admin/relays.yaml#/RelaysArray

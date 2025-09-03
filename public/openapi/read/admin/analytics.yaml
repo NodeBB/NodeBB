@@ -56,3 +56,7 @@ get:
                     type: array
                     items:
                       type: number
+                  pageviews:ap:
+                    type: array
+                    items:
+                      type: number

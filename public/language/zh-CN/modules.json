@@ -48,6 +48,7 @@
     "chat.add-user": "添加用户",
     "chat.notification-settings": "通知设置",
     "chat.default-notification-setting": "默认通知设置",
+    "chat.join-leave-messages": "加入/退出 消息",
     "chat.notification-setting-room-default": "默认房间",
     "chat.notification-setting-none": "无通知",
     "chat.notification-setting-at-mention-only": "仅@提及",

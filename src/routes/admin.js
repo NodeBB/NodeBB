@@ -81,11 +81,19 @@ function apiRoutes(router, name, middleware, controllers) {
 	router.get(`/api/${name}/groups/:groupname/csv`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.groups.getCSV));
 	router.get(`/api/${name}/analytics`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
 	router.get(`/api/${name}/advanced/cache/dump`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.cache.dump));
+	router.post(`/api/${name}/manage/categories`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.addRemote));
+	router.delete(`/api/${name}/manage/categories/:cid`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.removeRemote));
 
-	const multipart = require('connect-multiparty');
-	const multipartMiddleware = multipart();
+	const multer = require('multer');
+	const storage = multer.diskStorage({});
+	const upload = multer({ storage });
 
-	const middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.ensureLoggedIn];
+	const middlewares = [
+		upload.array('files[]', 20),
+		middleware.validateFiles,
+		middleware.applyCSRF,
+		middleware.ensureLoggedIn,
+	];
 
 	router.post(`/api/${name}/category/uploadpicture`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadCategoryPicture));
 	router.post(`/api/${name}/uploadfavicon`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFavicon));

@@ -1,0 +1,17 @@
+{
+	"events": "واقعات",
+	"no-events": "کوئی واقعات نہیں",
+	"control-panel": "واقعات کا کنٹرول پینل",
+	"delete-events": "واقعات حذف کریں",
+	"confirm-delete-all-events": "کیا آپ واقعی لاگ میں موجود تمام واقعات کو حذف کرنا چاہتے ہیں؟",
+	"filters": "فلٹرز",
+	"filters-apply": "فلٹرز لگائیں",
+	"filter-type": "واقعہ کی قسم",
+	"filter-start": "شروع کی تاریخ",
+	"filter-end": "ختم کی تاریخ",
+	"filter-user": "صارف کے مطابق فلٹر",
+	"filter-user.placeholder": "فلٹر کرنے کے لیے صارف کا نام درج کریں…",
+	"filter-group": "گروپ کے مطابق فلٹر",
+	"filter-group.placeholder": "فلٹر کرنے کے لیے گروپ کا نام درج کریں…",
+	"filter-per-page": "فی صفحہ"
+}

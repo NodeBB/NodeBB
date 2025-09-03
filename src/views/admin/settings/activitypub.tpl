@@ -45,6 +45,73 @@
 	</div>
 
 	<div class="row settings m-0">
+		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:rules]]</div>
+		<div class="col-sm-10 col-12">
+			<div class="mb-3">
+				<p>[[admin/settings/activitypub:rules-intro]]</p>
+				<table class="table table-striped" id="rules">
+					<thead>
+						<th>[[admin/settings/activitypub:rules.type]]</th>
+						<th>[[admin/settings/activitypub:rules.value]]</th>
+						<th>[[admin/settings/activitypub:rules.cid]]</th>
+						<th></th>
+					</thead>
+					<tbody>
+						{{{ each rules }}}
+						<tr data-rid="{./rid}">
+							<td>{./type}</td>
+							<td>{./value}</td>
+							<td>{./cid}</td>
+							<td><a href="#" data-action="rules.delete"><i class="fa fa-trash link-danger"></i></a></td>
+						</tr>
+						{{{ end }}}
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="3">
+								<button class="btn btn-sm btn-primary" data-action="rules.add">[[admin/settings/activitypub:rules.add]]</button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row settings m-0">
+		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:relays]]</div>
+		<div class="col-sm-10 col-12">
+			<p>[[admin/settings/activitypub:relays.intro]]</p>
+			<p class="text-warning">[[admin/settings/activitypub:relays.warning]]</p>
+			<div class="mb-3">
+				<table class="table table-striped" id="relays">
+					<thead>
+						<th>[[admin/settings/activitypub:relays.relay]]</th>
+						<th>[[admin/settings/activitypub:relays.state]]</th>
+						<th></th>
+					</thead>
+					<tbody>
+						{{{ each relays }}}
+						<tr data-url="{./url}">
+							<td>{./url}</td>
+							<td>{./label}</td>
+							<td><a href="#" data-action="relays.remove"><i class="fa fa-trash link-danger"></i></a></td>
+						</tr>
+						{{{ end }}}
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="3">
+								<button class="btn btn-sm btn-primary" data-action="relays.add">[[admin/settings/activitypub:relays.add]]</button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row settings m-0">
 		<div class="col-sm-2 col-12 settings-header">[[admin/settings/activitypub:pruning]]</div>
 		<div class="col-sm-10 col-12">
 			<form>

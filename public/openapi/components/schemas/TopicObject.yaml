@@ -106,6 +106,9 @@ TopicObject:
               description: A topic identifier
             content:
               type: string
+            sourceContent:
+              type: string
+              nullable: true
             timestampISO:
               type: string
               description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -118,6 +121,10 @@ TopicObject:
                 username:
                   type: string
                   description: A friendly name for a given user account
+                displayname:
+                  type: string
+                isLocal:
+                  type: boolean
                 userslug:
                   type: string
                   description: An URL-safe variant of the username (i.e. lower-cased, spaces

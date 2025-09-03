@@ -48,6 +48,7 @@
     "chat.add-user": "Додај корисника",
     "chat.notification-settings": "Подешавања обавештења",
     "chat.default-notification-setting": "Подразумевано подешавање обавештења",
+    "chat.join-leave-messages": "Join/Leave Messages",
     "chat.notification-setting-room-default": "Подразумевана соба",
     "chat.notification-setting-none": "Без обавештења",
     "chat.notification-setting-at-mention-only": "@помињање само",

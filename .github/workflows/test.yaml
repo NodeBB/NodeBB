@@ -63,7 +63,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:8.0.1'
+        image: 'redis:8.2.1'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -81,7 +81,7 @@ jobs:
           - 27017:27017
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - run: cp install/package.json package.json
 

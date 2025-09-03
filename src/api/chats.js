@@ -162,9 +162,17 @@ chatsAPI.update = async (caller, data) => {
 			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
 		}
 	}
-	if (data.hasOwnProperty('notificationSetting') && isAdmin) {
-		await db.setObjectField(`chat:room:${data.roomId}`, 'notificationSetting', data.notificationSetting);
+	if (isAdmin) {
+		const updateData = {};
+		if (data.hasOwnProperty('notificationSetting')) {
+			updateData.notificationSetting = data.notificationSetting;
+		}
+		if (data.hasOwnProperty('joinLeaveMessages')) {
+			updateData.joinLeaveMessages = data.joinLeaveMessages;
+		}
+		await db.setObject(`chat:room:${data.roomId}`, updateData);
 	}
+
 	const loadedRoom = await messaging.loadRoom(caller.uid, {
 		roomId: data.roomId,
 	});

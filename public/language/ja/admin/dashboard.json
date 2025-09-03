@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "ページビュー登録済み",
 	"graphs.page-views-guest": "ページビューゲスト",
 	"graphs.page-views-bot": "ページビューBot",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "ユニークな訪問者",
 	"graphs.registered-users": "登録したユーザー",
 	"graphs.guest-users": "Guest Users",

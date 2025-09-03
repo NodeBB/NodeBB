@@ -763,18 +763,18 @@ describe('Post\'s', () => {
 
 		it('should turn relative links in post body to absolute urls', (done) => {
 			const nconf = require('nconf');
-			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
+			const content = '<a href="/users">test</a> <a href="//youtube.com">youtube</a>';
 			const parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
-			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a>`);
+			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="${nconf.get('url_parsed').protocol}//youtube.com/">youtube</a>`);
 			done();
 		});
 
 		it('should turn relative links in post body to absolute urls', (done) => {
 			const nconf = require('nconf');
-			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
+			const content = '<a href="/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="/path/to/img"/>';
 			let parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
-			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
+			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="${nconf.get('url_parsed').protocol}//youtube.com/">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
 			done();
 		});
 	});

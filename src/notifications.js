@@ -22,6 +22,7 @@ const Notifications = module.exports;
 
 // ttlcache for email-only chat notifications
 const notificationCache = ttlCache({
+	name: 'notification-email-cache',
 	max: 1000,
 	ttl: (meta.config.notificationSendDelay || 60) * 1000,
 	noDisposeOnSet: true,
@@ -382,10 +383,20 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	]);
 };
 
-Notifications.markAllRead = async function (uid) {
+Notifications.markAllRead = async function (uid, filter = '') {
 	await batch.processSortedSet(`uid:${uid}:notifications:unread`, async (unreadNotifs) => {
-		const nids = unreadNotifs.map(n => n && n.value);
-		const datetimes = unreadNotifs.map(n => n && n.score);
+		let nids = unreadNotifs.map(n => n && n.value);
+		let datetimes = unreadNotifs.map(n => n && n.score);
+		if (filter !== '') {
+			const notificationKeys = nids.map(nid => `notifications:${nid}`);
+			let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'type', 'datetime']);
+			notificationData = notificationData.filter(n => n && n.nid && n.type === filter);
+			if (!notificationData.length) {
+				return;
+			}
+			nids = notificationData.map(n => n.nid);
+			datetimes = notificationData.map(n => n.datetime || Date.now());
+		}
 		await Promise.all([
 			db.sortedSetRemove(`uid:${uid}:notifications:unread`, nids),
 			db.sortedSetAdd(`uid:${uid}:notifications:read`, datetimes, nids),

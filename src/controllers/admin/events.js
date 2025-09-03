@@ -60,11 +60,11 @@ eventsController.get = async function (req, res) {
 		pagination: pagination.create(page, pageCount, req.query),
 		types: types,
 		query: {
-			start: validator.escape(String(req.query.start)),
-			end: validator.escape(String(req.query.end)),
-			username: validator.escape(String(req.query.username)),
-			group: validator.escape(String(req.query.group)),
-			perPage: validator.escape(String(req.query.perPage)),
+			start: validator.escape(String(req.query.start || '')),
+			end: validator.escape(String(req.query.end || '')),
+			username: validator.escape(String(req.query.username || '')),
+			group: validator.escape(String(req.query.group || '')),
+			perPage: validator.escape(String(req.query.perPage || '')),
 		},
 	});
 };
