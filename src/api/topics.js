@@ -8,7 +8,6 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
-const activitypub = require('../activitypub');
 
 const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
