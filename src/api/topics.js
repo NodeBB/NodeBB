@@ -8,7 +8,6 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
-const activitypub = require('../activitypub');
 
 const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
@@ -322,8 +321,6 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 				activitypubApi.announce.note(caller, { tid });
-				const { activity } = await activitypub.mocks.activities.create(topicData.mainPid, caller.uid);
-				await activitypub.feps.announce(topicData.mainPid, activity);
 			}
 
 			await events.log({
