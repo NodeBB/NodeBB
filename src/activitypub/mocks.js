@@ -757,17 +757,25 @@ Mocks.notes.public = async (post) => {
 			attachment: normalizeAttachment(noteAttachment),
 		};
 
-		const sentences = tokenizer.sentences(post.content, { sanitize: true });
+		const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
 		// Append sentences to summary until it contains just under 500 characters of content
 		const limit = 500;
+		let remaining = limit;
 		summary = sentences.reduce((memo, sentence) => {
-			const remaining = limit - memo.length;
-			if (sentence.length < remaining) {
+			const clean = sanitize(sentence, {
+				allowedTags: [],
+				allowedAttributes: {},
+			});
+			remaining = remaining - clean.length;
+			if (remaining > 0) {
 				memo += ` ${sentence}`;
 			}
 
 			return memo;
 		}, '');
+
+		// Final sanitization to clean up tags
+		summary = posts.sanitize(summary);
 	}
 
 	let context = await posts.getPostField(post.pid, 'context');

@@ -156,7 +156,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		// mainPid ok to leave as-is
 		if (!title) {
-			const sentences = tokenizer.sentences(content || sourceContent, { sanitize: true });
+			const sentences = tokenizer.sentences(content || sourceContent, { sanitize: true, newline_boundaries: true });
 			title = sentences.shift();
 		}
 
