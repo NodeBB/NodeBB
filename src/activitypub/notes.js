@@ -63,7 +63,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		return null;
 	}
 
-	id = await activitypub.checkHeader(id);
+	id = (await activitypub.checkHeader(id)) || id;
 
 	let chain;
 	let context = await activitypub.contexts.get(uid, id);
