@@ -56,9 +56,15 @@ function boostrapImport(themeData) {
 	function bsvariables() {
 		if (bootswatchSkin) {
 			if (isCustomSkin) {
-				return themeData._variables || '';
+				return `
+					${bsVariables}
+					${themeData._variables || ''}
+				`;
 			}
-			return `@import "bootswatch/dist/${bootswatchSkin}/variables";`;
+			return `
+				${bsVariables}
+				@import "bootswatch/dist/${bootswatchSkin}/variables";
+			`;
 		}
 		return bsVariables;
 	}
