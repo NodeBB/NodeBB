@@ -585,6 +585,9 @@ ActivityPub.checkHeader = async (url, timeout) => {
 				.map(p => p.trim())
 				.reduce((memo, cur) => {
 					cur = cur.split('=');
+					if (cur.length < 2) {
+						cur.push('');
+					}
 					memo[cur[0]] = cur[1].slice(1, -1);
 					return memo;
 				}, {});
