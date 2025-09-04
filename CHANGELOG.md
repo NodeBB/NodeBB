@@ -1,3 +1,45 @@
+#### v4.5.1 (2025-09-04)
+
+##### Chores
+
+*  up dbsearch (c07e81d2)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  update changelog for v4.5.0 (86d03b1e)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  use _variables.scss overrides from acp in custom skins and bootswatch skins as well (0c48e0e9)
+
+##### Bug Fixes
+
+*  remove unused dependency (8d7e3537)
+*  remove test for 1b12 announce on topic move (as this no longer occurs) (9221d34f)
+*  use existing id if checkHeader returns false (e6996846)
+*  regression that caused Piefed (or potentially others) content to be dropped on receipt (86d9016f)
+*  remove faulty code that tried to announce a remote object but couldn't as the ID was not a number (7adfe39e)
+
 #### v4.5.0 (2025-09-03)
 
 ##### Chores
