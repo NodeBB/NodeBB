@@ -54,6 +54,14 @@ describe('Topic\'s', () => {
 	});
 
 	describe('.post', () => {
+		before(() => {
+			meta.config.postQueue = 0;
+		});
+
+		after(() => {
+			meta.config.postQueue = 1;
+		});
+
 		it('should fail to create topic with invalid data', async () => {
 			try {
 				await apiTopics.create({ uid: 0 }, null);
@@ -2337,6 +2345,12 @@ describe('Topic\'s', () => {
 				content: 'The content of scheduled test topic',
 				timestamp: new Date(Date.now() + 86400000).getTime(),
 			};
+
+			meta.config.postQueue = 0;
+		});
+
+		after(() => {
+			meta.config.postQueue = 1;
 		});
 
 		it('should create a scheduled topic as pinned, deleted, included in "topics:scheduled" zset and with a timestamp in future', async () => {
