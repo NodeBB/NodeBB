@@ -3,6 +3,7 @@
 const winston = require('winston');
 const nconf = require('nconf');
 const tokenizer = require('sbd');
+const pretty = require('pretty');
 
 const db = require('../database');
 const batch = require('../batch');
@@ -156,7 +157,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		// mainPid ok to leave as-is
 		if (!title) {
-			const sentences = tokenizer.sentences(content || sourceContent, { sanitize: true, newline_boundaries: true });
+			const prettified = pretty(content || sourceContent);
+			const sentences = tokenizer.sentences(prettified, { sanitize: true, newline_boundaries: true });
 			title = sentences.shift();
 		}
 
