@@ -71,7 +71,7 @@ connection.connect = async function (options) {
 		});
 
 		if (options.password) {
-			cxn.auth(options.password);
+			cxn.auth({ password: options.password });
 		}
 	});
 };
