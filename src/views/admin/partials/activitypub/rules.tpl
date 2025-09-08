@@ -8,13 +8,14 @@
 		<label class="form-label" for="type">Type</label>
 		<select class="form-control" name="type" id="type">
 			<option value="hashtag">Hashtag</option>
+			<option value="user">User</option>
 			<!--<option value="content">Content contains...</option>-->
 		</select>
 	</div>
 	<div class="mb-3">
 		<label class="form-label" for="value">Value</label>
 		<input type="text" id="value" name="value" title="Value" class="form-control" placeholder="forum">
-		<p class="form-text">[[admin/settings/activitypub:rules.modal.values-multiple]]</p>
+		<p class="form-text" id="help-text"></p>
 	</div>
 	<div class="mb-3">
 		<label class="form-label">Category</label>

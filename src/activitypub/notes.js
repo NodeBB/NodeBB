@@ -417,6 +417,13 @@ async function assignCategory(post) {
 					}
 					break;
 				}
+
+				case 'user': {
+					if (post.uid === value) {
+						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}`);
+						return target;
+					}
+				}
 			}
 		}
 

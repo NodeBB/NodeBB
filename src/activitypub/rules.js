@@ -3,6 +3,8 @@
 const db = require('../database');
 const utils = require('../utils');
 
+const activitypub = require('.');
+
 const Rules = module.exports;
 
 Rules.list = async () => {
@@ -18,6 +20,15 @@ Rules.list = async () => {
 
 Rules.add = async (type, value, cid) => {
 	const uuid = utils.generateUUID();
+
+	// normalize user rule values into a uid
+	if (type === 'user' && value.indexOf('@') !== -1) {
+		const response = await activitypub.actors.assert(value);
+		if (!response) {
+			throw new Error('[[error:no-user]]');
+		}
+		value = await db.getObjectField('handle:uid', String(value).toLowerCase());
+	}
 
 	await Promise.all([
 		db.setObject(`rid:${uuid}`, { type, value, cid }),
