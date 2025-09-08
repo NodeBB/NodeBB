@@ -401,15 +401,18 @@ async function assertRelation(post) {
 }
 
 async function assignCategory(post) {
+	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
 	let cid = undefined;
 	const rules = await activitypub.rules.list();
-	const tags = await Notes._normalizeTags(post._activitypub.tag || []);
+	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
+	tags = tags.map(tag => tag.toLowerCase());
 
 	cid = rules.reduce((cid, { type, value, cid: target }) => {
 		if (!cid) {
 			switch (type) {
 				case 'hashtag': {
-					if (tags.includes(value)) {
+					if (tags.includes(value.toLowerCase())) {
+						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}`);
 						return target;
 					}
 					break;
