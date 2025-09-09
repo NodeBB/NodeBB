@@ -21,7 +21,7 @@ const helpers = require('./helpers');
 const inbox = module.exports;
 
 function reject(type, object, target, senderType = 'uid', id = 0) {
-	activitypub.send(senderType, id, target, {
+	return activitypub.send(senderType, id, target, {
 		id: `${helpers.resolveActor(senderType, id)}#/activity/reject/${encodeURIComponent(object.id)}`,
 		type: 'Reject',
 		object: {
@@ -408,7 +408,7 @@ inbox.follow = async (req) => {
 		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 
 		await user.onFollow(actor, id);
-		activitypub.send('uid', id, actor, {
+		await activitypub.send('uid', id, actor, {
 			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
 			object: {
@@ -435,7 +435,7 @@ inbox.follow = async (req) => {
 			await user.setCategoryWatchState(actor, id, categories.watchStates.tracking);
 		}
 
-		activitypub.send('cid', id, actor, {
+		await activitypub.send('cid', id, actor, {
 			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
 			object: {

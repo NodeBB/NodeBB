@@ -405,7 +405,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	};
 
 	const oneMinute = 1000 * 60;
-	batch.processArray(inboxes, async (inboxBatch) => {
+	return batch.processArray(inboxes, async (inboxBatch) => {
 		const retryQueueAdd = [];
 		const retryQueuedSet = [];
 
