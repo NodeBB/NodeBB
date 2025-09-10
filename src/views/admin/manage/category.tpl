@@ -46,6 +46,16 @@
 					</p>
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label" for="cid-{category.cid}-topic-template">
+						[[admin/manage/categories:topic-template]]
+					</label>
+					<textarea id="cid-{category.cid}-topic-template" data-name="topicTemplate" class="form-control" rows="4" />{category.topicTemplate}</textarea>
+					<p class="form-text">
+						[[admin/manage/categories:topic-template.help]]
+					</p>
+				</div>
+
 				<div class="mb-3 d-flex justify-content-between align-items-center gap-2">
 					<label class="form-label" for="cid-{category.cid}-parentCid">[[admin/manage/categories:parent-category]]</label>
 					<div id="parent-category-selector">
