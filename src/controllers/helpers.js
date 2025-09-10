@@ -448,10 +448,6 @@ helpers.getHomePageRoutes = async function (uid) {
 };
 
 helpers.formatApiResponse = async (statusCode, res, payload) => {
-	if (!res.hasOwnProperty('req')) {
-		console.log('formatApiResponse', statusCode, payload);
-	}
-
 	if (res.req.method === 'HEAD') {
 		return res.sendStatus(statusCode);
 	}
