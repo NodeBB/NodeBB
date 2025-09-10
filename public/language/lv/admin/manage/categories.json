@@ -17,6 +17,8 @@
 	"federatedDescription": "Federated Description",
 	"federatedDescription.help": "This text will be appended to the category description when queried by other websites/apps.",
 	"federatedDescription.default": "This is a forum category containing topical discussion. You can start new discussions by mentioning this category.",
+	"topic-template": "Topic Template",
+	"topic-template.help": "Define a template for new topics created in this category.",
 	"bg-color": "Fona krāsa",
 	"text-color": "Teksta krāsa",
 	"bg-image-size": "Fona bildes lielums",

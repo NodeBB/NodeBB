@@ -17,6 +17,8 @@
 	"federatedDescription": "תיאור פדרציה",
 	"federatedDescription.help": "טקסט זה יצורף לתיאור הקטגוריה כאשר הוא יתבקש על ידי אתרים או אפליקציות אחרות.",
 	"federatedDescription.default": "זוהי קטגוריית פורום המכילה דיון אקטואלי. תוכלו להתחיל דיונים חדשים על ידי אזכור קטגוריה זו.",
+	"topic-template": "Topic Template",
+	"topic-template.help": "Define a template for new topics created in this category.",
 	"bg-color": "צבע רקע",
 	"text-color": "צבע טקסט",
 	"bg-image-size": "גודל תמונת רקע",

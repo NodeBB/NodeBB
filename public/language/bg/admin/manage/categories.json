@@ -17,6 +17,8 @@
 	"federatedDescription": "Федерирано описание",
 	"federatedDescription.help": "Този текст ще бъде добавен към описанието на категорията, когато други уеб сайтове и приложения изискват информация за нея.",
 	"federatedDescription.default": "Това е категория във форума, съдържаща тематични дискусии. Може да започнете нова дискусия, като споменете този форум.",
+	"topic-template": "Topic Template",
+	"topic-template.help": "Define a template for new topics created in this category.",
 	"bg-color": "Цвят на фона",
 	"text-color": "Цвят на текста",
 	"bg-image-size": "Размер на фоновото изображение",

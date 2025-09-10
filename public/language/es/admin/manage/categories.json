@@ -17,6 +17,8 @@
 	"federatedDescription": "Descripción federada",
 	"federatedDescription.help": "Este texto será agregado a la descripción de la categoría cuando sea buscado por otros sitios y aplicaciones.",
 	"federatedDescription.default": "Esta es una categoría de foro que contiene discusiones pasadas. Puedes iniciar nuevas discusiones mencionando esta categoría.",
+	"topic-template": "Topic Template",
+	"topic-template.help": "Define a template for new topics created in this category.",
 	"bg-color": "Color de Fondo",
 	"text-color": "Color del Texto",
 	"bg-image-size": "Tamaño de la Imagen de Fondo",
