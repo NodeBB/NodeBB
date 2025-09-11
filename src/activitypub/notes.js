@@ -231,6 +231,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				unprocessed.shift();
 			} catch (e) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Could not post topic (${mainPost.pid}): ${e.message}`);
+				await unlock(id);
 				return null;
 			}
 
