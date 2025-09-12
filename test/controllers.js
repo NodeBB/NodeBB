@@ -700,7 +700,7 @@ describe('Controllers', () => {
 		assert.strictEqual(response.statusCode, 404);
 		assert.strictEqual(body, 'Not found');
 		meta.config['brand:touchIcon'] = oldValue;
-	})
+	});
 
 
 	it('should error if guests do not have search privilege', async () => {
