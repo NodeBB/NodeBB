@@ -19,6 +19,8 @@ get:
                     type: boolean
                   showTopicTools:
                     type: boolean
+                  reputation:disabled:
+                    type: number
                   nextStart:
                     type: number
                   topics:
