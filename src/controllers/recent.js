@@ -79,6 +79,7 @@ recentController.getData = async function (req, url, sort) {
 	data.selectedTag = tagData.selectedTag;
 	data.selectedTags = tagData.selectedTags;
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
+	data['reputation:disabled'] = meta.config['reputation:disabled'];
 	if (!meta.config['feeds:disableRSS']) {
 		data.rssFeedUrl = `${relative_path}/${url}.rss`;
 		if (req.loggedIn) {
