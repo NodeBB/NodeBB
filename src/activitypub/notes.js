@@ -32,7 +32,13 @@ async function unlock(value) {
 Notes._normalizeTags = async (tag, cid) => {
 	const systemTags = (meta.config.systemTags || '').split(',');
 	const maxTags = await categories.getCategoryField(cid, 'maxTags');
-	const tags = (tag || [])
+	let tags = tag || [];
+
+	if (!Array.isArray(tags)) { // the "|| []" should handle null/undefined values... #famouslastwords
+		tags = [tags];
+	}
+
+	tags = tags
 		.map((tag) => {
 			tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
 			return tag;
