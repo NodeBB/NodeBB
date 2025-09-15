@@ -9,6 +9,7 @@ const _ = require('lodash');
 
 const db = require('./database');
 const User = require('./user');
+const categories = require('./categories');
 const posts = require('./posts');
 const groups = require('./groups');
 const meta = require('./meta');
@@ -84,7 +85,24 @@ Notifications.getMultiple = async function (nids) {
 	const notifications = await db.getObjects(keys);
 
 	const userKeys = notifications.map(n => n && n.from);
-	const usersData = await User.getUsersFields(userKeys, ['username', 'userslug', 'picture']);
+	let [usersData, categoriesData] = await Promise.all([
+		User.getUsersFields(userKeys, ['username', 'userslug', 'picture']),
+		categories.getCategoriesFields(userKeys, ['cid', 'name', 'slug', 'picture']),
+	]);
+	// Merge valid categoriesData into usersData
+	usersData = usersData.map((userData, idx) => {
+		const categoryData = categoriesData[idx];
+		if (!userData.uid && categoryData.cid) {
+			return {
+				username: categoryData.slug,
+				displayname: categoryData.name,
+				userslug: categoryData.slug,
+				picture: categoryData.picture,
+			};
+		}
+
+		return userData;
+	});
 
 	notifications.forEach((notification, index) => {
 		if (notification) {
