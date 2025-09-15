@@ -94,7 +94,10 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
-	const postData = await posts.getPostFields(pid, ['tid', 'uid', 'content']);
+	const [postData, fromCategory] = await Promise.all([
+		posts.getPostFields(pid, ['tid', 'uid', 'content']),
+		!utils.isNumber(fromuid) && categories.exists(fromuid),
+	]);
 	const [canRead, isIgnoring] = await Promise.all([
 		privileges.posts.can('topics:read', pid, postData.uid),
 		topics.isIgnoring([postData.tid], postData.uid),
@@ -103,19 +106,17 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	const [userData, topicTitle, postObj] = await Promise.all([
-		user.getUserFields(fromuid, ['username']),
+		fromCategory ? categories.getCategoryFields(fromuid, ['name']) : user.getUserFields(fromuid, ['username']),
 		topics.getTopicField(postData.tid, 'title'),
 		posts.parsePost(postData),
 	]);
-
-	const { displayname } = userData;
 
 	const title = utils.decodeHTMLEntities(topicTitle);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
+		bodyShort: `[[${notification}, ${userData.displayname || userData.name}, ${titleEscaped}]]`,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
