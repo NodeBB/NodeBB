@@ -38,6 +38,7 @@ const ActivityPub = module.exports;
 ActivityPub._constants = Object.freeze({
 	uid: -2,
 	publicAddress: 'https://www.w3.org/ns/activitystreams#Public',
+	acceptablePublicAddresses: ['https://www.w3.org/ns/activitystreams#Public', 'as:Public', 'Public'],
 	acceptableTypes: [
 		'application/activity+json',
 		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
