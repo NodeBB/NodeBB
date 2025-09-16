@@ -446,7 +446,7 @@ define('navigator', [
 			newUrl,
 			index,
 		};
-		hooks.fire('filter:navigator.generateUrl', data);
+		hooks.fire('action:navigator.generateUrl', data);
 		return data.newUrl;
 	}
 
