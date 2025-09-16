@@ -22,9 +22,9 @@ recentController.get = async function (req, res, next) {
 	res.render('recent', data);
 };
 
-recentController.getData = async function (req, url, sort) {
+recentController.getData = async function (req, url, sort, selectedTerm = 'alltime') {
 	const page = parseInt(req.query.page, 10) || 1;
-	let term = helpers.terms[req.query.term];
+	let term = helpers.terms[req.query.term || selectedTerm];
 	const { cid, tag } = req.query;
 	const filter = req.query.filter || '';
 
