@@ -337,6 +337,52 @@ Helpers.resolveObjects = async (ids) => {
 	return objects.length === 1 ? objects[0] : objects;
 };
 
+const titleishTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'title', 'p', 'span'];
+const titleRegex = new RegExp(`<(${titleishTags.join('|')})>(.+?)</\\1>`, 'm');
+Helpers.generateTitle = (html) => {
+	// Given an html string, generates a more appropriate title if possible
+	let title;
+
+	// Try the first paragraph-like element
+	const match = html.match(titleRegex);
+	if (match && match.index === 0) {
+		title = match[2];
+	}
+
+	// Fall back to newline splitting (i.e. if no paragraph elements)
+	title = title || html.split('\n').filter(Boolean).shift();
+
+	// Discard everything after a line break element
+	title = title.replace(/<br(\s\/)?>.*/g, '');
+
+	// Strip html
+	title = utils.stripHTMLTags(title);
+
+	// Split sentences and use only first one
+	const sentences = title
+		.split(/(\.|\?|!)\s/)
+		.reduce((memo, cur, idx, sentences) => {
+			if (idx % 2) {
+				memo.push(`${sentences[idx - 1]}${cur}`);
+			} else if (idx === sentences.length - 1) {
+				memo.push(cur);
+			}
+
+			return memo;
+		}, []);
+
+	if (sentences.length > 1) {
+		title = sentences.shift();
+	}
+
+	// Truncate down if too long
+	if (title.length > meta.config.maximumTitleLength) {
+		title = `${title.slice(0, meta.config.maximumTitleLength - 3)}...`;
+	}
+
+	return title;
+};
+
 Helpers.remoteAnchorToLocalProfile = async (content, isMarkdown = false) => {
 	let anchorRegex;
 	if (isMarkdown) {
