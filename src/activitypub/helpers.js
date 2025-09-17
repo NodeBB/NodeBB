@@ -8,6 +8,7 @@ const validator = require('validator');
 // const cheerio = require('cheerio');
 const crypto = require('crypto');
 
+const meta = require('../meta');
 const posts = require('../posts');
 const categories = require('../categories');
 const messaging = require('../messaging');
@@ -15,6 +16,7 @@ const request = require('../request');
 const db = require('../database');
 const ttl = require('../cache/ttl');
 const user = require('../user');
+const utils = require('../utils');
 const activitypub = require('.');
 
 const webfingerRegex = /^(@|acct:)?[\w-.]+@.+$/;
