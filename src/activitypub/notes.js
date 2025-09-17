@@ -165,7 +165,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 			// mainPid ok to leave as-is
 			if (!title) {
-				const sentences = tokenizer.sentences(content || sourceContent, { sanitize: true });
+				// Naive pre-processing prior to sbd tokenization
+				let sbdInput = content || sourceContent;
+				sbdInput = sbdInput.replace('</p><p>', '</p>\n<p>');
+
+				const sentences = tokenizer.sentences(sbdInput, { sanitize: true, newline_boundaries: true });
 				title = sentences.shift();
 			}
 
