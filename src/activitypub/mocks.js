@@ -603,7 +603,6 @@ Mocks.notes.public = async (post) => {
 	let inReplyTo = null;
 	let tag = null;
 	let followersUrl;
-	const isMainPost = post.pid === post.topic.mainPid;
 
 	let name = null;
 	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
@@ -716,7 +715,9 @@ Mocks.notes.public = async (post) => {
 	});
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
-	const noteAttachment = isMainPost ? [...attachment] : null;
+	const plaintext = posts.sanitizePlaintext(content);
+	const isArticle = post.pid === post.topic.mainPid && plaintext.length > 500;
+	const noteAttachment = isArticle ? [...attachment] : null;
 	const [uploads, thumbs] = await Promise.all([
 		posts.uploads.listWithSizes(post.pid),
 		topics.getTopicField(post.tid, 'thumbs'),
@@ -748,7 +749,7 @@ Mocks.notes.public = async (post) => {
 	attachment = normalizeAttachment(attachment);
 	let preview;
 	let summary = null;
-	if (isMainPost) {
+	if (isArticle) {
 		preview = {
 			type: 'Note',
 			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
@@ -798,7 +799,7 @@ Mocks.notes.public = async (post) => {
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
-		type: isMainPost ? 'Article' : 'Note',
+		type: isArticle ? 'Article' : 'Note',
 		to: Array.from(to),
 		cc: Array.from(cc),
 		inReplyTo,
