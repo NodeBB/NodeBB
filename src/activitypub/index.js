@@ -152,7 +152,23 @@ ActivityPub.resolveInboxes = async (ids) => {
 		batch: 500,
 	});
 
-	return Array.from(inboxes);
+	let inboxArr = Array.from(inboxes);
+
+	// Filter out blocked instances
+	const blocked = [];
+	inboxArr = inboxArr.filter((inbox) => {
+		const { hostname } = new URL(inbox);
+		const allowed = ActivityPub.instances.isAllowed(hostname);
+		if (!allowed) {
+			blocked.push(inbox);
+		}
+		return allowed;
+	});
+	if (blocked.length) {
+		ActivityPub.helpers.log(`[activitypub/resolveInboxes] Not delivering to blocked instances: ${blocked.join(', ')}`);
+	}
+
+	return inboxArr;
 };
 
 ActivityPub.getPublicKey = async (type, id) => {
@@ -303,6 +319,15 @@ ActivityPub.verify = async (req) => {
 ActivityPub.get = async (type, id, uri, options) => {
 	if (!meta.config.activitypubEnabled) {
 		throw new Error('[[error:activitypub.not-enabled]]');
+	}
+
+	const { hostname } = new URL(uri);
+	const allowed = ActivityPub.instances.isAllowed(hostname);
+	if (!allowed) {
+		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
+		const e = new Error(`[[error:activitypub.get-failed]]`);
+		e.code = `ap_get_domain_blocked`;
+		throw e;
 	}
 
 	options = {
