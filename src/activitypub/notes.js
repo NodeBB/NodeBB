@@ -20,15 +20,6 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Notes = module.exports;
 
-async function lock(value) {
-	const count = await db.incrObjectField('locks', value);
-	return count <= 1;
-}
-
-async function unlock(value) {
-	await db.deleteObjectField('locks', value);
-}
-
 Notes._normalizeTags = async (tag, cid) => {
 	const systemTags = (meta.config.systemTags || '').split(',');
 	const maxTags = await categories.getCategoryField(cid, 'maxTags');
@@ -64,7 +55,9 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	let id = !activitypub.helpers.isUri(input) ? input.id : input;
-	const lockStatus = await lock(id);
+
+	let lockStatus = await db.incrObjectField('locks', id);
+	lockStatus = lockStatus <= 1;
 	if (!lockStatus) { // unable to achieve lock, stop processing.
 		winston.warn(`[activitypub/notes.assert] Unable to acquire lock, skipping processing of ${id}`);
 		return null;
@@ -78,7 +71,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		let chain;
 		let context = await activitypub.contexts.get(uid, id);
 		if (context.tid) {
-			await unlock(id);
 			const { tid } = context;
 			return { tid, count: 0 };
 		} else if (context.context) {
@@ -99,7 +91,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		// Can't resolve — give up.
 		if (!chain.length) {
-			await unlock(id);
 			return null;
 		}
 
@@ -122,7 +113,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		if (tid && members.every(Boolean)) {
 			// All cached, return early.
 			activitypub.helpers.log('[notes/assert] No new notes to process.');
-			await unlock(id);
 			return { tid, count: 0 };
 		}
 
@@ -196,7 +186,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
 			}
 
-			await unlock(id);
 			return null;
 		}
 
@@ -237,7 +226,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				unprocessed.shift();
 			} catch (e) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Could not post topic (${mainPost.pid}): ${e.message}`);
-				await unlock(id);
 				return null;
 			}
 
@@ -273,16 +261,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 		}
 
-		await Promise.all([
-			Notes.syncUserInboxes(tid, uid),
-			unlock(id),
-		]);
-
+		await Notes.syncUserInboxes(tid, uid);
 		return { tid, count };
 	} catch (e) {
-		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}), releasing lock.`);
-		await unlock(id);
+		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
+	} finally {
+		winston.verbose(`[activitypub/notes.assert] Releasing lock (${id})`);
+		await db.deleteObjectField('locks', id);
 	}
 };
 

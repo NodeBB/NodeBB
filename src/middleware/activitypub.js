@@ -98,7 +98,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 		activitypub.helpers.log(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
 		return res.sendStatus(403);
 	}
-	await db.sortedSetAdd('instances:lastSeen', Date.now(), hostname);
+	await activitypub.instances.log(hostname);
 
 	// Origin checking
 	if (typeof object !== 'string' && object.hasOwnProperty('id')) {
