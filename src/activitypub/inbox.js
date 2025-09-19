@@ -298,6 +298,7 @@ inbox.announce = async (req) => {
 			const exists = await posts.exists(localId || id);
 			if (exists) {
 				try {
+					await activitypub.actors.assert(object.actor);
 					const result = await posts.upvote(localId || id, object.actor);
 					if (localId) {
 						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
