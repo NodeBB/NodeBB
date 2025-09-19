@@ -85,7 +85,8 @@ module.exports = function (module) {
 			text: `
 		SELECT o."_key"
 		FROM "legacy_object_live" o
-		WHERE o."_key" LIKE '${match}'`,
+		WHERE o."_key" LIKE $1`,
+			values: [match],
 		});
 
 		return res.rows.map(r => r._key);
