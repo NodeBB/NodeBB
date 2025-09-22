@@ -109,9 +109,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
 		}
 
-		const members = await db.isSortedSetMembers(`tid:${tid}:posts`, chain.slice(1).map(p => p.pid));
-		members.unshift(await posts.exists(mainPid));
-		if (tid && members.every(Boolean)) {
+		const exists = await posts.exists(chain.map(p => p.pid));
+		if (tid && exists.every(Boolean)) {
 			// All cached, return early.
 			activitypub.helpers.log('[notes/assert] No new notes to process.');
 			return { tid, count: 0 };
@@ -203,7 +202,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 
 			return post;
-		}).filter((p, idx) => !members[idx]);
+		}).filter((p, idx) => !exists[idx]);
 		const count = unprocessed.length;
 		activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
