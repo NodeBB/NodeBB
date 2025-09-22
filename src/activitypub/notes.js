@@ -30,11 +30,12 @@ Notes._normalizeTags = async (tag, cid) => {
 	}
 
 	tags = tags
+		.filter(({ type }) => type === 'Hashtag')
 		.map((tag) => {
 			tag.name = tag.name.startsWith('#') ? tag.name.slice(1) : tag.name;
 			return tag;
 		})
-		.filter(o => o.type === 'Hashtag' && !systemTags.includes(o.name))
+		.filter(({ name }) => !systemTags.includes(name))
 		.map(t => t.name);
 
 	if (tags.length > maxTags) {
