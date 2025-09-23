@@ -89,11 +89,12 @@ module.exports = function (Topics) {
 	Topics.post = async function (data) {
 		data = await plugins.hooks.fire('filter:topic.post', data);
 		const { uid } = data;
+		const remoteUid = !utils.isNumber(uid);
 
 		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
 			parseInt(data.cid, 10) > 0 ? categories.exists(data.cid) : true,
-			privileges.categories.can('topics:create', data.cid, uid),
-			privileges.categories.can('topics:tag', data.cid, uid),
+			privileges.categories.can('topics:create', data.cid, remoteUid ? -2 : uid),
+			privileges.categories.can('topics:tag', data.cid, remoteUid ? -2 : uid),
 			privileges.users.isAdministrator(uid),
 		]);
 
