@@ -218,7 +218,9 @@ categoriesController.removeRemote = async function (req, res) {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await db.sortedSetRemove('cid:0:children', req.params.cid);
-	cache.del('cid:0:children');
+	const parentCid = await categories.getCategoryField(req.params.cid, 'parentCid');
+	await db.sortedSetRemove(`cid:${parentCid || 0}:children`, req.params.cid);
+	cache.del(`cid:${parentCid || 0}:children`);
+
 	res.sendStatus(200);
 };
