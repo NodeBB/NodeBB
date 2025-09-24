@@ -113,7 +113,7 @@
 	"alert.add": "Aggiungi una categoria",
 	"alert.add-help": "Le categorie remote possono essere aggiunte all'elenco delle categorie specificando il loro identificatore.<br /><br /><strong>Nota</strong> — La categoria remota potrebbe non riflettere tutte le discussioni pubblicate a meno che almeno un utente locale non ne tenga traccia.",
 	"alert.rename": "Rename a Remote Category",
-	"alert.rename-help": "Please enter the a new name for this category. Leave blank to restore original name.",
+	"alert.rename-help": "Please enter a new name for this category. Leave blank to restore original name.",
 	"alert.confirm-remove": "Do you really want to remove this category? You can add it back at any time.",
 	"alert.confirm-purge": "<p class=\"lead\">Vuoi davvero eliminare definitivamente questa categoria \"%1\"?</p><h5><strong class=\"text-danger\">Attenzione!</strong>Tutte le discussioni e i post in questa categoria saranno eliminati definitivamente!</h5> <p class=\"help-block\">Eliminare definitivamente una categoria rimuoverà tutte le discussioni e i post ed eliminerà la categoria dal database. Se vuoi rimuovere una categoria <em>temporaneamente</em>, puoi invece \"disabilitare\" la categoria.",
 	"alert.purge-success": "Categoria eliminata definitivamente!",
