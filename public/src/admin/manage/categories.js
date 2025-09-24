@@ -81,7 +81,21 @@ define('admin/manage/categories', [
 			});
 		});
 
-		$('.categories').on('click', 'a[data-action="remove"]', Categories.removeCategory);
+		$('.categories').on('click', 'a[data-action]', function () {
+			const action = this.getAttribute('data-action');
+
+			switch (action) {
+				case 'remove': {
+					Categories.remove.call(this);
+					break;
+				}
+
+				case 'rename': {
+					Categories.rename.call(this);
+					break;
+				}
+			}
+		});
 
 		$('#toggle-collapse-all').on('click', function () {
 			const $this = $(this);
@@ -181,9 +195,24 @@ define('admin/manage/categories', [
 		});
 	};
 
-	Categories.removeCategory = function () {
-		const cid = this.getAttribute('data-cid');
-		api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
+	Categories.remove = function () {
+		bootbox.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
+			if (ok) {
+				const cid = this.getAttribute('data-cid');
+				api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
+			}
+		});
+	};
+
+	Categories.rename = function () {
+		bootbox.prompt({
+			title: '[[admin/manage/categories:alert.rename]]',
+			message: '<p class="mb-3">[[admin/manage/categories:alert.rename-help]]</p>',
+			callback: (name) => {
+				const cid = this.getAttribute('data-cid');
+				api.post(`/api/admin/manage/categories/${encodeURIComponent(cid)}/name`, { name }).then(ajaxify.refresh);
+			},
+		});
 	};
 
 	Categories.create = function (payload) {

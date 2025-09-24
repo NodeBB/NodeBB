@@ -117,7 +117,7 @@ function modifyCategory(category, fields) {
 
 	db.parseIntFields(category, intFields, fields);
 
-	const escapeFields = ['name', 'description', 'federatedDescription', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
+	const escapeFields = ['name', 'nickname', 'description', 'federatedDescription', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
 	escapeFields.forEach((field) => {
 		if (category.hasOwnProperty(field)) {
 			category[field] = validator.escape(String(category[field] || ''));
@@ -138,5 +138,9 @@ function modifyCategory(category, fields) {
 
 	if (category.description) {
 		category.descriptionParsed = category.descriptionParsed || category.description;
+	}
+
+	if (category.nickname) {
+		category.name = category.nickname;
 	}
 }
