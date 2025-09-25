@@ -155,7 +155,7 @@
         "workerpool": "9.3.4",
         "xml": "1.0.1",
         "xregexp": "5.1.2",
-        "yargs": "17.7.2",
+        "yargs": "18.0.0",
         "zxcvbn": "4.4.2"
     },
     "devDependencies": {
