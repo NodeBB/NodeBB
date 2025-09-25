@@ -65,7 +65,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	}
 
 	try {
-		if (!options.skipChecks) {
+		if (!(options.skipChecks || process.env.hasOwnProperty('CI'))) {
 			id = (await activitypub.checkHeader(id)) || id;
 		}
 

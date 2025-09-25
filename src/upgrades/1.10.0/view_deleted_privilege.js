@@ -11,6 +11,7 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 		const cids = await db.getSortedSetRange('categories:cid', 0, -1);
+		progress.total = cids.length;
 		for (const cid of cids) {
 			const uids = await db.getSortedSetRange(`group:cid:${cid}:privileges:moderate:members`, 0, -1);
 			for (const uid of uids) {
