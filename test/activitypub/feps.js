@@ -63,20 +63,20 @@ describe('FEPs', () => {
 					activitypub._sent.clear();
 				});
 
-				it('should have federated out both Announce(Create(Article)) and Announce(Article)', () => {
+				it('should have federated out both Announce(Create(Note)) and Announce(Note)', () => {
 					const activities = Array.from(activitypub._sent);
 
 					const test1 = activities.some((activity) => {
 						[, activity] = activity;
 						return activity.type === 'Announce' &&
 							activity.object && activity.object.type === 'Create' &&
-							activity.object.object && activity.object.object.type === 'Article';
+							activity.object.object && activity.object.object.type === 'Note';
 					});
 
 					const test2 = activities.some((activity) => {
 						[, activity] = activity;
 						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Article';
+							activity.object && activity.object.type === 'Note';
 					});
 
 					assert(test1 && test2);

@@ -522,7 +522,7 @@ ActivityPub.record = async ({ id, type, actor }) => {
 
 	await Promise.all([
 		db.sortedSetAdd(`activities:datetime`, now, id),
-		db.sortedSetAdd('domains:lastSeen', now, hostname),
+		ActivityPub.instances.log(hostname),
 		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
 	]);
 };
