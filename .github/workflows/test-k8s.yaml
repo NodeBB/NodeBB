@@ -1,0 +1,90 @@
+name: K8S Integration test
+
+on:
+  push:
+    branches:
+    - master
+    - develop
+  pull_request:
+    types: [assigned]
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    permissions:
+      checks: write # for coverallsapp/github-action to create new checks
+      contents: read # for actions/checkout to fetch code
+    name: K8S Integration test
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+    - name: Create k3d cluster
+      uses: stevefan1999-personal/k3d-action@main
+      with:
+        cluster-name: "nodebb-test"
+        args: --agents 0 -i ghcr.io/jlian/k3d-nfs:v1.25.3-k3s1
+    - name: Install NFS Server Provisioner
+      run: |
+        kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+        helm repo add nfs-ganesha-server-and-external-provisioner https://kubernetes-sigs.github.io/nfs-ganesha-server-and-external-provisioner/
+        helm install -n kube-system nfs-provisioner nfs-ganesha-server-and-external-provisioner/nfs-server-provisioner \
+          --set persistence.storageClass=local-path \
+          --set persistence.enabled=true \
+          --set persistence.size=20Gi \
+          --set storageClass.defaultClass=true
+    - name: Install Verdaccio
+      run: |
+        helm repo add verdaccio https://charts.verdaccio.org
+        helm install npm verdaccio/verdaccio \
+          --set persistence.storageClass=local-path \
+          --set persistence.enabled=true \
+          --set persistence.size=20Gi
+    - name: Add charts repositories
+      run: |
+        for dir in $(ls -d charts/*/); do
+          helm dependency list $dir 2> /dev/null | tail +2 | head -n -1 | awk '{ print "helm repo add " $1 " " $3 }' | while read cmd; do $cmd; done
+        done
+    - name: Build NodeBB chart dependencies
+      run: |
+        cd ./charts/nodebb
+        helm dependency build
+    - name: Install example NodeBB chart based on Redis
+      run: |
+        cd ./charts/nodebb
+        helm upgrade --create-namespace -n redis --install redis-test . -f ./values.yaml -f ./values.example.redis.yaml --set env[0].name=NPM_CONFIG_REGISTRY --set env[0].value=http://npm-verdaccio.default:4873/
+        kubectl wait pod -n redis --all --for=condition=Ready --timeout=30m
+        helm uninstall -n redis redis-test --wait
+    - name: Install example NodeBB chart based on Mongo
+      run: |
+        cd ./charts/nodebb
+        helm upgrade --create-namespace -n mongo --install mongo-test . -f ./values.yaml -f ./values.example.mongo.yaml --set env[0].name=NPM_CONFIG_REGISTRY --set env[0].value=http://npm-verdaccio.default:4873/
+        kubectl wait pod -n mongo --all --for=condition=Ready --timeout=30m
+        helm uninstall -n mongo mongo-test --wait
+    - name: Install example NodeBB chart based on Postgres
+      run: |
+        cd ./charts/nodebb
+        helm upgrade --create-namespace -n postgres --install postgres-test . -f ./values.yaml -f ./values.example.postgres.yaml --set env[0].name=NPM_CONFIG_REGISTRY --set env[0].value=http://npm-verdaccio.default:4873/
+        kubectl wait pod -n postgres --all --for=condition=Ready --timeout=30m
+        helm uninstall -n postgres postgres-test --wait
+    - name: Remove all PVC and pods
+      if: always()
+      run: |
+        helm uninstall npm --wait
+        kubectl delete pvc --all -n redis --wait
+        kubectl delete pvc --all -n mongo --wait
+        kubectl delete pvc --all -n postgres --wait
+        helm uninstall -n kube-system nfs-provisioner --wait
