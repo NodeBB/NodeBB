@@ -27,12 +27,16 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 		}
 		initialTags = selectedTags.slice();
 
-		const toggleSearchVisibilty = searchEl.parents('[component="tag/filter"]').length &&
+		const toggleSearchVisibilty = searchEl.parent('[component="tag/filter"]').length &&
 			app.user.privileges['search:tags'];
 
 		el.on('show.bs.dropdown', function () {
 			if (toggleSearchVisibilty) {
+				el.find('.dropdown-toggle').css({ visibility: 'hidden' });
 				searchEl.removeClass('hidden');
+				searchEl.css({
+					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
+				});
 			}
 
 			function doSearch() {
@@ -63,6 +67,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 
 		el.on('hidden.bs.dropdown', function () {
 			if (toggleSearchVisibilty) {
+				el.find('.dropdown-toggle').css({ visibility: 'inherit' });
 				searchEl.addClass('hidden');
 			}
 
@@ -98,7 +103,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 				}
 				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
-					url += '?' + $.param(currentParams);
+					url += '?' + decodeURIComponent($.param(currentParams));
 				}
 				ajaxify.go(url);
 			}
@@ -134,12 +139,23 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 			if (options.onSelect) {
 				options.onSelect({ tag: tag, selectedTags: selectedTags.slice() });
 			}
+			
+			// Manually close dropdown to avoid issues with Bootstrap and
+			// long tag lists that require scrolling
+			const dropdownToggle = el.find('.dropdown-toggle').get(0);
+			if (dropdownToggle) {
+				const bsDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
+				if (bsDropdown) {
+					bsDropdown.hide();
+				}
+			}
+
 			return false;
 		});
 
 		function loadList(query, callback) {
 			let cids = null;
-			if (ajaxify.data.template.category || ajaxify.data.template.world) {
+			if (ajaxify.data.template.category) {
 				cids = [ajaxify.data.cid];
 			// selectedCids is avaiable on /recent, /unread, /popular etc.
 			} else if (Array.isArray(ajaxify.data.selectedCids) && ajaxify.data.selectedCids.length) {
@@ -159,7 +175,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 		function renderList(tags) {
 			const selectedTags = options.selectedTags;
 			tags.forEach(function (tag) {
-				tag.selected = selectedTags.includes(tag.value);
+				tag.selected = selectedTags.includes(tag.valueEscaped);
 			});
 
 			app.parseAndTranslate(options.template, {

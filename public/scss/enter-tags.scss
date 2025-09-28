@@ -1,0 +1,17 @@
+.composer {
+    .tag-row {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 8px;
+        background: #f8f9fa;
+        margin-bottom: 10px;
+        
+        .bootstrap-tagsinput {
+            border: 1px solid #ced4da !important;
+            border-radius: 4px !important;
+            background: white !important;
+            padding: 6px !important;
+            min-height: 38px !important;
+        }
+    }
+}
