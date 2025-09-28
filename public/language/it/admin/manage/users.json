@@ -59,7 +59,7 @@
 	"users.no-email": "(nessuna email)",
 	"users.validated": "Convalidato",
 	"users.not-validated": "Non convalidato",
-	"users.validation-pending": "In attesa di convalida",
+	"users.validation-pending": "Validazione in sospeso",
 	"users.validation-expired": "Convalida scaduta",
 	"users.ip": "IP",
 	"users.postcount": "numero di post",
