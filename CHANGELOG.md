@@ -1,3 +1,75 @@
+#### v4.5.2 (2025-09-29)
+
+##### Chores
+
+*  remove obsolete deprecation (52fec493)
+*  up persona (405d2172)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  update changelog for v4.5.1 (a9fffd7c)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add a term param to recent controller so it can be controller without req.query.term (9c18c6fe)
+*  add a new hook to override generateUrl in navigator.js (68a8db85)
+*  add topic templates per category, closes #13649 (0311b98e)
+
+##### Bug Fixes
+
+*  skip header checking during note assertion if test runner is active (7abdfd86)
+*  update note assertion topic members check to simpler posts.exists check (d0c05826)
+*  re-jig handling of ap tag values so that only hashtags are considered (not Piefed community tags, etc.) (4d68e3fe)
+*  missing actor assertion on 1b12 announced upboat (f9edb13f)
+*  use parameterized query for key lookup (6cca55e3)
+*  add pre-processing step to title generation logic so sbd doesn't fall over so badly (f7c47429)
+*  switch to action (f7bbec7c)
+*  handle cases where incoming ap object tag can be a non-array (b66c30a2)
+*  local pids not always converted to absolute URLs on topic actor controller (f67942ca)
+*  #13657, fix remote category data inconsistency in `sendNotificationToPostOwner` (225bf85e)
+*  don't show votes on unread if rep system disabled (dfe19a98)
+*  if reputation is disabled hide votes on /recent (8a786c71)
+*  favicon path (e2dc592c)
+*  check brand:touchIcon for correct path (56fad0be)
+*  remove .auth call (f9ddbeba)
+*  port the try/catch for notes.assert from develop (f9688b36)
+*  perform Link header check on note assertion only when skipChecks is falsy (953c051c)
+*  make auto-categorization logic case-insensitive (527f27af)
+*  closes #13641, log test email sending errors server side (b3ffa007)
+*  pass object to.auth (290a9395)
+* **deps:**  bump 2factor to 7.6.0 (d1f5060f)
+
+##### Other Changes
+
+*  remove unused (a6674f67)
+*  fix (a37521b0)
+
+##### Performance Improvements
+
+*  update upgrade script to use bulk methods (0a2fa45d)
+*  update old upgrade scripts to use bulkSet/Add (32d0ee48)
+
 #### v4.5.1 (2025-09-04)
 
 ##### Chores
