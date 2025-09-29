@@ -441,7 +441,13 @@ define('navigator', [
 	function generateUrl(index) {
 		const pathname = window.location.pathname.replace(config.relative_path, '');
 		const parts = pathname.split('/');
-		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		const newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		const data = {
+			newUrl,
+			index,
+		};
+		hooks.fire('action:navigator.generateUrl', data);
+		return data.newUrl;
 	}
 
 	navigator.getCount = () => count;

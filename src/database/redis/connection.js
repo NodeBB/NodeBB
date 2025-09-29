@@ -69,10 +69,6 @@ connection.connect = async function (options) {
 		}).catch((err) => {
 			winston.error('Error connecting to Redis:', err);
 		});
-
-		if (options.password) {
-			cxn.auth(options.password);
-		}
 	});
 };
 

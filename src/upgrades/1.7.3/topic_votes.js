@@ -10,32 +10,42 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
-		batch.processSortedSet('topics:tid', async (tids) => {
-			await Promise.all(tids.map(async (tid) => {
-				progress.incr();
-				const topicData = await db.getObjectFields(`topic:${tid}`, ['mainPid', 'cid', 'pinned']);
-				if (topicData.mainPid && topicData.cid) {
-					const postData = await db.getObject(`post:${topicData.mainPid}`);
-					if (postData) {
-						const upvotes = parseInt(postData.upvotes, 10) || 0;
-						const downvotes = parseInt(postData.downvotes, 10) || 0;
-						const data = {
-							upvotes: upvotes,
-							downvotes: downvotes,
-						};
-						const votes = upvotes - downvotes;
-						await Promise.all([
-							db.setObject(`topic:${tid}`, data),
-							db.sortedSetAdd('topics:votes', votes, tid),
-						]);
-						if (parseInt(topicData.pinned, 10) !== 1) {
-							await db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, votes, tid);
-						}
+		progress.total = await db.sortedSetCard('topics:tid');
+
+		await batch.processSortedSet('topics:tid', async (tids) => {
+			const topicsData = await db.getObjectsFields(
+				tids.map(tid => `topic:${tid}`),
+				['tid', 'mainPid', 'cid', 'pinned'],
+			);
+			const mainPids = topicsData.map(topicData => topicData && topicData.mainPid);
+			const mainPosts = await db.getObjects(mainPids.map(pid => `post:${pid}`));
+
+			const bulkSet = [];
+			const bulkAdd = [];
+
+			topicsData.forEach((topicData, index) => {
+				const mainPost = mainPosts[index];
+				if (mainPost && topicData && topicData.cid) {
+					const upvotes = parseInt(mainPost.upvotes, 10) || 0;
+					const downvotes = parseInt(mainPost.downvotes, 10) || 0;
+					const data = {
+						upvotes: upvotes,
+						downvotes: downvotes,
+					};
+					const votes = upvotes - downvotes;
+					bulkSet.push([`topic:${topicData.tid}`, data]);
+					bulkAdd.push(['topics:votes', votes, topicData.tid]);
+					if (parseInt(topicData.pinned, 10) !== 1) {
+						bulkAdd.push([`cid:${topicData.cid}:tids:votes`, votes, topicData.tid]);
 					}
 				}
-			}));
+			});
+
+			await db.setObjectBulk(bulkSet);
+			await db.sortedSetAddBulk('topics:votes', bulkAdd);
+
+			progress.incr(tids.length);
 		}, {
-			progress: progress,
 			batch: 500,
 		});
 	},

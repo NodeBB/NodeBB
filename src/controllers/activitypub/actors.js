@@ -136,6 +136,7 @@ Actors.topic = async function (req, res, next) {
 		let collection;
 		let pids;
 		try {
+			// pids are used in generation of digest only.
 			([collection, pids] = await Promise.all([
 				activitypub.helpers.generateCollection({
 					set: `tid:${req.params.tid}:posts`,
@@ -151,7 +152,6 @@ Actors.topic = async function (req, res, next) {
 		}
 		pids.push(mainPid);
 		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
-		collection.totalItems += 1; // account for mainPid
 
 		// Generate digest for ETag
 		const digest = activitypub.helpers.generateDigest(new Set(pids));
@@ -168,14 +168,17 @@ Actors.topic = async function (req, res, next) {
 		}
 		res.set('ETag', digest);
 
-		// Convert pids to urls
+		// Add OP to collection on first (or only) page
 		if (page || collection.totalItems < perPage) {
 			collection.orderedItems = collection.orderedItems || [];
-			if (!page || page === 1) { // add OP to collection
+			if (!page || page === 1) {
 				collection.orderedItems.unshift(mainPid);
+				collection.totalItems += 1;
 			}
-			collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		}
+
+		// Convert pids to urls
+		collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 
 		const object = {
 			'@context': 'https://www.w3.org/ns/activitystreams',

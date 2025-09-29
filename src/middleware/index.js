@@ -145,12 +145,18 @@ middleware.logApiUsage = async function logApiUsage(req, res, next) {
 };
 
 middleware.routeTouchIcon = function routeTouchIcon(req, res) {
-	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
-		return res.redirect(meta.config['brand:touchIcon']);
+	const brandTouchIcon = meta.config['brand:touchIcon'];
+	if (brandTouchIcon && validator.isURL(brandTouchIcon)) {
+		return res.redirect(brandTouchIcon);
 	}
+
 	let iconPath = '';
-	if (meta.config['brand:touchIcon']) {
-		iconPath = path.join(nconf.get('upload_path'), meta.config['brand:touchIcon'].replace(/assets\/uploads/, ''));
+	if (brandTouchIcon) {
+		const uploadPath = nconf.get('upload_path');
+		iconPath = path.join(uploadPath, brandTouchIcon.replace(/assets\/uploads/, ''));
+		if (!iconPath.startsWith(uploadPath)) {
+			return res.status(404).send('Not found');
+		}
 	} else {
 		iconPath = path.join(nconf.get('base_dir'), 'public/images/touch/512.png');
 	}

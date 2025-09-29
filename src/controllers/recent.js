@@ -22,9 +22,9 @@ recentController.get = async function (req, res, next) {
 	res.render('recent', data);
 };
 
-recentController.getData = async function (req, url, sort) {
+recentController.getData = async function (req, url, sort, selectedTerm = 'alltime') {
 	const page = parseInt(req.query.page, 10) || 1;
-	let term = helpers.terms[req.query.term];
+	let term = helpers.terms[req.query.term || selectedTerm];
 	const { cid, tag } = req.query;
 	const filter = req.query.filter || '';
 
@@ -79,6 +79,7 @@ recentController.getData = async function (req, url, sort) {
 	data.selectedTag = tagData.selectedTag;
 	data.selectedTags = tagData.selectedTags;
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
+	data['reputation:disabled'] = meta.config['reputation:disabled'];
 	if (!meta.config['feeds:disableRSS']) {
 		data.rssFeedUrl = `${relative_path}/${url}.rss`;
 		if (req.loggedIn) {
