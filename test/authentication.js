@@ -5,8 +5,8 @@ const assert = require('assert');
 const url = require('url');
 const nconf = require('nconf');
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const user = require('../src/user');
 const utils = require('../src/utils');
 const meta = require('../src/meta');
@@ -52,8 +52,8 @@ describe('authentication', () => {
 		meta.config.allowLoginWith = 'username-email';
 		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
 		const { response, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
-		assert.strictEqual(response.statusCode, 403);
-		assert.strictEqual(body, '[[error:invalid-login-credentials]]');
+		assert.strictEqual(response.statusCode, 400);
+		assert.strictEqual(body, '[[error:invalid-email]]');
 		meta.config.allowLoginWith = oldValue;
 	});
 

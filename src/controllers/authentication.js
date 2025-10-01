@@ -262,6 +262,8 @@ authenticationController.login = async (req, res, next) => {
 			const username = await user.getUsernameByEmail(req.body.username);
 			if (username !== '[[global:guest]]') {
 				req.body.username = username;
+			} else {
+				return errorHandler(req, res, '[[error:invalid-email]]', 400);
 			}
 		}
 		if (isEmailLogin || isUsernameLogin) {
