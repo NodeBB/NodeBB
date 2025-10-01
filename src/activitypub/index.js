@@ -565,42 +565,58 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 
 ActivityPub.checkHeader = async (url, timeout) => {
 	timeout = timeout || meta.config.activitypubProbeTimeout || 2000;
-	const { response } = await request.head(url, {
-		timeout,
-	});
-	const { headers } = response;
-	if (headers && headers.link) {
-		// Multiple link headers could be combined
-		const links = headers.link.split(',');
-		let apLink = false;
 
-		links.forEach((link) => {
-			let parts = link.split(';');
-			const url = parts.shift().match(/<(.+)>/)[1];
-			if (!url || apLink) {
-				return;
-			}
-
-			parts = parts
-				.map(p => p.trim())
-				.reduce((memo, cur) => {
-					cur = cur.split('=');
-					if (cur.length < 2) {
-						cur.push('');
-					}
-					memo[cur[0]] = cur[1].slice(1, -1);
-					return memo;
-				}, {});
-
-			if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
-				apLink = url;
-			}
+	try {
+		const { hostname } = new URL(url);
+		const { response } = await request.head(url, {
+			timeout,
 		});
+		const { headers } = response;
 
-		return apLink;
+		// headers.link =
+		if (headers && headers.link) {
+			// Multiple link headers could be combined
+			const links = headers.link.split(',');
+			let apLink = false;
+
+			links.forEach((link) => {
+				let parts = link.split(';');
+				const url = parts.shift().match(/<(.+)>/)[1];
+				if (!url || apLink) {
+					return;
+				}
+
+				parts = parts
+					.map(p => p.trim())
+					.reduce((memo, cur) => {
+						cur = cur.split('=');
+						if (cur.length < 2) {
+							cur.push('');
+						}
+						memo[cur[0]] = cur[1].slice(1, -1);
+						return memo;
+					}, {});
+
+				if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
+					apLink = url;
+				}
+			});
+
+			if (apLink) {
+				const { hostname: compare } = new URL(apLink);
+				if (hostname !== compare) {
+					apLink = false;
+				}
+			}
+
+			return apLink;
+		}
+
+		return false;
+	} catch (e) {
+		ActivityPub.helpers.log(`[activitypub/checkHeader] Failed on ${url}: ${e.message}`);
+		return false;
 	}
-
-	return false;
 };
 
 ActivityPub.probe = async ({ uid, url }) => {
