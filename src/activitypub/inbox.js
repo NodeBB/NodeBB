@@ -32,11 +32,15 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 	}).catch(err => winston.error(err.stack));
 }
 
+function publiclyAddressed(recipients) {
+	return activitypub._constants.acceptablePublicAddresses.some(address => recipients.includes(address));
+}
+
 inbox.create = async (req) => {
 	const { object, actor } = req.body;
 
 	// Alternative logic for non-public objects
-	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);
+	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 	if (!isPublic) {
 		return await activitypub.notes.assertPrivate(object);
 	}
@@ -76,7 +80,7 @@ inbox.add = async (req) => {
 
 inbox.update = async (req) => {
 	const { actor, object } = req.body;
-	const isPublic = [...(object.to || []), ...(object.cc || [])].includes(activitypub._constants.publicAddress);
+	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 
 	// Origin checking
 	const actorHostname = new URL(actor).hostname;

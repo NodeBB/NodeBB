@@ -193,6 +193,7 @@ async function setupMockDefaults() {
 	meta.config.initialPostDelay = 0;
 	meta.config.newbiePostDelay = 0;
 	meta.config.autoDetectLang = 0;
+	meta.config.activitypubProbeTimeout = 30000;
 
 	require('../../src/groups').cache.reset();
 	require('../../src/posts/cache').getOrCreate().reset();

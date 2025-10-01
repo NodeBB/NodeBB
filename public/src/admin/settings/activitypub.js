@@ -6,7 +6,8 @@ define('admin/settings/activitypub', [
 	'categorySelector',
 	'api',
 	'alerts',
-], function (Benchpress, bootbox, categorySelector, api, alerts) {
+	'translator',
+], function (Benchpress, bootbox, categorySelector, api, alerts, translator) {
 	const Module = {};
 
 	Module.init = function () {
@@ -94,6 +95,21 @@ define('admin/settings/activitypub', [
 			modal.on('shown.bs.modal', function () {
 				modal.find('input').focus();
 			});
+
+
+			// help text
+			const updateHelp = async (key, el) => {
+				const text = await translator.translate(`[[admin/settings/activitypub:rules.help-${key}]]`);
+				el.innerHTML = text;
+			};
+			const helpTextEl = modal.get(0).querySelector('#help-text');
+			const typeEl = modal.get(0).querySelector('#type');
+			updateHelp(modal.get(0).querySelector('#type option').value, helpTextEl);
+			if (typeEl && helpTextEl) {
+				typeEl.addEventListener('change', function () {
+					updateHelp(this.value, helpTextEl);
+				});
+			}
 
 			// category switcher
 			categorySelector.init(modal.find('[component="category-selector"]'), {

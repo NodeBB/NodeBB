@@ -43,6 +43,8 @@
 						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/analytics" role="menuitem">[[admin/manage/categories:analytics]]</a></li>
 						<li><a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/privileges/{categories.cid}" role="menuitem">[[admin/manage/categories:privileges]]</a></li>
 						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/federation" role="menuitem">[[admin/manage/categories:federation]]</a></li>
+						{{{ else }}}
+						<li><a class="dropdown-item rounded-1" href="#" data-cid="{./cid}" data-action="rename" role="menuitem">[[admin/manage/categories:rename]]</a></li>
 						{{{ end }}}
 						<li><a href="#" class="set-order dropdown-item rounded-1" data-cid="{categories.cid}" data-order="{categories.order}" role="menuitem">[[admin/manage/categories:set-order]]</a></li>
 						<li class="dropdown-divider"></li>

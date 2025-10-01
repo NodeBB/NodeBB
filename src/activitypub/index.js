@@ -38,6 +38,7 @@ const ActivityPub = module.exports;
 ActivityPub._constants = Object.freeze({
 	uid: -2,
 	publicAddress: 'https://www.w3.org/ns/activitystreams#Public',
+	acceptablePublicAddresses: ['https://www.w3.org/ns/activitystreams#Public', 'as:Public', 'Public'],
 	acceptableTypes: [
 		'application/activity+json',
 		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
@@ -151,7 +152,23 @@ ActivityPub.resolveInboxes = async (ids) => {
 		batch: 500,
 	});
 
-	return Array.from(inboxes);
+	let inboxArr = Array.from(inboxes);
+
+	// Filter out blocked instances
+	const blocked = [];
+	inboxArr = inboxArr.filter((inbox) => {
+		const { hostname } = new URL(inbox);
+		const allowed = ActivityPub.instances.isAllowed(hostname);
+		if (!allowed) {
+			blocked.push(inbox);
+		}
+		return allowed;
+	});
+	if (blocked.length) {
+		ActivityPub.helpers.log(`[activitypub/resolveInboxes] Not delivering to blocked instances: ${blocked.join(', ')}`);
+	}
+
+	return inboxArr;
 };
 
 ActivityPub.getPublicKey = async (type, id) => {
@@ -302,6 +319,15 @@ ActivityPub.verify = async (req) => {
 ActivityPub.get = async (type, id, uri, options) => {
 	if (!meta.config.activitypubEnabled) {
 		throw new Error('[[error:activitypub.not-enabled]]');
+	}
+
+	const { hostname } = new URL(uri);
+	const allowed = ActivityPub.instances.isAllowed(hostname);
+	if (!allowed) {
+		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
+		const e = new Error(`[[error:activitypub.get-failed]]`);
+		e.code = `ap_get_domain_blocked`;
+		throw e;
 	}
 
 	options = {
@@ -496,7 +522,7 @@ ActivityPub.record = async ({ id, type, actor }) => {
 
 	await Promise.all([
 		db.sortedSetAdd(`activities:datetime`, now, id),
-		db.sortedSetAdd('domains:lastSeen', now, hostname),
+		ActivityPub.instances.log(hostname),
 		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
 	]);
 };
@@ -565,42 +591,58 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 
 ActivityPub.checkHeader = async (url, timeout) => {
 	timeout = timeout || meta.config.activitypubProbeTimeout || 2000;
-	const { response } = await request.head(url, {
-		timeout,
-	});
-	const { headers } = response;
-	if (headers && headers.link) {
-		// Multiple link headers could be combined
-		const links = headers.link.split(',');
-		let apLink = false;
 
-		links.forEach((link) => {
-			let parts = link.split(';');
-			const url = parts.shift().match(/<(.+)>/)[1];
-			if (!url || apLink) {
-				return;
-			}
-
-			parts = parts
-				.map(p => p.trim())
-				.reduce((memo, cur) => {
-					cur = cur.split('=');
-					if (cur.length < 2) {
-						cur.push('');
-					}
-					memo[cur[0]] = cur[1].slice(1, -1);
-					return memo;
-				}, {});
-
-			if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
-				apLink = url;
-			}
+	try {
+		const { hostname } = new URL(url);
+		const { response } = await request.head(url, {
+			timeout,
 		});
+		const { headers } = response;
 
-		return apLink;
+		// headers.link =
+		if (headers && headers.link) {
+			// Multiple link headers could be combined
+			const links = headers.link.split(',');
+			let apLink = false;
+
+			links.forEach((link) => {
+				let parts = link.split(';');
+				const url = parts.shift().match(/<(.+)>/)[1];
+				if (!url || apLink) {
+					return;
+				}
+
+				parts = parts
+					.map(p => p.trim())
+					.reduce((memo, cur) => {
+						cur = cur.split('=');
+						if (cur.length < 2) {
+							cur.push('');
+						}
+						memo[cur[0]] = cur[1].slice(1, -1);
+						return memo;
+					}, {});
+
+				if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
+					apLink = url;
+				}
+			});
+
+			if (apLink) {
+				const { hostname: compare } = new URL(apLink);
+				if (hostname !== compare) {
+					apLink = false;
+				}
+			}
+
+			return apLink;
+		}
+
+		return false;
+	} catch (e) {
+		ActivityPub.helpers.log(`[activitypub/checkHeader] Failed on ${url}: ${e.message}`);
+		return false;
 	}
-
-	return false;
 };
 
 ActivityPub.probe = async ({ uid, url }) => {

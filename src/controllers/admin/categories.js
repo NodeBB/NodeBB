@@ -65,9 +65,9 @@ categoriesController.getAll = async function (req, res) {
 	}
 
 	const fields = [
-		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
+		'cid', 'name', 'nickname', 'icon', 'parentCid', 'disabled', 'link',
 		'order', 'color', 'bgColor', 'backgroundImage', 'imageClass',
-		'subCategoriesPerPage', 'description',
+		'subCategoriesPerPage', 'description', 'descriptionParsed',
 	];
 	let categoriesData = await categories.getCategoriesFields(cids, fields);
 	({ categories: categoriesData } = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields }));
@@ -213,12 +213,25 @@ categoriesController.addRemote = async function (req, res) {
 	res.sendStatus(200);
 };
 
+categoriesController.renameRemote = async (req, res) => {
+	if (utils.isNumber(req.params.cid)) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	const { name } = req.body;
+	await categories.setCategoryField(req.params.cid, 'nickname', name);
+
+	res.sendStatus(200);
+};
+
 categoriesController.removeRemote = async function (req, res) {
 	if (utils.isNumber(req.params.cid)) {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await db.sortedSetRemove('cid:0:children', req.params.cid);
-	cache.del('cid:0:children');
+	const parentCid = await categories.getCategoryField(req.params.cid, 'parentCid');
+	await db.sortedSetRemove(`cid:${parentCid || 0}:children`, req.params.cid);
+	cache.del(`cid:${parentCid || 0}:children`);
+
 	res.sendStatus(200);
 };

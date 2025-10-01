@@ -11,7 +11,7 @@ Instances.log = async (domain) => {
 
 Instances.getCount = async () => db.sortedSetCard('instances:lastSeen');
 
-Instances.isAllowed = async (domain) => {
+Instances.isAllowed = (domain) => {
 	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;
 	list = new Set(String(list).split('\n'));
 	// eslint-disable-next-line no-bitwise
