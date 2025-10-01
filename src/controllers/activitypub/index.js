@@ -48,6 +48,11 @@ Controller.fetch = async (req, res, next) => {
 			}
 		}
 
+		// Force outgoing links page on direct access
+		if (!res.locals.isAPI) {
+			url = new URL(`outgoing?url=${encodeURIComponent(url.href)}`, nconf.get('url'));
+		}
+
 		helpers.redirect(res, url.href, false);
 	} catch (e) {
 		if (!url || !url.href) {
