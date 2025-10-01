@@ -8,7 +8,6 @@ const user = require('../user');
 const plugins = require('../plugins');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
-const { secureRandom } = require('../utils');
 
 const Controllers = module.exports;
 
