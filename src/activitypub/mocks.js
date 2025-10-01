@@ -33,6 +33,7 @@ const sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat(['img', 'picture', 'source']),
 	allowedClasses: {
 		'*': [],
+		'p': ['quote-inline'],
 	},
 	allowedAttributes: {
 		a: ['href', 'rel'],

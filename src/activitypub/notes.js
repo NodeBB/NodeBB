@@ -156,7 +156,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 			// mainPid ok to leave as-is
 			if (!title) {
-				const prettified = pretty(content || sourceContent);
+				let prettified = pretty(content || sourceContent);
+
+				// Remove any lines that contain quote-post fallbacks
+				prettified = prettified.split('\n').filter(line => !line.startsWith('<p class="quote-inline"')).join('\'n');
 				const sentences = tokenizer.sentences(prettified, { sanitize: true, newline_boundaries: true });
 				title = sentences.shift();
 			}
