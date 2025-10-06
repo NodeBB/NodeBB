@@ -350,7 +350,7 @@ activitypubApi.announce = {};
 activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
 
-	// Only remote posts can be announced to real categories
+	// Only remote posts can be announced to local categories
 	if (utils.isNumber(pid) || parseInt(cid, 10) === -1) {
 		return;
 	}
@@ -376,6 +376,63 @@ activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
 		cc,
 		object: pid,
 		target: `${nconf.get('url')}/category/${cid}`,
+	});
+});
+
+activitypubApi.announce.delete = enabledCheck(async ({ uid }, { tid }) => {
+	const now = new Date();
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+
+	// Only local categories
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const allowed = await privileges.categories.can('topics:read', cid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [`${nconf.get('url')}/category/${cid}/followers`],
+	}, { cid });
+
+	const deleteTpl = {
+		id: `${nconf.get('url')}/topic/${tid}#activity/delete/${now.getTime()}`,
+		type: 'Delete',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to,
+		cc,
+		origin: `${nconf.get('url')}/category/${cid}`,
+	};
+
+	// 7888 variant
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/topic/${tid}#activity/announce/delete/${now.getTime()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to,
+		cc,
+		object: {
+			...deleteTpl,
+			object: `${nconf.get('url')}/topic/${tid}`,
+		},
+	});
+
+	// 1b12 variant
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/delete/${now.getTime()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to,
+		cc,
+		object: {
+			...deleteTpl,
+			actor: `${nconf.get('url')}/uid/${uid}`,
+			object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+		},
 	});
 });
 

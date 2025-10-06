@@ -34,6 +34,7 @@ module.exports = function (Posts) {
 		await Promise.all([
 			topics.updateLastPostTimeFromLastPid(postData.tid),
 			topics.updateTeaser(postData.tid),
+			isDeleting ? activitypub.notes.delete(pid) : null,
 			isDeleting ?
 				db.sortedSetRemove(`cid:${topicData.cid}:pids`, pid) :
 				db.sortedSetAdd(`cid:${topicData.cid}:pids`, postData.timestamp, pid),

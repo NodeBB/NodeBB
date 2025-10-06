@@ -8,6 +8,7 @@ const categories = require('../categories');
 const flags = require('../flags');
 const plugins = require('../plugins');
 const batch = require('../batch');
+const api = require('../api');
 const utils = require('../utils');
 
 module.exports = function (Topics) {
@@ -80,6 +81,7 @@ module.exports = function (Topics) {
 		}
 		deletedTopic.tags = tags;
 		await deleteFromFollowersIgnorers(tid);
+		await api.activitypub.announce.delete({ uid }, { tid }),
 
 		await Promise.all([
 			db.deleteAll([
