@@ -25,6 +25,7 @@ module.exports = function (Topics) {
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
+			api.activitypub.announce.delete({ uid }, { tid }),
 		]);
 
 		await categories.updateRecentTidForCid(cid);
