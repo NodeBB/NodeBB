@@ -210,7 +210,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
 		if (!hasTid) {
-			const { to, cc, attachment } = mainPost._activitypub;
+			const { to, cc } = mainPost._activitypub;
 			const tags = await Notes._normalizeTags(mainPost._activitypub.tag || []);
 
 			try {
@@ -239,7 +239,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 					id: tid,
 					path: mainPost._activitypub.image,
 				}) : null,
-				posts.attachments.update(mainPid, attachment),
 			]);
 
 			if (context) {
@@ -249,16 +248,13 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		for (const post of unprocessed) {
-			const { to, cc, attachment } = post._activitypub;
+			const { to, cc } = post._activitypub;
 
 			try {
 				// eslint-disable-next-line no-await-in-loop
 				await topics.reply(post);
 				// eslint-disable-next-line no-await-in-loop
-				await Promise.all([
-					Notes.updateLocalRecipients(post.pid, { to, cc }),
-					posts.attachments.update(post.pid, attachment),
-				]);
+				await Notes.updateLocalRecipients(post.pid, { to, cc });
 			} catch (e) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Could not add reply (${post.pid}): ${e.message}`);
 			}

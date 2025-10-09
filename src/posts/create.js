@@ -71,6 +71,8 @@ module.exports = function (Posts) {
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
 		postData.cid = topicData.cid;
 
+		const hasAttachment = _activitypub.attachment && _activitypub.attachment.length;
+
 		await Promise.all([
 			db.sortedSetAdd('posts:pid', timestamp, postData.pid),
 			utils.isNumber(pid) ? db.incrObjectField('global', 'postCount') : null,
@@ -79,7 +81,8 @@ module.exports = function (Posts) {
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
 			groups.onNewPostMade(postData),
 			addReplyTo(postData, timestamp),
-			Posts.uploads.sync(postData.pid),
+			Posts.uploads.sync(pid),
+			hasAttachment ? Posts.attachments.update(pid, _activitypub.attachment) : null,
 		]);
 
 		const result = await plugins.hooks.fire('filter:post.get', { post: postData, uid: data.uid });
