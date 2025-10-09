@@ -101,6 +101,7 @@
         "nodebb-plugin-dbsearch": "6.3.2",
         "nodebb-plugin-emoji": "6.0.3",
         "nodebb-plugin-emoji-android": "4.1.1",
+	"nodebb-plugin-link-preview": "2.1.5",
         "nodebb-plugin-markdown": "13.2.1",
         "nodebb-plugin-mentions": "4.7.6",
         "nodebb-plugin-spam-be-gone": "2.3.2",
