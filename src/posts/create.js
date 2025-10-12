@@ -71,7 +71,7 @@ module.exports = function (Posts) {
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
 		postData.cid = topicData.cid;
 
-		const hasAttachment = _activitypub.attachment && _activitypub.attachment.length;
+		const hasAttachment = _activitypub && _activitypub.attachment && _activitypub.attachment.length;
 
 		await Promise.all([
 			db.sortedSetAdd('posts:pid', timestamp, postData.pid),
