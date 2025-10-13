@@ -104,7 +104,7 @@ Mocks._normalize = async (object) => {
 	if (image) {
 		const parsed = new URL(image);
 		const type = mime.getType(parsed.pathname);
-		if (!type || type.startsWith('image/')) {
+		if (!type || !type.startsWith('image/')) {
 			activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 			image = null;
 		}
