@@ -21,15 +21,11 @@ Feps.announce = async function announce(id, activity) {
 	 *  - local tids (posted to remote cids) only
 	 */
 	const tid = await posts.getPostField(localId || id, 'tid');
-	let cid = await topics.getTopicField(tid, 'cid');
+	const cid = await topics.getTopicField(tid, 'cid');
 	const localCid = utils.isNumber(cid) && cid > 0;
 	const shouldAnnounce = localCid || utils.isNumber(tid);
 	if (!shouldAnnounce) { // inverse conditionals can kiss my ass.
 		return;
-	}
-
-	if (!localCid) {
-		cid = 0; // override cid to 0 so application actor sends the announce
 	}
 
 	let relays = await activitypub.relays.list();
@@ -39,7 +35,7 @@ Feps.announce = async function announce(id, activity) {
 		}
 		return memo;
 	}, []);
-	const followers = await activitypub.notes.getCategoryFollowers(cid);
+	const followers = localCid ? await activitypub.notes.getCategoryFollowers(cid) : [cid];
 	const targets = relays.concat(followers);
 	if (!targets.length) {
 		return;
@@ -54,7 +50,7 @@ Feps.announce = async function announce(id, activity) {
 		const isMain = await posts.isMain(localId || id);
 		if (isMain) {
 			activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing plain object (${activity.id}) to followers of cid ${cid} and ${relays.length} relays`);
-			await activitypub.send('cid', cid, targets, {
+			await activitypub.send('cid', localCid ? cid : 0, targets, {
 				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now}`,
 				type: 'Announce',
 				actor: `${nconf.get('url')}/category/${cid}`,
@@ -66,7 +62,7 @@ Feps.announce = async function announce(id, activity) {
 	}
 
 	activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} (${activity.id}) to followers of cid ${cid} and ${relays.length} relays`);
-	await activitypub.send('cid', cid, targets, {
+	await activitypub.send('cid', localCid ? cid : 0, targets, {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now + 1}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/category/${cid}`,
