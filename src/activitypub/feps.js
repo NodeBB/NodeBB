@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 
 const posts = require('../posts');
+const topics = require('../topics');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -13,8 +14,16 @@ Feps.announce = async function announce(id, activity) {
 	if (String(id).startsWith(nconf.get('url'))) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
 	}
-	const cid = await posts.getCidByPid(localId || id);
-	if (cid === -1 || !utils.isNumber(cid)) { // local cids only
+
+	/**
+	 * Re-broadcasting occurs on
+	 *  - local cids (for all tids), and
+	 *  - local tids (posted to remote cids) only
+	 */
+	const tid = await posts.getPostField(localId || id, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
+	const shouldAnnounce = (utils.isNumber(cid) && cid > 0) || utils.isNumber(tid);
+	if (!shouldAnnounce) { // inverse conditionals can kiss my ass.
 		return;
 	}
 
