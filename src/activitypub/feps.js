@@ -21,10 +21,15 @@ Feps.announce = async function announce(id, activity) {
 	 *  - local tids (posted to remote cids) only
 	 */
 	const tid = await posts.getPostField(localId || id, 'tid');
-	const cid = await topics.getTopicField(tid, 'cid');
-	const shouldAnnounce = (utils.isNumber(cid) && cid > 0) || utils.isNumber(tid);
+	let cid = await topics.getTopicField(tid, 'cid');
+	const localCid = utils.isNumber(cid) && cid > 0;
+	const shouldAnnounce = localCid || utils.isNumber(tid);
 	if (!shouldAnnounce) { // inverse conditionals can kiss my ass.
 		return;
+	}
+
+	if (!localCid) {
+		cid = 0; // override cid to 0 so application actor sends the announce
 	}
 
 	let relays = await activitypub.relays.list();

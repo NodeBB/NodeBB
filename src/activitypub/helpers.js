@@ -225,7 +225,7 @@ Helpers.resolveActor = (type, id) => {
 
 		case 'category':
 		case 'cid': {
-			return `${nconf.get('url')}/category/${id}`;
+			return `${nconf.get('url')}${id > 0 ? `/category/${id}` : '/actor'}`;
 		}
 
 		default:
