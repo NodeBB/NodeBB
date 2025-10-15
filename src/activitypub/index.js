@@ -201,7 +201,7 @@ ActivityPub.getPrivateKey = async (type, id) => {
 	if (type === 'uid') {
 		keyId = `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}#key`;
 	} else {
-		keyId = `${nconf.get('url')}/category/${id}#key`;
+		keyId = `${nconf.get('url')}${id > 0 ? `/category/${id}` : '/actor'}#key`;
 	}
 
 	return { key: privateKey, keyId };
