@@ -42,7 +42,7 @@ Feps.announce = async function announce(id, activity) {
 	}
 
 	const { actor } = activity;
-	if (actor && !actor.startsWith(nconf.get('url'))) {
+	if (localCid && actor && !actor.startsWith(nconf.get('url'))) {
 		targets.unshift(actor);
 	}
 	const now = Date.now();
