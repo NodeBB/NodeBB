@@ -7,7 +7,6 @@ const topics = require('.');
 const categories = require('../categories');
 const user = require('../user');
 const plugins = require('../plugins');
-const api = require('../api');
 const privileges = require('../privileges');
 const utils = require('../utils');
 
@@ -277,13 +276,6 @@ module.exports = function (Topics) {
 
 		const oldCid = topicData.cid;
 		await categories.moveRecentReplies(tid, oldCid, cid);
-
-		// AP: Announce(Delete(Object))
-		if (cid === -1) {
-			await api.activitypub.announce.delete({ uid: data.uid }, { tid });
-		} else {
-			// tbd: api.activitypub.announce.move
-		}
 
 		await Promise.all([
 			Topics.setTopicFields(tid, {

@@ -320,7 +320,16 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			socketHelpers.emitToUids('event:topic_moved', topicData, notifyUids);
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
-				activitypubApi.announce.note(caller, { tid });
+
+				// AP: Announce(Delete(Object))
+				if (cid === -1) {
+					await activitypubApi.announce.delete({ uid: caller.uid }, { tid });
+					// tbd: activitypubApi.undo.announce?
+				} else {
+					// tbd: some kind of plain object announce by the category...
+					activitypubApi.announce.note(caller, { tid }); // user announce, remove when discrete announces are a thing
+					// tbd: api.activitypub.announce.move
+				}
 			}
 
 			await events.log({
