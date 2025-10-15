@@ -46,6 +46,12 @@ Feps.announce = async function announce(id, activity) {
 		targets.unshift(actor);
 	}
 	const now = Date.now();
+	const to = [localCid ? `${nconf.get('url')}/category/${cid}/followers` : cid];
+	const cc = [activitypub._constants.publicAddress];
+	if (localCid) {
+		cc.unshift(actor);
+	}
+
 	if (activity.type === 'Create') {
 		const isMain = await posts.isMain(localId || id);
 		if (isMain) {
@@ -53,9 +59,9 @@ Feps.announce = async function announce(id, activity) {
 			await activitypub.send('cid', localCid ? cid : 0, targets, {
 				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now}`,
 				type: 'Announce',
-				actor: `${nconf.get('url')}/category/${cid}`,
-				to: [`${nconf.get('url')}/category/${cid}/followers`],
-				cc: [actor, activitypub._constants.publicAddress],
+				actor: localCid ? `${nconf.get('url')}/category/${cid}` : `${nconf.get('url')}/actor`,
+				to,
+				cc,
 				object: activity.object,
 			});
 		}
@@ -65,9 +71,9 @@ Feps.announce = async function announce(id, activity) {
 	await activitypub.send('cid', localCid ? cid : 0, targets, {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now + 1}`,
 		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
-		to: [`${nconf.get('url')}/category/${cid}/followers`],
-		cc: [actor, activitypub._constants.publicAddress],
+		actor: localCid ? `${nconf.get('url')}/category/${cid}` : `${nconf.get('url')}/actor`,
+		to,
+		cc,
 		object: activity,
 	});
 };
