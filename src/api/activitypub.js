@@ -347,7 +347,40 @@ activitypubApi.like.note = enabledCheck(async (caller, { pid }) => {
 
 activitypubApi.announce = {};
 
-activitypubApi.announce.note = enabledCheck(async (caller, { tid }) => {
+activitypubApi.announce.category = enabledCheck(async (_, { tid }) => {
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+
+	// Only local categories can announce
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const uid = await posts.getPostField(pid, 'uid'); // author
+	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		id: pid,
+		to: [activitypub._constants.publicAddress],
+		cc: [`${nconf.get('url')}/category/${cid}/followers`, uid],
+	}, { cid, uid: utils.isNumber(uid) ? uid : undefined });
+
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to,
+		cc,
+		object: pid,
+		target: `${nconf.get('url')}/category/${cid}`,
+	});
+});
+
+activitypubApi.announce.user = enabledCheck(async (caller, { tid }) => {
+	// ORPHANED, but will re-use when user announces are a thing.
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
 
 	// Only remote posts can be announced to local categories

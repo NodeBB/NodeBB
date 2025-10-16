@@ -326,8 +326,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 					await activitypubApi.announce.delete({ uid: caller.uid }, { tid });
 					// tbd: activitypubApi.undo.announce?
 				} else {
-					// tbd: some kind of plain object announce by the category...
-					activitypubApi.announce.note(caller, { tid }); // user announce, remove when discrete announces are a thing
+					activitypubApi.announce.category(caller, { tid });
 					// tbd: api.activitypub.announce.move
 				}
 			}
