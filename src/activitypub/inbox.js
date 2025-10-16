@@ -321,6 +321,12 @@ inbox.announce = async (req) => {
 			break;
 		}
 
+		case object.type === 'Delete': {
+			req.body = object;
+			await inbox.delete(req);
+			break;
+		}
+
 		case object.type === 'Create': {
 			object = object.object;
 			// falls through
