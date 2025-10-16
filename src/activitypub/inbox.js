@@ -188,14 +188,14 @@ inbox.delete = async (req) => {
 			throw new Error('[[error:invalid-pid]]');
 		}
 	}
-	const pid = object.id || object;
+	const id = object.id || object;
 	let type = object.type || undefined;
 
 	// Deletes don't have their objects resolved automatically
 	let method = 'purge';
 	try {
 		if (!type) {
-			({ type } = await activitypub.get('uid', 0, pid));
+			({ type } = await activitypub.get('uid', 0, id));
 		}
 
 		if (type === 'Tombstone') {
@@ -208,27 +208,41 @@ inbox.delete = async (req) => {
 	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
 
-	const objectHostname = new URL(pid).hostname;
+	const objectHostname = new URL(id).hostname;
 	if (actorHostname !== objectHostname) {
 		return reject('Delete', object, actor);
 	}
 
-	const [isNote/* , isActor */] = await Promise.all([
-		posts.exists(pid),
+	const [isNote, isContext/* , isActor */] = await Promise.all([
+		posts.exists(id),
+		activitypub.contexts.getItems(0, id, { returnRootId: true }),
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
 	switch (true) {
 		case isNote: {
-			const cid = await posts.getCidByPid(pid);
+			const cid = await posts.getCidByPid(id);
 			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
 			if (!allowed) {
 				return reject('Delete', object, actor);
 			}
 
-			const uid = await posts.getPostField(pid, 'uid');
-			await activitypub.feps.announce(pid, req.body);
-			await api.posts[method]({ uid }, { pid });
+			const uid = await posts.getPostField(id, 'uid');
+			await activitypub.feps.announce(id, req.body);
+			await api.posts[method]({ uid }, { pid: id });
+			break;
+		}
+
+		case !!isContext: {
+			const pid = isContext;
+			const exists = await posts.exists(pid);
+			if (!exists) {
+				activitypub.helpers.log(`[activitypub/inbox.delete] Context main pid (${pid}) not found locally. Doing nothing.`);
+				return;
+			}
+			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
+			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
 		}
 
@@ -238,7 +252,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${pid}) does not exist locally. Doing nothing.`);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${id}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}
