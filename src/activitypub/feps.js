@@ -23,7 +23,8 @@ Feps.announce = async function announce(id, activity) {
 	const tid = await posts.getPostField(localId || id, 'tid');
 	const cid = await topics.getTopicField(tid, 'cid');
 	const localCid = utils.isNumber(cid) && cid > 0;
-	const shouldAnnounce = localCid || utils.isNumber(tid);
+	const addressed = activitypub.helpers.addressed(cid, activity);
+	const shouldAnnounce = localCid || (utils.isNumber(tid) && !addressed);
 	if (!shouldAnnounce) { // inverse conditionals can kiss my ass.
 		return;
 	}
