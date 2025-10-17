@@ -25,6 +25,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		userAgentIcons,
 		buildAvatar,
 		increment,
+		lessthan,
+		greaterthan,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -326,6 +328,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function increment(value, inc) {
 		return String(value + parseInt(inc, 10));
+	}
+
+	function lessthan(a, b) {
+		return parseInt(a, 10) < parseInt(b, 10);
+	}
+
+	function greaterthan(a, b) {
+		return parseInt(a, 10) > parseInt(b, 10);
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {
