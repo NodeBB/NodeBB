@@ -1,3 +1,129 @@
+#### v4.6.0 (2025-10-01)
+
+##### Chores
+
+*  remove unneeded secureRandom require (3fcaa678)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  update changelog for v4.5.2 (9a596d67)
+*  fix grammatical error in language string (cf3964be)
+*  remove formatApiResponse logging (feda629f)
+*  up eslint (a5ea4b40)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  update default settings (5d653571)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **deps:**
+  *  update dependency lint-staged to v16.2.3 (#13681) (d7e93a5d)
+  *  update actions/download-artifact action to v5 (#13646) (30ca0000)
+  *  update dependency @eslint/js to v9.36.0 (#13670) (a4d8619b)
+  *  update commitlint monorepo to v20 (#13678) (6dab3f2e)
+  *  update dependency @stylistic/eslint-plugin to v5.4.0 (#13671) (3370c064)
+  *  update dependency lint-staged to v16.2.1 (#13672) (13ce106b)
+  *  update dependency sass-embedded to v1.93.2 (#13673) (df9d637c)
+  *  update dependency jsdom to v27 (#13653) (3238248e)
+  *  update dependency sass-embedded to v1.92.1 (#13638) (15b0b540)
+  *  update dependency lint-staged to v16.1.6 (#13635) (7147a2e3)
+  *  update actions/setup-node action to v5 (#13647) (4f5e770c)
+  *  update dependency mocha to v11.7.2 (#13636) (ac90ef8c)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-manage-categories (6055b345)
+  *  fallback strings for new resources: nodebb.admin-manage-categories (8730073a)
+  *  fallback strings for new resources: nodebb.admin-manage-categories (8d4e4652)
+  *  fallback strings for new resources: nodebb.admin-settings-activitypub (89390101)
+
+##### Documentation Changes
+
+*  update openapi schema to refer to try.nodebb.org instead of example.org (56a93366)
+
+##### New Features
+
+*  ability to nickname remote categories, closes #13677 (bd80b77a)
+*  allow activities to be addressed to as:Public or Public to be treated as public content (5f4790a4)
+*  allow user auto-categorization rule (1d6a9fe7)
+*  add minor pre-processing step to better handle header elements in incoming html (15f9fbaa)
+
+##### Bug Fixes
+
+*  login handler to handle if non-confirmed email is entered (5ed19ef8)
+*  allow quote-inline class in mocks sanitizer so quote-post fallback elements can be detected and removed during title generation, fixes #13688 (675178ac)
+*  force outgoing page on direct access to `/ap` handler (9cee7999)
+*  update outgoing page to match 404 design (954e7bc8)
+*  don\'t begin processing local login if the passed-in username isn't even valid (c3df68f2)
+*  #13667, record to instances:lastSeen instead of domains:lastSeen (7184507b)
+*  #13676, bug where nested remote categories could not be removed (175dc209)
+*  regression 218f5ea from via, stricter check on whether the calling user is a remote uid (8c553b18)
+*  #13668, privilege checking on topic create for remote users; was not properly checking against fediverse pseudo-user (218f5eab)
+*  update logic as to whether a post is served as an article or not (d122bf4a)
+*  update activitypubFilterList logic so that it is also checked on resolveInbox and ActivityPub.get methods, updated instances.isAllowed to no longer return a promise (be9212b5)
+*  add missing unlock in nested try/catch (9184a7a4)
+*  wrap majority of note assertion logic in try..catch to handle exceptions so that the lock is always released (95fb084c)
+*  use newline_boundaries param for tokenizer during title and summary generation, attempt to serve HTML in summary generation (2ea624fc)
+*  deprecated call to api.topics.move (0f9015f0)
+* **deps:**
+  *  update dependency webpack to v5.102.0 (#13683) (17dba0b0)
+  *  update dependency mongodb to v6.20.0 (#13665) (9b00ff1e)
+  *  update dependency lru-cache to v11.2.2 (#13669) (00d80616)
+  *  update dependency sass to v1.93.2 (#13674) (1b5804e1)
+  *  update fontsource monorepo (#13663) (6e84e35f)
+  *  update dependency esbuild to v0.25.10 (#13664) (9b48bbd5)
+  *  update dependency sharp to v0.34.4 (#13662) (c8680f30)
+  *  update dependency satori to v0.18.3 (#13660) (b2d91dc3)
+  *  update dependency nodebb-theme-harmony to v2.1.20 (#13659) (b845aa48)
+  *  update dependency fs-extra to v11.3.2 (#13658) (8324be2d)
+  *  update dependency @fontsource/inter to v5.2.7 (#13655) (db892509)
+  *  update dependency commander to v14.0.1 (#13652) (19f39198)
+  *  update dependency bootswatch to v5.3.8 (#13651) (1e82af66)
+  *  update dependency sass to v1.92.1 (#13645) (10344c98)
+  *  update dependency workerpool to v9.3.4 (#13650) (6a1e9e8a)
+  *  update dependency lru-cache to v11.2.1 (#13644) (6adfbb24)
+
+##### Other Changes
+
+*  disallow checkHeader from returning a URL from a different origin than the passed-in URL (4776d012)
+*  'nickname' and 'descriptionParsed' use in categories controller (051043b6)
+
+##### Performance Improvements
+
+*  update old upgrade scripts to use bulkSet/Add (2b987d09)
+
+##### Refactors
+
+*  notes.assert to add finally block, update assertPayload to update instances:lastSeen via method instead of direct db call (559155da)
+
+##### Reverts
+
+*  post queue changes to fix tests (10350ea6)
+
+##### Tests
+
+*  fix message (d6e7e168)
+*  show tids on test fail (8614d825)
+*  more fixes for note vs. article (3bba9029)
+*  short OPs create Notes again (15878087)
+*  ap timeouts (8d6a0f02)
+*  disable post queue when testing posting logic (9bfce68b)
+
 #### v4.5.2 (2025-09-29)
 
 ##### Chores

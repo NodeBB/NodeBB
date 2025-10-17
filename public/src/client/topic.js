@@ -358,7 +358,6 @@ define('forum/topic', [
 						const postContent = link.parents('[component="topic"]').find('[component="post/content"]').first();
 						const postRect = postContent.offset();
 						const postWidth = postContent.width();
-						const linkRect = link.offset();
 						const { top } = link.get(0).getBoundingClientRect();
 						const dropup = top > window.innerHeight / 2;
 						tooltip.on('mouseenter', function () {
@@ -366,11 +365,16 @@ define('forum/topic', [
 						});
 						tooltip.one('mouseleave', destroyTooltip);
 						$(window).off('click', onClickOutside).one('click', onClickOutside);
-						tooltip.css({
-							top: dropup ? linkRect.top - tooltip.outerHeight() : linkRect.top + 30,
+						const css = {
 							left: postRect.left,
 							width: postWidth,
-						});
+						};
+						if (dropup) {
+							css.bottom = window.innerHeight - top - window.scrollY + 5;
+						} else {
+							css.top = top + window.scrollY + 30;
+						}
+						tooltip.css(css);
 					}
 				}
 

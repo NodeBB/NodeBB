@@ -104,7 +104,7 @@ Mocks._normalize = async (object) => {
 	if (image) {
 		const parsed = new URL(image);
 		const type = mime.getType(parsed.pathname);
-		if (!type || type.startsWith('image/')) {
+		if (!type || !type.startsWith('image/')) {
 			activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 			image = null;
 		}
@@ -486,35 +486,37 @@ Mocks.actors.user = async (uid) => {
 	});
 
 	return {
-		'@context': [
-			'https://www.w3.org/ns/activitystreams',
-			'https://w3id.org/security/v1',
-		],
-		id: `${nconf.get('url')}/uid/${uid}`,
-		url: `${nconf.get('url')}/user/${userslug}`,
-		followers: `${nconf.get('url')}/uid/${uid}/followers`,
-		following: `${nconf.get('url')}/uid/${uid}/following`,
-		inbox: `${nconf.get('url')}/uid/${uid}/inbox`,
-		outbox: `${nconf.get('url')}/uid/${uid}/outbox`,
+		...{
+			'@context': [
+				'https://www.w3.org/ns/activitystreams',
+				'https://w3id.org/security/v1',
+			],
+			id: `${nconf.get('url')}/uid/${uid}`,
+			url: `${nconf.get('url')}/user/${userslug}`,
+			followers: `${nconf.get('url')}/uid/${uid}/followers`,
+			following: `${nconf.get('url')}/uid/${uid}/following`,
+			inbox: `${nconf.get('url')}/uid/${uid}/inbox`,
+			outbox: `${nconf.get('url')}/uid/${uid}/outbox`,
 
-		type: 'Person',
-		name: username !== displayname ? fullname : username, // displayname is escaped, fullname is not
-		preferredUsername: userslug,
-		summary: aboutmeParsed,
-		icon: picture,
-		image: cover,
-		published: new Date(joindate).toISOString(),
-		attachment,
+			type: 'Person',
+			name: username !== displayname ? fullname : username, // displayname is escaped, fullname is not
+			preferredUsername: userslug,
+			summary: aboutmeParsed,
+			published: new Date(joindate).toISOString(),
+			attachment,
 
-		publicKey: {
-			id: `${nconf.get('url')}/uid/${uid}#key`,
-			owner: `${nconf.get('url')}/uid/${uid}`,
-			publicKeyPem: publicKey,
+			publicKey: {
+				id: `${nconf.get('url')}/uid/${uid}#key`,
+				owner: `${nconf.get('url')}/uid/${uid}`,
+				publicKeyPem: publicKey,
+			},
+
+			endpoints: {
+				sharedInbox: `${nconf.get('url')}/inbox`,
+			},
 		},
-
-		endpoints: {
-			sharedInbox: `${nconf.get('url')}/inbox`,
-		},
+		...(picture && { icon: picture }),
+		...(cover && { image: cover }),
 	};
 };
 
