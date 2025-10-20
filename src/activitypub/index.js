@@ -406,6 +406,7 @@ async function sendMessage(uri, id, type, payload) {
 }
 
 ActivityPub.send = async (type, id, targets, payload) => {
+	console.log('sending', payload, targets);
 	if (!meta.config.activitypubEnabled) {
 		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
 	}

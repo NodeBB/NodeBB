@@ -412,63 +412,6 @@ activitypubApi.announce.user = enabledCheck(async (caller, { tid }) => {
 	});
 });
 
-activitypubApi.announce.delete = enabledCheck(async ({ uid }, { tid }) => {
-	const now = new Date();
-	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
-
-	// Only local categories
-	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
-		return;
-	}
-
-	const allowed = await privileges.categories.can('topics:read', cid, activitypub._constants.uid);
-	if (!allowed) {
-		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
-		return;
-	}
-
-	const { to, cc, targets } = await activitypub.buildRecipients({
-		to: [activitypub._constants.publicAddress],
-		cc: [`${nconf.get('url')}/category/${cid}/followers`],
-	}, { cid });
-
-	const deleteTpl = {
-		id: `${nconf.get('url')}/topic/${tid}#activity/delete/${now.getTime()}`,
-		type: 'Delete',
-		actor: `${nconf.get('url')}/category/${cid}`,
-		to,
-		cc,
-		origin: `${nconf.get('url')}/category/${cid}`,
-	};
-
-	// 7888 variant
-	await activitypub.send('cid', cid, Array.from(targets), {
-		id: `${nconf.get('url')}/topic/${tid}#activity/announce/delete/${now.getTime()}`,
-		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
-		to,
-		cc,
-		object: {
-			...deleteTpl,
-			object: `${nconf.get('url')}/topic/${tid}`,
-		},
-	});
-
-	// 1b12 variant
-	await activitypub.send('cid', cid, Array.from(targets), {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/delete/${now.getTime()}`,
-		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
-		to,
-		cc,
-		object: {
-			...deleteTpl,
-			actor: `${nconf.get('url')}/uid/${uid}`,
-			object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-		},
-	});
-});
-
 activitypubApi.undo = {};
 
 // activitypubApi.undo.follow =
@@ -572,4 +515,39 @@ activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
 		},
 	});
 	await db.sortedSetRemove(`flag:${flag.flagId}:remote`, caller.uid);
+});
+
+activitypubApi.remove = {};
+
+activitypubApi.remove.context = enabledCheck(async ({ uid }, { tid }) => {
+	// Federates Remove(Context); where Context is the tid
+	const now = new Date();
+	const cid = await topics.getTopicField(tid, 'cid');
+
+	// Only local categories
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const allowed = await privileges.categories.can('topics:read', cid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating deletion of tid ${tid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [`${nconf.get('url')}/category/${cid}/followers`],
+	}, { cid });
+
+	// Remove(Context)
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/topic/${tid}#activity/remove/${now.getTime()}`,
+		type: 'Remove',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to,
+		cc,
+		object: `${nconf.get('url')}/topic/${tid}`,
+		origin: `${nconf.get('url')}/category/${cid}`,
+	});
 });

@@ -182,6 +182,7 @@ inbox.update = async (req) => {
 
 inbox.delete = async (req) => {
 	const { actor, object } = req.body;
+	console.log(actor, object);
 	if (typeof object !== 'string') {
 		const { id } = object;
 		if (!id) {
@@ -200,8 +201,6 @@ inbox.delete = async (req) => {
 
 		if (type === 'Tombstone') {
 			method = 'delete'; // soft delete
-		} else if (activitypub._constants.acceptable.contextTypes.includes(type)) {
-			method = 'move'; // move to cid -1
 		}
 	} catch (e) {
 		// probably 410/404
@@ -221,11 +220,7 @@ inbox.delete = async (req) => {
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
-	// 'move' method only applicable for contexts
-	if (method === 'move' && !isContext) {
-		return reject('Delete', object, actor);
-	}
-
+	console.log(isNote, isContext);
 	switch (true) {
 		case isNote: {
 			const cid = await posts.getCidByPid(id);
@@ -248,13 +243,8 @@ inbox.delete = async (req) => {
 				return;
 			}
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
-			if (method === 'move') {
-				activitypub.helpers.log(`[activitypub/inbox.delete] Moving tid ${tid} to cid -1.`);
-				await api.topics.move({ uid }, { tid, cid: -1 });
-			} else {
-				activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
-				await api.topics[method]({ uid }, { tids: [tid] });
-			}
+			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
+			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
 		}
 
@@ -344,12 +334,6 @@ inbox.announce = async (req) => {
 		case object.type === 'Update': {
 			req.body = object;
 			await inbox.update(req);
-			break;
-		}
-
-		case object.type === 'Delete': {
-			req.body = object;
-			await inbox.delete(req);
 			break;
 		}
 

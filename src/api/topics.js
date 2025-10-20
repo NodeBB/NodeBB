@@ -321,13 +321,12 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
-				// AP: Announce(Delete(Object))
 				if (cid === -1) {
-					await activitypubApi.announce.delete({ uid: caller.uid }, { tid });
+					// tbd: activitypubApi.move (to null target)
 					// tbd: activitypubApi.undo.announce?
 				} else {
 					activitypubApi.announce.category(caller, { tid });
-					// tbd: api.activitypub.announce.move
+					// tbd: api.activitypub.move
 				}
 			}
 
