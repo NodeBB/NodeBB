@@ -322,11 +322,11 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
 				if (cid === -1) {
-					// tbd: activitypubApi.move (to null target)
+					activitypubApi.remove.context(caller, { tid });
 					// tbd: activitypubApi.undo.announce?
 				} else {
+					// tbd: activitypubApi.move
 					activitypubApi.announce.category(caller, { tid });
-					// tbd: api.activitypub.move
 				}
 			}
 

@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const api = require('../api');
+const utils = require('../utils');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -76,6 +77,42 @@ inbox.add = async (req) => {
 			}
 		}
 	}
+};
+
+inbox.remove = async (req) => {
+	const { actor, object } = req.body;
+
+	const isContext = activitypub._constants.acceptable.contextTypes.has(object.type);
+	if (!isContext) {
+		return; // don't know how to handle other types
+	}
+	console.log('isContext?', isContext);
+
+	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
+	const exists = await posts.exists(mainPid);
+	if (!exists) {
+		return; // post not cached; do nothing.
+	}
+	console.log('mainPid is', mainPid);
+
+	// Ensure that cid is same-origin as the actor
+	const tid = await posts.getPostField(mainPid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
+	if (utils.isNumber(cid)) {
+		// remote removal of topic in local cid; what??
+		return;
+	}
+	const actorHostname = new URL(actor).hostname;
+	const cidHostname = new URL(cid).hostname;
+	if (actorHostname !== cidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/remove] Removing topic ${tid} from ${cid}`);
+	await topics.tools.move(tid, {
+		cid: -1,
+		uid: 'system',
+	});
 };
 
 inbox.update = async (req) => {
@@ -182,7 +219,6 @@ inbox.update = async (req) => {
 
 inbox.delete = async (req) => {
 	const { actor, object } = req.body;
-	console.log(actor, object);
 	if (typeof object !== 'string') {
 		const { id } = object;
 		if (!id) {
@@ -220,7 +256,6 @@ inbox.delete = async (req) => {
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
-	console.log(isNote, isContext);
 	switch (true) {
 		case isNote: {
 			const cid = await posts.getCidByPid(id);

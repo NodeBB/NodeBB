@@ -541,7 +541,7 @@ activitypubApi.remove.context = enabledCheck(async ({ uid }, { tid }) => {
 	}, { cid });
 
 	// Remove(Context)
-	await activitypub.send('cid', cid, Array.from(targets), {
+	await activitypub.send('uid', uid, Array.from(targets), {
 		id: `${nconf.get('url')}/topic/${tid}#activity/remove/${now.getTime()}`,
 		type: 'Remove',
 		actor: `${nconf.get('url')}/uid/${uid}`,
