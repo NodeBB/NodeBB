@@ -88,6 +88,11 @@
 					<label for="allowTopicsThumbnail" class="form-check-label">[[admin/settings/uploads:allow-topic-thumbnails]]</label>
 				</div>
 
+					<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="showPostUploadsAsThumbnails" data-field="showPostUploadsAsThumbnails">
+					<label for="showPostUploadsAsThumbnails" class="form-check-label">[[admin/settings/uploads:show-post-uploads-as-thumbnails]]</label>
+				</div>
+
 				<div class="mb-3">
 					<label class="form-label" for="topicThumbSize">[[admin/settings/uploads:topic-thumb-size]]</label>
 					<input id="topicThumbSize" type="text" class="form-control" value="120" data-field="topicThumbSize">

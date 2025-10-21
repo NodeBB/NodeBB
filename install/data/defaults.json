@@ -38,6 +38,7 @@
     "maximumTagLength": 15,
     "undoTimeout": 0,
     "allowTopicsThumbnail": 1,
+    "showPostUploadsAsThumbnails": 1,
     "registrationType": "normal",
     "registrationApprovalType": "normal",
     "allowAccountDelete": 1,
