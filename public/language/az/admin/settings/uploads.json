@@ -22,6 +22,7 @@
 	"reject-image-height": "Maksimum şəklin hündürlüyü (piksellə)",
 	"reject-image-height-help": "Bu dəyərdən yüksək olan şəkillər rədd ediləcək.",
 	"allow-topic-thumbnails": "İstifadəçilərə mövzu miniatürlərini yükləməyə icazə ver",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Mövzu thumb ölçüsü",
 	"allowed-file-extensions": "İcazə verilən fayl uzantıları",
 	"allowed-file-extensions-help": "Fayl uzantılarının vergüllə ayrılmış siyahısını buraya daxil edin (məsələn, <code>pdf, xls, doc</code>). Boş siyahı bütün genişləndirmələrə icazə verildiyini bildirir.",

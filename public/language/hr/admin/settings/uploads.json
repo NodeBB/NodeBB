@@ -22,6 +22,7 @@
 	"reject-image-height": "Maximum Image Height (in pixels)",
 	"reject-image-height-help": "Images taller than this value will be rejected.",
 	"allow-topic-thumbnails": "Dozvoli korisnicima da učitaju sliku teme",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Veličina slike teme",
 	"allowed-file-extensions": "Dozvoljene ekstenzije datoteka",
 	"allowed-file-extensions-help": "Unesite popis dozvoljenih ekstenzija datoteka sa zarezima između (npr. <code>pdf,xls,doc</code> ).Prazan popis znači da su sve ekstenzije dozvoljene.",

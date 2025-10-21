@@ -22,6 +22,7 @@
 	"reject-image-height": "Նկարի առավելագույն բարձրությունը (պիքսելներով)",
 	"reject-image-height-help": "Այս արժեքից բարձր նկարները կմերժվեն:",
 	"allow-topic-thumbnails": "Թույլ տվեք օգտատերերին վերբեռնել թեմայի մանրապատկերները",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Թեմայի Thumb չափ",
 	"allowed-file-extensions": "Թույլատրված ֆայլերի ընդարձակումներ",
 	"allowed-file-extensions-help": "Մուտքագրեք ստորակետերով բաժանված ֆայլերի ընդարձակման ցանկն այստեղ (օրինակ՝ pdf, xls, doc): Դատարկ ցուցակը նշանակում է, որ բոլոր ընդլայնումները թույլատրված են:",

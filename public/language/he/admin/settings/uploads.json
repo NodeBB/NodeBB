@@ -22,6 +22,7 @@
 	"reject-image-height": "גובה תמונה מקסימלי (בפיקסלים)",
 	"reject-image-height-help": "תמונות גבוהות יותר מערך זה יידחו",
 	"allow-topic-thumbnails": "אפשרו למשתמשים להעלות תמונה ממוזערת לנושא",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "גודל תמונה ממוזערת לנושא",
 	"allowed-file-extensions": "סיומות קבצים מאושרים",
 	"allowed-file-extensions-help": "הכניסו כאן רשימת פורמטי קבצים מאושרים (לדוגמא. <code>pdf,xls,doc</code>). השארת השורה ללא תוכן פירושו שכל הקבצים יהיו מאושרים.",

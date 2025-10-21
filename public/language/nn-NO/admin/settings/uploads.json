@@ -22,6 +22,7 @@
 	"reject-image-height": "Avvis bilete høgde",
 	"reject-image-height-help": "Angi maksimal høgde for bilete som vert avvist ved opplasting.",
 	"allow-topic-thumbnails": "Tillat emne-miniatyrbilete",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Storleik på emne-miniatyr",
 	"allowed-file-extensions": "Tillatne filtypar",
 	"allowed-file-extensions-help": "Angi kva filtypar som er tillatne ved opplasting.",

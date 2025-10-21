@@ -22,6 +22,7 @@
 	"reject-image-height": "Kuvan suurin sallittu korkeus (kuvapisteinä)",
 	"reject-image-height-help": "Images taller than this value will be rejected.",
 	"allow-topic-thumbnails": "Allow users to upload topic thumbnails",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Topic Thumb Size",
 	"allowed-file-extensions": "Allowed File Extensions",
 	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>). An empty list means all extensions are allowed.",

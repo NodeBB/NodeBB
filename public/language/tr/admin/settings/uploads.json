@@ -22,6 +22,7 @@
 	"reject-image-height": "Maksimum Görsel Yüksekliği (piksel)",
 	"reject-image-height-help": "Bu değerden daha uzun olan görseller reddedilecektir.",
 	"allow-topic-thumbnails": "Kullanıcıların konulara küçük resim yüklemesine izin ver",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Konu Küçük Resim Boyutu",
 	"allowed-file-extensions": "İzin Verilen Dosya Uzantıları",
 	"allowed-file-extensions-help": "Virgül ile ayrılmış dosya uzantıları listesini buraya girin (ör. <code>pdf, xls, doc</code>). Boş bir liste, tüm uzantılara izin verildiği anlamına gelir.",

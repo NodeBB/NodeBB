@@ -22,6 +22,7 @@
 	"reject-image-height": "Maximum Image Height (in pixels)",
 	"reject-image-height-help": "Images taller than this value will be rejected.",
 	"allow-topic-thumbnails": "Дозволити користувачам завантажувати мініатюри тем",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Розмір мініатюри теми",
 	"allowed-file-extensions": "Допустимі розширення файлів",
 	"allowed-file-extensions-help": "Вкажіть розширеня файлів розділені комою (наприклад, <code>pdf,xls,doc</code>). Пустий список дає дозвіл на будь-які розширення.",

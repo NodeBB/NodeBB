@@ -22,6 +22,7 @@
 	"reject-image-height": "Maksimal bildehøyde (i piksler)",
 	"reject-image-height-help": "Bilder høyere enn denne verdien vil bli avvist.",
 	"allow-topic-thumbnails": "Tillat brukere å laste opp emneminiatyrbilder",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Størrelse på emneminiatyrbilder",
 	"allowed-file-extensions": "Tillatte filtyper",
 	"allowed-file-extensions-help": "Skriv inn kommaseparerte filtyper her (f.eks. <code>pdf,xls,doc</code>). En tom liste betyr at alle filtyper er tillatt.",
