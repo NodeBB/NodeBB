@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const api = require('../api');
+const utils = require('../utils');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -76,6 +77,42 @@ inbox.add = async (req) => {
 			}
 		}
 	}
+};
+
+inbox.remove = async (req) => {
+	const { actor, object } = req.body;
+
+	const isContext = activitypub._constants.acceptable.contextTypes.has(object.type);
+	if (!isContext) {
+		return; // don't know how to handle other types
+	}
+	console.log('isContext?', isContext);
+
+	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
+	const exists = await posts.exists(mainPid);
+	if (!exists) {
+		return; // post not cached; do nothing.
+	}
+	console.log('mainPid is', mainPid);
+
+	// Ensure that cid is same-origin as the actor
+	const tid = await posts.getPostField(mainPid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
+	if (utils.isNumber(cid)) {
+		// remote removal of topic in local cid; what??
+		return;
+	}
+	const actorHostname = new URL(actor).hostname;
+	const cidHostname = new URL(cid).hostname;
+	if (actorHostname !== cidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/remove] Removing topic ${tid} from ${cid}`);
+	await topics.tools.move(tid, {
+		cid: -1,
+		uid: 'system',
+	});
 };
 
 inbox.update = async (req) => {
@@ -200,8 +237,6 @@ inbox.delete = async (req) => {
 
 		if (type === 'Tombstone') {
 			method = 'delete'; // soft delete
-		} else if (activitypub._constants.acceptable.contextTypes.includes(type)) {
-			method = 'move'; // move to cid -1
 		}
 	} catch (e) {
 		// probably 410/404
@@ -220,11 +255,6 @@ inbox.delete = async (req) => {
 		activitypub.contexts.getItems(0, id, { returnRootId: true }), // ⚠️ unreliable, needs better logic (Contexts.is?)
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
-
-	// 'move' method only applicable for contexts
-	if (method === 'move' && !isContext) {
-		return reject('Delete', object, actor);
-	}
 
 	switch (true) {
 		case isNote: {
@@ -248,13 +278,8 @@ inbox.delete = async (req) => {
 				return;
 			}
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
-			if (method === 'move') {
-				activitypub.helpers.log(`[activitypub/inbox.delete] Moving tid ${tid} to cid -1.`);
-				await api.topics.move({ uid }, { tid, cid: -1 });
-			} else {
-				activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
-				await api.topics[method]({ uid }, { tids: [tid] });
-			}
+			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
+			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
 		}
 
@@ -344,12 +369,6 @@ inbox.announce = async (req) => {
 		case object.type === 'Update': {
 			req.body = object;
 			await inbox.update(req);
-			break;
-		}
-
-		case object.type === 'Delete': {
-			req.body = object;
-			await inbox.delete(req);
 			break;
 		}
 

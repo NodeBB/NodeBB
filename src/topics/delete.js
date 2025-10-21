@@ -25,7 +25,7 @@ module.exports = function (Topics) {
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
-			api.activitypub.announce.delete({ uid }, { tid }),
+			api.activitypub.remove.context({ uid }, { tid }),
 		]);
 
 		await categories.updateRecentTidForCid(cid);
@@ -82,7 +82,6 @@ module.exports = function (Topics) {
 		}
 		deletedTopic.tags = tags;
 		await deleteFromFollowersIgnorers(tid);
-		await api.activitypub.announce.delete({ uid }, { tid }),
 
 		await Promise.all([
 			db.deleteAll([
