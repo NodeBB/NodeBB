@@ -15,6 +15,7 @@ const notifications = require('../notifications');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
+const api = require('../api');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
@@ -106,7 +107,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (options.cid && cid === -1) {
 			// Move topic if currently uncategorized
-			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
+			await api.topics.move({ uid: 'system' }, { tid, cid: options.cid });
 		}
 
 		const exists = await posts.exists(chain.map(p => p.pid));
@@ -261,6 +262,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		await Notes.syncUserInboxes(tid, uid);
+
+		if (!hasTid && options.cid) {
+			// New topic, have category announce it
+			api.activitypub.announce.category({}, { tid });
+		}
+
 		return { tid, count };
 	} catch (e) {
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
