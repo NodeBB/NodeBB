@@ -522,7 +522,7 @@ activitypubApi.remove = {};
 activitypubApi.remove.context = enabledCheck(async ({ uid }, { tid }) => {
 	// Federates Remove(Context); where Context is the tid
 	const now = new Date();
-	const cid = await topics.getTopicField(tid, 'cid');
+	const cid = await topics.getTopicField(tid, 'oldCid');
 
 	// Only local categories
 	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
