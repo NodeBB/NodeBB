@@ -8,6 +8,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
+const utils = require('../utils');
 
 const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
@@ -321,7 +322,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
-				if (cid === -1) {
+				if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
 					activitypubApi.remove.context(caller, { tid });
 					// tbd: activitypubApi.undo.announce?
 				} else {
