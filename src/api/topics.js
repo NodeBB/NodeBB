@@ -326,7 +326,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 					activitypub.out.remove.context(caller.uid, tid);
 					// tbd: activitypubApi.undo.announce?
 				} else {
-					// tbd: activitypubApi.move
+					activitypub.out.move.context(caller.uid, tid);
 					activitypub.out.announce.category(tid);
 				}
 			}

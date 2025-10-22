@@ -533,7 +533,7 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
 	 * - Optional parameters:
-	 *     - `cid`: includes followers of the passed-in cid (local only)
+	 *     - `cid`: includes followers of the passed-in cid (local only, can also be an array)
 	 *     - `uid`: includes followers of the passed-in uid (local only)
 	 *     - `pid`: includes post announcers and all topic participants
 	 */
@@ -551,12 +551,15 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	}
 
 	if (cid) {
-		const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
-		followers = followers.concat(cidFollowers);
-		const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
-		if (!to.has(followersUrl)) {
-			cc.add(followersUrl);
-		}
+		cid = Array.isArray(cid) ? cid : [cid];
+		await Promise.all(cid.map(async (cid) => {
+			const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
+			followers = followers.concat(cidFollowers);
+			const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
+			if (!to.has(followersUrl)) {
+				cc.add(followersUrl);
+			}
+		}));
 	}
 
 	const targets = new Set([...followers, ...to, ...cc]);

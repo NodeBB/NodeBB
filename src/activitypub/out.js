@@ -351,10 +351,9 @@ Out.remove.context = enabledCheck(async (uid, tid) => {
 
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		to: [activitypub._constants.publicAddress],
-		cc: [`${nconf.get('url')}/category/${cid}/followers`],
+		cc: [],
 	}, { cid });
 
-	// Remove(Context)
 	await activitypub.send('uid', uid, Array.from(targets), {
 		id: `${nconf.get('url')}/topic/${tid}#activity/remove/${now.getTime()}`,
 		type: 'Remove',
@@ -362,7 +361,43 @@ Out.remove.context = enabledCheck(async (uid, tid) => {
 		to,
 		cc,
 		object: `${nconf.get('url')}/topic/${tid}`,
-		origin: `${nconf.get('url')}/category/${cid}`,
+		target: `${nconf.get('url')}/category/${cid}`,
+	});
+});
+
+Out.move = {};
+
+Out.move.context = enabledCheck(async (uid, tid) => {
+	// Federates Move(Context); where Context is the tid
+	const now = new Date();
+	const { cid, oldCid } = await topics.getTopicFields(tid, ['cid', 'oldCid']);
+
+	// This check may be revised if inter-community moderation becomes real.
+	const isNotLocal = id => !utils.isNumber(cid) || parseInt(cid, 10) < 1;
+	if ([cid, oldCid].some(isNotLocal)) {
+		return;
+	}
+
+	const allowed = await privileges.categories.can('topics:read', cid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating move of tid ${tid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+	}, { cid: [cid, oldCid] });
+
+	await activitypub.send('uid', uid, Array.from(targets), {
+		id: `${nconf.get('url')}/topic/${tid}#activity/move/${now.getTime()}`,
+		type: 'Move',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to,
+		cc,
+		object: `${nconf.get('url')}/topic/${tid}`,
+		origin: `${nconf.get('url')}/category/${oldCid}`,
+		target: `${nconf.get('url')}/category/${cid}`,
 	});
 });
 

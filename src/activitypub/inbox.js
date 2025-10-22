@@ -86,14 +86,12 @@ inbox.remove = async (req) => {
 	if (!isContext) {
 		return; // don't know how to handle other types
 	}
-	console.log('isContext?', isContext);
 
 	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
 	const exists = await posts.exists(mainPid);
 	if (!exists) {
 		return; // post not cached; do nothing.
 	}
-	console.log('mainPid is', mainPid);
 
 	// Ensure that cid is same-origin as the actor
 	const tid = await posts.getPostField(mainPid, 'tid');
