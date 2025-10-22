@@ -373,8 +373,10 @@ Out.move.context = enabledCheck(async (uid, tid) => {
 	const { cid, oldCid } = await topics.getTopicFields(tid, ['cid', 'oldCid']);
 
 	// This check may be revised if inter-community moderation becomes real.
-	const isNotLocal = id => !utils.isNumber(id) || parseInt(id, 10) < 1;
-	if ([cid, oldCid].some(isNotLocal)) {
+	const isLocal = id => utils.isNumber(id) && parseInt(id, 10) > 0;
+	if (isLocal(oldCid) && !isLocal(cid)) { // moving to remote/uncategorized
+		return Out.remove.context(uid, tid);
+	} else if ((isLocal(cid) && !isLocal(oldCid)) || [cid, oldCid].every(!isLocal)) { // stealing or remote-to-remote
 		return;
 	}
 
