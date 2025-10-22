@@ -151,7 +151,7 @@ postsAPI.edit = async function (caller, data) {
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
 		setTimeout(() => {
-			require('.').activitypub.update.note(caller, { post: postObj[0] });
+			activitypub.out.update.note(caller.uid, postObj[0]);
 		}, 5000);
 
 		return returnData;
@@ -208,7 +208,7 @@ async function deleteOrRestore(caller, data, params) {
 
 	// Explicitly non-awaited
 	posts.getPostSummaryByPids([data.pid], caller.uid, { extraFields: ['edited'] }).then(([post]) => {
-		require('.').activitypub.update.note(caller, { post });
+		activitypub.out.update.note(caller.uid, post);
 	});
 }
 
@@ -254,7 +254,7 @@ postsAPI.purge = async function (caller, data) {
 	posts.clearCachedPost(data.pid);
 	await Promise.all([
 		posts.purge(data.pid, caller.uid),
-		require('.').activitypub.delete.note(caller, { pid: data.pid }),
+		activitypub.out.delete.note(caller.uid, data.pid),
 	]);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);

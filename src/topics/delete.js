@@ -8,7 +8,7 @@ const categories = require('../categories');
 const flags = require('../flags');
 const plugins = require('../plugins');
 const batch = require('../batch');
-const api = require('../api');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (Topics) {
@@ -25,7 +25,7 @@ module.exports = function (Topics) {
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
-			api.activitypub.remove.context({ uid }, { tid }),
+			activitypub.out.remove.context(uid, tid),
 		]);
 
 		await categories.updateRecentTidForCid(cid);

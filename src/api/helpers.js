@@ -6,6 +6,7 @@ const topics = require('../topics');
 const posts = require('../posts');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');
@@ -129,7 +130,6 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 };
 
 async function executeCommand(caller, command, eventName, notification, data) {
-	const api = require('.');
 	const result = await posts[command](data.pid, caller.uid);
 	if (result && eventName) {
 		websockets.in(`uid_${caller.uid}`).emit(`posts.${command}`, result);
@@ -137,12 +137,12 @@ async function executeCommand(caller, command, eventName, notification, data) {
 	}
 	if (result && command === 'upvote') {
 		socketHelpers.upvote(result, notification);
-		await api.activitypub.like.note(caller, { pid: data.pid });
+		await activitypub.out.like.note(caller.uid, data.pid);
 	} else if (result && notification) {
 		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, command, notification);
 	} else if (result && command === 'unvote') {
 		socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
-		await api.activitypub.undo.like(caller, { pid: data.pid });
+		await activitypub.out.undo.like(caller.uid, data.pid);
 	}
 	return result;
 }

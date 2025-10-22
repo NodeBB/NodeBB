@@ -8,9 +8,9 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
-const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
 
 const { doTopicAction } = apiHelpers;
@@ -80,7 +80,7 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
 	if (!isScheduling) {
-		await activitypubApi.create.note(caller, { pid: result.postData.pid });
+		await activitypub.out.create.note(caller.uid, result.postData.pid);
 	}
 
 	return result.topicData;
@@ -116,7 +116,7 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	await activitypubApi.create.note(caller, { post: postData });
+	await activitypub.out.create.note(caller.uid, postData);
 
 	return postData;
 };
@@ -323,11 +323,11 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
 				if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
-					activitypubApi.remove.context(caller, { tid });
+					activitypub.out.remove.context(caller.uid, tid);
 					// tbd: activitypubApi.undo.announce?
 				} else {
 					// tbd: activitypubApi.move
-					activitypubApi.announce.category(caller, { tid });
+					activitypub.out.announce.category(tid);
 				}
 			}
 

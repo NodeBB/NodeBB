@@ -4,7 +4,7 @@ const db = require('../database');
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
-const api = require('../api');
+const activitypub = require('../activitypub');
 const privileges = require('../privileges');
 const utils = require('../utils');
 
@@ -39,7 +39,7 @@ module.exports = function (Messaging) {
 			});
 
 			if (!isPublic && utils.isNumber(messages[0].fromuid)) {
-				api.activitypub.update.privateNote({ uid: messages[0].fromuid }, { messageObj: messages[0] });
+				activitypub.out.update.privateNote(messages[0].fromuid, messages[0]);
 			}
 		}
 
