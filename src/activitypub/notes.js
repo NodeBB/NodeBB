@@ -265,7 +265,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (!hasTid && options.cid) {
 			// New topic, have category announce it
-			api.activitypub.announce.category({}, { tid });
+			activitypub.out.announce.category(tid);
 		}
 
 		return { tid, count };

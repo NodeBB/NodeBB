@@ -5,7 +5,6 @@ const winston = require('winston');
 const validator = require('validator');
 
 const activitypub = require('./activitypub');
-const activitypubApi = require('./api/activitypub');
 const db = require('./database');
 const user = require('./user');
 const groups = require('./groups');
@@ -477,8 +476,7 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 	const flagObj = await Flags.get(flagId);
 
 	if (notifyRemote && activitypub.helpers.isUri(id)) {
-		const caller = await user.getUserData(uid);
-		activitypubApi.flag(caller, { ...flagObj, reason });
+		activitypub.out.flag(uid, { ...flagObj, reason });
 	}
 
 	plugins.hooks.fire('action:flags.create', { flag: flagObj });
@@ -531,7 +529,7 @@ Flags.purge = async function (flagIds) {
 		flagData.flatMap(
 			async (flagObj, i) => allReporterUids[i].map(async (uid) => {
 				if (await db.isSortedSetMember(`flag:${flagObj.flagId}:remote`, uid)) {
-					await activitypubApi.undo.flag({ uid }, flagObj);
+					await activitypub.out.undo.flag(uid, flagObj);
 				}
 			})
 		),
@@ -569,7 +567,7 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp, targ
 	]);
 
 	if (notifyRemote && activitypub.helpers.isUri(id)) {
-		await activitypubApi.flag({ uid }, { flagId, type, targetId: id, targetUid, uid, reason, timestamp });
+		await activitypub.out.flag(uid, { flagId, type, targetId: id, targetUid, uid, reason, timestamp });
 	}
 
 	plugins.hooks.fire('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
@@ -599,7 +597,7 @@ Flags.rescindReport = async (type, id, uid) => {
 
 	if (await db.isSortedSetMember(`flag:${flagId}:remote`, uid)) {
 		const flag = await Flags.get(flagId);
-		await activitypubApi.undo.flag({ uid }, flag);
+		await activitypub.out.undo.flag(uid, flag);
 	}
 
 	await db.sortedSetRemoveBulk([
