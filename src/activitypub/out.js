@@ -373,7 +373,7 @@ Out.move.context = enabledCheck(async (uid, tid) => {
 	const { cid, oldCid } = await topics.getTopicFields(tid, ['cid', 'oldCid']);
 
 	// This check may be revised if inter-community moderation becomes real.
-	const isNotLocal = id => !utils.isNumber(cid) || parseInt(cid, 10) < 1;
+	const isNotLocal = id => !utils.isNumber(id) || parseInt(id, 10) < 1;
 	if ([cid, oldCid].some(isNotLocal)) {
 		return;
 	}
