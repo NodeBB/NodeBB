@@ -80,7 +80,7 @@ inbox.add = async (req) => {
 };
 
 inbox.remove = async (req) => {
-	const { actor, object } = req.body;
+	const { actor, object, target } = req.body;
 
 	const isContext = activitypub._constants.acceptable.contextTypes.has(object.type);
 	if (!isContext) {
@@ -88,16 +88,17 @@ inbox.remove = async (req) => {
 	}
 
 	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
+	const fromCid = target || object.audience;
 	const exists = await posts.exists(mainPid);
-	if (!exists) {
+	if (!exists || !fromCid) {
 		return; // post not cached; do nothing.
 	}
 
 	// Ensure that cid is same-origin as the actor
 	const tid = await posts.getPostField(mainPid, 'tid');
 	const cid = await topics.getTopicField(tid, 'cid');
-	if (utils.isNumber(cid)) {
-		// remote removal of topic in local cid; what??
+	if (utils.isNumber(cid) || cid !== fromCid) {
+		// remote removal of topic in local cid, or resolved cid does not match
 		return;
 	}
 	const actorHostname = new URL(actor).hostname;
