@@ -114,6 +114,43 @@ inbox.remove = async (req) => {
 	});
 };
 
+inbox.move = async (req) => {
+	const { actor, object, origin, target } = req.body;
+
+	const isContext = activitypub._constants.acceptable.contextTypes.has(object.type);
+	if (!isContext) {
+		return; // don't know how to handle other types
+	}
+
+	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
+	const fromCid = origin;
+	const toCid = target || object.audience;
+	const exists = await posts.exists(mainPid);
+	if (!exists || !toCid) {
+		return; // post not cached; do nothing.
+	}
+
+	// Ensure that cid is same-origin as the actor
+	const tid = await posts.getPostField(mainPid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
+	if (utils.isNumber(cid)) {
+		// remote removal of topic in local cid, or resolved cid does not match
+		return;
+	}
+	const actorHostname = new URL(actor).hostname;
+	const toCidHostname = new URL(toCid).hostname;
+	const fromCidHostname = new URL(fromCid).hostname;
+	if (actorHostname !== toCidHostname || actorHostname !== fromCidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/remove] Moving topic ${tid} from ${fromCid} to ${toCid}`);
+	await topics.tools.move(tid, {
+		cid: toCid,
+		uid: 'system',
+	});
+};
+
 inbox.update = async (req) => {
 	const { actor, object } = req.body;
 	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
