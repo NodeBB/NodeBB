@@ -194,6 +194,12 @@ describe('Upload Controllers', () => {
 			assert(body.response.images[0].url);
 		});
 
+		it('should upload a file with utf8 characters in the name to a post', async () => {
+			const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/测试.jpg'), {}, jar, csrf_token);
+
+			assert(body.response.images[0].url.endsWith('测试.jpg'));
+		});
+
 		it('should fail to upload image to post if image dimensions are too big', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
