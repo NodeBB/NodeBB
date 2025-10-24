@@ -85,9 +85,7 @@ function apiRoutes(router, name, middleware, controllers) {
 	router.post(`/api/${name}/manage/categories/:cid/name`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.renameRemote));
 	router.delete(`/api/${name}/manage/categories/:cid`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.removeRemote));
 
-	const multer = require('multer');
-	const storage = multer.diskStorage({});
-	const upload = multer({ storage });
+	const upload = require('../middleware/multer');
 
 	const middlewares = [
 		upload.array('files[]', 20),

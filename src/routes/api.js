@@ -23,9 +23,7 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/topic/teaser/:topic_id', [...middlewares], helpers.tryRoute(controllers.topics.teaser));
 	router.get('/topic/pagination/:topic_id', [...middlewares], helpers.tryRoute(controllers.topics.pagination));
 
-	const multer = require('multer');
-	const storage = multer.diskStorage({});
-	const upload = multer({ storage });
+	const upload = require('../middleware/multer');
 
 	const postMiddlewares = [
 		middleware.maintenanceMode,
