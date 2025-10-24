@@ -376,7 +376,10 @@ Out.move.context = enabledCheck(async (uid, tid) => {
 	const isLocal = id => utils.isNumber(id) && parseInt(id, 10) > 0;
 	if (isLocal(oldCid) && !isLocal(cid)) { // moving to remote/uncategorized
 		return Out.remove.context(uid, tid);
-	} else if ((isLocal(cid) && !isLocal(oldCid)) || [cid, oldCid].every(!isLocal)) { // stealing or remote-to-remote
+	} else if (
+		(isLocal(cid) && !isLocal(oldCid)) || // stealing, or
+		[cid, oldCid].every(id => !isLocal(id)) // remote-to-remote
+	) {
 		return;
 	}
 
