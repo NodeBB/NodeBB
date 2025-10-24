@@ -154,7 +154,7 @@ Auth.reloadRoutes = async function (params) {
 		});
 	});
 
-	const upload = require('../middleware/multer')
+	const upload = require('../middleware/multer');
 	const middlewares = [
 		upload.any(),
 		Auth.middleware.applyCSRF,
