@@ -54,9 +54,7 @@ helpers.setupApiRoute = function (...args) {
 	const [router, verb, name] = args;
 	let middlewares = args.length > 4 ? args[args.length - 2] : [];
 	const controller = args[args.length - 1];
-	const multer = require('multer');
-	const storage = multer.diskStorage({});
-	const upload = multer({ storage });
+	const upload = require('../middleware/multer');
 	middlewares = [
 		middleware.autoLocale,
 		middleware.applyBlacklist,
