@@ -30,9 +30,9 @@
 	"rules.cid": "版块",
 
 	"relays": "中继服务",
-	"relays.intro": "中继服务能提升您NodeBB论坛内容的发现效率。订阅中继服务意味着：中继服务接收的内容将转发至此处，而本论坛发布的内容则由中继服务向外同步传播。",
-	"relays.warning": "注：中继服务可能接收大量流量，并可能增加存储和处理成本。",
-	"relays.litepub": "NodeBB 遵循 LitePub 风格的中继标准。您在此处输入的URL应以 <code>/actor</code> 结尾。",
+	"relays.intro": "中继服务能提升您 NodeBB 论坛内容的发现效率。订阅中继服务意味着：中继服务接收的内容将转发至此处，而本论坛发布的内容则由中继服务向外同步传播。",
+	"relays.warning": "注意：中继服务可能接收大量传入流量，并可能增加存储和处理成本。",
+	"relays.litepub": "NodeBB 遵循 LitePub 风格的中继标准。您在此处输入的 URL 应以 <code>/actor</code> 结尾。",
 	"relays.add": "添加新中继服务",
 	"relays.relay": "中继服务",
 	"relays.state": "状态",

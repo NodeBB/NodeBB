@@ -20,7 +20,7 @@
     "terms-of-use-error": "您必须同意使用条款",
     "registration-added-to-queue": "您的注册正在等待批准。一旦通过，管理员会发送邮件通知您。",
     "registration-queue-average-time": "我们通常的注册批准时间为 %1 小时 %2 分钟。",
-    "registration-queue-auto-approve-time": "您在此论坛的帐号将会在最迟  %1  小时后被完全激活。",
+    "registration-queue-auto-approve-time": "您在此论坛的帐号将会在最迟  %1 小时后被完全激活。",
     "interstitial.intro": "我们需要一些额外信息以更新您的账号。",
     "interstitial.intro-new": "我们需要一些额外信息以创建您的账号。",
     "interstitial.errors-found": "请检查输入的信息：",
