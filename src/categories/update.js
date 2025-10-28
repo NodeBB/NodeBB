@@ -165,9 +165,9 @@ module.exports = function (Categories) {
 			throw new Error('[[error:category.handle-taken]]');
 		}
 
+		await db.sortedSetRemove('categoryhandle:cid', existing);
 		await Promise.all([
 			db.setObjectField(`category:${cid}`, 'handle', handle),
-			db.sortedSetRemove('categoryhandle:cid', existing),
 			db.sortedSetAdd('categoryhandle:cid', cid, handle),
 		]);
 	}
