@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (opts) {
-	const TTLCache = require('@isaacs/ttlcache');
+	const { TTLCache } = require('@isaacs/ttlcache');
 	const os = require('os');
 	const winston = require('winston');
 	const chalk = require('chalk');
