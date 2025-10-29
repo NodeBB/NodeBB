@@ -178,7 +178,9 @@ Actors.topic = async function (req, res, next) {
 		}
 
 		// Convert pids to urls
-		collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+		if (collection.orderedItems) {
+			collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+		}
 
 		const object = {
 			'@context': 'https://www.w3.org/ns/activitystreams',
