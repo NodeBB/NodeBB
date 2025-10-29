@@ -248,18 +248,16 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 		}
 
-		for (const post of unprocessed) {
+		await Promise.all(unprocessed.map(async (post) => {
 			const { to, cc } = post._activitypub;
 
 			try {
-				// eslint-disable-next-line no-await-in-loop
 				await topics.reply(post);
-				// eslint-disable-next-line no-await-in-loop
 				await Notes.updateLocalRecipients(post.pid, { to, cc });
 			} catch (e) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Could not add reply (${post.pid}): ${e.message}`);
 			}
-		}
+		}));
 
 		await Notes.syncUserInboxes(tid, uid);
 
