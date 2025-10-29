@@ -184,6 +184,9 @@ module.exports = function (Topics) {
 			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
 			.map(postObj => postObj.toPid);
 
+		const exists = await posts.exists(parentPids);
+		parentPids = parentPids.filter((_, idx) => exists[idx]);
+
 		if (!parentPids.length) {
 			return;
 		}
