@@ -320,7 +320,7 @@ Mocks.category = async (actors) => {
 		const payload = {
 			cid,
 			name,
-			handle: preferredUsername,
+			handle: `${preferredUsername}@${hostname}`,
 			slug: `${preferredUsername}@${hostname}`,
 			description: summary,
 			descriptionParsed: posts.sanitize(summary),
