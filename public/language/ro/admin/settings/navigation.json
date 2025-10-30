@@ -10,7 +10,7 @@
 	"id": "ID: <small>optional</small>",
 
 	"properties": "Properties:",
-	"show-to-groups": "Show to Groups:",
+	"show-to-groups": "Afișare în Grupurile:",
 	"open-new-window": "Open in a new window",
 	"dropdown": "Dropdown",
 	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
