@@ -184,9 +184,6 @@ module.exports = function (Topics) {
 			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
 			.map(postObj => postObj.toPid);
 
-		const exists = await posts.exists(parentPids);
-		parentPids = parentPids.filter((_, idx) => exists[idx]);
-
 		if (!parentPids.length) {
 			return;
 		}
@@ -212,7 +209,7 @@ module.exports = function (Topics) {
 				parentPost.content = foundPost.content;
 				return;
 			}
-			parentPost = await posts.parsePost(parentPost);
+			await posts.parsePost(parentPost);
 		}));
 
 		const parents = {};
@@ -230,7 +227,7 @@ module.exports = function (Topics) {
 		});
 
 		postData.forEach((post) => {
-			if (parents[post.toPid]) {
+			if (parents[post.toPid] && parents[post.toPid].content) {
 				post.parent = parents[post.toPid];
 			}
 		});
