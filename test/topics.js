@@ -327,7 +327,7 @@ describe('Topic\'s', () => {
 			replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
 			assert.strictEqual(replies, null);
 			toPid = await posts.getPostField(reply2.pid, 'toPid');
-			assert.strictEqual(toPid, null);
+			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
 		});
 	});
 
