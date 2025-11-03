@@ -5,9 +5,11 @@ const _ = require('lodash');
 const db = require('../database');
 const topics = require('.');
 const categories = require('../categories');
+const posts = require('../posts');
 const user = require('../user');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 
@@ -310,5 +312,110 @@ module.exports = function (Topics) {
 			Topics.events.log(tid, { type: 'share', uid: uid }),
 			db.sortedSetAdd(set, timestamp, tid),
 		]);
+	};
+
+	async function getCrossposts(tid) {
+		const crosspostIds = await db.getSortedSetMembers(`tid:${tid}:crossposts`);
+		let crossposts = await db.getObjects(crosspostIds.map(id => `crosspost:${id}`));
+		crossposts = crossposts.map((crosspost, idx) => {
+			crosspost.id = crosspostIds[idx];
+			return crosspost;
+		});
+
+		return crossposts;
+	}
+
+	topicTools.crosspost = async function (tid, cid, uid) {
+		// Target cid must exist
+		if (!utils.isNumber(cid)) {
+			await activitypub.actors.assert(cid);
+		}
+		const exists = await categories.exists(cid);
+		if (!exists) {
+			throw new Error('[[error:invalid-cid]]');
+		}
+
+		const crossposts = await getCrossposts(tid);
+		const crosspostedCids = crossposts.map(crosspost => String(crosspost.cid));
+		const now = Date.now();
+		const crosspostId = utils.generateUUID();
+		if (!crosspostedCids.includes(String(cid))) {
+			const [topicData, pids] = await Promise.all([
+				topics.getTopicFields(tid, ['uid', 'cid', 'timestamp']),
+				topics.getPids(tid),
+			]);
+			let pidTimestamps = await posts.getPostsFields(pids, ['timestamp']);
+			pidTimestamps = pidTimestamps.map(({ timestamp }) => timestamp);
+
+			if (cid === topicData.cid) {
+				throw new Error('[[error:invalid-cid]]');
+			}
+			const zsets = [
+				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:tids:create`,
+				`cid:${topicData.cid}:tids:lastposttime`,
+				`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
+				`cid:${topicData.cid}:tids:votes`,
+				`cid:${topicData.cid}:tids:posts`,
+				`cid:${topicData.cid}:tids:views`,
+			];
+			const scores = await db.sortedSetsScore(zsets, tid);
+			const bulkAdd = zsets.map((zset, idx) => {
+				return [zset.replace(`cid:${topicData.cid}`, `cid:${cid}`), scores[idx], tid];
+			});
+			await Promise.all([
+				db.sortedSetAddBulk(bulkAdd),
+				db.sortedSetAdd(`cid:${cid}:pids`, pidTimestamps, pids),
+				db.setObject(`crosspost:${crosspostId}`, { uid, tid, cid, timestamp: now }),
+				db.sortedSetAdd(`tid:${tid}:crossposts`, now, crosspostId),
+				db.sortedSetAdd(`uid:${uid}:crossposts`, now, crosspostId),
+			]);
+			await categories.onTopicsMoved([cid]);
+		} else {
+			throw new Error('[[error:topic-already-crossposted]]');
+		}
+
+		return [...crossposts, { id: crosspostId, uid, tid, cid, timestamp: now }];
+	};
+
+	topicTools.uncrosspost = async function (tid, cid, uid) {
+		let crossposts = await getCrossposts(tid);
+		const crosspostId = crossposts.reduce((id, { id: _id, cid: _cid, uid: _uid }) => {
+			if (String(cid) === String(_cid) && String(uid) === String(_uid)) {
+				id = _id;
+			}
+
+			return id;
+		}, null);
+		if (!crosspostId) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		const [author, pids] = await Promise.all([
+			topics.getTopicField(tid, 'uid'),
+			topics.getPids(tid),
+		]);
+		let bulkRemove = [
+			`cid:${cid}:tids`,
+			`cid:${cid}:tids:create`,
+			`cid:${cid}:tids:lastposttime`,
+			`cid:${cid}:uid:${author}:tids`,
+			`cid:${cid}:tids:votes`,
+			`cid:${cid}:tids:posts`,
+			`cid:${cid}:tids:views`,
+		];
+		bulkRemove = bulkRemove.map(zset => [zset, tid]);
+		bulkRemove.push([`cid:${cid}:pids`, pids]);
+
+		await Promise.all([
+			db.sortedSetRemoveBulk(bulkRemove),
+			db.delete(`crosspost:${crosspostId}`),
+			db.sortedSetRemove(`tid:${tid}:crossposts`, crosspostId),
+			db.sortedSetRemove(`uid:${uid}:crossposts`, crosspostId),
+		]);
+		await categories.onTopicsMoved([cid]);
+
+		crossposts = await getCrossposts(tid);
+		return crossposts;
 	};
 };
