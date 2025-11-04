@@ -137,7 +137,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				const { hostname } = new URL(mainPid);
 				remoteCid = Array.from(set).filter((id, idx) => {
 					const { hostname: cidHostname } = new URL(id);
-					return assertedGroups[idx] && cidHostname === hostname;
+					const explicitAudience = Array.isArray(_activitypub.audience) ?
+						_activitypub.audience.includes(id) :
+						_activitypub.audience === id;
+
+					return assertedGroups[idx] && (explicitAudience || cidHostname === hostname);
 				}).shift();
 			} catch (e) {
 				// noop
