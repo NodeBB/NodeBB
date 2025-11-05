@@ -45,7 +45,7 @@ module.exports = function (middleware) {
 				options.loggedInUser = await getLoggedInUser(req);
 				options.relative_path = relative_path;
 				options.template = { name: template, [template]: true };
-				options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
+				options.url = options.url || (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
 
 				if (req.loggedIn) {
