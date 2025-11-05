@@ -35,6 +35,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		shouldHideReplyContainer,
 		humanReadableNumber,
 		formattedNumber,
+		isNumber,
 		txEscape,
 		uploadBasename,
 		generatePlaceholderWave,
@@ -384,6 +385,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function formattedNumber(number) {
 		return utils.addCommas(number);
+	}
+
+	function isNumber(value) {
+		return utils.isNumber(value);
 	}
 
 	function txEscape(text) {
