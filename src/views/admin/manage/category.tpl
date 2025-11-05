@@ -37,16 +37,6 @@
 				</div>
 
 				<div class="mb-3">
-					<label class="form-label" for="cid-{category.cid}-federatedDescription">
-						[[admin/manage/categories:federatedDescription]]
-					</label>
-					<textarea id="cid-{category.cid}-federatedDescription" data-name="federatedDescription" class="form-control" rows="2" placeholder="[[admin/manage/categories:federatedDescription.default]]" />{category.federatedDescription}</textarea>
-					<p class="form-text">
-						[[admin/manage/categories:federatedDescription.help]]
-					</p>
-				</div>
-
-				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-topic-template">
 						[[admin/manage/categories:topic-template]]
 					</label>
