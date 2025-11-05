@@ -147,6 +147,7 @@
     "post-already-restored": "この投稿が既に復元されました",
     "topic-already-deleted": "このスレッドは既に削除されました",
     "topic-already-restored": "このスレッドは既に復元されました",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "メインの投稿を削除することはできません。代わりにスレッドを削除してください",
     "topic-thumbnails-are-disabled": "スレッドのサムネイルが無効された",
     "invalid-file": "無効なファイル",

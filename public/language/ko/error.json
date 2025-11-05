@@ -147,6 +147,7 @@
     "post-already-restored": "이 게시물은 복원되었습니다",
     "topic-already-deleted": "이 토픽은 삭제되었습니다",
     "topic-already-restored": "이 토픽은 복원되었습니다",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "주요 게시물을 정리할 수 없습니다. 대신 토픽을 삭제하세요",
     "topic-thumbnails-are-disabled": "토픽 썸네일이 비활성화되었습니다.",
     "invalid-file": "잘못된 파일",

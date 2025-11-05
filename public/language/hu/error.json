@@ -147,6 +147,7 @@
     "post-already-restored": "Ez a bejegyzés már visszaállításra került",
     "topic-already-deleted": "Ezt a témakör már törlésre került",
     "topic-already-restored": "Ez a témakör már helyreállításra került",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Nem tisztíthatod ki ezt a témakört, inkább töröld",
     "topic-thumbnails-are-disabled": "Témakör bélyegképek tíltásra kerültek.",
     "invalid-file": "Érvénytelen fájl",

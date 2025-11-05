@@ -147,6 +147,7 @@
     "post-already-restored": "Postitus on juba taastatud",
     "topic-already-deleted": "Teema on juba kustutatud",
     "topic-already-restored": "Teema on juba taastatud",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Te ei saa eemaldada peamist postitust, pigem kustutage teema ära.",
     "topic-thumbnails-are-disabled": "Teema thumbnailid on keelatud.",
     "invalid-file": "Vigane fail",

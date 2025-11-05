@@ -147,6 +147,7 @@
     "post-already-restored": "Dit bericht is al hersteld",
     "topic-already-deleted": "Dit onderwerp is al verwijderd",
     "topic-already-restored": "Dit onderwerp is al hersteld",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Het is niet mogelijk het eerste bericht te verwijderen. Hiervoor dient het gehele onderwerp verwijderd te worden.",
     "topic-thumbnails-are-disabled": "Miniatuurweergaven bij onderwerpen uitgeschakeld.",
     "invalid-file": "Ongeldig bestand",

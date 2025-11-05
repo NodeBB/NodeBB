@@ -147,6 +147,7 @@
     "post-already-restored": "Dieser Beitrag ist bereits wiederhergestellt worden",
     "topic-already-deleted": "Dieses Thema ist bereits gelöscht worden",
     "topic-already-restored": "Dieses Thema ist bereits wiederhergestellt worden",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Du kannst den Hauptbeitrag nicht löschen, bitte lösche stattdessen das Thema",
     "topic-thumbnails-are-disabled": "Vorschaubilder für Themen sind deaktiviert",
     "invalid-file": "Ungültige Datei",

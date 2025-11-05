@@ -147,6 +147,7 @@
     "post-already-restored": "Raksts jau ir atjaunots",
     "topic-already-deleted": "Temats jau ir izdzēsts",
     "topic-already-restored": "Temats jau ir atjaunots",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Nevar iztīrīt galveno rakstu, lūdzu, tā vietā izdzēsi tematu",
     "topic-thumbnails-are-disabled": "Tematu sīktēli ir atspējoti.",
     "invalid-file": "Nederīgs fails",

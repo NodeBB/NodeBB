@@ -147,6 +147,7 @@
     "post-already-restored": "Esta publicación ya ha sido restaurada",
     "topic-already-deleted": "Este tema ya ha sido borrado",
     "topic-already-restored": "Este tema ya ha sido restaurado",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "No puedes purgar el mensaje principal, por favor utiliza borrar tema",
     "topic-thumbnails-are-disabled": "Las miniaturas de los temas están deshabilitadas.",
     "invalid-file": "Archivo no válido",

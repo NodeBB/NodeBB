@@ -147,6 +147,7 @@
     "post-already-restored": "سبق وتم إلغاء حذف هذا الرد",
     "topic-already-deleted": "سبق وتم حذف هذا الموضوع",
     "topic-already-restored": "سبق وتم إلغاء حذف هذا الرد",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "لا يمكنك محو المشاركة الأساسية، يرجى حذف الموضوع بدلاً عن ذلك",
     "topic-thumbnails-are-disabled": "الصور المصغرة غير مفعلة.",
     "invalid-file": "ملف غير مقبول",

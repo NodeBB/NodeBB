@@ -147,6 +147,7 @@
     "post-already-restored": "Цей пост вже відновлено",
     "topic-already-deleted": "Ця тема вже була видалена",
     "topic-already-restored": "Ця тема вже була відновлена",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Ви не можете видалити головний пост, натомість видаліть тему.",
     "topic-thumbnails-are-disabled": "Мініатюри теми вимкнено.",
     "invalid-file": "Невірний файл",

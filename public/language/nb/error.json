@@ -147,6 +147,7 @@
     "post-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
     "topic-already-deleted": "Dette emnet har allerede blitt slettet",
     "topic-already-restored": "Dette emnet har allerede blitt gjenopprettet",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Du kan ikke slette hovedinnlegget. Vennligst slett emnet i stedet.",
     "topic-thumbnails-are-disabled": "Emne-minatyrbilder har blitt deaktivert",
     "invalid-file": "Ugyldig fil",

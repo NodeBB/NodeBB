@@ -147,6 +147,7 @@
     "post-already-restored": "Ky postim tashmë është rikthyer",
     "topic-already-deleted": "Kjo temë tashmë është fshirë",
     "topic-already-restored": "Kjo temë tashmë është rikthyer",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Ju nuk mund të fshini postimin kryesor, ju lutemi fshini temën në vend të saj",
     "topic-thumbnails-are-disabled": "Miniaturat e temës janë çaktivizuar.",
     "invalid-file": "Dokument i pavlefshëm",

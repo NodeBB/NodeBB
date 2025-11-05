@@ -147,6 +147,7 @@
     "post-already-restored": "یہ پوسٹ پہلے سے بحال ہو چکی ہے",
     "topic-already-deleted": "یہ موضوع پہلے سے حذف ہو چکا ہے",
     "topic-already-restored": "یہ موضوع پہلے سے بحال ہو چکا ہے",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "آپ ابتدائی پوسٹ کو صاف نہیں کر سکتے۔ براہ کرم اس کے بجائے موضوع کو حذف کریں۔",
     "topic-thumbnails-are-disabled": "موضوعات کے تھمب نیلز غیر فعال ہیں۔",
     "invalid-file": "غلط فائل",

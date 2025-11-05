@@ -147,6 +147,7 @@
     "post-already-restored": "Kiriman ini telah dipulihkan",
     "topic-already-deleted": "Topik ini telah dipadam",
     "topic-already-restored": "Kiriman ini telah dipulihkan",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Anda tidak boleh memadam, kiriman utama, sebaliknya sila pada topik",
     "topic-thumbnails-are-disabled": "Topik kecil dilumpuhkan.",
     "invalid-file": "Fail tak sah",

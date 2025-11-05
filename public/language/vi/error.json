@@ -147,6 +147,7 @@
     "post-already-restored": "Bài viết này đã được khôi phục",
     "topic-already-deleted": "Chủ đề này đã bị xóa",
     "topic-already-restored": "Chủ đề này đã được khôi phục",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Bạn không thể xoá bài viết chính, thay vào đó vui lòng xóa chủ đề",
     "topic-thumbnails-are-disabled": "Ảnh Thumbnails chủ đề đã bị tắt",
     "invalid-file": "Tệp Không Hợp Lệ",

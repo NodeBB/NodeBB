@@ -147,6 +147,7 @@
     "post-already-restored": "Message déjà restauré",
     "topic-already-deleted": "Sujet déjà supprimé",
     "topic-already-restored": "Sujet déjà restauré",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Il n'est pas possible d'effacer le message principal, veuillez supprimer le sujet entier à la place.",
     "topic-thumbnails-are-disabled": "Les miniatures de sujet sont désactivés",
     "invalid-file": "Fichier invalide",

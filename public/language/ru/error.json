@@ -147,6 +147,7 @@
     "post-already-restored": "Это сообщение уже восстановлено",
     "topic-already-deleted": "Тема уже удалена",
     "topic-already-restored": "Тема уже восстановлена",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Вы не можете стереть первое сообщение в теме. Пожалуйста, удалите саму тему.",
     "topic-thumbnails-are-disabled": "Иконки тем отключены.",
     "invalid-file": "Некорректный файл",

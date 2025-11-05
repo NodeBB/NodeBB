@@ -147,6 +147,7 @@
     "post-already-restored": "Այս գրառումն արդեն վերականգնվել է",
     "topic-already-deleted": "Այս թեման արդեն ջնջված է",
     "topic-already-restored": "Այս թեման արդեն վերականգնվել է",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Դուք չեք կարող մաքրել հիմնական գրառումը, փոխարենը ջնջեք թեման",
     "topic-thumbnails-are-disabled": "Թեմայի մանրապատկերներն անջատված են:",
     "invalid-file": "Անվավեր ֆայլ",

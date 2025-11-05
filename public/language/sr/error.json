@@ -147,6 +147,7 @@
     "post-already-restored": "Ова порука је већ обновљена",
     "topic-already-deleted": "Ова тема је већ избрисана",
     "topic-already-restored": "Ова тема је већ обновљена",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Не можете очистити насловну поруку, избришите тему уместо тога",
     "topic-thumbnails-are-disabled": "Сличице тема су онемогућене.",
     "invalid-file": "Неисправна датотека",

@@ -147,6 +147,7 @@
     "post-already-restored": "Tämä viesti on jo palautettu",
     "topic-already-deleted": "Tämä aihe on jo poistettu",
     "topic-already-restored": "Tämä aihe on jo palautettu",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "You can't purge the main post, please delete the topic instead",
     "topic-thumbnails-are-disabled": "Aiheiden kuvakkeet eivät ole käytössä",
     "invalid-file": "Virheellinen tiedosto",

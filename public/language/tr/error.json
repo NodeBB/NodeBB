@@ -147,6 +147,7 @@
     "post-already-restored": "İleti zaten geri getirilmiş",
     "topic-already-deleted": "Başlık zaten silinmiş",
     "topic-already-restored": "Başlık zaten geri getirilmiş",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "İlk iletiyi silemezsiniz, bunun yerine konuyu silin",
     "topic-thumbnails-are-disabled": "Başlık resimleri kapalı.",
     "invalid-file": "Geçersiz Dosya",

@@ -147,6 +147,7 @@
     "post-already-restored": "Ova objava je povraćena",
     "topic-already-deleted": "Ova tema je već obrisana",
     "topic-already-restored": "Ova tema je povraćena",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "Nemožete odbaciti glavnu objavu, obrišite temu za brisanje",
     "topic-thumbnails-are-disabled": "Slike tema su onemogućene",
     "invalid-file": "Pogrešna datoteka",

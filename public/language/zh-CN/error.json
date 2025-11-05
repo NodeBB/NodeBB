@@ -147,6 +147,7 @@
     "post-already-restored": "此帖已经恢复",
     "topic-already-deleted": "此主题已被删除",
     "topic-already-restored": "此主题已恢复",
+    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "无法清除主贴，请直接删除主题",
     "topic-thumbnails-are-disabled": "主题缩略图已禁用",
     "invalid-file": "无效文件",
