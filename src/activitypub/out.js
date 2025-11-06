@@ -279,7 +279,7 @@ Out.like.note = enabledCheck(async (uid, pid) => {
 
 Out.announce = {};
 
-Out.announce.category = enabledCheck(async (tid) => {
+Out.announce.topic = enabledCheck(async (tid) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
 
 	// Only local categories can announce

@@ -323,11 +323,12 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
 				if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
-					activitypub.out.remove.context(caller.uid, tid);
-					// tbd: activitypubApi.undo.announce?
+					activitypub.out.remove.context(caller.uid, tid); // 7888-style
+					activitypub.out.delete.note(caller.uid, topicData.mainPid); // threadiverse
+					// tbd: activitypubApi.undo.announce? // microblogs
 				} else {
 					activitypub.out.move.context(caller.uid, tid);
-					activitypub.out.announce.category(tid);
+					activitypub.out.announce.topic(tid);
 				}
 			}
 
