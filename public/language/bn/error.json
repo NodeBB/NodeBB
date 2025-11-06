@@ -147,7 +147,6 @@
     "post-already-restored": "এই পোষ্টটি ইতিমধ্যে পুনরোদ্ধার করা হয়েছে",
     "topic-already-deleted": "এই টপিকটি ইতিমধ্যে ডিলিট করা হয়েছে",
     "topic-already-restored": "এই টপিকটি ইতিমধ্যে পুনরোদ্ধার করা হয়েছে",
-    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "You can't purge the main post, please delete the topic instead",
     "topic-thumbnails-are-disabled": "টপিক থাম্বনেল নিষ্ক্রিয় করা।",
     "invalid-file": "ভুল ফাইল",

@@ -147,7 +147,6 @@
     "post-already-restored": "โพสต์นี้ถูกกู้คืนเรียบร้อยแล้ว",
     "topic-already-deleted": "กระทู้นี้ถูกลบไปแล้ว",
     "topic-already-restored": "กระทู้นี้ถูกกู้คืนเรียบร้อยแล้ว",
-    "topic-already-crossposted": "This topic has already been cross-posted there.",
     "cant-purge-main-post": "คุณไม่สามารถลบล้างโพสต์หลักได้ กรุณาลบกระทู้แทน",
     "topic-thumbnails-are-disabled": "ภาพตัวอย่างของกระทู้ถูกปิดใช้งาน",
     "invalid-file": "ไฟล์ไม่ถูกต้อง",
