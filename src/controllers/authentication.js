@@ -490,7 +490,7 @@ authenticationController.logout = async function (req, res) {
 		};
 		await plugins.hooks.fire('filter:user.logout', payload);
 
-		if (req.body?.noscript === 'true') {
+		if (req.body?.noscript === 'true' || res.locals.logoutRedirect === true) {
 			return res.redirect(payload.next);
 		}
 		res.status(200).send(payload);

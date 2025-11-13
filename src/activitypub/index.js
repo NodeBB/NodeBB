@@ -120,8 +120,13 @@ ActivityPub.resolveInboxes = async (ids) => {
 
 	if (!meta.config.activitypubAllowLoopback) {
 		ids = ids.filter((id) => {
-			const { hostname } = new URL(id);
-			return hostname !== nconf.get('url_parsed').hostname;
+			try {
+				const { hostname } = new URL(id);
+				return hostname !== nconf.get('url_parsed').hostname;
+			} catch (err) {
+				winston.error(`[activitypub/resolveInboxes] Invalid id: ${id}`);
+				return false;
+			}
 		});
 	}
 
