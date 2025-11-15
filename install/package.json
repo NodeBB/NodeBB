@@ -171,7 +171,7 @@
         "grunt": "1.6.1",
         "grunt-contrib-watch": "1.1.0",
         "husky": "8.0.3",
-        "jsdom": "27.1.0",
+        "jsdom": "27.2.0",
         "lint-staged": "16.2.6",
         "mocha": "11.7.5",
         "mocha-lcov-reporter": "1.3.0",
