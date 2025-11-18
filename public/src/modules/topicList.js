@@ -216,9 +216,12 @@ define('topicList', [
 			'reputation:disabled': data['reputation:disabled'],
 			template: {
 				name: templateName,
+				[templateName]: true,
 			},
 		};
-		tplData.template[templateName] = true;
+		if (ajaxify.data.cid) {
+			tplData.cid = ajaxify.data.cid;
+		}
 
 		hooks.fire('action:topics.loading', { topics: topics, after: after, before: before });
 

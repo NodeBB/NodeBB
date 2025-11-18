@@ -2,7 +2,6 @@
 
 define('forum/category', [
 	'forum/infinitescroll',
-	'share',
 	'navigator',
 	'topicList',
 	'sort',
@@ -11,7 +10,7 @@ define('forum/category', [
 	'alerts',
 	'api',
 	'clipboard',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
+], function (infinitescroll, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
