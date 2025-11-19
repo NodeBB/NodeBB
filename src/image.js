@@ -102,14 +102,15 @@ image.size = async function (path) {
 	return imageData ? { width: imageData.width, height: imageData.height } : undefined;
 };
 
-image.stripEXIF = async function (path) {
-	if (!meta.config.stripEXIFData || path.endsWith('.gif') || path.endsWith('.svg')) {
+image.stripEXIF = async function ({ path, type }) {
+	if (!meta.config.stripEXIFData || type === 'image/gif' || type === 'image/svg+xml') {
 		return;
 	}
 	try {
 		if (plugins.hooks.hasListeners('filter:image.stripEXIF')) {
 			await plugins.hooks.fire('filter:image.stripEXIF', {
 				path: path,
+				type: type,
 			});
 			return;
 		}

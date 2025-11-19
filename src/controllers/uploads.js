@@ -61,7 +61,7 @@ async function uploadAsImage(req, uploadedFile) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	await image.checkDimensions(uploadedFile.path);
-	await image.stripEXIF(uploadedFile.path);
+	await image.stripEXIF({ path: uploadedFile.path, type: uploadedFile.type });
 
 	if (plugins.hooks.hasListeners('filter:uploadImage')) {
 		return await plugins.hooks.fire('filter:uploadImage', {
