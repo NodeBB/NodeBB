@@ -845,6 +845,13 @@ Mocks.notes.private = async ({ messageObj }) => {
 	const published = messageObj.timestampISO;
 	const updated = messageObj.edited ? messageObj.editedISO : undefined;
 
+	const content = await messaging.getMessageField(messageObj.mid, 'content');
+	messageObj.content = content; // re-send raw content into parsePost
+	const parsed = await posts.parsePost(messageObj, 'activitypub.note');
+	messageObj.content = sanitize(parsed.content, sanitizeConfig);
+	messageObj.content = posts.relativeToAbsolute(messageObj.content, posts.urlRegex);
+	messageObj.content = posts.relativeToAbsolute(messageObj.content, posts.imgRegex);
+
 	let source;
 	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
 	if (markdownEnabled) {
