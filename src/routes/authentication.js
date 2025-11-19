@@ -154,10 +154,7 @@ Auth.reloadRoutes = async function (params) {
 		});
 	});
 
-
-	const multer = require('multer');
-	const storage = multer.diskStorage({});
-	const upload = multer({ storage });
+	const upload = require('../middleware/multer');
 	const middlewares = [
 		upload.any(),
 		Auth.middleware.applyCSRF,

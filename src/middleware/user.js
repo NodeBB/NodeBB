@@ -53,6 +53,12 @@ module.exports = function (middleware) {
 		}
 
 		if (req.loggedIn) {
+			const exists = await user.exists(req.uid);
+			if (!exists) {
+				res.locals.logoutRedirect = true;
+				return controllers.authentication.logout(req, res);
+			}
+
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
 			const user = await passportAuthenticateAsync(req, res);

@@ -82,7 +82,7 @@
 
 	<!-- users toggle -->
 	{{{ if users.length }}}
-	<div component="chat/user/list/btn" class="btn btn-ghost btn-sm d-none d-lg-flex flex-nowrap gap-3" title="[[modules:chat.view-users-list]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+	<div component="chat/user/list/btn" class="btn btn-ghost btn-sm d-none d-lg-flex flex-nowrap align-items-center gap-2" title="[[modules:chat.view-users-list]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 		<div class="d-flex text-nowrap">
 			{{{ if ./users.0 }}}
 			<span style="width: 18px; z-index: 3;" class="text-decoration-none" href="{config.relative_path}/user/{./users.0.userslug}">{buildAvatar(./users.0, "24px", true)}</span>
@@ -91,10 +91,10 @@
 			<span style="width: 18px; z-index: 2;" class="text-decoration-none" href="{config.relative_path}/user/{./users.1.userslug}">{buildAvatar(./users.1, "24px", true)}</span>
 			{{{ end }}}
 			{{{ if ./users.2 }}}
-			<span style="width: 18px; z-index: 1;" class="text-decoration-none" href="{config.relative_path}/user/{./users.2.userslug}">{buildAvatar(./users.2, "24px", true)}</span>
+			<span style="width: 24px; z-index: 1;" class="text-decoration-none" href="{config.relative_path}/user/{./users.2.userslug}">{buildAvatar(./users.2, "24px", true)}</span>
 			{{{ end }}}
 		</div>
-		{./userCount}
+		{formattedNumber(./userCount)}
 	</div>
 	{{{ end }}}
 </div>
