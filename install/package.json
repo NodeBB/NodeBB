@@ -165,7 +165,7 @@
         "@commitlint/config-angular": "20.0.0",
         "coveralls": "3.1.1",
         "@eslint/js": "9.39.1",
-        "@stylistic/eslint-plugin": "5.5.0",
+        "@stylistic/eslint-plugin": "5.6.1",
         "eslint-config-nodebb": "1.1.11",
         "eslint-plugin-import": "2.32.0",
         "grunt": "1.6.1",
