@@ -1,3 +1,62 @@
+#### v4.6.2 (2025-11-19)
+
+##### Chores
+
+*  up emoji (5bc5bb3d)
+*  up peace, closes #13774 (f764b791)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  update changelog for v4.6.1 (655c858b)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  #13779, svg uploads (e3002411)
+*  #13776, if plugin is in install/package.json use latest version from there (abfb6d13)
+*  category labels showing up on infinite scroll on category page (dece0628)
+*  crash in resolveInboxes (9900171f)
+*  log out user if session cookie resolves to non-existent uid (5d9da603)
+*  make i18n test failure message easier to read (3a81f903)
+*  wrong auto-categorization if group actor is explicitly included in `audience` (be4d0e81)
+*  order of operations when updating category handle (5cfec5b1)
+*  closes #13729, fix filename encoding (9410f466)
+
+##### Other Changes
+
+*  fix lint (008e1ae4)
+
+##### Refactors
+
+*  remove unused share (aacd27ee)
+
+##### Tests
+
+*  add test for #13729 (430a3e81)
+
 #### v4.6.1 (2025-10-17)
 
 ##### Chores
