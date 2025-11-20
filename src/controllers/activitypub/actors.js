@@ -143,7 +143,7 @@ Actors.topic = async function (req, res, next) {
 					method: posts.getPidsFromSet,
 					page,
 					perPage,
-					url: `${nconf.get('url')}/topic/${req.params.tid}/posts`,
+					url: `${nconf.get('url')}/topic/${req.params.tid}`,
 				}),
 				db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
 			]));
