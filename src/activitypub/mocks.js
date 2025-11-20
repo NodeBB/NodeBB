@@ -411,7 +411,10 @@ Mocks.message = async (object) => {
 		mid: object.id,
 		uid: object.attributedTo,
 		content: object.sourceContent || object.content,
-		// ip: caller.ip,
+
+		_activitypub: {
+			attachment: object.attachment,
+		},
 	};
 
 	return message;

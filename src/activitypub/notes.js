@@ -339,6 +339,16 @@ Notes.assertPrivate = async (object) => {
 
 	const payload = await activitypub.mocks.message(object);
 
+	// Naive image appending (using src/posts/attachments.js is likely better, but not worth the effort)
+	if (payload._activitypub.hasOwnProperty('attachment')) {
+		const images = payload._activitypub.attachment.filter((attachment) => {
+			return attachment.mediaType.startsWith('image/');
+		}).map(({ url, href }) => url || href);
+		images.forEach((url) => {
+			payload.content += `<p><img class="img-fluid img-thumbnail" src="${url}" /></p>`;
+		});
+	}
+
 	try {
 		await messaging.checkContent(payload.content, false);
 	} catch (e) {
