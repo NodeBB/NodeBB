@@ -283,9 +283,7 @@ module.exports = function (Topics) {
 				oldCid: oldCid,
 			}),
 			Topics.updateCategoryTagsCount([oldCid, cid], tags),
-			oldCid !== -1 ?
-				Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }) :
-				topicTools.share(tid, data.uid),
+			Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }),
 		]);
 
 		// Update entry in recent topics zset — must come after hash update
