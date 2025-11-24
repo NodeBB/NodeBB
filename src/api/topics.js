@@ -330,6 +330,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 					activitypub.out.move.context(caller.uid, tid);
 					activitypub.out.announce.topic(tid);
 				}
+				activitypub.out.undo.announce('cid', topicData.cid, tid);
 			}
 
 			await events.log({

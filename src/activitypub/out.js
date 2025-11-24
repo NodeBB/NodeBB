@@ -307,7 +307,6 @@ Out.announce.topic = enabledCheck(async (tid) => {
 		to,
 		cc,
 		object: pid,
-		target: `${nconf.get('url')}/category/${cid}`,
 	});
 });
 
@@ -524,4 +523,53 @@ Out.undo.flag = enabledCheck(async (uid, flag) => {
 		},
 	});
 	await db.sortedSetRemove(`flag:${flag.flagId}:remote`, uid);
+});
+
+Out.undo.announce = enabledCheck(async (type, id, tid) => {
+	if (!utils.isNumber(id) || !['uid', 'cid'].includes(type)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const exists = await Promise.all([
+		topics.exists(tid),
+		type === 'uid' ? user.exists(id) : categories.exists(id),
+	]);
+	if (!exists.every(Boolean)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const baseUrl = `${nconf.get('url')}/${type === 'uid' ? 'uid' : 'category'}/${id}`;
+	const { uid, mainPid: pid } = await topics.getTopicFields(tid, ['uid', 'mainPid']);
+	const allowed = await privileges.topics.can('topics:read', tid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		id: pid,
+		to: [activitypub._constants.publicAddress],
+		cc: [`${baseUrl}/followers`, uid],
+	}, {
+		uid: type === 'uid' && id,
+		cid: type === 'cid' && id,
+	});
+
+
+	// Just undo the announce.
+	await activitypub.send(type, id, Array.from(targets), {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/undo:announce/${Date.now()}`,
+		type: 'Undo',
+		actor: baseUrl,
+		to,
+		cc,
+		object: {
+			id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${Date.now()}`, // wrong timestamp btw
+			type: 'Announce',
+			actor: baseUrl,
+			to,
+			cc,
+			object: pid,
+		},
+	});
 });
