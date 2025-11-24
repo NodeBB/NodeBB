@@ -301,7 +301,7 @@ Out.announce.topic = enabledCheck(async (tid) => {
 	}, { cid, uid: utils.isNumber(uid) ? uid : undefined });
 
 	await activitypub.send('cid', cid, Array.from(targets), {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${Date.now()}`,
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/category/${cid}`,
 		to,
@@ -558,13 +558,13 @@ Out.undo.announce = enabledCheck(async (type, id, tid) => {
 
 	// Just undo the announce.
 	await activitypub.send(type, id, Array.from(targets), {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/undo:announce/${Date.now()}`,
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/undo:announce/${type}/${id}`,
 		type: 'Undo',
 		actor: baseUrl,
 		to,
 		cc,
 		object: {
-			id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${Date.now()}`, // wrong timestamp btw
+			id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/${type}/${id}`,
 			type: 'Announce',
 			actor: baseUrl,
 			to,

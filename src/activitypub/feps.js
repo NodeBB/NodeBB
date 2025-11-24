@@ -58,7 +58,7 @@ Feps.announce = async function announce(id, activity) {
 		if (isMain) {
 			activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing plain object (${activity.id}) to followers of cid ${cid} and ${relays.length} relays`);
 			await activitypub.send('cid', localCid ? cid : 0, targets, {
-				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now}`,
+				id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${localCid ? `cid/${cid}` : 'uid/0'}`,
 				type: 'Announce',
 				actor: localCid ? `${nconf.get('url')}/category/${cid}` : `${nconf.get('url')}/actor`,
 				to,
@@ -70,7 +70,7 @@ Feps.announce = async function announce(id, activity) {
 
 	activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} (${activity.id}) to followers of cid ${cid} and ${relays.length} relays`);
 	await activitypub.send('cid', localCid ? cid : 0, targets, {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now + 1}`,
+		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now}`,
 		type: 'Announce',
 		actor: localCid ? `${nconf.get('url')}/category/${cid}` : `${nconf.get('url')}/actor`,
 		to,
