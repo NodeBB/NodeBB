@@ -13,6 +13,7 @@ const categories = require('../categories');
 const posts = require('../posts');
 const topics = require('../topics');
 const messaging = require('../messaging');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const translator = require('../translator');
@@ -524,12 +525,19 @@ Mocks.actors.user = async (uid) => {
 };
 
 Mocks.actors.category = async (cid) => {
-	const {
-		name, handle: preferredUsername, slug,
-		descriptionParsed: summary, backgroundImage,
-	} = await categories.getCategoryFields(cid,
-		['name', 'handle', 'slug', 'description', 'descriptionParsed', 'backgroundImage']);
-	const publicKey = await activitypub.getPublicKey('cid', cid);
+	const [
+		{
+			name, handle: preferredUsername, slug,
+			descriptionParsed: summary, backgroundImage,
+		},
+		publicKey,
+		canPost,
+	] = await Promise.all([
+		categories.getCategoryFields(cid,
+			['name', 'handle', 'slug', 'description', 'descriptionParsed', 'backgroundImage']),
+		activitypub.getPublicKey('cid', cid),
+		privileges.categories.can('topics:create', cid, -2),
+	]);
 
 	let icon;
 	if (backgroundImage) {
@@ -567,6 +575,7 @@ Mocks.actors.category = async (cid) => {
 		summary,
 		// image, // todo once categories have cover photos
 		icon,
+		postingRestrictedToMods: !canPost,
 
 		publicKey: {
 			id: `${nconf.get('url')}/category/${cid}#key`,
