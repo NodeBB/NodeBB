@@ -151,7 +151,7 @@ categoryController.get = async function (req, res, next) {
 	categoryData.selectedTags = tagData.selectedTags;
 	categoryData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
 
-	if (!meta.config['feeds:disableRSS']) {
+	if (utils.isNumber(categoryData.cid) && !meta.config['feeds:disableRSS']) {
 		categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;
 		if (req.loggedIn) {
 			categoryData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
@@ -175,9 +175,14 @@ categoryController.get = async function (req, res, next) {
 		res.set('Link', `<${nconf.get('url')}/category/${cid}>; rel="alternate"; type="application/activity+json"`);
 
 		// Category accessible
-		const remoteOk = await privileges.categories.can('read', cid, activitypub._constants.uid);
-		if (remoteOk) {
+		const federating = await privileges.categories.can('read', cid, activitypub._constants.uid);
+		if (federating) {
 			categoryData.handleFull = `${categoryData.handle}@${nconf.get('url_parsed').host}`;
+		}
+
+		// Some remote categories don't have `url`, assume same as id
+		if (!utils.isNumber(categoryData.cid) && !categoryData.hasOwnProperty('url')) {
+			categoryData.url = categoryData.cid;
 		}
 	}
 
@@ -247,7 +252,7 @@ function addTags(categoryData, res, currentPage) {
 		},
 	];
 
-	if (!categoryData['feeds:disableRSS']) {
+	if (categoryData.rssFeedUrl && !categoryData['feeds:disableRSS']) {
 		res.locals.linkTags.push({
 			rel: 'alternate',
 			type: 'application/rss+xml',

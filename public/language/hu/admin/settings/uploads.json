@@ -22,6 +22,7 @@
 	"reject-image-height": "Képek maximális magassága (pixelben)",
 	"reject-image-height-help": "Azon képek, amik magasabbak ennél az értéknél visszautasításra kerülnek.",
 	"allow-topic-thumbnails": "Kis képek feltöltésének engedélyezése témakörhöz a felhasználók számára",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Témakörkép mérete",
 	"allowed-file-extensions": "Megengedett fájlkiterjesztések",
 	"allowed-file-extensions-help": "Itt adj meg fájlkiterjesztési listát, vesszővel elválasztva (pl. <code>pdf,xls,doc</code>). Az üres lista azt jelenti, hogy minden kiterjesztés megengedett.",

@@ -22,6 +22,7 @@
 	"reject-image-height": "تصاویر کی زیادہ سے زیادہ اونچائی (پکسلز میں)",
 	"reject-image-height-help": "جن تصاویر کی اونچائی اس قیمت سے زیادہ ہوگی وہ مسترد کر دی جائیں گی۔",
 	"allow-topic-thumbnails": "صارفین کو موضوعات کے لیے تھمب نیلز اپ لوڈ کرنے کی اجازت دیں",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "موضوعات کے تھمب نیلز کا سائز",
 	"allowed-file-extensions": "اجازت شدہ فائل ایکسٹینشنز",
 	"allowed-file-extensions-help": "فائل ایکسٹینشنز کوموں سے الگ کرکے درج کریں (مثال: <code>pdf,xls,doc</code>)۔ اگر فہرست خالی ہو تو تمام فائل ایکسٹینشنز کی اجازت ہوگی۔",

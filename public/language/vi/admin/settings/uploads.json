@@ -22,6 +22,7 @@
 	"reject-image-height": "Chiều Cao Ảnh Tối Đa (pixel)",
 	"reject-image-height-help": "Hình ảnh cao hơn giá trị này sẽ bị từ chối.",
 	"allow-topic-thumbnails": "Cho phép người dùng tải lên ảnh thumbnails chủ đề",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Kích Cỡ Ảnh Thumbnails Chủ Đề",
 	"allowed-file-extensions": "Cho Phép Phần Mở Rộng Tệp",
 	"allowed-file-extensions-help": "Nhập danh sách phần mở rộng tệp phân tách bằng dấu phẩy ở đây (VD: <code>pdf,xls,doc</code>). Để trống là cho phép tất cả.",

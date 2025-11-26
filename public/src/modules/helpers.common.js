@@ -25,6 +25,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		userAgentIcons,
 		buildAvatar,
 		increment,
+		lessthan,
+		greaterthan,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -33,6 +35,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		shouldHideReplyContainer,
 		humanReadableNumber,
 		formattedNumber,
+		isNumber,
 		txEscape,
 		uploadBasename,
 		generatePlaceholderWave,
@@ -328,6 +331,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return String(value + parseInt(inc, 10));
 	}
 
+	function lessthan(a, b) {
+		return parseInt(a, 10) < parseInt(b, 10);
+	}
+
+	function greaterthan(a, b) {
+		return parseInt(a, 10) > parseInt(b, 10);
+	}
+
 	function generateWroteReplied(post, timeagoCutoff) {
 		if (post.toPid) {
 			return generateRepliedTo(post, timeagoCutoff);
@@ -374,6 +385,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function formattedNumber(number) {
 		return utils.addCommas(number);
+	}
+
+	function isNumber(value) {
+		return utils.isNumber(value);
 	}
 
 	function txEscape(text) {

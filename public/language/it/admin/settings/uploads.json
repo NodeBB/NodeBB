@@ -22,6 +22,7 @@
 	"reject-image-height": "Lunghezza Massima Immagine (in pixel)",
 	"reject-image-height-help": "Le immagini più alte di questo valore saranno rifiutate.",
 	"allow-topic-thumbnails": "Consenti agli utenti di caricare le miniature degli argomenti",
+	"show-post-uploads-as-thumbnails": "Mostra i post caricati come miniature",
 	"topic-thumb-size": "Dimensione miniatura Argomento",
 	"allowed-file-extensions": "Abilita Estensioni File",
 	"allowed-file-extensions-help": "Inserisci una lista di estensioni separati da virgola quì (es. <code>pdf,xls,doc</code>). Una lista vuota indica che tutte le estensioni sono abilitate.",

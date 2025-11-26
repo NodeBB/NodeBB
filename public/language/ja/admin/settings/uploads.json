@@ -22,6 +22,7 @@
 	"reject-image-height": "Maximum Image Height (in pixels)",
 	"reject-image-height-help": "Images taller than this value will be rejected.",
 	"allow-topic-thumbnails": "ユーザーがスレッドのサムネイルをアップロードできるようにする",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "スレッドのサムネイルの大きさ",
 	"allowed-file-extensions": "ファイル拡張子が有効になりました。",
 	"allowed-file-extensions-help": "ここにファイル拡張子のカンマ区切りリストを入力します(例：<code> pdf,xls,doc </ code>)。空のリストは、すべての拡張が許可されていることを意味します。",

@@ -314,51 +314,6 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail to create new reply with toPid that has been purged', async () => {
-			const { postData } = await topics.post({
-				uid: topic.userId,
-				cid: topic.categoryId,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			});
-			await posts.purge(postData.pid, topic.userId);
-
-			await assert.rejects(
-				topics.reply({ uid: topic.userId, content: 'test post', tid: postData.topic.tid, toPid: postData.pid }),
-				{ message: '[[error:invalid-pid]]' }
-			);
-		});
-
-		it('should fail to create a new reply with toPid that has been deleted (user cannot view_deleted)', async () => {
-			const { postData } = await topics.post({
-				uid: topic.userId,
-				cid: topic.categoryId,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			});
-			await posts.delete(postData.pid, topic.userId);
-			const uid = await User.create({ username: utils.generateUUID().slice(0, 10) });
-
-			await assert.rejects(
-				topics.reply({ uid, content: 'test post', tid: postData.topic.tid, toPid: postData.pid }),
-				{ message: '[[error:invalid-pid]]' }
-			);
-		});
-
-		it('should properly create a new reply with toPid that has been deleted (user\'s own deleted post)', async () => {
-			const { postData } = await topics.post({
-				uid: topic.userId,
-				cid: topic.categoryId,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			});
-			await posts.delete(postData.pid, topic.userId);
-			const uid = await User.create({ username: utils.generateUUID().slice(0, 10) });
-
-			const { pid } = await topics.reply({ uid: topic.userId, content: 'test post', tid: postData.topic.tid, toPid: postData.pid });
-			assert(pid);
-		});
-
 		it('should delete nested relies properly', async () => {
 			const result = await topics.post({ uid: fooUid, title: 'nested test', content: 'main post', cid: topic.categoryId });
 			const reply1 = await topics.reply({ uid: fooUid, content: 'reply post 1', tid: result.topicData.tid });
@@ -372,7 +327,7 @@ describe('Topic\'s', () => {
 			replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
 			assert.strictEqual(replies, null);
 			toPid = await posts.getPostField(reply2.pid, 'toPid');
-			assert.strictEqual(toPid, null);
+			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
 		});
 	});
 

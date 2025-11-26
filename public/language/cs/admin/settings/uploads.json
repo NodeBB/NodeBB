@@ -22,6 +22,7 @@
 	"reject-image-height": "Maximální výška obrázku (v pixelech)",
 	"reject-image-height-help": "Vyšší obrázek než tato hodnota bude zamítnut.",
 	"allow-topic-thumbnails": "Povolit uživatelům nahrát miniatury témat",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Velikost miniatury tématu",
 	"allowed-file-extensions": "Povolené přípony souborů",
 	"allowed-file-extensions-help": "Zadejte seznam přípon souborů oddělených čárkou (např.: <code>pdf, xls, doc</code>). Prázdný seznam znamená, že všechny přípony jsou povoleny.",

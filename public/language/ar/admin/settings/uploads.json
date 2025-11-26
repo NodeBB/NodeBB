@@ -22,6 +22,7 @@
 	"reject-image-height": "Maximum Image Height (in pixels)",
 	"reject-image-height-help": "Images taller than this value will be rejected.",
 	"allow-topic-thumbnails": "السماح للاعضاء برفع الصور المصغرة للموضوع",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "حجم الصورة المصغرة للموضوع",
 	"allowed-file-extensions": "إمتدادات الملفات المسموح بها",
 	"allowed-file-extensions-help": "أدخل قائمة بامتدادات الملفات مفصولة بفواصل (مثال: <code>pdf,xls,doc</code>). القائمة الفارغة تعني أن كل الامتدادات مسموح بها.",

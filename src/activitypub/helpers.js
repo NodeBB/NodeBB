@@ -225,7 +225,7 @@ Helpers.resolveActor = (type, id) => {
 
 		case 'category':
 		case 'cid': {
-			return `${nconf.get('url')}/category/${id}`;
+			return `${nconf.get('url')}${id > 0 ? `/category/${id}` : '/actor'}`;
 		}
 
 		default:
@@ -525,4 +525,21 @@ Helpers.generateDigest = (set) => {
 			const result = a.map((x, i) => x ^ b[i]);
 			return result.toString('hex');
 		});
+};
+
+Helpers.addressed = (id, activity) => {
+	// Returns Boolean for if id is found in addressing fields (to, cc, etc.)
+	if (!id || !activity || typeof activity !== 'object') {
+		return false;
+	}
+
+	const combined = new Set([
+		...(activity.to || []),
+		...(activity.cc || []),
+		...(activity.bto || []),
+		...(activity.bcc || []),
+		...(activity.audience || []),
+	]);
+
+	return combined.has(id);
 };

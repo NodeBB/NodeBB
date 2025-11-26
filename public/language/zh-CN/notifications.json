@@ -71,7 +71,7 @@
     "users-csv-exported": "用户列表 CSV 已导出，点击以下载",
     "post-queue-accepted": "您先前提交的帖子已通过查验，点击这里查看您的帖子。",
     "post-queue-rejected": "您先前提交的帖子已被拒绝",
-    "post-queue-notify": "您先前提交的帖子收到了通知：“%1”",
+    "post-queue-notify": "您先前提交的帖子收到了通知：<br/>“%1”",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已完全激活。",
     "email-confirm-error-message": "验证的您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",

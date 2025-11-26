@@ -5,13 +5,13 @@
 	"disable-editing": "禁止编辑/删除聊天消息",
 	"disable-editing-help": "管理员和超级管理员不受此限制",
 	"max-length": "聊天信息的最大长度",
-	"max-length-remote": "远程聊天信息的最长长度",
-	"max-length-remote-help": "对于本地用户，该值通常设置为高于聊天消息最大值，因为远程消息往往较长（包含 @ 提及等）。",
+	"max-length-remote": "远程聊天消息的最大长度",
+	"max-length-remote-help": "该值通常设置得高于本地用户的聊天消息上限，因为远程消息往往更长（包含@提及等内容）",
 	"max-chat-room-name-length": "聊天室名称最大长度",
 	"max-room-size": "聊天室的最多用户数",
 	"delay": "发言频率（毫秒）",
-	"notification-delay": "聊天信息的通知延迟",
-	"notification-delay-help": "服务器可能无法承受即时通讯所带来的资源占用，因此在这段时间内发送的其他信息将被整理，并在每个延迟期通知用户一次。设置为 0 则禁用延迟。",
-	"restrictions.seconds-edit-after": "聊天信息保持可编辑状态的秒数。",
-	"restrictions.seconds-delete-after": "聊天信息保持可撤回状态的秒数。"
+	"notification-delay": "聊天消息通知延迟",
+	"notification-delay-help": "在此期间发送的额外消息将被汇总，并在每个延迟周期内向用户发送一次通知。设置为0可禁用延迟功能。",
+	"restrictions.seconds-edit-after": "聊天消息保持可编辑状态的秒数。",
+	"restrictions.seconds-delete-after": "聊天消息保持可撤回状态的秒数。"
 }

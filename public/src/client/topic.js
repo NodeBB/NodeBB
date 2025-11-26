@@ -206,6 +206,12 @@ define('forum/topic', [
 				});
 			}
 		});
+
+		$('[component="topic/thumb/list/expand"]').on('click', function () {
+			const btn = $(this);
+			btn.parents('[component="topic/thumb/list"]').removeClass('thumbs-collapsed');
+			btn.remove();
+		});
 	}
 
 	function addBlockQuoteHandler() {

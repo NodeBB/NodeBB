@@ -320,7 +320,7 @@ Mocks.category = async (actors) => {
 		const payload = {
 			cid,
 			name,
-			handle: preferredUsername,
+			handle: `${preferredUsername}@${hostname}`,
 			slug: `${preferredUsername}@${hostname}`,
 			description: summary,
 			descriptionParsed: posts.sanitize(summary),
@@ -411,7 +411,10 @@ Mocks.message = async (object) => {
 		mid: object.id,
 		uid: object.attributedTo,
 		content: object.sourceContent || object.content,
-		// ip: caller.ip,
+
+		_activitypub: {
+			attachment: object.attachment,
+		},
 	};
 
 	return message;
@@ -521,11 +524,11 @@ Mocks.actors.user = async (uid) => {
 };
 
 Mocks.actors.category = async (cid) => {
-	let {
+	const {
 		name, handle: preferredUsername, slug,
-		descriptionParsed: summary, federatedDescription, backgroundImage,
+		descriptionParsed: summary, backgroundImage,
 	} = await categories.getCategoryFields(cid,
-		['name', 'handle', 'slug', 'description', 'descriptionParsed', 'federatedDescription', 'backgroundImage']);
+		['name', 'handle', 'slug', 'description', 'descriptionParsed', 'backgroundImage']);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
 	let icon;
@@ -545,10 +548,6 @@ Mocks.actors.category = async (cid) => {
 			url: `${nconf.get('url')}${icon}`,
 		};
 	}
-
-	// Append federated desc.
-	const fallback = await translator.translate('[[admin/manage/categories:federatedDescription.default]]');
-	summary += `<hr /><p dir="auto">${federatedDescription || fallback}</p>\n`;
 
 	return {
 		'@context': [

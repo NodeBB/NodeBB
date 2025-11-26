@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const api = require('../api');
+const utils = require('../utils');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -76,6 +77,78 @@ inbox.add = async (req) => {
 			}
 		}
 	}
+};
+
+inbox.remove = async (req) => {
+	const { actor, object, target } = req.body;
+
+	const isContext = activitypub._constants.acceptable.contextTypes.has(object.type);
+	if (!isContext) {
+		return; // don't know how to handle other types
+	}
+
+	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
+	const fromCid = target || object.audience;
+	const exists = await posts.exists(mainPid);
+	if (!exists || !fromCid) {
+		return; // post not cached; do nothing.
+	}
+
+	// Ensure that cid is same-origin as the actor
+	const tid = await posts.getPostField(mainPid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
+	if (utils.isNumber(cid) || cid !== fromCid) {
+		// remote removal of topic in local cid, or resolved cid does not match
+		return;
+	}
+	const actorHostname = new URL(actor).hostname;
+	const cidHostname = new URL(cid).hostname;
+	if (actorHostname !== cidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/remove] Removing topic ${tid} from ${cid}`);
+	await topics.tools.move(tid, {
+		cid: -1,
+		uid: 'system',
+	});
+};
+
+inbox.move = async (req) => {
+	const { actor, object, origin, target } = req.body;
+
+	const isContext = activitypub._constants.acceptable.contextTypes.has(object.type);
+	if (!isContext) {
+		return; // don't know how to handle other types
+	}
+
+	const mainPid = await activitypub.contexts.getItems(0, object.id, { returnRootId: true });
+	const fromCid = origin;
+	const toCid = target || object.audience;
+	const exists = await posts.exists(mainPid);
+	if (!exists || !toCid) {
+		return; // post not cached; do nothing.
+	}
+
+	// Ensure that cid is same-origin as the actor
+	const tid = await posts.getPostField(mainPid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
+	if (utils.isNumber(cid)) {
+		// remote removal of topic in local cid, or resolved cid does not match
+		return;
+	}
+	const actorHostname = new URL(actor).hostname;
+	const toCidHostname = new URL(toCid).hostname;
+	const fromCidHostname = new URL(fromCid).hostname;
+	if (actorHostname !== toCidHostname || actorHostname !== fromCidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/remove] Moving topic ${tid} from ${fromCid} to ${toCid}`);
+	await topics.tools.move(tid, {
+		cid: toCid,
+		uid: 'system',
+	});
 };
 
 inbox.update = async (req) => {
@@ -188,18 +261,18 @@ inbox.delete = async (req) => {
 			throw new Error('[[error:invalid-pid]]');
 		}
 	}
-	const pid = object.id || object;
+	const id = object.id || object;
 	let type = object.type || undefined;
 
 	// Deletes don't have their objects resolved automatically
 	let method = 'purge';
 	try {
 		if (!type) {
-			({ type } = await activitypub.get('uid', 0, pid));
+			({ type } = await activitypub.get('uid', 0, id));
 		}
 
 		if (type === 'Tombstone') {
-			method = 'delete';
+			method = 'delete'; // soft delete
 		}
 	} catch (e) {
 		// probably 410/404
@@ -208,27 +281,41 @@ inbox.delete = async (req) => {
 	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
 
-	const objectHostname = new URL(pid).hostname;
+	const objectHostname = new URL(id).hostname;
 	if (actorHostname !== objectHostname) {
 		return reject('Delete', object, actor);
 	}
 
-	const [isNote/* , isActor */] = await Promise.all([
-		posts.exists(pid),
+	const [isNote, isContext/* , isActor */] = await Promise.all([
+		posts.exists(id),
+		activitypub.contexts.getItems(0, id, { returnRootId: true }), // ⚠️ unreliable, needs better logic (Contexts.is?)
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
 	switch (true) {
 		case isNote: {
-			const cid = await posts.getCidByPid(pid);
+			const cid = await posts.getCidByPid(id);
 			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
 			if (!allowed) {
 				return reject('Delete', object, actor);
 			}
 
-			const uid = await posts.getPostField(pid, 'uid');
-			await activitypub.feps.announce(pid, req.body);
-			await api.posts[method]({ uid }, { pid });
+			const uid = await posts.getPostField(id, 'uid');
+			await activitypub.feps.announce(id, req.body);
+			await api.posts[method]({ uid }, { pid: id });
+			break;
+		}
+
+		case !!isContext: {
+			const pid = isContext;
+			const exists = await posts.exists(pid);
+			if (!exists) {
+				activitypub.helpers.log(`[activitypub/inbox.delete] Context main pid (${pid}) not found locally. Doing nothing.`);
+				return;
+			}
+			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
+			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
 		}
 
@@ -238,7 +325,7 @@ inbox.delete = async (req) => {
 		// }
 
 		default: {
-			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${pid}) does not exist locally. Doing nothing.`);
+			activitypub.helpers.log(`[activitypub/inbox.delete] Object (${id}) does not exist locally. Doing nothing.`);
 			break;
 		}
 	}

@@ -248,7 +248,7 @@ module.exports = function (Topics) {
 
 	async function onNewPost({ pid, tid, uid: postOwner }, { uid, handle }) {
 		const [[postData], [userInfo]] = await Promise.all([
-			posts.getPostSummaryByPids([pid], uid, {}),
+			posts.getPostSummaryByPids([pid], uid, { extraFields: ['attachments'] }),
 			posts.getUserInfoForPosts([postOwner], uid),
 		]);
 		await Promise.all([

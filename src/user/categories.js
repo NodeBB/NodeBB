@@ -5,8 +5,8 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const categories = require('../categories');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
-const api = require('../api');
 const utils = require('../utils');
 
 module.exports = function (User) {
@@ -30,12 +30,8 @@ module.exports = function (User) {
 			throw new Error('[[error:no-category]]');
 		}
 
-		const apiMethod = state >= categories.watchStates.tracking ? 'follow' : 'unfollow';
-		const follows = cids.filter(cid => !utils.isNumber(cid)).map(cid => api.activitypub[apiMethod]({ uid }, {
-			type: 'uid',
-			id: uid,
-			actor: cid,
-		})); // returns promises
+		const apiMethod = state >= categories.watchStates.tracking ? activitypub.out.follow : activitypub.out.undo.follow;
+		const follows = cids.filter(cid => !utils.isNumber(cid)).map(cid => apiMethod('uid', uid, cid)); // returns promises
 
 		await Promise.all([
 			db.sortedSetsAdd(cids.map(cid => `cid:${cid}:uid:watch:state`), state, uid),

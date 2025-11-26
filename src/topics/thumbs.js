@@ -33,8 +33,9 @@ Thumbs.load = async function (topicData) {
 
 	const topicsWithThumbs = topicData.filter((tid, idx) => hasThumbs[idx]);
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
-
-	const thumbs = await loadFromTopicData(topicsWithThumbs);
+	const thumbs = await loadFromTopicData(topicsWithThumbs, {
+		thumbsOnly: meta.config.showPostUploadsAsThumbnails !== 1,
+	});
 
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
 	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));

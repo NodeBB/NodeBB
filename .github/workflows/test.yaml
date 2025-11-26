@@ -48,7 +48,7 @@ jobs:
 
     services:
       postgres:
-        image: 'postgres:17-alpine'
+        image: 'postgres:18-alpine'
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -63,7 +63,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:8.2.1'
+        image: 'redis:8.4.0'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -75,7 +75,7 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:8.0'
+        image: 'mongo:8.2'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
@@ -86,7 +86,7 @@ jobs:
       - run: cp install/package.json package.json
 
       - name: Install Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
 

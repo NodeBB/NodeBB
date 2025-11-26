@@ -81,6 +81,10 @@ Contexts.getItems = async (uid, id, options) => {
 	}
 
 	if (items) {
+		if (options.returnRootId) {
+			return items.pop();
+		}
+
 		items = await Promise.all(items
 			.map(async item => (activitypub.helpers.isUri(item) ? parseString(uid, item) : parseItem(uid, item))));
 		items = items.filter(Boolean);

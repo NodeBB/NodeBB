@@ -22,6 +22,7 @@
 	"reject-image-height": "Макс. высота изображения (в пикселях)",
 	"reject-image-height-help": "Загрузка изображений выше указанного значения будет отклонена.",
 	"allow-topic-thumbnails": "Разрешить пользователям загружать миниатюры для тем",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Размер миниатюр",
 	"allowed-file-extensions": "Допустимые расширения файлов",
 	"allowed-file-extensions-help": "Укажите через запятую список расширений файлов, например <code>pdf,xls,doc</code>. Оставьте поле пустым, чтобы разрешить любые загрузки.",

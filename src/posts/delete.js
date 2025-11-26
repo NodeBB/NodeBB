@@ -34,6 +34,7 @@ module.exports = function (Posts) {
 		await Promise.all([
 			topics.updateLastPostTimeFromLastPid(postData.tid),
 			topics.updateTeaser(postData.tid),
+			isDeleting ? activitypub.notes.delete(pid) : null,
 			isDeleting ?
 				db.sortedSetRemove(`cid:${topicData.cid}:pids`, pid) :
 				db.sortedSetAdd(`cid:${topicData.cid}:pids`, postData.timestamp, pid),
@@ -196,20 +197,15 @@ module.exports = function (Posts) {
 	}
 
 	async function deleteFromReplies(postData) {
-		const arrayOfReplyPids = await db.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
-		const allReplyPids = _.flatten(arrayOfReplyPids);
-		const promises = [
-			db.deleteObjectFields(
-				allReplyPids.map(pid => `post:${pid}`), ['toPid']
-			),
-			db.deleteAll(postData.map(p => `pid:${p.pid}:replies`)),
-		];
+		// Any replies to deleted posts will retain toPid reference (gh#13527)
+		await db.deleteAll(postData.map(p => `pid:${p.pid}:replies`));
 
+		// Remove post(s) from parents' replies zsets
 		const postsWithParents = postData.filter(p => parseInt(p.toPid, 10));
 		const bulkRemove = postsWithParents.map(p => [`pid:${p.toPid}:replies`, p.pid]);
-		promises.push(db.sortedSetRemoveBulk(bulkRemove));
-		await Promise.all(promises);
+		await db.sortedSetRemoveBulk(bulkRemove);
 
+		// Recalculate reply count
 		const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
 		const counts = await db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
 		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));

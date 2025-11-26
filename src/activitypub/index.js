@@ -68,6 +68,7 @@ ActivityPub.instances = require('./instances');
 ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
+ActivityPub.out = require('./out');
 
 ActivityPub.startJobs = () => {
 	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
@@ -206,7 +207,7 @@ ActivityPub.getPrivateKey = async (type, id) => {
 	if (type === 'uid') {
 		keyId = `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}#key`;
 	} else {
-		keyId = `${nconf.get('url')}/category/${id}#key`;
+		keyId = `${nconf.get('url')}${id > 0 ? `/category/${id}` : '/actor'}#key`;
 	}
 
 	return { key: privateKey, keyId };
@@ -537,7 +538,7 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
 	 * - Optional parameters:
-	 *     - `cid`: includes followers of the passed-in cid (local only)
+	 *     - `cid`: includes followers of the passed-in cid (local only, can also be an array)
 	 *     - `uid`: includes followers of the passed-in uid (local only)
 	 *     - `pid`: includes post announcers and all topic participants
 	 */
@@ -555,12 +556,15 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	}
 
 	if (cid) {
-		const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
-		followers = followers.concat(cidFollowers);
-		const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
-		if (!to.has(followersUrl)) {
-			cc.add(followersUrl);
-		}
+		cid = Array.isArray(cid) ? cid : [cid];
+		await Promise.all(cid.map(async (cid) => {
+			const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
+			followers = followers.concat(cidFollowers);
+			const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
+			if (!to.has(followersUrl)) {
+				cc.add(followersUrl);
+			}
+		}));
 	}
 
 	const targets = new Set([...followers, ...to, ...cc]);

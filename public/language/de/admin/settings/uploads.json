@@ -22,6 +22,7 @@
 	"reject-image-height": "Maximale Bildhöhe (in Pixeln)",
 	"reject-image-height-help": "Höhere Bilder werden abgelehnt.",
 	"allow-topic-thumbnails": "Nutzern erlauben Themen Thumbnails hochzuladen",
+	"show-post-uploads-as-thumbnails": "Show post uploads as thumbnails",
 	"topic-thumb-size": "Thema Thumbnailgröße",
 	"allowed-file-extensions": "Erlaubte Dateiendungen",
 	"allowed-file-extensions-help": "Komma-getrennte Liste der Dateiendungen hier einfügen (z.B. <code>pdf,xls,doc</code>). Eine leere Liste bedeutet, dass alle Dateiendungen erlaubt sind.",
