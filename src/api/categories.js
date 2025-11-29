@@ -126,7 +126,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const infScrollTopicsPerPage = 20;
+	const infScrollTopicsPerPage = settings.topicsPerPage;
 	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'recently_replied';
 
 	let start = Math.max(0, parseInt(data.after || 0, 10));
