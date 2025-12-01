@@ -7,6 +7,7 @@ const posts = require('../posts');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
+const utils = require('../utils');
 const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');
@@ -66,11 +67,22 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 	const uids = await user.getUidsFromSet('users:online', 0, -1);
 
 	await Promise.all(tids.map(async (tid) => {
-		const title = await topics.getTopicField(tid, 'title');
+		const { title, cid, mainPid } = await topics.getTopicFields(tid, ['title', 'cid', 'mainPid']);
 		const data = await topics.tools[action](tid, caller.uid);
 		const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
 		socketHelpers.emitToUids(event, data, notifyUids);
 		await logTopicAction(action, caller, tid, title);
+
+		switch(action) {
+			case 'delete': // falls through
+			case 'purge': {
+				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
+					activitypub.out.remove.context(caller.uid, tid); // 7888-style
+					activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
+					activitypub.out.undo.announce('cid', cid, tid); // microblogs
+				}
+			}
+		}
 	}));
 };
 
