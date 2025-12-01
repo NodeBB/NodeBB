@@ -147,7 +147,7 @@ Actors.assert = async (ids, options = {}) => {
 					categories.add(actor.id);
 				}
 			}
-			
+
 			if (
 				!typeOk ||
 				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
@@ -351,7 +351,7 @@ Actors.assertGroup = async (ids, options = {}) => {
 	}));
 	groups = groups.filter(Boolean); // remove unresolvable actors
 
-	// Build userData object for storage
+	// Build categoryData object for storage
 	const categoryObjs = (await activitypub.mocks.category(groups)).filter(Boolean);
 	const now = Date.now();
 
