@@ -57,7 +57,7 @@
         "compare-versions": "6.1.1",
         "compression": "1.8.1",
         "connect-flash": "0.1.1",
-        "connect-mongo": "5.1.0",
+        "connect-mongo": "6.0.0",
         "connect-pg-simple": "10.0.0",
         "connect-redis": "9.0.0",
         "cookie-parser": "1.4.7",
