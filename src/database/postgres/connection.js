@@ -43,7 +43,6 @@ connection.getConnectionOptions = function (postgres) {
 				connOptions.ssl[prop] = fs.readFileSync(ssl[prop]).toString();
 			}
 		});
-		console.log(connOptions);
 	}
 
 	return _.merge(connOptions, postgres.options || {});
