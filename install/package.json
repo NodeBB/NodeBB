@@ -67,7 +67,7 @@
         "daemon": "1.1.0",
         "diff": "8.0.2",
         "esbuild": "0.27.0",
-        "express": "4.21.2",
+        "express": "4.22.1",
         "express-session": "1.18.2",
         "express-useragent": "2.0.2",
         "fetch-cookie": "3.1.0",
