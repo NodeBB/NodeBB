@@ -180,8 +180,8 @@ describe('FEPs', () => {
 						return activity.type === 'Announce' &&
 							activity.object && activity.object.type === 'Note';
 					});
-
-					assert(test1 && test2, JSON.stringify(activities, null, 2));
+					console.log(JSON.stringify(activities, null, 2));
+					assert(test1 && test2);
 				});
 
 				it('should federate out an Announce(Create(Note)) on reply', async () => {
