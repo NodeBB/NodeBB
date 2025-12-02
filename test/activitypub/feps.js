@@ -180,7 +180,7 @@ describe('FEPs', () => {
 						return activity.type === 'Announce' &&
 							activity.object && activity.object.type === 'Note';
 					});
-					console.log(JSON.stringify(activities, null, 2));
+					console.log('activities', JSON.stringify(activities, null, 2));
 					assert(test1 && test2);
 				});
 
