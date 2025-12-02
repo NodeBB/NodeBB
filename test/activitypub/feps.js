@@ -163,7 +163,10 @@ describe('FEPs', () => {
 						cc: [`${nconf.get('url')}/category/${cid}`],
 					});
 					pid = id;
+					console.log('note passed to mocks.create', note);
 					({ activity } = await helpers.mocks.create(note));
+
+					console.log('activity passed to inbox.create', activity);
 					await activitypub.inbox.create({ body: activity });
 
 					const activities = Array.from(activitypub._sent);
