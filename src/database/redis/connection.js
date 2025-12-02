@@ -22,7 +22,6 @@ connection.connect = async function (options) {
 			const sentinelRootNodes = options.sentinels.map(sentinel => ({ host: sentinel.host, port: sentinel.port }));
 			cxn = createSentinel({
 				...options.options,
-				name: 'sentinel-db',
 				sentinelRootNodes,
 			});
 		} else if (redis_socket_or_host && String(redis_socket_or_host).indexOf('/') >= 0) {
