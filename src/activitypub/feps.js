@@ -10,6 +10,8 @@ const activitypub = module.parent.exports;
 const Feps = module.exports;
 
 Feps.announce = async function announce(id, activity) {
+	activity = structuredClone(activity);
+
 	let localId;
 	if (String(id).startsWith(nconf.get('url'))) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));

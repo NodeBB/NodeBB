@@ -163,10 +163,8 @@ describe('FEPs', () => {
 						cc: [`${nconf.get('url')}/category/${cid}`],
 					});
 					pid = id;
-					console.log('note passed to mocks.create', note);
 					({ activity } = await helpers.mocks.create(note));
 
-					console.log('activity passed to inbox.create', activity);
 					await activitypub.inbox.create({ body: activity });
 
 					const activities = Array.from(activitypub._sent);
@@ -183,7 +181,6 @@ describe('FEPs', () => {
 						return activity.type === 'Announce' &&
 							activity.object && activity.object.type === 'Note';
 					});
-					console.log('activities', JSON.stringify(activities, null, 2));
 					assert(test1 && test2);
 				});
 
