@@ -55,7 +55,6 @@ Feps.announce = async function announce(id, activity) {
 
 	if (activity.type === 'Create') {
 		const isMain = await posts.isMain(localId || id);
-		console.log('plain announce', activity);
 		if (isMain) {
 			activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing plain object (${activity.id}) to followers of cid ${cid} and ${relays.length} relays`);
 			await activitypub.send('cid', localCid ? cid : 0, targets, {
@@ -70,7 +69,6 @@ Feps.announce = async function announce(id, activity) {
 	}
 
 	activitypub.helpers.log(`[activitypub/inbox.announce(1b12)] Announcing ${activity.type} (${activity.id}) to followers of cid ${cid} and ${relays.length} relays`);
-	console.log('activity announce', activity);
 	await activitypub.send('cid', localCid ? cid : 0, targets, {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(id)}#activity/announce/${now}`,
 		type: 'Announce',
