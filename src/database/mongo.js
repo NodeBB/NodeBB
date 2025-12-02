@@ -65,7 +65,7 @@ mongoModule.init = async function (opts) {
 };
 
 mongoModule.createSessionStore = async function (options) {
-	const MongoStore = require('connect-mongo');
+	const { MongoStore } = require('connect-mongo');
 	const meta = require('../meta');
 
 	const store = MongoStore.create({
