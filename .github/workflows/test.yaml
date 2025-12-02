@@ -81,7 +81,7 @@ jobs:
           - 27017:27017
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - run: cp install/package.json package.json
 
