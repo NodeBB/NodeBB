@@ -204,3 +204,98 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 		});
 	});
 });
+
+describe('Privilege masking', () => {
+	before(async () => {
+		// Grant default fediverse privileges
+		await install.giveWorldPrivileges();
+	});
+
+	describe('control', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a standard mock group
+			({ id: cid } = helpers.mocks.group());
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+		});
+
+		it('should properly assert the remote category', async () => {
+			const assertion = await activitypub.actors.assertGroup([cid]);
+			const exists = await categories.exists(cid);
+
+			assert(assertion);
+			assert(exists);
+		});
+
+		it('should not set up a privilege mask for that category', async () => {
+			const exists = await db.exists(`cid:${cid}:privilegeMask`);
+			assert(!exists);
+		});
+
+		it('should pass the privileges .can() check if requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+			console.log(set);
+			const can = await privileges.categories.can('topics:create', cid, uid);
+			assert(can);
+		});
+
+		it('should return true in the privilege set when requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+
+			assert(set);
+			assert(set['topics:create']);
+		});
+	});
+
+	describe('postingRestrictedToMods', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a mock group with `postingRestrictedToMods` bit set
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: true,
+			}));
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+		});
+
+		it('should properly assert the remote category', async () => {
+			const assertion = await activitypub.actors.assertGroup([cid]);
+			const exists = await categories.exists(cid);
+
+			assert(assertion);
+			assert(exists);
+		});
+
+		it('should set up a privilege mask for that category', async () => {
+			const exists = await db.exists(`cid:${cid}:privilegeMask`);
+			assert(exists);
+		});
+
+		it('should contain a single mask', async () => {
+			const members = await db.getSetMembers(`cid:${cid}:privilegeMask`);
+
+			assert(members);
+			assert.strictEqual(members.length, 1);
+			assert.strictEqual(members[0], 'topics:create');
+		});
+
+		it('should fail the privileges .can() check if requested', async () => {
+			const can = await privileges.categories.can('topics:create', cid, uid);
+			assert(!can);
+		});
+
+		it('should return false in the privilege set when requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+
+			assert(set);
+			assert(!set['topics:create']);
+		});
+	});
+});
