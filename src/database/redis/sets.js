@@ -22,6 +22,16 @@ module.exports = function (module) {
 		await helpers.execBatch(batch);
 	};
 
+	module.setAddBulk = async function (data) {
+		if (!data.length) {
+			return;
+		}
+
+		const batch = module.client.batch();
+		data.forEach(([key, member]) => batch.sAdd(String(key), String(member)));
+		await helpers.execBatch(batch);
+	};
+
 	module.setRemove = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
