@@ -14,11 +14,19 @@ module.exports = function (module) {
 	};
 
 	module.setsAdd = async function (keys, value) {
-		if (!Array.isArray(keys) || !keys.length) {
+		if (!Array.isArray(keys) || !keys.length || !value) {
+			return;
+		}
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		if (!value.length) {
 			return;
 		}
 		const batch = module.client.batch();
-		keys.forEach(k => batch.sAdd(String(k), String(value)));
+		keys.forEach((k) => {
+			value.forEach(v => batch.sAdd(String(k), String(v)));
+		});
 		await helpers.execBatch(batch);
 	};
 
