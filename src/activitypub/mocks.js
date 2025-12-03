@@ -281,6 +281,7 @@ Mocks.category = async (actors) => {
 		let {
 			url, preferredUsername, icon, /* image, */
 			name, summary, followers, inbox, endpoints, tag,
+			postingRestrictedToMods,
 		} = actor;
 		preferredUsername = slugify(preferredUsername || name);
 		/*
@@ -338,6 +339,10 @@ Mocks.category = async (actors) => {
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
+
+			_activitypub: {
+				postingRestrictedToMods,
+			},
 		};
 
 		return payload;
