@@ -1,10 +1,11 @@
 'use strict';
 
+const db = require('./mocks/databasemock');
+
 const assert = require('assert');
 const nconf = require('nconf');
 
 const request = require('../src/request');
-const db = require('./mocks/databasemock');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
 const User = require('../src/user');
