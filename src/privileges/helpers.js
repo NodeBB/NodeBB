@@ -27,7 +27,7 @@ helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
 	}
 
 	let allowed;
-	const masked = db.isSetMember(`cid:${cid}:privilegeMask`, privilege);
+	const masked = await db.isSetMember(`cid:${cid}:privilegeMask`, privilege);
 	if (!masked) {
 		const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
 			groups.isMembers(uids, `cid:${cid}:privileges:${privilege}`),
