@@ -401,11 +401,11 @@ Actors.assertGroup = async (ids, options = {}) => {
 	]);
 
 	// Privilege mask
-	const masksAdd = categoryObjs.reduce((queries, category) => {
+	const masksAdd = categoryObjs.reduce((sets, category) => {
 		if (category?._activitypub?.postingRestrictedToMods) {
-			queries.push(db.setAdd.call(db, `cid:${category.cid}:privilegeMask`, 'topics:create'));
+			sets.push(`cid:${category.cid}:privilegeMask`);
 		}
-		return queries;
+		return sets;
 	}, []);
 
 	await Promise.all([
@@ -414,7 +414,7 @@ Actors.assertGroup = async (ids, options = {}) => {
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:cid', queries.handleAdd),
 		_migratePersonToGroup(categoryObjs),
-		Promise.all(masksAdd),
+		db.setsAdd(masksAdd, 'topics:create'),
 	]);
 
 	return categoryObjs;
