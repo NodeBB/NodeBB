@@ -78,7 +78,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function buildLinkTag(tag) {
 		const attributes = [
-			'link', 'rel', 'as', 'type', 'href', 'hreflang', 'sizes', 'title', 'crossorigin'
+			'link', 'rel', 'as', 'type', 'href', 'hreflang', 'sizes', 'title', 'crossorigin',
 		];
 		const [link, rel, as, type, href, hreflang, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
