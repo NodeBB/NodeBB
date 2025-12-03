@@ -12,6 +12,7 @@ set_defaults() {
   export SETUP="${SETUP:-}"
   export PACKAGE_MANAGER="${PACKAGE_MANAGER:-npm}"
   export OVERRIDE_UPDATE_LOCK="${OVERRIDE_UPDATE_LOCK:-false}"
+  export NODEBB_ADDITIONAL_PLUGINS="${NODEBB_ADDITIONAL_PLUGINS:-}"
 }
 
 # Function to check if a directory exists and is writable
@@ -172,6 +173,19 @@ debug_log() {
   echo "DEBUG: $message"
 }
 
+install_additional_plugins() {
+  if [[ ! -z ${NODEBB_ADDITIONAL_PLUGINS} ]]; then
+    export START_BUILD="true"
+    for plugin in "${NODEBB_ADDITIONAL_PLUGINS[@]}"; do
+      echo "Installing additional plugin ${plugin}..."
+      npm install "${plugin}" || {
+        echo "Failed to install plugin ${plugin}"
+        exit 1
+      }
+    done
+  fi
+}
+
 # Main function
 main() {
   set_defaults
@@ -182,12 +196,14 @@ main() {
   debug_log "PACKAGE_MANAGER: $PACKAGE_MANAGER"
   debug_log "CONFIG location: $CONFIG"
   debug_log "START_BUILD: $START_BUILD"
+  debug_log "NODEBB_ADDITIONAL_PLUGINS: ${NODEBB_ADDITIONAL_PLUGINS}"
 
   if [ -n "$SETUP" ]; then
     start_setup_session "$CONFIG"
   fi
 
   if [ -f "$CONFIG" ]; then
+    install_additional_plugins
     start_forum "$CONFIG" "$START_BUILD"
   else
     start_installation_session "$NODEBB_INIT_VERB" "$CONFIG"
