@@ -54,6 +54,32 @@ DO NOTHING`,
 		});
 	};
 
+	module.setAddBulk = async function (data) {
+		if (!data.length) {
+			return;
+		}
+		const keys = [];
+		const members = [];
+
+		for (const [key, member] of data) {
+			keys.push(key);
+			members.push(member);
+		}
+		await module.transaction(async (client) => {
+			await helpers.ensureLegacyObjectsType(client, keys, 'set');
+			await client.query({
+				name: 'setAddBulk',
+				text: `
+INSERT INTO "legacy_set" ("_key", "member")
+SELECT k, m
+FROM UNNEST($1::TEXT[], $2::TEXT[]) AS t(k, m)
+ON CONFLICT ("_key", "member")
+DO NOTHING;`,
+				values: [keys, members],
+			});
+		});
+	};
+
 	module.setRemove = async function (key, value) {
 		if (!Array.isArray(key)) {
 			key = [key];

@@ -88,6 +88,36 @@ describe('Set methods', () => {
 				done();
 			});
 		});
+
+		it('should add the values to each set', async () => {
+			await db.setsAdd(['saddarray1', 'saddarray2', 'saddarray3'], ['v1', 'v2', 'v3']);
+			const data = await db.getSetsMembers(['saddarray1', 'saddarray2', 'saddarray3']);
+			data.forEach(members => members.sort());
+			assert.deepStrictEqual(data, [
+				['v1', 'v2', 'v3'],
+				['v1', 'v2', 'v3'],
+				['v1', 'v2', 'v3'],
+			]);
+		});
+	});
+
+	describe('setAddBulk()', () => {
+		it('should add multiple key-member pairs', async () => {
+			await db.setAddBulk([
+				['bulkSet1', 'value1'],
+				['bulkSet2', 'value2'],
+			]);
+			let data = await db.getSetMembers('bulkSet1');
+			assert.deepStrictEqual(data, ['value1']);
+			data = await db.getSetMembers('bulkSet2');
+			assert.deepStrictEqual(data, ['value2']);
+			await db.setAddBulk([
+				['bulkSet1', 'value1'],
+				['bulkSet1', 'value3'],
+			]);
+			data = await db.getSetMembers('bulkSet1');
+			assert.deepStrictEqual(data.sort(), ['value1', 'value3']);
+		});
 	});
 
 	describe('getSetsMembers()', () => {

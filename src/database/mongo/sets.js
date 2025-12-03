@@ -68,6 +68,31 @@ module.exports = function (module) {
 		}
 	};
 
+	module.setAddBulk = async function (data) {
+		if (!data.length) {
+			return;
+		}
+
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+
+		data.forEach(([key, member]) => {
+			bulk.find({ _key: key }).upsert().updateOne({
+				$addToSet: {
+					members: helpers.valueToString(member),
+				},
+			});
+		});
+		try {
+			await bulk.execute();
+		} catch (err) {
+			if (err && err.message.includes('E11000 duplicate key error')) {
+				console.log(new Error('e11000').stack, data);
+				return await module.setAddBulk(data);
+			}
+			throw err;
+		}
+	};
+
 	module.setRemove = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
