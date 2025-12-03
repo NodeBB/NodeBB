@@ -238,7 +238,6 @@ describe('Privilege masking', () => {
 
 		it('should pass the privileges .can() check if requested', async () => {
 			const set = await privileges.categories.get(cid, uid);
-			console.log(set);
 			const can = await privileges.categories.can('topics:create', cid, uid);
 			assert(can);
 		});
