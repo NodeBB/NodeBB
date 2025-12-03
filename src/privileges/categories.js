@@ -96,14 +96,16 @@ privsCategories.get = async function (cid, uid) {
 		'topics:tag', 'read', 'posts:view_deleted',
 	];
 
-	const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
+	let [userPrivileges, isAdministrator, isModerator] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, cid),
 	]);
 
-	const combined = userPrivileges.map(allowed => allowed || isAdministrator);
-	const privData = _.zipObject(privs, combined);
+	if (utils.isNumber(cid)) {
+		userPrivileges = userPrivileges.map(allowed => allowed || isAdministrator);
+	}
+	const privData = _.zipObject(privs, userPrivileges);
 	const isAdminOrMod = isAdministrator || isModerator;
 
 	return await plugins.hooks.fire('filter:privileges.categories.get', {
