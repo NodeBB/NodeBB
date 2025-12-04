@@ -100,10 +100,16 @@ module.exports = function (module) {
 
 		value = value.map(v => helpers.valueToString(v));
 
-		await module.client.collection('objects').updateMany({
+		const coll = module.client.collection('objects');
+		await coll.updateMany({
 			_key: Array.isArray(key) ? { $in: key } : key,
 		}, {
 			$pullAll: { members: value },
+		});
+
+		await coll.deleteMany({
+			_key: Array.isArray(key) ? { $in: key } : key,
+			members: { $size: 0 },
 		});
 	};
 
@@ -113,10 +119,16 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		await module.client.collection('objects').updateMany({
+		const coll = module.client.collection('objects');
+		await coll.updateMany({
 			_key: { $in: keys },
 		}, {
 			$pull: { members: value },
+		});
+
+		await coll.deleteMany({
+			_key: { $in: keys },
+			members: { $size: 0 },
 		});
 	};
 
