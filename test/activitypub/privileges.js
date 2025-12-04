@@ -359,8 +359,8 @@ describe('Privilege masking', () => {
 			await activitypub.actors.assertGroup([cid], { update: true });
 
 			// Ensure mask is gone from db
-			const exists = await db.exists(`cid:${cid}:privilegeMask`);
-			assert(!exists);
+			const memberCount = await db.setCount(`cid:${cid}:privilegeMask`);
+			assert.strictEqual(memberCount, 0);
 
 			can = await privileges.categories.can('topics:create', cid, uid);
 			assert(can, 'Privilege should be restored after mask removal.');
@@ -396,8 +396,8 @@ describe('Privilege masking', () => {
 			await activitypub.actors.assertGroup([cid], { update: true });
 
 			// Ensure mask is gone from db
-			const exists = await db.exists(`cid:${cid}:privilegeMask`);
-			assert(!exists);
+			const memberCount = await db.setCount(`cid:${cid}:privilegeMask`);
+			assert.strictEqual(memberCount, 0);
 
 			can = await privileges.categories.can('topics:create', cid, uid);
 			assert(can, 'Privilege should be restored after mask removal.');
