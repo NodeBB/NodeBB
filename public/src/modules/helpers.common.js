@@ -113,7 +113,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		const href = tag === 'a' ? `href="${relative_path}/category/${category.slug}"` : '';
-		return `<${tag} ${href} component="topic/category" class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
+		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
 			${category.icon && category.icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
 			${category.name}
 		</${tag}>`;
