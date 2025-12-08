@@ -19,9 +19,7 @@ delete:
       description: a valid UNIX timestamp
       example: 1611850000000
   responses:
-    "200":
+    '200':
       description: Post diff successfully deleted
       content:
-        application/json:
-          schema:
-            $ref: ../diffs.yaml#/get/responses/200/content
+        $ref: ../diffs.yaml#/get/responses/200/content
