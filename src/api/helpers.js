@@ -147,14 +147,34 @@ async function executeCommand(caller, command, eventName, notification, data) {
 		websockets.in(`uid_${caller.uid}`).emit(`posts.${command}`, result);
 		websockets.in(data.room_id).emit(`event:${eventName}`, result);
 	}
-	if (result && command === 'upvote') {
-		socketHelpers.upvote(result, notification);
-		await activitypub.out.like.note(caller.uid, data.pid);
-	} else if (result && notification) {
-		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, command, notification);
-	} else if (result && command === 'unvote') {
-		socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
-		await activitypub.out.undo.like(caller.uid, data.pid);
+
+	if (result) {
+		switch (command) {
+			case 'upvote': {
+				socketHelpers.upvote(result, notification);
+				await activitypub.out.like.note(caller.uid, data.pid);
+				break;
+			}
+
+			case 'downvote': {
+				await activitypub.out.dislike.note(caller.uid, data.pid);
+				break;
+			}
+
+			case 'unvote': {
+				socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
+				await activitypub.out.undo.like(caller.uid, data.pid);
+				break;
+			}
+
+			default: {
+				if (notification) {
+					socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, command, notification);
+				}
+				break;
+			}
+		}
 	}
+
 	return result;
 }

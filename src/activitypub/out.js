@@ -277,6 +277,32 @@ Out.like.note = enabledCheck(async (uid, pid) => {
 	]);
 });
 
+Out.dislike = {};
+
+Out.dislike.note = enabledCheck(async (uid, pid) => {
+	const payload = {
+		id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
+		type: 'Dislike',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+
+	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
+		await activitypub.feps.announce(pid, payload);
+		return;
+	}
+
+	const recipient = await posts.getPostField(pid, 'uid');
+	if (!activitypub.helpers.isUri(recipient)) {
+		return;
+	}
+
+	await Promise.all([
+		activitypub.send('uid', uid, [recipient], payload),
+		activitypub.feps.announce(pid, payload),
+	]);
+});
+
 Out.announce = {};
 
 Out.announce.topic = enabledCheck(async (tid) => {

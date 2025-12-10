@@ -352,6 +352,26 @@ inbox.like = async (req) => {
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
 
+inbox.dislike = async (req) => {
+	const { actor, object } = req.body;
+	const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
+
+	if (type !== 'post' || !(await posts.exists(id))) {
+		return reject('Dislike', object, actor);
+	}
+
+	const allowed = await privileges.posts.can('posts:downvote', id, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be downvoted.`);
+		return reject('Dislike', object, actor);
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/dislike] id ${id} via ${actor}`);
+
+	await posts.downvote(id, actor);
+	await activitypub.feps.announce(object.id, req.body);
+};
+
 inbox.announce = async (req) => {
 	let { actor, object, published, to, cc } = req.body;
 	activitypub.helpers.log(`[activitypub/inbox/announce] Parsing Announce(${object.type}) from ${actor}`);
