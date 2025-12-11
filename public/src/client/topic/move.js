@@ -34,6 +34,7 @@ define('forum/topic/move', [
 			categorySelector.init(dropdownEl, {
 				onSelect: onCategorySelected,
 				privilege: 'moderate',
+				localOnly: true,
 			});
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);

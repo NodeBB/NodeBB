@@ -76,6 +76,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				privilege: options.privilege,
 				states: options.states,
 				showLinks: options.showLinks,
+				localOnly: options.localOnly,
 			}, function (err, { categories }) {
 				if (err) {
 					return alerts.error(err);
