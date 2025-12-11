@@ -6,12 +6,14 @@ const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const db = require('../database');
+const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.search = async function (data) {
 		const query = data.query || '';
 		const page = data.page || 1;
 		const uid = data.uid || 0;
+		const localOnly = data.localOnly || false;
 		const paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
 		const startTime = process.hrtime();
@@ -21,6 +23,9 @@ module.exports = function (Categories) {
 		}
 
 		let cids = await findCids(query, data.hardCap);
+		if (localOnly) {
+			cids = cids.filter(cid => utils.isNumber(cid));
+		}
 
 		const result = await plugins.hooks.fire('filter:categories.search', {
 			data: data,
