@@ -116,6 +116,10 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/crosspost"]', () => {
+			console.log('tbd');
+		});
+
 		topicContainer.on('click', '[component="topic/delete/posts"]', function () {
 			require(['forum/topic/delete-posts'], function (deletePosts) {
 				deletePosts.init();

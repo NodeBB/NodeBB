@@ -116,6 +116,7 @@
 	"thread-tools.lock": "Lock Topic",
 	"thread-tools.unlock": "Unlock Topic",
 	"thread-tools.move": "Move Topic",
+	"thread-tools.crosspost": "Crosspost Topic",
 	"thread-tools.move-posts": "Move Posts",
 	"thread-tools.move-all": "Move All",
 	"thread-tools.change-owner": "Change Owner",

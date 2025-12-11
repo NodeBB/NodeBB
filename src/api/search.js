@@ -66,6 +66,7 @@ async function findMatchedCids(uid, data) {
 		query: data.search,
 		qs: data.query,
 		paginate: false,
+		localOnly: data.localOnly,
 	});
 
 	let matchedCids = result.categories.map(c => c.cid);
