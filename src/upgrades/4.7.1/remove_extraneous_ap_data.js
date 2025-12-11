@@ -15,11 +15,10 @@ module.exports = {
 			const combined = readKeys.concat(voteKeys);
 
 			await db.deleteAll(combined);
-			progress.incr(combined.length);
+			progress.incr(uids.length);
 		}, {
 			batch: 500,
 			progress,
 		});
-
 	},
 };
