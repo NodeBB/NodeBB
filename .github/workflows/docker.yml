@@ -53,7 +53,7 @@ jobs:
 
       - name: Cache node_modules
         id: cache-node-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: var-cache-node-modules
           key: var-cache-node-modules-${{ hashFiles('Dockerfile', 'install/package.json') }}
