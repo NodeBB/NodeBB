@@ -216,14 +216,14 @@ Topics.move = async (req, res) => {
 
 Topics.crosspost = async (req, res) => {
 	const { cid } = req.body;
-	const crossposts = await topics.tools.crosspost(req.params.tid, cid, req.uid);
+	const crossposts = await topics.crossposts.add(req.params.tid, cid, req.uid);
 
 	helpers.formatApiResponse(200, res, { crossposts });
 };
 
 Topics.uncrosspost = async (req, res) => {
 	const { cid } = req.body;
-	const crossposts = await topics.tools.uncrosspost(req.params.tid, cid, req.uid);
+	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
 
 	helpers.formatApiResponse(200, res, { crossposts });
 };
