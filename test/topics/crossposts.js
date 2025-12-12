@@ -73,7 +73,7 @@ describe('Crossposting (& related logic)', () => {
 		});
 
 		it('should successfully crosspost to another cid', async () => {
-			const crossposts = await topics.tools.crosspost(tid, cid2, uid);
+			const crossposts = await topics.crossposts.add(tid, cid2, uid);
 
 			assert(Array.isArray(crossposts));
 			assert.strictEqual(crossposts.length, 1);
@@ -104,7 +104,7 @@ describe('Crossposting (& related logic)', () => {
 
 		it('should throw on cross-posting again when already cross-posted', async () => {
 			await assert.rejects(
-				topics.tools.crosspost(tid, cid2, uid),
+				topics.crossposts.add(tid, cid2, uid),
 				{ message: '[[error:topic-already-crossposted]]' },
 			);
 		});
@@ -129,11 +129,11 @@ describe('Crossposting (& related logic)', () => {
 			});
 			tid = topicData.tid;
 
-			await topics.tools.crosspost(tid, cid2, uid);
+			await topics.crossposts.add(tid, cid2, uid);
 		});
 
 		it('should successfully uncrosspost from a cid', async () => {
-			const crossposts = await topics.tools.uncrosspost(tid, cid2, uid);
+			const crossposts = await topics.crossposts.remove(tid, cid2, uid);
 
 			assert(Array.isArray(crossposts));
 			assert.strictEqual(crossposts.length, 0);
@@ -152,7 +152,7 @@ describe('Crossposting (& related logic)', () => {
 
 		it('should throw on uncrossposting if already uncrossposted', async () => {
 			assert.rejects(
-				topics.tools.uncrosspost(tid, cid2, uid),
+				topics.crossposts.remove(tid, cid2, uid),
 				'[[error:invalid-data]]',
 			);
 		});
