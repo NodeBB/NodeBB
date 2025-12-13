@@ -285,7 +285,7 @@ define('forum/category/tools', [
 	}
 
 	async function onTopicMoved(data) {
-		if (ajaxify.data.template.category) {
+		if (ajaxify.data.template.category || String(data.toCid) === '-1') {
 			getTopicEl(data.tid).remove();
 		} else {
 			const category = await api.get(`/categories/${data.toCid}`);
