@@ -273,10 +273,19 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
 	// Trim uploaded files' timestamps when downloading + force download if html
 	let basename = path.basename(req.path);
-	const extname = path.extname(req.path);
-	if (req.path.startsWith('/uploads/files/') && middleware.regexes.timestampedUpload.test(basename)) {
-		basename = basename.slice(14);
-		res.header('Content-Disposition', `${extname.startsWith('.htm') ? 'attachment' : 'inline'}; filename="${basename}"`);
+	const extname = path.extname(req.path).toLowerCase();
+	const unsafeExtensions = [
+		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
+		'.svg', '.svgz',
+		'.xml', '.xsl', '.xslt',
+	];
+	const isInlineSafe = !unsafeExtensions.includes(extname);
+	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
+	if (req.path.startsWith('/uploads/files/')) {
+		if (middleware.regexes.timestampedUpload.test(basename)) {
+			basename = basename.slice(14);
+		}
+		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
 	}
 
 	next();
