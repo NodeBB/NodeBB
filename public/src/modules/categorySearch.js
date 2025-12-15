@@ -77,6 +77,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				states: options.states,
 				showLinks: options.showLinks,
 				localOnly: options.localOnly,
+				hideUncategorized: options.hideUncategorized,
 			}, function (err, { categories }) {
 				if (err) {
 					return alerts.error(err);
@@ -94,6 +95,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				categoryItems: categories.slice(0, 200),
 				selectedCategory: ajaxify.data.selectedCategory,
 				allCategoriesUrl: ajaxify.data.allCategoriesUrl,
+				hideAll: options.hideAll,
 			}, function (html) {
 				el.find('[component="category/list"]')
 					.html(html.find('[component="category/list"]').html());
