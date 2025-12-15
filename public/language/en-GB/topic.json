@@ -150,6 +150,7 @@
 
 	"load-categories": "Loading Categories",
 	"confirm-move": "Move",
+	"confirm-crosspost": "Cross-post",
 	"confirm-fork": "Fork",
 
 	"bookmark": "Bookmark",
@@ -162,6 +163,7 @@
 	"loading-more-posts": "Loading More Posts",
 	"move-topic": "Move Topic",
 	"move-topics": "Move Topics",
+	"crosspost-topic": "Cross-post Topic",
 	"move-post": "Move Post",
 	"post-moved": "Post moved!",
 	"fork-topic": "Fork Topic",
@@ -182,6 +184,7 @@
 	"topic-id": "Topic ID",
 	"move-posts-instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
 	"move-topic-instruction": "Select the target category and then click move",
+	"crosspost-topic-instruction": "Select one or more categories to cross-post to. Topic(s) will be accessible from the original category and all cross-posted categories.",
 	"change-owner-instruction": "Click the posts you want to assign to another user",
 	"manage-editors-instruction": "Manage the users who can edit this post below.",
 
