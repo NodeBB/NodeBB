@@ -12,8 +12,20 @@ const Crossposts = module.exports;
 Crossposts.get = async function (tid) {
 	const crosspostIds = await db.getSortedSetMembers(`tid:${tid}:crossposts`);
 	let crossposts = await db.getObjects(crosspostIds.map(id => `crosspost:${id}`));
+	const cids = crossposts.reduce((cids, crossposts) => {
+		cids.add(crossposts.cid);
+		return cids;
+	}, new Set());
+	let categoriesData = await categories.getCategoriesFields(
+		cids, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
+	);
+	categoriesData = categoriesData.reduce((map, category) => {
+		map.set(parseInt(category.cid, 10), category);
+		return map;
+	}, new Map());
 	crossposts = crossposts.map((crosspost, idx) => {
 		crosspost.id = crosspostIds[idx];
+		crosspost.category = categoriesData.get(parseInt(crosspost.cid, 10));
 		return crosspost;
 	});
 
