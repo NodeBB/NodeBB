@@ -17,7 +17,7 @@ Crossposts.get = async function (tid) {
 		return cids;
 	}, new Set());
 	let categoriesData = await categories.getCategoriesFields(
-		cids, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
+		Array.from(cids), ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
 	);
 	categoriesData = categoriesData.reduce((map, category) => {
 		map.set(parseInt(category.cid, 10), category);
