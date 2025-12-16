@@ -1,15 +1,25 @@
 'use strict';
 
 const assert = require('assert');
+const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
 
+const meta = require('../../src/meta');
+const install = require('../../src/install');
 const user = require('../../src/user');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
+const posts = require('../../src/posts');
+const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
 describe('Crossposting (& related logic)', () => {
+	before(async () => {
+		meta.config.activitypubEnabled = 1;
+		await install.giveWorldPrivileges();
+	});
+
 	describe('topic already in multiple categories', () => {
 		let tid;
 		let cid1;
@@ -155,6 +165,130 @@ describe('Crossposting (& related logic)', () => {
 				topics.crossposts.remove(tid, cid2, uid),
 				'[[error:invalid-data]]',
 			);
+		});
+	});
+
+	describe('ActivityPub effects (or lack thereof)', () => {
+		describe('local canonical category', () => {
+			let tid;
+			let cid1;
+			let cid2;
+			let uid;
+			let pid;
+
+			const helpers = require('../activitypub/helpers');
+
+			before(async () => {
+				({ cid: cid1 } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+				const crosspostCategory = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+				cid2 = crosspostCategory.cid;
+				uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+				const { topicData } = await topics.post({
+					uid,
+					cid: cid1,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				tid = topicData.tid;
+				pid = topicData.mainPid,
+
+				// Add some remote followers
+				await Promise.all([cid1, cid2].map(async (cid) => {
+					const {activity} = helpers.mocks.follow({
+						object: {
+							id: `${nconf.get('url')}/category/${cid}`,
+						},
+					});
+					await activitypub.inbox.follow({
+						body: activity,
+					});
+				}));
+
+				activitypub._sent.clear();
+			});
+
+			afterEach(() => {
+				activitypub._sent.clear();
+			});
+
+			it('should not federate out any events on crosspost', async () => {
+				await topics.crossposts.add(tid, cid2, uid);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should not federate out anything on uncrosspost', async () => {
+				await topics.crossposts.remove(tid, cid2, uid);
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should only federate an Announce on a remote reply from the canonical cid', async () => {
+				const { note: object } = helpers.mocks.note({
+					audience: `${nconf.get('url')}/category/${cid1}`,
+					inReplyTo: `${nconf.get('url')}/post/${pid}`,
+				});
+				const { activity } = helpers.mocks.create(object);
+				await activitypub.inbox.create({
+					body: activity,
+				});
+
+				assert.strictEqual(activitypub._sent.size, 1);
+				assert.partialDeepStrictEqual(Array.from(activitypub._sent).pop()[1], {
+					type: 'Announce',
+					actor: `${nconf.get('url')}/category/${cid1}`,
+					object: activity,
+				});
+			});
+
+			it('should only federate an Announce on a remote like from the canonical cid', async () => {
+				const { activity: body } = helpers.mocks.like({
+					object: {
+						id: `${nconf.get('url')}/post/${pid}`,
+					},
+				});
+				await activitypub.inbox.like({ body });
+
+				assert.strictEqual(activitypub._sent.size, 1);
+				assert.partialDeepStrictEqual(Array.from(activitypub._sent).pop()[1], {
+					type: 'Announce',
+					actor: `${nconf.get('url')}/category/${cid1}`,
+					object: body,
+				});
+			});
+		});
+
+		describe('remote canonical category', () => {
+			let tid;
+			let cid;
+			let remoteCid;
+			let uid;
+			let pid;
+
+			const helpers = require('../activitypub/helpers');
+
+			before(async () => {
+				({ id: remoteCid } = helpers.mocks.group());
+				await activitypub.actors.assertGroup(remoteCid);
+				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+				uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+
+				({ id: pid } = helpers.mocks.note());
+				await activitypub.notes.assert(0, pid, { skipChecks: 1, cid: remoteCid });
+
+				tid = await posts.getPostField(pid, 'tid');
+
+				await topics.crossposts.add(tid, cid, uid);
+			});
+
+			it('should properly address the remote category when federating out a local reply', async () => {
+				const postData = await topics.reply({
+					uid,
+					cid,
+					tid,
+					content: utils.generateUUID(),
+				});
+				const mocked = await activitypub.mocks.notes.public(postData);
+				assert(mocked.to.includes(remoteCid));
+			});
 		});
 	});
 });
