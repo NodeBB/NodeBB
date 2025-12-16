@@ -178,10 +178,24 @@ install_additional_plugins() {
     export START_BUILD="true"
     for plugin in "${NODEBB_ADDITIONAL_PLUGINS[@]}"; do
       echo "Installing additional plugin ${plugin}..."
-      npm install "${plugin}" || {
-        echo "Failed to install plugin ${plugin}"
-        exit 1
-      }
+      case "$PACKAGE_MANAGER" in
+        yarn) yarn install || {
+          echo "Failed to install plugin ${plugin} with yarn"
+          exit 1
+        } ;;
+        npm) npm install || {
+          echo "Failed to install plugin ${plugin} with npm"
+          exit 1
+        } ;;
+        pnpm) pnpm install || {
+          echo "Failed to install plugin ${plugin} with pnpm"
+          exit 1
+        } ;;
+        *)
+          echo "Unknown package manager: $PACKAGE_MANAGER"
+          exit 1
+          ;;
+      esac
     done
   fi
 }
