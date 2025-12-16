@@ -153,6 +153,32 @@ Helpers.mocks.like = (override = {}) => {
 	return { activity };
 };
 
+Helpers.mocks.follow = (override = {}) => {
+	let actor = override.actor;
+	let object = override.object;
+	if (!actor) {
+		({ id: actor } = Helpers.mocks.person());
+	}
+	if (!object) {
+		({ id: object } = Helpers.mocks.person());
+	}
+	delete override.actor;
+	delete override.object;
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${Helpers.mocks._baseUrl}/follow/${encodeURIComponent(object.id || object)}`,
+		type: 'Follow',
+		to: [activitypub._constants.publicAddress],
+		cc: [`${actor}/followers`],
+		actor,
+		object,
+		...override,
+	};
+
+	return { activity };
+};
+
 Helpers.mocks.announce = (override = {}) => {
 	let actor = override.actor;
 	let object = override.object;
