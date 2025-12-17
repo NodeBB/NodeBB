@@ -432,6 +432,7 @@ describe('Notes', () => {
 
 		describe('Create', () => {
 			let uid;
+			let cid;
 
 			before(async () => {
 				uid = await user.create({ username: utils.generateUUID() });
@@ -451,6 +452,17 @@ describe('Notes', () => {
 					assert.strictEqual(cid, -1);
 				});
 
+				it('should not append to the tids_read sorted set', async () => {
+					const { note, id } = helpers.mocks.note();
+					const { activity } = helpers.mocks.create(note);
+
+					await db.sortedSetAdd(`followersRemote:${note.attributedTo}`, Date.now(), uid);
+					await activitypub.inbox.create({ body: activity });
+
+					const exists = await db.exists(`uid:${note.attributedTo}:tids_read`);
+					assert(!exists);
+				});
+
 				it('should create a new topic in a remote category if addressed (category same-origin)', async () => {
 					const { id: remoteCid } = helpers.mocks.group();
 					const { note, id } = helpers.mocks.note({
@@ -467,31 +479,54 @@ describe('Notes', () => {
 				});
 
 				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async function () {
-					this.timeout(30000);
-					const start = Date.now();
 					const { id: remoteCid } = helpers.mocks.group({
 						id: `https://example.com/${utils.generateUUID()}`,
 					});
-					console.log('1', Date.now() - start);
 					const { note, id } = helpers.mocks.note({
 						audience: [remoteCid],
 					});
-					console.log('2', Date.now() - start);
 					const { activity } = helpers.mocks.create(note);
-					console.log('3', Date.now() - start);
 					try {
 						await activitypub.inbox.create({ body: activity });
 					} catch (err) {
-						console.log('error in test', err.stack);
 						assert(false);
 					}
 
-					console.log('4', Date.now() - start);
 					assert(await posts.exists(id));
-					console.log('5', Date.now() - start);
 					const cid = await posts.getCidByPid(id);
-					console.log('6', Date.now() - start);
 					assert.strictEqual(cid, -1);
+				});
+			});
+
+			describe('(Like)', () => {
+				let pid;
+				let voterUid;
+
+				before(async () => {
+					({ cid } = await categories.create({ name: utils.generateUUID() }));
+					const { postData } = await topics.post({
+						uid,
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					pid = postData.pid;
+					const object = await activitypub.mocks.notes.public(postData);
+					const { activity } = helpers.mocks.like({ object });
+					voterUid = activity.actor;
+					await activitypub.inbox.like({ body: activity });
+				});
+
+				it('should increment a like for the post', async () => {
+					const voted = await posts.hasVoted(pid, voterUid);
+					const count = await posts.getPostField(pid, 'upvotes');
+					assert(voted);
+					assert.strictEqual(count, 1);
+				});
+
+				it('should not append to the uid upvotes zset', async () => {
+					const exists = await db.exists(`uid:${voterUid}:upvote`);
+					assert(!exists);
 				});
 			});
 		});
@@ -500,7 +535,7 @@ describe('Notes', () => {
 			let cid;
 
 			before(async () => {
-				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
 			});
 
 			describe('(Create)', () => {

@@ -290,7 +290,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.markAsRead = async function (tids, uid) {
-		if (!Array.isArray(tids) || !tids.length) {
+		if (!Array.isArray(tids) || !tids.length || !utils.isNumber(uid)) {
 			return false;
 		}
 

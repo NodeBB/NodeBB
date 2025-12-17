@@ -102,7 +102,7 @@ define('forum/account/settings', [
 			if (languageChanged && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
 				window.location.reload();
 			}
-		});
+		}).catch(alerts.error);
 	}
 
 	function toggleCustomRoute() {

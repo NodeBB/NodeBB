@@ -309,6 +309,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 				throw new Error('[[error:no-privileges]]');
 			}
 			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'slug', 'deleted']);
+			topicData.toCid = cid;
 			if (!cids.includes(topicData.cid)) {
 				cids.push(topicData.cid);
 			}

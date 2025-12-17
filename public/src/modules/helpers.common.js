@@ -77,10 +77,12 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function buildLinkTag(tag) {
-		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title', 'crossorigin'];
-		const [link, rel, as, type, href, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
+		const attributes = [
+			'link', 'rel', 'as', 'type', 'href', 'hreflang', 'sizes', 'title', 'crossorigin',
+		];
+		const [link, rel, as, type, href, hreflang, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
-		return '<link ' + link + rel + as + type + sizes + title + href + crossorigin + '/>\n\t';
+		return '<link ' + link + rel + as + type + sizes + title + href + hreflang + crossorigin + '/>\n\t';
 	}
 
 	function stringify(obj) {
@@ -111,7 +113,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		const href = tag === 'a' ? `href="${relative_path}/category/${category.slug}"` : '';
-		return `<${tag} ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
+		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
 			${category.icon && category.icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
 			${category.name}
 		</${tag}>`;

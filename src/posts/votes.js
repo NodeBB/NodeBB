@@ -177,16 +177,18 @@ module.exports = function (Posts) {
 		}
 		const now = Date.now();
 
-		if (type === 'upvote' && !unvote) {
-			await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
-		} else {
-			await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
-		}
+		if (utils.isNumber(uid)) {
+			if (type === 'upvote' && !unvote) {
+				await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
+			} else {
+				await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
+			}
 
-		if (type === 'upvote' || unvote) {
-			await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
-		} else {
-			await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
+			if (type === 'upvote' || unvote) {
+				await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
+			} else {
+				await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
+			}
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);

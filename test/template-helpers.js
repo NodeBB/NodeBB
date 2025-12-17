@@ -107,7 +107,7 @@ describe('helpers', () => {
 				imageClass: 'auto',
 				name: 'Category 1',
 			}, 'a', ''),
-			`<a href="${nconf.get('relative_path')}/category/undefined" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
+			`<a component="topic/category" href="${nconf.get('relative_path')}/category/undefined" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
 		);
 		assert.strictEqual(
 			helpers.buildCategoryLabel({
@@ -118,7 +118,7 @@ describe('helpers', () => {
 				name: 'Category 1',
 				icon: 'fa-book',
 			}, 'span', 'rounded-1'),
-			`<span  class="badge px-1 text-truncate text-decoration-none rounded-1" style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t<i class="fa fa-fw fa-book"></i>\n\t\t\tCategory 1\n\t\t</span>`,
+			`<span component="topic/category"  class="badge px-1 text-truncate text-decoration-none rounded-1" style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t<i class="fa fa-fw fa-book"></i>\n\t\t\tCategory 1\n\t\t</span>`,
 		);
 		done();
 	});
