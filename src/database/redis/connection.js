@@ -58,13 +58,12 @@ connection.connect = async function (options) {
 			winston.error(err.stack);
 			reject(err);
 		});
-		cxn.on('ready', () => {
+
+		cxn.connect().then(() => {
 			// back-compat with node_redis
 			cxn.batch = cxn.multi;
-			resolve(cxn);
-		});
-		cxn.connect().then(() => {
 			winston.info('Connected to Redis successfully');
+			resolve(cxn);
 		}).catch((err) => {
 			winston.error('Error connecting to Redis:', err);
 		});
