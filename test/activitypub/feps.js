@@ -164,8 +164,9 @@ describe('FEPs', () => {
 					});
 					pid = id;
 					({ activity } = await helpers.mocks.create(note));
+					console.log('before inbox create', activitypub._sent);
 					await activitypub.inbox.create({ body: activity });
-
+					console.log('after inbox create', activitypub._sent);
 					const activities = Array.from(activitypub._sent);
 
 					const test1 = activities.some((activity) => {
@@ -174,14 +175,13 @@ describe('FEPs', () => {
 							activity.object && activity.object.type === 'Create' &&
 							activity.object.object && activity.object.object.type === 'Note';
 					});
-
+					assert(test1);
 					const test2 = activities.some((activity) => {
 						[, activity] = activity;
 						return activity.type === 'Announce' &&
 							activity.object && activity.object.type === 'Note';
 					});
-
-					assert(test1 && test2);
+					assert(test2);
 				});
 
 				it('should federate out an Announce(Create(Note)) on reply', async () => {
