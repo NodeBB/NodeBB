@@ -1,3 +1,75 @@
+#### v4.7.1 (2025-12-17)
+
+##### Chores
+
+*  up widget-essentials (9d666550)
+*  remove log (2142b680)
+*  up harmony (59f649b8)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  update changelog for v4.7.0 (1c0a43dc)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Continuous Integration
+
+*  drop ARM v7 from docker builds (#13808) (254370c5)
+
+##### New Features
+
+*  stop extraneous vote and tids_read data from being saved for remote users (9f729964)
+*  add hreflang to buildLinkTag (ba85474d)
+*  #13790, allow ssl setup in psql (5bd1f7b7)
+
+##### Bug Fixes
+
+*  wrong increment value (b1fc5bfd)
+*  increment progress on upgrade script (9f94a721)
+*  disallow inline viewing of unsafe files (#13833) (5ae8d553)
+*  moving topic to cid=-1 will remove it from list (90a15134)
+*  show errors when saving settings (f49f540b)
+*  closes #13666, update category label (193aaf55)
+*  respect user pagination settings in infinite scroll (#13765) (#13788) (ebf2a2c5)
+*  remove hardcoded name for sentinel, #13794 (53e22acf)
+
+##### Other Changes
+
+*  fix missing comma (9fb41c69)
+
+##### Reverts
+
+*  spec change (b19281b0)
+
+##### Tests
+
+*  fix tests (11b01dfc)
+
 #### v4.7.0 (2025-11-26)
 
 ##### Chores
