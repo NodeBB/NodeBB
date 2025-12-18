@@ -60,7 +60,7 @@ define('quickreply', [
 				return;
 			}
 
-			const replyMsg = components.get('topic/quickreply/text').val();
+			const replyMsg = element.val();
 			const replyData = {
 				tid: ajaxify.data.tid,
 				handle: undefined,
@@ -74,9 +74,11 @@ define('quickreply', [
 			}
 
 			ready = false;
+			element.val('');
 			api.post(`/topics/${ajaxify.data.tid}`, replyData, function (err, data) {
 				ready = true;
 				if (err) {
+					element.val(replyMsg);
 					return alerts.error(err);
 				}
 				if (data && data.queued) {
@@ -91,7 +93,7 @@ define('quickreply', [
 					});
 				}
 
-				components.get('topic/quickreply/text').val('');
+				element.val('');
 				storage.removeItem(qrDraftId);
 				QuickReply._autocomplete.hide();
 				hooks.fire('action:quickreply.success', { data });
