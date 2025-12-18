@@ -1,7 +1,5 @@
 'use strict';
 
-const winston = require('winston');
-
 const user = require('../user');
 const topics = require('../topics');
 const categories = require('../categories');
@@ -82,9 +80,7 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
 	if (!isScheduling) {
-		activitypub.out.create.note(caller.uid, result.postData.pid).catch((err) => {
-			winston.error(`[activitypub] create.note failed ${err.stack}`);
-		});
+		await activitypub.out.create.note(caller.uid, result.postData.pid);
 	}
 
 	return result.topicData;
@@ -121,10 +117,6 @@ topicsAPI.reply = async function (caller, data) {
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
 	await activitypub.out.create.note(caller.uid, postData);
-
-	activitypub.out.create.note(caller.uid, postData).catch((err) => {
-		winston.error(`[activitypub] create.note failed ${err.stack}`);
-	});
 
 	return postData;
 };
