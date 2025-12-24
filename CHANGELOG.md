@@ -1,3 +1,53 @@
+#### v4.7.2 (2025-12-24)
+
+##### Chores
+
+*  up body-parser (59dd1ca6)
+*  up mentions (d505301f)
+*  incrementing version number - v4.7.1 (afb88805)
+*  update changelog for v4.7.1 (8668cfb3)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  update data-isowner when changing is ownership (1f9f2dff)
+*  bump 2factor (d0313712)
+
+##### Tests
+
+*  change redis connection (#13844) (550411fb)
+*  add await to check tests (1305faa8)
+*  add back logs for failing test (9f8d5070)
+
 #### v4.7.1 (2025-12-17)
 
 ##### Chores
