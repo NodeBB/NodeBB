@@ -167,7 +167,7 @@ actions.buildCSS = async function buildCSS(data) {
 		if (data.minify) {
 			opts.silenceDeprecations = [
 				'legacy-js-api', 'color-functions',
-				'global-builtin', 'import',
+				'global-builtin', 'import', 'if-function',
 			];
 		}
 		const scssOutput = await sass.compileStringAsync(data.source, opts);
