@@ -9,6 +9,7 @@
 		<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 	</div>
 	<div class="card-footer text-end">
+		<i class="fa me-2" id="crosspost_topic_spinner"></i>
 		<button type="button" class="btn btn-sm btn-outline-secondary" id="crosspost_topic_cancel">[[global:buttons.close]]</button>
 		<button type="button" class="btn btn-sm btn-primary" id="crosspost_thread_commit" disabled>[[topic:confirm-crosspost]]</button>
 	</div>
