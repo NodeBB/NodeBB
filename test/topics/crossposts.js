@@ -288,6 +288,66 @@ describe('Crossposting (& related logic)', () => {
 		});
 	});
 
+	describe('Deletion', () => {
+		let tid;
+		let cid1;
+		let cid2;
+		let uid;
+
+		before(async () => {
+			({ cid: cid1 } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			const crosspostCategory = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			cid2 = crosspostCategory.cid;
+			uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			tid = topicData.tid;
+
+			await topics.crossposts.add(tid, cid2, uid);
+			await topics.delete(tid, uid);
+		});
+
+		it('should maintain crossposts when topic is deleted', async () => {
+			const crossposts = await topics.crossposts.get(tid);
+			assert(Array.isArray(crossposts));
+			assert.strictEqual(crossposts.length, 1);
+		});
+	});
+
+	describe('Purging', () => {
+		let tid;
+		let cid1;
+		let cid2;
+		let uid;
+
+		before(async () => {
+			({ cid: cid1 } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			const crosspostCategory = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			cid2 = crosspostCategory.cid;
+			uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			tid = topicData.tid;
+
+			await topics.crossposts.add(tid, cid2, uid);
+			await topics.purge(tid, uid);
+		});
+
+		it('should remove crossposts when topic is purged', async () => {
+			const crossposts = await topics.crossposts.get(tid);
+			assert(Array.isArray(crossposts));
+			assert.strictEqual(crossposts.length, 0);
+		});
+	});
+
 	describe('ActivityPub effects (or lack thereof)', () => {
 		describe('local canonical category', () => {
 			let tid;
