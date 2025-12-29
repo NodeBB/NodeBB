@@ -4,7 +4,7 @@
 	</h5>
 	<div class="card-body">
 		<p>
-			[[topic:crosspost-topic-instruction]]
+			[[topic:crossposts.instructions]]
 		</p>
 		<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 	</div>
