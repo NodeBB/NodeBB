@@ -22,10 +22,6 @@
 {{{ end }}}
 
 <li>
-	<a component="topic/crosspost" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-clone text-secondary"></i> [[topic:thread-tools.crosspost]]</a>
-</li>
-
-<li>
 	<a component="topic/merge" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-code-fork text-secondary"></i> [[topic:thread-tools.merge]]</a>
 </li>
 
