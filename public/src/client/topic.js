@@ -414,7 +414,6 @@ define('forum/topic', [
 				const { crossposts } = ajaxify.data;
 				const html = await app.parseAndTranslate('modals/crossposts', { crossposts });
 				bootbox.dialog({
-					size: 'sm',
 					onEscape: true,
 					backdrop: true,
 					title: '[[global:crossposts]]',
