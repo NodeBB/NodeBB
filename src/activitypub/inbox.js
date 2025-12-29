@@ -388,12 +388,10 @@ inbox.announce = async (req) => {
 
 	// Category sync, remove when cross-posting available
 	const { cids } = await activitypub.actors.getLocalFollowers(actor);
-	let cid = null;
-	if (cids.size > 0) {
-		cid = Array.from(cids)[0];
-	}
+	const syncedCids = Array.from(cids);
 
 	// 1b12 announce
+	let cid = null;
 	const categoryActor = await categories.exists(actor);
 	if (categoryActor) {
 		cid = actor;
@@ -448,7 +446,7 @@ inbox.announce = async (req) => {
 				socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
 			} else { // Remote object
 				// Follower check
-				if (!fromRelay && !cid) {
+				if (!fromRelay && !cid && !syncedCids.length) {
 					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
 					if (!followers) {
 						winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
@@ -471,6 +469,12 @@ inbox.announce = async (req) => {
 				({ tid } = assertion);
 				await activitypub.notes.updateLocalRecipients(pid, { to, cc });
 				await activitypub.notes.syncUserInboxes(tid);
+
+				if (syncedCids) {
+					await Promise.all(syncedCids.map(async (cid) => {
+						await topics.crossposts.add(tid, cid, 0);
+					}));
+				}
 			}
 
 			if (!cid) { // Topic events from actors followed by users only
