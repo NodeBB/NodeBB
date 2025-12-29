@@ -128,3 +128,13 @@ Crossposts.remove = async function (tid, cid, uid) {
 	crossposts = await Crossposts.get(tid);
 	return crossposts;
 };
+
+Crossposts.removeAll = async function (tid) {
+	const crosspostIds = await db.getSortedSetMembers(`tid:${tid}:crossposts`);
+	const crossposts = await db.getObjects(crosspostIds.map(id => `crosspost:${id}`));
+	await Promise.all(crossposts.map(async ({ tid, cid, uid }) => {
+		return Crossposts.remove(tid, cid, uid);
+	}));
+
+	return [];
+};
