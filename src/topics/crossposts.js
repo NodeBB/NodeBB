@@ -76,7 +76,7 @@ Crossposts.add = async function (tid, cid, uid) {
 			db.sortedSetAdd(`cid:${cid}:pids`, pidTimestamps, pids),
 			db.setObject(`crosspost:${crosspostId}`, { uid, tid, cid, timestamp: now }),
 			db.sortedSetAdd(`tid:${tid}:crossposts`, now, crosspostId),
-			db.sortedSetAdd(`uid:${uid}:crossposts`, now, crosspostId),
+			uid > 0 ? db.sortedSetAdd(`uid:${uid}:crossposts`, now, crosspostId) : false,
 		]);
 		await categories.onTopicsMoved([cid]);
 	} else {
@@ -121,7 +121,7 @@ Crossposts.remove = async function (tid, cid, uid) {
 		db.sortedSetRemoveBulk(bulkRemove),
 		db.delete(`crosspost:${crosspostId}`),
 		db.sortedSetRemove(`tid:${tid}:crossposts`, crosspostId),
-		db.sortedSetRemove(`uid:${uid}:crossposts`, crosspostId),
+		uid > 0 ? db.sortedSetRemove(`uid:${uid}:crossposts`, crosspostId) : false,
 	]);
 	await categories.onTopicsMoved([cid]);
 
