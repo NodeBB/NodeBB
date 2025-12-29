@@ -102,6 +102,7 @@ module.exports = function (Topics) {
 			Topics.deleteTopicTags(tid),
 			Topics.events.purge(tid),
 			Topics.thumbs.deleteAll(tid),
+			Topics.crossposts.removeAll(tid),
 			reduceCounters(tid),
 		]);
 		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });
