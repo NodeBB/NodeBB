@@ -36,7 +36,6 @@ define('forum/topic/crosspost', [
 			dropdownEl.addClass('dropup');
 
 			categoryFilter.init($('[component="category/dropdown"]'), {
-				privilege: 'moderate',
 				onHidden: onCategoriesSelected,
 				hideAll: true,
 				hideUncategorized: true,
@@ -51,7 +50,6 @@ define('forum/topic/crosspost', [
 
 	function onCategoriesSelected(data) {
 		({ selectedCids } = data);
-		console.log('changed? ', data.changed);
 		if (data.changed) {
 			modal.find('#crosspost_thread_commit').prop('disabled', false);
 		}
@@ -107,12 +105,42 @@ define('forum/topic/crosspost', [
 
 		Promise.all(queries).then(async () => {
 			const statsEl = components.get('topic/stats');
+			updateSpinner('progress');
 			const { crossposts } = await api.get(`/topics/${data.tid}/crossposts`);
 			ajaxify.data.crossposts = crossposts;
 			const html = await app.parseAndTranslate('partials/topic/stats', ajaxify.data);
 			statsEl.html(html);
-			closeCrosspostModal();
-		}).catch(alerts.error);
+			updateSpinner('success');
+		}).catch((e) => {
+			updateSpinner('error');
+			alerts.error(e);
+		});
+	}
+
+	const spinnerClasses = new Map(Object.entries({
+		'initial': ['d-none'],
+		'progress': ['fa-spinner', 'text-secondary', 'fa-spin'],
+		'error': ['fa-times', 'text-error'],
+		'success': ['fa-check', 'text-success'],
+	}));
+	function updateSpinner(state) {
+		if (modal) {
+			const spinnerEl = document.getElementById('crosspost_topic_spinner');
+			const remove = [
+				...spinnerClasses.get('initial'),
+				...spinnerClasses.get('progress'),
+				...spinnerClasses.get('error'),
+				...spinnerClasses.get('success'),
+			];
+			spinnerEl.classList.remove(...remove);
+			spinnerEl.classList.add(...spinnerClasses.get(state));
+
+			if (state !== 'initial') {
+				setTimeout(() => {
+					updateSpinner('initial');
+				}, 2500);
+			}
+		}
 	}
 
 	function closeCrosspostModal() {
