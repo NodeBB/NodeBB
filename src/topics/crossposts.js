@@ -2,6 +2,7 @@
 
 const db = require('../database');
 const topics = require('.');
+const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
 const activitypub = require('../activitypub');
@@ -87,8 +88,10 @@ Crossposts.add = async function (tid, cid, uid) {
 
 Crossposts.remove = async function (tid, cid, uid) {
 	let crossposts = await Crossposts.get(tid);
+	const isPrivileged = await user.isAdminOrGlobalMod(uid);
+	const isMod = await user.isModerator(uid, cid);
 	const crosspostId = crossposts.reduce((id, { id: _id, cid: _cid, uid: _uid }) => {
-		if (String(cid) === String(_cid) && String(uid) === String(_uid)) {
+		if (String(cid) === String(_cid) && (isPrivileged || isMod || String(uid) === String(_uid))) {
 			id = _id;
 		}
 
