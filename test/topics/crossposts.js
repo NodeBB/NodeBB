@@ -8,9 +8,11 @@ const db = require('../mocks/databasemock');
 const meta = require('../../src/meta');
 const install = require('../../src/install');
 const user = require('../../src/user');
+const groups = require('../../src/groups');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
+const privileges = require('../../src/privileges');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
@@ -142,6 +144,14 @@ describe('Crossposting (& related logic)', () => {
 			await topics.crossposts.add(tid, cid2, uid);
 		});
 
+		it('should not let another user uncrosspost', async () => {
+			const uid2 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			assert.rejects(
+				topics.crossposts.remove(tid, cid2, uid2),
+				'[[error:invalid-data]]',
+			);
+		});
+
 		it('should successfully uncrosspost from a cid', async () => {
 			const crossposts = await topics.crossposts.remove(tid, cid2, uid);
 
@@ -165,6 +175,116 @@ describe('Crossposting (& related logic)', () => {
 				topics.crossposts.remove(tid, cid2, uid),
 				'[[error:invalid-data]]',
 			);
+		});
+	});
+
+	describe('uncrosspost (as administrator)', () => {
+		let tid;
+		let cid1;
+		let cid2;
+		let uid;
+		let privUid;
+
+		before(async () => {
+			({ cid: cid1 } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			const crosspostCategory = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			cid2 = crosspostCategory.cid;
+			uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			privUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			await groups.join('administrators', privUid);
+
+			const { topicData } = await topics.post({
+				uid,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			tid = topicData.tid;
+
+			await topics.crossposts.add(tid, cid2, uid);
+		});
+
+		it('should successfully uncrosspost from a cid', async () => {
+			const crossposts = await topics.crossposts.remove(tid, cid2, privUid);
+
+			assert(Array.isArray(crossposts));
+			assert.strictEqual(crossposts.length, 0);
+		});
+	});
+
+	describe('uncrosspost (as global moderator)', () => {
+		let tid;
+		let cid1;
+		let cid2;
+		let uid;
+		let privUid;
+
+		before(async () => {
+			({ cid: cid1 } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			const crosspostCategory = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			cid2 = crosspostCategory.cid;
+			uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			privUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			await groups.join('Global Moderators', privUid);
+
+			const { topicData } = await topics.post({
+				uid,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			tid = topicData.tid;
+
+			await topics.crossposts.add(tid, cid2, uid);
+		});
+
+		it('should successfully uncrosspost from a cid', async () => {
+			const crossposts = await topics.crossposts.remove(tid, cid2, privUid);
+
+			assert(Array.isArray(crossposts));
+			assert.strictEqual(crossposts.length, 0);
+		});
+	});
+
+	describe('uncrosspost (as category moderator)', () => {
+		let tid;
+		let cid1;
+		let cid2;
+		let uid;
+		let privUid;
+
+		before(async () => {
+			({ cid: cid1 } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			const crosspostCategory = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			cid2 = crosspostCategory.cid;
+			uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			privUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+
+			const { topicData } = await topics.post({
+				uid,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			tid = topicData.tid;
+
+			await topics.crossposts.add(tid, cid2, uid);
+		});
+
+		it('should fail to uncrosspost if not mod of passed-in category', async () => {
+			await privileges.categories.give(['moderate'], cid1, [privUid]);
+			assert.rejects(
+				topics.crossposts.remove(tid, cid2, privUid),
+				'[[error:invalid-data]]',
+			);
+		});
+
+		it('should successfully uncrosspost from a cid if proper mod', async () => {
+			await privileges.categories.give(['moderate'], cid2, [privUid]);
+			const crossposts = await topics.crossposts.remove(tid, cid2, privUid);
+
+			assert(Array.isArray(crossposts));
+			assert.strictEqual(crossposts.length, 0);
 		});
 	});
 
