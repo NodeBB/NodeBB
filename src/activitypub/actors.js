@@ -411,48 +411,12 @@ Actors.assertGroup = async (ids, options = {}) => {
 		db.sortedSetAdd('usersRemote:lastCrawled', groups.map(() => now), groups.map(p => p.id)),
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:cid', queries.handleAdd),
-		_migratePersonToGroup(categoryObjs),
 		db.setsAdd(masksAdd, 'topics:create'),
 		db.setsRemove(masksRemove, 'topics:create'),
 	]);
 
 	return categoryObjs;
 };
-
-async function _migratePersonToGroup(categoryObjs) {
-	// 4.0.0-4.1.x asserted as:Group as users. This moves relevant stuff over and deletes the now-duplicate user.
-	let ids = categoryObjs.map(category => category.cid);
-	const slugs = categoryObjs.map(category => category.slug);
-	const isUser = await db.isObjectFields('handle:uid', slugs);
-	ids = ids.filter((id, idx) => isUser[idx]);
-	if (!ids.length) {
-		return;
-	}
-
-	await Promise.all(ids.map(async (id) => {
-		const shares = await db.getSortedSetMembers(`uid:${id}:shares`);
-		let cids = await topics.getTopicsFields(shares, ['cid']);
-		cids = cids.map(o => o.cid);
-		await Promise.all(shares.map(async (share, idx) => {
-			const cid = cids[idx];
-			if (cid === -1) {
-				await topics.tools.move(share, {
-					cid: id,
-					uid: 'system',
-				});
-			}
-		}));
-
-		const followers = await db.getSortedSetMembersWithScores(`followersRemote:${id}`);
-		await db.sortedSetAdd(
-			`cid:${id}:uid:watch:state`,
-			followers.map(() => categories.watchStates.tracking),
-			followers.map(({ value }) => value),
-		);
-		await user.deleteAccount(id);
-	}));
-	await categories.onTopicsMoved(ids);
-}
 
 Actors.getLocalFollowers = async (id) => {
 	// Returns local uids and cids that follow a remote actor (by id)

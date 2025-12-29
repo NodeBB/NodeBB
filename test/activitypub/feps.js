@@ -164,9 +164,7 @@ describe('FEPs', () => {
 					});
 					pid = id;
 					({ activity } = await helpers.mocks.create(note));
-					console.log('before inbox create', activitypub._sent);
 					await activitypub.inbox.create({ body: activity });
-					console.log('after inbox create', activitypub._sent);
 					const activities = Array.from(activitypub._sent);
 
 					const test1 = activities.some((activity) => {
