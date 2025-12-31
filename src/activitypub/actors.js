@@ -445,9 +445,18 @@ Actors.getLocalFollowers = async (id) => {
 			}
 		});
 	} else if (isCategory) {
+		// Internally, users are different, they follow via watch state instead
+		// Possibly refactor to store in followersRemote:${id} too??
 		const members = await db.getSortedSetRangeByScore(`cid:${id}:uid:watch:state`, 0, -1, categories.watchStates.tracking, categories.watchStates.watching);
 		members.forEach((uid) => {
 			response.uids.add(uid);
+		});
+
+		const cids = await db.getSortedSetMembers(`followersRemote:${id}`);
+		cids.forEach((id) => {
+			if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
+				response.cids.add(parseInt(id.slice(4), 10));
+			}
 		});
 	}
 

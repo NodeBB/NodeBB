@@ -348,6 +348,91 @@ describe('Crossposting (& related logic)', () => {
 		});
 	});
 
+	describe('category sync; integration with', () => {
+		let cid;
+		let remoteCid;
+		let pid;
+		let post;
+
+		const helpers = require('../activitypub/helpers');
+
+		before(async () => {
+			({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			({ id: remoteCid } = helpers.mocks.group());
+			({ id: pid, note: post } = helpers.mocks.note({
+				audience: [remoteCid],
+			}));
+
+			// Mock a group follow/accept
+			const timestamp = Date.now();
+			console.log('saving', remoteCid);
+			await Promise.all([
+				db.sortedSetAdd(`cid:${cid}:following`, timestamp, remoteCid),
+				db.sortedSetAdd(`followersRemote:${remoteCid}`, timestamp, `cid|${cid}`),
+			]);
+		});
+
+		it('should automatically cross-post the topic when the remote category announces', async () => {
+			const { activity: body } = helpers.mocks.announce({
+				actor: remoteCid,
+				object: post,
+			});
+
+			await activitypub.inbox.announce({ body });
+
+			const tid = await posts.getPostField(pid, 'tid');
+			const crossposts = await topics.crossposts.get(tid);
+
+			assert.strictEqual(crossposts.length, 1);
+			assert.partialDeepStrictEqual(crossposts[0], {
+				uid: '0',
+				tid,
+				cid: String(cid),
+			});
+		});
+	});
+
+	describe('auto-categorization; integration with', () => {
+		let cid;
+		let remoteCid;
+		let pid;
+		let post;
+
+		const helpers = require('../activitypub/helpers');
+
+		before(async () => {
+			const preferredUsername = utils.generateUUID().slice(0, 8);
+			({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			({ id: remoteCid } = helpers.mocks.group({
+				preferredUsername,
+			}));
+			({ id: pid, note: post } = helpers.mocks.note({
+				audience: [remoteCid],
+				tag: [
+					{
+						type: 'Hashtag',
+						name: `#${preferredUsername}`,
+					},
+				],
+			}));
+
+			await activitypub.rules.add('hashtag', preferredUsername, cid);
+		});
+
+		it('note assertion should automatically cross-post', async () => {
+			await activitypub.notes.assert(0, pid, { skipChecks: true });
+
+			const tid = await posts.getPostField(pid, 'tid');
+			const crossposts = await topics.crossposts.get(tid);
+			assert.strictEqual(crossposts.length, 1);
+			assert.partialDeepStrictEqual(crossposts[0], {
+				uid: '0',
+				tid,
+				cid: String(cid),
+			});
+		});
+	});
+
 	describe('ActivityPub effects (or lack thereof)', () => {
 		describe('local canonical category', () => {
 			let tid;
