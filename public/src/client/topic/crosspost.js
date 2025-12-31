@@ -49,7 +49,7 @@ define('forum/topic/crosspost', [
 	}
 
 	function onCategoriesSelected(data) {
-		({ selectedCids } = data);
+		selectedCids = data.selectedCids.filter(utils.isNumber);
 		if (data.changed) {
 			modal.find('#crosspost_thread_commit').prop('disabled', false);
 		}
