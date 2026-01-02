@@ -42,9 +42,11 @@ utils.secureRandom = function (low, high) {
 };
 
 utils.getSass = function () {
+	if (process.platform === 'freebsd') {
+		return require('sass');
+	}
 	try {
-		const sass = require('sass-embedded');
-		return sass;
+		return require('sass-embedded');
 	} catch (err) {
 		console.error(err.message);
 		return require('sass');
