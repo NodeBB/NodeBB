@@ -9,6 +9,7 @@ const messaging = require('../messaging');
 const privileges = require('../privileges');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
 const controllersHelpers = require('../controllers/helpers');
 
@@ -29,8 +30,11 @@ searchApi.categories = async (caller, data) => {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
 	} else {
 		cids = await loadCids(caller.uid, data.parentCid);
-		if (meta.config.activitypubEnabled) {
+		if (!data.hideUncategorized && meta.config.activitypubEnabled) {
 			cids.unshift(-1);
+		}
+		if (data.localOnly) {
+			cids = cids.filter(cid => utils.isNumber(cid));
 		}
 	}
 
@@ -66,6 +70,7 @@ async function findMatchedCids(uid, data) {
 		query: data.search,
 		qs: data.query,
 		paginate: false,
+		localOnly: data.localOnly,
 	});
 
 	let matchedCids = result.categories.map(c => c.cid);

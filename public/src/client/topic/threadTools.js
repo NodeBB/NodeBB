@@ -116,6 +116,12 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/crosspost"]', () => {
+			require(['forum/topic/crosspost'], (crosspost) => {
+				crosspost.init(tid, ajaxify.data.cid);
+			});
+		});
+
 		topicContainer.on('click', '[component="topic/delete/posts"]', function () {
 			require(['forum/topic/delete-posts'], function (deletePosts) {
 				deletePosts.init();
