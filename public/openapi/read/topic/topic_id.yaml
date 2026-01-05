@@ -212,6 +212,10 @@ get:
                       isLocal:
                         type: boolean
                         description: Whether the user belongs to the local installation or not.
+                  crossposts:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/CrosspostObject.yaml#/CrosspostObject
               - type: object
                 description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
                 properties:
