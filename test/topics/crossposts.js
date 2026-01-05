@@ -89,7 +89,13 @@ describe('Crossposting (& related logic)', () => {
 
 			assert(Array.isArray(crossposts));
 			assert.strictEqual(crossposts.length, 1);
-			assert.partialDeepStrictEqual(crossposts[0], {
+
+			const actual = crossposts[0];
+			assert.deepStrictEqual({
+				uid: actual.uid,
+				tid: actual.tid,
+				cid: actual.cid,
+			}, {
 				uid,
 				tid,
 				cid: cid2,
@@ -365,7 +371,6 @@ describe('Crossposting (& related logic)', () => {
 
 			// Mock a group follow/accept
 			const timestamp = Date.now();
-			console.log('saving', remoteCid);
 			await Promise.all([
 				db.sortedSetAdd(`cid:${cid}:following`, timestamp, remoteCid),
 				db.sortedSetAdd(`followersRemote:${remoteCid}`, timestamp, `cid|${cid}`),
@@ -384,7 +389,13 @@ describe('Crossposting (& related logic)', () => {
 			const crossposts = await topics.crossposts.get(tid);
 
 			assert.strictEqual(crossposts.length, 1);
-			assert.partialDeepStrictEqual(crossposts[0], {
+
+			const actual = crossposts[0];
+			assert.deepStrictEqual({
+				uid: actual.uid,
+				tid: actual.tid,
+				cid: actual.cid,
+			}, {
 				uid: '0',
 				tid,
 				cid: String(cid),
@@ -425,7 +436,13 @@ describe('Crossposting (& related logic)', () => {
 			const tid = await posts.getPostField(pid, 'tid');
 			const crossposts = await topics.crossposts.get(tid);
 			assert.strictEqual(crossposts.length, 1);
-			assert.partialDeepStrictEqual(crossposts[0], {
+
+			const actual = crossposts[0];
+			assert.deepStrictEqual({
+				uid: actual.uid,
+				tid: actual.tid,
+				cid: actual.cid,
+			}, {
 				uid: '0',
 				tid,
 				cid: String(cid),
@@ -497,7 +514,13 @@ describe('Crossposting (& related logic)', () => {
 				});
 
 				assert.strictEqual(activitypub._sent.size, 1);
-				assert.partialDeepStrictEqual(Array.from(activitypub._sent).pop()[1], {
+
+				const actual = Array.from(activitypub._sent).pop()[1];
+				assert.deepStrictEqual({
+					type: actual.type,
+					actor: actual.actor,
+					object: actual.object,
+				}, {
 					type: 'Announce',
 					actor: `${nconf.get('url')}/category/${cid1}`,
 					object: activity,
@@ -513,7 +536,13 @@ describe('Crossposting (& related logic)', () => {
 				await activitypub.inbox.like({ body });
 
 				assert.strictEqual(activitypub._sent.size, 1);
-				assert.partialDeepStrictEqual(Array.from(activitypub._sent).pop()[1], {
+
+				const actual = Array.from(activitypub._sent).pop()[1];
+				assert.deepStrictEqual({
+					type: actual.type,
+					actor: actual.actor,
+					object: actual.object,
+				}, {
 					type: 'Announce',
 					actor: `${nconf.get('url')}/category/${cid1}`,
 					object: body,
