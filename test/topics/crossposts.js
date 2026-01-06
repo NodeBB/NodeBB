@@ -396,9 +396,9 @@ describe('Crossposting (& related logic)', () => {
 				tid: actual.tid,
 				cid: actual.cid,
 			}, {
-				uid: '0',
+				uid: 0,
 				tid,
-				cid: String(cid),
+				cid: cid,
 			});
 		});
 	});
@@ -443,9 +443,9 @@ describe('Crossposting (& related logic)', () => {
 				tid: actual.tid,
 				cid: actual.cid,
 			}, {
-				uid: '0',
+				uid: 0,
 				tid,
-				cid: String(cid),
+				cid: cid,
 			});
 		});
 	});
