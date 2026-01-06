@@ -364,8 +364,8 @@ describe('as:Group', () => {
 				assert.strictEqual(activitypub._sent.size, 1);
 
 				const activity = Array.from(activitypub._sent.values()).pop();
-				assert.strictEqual(activity.type, 'Follow');
-				assert.strictEqual(activity.object, cid);
+				assert.strictEqual(activity.payload.type, 'Follow');
+				assert.strictEqual(activity.payload.object, cid);
 			});
 
 			it('should send out a Follow activity when the watch state changes to "watching"', async () => {
@@ -374,9 +374,9 @@ describe('as:Group', () => {
 				assert.strictEqual(activitypub._sent.size, 1);
 
 				const activity = Array.from(activitypub._sent.values()).pop();
-				assert(activity && activity.object && typeof activity.object === 'string');
-				assert.strictEqual(activity.type, 'Follow');
-				assert.strictEqual(activity.object, cid);
+				assert(activity && activity.payload.object && typeof activity.payload.object === 'string');
+				assert.strictEqual(activity.payload.type, 'Follow');
+				assert.strictEqual(activity.payload.object, cid);
 			});
 
 			it('should not show up in the user\'s following list', async () => {
@@ -432,11 +432,11 @@ describe('as:Group', () => {
 				assert.strictEqual(activitypub._sent.size, 1);
 
 				const activity = Array.from(activitypub._sent.values()).pop();
-				assert(activity && activity.object && typeof activity.object === 'object');
-				assert.strictEqual(activity.type, 'Undo');
-				assert.strictEqual(activity.object.type, 'Follow');
-				assert.strictEqual(activity.object.actor, `${nconf.get('url')}/uid/${uid}`);
-				assert.strictEqual(activity.object.object, cid);
+				assert(activity && activity.payload && activity.payload.object && typeof activity.payload.object === 'object');
+				assert.strictEqual(activity.payload.type, 'Undo');
+				assert.strictEqual(activity.payload.object.type, 'Follow');
+				assert.strictEqual(activity.payload.object.actor, `${nconf.get('url')}/uid/${uid}`);
+				assert.strictEqual(activity.payload.object.object, cid);
 			});
 		});
 	});

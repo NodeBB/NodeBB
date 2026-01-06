@@ -418,13 +418,13 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 	ActivityPub.helpers.log(`[activitypub/send] ${payload.id}`);
 
-	if (process.env.hasOwnProperty('CI')) {
-		ActivityPub._sent.set(payload.id, payload);
-		return;
-	}
-
 	if (!Array.isArray(targets)) {
 		targets = [targets];
+	}
+
+	if (process.env.hasOwnProperty('CI')) {
+		ActivityPub._sent.set(payload.id, { payload, targets });
+		return;
 	}
 
 	const inboxes = await ActivityPub.resolveInboxes(targets);

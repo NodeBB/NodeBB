@@ -255,26 +255,26 @@ describe('Notes', () => {
 				});
 
 				it('should federate out a Create activity', () => {
-					assert(activity && activity.to);
-					assert.strictEqual(activity.type, 'Create');
+					assert(activity && activity.payload && activity.payload.to);
+					assert.strictEqual(activity.payload.type, 'Create');
 				});
 
 				it('should have the local category addressed', () => {
 					const addressees = new Set([
-						...(activity.to || []),
-						...(activity.cc || []),
-						...(activity.bcc || []),
-						...(activity.object.to || []),
-						...(activity.object.cc || []),
-						...(activity.object.bcc || []),
+						...(activity.payload.to || []),
+						...(activity.payload.cc || []),
+						...(activity.payload.bcc || []),
+						...(activity.payload.object.to || []),
+						...(activity.payload.object.cc || []),
+						...(activity.payload.object.bcc || []),
 					]);
 
 					assert(addressees.has(`${nconf.get('url')}/category/${cid}`));
 				});
 
 				it('should federate out an activity with object of type "Article"', () => {
-					assert(activity.object && activity.object.type);
-					assert.strictEqual(activity.object.type, 'Article');
+					assert(activity.payload.object && activity.payload.object.type);
+					assert.strictEqual(activity.payload.object.type, 'Article');
 				});
 			});
 
@@ -299,8 +299,8 @@ describe('Notes', () => {
 				});
 
 				it('should federate out an activity with object of type "Note"', () => {
-					assert(activity.object && activity.object.type);
-					assert.strictEqual(activity.object.type, 'Note');
+					assert(activity.payload && activity.payload.object && activity.payload.object.type);
+					assert.strictEqual(activity.payload.object.type, 'Note');
 				});
 			});
 		});
@@ -330,16 +330,16 @@ describe('Notes', () => {
 
 					const key = Array.from(activitypub._sent.keys())[0];
 					const activity = activitypub._sent.get(key);
-					assert(activity && activity.to);
-					assert.strictEqual(activity.type, 'Create');
+					assert(activity && activity.payload && activity.payload.to);
+					assert.strictEqual(activity.payload.type, 'Create');
 
 					const addressees = new Set([
-						...(activity.to || []),
-						...(activity.cc || []),
-						...(activity.bcc || []),
-						...(activity.object.to || []),
-						...(activity.object.cc || []),
-						...(activity.object.bcc || []),
+						...(activity.payload.to || []),
+						...(activity.payload.cc || []),
+						...(activity.payload.bcc || []),
+						...(activity.payload.object.to || []),
+						...(activity.payload.object.cc || []),
+						...(activity.payload.object.bcc || []),
 					]);
 
 					assert(addressees.has(cid));
@@ -366,16 +366,16 @@ describe('Notes', () => {
 
 					const key = Array.from(activitypub._sent.keys())[0];
 					const activity = activitypub._sent.get(key);
-					assert(activity && activity.to);
-					assert.strictEqual(activity.type, 'Create');
+					assert(activity && activity.payload && activity.payload.to);
+					assert.strictEqual(activity.payload.type, 'Create');
 
 					const addressees = new Set([
-						...(activity.to || []),
-						...(activity.cc || []),
-						...(activity.bcc || []),
-						...(activity.object.to || []),
-						...(activity.object.cc || []),
-						...(activity.object.bcc || []),
+						...(activity.payload.to || []),
+						...(activity.payload.cc || []),
+						...(activity.payload.bcc || []),
+						...(activity.payload.object.to || []),
+						...(activity.payload.object.cc || []),
+						...(activity.payload.object.bcc || []),
 					]);
 
 					assert(addressees.has(cid));
