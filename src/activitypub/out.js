@@ -313,7 +313,7 @@ Out.announce.topic = enabledCheck(async (tid) => {
 		return;
 	}
 
-	const uid = await posts.getPostField(pid, 'uid'); // author
+	const authorUid = await posts.getPostField(pid, 'uid'); // author
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
 		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
@@ -323,8 +323,9 @@ Out.announce.topic = enabledCheck(async (tid) => {
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		id: pid,
 		to: [activitypub._constants.publicAddress],
-		cc: [`${nconf.get('url')}/category/${cid}/followers`, uid],
-	}, { cid, uid: utils.isNumber(uid) ? uid : undefined });
+		cc: [authorUid],
+	}, { cid });
+	targets.add(authorUid);
 
 	await activitypub.send('cid', cid, Array.from(targets), {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
