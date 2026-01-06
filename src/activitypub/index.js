@@ -420,6 +420,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 	if (process.env.hasOwnProperty('CI')) {
 		ActivityPub._sent.set(payload.id, payload);
+		return;
 	}
 
 	if (!Array.isArray(targets)) {
