@@ -4,7 +4,9 @@ const assert = require('assert');
 const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
+const user = require('../../src/user');
 const categories = require('../../src/categories');
+const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const meta = require('../../src/meta');
 const install = require('../../src/install');
@@ -48,6 +50,11 @@ describe('Outbound activities module', () => {
 				assert.strictEqual(payload.type, 'Announce');
 			});
 
+			it('should contain the main post\'s pid in object', () => {
+				const { payload } = Array.from(activitypub._sent).pop()[1];
+				assert.strictEqual(payload.object, pid);
+			});
+
 			it('should include the category\'s followers collection in cc', () => {
 				const { payload } = Array.from(activitypub._sent).pop()[1];
 				assert(payload.cc.includes(`${nconf.get('url')}/category/${cid}/followers`));
@@ -63,9 +70,36 @@ describe('Outbound activities module', () => {
 				assert(targets.includes(note.attributedTo));
 			});
 		});
+
+		describe('.topic() (local topic; by cid)', () => {
+			let uid;
+			let tid;
+			let cid;
+
+			before(async () => {
+				uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				const { topicData } = await topics.post({
+					cid, uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				({ tid } = topicData);
+			});
+
+			after(() => {
+				activitypub._sent.clear();
+			});
+
+			it('should not error when called', async () => {
+				await activitypub.out.announce.topic(tid);
+			});
+
+			it('should include the topic\'s mainPid in object', async () => {
+				const mainPid = await topics.getTopicField(tid, 'mainPid');
+				const { payload } = Array.from(activitypub._sent).pop()[1];
+				assert.strictEqual(payload.object, `${nconf.get('url')}/post/${mainPid}`);
+			});
+		});
 	});
-
-	// let uid;
-	// uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-
 });

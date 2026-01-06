@@ -323,9 +323,11 @@ Out.announce.topic = enabledCheck(async (tid) => {
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		id: pid,
 		to: [activitypub._constants.publicAddress],
-		cc: [authorUid],
 	}, { cid });
-	targets.add(authorUid);
+	if (!utils.isNumber(authorUid)) {
+		cc.push(authorUid);
+		targets.add(authorUid);
+	}
 
 	await activitypub.send('cid', cid, Array.from(targets), {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
@@ -333,7 +335,7 @@ Out.announce.topic = enabledCheck(async (tid) => {
 		actor: `${nconf.get('url')}/category/${cid}`,
 		to,
 		cc,
-		object: pid,
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
 	});
 });
 
