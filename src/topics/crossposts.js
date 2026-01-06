@@ -27,6 +27,9 @@ Crossposts.get = async function (tid) {
 	crossposts = crossposts.map((crosspost, idx) => {
 		crosspost.id = crosspostIds[idx];
 		crosspost.category = categoriesData.get(parseInt(crosspost.cid, 10));
+		crosspost.uid = utils.isNumber(crosspost.uid) ? parseInt(crosspost.uid) : crosspost.uid;
+		crosspost.cid = utils.isNumber(crosspost.cid) ? parseInt(crosspost.cid) : crosspost.cid;
+
 		return crosspost;
 	});
 
