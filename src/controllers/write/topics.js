@@ -231,7 +231,7 @@ Topics.crosspost = async (req, res) => {
 Topics.uncrosspost = async (req, res) => {
 	const { cid } = req.body;
 	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
-	await activitypub.out.undo.announce('uid', req.uid, req.parms.tid);
+	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);
 
 	helpers.formatApiResponse(200, res, { crossposts });
 };

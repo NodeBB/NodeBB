@@ -20,27 +20,44 @@ define('forum/topic/crosspost', [
 	};
 
 	function showModal() {
-		app.parseAndTranslate('modals/crosspost-topic', {
-			selectedCategory: ajaxify.data.crossposts.length ?
-				{
-					icon: 'fa-plus',
-					name: '[[unread:multiple-categories-selected]]',
-					bgColor: '#ddd',
-				} :
-				ajaxify.data.category,
-		}, function (html) {
+		const selectedCategory = (() => {
+			const multiple = {
+				icon: 'fa-plus',
+				name: '[[unread:multiple-categories-selected]]',
+				bgColor: '#ddd',
+			};
+			if (ajaxify.data.cid > 0) {
+				return ajaxify.data.crossposts.length ? multiple : ajaxify.data.category;
+			}
+
+			switch (ajaxify.data.crossposts.length) {
+				case 0:
+					return undefined;
+
+				case 1:
+					return ajaxify.data.crossposts[0].category;
+
+				default:
+					return multiple;
+			}
+		})();
+		app.parseAndTranslate('modals/crosspost-topic', { selectedCategory }, function (html) {
 			modal = html;
 			$('body').append(modal);
 
 			const dropdownEl = modal.find('[component="category-selector"]');
 			dropdownEl.addClass('dropup');
 
+			const selectedCids = [...ajaxify.data.crossposts.map(c => c.cid)];
+			if (ajaxify.data.cid > 0) {
+				selectedCids.unshift(ajaxify.data.cid);
+			}
 			categoryFilter.init($('[component="category/dropdown"]'), {
 				onHidden: onCategoriesSelected,
 				hideAll: true,
 				hideUncategorized: true,
 				localOnly: true,
-				selectedCids: Array.from(new Set([ajaxify.data.cid, ...ajaxify.data.crossposts.map(c => c.cid)])),
+				selectedCids: Array.from(new Set(selectedCids)),
 			});
 
 			modal.find('#crosspost_thread_commit').on('click', onCommitClicked);
@@ -49,7 +66,7 @@ define('forum/topic/crosspost', [
 	}
 
 	function onCategoriesSelected(data) {
-		selectedCids = data.selectedCids.filter(utils.isNumber);
+		selectedCids = data.selectedCids.filter(cid => utils.isNumber(cid) && cid > 0);
 		if (data.changed) {
 			modal.find('#crosspost_thread_commit').prop('disabled', false);
 		}
@@ -58,30 +75,12 @@ define('forum/topic/crosspost', [
 	function onCommitClicked() {
 		const commitEl = modal.find('#crosspost_thread_commit');
 
-		if (!commitEl.prop('disabled') && selectedCids && selectedCids.length) {
+		if (!commitEl.prop('disabled')) {
 			commitEl.prop('disabled', true);
 			const data = {
 				tid: Crosspost.tid,
 				cids: selectedCids,
 			};
-
-			// TODO
-			// if (config.undoTimeout > 0) {
-			// 	return alerts.alert({
-			// 		alert_id: 'tids_move_' + (Crosspost.tid ? Crosspost.tid.join('-') : 'all'),
-			// 		title: '[[topic:thread-tools.move]]',
-			// 		message: message,
-			// 		type: 'success',
-			// 		timeout: config.undoTimeout,
-			// 		timeoutfn: function () {
-			// 			moveTopics(data);
-			// 		},
-			// 		clickfn: function (alert, params) {
-			// 			delete params.timeoutfn;
-			// 			alerts.success('[[topic:topic-move-undone]]');
-			// 		},
-			// 	});
-			// }
 
 			crosspost(data);
 		}
