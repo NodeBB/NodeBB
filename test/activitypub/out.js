@@ -22,84 +22,133 @@ describe('Outbound activities module', () => {
 	});
 
 	describe('.announce', () => {
-		describe('.topic() (remote topic; by cid)', () => {
-			let pid;
-			let note;
-			let tid;
-			let cid;
+		function commonTests() {
+			it('should not error when called', async function () {
+				await activitypub.out.announce.topic(this.tid, this.uid);
+				const { payload, targets } = Array.from(activitypub._sent).pop()[1];
+				this.payload = payload;
+				this.targets = targets;
+			});
 
-			before(async () => {
-				({ id: pid, note } = helpers.mocks.note());
-				({ cid } = await categories.create({ name: utils.generateUUID() }));
+			it('should send an Announce activity', function () {
+				assert.strictEqual(activitypub._sent.size, 1);
+				assert.strictEqual(this.payload.type, 'Announce');
+			});
+
+			it('should contain the main post\'s pid in object', function () {
+				assert.strictEqual(this.payload.object, this.pid);
+			});
+
+			it('should have actor as the calling user or category as appropriate', function () {
+				if (this.uid) {
+					assert.strictEqual(this.payload.actor, `${nconf.get('url')}/uid/${this.uid}`);
+				} else {
+					assert.strictEqual(this.payload.actor, `${nconf.get('url')}/category/${this.cid}`);
+				}
+			});
+		}
+
+		describe('.topic() (remote topic; by cid)', () => {
+			before(async function () {
+				const { id: pid, note } = helpers.mocks.note();
+				const { cid } = await categories.create({ name: utils.generateUUID() });
 				await activitypub.notes.assert(0, pid, { skipChecks: 1, cid });
-				tid = await posts.getPostField(pid, 'tid');
+
+				this.pid = pid;
+				this.note = note;
+				this.cid = cid;
+				this.tid = await posts.getPostField(pid, 'tid');
 			});
 
 			after(() => {
 				activitypub._sent.clear();
 			});
 
-			it('should not error when called', async () => {
-				await activitypub.out.announce.topic(tid);
+			commonTests();
+
+			it('should include the category\'s followers collection in cc', function () {
+				assert(this.payload.cc.includes(`${nconf.get('url')}/category/${this.cid}/followers`));
 			});
 
-			it('should send an Announce activity', () => {
-				assert.strictEqual(activitypub._sent.size, 1);
-
-				const { payload } = Array.from(activitypub._sent).pop()[1];
-				assert.strictEqual(payload.type, 'Announce');
+			it('should include the author in cc', function () {
+				assert(this.payload.cc.includes(this.note.attributedTo));
 			});
 
-			it('should contain the main post\'s pid in object', () => {
-				const { payload } = Array.from(activitypub._sent).pop()[1];
-				assert.strictEqual(payload.object, pid);
-			});
-
-			it('should include the category\'s followers collection in cc', () => {
-				const { payload } = Array.from(activitypub._sent).pop()[1];
-				assert(payload.cc.includes(`${nconf.get('url')}/category/${cid}/followers`));
-			});
-
-			it('should include the author in cc', () => {
-				const { payload } = Array.from(activitypub._sent).pop()[1];
-				assert(payload.cc.includes(note.attributedTo));
-			});
-
-			it('should include the author in targets', () => {
-				const { targets } = Array.from(activitypub._sent).pop()[1];
-				assert(targets.includes(note.attributedTo));
+			it('should include the author in targets', function () {
+				assert(this.targets.includes(this.note.attributedTo));
 			});
 		});
 
 		describe('.topic() (local topic; by cid)', () => {
-			let uid;
-			let tid;
-			let cid;
-
-			before(async () => {
-				uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-				({ cid } = await categories.create({ name: utils.generateUUID() }));
-				const { topicData } = await topics.post({
+			before(async function () {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { postData, topicData } = await topics.post({
 					cid, uid,
 					title: utils.generateUUID(),
 					content: utils.generateUUID(),
 				});
-				({ tid } = topicData);
+
+				this.tid = topicData.tid;
+				this.cid = cid;
+				this.pid = `${nconf.get('url')}/post/${topicData.mainPid}`;
+				this.note = await activitypub.mocks.notes.public(postData);
 			});
 
 			after(() => {
 				activitypub._sent.clear();
 			});
 
-			it('should not error when called', async () => {
-				await activitypub.out.announce.topic(tid);
+			commonTests();
+
+			it('should include the topic\'s mainPid in object', async function () {
+				const mainPid = await topics.getTopicField(this.tid, 'mainPid');
+				assert.strictEqual(this.payload.object, `${nconf.get('url')}/post/${mainPid}`);
+			});
+		});
+
+		describe('.topic() (remote topic; by uid)', () => {
+			before(async function () {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { id: pid, note } = helpers.mocks.note();
+
+				await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+
+				this.pid = pid;
+				this.note = note;
+				this.tid = await posts.getPostField(pid, 'tid');
+				this.uid = uid;
 			});
 
-			it('should include the topic\'s mainPid in object', async () => {
-				const mainPid = await topics.getTopicField(tid, 'mainPid');
-				const { payload } = Array.from(activitypub._sent).pop()[1];
-				assert.strictEqual(payload.object, `${nconf.get('url')}/post/${mainPid}`);
+			after(() => {
+				activitypub._sent.clear();
 			});
+
+			commonTests();
+		});
+
+		describe('.topic() (local topic; by uid)', () => {
+			before(async function () {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { postData, topicData } = await topics.post({
+					cid, uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+
+				this.tid = topicData.tid;
+				this.cid = cid;
+				this.pid = `${nconf.get('url')}/post/${topicData.mainPid}`;
+				this.note = await activitypub.mocks.notes.public(postData);
+				this.uid = uid;
+			});
+
+			after(() => {
+				activitypub._sent.clear();
+			});
+
+			commonTests();
 		});
 	});
 });

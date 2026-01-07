@@ -305,12 +305,19 @@ Out.dislike.note = enabledCheck(async (uid, pid) => {
 
 Out.announce = {};
 
-Out.announce.topic = enabledCheck(async (tid) => {
+Out.announce.topic = enabledCheck(async (tid, uid) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
 
-	// Only local categories can announce
-	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
-		return;
+	if (uid) {
+		const exists = await user.exists(uid);
+		if (!exists || !utils.isNumber(cid)) {
+			return;
+		}
+	} else {
+		// Only local categories can announce
+		if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+			return;
+		}
 	}
 
 	const authorUid = await posts.getPostField(pid, 'uid'); // author
@@ -323,16 +330,23 @@ Out.announce.topic = enabledCheck(async (tid) => {
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		id: pid,
 		to: [activitypub._constants.publicAddress],
-	}, { cid });
+	}, uid ? { uid } : { cid });
 	if (!utils.isNumber(authorUid)) {
 		cc.push(authorUid);
 		targets.add(authorUid);
 	}
 
-	await activitypub.send('cid', cid, Array.from(targets), {
+	const payload = uid ? {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/uid/${uid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+	} : {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/category/${cid}`,
+	};
+	await activitypub.send(uid ? 'uid' : 'cid', uid || cid, Array.from(targets), {
+		...payload,
 		to,
 		cc,
 		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
