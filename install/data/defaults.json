@@ -70,7 +70,7 @@
     "maximumChatMessageLength": 1000,
     "maximumRemoteChatMessageLength": 5000,
     "maximumChatRoomNameLength": 50,
-    "maximumProfileImageSize": 256,
+    "maximumProfileImageSize": 2048,
     "maximumCoverImageSize": 2048,
     "profileImageDimension": 200,
     "profile:convertProfileImageToPNG": 0,
