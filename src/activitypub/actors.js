@@ -9,7 +9,6 @@ const meta = require('../meta');
 const batch = require('../batch');
 const categories = require('../categories');
 const user = require('../user');
-const topics = require('../topics');
 const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
 
