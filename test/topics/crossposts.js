@@ -517,9 +517,9 @@ describe('Crossposting (& related logic)', () => {
 
 				const actual = Array.from(activitypub._sent).pop()[1];
 				assert.deepStrictEqual({
-					type: actual.type,
-					actor: actual.actor,
-					object: actual.object,
+					type: actual.payload.type,
+					actor: actual.payload.actor,
+					object: actual.payload.object,
 				}, {
 					type: 'Announce',
 					actor: `${nconf.get('url')}/category/${cid1}`,
@@ -539,9 +539,9 @@ describe('Crossposting (& related logic)', () => {
 
 				const actual = Array.from(activitypub._sent).pop()[1];
 				assert.deepStrictEqual({
-					type: actual.type,
-					actor: actual.actor,
-					object: actual.object,
+					type: actual.payload.type,
+					actor: actual.payload.actor,
+					object: actual.payload.object,
 				}, {
 					type: 'Announce',
 					actor: `${nconf.get('url')}/category/${cid1}`,
