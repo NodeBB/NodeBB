@@ -229,6 +229,7 @@ Topics.crosspost = async (req, res) => {
 };
 
 Topics.uncrosspost = async (req, res) => {
+	console.log('topics.uncrosspost called');
 	const { cid } = req.body;
 	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
 	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);

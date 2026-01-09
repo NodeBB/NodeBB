@@ -569,7 +569,9 @@ Out.undo.flag = enabledCheck(async (uid, flag) => {
 });
 
 Out.undo.announce = enabledCheck(async (type, id, tid) => {
+	console.log('IN UNDO ANNOUNCE');
 	if (!utils.isNumber(id) || !['uid', 'cid'].includes(type)) {
+		console.log('invalid 1');
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -577,7 +579,9 @@ Out.undo.announce = enabledCheck(async (type, id, tid) => {
 		topics.exists(tid),
 		type === 'uid' ? user.exists(id) : categories.exists(id),
 	]);
+	console.log(exists);
 	if (!exists.every(Boolean)) {
+		console.log('invalid 2');
 		throw new Error('[[error:invalid-data]]');
 	}
 
