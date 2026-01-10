@@ -116,6 +116,7 @@
 	"thread-tools.lock": "Lock Topic",
 	"thread-tools.unlock": "Unlock Topic",
 	"thread-tools.move": "Move Topic",
+	"thread-tools.crosspost": "Crosspost Topic",
 	"thread-tools.move-posts": "Move Posts",
 	"thread-tools.move-all": "Move All",
 	"thread-tools.change-owner": "Change Owner",
@@ -149,6 +150,7 @@
 
 	"load-categories": "Loading Categories",
 	"confirm-move": "Move",
+	"confirm-crosspost": "Cross-post",
 	"confirm-fork": "Fork",
 
 	"bookmark": "Bookmark",
@@ -161,6 +163,7 @@
 	"loading-more-posts": "Loading More Posts",
 	"move-topic": "Move Topic",
 	"move-topics": "Move Topics",
+	"crosspost-topic": "Cross-post Topic",
 	"move-post": "Move Post",
 	"post-moved": "Post moved!",
 	"fork-topic": "Fork Topic",
@@ -183,6 +186,10 @@
 	"move-topic-instruction": "Select the target category and then click move",
 	"change-owner-instruction": "Click the posts you want to assign to another user",
 	"manage-editors-instruction": "Manage the users who can edit this post below.",
+
+	"crossposts.instructions": "Select one or more categories to cross-post to. Topic(s) will be accessible from the original category and all cross-posted categories.",
+	"crossposts.listing": "This topic has been cross-posted to the following local categories:",
+	"crossposts.none": "This topic has not been cross-posted to any additional categories",
 
 	"composer.title-placeholder": "Enter your topic title here...",
 	"composer.handle-placeholder": "Enter your name/handle here",

@@ -54,5 +54,9 @@ module.exports = function () {
 
 	setupApiRoute(router, 'put', '/:tid/move', [...middlewares, middleware.assert.topic], controllers.write.topics.move);
 
+	setupApiRoute(router, 'get', '/:tid/crossposts', [...middlewares, middleware.assert.topic], controllers.write.topics.getCrossposts);
+	setupApiRoute(router, 'post', '/:tid/crossposts', [...middlewares, middleware.assert.topic], controllers.write.topics.crosspost);
+	setupApiRoute(router, 'delete', '/:tid/crossposts', [...middlewares, middleware.assert.topic], controllers.write.topics.uncrosspost);
+
 	return router;
 };

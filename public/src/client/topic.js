@@ -69,6 +69,7 @@ define('forum/topic', [
 		setupQuickReply();
 		handleBookmark(tid);
 		handleThumbs();
+		addCrosspostsHandler();
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
@@ -404,6 +405,22 @@ define('forum/topic', [
 				}
 			}, 300);
 		});
+	}
+
+	function addCrosspostsHandler() {
+		const anchorEl = document.getElementById('show-crossposts');
+		if (anchorEl) {
+			anchorEl.addEventListener('click', async () => {
+				const { crossposts } = ajaxify.data;
+				const html = await app.parseAndTranslate('modals/crossposts', { crossposts });
+				bootbox.dialog({
+					onEscape: true,
+					backdrop: true,
+					title: '[[global:crossposts]]',
+					message: html,
+				});
+			});
+		}
 	}
 
 	function setupQuickReply() {

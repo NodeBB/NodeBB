@@ -93,7 +93,6 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                   groups:
                     type: array
@@ -107,7 +106,6 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object
@@ -230,7 +228,6 @@ delete:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                   groups:
                     type: array
@@ -244,7 +241,6 @@ delete:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object
