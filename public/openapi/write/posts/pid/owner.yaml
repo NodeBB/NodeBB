@@ -8,6 +8,9 @@ put:
       in: path
       description: Post id
       required: true
+      schema:
+        type: integer
+        example: 123
   requestBody:
     description: New owner payload
     required: true
