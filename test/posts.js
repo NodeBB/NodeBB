@@ -118,7 +118,7 @@ describe('Post\'s', () => {
 
 	it('should fail to change owner if user is not authorized', async () => {
 		try {
-			await socketPosts.changeOwner({ uid: voterUid }, { pids: [1, 2], toUid: voterUid });
+			await apiPosts.changeOwner({ uid: voterUid }, { pids: [1, 2], uid: voterUid });
 		} catch (err) {
 			assert.strictEqual(err.message, '[[error:no-privileges]]');
 		}

@@ -210,3 +210,11 @@ Posts.notifyQueuedPostOwner = async (req, res) => {
 	await api.posts.notifyQueuedPostOwner(req, { id, message: req.body.message });
 	helpers.formatApiResponse(200, res);
 };
+
+Posts.changeOwner = async (req, res) => {
+	await api.posts.changeOwner(req, {
+		pids: req.body.pids || (req.params.pid ? [req.params.pid] : []),
+		uid: req.body.uid,
+	});
+	helpers.formatApiResponse(200, res);
+};
