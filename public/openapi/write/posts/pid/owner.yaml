@@ -10,7 +10,7 @@ put:
       required: true
       schema:
         type: integer
-      example: 12345
+      example: 2
   requestBody:
     description: New owner payload
     required: true
@@ -24,6 +24,7 @@ put:
             uid:
               type: integer
               description: User id of the new owner
+              example: 2
   responses:
     '200':
       description: Owner changed successfully
@@ -32,9 +33,7 @@ put:
           schema:
             type: object
             properties:
-              success:
-                type: boolean
-              message:
-                type: string
-    '404':
-      description: Post not found
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

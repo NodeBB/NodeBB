@@ -18,11 +18,11 @@ post:
               items:
                 type: integer
               description: Array of post IDs to change owner for
-              example: [123, 456]
+              example: [2]
             uid:
               type: integer
               description: Target user id
-              example: 42
+              example: 1
   responses:
     '200':
       description: Owner changed successfully
@@ -31,10 +31,9 @@ post:
           schema:
             type: object
             properties:
-              success:
-                type: boolean
-              changed:
-                type: integer
-                description: Number of posts updated
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
     '404':
       description: Post not found
