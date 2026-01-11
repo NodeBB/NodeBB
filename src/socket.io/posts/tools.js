@@ -79,7 +79,7 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/owner');
-		await api.posts.changeOwner(socket, data);
+		await api.posts.changeOwner(socket, { pids: data.pids, uid: data.toUid });
 	};
 
 	SocketPosts.getEditors = async function (socket, data) {
