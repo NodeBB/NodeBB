@@ -10,7 +10,7 @@ put:
       required: true
       schema:
         type: integer
-        example: 123
+      example: 12345
   requestBody:
     description: New owner payload
     required: true
