@@ -36,3 +36,5 @@ put:
                 type: boolean
               message:
                 type: string
+    '404':
+      description: Post not found

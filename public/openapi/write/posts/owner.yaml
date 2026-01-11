@@ -36,3 +36,5 @@ post:
               changed:
                 type: integer
                 description: Number of posts updated
+    '404':
+      description: Post not found
