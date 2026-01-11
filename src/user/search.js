@@ -119,8 +119,7 @@ module.exports = function (User) {
 		const min = query;
 		const max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
-		const resultsPerPage = meta.config.userSearchResultsPerPage;
-		hardCap = hardCap || resultsPerPage * 10;
+		hardCap = hardCap || 500;
 
 		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
 		// const uids = data.map(data => data.split(':').pop());

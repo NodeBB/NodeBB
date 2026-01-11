@@ -300,7 +300,9 @@ const utils = {
 		const pattern = (tags || ['']).join('|');
 		return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 	},
-
+	stripBidiControls: function (input) {
+		return input.replace(/[\u202A-\u202E\u2066-\u2069]/g, '');
+	},
 	cleanUpTag: function (tag, maxLength) {
 		if (typeof tag !== 'string' || !tag.length) {
 			return '';

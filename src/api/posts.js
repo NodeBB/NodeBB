@@ -665,3 +665,26 @@ async function sendQueueNotification(type, targetUid, path, notificationText) {
 	const notifObj = await notifications.create(notifData);
 	await notifications.push(notifObj, [targetUid]);
 }
+
+postsAPI.changeOwner = async function (caller, data) {
+	if (!data || !Array.isArray(data.pids) || !data.uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(caller.uid);
+	if (!isAdminOrGlobalMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const postData = await posts.changeOwner(data.pids, data.uid);
+	const logs = postData.map(({ pid, uid, cid }) => (events.log({
+		type: 'post-change-owner',
+		uid: caller.uid,
+		ip: caller.ip,
+		targetUid: data.uid,
+		pid: pid,
+		originalUid: uid,
+		cid: cid,
+	})));
+
+	await Promise.all(logs);
+};

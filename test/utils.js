@@ -44,6 +44,26 @@ describe('Utility Methods', () => {
 		done();
 	});
 
+	describe('utils.stripBidiControls', () => {
+		it('should remove common bidi embedding and override controls', () => {
+			const input = '\u202AHello\u202C \u202BWorld\u202C \u202DDwellers\u202E';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'Hello World Dwellers');
+		});
+
+		it('should remove bidirectional isolate formatting characters', () => {
+			const input = '\u2066abc\u2067def\u2068ghi\u2069';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'abcdefghi');
+		});
+
+		it('should leave normal text unchanged', () => {
+			const input = 'plain text 123';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'plain text 123');
+		});
+	});
+
 	it('should preserve case if requested', (done) => {
 		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
 		done();

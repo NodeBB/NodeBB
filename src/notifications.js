@@ -177,6 +177,9 @@ Notifications.create = async function (data) {
 	if (!result.data) {
 		return null;
 	}
+	if (data.bodyShort) {
+		data.bodyShort = utils.stripBidiControls(data.bodyShort);
+	}
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
 		db.setObject(`notifications:${data.nid}`, data),

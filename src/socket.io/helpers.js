@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
+const translator = require('../translator');
 
 const SocketHelpers = module.exports;
 
@@ -113,10 +114,11 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 
 	const title = utils.decodeHTMLEntities(topicTitle);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+	const bodyShort = translator.compile(notification, userData.displayname || userData.name, titleEscaped);
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: `[[${notification}, ${userData.displayname || userData.name}, ${titleEscaped}]]`,
+		bodyShort: bodyShort,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
