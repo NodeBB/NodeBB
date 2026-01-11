@@ -1,6 +1,6 @@
 post:
   tags:
-    - Posts
+    - posts
   summary: Change owner of one or more posts
   description: Change the owner of the posts identified by pids to the user uid.
   requestBody:
