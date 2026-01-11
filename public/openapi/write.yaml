@@ -206,6 +206,10 @@ paths:
     $ref: 'write/posts/queue/id.yaml'
   /posts/queue/{id}/notify:
     $ref: 'write/posts/queue/notify.yaml'
+  /posts/{pid}/owner:
+    $ref: 'write/posts/pid/owner.yaml'
+  /posts/owner:
+    $ref: 'write/posts/owner.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
   /chats/unread:
