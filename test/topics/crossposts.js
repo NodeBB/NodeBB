@@ -84,6 +84,13 @@ describe('Crossposting (& related logic)', () => {
 			tid = topicData.tid;
 		});
 
+		it('should not allow a spider (uid -1) to crosspost', async () => {
+			await assert.rejects(
+				topics.crossposts.add(tid, cid2, -1),
+				{ message: '[[error:invalid-uid]]' }
+			);
+		});
+
 		it('should successfully crosspost to another cid', async () => {
 			const crossposts = await topics.crossposts.add(tid, cid2, uid);
 

@@ -37,6 +37,13 @@ Crossposts.get = async function (tid) {
 };
 
 Crossposts.add = async function (tid, cid, uid) {
+	console.log('ADD WAS CALLED!!', tid, cid, uid);
+	return;
+	/**
+	 * NOTE: If uid is 0, the assumption is that it is a "system" crosspost, not a guest!
+	 * (Normally guest uid is 0)
+	 */
+
 	// Target cid must exist
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
@@ -44,6 +51,9 @@ Crossposts.add = async function (tid, cid, uid) {
 	const exists = await categories.exists(cid);
 	if (!exists) {
 		throw new Error('[[error:invalid-cid]]');
+	}
+	if (uid < 0) {
+		throw new Error('[[error:invalid-uid]]');
 	}
 
 	const crossposts = await Crossposts.get(tid);
