@@ -118,12 +118,12 @@ Crossposts.remove = async function (tid, cid, uid) {
 		`cid:${cid}:tids:views`,
 	];
 	bulkRemove = bulkRemove.map(zset => [zset, tid]);
-	bulkRemove.push([`cid:${cid}:pids`, pids]);
 
 	await Promise.all([
 		db.sortedSetRemoveBulk(bulkRemove),
 		db.delete(`crosspost:${crosspostId}`),
 		db.sortedSetRemove(`tid:${tid}:crossposts`, crosspostId),
+		db.sortedSetRemove(`cid:${cid}:pids`, pids),
 		uid > 0 ? db.sortedSetRemove(`uid:${uid}:crossposts`, crosspostId) : false,
 	]);
 	await categories.onTopicsMoved([cid]);
