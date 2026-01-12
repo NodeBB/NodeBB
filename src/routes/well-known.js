@@ -72,6 +72,9 @@ module.exports = function (app, middleware, controllers) {
 			metadata: {
 				nodeName: meta.config.title || 'NodeBB',
 				nodeDescription: meta.config.description || '',
+				federation: {
+					enabled: !!meta.config.activitypubEnabled,
+				},
 			},
 		});
 	}));
