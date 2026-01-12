@@ -37,8 +37,6 @@ Crossposts.get = async function (tid) {
 };
 
 Crossposts.add = async function (tid, cid, uid) {
-	console.log('ADD WAS CALLED!!', tid, cid, uid);
-	return;
 	/**
 	 * NOTE: If uid is 0, the assumption is that it is a "system" crosspost, not a guest!
 	 * (Normally guest uid is 0)
