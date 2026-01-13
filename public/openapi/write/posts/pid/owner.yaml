@@ -2,7 +2,7 @@ put:
   summary: Change owner of a post
   description: Change the owner (uid) of a post identified by pid.
   tags:
-    - Posts
+    - posts
   parameters:
     - name: pid
       in: path
