@@ -16,7 +16,7 @@ const slugify = require('../../src/slugify');
 
 const helpers = require('./helpers');
 
-describe('Actor asserton', () => {
+describe('as:Person (Actor asserton)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
@@ -512,6 +512,26 @@ describe('Controllers', () => {
 				type: 'Image',
 				mediaType: 'image/png',
 				url: `${nconf.get('url')}/assets/uploads/files/test.png`,
+			});
+		});
+
+		it('should not contain html entities in name and summary', async () => {const payload = {};
+			payload[cid] = {
+				name: 'One & Two',
+				description: 'This is a category for one & two',
+			};
+			await categories.update(payload);
+
+			const { body } = await request.get(`${nconf.get('url')}/category/${cid}`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			const { name, summary } = body;
+			assert.deepStrictEqual({ name, summary }, {
+				name: 'One & Two',
+				summary: 'This is a category for one & two',
 			});
 		});
 	});

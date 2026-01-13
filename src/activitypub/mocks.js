@@ -576,9 +576,9 @@ Mocks.actors.category = async (cid) => {
 		outbox: `${nconf.get('url')}/category/${cid}/outbox`,
 
 		type: 'Group',
-		name,
+		name: utils.decodeHTMLEntities(name),
 		preferredUsername,
-		summary,
+		summary: utils.decodeHTMLEntities(summary),
 		// image, // todo once categories have cover photos
 		icon,
 		postingRestrictedToMods: !canPost,
