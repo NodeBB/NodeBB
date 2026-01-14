@@ -101,7 +101,7 @@ module.exports = function (Categories) {
 				tids,
 				['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
 			),
-			Promise.all(tids.map(async tid => topics.crossposts.get(tid))),
+			topics.crossposts.get(tids),
 		]);
 
 		topicData.forEach((topic) => {
