@@ -60,7 +60,8 @@ module.exports = function (Posts) {
 							tag.name = `${tag.name}:`;
 						}
 
-						postData.content = postData.content.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
+						const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
+						postData[property] = postData[property].replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
 					});
 			}
 

@@ -5,7 +5,6 @@ const process = require('process');
 const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
-// const cheerio = require('cheerio');
 const crypto = require('crypto');
 
 const meta = require('../meta');

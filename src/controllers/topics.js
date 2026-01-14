@@ -123,8 +123,9 @@ topicsController.get = async function getTopic(req, res, next) {
 		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
 	);
 
-	const [author] = await Promise.all([
+	const [author, crossposts] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
+		topics.crossposts.get(topicData.tid),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res, currentPage, postAtIndex),
@@ -134,6 +135,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	]);
 
 	topicData.author = author;
+	topicData.crossposts = crossposts;
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;

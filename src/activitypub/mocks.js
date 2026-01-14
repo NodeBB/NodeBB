@@ -13,6 +13,7 @@ const categories = require('../categories');
 const posts = require('../posts');
 const topics = require('../topics');
 const messaging = require('../messaging');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const translator = require('../translator');
@@ -280,6 +281,7 @@ Mocks.category = async (actors) => {
 		let {
 			url, preferredUsername, icon, /* image, */
 			name, summary, followers, inbox, endpoints, tag,
+			postingRestrictedToMods,
 		} = actor;
 		preferredUsername = slugify(preferredUsername || name);
 		/*
@@ -337,6 +339,10 @@ Mocks.category = async (actors) => {
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
+
+			_activitypub: {
+				postingRestrictedToMods,
+			},
 		};
 
 		return payload;
@@ -524,12 +530,19 @@ Mocks.actors.user = async (uid) => {
 };
 
 Mocks.actors.category = async (cid) => {
-	const {
-		name, handle: preferredUsername, slug,
-		descriptionParsed: summary, backgroundImage,
-	} = await categories.getCategoryFields(cid,
-		['name', 'handle', 'slug', 'description', 'descriptionParsed', 'backgroundImage']);
-	const publicKey = await activitypub.getPublicKey('cid', cid);
+	const [
+		{
+			name, handle: preferredUsername, slug,
+			descriptionParsed: summary, backgroundImage,
+		},
+		publicKey,
+		canPost,
+	] = await Promise.all([
+		categories.getCategoryFields(cid,
+			['name', 'handle', 'slug', 'description', 'descriptionParsed', 'backgroundImage']),
+		activitypub.getPublicKey('cid', cid),
+		privileges.categories.can('topics:create', cid, -2),
+	]);
 
 	let icon;
 	if (backgroundImage) {
@@ -553,6 +566,7 @@ Mocks.actors.category = async (cid) => {
 		'@context': [
 			'https://www.w3.org/ns/activitystreams',
 			'https://w3id.org/security/v1',
+			'https://join-lemmy.org/context.json',
 		],
 		id: `${nconf.get('url')}/category/${cid}`,
 		url: `${nconf.get('url')}/category/${slug}`,
@@ -562,11 +576,12 @@ Mocks.actors.category = async (cid) => {
 		outbox: `${nconf.get('url')}/category/${cid}/outbox`,
 
 		type: 'Group',
-		name,
+		name: utils.decodeHTMLEntities(name),
 		preferredUsername,
-		summary,
+		summary: utils.decodeHTMLEntities(summary),
 		// image, // todo once categories have cover photos
 		icon,
+		postingRestrictedToMods: !canPost,
 
 		publicKey: {
 			id: `${nconf.get('url')}/category/${cid}#key`,

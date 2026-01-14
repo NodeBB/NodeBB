@@ -68,6 +68,7 @@
     "users": "Корисници",
     "topics": "Теме",
     "posts": "Поруке",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> поруке",
     "x-topics": "<span class=\"formatted-number\">%1</span> теме",
     "x-reputation": "<span class=\"formatted-number\">%1</span> угледа",

@@ -16,7 +16,7 @@ const slugify = require('../../src/slugify');
 
 const helpers = require('./helpers');
 
-describe('Actor asserton', () => {
+describe('as:Person (Actor asserton)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
@@ -75,105 +75,6 @@ describe('Actor asserton', () => {
 			assert(assertion);
 			assert.strictEqual(assertion.length, 1);
 			assert.strictEqual(assertion[0].cid, actor.id);
-		});
-
-		describe('remote user to remote category migration', () => {
-			it('should not migrate a user to a category if .assert is called', async () => {
-				// ... because the user isn't due for an update and so is filtered out during qualification
-				const { id } = helpers.mocks.person();
-				await activitypub.actors.assert([id]);
-
-				const { actor } = helpers.mocks.group({ id });
-				const assertion = await activitypub.actors.assertGroup([id]);
-
-				assert(assertion.length, 0);
-
-				const exists = await user.exists(id);
-				assert.strictEqual(exists, false);
-			});
-
-			it('should migrate a user to a category if on re-assertion it identifies as an as:Group', async () => {
-				// This is to handle previous behaviour that saved all as:Group actors as NodeBB users.
-				const { id } = helpers.mocks.person();
-				await activitypub.actors.assert([id]);
-
-				helpers.mocks.group({ id });
-				const assertion = await activitypub.actors.assertGroup([id]);
-
-				assert(assertion && Array.isArray(assertion) && assertion.length === 1);
-
-				const exists = await user.exists(id);
-				assert.strictEqual(exists, false);
-			});
-
-			it('should migrate any shares by that user, into topics in the category', async () => {
-				const { id } = helpers.mocks.person();
-				await activitypub.actors.assert([id]);
-
-				// Two shares
-				for (let x = 0; x < 2; x++) {
-					const { id: pid } = helpers.mocks.note();
-					// eslint-disable-next-line no-await-in-loop
-					const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
-					// eslint-disable-next-line no-await-in-loop
-					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
-				}
-
-				helpers.mocks.group({ id });
-				await activitypub.actors.assertGroup([id]);
-
-				const { topic_count, post_count } = await categories.getCategoryData(id);
-				assert.strictEqual(topic_count, 2);
-				assert.strictEqual(post_count, 2);
-			});
-
-			it('should not migrate shares by that user that already belong to a local category', async () => {
-				const { id } = helpers.mocks.person();
-				await activitypub.actors.assert([id]);
-
-				const { cid } = await categories.create({ name: utils.generateUUID() });
-
-				// Two shares, one moved to local cid
-				for (let x = 0; x < 2; x++) {
-					const { id: pid } = helpers.mocks.note();
-					// eslint-disable-next-line no-await-in-loop
-					const { tid } = await activitypub.notes.assert(0, pid, { skipChecks: 1 });
-					// eslint-disable-next-line no-await-in-loop
-					await db.sortedSetAdd(`uid:${id}:shares`, Date.now(), tid);
-
-					if (!x) {
-						// eslint-disable-next-line no-await-in-loop
-						await topics.tools.move(tid, {
-							cid,
-							uid: 'system',
-						});
-					}
-				}
-
-				helpers.mocks.group({ id });
-				await activitypub.actors.assertGroup([id]);
-
-				const { topic_count, post_count } = await categories.getCategoryData(id);
-				assert.strictEqual(topic_count, 1);
-				assert.strictEqual(post_count, 1);
-			});
-
-			it('should migrate any local followers into category watches', async () => {
-				const { id } = helpers.mocks.person();
-				await activitypub.actors.assert([id]);
-
-				const followerUid = await user.create({ username: utils.generateUUID() });
-				await Promise.all([
-					db.sortedSetAdd(`followingRemote:${followerUid}`, Date.now(), id),
-					db.sortedSetAdd(`followersRemote:${id}`, Date.now(), followerUid),
-				]);
-
-				helpers.mocks.group({ id });
-				await activitypub.actors.assertGroup([id]);
-
-				const states = await categories.getWatchState([id], followerUid);
-				assert.strictEqual(states[0], categories.watchStates.tracking);
-			});
 		});
 	});
 
@@ -364,8 +265,8 @@ describe('as:Group', () => {
 				assert.strictEqual(activitypub._sent.size, 1);
 
 				const activity = Array.from(activitypub._sent.values()).pop();
-				assert.strictEqual(activity.type, 'Follow');
-				assert.strictEqual(activity.object, cid);
+				assert.strictEqual(activity.payload.type, 'Follow');
+				assert.strictEqual(activity.payload.object, cid);
 			});
 
 			it('should send out a Follow activity when the watch state changes to "watching"', async () => {
@@ -374,9 +275,9 @@ describe('as:Group', () => {
 				assert.strictEqual(activitypub._sent.size, 1);
 
 				const activity = Array.from(activitypub._sent.values()).pop();
-				assert(activity && activity.object && typeof activity.object === 'string');
-				assert.strictEqual(activity.type, 'Follow');
-				assert.strictEqual(activity.object, cid);
+				assert(activity && activity.payload.object && typeof activity.payload.object === 'string');
+				assert.strictEqual(activity.payload.type, 'Follow');
+				assert.strictEqual(activity.payload.object, cid);
 			});
 
 			it('should not show up in the user\'s following list', async () => {
@@ -432,11 +333,11 @@ describe('as:Group', () => {
 				assert.strictEqual(activitypub._sent.size, 1);
 
 				const activity = Array.from(activitypub._sent.values()).pop();
-				assert(activity && activity.object && typeof activity.object === 'object');
-				assert.strictEqual(activity.type, 'Undo');
-				assert.strictEqual(activity.object.type, 'Follow');
-				assert.strictEqual(activity.object.actor, `${nconf.get('url')}/uid/${uid}`);
-				assert.strictEqual(activity.object.object, cid);
+				assert(activity && activity.payload && activity.payload.object && typeof activity.payload.object === 'object');
+				assert.strictEqual(activity.payload.type, 'Undo');
+				assert.strictEqual(activity.payload.object.type, 'Follow');
+				assert.strictEqual(activity.payload.object.actor, `${nconf.get('url')}/uid/${uid}`);
+				assert.strictEqual(activity.payload.object.object, cid);
 			});
 		});
 	});
@@ -611,6 +512,26 @@ describe('Controllers', () => {
 				type: 'Image',
 				mediaType: 'image/png',
 				url: `${nconf.get('url')}/assets/uploads/files/test.png`,
+			});
+		});
+
+		it('should not contain html entities in name and summary', async () => {const payload = {};
+			payload[cid] = {
+				name: 'One & Two',
+				description: 'This is a category for one & two',
+			};
+			await categories.update(payload);
+
+			const { body } = await request.get(`${nconf.get('url')}/category/${cid}`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			const { name, summary } = body;
+			assert.deepStrictEqual({ name, summary }, {
+				name: 'One & Two',
+				summary: 'This is a category for one & two',
 			});
 		});
 	});

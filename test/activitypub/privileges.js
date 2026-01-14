@@ -204,3 +204,240 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 		});
 	});
 });
+
+describe('Privilege masking', () => {
+	before(async () => {
+		// Grant default fediverse privileges
+		await install.giveWorldPrivileges();
+	});
+
+	describe('control', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a standard mock group
+			({ id: cid } = helpers.mocks.group());
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+		});
+
+		it('should properly assert the remote category', async () => {
+			const assertion = await activitypub.actors.assertGroup([cid]);
+			const exists = await categories.exists(cid);
+
+			assert(assertion);
+			assert(exists);
+		});
+
+		it('should not set up a privilege mask for that category', async () => {
+			const exists = await db.exists(`cid:${cid}:privilegeMask`);
+			assert(!exists);
+		});
+
+		it('should pass the privileges .can() check if requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+			const can = await privileges.categories.can('topics:create', cid, uid);
+			assert(can);
+		});
+
+		it('should return true in the privilege set when requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+
+			assert(set);
+			assert(set['topics:create']);
+		});
+	});
+
+	describe('postingRestrictedToMods (true on assert)', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a mock group with `postingRestrictedToMods` bit set
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: true,
+			}));
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+		});
+
+		it('should properly assert the remote category', async () => {
+			const assertion = await activitypub.actors.assertGroup([cid]);
+			const exists = await categories.exists(cid);
+
+			assert(assertion);
+			assert(exists);
+		});
+
+		it('should set up a privilege mask for that category', async () => {
+			const exists = await db.exists(`cid:${cid}:privilegeMask`);
+			assert(exists);
+		});
+
+		it('should contain a single mask', async () => {
+			const members = await db.getSetMembers(`cid:${cid}:privilegeMask`);
+
+			assert(members);
+			assert.strictEqual(members.length, 1);
+			assert.strictEqual(members[0], 'topics:create');
+		});
+
+		it('should fail the privileges .can() check if requested', async () => {
+			const can = await privileges.categories.can('topics:create', cid, uid);
+			assert(!can);
+		});
+
+		it('should return false in the privilege set when requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+
+			assert(set);
+			assert(!set['topics:create']);
+		});
+	});
+
+	describe('postingRestrictedToMods (true on assert and re-assertion)', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a mock group with `postingRestrictedToMods` bit set
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: true,
+			}));
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+
+			// Assert group, then re-assert again
+			await activitypub.actors.assertGroup([cid]);
+			await activitypub.actors.assertGroup([cid], { update: true });
+		});
+
+		it('should fail the privileges .can() check if requested', async () => {
+			const can = await privileges.categories.can('topics:create', cid, uid);
+			assert(!can);
+		});
+
+		it('should return false in the privilege set when requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+
+			assert(set);
+			assert(!set['topics:create']);
+		});
+	});
+
+	describe('postingRestrictedToMods (true on assert, false on update)', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a mock group with `postingRestrictedToMods` bit set
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: true,
+			}));
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+
+			await activitypub.actors.assertGroup([cid]);
+
+			// Group updated "remotely"
+			helpers.mocks.group({
+				id: cid,
+				postingRestrictedToMods: false,
+			});
+		});
+
+		it('should remove the privilege mask if the bit is not present on group actor update', async () => {
+			let can = await privileges.categories.can('topics:create', cid, uid);
+			assert(!can, 'Initial state should be denied due to mask.');
+
+			// Group re-assertion
+			await activitypub.actors.assertGroup([cid], { update: true });
+
+			// Ensure mask is gone from db
+			const memberCount = await db.setCount(`cid:${cid}:privilegeMask`);
+			assert.strictEqual(memberCount, 0);
+
+			can = await privileges.categories.can('topics:create', cid, uid);
+			assert(can, 'Privilege should be restored after mask removal.');
+		});
+	});
+
+	describe('postingRestrictedToMods (true on assert, property missing on update)', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a mock group with `postingRestrictedToMods` bit set
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: true,
+			}));
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+
+			await activitypub.actors.assertGroup([cid]);
+
+			// Group updated "remotely"
+			helpers.mocks.group({
+				id: cid,
+			});
+		});
+
+		it('should remove the privilege mask if the bit is not present on group actor update', async () => {
+			let can = await privileges.categories.can('topics:create', cid, uid);
+			assert(!can, 'Initial state should be denied due to mask.');
+
+			// Group re-assertion
+			await activitypub.actors.assertGroup([cid], { update: true });
+
+			// Ensure mask is gone from db
+			const memberCount = await db.setCount(`cid:${cid}:privilegeMask`);
+			assert.strictEqual(memberCount, 0);
+
+			can = await privileges.categories.can('topics:create', cid, uid);
+			assert(can, 'Privilege should be restored after mask removal.');
+		});
+	});
+
+	describe('postingRestrictedToMods (false on assert, true on update)', () => {
+		let cid;
+		let uid;
+
+		before(async () => {
+			// Set up a mock group with `postingRestrictedToMods` bit set to false
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: false,
+			}));
+
+			// Unprivileged user for testing
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+
+			await activitypub.actors.assertGroup([cid]);
+
+
+			// Update group "remotely", re-assert
+			helpers.mocks.group({
+				id: cid,
+				postingRestrictedToMods: true,
+			});
+			await activitypub.actors.assertGroup([cid], { update: true });
+		});
+
+		it('should fail the privileges .can() check if requested', async () => {
+			const can = await privileges.categories.can('topics:create', cid, uid);
+			assert(!can);
+		});
+
+		it('should return false in the privilege set when requested', async () => {
+			const set = await privileges.categories.get(cid, uid);
+
+			assert(set);
+			assert(!set['topics:create']);
+		});
+	});
+});

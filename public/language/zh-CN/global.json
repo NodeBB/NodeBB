@@ -68,6 +68,7 @@
     "users": "用户",
     "topics": "主题",
     "posts": "帖子",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> 个帖子",
     "x-topics": "<span class=\"formatted-number\">%1</span> 个主题",
     "x-reputation": "<span class=\"formatted-number\">%1</span>声望",

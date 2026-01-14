@@ -68,15 +68,15 @@ describe('FEPs', () => {
 
 					const test1 = activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Create' &&
-							activity.object.object && activity.object.object.type === 'Note';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Create' &&
+							activity.payload.object.object && activity.payload.object.object.type === 'Note';
 					});
 
 					const test2 = activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Note';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Note';
 					});
 
 					assert(test1 && test2);
@@ -92,9 +92,9 @@ describe('FEPs', () => {
 
 					assert(activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Create' &&
-							activity.object.object && activity.object.object.type === 'Note';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Create' &&
+							activity.payload.object.object && activity.payload.object.object.type === 'Note';
 					}));
 				});
 
@@ -108,7 +108,7 @@ describe('FEPs', () => {
 
 					assert(activities.every((activity) => {
 						[, activity] = activity;
-						if (activity.type === 'Announce' && activity.object && activity.object.type === 'Note') {
+						if (activity.payload.type === 'Announce' && activity.payload.object && activity.payload.object.type === 'Note') {
 							return false;
 						}
 
@@ -123,8 +123,8 @@ describe('FEPs', () => {
 
 					assert(activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Like';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Like';
 					}));
 				});
 			});
@@ -164,22 +164,20 @@ describe('FEPs', () => {
 					});
 					pid = id;
 					({ activity } = await helpers.mocks.create(note));
-					console.log('before inbox create', activitypub._sent);
 					await activitypub.inbox.create({ body: activity });
-					console.log('after inbox create', activitypub._sent);
 					const activities = Array.from(activitypub._sent);
 
 					const test1 = activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Create' &&
-							activity.object.object && activity.object.object.type === 'Note';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Create' &&
+							activity.payload.object.object && activity.payload.object.object.type === 'Note';
 					});
 					assert(test1);
 					const test2 = activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Note';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Note';
 					});
 					assert(test2);
 				});
@@ -197,9 +195,9 @@ describe('FEPs', () => {
 
 					assert(activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Create' &&
-							activity.object.object && activity.object.object.type === 'Note';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Create' &&
+							activity.payload.object.object && activity.payload.object.object.type === 'Note';
 					}));
 				});
 
@@ -214,8 +212,8 @@ describe('FEPs', () => {
 					const activities = Array.from(activitypub._sent);
 					assert(activities.some((activity) => {
 						[, activity] = activity;
-						return activity.type === 'Announce' &&
-							activity.object && activity.object.type === 'Like';
+						return activity.payload.type === 'Announce' &&
+							activity.payload.object && activity.payload.object.type === 'Like';
 					}));
 				});
 			});
@@ -240,8 +238,8 @@ describe('FEPs', () => {
 					const key = Array.from(activitypub._sent.keys())[0];
 					const activity = activitypub._sent.get(key);
 
-					assert(activity && activity.object && typeof activity.object === 'object');
-					assert.strictEqual(activity.object.id, `${nconf.get('url')}/post/${reply1Pid}`);
+					assert(activity && activity.payload && activity.payload.object && typeof activity.payload.object === 'object');
+					assert.strictEqual(activity.payload.object.id, `${nconf.get('url')}/post/${reply1Pid}`);
 				});
 
 				it('should be called when a post is moved to another topic', async () => {
@@ -268,11 +266,11 @@ describe('FEPs', () => {
 					const activities = Array.from(activitypub._sent.keys()).map(key => activitypub._sent.get(key));
 
 					const activity = activities.pop();
-					assert.strictEqual(activity.type, 'Announce');
-					assert(activity.object && activity.object.type);
-					assert.strictEqual(activity.object.type, 'Create');
-					assert(activity.object.object && activity.object.object.type);
-					assert.strictEqual(activity.object.object.type, 'Note');
+					assert.strictEqual(activity.payload.type, 'Announce');
+					assert(activity.payload.object && activity.payload.object.type);
+					assert.strictEqual(activity.payload.object.type, 'Create');
+					assert(activity.payload.object.object && activity.payload.object.object.type);
+					assert.strictEqual(activity.payload.object.object.type, 'Note');
 				});
 			});
 		});

@@ -168,6 +168,8 @@ paths:
     $ref: 'write/topics/tid/bump.yaml'
   /topics/{tid}/move:
     $ref: 'write/topics/tid/move.yaml'
+  /topics/{tid}/crossposts:
+    $ref: 'write/topics/tid/crossposts.yaml'
   /tags/{tag}/follow:
     $ref: 'write/tags/tag/follow.yaml'
   /posts/{pid}:
@@ -206,6 +208,10 @@ paths:
     $ref: 'write/posts/queue/id.yaml'
   /posts/queue/{id}/notify:
     $ref: 'write/posts/queue/notify.yaml'
+  /posts/{pid}/owner:
+    $ref: 'write/posts/pid/owner.yaml'
+  /posts/owner:
+    $ref: 'write/posts/owner.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
   /chats/unread:

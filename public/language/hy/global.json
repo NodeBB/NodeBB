@@ -68,6 +68,7 @@
     "users": "Օգտվողներ",
     "topics": "Թեմաներ",
     "posts": "Գրառումներ",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> գրառումներ",
     "x-topics": "<span class=\"formatted-number\">%1</span> թեմաներ",
     "x-reputation": "<span class=\"formatted-number\">%1</span> հեղինակություն",

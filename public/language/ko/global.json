@@ -68,6 +68,7 @@
     "users": "사용자",
     "topics": "토픽",
     "posts": "게시물",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> 개의 게시물",
     "x-topics": "<span class=\"formatted-number\">%1</span> 개의 토픽",
     "x-reputation": "<span class=\"formatted-number\">%1</span> 평판",

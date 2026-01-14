@@ -5,5 +5,6 @@
 	"profile-page-for": "Página de perfil para usuario %1",
 	"user-watched-tags": "Etiquetas de usuario seguidas",
 	"delete-upload-button": "Eliminar botón de subida ",
-	"group-page-link-for": "Link de página de grupo para %1"
+	"group-page-link-for": "Link de página de grupo para %1",
+	"show-crossposts": "Show Cross-posts"
 }

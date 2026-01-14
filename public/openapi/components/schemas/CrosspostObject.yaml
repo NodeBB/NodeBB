@@ -1,0 +1,52 @@
+CrosspostObject:
+  anyOf:
+    - type: object
+      properties:
+        id:
+          type: string
+          description: The cross-post ID
+        cid:
+          type: object
+          description: The category id that the topic was cross-posted to
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+        tid:
+          type: object
+          description: The topic id that was cross-posted
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+        timestamp:
+          type: number
+        uid:
+          type: object
+          description: The user id that initiated the cross-post
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+    - type: object
+      properties:
+        category:
+          type: object
+          properties:
+            cid:
+              type: number
+            name:
+              type: string
+            icon:
+              type: string
+            bgColor:
+              type: string
+            color:
+              type: string
+            slug:
+              type: string
+CrosspostsArray:
+  type: array
+  description: A list of crosspost objects
+  items:
+    $ref: '#/CrosspostObject'

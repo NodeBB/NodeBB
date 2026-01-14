@@ -68,6 +68,7 @@
     "users": "صارفین",
     "topics": "موضوعات",
     "posts": "پوسٹس",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> پوسٹس",
     "x-topics": "<span class=\"formatted-number\">%1</span> موضوعات",
     "x-reputation": "<span class=\"formatted-number\">%1</span> ساکھ",

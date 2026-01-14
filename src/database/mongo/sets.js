@@ -68,6 +68,31 @@ module.exports = function (module) {
 		}
 	};
 
+	module.setAddBulk = async function (data) {
+		if (!data.length) {
+			return;
+		}
+
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+
+		data.forEach(([key, member]) => {
+			bulk.find({ _key: key }).upsert().updateOne({
+				$addToSet: {
+					members: helpers.valueToString(member),
+				},
+			});
+		});
+		try {
+			await bulk.execute();
+		} catch (err) {
+			if (err && err.message.includes('E11000 duplicate key error')) {
+				console.log(new Error('e11000').stack, data);
+				return await module.setAddBulk(data);
+			}
+			throw err;
+		}
+	};
+
 	module.setRemove = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
@@ -75,10 +100,16 @@ module.exports = function (module) {
 
 		value = value.map(v => helpers.valueToString(v));
 
-		await module.client.collection('objects').updateMany({
+		const coll = module.client.collection('objects');
+		await coll.updateMany({
 			_key: Array.isArray(key) ? { $in: key } : key,
 		}, {
 			$pullAll: { members: value },
+		});
+
+		await coll.deleteMany({
+			_key: Array.isArray(key) ? { $in: key } : key,
+			members: { $size: 0 },
 		});
 	};
 
@@ -88,10 +119,16 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		await module.client.collection('objects').updateMany({
+		const coll = module.client.collection('objects');
+		await coll.updateMany({
 			_key: { $in: keys },
 		}, {
 			$pull: { members: value },
+		});
+
+		await coll.deleteMany({
+			_key: { $in: keys },
+			members: { $size: 0 },
 		});
 	};
 

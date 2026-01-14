@@ -94,6 +94,7 @@ privsTopics.filterTids = async function (privilege, tids, uid) {
 	const canViewScheduled = _.zipObject(cids, results.view_scheduled);
 
 	tids = topicsData.filter(t => (
+		t.tid &&
 		cidsSet.has(t.cid) &&
 		(results.isAdmin || privsTopics.canViewDeletedScheduled(t, {}, canViewDeleted[t.cid], canViewScheduled[t.cid]))
 	)).map(t => t.tid);

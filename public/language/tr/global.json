@@ -68,6 +68,7 @@
     "users": "Kullanıcı",
     "topics": "Konu",
     "posts": "İleti",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> ileti",
     "x-topics": "<span class=\"formatted-number\">%1</span> başlık",
     "x-reputation": "<span class=\"formatted-number\">%1</span> saygınlık",

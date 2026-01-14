@@ -9,7 +9,6 @@ const meta = require('../meta');
 const batch = require('../batch');
 const categories = require('../categories');
 const user = require('../user');
-const topics = require('../topics');
 const utils = require('../utils');
 const TTLCache = require('../cache/ttl');
 
@@ -147,7 +146,7 @@ Actors.assert = async (ids, options = {}) => {
 					categories.add(actor.id);
 				}
 			}
-			
+
 			if (
 				!typeOk ||
 				!activitypub._constants.requiredActorProps.every(prop => actor.hasOwnProperty(prop))
@@ -351,7 +350,7 @@ Actors.assertGroup = async (ids, options = {}) => {
 	}));
 	groups = groups.filter(Boolean); // remove unresolvable actors
 
-	// Build userData object for storage
+	// Build categoryData object for storage
 	const categoryObjs = (await activitypub.mocks.category(groups)).filter(Boolean);
 	const now = Date.now();
 
@@ -400,51 +399,23 @@ Actors.assertGroup = async (ids, options = {}) => {
 		db.deleteObjectFields('handle:cid', queries.handleRemove),
 	]);
 
+	// Privilege mask
+	const [masksAdd, masksRemove] = categoryObjs.reduce(([add, remove], category) => {
+		(category?._activitypub?.postingRestrictedToMods ? add : remove).push(`cid:${category.cid}:privilegeMask`);
+		return [add, remove];
+	}, [[], []]);
+
 	await Promise.all([
 		db.setObjectBulk(bulkSet),
 		db.sortedSetAdd('usersRemote:lastCrawled', groups.map(() => now), groups.map(p => p.id)),
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:cid', queries.handleAdd),
-		_migratePersonToGroup(categoryObjs),
+		db.setsAdd(masksAdd, 'topics:create'),
+		db.setsRemove(masksRemove, 'topics:create'),
 	]);
 
 	return categoryObjs;
 };
-
-async function _migratePersonToGroup(categoryObjs) {
-	// 4.0.0-4.1.x asserted as:Group as users. This moves relevant stuff over and deletes the now-duplicate user.
-	let ids = categoryObjs.map(category => category.cid);
-	const slugs = categoryObjs.map(category => category.slug);
-	const isUser = await db.isObjectFields('handle:uid', slugs);
-	ids = ids.filter((id, idx) => isUser[idx]);
-	if (!ids.length) {
-		return;
-	}
-
-	await Promise.all(ids.map(async (id) => {
-		const shares = await db.getSortedSetMembers(`uid:${id}:shares`);
-		let cids = await topics.getTopicsFields(shares, ['cid']);
-		cids = cids.map(o => o.cid);
-		await Promise.all(shares.map(async (share, idx) => {
-			const cid = cids[idx];
-			if (cid === -1) {
-				await topics.tools.move(share, {
-					cid: id,
-					uid: 'system',
-				});
-			}
-		}));
-
-		const followers = await db.getSortedSetMembersWithScores(`followersRemote:${id}`);
-		await db.sortedSetAdd(
-			`cid:${id}:uid:watch:state`,
-			followers.map(() => categories.watchStates.tracking),
-			followers.map(({ value }) => value),
-		);
-		await user.deleteAccount(id);
-	}));
-	await categories.onTopicsMoved(ids);
-}
 
 Actors.getLocalFollowers = async (id) => {
 	// Returns local uids and cids that follow a remote actor (by id)
@@ -473,9 +444,18 @@ Actors.getLocalFollowers = async (id) => {
 			}
 		});
 	} else if (isCategory) {
+		// Internally, users are different, they follow via watch state instead
+		// Possibly refactor to store in followersRemote:${id} too??
 		const members = await db.getSortedSetRangeByScore(`cid:${id}:uid:watch:state`, 0, -1, categories.watchStates.tracking, categories.watchStates.watching);
 		members.forEach((uid) => {
 			response.uids.add(uid);
+		});
+
+		const cids = await db.getSortedSetMembers(`followersRemote:${id}`);
+		cids.forEach((id) => {
+			if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
+				response.cids.add(parseInt(id.slice(4), 10));
+			}
 		});
 	}
 

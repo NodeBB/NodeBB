@@ -659,10 +659,15 @@ describe('API', async () => {
 					case 'boolean':
 						assert.strictEqual(typeof response[prop], 'boolean', `"${prop}" was expected to be a boolean, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						break;
-					case 'object':
-						assert.strictEqual(typeof response[prop], 'object', `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
+					case 'object': {
+						let valid = ['object'];
+						if (schema[prop].additionalProperties && schema[prop].additionalProperties.oneOf) {
+							valid = schema[prop].additionalProperties.oneOf.map(({ type }) => type);
+						}
+						assert(valid.includes(typeof response[prop]), `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						compare(schema[prop], response[prop], method, path, context ? [context, prop].join('.') : prop);
 						break;
+					}
 					case 'array':
 						assert.strictEqual(Array.isArray(response[prop]), true, `"${prop}" was expected to be an array, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 

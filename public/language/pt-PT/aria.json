@@ -5,5 +5,6 @@
 	"profile-page-for": "Profile page for user %1",
 	"user-watched-tags": "Etiquetas subscritas pelo utilizador",
 	"delete-upload-button": "Delete upload button",
-	"group-page-link-for": "Group page link for %1"
+	"group-page-link-for": "Group page link for %1",
+	"show-crossposts": "Show Cross-posts"
 }

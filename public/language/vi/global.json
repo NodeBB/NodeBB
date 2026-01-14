@@ -68,6 +68,7 @@
     "users": "Người dùng",
     "topics": "Chủ Đề",
     "posts": "Bài Viết",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> bài đăng",
     "x-topics": "<span class=\"formatted-number\">%1</span> chủ để",
     "x-reputation": "<span class=\"formatted-number\">%1</span> uy tín",

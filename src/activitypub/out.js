@@ -277,17 +277,50 @@ Out.like.note = enabledCheck(async (uid, pid) => {
 	]);
 });
 
-Out.announce = {};
+Out.dislike = {};
 
-Out.announce.topic = enabledCheck(async (tid) => {
-	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+Out.dislike.note = enabledCheck(async (uid, pid) => {
+	const payload = {
+		id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
+		type: 'Dislike',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
 
-	// Only local categories can announce
-	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
+		await activitypub.feps.announce(pid, payload);
 		return;
 	}
 
-	const uid = await posts.getPostField(pid, 'uid'); // author
+	const recipient = await posts.getPostField(pid, 'uid');
+	if (!activitypub.helpers.isUri(recipient)) {
+		return;
+	}
+
+	await Promise.all([
+		activitypub.send('uid', uid, [recipient], payload),
+		activitypub.feps.announce(pid, payload),
+	]);
+});
+
+Out.announce = {};
+
+Out.announce.topic = enabledCheck(async (tid, uid) => {
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+
+	if (uid) {
+		const exists = await user.exists(uid);
+		if (!exists || !utils.isNumber(cid)) {
+			return;
+		}
+	} else {
+		// Only local categories can announce
+		if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+			return;
+		}
+	}
+
+	const authorUid = await posts.getPostField(pid, 'uid'); // author
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
 		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
@@ -297,16 +330,26 @@ Out.announce.topic = enabledCheck(async (tid) => {
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		id: pid,
 		to: [activitypub._constants.publicAddress],
-		cc: [`${nconf.get('url')}/category/${cid}/followers`, uid],
-	}, { cid, uid: utils.isNumber(uid) ? uid : undefined });
+	}, uid ? { uid } : { cid });
+	if (!utils.isNumber(authorUid)) {
+		cc.push(authorUid);
+		targets.add(authorUid);
+	}
 
-	await activitypub.send('cid', cid, Array.from(targets), {
+	const payload = uid ? {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/uid/${uid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+	} : {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/category/${cid}`,
+	};
+	await activitypub.send(uid ? 'uid' : 'cid', uid || cid, Array.from(targets), {
+		...payload,
 		to,
 		cc,
-		object: pid,
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
 	});
 });
 

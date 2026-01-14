@@ -3,6 +3,7 @@
 const db = require('../../database');
 const api = require('../../api');
 const topics = require('../../topics');
+const activitypub = require('../../activitypub');
 
 const helpers = require('../helpers');
 const middleware = require('../../middleware');
@@ -212,4 +213,25 @@ Topics.move = async (req, res) => {
 	await api.topics.move(req, { cid, ...req.params });
 
 	helpers.formatApiResponse(200, res);
+};
+
+Topics.getCrossposts = async (req, res) => {
+	const crossposts = await topics.crossposts.get(req.params.tid);
+	helpers.formatApiResponse(200, res, { crossposts });
+};
+
+Topics.crosspost = async (req, res) => {
+	const { cid } = req.body;
+	const crossposts = await topics.crossposts.add(req.params.tid, cid, req.uid);
+	await activitypub.out.announce.topic(req.params.tid, req.uid);
+
+	helpers.formatApiResponse(200, res, { crossposts });
+};
+
+Topics.uncrosspost = async (req, res) => {
+	const { cid } = req.body;
+	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
+	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);
+
+	helpers.formatApiResponse(200, res, { crossposts });
 };
