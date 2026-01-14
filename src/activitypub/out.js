@@ -310,7 +310,7 @@ Out.announce.topic = enabledCheck(async (tid, uid) => {
 
 	if (uid) {
 		const exists = await user.exists(uid);
-		if (!exists || !utils.isNumber(cid)) {
+		if (!exists) {
 			return;
 		}
 	} else {
