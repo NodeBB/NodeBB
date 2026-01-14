@@ -147,7 +147,10 @@ module.exports = function (Categories) {
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
 		});
-		topics.forEach((t) => { t.parentCids = undefined; });
+		topics.forEach((t) => {
+			t.parentCids = undefined;
+			t.crossposts = undefined;
+		});
 	}
 
 	function bubbleUpChildrenPosts(categoryData) {
