@@ -68,6 +68,7 @@
     "users": "Користувачі",
     "topics": "Теми",
     "posts": "Пости",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> posts",
     "x-topics": "<span class=\"formatted-number\">%1</span> topics",
     "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",

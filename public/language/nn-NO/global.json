@@ -68,6 +68,7 @@
     "users": "Brukarar",
     "topics": "Emne",
     "posts": "Innlegg",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> innlegg",
     "x-topics": "<span class=\"formatted-number\">%1</span> emne",
     "x-reputation": "<span class=\"formatted-number\">%1</span> omdømme",

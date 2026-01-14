@@ -68,6 +68,7 @@
     "users": "Felhasználók",
     "topics": "Témakörök",
     "posts": "Hozzászólások",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> bejegyzés",
     "x-topics": "<span class=\"formatted-number\">%1</span> témakör",
     "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",

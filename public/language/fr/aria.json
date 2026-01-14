@@ -2,8 +2,9 @@
 	"post-sort-option": "Option de tri des messages, %1",
 	"topic-sort-option": "Option de tri des sujets, %1",
 	"user-avatar-for": "Avatar de l'utilisateur pour %1",
-	"profile-page-for": "Profile page for user %1",
+	"profile-page-for": "Page de profil de l'utilisateur %1",
 	"user-watched-tags": "L'utilisateur a regardé les tags",
 	"delete-upload-button": "Supprimer le bouton de téléchargement",
-	"group-page-link-for": "Lien vers la page de groupe pour %1"
+	"group-page-link-for": "Lien vers la page de groupe pour %1",
+	"show-crossposts": "Show Cross-posts"
 }

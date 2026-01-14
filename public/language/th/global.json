@@ -68,6 +68,7 @@
     "users": "ผู้ใช้",
     "topics": "กระทู้",
     "posts": "โพสต์",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> โพสต์",
     "x-topics": "<span class=\"formatted-number\">%1</span> กระทู้",
     "x-reputation": "ชื่อเสียง <span class=\"formatted-number\">%1</span>",

@@ -68,6 +68,7 @@
     "users": "Utenti",
     "topics": "Discussioni",
     "posts": "Post",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> post",
     "x-topics": "<span class=\"formatted-number\">%1</span> discussioni",
     "x-reputation": "<span class=\"formatted-number\">%1</span> reputazione",

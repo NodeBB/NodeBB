@@ -68,6 +68,7 @@
     "users": "İstifadəçilər",
     "topics": "Mövzu",
     "posts": "Yazı",
+    "crossposts": "Cross-posts",
     "x-posts": "<span class=\"formatted-number\">%1</span> yazı",
     "x-topics": "<span class=\"formatted-number\">%1</span> mövzu",
     "x-reputation": "<span class=\"formatted-number\">%1</span> reputasiya",
