@@ -96,10 +96,14 @@ module.exports = function (Categories) {
 	};
 
 	async function getTopics(tids, uid) {
-		const topicData = await topics.getTopicsFields(
-			tids,
-			['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
-		);
+		const [topicData, crossposts] = await Promise.all([
+			topics.getTopicsFields(
+				tids,
+				['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
+			),
+			Promise.all(tids.map(async tid => topics.crossposts.get(tid))),
+		]);
+
 		topicData.forEach((topic) => {
 			if (topic) {
 				topic.teaserPid = topic.teaserPid || topic.mainPid;
@@ -124,6 +128,7 @@ module.exports = function (Categories) {
 					slug: topicData[index].slug,
 					title: topicData[index].title,
 				};
+				teaser.crossposts = crossposts[index];
 			}
 		});
 		return teasers.filter(Boolean);
@@ -132,10 +137,12 @@ module.exports = function (Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach((category) => {
 			if (category) {
-				category.posts = topics.filter(
-					t => t.cid &&
-					(t.cid === category.cid || (t.parentCids && t.parentCids.includes(category.cid)))
-				)
+				category.posts = topics.filter(t =>
+					t.cid &&
+					(t.cid === category.cid ||
+						(t.parentCids && t.parentCids.includes(category.cid)) ||
+						(t.crossposts.some(({ cid }) => parseInt(cid, 10) === category.cid))
+					))
 					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
