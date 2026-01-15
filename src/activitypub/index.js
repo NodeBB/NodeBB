@@ -355,7 +355,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-async function sendMessage(uri, id, type, payload) {
+ActivityPub._sendMessage = async function (uri, id, type, payload) {
 	try {
 		const keyData = await ActivityPub.getPrivateKey(type, id);
 		const headers = await ActivityPub.sign(keyData, uri, payload);
@@ -381,7 +381,7 @@ async function sendMessage(uri, id, type, payload) {
 		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
 		return false;
 	}
-}
+};
 
 ActivityPub.send = async (type, id, targets, payload) => {
 	if (!meta.config.activitypubEnabled) {
@@ -415,7 +415,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		const retryQueuedSet = [];
 
 		await Promise.all(inboxBatch.map(async (uri) => {
-			const ok = await sendMessage(uri, id, type, payload);
+			const ok = await ActivityPub._sendMessage(uri, id, type, payload);
 			if (!ok) {
 				const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 				const nextTryOn = Date.now() + oneMinute;

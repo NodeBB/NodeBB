@@ -65,7 +65,7 @@ async function retryFailedMessages() {
 			queueIdsToRemove.push(queueId);
 			return;
 		}
-		const ok = await sendMessage(uri, id, type, payloadObj);
+		const ok = await activitypub._sendMessage(uri, id, type, payloadObj);
 		if (ok) {
 			queueIdsToRemove.push(queueId);
 		} else {
