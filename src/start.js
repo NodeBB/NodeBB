@@ -39,7 +39,7 @@ start.start = async function () {
 			require('./user').startJobs();
 			require('./plugins').startJobs();
 			require('./topics').scheduled.startJobs();
-			require('./activitypub').startJobs();
+			require('./activitypub').jobs.start();
 			await db.delete('locks');
 		}
 
