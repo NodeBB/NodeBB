@@ -159,9 +159,9 @@ describe('Crossposting (& related logic)', () => {
 
 		it('should not let another user uncrosspost', async () => {
 			const uid2 = await user.create({ username: utils.generateUUID().slice(0, 8) });
-			assert.rejects(
+			await assert.rejects(
 				topics.crossposts.remove(tid, cid2, uid2),
-				'[[error:invalid-data]]',
+				{ message: '[[error:invalid-data]]' },
 			);
 		});
 
@@ -184,9 +184,9 @@ describe('Crossposting (& related logic)', () => {
 		});
 
 		it('should throw on uncrossposting if already uncrossposted', async () => {
-			assert.rejects(
+			await assert.rejects(
 				topics.crossposts.remove(tid, cid2, uid),
-				'[[error:invalid-data]]',
+				{ message: '[[error:invalid-data]]' },
 			);
 		});
 	});
@@ -286,9 +286,9 @@ describe('Crossposting (& related logic)', () => {
 
 		it('should fail to uncrosspost if not mod of passed-in category', async () => {
 			await privileges.categories.give(['moderate'], cid1, [privUid]);
-			assert.rejects(
+			await assert.rejects(
 				topics.crossposts.remove(tid, cid2, privUid),
-				'[[error:invalid-data]]',
+				{ message: '[[error:invalid-data]]' },
 			);
 		});
 

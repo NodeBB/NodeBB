@@ -40,6 +40,7 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 };
 
 helpers.terms = {
+	alltime: 'alltime',
 	daily: 'day',
 	weekly: 'week',
 	monthly: 'month',
@@ -101,7 +102,7 @@ helpers.buildFilters = function (url, filter, query) {
 helpers.buildTerms = function (url, term, query) {
 	return [{
 		name: '[[recent:alltime]]',
-		url: url + helpers.buildQueryString(query, 'term', ''),
+		url: url + helpers.buildQueryString(query, 'term', 'alltime'),
 		selected: term === 'alltime',
 		term: 'alltime',
 	}, {

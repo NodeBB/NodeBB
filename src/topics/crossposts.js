@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const db = require('../database');
 const topics = require('.');
 const user = require('../user');
@@ -10,30 +11,39 @@ const utils = require('../utils');
 
 const Crossposts = module.exports;
 
-Crossposts.get = async function (tid) {
-	const crosspostIds = await db.getSortedSetMembers(`tid:${tid}:crossposts`);
-	let crossposts = await db.getObjects(crosspostIds.map(id => `crosspost:${id}`));
-	const cids = crossposts.reduce((cids, crossposts) => {
-		cids.add(crossposts.cid);
-		return cids;
-	}, new Set());
-	let categoriesData = await categories.getCategoriesFields(
-		Array.from(cids), ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
+Crossposts.get = async function (tids) {
+	const isArray = Array.isArray(tids);
+	if (!isArray) {
+		tids = [tids];
+	}
+
+	const crosspostIds = await db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:crossposts`));
+	const allCrosspostIds = crosspostIds.flat();
+	const allCrossposts = await db.getObjects(allCrosspostIds.map(id => `crosspost:${id}`));
+
+	const categoriesData = await categories.getCategoriesFields(
+		_.uniq(allCrossposts.map(c => c.cid)), ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
 	);
-	categoriesData = categoriesData.reduce((map, category) => {
+
+	const categoriesMap = categoriesData.reduce((map, category) => {
 		map.set(parseInt(category.cid, 10), category);
 		return map;
 	}, new Map());
-	crossposts = crossposts.map((crosspost, idx) => {
-		crosspost.id = crosspostIds[idx];
-		crosspost.category = categoriesData.get(parseInt(crosspost.cid, 10));
-		crosspost.uid = utils.isNumber(crosspost.uid) ? parseInt(crosspost.uid) : crosspost.uid;
-		crosspost.cid = utils.isNumber(crosspost.cid) ? parseInt(crosspost.cid) : crosspost.cid;
 
-		return crosspost;
-	});
+	const crosspostMap = allCrossposts.reduce((map, crosspost, index) => {
+		const id = allCrosspostIds[index];
+		if (id && crosspost) {
+			map.set(id, crosspost);
+			crosspost.id = id;
+			crosspost.category = categoriesMap.get(parseInt(crosspost.cid, 10));
+			crosspost.uid = utils.isNumber(crosspost.uid) ? parseInt(crosspost.uid, 10) : crosspost.uid;
+			crosspost.cid = utils.isNumber(crosspost.cid) ? parseInt(crosspost.cid, 10) : crosspost.cid;
+		}
+		return map;
+	}, new Map());
 
-	return crossposts;
+	const crossposts = crosspostIds.map(ids => ids.map(id => crosspostMap.get(id)));
+	return isArray ? crossposts : crossposts[0];
 };
 
 Crossposts.add = async function (tid, cid, uid) {
