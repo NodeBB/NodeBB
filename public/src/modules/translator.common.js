@@ -464,7 +464,7 @@ module.exports = function (utils, load, warn) {
 		 */
 		Translator.escape = function escape(text) {
 			return typeof text === 'string' ?
-				text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') :
+				text.replace(/\[\[([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;') :
 				text;
 		};
 
