@@ -241,6 +241,10 @@ module.exports = function (Topics) {
 		if (cid === topicData.cid) {
 			throw new Error('[[error:cant-move-topic-to-same-category]]');
 		}
+		if (!utils.isNumber(cid) || !utils.isNumber(topicData.cid)) {
+			throw new Error('[[error:cant-move-topic-to-from-remote-categories]]');
+		}
+
 		const tags = await Topics.getTopicTags(tid);
 		await db.sortedSetsRemove([
 			`cid:${topicData.cid}:tids`,
@@ -285,11 +289,30 @@ module.exports = function (Topics) {
 			Topics.updateCategoryTagsCount([oldCid, cid], tags),
 			Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }),
 		]);
+
+		// Update entry in recent topics zset — must come after hash update
+		if (oldCid === -1 || cid === -1) {
+			Topics.updateRecent(tid, topicData.lastposttime); // no await req'd
+		}
+
 		const hookData = _.clone(data);
 		hookData.fromCid = oldCid;
 		hookData.toCid = cid;
 		hookData.tid = tid;
 
 		plugins.hooks.fire('action:topic.move', hookData);
+	};
+
+	topicTools.share = async function (tid, uid, timestamp = Date.now()) {
+		const set = `uid:${uid}:shares`;
+		const shared = await db.isSortedSetMember(set, tid);
+		if (shared) {
+			return;
+		}
+
+		await Promise.all([
+			Topics.events.log(tid, { type: 'share', uid: uid }),
+			db.sortedSetAdd(set, timestamp, tid),
+		]);
 	};
 };

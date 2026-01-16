@@ -1,0 +1,23 @@
+{
+	"theme-name": "Harmony Theme",
+	"skins": "Örtüklər",
+	"collapse": "Yığmaq",
+	"expand": "Açmaq",
+	"sidebar-toggle": "Yan panel aç/bağla",
+	"login-register-to-search": "Axtarış etmək üçün daxil olun və ya qeydiyyatdan keçin.",
+	"settings.title": "Mövzu ayarları",
+	"settings.enableQuickReply": "Sürətli cavablandırmanı aktivləşdir",
+	"settings.enableBreadcrumbs": "Çörək qırıntılarını Kateqoriya və Mövzu səhifələrində göstərin",
+	"settings.enableBreadcrumbs.why": "Naviqasiya asanlığı üçün əksər səhifələrdə çörək qırıntıları görünür. Kateqoriya və mövzu səhifələrinin əsas dizaynı əsas səhifələrə geri keçid üçün alternativ vasitələrə malikdir, lakin qarışıqlığı azaltmaq üçün çörək qırıntıları söndürülə bilər.",
+	"settings.centerHeaderElements": "Başlıq elementlərinin mərkəzi",
+	"settings.mobileTopicTeasers": "Mövzu tizerlərini mobil telefonda göstərin",
+	"settings.stickyToolbar": "Yapışqan alətlər paneli",
+	"settings.stickyToolbar.help": "Mövzu və kateqoriya səhifələrindəki alətlər paneli səhifənin yuxarısına yapışacaq",
+	"settings.topicSidebarTools": "Mövzunun yan panel alətləri",
+	"settings.topicSidebarTools.help": "Bu seçim mövzu alətlərini masaüstü komputerdə yan panelə köçürəcək",
+	"settings.autohideBottombar": "Mobil naviqasiya panelini avtomatik gizlət",
+	"settings.autohideBottombar.help": "Səhifə aşağı sürüşdürüldükdə mobil panel gizlənəcək",
+	"settings.topMobilebar": "Mobil naviqasiya panelini yuxarıya köçür",
+	"settings.openSidebars": "Yan panelləri aç",
+	"settings.chatModals": "Söhbət modallarını aktivləşdir"
+}

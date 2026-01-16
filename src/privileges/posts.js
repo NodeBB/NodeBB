@@ -3,10 +3,12 @@
 
 const _ = require('lodash');
 
+const db = require('../database');
 const meta = require('../meta');
 const posts = require('../posts');
 const topics = require('../topics');
 const user = require('../user');
+const activitypub = require('../activitypub');
 const helpers = require('./helpers');
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -43,7 +45,7 @@ privsPosts.get = async function (pids, uid) {
 
 	const privileges = cids.map((cid, i) => {
 		const isAdminOrMod = results.isAdmin || isModerator[cid];
-		const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin;
+		const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator[i])) || results.isAdmin;
 		const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
 		const viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
 
@@ -84,7 +86,7 @@ privsPosts.filter = async function (privilege, pids, uid) {
 			post.topic = tidToTopic[post.tid];
 		}
 		return tidToTopic[post.tid] && tidToTopic[post.tid].cid;
-	}).filter(cid => parseInt(cid, 10));
+	}).filter(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 
 	cids = _.uniq(cids);
 
@@ -115,10 +117,12 @@ privsPosts.filter = async function (privilege, pids, uid) {
 };
 
 privsPosts.canEdit = async function (pid, uid) {
+	const isRemote = activitypub.helpers.isUri(pid);
 	const results = await utils.promiseParallel({
 		isAdmin: user.isAdministrator(uid),
 		isMod: posts.isModerator([pid], uid),
-		owner: posts.isOwner(pid, uid),
+		isOwner: posts.isOwner(pid, uid),
+		isEditor: db.isSetMember(`pid:${pid}:editors`, uid),
 		edit: privsPosts.can('posts:edit', pid, uid),
 		postData: posts.getPostFields(pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
 		userData: user.getUserFields(uid, ['reputation']),
@@ -130,14 +134,14 @@ privsPosts.canEdit = async function (pid, uid) {
 	}
 
 	if (
-		!results.isMod &&
+		!isRemote && !results.isMod &&
 		meta.config.postEditDuration &&
 		(Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)
 	) {
 		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
 	}
 	if (
-		!results.isMod &&
+		!isRemote && !results.isMod &&
 		meta.config.newbiePostEditDuration > 0 &&
 		meta.config.newbieReputationThreshold > results.userData.reputation &&
 		Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
@@ -154,11 +158,14 @@ privsPosts.canEdit = async function (pid, uid) {
 		return { flag: false, message: '[[error:post-deleted]]' };
 	}
 
-	results.pid = parseInt(pid, 10);
+	results.pid = utils.isNumber(pid) ? parseInt(pid, 10) : pid;
 	results.uid = uid;
 
 	const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
-	return { flag: result.edit && (result.owner || result.isMod), message: '[[error:no-privileges]]' };
+	return {
+		flag: result.edit && (result.isOwner || result.isEditor || result.isMod),
+		message: '[[error:no-privileges]]',
+	};
 };
 
 privsPosts.canDelete = async function (pid, uid) {
@@ -222,6 +229,12 @@ privsPosts.canPurge = async function (pid, uid) {
 		isAdmin: user.isAdministrator(uid),
 		isModerator: user.isModerator(uid, cid),
 	});
+
+	// Allow remote posts to purge themselves (as:Delete received)
+	if (activitypub.helpers.isUri(pid) && results.owner) {
+		results.purge = true;
+	}
+
 	return (results.purge && (results.owner || results.isModerator)) || results.isAdmin;
 };
 

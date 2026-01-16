@@ -68,8 +68,122 @@ get:
                         - outdated
                   installedCount:
                     type: number
+                  active:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        latest:
+                          type: string
+                        description:
+                          type: string
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                        isTheme:
+                          type: boolean
+                        error:
+                          type: boolean
+                        version:
+                          type: string
+                        license:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            text:
+                              type: string
+                          nullable: true
+                        downloads:
+                          type: number
+                        outdated:
+                          type: boolean
+                        settingsRoute:
+                          type: string
+                      required:
+                        - latest
+                        - description
+                        - name
+                        - id
+                        - installed
+                        - active
+                        - isTheme
+                        - error
+                        - version
+                        - license
+                        - outdated
                   activeCount:
                     type: number
+                  inactive:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        latest:
+                          type: string
+                        description:
+                          type: string
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                        isTheme:
+                          type: boolean
+                        error:
+                          type: boolean
+                        version:
+                          type: string
+                        license:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            text:
+                              type: string
+                          nullable: true
+                        downloads:
+                          type: number
+                        outdated:
+                          type: boolean
+                        settingsRoute:
+                          type: string
+                      required:
+                        - latest
+                        - description
+                        - name
+                        - id
+                        - installed
+                        - active
+                        - isTheme
+                        - error
+                        - version
+                        - license
+                        - outdated
                   inactiveCount:
                     type: number
                   canChangeState:
@@ -111,6 +225,60 @@ get:
                         - id
                         - installed
                         - active
+                  upgrade:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        updated:
+                          type: string
+                        description:
+                          type: string
+                        latest:
+                          type: string
+                        url:
+                          type: string
+                        numInstalls:
+                          type: number
+                        isCompatible:
+                          type: boolean
+                        id:
+                          type: string
+                        installed:
+                          type: boolean
+                        active:
+                          type: boolean
+                        isTheme:
+                          type: boolean
+                        error:
+                          type: boolean
+                        version:
+                          type: string
+                        license:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            text:
+                              type: string
+                        outdated:
+                          type: boolean
+                      required:
+                        - name
+                        - updated
+                        - latest
+                        - url
+                        - numInstalls
+                        - isCompatible
+                        - id
+                        - installed
+                        - active
+                        - isTheme
+                        - version
+                        - license
+                        - outdated
                   incompatible:
                     type: array
                     items:
@@ -205,4 +373,6 @@ get:
                     type: number
                   version:
                     type: string
+                  isStarterPlan:
+                    type: boolean
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

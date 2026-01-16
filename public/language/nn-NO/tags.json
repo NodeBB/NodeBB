@@ -1,0 +1,17 @@
+{
+    "all-tags": "Alle emneord",
+    "no-tag-topics": "Det er ingen innlegg med dette emneordet",
+    "no-tags-found": "Ingen emneord funne",
+    "tags": "Emneord",
+    "enter-tags-here": "Skriv inn emneord, %1 - %2 teikn.",
+    "enter-tags-here-short": "Skriv inn emneord...",
+    "no-tags": "Det er ingen emneord enno.",
+    "select-tags": "Vel emneord",
+    "tag-whitelist": "Kviteliste for emneord",
+    "watching": "Følger",
+    "not-watching": "Følger ikkje",
+    "watching.description": "Varsle meg om nye innlegg",
+    "not-watching.description": "Ikkje varsle meg om nye innlegg",
+    "following-tag.message": "Du vil no motta varsel når nokon postar eit emne med dette emneordet.",
+    "not-following-tag.message": "Du vil ikkje motta varsel når nokon postar eit emne med dette emneordet."
+}

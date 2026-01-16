@@ -55,7 +55,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 
 				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
-					url += '?' + decodeURIComponent($.param(currentParams));
+					url += '?' + $.param(currentParams);
 				}
 				ajaxify.go(url);
 			}

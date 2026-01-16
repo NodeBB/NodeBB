@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Ofensivo",
 	"modal-reason-other": "Outro (especifique abaixo)",
 	"modal-reason-custom": "Motivo para reportar este conteúdo...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Enviar Denúncia",
 	"modal-submit-success": "O conteúdo foi sinalizado para moderação.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Ações em Massa",
 	"bulk-resolve": "Resolver Sinalização(ões)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 sinalizações atualizadas",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."

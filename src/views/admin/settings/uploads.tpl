@@ -46,6 +46,11 @@
 					</div>
 				</div>
 
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="resizeImageKeepOriginal" data-field="resizeImageKeepOriginal">
+					<label for="resizeImageKeepOriginal" class="form-check-label">[[admin/settings/uploads:resize-image-keep-original]]</label>
+				</div>
+
 				<div class="mb-3">
 					<label class="form-label" for="resizeImageQuality">[[admin/settings/uploads:resize-image-quality]]</label>
 					<input id="resizeImageQuality" type="text" class="form-control" value="60" data-field="resizeImageQuality" placeholder="60">
@@ -81,6 +86,11 @@
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" id="allowTopicsThumbnail" data-field="allowTopicsThumbnail">
 					<label for="allowTopicsThumbnail" class="form-check-label">[[admin/settings/uploads:allow-topic-thumbnails]]</label>
+				</div>
+
+					<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="showPostUploadsAsThumbnails" data-field="showPostUploadsAsThumbnails">
+					<label for="showPostUploadsAsThumbnails" class="form-check-label">[[admin/settings/uploads:show-post-uploads-as-thumbnails]]</label>
 				</div>
 
 				<div class="mb-3">

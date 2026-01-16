@@ -1,6 +1,6 @@
 {
     "register": "註冊",
-    "already-have-account": "Already have an account?",
+    "already-have-account": "已有帳號 ?",
     "cancel-registration": "取消註冊",
     "help.email": "預設情況下，您的電子信箱不會公開。",
     "help.username-restrictions": "全站唯一的登入名稱，長度 %1 到 %2 個字元。其他人可以使用 @<span id='yourUsername'>使用者名</span> 提及您。",
@@ -19,15 +19,15 @@
     "agree-to-terms-of-use": "我同意使用條款",
     "terms-of-use-error": "您必須同意使用條款",
     "registration-added-to-queue": "您的註冊正在等待批准。一旦通過，管理員會發送郵件通知您。",
-    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
-    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
-    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
-    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
-    "interstitial.errors-found": "Please review the entered information:",
+    "registration-queue-average-time": "我們的平均審核會籍約需 %1 小時 %2 分鐘。",
+    "registration-queue-auto-approve-time": "您在本論壇的會籍最晚會在 %1 小時內啟用。",
+    "interstitial.intro": "我們需要一些額外資訊才能更新您的帳號。",
+    "interstitial.intro-new": "我們需要一些額外資訊才能建立您的帳號。",
+    "interstitial.errors-found": "請檢視您輸入的資料:",
     "gdpr-agree-data": "我同意此網站對我個人資料的收集與處理。",
     "gdpr-agree-email": "我同意此網站向我發送摘要和通知郵件。",
     "gdpr-consent-denied": "您需要同意此網站收集與處理您的個人資料，以及向您發送電子郵件。",
-    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
-    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
-    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
+    "invite.error-admin-only": "直接用戶註冊已停用。詳情可詢問管理員。",
+    "invite.error-invite-only": "直接用戶註冊已停用。您必須經由會員的邀請才能存取本論壇。",
+    "invite.error-invalid-data": "註冊資料與記錄不符，詳情請連絡管理員。"
 }

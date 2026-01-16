@@ -9,8 +9,10 @@ const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const privileges = require('../privileges');
 
 const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
 
@@ -110,7 +112,9 @@ module.exports = function (Topics) {
 		const pids = postData.map(post => post && post.pid);
 
 		async function getPostUserData(field, method) {
-			const uids = _.uniq(postData.filter(p => p && parseInt(p[field], 10) >= 0).map(p => p[field]));
+			const uids = _.uniq(postData
+				.filter(p => p && (activitypub.helpers.isUri(p[field]) || parseInt(p[field], 10) >= 0))
+				.map(p => p[field]));
 			const userData = await method(uids);
 			return _.zipObject(uids, userData);
 		}
@@ -126,7 +130,7 @@ module.exports = function (Topics) {
 			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
 			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
 			getPostReplies(postData, uid),
-			Topics.addParentPosts(postData),
+			Topics.addParentPosts(postData, uid),
 		]);
 
 		postData.forEach((postObj, i) => {
@@ -175,30 +179,55 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.addParentPosts = async function (postData) {
-		let parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);
+	Topics.addParentPosts = async function (postData, callerUid) {
+		let parentPids = postData
+			.filter(p => p && p.hasOwnProperty('toPid') && (activitypub.helpers.isUri(p.toPid) || utils.isNumber(p.toPid)))
+			.map(postObj => postObj.toPid);
 
 		if (!parentPids.length) {
 			return;
 		}
 		parentPids = _.uniq(parentPids);
-		const parentPosts = await posts.getPostsFields(parentPids, ['uid']);
+		const postPrivileges = await privileges.posts.get(parentPids, callerUid);
+		const pidToPrivs = _.zipObject(parentPids, postPrivileges);
+
+		parentPids = parentPids.filter(p => pidToPrivs[p]['topics:read']);
+		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'sourceContent', 'deleted']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
-		const userData = await user.getUsersFields(parentUids, ['username']);
+		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
 
 		const usersMap = _.zipObject(parentUids, userData);
+
+		await Promise.all(parentPosts.map(async (parentPost) => {
+			const postPrivs = pidToPrivs[parentPost.pid];
+			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
+				parentPost.content = `<p>[[topic:post-is-deleted]]</p>`;
+				return;
+			}
+			const foundPost = postData.find(p => String(p.pid) === String(parentPost.pid));
+			if (foundPost) {
+				parentPost.content = foundPost.content;
+				return;
+			}
+			await posts.parsePost(parentPost);
+		}));
+
 		const parents = {};
 		parentPosts.forEach((post, i) => {
 			if (usersMap[post.uid]) {
 				parents[parentPids[i]] = {
-					username: usersMap[post.uid].username,
-					displayname: usersMap[post.uid].displayname,
+					uid: post.uid,
+					pid: post.pid,
+					content: post.content,
+					user: usersMap[post.uid],
+					timestamp: post.timestamp,
+					timestampISO: post.timestampISO,
 				};
 			}
 		});
 
 		postData.forEach((post) => {
-			if (parents[post.toPid]) {
+			if (parents[post.toPid] && parents[post.toPid].content) {
 				post.parent = parents[post.toPid];
 			}
 		});
@@ -233,7 +262,7 @@ module.exports = function (Topics) {
 			}
 			isDeleted = await posts.getPostField(pids[0], 'deleted');
 			if (!isDeleted) {
-				return parseInt(pids[0], 10);
+				return pids[0];
 			}
 			index += 1;
 		} while (isDeleted);
@@ -241,7 +270,7 @@ module.exports = function (Topics) {
 
 	Topics.addPostToTopic = async function (tid, postData) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		if (!parseInt(mainPid, 10)) {
+		if (!mainPid) {
 			await Topics.setTopicField(tid, 'mainPid', postData.pid);
 		} else {
 			const upvotes = parseInt(postData.upvotes, 10) || 0;
@@ -276,7 +305,7 @@ module.exports = function (Topics) {
 			Topics.getTopicField(tid, 'mainPid'),
 			db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
 		]);
-		if (parseInt(mainPid, 10)) {
+		if (mainPid) {
 			pids = [mainPid].concat(pids);
 		}
 		return pids;
@@ -290,9 +319,18 @@ module.exports = function (Topics) {
 		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts');
 	};
 
-	Topics.increaseViewCount = async function (tid) {
-		const cid = await Topics.getTopicField(tid, 'cid');
-		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
+	Topics.increaseViewCount = async function (req, tid) {
+		const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
+		if (allow) {
+			req.session.tids_viewed = req.session.tids_viewed || {};
+			const now = Date.now();
+			const interval = meta.config.incrementTopicViewsInterval * 60000;
+			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
+				const cid = await Topics.getTopicField(tid, 'cid');
+				incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
+				req.session.tids_viewed[tid] = now;
+			}
+		}
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
@@ -358,7 +396,7 @@ module.exports = function (Topics) {
 				timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
 			};
 
-			replyPids.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+			replyPids.sort((a, b) => pidMap[a].timestamp - pidMap[b].timestamp);
 
 			replyPids.forEach((replyPid) => {
 				const replyData = pidMap[replyPid];
@@ -404,7 +442,7 @@ module.exports = function (Topics) {
 
 		let { content } = postData;
 		// ignore lines that start with `>`
-		content = content.split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
+		content = (content || '').split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
 		const matches = [...content.matchAll(backlinkRegex)];
 		if (!matches) {
@@ -429,7 +467,7 @@ module.exports = function (Topics) {
 			await Topics.events.log(tid, {
 				uid,
 				type: 'backlink',
-				href: `/post/${pid}`,
+				href: `/post/${encodeURIComponent(pid)}`,
 			});
 		}));
 

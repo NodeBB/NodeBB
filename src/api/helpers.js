@@ -6,6 +6,8 @@ const topics = require('../topics');
 const posts = require('../posts');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');
@@ -35,7 +37,7 @@ exports.buildReqObject = (req, payload) => {
 		params: req.params,
 		method: req.method,
 		body: payload || req.body,
-		session: session,
+		session: JSON.parse(JSON.stringify(session)),
 		ip: req.ip,
 		host: host,
 		protocol: encrypted ? 'https' : 'http',
@@ -44,7 +46,7 @@ exports.buildReqObject = (req, payload) => {
 		path: referer.slice(referer.indexOf(host) + host.length),
 		baseUrl: req.baseUrl,
 		originalUrl: req.originalUrl,
-		headers: headers,
+		headers: { ...headers },
 	};
 };
 
@@ -65,11 +67,22 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 	const uids = await user.getUidsFromSet('users:online', 0, -1);
 
 	await Promise.all(tids.map(async (tid) => {
-		const title = await topics.getTopicField(tid, 'title');
+		const { title, cid, mainPid } = await topics.getTopicFields(tid, ['title', 'cid', 'mainPid']);
 		const data = await topics.tools[action](tid, caller.uid);
 		const notifyUids = await privileges.categories.filterUids('topics:read', data.cid, uids);
 		socketHelpers.emitToUids(event, data, notifyUids);
 		await logTopicAction(action, caller, tid, title);
+
+		switch(action) {
+			case 'delete': // falls through
+			case 'purge': {
+				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
+					activitypub.out.remove.context(caller.uid, tid); // 7888-style
+					activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
+					activitypub.out.undo.announce('cid', cid, tid); // microblogs
+				}
+			}
+		}
 	}));
 };
 
@@ -134,12 +147,34 @@ async function executeCommand(caller, command, eventName, notification, data) {
 		websockets.in(`uid_${caller.uid}`).emit(`posts.${command}`, result);
 		websockets.in(data.room_id).emit(`event:${eventName}`, result);
 	}
-	if (result && command === 'upvote') {
-		socketHelpers.upvote(result, notification);
-	} else if (result && notification) {
-		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, command, notification);
-	} else if (result && command === 'unvote') {
-		socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
+
+	if (result) {
+		switch (command) {
+			case 'upvote': {
+				socketHelpers.upvote(result, notification);
+				await activitypub.out.like.note(caller.uid, data.pid);
+				break;
+			}
+
+			case 'downvote': {
+				await activitypub.out.dislike.note(caller.uid, data.pid);
+				break;
+			}
+
+			case 'unvote': {
+				socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
+				await activitypub.out.undo.like(caller.uid, data.pid);
+				break;
+			}
+
+			default: {
+				if (notification) {
+					socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, command, notification);
+				}
+				break;
+			}
+		}
 	}
+
 	return result;
 }

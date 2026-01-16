@@ -7,5 +7,7 @@
     "alltime": "Od początku",
     "no-recent-topics": "Brak ostatnich tematów.",
     "no-popular-topics": "Brak popularnych tematów.",
-    "load-new-posts": "Załaduj nowe posty"
+    "load-new-posts": "Załaduj nowe posty",
+    "uncategorized.title": "Wszystkie znane wątki",
+    "uncategorized.intro": "Ta strona pokazuje chronologiczną listę odebranych przez to forum wątków.<br />Miej na uwadze, że treści w tym miejscu nie są moderowane i mogą kompletnie nie mieć związku z tą stroną internetową."
 }

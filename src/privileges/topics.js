@@ -9,6 +9,7 @@ const user = require('../user');
 const helpers = require('./helpers');
 const categories = require('../categories');
 const plugins = require('../plugins');
+const utils = require('../utils');
 const privsCategories = require('./categories');
 
 const privsTopics = module.exports;
@@ -23,11 +24,16 @@ privsTopics.get = async function (tid, uid) {
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
 	];
 	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled']);
-	const [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
+	const [userPrivileges, isAdministrator, isModerator, disabled, topicTools] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, topicData.cid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, topicData.cid),
 		categories.getCategoryField(topicData.cid, 'disabled'),
+		plugins.hooks.fire('filter:topic.thread_tools', {
+			topic: topicData,
+			uid: uid,
+			tools: [],
+		}),
 	]);
 	const privData = _.zipObject(privs, userPrivileges);
 	const isOwner = uid > 0 && uid === topicData.uid;
@@ -35,6 +41,7 @@ privsTopics.get = async function (tid, uid) {
 	const editable = isAdminOrMod;
 	const deletable = (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator;
 	const mayReply = privsTopics.canViewDeletedScheduled(topicData, {}, false, privData['topics:schedule']);
+	const hasTools = topicTools.tools.length > 0;
 
 	return await plugins.hooks.fire('filter:privileges.topics.get', {
 		'topics:reply': (privData['topics:reply'] && ((!topicData.locked && mayReply) || isModerator)) || isAdministrator,
@@ -51,7 +58,7 @@ privsTopics.get = async function (tid, uid) {
 		read: privData.read || isAdministrator,
 		purge: (privData.purge && (isOwner || isModerator)) || isAdministrator,
 
-		view_thread_tools: editable || deletable,
+		view_thread_tools: editable || deletable || hasTools,
 		editable: editable,
 		deletable: deletable,
 		view_deleted: isAdminOrMod || isOwner || privData['posts:view_deleted'],
@@ -87,6 +94,7 @@ privsTopics.filterTids = async function (privilege, tids, uid) {
 	const canViewScheduled = _.zipObject(cids, results.view_scheduled);
 
 	tids = topicsData.filter(t => (
+		t.tid &&
 		cidsSet.has(t.cid) &&
 		(results.isAdmin || privsTopics.canViewDeletedScheduled(t, {}, canViewDeleted[t.cid], canViewScheduled[t.cid]))
 	)).map(t => t.tid);
@@ -123,12 +131,18 @@ privsTopics.filterUids = async function (privilege, tid, uids) {
 
 privsTopics.canPurge = async function (tid, uid) {
 	const cid = await topics.getTopicField(tid, 'cid');
-	const [purge, owner, isAdmin, isModerator] = await Promise.all([
+	let [purge, owner, isAdmin, isModerator] = await Promise.all([
 		privsCategories.isUserAllowedTo('purge', cid, uid),
 		topics.isOwner(tid, uid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, cid),
 	]);
+
+	// Allow remote posts to purge themselves (as:Delete received)
+	if (!utils.isNumber(tid) && owner) {
+		purge = true;
+	}
+
 	return (purge && (owner || isModerator)) || isAdmin;
 };
 

@@ -4,8 +4,10 @@
     "week": "Tuần",
     "month": "Tháng",
     "year": "Năm",
-    "alltime": "Mọi Lúc",
+    "alltime": "Tất Cả Thời Gian",
     "no-recent-topics": "Không có chủ đề gần đây.",
-    "no-popular-topics": "Không có chủ đề nào phổ biến.",
-    "load-new-posts": "Tải bài đăng mới"
+    "no-popular-topics": "Không có chủ đề phổ biến.",
+    "load-new-posts": "Tải bài đăng mới",
+    "uncategorized.title": "Tất cả các chủ đề đã biết",
+    "uncategorized.intro": "Trang này hiển thị danh sách theo thứ tự thời gian của mọi chủ đề mà diễn đàn này đã nhận được.<br />Các quan điểm và ý kiến ​​thể hiện trong các chủ đề dưới đây không được kiểm duyệt và có thể không thể hiện quan điểm và ý kiến ​​của trang web này."
 }

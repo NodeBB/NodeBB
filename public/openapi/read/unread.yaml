@@ -19,6 +19,8 @@ get:
                     type: boolean
                   showTopicTools:
                     type: boolean
+                  reputation:disabled:
+                    type: number
                   nextStart:
                     type: number
                   topics:
@@ -66,6 +68,9 @@ get:
                                 uid:
                                   type: number
                                   description: A user identifier
+                                isLocal:
+                                  type: boolean
+                                  description: Whether the user belongs to the local installation or not.
                                 username:
                                   type: string
                                   description: A friendly name for a given user account
@@ -135,6 +140,9 @@ get:
                                   description: A topic identifier
                                 content:
                                   type: string
+                                sourceContent:
+                                  type: string
+                                  nullable: true
                                 timestampISO:
                                   type: string
                                   description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -147,6 +155,10 @@ get:
                                     username:
                                       type: string
                                       description: A friendly name for a given user account
+                                    displayname:
+                                      type: string
+                                    isLocal:
+                                      type: boolean
                                     userslug:
                                       type: string
                                       description: An URL-safe variant of the username (i.e. lower-cased, spaces

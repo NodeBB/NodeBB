@@ -31,19 +31,6 @@ put:
               response:
                 type: object
                 properties:
-                  labels:
-                    type: object
-                    properties:
-                      users:
-                        type: array
-                        items:
-                          type: string
-                          description: Language key of the privilege name's user-friendly name
-                      groups:
-                        type: array
-                        items:
-                          type: string
-                          description: Language key of the privilege name's user-friendly name
                   labelData:
                     type: array
                     items:
@@ -64,6 +51,9 @@ put:
                           type: number
                           description: A user identifier
                           example: 1
+                        isLocal:
+                          type: boolean
+                          description: Whether the user belongs to the local installation or not.
                         username:
                           type: string
                           description: A friendly name for a given user account
@@ -96,7 +86,6 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object
@@ -113,7 +102,6 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object

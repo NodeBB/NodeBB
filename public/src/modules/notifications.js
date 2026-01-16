@@ -28,7 +28,7 @@ define('notifications', [
 	});
 	hooks.on('filter:notifications.load', _addTimeagoString);
 
-	Notifications.loadNotifications = function (notifList, callback) {
+	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
 		callback = callback || function () {};
 		socket.emit('notifications.get', null, function (err, data) {
 			if (err) {
@@ -47,7 +47,9 @@ define('notifications', [
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							components.get('notifications/list').dropdown('toggle');
+							if (triggerEl) {
+								triggerEl.dropdown('toggle');
+							}
 						}
 
 						const unread = notifEl.hasClass('unread');
@@ -57,7 +59,9 @@ define('notifications', [
 						const nid = notifEl.attr('data-nid');
 						markNotification(nid, true);
 					});
-					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
+					components.get('notifications').on('click', '.mark-all-read', () => {
+						Notifications.markAllRead();
+					});
 
 					Notifications.handleUnreadButton(notifList);
 
@@ -103,7 +107,7 @@ define('notifications', [
 		});
 
 		if (!unreadNotifs[notifData.nid]) {
-			unreadNotifs[notifData.nid] = true;
+			unreadNotifs[notifData.nid] = notifData;
 		}
 	};
 
@@ -163,12 +167,21 @@ define('notifications', [
 		}
 	};
 
-	Notifications.markAllRead = function () {
-		socket.emit('notifications.markAllRead', function (err) {
+	Notifications.markAllRead = function (filter = '') {
+		socket.emit('notifications.markAllRead', { filter }, function (err) {
 			if (err) {
 				alerts.error(err);
 			}
-			unreadNotifs = {};
+			if (filter) {
+				Object.keys(unreadNotifs).forEach(nid => {
+					if (unreadNotifs[nid].type === filter) {
+						delete unreadNotifs[nid];
+					}
+				});
+			} else {
+				unreadNotifs = {};
+			}
+
 			const notifEls = $('[component="notifications/list"] [data-nid]');
 			notifEls.removeClass('unread');
 			notifEls.find('.mark-read .unread').addClass('hidden');

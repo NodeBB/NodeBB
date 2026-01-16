@@ -22,7 +22,7 @@ define('forum/topic/posts', [
 			!data ||
 			!data.posts ||
 			!data.posts.length ||
-			parseInt(data.posts[0].tid, 10) !== parseInt(ajaxify.data.tid, 10)
+			String(data.posts[0].tid) !== String(ajaxify.data.tid)
 		) {
 			return;
 		}
@@ -256,7 +256,7 @@ define('forum/topic/posts', [
 		const after = parseInt(afterEl.attr('data-index'), 10) || 0;
 
 		const tid = ajaxify.data.tid;
-		if (!utils.isNumber(tid) || !utils.isNumber(after) || (direction < 0 && components.get('post', 'index', 0).length)) {
+		if (!utils.isNumber(after) || (direction < 0 && components.get('post', 'index', 0).length)) {
 			return;
 		}
 

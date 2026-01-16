@@ -25,7 +25,7 @@ uploadsController.get = async function (req, res) {
 
 	payload.uploads = uploadNames.map(uploadName => ({
 		name: uploadName,
-		url: path.resolve(nconf.get('upload_url'), uploadName),
+		url: path.posix.join(nconf.get('upload_url'), uploadName),
 	}));
 	const pageCount = Math.ceil(itemCount / itemsPerPage);
 	payload.pagination = pagination.create(page, pageCount, req.query);

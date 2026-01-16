@@ -109,9 +109,6 @@ chatsAPI.sortPublicRooms = async (caller, { roomIds, scores }) => {
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
-	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
-		throw new Error('[[error:too-many-messages]]');
-	}
 	if (!data || !data.roomId || !caller.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -122,7 +119,13 @@ chatsAPI.post = async (caller, data) => {
 	}));
 
 	await messaging.canMessageRoom(caller.uid, data.roomId);
-	const message = await messaging.sendMessage({
+	await messaging.checkContent(data.message);
+
+	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
+		throw new Error('[[error:too-many-messages]]');
+	}
+
+	const message = await messaging.addMessage({
 		uid: caller.uid,
 		roomId: data.roomId,
 		content: data.message,
@@ -159,9 +162,17 @@ chatsAPI.update = async (caller, data) => {
 			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
 		}
 	}
-	if (data.hasOwnProperty('notificationSetting') && isAdmin) {
-		await db.setObjectField(`chat:room:${data.roomId}`, 'notificationSetting', data.notificationSetting);
+	if (isAdmin) {
+		const updateData = {};
+		if (data.hasOwnProperty('notificationSetting')) {
+			updateData.notificationSetting = data.notificationSetting;
+		}
+		if (data.hasOwnProperty('joinLeaveMessages')) {
+			updateData.joinLeaveMessages = data.joinLeaveMessages;
+		}
+		await db.setObject(`chat:room:${data.roomId}`, updateData);
 	}
+
 	const loadedRoom = await messaging.loadRoom(caller.uid, {
 		roomId: data.roomId,
 	});
@@ -253,7 +264,7 @@ chatsAPI.users = async (caller, data) => {
 	users.forEach((user) => {
 		const isSelf = parseInt(user.uid, 10) === parseInt(caller.uid, 10);
 		user.canKick = isOwner && !isSelf;
-		user.canToggleOwner = (isAdmin || isOwner) && !isSelf;
+		user.canToggleOwner = utils.isNumber(user.uid) && (isAdmin || isOwner) && !isSelf;
 		user.online = parseInt(user.uid, 10) === parseInt(caller.uid, 10) || onlineUids.includes(String(user.uid));
 	});
 	return { users };

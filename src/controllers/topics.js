@@ -26,7 +26,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
 	if (
 		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||
-		!utils.isNumber(tid)
+		(!utils.isNumber(tid) && !validator.isUUID(String(tid)))
 	) {
 		return next();
 	}
@@ -119,23 +119,36 @@ topicsController.get = async function getTopic(req, res, next) {
 	}
 
 	topicData.postIndex = postIndex;
+	const postAtIndex = topicData.posts.find(
+		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
+	);
 
-	const [author] = await Promise.all([
+	const [author, crossposts] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
+		topics.crossposts.get(topicData.tid),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
-		addTags(topicData, req, res, currentPage),
-		incrementViewCount(req, tid),
+		addTags(topicData, req, res, currentPage, postAtIndex),
+		topics.increaseViewCount(req, tid),
 		markAsRead(req, tid),
 		analytics.increment([`pageviews:byCid:${topicData.category.cid}`]),
 	]);
 
 	topicData.author = author;
+	topicData.crossposts = crossposts;
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});
+
+	if (meta.config.activitypubEnabled && postAtIndex) {
+		// Include link header for richer parsing
+		const { pid } = postAtIndex;
+		const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
+		res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
+	}
+
 	res.render('topic', topicData);
 };
 
@@ -161,19 +174,6 @@ function calculateStartStop(page, postIndex, settings) {
 	const start = ((page - 1) * settings.postsPerPage) + startSkip;
 	const stop = start + settings.postsPerPage - 1;
 	return { start: Math.max(0, start), stop: Math.max(0, stop) };
-}
-
-async function incrementViewCount(req, tid) {
-	const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
-	if (allow) {
-		req.session.tids_viewed = req.session.tids_viewed || {};
-		const now = Date.now();
-		const interval = meta.config.incrementTopicViewsInterval * 60000;
-		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
-			await topics.increaseViewCount(tid);
-			req.session.tids_viewed[tid] = now;
-		}
-	}
 }
 
 async function markAsRead(req, tid) {
@@ -210,9 +210,7 @@ async function addOldCategory(topicData, userPrivileges) {
 	}
 }
 
-async function addTags(topicData, req, res, currentPage) {
-	const postIndex = parseInt(req.params.post_index, 10) || 0;
-	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
+async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	let description = '';
 	if (postAtIndex && postAtIndex.content) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content)).trim();
@@ -298,6 +296,15 @@ async function addTags(topicData, req, res, currentPage) {
 		res.locals.linkTags.push({
 			rel: 'author',
 			href: `${url}/user/${postAtIndex.user.userslug}`,
+		});
+	}
+
+	if (meta.config.activitypubEnabled && postAtIndex) {
+		const { pid } = postAtIndex;
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/activity+json',
+			href: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
 		});
 	}
 }

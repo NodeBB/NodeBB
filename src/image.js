@@ -102,14 +102,15 @@ image.size = async function (path) {
 	return imageData ? { width: imageData.width, height: imageData.height } : undefined;
 };
 
-image.stripEXIF = async function (path) {
-	if (!meta.config.stripEXIFData || path.endsWith('.svg')) {
+image.stripEXIF = async function ({ path, type }) {
+	if (!meta.config.stripEXIFData || type === 'image/gif' || type === 'image/svg+xml') {
 		return;
 	}
 	try {
 		if (plugins.hooks.hasListeners('filter:image.stripEXIF')) {
 			await plugins.hooks.fire('filter:image.stripEXIF', {
 				path: path,
+				type: type,
 			});
 			return;
 		}
@@ -122,7 +123,6 @@ image.stripEXIF = async function (path) {
 };
 
 image.checkDimensions = async function (path) {
-	const meta = require('./meta');
 	const result = await image.size(path);
 
 	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {

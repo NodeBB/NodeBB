@@ -5,6 +5,8 @@
 	"disable-editing": "ปิดการแก้ไข และการลบแชท",
 	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
 	"max-length": "จำนวนอักขระมากที่มากที่สุดต่อแชท",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "จำนวนผู้ใช้ในห้องแชทมากที่สุด",
 	"delay": "Time between chat messages (ms)",

@@ -6,10 +6,15 @@ const _ = require('lodash');
 
 const db = require('../database');
 const topics = require('../topics');
+const activitypub = require('../activitypub');
 
 module.exports = function (Posts) {
 	Posts.getCidByPid = async function (pid) {
 		const tid = await Posts.getPostField(pid, 'tid');
+		if (!tid && activitypub.helpers.isUri(pid)) {
+			return -1; // fediverse pseudo-category
+		}
+
 		return await topics.getTopicField(tid, 'cid');
 	};
 

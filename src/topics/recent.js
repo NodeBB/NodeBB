@@ -4,6 +4,7 @@
 const db = require('../database');
 const plugins = require('../plugins');
 const posts = require('../posts');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	const terms = {
@@ -71,9 +72,16 @@ module.exports = function (Topics) {
 	};
 
 	Topics.updateRecent = async function (tid, timestamp) {
-		let data = { tid: tid, timestamp: timestamp };
+		let data = { tid, timestamp };
+
+		// Topics in /world are excluded from /recent
+		const cid = await Topics.getTopicField(tid, 'cid');
+		if (!utils.isNumber(cid) || cid === -1) {
+			return await db.sortedSetRemove('topics:recent', data.tid);
+		}
+
 		if (plugins.hooks.hasListeners('filter:topics.updateRecent')) {
-			data = await plugins.hooks.fire('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
+			data = await plugins.hooks.fire('filter:topics.updateRecent', data);
 		}
 		if (data && data.tid && data.timestamp) {
 			await db.sortedSetAdd('topics:recent', data.timestamp, data.tid);

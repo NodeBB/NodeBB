@@ -2,8 +2,14 @@
 
 const appearanceController = module.exports;
 
-appearanceController.get = function (req, res) {
-	const term = req.params.term ? req.params.term : 'themes';
+appearanceController.themes = function (req, res) {
+	res.render(`admin/appearance/themes`, {});
+};
 
-	res.render(`admin/appearance/${term}`, {});
+appearanceController.skins = function (req, res) {
+	res.render(`admin/appearance/skins`, {});
+};
+
+appearanceController.customise = function (req, res) {
+	res.render(`admin/appearance/customise`, {});
 };

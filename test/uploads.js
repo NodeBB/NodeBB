@@ -128,7 +128,7 @@ describe('Upload Controllers', () => {
 			assert(body && body.status && body.response && body.response.images);
 			assert(Array.isArray(body.response.images));
 			assert(body.response.images[0].url);
-			const name = body.response.images[0].url.replace(`${nconf.get('relative_path') + nconf.get('upload_url')}/`, '');
+			const name = body.response.images[0].url.replace(`${nconf.get('relative_path') + nconf.get('upload_url')}`, '');
 			await socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name });
 
 			const uploads = await db.getSortedSetRange(`uid:${regularUid}:uploads`, 0, -1);
@@ -161,7 +161,25 @@ describe('Upload Controllers', () => {
 			assert(body.response.images[0].url);
 			assert(body.response.images[0].url.match(/\/assets\/uploads\/files\/\d+-test-resized\.png/));
 			meta.config.resizeImageWidth = oldValue;
-			meta.config.resizeImageWidthThreshold = 1520;
+			meta.config.resizeImageWidthThreshold = 2000;
+		});
+
+		it('should resize and upload an image to a post and replace original', async () => {
+			const oldValue = meta.config.resizeImageWidth;
+			const keepOldValue = meta.config.resizeImageKeepOriginal;
+			meta.config.resizeImageWidth = 10;
+			meta.config.resizeImageWidthThreshold = 10;
+			meta.config.resizeImageKeepOriginal = 0;
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 200);
+			assert(body && body.status && body.response && body.response.images);
+			assert(Array.isArray(body.response.images));
+			assert(body.response.images[0].url);
+			assert(body.response.images[0].url.match(/\/assets\/uploads\/files\/\d+-test.png/));
+			meta.config.resizeImageWidth = oldValue;
+			meta.config.resizeImageWidthThreshold = 2000;
+			meta.config.resizeImageKeepOriginal = keepOldValue;
 		});
 
 		it('should upload a file to a post', async () => {
@@ -176,6 +194,12 @@ describe('Upload Controllers', () => {
 			assert(body.response.images[0].url);
 		});
 
+		it('should upload a file with utf8 characters in the name to a post', async () => {
+			const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/测试.jpg'), {}, jar, csrf_token);
+
+			assert(body.response.images[0].url.endsWith('测试.jpg'));
+		});
+
 		it('should fail to upload image to post if image dimensions are too big', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
@@ -187,7 +211,7 @@ describe('Upload Controllers', () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
 			assert(body && body.status && body.status.message);
-			assert.strictEqual(body.status.message, 'Input file contains unsupported image format');
+			assert.strictEqual(body.status.message, 'pngload_buffer: end of stream');
 		});
 
 		it('should fail if file is not an image', (done) => {
@@ -320,6 +344,15 @@ describe('Upload Controllers', () => {
 			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.png`);
 		});
 
+		it('should upload svg as category image after cleaning it up', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/dirty.svg'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token);
+			assert.equal(response.statusCode, 200);
+			assert(Array.isArray(body));
+			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.svg`);
+			const svgContents = await fs.readFile(path.join(__dirname, '../test/uploads/category/category-1.svg'), 'utf-8');
+			assert.strictEqual(svgContents.includes('<script>'), false);
+		});
+
 		it('should upload default avatar', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadDefaultAvatar`, path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token);
 			assert.equal(response.statusCode, 200);
@@ -375,6 +408,17 @@ describe('Upload Controllers', () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
 				params: JSON.stringify({
 					folder: '../../system',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:invalid-path]]');
+		});
+
+		it('should fail to upload regular file if directory does not exist', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
+				params: JSON.stringify({
+					folder: 'does-not-exist',
 				}),
 			}, jar, csrf_token);
 
@@ -456,7 +500,7 @@ describe('Upload Controllers', () => {
 
 				assert.strictEqual(orphans.length, 1);
 				orphans.forEach((relPath) => {
-					assert(relPath.startsWith('files/'));
+					assert(relPath.startsWith('/files/'));
 					assert(relPath.endsWith('test.png'));
 				});
 			});

@@ -97,5 +97,9 @@
     "notificationType-post-queue": "Yeni bir ileti sıraya alındığında",
     "notificationType-new-post-flag": "Bir ileti şikayet edildiğinde",
     "notificationType-new-user-flag": "Bir kullanıcı şikayet edildiğinde",
-    "notificationType-new-reward": "Yeni bir ödül kazanınca"
+    "notificationType-new-reward": "Yeni bir ödül kazanınca",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

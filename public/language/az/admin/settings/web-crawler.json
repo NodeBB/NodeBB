@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "Taranma parametrləri",
+	"robots-txt": "Xüsusi Robots.txt <small>Defolt olaraq boş buraxın</small>",
+	"sitemap-feed-settings": "Sayt xəritəsi və Lent Parametrləri",
+	"disable-rss-feeds": "RSS Lentlərini söndür",
+	"disable-sitemap-xml": "Sitemap.xml-ni deaktiv et",
+	"sitemap-topics": "Sayt xəritəsində göstəriləcək mövzuların sayı",
+	"clear-sitemap-cache": "Sayt xəritəsi keşini təmizlə",
+	"view-sitemap": "Saytın Xəritəsinə bax"
+}

@@ -11,7 +11,7 @@ define('forum/chats', [
 	'forum/chats/user-list',
 	'forum/chats/message-search',
 	'forum/chats/pinned-messages',
-	'composer/autocomplete',
+	'autocomplete',
 	'hooks',
 	'bootbox',
 	'alerts',

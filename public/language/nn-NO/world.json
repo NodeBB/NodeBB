@@ -1,0 +1,21 @@
+{
+	"name": "Verda",
+	"popular": "Populære emne",
+	"recent": "Alle emne",
+	"help": "Hjelp",
+
+	"help.title": "Kva er denne sida?",
+	"help.intro": "Velkommen til ditt hjørne av fødiverset.",
+	"help.fediverse": "“Fødiverset” er eit nettverk av samanbundne applikasjonar og nettsider som kommuniserer med kvarandre, og der brukarane kan sjå kvarandre. Dette forumet er føderert og kan samhandle med det sosiale nettet (eller “fødiverset”). Denne sida er ditt hjørne av fødiverset. Ho består utelukkande av emne oppretta av – og delt frå – brukarar <strong>du</strong> følger.",
+	"help.build": "Det kan vere at det ikkje er mange emne her til å begynne med; det er heilt normalt. Du vil sjå meir innhald her etter kvart som du begynner å følge andre brukarar.",
+	"help.federating": "På same måte, dersom brukarar frå utsida av dette forumet begynner å følge <em>deg</em>, vil innlegga dine òg begynne å visast på desse appane og nettsidene.",
+	"help.next-generation": "Dette er den neste generasjonen av sosiale medium, begynn å bidra i dag!",
+
+	"onboard.title": "Ditt vindauge til fødiverset...",
+	"onboard.what": "Dette er din personlege kategori som berre består av innhald funne utanfor dette forumet. Om noko blir vist på denne sida, avheng av om du følger dei, eller om innlegget blei delt av nokon du følger.",
+	"onboard.why": "Det skjer mykje utanfor dette forumet, og ikkje alt er relevant for interessene dine. Difor er det å følge folk den beste måten å signalisere at du ønskjer å sjå meir frå nokon.",
+	"onboard.how": "I mellomtida kan du klikke på snarvegsknappane øvst for å sjå kva anna dette forumet inneheld, og begynne å oppdage nytt innhald!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
+}

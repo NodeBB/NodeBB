@@ -1,22 +1,32 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
-  "baseBranches": ["develop"],
-  "labels": ["dependencies"],
+  "baseBranchPatterns": [
+    "develop"
+  ],
+  "labels": [
+    "dependencies"
+  ],
   "packageRules": [
     {
-      "matchDepTypes": ["dependencies"],
-      "excludePackageNames": ["colors"],
-      "rangeStrategy": "pin"
+      "matchDepTypes": [
+        "dependencies"
+      ],
+      "rangeStrategy": "pin",
+      "matchPackageNames": []
     },
     {
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
       "automerge": true,
       "rangeStrategy": "pin"
     },
     {
-      "matchDepTypes": ["engines"],
+      "matchDepTypes": [
+        "engines"
+      ],
       "rangeStrategy": "auto"
     }
   ]

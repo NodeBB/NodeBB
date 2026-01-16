@@ -117,6 +117,12 @@ describe('Hash methods', () => {
 			const result = await db.getObject('emptykey');
 			assert.deepStrictEqual(result, null);
 		});
+
+		it('should return null if a field is set to null', async () => {
+			await db.setObject('nullFieldTest', { baz: 'baz', foo: null });
+			const data = await db.getObjectFields('nullFieldTest', ['baz', 'foo']);
+			assert.deepStrictEqual(data, { baz: 'baz', foo: null });
+		});
 	});
 
 	describe('setObjectField()', () => {
@@ -155,18 +161,21 @@ describe('Hash methods', () => {
 			});
 		});
 
-		it('should work for field names with "." in them when they are cached', (done) => {
-			db.setObjectField('dotObject3', 'my.dot.field', 'foo2', (err) => {
-				assert.ifError(err);
-				db.getObject('dotObject3', (err, data) => {
-					assert.ifError(err);
-					db.getObjectField('dotObject3', 'my.dot.field', (err, value) => {
-						assert.ifError(err);
-						assert.equal(value, 'foo2');
-						done();
-					});
-				});
-			});
+		it('should work for field names with "." in them when they are cached', async () => {
+			await db.setObjectField('dotObject3', 'my.dot.field', 'foo2');
+			const data = await db.getObject('dotObject3');
+			assert.strictEqual(data['my.dot.field'], 'foo2');
+			const value = await db.getObjectField('dotObject3', 'my.dot.field');
+			assert.equal(value, 'foo2');
+		});
+
+		it('should work for fields that start with $', async () => {
+			await db.setObjectField('dollarsign', '$someField', 'foo');
+			assert.strictEqual(await db.getObjectField('dollarsign', '$someField'), 'foo');
+			assert.strictEqual(await db.isObjectField('dollarsign', '$someField'), true);
+			assert.strictEqual(await db.isObjectField('dollarsign', '$doesntexist'), false);
+			await db.deleteObjectField('dollarsign', '$someField');
+			assert.strictEqual(await db.isObjectField('dollarsign', '$someField'), false);
 		});
 	});
 
@@ -274,6 +283,16 @@ describe('Hash methods', () => {
 				assert.equal(data, null);
 				done();
 			});
+		});
+
+		it('should return null if field is falsy', async () => {
+			const values = await Promise.all([
+				db.getObjectField('hashTestObject', ''),
+				db.getObjectField('hashTestObject', null),
+				db.getObjectField('hashTestObject', false),
+				db.getObjectField('hashTestObject', undefined),
+			]);
+			assert.deepStrictEqual(values, [null, null, null, null]);
 		});
 
 		it('should return null and not error', async () => {
@@ -521,6 +540,7 @@ describe('Hash methods', () => {
 
 		it('should not error if fields is empty array', async () => {
 			await db.deleteObjectFields('someKey', []);
+			await db.deleteObjectField('someKey', []);
 		});
 
 		it('should not error if key is undefined', (done) => {

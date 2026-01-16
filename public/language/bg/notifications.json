@@ -97,5 +97,9 @@
     "notificationType-post-queue": "Когато бъде добавена нова публикация в опашката",
     "notificationType-new-post-flag": "Когато публикация бъде докладвана",
     "notificationType-new-user-flag": "Когато потребител бъде докладван",
-    "notificationType-new-reward": "Когато получите нова награда"
+    "notificationType-new-reward": "Когато получите нова награда",
+    "activitypub.announce": "<strong>%1</strong> сподели Вашата публикация в <strong>%2</strong> със своите последователи.",
+    "activitypub.announce-dual": "<strong>%1</strong> и <strong>%2</strong> споделиха Вашата публикация в <strong>%3</strong> със своите последователи.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> и <strong>%3</strong> споделиха Вашата публикация в <strong>%4</strong> със своите последователи.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> и  %3 други споделиха Вашата публикация в <strong>%4</strong> със своите последователи."
 }

@@ -38,6 +38,7 @@
 	"settings/tags": "标签",
 	"settings/notifications": "通知",
 	"settings/api": "API 访问",
+	"settings/activitypub": "“联邦” (ActivityPub)",
 	"settings/sounds": "铃声",
 	"settings/social": "社交",
 	"settings/cookies": "Cookies",

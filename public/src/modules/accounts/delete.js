@@ -39,7 +39,7 @@ define('accounts/delete', ['api', 'bootbox', 'alerts'], function (api, bootbox, 
 				return;
 			}
 
-			api.del(`/users/${uid}${path}`, {}).then(() => {
+			api.del(`/users/${encodeURIComponent(uid)}${path}`, {}).then(() => {
 				alerts.success(successText);
 
 				if (typeof callback === 'function') {

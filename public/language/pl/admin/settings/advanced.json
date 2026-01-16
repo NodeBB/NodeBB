@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Domyślnie: %1",
 	"sockets.delay": "Opóźnienie ponownego łączenia",
 
-	"analytics.settings": "Ustawienia analityki",
-	"analytics.max-cache": "Maksymalna wartość pamięci podręcznej analityki",
-	"analytics.max-cache-help": "Przy dużym ruchu na forum weź poprawkę na to aby zapewnić pamięć podręczną przekraczającą liczbę odwiedzających stronę w tej samej chwili (potrzebny restartart).",
 	"compression.settings": "Ustawienia Kompresji",
 	"compression.enable": "Włącz Kompresję",
 	"compression.help": "To ustawienie włącza kompresję gzip. Na stronach produkcyjnych o dużym ruchu, najlepiej ustawić kompresję na poziomie reverse-proxy. Możesz włączyć je tutaj na cele testów."

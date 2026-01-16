@@ -15,7 +15,7 @@
 					<label for="downvote:disabled" class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 				</div>
 				<div class="mb-3">
-					<label for="upvoteVisibility" class="form-check-label">[[admin/settings/reputation:upvote-visibility]]</label>
+					<label for="upvoteVisibility" class="form-label">[[admin/settings/reputation:upvote-visibility]]</label>
 					<select id="upvoteVisibility" data-field="upvoteVisibility" class="form-select">
 						<option value="all">[[admin/settings/reputation:upvote-visibility-all]]</option>
 						<option value="loggedin">[[admin/settings/reputation:upvote-visibility-loggedin]]</option>
@@ -23,7 +23,7 @@
 					</select>
 				</div>
 				<div>
-					<label for="downvoteVisibility" class="form-check-label">[[admin/settings/reputation:downvote-visibility]]</label>
+					<label for="downvoteVisibility" class="form-label">[[admin/settings/reputation:downvote-visibility]]</label>
 					<select id="downvoteVisibility" data-field="downvoteVisibility" class="form-select">
 						<option value="all">[[admin/settings/reputation:downvote-visibility-all]]</option>
 						<option value="loggedin">[[admin/settings/reputation:downvote-visibility-loggedin]]</option>
@@ -72,10 +72,6 @@
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:flag">[[admin/settings/reputation:min-rep-flag]]</label>
 					<input type="number" class="form-control" placeholder="0" data-field="min:rep:flag" id="min:rep:flag">
-				</div>
-				<div class="mb-3">
-					<label class="form-label" for="min:rep:website">[[admin/settings/reputation:min-rep-website]]</label>
-					<input type="number" class="form-control" placeholder="0" data-field="min:rep:website" id="min:rep:website">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:aboutme">[[admin/settings/reputation:min-rep-aboutme]]</label>

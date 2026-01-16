@@ -7,5 +7,7 @@
     "alltime": "总计",
     "no-recent-topics": "暂无主题。",
     "no-popular-topics": "暂无热门主题。",
-    "load-new-posts": "加载新的帖子"
+    "load-new-posts": "加载新的帖子",
+    "uncategorized.title": "所有已知主题",
+    "uncategorized.intro": "本页按时间顺序列出了本论坛收到的每个主题。<br />以下主题中表达的观点和意见未经审核，可能不代表本网站的观点和意见。"
 }

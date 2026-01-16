@@ -108,7 +108,6 @@ UserReset.commit = async function (code, password) {
 		'password:shaWrapped': 1,
 	};
 
-	// don't verify email if password reset is due to expiry
 	const isPasswordExpired = userData.passwordExpiry && userData.passwordExpiry < Date.now();
 	if (!isPasswordExpired) {
 		data['email:confirmed'] = 1;
@@ -154,6 +153,9 @@ UserReset.clean = async function () {
 UserReset.cleanByUid = async function (uid) {
 	const tokensToClean = [];
 	uid = parseInt(uid, 10);
+	if (!uid) {
+		return;
+	}
 
 	await batch.processSortedSet('reset:issueDate', async (tokens) => {
 		const results = await db.getObjectFields('reset:uid', tokens);

@@ -2,13 +2,18 @@
 
 const _ = require('lodash');
 const nconf = require('nconf');
+const db = require('../../database');
+const user = require('../../user');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const translator = require('../../translator');
 const meta = require('../../meta');
+const activitypub = require('../../activitypub');
 const helpers = require('../helpers');
 const pagination = require('../../pagination');
+const utils = require('../../utils');
+const cache = require('../../cache');
 
 const categoriesController = module.exports;
 
@@ -45,14 +50,14 @@ categoriesController.get = async function (req, res, next) {
 
 categoriesController.getAll = async function (req, res) {
 	const rootCid = parseInt(req.query.cid, 10) || 0;
+	const rootChildren = await categories.getAllCidsFromSet(`cid:${rootCid}:children`);
 	async function getRootAndChildren() {
-		const rootChildren = await categories.getAllCidsFromSet(`cid:${rootCid}:children`);
 		const childCids = _.flatten(await Promise.all(rootChildren.map(cid => categories.getChildrenCids(cid))));
 		return [rootCid].concat(rootChildren.concat(childCids));
 	}
 
 	// Categories list will be rendered on client side with recursion, etc.
-	const cids = await (rootCid ? getRootAndChildren() : categories.getAllCidsFromSet('categories:cid'));
+	const cids = await getRootAndChildren();
 
 	let rootParent = 0;
 	if (rootCid) {
@@ -60,13 +65,19 @@ categoriesController.getAll = async function (req, res) {
 	}
 
 	const fields = [
-		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
+		'cid', 'name', 'nickname', 'icon', 'parentCid', 'disabled', 'link',
 		'order', 'color', 'bgColor', 'backgroundImage', 'imageClass',
-		'subCategoriesPerPage', 'description',
+		'subCategoriesPerPage', 'description', 'descriptionParsed',
 	];
-	const categoriesData = await categories.getCategoriesFields(cids, fields);
-	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
-	let tree = categories.getTree(result.categories, rootParent);
+	let categoriesData = await categories.getCategoriesFields(cids, fields);
+	({ categories: categoriesData } = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields }));
+
+	categoriesData = categoriesData.map((category) => {
+		category.isLocal = utils.isNumber(category.cid);
+		return category;
+	});
+
+	let tree = categories.getTree(categoriesData, rootParent);
 	const cidsCount = rootCid && tree[0] ? tree[0].children.length : tree.length;
 
 	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
@@ -144,4 +155,83 @@ categoriesController.getAnalytics = async function (req, res) {
 		analytics: analyticsData,
 		selectedCategory: selectedData.selectedCategory,
 	});
+};
+
+categoriesController.getFederation = async function (req, res) {
+	const cid = req.params.category_id;
+	let [_following, pending, followers, name, { selectedCategory }] = await Promise.all([
+		db.getSortedSetMembers(`cid:${cid}:following`),
+		db.getSortedSetMembers(`followRequests:cid.${cid}`),
+		activitypub.notes.getCategoryFollowers(cid),
+		categories.getCategoryField(cid, 'name'),
+		helpers.getSelectedCategory(cid),
+	]);
+
+	const following = [..._following, ...pending].map(entry => ({
+		id: entry,
+		approved: !pending.includes(entry),
+	}));
+
+	await activitypub.actors.assert(followers);
+	followers = await user.getUsersFields(followers, ['userslug', 'picture']);
+
+	res.render('admin/manage/category-federation', {
+		cid: cid,
+		enabled: meta.config.activitypubEnabled,
+		name,
+		selectedCategory,
+		following,
+		followers,
+	});
+};
+
+categoriesController.addRemote = async function (req, res) {
+	let { handle, id } = req.body;
+	if (handle && !id) {
+		({ actorUri: id } = await activitypub.helpers.query(handle));
+	}
+
+	if (!id) {
+		return res.sendStatus(404);
+	}
+
+	await activitypub.actors.assertGroup(id);
+	const exists = await categories.exists(id);
+
+	if (!exists) {
+		return res.sendStatus(404);
+	}
+
+	const score = await db.sortedSetCard('cid:0:children');
+	const order = score + 1; // order is 1-based lol
+	await Promise.all([
+		db.sortedSetAdd('cid:0:children', order, id),
+		categories.setCategoryField(id, 'order', order),
+	]);
+	cache.del('cid:0:children');
+
+	res.sendStatus(200);
+};
+
+categoriesController.renameRemote = async (req, res) => {
+	if (utils.isNumber(req.params.cid)) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	const { name } = req.body;
+	await categories.setCategoryField(req.params.cid, 'nickname', name);
+
+	res.sendStatus(200);
+};
+
+categoriesController.removeRemote = async function (req, res) {
+	if (utils.isNumber(req.params.cid)) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	const parentCid = await categories.getCategoryField(req.params.cid, 'parentCid');
+	await db.sortedSetRemove(`cid:${parentCid || 0}:children`, req.params.cid);
+	cache.del(`cid:${parentCid || 0}:children`);
+
+	res.sendStatus(200);
 };

@@ -8,6 +8,7 @@ const topics = require('../topics');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const translator = require('../translator');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	const votesInProgress = {};
@@ -99,17 +100,17 @@ module.exports = function (Posts) {
 	};
 
 	function voteInProgress(pid, uid) {
-		return Array.isArray(votesInProgress[uid]) && votesInProgress[uid].includes(parseInt(pid, 10));
+		return Array.isArray(votesInProgress[uid]) && votesInProgress[uid].includes(String(pid));
 	}
 
 	function putVoteInProgress(pid, uid) {
 		votesInProgress[uid] = votesInProgress[uid] || [];
-		votesInProgress[uid].push(parseInt(pid, 10));
+		votesInProgress[uid].push(String(pid));
 	}
 
 	function clearVoteProgress(pid, uid) {
 		if (Array.isArray(votesInProgress[uid])) {
-			const index = votesInProgress[uid].indexOf(parseInt(pid, 10));
+			const index = votesInProgress[uid].indexOf(String(pid));
 			if (index !== -1) {
 				votesInProgress[uid].splice(index, 1);
 			}
@@ -171,22 +172,23 @@ module.exports = function (Posts) {
 	}
 
 	async function vote(type, unvote, pid, uid, voteStatus) {
-		uid = parseInt(uid, 10);
-		if (uid <= 0) {
+		if (utils.isNumber(uid) && parseInt(uid, 10) <= 0) {
 			throw new Error('[[error:not-logged-in]]');
 		}
 		const now = Date.now();
 
-		if (type === 'upvote' && !unvote) {
-			await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
-		} else {
-			await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
-		}
+		if (utils.isNumber(uid)) {
+			if (type === 'upvote' && !unvote) {
+				await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
+			} else {
+				await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
+			}
 
-		if (type === 'upvote' || unvote) {
-			await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
-		} else {
-			await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
+			if (type === 'upvote' || unvote) {
+				await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
+			} else {
+				await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
+			}
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
@@ -278,7 +280,7 @@ module.exports = function (Posts) {
 			}
 		}
 
-		if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
+		if (String(topicData.mainPid) !== String(postData.pid)) {
 			return await db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
 		}
 		const promises = [

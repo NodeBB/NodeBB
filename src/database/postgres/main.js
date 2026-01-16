@@ -28,6 +28,11 @@ module.exports = function (module) {
 			return members.map(member => member.length > 0);
 		}
 
+		async function checkIfSetsExist(keys) {
+			const members = await Promise.all(keys.map(module.getSetMembers));
+			return members.map(member => member.length > 0);
+		}
+
 		async function checkIfKeysExist(keys) {
 			const res = await module.pool.query({
 				name: 'existsArray',
@@ -44,19 +49,25 @@ module.exports = function (module) {
 		if (isArray) {
 			const types = await Promise.all(key.map(module.type));
 			const zsetKeys = key.filter((_key, i) => types[i] === 'zset');
-			const otherKeys = key.filter((_key, i) => types[i] !== 'zset');
-			const [zsetExits, otherExists] = await Promise.all([
+			const setKeys = key.filter((_key, i) => types[i] === 'set');
+			const otherKeys = key.filter((_key, i) => types[i] !== 'zset' && types[i] !== 'set');
+			const [zsetExits, setExists, otherExists] = await Promise.all([
 				checkIfzSetsExist(zsetKeys),
+				checkIfSetsExist(setKeys),
 				checkIfKeysExist(otherKeys),
 			]);
 			const existsMap = Object.create(null);
 			zsetKeys.forEach((k, i) => { existsMap[k] = zsetExits[i]; });
+			setKeys.forEach((k, i) => { existsMap[k] = setExists[i]; });
 			otherKeys.forEach((k, i) => { existsMap[k] = otherExists[i]; });
 			return key.map(k => existsMap[k]);
 		}
 		const type = await module.type(key);
 		if (type === 'zset') {
 			const members = await module.getSortedSetRange(key, 0, 0);
+			return members.length > 0;
+		} else if (type === 'set') {
+			const members = await module.getSetMembers(key);
 			return members.length > 0;
 		}
 		const res = await module.pool.query({
@@ -85,7 +96,8 @@ module.exports = function (module) {
 			text: `
 		SELECT o."_key"
 		FROM "legacy_object_live" o
-		WHERE o."_key" LIKE '${match}'`,
+		WHERE o."_key" LIKE $1`,
+			values: [match],
 		});
 
 		return res.rows.map(r => r._key);

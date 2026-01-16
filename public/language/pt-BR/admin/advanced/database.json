@@ -17,7 +17,7 @@
 	"mongo.file-size": "Tamanho do Arquivo",
 	"mongo.resident-memory": "Resident Memory",
 	"mongo.virtual-memory": "Memória Virtual",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "Memória Canalizada",
 	"mongo.bytes-in": "Bytes recebidos",
 	"mongo.bytes-out": "Bytes enviados",
 	"mongo.num-requests": "Quantidade de Requisições",

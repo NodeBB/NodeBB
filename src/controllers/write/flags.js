@@ -7,8 +7,8 @@ const helpers = require('../helpers');
 const Flags = module.exports;
 
 Flags.create = async (req, res) => {
-	const { type, id, reason } = req.body;
-	const flagObj = await api.flags.create(req, { type, id, reason });
+	const { type, id, reason, notifyRemote } = req.body;
+	const flagObj = await api.flags.create(req, { type, id, reason, notifyRemote });
 	helpers.formatApiResponse(200, res, await user.isPrivileged(req.uid) ? flagObj : undefined);
 };
 

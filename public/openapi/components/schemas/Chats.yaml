@@ -27,6 +27,10 @@ RoomObject:
       description: Timestamp of when room was created
     notificationSetting:
       type: number
+      description: The notification setting for the room, 0 = no notifications, 1 = only mentions, 2 = all messages
+    joinLeaveMessages:
+      type: number
+      description: Whether join/leave messages are enabled in the room
 MessageObject:
   type: object
   properties:
@@ -61,6 +65,9 @@ MessageObject:
         uid:
           type: number
           description: A user identifier
+        isLocal:
+          type: boolean
+          description: Whether the user belongs to the local installation or not.
         username:
           type: string
           description: A friendly name for a given user account
@@ -122,6 +129,9 @@ RoomUserList:
           uid:
             type: number
             description: A user identifier
+          isLocal:
+            type: boolean
+            description: Whether the user belongs to the local installation or not.
           username:
             type: string
             description: A friendly name for a given user account

@@ -64,6 +64,11 @@ define('chat', [
 			return alerts.error('[[error:cant-chat-with-yourself]]');
 		}
 
+		// Skip dnd check for remote users
+		if (!utils.isNumber(touid)) {
+			return createChat();
+		}
+
 		api.get(`/users/${touid}/status`).then(({ status }) => {
 			if (status !== 'dnd') {
 				return createChat();

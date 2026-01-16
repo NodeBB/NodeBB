@@ -1,0 +1,20 @@
+{
+	"queue": "Kø",
+	"description": "Administrer registreringskøen og godkjenningsførespurnader.",
+
+	"list.name": "Namn",
+	"list.email": "E-post",
+	"list.ip": "IP-adresse",
+	"list.time": "Tidspunkt",
+	"list.username-spam": "Brukarnamn (spam)",
+	"list.email-spam": "E-post (spam)",
+	"list.ip-spam": "IP (spam)",
+
+	"invitations": "Invitasjonar",
+	"invitations.description": "Administrer invitasjonar sendt til potensielle brukarar.",
+	"invitations.inviter-username": "Inviterande brukarnamn",
+	"invitations.invitee-email": "E-post til inviterte",
+	"invitations.invitee-username": "Brukarnamn til inviterte",
+
+	"invitations.confirm-delete": "Er du sikker på at du vil slette denne invitasjonen?"
+} 

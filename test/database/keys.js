@@ -1,7 +1,5 @@
 'use strict';
 
-
-const async = require('async');
 const assert = require('assert');
 const db = require('../mocks/databasemock');
 
@@ -115,67 +113,29 @@ describe('Key methods', () => {
 		});
 	});
 
-	it('should delete all keys passed in', (done) => {
-		async.parallel([
-			function (next) {
-				db.set('key1', 'value1', next);
-			},
-			function (next) {
-				db.set('key2', 'value2', next);
-			},
-		], (err) => {
-			if (err) {
-				return done(err);
-			}
-			db.deleteAll(['key1', 'key2'], function (err) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 1);
-				async.parallel({
-					key1exists: function (next) {
-						db.exists('key1', next);
-					},
-					key2exists: function (next) {
-						db.exists('key2', next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.key1exists, false);
-					assert.equal(results.key2exists, false);
-					done();
-				});
-			});
-		});
+	it('should delete all keys passed in', async () => {
+		await Promise.all([
+			db.set('key1', 'value1'),
+			db.set('key2', 'value2'),
+		]);
+
+		await db.deleteAll(['key1', 'key2']);
+		const [key1Exists, key2Exists] = await db.exists(['key1', 'key2']);
+		assert.strictEqual(key1Exists, false);
+		assert.strictEqual(key2Exists, false);
 	});
 
-	it('should delete all sorted set elements', (done) => {
-		async.parallel([
-			function (next) {
-				db.sortedSetAdd('deletezset', 1, 'value1', next);
-			},
-			function (next) {
-				db.sortedSetAdd('deletezset', 2, 'value2', next);
-			},
-		], (err) => {
-			if (err) {
-				return done(err);
-			}
-			db.delete('deletezset', (err) => {
-				assert.ifError(err);
-				async.parallel({
-					key1exists: function (next) {
-						db.isSortedSetMember('deletezset', 'value1', next);
-					},
-					key2exists: function (next) {
-						db.isSortedSetMember('deletezset', 'value2', next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.key1exists, false);
-					assert.equal(results.key2exists, false);
-					done();
-				});
-			});
-		});
+	it('should delete all sorted set elements', async () => {
+		await db.sortedSetAddBulk([
+			['deletezset', 1, 'value1'],
+			['deletezset', 2, 'value2'],
+		]);
+
+		await db.delete('deletezset');
+		const [key1Exists, key2Exists] = await db.isSortedSetMembers('deletezset', ['value1', 'value2']);
+
+		assert.strictEqual(key1Exists, false);
+		assert.strictEqual(key2Exists, false);
 	});
 
 	describe('increment', () => {

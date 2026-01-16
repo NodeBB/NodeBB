@@ -38,6 +38,7 @@
 	"settings/tags": "Պիտակներ",
 	"settings/notifications": "Ծանուցումներ",
 	"settings/api": "API մուտք",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Ձայներ",
 	"settings/social": "Սոցիալական ",
 	"settings/cookies": "Cookies",

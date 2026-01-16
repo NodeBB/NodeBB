@@ -199,6 +199,26 @@ describe('socket.io', () => {
 		assert(Array.isArray(users[0].groups));
 	});
 
+	it('should error with invalid data set user reputation', async () => {
+		await assert.rejects(
+			socketAdmin.user.setReputation({ uid: adminUid }, null),
+			{ message: '[[error:invalid-data]]' }
+		);
+		await assert.rejects(
+			socketAdmin.user.setReputation({ uid: adminUid }, {}),
+			{ message: '[[error:invalid-data]]' }
+		);
+		await assert.rejects(
+			socketAdmin.user.setReputation({ uid: adminUid }, { uids: [], value: null }),
+			{ message: '[[error:invalid-data]]' }
+		);
+	});
+
+	it('should set user reputation', async () => {
+		await socketAdmin.user.setReputation({ uid: adminUid }, { uids: [adminUid], value: 10 });
+		assert.strictEqual(10, await db.sortedSetScore('users:reputation', adminUid));
+	});
+
 	it('should reset lockouts', (done) => {
 		socketAdmin.user.resetLockouts({ uid: adminUid }, [regularUid], (err) => {
 			assert.ifError(err);
@@ -249,12 +269,9 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should push unread notifications on reconnect', (done) => {
+	it('should push unread notifications/chats on reconnect', async () => {
 		const socketMeta = require('../src/socket.io/meta');
-		socketMeta.reconnected({ uid: 1 }, {}, (err) => {
-			assert.ifError(err);
-			done();
-		});
+		await socketMeta.reconnected({ uid: 1 }, {});
 	});
 
 

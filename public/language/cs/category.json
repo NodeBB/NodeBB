@@ -1,9 +1,13 @@
 {
     "category": "Kategorie",
     "subcategories": "Podkategorie",
+    "uncategorized": "Uncategorized",
+    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Nové téma",
     "guest-login-post": "Přihlásit se pro přispívání",
     "no-topics": "<strong>V této kategorii zatím nejsou žádné příspěvky.</strong><br />Můžeš být první.",
+    "no-followers": "Nobody on this website is tracking or watching this category. Track or watch this category in order to begin receiving updates.",
     "browsing": "prohlíží",
     "no-replies": "Nikdo ještě neodpověděl",
     "no-new-posts": "Žádné nové příspěvky",

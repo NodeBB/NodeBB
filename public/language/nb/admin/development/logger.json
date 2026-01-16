@@ -1,13 +1,13 @@
 {
 	"logger": "Logger",
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"logger-settings": "Logger-innstillinger",
+	"description": "Ved å aktivere avmerkingsboksene vil du motta logger i terminalen din. Hvis du spesifiserer en sti, blir loggene i stedet lagret i en fil. HTTP-logging er nyttig for å samle statistikk om hvem, når og hva folk besøker på forumet ditt. I tillegg til HTTP-forespørsler kan vi også logge socket.io-hendelser. Socket.io-logging, kombinert med redis-cli monitor, kan være svært nyttig for å lære mer om NodeBBs interne funksjoner.",
+	"explanation": "Merk av/på for loggingsinnstillingene for å aktivere eller deaktivere logging umiddelbart. Ingen omstart nødvendig.",
+	"enable-http": "Aktiver HTTP-logging",
+	"enable-socket": "Aktiver socket.io-hendelseslogging",
+	"file-path": "Sti til loggfil",
+	"file-path-placeholder": "/sti/til/logg/fil.log ::: la stå tomt for å logge til terminalen din",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "Logger Kontrollpanel",
+	"update-settings": "Oppdater logger-innstillinger"
 }

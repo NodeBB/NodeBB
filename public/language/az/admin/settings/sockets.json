@@ -1,0 +1,6 @@
+{
+    "reconnection": "Yenidən qoşulma parametrləri",
+    "max-attempts": "Maksimum yenidən qoşulma cəhdləri",
+    "default-placeholder": "Defolt: %1",
+    "delay": "Yenidən qoşulma gecikməsi"
+}

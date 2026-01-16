@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 'use strict';
 
 const db = require('../../database');
@@ -11,6 +9,7 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 		const nextCid = await db.getObjectField('global', 'nextCid');
+		progress.total = nextCid;
 		const allCids = [];
 		for (let i = 1; i <= nextCid; i++) {
 			allCids.push(i);
@@ -20,7 +19,6 @@ module.exports = {
 			progress.incr(cids.length);
 		}, {
 			batch: 500,
-			progress,
 		});
 	},
 };

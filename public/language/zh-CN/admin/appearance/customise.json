@@ -1,7 +1,7 @@
 {
 	"customise": "定制",
 	"custom-css": "自定义 CSS/SASS",
-	"custom-css.description": "在此输入您的 CSS/LESS 声明，这些声明将在所有其他样式之后应用。",
+	"custom-css.description": "在此处输入您自己的 CSS/SASS 样式，这些样式将在所有其他样式之后应用。",
 	"custom-css.enable": "启用自定义 CSS/SASS",
 
 	"custom-js": "自定义 Javascript",

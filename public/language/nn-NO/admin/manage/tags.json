@@ -1,0 +1,20 @@
+{
+	"manage-tags": "Administrer emneord",
+	"none": "Forumet har ingen innlegg med emneord enno.",
+	"bg-color": "Bakgrunnsfarge",
+	"text-color": "Tekstfarge",
+	"description": "Skildring",
+	"create": "Opprett emneord",
+	"add-tag": "Legg til emneord",
+	"modify": "Tilpass emneord",
+	"rename": "Endre emneord",
+	"delete": "Slett emneord",
+	"search": "Søk etter emneord",
+	"settings": "Innstillingar",
+	"name": "Namn på emneord",
+
+	"alerts.editing": "Redigerer emneord",
+	"alerts.confirm-delete": "Er du sikker på at du vil slette dette emneordet?",
+	"alerts.update-success": "Oppdatering lukkast",
+	"reset-colors": "Tilbakestill fargar"
+}

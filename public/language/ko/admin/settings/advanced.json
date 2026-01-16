@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "기본값: %1",
 	"sockets.delay": "재연결 지연",
 
-	"analytics.settings": "분석 설정",
-	"analytics.max-cache": "분석 캐시 최대 값",
-	"analytics.max-cache-help": "높은 트래픽 상황에서 동시에 활성 사용자 수가 최대 캐시 값보다 많으면 캐시가 지속적으로 고갈될 수 있습니다. (다시 시작 필요)",
 	"compression.settings": "압축 설정",
 	"compression.enable": "압축 사용",
 	"compression.help": "이 설정은 gzip 압축을 활성화합니다. 운영 중인 높은 트래픽 웹 사이트의 경우 최상의 방법은 역방향 프록시 수준에서 압축을 구현하는 것입니다. 여기에서 테스트 목적으로 활성화할 수 있습니다."

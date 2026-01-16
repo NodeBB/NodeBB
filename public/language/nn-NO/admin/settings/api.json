@@ -1,0 +1,29 @@
+{
+	"tokens": "Token",
+	"settings": "Innstillingar",
+	"lead-text": "Administrer API-token og tilgangsinnstillingar her.",
+	"intro": "API-token kan brukast for å få tilgang til forumets API. Ver forsiktig med deling av token.",
+	"warning": "Merk: For å sikre kommunikasjon, bør HTTPS vere aktivert.",
+	"docs": "Les dokumentasjonen for meir informasjon om API-konfigurasjon.",
+
+	"require-https": "Krev HTTPS",
+	"require-https-caveat": "Dette alternativet sikrar at all API-kommunikasjon går over HTTPS. Dette bør vere aktivert for å sikre dataene dine.",
+
+	"uid": "Brukar-ID",
+	"token": "Token",
+	"uid-help-text": "Vel ein brukar for å generere token for API-tilgang.",
+	"description": "Skildring",
+	"last-seen": "Sist sett",
+	"created": "Oppretta",
+	"create-token": "Opprett token",
+	"update-token": "Oppdater token",
+	"master-token": "Master-token",
+	"last-seen-never": "Aldri sett",
+	"no-description": "Ingen skildring",
+	"actions": "Handlingar",
+	"edit": "Rediger",
+	"roll": "Roter",
+
+	"delete-confirm": "Er du sikker på at du vil slette dette tokenet?",
+	"roll-confirm": "Er du sikker på at du vil rotere dette tokenet?"
+}

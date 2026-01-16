@@ -1,0 +1,21 @@
+{
+	"name": "Verden",
+	"popular": "Populære tema",
+	"recent": "Alle tema",
+	"help": "Hjelp",
+
+	"help.title": "Hva er denne siden?",
+	"help.intro": "Welcome to your corner of the fediverse.",
+	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
+	"help.build": "Det kan hende det ikke er så mange innlegg her i starten, det er helt normalt. Du vil begynne å se mer innhold her etter hvert som du begynner å følge andre brukere.",
+	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
+	"help.next-generation": "Dette er neste generasjon sosiale medier, begynn å bidra i dag!",
+
+	"onboard.title": "Ditt vindu til fødiverset...",
+	"onboard.what": "Dette er din personlige kategori, som kun består av innhold funnet utenfor dette forumet. Om noe vises på denne siden, avhenger av om du følger dem, eller om innlegget ble delt av noen du følger.",
+	"onboard.why": "Det skjer mye utenfor dette forumet, og ikke alt er relevant for dine interesser. Derfor er det å følge folk den beste måten å vise at du vil se mer fra noen.",
+	"onboard.how": "I mellomtiden kan du klikke på snarveisknappene øverst for å se hva annet dette forumet inneholder, og begynne å oppdage nytt innhold!",
+
+	"show-categories": "Vis kategorier",
+	"hide-categories": "Skjul kategorier"
+}

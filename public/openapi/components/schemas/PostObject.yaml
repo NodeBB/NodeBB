@@ -7,8 +7,20 @@ PostObject:
     tid:
       type: number
       description: A topic identifier
+    toPid:
+      type: number
+      description: The post that this post is in reply to
+      nullable: true
+    url:
+      type: string
+      description: |
+        A permalink to the post content.
+        For posts received via ActivityPub, it is the url of the original piece of content.
     content:
       type: string
+    sourceContent:
+      type: string
+      nullable: true
     uid:
       type: number
       description: A user identifier
@@ -31,6 +43,9 @@ PostObject:
         uid:
           type: number
           description: A user identifier
+        isLocal:
+          type: boolean
+          description: Whether the user belongs to the local installation or not.
         username:
           type: string
           description: A friendly name for a given user account
@@ -140,3 +155,233 @@ PostObject:
       type: boolean
     replies:
       type: number
+PostDataObject:
+  description: The output as returned from `Posts.getPostsData`
+  allOf:
+    - type: object
+      properties:
+        pid:
+          type: number
+        uid:
+          type: number
+          description: A user identifier
+        tid:
+          type: number
+          description: A topic identifier
+        content:
+          type: string
+        timestamp:
+          type: number
+        votes:
+          type: number
+        deleted:
+          type: number
+        upvotes:
+          type: number
+        downvotes:
+          type: number
+        announces:
+          type: number
+        bookmarks:
+          type: number
+        deleterUid:
+          type: number
+        edited:
+          type: number
+        timestampISO:
+          type: string
+          description: An ISO 8601 formatted date string (complementing `timestamp`)
+        editedISO:
+          type: string
+        index:
+          type: number
+        user:
+          type: object
+          properties:
+            uid:
+              type: number
+              description: A user identifier
+            isLocal:
+              type: boolean
+              description: Whether the user belongs to the local installation or not.
+            username:
+              type: string
+              description: A friendly name for a given user account
+            displayname:
+              type: string
+              description: This is either username or fullname depending on forum and user settings
+            userslug:
+              type: string
+              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                removed, etc.)
+            reputation:
+              type: number
+            postcount:
+              type: number
+            topiccount:
+              type: number
+            picture:
+              type: string
+              nullable: true
+            signature:
+              type: string
+            banned:
+              type: number
+            banned:expire:
+              type: number
+            status:
+              type: string
+            lastonline:
+              type: number
+            groupTitle:
+              nullable: true
+              type: string
+            groupTitleArray:
+              type: array
+              items:
+                type: string
+            muted:
+              type: boolean
+              description: Whether or not the user has been muted.
+            mutedUntil:
+              type: number
+              description: A UNIX timestamp representing the moment a muted state will be lifted.
+              nullable: true
+            icon:text:
+              type: string
+              description: A single-letter representation of a username. This is used in the
+                auto-generated icon given to users without
+                an avatar
+            icon:bgColor:
+              type: string
+              description: A six-character hexadecimal colour code assigned to the user. This
+                value is used in conjunction with
+                `icon:text` for the user's auto-generated
+                icon
+              example: "#f44336"
+            lastonlineISO:
+              type: string
+            banned_until:
+              type: number
+            banned_until_readable:
+              type: string
+            selectedGroups:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  slug:
+                    type: string
+                  labelColor:
+                    type: string
+                  textColor:
+                    type: string
+                  icon:
+                    type: string
+                  userTitle:
+                    type: string
+            custom_profile_info:
+              type: array
+              items:
+                type: object
+                properties:
+                  content:
+                    type: string
+                    description: HTML that is injected into `topic.tpl` of themes that support custom profile info
+        editor:
+          nullable: true
+        bookmarked:
+          type: boolean
+        upvoted:
+          type: boolean
+        downvoted:
+          type: boolean
+        attachments:
+          type: array
+        uploads:
+          type: array
+        replies:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+            users:
+              type: array
+              items:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: A friendly name for a given user account
+                  userslug:
+                    type: string
+                    description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                      removed, etc.)
+                  picture:
+                    type: string
+                  uid:
+                    type: number
+                    description: A user identifier
+                  icon:text:
+                    type: string
+                    description: A single-letter representation of a username. This is used in the
+                      auto-generated icon given to users without
+                      an avatar
+                  icon:bgColor:
+                    type: string
+                    description: A six-character hexadecimal colour code assigned to the user. This
+                      value is used in conjunction with
+                      `icon:text` for the user's auto-generated
+                      icon
+                    example: "#f44336"
+                  administrator:
+                    type: boolean
+            text:
+              type: string
+            count:
+              type: number
+            hasSingleImmediateReply:
+              type: boolean
+        selfPost:
+          type: boolean
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              id:
+                type: number
+              timestamp:
+                type: number
+              timestampISO:
+                type: string
+        topicOwnerPost:
+          type: boolean
+        display_edit_tools:
+          type: boolean
+        display_delete_tools:
+          type: boolean
+        display_moderator_tools:
+          type: boolean
+        display_move_tools:
+          type: boolean
+        display_post_menu:
+          type: boolean
+        flagId:
+          type: number
+          description: The flag identifier, if this particular post has been flagged before
+    - type: object
+      description: Optional properties that may or may not be present (except for `pid`, which is always present, and is only here as a hack to pass validation)
+      properties:
+        pid:
+          type: number
+          description: A post identifier
+        sourceContent:
+          type: string
+          description: The markdown equivalent of a remote post content, as received (or fetched) from the remote site.
+      required:
+        - pid

@@ -103,10 +103,8 @@ export function enableFilterForm() {
 		});
 	} else {
 		// Persona; parse ajaxify data to set form values to reflect current filters
-		for (const filter in ajaxify.data.filters) {
-			if (ajaxify.data.filters.hasOwnProperty(filter)) {
-				$filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
-			}
+		for (const [filter, value] of Object.entries(ajaxify.data.filters)) {
+			$filtersEl.find('[name="' + filter + '"]').val(value);
 		}
 		$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 
@@ -213,13 +211,34 @@ export function handleBulkActions() {
 		const subselector = e.target.closest('[data-action]');
 		if (subselector) {
 			const action = subselector.getAttribute('data-action');
+			let confirmed;
+			if (action === 'bulk-purge') {
+				confirmed = new Promise((resolve, reject) => {
+					bootbox.confirm('[[flags:confirm-purge]]', (confirmed) => {
+						if (confirmed) {
+							resolve();
+						} else {
+							reject(new Error('[[flags:purge-cancelled]]'));
+						}
+					});
+				});
+			}
 			const flagIds = getSelected();
-			const promises = flagIds.map((flagId) => {
+			const promises = flagIds.map(async (flagId) => {
 				const data = {};
-				if (action === 'bulk-assign') {
-					data.assignee = app.user.uid;
-				} else if (action === 'bulk-mark-resolved') {
-					data.state = 'resolved';
+				switch (action) {
+					case 'bulk-assign': {
+						data.assignee = app.user.uid;
+						break;
+					}
+					case 'bulk-mark-resolved': {
+						data.state = 'resolved';
+						break;
+					}
+					case 'bulk-purge': {
+						await confirmed;
+						return api.del(`/flags/${flagId}`);
+					}
 				}
 				return api.put(`/flags/${flagId}`, data);
 			});

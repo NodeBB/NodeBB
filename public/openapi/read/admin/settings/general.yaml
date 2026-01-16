@@ -1,0 +1,27 @@
+get:
+  tags:
+    - admin
+  summary: Get system settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  routes:
+                    type: array
+                  postSharing:
+                    type: array
+                  languages:
+                    type: array
+                  autoDetectLang:
+                    type: number
+                additionalProperties:
+                  type: object
+                  description: Most of the settings pages have their values loaded on the client-side, so the settings are not exposed server-side.
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

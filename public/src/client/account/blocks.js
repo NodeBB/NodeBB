@@ -33,6 +33,7 @@ define('forum/account/blocks', [
 					return alerts.error(err);
 				}
 				if (!data.users.length) {
+					blockListEl.find('[component="blocks/search/match"]').remove();
 					noUsersEl.removeClass('hidden');
 					return;
 				}

@@ -38,6 +38,7 @@
 	"settings/tags": "Tagi",
 	"settings/notifications": "Powiadomienia",
 	"settings/api": "Dostęp do API",
+	"settings/activitypub": "Federacja (ActivityPub)",
 	"settings/sounds": "Dźwięki",
 	"settings/social": "Społecznościowe",
 	"settings/cookies": "Ciasteczka",

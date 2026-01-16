@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Urážlivý",
 	"modal-reason-other": "Iné (popíšte nižšie)",
 	"modal-reason-custom": "Dôvod oznamovania tohto obsahu...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Odoslať správu",
 	"modal-submit-success": "Obsah bol označený na moderovanie.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 flags updated",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."

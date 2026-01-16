@@ -33,7 +33,7 @@ async function registerAndLoginUser(req, res, userData) {
 		userData.register = true;
 		req.session.registration = userData;
 
-		if (req.body.noscript === 'true') {
+		if (req.body?.noscript === 'true') {
 			res.redirect(`${nconf.get('relative_path')}/register/complete`);
 			return;
 		}
@@ -49,7 +49,10 @@ async function registerAndLoginUser(req, res, userData) {
 
 	const uid = await user.create(userData);
 	if (res.locals.processLogin) {
-		await authenticationController.doLogin(req, uid);
+		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
+		if (hasLoginPrivilege) {
+			await authenticationController.doLogin(req, uid);
+		}
 	}
 
 	// Distinguish registrations through invites from direct ones
@@ -61,7 +64,10 @@ async function registerAndLoginUser(req, res, userData) {
 		]);
 	}
 	await user.deleteInvitationKey(userData.email, userData.token);
-	const next = req.session.returnTo || `${nconf.get('relative_path')}/`;
+	let next = req.session.returnTo || `${nconf.get('relative_path')}/`;
+	if (req.loggedIn && next === `${nconf.get('relative_path')}/login`) {
+		next = `${nconf.get('relative_path')}/`;
+	}
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
 	req.session.returnTo = complete.next;
 	return complete;
@@ -109,7 +115,7 @@ authenticationController.register = async function (req, res) {
 
 		const data = await registerAndLoginUser(req, res, userData);
 		if (data) {
-			if (data.uid && req.body.userLang) {
+			if (data.uid && req.body?.userLang) {
 				await user.setSetting(data.uid, 'userLang', req.body.userLang);
 			}
 			res.json(data);
@@ -256,6 +262,8 @@ authenticationController.login = async (req, res, next) => {
 			const username = await user.getUsernameByEmail(req.body.username);
 			if (username !== '[[global:guest]]') {
 				req.body.username = username;
+			} else {
+				return errorHandler(req, res, '[[error:invalid-email]]', 400);
 			}
 		}
 		if (isEmailLogin || isUsernameLogin) {
@@ -287,7 +295,7 @@ function continueLogin(strategy, req, res, next) {
 		}
 
 		// Alter user cookie depending on passed-in option
-		if (req.body.remember === 'on') {
+		if (req.body?.remember === 'on') {
 			const duration = meta.getSessionTTLSeconds() * 1000;
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
@@ -324,7 +332,7 @@ function continueLogin(strategy, req, res, next) {
 }
 
 function redirectAfterLogin(req, res, destination) {
-	if (req.body.noscript === 'true') {
+	if (req.body?.noscript === 'true') {
 		res.redirect(`${destination}?loggedin`);
 	} else {
 		res.status(200).send({
@@ -414,6 +422,10 @@ authenticationController.localLogin = async function (req, username, password, n
 	}
 
 	const userslug = slugify(username);
+	if (!utils.isUserNameValid(username) || !userslug) {
+		return next(new Error('[[error:invalid-username]]'));
+	}
+
 	const uid = await user.getUidByUserslug(userslug);
 	try {
 		const [userData, isAdminOrGlobalMod, canLoginIfBanned] = await Promise.all([
@@ -453,7 +465,7 @@ authenticationController.localLogin = async function (req, username, password, n
 	}
 };
 
-authenticationController.logout = async function (req, res, next) {
+authenticationController.logout = async function (req, res) {
 	if (!req.loggedIn || !req.sessionID) {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 		return res.status(200).send('not-logged-in');
@@ -469,21 +481,22 @@ authenticationController.logout = async function (req, res, next) {
 
 		await user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000));
 		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
-		await plugins.hooks.fire('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
+		await plugins.hooks.fire('static:user.loggedOut', { req, res, uid, sessionID });
 
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in(`sess_${sessionID}`).emit('checkSession', 0);
 		const payload = {
 			next: `${nconf.get('relative_path')}/`,
 		};
-		plugins.hooks.fire('filter:user.logout', payload);
+		await plugins.hooks.fire('filter:user.logout', payload);
 
-		if (req.body.noscript === 'true') {
+		if (req.body?.noscript === 'true' || res.locals.logoutRedirect === true) {
 			return res.redirect(payload.next);
 		}
 		res.status(200).send(payload);
 	} catch (err) {
-		next(err);
+		winston.error(`${req.method} ${req.originalUrl}\n${err.stack}`);
+		res.status(500).send(err.message);
 	}
 };
 

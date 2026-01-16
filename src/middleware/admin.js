@@ -47,7 +47,6 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 		}
 	}
 
-	// If user does not have password
 	const hasPassword = await user.hasPassword(req.uid);
 	if (!hasPassword) {
 		return next();

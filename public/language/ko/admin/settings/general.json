@@ -15,7 +15,7 @@
 	"title-layout": "제목 레이아웃",
 	"title-layout-help": "브라우저 제목을 구성할 방식을 정의합니다. 예를 들어, {pageTitle} | {browserTitle} 형식으로 구성됩니다.",
 	"description.placeholder": "커뮤니티에 대한 간단한 설명",
-	"description": "사이트 설명",
+	"description": "Site Description",
 	"keywords": "사이트 키워드",
 	"keywords-placeholder": "커뮤니티를 설명하는 키워드, 쉼표로 구분",
 	"logo-and-icons": "사이트 로고 & 아이콘",
@@ -48,5 +48,16 @@
 	"background-color-help": "PWA로 설치된 웹사이트의 스플래시 화면 배경색으로 사용되는 색상",
 	"undo-timeout": "실행 취소 시간 제한",
 	"undo-timeout-help": "조정자는 토픽 이동과 같은 일부 작업을 통해 특정 기간 내에 작업을 취소할 수 있습니다. 되돌리기를 완전히 비활성화하려면 0으로 설정합니다.",
-	"topic-tools": "토픽 도구"
+	"topic-tools": "토픽 도구",
+	"home-page": "홈 페이지",
+	"home-page-route": "홈 페이지 경로",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "사용자 정의 경로",
+	"allow-user-home-pages": "사용자 홈 페이지 허용",
+	"home-page-title": "홈 페이지 제목 (default \"Home\")",
+	"default-language": "기본 언어",
+	"auto-detect": "비회원의 언어 설정 자동 감지",
+	"default-language-help": "기본 언어는 포럼을 방문하는 모든 사용자의 언어 설정을 결정합니다.<br />개별 사용자는 계정 설정 페이지에서 기본 언어를 재정의할 수 있습니다.",
+	"post-sharing": "게시물 공유",
+	"info-plugins-additional": "플러그인은 게시물을 공유하는 데 사용할 수 있는 추가 네트워크를 추가할 수 있습니다."
 }

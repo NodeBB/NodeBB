@@ -22,6 +22,7 @@
 	"delete-content": "删除用户内容",
 	"purge": "删除用户和内容",
 	"download-csv": "下载CSV",
+	"custom-user-fields": "自定义用户字段",
 	"manage-groups": "管理用户组",
 	"set-reputation": "设置声望",
 	"add-group": "添加至群组",

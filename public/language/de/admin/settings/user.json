@@ -64,6 +64,7 @@
 	"show-email": "Zeige E-Mail-Adresse",
 	"show-fullname": "Zeige vollen Namen",
 	"restrict-chat": "Erlaube nur Chatnachrichten von Benutzern denen ich folge",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Öffne externe Links in einem neuen Tab",
 	"topic-search": "Suchen innerhalb von Themen aktivieren",
 	"update-url-with-post-index": " URL während Themen durchsuchen mit dem Beitragsindex aktivieren",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Sekunden, bevor ein neuer Nutzer seinen ersten Beitrag verfassen kann",
 	"restrictions.seconds-edit-after-new": "Anzahl der Sekunden, die ein Beitrag für neue Benutzer bearbeitbar bleibt (zum Deaktivieren auf 0 setzen)",
 	"restrictions.milliseconds-between-messages": "Zeit zwischen Chat-Nachrichten für neue Benutzer (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Gruppen auswählen, die von den neuen Benutzerbeschränkungen ausgenommen werden sollen"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Gruppen auswählen, die von den neuen Benutzerbeschränkungen ausgenommen werden sollen",
+	"guest-settings": "Gasteinstellungen",
+	"handles.enabled": "Gastzugänge erlauben",
+	"handles.enabled-help": "Diese Option zeigt ein neues Feld an, in dem Gäste einen Namen auswählen können, der jedem von ihnen erstellten Beitrag zugeordnet werden soll. Wenn sie deaktiviert sind, werden sie einfach „Gast“ genannt.",
+	"topic-views.enabled": "Gästen erlauben, die gezählte Anzahl der Themenaufrufe zu erhöhen",
+	"reply-notifications.enabled": "Erlauben Sie Gästen, Antwortbenachrichtigungen zu erstellen"
 }

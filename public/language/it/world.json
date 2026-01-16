@@ -1,0 +1,21 @@
+{
+	"name": "Mondo",
+	"popular": "Discussioni popolari",
+	"recent": "Tutte le discussioni",
+	"help": "Aiuto",
+
+	"help.title": "Cos'è questa pagina?",
+	"help.intro": "Benvenuto nel tuo angolo del fediverso.",
+	"help.fediverse": "Il \"fediverso\" è una rete di applicazioni e siti web interconnessi che comunicano tra loro e i cui utenti possono vedersi. Questo forum è federato e può interagire con quel social web (o \"fediverso\"). Questa pagina è il tuo angolo di fediverso. Si tratta esclusivamente di discussioni create da — e condivisi da — utenti che <strong>tu</strong> segui.",
+	"help.build": "Potrebbero non esserci molte discussioni da cui iniziare, è normale. Inizierai a vedere più contenuti qui col tempo, quando inizierai a seguire altri utenti.",
+	"help.federating": "Allo stesso modo, se gli utenti esterni a questo forum iniziano a <em>seguirti</em>, i tuoi post inizieranno ad apparire anche su quelle app e quei siti web.",
+	"help.next-generation": "Questa è la prossima generazione di social media, inizia a contribuire oggi!",
+
+	"onboard.title": "La tua finestra sul fediverso...",
+	"onboard.what": "Questa è la tua categoria personalizzata composta solo da contenuti trovati al di fuori di questo forum. La presenza di qualcosa in questa pagina dipende dal fatto che tu la segua o che il post sia stato condiviso da qualcuno che segui.",
+	"onboard.why": "Ci sono molte cose che accadono al di fuori di questo forum e non tutte sono rilevanti per i tuoi interessi. Ecco perché seguire le persone è il modo migliore per segnalare che vuoi vedere di più da qualcuno.",
+	"onboard.how": "Nel frattempo, puoi cliccare sui pulsanti di scelta rapida in alto per vedere cos'altro conosce questo forum e iniziare a scoprire nuovi contenuti!",
+
+	"show-categories": "Mostra categorie",
+	"hide-categories": "Nascondi categorie"
+}

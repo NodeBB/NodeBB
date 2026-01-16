@@ -36,8 +36,10 @@ UserEmail.remove = async function (uid, sessionId) {
 			email: '',
 			'email:confirmed': 0,
 		}),
-		db.sortedSetRemove('email:uid', email.toLowerCase()),
-		db.sortedSetRemove('email:sorted', `${email.toLowerCase()}:${uid}`),
+		db.sortedSetRemoveBulk([
+			['email:uid', email.toLowerCase()],
+			['email:sorted', `${email.toLowerCase()}:${uid}`],
+		]),
 		user.email.expireValidation(uid),
 		sessionId ? user.auth.revokeAllSessions(uid, sessionId) : Promise.resolve(),
 		events.log({
@@ -53,7 +55,7 @@ UserEmail.getEmailForValidation = async (uid) => {
 	let email = '';
 	// check email from confirmObj
 	const code = await db.get(`confirm:byUid:${uid}`);
-	const confirmObj = await db.getObject(`confirm:${code}`);
+	const confirmObj = code ? await db.getObject(`confirm:${code}`) : null;
 	if (confirmObj && confirmObj.email && parseInt(uid, 10) === parseInt(confirmObj.uid, 10)) {
 		email = confirmObj.email;
 	}
@@ -122,29 +124,28 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		};
 	}
 
-	const confirm_code = utils.generateUUID();
-	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
-
-	const { emailConfirmInterval, emailConfirmExpiry } = meta.config;
-
 	// If no email passed in (default), retrieve email from uid
 	if (!options.email || !options.email.length) {
 		options.email = await user.getUserField(uid, 'email');
 	}
 	if (!options.email) {
+		winston.warn(`[user/email] No email found for uid ${uid}`);
 		return;
 	}
 
+	const { emailConfirmInterval, emailConfirmExpiry } = meta.config;
 	if (!options.force && !await UserEmail.canSendValidation(uid, options.email)) {
 		throw new Error(`[[error:confirm-email-already-sent, ${emailConfirmInterval}]]`);
 	}
 
+	const confirm_code = utils.generateUUID();
+	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
 	const username = await user.getUserField(uid, 'username');
 	const data = await plugins.hooks.fire('filter:user.verify', {
 		uid,
 		username,
 		confirm_link,
-		confirm_code: await plugins.hooks.fire('filter:user.verify.code', confirm_code),
+		confirm_code,
 		email: options.email,
 
 		subject: options.subject || '[[email:email.verify-your-email.subject]]',

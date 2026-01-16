@@ -3,7 +3,7 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1个节点在%2ms内响应！",
 	"host": "主机",
-	"primary": "primary / jobs",
+	"primary": "主节点 / 任务",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "在线",
@@ -19,7 +19,7 @@
 
 	"registered": "已注册",
 	"sockets": "接口",
-	"connection-count": "Connection Count",
+	"connection-count": "连接数",
 	"guests": "游客",
 
 	"info": "信息"

@@ -50,7 +50,7 @@ module.exports = function (User) {
 			lastonline: timestamp,
 			status: 'online',
 		};
-		['picture', 'fullname', 'location', 'birthday'].forEach((field) => {
+		['picture', 'fullname', 'birthday'].forEach((field) => {
 			if (data[field]) {
 				userData[field] = data[field];
 			}
@@ -109,11 +109,13 @@ module.exports = function (User) {
 		}
 
 		if (data.email && userData.uid > 1) {
-			await User.email.sendValidationEmail(userData.uid, {
-				email: data.email,
-				template: 'welcome',
-				subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
-			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
+			if (!data.token || !await User.isInviteTokenValid(data.token, data.email)) {
+				await User.email.sendValidationEmail(userData.uid, {
+					email: data.email,
+					template: 'welcome',
+					subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
+				}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
+			}
 		}
 		if (userNameChanged) {
 			await User.notifications.sendNameChangeNotification(userData.uid, userData.username);
@@ -184,7 +186,7 @@ module.exports = function (User) {
 		let { username } = userData;
 		while (true) {
 			/* eslint-disable no-await-in-loop */
-			const exists = await meta.userOrGroupExists(username);
+			const exists = await meta.slugTaken(username);
 			if (!exists) {
 				return numTries ? username : null;
 			}

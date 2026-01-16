@@ -12,6 +12,8 @@
 	"container.card": "Karta",
 	"container.card-header": "Nagłówek karty",
 	"container.card-body": "Treść karty",
+	"container.title": "Tytuł",
+	"container.body": "Treść",
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Czy na pewno chcesz usunąć ten widget?",

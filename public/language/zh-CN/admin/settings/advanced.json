@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "默认：%1",
 	"sockets.delay": "重连等待时间",
 
-	"analytics.settings": "分析设置",
-	"analytics.max-cache": "分析缓存最大值",
-	"analytics.max-cache-help": "在大流量的服务器中，如果同时活跃的用户比这个缓存最大值要多，缓存可能会被持续耗尽。（需要重新启动）",
 	"compression.settings": "压缩设置",
 	"compression.enable": "启用压缩",
 	"compression.help": "此设置启用 gzip 压缩。对大流量的生产环境网站，最佳的启用压缩的方法是在反向代理中实现。您可以出于测试目的启用这个设置。"

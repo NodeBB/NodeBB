@@ -7,5 +7,7 @@
     "alltime": "همه زمانها",
     "no-recent-topics": "هیچ موضوع تازه‌ای نیست.",
     "no-popular-topics": "هیچ موضوع پربازدیدی وجود ندارد",
-    "load-new-posts": "بارگذاری فرسته‌های جدید"
+    "load-new-posts": "بارگذاری پست های جدید",
+    "uncategorized.title": "All known topics",
+    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
 }

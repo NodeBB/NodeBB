@@ -1,0 +1,29 @@
+{
+	"tokens": "Tokenlər",
+	"settings": "Parametrlər",
+	"lead-text": "Bu səhifədən NodeBB-də Write API-yə girişi konfiqurasiya edə bilərsiniz.",
+	"intro": "Varsayılan olaraq, Write API istifadəçiləri seans kukisi əsasında autentifikasiya edir, lakin NodeBB bu səhifə vasitəsilə yaradılan tokenlər vasitəsilə Taşıyıcının autentifikasiyasını da dəstəkləyir.",
+	"warning": "<strong>Diqqətli olun</strong> - tokenlərə şifrə kimi yanaşın. Əgər onlar sızdırılıbsa, hesabınız təhlükə altına düşmüş hesab olunmalıdır.",
+	"docs": "Tam API spesifikasiyasına daxil olmaq üçün buraya klikləyin",
+
+	"require-https": "API istifadəsini yalnız HTTPS vasitəsilə tələb edin",
+	"require-https-caveat": "<strong>Qeyd</strong>: Yük balanslaşdırıcılarını əhatə edən bəzi qurğular HTTP istifadə edərək öz sorğularını NodeBB-yə proksiləşdirə bilər, bu halda bu seçim qeyri-aktiv olaraq qalmalıdır.",
+
+	"uid": "İstifadəçi ID-si",
+	"token": "Token",
+	"uid-help-text": "Bu işarə ilə əlaqələndirmək üçün İstifadəçi ID-sini göstərin. Əgər istifadəçi identifikatoru <code>0</code> olarsa, o, <code>_uid</code> parametrinə əsasən digər istifadəçilərin şəxsiyyətini qəbul edə bilən <em>əsas token</em> hesab ediləcək.",
+	"description": "Təsvir",
+	"last-seen": "Sonuncu dəfə görüldü",
+	"created": "Yaradıldı",
+	"create-token": "Token yarat",
+	"update-token": "Tokeni yenilə",
+	"master-token": "Master token",
+	"last-seen-never": "Bu açar heç istifadə edilməyib.",
+	"no-description": "Təsvir qeyd olunmayıb.",
+	"actions": "Fəaliyyətlər",
+	"edit": "Redaktə et",
+	"roll": "Roll",
+
+	"delete-confirm": "Bu tokeni silmək istədiyinizə əminsiniz? Onu bərpa etmək mümkün olmayacaq.",
+	"roll-confirm": "Bu tokeni bərpa etmək istədiyinizə əminsiniz? Köhnə token dərhal ləğv ediləcək və onu bərpa etmək mümkün olmayacaq."
+}

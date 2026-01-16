@@ -7,23 +7,23 @@
 	"docs": "单击此处访问完整的 API 规范",
 
 	"require-https": "要求 API 只能通过 HTTPS 调用",
-	"require-https-caveat": "<strong>注意：</strong>一些负载均衡器可能会使用 HTTP 代理对 NodeBB 的请求，在此情况下此选项应保持关闭状态。",
+	"require-https-caveat": "<strong>注意：</strong>一些负载均衡器可能会使用 HTTP 代理向 NodeBB 发送请求，在这种情况下，应继续禁用此选项。",
 
 	"uid": "用户ID",
 	"token": "令牌",
-	"uid-help-text": "指定要与此令牌关联的用户ID。如果用户ID是 <code>0</code>, 它将被实危 <em>最高</em> 令牌，可以通过 <code>_uid</code> 参数假定其他用户的身份",
+	"uid-help-text": "指定与此令牌关联的用户 ID 。如果用户 ID 为 <code>0</code>, 它将被视为 <em>主</em> 令牌，可以根据 <code>_uid</code> 参数假定其他用户的身份。",
 	"description": "说明",
-	"last-seen": "最后一次查看",
+	"last-seen": "最后一次使用",
 	"created": "创建",
 	"create-token": "创建令牌",
 	"update-token": "更新令牌",
 	"master-token": "主令牌",
-	"last-seen-never": "从未被使用过的键值",
+	"last-seen-never": "此令牌从未被使用过。",
 	"no-description": "未指定说明。",
 	"actions": "操作",
 	"edit": "编辑",
-	"roll": "滚动",
+	"roll": "重置",
 
-	"delete-confirm": "你确定要删除这个令牌吗？它将无法恢复。",
-	"roll-confirm": "你确定要重新生成该令牌吗？旧令牌将被立刻废止，并且无法恢复。"
+	"delete-confirm": "您确定您要删除此令牌吗？将无法恢复。",
+	"roll-confirm": "您确定您要重置此令牌吗？旧令牌将立即失效，无法恢复。"
 }

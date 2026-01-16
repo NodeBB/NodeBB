@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const pathPrefix = path.join(nconf.get('upload_path'));
-	const searchRegex = /\/assets\/uploads\/(files\/[^\s")]+\.?[\w]*)/g;
+	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
 
 	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
 	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
@@ -46,42 +46,50 @@ module.exports = function (Posts) {
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads
 
-		const [content, currentUploads, isMainPost] = await Promise.all([
-			Posts.getPostField(pid, 'content'),
-			Posts.uploads.list(pid),
+		const [postData, isMainPost] = await Promise.all([
+			Posts.getPostFields(pid, ['content', 'uploads']),
 			Posts.isMain(pid),
 		]);
 
+		const content = postData.content || '';
+		const currentUploads = postData.uploads || [];
+
 		// Extract upload file paths from post content
 		let match = searchRegex.exec(content);
-		const uploads = [];
+		let uploads = new Set();
 		while (match) {
-			uploads.push(match[1].replace('-resized', ''));
+			uploads.add(match[1].replace('-resized', ''));
 			match = searchRegex.exec(content);
 		}
 
 		// Main posts can contain topic thumbs, which are also tracked by pid
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
-			let thumbs = await topics.thumbs.get(tid);
+			let thumbs = await topics.thumbs.get(tid, { thumbsOnly: true });
 			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
-			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
-			uploads.push(...thumbs);
+			thumbs.forEach(t => uploads.add(t));
 		}
+
+		uploads = Array.from(uploads);
 
 		// Create add/remove sets
 		const add = uploads.filter(path => !currentUploads.includes(path));
 		const remove = currentUploads.filter(path => !uploads.includes(path));
-		await Promise.all([
-			Posts.uploads.associate(pid, add),
-			Posts.uploads.dissociate(pid, remove),
-		]);
+		await Posts.uploads.associate(pid, add);
+		await Posts.uploads.dissociate(pid, remove);
 	};
 
-	Posts.uploads.list = async function (pid) {
-		return await db.getSortedSetMembers(`post:${pid}:uploads`);
+	Posts.uploads.list = async function (pids) {
+		const isArray = Array.isArray(pids);
+		if (isArray) {
+			const uploads = await Posts.getPostsFields(pids, ['uploads']);
+			return uploads.map(p => p.uploads || []);
+		}
+
+		const uploads = await Posts.getPostField(pids, 'uploads');
+		return uploads;
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {
@@ -102,7 +110,9 @@ module.exports = function (Posts) {
 		const tsPrefix = /^\d{13}-/;
 		files = files.filter(filename => tsPrefix.test(filename));
 
-		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
+		files = await Promise.all(files.map(
+			async filename => (await Posts.uploads.isOrphan(`/files/${filename}`) ? `/files/${filename}` : null)
+		));
 		files = files.filter(Boolean);
 
 		return files;
@@ -142,46 +152,50 @@ module.exports = function (Posts) {
 			filePaths = [filePaths];
 		}
 
-		if (process.platform === 'win32') {
-			// windows path => 'files\\1685368788211-1-profileimg.jpg'
-			// turn it into => 'files/1685368788211-1-profileimg.jpg'
-			filePaths.forEach((file) => {
-				file.path = file.path.split(path.sep).join(path.posix.sep);
-			});
-		}
+		// windows path => 'files\\1685368788211-1-profileimg.jpg'
+		// linux path => files/1685368788211-1-profileimg.jpg
+		// turn them into => '/files/1685368788211-1-profileimg.jpg'
+		filePaths.forEach((file) => {
+			file.path = `/${file.path.split(path.sep).join(path.posix.sep)}`;
+		});
 
 		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);
 		return await Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
 	};
 
 	Posts.uploads.associate = async function (pid, filePaths) {
-		// Adds an upload to a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
 		if (!filePaths.length) {
 			return;
 		}
 		filePaths = await _filterValidPaths(filePaths); // Only process files that exist and are within uploads directory
+		const currentUploads = await Posts.uploads.list(pid);
+		filePaths.forEach((path) => {
+			if (!currentUploads.includes(path)) {
+				currentUploads.push(path);
+			}
+		});
 
 		const now = Date.now();
-		const scores = filePaths.map((p, i) => now + i);
 		const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
+
 		await Promise.all([
-			db.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
+			db.setObjectField(`post:${pid}`, 'uploads', JSON.stringify(currentUploads)),
 			db.sortedSetAddBulk(bulkAdd),
 			Posts.uploads.saveSize(filePaths),
 		]);
 	};
 
 	Posts.uploads.dissociate = async function (pid, filePaths) {
-		// Removes an upload from a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
 		if (!filePaths.length) {
 			return;
 		}
-
+		let currentUploads = await Posts.uploads.list(pid);
+		currentUploads = currentUploads.filter(upload => !filePaths.includes(upload));
 		const bulkRemove = filePaths.map(path => [`upload:${md5(path)}:pids`, pid]);
 		const promises = [
-			db.sortedSetRemove(`post:${pid}:uploads`, filePaths),
+			db.setObjectField(`post:${pid}`, 'uploads', JSON.stringify(currentUploads)),
 			db.sortedSetRemoveBulk(bulkRemove),
 		];
 
@@ -192,7 +206,9 @@ module.exports = function (Posts) {
 				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
 			)).filter(Boolean);
 
-			const uploaderUids = (await db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+			const uploaderUids = (await db.getObjectsFields(
+				deletePaths.map(path => `upload:${md5(path)}`, ['uid'])
+			)).map(o => (o ? o.uid || null : null));
 			await Promise.all(uploaderUids.map((uid, idx) => (
 				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
 			)).filter(Boolean));

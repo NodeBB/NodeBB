@@ -1,0 +1,22 @@
+{
+	"lead": "Aşağıda həzm çatdırılması statistikası və vaxtlarının siyahısı göstərilir.",
+	"disclaimer": "Nəzərə alın ki, e-poçt texnologiyasının təbiətinə görə e-poçt çatdırılmasına zəmanət verilmir. Bir çox dəyişənlər alıcının serverinə göndərilən e-poçtun son nəticədə istifadəçinin gələnlər qutusuna daxil olub-olmamasına, o cümlədən server reputasiyasına, qara siyahıya alınmış IP ünvanlarına və DKIM/SPF/DMARC-nin konfiqurasiya edilib-edilməməsinə təsir göstərir.",
+	"disclaimer-continued": "Uğurlu çatdırılma mesajın NodeBB tərəfindən uğurla göndərilməsi və alıcı server tərəfindən təsdiqlənməsi deməkdir. Bu, e-poçtun gələnlər qutusuna düşməsi demək deyil. Ən yaxşı nəticələr üçün biz <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a> kimi üçüncü tərəfin e-poçt çatdırılması xidmətindən istifadə etməyi tövsiyə edirik.",
+
+	"user": "İstifadəçi",
+	"subscription": "Abunə növü",
+	"last-delivery": "Sonuncu uğurlu çatdırılma",
+	"default": "Sistemin defolt",
+	"default-help": "<em>Sistem defolt</em> o deməkdir ki, istifadəçi hazırda həzmlər üçün qlobal forum parametrini ləğv etməyib: &quot;<strong>%1</strong>&quot;",
+	"resend": "Digesti yenidən göndərin",
+	"resend-all-confirm": "Bu həzm işini əl ilə yerinə yetirmək istədiyinizə əminsiniz?",
+	"resent-single": "Manual digest yenidən göndərmə tamamlandı",
+	"resent-day": "Gündəlik həzm hirslənir",
+	"resent-week": "Həftəlik həzm hirsləndi",
+	"resent-biweek": "İki həftəlik həzm rezidenti",
+	"resent-month": "Aylıq həzm yenidən göndərildi",
+	"null": "<em>Heç vaxt</em>",
+	"manual-run": "Əl ilə həzm işlət:",
+
+	"no-delivery-data": "Çatdırılma məlumatı tapılmadı"
+}

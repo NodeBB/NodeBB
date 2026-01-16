@@ -15,7 +15,7 @@
 	"title-layout": "Titel Layout",
 	"title-layout-help": "Definiert wie der Browser Titel gebildet wird, z.B. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Eine kurze Beschreibung der Community",
-	"description": "Forum Beschreibung",
+	"description": "Site Description",
 	"keywords": "Forum Schlüsselworte",
 	"keywords-placeholder": "Schlüsselworte, die ihre Community beschreiben, mit Komma getrennt",
 	"logo-and-icons": "Website-Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "Farbe, die für den Hintergrund des Startbildschirms verwendet wird, wenn die Website als PWA installiert ist",
 	"undo-timeout": "Zeitüberschreitung rückgängig machen",
 	"undo-timeout-help": "Bei einigen Vorgängen, wie z. B. dem Verschieben eines Themes, kann der Moderator seine Aktion innerhalb eines bestimmten Zeitrahmens rückgängig machen. Setzen Sie den Wert auf 0, um die Rückgängigmachung vollständig zu deaktivieren.",
-	"topic-tools": "Themen-Tools"
+	"topic-tools": "Themen-Tools",
+	"home-page": "Startseite",
+	"home-page-route": "Startseiten Route",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Benutzerdefinierte Route",
+	"allow-user-home-pages": "Benutzer-Startseiten zulassen",
+	"home-page-title": "Titel der Startseite (Standardmäßig \"Home\")",
+	"default-language": "Standardsprache",
+	"auto-detect": "Sprach-Einstellung bei Gästen automatisch ermitteln",
+	"default-language-help": "Die Standardsprache bestimmt die Spracheinstellungen für alle Benutzer, die dein Forum besuchen. <br />Einzelne Benutzer können die Standardsprache auf ihrer Kontoeinstellungsseite überschreiben.",
+	"post-sharing": "Beitragsfreigabe",
+	"info-plugins-additional": "Plugins können zusätzliche Netzwerke zum Teilen von Beiträgen hinzufügen."
 }

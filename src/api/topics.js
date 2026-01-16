@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const user = require('../user');
 const topics = require('../topics');
 const categories = require('../categories');
@@ -10,6 +8,8 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 const apiHelpers = require('./helpers');
 
@@ -21,17 +21,13 @@ const socketHelpers = require('../socket.io/helpers');
 const topicsAPI = module.exports;
 
 topicsAPI._checkThumbPrivileges = async function ({ tid, uid }) {
-	// req.params.tid could be either a tid (pushing a new thumb to an existing topic)
-	// or a post UUID (a new topic being composed)
-	const isUUID = validator.isUUID(tid);
-
 	// Sanity-check the tid if it's strictly not a uuid
-	if (!isUUID && (isNaN(parseInt(tid, 10)) || !await topics.exists(tid))) {
+	if ((isNaN(parseInt(tid, 10)) || !await topics.exists(tid))) {
 		throw new Error('[[error:no-topic]]');
 	}
 
 	// While drafts are not protected, tids are
-	if (!isUUID && !await privileges.topics.canEdit(tid, uid)) {
+	if (!await privileges.topics.canEdit(tid, uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 };
@@ -59,6 +55,7 @@ topicsAPI.create = async function (caller, data) {
 	}
 
 	const payload = { ...data };
+	delete payload.tid;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
@@ -77,11 +74,14 @@ topicsAPI.create = async function (caller, data) {
 	}
 
 	const result = await topics.post(payload);
-	await topics.thumbs.migrate(data.uuid, result.topicData.tid);
 
 	socketHelpers.emitToUids('event:new_post', { posts: [result.postData] }, [caller.uid]);
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
+
+	if (!isScheduling) {
+		await activitypub.out.create.note(caller.uid, result.postData.pid);
+	}
 
 	return result.topicData;
 };
@@ -91,6 +91,7 @@ topicsAPI.reply = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const payload = { ...data };
+	delete payload.pid;
 	apiHelpers.setDefaultPostData(caller, payload);
 
 	await meta.blacklist.test(caller.ip);
@@ -99,8 +100,7 @@ topicsAPI.reply = async function (caller, data) {
 		return await posts.addToQueue(payload);
 	}
 
-	const postData = await topics.reply(payload); // postData seems to be a subset of postObj, refactor?
-	const postObj = await posts.getPostSummaryByPids([postData.pid], caller.uid, {});
+	const postData = await topics.reply(payload);
 
 	const result = {
 		posts: [postData],
@@ -116,8 +116,9 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
+	await activitypub.out.create.note(caller.uid, postData);
 
-	return postObj[0];
+	return postData;
 };
 
 topicsAPI.delete = async function (caller, data) {
@@ -208,7 +209,7 @@ topicsAPI.deleteTags = async (caller, { tid }) => {
 	await topics.deleteTopicTags(tid);
 };
 
-topicsAPI.getThumbs = async (caller, { tid }) => {
+topicsAPI.getThumbs = async (caller, { tid, thumbsOnly }) => {
 	if (isFinite(tid)) { // post_uuids can be passed in occasionally, in that case no checks are necessary
 		const [exists, canRead] = await Promise.all([
 			topics.exists(tid),
@@ -222,18 +223,7 @@ topicsAPI.getThumbs = async (caller, { tid }) => {
 		}
 	}
 
-	return await topics.thumbs.get(tid);
-};
-
-// topicsAPI.addThumb
-
-topicsAPI.migrateThumbs = async (caller, { from, to }) => {
-	await Promise.all([
-		topicsAPI._checkThumbPrivileges({ tid: from, uid: caller.uid }),
-		topicsAPI._checkThumbPrivileges({ tid: to, uid: caller.uid }),
-	]);
-
-	await topics.thumbs.migrate(from, to);
+	return await topics.thumbs.get(tid, { thumbsOnly });
 };
 
 topicsAPI.deleteThumb = async (caller, { tid, path }) => {
@@ -318,7 +308,8 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!canMove) {
 				throw new Error('[[error:no-privileges]]');
 			}
-			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug', 'deleted']);
+			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'slug', 'deleted']);
+			topicData.toCid = cid;
 			if (!cids.includes(topicData.cid)) {
 				cids.push(topicData.cid);
 			}
@@ -331,6 +322,15 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			socketHelpers.emitToUids('event:topic_moved', topicData, notifyUids);
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
+
+				if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
+					activitypub.out.remove.context(caller.uid, tid); // 7888-style
+					activitypub.out.delete.note(caller.uid, topicData.mainPid); // 1b12-style
+				} else {
+					activitypub.out.move.context(caller.uid, tid);
+					activitypub.out.announce.topic(tid);
+				}
+				activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
 			}
 
 			await events.log({

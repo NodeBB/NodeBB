@@ -1,0 +1,17 @@
+{
+	"rewards": "Mükafatlar",
+	"add-reward": "Mükafat əlavə et",
+	"condition-if-users": "Əgər istifadəçi",
+	"condition-is": "Əgər:",
+	"condition-then": "O zaman:",
+	"max-claims": "Mükafatın tələb oluna biləcəyi vaxtların miqdarı",
+	"zero-infinite": "Sonsuzluq üçün 0 daxil edin",
+	"select-reward": "Mükafat seç",
+	"delete": "Sil",
+	"enable": "Aktivləşdir",
+	"disable": "Qeyri-aktiv et",
+
+	"alert.delete-success": "Mükafat uğurla silindi",
+	"alert.no-inputs-found": "Xətalı mükafat - heç bir giriş tapılmadı!",
+	"alert.save-success": "Mükafatlar müvəffəqiyyətlə yadda saxlanıldı"
+}

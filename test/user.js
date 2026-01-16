@@ -680,6 +680,12 @@ describe('User', () => {
 				done();
 			});
 		});
+
+		it('should return null if field or user doesn not exist', async () => {
+			assert.strictEqual(await User.getUserField('1', 'doesnotexist'), null);
+			assert.strictEqual(await User.getUserField('doesnotexistkey', 'doesnotexist'), null);
+			assert.strictEqual(await User.getUserField('0', 'doesnotexist'), null);
+		});
 	});
 
 	describe('profile methods', () => {
@@ -737,17 +743,17 @@ describe('User', () => {
 					username: 'updatedUserName',
 					email: 'updatedEmail@me.com',
 					fullname: 'updatedFullname',
-					website: 'http://nodebb.org',
-					location: 'izmir',
 					groupTitle: 'testGroup',
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
 					password: '123456',
 				};
-				const result = await apiUser.update({ uid: uid }, { ...data, password: '123456', invalid: 'field' });
+				const result = await apiUser.update({ uid: uid }, {
+					...data, password: '123456', invalid: 'field',
+				});
 				assert.equal(result.username, 'updatedUserName');
 				assert.equal(result.userslug, 'updatedusername');
-				assert.equal(result.location, 'izmir');
+				assert.equal(result.fullname, 'updatedFullname');
 
 				const userData = await db.getObject(`user:${uid}`);
 				Object.keys(data).forEach((key) => {
@@ -756,11 +762,32 @@ describe('User', () => {
 					} else if (key !== 'password') {
 						assert.equal(data[key], userData[key]);
 					} else {
-						assert(userData[key].startsWith('$2a$'));
+						assert(userData[key].startsWith('$2b$'));
 					}
 				});
 				// updateProfile only saves valid fields
 				assert.strictEqual(userData.invalid, undefined);
+			});
+
+			it('should not change the username to escaped version', async () => {
+				const uid = await User.create({
+					username: 'ex\'ample_user', email: '13475@test.com', password: '123456',
+				});
+				await User.setUserField(uid, 'email', '13475@test.com');
+				await User.email.confirmByUid(uid);
+
+				const data = {
+					uid: uid,
+					username: 'ex\'ample_user',
+					password: '123456',
+				};
+				const result = await apiUser.update({ uid: uid }, {
+					...data, password: '123456', invalid: 'field',
+				});
+				const storedUsername = await db.getObjectField(`user:${uid}`, 'username');
+				assert.equal(result.username, 'ex&#x27;ample_user');
+				assert.equal(storedUsername, 'ex\'ample_user');
+				assert.equal(result.userslug, 'ex-ample_user');
 			});
 
 			it('should also generate an email confirmation code for the changed email', async () => {
@@ -774,6 +801,18 @@ describe('User', () => {
 			await apiUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' });
 			const correct = await User.isPasswordCorrect(uid, '654321', '127.0.0.1');
 			assert(correct);
+		});
+
+		it('should not let user change their password to their current password', async () => {
+			const uid = await User.create({ username: 'changepasswordsame', password: '123456' });
+			await assert.rejects(
+				apiUser.changePassword({ uid: uid }, {
+					uid: uid,
+					newPassword: '123456',
+					currentPassword: '123456',
+				}),
+				{ message: '[[user:change-password-error-same-password]]' },
+			);
 		});
 
 		it('should not let user change another user\'s password', async () => {
@@ -1613,7 +1652,7 @@ describe('User', () => {
 					postsPerPage: '5',
 					showemail: 1,
 					showfullname: 1,
-					restrictChat: 0,
+					disableIncomingMessages: 0,
 					followTopicsOnCreate: 1,
 					followTopicsOnReply: 1,
 				},
@@ -1638,7 +1677,7 @@ describe('User', () => {
 					postsPerPage: '5',
 					showemail: 1,
 					showfullname: 1,
-					restrictChat: 0,
+					disableIncomingMessages: 0,
 					followTopicsOnCreate: 1,
 					followTopicsOnReply: 1,
 				},

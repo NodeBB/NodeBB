@@ -7,6 +7,7 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
 const groups = require('../groups');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (User) {
@@ -40,11 +41,42 @@ module.exports = function (User) {
 		} else if (searchBy === 'uid') {
 			uids = [query];
 		} else {
-			const searchMethod = data.findUids || findUids;
-			uids = await searchMethod(query, searchBy, data.hardCap);
+			if (!data.findUids && data.uid) {
+				const handle = activitypub.helpers.isWebfinger(data.query);
+				if (handle || activitypub.helpers.isUri(data.query)) {
+					const local = await activitypub.helpers.resolveLocalId(data.query);
+					if (local.type === 'user' && utils.isNumber(local.id)) {
+						uids = [local.id];
+					} else {
+						const assertion = await activitypub.actors.assert([handle || data.query]);
+						if (assertion === true) {
+							uids = [handle ? await User.getUidByUserslug(handle) : query];
+						} else if (Array.isArray(assertion) && assertion.length) {
+							uids = assertion.map(u => u.id);
+						}
+					}
+				}
+			}
+
+			if (!uids.length) {
+				const searchMethod = data.findUids || findUids;
+				uids = await searchMethod(query, searchBy, data.hardCap);
+
+				const mapping = {
+					username: 'ap.preferredUsername',
+					fullname: 'ap.name',
+				};
+				if (meta.config.activitypubEnabled && mapping.hasOwnProperty(searchBy)) {
+					uids = uids.concat(await searchMethod(query, mapping[searchBy], data.hardCap));
+				}
+			}
 		}
 
 		uids = await filterAndSortUids(uids, data);
+		if (data.hardCap > 0) {
+			uids.length = data.hardCap;
+		}
+
 		const result = await plugins.hooks.fire('filter:users.search', { uids: uids, uid: uid });
 		uids = result.uids;
 
@@ -74,7 +106,8 @@ module.exports = function (User) {
 		}
 
 		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
-		searchResult.users = userData.filter(user => user && user.uid > 0);
+		searchResult.users = userData.filter(user => (user &&
+			utils.isNumber(user.uid) ? user.uid > 0 : activitypub.helpers.isUri(user.uid)));
 		return searchResult;
 	};
 
@@ -86,16 +119,22 @@ module.exports = function (User) {
 		const min = query;
 		const max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
-		const resultsPerPage = meta.config.userSearchResultsPerPage;
-		hardCap = hardCap || resultsPerPage * 10;
+		hardCap = hardCap || 500;
 
 		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
-		const uids = data.map(data => data.split(':').pop());
+		// const uids = data.map(data => data.split(':').pop());
+		const uids = data.map((data) => {
+			if (data.includes(':https:')) {
+				return data.substring(data.indexOf(':https:') + 1);
+			}
+
+			return data.split(':').pop();
+		});
 		return uids;
 	}
 
 	async function filterAndSortUids(uids, data) {
-		uids = uids.filter(uid => parseInt(uid, 10));
+		uids = uids.filter(uid => parseInt(uid, 10) || activitypub.helpers.isUri(uid));
 		let filters = data.filters || [];
 		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];

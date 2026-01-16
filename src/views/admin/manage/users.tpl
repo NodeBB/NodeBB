@@ -39,7 +39,7 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
-					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm" role="menu">
+					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm overflow-auto" role="menu" style="max-height:75vh;">
 
 						<li><h6 class="dropdown-header">[[admin/manage/users:email]]</h6></li>
 						<li><a href="#" class="dropdown-item rounded-1 change-email" role="menuitem"><i class="text-secondary fa fa-fw fa-envelope text-start"></i> [[admin/manage/users:change-email]]</a></li>
@@ -81,6 +81,8 @@
 						<li><a class="dropdown-item rounded-1" href="#" data-action="create" role="menuitem">[[admin/manage/users:create]]</a></li>
 						{{{ if showInviteButton }}}<li><a class="dropdown-item rounded-1" href="#" component="user/invite" role="menuitem">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="dropdown-item rounded-1 export-csv" role="menuitem">[[admin/manage/users:download-csv]]</a></li>
+						<li><a class="dropdown-item rounded-1" href="{relative_path}/admin/manage/users/custom-fields">[[admin/manage/users:custom-user-fields]]</a>
+						</li>
 					</ul>
 				</div>
 			</div>

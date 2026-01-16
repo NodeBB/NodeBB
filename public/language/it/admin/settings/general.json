@@ -15,7 +15,7 @@
 	"title-layout": "Layout del Titolo",
 	"title-layout-help": "Definire come sarà strutturato il titolo del browser, ad es. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Una breve descrizione della tua comunità",
-	"description": "Descrizione del sito",
+	"description": "Descrizione sito",
 	"keywords": "Parole chiave del sito",
 	"keywords-placeholder": "Parole chiave che descrivono la vostra comunità, separate da virgole",
 	"logo-and-icons": "Logo e icone del sito",
@@ -48,5 +48,16 @@
 	"background-color-help": "Colore utilizzato per lo sfondo della schermata iniziale quando il sito Web è installato come PWA",
 	"undo-timeout": "Annulla timeout",
 	"undo-timeout-help": "Alcune operazioni come lo spostamento delle discussioni permetteranno al moderatore di annullare la sua azione entro un certo periodo di tempo. Imposta a 0 per disabilitare completamente l'annullamento.",
-	"topic-tools": "Strumenti discussione"
+	"topic-tools": "Strumenti discussione",
+	"home-page": "Pagina Iniziale",
+	"home-page-route": "Percorso Pagina Iniziale",
+	"home-page-description": "Scegli quale pagina visualizzare quando gli utenti navigano verso l'URL principale del tuo forum.",
+	"custom-route": "Percorso personalizzato",
+	"allow-user-home-pages": "Consenti Pagina Iniziale Utente",
+	"home-page-title": "Titolo della pagina iniziale (impostazione predefinita \"Home\")",
+	"default-language": "Lingua predefinita",
+	"auto-detect": "Rilevazione automatica della lingua impostata per gli Ospiti",
+	"default-language-help": "La lingua predefinita determina le impostazioni della lingua per tutti gli utenti che visitano il tuo forum. <br />I singoli utenti possono sovrascrivere la lingua predefinita nella pagina delle impostazioni dell'account.",
+	"post-sharing": "Condivisione post",
+	"info-plugins-additional": "I plugin possono aggiungere reti aggiuntive per la condivisione dei post."
 }

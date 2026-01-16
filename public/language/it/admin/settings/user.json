@@ -64,6 +64,7 @@
 	"show-email": "Mostra email ",
 	"show-fullname": "Mostra nome completo",
 	"restrict-chat": "Permetti messaggi in chat solo da utenti che seguo",
+	"disable-incoming-chats": "Disabilita i messaggi di chat in arrivo",
 	"outgoing-new-tab": "Apri link esterni in una nuova scheda",
 	"topic-search": "Abilita ricerca nella Discussione",
 	"update-url-with-post-index": "Aggiorna l'url con l'indice dei post durante la navigazione delle discussioni",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Secondi prima che un nuovo utente possa pubblicare il suo primo post",
 	"restrictions.seconds-edit-after-new": "Numero di secondi per cui un post rimane modificabile per i nuovi utenti (impostare a 0 per disabilitarlo)",
 	"restrictions.milliseconds-between-messages": "Tempo tra i messaggi di chat per i nuovi utenti (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Seleziona i gruppi che devono essere esenti dalle restrizioni dei nuovi utente"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Seleziona i gruppi che devono essere esenti dalle restrizioni dei nuovi utente",
+	"guest-settings": "Impostazioni ospite",
+	"handles.enabled": "Consenti pseudonimo ospite",
+	"handles.enabled-help": "Questa opzione mostra un nuovo campo che permette agli ospiti di scegliere un nome da associare ad ogni post che fanno. Se disabilitata, saranno semplicemente chiamati \"Ospite\".",
+	"topic-views.enabled": "Consentire agli ospiti di aumentare il numero di visualizzazioni della discussione",
+	"reply-notifications.enabled": "Consenti agli ospiti di generare notifiche di risposta"
 }

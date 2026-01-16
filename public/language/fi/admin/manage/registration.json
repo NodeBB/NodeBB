@@ -1,20 +1,20 @@
 {
-	"queue": "Queue",
+	"queue": "Jono",
 	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 
-	"list.name": "Name",
-	"list.email": "Sähköposti",
-	"list.ip": "IP",
-	"list.time": "Time",
+	"list.name": "Nimi",
+	"list.email": "Sähköpostiosoite",
+	"list.ip": "IP-osoite",
+	"list.time": "Aika",
 	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
-	"invitations": "Invitations",
+	"invitations": "Kutsut",
 	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
 	"invitations.inviter-username": "Kutsujan käyttäjätunnus",
 	"invitations.invitee-email": "Kutsujan sähköpostiosoite",
 	"invitations.invitee-username": "Kutsujan käyttäjätunnus (jos rekisteröity)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Haluatko varmasti poistaa kutsun?"
 } 

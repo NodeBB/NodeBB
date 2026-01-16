@@ -3,6 +3,7 @@
 const db = require('../../database');
 const api = require('../../api');
 const topics = require('../../topics');
+const activitypub = require('../../activitypub');
 
 const helpers = require('../helpers');
 const middleware = require('../../middleware');
@@ -11,7 +12,11 @@ const uploadsController = require('../uploads');
 const Topics = module.exports;
 
 Topics.get = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.topics.get(req, req.params));
+	const topicData = await api.topics.get(req, req.params);
+	if (!topicData) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+	}
+	helpers.formatApiResponse(200, res, topicData);
 };
 
 Topics.create = async (req, res) => {
@@ -123,7 +128,9 @@ Topics.deleteTags = async (req, res) => {
 };
 
 Topics.getThumbs = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.topics.getThumbs(req, { ...req.params }));
+	let { thumbsOnly } = req.query;
+	thumbsOnly = thumbsOnly ? !!parseInt(thumbsOnly, 10) : false;
+	helpers.formatApiResponse(200, res, await api.topics.getThumbs(req, { ...req.params, thumbsOnly }));
 };
 
 Topics.addThumb = async (req, res) => {
@@ -132,25 +139,18 @@ Topics.addThumb = async (req, res) => {
 
 	const files = await uploadsController.uploadThumb(req, res); // response is handled here
 
-	// Add uploaded files to topic zset
+	// Add uploaded files to topic hash
 	if (files && files.length) {
-		await Promise.all(files.map(async (fileObj) => {
+		for (const fileObj of files) {
+			// eslint-disable-next-line no-await-in-loop
 			await topics.thumbs.associate({
 				id: req.params.tid,
-				path: fileObj.path || fileObj.url,
+				path: fileObj.url,
 			});
-		}));
+		}
 	}
 };
 
-Topics.migrateThumbs = async (req, res) => {
-	await api.topics.migrateThumbs(req, {
-		from: req.params.tid,
-		to: req.body.tid,
-	});
-
-	helpers.formatApiResponse(200, res, await api.topics.getThumbs(req, { tid: req.body.tid }));
-};
 
 Topics.deleteThumb = async (req, res) => {
 	if (!req.body.path.startsWith('http')) {
@@ -213,4 +213,25 @@ Topics.move = async (req, res) => {
 	await api.topics.move(req, { cid, ...req.params });
 
 	helpers.formatApiResponse(200, res);
+};
+
+Topics.getCrossposts = async (req, res) => {
+	const crossposts = await topics.crossposts.get(req.params.tid);
+	helpers.formatApiResponse(200, res, { crossposts });
+};
+
+Topics.crosspost = async (req, res) => {
+	const { cid } = req.body;
+	const crossposts = await topics.crossposts.add(req.params.tid, cid, req.uid);
+	await activitypub.out.announce.topic(req.params.tid, req.uid);
+
+	helpers.formatApiResponse(200, res, { crossposts });
+};
+
+Topics.uncrosspost = async (req, res) => {
+	const { cid } = req.body;
+	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
+	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);
+
+	helpers.formatApiResponse(200, res, { crossposts });
 };

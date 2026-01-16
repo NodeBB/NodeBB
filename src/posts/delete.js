@@ -9,6 +9,8 @@ const user = require('../user');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
 const flags = require('../flags');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.delete = async function (pid, uid) {
@@ -26,12 +28,13 @@ module.exports = function (Posts) {
 			deleted: isDeleting ? 1 : 0,
 			deleterUid: isDeleting ? uid : 0,
 		});
-		const postData = await Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp']);
+		const postData = await Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp', 'deleted']);
 		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
 		postData.cid = topicData.cid;
 		await Promise.all([
 			topics.updateLastPostTimeFromLastPid(postData.tid),
 			topics.updateTeaser(postData.tid),
+			isDeleting ? activitypub.notes.delete(pid) : null,
 			isDeleting ?
 				db.sortedSetRemove(`cid:${topicData.cid}:pids`, pid) :
 				db.sortedSetAdd(`cid:${topicData.cid}:pids`, postData.timestamp, pid),
@@ -61,10 +64,6 @@ module.exports = function (Posts) {
 			p.cid = tidToTopic[p.tid] && tidToTopic[p.tid].cid;
 		});
 
-		// deprecated hook
-		await Promise.all(postData.map(p => plugins.hooks.fire('filter:post.purge', { post: p, pid: p.pid, uid: uid })));
-
-		// new hook
 		await plugins.hooks.fire('filter:posts.purge', {
 			posts: postData,
 			pids: postData.map(p => p.pid),
@@ -81,14 +80,13 @@ module.exports = function (Posts) {
 			deleteDiffs(pids),
 			deleteFromUploads(pids),
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
+			Posts.attachments.empty(pids),
+			activitypub.notes.delete(pids),
+			db.deleteAll(pids.map(pid => `pid:${pid}:editors`)),
 		]);
 
 		await resolveFlags(postData, uid);
 
-		// deprecated hook
-		Promise.all(postData.map(p => plugins.hooks.fire('action:post.purge', { post: p, uid: uid })));
-
-		// new hook
 		plugins.hooks.fire('action:posts.purge', { posts: postData, uid: uid });
 
 		await db.deleteAll(postData.map(p => `post:${p.pid}`));
@@ -105,14 +103,15 @@ module.exports = function (Posts) {
 		});
 		await db.sortedSetRemoveBulk(bulkRemove);
 
-		const incrObjectBulk = [['global', { postCount: -postData.length }]];
+		const localCount = postData.filter(p => utils.isNumber(p.pid)).length;
+		const incrObjectBulk = [['global', { postCount: -localCount }]];
 
 		const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
 		for (const [cid, posts] of Object.entries(postsByCategory)) {
 			incrObjectBulk.push([`category:${cid}`, { post_count: -posts.length }]);
 		}
 
-		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
+		const postsByTopic = _.groupBy(postData, p => String(p.tid));
 		const topicPostCountTasks = [];
 		const topicTasks = [];
 		const zsetIncrBulk = [];
@@ -198,20 +197,15 @@ module.exports = function (Posts) {
 	}
 
 	async function deleteFromReplies(postData) {
-		const arrayOfReplyPids = await db.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
-		const allReplyPids = _.flatten(arrayOfReplyPids);
-		const promises = [
-			db.deleteObjectFields(
-				allReplyPids.map(pid => `post:${pid}`), ['toPid']
-			),
-			db.deleteAll(postData.map(p => `pid:${p.pid}:replies`)),
-		];
+		// Any replies to deleted posts will retain toPid reference (gh#13527)
+		await db.deleteAll(postData.map(p => `pid:${p.pid}:replies`));
 
+		// Remove post(s) from parents' replies zsets
 		const postsWithParents = postData.filter(p => parseInt(p.toPid, 10));
 		const bulkRemove = postsWithParents.map(p => [`pid:${p.toPid}:replies`, p.pid]);
-		promises.push(db.sortedSetRemoveBulk(bulkRemove));
-		await Promise.all(promises);
+		await db.sortedSetRemoveBulk(bulkRemove);
 
+		// Recalculate reply count
 		const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
 		const counts = await db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
 		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));

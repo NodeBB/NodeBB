@@ -52,6 +52,17 @@ describe('helpers', () => {
 		done();
 	});
 
+	it('should return true if route is visible', (done) => {
+		const flag = helpers.displayMenuItem({
+			navigation: [{ route: '/recent' }],
+			user: {
+				privileges: {},
+			},
+		}, 0);
+		assert(flag);
+		done();
+	});
+
 	it('should stringify object', (done) => {
 		const str = helpers.stringify({ a: 'herp < derp > and & quote "' });
 		assert.equal(str, '{&quot;a&quot;:&quot;herp &lt; derp &gt; and &amp; quote \\&quot;&quot;}');
@@ -64,7 +75,57 @@ describe('helpers', () => {
 		done();
 	});
 
+	it('should build category icon', (done) => {
+		assert.strictEqual(
+			helpers.buildCategoryIcon({
+				bgColor: '#ff0000',
+				color: '#00ff00',
+				backgroundImage: '/assets/uploads/image.png',
+				imageClass: 'auto',
+			}, 16, 'rounded-circle'),
+			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"></span>'
+		);
+		assert.strictEqual(
+			helpers.buildCategoryIcon({
+				bgColor: '#ff0000',
+				color: '#00ff00',
+				backgroundImage: '/assets/uploads/image.png',
+				imageClass: 'auto',
+				icon: 'fa-book',
+			}, 16, 'rounded-circle'),
+			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"><i class="fa fa-fw fa-book"></i></span>'
+		);
+		done();
+	});
+
+	it('should build category label', (done) => {
+		assert.strictEqual(
+			helpers.buildCategoryLabel({
+				bgColor: '#ff0000',
+				color: '#00ff00',
+				backgroundImage: '/assets/uploads/image.png',
+				imageClass: 'auto',
+				name: 'Category 1',
+			}, 'a', ''),
+			`<a component="topic/category" href="${nconf.get('relative_path')}/category/undefined" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
+		);
+		assert.strictEqual(
+			helpers.buildCategoryLabel({
+				bgColor: '#ff0000',
+				color: '#00ff00',
+				backgroundImage: '/assets/uploads/image.png',
+				imageClass: 'auto',
+				name: 'Category 1',
+				icon: 'fa-book',
+			}, 'span', 'rounded-1'),
+			`<span component="topic/category"  class="badge px-1 text-truncate text-decoration-none rounded-1" style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t<i class="fa fa-fw fa-book"></i>\n\t\t\tCategory 1\n\t\t</span>`,
+		);
+		done();
+	});
+
 	it('should return empty string if category is falsy', (done) => {
+		assert.equal(helpers.buildCategoryIcon(null), '');
+		assert.equal(helpers.buildCategoryLabel(null), '');
 		assert.equal(helpers.generateCategoryBackground(null), '');
 		done();
 	});
@@ -151,7 +212,7 @@ describe('helpers', () => {
 			find: 'viewing',
 			read: 'viewing',
 		};
-		const html = helpers.spawnPrivilegeStates('guests', privs, types);
+		const html = helpers.spawnPrivilegeStates(1, 'guests', privs, types);
 		assert.equal(html, `
 				<td data-privilege="find" data-value="true" data-type="viewing">
 					<div class="form-check text-center">
@@ -169,16 +230,16 @@ describe('helpers', () => {
 	});
 
 	it('should render thumb as topic image', (done) => {
-		const topicObj = { thumb: '/uploads/1.png', user: { username: 'baris' } };
+		const topicObj = { thumb: '/uploads/1.png', user: { username: 'baris', displayname: 'Baris Soner Usakli' } };
 		const html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.username}" />`);
+		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.displayname}" />`);
 		done();
 	});
 
 	it('should render user picture as topic image', (done) => {
-		const topicObj = { thumb: '', user: { uid: 1, username: 'baris', picture: '/uploads/2.png' } };
+		const topicObj = { thumb: '', user: { uid: 1, username: 'baris', displayname: 'Baris Soner Usakli', picture: '/uploads/2.png' } };
 		const html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.username}" />`);
+		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.displayname}" />`);
 		done();
 	});
 
@@ -249,6 +310,36 @@ describe('helpers', () => {
 	it('shoud render user agent/browser icons', (done) => {
 		const html = helpers.userAgentIcons({ platform: 'unknow', browser: 'unknown' });
 		assert.equal(html, '<i class="fa fa-fw fa-question-circle"></i><i class="fa fa-fw fa-question-circle"></i>');
+		done();
+	});
+
+	it('should generate replied to or wrote based on toPid', (done) => {
+		const now = Date.now();
+		const iso = new Date().toISOString();
+		let post = { pid: 2, toPid: 1, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
+		let str = helpers.generateWroteReplied(post, 1);
+		assert.strictEqual(str, `[[topic:replied-to-user-ago, 1, ${nconf.get('relative_path')}/post/1, baris, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+
+		post = { pid: 2, toPid: 1, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
+		str = helpers.generateWroteReplied(post, -1);
+		assert.strictEqual(str, `[[topic:replied-to-user-on, 1, ${nconf.get('relative_path')}/post/1, baris, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+
+		post = { pid: 2, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
+		str = helpers.generateWroteReplied(post, 1);
+		assert.strictEqual(str, `[[topic:wrote-ago, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+
+		str = helpers.generateWroteReplied(post, -1);
+		assert.strictEqual(str, `[[topic:wrote-on, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+
+		done();
+	});
+
+	it('should generate placeholder wave', (done) => {
+		const items = [2, 'divider', 3];
+		const str = helpers.generatePlaceholderWave(items);
+		assert(str.includes('dropdown-divider'));
+		assert(str.includes('col-2'));
+		assert(str.includes('col-3'));
 		done();
 	});
 });

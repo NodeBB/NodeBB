@@ -11,7 +11,11 @@ let cached;
 
 // cache buster is an 11-character, lowercase, alphanumeric string
 function generate() {
-	return (Math.random() * 1e18).toString(32).slice(0, 11);
+	const crypto = require('crypto');
+	const length = 11;
+	const generated = crypto.randomBytes(Math.ceil(length / 2))
+		.toString('hex').slice(0, length);
+	return generated;
 }
 
 exports.write = async function write() {

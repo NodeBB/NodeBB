@@ -1,0 +1,9 @@
+{
+    "uploading-file": "Fayl yüklənir...",
+    "select-file-to-upload": "Yükləmək üçün fayl seçin!",
+    "upload-success": "Fayl uğurla yükləndi!",
+    "maximum-file-size": "Maksimum %1 kb",
+    "no-uploads-found": "Heç bir yükləmə tapılmadı",
+    "public-uploads-info": "Yükləmələr hamıya açıqdır, bütün ziyarətçilər onları görə bilər.",
+    "private-uploads-info": "Yükləmələr məxfidir, yalnız daxil olmuş istifadəçilər onları görə bilər."
+}

@@ -59,7 +59,7 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 					const params = utils.params({ url: data.next });
 					params.loggedin = true;
 					delete params.register; // clear register message incase it exists
-					const qs = decodeURIComponent($.param(params));
+					const qs = $.param(params);
 
 					window.location.href = pathname + '?' + qs;
 				},

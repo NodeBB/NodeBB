@@ -57,7 +57,7 @@ usersAPI.update = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const oldUserData = await user.getUserFields(data.uid, ['email', 'username']);
+	const oldUserData = await db.getObjectFields(`user:${data.uid}`, ['email', 'username']);
 	if (!oldUserData || !oldUserData.username) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -67,8 +67,8 @@ usersAPI.update = async function (caller, data) {
 		privileges.users.canEdit(caller.uid, data.uid),
 	]);
 
-	// Changing own email/username requires password confirmation
-	if (data.hasOwnProperty('email') || data.hasOwnProperty('username')) {
+	const isChangingEmailOrUsername = data.hasOwnProperty('email') || data.hasOwnProperty('username');
+	if (isChangingEmailOrUsername) {
 		await isPrivilegedOrSelfAndPasswordMatch(caller, data);
 	}
 
@@ -86,14 +86,14 @@ usersAPI.update = async function (caller, data) {
 
 	await user.updateProfile(caller.uid, data);
 	const userData = await user.getUserData(data.uid);
-
-	if (userData.username !== oldUserData.username) {
+	const oldUsernameEscaped = validator.escape(String(oldUserData.username));
+	if (userData.username !== oldUsernameEscaped) {
 		await events.log({
 			type: 'username-change',
 			uid: caller.uid,
 			targetUid: data.uid,
 			ip: caller.ip,
-			oldUsername: oldUserData.username,
+			oldUsername: oldUsernameEscaped,
 			newUsername: userData.username,
 		});
 	}
@@ -175,27 +175,11 @@ usersAPI.changePassword = async function (caller, data) {
 
 usersAPI.follow = async function (caller, data) {
 	await user.follow(caller.uid, data.uid);
+	await user.onFollow(caller.uid, data.uid);
 	plugins.hooks.fire('action:user.follow', {
 		fromUid: caller.uid,
 		toUid: data.uid,
 	});
-
-	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
-	const { displayname } = userData;
-
-	const notifObj = await notifications.create({
-		type: 'follow',
-		bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
-		nid: `follow:${data.uid}:uid:${caller.uid}`,
-		from: caller.uid,
-		path: `/uid/${data.uid}/followers`,
-		mergeId: 'notifications:user-started-following-you',
-	});
-	if (!notifObj) {
-		return;
-	}
-	notifObj.user = userData;
-	await notifications.push(notifObj, [data.uid]);
 };
 
 usersAPI.unfollow = async function (caller, data) {
@@ -531,7 +515,7 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 
 async function processDeletion({ uid, method, password, caller }) {
 	const isTargetAdmin = await user.isAdministrator(uid);
-	const isSelf = parseInt(uid, 10) === parseInt(caller.uid, 10);
+	const isSelf = String(uid) === String(caller.uid);
 	const hasAdminPrivilege = await privileges.admin.can('admin:users', caller.uid);
 
 	if (isSelf && meta.config.allowAccountDelete !== 1) {
@@ -547,7 +531,6 @@ async function processDeletion({ uid, method, password, caller }) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	// Self-deletions require a password
 	const hasPassword = await user.hasPassword(uid);
 	if (isSelf && hasPassword) {
 		const ok = await user.isPasswordCorrect(uid, password, caller.ip);

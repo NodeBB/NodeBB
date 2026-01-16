@@ -38,6 +38,7 @@
 	"settings/tags": "Címkék",
 	"settings/notifications": "Értesítések",
 	"settings/api": "API hozzáférés",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Hangok",
 	"settings/social": "Közösség",
 	"settings/cookies": "Süti",

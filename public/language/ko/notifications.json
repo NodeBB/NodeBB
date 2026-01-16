@@ -97,5 +97,9 @@
     "notificationType-post-queue": "새 게시물이 대기열에 추가될 때",
     "notificationType-new-post-flag": "게시물이 신고될 때",
     "notificationType-new-user-flag": "사용자가 신고될 때",
-    "notificationType-new-reward": "새로운 리워드를 획득할 때"
+    "notificationType-new-reward": "새로운 리워드를 획득할 때",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

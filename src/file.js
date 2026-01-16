@@ -7,6 +7,7 @@ const winston = require('winston');
 const { mkdirp } = require('mkdirp');
 const mime = require('mime');
 const graceful = require('graceful-fs');
+const sanitizeHtml = require('sanitize-html');
 
 const slugify = require('./slugify');
 
@@ -27,6 +28,10 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 
 	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
+	if (filename.endsWith('.svg')) {
+		await sanitizeSvg(tempPath);
+	}
+
 	await fs.promises.copyFile(tempPath, uploadPath);
 	return {
 		url: `/assets/uploads/${folder ? `${folder}/` : ''}${filename}`,
@@ -154,5 +159,40 @@ file.walk = async function (dir) {
 	}));
 	return files.reduce((a, f) => a.concat(f), []);
 };
+
+async function sanitizeSvg(filePath) {
+	const dirty = await fs.promises.readFile(filePath, 'utf8');
+	const clean = sanitizeHtml(dirty, {
+		allowedTags: [
+			'svg', 'g', 'defs', 'linearGradient', 'radialGradient', 'stop',
+			'circle', 'ellipse', 'polygon', 'polyline', 'path', 'rect',
+			'line', 'text', 'tspan', 'use', 'symbol', 'clipPath', 'mask', 'pattern',
+			'filter', 'feGaussianBlur', 'feOffset', 'feBlend', 'feColorMatrix', 'feMerge', 'feMergeNode',
+		],
+		allowedAttributes: {
+			'*': [
+				// Geometry
+				'x', 'y', 'x1', 'x2', 'y1', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
+				'width', 'height', 'd', 'points', 'viewBox', 'transform',
+
+				// Presentation
+				'fill', 'stroke', 'stroke-width', 'opacity',
+				'stop-color', 'stop-opacity', 'offset', 'style', 'class',
+
+				// Text
+				'text-anchor', 'font-size', 'font-family',
+
+				// Misc
+				'id', 'clip-path', 'mask', 'filter', 'gradientUnits', 'gradientTransform',
+				'xmlns', 'preserveAspectRatio',
+			],
+		},
+		parser: {
+			lowerCaseTags: false,
+			lowerCaseAttributeNames: false,
+		},
+	});
+	await fs.promises.writeFile(filePath, clean);
+}
 
 require('./promisify')(file);

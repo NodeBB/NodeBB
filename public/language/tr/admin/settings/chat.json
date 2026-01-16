@@ -5,6 +5,8 @@
 	"disable-editing": "Sohbet mesajlarını düzenlemeyi/silmeyi kapat",
 	"disable-editing-help": "Yöneticiler ve global moderatörler bu kısıtlamadan muaftır",
 	"max-length": "Maksimum sohbet mesajı uzunluğu",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
 	"max-chat-room-name-length": "Maksimum sohbet oda adı uzunluğu",
 	"max-room-size": "Sohbet odalarındaki maksimum kullanıcı sayısı",
 	"delay": "Time between chat messages (ms)",

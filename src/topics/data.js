@@ -10,9 +10,10 @@ const plugins = require('../plugins');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
-	'viewcount', 'postercount', 'deleted', 'locked', 'pinned',
-	'pinExpiry', 'timestamp', 'upvotes', 'downvotes', 'lastposttime',
-	'deleterUid',
+	'viewcount', 'postercount', 'followercount',
+	'deleted', 'locked', 'pinned', 'pinExpiry',
+	'timestamp', 'upvotes', 'downvotes',
+	'lastposttime', 'deleterUid',
 ];
 
 module.exports = function (Topics) {
@@ -40,7 +41,7 @@ module.exports = function (Topics) {
 
 	Topics.getTopicField = async function (tid, field) {
 		const topic = await Topics.getTopicFields(tid, [field]);
-		return topic ? topic[field] : null;
+		return topic && topic.hasOwnProperty(field) ? topic[field] : null;
 	};
 
 	Topics.getTopicFields = async function (tid, fields) {
@@ -134,9 +135,17 @@ function modifyTopic(topic, fields) {
 			return {
 				value: tag,
 				valueEscaped: escaped,
-				valueEncoded: encodeURIComponent(escaped),
+				valueEncoded: encodeURIComponent(tag),
 				class: escaped.replace(/\s/g, '-'),
 			};
 		});
+	}
+
+	if (fields.includes('thumbs') || !fields.length) {
+		try {
+			topic.thumbs = topic.thumbs ? JSON.parse(String(topic.thumbs || '[]')) : [];
+		} catch (e) {
+			topic.thumbs = [];
+		}
 	}
 }

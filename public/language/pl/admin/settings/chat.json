@@ -5,6 +5,8 @@
 	"disable-editing": "Wyłącz edycję/usuwanie wiadomości czat",
 	"disable-editing-help": "Ograniczenie to nie dotyczy administratorów i moderatorów globalnych",
 	"max-length": "Maksymalna długość wiadomości czatu",
+	"max-length-remote": "Maksymalna długość wiadomości zdalnego czatu",
+	"max-length-remote-help": "Ta wartość jest ustawiana wyżej niż dla użytkowników czatu lokalnego, bo wiadomości zdalnego czatu bywają dużo dłuższe (ze wzmiankami @ i podobnymi).",
 	"max-chat-room-name-length": "Maksymalna długość nazw pokojów czatu",
 	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
 	"delay": "Czas pomiędzy wiadomościami czatu (ms)",

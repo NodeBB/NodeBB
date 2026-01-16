@@ -1,0 +1,17 @@
+{
+	"events": "Hadisələr",
+	"no-events": "Hadisə yoxdur",
+	"control-panel": "Hadisələrin İdarəetmə Paneli",
+	"delete-events": "Tədbirləri sil",
+	"confirm-delete-all-events": "Daxil edilmiş bütün hadisələri silmək istədiyinizə əminsiniz?",
+	"filters": "Filtrlər",
+	"filters-apply": "Filtrləri tətbiq et",
+	"filter-type": "Hadisə növü",
+	"filter-start": "Başlama tarixi",
+	"filter-end": "Bitmə tarixi",
+	"filter-user": "İstifadəçiyə görə filtrlə",
+	"filter-user.placeholder": "Filtr etmək üçün istifadəçi adını daxil edin...",
+	"filter-group": "Qrup üzrə filtrlə",
+	"filter-group.placeholder": "Filtr etmək üçün qrup adını yazın...",
+	"filter-per-page": "Hər səhifə üçün"
+}

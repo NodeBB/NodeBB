@@ -39,9 +39,9 @@ redisModule.init = async function (opts) {
 
 redisModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
-	const sessionStore = require('connect-redis').default;
+	const { RedisStore } = require('connect-redis');
 	const client = await connection.connect(options);
-	const store = new sessionStore({
+	const store = new RedisStore({
 		client: client,
 		ttl: meta.getSessionTTLSeconds(),
 	});
@@ -61,7 +61,7 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 };
 
 redisModule.close = async function () {
-	await redisModule.client.quit();
+	await redisModule.client.close();
 	if (redisModule.objectCache) {
 		redisModule.objectCache.reset();
 	}
@@ -104,8 +104,11 @@ redisModule.info = async function (cxn) {
 
 redisModule.socketAdapter = async function () {
 	const redisAdapter = require('@socket.io/redis-adapter');
-	const pub = await connection.connect(nconf.get('redis'));
-	const sub = await connection.connect(nconf.get('redis'));
+	const redisConfig = nconf.get('redis');
+	const [pub, sub] = await Promise.all([
+		connection.connect(redisConfig),
+		connection.connect(redisConfig),
+	]);
 	return redisAdapter(pub, sub, {
 		key: `db:${nconf.get('redis:database')}:adapter_key`,
 	});

@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "Siz <strong>%1</strong> reputasiyaya layiq görülmüsünüz",
+	"awarded-group-membership": "Siz <strong>%1</strong> qrupuna əlavə edildiniz",
+
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputasiya %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Yazıların sayı %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Son onlayn %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Qoşulma tarixi %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Qeydiyyatdan keçmiş günlər %1 %2)</span>"
+}

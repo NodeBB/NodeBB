@@ -1,9 +1,9 @@
 {
-    "all-tags": "All tags",
+    "all-tags": "Todas las Etiquetas",
     "no-tag-topics": "No hay temas con esta etiqueta.",
-    "no-tags-found": "No tags found",
+    "no-tags-found": "No se encontraron etiquetas",
     "tags": "Etiquetas",
-    "enter-tags-here": "Enter tags, %1 - %2 characters.",
+    "enter-tags-here": "Introduzca las etiquetas, %1 - %2 caracteres.",
     "enter-tags-here-short": "Introduzca las etiquetas...",
     "no-tags": "Aún no hay etiquetas.",
     "select-tags": "Seleccionar Etiquetas",

@@ -1,0 +1,13 @@
+{
+    "tag": "Innstilling for emneord",
+    "link-to-manage": "Administrer emneord",
+    "system-tags": "Systememneord",
+    "system-tags-help": "Systememneord vert brukt til spesifikke føremål i forumet.",
+    "tags-per-topic": "Emneord per tråd",
+    "min-per-topic": "Minimum emnerord per tråd",
+    "max-per-topic": "Maksimum emnerord per tråd",
+    "min-length": "Minimum lengd på emneord",
+    "max-length": "Maksimum lengd på emneord",
+    "related-topics": "Relaterte emne",
+    "max-related-topics": "Maksimum relaterte emne"
+}

@@ -13,43 +13,19 @@
 
 .tracking-tight { letter-spacing: -0.02em; }
 
-@mixin btn-ghost-base {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: ($spacer * 0.5);
-	border-radius: $border-radius-sm;
-	border-width: 1px;
-	border-color: transparent;
-	background-color: transparent;
-	padding: ($spacer * 0.25) ($spacer * 0.5);
-	text-align: left;
-	--bs-text-opacity: 1;
-	color: $btn-ghost-color;
-	font-family: $font-family-secondary;
-	cursor: pointer;
-	&:hover, &.active {
-		background-color: $btn-ghost-hover-color;
-		text-decoration: none;
-	}
-}
-
+// https://getbootstrap.com/docs/5.3/components/buttons/#variables
 .btn-ghost {
-	@include btn-ghost-base();
-	line-height: 1.5rem;
-	> i {
-		line-height: 1.5rem;
-	}
+	--bs-btn-color: #{$btn-ghost-color};
+	--bs-btn-bg: transparent;
+	--bs-btn-border-color: transparent;
+	--bs-btn-box-shadow: none;
+	--bs-btn-hover-color: #{$btn-ghost-color};
+	--bs-btn-hover-bg: #{$btn-ghost-hover-color};
+	--bs-btn-hover-border-color: #{$btn-ghost-hover-color};
+	--bs-btn-active-bg: #{$btn-ghost-hover-color};
+	--bs-btn-active-border-color: transparent;
 }
 
-.btn-ghost-sm {
-	@include btn-ghost-base();
-	font-size: 0.875rem;
-	line-height: 1.25rem;
-	> i {
-		line-height: 1.25rem;
-	}
-}
 
 @include color-mode(dark) {
 	.btn-light {
@@ -58,10 +34,11 @@
 	.text-bg-light {
 		@extend .text-bg-dark;
 	}
-	.btn-ghost, .btn-ghost-sm {
+	.btn-ghost {
 		color: $btn-ghost-color-dark;
 		&:hover, &.active {
 			background-color: $btn-ghost-hover-color-dark;
+			border-color: $btn-ghost-hover-color-dark;
 		}
 	}
 }

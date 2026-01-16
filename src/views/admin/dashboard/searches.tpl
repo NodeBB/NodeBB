@@ -17,7 +17,7 @@
 			<button id="clear-search-history" class="btn btn-sm btn-light"><i class="fa fa-trash text-danger"></i> [[admin/dashboard:clear-search-history]]</button>
 		</div>
 
-		<table class="table table-sm text-sm search-list">
+		<table class="table table-sm text-sm search-list w-100">
 			<thead>
 				<th>[[admin/dashboard:search-term]]</th>
 				<th class="text-end">[[admin/dashboard:search-count]]</th>
@@ -30,8 +30,8 @@
 				{{{ end }}}
 				{{{ each searches }}}
 				<tr>
-					<td>{searches.value}</td>
-					<td class="text-end" style="width: 1px;">{formattedNumber(searches.score)}</td>
+					<td class="w-100 text-truncate" style="max-width:1px;">{searches.value}</td>
+					<td class="w-0 text-end text-nowrap">{formattedNumber(searches.score)}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>

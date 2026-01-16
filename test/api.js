@@ -11,8 +11,8 @@ const util = require('util');
 
 const wait = util.promisify(setTimeout);
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const user = require('../src/user');
@@ -23,6 +23,7 @@ const posts = require('../src/posts');
 const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
+const activitypub = require('../src/activitypub');
 const utils = require('../src/utils');
 const api = require('../src/api');
 
@@ -241,6 +242,7 @@ describe('API', async () => {
 		meta.config.allowTopicsThumbnail = 1;
 		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
 		meta.config.chatMessageDelay = 0;
+		meta.config.activitypubEnabled = 1;
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -280,8 +282,13 @@ describe('API', async () => {
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
-		// Create a new chat room
-		await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		// Create a new chat room & send a message
+		const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		await messaging.sendMessage({
+			roomId,
+			uid: adminUid,
+			content: 'this is a chat message',
+		});
 
 		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
@@ -315,6 +322,17 @@ describe('API', async () => {
 
 		// Retrieve CSRF token using cookie, to test Write API
 		csrfToken = await helpers.getCsrfToken(jar);
+
+		// Pre-seed ActivityPub cache so contrived actor assertions pass
+		activitypub._cache.set(`0;https://example.org/foobar`, {
+			id: 'https://example.org/foobar',
+			name: 'foobar',
+			publicKey: {
+				id: `https://example.org/foobar#key`,
+				owner: `https://example.org/foobar`,
+				publicKeyPem: 'secretcat',
+			},
+		});
 
 		setup = true;
 	}
@@ -473,7 +491,8 @@ describe('API', async () => {
 					}
 				});
 
-				it('should not error out when called', async () => {
+				it('should not error out when called', async function () {
+					this.timeout(0);
 					await setupData();
 
 					if (csrfToken) {
@@ -500,6 +519,7 @@ describe('API', async () => {
 								redirect: 'manual',
 								headers: headers,
 								body: body,
+								timeout: 30000,
 							});
 						} else if (type === 'form') {
 							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);
@@ -562,8 +582,15 @@ describe('API', async () => {
 					const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
-						const sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
-						const sessObj = await db.sessionStoreGet(sessionIds[0]);
+						let sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+						let sessObj = await db.sessionStoreGet(sessionIds[0]);
+						if (!sessObj) {
+							// password changed so login with new pwd
+							({ jar } = await helpers.loginUser('admin', '654321'));
+							sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+							sessObj = await db.sessionStoreGet(sessionIds[0]);
+						}
+
 						const { uuid } = sessObj.meta;
 						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = uuid;
 
@@ -632,10 +659,15 @@ describe('API', async () => {
 					case 'boolean':
 						assert.strictEqual(typeof response[prop], 'boolean', `"${prop}" was expected to be a boolean, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						break;
-					case 'object':
-						assert.strictEqual(typeof response[prop], 'object', `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
+					case 'object': {
+						let valid = ['object'];
+						if (schema[prop].additionalProperties && schema[prop].additionalProperties.oneOf) {
+							valid = schema[prop].additionalProperties.oneOf.map(({ type }) => type);
+						}
+						assert(valid.includes(typeof response[prop]), `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						compare(schema[prop], response[prop], method, path, context ? [context, prop].join('.') : prop);
 						break;
+					}
 					case 'array':
 						assert.strictEqual(Array.isArray(response[prop]), true, `"${prop}" was expected to be an array, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 

@@ -52,7 +52,7 @@ cacheController.dump = async function (req, res, next) {
 		local: require('../../cache'),
 	};
 	caches = await plugins.hooks.fire('filter:admin.cache.get', caches);
-	if (!caches[req.query.name]) {
+	if (!caches.hasOwnProperty(req.query.name)) {
 		return next();
 	}
 

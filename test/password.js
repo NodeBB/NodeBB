@@ -9,7 +9,7 @@ describe('Password', () => {
 	describe('.hash()', () => {
 		it('should return a password hash when called', async () => {
 			const hash = await password.hash(12, 'test');
-			assert(hash.startsWith('$2a$'));
+			assert(hash.startsWith('$2b$'));
 		});
 	});
 

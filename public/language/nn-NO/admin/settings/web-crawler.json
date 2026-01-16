@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "Innstillingar for gjennomsøking",
+	"robots-txt": "robots.txt",
+	"sitemap-feed-settings": "Innstillingar for sitemap og feed",
+	"disable-rss-feeds": "Deaktiver RSS-feedar",
+	"disable-sitemap-xml": "Deaktiver sitemap.xml",
+	"sitemap-topics": "Sitemap-emne",
+	"clear-sitemap-cache": "Tøm sitemap-cache",
+	"view-sitemap": "Vis sitemap"
+}

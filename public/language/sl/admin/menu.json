@@ -38,6 +38,7 @@
 	"settings/tags": "Oznake",
 	"settings/notifications": "Obvestila",
 	"settings/api": "API dostop",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Zvoki",
 	"settings/social": "Družbeno",
 	"settings/cookies": "Piškotki",

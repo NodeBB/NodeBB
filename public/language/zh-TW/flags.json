@@ -1,6 +1,6 @@
 {
 	"state": "狀態",
-	"report": "Report",
+	"report": "提報",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "帥！沒發現任何的舉報。",
@@ -9,8 +9,8 @@
 	"update": "更新",
 	"updated": "已更新",
 	"resolved": "Resolved",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "已加入",
+	"report-rescinded": "已撤銷",
 	"target-purged": "被舉報的內容已經被清除，不再可用。",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 
@@ -84,12 +84,18 @@
 	"modal-reason-offensive": "人身攻擊",
 	"modal-reason-other": "其它（請在下方指定）",
 	"modal-reason-custom": "舉報此內容的理由……",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "提交舉報",
 	"modal-submit-success": "已舉報此內容。",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 flags updated",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "標記 <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

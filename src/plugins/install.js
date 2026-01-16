@@ -156,6 +156,16 @@ module.exports = function (Plugins) {
 		}
 	};
 
+	Plugins.isSystemPlugin = async function (id) {
+		const pluginDir = path.join(paths.nodeModules, id, 'plugin.json');
+		try {
+			const pluginData = JSON.parse(await fs.readFile(pluginDir, 'utf8'));
+			return pluginData && pluginData.system === true;
+		} catch (err) {
+			return false;
+		}
+	};
+
 	Plugins.isActive = async function (id) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);

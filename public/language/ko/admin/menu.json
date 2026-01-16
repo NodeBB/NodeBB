@@ -38,6 +38,7 @@
 	"settings/tags": "태그",
 	"settings/notifications": "알림",
 	"settings/api": "API 액세스",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "사운드",
 	"settings/social": "소셜",
 	"settings/cookies": "쿠키",

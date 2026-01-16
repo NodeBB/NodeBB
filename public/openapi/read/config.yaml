@@ -23,6 +23,12 @@ get:
                 type: string
               browserTitle:
                 type: string
+              description:
+                type: string
+              keywords:
+                type: string
+              brand:logo:
+                type: string
               titleLayout:
                 type: string
               showSiteTitle:
@@ -172,3 +178,8 @@ get:
                       type: string
                   version:
                     type: string
+              activitypub:
+                type: object
+                properties:
+                  probe:
+                    type: number

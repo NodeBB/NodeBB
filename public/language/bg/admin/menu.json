@@ -38,6 +38,7 @@
 	"settings/tags": "Етикети",
 	"settings/notifications": "Известия",
 	"settings/api": "Достъп чрез ППИ",
+	"settings/activitypub": "Федериране (ActivityPub)",
 	"settings/sounds": "Звуци",
 	"settings/social": "Обществени",
 	"settings/cookies": "Бисквитки",

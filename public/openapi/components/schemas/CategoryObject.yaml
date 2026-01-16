@@ -8,6 +8,14 @@ CategoryObject:
         name:
           type: string
           description: The category's name/title
+        handle:
+          type: string
+          description: |
+            An URL-safe name/handle used to represent the category over federated networks (e.g. ActivityPub).
+
+            This value is separate from the `slug`, which is used specifically in the URL as a human-readable representation.
+
+            The handle is unique across-the-board between users/groups/categories.
         description:
           type: string
           description: A variable-length description of the category (usually displayed underneath the category name)

@@ -12,6 +12,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 
+const db = require('./database');
 const User = require('./user');
 const Plugins = require('./plugins');
 const meta = require('./meta');
@@ -152,7 +153,11 @@ Emailer.setupFallbackTransport = (config) => {
 		} else {
 			smtpOptions.service = String(config['email:smtpTransport:service']);
 		}
-
+		if (config['email:smtpTransport:allow-self-signed']) {
+			smtpOptions.tls = {
+				rejectUnauthorized: false,
+			};
+		}
 		Emailer.transports.smtp = nodemailer.createTransport(smtpOptions);
 		Emailer.fallbackTransport = Emailer.transports.smtp;
 	} else {
@@ -223,6 +228,13 @@ Emailer.send = async (template, uid, params) => {
 	// 'welcome' and 'verify-email' explicitly used passed-in email address
 	if (['welcome', 'verify-email'].includes(template)) {
 		userData.email = params.email;
+	} else if (meta.config.includeUnverifiedEmails && !userData.email) {
+		// get unconfirmed email to use
+		const code = await db.get(`confirm:byUid:${uid}`);
+		const confirmObj = code ? await db.getObject(`confirm:${code}`) : null;
+		if (confirmObj && confirmObj.email) {
+			userData.email = String(confirmObj.email);
+		}
 	}
 
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
@@ -253,6 +265,7 @@ Emailer.send = async (template, uid, params) => {
 	params = { ...Emailer._defaultPayload, ...params };
 	params.uid = uid;
 	params.username = userData.username;
+	params.displayname = userData.displayname;
 	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
 
 	const result = await Plugins.hooks.fire('filter:email.cancel', {
@@ -331,10 +344,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	const usingFallback = !Plugins.hooks.hasListeners('filter:email.send') &&
 		!Plugins.hooks.hasListeners('static:email.send');
 	try {
-		if (Plugins.hooks.hasListeners('filter:email.send')) {
-			// Deprecated, remove in v1.19.0
-			await Plugins.hooks.fire('filter:email.send', data);
-		} else if (Plugins.hooks.hasListeners('static:email.send')) {
+		if (Plugins.hooks.hasListeners('static:email.send')) {
 			await Plugins.hooks.fire('static:email.send', data);
 		} else {
 			await Emailer.sendViaFallback(data);
@@ -354,8 +364,11 @@ Emailer.sendViaFallback = async (data) => {
 	data.text = data.plaintext;
 	delete data.plaintext;
 
-	// NodeMailer uses a combined "from"
-	data.from = `${data.from_name}<${data.from}>`;
+	// use an address object https://nodemailer.com/message/addresses/
+	data.from = {
+		name: data.from_name,
+		address: data.from,
+	};
 	delete data.from_name;
 	await Emailer.fallbackTransport.sendMail(data);
 };

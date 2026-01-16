@@ -15,7 +15,7 @@
 	"title-layout": "Vzhľad názvu",
 	"title-layout-help": "Určite, ako má byť zostavený názov prehliadača, tj. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Skrátený popis Vašej komunity",
-	"description": "Popis stránky",
+	"description": "Site Description",
 	"keywords": "Kľúčové slová pre stránky",
 	"keywords-placeholder": "Kľúčové slová popisujúce Vašu komunitu, oddelené čiarkou",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "Domovská stránka",
+	"home-page-route": "Cesta k domovskej stránke",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Upraviť cestu",
+	"allow-user-home-pages": "Povoliť používateľom domovské stránky",
+	"home-page-title": "Titulok domovskej stránky (Predvolený „Domov”)",
+	"default-language": "Predvolený jazyk",
+	"auto-detect": "Automaticky rozpoznávať nastavenie jazyka pre hostí",
+	"default-language-help": "Predvolený jazyk určuje nastavenie jazyka pre všetkých používateľov navštevujúcich vaše fórum. <br />Každý používateľ si môže potom nastaviť predvolený jazyk na stránke nastavenia účtu.",
+	"post-sharing": "Zdieľanie príspevku",
+	"info-plugins-additional": "Doplnky môžu pridávať ďalšie siete na zdieľanie príspevkov."
 }

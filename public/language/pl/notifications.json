@@ -97,5 +97,9 @@
     "notificationType-post-queue": "Kiedy nowy post jest kolejkowany",
     "notificationType-new-post-flag": "Kiedy post zostanie oflagowany",
     "notificationType-new-user-flag": "Kiedy użytkownik zostanie oflagowany",
-    "notificationType-new-reward": "Kiedy otrzymasz nagrodę"
+    "notificationType-new-reward": "Kiedy otrzymasz nagrodę",
+    "activitypub.announce": "<strong>%1</strong> podzielił się Twoim wpisem w <strong>%2</strong> z korzyścią dla śledzących.",
+    "activitypub.announce-dual": "<strong>%1</strong> i <strong>%2</strong> podzielili się Twoim wpisem w <strong>%3</strong> z korzyścią dla śledzących.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> i <strong>%3</strong> podzielili się Twoim wpisem <strong>%4</strong> ze śledzącymi.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> oraz %3 innych udostępiło Twój wpis w <strong>%4</strong> dla śledzących."
 }

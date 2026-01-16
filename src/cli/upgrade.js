@@ -24,9 +24,9 @@ const steps = {
 	},
 	plugins: {
 		message: 'Checking installed plugins for updates...',
-		handler: async function () {
+		handler: async function (options) {
 			await require('../database').init();
-			await upgradePlugins();
+			await upgradePlugins(options.unattended);
 		},
 	},
 	schema: {
@@ -45,14 +45,14 @@ const steps = {
 	},
 };
 
-async function runSteps(tasks) {
+async function runSteps(tasks, options) {
 	try {
 		for (let i = 0; i < tasks.length; i++) {
 			const step = steps[tasks[i]];
 			if (step && step.message && step.handler) {
 				process.stdout.write(`\n${chalk.bold(`${i + 1}. `)}${chalk.yellow(step.message)}`);
 				/* eslint-disable-next-line */
-				await step.handler();
+				await step.handler(options);
 			}
 		}
 		const message = 'NodeBB Upgrade Complete!';
@@ -95,7 +95,7 @@ async function runUpgrade(upgrades, options) {
 				options.plugins || options.schema || options.build) {
 			tasks = tasks.filter(key => options[key]);
 		}
-		await runSteps(tasks);
+		await runSteps(tasks, options);
 		return;
 	}
 

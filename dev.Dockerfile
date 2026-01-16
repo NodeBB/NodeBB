@@ -38,8 +38,9 @@ COPY --from=git --chown=${USER}:${USER} /usr/src/app/install/package.json /usr/s
 
 USER ${USER}
 
-RUN npm install
-  
+RUN npm install \
+    && rm -rf .npm
+
 FROM node:lts-slim AS final
 
 ENV NODE_ENV=development \
@@ -57,8 +58,8 @@ RUN corepack enable \
     && mkdir -p /usr/src/app/logs/ /opt/config/ \
     && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/
 
-COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
-COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
+COPY --from=git --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
+COPY --from=git --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
 COPY --from=node_modules_touch --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
 COPY --from=git --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/
 

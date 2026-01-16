@@ -53,8 +53,8 @@ privsCategories.getType = function (privilege) {
 	return priv && priv.type ? priv.type : '';
 };
 
-privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', Array.from(_privilegeMap.keys()));
-privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
+privsCategories.getUserPrivilegeList = () => Array.from(_privilegeMap.keys());
+privsCategories.getGroupPrivilegeList = () => Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`);
 
 privsCategories.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
@@ -72,27 +72,20 @@ privsCategories.getPrivilegesByFilter = function (filter) {
 
 // Method used in admin/category controller to show all users/groups with privs in that given cid
 privsCategories.list = async function (cid) {
-	let labels = Array.from(_privilegeMap.values()).map(data => data.label);
-	labels = await utils.promiseParallel({
-		users: plugins.hooks.fire('filter:privileges.list_human', labels.slice()),
-		groups: plugins.hooks.fire('filter:privileges.groups.list_human', labels.slice()),
-	});
-
 	const keys = await utils.promiseParallel({
 		users: privsCategories.getUserPrivilegeList(),
 		groups: privsCategories.getGroupPrivilegeList(),
 	});
 
 	const payload = await utils.promiseParallel({
-		labels,
 		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(cid, keys.users),
 		groups: helpers.getGroupPrivileges(cid, keys.groups),
 	});
 	payload.keys = keys;
 
-	payload.columnCountUserOther = payload.labels.users.length - privsCategories._coreSize;
-	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories._coreSize;
+	payload.columnCountUserOther = payload.labelData.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labelData.length - privsCategories._coreSize;
 
 	return payload;
 };
@@ -103,14 +96,16 @@ privsCategories.get = async function (cid, uid) {
 		'topics:tag', 'read', 'posts:view_deleted',
 	];
 
-	const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
+	let [userPrivileges, isAdministrator, isModerator] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, cid),
 	]);
 
-	const combined = userPrivileges.map(allowed => allowed || isAdministrator);
-	const privData = _.zipObject(privs, combined);
+	if (utils.isNumber(cid)) {
+		userPrivileges = userPrivileges.map(allowed => allowed || isAdministrator);
+	}
+	const privData = _.zipObject(privs, userPrivileges);
 	const isAdminOrMod = isAdministrator || isModerator;
 
 	return await plugins.hooks.fire('filter:privileges.categories.get', {
@@ -153,6 +148,7 @@ privsCategories.can = async function (privilege, cid, uid) {
 	if (!cid) {
 		return false;
 	}
+
 	const [disabled, isAdmin, isAllowed] = await Promise.all([
 		categories.getCategoryField(cid, 'disabled'),
 		user.isAdministrator(uid),

@@ -1,5 +1,5 @@
 {
-    "settings.title": "Theme settings",
+    "settings.title": "Nastavení motivu",
     "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
     "settings.mobile-menu-side": "Switch which side each mobile menu is on",
     "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",

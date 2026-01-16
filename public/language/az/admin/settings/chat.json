@@ -1,0 +1,17 @@
+{
+	"zero-is-disabled": "Bu məhdudiyyəti ləğv etmək üçün 0 daxil edin",
+	"chat-settings": "Söhbət parametrləri",
+	"disable": "Söhbəti deaktiv et",
+	"disable-editing": "Söhbət mesajının redaktəsini/silinməsini deaktiv et",
+	"disable-editing-help": "Administratorlar və qlobal moderatorlar bu məhdudiyyətdən azaddırlar",
+	"max-length": "Söhbət mesajlarının maksimum uzunluğu",
+	"max-length-remote": "Uzaq söhbət mesajlarının maksimum uzunluğu",
+	"max-length-remote-help": "Bu dəyər adətən yerli istifadəçilər üçün maksimum söhbət mesajından yuxarı təyin edilir, çünki uzaqdan gələn mesajlar daha uzun olur (@ qeydləri ilə və s.)",
+	"max-chat-room-name-length": "Söhbət otağı adlarının maksimum uzunluğu",
+	"max-room-size": "Söhbət otaqlarında maksimum istifadəçi sayı",
+	"delay": "Söhbət mesajları arasındakı vaxt (ms)",
+	"notification-delay": "Söhbət mesajları üçün bildiriş gecikməsi",
+	"notification-delay-help": "Bu vaxt arasında göndərilən əlavə mesajlar toplanır və istifadəçiyə hər gecikmə müddətində bir dəfə bildiriş göndərilir. Gecikməni söndürmək üçün bunu 0-a qoyun.",
+	"restrictions.seconds-edit-after": "Söhbət mesajının redaktə oluna biləcəyi saniyələrin sayı.",
+	"restrictions.seconds-delete-after": "Söhbət mesajının silinə biləcəyi saniyələrin sayı."
+}

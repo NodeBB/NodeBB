@@ -1,13 +1,13 @@
 {
-    "manage-admins-and-mods": "Manage Admins & Mods",
-    "administrators": "Administrators",
-    "global-moderators": "Global Moderators",
-    "moderators": "Moderators",
-    "no-global-moderators": "No Global Moderators",
-    "no-sub-categories": "No subcategories",
-    "view-children": "View children (%1)",
-    "no-moderators": "No Moderators",
-    "add-administrator": "Add Administrator",
-    "add-global-moderator": "Add Global Moderator",
-    "add-moderator": "Add Moderator"
+    "manage-admins-and-mods": "Administrer administratorer og moderatorer",
+    "administrators": "Administratorer",
+    "global-moderators": "Globale moderatorer",
+    "moderators": "Moderatorer",
+    "no-global-moderators": "Ingen globale moderatorer",
+    "no-sub-categories": "Ingen underkategorier",
+    "view-children": "Vis underkategorier (%1)",
+    "no-moderators": "Ingen moderatorer",
+    "add-administrator": "Legg til administrator",
+    "add-global-moderator": "Legg til global moderator",
+    "add-moderator": "Legg til moderator"
 }

@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Пароль",
 	"smtp-transport.pool": "Включить объединенные подключения",
 	"smtp-transport.pool-help": "Объединение соединений не позволяет NodeBB создавать новое соединение для каждой электронной почты. Этот параметр применяется только в том случае, если включен транспортный протокол SMTP.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Шаблоны писем",
 	"template.select": "Выберите шаблон письма",

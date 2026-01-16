@@ -10,6 +10,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
+const activitypub = require('../activitypub');
 const privileges = require('../privileges');
 const social = require('../social');
 
@@ -34,6 +35,7 @@ Topics.thumbs = require('./thumbs');
 require('./bookmarks')(Topics);
 require('./merge')(Topics);
 Topics.events = require('./events');
+Topics.crossposts = require('./crossposts');
 
 Topics.exists = async function (tids) {
 	return await db.exists(
@@ -69,8 +71,11 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	async function loadTopics() {
 		const topics = await Topics.getTopicsData(tids);
-		const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
-		const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
+		const uids = _.uniq(topics
+			.map(t => t && t.uid && t.uid.toString())
+			.filter(v => utils.isNumber(v) || activitypub.helpers.isUri(v)));
+		const cids = _.uniq(topics
+			.map(t => t && t.cid && t.cid.toString()));
 		const guestTopics = topics.filter(t => t && t.uid === 0);
 
 		async function loadGuestHandles() {
@@ -187,13 +192,13 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 
 	topicData.thumbs = thumbs[0];
 	topicData.posts = posts;
-	topicData.events = events;
 	topicData.posts.forEach((p) => {
 		p.events = events.filter(
 			event => event.timestamp >= p.eventStart && event.timestamp < p.eventEnd
 		);
 		p.eventStart = undefined;
 		p.eventEnd = undefined;
+		p.events = mergeConsecutiveShareEvents(p.events);
 	});
 
 	topicData.category = category;
@@ -225,6 +230,23 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
 	return result.topic;
 };
+
+function mergeConsecutiveShareEvents(arr) {
+	return arr.reduce((acc, curr) => {
+		const last = acc[acc.length - 1];
+		if (last && last.type === curr.type && last.type === 'share') {
+			if (!last.items) {
+				last.items = [{ ...last }];
+				['user', 'text', 'timestamp', 'timestampISO'].forEach(field => delete last[field]);
+			}
+			last.items.push(curr);
+		} else {
+			acc.push(curr);
+		}
+		return acc;
+	}, []);
+}
+
 
 async function getDeleter(topicData) {
 	if (!parseInt(topicData.deleterUid, 10)) {

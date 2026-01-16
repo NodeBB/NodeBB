@@ -15,7 +15,7 @@
 	"title-layout": "Başlık Düzeni",
 	"title-layout-help": "Tarayıcı başlığının nasıl yapılandırılacağını tanımlayın örn. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Topluluk hakkında kısa bir açıklama yazın",
-	"description": "Site Açıklaması",
+	"description": "Site Description",
 	"keywords": "Site Anahtar Kelimeler",
 	"keywords-placeholder": "Topluluğunuzu tanımlayan anahtar kelimeler, virgülle-ayrılmış",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "Site PWA olarak kurulduğunda ekran arkaplanı olarak kullanılacak renk",
 	"undo-timeout": "Zaman Aşımını Geri Al",
 	"undo-timeout-help": "Konu taşıma gibi bazı işlemler, moderatörün belirli bir zaman dilimi içinde eylemlerini geri almasına olanak tanır. Tamamen geri almayı devre dışı bırakmak için 0'a ayarlayın.",
-	"topic-tools": "Konu Araçları"
+	"topic-tools": "Konu Araçları",
+	"home-page": "Ana Sayfa",
+	"home-page-route": "Ana Sayfa Yolu",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Özel Yol",
+	"allow-user-home-pages": "Kullanıcılara ana sayfalarını özelleştirmeleri için izin ver",
+	"home-page-title": "Ana sayfanın başlığı (varsayılan \"Ana Sayfa\")",
+	"default-language": "Varsayılan Dil",
+	"auto-detect": "Ziyaretçiler için dili otomatik tespit et",
+	"default-language-help": "Varsayılan dil, forumunuzu ziyaret eden tüm kullanıcılar için dil ayarlarını belirler. <br />Kullanıcılar, bireysel olarak hesap ayarları sayfasında varsayılan dili geçersiz kılabilir.",
+	"post-sharing": "İleti Paylaşımı",
+	"info-plugins-additional": "Eklentiler, paylaşımda bulunmak için ek sosyal ağlar ekleyebilir."
 }

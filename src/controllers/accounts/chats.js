@@ -67,8 +67,11 @@ chatsController.get = async function (req, res, next) {
 
 	room.title = room.roomName || room.usernames || '[[pages:chats]]';
 	room.bodyClasses = ['chat-loaded'];
-	room.canViewInfo = await privileges.global.can('view:users:info', uid);
-
+	const [canViewInfo, canUploadImage, canUploadFile] = await privileges.global.can([
+		'view:users:info', 'upload:post:image', 'upload:post:file',
+	], uid);
+	room.canViewInfo = canViewInfo;
+	room.canUpload = (canUploadImage || canUploadFile) && (meta.config.maximumFileSize > 0 || room.isAdmin);
 	res.render('chats', {
 		...payload,
 		...room,

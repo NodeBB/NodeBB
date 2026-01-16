@@ -1,0 +1,17 @@
+{
+	"events": "Hendingar",
+	"no-events": "Ingen hendingar",
+	"control-panel": "Kontrollpanel",
+	"delete-events": "Slett hendingar",
+	"confirm-delete-all-events": "Er du sikker på at du vil slette alle hendingane?",
+	"filters": "Filter",
+	"filters-apply": "Bruk filter",
+	"filter-type": "Filtertype",
+	"filter-start": "Startdato",
+	"filter-end": "Sluttdato",
+	"filter-user": "Filter på brukar",
+	"filter-user.placeholder": "Skriv inn brukarnamn",
+	"filter-group": "Filter på gruppe",
+	"filter-group.placeholder": "Skriv inn gruppenamn",
+	"filter-per-page": "Filter per side"
+}

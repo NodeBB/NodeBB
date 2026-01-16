@@ -20,7 +20,6 @@
 	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "Reputación negativa para denunciar",
-	"min-rep-website": "Reputación mínima para añadir \"Sitio web\" al perfil del usuario.",
 	"min-rep-aboutme": "Reputación mínima para añadir \"Sobre mi\" al perfil de usuario.",
 	"min-rep-signature": "Reputación mínima para añadir \"Firma\" al perfil de usuario",
 	"min-rep-profile-picture": "Reputación mínima para añadir \"Foto de Perfil\" al perfil de usuario.",

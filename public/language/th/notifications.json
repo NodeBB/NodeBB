@@ -97,5 +97,9 @@
     "notificationType-post-queue": "เมื่อมีโพสต์ใหม่อยู่ในคิว",
     "notificationType-new-post-flag": "เมื่อโพสต์ถูกรายงาน",
     "notificationType-new-user-flag": "เมื่อผู้ใช้ถูกรายงาน",
-    "notificationType-new-reward": "เมื่อคุณได้รับรางวัล"
+    "notificationType-new-reward": "เมื่อคุณได้รับรางวัล",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

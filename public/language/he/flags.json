@@ -84,12 +84,18 @@
 	"modal-reason-offensive": "פוגעני",
 	"modal-reason-other": "אחר (ציינו למטה)",
 	"modal-reason-custom": "הסיבה לדיווח על התוכן...",
+	"modal-notify-remote": "העברת דוח זה ל %1",
 	"modal-submit": "שליחת דיווח",
 	"modal-submit-success": "התוכן סומן לצרכי בקרה",
 
+	"modal-confirm-rescind": "לבטל דוח?",
+
 	"bulk-actions": "פעולות כלליות",
 	"bulk-resolve": "השלמת דיווחים",
+	"confirm-purge": "האם למחוק לצמיתות את הדיווחים הללו?",
+	"purge-cancelled": "מחיקת הדיווח בוטל",
+	"bulk-purge": "מחיקת דיווחים",
 	"bulk-success": "%1 דיווחים עודכנו",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "מדווחים <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[דיווח אוטומטי] פוסט זה קיבל %1 הצבעות למטה."
 }

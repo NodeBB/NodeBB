@@ -64,6 +64,7 @@
 	"show-email": "E-posta Göster",
 	"show-fullname": "Tam adı göster",
 	"restrict-chat": "Sadece takip ettiğim kişilerden sohbetleri kabul et",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Dışarı giden bağlantıları yeni sekmede aç",
 	"topic-search": "Konu içi aramayı etkinleştir",
 	"update-url-with-post-index": "Sayfayı okurken URL bağlantısındaki ileti numarasını güncelle",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Yeni kullanıcıların ilk iletilerini göndermesi için geçmesi gereken saniye miktarı",
 	"restrictions.seconds-edit-after-new": "Yeni kullanıcıların iletileri kaç saniye boyunca düzenlenebilir (devre dışı bırakmak için 0 giriniz)",
 	"restrictions.milliseconds-between-messages": "Yeni kullanıcıların sohbet mesajları arasındaki süre (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Yeni kullanıcı kısıtlamalarının uygulanmayacağı grupları seçiniz"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Yeni kullanıcı kısıtlamalarının uygulanmayacağı grupları seçiniz",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Misafir üyelere izin ver",
+	"handles.enabled-help": "Bu seçenek, misafirlerin yaptıkları her gönderiyle ilişkilendirebilecekleri bir isim alanı sunar. Devre dışı bırakılırsa, gönderenin ismi basitçe \"Misafir\" olarak adlandırılacaktır.",
+	"topic-views.enabled": "Ziyaretçilerin konu bakış sayısını arttırmasına izin ver",
+	"reply-notifications.enabled": "Ziyaretçilerin cevap bildirimleri oluşturmasına izin ver"
 }

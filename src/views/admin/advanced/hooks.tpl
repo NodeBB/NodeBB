@@ -2,9 +2,8 @@
 	{{{ each hooks }}}
 	<div class="mb-3 border rounded p-2">
 		<div class="" role="tab">
-			<h6 class="mb-0 ps-2 d-flex justify-content-between align-items-center">
-				<span>{hooks.hookName}</span>
-				<button class="btn-ghost-sm" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#{hooks.index}" aria-expanded="true" aria-controls="{hooks.index}">View hooks ({hooks.count})</button>
+			<h6 class="mb-0 d-flex align-items-center">
+				<button class="btn btn-ghost btn-sm" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#{hooks.index}" aria-expanded="true" aria-controls="{hooks.index}">{hooks.hookName} ({hooks.count})</button>
 			</h6>
 		</div>
 		<div id="{hooks.index}" class="accordion-collapse collapse" role="tabpanel">

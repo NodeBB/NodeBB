@@ -37,7 +37,7 @@
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Flagged User",
 	"view-profile": "View Profile",
-	"start-new-chat": "Start New Chat",
+	"start-new-chat": "Aloita uusi keskustelu",
 	"go-to-target": "View Flag Target",
 	"assign-to-me": "Assign To Me",
 	"delete-post": "Delete Post",
@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "Offensive",
 	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "Reason for reporting this content...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Submit Report",
 	"modal-submit-success": "Content has been flagged for moderation.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 flags updated",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."

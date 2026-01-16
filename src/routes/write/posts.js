@@ -29,6 +29,8 @@ module.exports = function () {
 	setupApiRoute(router, 'get', '/:pid/voters', [middleware.assert.post], controllers.write.posts.getVoters);
 	setupApiRoute(router, 'get', '/:pid/upvoters', [middleware.assert.post], controllers.write.posts.getUpvoters);
 
+	setupApiRoute(router, 'get', '/:pid/announcers', [middleware.assert.post], controllers.write.posts.getAnnouncers);
+	setupApiRoute(router, 'get', '/:pid/announcers/tooltip', [middleware.assert.post], controllers.write.posts.getAnnouncersTooltip);
 	setupApiRoute(router, 'put', '/:pid/bookmark', middlewares, controllers.write.posts.bookmark);
 	setupApiRoute(router, 'delete', '/:pid/bookmark', middlewares, controllers.write.posts.unbookmark);
 
@@ -38,6 +40,14 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:pid/diffs/:timestamp', middlewares, controllers.write.posts.deleteDiff);
 
 	setupApiRoute(router, 'get', '/:pid/replies', [middleware.assert.post], controllers.write.posts.getReplies);
+
+	setupApiRoute(router, 'post', '/queue/:id', controllers.write.posts.acceptQueuedPost);
+	setupApiRoute(router, 'delete', '/queue/:id', controllers.write.posts.removeQueuedPost);
+	setupApiRoute(router, 'put', '/queue/:id', controllers.write.posts.editQueuedPost);
+	setupApiRoute(router, 'post', '/queue/:id/notify', [middleware.checkRequired.bind(null, ['message'])], controllers.write.posts.notifyQueuedPostOwner);
+
+	setupApiRoute(router, 'put', '/:pid/owner', [middleware.ensureLoggedIn, middleware.assert.post, middleware.checkRequired.bind(null, ['uid'])], controllers.write.posts.changeOwner);
+	setupApiRoute(router, 'post', '/owner', [middleware.ensureLoggedIn, middleware.checkRequired.bind(null, ['pids', 'uid'])], controllers.write.posts.changeOwner);
 
 	// Shorthand route to access post routes by topic index
 	router.all('/+byIndex/:index*?', [middleware.checkRequired.bind(null, ['tid'])], controllers.write.posts.redirectByIndex);

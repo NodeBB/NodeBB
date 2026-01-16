@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Parole",
 	"smtp-transport.pool": "Enable pooled connections",
 	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Rediģēt e-pasta veidni",
 	"template.select": "Atlasīt e-pasta veidni",

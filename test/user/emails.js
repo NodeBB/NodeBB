@@ -1,8 +1,6 @@
 'use strict';
 
 const assert = require('assert');
-const nconf = require('nconf');
-const util = require('util');
 
 const db = require('../mocks/databasemock');
 
@@ -16,7 +14,7 @@ const utils = require('../../src/utils');
 
 describe('email confirmation (library methods)', () => {
 	let uid;
-	async function dummyEmailerHook(data) {
+	async function dummyEmailerHook() {
 		// pretend to handle sending emails
 	}
 
@@ -159,7 +157,6 @@ describe('email confirmation (v3 api)', () => {
 	});
 
 	it('should have a pending validation', async () => {
-		const code = await db.get(`confirm:byUid:${userObj.uid}`);
 		assert.strictEqual(await user.email.isValidationPending(userObj.uid, 'test@example.org'), true);
 	});
 

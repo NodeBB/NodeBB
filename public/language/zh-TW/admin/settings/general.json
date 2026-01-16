@@ -15,7 +15,7 @@
 	"title-layout": "標題佈局",
 	"title-layout-help": "定義瀏覽器標題的佈局，即&#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "關於您的社區的簡短說明",
-	"description": "網站描述",
+	"description": "Site Description",
 	"keywords": "網站關鍵字",
 	"keywords-placeholder": "描述您的社區的關鍵字，以逗號分隔",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "當網站以 PWA 方式安裝時起始視窗的背景顏色",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "首頁",
+	"home-page-route": "首頁路徑",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "自訂路徑",
+	"allow-user-home-pages": "允許使用者自訂首頁",
+	"home-page-title": "首頁標題(預設為“Home”)",
+	"default-language": "預設語言",
+	"auto-detect": "自動檢測訪客的語言設定",
+	"default-language-help": "預設語言會決定所有使用者的語言設定。 <br />單一使用者可以各自在帳戶設定中覆蓋此項設定。",
+	"post-sharing": "貼文分享",
+	"info-plugins-additional": "外掛可以增加額外用於分享貼文的社群媒體。"
 }

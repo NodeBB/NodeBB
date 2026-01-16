@@ -1,6 +1,4 @@
 <div class="tool-modal d-flex">
-
-
 	<div class="card shadow">
 		<h5 class="card-header">[[topic:thread-tools.merge-topics]]</h5>
 		<div class="card-body">

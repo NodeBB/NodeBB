@@ -64,6 +64,7 @@
 	"show-email": "Ցույց տալ էլ.նամակը",
 	"show-fullname": "Ցույց տալ լրիվ անունը",
 	"restrict-chat": "Թույլատրել զրույցի հաղորդագրությունները միայն այն օգտվողներից, որոնց ես հետևում եմ",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Բացել ելքային հղումները նոր ներդիրում",
 	"topic-search": "Միացնել թեմայում որոնումը",
 	"update-url-with-post-index": "Թեմաներ զննարկելիս թարմացրեք url-ը գրառումների ինդեքսով",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Վայրկյաններ առաջ, երբ նոր օգտատերը կարող է կատարել իր առաջին գրառումը",
 	"restrictions.seconds-edit-after-new": "Գրառման վայրկյանների քանակը մնում է խմբագրելի (անջատելու համար դնել 0)",
 	"restrictions.milliseconds-between-messages": "Նոր օգտատերերի համար հաղորդագրությունների միջև ընկած ժամանակը (մվ)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Ընտրեք խմբեր, որոնք պետք է ազատվեն նոր օգտատերերի սահմանափակումնեից"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Ընտրեք խմբեր, որոնք պետք է ազատվեն նոր օգտատերերի սահմանափակումնեից",
+	"guest-settings": "Հյուրերի կարգավորումներ",
+	"handles.enabled": "Թույլատրել guest handles",
+	"handles.enabled-help": "Այս ընտրանքը բացահայտում է նոր դաշտ, որը թույլ է տալիս հյուրերին ընտրել անուն՝ իրենց կատարած յուրաքանչյուր գրառման հետ կապելու համար: Եթե անջատված են, նրանք պարզապես կանվանվեն «Հյուր»",
+	"topic-views.enabled": "Թույլ տվեք հյուրերին ավելացնել թեմայի դիտումների քանակը",
+	"reply-notifications.enabled": "Թույլ տվեք հյուրերին ստեղծել պատասխանների ծանուցումներ"
 }

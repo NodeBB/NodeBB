@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const url = require('url');
 const winston = require('winston');
 const sanitize = require('sanitize-html');
 const _ = require('lodash');
@@ -33,37 +32,43 @@ let sanitizeConfig = {
 		'tabindex', 'title', 'translate', 'aria-*', 'data-*',
 	],
 };
+const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article', 'markdown']);
 
 module.exports = function (Posts) {
-	Posts.urlRegex = {
-		regex: /href="([^"]+)"/g,
-		length: 6,
-	};
+	Posts.urlRegex = /href="([^"]+)"/g;
+	Posts.imgRegex = /src="([^"]+)"/g;
+	Posts.mdImageUrlRegex = /\[.+?\]\(([^\\)]+)\)/g;
 
-	Posts.imgRegex = {
-		regex: /src="([^"]+)"/g,
-		length: 5,
-	};
-
-	Posts.parsePost = async function (postData) {
+	Posts.parsePost = async function (postData, type) {
 		if (!postData) {
 			return postData;
 		}
-		postData.content = String(postData.content || '');
+
+		if (!type || !allowedTypes.has(type)) {
+			type = 'default';
+		}
+		postData.content = String(postData.sourceContent || postData.content || '');
 		const cache = postCache.getOrCreate();
-		const pid = String(postData.pid);
-		const cachedContent = cache.get(pid);
+		const cacheKey = `${String(postData.pid)}|${type}`;
+		const cachedContent = cache.get(cacheKey);
+
 		if (postData.pid && cachedContent !== undefined) {
 			postData.content = cachedContent;
 			return postData;
 		}
 
-		const data = await plugins.hooks.fire('filter:parse.post', { postData: postData });
-		data.postData.content = translator.escape(data.postData.content);
-		if (data.postData.pid) {
-			cache.set(pid, data.postData.content);
+		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
+		postData.content = translator.escape(postData.content);
+		if (postData.pid) {
+			cache.set(cacheKey, postData.content);
 		}
-		return data.postData;
+
+		return postData;
+	};
+
+	Posts.clearCachedPost = function (pid) {
+		const cache = require('./cache');
+		cache.del(Array.from(allowedTypes).map(type => `${String(pid)}|${type}`));
 	};
 
 	Posts.parseSignature = async function (userData, uid) {
@@ -77,30 +82,24 @@ module.exports = function (Posts) {
 			return content;
 		}
 		let parsed;
-		let current = regex.regex.exec(content);
+		let current = regex.exec(content);
 		let absolute;
 		while (current !== null) {
 			if (current[1]) {
 				try {
-					parsed = url.parse(current[1]);
-					if (!parsed.protocol) {
-						if (current[1].startsWith('/')) {
-							// Internal link
-							absolute = nconf.get('base_url') + current[1];
-						} else {
-							// External link
-							absolute = `//${current[1]}`;
-						}
-
-						content = content.slice(0, current.index + regex.length) +
+					parsed = new URL(current[1], nconf.get('url'));
+					absolute = parsed.toString();
+					if (absolute !== current[1]) {
+						const offset = current[0].indexOf(current[1]);
+						content = content.slice(0, current.index + offset) +
 						absolute +
-						content.slice(current.index + regex.length + current[1].length);
+						content.slice(current.index + offset + current[1].length);
 					}
 				} catch (err) {
 					winston.verbose(err.messsage);
 				}
 			}
-			current = regex.regex.exec(content);
+			current = regex.exec(content);
 		}
 
 		return content;
@@ -113,6 +112,10 @@ module.exports = function (Posts) {
 			allowedClasses: sanitizeConfig.allowedClasses,
 		});
 	};
+
+	Posts.sanitizePlaintext = content => sanitize(content, {
+		allowedTags: [],
+	});
 
 	Posts.configureSanitize = async () => {
 		// Each allowed tags should have some common global attributes...
@@ -131,7 +134,7 @@ module.exports = function (Posts) {
 		plugins.hooks.register('core', {
 			hook: 'filter:parse.post',
 			method: async (data) => {
-				data.postData.content = Posts.sanitize(data.postData.content);
+				data.postData.content = Posts[data.type !== 'plaintext' ? 'sanitize' : 'sanitizePlaintext'](data.postData.content);
 				return data;
 			},
 		});

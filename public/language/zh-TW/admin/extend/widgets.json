@@ -5,13 +5,15 @@
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"clone-from": "從小工具複製",
 	"containers.available": "可用的容器",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "拖放到小工具上",
 	"containers.none": "無",
 	"container.well": "Well",
 	"container.jumbotron": "超大屏幕",
 	"container.card": "Card",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
+	"container.title": "標題",
+	"container.body": "內文",
 	"container.alert": "警示",
 
 	"alert.confirm-delete": "確認刪除此小工具？",
@@ -30,6 +32,6 @@
 	"start-date": "Start date",
 	"end-date": "End date",
 	"hide-on-mobile": "在移動端隱藏",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-drafts": "隱藏草稿",
+	"show-drafts": "顯示草稿"
 }

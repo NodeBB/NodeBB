@@ -48,5 +48,16 @@
 	"background-color-help": "Kolor wykorzystywany jako tło ekranu ładowania gdy strona jest zainstalowana jako PWA",
 	"undo-timeout": "Czas na cofnięcie",
 	"undo-timeout-help": "Niektóre operacje, jak przenoszenie tematów, pozwolą moderatorowi cofnąć swoje akcje w przeciągu pewnego czasu. Ustaw 0 aby wyłączyć cofanie całkowicie.",
-	"topic-tools": "Narzędzia tematu"
+	"topic-tools": "Narzędzia tematu",
+	"home-page": "Strona główna",
+	"home-page-route": "Ścieżka strony głównej",
+	"home-page-description": "Wybierz stronę, która ma być dostępna pod startowym URL tego forum.",
+	"custom-route": "Niestandardowa ścieżka",
+	"allow-user-home-pages": "Zezwalaj na strony startowe użytkowników",
+	"home-page-title": "Tytuł strony głównej (domyślnie: \"Strona główna\")",
+	"default-language": "Domyślny język",
+	"auto-detect": "Automatycznie wykrywaj język gości",
+	"default-language-help": "Domyślny język określa ustawienia języka dla wszystkich użytkowników, którzy odwiedzają forum. <br /> Użytkownicy mogą zmienić domyślny język w ustawieniach swojego konta.",
+	"post-sharing": "Udostępnianie wpisów",
+	"info-plugins-additional": "Wtyczki mogą dodać dodatkowe platformy do udostępniania wpisów."
 }

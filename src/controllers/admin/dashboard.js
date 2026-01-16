@@ -28,12 +28,13 @@ dashboardController.get = async function (req, res) {
 		getPopularSearches(),
 	]);
 	const version = nconf.get('version');
+	const latestValidVersion = semver.valid(latestVersion);
 
 	res.render('admin/dashboard', {
 		version: version,
-		lookupFailed: latestVersion === null,
-		latestVersion: latestVersion,
-		upgradeAvailable: latestVersion && semver.gt(latestVersion, version),
+		lookupFailed: latestValidVersion === null,
+		latestVersion: latestValidVersion,
+		upgradeAvailable: latestValidVersion && semver.gt(latestValidVersion, version),
 		currentPrerelease: versions.isPrerelease.test(version),
 		notices: notices,
 		stats: stats,
@@ -41,6 +42,7 @@ dashboardController.get = async function (req, res) {
 		lastrestart: lastrestart,
 		showSystemControls: isAdmin,
 		popularSearches: popularSearches,
+		hideAllTime: true,
 	});
 };
 
@@ -89,7 +91,7 @@ async function getLatestVersion() {
 dashboardController.getAnalytics = async (req, res, next) => {
 	// Basic validation
 	const validUnits = ['days', 'hours'];
-	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
+	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest', 'pageviews:ap'];
 	const until = req.query.until ? new Date(parseInt(req.query.until, 10)) : Date.now();
 	const count = req.query.count || (req.query.units === 'hours' ? 24 : 30);
 	if (isNaN(until) || !validUnits.includes(req.query.units)) {
@@ -128,7 +130,7 @@ async function getStats() {
 	}
 
 	let results = await Promise.all([
-		getStatsFromAnalytics('uniquevisitors', 'uniqueIPCount'),
+		getStatsFromAnalytics('uniquevisitors', ''),
 		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
@@ -227,6 +229,7 @@ function calculateDeltas(results) {
 }
 
 async function getGlobalField(field) {
+	if (!field) return 0;
 	const count = await db.getObjectField('global', field);
 	return parseInt(count, 10) || 0;
 }
@@ -275,7 +278,7 @@ dashboardController.getLogins = async (req, res) => {
 
 	res.render('admin/dashboard/logins', {
 		set: 'logins',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		sessions,
@@ -303,7 +306,7 @@ dashboardController.getUsers = async (req, res) => {
 
 	res.render('admin/dashboard/users', {
 		set: 'registrations',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		users,
@@ -330,7 +333,7 @@ dashboardController.getTopics = async (req, res) => {
 
 	res.render('admin/dashboard/topics', {
 		set: 'topics',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		topics: topicData,

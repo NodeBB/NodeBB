@@ -12,6 +12,8 @@
 	"container.card": "Քարտ",
 	"container.card-header": "Քարտի վերնագիր",
 	"container.card-body": "Քարտի կառուցվածք",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Զգուշացում",
 
 	"alert.confirm-delete": "Վստա՞հ եք, որ ցանկանում եք ջնջել այս վիջեթը:",

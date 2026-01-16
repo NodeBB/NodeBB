@@ -60,7 +60,7 @@
 
 					<div class="mb-3">
 						<div class="mb-2">
-							<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
+							<label class="form-label" for="language">[[admin/settings/general:default-language]]</label>
 							<select id="language" data-field="defaultLang" class="form-select">
 								{{{ each languages }}}
 								<option value="{./code}" {{{ if ./selected }}}selected{{{ end }}}>{./name} ({./code})</option>
@@ -68,13 +68,13 @@
 							</select>
 						</div>
 						<p class="form-text">
-							[[admin/settings/languages:description]]
+							[[admin/settings/general:default-language-help]]
 						</p>
 
 						<div class="">
 							<div class="form-check form-switch">
 								<input id="autoDetectLang" class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
-								<label for="autoDetectLang" class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
+								<label for="autoDetectLang" class="form-check-label">[[admin/settings/general:auto-detect]]</label>
 							</div>
 						</div>
 					</div>
@@ -120,9 +120,9 @@
 				</div>
 
 				<div class="mb-3">
-					<label class="form-label" for="og_image">[[admin/settings/general:favicon]]</label>
+					<label class="form-label" for="faviconUrl">[[admin/settings/general:favicon]]</label>
 					<div class="d-flex gap-1">
-						<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
+						<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" />
 
 						<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-light" value="[[admin/settings/general:favicon.upload]]" />
 						<button data-action="removeFavicon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
@@ -132,7 +132,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="touchIconUrl">[[admin/settings/general:touch-icon]]</label>
 					<div class="d-flex gap-1">
-						<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" readonly />
+						<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" />
 						<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
 						<button data-action="removeTouchIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
@@ -144,7 +144,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="maskableIconUrl">[[admin/settings/general:maskable-icon]]</label>
 					<div class="d-flex gap-1">
-						<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" readonly />
+						<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" />
 
 						<input data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
 						<button data-action="removeMaskableIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
@@ -158,16 +158,16 @@
 			<hr/>
 
 			<div id="home-page" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/homepage:home-page]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:home-page]]</h5>
 
 				<div class="">
 					<p>
-						[[admin/settings/homepage:description]]
+						[[admin/settings/general:home-page-description]]
 					</p>
 					<form class="row">
 						<div class="col-sm-12">
 							<div class="mb-3">
-								<label class="form-label" for="homePageRoute">[[admin/settings/homepage:home-page-route]]</label>
+								<label class="form-label" for="homePageRoute">[[admin/settings/general:home-page-route]]</label>
 								<select id="homePageRoute" class="form-select" data-field="homePageRoute">
 									{{{ each routes }}}
 									<option value="{./route}">{./name}</option>
@@ -175,17 +175,17 @@
 								</select>
 							</div>
 							<div id="homePageCustom" class="mb-3" style="display: none;">
-								<label class="form-label" for="homePageCustomInput">[[admin/settings/homepage:custom-route]]</label>
+								<label class="form-label" for="homePageCustomInput">[[admin/settings/general:custom-route]]</label>
 								<input id="homePageCustomInput" type="text" class="form-control" data-field="homePageCustom"/>
 								<p class="form-text">[[user:custom-route-help]]</p>
 							</div>
 
 							<div class="form-check form-switch mb-3">
 								<input class="form-check-input" type="checkbox" id="allowUserHomePage" data-field="allowUserHomePage">
-								<label for="allowUserHomePage" class="form-check-label">[[admin/settings/homepage:allow-user-home-pages]]</label>
+								<label for="allowUserHomePage" class="form-check-label">[[admin/settings/general:allow-user-home-pages]]</label>
 							</div>
 							<div>
-								<label class="form-label" for="homePageTitle">[[admin/settings/homepage:home-page-title]]</label>
+								<label class="form-label" for="homePageTitle">[[admin/settings/general:home-page-title]]</label>
 								<input id="homePageTitle" class="form-control" type="text" data-field="homePageTitle">
 							</div>
 						</div>
@@ -293,7 +293,7 @@
 			<hr/>
 
 			<div id="post-sharing" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/social:post-sharing]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:post-sharing]]</h5>
 				<div class="mb-3">
 					<div class="form-group" id="postSharingNetworks">
 						{{{ each postSharing }}}
@@ -304,7 +304,7 @@
 							</label>
 						</div>
 						{{{ end }}}
-						<p class="form-text">[[admin/settings/social:info-plugins-additional]]</p>
+						<p class="form-text">[[admin/settings/general:info-plugins-additional]]</p>
 					</div>
 				</div>
 			</div>

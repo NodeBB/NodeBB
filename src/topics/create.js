@@ -2,6 +2,7 @@
 'use strict';
 
 const _ = require('lodash');
+const winston = require('winston');
 
 const db = require('../database');
 const utils = require('../utils');
@@ -9,6 +10,7 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 const analytics = require('../analytics');
 const user = require('../user');
+const activitypub = require('../activitypub');
 const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
@@ -20,7 +22,7 @@ module.exports = function (Topics) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
 
-		const tid = await db.incrObjectField('global', 'nextTid');
+		const tid = data.tid || await db.incrObjectField('global', 'nextTid');
 
 		let topicData = {
 			tid: tid,
@@ -39,6 +41,12 @@ module.exports = function (Topics) {
 			topicData.tags = data.tags.join(',');
 		}
 
+		if (Array.isArray(data.thumbs) && data.thumbs.length) {
+			const thumbs = Topics.thumbs.filterThumbs(data.thumbs);
+			topicData.thumbs = JSON.stringify(thumbs);
+			topicData.numThumbs = thumbs.length;
+		}
+
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
@@ -49,6 +57,12 @@ module.exports = function (Topics) {
 			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 		];
+		const countedSortedSetKeys = [
+			...['views', 'posts', 'votes'].map(prop => `${utils.isNumber(tid) ? 'topics' : 'topicsRemote'}:${prop}`),
+			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:posts`,
+			`cid:${topicData.cid}:tids:views`,
+		];
 
 		const scheduled = timestamp > Date.now();
 		if (scheduled) {
@@ -57,15 +71,10 @@ module.exports = function (Topics) {
 
 		await Promise.all([
 			db.sortedSetsAdd(timestampedSortedSetKeys, timestamp, topicData.tid),
-			db.sortedSetsAdd([
-				'topics:views', 'topics:posts', 'topics:votes',
-				`cid:${topicData.cid}:tids:votes`,
-				`cid:${topicData.cid}:tids:posts`,
-				`cid:${topicData.cid}:tids:views`,
-			], 0, topicData.tid),
+			db.sortedSetsAdd(countedSortedSetKeys, 0, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
-			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
-			db.incrObjectField('global', 'topicCount'),
+			db.incrObjectField(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'topic_count'),
+			utils.isNumber(tid) ? db.incrObjectField('global', 'topicCount') : null,
 			Topics.createTags(data.tags, topicData.tid, timestamp),
 			scheduled ? Promise.resolve() : categories.updateRecentTid(topicData.cid, topicData.tid),
 		]);
@@ -80,11 +89,12 @@ module.exports = function (Topics) {
 	Topics.post = async function (data) {
 		data = await plugins.hooks.fire('filter:topic.post', data);
 		const { uid } = data;
+		const remoteUid = activitypub.helpers.isUri(uid);
 
 		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
-			categories.exists(data.cid),
-			privileges.categories.can('topics:create', data.cid, uid),
-			privileges.categories.can('topics:tag', data.cid, uid),
+			parseInt(data.cid, 10) > 0 ? categories.exists(data.cid) : true,
+			privileges.categories.can('topics:create', data.cid, remoteUid ? -2 : uid),
+			privileges.categories.can('topics:tag', data.cid, remoteUid ? -2 : uid),
 			privileges.users.isAdministrator(uid),
 		]);
 
@@ -98,7 +108,7 @@ module.exports = function (Topics) {
 		await Topics.validateTags(data.tags, data.cid, uid);
 		data.tags = await Topics.filterTags(data.tags, data.cid);
 		if (!data.fromQueue && !isAdmin) {
-			Topics.checkContent(data.content);
+			Topics.checkContent(data.sourceContent || data.content);
 			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
 				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 			}
@@ -135,7 +145,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
-		if (uid > 0 && settings.followTopicsOnCreate) {
+		if (utils.isNumber(uid) && uid > 0 && settings.followTopicsOnCreate) {
 			await Topics.follow(postData.tid, uid);
 		}
 		const topicData = topics[0];
@@ -151,10 +161,20 @@ module.exports = function (Topics) {
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (parseInt(uid, 10) && !topicData.scheduled) {
-			user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
-			Topics.notifyTagFollowers(postData, uid);
-			categories.notifyCategoryFollowers(postData, uid);
+		if (!topicData.scheduled) {
+			setImmediate(async () => {
+				try {
+					if (utils.isNumber(uid)) {
+						// New topic notifications only sent for local-to-local follows only
+						await user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
+					}
+
+					await Topics.notifyTagFollowers(postData, uid);
+					await categories.notifyCategoryFollowers(postData, uid);
+				} catch (err) {
+					winston.error(err.stack);
+				}
+			});
 		}
 
 		return {
@@ -165,8 +185,7 @@ module.exports = function (Topics) {
 
 	Topics.reply = async function (data) {
 		data = await plugins.hooks.fire('filter:topic.reply', data);
-		const { tid } = data;
-		const { uid } = data;
+		const { tid, uid } = data;
 
 		const [topicData, isAdmin] = await Promise.all([
 			Topics.getTopicData(tid),
@@ -182,7 +201,7 @@ module.exports = function (Topics) {
 
 		if (!data.fromQueue && !isAdmin) {
 			await user.isReadyToPost(uid, data.cid);
-			Topics.checkContent(data.content);
+			Topics.checkContent(data.sourceContent || data.content);
 			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
 				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 			}
@@ -202,18 +221,22 @@ module.exports = function (Topics) {
 			await Topics.follow(postData.tid, uid);
 		}
 
-		if (parseInt(uid, 10)) {
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid)) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
-			const { displayname } = postData.user;
-
-			Topics.notifyFollowers(postData, uid, {
-				type: 'new-reply',
-				bodyShort: translator.compile('notifications:user-posted-to', displayname, postData.topic.title),
-				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
-				mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
+		if (parseInt(uid, 10) || activitypub.helpers.isUri(uid) || meta.config.allowGuestReplyNotifications) {
+			setImmediate(async () => {
+				try {
+					await Topics.notifyFollowers(postData, uid, {
+						type: 'new-reply',
+						bodyShort: translator.compile('notifications:user-posted-to', postData.user.displayname, postData.topic.title),
+						nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
+						mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
+					});
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			});
 		}
 
@@ -223,36 +246,27 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost(postData, data) {
-		const { tid, uid } = postData;
-		await Topics.markAsRead([tid], uid);
-		const [
-			userInfo,
-			topicInfo,
-		] = await Promise.all([
-			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags']),
-			Topics.addParentPosts([postData]),
+	async function onNewPost({ pid, tid, uid: postOwner }, { uid, handle }) {
+		const [[postData], [userInfo]] = await Promise.all([
+			posts.getPostSummaryByPids([pid], uid, { extraFields: ['attachments'] }),
+			posts.getUserInfoForPosts([postOwner], uid),
+		]);
+		await Promise.all([
+			Topics.addParentPosts([postData], uid),
 			Topics.syncBacklinks(postData),
-			posts.parsePost(postData),
+			Topics.markAsRead([tid], uid),
 		]);
 
-		postData.user = userInfo[0];
-		postData.topic = topicInfo;
-		postData.index = topicInfo.postcount - 1;
-
-		posts.overrideGuestHandle(postData, data.handle);
-
-		postData.votes = 0;
+		// Returned data is a superset of post summary data
+		postData.user = userInfo;
+		postData.index = postData.topic.postcount - 1;
 		postData.bookmarked = false;
 		postData.display_edit_tools = true;
 		postData.display_delete_tools = true;
 		postData.display_moderator_tools = true;
 		postData.display_move_tools = true;
 		postData.selfPost = false;
-		postData.timestampISO = utils.toISOString(postData.timestamp);
-		postData.topic.title = String(postData.topic.title);
-
+		posts.overrideGuestHandle(postData, handle);
 		return postData;
 	}
 

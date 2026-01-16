@@ -1,0 +1,10 @@
+{
+    "settings.title": "Mövzu ayarları",
+    "settings.intro": "Burada mövzu parametrlərinizi fərdiləşdirə bilərsiniz. Parametrlər hər bir cihaz əsasında saxlanılır, buna görə də siz müxtəlif cihazlarda (telefon, planşet, iş masası və s.) müxtəlif parametrlərə malik ola bilərsiniz.",
+    "settings.mobile-menu-side": "Hər mobil menyunun hansı tərəfdə olduğunu dəyişdirin",
+    "settings.autoHidingNavbar": "Sürüşdürmə zamanı naviqasiya panelini avtomatik gizlət",
+    "settings.autoHidingNavbar-xs": "Çox kiçik ekranlar (məsələn portret rejimində telefonlar)",
+    "settings.autoHidingNavbar-sm": "Kiçik ekranlar (məsələn, telefonlar, bəzi planşetlər)",
+    "settings.autoHidingNavbar-md": "Orta ölçülü ekranlar (məsələn, landşaft rejimində planşetlər)",
+    "settings.autoHidingNavbar-lg": "Daha böyük ekranlar (məsələn, masaüstü kompüterlər)"
+}

@@ -15,7 +15,7 @@
 	"title-layout": "Raspored naslova",
 	"title-layout-help": "Definiraj kako će naslov pretraživača biti strukturiran npr.: &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Kratak opis zajednice",
-	"description": "Opis foruma",
+	"description": "Site Description",
 	"keywords": "Ključne riječi",
 	"keywords-placeholder": "Ključne riječi koje opisuju Vašu zajednicu, odvojeni zarezom",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "Naslovnica",
+	"home-page-route": "Putanja naslovnice",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Uobičajna putanja",
+	"allow-user-home-pages": "Dozvoli korisničke naslovnice",
+	"home-page-title": "Title of the home page (default \"Home\")",
+	"default-language": "Zadani jezik",
+	"auto-detect": "Auto Detect Language Setting for Guests",
+	"default-language-help": "Zadani jezik odlučuje o postavkama jezika za sve korisnike foruma. <br/> .Korisnici mogu sami odabrati jezik na stranici postavki jezika.",
+	"post-sharing": "Dijeljenje objave",
+	"info-plugins-additional": "Dodaci mogu dodati dodatne mreže za dijeljenje objava."
 }

@@ -64,6 +64,7 @@
 	"show-email": "Exibir e-mail",
 	"show-fullname": "Exibir nome completo",
 	"restrict-chat": "Permitir apenas mensagens de chat de usuários que eu sigo",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Abrir links externos em nova aba",
 	"topic-search": "Permitir Busca dentro do Tópico",
 	"update-url-with-post-index": "Atualizar url com índice de postagem enquanto navega pelos tópicos",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
 	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
 	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Permitir que visitantes escolham um nome",
+	"handles.enabled-help": "Esta opção mostra um novo campo que permite visitantes de escolher um nome para associar a cada post que eles fizerem. Se desabilitado, eles serão simplesmente chamados de \"Visitante\".",
+	"topic-views.enabled": "Permitir que visitantes aumentem a contagem de visualizações do tópico",
+	"reply-notifications.enabled": "Permitir que convidados gerem notificações de resposta"
 }

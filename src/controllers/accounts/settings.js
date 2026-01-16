@@ -43,6 +43,7 @@ settingsController.get = async function (req, res, next) {
 		getNotificationSettings(userData),
 		getHomePageRoutes(userData),
 		getSkinOptions(userData),
+		getChatAllowDenyList(userData),
 	]);
 
 	userData.customSettings = data.customSettings;
@@ -113,17 +114,26 @@ const doUnsubscribe = async (payload) => {
 			user.updateDigestSetting(payload.uid, 'off'),
 		]);
 	} else if (payload.template === 'notification') {
+		const currentToNewSetting = {
+			notificationemail: 'notification',
+			email: 'none',
+		};
 		const current = await db.getObjectField(`user:${payload.uid}:settings`, `notificationType_${payload.type}`);
-		await user.setSetting(payload.uid, `notificationType_${payload.type}`, (current === 'notificationemail' ? 'notification' : 'none'));
+		if (currentToNewSetting.hasOwnProperty(current)) {
+			await user.setSetting(payload.uid, `notificationType_${payload.type}`, currentToNewSetting[current]);
+		}
 	}
 	return true;
 };
 
-settingsController.unsubscribe = async (req, res) => {
+settingsController.unsubscribe = async (req, res, next) => {
+	if (req.method === 'HEAD') {
+		return res.sendStatus(204);
+	}
 	try {
 		const payload = await jwtVerifyAsync(req.params.token);
 		if (!payload || !unsubscribable.includes(payload.template)) {
-			return;
+			return next();
 		}
 		await doUnsubscribe(payload);
 		res.render('unsubscribe', {
@@ -245,3 +255,13 @@ async function getSkinOptions(userData) {
 	});
 	return bootswatchSkinOptions;
 }
+
+async function getChatAllowDenyList(userData) {
+	const [chatAllowListUsers, chatDenyListUsers] = await Promise.all([
+		user.getUsersFields(userData.settings.chatAllowList, ['uid', 'username', 'picture']),
+		user.getUsersFields(userData.settings.chatDenyList, ['uid', 'username', 'picture']),
+	]);
+
+	userData.settings.chatAllowListUsers = chatAllowListUsers;
+	userData.settings.chatDenyListUsers = chatDenyListUsers;
+};

@@ -1,0 +1,21 @@
+{
+	"name": "World",
+	"popular": "Popular topics",
+	"recent": "All topics",
+	"help": "Nápověda",
+
+	"help.title": "What is this page?",
+	"help.intro": "Welcome to your corner of the fediverse.",
+	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
+	"help.build": "There might not be a lot of topics here to start; that's normal. You will start to see more content here over time when you start following other users.",
+	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
+	"help.next-generation": "This is the next generation of social media, start contributing today!",
+
+	"onboard.title": "Your window to the fediverse...",
+	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
+	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
+	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
+}

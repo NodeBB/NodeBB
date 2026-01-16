@@ -48,5 +48,16 @@
 	"background-color-help": "当网站安装为 PWA 时用于启动屏幕背景的颜色",
 	"undo-timeout": "撤销超时",
 	"undo-timeout-help": "部分操作，例如移动主题，将允许版主在一定时间内撤销其操作。设置为 0 可完全禁用撤消。",
-	"topic-tools": "主题工具"
+	"topic-tools": "主题工具",
+	"home-page": "主页",
+	"home-page-route": "主页路由",
+	"home-page-description": "选择用户导航到论坛根 URL 时显示的页面。",
+	"custom-route": "自定义路由",
+	"allow-user-home-pages": "允许用户主页",
+	"home-page-title": "首页标题(默认“Home”)",
+	"default-language": "默认语言",
+	"auto-detect": "自动检测游客的语言设置",
+	"default-language-help": "默认语言会决定所有用户的语言设定。 <br />单一用户可以各自在帐户设置中覆盖此项设定。",
+	"post-sharing": "帖子分享",
+	"info-plugins-additional": "插件可以增加可选的用于分享帖子的网络。"
 }

@@ -2,6 +2,7 @@
 
 const categories = require('../../categories');
 const meta = require('../../meta');
+const activitypub = require('../../activitypub');
 const api = require('../../api');
 
 const helpers = require('../helpers');
@@ -104,4 +105,30 @@ Categories.setModerator = async (req, res) => {
 
 	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
 	helpers.formatApiResponse(200, res, privilegeSet);
+};
+
+Categories.follow = async (req, res, next) => {
+	// Priv check done in route middleware
+	const { actor } = req.body;
+	const id = parseInt(req.params.cid, 10);
+
+	if (!id) { // disallow cid 0
+		return next();
+	}
+
+	await activitypub.out.follow('cid', id, actor);
+
+	helpers.formatApiResponse(200, res, {});
+};
+
+Categories.unfollow = async (req, res, next) => {
+	const { actor } = req.body;
+	const id = parseInt(req.params.cid, 10);
+
+	if (!id) { // disallow cid 0
+		return next();
+	}
+
+	await activitypub.out.undo.follow('cid', id, actor);
+	helpers.formatApiResponse(200, res, {});
 };

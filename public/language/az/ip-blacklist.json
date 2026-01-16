@@ -1,0 +1,19 @@
+{
+	"lead": "İP qara siyahınızı burada konfiqurasiya edin.",
+	"description": "Bəzən istifadəçi hesabı qadağası kifayət qədər maneə törətmir. Digər hallarda, foruma girişi müəyyən bir IP və ya bir sıra IP-lərlə məhdudlaşdırmaq forumu qorumaq üçün ən yaxşı yoldur. Bu ssenarilərdə siz bu qara siyahıya problemli IP ünvanlarını və ya bütün CIDR bloklarını əlavə edə bilərsiniz və onların yeni hesaba daxil olmasının və ya qeydiyyatdan keçirilməsinin qarşısı alınacaq.",
+	"active-rules": "Aktiv Qaydalar",
+	"validate": "Qara siyahını təsdiq edin",
+	"apply": "Qara siyahı tətbiq et",
+	"hints": "Sintaksis göstərişləri",
+	"hint-1": "Hər sətir üçün tək IP ünvanlarını təyin edin. CIDR formatına (məsələn, <code>192.168.100.0/22</code>) əməl etdikcə IP bloklarını əlavə edə bilərsiniz.",
+	"hint-2": "Şərhlərə <code>#</code> simvolu ilə başlayan sətirlər əlavə edə bilərsiniz.",
+
+	"validate.x-valid": "<strong>%2</strong> qayda(lar)dan <strong>%1</strong> etibarlıdır.",
+	"validate.x-invalid": "Aşağıdakı <strong>%1</strong> qaydalar yanlışdır:",
+
+	"alerts.applied-success": "Qara siyahı tətbiq olundu",
+
+	"analytics.blacklist-hourly": "<strong>Şəkil 1</strong> &ndash; Saatda qara siyahıya daxil olanlar",
+	"analytics.blacklist-daily": "<strong>Şəkil 2</strong> &ndash; Gündə qara siyahıya daxil olanlar",
+	"ip-banned": "IP qadağan edildi"
+}

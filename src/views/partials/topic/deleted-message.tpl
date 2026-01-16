@@ -1,4 +1,4 @@
-<div component="topic/deleted/message" class="alert alert-warning mt-3{{{ if !deleted }}} hidden{{{ end }}} d-flex justify-content-between flex-wrap">
+<div component="topic/deleted/message" class="alert alert-warning d-flex justify-content-between flex-wrap{{{ if !deleted }}} hidden{{{ end }}}">
     <span>[[topic:deleted-message]]</span>
     <span>
         {{{ if deleter }}}

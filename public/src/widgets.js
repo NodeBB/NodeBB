@@ -14,10 +14,7 @@ module.exports.render = function (template) {
 			return;
 		}
 
-		let html = '';
-		widgetsAtLocation.forEach(function (widget) {
-			html += widget.html;
-		});
+		const html = widgetsAtLocation.map(widget => widget.html).join('');
 		if (!html) {
 			return;
 		}

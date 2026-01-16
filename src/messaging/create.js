@@ -10,7 +10,7 @@ const utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = async (data) => {
-		await Messaging.checkContent(data.content);
+		await Messaging.checkContent(data.content, utils.isNumber(data.uid));
 		const inRoom = await Messaging.isUserInRoom(data.uid, data.roomId);
 		if (!inRoom) {
 			throw new Error('[[error:not-allowed]]');
@@ -19,20 +19,20 @@ module.exports = function (Messaging) {
 		return await Messaging.addMessage(data);
 	};
 
-	Messaging.checkContent = async (content) => {
+	Messaging.checkContent = async (content, local = true) => {
 		if (!content) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
 
-		const maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
+		const maximum = meta.config[local ? 'maximumChatMessageLength' : 'maximumRemoteChatMessageLength'];
 		content = String(content).trim();
 		let { length } = content;
 		({ content, length } = await plugins.hooks.fire('filter:messaging.checkContent', { content, length }));
 		if (!content) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
-		if (length > maximumChatMessageLength) {
-			throw new Error(`[[error:chat-message-too-long, ${maximumChatMessageLength}]]`);
+		if (length > maximum) {
+			throw new Error(`[[error:chat-message-too-long, ${maximum}]]`);
 		}
 	};
 
@@ -43,14 +43,14 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:no-room]]');
 		}
 		if (data.toMid) {
-			if (!utils.isNumber(data.toMid)) {
+			if (!await Messaging.messageExists(data.toMid)) {
 				throw new Error('[[error:invalid-mid]]');
 			}
 			if (!await Messaging.canViewMessage(data.toMid, roomId, uid)) {
 				throw new Error('[[error:no-privileges]]');
 			}
 		}
-		const mid = await db.incrObjectField('global', 'nextMid');
+		const mid = data.mid || await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
 		let message = {
 			mid: mid,

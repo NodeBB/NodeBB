@@ -1,5 +1,3 @@
-/* eslint-disable import/order */
-
 'use strict';
 
 const fs = require('fs');
@@ -44,7 +42,7 @@ try {
 	checkVersion('lru-cache');
 } catch (e) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
-		console.warn('Dependencies outdated or not yet installed.');
+		console.warn(`Dependencies outdated or not yet installed. Error Code: ${e.code}\n${e.stack}`);
 		console.log('Installing them now...\n');
 
 		packageInstall.updatePackageFile();
@@ -87,7 +85,8 @@ program
 	.option('--log-level <level>', 'Default logging level to use', 'info')
 	.option('--config <value>', 'Specify a config file', 'config.json')
 	.option('-d, --dev', 'Development mode, including verbose logging', false)
-	.option('-l, --log', 'Log subprocess output to console', false);
+	.option('-l, --log', 'Log subprocess output to console', false)
+	.option('-y, --unattended', 'Answer yes to any prompts, like plugin upgrades', false);
 
 // provide a yargs object ourselves
 // otherwise yargs will consume `--help` or `help`
@@ -294,6 +293,7 @@ program
 		].join('\n')}`);
 	})
 	.action((scripts, options) => {
+		options.unattended = program.opts().unattended;
 		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';
 			global.env = 'development';
@@ -308,7 +308,8 @@ program
 	.alias('upgradePlugins')
 	.description('Upgrade plugins')
 	.action(() => {
-		require('./upgrade-plugins').upgradePlugins((err) => {
+		const { unattended } = program.opts();
+		require('./upgrade-plugins').upgradePlugins(unattended, (err) => {
 			if (err) {
 				throw err;
 			}

@@ -1,0 +1,37 @@
+{
+	"widgets": "ویجٹس",
+	"available": "دستیاب ویجٹس",
+	"explanation": "ڈراپ ڈاؤن مینو سے ایک ویجٹ منتخب کریں، پھر اسے بائیں جانب موجود ٹیمپلیٹس میں سے کسی ویجٹ ایریا میں گھسیٹ کر چھوڑیں۔",
+	"none-installed": "کوئی ویجٹس نہیں ملے! <a href=\"%1\">پلگ انز</a> کنٹرول پینل میں بنیادی ویجٹس پلگ ان کو فعال کریں۔",
+	"clone-from": "ویجٹس کو کلون کریں از",
+	"containers.available": "دستیاب کنٹینرز",
+	"containers.explanation": "کسی ویجٹ پر گھسیٹیں اور چھوڑیں",
+	"containers.none": "کوئی نہیں",
+	"container.well": "ویب",
+	"container.jumbotron": "جمبوٹران",
+	"container.card": "کارڈ",
+	"container.card-header": "کارڈ ہیڈر",
+	"container.card-body": "کارڈ باڈی",
+	"container.title": "عنوان",
+	"container.body": "مواد",
+	"container.alert": "انتباہ",
+
+	"alert.confirm-delete": "کیا آپ واقعی اس ویجٹ کو حذف کرنا چاہتے ہیں؟",
+	"alert.updated": "ویجٹس اپ ڈیٹ ہو گئے",
+	"alert.update-success": "ویجٹس کامیابی سے اپ ڈیٹ ہو گئے",
+	"alert.clone-success": "ویجٹس کامیابی سے کلون ہو گئے",
+
+	"error.select-clone": "کلون کرنے کے لیے ایک صفحہ منتخب کریں",
+
+	"title": "عنوان",
+	"title.placeholder": "عنوان (صرف کچھ کنٹینرز میں دکھایا جاتا ہے)",
+	"container": "کنٹینر",
+	"container.placeholder": "کنٹینر گھسیٹیں اور چھوڑیں یا یہاں ایچ ٹی ایم ایل درج کریں۔",
+	"show-to-groups": "گروپس کو دکھائیں",
+	"hide-from-groups": "گروپس سے چھپائیں",
+	"start-date": "شروع کی تاریخ",
+	"end-date": "ختم کی تاریخ",
+	"hide-on-mobile": "موبائل ڈیوائسز پر چھپائیں",
+	"hide-drafts": "ڈرافٹس چھپائیں",
+	"show-drafts": "ڈرافٹس دکھائیں"
+}

@@ -30,6 +30,7 @@
 	"restore": "Restore",
 	"move": "Move",
 	"change-owner": "Change Owner",
+	"manage-editors": "Manage Editors",
 	"fork": "Fork",
 	"link": "Link",
 	"share": "Share",
@@ -65,6 +66,8 @@
 	"user-restored-topic-on": "%1 restored this topic on %2",
 	"user-moved-topic-from-ago": "%1 moved this topic from %2 %3",
 	"user-moved-topic-from-on": "%1 moved this topic from %2 on %3",
+	"user-shared-topic-ago": "%1 shared this topic %2",
+	"user-shared-topic-on": "%1 shared this topic on %2",
 	"user-queued-post-ago": "%1 <a href=\"%2\">queued</a> post for approval %3",
 	"user-queued-post-on": "%1 <a href=\"%2\">queued</a> post for approval on %3",
 	"user-referenced-topic-ago": "%1 <a href=\"%2\">referenced</a> this topic %3",
@@ -113,9 +116,11 @@
 	"thread-tools.lock": "Lock Topic",
 	"thread-tools.unlock": "Unlock Topic",
 	"thread-tools.move": "Move Topic",
+	"thread-tools.crosspost": "Crosspost Topic",
 	"thread-tools.move-posts": "Move Posts",
 	"thread-tools.move-all": "Move All",
 	"thread-tools.change-owner": "Change Owner",
+	"thread-tools.manage-editors": "Manage Editors",
 	"thread-tools.select-category": "Select Category",
 	"thread-tools.fork": "Fork Topic",
 	"thread-tools.tag": "Tag Topic",
@@ -145,6 +150,7 @@
 
 	"load-categories": "Loading Categories",
 	"confirm-move": "Move",
+	"confirm-crosspost": "Cross-post",
 	"confirm-fork": "Fork",
 
 	"bookmark": "Bookmark",
@@ -152,10 +158,12 @@
 	"bookmarks.has-no-bookmarks": "You haven't bookmarked any posts yet.",
 
 	"copy-permalink": "Copy Permalink",
+	"go-to-original": "View Original Post",
 
 	"loading-more-posts": "Loading More Posts",
 	"move-topic": "Move Topic",
 	"move-topics": "Move Topics",
+	"crosspost-topic": "Cross-post Topic",
 	"move-post": "Move Post",
 	"post-moved": "Post moved!",
 	"fork-topic": "Fork Topic",
@@ -177,6 +185,11 @@
 	"move-posts-instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
 	"move-topic-instruction": "Select the target category and then click move",
 	"change-owner-instruction": "Click the posts you want to assign to another user",
+	"manage-editors-instruction": "Manage the users who can edit this post below.",
+
+	"crossposts.instructions": "Select one or more categories to cross-post to. Topic(s) will be accessible from the original category and all cross-posted categories.",
+	"crossposts.listing": "This topic has been cross-posted to the following local categories:",
+	"crossposts.none": "This topic has not been cross-posted to any additional categories",
 
 	"composer.title-placeholder": "Enter your topic title here...",
 	"composer.handle-placeholder": "Enter your name/handle here",
@@ -245,5 +258,8 @@
 	"downvote-post": "Downvote post",
 	"post-tools": "Post tools",
 	"unread-posts-link": "Unread posts link",
-	"thumb-image": "Topic thumbnail image"
+	"thumb-image": "Topic thumbnail image",
+
+	"announcers": "Shares",
+	"announcers-x": "Shares (%1)"
 }

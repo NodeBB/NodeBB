@@ -43,12 +43,15 @@ define('admin/manage/users', [
 				{ label: '[[admin/manage/users:export-field-followercount]]', field: 'followerCount', selected: false },
 				{ label: '[[admin/manage/users:export-field-followingcount]]', field: 'followingCount', selected: false },
 				{ label: '[[admin/manage/users:export-field-fullname]]', field: 'fullname', selected: false },
-				{ label: '[[admin/manage/users:export-field-website]]', field: 'website', selected: false },
-				{ label: '[[admin/manage/users:export-field-location]]', field: 'location', selected: false },
 				{ label: '[[admin/manage/users:export-field-birthday]]', field: 'birthday', selected: false },
 				{ label: '[[admin/manage/users:export-field-signature]]', field: 'signature', selected: false },
 				{ label: '[[admin/manage/users:export-field-aboutme]]', field: 'aboutme', selected: false },
-			];
+			].concat(ajaxify.data.customUserFields.map(field => ({
+				label: field.name,
+				field: field.key,
+				selected: false,
+			})));
+
 			const options = defaultFields.map((field, i) => (`
 				<div class="form-check mb-2">
 					<input data-field="${field.field}" class="form-check-input" type="checkbox" id="option-${i}" ${field.selected ? 'checked' : ''}>
@@ -510,7 +513,7 @@ define('admin/manage/users', [
 				if (confirm) {
 					Promise.all(
 						uids.map(
-							uid => api.del(`/users/${uid}${path}`, {}).then(() => {
+							uid => api.del(`/users/${encodeURIComponent(uid)}${path}`, {}).then(() => {
 								if (path !== '/content') {
 									removeRow(uid);
 								}
@@ -617,7 +620,7 @@ define('admin/manage/users', [
 		params.query = query.query;
 		params.page = query.page;
 		params.sortBy = params.sortBy || 'lastonline';
-		const qs = decodeURIComponent($.param(params));
+		const qs = $.param(params);
 		$.get(config.relative_path + '/api/admin/manage/users?' + qs, function (data) {
 			renderSearchResults(data);
 			const url = config.relative_path + '/admin/manage/users?' + qs;
@@ -670,7 +673,7 @@ define('admin/manage/users', [
 			delete params.searchBy;
 		}
 
-		return decodeURIComponent($.param(params));
+		return $.param(params);
 	}
 
 	function handleSort() {

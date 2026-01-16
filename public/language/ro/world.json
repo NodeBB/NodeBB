@@ -1,0 +1,21 @@
+{
+	"name": "Lumea",
+	"popular": "Subiecte Populare",
+	"recent": "Toate subiectele",
+	"help": "Ajutor",
+
+	"help.title": "Ce este în pagina curentă",
+	"help.intro": "Bine ai venit în colțul tău din universul fediverse",
+	"help.fediverse": "„Fediversul” este o rețea de aplicații și site-uri web interconectate care comunică între ele și ai căror utilizatori se pot vedea reciproc. Acest forum este federat și poate interacționa cu acea rețea socială (sau „fediversul”). Această pagină este colțul tău din fedivers. Constă exclusiv din subiecte create de — și partajate de — utilizatori pe care îi urmărești.",
+	"help.build": "S-ar putea să nu fie multe subiecte de început aici; este normal. Vei începe să vezi mai mult conținut aici în timp, când vei începe să urmărești alți utilizatori.",
+	"help.federating": "De asemenea, dacă utilizatori din afara acestui forum încep să te urmărească, atunci postările tale vor începe să apară și pe acele aplicații și site-uri web.",
+	"help.next-generation": "Aceasta este următoarea generație de social media, începe să contribui chiar azi!",
+
+	"onboard.title": "Fereastra ta către fedivers...",
+	"onboard.what": "Aceasta este categoria ta personalizată, formată doar din conținut găsit în afara acestui forum. Afișarea unui element pe această pagină depinde de dacă îl urmărești sau dacă postarea respectivă a fost distribuită de cineva pe care îl urmărești.",
+	"onboard.why": "Se întâmplă multe lucruri în afara acestui forum și nu toate sunt relevante pentru interesele tale. De aceea, urmărirea oamenilor este cea mai bună modalitate de a semnala că vrei să vezi mai multe de la cineva.",
+	"onboard.how": "Între timp, puteți da clic pe butoanele de comandă rapidă din partea de sus pentru a vedea ce mai știe acest forum și pentru a începe să descoperiți conținut nou!",
+
+	"show-categories": "Afișează categoriile",
+	"hide-categories": "Ascunde categoriile"
+}

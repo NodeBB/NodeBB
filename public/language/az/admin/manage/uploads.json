@@ -1,0 +1,12 @@
+{
+    "manage-uploads": "Yükləmələri idarə et",
+    "upload-file": "Faylı yüklə",
+    "filename": "Faylın adı",
+    "usage": "Yazıdan istifadə",
+    "orphaned": "Yetim qalmış",
+    "size/filecount": "Həcmi / Fayl sayı",
+    "confirm-delete": "Bu faylı həqiqətən silmək istəyirsiniz?",
+    "filecount": "%1 fayl",
+    "new-folder": "Yeni qovluq",
+    "name-new-folder": "Yeni qovluq üçün ad daxil edin"
+}

@@ -22,6 +22,7 @@
 	"delete-content": "Удалить <strong>данные</strong> пользователя(-ей)",
 	"purge": "Удалить <strong>пользователя(-ей)</strong> и <strong>данные</strong>",
 	"download-csv": "Скачать CSV",
+	"custom-user-fields": "Custom User Fields",
 	"manage-groups": "Изменить членство в группах",
 	"set-reputation": "Set Reputation",
 	"add-group": "Добавить группу",

@@ -103,7 +103,7 @@
 			<div id="smtp-transport" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:smtp-transport]]</h5>
 
-				<div class="alert alert-warning">
+				<div class="alert alert-warning text-sm p-2">
 					[[admin/settings/email:smtp-transport-help]]
 				</div>
 
@@ -115,6 +115,11 @@
 					<input class="form-check-input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
 					<label for="email:smtpTransport:pool" class="form-check-label">[[admin/settings/email:smtp-transport.pool]]</label>
 					<p class="form-text">[[admin/settings/email:smtp-transport.pool-help]]</p>
+				</div>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="email:smtpTransport:allow-self-signed" data-field="email:smtpTransport:allow-self-signed" name="email:smtpTransport:allow-self-signed" />
+					<label for="email:smtpTransport:allow-self-signed" class="form-check-label">[[admin/settings/email:smtp-transport.allow-self-signed]]</label>
+					<p class="form-text">[[admin/settings/email:smtp-transport.allow-self-signed-help]]</p>
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="email:smtpTransport:service">[[admin/settings/email:smtp-transport.service]]</label>

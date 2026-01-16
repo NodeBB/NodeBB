@@ -64,6 +64,7 @@
 	"show-email": "Afficher l'adresse e-mail",
 	"show-fullname": "Afficher le nom complet",
 	"restrict-chat": "Autoriser uniquement les discussions aux utilisateurs que je suis",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Ouvrir les liens sortants dans un nouvel onglet",
 	"topic-search": "Activer la recherche au sein des sujets",
 	"update-url-with-post-index": "Mettre à jour l'URL avec l'index des articles",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Quelques secondes avant qu'un nouvel utilisateur puisse publier son premier message",
 	"restrictions.seconds-edit-after-new": "Nombre de secondes pendant lesquelles une publication reste modifiable (définissez la valeur sur 0 pour la désactiver)",
 	"restrictions.milliseconds-between-messages": "Temps entre chaque message de discussion (en millisecondes)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Sélectionnez les groupes qui devraient être exemptés des nouvelles restrictions d'utilisateur"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Sélectionnez les groupes qui devraient être exemptés des nouvelles restrictions d'utilisateur",
+	"guest-settings": "Paramètres d'invité",
+	"handles.enabled": "Autoriser les invités à poster",
+	"handles.enabled-help": "Cette option affiche un nouveau champ qui permet aux invités de choisir un nom qui sera associé à chaque message qu'ils rédigent. Si désactivé, il seront simplement nommés \"Invité\".",
+	"topic-views.enabled": "Autoriser les invités à augmenter le nombre de consultations de sujets",
+	"reply-notifications.enabled": "Autoriser les invités à générer des notifications de réponse"
 }

@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Hasło",
 	"smtp-transport.pool": "Włącz pulę połączeń",
 	"smtp-transport.pool-help": "Pooling połączeń sprawia, że NodeBB nie będzie tworzył nowego połączenia dla każdego maila. Ta opcja ma zastosowanie tylko, jeśli transport SMTP jest włączony.",
+	"smtp-transport.allow-self-signed": "Zezwól na własnoręcznie podpisane certyfikaty",
+	"smtp-transport.allow-self-signed-help": "Kiedy włączone będzie przyjmować lokalne i błędne certyfikaty TLS.",
 
 	"template": "Edytuj szablon e-maila",
 	"template.select": "Wybierz szablon e-maila",

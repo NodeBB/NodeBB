@@ -14,7 +14,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts', 'api'], f
 				.removeClass('fa-chevron-down')
 				.addClass('fa-spin fa-spinner');
 
-			api.get(`/posts/${pid}/replies`, {}, function (err, { replies }) {
+			api.get(`/posts/${encodeURIComponent(pid)}/replies`, {}, function (err, { replies }) {
 				const postData = replies;
 				open.removeAttr('loading')
 					.attr('loaded', '1')
@@ -36,6 +36,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts', 'api'], f
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
 					'reputation:disabled': ajaxify.data['reputation:disabled'],
 					loggedIn: !!app.user.uid,
+					hideParent: true,
 					hideReplies: config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, async function (html) {

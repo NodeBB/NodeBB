@@ -15,7 +15,7 @@
 	"title-layout": "Cím formátuma",
 	"title-layout-help": "Add meg, hogy a böngésző cím hogyan épüljön fel. Pl.: &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "A közösséged rövid leírása",
-	"description": "Weboldal leírása",
+	"description": "Site Description",
 	"keywords": "Weboldal kulcsszavak",
 	"keywords-placeholder": "A közösségedet leíró kulcsszavak, vesszővel elválasztva",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "A szín ami akkor jelenik meg alkalmazás indulásnál, ha a weboldal egy okostelefonon PWA-ként van telepítve",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Témakör eszközök"
+	"topic-tools": "Témakör eszközök",
+	"home-page": "Főoldal",
+	"home-page-route": "Főoldal útvonala",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Egyéni útvonal",
+	"allow-user-home-pages": "Felhasználói főoldalak engedélyezése",
+	"home-page-title": "A főoldal címe (alapértelmezés \"Kezdőlap\")",
+	"default-language": "Alapértelmezett nyelv",
+	"auto-detect": "Nyelvi beállítás automatikus észlelése vendégeknek",
+	"default-language-help": "Az alapértelmezett nyelv meghatározza a nyelvi beállításokat minden fórumot látogató számára. <br />Ezt az egyes felhasználók felülírhatják fiókjuk beállításaiban.",
+	"post-sharing": "Hozzászólások megosztása",
+	"info-plugins-additional": "Beépülőkkel további hálózatok adhatók hozzá hozzászólások megosztásához."
 }

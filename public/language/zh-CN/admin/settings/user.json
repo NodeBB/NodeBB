@@ -25,7 +25,7 @@
 	"lockout-duration": "帐户锁定时间(分钟)",
 	"login-days": "记录用户会话天数",
 	"password-expiry-days": "强制重置密码天数",
-	"session-time": "Session 过期时间",
+	"session-time": "会话过期时间",
 	"session-time-days": "天",
 	"session-time-seconds": "秒",
 	"session-time-help": "这些值将用于控制用户在登录时选中&quot;记住我&quot;后能够保持登录的时长。注意以下数值中只有一个将被使用。若<i>秒</i>值为空我们将回退使用<i>天</i>。若<i>天</i>值为空我们将使用默认值<i>14天</i>。",
@@ -64,6 +64,7 @@
 	"show-email": "显示邮箱",
 	"show-fullname": "显示全名",
 	"restrict-chat": "只允许我关注的用户给我发送聊天消息",
+	"disable-incoming-chats": "停止接收聊天信息",
 	"outgoing-new-tab": "在新标签打开外部链接",
 	"topic-search": "启用主题内搜索",
 	"update-url-with-post-index": "浏览主题时更新 URL 中的帖子索引值",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "新用户多少秒后可以发第一帖",
 	"restrictions.seconds-edit-after-new": "帖子保持可编辑的秒数（设置为 0 表示禁用）",
 	"restrictions.milliseconds-between-messages": "聊天信息间的毫秒数",
-	"restrictions.groups-exempt-from-new-user-restrictions": "选择不受新用户限制的分组"
+	"restrictions.groups-exempt-from-new-user-restrictions": "选择不受新用户限制的分组",
+	"guest-settings": "访客设置",
+	"handles.enabled": "允许游客用户名",
+	"handles.enabled-help": "这个选项将允许游客使用一个额外的输入框来设置发帖时的用户名，如果被禁用，仅会统一显示为“游客”",
+	"topic-views.enabled": "将来自游客的浏览记入帖子的浏览数",
+	"reply-notifications.enabled": "允许游客生成回帖通知"
 }

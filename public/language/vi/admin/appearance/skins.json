@@ -1,6 +1,6 @@
 {
 	"skins": "Trang điểm",
-	"bootswatch-skins": "Trang Điểm Đồng Hồ Khởi Động",
+	"bootswatch-skins": "Trang Điểm Giao Diện",
 	"custom-skins": "Trang Điểm Tùy Chỉnh",
 	"add-skin": "Thêm Trang Điểm",
 	"save-custom-skins": "Lưu Trang Điểm Tùy Chỉnh",
@@ -14,5 +14,5 @@
 	"current-skin": "Trang Điểm Hiện Tại",
 	"skin-updated": "Đã Cập Nhật Trang Điểm",
 	"applied-success": "%1 trang điểm sử dụng thành công",
-	"revert-success": "Đã trả trang điểm về màu cơ bản"
+	"revert-success": "Trang điểm đã về màu cơ bản"
 }

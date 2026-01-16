@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Преглеждания на страниците от регистрирани потребители",
 	"graphs.page-views-guest": "Преглеждания на страниците от гости",
 	"graphs.page-views-bot": "Преглеждания на страниците от ботове",
+	"graphs.page-views-ap": "Преглеждания на страницата от ActivityPub",
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
 	"graphs.guest-users": "Гости",

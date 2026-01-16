@@ -1,8 +1,0 @@
-{
-	"home-page": "홈 페이지",
-	"description": "사용자가 포럼의 루트 URL로 이동할 때 표시되는 페이지를 선택합니다.",
-	"home-page-route": "홈 페이지 경로",
-	"custom-route": "사용자 정의 경로",
-	"allow-user-home-pages": "사용자 홈 페이지 허용",
-	"home-page-title": "홈 페이지 제목 (default \"Home\")"
-}

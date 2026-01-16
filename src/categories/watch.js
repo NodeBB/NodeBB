@@ -2,6 +2,8 @@
 
 const db = require('../database');
 const user = require('../user');
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.watchStates = {
@@ -20,7 +22,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getWatchState = async function (cids, uid) {
-		if (!(parseInt(uid, 10) > 0)) {
+		if (!activitypub.helpers.isUri(uid) && !(parseInt(uid, 10) > 0)) {
 			return cids.map(() => Categories.watchStates.notwatching);
 		}
 		if (!Array.isArray(cids) || !cids.length) {
@@ -31,7 +33,11 @@ module.exports = function (Categories) {
 			user.getSettings(uid),
 			db.sortedSetsScore(keys, uid),
 		]);
-		return states.map(state => state || Categories.watchStates[userSettings.categoryWatchState]);
+
+		const fallbacks = cids.map(cid => (utils.isNumber(cid) ?
+			Categories.watchStates[userSettings.categoryWatchState] : Categories.watchStates.notwatching));
+
+		return states.map((state, idx) => state || fallbacks[idx]);
 	};
 
 	Categories.getIgnorers = async function (cid, start, stop) {

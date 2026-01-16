@@ -1,5 +1,3 @@
-/* eslint-disable no-redeclare */
-
 'use strict';
 
 const $ = require('jquery');

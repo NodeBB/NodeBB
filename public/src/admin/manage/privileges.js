@@ -200,7 +200,7 @@ define('admin/manage/privileges', [
 			ajaxify.data.privileges = { ...ajaxify.data.privileges, ...privileges };
 			const tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
 			const isAdminPriv = ajaxify.currentPage.endsWith('admin/manage/privileges/admin');
-			app.parseAndTranslate(tpl, { privileges, isAdminPriv }).then((html) => {
+			app.parseAndTranslate(tpl, { cid, privileges, isAdminPriv }).then((html) => {
 				// Get currently selected filters
 				const btnIndices = $('.privilege-filters button.btn-warning').map((idx, el) => $(el).index()).get();
 				$('.privilege-table-container').html(html);
@@ -228,7 +228,7 @@ define('admin/manage/privileges', [
 		applyPrivileges(bannedUsersPrivs, getBannedUsersInputSelector);
 
 		// For rest that inherits from registered-users
-		const getRegisteredUsersInputSelector = (privs, i) => `.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="banned-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege="${privs[i]}"] input, .privilege-table tr[data-uid]:not([data-banned]) td[data-privilege="${privs[i]}"] input`;
+		const getRegisteredUsersInputSelector = (privs, i) => `.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="banned-users"],[data-group-name="guests"],[data-group-name="spiders"],[data-group-name="fediverse"]) td[data-privilege="${privs[i]}"] input, .privilege-table tr[data-uid]:not([data-banned]) td[data-privilege="${privs[i]}"] input`;
 		const registeredUsersPrivs = getPrivilegesFromRow('registered-users');
 		applyPrivileges(registeredUsersPrivs, getRegisteredUsersInputSelector);
 	};
@@ -240,7 +240,7 @@ define('admin/manage/privileges', [
 				inputSelectorFn = () => `.privilege-table tr[data-banned] td[data-privilege]:nth-child(${columnNo}) input`;
 				break;
 			default:
-				inputSelectorFn = () => `.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="banned-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege]:nth-child(${columnNo}) input, .privilege-table tr[data-uid]:not([data-banned]) td[data-privilege]:nth-child(${columnNo}) input`;
+				inputSelectorFn = () => `.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="banned-users"],[data-group-name="guests"],[data-group-name="spiders"],[data-group-name="fediverse"]) td[data-privilege]:nth-child(${columnNo}) input, .privilege-table tr[data-uid]:not([data-banned]) td[data-privilege]:nth-child(${columnNo}) input`;
 		}
 
 		const sourceChecked = getPrivilegeFromColumn(sourceGroupName, columnNo);

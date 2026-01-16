@@ -58,6 +58,9 @@ FlagObject:
                   uid:
                     type: number
                     description: A user identifier
+                  isLocal:
+                    type: boolean
+                    description: Whether the user belongs to the local installation or not.
                   icon:text:
                     type: string
                     description: A single-letter representation of a username. This is used in the
@@ -122,6 +125,9 @@ FlagHistoryObject:
               uid:
                 type: number
                 description: A user identifier
+              isLocal:
+                type: boolean
+                description: Whether the user belongs to the local installation or not.
               icon:text:
                 type: string
                 description: A single-letter representation of a username. This is used in the
@@ -175,6 +181,9 @@ FlagNotesObject:
               uid:
                 type: number
                 description: A user identifier
+              isLocal:
+                type: boolean
+                description: Whether the user belongs to the local installation or not.
               icon:text:
                 type: string
                 description: A single-letter representation of a username. This is used in the

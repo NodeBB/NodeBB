@@ -1,0 +1,26 @@
+{
+	"you-are-on": "Du er på <strong>%1:%2</strong>",
+	"ip": "IP <strong>%1</strong>",
+	"nodes-responded": "%1 noder svarte innen %2 ms!",
+	"host": "Vert",
+	"primary": "Primær",
+	"pid": "PID",
+	"nodejs": "Node.js",
+	"online": "Pålogga",
+	"git": "Git",
+	"process-memory": "Prosessminne",
+	"system-memory": "Systemminne",
+	"used-memory-process": "Brukt minne (prosess)",
+	"used-memory-os": "Brukt minne (OS)",
+	"total-memory-os": "Totalt minne (OS)",
+	"load": "Belastning",
+	"cpu-usage": "CPU-bruk",
+	"uptime": "Oppetid",
+
+	"registered": "Registrert",
+	"sockets": "Kontakter",
+	"connection-count": "Tilkoplingar",
+	"guests": "Gjestar",
+
+	"info": "Info"
+}

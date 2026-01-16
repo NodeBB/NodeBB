@@ -56,6 +56,7 @@
 	"header.navigation": "Navigation",
 	"header.manage": "Manage",
 	"header.drafts": "Drafts",
+	"header.world": "World",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
@@ -80,6 +81,7 @@
 	"users": "Users",
 	"topics": "Topics",
 	"posts": "Posts",
+	"crossposts": "Cross-posts",
 	"x-posts": "<span class=\"formatted-number\">%1</span> posts",
 	"x-topics": "<span class=\"formatted-number\">%1</span> topics",
 	"x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
@@ -94,6 +96,7 @@
 	"downvoted": "Downvoted",
 	"views": "Views",
 	"posters": "Posters",
+	"watching": "Watching",
 	"reputation": "Reputation",
 	"lastpost": "Last post",
 	"firstpost": "First post",
@@ -130,6 +133,8 @@
 	"dnd": "Do not disturb",
 	"invisible": "Invisible",
 	"offline": "Offline",
+
+	"remote-user": "This user is from outside of this forum",
 
 	"email": "Email",
 	"language": "Language",

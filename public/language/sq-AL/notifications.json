@@ -97,5 +97,9 @@
     "notificationType-post-queue": "Kur një postim i ri është në radhë",
     "notificationType-new-post-flag": "Kur një postim është raportuar",
     "notificationType-new-user-flag": "Kur një përdorues është raportuar",
-    "notificationType-new-reward": "When you earn a new reward"
+    "notificationType-new-reward": "When you earn a new reward",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

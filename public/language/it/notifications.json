@@ -97,5 +97,9 @@
     "notificationType-post-queue": "Quando un nuovo post è in coda",
     "notificationType-new-post-flag": "Quando un post viene segnalato",
     "notificationType-new-user-flag": "Quando un utente viene segnalato",
-    "notificationType-new-reward": "Quando guadagni una nuova ricompensa"
+    "notificationType-new-reward": "Quando guadagni una nuova ricompensa",
+    "activitypub.announce": "<strong>%1</strong> ha condiviso il tuo post in <strong>%2</strong> agli utenti che lo seguono.",
+    "activitypub.announce-dual": "<strong>%1</strong> e <strong>%2</strong> hanno condiviso il tuo post in <strong>%3</strong> agli utenti che li seguono.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> e <strong>%3</strong> hanno condiviso il tuo post in <strong>%4</strong> agli utenti che li seguono.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> e %3 hanno condiviso il tuo post in <strong>%4</strong> agli utenti che li seguono."
 }

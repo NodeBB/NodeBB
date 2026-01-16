@@ -144,6 +144,9 @@ get:
                                     type: number
                                   content:
                                     type: string
+                                  sourceContent:
+                                    type: string
+                                    nullable: true
                                   timestampISO:
                                     type: string
                                     description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -178,6 +181,9 @@ get:
                                           `icon:text` for the user's
                                           auto-generated icon
                                         example: "#f44336"
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                   index:
                                     type: number
                                   cid:
@@ -242,6 +248,9 @@ get:
                                       'icon:bgColor':
                                         type: string
                                         example: '#9c27b0'
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                             imageClass:
                               type: string
               - $ref: ../components/schemas/Pagination.yaml#/Pagination

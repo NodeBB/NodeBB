@@ -1,6 +1,6 @@
 {
 	"queue": "申請",
-	"description": "註冊申請佇列裡面還沒有使用者申請。<br>要開啟這項功能，請去<a href=\"%1\">設定 &rarr; 使用者 &rarr; 使用者註冊</a> 並設定<strong>註冊類型</strong>為“管理員批准”。",
+	"description": "註冊申請隊伍裡目前沒人排隊。<br>要開啟本功能，請前往<a href=\"%1\">設定 &rarr; 用戶 &rarr; 用戶註冊</a> 並設定<strong>註冊類型</strong>為“管理員批准”。",
 
 	"list.name": "姓名",
 	"list.email": "郵件",

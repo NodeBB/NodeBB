@@ -7,7 +7,9 @@ const plugins = require('../plugins');
 const topics = require('../topics');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const cache = require('../cache');
+const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.purge = async function (cid, uid) {
@@ -31,10 +33,14 @@ module.exports = function (Categories) {
 		if (categoryData && categoryData.name) {
 			bulkRemove.push(['categories:name', `${categoryData.name.slice(0, 200).toLowerCase()}:${cid}`]);
 		}
+		if (categoryData && categoryData.handle) {
+			bulkRemove.push(['categoryhandle:cid', categoryData.handle]);
+		}
 		await db.sortedSetRemoveBulk(bulkRemove);
 
 		await removeFromParent(cid);
 		await deleteTags(cid);
+		await activitypub.actors.removeGroup(cid);
 		await db.deleteAll([
 			`cid:${cid}:tids`,
 			`cid:${cid}:tids:pinned`,
@@ -48,7 +54,7 @@ module.exports = function (Categories) {
 			`cid:${cid}:uid:watch:state`,
 			`cid:${cid}:children`,
 			`cid:${cid}:tag:whitelist`,
-			`category:${cid}`,
+			`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`,
 		]);
 		const privilegeList = await privileges.categories.getPrivilegeList();
 		await groups.destroy(privilegeList.map(privilege => `cid:${cid}:privileges:${privilege}`));

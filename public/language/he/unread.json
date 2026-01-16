@@ -1,16 +1,16 @@
 {
     "title": "לא נקרא",
-    "no-unread-topics": "אין נושאים שלא נקראו",
+    "no-unread-topics": "אין נושאים שלא נקראו.",
     "load-more": "טען עוד",
     "mark-as-read": "סמן כנקרא",
     "mark-as-unread": "סימון כלא נקרא",
     "selected": "נבחר",
     "all": "הכל",
     "all-categories": "כל הקטגוריות",
-    "topics-marked-as-read.success": "הנושאים שבחרת סומנו כנקרא!",
+    "topics-marked-as-read.success": "הנושאים שבחרת סומנו כנקראו!",
     "all-topics": "כל הנושאים",
     "new-topics": "נושאים חדשים",
-    "watched-topics": "נושאים שאתה עוקב אחריהם",
+    "watched-topics": "נושאים שאתם עוקבים אחריהם",
     "unreplied-topics": "נושאים ללא תגובות",
     "multiple-categories-selected": "בחירות מרובות"
 }

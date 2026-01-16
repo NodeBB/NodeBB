@@ -1,0 +1,10 @@
+{
+    "settings.title": "Temainnstillingar",
+    "settings.intro": "Innstillingar for temaet",
+    "settings.mobile-menu-side": "Side for mobilmeny",
+    "settings.autoHidingNavbar": "Automatisk skjuling av navigasjonslinje",
+    "settings.autoHidingNavbar-xs": "Automatisk skjuling av navigasjonslinje - ekstra liten skjerm",
+    "settings.autoHidingNavbar-sm": "Automatisk skjuling av navigasjonslinje - liten skjerm",
+    "settings.autoHidingNavbar-md": "Automatisk skjuling av navigasjonslinje - middels skjerm",
+    "settings.autoHidingNavbar-lg": "Automatisk skjuling av navigasjonslinje - stor skjerm"
+}

@@ -17,8 +17,9 @@ module.exports = {
 		const { progress } = this;
 
 		const folder = path.join(nconf.get('upload_path'), 'profile');
-
+		await mkdirp(folder);
 		const userPicRegex = /^\d+-profile/;
+
 		const files = (await fs.promises.readdir(folder, { withFileTypes: true }))
 			.filter(item => !item.isDirectory() && String(item.name).match(userPicRegex))
 			.map(item => item.name);

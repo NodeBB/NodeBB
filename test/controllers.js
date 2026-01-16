@@ -6,8 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const api = require('../src/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
@@ -31,7 +31,6 @@ describe('Controllers', () => {
 	let fooUid;
 	let adminUid;
 	let category;
-	let testRoutes = [];
 
 	before(async () => {
 		category = await categories.create({
@@ -56,48 +55,6 @@ describe('Controllers', () => {
 		tid = result.topicData.tid;
 
 		pid = result.postData.pid;
-
-		testRoutes = [
-			{ it: 'should load /reset without code', url: '/reset' },
-			{ it: 'should load /reset with invalid code', url: '/reset/123123' },
-			{ it: 'should load /login', url: '/login' },
-			{ it: 'should load /register', url: '/register' },
-			{ it: 'should load /robots.txt', url: '/robots.txt' },
-			{ it: 'should load /manifest.webmanifest', url: '/manifest.webmanifest' },
-			{ it: 'should load /outgoing?url=<url>', url: '/outgoing?url=http://youtube.com' },
-			{ it: 'should 404 on /outgoing with no url', url: '/outgoing', status: 404 },
-			{ it: 'should 404 on /outgoing with javascript: protocol', url: '/outgoing?url=javascript:alert(1);', status: 404 },
-			{ it: 'should 404 on /outgoing with invalid url', url: '/outgoing?url=derp', status: 404 },
-			{ it: 'should load /sping', url: '/sping', body: 'healthy' },
-			{ it: 'should load /ping', url: '/ping', body: '200' },
-			{ it: 'should handle 404', url: '/arouteinthevoid', status: 404 },
-			{ it: 'should load topic rss feed', url: `/topic/${tid}.rss` },
-			{ it: 'should load category rss feed', url: `/category/${cid}.rss` },
-			{ it: 'should load topics rss feed', url: `/topics.rss` },
-			{ it: 'should load recent rss feed', url: `/recent.rss` },
-			{ it: 'should load top rss feed', url: `/top.rss` },
-			{ it: 'should load popular rss feed', url: `/popular.rss` },
-			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
-			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
-			{ it: 'should load category recent posts rss feed', url: `/category/${cid}/recentposts.rss` },
-			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
-			{ it: 'should load tag rss feed', url: `/tags/nodebb.rss` },
-			{ it: 'should load client.css', url: `/assets/client.css` },
-			{ it: 'should load admin.css', url: `/assets/admin.css` },
-			{ it: 'should load sitemap.xml', url: `/sitemap.xml` },
-			{ it: 'should load sitemap/pages.xml', url: `/sitemap/pages.xml` },
-			{ it: 'should load sitemap/categories.xml', url: `/sitemap/categories.xml` },
-			{ it: 'should load sitemap/topics.1.xml', url: `/sitemap/topics.1.xml` },
-			{ it: 'should load theme screenshot', url: `/css/previews/nodebb-theme-harmony` },
-			{ it: 'should load users page', url: `/users` },
-			{ it: 'should load users page section', url: `/users?section=online` },
-			{ it: 'should load groups page', url: `/groups` },
-			{ it: 'should get recent posts', url: `/api/recent/posts/month` },
-			{ it: 'should get post data', url: `/api/v3/posts/${pid}` },
-			{ it: 'should get topic data', url: `/api/v3/topics/${tid}` },
-			{ it: 'should get category data', url: `/api/v3/categories/${cid}` },
-			{ it: 'should return osd data', url: `/osd.xml` },
-		];
 	});
 
 	it('should load /config with csrf_token', async () => {
@@ -222,6 +179,48 @@ describe('Controllers', () => {
 
 	describe('routes that should 200/404 etc.', () => {
 		const baseUrl = nconf.get('url');
+		const testRoutes = [
+			{ it: 'should load /reset without code', url: '/reset' },
+			{ it: 'should load /reset with invalid code', url: '/reset/123123' },
+			{ it: 'should load /login', url: '/login' },
+			{ it: 'should load /register', url: '/register' },
+			{ it: 'should load /robots.txt', url: '/robots.txt' },
+			{ it: 'should load /manifest.webmanifest', url: '/manifest.webmanifest' },
+			{ it: 'should load /outgoing?url=<url>', url: '/outgoing?url=http://youtube.com' },
+			{ it: 'should 404 on /outgoing with no url', url: '/outgoing', status: 404 },
+			{ it: 'should 404 on /outgoing with javascript: protocol', url: '/outgoing?url=javascript:alert(1);', status: 404 },
+			{ it: 'should 404 on /outgoing with invalid url', url: '/outgoing?url=derp', status: 404 },
+			{ it: 'should load /sping', url: '/sping', body: 'healthy' },
+			{ it: 'should load /ping', url: '/ping', body: '200' },
+			{ it: 'should handle 404', url: '/arouteinthevoid', status: 404 },
+			{ it: 'should load topic rss feed', url: `/topic/1.rss` },
+			{ it: 'should load category rss feed', url: `/category/1.rss` },
+			{ it: 'should load topics rss feed', url: `/topics.rss` },
+			{ it: 'should load recent rss feed', url: `/recent.rss` },
+			{ it: 'should load top rss feed', url: `/top.rss` },
+			{ it: 'should load popular rss feed', url: `/popular.rss` },
+			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
+			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
+			{ it: 'should load category recent posts rss feed', url: `/category/1/recentposts.rss` },
+			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
+			{ it: 'should load tag rss feed', url: `/tags/nodebb.rss` },
+			{ it: 'should load client.css', url: `/assets/client.css` },
+			{ it: 'should load admin.css', url: `/assets/admin.css` },
+			{ it: 'should load sitemap.xml', url: `/sitemap.xml` },
+			{ it: 'should load sitemap/pages.xml', url: `/sitemap/pages.xml` },
+			{ it: 'should load sitemap/categories.xml', url: `/sitemap/categories.xml` },
+			{ it: 'should load sitemap/topics.1.xml', url: `/sitemap/topics.1.xml` },
+			{ it: 'should load theme screenshot', url: `/css/previews/nodebb-theme-harmony` },
+			{ it: 'should load users page', url: `/users` },
+			{ it: 'should load users page section', url: `/users?section=online` },
+			{ it: 'should load groups page', url: `/groups` },
+			{ it: 'should get recent posts', url: `/api/recent/posts/month` },
+			{ it: 'should get post data', url: `/api/v3/posts/1` },
+			{ it: 'should get topic data', url: `/api/v3/topics/1` },
+			{ it: 'should get category data', url: `/api/v3/categories/1` },
+			{ it: 'should return osd data', url: `/osd.xml` },
+			{ it: 'should load service worker', url: '/service-worker.js' },
+		];
 		testRoutes.forEach((route) => {
 			it(route.it, async () => {
 				const { response, body } = await request.get(`${baseUrl}/${route.url}`);
@@ -229,7 +228,7 @@ describe('Controllers', () => {
 				if (route.body) {
 					assert.strictEqual(String(body), route.body);
 				} else {
-					assert(body);
+					assert(body, `No body returned for ${route.url} ${response.statusCode}`);
 				}
 			});
 		});
@@ -640,7 +639,7 @@ describe('Controllers', () => {
 				});
 
 				assert.strictEqual(response.statusCode, 302);
-				assert.strictEqual(response.headers['set-cookie'], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`);
+				assert.strictEqual(response.headers['set-cookie'], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT${nconf.get('secure') ? '; Secure' : ''}; SameSite=Lax`);
 				assert.strictEqual(response.headers.location, `${nconf.get('relative_path')}/`);
 			});
 
@@ -691,6 +690,16 @@ describe('Controllers', () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/tos`);
 		assert.equal(response.statusCode, 404);
 		assert(body);
+	});
+
+	it('should 404 if brand:touchIcon is not valid', async () => {
+		const oldValue = meta.config['brand:touchIcon'];
+		meta.config['brand:touchIcon'] = '../../not/valid';
+
+		const { response, body } = await request.get(`${nconf.get('url')}/apple-touch-icon`);
+		assert.strictEqual(response.statusCode, 404);
+		assert.strictEqual(body, 'Not found');
+		meta.config['brand:touchIcon'] = oldValue;
 	});
 
 
@@ -943,7 +952,7 @@ describe('Controllers', () => {
 		it('should redirect to account page with logged in user', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/login`, { jar });
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/foo');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo'));
 			assert.equal(body, '/user/foo');
 		});
 
@@ -955,14 +964,14 @@ describe('Controllers', () => {
 		it('should redirect to userslug', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/uid/${fooUid}`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/foo');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo'));
 			assert.equal(body, '/user/foo');
 		});
 
 		it('should redirect to userslug and keep query params', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/uid/${fooUid}/topics?foo=bar`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/user/foo/topics?foo=bar');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo/topics?foo=bar'));
 			assert.equal(body, '/user/foo/topics?foo=bar');
 		});
 
@@ -982,14 +991,14 @@ describe('Controllers', () => {
 			it('api should redirect to /user/[userslug]/bookmarks', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/api/me/bookmarks`, { jar });
 				assert.equal(response.statusCode, 200);
-				assert.equal(response.headers['x-redirect'], '/user/foo/bookmarks');
+				assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo/bookmarks'));
 				assert.equal(body, '/user/foo/bookmarks');
 			});
 
 			it('api should redirect to /user/[userslug]/edit/username', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/api/me/edit/username`, { jar });
 				assert.equal(response.statusCode, 200);
-				assert.equal(response.headers['x-redirect'], '/user/foo/edit/username');
+				assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/foo/edit/username'));
 				assert.equal(body, '/user/foo/edit/username');
 			});
 
@@ -1388,7 +1397,7 @@ describe('Controllers', () => {
 		it('should return correct post path', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/post/${pid}`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/topic/1/test-topic-title');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/topic/1/test-topic-title'));
 			assert.equal(body, '/topic/1/test-topic-title');
 		});
 	});
@@ -1443,44 +1452,44 @@ describe('Controllers', () => {
 		});
 
 		it('should handle CSRF error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('csrf-error');
 					err.code = 'EBADCSRFTOKEN';
-					next(err);
+					throw err;
 				},
 			});
 
 			const { response } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['filter:router.page'] = [];
+			plugins.loadedHooks['response:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 		});
 
 		it('should handle black-list error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('blacklist error message');
 					err.code = 'blacklisted-ip';
-					next(err);
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['filter:router.page'] = [];
+			plugins.loadedHooks['response:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, 'blacklist error message');
 		});
 
 		it('should handle page redirect through error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('redirect');
 					err.status = 302;
 					err.path = '/popular';
-					plugins.loadedHooks['filter:router.page'] = [];
-					next(err);
+					plugins.loadedHooks['response:router.page'] = [];
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
@@ -1489,32 +1498,32 @@ describe('Controllers', () => {
 		});
 
 		it('should handle api page redirect through error', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('redirect');
 					err.status = 308;
 					err.path = '/api/popular';
-					plugins.loadedHooks['filter:router.page'] = [];
-					next(err);
+					plugins.loadedHooks['response:router.page'] = [];
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/users`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/api/popular');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/api/popular'));
 			assert(body, '/api/popular');
 		});
 
 		it('should handle error page', async () => {
-			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
-			plugins.loadedHooks['filter:router.page'].push({
-				method: function (req, res, next) {
+			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
+			plugins.loadedHooks['response:router.page'].push({
+				method: function () {
 					const err = new Error('regular error');
-					next(err);
+					throw err;
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['filter:router.page'] = [];
+			plugins.loadedHooks['response:router.page'] = [];
 			assert.equal(response.statusCode, 500);
 			assert(body);
 		});
@@ -1553,6 +1562,7 @@ describe('Controllers', () => {
 			await privileges.categories.rescind(['groups:read'], category.cid, 'guests');
 			const { response } = await request.get(`${nconf.get('url')}/api/category/${category.slug}`);
 			assert.equal(response.statusCode, 401);
+			await privileges.categories.give(['groups:read'], category.cid, 'guests');
 		});
 
 		it('should redirect if topic index is negative', async () => {
@@ -1605,12 +1615,12 @@ describe('Controllers', () => {
 			const { cid } = category;
 
 			let result = await request.get(`${nconf.get('url')}/api/category/${category.slug}`, { jar });
-			assert.equal(result.response.headers['x-redirect'], 'https://nodebb.org');
+			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('https://nodebb.org'));
 			assert.equal(result.body, 'https://nodebb.org');
 			await categories.setCategoryField(cid, 'link', '/recent');
 
 			result = await request.get(`${nconf.get('url')}/api/category/${category.slug}`, { jar });
-			assert.equal(result.response.headers['x-redirect'], '/recent');
+			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('/recent'));
 			assert.equal(result.body, '/recent');
 		});
 
@@ -1686,7 +1696,7 @@ describe('Controllers', () => {
 		it('should redirect if page is out of bounds', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/unread?page=-1`, { jar });
 			assert.equal(response.statusCode, 200);
-			assert.equal(response.headers['x-redirect'], '/unread?page=1');
+			assert.equal(response.headers['x-redirect'], encodeURIComponent('/unread?page=1'));
 			assert.equal(body, '/unread?page=1');
 		});
 	});
@@ -1715,7 +1725,9 @@ describe('Controllers', () => {
 		});
 
 		it('should load the composer route', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=1`);
+			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`, {
+				jar,
+			});
 			assert.equal(response.statusCode, 200);
 			assert(body.title);
 			assert(body.template);
@@ -1733,7 +1745,9 @@ describe('Controllers', () => {
 				method: hookMethod,
 			});
 
-			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=1`);
+			const { response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`, {
+				jar,
+			});
 			assert.equal(response.statusCode, 200);
 			assert(body.title);
 			assert.strictEqual(body.template.name, '');
@@ -1835,6 +1849,30 @@ describe('Controllers', () => {
 			assert.equal(replyResult.response.statusCode, 302);
 			await privileges.categories.rescind(['groups:topics:post', 'groups:topics:reply'], cid, 'guests');
 		});
+
+		it('should not load a topic data that is in private category', async () => {
+			const { cid } = await categories.create({
+				name: 'private',
+				description: 'private',
+			});
+
+			const result = await topics.post({ uid: fooUid, title: 'hidden title', content: 'hidden content', cid: cid });
+
+			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'guests');
+			let { response, body } = await request.get(`${nconf.get('url')}/api/compose?tid=${result.topicData.tid}`);
+			assert.equal(response.statusCode, 401);
+			assert(!body.title);
+
+			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`));
+			assert.equal(response.statusCode, 401);
+			assert(!body.title);
+
+			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?pid=${result.postData.pid}`));
+			assert.equal(response.statusCode, 401);
+			assert(!body.title);
+
+			await privileges.categories.give(['groups:topics:read'], category.cid, 'guests');
+		});
 	});
 
 	describe('test routes', () => {
@@ -1863,6 +1901,49 @@ describe('Controllers', () => {
 				assert(body);
 			});
 		}
+	});
+
+	describe('.well-known', () => {
+		describe('webfinger', () => {
+			let uid;
+			let username;
+
+			before(async () => {
+				username = utils.generateUUID().slice(0, 10);
+				uid = await user.create({ username });
+			});
+
+			it('should error if resource parameter is missing', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger`);
+				assert.strictEqual(response.statusCode, 400);
+			});
+
+			it('should error if resource parameter is malformed', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=foobar`);
+				assert.strictEqual(response.statusCode, 400);
+			});
+
+			it('should deny access if view:users privilege is not enabled for guests', async () => {
+				await privileges.global.rescind(['groups:view:users'], 'fediverse');
+
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(response.statusCode, 404);
+
+				await privileges.global.give(['groups:view:users'], 'fediverse');
+			});
+
+			it('should respond appropriately if the user requested does not exist locally', async () => {
+				const { response } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(response.statusCode, 404);
+			});
+
+			it('should return a valid webfinger response if the user exists', async () => {
+				const { response, body } = await request.get(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`);
+				assert.strictEqual(response.statusCode, 200);
+				assert(['subject', 'aliases', 'links'].every(prop => body.hasOwnProperty(prop)));
+				assert(body.subject, `acct:${username}@${nconf.get('url_parsed').host}`);
+			});
+		});
 	});
 
 	after((done) => {

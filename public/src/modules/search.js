@@ -26,11 +26,12 @@ define('search', [
 
 		const quickSearchContainer = searchFields.find('#quick-search-container');
 		const toggleVisibility = searchFields.hasClass('hidden');
+		const webfingerRegex = /^(@|acct:)?[\w-]+@.+$/; // should match src/activitypub/helpers.js
 
 		if (toggleVisibility) {
-			searchInput.off('blur').on('blur', function dismissSearch() {
+			searchFields.off('focusout').on('focusout', function dismissSearch() {
 				setTimeout(function () {
-					if (!searchInput.is(':focus')) {
+					if (!searchFields.find(':focus').length) {
 						searchFields.addClass('hidden');
 						searchButton.removeClass('hidden');
 					}
@@ -70,6 +71,12 @@ define('search', [
 			const data = Search.getSearchPreferences();
 			data.term = input.val();
 			data.in = searchOptions.in;
+
+			// Override search target if webfinger handle entered
+			if (webfingerRegex.test(data.term)) {
+				data.in = 'users';
+			}
+
 			hooks.fire('action:search.submit', {
 				searchOptions: data,
 				searchElements: searchElements,
@@ -125,34 +132,56 @@ define('search', [
 			options.searchOptions.searchOnly = 1;
 			Search.api(options.searchOptions, function (data) {
 				quickSearchResults.find('.loading-indicator').addClass('hidden');
-				if (!data.posts || (options.hideOnNoMatches && !data.posts.length)) {
-					return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
-				}
-				data.posts.forEach(function (p) {
-					const text = $('<div>' + p.content + '</div>').text();
-					const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
-					const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
-					p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
-						text.slice(start, start + 80) +
-						(text.length - start > 80 ? '...' : ''));
-				});
-				data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
-				app.parseAndTranslate('partials/quick-search-results', data, function (html) {
-					if (html.length) {
-						html.find('.timeago').timeago();
+
+				if (options.searchOptions.in === 'categories') {
+					if (!data.categories || (options.hideOnNoMatches && !data.categories.length)) {
+						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 					}
-					quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
-						.find('.quick-search-results-container')
-						.html(html.length ? html : '');
-					const highlightEls = quickSearchResults.find(
-						'.quick-search-results .quick-search-title, .quick-search-results .snippet'
-					);
-					Search.highlightMatches(options.searchOptions.term, highlightEls);
-					hooks.fire('action:search.quick.complete', {
-						data: data,
-						options: options,
+
+					data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
+					app.parseAndTranslate('partials/quick-category-search-results', data, (html) => {
+						if (html.length) {
+							html.find('.timeago').timeago();
+						}
+						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
+							.find('.quick-search-results-container')
+							.html(html.length ? html : '');
+
+						hooks.fire('action:search.quick.complete', {
+							data: data,
+							options: options,
+						});
 					});
-				});
+				} else {
+					if (!data.posts || (options.hideOnNoMatches && !data.posts.length)) {
+						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
+					}
+					data.posts.forEach(function (p) {
+						const text = $('<div>' + p.content + '</div>').text();
+						const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
+						const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
+						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
+							text.slice(start, start + 80) +
+							(text.length - start > 80 ? '...' : ''));
+					});
+					data.dropdown = { maxWidth: '400px', maxHeight: '500px', ...options.dropdown };
+					app.parseAndTranslate('partials/quick-search-results', data, function (html) {
+						if (html.length) {
+							html.find('.timeago').timeago();
+						}
+						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
+							.find('.quick-search-results-container')
+							.html(html.length ? html : '');
+						const highlightEls = quickSearchResults.find(
+							'.quick-search-results .quick-search-title, .quick-search-results .snippet'
+						);
+						Search.highlightMatches(options.searchOptions.term, highlightEls);
+						hooks.fire('action:search.quick.complete', {
+							data: data,
+							options: options,
+						});
+					});
+				}
 			});
 		}
 
@@ -177,30 +206,33 @@ define('search', [
 			doSearch();
 		}, 500));
 
-		let mousedownOnResults = false;
 		quickSearchResults.on('mousedown', '.quick-search-results > *', function () {
 			$(window).one('mouseup', function () {
 				quickSearchResults.addClass('hidden');
 			});
-			mousedownOnResults = true;
 		});
-		inputEl.on('blur', function () {
+
+		const inputParent = inputEl.parent();
+		const resultParent = quickSearchResults.parent();
+		inputParent.on('focusout', hideResults);
+		resultParent.on('focusout', hideResults);
+		function hideResults() {
 			setTimeout(function () {
-				if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
+				if (!inputParent.find(':focus').length && !resultParent.find(':focus').length && !quickSearchResults.hasClass('hidden')) {
 					quickSearchResults.addClass('hidden');
 				}
 			}, 200);
-		});
+		}
 
 		let ajaxified = false;
 		hooks.on('action:ajaxify.end', function () {
 			if (!ajaxify.isCold()) {
 				ajaxified = true;
 			}
+			quickSearchResults.addClass('hidden');
 		});
 
 		inputEl.on('focus', function () {
-			mousedownOnResults = false;
 			const query = inputEl.val();
 			oldValue = query;
 			if (query && quickSearchResults.find('#quick-search-results').children().length) {
@@ -257,12 +289,7 @@ define('search', [
 
 	function createQueryString(data) {
 		const searchIn = data.in || 'titles';
-		let term = data.term.replace(/^[ ?#]*/, '');
-		try {
-			term = encodeURIComponent(term);
-		} catch (e) {
-			return alerts.error('[[error:invalid-search-term]]');
-		}
+		const term = data.term.replace(/^[ ?#]*/, '');
 
 		const query = {
 			...data,
@@ -275,13 +302,14 @@ define('search', [
 			data: data,
 		});
 
-		return decodeURIComponent($.param(query));
+		return $.param(query);
 	}
 
 	Search.getSearchPreferences = function () {
 		try {
 			return JSON.parse(storage.getItem('search-preferences') || '{}');
-		} catch (e) {
+		} catch (err) {
+			console.error(err);
 			return {};
 		}
 	};
@@ -317,7 +345,7 @@ define('search', [
 			});
 		});
 
-		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-fluid');
+		$('.search-results .content').find('img:not(.not-responsive)').addClass('img-fluid');
 	};
 
 	return Search;

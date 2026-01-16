@@ -13,14 +13,45 @@ const intFields = [
 	'minTags', 'maxTags', 'postQueue', 'subCategoriesPerPage',
 ];
 
+const worldCategory = {
+	cid: -1,
+	name: '[[category:uncategorized]]',
+	description: '[[category:uncategorized.description]]',
+	icon: 'fa-globe',
+	imageClass: 'cover',
+	bgColor: '#eee',
+	color: '#333',
+	slug: '../world',
+	parentCid: 0,
+	disabled: 0,
+	handle: 'world',
+	link: '',
+	class: '', // todo
+};
+worldCategory.descriptionParsed = worldCategory.description;
+
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = async function (cids, fields) {
 		if (!Array.isArray(cids) || !cids.length) {
 			return [];
 		}
 
-		const keys = cids.map(cid => `category:${cid}`);
+		cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
+		const keys = cids.map(cid => (utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`));
 		const categories = await db.getObjects(keys, fields);
+
+		// Handle cid -1
+		if (cids.includes(-1)) {
+			let subset = null;
+			if (fields && fields.length) {
+				subset = fields.reduce((category, field) => {
+					category[field] = worldCategory[field] || undefined;
+					return category;
+				}, {});
+			}
+			categories.splice(cids.indexOf(-1), 1, subset || { ...worldCategory });
+		}
+
 		const result = await plugins.hooks.fire('filter:category.getFields', {
 			cids: cids,
 			categories: categories,
@@ -42,7 +73,7 @@ module.exports = function (Categories) {
 
 	Categories.getCategoryField = async function (cid, field) {
 		const category = await Categories.getCategoryFields(cid, [field]);
-		return category ? category[field] : null;
+		return category && category.hasOwnProperty(field) ? category[field] : null;
 	};
 
 	Categories.getCategoryFields = async function (cid, fields) {
@@ -56,11 +87,11 @@ module.exports = function (Categories) {
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {
-		await db.setObjectField(`category:${cid}`, field, value);
+		await db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
 	};
 
 	Categories.incrementCategoryFieldBy = async function (cid, field, value) {
-		await db.incrObjectFieldBy(`category:${cid}`, field, value);
+		await db.incrObjectFieldBy(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
 	};
 };
 
@@ -86,7 +117,7 @@ function modifyCategory(category, fields) {
 
 	db.parseIntFields(category, intFields, fields);
 
-	const escapeFields = ['name', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
+	const escapeFields = ['name', 'nickname', 'description', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
 	escapeFields.forEach((field) => {
 		if (category.hasOwnProperty(field)) {
 			category[field] = validator.escape(String(category[field] || ''));
@@ -106,7 +137,10 @@ function modifyCategory(category, fields) {
 	}
 
 	if (category.description) {
-		category.description = validator.escape(String(category.description));
 		category.descriptionParsed = category.descriptionParsed || category.description;
+	}
+
+	if (category.nickname) {
+		category.name = category.nickname;
 	}
 }

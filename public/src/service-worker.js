@@ -1,5 +1,15 @@
 'use strict';
 
+self.addEventListener('install', () => {
+	// Register self as the primary service worker
+	self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+	// Take responsibility over existing clients from old service worker
+	event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('fetch', function (event) {
 	// This is the code that ignores post requests
 	// https://github.com/NodeBB/NodeBB/issues/9151

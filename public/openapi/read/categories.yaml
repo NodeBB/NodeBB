@@ -142,6 +142,9 @@ get:
                                     type: number
                                   content:
                                     type: string
+                                  sourceContent:
+                                    type: string
+                                    nullable: true
                                   timestampISO:
                                     type: string
                                     description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -151,6 +154,9 @@ get:
                                       uid:
                                         type: number
                                         description: A user identifier
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         description: A friendly name for a given user account
@@ -220,6 +226,9 @@ get:
                                       uid:
                                         type: number
                                         example: 1
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         example: Dragon Fruit

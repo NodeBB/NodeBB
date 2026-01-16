@@ -5,18 +5,20 @@ define('forum/header/notifications', function () {
 
 	notifications.prepareDOM = function () {
 		const notifTrigger = $('[component="notifications"] [data-bs-toggle="dropdown"]');
-		if (!notifTrigger.length) {
-			return;
-		}
 
-		notifTrigger.on('show.bs.dropdown', (ev) => {
-			requireAndCall('loadNotifications', $(ev.target).parent().find('[component="notifications/list"]'));
+		notifTrigger.on('show.bs.dropdown', async (ev) => {
+			const notifications = await app.require('notifications');
+			const triggerEl = $(ev.target);
+			notifications.loadNotifications(triggerEl, triggerEl.parent().find('[component="notifications/list"]'));
 		});
 
 		notifTrigger.each((index, el) => {
-			const dropdownEl = $(el).parent().find('.dropdown-menu');
+			const triggerEl = $(el);
+			const dropdownEl = triggerEl.parent().find('.dropdown-menu');
 			if (dropdownEl.hasClass('show')) {
-				requireAndCall('loadNotifications', dropdownEl.find('[component="notifications/list"]'));
+				app.require('notifications').then((notifications) => {
+					notifications.loadNotifications(triggerEl, dropdownEl.find('[component="notifications/list"]'));
+				});
 			}
 		});
 
@@ -27,18 +29,14 @@ define('forum/header/notifications', function () {
 		socket.on('event:notifications.updateCount', onUpdateCount);
 	};
 
-	function onNewNotification(data) {
-		requireAndCall('onNewNotification', data);
+	async function onNewNotification(data) {
+		const notifications = await app.require('notifications');
+		notifications.onNewNotification(data);
 	}
 
-	function onUpdateCount(data) {
-		requireAndCall('updateNotifCount', data);
-	}
-
-	function requireAndCall(method, param) {
-		require(['notifications'], function (notifications) {
-			notifications[method](param);
-		});
+	async function onUpdateCount(data) {
+		const notifications = await app.require('notifications');
+		notifications.updateNotifCount(data);
 	}
 
 	return notifications;

@@ -38,6 +38,7 @@
 	"settings/tags": "Метки",
 	"settings/notifications": "Уведомления",
 	"settings/api": "Доступ API",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Звуки",
 	"settings/social": "Шэринг",
 	"settings/cookies": "Куки",

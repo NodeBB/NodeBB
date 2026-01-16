@@ -15,7 +15,7 @@
 	"title-layout": "Virsraksta izkārtojums",
 	"title-layout-help": "Noteikt, kā virsraksts pārlūkā tiks izkārtots, t.i., &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Īss foruma apraksts",
-	"description": "Foruma apraksts",
+	"description": "Site Description",
 	"keywords": "Foruma atslēgvārdi",
 	"keywords-placeholder": "Atslēgvārdi, kas apraksta forumu, atdalīti ar komatu",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "Color used for splash screen background when website is installed as a PWA",
 	"undo-timeout": "Undo Timeout",
 	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "Sākums",
+	"home-page-route": "Sākumlapas ceļš",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Pielāgotais ceļš",
+	"allow-user-home-pages": "Atļaut lietotājiem savas mājaslapas",
+	"home-page-title": "Sākumlapas titulis (pēc noklusējuma \"Sākums\")",
+	"default-language": "Noklusējama valoda",
+	"auto-detect": "Viesiem automātiski izprast valodas iestatījumus",
+	"default-language-help": "Noklusējuma valoda nosaka valodas iestatījumus visiem lietotājiem, kuri apmeklē forumu. <br />Lietotājs savā konta iestatījumu lapā var ignorēt noklusējuma valodu.",
+	"post-sharing": "Rakstu kopīgošana",
+	"info-plugins-additional": "Spraudņi var pievienot papildu rakstu kopīgošanas tīklus."
 }

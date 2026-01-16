@@ -132,6 +132,7 @@ Configs.setMultiple = async function (data) {
 	await processConfig(data);
 	data = serialize(data);
 	await db.setObject('config', data);
+	await updateNavItems(data);
 	updateConfig(deserialize(data));
 };
 
@@ -226,6 +227,13 @@ async function getLogoSize(data) {
 	data['brand:emailLogo'] = nconf.get('url') + path.join(nconf.get('upload_url'), 'system', 'site-logo-x50.png');
 	data['brand:emailLogo:height'] = size.height;
 	data['brand:emailLogo:width'] = size.width;
+}
+
+async function updateNavItems(data) {
+	if (data.hasOwnProperty('activitypubEnabled')) {
+		const navAdmin = require('../navigation/admin');
+		await navAdmin.update('/world', { enabled: data.activitypubEnabled ? 'on' : '' });
+	}
 }
 
 function updateConfig(config) {

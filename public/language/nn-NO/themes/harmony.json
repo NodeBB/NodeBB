@@ -1,0 +1,23 @@
+{
+	"theme-name": "Tema-namn",
+	"skins": "Utsjånad",
+	"collapse": "Slå saman",
+	"expand": "Utvid",
+	"sidebar-toggle": "Vis/skjul sidefelt",
+	"login-register-to-search": "Logg inn eller registrer deg for å søkje",
+	"settings.title": "Temainnstillingar",
+	"settings.enableQuickReply": "Aktiver raskt svar",
+	"settings.enableBreadcrumbs": "Aktiver navigasjonsstiar",
+	"settings.enableBreadcrumbs.why": "Navigasjonsstiar hjelper med å navigere tilbake til tidlegare sider.",
+	"settings.centerHeaderElements": "Sentrer hovudelement",
+	"settings.mobileTopicTeasers": "Vis emneteasere på mobil",
+	"settings.stickyToolbar": "Fast verktøylinje",
+	"settings.stickyToolbar.help": "Gjer verktøylinja fast øvst på sida når du rullar.",
+	"settings.topicSidebarTools": "Topic sidebar tools",
+	"settings.topicSidebarTools.help": "This option will move the topic tools to the sidebar on desktop",
+	"settings.autohideBottombar": "Auto hide mobile navigation bar",
+	"settings.autohideBottombar.help": "The mobile bar will be hidden when the page is scrolled down",
+	"settings.topMobilebar": "Move the mobile navigation bar to the top",
+	"settings.openSidebars": "Opne sidefelt",
+	"settings.chatModals": "Chat-modalar"
+}

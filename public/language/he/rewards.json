@@ -1,6 +1,6 @@
 {
-	"awarded-x-reputation": "הוענק לך <strong>%1</strong> מוניטין",
-	"awarded-group-membership": "נוספת לקבוצה <strong>%1</strong>",
+	"awarded-x-reputation": "הוענק לכם <strong>%1</strong> מוניטין",
+	"awarded-group-membership": "נוספתם לקבוצה <strong>%1</strong>",
 
 	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(מוניטין %1 %2)</span>",
 	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(כמות פוסטים %1 %2)</span>",

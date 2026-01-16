@@ -15,7 +15,7 @@
 	"title-layout": "Postavitev naslova",
 	"title-layout-help": "Define how the browser title will be structured ie. &#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "Kratek opis vaše skupnosti",
-	"description": "Opis spletne strani",
+	"description": "Site Description",
 	"keywords": "Ključne besede spletnega mesta",
 	"keywords-placeholder": "Ključne besede, ki opisujejo vašo skupnost, ločene z vejicami",
 	"logo-and-icons": "Site Logo & Icons",
@@ -48,5 +48,16 @@
 	"background-color-help": "Barva, ki se uporablja za ozadje začetnega zaslona, ​​ko je spletno mesto nameščeno kot PWA",
 	"undo-timeout": "Razveljavi časovno omejitev",
 	"undo-timeout-help": "Nekatere operacije, kot so premikanje tem, bodo moderatorju omogočile, da v določenem časovnem okviru razveljavi svoje dejanje. Nastavite na 0, da popolnoma onemogočite razveljavitev.",
-	"topic-tools": "Topic Tools"
+	"topic-tools": "Topic Tools",
+	"home-page": "Domača stran",
+	"home-page-route": "Pot do domače strani",
+	"home-page-description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"custom-route": "Pot po meri",
+	"allow-user-home-pages": "Dovoli domače strani uporabnikov",
+	"home-page-title": "Naslov domače strani (privzeto »Domača stran«)",
+	"default-language": "Privzeti jezik",
+	"auto-detect": "Samodejna zaznava nastavitev jezika za goste",
+	"default-language-help": "Privzeti jezik določa jezikovne nastavitve za vse uporabnike, ki obiščejo vaš forum. <br /> Posamezni uporabniki lahko na strani z nastavitvami računa preglasijo privzeti jezik.",
+	"post-sharing": "Deljenje objav",
+	"info-plugins-additional": "Vtičniki lahko dodajo dodatna omrežja za deljenje objav."
 }

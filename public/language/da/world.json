@@ -1,0 +1,21 @@
+{
+	"name": "Verden",
+	"popular": "Populære tråde",
+	"recent": "Alle tråde",
+	"help": "Hjælp",
+
+	"help.title": "Hvad er denne side?",
+	"help.intro": "Velkommen til dit hjørne af fødiverset.",
+	"help.fediverse": "\"Fødiverset\" er et netværk af forbundne programmer og hjemmesider der allesammen taler med hinanden og hvis brugere kan se hinanden. Dette forum er fødereret og kan inteagere med det sociale net (også kaldet \"fødiverset\"). Denne side er dit hjørne af fødiverset. Den indeholder kun tråde skabt af - og delt af - brugere <strong>du</strong> følger.",
+	"help.build": "Der er måske ikke mange tråde her til at starte med; det er helt normalt. Du vil begynde at se mere indhold her med tiden, som du begynder at følge andre brugere.",
+	"help.federating": "Ligeså, hvis brugere udefra dette fourm begynder at følge <em>dig</<em>, så vil dine opslag begynde at dukke op på deres programmer og hjemmesider også.",
+	"help.next-generation": "Dette er den næste generation af sociale medier, bliv en del af det i dag!",
+
+	"onboard.title": "Dit vindue til fødiverset...",
+	"onboard.what": "Dette er din personaliserede kategori som består kun af indhold fra udefra dette forum. Om noget dukker op her eller ej afhænger af om følger personen der lavede indlægget, eller om du følger nogen der har fremhævet indlægget.",
+	"onboard.why": "Der foregår en masse udenfor dette forum, og ikke det hele er relevant for dine interesser. At følge folk er derfor den bedste måde at signalere at du gerne vil se mere fra dem.",
+	"onboard.how": "I mellemtiden kan du klikke på genvejs-knapperne i toppen for at se, hvad forummet kender til og begynd at opdage nyt indhold!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
+}

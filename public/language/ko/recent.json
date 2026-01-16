@@ -7,5 +7,7 @@
     "alltime": "전체 기간",
     "no-recent-topics": "최근 토픽이 없습니다.",
     "no-popular-topics": "인기 있는 토픽이 없습니다.",
-    "load-new-posts": "새로운 게시물 불러오기"
+    "load-new-posts": "새로운 게시물 불러오기",
+    "uncategorized.title": "All known topics",
+    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
 }

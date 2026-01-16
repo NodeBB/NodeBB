@@ -1,0 +1,11 @@
+// fixes for global skin issues
+
+// brite text-secondary is white :/
+.skin-brite .text-secondary {
+	color: var(--bs-secondary-color) !important;
+}
+
+// fix minty buttons
+.skin-minty .btn {
+	color: initial!important;
+}

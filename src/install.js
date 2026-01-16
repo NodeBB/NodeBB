@@ -199,6 +199,11 @@ async function completeConfigSetup(config) {
 	if (nconf.get('package_manager')) {
 		config.package_manager = nconf.get('package_manager');
 	}
+
+	if (install.values && install.values.hasOwnProperty('saas_plan')) {
+		config.saas_plan = install.values.saas_plan;
+	}
+
 	nconf.overrides(config);
 	const db = require('./database');
 	await db.init();
@@ -370,26 +375,21 @@ async function createAdmin() {
 	}
 
 	async function retryPassword(originalResults) {
-		// Ask only the password questions
 		const results = await prompt.get(passwordQuestions);
 
-		// Update the original data with newly collected password
 		originalResults.password = results.password;
 		originalResults['password:confirm'] = results['password:confirm'];
 
-		// Send back to success to handle
 		return await success(originalResults);
 	}
 
-	// Add the password questions
 	questions = questions.concat(passwordQuestions);
 
 	if (!install.values) {
 		const results = await prompt.get(questions);
 		return await success(results);
 	}
-	// If automated setup did not provide a user password, generate one,
-	// it will be shown to the user upon setup completion
+
 	if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
 		console.log('Password was not provided during automated setup, generating one...');
 		password = utils.generateUUID().slice(0, 8);
@@ -436,6 +436,37 @@ async function giveGlobalPrivileges() {
 	]), 'Global Moderators');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
+	await privileges.global.give(['groups:view:users'], 'fediverse');
+}
+
+async function giveWorldPrivileges() {
+	// should match privilege assignment logic in src/categories/create.js EXCEPT commented one liner below
+	const privileges = require('./privileges');
+	const defaultPrivileges = [
+		'groups:find',
+		'groups:read',
+		'groups:topics:read',
+		'groups:topics:create',
+		'groups:topics:reply',
+		'groups:topics:tag',
+		'groups:posts:edit',
+		'groups:posts:history',
+		'groups:posts:delete',
+		'groups:posts:upvote',
+		'groups:posts:downvote',
+		'groups:topics:delete',
+	];
+	const modPrivileges = defaultPrivileges.concat([
+		'groups:topics:schedule',
+		'groups:posts:view_deleted',
+		'groups:purge',
+	]);
+	const guestPrivileges = ['groups:find', 'groups:read', 'groups:topics:read'];
+
+	await privileges.categories.give(defaultPrivileges, -1, ['registered-users']);
+	await privileges.categories.give(defaultPrivileges.slice(2), -1, ['fediverse']); // different priv set for fediverse
+	await privileges.categories.give(modPrivileges, -1, ['administrators', 'Global Moderators']);
+	await privileges.categories.give(guestPrivileges, -1, ['guests', 'spiders']);
 }
 
 async function createCategories() {
@@ -495,8 +526,10 @@ async function enableDefaultPlugins() {
 
 	let defaultEnabled = [
 		'nodebb-plugin-composer-default',
+		'nodebb-plugin-dbsearch',
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
+		'nodebb-plugin-web-push',
 		'nodebb-widget-essentials',
 		'nodebb-rewards-essentials',
 		'nodebb-plugin-emoji',
@@ -588,6 +621,7 @@ install.setup = async function () {
 		const adminInfo = await createAdministrator();
 		await createGlobalModeratorsGroup();
 		await giveGlobalPrivileges();
+		await giveWorldPrivileges();
 		await createMenuItems();
 		await createWelcomePost();
 		await enableDefaultPlugins();
@@ -624,9 +658,14 @@ install.save = async function (server_conf) {
 		}
 	}
 
-	await fs.promises.writeFile(serverConfigPath, JSON.stringify({ ...currentConfig, ...server_conf }, null, 4));
+	await fs.promises.writeFile(serverConfigPath, JSON.stringify({
+		...currentConfig,
+		...server_conf,
+	}, null, 4));
 	console.log('Configuration Saved OK');
 	nconf.file({
 		file: serverConfigPath,
 	});
 };
+
+install.giveWorldPrivileges = giveWorldPrivileges; // exported for upgrade script and test runner

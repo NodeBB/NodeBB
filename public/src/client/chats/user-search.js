@@ -15,7 +15,7 @@ define('forum/chats/user-search', [
 		chatsListEl.on('click', '[data-uid]', function () {
 			if (options.onSelect) {
 				options.onSelect(
-					users.find(u => parseInt(u.uid, 10) === parseInt($(this).attr('data-uid'), 10))
+					users.find(u => String(u.uid) === String($(this).attr('data-uid')))
 				);
 			}
 			clearInputAndResults(chatsListEl);

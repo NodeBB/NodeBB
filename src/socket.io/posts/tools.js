@@ -5,12 +5,13 @@ const nconf = require('nconf');
 const db = require('../../database');
 const posts = require('../../posts');
 const flags = require('../../flags');
-const events = require('../../events');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const social = require('../../social');
 const user = require('../../user');
 const utils = require('../../utils');
+const sockets = require('../index');
+const api = require('../../api');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.loadPostTools = async function (socket, data) {
@@ -19,7 +20,7 @@ module.exports = function (SocketPosts) {
 		}
 		const cid = await posts.getCidByPid(data.pid);
 		const results = await utils.promiseParallel({
-			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId']),
+			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId', 'url']),
 			isAdmin: user.isAdministrator(socket.uid),
 			isGlobalMod: user.isGlobalModerator(socket.uid),
 			isModerator: user.isModerator(socket.uid, cid),
@@ -36,7 +37,8 @@ module.exports = function (SocketPosts) {
 		});
 
 		const postData = results.posts;
-		postData.absolute_url = `${nconf.get('url')}/post/${data.pid}`;
+		postData.pid = data.pid;
+		postData.absolute_url = `${nconf.get('url')}/post/${encodeURIComponent(data.pid)}`;
 		postData.bookmarked = results.bookmarked;
 		postData.selfPost = socket.uid && socket.uid === postData.uid;
 		postData.display_edit_tools = results.canEdit.flag;
@@ -46,8 +48,10 @@ module.exports = function (SocketPosts) {
 		postData.display_moderator_tools = postData.display_edit_tools || postData.display_delete_tools;
 		postData.display_move_tools = results.isAdmin || results.isModerator;
 		postData.display_change_owner_tools = results.isAdmin || results.isModerator;
+		postData.display_manage_editors_tools = results.isAdmin || results.isModerator || postData.selfPost;
 		postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
 		postData.display_history = results.history && results.canViewHistory;
+		postData.display_original_url = !utils.isNumber(data.pid);
 		postData.flags = {
 			flagId: parseInt(results.posts.flagId, 10) || null,
 			can: results.canFlag.flag,
@@ -74,22 +78,38 @@ module.exports = function (SocketPosts) {
 		if (!data || !Array.isArray(data.pids) || !data.toUid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
-		if (!isAdminOrGlobalMod) {
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/owner');
+		await api.posts.changeOwner(socket, { pids: data.pids, uid: data.toUid });
+	};
+
+	SocketPosts.getEditors = async function (socket, data) {
+		if (!data || !data.pid) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		await checkEditorPrivilege(socket.uid, data.pid);
+		const editorUids = await db.getSetMembers(`pid:${data.pid}:editors`);
+		const userData = await user.getUsersFields(editorUids, ['username', 'userslug', 'picture']);
+		return userData;
+	};
+
+	SocketPosts.saveEditors = async function (socket, data) {
+		if (!data || !data.pid || !Array.isArray(data.uids)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		await checkEditorPrivilege(socket.uid, data.pid);
+		await db.delete(`pid:${data.pid}:editors`);
+		await db.setAdd(`pid:${data.pid}:editors`, data.uids);
+	};
+
+	async function checkEditorPrivilege(uid, pid) {
+		const cid = await posts.getCidByPid(pid);
+		const [isAdminOrMod, owner] = await Promise.all([
+			privileges.categories.isAdminOrMod(cid, uid),
+			posts.getPostField(pid, 'uid'),
+		]);
+		const isSelfPost = String(uid) === String(owner);
+		if (!isAdminOrMod && !isSelfPost) {
 			throw new Error('[[error:no-privileges]]');
 		}
-
-		const postData = await posts.changeOwner(data.pids, data.toUid);
-		const logs = postData.map(({ pid, uid, cid }) => (events.log({
-			type: 'post-change-owner',
-			uid: socket.uid,
-			ip: socket.ip,
-			targetUid: data.toUid,
-			pid: pid,
-			originalUid: uid,
-			cid: cid,
-		})));
-
-		await Promise.all(logs);
-	};
+	}
 };

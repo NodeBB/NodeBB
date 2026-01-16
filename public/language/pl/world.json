@@ -1,0 +1,21 @@
+{
+	"name": "Świat",
+	"popular": "Popularne tematy",
+	"recent": "Wszystkie tematy",
+	"help": "Pomoc",
+
+	"help.title": "Co to za strona?",
+	"help.intro": "Witaj w swoim zakątku fediverse.",
+	"help.fediverse": "Sieć \"fediverse\" jest zbiorem połączonych aplikacji i stron internetowych, których użytkownicy mogą się ze sobą komunikować. To forum umożliwia tego typu interakcje w ramach \"fediverse\". Ta strona jest Twoim zakątkiem fediverse. Zawiera wątki tworzone i współdzielone przez śledzonych przez <strong>Ciebie</strong> użytkowników.",
+	"help.build": "Na początku może być tu trochę pusto; to normalne. Zacznie się robić tłoczno po tym jak zaczniesz śledzić innych użytkowników.",
+	"help.federating": "O ile użytkownicy spoza tego forum zaczną Cię <em>śledzić</em>, to w efekcie Twoje wpisy pojawią się na zewnętrznych stronach i w aplikacjach.",
+	"help.next-generation": "To są media społecznościowe kolejnej generacji, dołącz już dzisiaj!",
+
+	"onboard.title": "Twoje okno na fediverse...",
+	"onboard.what": "Zawartość tej kategorii jest dostowana do Twoich poczynań i zawiera jedynie dane spoza tego forum. Aby się coś tu pojawiło trzeba zacząć śledzić zdalne źródła informacji.",
+	"onboard.why": "Mnóstwo rzeczy dzieje się poza tym forum ale niekoniecznie zgodnych z Twoimi zainteresowaniami. Dlatego śledzenie konkretnych użytkowników jest dobrą metodą aby uzyskać więcej zawartości przez nich dodawanych.",
+	"onboard.how": "W międzyczasie możesz użyć przycisków skrótów na górze aby przekonać się jak forum jest powiązane a okaże się, że zapewnia wiele dodatkowych treści!",
+
+	"show-categories": "Pokaż kategorie",
+	"hide-categories": "Ukryj kategorie"
+}

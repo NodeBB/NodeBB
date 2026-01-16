@@ -20,10 +20,30 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="cid-{category.cid}-handle">
+						[[admin/manage/categories:handle]]
+					</label>
+					<input id="cid-{category.cid}-handle" type="text" class="form-control" data-name="handle" value="{category.handle}" />
+					<p class="form-text">
+						[[admin/manage/categories:handle.help]]
+					</p>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-description">
 						[[admin/manage/categories:description]]
 					</label>
 					<textarea id="cid-{category.cid}-description" data-name="description" class="form-control category_description description" rows="4" />{category.description}</textarea>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="cid-{category.cid}-topic-template">
+						[[admin/manage/categories:topic-template]]
+					</label>
+					<textarea id="cid-{category.cid}-topic-template" data-name="topicTemplate" class="form-control" rows="4" />{category.topicTemplate}</textarea>
+					<p class="form-text">
+						[[admin/manage/categories:topic-template.help]]
+					</p>
 				</div>
 
 				<div class="mb-3 d-flex justify-content-between align-items-center gap-2">
@@ -164,44 +184,7 @@
 			</div>
 		</div>
 
-		<div class="col-12 col-md-4 px-0 px-md-3 options acp-sidebar">
-			<div class="p-2 d-flex flex-column text-bg-light border rounded-1 gap-1">
-				<a href="{config.relative_path}/admin/manage/categories" class="btn-ghost-sm justify-content-start"><i class="fa fa-fw fa-chevron-left text-primary"></i> [[admin/manage/categories:back-to-categories]]</a>
-
-				<hr class="my-1"/>
-
-				<button class="btn-ghost-sm justify-content-start copy-settings">
-					<i class="fa fa-fw fa-files-o text-primary"></i> [[admin/manage/categories:copy-settings]]
-				</button>
-
-				<a class="btn-ghost-sm justify-content-start" href="{config.relative_path}/admin/manage/categories/{category.cid}/analytics"><i class="fa fa-fw fa-chart-simple text-primary"></i> [[admin/manage/categories:analytics]]</a>
-
-				<a href="{config.relative_path}/admin/manage/privileges/{category.cid}" class="btn-ghost-sm justify-content-start">
-					<i class="fa fa-fw fa-lock text-primary"></i> [[admin/manage/categories:privileges]]
-				</a>
-
-				<a href="{config.relative_path}/category/{category.cid}" class="btn-ghost-sm justify-content-start">
-					<i class="fa fa-fw fa-eye text-primary"></i> [[admin/manage/categories:view-category]]
-				</a>
-
-				<hr class="my-1"/>
-
-				<button data-action="toggle" data-disabled="{category.disabled}" class="btn-ghost-sm justify-content-start">
-					{{{ if category.disabled }}}
-					<i class="fa fa-fw fa-check text-success"></i>
-					<span class="label">[[admin/manage/categories:enable]]</span>
-					{{{ else }}}
-					<i class="fa fa-fw fa-ban text-danger"></i>
-					<span class="label">[[admin/manage/categories:disable]]</span>
-					{{{ end }}}
-				</button>
-
-				<button class="btn-ghost-sm purge justify-content-start">
-					<i class="fa fa-fw fa-trash text-danger"></i> [[admin/manage/categories:purge]]
-				</button>
-
-			</div>
-		</div>
+		<!-- IMPORT admin/partials/category/sidebar.tpl -->
 	</div>
 </div>
 

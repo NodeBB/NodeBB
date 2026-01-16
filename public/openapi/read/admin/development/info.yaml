@@ -98,6 +98,8 @@ get:
                               type: boolean
                             jobsDisabled:
                               type: boolean
+                            acpPluginInstallDisabled:
+                              type: boolean
                         git:
                           type: object
                           properties:

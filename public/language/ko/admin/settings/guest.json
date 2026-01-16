@@ -1,8 +1,0 @@
-{
-	"settings": "설정",
-	"guest-settings": "비회원 설정",
-	"handles.enabled": "비회원 처리 허용",
-	"handles.enabled-help": "비회원들이 각각의 게시물에 사용할 닉네임을 선택할 수 있게 됩니다. 비활성화하면 비회원은 간단히 \"비회원\"로 불릴 것입니다.",
-	"topic-views.enabled": "토픽 조회 수에 비회원도 포함",
-	"reply-notifications.enabled": "비회원이 답글 알림을 사용할 수 있도록 허용"
-}

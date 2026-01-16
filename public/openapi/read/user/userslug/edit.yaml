@@ -37,8 +37,6 @@ get:
                     type: boolean
                   allowAccountDelete:
                     type: boolean
-                  allowWebsite:
-                    type: boolean
                   allowAboutMe:
                     type: boolean
                   allowSignature:
@@ -66,6 +64,8 @@ get:
                     type: number
                   title:
                     type: string
+                  customUserFields:
+                    type: array
                   editButtons:
                     type: array
                     items:

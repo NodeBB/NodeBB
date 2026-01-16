@@ -1,6 +1,0 @@
-{
-	"language-settings": "Spracheinstellungen",
-	"description": "Die Standardsprache bestimmt die Spracheinstellungen für alle Benutzer, die dein Forum besuchen. <br />Einzelne Benutzer können die Standardsprache auf ihrer Kontoeinstellungsseite überschreiben.",
-	"default-language": "Standardsprache",
-	"auto-detect": "Sprach-Einstellung bei Gästen automatisch ermitteln"
-}

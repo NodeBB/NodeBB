@@ -1,8 +1,0 @@
-{
-	"home-page": "Aloitussivu",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Aloitussivun polku",
-	"custom-route": "Mukautettu polku",
-	"allow-user-home-pages": "Salli käyttäjäkohtaiset aloitussivut",
-	"home-page-title": "Aloitussivun otsikko (oletus on \"Aloitus\")"
-}

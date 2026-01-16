@@ -8,7 +8,8 @@ const categories = require('../categories');
 const flags = require('../flags');
 const plugins = require('../plugins');
 const batch = require('../batch');
-
+const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.delete = async function (tid, uid) {
@@ -24,6 +25,7 @@ module.exports = function (Topics) {
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
+			activitypub.out.remove.context(uid, tid),
 		]);
 
 		await categories.updateRecentTidForCid(cid);
@@ -64,6 +66,7 @@ module.exports = function (Topics) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
 		await batch.processSortedSet(`tid:${tid}:posts`, async (pids) => {
 			await posts.purge(pids, uid);
+			await db.sortedSetRemove(`tid:${tid}:posts`, pids); // Guard against infinite loop if pid already does not exist in db
 		}, { alwaysStartAt: 0, batch: 500 });
 		await posts.purge(mainPid, uid);
 		await Topics.purge(tid, uid);
@@ -92,15 +95,14 @@ module.exports = function (Topics) {
 			db.sortedSetsRemove([
 				'topics:tid',
 				'topics:recent',
-				'topics:posts',
-				'topics:views',
-				'topics:votes',
 				'topics:scheduled',
 			], tid),
+			db.sortedSetsRemove(['views', 'posts', 'votes'].map(prop => `${utils.isNumber(tid) ? 'topics' : 'topicsRemote'}:${prop}`), tid),
 			deleteTopicFromCategoryAndUser(tid),
 			Topics.deleteTopicTags(tid),
 			Topics.events.purge(tid),
 			Topics.thumbs.deleteAll(tid),
+			Topics.crossposts.removeAll(tid),
 			reduceCounters(tid),
 		]);
 		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });
@@ -139,13 +141,15 @@ module.exports = function (Topics) {
 
 	async function reduceCounters(tid) {
 		const incr = -1;
-		await db.incrObjectFieldBy('global', 'topicCount', incr);
+		if (utils.isNumber(tid)) {
+			await db.incrObjectFieldBy('global', 'topicCount', incr);
+		}
 		const topicData = await Topics.getTopicFields(tid, ['cid', 'postcount']);
 		const postCountChange = incr * topicData.postcount;
 		await Promise.all([
 			db.incrObjectFieldBy('global', 'postCount', postCountChange),
-			db.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),
-			db.incrObjectFieldBy(`category:${topicData.cid}`, 'topic_count', incr),
+			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'post_count', postCountChange),
+			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'topic_count', incr),
 		]);
 	}
 };

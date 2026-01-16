@@ -56,8 +56,8 @@ define('forum/account/edit/password', [
 			}
 		}
 
-		password.on('blur', onPasswordChanged);
-		password_confirm.on('blur', onPasswordConfirmChanged);
+		password.on('input', onPasswordChanged);
+		password_confirm.on('input', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function () {
 			onPasswordChanged();
@@ -103,19 +103,14 @@ define('forum/account/edit/password', [
 
 	function showError(element, msg) {
 		translator.translate(msg, function (msg) {
-			element.html(msg);
-
-			element.parent()
-				.removeClass('show-success')
-				.addClass('show-danger');
+			element.html(msg).removeClass('text-success')
+				.addClass('text-danger');
 		});
 	}
 
 	function showSuccess(element) {
-		element.html('');
-		element.parent()
-			.removeClass('show-danger')
-			.addClass('show-success');
+		element.html('').removeClass('text-danger')
+			.addClass('text-success');
 	}
 
 	return AccountEditPassword;

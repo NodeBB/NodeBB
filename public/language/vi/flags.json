@@ -29,7 +29,7 @@
 	"filter-assignee": "Ủy nhiệm",
 	"filter-cid": "Chuyên mục",
 	"filter-quick-mine": "Được giao cho tôi",
-	"filter-cid-all": "Tất cả chuyên mục",
+	"filter-cid-all": "Tất cả các danh mục",
 	"apply-filters": "Áp Dụng Bộ Lọc",
 	"more-filters": "Thêm Bộ Lọc",
 	"fewer-filters": "Bớt Bộ Lọc",
@@ -79,16 +79,22 @@
 	"sort-replies": "Nhiều lượt trả lời",
 
 	"modal-title": "Báo Cáo Nội Dung",
-	"modal-body": "Vui lòng nêu rõ lý do bạn gắn cờ %1 %2 để đánh giá. Ngoài ra, hãy sử dụng một trong các nút báo cáo nhanh nếu có.",
+	"modal-body": "Hãy nói lý do bạn gắn cờ %1 %2 để đánh giá. Ngoài ra, hãy sử dụng một trong các nút báo cáo nhanh nếu có.",
 	"modal-reason-spam": "Quấy Rối",
 	"modal-reason-offensive": "Phản Cảm",
 	"modal-reason-other": "Khác (Ghi Rõ Bên Dưới)",
 	"modal-reason-custom": "Lý do báo cáo nội dung này...",
+	"modal-notify-remote": "Chuyển tiếp báo cáo này tới %1",
 	"modal-submit": "Gửi Báo Cáo",
 	"modal-submit-success": "Nội dung đã được gắn cờ để kiểm duyệt.",
 
+	"modal-confirm-rescind": "Hủy Bỏ Báo Cáo?",
+
 	"bulk-actions": "‎Hành động hàng loạt‎",
 	"bulk-resolve": "Xử Lý Cờ",
+	"confirm-purge": "Bạn có chắc chắn muốn xóa vĩnh viễn những cờ này không?",
+	"purge-cancelled": "Đã Hủy Loại Bỏ Cờ",
+	"bulk-purge": "Loại Bỏ Cờ",
 	"bulk-success": "%1 cờ đã cập nhật",
 	"flagged-timeago": "Đã gắn cờ <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Cờ Tự Động] Nhận được %1 phản đối."

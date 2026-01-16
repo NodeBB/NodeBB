@@ -1,5 +1,6 @@
 {
     "all-users": "Všichni uživatelé",
+    "followed-users": "Followed Users",
     "latest-users": "Nejnovější uživatelé",
     "top-posters": "Nejaktivnější",
     "most-reputation": "Nejváženější",
@@ -20,6 +21,6 @@
     "popular-topics": "Oblíbená témata",
     "unread-topics": "Nepřečtená témata",
     "categories": "Kategorie",
-    "tags": "Značky",
+    "tags": "Štítky",
     "no-users-found": "Nebyly nalezeny žádní uživatelé."
 }

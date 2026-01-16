@@ -66,6 +66,10 @@ tags:
   - name: other
     description: Other one-off routes that do not fit in a section of their own
 paths:
+  /sping:
+    $ref: 'read/sping.yaml'
+  /ping:
+    $ref: 'read/ping.yaml'
   /api/:
     $ref: 'read/index.yaml'
   /api/admin:
@@ -80,18 +84,38 @@ paths:
     $ref: 'read/admin/dashboard/topics.yaml'
   /api/admin/dashboard/searches:
     $ref: 'read/admin/dashboard/searches.yaml'
-  "/api/admin/settings/{term}":
-    $ref: 'read/admin/settings/term.yaml'
+  "/api/admin/settings/general":
+    $ref: 'read/admin/settings/general.yaml'
   /api/admin/settings/navigation:
     $ref: 'read/admin/settings/navigation.yaml'
-  /api/admin/settings/api:
-    $ref: 'read/admin/settings/api.yaml'
-  /api/admin/settings/email:
-    $ref: 'read/admin/settings/email.yaml'
   /api/admin/settings/user:
     $ref: 'read/admin/settings/user.yaml'
+  /api/admin/settings/reputation:
+    $ref: 'read/admin/settings/reputation.yaml'
+  /api/admin/settings/group:
+    $ref: 'read/admin/settings/group.yaml'
+  /api/admin/settings/tags:
+    $ref: 'read/admin/settings/tags.yaml'
   /api/admin/settings/post:
     $ref: 'read/admin/settings/post.yaml'
+  /api/admin/settings/activitypub:
+    $ref: 'read/admin/settings/activitypub.yaml'
+  /api/admin/settings/uploads:
+    $ref: 'read/admin/settings/uploads.yaml'
+  /api/admin/settings/email:
+    $ref: 'read/admin/settings/email.yaml'
+  /api/admin/settings/chat:
+    $ref: 'read/admin/settings/chat.yaml'
+  /api/admin/settings/pagination:
+    $ref: 'read/admin/settings/pagination.yaml'
+  /api/admin/settings/notifications:
+    $ref: 'read/admin/settings/notifications.yaml'
+  /api/admin/settings/api:
+    $ref: 'read/admin/settings/api.yaml'
+  /api/admin/settings/cookies:
+    $ref: 'read/admin/settings/cookies.yaml'
+  /api/admin/settings/web-crawler:
+    $ref: 'read/admin/settings/web-crawler.yaml'
   /api/admin/settings/advanced:
     $ref: 'read/admin/settings/advanced.yaml'
   /api/admin/manage/categories:
@@ -100,26 +124,34 @@ paths:
     $ref: 'read/admin/manage/categories/category_id.yaml'
   "/api/admin/manage/categories/{category_id}/analytics":
     $ref: 'read/admin/manage/categories/category_id/analytics.yaml'
+  "/api/admin/manage/categories/{category_id}/federation":
+    $ref: 'read/admin/manage/categories/category_id/federation.yaml'
   "/api/admin/manage/privileges/{cid}":
     $ref: 'read/admin/manage/privileges/cid.yaml'
   /api/admin/manage/tags:
     $ref: 'read/admin/manage/tags.yaml'
   /api/admin/manage/users:
     $ref: 'read/admin/manage/users.yaml'
+  /api/admin/manage/users/custom-fields:
+    $ref: 'read/admin/manage/users/custom-fields.yaml'
   /api/admin/manage/registration:
     $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:
     $ref: 'read/admin/manage/admins-mods.yaml'
   /api/admin/manage/groups:
     $ref: 'read/admin/manage/groups.yaml'
-  "/api/admin/manage/groups/{name}":
-    $ref: 'read/admin/manage/groups/name.yaml'
+  "/api/admin/manage/groups/{slug}":
+    $ref: 'read/admin/manage/groups/slug.yaml'
   /api/admin/manage/uploads:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
     $ref: 'read/admin/manage/digest.yaml'
-  "/api/admin/appearance/{term}":
-    $ref: 'read/admin/appearance/term.yaml'
+  "/api/admin/appearance/themes":
+    $ref: 'read/admin/appearance/themes.yaml'
+  "/api/admin/appearance/skins":
+    $ref: 'read/admin/appearance/skins.yaml'
+  "/api/admin/appearance/customise":
+    $ref: 'read/admin/appearance/customise.yaml'
   /api/admin/extend/plugins:
     $ref: 'read/admin/extend/plugins.yaml'
   /api/admin/extend/widgets:
@@ -270,6 +302,8 @@ paths:
     $ref: 'read/user/userslug/posts.yaml'
   "/api/user/{userslug}/topics":
     $ref: 'read/user/userslug/topics.yaml'
+  "/api/user/{userslug}/shares":
+    $ref: 'read/user/userslug/shares.yaml'
   "/api/user/{userslug}/best":
     $ref: 'read/user/userslug/best.yaml'
   "/api/user/{userslug}/controversial":
@@ -282,6 +316,8 @@ paths:
     $ref: 'read/user/userslug/watched.yaml'
   "/api/user/{userslug}/ignored":
     $ref: 'read/user/userslug/ignored.yaml'
+  "/api/user/{userslug}/read":
+    $ref: 'read/user/userslug/read.yaml'
   "/api/user/{userslug}/upvoted":
     $ref: 'read/user/userslug/upvoted.yaml'
   "/api/user/{userslug}/downvoted":
@@ -326,5 +362,9 @@ paths:
     $ref: 'read/groups/slug.yaml'
   "/api/groups/{slug}/members":
     $ref: 'read/groups/slug/members.yaml'
+  /api/world:
+    $ref: 'read/world.yaml'
+  /api/ap:
+    $ref: 'read/ap.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'

@@ -2,6 +2,7 @@
 
 const sockets = require('../socket.io');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 
 module.exports = function (Messaging) {
 	Messaging.deleteMessage = async (mid, uid) => await doDeleteRestore(mid, 1, uid);
@@ -18,6 +19,7 @@ module.exports = function (Messaging) {
 
 		await Messaging.setMessageField(mid, 'deleted', state);
 		msgData.deleted = state;
+
 		const ioRoom = sockets.in(`chat_room_${msgData.roomId}`);
 		if (state === 1 && ioRoom) {
 			ioRoom.emit('event:chats.delete', mid);
@@ -27,5 +29,7 @@ module.exports = function (Messaging) {
 			ioRoom.emit('event:chats.restore', messages[0]);
 			plugins.hooks.fire('action:messaging.restore', { message: msgData });
 		}
+
+		activitypub.out.update.privateNote(uid, msgData);
 	}
 };

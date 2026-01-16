@@ -1,12 +1,12 @@
 {
-    "manage-uploads": "Manage Uploads",
-    "upload-file": "Upload File",
-    "filename": "Filename",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files",
-    "new-folder": "New Folder",
-    "name-new-folder": "Enter a name for new the folder"
+    "manage-uploads": "Administrer opplastinger",
+    "upload-file": "Last opp fil",
+    "filename": "Filnavn",
+    "usage": "Bruk i innlegg",
+    "orphaned": "Foreldreløs",
+    "size/filecount": "Størrelse / Antall filer",
+    "confirm-delete": "Vil du virkelig slette denne filen?",
+    "filecount": "%1 filer",
+    "new-folder": "Ny mappe",
+    "name-new-folder": "Skriv inn et navn for den nye mappen"
 }

@@ -194,7 +194,7 @@ Plugins.listTrending = async () => {
 
 Plugins.normalise = async function (apiReturn) {
 	const pluginMap = {};
-	const { dependencies } = require(paths.currentPackage);
+	const { dependencies } = require(paths.installPackage);
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
 	apiReturn.forEach((packageData) => {
 		packageData.id = packageData.name;
@@ -229,13 +229,18 @@ Plugins.normalise = async function (apiReturn) {
 		pluginMap[plugin.id].settingsRoute = plugin.settingsRoute;
 		pluginMap[plugin.id].license = plugin.license;
 
-		// If package.json defines a version to use, stick to that
+		// If install/package.json defines a version to use, stick to that
 		if (dependencies.hasOwnProperty(plugin.id) && semver.valid(dependencies[plugin.id])) {
 			pluginMap[plugin.id].latest = dependencies[plugin.id];
 		} else {
 			pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
 		}
-		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
+		try {
+			pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
+		} catch (err) {
+			winston.error(`plugin ID=${plugin.id}, latest=${pluginMap[plugin.id].latest}, version=${pluginMap[plugin.id].version},\n${err.stack}`);
+			throw err;
+		}
 	});
 
 	if (nconf.get('plugins:active')) {

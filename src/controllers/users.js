@@ -1,5 +1,7 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const user = require('../user');
 const meta = require('../meta');
 
@@ -11,6 +13,8 @@ const api = require('../api');
 const utils = require('../utils');
 
 const usersController = module.exports;
+
+const url = nconf.get('url');
 
 usersController.index = async function (req, res, next) {
 	const section = req.query.section || 'joindate';
@@ -183,7 +187,7 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 		getCount(),
 	]);
 	return {
-		users: usersData.filter(user => user && parseInt(user.uid, 10)),
+		users: usersData.filter(Boolean),
 		count: count,
 	};
 };
@@ -205,6 +209,13 @@ async function render(req, res, data) {
 	}
 
 	data['reputation:disabled'] = meta.config['reputation:disabled'];
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}${req.url.replace(/^\/api/, '')}`,
+		},
+	];
 
 	res.append('X-Total-Count', data.userCount);
 	res.render('users', data);

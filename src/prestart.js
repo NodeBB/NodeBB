@@ -58,6 +58,7 @@ function loadConfig(configFile) {
 		isCluster: false,
 		isPrimary: true,
 		jobsDisabled: false,
+		acpPluginInstallDisabled: false,
 		fontawesome: {
 			pro: false,
 			styles: '*',
@@ -65,7 +66,7 @@ function loadConfig(configFile) {
 	});
 
 	// Explicitly cast as Bool, loader.js passes in isCluster as string 'true'/'false'
-	const castAsBool = ['isCluster', 'isPrimary', 'jobsDisabled'];
+	const castAsBool = ['isCluster', 'isPrimary', 'jobsDisabled', 'acpPluginInstallDisabled'];
 	nconf.stores.env.readOnly = false;
 	castAsBool.forEach((prop) => {
 		const value = nconf.get(prop);

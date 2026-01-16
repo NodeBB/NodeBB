@@ -12,6 +12,8 @@
 	"container.card": "Kart",
 	"container.card-header": "Kart Başlığı",
 	"container.card-body": "Kart İçeriği",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Uyarı",
 
 	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",

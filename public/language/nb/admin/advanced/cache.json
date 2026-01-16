@@ -1,10 +1,10 @@
 {
 	"cache": "Cache",
-	"post-cache": "Post-buffer",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
-	"percent-full": "%1%full ",
-	"post-cache-size": "Post-buffer størrelse",
+	"post-cache": "Innleggsbuffer",
+	"group-cache": "Gruppebuffer",
+	"local-cache": "Lokalbuffer",
+	"object-cache": "Objektbuffer",
+	"percent-full": "%1% fullt",
+	"post-cache-size": "Størrelse på innleggsbuffer",
 	"items-in-cache": "Element i buffer"
 }

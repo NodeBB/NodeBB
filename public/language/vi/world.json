@@ -1,0 +1,21 @@
+{
+	"name": "Thế giới",
+	"popular": "Chủ đề phổ biến",
+	"recent": "Tất cả chủ đề",
+	"help": "Trợ giúp",
+
+	"help.title": "Trang này là gì?",
+	"help.intro": "Chào mừng đến với góc của bạn trên fediverse.",
+	"help.fediverse": "\"Fediverse\" là một mạng lưới các ứng dụng và trang web được kết nối với nhau, tất cả đều giao tiếp với nhau và người dùng có thể nhìn thấy nhau. Diễn đàn này được liên kết và có thể tương tác với trang web xã hội đó (hoặc \"fediverse\"). Trang này là góc của bạn trên fediverse. Nó chỉ bao gồm các chủ đề được tạo bởi — và được chia sẻ từ — người dùng <strong>bạn</strong> theo dõi.",
+	"help.build": "Có thể không có nhiều chủ đề ở đây để bắt đầu; điều đó là bình thường. Bạn sẽ bắt đầu thấy nhiều nội dung hơn ở đây theo thời gian khi bạn bắt đầu theo dõi những người dùng khác.",
+	"help.federating": "Tương tự như vậy, nếu người dùng bên ngoài diễn đàn này bắt đầu theo dõi <em>bạn</em>, thì bài đăng của bạn cũng sẽ bắt đầu xuất hiện trên các ứng dụng và trang web đó.",
+	"help.next-generation": "Đây là thế hệ mạng xã hội kế tiếp, hãy bắt đầu đóng góp ngay hôm nay!",
+
+	"onboard.title": "Cửa sổ của bạn đến với liên đoàn...",
+	"onboard.what": "Đây là danh mục được cá nhân hóa của bạn chỉ bao gồm nội dung được tìm thấy bên ngoài diễn đàn này. Việc nội dung nào đó có hiển thị trên trang này hay không tùy thuộc vào việc bạn có theo dõi họ hay không hoặc liệu bài đăng đó có được chia sẻ bởi người mà bạn theo dõi hay không.",
+	"onboard.why": "Có rất nhiều điều diễn ra bên ngoài diễn đàn này và không phải tất cả đều phù hợp với sở thích của bạn. Đó là lý do tại sao theo dõi mọi người là cách tốt nhất để báo hiệu rằng bạn muốn biết thêm thông tin từ ai đó.",
+	"onboard.how": "Trong thời gian chờ đợi, bạn có thể nhấp vào các nút tắt ở trên cùng để xem diễn đàn này biết thêm những gì và bắt đầu khám phá một số nội dung mới!",
+
+	"show-categories": "Hiển thị các danh mục",
+	"hide-categories": "Ẩn các danh mục"
+}

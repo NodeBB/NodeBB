@@ -64,6 +64,7 @@
 	"show-email": "Email cím megjelenítése",
 	"show-fullname": "Teljes név megjelenítése",
 	"restrict-chat": "Csak olyan felhasználó írhasson csevegő üzenetet nekem, akit követek",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Kimenő linkek megnyitása új lapon",
 	"topic-search": "Témakörön belüli keresés engedélyezése",
 	"update-url-with-post-index": "URL frissítése a hozzászólás indexével témakörök böngészése közben",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Szükséges eltelt idő, mielőtt egy új felhasználó hozzászólást írhat (másodpercben)",
 	"restrictions.seconds-edit-after-new": "Hány másodpercig maradjanak a hozzászólások szerkeszthetőek az új felhasználóknak (0: nincs korlátozás)",
 	"restrictions.milliseconds-between-messages": "Csevegési üzenetek közötti idő új felhasználóknak ezredmásodpercben",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Válaszd ki azokat a csoportokat, amelyek mentesülnek az új felhasználói korlátozások alól."
+	"restrictions.groups-exempt-from-new-user-restrictions": "Válaszd ki azokat a csoportokat, amelyek mentesülnek az új felhasználói korlátozások alól.",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Vendég név beállítás engedélyezése",
+	"handles.enabled-help": "Ez a beállítás engedélyez egy új mezőt, amivel a vendégek minden hozzászólásnál választhatnak egy nevet ami megjelenik ott. Ha nincs engedélyezve, egyszerűen \"Vendég\"-ként jelennek meg.",
+	"topic-views.enabled": "Témakör látogatások számának növelésének engedélyezése vendégek számára",
+	"reply-notifications.enabled": "Válasz értesítések generálásának engedélyezése vendégek számára"
 }

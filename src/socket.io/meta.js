@@ -6,20 +6,23 @@ const user = require('../user');
 const meta = require('../meta');
 const topics = require('../topics');
 const privileges = require('../privileges');
+const messaging = require('../messaging');
 
 const SocketMeta = module.exports;
 SocketMeta.rooms = {};
 
-SocketMeta.reconnected = function (socket, data, callback) {
-	callback = callback || function () {};
-	if (socket.uid) {
-		topics.pushUnreadCount(socket.uid);
-		user.notifications.pushCount(socket.uid);
+SocketMeta.reconnected = async function (socket) {
+	if (socket.uid > 0) {
+		await Promise.all([
+			topics.pushUnreadCount(socket.uid),
+			user.notifications.pushCount(socket.uid),
+			messaging.pushUnreadCount(socket.uid),
+		]);
 	}
-	callback(null, {
+	return {
 		'cache-buster': meta.config['cache-buster'],
 		hostname: os.hostname(),
-	});
+	};
 };
 
 /* Rooms */

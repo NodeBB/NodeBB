@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Varsayılan: %1",
 	"sockets.delay": "Yeniden Bağlanma Gecikmesi",
 
-	"analytics.settings": "Analitik Ayarlar",
-	"analytics.max-cache": "Analitik Önbellek Maksimum Değeri",
-	"analytics.max-cache-help": "Yüksek trafikli zamanlarda, Maksimum Önbellek değerinden daha fazla eşzamanlı etkin kullanıcı varsa önbellek sürekli olarak tüketilebilir. (Yeniden başlatmak gerekir)",
 	"compression.settings": "Sıkıştırma Ayarları",
 	"compression.enable": "Sıkıştırmayı Aktifleştir",
 	"compression.help": "Bu ayar gzip sıkıştırmasını etkinleştirir. Üretimdeki yüksek trafiğe sahip bir web sitesi için sıkıştırmayı uygulamaya koymanın en iyi yolu ters proxy düzeyinden uygulamaktır. Test amacıyla buradan etkinleştirebilirsiniz."

@@ -22,6 +22,7 @@
 	"delete-content": "Изтриване на <strong>съдържанието</strong> на потребителя/ите",
 	"purge": "Изтриване на <strong>потребителя/ите</strong> и <strong>съдържанието</strong>",
 	"download-csv": "Сваляне във формат „CSV“",
+	"custom-user-fields": "Персонализирани потребителски полета",
 	"manage-groups": "Управление на групите",
 	"set-reputation": "Задаване на репутация",
 	"add-group": "Добавяне на група",

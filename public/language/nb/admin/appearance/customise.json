@@ -1,20 +1,20 @@
 {
-	"customise": "Customise",
-	"custom-css": "Custom CSS/SASS",
-	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"customise": "Tilpass",
+	"custom-css": "Egendefinert CSS/SASS",
+	"custom-css.description": "Skriv inn dine egne CSS/SASS-erklæringer her, som vil bli brukt etter alle andre stiler.",
+	"custom-css.enable": "Aktiver egendefinert CSS/SASS",
 
-	"custom-js": "Custom Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js": "Egendefinert Javascript",
+	"custom-js.description": "Skriv inn din egen Javascript-kode her. Den vil bli kjørt etter at siden er fullstendig lastet.",
+	"custom-js.enable": "Aktiver egendefinert Javascript",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
-	"custom-header.enable": "Enable Custom Header",
+	"custom-header": "Egendefinert header",
+	"custom-header.description": "Skriv inn egendefinert HTML her (f.eks. metakoder, osv.), som vil bli lagt til i <code>&lt;head&gt;</code>-delen av forumets markering. Skript-tagger er tillatt, men anbefales ikke, siden <a href=\"#custom-js\" data-toggle=\"tab\">Egendefinert Javascript</a>-fanen er tilgjengelig.",
+	"custom-header.enable": "Aktiver egendefinert header",
 
-	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save",
+	"custom-css.livereload": "Aktiver Live Reload",
+	"custom-css.livereload.description": "Aktiver dette for å tvinge alle økter på alle enheter under kontoen din til å oppdatere hver gang du klikker lagre.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Overstyr bootstrap-variabler her. Du kan også bruke et verktøy som <a href=\"https://bootstrap.build/app\">bootstrap.build</a> og lime inn resultatet her.<br/>Endringer krever ombygging og omstart.",
+	"bsvariables.enable": "Aktiver _variables.scss"
 }

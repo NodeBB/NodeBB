@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Page Views Registered",
 	"graphs.page-views-guest": "Page Views Guest",
 	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Unikátny navštevníci",
 	"graphs.registered-users": "Zarestrovaný užívatelia",
 	"graphs.guest-users": "Guest Users",

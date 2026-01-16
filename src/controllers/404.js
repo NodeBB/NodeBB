@@ -6,8 +6,10 @@ const validator = require('validator');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
+const { secureRandom } = require('../utils');
 
 exports.handle404 = helpers.try(async (req, res) => {
 	const relativePath = nconf.get('relative_path');
@@ -23,6 +25,12 @@ exports.handle404 = helpers.try(async (req, res) => {
 
 	if (isClientScript.test(req.url)) {
 		res.type('text/javascript').status(404).send('Not Found');
+	} else if (
+		activitypub.helpers.assertAccept(req.headers.accept) ||
+		(req.headers['Content-Type'] && activitypub._constants.acceptableTypes.includes(req.headers['Content-Type']))
+	) {
+		// todo: separate logging of AP 404s
+		res.sendStatus(404);
 	} else if (
 		!res.locals.isAPI && (
 			req.path.startsWith(`${relativePath}/assets/uploads`) ||
@@ -64,6 +72,6 @@ exports.send404 = helpers.try(async (req, res) => {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
 		bodyClass: helpers.buildBodyClass(req, res),
-		icon: icons[Math.floor(Math.random() * icons.length)],
+		icon: icons[secureRandom(0, icons.length - 1)],
 	});
 });

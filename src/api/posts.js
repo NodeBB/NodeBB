@@ -7,16 +7,18 @@ const db = require('../database');
 const utils = require('../utils');
 const user = require('../user');
 const posts = require('../posts');
-const postsCache = require('../posts/cache');
 const topics = require('../topics');
 const groups = require('../groups');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const events = require('../events');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
+const translator = require('../translator');
+const notifications = require('../notifications');
 
 const postsAPI = module.exports;
 
@@ -90,17 +92,25 @@ postsAPI.edit = async function (caller, data) {
 	if (!caller.uid) {
 		throw new Error('[[error:not-logged-in]]');
 	}
-	// Trim and remove HTML (latter for composers that send in HTML, like redactor)
-	const contentLen = utils.stripHTMLTags(data.content).trim().length;
+
+	// Discard content for non-local posts
+	if (!utils.isNumber(data.pid)) {
+		data.content = null;
+	} else {
+		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
+		const contentLen = utils.stripHTMLTags(data.content).trim().length;
+
+		if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
+			throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
+		} else if (contentLen > meta.config.maximumPostLength) {
+			throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+		}
+	}
 
 	if (data.title && data.title.length < meta.config.minimumTitleLength) {
 		throw new Error(`[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
 	} else if (data.title && data.title.length > meta.config.maximumTitleLength) {
 		throw new Error(`[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
-	} else if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
-		throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
-	} else if (contentLen > meta.config.maximumPostLength) {
-		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 	} else if (!await posts.canUserPostContentWithLinks(caller.uid, data.content)) {
 		throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 	}
@@ -110,9 +120,7 @@ postsAPI.edit = async function (caller, data) {
 	data.timestamp = parseInt(data.timestamp, 10) || Date.now();
 
 	const editResult = await posts.edit(data);
-	if (editResult.topic.isMainPost) {
-		await topics.thumbs.migrate(data.uuid, editResult.topic.tid);
-	}
+
 	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
 	if (!selfPost && editResult.post.changed) {
 		await events.log({
@@ -135,12 +143,17 @@ postsAPI.edit = async function (caller, data) {
 			newTitle: validator.escape(String(editResult.topic.title)),
 		});
 	}
-	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, {});
+	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
+	postObj.content = editResult.post.content; // re-use already parsed html
 	const returnData = { ...postObj[0], ...editResult.post };
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
+		setTimeout(() => {
+			activitypub.out.update.note(caller.uid, postObj[0]);
+		}, 5000);
+
 		return returnData;
 	}
 
@@ -153,6 +166,7 @@ postsAPI.edit = async function (caller, data) {
 
 	const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
 	uids.forEach(uid => websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
+
 	return returnData;
 };
 
@@ -176,9 +190,12 @@ async function deleteOrRestore(caller, data, params) {
 	if (!data || !data.pid) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const postData = await posts.tools[params.command](caller.uid, data.pid);
-	const results = await isMainAndLastPost(data.pid);
-	if (results.isMain && results.isLast) {
+	const [postData, { isMain, isLast }] = await Promise.all([
+		posts.tools[params.command](caller.uid, data.pid),
+		isMainAndLastPost(data.pid),
+		activitypub.out.delete.note(caller.uid, data.pid),
+	]);
+	if (isMain && isLast) {
 		await deleteOrRestoreTopicOf(params.command, data.pid, caller);
 	}
 
@@ -209,16 +226,22 @@ async function deleteOrRestoreTopicOf(command, pid, caller) {
 }
 
 postsAPI.purge = async function (caller, data) {
-	if (!data || !parseInt(data.pid, 10)) {
+	if (!data || !data.pid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const results = await isMainAndLastPost(data.pid);
-	if (results.isMain && !results.isLast) {
+	const [exists, { isMain, isLast }] = await Promise.all([
+		posts.exists(data.pid),
+		isMainAndLastPost(data.pid),
+	]);
+	if (!exists) {
+		throw new Error('[[error:no-post]]');
+	}
+	if (isMain && !isLast) {
 		throw new Error('[[error:cant-purge-main-post]]');
 	}
 
-	const isMainAndLast = results.isMain && results.isLast;
+	const isMainAndLast = isMain && isLast;
 	const postData = await posts.getPostFields(data.pid, ['toPid', 'tid']);
 	postData.pid = data.pid;
 
@@ -226,8 +249,11 @@ postsAPI.purge = async function (caller, data) {
 	if (!canPurge) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	postsCache.del(data.pid);
-	await posts.purge(data.pid, caller.uid);
+	posts.clearCachedPost(data.pid);
+	await Promise.all([
+		posts.purge(data.pid, caller.uid),
+		activitypub.out.delete.note(caller.uid, data.pid),
+	]);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
 	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
@@ -293,6 +319,12 @@ postsAPI.move = async function (caller, data) {
 
 	if (!postDeleted && !topicDeleted) {
 		socketHelpers.sendNotificationToPostOwner(data.pid, caller.uid, 'move', 'notifications:moved-your-post');
+
+		// ideally we should federate a "move" activity instead, then can capture remote posts too. tbd
+		if (utils.isNumber(data.pid)) {
+			const { activity } = await activitypub.mocks.activities.create(data.pid, caller.uid);
+			await activitypub.feps.announce(data.pid, activity);
+		}
 	}
 };
 
@@ -355,9 +387,13 @@ postsAPI.getUpvoters = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	let upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	const upvotedUids = (await posts.getUpvotedUidsByPids([pid]))[0];
+	return await getTooltipData(upvotedUids);
+};
+
+async function getTooltipData(uids) {
 	const cutoff = 6;
-	if (!upvotedUids.length) {
+	if (!uids.length) {
 		return {
 			otherCount: 0,
 			usernames: [],
@@ -365,16 +401,40 @@ postsAPI.getUpvoters = async function (caller, data) {
 		};
 	}
 	let otherCount = 0;
-	if (upvotedUids.length > cutoff) {
-		otherCount = upvotedUids.length - (cutoff - 1);
-		upvotedUids = upvotedUids.slice(0, cutoff - 1);
+	if (uids.length > cutoff) {
+		otherCount = uids.length - (cutoff - 1);
+		uids = uids.slice(0, cutoff - 1);
 	}
 
-	const usernames = await user.getUsernamesByUids(upvotedUids);
+	const users = await user.getUsersFields(uids, ['username']);
 	return {
 		otherCount,
-		usernames,
+		usernames: users.map(user => user.displayname),
 		cutoff,
+	};
+}
+
+postsAPI.getAnnouncers = async (caller, data) => {
+	if (!data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (!meta.config.activitypubEnabled) {
+		return [];
+	}
+	const { pid } = data;
+	const cid = await posts.getCidByPid(pid);
+	if (!await privileges.categories.isUserAllowedTo('topics:read', cid, caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const notes = require('../activitypub/notes');
+	const announcers = await notes.announce.list({ pid });
+	const uids = announcers.map(ann => ann.actor);
+	if (data.tooltip) {
+		return await getTooltipData(uids);
+	}
+	return {
+		announceCount: uids.length,
+		announcers: await user.getUsersFields(uids, ['username', 'userslug', 'picture']),
 	};
 };
 
@@ -427,10 +487,12 @@ async function diffsPrivilegeCheck(pid, uid) {
 
 postsAPI.getDiffs = async (caller, data) => {
 	await diffsPrivilegeCheck(data.pid, caller.uid);
-	const timestamps = await posts.diffs.list(data.pid);
-	const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
+	const [timestamps, post, diffs] = await Promise.all([
+		posts.diffs.list(data.pid),
+		posts.getPostFields(data.pid, ['timestamp', 'uid']),
+		posts.diffs.get(data.pid),
+	]);
 
-	const diffs = await posts.diffs.get(data.pid);
 	const uids = diffs.map(diff => diff.uid || null);
 	uids.push(post.uid);
 	let usernames = await user.getUsersFields(uids, ['username']);
@@ -444,18 +506,21 @@ postsAPI.getDiffs = async (caller, data) => {
 
 	// timestamps returned by posts.diffs.list are strings
 	timestamps.push(String(post.timestamp));
-
-	return {
+	const result = await plugins.hooks.fire('filter:post.getDiffs', {
+		uid: caller.uid,
+		pid: data.pid,
 		timestamps: timestamps,
 		revisions: timestamps.map((timestamp, idx) => ({
 			timestamp: timestamp,
 			username: usernames[idx],
+			uid: uids[idx],
 		})),
 		// Only admins, global mods and moderator of that cid can delete a diff
 		deletable: isAdmin || isModerator,
 		// These and post owners can restore to a different post version
 		editable: isAdmin || isModerator || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
-	};
+	});
+	return result;
 };
 
 postsAPI.loadDiff = async (caller, data) => {
@@ -489,7 +554,7 @@ postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
 };
 
 postsAPI.getReplies = async (caller, { pid }) => {
-	if (!utils.isNumber(pid)) {
+	if (!utils.isNumber(pid) && !activitypub.helpers.isUri(pid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { uid } = caller;
@@ -511,4 +576,115 @@ postsAPI.getReplies = async (caller, { pid }) => {
 	postData = await user.blocks.filter(uid, postData);
 
 	return postData;
+};
+
+postsAPI.acceptQueuedPost = async (caller, data) => {
+	await canEditQueue(caller.uid, data, 'accept');
+	const result = await posts.submitFromQueue(data.id);
+	if (result && caller.uid !== parseInt(result.uid, 10)) {
+		await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
+	}
+	await logQueueEvent(caller, result, 'accept');
+	return { type: result.type, pid: result.pid, tid: result.tid };
+};
+
+postsAPI.removeQueuedPost = async (caller, data) => {
+	await canEditQueue(caller.uid, data, 'reject');
+	const result = await posts.removeFromQueue(data.id);
+	if (result && caller.uid !== parseInt(result.uid, 10)) {
+		await sendQueueNotification('post-queue-rejected', result.uid, '/');
+	}
+	await logQueueEvent(caller, result, 'reject');
+};
+
+postsAPI.editQueuedPost = async (caller, data) => {
+	if (!data || !data.id || (!data.content && !data.title && !data.cid)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	await posts.editQueuedContent(caller.uid, data);
+	if (data.content) {
+		return await plugins.hooks.fire('filter:parse.post', { postData: data });
+	}
+	return { postData: data };
+};
+
+postsAPI.notifyQueuedPostOwner = async (caller, data) => {
+	await canEditQueue(caller.uid, data, 'notify');
+	const result = await posts.getFromQueue(data.id);
+	if (result) {
+		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message)));
+	}
+};
+
+async function canEditQueue(uid, data, action) {
+	const [canEditQueue, queuedPost] = await Promise.all([
+		posts.canEditQueue(uid, data, action),
+		posts.getFromQueue(data.id),
+	]);
+	if (!queuedPost) {
+		throw new Error('[[error:no-post]]');
+	}
+	if (!canEditQueue) {
+		throw new Error('[[error:no-privileges]]');
+	}
+}
+
+async function logQueueEvent(caller, result, type) {
+	const eventData = {
+		type: `post-queue-${result.type}-${type}`,
+		uid: caller.uid,
+		ip: caller.ip,
+		content: result.data.content,
+		targetUid: result.uid,
+	};
+	if (result.type === 'topic') {
+		eventData.cid = result.data.cid;
+		eventData.title = result.data.title;
+	} else {
+		eventData.tid = result.data.tid;
+	}
+	if (result.pid) {
+		eventData.pid = result.pid;
+	}
+	await events.log(eventData);
+}
+
+async function sendQueueNotification(type, targetUid, path, notificationText) {
+	const bodyShort = notificationText ?
+		translator.compile(`notifications:${type}`, notificationText) :
+		translator.compile(`notifications:${type}`);
+	const notifData = {
+		type: type,
+		nid: `${type}-${targetUid}-${path}`,
+		bodyShort: bodyShort,
+		path: path,
+	};
+	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
+		notifData.from = meta.config.postQueueNotificationUid;
+	}
+	const notifObj = await notifications.create(notifData);
+	await notifications.push(notifObj, [targetUid]);
+}
+
+postsAPI.changeOwner = async function (caller, data) {
+	if (!data || !Array.isArray(data.pids) || !data.uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(caller.uid);
+	if (!isAdminOrGlobalMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const postData = await posts.changeOwner(data.pids, data.uid);
+	const logs = postData.map(({ pid, uid, cid }) => (events.log({
+		type: 'post-change-owner',
+		uid: caller.uid,
+		ip: caller.ip,
+		targetUid: data.uid,
+		pid: pid,
+		originalUid: uid,
+		cid: cid,
+	})));
+
+	await Promise.all(logs);
 };

@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Գաղտնաբառ",
 	"smtp-transport.pool": "Միացնել միավորված կապերը",
 	"smtp-transport.pool-help": "Կապերի միավորումը թույլ չի տալիս NodeBB-ին նոր կապ ստեղծել յուրաքանչյուր էլփոստի համար: Այս տարբերակը կիրառվում է միայն այն դեպքում, եթե SMTP Transport-ը միացված է:",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "Խմբագրել էլփոստի ձևանմուշը",
 	"template.select": "Ընտրեք էլփոստի ձևանմուշ",

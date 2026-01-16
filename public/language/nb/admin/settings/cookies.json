@@ -1,13 +1,13 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "EU-samtykke",
+	"consent.enabled": "Aktivert",
+	"consent.message": "Varslingsmelding",
+	"consent.acceptance": "Godkjenningsmelding",
+	"consent.link-text": "Lenketekst for policy",
+	"consent.link-url": "URL til policy",
+	"consent.blank-localised-default": "La stå tomt for å bruke NodeBBs lokaliserte standardverdier",
+	"settings": "Innstillinger",
+	"cookie-domain": "Domene for øktinformasjonskapsler",
+	"max-user-sessions": "Maksimalt antall aktive økter per bruker",
+	"blank-default": "La stå tomt for standard"
 }

@@ -12,23 +12,60 @@ const privileges = require('../privileges');
 
 const groupsController = module.exports;
 
+const url = nconf.get('url');
+
 groupsController.list = async function (req, res) {
 	const sort = req.query.sort || 'alpha';
-
-	const [groupData, allowGroupCreation] = await Promise.all([
-		groups.getGroupsBySort(sort, 0, 14),
+	const page = parseInt(req.query.page, 10) || 1;
+	const [allowGroupCreation, [groupData, pageCount]] = await Promise.all([
 		privileges.global.can('group:create', req.uid),
+		getGroups(req, sort, page),
 	]);
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}${req.url.replace(/^\/api/, '')}`,
+		},
+	];
 
 	res.render('groups/list', {
 		groups: groupData,
 		allowGroupCreation: allowGroupCreation,
 		sort: validator.escape(String(sort)),
-		nextStart: 15,
+		pagination: pagination.create(page, pageCount, req.query),
 		title: '[[pages:groups]]',
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]),
 	});
 };
+
+async function getGroups(req, sort, page) {
+	const resultsPerPage = req.query.query ? 100 : 15;
+	const start = Math.max(0, page - 1) * resultsPerPage;
+	const stop = start + resultsPerPage - 1;
+
+	if (req.query.query) {
+		const filterHidden = req.query.filterHidden === 'true' || !await user.isAdministrator(req.uid);
+		const groupData = await groups.search(req.query.query, {
+			sort,
+			filterHidden: filterHidden,
+			showMembers: req.query.showMembers === 'true',
+			hideEphemeralGroups: req.query.hideEphemeralGroups === 'true',
+			excludeGroups: Array.isArray(req.query.excludeGroups) ? req.query.excludeGroups : [],
+		});
+		const pageCount = Math.ceil(groupData.length / resultsPerPage);
+
+		return [groupData.slice(start, stop + 1), pageCount];
+	}
+
+	const [groupData, groupCount] = await Promise.all([
+		groups.getGroupsBySort(sort, start, stop),
+		groups.getGroupCountBySort(sort),
+	]);
+
+	const pageCount = Math.ceil(groupCount / resultsPerPage);
+	return [groupData, pageCount];
+}
 
 groupsController.details = async function (req, res, next) {
 	const lowercaseSlug = req.params.slug.toLowerCase();
@@ -72,6 +109,13 @@ groupsController.details = async function (req, res, next) {
 	if (!groupData) {
 		return next();
 	}
+
+	res.locals.linkTags = [
+		{
+			rel: 'canonical',
+			href: `${url}/groups/${lowercaseSlug}`,
+		},
+	];
 
 	res.render('groups/details', {
 		title: `[[pages:group, ${groupData.displayName}]]`,

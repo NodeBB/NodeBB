@@ -14,7 +14,7 @@
 	"target-purged": "被举报的内容已经被清除，不再可用。",
 	"target-aboutme-empty": "这个用户没有设置 &quot;关于我&quot; 。",
 
-	"graph-label": "日举报",
+	"graph-label": "每日举报",
 	"quick-filters": "快速过滤器",
 	"filter-active": "该列中有一个或更多激活的过滤器",
 	"filter-reset": "删除过滤器",
@@ -84,11 +84,17 @@
 	"modal-reason-offensive": "人身攻击",
 	"modal-reason-other": "其他（请在下方指定）",
 	"modal-reason-custom": "举报此内容的理由……",
+	"modal-notify-remote": "将此举报转发至 %1",
 	"modal-submit": "提交举报",
 	"modal-submit-success": "已举报此内容。",
 
+	"modal-confirm-rescind": "撤销举报？",
+
 	"bulk-actions": "批量操作",
 	"bulk-resolve": "处理举报",
+	"confirm-purge": "您确定要永久删除这些举报吗？",
+	"purge-cancelled": "已取消清除举报",
+	"bulk-purge": "清除举报",
 	"bulk-success": "已更新%1个举报",
 	"flagged-timeago": "标记<span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "【自动举报】收到 %1 个踩"

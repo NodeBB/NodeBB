@@ -41,7 +41,7 @@
 				</td>
 				<td></td>
 				<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
-				{function.spawnPrivilegeStates, privileges.groups.name, ../privileges, ../types}
+				{function.spawnPrivilegeStates, cid, privileges.groups.name, ../privileges, ../types}
 			</tr>
 			{{{ end }}}
 		</tbody>
@@ -104,7 +104,7 @@
 					<!-- need this empty -->
 				</td>
 				<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
-				{function.spawnPrivilegeStates, privileges.users.username, ../privileges, ../types}
+				{function.spawnPrivilegeStates, cid, privileges.users.username, ../privileges, ../types}
 			</tr>
 			{{{ end }}}
 		</tbody>

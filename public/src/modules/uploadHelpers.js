@@ -41,6 +41,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			const fileInput = formEl.find('input[name="files[]"]');
 			options.uploadBtnEl.on('click', function () {
 				fileInput.trigger('click');
+				return false;
 			});
 			fileInput.on('change', function (e) {
 				const files = (e.target || {}).files ||

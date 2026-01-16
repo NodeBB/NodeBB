@@ -1,0 +1,17 @@
+{
+	"zero-is-disabled": "0 betyr deaktivert",
+	"chat-settings": "Chat-innstillingar",
+	"disable": "Deaktiver",
+	"disable-editing": "Deaktiver redigering",
+	"disable-editing-help": "Når aktivert, kan brukarar ikkje redigere meldingane sine etter sending.",
+	"max-length": "Maksimum lengd",
+	"max-length-remote": "Maximum length of remote chat messages",
+	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
+	"max-chat-room-name-length": "Maksimum lengd på namn på chat",
+	"max-room-size": "Maksimum tal på deltakarar i chat",
+	"delay": "Forsinkelse",
+	"notification-delay": "Varslingsforsinkelse",
+	"notification-delay-help": "Angi kor lang forsinkelse som skal vere før varsel vert sendt.",
+	"restrictions.seconds-edit-after": "Sekund til redigering er mogleg etter sending",
+	"restrictions.seconds-delete-after": "Sekund til sletting er mogleg etter sending"
+}

@@ -75,12 +75,16 @@ define('forum/chats/manage', [
 
 			modal.find('[component="chat/manage/save"]').on('click', () => {
 				const notifSettingEl = modal.find('[component="chat/room/notification/setting"]');
+				const joinLeaveMessagesEl = modal.find('[component="chat/room/join-leave-messages"]');
+
 				api.put(`/chats/${roomId}`, {
 					groups: modal.find('[component="chat/room/groups"]').val(),
 					notificationSetting: notifSettingEl.val(),
+					joinLeaveMessages: joinLeaveMessagesEl.is(':checked') ? 1 : 0,
 				}).then((payload) => {
 					ajaxify.data.groups = payload.groups;
 					ajaxify.data.notificationSetting = payload.notificationSetting;
+					ajaxify.data.joinLeaveMessages = payload.joinLeaveMessages;
 					const roomDefaultOption = payload.notificationOptions[0];
 					$('[component="chat/notification/setting"] [data-icon]').first().attr(
 						'data-icon', roomDefaultOption.icon
@@ -102,7 +106,7 @@ define('forum/chats/manage', [
 
 	function addKickHandler(roomId, modal) {
 		modal.on('click', '[data-action="kick"]', function () {
-			const uid = parseInt(this.getAttribute('data-uid'), 10);
+			const uid = encodeURIComponent(this.getAttribute('data-uid'));
 
 			api.del(`/chats/${roomId}/users/${uid}`, {}).then((body) => {
 				refreshParticipantsList(roomId, modal, body);
@@ -112,9 +116,13 @@ define('forum/chats/manage', [
 
 	function addToggleOwnerHandler(roomId, modal) {
 		modal.on('click', '[data-action="toggleOwner"]', async function () {
-			const uid = parseInt(this.getAttribute('data-uid'), 10);
+			const uid = String(this.getAttribute('data-uid'));
 			const iconEl = modal.get(0).querySelector(`[component="chat/manage/user/list"] > [data-uid="${uid}"] [component="chat/manage/user/owner/icon"]`);
 			const current = !iconEl.classList.contains('hidden');
+
+			if (!utils.isNumber(uid)) {
+				return alerts.error('[[error:invalid-uid]]');
+			}
 
 			await api[current ? 'del' : 'put'](`/chats/${roomId}/owners/${uid}`);
 			iconEl.classList.toggle('hidden');
@@ -128,6 +136,7 @@ define('forum/chats/manage', [
 			try {
 				data = await api.get(`/chats/${roomId}/users`, {});
 			} catch (err) {
+				console.error(err);
 				listEl.find('li').text(await translator.translate('[[error:invalid-data]]'));
 			}
 		}

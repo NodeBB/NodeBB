@@ -1,12 +1,14 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook",
-	"sign-in-with-linkedin": "Sign in with LinkedIn",
-	"sign-up-with-linkedin": "Sign up with LinkedIn"
+	"sign-in-with-twitter": "Logg inn med X",
+	"sign-up-with-twitter": "Registrer deg med X",
+	"sign-in-with-github": "Logg inn med Github",
+	"sign-up-with-github": "Registrer deg med Github",
+	"sign-in-with-google": "Logg inn med Google",
+	"sign-up-with-google": "Registrer deg med Google",
+	"log-in-with-facebook": "Logg inn med Facebook",
+	"continue-with-facebook": "Fortsett med Facebook",
+	"sign-in-with-linkedin": "Logg inn med LinkedIn",
+	"sign-up-with-linkedin": "Registrer deg med LinkedIn",
+	"sign-in-with-wordpress": "Sign in with WordPress",
+	"sign-up-with-wordpress": "Sign up with WordPress"
 }

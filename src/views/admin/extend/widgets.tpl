@@ -16,18 +16,18 @@
 					</button>
 					<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1" role="menu">
 						{{{ each templates }}}
-						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" data-toggle="pill" role="menuitem">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
+						<li><a class="dropdown-item rounded-1 d-flex justify-content-between align-items-center gap-3" href="#" data-template="{./template}" role="menuitem">{./template} <span class="badge text-bg-light border" style="min-width: 2.15em;">{./widgetCount}</span></a></li>
 						{{{ end }}}
 					</ul>
 				</div>
 				<div>
-					<button id="hide-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:hide-drafts]]</button>
-					<button id="show-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:show-drafts]]</button>
+					<button id="hide-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:hide-drafts]]</button>
+					<button id="show-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:show-drafts]]</button>
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-12 col-md-6" component="widgets-container">
+				<div class="col-12" component="widgets-container">
 					<div class="tab-content">
 					{{{ each templates }}}
 						<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
@@ -43,7 +43,7 @@
 					{{{ end }}}
 					</div>
 				</div>
-				<div class="col-12 col-md-6" component="drafts-container">
+				<div class="col-12 col-md-6 hidden" component="drafts-container">
 
 				</div>
 			</div>
@@ -115,11 +115,21 @@
 							<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
 								[[admin/extend/widgets:container.jumbotron]]
 							</div>
+
+							<div class="mb-3 pointer" data-container-html='<h5>\{{title}}</h5><hr/><div>\{{body}}</div>'>
+								<h5>[[admin/extend/widgets:container.title]]</h5>
+								<hr/>
+								<div class="">
+									[[admin/extend/widgets:container.body]]
+								</div>
+							</div>
+
 							<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-body pointer">
 									[[admin/extend/widgets:container.card]]
 								</div>
 							</div>
+
 							<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-header d-flex justify-content-between text-nowrap flex-wrap align-items-center">
 									[[admin/extend/widgets:container.card-header]]

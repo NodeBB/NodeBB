@@ -2,7 +2,6 @@
 
 define('forum/category', [
 	'forum/infinitescroll',
-	'share',
 	'navigator',
 	'topicList',
 	'sort',
@@ -10,7 +9,8 @@ define('forum/category', [
 	'hooks',
 	'alerts',
 	'api',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api) {
+	'clipboard',
+], function (infinitescroll, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -23,8 +23,6 @@ define('forum/category', [
 		const cid = ajaxify.data.cid;
 
 		app.enterRoom('category_' + cid);
-
-		share.addShareHandlers(ajaxify.data.name);
 
 		topicList.init('category', loadTopicsAfter);
 
@@ -42,6 +40,8 @@ define('forum/category', [
 
 		handleLoadMoreSubcategories();
 
+		handleDescription();
+
 		categorySelector.init($('[component="category-selector"]'), {
 			privilege: 'find',
 			parentCid: ajaxify.data.cid,
@@ -49,6 +49,8 @@ define('forum/category', [
 				ajaxify.go('/category/' + category.cid);
 			},
 		});
+
+		new clipboard('[data-clipboard-text]');
 
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
@@ -69,7 +71,7 @@ define('forum/category', [
 			const $this = $(this);
 			const state = $this.attr('data-state');
 
-			api.put(`/categories/${cid}/watch`, { state }, (err) => {
+			api.put(`/categories/${encodeURIComponent(cid)}/watch`, { state }, (err) => {
 				if (err) {
 					return alerts.error(err);
 				}
@@ -112,12 +114,24 @@ define('forum/category', [
 		});
 	}
 
+	function handleDescription() {
+		const fadeEl = document.querySelector('.description.clamp-fade-4');
+		if (!fadeEl) {
+			return;
+		}
+
+		fadeEl.addEventListener('click', () => {
+			const state = fadeEl.classList.contains('line-clamp-4');
+			fadeEl.classList.toggle('line-clamp-4', !state);
+		});
+	}
+
 	Category.toTop = function () {
 		navigator.scrollTop(0);
 	};
 
 	Category.toBottom = async () => {
-		const { count } = await api.get(`/categories/${ajaxify.data.category.cid}/count`);
+		const { count } = await api.get(`/categories/${encodeURIComponent(ajaxify.data.category.cid)}/count`);
 		navigator.scrollBottom(count - 1);
 	};
 
@@ -126,7 +140,7 @@ define('forum/category', [
 
 		hooks.fire('action:topics.loading');
 		const params = utils.params();
-		infinitescroll.loadMore(`/categories/${ajaxify.data.cid}/topics`, {
+		infinitescroll.loadMore(`/categories/${encodeURIComponent(ajaxify.data.cid)}/topics`, {
 			after: after,
 			direction: direction,
 			query: params,

@@ -5,6 +5,7 @@ const validator = require('validator');
 
 const meta = require('../meta');
 const db = require('../database');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 const languages = require('../languages');
@@ -16,6 +17,10 @@ module.exports = function (User) {
 		postsPerPage: 20,
 		topicsPerPage: 20,
 	};
+	const remoteDefaultSettings = Object.freeze({
+		categoryWatchState: 'notwatching',
+	});
+
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
 			const isSpider = parseInt(uid, 10) === -1;
@@ -71,7 +76,7 @@ module.exports = function (User) {
 		settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
 		settings.followTopicsOnReply = parseInt(getSetting(settings, 'followTopicsOnReply', 0), 10) === 1;
 		settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
-		settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
+		settings.disableIncomingChats = parseInt(getSetting(settings, 'disableIncomingChats', 0), 10) === 1;
 		settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 		settings.updateUrlWithPostIndex = parseInt(getSetting(settings, 'updateUrlWithPostIndex', 1), 10) === 1;
 		settings.bootswatchSkin = validator.escape(String(settings.bootswatchSkin || ''));
@@ -84,12 +89,24 @@ module.exports = function (User) {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
 		});
 
+		settings.chatAllowList = parseJSONSetting(settings.chatAllowList || '[]', []).map(String);
+		settings.chatDenyList = parseJSONSetting(settings.chatDenyList || '[]', []).map(String);
 		return settings;
+	}
+
+	function parseJSONSetting(value, defaultValue) {
+		try {
+			return JSON.parse(value);
+		} catch (err) {
+			return defaultValue;
+		}
 	}
 
 	function getSetting(settings, key, defaultValue) {
 		if (settings[key] || settings[key] === 0) {
 			return settings[key];
+		} else if (activitypub.helpers.isUri(settings.uid) && remoteDefaultSettings[key]) {
+			return remoteDefaultSettings[key];
 		} else if (meta.config[key] || meta.config[key] === 0) {
 			return meta.config[key];
 		}
@@ -138,7 +155,7 @@ module.exports = function (User) {
 			acpLang: data.acpLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
-			restrictChat: data.restrictChat,
+			disableIncomingChats: data.disableIncomingChats,
 			topicSearchEnabled: data.topicSearchEnabled,
 			updateUrlWithPostIndex: data.updateUrlWithPostIndex,
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
@@ -148,6 +165,8 @@ module.exports = function (User) {
 			categoryWatchState: data.categoryWatchState,
 			categoryTopicSort: data.categoryTopicSort,
 			topicPostSort: data.topicPostSort,
+			chatAllowList: data.chatAllowList,
+			chatDenyList: data.chatDenyList,
 		};
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {

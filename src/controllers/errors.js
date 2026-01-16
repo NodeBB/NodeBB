@@ -69,7 +69,9 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		// Display NodeBB error page
 		const status = parseInt(err.status, 10);
 		if ((status === 302 || status === 308) && err.path) {
-			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
+			return res.locals.isAPI ?
+				res.set('X-Redirect', encodeURIComponent(err.path)).status(200).json(err.path) :
+				res.redirect(nconf.get('relative_path') + err.path);
 		}
 
 		const path = String(req.path || '');

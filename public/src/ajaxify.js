@@ -23,6 +23,66 @@ ajaxify.widgets = { render: render };
 	if ('scrollRestoration' in history) {
 		history.scrollRestoration = 'manual';
 	}
+
+	ajaxify.check = (item) => {
+		/**
+		 * returns:
+		 *   true  (ajaxify OK)
+		 *   false (browser default)
+		 *   null  (no action)
+		 */
+		let urlObj;
+		let pathname = item instanceof Element ? item.getAttribute('href') : undefined;
+		try {
+			urlObj = new URL(item, `${document.location.origin}${config.relative_path}`);
+			if (!pathname) {
+				({ pathname } = urlObj);
+			}
+		} catch (err) {
+			console.error(err);
+			return false;
+		}
+
+		const internalLink = utils.isInternalURI(urlObj, window.location, config.relative_path);
+
+		const hrefEmpty = href => href === undefined || href === '' || href === 'javascript:;';
+
+		if (item instanceof Element) {
+			if (item.getAttribute('data-ajaxify') === 'false') {
+				if (!internalLink) {
+					return false;
+				}
+
+				return null;
+			}
+
+			if (hrefEmpty(urlObj.href) || urlObj.protocol === 'javascript:' || pathname === '#' || pathname === '') {
+				return null;
+			}
+		}
+
+		if (internalLink) {
+			// Default behaviour for rss feeds
+			if (pathname.endsWith('.rss')) {
+				return false;
+			}
+
+			// Default behaviour for sitemap
+			if (String(pathname).startsWith(config.relative_path + '/sitemap') && pathname.endsWith('.xml')) {
+				return false;
+			}
+
+			// Default behaviour for uploads and direct links to API urls
+			if (['/uploads', '/assets/', '/api/'].some(function (prefix) {
+				return String(pathname).startsWith(config.relative_path + prefix);
+			})) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected && parseInt(app.user.uid, 10) >= 0) {
@@ -454,7 +514,6 @@ ajaxify.widgets = { render: render };
 			cache: false,
 			dataType: 'text',
 			success: function (script) {
-				// eslint-disable-next-line no-new-func
 				const renderFunction = new Function('module', script);
 				const moduleObj = { exports: {} };
 				renderFunction(moduleObj);
@@ -512,10 +571,6 @@ $(document).ready(function () {
 	});
 
 	function ajaxifyAnchors() {
-		function hrefEmpty(href) {
-			// eslint-disable-next-line no-script-url
-			return href === undefined || href === '' || href === 'javascript:;';
-		}
 		const location = document.location || window.location;
 		const rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 		const contentEl = document.getElementById('content');
@@ -527,10 +582,7 @@ $(document).ready(function () {
 				return;
 			}
 
-			const $this = $(this);
-			const href = $this.attr('href');
 			const internalLink = utils.isInternalURI(this, window.location, config.relative_path);
-
 			const rootAndPath = new RegExp(`^${rootUrl}${config.relative_path}/?`);
 			const process = function () {
 				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
@@ -556,57 +608,44 @@ $(document).ready(function () {
 								ajaxify.go('outgoing?url=' + encodeURIComponent(href));
 								e.preventDefault();
 							}
+						} else if (config.activitypub.probe) {
+							ajaxify.go(`ap?resource=${encodeURIComponent(this.href)}`);
+							e.preventDefault();
 						}
 					}
 				}
 			};
 
-			if ($this.attr('data-ajaxify') === 'false') {
-				if (!internalLink) {
-					return;
-				}
-				return e.preventDefault();
-			}
-
-			// Default behaviour for rss feeds
-			if (internalLink && href && href.endsWith('.rss')) {
-				return;
-			}
-
-			// Default behaviour for sitemap
-			if (internalLink && href && String(_self.pathname).startsWith(config.relative_path + '/sitemap') && href.endsWith('.xml')) {
-				return;
-			}
-
-			// Default behaviour for uploads and direct links to API urls
-			if (internalLink && ['/uploads', '/assets/', '/api/'].some(function (prefix) {
-				return String(_self.pathname).startsWith(config.relative_path + prefix);
-			})) {
-				return;
-			}
-
-			// eslint-disable-next-line no-script-url
-			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || href === '#' || href === '') {
-				return e.preventDefault();
-			}
-
-			if (app.flags && app.flags.hasOwnProperty('_unsaved') && app.flags._unsaved === true) {
-				if (e.ctrlKey) {
-					return;
-				}
-
-				require(['bootbox'], function (bootbox) {
-					bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
-						if (navigate) {
-							app.flags._unsaved = false;
-							process.call(_self);
+			const check = ajaxify.check(this);
+			switch (check) {
+				case true: {
+					if (app.flags && app.flags.hasOwnProperty('_unsaved') && app.flags._unsaved === true) {
+						if (e.ctrlKey) {
+							return;
 						}
-					});
-				});
-				return e.preventDefault();
-			}
 
-			process.call(_self);
+						require(['bootbox'], function (bootbox) {
+							bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+								if (navigate) {
+									app.flags._unsaved = false;
+									process.call(_self);
+								}
+							});
+						});
+						return e.preventDefault();
+					}
+
+					process.call(_self);
+					break;
+				}
+
+				case null: {
+					e.preventDefault();
+					break;
+				}
+
+				// default is default browser behaviour
+			}
 		});
 	}
 

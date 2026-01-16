@@ -1,5 +1,5 @@
 {
-	"section-dashboard": "Dashboard",
+	"section-dashboard": "Cruscotti",
 	"dashboard/overview": "Panoramica",
 	"dashboard/logins": "Accessi",
 	"dashboard/users": "Utenti",
@@ -38,6 +38,7 @@
 	"settings/tags": "Tag",
 	"settings/notifications": "Notifiche",
 	"settings/api": "Accesso API",
+	"settings/activitypub": "Federazione (ActivityPub)",
 	"settings/sounds": "Suoni",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",

@@ -13,6 +13,7 @@ const meta = require('../meta');
 const io = require('../socket.io');
 const cache = require('../cache');
 const cacheCreate = require('../cacheCreate');
+const utils = require('../utils');
 
 const roomUidCache = cacheCreate({
 	name: 'chat:room:uids',
@@ -21,7 +22,7 @@ const roomUidCache = cacheCreate({
 });
 
 const intFields = [
-	'roomId', 'timestamp', 'userCount', 'messageCount',
+	'roomId', 'timestamp', 'userCount', 'messageCount', 'joinLeaveMessages',
 ];
 
 module.exports = function (Messaging) {
@@ -87,6 +88,7 @@ module.exports = function (Messaging) {
 			timestamp: now,
 			notificationSetting: data.notificationSetting,
 			messageCount: 0,
+			joinLeaveMessages: data.joinLeaveMessages || 0,
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {
@@ -125,7 +127,7 @@ module.exports = function (Messaging) {
 			'chat:rooms:public:order:all',
 		]);
 
-		if (!isPublic) {
+		if (!isPublic && parseInt(room.joinLeaveMessages, 10) === 1) {
 			// chat owner should also get the user-join system message
 			await Messaging.addSystemMessage('user-join', uid, roomId);
 		}
@@ -259,6 +261,13 @@ module.exports = function (Messaging) {
 
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
 		uids = _.uniq(uids);
+
+		// Public rooms must only contain local users
+		const isPublic = await db.getObjectField(`chat:room:${roomId}`, 'public');
+		if (parseInt(isPublic, 10) === 1 && uids.some(uid => !utils.isNumber(uid))) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		const inRoom = await Messaging.isUserInRoom(uid, roomId);
 		const payload = await plugins.hooks.fire('filter:messaging.addUsersToRoom', { uid, uids, roomId, inRoom });
 
@@ -272,12 +281,22 @@ module.exports = function (Messaging) {
 	async function addUidsToRoom(uids, roomId) {
 		const now = Date.now();
 		const timestamps = uids.map(() => now);
+
 		await Promise.all([
 			db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids),
 			db.sortedSetAdd(`chat:room:${roomId}:uids:online`, timestamps, uids),
 		]);
 		await updateUserCount([roomId]);
-		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
+		if (await joinLeaveMessagesEnabled(roomId)) {
+			await Promise.all(
+				uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId))
+			);
+		}
+	}
+
+	async function joinLeaveMessagesEnabled(roomId) {
+		const roomData = await Messaging.getRoomData(roomId, ['joinLeaveMessages']);
+		return roomData && roomData.joinLeaveMessages === 1;
 	}
 
 	Messaging.removeUsersFromRoom = async (uid, uids, roomId) => {
@@ -311,7 +330,9 @@ module.exports = function (Messaging) {
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
-		const isInRoom = await Promise.all(uids.map(uid => Messaging.isUserInRoom(uid, roomId)));
+		const isInRoom = await Promise.all(
+			uids.map(uid => Messaging.isUserInRoom(uid, roomId))
+		);
 		uids = uids.filter((uid, index) => isInRoom[index]);
 
 		const keys = uids
@@ -326,8 +347,11 @@ module.exports = function (Messaging) {
 			], uids),
 			db.sortedSetsRemove(keys, roomId),
 		]);
-
-		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId)));
+		if (await joinLeaveMessagesEnabled(roomId)) {
+			await Promise.all(
+				uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId))
+			);
+		}
 		await updateOwner(roomId);
 		await updateUserCount([roomId]);
 	};
@@ -349,10 +373,13 @@ module.exports = function (Messaging) {
 			], roomIds),
 		]);
 
-		await Promise.all(
-			roomIds.map(roomId => updateOwner(roomId))
-				.concat(roomIds.map(roomId => Messaging.addSystemMessage('user-leave', uid, roomId)))
-		);
+		await Promise.all(roomIds.map(async (roomId) => {
+			await updateOwner(roomId);
+			if (await joinLeaveMessagesEnabled(roomId)) {
+				await Messaging.addSystemMessage('user-leave', uid, roomId);
+			}
+		}));
+
 		await updateUserCount(roomIds);
 	};
 

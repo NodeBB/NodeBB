@@ -12,6 +12,8 @@
 	"container.card": "Card",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Brīdinājums",
 
 	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",

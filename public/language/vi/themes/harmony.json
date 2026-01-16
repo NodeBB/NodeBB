@@ -1,5 +1,5 @@
 {
-	"theme-name": "Chủ Đề Hòa Âm",
+	"theme-name": "Chủ Đề Hài Hòa",
 	"skins": "Trang điểm",
 	"collapse": "Thu gọn",
 	"expand": "Mở rộng",
@@ -7,13 +7,17 @@
 	"login-register-to-search": "Đăng nhập hoặc đăng ký để tìm kiếm.",
 	"settings.title": "Cài đặt chủ đề",
 	"settings.enableQuickReply": "Bật trả lời nhanh",
-	"settings.enableBreadcrumbs": "Bật dẫn hướng đường dẫn",
+	"settings.enableBreadcrumbs": "Hiển thị đường dẫn trong trang Danh mục và Chủ đề",
+	"settings.enableBreadcrumbs.why": "Đường dẫn được hiển thị trong hầu hết các trang để dễ điều hướng. Thiết kế cơ bản của các trang danh mục và chủ đề có các phương tiện thay thế để liên kết trở lại các trang mẹ, nhưng có thể tắt đường dẫn để giảm bớt sự lộn xộn.",
 	"settings.centerHeaderElements": "Yếu tố tiêu đề trung tâm",
 	"settings.mobileTopicTeasers": "Hiển thị đoạn giới thiệu chủ đề trên di động",
 	"settings.stickyToolbar": "Thanh công cụ cố định",
 	"settings.stickyToolbar.help": "Thanh công cụ trên các trang chủ đề và danh mục sẽ nằm ở đầu trang",
-	"settings.autohideBottombar": "Tự động ẩn thanh dưới cùng",
-	"settings.autohideBottombar.help": "Thanh dưới cùng trên chế độ xem di động sẽ ẩn khi trang được cuộn xuống",
+	"settings.topicSidebarTools": "Công cụ thanh bên chủ đề",
+	"settings.topicSidebarTools.help": "Tùy chọn này sẽ chuyển các công cụ chủ đề sang thanh bên trên máy tính để bàn",
+	"settings.autohideBottombar": "Tự động ẩn thanh điều hướng di động",
+	"settings.autohideBottombar.help": "Thanh di động sẽ bị ẩn khi trang được cuộn xuống",
+	"settings.topMobilebar": "Di chuyển thanh điều hướng di động lên đỉnh",
 	"settings.openSidebars": "Mở thanh bên",
 	"settings.chatModals": "Bật phương thức trò chuyện"
 }

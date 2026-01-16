@@ -12,6 +12,8 @@
 	"container.card": "การ์ด",
 	"container.card-header": "ส่วนหัวของการ์ด",
 	"container.card-body": "ข้างในการ์ด",
+	"container.title": "ชื่อ",
+	"container.body": "เนื้อหา",
 	"container.alert": "แจ้งเตือน",
 
 	"alert.confirm-delete": "คุณต้องการจะลบวิดเจ็ตนี้หรือไม่?",

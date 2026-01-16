@@ -1,0 +1,13 @@
+{
+	"general": "Ümumi",
+	"private-groups": "Şəxsi qruplar",
+	"private-groups.help": "Aktivdirsə, qruplara qoşulmaq üçün qrup sahibinin təsdiqi tələb olunur <em>(Defolt: aktivdir)</em>",
+	"private-groups.warning": "<strong>Ehtiyatlı olun!</strong> Bu seçim qeyri-aktivdirsə və şəxsi qruplarınız varsa, onlar avtomatik olaraq ictimailəşir.",
+	"allow-multiple-badges": "Birdən çox nişanlara icazə ver",
+	"allow-multiple-badges-help": "Bu bayraq istifadəçilərə bir neçə qrup nişanı seçməyə icazə vermək üçün istifadə edilə bilər, mövzu dəstəyi tələb edir.",
+	"max-name-length": "Qrup adının maksimum uzunluğu",
+	"max-title-length": "Qrup başlığının maksimum uzunluğu",
+	"cover-image": "Qrup örtük şəkili",
+	"default-cover": "Defolt örtük şəkilləri",
+	"default-cover-help": "Yüklənmiş örtük şəkli olmayan qruplar üçün vergüllə ayrılmış defolt örtük şəkilləri əlavə edin"
+}

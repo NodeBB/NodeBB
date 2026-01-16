@@ -28,6 +28,8 @@
 	"smtp-transport.password": "Passwort",
 	"smtp-transport.pool": "Gepoolte Verbindungen erlauben",
 	"smtp-transport.pool-help": "Das Poolen von Verbindungen hindert NodeBB daran für jede neu erstellte E-Mail eine eigene Verbindung aufzubauen. Diese Option ist nur zutreffend, wenn SMTP aktiviert ist.",
+	"smtp-transport.allow-self-signed": "Allow self-signed certificates",
+	"smtp-transport.allow-self-signed-help": "Enabling this setting will allow you to use self-signed or invalid TLS certificates.",
 
 	"template": "E-Mail Vorlage bearbeiten",
 	"template.select": "E-Mail Vorlage auswählen",

@@ -1,0 +1,9 @@
+{
+    "uploading-file": "Lastar opp fila...",
+    "select-file-to-upload": "Vel ei fil å laste opp!",
+    "upload-success": "Fila vart lasta opp med suksess!",
+    "maximum-file-size": "Maksimalt %1 kb",
+    "no-uploads-found": "Ingen opplastingar funne",
+    "public-uploads-info": "Opplastingar er offentlege, alle besøkande kan sjå dei.",
+    "private-uploads-info": "Opplastingar er private, berre innlogga brukarar kan sjå dei."
+}

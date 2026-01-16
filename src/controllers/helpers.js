@@ -133,7 +133,7 @@ helpers.notAllowed = async function (req, res, error) {
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
 			if (req.originalUrl.startsWith(`${relative_path}/api/v3`)) {
-				helpers.formatApiResponse(403, res, error);
+				await helpers.formatApiResponse(403, res, error);
 			} else {
 				res.status(403).json({
 					path: req.path.replace(/^\/api/, ''),
@@ -155,7 +155,7 @@ helpers.notAllowed = async function (req, res, error) {
 		}
 	} else if (res.locals.isAPI) {
 		req.session.returnTo = req.url.replace(/^\/api/, '');
-		helpers.formatApiResponse(401, res, error);
+		await helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
 		res.redirect(`${relative_path}/login${req.path.startsWith('/admin') ? '?local=1' : ''}`);
@@ -166,9 +166,9 @@ helpers.redirect = function (res, url, permanent) {
 	// this is used by sso plugins to redirect to the auth route
 	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
 	if (url.hasOwnProperty('external')) {
-		const redirectUrl = encodeURI(prependRelativePath(url.external));
+		const redirectUrl = prependRelativePath(url.external);
 		if (res.locals.isAPI) {
-			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
+			res.set('X-Redirect', encodeURIComponent(redirectUrl)).status(200).json({ external: redirectUrl });
 		} else {
 			res.redirect(permanent ? 308 : 307, redirectUrl);
 		}
@@ -176,10 +176,9 @@ helpers.redirect = function (res, url, permanent) {
 	}
 
 	if (res.locals.isAPI) {
-		url = encodeURI(url);
-		res.set('X-Redirect', url).status(200).json(url);
+		res.set('X-Redirect', encodeURIComponent(url)).status(200).json(url);
 	} else {
-		res.redirect(permanent ? 308 : 307, encodeURI(prependRelativePath(url)));
+		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}
 };
 
@@ -363,11 +362,11 @@ helpers.getSelectedTag = function (tags) {
 		tags = [tags];
 	}
 	tags = tags || [];
-	const tagData = tags.map(t => validator.escape(String(t)));
+	const tagData = tags.map(t => String(t));
 	let selectedTag = null;
 	if (tagData.length) {
 		selectedTag = {
-			label: tagData.join(', '),
+			label: validator.escape(tagData.join(', ')),
 		};
 	}
 	return {

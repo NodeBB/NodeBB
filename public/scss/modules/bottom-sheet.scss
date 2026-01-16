@@ -1,5 +1,5 @@
 .bottom-sheet {
-	@include media-breakpoint-down(sm) {
+	@include media-breakpoint-down(md) {
 		.dropdown-menu {
 			display: block;
 			visibility: hidden;
@@ -8,7 +8,7 @@
 			inset: auto 0 0 0!important;
 
 			margin: 0 -1px -1px -1px;
-			padding: 0 5px;
+			padding: $spacer * 0.25 !important;
 			max-height: 60%;
 
 			box-shadow: 0 2px 6px rgba(0,0,0,0.35);
@@ -19,11 +19,12 @@
 			z-index: $zindex-popover;
 			padding: 5px 0 10px;
 
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: 0;
+			border: 0px;
+			border-top: 1px solid $border-color;
 
 			> li {
-				> a {
+				> a, .dropdown-item {
 					padding: 10px 20px;
 					overflow: hidden;
 					text-overflow: ellipsis;
@@ -44,6 +45,7 @@
 			width: auto;
 		}
 
+		// this does not look to be used anymore
 		.dropdown-backdrop {
 			background-color: rgba(0, 0, 0, .3);
 		}

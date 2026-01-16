@@ -50,7 +50,10 @@ define('forum/chats/messages', [
 	messages.updateRemainingLength = function (parent) {
 		const element = parent.find('[component="chat/input"]');
 		parent.find('[component="chat/message/length"]').text(element.val().length);
-		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
+		const remainingLength = config.maximumChatMessageLength - element.val().length;
+		parent.find('[component="chat/message/remaining"]').text(remainingLength)
+			.toggleClass('fw-bold text-danger', remainingLength < 0)
+			.toggleClass('text-muted', remainingLength >= 0);
 		hooks.fire('action:chat.updateRemainingLength', {
 			parent: parent,
 		});
@@ -181,7 +184,7 @@ define('forum/chats/messages', [
 		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
 		replyToEl.attr('data-tomid', mid)
 			.find('[component="chat/composer/replying-to-text"]')
-			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-username')}]]`);
+			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-displayname')}]]`);
 		replyToEl.removeClass('hidden');
 		replyToEl.find('[component="chat/composer/replying-to-cancel"]').off('click')
 			.on('click', () => {
@@ -344,14 +347,14 @@ define('forum/chats/messages', [
 				return;
 			}
 
-			api.del(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+			api.del(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
 				components.get('chat/message', messageId).toggleClass('deleted', true);
 			}).catch(alerts.error);
 		});
 	};
 
 	messages.restore = function (messageId, roomId) {
-		api.post(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+		api.post(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
 			components.get('chat/message', messageId).toggleClass('deleted', false);
 		}).catch(alerts.error);
 	};

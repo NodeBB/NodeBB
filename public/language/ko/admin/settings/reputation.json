@@ -20,7 +20,6 @@
 	"min-rep-chat": "채팅 메시지를 보내는데 필요한 최소 평판",
 	"min-rep-post-links": "링크를 게시할 수 있는 최소 평판",
 	"min-rep-flag": "게시물을 신고할 수 있는 최소 평판",
-	"min-rep-website": "사용자 프로필에 \"웹사이트\" 를 추가할 수 있는 최소 평판",
 	"min-rep-aboutme": "사용자 프로필에 \"About me\" 를 추가할 수 있는 최소 평판",
 	"min-rep-signature": "사용자 프로필에  \"서명\"을 추가할 수 있는 최소 평판",
 	"min-rep-profile-picture": "사용자 프로필에 \"프로필 이미지\" 를 추가할 수 있는 최소 평판",

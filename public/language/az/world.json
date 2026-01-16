@@ -1,0 +1,21 @@
+{
+	"name": "Dünya",
+	"popular": "Populyar mövzular",
+	"recent": "Bütün mövzular",
+	"help": "Yardım",
+
+	"help.title": "Bu səhifə nədir?",
+	"help.intro": "Fediverse küncünə xoş gəlmisiniz.",
+	"help.fediverse": "\"Fadiverse\" hamısı bir-biri ilə danışan və istifadəçiləri bir-birini görə bilən bir-birinə bağlı tətbiqlər və veb saytlar şəbəkəsidir. Bu forum federasiyadır və həmin sosial şəbəkə (və ya \"fediverse\") ilə qarşılıqlı əlaqədə ola bilər. Bu səhifə sizin fediverse guşəsidir. Bu, yalnız <strong>izlədiyiniz</strong> istifadəçilər tərəfindən yaradılmış və onlardan paylaşılan mövzulardan ibarətdir.",
+	"help.build": "Burada başlamaq üçün çox mövzu olmaya bilər; bu normaldır. Zamanla digər istifadəçiləri izləməyə başlayanda burada daha çox məzmun görməyə başlayacaqsınız.",
+	"help.federating": "Eyni şəkildə, bu forumdan kənar istifadəçilər <em>sizi</em> izləməyə başlayarsa, o zaman yazılarınız həmin proqramlarda və vebsaytlarda da görünməyə başlayacaq.",
+	"help.next-generation": "Bu, sosial medianın yeni nəslidir, bu gün töhfə verməyə başlayın!",
+
+	"onboard.title": "Sizin fediverse pəncərəniz...",
+	"onboard.what": "Bu, yalnız bu forumdan kənarda tapılan məzmundan ibarət sizin fərdiləşdirilmiş kateqoriyanızdır. Bu səhifədə nəyinsə görünüb-göstərilməməsi onları izlədiyinizdən və ya həmin postun izlədiyiniz biri tərəfindən paylaşılıb-paylaşılmamasından asılıdır.",
+	"onboard.why": "Bu forumdan kənarda gedən çox şey var və bunların heç də hamısı maraqlarınıza uyğun deyil. Buna görə də insanları izləmək, kimdənsə daha çox görmək istədiyinizi bildirməyin ən yaxşı yoludur.",
+	"onboard.how": "Bu arada, bu forumun daha nələr haqqında bildiyini görmək üçün yuxarıdakı qısayol düymələrinə klikləyə və bəzi yeni məzmunlar kəşf etməyə başlaya bilərsiniz!",
+
+	"show-categories": "Show categories",
+	"hide-categories": "Hide categories"
+}

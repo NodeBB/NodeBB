@@ -25,7 +25,7 @@ require('./cache')(Groups);
 
 Groups.BANNED_USERS = 'banned-users';
 
-Groups.ephemeralGroups = ['guests', 'spiders'];
+Groups.ephemeralGroups = ['guests', 'spiders', 'fediverse'];
 
 Groups.systemGroups = [
 	'registered-users',
@@ -76,14 +76,22 @@ Groups.getGroupsFromSet = async function (set, start, stop) {
 };
 
 Groups.getGroupsBySort = async function (sort, start, stop) {
+	return await Groups.getGroupsFromSet(sortToSet(sort), start, stop);
+};
+
+Groups.getGroupCountBySort = async function (sort) {
+	return await db.sortedSetCard(sortToSet(sort));
+};
+
+function sortToSet(sort) {
 	let set = 'groups:visible:name';
 	if (sort === 'count') {
 		set = 'groups:visible:memberCount';
 	} else if (sort === 'date') {
 		set = 'groups:visible:createtime';
 	}
-	return await Groups.getGroupsFromSet(set, start, stop);
-};
+	return set;
+}
 
 Groups.getNonPrivilegeGroups = async function (set, start, stop, flags) {
 	if (!flags) {

@@ -1,0 +1,23 @@
+get:
+  tags:
+    - admin
+  summary: Get federation (ActivityPub) settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  instanceCount:
+                    type: number
+                    description: The number of ActivityPub-enabled instances that this forum knows about.
+                  rules:
+                    $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray
+                  relays:
+                    $ref: ../../../components/schemas/admin/relays.yaml#/RelaysArray
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
