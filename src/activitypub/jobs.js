@@ -5,6 +5,8 @@ const { CronJob } = require('cron');
 
 const db = require('../database');
 const meta = require('../meta');
+const topics = require('../topics');
+const utils = require('../utils');
 const activitypub = module.parent.exports;
 
 const Jobs = module.exports;
@@ -34,7 +36,11 @@ Jobs.start = () => {
 
 	new CronJob('0 * * * * *', async () => {
 		await tryCronJob(retryFailedMessages);
-	}, null, true, null, null, false);
+	}, null, true, null, null, false); // change last argument to true for debugging
+
+	new CronJob('15 * * * *', async () => {
+		await tryCronJob(backfill);
+	}, null, true, null, null, false); // change last argument to true for debugging
 };
 
 async function retryFailedMessages() {
@@ -86,4 +92,23 @@ async function retryFailedMessages() {
 		db.sortedSetRemove('ap:retry:queue', queueIdsToRemove),
 		db.deleteAll(queueIdsToRemove.map(id => `ap:retry:queue:${id}`)),
 	]);
+}
+
+async function backfill() {
+	const start = 0;
+	const stop = meta.config.topicsPerPage - 1;
+	const sorted = await topics.getSortedTopics({
+		term: 'day',
+		sort: 'posts',
+		uid: 0,
+		start,
+		stop,
+	});
+
+	// Remote mainPids only
+	const pids = sorted.topics
+		.map(({ mainPid }) => mainPid)
+		.filter(pid => !utils.isNumber(pid));
+
+	await activitypub.notes.backfill(pids);
 }
