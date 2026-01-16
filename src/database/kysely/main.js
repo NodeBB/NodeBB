@@ -6,7 +6,7 @@ module.exports = function (module) {
 	module.flushdb = async function () {
 		// Drop all legacy tables and recreate
 		const tables = ['legacy_string', 'legacy_list', 'legacy_set', 'legacy_zset', 'legacy_hash', 'legacy_object'];
-		
+
 		for (const table of tables) {
 			try {
 				await module.db.schema.dropTable(table).ifExists().execute();
@@ -14,7 +14,7 @@ module.exports = function (module) {
 				// Ignore errors during drop
 			}
 		}
-		
+
 		// Re-run init to recreate tables
 		const connection = require('./connection');
 		const opts = require('nconf').get('kysely');
@@ -29,13 +29,13 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		
+
 		const isArray = Array.isArray(key);
 		if (isArray && !key.length) {
 			return [];
 		}
-		
-		const {dialect} = module;
+
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 
 		async function checkIfzSetsExist(keys) {
@@ -51,15 +51,12 @@ module.exports = function (module) {
 		}
 
 		async function checkIfKeysExist(keys) {
-			const result = await module.db.selectFrom('legacy_object')
+			let query = module.db.selectFrom('legacy_object')
 				.select('_key')
-				.where('_key', 'in', keys)
-				.where(eb => eb.or([
-					eb('expireAt', 'is', null),
-					eb('expireAt', '>', now),
-				]))
-				.execute();
-			
+				.where('_key', 'in', keys);
+			query = helpers.whereNotExpired(query, null, now);
+			const result = await query.execute();
+
 			return keys.map(k => result.some(r => r._key === k));
 		}
 
@@ -80,7 +77,7 @@ module.exports = function (module) {
 			otherKeys.forEach((k, i) => { existsMap[k] = otherExists[i]; });
 			return key.map(k => existsMap[k]);
 		}
-		
+
 		const type = await module.type(key);
 		if (type === 'zset') {
 			const members = await module.getSortedSetRange(key, 0, 0);
@@ -89,33 +86,26 @@ module.exports = function (module) {
 			const members = await module.getSetMembers(key);
 			return members.length > 0;
 		}
-		
-		const result = await module.db.selectFrom('legacy_object')
+
+		let query = module.db.selectFrom('legacy_object')
 			.select('_key')
-			.where('_key', '=', key)
-			.where(eb => eb.or([
-				eb('expireAt', 'is', null),
-				eb('expireAt', '>', now),
-			]))
-			.limit(1)
-			.executeTakeFirst();
+			.where('_key', '=', key);
+		query = helpers.whereNotExpired(query, null, now);
+		const result = await query.limit(1).executeTakeFirst();
 
 		return !!result;
 	};
 
 	module.scan = async function (params) {
-		const {dialect} = module;
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 		const pattern = helpers.buildLikePattern(params.match);
 
-		const result = await module.db.selectFrom('legacy_object')
+		let query = module.db.selectFrom('legacy_object')
 			.select('_key')
-			.where('_key', 'like', pattern)
-			.where(eb => eb.or([
-				eb('expireAt', 'is', null),
-				eb('expireAt', '>', now),
-			]))
-			.execute();
+			.where('_key', 'like', pattern);
+		query = helpers.whereNotExpired(query, null, now);
+		const result = await query.execute();
 
 		return result.map(r => r._key);
 	};
@@ -145,18 +135,9 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_string as s', 's._key', 'o._key')
+		const result = await helpers.createStringQuery(module.db, module.dialect)
 			.select('s.data')
 			.where('o._key', '=', key)
-			.where('o.type', '=', 'string')
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.limit(1)
 			.executeTakeFirst();
 
@@ -168,25 +149,12 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_string as s', 's._key', 'o._key')
+		const result = await helpers.createStringQuery(module.db, module.dialect)
 			.select(['s._key', 's.data'])
 			.where('o._key', 'in', keys)
-			.where('o.type', '=', 'string')
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
-		const map = {};
-		result.forEach((d) => {
-			map[d._key] = d.data;
-		});
-		return keys.map(k => (map.hasOwnProperty(k) ? map[k] : null));
+		return helpers.mapResultsToKeys(keys, result, '_key', 'data', null);
 	};
 
 	module.set = async function (key, value) {
@@ -194,11 +162,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'string', dialect);
-			
+		await helpers.withTransaction(module, key, 'string', async (client, dialect) => {
 			await helpers.upsert(client, 'legacy_string', {
 				_key: key,
 				data: String(value),
@@ -211,36 +175,32 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
-		return await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'string', dialect);
-			
+		return await helpers.withTransaction(module, key, 'string', async (client, dialect) => {
 			// Get current value
 			const current = await client.selectFrom('legacy_string')
 				.select('data')
 				.where('_key', '=', key)
 				.executeTakeFirst();
-			
+
 			const currentValue = current ? parseFloat(current.data) || 0 : 0;
 			const newValue = currentValue + 1;
-			
+
 			await helpers.upsert(client, 'legacy_string', {
 				_key: key,
 				data: String(newValue),
 			}, ['_key'], { data: String(newValue) }, dialect);
-			
+
 			return newValue;
 		});
 	};
 
 	module.rename = async function (oldKey, newKey) {
-		await module.transaction(async (client) => {
+		await helpers.withTransaction(module, null, null, async (client) => {
 			// Delete the new key if it exists
 			await client.deleteFrom('legacy_object')
 				.where('_key', '=', newKey)
 				.execute();
-			
+
 			// Update child tables first (they reference the old key)
 			const tables = ['legacy_hash', 'legacy_zset', 'legacy_set', 'legacy_list', 'legacy_string'];
 			for (const table of tables) {
@@ -250,7 +210,7 @@ module.exports = function (module) {
 					.execute()
 					.catch(() => {}); // Ignore if key doesn't exist in this table
 			}
-			
+
 			// Rename the key in legacy_object
 			await client.updateTable('legacy_object')
 				.set({ _key: newKey })
@@ -260,26 +220,22 @@ module.exports = function (module) {
 	};
 
 	module.type = async function (key) {
-		const {dialect} = module;
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 
-		const result = await module.db.selectFrom('legacy_object')
+		let query = module.db.selectFrom('legacy_object')
 			.select('type')
-			.where('_key', '=', key)
-			.where(eb => eb.or([
-				eb('expireAt', 'is', null),
-				eb('expireAt', '>', now),
-			]))
-			.limit(1)
-			.executeTakeFirst();
+			.where('_key', '=', key);
+		query = helpers.whereNotExpired(query, null, now);
+		const result = await query.limit(1).executeTakeFirst();
 
 		return result ? result.type : null;
 	};
 
 	async function doExpire(key, date) {
-		const {dialect} = module;
+		const { dialect } = module;
 		const expireAt = helpers.getExpireAtTimestamp(date, dialect);
-		
+
 		await module.db.updateTable('legacy_object')
 			.set({ expireAt: expireAt })
 			.where('_key', '=', key)
@@ -312,9 +268,9 @@ module.exports = function (module) {
 		if (!result || !result.expireAt) {
 			return null;
 		}
-		
+
 		// Handle different date formats
-		const {expireAt} = result;
+		const { expireAt } = result;
 		if (expireAt instanceof Date) {
 			return expireAt.getTime();
 		}

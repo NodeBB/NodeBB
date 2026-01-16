@@ -7,16 +7,12 @@ module.exports = function (module) {
 		if (!key || !data) {
 			return;
 		}
-		
+
 		if (Array.isArray(key)) {
 			return await Promise.all(key.map(k => module.setObject(k, data)));
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-			
+		await helpers.withTransaction(module, key, 'hash', async (client, dialect) => {
 			const fields = Object.keys(data);
 			for (const field of fields) {
 				const value = data[field] !== null && data[field] !== undefined ? String(data[field]) : null;
@@ -30,7 +26,6 @@ module.exports = function (module) {
 	};
 
 	module.setObjectBulk = async function (...args) {
-		// Handle both array of [key, data] pairs and separate keys/data arrays
 		let pairs;
 		if (Array.isArray(args[0]) && args[0].length > 0 && Array.isArray(args[0][0])) {
 			pairs = args[0];
@@ -44,14 +39,12 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
+		await helpers.withTransaction(module, null, null, async (client, dialect) => {
 			for (const [key, data] of pairs) {
 				if (!key || !data) continue;
-				
+
 				await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-				
+
 				const fields = Object.keys(data);
 				for (const field of fields) {
 					const value = data[field] !== null && data[field] !== undefined ? String(data[field]) : null;
@@ -69,17 +62,14 @@ module.exports = function (module) {
 		if (!key || !field) {
 			return;
 		}
-		
+
 		if (Array.isArray(key)) {
 			return await Promise.all(key.map(k => module.setObjectField(k, field, value)));
 		}
 
-		const {dialect} = module;
 		const strValue = value !== null && value !== undefined ? String(value) : null;
 
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-			
+		await helpers.withTransaction(module, key, 'hash', async (client, dialect) => {
 			await helpers.upsert(client, 'legacy_hash', {
 				_key: key,
 				field: field,
@@ -93,18 +83,9 @@ module.exports = function (module) {
 			return null;
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		let query = module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_hash as h', 'h._key', 'o._key')
+		let query = helpers.createHashQuery(module.db, module.dialect)
 			.select(['h.field', 'h.value'])
-			.where('o._key', '=', key)
-			.where('o.type', '=', 'hash')
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]));
+			.where('o._key', '=', key);
 
 		if (fields && fields.length) {
 			query = query.where('h.field', 'in', fields);
@@ -128,18 +109,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		let query = module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_hash as h', 'h._key', 'o._key')
+		let query = helpers.createHashQuery(module.db, module.dialect)
 			.select(['h._key', 'h.field', 'h.value'])
-			.where('o._key', 'in', keys)
-			.where('o.type', '=', 'hash')
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]));
+			.where('o._key', 'in', keys);
 
 		if (fields && fields.length) {
 			query = query.where('h.field', 'in', fields);
@@ -150,7 +122,7 @@ module.exports = function (module) {
 		// Build a map of key -> {field: value}
 		const map = {};
 		keys.forEach((k) => { map[k] = null; });
-		
+
 		result.forEach((row) => {
 			if (!map[row._key]) {
 				map[row._key] = {};
@@ -191,11 +163,11 @@ module.exports = function (module) {
 		}
 
 		const data = await module.getObject(key, fields);
-		
+
 		// Ensure all requested fields are present (set to null if missing)
 		const result = {};
 		fields.forEach((f) => {
-			result[f] = data && data.hasOwnProperty(f) ? data[f] : null;
+			result[f] = data && Object.prototype.hasOwnProperty.call(data, f) ? data[f] : null;
 		});
 		return result;
 	};
@@ -204,14 +176,14 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		
+
 		// When fields is empty array, return all fields
 		if (!Array.isArray(fields) || !fields.length) {
 			return await module.getObjects(keys);
 		}
 
 		const objects = await module.getObjects(keys, fields);
-		
+
 		return objects.map((obj) => {
 			const result = {};
 			fields.forEach((f) => {
@@ -226,18 +198,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_hash as h', 'h._key', 'o._key')
+		const result = await helpers.createHashQuery(module.db, module.dialect)
 			.select('h.field')
 			.where('o._key', '=', key)
-			.where('o.type', '=', 'hash')
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
 		return result.map(r => r.field);
@@ -253,19 +216,10 @@ module.exports = function (module) {
 			return false;
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_hash as h', 'h._key', 'o._key')
+		const result = await helpers.createHashQuery(module.db, module.dialect)
 			.select('h.value')
 			.where('o._key', '=', key)
-			.where('o.type', '=', 'hash')
 			.where('h.field', '=', field)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.limit(1)
 			.executeTakeFirst();
 
@@ -277,19 +231,10 @@ module.exports = function (module) {
 			return fields ? fields.map(() => false) : [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_hash as h', 'h._key', 'o._key')
+		const result = await helpers.createHashQuery(module.db, module.dialect)
 			.select('h.field')
 			.where('o._key', '=', key)
-			.where('o.type', '=', 'hash')
 			.where('h.field', 'in', fields)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
 		const existingFields = new Set(result.map(r => r.field));
@@ -300,12 +245,11 @@ module.exports = function (module) {
 		if (!key || !field || (Array.isArray(field) && !field.length)) {
 			return;
 		}
-		
+
 		if (Array.isArray(key)) {
 			return await Promise.all(key.map(k => module.deleteObjectField(k, field)));
 		}
-		
-		// If field is an array, use deleteObjectFields
+
 		if (Array.isArray(field)) {
 			return await module.deleteObjectFields(key, field);
 		}
@@ -352,12 +296,7 @@ module.exports = function (module) {
 			return await Promise.all(key.map(k => module.incrObjectFieldBy(k, field, value)));
 		}
 
-		const {dialect} = module;
-
-		return await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-			
-			// Get current value
+		return await helpers.withTransaction(module, key, 'hash', async (client, dialect) => {
 			const current = await client.selectFrom('legacy_hash')
 				.select('value')
 				.where('_key', '=', key)
@@ -383,19 +322,16 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
+		await helpers.withTransaction(module, null, null, async (client, dialect) => {
 			for (const item of data) {
 				const [key, fieldValueObj] = item;
 				if (!key || !fieldValueObj) continue;
-				
+
 				await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-				
+
 				for (const [field, value] of Object.entries(fieldValueObj)) {
 					const increment = parseInt(value, 10) || 0;
-					
-					// Get current value
+
 					const current = await client.selectFrom('legacy_hash')
 						.select('value')
 						.where('_key', '=', key)

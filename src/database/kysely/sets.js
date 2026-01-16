@@ -8,16 +8,12 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
 		const values = Array.isArray(value) ? value : [value];
 		if (!values.length) {
 			return;
 		}
 
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'set', dialect);
-
+		await helpers.withTransaction(module, key, 'set', async (client, dialect) => {
 			for (const v of values) {
 				const member = String(v);
 				await helpers.upsert(client, 'legacy_set', {
@@ -36,9 +32,7 @@ module.exports = function (module) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
+		await helpers.withTransaction(module, null, null, async (client, dialect) => {
 			const uniqueKeys = [...new Set(keys)];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'set', dialect);
 
@@ -46,7 +40,7 @@ module.exports = function (module) {
 				const key = keys[i];
 				const value = values[i];
 				const members = Array.isArray(value) ? value : [value];
-				
+
 				for (const v of members) {
 					const member = String(v);
 					await helpers.upsert(client, 'legacy_set', {
@@ -63,9 +57,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
+		await helpers.withTransaction(module, null, null, async (client, dialect) => {
 			const uniqueKeys = [...new Set(data.map(d => d[0]))];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'set', dialect);
 
@@ -84,13 +76,9 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectsType(client, keys, 'set', dialect);
-
+		await helpers.withTransactionKeys(module, keys, 'set', async (client, dialect) => {
 			const values = Array.isArray(value) ? value : [value];
-			
+
 			for (const key of keys) {
 				for (const v of values) {
 					const member = String(v);
@@ -137,18 +125,10 @@ module.exports = function (module) {
 			return false;
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select('s.member')
 			.where('o._key', '=', key)
 			.where('s.member', '=', String(value))
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.limit(1)
 			.executeTakeFirst();
 
@@ -160,19 +140,12 @@ module.exports = function (module) {
 			return values.map(() => false);
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
 		const stringValues = values.map(String);
 
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select('s.member')
 			.where('o._key', '=', key)
 			.where('s.member', 'in', stringValues)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
 		const memberSet = new Set(result.map(r => r.member));
@@ -184,19 +157,12 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
 		const member = String(value);
 
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select('s._key')
 			.where('o._key', 'in', sets)
 			.where('s.member', '=', member)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
 		const keySet = new Set(result.map(r => r._key));
@@ -208,17 +174,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select('s.member')
 			.where('o._key', '=', key)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
 		return result.map(r => r.member);
@@ -229,28 +187,12 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select(['s._key', 's.member'])
 			.where('o._key', 'in', keys)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.execute();
 
-		const map = {};
-		keys.forEach((k) => {
-			map[k] = [];
-		});
-		result.forEach((row) => {
-			map[row._key].push(row.member);
-		});
-
-		return keys.map(k => map[k]);
+		return helpers.mapResultsToKeysArray(keys, result, '_key', r => r.member);
 	};
 
 	module.setCount = async function (key) {
@@ -258,17 +200,9 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select(eb => eb.fn.countAll().as('count'))
 			.where('o._key', '=', key)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.executeTakeFirst();
 
 		return parseInt(result?.count || 0, 10);
@@ -279,27 +213,14 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const result = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const result = await helpers.createSetQuery(module.db, module.dialect)
 			.select(['s._key'])
 			.select(eb => eb.fn.countAll().as('count'))
 			.where('o._key', 'in', keys)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.groupBy('s._key')
 			.execute();
 
-		const map = {};
-		result.forEach((row) => {
-			map[row._key] = parseInt(row.count, 10);
-		});
-
-		return keys.map(k => map[k] || 0);
+		return helpers.mapCountsToKeys(keys, result, '_key', 'count');
 	};
 
 	module.setRemoveRandom = async function (key) {
@@ -307,17 +228,9 @@ module.exports = function (module) {
 			return;
 		}
 
-		const {dialect} = module;
-		const now = helpers.getCurrentTimestamp(dialect);
-
-		const randomMember = await module.db.selectFrom('legacy_object as o')
-			.innerJoin('legacy_set as s', 's._key', 'o._key')
+		const randomMember = await helpers.createSetQuery(module.db, module.dialect)
 			.select('s.member')
 			.where('o._key', '=', key)
-			.where(eb => eb.or([
-				eb('o.expireAt', 'is', null),
-				eb('o.expireAt', '>', now),
-			]))
 			.limit(1)
 			.executeTakeFirst();
 

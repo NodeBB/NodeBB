@@ -8,7 +8,7 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		const {dialect} = module;
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 
 		// Get all values and count occurrences across sets
@@ -53,28 +53,22 @@ module.exports = function (module) {
 		if (!sets || !sets.length) {
 			return [];
 		}
-		const start = params.hasOwnProperty('start') ? params.start : 0;
-		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
-		let weights = params.weights || [];
+		const start = Object.prototype.hasOwnProperty.call(params, 'start') ? params.start : 0;
+		const stop = Object.prototype.hasOwnProperty.call(params, 'stop') ? params.stop : -1;
+		const weights = params.weights || [];
 		const aggregate = params.aggregate || 'SUM';
 
-		if (sets.length < weights.length) {
-			weights = weights.slice(0, sets.length);
-		}
-		while (sets.length > weights.length) {
-			weights.push(1);
-		}
+		const weightMap = helpers.createWeightMap(sets, weights);
 
 		let limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = null;
 		}
 
-		const {dialect} = module;
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 
 		// For MySQL 4 / SQLite compatibility, we emulate weighted intersect with application logic
-		// Get all values with their scores from all sets
 		const rows = await module.db.selectFrom('legacy_object as o')
 			.innerJoin('legacy_zset as z', join =>
 				join.onRef('o._key', '=', 'z._key')
@@ -88,16 +82,11 @@ module.exports = function (module) {
 			.execute();
 
 		// Build a map: value -> { setKey -> weightedScore }
-		const weightMap = {};
-		sets.forEach((set, idx) => {
-			weightMap[set] = weights[idx];
-		});
-
 		const valueData = {};
 		rows.forEach((row) => {
-			const weight = weightMap.hasOwnProperty(row.k) ? weightMap[row.k] : 1;
+			const weight = helpers.getWeight(weightMap, row.k);
 			const weightedScore = parseFloat(row.score) * weight;
-			
+
 			if (!valueData[row.value]) {
 				valueData[row.value] = { scores: [], sets: new Set() };
 			}
@@ -108,20 +97,13 @@ module.exports = function (module) {
 		// Filter to only values that appear in all sets (intersection)
 		const setsCount = sets.length;
 		const intersectedValues = [];
-		
+
 		Object.entries(valueData).forEach(([value, data]) => {
 			if (data.sets.size === setsCount) {
-				let score;
-				if (aggregate === 'SUM') {
-					score = data.scores.reduce((a, b) => a + b, 0);
-				} else if (aggregate === 'MIN') {
-					score = Math.min(...data.scores);
-				} else if (aggregate === 'MAX') {
-					score = Math.max(...data.scores);
-				} else {
-					score = data.scores.reduce((a, b) => a + b, 0);
-				}
-				intersectedValues.push({ value, score });
+				intersectedValues.push({
+					value,
+					score: helpers.aggregateScores(data.scores, aggregate),
+				});
 			}
 		});
 

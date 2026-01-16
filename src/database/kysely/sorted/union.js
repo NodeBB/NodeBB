@@ -8,7 +8,7 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		const {dialect} = module;
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 
 		const result = await module.db.selectFrom('legacy_object as o')
@@ -52,28 +52,22 @@ module.exports = function (module) {
 		if (!sets || !sets.length) {
 			return [];
 		}
-		const start = params.hasOwnProperty('start') ? params.start : 0;
-		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
-		let weights = params.weights || [];
+		const start = Object.prototype.hasOwnProperty.call(params, 'start') ? params.start : 0;
+		const stop = Object.prototype.hasOwnProperty.call(params, 'stop') ? params.stop : -1;
+		const weights = params.weights || [];
 		const aggregate = params.aggregate || 'SUM';
 
-		if (sets.length < weights.length) {
-			weights = weights.slice(0, sets.length);
-		}
-		while (sets.length > weights.length) {
-			weights.push(1);
-		}
+		const weightMap = helpers.createWeightMap(sets, weights);
 
 		let limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = null;
 		}
 
-		const {dialect} = module;
+		const { dialect } = module;
 		const now = helpers.getCurrentTimestamp(dialect);
 
-		// For MySQL 4 / SQLite compatibility, we need to emulate weighted union with application logic
-		// Get all values with their scores from all sets
+		// For MySQL 4 / SQLite compatibility, we emulate weighted union with application logic
 		const rows = await module.db.selectFrom('legacy_object as o')
 			.innerJoin('legacy_zset as z', join =>
 				join.onRef('o._key', '=', 'z._key')
@@ -87,16 +81,11 @@ module.exports = function (module) {
 			.execute();
 
 		// Build a map: value -> weighted scores
-		const weightMap = {};
-		sets.forEach((set, idx) => {
-			weightMap[set] = weights[idx];
-		});
-
 		const valueScores = {};
 		rows.forEach((row) => {
-			const weight = weightMap[row.k] || 1;
+			const weight = helpers.getWeight(weightMap, row.k);
 			const weightedScore = parseFloat(row.score) * weight;
-			
+
 			if (!valueScores[row.value]) {
 				valueScores[row.value] = [];
 			}
@@ -104,19 +93,10 @@ module.exports = function (module) {
 		});
 
 		// Aggregate scores
-		const aggregatedValues = Object.entries(valueScores).map(([value, scores]) => {
-			let score;
-			if (aggregate === 'SUM') {
-				score = scores.reduce((a, b) => a + b, 0);
-			} else if (aggregate === 'MIN') {
-				score = Math.min(...scores);
-			} else if (aggregate === 'MAX') {
-				score = Math.max(...scores);
-			} else {
-				score = scores.reduce((a, b) => a + b, 0);
-			}
-			return { value, score };
-		});
+		const aggregatedValues = Object.entries(valueScores).map(([value, scores]) => ({
+			value,
+			score: helpers.aggregateScores(scores, aggregate),
+		}));
 
 		// Sort
 		if (params.sort > 0) {
