@@ -45,19 +45,17 @@ define('forum/groups/list', [
 		return false;
 	};
 
-	function renderSearchResults(data) {
-		app.parseAndTranslate('partials/paginator', {
-			pagination: data.pagination,
-		}).then(function (html) {
-			$('.pagination-container').replaceWith(html);
-		});
-
-		const groupsEl = $('#groups-list');
-		app.parseAndTranslate('partials/groups/list', {
-			groups: data.groups,
-		}).then(function (html) {
-			groupsEl.empty().append(html);
-		});
+	async function renderSearchResults(data) {
+		const [paginationHtml, groupsHtml] = await Promise.all([
+			app.parseAndTranslate('partials/paginator', {
+				pagination: data.pagination,
+			}),
+			app.parseAndTranslate('partials/groups/list', {
+				groups: data.groups,
+			}),
+		]);
+		$('.pagination-container').replaceWith(paginationHtml);
+		$('#groups-list').empty().append(groupsHtml);
 	}
 
 	return Groups;
