@@ -42,7 +42,7 @@ async function registerAndLoginUser(req, res, userData) {
 	}
 
 	const queue = await user.shouldQueueUser(req.ip);
-	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue });
+	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, res, userData, queue });
 	if (result.queue) {
 		return await addToApprovalQueue(req, userData);
 	}
