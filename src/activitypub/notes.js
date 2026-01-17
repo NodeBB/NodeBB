@@ -16,10 +16,18 @@ const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
 const api = require('../api');
+const ttlCache = require('../cache/ttl');
+const websockets = require('../socket.io');
 const utils = require('../utils');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
+
+const backfillCache = ttlCache({
+	name: 'ap-backfill-cache',
+	max: 500,
+	ttl: 1000 * 60 * 2, // 2 minutes
+});
 
 Notes._normalizeTags = async (tag, cid) => {
 	const systemTags = (meta.config.systemTags || '').split(',');
@@ -255,16 +263,30 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 		}
 
+		let added = [];
 		await Promise.all(unprocessed.map(async (post) => {
 			const { to, cc } = post._activitypub;
 
 			try {
-				await topics.reply(post);
+				const postData = await topics.reply(post);
+				added.push(postData);
 				await Notes.updateLocalRecipients(post.pid, { to, cc });
 			} catch (e) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Could not add reply (${post.pid}): ${e.message}`);
 			}
 		}));
+
+		if (added.length) {
+			// Because replies are added in parallel, `index` is calculated incorrectly
+			added = added
+				.sort((a, b) => a.timestamp - b.timestamp)
+				.map((post, idx) => {
+					post.index = post.index - idx;
+					return post;
+				})
+				.reverse();
+			websockets.in(`topic_${tid}`).emit('event:new_post', { posts: added });
+		}
 
 		await Notes.syncUserInboxes(tid, uid);
 
@@ -582,6 +604,22 @@ Notes.getCategoryFollowers = async (cid) => {
 	uids = uids.filter(uid => !utils.isNumber(uid));
 
 	return uids;
+};
+
+Notes.backfill = async (pids) => {
+	if (!Array.isArray(pids)) {
+		pids = [pids];
+	}
+
+	return Promise.all(pids.map(async (pid) => {
+		if (backfillCache.has(pid)) {
+			console.log('cache hit, not proactively backfilling');
+			return;
+		}
+
+		await Notes.assert(0, pid, { skipChecks: 1 });
+		backfillCache.set(pid, 1);
+	}));
 };
 
 Notes.announce = {};

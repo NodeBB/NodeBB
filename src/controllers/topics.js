@@ -14,6 +14,7 @@ const helpers = require('./helpers');
 const pagination = require('../pagination');
 const utils = require('../utils');
 const analytics = require('../analytics');
+const activitypub = require('../activitypub');
 
 const topicsController = module.exports;
 
@@ -142,11 +143,18 @@ topicsController.get = async function getTopic(req, res, next) {
 		res.locals.linkTags.push(rel);
 	});
 
-	if (meta.config.activitypubEnabled && postAtIndex) {
-		// Include link header for richer parsing
-		const { pid } = postAtIndex;
-		const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
-		res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
+	if (meta.config.activitypubEnabled) {
+		if (postAtIndex) {
+			// Include link header for richer parsing
+			const { pid } = postAtIndex;
+			const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
+			res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
+		}
+
+		if (!utils.isNumber(topicData.mainPid)) {
+			// not awaited on purpose so topic loading is not blocked
+			activitypub.notes.backfill(topicData.mainPid);
+		}
 	}
 
 	res.render('topic', topicData);

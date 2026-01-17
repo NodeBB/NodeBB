@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash, createSign, createVerify, getHashes } = require('crypto');
-const { CronJob } = require('cron');
 
 const request = require('../request');
 const db = require('../database');
@@ -69,34 +68,7 @@ ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
 ActivityPub.out = require('./out');
-
-ActivityPub.startJobs = () => {
-	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
-	async function tryCronJob(method) {
-		if (!meta.config.activitypubEnabled) {
-			return;
-		}
-		try {
-			await method();
-		} catch (err) {
-			winston.error(err.stack);
-		}
-	}
-	new CronJob('0 0 * * *', async () => {
-		await tryCronJob(async () => {
-			await ActivityPub.notes.prune();
-			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
-		});
-	}, null, true, null, null, false); // change last argument to true for debugging
-
-	new CronJob('*/30 * * * *', async () => {
-		await tryCronJob(ActivityPub.actors.prune);
-	}, null, true, null, null, false); // change last argument to true for debugging
-
-	new CronJob('0 * * * * *', async () => {
-		await tryCronJob(retryFailedMessages);
-	}, null, true, null, null, false);
-};
+ActivityPub.jobs = require('./jobs');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
@@ -383,7 +355,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-async function sendMessage(uri, id, type, payload) {
+ActivityPub._sendMessage = async function (uri, id, type, payload) {
 	try {
 		const keyData = await ActivityPub.getPrivateKey(type, id);
 		const headers = await ActivityPub.sign(keyData, uri, payload);
@@ -409,7 +381,7 @@ async function sendMessage(uri, id, type, payload) {
 		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
 		return false;
 	}
-}
+};
 
 ActivityPub.send = async (type, id, targets, payload) => {
 	if (!meta.config.activitypubEnabled) {
@@ -443,7 +415,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		const retryQueuedSet = [];
 
 		await Promise.all(inboxBatch.map(async (uri) => {
-			const ok = await sendMessage(uri, id, type, payload);
+			const ok = await ActivityPub._sendMessage(uri, id, type, payload);
 			if (!ok) {
 				const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 				const nextTryOn = Date.now() + oneMinute;
@@ -471,57 +443,6 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		interval: 100,
 	}).catch(err => winston.error(err.stack));
 };
-
-async function retryFailedMessages() {
-	const queueIds = await db.getSortedSetRangeByScore('ap:retry:queue', 0, 50, '-inf', Date.now());
-	const queuedData = (await db.getObjects(queueIds.map(id => `ap:retry:queue:${id}`)));
-
-	const retryQueueAdd = [];
-	const retryQueuedSet = [];
-	const queueIdsToRemove = [];
-
-	const oneMinute = 1000 * 60;
-	await Promise.all(queuedData.map(async (data, index) => {
-		const queueId = queueIds[index];
-		if (!data) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-
-		const { uri, id, type, attempts, payload } = data;
-		if (!uri || !id || !type || !payload || attempts > 10) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-		let payloadObj;
-		try {
-			payloadObj = JSON.parse(payload);
-		} catch (err) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-		const ok = await sendMessage(uri, id, type, payloadObj);
-		if (ok) {
-			queueIdsToRemove.push(queueId);
-		} else {
-			const nextAttempt = (parseInt(attempts, 10) || 0) + 1;
-			const timeout = (2 ** nextAttempt) * oneMinute; // exponential backoff
-			const nextTryOn = Date.now() + timeout;
-			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-				attempts: nextAttempt,
-				timestamp: nextTryOn,
-			}]);
-		}
-	}));
-
-	await Promise.all([
-		db.sortedSetAddBulk(retryQueueAdd),
-		db.setObjectBulk(retryQueuedSet),
-		db.sortedSetRemove('ap:retry:queue', queueIdsToRemove),
-		db.deleteAll(queueIdsToRemove.map(id => `ap:retry:queue:${id}`)),
-	]);
-}
 
 ActivityPub.record = async ({ id, type, actor }) => {
 	const now = Date.now();

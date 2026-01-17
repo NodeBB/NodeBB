@@ -87,22 +87,22 @@ describe('Topic tools', () => {
 		});
 
 		it('should throw when attempting to move a topic from a remote category', async () => {
-			assert.rejects(
+			await assert.rejects(
 				topics.tools.move(tid1, {
 					cid: localCid,
 					uid: 'system',
 				}),
-				'[[error:cant-move-topic-to-from-remote-categories]]'
+				{ message: '[[error:no-topic]]' }
 			);
 		});
 
 		it('should throw when attempting to move a topic to a remote category', async () => {
-			assert.rejects(
+			await assert.rejects(
 				topics.tools.move(tid2, {
 					cid: remoteCid,
 					uid: 'system',
 				}),
-				'[[error:cant-move-topic-to-from-remote-categories]]'
+				{ message: '[[error:cant-move-topic-to-from-remote-categories]]' }
 			);
 		});
 	});
