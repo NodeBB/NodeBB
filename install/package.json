@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
+        "better-sqlite3": "11.9.1",
         "@fontsource-utils/scss": "0.2.2",
         "@fontsource/inter": "5.2.8",
         "@fontsource/poppins": "5.2.7",
@@ -85,6 +86,7 @@
         "jquery-ui": "1.14.1",
         "jsesc": "3.1.0",
         "json2csv": "5.0.7",
+        "kysely": "0.28.4",
         "jsonwebtoken": "9.0.3",
         "lodash": "4.17.21",
         "logrotate-stream": "0.2.9",
