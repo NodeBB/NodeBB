@@ -1,15 +1,14 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('../helpers');
+	const { helpers } = module;
 
 	module.sortedSetIntersectCard = async function (keys) {
-		if (!Array.isArray(keys) || !keys.length) {
+		if (!keys?.length) {
 			return 0;
 		}
 
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		// Get all values and count occurrences across sets
 		const rows = await module.db.selectFrom('legacy_object as o')
@@ -27,15 +26,7 @@ module.exports = function (module) {
 			.execute();
 
 		// Count values that appear in all sets
-		const keysCount = keys.length;
-		let count = 0;
-		rows.forEach((row) => {
-			if (parseInt(row.c, 10) === keysCount) {
-				count += 1;
-			}
-		});
-
-		return count;
+		return rows.filter(({ c }) => parseInt(c, 10) === keys.length).length;
 	};
 
 	module.getSortedSetIntersect = async function (params) {
@@ -48,25 +39,14 @@ module.exports = function (module) {
 		return await getSortedSetIntersect(params);
 	};
 
-	async function getSortedSetIntersect(params) {
-		const { sets } = params;
-		if (!sets || !sets.length) {
+	async function getSortedSetIntersect({ sets, weights = [], aggregate = 'SUM', sort, withScores, start = 0, stop = -1 }) {
+		if (!sets?.length) {
 			return [];
 		}
-		const start = Object.prototype.hasOwnProperty.call(params, 'start') ? params.start : 0;
-		const stop = Object.prototype.hasOwnProperty.call(params, 'stop') ? params.stop : -1;
-		const weights = params.weights || [];
-		const aggregate = params.aggregate || 'SUM';
 
+		const limit = stop - start + 1 > 0 ? stop - start + 1 : null;
 		const weightMap = helpers.createWeightMap(sets, weights);
-
-		let limit = stop - start + 1;
-		if (limit <= 0) {
-			limit = null;
-		}
-
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		// For MySQL 4 / SQLite compatibility, we emulate weighted intersect with application logic
 		const rows = await module.db.selectFrom('legacy_object as o')
@@ -81,48 +61,20 @@ module.exports = function (module) {
 			]))
 			.execute();
 
-		// Build a map: value -> { setKey -> weightedScore }
-		const valueData = {};
-		rows.forEach((row) => {
-			const weight = helpers.getWeight(weightMap, row.k);
-			const weightedScore = parseFloat(row.score) * weight;
+		// Build array using Map, then filter/aggregate/sort/paginate
+		const result = [...rows.reduce((acc, { k, value, score }) => {
+			const prev = acc.get(value) || { value, scores: [], sets: new Set() };
+			return acc.set(value, {
+				value,
+				scores: [...prev.scores, parseFloat(score) * helpers.getWeight(weightMap, k)],
+				sets: new Set([...prev.sets, k]),
+			});
+		}, new Map()).values()]
+			.filter(({ sets: s }) => s.size === sets.length)
+			.map(({ value, scores }) => ({ value, score: helpers.aggregateScores(scores, aggregate) }))
+			.sort((a, b) => (sort > 0 ? a.score - b.score : b.score - a.score))
+			.slice(start, limit ? start + limit : undefined);
 
-			if (!valueData[row.value]) {
-				valueData[row.value] = { scores: [], sets: new Set() };
-			}
-			valueData[row.value].scores.push(weightedScore);
-			valueData[row.value].sets.add(row.k);
-		});
-
-		// Filter to only values that appear in all sets (intersection)
-		const setsCount = sets.length;
-		const intersectedValues = [];
-
-		Object.entries(valueData).forEach(([value, data]) => {
-			if (data.sets.size === setsCount) {
-				intersectedValues.push({
-					value,
-					score: helpers.aggregateScores(data.scores, aggregate),
-				});
-			}
-		});
-
-		// Sort
-		if (params.sort > 0) {
-			intersectedValues.sort((a, b) => a.score - b.score);
-		} else {
-			intersectedValues.sort((a, b) => b.score - a.score);
-		}
-
-		// Apply offset and limit
-		let result = intersectedValues.slice(start);
-		if (limit !== null) {
-			result = result.slice(0, limit);
-		}
-
-		if (params.withScores) {
-			return result.map(r => ({ value: r.value, score: r.score }));
-		}
-		return result.map(r => r.value);
+		return withScores ? result : result.map(({ value }) => value);
 	}
 };

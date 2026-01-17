@@ -28,7 +28,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [20, 22]
-        database: [mongo-dev, mongo, redis, postgres]
+        database: [mongo-dev, mongo, redis, postgres, sqlite]
         include:
           # only run coverage once
           - os: ubuntu-latest
@@ -177,6 +177,30 @@ jobs:
               "host": "127.0.0.1",
               "database": 1,
               "port": 6379
+            }
+        run: |
+          node app --setup="${SETUP}" --ci="${CI}"
+
+      - name: Setup on SQLite
+        if: startsWith(matrix.database, 'sqlite')
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
+
+              "database": "kysely",
+              "kysely:dialect": "sqlite",
+              "kysely:database": "./nodebb.db"
+            }
+          CI: >-
+            {
+              "dialect": "sqlite",
+              "database": "./ci_test.db"
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('../helpers');
+	const { helpers } = module;
 	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
@@ -21,15 +21,15 @@ module.exports = function (module) {
 	};
 
 	async function sortedSetAddSingle(key, score, value) {
-		value = helpers.valueToString(value);
+		value = String(value);
 		score = parseFloat(score);
 
-		await helpers.withTransaction(module, key, 'zset', async (client, dialect) => {
+		await helpers.withTransaction(key, 'zset', async (client) => {
 			await helpers.upsert(client, 'legacy_zset', {
 				_key: key,
 				value: value,
 				score: score,
-			}, ['_key', 'value'], { score: score }, dialect);
+			}, ['_key', 'value'], { score: score });
 		});
 	}
 
@@ -40,22 +40,23 @@ module.exports = function (module) {
 		if (scores.length !== values.length) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		for (let i = 0; i < scores.length; i += 1) {
-			if (!utils.isNumber(scores[i])) {
-				throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
-			}
+		const invalidIdx = scores.findIndex(s => !utils.isNumber(s));
+		if (invalidIdx !== -1) {
+			throw new Error(`[[error:invalid-score, ${scores[invalidIdx]}]]`);
 		}
 
-		values = values.map(helpers.valueToString);
-		scores = scores.map(s => parseFloat(s));
+		values = values.map(String);
+		scores = scores.map(parseFloat);
 
-		await helpers.withTransaction(module, key, 'zset', async (client, dialect) => {
-			const rows = values.map((value, i) => ({
+		await helpers.withTransaction(key, 'zset', async (client) => {
+			let rows = values.map((value, i) => ({
 				_key: key,
 				value: value,
 				score: scores[i],
 			}));
-			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
+			// Deduplicate to avoid "ON CONFLICT DO UPDATE cannot affect row a second time" error
+			rows = helpers.deduplicateRows(rows, ['_key', 'value']);
+			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score']);
 		});
 	}
 
@@ -74,16 +75,16 @@ module.exports = function (module) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 		scores = isArrayOfScores ? scores.map(s => parseFloat(s)) : parseFloat(scores);
 
-		await helpers.withTransactionKeys(module, keys, 'zset', async (client, dialect) => {
+		await helpers.withTransactionKeys(keys, 'zset', async (client) => {
 			const rows = keys.map((key, i) => ({
 				_key: key,
 				value: value,
 				score: isArrayOfScores ? scores[i] : scores,
 			}));
-			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
+			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score']);
 		});
 	};
 
@@ -93,25 +94,26 @@ module.exports = function (module) {
 		}
 
 		// Validate all scores first
-		for (const item of data) {
-			if (!utils.isNumber(item[1])) {
-				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
-			}
+		const invalidItem = data.find(([, score]) => !utils.isNumber(score));
+		if (invalidItem) {
+			throw new Error(`[[error:invalid-score, ${invalidItem[1]}]]`);
 		}
 
-		await helpers.withTransaction(module, null, null, async (client, dialect) => {
+		await helpers.withTransaction(null, null, async (client) => {
 			// Ensure all keys have the right type
-			const uniqueKeys = [...new Set(data.map(item => item[0]))];
-			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset', dialect);
+			const uniqueKeys = [...new Set(data.map(([key]) => key))];
+			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset');
 
-			// Build all rows for batch upsert
-			const rows = data.map(item => ({
-				_key: item[0],
-				value: helpers.valueToString(item[2]),
-				score: parseFloat(item[1]),
-			}));
-
-			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
+			// Build all rows for batch upsert and deduplicate
+			const rows = helpers.deduplicateRows(
+				data.map(([key, score, value]) => ({
+					_key: key,
+					value: String(value),
+					score: parseFloat(score),
+				})),
+				['_key', 'value']
+			);
+			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score']);
 		});
 	};
 };

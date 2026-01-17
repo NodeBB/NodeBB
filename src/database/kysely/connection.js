@@ -46,12 +46,12 @@ connection.getConnectionOptions = function (options) {
 			if (typeof options.ssl === 'object') {
 				connOptions.ssl = {
 					rejectUnauthorized: options.ssl.rejectUnauthorized,
+					...Object.fromEntries(
+						['ca', 'key', 'cert']
+							.filter(prop => options.ssl[prop])
+							.map(prop => [prop, fs.readFileSync(options.ssl[prop]).toString()])
+					),
 				};
-				['ca', 'key', 'cert'].forEach((prop) => {
-					if (options.ssl[prop]) {
-						connOptions.ssl[prop] = fs.readFileSync(options.ssl[prop]).toString();
-					}
-				});
 			} else {
 				connOptions.ssl = { rejectUnauthorized: false };
 			}
@@ -59,8 +59,15 @@ connection.getConnectionOptions = function (options) {
 	} else if (dialect === 'sqlite') {
 		// SQLite connection options
 		connOptions.filename = options.filename || options.database || ':memory:';
+	} else if (dialect === 'pglite') {
+		// PGlite connection options (embedded PostgreSQL)
+		// Use :memory: for in-memory database or a path for persistent storage
+		connOptions.dataDir = options.dataDir || options.database || 'memory://';
+	} else {
+		// Unknown dialect - pass through all options for custom dialects
+		Object.assign(connOptions, options);
 	}
-	
+
 	return connOptions;
 };
 
@@ -106,6 +113,17 @@ connection.createKyselyInstance = async function (options) {
 		});
 	} else if (dialect === 'sqlite') {
 		const Database = require('better-sqlite3');
+		const path = require('path');
+		const fs = require('fs');
+		
+		// Auto-create directory if it doesn't exist (for file-based databases)
+		if (connOptions.filename !== ':memory:') {
+			const dir = path.dirname(connOptions.filename);
+			if (dir && dir !== '.') {
+				fs.mkdirSync(dir, { recursive: true });
+			}
+		}
+		
 		const database = new Database(connOptions.filename);
 		database.pragma('journal_mode = WAL');
 		database.pragma('foreign_keys = ON');
@@ -113,8 +131,33 @@ connection.createKyselyInstance = async function (options) {
 		kyselyDialect = new SqliteDialect({
 			database: database,
 		});
+	} else if (dialect === 'pglite') {
+		const { PGlite } = require('@electric-sql/pglite');
+		const { PGliteDialect } = require('kysely-pglite-dialect');
+
+		const pglite = new PGlite(connOptions.dataDir);
+
+		kyselyDialect = new PGliteDialect(pglite);
 	} else {
-		throw new Error(`Unsupported database dialect: ${dialect}`);
+		// Unsupported dialect - warn and attempt to use custom dialect from options
+		winston.warn(`[database/kysely] Dialect "${dialect}" is not officially supported.`);
+		winston.warn('[database/kysely] Attempting to use custom dialect configuration from options.');
+
+		if (connOptions.kyselyDialect) {
+			if (typeof connOptions.kyselyDialect === 'function') {
+				// User provided a factory function
+				kyselyDialect = connOptions.kyselyDialect(connOptions);
+			} else {
+				// User provided a package name to require
+				const CustomDialect = require(connOptions.kyselyDialect);
+				kyselyDialect = new CustomDialect(connOptions);
+			}
+		} else {
+			throw new Error(
+				`Unsupported database dialect: ${dialect}. ` +
+				'Provide a "kyselyDialect" in your config (function or package name) to use a custom dialect.'
+			);
+		}
 	}
 	
 	const db = new Kysely({
@@ -125,7 +168,7 @@ connection.createKyselyInstance = async function (options) {
 	try {
 		if (dialect === 'mysql') {
 			await db.selectFrom('information_schema.tables').select('table_name').limit(1).execute();
-		} else if (dialect === 'postgres') {
+		} else if (dialect === 'postgres' || dialect === 'pglite') {
 			await db.selectFrom('pg_catalog.pg_tables').select('tablename').limit(1).execute();
 		} else if (dialect === 'sqlite') {
 			await db.selectFrom('sqlite_master').select('name').limit(1).execute();

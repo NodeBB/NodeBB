@@ -16,7 +16,7 @@
  */
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
+	const { helpers } = module;
 
 	/**
 	 * Get boundary positions for a list.
@@ -48,7 +48,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		await helpers.withTransaction(module, key, 'list', async (client) => {
+		await helpers.withTransaction(key, 'list', async (client) => {
 			const values = Array.isArray(value) ? value : [value];
 			// Reverse order so prepending ['a', 'b', 'c'] results in ['c', 'b', 'a', ...]
 			const insertOrder = [...values].reverse();
@@ -61,7 +61,7 @@ module.exports = function (module) {
 			const rows = insertOrder.map((v, i) => ({
 				_key: key,
 				idx: startPos + i,
-				value: helpers.valueToString(v),
+				value: String(v),
 			}));
 
 			await helpers.insertMultiple(client, 'legacy_list', rows);
@@ -77,7 +77,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		await helpers.withTransaction(module, key, 'list', async (client) => {
+		await helpers.withTransaction(key, 'list', async (client) => {
 			// Get current max position (or start at 0 if empty)
 			const bounds = await getBounds(client, key);
 			const startPos = bounds.max !== null ? bounds.max + 1 : 0;
@@ -87,7 +87,7 @@ module.exports = function (module) {
 			const rows = values.map((v, i) => ({
 				_key: key,
 				idx: startPos + i,
-				value: helpers.valueToString(v),
+				value: String(v),
 			}));
 
 			await helpers.insertMultiple(client, 'legacy_list', rows);
@@ -103,8 +103,8 @@ module.exports = function (module) {
 			return null;
 		}
 
-		return await helpers.withTransaction(module, null, null, async (client, dialect) => {
-			const now = helpers.getCurrentTimestamp(dialect);
+		return await helpers.withTransaction(null, null, async (client) => {
+			const now = new Date().toISOString();
 
 			// Build query for last element
 			let query = client.selectFrom('legacy_object as o')
@@ -149,7 +149,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const values = Array.isArray(value) ? value.map(helpers.valueToString) : [helpers.valueToString(value)];
+		const values = Array.isArray(value) ? value.map(v => String(v)) : [String(value)];
 
 		// Simple delete without reindexing - gaps are fine
 		await module.db.deleteFrom('legacy_list')
@@ -180,7 +180,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		await helpers.withTransaction(module, null, null, async (client) => {
+		await helpers.withTransaction(null, null, async (client) => {
 			// Get all positions in order
 			const positions = await client.selectFrom('legacy_list')
 				.select('idx')
@@ -222,7 +222,7 @@ module.exports = function (module) {
 		}
 
 		// Get all elements in order first
-		const elements = await helpers.createListQuery(module.db, module.dialect)
+		const elements = await helpers.createListQuery()
 			.select('l.value')
 			.where('o._key', '=', key)
 			.orderBy('l.idx', 'asc')
@@ -241,7 +241,7 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		const result = await helpers.createListQuery(module.db, module.dialect)
+		const result = await helpers.createListQuery()
 			.select(eb => eb.fn.count('l.idx').as('count'))
 			.where('o._key', '=', key)
 			.executeTakeFirst();

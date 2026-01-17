@@ -50,8 +50,7 @@ class KyselySessionStore extends Store {
 	}
 
 	async _get(sid) {
-		const {dialect} = this;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		const result = await this.db.selectFrom('sessions')
 			.select('sess')
@@ -83,7 +82,7 @@ class KyselySessionStore extends Store {
 	async _set(sid, session) {
 		const {dialect} = this;
 		const ttl = session.cookie && session.cookie.maxAge ? session.cookie.maxAge : 86400000;
-		const expireAt = helpers.getExpireAtTimestamp(new Date(Date.now() + ttl), dialect);
+		const expireAt = new Date(Date.now() + ttl).toISOString();
 		const sess = JSON.stringify(session);
 
 		await helpers.upsert(this.db, 'sessions', {
@@ -117,9 +116,8 @@ class KyselySessionStore extends Store {
 	}
 
 	async _touch(sid, session) {
-		const {dialect} = this;
 		const ttl = session.cookie && session.cookie.maxAge ? session.cookie.maxAge : 86400000;
-		const expireAt = helpers.getExpireAtTimestamp(new Date(Date.now() + ttl), dialect);
+		const expireAt = new Date(Date.now() + ttl).toISOString();
 
 		await this.db.updateTable('sessions')
 			.set({ expireAt: expireAt })
@@ -135,8 +133,7 @@ class KyselySessionStore extends Store {
 	}
 
 	async _all() {
-		const {dialect} = this;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		const result = await this.db.selectFrom('sessions')
 			.select(['sid', 'sess'])
@@ -146,15 +143,13 @@ class KyselySessionStore extends Store {
 			]))
 			.execute();
 
-		const sessions = {};
-		result.forEach((row) => {
+		return result.reduce((sessions, { sid, sess }) => {
 			try {
-				sessions[row.sid] = typeof row.sess === 'string' ? JSON.parse(row.sess) : row.sess;
+				return { ...sessions, [sid]: typeof sess === 'string' ? JSON.parse(sess) : sess };
 			} catch (err) {
-				// Ignore invalid sessions
+				return sessions; // Ignore invalid sessions
 			}
-		});
-		return sessions;
+		}, {});
 	}
 
 	length(callback) {
@@ -165,8 +160,7 @@ class KyselySessionStore extends Store {
 	}
 
 	async _length() {
-		const {dialect} = this;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		const result = await this.db.selectFrom('sessions')
 			.select(eb => eb.fn.count('sid').as('count'))
@@ -192,8 +186,7 @@ class KyselySessionStore extends Store {
 
 	// Cleanup expired sessions
 	async cleanupExpired() {
-		const {dialect} = this;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		await this.db.deleteFrom('sessions')
 			.where('expireAt', '<', now)

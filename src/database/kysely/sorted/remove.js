@@ -1,8 +1,6 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('../helpers');
-
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
 			return;
@@ -19,7 +17,7 @@ module.exports = function (module) {
 		if (!isValueArray) {
 			value = [value];
 		}
-		value = value.map(helpers.valueToString);
+		value = value.map(String);
 
 		await module.db.deleteFrom('legacy_zset')
 			.where('_key', 'in', key)
@@ -32,7 +30,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 
 		await module.db.deleteFrom('legacy_zset')
 			.where('_key', 'in', keys)
@@ -76,7 +74,7 @@ module.exports = function (module) {
 			.where(eb => eb.or(
 				data.map(([key, value]) => eb.and([
 					eb('_key', '=', key),
-					eb('value', '=', helpers.valueToString(value)),
+					eb('value', '=', String(value)),
 				]))
 			))
 			.execute();

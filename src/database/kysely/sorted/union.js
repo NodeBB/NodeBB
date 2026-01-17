@@ -1,15 +1,14 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('../helpers');
+	const { helpers } = module;
 
 	module.sortedSetUnionCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
 
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		const result = await module.db.selectFrom('legacy_object as o')
 			.innerJoin('legacy_zset as z', join =>
@@ -47,28 +46,17 @@ module.exports = function (module) {
 		return await getSortedSetUnion(params);
 	};
 
-	async function getSortedSetUnion(params) {
-		const { sets } = params;
-		if (!sets || !sets.length) {
+	async function getSortedSetUnion({ sets, weights = [], aggregate = 'SUM', sort, withScores, start = 0, stop = -1, min = '-inf', max = '+inf' }) {
+		if (!sets?.length) {
 			return [];
 		}
-		const start = Object.prototype.hasOwnProperty.call(params, 'start') ? params.start : 0;
-		const stop = Object.prototype.hasOwnProperty.call(params, 'stop') ? params.stop : -1;
-		const weights = params.weights || [];
-		const aggregate = params.aggregate || 'SUM';
 
+		const limit = stop - start + 1 > 0 ? stop - start + 1 : null;
 		const weightMap = helpers.createWeightMap(sets, weights);
-
-		let limit = stop - start + 1;
-		if (limit <= 0) {
-			limit = null;
-		}
-
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		// For MySQL 4 / SQLite compatibility, we emulate weighted union with application logic
-		const rows = await module.db.selectFrom('legacy_object as o')
+		let query = module.db.selectFrom('legacy_object as o')
 			.innerJoin('legacy_zset as z', join =>
 				join.onRef('o._key', '=', 'z._key')
 					.on('o.type', '=', 'zset'))
@@ -77,43 +65,29 @@ module.exports = function (module) {
 			.where(eb => eb.or([
 				eb('o.expireAt', 'is', null),
 				eb('o.expireAt', '>', now),
-			]))
-			.execute();
+			]));
 
-		// Build a map: value -> weighted scores
-		const valueScores = {};
-		rows.forEach((row) => {
-			const weight = helpers.getWeight(weightMap, row.k);
-			const weightedScore = parseFloat(row.score) * weight;
-
-			if (!valueScores[row.value]) {
-				valueScores[row.value] = [];
-			}
-			valueScores[row.value].push(weightedScore);
-		});
-
-		// Aggregate scores
-		const aggregatedValues = Object.entries(valueScores).map(([value, scores]) => ({
-			value,
-			score: helpers.aggregateScores(scores, aggregate),
-		}));
-
-		// Sort
-		if (params.sort > 0) {
-			aggregatedValues.sort((a, b) => a.score - b.score);
-		} else {
-			aggregatedValues.sort((a, b) => b.score - a.score);
+		// Apply score filtering if min/max provided
+		if (min !== '-inf') {
+			const minScore = parseFloat(min);
+			query = query.where('z.score', '>=', minScore);
+		}
+		if (max !== '+inf') {
+			const maxScore = parseFloat(max);
+			query = query.where('z.score', '<=', maxScore);
 		}
 
-		// Apply offset and limit
-		let result = aggregatedValues.slice(start);
-		if (limit !== null) {
-			result = result.slice(0, limit);
-		}
+		const rows = await query.execute();
 
-		if (params.withScores) {
-			return result.map(r => ({ value: r.value, score: r.score }));
-		}
-		return result.map(r => r.value);
+		// Build array using Map, then aggregate/sort/paginate
+		const result = [...rows.reduce((acc, { k, value, score }) => {
+			const prev = acc.get(value) || { value, scores: [] };
+			return acc.set(value, { value, scores: [...prev.scores, parseFloat(score) * helpers.getWeight(weightMap, k)] });
+		}, new Map()).values()]
+			.map(({ value, scores }) => ({ value, score: helpers.aggregateScores(scores, aggregate) }))
+			.sort((a, b) => (sort > 0 ? a.score - b.score : b.score - a.score))
+			.slice(start, limit ? start + limit : undefined);
+
+		return withScores ? result : result.map(({ value }) => value);
 	}
 };

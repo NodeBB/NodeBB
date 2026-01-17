@@ -7,13 +7,14 @@ const winston = require('winston');
 const nconf = require('nconf');
 
 const connection = require('./kysely/connection');
+const features = require('./kysely/features');
 
 const kyselyModule = module.exports;
 
 kyselyModule.questions = [
 	{
 		name: 'kysely:dialect',
-		description: 'Database dialect (mysql, postgres, sqlite)',
+		description: 'Database dialect (mysql, postgres, sqlite, pglite)',
 		default: nconf.get('kysely:dialect') || nconf.get('defaults:kysely:dialect') || 'mysql',
 	},
 	{
@@ -45,12 +46,29 @@ kyselyModule.questions = [
 	},
 ];
 
+/**
+ * Get the SQL dialect to use for SQL generation.
+ * PGlite uses the same SQL as PostgreSQL.
+ * @param {string} dialect - Original dialect
+ * @returns {string} SQL dialect for generation
+ */
+function getSqlDialect(dialect) {
+	// PGlite is PostgreSQL-compatible
+	if (dialect === 'pglite') {
+		return 'postgres';
+	}
+	return dialect;
+}
+
 kyselyModule.init = async function (opts) {
 	const db = await connection.createKyselyInstance(opts);
 	kyselyModule.db = db;
 	kyselyModule.pool = db;
 	kyselyModule.client = db;
-	kyselyModule.dialect = connection.getDialect(opts);
+	// Store both the original dialect and the SQL dialect
+	const originalDialect = connection.getDialect(opts);
+	kyselyModule.dialect = getSqlDialect(originalDialect);
+	kyselyModule.originalDialect = originalDialect;
 
 	try {
 		await checkUpgrade(db);
@@ -59,38 +77,24 @@ kyselyModule.init = async function (opts) {
 		throw err;
 	}
 
-	// Check if the database supports row-level locking (FOR UPDATE)
-	// SQLite doesn't support this, MySQL and PostgreSQL do
-	kyselyModule.supportsLocking = await checkLockingSupport(db, kyselyModule.dialect);
+	// Run feature detection and cache results
+	kyselyModule.features = await features.detect(db, kyselyModule.dialect);
+	// Keep supportsLocking as a top-level property for backward compatibility
+	kyselyModule.supportsLocking = kyselyModule.features.locking;
+
+	// Update dialect if detection found a more specific one
+	if (kyselyModule.features.detectedDialect) {
+		kyselyModule.dialect = kyselyModule.features.detectedDialect;
+	}
+
+	// Create context object for passing to helpers (combines dialect and features)
+	kyselyModule.context = {
+		dialect: kyselyModule.dialect,
+		features: kyselyModule.features,
+	};
+
+	winston.info(`[database/kysely] Detected features: ${JSON.stringify(kyselyModule.features)}`);
 };
-
-/**
- * Check if the database supports row-level locking (FOR UPDATE).
- * SQLite does not support this, MySQL and PostgreSQL do.
- * @param {object} db - Kysely database instance
- * @param {string} dialect - Database dialect
- * @returns {Promise<boolean>} True if locking is supported
- */
-async function checkLockingSupport(db, dialect) {
-	// SQLite doesn't support FOR UPDATE
-	if (dialect === 'sqlite') {
-		return false;
-	}
-
-	// Try to execute a query with FOR UPDATE
-	try {
-		await db.transaction().execute(async (trx) => {
-			await trx.selectFrom('legacy_object')
-				.select('_key')
-				.limit(1)
-				.forUpdate()
-				.execute();
-		});
-		return true;
-	} catch {
-		return false;
-	}
-}
 
 async function checkUpgrade(db) {
 	const {dialect} = kyselyModule;
@@ -105,7 +109,7 @@ async function checkUpgrade(db) {
 				.where('table_name', '=', 'legacy_object')
 				.execute();
 			tablesExist = result.length > 0;
-		} else if (dialect === 'postgres') {
+		} else if (dialect === 'postgres' || kyselyModule.originalDialect === 'pglite') {
 			const result = await db.selectFrom('information_schema.tables')
 				.select('table_name')
 				.where('table_schema', '=', 'public')
@@ -134,13 +138,15 @@ async function checkUpgrade(db) {
 }
 
 async function createTables(db, dialect) {
+	const timestampType = features.getTimestampType(dialect);
+
 	// 1. Create legacy_object table - main registry for all keys
 	await db.schema
 		.createTable('legacy_object')
 		.ifNotExists()
 		.addColumn('_key', 'varchar(255)', col => col.primaryKey().notNull())
 		.addColumn('type', 'varchar(10)', col => col.notNull())
-		.addColumn('expireAt', dialect === 'sqlite' ? 'text' : 'timestamp')
+		.addColumn('expireAt', timestampType)
 		.execute();
 
 	// 2. Create legacy_hash table - normalized field storage (key, field, value)
@@ -227,16 +233,17 @@ async function createTables(db, dialect) {
 kyselyModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
 	const {dialect} = kyselyModule;
-	
+	const timestampType = features.getTimestampType(dialect);
+
 	// Create session table
 	const db = kyselyModule.db || await connection.createKyselyInstance(options);
-	
+
 	await db.schema
 		.createTable('sessions')
 		.ifNotExists()
 		.addColumn('sid', 'varchar(255)', col => col.primaryKey().notNull())
 		.addColumn('sess', 'text', col => col.notNull())
-		.addColumn('expireAt', dialect === 'sqlite' ? 'text' : 'timestamp', col => col.notNull())
+		.addColumn('expireAt', timestampType, col => col.notNull())
 		.execute();
 
 	await db.schema
@@ -335,7 +342,7 @@ kyselyModule.info = async function (db) {
 		if (dialect === 'mysql') {
 			const result = await sql`SELECT VERSION() as version`.execute(db);
 			info.version = result.rows[0].version;
-		} else if (dialect === 'postgres') {
+		} else if (dialect === 'postgres' || kyselyModule.originalDialect === 'pglite') {
 			const result = await sql`SELECT current_setting('server_version') as version`.execute(db);
 			info.version = result.rows[0].version;
 		} else if (dialect === 'sqlite') {
@@ -356,7 +363,8 @@ kyselyModule.close = async function () {
 	}
 };
 
-// Load sub-modules
+// Load sub-modules (order matters: helpers must be loaded first)
+require('./kysely/helpers')(kyselyModule);
 require('./kysely/main')(kyselyModule);
 require('./kysely/hash')(kyselyModule);
 require('./kysely/sets')(kyselyModule);
@@ -364,4 +372,4 @@ require('./kysely/sorted')(kyselyModule);
 require('./kysely/list')(kyselyModule);
 require('./kysely/transaction')(kyselyModule);
 
-require('../promisify')(kyselyModule, ['client', 'sessionStore', 'pool', 'db', 'transaction']);
+require('../promisify')(kyselyModule, ['client', 'sessionStore', 'pool', 'db', 'transaction', 'helpers']);

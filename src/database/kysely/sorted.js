@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
+	const { helpers } = module;
 
 	require('./sorted/add')(module);
 	require('./sorted/remove')(module);
@@ -34,14 +34,13 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const { dialect } = module;
 		const isReverse = method === 'zrevrange' || method === 'zrevrangebyscore';
 
 		if (start < 0 && start > stop) {
 			return [];
 		}
 
-		let query = helpers.createZsetQuery(module.db, dialect)
+		let query = helpers.createZsetQuery()
 			.select(['z.value', 'z.score'])
 			.where('o._key', 'in', keys);
 
@@ -72,43 +71,80 @@ module.exports = function (module) {
 	}
 
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, false);
+		return await sortedSetRangeByScore(key, start, count, min, max, 1, false);
 	};
 
 	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, false);
+		return await sortedSetRangeByScore(key, start, count, min, max, -1, false);
 	};
 
 	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, true);
+		return await sortedSetRangeByScore(key, start, count, min, max, 1, true);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, true);
+		return await sortedSetRangeByScore(key, start, count, min, max, -1, true);
 	};
 
-	async function sortedSetRangeByScore(method, key, start, count, min, max, withScores) {
+	async function sortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
+		if (!key) {
+			return;
+		}
+
+		// Handle both single key and array of keys
+		const keys = Array.isArray(key) ? key : [key];
+		if (!keys.length) {
+			return [];
+		}
+
 		if (count === 0) {
 			return [];
 		}
 
-		if (Array.isArray(key)) {
-			if (!key.length) {
-				return [];
-			}
-			return module.sortedSetUnion({ method, sets: key, start, stop: start + count - 1, min, max, withScores });
+		// Handle count = -1 (no limit)
+		if (parseInt(count, 10) === -1) {
+			count = null;
 		}
 
-		const { dialect } = module;
-		const isReverse = method === 'zrevrangebyscore';
+		// Convert -inf/+inf to null for comparison
+		// Also handle NaN (which can occur if unreadCutoff config is not set)
+		let minScore = (min === '-inf') ? null : parseFloat(min);
+		let maxScore = (max === '+inf') ? null : parseFloat(max);
+		
+		// NaN should be treated as no filter
+		if (minScore !== null && Number.isNaN(minScore)) {
+			minScore = null;
+		}
+		if (maxScore !== null && Number.isNaN(maxScore)) {
+			maxScore = null;
+		}
 
-		let query = helpers.createZsetQuery(module.db, dialect)
-			.select(withScores ? ['z.value', 'z.score'] : ['z.value'])
-			.where('o._key', '=', key);
+		const isReverse = sort < 0;
 
-		query = helpers.applyScoreConditions(query, min, max);
+		let query = helpers.createZsetQuery()
+			.select(['z.value', 'z.score'])
+			.where('o._key', 'in', keys);
+
+		// Apply score conditions (like postgres: NULL means no limit)
+		if (minScore !== null) {
+			query = query.where('z.score', '>=', minScore);
+		}
+		if (maxScore !== null) {
+			query = query.where('z.score', '<=', maxScore);
+		}
+
 		query = query.orderBy('z.score', isReverse ? 'desc' : 'asc');
-		query = helpers.applyPagination(query, start, count);
+
+		// Apply pagination - SQLite requires LIMIT when using OFFSET
+		if (count !== null && count > 0) {
+			query = query.limit(count);
+			if (start > 0) {
+				query = query.offset(start);
+			}
+		} else if (start > 0) {
+			// Use a very large limit when only offset is specified (SQLite doesn't support OFFSET without LIMIT)
+			query = query.limit(Number.MAX_SAFE_INTEGER).offset(start);
+		}
 
 		const result = await query.execute();
 		if (withScores) {
@@ -122,7 +158,7 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		let query = helpers.createZsetQuery(module.db, module.dialect)
+		let query = helpers.createZsetQuery()
 			.select(eb => eb.fn.count('z.value').as('count'))
 			.where('o._key', '=', key);
 
@@ -137,7 +173,7 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select(eb => eb.fn.count('z.value').as('count'))
 			.where('o._key', '=', key)
 			.executeTakeFirst();
@@ -150,7 +186,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select(['o._key'])
 			.select(eb => eb.fn.count('z.value').as('count'))
 			.where('o._key', 'in', keys)
@@ -170,7 +206,7 @@ module.exports = function (module) {
 
 		let counts;
 		if (min !== '-inf' || max !== '+inf') {
-			let query = helpers.createZsetQuery(module.db, module.dialect)
+			let query = helpers.createZsetQuery()
 				.select(['o._key'])
 				.select(eb => eb.fn.count('z.value').as('count'))
 				.where('o._key', 'in', keys);
@@ -197,12 +233,11 @@ module.exports = function (module) {
 			return null;
 		}
 
-		const { dialect } = module;
 		const isReverse = method === 'zrevrank';
-		value = helpers.valueToString(value);
+		value = String(value);
 
 		// First check if the member exists
-		const exists = await helpers.createZsetQuery(module.db, dialect)
+		const exists = await helpers.createZsetQuery()
 			.select('z.score')
 			.where('o._key', '=', key)
 			.where('z.value', '=', value)
@@ -214,7 +249,7 @@ module.exports = function (module) {
 
 		// Count members with lower (or higher for rev) score
 		// When scores are equal, sort by value alphabetically
-		const result = await helpers.createZsetQuery(module.db, dialect)
+		const result = await helpers.createZsetQuery()
 			.select(eb => eb.fn.count('z.value').as('count'))
 			.where('o._key', '=', key)
 			.where((eb) => {
@@ -273,9 +308,9 @@ module.exports = function (module) {
 			return null;
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select('z.score')
 			.where('o._key', '=', key)
 			.where('z.value', '=', value)
@@ -289,9 +324,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select(['o._key', 'z.score'])
 			.where('o._key', 'in', keys)
 			.where('z.value', '=', value)
@@ -309,9 +344,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		values = values.map(v => helpers.valueToString(v));
+		values = values.map(v => String(v));
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select(['z.value', 'z.score'])
 			.where('o._key', '=', key)
 			.where('z.value', 'in', values)
@@ -326,9 +361,9 @@ module.exports = function (module) {
 			return false;
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select('z.value')
 			.where('o._key', '=', key)
 			.where('z.value', '=', value)
@@ -346,9 +381,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		values = values.map(v => helpers.valueToString(v));
+		values = values.map(v => String(v));
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select('z.value')
 			.where('o._key', '=', key)
 			.where('z.value', 'in', values)
@@ -363,9 +398,9 @@ module.exports = function (module) {
 			return [];
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select('o._key')
 			.where('o._key', 'in', keys)
 			.where('z.value', '=', value)
@@ -396,7 +431,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select(['o._key', 'z.value'])
 			.where('o._key', 'in', keys)
 			.orderBy('z.score', 'asc')
@@ -410,7 +445,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const result = await helpers.createZsetQuery(module.db, module.dialect)
+		const result = await helpers.createZsetQuery()
 			.select(['o._key', 'z.value', 'z.score'])
 			.where('o._key', 'in', keys)
 			.orderBy('z.score', 'asc')
@@ -427,9 +462,9 @@ module.exports = function (module) {
 			return;
 		}
 
-		value = helpers.valueToString(value);
+		value = String(value);
 
-		return await helpers.withTransaction(module, key, 'zset', async (client, dialect) => {
+		return await helpers.withTransaction(key, 'zset', async (client) => {
 			const existing = await client.selectFrom('legacy_zset')
 				.select('score')
 				.where('_key', '=', key)
@@ -443,7 +478,7 @@ module.exports = function (module) {
 				_key: key,
 				value: value,
 				score: newScore,
-			}, ['_key', 'value'], { score: newScore }, dialect);
+			}, ['_key', 'value'], { score: newScore });
 
 			return newScore;
 		});
@@ -454,15 +489,15 @@ module.exports = function (module) {
 			return;
 		}
 
-		return await helpers.withTransaction(module, null, null, async (client, dialect) => {
+		return await helpers.withTransaction(null, null, async (client) => {
 			// Ensure all keys have the right type
 			const uniqueKeys = [...new Set(data.map(item => item[0]))];
-			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset', dialect);
+			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset');
 
 			// Build key-value pairs for querying existing scores
 			const keyValuePairs = data.map(item => ({
 				key: item[0],
-				value: helpers.valueToString(item[2]),
+				value: String(item[2]),
 			}));
 
 			// Query all existing scores at once
@@ -478,9 +513,9 @@ module.exports = function (module) {
 					))
 					.execute();
 
-				results.forEach((r) => {
-					existingScores[`${r._key}:${r.value}`] = parseFloat(r.score);
-				});
+				for (const { _key, value, score } of results) {
+					existingScores[`${_key}:${value}`] = parseFloat(score);
+				}
 			}
 
 			// Calculate new scores and build upsert rows
@@ -488,7 +523,7 @@ module.exports = function (module) {
 			const returnResults = [];
 			for (const item of data) {
 				const [key, increment, value] = item;
-				const strValue = helpers.valueToString(value);
+				const strValue = String(value);
 				const existKey = `${key}:${strValue}`;
 				const currentScore = existingScores[existKey] || 0;
 				const newScore = currentScore + parseFloat(increment);
@@ -503,7 +538,7 @@ module.exports = function (module) {
 
 			// Batch upsert all rows
 			if (rows.length) {
-				await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
+				await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score']);
 			}
 
 			return returnResults;
@@ -523,7 +558,7 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		let query = helpers.createZsetQuery(module.db, module.dialect)
+		let query = helpers.createZsetQuery()
 			.select(eb => eb.fn.count('z.value').as('count'))
 			.where('o._key', '=', key);
 
@@ -538,7 +573,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		let query = helpers.createZsetQuery(module.db, module.dialect)
+		let query = helpers.createZsetQuery()
 			.select('z.value')
 			.where('o._key', '=', key);
 
@@ -558,7 +593,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		let selectQuery = helpers.createZsetQuery(module.db, module.dialect)
+		let selectQuery = helpers.createZsetQuery()
 			.select('z.value')
 			.where('o._key', '=', key);
 
@@ -584,7 +619,7 @@ module.exports = function (module) {
 
 		const pattern = helpers.buildLikePattern(match);
 
-		let query = helpers.createZsetQuery(module.db, module.dialect)
+		let query = helpers.createZsetQuery()
 			.select(['z.value', 'z.score'])
 			.where('o._key', '=', key)
 			.where('z.value', 'like', pattern)

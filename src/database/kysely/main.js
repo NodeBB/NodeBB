@@ -1,31 +1,21 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
+	const { helpers } = module;
 
 	module.flushdb = async function () {
-		// Drop all legacy tables and recreate
-		const tables = ['legacy_string', 'legacy_list', 'legacy_set', 'legacy_zset', 'legacy_hash', 'legacy_object'];
-
-		// Note: Tables must be dropped in sequence due to foreign key dependencies
-		/* eslint-disable no-await-in-loop */
-		for (const table of tables) {
-			try {
-				await module.db.schema.dropTable(table).ifExists().execute();
-			} catch (err) {
-				// Ignore errors during drop
-			}
-		}
-		/* eslint-enable no-await-in-loop */
-
-		// Re-run init to recreate tables
-		const connection = require('./connection');
-		const opts = require('nconf').get('kysely');
-		module.db = await connection.createKyselyInstance(opts);
+		// Delete data from all tables (child tables first due to potential FK constraints)
+		await module.emptydb();
+		// Also clear sessions if exists
+		await module.db.deleteFrom('sessions').execute().catch(() => {});
 	};
 
 	module.emptydb = async function () {
-		await module.db.deleteFrom('legacy_object').execute();
+		// Delete data from all tables (child tables first, then parent)
+		const childTables = ['legacy_string', 'legacy_list', 'legacy_set', 'legacy_zset', 'legacy_hash'];
+		await Promise.all(childTables.map(table =>
+			module.db.deleteFrom(table).execute().catch(() => {})));
+		await module.db.deleteFrom('legacy_object').execute().catch(() => {});
 	};
 
 	module.exists = async function (key) {
@@ -38,8 +28,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		async function checkIfzSetsExist(keys) {
 			const members = await Promise.all(
@@ -74,10 +63,11 @@ module.exports = function (module) {
 				checkIfSetsExist(setKeys),
 				checkIfKeysExist(otherKeys),
 			]);
-			const existsMap = Object.create(null);
-			zsetKeys.forEach((k, i) => { existsMap[k] = zsetExits[i]; });
-			setKeys.forEach((k, i) => { existsMap[k] = setExists[i]; });
-			otherKeys.forEach((k, i) => { existsMap[k] = otherExists[i]; });
+			const existsMap = {
+				...Object.fromEntries(zsetKeys.map((k, i) => [k, zsetExits[i]])),
+				...Object.fromEntries(setKeys.map((k, i) => [k, setExists[i]])),
+				...Object.fromEntries(otherKeys.map((k, i) => [k, otherExists[i]])),
+			};
 			return key.map(k => existsMap[k]);
 		}
 
@@ -100,8 +90,7 @@ module.exports = function (module) {
 	};
 
 	module.scan = async function (params) {
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 		const pattern = helpers.buildLikePattern(params.match);
 
 		let query = module.db.selectFrom('legacy_object')
@@ -138,7 +127,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const result = await helpers.createStringQuery(module.db, module.dialect)
+		const result = await helpers.createStringQuery()
 			.select('s.data')
 			.where('o._key', '=', key)
 			.limit(1)
@@ -152,7 +141,7 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const result = await helpers.createStringQuery(module.db, module.dialect)
+		const result = await helpers.createStringQuery()
 			.select(['s._key', 's.data'])
 			.where('o._key', 'in', keys)
 			.execute();
@@ -165,11 +154,11 @@ module.exports = function (module) {
 			return;
 		}
 
-		await helpers.withTransaction(module, key, 'string', async (client, dialect) => {
+		await helpers.withTransaction(key, 'string', async (client) => {
 			await helpers.upsert(client, 'legacy_string', {
 				_key: key,
 				data: String(value),
-			}, ['_key'], { data: String(value) }, dialect);
+			}, ['_key'], { data: String(value) });
 		});
 	};
 
@@ -178,7 +167,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		return await helpers.withTransaction(module, key, 'string', async (client, dialect) => {
+		return await helpers.withTransaction(key, 'string', async (client) => {
 			// Get current value
 			const current = await client.selectFrom('legacy_string')
 				.select('data')
@@ -191,14 +180,14 @@ module.exports = function (module) {
 			await helpers.upsert(client, 'legacy_string', {
 				_key: key,
 				data: String(newValue),
-			}, ['_key'], { data: String(newValue) }, dialect);
+			}, ['_key'], { data: String(newValue) });
 
 			return newValue;
 		});
 	};
 
 	module.rename = async function (oldKey, newKey) {
-		await helpers.withTransaction(module, null, null, async (client) => {
+		await helpers.withTransaction(null, null, async (client) => {
 			// Delete the new key if it exists
 			await client.deleteFrom('legacy_object')
 				.where('_key', '=', newKey)
@@ -221,8 +210,7 @@ module.exports = function (module) {
 	};
 
 	module.type = async function (key) {
-		const { dialect } = module;
-		const now = helpers.getCurrentTimestamp(dialect);
+		const now = new Date().toISOString();
 
 		let query = module.db.selectFrom('legacy_object')
 			.select('type')
@@ -234,8 +222,7 @@ module.exports = function (module) {
 	};
 
 	async function doExpire(key, date) {
-		const { dialect } = module;
-		const expireAt = helpers.getExpireAtTimestamp(date, dialect);
+		const expireAt = date.toISOString();
 
 		await module.db.updateTable('legacy_object')
 			.set({ expireAt: expireAt })

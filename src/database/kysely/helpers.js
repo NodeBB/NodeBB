@@ -1,610 +1,504 @@
 'use strict';
 
-const helpers = module.exports;
-
-// =============================================================================
-// VALUE CONVERSION HELPERS
-// =============================================================================
-
 /**
- * Convert a value to string for storage
+ * Helpers module - exports a function to extend the database module with bound helpers.
+ * This follows the same pattern as other submodules (hash.js, sets.js, etc.)
+ *
+ * Usage in kysely.js:
+ *   require('./kysely/helpers')(kyselyModule);
+ *
+ * Then in submodules:
+ *   const helpers = module.helpers;
  */
-helpers.valueToString = function (value) {
-	return String(value);
-};
+module.exports = function (module) {
+	const getCtx = () => module.context || { dialect: module.dialect, features: module.features || null };
 
-/**
- * Get the current timestamp for the dialect
- */
-helpers.getCurrentTimestamp = function (dialect) {
-	if (dialect === 'sqlite') {
-		return new Date().toISOString();
-	}
-	return new Date();
-};
+	// =============================================================================
+	// STATIC HELPERS (no context needed, can be used directly)
+	// =============================================================================
 
-/**
- * Get the expireAt timestamp value for the dialect
- */
-helpers.getExpireAtTimestamp = function (date, dialect) {
-	if (dialect === 'sqlite') {
-		return date.toISOString();
-	}
-	return date;
-};
-
-/**
- * Build a LIKE pattern from a glob-style match pattern
- */
-helpers.buildLikePattern = function (match) {
-	if (!match) {
-		return '%';
-	}
-	// Replace glob wildcards with SQL LIKE wildcards
-	return match.replace(/\*/g, '%').replace(/\?/g, '_');
-};
-
-// =============================================================================
-// EXPIRY CONDITION HELPER
-// =============================================================================
-
-/**
- * Add expiry check condition to a query builder
- * @param {object} query - Kysely query builder
- * @param {string} tableAlias - Table alias (e.g., 'o' for legacy_object)
- * @param {any} now - Current timestamp value
- * @returns {object} Query builder with expiry condition added
- */
-helpers.whereNotExpired = function (query, tableAlias, now) {
-	const expireAtCol = tableAlias ? `${tableAlias}.expireAt` : 'expireAt';
-	return query.where(eb => eb.or([
-		eb(expireAtCol, 'is', null),
-		eb(expireAtCol, '>', now),
-	]));
-};
-
-// =============================================================================
-// QUERY BUILDER FACTORIES
-// =============================================================================
-
-/**
- * Create a base query builder that selects from legacy_object with a join
- * and includes expiry check
- * 
- * @param {object} db - Kysely database instance
- * @param {string} dialect - Database dialect
- * @param {string} joinTable - Table to join (e.g., 'legacy_zset', 'legacy_hash')
- * @param {string} joinAlias - Alias for the join table (e.g., 'z', 'h')
- * @param {string} type - Object type (e.g., 'zset', 'hash', 'set', 'list', 'string')
- * @returns {object} Kysely query builder
- */
-helpers.createObjectQuery = function (db, dialect, joinTable, joinAlias, type) {
-	const now = helpers.getCurrentTimestamp(dialect);
-	let query = db.selectFrom('legacy_object as o')
-		.innerJoin(`${joinTable} as ${joinAlias}`, `${joinAlias}._key`, 'o._key')
-		.where('o.type', '=', type);
-	query = helpers.whereNotExpired(query, 'o', now);
-	return query;
-};
-
-/**
- * Create a zset query builder with expiry check
- */
-helpers.createZsetQuery = function (db, dialect) {
-	return helpers.createObjectQuery(db, dialect, 'legacy_zset', 'z', 'zset');
-};
-
-/**
- * Create a hash query builder with expiry check
- */
-helpers.createHashQuery = function (db, dialect) {
-	return helpers.createObjectQuery(db, dialect, 'legacy_hash', 'h', 'hash');
-};
-
-/**
- * Create a set query builder with expiry check
- */
-helpers.createSetQuery = function (db, dialect) {
-	return helpers.createObjectQuery(db, dialect, 'legacy_set', 's', 'set');
-};
-
-/**
- * Create a list query builder with expiry check
- */
-helpers.createListQuery = function (db, dialect) {
-	return helpers.createObjectQuery(db, dialect, 'legacy_list', 'l', 'list');
-};
-
-/**
- * Create a string query builder with expiry check
- */
-helpers.createStringQuery = function (db, dialect) {
-	return helpers.createObjectQuery(db, dialect, 'legacy_string', 's', 'string');
-};
-
-/**
- * Create a query on legacy_object only with expiry check
- */
-helpers.createLegacyObjectQuery = function (db, dialect) {
-	const now = helpers.getCurrentTimestamp(dialect);
-	let query = db.selectFrom('legacy_object');
-	query = helpers.whereNotExpired(query, null, now);
-	return query;
-};
-
-// =============================================================================
-// RESULT MAPPING HELPERS
-// =============================================================================
-
-/**
- * Map database results back to keys array, preserving order
- * @param {string[]} keys - Original keys array
- * @param {object[]} rows - Database result rows
- * @param {string} keyCol - Column name containing the key (default: '_key')
- * @param {string} valueCol - Column name containing the value to extract
- * @param {any} defaultValue - Default value for missing keys (default: null)
- * @returns {any[]} Array of values in same order as keys
- */
-helpers.mapResultsToKeys = function (keys, rows, keyCol, valueCol, defaultValue = null) {
-	const map = {};
-	rows.forEach((row) => {
-		map[row[keyCol]] = row[valueCol];
-	});
-	return keys.map(k => (Object.prototype.hasOwnProperty.call(map, k) ? map[k] : defaultValue));
-};
-
-/**
- * Map database results to keys array, collecting multiple values per key
- * @param {string[]} keys - Original keys array
- * @param {object[]} rows - Database result rows
- * @param {string} keyCol - Column name containing the key (default: '_key')
- * @param {function} valueExtractor - Function to extract value from row
- * @returns {any[][]} Array of value arrays in same order as keys
- */
-helpers.mapResultsToKeysArray = function (keys, rows, keyCol, valueExtractor) {
-	const map = {};
-	keys.forEach((k) => { map[k] = []; });
-	rows.forEach((row) => {
-		if (map[row[keyCol]]) {
-			map[row[keyCol]].push(valueExtractor(row));
+	/**
+	 * Build a LIKE pattern from a glob-style match pattern
+	 */
+	function buildLikePattern(match) {
+		if (!match) {
+			return '%';
 		}
-	});
-	return keys.map(k => map[k]);
-};
-
-/**
- * Map count results to keys array
- * @param {string[]} keys - Original keys array
- * @param {object[]} rows - Database result rows with count
- * @param {string} keyCol - Column name containing the key
- * @param {string} countCol - Column name containing the count
- * @returns {number[]} Array of counts in same order as keys
- */
-helpers.mapCountsToKeys = function (keys, rows, keyCol, countCol) {
-	const map = {};
-	rows.forEach((row) => {
-		map[row[keyCol]] = parseInt(row[countCol], 10);
-	});
-	return keys.map(k => (Object.prototype.hasOwnProperty.call(map, k) ? map[k] : 0));
-};
-
-// =============================================================================
-// SCORE AGGREGATION HELPERS (for union/intersect)
-// =============================================================================
-
-/**
- * Aggregate an array of scores using the specified method
- * @param {number[]} scores - Array of scores
- * @param {string} aggregate - Aggregation method: 'SUM', 'MIN', 'MAX'
- * @returns {number} Aggregated score
- */
-helpers.aggregateScores = function (scores, aggregate) {
-	if (aggregate === 'MIN') {
-		return Math.min(...scores);
-	} else if (aggregate === 'MAX') {
-		return Math.max(...scores);
+		return match.replace(/\*/g, '%').replace(/\?/g, '_');
 	}
-	// Default to SUM
-	return scores.reduce((a, b) => a + b, 0);
-};
 
-/**
- * Create a weight map from sets and weights arrays
- * @param {string[]} sets - Array of set keys
- * @param {number[]} weights - Array of weights (will be padded with 1s if shorter)
- * @returns {object} Map of set key to weight
- */
-helpers.createWeightMap = function (sets, weights = []) {
-	if (sets.length < weights.length) {
-		weights = weights.slice(0, sets.length);
+	/**
+	 * Add expiry check condition to a query builder
+	 */
+	function whereNotExpired(query, tableAlias, now) {
+		const expireAtCol = tableAlias ? `${tableAlias}.expireAt` : 'expireAt';
+		return query.where(eb => eb.or([
+			eb(expireAtCol, 'is', null),
+			eb(expireAtCol, '>', now),
+		]));
 	}
-	while (sets.length > weights.length) {
-		weights.push(1);
+
+	/**
+	 * Map database results back to keys array, preserving order
+	 */
+	function mapResultsToKeys(keys, rows, keyCol, valueCol, defaultValue = null) {
+		const map = Object.fromEntries(rows.map(row => [row[keyCol], row[valueCol]]));
+		return keys.map(k => (k in map ? map[k] : defaultValue));
 	}
-	const weightMap = {};
-	sets.forEach((set, idx) => {
-		weightMap[set] = weights[idx];
-	});
-	return weightMap;
-};
 
-/**
- * Get weight for a key from weight map (handles 0 weights correctly)
- * @param {object} weightMap - Weight map created by createWeightMap
- * @param {string} key - Set key to look up
- * @returns {number} Weight value
- */
-helpers.getWeight = function (weightMap, key) {
-	return Object.prototype.hasOwnProperty.call(weightMap, key) ? weightMap[key] : 1;
-};
+	/**
+	 * Map database results to keys array, collecting multiple values per key
+	 */
+	function mapResultsToKeysArray(keys, rows, keyCol, valueExtractor) {
+		const map = rows.reduce(
+			(acc, row) => ({ ...acc, [row[keyCol]]: [...(acc[row[keyCol]] || []), valueExtractor(row)] }),
+			Object.fromEntries(keys.map(k => [k, []]))
+		);
+		return keys.map(k => map[k]);
+	}
 
-// =============================================================================
-// LEGACY OBJECT TYPE HELPERS
-// =============================================================================
+	/**
+	 * Map count results to keys array
+	 */
+	function mapCountsToKeys(keys, rows, keyCol, countCol) {
+		const map = Object.fromEntries(rows.map(row => [row[keyCol], parseInt(row[countCol], 10)]));
+		return keys.map(k => (k in map ? map[k] : 0));
+	}
 
-/**
- * Ensure a key exists in legacy_object with the given type
- */
-helpers.ensureLegacyObjectType = async function (db, key, type, dialect) {
-	if (!key) return;
-
-	await helpers.upsert(db, 'legacy_object', {
-		_key: key,
-		type: type,
-	}, ['_key'], { type: type }, dialect);
-};
-
-/**
- * Ensure multiple keys exist in legacy_object with the given type
- * Uses batch insert for efficiency
- */
-helpers.ensureLegacyObjectsType = async function (db, keys, type, dialect) {
-	if (!keys || !keys.length) return;
-
-	const rows = keys.map(key => ({ _key: key, type: type }));
-	await helpers.upsertMultiple(db, 'legacy_object', rows, ['_key'], ['type'], dialect);
-};
-
-// =============================================================================
-// UPSERT HELPERS
-// =============================================================================
-
-/**
- * Unified upsert function for all dialects
- * @param {object} db - Kysely database instance or transaction
- * @param {string} table - Table name
- * @param {object} values - Values to insert
- * @param {string[]} conflictColumns - Columns that define the conflict (primary key)
- * @param {object} updateValues - Values to update on conflict
- * @param {string} dialect - Database dialect (mysql, postgres, sqlite)
- */
-helpers.upsert = async function (db, table, values, conflictColumns, updateValues, dialect) {
-	const hasUpdates = updateValues && Object.keys(updateValues).length > 0;
-
-	if (dialect === 'mysql') {
-		// MySQL uses ON DUPLICATE KEY UPDATE
-		if (hasUpdates) {
-			await db.insertInto(table)
-				.values(values)
-				.onDuplicateKeyUpdate(updateValues)
-				.execute();
-		} else {
-			// MySQL: INSERT IGNORE equivalent using ON DUPLICATE KEY UPDATE with no-op
-			await db.insertInto(table)
-				.values(values)
-				.onDuplicateKeyUpdate({ _key: values._key })
-				.execute();
+	/**
+	 * Aggregate an array of scores using the specified method
+	 */
+	function aggregateScores(scores, aggregate) {
+		if (aggregate === 'MIN') {
+			return Math.min(...scores);
+		} else if (aggregate === 'MAX') {
+			return Math.max(...scores);
 		}
-	} else {
-		// PostgreSQL and SQLite use ON CONFLICT
-		if (hasUpdates) {
-			await db.insertInto(table)
-				.values(values)
-				.onConflict(oc => oc.columns(conflictColumns).doUpdateSet(updateValues))
-				.execute();
-		} else {
-			await db.insertInto(table)
-				.values(values)
-				.onConflict(oc => oc.columns(conflictColumns).doNothing())
-				.execute();
-		}
+		return scores.reduce((a, b) => a + b, 0);
 	}
-};
 
-/**
- * Batch insert with conflict handling - uses multi-row insert
- */
-helpers.upsertBatch = async function (db, table, rows, conflictColumns, updateColumns, dialect) {
-	if (!rows || !rows.length) return;
+	/**
+	 * Create a weight map from sets and weights arrays
+	 */
+	function createWeightMap(sets, weights = []) {
+		const normalizedWeights = [
+			...weights.slice(0, sets.length),
+			...Array(Math.max(0, sets.length - weights.length)).fill(1),
+		];
+		return Object.fromEntries(sets.map((set, idx) => [set, normalizedWeights[idx]]));
+	}
 
-	await helpers.upsertMultiple(db, table, rows, conflictColumns, updateColumns, dialect);
-};
+	/**
+	 * Get weight for a key from weight map
+	 */
+	function getWeight(weightMap, key) {
+		return key in weightMap ? weightMap[key] : 1;
+	}
 
-// SQLite has a limit of 999 SQL variables by default
-// We chunk large inserts to avoid hitting this limit
-const SQLITE_CHUNK_SIZE = 100;
+	/**
+	 * Parse lex range notation
+	 */
+	function parseLexRange(value) {
+		if (value === '-') {
+			return { value: null, op: null, isMin: true };
+		}
+		if (value === '+') {
+			return { value: null, op: null, isMax: true };
+		}
+		if (value.startsWith('(')) {
+			return { value: value.slice(1), inclusive: false };
+		}
+		if (value.startsWith('[')) {
+			return { value: value.slice(1), inclusive: true };
+		}
+		return { value: value, inclusive: true };
+	}
 
-/**
- * Multi-row upsert - inserts all rows in a single query (or chunked for large batches)
- * @param {object} db - Kysely database instance or transaction
- * @param {string} table - Table name
- * @param {object[]} rows - Array of row objects to insert
- * @param {string[]} conflictColumns - Columns that define the conflict (primary key)
- * @param {string[]} updateColumns - Columns to update on conflict
- * @param {string} dialect - Database dialect (mysql, postgres, sqlite)
- */
-helpers.upsertMultiple = async function (db, table, rows, conflictColumns, updateColumns, dialect) {
-	if (!rows || !rows.length) return;
+	/**
+	 * Apply lex range conditions to a query
+	 */
+	function applyLexConditions(query, min, max, valueCol = 'z.value') {
+		const minParsed = parseLexRange(min);
+		const maxParsed = parseLexRange(max);
 
-	// For single row, use simple upsert
-	if (rows.length === 1) {
-		const updateValues = {};
-		updateColumns.forEach((col) => {
-			if (Object.prototype.hasOwnProperty.call(rows[0], col)) {
-				updateValues[col] = rows[0][col];
+		if (!minParsed.isMin) {
+			const op = minParsed.inclusive ? '>=' : '>';
+			query = query.where(valueCol, op, minParsed.value);
+		}
+		if (!maxParsed.isMax) {
+			const op = maxParsed.inclusive ? '<=' : '<';
+			query = query.where(valueCol, op, maxParsed.value);
+		}
+		return query;
+	}
+
+	/**
+	 * Apply score range conditions to a query
+	 */
+	function applyScoreConditions(query, min, max, scoreCol = 'z.score') {
+		if (min !== '-inf') {
+			query = query.where(scoreCol, '>=', parseFloat(min));
+		}
+		if (max !== '+inf') {
+			query = query.where(scoreCol, '<=', parseFloat(max));
+		}
+		return query;
+	}
+
+	/**
+	 * Apply offset and limit to a query
+	 */
+	function applyPagination(query, start, count) {
+		if (start > 0 && count > 0) {
+			query = query.offset(start).limit(count);
+		} else if (start > 0) {
+			query = query.offset(start).limit(Number.MAX_SAFE_INTEGER);
+		} else if (count > 0) {
+			query = query.limit(count);
+		}
+		return query;
+	}
+
+	/**
+	 * Handle negative indices by slicing
+	 */
+	function sliceWithNegativeIndices(results, start, stop) {
+		const len = results.length;
+		if (len === 0) {
+			return [];
+		}
+
+		const startIdx = start < 0 ? Math.max(0, len + start) : start;
+		const stopIdx = stop < 0 ? len + stop : stop;
+
+		if (startIdx > stopIdx || startIdx >= len) {
+			return [];
+		}
+
+		return results.slice(startIdx, stopIdx + 1);
+	}
+
+	/**
+	 * Deduplicate rows by key columns, keeping the last occurrence.
+	 */
+	function deduplicateRows(rows, keyColumns) {
+		if (keyColumns.length === 1) {
+			return [...rows.reduce(
+				(map, row) => map.set(row[keyColumns[0]], row),
+				new Map()
+			).values()];
+		}
+		const root = rows.reduce((map, row) => {
+			const path = keyColumns.slice(0, -1);
+			const leaf = keyColumns[keyColumns.length - 1];
+			const target = path.reduce(
+				(m, col) => m.get(row[col]) || m.set(row[col], new Map()).get(row[col]),
+				map
+			);
+			target.set(row[leaf], row);
+			return map;
+		}, new Map());
+
+		const collect = (map, depth) => (depth === keyColumns.length - 1 ?
+			[...map.values()] :
+			[...map.values()].flatMap(m => collect(m, depth + 1)));
+		return collect(root, 0);
+	}
+
+	// =============================================================================
+	// QUERY BUILDER FACTORIES (bound to module's db and dialect)
+	// =============================================================================
+
+	function createObjectQuery(joinTable, joinAlias, type) {
+		const now = new Date().toISOString();
+		let query = module.db.selectFrom('legacy_object as o')
+			.innerJoin(`${joinTable} as ${joinAlias}`, `${joinAlias}._key`, 'o._key')
+			.where('o.type', '=', type);
+		query = whereNotExpired(query, 'o', now);
+		return query;
+	}
+
+	function createZsetQuery() {
+		return createObjectQuery('legacy_zset', 'z', 'zset');
+	}
+
+	function createHashQuery() {
+		return createObjectQuery('legacy_hash', 'h', 'hash');
+	}
+
+	function createSetQuery() {
+		return createObjectQuery('legacy_set', 's', 'set');
+	}
+
+	function createListQuery() {
+		return createObjectQuery('legacy_list', 'l', 'list');
+	}
+
+	function createStringQuery() {
+		return createObjectQuery('legacy_string', 's', 'string');
+	}
+
+	function createLegacyObjectQuery() {
+		const now = new Date().toISOString();
+		let query = module.db.selectFrom('legacy_object');
+		query = whereNotExpired(query, null, now);
+		return query;
+	}
+
+	// =============================================================================
+	// UPSERT HELPERS (bound with automatic context)
+	// =============================================================================
+
+	// Internal upsert implementations
+	async function upsertMySQL(db, table, values, updateValues) {
+		const hasUpdates = updateValues && Object.keys(updateValues).length > 0;
+		const update = hasUpdates ? updateValues : { _key: values._key };
+		await db.insertInto(table).values(values).onDuplicateKeyUpdate(update).execute();
+	}
+
+	async function upsertOnConflict(db, table, values, conflictColumns, updateValues) {
+		await db.insertInto(table)
+			.values(values)
+			.onConflict((oc) => {
+				const cols = oc.columns(conflictColumns);
+				const hasUpdates = updateValues && Object.keys(updateValues).length > 0;
+				return hasUpdates ? cols.doUpdateSet(updateValues) : cols.doNothing();
+			})
+			.execute();
+	}
+
+	async function executeMerge(db, table, values, conflictColumns, updateValues) {
+		const hasUpdates = updateValues && Object.keys(updateValues).length > 0;
+		const columns = Object.keys(values);
+
+		const sourceQuery = db.selectNoFrom(eb => columns.map(col => eb.val(values[col]).as(col)));
+
+		const mergeQuery = db.mergeInto(`${table} as target`)
+			.using(sourceQuery.as('source'), join =>
+				conflictColumns.reduce(
+					(j, col) => j.onRef(`target.${col}`, '=', `source.${col}`),
+					join
+				));
+
+		const withMatched = hasUpdates ?
+			mergeQuery.whenMatched().thenUpdateSet(updateValues) :
+			mergeQuery;
+
+		const insertValues = Object.fromEntries(
+			columns.map(col => [col, eb => eb.ref(`source.${col}`)])
+		);
+
+		await withMatched.whenNotMatched().thenInsertValues(insertValues).execute();
+	}
+
+	async function upsert(db, table, values, conflictColumns, updateValues) {
+		const { dialect, features } = getCtx();
+
+		if (features?.onDuplicateKey) {
+			return await upsertMySQL(db, table, values, updateValues);
+		}
+		if (features?.onConflict) {
+			return await upsertOnConflict(db, table, values, conflictColumns, updateValues);
+		}
+		if (features?.merge) {
+			return await executeMerge(db, table, values, conflictColumns, updateValues);
+		}
+
+		// Fallback based on dialect
+		return dialect === 'mysql' ?
+			await upsertMySQL(db, table, values, updateValues) :
+			await upsertOnConflict(db, table, values, conflictColumns, updateValues);
+	}
+
+	// Batch upsert implementations
+	async function upsertBatchMySQL(db, table, rows, conflictColumns, updateColumns) {
+		const updateSet = updateColumns.length > 0 ?
+			Object.fromEntries(updateColumns.map(col => [col, eb => eb.fn('VALUES', [eb.ref(col)])])) :
+			{ [conflictColumns[0]]: eb => eb.fn('VALUES', [eb.ref(conflictColumns[0])]) };
+		await db.insertInto(table).values(rows).onDuplicateKeyUpdate(updateSet).execute();
+	}
+
+	async function upsertBatchOnConflict(db, table, rows, conflictColumns, updateColumns) {
+		await db.insertInto(table)
+			.values(rows)
+			.onConflict((oc) => {
+				const cols = oc.columns(conflictColumns);
+				return updateColumns.length > 0 ?
+					cols.doUpdateSet(Object.fromEntries(
+						updateColumns.map(col => [col, eb => eb.ref(`excluded.${col}`)])
+					)) :
+					cols.doNothing();
+			})
+			.execute();
+	}
+
+	async function executeMergeBatch(db, table, rows, conflictColumns, updateColumns) {
+		// MERGE doesn't support batch operations, process sequentially
+		await rows.reduce(
+			(promise, row) => promise.then(() => executeMerge(
+				db,
+				table,
+				row,
+				conflictColumns,
+				Object.fromEntries(updateColumns.filter(col => col in row).map(col => [col, row[col]]))
+			)),
+			Promise.resolve()
+		);
+	}
+
+	const SQLITE_CHUNK_SIZE = 100;
+
+	async function upsertMultipleBatch(db, table, rows, conflictColumns, updateColumns) {
+		const { dialect, features } = getCtx();
+
+		if (features?.onDuplicateKey) {
+			return await upsertBatchMySQL(db, table, rows, conflictColumns, updateColumns);
+		}
+		if (features?.onConflict) {
+			return await upsertBatchOnConflict(db, table, rows, conflictColumns, updateColumns);
+		}
+		if (features?.merge) {
+			return await executeMergeBatch(db, table, rows, conflictColumns, updateColumns);
+		}
+
+		// Fallback based on dialect
+		return dialect === 'mysql' ?
+			await upsertBatchMySQL(db, table, rows, conflictColumns, updateColumns) :
+			await upsertBatchOnConflict(db, table, rows, conflictColumns, updateColumns);
+	}
+
+	async function upsertMultiple(db, table, rows, conflictColumns, updateColumns) {
+		if (!rows?.length) return;
+
+		// Single row optimization
+		if (rows.length === 1) {
+			const [row] = rows;
+			const updateValues = Object.fromEntries(
+				updateColumns.filter(col => col in row).map(col => [col, row[col]])
+			);
+			return await upsert(db, table, row, conflictColumns, updateValues);
+		}
+
+		const { dialect } = getCtx();
+		const chunkSize = dialect === 'sqlite' ? SQLITE_CHUNK_SIZE : 1000;
+
+		// Process in chunks if needed
+		if (rows.length > chunkSize) {
+			const chunks = Array.from(
+				{ length: Math.ceil(rows.length / chunkSize) },
+				(_, i) => rows.slice(i * chunkSize, (i + 1) * chunkSize)
+			);
+			await chunks.reduce(
+				(promise, chunk) => promise.then(() =>
+					upsertMultipleBatch(db, table, chunk, conflictColumns, updateColumns)),
+				Promise.resolve()
+			);
+			return;
+		}
+
+		await upsertMultipleBatch(db, table, rows, conflictColumns, updateColumns);
+	}
+
+	async function insertMultiple(db, table, rows) {
+		if (!rows || !rows.length) return;
+		await db.insertInto(table).values(rows).execute();
+	}
+
+	// =============================================================================
+	// LEGACY OBJECT TYPE HELPERS
+	// =============================================================================
+
+	async function ensureLegacyObjectType(db, key, type) {
+		if (!key) return;
+		await upsert(db, 'legacy_object', { _key: key, type: type }, ['_key'], { type: type });
+	}
+
+	async function ensureLegacyObjectsType(db, keys, type) {
+		if (!keys || !keys.length) return;
+		const rows = keys.map(key => ({ _key: key, type: type }));
+		await upsertMultiple(db, 'legacy_object', rows, ['_key'], ['type']);
+	}
+
+	// =============================================================================
+	// DELETE HELPERS
+	// =============================================================================
+
+	async function deleteByKey(db, table, key) {
+		await db.deleteFrom(table).where('_key', '=', key).execute();
+	}
+
+	async function deleteByKeys(db, table, keys) {
+		if (!keys || !keys.length) return;
+		await db.deleteFrom(table).where('_key', 'in', keys).execute();
+	}
+
+	// =============================================================================
+	// TRANSACTION HELPERS
+	// =============================================================================
+
+	async function withTransaction(key, type, fn) {
+		return await module.transaction(async (client) => {
+			if (key) {
+				await ensureLegacyObjectType(client, key, type);
 			}
+			return await fn(client);
 		});
-		return await helpers.upsert(db, table, rows[0], conflictColumns, updateValues, dialect);
 	}
 
-	// Chunk large batches for SQLite to avoid "too many SQL variables" error
-	const chunkSize = dialect === 'sqlite' ? SQLITE_CHUNK_SIZE : 1000;
-	if (rows.length > chunkSize) {
-		const chunks = [];
-		for (let i = 0; i < rows.length; i += chunkSize) {
-			chunks.push(rows.slice(i, i + chunkSize));
-		}
-		for (const chunk of chunks) {
-			// eslint-disable-next-line no-await-in-loop -- sequential chunk processing
-			await helpers.upsertMultipleBatch(db, table, chunk, conflictColumns, updateColumns, dialect);
-		}
-		return;
-	}
-
-	await helpers.upsertMultipleBatch(db, table, rows, conflictColumns, updateColumns, dialect);
-};
-
-/**
- * Internal batch upsert - handles a single batch of rows
- */
-helpers.upsertMultipleBatch = async function (db, table, rows, conflictColumns, updateColumns, dialect) {
-	if (dialect === 'mysql') {
-		// MySQL: INSERT ... ON DUPLICATE KEY UPDATE
-		// For MySQL, we need to reference the values using VALUES()
-		const updateSet = {};
-		updateColumns.forEach((col) => {
-			// In MySQL, use VALUES(col) to reference the new value
-			updateSet[col] = eb => eb.fn('VALUES', [eb.ref(col)]);
+	async function withTransactionKeys(keys, type, fn) {
+		return await module.transaction(async (client) => {
+			if (keys && keys.length) {
+				await ensureLegacyObjectsType(client, keys, type);
+			}
+			return await fn(client);
 		});
-
-		if (Object.keys(updateSet).length > 0) {
-			await db.insertInto(table)
-				.values(rows)
-				.onDuplicateKeyUpdate(updateSet)
-				.execute();
-		} else {
-			// No updates, use INSERT IGNORE equivalent
-			await db.insertInto(table)
-				.values(rows)
-				.onDuplicateKeyUpdate({ [conflictColumns[0]]: eb => eb.fn('VALUES', [eb.ref(conflictColumns[0])]) })
-				.execute();
-		}
-	} else {
-		// PostgreSQL and SQLite: INSERT ... ON CONFLICT ... DO UPDATE SET
-		const updateSet = {};
-		updateColumns.forEach((col) => {
-			// In PostgreSQL/SQLite, use excluded.col to reference the new value
-			updateSet[col] = eb => eb.ref(`excluded.${col}`);
-		});
-
-		if (Object.keys(updateSet).length > 0) {
-			await db.insertInto(table)
-				.values(rows)
-				.onConflict(oc => oc.columns(conflictColumns).doUpdateSet(updateSet))
-				.execute();
-		} else {
-			await db.insertInto(table)
-				.values(rows)
-				.onConflict(oc => oc.columns(conflictColumns).doNothing())
-				.execute();
-		}
-	}
-};
-
-/**
- * Batch insert without conflict handling (simple multi-row insert)
- */
-helpers.insertMultiple = async function (db, table, rows) {
-	if (!rows || !rows.length) return;
-
-	await db.insertInto(table)
-		.values(rows)
-		.execute();
-};
-
-// =============================================================================
-// DELETE HELPERS
-// =============================================================================
-
-/**
- * Delete from a table with key matching
- */
-helpers.deleteByKey = async function (db, table, key) {
-	await db.deleteFrom(table)
-		.where('_key', '=', key)
-		.execute();
-};
-
-/**
- * Delete from a table with multiple keys
- */
-helpers.deleteByKeys = async function (db, table, keys) {
-	if (!keys || !keys.length) return;
-
-	await db.deleteFrom(table)
-		.where('_key', 'in', keys)
-		.execute();
-};
-
-// =============================================================================
-// SORTED SET LEX HELPERS
-// =============================================================================
-
-/**
- * Parse lex range notation
- * - '-' means minimum (from beginning)
- * - '+' means maximum (to end)
- * - '[a' means >= 'a' (inclusive)
- * - '(a' means > 'a' (exclusive)
- * - 'a' (no prefix) defaults to inclusive
- */
-helpers.parseLexRange = function (value) {
-	if (value === '-') {
-		return { value: null, op: null, isMin: true };
-	}
-	if (value === '+') {
-		return { value: null, op: null, isMax: true };
-	}
-	if (value.startsWith('(')) {
-		return { value: value.slice(1), inclusive: false };
-	}
-	if (value.startsWith('[')) {
-		return { value: value.slice(1), inclusive: true };
-	}
-	// Default to inclusive
-	return { value: value, inclusive: true };
-};
-
-/**
- * Apply lex range conditions to a query
- * @param {object} query - Kysely query builder
- * @param {string} min - Minimum lex value
- * @param {string} max - Maximum lex value
- * @param {string} valueCol - Column name for the value (default: 'z.value')
- * @returns {object} Query builder with lex conditions applied
- */
-helpers.applyLexConditions = function (query, min, max, valueCol = 'z.value') {
-	const minParsed = helpers.parseLexRange(min);
-	const maxParsed = helpers.parseLexRange(max);
-
-	if (!minParsed.isMin) {
-		const op = minParsed.inclusive ? '>=' : '>';
-		query = query.where(valueCol, op, minParsed.value);
-	}
-	if (!maxParsed.isMax) {
-		const op = maxParsed.inclusive ? '<=' : '<';
-		query = query.where(valueCol, op, maxParsed.value);
-	}
-	return query;
-};
-
-// =============================================================================
-// SORTED SET SCORE RANGE HELPERS
-// =============================================================================
-
-/**
- * Apply score range conditions to a query
- * @param {object} query - Kysely query builder
- * @param {string|number} min - Minimum score ('-inf' for no minimum)
- * @param {string|number} max - Maximum score ('+inf' for no maximum)
- * @param {string} scoreCol - Column name for the score (default: 'z.score')
- * @returns {object} Query builder with score conditions applied
- */
-helpers.applyScoreConditions = function (query, min, max, scoreCol = 'z.score') {
-	if (min !== '-inf') {
-		query = query.where(scoreCol, '>=', parseFloat(min));
-	}
-	if (max !== '+inf') {
-		query = query.where(scoreCol, '<=', parseFloat(max));
-	}
-	return query;
-};
-
-// =============================================================================
-// PAGINATION HELPERS
-// =============================================================================
-
-/**
- * Apply offset and limit to a query, handling SQLite's requirement for LIMIT when using OFFSET
- * @param {object} query - Kysely query builder
- * @param {number} start - Start offset
- * @param {number} count - Number of items (-1 or undefined for no limit)
- * @returns {object} Query builder with pagination applied
- */
-helpers.applyPagination = function (query, start, count) {
-	if (start > 0 && count > 0) {
-		query = query.offset(start).limit(count);
-	} else if (start > 0) {
-		// SQLite requires LIMIT when using OFFSET
-		query = query.offset(start).limit(Number.MAX_SAFE_INTEGER);
-	} else if (count > 0) {
-		query = query.limit(count);
-	}
-	return query;
-};
-
-/**
- * Handle negative indices by fetching all results and slicing
- * @param {any[]} results - Array of results
- * @param {number} start - Start index (can be negative)
- * @param {number} stop - Stop index (can be negative, inclusive)
- * @returns {any[]} Sliced results
- */
-helpers.sliceWithNegativeIndices = function (results, start, stop) {
-	const len = results.length;
-	if (len === 0) {
-		return [];
 	}
 
-	// Convert negative indices to positive
-	const startIdx = start < 0 ? Math.max(0, len + start) : start;
-	const stopIdx = stop < 0 ? len + stop : stop;
+	// =============================================================================
+	// BIND ALL HELPERS TO MODULE
+	// =============================================================================
 
-	// Handle invalid ranges
-	if (startIdx > stopIdx || startIdx >= len) {
-		return [];
-	}
+	module.helpers = {
+		// Static helpers (no context needed)
+		buildLikePattern,
+		whereNotExpired,
+		mapResultsToKeys,
+		mapResultsToKeysArray,
+		mapCountsToKeys,
+		aggregateScores,
+		createWeightMap,
+		getWeight,
+		parseLexRange,
+		applyLexConditions,
+		applyScoreConditions,
+		applyPagination,
+		sliceWithNegativeIndices,
+		deduplicateRows,
 
-	// Slice the results (stopIdx is inclusive, so +1)
-	return results.slice(startIdx, stopIdx + 1);
-};
+		// Query builders (bound to module's db)
+		createObjectQuery,
+		createZsetQuery,
+		createHashQuery,
+		createSetQuery,
+		createListQuery,
+		createStringQuery,
+		createLegacyObjectQuery,
 
-// =============================================================================
-// TRANSACTION HELPER
-// =============================================================================
+		// Upsert methods (automatic context)
+		upsert,
+		upsertMultiple,
+		insertMultiple,
 
-/**
- * Execute a function with a transaction, ensuring legacy object type
- * @param {object} module - Database module
- * @param {string} key - Key to ensure type for
- * @param {string} type - Object type (e.g., 'zset', 'hash')
- * @param {function} fn - Function to execute within transaction, receives (client, dialect)
- * @returns {any} Result of fn
- */
-helpers.withTransaction = async function (module, key, type, fn) {
-	const { dialect } = module;
-	return await module.transaction(async (client) => {
-		if (key) {
-			await helpers.ensureLegacyObjectType(client, key, type, dialect);
-		}
-		return await fn(client, dialect);
-	});
-};
+		// Legacy object type helpers
+		ensureLegacyObjectType,
+		ensureLegacyObjectsType,
 
-/**
- * Execute a function with a transaction, ensuring legacy object types for multiple keys
- * @param {object} module - Database module
- * @param {string[]} keys - Keys to ensure type for
- * @param {string} type - Object type (e.g., 'zset', 'hash')
- * @param {function} fn - Function to execute within transaction, receives (client, dialect)
- * @returns {any} Result of fn
- */
-helpers.withTransactionKeys = async function (module, keys, type, fn) {
-	const { dialect } = module;
-	return await module.transaction(async (client) => {
-		if (keys && keys.length) {
-			await helpers.ensureLegacyObjectsType(client, keys, type, dialect);
-		}
-		return await fn(client, dialect);
-	});
+		// Delete helpers
+		deleteByKey,
+		deleteByKeys,
+
+		// Transaction helpers (simplified signature)
+		withTransaction,
+		withTransactionKeys,
+	};
 };
