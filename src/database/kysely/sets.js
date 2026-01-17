@@ -14,13 +14,11 @@ module.exports = function (module) {
 		}
 
 		await helpers.withTransaction(module, key, 'set', async (client, dialect) => {
-			for (const v of values) {
-				const member = String(v);
-				await helpers.upsert(client, 'legacy_set', {
-					_key: key,
-					member: member,
-				}, ['_key', 'member'], {}, dialect);
-			}
+			const rows = values.map(v => ({
+				_key: key,
+				member: String(v),
+			}));
+			await helpers.upsertMultiple(client, 'legacy_set', rows, ['_key', 'member'], [], dialect);
 		});
 	};
 
@@ -36,18 +34,23 @@ module.exports = function (module) {
 			const uniqueKeys = [...new Set(keys)];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'set', dialect);
 
-			for (let i = 0; i < keys.length; i++) {
+			// Collect all rows
+			const allRows = [];
+			for (let i = 0; i < keys.length; i += 1) {
 				const key = keys[i];
 				const value = values[i];
 				const members = Array.isArray(value) ? value : [value];
 
 				for (const v of members) {
-					const member = String(v);
-					await helpers.upsert(client, 'legacy_set', {
+					allRows.push({
 						_key: key,
-						member: member,
-					}, ['_key', 'member'], {}, dialect);
+						member: String(v),
+					});
 				}
+			}
+
+			if (allRows.length) {
+				await helpers.upsertMultiple(client, 'legacy_set', allRows, ['_key', 'member'], [], dialect);
 			}
 		});
 	};
@@ -61,13 +64,11 @@ module.exports = function (module) {
 			const uniqueKeys = [...new Set(data.map(d => d[0]))];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'set', dialect);
 
-			for (const [key, value] of data) {
-				const member = String(value);
-				await helpers.upsert(client, 'legacy_set', {
-					_key: key,
-					member: member,
-				}, ['_key', 'member'], {}, dialect);
-			}
+			const rows = data.map(([key, value]) => ({
+				_key: key,
+				member: String(value),
+			}));
+			await helpers.upsertMultiple(client, 'legacy_set', rows, ['_key', 'member'], [], dialect);
 		});
 	};
 
@@ -79,14 +80,19 @@ module.exports = function (module) {
 		await helpers.withTransactionKeys(module, keys, 'set', async (client, dialect) => {
 			const values = Array.isArray(value) ? value : [value];
 
+			// Collect all rows
+			const allRows = [];
 			for (const key of keys) {
 				for (const v of values) {
-					const member = String(v);
-					await helpers.upsert(client, 'legacy_set', {
+					allRows.push({
 						_key: key,
-						member: member,
-					}, ['_key', 'member'], {}, dialect);
+						member: String(v),
+					});
 				}
+			}
+
+			if (allRows.length) {
+				await helpers.upsertMultiple(client, 'legacy_set', allRows, ['_key', 'member'], [], dialect);
 			}
 		});
 	};

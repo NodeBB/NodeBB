@@ -1,8 +1,48 @@
 'use strict';
 
+/**
+ * List operations for Kysely database backend.
+ *
+ * This module implements Redis-compatible list operations using SQL.
+ * Position-based ordering allows O(1) append/prepend without reindexing.
+ *
+ * Design: Positions use integer increments only.
+ * - Append: max_position + 1
+ * - Prepend: min_position - 1 (for each element in reverse order)
+ * - Delete: No reindexing needed (gaps in indices are fine)
+ *
+ * Uses INTEGER for position field for maximum database compatibility.
+ * Range: -2,147,483,648 to 2,147,483,647 (~4.3 billion total elements).
+ */
+
 module.exports = function (module) {
 	const helpers = require('./helpers');
 
+	/**
+	 * Get boundary positions for a list.
+	 */
+	async function getBounds(client, key) {
+		const result = await client.selectFrom('legacy_list')
+			.select(eb => [
+				eb.fn.min('idx').as('minIdx'),
+				eb.fn.max('idx').as('maxIdx'),
+				eb.fn.count('idx').as('count'),
+			])
+			.where('_key', '=', key)
+			.executeTakeFirst();
+
+		return {
+			min: result.minIdx !== null ? parseInt(result.minIdx, 10) : null,
+			max: result.maxIdx !== null ? parseInt(result.maxIdx, 10) : null,
+			count: parseInt(result.count, 10),
+		};
+	}
+
+	/**
+	 * Prepend values to the beginning of a list.
+	 * Uses position-based ordering: new elements get min_position - 1, - 2, etc.
+	 * When prepending ['a', 'b', 'c'], result is ['c', 'b', 'a', ...existing]
+	 */
 	module.listPrepend = async function (key, value) {
 		if (!key) {
 			return;
@@ -10,71 +50,64 @@ module.exports = function (module) {
 
 		await helpers.withTransaction(module, key, 'list', async (client) => {
 			const values = Array.isArray(value) ? value : [value];
+			// Reverse order so prepending ['a', 'b', 'c'] results in ['c', 'b', 'a', ...]
+			const insertOrder = [...values].reverse();
 
-			// When prepending array ['a', 'b', 'c'], each element is prepended in sequence:
-			// 'a' -> list is ['a']
-			// 'b' -> list is ['b', 'a']
-			// 'c' -> list is ['c', 'b', 'a']
-			for (const v of values) {
-				// Shift all existing indices up by 1
-				await client.updateTable('legacy_list')
-					.set(eb => ({
-						idx: eb('idx', '+', 1),
-					}))
-					.where('_key', '=', key)
-					.execute();
+			// Get current min position (or start at 0 if empty)
+			const bounds = await getBounds(client, key);
+			const startPos = bounds.min !== null ? bounds.min - insertOrder.length : 0;
 
-				// Insert new element at index 0
-				await client.insertInto('legacy_list')
-					.values({
-						_key: key,
-						idx: 0,
-						value: helpers.valueToString(v),
-					})
-					.execute();
-			}
+			// Batch insert all elements with calculated positions
+			const rows = insertOrder.map((v, i) => ({
+				_key: key,
+				idx: startPos + i,
+				value: helpers.valueToString(v),
+			}));
+
+			await helpers.insertMultiple(client, 'legacy_list', rows);
 		});
 	};
 
+	/**
+	 * Append values to the end of a list.
+	 * Uses position-based ordering: new elements get max_position + 1, + 2, etc.
+	 */
 	module.listAppend = async function (key, value) {
 		if (!key) {
 			return;
 		}
 
 		await helpers.withTransaction(module, key, 'list', async (client) => {
-			// Get the current max index
-			const maxResult = await client.selectFrom('legacy_list')
-				.select(eb => eb.fn.max('idx').as('maxIdx'))
-				.where('_key', '=', key)
-				.executeTakeFirst();
+			// Get current max position (or start at 0 if empty)
+			const bounds = await getBounds(client, key);
+			const startPos = bounds.max !== null ? bounds.max + 1 : 0;
 
-			let nextIdx = maxResult && maxResult.maxIdx !== null ? parseInt(maxResult.maxIdx, 10) + 1 : 0;
-
-			// Insert new elements at the end
+			// Batch insert all elements with calculated positions
 			const values = Array.isArray(value) ? value : [value];
-			for (const v of values) {
-				await client.insertInto('legacy_list')
-					.values({
-						_key: key,
-						idx: nextIdx,
-						value: helpers.valueToString(v),
-					})
-					.execute();
-				nextIdx += 1;
-			}
+			const rows = values.map((v, i) => ({
+				_key: key,
+				idx: startPos + i,
+				value: helpers.valueToString(v),
+			}));
+
+			await helpers.insertMultiple(client, 'legacy_list', rows);
 		});
 	};
 
+	/**
+	 * Remove and return the last element of a list.
+	 * Uses conditional locking (FOR UPDATE) when supported by the database.
+	 */
 	module.listRemoveLast = async function (key) {
 		if (!key) {
-			return;
+			return null;
 		}
 
 		return await helpers.withTransaction(module, null, null, async (client, dialect) => {
 			const now = helpers.getCurrentTimestamp(dialect);
 
-			// Get the last element
-			const last = await client.selectFrom('legacy_object as o')
+			// Build query for last element
+			let query = client.selectFrom('legacy_object as o')
 				.innerJoin('legacy_list as l', 'l._key', 'o._key')
 				.select(['l.idx', 'l.value'])
 				.where('o._key', '=', key)
@@ -84,14 +117,20 @@ module.exports = function (module) {
 					eb('o.expireAt', '>', now),
 				]))
 				.orderBy('l.idx', 'desc')
-				.limit(1)
-				.executeTakeFirst();
+				.limit(1);
+
+			// Add locking if supported (checked during module.init)
+			if (module.supportsLocking) {
+				query = query.forUpdate();
+			}
+
+			const last = await query.executeTakeFirst();
 
 			if (!last) {
 				return null;
 			}
 
-			// Remove the last element
+			// Remove the last element (no reindexing needed - gaps are fine)
 			await client.deleteFrom('legacy_list')
 				.where('_key', '=', key)
 				.where('idx', '=', last.idx)
@@ -101,6 +140,10 @@ module.exports = function (module) {
 		});
 	};
 
+	/**
+	 * Remove all occurrences of specified values from a list.
+	 * No reindexing needed - gaps in indices are fine.
+	 */
 	module.listRemoveAll = async function (key, value) {
 		if (!key) {
 			return;
@@ -108,96 +151,70 @@ module.exports = function (module) {
 
 		const values = Array.isArray(value) ? value.map(helpers.valueToString) : [helpers.valueToString(value)];
 
-		await helpers.withTransaction(module, null, null, async (client) => {
-			// Delete all elements with these values
-			await client.deleteFrom('legacy_list')
-				.where('_key', '=', key)
-				.where('value', 'in', values)
-				.execute();
-
-			// Re-index the remaining elements to maintain contiguous indices
-			await reindexList(client, key);
-		});
+		// Simple delete without reindexing - gaps are fine
+		await module.db.deleteFrom('legacy_list')
+			.where('_key', '=', key)
+			.where('value', 'in', values)
+			.execute();
 	};
 
+	/**
+	 * Normalize negative indices and clamp to valid range.
+	 */
+	function normalizeRange(length, start, stop) {
+		let actualStart = start < 0 ? length + start : start;
+		let actualStop = stop < 0 ? length + stop : stop;
+
+		actualStart = Math.max(0, actualStart);
+		actualStop = Math.min(length - 1, actualStop);
+
+		return { actualStart, actualStop };
+	}
+
+	/**
+	 * Trim a list to only include elements within the specified range.
+	 * No reindexing needed - gaps in indices are fine.
+	 */
 	module.listTrim = async function (key, start, stop) {
 		if (!key) {
 			return;
 		}
 
 		await helpers.withTransaction(module, null, null, async (client) => {
-			// Get current elements in order
-			const elements = await client.selectFrom('legacy_list')
-				.select(['idx', 'value'])
+			// Get all positions in order
+			const positions = await client.selectFrom('legacy_list')
+				.select('idx')
 				.where('_key', '=', key)
 				.orderBy('idx', 'asc')
 				.execute();
 
-			if (!elements.length) {
+			if (!positions.length) {
 				return;
 			}
 
-			// Calculate actual start and stop indices
-			const len = elements.length;
-			const actualStart = start < 0 ? Math.max(0, len + start) : start;
-			let actualStop = stop < 0 ? len + stop : stop;
-			actualStop = Math.min(actualStop, len - 1);
+			const { actualStart, actualStop } = normalizeRange(positions.length, start, stop);
 
-			if (actualStart > actualStop || actualStart >= len) {
-				// Remove all elements
+			// If range is invalid, remove all elements
+			if (actualStart > actualStop) {
 				await client.deleteFrom('legacy_list')
 					.where('_key', '=', key)
 					.execute();
 				return;
 			}
 
-			// Get indices to keep
-			const indicesToKeep = elements.slice(actualStart, actualStop + 1).map(e => e.idx);
+			// Get positions to keep
+			const keepPositions = positions.slice(actualStart, actualStop + 1).map(p => p.idx);
 
-			// Delete elements outside the range
-			if (indicesToKeep.length > 0) {
-				await client.deleteFrom('legacy_list')
-					.where('_key', '=', key)
-					.where('idx', 'not in', indicesToKeep)
-					.execute();
-
-				// Re-index the remaining elements
-				await reindexList(client, key);
-			} else {
-				await client.deleteFrom('legacy_list')
-					.where('_key', '=', key)
-					.execute();
-			}
+			// Delete elements outside the range (no reindexing needed)
+			await client.deleteFrom('legacy_list')
+				.where('_key', '=', key)
+				.where(eb => eb.or([
+					eb('idx', '<', keepPositions[0]),
+					eb('idx', '>', keepPositions[keepPositions.length - 1]),
+				]))
+				.execute();
 		});
 	};
-
-	async function reindexList(client, key) {
-		// Get all elements in order
-		const elements = await client.selectFrom('legacy_list')
-			.select(['idx', 'value'])
-			.where('_key', '=', key)
-			.orderBy('idx', 'asc')
-			.execute();
-
-		if (!elements.length) {
-			return;
-		}
-
-		// Delete all and re-insert with new indices
-		await client.deleteFrom('legacy_list')
-			.where('_key', '=', key)
-			.execute();
-
-		for (let i = 0; i < elements.length; i++) {
-			await client.insertInto('legacy_list')
-				.values({
-					_key: key,
-					idx: i,
-					value: elements[i].value,
-				})
-				.execute();
-		}
-	}
 
 	module.getListRange = async function (key, start, stop) {
 		if (!key) {

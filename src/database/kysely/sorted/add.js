@@ -21,13 +21,10 @@ module.exports = function (module) {
 	};
 
 	async function sortedSetAddSingle(key, score, value) {
-		const {dialect} = module;
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'zset', dialect);
-
+		await helpers.withTransaction(module, key, 'zset', async (client, dialect) => {
 			await helpers.upsert(client, 'legacy_zset', {
 				_key: key,
 				value: value,
@@ -49,20 +46,16 @@ module.exports = function (module) {
 			}
 		}
 
-		const {dialect} = module;
 		values = values.map(helpers.valueToString);
 		scores = scores.map(s => parseFloat(s));
 
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectType(client, key, 'zset', dialect);
-
-			for (let i = 0; i < values.length; i++) {
-				await helpers.upsert(client, 'legacy_zset', {
-					_key: key,
-					value: values[i],
-					score: scores[i],
-				}, ['_key', 'value'], { score: scores[i] }, dialect);
-			}
+		await helpers.withTransaction(module, key, 'zset', async (client, dialect) => {
+			const rows = values.map((value, i) => ({
+				_key: key,
+				value: value,
+				score: scores[i],
+			}));
+			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
 		});
 	}
 
@@ -81,23 +74,16 @@ module.exports = function (module) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const {dialect} = module;
 		value = helpers.valueToString(value);
 		scores = isArrayOfScores ? scores.map(s => parseFloat(s)) : parseFloat(scores);
 
-		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectsType(client, keys, 'zset', dialect);
-
-			for (let i = 0; i < keys.length; i++) {
-				const key = keys[i];
-				const score = isArrayOfScores ? scores[i] : scores;
-
-				await helpers.upsert(client, 'legacy_zset', {
-					_key: key,
-					value: value,
-					score: score,
-				}, ['_key', 'value'], { score: score }, dialect);
-			}
+		await helpers.withTransactionKeys(module, keys, 'zset', async (client, dialect) => {
+			const rows = keys.map((key, i) => ({
+				_key: key,
+				value: value,
+				score: isArrayOfScores ? scores[i] : scores,
+			}));
+			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
 		});
 	};
 
@@ -113,22 +99,19 @@ module.exports = function (module) {
 			}
 		}
 
-		const {dialect} = module;
+		await helpers.withTransaction(module, null, null, async (client, dialect) => {
+			// Ensure all keys have the right type
+			const uniqueKeys = [...new Set(data.map(item => item[0]))];
+			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset', dialect);
 
-		await module.transaction(async (client) => {
-			for (const item of data) {
-				const [key, score, value] = item;
-				const strValue = helpers.valueToString(value);
-				const numScore = parseFloat(score);
+			// Build all rows for batch upsert
+			const rows = data.map(item => ({
+				_key: item[0],
+				value: helpers.valueToString(item[2]),
+				score: parseFloat(item[1]),
+			}));
 
-				await helpers.ensureLegacyObjectType(client, key, 'zset', dialect);
-
-				await helpers.upsert(client, 'legacy_zset', {
-					_key: key,
-					value: strValue,
-					score: numScore,
-				}, ['_key', 'value'], { score: numScore }, dialect);
-			}
+			await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
 		});
 	};
 };

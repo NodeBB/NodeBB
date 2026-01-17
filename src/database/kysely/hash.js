@@ -14,14 +14,12 @@ module.exports = function (module) {
 
 		await helpers.withTransaction(module, key, 'hash', async (client, dialect) => {
 			const fields = Object.keys(data);
-			for (const field of fields) {
-				const value = data[field] !== null && data[field] !== undefined ? String(data[field]) : null;
-				await helpers.upsert(client, 'legacy_hash', {
-					_key: key,
-					field: field,
-					value: value,
-				}, ['_key', 'field'], { value: value }, dialect);
-			}
+			const rows = fields.map(field => ({
+				_key: key,
+				field: field,
+				value: data[field] !== null && data[field] !== undefined ? String(data[field]) : null,
+			}));
+			await helpers.upsertMultiple(client, 'legacy_hash', rows, ['_key', 'field'], ['value'], dialect);
 		});
 	};
 
@@ -40,20 +38,27 @@ module.exports = function (module) {
 		}
 
 		await helpers.withTransaction(module, null, null, async (client, dialect) => {
+			// Collect all unique keys and ensure types
+			const uniqueKeys = [...new Set(pairs.filter(p => p[0]).map(p => p[0]))];
+			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash', dialect);
+
+			// Collect all rows across all pairs
+			const allRows = [];
 			for (const [key, data] of pairs) {
 				if (!key || !data) continue;
 
-				await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-
 				const fields = Object.keys(data);
 				for (const field of fields) {
-					const value = data[field] !== null && data[field] !== undefined ? String(data[field]) : null;
-					await helpers.upsert(client, 'legacy_hash', {
+					allRows.push({
 						_key: key,
 						field: field,
-						value: value,
-					}, ['_key', 'field'], { value: value }, dialect);
+						value: data[field] !== null && data[field] !== undefined ? String(data[field]) : null,
+					});
 				}
+			}
+
+			if (allRows.length) {
+				await helpers.upsertMultiple(client, 'legacy_hash', allRows, ['_key', 'field'], ['value'], dialect);
 			}
 		});
 	};
@@ -322,32 +327,62 @@ module.exports = function (module) {
 			return;
 		}
 
+		// Note: This requires sequential processing because each increment depends on the current value
+		// We batch the type ensures but process increments sequentially
 		await helpers.withTransaction(module, null, null, async (client, dialect) => {
+			const uniqueKeys = [...new Set(data.filter(d => d[0]).map(d => d[0]))];
+			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash', dialect);
+
+			// Get all current values in one query
+			const keyFieldPairs = [];
+			for (const item of data) {
+				const [key, fieldValueObj] = item;
+				if (!key || !fieldValueObj) continue;
+				for (const field of Object.keys(fieldValueObj)) {
+					keyFieldPairs.push({ key, field });
+				}
+			}
+
+			// Query all existing values at once
+			const existingValues = {};
+			if (keyFieldPairs.length) {
+				const results = await client.selectFrom('legacy_hash')
+					.select(['_key', 'field', 'value'])
+					.where(eb => eb.or(
+						keyFieldPairs.map(p => eb.and([
+							eb('_key', '=', p.key),
+							eb('field', '=', p.field),
+						]))
+					))
+					.execute();
+
+				results.forEach((r) => {
+					existingValues[`${r._key}:${r.field}`] = r.value;
+				});
+			}
+
+			// Build all rows for upsert
+			const rows = [];
 			for (const item of data) {
 				const [key, fieldValueObj] = item;
 				if (!key || !fieldValueObj) continue;
 
-				await helpers.ensureLegacyObjectType(client, key, 'hash', dialect);
-
-				for (const [field, value] of Object.entries(fieldValueObj)) {
-					const increment = parseInt(value, 10) || 0;
-
-					const current = await client.selectFrom('legacy_hash')
-						.select('value')
-						.where('_key', '=', key)
-						.where('field', '=', field)
-						.executeTakeFirst();
-
-					const currentValue = current ? parseFloat(current.value) || 0 : 0;
+				for (const [field, incValue] of Object.entries(fieldValueObj)) {
+					const increment = parseInt(incValue, 10) || 0;
+					const existingKey = `${key}:${field}`;
+					const currentValue = existingValues[existingKey] ? parseFloat(existingValues[existingKey]) || 0 : 0;
 					const newValue = currentValue + increment;
-					const strValue = String(newValue);
 
-					await helpers.upsert(client, 'legacy_hash', {
+					rows.push({
 						_key: key,
 						field: field,
-						value: strValue,
-					}, ['_key', 'field'], { value: strValue }, dialect);
+						value: String(newValue),
+					});
 				}
+			}
+
+			if (rows.length) {
+				await helpers.upsertMultiple(client, 'legacy_hash', rows, ['_key', 'field'], ['value'], dialect);
 			}
 		});
 	};

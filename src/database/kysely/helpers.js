@@ -256,13 +256,13 @@ helpers.ensureLegacyObjectType = async function (db, key, type, dialect) {
 
 /**
  * Ensure multiple keys exist in legacy_object with the given type
+ * Uses batch insert for efficiency
  */
 helpers.ensureLegacyObjectsType = async function (db, keys, type, dialect) {
 	if (!keys || !keys.length) return;
 
-	for (const key of keys) {
-		await helpers.ensureLegacyObjectType(db, key, type, dialect);
-	}
+	const rows = keys.map(key => ({ _key: key, type: type }));
+	await helpers.upsertMultiple(db, 'legacy_object', rows, ['_key'], ['type'], dialect);
 };
 
 // =============================================================================
@@ -312,20 +312,114 @@ helpers.upsert = async function (db, table, values, conflictColumns, updateValue
 };
 
 /**
- * Batch insert with conflict handling
+ * Batch insert with conflict handling - uses multi-row insert
  */
 helpers.upsertBatch = async function (db, table, rows, conflictColumns, updateColumns, dialect) {
 	if (!rows || !rows.length) return;
 
-	for (const row of rows) {
+	await helpers.upsertMultiple(db, table, rows, conflictColumns, updateColumns, dialect);
+};
+
+// SQLite has a limit of 999 SQL variables by default
+// We chunk large inserts to avoid hitting this limit
+const SQLITE_CHUNK_SIZE = 100;
+
+/**
+ * Multi-row upsert - inserts all rows in a single query (or chunked for large batches)
+ * @param {object} db - Kysely database instance or transaction
+ * @param {string} table - Table name
+ * @param {object[]} rows - Array of row objects to insert
+ * @param {string[]} conflictColumns - Columns that define the conflict (primary key)
+ * @param {string[]} updateColumns - Columns to update on conflict
+ * @param {string} dialect - Database dialect (mysql, postgres, sqlite)
+ */
+helpers.upsertMultiple = async function (db, table, rows, conflictColumns, updateColumns, dialect) {
+	if (!rows || !rows.length) return;
+
+	// For single row, use simple upsert
+	if (rows.length === 1) {
 		const updateValues = {};
 		updateColumns.forEach((col) => {
-			if (Object.prototype.hasOwnProperty.call(row, col)) {
-				updateValues[col] = row[col];
+			if (Object.prototype.hasOwnProperty.call(rows[0], col)) {
+				updateValues[col] = rows[0][col];
 			}
 		});
-		await helpers.upsert(db, table, row, conflictColumns, updateValues, dialect);
+		return await helpers.upsert(db, table, rows[0], conflictColumns, updateValues, dialect);
 	}
+
+	// Chunk large batches for SQLite to avoid "too many SQL variables" error
+	const chunkSize = dialect === 'sqlite' ? SQLITE_CHUNK_SIZE : 1000;
+	if (rows.length > chunkSize) {
+		const chunks = [];
+		for (let i = 0; i < rows.length; i += chunkSize) {
+			chunks.push(rows.slice(i, i + chunkSize));
+		}
+		for (const chunk of chunks) {
+			// eslint-disable-next-line no-await-in-loop -- sequential chunk processing
+			await helpers.upsertMultipleBatch(db, table, chunk, conflictColumns, updateColumns, dialect);
+		}
+		return;
+	}
+
+	await helpers.upsertMultipleBatch(db, table, rows, conflictColumns, updateColumns, dialect);
+};
+
+/**
+ * Internal batch upsert - handles a single batch of rows
+ */
+helpers.upsertMultipleBatch = async function (db, table, rows, conflictColumns, updateColumns, dialect) {
+	if (dialect === 'mysql') {
+		// MySQL: INSERT ... ON DUPLICATE KEY UPDATE
+		// For MySQL, we need to reference the values using VALUES()
+		const updateSet = {};
+		updateColumns.forEach((col) => {
+			// In MySQL, use VALUES(col) to reference the new value
+			updateSet[col] = eb => eb.fn('VALUES', [eb.ref(col)]);
+		});
+
+		if (Object.keys(updateSet).length > 0) {
+			await db.insertInto(table)
+				.values(rows)
+				.onDuplicateKeyUpdate(updateSet)
+				.execute();
+		} else {
+			// No updates, use INSERT IGNORE equivalent
+			await db.insertInto(table)
+				.values(rows)
+				.onDuplicateKeyUpdate({ [conflictColumns[0]]: eb => eb.fn('VALUES', [eb.ref(conflictColumns[0])]) })
+				.execute();
+		}
+	} else {
+		// PostgreSQL and SQLite: INSERT ... ON CONFLICT ... DO UPDATE SET
+		const updateSet = {};
+		updateColumns.forEach((col) => {
+			// In PostgreSQL/SQLite, use excluded.col to reference the new value
+			updateSet[col] = eb => eb.ref(`excluded.${col}`);
+		});
+
+		if (Object.keys(updateSet).length > 0) {
+			await db.insertInto(table)
+				.values(rows)
+				.onConflict(oc => oc.columns(conflictColumns).doUpdateSet(updateSet))
+				.execute();
+		} else {
+			await db.insertInto(table)
+				.values(rows)
+				.onConflict(oc => oc.columns(conflictColumns).doNothing())
+				.execute();
+		}
+	}
+};
+
+/**
+ * Batch insert without conflict handling (simple multi-row insert)
+ */
+helpers.insertMultiple = async function (db, table, rows) {
+	if (!rows || !rows.length) return;
+
+	await db.insertInto(table)
+		.values(rows)
+		.execute();
 };
 
 // =============================================================================

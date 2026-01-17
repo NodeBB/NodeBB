@@ -70,13 +70,15 @@ module.exports = function (module) {
 			return;
 		}
 
-		// Delete each key-value pair individually
-		// For MySQL 4 compatibility we can't use modern tuple IN syntax
-		for (const [key, value] of data) {
-			await module.db.deleteFrom('legacy_zset')
-				.where('_key', '=', key)
-				.where('value', '=', helpers.valueToString(value))
-				.execute();
-		}
+		// Build OR conditions for all key-value pairs
+		// This is more efficient than individual deletes
+		await module.db.deleteFrom('legacy_zset')
+			.where(eb => eb.or(
+				data.map(([key, value]) => eb.and([
+					eb('_key', '=', key),
+					eb('value', '=', helpers.valueToString(value)),
+				]))
+			))
+			.execute();
 	};
 };

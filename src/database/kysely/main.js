@@ -7,6 +7,8 @@ module.exports = function (module) {
 		// Drop all legacy tables and recreate
 		const tables = ['legacy_string', 'legacy_list', 'legacy_set', 'legacy_zset', 'legacy_hash', 'legacy_object'];
 
+		// Note: Tables must be dropped in sequence due to foreign key dependencies
+		/* eslint-disable no-await-in-loop */
 		for (const table of tables) {
 			try {
 				await module.db.schema.dropTable(table).ifExists().execute();
@@ -14,6 +16,7 @@ module.exports = function (module) {
 				// Ignore errors during drop
 			}
 		}
+		/* eslint-enable no-await-in-loop */
 
 		// Re-run init to recreate tables
 		const connection = require('./connection');
@@ -201,15 +204,13 @@ module.exports = function (module) {
 				.where('_key', '=', newKey)
 				.execute();
 
-			// Update child tables first (they reference the old key)
+			// Update child tables in parallel (no dependencies between them)
 			const tables = ['legacy_hash', 'legacy_zset', 'legacy_set', 'legacy_list', 'legacy_string'];
-			for (const table of tables) {
-				await client.updateTable(table)
-					.set({ _key: newKey })
-					.where('_key', '=', oldKey)
-					.execute()
-					.catch(() => {}); // Ignore if key doesn't exist in this table
-			}
+			await Promise.all(tables.map(table => client.updateTable(table)
+				.set({ _key: newKey })
+				.where('_key', '=', oldKey)
+				.execute()
+				.catch(() => {}))); // Ignore if key doesn't exist in this table
 
 			// Rename the key in legacy_object
 			await client.updateTable('legacy_object')

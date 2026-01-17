@@ -455,31 +455,58 @@ module.exports = function (module) {
 		}
 
 		return await helpers.withTransaction(module, null, null, async (client, dialect) => {
-			const results = [];
+			// Ensure all keys have the right type
+			const uniqueKeys = [...new Set(data.map(item => item[0]))];
+			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset', dialect);
+
+			// Build key-value pairs for querying existing scores
+			const keyValuePairs = data.map(item => ({
+				key: item[0],
+				value: helpers.valueToString(item[2]),
+			}));
+
+			// Query all existing scores at once
+			const existingScores = {};
+			if (keyValuePairs.length) {
+				const results = await client.selectFrom('legacy_zset')
+					.select(['_key', 'value', 'score'])
+					.where(eb => eb.or(
+						keyValuePairs.map(p => eb.and([
+							eb('_key', '=', p.key),
+							eb('value', '=', p.value),
+						]))
+					))
+					.execute();
+
+				results.forEach((r) => {
+					existingScores[`${r._key}:${r.value}`] = parseFloat(r.score);
+				});
+			}
+
+			// Calculate new scores and build upsert rows
+			const rows = [];
+			const returnResults = [];
 			for (const item of data) {
 				const [key, increment, value] = item;
 				const strValue = helpers.valueToString(value);
-
-				await helpers.ensureLegacyObjectType(client, key, 'zset', dialect);
-
-				const existing = await client.selectFrom('legacy_zset')
-					.select('score')
-					.where('_key', '=', key)
-					.where('value', '=', strValue)
-					.executeTakeFirst();
-
-				const currentScore = existing ? parseFloat(existing.score) : 0;
+				const existKey = `${key}:${strValue}`;
+				const currentScore = existingScores[existKey] || 0;
 				const newScore = currentScore + parseFloat(increment);
 
-				await helpers.upsert(client, 'legacy_zset', {
+				rows.push({
 					_key: key,
 					value: strValue,
 					score: newScore,
-				}, ['_key', 'value'], { score: newScore }, dialect);
-
-				results.push(newScore);
+				});
+				returnResults.push(newScore);
 			}
-			return results;
+
+			// Batch upsert all rows
+			if (rows.length) {
+				await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score'], dialect);
+			}
+
+			return returnResults;
 		});
 	};
 

@@ -51,14 +51,46 @@ kyselyModule.init = async function (opts) {
 	kyselyModule.pool = db;
 	kyselyModule.client = db;
 	kyselyModule.dialect = connection.getDialect(opts);
-	
+
 	try {
 		await checkUpgrade(db);
 	} catch (err) {
 		winston.error(`NodeBB could not connect to your database. Error: ${err.message}`);
 		throw err;
 	}
+
+	// Check if the database supports row-level locking (FOR UPDATE)
+	// SQLite doesn't support this, MySQL and PostgreSQL do
+	kyselyModule.supportsLocking = await checkLockingSupport(db, kyselyModule.dialect);
 };
+
+/**
+ * Check if the database supports row-level locking (FOR UPDATE).
+ * SQLite does not support this, MySQL and PostgreSQL do.
+ * @param {object} db - Kysely database instance
+ * @param {string} dialect - Database dialect
+ * @returns {Promise<boolean>} True if locking is supported
+ */
+async function checkLockingSupport(db, dialect) {
+	// SQLite doesn't support FOR UPDATE
+	if (dialect === 'sqlite') {
+		return false;
+	}
+
+	// Try to execute a query with FOR UPDATE
+	try {
+		await db.transaction().execute(async (trx) => {
+			await trx.selectFrom('legacy_object')
+				.select('_key')
+				.limit(1)
+				.forUpdate()
+				.execute();
+		});
+		return true;
+	} catch {
+		return false;
+	}
+}
 
 async function checkUpgrade(db) {
 	const {dialect} = kyselyModule;
