@@ -82,7 +82,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:          
-            {{- toYaml .Values.env | nindent 12 }}
+            {{- range .Values.env }}
+            - {{ toJson . }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
