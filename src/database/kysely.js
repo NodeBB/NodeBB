@@ -365,6 +365,13 @@ kyselyModule.close = async function () {
 	}
 };
 
+kyselyModule.checkpoint = async function () {
+	if (kyselyModule.db && kyselyModule.dialect === 'sqlite') {
+		const { sql } = require('kysely');
+		await sql`PRAGMA wal_checkpoint(TRUNCATE)`.execute(kyselyModule.db);
+	}
+}
+
 // Load sub-modules (order matters: helpers must be loaded first)
 require('./kysely/helpers')(kyselyModule);
 require('./kysely/main')(kyselyModule);
