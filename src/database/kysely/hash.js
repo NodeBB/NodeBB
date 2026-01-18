@@ -18,16 +18,23 @@ module.exports = function (module) {
 				field,
 				value: value !== null && value !== undefined ? String(value) : null,
 			}));
-			await helpers.upsertMultiple(client, 'legacy_hash', rows, ['_key', 'field'], ['value']);
+			await helpers.upsertMultiple(
+				client,
+				'legacy_hash',
+				rows,
+				['_key', 'field'],
+				['value']
+			);
 		});
 	};
 
 	module.setObjectBulk = async function (...args) {
-		const pairs = Array.isArray(args[0]) && args[0].length > 0 && Array.isArray(args[0][0]) ?
-			args[0] :
-			Array.isArray(args[0]) && Array.isArray(args[1]) ?
-				args[0].map((key, i) => [key, args[1][i]]) :
-				args;
+		const pairs =
+			Array.isArray(args[0]) && args[0].length > 0 && Array.isArray(args[0][0]) ?
+				args[0] :
+				Array.isArray(args[0]) && Array.isArray(args[1]) ?
+					args[0].map((key, i) => [key, args[1][i]]) :
+					args;
 
 		if (!pairs.length) {
 			return;
@@ -35,20 +42,29 @@ module.exports = function (module) {
 
 		await helpers.withTransaction(null, null, async (client) => {
 			// Collect all unique keys and ensure types
-			const uniqueKeys = [...new Set(pairs.filter(([key]) => key).map(([key]) => key))];
+			const uniqueKeys = [
+				...new Set(pairs.filter(([key]) => key).map(([key]) => key)),
+			];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash');
 
 			// Collect all rows across all pairs using flatMap
 			const allRows = pairs
 				.filter(([key, data]) => key && data)
-				.flatMap(([key, data]) => Object.entries(data).map(([field, value]) => ({
-					_key: key,
-					field,
-					value: value !== null && value !== undefined ? String(value) : null,
-				})));
+				.flatMap(([key, data]) =>
+					Object.entries(data).map(([field, value]) => ({
+						_key: key,
+						field,
+						value: value !== null && value !== undefined ? String(value) : null,
+					})));
 
 			if (allRows.length) {
-				await helpers.upsertMultiple(client, 'legacy_hash', allRows, ['_key', 'field'], ['value']);
+				await helpers.upsertMultiple(
+					client,
+					'legacy_hash',
+					allRows,
+					['_key', 'field'],
+					['value']
+				);
 			}
 		});
 	};
@@ -59,17 +75,26 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(key.map(k => module.setObjectField(k, field, value)));
+			return await Promise.all(
+				key.map(k => module.setObjectField(k, field, value))
+			);
 		}
 
-		const strValue = value !== null && value !== undefined ? String(value) : null;
+		const strValue =
+			value !== null && value !== undefined ? String(value) : null;
 
 		await helpers.withTransaction(key, 'hash', async (client) => {
-			await helpers.upsert(client, 'legacy_hash', {
-				_key: key,
-				field: field,
-				value: strValue,
-			}, ['_key', 'field'], { value: strValue });
+			await helpers.upsert(
+				client,
+				'legacy_hash',
+				{
+					_key: key,
+					field: field,
+					value: strValue,
+				},
+				['_key', 'field'],
+				{ value: strValue }
+			);
 		});
 	};
 
@@ -78,30 +103,41 @@ module.exports = function (module) {
 			return null;
 		}
 
-		let query = helpers.createHashQuery()
+		// Normalize fields to array (handle string like 'field' vs ['field'])
+		let normalizedFields = fields;
+		if (fields && !Array.isArray(fields)) {
+			normalizedFields = [fields];
+		}
+
+		let query = helpers
+			.createHashQuery()
 			.select(['h.field', 'h.value'])
 			.where('o._key', '=', key);
 
-		if (fields && fields.length) {
-			query = query.where('h.field', 'in', fields);
+		if (normalizedFields && normalizedFields.length) {
+			query = query.where('h.field', 'in', normalizedFields);
 		}
 
 		const result = await query.execute();
 
 		if (!result.length) {
 			// If fields were specified, return object with null values (matches postgres behavior)
-			if (fields && fields.length) {
-				return Object.fromEntries(fields.map(f => [f, null]));
+			if (normalizedFields && normalizedFields.length) {
+				return Object.fromEntries(normalizedFields.map(f => [f, null]));
 			}
 			return null;
 		}
 
 		// Build result object
-		const obj = Object.fromEntries(result.map(({ field, value }) => [field, value]));
+		const obj = Object.fromEntries(
+			result.map(({ field, value }) => [field, value])
+		);
 
 		// If fields were specified, ensure all requested fields are present
-		if (fields && fields.length) {
-			return Object.fromEntries(fields.map(f => [f, obj[f] ?? null]));
+		if (normalizedFields && normalizedFields.length) {
+			return Object.fromEntries(
+				normalizedFields.map(f => [f, obj[f] ?? null])
+			);
 		}
 
 		return obj;
@@ -112,28 +148,39 @@ module.exports = function (module) {
 			return [];
 		}
 
-		let query = helpers.createHashQuery()
+		// Normalize fields to array (handle string like 'field' vs ['field'])
+		let normalizedFields = fields;
+		if (fields && !Array.isArray(fields)) {
+			normalizedFields = [fields];
+		}
+
+		let query = helpers
+			.createHashQuery()
 			.select(['h._key', 'h.field', 'h.value'])
 			.where('o._key', 'in', keys);
 
-		if (fields && fields.length) {
-			query = query.where('h.field', 'in', fields);
+		if (normalizedFields && normalizedFields.length) {
+			query = query.where('h.field', 'in', normalizedFields);
 		}
 
 		const result = await query.execute();
 
 		// Build a map of key -> {field: value}
-		const map = result.reduce((acc, { _key, field, value }) => ({
-			...acc,
-			[_key]: { ...(acc[_key] || {}), [field]: value },
-		}), {});
+		const map = result.reduce(
+			(acc, { _key, field, value }) => ({
+				...acc,
+				[_key]: { ...(acc[_key] || {}), [field]: value },
+			}),
+			{}
+		);
 
 		// If specific fields were requested, return object with all fields (null for missing)
 		// This matches postgres behavior where missing keys return {field1: null, field2: null, ...}
-		if (fields?.length) {
-			return keys.map(k => Object.fromEntries(
-				fields.map(f => [f, map[k]?.[f] ?? null])
-			));
+		if (normalizedFields?.length) {
+			return keys.map(k =>
+				Object.fromEntries(
+					normalizedFields.map(f => [f, map[k]?.[f] ?? null])
+				));
 		}
 
 		// Without fields, return the full object or null for missing keys
@@ -177,7 +224,8 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const result = await helpers.createHashQuery()
+		const result = await helpers
+			.createHashQuery()
 			.select('h.field')
 			.where('o._key', '=', key)
 			.execute();
@@ -195,7 +243,8 @@ module.exports = function (module) {
 			return false;
 		}
 
-		const result = await helpers.createHashQuery()
+		const result = await helpers
+			.createHashQuery()
 			.select('h.value')
 			.where('o._key', '=', key)
 			.where('h.field', '=', field)
@@ -210,7 +259,8 @@ module.exports = function (module) {
 			return fields ? fields.map(() => false) : [];
 		}
 
-		const result = await helpers.createHashQuery()
+		const result = await helpers
+			.createHashQuery()
 			.select('h.field')
 			.where('o._key', '=', key)
 			.where('h.field', 'in', fields)
@@ -226,14 +276,17 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(key.map(k => module.deleteObjectField(k, field)));
+			return await Promise.all(
+				key.map(k => module.deleteObjectField(k, field))
+			);
 		}
 
 		if (Array.isArray(field)) {
 			return await module.deleteObjectFields(key, field);
 		}
 
-		await module.db.deleteFrom('legacy_hash')
+		await module.db
+			.deleteFrom('legacy_hash')
 			.where('_key', '=', key)
 			.where('field', '=', field)
 			.execute();
@@ -245,10 +298,13 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(key.map(k => module.deleteObjectFields(k, fields)));
+			return await Promise.all(
+				key.map(k => module.deleteObjectFields(k, fields))
+			);
 		}
 
-		await module.db.deleteFrom('legacy_hash')
+		await module.db
+			.deleteFrom('legacy_hash')
 			.where('_key', '=', key)
 			.where('field', 'in', fields)
 			.execute();
@@ -272,11 +328,14 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(key.map(k => module.incrObjectFieldBy(k, field, value)));
+			return await Promise.all(
+				key.map(k => module.incrObjectFieldBy(k, field, value))
+			);
 		}
 
 		return await helpers.withTransaction(key, 'hash', async (client) => {
-			const current = await client.selectFrom('legacy_hash')
+			const current = await client
+				.selectFrom('legacy_hash')
 				.select('value')
 				.where('_key', '=', key)
 				.where('field', '=', field)
@@ -286,11 +345,17 @@ module.exports = function (module) {
 			const newValue = currentValue + value;
 			const strValue = String(newValue);
 
-			await helpers.upsert(client, 'legacy_hash', {
-				_key: key,
-				field: field,
-				value: strValue,
-			}, ['_key', 'field'], { value: strValue });
+			await helpers.upsert(
+				client,
+				'legacy_hash',
+				{
+					_key: key,
+					field: field,
+					value: strValue,
+				},
+				['_key', 'field'],
+				{ value: strValue }
+			);
 
 			return newValue;
 		});
@@ -303,46 +368,59 @@ module.exports = function (module) {
 
 		// Note: This requires fetching current values first, then calculating new values
 		await helpers.withTransaction(null, null, async (client) => {
-			const uniqueKeys = [...new Set(data.filter(([key]) => key).map(([key]) => key))];
+			const uniqueKeys = [
+				...new Set(data.filter(([key]) => key).map(([key]) => key)),
+			];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash');
 
 			// Get all key-field pairs using flatMap
 			const keyFieldPairs = data
 				.filter(([key, fieldValueObj]) => key && fieldValueObj)
-				.flatMap(([key, fieldValueObj]) => Object.keys(fieldValueObj).map(field => ({ key, field })));
+				.flatMap(([key, fieldValueObj]) =>
+					Object.keys(fieldValueObj).map(field => ({ key, field })));
 
 			// Query all existing values at once
 			const existingValues = keyFieldPairs.length ?
 				Object.fromEntries(
-					(await client.selectFrom('legacy_hash')
-						.select(['_key', 'field', 'value'])
-						.where(eb => eb.or(
-							keyFieldPairs.map(({ key, field }) => eb.and([
-								eb('_key', '=', key),
-								eb('field', '=', field),
-							]))
-						))
-						.execute())
-						.map(({ _key, field, value }) => [`${_key}:${field}`, value])
-				) : {};
+					(
+						await client
+							.selectFrom('legacy_hash')
+							.select(['_key', 'field', 'value'])
+							.where(eb =>
+								eb.or(
+									keyFieldPairs.map(({ key, field }) =>
+										eb.and([eb('_key', '=', key), eb('field', '=', field)]))
+								))
+							.execute()
+					).map(({ _key, field, value }) => [`${_key}:${field}`, value])
+				) :
+				{};
 
 			// Build all rows for upsert using flatMap
 			const rows = data
 				.filter(([key, fieldValueObj]) => key && fieldValueObj)
-				.flatMap(([key, fieldValueObj]) => Object.entries(fieldValueObj).map(([field, incValue]) => {
-					const increment = parseInt(incValue, 10) || 0;
-					const existingKey = `${key}:${field}`;
-					const currentValue = existingValues[existingKey] ?
-						parseFloat(existingValues[existingKey]) || 0 : 0;
-					return {
-						_key: key,
-						field,
-						value: String(currentValue + increment),
-					};
-				}));
+				.flatMap(([key, fieldValueObj]) =>
+					Object.entries(fieldValueObj).map(([field, incValue]) => {
+						const increment = parseInt(incValue, 10) || 0;
+						const existingKey = `${key}:${field}`;
+						const currentValue = existingValues[existingKey] ?
+							parseFloat(existingValues[existingKey]) || 0 :
+							0;
+						return {
+							_key: key,
+							field,
+							value: String(currentValue + increment),
+						};
+					}));
 
 			if (rows.length) {
-				await helpers.upsertMultiple(client, 'legacy_hash', rows, ['_key', 'field'], ['value']);
+				await helpers.upsertMultiple(
+					client,
+					'legacy_hash',
+					rows,
+					['_key', 'field'],
+					['value']
+				);
 			}
 		});
 	};

@@ -1,13 +1,13 @@
 'use strict';
 
 const {Store} = require('express-session');
-const helpers = require('./helpers');
 
 class KyselySessionStore extends Store {
 	constructor(options) {
 		super(options);
 		this.db = options.db;
 		this.dialect = options.dialect;
+		this.helpers = options.helpers;
 	}
 
 	async ensureSessionsTable() {
@@ -80,19 +80,19 @@ class KyselySessionStore extends Store {
 	}
 
 	async _set(sid, session) {
-		const {dialect} = this;
+		const {helpers, db} = this;
 		const ttl = session.cookie && session.cookie.maxAge ? session.cookie.maxAge : 86400000;
 		const expireAt = new Date(Date.now() + ttl).toISOString();
 		const sess = JSON.stringify(session);
 
-		await helpers.upsert(this.db, 'sessions', {
+		await helpers.upsert(db, 'sessions', {
 			sid: sid,
 			sess: sess,
 			expireAt: expireAt,
 		}, ['sid'], {
 			sess: sess,
 			expireAt: expireAt,
-		}, dialect);
+		});
 	}
 
 	destroy(sid, callback) {

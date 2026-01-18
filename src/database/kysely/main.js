@@ -107,6 +107,15 @@ module.exports = function (module) {
 			return;
 		}
 
+		// Delete from child tables first
+		const childTables = ['legacy_string', 'legacy_hash', 'legacy_zset', 'legacy_set', 'legacy_list'];
+		await Promise.all(childTables.map(table =>
+			module.db.deleteFrom(table)
+				.where('_key', '=', key)
+				.execute()
+				.catch(() => {}))); // Ignore errors if key doesn't exist in table
+
+		// Then delete from parent table
 		await module.db.deleteFrom('legacy_object')
 			.where('_key', '=', key)
 			.execute();
@@ -117,6 +126,15 @@ module.exports = function (module) {
 			return;
 		}
 
+		// Delete from child tables first
+		const childTables = ['legacy_string', 'legacy_hash', 'legacy_zset', 'legacy_set', 'legacy_list'];
+		await Promise.all(childTables.map(table =>
+			module.db.deleteFrom(table)
+				.where('_key', 'in', keys)
+				.execute()
+				.catch(() => {}))); // Ignore errors if keys don't exist in table
+
+		// Then delete from parent table
 		await module.db.deleteFrom('legacy_object')
 			.where('_key', 'in', keys)
 			.execute();
@@ -168,7 +186,7 @@ module.exports = function (module) {
 		}
 
 		return await helpers.withTransaction(key, 'string', async (client) => {
-			// Get current value
+			// Get current value - ensureLegacyObjectType already deleted expired keys and their data
 			const current = await client.selectFrom('legacy_string')
 				.select('data')
 				.where('_key', '=', key)
@@ -188,12 +206,29 @@ module.exports = function (module) {
 
 	module.rename = async function (oldKey, newKey) {
 		await helpers.withTransaction(null, null, async (client) => {
-			// Delete the new key if it exists
+			// Delete the new key if it exists (CASCADE will delete child rows too)
 			await client.deleteFrom('legacy_object')
 				.where('_key', '=', newKey)
+				.execute()
+				.catch(() => {});
+
+			// Get old key's type and expireAt so we can create the new parent row first
+			const oldRow = await client.selectFrom('legacy_object')
+				.select(['type', 'expireAt'])
+				.where('_key', '=', oldKey)
+				.executeTakeFirst();
+
+			if (!oldRow) {
+				// Old key doesn't exist, nothing to rename
+				return;
+			}
+
+			// Insert new parent row first (so FK constraint is satisfied when updating children)
+			await client.insertInto('legacy_object')
+				.values({ _key: newKey, type: oldRow.type, expireAt: oldRow.expireAt })
 				.execute();
 
-			// Update child tables in parallel (no dependencies between them)
+			// Update child tables in parallel to point to the new key
 			const tables = ['legacy_hash', 'legacy_zset', 'legacy_set', 'legacy_list', 'legacy_string'];
 			await Promise.all(tables.map(table => client.updateTable(table)
 				.set({ _key: newKey })
@@ -201,9 +236,8 @@ module.exports = function (module) {
 				.execute()
 				.catch(() => {}))); // Ignore if key doesn't exist in this table
 
-			// Rename the key in legacy_object
-			await client.updateTable('legacy_object')
-				.set({ _key: newKey })
+			// Delete the old parent row (CASCADE will clean up any remaining children)
+			await client.deleteFrom('legacy_object')
 				.where('_key', '=', oldKey)
 				.execute();
 		});

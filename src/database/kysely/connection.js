@@ -13,11 +13,11 @@ connection.getDialect = function (options) {
 connection.getConnectionOptions = function (options) {
 	options = options || nconf.get('kysely') || {};
 	const dialect = connection.getDialect(options);
-	
+
 	const connOptions = {
 		dialect: dialect,
 	};
-	
+
 	if (dialect === 'mysql') {
 		// MySQL connection options
 		connOptions.host = options.host || '127.0.0.1';
@@ -27,7 +27,7 @@ connection.getConnectionOptions = function (options) {
 		connOptions.database = options.database || 'nodebb';
 		connOptions.connectionLimit = options.connectionLimit || 20;
 		connOptions.connectTimeout = options.connectTimeout || 90000;
-		
+
 		if (options.ssl) {
 			connOptions.ssl = typeof options.ssl === 'object' ? options.ssl : { rejectUnauthorized: false };
 		}
@@ -40,7 +40,7 @@ connection.getConnectionOptions = function (options) {
 		connOptions.database = options.database || 'nodebb';
 		connOptions.max = options.max || 20;
 		connOptions.connectionTimeoutMillis = options.connectionTimeoutMillis || 90000;
-		
+
 		if (options.ssl) {
 			const fs = require('fs');
 			if (typeof options.ssl === 'object') {
@@ -73,12 +73,12 @@ connection.getConnectionOptions = function (options) {
 
 connection.createKyselyInstance = async function (options) {
 	const { Kysely, MysqlDialect, PostgresDialect, SqliteDialect } = require('kysely');
-	
+
 	const connOptions = connection.getConnectionOptions(options);
-	const {dialect} = connOptions;
-	
+	const { dialect } = connOptions;
+
 	let kyselyDialect;
-	
+
 	if (dialect === 'mysql') {
 		const mysql2 = require('mysql2');
 		const pool = mysql2.createPool({
@@ -91,7 +91,7 @@ connection.createKyselyInstance = async function (options) {
 			connectTimeout: connOptions.connectTimeout,
 			ssl: connOptions.ssl,
 		});
-		
+
 		kyselyDialect = new MysqlDialect({
 			pool: pool.promise(),
 		});
@@ -107,7 +107,7 @@ connection.createKyselyInstance = async function (options) {
 			connectionTimeoutMillis: connOptions.connectionTimeoutMillis,
 			ssl: connOptions.ssl,
 		});
-		
+
 		kyselyDialect = new PostgresDialect({
 			pool: pool,
 		});
@@ -115,7 +115,7 @@ connection.createKyselyInstance = async function (options) {
 		const Database = require('better-sqlite3');
 		const path = require('path');
 		const fs = require('fs');
-		
+
 		// Auto-create directory if it doesn't exist (for file-based databases)
 		if (connOptions.filename !== ':memory:') {
 			const dir = path.dirname(connOptions.filename);
@@ -123,11 +123,12 @@ connection.createKyselyInstance = async function (options) {
 				fs.mkdirSync(dir, { recursive: true });
 			}
 		}
-		
+
 		const database = new Database(connOptions.filename);
 		database.pragma('journal_mode = WAL');
 		database.pragma('foreign_keys = ON');
-		
+		database.pragma('busy_timeout = 30000'); // Wait up to 30 seconds for lock to release
+
 		kyselyDialect = new SqliteDialect({
 			database: database,
 		});
@@ -159,11 +160,28 @@ connection.createKyselyInstance = async function (options) {
 			);
 		}
 	}
-	
+
 	const db = new Kysely({
 		dialect: kyselyDialect,
+		log(event) {
+			if (false) return;
+			if (event.level === 'error') {
+				console.error('Query failed : ', {
+					durationMs: event.queryDurationMillis,
+					error: event.error,
+					sql: event.query.sql,
+					params: event.query.parameters,
+				});
+			} else { // `'query'`
+				console.log('Query executed : ', {
+					durationMs: event.queryDurationMillis,
+					sql: event.query.sql,
+					params: event.query.parameters,
+				});
+			}
+		},
 	});
-	
+
 	// Test the connection
 	try {
 		if (dialect === 'mysql') {
@@ -177,7 +195,7 @@ connection.createKyselyInstance = async function (options) {
 		winston.error(`Failed to connect to database: ${err.message}`);
 		throw err;
 	}
-	
+
 	return db;
 };
 

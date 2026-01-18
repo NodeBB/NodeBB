@@ -1,5 +1,7 @@
 'use strict';
 
+const util = require('util');
+
 module.exports = function (module) {
 	const { helpers } = module;
 
@@ -640,6 +642,11 @@ module.exports = function (module) {
 		const batch = options.batch || 100;
 		let cursor = 0;
 		let done = false;
+
+		// Promisify callback-based process functions (like batch.js does for other DBs)
+		if (processFn && processFn.constructor && processFn.constructor.name !== 'AsyncFunction') {
+			processFn = util.promisify(processFn);
+		}
 
 		while (!done) {
 			/* eslint-disable no-await-in-loop */

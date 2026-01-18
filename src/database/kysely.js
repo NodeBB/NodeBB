@@ -150,10 +150,11 @@ async function createTables(db, dialect) {
 		.execute();
 
 	// 2. Create legacy_hash table - normalized field storage (key, field, value)
+	// With foreign key constraint to legacy_object for referential integrity
 	await db.schema
 		.createTable('legacy_hash')
 		.ifNotExists()
-		.addColumn('_key', 'varchar(255)', col => col.notNull())
+		.addColumn('_key', 'varchar(255)', col => col.notNull().references('legacy_object._key').onDelete('cascade'))
 		.addColumn('field', 'varchar(255)', col => col.notNull())
 		.addColumn('value', 'text')
 		.addPrimaryKeyConstraint('pk_legacy_hash', ['_key', 'field'])
@@ -163,7 +164,7 @@ async function createTables(db, dialect) {
 	await db.schema
 		.createTable('legacy_zset')
 		.ifNotExists()
-		.addColumn('_key', 'varchar(255)', col => col.notNull())
+		.addColumn('_key', 'varchar(255)', col => col.notNull().references('legacy_object._key').onDelete('cascade'))
 		.addColumn('value', 'varchar(255)', col => col.notNull())
 		.addColumn('score', dialect === 'sqlite' ? 'real' : 'decimal(20, 4)', col => col.notNull())
 		.addPrimaryKeyConstraint('pk_legacy_zset', ['_key', 'value'])
@@ -173,7 +174,7 @@ async function createTables(db, dialect) {
 	await db.schema
 		.createTable('legacy_set')
 		.ifNotExists()
-		.addColumn('_key', 'varchar(255)', col => col.notNull())
+		.addColumn('_key', 'varchar(255)', col => col.notNull().references('legacy_object._key').onDelete('cascade'))
 		.addColumn('member', 'varchar(255)', col => col.notNull())
 		.addPrimaryKeyConstraint('pk_legacy_set', ['_key', 'member'])
 		.execute();
@@ -182,7 +183,7 @@ async function createTables(db, dialect) {
 	await db.schema
 		.createTable('legacy_list')
 		.ifNotExists()
-		.addColumn('_key', 'varchar(255)', col => col.notNull())
+		.addColumn('_key', 'varchar(255)', col => col.notNull().references('legacy_object._key').onDelete('cascade'))
 		.addColumn('idx', 'integer', col => col.notNull())
 		.addColumn('value', 'text', col => col.notNull())
 		.addPrimaryKeyConstraint('pk_legacy_list', ['_key', 'idx'])
@@ -192,7 +193,7 @@ async function createTables(db, dialect) {
 	await db.schema
 		.createTable('legacy_string')
 		.ifNotExists()
-		.addColumn('_key', 'varchar(255)', col => col.primaryKey().notNull())
+		.addColumn('_key', 'varchar(255)', col => col.primaryKey().notNull().references('legacy_object._key').onDelete('cascade'))
 		.addColumn('data', 'text', col => col.notNull())
 		.execute();
 
@@ -259,6 +260,7 @@ kyselyModule.createSessionStore = async function (options) {
 	return new KyselySessionStore({
 		db: db,
 		dialect: dialect,
+		helpers: kyselyModule.helpers,
 		ttl: meta.getSessionTTLSeconds(),
 		pruneSessionInterval: nconf.get('isPrimary') ? 60 : false,
 	});

@@ -408,13 +408,83 @@ module.exports = function (module) {
 	// LEGACY OBJECT TYPE HELPERS
 	// =============================================================================
 
-	async function ensureLegacyObjectType(db, key, type) {
-		if (!key) return;
-		await upsert(db, 'legacy_object', { _key: key, type: type }, ['_key'], { type: type });
+	// Child tables that need to be cleaned up when a key expires
+	const CHILD_TABLES = ['legacy_string', 'legacy_hash', 'legacy_zset', 'legacy_set', 'legacy_list'];
+
+	/**
+	 * Delete expired keys from legacy_object and all child tables.
+	 * This matches the behavior of the PostgreSQL implementation which uses
+	 * a view (legacy_object_live) that filters expired entries.
+	 */
+	async function deleteExpiredKeys(db, keys) {
+		if (!keys || !keys.length) return;
+
+		const now = new Date().toISOString();
+
+		// Find which keys are expired
+		const expiredResult = await db.selectFrom('legacy_object')
+			.select('_key')
+			.where('_key', 'in', keys)
+			.where('expireAt', 'is not', null)
+			.where('expireAt', '<=', now)
+			.execute();
+
+		const expiredKeys = expiredResult.map(r => r._key);
+		if (!expiredKeys.length) return;
+
+		// Delete from all child tables first (no CASCADE in SQLite)
+		await Promise.all(CHILD_TABLES.map(table => db.deleteFrom(table)
+			.where('_key', 'in', expiredKeys)
+			.execute()
+			.catch(() => {}))); // Ignore if table doesn't exist or key not found
+
+		// Then delete from legacy_object
+		await db.deleteFrom('legacy_object')
+			.where('_key', 'in', expiredKeys)
+			.execute();
 	}
 
+	/**
+	 * Ensure a key exists in legacy_object with the given type.
+	 * First deletes expired entries for this key (and its data), then upserts.
+	 * This matches the behavior of the PostgreSQL implementation.
+	 */
+	async function ensureLegacyObjectType(db, key, type) {
+		if (!key) return;
+
+		// Delete expired entry for this key (including from child tables)
+		await deleteExpiredKeys(db, [key]);
+
+		// Now upsert the key with the type
+		await upsert(db, 'legacy_object', { _key: key, type: type }, ['_key'], { type: type });
+
+		// Verify the type matches (like Postgres does)
+		const now = new Date().toISOString();
+		const result = await db.selectFrom('legacy_object')
+			.select('type')
+			.where('_key', '=', key)
+			.where(eb => eb.or([
+				eb('expireAt', 'is', null),
+				eb('expireAt', '>', now),
+			]))
+			.executeTakeFirst();
+
+		if (result && result.type !== type) {
+			throw new Error(`database: cannot insert ${JSON.stringify(key)} as ${type} because it already exists as ${result.type}`);
+		}
+	}
+
+	/**
+	 * Ensure multiple keys exist in legacy_object with the given type.
+	 * First deletes expired entries (and their data), then upserts.
+	 */
 	async function ensureLegacyObjectsType(db, keys, type) {
 		if (!keys || !keys.length) return;
+
+		// Delete expired entries for these keys (including from child tables)
+		await deleteExpiredKeys(db, keys);
+
+		// Now upsert all keys
 		const rows = keys.map(key => ({ _key: key, type: type }));
 		await upsertMultiple(db, 'legacy_object', rows, ['_key'], ['type']);
 	}
