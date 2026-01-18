@@ -164,7 +164,7 @@ connection.createKyselyInstance = async function (options) {
 	const db = new Kysely({
 		dialect: kyselyDialect,
 		log(event) {
-			if (false) return;
+			if (process.env.LOG_SQL !== 'true') return;
 			if (event.level === 'error') {
 				console.error('Query failed : ', {
 					durationMs: event.queryDurationMillis,
