@@ -11,11 +11,13 @@ const features = require('./kysely/features');
 
 const kyselyModule = module.exports;
 
+const dialect = nconf.get('kysely:dialect') || nconf.get('defaults:kysely:dialect') || 'sqlite';
+
 kyselyModule.questions = [
 	{
 		name: 'kysely:dialect',
 		description: 'Database dialect (mysql, postgres, sqlite, pglite)',
-		default: nconf.get('kysely:dialect') || nconf.get('defaults:kysely:dialect') || 'mysql',
+		default: dialect,
 	},
 	{
 		name: 'kysely:host',
@@ -42,7 +44,7 @@ kyselyModule.questions = [
 	{
 		name: 'kysely:database',
 		description: 'Database name',
-		default: nconf.get('kysely:database') || nconf.get('defaults:kysely:database') || 'nodebb',
+		default: nconf.get('kysely:database') || nconf.get('defaults:kysely:database') || (dialect === 'sqlite' ? 'nodebb.db' : 'nodebb'),
 	},
 ];
 
@@ -370,7 +372,7 @@ kyselyModule.checkpoint = async function () {
 		const { sql } = require('kysely');
 		await sql`PRAGMA wal_checkpoint(TRUNCATE)`.execute(kyselyModule.db);
 	}
-}
+};
 
 // Load sub-modules (order matters: helpers must be loaded first)
 require('./kysely/helpers')(kyselyModule);

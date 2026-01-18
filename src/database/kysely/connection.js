@@ -7,7 +7,7 @@ const connection = module.exports;
 
 connection.getDialect = function (options) {
 	options = options || nconf.get('kysely') || {};
-	return options.dialect || 'mysql';
+	return options.dialect || 'sqlite';
 };
 
 connection.getConnectionOptions = function (options) {
@@ -58,7 +58,7 @@ connection.getConnectionOptions = function (options) {
 		}
 	} else if (dialect === 'sqlite') {
 		// SQLite connection options
-		connOptions.filename = options.filename || options.database || ':memory:';
+		connOptions.filename = options.filename || options.database || 'nodebb.db';
 	} else if (dialect === 'pglite') {
 		// PGlite connection options (embedded PostgreSQL)
 		// Use :memory: for in-memory database or a path for persistent storage
