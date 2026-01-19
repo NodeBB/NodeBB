@@ -35,8 +35,8 @@
 								{{{ end }}}
 								{{{ end }}}
 								{./username}
-								{{{ if ./ssoIcon }}}
-								<i class="{./ssoIcon}"></i>
+								{{{ if ./sso }}}
+								<i class="{./sso.icon}" title="{./sso.name}"></i>
 								{{{ end }}}
 							</td>
 							<td>
