@@ -41,11 +41,10 @@ async function registerAndLoginUser(req, res, userData) {
 		return;
 	}
 
-	const result = await user.createOrQueue(req, userData);
-	if (result.queued) {
-		return { message: result.message };
+	const { queued, uid, message } = await user.createOrQueue(req, userData);
+	if (queued) {
+		return { message };
 	}
-	const { uid } = result;
 
 	if (res.locals.processLogin) {
 		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
