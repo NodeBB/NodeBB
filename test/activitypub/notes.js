@@ -430,6 +430,45 @@ describe('Notes', () => {
 			});
 		});
 
+		describe('from a banned account', () => {
+			before(async function () {
+				const { id: bannedUid } = helpers.mocks.person();
+				this.bannedUid = bannedUid;
+
+				const { note } = helpers.mocks.note({
+					attributedTo: bannedUid,
+				});
+
+				const uid = await user.create({ username: utils.generateUUID() });
+				const { id: boosterUid } = helpers.mocks.person();
+				await db.sortedSetAdd(`followersRemote:${boosterUid}`, Date.now(), uid);
+				const { activity } = helpers.mocks.announce({
+					actor: boosterUid,
+					object: note,
+				});
+				this.activity = activity;
+				this.pid = note.id;
+
+				await user.bans.ban(bannedUid, 0, 'testing');
+			});
+
+			it('should list the remote user as banned, when queried', async function () {
+				const isBanned = await user.bans.isBanned(this.bannedUid);
+				assert.strictEqual(isBanned, true);
+			});
+
+			// Can't actually test the middleware because I can't sign a request for a test
+
+			it('should not assert a note if authored by a banned user (boosted by third-party)', async function () {
+				await activitypub.inbox.announce({
+					body: this.activity,
+				});
+
+				const exists = await posts.exists(this.pid);
+				assert.strictEqual(exists, false);
+			});
+		});
+
 		describe('Create', () => {
 			let uid;
 			let cid;

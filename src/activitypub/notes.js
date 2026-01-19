@@ -111,6 +111,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
 		const hasTid = !!tid;
 
+		const authorBanned = await user.bans.isBanned(authorId);
+		if (!hasTid && authorBanned) { // New topics only
+			activitypub.helpers.log('[notes/assert] OP is banned, not asserting topic.');
+			return null;
+		}
+
 		const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
 		let crosspostCid = false;
 
@@ -263,8 +269,19 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 		}
 
+		const uids = Array.from(unprocessed.reduce((uids, post) => {
+			uids.add(post.uid);
+			return uids;
+		}, new Set()));
+		const isBanned = await user.bans.isBanned(uids);
+		const banned = uids.filter((_, idx) => isBanned[idx]);
+
 		let added = [];
 		await Promise.all(unprocessed.map(async (post) => {
+			if (banned.includes(post.uid)) {
+				return;
+			}
+
 			const { to, cc } = post._activitypub;
 
 			try {
