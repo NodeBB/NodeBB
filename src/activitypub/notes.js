@@ -218,7 +218,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		mainPost.tid = tid;
 
 		const urlMap = chain.reduce((map, post) => (post.url ? map.set(post.url, post.id) : map), new Map());
-		const unprocessed = chain.map((post) => {
+		let unprocessed = chain.map((post) => {
 			post.tid = tid; // add tid to post hash
 
 			// Ensure toPids in replies are ids
@@ -275,13 +275,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}, new Set()));
 		const isBanned = await user.bans.isBanned(uids);
 		const banned = uids.filter((_, idx) => isBanned[idx]);
+		unprocessed = unprocessed.filter(post => banned.includes(post.uid));
 
 		let added = [];
 		await Promise.all(unprocessed.map(async (post) => {
-			if (banned.includes(post.uid)) {
-				return;
-			}
-
 			const { to, cc } = post._activitypub;
 
 			try {
