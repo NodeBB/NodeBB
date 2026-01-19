@@ -275,7 +275,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}, new Set()));
 		const isBanned = await user.bans.isBanned(uids);
 		const banned = uids.filter((_, idx) => isBanned[idx]);
-		unprocessed = unprocessed.filter(post => banned.includes(post.uid));
+		unprocessed = unprocessed.filter(post => !banned.includes(post.uid));
 
 		let added = [];
 		await Promise.all(unprocessed.map(async (post) => {
@@ -292,13 +292,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (added.length) {
 			// Because replies are added in parallel, `index` is calculated incorrectly
-			added = added
-				.sort((a, b) => a.timestamp - b.timestamp)
-				.map((post, idx) => {
-					post.index = post.index - idx;
-					return post;
-				})
-				.reverse();
+			const indices = await posts.getPostIndices(added, uid);
+			added = added.map((post, idx) => {
+				post.index = indices[idx];
+				return post;
+			});
 			websockets.in(`topic_${tid}`).emit('event:new_post', { posts: added });
 		}
 
@@ -627,7 +625,6 @@ Notes.backfill = async (pids) => {
 
 	return Promise.all(pids.map(async (pid) => {
 		if (backfillCache.has(pid)) {
-			console.log('cache hit, not proactively backfilling');
 			return;
 		}
 
