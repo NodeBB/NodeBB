@@ -27,7 +27,7 @@ module.exports = function (User) {
 		const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, userData, queue });
 		if (result.queue) {
 			await User.addToApprovalQueue({ ...userData, ip: req.ip, _opts: JSON.stringify(opts) });
-			return { queued: true, message: await User.getRegistrationQueuedMessage() };
+			return { queued: true, message: await getRegistrationQueuedMessage() };
 		}
 
 		const uid = await User.create(userData, opts);
@@ -150,7 +150,7 @@ module.exports = function (User) {
 		return false;
 	};
 
-	User.getRegistrationQueuedMessage = async function () {
+	async function getRegistrationQueuedMessage() {
 		let message = '[[register:registration-added-to-queue]]';
 		if (meta.config.showAverageApprovalTime) {
 			const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
