@@ -22,6 +22,18 @@ module.exports = function (User) {
 		}
 	}), null, true);
 
+	User.createOrQueue = async function (req, userData, opts = {}) {
+		const queue = await User.shouldQueueUser(req.ip);
+		const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, userData, queue });
+		if (result.queue) {
+			await User.addToApprovalQueue({ ...userData, ip: req.ip, _opts: JSON.stringify(opts) });
+			return { queued: true, message: await getRegistrationQueuedMessage() };
+		}
+
+		const uid = await User.create(userData, opts);
+		return { queued: false, uid };
+	};
+
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();
 		userData.userslug = slugify(userData.username);
@@ -31,9 +43,12 @@ module.exports = function (User) {
 			username: userData.username,
 			email: userData.email,
 			ip: userData.ip,
-			hashedPassword: hashedPassword,
+			_opts: userData._opts || '{}',
 		};
-		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data: data, userData: userData });
+		if (hashedPassword) {
+			data.hashedPassword = hashedPassword;
+		}
+		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data, userData });
 		await db.setObject(`registration:queue:name:${userData.username}`, results.data);
 		await db.sortedSetAdd('registration:queue', Date.now(), userData.username);
 		await sendNotificationToAdmins(userData.username);
@@ -69,12 +84,15 @@ module.exports = function (User) {
 		if (!userData) {
 			throw new Error('[[error:invalid-data]]');
 		}
+		const opts = parseCreateOptions(userData);
 		const creation_time = await db.sortedSetScore('registration:queue', username);
-		const uid = await User.create(userData);
-		await User.setUserFields(uid, {
-			password: userData.hashedPassword,
-			'password:shaWrapped': 1,
-		});
+		const uid = await User.create(userData, opts);
+		if (userData.hashedPassword) {
+			await User.setUserFields(uid, {
+				password: userData.hashedPassword,
+				'password:shaWrapped': 1,
+			});
+		}
 		await removeFromQueue(username);
 		await markNotificationRead(username);
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });
@@ -89,6 +107,18 @@ module.exports = function (User) {
 		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);
 		return uid;
 	};
+
+	function parseCreateOptions(userData) {
+		let opts = {};
+		try {
+			opts = JSON.parse(userData._opts || '{}');
+			delete userData._opts;
+			return opts;
+		} catch (err) {
+			winston.error(`[user.acceptRegistration] Failed to parse create options for queued user ${userData.username}: ${err.stack}`);
+			return {};
+		}
+	}
 
 	async function markNotificationRead(username) {
 		const nid = `new-register:${username}`;
@@ -118,6 +148,20 @@ module.exports = function (User) {
 			return !!count;
 		}
 		return false;
+	};
+
+	async function getRegistrationQueuedMessage() {
+		let message = '[[register:registration-added-to-queue]]';
+		if (meta.config.showAverageApprovalTime) {
+			const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
+			if (average_time > 0) {
+				message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
+			}
+		}
+		if (meta.config.autoApproveTime > 0) {
+			message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
+		}
+		return message;
 	};
 
 	User.getRegistrationQueue = async function (start, stop) {

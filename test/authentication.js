@@ -20,19 +20,19 @@ describe('authentication', () => {
 	let regularUid;
 	const dummyEmailerHook = async (data) => {};
 
-	before((done) => {
+	before(async () => {
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('authentication-test', {
 			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
-		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, (err, uid) => {
-			assert.ifError(err);
-			regularUid = uid;
-			assert.strictEqual(uid, 1);
-			done();
+		regularUid = await user.create({
+			username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org',
+		}, {
+			emailVerification: 'verify',
 		});
+		assert.strictEqual(regularUid, 1);
 	});
 
 	after(() => {
@@ -393,9 +393,9 @@ describe('authentication', () => {
 
 	it('should be able to login with email', async () => {
 		const email = 'ginger@nodebb.org';
-		const uid = await user.create({ username: 'ginger', password: '123456', email });
-		await user.setUserField(uid, 'email', email);
-		await user.email.confirmByUid(uid);
+		const uid = await user.create({ username: 'ginger', password: '123456', email }, {
+			emailVerification: 'verify',
+		});
 		const { response } = await helpers.loginUser('ginger@nodebb.org', '123456');
 		assert.equal(response.statusCode, 200);
 	});
