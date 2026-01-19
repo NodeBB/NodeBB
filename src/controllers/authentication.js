@@ -41,13 +41,12 @@ async function registerAndLoginUser(req, res, userData) {
 		return;
 	}
 
-	const queue = await user.shouldQueueUser(req.ip);
-	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, res, userData, queue });
-	if (result.queue) {
-		return await addToApprovalQueue(req, userData);
+	const result = await user.createOrQueue(req, userData);
+	if (result.queued) {
+		return { message: result.message };
 	}
+	const { uid } = result;
 
-	const uid = await user.create(userData);
 	if (res.locals.processLogin) {
 		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
 		if (hasLoginPrivilege) {
@@ -124,22 +123,6 @@ authenticationController.register = async function (req, res) {
 		helpers.noScriptErrors(req, res, err.message, 400);
 	}
 };
-
-async function addToApprovalQueue(req, userData) {
-	userData.ip = req.ip;
-	await user.addToApprovalQueue(userData);
-	let message = '[[register:registration-added-to-queue]]';
-	if (meta.config.showAverageApprovalTime) {
-		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
-		if (average_time > 0) {
-			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
-		}
-	}
-	if (meta.config.autoApproveTime > 0) {
-		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
-	}
-	return { message: message };
-}
 
 authenticationController.registerComplete = async function (req, res) {
 	try {
