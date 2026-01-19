@@ -122,15 +122,20 @@ async function generateForCategory(req, res, next) {
 		return next();
 	}
 	const uid = req.uid || req.query.uid || 0;
+	async function getRecentlyCreatedTids() {
+		const [pinnedTids, tids] = await Promise.all([
+			db.getSortedSetRevRange(`cid:${cid}:tids:pinned`, 0, -1),
+			db.getSortedSetRevRange(`cid:${cid}:tids:create`, 0, 24),
+		]);
+		const allTids = Array.from(new Set([...pinnedTids, ...tids]));
+		const topicData = await topics.getTopicsFields(allTids, ['tid', 'timestamp']);
+		topicData.sort((a, b) => b.timestamp - a.timestamp);
+		return topicData.slice(0, 25).map(t => t.tid);
+	}
 	const [userPrivileges, category, tids] = await Promise.all([
 		privileges.categories.get(cid, req.uid),
 		categories.getCategoryData(cid),
-		db.getSortedSetRevIntersect({
-			sets: ['topics:tid', `cid:${cid}:tids:lastposttime`],
-			start: 0,
-			stop: 24,
-			weights: [1, 0],
-		}),
+		getRecentlyCreatedTids(),
 	]);
 
 	if (!category || !category.name) {
