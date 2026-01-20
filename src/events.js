@@ -261,6 +261,7 @@ events.deleteEvents = async function (eids) {
 events.deleteAll = async function () {
 	await batch.processSortedSet('events:time', async (eids) => {
 		await events.deleteEvents(eids);
+		await db.sortedSetRemove('events:time', eids);
 	}, { alwaysStartAt: 0, batch: 500 });
 };
 
