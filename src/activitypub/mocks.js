@@ -734,20 +734,12 @@ Mocks.notes.public = async (post) => {
 	// Special handling for main posts (as:Article w/ as:Note preview)
 	const plaintext = posts.sanitizePlaintext(content);
 	const isArticle = post.pid === post.topic.mainPid && plaintext.length > 500;
-	const noteAttachment = isArticle ? [...attachment] : null;
-	const [uploads, thumbs] = await Promise.all([
-		posts.uploads.listWithSizes(post.pid),
-		topics.getTopicField(post.tid, 'thumbs'),
-	]);
-	const isThumb = uploads.map(u => Array.isArray(thumbs) ? thumbs.includes(u.name) : false);
 
-	uploads.forEach(({ name, width, height }, idx) => {
+	const thumbs = await topics.thumbs.get(post.tid);
+	thumbs.forEach(({ name, path }) => {
 		const mediaType = mime.getType(name);
-		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
-		(noteAttachment || attachment).push({ mediaType, url, width, height });
-		if (isThumb[idx] && noteAttachment) {
-			attachment.push({ mediaType, url, width, height });
-		}
+		const url = `${nconf.get('url') + nconf.get('upload_url')}${path}`;
+		attachment.push({ mediaType, url });
 	});
 
 	// Inspect post content for external imagery as well
@@ -757,13 +749,14 @@ Mocks.notes.public = async (post) => {
 			const { hostname, pathname, href: url } = new URL(match[1]);
 			if (hostname !== nconf.get('url_parsed').hostname) {
 				const mediaType = mime.getType(pathname);
-				(noteAttachment || attachment).push({ mediaType, url });
+				attachment.push({ mediaType, url });
 			}
 		}
 		match = posts.imgRegex.exec(post.content);
 	}
 
 	attachment = normalizeAttachment(attachment);
+	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
 	let preview;
 	let summary = null;
 	if (isArticle) {
@@ -772,7 +765,7 @@ Mocks.notes.public = async (post) => {
 			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 			content: post.content,
 			published,
-			attachment: normalizeAttachment(noteAttachment),
+			attachment,
 		};
 
 		const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
@@ -833,6 +826,7 @@ Mocks.notes.public = async (post) => {
 		source,
 		tag,
 		attachment,
+		image,
 		replies: `${id}/replies`,
 	};
 
