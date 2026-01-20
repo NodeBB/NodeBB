@@ -23,6 +23,7 @@ module.exports = function (User) {
 	}), null, true);
 
 	User.createOrQueue = async function (req, userData, opts = {}) {
+		User.checkUsernameLength(userData.username);
 		const queue = await User.shouldQueueUser(req.ip);
 		const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, userData, queue });
 		if (result.queue) {
