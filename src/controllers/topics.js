@@ -151,7 +151,7 @@ topicsController.get = async function getTopic(req, res, next) {
 			res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
 		}
 
-		if (!utils.isNumber(topicData.mainPid)) {
+		if (req.uid > 0 && !utils.isNumber(topicData.mainPid)) {
 			// not awaited on purpose so topic loading is not blocked
 			activitypub.notes.backfill(topicData.mainPid);
 		}
