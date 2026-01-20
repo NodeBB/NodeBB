@@ -252,6 +252,7 @@
     "api.401": "Es wurde keine gültige Anmeldesitzung gefunden. Bitte melden Sie sich an und versuchen Sie es erneut.",
     "api.403": "Sie sind nicht berechtigt, diesen Anruf zu tätigen",
     "api.404": "Ungültiger API-Aufruf",
+    "api.413": "The request payload is too large",
     "api.426": "HTTPS ist für Anfragen an die Schreib-API erforderlich, bitte senden Sie Ihre Anfrage erneut über HTTPS",
     "api.429": "Sie haben zu viele Anfragen gestellt, bitte versuchen Sie es später erneut",
     "api.500": "Beim Versuch, Ihre Anfrage zu bearbeiten, ist ein unerwarteter Fehler aufgetreten.",

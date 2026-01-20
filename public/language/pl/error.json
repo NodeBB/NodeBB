@@ -252,6 +252,7 @@
     "api.401": "Poprawna sesja logowanie nie została znaleziona. Proszę zaloguj się i spróbuj ponownie.",
     "api.403": "Nie masz uprawnień do wykonania tego żądania",
     "api.404": "Niepoprawne żądanie API",
+    "api.413": "The request payload is too large",
     "api.426": "HTTPS jest wymagany dla żądań do API zapisu, wyślij ponownie żądanie przez HTTPS",
     "api.429": "Został przekroczony limit żądań, proszę spróbuj ponownie później",
     "api.500": "Wystąpił nieoczekiwany błąd podczas próby obsługi Twojego żądania.",

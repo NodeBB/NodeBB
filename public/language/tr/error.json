@@ -252,6 +252,7 @@
     "api.401": "Geçerli bir giriş oturumu bulunamadı. Lütfen yeniden giriş yapıp tekrar deneyin.",
     "api.403": "Bu aramayı yapmak için yetkiniz yok",
     "api.404": "Geçersiz API çağrısı",
+    "api.413": "The request payload is too large",
     "api.426": "Yazma API'sine yapılan istekler için HTTPS gereklidir, lütfen isteğinizi HTTPS aracılığıyla yeniden gönderin",
     "api.429": "Fazla sayıda istekte bulundunuz, lütfen daha sonra tekrar deneyiniz.",
     "api.500": "İsteğinizi gerçekleştirmeye çalışırken beklenmeyen bir hata ile karşılaşıldı.",
