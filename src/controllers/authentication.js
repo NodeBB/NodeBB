@@ -102,10 +102,6 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[user:change-password-error-match]]');
 		}
 
-		if (userData.password.length > 512) {
-			throw new Error('[[error:password-too-long]]');
-		}
-
 		user.isPasswordValid(userData.password);
 
 		await plugins.hooks.fire('filter:password.check', { password: userData.password, uid: 0, userData: userData });
