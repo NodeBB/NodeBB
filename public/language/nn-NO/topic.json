@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">refererte</a> til dette emnet den %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">kopierte</a> dette emnet %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">kopierte</a> dette emnet den %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Klikk her for å gå tilbake til siste lese innlegg i denne tråden.",
     "flag-post": "Rapporter dette innlegget",
     "flag-user": "Rapporter denne brukaren",

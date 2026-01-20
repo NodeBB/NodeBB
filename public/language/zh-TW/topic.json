@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">引用</a> 了在 %3 的話題",
     "user-forked-topic-ago": "%1 <a href=\"%2\">分支</a> 了話題 %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">分支</a> 了在 %3 的話題",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "點擊閱讀本主題貼文中的最新回覆",
     "flag-post": "檢舉此貼文",
     "flag-user": "檢舉此用戶",

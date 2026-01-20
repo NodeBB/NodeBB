@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">hivatkozott</a> erre a témakörre %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">elágazta</a> ezt a témakört %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">elágazta</a> ezt a témakört %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Kattints ide a beszélgetés utolsó hozzászólására ugráshoz.",
     "flag-post": "Jelöld meg ezt a bejegyzést",
     "flag-user": "Jelöld meg ezt a felhasználót",

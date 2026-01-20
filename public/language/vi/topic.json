@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">đã tham khảo</a> chủ đề này trên %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">đã rẽ nhánh</a> chủ đề này %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">đã rẽ nhánh</a> chủ đề này trên %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Bấm vào đây để trở lại bài đọc cuối cùng trong chủ đề này.",
     "flag-post": "Gắn cờ bài đăng này",
     "flag-user": "Gắn cờ người dùng này",

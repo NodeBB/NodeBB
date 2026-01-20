@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 bu başlıktan %3 tarihinde <a href=\"%2\">bahsetti</a>",
     "user-forked-topic-ago": "%1 bu başlığı %3 <a href=\"%2\">bölerek ayırdı</a>",
     "user-forked-topic-on": "%1 bu başlığı %3 tarihinde <a href=\"%2\">bölerek ayırdı</a>",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Bu konuda en son kaldığın yere dönmek için tıkla.",
     "flag-post": "Bu iletiyi şikayet et",
     "flag-user": "Bu kullanıcıyı şikayet et",

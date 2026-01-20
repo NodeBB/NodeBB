@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 این تاپیک را در %3 <a href=\"%2\">ارجاع داد</a>",
     "user-forked-topic-ago": "%1 <a href=\"%2\">forked</a> this topic %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">forked</a> this topic on %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "برای بازگشت به آخرین پست در این موضوع اینجا را کلیک کنید.",
     "flag-post": "گزارش این پست",
     "flag-user": "گزارش این کاربر",

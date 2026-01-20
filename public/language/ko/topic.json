@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%3에 %1님이 <a href=\"%2\">이 토픽을 참조</a>함",
     "user-forked-topic-ago": "%3에 %1님이 <a href=\"%2\">이 토픽을 포크</a>함",
     "user-forked-topic-on": "%3에 %1님이 <a href=\"%2\">이 토픽을 포크</a>함",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "마지막 읽은 위치로 돌아가려면 클릭하세요.",
     "flag-post": "이 게시물 신고",
     "flag-user": "이 사용자 신고",
