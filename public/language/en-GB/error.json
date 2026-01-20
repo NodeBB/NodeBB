@@ -292,6 +292,7 @@
 	"api.401": "A valid login session was not found. Please log in and try again.",
 	"api.403": "You are not authorised to make this call",
 	"api.404": "Invalid API call",
+	"api.413": "The request payload is too large",
 	"api.426": "HTTPS is required for requests to the write api, please re-send your request via HTTPS",
 	"api.429": "You have made too many requests, please try again later",
 	"api.500": "An unexpected error was encountered while attempting to service your request.",
