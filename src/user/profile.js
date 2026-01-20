@@ -170,13 +170,7 @@ module.exports = function (User) {
 			}
 		}
 
-		if (data.username.length < meta.config.minimumUsernameLength) {
-			throw new Error('[[error:username-too-short]]');
-		}
-
-		if (data.username.length > meta.config.maximumUsernameLength) {
-			throw new Error('[[error:username-too-long]]');
-		}
+		User.checkUsernameLength(data.username);
 
 		const userslug = slugify(data.username);
 		if (!utils.isUserNameValid(data.username) || !userslug) {
@@ -200,6 +194,20 @@ module.exports = function (User) {
 		}
 	}
 	User.checkUsername = async username => isUsernameAvailable({ username });
+
+	User.checkUsernameLength = function (username) {
+		if (
+			!username ||
+			username.length < meta.config.minimumUsernameLength ||
+			slugify(username).length < meta.config.minimumUsernameLength
+		) {
+			throw new Error('[[error:username-too-short]]');
+		}
+
+		if (username.length > meta.config.maximumUsernameLength) {
+			throw new Error('[[error:username-too-long]]');
+		}
+	};
 
 	async function isAboutMeValid(callerUid, data) {
 		if (!data.aboutme) {
