@@ -98,8 +98,9 @@ Crossposts.add = async function (tid, cid, uid) {
 			db.setObject(`crosspost:${crosspostId}`, { uid, tid, cid, timestamp: now }),
 			db.sortedSetAdd(`tid:${tid}:crossposts`, now, crosspostId),
 			uid > 0 ? db.sortedSetAdd(`uid:${uid}:crossposts`, now, crosspostId) : false,
+			topics.events.log(tid, { uid, type: 'crosspost', toCid: cid }),
 		]);
-		await categories.onTopicsMoved([cid]);
+		await categories.onTopicsMoved([cid]); // must be done after
 	} else {
 		throw new Error('[[error:topic-already-crossposted]]');
 	}
@@ -145,6 +146,10 @@ Crossposts.remove = async function (tid, cid, uid) {
 		uid > 0 ? db.sortedSetRemove(`uid:${uid}:crossposts`, crosspostId) : false,
 	]);
 	await categories.onTopicsMoved([cid]);
+
+	topics.events.find(tid, { uid, toCid: cid, type: 'crosspost' }).then((eventIds) => {
+		topics.events.purge(tid, eventIds);
+	});
 
 	crossposts = await Crossposts.get(tid);
 	return crossposts;
