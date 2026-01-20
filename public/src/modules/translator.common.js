@@ -475,7 +475,7 @@ module.exports = function (utils, load, warn) {
 		 */
 		Translator.unescape = function unescape(text) {
 			return typeof text === 'string' ?
-				text.replace(/&rsqb;&rsqb;/g, ']]').replace(/&lsqb;&lsqb;/g, '[[') :
+				text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)&rsqb;&rsqb;/g, '[[$1]]') :
 				text;
 		};
 
