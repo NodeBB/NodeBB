@@ -376,9 +376,9 @@ function sortPosts(posts, data) {
 	} else {
 		posts.sort((p1, p2) => {
 			if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) {
-				return direction;
-			} else if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) {
 				return -direction;
+			} else if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) {
+				return direction;
 			}
 			return 0;
 		});

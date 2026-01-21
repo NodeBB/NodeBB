@@ -11,6 +11,7 @@ define('forum/chats', [
 	'forum/chats/user-list',
 	'forum/chats/message-search',
 	'forum/chats/pinned-messages',
+	'forum/chats/events',
 	'autocomplete',
 	'hooks',
 	'bootbox',
@@ -21,15 +22,14 @@ define('forum/chats', [
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
-	autocomplete, hooks, bootbox, alerts, chatModule, api,
-	uploadHelpers
+	events, autocomplete, hooks, bootbox, alerts, chatModule,
+	api, uploadHelpers
 ) {
 	const Chats = {
-		initialised: false,
 		activeAutocomplete: {},
+		newMessage: false,
 	};
 
-	let newMessage = false;
 	let chatNavWrapper = null;
 
 	$(window).on('action:ajaxify.start', function () {
@@ -54,10 +54,9 @@ define('forum/chats', [
 		socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
 		const env = utils.findBootstrapEnvironment();
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
-		if (!Chats.initialised) {
-			Chats.addSocketListeners();
-			Chats.addGlobalEventListeners();
-		}
+
+		Chats.addSocketListeners();
+		Chats.addGlobalEventListeners();
 
 		recentChats.init();
 
@@ -68,7 +67,6 @@ define('forum/chats', [
 			Chats.addHotkeys();
 		}
 
-		Chats.initialised = true;
 		const chatContentEl = $('[component="chat/message/content"]');
 		messages.wrapImagesInLinks(chatContentEl);
 		if (ajaxify.data.scrollToIndex) {
@@ -647,89 +645,22 @@ define('forum/chats', [
 	};
 
 	Chats.addGlobalEventListeners = function () {
-		$(window).on('mousemove keypress click', function () {
-			if (newMessage && ajaxify.data.roomId) {
-				api.del(`/chats/${ajaxify.data.roomId}/state`, {});
-				newMessage = false;
-			}
-		});
+		$(window).off('mousemove keypress click', onUserInteraction)
+			.on('mousemove keypress click', onUserInteraction);
 	};
 
+	function onUserInteraction() {
+		if (Chats.newMessage && ajaxify.data.roomId) {
+			// mark current room read on user interaction
+			api.del(`/chats/${ajaxify.data.roomId}/state`, {});
+			Chats.newMessage = false;
+		}
+	}
+
 	Chats.addSocketListeners = function () {
-		socket.on('event:chats.receive', function (data) {
-			if (chatModule.isFromBlockedUser(data.fromUid)) {
-				return;
-			}
-			if (parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
-				data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
-				if (!newMessage) {
-					newMessage = data.self === 0;
-				}
-				data.message.self = data.self;
-				data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-				data.message.timestampISO = utils.toISOString(data.message.timestamp);
-				messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
-
-				Chats.updateTeaser(data.roomId, {
-					content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
-					user: data.message.fromUser,
-					timestampISO: data.message.timestampISO,
-				});
-			}
-		});
-
-		socket.on('event:chats.public.unread', function (data) {
-			if (
-				chatModule.isFromBlockedUser(data.fromUid) ||
-				chatModule.isLookingAtRoom(data.roomId) ||
-				app.user.uid === parseInt(data.fromUid, 10)
-			) {
-				return;
-			}
-			Chats.markChatPageElUnread(data);
-			Chats.increasePublicRoomUnreadCount(chatNavWrapper.find('[data-roomid=' + data.roomId + ']'));
-		});
-
-		socket.on('event:user_status_change', function (data) {
-			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
-		});
+		events.init();
 
 		messages.addSocketListeners();
-
-		socket.on('event:chats.roomRename', function (data) {
-			const roomEl = components.get('chat/recent/room', data.roomId);
-			if (roomEl.length) {
-				const titleEl = roomEl.find('[component="chat/room/title"]');
-				ajaxify.data.roomName = data.newName;
-				titleEl.translateText(data.newName ? data.newName : ajaxify.data.usernames);
-			}
-			const titleEl = $(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"] [component="chat/header/title"]`);
-			if (titleEl.length) {
-				titleEl.html(
-					data.newName ?
-						`<i class="fa ${ajaxify.data.icon} text-muted"></i> ${data.newName}` :
-						ajaxify.data.chatWithMessage
-				);
-			}
-		});
-
-		socket.on('event:chats.mark', ({ roomId, state }) => {
-			const roomEls = $(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"], [component="chat/public"] [data-roomid="${roomId}"]`);
-			roomEls.each((idx, el) => {
-				const roomEl = $(el);
-				chatModule.markChatElUnread(roomEl, state === 1);
-				if (state === 0) {
-					Chats.updatePublicRoomUnreadCount(roomEl, 0);
-				}
-			});
-		});
-
-		socket.on('event:chats.typing', async (data) => {
-			if (data.uid === app.user.uid || chatModule.isFromBlockedUser(data.uid)) {
-				return;
-			}
-			chatModule.updateTypingUserList($(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"]`), data);
-		});
 	};
 
 	Chats.updateTeaser = async function (roomId, teaser) {
