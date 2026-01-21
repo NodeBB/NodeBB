@@ -297,7 +297,7 @@ define('forum/chats', [
 		let loading = false;
 		let previousScrollTop = el.scrollTop();
 		let currentScrollTop = previousScrollTop;
-		el.off('scroll').on('scroll', utils.debounce(function () {
+		el.off('scroll').on('scroll', utils.debounce(async function () {
 			if (parseInt(el.attr('data-ignore-next-scroll'), 10) === 1) {
 				el.removeAttr('data-ignore-next-scroll');
 				previousScrollTop = el.scrollTop();
@@ -323,41 +323,13 @@ define('forum/chats', [
 			if ((scrollPercent < top && direction === -1) || (scrollPercent > bottom && direction === 1)) {
 				loading = true;
 
-				const msgEls = el.children('[data-mid]').not('.new');
-				const afterEl = direction > 0 ? msgEls.last() : msgEls.first();
-				const start = parseInt(afterEl.attr('data-index'), 10) || 0;
-
-				api.get(`/chats/${roomId}/messages`, { uid, start, direction }).then((data) => {
-					let messageData = data.messages;
-					if (!messageData) {
-						loading = false;
-						return;
-					}
-					messageData = messageData.filter(function (chatMsg) {
-						const msgOnDom = el.find('[component="chat/message"][data-mid="' + chatMsg.messageId + '"]');
-						msgOnDom.removeClass('new');
-						return !msgOnDom.length;
-					});
-					if (!messageData.length) {
-						loading = false;
-						return;
-					}
-					messages.parseMessage(messageData, function (html) {
-						el.attr('data-ignore-next-scroll', 1);
-						if (direction > 0) {
-							html.insertAfter(afterEl);
-							messages.onMessagesAddedToDom(html);
-						} else {
-							const currentScrollTop = el.scrollTop();
-							const previousHeight = el[0].scrollHeight;
-							el.prepend(html);
-							messages.onMessagesAddedToDom(html);
-							el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
-						}
-
-						loading = false;
-					});
-				}).catch(alerts.error);
+				try {
+					await messages.loadMoreMessages(el, uid, roomId, direction);
+				} catch (err) {
+					alerts.error(err);
+				} finally {
+					loading = false;
+				}
 			}
 		}, 100));
 	};
