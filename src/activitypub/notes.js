@@ -635,6 +635,12 @@ Notes.backfill = async (pids) => {
 
 Notes.announce = {};
 
+Notes.announce._cache = ttlCache({
+	name: 'ap-note-announce-cache',
+	max: 500,
+	ttl: 1000 * 60 * 60, // 1 hour
+});
+
 Notes.announce.list = async ({ pid, tid }) => {
 	let pids = [];
 	if (pid) {
@@ -652,8 +658,24 @@ Notes.announce.list = async ({ pid, tid }) => {
 		return [];
 	}
 
-	const keys = pids.map(pid => `pid:${pid}:announces`);
-	let announces = await db.getSortedSetsMembersWithScores(keys);
+	const missing = [];
+	let announces = pids.map((pid, idx) => {
+		const cached = Notes.announce._cache.get(pid);
+		if (!cached) {
+			missing.push(idx);
+		}
+		return cached;
+	});
+
+	if (missing.length) {
+		const toCache = await db.getSortedSetsMembersWithScores(missing.map(idx => `pid:${pids[idx]}:announces`));
+		toCache.forEach((value, idx) => {
+			const pid = pids[missing[idx]];
+			Notes.announce._cache.set(pid, value);
+			announces[missing[idx]] = value;
+		});
+	}
+
 	announces = announces.reduce((memo, cur, idx) => {
 		if (cur.length) {
 			const pid = pids[idx];
@@ -672,6 +694,7 @@ Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 		posts.getPostField(pid, 'tid'),
 		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
 	]);
+	Notes.announce._cache.del(`pid:${pid}:announces`);
 	await Promise.all([
 		posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`)),
 		topics.tools.share(tid, actor, timestamp),
@@ -680,6 +703,8 @@ Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 
 Notes.announce.remove = async (pid, actor) => {
 	await db.sortedSetRemove(`pid:${pid}:announces`, actor);
+	Notes.announce._cache.del(`pid:${pid}:announces`);
+
 	const count = await db.sortedSetCard(`pid:${pid}:announces`);
 	if (count > 0) {
 		await posts.setPostField(pid, 'announces', count);
@@ -693,6 +718,7 @@ Notes.announce.removeAll = async (pid) => {
 		db.delete(`pid:${pid}:announces`),
 		db.deleteObjectField(`post:${pid}`, 'announces'),
 	]);
+	Notes.announce._cache.del(`pid:${pid}:announces`);
 };
 
 Notes.delete = async (pids) => {
