@@ -177,7 +177,9 @@ module.exports = function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active');
 		}
-		return await db.getSortedSetRange('plugins:active', 0, -1);
+		const active = await db.getSortedSetRange('plugins:active', 0, -1);
+		nconf.set('plugins:active', active);
+		return active;
 	};
 
 	Plugins.autocomplete = async (fragment) => {

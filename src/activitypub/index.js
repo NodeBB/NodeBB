@@ -491,13 +491,23 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 
 	const targets = new Set([...followers, ...to, ...cc]);
 
-	// Remove any ids that aren't asserted actors
-	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
-	Array.from(targets).forEach((uri, idx) => {
-		if (!exists[idx]) {
-			targets.delete(uri);
+	// Remove local uris, public addresses, and any ids that aren't asserted actors
+	targets.forEach((address) => {
+		if (address.startsWith(nconf.get('url'))) {
+			targets.delete(address);
 		}
 	});
+	ActivityPub._constants.acceptablePublicAddresses.forEach((address) => {
+		targets.delete(address);
+	});
+	if (targets.size) {
+		const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
+		Array.from(targets).forEach((uri, idx) => {
+			if (!exists[idx]) {
+				targets.delete(uri);
+			}
+		});
+	}
 
 	// Topic posters, post announcers and their followers
 	if (pid) {

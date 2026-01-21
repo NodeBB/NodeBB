@@ -45,6 +45,9 @@ Actors.qualify = async (ids, options = {}) => {
 	// Filter out uids if passed in
 	ids = ids.filter(id => !utils.isNumber(id));
 
+	// Filter out constants
+	ids = ids.filter(id => !activitypub._constants.acceptablePublicAddresses.includes(id));
+
 	// Translate webfinger handles to uris
 	ids = (await Promise.all(ids.map(async (id) => {
 		const originalId = id;
