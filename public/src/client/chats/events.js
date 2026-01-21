@@ -3,11 +3,10 @@
 
 
 define('forum/chats/events', [
-	'forum/chats',
 	'forum/chats/messages',
 	'chat',
 	'components',
-], function (Chats, messages, chatModule, components) {
+], function (messages, chatModule, components) {
 	const Events = {};
 
 	const events = {
@@ -20,7 +19,10 @@ define('forum/chats/events', [
 	};
 	let chatNavWrapper = null;
 
-	Events.init = function () {
+	let Chats = null;
+
+	Events.init = async function () {
+		Chats = await app.require('forum/chats');
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
 		Events.removeListeners();
 		for (const [eventName, handler] of Object.entries(events)) {
