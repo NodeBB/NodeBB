@@ -64,7 +64,7 @@ module.exports = function (User) {
 			path.join(baseDir, 'build/export', 'users.csv'),
 			'w'
 		);
-		fs.promises.appendFile(fd, `${fields.map(f => `"${f}"`).join(',')}\n`);
+		await fs.promises.appendFile(fd, `${fields.map(f => `"${f}"`).join(',')}\n`);
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const userFieldsToLoad = fields.filter(field => field !== 'ip' && field !== 'password');
 			const usersData = await User.getUsersFields(uids, userFieldsToLoad);
