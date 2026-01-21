@@ -55,7 +55,8 @@ module.exports = function (User) {
 			fields: fieldsToExport,
 			showIps: fieldsToExport.includes('ip'),
 		});
-
+		const customUserFields = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		const fieldsToWrapInQuotes = ['fullname', 'signature', 'aboutme', ...customUserFields];
 		if (!showIps && fields.includes('ip')) {
 			fields.splice(fields.indexOf('ip'), 1);
 		}
@@ -76,6 +77,11 @@ module.exports = function (User) {
 				if (Array.isArray(userIps[index])) {
 					user.ip = userIps[index].join(',');
 				}
+				fieldsToWrapInQuotes.forEach((field) => {
+					if (user[field]) {
+						user[field] = `"${String(user[field])}"`;
+					}
+				});
 			});
 
 			const opts = { fields, header: false };
