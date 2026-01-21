@@ -506,7 +506,7 @@ Notes.updateLocalRecipients = async (id, { to, cc }) => {
 
 		const followedUid = await db.getObjectField('followersUrl:uid', recipient);
 		if (followedUid) {
-			const { uids: followers } = await activitypub.actors.getLocalFollowers(followedUid);
+			const { uids: followers } = await activitypub.actors.getFollowers(followedUid);
 			if (followers.size > 0) {
 				followers.forEach((uid) => {
 					uids.add(uid);
@@ -590,7 +590,7 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	});
 
 	// Category followers
-	const categoryFollowers = await activitypub.actors.getLocalFollowers(cid);
+	const categoryFollowers = await activitypub.actors.getFollowers(cid);
 	categoryFollowers.uids.forEach((uid) => {
 		uids.add(uid);
 	});

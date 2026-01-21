@@ -58,7 +58,7 @@ Categories.getCategoryById = async function (data) {
 		Categories.getTopicCount(data),
 		Categories.getWatchState([data.cid], data.uid),
 		getChildrenTree(category, data.uid),
-		!utils.isNumber(data.cid) ? activitypub.actors.getLocalFollowers(data.cid) : null,
+		!utils.isNumber(data.cid) ? activitypub.actors.getFollowers(data.cid) : null,
 	];
 
 	if (category.parentCid) {
