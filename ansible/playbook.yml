@@ -1,0 +1,149 @@
+---
+
+# E.g. To run this playbook:
+#   ansible-playbook -i hosts.yml playbook.yml -e "fqdn=eg.dnk8n.dev host=12.34.56.78"
+
+- name: Create sudo user
+  hosts: community-root
+  gather_facts: no
+  ignore_unreachable: yes
+  become: no
+  tasks:
+    - name: Add sudoers user
+      user: name=ubuntu append=yes state=present createhome=yes
+      register: connection
+      ignore_errors: yes
+
+    - name: Allow ubuntu group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%ubuntu'
+        line: '%ubuntu ALL=(ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -csf %s
+      when: connection.changed
+
+    - name: Copy authorized keys from root user to the ubuntu user
+      copy:
+        remote_src: yes
+        src: /root/.ssh
+        dest: /home/ubuntu/
+        owner: ubuntu
+        group: ubuntu
+        mode: preserve
+      when: connection.changed
+
+- name: Install packages as sudo user, updating cache
+  hosts: community-ubuntu
+  become: yes
+  tasks:
+    - name: Install git
+      apt:
+        update_cache: yes
+        name: git
+
+- name: Ensure Docker is installed
+  hosts: community-ubuntu
+  become: yes
+  vars:
+    docker_package_state: latest
+    docker_users:
+      - ubuntu
+  roles:
+    # ansible-galaxy install geerlingguy.docker
+    - role: geerlingguy.docker
+
+- name: Ensure Docker Python library is installed
+  hosts: community-ubuntu
+  become: yes
+  vars:
+    pip_executable: pip3
+    pip_package: python3-pip
+    pip_install_packages:
+      - name: docker
+        state: latest
+  roles:
+    # ansible-galaxy install geerlingguy.pip
+    - role: geerlingguy.pip
+
+- name: Manage Deployment
+  hosts: community-ubuntu
+  become: no
+  tasks:
+
+    - name: Caddyfile directory exists
+      file:
+        path: /home/ubuntu/.caddy
+        state: directory
+        mode: 0755
+
+    - name: Caddyfile exists
+      vars:
+        fqdn: "{{ fqdn }}"
+      template:
+        src: Caddyfile.j2
+        dest: /home/ubuntu/.caddy/Caddyfile
+        mode: 0644
+
+    - name: Caddy container exists
+      docker_container:
+        user: root
+        name: caddy
+        state: started
+        image: caddy/caddy:v2.0.0-beta.15-alpine
+        pull: yes
+        keep_volumes: yes
+        ports:
+          - 80:80
+          - 443:443
+#        restart_policy: unless-stopped
+        env:
+          ACME_AGREE: "true"
+          XDG_DATA_HOME: "/root/.local/share"
+        volumes:
+          - /home/ubuntu/.caddy/Caddyfile:/etc/caddy/Caddyfile
+          - /home/ubuntu/.caddy/data:/data
+          - /home/ubuntu/.caddy/config:/config
+          - /home/ubuntu/.caddy/share/.local:/root/.local/share
+          - /home/ubuntu/.caddy/share/usr:/usr/share/caddy
+
+    - name: Redis container exists
+      docker_container:
+        user: root
+        name: redis
+        state: started
+        image: redis:5.0.8
+        pull: yes
+        restart_policy: unless-stopped
+
+    - name: NodeBB repo exists
+      git:
+        repo: https://github.com/NodeBB/NodeBB.git
+        dest: /home/ubuntu/src/NodeBB
+        version: v1.13.2
+
+    - name: NodeBB image exists and is the correct version
+      docker_image:
+        build:
+          path: /home/ubuntu/src/NodeBB
+          pull: yes
+        name: nodebb/nodebb
+        tag: v1.13.2
+        state: present
+        source: build
+        force_source: yes
+
+    - name: NodeBB container is started
+      docker_container:
+        name: nodebb
+        state: started
+        image: nodebb/nodebb:v1.13.2
+        restart_policy: unless-stopped
+
+    - name: Ensure only necessary containers added to network
+      docker_network:
+        name: community
+        connected:
+          - caddy
+          - nodebb
+          - redis
