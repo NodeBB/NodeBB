@@ -456,7 +456,7 @@ ActivityPub.record = async ({ id, type, actor }) => {
 	]);
 };
 
-ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
+ActivityPub.buildRecipients = async function (object, options) {
 	/**
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
@@ -464,14 +464,18 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	 *     - `cid`: includes followers of the passed-in cid (local only, can also be an array)
 	 *     - `uid`: includes followers of the passed-in uid (local only)
 	 *     - `pid`: includes post announcers and all topic participants
+	 *     - `targets`: boolean; whether to calculate targets (default: true)
 	 */
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
 
+	let { pid, uid, cid } = options;
+	options.targets = options.targets ?? true;
+
 	let followers = [];
 	if (uid) {
-		followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
+		({ uids: followers } = await ActivityPub.actors.getFollowers(uid));
 		const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
 		if (!to.has(followersUrl)) {
 			cc.add(followersUrl);
@@ -490,24 +494,28 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 		}));
 	}
 
-	const targets = new Set([...followers, ...to, ...cc]);
+	let targets = new Set();
+	if (options.targets) {
+		targets = new Set([...followers, ...to, ...cc]);
 
-	// Remove local uris, public addresses, and any ids that aren't asserted actors
-	targets.forEach((address) => {
-		if (address.startsWith(nconf.get('url'))) {
-			targets.delete(address);
-		}
-	});
-	ActivityPub._constants.acceptablePublicAddresses.forEach((address) => {
-		targets.delete(address);
-	});
-	if (targets.size) {
-		const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
-		Array.from(targets).forEach((uri, idx) => {
-			if (!exists[idx]) {
-				targets.delete(uri);
+		// Remove local uris, public addresses, and any ids that aren't asserted actors
+		targets.forEach((address) => {
+			if (address.startsWith(nconf.get('url'))) {
+				targets.delete(address);
 			}
 		});
+		ActivityPub._constants.acceptablePublicAddresses.forEach((address) => {
+			targets.delete(address);
+		});
+		if (targets.size) {
+			console.log('derpo', new Error().stack);
+			const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
+			Array.from(targets).forEach((uri, idx) => {
+				if (!exists[idx]) {
+					targets.delete(uri);
+				}
+			});
+		}
 	}
 
 	// Topic posters, post announcers and their followers
