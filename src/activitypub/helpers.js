@@ -65,10 +65,11 @@ Helpers.isUri = (value) => {
 	});
 };
 
-Helpers.assertAccept = accept => (accept && accept.split(',').some((value) => {
-	const parts = value.split(';').map(v => v.trim());
-	return activitypub._constants.acceptableTypes.includes(value || parts[0]);
-}));
+Helpers.assertAccept = (accept) => {
+	if (!accept) return false;
+	const normalized = accept.split(',').map(s => s.trim().replace(/\s*;\s*/g, ';')).join(',');
+	return activitypub._constants.acceptableTypes.some(type => normalized.includes(type));
+};
 
 Helpers.isWebfinger = (value) => {
 	// N.B. returns normalized handle, so truthy check!
