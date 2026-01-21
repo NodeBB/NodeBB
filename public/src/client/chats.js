@@ -26,7 +26,6 @@ define('forum/chats', [
 	api, uploadHelpers
 ) {
 	const Chats = {
-		initialised: false,
 		activeAutocomplete: {},
 		newMessage: false,
 	};
@@ -55,10 +54,9 @@ define('forum/chats', [
 		socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
 		const env = utils.findBootstrapEnvironment();
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
-		if (!Chats.initialised) {
-			Chats.addSocketListeners();
-			Chats.addGlobalEventListeners();
-		}
+
+		Chats.addSocketListeners();
+		Chats.addGlobalEventListeners();
 
 		recentChats.init();
 
@@ -69,7 +67,6 @@ define('forum/chats', [
 			Chats.addHotkeys();
 		}
 
-		Chats.initialised = true;
 		const chatContentEl = $('[component="chat/message/content"]');
 		messages.wrapImagesInLinks(chatContentEl);
 		if (ajaxify.data.scrollToIndex) {
@@ -676,13 +673,17 @@ define('forum/chats', [
 	};
 
 	Chats.addGlobalEventListeners = function () {
-		$(window).on('mousemove keypress click', function () {
-			if (Chats.newMessage && ajaxify.data.roomId) {
-				api.del(`/chats/${ajaxify.data.roomId}/state`, {});
-				Chats.newMessage = false;
-			}
-		});
+		$(window).off('mousemove keypress click', onUserInteraction)
+			.on('mousemove keypress click', onUserInteraction);
 	};
+
+	function onUserInteraction() {
+		if (Chats.newMessage && ajaxify.data.roomId) {
+			// mark current room read on user interaction
+			api.del(`/chats/${ajaxify.data.roomId}/state`, {});
+			Chats.newMessage = false;
+		}
+	}
 
 	Chats.addSocketListeners = function () {
 		events.init();
