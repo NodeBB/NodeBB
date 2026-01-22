@@ -163,25 +163,25 @@ Digest.send = async function (data) {
 };
 
 Digest.getDeliveryTimes = async (start, stop) => {
-	const count = await db.sortedSetCard('users:joindate');
-	const uids = await user.getUidsFromSet('users:joindate', start, stop);
+	const [count, uids] = await Promise.all([
+		db.sortedSetCard('users:joindate'),
+		user.getUidsFromSet('users:joindate', start, stop),
+	]);
 	if (!uids.length) {
-		return [];
+		return { users: [], count };
 	}
 
-	const [scores, settings] = await Promise.all([
+	const [scores, settings, userData] = await Promise.all([
 		// Grab the last time a digest was successfully delivered to these uids
 		db.sortedSetScores('digest:delivery', uids),
 		// Get users' digest settings
 		Digest.getUsersInterval(uids),
+		user.getUsersFields(uids, ['username', 'picture']),
 	]);
 
-	// Populate user data
-	let userData = await user.getUsersFields(uids, ['username', 'picture']);
-	userData = userData.map((user, idx) => {
+	userData.forEach((user, idx) => {
 		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : '[[admin/manage/digest:null]]';
 		user.setting = settings[idx];
-		return user;
 	});
 
 	return {
