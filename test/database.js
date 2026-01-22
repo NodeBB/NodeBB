@@ -53,6 +53,11 @@ describe('Test database', () => {
 					assert.equal(err.message, 'The `pg` package is out-of-date, please run `./nodebb setup` again.');
 					done();
 				});
+			} else if (dbName === 'kysely') {
+				db.checkCompatibilityVersion('0.0.1', (err) => {
+					assert.equal(err.message, 'The `kysely` package is out-of-date, please run `./nodebb setup` again.');
+					done();
+				});
 			}
 		});
 	});
