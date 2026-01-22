@@ -69,7 +69,7 @@ async function getNotices() {
 		});
 	}
 
-	if (global.env !== 'production') {
+	if (process.env.NODE_ENV !== 'production') {
 		notices.push({
 			done: false,
 			notDoneText: '[[admin/dashboard:running-in-development]]',

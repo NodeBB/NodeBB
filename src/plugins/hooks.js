@@ -90,7 +90,7 @@ Hooks.unregister = function (id, hook, method) {
 Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
-	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
+	if (process.env.NODE_ENV === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
 		winston.debug(`[plugins/fireHook] ${hook}`);
 	}
 
@@ -160,7 +160,7 @@ async function fireFilterHook(hook, hookList, params) {
 
 	async function fireMethod(hookObj, params) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if (process.env.NODE_ENV === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 			return params;
@@ -185,7 +185,7 @@ async function fireActionHook(hook, hookList, params) {
 	}
 	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if (process.env.NODE_ENV === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {
@@ -219,7 +219,7 @@ async function fireStaticHook(hook, hookList, params) {
 
 	async function fireMethod(hookObj, params) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if (process.env.NODE_ENV === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 			return params;
@@ -256,7 +256,7 @@ async function fireResponseHook(hook, hookList, params) {
 	}
 	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if (process.env.NODE_ENV === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {

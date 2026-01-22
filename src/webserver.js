@@ -136,12 +136,12 @@ function setupExpressApp(app) {
 	});
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
-	app.set('json spaces', global.env === 'development' ? 4 : 0);
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
 	app.use(flash());
 
 	app.enable('view cache');
 
-	if (global.env !== 'development') {
+	if (process.env.NODE_ENV !== 'development') {
 		app.enable('cache');
 		app.enable('minification');
 	}

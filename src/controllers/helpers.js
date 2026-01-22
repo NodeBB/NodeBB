@@ -510,7 +510,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
 
-		if (global.env === 'development') {
+		if (process.env.NODE_ENV === 'development') {
 			returnPayload.stack = payload.stack;
 			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
 			process.stdout.write(payload.stack);

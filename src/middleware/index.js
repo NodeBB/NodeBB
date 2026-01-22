@@ -221,7 +221,7 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 };
 
 middleware.busyCheck = function busyCheck(req, res, next) {
-	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
+	if (process.env.NODE_ENV === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {

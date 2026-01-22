@@ -97,7 +97,6 @@ nconf.argv(opts).env({
 });
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
 
 prestart.setupWinston();
 
@@ -139,7 +138,6 @@ program
 	.description('Start NodeBB in verbose development mode')
 	.action(() => {
 		process.env.NODE_ENV = 'development';
-		global.env = 'development';
 		require('./running').start({ ...program.opts(), dev: true });
 	});
 program
@@ -206,7 +204,6 @@ program
 	.action((targets, options) => {
 		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';
-			global.env = 'development';
 		}
 		require('./manage').build(targets.length ? targets : true, options);
 	})
@@ -296,7 +293,6 @@ program
 		options.unattended = program.opts().unattended;
 		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';
-			global.env = 'development';
 		}
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
