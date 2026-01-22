@@ -5,6 +5,15 @@ const path = require('path');
 
 require('../../require-main');
 
+// https://github.com/NodeBB/NodeBB/issues/13734
+// check dev flag early so packageInstall.installAll() can use it
+const isDev = process.argv.some(arg =>
+	arg === '-d' ||
+	arg === '--dev' ||
+	(arg.startsWith('-') && !arg.startsWith('--') && arg.includes('d')));
+
+process.env.NODE_ENV = isDev ? 'development' : (process.env.NODE_ENV || 'production');
+
 const packageInstall = require('./package-install');
 const { paths } = require('../constants');
 
@@ -96,7 +105,7 @@ nconf.argv(opts).env({
 	separator: '__',
 });
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 
 prestart.setupWinston();
 
