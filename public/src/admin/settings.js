@@ -25,10 +25,13 @@ define('admin/settings', [
 			});
 			const offset = mainHader.outerHeight(true);
 			// https://stackoverflow.com/a/11814275/583363
-			tocList.find('a').on('click', function (event) {
-				event.preventDefault();
+			tocList.find('a').on('click', function () {
 				const href = $(this).attr('href');
-				$(href)[0].scrollIntoView();
+				const $target = $(href);
+				if (!$target.length) {
+					return;
+				}
+				$target.get(0).scrollIntoView(true);
 				window.location.hash = href;
 				scrollBy(0, -offset);
 				setTimeout(() => {
