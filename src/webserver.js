@@ -141,7 +141,7 @@ function setupExpressApp(app) {
 	// https://github.com/NodeBB/NodeBB/issues/13918
 	const qs = require('qs');
 	app.set('query parser', str => qs.parse(str, {
-		arrayLimit: Math.max(100, nconf.get('queryParser:arrayLimit') || 50),
+		arrayLimit: Math.min(100, nconf.get('queryParser:arrayLimit') || 50),
 	}));
 	app.use(flash());
 
