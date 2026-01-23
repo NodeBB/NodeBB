@@ -735,12 +735,21 @@ Mocks.notes.public = async (post) => {
 	const plaintext = posts.sanitizePlaintext(content);
 	const isArticle = post.pid === post.topic.mainPid && plaintext.length > 500;
 
-	const thumbs = await topics.thumbs.get(post.tid);
-	thumbs.forEach(({ name, path }) => {
-		const mediaType = mime.getType(name);
-		const url = `${nconf.get('url') + nconf.get('upload_url')}${path}`;
-		attachment.push({ mediaType, url });
-	});
+	if (post.isMainPost) {
+		const thumbs = await topics.thumbs.get(post.tid);
+		thumbs.forEach(({ name, path }) => {
+			const mediaType = mime.getType(name);
+			const url = `${nconf.get('url') + nconf.get('upload_url')}${path}`;
+			attachment.push({ mediaType, url });
+		});
+	} else {
+		const uploads = await posts.uploads.listWithSizes(post.pid);
+		uploads.forEach(({ name, width, height }) => {
+			const mediaType = mime.getType(name);
+			const url = `${nconf.get('url') + nconf.get('upload_url')}${name}`;
+			attachment.push({ mediaType, url, width, height });
+		});
+	}
 
 	// Inspect post content for external imagery as well
 	let match = posts.imgRegex.exec(post.content);
