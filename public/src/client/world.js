@@ -1,17 +1,23 @@
 'use strict';
 
-define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 'bootbox'], function (topicList, search, sort, hooks, alerts, api, bootbox) {
+define('forum/world', [
+	'forum/infinitescroll', 'search', 'sort', 'hooks',
+	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
+], function (infinitescroll, search, sort, hooks, alerts, api, bootbox, helpers, categoryTools) {
 	const World = {};
+
+	$(window).on('action:ajaxify.start', function () {
+		categoryTools.removeListeners();
+	});
 
 	World.init = function () {
 		app.enterRoom('world');
-		topicList.init('world');
+		categoryTools.init($('#world-feed'));
 
 		sort.handleSort('categoryTopicSort', 'world');
 
-		handleIgnoreWatch(-1);
+		handleButtons();
 		handleHelp();
-		handleCategories();
 
 		search.enableQuickSearch({
 			searchElements: {
@@ -28,34 +34,103 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 			hideOnNoMatches: false,
 		});
 
+		if (!config.usePagination) {
+			infinitescroll.init((direction) => {
+				const posts = Array.from(document.querySelectorAll('[component="post"]'));
+				const afterEl = direction > 0 ? posts.pop() : posts.shift();
+				const after = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
+				if (after < config.topicsPerPage) {
+					return;
+				}
+
+				loadTopicsAfter(after, direction, (payload) => {
+					app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
+						const listEl = document.getElementById('world-feed');
+						$(listEl).append(html);
+						html.find('.timeago').timeago();
+					});
+				});
+			});
+		}
+
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
 	};
 
-	function handleIgnoreWatch(cid) {
-		$('[component="category/watching"], [component="category/tracking"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
-			const $this = $(this);
-			const state = $this.attr('data-state');
+	function calculateNextPage(after, direction) {
+		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
+	}
 
-			api.put(`/categories/${cid}/watch`, { state }, (err) => {
+	function loadTopicsAfter(after, direction, callback) {
+		callback = callback || function () {};
+		const query = utils.params();
+		query.page = calculateNextPage(after, direction);
+		infinitescroll.loadMoreXhr(query, callback);
+	}
+
+	function handleButtons() {
+		const feedEl = $('#world-feed');
+
+		feedEl.on('click', '[data-action="bookmark"]', function () {
+			const $this = $(this);
+			const isBookmarked = $this.attr('data-bookmarked') === 'true';
+			const pid = $this.attr('data-pid');
+			const bookmarkCount = parseInt($this.attr('data-bookmarks'), 10);
+			const method = isBookmarked ? 'del' : 'put';
+
+			api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
+				if (err) {
+					return alerts.error(err);
+				}
+				const type = isBookmarked ? 'unbookmark' : 'bookmark';
+				const newBookmarkCount = bookmarkCount + (isBookmarked ? -1 : 1);
+				$this.find('[component="bookmark-count"]').text(
+					helpers.humanReadableNumber(newBookmarkCount)
+				);
+				$this.attr('data-bookmarks', newBookmarkCount);
+				$this.attr('data-bookmarked', isBookmarked ? 'false' : 'true');
+				$this.find('i').toggleClass('fa text-primary', !isBookmarked)
+					.toggleClass('fa-regular text-muted', isBookmarked);
+				hooks.fire(`action:post.${type}`, { pid: pid });
+			});
+		});
+
+		feedEl.on('click', '[data-action="upvote"]', function () {
+			const $this = $(this);
+			const isUpvoted = $this.attr('data-upvoted') === 'true';
+			const pid = $this.attr('data-pid');
+			const upvoteCount = parseInt($this.attr('data-upvotes'), 10);
+			const method = isUpvoted ? 'del' : 'put';
+			const delta = 1;
+			api[method](`/posts/${pid}/vote`, { delta }, function (err) {
 				if (err) {
 					return alerts.error(err);
 				}
 
-				$('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
-				$('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
+				const newUpvoteCount = upvoteCount + (isUpvoted ? -1 : 1);
+				$this.find('[component="upvote-count"]').text(
+					helpers.humanReadableNumber(newUpvoteCount)
+				);
+				$this.attr('data-upvotes', newUpvoteCount);
+				$this.attr('data-upvoted', isUpvoted ? 'false' : 'true');
+				$this.find('i').toggleClass('fa text-danger', !isUpvoted)
+					.toggleClass('fa-regular text-muted', isUpvoted);
 
-				$('[component="category/tracking/menu"]').toggleClass('hidden', state !== 'tracking');
-				$('[component="category/tracking/check"]').toggleClass('fa-check', state === 'tracking');
-
-				$('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
-				$('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');
-
-				$('[component="category/ignoring/menu"]').toggleClass('hidden', state !== 'ignoring');
-				$('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
-
-				alerts.success('[[category:' + state + '.message]]');
+				hooks.fire('action:post.toggleVote', {
+					pid: pid,
+					delta: delta,
+					unvote: method === 'del',
+				});
 			});
+		});
+
+		feedEl.on('click', '[data-action="reply"]', function () {
+			const $this = $(this);
+			const isMain = $this.attr('data-is-main') === 'true';
+			app.newReply({
+				tid: $this.attr('data-tid'),
+				pid: !isMain ? $this.attr('data-pid') : undefined,
+			}).catch(alerts.error);
 		});
 	}
 
@@ -79,39 +154,6 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 				message: content.join('\n'),
 				size: 'large',
 			});
-		});
-	}
-
-	function handleCategories() {
-		// const optionsEl = document.getElementById('category-options');
-		// const dropdownEl = optionsEl.querySelector('ul');
-		const showEl = document.getElementById('show-categories');
-		const hideEl = document.getElementById('hide-categories');
-		const categoriesEl = document.querySelector('.categories-list');
-		if (![showEl, hideEl, categoriesEl].every(Boolean)) {
-			return;
-		}
-
-		const update = () => {
-			showEl.classList.toggle('hidden', visibility);
-			hideEl.classList.toggle('hidden', !visibility);
-			categoriesEl.classList.toggle('hidden', !visibility);
-			localStorage.setItem('world:show-categories', visibility);
-		};
-
-		let visibility = localStorage.getItem('world:show-categories');
-		console.log('got value', visibility);
-		visibility = visibility ? visibility === 'true' : true; // localStorage values are strings
-		update();
-
-		showEl.addEventListener('click', () => {
-			visibility = true;
-			update();
-		});
-
-		hideEl.addEventListener('click', () => {
-			visibility = false;
-			update();
 		});
 	}
 

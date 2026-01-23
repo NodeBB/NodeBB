@@ -132,6 +132,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			return { tid, count: 0 };
 		}
 
+		let generatedTitle;
 		if (hasTid) {
 			mainPid = await topics.getTopicField(tid, 'mainPid');
 		} else {
@@ -184,6 +185,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				prettified = prettified.split('\n').filter(line => !line.startsWith('<p class="quote-inline"')).join('\n');
 				const sentences = tokenizer.sentences(prettified, { sanitize: true, newline_boundaries: true });
 				title = sentences.shift();
+				generatedTitle = 1;
 			}
 
 			// Remove any custom emoji from title
@@ -246,6 +248,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 					tags,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				});
 				unprocessed.shift();
