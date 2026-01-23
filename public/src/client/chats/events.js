@@ -17,9 +17,11 @@ define('forum/chats/events', [
 		'event:chats.typing': onChatTyping,
 	};
 	let chatNavWrapper = null;
+
 	let Chats = null;
+
 	Events.init = async function () {
-		Chats = await require('forum/chats');
+		Chats = await app.require('forum/chats');
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
 		Events.removeListeners();
 		for (const [eventName, handler] of Object.entries(events)) {

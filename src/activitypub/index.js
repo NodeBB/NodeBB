@@ -41,7 +41,7 @@ ActivityPub._constants = Object.freeze({
 	acceptablePublicAddresses: ['https://www.w3.org/ns/activitystreams#Public', 'as:Public', 'Public'],
 	acceptableTypes: [
 		'application/activity+json',
-		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+		'application/ld+json;profile="https://www.w3.org/ns/activitystreams"',
 	],
 	acceptedPostTypes: [
 		'Note', 'Page', 'Article', 'Question', 'Video',
