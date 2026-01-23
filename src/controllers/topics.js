@@ -338,8 +338,8 @@ function addOGImageTag(res, image) {
 	}
 
 	if (!imageUrl.startsWith('http')) {
-		// (https://domain.com/forum) + (/assets/uploads) + (imagePath)
-		imageUrl = path.posix.join(url, upload_url, imageUrl);
+		// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
+		imageUrl = url + path.posix.join(upload_url, imageUrl);
 	}
 
 	res.locals.metaTags.push({
