@@ -263,7 +263,7 @@ async function generateTopicsFeed(feedOptions, feedTopics, timestampField) {
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
 
-	feedTopics = feedTopics.filter(Boolean);
+	feedTopics = feedTopics.filter(t => t && !t.deleted);
 
 	const feed = new rss(feedOptions);
 
@@ -271,38 +271,39 @@ async function generateTopicsFeed(feedOptions, feedTopics, timestampField) {
 		feed.pubDate = new Date(feedTopics[0][timestampField]).toUTCString();
 	}
 
-	async function addFeedItem(topicData) {
+	if (feedOptions.useMainPost) {
+		const tids = feedTopics.map(topic => topic.tid);
+		const mainPosts = await topics.getMainPosts(tids, feedOptions.uid);
+		feedTopics.forEach((topicData, index) => {
+			topicData.mainPost = mainPosts[index];
+		});
+	}
+
+	function addFeedItem(topicData) {
+		const title = stripUnicodeControlChars(topicData.title);
 		const feedItem = {
-			title: utils.stripHTMLTags(topicData.title, utils.tags),
+			title: utils.stripHTMLTags(title, utils.tags),
 			url: `${nconf.get('url')}/topic/${topicData.slug}`,
 			date: new Date(topicData[timestampField]).toUTCString(),
 		};
 
-		if (topicData.deleted) {
-			return;
-		}
-
 		if (topicData.teaser && topicData.teaser.user && !feedOptions.useMainPost) {
-			feedItem.description = topicData.teaser.content;
+			feedItem.description = stripUnicodeControlChars(topicData.teaser.content);
 			feedItem.author = topicData.teaser.user.username;
 			feed.item(feedItem);
 			return;
 		}
-
-		const mainPost = await topics.getMainPost(topicData.tid, feedOptions.uid);
+		const { mainPost } = topicData;
 		if (!mainPost) {
 			feed.item(feedItem);
 			return;
 		}
-		feedItem.description = mainPost.content;
+		feedItem.description = stripUnicodeControlChars(mainPost.content);
 		feedItem.author = mainPost.user && mainPost.user.username;
 		feed.item(feedItem);
 	}
 
-	for (const topicData of feedTopics) {
-		/* eslint-disable no-await-in-loop */
-		await addFeedItem(topicData);
-	}
+	feedTopics.forEach(addFeedItem);
 	return feed;
 }
 
@@ -368,9 +369,10 @@ function generateForPostsFeed(feedOptions, posts) {
 	}
 
 	posts.forEach((postData) => {
+		const title = stripUnicodeControlChars(postData.topic ? postData.topic.title : '');
 		feed.item({
-			title: postData.topic ? postData.topic.title : '',
-			description: postData.content,
+			title: title,
+			description: stripUnicodeControlChars(postData.content),
 			url: `${nconf.get('url')}/post/${postData.pid}`,
 			author: postData.user ? postData.user.username : '',
 			date: new Date(parseInt(postData.timestamp, 10)).toUTCString(),
@@ -405,7 +407,8 @@ async function generateForTag(req, res) {
 		return controllers404.handle404(req, res);
 	}
 	const uid = await getUidFromToken(req);
-	const tag = validator.escape(String(req.params.tag));
+	const set = `tag:${String(req.params.tag)}:topics`;
+	const tag = validator.escape(stripUnicodeControlChars(String(req.params.tag)));
 	const page = parseInt(req.query.page, 10) || 1;
 	const topicsPerPage = meta.config.topicsPerPage || 20;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
@@ -418,7 +421,7 @@ async function generateForTag(req, res) {
 		site_url: `/tags/${tag}`,
 		start: start,
 		stop: stop,
-	}, `tag:${tag}:topics`, res);
+	}, set, res);
 }
 
 async function getUidFromToken(req) {
