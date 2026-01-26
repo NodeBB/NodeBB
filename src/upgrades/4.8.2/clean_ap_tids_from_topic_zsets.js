@@ -17,10 +17,16 @@ module.exports = {
 		async function cleanupSet(setName) {
 			const tidsToRemove = [];
 			await batch.processSortedSet(setName, async (tids) => {
-				const topicData = await db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['tid', 'cid']);
+				const topicData = await db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['cid']);
+				topicData.forEach((t, index) => {
+					if (t) {
+						t.tid = tids[index];
+					}
+				});
 				const batchTids = topicData.filter(
 					t => t && (!t.cid || !utils.isNumber(t.cid) || t.cid === -1)
 				).map(t => t.tid);
+
 				tidsToRemove.push(...batchTids);
 				progress.incr(tids.length);
 			}, {
