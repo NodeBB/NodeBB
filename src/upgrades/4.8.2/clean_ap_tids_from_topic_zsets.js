@@ -5,7 +5,7 @@ const batch = require('../../batch');
 const utils = require('../../utils');
 
 module.exports = {
-	name: 'Remote AP tids from topics:recent, topics:views, topics:posts, topics:votes zsets',
+	name: 'Remove AP tids from topics:recent, topics:views, topics:posts, topics:votes zsets',
 	timestamp: Date.UTC(2026, 0, 25),
 	method: async function () {
 		const { progress } = this;
