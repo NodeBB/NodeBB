@@ -1,0 +1,42 @@
+'use strict';
+
+const db = require('../../database');
+const batch = require('../../batch');
+const utils = require('../../utils');
+
+module.exports = {
+	name: 'Remote AP tids from topics:recent, topics:views, topics:posts, topics:votes zsets',
+	timestamp: Date.UTC(2026, 0, 25),
+	method: async function () {
+		const { progress } = this;
+		const [recent, views, posts, votes] = await db.sortedSetsCard([
+			'topics:recent', 'topics:views', 'topics:posts', 'topics:votes',
+		]);
+		progress.total = recent + views + posts + votes;
+
+		async function cleanupSet(setName, count) {
+			const tidsToRemove = [];
+			await batch.processSortedSet(setName, async (tids) => {
+				const topicData = await db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['tid', 'cid']);
+				const batchTids = topicData.filter(
+					t => t && (!t.cid || !utils.isNumber(t.cid) || t.cid === -1)
+				).map(t => t.tid);
+				tidsToRemove.push(...batchTids);
+				progress.incr(batchTids.length);
+			}, {
+				batch: 500,
+			});
+
+			await batch.processArray(tidsToRemove, async (batchTids) => {
+				await db.sortedSetRemove(setName, batchTids);
+			}, {
+				batch: 500,
+			});
+			progress.incr(count);
+		}
+		await cleanupSet('topics:recent', recent);
+		await cleanupSet('topics:views', views);
+		await cleanupSet('topics:posts', posts);
+		await cleanupSet('topics:votes', votes);
+	},
+};
