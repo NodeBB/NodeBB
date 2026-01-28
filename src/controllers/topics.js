@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const path = require('path');
 const qs = require('querystring');
 const validator = require('validator');
 
@@ -311,17 +312,15 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
-	const images = uploads.map((upload) => {
-		upload.name = `${url + upload_url}/${upload.name}`;
-		return upload;
-	});
+	const images = uploads.filter(Boolean);
+
 	if (topicData.thumbs) {
-		const path = require('path');
 		const thumbs = topicData.thumbs.filter(
-			t => t && images.every(img => path.normalize(img.name) !== path.normalize(url + t.url))
+			t => t && images.every(img => path.normalize(img.name) !== path.normalize(t.path))
 		);
-		images.push(...thumbs.map(thumbObj => ({ name: url + thumbObj.url })));
+		images.push(...thumbs.map(t => t.path));
 	}
+
 	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
 		images.push(topicData.category.backgroundImage);
 	}
@@ -332,13 +331,15 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 }
 
 function addOGImageTag(res, image) {
-	let imageUrl;
-	if (typeof image === 'string' && !image.startsWith('http')) {
-		imageUrl = url + image.replace(new RegExp(`^${relative_path}`), '');
-	} else if (typeof image === 'object') {
-		imageUrl = image.name;
-	} else {
-		imageUrl = image;
+	const isObject = typeof image === 'object' && image.name;
+	let imageUrl = isObject ? image.name : image;
+	if (!(typeof imageUrl === 'string')) {
+		return;
+	}
+
+	if (!imageUrl.startsWith('http')) {
+		// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
+		imageUrl = url + path.posix.join(upload_url, imageUrl);
 	}
 
 	res.locals.metaTags.push({
@@ -351,7 +352,7 @@ function addOGImageTag(res, image) {
 		noEscape: true,
 	});
 
-	if (typeof image === 'object' && image.width && image.height) {
+	if (isObject && image.width && image.height) {
 		res.locals.metaTags.push({
 			property: 'og:image:width',
 			content: String(image.width),

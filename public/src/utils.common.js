@@ -301,7 +301,7 @@ const utils = {
 		return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 	},
 	stripBidiControls: function (input) {
-		return input.replace(/[\u202A-\u202E\u2066-\u2069]/g, '');
+		return input.replace(/[\u202A-\u202E\u2066-\u2069]/gi, '');
 	},
 	cleanUpTag: function (tag, maxLength) {
 		if (typeof tag !== 'string' || !tag.length) {
@@ -310,7 +310,7 @@ const utils = {
 
 		tag = tag.trim().toLowerCase();
 		// see https://github.com/NodeBB/NodeBB/issues/4378
-		tag = tag.replace(/\u202E/gi, '');
+		tag = utils.stripBidiControls(tag);
 		tag = tag.replace(/[,/#!$^*;:{}=_`<>'"~()?|]/g, '');
 		tag = tag.slice(0, maxLength || 15).trim();
 		const matches = tag.match(/^[.-]*(.+?)[.-]*$/);

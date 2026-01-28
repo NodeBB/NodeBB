@@ -42,7 +42,7 @@ async function registerAndLoginUser(req, res, userData) {
 	}
 
 	const queue = await user.shouldQueueUser(req.ip);
-	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue });
+	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, res, userData, queue });
 	if (result.queue) {
 		return await addToApprovalQueue(req, userData);
 	}
@@ -100,10 +100,6 @@ authenticationController.register = async function (req, res) {
 
 		if (userData.password !== userData['password-confirm']) {
 			throw new Error('[[user:change-password-error-match]]');
-		}
-
-		if (userData.password.length > 512) {
-			throw new Error('[[error:password-too-long]]');
 		}
 
 		user.isPasswordValid(userData.password);

@@ -181,7 +181,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 						'[[error:parse-error]]';
 
 					if (xhr && xhr.status === 413) {
-						errorMsg = xhr.statusText || 'Request Entity Too Large';
+						errorMsg = '[[error:api.413]]';
 					}
 					alerts.error(errorMsg);
 					alerts.remove(alert_id);

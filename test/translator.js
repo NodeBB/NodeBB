@@ -326,7 +326,7 @@ describe('Translator static methods', () => {
 			done();
 		});
 	});
-	describe('.escape', () => {
+	describe('.escape/.unescape', () => {
 		it('should escape translation patterns within text', (done) => {
 			assert.strictEqual(
 				Translator.escape('some nice text [[global:home]] here'),
@@ -334,13 +334,35 @@ describe('Translator static methods', () => {
 			);
 			done();
 		});
-	});
 
-	describe('.unescape', () => {
+		it('should escape all translation patterns within text', (done) => {
+			assert.strictEqual(
+				Translator.escape('some nice text [[global:home]] here and [[global:search]] there'),
+				'some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here and &lsqb;&lsqb;global:search&rsqb;&rsqb; there'
+			);
+			done();
+		});
+
+		it('should not escape markdown links', (done) => {
+			assert.strictEqual(
+				Translator.escape('[link text [test]](https://example.org)'),
+				'[link text [test]](https://example.org)'
+			);
+			done();
+		});
+
 		it('should unescape escaped translation patterns within text', (done) => {
 			assert.strictEqual(
 				Translator.unescape('some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'),
 				'some nice text [[global:home]] here'
+			);
+			done();
+		});
+
+		it('should not unescape markdown links', (done) => {
+			assert.strictEqual(
+				Translator.unescape('&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'),
+				'&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'
 			);
 			done();
 		});

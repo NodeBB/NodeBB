@@ -137,6 +137,12 @@ function setupExpressApp(app) {
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
 	app.set('json spaces', global.env === 'development' ? 4 : 0);
+
+	// https://github.com/NodeBB/NodeBB/issues/13918
+	const qs = require('qs');
+	app.set('query parser', str => qs.parse(str, {
+		arrayLimit: Math.min(100, nconf.get('queryParser:arrayLimit') || 50),
+	}));
 	app.use(flash());
 
 	app.enable('view cache');
