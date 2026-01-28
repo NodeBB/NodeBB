@@ -59,16 +59,18 @@ module.exports = function (User) {
 		settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
 		settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 		settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
-		settings.topicsPerPage = Math.min(
+		settings.topicsPerPage = Math.max(1, Math.min(
 			meta.config.maxTopicsPerPage,
-			settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage,
-			defaultTopicsPerPage
-		);
-		settings.postsPerPage = Math.min(
+			settings.topicsPerPage ?
+				parseInt(settings.topicsPerPage, 10) :
+				defaultTopicsPerPage,
+		));
+		settings.postsPerPage = Math.max(1, Math.min(
 			meta.config.maxPostsPerPage,
-			settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage,
-			defaultPostsPerPage
-		);
+			settings.postsPerPage ?
+				parseInt(settings.postsPerPage, 10) :
+				defaultPostsPerPage,
+		));
 		settings.userLang = settings.userLang || meta.config.defaultLang || 'en-GB';
 		settings.acpLang = settings.acpLang || settings.userLang;
 		settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
