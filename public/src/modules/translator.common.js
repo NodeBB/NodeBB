@@ -530,42 +530,31 @@ module.exports = function (utils, load, warn) {
 
 		/**
 		 * Legacy translator function for backwards compatibility
+		 * Now returns a Promise and no longer overloads the `language`
+		 * parameter as a callback.
 		 */
-		translate: function translate(text, language, callback) {
+		translate: function translate(text, language) {
 			// TODO: deprecate?
 
-			let cb = callback;
-			let lang = language;
-			if (typeof language === 'function') {
-				cb = language;
-				lang = null;
-			}
+			const lang = language;
 
 			if (!(typeof text === 'string' || text instanceof String) || text === '') {
-				if (cb) {
-					return setTimeout(cb, 0, '');
-				}
-				return '';
+				// Maintain previous behaviour of resolving to empty string
+				return Promise.resolve('');
 			}
 
 			return Translator.create(lang).translate(text).then(function (output) {
-				if (cb) {
-					setTimeout(cb, 0, output);
-				}
 				return output;
 			}, function (err) {
 				warn('Translation failed: ' + err.stack);
 			});
 		},
 		translateKeys: async function (keys, language, callback) {
-			let cb = callback;
-			let lang = language;
-			if (typeof language === 'function') {
-				cb = language;
-				lang = null;
-			}
+			const lang = language;
+			const cb = typeof callback === 'function' ? callback : null;
+
 			const translations = await Promise.all(keys.map(key => adaptor.translate(key, lang)));
-			if (typeof cb === 'function') {
+			if (cb) {
 				return setTimeout(cb, 0, translations);
 			}
 			return translations;
