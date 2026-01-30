@@ -74,6 +74,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 
 	function showQueryStringMessages() {
 		const params = utils.params({ full: true });
+		const originalQs = params.toString();
 		showWelcomeMessage = params.has('loggedin');
 		registerMessage = params.get('register');
 
@@ -102,7 +103,9 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 		}
 
 		const qs = params.toString();
-		ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
+		if (qs !== originalQs) {
+			ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
+		}
 	}
 
 	messages.showInvalidSession = function () {
