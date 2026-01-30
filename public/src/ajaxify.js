@@ -200,7 +200,7 @@ ajaxify.widgets = { render: render };
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, url, config.relative_path + '/' + url);
+			}, '', config.relative_path + (url ? '/' + url : ''));
 		}
 	};
 
@@ -557,10 +557,11 @@ ajaxify.widgets = { render: render };
 $(document).ready(function () {
 	window.addEventListener('popstate', (ev) => {
 		if (ev !== null && ev.state) {
-			if (ev.state.url === null && ev.state.returnPath !== undefined) {
+			const { returnPath } = ev.state;
+			if (ev.state.url === null && returnPath !== undefined) {
 				window.history.replaceState({
-					url: ev.state.returnPath,
-				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
+					url: returnPath,
+				}, '', config.relative_path + (returnPath ? '/' + returnPath : ''));
 			} else if (ev.state.url !== undefined) {
 				ajaxify.handleTransientElements();
 				ajaxify.go(ev.state.url, function () {
