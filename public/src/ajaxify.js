@@ -198,9 +198,10 @@ ajaxify.widgets = { render: render };
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		ajaxify.requestedPage = null;
 		if (window.history && window.history.pushState) {
+			const { relative_path } = config;
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, '', config.relative_path + (url ? '/' + url : ''));
+			}, '', relative_path + (url ? '/' + url : (relative_path ? '' : '/')));
 		}
 	};
 
@@ -559,9 +560,10 @@ $(document).ready(function () {
 		if (ev !== null && ev.state) {
 			const { returnPath } = ev.state;
 			if (ev.state.url === null && returnPath !== undefined) {
+				const { relative_path } = config;
 				window.history.replaceState({
 					url: returnPath,
-				}, '', config.relative_path + (returnPath ? '/' + returnPath : ''));
+				}, '', relative_path + (returnPath ? '/' + returnPath : (relative_path ? '' : '/')));
 			} else if (ev.state.url !== undefined) {
 				ajaxify.handleTransientElements();
 				ajaxify.go(ev.state.url, function () {
