@@ -7,6 +7,7 @@ const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
+	kysely: require('../src/database/kysely').questions,
 };
 
 module.exports = async function (config) {
@@ -35,6 +36,11 @@ async function getDatabaseConfig(config) {
 			return config;
 		}
 		return await prompt.get(questions.postgres);
+	} else if (config.database === 'kysely') {
+		if (config['kysely:dialect']) {
+			return config;
+		}
+		return await prompt.get(questions.kysely);
 	}
 	throw new Error(`unknown database : ${config.database}`);
 }
@@ -74,11 +80,20 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
 		};
+	} else if (config.database === 'kysely') {
+		config.kysely = {
+			dialect: databaseConfig['kysely:dialect'],
+			host: databaseConfig['kysely:host'],
+			port: databaseConfig['kysely:port'],
+			username: databaseConfig['kysely:username'],
+			password: databaseConfig['kysely:password'],
+			database: databaseConfig['kysely:database'],
+		};
 	} else {
 		throw new Error(`unknown database : ${config.database}`);
 	}
 
-	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
+	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres).concat(questions.kysely);
 	for (let x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
