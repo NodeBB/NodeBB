@@ -6,7 +6,6 @@ const Benchpress = require('benchpressjs');
 const nodemailer = require('nodemailer');
 const wellKnownServices = require('nodemailer/lib/well-known/services');
 const { htmlToText } = require('html-to-text');
-const url = require('url');
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
