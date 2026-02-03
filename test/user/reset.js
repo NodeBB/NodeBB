@@ -101,7 +101,9 @@ describe('Password reset (library methods)', () => {
 		assert.strictEqual(confirmed, 0);
 		assert.strictEqual(verified, false);
 		assert.strictEqual(unverified, true);
-		await user.setUserField(uid, 'passwordExpiry', Date.now());
+		// For kysely with sqlite, we need to wait a tick to ensure the timestamp is different
+		// Because when you are saving to file, the timestamp resolution could be as low as sub-millisecond 
+		await user.setUserField(uid, 'passwordExpiry', Date.now() - 1000);
 		const code = await user.reset.generate(uid);
 		await user.reset.commit(code, '654321');
 		confirmed = await user.getUserField(uid, 'email:confirmed');
@@ -121,6 +123,11 @@ describe('locks', () => {
 		email = `${username}@nodebb.org`;
 		await user.setUserField(uid, 'email', email);
 		await user.email.confirmByUid(uid);
+	});
+
+	afterEach(async () => {
+		user.reset.minSecondsBetweenEmails = 60;
+		await db.sortedSetRemove('reset:issueDate:uid', uid);
 	});
 
 	it('should disallow reset request if one was made within the minute', async () => {

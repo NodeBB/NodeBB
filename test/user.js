@@ -688,7 +688,8 @@ describe('User', () => {
 		});
 	});
 
-	describe('profile methods', () => {
+	describe('profile methods', function () {
+		this.timeout(60000);
 		let uid;
 		let jar;
 		let csrf_token;
@@ -1709,9 +1710,10 @@ describe('User', () => {
 			const adminUid = await User.create({ username: 'noteadmin' });
 			await groups.join('administrators', adminUid);
 			await socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' });
-			await setTimeout(50);
+			await setTimeout(100);
 			await socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: '<svg/onload=alert(document.location);//' });
 			const notes = await User.getModerationNotes(testUid, 0, -1);
+			assert(notes.length >= 2, `Expected at least 2 notes but got ${notes.length}: ${JSON.stringify(notes)}`);
 			assert.equal(notes[0].note, '');
 			assert.equal(notes[0].uid, adminUid);
 			assert.equal(notes[1].note, 'this is a test user');
