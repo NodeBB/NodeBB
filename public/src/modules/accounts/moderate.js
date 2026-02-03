@@ -18,7 +18,7 @@ define('forum/account/moderate', [
 				const until = formData.length > 0 ? (
 					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
 				) : 0;
-				api.put('/users/' + theirid + '/ban', {
+				api.put('/users/' + encodeURIComponent(theirid) + '/ban', {
 					until: until,
 					reason: formData.reason || '',
 				}).then(() => {
@@ -37,7 +37,7 @@ define('forum/account/moderate', [
 			tpl: 'modals/unban',
 			title: '[[user:unban-account]]',
 			onSubmit: function (formData) {
-				api.del('/users/' + theirid + '/ban', {
+				api.del('/users/' + encodeURIComponent(theirid) + '/ban', {
 					reason: formData.reason || '',
 				}).then(() => {
 					ajaxify.refresh();

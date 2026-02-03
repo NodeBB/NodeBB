@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 %3-də bu mövzuya <a href=\"%2\">istinad etdi</a>",
     "user-forked-topic-ago": "%1 bu mövzunu <a href=\"%2\">nüsxələdi</a> %3",
     "user-forked-topic-on": "%1 bu mövzunu %3-də <a href=\"%2\">nüsxələdi</a>",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Bu mövzuda son oxunmuş yazıya qayıtmaq üçün bura klikləyin.",
     "flag-post": "Bu postu işarələ",
     "flag-user": "Bu istifadəçini qeyd et",

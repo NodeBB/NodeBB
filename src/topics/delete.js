@@ -73,14 +73,11 @@ module.exports = function (Topics) {
 	};
 
 	Topics.purge = async function (tid, uid) {
-		const [deletedTopic, tags] = await Promise.all([
-			Topics.getTopicData(tid),
-			Topics.getTopicTags(tid),
-		]);
+		const deletedTopic = await Topics.getTopicData(tid);
 		if (!deletedTopic) {
 			return;
 		}
-		deletedTopic.tags = tags;
+		deletedTopic.tags = deletedTopic.tags.map(tag => tag.value);
 		await deleteFromFollowersIgnorers(tid);
 
 		await Promise.all([

@@ -333,7 +333,7 @@ module.exports = function (User) {
 
 		user.displayname = validator.escape(String(
 			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
-				user.fullname :
+				utils.stripBidiControls(user.fullname) :
 				user.username
 		));
 	}

@@ -13,7 +13,7 @@ const url = require('url');
 const util = require('util');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
+
 if (!process.env.hasOwnProperty('CI')) {
 	process.env.CI = 'true';
 }
@@ -125,7 +125,7 @@ if (testDbConfig.database === productionDbConfig.database &&
 nconf.set(dbType, testDbConfig);
 
 winston.info('database config %s', dbType, testDbConfig);
-winston.info(`environment ${global.env}`);
+winston.info(`environment ${process.env.NODE_ENV}`);
 
 const db = require('../../src/database');
 

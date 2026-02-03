@@ -14,6 +14,7 @@ const meta = require('../meta');
 const pubsub = require('../pubsub');
 const { paths, pluginNamePattern } = require('../constants');
 const pkgInstall = require('../cli/package-install');
+const cache = require('../cache');
 
 const packageManager = pkgInstall.getPackageManager();
 let packageManagerExecutable = packageManager;
@@ -70,6 +71,7 @@ module.exports = function (Plugins) {
 			const count = await db.sortedSetCard('plugins:active');
 			await db.sortedSetAdd('plugins:active', count, id);
 		}
+		cache.set(`plugin:isActive:${id}`, !isActive);
 		meta.reloadRequired = true;
 		const hook = isActive ? 'deactivate' : 'activate';
 		Plugins.hooks.fire(`action:plugin.${hook}`, { id: id });
@@ -170,7 +172,13 @@ module.exports = function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);
 		}
-		return await db.isSortedSetMember('plugins:active', id);
+		const cached = cache.get(`plugin:isActive:${id}`);
+		if (cached !== undefined) {
+			return cached;
+		}
+		const isActive = await db.isSortedSetMember('plugins:active', id);
+		cache.set(`plugin:isActive:${id}`, isActive);
+		return isActive;
 	};
 
 	Plugins.getActive = async function () {

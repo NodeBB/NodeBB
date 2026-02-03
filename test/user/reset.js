@@ -16,9 +16,11 @@ describe('Password reset (library methods)', () => {
 	let uid;
 	let code;
 	before(async () => {
-		uid = await user.create({ username: 'resetuser', password: '123456' });
-		await user.setUserField(uid, 'email', 'reset@me.com');
-		await user.email.confirmByUid(uid);
+		uid = await user.create({
+			username: 'resetuser', password: '123456', email: 'reset@me.com',
+		}, {
+			emailVerification: 'verify',
+		});
 	});
 
 	it('.generate() should generate a new reset code', (done) => {
@@ -119,10 +121,10 @@ describe('locks', () => {
 	let email;
 	beforeEach(async () => {
 		const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-		uid = await user.create({ username, password });
 		email = `${username}@nodebb.org`;
-		await user.setUserField(uid, 'email', email);
-		await user.email.confirmByUid(uid);
+		uid = await user.create({ username, password, email }, {
+			emailVerification: 'verify',
+		});
 	});
 
 	afterEach(async () => {

@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">odniósł się</a> do tego tematu dnia %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">rozdzielił</a> ten temat %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">rozdzielił</a> ten temat dnia %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Kliknij tutaj, by powrócić do ostatniego przeczytanego postu w tym temacie.",
     "flag-post": "Zgłoś ten post",
     "flag-user": "Zgłoś tego użytkownika",

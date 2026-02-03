@@ -513,6 +513,7 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 			db.sortedSetRemove(`followersRemote:${actor}`, `cid|${id}`),
 		]);
 	}
+	activitypub.actors._followerCache.del(actor);
 });
 
 Out.undo.like = enabledCheck(async (uid, pid) => {

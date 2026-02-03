@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">referenced</a> this topic on %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">forked</a> this topic %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">forked</a> this topic on %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Натисніть тут, щоб повернутися до останнього прочитаного посту у цій темі.",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",

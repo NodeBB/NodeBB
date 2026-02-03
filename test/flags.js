@@ -38,7 +38,9 @@ describe('Flags', () => {
 		});
 
 		// Create some stuff to flag
-		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' });
+		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' }, {
+			emailVerification: 'verify',
+		});
 
 		adminUid = await User.create({ username: 'testUser2', password: 'abcdef', email: 'c@d.com' });
 		await Groups.join('administrators', adminUid);

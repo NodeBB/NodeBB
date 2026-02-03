@@ -73,12 +73,16 @@ describe('Groups', () => {
 		testUid = await User.create({
 			username: 'testuser',
 			email: 'b@c.com',
+		}, {
+			emailVerification: 'verify',
 		});
 
 		adminUid = await User.create({
 			username: 'admin',
 			email: 'admin@admin.com',
 			password: '123456',
+		}, {
+			emailVerification: 'verify',
 		});
 		await Groups.join('administrators', adminUid);
 	});

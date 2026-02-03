@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 a <a href=\"%2\">fait référence</a> à ce sujet sur %3",
     "user-forked-topic-ago": "%1 a <a href=\"%2\">scindé</a> ce sujet %3",
     "user-forked-topic-on": "%1 a <a href=\"%2\">scindé</a> ce sujet sur %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Cliquer ici pour aller au dernier message lu de ce fil.",
     "flag-post": "Signaler ce message",
     "flag-user": "Signaler cet utilisateur",

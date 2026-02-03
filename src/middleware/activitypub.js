@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../database');
+const user = require('../user');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
 const analytics = require('../analytics');
@@ -63,6 +64,12 @@ middleware.verify = async function (req, res, next) {
 middleware.assertPayload = helpers.try(async function (req, res, next) {
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	activitypub.helpers.log('[middleware/activitypub] Validating incoming payload...');
+
+	// Reject from banned users
+	const isBanned = await user.bans.isBanned(req.uid);
+	if (isBanned) {
+		return res.sendStatus(403);
+	}
 
 	// Sanity-check payload schema
 	const required = ['id', 'type', 'actor', 'object'];

@@ -111,6 +111,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
 		const hasTid = !!tid;
 
+		const authorBanned = await user.bans.isBanned(authorId);
+		if (!hasTid && authorBanned) { // New topics only
+			activitypub.helpers.log('[notes/assert] OP is banned, not asserting topic.');
+			return null;
+		}
+
 		const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
 		let crosspostCid = false;
 
@@ -212,7 +218,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		mainPost.tid = tid;
 
 		const urlMap = chain.reduce((map, post) => (post.url ? map.set(post.url, post.id) : map), new Map());
-		const unprocessed = chain.map((post) => {
+		let unprocessed = chain.map((post) => {
 			post.tid = tid; // add tid to post hash
 
 			// Ensure toPids in replies are ids
@@ -263,6 +269,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 		}
 
+		const uids = Array.from(unprocessed.reduce((uids, post) => {
+			uids.add(post.uid);
+			return uids;
+		}, new Set()));
+		const isBanned = await user.bans.isBanned(uids);
+		const banned = uids.filter((_, idx) => isBanned[idx]);
+		unprocessed = unprocessed.filter(post => !banned.includes(post.uid));
+
 		let added = [];
 		await Promise.all(unprocessed.map(async (post) => {
 			const { to, cc } = post._activitypub;
@@ -278,13 +292,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (added.length) {
 			// Because replies are added in parallel, `index` is calculated incorrectly
-			added = added
-				.sort((a, b) => a.timestamp - b.timestamp)
-				.map((post, idx) => {
-					post.index = post.index - idx;
-					return post;
-				})
-				.reverse();
+			const indices = await posts.getPostIndices(added, uid);
+			added = added.map((post, idx) => {
+				post.index = indices[idx];
+				return post;
+			});
 			websockets.in(`topic_${tid}`).emit('event:new_post', { posts: added });
 		}
 
@@ -494,7 +506,7 @@ Notes.updateLocalRecipients = async (id, { to, cc }) => {
 
 		const followedUid = await db.getObjectField('followersUrl:uid', recipient);
 		if (followedUid) {
-			const { uids: followers } = await activitypub.actors.getLocalFollowers(followedUid);
+			const { uids: followers } = await activitypub.actors.getFollowers(followedUid);
 			if (followers.size > 0) {
 				followers.forEach((uid) => {
 					uids.add(uid);
@@ -578,7 +590,7 @@ Notes.syncUserInboxes = async function (tid, uid) {
 	});
 
 	// Category followers
-	const categoryFollowers = await activitypub.actors.getLocalFollowers(cid);
+	const categoryFollowers = await activitypub.actors.getFollowers(cid);
 	categoryFollowers.uids.forEach((uid) => {
 		uids.add(uid);
 	});
@@ -613,7 +625,6 @@ Notes.backfill = async (pids) => {
 
 	return Promise.all(pids.map(async (pid) => {
 		if (backfillCache.has(pid)) {
-			console.log('cache hit, not proactively backfilling');
 			return;
 		}
 
@@ -623,6 +634,12 @@ Notes.backfill = async (pids) => {
 };
 
 Notes.announce = {};
+
+Notes.announce._cache = ttlCache({
+	name: 'ap-note-announce-cache',
+	max: 500,
+	ttl: 1000 * 60 * 60, // 1 hour
+});
 
 Notes.announce.list = async ({ pid, tid }) => {
 	let pids = [];
@@ -641,8 +658,24 @@ Notes.announce.list = async ({ pid, tid }) => {
 		return [];
 	}
 
-	const keys = pids.map(pid => `pid:${pid}:announces`);
-	let announces = await db.getSortedSetsMembersWithScores(keys);
+	const missing = [];
+	let announces = pids.map((pid, idx) => {
+		const cached = Notes.announce._cache.get(pid);
+		if (!cached) {
+			missing.push(idx);
+		}
+		return cached;
+	});
+
+	if (missing.length) {
+		const toCache = await db.getSortedSetsMembersWithScores(missing.map(idx => `pid:${pids[idx]}:announces`));
+		toCache.forEach((value, idx) => {
+			const pid = pids[missing[idx]];
+			Notes.announce._cache.set(pid, value);
+			announces[missing[idx]] = value;
+		});
+	}
+
 	announces = announces.reduce((memo, cur, idx) => {
 		if (cur.length) {
 			const pid = pids[idx];
@@ -661,6 +694,7 @@ Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 		posts.getPostField(pid, 'tid'),
 		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
 	]);
+	Notes.announce._cache.del(`pid:${pid}:announces`);
 	await Promise.all([
 		posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`)),
 		topics.tools.share(tid, actor, timestamp),
@@ -669,6 +703,8 @@ Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 
 Notes.announce.remove = async (pid, actor) => {
 	await db.sortedSetRemove(`pid:${pid}:announces`, actor);
+	Notes.announce._cache.del(`pid:${pid}:announces`);
+
 	const count = await db.sortedSetCard(`pid:${pid}:announces`);
 	if (count > 0) {
 		await posts.setPostField(pid, 'announces', count);
@@ -682,6 +718,7 @@ Notes.announce.removeAll = async (pid) => {
 		db.delete(`pid:${pid}:announces`),
 		db.deleteObjectField(`post:${pid}`, 'announces'),
 	]);
+	Notes.announce._cache.del(`pid:${pid}:announces`);
 };
 
 Notes.delete = async (pids) => {

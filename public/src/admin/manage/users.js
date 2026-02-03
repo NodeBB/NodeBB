@@ -246,7 +246,7 @@ define('admin/manage/users', [
 			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
 				if (confirm) {
 					Promise.all(uids.map(function (uid) {
-						return api.put('/users/' + uid + '/ban');
+						return api.put('/users/' + encodeURIComponent(uid) + '/ban');
 					})).then(() => {
 						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
 					}).catch(alerts.error);
@@ -284,7 +284,7 @@ define('admin/manage/users', [
 								) : 0;
 
 								Promise.all(uids.map(function (uid) {
-									return api.put('/users/' + uid + '/ban', {
+									return api.put('/users/' + encodeURIComponent(uid) + '/ban', {
 										until: until,
 										reason: formData.reason,
 									});
@@ -326,7 +326,7 @@ define('admin/manage/users', [
 
 
 								Promise.all(uids.map(function (uid) {
-									return api.del('/users/' + uid + '/ban', {
+									return api.del('/users/' + encodeURIComponent(uid) + '/ban', {
 										reason: formData.reason || '',
 									});
 								})).then(() => {

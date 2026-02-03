@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">հղել է</a> այս թեման %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">քաղել է</a> այս թեման %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">քաղել է</a> այս թեման %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Սեղմեք այստեղ՝ այս թեմայի վերջին ընթերցված գրառմանը վերադառնալու համար:",
     "flag-post": "Դրոշակել այց գրառումը",
     "flag-user": "Դրոշակել այս օգտատերին",

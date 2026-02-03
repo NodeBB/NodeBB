@@ -5,6 +5,15 @@ const path = require('path');
 
 require('../../require-main');
 
+// https://github.com/NodeBB/NodeBB/issues/13734
+// check dev flag early so packageInstall.installAll() can use it
+const isDev = process.argv.some(arg =>
+	arg === '-d' ||
+	arg === '--dev' ||
+	(arg.startsWith('-') && !arg.startsWith('--') && arg.includes('d')));
+
+process.env.NODE_ENV = isDev ? 'development' : (process.env.NODE_ENV || 'production');
+
 const packageInstall = require('./package-install');
 const { paths } = require('../constants');
 
@@ -96,8 +105,7 @@ nconf.argv(opts).env({
 	separator: '__',
 });
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
+
 
 prestart.setupWinston();
 
@@ -139,7 +147,6 @@ program
 	.description('Start NodeBB in verbose development mode')
 	.action(() => {
 		process.env.NODE_ENV = 'development';
-		global.env = 'development';
 		require('./running').start({ ...program.opts(), dev: true });
 	});
 program
@@ -206,7 +213,6 @@ program
 	.action((targets, options) => {
 		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';
-			global.env = 'development';
 		}
 		require('./manage').build(targets.length ? targets : true, options);
 	})
@@ -296,7 +302,6 @@ program
 		options.unattended = program.opts().unattended;
 		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';
-			global.env = 'development';
 		}
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});

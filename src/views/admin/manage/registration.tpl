@@ -35,6 +35,9 @@
 								{{{ end }}}
 								{{{ end }}}
 								{./username}
+								{{{ if ./sso }}}
+								<i class="{./sso.icon}" title="{./sso.name}"></i>
+								{{{ end }}}
 							</td>
 							<td>
 								{{{ if ./emailSpam }}}

@@ -252,6 +252,7 @@
     "api.401": "Aucune session de connexion valide trouvée. Veuillez vous connecter et réessayer.",
     "api.403": "Vous n'êtes pas autorisé à réaliser cet appel",
     "api.404": "Appel de l'API non valide",
+    "api.413": "The request payload is too large",
     "api.426": "HTTPS est requis pour les demandes d’écriture via l'API, veuillez renvoyer votre demande via HTTPS",
     "api.429": "Vous avez fait trop de demandes, veuillez réessayer plus tard",
     "api.500": "Une erreur inattendue s'est produite lors de la tentative de traitement de votre demande.",

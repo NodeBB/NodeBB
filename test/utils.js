@@ -51,6 +51,12 @@ describe('Utility Methods', () => {
 			assert.strictEqual(out, 'Hello World Dwellers');
 		});
 
+		it('should remove common bidi embedding and override controls if they are lowercase', () => {
+			const input = '\u202aHello\u202c \u202bWorld\u202c \u202dDwellers\u202e';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'Hello World Dwellers');
+		});
+
 		it('should remove bidirectional isolate formatting characters', () => {
 			const input = '\u2066abc\u2067def\u2068ghi\u2069';
 			const out = utils.stripBidiControls(input);

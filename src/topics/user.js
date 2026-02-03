@@ -2,6 +2,7 @@
 
 const db = require('../database');
 const utils = require('../utils');
+const cache = require('../cache');
 
 module.exports = function (Topics) {
 	Topics.isOwner = async function (tid, uid) {
@@ -13,6 +14,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getUids = async function (tid) {
-		return await db.getSortedSetRevRangeByScore(`tid:${tid}:posters`, 0, -1, '+inf', 1);
+		const cacheKey = `tid:${tid}:uids`;
+		let posters = cache.get(cacheKey, tid);
+		if (!posters) {
+			posters = await db.getSortedSetRevRangeByScore(`tid:${tid}:posters`, 0, -1, '+inf', 1);
+			cache.set(cacheKey, posters);
+		}
+
+		return posters;
 	};
 };

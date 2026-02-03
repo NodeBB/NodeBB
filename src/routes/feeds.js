@@ -61,6 +61,11 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	return true;
 }
 
+function stripUnicodeControlChars(str) {
+	// eslint-disable-next-line no-control-regex
+	return str.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, '');
+}
+
 async function generateForTopic(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
 		return next();
@@ -80,20 +85,21 @@ async function generateForTopic(req, res, next) {
 	if (await validateTokenIfRequiresLogin(!userPrivileges['topics:read'], topic.cid, req, res)) {
 		const topicData = await topics.getTopicWithPosts(topic, `tid:${tid}:posts`, req.uid || req.query.uid || 0, 0, 24, true);
 
+		const mainPost = topicData.posts[0];
 		topics.modifyPostsByPrivilege(topicData, userPrivileges);
-
+		const title = stripUnicodeControlChars(topicData.title);
 		const feed = new rss({
-			title: utils.stripHTMLTags(topicData.title, utils.tags),
-			description: topicData.posts.length ? topicData.posts[0].content : '',
+			title: utils.stripHTMLTags(title, utils.tags),
+			description: topicData.posts.length ? stripUnicodeControlChars(mainPost.content) : '',
 			feed_url: `${nconf.get('url')}/topic/${tid}.rss`,
 			site_url: `${nconf.get('url')}/topic/${topicData.slug}`,
-			image_url: topicData.posts.length ? topicData.posts[0].picture : '',
-			author: topicData.posts.length ? topicData.posts[0].username : '',
+			image_url: topicData.posts.length ? mainPost.picture : '',
+			author: topicData.posts.length ? mainPost.username : '',
 			ttl: 60,
 		});
 
 		if (topicData.posts.length > 0) {
-			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
+			feed.pubDate = new Date(parseInt(mainPost.timestamp, 10)).toUTCString();
 		}
 		const replies = topicData.posts.slice(1);
 		replies.forEach((postData) => {
@@ -103,8 +109,8 @@ async function generateForTopic(req, res, next) {
 				).toUTCString();
 
 				feed.item({
-					title: `Reply to ${utils.stripHTMLTags(topicData.title, utils.tags)} on ${dateStamp}`,
-					description: postData.content,
+					title: `Reply to ${utils.stripHTMLTags(title, utils.tags)} on ${dateStamp}`,
+					description: stripUnicodeControlChars(postData.content),
 					url: `${nconf.get('url')}/post/${postData.pid}`,
 					author: postData.user ? postData.user.username : '',
 					date: dateStamp,
@@ -122,15 +128,20 @@ async function generateForCategory(req, res, next) {
 		return next();
 	}
 	const uid = req.uid || req.query.uid || 0;
+	async function getRecentlyCreatedTids() {
+		const [pinnedTids, tids] = await Promise.all([
+			db.getSortedSetRevRange(`cid:${cid}:tids:pinned`, 0, -1),
+			db.getSortedSetRevRange(`cid:${cid}:tids:create`, 0, 24),
+		]);
+		const allTids = Array.from(new Set([...pinnedTids, ...tids]));
+		const topicData = await topics.getTopicsFields(allTids, ['tid', 'timestamp']);
+		topicData.sort((a, b) => b.timestamp - a.timestamp);
+		return topicData.slice(0, 25).map(t => t.tid);
+	}
 	const [userPrivileges, category, tids] = await Promise.all([
 		privileges.categories.get(cid, req.uid),
 		categories.getCategoryData(cid),
-		db.getSortedSetRevIntersect({
-			sets: ['topics:tid', `cid:${cid}:tids:lastposttime`],
-			start: 0,
-			stop: 24,
-			weights: [1, 0],
-		}),
+		getRecentlyCreatedTids(),
 	]);
 
 	if (!category || !category.name) {
@@ -252,7 +263,7 @@ async function generateTopicsFeed(feedOptions, feedTopics, timestampField) {
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
 
-	feedTopics = feedTopics.filter(Boolean);
+	feedTopics = feedTopics.filter(t => t && !t.deleted);
 
 	const feed = new rss(feedOptions);
 
@@ -260,38 +271,39 @@ async function generateTopicsFeed(feedOptions, feedTopics, timestampField) {
 		feed.pubDate = new Date(feedTopics[0][timestampField]).toUTCString();
 	}
 
-	async function addFeedItem(topicData) {
+	if (feedOptions.useMainPost) {
+		const tids = feedTopics.map(topic => topic.tid);
+		const mainPosts = await topics.getMainPosts(tids, feedOptions.uid);
+		feedTopics.forEach((topicData, index) => {
+			topicData.mainPost = mainPosts[index];
+		});
+	}
+
+	function addFeedItem(topicData) {
+		const title = stripUnicodeControlChars(topicData.title);
 		const feedItem = {
-			title: utils.stripHTMLTags(topicData.title, utils.tags),
+			title: utils.stripHTMLTags(title, utils.tags),
 			url: `${nconf.get('url')}/topic/${topicData.slug}`,
 			date: new Date(topicData[timestampField]).toUTCString(),
 		};
 
-		if (topicData.deleted) {
-			return;
-		}
-
 		if (topicData.teaser && topicData.teaser.user && !feedOptions.useMainPost) {
-			feedItem.description = topicData.teaser.content;
+			feedItem.description = stripUnicodeControlChars(topicData.teaser.content);
 			feedItem.author = topicData.teaser.user.username;
 			feed.item(feedItem);
 			return;
 		}
-
-		const mainPost = await topics.getMainPost(topicData.tid, feedOptions.uid);
+		const { mainPost } = topicData;
 		if (!mainPost) {
 			feed.item(feedItem);
 			return;
 		}
-		feedItem.description = mainPost.content;
+		feedItem.description = stripUnicodeControlChars(mainPost.content);
 		feedItem.author = mainPost.user && mainPost.user.username;
 		feed.item(feedItem);
 	}
 
-	for (const topicData of feedTopics) {
-		/* eslint-disable no-await-in-loop */
-		await addFeedItem(topicData);
-	}
+	feedTopics.forEach(addFeedItem);
 	return feed;
 }
 
@@ -357,9 +369,10 @@ function generateForPostsFeed(feedOptions, posts) {
 	}
 
 	posts.forEach((postData) => {
+		const title = stripUnicodeControlChars(postData.topic ? postData.topic.title : '');
 		feed.item({
-			title: postData.topic ? postData.topic.title : '',
-			description: postData.content,
+			title: title,
+			description: stripUnicodeControlChars(postData.content),
 			url: `${nconf.get('url')}/post/${postData.pid}`,
 			author: postData.user ? postData.user.username : '',
 			date: new Date(parseInt(postData.timestamp, 10)).toUTCString(),
@@ -394,7 +407,8 @@ async function generateForTag(req, res) {
 		return controllers404.handle404(req, res);
 	}
 	const uid = await getUidFromToken(req);
-	const tag = validator.escape(String(req.params.tag));
+	const set = `tag:${String(req.params.tag)}:topics`;
+	const tag = validator.escape(stripUnicodeControlChars(String(req.params.tag)));
 	const page = parseInt(req.query.page, 10) || 1;
 	const topicsPerPage = meta.config.topicsPerPage || 20;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
@@ -407,7 +421,7 @@ async function generateForTag(req, res) {
 		site_url: `/tags/${tag}`,
 		start: start,
 		stop: stop,
-	}, `tag:${tag}:topics`, res);
+	}, set, res);
 }
 
 async function getUidFromToken(req) {
