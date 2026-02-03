@@ -182,6 +182,7 @@
     "composer.replying-to": "Писање одговора на %1",
     "composer.new-topic": "Нова тема",
     "composer.editing-in": "Уређивање објаве у %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "отпремање...",
     "composer.thumb-url-label": "Налепи адресу сличице теме",
     "composer.thumb-title": "Додај сличицу овој теми",

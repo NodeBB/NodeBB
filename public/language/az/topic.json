@@ -182,6 +182,7 @@
     "composer.replying-to": "%1 cavab verilir",
     "composer.new-topic": "Yeni mövzu",
     "composer.editing-in": "%1-də yazı redaktə edilir",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "yüklənir...",
     "composer.thumb-url-label": "Mövzuya kiçik şəkli URL kimi yerləşdir",
     "composer.thumb-title": "Bu mövzuya kiçik şəkil əlavə et",

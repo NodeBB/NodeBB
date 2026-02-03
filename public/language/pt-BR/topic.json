@@ -182,6 +182,7 @@
     "composer.replying-to": "Respondendo para %1",
     "composer.new-topic": "Novo Tópico",
     "composer.editing-in": "Editando post em %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "enviando...",
     "composer.thumb-url-label": "Cole o endereço de um thumbnail para o tópico",
     "composer.thumb-title": "Adicionar um thumbnail para este tópico",

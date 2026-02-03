@@ -182,6 +182,7 @@
     "composer.replying-to": "תגובה ל%1",
     "composer.new-topic": "נושא חדש",
     "composer.editing-in": "עריכת פוסט ב-%1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "מעלה...",
     "composer.thumb-url-label": "הדביקו את כתובת ה-URL לתמונה הממוזערת עבור הנושא",
     "composer.thumb-title": "הוספת תמונה ממוזערת לנושא",

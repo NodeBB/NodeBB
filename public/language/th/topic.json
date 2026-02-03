@@ -182,6 +182,7 @@
     "composer.replying-to": "ตอบไปยัง  %1",
     "composer.new-topic": "กระทู้ใหม่",
     "composer.editing-in": "แก้ไขโพสต์ใน %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "กำลังอัพโหลด ...",
     "composer.thumb-url-label": "วาง URL ของภาพของกระทู้นี้",
     "composer.thumb-title": "เพิ่มภาพให้กับกระทู้นี้",

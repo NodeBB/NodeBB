@@ -182,6 +182,7 @@
     "composer.replying-to": "Îi raspunde lui %1",
     "composer.new-topic": "Subiect Nou",
     "composer.editing-in": "Editing post in %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "se uploadează ...",
     "composer.thumb-url-label": "Lipește un link pentru pictogramă subiect",
     "composer.thumb-title": "Adaugă o pictogramă la acest subiect",

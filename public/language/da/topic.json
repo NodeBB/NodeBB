@@ -182,6 +182,7 @@
     "composer.replying-to": "Svare til %1",
     "composer.new-topic": "Ny tråd",
     "composer.editing-in": "Editing post in %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "uploader...",
     "composer.thumb-url-label": "Indsæt en tråd miniature URL",
     "composer.thumb-title": "Tilføj en miniature til denne tråd",

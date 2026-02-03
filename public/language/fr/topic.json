@@ -182,6 +182,7 @@
     "composer.replying-to": "En réponse à %1",
     "composer.new-topic": "Nouveau sujet",
     "composer.editing-in": "Modification du message dans %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "envoi en cours…",
     "composer.thumb-url-label": "Coller une URL de vignette du sujet",
     "composer.thumb-title": "Ajouter une vignette à ce sujet",

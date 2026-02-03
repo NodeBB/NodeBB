@@ -182,6 +182,7 @@
     "composer.replying-to": "正在回覆 %1",
     "composer.new-topic": "新主題",
     "composer.editing-in": "編輯在 %1 的貼文",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "正在上傳...",
     "composer.thumb-url-label": "添加主題縮圖網址",
     "composer.thumb-title": "給此主題添加縮圖",
