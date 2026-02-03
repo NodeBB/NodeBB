@@ -12,7 +12,7 @@ const privileges = require('../privileges');
 const meta = require('../meta');
 const io = require('../socket.io');
 const cache = require('../cache');
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
 
 const roomUidCache = cacheCreate({
