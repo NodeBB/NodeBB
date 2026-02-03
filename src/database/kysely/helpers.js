@@ -388,11 +388,10 @@ module.exports = function (module) {
 				{ length: Math.ceil(rows.length / chunkSize) },
 				(_, i) => rows.slice(i * chunkSize, (i + 1) * chunkSize)
 			);
-			await chunks.reduce(
-				(promise, chunk) => promise.then(() =>
-					upsertMultipleBatch(db, table, chunk, conflictColumns, updateColumns)),
-				Promise.resolve()
-			);
+			for (const chunk of chunks) {
+				// eslint-disable-next-line no-await-in-loop
+				await upsertMultipleBatch(db, table, chunk, conflictColumns, updateColumns);
+			}
 			return;
 		}
 

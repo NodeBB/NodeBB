@@ -5,6 +5,31 @@ const winston = require('winston');
 
 const connection = module.exports;
 
+/**
+ * EventLoopYieldPlugin - Yields to the event loop after each SQLite query.
+ *
+ * better-sqlite3 is synchronous and blocks the Node.js event loop.
+ * This causes issues with tests that rely on setTimeout/setInterval timing,
+ * as Date.now() doesn't progress during synchronous operations.
+ *
+ * By yielding after each query via setImmediate, we allow:
+ * - Timers to fire
+ * - Date.now() to reflect actual elapsed time
+ * - Other async operations to proceed
+ */
+class EventLoopYieldPlugin {
+	transformQuery(args) {
+		return args.node;
+	}
+
+	async transformResult(args) {
+		// Yield to the event loop after each query execution
+		// This allows timers/callbacks to run between queries
+		await new Promise(resolve => setImmediate(resolve));
+		return args.result;
+	}
+}
+
 connection.getDialect = function (options) {
 	options = options || nconf.get('kysely') || {};
 	return options.dialect || 'sqlite';
@@ -125,9 +150,11 @@ connection.createKyselyInstance = async function (options) {
 		}
 
 		const database = new Database(connOptions.filename);
+		database.pragma('busy_timeout = 30000');
 		database.pragma('journal_mode = WAL');
+		database.pragma('synchronous = NORMAL');
 		database.pragma('foreign_keys = ON');
-		database.pragma('busy_timeout = 30000'); // Wait up to 30 seconds for lock to release
+		database.pragma('cache_size = -64000');
 
 		kyselyDialect = new SqliteDialect({
 			database: database,
@@ -161,8 +188,14 @@ connection.createKyselyInstance = async function (options) {
 		}
 	}
 
+	const plugins = [];
+	if (dialect === 'sqlite') {
+		plugins.push(new EventLoopYieldPlugin());
+	}
+
 	const db = new Kysely({
 		dialect: kyselyDialect,
+		plugins,
 		log(event) {
 			if (process.env.LOG_SQL !== 'true') return;
 			if (event.level === 'error') {
