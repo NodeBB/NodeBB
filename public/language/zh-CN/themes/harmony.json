@@ -1,6 +1,8 @@
 {
 	"theme-name": "Harmony 主题",
 	"skins": "皮肤",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "折叠",
 	"expand": "展开",
 	"sidebar-toggle": "侧栏滚动",
