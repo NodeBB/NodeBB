@@ -204,6 +204,7 @@
 	"composer.replying-to": "Replying to %1",
 	"composer.new-topic": "New Topic",
 	"composer.editing-in": "Editing post in %1",
+	"composer.untitled-topic": "Untitled Topic",
 
 	"composer.uploading": "uploading...",
 	"composer.thumb-url-label": "Paste a topic thumbnail URL",
