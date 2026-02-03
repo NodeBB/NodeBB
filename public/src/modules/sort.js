@@ -2,9 +2,9 @@
 
 
 define('sort', ['components'], function (components) {
-	const module = {};
+	const Sort = {};
 
-	module.handleSort = function (field, gotoOnSave) {
+	Sort.handleSort = function (field, gotoOnSave) {
 		const threadSort = components.get('thread/sort');
 		threadSort.find('i').removeClass('fa-check');
 		const currentSort = utils.params().sort || config[field];
@@ -22,5 +22,5 @@ define('sort', ['components'], function (components) {
 			});
 	};
 
-	return module;
+	return Sort;
 });

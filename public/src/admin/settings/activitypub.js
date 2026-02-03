@@ -8,9 +8,9 @@ define('admin/settings/activitypub', [
 	'alerts',
 	'translator',
 ], function (Benchpress, bootbox, categorySelector, api, alerts, translator) {
-	const Module = {};
+	const ActivityPub = {};
 
-	Module.init = function () {
+	ActivityPub.init = function () {
 		const rulesEl = document.getElementById('rules');
 		if (rulesEl) {
 			rulesEl.addEventListener('click', (e) => {
@@ -19,7 +19,7 @@ define('admin/settings/activitypub', [
 					const action = subselector.getAttribute('data-action');
 					switch (action) {
 						case 'rules.add': {
-							Module.throwRulesModal();
+							ActivityPub.throwRulesModal();
 							break;
 						}
 
@@ -46,7 +46,7 @@ define('admin/settings/activitypub', [
 					const action = subselector.getAttribute('data-action');
 					switch (action) {
 						case 'relays.add': {
-							Module.throwRelaysModal();
+							ActivityPub.throwRelaysModal();
 							break;
 						}
 
@@ -66,7 +66,7 @@ define('admin/settings/activitypub', [
 		}
 	};
 
-	Module.throwRulesModal = function () {
+	ActivityPub.throwRulesModal = function () {
 		Benchpress.render('admin/partials/activitypub/rules', {}).then(function (html) {
 			const submit = function () {
 				const formEl = modal.find('form').get(0);
@@ -123,7 +123,7 @@ define('admin/settings/activitypub', [
 		});
 	};
 
-	Module.throwRelaysModal = function () {
+	ActivityPub.throwRelaysModal = function () {
 		Benchpress.render('admin/partials/activitypub/relays', {}).then(function (html) {
 			const submit = function () {
 				const formEl = modal.find('form').get(0);
@@ -155,5 +155,5 @@ define('admin/settings/activitypub', [
 		});
 	};
 
-	return Module;
+	return ActivityPub;
 });

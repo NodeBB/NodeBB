@@ -2,9 +2,9 @@
 
 
 define('uploader', ['jquery-form'], function () {
-	const module = {};
+	const Uploader = {};
 
-	module.show = function (data, callback) {
+	Uploader.show = function (data, callback) {
 		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		app.parseAndTranslate('modals/upload-file', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
@@ -35,7 +35,7 @@ define('uploader', ['jquery-form'], function () {
 		});
 	};
 
-	module.hideAlerts = function (modal) {
+	Uploader.hideAlerts = function (modal) {
 		$(modal).find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
 	};
 
@@ -53,11 +53,11 @@ define('uploader', ['jquery-form'], function () {
 			return showAlert(uploadModal, 'error', '[[error:file-too-big, ' + fileSize + ']]');
 		}
 
-		module.ajaxSubmit(uploadModal, callback);
+		Uploader.ajaxSubmit(uploadModal, callback);
 	}
 
 	function showAlert(uploadModal, type, message) {
-		module.hideAlerts(uploadModal);
+		Uploader.hideAlerts(uploadModal);
 		if (type === 'error') {
 			uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
 		}
@@ -65,7 +65,7 @@ define('uploader', ['jquery-form'], function () {
 		uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 	}
 
-	module.ajaxSubmit = function (uploadModal, callback) {
+	Uploader.ajaxSubmit = function (uploadModal, callback) {
 		const uploadForm = uploadModal.find('#uploadForm');
 		uploadForm.ajaxSubmit({
 			headers: {
@@ -96,7 +96,7 @@ define('uploader', ['jquery-form'], function () {
 
 				showAlert(uploadModal, 'success', '[[uploads:upload-success]]');
 				setTimeout(function () {
-					module.hideAlerts(uploadModal);
+					Uploader.hideAlerts(uploadModal);
 					uploadModal.modal('hide');
 				}, 750);
 			},
@@ -122,5 +122,5 @@ define('uploader', ['jquery-form'], function () {
 		return true;
 	}
 
-	return module;
+	return Uploader;
 });
