@@ -670,9 +670,11 @@ define('forum/chats', [
 
 		function moveChatAndHrToTop(roomEl) {
 			const hr = roomEl.next('hr');
-			components.get('chat/recent').prepend(roomEl);
-			if (hr.length) {
-				roomEl.after(hr);
+			const recentChats = components.get('chat/recent');
+			const chatCount = recentChats.find('[data-roomid]').length;
+			recentChats.prepend(roomEl);
+			if (hr.length || chatCount > 1) {
+				roomEl.after(hr.length ? hr : `<hr class="my-1">`);
 			}
 		}
 
