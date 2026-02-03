@@ -667,6 +667,15 @@ define('forum/chats', [
 		if (!ajaxify.data.template.chats || !app.user.userslug) {
 			return;
 		}
+
+		function moveChatAndHrToTop(roomEl) {
+			const hr = roomEl.next('hr');
+			components.get('chat/recent').prepend(roomEl);
+			if (hr.length) {
+				roomEl.after(hr);
+			}
+		}
+
 		const roomEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
 		if (roomEl.length) {
 			const html = await app.parseAndTranslate('partials/chats/room-teaser', {
@@ -674,16 +683,16 @@ define('forum/chats', [
 			});
 			roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
 			roomEl.find('.timeago').timeago();
+			moveChatAndHrToTop(roomEl);
 		} else {
 			const { rooms } = await api.get(`/chats`, { start: 0, perPage: 2 });
 			const room = rooms.find(r => parseInt(r.roomId, 10) === parseInt(roomId, 10));
 			if (room) {
-				const recentEl = components.get('chat/recent');
 				const html = await app.parseAndTranslate('chats', 'rooms', {
 					rooms: [room],
 					showBottomHr: true,
 				});
-				recentEl.prepend(html);
+				moveChatAndHrToTop(html);
 			}
 		}
 	};
