@@ -182,6 +182,7 @@
     "composer.replying-to": "%1에 답글 작성 중",
     "composer.new-topic": "새 토픽",
     "composer.editing-in": "%1에서 게시물 편집 중",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "업로드 중...",
     "composer.thumb-url-label": "토픽 썸네일 URL 붙여넣기",
     "composer.thumb-title": "이 토픽에 대한 썸네일 추가",

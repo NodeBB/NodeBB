@@ -182,6 +182,7 @@
     "composer.replying-to": "Válasz erre: %1",
     "composer.new-topic": "Új témakör",
     "composer.editing-in": "Editing post in %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "feltöltés...",
     "composer.thumb-url-label": "Bélyegkép URL beszúrása",
     "composer.thumb-title": "Bélyegkép hozzáadása a témakörhöz",
