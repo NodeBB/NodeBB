@@ -57,6 +57,7 @@
     "rejectImageWidth": 5000,
     "rejectImageHeight": 5000,
     "resizeImageQuality": 80,
+    "convertPastedImageTo": "image/jpeg",
     "topicThumbSize": 512,
     "minimumTitleLength": 3,
     "maximumTitleLength": 255,
