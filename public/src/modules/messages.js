@@ -26,20 +26,17 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 				storage.setItem('email-confirm-dismiss', 1);
 			},
 		};
-
+		function hideAlertAndGotoEditEmail() {
+			alerts.remove('email_confirm');
+			ajaxify.go('/me/edit/email');
+		}
 		if (!app.user.email && !app.user.isEmailConfirmSent) {
 			msg.message = '[[error:no-email-to-confirm]]';
-			msg.clickfn = function () {
-				alerts.remove('email_confirm');
-				ajaxify.go('user/' + app.user.userslug + '/edit/email');
-			};
+			msg.clickfn = hideAlertAndGotoEditEmail;
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = message || '[[error:email-not-confirmed]]';
-			msg.clickfn = function () {
-				alerts.remove('email_confirm');
-				ajaxify.go('/me/edit/email');
-			};
+			msg.clickfn = hideAlertAndGotoEditEmail;
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
 			msg.message = '[[error:email-not-confirmed-email-sent]]';
