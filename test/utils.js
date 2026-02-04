@@ -91,6 +91,17 @@ describe('Utility Methods', () => {
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 
+		it('rejects string with only spaces', () => {
+			const username = '    ';
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
+		it('rejects string with tabs', () => {
+			// eslint-disable-next-line @stylistic/js/no-tabs
+			const username = '		';
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
 		it('should reject new lines', () => {
 			assert.equal(utils.isUserNameValid('myusername\r\n'), false);
 		});
@@ -101,6 +112,11 @@ describe('Utility Methods', () => {
 
 		it('should reject tabs', () => {
 			assert.equal(utils.isUserNameValid('myusername\t'), false);
+		});
+
+		it('should reject hangul filler U+3164', () => {
+			assert.equal(utils.isUserNameValid('myusernameㅤ'), false);
+			assert.equal(utils.isUserNameValid('ㅤㅤㅤ'), false);
 		});
 
 		it('accepts square brackets', () => {

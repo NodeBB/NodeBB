@@ -16,6 +16,8 @@ function replaceChar(c) {
 }
 const escapeChars = /[&<>"'`=]/g;
 
+const invisibleChars = /[\u200B-\u200F\u202A-\u202E\u2066-\u2069\u3164\uFEFF]/;
+
 const HTMLEntities = Object.freeze({
 	amp: '&',
 	gt: '>',
@@ -329,7 +331,10 @@ const utils = {
 	},
 
 	isUserNameValid: function (name) {
-		return (name && name !== '' && (/^['" \-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+		if (!name || name === '') return false;
+		if (name.trim().length === 0) return false;
+		if (invisibleChars.test(name)) return false;
+		return (/^['" \-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name));
 	},
 
 	isPasswordValid: function (password) {
