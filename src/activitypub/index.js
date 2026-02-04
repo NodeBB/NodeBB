@@ -507,7 +507,6 @@ ActivityPub.buildRecipients = async function (object, options) {
 			targets.delete(address);
 		});
 		if (targets.size) {
-			console.log('derpo', new Error().stack);
 			const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
 			Array.from(targets).forEach((uri, idx) => {
 				if (!exists[idx]) {
