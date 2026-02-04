@@ -8,7 +8,6 @@ const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
 const categories = require('../categories');
-const topics = require('../topics');
 const posts = require('../posts');
 const messaging = require('../messaging');
 const user = require('../user');
@@ -521,7 +520,7 @@ ActivityPub.buildRecipients = async function (object, options) {
 	// Topic posters, post announcers and their followers
 	if (pid) {
 		const tid = await posts.getPostField(pid, 'tid');
-		const participants = (await topics.getUids(tid))
+		const participants = (await db.getSortedSetMembers(`tid:${tid}:posters`))
 			.filter(uid => !utils.isNumber(uid)); // remote users only
 		const announcers = (await ActivityPub.notes.announce.list({ pid })).map(({ actor }) => actor);
 		const auxiliaries = Array.from(new Set([...participants, ...announcers]));
