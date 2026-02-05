@@ -43,8 +43,8 @@
 							<span title="[[admin/development/info:used-memory-process]]">{info.process.memoryUsage.rssReadable}gb / {info.process.memoryUsage.heapUsedReadable}gb</span>
 						</td>
 						<td>
-							<span title="[[admin/development/info:used-memory-os]]">{info.os.usedmem} gb</span> /
-							<span title="[[admin/development/info:total-memory-os]]">{info.os.totalmem} gb</span>
+							<span title="[[admin/development/info:used-memory-os]]">{info.os.usedmem}gb</span> /
+							<span title="[[admin/development/info:total-memory-os]]">{info.os.totalmem}gb</span>
 						</td>
 						<td>{info.os.load}</td>
 						<td class="text-end">{info.process.uptimeHumanReadable}</td>
