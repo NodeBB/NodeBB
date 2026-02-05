@@ -145,11 +145,8 @@ blockquote {
 	}
 }
 
-.hidden-blockquote {
-	blockquote {
-		display: none;
-	}
-}
+.hidden-blockquote { blockquote { display: none; } }
+.hidden-pre { pre { display: none; } }
 
 .hidden-leading-br {
 	> br:first-child {
