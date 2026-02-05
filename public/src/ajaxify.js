@@ -360,6 +360,11 @@ ajaxify.widgets = { render: render };
 	}
 
 	ajaxify.end = function (url, tpl_url) {
+		// Cancel reconnectAction if there was one pending, since ajaxify was a success
+		if (ajaxify.reconnectAction) {
+			$(window).off('action:reconnected', ajaxify.reconnectAction);
+		}
+
 		// Scroll back to top of page
 		if (!ajaxify.isCold()) {
 			window.scrollTo(0, 0);
