@@ -82,7 +82,7 @@
     "composer.hide-preview": "Sakrij prikaz",
     "composer.help": "Help",
     "composer.user-said-in": "%1 je rekao u %2:",
-    "composer.user-said": "%1 je rekao:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Sigurni ste da želite odbaciti ovu objavu?",
     "composer.submit-and-lock": "Objavi i zaključaj",
     "composer.toggle-dropdown": "Promjeni padajuće",

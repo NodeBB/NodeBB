@@ -82,7 +82,7 @@
     "composer.hide-preview": "Nascondi Anteprima",
     "composer.help": "Aiuto",
     "composer.user-said-in": "%1 ha detto in %2:",
-    "composer.user-said": "%1 ha detto:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Sei sicuro di voler scartare questo post?",
     "composer.submit-and-lock": "Invia e Blocca",
     "composer.toggle-dropdown": "Mostra/Nascondi menu a discesa",

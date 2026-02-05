@@ -82,7 +82,7 @@
     "composer.hide-preview": "Скриване на прегледа",
     "composer.help": "Помощ",
     "composer.user-said-in": "%1 каза в %2:",
-    "composer.user-said": "%1 каза:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Наистина ли искате да отхвърлите тази публикация?",
     "composer.submit-and-lock": "Публикуване и заключване",
     "composer.toggle-dropdown": "Превключване на падащото меню",

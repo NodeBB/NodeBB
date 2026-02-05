@@ -82,7 +82,7 @@
     "composer.hide-preview": "Dölj förhandsgranskning",
     "composer.help": "Hjälp",
     "composer.user-said-in": "%1 sa i %2:",
-    "composer.user-said": "%1 sa:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Är du säker på att du vill ta bort det här inlägget?",
     "composer.submit-and-lock": "Skicka och lås",
     "composer.toggle-dropdown": "Visa/Dölj dropdown",

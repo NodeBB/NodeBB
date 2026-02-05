@@ -82,7 +82,7 @@
     "composer.hide-preview": "Önizləməni gizlət",
     "composer.help": "Yardım",
     "composer.user-said-in": "%1 %2-də dedi:",
-    "composer.user-said": "%1 dedi:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Bu yazını silmək istədiyinizə əminsiniz?",
     "composer.submit-and-lock": "Göndər və kilidlə",
     "composer.toggle-dropdown": "Açılan menyunu dəyiş",

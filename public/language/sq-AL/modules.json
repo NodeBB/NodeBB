@@ -82,7 +82,7 @@
     "composer.hide-preview": "Mbulo rezultatin",
     "composer.help": "Help",
     "composer.user-said-in": "%1 tha në %2:",
-    "composer.user-said": "%1 tha:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Jeni i sigurt që dëshironi ta hiqni këtë postim?",
     "composer.submit-and-lock": "Dorëzo dhe izolo",
     "composer.toggle-dropdown": "Aktivizo Dropdown",

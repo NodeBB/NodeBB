@@ -82,7 +82,7 @@
     "composer.hide-preview": "Slēpt priekšskatu",
     "composer.help": "Help",
     "composer.user-said-in": "%1 sacīja %2:",
-    "composer.user-said": "%1 sacīja:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Vai tiešām vēlies atmest šo rakstu?",
     "composer.submit-and-lock": "Iesniegt un aizslēgt",
     "composer.toggle-dropdown": "Pārslēgt izvēlni",

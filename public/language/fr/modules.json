@@ -82,7 +82,7 @@
     "composer.hide-preview": "Masquer l'aperçu",
     "composer.help": "Aide",
     "composer.user-said-in": "%1 a dit dans %2 :",
-    "composer.user-said": "%1 a dit :",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "composer.submit-and-lock": "Envoyer et verrouiller",
     "composer.toggle-dropdown": "Afficher/masquer le menu",
