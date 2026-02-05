@@ -664,7 +664,7 @@ define('forum/chats', [
 	};
 
 	Chats.updateTeaser = async function (roomId, teaser) {
-		if (!ajaxify.data.template.chats || !app.user.userslug) {
+		if (!ajaxify.data.template.chats || ajaxify.data.public || !app.user.userslug) {
 			return;
 		}
 
