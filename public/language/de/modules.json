@@ -82,7 +82,7 @@
     "composer.hide-preview": "Vorschau ausblenden",
     "composer.help": "Hilfe",
     "composer.user-said-in": "%1 sagte in %2:",
-    "composer.user-said": "%1 sagte:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Bist du sicher, dass du diesen Beitrag verwerfen möchtest?",
     "composer.submit-and-lock": "Einreichen und Sperren",
     "composer.toggle-dropdown": "Menu aus-/einblenden",

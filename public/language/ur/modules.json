@@ -82,7 +82,7 @@
     "composer.hide-preview": "پیش نظارہ چھپائیں",
     "composer.help": "مدد",
     "composer.user-said-in": "%1 نے %2 میں کہا:",
-    "composer.user-said": "%1 نے کہا:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "کیا آپ واقعی اس پوسٹ کو مسترد کرنا چاہتے ہیں؟",
     "composer.submit-and-lock": "پوسٹ کریں اور لاک کریں",
     "composer.toggle-dropdown": "ڈراپ ڈاؤن ٹوگل کریں",

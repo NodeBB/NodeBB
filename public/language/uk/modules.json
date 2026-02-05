@@ -82,7 +82,7 @@
     "composer.hide-preview": "Сховати попередній перегляд",
     "composer.help": "Help",
     "composer.user-said-in": "%1 написав в %2:",
-    "composer.user-said": "%1 написав:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Ви впевнені, що хочете скасувати цей пост?",
     "composer.submit-and-lock": "Надіслати і заблокувати",
     "composer.toggle-dropdown": "Показати випадаючий список",

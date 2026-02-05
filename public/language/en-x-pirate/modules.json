@@ -82,7 +82,7 @@
     "composer.hide-preview": "Hide Preview",
     "composer.help": "Help",
     "composer.user-said-in": "%1 said in %2:",
-    "composer.user-said": "%1 said:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Are you sure you wish to discard this post?",
     "composer.submit-and-lock": "Submit and Lock",
     "composer.toggle-dropdown": "Toggle Dropdown",

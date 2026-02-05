@@ -82,7 +82,7 @@
     "composer.hide-preview": "미리보기 숨기기",
     "composer.help": "도움말",
     "composer.user-said-in": "%2 에서 %1 님이 말했습니다:",
-    "composer.user-said": "%1 님이 말했습니다:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "이 게시물을 삭제하시겠습니까?",
     "composer.submit-and-lock": "제출 및 잠금",
     "composer.toggle-dropdown": "드롭다운 전환",

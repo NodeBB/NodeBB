@@ -82,7 +82,7 @@
     "composer.hide-preview": "Skryť náhľad",
     "composer.help": "Help",
     "composer.user-said-in": "%1 povedal v %2:",
-    "composer.user-said": "%1 povedal:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Ste si istý, že chcete zahodiť tento príspevok?",
     "composer.submit-and-lock": "Vložiť a uzamknúť",
     "composer.toggle-dropdown": "Prepnúť rozbalovací zoznam",

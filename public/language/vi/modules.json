@@ -82,7 +82,7 @@
     "composer.hide-preview": "Ẩn Xem Thử",
     "composer.help": "Trợ giúp",
     "composer.user-said-in": "%1 nói trong %2:",
-    "composer.user-said": "%1 nói:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Bạn có chắc muốn loại bỏ bài đăng này?",
     "composer.submit-and-lock": "Gửi và Khoá",
     "composer.toggle-dropdown": "Chuyển Đổi Thả Xuống",

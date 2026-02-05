@@ -82,7 +82,7 @@
     "composer.hide-preview": "Ukryj podgląd",
     "composer.help": "Pomoc",
     "composer.user-said-in": "%1 napisał w %2:",
-    "composer.user-said": "%1 napisał:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Na pewno chcesz porzucić ten post?",
     "composer.submit-and-lock": "Prześlij i zablokuj",
     "composer.toggle-dropdown": "Przełącz listę rozwijaną",

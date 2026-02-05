@@ -82,7 +82,7 @@
     "composer.hide-preview": "Hide Preview",
     "composer.help": "Help",
     "composer.user-said-in": "%1 a spus în %2:",
-    "composer.user-said": "%1 a spus:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Ești sigur că vrei să renunți la acest mesaj?",
     "composer.submit-and-lock": "Submit and Lock",
     "composer.toggle-dropdown": "Toggle Dropdown",

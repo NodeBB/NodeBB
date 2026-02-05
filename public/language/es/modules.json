@@ -82,7 +82,7 @@
     "composer.hide-preview": "Ocultar Previsualización",
     "composer.help": "Help",
     "composer.user-said-in": "%1 dijo en %2:",
-    "composer.user-said": "%1 dijo:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "¿Estás seguro de que deseas descartar este mensaje?",
     "composer.submit-and-lock": "Enviar y Bloquear",
     "composer.toggle-dropdown": "Alternar desplegable",
