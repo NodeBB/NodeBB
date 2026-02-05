@@ -51,7 +51,7 @@ get:
                                   type: number
                                 arrayBuffers:
                                   type: number
-                                rssReadble:
+                                rssReadable:
                                   type: number
                                 heapUsedReadable:
                                   type: number
@@ -60,7 +60,7 @@ get:
                                 - heapTotal
                                 - heapUsed
                                 - external
-                                - rssReadble
+                                - rssReadable
                                 - heapUsedReadable
                             uptime:
                               type: number
