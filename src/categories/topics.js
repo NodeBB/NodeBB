@@ -237,10 +237,14 @@ module.exports = function (Categories) {
 		}
 
 		const { displayname } = postData.user;
-		const categoryName = await Categories.getCategoryField(cid, 'name');
+		const [categoryName, title] = await Promise.all([
+			Categories.getCategoryField(cid, 'name'),
+			topics.getTopicField(postData.topic.tid, 'title'),
+		]);
+
 		const notifBase = 'notifications:user-posted-topic-in-category';
 
-		const bodyShort = translator.compile(notifBase, displayname, categoryName);
+		const bodyShort = translator.compile(notifBase, displayname, title, categoryName);
 
 		const notification = await notifications.create({
 			type: 'new-topic-in-category',

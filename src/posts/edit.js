@@ -84,19 +84,24 @@ module.exports = function (Posts) {
 		returnPostData.oldContent = oldContent;
 		returnPostData.newContent = data.content;
 
-		await topics.notifyFollowers(returnPostData, data.uid, {
-			type: 'post-edit',
-			bodyShort: translator.compile('notifications:user-edited-post', editor.username, topic.title),
-			nid: `edit_post:${data.pid}:uid:${data.uid}`,
-		});
 		await topics.syncBacklinks(returnPostData);
 
-		plugins.hooks.fire('action:post.edit', { post: { ...returnPostData, _activitypub }, data: data, uid: data.uid });
+		plugins.hooks.fire('action:post.edit', {
+			post: { ...returnPostData, _activitypub },
+			data: data,
+			uid: data.uid,
+		});
 
 		Posts.clearCachedPost(String(postData.pid));
 		pubsub.publish('post:edit', String(postData.pid));
 
 		await Posts.parsePost(returnPostData);
+
+		await topics.notifyFollowers(returnPostData, data.uid, {
+			type: 'post-edit',
+			bodyShort: translator.compile('notifications:user-edited-post', editor.username, topic.title),
+			nid: `edit_post:${data.pid}:uid:${data.uid}`,
+		});
 
 		return {
 			topic: topic,

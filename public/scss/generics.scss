@@ -145,6 +145,18 @@ blockquote {
 	}
 }
 
+.hidden-blockquote {
+	blockquote {
+		display: none;
+	}
+}
+
+.hidden-leading-br {
+	> br:first-child {
+		display: none;
+	}
+}
+
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {
     display: none!important;

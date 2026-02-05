@@ -934,7 +934,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
 			bodyShort: `[[notifications:user-flagged-post-in, ${displayname}, ${titleEscaped}]]`,
-			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
+			bodyLong: String(flagObj.target?.content || ''),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:post:${flagObj.targetId}:${uid}`,
