@@ -8,7 +8,7 @@
 	"nodejs": "nodejs",
 	"online": "en ligne",
 	"git": "git",
-	"process-memory": "Mémoire de processus",
+	"process-memory": "rss/heap used",
 	"system-memory": "Mémoire système",
 	"used-memory-process": "Mémoire utilisée par processus",
 	"used-memory-os": "Mémoire système utilisée",

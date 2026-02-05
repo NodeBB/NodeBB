@@ -8,7 +8,7 @@
 	"nodejs": "nodejs",
 	"online": "çevrimiçi",
 	"git": "git",
-	"process-memory": "işlem belleği",
+	"process-memory": "rss/heap used",
 	"system-memory": "sistem hafızası",
 	"used-memory-process": "İşleme göre kullanılan bellek",
 	"used-memory-os": "Kullanılan sistem belleği",
