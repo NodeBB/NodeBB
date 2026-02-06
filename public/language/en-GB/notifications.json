@@ -62,7 +62,7 @@
 	"user-posted-topic-with-tag-triple": "<strong>%1</strong> posted <strong>%2</strong> (tagged %3, %4, and %5)",
 	"user-posted-topic-with-tag-multiple": "<strong>%1</strong> posted <strong>%2</strong> (tagged %3)",
 
-	"user-posted-topic-in-category": "<strong>%1</strong> posted <strong>%2</strong> (category %3)",
+	"user-posted-topic-in-category": "<strong>%1</strong> posted <strong>%2</strong> in <strong>%3</strong>",
 
 	"user-started-following-you": "<strong>%1</strong> started following you.",
 	"user-started-following-you-dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
