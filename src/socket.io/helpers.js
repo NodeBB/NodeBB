@@ -96,7 +96,7 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	}
 	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
 	const [postData, fromCategory] = await Promise.all([
-		posts.getPostFields(pid, ['tid', 'uid', 'content']),
+		posts.getPostFields(pid, ['tid', 'uid', 'content', 'sourceContent']),
 		!utils.isNumber(fromuid) && categories.exists(fromuid),
 	]);
 	const [canRead, isIgnoring] = await Promise.all([
