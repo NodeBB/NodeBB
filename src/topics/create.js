@@ -48,6 +48,10 @@ module.exports = function (Topics) {
 			topicData.numThumbs = thumbs.length;
 		}
 
+		if (data.generatedTitle && utils.isNumber(data.generatedTitle)) {
+			topicData.generatedTitle = data.generatedTitle;
+		}
+
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);

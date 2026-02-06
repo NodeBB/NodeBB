@@ -56,6 +56,7 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	delete payload.tid;
+	delete payload.generatedTitle;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
