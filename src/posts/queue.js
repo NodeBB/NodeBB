@@ -210,6 +210,7 @@ module.exports = function (Posts) {
 			bodyShort: '[[notifications:post-awaiting-review]]',
 			bodyLong: bodyLong,
 			path: `/post-queue/${id}`,
+			from: data.uid,
 		});
 		await notifications.push(notifObj, uids);
 		return {
