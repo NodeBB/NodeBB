@@ -1,8 +1,8 @@
 {
     "category": "Kategoria",
     "subcategories": "Podkategorie",
-    "uncategorized": "Nieokreślone",
-    "uncategorized.description": "Wątki, które nie do końca pasują do istniejących kategorii",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Tę kategorię można śledzić za pośrednictwem %1",
     "new-topic-button": "Nowy temat",
     "guest-login-post": "Zaloguj się, aby napisać post",

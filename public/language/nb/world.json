@@ -1,7 +1,8 @@
 {
 	"name": "Verden",
-	"popular": "Populære tema",
-	"recent": "Alle tema",
+	"latest": "Latest",
+	"popular": "Popular",
+	"recent": "All",
 	"help": "Hjelp",
 
 	"help.title": "Hva er denne siden?",
@@ -16,6 +17,5 @@
 	"onboard.why": "Det skjer mye utenfor dette forumet, og ikke alt er relevant for dine interesser. Derfor er det å følge folk den beste måten å vise at du vil se mer fra noen.",
 	"onboard.how": "I mellomtiden kan du klikke på snarveisknappene øverst for å se hva annet dette forumet inneholder, og begynne å oppdage nytt innhold!",
 
-	"show-categories": "Vis kategorier",
-	"hide-categories": "Skjul kategorier"
+	"category-search": "Find a category..."
 }
