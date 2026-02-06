@@ -74,7 +74,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 		return null;
 	}
 
-	const postData = await posts.getPostFields(pid, ['content', 'deleted']);
+	const postData = await posts.getPostFields(pid, ['content', 'sourceContent', 'deleted']);
 	const selfPost = caller.uid && caller.uid === parseInt(postData.uid, 10);
 
 	if (postData.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
@@ -82,7 +82,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 	}
 	postData.pid = pid;
 	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: caller.uid, postData: postData });
-	return result.postData.content;
+	return result.postData.sourceContent || result.postData.content;
 };
 
 postsAPI.edit = async function (caller, data) {
