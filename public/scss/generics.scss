@@ -145,6 +145,16 @@ blockquote {
 	}
 }
 
+.text-contain {
+	min-width: 0;
+	> * {
+		max-width: 100%;
+		white-space: pre-wrap;
+		word-break: break-word;
+		overflow-wrap: anywhere;
+	}
+}
+
 .hidden-blockquote { blockquote { display: none; } }
 .hidden-pre { pre { display: none; } }
 
