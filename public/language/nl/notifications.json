@@ -56,7 +56,7 @@
     "user-posted-topic-with-tag-dual": "<strong>%1</strong> posted <strong>%2</strong> (tagged %3 and %4)",
     "user-posted-topic-with-tag-triple": "<strong>%1</strong> posted <strong>%2</strong> (tagged %3, %4, and %5)",
     "user-posted-topic-with-tag-multiple": "<strong>%1</strong> posted <strong>%2</strong> (tagged %3)",
-    "user-posted-topic-in-category": "<strong>%1</strong> posted <strong>%2</strong> (category %3)",
+    "user-posted-topic-in-category": "<strong>%1</strong> posted <strong>%2</strong> in <strong>%3</strong>",
     "user-started-following-you": "<strong>%1</strong> volgt jou nu.",
     "user-started-following-you-dual": "<strong>%1</strong> en <strong>%2</strong> volgen jou nu.",
     "user-started-following-you-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> started following you.",
