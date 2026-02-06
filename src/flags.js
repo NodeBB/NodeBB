@@ -18,6 +18,7 @@ const privileges = require('./privileges');
 const plugins = require('./plugins');
 const utils = require('./utils');
 const batch = require('./batch');
+const translator = require('./translator');
 
 const Flags = module.exports;
 
@@ -747,7 +748,6 @@ Flags.update = async function (flagId, uid, changeset) {
 		const notifObj = await notifications.create({
 			type: 'my-flags',
 			bodyShort: `[[notifications:flag-assigned-to-you, ${flagId}]]`,
-			bodyLong: '',
 			path: `/flags/${flagId}`,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
@@ -929,11 +929,11 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		]);
 
 		const modUids = await categories.getModeratorUids([cid]);
-		const titleEscaped = utils.decodeHTMLEntities(title).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		const titleEscaped = utils.decodeHTMLEntities(title);
 
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
-			bodyShort: `[[notifications:user-flagged-post-in, ${displayname}, ${titleEscaped}]]`,
+			bodyShort: translator.compile('notifications:user-flagged-post-in', displayname, titleEscaped),
 			bodyLong: String(flagObj.target?.content || ''),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
