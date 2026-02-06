@@ -1,8 +1,8 @@
 {
     "category": "Kategori",
     "subcategories": "Underkategorier",
-    "uncategorized": "Ikke-kategoriseret",
-    "uncategorized.description": "Tråden passer ikke strengt ind i nogen eksisterende kategorier",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Denne kategori kan følges fra det åbne sociale net gennem grebet %1",
     "new-topic-button": "Ny tråd",
     "guest-login-post": "Log ind",

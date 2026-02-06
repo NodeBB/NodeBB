@@ -1,8 +1,8 @@
 {
     "category": "Danh mục",
     "subcategories": "Danh mục phụ",
-    "uncategorized": "Chưa phân loại",
-    "uncategorized.description": "Các chủ đề không phù hợp với bất kỳ danh mục hiện có nào",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Có thể theo dõi danh mục này từ mạng xã hội mở thông qua xử lý %1",
     "new-topic-button": "Chủ Đề Mới",
     "guest-login-post": "Đăng nhập để đăng bài",

@@ -1,8 +1,8 @@
 {
     "category": "Категория",
     "subcategories": "Подкатегории",
-    "uncategorized": "Без категория",
-    "uncategorized.description": "Теми, които не пасват на никоя конкретна категория",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Тази категория може да бъде последвана от отворената социална мрежа от чрез идентификатора %1",
     "new-topic-button": "Нова тема",
     "guest-login-post": "Впишете се, за да можете да публикувате",

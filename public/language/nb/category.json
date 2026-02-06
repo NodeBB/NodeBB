@@ -1,8 +1,8 @@
 {
     "category": "Kategori",
     "subcategories": "Underkategorier",
-    "uncategorized": "Ukategorisert",
-    "uncategorized.description": "Innlegg som ikke passer inn i noen av de eksisterende kategoriene.",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Nytt innlegg",
     "guest-login-post": "Logg inn for å publisere innlegg",

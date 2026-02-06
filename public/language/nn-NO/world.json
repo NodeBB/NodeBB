@@ -1,7 +1,8 @@
 {
 	"name": "Verda",
-	"popular": "Populære emne",
-	"recent": "Alle emne",
+	"latest": "Latest",
+	"popular": "Popular",
+	"recent": "All",
 	"help": "Hjelp",
 
 	"help.title": "Kva er denne sida?",
@@ -16,6 +17,5 @@
 	"onboard.why": "Det skjer mykje utanfor dette forumet, og ikkje alt er relevant for interessene dine. Difor er det å følge folk den beste måten å signalisere at du ønskjer å sjå meir frå nokon.",
 	"onboard.how": "I mellomtida kan du klikke på snarvegsknappane øvst for å sjå kva anna dette forumet inneheld, og begynne å oppdage nytt innhald!",
 
-	"show-categories": "Show categories",
-	"hide-categories": "Hide categories"
+	"category-search": "Find a category..."
 }

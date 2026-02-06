@@ -30,6 +30,7 @@ module.exports = function (Topics) {
 			cid: data.cid,
 			mainPid: 0,
 			title: data.title,
+			generatedTitle: data.generatedTitle,
 			slug: `${tid}/${slugify(data.title) || 'topic'}`,
 			timestamp: timestamp,
 			lastposttime: 0,
@@ -45,6 +46,10 @@ module.exports = function (Topics) {
 			const thumbs = Topics.thumbs.filterThumbs(data.thumbs);
 			topicData.thumbs = JSON.stringify(thumbs);
 			topicData.numThumbs = thumbs.length;
+		}
+
+		if (data.generatedTitle && utils.isNumber(data.generatedTitle)) {
+			topicData.generatedTitle = data.generatedTitle;
 		}
 
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });

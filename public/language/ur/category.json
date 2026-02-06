@@ -1,8 +1,8 @@
 {
     "category": "زمرہ",
     "subcategories": "ذیلی زمرہ جات",
-    "uncategorized": "بغیر زمرہ",
-    "uncategorized.description": "وہ موضوعات جو کسی مخصوص زمرے میں فٹ نہیں ہوتے",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "اس زمرے کو کھلی سوشل نیٹ ورک سے %1 شناخت کنندہ کے ذریعے فالو کیا جا سکتا ہے",
     "new-topic-button": "نیا موضوع",
     "guest-login-post": "پوسٹ کرنے کے لیے لاگ ان کریں",

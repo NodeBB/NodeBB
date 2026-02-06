@@ -84,6 +84,8 @@ PostObject:
           description: A topic identifier
         title:
           type: string
+        generatedTitle:
+          type: number
         cid:
           type: number
           description: A category identifier
