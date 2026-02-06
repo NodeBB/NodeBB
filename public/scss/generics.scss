@@ -175,6 +175,8 @@ $hidden-elements-for-first-last-child: br, hr;
 	}
 }
 
+.trim-last-divider > *:last-child hr {	display: none;	}
+
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {
     display: none!important;
