@@ -214,6 +214,8 @@ TopicObjectSlim:
           description: A category identifier
         title:
           type: string
+        generatedTitle:
+          type: number
         slug:
           type: string
         mainPid:

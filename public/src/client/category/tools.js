@@ -12,8 +12,8 @@ define('forum/category/tools', [
 ], function (topicSelect, threadTools, components, api, bootbox, alerts) {
 	const CategoryTools = {};
 
-	CategoryTools.init = function () {
-		topicSelect.init(updateDropdownOptions);
+	CategoryTools.init = function (containerEl) {
+		topicSelect.init(updateDropdownOptions, containerEl);
 
 		handlePinnedTopicSort();
 
