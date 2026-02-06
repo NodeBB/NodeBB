@@ -536,7 +536,7 @@ Notes.getParentChain = async (uid, input) => {
 		}
 
 		const postData = await posts.getPostData(id);
-		if (postData) {
+		if (postData && postData.pid) {
 			chain.add(postData);
 			if (postData.toPid) {
 				await traverse(uid, postData.toPid);

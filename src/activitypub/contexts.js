@@ -124,7 +124,7 @@ async function parseString(uid, item) {
 	const { type, id } = await activitypub.helpers.resolveLocalId(item);
 	const pid = type === 'post' && id ? id : item;
 	const postData = await posts.getPostData(pid);
-	if (postData) {
+	if (postData && postData.pid) {
 		// Already cached
 		return postData;
 	}
@@ -157,7 +157,7 @@ async function parseItem(uid, item) {
 	const { type, id } = await activitypub.helpers.resolveLocalId(item.id);
 	const pid = type === 'post' && id ? id : item.id;
 	const postData = await posts.getPostData(pid);
-	if (postData) {
+	if (postData && postData.pid) {
 		// Already cached
 		return postData;
 	}
