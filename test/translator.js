@@ -126,7 +126,7 @@ describe('new Translator(language)', () => {
 			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:user-posted-to, [[global:guest]], My Topic]]').then((translated) => {
-				assert.strictEqual(translated, '<strong>Guest</strong> replied in <br/><strong>My Topic</strong>');
+				assert.strictEqual(translated, '<strong>Guest</strong> posted a reply in <strong>My Topic</strong>');
 			});
 		});
 
@@ -134,7 +134,7 @@ describe('new Translator(language)', () => {
 			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:user-posted-to, [[global:guest]], [[global:guest]]]]').then((translated) => {
-				assert.strictEqual(translated, '<strong>Guest</strong> replied in <br/><strong>Guest</strong>');
+				assert.strictEqual(translated, '<strong>Guest</strong> posted a reply in <strong>Guest</strong>');
 			});
 		});
 
@@ -178,7 +178,7 @@ describe('new Translator(language)', () => {
 
 			const key = '[[notifications:upvoted-your-post-in, test1, error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade]]';
 			return translator.translate(key).then((translated) => {
-				assert.strictEqual(translated, '<strong>test1</strong> upvoted your post in <br/><strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>');
+				assert.strictEqual(translated, '<strong>test1</strong> upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>');
 			});
 		});
 
