@@ -160,9 +160,18 @@ blockquote {
 .hidden-blockquote { blockquote { display: none; } }
 .hidden-pre { pre { display: none; } }
 
-.hidden-leading-br {
-	> br:first-child {
-		display: none;
+$hidden-elements-for-first-last-child: br, hr;
+
+@each $element in $hidden-elements-for-first-last-child {
+	.hidden-first-child-#{$element} {
+		> #{$element}:first-child {
+			display: none;
+		}
+	}
+	.hidden-last-child-#{$element} {
+		> #{$element}:last-child {
+			display: none;
+		}
 	}
 }
 
