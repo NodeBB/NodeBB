@@ -23,6 +23,7 @@
 	"purge": "Eliminar <strong>Utilizador(es)</strong> e os seus <strong>Conteúdos</strong>",
 	"download-csv": "Transferir CSV",
 	"custom-user-fields": "Custom User Fields",
+	"ban-reasons": "Ban Reasons",
 	"manage-groups": "Gerir Grupos",
 	"set-reputation": "Set Reputation",
 	"add-group": "Adicionar Grupo",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Razão <span class=\"text-muted\">(Opcional)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Horas",
 	"temp-ban.days": "Dias",
 	"temp-ban.explanation": "Insere o tempo de duração para o banimento. Nota que um tempo de 0 irá ser considerado um banimento permanente.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Tens a certeza que queres banir este utilizador <strong>permanentemente</strong>?",
 	"alerts.confirm-ban-multi": "Tens a certeza que queres banir estes utilizadores <strong>permanentemente</strong>?",

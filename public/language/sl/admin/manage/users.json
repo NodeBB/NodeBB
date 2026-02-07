@@ -23,6 +23,7 @@
 	"purge": "Izbrišite<strong>uporabnika(e)</strong> in <strong>vsebino</strong>",
 	"download-csv": "Prenesite CSV",
 	"custom-user-fields": "Custom User Fields",
+	"ban-reasons": "Ban Reasons",
 	"manage-groups": "Upravljaj skupine",
 	"set-reputation": "Set Reputation",
 	"add-group": "Dodaj skupino",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Ur",
 	"temp-ban.days": "Dni",
 	"temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Do you really want to ban this user <strong>permanently</strong>?",
 	"alerts.confirm-ban-multi": "Do you really want to ban these users <strong>permanently</strong>?",

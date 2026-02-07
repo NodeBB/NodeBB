@@ -23,6 +23,7 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "Stiahnuť ako CSV",
 	"custom-user-fields": "Custom User Fields",
+	"ban-reasons": "Ban Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Dôvod <span class=\"text-muted\">(voliteľné)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Hodiny",
 	"temp-ban.days": "Dni",
 	"temp-ban.explanation": "Zadajte dĺžku trvania pre zákaz. Nezabudnite, že 0 je považovaná ako trvalý zákaz.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Naozaj chcete <strong>trvalo</strong> zablokovať tohto používateľa?",
 	"alerts.confirm-ban-multi": "Naozaj chcete <strong>trvalo</strong> zablokovať týchto používateľov? ",

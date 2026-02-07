@@ -23,6 +23,7 @@
 	"purge": "删除用户和内容",
 	"download-csv": "下载CSV",
 	"custom-user-fields": "自定义用户字段",
+	"ban-reasons": "Ban Reasons",
 	"manage-groups": "管理用户组",
 	"set-reputation": "设置声望",
 	"add-group": "添加至群组",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "时长",
 	"temp-ban.reason": "理由<span class=\"text-muted\">（可选）</span> ",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "小时",
 	"temp-ban.days": "天",
 	"temp-ban.explanation": "输入封禁时长。提示，时长为0视为永久封禁。",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "您真的想要<strong>永久</strong>封禁该用户吗？",
 	"alerts.confirm-ban-multi": "您确定要<strong>永久</strong>封禁这些用户吗？",

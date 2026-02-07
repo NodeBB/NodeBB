@@ -23,6 +23,7 @@
 	"purge": "<strong>صارف/صارفین</strong> اور <strong>مواد</strong> کو حذف کریں",
 	"download-csv": "CSV فارمیٹ میں ڈاؤن لوڈ کریں",
 	"custom-user-fields": "مرضی کے صارف فیلڈز",
+	"ban-reasons": "Ban Reasons",
 	"manage-groups": "گروپس کا انتظام",
 	"set-reputation": "ساکھ سیٹ کریں",
 	"add-group": "گروپ شامل کریں",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "دورانیہ",
 	"temp-ban.reason": "وجہ <span class=\"text-muted\">(اختیاری)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "گھنٹے",
 	"temp-ban.days": "دن",
 	"temp-ban.explanation": "پابندی کا دورانیہ درج کریں۔ 0 کی قیمت پابندی کو مستقل بنائے گی۔",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "کیا آپ واقعی اس صارف پر <strong>مستقل</strong> پابندی لگانا چاہتے ہیں؟",
 	"alerts.confirm-ban-multi": "کیا آپ واقعی ان صارفین پر <strong>مستقل</strong> پابندی لگانا چاہتے ہیں؟",
