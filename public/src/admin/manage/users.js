@@ -254,47 +254,52 @@ define('admin/manage/users', [
 			});
 		});
 
-		$('.ban-user-temporary').on('click', function () {
+		$('.ban-user-temporary').on('click', async function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
+			const reasons = await socket.emit('user.getBanReasons');
+			const html = await app.parseAndTranslate('modals/temporary-ban', { reasons });
+			const modal = bootbox.dialog({
+				title: '[[user:ban-account]]',
+				message: html,
+				show: true,
+				onEscape: true,
+				buttons: {
+					close: {
+						label: '[[global:close]]',
+						className: 'btn-link',
+					},
+					submit: {
+						label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
+						callback: function () {
+							const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
+								data[cur.name] = cur.value;
+								return data;
+							}, {});
+							const until = formData.length > 0 ? (
+								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
+							) : 0;
 
-			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
-				const modal = bootbox.dialog({
-					title: '[[user:ban-account]]',
-					message: html,
-					show: true,
-					onEscape: true,
-					buttons: {
-						close: {
-							label: '[[global:close]]',
-							className: 'btn-link',
-						},
-						submit: {
-							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
-							callback: function () {
-								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
-									data[cur.name] = cur.value;
-									return data;
-								}, {});
-								const until = formData.length > 0 ? (
-									Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-								) : 0;
-
-								Promise.all(uids.map(function (uid) {
-									return api.put('/users/' + encodeURIComponent(uid) + '/ban', {
-										until: until,
-										reason: formData.reason,
-									});
-								})).then(() => {
-									onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-								}).catch(alerts.error);
-							},
+							Promise.all(uids.map(function (uid) {
+								return api.put('/users/' + encodeURIComponent(uid) + '/ban', {
+									until: until,
+									reason: formData.reason,
+								});
+							})).then(() => {
+								onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+							}).catch(alerts.error);
 						},
 					},
-				});
+				},
+			});
+			modal.find('[data-key]').on('click', function () {
+				const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+				if (reason && reason.body) {
+					modal.find('[name="reason"]').val(translator.unescape(reason.body));
+				}
 			});
 		});
 
