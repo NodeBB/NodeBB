@@ -25,15 +25,15 @@
 					<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						[[admin/manage/users:filter-by]] <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
+					<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
 						<li data-filter-by="unverified" role="presentation">
-							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
 						</li>
 						<li data-filter-by="verified" role="presentation">
-							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
 						</li>
 						<li data-filter-by="banned" role="presentation">
-							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
 						</li>
 					</ul>
 				</div>
