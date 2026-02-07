@@ -1,11 +1,11 @@
 'use strict';
 
 define('forum/account/moderate', [
-	'benchpress',
 	'api',
 	'bootbox',
 	'alerts',
-], function (Benchpress, api, bootbox, alerts) {
+	'translator',
+], function (api, bootbox, alerts, translator) {
 	const AccountModerate = {};
 
 	AccountModerate.banAccount = function (theirid, onSuccess) {
@@ -83,31 +83,37 @@ define('forum/account/moderate', [
 		});
 	};
 
-	function throwModal(options) {
-		Benchpress.render(options.tpl, {}).then(function (html) {
-			const modal = bootbox.dialog({
-				title: options.title,
-				message: html,
-				show: true,
-				onEscape: true,
-				buttons: {
-					close: {
-						label: '[[global:close]]',
-						className: 'btn-link',
-					},
-					submit: {
-						label: options.title,
-						callback: function () {
-							const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
-								data[cur.name] = cur.value;
-								return data;
-							}, {});
+	async function throwModal(options) {
+		const reasons = await socket.emit('user.getBanReasons');
+		const html = await app.parseAndTranslate(options.tpl, { reasons });
+		const modal = bootbox.dialog({
+			title: options.title,
+			message: html,
+			show: true,
+			onEscape: true,
+			buttons: {
+				close: {
+					label: '[[global:close]]',
+					className: 'btn-link',
+				},
+				submit: {
+					label: options.title,
+					callback: function () {
+						const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
+							data[cur.name] = cur.value;
+							return data;
+						}, {});
 
-							options.onSubmit(formData);
-						},
+						options.onSubmit(formData);
 					},
 				},
-			});
+			},
+		});
+		modal.find('[data-key]').on('click', function () {
+			const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+			if (reason && reason.body) {
+				modal.find('[name="reason"]').val(translator.unescape(reason.body));
+			}
 		});
 	}
 

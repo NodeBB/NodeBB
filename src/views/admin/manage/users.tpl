@@ -83,6 +83,8 @@
 						<li><a target="_blank" href="#" class="dropdown-item rounded-1 export-csv" role="menuitem">[[admin/manage/users:download-csv]]</a></li>
 						<li><a class="dropdown-item rounded-1" href="{relative_path}/admin/manage/users/custom-fields">[[admin/manage/users:custom-user-fields]]</a>
 						</li>
+						<li><a class="dropdown-item rounded-1" href="{relative_path}/admin/manage/users/ban-reasons">[[admin/manage/users:ban-reasons]]</a>
+						</li>
 					</ul>
 				</div>
 			</div>

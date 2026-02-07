@@ -314,3 +314,8 @@ usersController.customFields = async function (req, res) {
 	});
 	res.render('admin/manage/users/custom-fields', { fields: fields });
 };
+
+usersController.banReasons = async function (req, res) {
+	const reasons = await user.bans.getBanReasons();
+	res.render('admin/manage/users/ban-reasons', { reasons });
+};
