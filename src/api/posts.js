@@ -592,7 +592,10 @@ postsAPI.removeQueuedPost = async (caller, data) => {
 	await canEditQueue(caller.uid, data, 'reject');
 	const result = await posts.removeFromQueue(data.id);
 	if (result && caller.uid !== parseInt(result.uid, 10)) {
-		await sendQueueNotification('post-queue-rejected', result.uid, '/');
+		const msg = validator.escape(String(data.message ? data.message : ''));
+		await sendQueueNotification(
+			msg ? 'post-queue-rejected-for-reason' : 'post-queue-rejected', result.uid, '/', msg
+		);
 	}
 	await logQueueEvent(caller, result, 'reject');
 };
@@ -612,7 +615,7 @@ postsAPI.notifyQueuedPostOwner = async (caller, data) => {
 	await canEditQueue(caller.uid, data, 'notify');
 	const result = await posts.getFromQueue(data.id);
 	if (result) {
-		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message)));
+		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message || '')));
 	}
 };
 

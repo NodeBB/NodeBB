@@ -1,9 +1,9 @@
-define('admin/manage/user/ban-reasons', [
+define('admin/manage/user/custom-reasons', [
 	'benchpress', 'bootbox', 'alerts', 'translator', 'jquery-ui/widgets/sortable',
 ], function (benchpress, bootbox, alerts, translator) {
-	const manageBanReasons = {};
+	const manageCustomReasons = {};
 
-	manageBanReasons.init = function () {
+	manageCustomReasons.init = function () {
 		const table = $('table');
 
 		$('#new').on('click', () => showModal());
@@ -16,7 +16,7 @@ define('admin/manage/user/ban-reasons', [
 		table.on('click', '[data-action="delete"]', function () {
 			const row = $(this).parents('[data-key]');
 			const title = row.attr('data-title');
-			bootbox.confirm(`[[admin/manage/ban-reasons:delete-reason-confirm-x, "${title}"]]`, function (ok) {
+			bootbox.confirm(`[[admin/manage/custom-reasons:delete-reason-confirm-x, "${title}"]]`, function (ok) {
 				if (!ok) {
 					return;
 				}
@@ -35,11 +35,11 @@ define('admin/manage/user/ban-reasons', [
 			$('tbody tr[data-key]').each((index, el) => {
 				reasons.push(getDataFromEl($(el)));
 			});
-			socket.emit('admin.user.saveBanReasons', reasons, function (err) {
+			socket.emit('admin.user.saveCustomReasons', reasons, function (err) {
 				if (err) {
 					return alerts.error(err);
 				}
-				alerts.success('[[admin/manage/ban-reasons:ban-reasons-saved]]');
+				alerts.success('[[admin/manage/custom-reasons:custom-reasons-saved]]');
 			});
 		});
 	};
@@ -48,18 +48,19 @@ define('admin/manage/user/ban-reasons', [
 		return {
 			key: el.attr('data-key'),
 			title: el.attr('data-title'),
+			type: el.attr('data-type'),
 			body: el.attr('data-body'),
 		};
 	}
 
 	async function showModal(reason = null) {
-		const html = await benchpress.render('admin/partials/manage-ban-reasons-modal', reason);
+		const html = await benchpress.render('admin/partials/manage-custom-reasons-modal', reason);
 		const modal = bootbox.dialog({
 			message: html,
 			onEscape: true,
 			title: reason ?
-				'[[admin/manage/ban-reasons:edit-reason]]' :
-				'[[admin/manage/ban-reasons:create-reason]]',
+				'[[admin/manage/custom-reasons:edit-reason]]' :
+				'[[admin/manage/custom-reasons:create-reason]]',
 			buttons: {
 				submit: {
 					label: '[[global:save]]',
@@ -69,7 +70,7 @@ define('admin/manage/user/ban-reasons', [
 						formData.body = translator.escape(formData.body);
 						formData.parsedBody = translator.escape(await socket.emit('admin.parseRaw', formData.body));
 
-						app.parseAndTranslate('admin/manage/users/ban-reasons', 'reasons', {
+						app.parseAndTranslate('admin/manage/users/custom-reasons', 'reasons', {
 							reasons: [formData],
 						}, (html) => {
 							if (reason) {
@@ -90,7 +91,7 @@ define('admin/manage/user/ban-reasons', [
 	}
 
 
-	return manageBanReasons;
+	return manageCustomReasons;
 });
 
 

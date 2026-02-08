@@ -14,6 +14,7 @@ define('forum/account/moderate', [
 		throwModal({
 			tpl: 'modals/temporary-ban',
 			title: '[[user:ban-account]]',
+			type: 'ban',
 			onSubmit: function (formData) {
 				const until = formData.length > 0 ? (
 					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
@@ -36,6 +37,7 @@ define('forum/account/moderate', [
 		throwModal({
 			tpl: 'modals/unban',
 			title: '[[user:unban-account]]',
+			type: 'ban',
 			onSubmit: function (formData) {
 				api.del('/users/' + encodeURIComponent(theirid) + '/ban', {
 					reason: formData.reason || '',
@@ -51,6 +53,7 @@ define('forum/account/moderate', [
 		throwModal({
 			tpl: 'modals/temporary-mute',
 			title: '[[user:mute-account]]',
+			type: 'mute',
 			onSubmit: function (formData) {
 				const until = formData.length > 0 ? (
 					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
@@ -84,7 +87,7 @@ define('forum/account/moderate', [
 	};
 
 	async function throwModal(options) {
-		const reasons = await socket.emit('user.getBanReasons');
+		const reasons = await socket.emit('user.getCustomReasons', { type: options.type || '' });
 		const html = await app.parseAndTranslate(options.tpl, { reasons });
 		const modal = bootbox.dialog({
 			title: options.title,

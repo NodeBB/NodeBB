@@ -260,7 +260,7 @@ define('admin/manage/users', [
 				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
-			const reasons = await socket.emit('user.getBanReasons');
+			const reasons = await socket.emit('user.getCustomReasons', { type: 'ban' });
 			const html = await app.parseAndTranslate('modals/temporary-ban', { reasons });
 			const modal = bootbox.dialog({
 				title: '[[user:ban-account]]',

@@ -165,14 +165,18 @@ module.exports = function (User) {
 		return banObj && banObj.reason ? banObj.reason : '';
 	};
 
-	User.bans.getBanReasons = async function () {
-		const keys = await db.getSortedSetRange('ban-reasons', 0, -1);
-		const reasons = (await db.getObjects(keys.map(k => `ban-reason:${k}`))).filter(Boolean);
+	User.bans.getCustomReasons = async function ({ type = '' } = {}) {
+		const keys = await db.getSortedSetRange('custom-reasons', 0, -1);
+		type = type || '';
+		const reasons = (await db.getObjects(keys.map(k => `custom-reason:${k}`))).filter(Boolean);
 		await Promise.all(reasons.map(async (reason, i) => {
 			reason.key = i;
 			reason.parsedBody = translator.escape(await plugins.hooks.fire('filter:parse.raw', reason.body || ''));
 			reason.body = translator.escape(reason.body);
 		}));
+		if (type !== '') {
+			return reasons.filter(reason => reason.type === type || reason.type === '');
+		}
 		return reasons;
 	};
 };

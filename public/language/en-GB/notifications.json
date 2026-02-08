@@ -78,6 +78,7 @@
 	"users-csv-exported": "Users csv exported, click to download",
 	"post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
 	"post-queue-rejected": "Your queued post has been rejected.",
+	"post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
 	"post-queue-notify": "Queued post received a notification: \"%1\"",
 
 	"email-confirmed": "Email Confirmed",
