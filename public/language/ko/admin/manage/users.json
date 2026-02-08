@@ -23,7 +23,7 @@
 	"purge": "<strong>사용자</strong> 및 <strong>콘텐츠</strong> 삭제",
 	"download-csv": "CSV 다운로드",
 	"custom-user-fields": "Custom User Fields",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "그룹 관리",
 	"set-reputation": "평판 설정",
 	"add-group": "그룹 추가",

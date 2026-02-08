@@ -23,7 +23,7 @@
 	"purge": "<strong>Felhasználó(k)</strong> és <strong>minden tartalmának</strong> törlése",
 	"download-csv": "CSV letöltése",
 	"custom-user-fields": "Custom User Fields",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Csoportok kezelése",
 	"set-reputation": "Set Reputation",
 	"add-group": "Csoport létrehozása",

@@ -23,7 +23,7 @@
 	"purge": "Supprimer <strong>le compte</strong> et <strong>le contenu</strong>",
 	"download-csv": "Exporter en CSV",
 	"custom-user-fields": "Champs utilisateur personnalisés",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Gérer les groupes",
 	"set-reputation": "Définir une réputation",
 	"add-group": "Ajouter un groupe",

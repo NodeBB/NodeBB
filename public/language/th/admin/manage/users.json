@@ -23,7 +23,7 @@
 	"purge": "ลบ<strong>ผู้ใช้งาน</strong>และ<strong>เนื้อหา</strong>",
 	"download-csv": "ดาวน์โหลด CSV",
 	"custom-user-fields": "ฟิลด์ข้อมูลผู้ใช้ที่ปรับแต่งได้",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "จัดการกลุ่ม",
 	"set-reputation": "ตั้งค่าชื่อเสียง",
 	"add-group": "เพิ่มกลุ่ม",
