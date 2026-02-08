@@ -46,7 +46,7 @@ nconf.defaults({
 	relative_path: '',
 });
 
-const urlObject = url.parse(nconf.get('url'));
+const urlObject = new URL(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
 nconf.set('asset_base_url', `${relativePath}/assets`);
@@ -133,9 +133,6 @@ module.exports = db;
 
 before(async function () {
 	this.timeout(30000);
-
-	// Parse out the relative_url and other goodies from the configured URL
-	const urlObject = url.parse(nconf.get('url'));
 
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));

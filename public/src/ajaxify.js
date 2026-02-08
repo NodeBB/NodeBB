@@ -198,10 +198,15 @@ ajaxify.widgets = { render: render };
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		ajaxify.requestedPage = null;
 		if (window.history && window.history.pushState) {
+			const prependSlash = url && !url.startsWith('?') && !url.startsWith('#');
 			const { relative_path } = config;
+			const historyUrl = prependSlash ?
+				(relative_path + '/' + url) :
+				relative_path + (url || (relative_path ? '' : '/'));
+
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, '', relative_path + (url ? '/' + url : (relative_path ? '' : '/')));
+			}, '', historyUrl);
 		}
 	};
 
@@ -402,8 +407,11 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.removeRelativePath = function (url) {
-		if (url.startsWith(config.relative_path.slice(1))) {
-			url = url.slice(config.relative_path.length);
+		if (config.relative_path && url.startsWith(config.relative_path.slice(1))) {
+			url = url.slice(config.relative_path.length - 1);
+			if (url.startsWith('/')) {
+				url = url.slice(1);
+			}
 		}
 		return url;
 	};
@@ -565,10 +573,16 @@ $(document).ready(function () {
 		if (ev !== null && ev.state) {
 			const { returnPath } = ev.state;
 			if (ev.state.url === null && returnPath !== undefined) {
+				const url = returnPath;
+				const prependSlash = url && !url.startsWith('?') && !url.startsWith('#');
 				const { relative_path } = config;
+				const historyUrl = prependSlash ?
+					(relative_path + '/' + url) :
+					relative_path + (url || (relative_path ? '' : '/'));
+
 				window.history.replaceState({
 					url: returnPath,
-				}, '', relative_path + (returnPath ? '/' + returnPath : (relative_path ? '' : '/')));
+				}, '', historyUrl);
 			} else if (ev.state.url !== undefined) {
 				ajaxify.handleTransientElements();
 				ajaxify.go(ev.state.url, function () {
