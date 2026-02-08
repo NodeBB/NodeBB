@@ -23,7 +23,7 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "Stiahnuť ako CSV",
 	"custom-user-fields": "Custom User Fields",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",

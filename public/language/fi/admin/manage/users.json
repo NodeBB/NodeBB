@@ -23,7 +23,7 @@
 	"purge": "Poista <strong>käyttäjät</strong> ja <strong>sisällöt</strong>",
 	"download-csv": "Lataa CSV",
 	"custom-user-fields": "Custom User Fields",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Hallitse ryhmiä",
 	"set-reputation": "Aseta maine",
 	"add-group": "Lisää ryhmä",

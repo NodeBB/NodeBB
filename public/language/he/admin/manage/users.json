@@ -23,7 +23,7 @@
 	"purge": "מחיקת <strong>משתמש(ים)</strong> ו<strong>תוכן</strong>",
 	"download-csv": "ייצוא משתמשים כ-CSV",
 	"custom-user-fields": "שדות משתמש מותאמים אישית",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "ניהול קבוצות",
 	"set-reputation": "הגדרת מוניטין",
 	"add-group": "הוספת קבוצה",

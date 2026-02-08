@@ -23,7 +23,7 @@
 	"purge": "Удалить <strong>пользователя(-ей)</strong> и <strong>данные</strong>",
 	"download-csv": "Скачать CSV",
 	"custom-user-fields": "Custom User Fields",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Изменить членство в группах",
 	"set-reputation": "Set Reputation",
 	"add-group": "Добавить группу",

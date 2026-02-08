@@ -23,7 +23,7 @@
 	"purge": "Изтриване на <strong>потребителя/ите</strong> и <strong>съдържанието</strong>",
 	"download-csv": "Сваляне във формат „CSV“",
 	"custom-user-fields": "Персонализирани потребителски полета",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Управление на групите",
 	"set-reputation": "Задаване на репутация",
 	"add-group": "Добавяне на група",

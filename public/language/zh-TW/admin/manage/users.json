@@ -23,7 +23,7 @@
 	"purge": "刪除 <strong>用戶</strong> 和 <strong>內容</strong>",
 	"download-csv": "下載CSV",
 	"custom-user-fields": "Custom User Fields",
-	"ban-reasons": "Ban Reasons",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "管理群組",
 	"set-reputation": "設立聲望",
 	"add-group": "新增至群組",
