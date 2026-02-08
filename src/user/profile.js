@@ -173,7 +173,7 @@ module.exports = function (User) {
 		User.checkUsernameLength(data.username);
 
 		const userslug = slugify(data.username);
-		if (!utils.isUserNameValid(data.username) || !userslug) {
+		if (!utils.isUserNameValid(data.username) || !utils.isSlugValid(userslug)) {
 			throw new Error('[[error:invalid-username]]');
 		}
 

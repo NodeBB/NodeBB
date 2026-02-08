@@ -171,6 +171,23 @@ describe('User', () => {
 			]);
 			assert.strictEqual(err.message, '[[error:email-taken]]');
 		});
+
+		it('should fail to create user with invalid slug', async () => {
+			await assert.rejects(User.create({
+				username: '-.-', // slug becomes .
+				password: '123456',
+			}), { message: '[[error:invalid-username, -.-]]' });
+		});
+
+		it('should create user with valid slug (-.-.- => .-.)', async () => {
+			const uid = await User.create({
+				username: '-.-.-', // slug becomes .-.
+				password: '123456',
+			});
+			const data = await User.getUserData(uid);
+			assert.strictEqual(data.username, '-.-.-');
+			assert.strictEqual(data.userslug, '.-.');
+		});
 	});
 
 	describe('.uniqueUsername()', () => {
