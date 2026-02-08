@@ -121,12 +121,13 @@ define('forum/register', [
 		username_notify.text('');
 		const usernameInput = $('#username');
 		const userslug = slugify(username);
-		if (username.length < ajaxify.data.minimumUsernameLength || userslug.length < ajaxify.data.minimumUsernameLength) {
-			showError(usernameInput, username_notify, '[[error:username-too-short]]');
-		} else if (username.length > ajaxify.data.maximumUsernameLength) {
-			showError(usernameInput, username_notify, '[[error:username-too-long]]');
-		} else if (!utils.isUserNameValid(username) || !utils.isSlugValid(userslug)) {
+		const { minimumUsernameLength, maximumUsernameLength } = ajaxify.data;
+		if (!utils.isUserNameValid(username) || !utils.isSlugValid(userslug)) {
 			showError(usernameInput, username_notify, '[[error:invalid-username]]');
+		} else if (username.length < minimumUsernameLength || userslug.length < minimumUsernameLength) {
+			showError(usernameInput, username_notify, '[[error:username-too-short]]');
+		} else if (username.length > maximumUsernameLength) {
+			showError(usernameInput, username_notify, '[[error:username-too-long]]');
 		} else {
 			Promise.allSettled([
 				api.head(`/users/bySlug/${userslug}`, {}),
