@@ -125,7 +125,7 @@ define('forum/register', [
 			showError(usernameInput, username_notify, '[[error:username-too-short]]');
 		} else if (username.length > ajaxify.data.maximumUsernameLength) {
 			showError(usernameInput, username_notify, '[[error:username-too-long]]');
-		} else if (!utils.isUserNameValid(username) || !userslug) {
+		} else if (!utils.isUserNameValid(username) || !utils.isSlugValid(userslug)) {
 			showError(usernameInput, username_notify, '[[error:invalid-username]]');
 		} else {
 			Promise.allSettled([

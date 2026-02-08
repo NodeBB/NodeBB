@@ -337,6 +337,13 @@ const utils = {
 		return (/^['" \-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name));
 	},
 
+	isSlugValid: function (slug) {
+		if (!slug || slug === '' || slug === '.' || slug === '..') return false;
+		if (slug.trim().length === 0) return false;
+		if (invisibleChars.test(slug)) return false;
+		return true;
+	},
+
 	isPasswordValid: function (password) {
 		return typeof password === 'string' && password.length;
 	},

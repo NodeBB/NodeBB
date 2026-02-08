@@ -156,7 +156,6 @@
         "winston": "3.19.0",
         "workerpool": "10.0.1",
         "xml": "1.0.1",
-        "xregexp": "5.1.2",
         "yargs": "17.7.2",
         "zxcvbn": "4.4.2"
     },

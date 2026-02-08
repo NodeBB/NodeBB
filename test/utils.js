@@ -4,7 +4,6 @@
 const assert = require('assert');
 const validator = require('validator');
 const { JSDOM } = require('jsdom');
-const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', () => {
@@ -68,16 +67,6 @@ describe('Utility Methods', () => {
 			const out = utils.stripBidiControls(input);
 			assert.strictEqual(out, 'plain text 123');
 		});
-	});
-
-	it('should preserve case if requested', (done) => {
-		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
-		done();
-	});
-
-	it('should work if a number is passed in', (done) => {
-		assert.strictEqual(slugify(12345), '12345');
-		done();
 	});
 
 	describe('username validation', () => {

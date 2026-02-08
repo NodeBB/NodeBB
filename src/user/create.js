@@ -156,7 +156,7 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-email]]');
 		}
 
-		if (!utils.isUserNameValid(userData.username) || !userData.userslug) {
+		if (!utils.isUserNameValid(userData.username) || !utils.isSlugValid(userData.userslug)) {
 			throw new Error(`[[error:invalid-username, ${userData.username}]]`);
 		}
 
