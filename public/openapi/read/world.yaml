@@ -45,6 +45,8 @@ get:
                     nullable: true
                   title:
                     type: string
+                  topicCount:
+                    type: number
                   categories:
                     type: array
                     items:
