@@ -267,10 +267,11 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
-
-			user['cover:url'] = user['cover:url'] ?
-				prependRelativePath(user['cover:url']) :
-				coverPhoto.getDefaultProfileCover(user.uid);
+			if (user.hasOwnProperty('cover:url')) {
+				user['cover:url'] = user['cover:url'] ?
+					prependRelativePath(user['cover:url']) :
+					coverPhoto.getDefaultProfileCover(user.uid);
+			}
 
 			if (meta.config.defaultAvatar && !user.picture) {
 				user.picture = User.getDefaultAvatar();
