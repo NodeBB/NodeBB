@@ -1,9 +1,0 @@
-{
-	"title": "Manage Ban Reasons",
-	"create-reason": "Create Reason",
-	"edit-reason": "Edit Reason",
-	"reason-title": "Title",
-	"reason-body": "Body",
-	"ban-reasons-saved": "Ban reasons saved successfully",
-	"delete-reason-confirm-x": "Are you sure you want to delete the ban reason with the title <strong>%1</strong>?"
-}

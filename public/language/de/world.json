@@ -1,7 +1,11 @@
 {
 	"name": "World",
 	"latest": "Latest",
-	"popular": "Popular",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
 	"recent": "All",
 	"help": "Hilfe",
 
