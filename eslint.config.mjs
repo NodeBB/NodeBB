@@ -60,6 +60,12 @@ export default defineConfig([
 		}
 	},
 	...publicConfig,
-	...serverConfig
+	...serverConfig,
+	{
+		rules: {
+			'preserve-caught-error': 'off',
+			'no-useless-assignment': 'off'
+		}
+	}
 ]);
 

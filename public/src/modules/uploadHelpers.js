@@ -88,7 +88,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				let formData;
 				if (window.FormData) {
 					formData = new FormData();
-					for (var i = 0; i < files.length; ++i) {
+					for (let i = 0; i < files.length; ++i) {
 						formData.append('files[]', files[i], files[i].name);
 					}
 				}
@@ -215,7 +215,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				success: function (res) {
 					const uploads = res.response.images;
 					if (uploads && uploads.length) {
-						for (var i = 0; i < uploads.length; ++i) {
+						for (let i = 0; i < uploads.length; ++i) {
 							uploads[i].filename = files[i].name;
 							uploads[i].isImage = /image./.test(files[i].type);
 						}
