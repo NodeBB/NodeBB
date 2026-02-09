@@ -9,8 +9,11 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
+const coverPhoto = require('../coverPhoto');
 
 const relative_path = nconf.get('relative_path');
+
+const prependRelativePath = url => url.startsWith('http') ? url : relative_path + url;
 
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
@@ -257,12 +260,18 @@ module.exports = function (User) {
 				parseGroupTitle(user);
 			}
 
-			if (user.picture && user.picture === user.uploadedpicture) {
-				user.uploadedpicture = user.picture.startsWith('http') ? user.picture : relative_path + user.picture;
-				user.picture = user.uploadedpicture;
-			} else if (user.uploadedpicture) {
-				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : relative_path + user.uploadedpicture;
+			if (user.uploadedpicture || user.picture) {
+				const source = (user.picture && user.picture === user.uploadedpicture) ? user.picture : user.uploadedpicture;
+				if (source) {
+					user.uploadedpicture = prependRelativePath(source);
+					user.picture = user.uploadedpicture;
+				}
 			}
+
+			user['cover:url'] = user['cover:url'] ?
+				prependRelativePath(user['cover:url']) :
+				coverPhoto.getDefaultProfileCover(user.uid);
+
 			if (meta.config.defaultAvatar && !user.picture) {
 				user.picture = User.getDefaultAvatar();
 			}

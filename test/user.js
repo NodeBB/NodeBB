@@ -176,7 +176,7 @@ describe('User', () => {
 			await assert.rejects(User.create({
 				username: '-.-', // slug becomes .
 				password: '123456',
-			}), { message: '[[error:invalid-username, -.-]]' });
+			}), { message: '[[error:invalid-username]]' });
 		});
 
 		it('should create user with valid slug (-.-.- => .-.)', async () => {

@@ -7,6 +7,11 @@ const db = require('../database');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const translator = require('../translator');
+const coverPhoto = require('../coverPhoto');
+
+const relative_path = nconf.get('relative_path');
+
+const prependRelativePath = url => url.startsWith('http') ? url : relative_path + url;
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
@@ -81,17 +86,13 @@ function modifyGroup(group, fields) {
 
 		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
 
-		if (group['cover:url']) {
-			group['cover:url'] = group['cover:url'].startsWith('http') ? group['cover:url'] : (nconf.get('relative_path') + group['cover:url']);
-		} else {
-			group['cover:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
-		}
+		group['cover:url'] = group['cover:url'] ?
+			prependRelativePath(group['cover:url']) :
+			coverPhoto.getDefaultGroupCover(group.name);
 
-		if (group['cover:thumb:url']) {
-			group['cover:thumb:url'] = group['cover:thumb:url'].startsWith('http') ? group['cover:thumb:url'] : (nconf.get('relative_path') + group['cover:thumb:url']);
-		} else {
-			group['cover:thumb:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
-		}
+		group['cover:thumb:url'] = group['cover:thumb:url'] ?
+			prependRelativePath(group['cover:thumb:url']) :
+			coverPhoto.getDefaultGroupCover(group.name);
 
 		group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
 	}
