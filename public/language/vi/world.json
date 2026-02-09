@@ -1,8 +1,12 @@
 {
 	"name": "Thế giới",
 	"latest": "Latest",
-	"popular": "Popular",
-	"recent": "All",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "Tất cả",
 	"help": "Trợ giúp",
 
 	"help.title": "Trang này là gì?",
