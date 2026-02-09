@@ -3,7 +3,8 @@
 define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
 	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
-], function (infinitescroll, search, sort, hooks, alerts, api, bootbox, helpers, categoryTools) {
+	'translator',
+], function (infinitescroll, search, sort, hooks, alerts, api, bootbox, helpers, categoryTools, translator) {
 	const World = {};
 
 	$(window).on('action:ajaxify.start', function () {
@@ -23,8 +24,16 @@ define('forum/world', [
 		const sortLabelEl = document.getElementById('sort-label');
 		const sortOptionsEl = document.getElementById('sort-options');
 		if (sortLabelEl && sortOptionsEl) {
-			const match = sortOptionsEl.querySelector(`a[href="${window.location.pathname}${window.location.search}`);
-			sortLabelEl.innerText = match.innerText;
+			const params = new URLSearchParams(window.location.search);
+			if (params.get('sort') === 'popular') {
+				translator.translate(`[[world:popular-${params.get('term')}]]`, function (translated) {
+					sortLabelEl.innerText = translated;
+				});
+			} else {
+				translator.translate('[[world:latest]]', function (translated) {
+					sortLabelEl.innerText = translated;
+				});
+			}
 		}
 
 		search.enableQuickSearch({
@@ -44,7 +53,7 @@ define('forum/world', [
 
 		if (!config.usePagination) {
 			infinitescroll.init((direction) => {
-				const posts = Array.from(document.querySelectorAll('[component="post"]'));
+				const posts = Array.from(document.querySelectorAll('[component="category/topic"]'));
 				const afterEl = direction > 0 ? posts.pop() : posts.shift();
 				const after = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
 				if (after < config.topicsPerPage) {

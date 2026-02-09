@@ -42,6 +42,7 @@ controller.list = async function (req, res) {
 	data.sort = req.query.sort;
 
 	let tids;
+	let topicCount;
 	if (req.query.sort === 'popular') {
 		cidQuery = {
 			...cidQuery,
@@ -50,11 +51,14 @@ controller.list = async function (req, res) {
 			term: req.query.term || 'day',
 		};
 		delete cidQuery.cid;
-		({ tids } = await topics.getSortedTopics(cidQuery));
+		({ tids, topicCount } = await topics.getSortedTopics(cidQuery));
 		tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	} else {
 		tids = await categories.getTopicIds(cidQuery);
+		topicCount = await categories.getTopicCount(cidQuery);
 	}
+	data.topicCount = topicCount;
+
 	const mainPids = await topics.getMainPids(tids);
 	const postData = await posts.getPostSummaryByPids(mainPids, req.uid, {
 		stripTags: false,
@@ -118,6 +122,7 @@ controller.list = async function (req, res) {
 	data.title = translator.escape(data.name);
 	data.breadcrumbs = helpers.buildBreadcrumbs([]);
 
+	console.log(data.topicCount, topicsPerPage);
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({
