@@ -19,6 +19,14 @@ define('forum/world', [
 		handleButtons();
 		handleHelp();
 
+		// Add label to sort
+		const sortLabelEl = document.getElementById('sort-label');
+		const sortOptionsEl = document.getElementById('sort-options');
+		if (sortLabelEl && sortOptionsEl) {
+			const match = sortOptionsEl.querySelector(`a[href="${window.location.pathname}${window.location.search}`);
+			sortLabelEl.innerText = match.innerText;
+		}
+
 		search.enableQuickSearch({
 			searchElements: {
 				inputEl: $('[component="category-search"]'),
