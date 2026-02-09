@@ -122,7 +122,6 @@ controller.list = async function (req, res) {
 	data.title = translator.escape(data.name);
 	data.breadcrumbs = helpers.buildBreadcrumbs([]);
 
-	console.log(data.topicCount, topicsPerPage);
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({
