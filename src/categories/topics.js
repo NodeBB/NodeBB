@@ -81,9 +81,10 @@ module.exports = function (Categories) {
 			return result && result.topicCount;
 		}
 		const set = await Categories.buildTopicsSortedSet(data);
+		console.log(set);
 		if (Array.isArray(set)) {
 			return await db.sortedSetIntersectCard(set);
-		} else if (data.targetUid && set) {
+		} else if (parseInt(data.cid, 10) === -1 || data.targetUid && set) {
 			return await db.sortedSetCard(set);
 		}
 		return data.category.topic_count;
