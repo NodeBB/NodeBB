@@ -366,10 +366,13 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should upload favicon', async () => {
-			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadfavicon`, path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token);
+			const { response, body } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/admin/uploadfavicon`,
+				path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token
+			);
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body));
-			assert.equal(body[0].url, '/assets/uploads/system/favicon.ico');
+			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/system/favicon.ico`);
 		});
 
 		it('should upload touch icon', async () => {
