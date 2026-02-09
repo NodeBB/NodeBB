@@ -9,8 +9,6 @@ require('../../require-main');
 
 const path = require('path');
 const nconf = require('nconf');
-const url = require('url');
-const util = require('util');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
 
@@ -52,7 +50,15 @@ nconf.set('relative_path', relativePath);
 nconf.set('asset_base_url', `${relativePath}/assets`);
 nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
 nconf.set('upload_url', '/assets/uploads');
-nconf.set('url_parsed', urlObject);
+nconf.set('url_parsed', {
+	href: urlObject.href,
+	origin: urlObject.origin,
+	protocol: urlObject.protocol,
+	host: urlObject.host,
+	hostname: urlObject.hostname,
+	port: urlObject.port,
+	pathname: urlObject.pathname,
+});
 nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 nconf.set('secure', urlObject.protocol === 'https:');
 nconf.set('use_port', !!urlObject.port);

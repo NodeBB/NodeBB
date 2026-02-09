@@ -93,7 +93,15 @@ function loadConfig(configFile) {
 		const urlObject = new URL(url);
 
 		nconf.set('url', url.replace(/\/$/, ''));
-		nconf.set('url_parsed', urlObject);
+		nconf.set('url_parsed', {
+			href: urlObject.href,
+			origin: urlObject.origin,
+			protocol: urlObject.protocol,
+			host: urlObject.host,
+			hostname: urlObject.hostname,
+			port: urlObject.port,
+			pathname: urlObject.pathname,
+		});
 		// Parse out the relative_url and other goodies from the configured URL
 		const relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 		nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
