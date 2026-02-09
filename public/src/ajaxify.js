@@ -573,16 +573,9 @@ $(document).ready(function () {
 		if (ev !== null && ev.state) {
 			const { returnPath } = ev.state;
 			if (ev.state.url === null && returnPath !== undefined) {
-				const url = returnPath;
-				const prependSlash = url && !url.startsWith('?') && !url.startsWith('#');
-				const { relative_path } = config;
-				const historyUrl = prependSlash ?
-					(relative_path + '/' + url) :
-					relative_path + (url || (relative_path ? '' : '/'));
-
 				window.history.replaceState({
 					url: returnPath,
-				}, '', historyUrl);
+				}, '', returnPath);
 			} else if (ev.state.url !== undefined) {
 				ajaxify.handleTransientElements();
 				ajaxify.go(ev.state.url, function () {
