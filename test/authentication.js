@@ -140,11 +140,11 @@ describe('authentication', () => {
 
 	it('should regenerate the session identifier on successful login', async () => {
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
-		const { hostname, path } = new URL(nconf.get('url'));
-		const sid = String(jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
+		const { hostname, pathname } = new URL(nconf.get('url'));
+		const sid = String(jar.store.idx[hostname][pathname]['express.sid']).match(matchRegexp)[1];
 		await helpers.logoutUser(jar);
 		const newJar = (await helpers.loginUser('regular', 'regularpwd')).jar;
-		const newSid = String(newJar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
+		const newSid = String(newJar.store.idx[hostname][pathname]['express.sid']).match(matchRegexp)[1];
 
 		assert.notStrictEqual(newSid, sid);
 	});
