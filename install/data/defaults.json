@@ -142,6 +142,7 @@
     "feeds:disableSitemap": 0,
     "feeds:disableRSS": 0,
     "sitemapTopics": 500,
+    "sitemapCacheDurationHours": 24,
     "maintenanceMode": 0,
     "maintenanceModeStatus": 503,
     "upvoteVisibility": "all",
