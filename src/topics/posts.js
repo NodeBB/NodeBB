@@ -252,7 +252,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getLatestUndeletedReply = async function (tid) {
-		let isDeleted = false;
+		let isDeleted;
 		let index = 0;
 		do {
 			/* eslint-disable no-await-in-loop */

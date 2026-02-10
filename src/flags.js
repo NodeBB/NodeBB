@@ -755,8 +755,7 @@ Flags.update = async function (flagId, uid, changeset) {
 		await notifications.push(notifObj, [assigneeId]);
 	};
 	const isAssignable = async function (assigneeId) {
-		let allowed = false;
-		allowed = await user.isAdminOrGlobalMod(assigneeId);
+		let allowed = await user.isAdminOrGlobalMod(assigneeId);
 
 		// Mods are also allowed to be assigned, if flag target is post in uid's moderated cid
 		if (!allowed && current.type === 'post') {
@@ -918,7 +917,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		groups.getMembers('Global Moderators', 0, -1),
 	]);
 	let uids = admins.concat(globalMods);
-	let notifObj = null;
+	let notifObj;
 
 	const { displayname } = flagObj.reports[flagObj.reports.length - 1].reporter;
 

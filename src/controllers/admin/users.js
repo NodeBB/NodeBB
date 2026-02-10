@@ -77,7 +77,7 @@ async function getUsers(req, res) {
 	}
 
 	async function getUids(set) {
-		let uids = [];
+		let uids;
 		if (Array.isArray(set)) {
 			const weights = set.map((s, index) => (index ? 0 : 1));
 			uids = await db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({
