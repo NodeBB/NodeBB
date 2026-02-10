@@ -621,7 +621,7 @@ Mocks.notes.public = async (post) => {
 	let tag = null;
 	let followersUrl;
 
-	let name = null;
+	let name;
 	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
 
 	if (post.toPid) { // direct reply

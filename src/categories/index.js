@@ -268,7 +268,6 @@ async function getChildrenTree(category, uid) {
 	}
 	let childrenData = await Categories.getCategoriesData(childrenCids);
 	childrenData = childrenData.filter(Boolean);
-	childrenCids = childrenData.map(child => child.cid);
 	Categories.getTree([category].concat(childrenData), category.parentCid);
 }
 

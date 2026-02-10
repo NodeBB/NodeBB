@@ -110,9 +110,8 @@ module.exports = function (User) {
 	};
 
 	function parseCreateOptions(userData) {
-		let opts = {};
 		try {
-			opts = JSON.parse(userData._opts || '{}');
+			const opts = JSON.parse(userData._opts || '{}');
 			delete userData._opts;
 			return opts;
 		} catch (err) {

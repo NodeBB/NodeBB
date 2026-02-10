@@ -134,10 +134,10 @@ Events.get = async (tid, uid, reverse = false) => {
 		return [];
 	}
 
-	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+	const eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
 	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
 	const timestamps = eventIds.map(obj => obj.score);
-	eventIds = eventIds.map(obj => obj.value);
+
 	let events = await db.getObjects(keys);
 	events.forEach((e, idx) => {
 		e.timestamp = timestamps[idx];

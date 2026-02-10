@@ -228,7 +228,7 @@ SELECT o."_key" k,
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		let counts = [];
+		let counts;
 		if (min !== '-inf' || max !== '+inf') {
 			if (min === '-inf') {
 				min = null;

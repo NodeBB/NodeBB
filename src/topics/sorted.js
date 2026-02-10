@@ -43,7 +43,7 @@ module.exports = function (Topics) {
 			const result = await plugins.hooks.fire('filter:topics.getSortedTids', { params: params, tids: [] });
 			return result.tids;
 		}
-		let tids = [];
+		let tids;
 		if (params.term !== 'alltime') {
 			if (params.sort === 'posts') {
 				tids = await getTidsWithMostPostsInTerm(params.cids, params.uid, params.term);

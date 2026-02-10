@@ -25,7 +25,7 @@ uploadsController.get = async function (req, res, next) {
 	}
 	const itemsPerPage = 20;
 	const page = parseInt(req.query.page, 10) || 1;
-	let files = [];
+	let files;
 	try {
 		await checkSymLinks(req.query.dir);
 		files = await getFilesInFolder(currentFolder);
@@ -149,7 +149,7 @@ async function getFileData(currentDir, file) {
 
 uploadsController.uploadCategoryPicture = async function (req, res, next) {
 	const uploadedFile = req.files[0];
-	let params = null;
+	let params;
 
 	try {
 		params = JSON.parse(req.body.params);

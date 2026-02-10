@@ -17,8 +17,6 @@ const searchApi = module.exports;
 
 searchApi.categories = async (caller, data) => {
 	// used by categorySearch module
-
-	let cids = [];
 	let matchedCids = [];
 	const privilege = data.privilege || 'topics:read';
 	data.states = (data.states || ['watching', 'tracking', 'notwatching', 'ignoring']).map(
@@ -26,6 +24,7 @@ searchApi.categories = async (caller, data) => {
 	);
 	data.parentCid = parseInt(data.parentCid || 0, 10);
 
+	let cids;
 	if (data.search) {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
 	} else {

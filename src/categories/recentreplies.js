@@ -72,7 +72,7 @@ module.exports = function (Categories) {
 			return;
 		}
 		const categoriesToLoad = categoryData.filter(c => c && c.numRecentReplies && parseInt(c.numRecentReplies, 10) > 0);
-		let keys = [];
+		let keys;
 		if (plugins.hooks.hasListeners('filter:categories.getRecentTopicReplies')) {
 			const result = await plugins.hooks.fire('filter:categories.getRecentTopicReplies', {
 				categories: categoriesToLoad,

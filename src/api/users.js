@@ -615,15 +615,14 @@ usersAPI.changePicture = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const { type, url } = data;
-	let picture = '';
-
 	await user.checkMinReputation(caller.uid, data.uid, 'min:rep:profile-picture');
 	const canEdit = await privileges.users.canEdit(caller.uid, data.uid);
 	if (!canEdit) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
+	const { type, url } = data;
+	let picture;
 	if (type === 'default') {
 		picture = '';
 	} else if (type === 'uploaded') {

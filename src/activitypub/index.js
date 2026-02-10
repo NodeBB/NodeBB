@@ -344,14 +344,13 @@ ActivityPub.get = async (type, id, uri, options) => {
 
 		requestCache.set(cacheKey, body);
 		return body;
-	} catch (e) {
-		if (String(e.code).startsWith('ap_get_')) {
-			throw e;
+	} catch (err) {
+		if (String(err.code).startsWith('ap_get_')) {
+			throw err;
 		}
 
 		// Handle things like non-json body, etc.
-		const { cause } = e;
-		throw new Error(`[[error:activitypub.get-failed]]`, { cause });
+		throw new Error(`[[error:activitypub.get-failed]]`, { cause: err });
 	}
 };
 

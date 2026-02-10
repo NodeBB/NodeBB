@@ -257,7 +257,7 @@ module.exports = function (User) {
 		if (!data.groupTitle) {
 			return;
 		}
-		let groupTitles = [];
+		let groupTitles;
 		if (validator.isJSON(data.groupTitle)) {
 			groupTitles = JSON.parse(data.groupTitle);
 			if (!Array.isArray(groupTitles)) {

@@ -888,15 +888,10 @@ describe('Topic\'s', () => {
 			});
 
 			const { topics: topicsData } = results;
-			let topic;
-			let i;
-			for (i = 0; i < topicsData.length; i += 1) {
-				if (topicsData[i].tid === parseInt(newTid, 10)) {
-					assert.equal(false, topicsData[i].unread, 'ignored topic was marked as unread in recent list');
-					return;
-				}
-			}
-			assert.ok(topic, 'topic didn\'t appear in the recent list');
+
+			const topic = topicsData.find(topic => topic.tid === parseInt(newTid, 10));
+			assert(topic, 'ignored topic didn\'t appear in the recent list');
+			assert.strictEqual(topic.unread, false, 'ignored topic was marked as unread in recent list');
 		});
 
 		it('should appear as unread again when marked as following', async () => {
