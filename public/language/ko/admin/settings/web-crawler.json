@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "RSS 피드 비활성화",
 	"disable-sitemap-xml": "Sitemap.xml 비활성화",
 	"sitemap-topics": "사이트맵에 표시할 토픽 수",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "사이트맵 캐시 지우기",
 	"view-sitemap": "사이트맵 보기"
 }

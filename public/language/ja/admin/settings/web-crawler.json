@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "RSSフィードを無効にする",
 	"disable-sitemap-xml": "Sitemap.xmlを無効にする",
 	"sitemap-topics": "サイトマップに表示するスレッドの数",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "サイトマップのキャッシュをクリア",
 	"view-sitemap": "サイトマップを表示"
 }

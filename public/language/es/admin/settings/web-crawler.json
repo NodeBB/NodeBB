@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "Deshabilitar RSS Feeds",
 	"disable-sitemap-xml": "Deshabilitar Sitemap.xml",
 	"sitemap-topics": "Número de Temas para mostrar en el Sitemap",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Limpiar Caché del Sitemap",
 	"view-sitemap": "Ver Sitemap"
 }

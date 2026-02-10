@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "禁用 RSS 订阅",
 	"disable-sitemap-xml": "禁用 Sitemap.xml",
 	"sitemap-topics": "要在 Stemap 中展示的主题数量",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "清除 Sitemap 缓存",
 	"view-sitemap": "查看 Sitemap"
 }
