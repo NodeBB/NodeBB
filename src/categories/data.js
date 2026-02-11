@@ -145,7 +145,7 @@ function modifyCategory(category, fields) {
 		category.descriptionParsed = category.descriptionParsed || category.description;
 	}
 
-	if (hasField('nickname')) {
+	if (hasField('nickname') && category.nickname) {
 		category.name = category.nickname;
 	}
 }
