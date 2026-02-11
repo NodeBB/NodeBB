@@ -3,6 +3,7 @@
     "all-groups": "Све групе",
     "groups": "Групе",
     "members": "Чланови",
+    "x-members": "%1 member(s)",
     "view-group": "Преглед групе",
     "owner": "Власник групе",
     "new-group": "Направи нову групу",

@@ -3,6 +3,7 @@
     "all-groups": "กลุ่มทั้งหมด",
     "groups": "กลุ่ม",
     "members": "สมาชิก",
+    "x-members": "%1 member(s)",
     "view-group": "ดูกลุ่ม",
     "owner": "เจ้าของกลุ่ม",
     "new-group": "สร้างกลุ่มใหม่",

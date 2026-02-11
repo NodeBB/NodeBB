@@ -3,6 +3,7 @@
     "all-groups": "All groups",
     "groups": "Grup",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Tampilkan Grup",
     "owner": "Group Owner",
     "new-group": "Create New Group",
