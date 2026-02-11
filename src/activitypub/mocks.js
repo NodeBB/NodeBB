@@ -195,17 +195,7 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-		summary = summary || '';
-		// Replace emoji in summary
-		if (tag && Array.isArray(tag)) {
-			tag
-				.filter(tag => tag.type === 'Emoji' &&
-					isEmojiShortcode.test(tag.name) &&
-					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
-				.forEach((tag) => {
-					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
-				});
-		}
+		summary = activitypub.helpers.renderEmoji(summary || '', tag);
 
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
@@ -308,24 +298,13 @@ Mocks.category = async (actors) => {
 
 		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
 
-		// Replace emoji in summary
-		if (tag && Array.isArray(tag)) {
-			tag
-				.filter(tag => tag.type === 'Emoji' &&
-					isEmojiShortcode.test(tag.name) &&
-					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
-				.forEach((tag) => {
-					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
-				});
-		}
-
 		const payload = {
 			cid,
 			name,
 			handle: `${preferredUsername}@${hostname}`,
 			slug: `${preferredUsername}@${hostname}`,
 			description: summary,
-			descriptionParsed: posts.sanitize(summary),
+			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
 			icon: backgroundImage ? 'fa-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,

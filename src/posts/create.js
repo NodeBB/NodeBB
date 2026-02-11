@@ -48,22 +48,8 @@ module.exports = function (Posts) {
 			}
 
 			// Rewrite emoji references to inline image assets
-			if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
-				_activitypub.tag
-					.filter(tag => tag.type === 'Emoji' &&
-								tag.icon && tag.icon.type === 'Image')
-					.forEach((tag) => {
-						if (!tag.name.startsWith(':')) {
-							tag.name = `:${tag.name}`;
-						}
-						if (!tag.name.endsWith(':')) {
-							tag.name = `${tag.name}:`;
-						}
-
-						const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
-						postData[property] = postData[property].replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
-					});
-			}
+			const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
+			postData[property] = activitypub.helpers.renderEmoji(postData[property], _activitypub.tag);
 
 			hasAttachment = _activitypub && _activitypub.attachment && _activitypub.attachment.length;
 		}

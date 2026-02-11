@@ -543,3 +543,41 @@ Helpers.addressed = (id, activity) => {
 
 	return combined.has(id);
 };
+
+Helpers.renderEmoji = (text, tags, strip = false) => {
+	if (!text || !tags) {
+		return text;
+	}
+
+	tags = Array.isArray(tags) ? tags : [tags];
+	let result = text;
+
+	tags.forEach((tag) => {
+		const isEmoji = tag.type === 'Emoji';
+		const hasUrl = tag.icon && tag.icon.url;
+		const isImage = !tag.icon?.mediaType || tag.icon.mediaType.startsWith('image/');
+
+		if (isEmoji && (strip || (hasUrl && isImage))) {
+			let { name } = tag;
+
+			if (!name.startsWith(':')) {
+				name = `:${name}`;
+			}
+			if (!name.endsWith(':')) {
+				name = `${name}:`;
+			}
+
+			const imgTag = strip ?
+				'' :
+				`<img class="not-responsive emoji" src="${tag.icon.url}" title="${name}" />`;
+
+			let index = result.indexOf(name);
+			while (index !== -1) {
+				result = result.substring(0, index) + imgTag + result.substring(index + name.length);
+				index = result.indexOf(name, index + imgTag.length);
+			}
+		}
+	});
+
+	return result;
+};

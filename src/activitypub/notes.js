@@ -189,13 +189,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 
 			// Remove any custom emoji from title
-			if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
-				_activitypub.tag
-					.filter(tag => tag.type === 'Emoji')
-					.forEach((tag) => {
-						title = title.replace(new RegExp(tag.name, 'g'), '');
-					});
-			}
+			title = activitypub.helpers.renderEmoji(title, _activitypub.tag, true);
 		}
 		mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
