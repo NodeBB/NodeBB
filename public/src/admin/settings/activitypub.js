@@ -11,59 +11,8 @@ define('admin/settings/activitypub', [
 	const ActivityPub = {};
 
 	ActivityPub.init = function () {
-		const rulesEl = document.getElementById('rules');
-		if (rulesEl) {
-			rulesEl.addEventListener('click', (e) => {
-				const subselector = e.target.closest('[data-action]');
-				if (subselector) {
-					const action = subselector.getAttribute('data-action');
-					switch (action) {
-						case 'rules.add': {
-							ActivityPub.throwRulesModal();
-							break;
-						}
-
-						case 'rules.delete': {
-							const rid = subselector.closest('tr').getAttribute('data-rid');
-							api.del(`/admin/activitypub/rules/${rid}`, {}).then(async (data) => {
-								const html = await Benchpress.render('admin/settings/activitypub', { rules: data }, 'rules');
-								const tbodyEl = document.querySelector('#rules tbody');
-								if (tbodyEl) {
-									tbodyEl.innerHTML = html;
-								}
-							}).catch(alerts.error);
-						}
-					}
-				}
-			});
-		}
-
-		const relaysEl = document.getElementById('relays');
-		if (relaysEl) {
-			relaysEl.addEventListener('click', (e) => {
-				const subselector = e.target.closest('[data-action]');
-				if (subselector) {
-					const action = subselector.getAttribute('data-action');
-					switch (action) {
-						case 'relays.add': {
-							ActivityPub.throwRelaysModal();
-							break;
-						}
-
-						case 'relays.remove': {
-							const url = subselector.closest('tr').getAttribute('data-url');
-							api.del(`/admin/activitypub/relays/${encodeURIComponent(url)}`, {}).then(async (data) => {
-								const html = await app.parseAndTranslate('admin/settings/activitypub', 'relays', { relays: data });
-								const tbodyEl = document.querySelector('#relays tbody');
-								if (tbodyEl) {
-									$(tbodyEl).html(html);
-								}
-							}).catch(alerts.error);
-						}
-					}
-				}
-			});
-		}
+		setupRules();
+		setupRelays();
 	};
 
 	ActivityPub.throwRulesModal = function () {
@@ -154,6 +103,64 @@ define('admin/settings/activitypub', [
 			});
 		});
 	};
+
+	function setupRules() {
+		const rulesEl = document.getElementById('rules');
+		if (rulesEl) {
+			rulesEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[data-action]');
+				if (subselector) {
+					const action = subselector.getAttribute('data-action');
+					switch (action) {
+						case 'rules.add': {
+							ActivityPub.throwRulesModal();
+							break;
+						}
+
+						case 'rules.delete': {
+							const rid = subselector.closest('tr').getAttribute('data-rid');
+							api.del(`/admin/activitypub/rules/${rid}`, {}).then(async (data) => {
+								const html = await Benchpress.render('admin/settings/activitypub', { rules: data }, 'rules');
+								const tbodyEl = document.querySelector('#rules tbody');
+								if (tbodyEl) {
+									tbodyEl.innerHTML = html;
+								}
+							}).catch(alerts.error);
+						}
+					}
+				}
+			});
+		}
+	}
+
+	function setupRelays() {
+		const relaysEl = document.getElementById('relays');
+		if (relaysEl) {
+			relaysEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[data-action]');
+				if (subselector) {
+					const action = subselector.getAttribute('data-action');
+					switch (action) {
+						case 'relays.add': {
+							ActivityPub.throwRelaysModal();
+							break;
+						}
+
+						case 'relays.remove': {
+							const url = subselector.closest('tr').getAttribute('data-url');
+							api.del(`/admin/activitypub/relays/${encodeURIComponent(url)}`, {}).then(async (data) => {
+								const html = await app.parseAndTranslate('admin/settings/activitypub', 'relays', { relays: data });
+								const tbodyEl = document.querySelector('#relays tbody');
+								if (tbodyEl) {
+									$(tbodyEl).html(html);
+								}
+							}).catch(alerts.error);
+						}
+					}
+				}
+			});
+		}
+	}
 
 	return ActivityPub;
 });
