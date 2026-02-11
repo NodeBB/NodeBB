@@ -3,6 +3,7 @@
     "all-groups": "All groups",
     "groups": "গ্রুপসমূহ",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "গ্রুপ দেখুন",
     "owner": "Group Owner",
     "new-group": "Create New Group",

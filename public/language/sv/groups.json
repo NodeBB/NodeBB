@@ -3,6 +3,7 @@
     "all-groups": "All groups",
     "groups": "Grupper",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Visa grupp",
     "owner": "Gruppägare",
     "new-group": "Skapa ny grupp",

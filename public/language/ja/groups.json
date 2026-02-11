@@ -3,6 +3,7 @@
     "all-groups": "All groups",
     "groups": "グループ",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "グループを閲覧",
     "owner": "グループ管理人",
     "new-group": "新しいグループを作成",

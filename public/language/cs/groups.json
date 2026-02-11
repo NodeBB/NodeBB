@@ -3,6 +3,7 @@
     "all-groups": "All groups",
     "groups": "Skupiny",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Zobrazit skupinu",
     "owner": "Vlastník skupiny",
     "new-group": "Vytvořit novou skupinu",
