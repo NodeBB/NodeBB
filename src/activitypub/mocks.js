@@ -21,8 +21,6 @@ const utils = require('../utils');
 
 const accountHelpers = require('../controllers/accounts/helpers');
 
-const isEmojiShortcode = /^:[\w]+:$/;
-
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
 
