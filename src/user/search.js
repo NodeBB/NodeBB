@@ -60,15 +60,18 @@ module.exports = function (User) {
 
 			if (!uids.length) {
 				const searchMethod = data.findUids || findUids;
-				uids = await searchMethod(query, searchBy, data.hardCap);
+				const promises = [
+					searchMethod(query, searchBy, data.hardCap),
+				];
 
 				const mapping = {
 					username: 'ap.preferredUsername',
 					fullname: 'ap.name',
 				};
-				if (meta.config.activitypubEnabled && mapping.hasOwnProperty(searchBy)) {
-					uids = uids.concat(await searchMethod(query, mapping[searchBy], data.hardCap));
+				if (meta.config.activitypubEnabled && mapping.hasOwn(searchBy)) {
+					promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
 				}
+				uids = (await Promise.all(promises)).flat();
 			}
 		}
 
