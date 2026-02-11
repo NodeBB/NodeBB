@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 const winston = require('winston');
+const tokenizer = require('sbd');
 
 const db = require('../database');
 const utils = require('../utils');
@@ -102,9 +103,17 @@ module.exports = function (Topics) {
 			privileges.users.isAdministrator(uid),
 		]);
 
-		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
 		data.content = String(data.content || '').trimEnd();
+
+		if (data.title) {
+			data.title = String(data.title).trim();
+		} else {
+			const sentences = tokenizer.sentences(data.content, { sanitize: true, newline_boundaries: true });
+			data.title = sentences.shift();
+			data.generatedTitle = 1;
+		}
+
 		if (!isAdmin) {
 			Topics.checkTitle(data.title);
 		}
@@ -259,6 +268,7 @@ module.exports = function (Topics) {
 			Topics.addParentPosts([postData], uid),
 			Topics.syncBacklinks(postData),
 			Topics.markAsRead([tid], uid),
+			activitypub.notes.syncUserInboxes(tid, uid),
 		]);
 
 		// Returned data is a superset of post summary data
