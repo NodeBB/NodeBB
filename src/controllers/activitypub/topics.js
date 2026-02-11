@@ -7,6 +7,7 @@ const user = require('../../user');
 const topics = require('../../topics');
 const posts = require('../../posts');
 const categories = require('../../categories');
+const privileges = require('../../privileges');
 const translator = require('../../translator');
 const pagination = require('../../pagination');
 const utils = require('../../utils');
@@ -24,7 +25,10 @@ controller.list = async function (req, res) {
 	const start = Math.max(0, (page - 1) * topicsPerPage);
 	const stop = start + topicsPerPage - 1;
 
-	const userSettings = await user.getSettings(req.uid);
+	const [userSettings, userPrivileges] = await Promise.all([
+		user.getSettings(req.uid),
+		privileges.categories.get('-1', req.uid),
+	]);
 	const targetUid = await user.getUidByUserslug(req.query.author);
 	let cidQuery = {
 		uid: req.uid,
@@ -40,6 +44,7 @@ controller.list = async function (req, res) {
 	const data = await categories.getCategoryById(cidQuery);
 	delete data.children;
 	data.sort = req.query.sort;
+	data.privileges = userPrivileges;
 
 	let tids;
 	let topicCount;

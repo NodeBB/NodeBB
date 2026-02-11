@@ -3,8 +3,10 @@
 define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
 	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
-	'translator',
-], function (infinitescroll, search, sort, hooks, alerts, api, bootbox, helpers, categoryTools, translator) {
+	'translator', 'quickreply',
+], function (infinitescroll, search, sort, hooks,
+	alerts, api, bootbox, helpers, categoryTools,
+	translator, quickreply) {
 	const World = {};
 
 	$(window).on('action:ajaxify.start', function () {
@@ -14,6 +16,7 @@ define('forum/world', [
 	World.init = function () {
 		app.enterRoom('world');
 		categoryTools.init($('#world-feed'));
+		quickreply.init();
 
 		sort.handleSort('categoryTopicSort', 'world');
 

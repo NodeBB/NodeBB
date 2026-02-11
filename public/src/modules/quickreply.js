@@ -69,6 +69,18 @@ define('quickreply', [
 				handle: undefined,
 				content: replyMsg,
 			};
+			let replyRoute = '/topics';
+			switch(ajaxify.data.template.name) {
+				case 'topic':
+					replyData.tid = ajaxify.data.tid;
+					replyRoute = `/topics/${ajaxify.data.tid}`;
+					break;
+
+				case 'world':
+					replyData.cid = '-1';
+					break;
+			}
+
 			const replyLen = replyMsg.length;
 			if (replyLen < parseInt(config.minimumPostLength, 10)) {
 				return alerts.error('[[error:content-too-short, ' + config.minimumPostLength + ']]');
@@ -78,7 +90,7 @@ define('quickreply', [
 
 			ready = false;
 			element.val('');
-			api.post(`/topics/${ajaxify.data.tid}`, replyData, function (err, data) {
+			api.post(replyRoute, replyData, function (err, data) {
 				ready = true;
 				if (err) {
 					element.val(replyMsg);
