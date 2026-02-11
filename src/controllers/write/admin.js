@@ -104,6 +104,12 @@ Admin.activitypub.deleteRule = async (req, res) => {
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 
+Admin.activitypub.reorderRules = async (req, res) => {
+	const { rids } = req.body;
+	await activitypub.rules.reorder(rids);
+	helpers.formatApiResponse(200, res, await activitypub.rules.list());
+};
+
 Admin.activitypub.addRelay = async (req, res) => {
 	const { url } = req.body;
 

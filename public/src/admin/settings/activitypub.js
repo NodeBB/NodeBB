@@ -7,6 +7,8 @@ define('admin/settings/activitypub', [
 	'api',
 	'alerts',
 	'translator',
+
+	'jquery-ui/widgets/sortable',
 ], function (Benchpress, bootbox, categorySelector, api, alerts, translator) {
 	const ActivityPub = {};
 
@@ -106,30 +108,55 @@ define('admin/settings/activitypub', [
 
 	function setupRules() {
 		const rulesEl = document.getElementById('rules');
-		if (rulesEl) {
-			rulesEl.addEventListener('click', (e) => {
-				const subselector = e.target.closest('[data-action]');
-				if (subselector) {
-					const action = subselector.getAttribute('data-action');
-					switch (action) {
-						case 'rules.add': {
-							ActivityPub.throwRulesModal();
-							break;
-						}
+		if (!rulesEl) {
+			return;
+		}
 
-						case 'rules.delete': {
-							const rid = subselector.closest('tr').getAttribute('data-rid');
-							api.del(`/admin/activitypub/rules/${rid}`, {}).then(async (data) => {
-								const html = await Benchpress.render('admin/settings/activitypub', { rules: data }, 'rules');
-								const tbodyEl = document.querySelector('#rules tbody');
-								if (tbodyEl) {
-									tbodyEl.innerHTML = html;
-								}
-							}).catch(alerts.error);
-						}
+		rulesEl.addEventListener('click', (e) => {
+			const subselector = e.target.closest('[data-action]');
+			if (subselector) {
+				const action = subselector.getAttribute('data-action');
+				switch (action) {
+					case 'rules.add': {
+						ActivityPub.throwRulesModal();
+						break;
+					}
+
+					case 'rules.delete': {
+						const rid = subselector.closest('tr').getAttribute('data-rid');
+						api.del(`/admin/activitypub/rules/${rid}`, {}).then(async (data) => {
+							const html = await Benchpress.render('admin/settings/activitypub', { rules: data }, 'rules');
+							const tbodyEl = document.querySelector('#rules tbody');
+							if (tbodyEl) {
+								tbodyEl.innerHTML = html;
+							}
+						}).catch(alerts.error);
 					}
 				}
+			}
+		});
+
+		const tbodyEl = $(rulesEl).find('tbody');
+		tbodyEl.sortable({
+			handle: '.drag-handle',
+			helper: fixWidthHelper,
+			placeholder: 'ui-state-highlight',
+			axis: 'y',
+			update: function () {
+				var rids = [];
+				tbodyEl.find('tr').each(function () {
+					rids.push($(this).data('rid'));
+				});
+
+				api.put('/admin/activitypub/rules/order', { rids }).catch(alerts.error);
+			},
+		});
+
+		function fixWidthHelper(e, ui) {
+			ui.children().each(function () {
+				$(this).width($(this).width());
 			});
+			return ui;
 		}
 	}
 

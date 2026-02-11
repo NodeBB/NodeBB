@@ -51,14 +51,18 @@
 				<p>[[admin/settings/activitypub:rules-intro]]</p>
 				<table class="table table-striped" id="rules">
 					<thead>
+						<th></th>
 						<th>[[admin/settings/activitypub:rules.type]]</th>
 						<th>[[admin/settings/activitypub:rules.value]]</th>
 						<th>[[admin/settings/activitypub:rules.cid]]</th>
 						<th></th>
 					</thead>
-					<tbody>
+					<tbody class="sortable-container">
 						{{{ each rules }}}
 						<tr data-rid="{./rid}">
+							<td class="align-items-center" style="cursor: move;">
+								<i class="fa fa-grip-lines text-muted drag-handle"></i>
+							</td>
 							<td>{./type}</td>
 							<td>{./value}</td>
 							<td>{./cid}</td>

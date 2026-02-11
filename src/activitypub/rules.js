@@ -42,3 +42,11 @@ Rules.delete = async (rid) => {
 		db.delete(`rid:${rid}`),
 	]);
 };
+
+Rules.reorder = async (rids) => {
+	const exists = await db.isSortedSetMembers('categorization:rid', rids);
+	rids = rids.filter((_, idx) => exists[idx]);
+	const scores = Array.from({ length: rids.length }, (_, idx) => idx);
+
+	await db.sortedSetAdd('categorization:rid', scores, rids);
+};
