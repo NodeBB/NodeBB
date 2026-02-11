@@ -95,8 +95,8 @@ module.exports = function (Categories) {
 	};
 };
 
-function defaultIntField(category, fields, fieldName, defaultField) {
-	if (!fields.length || fields.includes(fieldName)) {
+function defaultIntField(category, hasField, fieldName, defaultField) {
+	if (hasField(fieldName)) {
 		const useDefault = !category.hasOwnProperty(fieldName) ||
 			category[fieldName] === null ||
 			category[fieldName] === '' ||
@@ -111,36 +111,41 @@ function modifyCategory(category, fields) {
 		return;
 	}
 
-	defaultIntField(category, fields, 'minTags', 'minimumTagsPerTopic');
-	defaultIntField(category, fields, 'maxTags', 'maximumTagsPerTopic');
-	defaultIntField(category, fields, 'postQueue', 'postQueue');
+	const hasField = utils.createFieldChecker(fields);
+
+	defaultIntField(category, hasField, 'minTags', 'minimumTagsPerTopic');
+	defaultIntField(category, hasField, 'maxTags', 'maximumTagsPerTopic');
+	defaultIntField(category, hasField, 'postQueue', 'postQueue');
 
 	db.parseIntFields(category, intFields, fields);
 
-	const escapeFields = ['name', 'nickname', 'description', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
+	const escapeFields = [
+		'name', 'nickname', 'description', 'color', 'bgColor',
+		'backgroundImage', 'imageClass', 'class', 'link',
+	];
 	escapeFields.forEach((field) => {
-		if (category.hasOwnProperty(field)) {
+		if (hasField(field)) {
 			category[field] = validator.escape(String(category[field] || ''));
 		}
 	});
 
-	if (category.hasOwnProperty('icon')) {
+	if (hasField('icon')) {
 		category.icon = category.icon || 'hidden';
 	}
 
-	if (category.hasOwnProperty('post_count')) {
+	if (hasField('post_count')) {
 		category.totalPostCount = category.post_count;
 	}
 
-	if (category.hasOwnProperty('topic_count')) {
+	if (hasField('topic_count')) {
 		category.totalTopicCount = category.topic_count;
 	}
 
-	if (category.description) {
+	if (hasField('description')) {
 		category.descriptionParsed = category.descriptionParsed || category.description;
 	}
 
-	if (category.nickname) {
+	if (hasField('nickname')) {
 		category.name = category.nickname;
 	}
 }
