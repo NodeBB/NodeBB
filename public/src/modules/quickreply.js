@@ -19,8 +19,11 @@ define('quickreply', [
 			strategies: [],
 			options: {
 				style: {
-					'z-index': 100,
+					'z-index': 20000,
+					'max-height': '250px',
+					overflow: 'auto',
 				},
+				className: 'dropdown-menu textcomplete-dropdown ghost-scrollbar',
 			},
 		};
 
