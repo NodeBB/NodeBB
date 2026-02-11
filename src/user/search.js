@@ -68,8 +68,7 @@ module.exports = function (User) {
 					username: 'ap.preferredUsername',
 					fullname: 'ap.name',
 				};
-				console.log('group?', new Error('test').stack);
-				if (meta.config.activitypubEnabled && mapping.hasOwn(searchBy)) {
+				if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
 					promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
 				}
 				uids = (await Promise.all(promises)).flat();
