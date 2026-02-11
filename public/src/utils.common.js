@@ -321,7 +321,12 @@ const utils = {
 		}
 		return tag;
 	},
-
+	createFieldChecker: function (fields = []) {
+		const allFields = !fields.length;
+		return function hasField(field) {
+			return allFields || fields.includes(field);
+		};
+	},
 	removePunctuation: function (str) {
 		return str.replace(/[.,-/#!$%^&*;:{}=\-_`<>'"~()?]/g, '');
 	},

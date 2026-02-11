@@ -72,38 +72,70 @@ module.exports = function (Groups) {
 
 function modifyGroup(group, fields) {
 	if (group) {
+		const hasField = utils.createFieldChecker(fields);
+
+		if (hasField('private')) {
+			// Default to private if not set, as groups are private by default
+			group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
+		}
+
 		db.parseIntFields(group, intFields, fields);
 
-		escapeGroupData(group);
-		group.userTitleEnabled = ([null, undefined].includes(group.userTitleEnabled)) ? 1 : group.userTitleEnabled;
-		group.labelColor = validator.escape(String(group.labelColor || '#000000'));
-		group.textColor = validator.escape(String(group.textColor || '#ffffff'));
-		group.icon = validator.escape(String(group.icon || ''));
-		group.createtimeISO = utils.toISOString(group.createtime);
-		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
-		group.memberPostCids = group.memberPostCids || '';
-		group.memberPostCidsArray = group.memberPostCids.split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
+		escapeGroupData(group, hasField);
 
-		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
+		if (hasField('labelColor')) {
+			group.labelColor = validator.escape(String(group.labelColor || '#000000'));
+		}
 
-		group['cover:url'] = group['cover:url'] ?
-			prependRelativePath(group['cover:url']) :
-			coverPhoto.getDefaultGroupCover(group.name);
+		if (hasField('textColor')) {
+			group.textColor = validator.escape(String(group.textColor || '#ffffff'));
+		}
 
-		group['cover:thumb:url'] = group['cover:thumb:url'] ?
-			prependRelativePath(group['cover:thumb:url']) :
-			coverPhoto.getDefaultGroupCover(group.name);
+		if (hasField('icon')) {
+			group.icon = validator.escape(String(group.icon || ''));
+		}
 
-		group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
+		if (hasField('createtime')) {
+			group.createtimeISO = utils.toISOString(group.createtime);
+		}
+
+		if (hasField('memberPostCids')) {
+			group.memberPostCids = group.memberPostCids || '';
+			group.memberPostCidsArray = group.memberPostCids.split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
+		}
+
+		if (hasField('cover:thumb:url')) {
+			group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
+
+			group['cover:thumb:url'] = group['cover:thumb:url'] ?
+				prependRelativePath(group['cover:thumb:url']) :
+				coverPhoto.getDefaultGroupCover(group.name);
+		}
+
+		if (hasField('cover:url')) {
+			group['cover:url'] = group['cover:url'] ?
+				prependRelativePath(group['cover:url']) :
+				coverPhoto.getDefaultGroupCover(group.name);
+		}
+
+		if (hasField('cover:position')) {
+			group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
+		}
 	}
 }
 
-function escapeGroupData(group) {
+function escapeGroupData(group, hasField) {
 	if (group) {
-		group.nameEncoded = encodeURIComponent(group.name);
-		group.displayName = validator.escape(String(group.name));
-		group.description = validator.escape(String(group.description || ''));
-		group.userTitle = validator.escape(String(group.userTitle || ''));
-		group.userTitleEscaped = translator.escape(group.userTitle);
+		if (hasField('name')) {
+			group.nameEncoded = encodeURIComponent(group.name);
+			group.displayName = validator.escape(String(group.name));
+		}
+		if (hasField('description')) {
+			group.description = validator.escape(String(group.description || ''));
+		}
+		if (hasField('userTitle')) {
+			group.userTitle = validator.escape(String(group.userTitle || ''));
+			group.userTitleEscaped = translator.escape(group.userTitle);
+		}
 	}
 }
