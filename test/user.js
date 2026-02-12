@@ -1035,6 +1035,11 @@ describe('User', () => {
 			}
 		});
 
+		it('should return picture and uploaded picture as different values', async () => {
+			const userData = await User.getUserFields(uid, ['picture', 'uploadedpicture']);
+			assert.notStrictEqual(userData.picture, userData.uploadedpicture);
+		});
+
 		it('should set user picture to uploaded', async () => {
 			await User.setUserField(uid, 'uploadedpicture', '/test');
 			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid });
