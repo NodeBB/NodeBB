@@ -259,11 +259,10 @@ module.exports = function (User) {
 			if (user.hasOwnProperty('groupTitle')) {
 				parseGroupTitle(user);
 			}
-
-			if (user.uploadedpicture || user.picture) {
-				const source = (user.picture && user.picture === user.uploadedpicture) ? user.picture : user.uploadedpicture;
-				if (source) {
-					user.uploadedpicture = prependRelativePath(source);
+			const isUsingUploadedPicture = user.picture && user.picture === user.uploadedpicture;
+			if (isUsingUploadedPicture || user.uploadedpicture) {
+				user.uploadedpicture = prependRelativePath(user.uploadedpicture);
+				if (isUsingUploadedPicture) {
 					user.picture = user.uploadedpicture;
 				}
 			}
