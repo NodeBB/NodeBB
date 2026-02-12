@@ -15,6 +15,7 @@ put:
               description: A list of rule IDs in the preferred order. Any omitted IDs will remain in the last-known order, which may conflict with the new ordering.
               items:
                 type: string
+              example: ["be1aee05-2d56-484e-9d83-6212d0f8a033", "81b20d59-85af-44e7-9e52-dadf6ff3c7fb"]
   responses:
     '200':
       description: rules successfully re-ordered
