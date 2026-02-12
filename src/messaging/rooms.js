@@ -16,7 +16,7 @@ const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
 
 const roomUidCache = cacheCreate({
-	name: 'chat:room:uids',
+	name: 'chat-room-uids',
 	max: 500,
 	ttl: 0,
 });

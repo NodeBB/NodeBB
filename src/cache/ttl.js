@@ -7,6 +7,7 @@ module.exports = function (opts) {
 	const chalk = require('chalk');
 
 	const pubsub = require('../pubsub');
+	const tracker = require('./tracker');
 
 	const ttlCache = new TTLCache(opts);
 	if (!opts.name) {
@@ -137,5 +138,6 @@ module.exports = function (opts) {
 		return ttlCache.get(key, { updateAgeOnGet: false });
 	};
 
+	tracker.addCache(opts.name, cache);
 	return cache;
 };

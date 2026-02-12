@@ -11,19 +11,19 @@
 
 	<div>
 		<div class="table-responsive">
-				<table class="table table-sm text-sm">
+				<table id="cache-table" class="table table-sm text-sm">
 					<thead>
 						<tr>
-							<td></td>
-							<td class="text-end">capacity</td>
-							<td class="text-end">count</td>
-							<td class="text-end">size</td>
-							<td class="text-end">hits</td>
-							<td class="text-end">misses</td>
-							<td class="text-end">hit ratio</td>
-							<td class="text-end">hits/sec</td>
-							<td class="text-end">ttl</td>
-							<td></td>
+							<th><a href="#" class="text-reset">name</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">capacity</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">count</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">size</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">hits</a> <i class="fa-solid fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">misses</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">hit ratio</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">hits/sec</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th class="text-end"><a href="#" class="text-reset">ttl</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th></td>
 						</tr>
 					</thead>
 					<tbody class="text-xs">
@@ -34,7 +34,7 @@
 								<div class="form-check form-switch text-sm" data-name="{@key}" style="min-height: initial;">
 									<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
 								</div>
-								[[admin/advanced/cache:{@key}-cache]]
+								{./name}
 							</div>
 						</td>
 						<td class="text-end">{./percentFull}%</td>
@@ -58,8 +58,8 @@
 						<td class="text-end">{./ttl}</td>
 						<td class="">
 							<div class="d-flex justify-content-end gap-1">
-								<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-light btn-sm"><i class="fa fa-download"></i></a>
-								<a class="btn btn-sm btn-danger clear" data-name="{@key}"><i class="fa fa-trash"></i></a>
+								<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={./name}" class="btn btn-light btn-sm"><i class="fa fa-download"></i></a>
+								<a class="btn btn-sm btn-danger clear" data-name="{./name}"><i class="fa fa-trash"></i></a>
 							</div>
 						</td>
 					</tr>
