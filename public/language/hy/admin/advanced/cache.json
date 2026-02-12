@@ -1,10 +1,5 @@
 {
 	"cache": "Քեշ",
-	"post-cache": "Գրառման քեշ",
-	"group-cache": "Խմբի քեշ",
-	"local-cache": "Տեղական քեշ",
-	"object-cache": "Օբյեկտի քեշ",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1%Լրիվ",
 	"post-cache-size": "Գրառման քեշի չափը",
 	"items-in-cache": "Նյութեր քեշում"

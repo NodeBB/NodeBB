@@ -1,10 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Innleggscache",
-	"group-cache": "Gruppecache",
-	"local-cache": "Lokal cache",
-	"object-cache": "Objektcache",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1% fylt",
 	"post-cache-size": "Storleik på innleggscache",
 	"items-in-cache": "Element i cache"
