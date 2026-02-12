@@ -8,7 +8,7 @@
 
 			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 
-			<div class="btn-group" role="group">
+			<div class="dropdown" role="group">
 				<button class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary text-center text-nowrap dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 					[[admin/manage/categories:add-category]]
 					<i class="fa fa-caret-down"></i>

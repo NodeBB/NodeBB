@@ -453,7 +453,7 @@ define('forum/topic/postTools', [
 		require(['chat'], function (chat) {
 			chat.newChat(post.attr('data-uid'));
 		});
-		button.parents('.btn-group').find('.dropdown-toggle').click();
+		button.parents('.dropdown').find('.dropdown-toggle').click();
 		return false;
 	}
 

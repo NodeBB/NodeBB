@@ -21,7 +21,7 @@
 					<option value="250">[[admin/manage/users:250-per-page]]</option>
 					<option value="500">[[admin/manage/users:500-per-page]]</option>
 				</select>
-				<div class="btn-group" id="filter-by">
+				<div class="dropdown d-flex" id="filter-by">
 					<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						[[admin/manage/users:filter-by]] <span class="caret"></span>
 					</button>
@@ -37,7 +37,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="btn-group">
+				<div class="dropdown d-flex">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm overflow-auto" role="menu" style="max-height:75vh;">
 
@@ -75,7 +75,7 @@
 						<li><a href="#" class="dropdown-item rounded-1 delete-user-and-content" role="menuitem"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
 					</ul>
 				</div>
-				<div class="btn-group">
+				<div class="dropdown d-flex">
 					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"><i class="fa fa-gear text-primary"></i></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
 						<li><a class="dropdown-item rounded-1" href="#" data-action="create" role="menuitem">[[admin/manage/users:create]]</a></li>

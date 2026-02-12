@@ -1,5 +1,5 @@
 {{{ if config.loggedIn }}}
-<div class="btn-group bottom-sheet" component="tag/watch">
+<div class="dropdown bottom-sheet" component="tag/watch">
 	<button class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
 		<span component="tag/following/menu" class="d-flex gap-2 align-items-center{{{ if !isFollowing }}} hidden{{{ end }}}">
 			<i class="flex-shrink-0 fa fa-fw fa-bell-o text-primary"></i>
