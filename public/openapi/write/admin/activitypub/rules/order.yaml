@@ -1,0 +1,29 @@
+put:
+  tags:
+    - admin
+  summary: re-order auto-categorization rules
+  description: This operation updates the order of some or all auto-categorization rules.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            rids:
+              type: array
+              description: A list of rule IDs in the preferred order. Any omitted IDs will remain in the last-known order, which may conflict with the new ordering.
+              items:
+                type: string
+  responses:
+    '200':
+      description: rules successfully re-ordered
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray

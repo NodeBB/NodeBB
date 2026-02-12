@@ -280,6 +280,8 @@ paths:
     $ref: 'write/admin/activitypub/rules.yaml'
   /admin/activitypub/rules/{rid}:
     $ref: 'write/admin/activitypub/rules/rid.yaml'
+  /admin/activitypub/rules/order:
+    $ref: 'write/admin/activitypub/rules/order.yaml'
   /admin/activitypub/relays:
     $ref: 'write/admin/activitypub/relays.yaml'
   /admin/activitypub/relays/{url}:
