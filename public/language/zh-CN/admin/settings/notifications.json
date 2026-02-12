@@ -3,5 +3,7 @@
 	"welcome-notification": "欢迎通知",
 	"welcome-notification-link": "欢迎通知链接",
 	"welcome-notification-uid": "用户欢迎通知 (UID)",
-	"post-queue-notification-uid": "发布队列用户（UID）"
+	"post-queue-notification-uid": "发布队列用户（UID）",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
 }
