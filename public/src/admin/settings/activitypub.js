@@ -143,7 +143,7 @@ define('admin/settings/activitypub', [
 			placeholder: 'ui-state-highlight',
 			axis: 'y',
 			update: function () {
-				var rids = [];
+				const rids = [];
 				tbodyEl.find('tr').each(function () {
 					rids.push($(this).data('rid'));
 				});
