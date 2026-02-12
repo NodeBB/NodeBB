@@ -182,7 +182,7 @@
     "composer.replying-to": "Rispondendo a %1",
     "composer.new-topic": "Nuova Discussione",
     "composer.editing-in": "Modifica post in %1",
-    "composer.untitled-topic": "Untitled Topic",
+    "composer.untitled-topic": "Discussione senza titolo",
     "composer.uploading": "caricamento...",
     "composer.thumb-url-label": "Incolla l'URL della miniatura per la discussione",
     "composer.thumb-title": "Aggiungi una miniatura a questa discussione",
@@ -233,5 +233,8 @@
     "unread-posts-link": "Link ai post non letti",
     "thumb-image": "Immagine anteprima della discussione",
     "announcers": "Condivisioni",
-    "announcers-x": "Condivisioni (%1)"
+    "announcers-x": "Condivisioni (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }
