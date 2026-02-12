@@ -11,9 +11,9 @@ define('quickreply', [
 		_autocomplete: null,
 	};
 
-	QuickReply.init = function () {
+	QuickReply.init = function (opts) {
 		const element = components.get('topic/quickreply/text');
-		const qrDraftId = `qr:draft:tid:${ajaxify.data.tid}`;
+		const qrDraftId = ajaxify.data.tid ? `qr:draft:tid:${ajaxify.data.tid}` : `qr:draft:cid:${opts?.body?.cid || -1}`;
 		const data = {
 			element: element,
 			strategies: [],
@@ -68,18 +68,8 @@ define('quickreply', [
 				tid: ajaxify.data.tid,
 				handle: undefined,
 				content: replyMsg,
+				...opts.body,
 			};
-			let replyRoute = '/topics';
-			switch(ajaxify.data.template.name) {
-				case 'topic':
-					replyData.tid = ajaxify.data.tid;
-					replyRoute = `/topics/${ajaxify.data.tid}`;
-					break;
-
-				case 'world':
-					replyData.cid = '-1';
-					break;
-			}
 
 			const replyLen = replyMsg.length;
 			if (replyLen < parseInt(config.minimumPostLength, 10)) {
@@ -90,7 +80,7 @@ define('quickreply', [
 
 			ready = false;
 			element.val('');
-			api.post(replyRoute, replyData, function (err, data) {
+			api.post(opts.route, replyData, function (err, data) {
 				ready = true;
 				if (err) {
 					element.val(replyMsg);
