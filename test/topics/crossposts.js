@@ -87,8 +87,17 @@ describe('Crossposting (& related logic)', () => {
 		it('should not allow a spider (uid -1) to crosspost', async () => {
 			await assert.rejects(
 				topics.crossposts.add(tid, cid2, -1),
-				{ message: '[[error:invalid-uid]]' }
+				{ message: '[[error:not-allowed]]' }
 			);
+		});
+
+		it('should not allow a crosspost if privilege is missing', async () => {
+			await privileges.categories.rescind(['groups:topics:crosspost'], cid2, 'registered-users');
+			await assert.rejects(
+				topics.crossposts.add(tid, cid2, uid),
+				{ message: '[[error:not-allowed]]' }
+			);
+			await privileges.categories.give(['groups:topics:crosspost'], cid2, 'registered-users');
 		});
 
 		it('should successfully crosspost to another cid', async () => {

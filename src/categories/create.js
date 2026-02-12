@@ -59,6 +59,7 @@ module.exports = function (Categories) {
 			'groups:topics:read',
 			'groups:topics:create',
 			'groups:topics:reply',
+			'groups:topics:crosspost',
 			'groups:topics:tag',
 			'groups:posts:edit',
 			'groups:posts:history',

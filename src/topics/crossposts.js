@@ -6,6 +6,7 @@ const topics = require('.');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
+const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 
@@ -56,9 +57,15 @@ Crossposts.add = async function (tid, cid, uid) {
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
 	}
-	const exists = await categories.exists(cid);
+	const [exists, allowed] = await Promise.all([
+		categories.exists(cid),
+		uid === 0 || privileges.categories.can('topics:crosspost', cid, uid),
+	]);
 	if (!exists) {
 		throw new Error('[[error:invalid-cid]]');
+	}
+	if (!allowed) {
+		throw new Error('[[error:not-allowed]]');
 	}
 	if (uid < 0) {
 		throw new Error('[[error:invalid-uid]]');
