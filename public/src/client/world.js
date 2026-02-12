@@ -16,7 +16,12 @@ define('forum/world', [
 	World.init = function () {
 		app.enterRoom('world');
 		categoryTools.init($('#world-feed'));
-		quickreply.init();
+		quickreply.init({
+			route: '/topics',
+			body: {
+				cid: ajaxify.data.cid,
+			},
+		});
 
 		sort.handleSort('categoryTopicSort', 'world');
 
