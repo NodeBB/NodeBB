@@ -40,7 +40,7 @@
 						<td class="text-end">{./percentFull}%</td>
 						<td class="text-end">{{{if ./length}}}{./length}{{{else}}}{./itemCount}{{{end}}} </td>
 						<td class="text-end">
-							{{{ if (@key == "post") }}}
+							{{{ if (./name == "post") }}}
 							<div class="d-flex justify-content-end align-items-center gap-1">
 							<a href="#" data-bs-toggle="tooltip" data-bs-title="Changing the post cache size requires a restart."><i class="fa-regular fa-circle-question"></i></a>
 
