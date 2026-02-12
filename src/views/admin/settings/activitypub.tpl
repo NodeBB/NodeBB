@@ -57,7 +57,7 @@
 						<th>[[admin/settings/activitypub:rules.cid]]</th>
 						<th></th>
 					</thead>
-					<tbody class="sortable-container">
+					<tbody>
 						{{{ each rules }}}
 						<tr data-rid="{./rid}">
 							<td class="align-items-center" style="cursor: move;">
