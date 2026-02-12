@@ -303,7 +303,7 @@ Mocks.category = async (actors) => {
 			slug: `${preferredUsername}@${hostname}`,
 			description: summary,
 			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
-			icon: backgroundImage ? 'fa-none' : 'fa-comments',
+			icon: backgroundImage ? 'fa-nbb-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,
 			backgroundImage,

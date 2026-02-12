@@ -131,6 +131,9 @@ function modifyCategory(category, fields) {
 
 	if (hasField('icon')) {
 		category.icon = category.icon || 'hidden';
+		if (category.icon === 'fa-none') {
+			category.icon = 'fa-nbb-none';
+		}
 	}
 
 	if (hasField('post_count')) {
