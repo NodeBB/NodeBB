@@ -24,6 +24,6 @@ put:
             type: object
             properties:
               status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray
+                $ref: ../../../../components/schemas/admin/rules.yaml#/RulesArray
