@@ -1,10 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Innleggsbuffer",
-	"group-cache": "Gruppebuffer",
-	"local-cache": "Lokalbuffer",
-	"object-cache": "Objektbuffer",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1% fullt",
 	"post-cache-size": "Størrelse på innleggsbuffer",
 	"items-in-cache": "Element i buffer"

@@ -1,10 +1,5 @@
 {
 	"cache": "Bộ nhớ đệm",
-	"post-cache": "Bộ Đệm Bài Đăng",
-	"group-cache": "Bộ Đệm Nhóm",
-	"local-cache": "Bộ Đệm Cục Bộ",
-	"object-cache": "Bộ Đệm Đối Tượng",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1% Đầy",
 	"post-cache-size": "Kích Cỡ Bộ Đệm Bài Đăng",
 	"items-in-cache": "Các Mục trong Bộ Đệm"

@@ -1,10 +1,5 @@
 {
 	"cache": "快取",
-	"post-cache": "貼文快取",
-	"group-cache": "群組快取",
-	"local-cache": "本地快取",
-	"object-cache": "物件快取",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1% 容量",
 	"post-cache-size": "貼文快取大小",
 	"items-in-cache": "快取中的項目數量"

@@ -1,10 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Indlægs Cache",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1% Fuld",
 	"post-cache-size": "Indlægs Cache Størrelse",
 	"items-in-cache": "Ting i Cache"

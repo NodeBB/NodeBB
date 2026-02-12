@@ -1,10 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Onderwerpcache",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
-	"notification-cache": "Notification Cache",
 	"percent-full": "%1%vol",
 	"post-cache-size": "Onderwerpcache grootte",
 	"items-in-cache": "Items in cache"
