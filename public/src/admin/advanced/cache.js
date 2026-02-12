@@ -47,8 +47,8 @@ define('admin/advanced/cache', ['alerts'], function (alerts) {
 				.toggleClass('fa-sort-down', !ascending);
 
 			rows.sort(function (a, b) {
-				const A = $(a).children().eq(columnIndex).text().trim();
-				const B = $(b).children().eq(columnIndex).text().trim();
+				const A = $(a).children().eq(columnIndex).attr('data-sort-value').trim();
+				const B = $(b).children().eq(columnIndex).attr('data-sort-value').trim();
 				// Remove thousands separators
 				const cleanA = A.replace(/,/g, '');
 				const cleanB = B.replace(/,/g, '');
