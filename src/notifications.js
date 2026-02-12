@@ -282,7 +282,10 @@ async function pushToUids(uids, notification) {
 				notificationCache.delete(cacheKey);
 			}
 		} else {
-			await sendEmail({ uids: results.uidsToEmail, notification });
+			notificationCache.set(`delayed:nid:${notification.nid}`, {
+				uids: results.uidsToEmail,
+				notification,
+			});
 		}
 	}
 
@@ -294,8 +297,19 @@ async function pushToUids(uids, notification) {
 	});
 }
 
-async function sendEmail({ uids, notification }, mergeId, reason) {
+async function sendEmail({ uids, notification }, cacheKey, reason) {
 	if ((reason && reason === 'set') || !uids.length) {
+		return;
+	}
+
+	// check if notification already read by users
+	// if so don't send email, https://github.com/NodeBB/NodeBB/issues/5867
+	const hasRead = await db.isMemberOfSortedSets(
+		uids.map(uid => `uid:${uid}:notifications:read`),
+		notification.nid
+	);
+	uids = uids.filter((uid, index) => !hasRead[index]);
+	if (!uids.length) {
 		return;
 	}
 

@@ -21,7 +21,11 @@
 					<label class="form-label">[[admin/settings/notifications:post-queue-notification-uid]]</label>
 					<input type="text" class="form-control" data-field="postQueueNotificationUid">
 				</div>
-
+				<div class="mb-3">
+					<label class="form-label" for="notificationSendDelay">[[admin/settings/notifications:notification-delay]]</label>
+					<input id="notificationSendDelay" type="text" class="form-control" value="60" data-field="notificationSendDelay">
+					<p class="form-text">[[admin/settings/notifications:notification-delay-help]]</p>
+				</div>
 			</div>
 		</div>
 
