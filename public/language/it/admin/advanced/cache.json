@@ -4,6 +4,7 @@
 	"group-cache": "Cache di gruppo",
 	"local-cache": "Cache locale",
 	"object-cache": "Cache oggetti",
+	"notification-cache": "Notification Cache",
 	"percent-full": "%1% Pieno",
 	"post-cache-size": "Dimensione cache dei post",
 	"items-in-cache": "Elementi nella Cache"

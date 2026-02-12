@@ -4,6 +4,7 @@
 	"group-cache": "Group Cache",
 	"local-cache": "Local Cache",
 	"object-cache": "Object Cache",
+	"notification-cache": "Notification Cache",
 	"percent-full": "%1% Plot ",
 	"post-cache-size": "Post Cache Size",
 	"items-in-cache": "Items in Cache"
