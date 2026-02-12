@@ -268,8 +268,8 @@ module.exports = function (Topics) {
 			Topics.addParentPosts([postData], uid),
 			Topics.syncBacklinks(postData),
 			Topics.markAsRead([tid], uid),
-			activitypub.notes.syncUserInboxes(tid, uid),
 		]);
+		activitypub.notes.syncUserInboxes(tid, uid);
 
 		// Returned data is a superset of post summary data
 		postData.user = userInfo;
