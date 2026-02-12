@@ -30,6 +30,8 @@ const notificationCache = ttlCache({
 	dispose: sendEmail,
 });
 
+Notifications.delayCache = notificationCache;
+
 Notifications.baseTypes = [
 	'notificationType_upvote',
 	'notificationType_new-topic',

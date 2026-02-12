@@ -10,6 +10,7 @@ cacheController.get = async function (req, res) {
 	const groupCache = require('../../groups').cache;
 	const { objectCache } = require('../../database');
 	const localCache = require('../../cache');
+	const { delayCache } = require('../../notifications');
 	const uptimeInSeconds = process.uptime();
 	function getInfo(cache) {
 		return {
@@ -32,6 +33,7 @@ cacheController.get = async function (req, res) {
 		post: postCache,
 		group: groupCache,
 		local: localCache,
+		notification: delayCache,
 	};
 	if (objectCache) {
 		caches.object = objectCache;
