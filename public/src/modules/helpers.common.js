@@ -374,11 +374,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function shouldHideReplyContainer(post) {
-		if (post.replies.count <= 0 || post.replies.hasSingleImmediateReply) {
-			return true;
-		}
-
-		return false;
+		return post.replies.count <= 0 || post.replies.hasSingleImmediateReply;
 	}
 
 	function humanReadableNumber(number, toFixed = 1) {
