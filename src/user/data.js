@@ -275,7 +275,7 @@ module.exports = function (User) {
 				user.joindateISO = utils.toISOString(user.joindate);
 			}
 
-			if (user.hasOwnProperty('lastonline')) {
+			if (user.hasOwnProperty('lastonline') && (!requestedFields.length || requestedFields.includes('lastonline')) && !fieldsToRemove.includes('lastonline')) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 

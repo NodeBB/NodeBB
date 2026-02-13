@@ -60,8 +60,6 @@ TopicObject:
             signature:
               type: string
               nullable: true
-            banned:
-              type: number
             status:
               type: string
             icon:text:
@@ -76,6 +74,10 @@ TopicObject:
                 `icon:text` for the user's auto-generated
                 icon
               example: "#f44336"
+            banned:
+              type: number
+            banned_until:
+              type: number
             banned_until_readable:
               type: string
           required:
