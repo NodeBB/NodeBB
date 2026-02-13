@@ -124,9 +124,9 @@ define('quickreply', [
 			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
 			hooks.fire('action:composer.post.new', {
-				tid: ajaxify.data.tid,
-				title: ajaxify.data.titleRaw,
+				title: ajaxify.data.tid ? ajaxify.data.titleRaw : '',
 				body: textEl.val(),
+				...opts.body,
 			});
 			textEl.val('');
 		});

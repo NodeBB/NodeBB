@@ -427,6 +427,9 @@ define('forum/topic', [
 		if (config.enableQuickReply || (config.theme && config.theme.enableQuickReply)) {
 			quickreply.init({
 				route: `/topics/${ajaxify.data.tid}`,
+				body: {
+					tid: ajaxify.data.tid,
+				},
 			});
 		}
 	}
