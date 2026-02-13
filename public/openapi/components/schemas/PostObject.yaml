@@ -139,6 +139,8 @@ PostObject:
               url:
                 type: string
                 description: Relative path to the topic thumbnail
+        teaser:
+          $ref: ../../components/schemas/TeaserObject.yaml#/TeaserObject
       required:
         - uid
         - tid
