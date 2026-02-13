@@ -106,7 +106,7 @@ Notifications.getMultiple = async function (nids) {
 		return userData;
 	});
 	// from can be either uid or cid
-	const userMap = new Map(userKeys.map((from, index) => [from, usersData[index]]));
+	const userMap = new Map(userKeys.map((from, index) => [String(from), usersData[index]]));
 
 	notifications.forEach((notification) => {
 		if (notification) {
@@ -125,8 +125,9 @@ Notifications.getMultiple = async function (nids) {
 			if (notification.bodyLong) {
 				notification.bodyLong = utils.stripHTMLTags(notification.bodyLong, ['img', 'p', 'a']);
 			}
-			if (userMap.has(notification.from)) {
-				notification.user = userMap.get(notification.from);
+			const fromUser = userMap.get(String(notification.from));
+			if (fromUser !== undefined) {
+				notification.user = fromUser;
 			}
 			if (notification.user && notification.from) {
 				notification.image = notification.user.picture || null;
