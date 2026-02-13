@@ -100,13 +100,6 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail to create new topic with empty title', (done) => {
-			topics.post({ uid: fooUid, title: '', content: topic.content, cid: topic.categoryId }, (err) => {
-				assert.ok(err);
-				done();
-			});
-		});
-
 		it('should fail to create new topic with empty content', (done) => {
 			topics.post({ uid: fooUid, title: topic.title, content: '', cid: topic.categoryId }, (err) => {
 				assert.ok(err);
@@ -235,6 +228,27 @@ describe('Topic\'s', () => {
 			assert.strictEqual(replyResult.body.response.user.username, 'guest124');
 			assert.strictEqual(replyResult.body.response.user.displayname, 'guest124');
 			meta.config.allowGuestHandles = oldValue;
+		});
+
+		describe('without a title', () => {
+			before(function () {
+				this.payload = {
+					uid: topic.userId,
+					// title: '',
+					content: topic.content,
+					cid: topic.categoryId,
+				};
+			});
+
+			it('should create a new topic', async function () {
+				this.result = await topics.post(this.payload);
+				assert(this.result);
+			});
+
+			it('should contain a generated title', function () {
+				assert.strictEqual(this.result.title, this.result.content);
+				assert(this.result.topicData.generatedTitle);
+			});
 		});
 	});
 
