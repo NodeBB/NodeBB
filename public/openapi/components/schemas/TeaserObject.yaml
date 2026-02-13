@@ -1,14 +1,24 @@
 TeaserObject:
   type: object
+  nullable: true
   properties:
-    roomId:
+    pid:
       type: number
-    fromuid:
-      type: number
-    content:
+    url:
       type: string
+    uid:
+      type: number
+      description: A user identifier
     timestamp:
       type: number
+    tid:
+      type: number
+      description: A topic identifier
+    content:
+      type: string
+    sourceContent:
+      type: string
+      nullable: true
     timestampISO:
       type: string
       description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -18,15 +28,13 @@ TeaserObject:
         uid:
           type: number
           description: A user identifier
-        isLocal:
-          type: boolean
-          description: Whether the user belongs to the local installation or not.
         username:
           type: string
           description: A friendly name for a given user account
         displayname:
           type: string
-          description: This is either username or fullname depending on forum and user settings
+        isLocal:
+          type: boolean
         userslug:
           type: string
           description: An URL-safe variant of the username (i.e. lower-cased, spaces
@@ -34,10 +42,6 @@ TeaserObject:
         picture:
           nullable: true
           type: string
-        status:
-          type: string
-        lastonline:
-          type: number
         icon:text:
           type: string
           description: A single-letter representation of a username. This is used in the
@@ -50,6 +54,10 @@ TeaserObject:
             `icon:text` for the user's
             auto-generated icon
           example: "#f44336"
-        lastonlineISO:
-          type: string
-  nullable: true
+    topic:
+      type: object
+      additionalProperties: {}
+    index:
+      type: number
+  required:
+    - pid
