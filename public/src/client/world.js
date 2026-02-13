@@ -9,13 +9,8 @@ define('forum/world', [
 	translator, quickreply) {
 	const World = {};
 
-	$(window).on('action:ajaxify.start', function () {
-		categoryTools.removeListeners();
-	});
-
 	World.init = function () {
 		app.enterRoom('world');
-		categoryTools.init($('#world-feed'));
 		quickreply.init({
 			route: '/topics',
 			body: {
@@ -27,6 +22,14 @@ define('forum/world', [
 
 		handleButtons();
 		handleHelp();
+
+		categoryTools.init($('#world-feed'));
+		socket.on('event:new_post', onNewPost);
+		$(window).one('action:ajaxify.start', function () {
+			categoryTools.removeListeners();
+			socket.removeListener('event:new_post', onNewPost);
+		});
+
 
 		// Add label to sort
 		const sortLabelEl = document.getElementById('sort-label');
@@ -215,6 +218,16 @@ define('forum/world', [
 			category.find('[component="category/ignoring/menu"]').toggleClass('hidden', state !== 'ignoring');
 			category.find('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
 		});
+	}
+
+	async function onNewPost({ posts }) {
+		const feedEl = document.getElementById('world-feed');
+		const html = await app.parseAndTranslate('world', 'posts', { posts });
+		if (!feedEl || !html) {
+			return;
+		}
+
+		feedEl.prepend(...html);
 	}
 
 	return World;
