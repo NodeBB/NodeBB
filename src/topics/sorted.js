@@ -74,7 +74,7 @@ module.exports = function (Topics) {
 	}
 
 	async function getInbox(tids, params) {
-		if (params.cids && !params.cids.includes('-1')) {
+		if (!Array.isArray(params.cids) || !params.cids.includes('-1')) {
 			return tids;
 		}
 
@@ -97,7 +97,7 @@ module.exports = function (Topics) {
 			inbox = await db[method](`uid:${params.uid}:inbox`, 0, meta.config.recentMaxTopics - 1);
 		}
 
-		return tids.concat(inbox);
+		return _.uniq(tids.concat(inbox));
 	}
 
 	function sortToSet(sort) {
