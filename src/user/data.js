@@ -118,31 +118,22 @@ module.exports = function (User) {
 	};
 
 	function ensureRequiredFields(fields, fieldsToRemove) {
-		function addField(field) {
-			if (!fields.includes(field)) {
-				fields.push(field);
-				fieldsToRemove.push(field);
-			}
-		}
-
 		if (fields.length && !fields.includes('uid')) {
 			fields.push('uid');
 		}
 
-		if (fields.includes('picture')) {
-			addField('uploadedpicture');
-		}
-
-		if (fields.includes('status')) {
-			addField('lastonline');
-		}
-
-		if (fields.includes('banned') && !fields.includes('banned:expire')) {
-			addField('banned:expire');
-		}
-
-		if (fields.includes('username') && !fields.includes('fullname')) {
-			addField('fullname');
+		const requiredFields = {
+			picture: 'uploadedpicture',
+			status: 'lastonline',
+			banned: 'banned:expire',
+			'banned:expire': 'banned',
+			username: 'fullname',
+		};
+		for (const [key, field] of Object.entries(requiredFields)) {
+			if (fields.includes(key) && !fields.includes(field)) {
+				fields.push(field);
+				fieldsToRemove.push(field);
+			}
 		}
 	}
 
@@ -246,7 +237,7 @@ module.exports = function (User) {
 			}
 
 			if (user.hasOwnProperty('email')) {
-				user.email = validator.escape(user.email ? user.email.toString() : '');
+				user.email = validator.escape(String(user.email || ''));
 			}
 
 			if (!user.uid && !activitypub.helpers.isUri(user.uid)) {
@@ -280,19 +271,6 @@ module.exports = function (User) {
 				user.status = User.getStatus(user);
 			}
 
-			for (let i = 0; i < fieldsToRemove.length; i += 1) {
-				user[fieldsToRemove[i]] = undefined;
-			}
-
-			// User Icons
-			if (requestedFields.includes('picture') && user.username && user.uid !== 0 && !meta.config.defaultAvatar) {
-				if (!iconBackgrounds.includes(user['icon:bgColor'])) {
-					const nameAsIndex = Array.from(user.username).reduce((cur, next) => cur + next.charCodeAt(), 0);
-					user['icon:bgColor'] = iconBackgrounds[nameAsIndex % iconBackgrounds.length];
-				}
-				user['icon:text'] = (user.username[0] || '').toUpperCase();
-			}
-
 			if (user.hasOwnProperty('joindate')) {
 				user.joindateISO = utils.toISOString(user.joindate);
 			}
@@ -305,7 +283,18 @@ module.exports = function (User) {
 				user.muted = user.mutedUntil > Date.now();
 			}
 
-			if (user.hasOwnProperty('banned') || user.hasOwnProperty('banned:expire')) {
+			user.isLocal = utils.isNumber(user.uid);
+
+			// User Icons
+			if (requestedFields.includes('picture') && user.username && user.uid !== 0 && !meta.config.defaultAvatar) {
+				if (!iconBackgrounds.includes(user['icon:bgColor'])) {
+					const nameAsIndex = Array.from(user.username).reduce((cur, next) => cur + next.charCodeAt(), 0);
+					user['icon:bgColor'] = iconBackgrounds[nameAsIndex % iconBackgrounds.length];
+				}
+				user['icon:text'] = (user.username[0] || '').toUpperCase();
+			}
+
+			if (user.hasOwnProperty('banned') && user.hasOwnProperty('banned:expire')) {
 				const result = User.bans.calcExpiredFromUserData(user);
 				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
@@ -316,9 +305,17 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
-
-			user.isLocal = utils.isNumber(user.uid);
 		});
+
+		// remove fields that were added just for processing
+		fieldsToRemove.forEach((field) => {
+			users.forEach((user) => {
+				if (user) {
+					user[field] = undefined;
+				}
+			});
+		});
+
 		if (unbanUids.length) {
 			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
 		}
