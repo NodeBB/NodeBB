@@ -48,6 +48,33 @@ get:
                   hasFollowers:
                     type: boolean
                     nullable: true
+                  privileges:
+                    type: object
+                    properties:
+                      topics:create:
+                        type: boolean
+                      topics:read:
+                        type: boolean
+                      topics:schedule:
+                        type: boolean
+                      topics:tag:
+                        type: boolean
+                      read:
+                        type: boolean
+                      posts:view_deleted:
+                        type: boolean
+                      cid:
+                        type: string
+                        example: '-1'
+                      uid:
+                        type: number
+                        description: A user identifier
+                      editable:
+                        type: boolean
+                      view_deleted:
+                        type: boolean
+                      isAdminOrMod:
+                        type: boolean
                   title:
                     type: string
                   topicCount:
