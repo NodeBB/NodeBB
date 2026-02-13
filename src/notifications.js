@@ -86,7 +86,7 @@ Notifications.getMultiple = async function (nids) {
 	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjects(keys);
 
-	const userKeys = notifications.map(n => n && n.from);
+	const userKeys = notifications.filter(n => n && n.from).map(n => n.from);
 	let [usersData, categoriesData] = await Promise.all([
 		User.getUsersFields(userKeys, ['username', 'userslug', 'picture']),
 		categories.getCategoriesFields(userKeys, ['cid', 'name', 'slug', 'picture']),
@@ -105,8 +105,10 @@ Notifications.getMultiple = async function (nids) {
 
 		return userData;
 	});
+	// from can be either uid or cid
+	const userMap = new Map(userKeys.map((from, index) => [from, usersData[index]]));
 
-	notifications.forEach((notification, index) => {
+	notifications.forEach((notification) => {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
@@ -123,8 +125,9 @@ Notifications.getMultiple = async function (nids) {
 			if (notification.bodyLong) {
 				notification.bodyLong = utils.stripHTMLTags(notification.bodyLong, ['img', 'p', 'a']);
 			}
-
-			notification.user = usersData[index];
+			if (userMap.has(notification.from)) {
+				notification.user = userMap.get(notification.from);
+			}
 			if (notification.user && notification.from) {
 				notification.image = notification.user.picture || null;
 				if (notification.user.username === '[[global:guest]]') {
@@ -166,7 +169,7 @@ Notifications.create = async function (data) {
 	const oldNotif = await db.getObject(`notifications:${data.nid}`);
 	if (
 		oldNotif &&
-		parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) &&
+		String(oldNotif.pid, 10) === String(data.pid, 10) &&
 		parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)
 	) {
 		return null;
