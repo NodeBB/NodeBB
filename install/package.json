@@ -124,7 +124,7 @@
         "pretty": "^2.0.0",
         "progress-webpack-plugin": "1.0.16",
         "prompt": "1.3.0",
-        "qs": "6.14.1",
+        "qs": "6.14.2",
         "redis": "5.10.0",
         "rimraf": "6.1.2",
         "rss": "1.2.2",
