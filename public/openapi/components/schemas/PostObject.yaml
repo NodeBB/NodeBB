@@ -176,6 +176,8 @@ PostObject:
       type: boolean
     replies:
       type: number
+    bookmarks:
+      type: number
 PostDataObject:
   description: The output as returned from `Posts.getPostsData`
   allOf:
