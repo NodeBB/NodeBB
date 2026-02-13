@@ -298,70 +298,46 @@ ajaxify.widgets = { render: render };
 	ajaxify.updateTitle = updateTitle;
 
 	function updateTags() {
-		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(function (val) {
-			return new RegExp(val);
-		});
+		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(val => new RegExp(val));
 		const linkWhitelist = ['canonical', 'alternate', 'up'];
 
 		// Delete the old meta tags
-		Array.prototype.slice
-			.call(document.querySelectorAll('head meta'))
-			.filter(function (el) {
-				const name = el.getAttribute('property') || el.getAttribute('name');
-				return metaWhitelist.some(function (exp) {
-					return !!exp.test(name);
-				});
-			})
-			.forEach(function (el) {
-				document.head.removeChild(el);
-			});
+		document.querySelectorAll('head meta').forEach(el => {
+			const name = el.getAttribute('property') || el.getAttribute('name') || '';
+			if (metaWhitelist.some(exp => exp.test(name))) {
+				el.remove();
+			}
+		});
 
 		// Add new meta tags
-		ajaxify.data._header.tags.meta
-			.filter(function (tagObj) {
-				const name = tagObj.name || tagObj.property;
-				return metaWhitelist.some(function (exp) {
-					return !!exp.test(name);
-				});
-			}).forEach(async function (tagObj) {
+		ajaxify.data._header.tags.meta.forEach(async (tagObj) => {
+			const name = tagObj.name || tagObj.property;
+			if (metaWhitelist.some(exp => exp.test(name))) {
 				if (tagObj.content) {
 					tagObj.content = await translator.translate(tagObj.content);
 				}
 				const metaEl = document.createElement('meta');
-				Object.keys(tagObj).forEach(function (prop) {
-					metaEl.setAttribute(prop, tagObj[prop]);
-				});
+				Object.keys(tagObj).forEach(prop => metaEl.setAttribute(prop, tagObj[prop]));
 				document.head.appendChild(metaEl);
-			});
-
+			}
+		});
 
 		// Delete the old link tags
-		Array.prototype.slice
-			.call(document.querySelectorAll('head link'))
-			.filter(function (el) {
-				const name = el.getAttribute('rel');
-				return linkWhitelist.some(function (item) {
-					return item === name;
-				});
-			})
-			.forEach(function (el) {
-				document.head.removeChild(el);
-			});
+		document.querySelectorAll('head link').forEach(el => {
+			const name = el.getAttribute('rel');
+			if (linkWhitelist.some(item => item === name)) {
+				el.remove();
+			}
+		});
 
 		// Add new link tags
-		ajaxify.data._header.tags.link
-			.filter(function (tagObj) {
-				return linkWhitelist.some(function (item) {
-					return item === tagObj.rel;
-				});
-			})
-			.forEach(function (tagObj) {
+		ajaxify.data._header.tags.link.forEach(async (tagObj) => {
+			if (linkWhitelist.some(item => item === tagObj.rel)) {
 				const linkEl = document.createElement('link');
-				Object.keys(tagObj).forEach(function (prop) {
-					linkEl.setAttribute(prop, tagObj[prop]);
-				});
+				Object.keys(tagObj).forEach(prop => linkEl.setAttribute(prop, tagObj[prop]));
 				document.head.appendChild(linkEl);
-			});
+			}
+		});
 	}
 
 	ajaxify.end = function (url, tpl_url) {
