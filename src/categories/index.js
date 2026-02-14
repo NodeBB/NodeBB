@@ -8,8 +8,10 @@ const user = require('../user');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 const cache = require('../cache');
 const meta = require('../meta');
+const utils = require('../utils');
 
 const Categories = module.exports;
 
@@ -26,9 +28,14 @@ require('./search')(Categories);
 Categories.icons = require('./icon');
 
 Categories.exists = async function (cids) {
-	return await db.exists(
-		Array.isArray(cids) ? cids.map(cid => `category:${cid}`) : `category:${cids}`
-	);
+	let keys;
+	if (Array.isArray(cids)) {
+		keys = cids.map(cid => (utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`));
+	} else {
+		keys = utils.isNumber(cids) ? `category:${cids}` : `categoryRemote:${cids}`;
+	}
+
+	return await db.exists(keys);
 };
 
 Categories.existsByHandle = async function (handle) {
@@ -51,12 +58,13 @@ Categories.getCategoryById = async function (data) {
 		Categories.getTopicCount(data),
 		Categories.getWatchState([data.cid], data.uid),
 		getChildrenTree(category, data.uid),
+		!utils.isNumber(data.cid) ? activitypub.actors.getFollowers(data.cid) : null,
 	];
 
 	if (category.parentCid) {
 		promises.push(Categories.getCategoryData(category.parentCid));
 	}
-	const [topics, topicCount, watchState, , parent] = await Promise.all(promises);
+	const [topics, topicCount, watchState, , localFollowers, parent] = await Promise.all(promises);
 
 	category.topics = topics.topics;
 	category.nextStart = topics.nextStart;
@@ -65,6 +73,7 @@ Categories.getCategoryById = async function (data) {
 	category.isTracked = watchState[0] === Categories.watchStates.tracking;
 	category.isNotWatched = watchState[0] === Categories.watchStates.notwatching;
 	category.isIgnored = watchState[0] === Categories.watchStates.ignoring;
+	category.hasFollowers = localFollowers ? (localFollowers.uids.size + localFollowers.cids.size) > 0 : localFollowers;
 	category.parent = parent;
 
 	calculateTopicPostCount(category);
@@ -76,7 +85,16 @@ Categories.getCategoryById = async function (data) {
 };
 
 Categories.getCidByHandle = async function (handle) {
-	return await db.sortedSetScore('categoryhandle:cid', handle);
+	if (!handle) {
+		return null;
+	}
+	let cid = await db.sortedSetScore('categoryhandle:cid', handle);
+	if (!cid) {
+		// remote cids
+		cid = await db.getObjectField('handle:cid', handle);
+	}
+
+	return cid;
 };
 
 Categories.getAllCidsFromSet = async function (key) {
@@ -86,7 +104,7 @@ Categories.getAllCidsFromSet = async function (key) {
 	}
 
 	cids = await db.getSortedSetRange(key, 0, -1);
-	cids = cids.map(cid => parseInt(cid, 10));
+	cids = cids.map(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 	cache.set(key, cids);
 	return cids.slice();
 };
@@ -250,7 +268,6 @@ async function getChildrenTree(category, uid) {
 	}
 	let childrenData = await Categories.getCategoriesData(childrenCids);
 	childrenData = childrenData.filter(Boolean);
-	childrenCids = childrenData.map(child => child.cid);
 	Categories.getTree([category].concat(childrenData), category.parentCid);
 }
 
@@ -259,7 +276,7 @@ Categories.getChildrenTree = getChildrenTree;
 Categories.getParentCids = async function (currentCid) {
 	let cid = currentCid;
 	const parents = [];
-	while (parseInt(cid, 10)) {
+	while (utils.isNumber(cid) ? parseInt(cid, 10) : cid) {
 		// eslint-disable-next-line
 		cid = await Categories.getCategoryField(cid, 'parentCid');
 		if (cid) {
@@ -274,12 +291,12 @@ Categories.getChildrenCids = async function (rootCid) {
 	async function recursive(keys) {
 		let childrenCids = await db.getSortedSetRange(keys, 0, -1);
 
-		childrenCids = childrenCids.filter(cid => !allCids.includes(parseInt(cid, 10)));
+		childrenCids = childrenCids.filter(cid => !allCids.includes(utils.isNumber(cid) ? parseInt(cid, 10) : cid));
 		if (!childrenCids.length) {
 			return;
 		}
 		keys = childrenCids.map(cid => `cid:${cid}:children`);
-		childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
+		childrenCids.forEach(cid => allCids.push(utils.isNumber(cid) ? parseInt(cid, 10) : cid));
 		await recursive(keys);
 	}
 	const key = `cid:${rootCid}:children`;

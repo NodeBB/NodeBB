@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
 const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
@@ -23,8 +24,10 @@ const url = nconf.get('url');
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		if (typeof error === 'string') {
+			winston.error(`${new Error(error).stack}`);
 			return res.status(httpStatus).send(error);
 		}
+		winston.error(`${new Error(JSON.stringify(error)).stack}`);
 		return res.status(httpStatus).json(error);
 	}
 	const middleware = require('../middleware');
@@ -40,6 +43,7 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 };
 
 helpers.terms = {
+	alltime: 'alltime',
 	daily: 'day',
 	weekly: 'week',
 	monthly: 'month',
@@ -101,7 +105,7 @@ helpers.buildFilters = function (url, filter, query) {
 helpers.buildTerms = function (url, term, query) {
 	return [{
 		name: '[[recent:alltime]]',
-		url: url + helpers.buildQueryString(query, 'term', ''),
+		url: url + helpers.buildQueryString(query, 'term', 'alltime'),
 		selected: term === 'alltime',
 		term: 'alltime',
 	}, {
@@ -506,7 +510,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
 
-		if (global.env === 'development') {
+		if (process.env.NODE_ENV === 'development') {
 			returnPayload.stack = payload.stack;
 			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
 			process.stdout.write(payload.stack);

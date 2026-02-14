@@ -6,7 +6,6 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
 			<div class="modal-body">
-				<div class="alert alert-danger hide" id="create-modal-error"></div>
 				<form>
 					<div class="mb-3">
 						<label class="form-label" for="create-group-name">[[admin/manage/groups:name]]</label>

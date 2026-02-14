@@ -194,6 +194,12 @@ describe('Upload Controllers', () => {
 			assert(body.response.images[0].url);
 		});
 
+		it('should upload a file with utf8 characters in the name to a post', async () => {
+			const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/测试.jpg'), {}, jar, csrf_token);
+
+			assert(body.response.images[0].url.endsWith('测试.jpg'));
+		});
+
 		it('should fail to upload image to post if image dimensions are too big', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
@@ -205,7 +211,7 @@ describe('Upload Controllers', () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
 			assert(body && body.status && body.status.message);
-			assert.strictEqual(body.status.message, 'Input file contains unsupported image format');
+			assert.strictEqual(body.status.message, 'pngload_buffer: end of stream');
 		});
 
 		it('should fail if file is not an image', (done) => {
@@ -338,6 +344,15 @@ describe('Upload Controllers', () => {
 			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.png`);
 		});
 
+		it('should upload svg as category image after cleaning it up', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/dirty.svg'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token);
+			assert.equal(response.statusCode, 200);
+			assert(Array.isArray(body));
+			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/category/category-1.svg`);
+			const svgContents = await fs.readFile(path.join(__dirname, '../test/uploads/category/category-1.svg'), 'utf-8');
+			assert.strictEqual(svgContents.includes('<script>'), false);
+		});
+
 		it('should upload default avatar', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadDefaultAvatar`, path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token);
 			assert.equal(response.statusCode, 200);
@@ -351,10 +366,13 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should upload favicon', async () => {
-			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadfavicon`, path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token);
+			const { response, body } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/admin/uploadfavicon`,
+				path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token
+			);
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body));
-			assert.equal(body[0].url, '/assets/uploads/system/favicon.ico');
+			assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/system/favicon.ico`);
 		});
 
 		it('should upload touch icon', async () => {

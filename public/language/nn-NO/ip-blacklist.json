@@ -5,7 +5,7 @@
 	"validate": "Valider",
 	"apply": "Bruk",
 	"hints": "Tips",
-	"hint-1": "Definer éi IP-adresse per linje. Du kan leggje til IP-blokker så lenge dei følgjer CIDR-formatet (t.d. 192.168.100.0/22).",
+	"hint-1": "Definer éi IP-adresse per linje. Du kan leggje til IP-blokker så lenge dei følger CIDR-formatet (t.d. 192.168.100.0/22).",
 	"hint-2": "Pass på å validere reglane før du tek dei i bruk.",
 
 	"validate.x-valid": "<strong>%1</strong> av <strong>%2</strong> reglar er gyldige.",

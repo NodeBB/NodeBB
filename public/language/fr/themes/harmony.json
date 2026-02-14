@@ -1,6 +1,8 @@
 {
 	"theme-name": "Thème Harmony",
 	"skins": "Habillages",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "Réduire",
 	"expand": "Développer",
 	"sidebar-toggle": "Réduire la barre latérale",

@@ -23,6 +23,7 @@
 	"purge": "Xóa <strong>Người Dùng</strong> và <strong>Nội Dung</strong>",
 	"download-csv": "Tải về CSV",
 	"custom-user-fields": "Trường Người Dùng Tùy Chỉnh",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Quản Lý Nhóm",
 	"set-reputation": "Đặt Uy Tín",
 	"add-group": "Thêm Nhóm",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "Dài",
 	"temp-ban.reason": "Lý do <span class=\"text-muted\">(Không bắt buộc)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Giờ",
 	"temp-ban.days": "Ngày",
 	"temp-ban.explanation": "Nhập khoảng thời gian cho lệnh cấm. Lưu ý rằng thời gian bằng 0 sẽ là một lệnh cấm vĩnh viễn.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Bạn có chắc muốn cấm người dùng này <strong>mãi mãi</strong>?",
 	"alerts.confirm-ban-multi": "Bạn có chắc muốn cấm những người dùng này <strong>mãi mãi</strong>?",
@@ -119,7 +122,7 @@
 	"alerts.create-success": "Đã tạo người dùng!",
 
 	"alerts.prompt-email": "Thư điện tử:",
-	"alerts.email-sent-to": "Email mời đã được gửi đến %1",
+	"alerts.email-sent-to": "Một email mời đã được gửi đến %1",
 	"alerts.x-users-found": "Tìm được %1 người, (%2 giây)",
 	"alerts.select-a-single-user-to-change-email": "Chọn một người dùng để thay đổi email",
 	"export": "Xuất",

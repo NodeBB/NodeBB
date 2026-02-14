@@ -117,6 +117,12 @@ describe('Hash methods', () => {
 			const result = await db.getObject('emptykey');
 			assert.deepStrictEqual(result, null);
 		});
+
+		it('should return null if a field is set to null', async () => {
+			await db.setObject('nullFieldTest', { baz: 'baz', foo: null });
+			const data = await db.getObjectFields('nullFieldTest', ['baz', 'foo']);
+			assert.deepStrictEqual(data, { baz: 'baz', foo: null });
+		});
 	});
 
 	describe('setObjectField()', () => {
@@ -277,6 +283,16 @@ describe('Hash methods', () => {
 				assert.equal(data, null);
 				done();
 			});
+		});
+
+		it('should return null if field is falsy', async () => {
+			const values = await Promise.all([
+				db.getObjectField('hashTestObject', ''),
+				db.getObjectField('hashTestObject', null),
+				db.getObjectField('hashTestObject', false),
+				db.getObjectField('hashTestObject', undefined),
+			]);
+			assert.deepStrictEqual(values, [null, null, null, null]);
 		});
 
 		it('should return null and not error', async () => {

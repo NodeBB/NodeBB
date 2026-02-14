@@ -7,6 +7,8 @@ const emailer = require('../emailer');
 const db = require('../database');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const plugins = require('../plugins');
+const translator = require('../translator');
 
 module.exports = function (User) {
 	User.bans = {};
@@ -50,19 +52,26 @@ module.exports = function (User) {
 		}
 
 		// Email notification of ban
-		const username = await User.getUserField(uid, 'username');
+		const [username, settings] = await Promise.all([
+			User.getUserField(uid, 'username'),
+			User.getSettings(uid),
+		]);
 		const siteTitle = meta.config.title || 'NodeBB';
 
-		const data = {
+		await emailer.send('banned', uid, {
 			subject: `[[email:banned.subject, ${siteTitle}]]`,
 			username: username,
 			until: until ? (new Date(until)).toUTCString().replace(/,/g, '\\,') : false,
-			reason: reason,
-		};
-		await emailer.send('banned', uid, data).catch(err => winston.error(`[emailer.send] ${err.stack}`));
+			reason: await parseReason(reason, settings.userLang),
+		}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 
 		return banData;
 	};
+
+	async function parseReason(reason, lang) {
+		const parsed = await plugins.hooks.fire('filter:parse.raw', reason);
+		return await translator.translate(parsed, lang);
+	}
 
 	User.bans.unban = async function (uids, reason = '') {
 		const isArray = Array.isArray(uids);
@@ -154,5 +163,20 @@ module.exports = function (User) {
 		}
 		const banObj = await db.getObject(keys[0]);
 		return banObj && banObj.reason ? banObj.reason : '';
+	};
+
+	User.bans.getCustomReasons = async function ({ type = '' } = {}) {
+		const keys = await db.getSortedSetRange('custom-reasons', 0, -1);
+		type = type || '';
+		const reasons = (await db.getObjects(keys.map(k => `custom-reason:${k}`))).filter(Boolean);
+		await Promise.all(reasons.map(async (reason, i) => {
+			reason.key = i;
+			reason.parsedBody = translator.escape(await plugins.hooks.fire('filter:parse.raw', reason.body || ''));
+			reason.body = translator.escape(reason.body);
+		}));
+		if (type !== '') {
+			return reasons.filter(reason => reason.type === type || reason.type === '');
+		}
+		return reasons;
 	};
 };

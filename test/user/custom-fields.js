@@ -91,6 +91,14 @@ describe('custom user fields', () => {
 		await assert.rejects(
 			user.updateProfile(highRepUid, {
 				uid: highRepUid,
+				website: 'javascript:alert("xss")',
+			}),
+			{ message: '[[error:custom-user-field-invalid-link, Website]]' },
+		);
+
+		await assert.rejects(
+			user.updateProfile(highRepUid, {
+				uid: highRepUid,
 				soccerTeam: 'not-in-options',
 			}),
 			{ message: '[[error:custom-user-field-select-value-invalid, Soccer Team]]' },

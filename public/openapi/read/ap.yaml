@@ -14,8 +14,8 @@ get:
       name: resource
       schema:
         type: string
-      description: A URL to query for potential ActivityPub resource
-      example: 'https://example.org/ap'
+      description: A URL-encoded address to query for potential ActivityPub resource
+      example: 'https://try.nodebb.org/uid/1'
   responses:
     "200":
       description: Sent if the `/api` prefix is used. The `X-Redirect` header is sent with the redirection target.
@@ -24,7 +24,7 @@ get:
           schema:
             type: string
     "307":
-      description: Redirect the user to the local representation or original URL.
+      description: Redirect the user to the local representation or /outgoing interstitial page for original URL.
       headers:
         Location:
           schema:

@@ -4,7 +4,6 @@
 const assert = require('assert');
 const validator = require('validator');
 const { JSDOM } = require('jsdom');
-const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', () => {
@@ -44,14 +43,30 @@ describe('Utility Methods', () => {
 		done();
 	});
 
-	it('should preserve case if requested', (done) => {
-		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
-		done();
-	});
+	describe('utils.stripBidiControls', () => {
+		it('should remove common bidi embedding and override controls', () => {
+			const input = '\u202AHello\u202C \u202BWorld\u202C \u202DDwellers\u202E';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'Hello World Dwellers');
+		});
 
-	it('should work if a number is passed in', (done) => {
-		assert.strictEqual(slugify(12345), '12345');
-		done();
+		it('should remove common bidi embedding and override controls if they are lowercase', () => {
+			const input = '\u202aHello\u202c \u202bWorld\u202c \u202dDwellers\u202e';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'Hello World Dwellers');
+		});
+
+		it('should remove bidirectional isolate formatting characters', () => {
+			const input = '\u2066abc\u2067def\u2068ghi\u2069';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'abcdefghi');
+		});
+
+		it('should leave normal text unchanged', () => {
+			const input = 'plain text 123';
+			const out = utils.stripBidiControls(input);
+			assert.strictEqual(out, 'plain text 123');
+		});
 	});
 
 	describe('username validation', () => {
@@ -65,6 +80,17 @@ describe('Utility Methods', () => {
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 
+		it('rejects string with only spaces', () => {
+			const username = '    ';
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
+		it('rejects string with tabs', () => {
+			// eslint-disable-next-line @stylistic/js/no-tabs
+			const username = '		';
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
 		it('should reject new lines', () => {
 			assert.equal(utils.isUserNameValid('myusername\r\n'), false);
 		});
@@ -75,6 +101,11 @@ describe('Utility Methods', () => {
 
 		it('should reject tabs', () => {
 			assert.equal(utils.isUserNameValid('myusername\t'), false);
+		});
+
+		it('should reject hangul filler U+3164', () => {
+			assert.equal(utils.isUserNameValid('myusernameㅤ'), false);
+			assert.equal(utils.isUserNameValid('ㅤㅤㅤ'), false);
 		});
 
 		it('accepts square brackets', () => {
@@ -264,15 +295,7 @@ describe('Utility Methods', () => {
 
 	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('100'), '100');
-		done();
-	});
-
-	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000'), '1,000');
-		done();
-	});
-
-	it('should add commas to numbers', (done) => {
 		assert.equal(utils.addCommas('1000000'), '1,000,000');
 		done();
 	});
@@ -293,18 +316,18 @@ describe('Utility Methods', () => {
 	});
 
 	it('should return false if browser is not android', (done) => {
-		global.navigator = {
+		const navigator = {
 			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36',
 		};
-		assert.equal(utils.isAndroidBrowser(), false);
+		assert.equal(utils.isAndroidBrowser(navigator.userAgent), false);
 		done();
 	});
 
 	it('should return true if browser is android', (done) => {
-		global.navigator = {
+		const navigator = {
 			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Android /58.0.3029.96 Safari/537.36',
 		};
-		assert.equal(utils.isAndroidBrowser(), true);
+		assert.equal(utils.isAndroidBrowser(navigator.userAgent), true);
 		done();
 	});
 
@@ -322,6 +345,39 @@ describe('Utility Methods', () => {
 
 	it('should get url params', (done) => {
 		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp=2' });
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
+		done();
+	});
+
+	it('should get url params for relative url', (done) => {
+		const params = utils.params({
+			url: '/page?foo=1&bar=test&herp=2',
+			relative_path: '',
+		});
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
+		done();
+	});
+
+	it('should get url params for relative url', (done) => {
+		const params = utils.params({
+			url: '/page?foo=1&bar=test&herp=2',
+			relative_path: '/forum',
+		});
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
+		done();
+	});
+
+	it('should get url params for relative url', (done) => {
+		const params = utils.params({
+			url: '/forum/page?foo=1&bar=test&herp=2',
+			relative_path: '/forum',
+		});
 		assert.strictEqual(params.foo, 1);
 		assert.strictEqual(params.bar, 'test');
 		assert.strictEqual(params.herp, 2);

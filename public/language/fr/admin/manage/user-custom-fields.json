@@ -1,8 +1,8 @@
 {
-	"title": "Manage Custom User Fields",
-	"create-field": "Create Field",
-	"edit-field": "Edit Field",
-	"manage-custom-fields": "Manage Custom Fields",
+	"title": "Gérer les champs utilisateur personnalisés",
+	"create-field": "Créer un champ",
+	"edit-field": "Editer un champ",
+	"manage-custom-fields": "Gérer les champs personnalisés",
 	"type-of-input": "Type of input",
 	"key": "Key",
 	"name": "Name",

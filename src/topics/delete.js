@@ -8,6 +8,7 @@ const categories = require('../categories');
 const flags = require('../flags');
 const plugins = require('../plugins');
 const batch = require('../batch');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (Topics) {
@@ -24,6 +25,7 @@ module.exports = function (Topics) {
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
+			activitypub.out.remove.context(uid, tid),
 		]);
 
 		await categories.updateRecentTidForCid(cid);
@@ -71,14 +73,11 @@ module.exports = function (Topics) {
 	};
 
 	Topics.purge = async function (tid, uid) {
-		const [deletedTopic, tags] = await Promise.all([
-			Topics.getTopicData(tid),
-			Topics.getTopicTags(tid),
-		]);
+		const deletedTopic = await Topics.getTopicData(tid);
 		if (!deletedTopic) {
 			return;
 		}
-		deletedTopic.tags = tags;
+		deletedTopic.tags = deletedTopic.tags.map(tag => tag.value);
 		await deleteFromFollowersIgnorers(tid);
 
 		await Promise.all([
@@ -100,6 +99,7 @@ module.exports = function (Topics) {
 			Topics.deleteTopicTags(tid),
 			Topics.events.purge(tid),
 			Topics.thumbs.deleteAll(tid),
+			Topics.crossposts.removeAll(tid),
 			reduceCounters(tid),
 		]);
 		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });
@@ -145,8 +145,8 @@ module.exports = function (Topics) {
 		const postCountChange = incr * topicData.postcount;
 		await Promise.all([
 			db.incrObjectFieldBy('global', 'postCount', postCountChange),
-			db.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),
-			db.incrObjectFieldBy(`category:${topicData.cid}`, 'topic_count', incr),
+			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'post_count', postCountChange),
+			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'topic_count', incr),
 		]);
 	}
 };

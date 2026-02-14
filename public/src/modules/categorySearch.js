@@ -4,7 +4,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
-		let categoriesList = null;
+		let categoriesList = options.defaultCategories || null;
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'tracking', 'notwatching', 'ignoring'];
@@ -13,6 +13,9 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 		let localCategories = [];
 		if (Array.isArray(options.localCategories)) {
 			localCategories = options.localCategories.map(c => ({ ...c }));
+			if (categoriesList) {
+				categoriesList = [...localCategories, ...categoriesList];
+			}
 		}
 		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 
@@ -73,6 +76,8 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				privilege: options.privilege,
 				states: options.states,
 				showLinks: options.showLinks,
+				localOnly: options.localOnly,
+				hideUncategorized: options.hideUncategorized,
 			}, function (err, { categories }) {
 				if (err) {
 					return alerts.error(err);
@@ -90,6 +95,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				categoryItems: categories.slice(0, 200),
 				selectedCategory: ajaxify.data.selectedCategory,
 				allCategoriesUrl: ajaxify.data.allCategoriesUrl,
+				hideAll: options.hideAll,
 			}, function (html) {
 				el.find('[component="category/list"]')
 					.html(html.find('[component="category/list"]').html());

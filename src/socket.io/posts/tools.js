@@ -5,12 +5,13 @@ const nconf = require('nconf');
 const db = require('../../database');
 const posts = require('../../posts');
 const flags = require('../../flags');
-const events = require('../../events');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const social = require('../../social');
 const user = require('../../user');
 const utils = require('../../utils');
+const sockets = require('../index');
+const api = require('../../api');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.loadPostTools = async function (socket, data) {
@@ -77,23 +78,8 @@ module.exports = function (SocketPosts) {
 		if (!data || !Array.isArray(data.pids) || !data.toUid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
-		if (!isAdminOrGlobalMod) {
-			throw new Error('[[error:no-privileges]]');
-		}
-
-		const postData = await posts.changeOwner(data.pids, data.toUid);
-		const logs = postData.map(({ pid, uid, cid }) => (events.log({
-			type: 'post-change-owner',
-			uid: socket.uid,
-			ip: socket.ip,
-			targetUid: data.toUid,
-			pid: pid,
-			originalUid: uid,
-			cid: cid,
-		})));
-
-		await Promise.all(logs);
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/owner');
+		await api.posts.changeOwner(socket, { pids: data.pids, uid: data.toUid });
 	};
 
 	SocketPosts.getEditors = async function (socket, data) {

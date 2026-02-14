@@ -84,17 +84,26 @@ Digest.getSubscribers = async function (interval) {
 
 Digest.send = async function (data) {
 	let emailsSent = 0;
+	let emailsFailed = 0;
 	if (!data || !data.subscribers || !data.subscribers.length) {
 		return emailsSent;
 	}
 	let errorLogged = false;
+	const date = new Date();
 	await batch.processArray(data.subscribers, async (uids) => {
-		let userData = await user.getUsersFields(uids, ['uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline']);
-		userData = userData.filter(u => u && u.email && (meta.config.includeUnverifiedEmails || u['email:confirmed']));
+		let userData = await user.getUsersFields(uids, [
+			'uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline',
+		]);
+		userData = userData.filter(
+			u => u && u.email && (meta.config.includeUnverifiedEmails || u['email:confirmed'])
+		);
 		if (!userData.length) {
 			return;
 		}
-		await Promise.all(userData.map(async (userObj) => {
+		const userSettings = await user.getMultipleUserSettings(userData.map(u => u.uid));
+		const successfullUids = [];
+		await Promise.all(userData.map(async (userObj, index) => {
+			const userSetting = userSettings[index];
 			const [publicRooms, notifications, topics] = await Promise.all([
 				getUnreadPublicRooms(userObj.uid),
 				user.notifications.getUnreadInterval(userObj.uid, data.interval),
@@ -117,58 +126,62 @@ Digest.send = async function (data) {
 				}
 			});
 
-			emailsSent += 1;
-			const now = new Date();
-			await emailer.send('digest', userObj.uid, {
-				subject: `[[email:digest.subject, ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}]]`,
-				username: userObj.username,
-				userslug: userObj.userslug,
-				notifications: unreadNotifs,
-				publicRooms: publicRooms,
-				recent: topics.recent,
-				topTopics: topics.top,
-				popularTopics: topics.popular,
-				interval: data.interval,
-				showUnsubscribe: true,
-			}).catch((err) => {
+			try {
+				await emailer.send('digest', userObj.uid, {
+					subject: `[[email:digest.subject, ${date.toLocaleDateString(userSetting.userLang)}]]`,
+					username: userObj.username,
+					userslug: userObj.userslug,
+					notifications: unreadNotifs,
+					publicRooms: publicRooms,
+					recent: topics.recent,
+					topTopics: topics.top,
+					popularTopics: topics.popular,
+					interval: data.interval,
+					showUnsubscribe: true,
+				});
+				emailsSent += 1;
+				successfullUids.push(userObj.uid);
+			} catch (err) {
+				emailsFailed += 1;
 				if (!errorLogged) {
 					winston.error(`[user/jobs] Could not send digest email\n[emailer.send] ${err.stack}`);
 					errorLogged = true;
 				}
-			});
+			}
 		}));
-		if (data.interval !== 'alltime') {
+
+		if (data.interval !== 'alltime' && successfullUids.length) {
 			const now = Date.now();
-			await db.sortedSetAdd('digest:delivery', userData.map(() => now), userData.map(u => u.uid));
+			await db.sortedSetAdd('digest:delivery', successfullUids.map(() => now), successfullUids);
 		}
 	}, {
 		interval: 1000,
 		batch: 100,
 	});
-	winston.info(`[user/jobs] Digest (${data.interval}) sending completed. ${emailsSent} emails sent.`);
+	winston.info(`[user/jobs] Digest (${data.interval}) sending completed. ${emailsSent} emails sent. ${emailsFailed} failures.`);
 	return emailsSent;
 };
 
 Digest.getDeliveryTimes = async (start, stop) => {
-	const count = await db.sortedSetCard('users:joindate');
-	const uids = await user.getUidsFromSet('users:joindate', start, stop);
+	const [count, uids] = await Promise.all([
+		db.sortedSetCard('users:joindate'),
+		user.getUidsFromSet('users:joindate', start, stop),
+	]);
 	if (!uids.length) {
-		return [];
+		return { users: [], count };
 	}
 
-	const [scores, settings] = await Promise.all([
+	const [scores, settings, userData] = await Promise.all([
 		// Grab the last time a digest was successfully delivered to these uids
 		db.sortedSetScores('digest:delivery', uids),
 		// Get users' digest settings
 		Digest.getUsersInterval(uids),
+		user.getUsersFields(uids, ['username', 'picture']),
 	]);
 
-	// Populate user data
-	let userData = await user.getUsersFields(uids, ['username', 'picture']);
-	userData = userData.map((user, idx) => {
+	userData.forEach((user, idx) => {
 		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : '[[admin/manage/digest:null]]';
 		user.setting = settings[idx];
-		return user;
 	});
 
 	return {

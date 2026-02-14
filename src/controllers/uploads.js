@@ -18,7 +18,7 @@ const uploadsController = module.exports;
 uploadsController.upload = async function (req, res, filesIterator) {
 	let files;
 	try {
-		files = req.files.files;
+		files = req.files;
 	} catch (e) {
 		return helpers.formatApiResponse(400, res);
 	}
@@ -26,9 +26,6 @@ uploadsController.upload = async function (req, res, filesIterator) {
 	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
 		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
-	}
-	if (Array.isArray(files[0])) {
-		files = files[0];
 	}
 
 	try {
@@ -64,7 +61,7 @@ async function uploadAsImage(req, uploadedFile) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	await image.checkDimensions(uploadedFile.path);
-	await image.stripEXIF(uploadedFile.path);
+	await image.stripEXIF({ path: uploadedFile.path, type: uploadedFile.type });
 
 	if (plugins.hooks.hasListeners('filter:uploadImage')) {
 		return await plugins.hooks.fire('filter:uploadImage', {
@@ -126,7 +123,7 @@ async function resizeImage(fileObj) {
 
 uploadsController.uploadThumb = async function (req, res) {
 	if (!meta.config.allowTopicsThumbnail) {
-		deleteTempFiles(req.files.files);
+		deleteTempFiles(req.files);
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
@@ -196,12 +193,18 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	};
 
 	await user.associateUpload(uid, upload.url.replace(`${nconf.get('upload_url')}`, ''));
-	const data = await plugins.hooks.fire('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
+	const data = await plugins.hooks.fire('filter:uploadStored', {
+		uid,
+		uploadedFile,
+		storedFile,
+	});
 	return data.storedFile;
 }
 
 function deleteTempFiles(files) {
-	files.forEach(fileObj => file.delete(fileObj.path));
+	if (Array.isArray(files)) {
+		files.forEach(fileObj => file.delete(fileObj.path));
+	}
 }
 
 require('../promisify')(uploadsController, ['upload', 'uploadPost', 'uploadThumb']);

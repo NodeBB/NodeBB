@@ -3,7 +3,9 @@
 const _ = require('lodash');
 
 const db = require('../database');
+const meta = require('../meta');
 const categories = require('../categories');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
 
@@ -27,7 +29,14 @@ module.exports = function (User) {
 		if (exists.includes(false)) {
 			throw new Error('[[error:no-category]]');
 		}
-		await db.sortedSetsAdd(cids.map(cid => `cid:${cid}:uid:watch:state`), state, uid);
+
+		const apiMethod = state >= categories.watchStates.tracking ? activitypub.out.follow : activitypub.out.undo.follow;
+		const follows = cids.filter(cid => !utils.isNumber(cid)).map(cid => apiMethod('uid', uid, cid)); // returns promises
+
+		await Promise.all([
+			db.sortedSetsAdd(cids.map(cid => `cid:${cid}:uid:watch:state`), state, uid),
+			...follows,
+		]);
 	};
 
 	User.getCategoryWatchState = async function (uid) {
@@ -67,7 +76,11 @@ module.exports = function (User) {
 	};
 
 	User.getCategoriesByStates = async function (uid, states) {
-		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const [localCids, remoteCids] = await Promise.all([
+			categories.getAllCidsFromSet('categories:cid'),
+			meta.config.activitypubEnabled ? db.getObjectValues('handle:cid') : [],
+		]);
+		const cids = localCids.concat(remoteCids);
 		if (!(parseInt(uid, 10) > 0)) {
 			return cids;
 		}

@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
+const translator = require('../translator');
 
 const SocketHelpers = module.exports;
 
@@ -94,7 +95,10 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
-	const postData = await posts.getPostFields(pid, ['tid', 'uid', 'content']);
+	const [postData, fromCategory] = await Promise.all([
+		posts.getPostFields(pid, ['tid', 'uid', 'content', 'sourceContent']),
+		!utils.isNumber(fromuid) && categories.exists(fromuid),
+	]);
 	const [canRead, isIgnoring] = await Promise.all([
 		privileges.posts.can('topics:read', pid, postData.uid),
 		topics.isIgnoring([postData.tid], postData.uid),
@@ -103,19 +107,17 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	const [userData, topicTitle, postObj] = await Promise.all([
-		user.getUserFields(fromuid, ['username']),
+		fromCategory ? categories.getCategoryFields(fromuid, ['name']) : user.getUserFields(fromuid, ['username']),
 		topics.getTopicField(postData.tid, 'title'),
 		posts.parsePost(postData),
 	]);
 
-	const { displayname } = userData;
-
 	const title = utils.decodeHTMLEntities(topicTitle);
-	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+	const bodyShort = translator.compile(notification, userData.displayname || userData.name, title);
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
+		bodyShort: bodyShort,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
@@ -150,10 +152,9 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 
 	const ownerUid = topicData.uid;
 	const title = utils.decodeHTMLEntities(topicData.title);
-	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
+		bodyShort: translator.compile(notification, displayname, title),
 		path: `/topic/${topicData.slug}`,
 		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,

@@ -1,10 +1,11 @@
 'use strict';
 
+const db = require('./mocks/databasemock');
+
 const assert = require('assert');
 const nconf = require('nconf');
 
 const request = require('../src/request');
-const db = require('./mocks/databasemock');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
 const User = require('../src/user');
@@ -476,9 +477,7 @@ describe('Categories', () => {
 
 		it('should get privilege settings', async () => {
 			const data = await apiCategories.getPrivileges({ uid: adminUid }, categoryObj.cid);
-			assert(data.labels);
-			assert(data.labels.users);
-			assert(data.labels.groups);
+			assert(data.labelData);
 			assert(data.keys.users);
 			assert(data.keys.groups);
 			assert(data.users);
@@ -677,6 +676,7 @@ describe('Categories', () => {
 					'topics:reply': false,
 					'topics:read': false,
 					'topics:create': false,
+					'topics:crosspost': false,
 					'topics:tag': false,
 					'topics:delete': false,
 					'topics:schedule': false,
@@ -731,6 +731,7 @@ describe('Categories', () => {
 					'groups:posts:downvote': true,
 					'groups:topics:delete': false,
 					'groups:topics:create': true,
+					'groups:topics:crosspost': true,
 					'groups:topics:reply': true,
 					'groups:topics:tag': true,
 					'groups:topics:schedule': false,

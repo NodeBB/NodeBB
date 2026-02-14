@@ -5,5 +5,6 @@
 	"profile-page-for": "%1 istifadəçisi üçün profil səhifəsi",
 	"user-watched-tags": "İstifadəçinin izlədiyi təqlər",
 	"delete-upload-button": "Yükləmə düyməsini silmək",
-	"group-page-link-for": "%1 üçün qrup səhifəsi linki"
+	"group-page-link-for": "%1 üçün qrup səhifəsi linki",
+	"show-crossposts": "Show Cross-posts"
 }

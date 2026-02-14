@@ -1,18 +1,10 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../database');
 const posts = require('../posts');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
-const meta = require('../meta');
 const topics = require('../topics');
-const notifications = require('../notifications');
 const utils = require('../utils');
-const events = require('../events');
-const translator = require('../translator');
-
 const api = require('../api');
 const sockets = require('.');
 
@@ -99,90 +91,23 @@ SocketPosts.getReplies = async function (socket, pid) {
 };
 
 SocketPosts.accept = async function (socket, data) {
-	await canEditQueue(socket, data, 'accept');
-	const result = await posts.submitFromQueue(data.id);
-	if (result && socket.uid !== parseInt(result.uid, 10)) {
-		await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
-	}
-	await logQueueEvent(socket, result, 'accept');
+	sockets.warnDeprecated(socket, 'POST /api/v3/posts/queue/:id');
+	await api.posts.acceptQueuedPost(socket, data);
 };
 
 SocketPosts.reject = async function (socket, data) {
-	await canEditQueue(socket, data, 'reject');
-	const result = await posts.removeFromQueue(data.id);
-	if (result && socket.uid !== parseInt(result.uid, 10)) {
-		await sendQueueNotification('post-queue-rejected', result.uid, '/');
-	}
-	await logQueueEvent(socket, result, 'reject');
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/queue/:id');
+	await api.posts.removeQueuedPost(socket, data);
 };
-
-async function logQueueEvent(socket, result, type) {
-	const eventData = {
-		type: `post-queue-${result.type}-${type}`,
-		uid: socket.uid,
-		ip: socket.ip,
-		content: result.data.content,
-		targetUid: result.uid,
-	};
-	if (result.type === 'topic') {
-		eventData.cid = result.data.cid;
-		eventData.title = result.data.title;
-	} else {
-		eventData.tid = result.data.tid;
-	}
-	if (result.pid) {
-		eventData.pid = result.pid;
-	}
-	await events.log(eventData);
-}
 
 SocketPosts.notify = async function (socket, data) {
-	await canEditQueue(socket, data, 'notify');
-	const result = await posts.getFromQueue(data.id);
-	if (result) {
-		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message)));
-	}
+	sockets.warnDeprecated(socket, 'POST /api/v3/posts/queue/:id/notify');
+	await api.posts.notifyQueuedPostOwner(socket, data);
 };
 
-async function canEditQueue(socket, data, action) {
-	const [canEditQueue, queuedPost] = await Promise.all([
-		posts.canEditQueue(socket.uid, data, action),
-		posts.getFromQueue(data.id),
-	]);
-	if (!queuedPost) {
-		throw new Error('[[error:no-post]]');
-	}
-	if (!canEditQueue) {
-		throw new Error('[[error:no-privileges]]');
-	}
-}
-
-async function sendQueueNotification(type, targetUid, path, notificationText) {
-	const bodyShort = notificationText ?
-		translator.compile(`notifications:${type}`, notificationText) :
-		translator.compile(`notifications:${type}`);
-	const notifData = {
-		type: type,
-		nid: `${type}-${targetUid}-${path}`,
-		bodyShort: bodyShort,
-		path: path,
-	};
-	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
-		notifData.from = meta.config.postQueueNotificationUid;
-	}
-	const notifObj = await notifications.create(notifData);
-	await notifications.push(notifObj, [targetUid]);
-}
-
 SocketPosts.editQueuedContent = async function (socket, data) {
-	if (!data || !data.id || (!data.content && !data.title && !data.cid)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	await posts.editQueuedContent(socket.uid, data);
-	if (data.content) {
-		return await plugins.hooks.fire('filter:parse.post', { postData: data });
-	}
-	return { postData: data };
+	sockets.warnDeprecated(socket, 'PUT /api/v3/posts/queue/:id');
+	return await api.posts.editQueuedPost(socket, data);
 };
 
 require('../promisify')(SocketPosts);

@@ -11,7 +11,6 @@ module.exports = {
 	categories: require('./categories'),
 	search: require('./search'),
 	flags: require('./flags'),
-	activitypub: require('./activitypub'),
 	files: require('./files'),
 	utils: require('./utils'),
 };

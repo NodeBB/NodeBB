@@ -23,6 +23,7 @@
 	"purge": "<strong>Benutzer</strong> und Benutzer-<strong>Inhalte</strong> löschen",
 	"download-csv": "CSV herunterladen",
 	"custom-user-fields": "Benutzerdefinierte Benutzerfelder",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Gruppen verwalten",
 	"set-reputation": "Ansehen festlegen",
 	"add-group": "Gruppe hinzufügen",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "Länge",
 	"temp-ban.reason": "Grund <span class=\"text-muted\">(optional)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Stunden",
 	"temp-ban.days": "Tage",
 	"temp-ban.explanation": "Geben die dauer des Bans an. Beachte, dass eine Zeit von 0 als permanent interpretiert wird.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Möchtest Du diesen Nutzer wirklich <strong>permanent</strong> bannen?",
 	"alerts.confirm-ban-multi": "Möchtest Du diese Nutzer wirklich <strong>permanent</strong> bannen?",

@@ -12,7 +12,8 @@ const meta = require('../meta');
 const analytics = require('../analytics');
 
 module.exports = function (User) {
-	User.create = async function (data) {
+	User.create = async function (data, opts = {}) {
+		opts = { emailVerification: 'send', ...opts };
 		data.username = data.username.trim();
 		data.userslug = slugify(data.username);
 		if (data.email !== undefined) {
@@ -27,7 +28,7 @@ module.exports = function (User) {
 		}
 
 		try {
-			return await create(data);
+			return await create(data, opts);
 		} finally {
 			await db.deleteObjectFields('locks', [data.username, data.email]);
 		}
@@ -40,7 +41,7 @@ module.exports = function (User) {
 		}
 	}
 
-	async function create(data) {
+	async function create(data, opts) {
 		const timestamp = data.timestamp || Date.now();
 
 		let userData = {
@@ -73,7 +74,6 @@ module.exports = function (User) {
 		userData = results.user;
 
 		const uid = await db.incrObjectField('global', 'nextUid');
-		const isFirstUser = uid === 1;
 		userData.uid = uid;
 
 		await db.setObject(`user:${uid}`, userData);
@@ -103,18 +103,8 @@ module.exports = function (User) {
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
 		]);
 
-		if (data.email && isFirstUser) {
-			await User.setUserField(uid, 'email', data.email);
-			await User.email.confirmByUid(userData.uid);
-		}
+		await handleEmailVerification(uid, data.email, data.token, opts.emailVerification);
 
-		if (data.email && userData.uid > 1) {
-			await User.email.sendValidationEmail(userData.uid, {
-				email: data.email,
-				template: 'welcome',
-				subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
-			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
-		}
 		if (userNameChanged) {
 			await User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 		}
@@ -136,13 +126,38 @@ module.exports = function (User) {
 		]);
 	}
 
+	async function handleEmailVerification(uid, email, token, method) {
+		if (email) {
+			switch (method) {
+				case 'verify':
+					await User.setUserField(uid, 'email', email);
+					await User.email.confirmByUid(uid);
+					break;
+				case 'send':
+					if (!token || !await User.isInviteTokenValid(token, email)) {
+						await User.email.sendValidationEmail(uid, {
+							email: email,
+							template: 'welcome',
+							subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
+						}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
+					}
+					break;
+				case 'skip':
+					// explicitly do nothing
+					break;
+				default:
+					throw new Error(`Invalid email verification mode: ${method}`);
+			}
+		}
+	}
+
 	User.isDataValid = async function (userData) {
 		if (userData.email && !utils.isEmailValid(userData.email)) {
 			throw new Error('[[error:invalid-email]]');
 		}
 
-		if (!utils.isUserNameValid(userData.username) || !userData.userslug) {
-			throw new Error(`[[error:invalid-username, ${userData.username}]]`);
+		if (!utils.isUserNameValid(userData.username) || !utils.isSlugValid(userData.userslug)) {
+			throw new Error(`[[error:invalid-username]]`);
 		}
 
 		if (userData.password) {

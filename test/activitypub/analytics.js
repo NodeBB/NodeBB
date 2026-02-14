@@ -1,7 +1,7 @@
 'use strict';
 
-const nconf = require('nconf');
 const assert = require('assert');
+const nconf = require('nconf');
 
 const db = require('../../src/database');
 const controllers = require('../../src/controllers');
@@ -105,7 +105,7 @@ describe('Analytics', () => {
 
 	it('should increment the last seen time of that domain', async () => {
 		const id = `https://example.org/activity/${utils.generateUUID()}`;
-		const before = await db.sortedSetScore('domains:lastSeen', 'example.org');
+		const before = await db.sortedSetScore('instances:lastSeen', 'example.org');
 		await controllers.activitypub.postInbox({
 			body: {
 				id,
@@ -118,7 +118,7 @@ describe('Analytics', () => {
 			},
 		}, { sendStatus: () => {} });
 
-		const after = await db.sortedSetScore('domains:lastSeen', 'example.org');
+		const after = await db.sortedSetScore('instances:lastSeen', 'example.org');
 
 		assert(before && after);
 		assert(before < after);

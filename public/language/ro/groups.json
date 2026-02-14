@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "All groups",
     "groups": "Grupuri",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Vezi Grup",
     "owner": "Propietar de group",
     "new-group": "Crează un grup nou",

@@ -65,7 +65,7 @@
 	"on-categories": "I kategoriar",
 	"reading-posts": "Les innlegg",
 	"browsing-topics": "Blar gjennom emne",
-	"recent": "Nyleg",
+	"recent": "Siste",
 	"unread": "Uleste",
 
 	"high-presence-topics": "Emne med høg aktivitet",
@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Diagram over sidevisningar (registrerte)",
 	"graphs.page-views-guest": "Diagram over sidevisningar (gjestar)",
 	"graphs.page-views-bot": "Diagram over sidevisningar (botar)",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Diagram over unike besøkande",
 	"graphs.registered-users": "Diagram over registrerte brukarar",
 	"graphs.guest-users": "Diagram over gjestar",

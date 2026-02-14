@@ -241,6 +241,10 @@ module.exports = function (Topics) {
 		if (cid === topicData.cid) {
 			throw new Error('[[error:cant-move-topic-to-same-category]]');
 		}
+		if (!utils.isNumber(cid) || !utils.isNumber(topicData.cid)) {
+			throw new Error('[[error:cant-move-topic-to-from-remote-categories]]');
+		}
+
 		const tags = await Topics.getTopicTags(tid);
 		await db.sortedSetsRemove([
 			`cid:${topicData.cid}:tids`,
@@ -283,9 +287,7 @@ module.exports = function (Topics) {
 				oldCid: oldCid,
 			}),
 			Topics.updateCategoryTagsCount([oldCid, cid], tags),
-			oldCid !== -1 ?
-				Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }) :
-				topicTools.share(tid, data.uid),
+			Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }),
 		]);
 
 		// Update entry in recent topics zset — must come after hash update

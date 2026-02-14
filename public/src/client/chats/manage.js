@@ -75,12 +75,16 @@ define('forum/chats/manage', [
 
 			modal.find('[component="chat/manage/save"]').on('click', () => {
 				const notifSettingEl = modal.find('[component="chat/room/notification/setting"]');
+				const joinLeaveMessagesEl = modal.find('[component="chat/room/join-leave-messages"]');
+
 				api.put(`/chats/${roomId}`, {
 					groups: modal.find('[component="chat/room/groups"]').val(),
 					notificationSetting: notifSettingEl.val(),
+					joinLeaveMessages: joinLeaveMessagesEl.is(':checked') ? 1 : 0,
 				}).then((payload) => {
 					ajaxify.data.groups = payload.groups;
 					ajaxify.data.notificationSetting = payload.notificationSetting;
+					ajaxify.data.joinLeaveMessages = payload.joinLeaveMessages;
 					const roomDefaultOption = payload.notificationOptions[0];
 					$('[component="chat/notification/setting"] [data-icon]').first().attr(
 						'data-icon', roomDefaultOption.icon

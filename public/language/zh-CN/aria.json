@@ -1,9 +1,10 @@
 {
-	"post-sort-option": "帖子分类选项，%1",
-	"topic-sort-option": "主题分类选项，%1",
-	"user-avatar-for": "用户头像%1",
-	"profile-page-for": "用户 %1 的资料页面",
-	"user-watched-tags": "用户关注标签",
+	"post-sort-option": "帖子排序选项，%1",
+	"topic-sort-option": "主题排序选项，%1",
+	"user-avatar-for": "%1 的用户头像",
+	"profile-page-for": "用户 %1 的个人资料页面",
+	"user-watched-tags": "用户关注的标签",
 	"delete-upload-button": "删除上传按钮",
-	"group-page-link-for": "群组页面链接%1"
+	"group-page-link-for": "%1 的群组页面链接",
+	"show-crossposts": "Show Cross-posts"
 }

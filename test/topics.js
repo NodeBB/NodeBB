@@ -314,51 +314,6 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail to create new reply with toPid that has been purged', async () => {
-			const { postData } = await topics.post({
-				uid: topic.userId,
-				cid: topic.categoryId,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			});
-			await posts.purge(postData.pid, topic.userId);
-
-			await assert.rejects(
-				topics.reply({ uid: topic.userId, content: 'test post', tid: postData.topic.tid, toPid: postData.pid }),
-				{ message: '[[error:invalid-pid]]' }
-			);
-		});
-
-		it('should fail to create a new reply with toPid that has been deleted (user cannot view_deleted)', async () => {
-			const { postData } = await topics.post({
-				uid: topic.userId,
-				cid: topic.categoryId,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			});
-			await posts.delete(postData.pid, topic.userId);
-			const uid = await User.create({ username: utils.generateUUID().slice(0, 10) });
-
-			await assert.rejects(
-				topics.reply({ uid, content: 'test post', tid: postData.topic.tid, toPid: postData.pid }),
-				{ message: '[[error:invalid-pid]]' }
-			);
-		});
-
-		it('should properly create a new reply with toPid that has been deleted (user\'s own deleted post)', async () => {
-			const { postData } = await topics.post({
-				uid: topic.userId,
-				cid: topic.categoryId,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			});
-			await posts.delete(postData.pid, topic.userId);
-			const uid = await User.create({ username: utils.generateUUID().slice(0, 10) });
-
-			const { pid } = await topics.reply({ uid: topic.userId, content: 'test post', tid: postData.topic.tid, toPid: postData.pid });
-			assert(pid);
-		});
-
 		it('should delete nested relies properly', async () => {
 			const result = await topics.post({ uid: fooUid, title: 'nested test', content: 'main post', cid: topic.categoryId });
 			const reply1 = await topics.reply({ uid: fooUid, content: 'reply post 1', tid: result.topicData.tid });
@@ -372,7 +327,7 @@ describe('Topic\'s', () => {
 			replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
 			assert.strictEqual(replies, null);
 			toPid = await posts.getPostField(reply2.pid, 'toPid');
-			assert.strictEqual(toPid, null);
+			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
 		});
 	});
 
@@ -933,15 +888,10 @@ describe('Topic\'s', () => {
 			});
 
 			const { topics: topicsData } = results;
-			let topic;
-			let i;
-			for (i = 0; i < topicsData.length; i += 1) {
-				if (topicsData[i].tid === parseInt(newTid, 10)) {
-					assert.equal(false, topicsData[i].unread, 'ignored topic was marked as unread in recent list');
-					return;
-				}
-			}
-			assert.ok(topic, 'topic didn\'t appear in the recent list');
+
+			const topic = topicsData.find(topic => topic.tid === parseInt(newTid, 10));
+			assert(topic, 'ignored topic didn\'t appear in the recent list');
+			assert.strictEqual(topic.unread, false, 'ignored topic was marked as unread in recent list');
 		});
 
 		it('should appear as unread again when marked as following', async () => {
@@ -1421,7 +1371,7 @@ describe('Topic\'s', () => {
 			const result = await topics.post({ uid: adminUid, title: 'deleted unread', content: 'not unread', cid: categoryObj.cid });
 			await topics.delete(result.topicData.tid, adminUid);
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
-			assert(!unreadTids.includes(result.topicData.tid));
+			assert(!unreadTids.includes(result.topicData.tid), JSON.stringify({ unreadTids, tid: result.topicData.tid }));
 		});
 	});
 
@@ -2000,7 +1950,8 @@ describe('Topic\'s', () => {
 		it('should get teasers with 2 params', (done) => {
 			topics.getTeasers([topic1.topicData, topic2.topicData], 1, (err, teasers) => {
 				assert.ifError(err);
-				assert.deepEqual([undefined, undefined], teasers);
+				assert(teasers[0]);
+				assert(teasers[1]);
 				done();
 			});
 		});
@@ -2504,6 +2455,35 @@ describe('Topic\'s', () => {
 		it('should remove from topics:scheduled on purge', async () => {
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(!score);
+		});
+
+		it('should properly update timestamp in cid:<cid>:pids after editing and posting immediately', async () => {
+			const scheduleTimestamp = Date.now() + (86400000 * 365);
+			const result = await topics.post({
+				cid: categoryObj.cid,
+				title: 'testing cid:<cid>:pids',
+				content: 'some content here',
+				uid: adminUid,
+				timestamp: scheduleTimestamp,
+			});
+			const { mainPid } = result.topicData;
+
+			assert.strictEqual(
+				await db.isSortedSetMember(`cid:${categoryObj.cid}:pids`, mainPid),
+				false,
+			);
+
+			// edit main post and publish
+			await posts.edit({
+				uid: adminUid,
+				pid: mainPid,
+				content: 'some content here - edited',
+				timestamp: Date.now(),
+			});
+
+			// the score in cid:<cid>:pids should be less than Date.now()
+			const score = await db.sortedSetScore(`cid:${categoryObj.cid}:pids`, mainPid);
+			assert(score < Date.now(), 'Post in cid:<cid>:pids has wrong score, it should not be in the future');
 		});
 	});
 });

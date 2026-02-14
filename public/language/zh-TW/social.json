@@ -8,5 +8,7 @@
 	"log-in-with-facebook": "以Facebook登入",
 	"continue-with-facebook": "以Facebook繼續使用",
 	"sign-in-with-linkedin": "以 LinkedIn 登入",
-	"sign-up-with-linkedin": "以 LinkedIn 註冊"
+	"sign-up-with-linkedin": "以 LinkedIn 註冊",
+	"sign-in-with-wordpress": "Sign in with WordPress",
+	"sign-up-with-wordpress": "Sign up with WordPress"
 }

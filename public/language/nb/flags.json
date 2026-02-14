@@ -35,7 +35,7 @@
 	"fewer-filters": "Færre filtre",
 
 	"quick-actions": "Hurtighandlinger",
-	"flagged-user": "Flagget bruker",
+	"flagged-user": "Rapportert bruker",
 	"view-profile": "Vis profil",
 	"start-new-chat": "Start ny chat",
 	"go-to-target": "Vis flaggmålet",
@@ -52,8 +52,8 @@
 	"add-note": "Legg til notat",
 	"edit-note": "Rediger notat",
 	"no-notes": "Ingen delte notater",
-	"delete-note-confirm": "Er du sikker på at du ønsker å slette dette flaggnotatet?",
-	"delete-flag-confirm": "Er du sikker på at du vil slette dette flagget?",
+	"delete-note-confirm": "Er du sikker på at du ønsker å slette denne rapporteringen?",
+	"delete-flag-confirm": "Er du sikker på at du vil slette denne rapporteringen?",
 	"note-added": "Notat lagt til",
 	"note-deleted": "Notat slettet",
 	"flag-deleted": "Flagg slettet",
@@ -75,7 +75,7 @@
 	"sort-all": "Alle flaggtyper",
 	"sort-posts-only": "Kun innlegg",
 	"sort-downvotes": "Flest nedstemminger",
-	"sort-upvotes": "Flest  tilrådinger",
+	"sort-upvotes": "Flest anbefalinger",
 	"sort-replies": "Flest kommentarer",
 
 	"modal-title": "Rapporter innhold",

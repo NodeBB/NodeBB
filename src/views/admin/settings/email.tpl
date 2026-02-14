@@ -167,9 +167,12 @@
 						[[admin/settings/email:smtp-transport.username-help]]
 					</p>
 				</div>
-				<div>
+				<div class="mb-3">
 					<label class="form-label" for="email:smtpTransport:pass">[[admin/settings/email:smtp-transport.password]]</label>
 					<input id="email:smtpTransport:pass" type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" autocomplete="off" />
+				</div>
+				<div>
+					<button class="btn btn-primary text-nowrap" type="button" data-action="email.smtp.test">[[admin/settings/email:test-smtp-settings]]</button>
 				</div>
 			</div>
 
@@ -181,14 +184,23 @@
 					<div class="d-flex justify-content-between gap-1">
 						<select id="test-email" class="form-select">
 							{{{ each sendable }}}
-							<option value="{@value}">{@value}</option>
+							<option value="{@value}" {{{ if (@value == "test")}}} selected{{{ end }}}>{@value}</option>
 							{{{ end }}}
 						</select>
 						<button class="btn btn-primary text-nowrap" type="button" data-action="email.test">[[admin/settings/email:testing.send]]</button>
 					</div>
 				</div>
 				<p class="form-text">
-					[[admin/settings/email:testing.send-help]]
+					[[admin/settings/email:testing.send-help]]<br/>
+					{{{ if emailerPlugin }}}
+					[[admin/settings/email:testing.send-help-plugin, {emailerPlugin}]]
+					{{{ else }}}
+					{{{ if smtpEnabled }}}
+					[[admin/settings/email:testing.send-help-smtp]]
+					{{{ else }}}
+					[[admin/settings/email:testing.send-help-no-plugin]]
+					{{{ end }}}
+					{{{ end }}}
 				</p>
 			</div>
 

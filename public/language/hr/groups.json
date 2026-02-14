@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "All groups",
     "groups": "Grupe",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Pogledaj grupu",
     "owner": "Vlasnik grupe",
     "new-group": "Napravi novu grupu",

@@ -17,7 +17,7 @@
     "invitation.text2": "Invitasjonen din vil utløpe om %1 dagar.",
     "invitation.cta": "Klikk her for å opprette kontoen din.",
     "reset.text1": "Vi har mottatt ein førespurnad om å tilbakestille passordet ditt, moglegvis fordi du har gløymt det. Om dette ikkje er tilfelle, ver venleg å ignorere denne e-posten.",
-    "reset.text2": "For å halde fram med tilbakestillinga av passordet, ver venleg å klikk på lenkja nedanfor:",
+    "reset.text2": "For å halde fram med tilbakestillinga av passordet, ver venleg å klikk på lenka nedanfor:",
     "reset.cta": "Klikk her for å tilbakestille passordet ditt",
     "reset.notify.subject": "Passord endra med suksess",
     "reset.notify.text1": "Vi informerer deg om at passordet ditt vart endra med suksess den %1.",

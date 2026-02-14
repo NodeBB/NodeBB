@@ -136,12 +136,18 @@ function setupExpressApp(app) {
 	});
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
-	app.set('json spaces', global.env === 'development' ? 4 : 0);
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
+
+	// https://github.com/NodeBB/NodeBB/issues/13918
+	const qs = require('qs');
+	app.set('query parser', str => qs.parse(str, {
+		arrayLimit: Math.min(100, nconf.get('queryParser:arrayLimit') || 50),
+	}));
 	app.use(flash());
 
 	app.enable('view cache');
 
-	if (global.env !== 'development') {
+	if (process.env.NODE_ENV !== 'development') {
 		app.enable('cache');
 		app.enable('minification');
 	}
@@ -227,6 +233,9 @@ function setupHelmet(app) {
 function setupFavicon(app) {
 	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
+	if (!faviconPath.startsWith(nconf.get('upload_path'))) {
+		faviconPath = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
+	}
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
@@ -239,12 +248,13 @@ function configureBodyParser(app) {
 	}
 	app.use(bodyParser.urlencoded(urlencodedOpts));
 
-	const jsonOpts = nconf.get('bodyParser:json') || {
+	const jsonOpts = {
 		type: [
 			'application/json',
 			'application/ld+json',
 			'application/activity+json',
 		],
+		...nconf.get('bodyParser:json'),
 	};
 	app.use(bodyParser.json(jsonOpts));
 }
@@ -277,9 +287,14 @@ async function listen() {
 		}
 	}
 	port = parseInt(port, 10);
-	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
-		winston.info('🤝 Enabling \'trust proxy\'');
-		app.enable('trust proxy');
+
+	let trust_proxy = nconf.get('trust_proxy');
+	if (trust_proxy == null && ![80, 443].includes(port)) {
+		trust_proxy = true;
+	}
+	if (trust_proxy) {
+		winston.info(`🤝 Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
+		app.set('trust proxy', trust_proxy);
 	}
 
 	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {

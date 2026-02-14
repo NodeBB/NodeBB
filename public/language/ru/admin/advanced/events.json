@@ -9,9 +9,9 @@
 	"filter-type": "Тип события",
 	"filter-start": "Дата начала",
 	"filter-end": "Дата окончания",
-	"filter-user": "Filter by User",
-	"filter-user.placeholder": "Type user name to filter...",
-	"filter-group": "Filter by Group",
-	"filter-group.placeholder": "Type group name to filter...",
+	"filter-user": "Фильтровать по пользователю",
+	"filter-user.placeholder": "Введите имя пользователя для фильтрации…",
+	"filter-group": "Фильтровать по группе",
+	"filter-group.placeholder": "Введите название группы для фильтрации…",
 	"filter-per-page": "Записей на страницу"
 }

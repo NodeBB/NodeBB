@@ -196,11 +196,12 @@ module.exports = function (Messaging) {
 
 async function modifyMessage(message, fields, mid) {
 	if (message) {
+		const hasField = utils.createFieldChecker(fields);
 		db.parseIntFields(message, intFields, fields);
-		if (message.hasOwnProperty('timestamp')) {
+		if (hasField('timestamp')) {
 			message.timestampISO = utils.toISOString(message.timestamp);
 		}
-		if (message.hasOwnProperty('edited')) {
+		if (hasField('edited')) {
 			message.editedISO = utils.toISOString(message.edited);
 		}
 	}

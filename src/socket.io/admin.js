@@ -9,6 +9,7 @@ const db = require('../database');
 const privileges = require('../privileges');
 const websockets = require('./index');
 const batch = require('../batch');
+const plugins = require('../plugins');
 const index = require('./index');
 const getAdminSearchDict = require('../admin/search').getDictionary;
 
@@ -124,6 +125,10 @@ SocketAdmin.clearSearchHistory = async function () {
 		batch: 500,
 		interval: 0,
 	});
+};
+
+SocketAdmin.parseRaw = async function (socket, text) {
+	return await plugins.hooks.fire('filter:parse.raw', text);
 };
 
 require('../promisify')(SocketAdmin);

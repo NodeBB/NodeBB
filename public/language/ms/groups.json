@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "All groups",
     "groups": "Kumpulan",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Lihat Kumpulan",
     "owner": "Pemilik Kumpulan",
     "new-group": "Buat Kumpulan Baru",

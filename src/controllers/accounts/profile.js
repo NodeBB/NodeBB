@@ -52,6 +52,11 @@ profileController.get = async function (req, res, next) {
 	if (meta.config.activitypubEnabled) {
 		// Include link header for richer parsing
 		res.set('Link', `<${nconf.get('url')}/uid/${userData.uid}>; rel="alternate"; type="application/activity+json"`);
+
+		if (!utils.isNumber(userData.uid)) {
+			res.set('Link', `<${userData.url || userData.uid}>; rel="canonical"`);
+			res.set('x-robots-tag', 'noindex');
+		}
 	}
 
 	res.render('account/profile', userData);
@@ -163,10 +168,21 @@ function addTags(res, userData) {
 
 	res.locals.linkTags = [];
 
-	res.locals.linkTags.push({
-		rel: 'canonical',
-		href: `${url}/user/${userData.userslug}`,
-	});
+	if (utils.isNumber(userData.uid)) {
+		res.locals.linkTags.push({
+			rel: 'canonical',
+			href: `${url}/user/${userData.userslug}`,
+		});
+	} else {
+		res.locals.linkTags.push({
+			rel: 'canonical',
+			href: userData.url || userData.uid,
+		});
+		res.locals.metaTags.push({
+			name: 'robots',
+			content: 'noindex',
+		});
+	}
 
 	if (meta.config.activitypubEnabled) {
 		res.locals.linkTags.push({

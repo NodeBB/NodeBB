@@ -37,12 +37,12 @@
 				</div>
 
 				<div class="mb-3">
-					<label class="form-label" for="cid-{category.cid}-federatedDescription">
-						[[admin/manage/categories:federatedDescription]]
+					<label class="form-label" for="cid-{category.cid}-topic-template">
+						[[admin/manage/categories:topic-template]]
 					</label>
-					<textarea id="cid-{category.cid}-federatedDescription" data-name="federatedDescription" class="form-control" rows="2" placeholder="[[admin/manage/categories:federatedDescription.default]]" />{category.federatedDescription}</textarea>
+					<textarea id="cid-{category.cid}-topic-template" data-name="topicTemplate" class="form-control" rows="4" />{category.topicTemplate}</textarea>
 					<p class="form-text">
-						[[admin/manage/categories:federatedDescription.help]]
+						[[admin/manage/categories:topic-template.help]]
 					</p>
 				</div>
 

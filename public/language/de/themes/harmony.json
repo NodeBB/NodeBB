@@ -1,6 +1,8 @@
 {
 	"theme-name": "Harmony Theme",
 	"skins": "Skins",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "Einklappen",
 	"expand": "Ausklappen",
 	"sidebar-toggle": "Sidebar Toggle",

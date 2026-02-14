@@ -23,6 +23,7 @@
 	"purge": "מחיקת <strong>משתמש(ים)</strong> ו<strong>תוכן</strong>",
 	"download-csv": "ייצוא משתמשים כ-CSV",
 	"custom-user-fields": "שדות משתמש מותאמים אישית",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "ניהול קבוצות",
 	"set-reputation": "הגדרת מוניטין",
 	"add-group": "הוספת קבוצה",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "זמן הרחקה",
 	"temp-ban.reason": "סיבה <span class=\"text-muted\">(אופציונאלי)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "שעות",
 	"temp-ban.days": "ימים",
 	"temp-ban.explanation": "הזינו זמן הרחקה. שימו לב הזנת מספר 0 מהווה הרחקה לצמיתות.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "האם אתם רוצים להרחיק משתמש זה <strong>לצמיתות</strong>?",
 	"alerts.confirm-ban-multi": "האם אתם רוצים להרחיק את המשתמשים <strong>לצמיתות</strong>?",

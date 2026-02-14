@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Page Views Registered",
 	"graphs.page-views-guest": "Page Views Guest",
 	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-ap": "Vizualizări Pagină ActivityPub",
 	"graphs.unique-visitors": "Unique Visitors",
 	"graphs.registered-users": "Registered Users",
 	"graphs.guest-users": "Guest Users",
@@ -95,7 +96,7 @@
 	"expand-analytics": "Expand analytics",
 	"clear-search-history": "Clear Search History",
 	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
-	"search-term": "Term",
+	"search-term": "Termen",
 	"search-count": "Count",
-	"view-all": "View all"
+	"view-all": "Arată Tot"
 }

@@ -1,7 +1,12 @@
 {
 	"name": "Świat",
-	"popular": "Popularne tematy",
-	"recent": "Wszystkie tematy",
+	"latest": "Latest",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
 	"help": "Pomoc",
 
 	"help.title": "Co to za strona?",
@@ -14,5 +19,7 @@
 	"onboard.title": "Twoje okno na fediverse...",
 	"onboard.what": "Zawartość tej kategorii jest dostowana do Twoich poczynań i zawiera jedynie dane spoza tego forum. Aby się coś tu pojawiło trzeba zacząć śledzić zdalne źródła informacji.",
 	"onboard.why": "Mnóstwo rzeczy dzieje się poza tym forum ale niekoniecznie zgodnych z Twoimi zainteresowaniami. Dlatego śledzenie konkretnych użytkowników jest dobrą metodą aby uzyskać więcej zawartości przez nich dodawanych.",
-	"onboard.how": "W międzyczasie możesz użyć przycisków skrótów na górze aby przekonać się jak forum jest powiązane a okaże się, że zapewnia wiele dodatkowych treści!"
+	"onboard.how": "W międzyczasie możesz użyć przycisków skrótów na górze aby przekonać się jak forum jest powiązane a okaże się, że zapewnia wiele dodatkowych treści!",
+
+	"category-search": "Find a category..."
 }

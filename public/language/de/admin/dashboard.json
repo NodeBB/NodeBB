@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Registrierte Seitenaufrufe",
 	"graphs.page-views-guest": "Seitenaufrufe von Gästen",
 	"graphs.page-views-bot": "Seitenaufrufe von Bots",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Verschiedene Besucher",
 	"graphs.registered-users": "Registrierte Benutzer",
 	"graphs.guest-users": "Gast-Benutzer",

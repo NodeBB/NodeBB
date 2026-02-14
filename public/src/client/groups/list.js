@@ -8,13 +8,16 @@ define('forum/groups/list', [
 	Groups.init = function () {
 		// Group creation
 		$('button[data-action="new"]').on('click', function () {
-			bootbox.prompt('[[groups:new-group.group-name]]', function (name) {
-				if (name && name.length) {
-					api.post('/groups', {
-						name: name,
-					}).then((res) => {
+			const modal = bootbox.prompt('[[groups:new-group.group-name]]', function (name) {
+				if (name === '') {
+					return false;
+				}
+				if (name && name.trim().length) {
+					api.post('/groups', { name }).then((res) => {
+						modal.modal('hide');
 						ajaxify.go('groups/' + res.slug);
 					}).catch(alerts.error);
+					return false;
 				}
 			});
 		});
@@ -42,19 +45,17 @@ define('forum/groups/list', [
 		return false;
 	};
 
-	function renderSearchResults(data) {
-		app.parseAndTranslate('partials/paginator', {
-			pagination: data.pagination,
-		}).then(function (html) {
-			$('.pagination-container').replaceWith(html);
-		});
-
-		const groupsEl = $('#groups-list');
-		app.parseAndTranslate('partials/groups/list', {
-			groups: data.groups,
-		}).then(function (html) {
-			groupsEl.empty().append(html);
-		});
+	async function renderSearchResults(data) {
+		const [paginationHtml, groupsHtml] = await Promise.all([
+			app.parseAndTranslate('partials/paginator', {
+				pagination: data.pagination,
+			}),
+			app.parseAndTranslate('partials/groups/list', {
+				groups: data.groups,
+			}),
+		]);
+		$('.pagination-container').replaceWith(paginationHtml);
+		$('#groups-list').empty().append(groupsHtml);
 	}
 
 	return Groups;

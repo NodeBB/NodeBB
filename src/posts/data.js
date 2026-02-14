@@ -7,7 +7,7 @@ const utils = require('../utils');
 const intFields = [
 	'uid', 'pid', 'tid', 'deleted', 'timestamp',
 	'upvotes', 'downvotes', 'deleterUid', 'edited',
-	'replies', 'bookmarks',
+	'replies', 'bookmarks', 'announces',
 ];
 
 module.exports = function (Posts) {
@@ -58,17 +58,31 @@ module.exports = function (Posts) {
 function modifyPost(post, fields) {
 	if (post) {
 		db.parseIntFields(post, intFields, fields);
-		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
+
+		const hasField = utils.createFieldChecker(fields);
+
+		if (hasField('upvotes') && hasField('downvotes')) {
 			post.votes = post.upvotes - post.downvotes;
 		}
-		if (post.hasOwnProperty('timestamp')) {
+
+		if (hasField('timestamp')) {
 			post.timestampISO = utils.toISOString(post.timestamp);
 		}
-		if (post.hasOwnProperty('edited')) {
+
+		if (hasField('edited')) {
 			post.editedISO = post.edited !== 0 ? utils.toISOString(post.edited) : '';
 		}
-		if (!fields.length || fields.includes('attachments')) {
+
+		if (hasField('attachments')) {
 			post.attachments = (post.attachments || '').split(',').filter(Boolean);
+		}
+
+		if (hasField('uploads')) {
+			try {
+				post.uploads = post.uploads ? JSON.parse(post.uploads) : [];
+			} catch (err) {
+				post.uploads = [];
+			}
 		}
 	}
 }

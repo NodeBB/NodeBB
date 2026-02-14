@@ -11,14 +11,23 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
+		progress.total = await db.sortedSetCard('users:joindate');
+
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			for (const uid of uids) {
-				progress.incr();
-				const [bans, reasons, userData] = await Promise.all([
-					db.getSortedSetRevRangeWithScores(`uid:${uid}:bans`, 0, -1),
-					db.getSortedSetRevRangeWithScores(`banned:${uid}:reasons`, 0, -1),
-					db.getObjectFields(`user:${uid}`, ['banned', 'banned:expire', 'joindate', 'lastposttime', 'lastonline']),
-				]);
+			progress.incr(uids.length);
+			const [allUserData, allBans] = await Promise.all([
+				db.getObjectsFields(
+					uids.map(uid => `user:${uid}`),
+					['banned', 'banned:expire', 'joindate', 'lastposttime', 'lastonline'],
+				),
+				db.getSortedSetsMembersWithScores(
+					uids.map(uid => `uid:${uid}:bans`)
+				),
+			]);
+
+			await Promise.all(uids.map(async (uid, index) => {
+				const userData = allUserData[index];
+				const bans = allBans[index] || [];
 
 				// has no history, but is banned, create plain object with just uid and timestmap
 				if (!bans.length && parseInt(userData.banned, 10)) {
@@ -31,6 +40,7 @@ module.exports = {
 					const banKey = `uid:${uid}:ban:${banTimestamp}`;
 					await addBan(uid, banKey, { uid: uid, timestamp: banTimestamp });
 				} else if (bans.length) {
+					const reasons = await db.getSortedSetRevRangeWithScores(`banned:${uid}:reasons`, 0, -1);
 					// process ban history
 					for (const ban of bans) {
 						const reasonData = reasons.find(reasonData => reasonData.score === ban.score);
@@ -46,14 +56,16 @@ module.exports = {
 						await addBan(uid, banKey, data);
 					}
 				}
-			}
+			}));
 		}, {
-			progress: this.progress,
+			batch: 500,
 		});
 	},
 };
 
 async function addBan(uid, key, data) {
-	await db.setObject(key, data);
-	await db.sortedSetAdd(`uid:${uid}:bans:timestamp`, data.timestamp, key);
+	await Promise.all([
+		db.setObject(key, data),
+		db.sortedSetAdd(`uid:${uid}:bans:timestamp`, data.timestamp, key),
+	]);
 }

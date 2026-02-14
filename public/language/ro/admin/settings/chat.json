@@ -5,13 +5,11 @@
 	"disable-editing": "Disable chat message editing/deletion",
 	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
 	"max-length": "Maximum length of chat messages",
-	"max-length-remote": "Maximum length of remote chat messages",
-	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
+	"max-length-remote": "Lungimea maximă a mesajelor de chat la distanță",
+	"max-length-remote-help": "Această valoare este de obicei setată la o valoare mai mare decât numărul maxim de mesaje de chat pentru utilizatorii locali, deoarece mesajele la distanță tind să fie mai lungi (cu mențiuni @ etc.).",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maximum number of users in chat rooms",
 	"delay": "Time between chat messages (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
 }

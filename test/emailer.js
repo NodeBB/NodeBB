@@ -148,8 +148,9 @@ describe('emailer', () => {
 		let recipientUid;
 
 		before(async () => {
-			recipientUid = await user.create({ username: 'recipient', email: 'test@example.org' });
-			await user.email.confirmByUid(recipientUid);
+			recipientUid = await user.create({ username: 'recipient', email: 'test@example.org' }, {
+				emailVerification: 'verify',
+			});
 		});
 
 		it('should not send email to a banned user', async () => {

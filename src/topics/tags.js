@@ -205,7 +205,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTagTopicCount = async function (tag, cids = []) {
-		let count = 0;
+		let count;
 		if (cids.length) {
 			count = await db.sortedSetsCardSum(
 				cids.map(cid => `cid:${cid}:tag:${tag}:topics`)
@@ -476,7 +476,7 @@ module.exports = function (Topics) {
 		if (parseInt(data.cid, 10)) {
 			tagWhitelist = await categories.getTagWhitelist([data.cid]);
 		}
-		let tags = [];
+		let tags;
 		if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
 			const scores = await db.sortedSetScores(`cid:${data.cid}:tags`, tagWhitelist[0]);
 			tags = tagWhitelist[0].map((tag, index) => ({ value: tag, score: scores[index] }));

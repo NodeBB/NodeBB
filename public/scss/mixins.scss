@@ -111,6 +111,28 @@
 	}
 }
 
+// Use on elements with `line-clamp-*` classes
+@mixin clamp-fade($lines) {
+	position: relative;
+	cursor: pointer;
+
+	&.line-clamp-#{$lines}::before {
+		content: '';
+		position: absolute;
+		top: calc(1.5em * ($lines - 2));
+		display: block;
+		width: 100%;
+		height: 3em;
+		background: linear-gradient(180deg, transparent 0, $body-bg 100%);
+	}
+}
+
+@for $i from 1 through 6 {
+	.clamp-fade-#{$i} {
+		@include clamp-fade($i);
+	}
+}
+
 @each $color, $value in $grays {
 	.border-gray-#{$color} {
 		border-color: $value !important;

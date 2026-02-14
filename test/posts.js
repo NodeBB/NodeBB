@@ -118,7 +118,7 @@ describe('Post\'s', () => {
 
 	it('should fail to change owner if user is not authorized', async () => {
 		try {
-			await socketPosts.changeOwner({ uid: voterUid }, { pids: [1, 2], toUid: voterUid });
+			await apiPosts.changeOwner({ uid: voterUid }, { pids: [1, 2], uid: voterUid });
 		} catch (err) {
 			assert.strictEqual(err.message, '[[error:no-privileges]]');
 		}
@@ -729,8 +729,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should store post content in cache', (done) => {
-			const oldValue = global.env;
-			global.env = 'production';
+			const oldValue = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'production';
 			const postData = {
 				pid: 9999,
 				content: 'some post content',
@@ -739,7 +739,7 @@ describe('Post\'s', () => {
 				assert.ifError(err);
 				posts.parsePost(postData, (err) => {
 					assert.ifError(err);
-					global.env = oldValue;
+					process.env.NODE_ENV = oldValue;
 					done();
 				});
 			});
@@ -763,18 +763,18 @@ describe('Post\'s', () => {
 
 		it('should turn relative links in post body to absolute urls', (done) => {
 			const nconf = require('nconf');
-			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
+			const content = '<a href="/users">test</a> <a href="//youtube.com">youtube</a>';
 			const parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
-			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a>`);
+			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="${nconf.get('url_parsed').protocol}//youtube.com/">youtube</a>`);
 			done();
 		});
 
 		it('should turn relative links in post body to absolute urls', (done) => {
 			const nconf = require('nconf');
-			const content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
+			const content = '<a href="/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="/path/to/img"/>';
 			let parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
 			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
-			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
+			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="${nconf.get('url_parsed').protocol}//youtube.com/">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
 			done();
 		});
 	});
@@ -985,15 +985,15 @@ describe('Post\'s', () => {
 			assert.equal(posts[1].data.content, 'this is a queued reply');
 		});
 
-		it('should error if data is invalid', (done) => {
-			socketPosts.editQueuedContent({ uid: globalModUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should error if data is invalid', async () => {
+			await assert.rejects(
+				apiPosts.editQueuedPost({ uid: globalModUid }, null),
+				{ message: '[[error:invalid-data]]' },
+			);
 		});
 
 		it('should edit post in queue', async () => {
-			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: queueId, content: 'newContent' });
+			await apiPosts.editQueuedPost({ uid: globalModUid }, { id: queueId, content: 'newContent' });
 			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
 			const { posts } = body;
 			assert.equal(posts[1].type, 'reply');
@@ -1001,7 +1001,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should edit topic title in queue', async () => {
-			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, title: 'new topic title' });
+			await apiPosts.editQueuedPost({ uid: globalModUid }, { id: topicQueueId, title: 'new topic title' });
 			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
 			const { posts } = body;
 			assert.equal(posts[0].type, 'topic');
@@ -1009,39 +1009,39 @@ describe('Post\'s', () => {
 		});
 
 		it('should edit topic category in queue', async () => {
-			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: 2 });
+			await apiPosts.editQueuedPost({ uid: globalModUid }, { id: topicQueueId, cid: 2 });
 			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar });
 			const { posts } = body;
 			assert.equal(posts[0].type, 'topic');
 			assert.equal(posts[0].data.cid, 2);
-			await socketPosts.editQueuedContent({ uid: globalModUid }, { id: topicQueueId, cid: cid });
+			await apiPosts.editQueuedPost({ uid: globalModUid }, { id: topicQueueId, cid: cid });
 		});
 
-		it('should prevent regular users from approving posts', (done) => {
-			socketPosts.accept({ uid: uid }, { id: queueId }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should prevent regular users from approving posts', async () => {
+			await assert.rejects(
+				apiPosts.acceptQueuedPost({ uid: uid }, { id: queueId }),
+				{ message: '[[error:no-privileges]]' },
+			);
 		});
 
-		it('should prevent regular users from approving non existing posts', (done) => {
-			socketPosts.accept({ uid: uid }, { id: 123123 }, (err) => {
-				assert.equal(err.message, '[[error:no-post]]');
-				done();
-			});
+		it('should prevent regular users from approving non existing posts', async () => {
+			await assert.rejects(
+				apiPosts.acceptQueuedPost({ uid: uid }, { id: 123123 }),
+				{ message: '[[error:no-post]]' },
+			);
 		});
 
 		it('should accept queued posts and submit', async () => {
 			const ids = await db.getSortedSetRange('post:queue', 0, -1);
-			await socketPosts.accept({ uid: globalModUid }, { id: ids[0] });
-			await socketPosts.accept({ uid: globalModUid }, { id: ids[1] });
+			await apiPosts.acceptQueuedPost({ uid: globalModUid }, { id: ids[0] });
+			await apiPosts.acceptQueuedPost({ uid: globalModUid }, { id: ids[1] });
 		});
 
-		it('should not crash if id does not exist', (done) => {
-			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, (err) => {
-				assert.equal(err.message, '[[error:no-post]]');
-				done();
-			});
+		it('should not crash if id does not exist', async () => {
+			await assert.rejects(
+				apiPosts.removeQueuedPost({ uid: globalModUid }, { id: '123123123' }),
+				{ message: '[[error:no-post]]' },
+			);
 		});
 
 		it('should bypass post queue if user is in exempt group', async () => {

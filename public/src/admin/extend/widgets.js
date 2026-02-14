@@ -7,7 +7,6 @@ define('admin/extend/widgets', [
 	'jquery-ui/widgets/sortable',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
-	'jquery-ui/widgets/datepicker',
 ], function (bootbox, alerts) {
 	const Widgets = {};
 
@@ -74,7 +73,6 @@ define('admin/extend/widgets', [
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
-				createDatePicker(ui.item);
 				appendToggle(ui.item);
 			},
 			start: function () {
@@ -117,23 +115,21 @@ define('admin/extend/widgets', [
 				area.find('.widget-panel[data-widget]').each(function () {
 					const widgetData = {};
 					const data = $(this).find('form').serializeArray();
-
-					for (const d in data) {
-						if (data.hasOwnProperty(d)) {
-							if (data[d].name) {
-								if (widgetData[data[d].name]) {
-									if (!Array.isArray(widgetData[data[d].name])) {
-										widgetData[data[d].name] = [
-											widgetData[data[d].name],
-										];
-									}
-									widgetData[data[d].name].push(data[d].value);
-								} else {
-									widgetData[data[d].name] = data[d].value;
+					data.forEach((widgetField) => {
+						const { name, value } = widgetField;
+						if (name) {
+							if (widgetData[name]) {
+								if (!Array.isArray(widgetData[name])) {
+									widgetData[name] = [
+										widgetData[name],
+									];
 								}
+								widgetData[name].push(value);
+							} else {
+								widgetData[name] = value;
 							}
 						}
-					}
+					});
 
 					widgets.push({
 						widget: $(this).attr('data-widget'),
@@ -177,15 +173,6 @@ define('admin/extend/widgets', [
 
 			container.attr('data-container-html', container.attr('data-container-html')
 				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable ui-draggable-handle', '') + '"'));
-		});
-	}
-
-	function createDatePicker(el) {
-		const currentYear = new Date().getFullYear();
-		el.find('.date-selector').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			yearRange: currentYear + ':' + (currentYear + 100),
 		});
 	}
 
@@ -245,7 +232,6 @@ define('admin/extend/widgets', [
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);
-					createDatePicker(widgetEl);
 				}
 			}
 

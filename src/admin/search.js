@@ -39,7 +39,7 @@ function sanitize(html) {
 	return sanitizeHTML(html, {
 		allowedTags: [],
 		allowedAttributes: [],
-	});
+	}).replace(/"/g, '');
 }
 
 function simplify(translations) {
@@ -89,15 +89,33 @@ async function initDict(language) {
 	return await Promise.all(namespaces.map(ns => buildNamespace(language, ns)));
 }
 
+async function getTemplateDataFields(namespace) {
+	if (!namespace.startsWith('admin/settings')) {
+		return [];
+	}
+	try {
+		const template = await fs.promises.readFile(
+			path.resolve(nconf.get('views_dir'), `${namespace}.tpl`), 'utf8'
+		);
+		const fields = [...template.matchAll(/data-field="([^"]+)"/g)].map(m => m[1]);
+		return fields.filter(f => !f.startsWith('{')); // dont include stuff like {./name}
+	} catch (err) {
+		return [];
+	}
+}
+
 async function buildNamespace(language, namespace) {
 	const translator = Translator.create(language);
 	try {
-		const translations = await translator.getTranslation(namespace);
+		const [translations, dataFields] = await Promise.all([
+			translator.getTranslation(namespace),
+			getTemplateDataFields(namespace),
+		]);
 		if (!translations || !Object.keys(translations).length) {
 			return await fallback(namespace);
 		}
 		// join all translations into one string separated by newlines
-		let str = Object.keys(translations).map(key => translations[key]).join('\n');
+		let str = Object.values(translations).concat(dataFields).join('\n');
 		str = sanitize(str);
 
 		let title = namespace;

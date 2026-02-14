@@ -1,6 +1,6 @@
 'use strict';
 
-const url = require('url');
+
 const querystring = require('querystring');
 
 const plugins = require('../plugins');
@@ -33,12 +33,12 @@ async function rewrite(req, res, next) {
 
 	let parsedUrl;
 	try {
-		parsedUrl = url.parse(route, true);
+		parsedUrl = new URL(route, 'http://localhost.com');
 	} catch (err) {
 		return next(err);
 	}
 
-	const { pathname } = parsedUrl;
+	const pathname = parsedUrl.pathname.replace(/^\/+/, '');
 	const hook = `action:homepage.get:${pathname}`;
 	if (!plugins.hooks.hasListeners(hook)) {
 		const queryString = querystring.stringify(req.query);
@@ -46,6 +46,8 @@ async function rewrite(req, res, next) {
 	} else {
 		res.locals.homePageRoute = pathname;
 	}
+	// TODO: cant write to req.query in express 5.x+
+	//req.query = Object.assign(Object.fromEntries(parsedUrl.searchParams), req.query);
 
 	next();
 }

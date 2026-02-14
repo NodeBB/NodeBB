@@ -55,6 +55,7 @@ define('autocomplete', [
 									slug: user.userslug,
 									username: user.username,
 									userslug: user.userslug,
+									displayname: user.displayname,
 									picture: user.picture,
 									banned: user.banned,
 									'icon:text': user['icon:text'],
@@ -137,7 +138,7 @@ define('autocomplete', [
 		if (!targetEl) {
 			return;
 		}
-		var editor;
+		let editor;
 		if (targetEl.nodeName === 'TEXTAREA' || targetEl.nodeName === 'INPUT') {
 			editor = new TextareaEditor(targetEl);
 		} else if (targetEl.nodeName === 'DIV' && targetEl.getAttribute('contenteditable') === 'true') {
@@ -149,7 +150,7 @@ define('autocomplete', [
 		// yuku-t/textcomplete inherits directionality from target element itself
 		targetEl.setAttribute('dir', document.querySelector('html').getAttribute('data-dir'));
 
-		var textcomplete = new Textcomplete(editor, strategies, {
+		const textcomplete = new Textcomplete(editor, strategies, {
 			dropdown: options,
 		});
 		textcomplete.on('rendered', function () {

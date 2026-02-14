@@ -3,5 +3,7 @@
 	"welcome-notification": "Приветствено известие",
 	"welcome-notification-link": "Връзка за приветственото известие",
 	"welcome-notification-uid": "Потр. ид. за приветственото известие",
-	"post-queue-notification-uid": "Потр. ид. за опашката с публикации"
+	"post-queue-notification-uid": "Потр. ид. за опашката с публикации",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
 }

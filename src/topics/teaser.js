@@ -110,7 +110,7 @@ module.exports = function (Topics) {
 	}
 
 	async function getPreviousNonBlockedPost(postData, blockedUids) {
-		let isBlocked = false;
+		let isBlocked;
 		let prevPost = postData;
 		const postsPerIteration = 5;
 		let start = 0;

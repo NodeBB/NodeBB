@@ -33,7 +33,7 @@
 								<a href="#" component="sort/handle" class="btn btn-light btn-sm d-none d-md-block ui-sortable-handle" style="cursor:grab;"><i class="fa fa-arrows-up-down text-muted"></i></a>
 							</td>
 							<td class="text-nowrap">{./key}</td>
-							<td class="text-nowrap">{{{ if ./icon }}}<i class="text-muted {./icon}"></i> {{{ end }}}{./name}</td>
+							<td class="text-nowrap">{{{ if ./icon }}}<i class="text-muted fa-fw {./icon}"></i> {{{ end }}}{./name}</td>
 							<td>
 								{./type}
 								{{{ if ((./type == "select") || (./type == "select-multi")) }}}

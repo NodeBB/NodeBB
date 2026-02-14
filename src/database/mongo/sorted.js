@@ -82,7 +82,7 @@ module.exports = function (module) {
 			limit = 0;
 		}
 
-		let result = [];
+		let result;
 		async function doQuery(_key, fields, skip, limit) {
 			return await module.client.collection('objects').find({
 				...query, ...{ _key: _key },

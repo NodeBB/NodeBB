@@ -11,8 +11,8 @@ const util = require('util');
 
 const wait = util.promisify(setTimeout);
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const user = require('../src/user');
@@ -185,13 +185,10 @@ describe('API', async () => {
 		}
 
 		// Create sample users
-		const adminUid = await user.create({ username: 'admin', password: '123456' });
-		const unprivUid = await user.create({ username: 'unpriv', password: '123456' });
+		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' }, { emailVerification: 'verify' });
+		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' }, { emailVerification: 'verify' });
 		const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
-		await user.setUserField(adminUid, 'email', 'test@example.org');
-		await user.setUserField(unprivUid, 'email', 'unpriv@example.org');
-		await user.email.confirmByUid(adminUid);
-		await user.email.confirmByUid(unprivUid);
+
 		mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
 
 		for (let x = 0; x < 4; x++) {
@@ -282,8 +279,13 @@ describe('API', async () => {
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
-		// Create a new chat room
-		await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		// Create a new chat room & send a message
+		const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		await messaging.sendMessage({
+			roomId,
+			uid: adminUid,
+			content: 'this is a chat message',
+		});
 
 		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
@@ -488,7 +490,8 @@ describe('API', async () => {
 					}
 				});
 
-				it('should not error out when called', async () => {
+				it('should not error out when called', async function () {
+					this.timeout(0);
 					await setupData();
 
 					if (csrfToken) {
@@ -515,6 +518,7 @@ describe('API', async () => {
 								redirect: 'manual',
 								headers: headers,
 								body: body,
+								timeout: 30000,
 							});
 						} else if (type === 'form') {
 							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);
@@ -530,7 +534,7 @@ describe('API', async () => {
 					assert(
 						responses.hasOwnProperty('418') ||
 						Object.keys(responses).includes(String(result.response.statusCode)),
-						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}`
+						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}, body: ${JSON.stringify(result.body)} status: ${result.response.statusText}`,
 					);
 				});
 
@@ -654,10 +658,15 @@ describe('API', async () => {
 					case 'boolean':
 						assert.strictEqual(typeof response[prop], 'boolean', `"${prop}" was expected to be a boolean, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						break;
-					case 'object':
-						assert.strictEqual(typeof response[prop], 'object', `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
+					case 'object': {
+						let valid = ['object'];
+						if (schema[prop].additionalProperties && schema[prop].additionalProperties.oneOf) {
+							valid = schema[prop].additionalProperties.oneOf.map(({ type }) => type);
+						}
+						assert(valid.includes(typeof response[prop]), `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						compare(schema[prop], response[prop], method, path, context ? [context, prop].join('.') : prop);
 						break;
+					}
 					case 'array':
 						assert.strictEqual(Array.isArray(response[prop]), true, `"${prop}" was expected to be an array, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 

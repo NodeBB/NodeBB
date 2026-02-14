@@ -5,6 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const api = require('../../api');
+const activitypub = require('../../activitypub');
 const user = require('../../user');
 
 const helpers = require('../helpers');
@@ -94,11 +95,7 @@ Users.changePassword = async (req, res) => {
 Users.follow = async (req, res) => {
 	const remote = String(req.params.uid).includes('@');
 	if (remote) {
-		await api.activitypub.follow(req, {
-			type: 'uid',
-			id: req.uid,
-			actor: req.params.uid,
-		});
+		await activitypub.out.follow('uid', req.uid, req.params.uid);
 	} else {
 		await api.users.follow(req, req.params);
 	}
@@ -109,11 +106,7 @@ Users.follow = async (req, res) => {
 Users.unfollow = async (req, res) => {
 	const remote = String(req.params.uid).includes('@');
 	if (remote) {
-		await api.activitypub.unfollow(req, {
-			type: 'uid',
-			id: req.uid,
-			actor: req.params.uid,
-		});
+		await activitypub.out.undo.follow('uid', req.uid, req.params.uid);
 	} else {
 		await api.users.unfollow(req, req.params);
 	}

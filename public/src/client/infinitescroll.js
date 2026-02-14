@@ -21,7 +21,7 @@ define('forum/infinitescroll', ['hooks', 'alerts', 'api'], function (hooks, aler
 		previousScrollTop = $(window).scrollTop();
 		$(window).off('scroll', startScrollTimeout).on('scroll', startScrollTimeout);
 		if ($body.height() <= $(window).height() && (
-			!ajaxify.data.hasOwnProperty('pageCount') || ajaxify.data.pageCount > 1
+			ajaxify.data.pagination && ajaxify.data.pagination.pageCount > 1
 		)) {
 			callback(1);
 		}

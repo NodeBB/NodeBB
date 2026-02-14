@@ -2,11 +2,11 @@
 
 
 define('forum/post-queue', [
-	'categoryFilter', 'categorySelector', 'api', 'alerts', 'bootbox',
-	'accounts/moderate', 'accounts/delete',
+	'categoryFilter', 'categorySelector', 'api', 'alerts', 'translator',
+	'bootbox', 'accounts/moderate', 'accounts/delete',
 ], function (
-	categoryFilter, categorySelector, api, alerts, bootbox,
-	AccountModerate, AccountsDelete
+	categoryFilter, categorySelector, api, alerts, translator,
+	bootbox, AccountModerate, AccountsDelete
 ) {
 	const PostQueue = {};
 
@@ -69,14 +69,10 @@ define('forum/post-queue', [
 			const id = textarea.parents('[data-id]').attr('data-id');
 			const titleEdit = triggerClass === '[data-action="editTitle"]';
 
-			socket.emit('posts.editQueuedContent', {
-				id: id,
+			api.put(`/posts/queue/${id}`, {
 				title: titleEdit ? textarea.val() : undefined,
 				content: titleEdit ? undefined : textarea.val(),
-			}, function (err, data) {
-				if (err) {
-					return alerts.error(err);
-				}
+			}).then((data) => {
 				if (titleEdit) {
 					preview.find('.title-text').text(data.postData.title);
 				} else {
@@ -85,7 +81,7 @@ define('forum/post-queue', [
 
 				textarea.parent().addClass('hidden');
 				preview.removeClass('hidden');
-			});
+			}).catch(alerts.error);
 		});
 	}
 
@@ -96,8 +92,7 @@ define('forum/post-queue', [
 			onSubmit: function (selectedCategory) {
 				Promise.all([
 					api.get(`/categories/${selectedCategory.cid}`, {}),
-					socket.emit('posts.editQueuedContent', {
-						id: id,
+					api.put(`/posts/queue/${id}`, {
 						cid: selectedCategory.cid,
 					}),
 				]).then(function (result) {
@@ -163,67 +158,128 @@ define('forum/post-queue', [
 							AccountsDelete.purge(uid, ajaxify.go.bind(null, 'post-queue'));
 							break;
 
-						default:
-							handleQueueActions.call(e.target);
+						case 'accept':
+							handleAccept(subselector);
 							break;
+
+						case 'reject':
+							handleReject(subselector);
+							break;
+
+						case 'notify':
+							handleNotify(subselector);
+							break;
+
+						default:
+							throw new Error(`Unknown action: ${action}`);
 					}
 				}
 			});
 		}
 	}
 
-	async function handleQueueActions() {
-		// accept, reject, notify
-		function getMessage() {
-			return new Promise((resolve) => {
-				const modal = bootbox.dialog({
-					title: '[[post-queue:notify-user]]',
-					message: '<textarea class="form-control"></textarea>',
-					buttons: {
-						OK: {
-							label: '[[modules:bootbox.send]]',
-							callback: function () {
-								const val = modal.find('textarea').val();
-								if (val) {
-									resolve(val);
-								}
-							},
-						},
-					},
-				});
-			});
-		}
-
-		const parent = $(this).parents('[data-id]');
-		const action = $(this).attr('data-action');
+	function handleAccept(btn) {
+		const parent = $(btn).parents('[data-id]');
 		const id = parent.attr('data-id');
-		const listContainer = parent.get(0).parentNode;
+		doAction('accept', id).then(() => removePostQueueElement(parent)).catch(alerts.error);
+	}
 
-		if ((!['accept', 'reject', 'notify'].includes(action)) ||
-			(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
+	async function handleReject(btn) {
+		const parent = $(btn).parents('[data-id]');
+		const id = parent.attr('data-id');
+		const translationString = ajaxify.data.canAccept ?
+			'[[post-queue:confirm-reject]]' :
+			'[[post-queue:confirm-remove]]';
+
+		const message = await getMessage(translationString);
+		if (message === false) {
+			return;
+		}
+		doAction('reject', id, message).then(() => removePostQueueElement(parent)).catch(alerts.error);
+	}
+
+	function removePostQueueElement(parent) {
+		const listContainer = parent.get(0).parentNode;
+		parent.remove();
+		if (listContainer.childElementCount === 0) {
+			if (ajaxify.data.singlePost) {
+				ajaxify.go('/post-queue' + window.location.search);
+			} else {
+				ajaxify.refresh();
+			}
+		}
+	}
+
+	async function handleNotify(btn) {
+		const parent = $(btn).parents('[data-id]');
+		const id = parent.attr('data-id');
+		const message = await getMessage('[[post-queue:notify-user]]');
+		if (message === false) {
 			return;
 		}
 
-		socket.emit('posts.' + action, {
-			id: id,
-			message: action === 'notify' ? await getMessage() : undefined,
-		}, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-			if (action === 'accept' || action === 'reject') {
-				parent.remove();
-			}
+		doAction('notify', id, message).catch(alerts.error);
+	}
 
-			if (listContainer.childElementCount === 0) {
-				if (ajaxify.data.singlePost) {
-					ajaxify.go('/post-queue' + window.location.search);
-				} else {
-					ajaxify.refresh();
+	async function getMessage(title) {
+		const reasons = await socket.emit('user.getCustomReasons', { type: 'post-queue' });
+		const html = await app.parseAndTranslate('partials/custom-reason', { reasons });
+
+		return new Promise((resolve) => {
+			let resolved = false;
+			const done = (value) => {
+				if (resolved) {
+					return;
 				}
-			}
+				resolved = true;
+				resolve(value);
+			};
+
+			const modal = bootbox.dialog({
+				title: title,
+				message: `<form class="form">${html.html()}</form>`,
+				show: true,
+				onEscape: true,
+				buttons: {
+					close: {
+						label: '[[global:close]]',
+						className: 'btn-link',
+						callback: function () {
+							done(false);
+						},
+					},
+					submit: {
+						label: '[[modules:bootbox.confirm]]',
+						callback: function () {
+							done(modal.find('[name="reason"]').val());
+						},
+					},
+				},
+			});
+
+			modal.on('hidden.bs.modal', () => {
+				done(false);
+			});
+			modal.find('[data-key]').on('click', function () {
+				const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+				if (reason && reason.body) {
+					modal.find('[name="reason"]').val(translator.unescape(reason.body));
+				}
+			});
 		});
-		return false;
+	}
+
+	async function doAction(action, id, message = '') {
+		const actionsMap = {
+			accept: () => api.post(`/posts/queue/${id}`, {}),
+			reject: () => api.del(`/posts/queue/${id}`, { message }),
+			notify: () => api.post(`/posts/queue/${id}/notify`, { message }),
+		};
+		if (actionsMap[action]) {
+			const result = actionsMap[action]();
+			return (result instanceof Promise ? result : Promise.resolve(result));
+		}
+		throw new Error(`Unknown action: ${action}`);
 	}
 
 	function handleBulkActions() {
@@ -244,7 +300,7 @@ define('forum/post-queue', [
 				return;
 			}
 			const action = bulkAction.split('-')[0];
-			const promises = ids.map(id => socket.emit('posts.' + action, { id: id }));
+			const promises = ids.map(id => doAction(action, id));
 
 			Promise.allSettled(promises).then(function (results) {
 				const fulfilled = results.filter(res => res.status === 'fulfilled').length;

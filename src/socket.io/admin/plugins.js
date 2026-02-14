@@ -11,6 +11,9 @@ const { pluginNamePattern } = require('../../constants');
 const Plugins = module.exports;
 
 Plugins.toggleActive = async function (socket, plugin_id) {
+	if (await plugins.isSystemPlugin(plugin_id)) {
+		throw new Error('[[error:cannot-toggle-system-plugin]]');
+	}
 	postsCache.reset();
 	const data = await plugins.toggleActive(plugin_id);
 	await events.log({
@@ -22,6 +25,9 @@ Plugins.toggleActive = async function (socket, plugin_id) {
 };
 
 Plugins.toggleInstall = async function (socket, data) {
+	if (await plugins.isSystemPlugin(data.id)) {
+		throw new Error('[[error:cannot-toggle-system-plugin]]');
+	}
 	const isInstalled = await plugins.isInstalled(data.id);
 	const isStarterPlan = nconf.get('saas_plan') === 'starter';
 	if ((isStarterPlan || nconf.get('acpPluginInstallDisabled')) && !isInstalled) {

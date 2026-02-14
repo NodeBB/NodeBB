@@ -1,0 +1,36 @@
+post:
+  summary: Notify the owner of a queued post
+  tags:
+    - QueuedPosts
+  parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: a valid queued post id
+      example: 2
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: body of the notification message
+  responses:
+    '200':
+      description: post successfully accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      description: Bad request, invalid post id

@@ -1,18 +1,25 @@
 {
-	"name": "World",
-	"popular": "Popular topics",
-	"recent": "All topics",
-	"help": "Help",
+	"name": "Monde",
+	"latest": "Dernier",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "Tous",
+	"help": "Aide",
 
-	"help.title": "What is this page?",
-	"help.intro": "Welcome to your corner of the fediverse.",
-	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
-	"help.build": "There might not be a lot of topics here to start; that's normal. You will start to see more content here over time when you start following other users.",
-	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
-	"help.next-generation": "This is the next generation of social media, start contributing today!",
+	"help.title": "Qu'est-ce que cette page ?",
+	"help.intro": "Bienvenue dans votre coin du fediverse.",
+	"help.fediverse": "Le \"fediverse\" est un réseau d'applications et de sites web interconnectés qui communiquent entre eux et dont les utilisateurs peuvent se voir. Ce forum est fédéré et peut interagir avec ce web social (ou \"fediverse\"). Cette page est votre coin du fediverse. Elle contient uniquement des sujets créés par, et partagés par, les utilisateurs que <strong>vous</strong> suivez.",
+	"help.build": "Il n'y a peut-être pas encore beaucoup de sujets ici au début, c'est normal. Vous commencerez à voir plus de contenu au fil du temps lorsque vous commencerez à suivre d'autres utilisateurs.",
+	"help.federating": "De même, si des utilisateurs extérieurs à ce forum commencent à <em>vous</em> suivre, vos publications commenceront à apparaître sur ces applications et sites web également.",
+	"help.next-generation": "C'est la prochaine génération des réseaux sociaux, commencez à contribuer dès aujourd'hui !",
 
-	"onboard.title": "Your window to the fediverse...",
-	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
-	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
-	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!"
+	"onboard.title": "Votre fenêtre sur le fediverse...",
+	"onboard.what": "Voici votre catégorie personnalisée, composée uniquement de contenu trouvé en dehors de ce forum. La présence de contenu sur cette page dépend de si vous suivez la personne, ou si ce post a été partagé par quelqu'un que vous suivez.",
+	"onboard.why": "Il se passe beaucoup de choses en dehors de ce forum, et tout n'est pas nécessairement pertinent pour vos intérêts. C'est pourquoi suivre des personnes est le meilleur moyen de signaler que vous souhaitez voir plus de contenu de leur part.",
+	"onboard.how": "En attendant, vous pouvez cliquer sur les boutons de raccourci en haut pour voir ce que ce forum connaît d'autre et commencer à découvrir de nouveaux contenus !",
+
+	"category-search": "Trouver une catégorie..."
 }

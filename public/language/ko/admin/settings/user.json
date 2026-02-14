@@ -64,6 +64,7 @@
 	"show-email": "이메일 표시",
 	"show-fullname": "전체 이름 표시",
 	"restrict-chat": "팔로우하는 사용자의 채팅 메시지만 허용",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "새 탭에서 나가는 링크 열기",
 	"topic-search": "토픽 내 검색 활성화",
 	"update-url-with-post-index": "토픽을 탐색하는 동안 URL에 게시물 색인 업데이트",

@@ -22,7 +22,8 @@
 	"delete-content": "Supprimer <strong>le contenu</strong> du compte",
 	"purge": "Supprimer <strong>le compte</strong> et <strong>le contenu</strong>",
 	"download-csv": "Exporter en CSV",
-	"custom-user-fields": "Custom User Fields",
+	"custom-user-fields": "Champs utilisateur personnalisés",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Gérer les groupes",
 	"set-reputation": "Définir une réputation",
 	"add-group": "Ajouter un groupe",
@@ -77,9 +78,11 @@
 
 	"temp-ban.length": "Longueur",
 	"temp-ban.reason": "Raison <span class=\"text-muted\">(Optionel)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Heures",
 	"temp-ban.days": "Jours",
 	"temp-ban.explanation": "Entrer la durée du bannissement. Notez qu'une durée de 0 sera considérée comme un bannissement définitif.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Voulez-vous réellement bannir <strong>définitivement</strong> cet utilisateur ?",
 	"alerts.confirm-ban-multi": "Voulez-vous réellement bannir <strong>définitivement</strong> ces utilisateurs ?",

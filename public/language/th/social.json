@@ -8,5 +8,7 @@
 	"log-in-with-facebook": "เข้าสู่ระบบด้วยบัญชี Facebook",
 	"continue-with-facebook": "ไปต่อโดยใช้บัญชี Facebook",
 	"sign-in-with-linkedin": "เข้าสู่ระบบด้วยบัญชี LinkedIn",
-	"sign-up-with-linkedin": "สร้างบัญชีใหม่ด้วยบัญชี LinkedIn"
+	"sign-up-with-linkedin": "สร้างบัญชีใหม่ด้วยบัญชี LinkedIn",
+	"sign-in-with-wordpress": "Sign in with WordPress",
+	"sign-up-with-wordpress": "Sign up with WordPress"
 }

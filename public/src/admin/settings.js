@@ -2,8 +2,8 @@
 
 
 define('admin/settings', [
-	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap',
-], function (uploader, mousetrap, hooks, alerts, settings, bootstrap) {
+	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap', 'admin/modules/relogin-timer',
+], function (uploader, mousetrap, hooks, alerts, settings, bootstrap, reloginTimer) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
@@ -25,10 +25,13 @@ define('admin/settings', [
 			});
 			const offset = mainHader.outerHeight(true);
 			// https://stackoverflow.com/a/11814275/583363
-			tocList.find('a').on('click', function (event) {
-				event.preventDefault();
+			tocList.find('a').on('click', function () {
 				const href = $(this).attr('href');
-				$(href)[0].scrollIntoView();
+				const $target = $(href);
+				if (!$target.length) {
+					return;
+				}
+				$target.get(0).scrollIntoView(true);
 				window.location.hash = href;
 				scrollBy(0, -offset);
 				setTimeout(() => {
@@ -215,9 +218,10 @@ define('admin/settings', [
 				return callback(err);
 			}
 
-			for (const field in data) {
-				if (data.hasOwnProperty(field)) {
-					app.config[field] = data[field];
+			for (const [field, value] of Object.entries(data)) {
+				app.config[field] = value;
+				if (field === 'adminReloginDuration') {
+					reloginTimer.start(parseInt(value, 10));
 				}
 			}
 

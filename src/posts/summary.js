@@ -93,7 +93,7 @@ module.exports = function (Posts) {
 
 	async function getTopicAndCategories(tids) {
 		const topicsData = await topics.getTopicsFields(tids, [
-			'uid', 'tid', 'title', 'cid', 'tags', 'slug',
+			'uid', 'tid', 'title', 'generatedTitle', 'cid', 'tags', 'slug',
 			'deleted', 'scheduled', 'postcount', 'mainPid', 'teaserPid',
 		]);
 

@@ -1,6 +1,8 @@
 {
 	"theme-name": "Harmony Theme",
 	"skins": "Örtüklər",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "Yığmaq",
 	"expand": "Açmaq",
 	"sidebar-toggle": "Yan panel aç/bağla",

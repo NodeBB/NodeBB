@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "Tutti i gruppi",
     "groups": "Gruppi",
     "members": "Membri",
+    "x-members": "%1 member(s)",
     "view-group": "Vedi Gruppo",
     "owner": "Proprietario del Gruppo",
     "new-group": "Crea Nuovo Gruppo",

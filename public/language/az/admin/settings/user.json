@@ -64,6 +64,7 @@
 	"show-email": "E-poçtu göstər",
 	"show-fullname": "Tam adı göstər",
 	"restrict-chat": "Yalnız izlədiyim istifadəçilərdən gələn söhbət mesajlarına icazə ver",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Gedən bağlantıları yeni tabda açın",
 	"topic-search": "Mövzudaxili axtarışı aktivləşdir",
 	"update-url-with-post-index": "Mövzulara baxarkən url-i post indeksi ilə yenilə",

@@ -11,7 +11,7 @@ exports.getOrCreate = function () {
 			maxSize: meta.config.postCacheSize,
 			sizeCalculation: function (n) { return n.length || 1; },
 			ttl: 0,
-			enabled: global.env === 'production',
+			enabled: process.env.NODE_ENV === 'production',
 		});
 	}
 

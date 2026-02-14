@@ -77,14 +77,14 @@ Actors.note = async function (req, res, next) {
 	}
 
 	const payload = await activitypub.mocks.notes.public(post);
-	const { to, cc } = await activitypub.buildRecipients(payload, { pid: post.pid, uid: post.user.uid });
+	const { to, cc } = await activitypub.buildRecipients(payload, { pid: post.pid, uid: post.user.uid, targets: false });
 	payload.to = to;
 	payload.cc = cc;
 
 	res.status(200).json(payload);
 };
 
-Actors.replies = async function (req, res) {
+Actors.replies = async function (req, res, next) {
 	const allowed = utils.isNumber(req.params.pid) && await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
 	const exists = await posts.exists(req.params.pid);
 	if (!allowed || !exists) {
@@ -92,15 +92,22 @@ Actors.replies = async function (req, res) {
 	}
 
 	const page = parseInt(req.query.page, 10);
-	const replies = await activitypub.helpers.generateCollection({
-		set: `pid:${req.params.pid}:replies`,
-		page,
-		perPage: meta.config.postsPerPage,
-		url: `${nconf.get('url')}/post/${req.params.pid}/replies`,
-	});
+	let replies;
+	try {
+		replies = await activitypub.helpers.generateCollection({
+			set: `pid:${req.params.pid}:replies`,
+			page,
+			perPage: meta.config.postsPerPage,
+			url: `${nconf.get('url')}/post/${req.params.pid}/replies`,
+		});
+	} catch (e) {
+		return next(); // invalid page; 404
+	}
 
 	// Convert pids to urls
-	replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+	if (replies.orderedItems) {
+		replies.orderedItems = replies.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
+	}
 
 	const object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -126,19 +133,25 @@ Actors.topic = async function (req, res, next) {
 			return next();
 		}
 
-		let [collection, pids] = await Promise.all([
-			activitypub.helpers.generateCollection({
-				set: `tid:${req.params.tid}:posts`,
-				method: posts.getPidsFromSet,
-				page,
-				perPage,
-				url: `${nconf.get('url')}/topic/${req.params.tid}/posts`,
-			}),
-			db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
-		]);
+		let collection;
+		let pids;
+		try {
+			// pids are used in generation of digest only.
+			([collection, pids] = await Promise.all([
+				activitypub.helpers.generateCollection({
+					set: `tid:${req.params.tid}:posts`,
+					method: posts.getPidsFromSet,
+					page,
+					perPage,
+					url: `${nconf.get('url')}/topic/${req.params.tid}`,
+				}),
+				db.getSortedSetMembers(`tid:${req.params.tid}:posts`),
+			]));
+		} catch (e) {
+			return next(); // invalid page; 404
+		}
 		pids.push(mainPid);
 		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
-		collection.totalItems += 1; // account for mainPid
 
 		// Generate digest for ETag
 		const digest = activitypub.helpers.generateDigest(new Set(pids));
@@ -155,12 +168,17 @@ Actors.topic = async function (req, res, next) {
 		}
 		res.set('ETag', digest);
 
-		// Convert pids to urls
-		if (page || collection.totalItems < meta.config.postsPerPage) {
+		// Add OP to collection on first (or only) page
+		if (page || collection.totalItems < perPage) {
 			collection.orderedItems = collection.orderedItems || [];
-			if (!page || page === 1) { // add OP to collection
+			if (!page || page === 1) {
 				collection.orderedItems.unshift(mainPid);
+				collection.totalItems += 1;
 			}
+		}
+
+		// Convert pids to urls
+		if (collection.orderedItems) {
 			collection.orderedItems = collection.orderedItems.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		}
 

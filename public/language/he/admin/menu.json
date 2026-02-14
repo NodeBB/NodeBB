@@ -83,11 +83,11 @@
 	"search.placeholder": "חיפוש הגדרות",
 	"search.no-results": "אין תוצאות...",
 	"search.search-forum": "חפש בפורום <strong></strong>",
-	"search.keep-typing": "המשך להקליד על מנת למצוא תוצאות...",
-	"search.start-typing": "התחל להקליד על מנת לראות תוצאות...",
+	"search.keep-typing": "המשיכו להקליד על מנת למצוא תוצאות...",
+	"search.start-typing": "התחילו להקליד על מנת לראות תוצאות...",
 
 	"connection-lost": "החיבור ל-%1 אבד, מנסה להתחבר מחדש...",
 
 	"alerts.version": "מעודכן ל-<strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "שדרג ל v%1"
+	"alerts.upgrade": "שדרגו ל v%1"
 }

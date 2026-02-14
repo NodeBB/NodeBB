@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Đã Đăng Ký Xem Trang",
 	"graphs.page-views-guest": "Khách Xem Trang",
 	"graphs.page-views-bot": "Bot Xem Trang",
+	"graphs.page-views-ap": "Lượt Xem Trang ActivityPub",
 	"graphs.unique-visitors": "Khách Độc Lập",
 	"graphs.registered-users": "Thành Viên Chính Thức",
 	"graphs.guest-users": "Người dùng khách",

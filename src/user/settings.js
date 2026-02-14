@@ -59,16 +59,18 @@ module.exports = function (User) {
 		settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
 		settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 		settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
-		settings.topicsPerPage = Math.min(
+		settings.topicsPerPage = Math.max(1, Math.min(
 			meta.config.maxTopicsPerPage,
-			settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage,
-			defaultTopicsPerPage
-		);
-		settings.postsPerPage = Math.min(
+			settings.topicsPerPage ?
+				parseInt(settings.topicsPerPage, 10) :
+				defaultTopicsPerPage,
+		));
+		settings.postsPerPage = Math.max(1, Math.min(
 			meta.config.maxPostsPerPage,
-			settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage,
-			defaultPostsPerPage
-		);
+			settings.postsPerPage ?
+				parseInt(settings.postsPerPage, 10) :
+				defaultPostsPerPage,
+		));
 		settings.userLang = settings.userLang || meta.config.defaultLang || 'en-GB';
 		settings.acpLang = settings.acpLang || settings.userLang;
 		settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
@@ -76,7 +78,7 @@ module.exports = function (User) {
 		settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
 		settings.followTopicsOnReply = parseInt(getSetting(settings, 'followTopicsOnReply', 0), 10) === 1;
 		settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
-		settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
+		settings.disableIncomingChats = parseInt(getSetting(settings, 'disableIncomingChats', 0), 10) === 1;
 		settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 		settings.updateUrlWithPostIndex = parseInt(getSetting(settings, 'updateUrlWithPostIndex', 1), 10) === 1;
 		settings.bootswatchSkin = validator.escape(String(settings.bootswatchSkin || ''));
@@ -89,7 +91,17 @@ module.exports = function (User) {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
 		});
 
+		settings.chatAllowList = parseJSONSetting(settings.chatAllowList || '[]', []).map(String);
+		settings.chatDenyList = parseJSONSetting(settings.chatDenyList || '[]', []).map(String);
 		return settings;
+	}
+
+	function parseJSONSetting(value, defaultValue) {
+		try {
+			return JSON.parse(value);
+		} catch (err) {
+			return defaultValue;
+		}
 	}
 
 	function getSetting(settings, key, defaultValue) {
@@ -145,7 +157,7 @@ module.exports = function (User) {
 			acpLang: data.acpLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
-			restrictChat: data.restrictChat,
+			disableIncomingChats: data.disableIncomingChats,
 			topicSearchEnabled: data.topicSearchEnabled,
 			updateUrlWithPostIndex: data.updateUrlWithPostIndex,
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
@@ -155,6 +167,8 @@ module.exports = function (User) {
 			categoryWatchState: data.categoryWatchState,
 			categoryTopicSort: data.categoryTopicSort,
 			topicPostSort: data.topicPostSort,
+			chatAllowList: data.chatAllowList,
+			chatDenyList: data.chatDenyList,
 		};
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {

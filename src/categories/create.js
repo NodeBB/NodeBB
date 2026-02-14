@@ -59,6 +59,7 @@ module.exports = function (Categories) {
 			'groups:topics:read',
 			'groups:topics:create',
 			'groups:topics:reply',
+			'groups:topics:crosspost',
 			'groups:topics:tag',
 			'groups:posts:edit',
 			'groups:posts:history',
@@ -151,7 +152,15 @@ module.exports = function (Categories) {
 	}
 
 	async function generateHandle(slug) {
-		let taken = await meta.slugTaken(slug);
+		let taken;
+		try {
+			taken = await meta.slugTaken(slug);
+		} catch (e) {
+			// invalid slug passed in
+			slug = 'category';
+			taken = true;
+		}
+
 		let suffix;
 		while (taken) {
 			suffix = utils.generateUUID().slice(0, 8);

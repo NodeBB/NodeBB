@@ -40,7 +40,6 @@ define('admin/manage/groups', [
 					const createModal = $('#create-modal');
 					const createGroupName = $('#create-group-name');
 					const createModalGo = $('#create-modal-go');
-					const createModalError = $('#create-modal-error');
 
 					createGroupName.trigger('focus');
 					createModal.on('keypress', function (e) {
@@ -61,18 +60,12 @@ define('admin/manage/groups', [
 						};
 
 						api.post('/groups', submitObj).then((response) => {
-							createModalError.addClass('hide');
 							createGroupName.val('');
 							createModal.on('hidden.bs.modal', function () {
 								ajaxify.go('admin/manage/groups/' + response.name);
 							});
 							createModal.modal('hide');
-						}).catch((err) => {
-							if (!utils.hasLanguageKey(err.status.message)) {
-								err.status.message = '[[admin/manage/groups:alerts.create-failure]]';
-							}
-							createModalError.translateHtml(err.status.message).removeClass('hide');
-						});
+						}).catch(alerts.error);
 					});
 				});
 			});

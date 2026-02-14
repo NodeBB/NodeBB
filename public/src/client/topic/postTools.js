@@ -397,7 +397,7 @@ define('forum/topic/postTools', [
 				return;
 			}
 			const post = button.parents('[data-pid]');
-			if (post.length) {
+			if (post.length && !post.hasClass('self-post')) {
 				require(['slugify'], function (slugify) {
 					slug = slugify(post.attr('data-username'), true);
 					if (!slug) {
@@ -453,7 +453,7 @@ define('forum/topic/postTools', [
 		require(['chat'], function (chat) {
 			chat.newChat(post.attr('data-uid'));
 		});
-		button.parents('.btn-group').find('.dropdown-toggle').click();
+		button.parents('.dropdown').find('.dropdown-toggle').click();
 		return false;
 	}
 

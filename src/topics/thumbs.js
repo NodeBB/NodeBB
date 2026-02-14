@@ -5,29 +5,26 @@ const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
 const mime = require('mime');
-
-const db = require('../database');
-const file = require('../file');
 const plugins = require('../plugins');
 const posts = require('../posts');
 const meta = require('../meta');
-const cache = require('../cache');
 
 const topics = module.parent.exports;
 const Thumbs = module.exports;
 
-Thumbs.exists = async function (id, path) {
-	const isDraft = !await topics.exists(id);
-	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
+const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
+const upload_path = nconf.get('upload_path');
 
-	return db.isSortedSetMember(set, path);
+Thumbs.exists = async function (tid, path) {
+	const thumbs = await topics.getTopicField(tid, 'thumbs');
+	return thumbs.includes(path);
 };
 
 Thumbs.load = async function (topicData) {
 	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
-	let hashes = await posts.getPostsFields(mainPids, ['attachments']);
-	const hasUploads = await db.exists(mainPids.map(pid => `post:${pid}:uploads`));
-	hashes = hashes.map(o => o.attachments);
+	const mainPostData = await posts.getPostsFields(mainPids, ['attachments', 'uploads']);
+	const hasUploads = mainPostData.map(p => Array.isArray(p.uploads) && p.uploads.length > 0);
+	const hashes = mainPostData.map(o => o.attachments);
 	let hasThumbs = topicData.map((t, idx) => t &&
 		(parseInt(t.numThumbs, 10) > 0 ||
 		!!(hashes[idx] && hashes[idx].length) ||
@@ -36,9 +33,69 @@ Thumbs.load = async function (topicData) {
 
 	const topicsWithThumbs = topicData.filter((tid, idx) => hasThumbs[idx]);
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
-	const thumbs = await Thumbs.get(tidsWithThumbs);
+	const thumbs = await loadFromTopicData(topicsWithThumbs, {
+		thumbsOnly: meta.config.showPostUploadsAsThumbnails !== 1,
+	});
+
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
 	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));
+};
+
+async function loadFromTopicData(topicData, options = {}) {
+	const tids = topicData.map(t => t && t.tid);
+	const thumbs = topicData.map(t => t && Array.isArray(t.thumbs) ? t.thumbs : []);
+
+	if (!options.thumbsOnly) {
+		const mainPids = topicData.map(t => t.mainPid);
+		const [mainPidUploads, mainPidAttachments] = await Promise.all([
+			posts.uploads.list(mainPids),
+			posts.attachments.get(mainPids),
+		]);
+
+		// Add uploaded media to thumb sets
+		mainPidUploads.forEach((uploads, idx) => {
+			uploads = uploads.filter((upload) => {
+				const type = mime.getType(upload);
+				return !thumbs[idx].includes(upload) && type && type.startsWith('image/');
+			});
+
+			if (uploads.length) {
+				thumbs[idx].push(...uploads);
+			}
+		});
+
+		// Add attachments to thumb sets
+		mainPidAttachments.forEach((attachments, idx) => {
+			attachments = attachments.filter(
+				attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
+			);
+
+			if (attachments.length) {
+				thumbs[idx].push(...attachments.map(attachment => attachment.url));
+			}
+		});
+	}
+
+	const hasTimestampPrefix = /^\d+-/;
+
+	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
+		id: String(tids[idx]),
+		name: (() => {
+			const name = path.basename(thumb);
+			return hasTimestampPrefix.test(name) ? name.slice(14) : name;
+		})(),
+		path: thumb,
+		url: thumb.startsWith('http') ?
+			thumb :
+			path.posix.join(upload_url, thumb.replace(/\\/g, '/')),
+	})));
+
+	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', {
+		tids,
+		thumbsOnly: options.thumbsOnly,
+		thumbs: response,
+	}));
+	return response;
 };
 
 Thumbs.get = async function (tids, options) {
@@ -54,118 +111,77 @@ Thumbs.get = async function (tids, options) {
 			thumbsOnly: false,
 		};
 	}
-
-	const isDraft = (await topics.exists(tids)).map(exists => !exists);
-
 	if (!meta.config.allowTopicsThumbnail || !tids.length) {
 		return singular ? [] : tids.map(() => []);
 	}
 
-	const hasTimestampPrefix = /^\d+-/;
-	const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
-	const sets = tids.map((tid, idx) => `${isDraft[idx] ? 'draft' : 'topic'}:${tid}:thumbs`);
-	const thumbs = await Promise.all(sets.map(getThumbs));
-
-	let mainPids = await topics.getTopicsFields(tids, ['mainPid']);
-	mainPids = mainPids.map(o => o.mainPid);
-
-	if (!options.thumbsOnly) {
-		// Add uploaded media to thumb sets
-		const mainPidUploads = await Promise.all(mainPids.map(posts.uploads.list));
-		mainPidUploads.forEach((uploads, idx) => {
-			uploads = uploads.filter((upload) => {
-				const type = mime.getType(upload);
-				return !thumbs[idx].includes(upload) && type && type.startsWith('image/');
-			});
-
-			if (uploads.length) {
-				thumbs[idx].push(...uploads);
-			}
-		});
-
-		// Add attachments to thumb sets
-		const mainPidAttachments = await posts.attachments.get(mainPids);
-		mainPidAttachments.forEach((attachments, idx) => {
-			attachments = attachments.filter(
-				attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
-			);
-
-			if (attachments.length) {
-				thumbs[idx].push(...attachments.map(attachment => attachment.url));
-			}
-		});
-	}
-
-	let response = thumbs.map((thumbSet, idx) => thumbSet.map(thumb => ({
-		id: tids[idx],
-		name: (() => {
-			const name = path.basename(thumb);
-			return hasTimestampPrefix.test(name) ? name.slice(14) : name;
-		})(),
-		path: thumb,
-		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb.replace(/\\/g, '/')),
-	})));
-
-	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', {
-		tids,
-		thumbsOnly: options.thumbsOnly,
-		thumbs: response,
-	}));
-	return singular ? response.pop() : response;
+	const topicData = await topics.getTopicsFields(tids, ['tid', 'mainPid', 'thumbs']);
+	const response = await loadFromTopicData(topicData, options);
+	return singular ? response[0] : response;
 };
 
-async function getThumbs(set) {
-	const cached = cache.get(set);
-	if (cached !== undefined) {
-		return cached.slice();
-	}
-	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	cache.set(set, thumbs);
-	return thumbs.slice();
-}
 
 Thumbs.associate = async function ({ id, path, score }) {
-	// Associates a newly uploaded file as a thumb to the passed-in draft or topic
-	const isDraft = !await topics.exists(id);
+	// Associates a newly uploaded file as a thumb to the passed-in topic
+	const topicData = await topics.getTopicData(id);
+	if (!topicData) {
+		return;
+	}
 	const isLocal = !path.startsWith('http');
-	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
-	const numThumbs = await db.sortedSetCard(set);
 
 	// Normalize the path to allow for changes in upload_path (and so upload_url can be appended if needed)
 	if (isLocal) {
 		path = path.replace(nconf.get('relative_path'), '');
 		path = path.replace(nconf.get('upload_url'), '');
 	}
-	await db.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
-	if (!isDraft) {
-		const numThumbs = await db.sortedSetCard(set);
-		await topics.setTopicField(id, 'numThumbs', numThumbs);
-	}
-	cache.del(set);
 
-	// Associate thumbnails with the main pid (only on local upload)
-	if (!isDraft && isLocal) {
-		const mainPid = (await topics.getMainPids([id]))[0];
-		await posts.uploads.associate(mainPid, path);
+	if (Array.isArray(topicData.thumbs)) {
+		const currentIdx = topicData.thumbs.indexOf(path);
+		const insertIndex = (typeof score === 'number' && score >= 0 && score < topicData.thumbs.length) ?
+			score :
+			topicData.thumbs.length;
+
+		if (currentIdx !== -1) {
+			// Remove from current position
+			topicData.thumbs.splice(currentIdx, 1);
+			// Adjust insertIndex if needed
+			const adjustedIndex = currentIdx < insertIndex ? insertIndex - 1 : insertIndex;
+			topicData.thumbs.splice(adjustedIndex, 0, path);
+		} else {
+			topicData.thumbs.splice(insertIndex, 0, path);
+		}
+
+		await topics.setTopicFields(id, {
+			thumbs: JSON.stringify(topicData.thumbs),
+			numThumbs: topicData.thumbs.length,
+		});
+		// Associate thumbnails with the main pid (only on local upload)
+		if (isLocal && currentIdx === -1) {
+			await posts.uploads.associate(topicData.mainPid, path);
+		}
 	}
 };
 
-Thumbs.migrate = async function (uuid, id) {
-	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
-	const set = `draft:${uuid}:thumbs`;
-	const thumbs = await db.getSortedSetRangeWithScores(set, 0, -1);
-	await Promise.all(thumbs.map(async thumb => await Thumbs.associate({
-		id,
-		path: thumb.value,
-		score: thumb.score,
-	})));
-	await db.delete(set);
-	cache.del(set);
+Thumbs.filterThumbs = function (thumbs) {
+	if (!Array.isArray(thumbs)) {
+		return [];
+	}
+	thumbs = thumbs.filter((thumb) => {
+		if (thumb.startsWith('http')) {
+			return true;
+		}
+		// ensure it is in upload path
+		const fullPath = path.join(upload_path, thumb);
+		return fullPath.startsWith(upload_path);
+	});
+	return thumbs;
 };
 
-Thumbs.delete = async function (id, relativePaths) {
-	const isDraft = !await topics.exists(id);
-	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
+Thumbs.delete = async function (tid, relativePaths) {
+	const topicData = await topics.getTopicData(tid);
+	if (!topicData) {
+		return;
+	}
 
 	if (typeof relativePaths === 'string') {
 		relativePaths = [relativePaths];
@@ -173,48 +189,28 @@ Thumbs.delete = async function (id, relativePaths) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const absolutePaths = relativePaths.map(relativePath => path.join(nconf.get('upload_path'), relativePath));
-	const [associated, existsOnDisk] = await Promise.all([
-		db.isSortedSetMembers(set, relativePaths),
-		Promise.all(absolutePaths.map(async absolutePath => file.exists(absolutePath))),
-	]);
+	const toRemove = relativePaths.map(
+		relativePath => topicData.thumbs.includes(relativePath) ? relativePath : null
+	).filter(Boolean);
 
-	const toRemove = [];
-	const toDelete = [];
-	relativePaths.forEach((relativePath, idx) => {
-		if (associated[idx]) {
-			toRemove.push(relativePath);
-		}
 
-		if (existsOnDisk[idx]) {
-			toDelete.push(absolutePaths[idx]);
-		}
-	});
-
-	await db.sortedSetRemove(set, toRemove);
-
-	if (isDraft && toDelete.length) { // drafts only; post upload dissociation handles disk deletion for topics
-		await Promise.all(toDelete.map(path => file.delete(path)));
-	}
-
-	if (toRemove.length && !isDraft) {
-		const topics = require('.');
-		const mainPid = (await topics.getMainPids([id]))[0];
-
+	if (toRemove.length) {
+		const { mainPid } = topicData.mainPid;
+		topicData.thumbs = topicData.thumbs.filter(thumb => !toRemove.includes(thumb));
 		await Promise.all([
-			db.incrObjectFieldBy(`topic:${id}`, 'numThumbs', -toRemove.length),
+			topics.setTopicFields(tid, {
+				thumbs: JSON.stringify(topicData.thumbs),
+				numThumbs: topicData.thumbs.length,
+			}),
 			Promise.all(toRemove.map(async relativePath => posts.uploads.dissociate(mainPid, relativePath))),
 		]);
 	}
-	if (toRemove.length) {
-		cache.del(set);
-	}
 };
 
-Thumbs.deleteAll = async (id) => {
-	const isDraft = !await topics.exists(id);
-	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
-
-	const thumbs = await db.getSortedSetRange(set, 0, -1);
-	await Thumbs.delete(id, thumbs);
+Thumbs.deleteAll = async (tid) => {
+	const topicData = await topics.getTopicData(tid);
+	if (!topicData) {
+		return;
+	}
+	await Thumbs.delete(tid, topicData.thumbs);
 };

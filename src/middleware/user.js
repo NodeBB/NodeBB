@@ -53,6 +53,12 @@ module.exports = function (middleware) {
 		}
 
 		if (req.loggedIn) {
+			const exists = await user.exists(req.uid);
+			if (!exists) {
+				res.locals.logoutRedirect = true;
+				return controllers.authentication.logout(req, res);
+			}
+
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
 			const user = await passportAuthenticateAsync(req, res);
@@ -259,8 +265,12 @@ module.exports = function (middleware) {
 				return res.redirect(`${nconf.get('relative_path')}${newPath}`);
 			}
 		}
+		try {
+			res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		} catch (err) {
+			return next(err);
+		}
 
-		res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 		if (!res.locals.userData) {
 			return next('route');
 		}

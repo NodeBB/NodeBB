@@ -159,27 +159,33 @@ function setupGraphs(callback) {
 		Chart.defaults.plugins.tooltip.enabled = false;
 	}
 
-	const t = translator.Translator.create();
-	Promise.all([
-		t.translateKey('admin/dashboard:graphs.page-views', []),
-		t.translateKey('admin/dashboard:graphs.page-views-registered', []),
-		t.translateKey('admin/dashboard:graphs.page-views-guest', []),
-		t.translateKey('admin/dashboard:graphs.page-views-bot', []),
-		t.translateKey('admin/dashboard:graphs.unique-visitors', []),
-		t.translateKey('admin/dashboard:graphs.registered-users', []),
-		t.translateKey('admin/dashboard:graphs.guest-users', []),
-		t.translateKey('admin/dashboard:on-categories', []),
-		t.translateKey('admin/dashboard:reading-posts', []),
-		t.translateKey('admin/dashboard:browsing-topics', []),
-		t.translateKey('admin/dashboard:recent', []),
-		t.translateKey('admin/dashboard:unread', []),
-	]).then(function (translations) {
+	const keys = [
+		'[[admin/dashboard:graphs.page-views]]',
+		'[[admin/dashboard:graphs.page-views-registered]]',
+		'[[admin/dashboard:graphs.page-views-guest]]',
+		'[[admin/dashboard:graphs.page-views-bot]]',
+		'[[admin/dashboard:graphs.page-views-ap]]',
+		'[[admin/dashboard:graphs.unique-visitors]]',
+		'[[admin/dashboard:graphs.registered-users]]',
+		'[[admin/dashboard:graphs.guest-users]]',
+		'[[admin/dashboard:on-categories]]',
+		'[[admin/dashboard:reading-posts]]',
+		'[[admin/dashboard:browsing-topics]]',
+		'[[admin/dashboard:recent]]',
+		'[[admin/dashboard:unread]]',
+	];
+	const graphLabels = {};
+	translator.translateKeys(keys, config.acpLang).then(function (translations) {
+		keys.forEach(function (key, index) {
+			graphLabels[key.split(':')[1].slice(0, -2)] = translations[index];
+		});
+
 		const tension = 0.25;
 		const data = {
 			labels: trafficLabels,
 			datasets: [
 				{
-					label: translations[0],
+					label: graphLabels['graphs.page-views'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: 'rgba(220,220,220,0.2)',
@@ -191,7 +197,7 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[1],
+					label: graphLabels['graphs.page-views-registered'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: '#ab464233',
@@ -203,7 +209,7 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[2],
+					label: graphLabels['graphs.page-views-guest'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: '#ba8baf33',
@@ -215,7 +221,7 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[3],
+					label: graphLabels['graphs.page-views-bot'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: '#f7ca8833',
@@ -227,7 +233,19 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[4],
+					label: graphLabels['graphs.page-views-ap'],
+					fill: 'origin',
+					tension: tension,
+					backgroundColor: 'rgba(151,187,205,0.2)',
+					borderColor: 'rgba(110, 187, 132, 1)',
+					pointBackgroundColor: 'rgba(110, 187, 132, 1)',
+					pointHoverBackgroundColor: 'rgba(110, 187, 132, 1)',
+					pointBorderColor: '#fff',
+					pointHoverBorderColor: 'rgba(110, 187, 132, 1)',
+					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+				},
+				{
+					label: graphLabels['graphs.unique-visitors'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: 'rgba(151,187,205,0.2)',
@@ -247,7 +265,8 @@ function setupGraphs(callback) {
 		data.datasets[1].yAxisID = 'left-y-axis';
 		data.datasets[2].yAxisID = 'left-y-axis';
 		data.datasets[3].yAxisID = 'left-y-axis';
-		data.datasets[4].yAxisID = 'right-y-axis';
+		data.datasets[4].yAxisID = 'left-y-axis';
+		data.datasets[5].yAxisID = 'right-y-axis';
 
 		graphs.traffic = new Chart(trafficCtx, {
 			type: 'line',
@@ -260,7 +279,7 @@ function setupGraphs(callback) {
 						type: 'linear',
 						title: {
 							display: true,
-							text: translations[0],
+							text: graphLabels['graphs.page-views'],
 						},
 						beginAtZero: true,
 					},
@@ -269,7 +288,7 @@ function setupGraphs(callback) {
 						type: 'linear',
 						title: {
 							display: true,
-							text: translations[4],
+							text: graphLabels['graphs.unique-visitors'],
 						},
 						beginAtZero: true,
 					},
@@ -297,7 +316,7 @@ function setupGraphs(callback) {
 		graphs.registered = new Chart(registeredCtx, {
 			type: 'doughnut',
 			data: {
-				labels: translations.slice(5, 7),
+				labels: [graphLabels['graphs.registered-users'], graphLabels['graphs.guest-users']],
 				datasets: [{
 					data: [1, 1],
 					backgroundColor: ['#F7464A', '#46BFBD'],
@@ -310,7 +329,9 @@ function setupGraphs(callback) {
 		graphs.presence = new Chart(presenceCtx, {
 			type: 'doughnut',
 			data: {
-				labels: translations.slice(7, 12),
+				labels: [
+					graphLabels['on-categories'], graphLabels['reading-posts'], graphLabels['browsing-topics'], graphLabels['recent'], graphLabels['unread'],
+				],
 				datasets: [{
 					data: [1, 1, 1, 1, 1],
 					backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#9FB194'],
@@ -446,7 +467,8 @@ function updateTrafficGraph(units, until, amount) {
 		graphs.traffic.data.datasets[1].data = data.pageviewsRegistered;
 		graphs.traffic.data.datasets[2].data = data.pageviewsGuest;
 		graphs.traffic.data.datasets[3].data = data.pageviewsBot;
-		graphs.traffic.data.datasets[4].data = data.uniqueVisitors;
+		graphs.traffic.data.datasets[4].data = data.appageviews;
+		graphs.traffic.data.datasets[5].data = data.uniqueVisitors;
 		graphs.traffic.data.labels = graphs.traffic.data.xLabels;
 
 		graphs.traffic.update();

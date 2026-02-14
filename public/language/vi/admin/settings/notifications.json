@@ -3,5 +3,7 @@
 	"welcome-notification": "Thông Báo Chào Mừng",
 	"welcome-notification-link": "Liên Kết Thông Báo Chào Mừng",
 	"welcome-notification-uid": "Thông Báo Chào Mừng Người Dùng (UID)",
-	"post-queue-notification-uid": "Người Dùng Đợi Đăng (UID)"
+	"post-queue-notification-uid": "Người Dùng Đợi Đăng (UID)",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
 }

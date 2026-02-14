@@ -8,5 +8,7 @@
 	"log-in-with-facebook": "Facebook으로 로그인",
 	"continue-with-facebook": "Facebook으로 계속하기",
 	"sign-in-with-linkedin": "LinkedIn으로 로그인",
-	"sign-up-with-linkedin": "LinkedIn으로 가입"
+	"sign-up-with-linkedin": "LinkedIn으로 가입",
+	"sign-in-with-wordpress": "Sign in with WordPress",
+	"sign-up-with-wordpress": "Sign up with WordPress"
 }

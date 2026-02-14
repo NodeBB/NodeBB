@@ -75,6 +75,7 @@
 	"graphs.page-views-registered": "Səhifə Baxışları qeydə alınıb",
 	"graphs.page-views-guest": "Səhifə baxışı qonaq",
 	"graphs.page-views-bot": "Səhifə baxış botu",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Unikal ziyarətçilər",
 	"graphs.registered-users": "Qeydiyyatdan keçmiş istifadəçilər",
 	"graphs.guest-users": "Qonaqlar",

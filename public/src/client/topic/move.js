@@ -2,8 +2,8 @@
 
 
 define('forum/topic/move', [
-	'categorySelector', 'alerts', 'hooks',
-], function (categorySelector, alerts, hooks) {
+	'categorySelector', 'alerts', 'hooks', 'api',
+], function (categorySelector, alerts, hooks, api) {
 	const Move = {};
 	let modal;
 	let selectedCategory;
@@ -34,6 +34,7 @@ define('forum/topic/move', [
 			categorySelector.init(dropdownEl, {
 				onSelect: onCategorySelected,
 				privilege: 'moderate',
+				localOnly: true,
 			});
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);
@@ -88,15 +89,26 @@ define('forum/topic/move', [
 	function moveTopics(data) {
 		hooks.fire('action:topic.move', data);
 
-		socket.emit(!data.tids ? 'topics.moveAll' : 'topics.move', data, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
+		if (data.tids) {
+			data.tids.forEach((tid) => {
+				api.put(`/topics/${tid}/move`, { cid: data.cid }).then(() => {
+					if (typeof data.onComplete === 'function') {
+						data.onComplete();
+					}
+				}).catch(alerts.error);
+			});
+		} else {
+			socket.emit('topics.moveAll', data, function (err) {
+				if (err) {
+					return alerts.error(err);
+				}
 
-			if (typeof data.onComplete === 'function') {
-				data.onComplete();
-			}
-		});
+				if (typeof data.onComplete === 'function') {
+					data.onComplete();
+				}
+			});
+		}
+
 	}
 
 	function closeMoveModal() {

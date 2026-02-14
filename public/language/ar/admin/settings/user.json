@@ -64,6 +64,7 @@
 	"show-email": "عرض البريد الإلكتروني",
 	"show-fullname": "عرض الاسم الكامل",
 	"restrict-chat": "السماح فقط برسائل الدردشة من المستخدمين الذين أتبعهم",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Open outgoing links in new tab",
 	"topic-search": "Enable In-Topic Searching",
 	"update-url-with-post-index": "Update url with post index while browsing topics",
