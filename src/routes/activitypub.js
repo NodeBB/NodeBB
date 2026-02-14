@@ -50,7 +50,7 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], helpers.tryRoute(controllers.activitypub.actors.topic));
 
 	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getInbox));
-	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub).postInbox);
+	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getCategoryOutbox));
 	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.postOutbox));
 	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.category));
