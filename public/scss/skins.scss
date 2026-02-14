@@ -2,11 +2,6 @@
 
 // brite text-secondary is white :/
 .skin-brite {
-	.btn {
-		// this removes the 3px left margin on buttons in brite skin
-		// without button in the sidebar ontopic.tpl aren't properly
-		margin-left: 0px;
-	}
 	.text-secondary {
 		color: var(--bs-secondary-color) !important;
 	}
