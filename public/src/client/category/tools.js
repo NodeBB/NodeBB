@@ -12,8 +12,8 @@ define('forum/category/tools', [
 ], function (topicSelect, threadTools, components, api, bootbox, alerts) {
 	const CategoryTools = {};
 
-	CategoryTools.init = function (containerEl) {
-		topicSelect.init(updateDropdownOptions, containerEl);
+	CategoryTools.init = function () {
+		topicSelect.init(updateDropdownOptions);
 
 		handlePinnedTopicSort();
 
@@ -284,20 +284,8 @@ define('forum/category/tools', [
 		topic.find('[component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 	}
 
-	async function onTopicMoved(data) {
-		if (ajaxify.data.template.category || String(data.toCid) === '-1') {
-			getTopicEl(data.tid).remove();
-		} else {
-			const category = await api.get(`/categories/${data.toCid}`);
-			const html = await app.parseAndTranslate('partials/topics_list', {
-				topics: [{
-					...data,
-					category,
-				}],
-			});
-			const categoryLabelSelector = `[component="category/topic"][data-tid="${data.tid}"] [component="topic/category"]`;
-			$(categoryLabelSelector).replaceWith(html.find(categoryLabelSelector));
-		}
+	function onTopicMoved(data) {
+		getTopicEl(data.tid).remove();
 	}
 
 	function onTopicPurged(data) {

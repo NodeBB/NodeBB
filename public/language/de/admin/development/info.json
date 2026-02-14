@@ -8,7 +8,7 @@
 	"nodejs": "Node.js Version",
 	"online": "Online",
 	"git": "git",
-	"process-memory": "rss/heap used",
+	"process-memory": "Prozess-Speicher",
 	"system-memory": "System-Speicher",
 	"used-memory-process": "Verwendeter Prozess-Speicher",
 	"used-memory-os": "Verwendeter System-Speicher",

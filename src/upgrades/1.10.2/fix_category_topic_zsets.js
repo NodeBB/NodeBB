@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+
 'use strict';
 
 const db = require('../../database');
@@ -11,24 +13,18 @@ module.exports = {
 		const { progress } = this;
 
 		const topics = require('../../topics');
-		progress.total = await db.sortedSetCard('topics:tid');
 		await batch.processSortedSet('topics:tid', async (tids) => {
-			progress.incr(tids.length);
-			const topicData = await db.getObjectFields(
-				tids.map(tid => `topic:${tid}`),
-				['tid', 'cid', 'pinned', 'postcount'],
-			);
-			const bulkAdd = [];
-			topicData.forEach((topic) => {
-				if (topic && parseInt(topic.pinned, 10) !== 1) {
+			for (const tid of tids) {
+				progress.incr();
+				const topicData = await db.getObjectFields(`topic:${tid}`, ['cid', 'pinned', 'postcount']);
+				if (parseInt(topicData.pinned, 10) !== 1) {
 					topicData.postcount = parseInt(topicData.postcount, 10) || 0;
-					bulkAdd.push([`cid:${topicData.cid}:tids:posts`, topicData.postcount, topicData.tid]);
+					await db.sortedSetAdd(`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid);
 				}
-			});
-			await db.sortedSetAddBulk(bulkAdd);
-			await Promise.all(tids.map(tid => topics.updateLastPostTimeFromLastPid(tid)));
+				await topics.updateLastPostTimeFromLastPid(tid);
+			}
 		}, {
-			batch: 500,
+			progress: progress,
 		});
 	},
 };

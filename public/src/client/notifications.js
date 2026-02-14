@@ -13,7 +13,7 @@ define('forum/notifications', ['components', 'notifications'], function (compone
 		notifications.handleUnreadButton(listEl);
 
 		components.get('notifications/mark_all').on('click', function () {
-			notifications.markAllRead(ajaxify.data.selectedFilter.filter, function () {
+			notifications.markAllRead(function () {
 				components.get('notifications/item').removeClass('unread');
 			});
 		});

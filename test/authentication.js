@@ -5,8 +5,8 @@ const assert = require('assert');
 const url = require('url');
 const nconf = require('nconf');
 
-const db = require('./mocks/databasemock');
 const request = require('../src/request');
+const db = require('./mocks/databasemock');
 const user = require('../src/user');
 const utils = require('../src/utils');
 const meta = require('../src/meta');
@@ -20,19 +20,19 @@ describe('authentication', () => {
 	let regularUid;
 	const dummyEmailerHook = async (data) => {};
 
-	before(async () => {
+	before((done) => {
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('authentication-test', {
 			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
-		regularUid = await user.create({
-			username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org',
-		}, {
-			emailVerification: 'verify',
+		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, (err, uid) => {
+			assert.ifError(err);
+			regularUid = uid;
+			assert.strictEqual(uid, 1);
+			done();
 		});
-		assert.strictEqual(regularUid, 1);
 	});
 
 	after(() => {
@@ -52,8 +52,8 @@ describe('authentication', () => {
 		meta.config.allowLoginWith = 'username-email';
 		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
 		const { response, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
-		assert.strictEqual(response.statusCode, 400);
-		assert.strictEqual(body, '[[error:invalid-email]]');
+		assert.strictEqual(response.statusCode, 403);
+		assert.strictEqual(body, '[[error:invalid-login-credentials]]');
 		meta.config.allowLoginWith = oldValue;
 	});
 
@@ -140,11 +140,11 @@ describe('authentication', () => {
 
 	it('should regenerate the session identifier on successful login', async () => {
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
-		const { hostname, pathname } = new URL(nconf.get('url'));
-		const sid = String(jar.store.idx[hostname][pathname]['express.sid']).match(matchRegexp)[1];
+		const { hostname, path } = url.parse(nconf.get('url'));
+		const sid = String(jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
 		await helpers.logoutUser(jar);
 		const newJar = (await helpers.loginUser('regular', 'regularpwd')).jar;
-		const newSid = String(newJar.store.idx[hostname][pathname]['express.sid']).match(matchRegexp)[1];
+		const newSid = String(newJar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
 
 		assert.notStrictEqual(newSid, sid);
 	});
@@ -393,9 +393,9 @@ describe('authentication', () => {
 
 	it('should be able to login with email', async () => {
 		const email = 'ginger@nodebb.org';
-		const uid = await user.create({ username: 'ginger', password: '123456', email }, {
-			emailVerification: 'verify',
-		});
+		const uid = await user.create({ username: 'ginger', password: '123456', email });
+		await user.setUserField(uid, 'email', email);
+		await user.email.confirmByUid(uid);
 		const { response } = await helpers.loginUser('ginger@nodebb.org', '123456');
 		assert.equal(response.statusCode, 200);
 	});

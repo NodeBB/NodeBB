@@ -5,7 +5,6 @@
 	"disable-rss-feeds": "Zakázať zdroje RSS",
 	"disable-sitemap-xml": "Zakázať Sitemap.xml",
 	"sitemap-topics": "Počet tém zobrazených na mape stránky",
-	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Zmazať vyrovnávaciu pamäť mapy stránky",
 	"view-sitemap": "Zobraziť mapu stránky"
 }

@@ -1,25 +1,18 @@
 {
-	"name": "Svět",
-	"latest": "Latest",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
-	"recent": "All",
-	"help": "Nápověda",
+	"name": "World",
+	"popular": "Popular topics",
+	"recent": "All topics",
+	"help": "Help",
 
-	"help.title": "Co je tato stránka?",
-	"help.intro": "Vítejte ve svém koutku fediverse.",
-	"help.fediverse": "„Fediverse“ je síť propojených aplikací a webových stránek, které spolu komunikují a jejichž uživatelé se navzájem vidí. Toto fórum je federované a může komunikovat s touto sociální sítí (nebo „fediverse“). Tato stránka je vaším koutkem ve fediverse. Skládá se výhradně z témat vytvořených a sdílených uživateli, které <strong>vy</strong> sledujete.",
-	"help.build": "Zpočátku zde nemusí být mnoho témat; je to normální. Postupem času se zde začne objevovat více obsahu, až začnete sledovat další uživatele.",
-	"help.federating": "Stejně tak, pokud <em>vás</em> začnou sledovat uživatelé mimo toto fórum, vaše příspěvky se začnou zobrazovat i v těchto aplikacích a na webových stránkách.",
-	"help.next-generation": "Toto je nová generace sociálních sítí – začněte přispívat ještě dnes!",
+	"help.title": "What is this page?",
+	"help.intro": "Welcome to your corner of the fediverse.",
+	"help.fediverse": "The \"fediverse\" is a network of interconnected applications and websites that all talk to one another and whose users can see each other. This forum is federated, and can interact with that social web (or \"fediverse\"). This page is your corner of the fediverse. It consists solely of topics created by — and shared from — users <strong>you</strong> follow.",
+	"help.build": "There might not be a lot of topics here to start; that's normal. You will start to see more content here over time when you start following other users.",
+	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
+	"help.next-generation": "This is the next generation of social media, start contributing today!",
 
-	"onboard.title": "Vaše okno do fediverse…",
-	"onboard.what": "Toto je vaše personalizovaná kategorie složená pouze z obsahu nalezeného mimo toto fórum. To, zda se něco zobrazí na této stránce, závisí na tom, zda tyto zdroje sledujete, nebo zda byl příspěvek sdílen někým, koho sledujete.",
-	"onboard.why": "Mimo toto fórum se děje spousta věcí, a ne všechno je relevantní pro vaše zájmy. Proto je sledování lidí nejlepší způsob, jak naznačit, že chcete vidět více obsahu od konkrétní osoby.",
-	"onboard.how": "Mezitím můžete kliknout na tlačítka zkratek nahoře, abyste viděli o čem dalším toto fórum ví, a začít objevovat nový obsah!",
-
-	"category-search": "Find a category..."
+	"onboard.title": "Your window to the fediverse...",
+	"onboard.what": "This is your personalized category made up of only content found outside of this forum. Whether something shows up in this page depends on whether you follow them, or whether that post was shared by someone you follow.",
+	"onboard.why": "There's a lot that goes on outside of this forum, and not all of it is relevant to your interests. That's why following people is the best way to signal that you want to see more from someone.",
+	"onboard.how": "In the meantime, you can click on the shortcut buttons at the top to see what else this forum knows about, and start discovering some new content!"
 }

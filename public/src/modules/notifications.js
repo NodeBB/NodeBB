@@ -59,9 +59,7 @@ define('notifications', [
 						const nid = notifEl.attr('data-nid');
 						markNotification(nid, true);
 					});
-					components.get('notifications').on('click', '.mark-all-read', () => {
-						Notifications.markAllRead();
-					});
+					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
 
 					Notifications.handleUnreadButton(notifList);
 
@@ -107,7 +105,7 @@ define('notifications', [
 		});
 
 		if (!unreadNotifs[notifData.nid]) {
-			unreadNotifs[notifData.nid] = notifData;
+			unreadNotifs[notifData.nid] = true;
 		}
 	};
 
@@ -167,21 +165,12 @@ define('notifications', [
 		}
 	};
 
-	Notifications.markAllRead = function (filter = '') {
-		socket.emit('notifications.markAllRead', { filter }, function (err) {
+	Notifications.markAllRead = function () {
+		socket.emit('notifications.markAllRead', function (err) {
 			if (err) {
 				alerts.error(err);
 			}
-			if (filter) {
-				Object.keys(unreadNotifs).forEach(nid => {
-					if (unreadNotifs[nid].type === filter) {
-						delete unreadNotifs[nid];
-					}
-				});
-			} else {
-				unreadNotifs = {};
-			}
-
+			unreadNotifs = {};
 			const notifEls = $('[component="notifications/list"] [data-nid]');
 			notifEls.removeClass('unread');
 			notifEls.find('.mark-read .unread').addClass('hidden');

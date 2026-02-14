@@ -198,15 +198,9 @@ ajaxify.widgets = { render: render };
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		ajaxify.requestedPage = null;
 		if (window.history && window.history.pushState) {
-			const prependSlash = url && !url.startsWith('?') && !url.startsWith('#');
-			const { relative_path } = config;
-			const historyUrl = prependSlash ?
-				(relative_path + '/' + url) :
-				relative_path + (url || (relative_path ? '' : '/'));
-
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, '', historyUrl);
+			}, url, config.relative_path + '/' + url);
 		}
 	};
 
@@ -298,54 +292,73 @@ ajaxify.widgets = { render: render };
 	ajaxify.updateTitle = updateTitle;
 
 	function updateTags() {
-		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(val => new RegExp(val));
+		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(function (val) {
+			return new RegExp(val);
+		});
 		const linkWhitelist = ['canonical', 'alternate', 'up'];
 
 		// Delete the old meta tags
-		document.querySelectorAll('head meta').forEach(el => {
-			const name = el.getAttribute('property') || el.getAttribute('name') || '';
-			if (metaWhitelist.some(exp => exp.test(name))) {
-				el.remove();
-			}
-		});
+		Array.prototype.slice
+			.call(document.querySelectorAll('head meta'))
+			.filter(function (el) {
+				const name = el.getAttribute('property') || el.getAttribute('name');
+				return metaWhitelist.some(function (exp) {
+					return !!exp.test(name);
+				});
+			})
+			.forEach(function (el) {
+				document.head.removeChild(el);
+			});
 
 		// Add new meta tags
-		ajaxify.data._header.tags.meta.forEach(async (tagObj) => {
-			const name = tagObj.name || tagObj.property;
-			if (metaWhitelist.some(exp => exp.test(name))) {
+		ajaxify.data._header.tags.meta
+			.filter(function (tagObj) {
+				const name = tagObj.name || tagObj.property;
+				return metaWhitelist.some(function (exp) {
+					return !!exp.test(name);
+				});
+			}).forEach(async function (tagObj) {
 				if (tagObj.content) {
 					tagObj.content = await translator.translate(tagObj.content);
 				}
 				const metaEl = document.createElement('meta');
-				Object.keys(tagObj).forEach(prop => metaEl.setAttribute(prop, tagObj[prop]));
+				Object.keys(tagObj).forEach(function (prop) {
+					metaEl.setAttribute(prop, tagObj[prop]);
+				});
 				document.head.appendChild(metaEl);
-			}
-		});
+			});
+
 
 		// Delete the old link tags
-		document.querySelectorAll('head link').forEach(el => {
-			const name = el.getAttribute('rel');
-			if (linkWhitelist.some(item => item === name)) {
-				el.remove();
-			}
-		});
+		Array.prototype.slice
+			.call(document.querySelectorAll('head link'))
+			.filter(function (el) {
+				const name = el.getAttribute('rel');
+				return linkWhitelist.some(function (item) {
+					return item === name;
+				});
+			})
+			.forEach(function (el) {
+				document.head.removeChild(el);
+			});
 
 		// Add new link tags
-		ajaxify.data._header.tags.link.forEach(async (tagObj) => {
-			if (linkWhitelist.some(item => item === tagObj.rel)) {
+		ajaxify.data._header.tags.link
+			.filter(function (tagObj) {
+				return linkWhitelist.some(function (item) {
+					return item === tagObj.rel;
+				});
+			})
+			.forEach(function (tagObj) {
 				const linkEl = document.createElement('link');
-				Object.keys(tagObj).forEach(prop => linkEl.setAttribute(prop, tagObj[prop]));
+				Object.keys(tagObj).forEach(function (prop) {
+					linkEl.setAttribute(prop, tagObj[prop]);
+				});
 				document.head.appendChild(linkEl);
-			}
-		});
+			});
 	}
 
 	ajaxify.end = function (url, tpl_url) {
-		// Cancel reconnectAction if there was one pending, since ajaxify was a success
-		if (ajaxify.reconnectAction) {
-			$(window).off('action:reconnected', ajaxify.reconnectAction);
-		}
-
 		// Scroll back to top of page
 		if (!ajaxify.isCold()) {
 			window.scrollTo(0, 0);
@@ -383,11 +396,8 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.removeRelativePath = function (url) {
-		if (config.relative_path && url.startsWith(config.relative_path.slice(1))) {
-			url = url.slice(config.relative_path.length - 1);
-			if (url.startsWith('/')) {
-				url = url.slice(1);
-			}
+		if (url.startsWith(config.relative_path.slice(1))) {
+			url = url.slice(config.relative_path.length);
 		}
 		return url;
 	};
@@ -547,11 +557,10 @@ ajaxify.widgets = { render: render };
 $(document).ready(function () {
 	window.addEventListener('popstate', (ev) => {
 		if (ev !== null && ev.state) {
-			const { returnPath } = ev.state;
-			if (ev.state.url === null && returnPath !== undefined) {
+			if (ev.state.url === null && ev.state.returnPath !== undefined) {
 				window.history.replaceState({
-					url: returnPath,
-				}, '', returnPath);
+					url: ev.state.returnPath,
+				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
 				ajaxify.handleTransientElements();
 				ajaxify.go(ev.state.url, function () {

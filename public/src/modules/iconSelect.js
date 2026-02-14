@@ -255,6 +255,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						className: 'btn-default',
 						callback: function () {
 							el.removeClass(selected.icon);
+							// eslint-disable-next-line no-restricted-syntax
 							for (const style of selected.styles) {
 								el.removeClass(style);
 							}
@@ -271,9 +272,11 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 							const newIcon = cleanFAClass(iconClass);
 							if (newIcon.icon) {
 								el.removeClass(selected.icon).addClass(newIcon.icon);
+								// eslint-disable-next-line no-restricted-syntax
 								for (const style of selected.styles || []) {
 									el.removeClass(style);
 								}
+								// eslint-disable-next-line no-restricted-syntax
 								for (const style of newIcon.styles || []) {
 									el.addClass(style);
 								}
@@ -388,6 +391,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 	function cleanFAClass(classList) {
 		const styles = [];
 		let icon;
+		// eslint-disable-next-line no-restricted-syntax
 		for (const className of classList) {
 			if (className.startsWith('fa-') && !excludedClassRegex.test(className)) {
 				if (styleRegex.test(className)) {

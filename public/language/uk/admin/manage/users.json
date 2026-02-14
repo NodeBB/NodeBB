@@ -23,7 +23,6 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "Скачати CSV",
 	"custom-user-fields": "Custom User Fields",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(необов'язково)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Години",
 	"temp-ban.days": "Дні",
 	"temp-ban.explanation": "Уведіть тривалість бану. 0 означатиме постійний бан.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Ви впевнені, що бажаєте забанити цього користувача <strong>напостійно</strong>?",
 	"alerts.confirm-ban-multi": "Ви впевнені, що бажаєте забанити цих користувачів <strong>напостійно</strong>?",

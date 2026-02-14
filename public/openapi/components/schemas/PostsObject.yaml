@@ -2,15 +2,4 @@ PostsObject:
   description: One of the objects in the array returned from `Posts.getPostSummaryByPids`
   type: array
   items:
-    allOf:
-      - $ref: ./PostObject.yaml#/PostObject
-      - type: object
-        description: Optional properties that may or may not be present (except for `pid`, which is always present, and is only here as a hack to pass validation)
-        properties:
-          pid:
-            type: number
-            description: A post identifier
-          attachments:
-            type: array
-        required:
-          - pid
+    $ref: ./PostObject.yaml#/PostObject

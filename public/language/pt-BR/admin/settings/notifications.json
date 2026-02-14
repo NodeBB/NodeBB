@@ -3,7 +3,5 @@
 	"welcome-notification": "Notificação de Boas-vindas",
 	"welcome-notification-link": "Link da Notificação de Boas-vindas",
 	"welcome-notification-uid": "Usuário de Notificação de Boas-vindas (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

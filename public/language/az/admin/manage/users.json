@@ -23,7 +23,6 @@
 	"purge": "<strong>İstifadəçi(lər)i</strong> və <strong>məzmunu</strong> silin",
 	"download-csv": "CSV-ni endir",
 	"custom-user-fields": "Fərdi istifadəçi sahələri",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Qrupları idarə et",
 	"set-reputation": "Reputasiya təyin et",
 	"add-group": "Qrup əlavə et",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "Uzunluq",
 	"temp-ban.reason": "Səbəb <span class=\"text-muted\">(İstəyə görə)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Saat",
 	"temp-ban.days": "Günlər",
 	"temp-ban.explanation": "Qadağanın müddətini daxil edin. Nəzərə alın ki, 0 vaxtı daimi qadağa hesab olunacaq.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Həqiqətən bu istifadəçini <strong>həmişəlik</strong> qadağan etmək istəyirsiniz?",
 	"alerts.confirm-ban-multi": "Bu istifadəçiləri <strong>həmişəlik</strong> qadağan etmək istəyirsiniz?",

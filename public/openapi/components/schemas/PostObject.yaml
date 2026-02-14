@@ -84,8 +84,6 @@ PostObject:
           description: A topic identifier
         title:
           type: string
-        generatedTitle:
-          type: number
         cid:
           type: number
           description: A category identifier
@@ -181,8 +179,6 @@ PostDataObject:
         upvotes:
           type: number
         downvotes:
-          type: number
-        announces:
           type: number
         bookmarks:
           type: number
@@ -301,8 +297,6 @@ PostDataObject:
         downvoted:
           type: boolean
         attachments:
-          type: array
-        uploads:
           type: array
         replies:
           type: object

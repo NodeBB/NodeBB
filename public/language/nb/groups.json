@@ -1,9 +1,7 @@
 {
-    "group": "Group",
     "all-groups": "Alle grupper",
     "groups": "Grupper",
     "members": "Medlemmer",
-    "x-members": "%1 member(s)",
     "view-group": "Vis gruppe",
     "owner": "Gruppeeier",
     "new-group": "Opprett ny gruppe",

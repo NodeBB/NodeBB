@@ -23,7 +23,6 @@
 	"purge": "<strong>사용자</strong> 및 <strong>콘텐츠</strong> 삭제",
 	"download-csv": "CSV 다운로드",
 	"custom-user-fields": "Custom User Fields",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "그룹 관리",
 	"set-reputation": "평판 설정",
 	"add-group": "그룹 추가",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "기간",
 	"temp-ban.reason": "사유 <span class=\"text-muted\">(선택 사항)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "시간",
 	"temp-ban.days": "일",
 	"temp-ban.explanation": "차단 기간을 입력하세요. 0을 입력하면 영구적인 차단으로 간주됩니다.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "이 사용자를 <strong>영구적으로</strong> 차단하시겠습니까?",
 	"alerts.confirm-ban-multi": "이 사용자들을 <strong>영구적으로</strong> 차단하시겠습니까?",

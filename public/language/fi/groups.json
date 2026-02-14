@@ -1,9 +1,7 @@
 {
-    "group": "Group",
     "all-groups": "Kaikki ryhmät",
     "groups": "Ryhmät",
     "members": "Members",
-    "x-members": "%1 member(s)",
     "view-group": "Tarkaste ryhmää",
     "owner": "Ryhmän omistaja",
     "new-group": "Luo uusi ryhmä",

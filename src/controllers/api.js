@@ -64,7 +64,6 @@ apiController.loadConfig = async function (req) {
 		topicsPerPage: meta.config.topicsPerPage || 20,
 		postsPerPage: meta.config.postsPerPage || 20,
 		maximumFileSize: meta.config.maximumFileSize,
-		convertPastedImageTo: meta.config.convertPastedImageTo,
 		'theme:id': meta.config['theme:id'],
 		'theme:src': meta.config['theme:src'],
 		defaultLang: meta.config.defaultLang || 'en-GB',

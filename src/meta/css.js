@@ -16,7 +16,7 @@ const utils = require('../utils');
 const CSS = module.exports;
 
 CSS.supportedSkins = [
-	'brite', 'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera',
+	'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera',
 	'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'quartz', 'sandstone',
 	'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united',
 	'vapor', 'yeti', 'zephyr',
@@ -56,15 +56,9 @@ function boostrapImport(themeData) {
 	function bsvariables() {
 		if (bootswatchSkin) {
 			if (isCustomSkin) {
-				return `
-					${bsVariables}
-					${themeData._variables || ''}
-				`;
+				return themeData._variables || '';
 			}
-			return `
-				${bsVariables}
-				@import "bootswatch/dist/${bootswatchSkin}/variables";
-			`;
+			return `@import "bootswatch/dist/${bootswatchSkin}/variables";`;
 		}
 		return bsVariables;
 	}
@@ -276,7 +270,7 @@ CSS.getSkinSwitcherOptions = async function (uid) {
 		{ name: '[[user:no-skin]]', value: 'noskin', selected: userSettings.bootswatchSkin === 'noskin' },
 	];
 	const lightSkins = [
-		'brite', 'cerulean', 'cosmo', 'flatly', 'journal', 'litera',
+		'cerulean', 'cosmo', 'flatly', 'journal', 'litera',
 		'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'sandstone',
 		'simplex', 'sketchy', 'spacelab', 'united', 'yeti', 'zephyr',
 	];

@@ -1,5 +1,9 @@
 {
 	"cache": "Cache",
+	"post-cache": "İleti Önbelleği",
+	"group-cache": "Grup Önbelleği",
+	"local-cache": "Yerel Önbellek",
+	"object-cache": "Öğe Önbelleği",
 	"percent-full": "%1% Tam",
 	"post-cache-size": "İleti Önbellek Boyutu",
 	"items-in-cache": "Önbellekteki Öğeler"

@@ -11,7 +11,7 @@ const topics = require('./index');
 const categories = require('../categories');
 const groups = require('../groups');
 const user = require('../user');
-const activitypub = require('../activitypub');
+const api = require('../api');
 const plugins = require('../plugins');
 
 const Scheduled = module.exports;
@@ -175,7 +175,7 @@ function federatePosts(uids, topicData) {
 	topicData.forEach(({ mainPid: pid }, idx) => {
 		const uid = uids[idx];
 
-		activitypub.out.create.note(uid, pid);
+		api.activitypub.create.note({ uid }, { pid });
 	});
 }
 

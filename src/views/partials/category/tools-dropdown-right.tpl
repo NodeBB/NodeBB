@@ -1,5 +1,5 @@
 {{{ if showTopicTools }}}
-<div class="dropdown thread-tools dropdown-right bottom-sheet">
+<div class="btn-group thread-tools dropdown-right bottom-sheet">
 	<!-- IMPORT partials/category/tools-dropdown-content.tpl -->
 </div>
 {{{ end }}}

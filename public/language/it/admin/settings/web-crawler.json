@@ -5,7 +5,6 @@
 	"disable-rss-feeds": "Disabilita Feed RSS",
 	"disable-sitemap-xml": "Disabilita Sitemap.xml",
 	"sitemap-topics": "Numero di Discussioni da visualizzare in Mappa Sito",
-	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Cancella Cache Mappa Sito",
 	"view-sitemap": "Visualizza Mappa Sito"
 }

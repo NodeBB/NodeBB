@@ -69,7 +69,7 @@ async function getNotices() {
 		});
 	}
 
-	if (process.env.NODE_ENV !== 'production') {
+	if (global.env !== 'production') {
 		notices.push({
 			done: false,
 			notDoneText: '[[admin/dashboard:running-in-development]]',
@@ -91,7 +91,7 @@ async function getLatestVersion() {
 dashboardController.getAnalytics = async (req, res, next) => {
 	// Basic validation
 	const validUnits = ['days', 'hours'];
-	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest', 'pageviews:ap'];
+	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
 	const until = req.query.until ? new Date(parseInt(req.query.until, 10)) : Date.now();
 	const count = req.query.count || (req.query.units === 'hours' ? 24 : 30);
 	if (isNaN(until) || !validUnits.includes(req.query.units)) {

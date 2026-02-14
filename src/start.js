@@ -39,7 +39,7 @@ start.start = async function () {
 			require('./user').startJobs();
 			require('./plugins').startJobs();
 			require('./topics').scheduled.startJobs();
-			require('./activitypub').jobs.start();
+			require('./activitypub').startJobs();
 			await db.delete('locks');
 		}
 
@@ -107,24 +107,13 @@ function addProcessHandlers() {
 		shutdown(1);
 	});
 	process.on('message', (msg) => {
-		if (msg) {
-			if (Array.isArray(msg.compiling)) {
-				if (msg.compiling.includes('tpl')) {
-					const benchpressjs = require('benchpressjs');
-					benchpressjs.flush();
-				} else if (msg.compiling.includes('lang')) {
-					const translator = require('./translator');
-					translator.flush();
-				}
-			}
-
-			if (msg.livereload) {
-				// Send livereload event to all connected clients via Socket.IO
-				const websockets = require('./socket.io');
-				if (websockets.server) {
-					websockets.server.emit('event:livereload');
-					winston.info('[livereload] Sent reload event to all clients');
-				}
+		if (msg && Array.isArray(msg.compiling)) {
+			if (msg.compiling.includes('tpl')) {
+				const benchpressjs = require('benchpressjs');
+				benchpressjs.flush();
+			} else if (msg.compiling.includes('lang')) {
+				const translator = require('./translator');
+				translator.flush();
 			}
 		}
 	});

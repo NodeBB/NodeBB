@@ -14,7 +14,6 @@ const api = require('../../api');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
 const translator = require('../../translator');
-const plugins = require('../../plugins');
 
 const settingsController = module.exports;
 
@@ -115,14 +114,9 @@ settingsController.uploads = async (req, res) => {
 
 settingsController.email = async (req, res) => {
 	const emails = await emailer.getTemplates(meta.config);
-	const hooks = plugins.loadedHooks['static:email.send'];
-	const emailerPlugin = hooks && hooks.length ? hooks[0].id : null;
-	const smtpEnabled = parseInt(meta.config['email:smtpTransport:enabled'], 10) === 1;
 
 	res.render('admin/settings/email', {
 		title: '[[admin/menu:settings/email]]',
-		emailerPlugin,
-		smtpEnabled,
 		emails: emails,
 		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')).map(tpl => tpl.path),
 		services: emailer.listServices(),
@@ -165,17 +159,11 @@ settingsController.api = async (req, res) => {
 };
 
 settingsController.activitypub = async (req, res) => {
-	const [instanceCount, rules, relays] = await Promise.all([
-		activitypub.instances.getCount(),
-		activitypub.rules.list(),
-		activitypub.relays.list(),
-	]);
+	const instanceCount = await activitypub.instances.getCount();
 
 	res.render('admin/settings/activitypub', {
 		title: `[[admin/menu:settings/activitypub]]`,
 		instanceCount,
-		rules,
-		relays,
 	});
 };
 
@@ -198,3 +186,7 @@ settingsController.advanced = async (req, res) => {
 		groupsExemptFromMaintenanceMode: groupData,
 	});
 };
+
+
+
+

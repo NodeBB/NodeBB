@@ -42,25 +42,11 @@ utils.secureRandom = function (low, high) {
 };
 
 utils.getSass = function () {
-	// https://github.com/NodeBB/NodeBB/issues/11606
-	function isMusl() {
-		if (process.platform !== 'linux') {
-			return false;
-		}
-
-		try {
-			return !process.report.getReport().header.glibcVersionRuntime;
-		} catch {
-			return true;
-		}
-	}
-	if (process.platform === 'freebsd' || isMusl()) {
-		return require('sass');
-	}
 	try {
-		return require('sass-embedded');
+		const sass = require('sass-embedded');
+		return sass;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err.message)
 		return require('sass');
 	}
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const url = require('url');
 const nconf = require('nconf');
 
 const activePlugins = require('./build/active_plugins.json');
@@ -11,7 +12,7 @@ if (relativePath === undefined) {
 		file: path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json'),
 	});
 
-	const urlObject = new URL(nconf.get('url'));
+	const urlObject = url.parse(nconf.get('url'));
 	relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 }
 

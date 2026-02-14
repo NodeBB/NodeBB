@@ -1,5 +1,9 @@
 {
 	"cache": "Cache",
+	"post-cache": "Кеш постів",
+	"group-cache": "Group Cache",
+	"local-cache": "Local Cache",
+	"object-cache": "Object Cache",
 	"percent-full": "Заповнений на %1%",
 	"post-cache-size": "Розмір кешу постів",
 	"items-in-cache": "Елементів у кеші"

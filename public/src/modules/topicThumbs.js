@@ -7,15 +7,11 @@ define('topicThumbs', [
 
 	Thumbs.get = id => api.get(`/topics/${id}/thumbs`, { thumbsOnly: 1 });
 
+	Thumbs.getByPid = pid => api.get(`/posts/${encodeURIComponent(pid)}`, {}).then(post => Thumbs.get(post.tid));
+
 	Thumbs.delete = (id, path) => api.del(`/topics/${id}/thumbs`, {
 		path: path,
 	});
-
-	Thumbs.updateTopicThumbs = async (tid) => {
-		const thumbs = await Thumbs.get(tid);
-		const html = await app.parseAndTranslate('partials/topic/thumbs', { thumbs });
-		$('[component="topic/thumb/list"]').html(html);
-	};
 
 	Thumbs.deleteAll = (id) => {
 		Thumbs.get(id).then((thumbs) => {
@@ -23,11 +19,11 @@ define('topicThumbs', [
 		});
 	};
 
-	Thumbs.upload = () => new Promise((resolve) => {
+	Thumbs.upload = id => new Promise((resolve) => {
 		uploader.show({
 			title: '[[topic:composer.thumb-title]]',
 			method: 'put',
-			route: config.relative_path + `/api/topic/thumb/upload`,
+			route: config.relative_path + `/api/v3/topics/${id}/thumbs`,
 		}, function (url) {
 			resolve(url);
 		});
@@ -36,16 +32,24 @@ define('topicThumbs', [
 	Thumbs.modal = {};
 
 	Thumbs.modal.open = function (payload) {
-		const { id, postData } = payload;
+		const { id, pid } = payload;
 		let { modal } = payload;
-		const thumbs = postData.thumbs || [];
+		let numThumbs;
 
 		return new Promise((resolve) => {
-			Benchpress.render('modals/topic-thumbs', { thumbs }).then((html) => {
+			Promise.all([
+				Thumbs.get(id),
+				pid ? Thumbs.getByPid(pid) : [],
+			]).then(results => new Promise((resolve) => {
+				const thumbs = results.reduce((memo, cur) => memo.concat(cur));
+				numThumbs = thumbs.length;
+
+				resolve(thumbs);
+			})).then(thumbs => Benchpress.render('modals/topic-thumbs', { thumbs })).then((html) => {
 				if (modal) {
 					translator.translate(html, function (translated) {
 						modal.find('.bootbox-body').html(translated);
-						Thumbs.modal.handleSort({ modal, thumbs });
+						Thumbs.modal.handleSort({ modal, numThumbs });
 					});
 				} else {
 					modal = bootbox.dialog({
@@ -58,11 +62,7 @@ define('topicThumbs', [
 								label: '<i class="fa fa-plus"></i> [[modules:thumbs.modal.add]]',
 								className: 'btn-success',
 								callback: () => {
-									Thumbs.upload().then((thumbUrl) => {
-										postData.thumbs.push(
-											thumbUrl.replace(new RegExp(`^${config.upload_url}`), '')
-										);
-
+									Thumbs.upload(id).then(() => {
 										Thumbs.modal.open({ ...payload, modal });
 										require(['composer'], (composer) => {
 											composer.updateThumbCount(id, $(`[component="composer"][data-uuid="${id}"]`));
@@ -79,7 +79,7 @@ define('topicThumbs', [
 						},
 					});
 					Thumbs.modal.handleDelete({ ...payload, modal });
-					Thumbs.modal.handleSort({ modal, thumbs });
+					Thumbs.modal.handleSort({ modal, numThumbs });
 				}
 			});
 		});
@@ -94,41 +94,41 @@ define('topicThumbs', [
 					if (!ok) {
 						return;
 					}
+
+					const id = ev.target.closest('[data-id]').getAttribute('data-id');
 					const path = ev.target.closest('[data-path]').getAttribute('data-path');
-					const postData = payload.postData;
-					if (postData && postData.thumbs && postData.thumbs.includes(path)) {
-						postData.thumbs = postData.thumbs.filter(thumb => thumb !== path);
+					api.del(`/topics/${id}/thumbs`, {
+						path: path,
+					}).then(() => {
 						Thumbs.modal.open(payload);
 						require(['composer'], (composer) => {
 							composer.updateThumbCount(uuid, $(`[component="composer"][data-uuid="${uuid}"]`));
 						});
-					}
+					}).catch(alerts.error);
 				});
 			}
 		});
 	};
 
-	Thumbs.modal.handleSort = ({ modal, thumbs }) => {
-		if (thumbs.length > 1) {
+	Thumbs.modal.handleSort = ({ modal, numThumbs }) => {
+		if (numThumbs > 1) {
 			const selectorEl = modal.find('.topic-thumbs-modal');
 			selectorEl.sortable({
-				items: '[data-path]',
+				items: '[data-id]',
 			});
-			selectorEl.on('sortupdate', function () {
-				if (!thumbs) return;
-				const newOrder = [];
-				selectorEl.find('[data-path]').each(function () {
-					const path = $(this).attr('data-path');
-					const thumb = thumbs.find(t => t === path);
-					if (thumb) {
-						newOrder.push(thumb);
-					}
-				});
-				// Mutate thumbs array in place
-				thumbs.length = 0;
-				Array.prototype.push.apply(thumbs, newOrder);
-			});
+			selectorEl.on('sortupdate', Thumbs.modal.handleSortChange);
 		}
+	};
+
+	Thumbs.modal.handleSortChange = (ev, ui) => {
+		const items = ui.item.get(0).parentNode.querySelectorAll('[data-id]');
+		Array.from(items).forEach((el, order) => {
+			const id = el.getAttribute('data-id');
+			let path = el.getAttribute('data-path');
+			path = path.replace(new RegExp(`^${config.upload_url}`), '');
+
+			api.put(`/topics/${id}/thumbs/order`, { path, order }).catch(alerts.error);
+		});
 	};
 
 	return Thumbs;

@@ -17,8 +17,6 @@ const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
-const translator = require('../translator');
-const notifications = require('../notifications');
 
 const postsAPI = module.exports;
 
@@ -74,7 +72,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 		return null;
 	}
 
-	const postData = await posts.getPostFields(pid, ['content', 'sourceContent', 'deleted']);
+	const postData = await posts.getPostFields(pid, ['content', 'deleted']);
 	const selfPost = caller.uid && caller.uid === parseInt(postData.uid, 10);
 
 	if (postData.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
@@ -82,7 +80,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 	}
 	postData.pid = pid;
 	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: caller.uid, postData: postData });
-	return result.postData.sourceContent || result.postData.content;
+	return result.postData.content;
 };
 
 postsAPI.edit = async function (caller, data) {
@@ -120,7 +118,9 @@ postsAPI.edit = async function (caller, data) {
 	data.timestamp = parseInt(data.timestamp, 10) || Date.now();
 
 	const editResult = await posts.edit(data);
-
+	if (editResult.topic.isMainPost) {
+		await topics.thumbs.migrate(data.uuid, editResult.topic.tid);
+	}
 	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
 	if (!selfPost && editResult.post.changed) {
 		await events.log({
@@ -151,7 +151,7 @@ postsAPI.edit = async function (caller, data) {
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
 		setTimeout(() => {
-			activitypub.out.update.note(caller.uid, postObj[0]);
+			require('.').activitypub.update.note(caller, { post: postObj[0] });
 		}, 5000);
 
 		return returnData;
@@ -190,12 +190,9 @@ async function deleteOrRestore(caller, data, params) {
 	if (!data || !data.pid) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [postData, { isMain, isLast }] = await Promise.all([
-		posts.tools[params.command](caller.uid, data.pid),
-		isMainAndLastPost(data.pid),
-		activitypub.out.delete.note(caller.uid, data.pid),
-	]);
-	if (isMain && isLast) {
+	const postData = await posts.tools[params.command](caller.uid, data.pid);
+	const results = await isMainAndLastPost(data.pid);
+	if (results.isMain && results.isLast) {
 		await deleteOrRestoreTopicOf(params.command, data.pid, caller);
 	}
 
@@ -207,6 +204,11 @@ async function deleteOrRestore(caller, data, params) {
 		pid: data.pid,
 		tid: postData.tid,
 		ip: caller.ip,
+	});
+
+	// Explicitly non-awaited
+	posts.getPostSummaryByPids([data.pid], caller.uid, { extraFields: ['edited'] }).then(([post]) => {
+		require('.').activitypub.update.note(caller, { post });
 	});
 }
 
@@ -252,7 +254,7 @@ postsAPI.purge = async function (caller, data) {
 	posts.clearCachedPost(data.pid);
 	await Promise.all([
 		posts.purge(data.pid, caller.uid),
-		activitypub.out.delete.note(caller.uid, data.pid),
+		require('.').activitypub.delete.note(caller, { pid: data.pid }),
 	]);
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
@@ -487,12 +489,10 @@ async function diffsPrivilegeCheck(pid, uid) {
 
 postsAPI.getDiffs = async (caller, data) => {
 	await diffsPrivilegeCheck(data.pid, caller.uid);
-	const [timestamps, post, diffs] = await Promise.all([
-		posts.diffs.list(data.pid),
-		posts.getPostFields(data.pid, ['timestamp', 'uid']),
-		posts.diffs.get(data.pid),
-	]);
+	const timestamps = await posts.diffs.list(data.pid);
+	const post = await posts.getPostFields(data.pid, ['timestamp', 'uid']);
 
+	const diffs = await posts.diffs.get(data.pid);
 	const uids = diffs.map(diff => diff.uid || null);
 	uids.push(post.uid);
 	let usernames = await user.getUsersFields(uids, ['username']);
@@ -506,21 +506,18 @@ postsAPI.getDiffs = async (caller, data) => {
 
 	// timestamps returned by posts.diffs.list are strings
 	timestamps.push(String(post.timestamp));
-	const result = await plugins.hooks.fire('filter:post.getDiffs', {
-		uid: caller.uid,
-		pid: data.pid,
+
+	return {
 		timestamps: timestamps,
 		revisions: timestamps.map((timestamp, idx) => ({
 			timestamp: timestamp,
 			username: usernames[idx],
-			uid: uids[idx],
 		})),
 		// Only admins, global mods and moderator of that cid can delete a diff
 		deletable: isAdmin || isModerator,
 		// These and post owners can restore to a different post version
 		editable: isAdmin || isModerator || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
-	});
-	return result;
+	};
 };
 
 postsAPI.loadDiff = async (caller, data) => {
@@ -576,118 +573,4 @@ postsAPI.getReplies = async (caller, { pid }) => {
 	postData = await user.blocks.filter(uid, postData);
 
 	return postData;
-};
-
-postsAPI.acceptQueuedPost = async (caller, data) => {
-	await canEditQueue(caller.uid, data, 'accept');
-	const result = await posts.submitFromQueue(data.id);
-	if (result && caller.uid !== parseInt(result.uid, 10)) {
-		await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
-	}
-	await logQueueEvent(caller, result, 'accept');
-	return { type: result.type, pid: result.pid, tid: result.tid };
-};
-
-postsAPI.removeQueuedPost = async (caller, data) => {
-	await canEditQueue(caller.uid, data, 'reject');
-	const result = await posts.removeFromQueue(data.id);
-	if (result && caller.uid !== parseInt(result.uid, 10)) {
-		const msg = validator.escape(String(data.message ? data.message : ''));
-		await sendQueueNotification(
-			msg ? 'post-queue-rejected-for-reason' : 'post-queue-rejected', result.uid, '/', msg
-		);
-	}
-	await logQueueEvent(caller, result, 'reject');
-};
-
-postsAPI.editQueuedPost = async (caller, data) => {
-	if (!data || !data.id || (!data.content && !data.title && !data.cid)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	await posts.editQueuedContent(caller.uid, data);
-	if (data.content) {
-		return await plugins.hooks.fire('filter:parse.post', { postData: data });
-	}
-	return { postData: data };
-};
-
-postsAPI.notifyQueuedPostOwner = async (caller, data) => {
-	await canEditQueue(caller.uid, data, 'notify');
-	const result = await posts.getFromQueue(data.id);
-	if (result) {
-		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message || '')));
-	}
-};
-
-async function canEditQueue(uid, data, action) {
-	const [canEditQueue, queuedPost] = await Promise.all([
-		posts.canEditQueue(uid, data, action),
-		posts.getFromQueue(data.id),
-	]);
-	if (!queuedPost) {
-		throw new Error('[[error:no-post]]');
-	}
-	if (!canEditQueue) {
-		throw new Error('[[error:no-privileges]]');
-	}
-}
-
-async function logQueueEvent(caller, result, type) {
-	const eventData = {
-		type: `post-queue-${result.type}-${type}`,
-		uid: caller.uid,
-		ip: caller.ip,
-		content: result.data.content,
-		targetUid: result.uid,
-	};
-	if (result.type === 'topic') {
-		eventData.cid = result.data.cid;
-		eventData.title = result.data.title;
-	} else {
-		eventData.tid = result.data.tid;
-	}
-	if (result.pid) {
-		eventData.pid = result.pid;
-	}
-	await events.log(eventData);
-}
-
-async function sendQueueNotification(type, targetUid, path, notificationText) {
-	const bodyShort = notificationText ?
-		translator.compile(`notifications:${type}`, notificationText) :
-		translator.compile(`notifications:${type}`);
-	const notifData = {
-		type: type,
-		nid: `${type}-${targetUid}-${path}`,
-		bodyShort: bodyShort,
-		path: path,
-	};
-	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
-		notifData.from = meta.config.postQueueNotificationUid;
-	}
-	const notifObj = await notifications.create(notifData);
-	await notifications.push(notifObj, [targetUid]);
-}
-
-postsAPI.changeOwner = async function (caller, data) {
-	if (!data || !Array.isArray(data.pids) || !data.uid) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(caller.uid);
-	if (!isAdminOrGlobalMod) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const postData = await posts.changeOwner(data.pids, data.uid);
-	const logs = postData.map(({ pid, uid, cid }) => (events.log({
-		type: 'post-change-owner',
-		uid: caller.uid,
-		ip: caller.ip,
-		targetUid: data.uid,
-		pid: pid,
-		originalUid: uid,
-		cid: cid,
-	})));
-
-	await Promise.all(logs);
 };

@@ -35,9 +35,6 @@
 								{{{ end }}}
 								{{{ end }}}
 								{./username}
-								{{{ if ./sso }}}
-								<i class="{./sso.icon}" title="{./sso.name}"></i>
-								{{{ end }}}
 							</td>
 							<td>
 								{{{ if ./emailSpam }}}
@@ -116,7 +113,7 @@
 							<td class ="invited-by">{{{ if @first }}}{invites.username}{{{ end }}}</td>
 							<td>{invites.invitations.email}</td>
 							<td>{invites.invitations.username}
-								<div class="float-end">
+								<div class="btn-group float-end">
 									<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 								</div>
 							</td>

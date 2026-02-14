@@ -60,6 +60,8 @@ TopicObject:
             signature:
               type: string
               nullable: true
+            banned:
+              type: number
             status:
               type: string
             icon:text:
@@ -74,10 +76,6 @@ TopicObject:
                 `icon:text` for the user's auto-generated
                 icon
               example: "#f44336"
-            banned:
-              type: number
-            banned_until:
-              type: number
             banned_until_readable:
               type: string
           required:
@@ -108,9 +106,6 @@ TopicObject:
               description: A topic identifier
             content:
               type: string
-            sourceContent:
-              type: string
-              nullable: true
             timestampISO:
               type: string
               description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -123,10 +118,6 @@ TopicObject:
                 username:
                   type: string
                   description: A friendly name for a given user account
-                displayname:
-                  type: string
-                isLocal:
-                  type: boolean
                 userslug:
                   type: string
                   description: An URL-safe variant of the username (i.e. lower-cased, spaces
@@ -216,8 +207,6 @@ TopicObjectSlim:
           description: A category identifier
         title:
           type: string
-        generatedTitle:
-          type: number
         slug:
           type: string
         mainPid:
@@ -228,8 +217,6 @@ TopicObjectSlim:
         viewcount:
           type: number
         postercount:
-          type: number
-        followercount:
           type: number
         scheduled:
           type: number

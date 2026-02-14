@@ -36,8 +36,8 @@ module.exports = function (Categories) {
 			return [];
 		}
 
-		cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
-		const keys = cids.map(cid => (utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`));
+		cids = cids.map(cid => parseInt(cid, 10));
+		const keys = cids.map(cid => `category:${cid}`);
 		const categories = await db.getObjects(keys, fields);
 
 		// Handle cid -1
@@ -87,16 +87,16 @@ module.exports = function (Categories) {
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {
-		await db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
+		await db.setObjectField(`category:${cid}`, field, value);
 	};
 
 	Categories.incrementCategoryFieldBy = async function (cid, field, value) {
-		await db.incrObjectFieldBy(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
+		await db.incrObjectFieldBy(`category:${cid}`, field, value);
 	};
 };
 
-function defaultIntField(category, hasField, fieldName, defaultField) {
-	if (hasField(fieldName)) {
+function defaultIntField(category, fields, fieldName, defaultField) {
+	if (!fields.length || fields.includes(fieldName)) {
 		const useDefault = !category.hasOwnProperty(fieldName) ||
 			category[fieldName] === null ||
 			category[fieldName] === '' ||
@@ -111,44 +111,32 @@ function modifyCategory(category, fields) {
 		return;
 	}
 
-	const hasField = utils.createFieldChecker(fields);
-
-	defaultIntField(category, hasField, 'minTags', 'minimumTagsPerTopic');
-	defaultIntField(category, hasField, 'maxTags', 'maximumTagsPerTopic');
-	defaultIntField(category, hasField, 'postQueue', 'postQueue');
+	defaultIntField(category, fields, 'minTags', 'minimumTagsPerTopic');
+	defaultIntField(category, fields, 'maxTags', 'maximumTagsPerTopic');
+	defaultIntField(category, fields, 'postQueue', 'postQueue');
 
 	db.parseIntFields(category, intFields, fields);
 
-	const escapeFields = [
-		'name', 'nickname', 'description', 'color', 'bgColor',
-		'backgroundImage', 'imageClass', 'class', 'link',
-	];
+	const escapeFields = ['name', 'description', 'federatedDescription', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
 	escapeFields.forEach((field) => {
-		if (hasField(field)) {
+		if (category.hasOwnProperty(field)) {
 			category[field] = validator.escape(String(category[field] || ''));
 		}
 	});
 
-	if (hasField('icon')) {
+	if (category.hasOwnProperty('icon')) {
 		category.icon = category.icon || 'hidden';
-		if (category.icon === 'fa-none') {
-			category.icon = 'fa-nbb-none';
-		}
 	}
 
-	if (hasField('post_count')) {
+	if (category.hasOwnProperty('post_count')) {
 		category.totalPostCount = category.post_count;
 	}
 
-	if (hasField('topic_count')) {
+	if (category.hasOwnProperty('topic_count')) {
 		category.totalTopicCount = category.topic_count;
 	}
 
-	if (hasField('description')) {
+	if (category.description) {
 		category.descriptionParsed = category.descriptionParsed || category.description;
-	}
-
-	if (category.nickname) {
-		category.name = category.nickname;
 	}
 }

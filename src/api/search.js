@@ -9,7 +9,6 @@ const messaging = require('../messaging');
 const privileges = require('../privileges');
 const meta = require('../meta');
 const plugins = require('../plugins');
-const utils = require('../utils');
 
 const controllersHelpers = require('../controllers/helpers');
 
@@ -17,6 +16,8 @@ const searchApi = module.exports;
 
 searchApi.categories = async (caller, data) => {
 	// used by categorySearch module
+
+	let cids = [];
 	let matchedCids = [];
 	const privilege = data.privilege || 'topics:read';
 	data.states = (data.states || ['watching', 'tracking', 'notwatching', 'ignoring']).map(
@@ -24,16 +25,12 @@ searchApi.categories = async (caller, data) => {
 	);
 	data.parentCid = parseInt(data.parentCid || 0, 10);
 
-	let cids;
 	if (data.search) {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
 	} else {
 		cids = await loadCids(caller.uid, data.parentCid);
-		if (!data.hideUncategorized && meta.config.activitypubEnabled) {
+		if (meta.config.activitypubEnabled) {
 			cids.unshift(-1);
-		}
-		if (data.localOnly) {
-			cids = cids.filter(cid => utils.isNumber(cid));
 		}
 	}
 
@@ -69,7 +66,6 @@ async function findMatchedCids(uid, data) {
 		query: data.search,
 		qs: data.query,
 		paginate: false,
-		localOnly: data.localOnly,
 	});
 
 	let matchedCids = result.categories.map(c => c.cid);

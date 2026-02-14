@@ -81,7 +81,6 @@ define('forum/groups/details', [
 				case 'toggleOwnership':
 					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
 						ownerFlagEl.toggleClass('invisible');
-						userRow.attr('data-isowner', isOwner ? '0' : '1');
 					}).catch(alerts.error);
 					break;
 

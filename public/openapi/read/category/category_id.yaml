@@ -61,9 +61,6 @@ get:
                     type: boolean
                   isIgnored:
                     type: boolean
-                  hasFollowers:
-                    type: boolean
-                    nullable: true
                   title:
                     type: string
                   selectCategoryLabel:

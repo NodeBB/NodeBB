@@ -103,8 +103,10 @@ export function enableFilterForm() {
 		});
 	} else {
 		// Persona; parse ajaxify data to set form values to reflect current filters
-		for (const [filter, value] of Object.entries(ajaxify.data.filters)) {
-			$filtersEl.find('[name="' + filter + '"]').val(value);
+		for (const filter in ajaxify.data.filters) {
+			if (ajaxify.data.filters.hasOwnProperty(filter)) {
+				$filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+			}
 		}
 		$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 

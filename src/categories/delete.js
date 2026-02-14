@@ -7,9 +7,7 @@ const plugins = require('../plugins');
 const topics = require('../topics');
 const groups = require('../groups');
 const privileges = require('../privileges');
-const activitypub = require('../activitypub');
 const cache = require('../cache');
-const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.purge = async function (cid, uid) {
@@ -17,14 +15,12 @@ module.exports = function (Categories) {
 			await async.eachLimit(tids, 10, async (tid) => {
 				await topics.purgePostsAndTopic(tid, uid);
 			});
-			await db.sortedSetRemove(`cid:${cid}:tids`, tids);
 		}, { alwaysStartAt: 0 });
 
 		const pinnedTids = await db.getSortedSetRevRange(`cid:${cid}:tids:pinned`, 0, -1);
 		await async.eachLimit(pinnedTids, 10, async (tid) => {
 			await topics.purgePostsAndTopic(tid, uid);
 		});
-		await db.sortedSetRemove(`cid:${cid}:tids:pinned`, pinnedTids);
 		const categoryData = await Categories.getCategoryData(cid);
 		await purgeCategory(cid, categoryData);
 		plugins.hooks.fire('action:category.delete', { cid: cid, uid: uid, category: categoryData });
@@ -42,7 +38,6 @@ module.exports = function (Categories) {
 
 		await removeFromParent(cid);
 		await deleteTags(cid);
-		await activitypub.actors.removeGroup(cid);
 		await db.deleteAll([
 			`cid:${cid}:tids`,
 			`cid:${cid}:tids:pinned`,
@@ -56,7 +51,7 @@ module.exports = function (Categories) {
 			`cid:${cid}:uid:watch:state`,
 			`cid:${cid}:children`,
 			`cid:${cid}:tag:whitelist`,
-			`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`,
+			`category:${cid}`,
 		]);
 		const privilegeList = await privileges.categories.getPrivilegeList();
 		await groups.destroy(privilegeList.map(privilege => `cid:${cid}:privileges:${privilege}`));

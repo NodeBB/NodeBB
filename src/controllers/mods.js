@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const user = require('../user');
 const groups = require('../groups');
@@ -44,9 +43,9 @@ modsController.flags.list = async function (req, res) {
 	filters = filters.reduce((memo, cur) => {
 		if (req.query.hasOwnProperty(cur)) {
 			if (typeof req.query[cur] === 'string' && req.query[cur].trim() !== '') {
-				memo[cur] = validator.escape(String(req.query[cur].trim()));
+				memo[cur] = req.query[cur].trim();
 			} else if (Array.isArray(req.query[cur]) && req.query[cur].length) {
-				memo[cur] = req.query[cur].map(item => validator.escape(String(item).trim()));
+				memo[cur] = req.query[cur];
 			}
 		}
 
@@ -237,7 +236,6 @@ modsController.postQueue = async function (req, res, next) {
 		.map((post) => {
 			const isSelf = post.user.uid === req.uid;
 			post.canAccept = !isSelf && (isAdmin || isGlobalMod || !!moderatedCids.length);
-			post.canEdit = isSelf || isAdmin || isGlobalMod;
 			return post;
 		});
 

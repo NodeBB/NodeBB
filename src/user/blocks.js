@@ -8,7 +8,7 @@ const cacheCreate = require('../cache/lru');
 module.exports = function (User) {
 	User.blocks = {
 		_cache: cacheCreate({
-			name: 'user-blocks',
+			name: 'user:blocks',
 			max: 100,
 			ttl: 0,
 		}),

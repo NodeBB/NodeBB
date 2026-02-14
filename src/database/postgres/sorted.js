@@ -228,7 +228,7 @@ SELECT o."_key" k,
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		let counts;
+		let counts = [];
 		if (min !== '-inf' || max !== '+inf') {
 			if (min === '-inf') {
 				min = null;
@@ -707,9 +707,9 @@ SELECT z."value",
          ON o."_key" = z."_key"
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT
-  AND z."value" LIKE $3
+  AND z."value" LIKE '${match}'
   LIMIT $2::INTEGER`,
-			values: [params.key, params.limit, match],
+			values: [params.key, params.limit],
 		});
 		if (!params.withScores) {
 			return res.rows.map(r => r.value);

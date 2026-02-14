@@ -26,17 +26,20 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 				storage.setItem('email-confirm-dismiss', 1);
 			},
 		};
-		function hideAlertAndGotoEditEmail() {
-			alerts.remove('email_confirm');
-			ajaxify.go('/me/edit/email');
-		}
+
 		if (!app.user.email && !app.user.isEmailConfirmSent) {
 			msg.message = '[[error:no-email-to-confirm]]';
-			msg.clickfn = hideAlertAndGotoEditEmail;
+			msg.clickfn = function () {
+				alerts.remove('email_confirm');
+				ajaxify.go('user/' + app.user.userslug + '/edit/email');
+			};
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = message || '[[error:email-not-confirmed]]';
-			msg.clickfn = hideAlertAndGotoEditEmail;
+			msg.clickfn = function () {
+				alerts.remove('email_confirm');
+				ajaxify.go('/me/edit/email');
+			};
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
 			msg.message = '[[error:email-not-confirmed-email-sent]]';
@@ -71,7 +74,6 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 
 	function showQueryStringMessages() {
 		const params = utils.params({ full: true });
-		const originalQs = params.toString();
 		showWelcomeMessage = params.has('loggedin');
 		registerMessage = params.get('register');
 
@@ -100,9 +102,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 		}
 
 		const qs = params.toString();
-		if (qs !== originalQs) {
-			ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
-		}
+		ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
 	}
 
 	messages.showInvalidSession = function () {

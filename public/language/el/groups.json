@@ -1,9 +1,7 @@
 {
-    "group": "Group",
     "all-groups": "All groups",
     "groups": "Ομάδες",
     "members": "Members",
-    "x-members": "%1 member(s)",
     "view-group": "Προβολή Ομάδας",
     "owner": "Κάτοχος Ομάδας",
     "new-group": "Δημιουργία Νέας Ομάδας",

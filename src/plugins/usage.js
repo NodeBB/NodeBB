@@ -18,7 +18,7 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.submitUsageData = async function () {
-		if (!meta.config.submitPluginUsage || !Plugins.loadedPlugins.length || process.env.NODE_ENV !== 'production') {
+		if (!meta.config.submitPluginUsage || !Plugins.loadedPlugins.length || global.env !== 'production') {
 			return;
 		}
 

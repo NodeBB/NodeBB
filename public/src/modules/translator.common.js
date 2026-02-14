@@ -464,7 +464,7 @@ module.exports = function (utils, load, warn) {
 		 */
 		Translator.escape = function escape(text) {
 			return typeof text === 'string' ?
-				text.replace(/\[\[([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;') :
+				text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') :
 				text;
 		};
 
@@ -475,7 +475,7 @@ module.exports = function (utils, load, warn) {
 		 */
 		Translator.unescape = function unescape(text) {
 			return typeof text === 'string' ?
-				text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)&rsqb;&rsqb;/g, '[[$1]]') :
+				text.replace(/&rsqb;&rsqb;/g, ']]').replace(/&lsqb;&lsqb;/g, '[[') :
 				text;
 		};
 

@@ -2,7 +2,7 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranchPatterns": [
+  "baseBranches": [
     "develop"
   ],
   "labels": [
@@ -14,7 +14,8 @@
         "dependencies"
       ],
       "rangeStrategy": "pin",
-      "matchPackageNames": []
+      "matchPackageNames": [
+      ]
     },
     {
       "matchDepTypes": [

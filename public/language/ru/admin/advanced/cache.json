@@ -1,5 +1,9 @@
 {
 	"cache": "Cache",
+	"post-cache": "Кэш сообщений",
+	"group-cache": "Кеш групп",
+	"local-cache": "Локальный кеш",
+	"object-cache": "Кеш объектов",
 	"percent-full": "Заполнен на%1%",
 	"post-cache-size": "Размер кэша сообщений",
 	"items-in-cache": "Закешировано элементов"

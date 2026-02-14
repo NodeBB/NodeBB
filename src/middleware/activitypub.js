@@ -1,20 +1,12 @@
 'use strict';
 
 const db = require('../database');
-const user = require('../user');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
-const analytics = require('../analytics');
-const helpers = require('./helpers');
 
 const middleware = module.exports;
 
 middleware.enabled = async (req, res, next) => next(!meta.config.activitypubEnabled ? 'route' : undefined);
-
-middleware.pageview = async (req, res, next) => {
-	await analytics.apPageView({ ip: req.ip });
-	next();
-};
 
 middleware.assertS2S = async function (req, res, next) {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
@@ -41,12 +33,10 @@ middleware.verify = async function (req, res, next) {
 		return next();
 	}
 
-	if (req.method === 'POST') {
-		const verified = await activitypub.verify(req);
-		if (!verified) {
-			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
-			return res.sendStatus(400);
-		}
+	const verified = await activitypub.verify(req);
+	if (!verified && req.method === 'POST') {
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
+		return res.sendStatus(400);
 	}
 
 	// Set calling user
@@ -61,15 +51,9 @@ middleware.verify = async function (req, res, next) {
 	next();
 };
 
-middleware.assertPayload = helpers.try(async function (req, res, next) {
+middleware.assertPayload = async function (req, res, next) {
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	activitypub.helpers.log('[middleware/activitypub] Validating incoming payload...');
-
-	// Reject from banned users
-	const isBanned = await user.bans.isBanned(req.uid);
-	if (isBanned) {
-		return res.sendStatus(403);
-	}
 
 	// Sanity-check payload schema
 	const required = ['id', 'type', 'actor', 'object'];
@@ -100,12 +84,12 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 
 	// Domain check
 	const { hostname } = new URL(actor);
-	const allowed = activitypub.instances.isAllowed(hostname);
+	const allowed = await activitypub.instances.isAllowed(hostname);
 	if (!allowed) {
 		activitypub.helpers.log(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
 		return res.sendStatus(403);
 	}
-	activitypub.instances.log(hostname);
+	await db.sortedSetAdd('instances:lastSeen', Date.now(), hostname);
 
 	// Origin checking
 	if (typeof object !== 'string' && object.hasOwnProperty('id')) {
@@ -121,11 +105,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 
 	// Cross-check key ownership against received actor
 	await activitypub.actors.assert(actor);
-	let compare = await db.getObjectsFields([
-		`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
-	], ['id']);
-	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
-
+	const compare = ((await db.getObjectField(`userRemote:${actor}:keys`, 'id')) || '').replace(/#[\w-]+$/, '');
 	const { signature } = req.headers;
 	let keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
 		const index = v.indexOf('=');
@@ -139,7 +119,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check passed.');
 
 	next();
-});
+};
 
 middleware.resolveObjects = async function (req, res, next) {
 	const { type, object } = req.body;

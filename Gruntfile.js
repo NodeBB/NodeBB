@@ -173,10 +173,7 @@ module.exports = function (grunt) {
 				winston.error(err.stack);
 			}
 			if (worker) {
-				worker.send({
-					compiling: compiling,
-					livereload: true, // Send livereload event via Socket.IO for instant browser refresh
-				});
+				worker.send({ compiling: compiling });
 			}
 		});
 	});

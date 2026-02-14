@@ -3,12 +3,12 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 vazeb odpovědělo během %2ms.",
 	"host": "host",
-	"primary": "primární / práce",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "připojen",
 	"git": "git",
-	"process-memory": "rss/heap used",
+	"process-memory": "process memory",
 	"system-memory": "system memory",
 	"used-memory-process": "Used memory by process",
 	"used-memory-os": "Used system memory",
@@ -19,7 +19,7 @@
 
 	"registered": "Registrován",
 	"sockets": "Sockety",
-	"connection-count": "Počet připojení",
+	"connection-count": "Connection Count",
 	"guests": "Hosté",
 
 	"info": "Informace"

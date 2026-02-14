@@ -11,74 +11,34 @@ module.exports = function (module) {
 	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
-		return await sortedSetRange(key, start, stop, '-inf', '+inf', false, false, false);
+		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', false);
 	};
 
 	module.getSortedSetRevRange = async function (key, start, stop) {
-		return await sortedSetRange(key, start, stop, '-inf', '+inf', false, true, false);
+		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', false);
 	};
 
 	module.getSortedSetRangeWithScores = async function (key, start, stop) {
-		return await sortedSetRange(key, start, stop, '-inf', '+inf', true, false, false);
+		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', true);
 	};
 
 	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
-		return await sortedSetRange(key, start, stop, '-inf', '+inf', true, true, false);
+		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', true);
 	};
 
-	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScore(key, start, count, min, max, false, false);
-	};
-
-	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScore(key, start, count, max, min, false, true);
-	};
-
-	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScore(key, start, count, min, max, true, false);
-	};
-
-	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScore(key, start, count, max, min, true, true);
-	};
-
-	async function sortedSetRangeByScore(key, start, count, min, max, withScores, rev) {
-		if (parseInt(count, 10) === 0) {
-			return [];
-		}
-		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
-		return await sortedSetRange(key, start, stop, min, max, withScores, rev, true);
-	}
-
-	async function sortedSetRange(key, start, stop, min, max, withScores, rev, byScore) {
-		const opts = {};
-		const cmd = withScores ? 'zRangeWithScores' : 'zRange';
-		if (byScore) {
-			opts.BY = 'SCORE';
-			opts.LIMIT = { offset: start, count: stop !== -1 ? stop + 1 : stop };
-		}
-		if (rev) {
-			opts.REV = true;
-		}
-
+	async function sortedSetRange(method, key, start, stop, min, max, withScores) {
 		if (Array.isArray(key)) {
 			if (!key.length) {
 				return [];
 			}
 			const batch = module.client.batch();
-
-			if (byScore) {
-				key.forEach(key => batch.zRangeWithScores(key, min, max, {
-					...opts,
-					LIMIT: { offset: 0, count: stop !== -1 ? stop + 1 : stop },
-				}));
-			} else {
-				key.forEach(key => batch.zRangeWithScores(key, 0, stop, { ...opts }));
-			}
-
+			key.forEach(key => batch[method](genParams(method, key, 0, stop, min, max, true)));
 			const data = await helpers.execBatch(batch);
-			const batchData = data;
-			let objects = dbHelpers.mergeBatch(batchData, 0, stop, rev ? -1 : 1);
+
+			const batchData = data.map(setData => helpers.zsetToObjectArray(setData));
+
+			let objects = dbHelpers.mergeBatch(batchData, 0, stop, method === 'zrange' ? 1 : -1);
+
 			if (start > 0) {
 				objects = objects.slice(start, stop !== -1 ? stop + 1 : undefined);
 			}
@@ -88,25 +48,63 @@ module.exports = function (module) {
 			return objects;
 		}
 
-		let data;
-		if (byScore) {
-			data = await module.client[cmd](key, min, max, opts);
-		} else {
-			data = await module.client[cmd](key, start, stop, opts);
-		}
-
+		const params = genParams(method, key, start, stop, min, max, withScores);
+		const data = await module.client[method](params);
 		if (!withScores) {
 			return data;
 		}
-		return data;
+		const objects = helpers.zsetToObjectArray(data);
+		return objects;
+	}
+
+	function genParams(method, key, start, stop, min, max, withScores) {
+		const params = {
+			zrevrange: [key, start, stop],
+			zrange: [key, start, stop],
+			zrangebyscore: [key, min, max],
+			zrevrangebyscore: [key, max, min],
+		};
+		if (withScores) {
+			params[method].push('WITHSCORES');
+		}
+
+		if (method === 'zrangebyscore' || method === 'zrevrangebyscore') {
+			const count = stop !== -1 ? stop - start + 1 : stop;
+			params[method].push('LIMIT', start, count);
+		}
+		return params[method];
+	}
+
+	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
+		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, false);
+	};
+
+	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
+		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, false);
+	};
+
+	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
+		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, true);
+	};
+
+	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
+		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, true);
+	};
+
+	async function sortedSetRangeByScore(method, key, start, count, min, max, withScores) {
+		if (parseInt(count, 10) === 0) {
+			return [];
+		}
+		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
+		return await sortedSetRange(method, key, start, stop, min, max, withScores);
 	}
 
 	module.sortedSetCount = async function (key, min, max) {
-		return await module.client.zCount(key, min, max);
+		return await module.client.zcount(key, min, max);
 	};
 
 	module.sortedSetCard = async function (key) {
-		return await module.client.zCard(key);
+		return await module.client.zcard(key);
 	};
 
 	module.sortedSetsCard = async function (keys) {
@@ -114,7 +112,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const batch = module.client.batch();
-		keys.forEach(k => batch.zCard(String(k)));
+		keys.forEach(k => batch.zcard(String(k)));
 		return await helpers.execBatch(batch);
 	};
 
@@ -127,26 +125,26 @@ module.exports = function (module) {
 		}
 		const batch = module.client.batch();
 		if (min !== '-inf' || max !== '+inf') {
-			keys.forEach(k => batch.zCount(String(k), min, max));
+			keys.forEach(k => batch.zcount(String(k), min, max));
 		} else {
-			keys.forEach(k => batch.zCard(String(k)));
+			keys.forEach(k => batch.zcard(String(k)));
 		}
 		const counts = await helpers.execBatch(batch);
 		return counts.reduce((acc, val) => acc + val, 0);
 	};
 
 	module.sortedSetRank = async function (key, value) {
-		return await module.client.zRank(key, String(value));
+		return await module.client.zrank(key, value);
 	};
 
 	module.sortedSetRevRank = async function (key, value) {
-		return await module.client.zRevRank(key, String(value));
+		return await module.client.zrevrank(key, value);
 	};
 
 	module.sortedSetsRanks = async function (keys, values) {
 		const batch = module.client.batch();
 		for (let i = 0; i < values.length; i += 1) {
-			batch.zRank(keys[i], String(values[i]));
+			batch.zrank(keys[i], String(values[i]));
 		}
 		return await helpers.execBatch(batch);
 	};
@@ -154,7 +152,7 @@ module.exports = function (module) {
 	module.sortedSetsRevRanks = async function (keys, values) {
 		const batch = module.client.batch();
 		for (let i = 0; i < values.length; i += 1) {
-			batch.zRevRank(keys[i], String(values[i]));
+			batch.zrevrank(keys[i], String(values[i]));
 		}
 		return await helpers.execBatch(batch);
 	};
@@ -162,7 +160,7 @@ module.exports = function (module) {
 	module.sortedSetRanks = async function (key, values) {
 		const batch = module.client.batch();
 		for (let i = 0; i < values.length; i += 1) {
-			batch.zRank(key, String(values[i]));
+			batch.zrank(key, String(values[i]));
 		}
 		return await helpers.execBatch(batch);
 	};
@@ -170,7 +168,7 @@ module.exports = function (module) {
 	module.sortedSetRevRanks = async function (key, values) {
 		const batch = module.client.batch();
 		for (let i = 0; i < values.length; i += 1) {
-			batch.zRevRank(key, String(values[i]));
+			batch.zrevrank(key, String(values[i]));
 		}
 		return await helpers.execBatch(batch);
 	};
@@ -179,7 +177,8 @@ module.exports = function (module) {
 		if (!key || value === undefined) {
 			return null;
 		}
-		const score = await module.client.zScore(key, String(value));
+
+		const score = await module.client.zscore(key, value);
 		return score === null ? score : parseFloat(score);
 	};
 
@@ -188,7 +187,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const batch = module.client.batch();
-		keys.forEach(key => batch.zScore(String(key), String(value)));
+		keys.forEach(key => batch.zscore(String(key), String(value)));
 		const scores = await helpers.execBatch(batch);
 		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
@@ -198,7 +197,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const batch = module.client.batch();
-		values.forEach(value => batch.zScore(String(key), String(value)));
+		values.forEach(value => batch.zscore(String(key), String(value)));
 		const scores = await helpers.execBatch(batch);
 		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
@@ -212,9 +211,9 @@ module.exports = function (module) {
 		if (!values.length) {
 			return [];
 		}
-		const batch = module.client.multi();
-		values.forEach(v => batch.zScore(key, String(v)));
-		const results = await batch.execAsPipeline();
+		const batch = module.client.batch();
+		values.forEach(v => batch.zscore(key, String(v)));
+		const results = await helpers.execBatch(batch);
 		return results.map(utils.isNumber);
 	};
 
@@ -222,18 +221,20 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		const batch = module.client.multi();
-		keys.forEach(k => batch.zScore(k, String(value)));
-		const results = await batch.execAsPipeline();
+		const batch = module.client.batch();
+		keys.forEach(k => batch.zscore(k, String(value)));
+		const results = await helpers.execBatch(batch);
 		return results.map(utils.isNumber);
 	};
 
 	module.getSortedSetMembers = async function (key) {
-		return await module.client.zRange(key, 0, -1);
+		return await module.client.zrange(key, 0, -1);
 	};
 
 	module.getSortedSetMembersWithScores = async function (key) {
-		return await module.client.zRangeWithScores(key, 0, -1);
+		return helpers.zsetToObjectArray(
+			await module.client.zrange(key, 0, -1, 'WITHSCORES')
+		);
 	};
 
 	module.getSortedSetsMembers = async function (keys) {
@@ -241,7 +242,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const batch = module.client.batch();
-		keys.forEach(k => batch.zRange(k, 0, -1));
+		keys.forEach(k => batch.zrange(k, 0, -1));
 		return await helpers.execBatch(batch);
 	};
 
@@ -250,73 +251,87 @@ module.exports = function (module) {
 			return [];
 		}
 		const batch = module.client.batch();
-		keys.forEach(k => batch.zRangeWithScores(k, 0, -1));
+		keys.forEach(k => batch.zrange(k, 0, -1, 'WITHSCORES'));
 		const res = await helpers.execBatch(batch);
-		return res;
+		return res.map(helpers.zsetToObjectArray);
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {
-		const newValue = await module.client.zIncrBy(key, increment, String(value));
+		const newValue = await module.client.zincrby(key, increment, value);
 		return parseFloat(newValue);
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
 		const multi = module.client.multi();
 		data.forEach((item) => {
-			multi.zIncrBy(item[0], item[1], String(item[2]));
+			multi.zincrby(item[0], item[1], item[2]);
 		});
 		const result = await multi.exec();
-		return result;
+		return result.map(item => item && parseFloat(item[1]));
 	};
 
-	module.getSortedSetRangeByLex = async function (key, min, max, start = 0, count = -1) {
-		const { lmin, lmax } = helpers.normalizeLexRange(min, max, false);
-		return await module.client.zRange(key, lmin, lmax, {
-			BY: 'LEX',
-			LIMIT: { offset: start, count: count },
-		});
+	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
+		return await sortedSetLex('zrangebylex', false, key, min, max, start, count);
 	};
 
-	module.getSortedSetRevRangeByLex = async function (key, max, min, start = 0, count = -1) {
-		const { lmin, lmax } = helpers.normalizeLexRange(max, min, true);
-		return await module.client.zRange(key, lmin, lmax, {
-			REV: true,
-			BY: 'LEX',
-			LIMIT: { offset: start, count: count },
-		});
+	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
+		return await sortedSetLex('zrevrangebylex', true, key, max, min, start, count);
 	};
 
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
-		const { lmin, lmax } = helpers.normalizeLexRange(min, max, false);
-		await module.client.zRemRangeByLex(key, lmin, lmax);
+		await sortedSetLex('zremrangebylex', false, key, min, max);
 	};
 
 	module.sortedSetLexCount = async function (key, min, max) {
-		const { lmin, lmax } = helpers.normalizeLexRange(min, max, false);
-		return await module.client.zLexCount(key, lmin, lmax);
+		return await sortedSetLex('zlexcount', false, key, min, max);
 	};
+
+	async function sortedSetLex(method, reverse, key, min, max, start, count) {
+		let minmin;
+		let maxmax;
+		if (reverse) {
+			minmin = '+';
+			maxmax = '-';
+		} else {
+			minmin = '-';
+			maxmax = '+';
+		}
+
+		if (min !== minmin && !min.match(/^[[(]/)) {
+			min = `[${min}`;
+		}
+		if (max !== maxmax && !max.match(/^[[(]/)) {
+			max = `[${max}`;
+		}
+		const args = [key, min, max];
+		if (count) {
+			args.push('LIMIT', start, count);
+		}
+		return await module.client[method](args);
+	}
 
 	module.getSortedSetScan = async function (params) {
 		let cursor = '0';
 
 		const returnData = [];
-		let done;
+		let done = false;
 		const seen = Object.create(null);
 		do {
 			/* eslint-disable no-await-in-loop */
-			const res = await module.client.zScan(params.key, cursor, { MATCH: params.match, COUNT: 5000 });
-			cursor = res.cursor;
+			const res = await module.client.zscan(params.key, cursor, 'MATCH', params.match, 'COUNT', 5000);
+			cursor = res[0];
 			done = cursor === '0';
+			const data = res[1];
 
-			for (let i = 0; i < res.members.length; i ++) {
-				const item = res.members[i];
-				if (!seen[item.value]) {
-					seen[item.value] = 1;
+			for (let i = 0; i < data.length; i += 2) {
+				const value = data[i];
+				if (!seen[value]) {
+					seen[value] = 1;
 
 					if (params.withScores) {
-						returnData.push({ value: item.value, score: parseFloat(item.score) });
+						returnData.push({ value: value, score: parseFloat(data[i + 1]) });
 					} else {
-						returnData.push(item.value);
+						returnData.push(value);
 					}
 					if (params.limit && returnData.length >= params.limit) {
 						done = true;

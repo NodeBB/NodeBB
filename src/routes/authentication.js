@@ -121,7 +121,7 @@ Auth.reloadRoutes = async function (params) {
 			// passport seems to remove `req.session.returnTo` after it redirects
 			req.session.registration.returnTo = req.session.next || req.session.returnTo;
 
-			passport.authenticate(strategy.name, (err, user, info) => {
+			passport.authenticate(strategy.name, (err, user) => {
 				if (err) {
 					if (req.session && req.session.registration) {
 						delete req.session.registration;
@@ -133,10 +133,7 @@ Auth.reloadRoutes = async function (params) {
 					if (req.session && req.session.registration) {
 						delete req.session.registration;
 					}
-					if (info && info.message) {
-						return helpers.redirect(res, `/?register=${encodeURIComponent(info.message)}`);
-					}
-					return helpers.redirect(res, strategy.failureUrl || '/login');
+					return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
 				}
 
 				res.locals.user = user;
@@ -152,17 +149,14 @@ Auth.reloadRoutes = async function (params) {
 					return next(err);
 				}
 
-				helpers.redirect(res, strategy.successUrl || '/');
+				helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
 			});
 		});
 	});
 
-	const upload = require('../middleware/multer');
-	const middlewares = [
-		upload.any(),
-		Auth.middleware.applyCSRF,
-		Auth.middleware.applyBlacklist,
-	];
+	const multipart = require('connect-multiparty');
+	const multipartMiddleware = multipart();
+	const middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
 
 	router.post('/register', middlewares, controllers.authentication.register);
 	router.post('/register/complete', middlewares, controllers.authentication.registerComplete);

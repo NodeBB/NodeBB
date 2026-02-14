@@ -6,7 +6,6 @@ const winston = require('winston');
 const meta = require('../../meta');
 const user = require('../../user');
 const activitypub = require('../../activitypub');
-const utils = require('../../utils');
 const helpers = require('../helpers');
 
 const Controller = module.exports;
@@ -31,7 +30,7 @@ Controller.fetch = async (req, res, next) => {
 		if (typeof result === 'string') {
 			return helpers.redirect(res, result);
 		} else if (result) {
-			const { id, type } = await activitypub.get('uid', req.uid, url.href);
+			const { id, type } = await activitypub.get('uid', req.uid || 0, url.href);
 			switch (true) {
 				case activitypub._constants.acceptedPostTypes.includes(type): {
 					return helpers.redirect(res, `/post/${encodeURIComponent(id)}`);
@@ -48,11 +47,6 @@ Controller.fetch = async (req, res, next) => {
 			}
 		}
 
-		// Force outgoing links page on direct access
-		if (!res.locals.isAPI) {
-			url = new URL(`outgoing?url=${encodeURIComponent(url.href)}`, nconf.get('url'));
-		}
-
 		helpers.redirect(res, url.href, false);
 	} catch (e) {
 		if (!url || !url.href) {
@@ -66,53 +60,71 @@ Controller.fetch = async (req, res, next) => {
 Controller.getFollowing = async (req, res) => {
 	const { followingCount, followingRemoteCount } = await user.getUserFields(req.params.uid, ['followingCount', 'followingRemoteCount']);
 	const totalItems = parseInt(followingCount || 0, 10) + parseInt(followingRemoteCount || 0, 10);
+	let orderedItems;
+	let next = (totalItems && `${nconf.get('url')}/uid/${req.params.uid}/following?page=`) || null;
 
-	const count = totalItems;
-	const collection = await activitypub.helpers.generateCollection({
-		method: user.getFollowing.bind(null, req.params.uid),
-		count,
-		perPage: 50,
-		page: req.query.page,
-		url: `${nconf.get('url')}/uid/${req.params.uid}/following`,
-	});
+	if (totalItems) {
+		if (req.query.page) {
+			const page = parseInt(req.query.page, 10) || 1;
+			const resultsPerPage = 50;
+			const start = Math.max(0, page - 1) * resultsPerPage;
+			const stop = start + resultsPerPage - 1;
 
-	if (collection.hasOwnProperty('orderedItems')) {
-		collection.orderedItems = collection.orderedItems.map(({ uid }) => {
-			if (utils.isNumber(uid)) {
-				return `${nconf.get('url')}/uid/${uid}`;
+			orderedItems = await user.getFollowing(req.params.uid, start, stop);
+			orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+			if (stop < totalItems - 1) {
+				next = `${next}${page + 1}`;
+			} else {
+				next = null;
 			}
-
-			return uid;
-		});
+		} else {
+			orderedItems = [];
+			next = `${next}1`;
+		}
 	}
 
-	res.status(200).json(collection);
+	res.status(200).json({
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		type: 'OrderedCollection',
+		totalItems,
+		orderedItems,
+		next,
+	});
 };
 
 Controller.getFollowers = async (req, res) => {
 	const { followerCount, followerRemoteCount } = await user.getUserFields(req.params.uid, ['followerCount', 'followerRemoteCount']);
 	const totalItems = parseInt(followerCount || 0, 10) + parseInt(followerRemoteCount || 0, 10);
+	let orderedItems = [];
+	let next = (totalItems && `${nconf.get('url')}/uid/${req.params.uid}/followers?page=`) || null;
 
-	const count = totalItems;
-	const collection = await activitypub.helpers.generateCollection({
-		method: user.getFollowers.bind(null, req.params.uid),
-		count,
-		perPage: 50,
-		page: req.query.page,
-		url: `${nconf.get('url')}/uid/${req.params.uid}/followers`,
-	});
+	if (totalItems) {
+		if (req.query.page) {
+			const page = parseInt(req.query.page, 10) || 1;
+			const resultsPerPage = 50;
+			const start = Math.max(0, page - 1) * resultsPerPage;
+			const stop = start + resultsPerPage - 1;
 
-	if (collection.hasOwnProperty('orderedItems')) {
-		collection.orderedItems = collection.orderedItems.map(({ uid }) => {
-			if (utils.isNumber(uid)) {
-				return `${nconf.get('url')}/uid/${uid}`;
+			orderedItems = await user.getFollowers(req.params.uid, start, stop);
+			orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+			if (stop < totalItems - 1) {
+				next = `${next}${page + 1}`;
+			} else {
+				next = null;
 			}
-
-			return uid;
-		});
+		} else {
+			orderedItems = [];
+			next = `${next}1`;
+		}
 	}
 
-	res.status(200).json(collection);
+	res.status(200).json({
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		type: 'OrderedCollection',
+		totalItems,
+		orderedItems,
+		next,
+	});
 };
 
 Controller.getOutbox = async (req, res) => {
@@ -149,15 +161,15 @@ Controller.postInbox = async (req, res) => {
 	// Note: underlying methods are internal use only, hence no exposure via src/api
 	const method = String(req.body.type).toLowerCase();
 	if (!activitypub.inbox.hasOwnProperty(method)) {
-		activitypub.helpers.log(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
-		return res.sendStatus(200);
+		winston.warn(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
+		return res.sendStatus(501);
 	}
 
 	try {
 		await activitypub.inbox[method](req);
 		await activitypub.record(req.body);
-		await helpers.formatApiResponse(202, res);
+		helpers.formatApiResponse(202, res);
 	} catch (e) {
-		helpers.formatApiResponse(500, res, e).catch(err => winston.error(err.stack));
+		helpers.formatApiResponse(500, res, e);
 	}
 };

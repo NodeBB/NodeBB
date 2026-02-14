@@ -1,9 +1,7 @@
 {
-    "group": "Group",
     "all-groups": "Bütün qruplar",
     "groups": "Qruplar",
     "members": "Üzvlər",
-    "x-members": "%1 member(s)",
     "view-group": "Qrupa bax",
     "owner": "Qrup sahibi",
     "new-group": "Yeni qrup yarat",

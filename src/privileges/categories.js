@@ -23,7 +23,6 @@ const _privilegeMap = new Map([
 	['topics:read', { label: '[[admin/manage/privileges:access-topics]]', type: 'viewing' }],
 	['topics:create', { label: '[[admin/manage/privileges:create-topics]]', type: 'posting' }],
 	['topics:reply', { label: '[[admin/manage/privileges:reply-to-topics]]', type: 'posting' }],
-	['topics:crosspost', { label: '[[admin/manage/privileges:crosspost-topics]]', type: 'posting' }],
 	['topics:schedule', { label: '[[admin/manage/privileges:schedule-topics]]', type: 'posting' }],
 	['topics:tag', { label: '[[admin/manage/privileges:tag-topics]]', type: 'posting' }],
 	['posts:edit', { label: '[[admin/manage/privileges:edit-posts]]', type: 'posting' }],
@@ -54,8 +53,8 @@ privsCategories.getType = function (privilege) {
 	return priv && priv.type ? priv.type : '';
 };
 
-privsCategories.getUserPrivilegeList = () => Array.from(_privilegeMap.keys());
-privsCategories.getGroupPrivilegeList = () => Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`);
+privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', Array.from(_privilegeMap.keys()));
+privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
 
 privsCategories.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
@@ -73,20 +72,27 @@ privsCategories.getPrivilegesByFilter = function (filter) {
 
 // Method used in admin/category controller to show all users/groups with privs in that given cid
 privsCategories.list = async function (cid) {
+	let labels = Array.from(_privilegeMap.values()).map(data => data.label);
+	labels = await utils.promiseParallel({
+		users: plugins.hooks.fire('filter:privileges.list_human', labels.slice()),
+		groups: plugins.hooks.fire('filter:privileges.groups.list_human', labels.slice()),
+	});
+
 	const keys = await utils.promiseParallel({
 		users: privsCategories.getUserPrivilegeList(),
 		groups: privsCategories.getGroupPrivilegeList(),
 	});
 
 	const payload = await utils.promiseParallel({
+		labels,
 		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(cid, keys.users),
 		groups: helpers.getGroupPrivileges(cid, keys.groups),
 	});
 	payload.keys = keys;
 
-	payload.columnCountUserOther = payload.labelData.length - privsCategories._coreSize;
-	payload.columnCountGroupOther = payload.labelData.length - privsCategories._coreSize;
+	payload.columnCountUserOther = payload.labels.users.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories._coreSize;
 
 	return payload;
 };
@@ -97,16 +103,14 @@ privsCategories.get = async function (cid, uid) {
 		'topics:tag', 'read', 'posts:view_deleted',
 	];
 
-	let [userPrivileges, isAdministrator, isModerator] = await Promise.all([
+	const [userPrivileges, isAdministrator, isModerator] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, cid),
 	]);
 
-	if (utils.isNumber(cid)) {
-		userPrivileges = userPrivileges.map(allowed => allowed || isAdministrator);
-	}
-	const privData = _.zipObject(privs, userPrivileges);
+	const combined = userPrivileges.map(allowed => allowed || isAdministrator);
+	const privData = _.zipObject(privs, combined);
 	const isAdminOrMod = isAdministrator || isModerator;
 
 	return await plugins.hooks.fire('filter:privileges.categories.get', {

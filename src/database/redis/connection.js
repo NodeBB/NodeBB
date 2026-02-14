@@ -1,7 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
-const { createClient, createCluster, createSentinel } = require('redis');
+const Redis = require('ioredis');
 const winston = require('winston');
 
 const connection = module.exports;
@@ -13,39 +13,28 @@ connection.connect = async function (options) {
 
 		let cxn;
 		if (options.cluster) {
-			const rootNodes = options.cluster.map(node => ({ url : `redis://${node.host}:${node.port}` }));
-			cxn = createCluster({
-				...options.options,
-				rootNodes: rootNodes,
-			});
+			cxn = new Redis.Cluster(options.cluster, options.options);
 		} else if (options.sentinels) {
-			const sentinelRootNodes = options.sentinels.map(sentinel => ({ host: sentinel.host, port: sentinel.port }));
-			cxn = createSentinel({
+			cxn = new Redis({
+				sentinels: options.sentinels,
 				...options.options,
-				sentinelRootNodes,
 			});
 		} else if (redis_socket_or_host && String(redis_socket_or_host).indexOf('/') >= 0) {
 			// If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock
-			cxn = createClient({
+			cxn = new Redis({
 				...options.options,
+				path: redis_socket_or_host,
 				password: options.password,
-				database: options.database,
-				socket: {
-					path: redis_socket_or_host,
-					reconnectStrategy: 3000,
-				},
+				db: options.database,
 			});
 		} else {
 			// Else, connect over tcp/ip
-			cxn = createClient({
+			cxn = new Redis({
 				...options.options,
+				host: redis_socket_or_host,
+				port: options.port,
 				password: options.password,
-				database: options.database,
-				socket: {
-					host: redis_socket_or_host,
-					port: options.port,
-					reconnectStrategy: 3000,
-				},
+				db: options.database,
 			});
 		}
 
@@ -58,15 +47,15 @@ connection.connect = async function (options) {
 			winston.error(err.stack);
 			reject(err);
 		});
-
-		cxn.connect().then(() => {
+		cxn.on('ready', () => {
 			// back-compat with node_redis
-			cxn.batch = cxn.multi;
-			winston.info('Connected to Redis successfully');
+			cxn.batch = cxn.pipeline;
 			resolve(cxn);
-		}).catch((err) => {
-			winston.error('Error connecting to Redis:', err);
 		});
+
+		if (options.password) {
+			cxn.auth(options.password);
+		}
 	});
 };
 

@@ -8,7 +8,7 @@
 	"nodejs": "nodejs",
 	"online": "առցանց",
 	"git": "git",
-	"process-memory": "rss/heap used",
+	"process-memory": "գործընթացի հիշողություն",
 	"system-memory": "Համակարգի հիշողություն",
 	"used-memory-process": "Օգտագործված հիշողությունը ըստ գործընթացի",
 	"used-memory-os": "Օգտագործված համակարգի հիշողություն",

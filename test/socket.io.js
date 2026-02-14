@@ -32,16 +32,18 @@ describe('socket.io', () => {
 	before(async () => {
 		const data = await Promise.all([
 			user.create({ username: 'admin', password: 'adminpwd' }),
-			user.create({ username: 'regular', password: 'regularpwd', email: 'regular@test.com' }, { emailVerification: 'verify' }),
+			user.create({ username: 'regular', password: 'regularpwd' }),
 			categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			}),
 		]);
 		adminUid = data[0];
-		await groups.join('administrators', adminUid);
+		await groups.join('administrators', data[0]);
 
 		regularUid = data[1];
+		await user.setUserField(regularUid, 'email', 'regular@test.com');
+		await user.email.confirmByUid(regularUid);
 
 		cid = data[2].cid;
 		await topics.post({

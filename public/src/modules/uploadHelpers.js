@@ -88,7 +88,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				let formData;
 				if (window.FormData) {
 					formData = new FormData();
-					for (let i = 0; i < files.length; ++i) {
+					for (var i = 0; i < files.length; ++i) {
 						formData.append('files[]', files[i], files[i].name);
 					}
 				}
@@ -123,43 +123,25 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 
 	uploadHelpers.handlePaste = function (options) {
 		const container = options.container;
-		container.on('paste', async function (event) {
+		container.on('paste', function (event) {
 			const items = (event.clipboardData || event.originalEvent.clipboardData || {}).items;
 			const files = [];
 			const fileNames = [];
-			const formData = window.FormData ? new FormData() : null;
-
-			function addFile(file, fileName) {
-				files.push(file);
-				fileNames.push(fileName);
-				if (formData) {
-					formData.append('files[]', file, fileName);
-				}
+			let formData = null;
+			if (window.FormData) {
+				formData = new FormData();
 			}
-			const { convertPastedImageTo } = config;
-			for (const item of items) {
+			[].forEach.call(items, function (item) {
 				const file = item.getAsFile();
-				if (!file) continue;
-				try {
-					if (convertPastedImageTo && file.type.match(/image./) && file.type !== convertPastedImageTo) {
-						// eslint-disable-next-line no-await-in-loop
-						const convertedBlob = await convertImage(file, convertPastedImageTo, 0.9);
-						const ext = convertedBlob.type.split('/')[1];
-						const fileName = `${utils.generateUUID()}-image.${ext}`;
-
-						const convertedFile = new File([convertedBlob], fileName, {
-							type: convertedBlob.type,
-						});
-						addFile(convertedFile, fileName);
-					} else {
-						const fileName = utils.generateUUID() + '-' + file.name;
-						addFile(file, fileName);
+				if (file) {
+					const fileName = utils.generateUUID() + '-' + file.name;
+					if (formData) {
+						formData.append('files[]', file, fileName);
 					}
-				} catch (err) {
-					alerts.error(err);
-					console.error(err);
+					files.push(file);
+					fileNames.push(fileName);
 				}
-			}
+			});
 
 			if (files.length) {
 				options.callback({
@@ -199,7 +181,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 						'[[error:parse-error]]';
 
 					if (xhr && xhr.status === 413) {
-						errorMsg = '[[error:api.413]]';
+						errorMsg = xhr.statusText || 'Request Entity Too Large';
 					}
 					alerts.error(errorMsg);
 					alerts.remove(alert_id);
@@ -215,7 +197,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				success: function (res) {
 					const uploads = res.response.images;
 					if (uploads && uploads.length) {
-						for (let i = 0; i < uploads.length; ++i) {
+						for (var i = 0; i < uploads.length; ++i) {
 							uploads[i].filename = files[i].name;
 							uploads[i].isImage = /image./.test(files[i].type);
 						}
@@ -234,35 +216,6 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 
 		options.uploadForm.submit();
 	};
-
-	function convertImage(file, mime, quality = 0.9) {
-		return new Promise((resolve, reject) => {
-			const img = new Image();
-			const reader = new FileReader();
-
-			reader.onload = e => {
-				img.onload = () => {
-					const canvas = document.createElement('canvas');
-					canvas.width = img.width;
-					canvas.height = img.height;
-
-					const ctx = canvas.getContext('2d');
-					ctx.drawImage(img, 0, 0);
-
-					canvas.toBlob(blob => {
-						if (!blob) return reject(new Error('Conversion failed'));
-						resolve(blob);
-					}, mime, quality);
-				};
-
-				img.onerror = reject;
-				img.src = e.target.result;
-			};
-
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
-	}
 
 	return uploadHelpers;
 });

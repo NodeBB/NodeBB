@@ -5,7 +5,6 @@
 	"disable-rss-feeds": "Անջատել RSS Feeds",
 	"disable-sitemap-xml": "Անջատել Sitemap.xml",
 	"sitemap-topics": "Կայքի քարտեզում ցուցադրվող թեմաների քանակը",
-	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Մաքրել կայքի քարտեզի քեշը",
 	"view-sitemap": "Դիտել կայքի քարտեզը"
 }

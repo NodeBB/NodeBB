@@ -15,6 +15,7 @@ const Messaging = require('../src/messaging');
 const api = require('../src/api');
 const helpers = require('./helpers');
 const request = require('../src/request');
+const utils = require('../src/utils');
 const translator = require('../src/translator');
 
 describe('Messaging Library', () => {
@@ -46,13 +47,21 @@ describe('Messaging Library', () => {
 	};
 
 	before(async () => {
-		mocks.users.foo.uid = await User.create({ username: 'foo', password: 'barbar' }); // admin
-		mocks.users.bar.uid = await User.create({ username: 'bar', password: 'bazbaz' }); // admin
-		mocks.users.baz.uid = await User.create({ username: 'baz', password: 'quuxquux' }); // restricted user
-		mocks.users.herp.uid = await User.create({ username: 'herp', password: 'derpderp' }); // a regular user
+		// Create 3 users: 1 admin, 2 regular
+		({
+			foo: mocks.users.foo.uid,
+			bar: mocks.users.bar.uid,
+			baz: mocks.users.baz.uid,
+			herp: mocks.users.herp.uid,
+		} = await utils.promiseParallel({
+			foo: User.create({ username: 'foo', password: 'barbar' }), // admin
+			bar: User.create({ username: 'bar', password: 'bazbaz' }), // admin
+			baz: User.create({ username: 'baz', password: 'quuxquux' }), // restricted user
+			herp: User.create({ username: 'herp', password: 'derpderp' }), // a regular user
+		}));
 
 		await Groups.join('administrators', mocks.users.foo.uid);
-		await User.setSetting(mocks.users.baz.uid, 'disableIncomingChats', '1');
+		await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
 
 		({ jar: mocks.users.foo.jar, csrf_token: mocks.users.foo.csrf } = await helpers.loginUser('foo', 'barbar'));
 		({ jar: mocks.users.bar.jar, csrf_token: mocks.users.bar.csrf } = await helpers.loginUser('bar', 'bazbaz'));
@@ -76,7 +85,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should NOT allow messages to be sent to a restricted user', async () => {
-			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '1');
+			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
 			try {
 				await Messaging.canMessageUser(mocks.users.herp.uid, mocks.users.baz.uid);
 			} catch (err) {
@@ -91,25 +100,13 @@ describe('Messaging Library', () => {
 			});
 		});
 
-		it('should respect allow/deny list when sending chat messages', async () => {
-			const uid1 = await User.create({ username: 'allowdeny1', password: 'barbar' });
-			const uid2 = await User.create({ username: 'allowdeny2', password: 'bazbaz' });
-			const uid3 = await User.create({ username: 'allowdeny3', password: 'bazbaz' });
-			await Messaging.canMessageUser(uid1, uid2);
-
-			// rejects uid1 only allows uid3 to chat
-			await User.setSetting(uid1, 'chatAllowList', JSON.stringify([uid3]));
-			await assert.rejects(
-				Messaging.canMessageUser(uid2, uid1),
-				{ message: '[[error:chat-restricted]]' },
-			);
-
-			// rejects uid2 denies chat from uid1
-			await User.setSetting(uid2, 'chatDenyList', JSON.stringify([uid1]));
-			await assert.rejects(
-				Messaging.canMessageUser(uid1, uid2),
-				{ message: '[[error:chat-restricted]]' },
-			);
+		it('should allow messages to be sent to a restricted user if restricted user follows sender', (done) => {
+			User.follow(mocks.users.baz.uid, mocks.users.herp.uid, () => {
+				Messaging.canMessageUser(mocks.users.herp.uid, mocks.users.baz.uid, (err) => {
+					assert.ifError(err);
+					done();
+				});
+			});
 		});
 
 		it('should not allow messaging room if user is muted', async () => {
@@ -172,12 +169,11 @@ describe('Messaging Library', () => {
 		});
 
 		it('should create a new chat room', async () => {
-			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '0');
+			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '0');
 			const { body } = await callv3API('post', `/chats`, {
 				uids: [mocks.users.baz.uid],
-				joinLeaveMessages: 1,
 			}, 'foo');
-			await User.setSetting(mocks.users.baz.uid, 'disableIncomingMessages', '1');
+			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
 
 			roomId = body.response.roomId;
 			assert(roomId);
@@ -284,16 +280,6 @@ describe('Messaging Library', () => {
 			message = messages.pop();
 			assert.strictEqual(message.system, 1);
 			assert.strictEqual(message.content, 'user-join');
-		});
-
-		it('should make both users owners on room creation', async () => {
-			const { body } = await callv3API('post', '/chats', {
-				uids: [mocks.users.foo.uid],
-			}, 'herp');
-			const { roomId } = body.response;
-			assert.deepStrictEqual(
-				await Messaging.isRoomOwner([mocks.users.herp.uid, mocks.users.foo.uid], roomId), [true, true]
-			);
 		});
 
 		it('should change owner when owner leaves room', async () => {

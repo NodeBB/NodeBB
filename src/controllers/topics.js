@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const path = require('path');
 const qs = require('querystring');
 const validator = require('validator');
 
@@ -15,7 +14,6 @@ const helpers = require('./helpers');
 const pagination = require('../pagination');
 const utils = require('../utils');
 const analytics = require('../analytics');
-const activitypub = require('../activitypub');
 
 const topicsController = module.exports;
 
@@ -28,7 +26,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
 	if (
 		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||
-		(!utils.isNumber(tid) && !validator.isUUID(String(tid)))
+		(!utils.isNumber(tid) && !validator.isUUID(tid))
 	) {
 		return next();
 	}
@@ -125,9 +123,8 @@ topicsController.get = async function getTopic(req, res, next) {
 		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
 	);
 
-	const [author, crossposts] = await Promise.all([
+	const [author] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
-		topics.crossposts.get(topicData.tid),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res, currentPage, postAtIndex),
@@ -137,25 +134,17 @@ topicsController.get = async function getTopic(req, res, next) {
 	]);
 
 	topicData.author = author;
-	topicData.crossposts = crossposts;
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});
 
-	if (meta.config.activitypubEnabled) {
-		if (postAtIndex) {
-			// Include link header for richer parsing
-			const { pid } = postAtIndex;
-			const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
-			res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
-		}
-
-		if (req.uid > 0 && !utils.isNumber(topicData.mainPid)) {
-			// not awaited on purpose so topic loading is not blocked
-			activitypub.notes.backfill(topicData.mainPid);
-		}
+	if (meta.config.activitypubEnabled && postAtIndex) {
+		// Include link header for richer parsing
+		const { pid } = postAtIndex;
+		const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
+		res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
 	}
 
 	res.render('topic', topicData);
@@ -320,15 +309,17 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
-	const images = uploads.filter(Boolean);
-
+	const images = uploads.map((upload) => {
+		upload.name = `${url + upload_url}/${upload.name}`;
+		return upload;
+	});
 	if (topicData.thumbs) {
+		const path = require('path');
 		const thumbs = topicData.thumbs.filter(
-			t => t && images.every(img => path.normalize(img.name) !== path.normalize(t.path))
+			t => t && images.every(img => path.normalize(img.name) !== path.normalize(url + t.url))
 		);
-		images.push(...thumbs.map(t => t.path));
+		images.push(...thumbs.map(thumbObj => ({ name: url + thumbObj.url })));
 	}
-
 	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
 		images.push(topicData.category.backgroundImage);
 	}
@@ -339,15 +330,13 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 }
 
 function addOGImageTag(res, image) {
-	const isObject = typeof image === 'object' && image.name;
-	let imageUrl = isObject ? image.name : image;
-	if (!(typeof imageUrl === 'string')) {
-		return;
-	}
-
-	if (!imageUrl.startsWith('http')) {
-		// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
-		imageUrl = url + path.posix.join(upload_url, imageUrl);
+	let imageUrl;
+	if (typeof image === 'string' && !image.startsWith('http')) {
+		imageUrl = url + image.replace(new RegExp(`^${relative_path}`), '');
+	} else if (typeof image === 'object') {
+		imageUrl = image.name;
+	} else {
+		imageUrl = image;
 	}
 
 	res.locals.metaTags.push({
@@ -360,7 +349,7 @@ function addOGImageTag(res, image) {
 		noEscape: true,
 	});
 
-	if (isObject && image.width && image.height) {
+	if (typeof image === 'object' && image.width && image.height) {
 		res.locals.metaTags.push({
 			property: 'og:image:width',
 			content: String(image.width),

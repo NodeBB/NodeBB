@@ -1,9 +1,7 @@
 {
-    "group": "Group",
     "all-groups": "All groups",
     "groups": "المجموعات",
     "members": "Members",
-    "x-members": "%1 member(s)",
     "view-group": "معاينة المجموعة",
     "owner": "مالك المجموعة",
     "new-group": "أنشئ مجموعة جديدة",

@@ -24,7 +24,7 @@ Dependencies.check = async function () {
 
 	if (depsMissing) {
 		throw new Error('dependencies-missing');
-	} else if (depsOutdated && process.env.NODE_ENV !== 'development') {
+	} else if (depsOutdated && global.env !== 'development') {
 		throw new Error('dependencies-out-of-date');
 	}
 };

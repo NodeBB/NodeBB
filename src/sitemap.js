@@ -60,10 +60,6 @@ async function getSitemapPages() {
 	return data.urls;
 }
 
-function getCacheExpireTimestamp() {
-	return Date.now() + (1000 * 60 * 60 * (meta.config.sitemapCacheDurationHours || 24));
-}
-
 sitemap.getPages = async function () {
 	if (sitemap.maps.pages && Date.now() < sitemap.maps.pagesCacheExpireTimestamp) {
 		return sitemap.maps.pages;
@@ -72,12 +68,12 @@ sitemap.getPages = async function () {
 	const urls = await getSitemapPages();
 	if (!urls.length) {
 		sitemap.maps.pages = '';
-		sitemap.maps.pagesCacheExpireTimestamp = getCacheExpireTimestamp();
+		sitemap.maps.pagesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
 		return sitemap.maps.pages;
 	}
 
 	sitemap.maps.pages = await urlsToSitemap(urls);
-	sitemap.maps.pagesCacheExpireTimestamp = getCacheExpireTimestamp();
+	sitemap.maps.pagesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
 	return sitemap.maps.pages;
 };
 
@@ -109,12 +105,12 @@ sitemap.getCategories = async function () {
 
 	if (!categoryUrls.length) {
 		sitemap.maps.categories = '';
-		sitemap.maps.categoriesCacheExpireTimestamp = getCacheExpireTimestamp();
+		sitemap.maps.categoriesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
 		return sitemap.maps.categories;
 	}
 
 	sitemap.maps.categories = await urlsToSitemap(categoryUrls);
-	sitemap.maps.categoriesCacheExpireTimestamp = getCacheExpireTimestamp();
+	sitemap.maps.categoriesCacheExpireTimestamp = Date.now() + (1000 * 60 * 60 * 24);
 	return sitemap.maps.categories;
 };
 
@@ -144,7 +140,7 @@ sitemap.getTopicPage = async function (page) {
 	if (!data.topics.length) {
 		sitemap.maps.topics[page - 1] = {
 			sm: '',
-			cacheExpireTimestamp: getCacheExpireTimestamp(),
+			cacheExpireTimestamp: Date.now() + (1000 * 60 * 60 * 24),
 		};
 		return sitemap.maps.topics[page - 1].sm;
 	}
@@ -162,7 +158,7 @@ sitemap.getTopicPage = async function (page) {
 
 	sitemap.maps.topics[page - 1] = {
 		sm: await urlsToSitemap(topicUrls),
-		cacheExpireTimestamp: getCacheExpireTimestamp(),
+		cacheExpireTimestamp: Date.now() + (1000 * 60 * 60 * 24),
 	};
 
 	return sitemap.maps.topics[page - 1].sm;

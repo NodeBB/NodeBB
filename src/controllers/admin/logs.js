@@ -4,7 +4,6 @@ const validator = require('validator');
 const winston = require('winston');
 
 const meta = require('../../meta');
-const translator = require('../../translator');
 
 const logsController = module.exports;
 
@@ -16,6 +15,6 @@ logsController.get = async function (req, res) {
 		winston.error(err.stack);
 	}
 	res.render('admin/advanced/logs', {
-		data: translator.escape(validator.escape(logs)),
+		data: validator.escape(logs),
 	});
 };

@@ -6,9 +6,9 @@ define('forum/header', [
 	'forum/header/chat',
 	'alerts',
 ], function (unread, notifications, chat, alerts) {
-	const header = {};
+	const module = {};
 
-	header.prepareDOM = function () {
+	module.prepareDOM = function () {
 		if (app.user.uid > 0) {
 			unread.initUnreadTopics();
 		}
@@ -44,24 +44,12 @@ define('forum/header', [
 			return;
 		}
 
-		// only affects persona, harmony uses a different structure in harmony.js
-		const tooltipEls = $('#header-menu .nav-item[title]');
-
-		tooltipEls.tooltip({
-			trigger: 'manual',
-			animation: false,
+		$('#header-menu #main-nav').tooltip({
+			selector: '.nav-item',
 			placement: 'bottom',
-		});
-
-		tooltipEls.on('mouseenter', function (ev) {
-			const target = $(ev.target);
-			const isDropdown = target.hasClass('dropdown-menu') || !!target.parents('.dropdown-menu').length;
-			if (!isDropdown) {
-				$(this).tooltip('show');
-			}
-		});
-		tooltipEls.on('click mouseleave', function () {
-			$(this).tooltip('hide');
+			trigger: 'hover',
+			container: 'body',
+			animation: false,
 		});
 	}
 
@@ -74,5 +62,5 @@ define('forum/header', [
 		});
 	}
 
-	return header;
+	return module;
 });

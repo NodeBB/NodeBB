@@ -12,12 +12,10 @@ module.exports = {
 		const { progress } = this;
 
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			progress.incr(uids.length);
-			const allNotes = await db.getSortedSetsMembers(
-				uids.map(uid => `uid:${uid}:moderation:notes`)
-			);
-			await Promise.all(uids.map(async (uid, index) => {
-				const notes = allNotes[index];
+			await Promise.all(uids.map(async (uid) => {
+				progress.incr();
+
+				const notes = await db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, 0, -1);
 				for (const note of notes) {
 					const noteData = JSON.parse(note);
 					noteData.timestamp = noteData.timestamp || Date.now();

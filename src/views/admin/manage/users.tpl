@@ -21,23 +21,23 @@
 					<option value="250">[[admin/manage/users:250-per-page]]</option>
 					<option value="500">[[admin/manage/users:500-per-page]]</option>
 				</select>
-				<div class="dropdown d-flex" id="filter-by">
+				<div class="btn-group" id="filter-by">
 					<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						[[admin/manage/users:filter-by]] <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
+					<ul class="dropdown-menu" role="menu">
 						<li data-filter-by="unverified" role="presentation">
-							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
 						</li>
 						<li data-filter-by="verified" role="presentation">
-							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
 						</li>
 						<li data-filter-by="banned" role="presentation">
-							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
 						</li>
 					</ul>
 				</div>
-				<div class="dropdown d-flex">
+				<div class="btn-group">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm overflow-auto" role="menu" style="max-height:75vh;">
 
@@ -75,15 +75,13 @@
 						<li><a href="#" class="dropdown-item rounded-1 delete-user-and-content" role="menuitem"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
 					</ul>
 				</div>
-				<div class="dropdown d-flex">
+				<div class="btn-group">
 					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"><i class="fa fa-gear text-primary"></i></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
 						<li><a class="dropdown-item rounded-1" href="#" data-action="create" role="menuitem">[[admin/manage/users:create]]</a></li>
 						{{{ if showInviteButton }}}<li><a class="dropdown-item rounded-1" href="#" component="user/invite" role="menuitem">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="dropdown-item rounded-1 export-csv" role="menuitem">[[admin/manage/users:download-csv]]</a></li>
 						<li><a class="dropdown-item rounded-1" href="{relative_path}/admin/manage/users/custom-fields">[[admin/manage/users:custom-user-fields]]</a>
-						</li>
-						<li><a class="dropdown-item rounded-1" href="{relative_path}/admin/manage/users/custom-reasons">[[admin/manage/users:custom-reasons]]</a>
 						</li>
 					</ul>
 				</div>
