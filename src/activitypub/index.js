@@ -3,33 +3,28 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash, createSign, createVerify, getHashes } = require('crypto');
+const { CronJob } = require('cron');
 
 const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
-const categories = require('../categories');
 const posts = require('../posts');
 const messaging = require('../messaging');
 const user = require('../user');
 const utils = require('../utils');
 const ttl = require('../cache/ttl');
+const lru = require('../cache/lru');
 const batch = require('../batch');
+const pubsub = require('../pubsub');
 const analytics = require('../analytics');
-const crypto = require('crypto');
 
 const requestCache = ttl({
-	name: 'ap-request-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 5, // 5 minutes
 });
 const probeCache = ttl({
-	name: 'ap-probe-cache',
 	max: 500,
 	ttl: 1000 * 60 * 60, // 1 hour
-});
-const probeRateLimit = ttl({
-	name: 'ap-probe-rate-limit-cache',
-	ttl: 1000 * 3, // 3 seconds
 });
 
 const ActivityPub = module.exports;
@@ -37,17 +32,15 @@ const ActivityPub = module.exports;
 ActivityPub._constants = Object.freeze({
 	uid: -2,
 	publicAddress: 'https://www.w3.org/ns/activitystreams#Public',
-	acceptablePublicAddresses: ['https://www.w3.org/ns/activitystreams#Public', 'as:Public', 'Public'],
 	acceptableTypes: [
 		'application/activity+json',
-		'application/ld+json;profile="https://www.w3.org/ns/activitystreams"',
+		'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 	],
 	acceptedPostTypes: [
 		'Note', 'Page', 'Article', 'Question', 'Video',
 	],
-	acceptableActorTypes: new Set(['Application', 'Organization', 'Person', 'Service']),
-	acceptableGroupTypes: new Set(['Group']),
-	requiredActorProps: ['inbox'],
+	acceptableActorTypes: new Set(['Application', 'Group', 'Organization', 'Person', 'Service']),
+	requiredActorProps: ['inbox', 'outbox'],
 	acceptedProtocols: ['https', ...(process.env.CI === 'true' ? ['http'] : [])],
 	acceptable: {
 		customFields: new Set(['PropertyValue', 'Link', 'Note']),
@@ -65,10 +58,32 @@ ActivityPub.contexts = require('./contexts');
 ActivityPub.actors = require('./actors');
 ActivityPub.instances = require('./instances');
 ActivityPub.feps = require('./feps');
-ActivityPub.rules = require('./rules');
-ActivityPub.relays = require('./relays');
-ActivityPub.out = require('./out');
-ActivityPub.jobs = require('./jobs');
+
+ActivityPub.startJobs = () => {
+	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
+	new CronJob('0 0 * * *', async () => {
+		if (!meta.config.activitypubEnabled) {
+			return;
+		}
+		try {
+			await ActivityPub.notes.prune();
+			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
+		} catch (err) {
+			winston.error(err.stack);
+		}
+	}, null, true, null, null, false); // change last argument to true for debugging
+
+	new CronJob('*/30 * * * *', async () => {
+		if (!meta.config.activitypubEnabled) {
+			return;
+		}
+		try {
+			await ActivityPub.actors.prune();
+		} catch (err) {
+			winston.error(err.stack);
+		}
+	}, null, true, null, null, false); // change last argument to true for debugging
+};
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
@@ -92,61 +107,24 @@ ActivityPub.resolveInboxes = async (ids) => {
 
 	if (!meta.config.activitypubAllowLoopback) {
 		ids = ids.filter((id) => {
-			try {
-				const { hostname } = new URL(id);
-				return hostname !== nconf.get('url_parsed').hostname;
-			} catch (err) {
-				winston.error(`[activitypub/resolveInboxes] Invalid id: ${id}`);
-				return false;
-			}
+			const { hostname } = new URL(id);
+			return hostname !== nconf.get('url_parsed').hostname;
 		});
 	}
 
 	await ActivityPub.actors.assert(ids);
-
-	// Remove non-asserted targets
-	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', ids);
-	ids = ids.filter((_, idx) => exists[idx]);
-
 	await batch.processArray(ids, async (currentIds) => {
-		const isCategory = await db.exists(currentIds.map(id => `categoryRemote:${id}`));
-		const [cids, uids] = currentIds.reduce(([cids, uids], id, idx) => {
-			const array = isCategory[idx] ? cids : uids;
-			array.push(id);
-			return [cids, uids];
-		}, [[], []]);
-		const categoryData = await categories.getCategoriesFields(cids, ['inbox', 'sharedInbox']);
-		const userData = await user.getUsersFields(uids, ['inbox', 'sharedInbox']);
-		currentIds.forEach((id) => {
-			if (cids.includes(id)) {
-				const data = categoryData[cids.indexOf(id)];
-				inboxes.add(data.sharedInbox || data.inbox);
-			} else if (uids.includes(id)) {
-				const data = userData[uids.indexOf(id)];
-				inboxes.add(data.sharedInbox || data.inbox);
+		const usersData = await user.getUsersFields(currentIds, ['inbox', 'sharedInbox']);
+		usersData.forEach((u) => {
+			if (u && (u.sharedInbox || u.inbox)) {
+				inboxes.add(u.sharedInbox || u.inbox);
 			}
 		});
 	}, {
 		batch: 500,
 	});
 
-	let inboxArr = Array.from(inboxes);
-
-	// Filter out blocked instances
-	const blocked = [];
-	inboxArr = inboxArr.filter((inbox) => {
-		const { hostname } = new URL(inbox);
-		const allowed = ActivityPub.instances.isAllowed(hostname);
-		if (!allowed) {
-			blocked.push(inbox);
-		}
-		return allowed;
-	});
-	if (blocked.length) {
-		ActivityPub.helpers.log(`[activitypub/resolveInboxes] Not delivering to blocked instances: ${blocked.join(', ')}`);
-	}
-
-	return inboxArr;
+	return Array.from(inboxes);
 };
 
 ActivityPub.getPublicKey = async (type, id) => {
@@ -179,7 +157,7 @@ ActivityPub.getPrivateKey = async (type, id) => {
 	if (type === 'uid') {
 		keyId = `${nconf.get('url')}${id > 0 ? `/uid/${id}` : '/actor'}#key`;
 	} else {
-		keyId = `${nconf.get('url')}${id > 0 ? `/category/${id}` : '/actor'}#key`;
+		keyId = `${nconf.get('url')}/category/${id}#key`;
 	}
 
 	return { key: privateKey, keyId };
@@ -235,49 +213,49 @@ ActivityPub.verify = async (req) => {
 		return false;
 	}
 
-	// Verify the signature string via public key
-	try {
-		// Break the signature apart
-		let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
-			const split = cur.split('="');
-			const key = split.shift();
-			const value = split.join('="');
-			memo[key] = value.slice(0, -1);
-			return memo;
-		}, {});
+	// Break the signature apart
+	let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
+		const split = cur.split('="');
+		const key = split.shift();
+		const value = split.join('="');
+		memo[key] = value.slice(0, -1);
+		return memo;
+	}, {});
 
-		const acceptableHashes = getHashes();
-		if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
-			algorithm = 'sha256';
-		}
+	const acceptableHashes = getHashes();
+	if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
+		algorithm = 'sha256';
+	}
 
-		// Re-construct signature string
-		const signed_string = headers.split(' ').reduce((memo, cur) => {
-			switch (cur) {
-				case '(request-target)': {
-					memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
-					break;
-				}
-
-				case '(created)': {
-					memo.push(`${cur}: ${created}`);
-					break;
-				}
-
-				case '(expires)': {
-					memo.push(`${cur}: ${expires}`);
-					break;
-				}
-
-				default: {
-					memo.push(`${cur}: ${req.headers[cur]}`);
-					break;
-				}
+	// Re-construct signature string
+	const signed_string = headers.split(' ').reduce((memo, cur) => {
+		switch (cur) {
+			case '(request-target)': {
+				memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
+				break;
 			}
 
-			return memo;
-		}, []).join('\n');
+			case '(created)': {
+				memo.push(`${cur}: ${created}`);
+				break;
+			}
 
+			case '(expires)': {
+				memo.push(`${cur}: ${expires}`);
+				break;
+			}
+
+			default: {
+				memo.push(`${cur}: ${req.headers[cur]}`);
+				break;
+			}
+		}
+
+		return memo;
+	}, []).join('\n');
+
+	// Verify the signature string via public key
+	try {
 		// Retrieve public key from remote instance
 		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
 		const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
@@ -297,15 +275,6 @@ ActivityPub.verify = async (req) => {
 ActivityPub.get = async (type, id, uri, options) => {
 	if (!meta.config.activitypubEnabled) {
 		throw new Error('[[error:activitypub.not-enabled]]');
-	}
-
-	const { hostname } = new URL(uri);
-	const allowed = ActivityPub.instances.isAllowed(hostname);
-	if (!allowed) {
-		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
-		const e = new Error(`[[error:activitypub.get-failed]]`);
-		e.code = `ap_get_domain_blocked`;
-		throw e;
 	}
 
 	options = {
@@ -344,21 +313,31 @@ ActivityPub.get = async (type, id, uri, options) => {
 
 		requestCache.set(cacheKey, body);
 		return body;
-	} catch (err) {
-		if (String(err.code).startsWith('ap_get_')) {
-			throw err;
+	} catch (e) {
+		if (String(e.code).startsWith('ap_get_')) {
+			throw e;
 		}
 
 		// Handle things like non-json body, etc.
-		throw new Error(`[[error:activitypub.get-failed]]`, { cause: err });
+		const { cause } = e;
+		throw new Error(`[[error:activitypub.get-failed]]`, { cause });
 	}
 };
 
-ActivityPub._sendMessage = async function (uri, id, type, payload) {
-	try {
-		const keyData = await ActivityPub.getPrivateKey(type, id);
-		const headers = await ActivityPub.sign(keyData, uri, payload);
+ActivityPub.retryQueue = lru({ name: 'activitypub-retry-queue', max: 4000, ttl: 1000 * 60 * 60 * 24 * 60 });
 
+// handle clearing retry queue from another member of the cluster
+pubsub.on(`activitypub-retry-queue:lruCache:del`, (keys) => {
+	if (Array.isArray(keys)) {
+		keys.forEach(key => clearTimeout(ActivityPub.retryQueue.get(key)));
+	}
+});
+
+async function sendMessage(uri, id, type, payload, attempts = 1) {
+	const keyData = await ActivityPub.getPrivateKey(type, id);
+	const headers = await ActivityPub.sign(keyData, uri, payload);
+
+	try {
 		const { response, body } = await request.post(uri, {
 			headers: {
 				...headers,
@@ -370,17 +349,27 @@ ActivityPub._sendMessage = async function (uri, id, type, payload) {
 
 		if (String(response.statusCode).startsWith('2')) {
 			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
-			return true;
+		} else {
+			if (typeof body === 'object') {
+				throw new Error(JSON.stringify(body));
+			}
+			throw new Error(String(body));
 		}
-		if (typeof body === 'object') {
-			throw new Error(JSON.stringify(body));
-		}
-		throw new Error(String(body));
 	} catch (e) {
 		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
-		return false;
+		// add to retry queue
+		if (attempts < 12) { // stop attempting after ~2 months
+			const timeout = (4 ** attempts) * 1000; // exponential backoff
+			const queueId = `${payload.type}:${payload.id}:${new URL(uri).hostname}`;
+			const timeoutId = setTimeout(() => sendMessage(uri, id, type, payload, attempts + 1), timeout);
+			ActivityPub.retryQueue.set(queueId, timeoutId);
+
+			ActivityPub.helpers.log(`[activitypub/send] Added ${payload.type} to ${uri} to retry queue for ${timeout}ms`);
+		} else {
+			winston.warn(`[activitypub/send] Max attempts reached for ${payload.type} to ${uri}; giving up on sending`);
+		}
 	}
-};
+}
 
 ActivityPub.send = async (type, id, targets, payload) => {
 	if (!meta.config.activitypubEnabled) {
@@ -389,13 +378,12 @@ ActivityPub.send = async (type, id, targets, payload) => {
 
 	ActivityPub.helpers.log(`[activitypub/send] ${payload.id}`);
 
-	if (!Array.isArray(targets)) {
-		targets = [targets];
+	if (process.env.hasOwnProperty('CI')) {
+		ActivityPub._sent.set(payload.id, payload);
 	}
 
-	if (process.env.hasOwnProperty('CI')) {
-		ActivityPub._sent.set(payload.id, { payload, targets });
-		return;
+	if (!Array.isArray(targets)) {
+		targets = [targets];
 	}
 
 	const inboxes = await ActivityPub.resolveInboxes(targets);
@@ -408,39 +396,15 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		...payload,
 	};
 
-	const oneMinute = 1000 * 60;
-	batch.processArray(inboxes, async (inboxBatch) => {
-		const retryQueueAdd = [];
-		const retryQueuedSet = [];
-
-		await Promise.all(inboxBatch.map(async (uri) => {
-			const ok = await ActivityPub._sendMessage(uri, id, type, payload);
-			if (!ok) {
-				const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
-				const nextTryOn = Date.now() + oneMinute;
-				retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-				retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-					queueId,
-					uri,
-					id,
-					type,
-					attempts: 1,
-					timestamp: nextTryOn,
-					payload: JSON.stringify(payload),
-				}]);
-			}
-		}));
-
-		if (retryQueueAdd.length) {
-			await Promise.all([
-				db.sortedSetAddBulk(retryQueueAdd),
-				db.setObjectBulk(retryQueuedSet),
-			]);
-		}
-	}, {
-		batch: 50,
-		interval: 100,
-	}).catch(err => winston.error(err.stack));
+	// Runs in background... potentially a better queue is required... later.
+	batch.processArray(
+		inboxes,
+		async inboxBatch => Promise.all(inboxBatch.map(async uri => sendMessage(uri, id, type, payload))),
+		{
+			batch: 50,
+			interval: 100,
+		},
+	);
 };
 
 ActivityPub.record = async ({ id, type, actor }) => {
@@ -449,31 +413,27 @@ ActivityPub.record = async ({ id, type, actor }) => {
 
 	await Promise.all([
 		db.sortedSetAdd(`activities:datetime`, now, id),
-		ActivityPub.instances.log(hostname),
+		db.sortedSetAdd('domains:lastSeen', now, hostname),
 		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
 	]);
 };
 
-ActivityPub.buildRecipients = async function (object, options) {
+ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	/**
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
 	 * - Optional parameters:
-	 *     - `cid`: includes followers of the passed-in cid (local only, can also be an array)
+	 *     - `cid`: includes followers of the passed-in cid (local only)
 	 *     - `uid`: includes followers of the passed-in uid (local only)
 	 *     - `pid`: includes post announcers and all topic participants
-	 *     - `targets`: boolean; whether to calculate targets (default: true)
 	 */
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
 
-	let { pid, uid, cid } = options;
-	options.targets = options.targets ?? true;
-
 	let followers = [];
 	if (uid) {
-		({ uids: followers } = await ActivityPub.actors.getFollowers(uid));
+		followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
 		const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
 		if (!to.has(followersUrl)) {
 			cc.add(followersUrl);
@@ -481,39 +441,23 @@ ActivityPub.buildRecipients = async function (object, options) {
 	}
 
 	if (cid) {
-		cid = Array.isArray(cid) ? cid : [cid];
-		await Promise.all(cid.map(async (cid) => {
-			const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
-			followers = followers.concat(cidFollowers);
-			const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
-			if (!to.has(followersUrl)) {
-				cc.add(followersUrl);
-			}
-		}));
-	}
-
-	let targets = new Set();
-	if (options.targets) {
-		targets = new Set([...followers, ...to, ...cc]);
-
-		// Remove local uris, public addresses, and any ids that aren't asserted actors
-		targets.forEach((address) => {
-			if (address.startsWith(nconf.get('url'))) {
-				targets.delete(address);
-			}
-		});
-		ActivityPub._constants.acceptablePublicAddresses.forEach((address) => {
-			targets.delete(address);
-		});
-		if (targets.size) {
-			const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
-			Array.from(targets).forEach((uri, idx) => {
-				if (!exists[idx]) {
-					targets.delete(uri);
-				}
-			});
+		const cidFollowers = await ActivityPub.notes.getCategoryFollowers(cid);
+		followers = followers.concat(cidFollowers);
+		const followersUrl = `${nconf.get('url')}/category/${cid}/followers`;
+		if (!to.has(followersUrl)) {
+			cc.add(followersUrl);
 		}
 	}
+
+	const targets = new Set([...followers, ...to, ...cc]);
+
+	// Remove any ids that aren't asserted actors
+	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
+	Array.from(targets).forEach((uri, idx) => {
+		if (!exists[idx]) {
+			targets.delete(uri);
+		}
+	});
 
 	// Topic posters, post announcers and their followers
 	if (pid) {
@@ -536,75 +480,12 @@ ActivityPub.buildRecipients = async function (object, options) {
 	};
 };
 
-ActivityPub.checkHeader = async (url, timeout) => {
-	timeout = timeout || meta.config.activitypubProbeTimeout || 2000;
-
-	try {
-		const { hostname } = new URL(url);
-		const { response } = await request.head(url, {
-			timeout,
-		});
-		const { headers } = response;
-
-		// headers.link =
-		if (headers && headers.link) {
-			// Multiple link headers could be combined
-			const links = headers.link.split(',');
-			let apLink = false;
-
-			links.forEach((link) => {
-				let parts = link.split(';');
-				const url = parts.shift().match(/<(.+)>/)[1];
-				if (!url || apLink) {
-					return;
-				}
-
-				parts = parts
-					.map(p => p.trim())
-					.reduce((memo, cur) => {
-						cur = cur.split('=');
-						if (cur.length < 2) {
-							cur.push('');
-						}
-						memo[cur[0]] = cur[1].slice(1, -1);
-						return memo;
-					}, {});
-
-				if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
-					apLink = url;
-				}
-			});
-
-			if (apLink) {
-				const { hostname: compare } = new URL(apLink);
-				if (hostname !== compare) {
-					apLink = false;
-				}
-			}
-
-			return apLink;
-		}
-
-		return false;
-	} catch (e) {
-		ActivityPub.helpers.log(`[activitypub/checkHeader] Failed on ${url}: ${e.message}`);
-		return false;
-	}
-};
-
 ActivityPub.probe = async ({ uid, url }) => {
 	/**
 	 * Checks whether a passed-in id or URL is an ActivityPub object and can be mapped to a local representation
 	 *   - `uid` is optional (links to private messages won't match without uid)
 	 *   - Returns a relative path if already available, true if not, and false otherwise.
 	 */
-
-	// Disable on config setting; restrict lookups to HTTPS-enabled URLs only
-	const { activitypubProbe } = meta.config;
-	const { protocol, host } = new URL(url);
-	if (!activitypubProbe || protocol !== 'https:' || host === nconf.get('url_parsed').host) {
-		return false;
-	}
 
 	// Known resources
 	const [isNote, isMessage, isActor, isActorUrl] = await Promise.all([
@@ -641,35 +522,42 @@ ActivityPub.probe = async ({ uid, url }) => {
 		}
 	}
 
-	// Guests not allowed to use expensive logic path
-	if (!uid) {
-		return false;
-	}
-
-	// One request allowed every 3 seconds (configured at top)
-	const limited = probeRateLimit.get(uid);
-	if (limited) {
-		return false;
-	}
-
 	// Cached result
 	if (probeCache.has(url)) {
 		return probeCache.get(url);
 	}
 
 	// Opportunistic HEAD
-	try {
-		probeRateLimit.set(uid, true);
-		const probe = await ActivityPub.checkHeader(url).then((result) => {
-			probeCache.set(url, result);
-			return !!result;
+	async function checkHeader(timeout) {
+		const { response } = await request.head(url, {
+			timeout,
 		});
+		const { headers } = response;
+		if (headers && headers.link) {
+			let parts = headers.link.split(';');
+			parts.shift();
+			parts = parts
+				.map(p => p.trim())
+				.reduce((memo, cur) => {
+					cur = cur.split('=');
+					memo[cur[0]] = cur[1].slice(1, -1);
+					return memo;
+				}, {});
 
-		return !!probe;
+			if (parts.rel === 'alternate' && parts.type === 'application/activity+json') {
+				probeCache.set(url, true);
+				return true;
+			}
+		}
+
+		return false;
+	}
+	try {
+		return await checkHeader(meta.config.activitypubProbeTimeout || 2000);
 	} catch (e) {
 		if (e.name === 'TimeoutError') {
 			// Return early but retry for caching purposes
-			ActivityPub.checkHeader(url, 1000 * 60).then((result) => {
+			checkHeader(1000 * 60).then((result) => {
 				probeCache.set(url, result);
 			}).catch(err => ActivityPub.helpers.log(err.stack));
 			return false;

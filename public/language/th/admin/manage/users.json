@@ -23,7 +23,6 @@
 	"purge": "ลบ<strong>ผู้ใช้งาน</strong>และ<strong>เนื้อหา</strong>",
 	"download-csv": "ดาวน์โหลด CSV",
 	"custom-user-fields": "ฟิลด์ข้อมูลผู้ใช้ที่ปรับแต่งได้",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "จัดการกลุ่ม",
 	"set-reputation": "ตั้งค่าชื่อเสียง",
 	"add-group": "เพิ่มกลุ่ม",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "ความยาว",
 	"temp-ban.reason": "เหตุผล <span class=\"text-muted\">(ตัวเลือก)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "ชั่วโมง",
 	"temp-ban.days": "วัน",
 	"temp-ban.explanation": "ระบุระยะเวลาของการแบน ถ้าระยะเวลาเป็น \"0\" คือการแบนถาวร",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "คุณต้องการที่จะแบนผู้ใช้คนนี้ <strong>ถาวร </strong>?",
 	"alerts.confirm-ban-multi": "คุณต้องการที่จะแบนผู้ใช้กลุ่มนี้ <strong>ถาวร </strong>?",

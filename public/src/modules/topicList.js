@@ -53,7 +53,7 @@ define('topicList', [
 
 		handleBack.init(function (after, handleBackCallback) {
 			loadTopicsCallback(after, 1, function (data, loadCallback) {
-				onTopicsLoaded(templateName, data, ajaxify.data.showSelect, 1, function () {
+				onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, 1, function () {
 					handleBackCallback();
 					loadCallback();
 				});
@@ -166,7 +166,7 @@ define('topicList', [
 		}
 
 		loadTopicsCallback(after, direction, function (data, done) {
-			onTopicsLoaded(templateName, data, ajaxify.data.showSelect, direction, done);
+			onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, direction, done);
 		});
 	};
 
@@ -187,8 +187,7 @@ define('topicList', [
 		});
 	}
 
-	function onTopicsLoaded(templateName, data, showSelect, direction, callback) {
-		let { topics } = data;
+	function onTopicsLoaded(templateName, topics, showSelect, direction, callback) {
 		if (!topics || !topics.length) {
 			$('#load-more-btn').hide();
 			return callback();
@@ -213,15 +212,11 @@ define('topicList', [
 		const tplData = {
 			topics: topics,
 			showSelect: showSelect,
-			'reputation:disabled': data['reputation:disabled'],
 			template: {
 				name: templateName,
-				[templateName]: true,
 			},
 		};
-		if (ajaxify.data.cid) {
-			tplData.cid = ajaxify.data.cid;
-		}
+		tplData.template[templateName] = true;
 
 		hooks.fire('action:topics.loading', { topics: topics, after: after, before: before });
 

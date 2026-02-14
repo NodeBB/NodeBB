@@ -27,19 +27,19 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [20, 22]
+        node: [18, 20]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
           - os: ubuntu-latest
-            node: 22
+            node: 18
             coverage: true
           # test under development once
           - database: mongo-dev
             test_env: development
           # only run eslint once
           - os: ubuntu-latest
-            node: 22
+            node: 18
             database: mongo-dev
             lint: true
     runs-on: ${{ matrix.os }}
@@ -48,7 +48,7 @@ jobs:
 
     services:
       postgres:
-        image: 'postgres:18-alpine'
+        image: 'postgres:17-alpine'
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -63,7 +63,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:8.6.0'
+        image: 'redis:7.4.2'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -75,18 +75,18 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:8.2'
+        image: 'mongo:8.0'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - run: cp install/package.json package.json
 
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 

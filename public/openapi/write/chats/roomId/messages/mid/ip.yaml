@@ -17,7 +17,7 @@ get:
         type: string
       required: true
       description: a valid chat message id
-      example: 2
+      example: 5
   responses:
     '200':
       description: Chat message ip address retrieved

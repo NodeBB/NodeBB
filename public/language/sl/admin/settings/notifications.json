@@ -3,7 +3,5 @@
 	"welcome-notification": "Obvestilo o dobrodošlici",
 	"welcome-notification-link": "Povezava do obvestila o dobrodošlici",
 	"welcome-notification-uid": "Obvestilo o dobrodošlici za uporabnika (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

@@ -1,5 +1,9 @@
 {
 	"cache": "Cache",
+	"post-cache": "แคชข้อความ",
+	"group-cache": "แคชกลุ่ม",
+	"local-cache": "แคชโลคอล",
+	"object-cache": "แคชออพเจ็กท์",
 	"percent-full": "เต็ม %1%",
 	"post-cache-size": "ขนาดแคชของข้อความ",
 	"items-in-cache": "รายการที่ถูกแคช"

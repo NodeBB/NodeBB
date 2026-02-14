@@ -23,13 +23,11 @@
 		display: block;
 	}
 }
-html[data-dir="ltr"] {
-	.dropdown-left .dropdown-menu { --bs-position: start; }
-	.dropdown-right .dropdown-menu { --bs-position: end; }
+.dropdown-left {
+	.dropdown-menu { --bs-position: start; }
 }
-html[data-dir="rtl"] {
-	.dropdown-left .dropdown-menu { --bs-position: end; }
-	.dropdown-right .dropdown-menu { --bs-position: start; }
+.dropdown-right {
+	.dropdown-menu { --bs-position: end; }
 }
 
 .category-dropdown-menu {
@@ -144,38 +142,6 @@ blockquote {
 		display: none!important;
 	}
 }
-
-.text-contain {
-	min-width: 0;
-	word-break: break-word;
-	overflow-wrap: anywhere;
-	> * {
-		max-width: 100%;
-		white-space: pre-wrap;
-		word-break: break-word;
-		overflow-wrap: anywhere;
-	}
-}
-
-.hidden-blockquote { blockquote { display: none; } }
-.hidden-pre { pre { display: none; } }
-
-$hidden-elements-for-first-last-child: br, hr;
-
-@each $element in $hidden-elements-for-first-last-child {
-	.hidden-first-child-#{$element} {
-		> #{$element}:first-child {
-			display: none;
-		}
-	}
-	.hidden-last-child-#{$element} {
-		> #{$element}:last-child {
-			display: none;
-		}
-	}
-}
-
-.trim-last-divider > *:last-child hr {	display: none;	}
 
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {

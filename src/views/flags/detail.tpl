@@ -9,8 +9,8 @@
 			</a>
 
 			{{{ if target.uid }}}
-			<div class="dropdown dropend" data-uid="{target.uid}">
-				<button type="button" class="btn btn-ghost btn-sm ff-secondary border d-flex gap-2 align-items-center dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<div class="btn-group dropend" data-uid="{target.uid}">
+				<button type="button" class="btn btn-ghost btn-sm ff-secondary border d-flex gap-2 align-items-center dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<i class="fa fa-fw fa-street-view text-primary"></i>
 					[[flags:flagged-user]]
 					<i class="fa fa-chevron-right ms-auto text-secondary"></i>

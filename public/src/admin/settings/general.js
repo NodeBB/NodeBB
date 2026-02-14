@@ -2,9 +2,9 @@
 
 
 define('admin/settings/general', ['admin/settings'], function () {
-	const General = {};
+	const Module = {};
 
-	General.init = function () {
+	Module.init = function () {
 		$('button[data-action="removeLogo"]').on('click', function () {
 			$('input[data-field="brand:logo"]').val('');
 		});
@@ -34,5 +34,5 @@ define('admin/settings/general', ['admin/settings'], function () {
 		}
 	}
 
-	return General;
+	return Module;
 });

@@ -1,4 +1,4 @@
-<div class="dropdown bottom-sheet" component="thread/sort">
+<div class="btn-group bottom-sheet" component="thread/sort">
 	<button class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" aria-label="[[aria:topic-sort-option, {sortOptionLabel}]]">
 		<i class="fa fa-fw fa-arrow-down-wide-short text-primary"></i>
 		<span class="d-none d-md-inline fw-semibold">{sortOptionLabel}</span>

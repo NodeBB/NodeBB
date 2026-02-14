@@ -45,7 +45,7 @@ module.exports = function (middleware) {
 				options.loggedInUser = await getLoggedInUser(req);
 				options.relative_path = relative_path;
 				options.template = { name: template, [template]: true };
-				options.url = options.url || (req.baseUrl + req.path.replace(/^\/api/, ''));
+				options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
 
 				if (req.loggedIn) {
@@ -88,7 +88,7 @@ module.exports = function (middleware) {
 					if (req.route && req.route.path === '/api/') {
 						options.title = '[[pages:home]]';
 					}
-					req.app.set('json spaces', process.env.NODE_ENV === 'development' || req.query.pretty ? 4 : 0);
+					req.app.set('json spaces', global.env === 'development' || req.query.pretty ? 4 : 0);
 					return res.json(options);
 				}
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
@@ -150,7 +150,6 @@ module.exports = function (middleware) {
 	async function loadClientHeaderFooterData(req, res, options) {
 		const registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
-		const userLang = res.locals.config.userLang || meta.config.userLang || 'en-GB';
 		const templateValues = {
 			title: meta.config.title || '',
 			'title:url': meta.config['title:url'] || '',
@@ -181,9 +180,9 @@ module.exports = function (middleware) {
 			blocks: user.blocks.list(req.uid),
 			user: user.getUserData(req.uid),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
-			languageDirection: translator.translate('[[language:dir]]', userLang),
-			timeagoCode: languages.userTimeagoCode(userLang),
-			browserTitle: translator.translate(controllersHelpers.buildTitle(title), userLang),
+			languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
+			timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
+			browserTitle: translator.translate(controllersHelpers.buildTitle(title)),
 			navigation: navigation.get(req.uid),
 			roomIds: req.uid > 0 ? db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0) : [],
 		});

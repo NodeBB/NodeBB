@@ -1,9 +1,9 @@
 'use strict';
 
 define('pictureCropper', ['alerts'], function (alerts) {
-	const PictureCropper = {};
+	const module = {};
 
-	PictureCropper.show = function (data, callback) {
+	module.show = function (data, callback) {
 		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		app.parseAndTranslate('modals/upload-file', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
@@ -32,7 +32,7 @@ define('pictureCropper', ['alerts'], function (alerts) {
 		});
 	};
 
-	PictureCropper.handleImageCrop = function (data, callback) {
+	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
 		app.parseAndTranslate('modals/crop_picture', {
 			url: utils.escapeHTML(data.url),
@@ -227,7 +227,7 @@ define('pictureCropper', ['alerts'], function (alerts) {
 
 			data.uploadModal.modal('hide');
 
-			PictureCropper.handleImageCrop({
+			module.handleImageCrop({
 				url: imageUrl,
 				imageType: file.type,
 				socketMethod: data.socketMethod,
@@ -245,5 +245,5 @@ define('pictureCropper', ['alerts'], function (alerts) {
 		}
 	}
 
-	return PictureCropper;
+	return module;
 });

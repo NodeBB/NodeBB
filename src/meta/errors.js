@@ -4,7 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
-const { setTimeout } = require('timers/promises');
+const { setTimeout } = require('timers/promises')
 
 const db = require('../database');
 const analytics = require('../analytics');

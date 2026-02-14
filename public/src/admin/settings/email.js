@@ -2,11 +2,10 @@
 
 
 define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function (ace, alerts) {
-	const Email = {};
+	const module = {};
 	let emailEditor;
 
-	Email.init = function () {
-		configureSmtpTester();
+	module.init = function () {
 		configureEmailTester();
 		configureEmailEditor();
 		handleDigestHourChange();
@@ -27,29 +26,6 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		socket.emit('admin.user.restartJobs');
 	}
 
-	function configureSmtpTester() {
-		$('[data-action="email.smtp.test"]').on('click', function () {
-			const smtpOptions = {};
-			$('[data-field^="email:smtp"]').each(function (index, el) {
-				const $el = $(el);
-				const key = $el.attr('data-field');
-				if ($el.is(':checkbox')) {
-					smtpOptions[key] = $el.is(':checked');
-				} else {
-					smtpOptions[key] = $el.val();
-				}
-			});
-
-			socket.emit('admin.email.testSmtp', { smtp: smtpOptions }, function (err) {
-				if (err) {
-					console.error(err.message);
-					return alerts.error(err);
-				}
-				alerts.success('[[admin/settings/email:smtp-transport.test-success]]');
-			});
-		});
-	}
-
 	function configureEmailTester() {
 		$('button[data-action="email.test"]').off('click').on('click', function () {
 			socket.emit('admin.email.test', { template: $('#test-email').val() }, function (err) {
@@ -57,7 +33,7 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 					console.error(err.message);
 					return alerts.error(err);
 				}
-				alerts.success('[[admin/settings/email:testing.success]]');
+				alerts.success('Test Email Sent');
 			});
 			return false;
 		});
@@ -159,5 +135,5 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		});
 	}
 
-	return Email;
+	return module;
 });

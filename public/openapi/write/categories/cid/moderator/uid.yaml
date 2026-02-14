@@ -31,6 +31,19 @@ put:
               response:
                 type: object
                 properties:
+                  labels:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: string
+                          description: Language key of the privilege name's user-friendly name
+                      groups:
+                        type: array
+                        items:
+                          type: string
+                          description: Language key of the privilege name's user-friendly name
                   labelData:
                     type: array
                     items:
@@ -79,10 +92,6 @@ put:
                           type: number
                           description: A Boolean representing whether a user is banned or not
                           example: 0
-                        banned_until:
-                          type: number
-                          description: A UNIX timestamp representing the moment a ban will be lifted
-                          example: 0
                         banned_until_readable:
                           type: string
                           description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
@@ -90,6 +99,7 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
+                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object
@@ -106,6 +116,7 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
+                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object

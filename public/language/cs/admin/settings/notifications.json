@@ -3,7 +3,5 @@
 	"welcome-notification": "Uvítání",
 	"welcome-notification-link": "Odkaz na uvítání",
 	"welcome-notification-uid": "Uvítání uživatele (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

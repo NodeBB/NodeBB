@@ -84,10 +84,14 @@ define('admin/extend/rewards', [
 		let inputs;
 		let html = '';
 
-		const selectedReward = available.find(reward => reward.rid === el.attr('data-selected'));
-		if (selectedReward) {
-			inputs = selectedReward.inputs;
-			parent.attr('data-rid', selectedReward.rid);
+		for (const reward in available) {
+			if (available.hasOwnProperty(reward)) {
+				if (available[reward].rid === el.attr('data-selected')) {
+					inputs = available[reward].inputs;
+					parent.attr('data-rid', available[reward].rid);
+					break;
+				}
+			}
 		}
 
 		if (!inputs) {
@@ -118,8 +122,10 @@ define('admin/extend/rewards', [
 			const div = $(this).find('.inputs');
 			const rewards = active[i].rewards;
 
-			for (const [reward, value] of Object.entries(rewards)) {
-				div.find('[name="' + reward + '"]').val(value);
+			for (const reward in rewards) {
+				if (rewards.hasOwnProperty(reward)) {
+					div.find('[name="' + reward + '"]').val(rewards[reward]);
+				}
 			}
 		});
 	}

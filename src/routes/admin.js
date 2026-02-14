@@ -23,7 +23,6 @@ module.exports = function (app, name, middleware, controllers) {
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/users`, middlewares, controllers.admin.users.index);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/users/custom-fields`, middlewares, controllers.admin.users.customFields);
-	helpers.setupAdminPageRoute(app, `/${name}/manage/users/custom-reasons`, middlewares, controllers.admin.users.banReasons);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/registration`, middlewares, controllers.admin.users.registrationQueue);
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/admins-mods`, middlewares, controllers.admin.adminsMods.get);
@@ -82,18 +81,11 @@ function apiRoutes(router, name, middleware, controllers) {
 	router.get(`/api/${name}/groups/:groupname/csv`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.groups.getCSV));
 	router.get(`/api/${name}/analytics`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
 	router.get(`/api/${name}/advanced/cache/dump`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.cache.dump));
-	router.post(`/api/${name}/manage/categories`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.addRemote));
-	router.post(`/api/${name}/manage/categories/:cid/name`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.renameRemote));
-	router.delete(`/api/${name}/manage/categories/:cid`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.categories.removeRemote));
 
-	const upload = require('../middleware/multer');
+	const multipart = require('connect-multiparty');
+	const multipartMiddleware = multipart();
 
-	const middlewares = [
-		upload.array('files[]', 20),
-		middleware.validateFiles,
-		middleware.applyCSRF,
-		middleware.ensureLoggedIn,
-	];
+	const middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.ensureLoggedIn];
 
 	router.post(`/api/${name}/category/uploadpicture`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadCategoryPicture));
 	router.post(`/api/${name}/uploadfavicon`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadFavicon));

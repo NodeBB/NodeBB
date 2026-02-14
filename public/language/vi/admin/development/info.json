@@ -8,7 +8,7 @@
 	"nodejs": "nodejs",
 	"online": "trực tuyến",
 	"git": "git",
-	"process-memory": "rss/heap used",
+	"process-memory": "xử lý bộ nhớ",
 	"system-memory": "bộ nhớ hệ thống",
 	"used-memory-process": "Đã sử dụng bộ nhớ theo quy trình",
 	"used-memory-os": "Bộ nhớ hệ thống đã sử dụng",

@@ -95,7 +95,7 @@ module.exports = function (module) {
 	};
 
 	module.getObjectField = async function (key, field) {
-		if (!key || !field) {
+		if (!key) {
 			return null;
 		}
 		const cachedData = {};
@@ -104,11 +104,7 @@ module.exports = function (module) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
 		field = helpers.fieldToString(field);
-		const item = await module.client.collection('objects').findOne({
-			_key: key,
-		}, {
-			projection: { _id: 0, [field]: 1 },
-		});
+		const item = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0, [field]: 1 } });
 		if (!item) {
 			return null;
 		}

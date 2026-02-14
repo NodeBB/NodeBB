@@ -8,46 +8,52 @@ module.exports = function (module) {
 			return 0;
 		}
 		const tempSetName = `temp_${Date.now()}`;
+
+		const interParams = [tempSetName, keys.length].concat(keys);
+
 		const multi = module.client.multi();
-		multi.zInterStore(tempSetName, keys);
-		multi.zCard(tempSetName);
+		multi.zinterstore(interParams);
+		multi.zcard(tempSetName);
 		multi.del(tempSetName);
 		const results = await helpers.execBatch(multi);
 		return results[1] || 0;
 	};
 
 	module.getSortedSetIntersect = async function (params) {
-		params.reverse = false;
+		params.method = 'zrange';
 		return await getSortedSetRevIntersect(params);
 	};
 
 	module.getSortedSetRevIntersect = async function (params) {
-		params.reverse = true;
+		params.method = 'zrevrange';
 		return await getSortedSetRevIntersect(params);
 	};
 
 	async function getSortedSetRevIntersect(params) {
-		let { sets } = params;
+		const { sets } = params;
 		const start = params.hasOwnProperty('start') ? params.start : 0;
 		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
 		const weights = params.weights || [];
 
 		const tempSetName = `temp_${Date.now()}`;
 
-		const interParams = {};
+		let interParams = [tempSetName, sets.length].concat(sets);
 		if (weights.length) {
-			sets = sets.map((set, index) => ({ key: set, weight: weights[index] }));
+			interParams = interParams.concat(['WEIGHTS'].concat(weights));
 		}
 
 		if (params.aggregate) {
-			interParams['AGGREGATE'] = params.aggregate.toUpperCase();
+			interParams = interParams.concat(['AGGREGATE', params.aggregate]);
 		}
 
-		const rangeCmd = params.withScores ? 'zRangeWithScores' : 'zRange';
+		const rangeParams = [tempSetName, start, stop];
+		if (params.withScores) {
+			rangeParams.push('WITHSCORES');
+		}
 
 		const multi = module.client.multi();
-		multi.zInterStore(tempSetName, sets, interParams);
-		multi[rangeCmd](tempSetName, start, stop, { REV: params.reverse});
+		multi.zinterstore(interParams);
+		multi[params.method](rangeParams);
 		multi.del(tempSetName);
 		let results = await helpers.execBatch(multi);
 
@@ -55,6 +61,6 @@ module.exports = function (module) {
 			return results ? results[1] : null;
 		}
 		results = results[1] || [];
-		return results;
+		return helpers.zsetToObjectArray(results);
 	}
 };

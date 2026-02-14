@@ -441,13 +441,7 @@ define('navigator', [
 	function generateUrl(index) {
 		const pathname = window.location.pathname.replace(config.relative_path, '');
 		const parts = pathname.split('/');
-		const newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
-		const data = {
-			newUrl,
-			index,
-		};
-		hooks.fire('action:navigator.generateUrl', data);
-		return data.newUrl;
+		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
 	}
 
 	navigator.getCount = () => count;
@@ -727,7 +721,7 @@ define('navigator', [
 				}
 			}
 
-			let scrollTop;
+			let scrollTop = 0;
 			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
 				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
 			} else {

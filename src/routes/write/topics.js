@@ -10,6 +10,9 @@ const { setupApiRoute } = routeHelpers;
 module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn];
 
+	const multipart = require('connect-multiparty');
+	const multipartMiddleware = multipart();
+
 	setupApiRoute(router, 'post', '/', [middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
 	setupApiRoute(router, 'get', '/:tid', [], controllers.write.topics.get);
 	setupApiRoute(router, 'post', '/:tid', [middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
@@ -34,14 +37,8 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
 
 	setupApiRoute(router, 'get', '/:tid/thumbs', [], controllers.write.topics.getThumbs);
-
-	setupApiRoute(router, 'post', '/:tid/thumbs', [
-		middleware.validateFiles,
-		middleware.uploads.ratelimit,
-		...middlewares,
-	], controllers.write.topics.addThumb);
-
-
+	setupApiRoute(router, 'post', '/:tid/thumbs', [multipartMiddleware, middleware.validateFiles, middleware.uploads.ratelimit, ...middlewares], controllers.write.topics.addThumb);
+	setupApiRoute(router, 'put', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['tid'])], controllers.write.topics.migrateThumbs);
 	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['path'])], controllers.write.topics.deleteThumb);
 	setupApiRoute(router, 'put', '/:tid/thumbs/order', [...middlewares, middleware.checkRequired.bind(null, ['path', 'order'])], controllers.write.topics.reorderThumbs);
 
@@ -53,10 +50,6 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:tid/bump', [...middlewares, middleware.assert.topic], controllers.write.topics.bump);
 
 	setupApiRoute(router, 'put', '/:tid/move', [...middlewares, middleware.assert.topic], controllers.write.topics.move);
-
-	setupApiRoute(router, 'get', '/:tid/crossposts', [...middlewares, middleware.assert.topic], controllers.write.topics.getCrossposts);
-	setupApiRoute(router, 'post', '/:tid/crossposts', [...middlewares, middleware.assert.topic], controllers.write.topics.crosspost);
-	setupApiRoute(router, 'delete', '/:tid/crossposts', [...middlewares, middleware.assert.topic], controllers.write.topics.uncrosspost);
 
 	return router;
 };

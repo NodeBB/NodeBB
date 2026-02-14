@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 module.exports = {
 	name: 'Normalize topic thumbnails, post & user uploads to same format',
-	timestamp: Date.UTC(2025, 3, 4),
+	timestamp: Date.UTC(2021, 1, 7),
 	method: async function () {
 		const { progress } = this;
 
@@ -89,36 +89,34 @@ module.exports = {
 			const keys = uids.map(uid => `uid:${uid}:uploads`);
 
 			const userUploadData = await db.getSortedSetsMembersWithScores(keys);
+			const bulkAdd = [];
+			const bulkRemove = [];
+			const promises = [];
 
-			await Promise.all(userUploadData.map(async (allUserUploads, idx) => {
+			userUploadData.forEach((userUploads, idx) => {
 				const uid = uids[idx];
-				if (Array.isArray(allUserUploads)) {
-					await batch.processArray(allUserUploads, async (userUploads) => {
-						const bulkAdd = [];
-						const bulkRemove = [];
-						const promises = [];
-						userUploads.forEach((userUpload) => {
-							const normalizedPath = normalizePath(userUpload.value);
-							if (normalizedPath !== userUpload.value) {
-								bulkAdd.push([`uid:${uid}:uploads`, userUpload.score, normalizedPath]);
-								promises.push(db.setObjectField(`upload:${md5(normalizedPath)}`, 'uid', uid));
+				if (Array.isArray(userUploads)) {
+					userUploads.forEach((userUpload) => {
+						const normalizedPath = normalizePath(userUpload.value);
+						if (normalizedPath !== userUpload.value) {
+							bulkAdd.push([`uid:${uid}:uploads`, userUpload.score, normalizedPath]);
+							promises.push(db.setObjectField(`upload:${md5(normalizedPath)}`, 'uid', uid));
 
-								bulkRemove.push([`uid:${uid}:uploads`, userUpload.value]);
-								promises.push(db.delete(`upload:${md5(userUpload.value)}`));
-							}
-						});
-						await Promise.all(promises);
-						await db.sortedSetRemoveBulk(bulkRemove);
-						await db.sortedSetAddBulk(bulkAdd);
-					}, {
-						batch: 500,
+							bulkRemove.push([`uid:${uid}:uploads`, userUpload.value]);
+							promises.push(db.delete(`upload:${md5(userUpload.value)}`));
+						}
 					});
+
 				}
-			}));
+			});
+
+			await Promise.all(promises);
+			await db.sortedSetRemoveBulk(bulkRemove);
+			await db.sortedSetAddBulk(bulkAdd);
 
 			progress.incr(uids.length);
 		}, {
-			batch: 100,
+			batch: 500,
 		});
 	},
 };

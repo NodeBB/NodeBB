@@ -5,7 +5,6 @@
 	"disable-rss-feeds": "RSS Lentlərini söndür",
 	"disable-sitemap-xml": "Sitemap.xml-ni deaktiv et",
 	"sitemap-topics": "Sayt xəritəsində göstəriləcək mövzuların sayı",
-	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Sayt xəritəsi keşini təmizlə",
 	"view-sitemap": "Saytın Xəritəsinə bax"
 }

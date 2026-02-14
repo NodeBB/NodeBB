@@ -25,13 +25,16 @@ define('settings/object', function () {
 		element.attr('data-prop', prop);
 		delete attributes['data-type'];
 		delete attributes.tagName;
-		for (const [name, val] of Object.entries(attributes)) {
-			if (name.search('data-') === 0) {
-				element.data(name.substring(5), val);
-			} else if (name.search('prop-') === 0) {
-				element.prop(name.substring(5), val);
-			} else {
-				element.attr(name, val);
+		for (const name in attributes) {
+			if (attributes.hasOwnProperty(name)) {
+				const val = attributes[name];
+				if (name.search('data-') === 0) {
+					element.data(name.substring(5), val);
+				} else if (name.search('prop-') === 0) {
+					element.prop(name.substring(5), val);
+				} else {
+					element.attr(name, val);
+				}
 			}
 		}
 		helper.fillField(element, value);
@@ -59,7 +62,9 @@ define('settings/object', function () {
 			const properties = element.data('attributes') || element.data('properties');
 			const key = element.data('key') || element.data('parent');
 			let separator = element.data('split') || ', ';
-
+			let propertyIndex;
+			let propertyName;
+			let attributes;
 			separator = (function () {
 				try {
 					return $(separator);
@@ -72,26 +77,27 @@ define('settings/object', function () {
 			if (typeof value !== 'object') {
 				value = {};
 			}
-
 			if (Array.isArray(properties)) {
-				for (const [propertyIndex, attr] of Object.entries(properties)) {
-					let attributes = attr;
-					if (typeof attr !== 'object') {
-						attributes = {};
+				for (propertyIndex in properties) {
+					if (properties.hasOwnProperty(propertyIndex)) {
+						attributes = properties[propertyIndex];
+						if (typeof attributes !== 'object') {
+							attributes = {};
+						}
+						propertyName = attributes['data-prop'] || attributes['data-property'] || propertyIndex;
+						if (value[propertyName] === undefined && attributes['data-new'] !== undefined) {
+							value[propertyName] = attributes['data-new'];
+						}
+						addObjectPropertyElement(
+							element,
+							key,
+							attributes,
+							propertyName,
+							value[propertyName],
+							separator.clone(),
+							function (el) { element.append(el); }
+						);
 					}
-					const propertyName = attributes['data-prop'] || attributes['data-property'] || propertyIndex;
-					if (value[propertyName] === undefined && attributes['data-new'] !== undefined) {
-						value[propertyName] = attributes['data-new'];
-					}
-					addObjectPropertyElement(
-						element,
-						key,
-						attributes,
-						propertyName,
-						value[propertyName],
-						separator.clone(),
-						function (el) { element.append(el); }
-					);
 				}
 			}
 		},

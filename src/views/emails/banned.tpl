@@ -22,9 +22,9 @@
 						<p style="margin: 0;">
 							[[email:banned.text3]]
 						</p>
-						<div style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">
+						<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">
 							{reason}
-						</div>
+						</p>
 					</td>
 				</tr>
 				{{{ end }}}

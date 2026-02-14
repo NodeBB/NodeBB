@@ -23,7 +23,6 @@
 	"purge": "Удалить <strong>пользователя(-ей)</strong> и <strong>данные</strong>",
 	"download-csv": "Скачать CSV",
 	"custom-user-fields": "Custom User Fields",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Изменить членство в группах",
 	"set-reputation": "Set Reputation",
 	"add-group": "Добавить группу",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(Необязательно)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Часов",
 	"temp-ban.days": "Дней",
 	"temp-ban.explanation": "Укажите продолжительность блокировки. Имейте в виду, что «0» означает заблокировать навсегда.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Вы действительно хотите заблокировать пользователя <strong>навсегда</strong>?",
 	"alerts.confirm-ban-multi": "Вы действительно хотите заблокировать этих пользователей <strong>навсегда</strong>?",

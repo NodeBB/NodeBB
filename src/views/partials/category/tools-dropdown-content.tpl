@@ -75,11 +75,11 @@
 		</a>
 	</li>
 
-	{{{ each thread_tools }}}
+	{{{each thread_tools}}}
 	<li>
-		<a href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {./class}" role="menuitem">
-			<i class="fa fa-fw {./icon} text-secondary"></i> {./title}
-		</a>
+		<a href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {thread_tools.class}" role="menuitem">
+			<i class="fa fa-fw {thread_tools.icon} text-secondary"></i>
+			{thread_tools.title}</a>
 	</li>
-	{{{ end }}}
+	{{{end}}}
 </ul>

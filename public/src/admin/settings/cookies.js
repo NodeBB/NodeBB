@@ -1,9 +1,9 @@
 'use strict';
 
 define('admin/settings/cookies', ['alerts'], function (alerts) {
-	const Cookies = {};
+	const Module = {};
 
-	Cookies.init = function () {
+	Module.init = function () {
 		$('#delete-all-sessions').on('click', function () {
 			socket.emit('admin.deleteAllSessions', function (err) {
 				if (err) {
@@ -15,5 +15,5 @@ define('admin/settings/cookies', ['alerts'], function (alerts) {
 		});
 	};
 
-	return Cookies;
+	return Module;
 });

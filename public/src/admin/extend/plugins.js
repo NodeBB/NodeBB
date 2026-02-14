@@ -24,10 +24,7 @@ define('admin/extend/plugins', [
 			pluginID = pluginEl.attr('data-plugin-id');
 			const btn = $(this);
 
-			const pluginData = ajaxify.data.installed.find(plugin => plugin.id === pluginID);
-			if (!pluginData) {
-				return;
-			}
+			const pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];
 
 			function toggleActivate() {
 				socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {

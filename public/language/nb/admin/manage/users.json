@@ -23,7 +23,6 @@
 	"purge": "Slett <strong>bruker(e)</strong> og <strong>innhold</strong>",
 	"download-csv": "Last ned CSV",
 	"custom-user-fields": "Egendefinerte brukerfelt",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Administrer grupper",
 	"set-reputation": "Sett omdømme",
 	"add-group": "Legg til gruppe",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "Lengde",
 	"temp-ban.reason": "Årsak <span class=\"text-muted\">(Valgfritt)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Timer",
 	"temp-ban.days": "Dager",
 	"temp-ban.explanation": "Angi varigheten for utestengningen. Merk at en varighet på 0 vil bli betraktet som en permanent utestengning.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Vil du virkelig utestenge denne brukeren <strong>permanent</strong>?",
 	"alerts.confirm-ban-multi": "Vil du virkelig utestenge disse brukerne <strong>permanent</strong>?",

@@ -1,9 +1,7 @@
 {
-    "group": "Group",
     "all-groups": "همه‌ی گروه‌ها",
     "groups": "گروه‌ها",
     "members": "اعضا",
-    "x-members": "%1 member(s)",
     "view-group": "مشاهده گروه",
     "owner": "مالک گروه",
     "new-group": "ساخت گروه جدید",

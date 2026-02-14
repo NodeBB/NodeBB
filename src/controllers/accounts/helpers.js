@@ -119,6 +119,13 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
 	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
+
+	if (userData['cover:url']) {
+		userData['cover:url'] = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
+	} else {
+		userData['cover:url'] = require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+	}
+
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];

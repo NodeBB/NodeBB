@@ -21,7 +21,6 @@ let local = {
 	pageViewsRegistered: 0,
 	pageViewsGuest: 0,
 	pageViewsBot: 0,
-	apPageViews: 0,
 	uniquevisitors: 0,
 };
 const empty = _.cloneDeep(local);
@@ -102,17 +101,8 @@ Analytics.pageView = async function (payload) {
 		local.pageViewsGuest += 1;
 	}
 
-	await incrementUniqueVisitors(payload.ip);
-};
-
-Analytics.apPageView = async function ({ ip }) {
-	local.apPageViews += 1;
-	await incrementUniqueVisitors(ip);
-};
-
-async function incrementUniqueVisitors(ip) {
-	if (ip) {
-		const score = await db.sortedSetScore('ip:recent', ip);
+	if (payload.ip) {
+		const score = await db.sortedSetScore('ip:recent', payload.ip);
 		let record = !score;
 		if (score) {
 			const today = new Date();
@@ -122,10 +112,10 @@ async function incrementUniqueVisitors(ip) {
 
 		if (record) {
 			local.uniquevisitors += 1;
-			await db.sortedSetAdd('ip:recent', Date.now(), ip);
+			await db.sortedSetAdd('ip:recent', Date.now(), payload.ip);
 		}
 	}
-}
+};
 
 Analytics.writeData = async function () {
 	const today = new Date();
@@ -170,12 +160,6 @@ Analytics.writeData = async function () {
 		incrByBulk.push(['analytics:pageviews:bot', total.pageViewsBot, today.getTime()]);
 		incrByBulk.push(['analytics:pageviews:month:bot', total.pageViewsBot, month.getTime()]);
 		total.pageViewsBot = 0;
-	}
-
-	if (total.apPageViews > 0) {
-		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
-		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
-		total.apPageViews = 0;
 	}
 
 	if (total.uniquevisitors > 0) {

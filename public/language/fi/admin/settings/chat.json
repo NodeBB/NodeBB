@@ -10,6 +10,8 @@
 	"max-chat-room-name-length": "Keskusteluhuoneiden nimien enimmäispituus",
 	"max-room-size": "Keskusteluhuoneiden käyttäjien enimmäismäärä",
 	"delay": "Pikaviestien välinen aika (ms)",
+	"notification-delay": "Pikaviestien ilmoitusviive",
+	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
 }

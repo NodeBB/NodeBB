@@ -73,16 +73,12 @@ describe('Groups', () => {
 		testUid = await User.create({
 			username: 'testuser',
 			email: 'b@c.com',
-		}, {
-			emailVerification: 'verify',
 		});
 
 		adminUid = await User.create({
 			username: 'admin',
 			email: 'admin@admin.com',
 			password: '123456',
-		}, {
-			emailVerification: 'verify',
 		});
 		await Groups.join('administrators', adminUid);
 	});
@@ -131,18 +127,6 @@ describe('Groups', () => {
 				done();
 			});
 		});
-
-		it('should return only requested fields', async () => {
-			await Groups.create({
-				name: 'groupfields',
-				description: 'desc',
-				userTitle: 'utitle',
-			});
-			const data = await Groups.getGroupFields('groupfields', ['description', 'icon']);
-			assert.strictEqual(Object.keys(data).length, 2);
-			assert.strictEqual(data.description, 'desc');
-			assert.strictEqual(data.icon, '');
-		});
 	});
 
 	describe('.search()', () => {
@@ -151,7 +135,7 @@ describe('Groups', () => {
 		it('should return empty array if query is falsy', (done) => {
 			Groups.search(null, {}, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(groups.length, 0);
+				assert.equal(0, groups.length);
 				done();
 			});
 		});
@@ -159,7 +143,7 @@ describe('Groups', () => {
 		it('should return the groups when search query is empty', (done) => {
 			socketGroups.search({ uid: adminUid }, { query: '' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(groups.length, 6);
+				assert.equal(5, groups.length);
 				done();
 			});
 		});
@@ -167,8 +151,8 @@ describe('Groups', () => {
 		it('should return the "Test" group when searched for', (done) => {
 			socketGroups.search({ uid: adminUid }, { query: 'test' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(groups.length, 2);
-				assert.strictEqual(groups[0].name, 'Test');
+				assert.equal(2, groups.length);
+				assert.strictEqual('Test', groups[0].name);
 				done();
 			});
 		});
@@ -176,8 +160,8 @@ describe('Groups', () => {
 		it('should return the "Test" group when searched for and sort by member count', (done) => {
 			Groups.search('test', { filterHidden: true, sort: 'count' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(groups.length, 2);
-				assert.strictEqual(groups[0].name, 'Test');
+				assert.equal(2, groups.length);
+				assert.strictEqual('Test', groups[0].name);
 				done();
 			});
 		});
@@ -185,8 +169,8 @@ describe('Groups', () => {
 		it('should return the "Test" group when searched for and sort by creation time', (done) => {
 			Groups.search('test', { filterHidden: true, sort: 'date' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(groups.length, 2);
-				assert.strictEqual(groups[1].name, 'Test');
+				assert.equal(2, groups.length);
+				assert.strictEqual('Test', groups[1].name);
 				done();
 			});
 		});

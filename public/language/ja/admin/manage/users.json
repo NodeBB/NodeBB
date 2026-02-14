@@ -23,7 +23,6 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "CSVでダウンロード",
 	"custom-user-fields": "Custom User Fields",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "理由<span class = \"text-muted\">(任意)</ span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "時間",
 	"temp-ban.days": "日",
 	"temp-ban.explanation": "禁止期間の長さを入力します。0にすると永久に禁止と解釈されますのでご注意ください。",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "あなたは本当にこのユーザーを<strong>永久に</strong>禁止しますか？",
 	"alerts.confirm-ban-multi": "あなたは本当にこれらのユーザーを<strong>恒久的に</ strong>禁止しますか？",

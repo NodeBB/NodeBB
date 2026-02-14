@@ -2,7 +2,6 @@
 
 const categories = require('../../categories');
 const meta = require('../../meta');
-const activitypub = require('../../activitypub');
 const api = require('../../api');
 
 const helpers = require('../helpers');
@@ -108,7 +107,6 @@ Categories.setModerator = async (req, res) => {
 };
 
 Categories.follow = async (req, res, next) => {
-	// Priv check done in route middleware
 	const { actor } = req.body;
 	const id = parseInt(req.params.cid, 10);
 
@@ -116,7 +114,11 @@ Categories.follow = async (req, res, next) => {
 		return next();
 	}
 
-	await activitypub.out.follow('cid', id, actor);
+	await api.activitypub.follow(req, {
+		type: 'cid',
+		id,
+		actor,
+	});
 
 	helpers.formatApiResponse(200, res, {});
 };
@@ -129,6 +131,11 @@ Categories.unfollow = async (req, res, next) => {
 		return next();
 	}
 
-	await activitypub.out.undo.follow('cid', id, actor);
+	await api.activitypub.unfollow(req, {
+		type: 'cid',
+		id,
+		actor,
+	});
+
 	helpers.formatApiResponse(200, res, {});
 };

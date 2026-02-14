@@ -1,15 +1,11 @@
 'use strict';
+const serverConfig = require('eslint-config-nodebb');
+const publicConfig = require('eslint-config-nodebb/public');
 
-import serverConfig from 'eslint-config-nodebb';
-import publicConfig from 'eslint-config-nodebb/public';
-import commonRules from 'eslint-config-nodebb/common';
+const { configs } = require('@eslint/js');
+const globals = require('globals');
 
-import { defineConfig } from 'eslint/config';
-import stylisticJs from '@stylistic/eslint-plugin'
-import js from '@eslint/js';
-import globals from 'globals';
-
-export default defineConfig([
+module.exports = [
 	{
 		ignores: [
 			'node_modules/',
@@ -31,13 +27,15 @@ export default defineConfig([
 			'install/docker/',
 		],
 	},
+	configs.recommended,
+	{
+		rules: {
+			'no-bitwise': 'warn',
+			'no-await-in-loop': 'warn',
+		}
+	},
 	// tests
 	{
-		plugins: {
-			js,
-			'@stylistic/js': stylisticJs,
-		},
-		extends: ['js/recommended'],
 		files: ['test/**/*.js'],
 		languageOptions: {
 			ecmaVersion: 2020,
@@ -52,19 +50,13 @@ export default defineConfig([
 				after: 'readonly',
 				afterEach: 'readonly',
 			},
-		},
+	  	},
 		rules: {
-			...commonRules,
-			'no-unused-vars': 'off',
+	  		'no-unused-vars': 'off',
 			'no-prototype-builtins': 'off',
 		}
-	},
+  	},
 	...publicConfig,
-	...serverConfig,
-	{
-		rules: {
-			'preserve-caught-error': 'off'
-		}
-	}
-]);
+	...serverConfig
+];
 

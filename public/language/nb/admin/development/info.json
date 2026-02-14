@@ -8,7 +8,7 @@
 	"nodejs": "Node.js",
 	"online": "Pålogget",
 	"git": "Git",
-	"process-memory": "rss/heap used",
+	"process-memory": "Prosessminne",
 	"system-memory": "Systemminne",
 	"used-memory-process": "Brukt minne av prosess",
 	"used-memory-os": "Brukt systemminne",

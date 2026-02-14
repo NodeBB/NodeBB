@@ -9,7 +9,6 @@ const _ = require('lodash');
 
 const db = require('./database');
 const User = require('./user');
-const categories = require('./categories');
 const posts = require('./posts');
 const groups = require('./groups');
 const meta = require('./meta');
@@ -23,14 +22,11 @@ const Notifications = module.exports;
 
 // ttlcache for email-only chat notifications
 const notificationCache = ttlCache({
-	name: 'notification-email-cache',
 	max: 1000,
 	ttl: (meta.config.notificationSendDelay || 60) * 1000,
 	noDisposeOnSet: true,
 	dispose: sendEmail,
 });
-
-Notifications.delayCache = notificationCache;
 
 Notifications.baseTypes = [
 	'notificationType_upvote',
@@ -86,29 +82,10 @@ Notifications.getMultiple = async function (nids) {
 	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjects(keys);
 
-	const userKeys = notifications.filter(n => n && n.from).map(n => n.from);
-	let [usersData, categoriesData] = await Promise.all([
-		User.getUsersFields(userKeys, ['username', 'userslug', 'picture']),
-		categories.getCategoriesFields(userKeys, ['cid', 'name', 'slug', 'picture']),
-	]);
-	// Merge valid categoriesData into usersData
-	usersData = usersData.map((userData, idx) => {
-		const categoryData = categoriesData[idx];
-		if (!userData.uid && categoryData.cid) {
-			return {
-				username: categoryData.slug,
-				displayname: categoryData.name,
-				userslug: categoryData.slug,
-				picture: categoryData.picture,
-			};
-		}
+	const userKeys = notifications.map(n => n && n.from);
+	const usersData = await User.getUsersFields(userKeys, ['username', 'userslug', 'picture']);
 
-		return userData;
-	});
-	// from can be either uid or cid
-	const userMap = new Map(userKeys.map((from, index) => [String(from), usersData[index]]));
-
-	notifications.forEach((notification) => {
+	notifications.forEach((notification, index) => {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
@@ -125,10 +102,8 @@ Notifications.getMultiple = async function (nids) {
 			if (notification.bodyLong) {
 				notification.bodyLong = utils.stripHTMLTags(notification.bodyLong, ['img', 'p', 'a']);
 			}
-			const fromUser = userMap.get(String(notification.from));
-			if (fromUser !== undefined) {
-				notification.user = fromUser;
-			}
+
+			notification.user = usersData[index];
 			if (notification.user && notification.from) {
 				notification.image = notification.user.picture || null;
 				if (notification.user.username === '[[global:guest]]') {
@@ -170,7 +145,7 @@ Notifications.create = async function (data) {
 	const oldNotif = await db.getObject(`notifications:${data.nid}`);
 	if (
 		oldNotif &&
-		String(oldNotif.pid, 10) === String(data.pid, 10) &&
+		parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) &&
 		parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)
 	) {
 		return null;
@@ -182,9 +157,6 @@ Notifications.create = async function (data) {
 	});
 	if (!result.data) {
 		return null;
-	}
-	if (data.bodyShort) {
-		data.bodyShort = utils.stripBidiControls(data.bodyShort);
 	}
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
@@ -288,10 +260,7 @@ async function pushToUids(uids, notification) {
 				notificationCache.delete(cacheKey);
 			}
 		} else {
-			notificationCache.set(`delayed:nid:${notification.nid}`, {
-				uids: results.uidsToEmail,
-				notification,
-			});
+			await sendEmail({ uids: results.uidsToEmail, notification });
 		}
 	}
 
@@ -303,19 +272,8 @@ async function pushToUids(uids, notification) {
 	});
 }
 
-async function sendEmail({ uids, notification }, cacheKey, reason) {
+async function sendEmail({ uids, notification }, mergeId, reason) {
 	if ((reason && reason === 'set') || !uids.length) {
-		return;
-	}
-
-	// check if notification already read by users
-	// if so don't send email, https://github.com/NodeBB/NodeBB/issues/5867
-	const hasRead = await db.isMemberOfSortedSets(
-		uids.map(uid => `uid:${uid}:notifications:read`),
-		notification.nid
-	);
-	uids = uids.filter((uid, index) => !hasRead[index]);
-	if (!uids.length) {
 		return;
 	}
 
@@ -424,20 +382,10 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	]);
 };
 
-Notifications.markAllRead = async function (uid, filter = '') {
+Notifications.markAllRead = async function (uid) {
 	await batch.processSortedSet(`uid:${uid}:notifications:unread`, async (unreadNotifs) => {
-		let nids = unreadNotifs.map(n => n && n.value);
-		let datetimes = unreadNotifs.map(n => n && n.score);
-		if (filter !== '') {
-			const notificationKeys = nids.map(nid => `notifications:${nid}`);
-			let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'type', 'datetime']);
-			notificationData = notificationData.filter(n => n && n.nid && n.type === filter);
-			if (!notificationData.length) {
-				return;
-			}
-			nids = notificationData.map(n => n.nid);
-			datetimes = notificationData.map(n => n.datetime || Date.now());
-		}
+		const nids = unreadNotifs.map(n => n && n.value);
+		const datetimes = unreadNotifs.map(n => n && n.score);
 		await Promise.all([
 			db.sortedSetRemove(`uid:${uid}:notifications:unread`, nids),
 			db.sortedSetAdd(`uid:${uid}:notifications:read`, datetimes, nids),

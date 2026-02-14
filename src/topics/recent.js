@@ -4,7 +4,6 @@
 const db = require('../database');
 const plugins = require('../plugins');
 const posts = require('../posts');
-const utils = require('../utils');
 
 module.exports = function (Topics) {
 	const terms = {
@@ -76,7 +75,7 @@ module.exports = function (Topics) {
 
 		// Topics in /world are excluded from /recent
 		const cid = await Topics.getTopicField(tid, 'cid');
-		if (!utils.isNumber(cid) || cid === -1) {
+		if (cid === -1) {
 			return await db.sortedSetRemove('topics:recent', data.tid);
 		}
 

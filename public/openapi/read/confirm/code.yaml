@@ -24,6 +24,9 @@ get:
                   error:
                     type: string
                     description: Translation key for client-side localisation
+                  alreadyValidated:
+                    type: boolean
+                    description: set to true if the email was already validated
                 required:
                   - title
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

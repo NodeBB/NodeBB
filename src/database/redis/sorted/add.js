@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
+	const helpers = require('../helpers');
 	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
@@ -13,8 +14,7 @@ module.exports = function (module) {
 		if (!utils.isNumber(score)) {
 			throw new Error(`[[error:invalid-score, ${score}]]`);
 		}
-
-		await module.client.zAdd(key, { score, value: String(value) });
+		await module.client.zadd(key, score, String(value));
 	};
 
 	async function sortedSetAddMulti(key, scores, values) {
@@ -30,8 +30,11 @@ module.exports = function (module) {
 				throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
 			}
 		}
-		const members = scores.map((score, i) => ({ score, value: String(values[i])}));
-		await module.client.zAdd(key, members);
+		const args = [key];
+		for (let i = 0; i < scores.length; i += 1) {
+			args.push(scores[i], String(values[i]));
+		}
+		await module.client.zadd(args);
 	}
 
 	module.sortedSetsAdd = async function (keys, scores, value) {
@@ -48,16 +51,13 @@ module.exports = function (module) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const batch = module.client.multi();
+		const batch = module.client.batch();
 		for (let i = 0; i < keys.length; i += 1) {
 			if (keys[i]) {
-				batch.zAdd(keys[i], {
-					score: isArrayOfScores ? scores[i] : scores,
-					value: String(value),
-				});
+				batch.zadd(keys[i], isArrayOfScores ? scores[i] : scores, String(value));
 			}
 		}
-		await batch.execAsPipeline();
+		await helpers.execBatch(batch);
 	};
 
 	module.sortedSetAddBulk = async function (data) {
@@ -69,8 +69,8 @@ module.exports = function (module) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
-			batch.zAdd(item[0], { score: item[1], value: String(item[2]) });
+			batch.zadd(item[0], item[1], item[2]);
 		});
-		await batch.execAsPipeline();
+		await helpers.execBatch(batch);
 	};
 };

@@ -1,30 +1,29 @@
 'use strict';
 
+const async = require('async');
+
 const db = require('../../database');
-const batch = require('../../batch');
 
 module.exports = {
 	name: 'New sorted set cid:<cid>:tids:lastposttime',
 	timestamp: Date.UTC(2017, 9, 30),
-	method: async function () {
+	method: function (callback) {
 		const { progress } = this;
-		progress.total = await db.sortedSetCard('topics:tid');
 
-		await batch.processSortedSet('topics:tid', async (tids) => {
-			const topicData = await db.getObjectsFields(
-				tids.map(tid => `topic:${tid}`), ['tid', 'cid', 'timestamp', 'lastposttime']
-			);
-			const bulkAdd = [];
-			topicData.forEach((data) => {
-				if (data && data.cid && data.tid) {
-					const timestamp = data.lastposttime || data.timestamp || Date.now();
-					bulkAdd.push([`cid:${data.cid}:tids:lastposttime`, timestamp, data.tid]);
-				}
-			});
-			await db.sortedSetAddBulk(bulkAdd);
-			progress.incr(tids.length);
+		require('../../batch').processSortedSet('topics:tid', (tids, next) => {
+			async.eachSeries(tids, (tid, next) => {
+				db.getObjectFields(`topic:${tid}`, ['cid', 'timestamp', 'lastposttime'], (err, topicData) => {
+					if (err || !topicData) {
+						return next(err);
+					}
+					progress.incr();
+
+					const timestamp = topicData.lastposttime || topicData.timestamp || Date.now();
+					db.sortedSetAdd(`cid:${topicData.cid}:tids:lastposttime`, timestamp, tid, next);
+				}, next);
+			}, next);
 		}, {
-			batch: 500,
-		});
+			progress: this.progress,
+		}, callback);
 	},
 };

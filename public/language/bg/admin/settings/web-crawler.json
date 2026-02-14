@@ -5,7 +5,6 @@
 	"disable-rss-feeds": "Изключване на емисиите чрез RSS",
 	"disable-sitemap-xml": "Изключване на картата на уеб сайта („Sitemap.xml“)",
 	"sitemap-topics": "Брой теми за показване в картата на уеб сайта",
-	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Изчистване на кеша на картата на уеб сайта",
 	"view-sitemap": "Преглед на картата на уеб сайта"
 }

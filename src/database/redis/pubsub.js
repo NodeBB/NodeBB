@@ -13,7 +13,12 @@ const PubSub = function () {
 	self.queue = [];
 	connection.connect().then((client) => {
 		self.subClient = client;
-		self.subClient.subscribe(channelName, (message) => {
+		self.subClient.subscribe(channelName);
+		self.subClient.on('message', (channel, message) => {
+			if (channel !== channelName) {
+				return;
+			}
+
 			try {
 				const msg = JSON.parse(message);
 				self.emit(msg.event, msg.data);

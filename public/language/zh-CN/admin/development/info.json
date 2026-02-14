@@ -8,7 +8,7 @@
 	"nodejs": "nodejs",
 	"online": "在线",
 	"git": "git",
-	"process-memory": "rss/heap used",
+	"process-memory": "进程内存",
 	"system-memory": "系统内存",
 	"used-memory-process": "进程使用的内存",
 	"used-memory-os": "已使用系统内存",

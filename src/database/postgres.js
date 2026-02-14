@@ -1,7 +1,5 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
 const winston = require('winston');
 const nconf = require('nconf');
 const session = require('express-session');
@@ -362,7 +360,7 @@ postgresModule.createIndices = async function () {
 };
 
 postgresModule.checkCompatibility = function (callback) {
-	const postgresPkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../../node_modules/pg/package.json'), 'utf8'));
+	const postgresPkg = require('pg/package.json');
 	postgresModule.checkCompatibilityVersion(postgresPkg.version, callback);
 };
 

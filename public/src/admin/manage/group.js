@@ -88,7 +88,7 @@ define('admin/manage/group', [
 			bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 				if (confirm) {
 					api.del(`/groups/${slugify(ajaxify.data.group.name)}`, {}).then(() => {
-						ajaxify.go('/admin/manage/groups');
+						ajaxify.go('/admin/managegroups');
 					}).catch(alerts.error);
 				}
 			});

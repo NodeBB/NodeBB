@@ -92,8 +92,7 @@ async function getNodeInfo() {
 		},
 	};
 
-	data.process.memoryUsage.rssReadable = (data.process.memoryUsage.rss / (1024 * 1024 * 1024)).toFixed(2);
-	data.process.memoryUsage.heapUsedReadable = (data.process.memoryUsage.heapUsed / (1024 * 1024 * 1024)).toFixed(2);
+	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024 * 1024)).toFixed(3);
 	data.process.uptimeHumanReadable = humanReadableUptime(data.process.uptime);
 	data.os.freemem = (data.os.freemem / (1024 * 1024 * 1024)).toFixed(2);
 	data.os.totalmem = (data.os.totalmem / (1024 * 1024 * 1024)).toFixed(2);
@@ -118,18 +117,14 @@ function getCpuUsage() {
 }
 
 function humanReadableUptime(seconds) {
-	const oneHourInSeconds = 3600;
-	const oneDayInSeconds = oneHourInSeconds * 24;
 	if (seconds < 60) {
 		return `${Math.floor(seconds)}s`;
-	} else if (seconds < oneHourInSeconds) {
+	} else if (seconds < 3600) {
 		return `${Math.floor(seconds / 60)}m`;
-	} else if (seconds < oneDayInSeconds) {
+	} else if (seconds < 3600 * 24) {
 		return `${Math.floor(seconds / (60 * 60))}h`;
 	}
-	const days = Math.floor(seconds / (oneDayInSeconds));
-	const hours = Math.floor((seconds % (oneDayInSeconds)) / oneHourInSeconds);
-	return `${days}d ${hours}h`;
+	return `${Math.floor(seconds / (60 * 60 * 24))}d`;
 }
 
 async function getGitInfo() {

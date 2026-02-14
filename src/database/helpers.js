@@ -16,7 +16,7 @@ helpers.mergeBatch = function (batchData, start, stop, sort) {
 		}
 		return selectedArray.length ? selectedArray.shift() : null;
 	}
-	let item;
+	let item = null;
 	const result = [];
 	do {
 		item = getFirst(batchData);

@@ -1,20 +1,21 @@
 'use strict';
 
-const db = require('../../database');
+const async = require('async');
 const posts = require('../../posts');
-const batch = require('../../batch');
 
 module.exports = {
 	name: 'Refresh post-upload associations',
 	timestamp: Date.UTC(2018, 3, 16),
-	method: async function () {
+	method: function (callback) {
 		const { progress } = this;
-		progress.total = await db.sortedSetCard('posts:pid');
-		await batch.processSortedSet('posts:pid', async (pids) => {
-			await Promise.all(pids.map(pid => posts.uploads.sync(pid)));
-			progress.incr(pids.length);
+
+		require('../../batch').processSortedSet('posts:pid', (pids, next) => {
+			async.each(pids, (pid, next) => {
+				posts.uploads.sync(pid, next);
+				progress.incr();
+			}, next);
 		}, {
-			batch: 500,
-		});
+			progress: this.progress,
+		}, callback);
 	},
 };

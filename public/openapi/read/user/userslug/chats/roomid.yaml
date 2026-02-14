@@ -56,8 +56,6 @@ get:
                     type: array
                   notificationOptionsIcon:
                     type: string
-                  joinLeaveMessages:
-                    type: number
                   messages:
                     type: array
                     items:
@@ -124,8 +122,6 @@ get:
                                 `icon:text` for the user's auto-generated
                                 icon
                               example: "#f44336"
-                            banned_until:
-                              type: number
                             banned_until_readable:
                               type: string
                             deleted:
@@ -363,8 +359,6 @@ get:
                         chatWithMessage:
                           type: string
                         notificationSetting:
-                          type: number
-                        joinLeaveMessages:
                           type: number
                   publicRooms:
                     type: array

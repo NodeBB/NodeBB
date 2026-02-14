@@ -2,7 +2,7 @@
 
 const sockets = require('../socket.io');
 const plugins = require('../plugins');
-const activitypub = require('../activitypub');
+const api = require('../api');
 
 module.exports = function (Messaging) {
 	Messaging.deleteMessage = async (mid, uid) => await doDeleteRestore(mid, 1, uid);
@@ -30,6 +30,6 @@ module.exports = function (Messaging) {
 			plugins.hooks.fire('action:messaging.restore', { message: msgData });
 		}
 
-		activitypub.out.update.privateNote(uid, msgData);
+		api.activitypub.update.privateNote({ uid }, { messageObj: msgData });
 	}
 };

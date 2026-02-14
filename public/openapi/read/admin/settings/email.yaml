@@ -13,10 +13,6 @@ get:
                 properties:
                   title:
                     type: string
-                  emailerPlugin:
-                    type: string
-                  smtpEnabled:
-                    type: boolean
                   emails:
                     type: array
                     items:

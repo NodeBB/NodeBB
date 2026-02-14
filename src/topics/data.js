@@ -10,10 +10,9 @@ const plugins = require('../plugins');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
-	'viewcount', 'postercount', 'followercount',
-	'deleted', 'locked', 'pinned', 'pinExpiry',
-	'timestamp', 'upvotes', 'downvotes',
-	'lastposttime', 'deleterUid', 'generatedTitle',
+	'viewcount', 'postercount', 'deleted', 'locked', 'pinned',
+	'pinExpiry', 'timestamp', 'upvotes', 'downvotes', 'lastposttime',
+	'deleterUid',
 ];
 
 module.exports = function (Topics) {
@@ -80,11 +79,13 @@ module.exports = function (Topics) {
 	};
 };
 
-function escapeTitle(topicData, hasField) {
+function escapeTitle(topicData) {
 	if (topicData) {
-		if (hasField('title')) {
+		if (topicData.title) {
 			topicData.title = translator.escape(validator.escape(topicData.title));
-			topicData.titleRaw = translator.escape(topicData.titleRaw || '');
+		}
+		if (topicData.titleRaw) {
+			topicData.titleRaw = translator.escape(topicData.titleRaw);
 		}
 	}
 }
@@ -94,41 +95,39 @@ function modifyTopic(topic, fields) {
 		return;
 	}
 
-	const hasField = utils.createFieldChecker(fields);
-
 	db.parseIntFields(topic, intFields, fields);
 
-	if (hasField('title')) {
+	if (topic.hasOwnProperty('title')) {
 		topic.titleRaw = topic.title;
 		topic.title = String(topic.title);
 	}
 
-	escapeTitle(topic, hasField);
+	escapeTitle(topic);
 
-	if (hasField('timestamp')) {
+	if (topic.hasOwnProperty('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);
-		if (hasField('scheduled')) {
+		if (!fields.length || fields.includes('scheduled')) {
 			topic.scheduled = topic.timestamp > Date.now();
 		}
 	}
 
-	if (hasField('lastposttime')) {
+	if (topic.hasOwnProperty('lastposttime')) {
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}
 
-	if (hasField('pinExpiry')) {
+	if (topic.hasOwnProperty('pinExpiry')) {
 		topic.pinExpiryISO = utils.toISOString(topic.pinExpiry);
 	}
 
-	if (hasField('upvotes') && hasField('downvotes')) {
+	if (topic.hasOwnProperty('upvotes') && topic.hasOwnProperty('downvotes')) {
 		topic.votes = topic.upvotes - topic.downvotes;
 	}
 
-	if (hasField('teaserPid')) {
+	if (fields.includes('teaserPid') || !fields.length) {
 		topic.teaserPid = topic.teaserPid || null;
 	}
 
-	if (hasField('tags')) {
+	if (fields.includes('tags') || !fields.length) {
 		const tags = String(topic.tags || '');
 		topic.tags = tags.split(',').filter(Boolean).map((tag) => {
 			const escaped = validator.escape(String(tag));
@@ -139,13 +138,5 @@ function modifyTopic(topic, fields) {
 				class: escaped.replace(/\s/g, '-'),
 			};
 		});
-	}
-
-	if (hasField('thumbs')) {
-		try {
-			topic.thumbs = topic.thumbs ? JSON.parse(String(topic.thumbs || '[]')) : [];
-		} catch (e) {
-			topic.thumbs = [];
-		}
 	}
 }

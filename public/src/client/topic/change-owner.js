@@ -5,8 +5,7 @@ define('forum/topic/change-owner', [
 	'postSelect',
 	'autocomplete',
 	'alerts',
-	'api',
-], function (postSelect, autocomplete, alerts, api) {
+], function (postSelect, autocomplete, alerts) {
 	const ChangeOwner = {};
 
 	let modal;
@@ -70,12 +69,14 @@ define('forum/topic/change-owner', [
 		if (!toUid) {
 			return;
 		}
-
-		api.post('/posts/owner', { pids: postSelect.pids, uid: toUid}).then(() => {
+		socket.emit('posts.changeOwner', { pids: postSelect.pids, toUid: toUid }, function (err) {
+			if (err) {
+				return alerts.error(err);
+			}
 			ajaxify.go(`/post/${postSelect.pids[0]}`);
 
 			closeModal();
-		}).catch(alerts.error);
+		});
 	}
 
 	function closeModal() {

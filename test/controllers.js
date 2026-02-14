@@ -6,8 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const db = require('./mocks/databasemock');
 const request = require('../src/request');
+const db = require('./mocks/databasemock');
 const api = require('../src/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
@@ -39,9 +39,9 @@ describe('Controllers', () => {
 		});
 		cid = category.cid;
 
-		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true, email: 'foo@test.com' }, {
-			emailVerification: 'verify',
-		});
+		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true });
+		await user.setUserField(fooUid, 'email', 'foo@test.com');
+		await user.email.confirmByUid(fooUid);
 
 		adminUid = await user.create({ username: 'admin', password: 'barbar', gdpr_consent: true });
 		await groups.join('administrators', adminUid);
@@ -395,9 +395,9 @@ describe('Controllers', () => {
 			it('should remove current email (only allowed if email not required)', async () => {
 				meta.config.requireEmailAddress = 0;
 
-				const uid = await user.create({
-					username: 'interstiuser5', email: 'interstiuser5@nodebb.org',
-				}, { emailVerification: 'verify' });
+				const uid = await user.create({ username: 'interstiuser5' });
+				await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
+				await user.email.confirmByUid(uid);
 
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -418,11 +418,9 @@ describe('Controllers', () => {
 			it('should require a password (if one is set) for email change', async () => {
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-					const uid = await user.create({
-						username, password, email: `${username}@nodebb.org`,
-					}, {
-						emailVerification: 'verify',
-					});
+					const uid = await user.create({ username, password });
+					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+					await user.email.confirmByUid(uid);
 
 					const result = await user.interstitials.email({
 						userData: { uid: uid, updateEmail: true },
@@ -443,11 +441,9 @@ describe('Controllers', () => {
 
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-					const uid = await user.create({
-						username, password, email: `${username}@nodebb.org`,
-					}, {
-						emailVerification: 'verify',
-					});
+					const uid = await user.create({ username, password });
+					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+					await user.email.confirmByUid(uid);
 
 					const result = await user.interstitials.email({
 						userData: { uid: uid, updateEmail: true },
@@ -467,11 +463,9 @@ describe('Controllers', () => {
 
 			it('should successfully issue validation request if the correct password is passed in', async () => {
 				const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-				const uid = await user.create({
-					username, password, email: `${username}@nodebb.org`,
-				}, {
-					emailVerification: 'verify',
-				});
+				const uid = await user.create({ username, password });
+				await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+				await user.email.confirmByUid(uid);
 
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -645,7 +639,7 @@ describe('Controllers', () => {
 				});
 
 				assert.strictEqual(response.statusCode, 302);
-				assert.strictEqual(response.headers['set-cookie'], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT${nconf.get('secure') ? '; Secure' : ''}; SameSite=Lax`);
+				assert.strictEqual(response.headers['set-cookie'], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`);
 				assert.strictEqual(response.headers.location, `${nconf.get('relative_path')}/`);
 			});
 
@@ -696,16 +690,6 @@ describe('Controllers', () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/tos`);
 		assert.equal(response.statusCode, 404);
 		assert(body);
-	});
-
-	it('should 404 if brand:touchIcon is not valid', async () => {
-		const oldValue = meta.config['brand:touchIcon'];
-		meta.config['brand:touchIcon'] = '../../not/valid';
-
-		const { response, body } = await request.get(`${nconf.get('url')}/apple-touch-icon`);
-		assert.strictEqual(response.statusCode, 404);
-		assert.strictEqual(body, 'Not found');
-		meta.config['brand:touchIcon'] = oldValue;
 	});
 
 
@@ -1171,7 +1155,7 @@ describe('Controllers', () => {
 			assert.equal(response.statusCode, 200);
 			assert(body);
 			const notif = body.notifications[0];
-			assert.equal(notif.bodyShort, '<strong>test1</strong> posted a reply in <strong>test2</strong>');
+			assert.equal(notif.bodyShort, '<strong>test1</strong> has posted a reply to: <strong>test2</strong>');
 			assert.equal(notif.bodyLong, notifData.bodyLong);
 			assert.equal(notif.pid, notifData.pid);
 			assert.equal(notif.path, nconf.get('relative_path') + notifData.path);
@@ -1458,44 +1442,44 @@ describe('Controllers', () => {
 		});
 
 		it('should handle CSRF error', async () => {
-			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
-			plugins.loadedHooks['response:router.page'].push({
-				method: function () {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
 					const err = new Error('csrf-error');
 					err.code = 'EBADCSRFTOKEN';
-					throw err;
+					next(err);
 				},
 			});
 
 			const { response } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['response:router.page'] = [];
+			plugins.loadedHooks['filter:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 		});
 
 		it('should handle black-list error', async () => {
-			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
-			plugins.loadedHooks['response:router.page'].push({
-				method: function () {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
 					const err = new Error('blacklist error message');
 					err.code = 'blacklisted-ip';
-					throw err;
+					next(err);
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['response:router.page'] = [];
+			plugins.loadedHooks['filter:router.page'] = [];
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, 'blacklist error message');
 		});
 
 		it('should handle page redirect through error', async () => {
-			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
-			plugins.loadedHooks['response:router.page'].push({
-				method: function () {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
 					const err = new Error('redirect');
 					err.status = 302;
 					err.path = '/popular';
-					plugins.loadedHooks['response:router.page'] = [];
-					throw err;
+					plugins.loadedHooks['filter:router.page'] = [];
+					next(err);
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
@@ -1504,14 +1488,14 @@ describe('Controllers', () => {
 		});
 
 		it('should handle api page redirect through error', async () => {
-			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
-			plugins.loadedHooks['response:router.page'].push({
-				method: function () {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
 					const err = new Error('redirect');
 					err.status = 308;
 					err.path = '/api/popular';
-					plugins.loadedHooks['response:router.page'] = [];
-					throw err;
+					plugins.loadedHooks['filter:router.page'] = [];
+					next(err);
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/users`);
@@ -1521,15 +1505,15 @@ describe('Controllers', () => {
 		});
 
 		it('should handle error page', async () => {
-			plugins.loadedHooks['response:router.page'] = plugins.loadedHooks['response:router.page'] || [];
-			plugins.loadedHooks['response:router.page'].push({
-				method: function () {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
 					const err = new Error('regular error');
-					throw err;
+					next(err);
 				},
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/users`);
-			plugins.loadedHooks['response:router.page'] = [];
+			plugins.loadedHooks['filter:router.page'] = [];
 			assert.equal(response.statusCode, 500);
 			assert(body);
 		});

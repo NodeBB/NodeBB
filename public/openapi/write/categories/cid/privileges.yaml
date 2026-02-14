@@ -24,6 +24,19 @@ get:
               response:
                 type: object
                 properties:
+                  labels:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: string
+                          description: Language key of the privilege name's user-friendly name
+                      groups:
+                        type: array
+                        items:
+                          type: string
+                          description: Language key of the privilege name's user-friendly name
                   labelData:
                     type: array
                     items:
@@ -47,6 +60,7 @@ get:
                         privileges:
                           type: object
                           additionalProperties:
+                            type: boolean
                             description: A set of privileges with either true or false
                         isPrivate:
                           type: boolean
@@ -64,6 +78,7 @@ get:
                         privileges:
                           type: object
                           additionalProperties:
+                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object

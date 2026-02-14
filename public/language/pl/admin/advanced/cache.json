@@ -1,5 +1,9 @@
 {
 	"cache": "Pamięć podręczna",
+	"post-cache": "Pamięć podręczna postów",
+	"group-cache": "Pamięć podręczna grupy",
+	"local-cache": "Lokalna pamięć podręczna",
+	"object-cache": "Pamięć podręczna obiektów",
 	"percent-full": "%1%",
 	"post-cache-size": "Rozmiar pamięci podręcznej postów",
 	"items-in-cache": "Elementów w pamięci podręcznej"

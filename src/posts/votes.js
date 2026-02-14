@@ -177,18 +177,16 @@ module.exports = function (Posts) {
 		}
 		const now = Date.now();
 
-		if (utils.isNumber(uid)) {
-			if (type === 'upvote' && !unvote) {
-				await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
-			} else {
-				await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
-			}
+		if (type === 'upvote' && !unvote) {
+			await db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
+		} else {
+			await db.sortedSetRemove(`uid:${uid}:upvote`, pid);
+		}
 
-			if (type === 'upvote' || unvote) {
-				await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
-			} else {
-				await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
-			}
+		if (type === 'upvote' || unvote) {
+			await db.sortedSetRemove(`uid:${uid}:downvote`, pid);
+		} else {
+			await db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
 		}
 
 		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
@@ -271,30 +269,27 @@ module.exports = function (Posts) {
 
 	async function updateTopicVoteCount(postData) {
 		const topicData = await topics.getTopicFields(postData.tid, ['mainPid', 'cid', 'pinned']);
-		const { cid } = topicData;
+
 		if (postData.uid) {
 			if (postData.votes !== 0) {
-				await db.sortedSetAdd(`cid:${cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid);
+				await db.sortedSetAdd(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid);
 			} else {
-				await db.sortedSetRemove(`cid:${cid}:uid:${postData.uid}:pids:votes`, postData.pid);
+				await db.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.pid);
 			}
 		}
 
 		if (String(topicData.mainPid) !== String(postData.pid)) {
 			return await db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
 		}
-		const isRemoteCid = !utils.isNumber(cid) || cid === -1;
 		const promises = [
 			topics.setTopicFields(postData.tid, {
 				upvotes: postData.upvotes,
 				downvotes: postData.downvotes,
 			}),
-			isRemoteCid ?
-				Promise.resolve() :
-				db.sortedSetAdd('topics:votes', postData.votes, postData.tid),
+			db.sortedSetAdd('topics:votes', postData.votes, postData.tid),
 		];
 		if (!topicData.pinned) {
-			promises.push(db.sortedSetAdd(`cid:${cid}:tids:votes`, postData.votes, postData.tid));
+			promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, postData.votes, postData.tid));
 		}
 		await Promise.all(promises);
 	}

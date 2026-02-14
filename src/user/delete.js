@@ -43,17 +43,15 @@ module.exports = function (User) {
 	async function deletePosts(callerUid, uid) {
 		await batch.processSortedSet(`uid:${uid}:posts`, async (pids) => {
 			await posts.purge(pids, callerUid);
-			await db.sortedSetRemove(`uid:${uid}:posts`, pids);
 		}, { alwaysStartAt: 0, batch: 500 });
 	}
 
 	async function deleteTopics(callerUid, uid) {
-		await batch.processSortedSet(`uid:${uid}:topics`, async (tids) => {
-			await async.eachSeries(tids, async (tid) => {
+		await batch.processSortedSet(`uid:${uid}:topics`, async (ids) => {
+			await async.eachSeries(ids, async (tid) => {
 				await topics.purge(tid, callerUid);
 			});
-			await db.sortedSetRemove(`uid:${uid}:topics`, tids);
-		}, { alwaysStartAt: 0, batch: 100 });
+		}, { alwaysStartAt: 0 });
 	}
 
 	async function deleteUploads(callerUid, uid) {
@@ -124,7 +122,6 @@ module.exports = function (User) {
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`,
-			`uid:${uid}:shares`,
 			`invitation:uid:${uid}`,
 		];
 
@@ -161,10 +158,9 @@ module.exports = function (User) {
 			activitypub.actors.remove(uid),
 		]);
 		await db.deleteAll([
-			`followers:${uid}`, `following:${uid}`,
+			`followers:${uid}`, `following:${uid}`, `user:${uid}`,
 			`uid:${uid}:followed_tags`, `uid:${uid}:followed_tids`,
 			`uid:${uid}:ignored_tids`,
-			`${utils.isNumber(uid) ? 'user' : 'userRemote'}:${uid}`,
 		]);
 		delete deletesInProgress[uid];
 		return userData;

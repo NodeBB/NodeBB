@@ -34,7 +34,6 @@ module.exports = function (Posts) {
 		await Promise.all([
 			topics.updateLastPostTimeFromLastPid(postData.tid),
 			topics.updateTeaser(postData.tid),
-			isDeleting ? activitypub.notes.delete(pid) : null,
 			isDeleting ?
 				db.sortedSetRemove(`cid:${topicData.cid}:pids`, pid) :
 				db.sortedSetAdd(`cid:${topicData.cid}:pids`, postData.timestamp, pid),
@@ -64,6 +63,10 @@ module.exports = function (Posts) {
 			p.cid = tidToTopic[p.tid] && tidToTopic[p.tid].cid;
 		});
 
+		// deprecated hook
+		await Promise.all(postData.map(p => plugins.hooks.fire('filter:post.purge', { post: p, pid: p.pid, uid: uid })));
+
+		// new hook
 		await plugins.hooks.fire('filter:posts.purge', {
 			posts: postData,
 			pids: postData.map(p => p.pid),
@@ -87,6 +90,10 @@ module.exports = function (Posts) {
 
 		await resolveFlags(postData, uid);
 
+		// deprecated hook
+		Promise.all(postData.map(p => plugins.hooks.fire('action:post.purge', { post: p, uid: uid })));
+
+		// new hook
 		plugins.hooks.fire('action:posts.purge', { posts: postData, uid: uid });
 
 		await db.deleteAll(postData.map(p => `post:${p.pid}`));
@@ -197,15 +204,20 @@ module.exports = function (Posts) {
 	}
 
 	async function deleteFromReplies(postData) {
-		// Any replies to deleted posts will retain toPid reference (gh#13527)
-		await db.deleteAll(postData.map(p => `pid:${p.pid}:replies`));
+		const arrayOfReplyPids = await db.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
+		const allReplyPids = _.flatten(arrayOfReplyPids);
+		const promises = [
+			db.deleteObjectFields(
+				allReplyPids.map(pid => `post:${pid}`), ['toPid']
+			),
+			db.deleteAll(postData.map(p => `pid:${p.pid}:replies`)),
+		];
 
-		// Remove post(s) from parents' replies zsets
 		const postsWithParents = postData.filter(p => parseInt(p.toPid, 10));
 		const bulkRemove = postsWithParents.map(p => [`pid:${p.toPid}:replies`, p.pid]);
-		await db.sortedSetRemoveBulk(bulkRemove);
+		promises.push(db.sortedSetRemoveBulk(bulkRemove));
+		await Promise.all(promises);
 
-		// Recalculate reply count
 		const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
 		const counts = await db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
 		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));

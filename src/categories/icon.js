@@ -5,7 +5,7 @@ const fs = require('fs/promises');
 const nconf = require('nconf');
 const winston = require('winston');
 const { default: satori } = require('satori');
-const sharp = require('sharp');
+const { Resvg } = require('@resvg/resvg-js');
 
 const utils = require('../utils');
 
@@ -96,9 +96,9 @@ Icons.regenerate = async (cid) => {
 	await fs.writeFile(path.resolve(nconf.get('upload_path'), 'category', `category-${cid}-icon.svg`), svg);
 
 	// Generate and save PNG
-	const pngBuffer = await sharp(Buffer.from(svg))
-		.png()
-		.toBuffer();
+	const resvg = new Resvg(Buffer.from(svg));
+	const pngData = resvg.render();
+	const pngBuffer = pngData.asPng();
 
 	await fs.writeFile(path.resolve(nconf.get('upload_path'), 'category', `category-${cid}-icon.png`), pngBuffer);
 

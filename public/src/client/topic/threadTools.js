@@ -116,12 +116,6 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/crosspost"]', () => {
-			require(['forum/topic/crosspost'], (crosspost) => {
-				crosspost.init(tid, ajaxify.data.cid);
-			});
-		});
-
 		topicContainer.on('click', '[component="topic/delete/posts"]', function () {
 			require(['forum/topic/delete-posts'], function (deletePosts) {
 				deletePosts.init();
@@ -231,7 +225,7 @@ define('forum/topic/threadTools', [
 				return;
 			}
 			dropdownMenu.html(helpers.generatePlaceholderWave([8, 8, 8]));
-			const data = await socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }).catch(alerts.error);
+			const data = await socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid });
 			const html = await app.parseAndTranslate('partials/topic/topic-menu-list', data);
 			$(dropdownMenu).attr('data-loaded', 'true').html(html);
 			hooks.fire('action:topic.tools.load', {

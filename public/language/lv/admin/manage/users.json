@@ -23,7 +23,6 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "Lejupielādēt .csv",
 	"custom-user-fields": "Custom User Fields",
-	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",
@@ -78,11 +77,9 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Iemesls <span class=\"text-muted\">(neobligāts)</span>",
-	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Stundas",
 	"temp-ban.days": "Dienas",
 	"temp-ban.explanation": "Ievadīt bloķēšanas termiņu, ņemot vērā, ka 0 tiks uzskatīts par pastāvīgu bloķēšanu.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Vai tiešām vēlies <strong>pastāvīgi</strong> bloķēt šo lietotāju?",
 	"alerts.confirm-ban-multi": "Vai tiešām vēlies <strong>pastāvīgi</strong> bloķēt šos lietotājus?",

@@ -38,9 +38,7 @@ describe('Flags', () => {
 		});
 
 		// Create some stuff to flag
-		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' }, {
-			emailVerification: 'verify',
-		});
+		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' });
 
 		adminUid = await User.create({ username: 'testUser2', password: 'abcdef', email: 'c@d.com' });
 		await Groups.join('administrators', adminUid);
@@ -930,11 +928,6 @@ describe('Flags', () => {
 				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
 			});
 
-			it('should escape filters', async () => {
-				const { body } = await request.get(`${nconf.get('url')}/api/flags?quick="<script>alert('foo');</script>`, { jar });
-				assert.strictEqual(body.filters.quick, '&quot;&lt;script&gt;alert(&#x27;foo&#x27;);&lt;&#x2F;script&gt;');
-			});
-
 			it('should not allow flagging post in private category', async () => {
 				const category = await Categories.create({ name: 'private category' });
 
@@ -1192,7 +1185,5 @@ describe('Flags', () => {
 				}
 			});
 		});
-
-
 	});
 });

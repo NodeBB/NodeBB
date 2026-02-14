@@ -41,14 +41,6 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/:pid/replies', [middleware.assert.post], controllers.write.posts.getReplies);
 
-	setupApiRoute(router, 'post', '/queue/:id', controllers.write.posts.acceptQueuedPost);
-	setupApiRoute(router, 'delete', '/queue/:id', controllers.write.posts.removeQueuedPost);
-	setupApiRoute(router, 'put', '/queue/:id', controllers.write.posts.editQueuedPost);
-	setupApiRoute(router, 'post', '/queue/:id/notify', [middleware.checkRequired.bind(null, ['message'])], controllers.write.posts.notifyQueuedPostOwner);
-
-	setupApiRoute(router, 'put', '/:pid/owner', [middleware.ensureLoggedIn, middleware.assert.post, middleware.checkRequired.bind(null, ['uid'])], controllers.write.posts.changeOwner);
-	setupApiRoute(router, 'post', '/owner', [middleware.ensureLoggedIn, middleware.checkRequired.bind(null, ['pids', 'uid'])], controllers.write.posts.changeOwner);
-
 	// Shorthand route to access post routes by topic index
 	// TODO: upgrade to express 5
 

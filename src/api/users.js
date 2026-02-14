@@ -57,7 +57,7 @@ usersAPI.update = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const oldUserData = await db.getObjectFields(`user:${data.uid}`, ['email', 'username']);
+	const oldUserData = await user.getUserFields(data.uid, ['email', 'username']);
 	if (!oldUserData || !oldUserData.username) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -86,14 +86,14 @@ usersAPI.update = async function (caller, data) {
 
 	await user.updateProfile(caller.uid, data);
 	const userData = await user.getUserData(data.uid);
-	const oldUsernameEscaped = validator.escape(String(oldUserData.username));
-	if (userData.username !== oldUsernameEscaped) {
+
+	if (userData.username !== oldUserData.username) {
 		await events.log({
 			type: 'username-change',
 			uid: caller.uid,
 			targetUid: data.uid,
 			ip: caller.ip,
-			oldUsername: oldUsernameEscaped,
+			oldUsername: oldUserData.username,
 			newUsername: userData.username,
 		});
 	}
@@ -615,14 +615,15 @@ usersAPI.changePicture = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
+	const { type, url } = data;
+	let picture = '';
+
 	await user.checkMinReputation(caller.uid, data.uid, 'min:rep:profile-picture');
 	const canEdit = await privileges.users.canEdit(caller.uid, data.uid);
 	if (!canEdit) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const { type, url } = data;
-	let picture;
 	if (type === 'default') {
 		picture = '';
 	} else if (type === 'uploaded') {
