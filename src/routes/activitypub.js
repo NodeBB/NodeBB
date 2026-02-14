@@ -47,6 +47,5 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getCategoryOutbox));
 	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.postOutbox));
 	app.get('/category/:cid{/:slug}', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.category));
-
 	app.get('/message/:mid', [...middlewares, middleware.assert.message], controllers.activitypub.actors.message);
 };
