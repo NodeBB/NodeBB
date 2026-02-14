@@ -13,6 +13,7 @@
 .text-md { font-size: 1.125rem!important; } // 18px on harmony
 .text-sm { font-size: 0.875rem!important; } // 14px on harmony
 .text-xs { font-size: 0.75rem!important; } // 12px on harmony
+.text-tabular { font-variant-numeric: tabular-nums!important; }
 
 .overscroll-behavior-contain {
 	overscroll-behavior: contain;

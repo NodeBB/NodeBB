@@ -36,8 +36,8 @@ define('admin/advanced/cache', ['alerts'], function (alerts) {
 			const rows = tbody.find('tr').toArray();
 
 			// Toggle sort direction
-			const ascending = !!$(this).data('asc');
-			$(this).data('asc', !ascending);
+			const ascending = $(this).data('sort') === 'asc';
+			$(this).data('sort', !ascending ? 'asc' : 'desc');
 
 			// Remove sort indicators from all headers
 			table.find('th i').addClass('invisible');

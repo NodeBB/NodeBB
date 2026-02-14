@@ -14,19 +14,19 @@
 				<table id="cache-table" class="table table-sm text-sm">
 					<thead>
 						<tr>
-							<th><a href="#" class="text-reset">name</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">capacity</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">count</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">size</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">hits</a> <i class="fa-solid fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">misses</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">hit ratio</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">hits/sec</a> <i class="fa-solid invisible fa-sort-down"></i></th>
-							<th class="text-end"><a href="#" class="text-reset">ttl</a> <i class="fa-solid invisible fa-sort-down"></i></th>
+							<th><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">name</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">capacity</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">count</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">size</a></th>
+							<th class="text-end" data-sort="asc"><i class="fa-solid fa-sort-down"></i> <a href="#" class="text-reset">hits</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">misses</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">hit ratio</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">hits/sec</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">ttl</a></th>
 							<th></td>
 						</tr>
 					</thead>
-					<tbody class="text-xs">
+					<tbody class="text-xs text-tabular">
 					{{{ each caches }}}
 					<tr class="align-middle">
 						<td data-sort-value="{./name}">
