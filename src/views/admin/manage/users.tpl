@@ -121,7 +121,7 @@
 						{{{ each users }}}
 						<tr class="user-row align-middle">
 							<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
-							<td class="text-end">{users.uid}</td>
+							<td class="text-end text-tabular">{users.uid}</td>
 							<td>
 								<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger{{{ if !users.banned }}} hidden{{{ end }}}"></i>
 								<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
@@ -172,9 +172,9 @@
 								</div>
 								{{{ end }}}
 							</td>
-							<td class="text-end">{formattedNumber(users.postcount)}</td>
-							<td class="text-end" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
-							<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
+							<td class="text-end text-tabular">{formattedNumber(users.postcount)}</td>
+							<td class="text-end text-tabular" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
+							<td class="text-end text-tabular">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
 							<td><span class="timeago" title="{users.joindateISO}"></span></td>
 							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
 						</tr>

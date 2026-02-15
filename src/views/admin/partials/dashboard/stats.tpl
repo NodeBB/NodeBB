@@ -17,7 +17,7 @@
 				{{{ end }}}
 			</tr>
 		</thead>
-		<tbody class="text-sm">
+		<tbody class="text-sm text-tabular">
 			{{{ each stats }}}
 			<tr>
 				<td class="fw-bold text-nowrap">
@@ -31,15 +31,15 @@
 				</td>
 				<td class="text-end">{formattedNumber(./yesterday)}</td>
 				<td class="text-end">{formattedNumber(./today)}</td>
-				<td class="{./dayTextClass}"><small>{./dayIncrease}%</small></td>
+				<td class="{./dayTextClass} text-end"><small>{./dayIncrease}%</small></td>
 
 				<td class="text-end">{formattedNumber(./lastweek)}</td>
 				<td class="text-end">{formattedNumber(./thisweek)}</td>
-				<td class="{./weekTextClass}"><small>{./weekIncrease}%</small></td>
+				<td class="{./weekTextClass} text-end"><small>{./weekIncrease}%</small></td>
 
 				<td class="text-end">{formattedNumber(./lastmonth)}</td>
 				<td class="text-end">{formattedNumber(./thismonth)}</td>
-				<td class="{./monthTextClass}"><small>{./monthIncrease}%</small></td>
+				<td class="{./monthTextClass} text-end"><small>{./monthIncrease}%</small></td>
 				{{{ if !hideAllTime}}}
 				<td class="text-end">{formattedNumber(./alltime)}</td>
 				{{{ end }}}
