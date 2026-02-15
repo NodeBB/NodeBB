@@ -36,5 +36,6 @@
 				{{{ end }}}
 			</tbody>
 		</table>
+		<!-- IMPORT admin/partials/paginator.tpl -->
 	</div>
 </div>

@@ -15,6 +15,7 @@ const user = require('../../user');
 const topics = require('../../topics');
 const utils = require('../../utils');
 const emailer = require('../../emailer');
+const pagination = require('../../pagination');
 
 const dashboardController = module.exports;
 
@@ -341,24 +342,30 @@ dashboardController.getTopics = async (req, res) => {
 };
 
 dashboardController.getSearches = async (req, res) => {
-	let start = 0;
-	let end = 0;
+	const page = parseInt(req.query.page, 10) || 1;
+	const perPage = 25;
+	const start = Math.max(0, (page - 1) * perPage);
+	const stop = start + perPage - 1;
+
+	let startDate = 0;
+	let endDate = 0;
 	if (req.query.start) {
-		start = new Date(req.query.start);
-		start.setHours(24, 0, 0, 0);
-		end = new Date();
-		end.setHours(24, 0, 0, 0);
+		startDate = new Date(req.query.start);
+		startDate.setHours(24, 0, 0, 0);
+		endDate = new Date();
+		endDate.setHours(24, 0, 0, 0);
 	}
 	if (req.query.end) {
-		end = new Date(req.query.end);
-		end.setHours(24, 0, 0, 0);
+		endDate = new Date(req.query.end);
+		endDate.setHours(24, 0, 0, 0);
 	}
 
 	let searches;
-	if (start && end && start <= end) {
-		const daysArr = [start];
-		const nextDay = new Date(start.getTime());
-		while (nextDay < end) {
+	let itemCount;
+	if (startDate && endDate && startDate <= endDate) {
+		const daysArr = [startDate];
+		const nextDay = new Date(startDate.getTime());
+		while (nextDay < endDate) {
 			nextDay.setDate(nextDay.getDate() + 1);
 			nextDay.setHours(0, 0, 0, 0);
 			daysArr.push(new Date(nextDay.getTime()));
@@ -382,13 +389,21 @@ dashboardController.getSearches = async (req, res) => {
 		searches = Object.keys(map)
 			.map(key => ({ value: key, score: map[key] }))
 			.sort((a, b) => b.score - a.score);
+		itemCount = searches.length;
+		searches = searches.slice(start, stop + 1);
 	} else {
-		searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 99);
+		[itemCount, searches] = await Promise.all([
+			db.sortedSetCard('searches:all'),
+			db.getSortedSetRevRangeWithScores('searches:all', start, stop),
+		]);
 	}
+
+	const pageCount = Math.ceil(itemCount / perPage);
 
 	res.render('admin/dashboard/searches', {
 		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
 		startDate: req.query.start ? validator.escape(String(req.query.start)) : null,
 		endDate: req.query.end ? validator.escape(String(req.query.end)) : null,
+		pagination: pagination.create(page, pageCount, req.query),
 	});
 };
