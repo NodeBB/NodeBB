@@ -101,7 +101,7 @@ async function getUsers(req, res) {
 	]);
 
 	await render(req, res, {
-		users: users.filter(user => user && parseInt(user.uid, 10)),
+		users: users.filter(user => user && user.userslug),
 		page: page,
 		pageCount: Math.max(1, Math.ceil(count / resultsPerPage)),
 		resultsPerPage: resultsPerPage,
