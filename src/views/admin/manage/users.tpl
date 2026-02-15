@@ -120,7 +120,7 @@
 					<tbody>
 						{{{ each users }}}
 						<tr class="user-row align-middle">
-							<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
+							<td><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 							<td class="text-end text-tabular">{users.uid}</td>
 							<td>
 								<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger{{{ if !users.banned }}} hidden{{{ end }}}"></i>

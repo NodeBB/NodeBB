@@ -19,8 +19,8 @@
 
 		<table class="table table-sm text-sm search-list w-100">
 			<thead>
-				<th>[[admin/dashboard:search-term]]</th>
 				<th class="text-end">[[admin/dashboard:search-count]]</th>
+				<th>[[admin/dashboard:search-term]]</th>
 			</thead>
 			<tbody>
 				{{{ if !searches.length}}}
@@ -30,8 +30,8 @@
 				{{{ end }}}
 				{{{ each searches }}}
 				<tr>
+					<td class="w-0 text-end text-nowrap text-tabular">{formattedNumber(searches.score)}</td>
 					<td class="w-100 text-truncate" style="max-width:1px;">{searches.value}</td>
-					<td class="w-0 text-end text-nowrap">{formattedNumber(searches.score)}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>
