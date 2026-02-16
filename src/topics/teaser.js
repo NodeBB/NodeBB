@@ -80,7 +80,7 @@ module.exports = function (Topics) {
 			return tidToPost[topic.tid];
 		});
 
-		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.hooks.fire('filter:teasers.get', { teasers, uid });
 		return result.teasers;
 	};
 
