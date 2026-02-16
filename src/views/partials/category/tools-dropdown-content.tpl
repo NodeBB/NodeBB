@@ -1,4 +1,4 @@
-<button class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+<button class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle h-100" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
 	<i class="fa fa-fw fa-gear text-primary"></i>
 	<span class="visible-md-inline visible-lg-inline fw-semibold">[[topic:thread-tools.title]]</span>
 	<span component="topic/selected/badge" class="badge rounded-pill bg-secondary"></span>

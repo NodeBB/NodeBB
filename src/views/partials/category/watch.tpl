@@ -1,6 +1,6 @@
 {{{ if config.loggedIn }}}
 <div class="dropdown bottom-sheet" component="topic/watch">
-	<button class="btn btn-ghost btn-sm ff-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+	<button class="btn btn-ghost btn-sm ff-secondary dropdown-toggle h-100" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
 		<span component="category/watching/menu" class="d-flex gap-2 align-items-center {{{ if !./isWatched }}} hidden{{{ end }}}"><i class="fa fa-fw fa-bell-o text-primary"></i><span class="visible-md-inline visible-lg-inline fw-semibold">[[category:watching]]</span></span>
 
 		<span component="category/tracking/menu"  class="d-flex gap-2 align-items-center {{{ if !./isTracked }}} hidden{{{ end }}}"><i class="fa fa-fw fa-inbox text-primary"></i><span class="visible-md-inline visible-lg-inline fw-semibold">[[category:tracking]]</span></span>
