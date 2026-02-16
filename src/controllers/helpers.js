@@ -396,7 +396,7 @@ helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			url: `${nconf.get('relative_path')}/post/${encodeURIComponent(post.pid)}`,
 			timestampISO: post.timestampISO,
 			pid: post.pid,
 			tid: post.tid,
