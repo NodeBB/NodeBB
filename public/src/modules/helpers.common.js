@@ -20,7 +20,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 		membershipBtn,
 		spawnPrivilegeStates,
 		localeToHTML,
-		renderTopicImage,
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
@@ -220,13 +219,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function localeToHTML(locale, fallback) {
 		locale = locale || fallback || 'en-GB';
 		return locale.replace('_', '-');
-	}
-
-	function renderTopicImage(topicObj) {
-		if (topicObj.thumb) {
-			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.displayname + '" />';
-		}
-		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.displayname + '" />';
 	}
 
 	function renderDigestAvatar(block) {
