@@ -225,6 +225,7 @@
     "no-more-next-post": "คุณได้มีโพสต์อีกในกระทู้นี้",
     "open-composer": "เปิดคอมโพสเซอร์",
     "post-quick-reply": "ตอบกลับอย่างรวดเร็ว",
+    "post-quick-create": "Quick post",
     "navigator.index": "โพสต์ %1 จากทั้งหมด %2",
     "navigator.unread": "ยังไม่ได้อ่าน %1",
     "upvote-post": "โหวดขึ้นโพสต์นี้",

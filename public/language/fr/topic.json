@@ -225,6 +225,7 @@
     "no-more-next-post": "Vous n'avez plus de messages dans ce sujet",
     "open-composer": "Ouvrir l'éditeur",
     "post-quick-reply": "Réponse rapide",
+    "post-quick-create": "Quick post",
     "navigator.index": "Message %1 sur %2",
     "navigator.unread": "%1 non lu",
     "upvote-post": "Vote positif",
