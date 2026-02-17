@@ -46,7 +46,7 @@ searchApi.categories = async (caller, data) => {
 	}
 
 	let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass'], data.parentCid);
-	categoriesData = categoriesData.slice(0, 200);
+	categoriesData = categoriesData.slice(0, 1000);
 
 	categoriesData.forEach((category) => {
 		category.selected = data.selectedCids ? data.selectedCids.includes(category.cid) : false;
