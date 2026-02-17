@@ -22,7 +22,7 @@
 							<td class="fw-bold text-end">[[admin/development/info:uptime]]</td>
 						</tr>
 					</thead>
-					<tbody class="text-xs">
+					<tbody class="text-xs text-tabular">
 					{{{ each info }}}
 					<tr>
 						<td>{info.os.hostname}:{info.process.port}</td>
