@@ -133,6 +133,8 @@ get:
                     type: number
                   maxPostsPerPage:
                     type: number
+                  maxUnreadCutoff:
+                    type: number
                   title:
                     type: string
               - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs

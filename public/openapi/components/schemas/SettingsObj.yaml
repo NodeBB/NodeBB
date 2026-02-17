@@ -4,6 +4,9 @@ Settings:
     showemail:
       type: boolean
       description: Show user email in profile page
+    unreadCutoff:
+      type: number
+      description: Number of days after which a topic is no longer considered unread
     usePagination:
       type: boolean
       description: Toggles between pagination (when enabled), or infinite scrolling (when disabled)

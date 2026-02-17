@@ -48,7 +48,7 @@ module.exports = function (User) {
 	};
 
 	async function onSettingsLoaded(uid, settings) {
-		const data = await plugins.hooks.fire('filter:user.getSettings', { uid: uid, settings: settings });
+		const data = await plugins.hooks.fire('filter:user.getSettings', { uid, settings });
 		settings = data.settings;
 
 		const defaultTopicsPerPage = meta.config.topicsPerPage;
@@ -59,6 +59,12 @@ module.exports = function (User) {
 		settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
 		settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 		settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
+		settings.unreadCutoff = Math.max(1, Math.min(
+			Math.max(meta.config.unreadCutoff, 14),
+			settings.unreadCutoff ?
+				parseInt(settings.unreadCutoff, 10) :
+				meta.config.unreadCutoff,
+		));
 		settings.topicsPerPage = Math.max(1, Math.min(
 			meta.config.maxTopicsPerPage,
 			settings.topicsPerPage ?
@@ -116,6 +122,60 @@ module.exports = function (User) {
 	}
 
 	User.saveSettings = async function (uid, data) {
+		await validateSettings(data);
+
+		data.userLang = data.userLang || meta.config.defaultLang;
+
+		plugins.hooks.fire('action:user.saveSettings', { uid: uid, settings: data });
+
+		const settings = {
+			showemail: data.showemail,
+			showfullname: data.showfullname,
+			unreadCutoff: data.unreadCutoff,
+			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
+			dailyDigestFreq: data.dailyDigestFreq || 'off',
+			usePagination: data.usePagination,
+			topicsPerPage: data.topicsPerPage,
+			postsPerPage: data.postsPerPage,
+			userLang: data.userLang,
+			acpLang: data.acpLang || meta.config.defaultLang,
+			followTopicsOnCreate: data.followTopicsOnCreate,
+			followTopicsOnReply: data.followTopicsOnReply,
+			disableIncomingChats: data.disableIncomingChats,
+			topicSearchEnabled: data.topicSearchEnabled,
+			updateUrlWithPostIndex: data.updateUrlWithPostIndex,
+			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
+			scrollToMyPost: data.scrollToMyPost,
+			upvoteNotifFreq: data.upvoteNotifFreq,
+			bootswatchSkin: data.bootswatchSkin,
+			categoryWatchState: data.categoryWatchState,
+			categoryTopicSort: data.categoryTopicSort,
+			topicPostSort: data.topicPostSort,
+			chatAllowList: data.chatAllowList,
+			chatDenyList: data.chatDenyList,
+		};
+		const notificationTypes = await notifications.getAllNotificationTypes();
+		notificationTypes.forEach((notificationType) => {
+			if (data[notificationType]) {
+				settings[notificationType] = data[notificationType];
+			}
+		});
+		const result = await plugins.hooks.fire('filter:user.saveSettings', { uid, settings, data });
+		await db.setObject(`user:${uid}:settings`, result.settings);
+		await User.updateDigestSetting(uid, data.dailyDigestFreq);
+		return await User.getSettings(uid);
+	};
+
+	async function validateSettings(data) {
+		const maxUnreadCutoff = Math.max(meta.config.unreadCutoff, 14);
+		if (
+			!data.unreadCutoff ||
+			parseInt(data.unreadCutoff, 10) <= 0 ||
+			parseInt(data.unreadCutoff, 10) > maxUnreadCutoff
+		) {
+			throw new Error(`[[error:invalid-unread-cutoff, ${maxUnreadCutoff}]]`);
+		}
+
 		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
 		if (
 			!data.postsPerPage ||
@@ -141,46 +201,7 @@ module.exports = function (User) {
 		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
 			throw new Error('[[error:invalid-language]]');
 		}
-		data.userLang = data.userLang || meta.config.defaultLang;
-
-		plugins.hooks.fire('action:user.saveSettings', { uid: uid, settings: data });
-
-		const settings = {
-			showemail: data.showemail,
-			showfullname: data.showfullname,
-			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
-			dailyDigestFreq: data.dailyDigestFreq || 'off',
-			usePagination: data.usePagination,
-			topicsPerPage: Math.min(data.topicsPerPage, parseInt(maxTopicsPerPage, 10) || 20),
-			postsPerPage: Math.min(data.postsPerPage, parseInt(maxPostsPerPage, 10) || 20),
-			userLang: data.userLang || meta.config.defaultLang,
-			acpLang: data.acpLang || meta.config.defaultLang,
-			followTopicsOnCreate: data.followTopicsOnCreate,
-			followTopicsOnReply: data.followTopicsOnReply,
-			disableIncomingChats: data.disableIncomingChats,
-			topicSearchEnabled: data.topicSearchEnabled,
-			updateUrlWithPostIndex: data.updateUrlWithPostIndex,
-			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
-			scrollToMyPost: data.scrollToMyPost,
-			upvoteNotifFreq: data.upvoteNotifFreq,
-			bootswatchSkin: data.bootswatchSkin,
-			categoryWatchState: data.categoryWatchState,
-			categoryTopicSort: data.categoryTopicSort,
-			topicPostSort: data.topicPostSort,
-			chatAllowList: data.chatAllowList,
-			chatDenyList: data.chatDenyList,
-		};
-		const notificationTypes = await notifications.getAllNotificationTypes();
-		notificationTypes.forEach((notificationType) => {
-			if (data[notificationType]) {
-				settings[notificationType] = data[notificationType];
-			}
-		});
-		const result = await plugins.hooks.fire('filter:user.saveSettings', { uid: uid, settings: settings, data: data });
-		await db.setObject(`user:${uid}:settings`, result.settings);
-		await User.updateDigestSetting(uid, data.dailyDigestFreq);
-		return await User.getSettings(uid);
-	};
+	}
 
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {
 		await db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);

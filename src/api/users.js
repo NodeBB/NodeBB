@@ -132,6 +132,7 @@ usersAPI.updateSettings = async function (caller, data) {
 
 	let defaults = await user.getSettings(0);
 	defaults = {
+		unreadCutoff: defaults.unreadCutoff,
 		postsPerPage: defaults.postsPerPage,
 		topicsPerPage: defaults.topicsPerPage,
 		userLang: defaults.userLang,

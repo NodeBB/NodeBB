@@ -37,6 +37,7 @@
 	"folder-exists": "Folder exists",
 
 	"invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+	"invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
 
 	"username-taken": "Username taken",
 	"email-taken": "Email address is already taken.",
