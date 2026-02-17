@@ -32,6 +32,7 @@
     "invalid-path": "Ugyldig sti",
     "folder-exists": "Mappa eksisterer",
     "invalid-pagination-value": "Ugyldig pagineringsverdi, må vere minst %1 og høgst %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Brukarnamn er allereie tatt",
     "email-taken": "E-postadressa er allereie i bruk.",
     "email-nochange": "Den oppgitte e-posten er den same som e-posten som allereie er registrert.",

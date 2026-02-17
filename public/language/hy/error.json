@@ -32,6 +32,7 @@
     "invalid-path": "Անվավեր ուղի",
     "folder-exists": "Թղթապանակ գոյություն ունի",
     "invalid-pagination-value": "Էջավորման անվավեր արժեքը, պետք է լինի առնվազն %1 և առավելագույնը %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Օգտագործողի անունը վերցված է",
     "email-taken": "Email address is already taken.",
     "email-nochange": "Մուտքագրված էլփոստը նույնն է, ինչ ֆայլում արդեն առկա էլ.",

@@ -32,6 +32,7 @@
     "invalid-path": "Некорректный путь",
     "folder-exists": "Папка существует",
     "invalid-pagination-value": "Неправильно указан номер страницы. Значение должно быть в диапазоне от %1 до %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Это имя пользователя уже занято",
     "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
