@@ -269,7 +269,9 @@ module.exports = function (Topics) {
 			Topics.syncBacklinks(postData),
 			Topics.markAsRead([tid], uid),
 		]);
-		activitypub.notes.syncUserInboxes(tid, uid);
+		if (utils.isNumber(postOwner) && postData.category.cid === -1) {
+			activitypub.notes.syncUserInboxes(tid, uid);
+		}
 
 		// Returned data is a superset of post summary data
 		postData.user = userInfo;
