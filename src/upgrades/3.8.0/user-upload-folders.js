@@ -38,7 +38,6 @@ module.exports = {
 		if (batchBuffer.length > 0) {
 			await processBatch(batchBuffer);
 			progress.incr(batchBuffer.length);
-			batchBuffer = [];
 		}
 
 		async function processBatch(files) {
