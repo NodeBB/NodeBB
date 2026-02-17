@@ -2,7 +2,6 @@
 'use strict';
 
 const db = require('../../database');
-const batch = require('../../batch');
 
 module.exports = {
 	name: 'Add id field to all topic events',
@@ -12,11 +11,11 @@ module.exports = {
 
 		let nextId = await db.getObjectField('global', 'nextTopicEventId');
 		nextId = parseInt(nextId, 10) || 0;
+		progress.total = Math.max(0, nextId - 1);
 		const ids = [];
-		for (let i = 1; i < nextId; i++) {
-			ids.push(i);
-		}
-		await batch.processArray(ids, async (eids) => {
+		const BATCH_SIZE = 500;
+
+		async function processBatch(eids) {
 			const eventData = await db.getObjects(eids.map(eid => `topicEvent:${eid}`));
 			const bulkSet = [];
 			eventData.forEach((event, idx) => {
@@ -28,10 +27,20 @@ module.exports = {
 				}
 			});
 			await db.setObjectBulk(bulkSet);
-			progress.incr(eids.length);
-		}, {
-			batch: 500,
-			progress,
-		});
+		}
+
+		for (let i = 1; i < nextId; i++) {
+			ids.push(i);
+			if (ids.length >= BATCH_SIZE) {
+				await processBatch(ids);
+				progress.incr(ids.length);
+				ids.length = 0;
+			}
+		}
+
+		if (ids.length > 0) {
+			await processBatch(ids);
+			progress.incr(ids.length);
+		}
 	},
 };
