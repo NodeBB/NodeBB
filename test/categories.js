@@ -247,6 +247,7 @@ describe('Categories', () => {
 			assert.deepStrictEqual(
 				data.topics.map(t => t.title),
 				['[[topic:topic-is-deleted]]', 'Test Topic Title', 'Test Topic Title'],
+				JSON.stringify(data.topics, null, 2),
 			);
 		});
 
