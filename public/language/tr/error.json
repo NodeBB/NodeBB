@@ -32,6 +32,7 @@
     "invalid-path": "Geçersiz yol",
     "folder-exists": "Dosya mevcut",
     "invalid-pagination-value": "Geçersiz sayfa numarası girdiniz, en az %1 ve en fazla %2 olabilir",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "Bu e-posta adresi halihazırda  başka biri tarafından kullanılıyor. ",
     "email-nochange": "Girdiğiniz e-posta var olan e-posta ile aynı",

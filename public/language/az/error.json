@@ -32,6 +32,7 @@
     "invalid-path": "Yanlış yol",
     "folder-exists": "Qovluq mövcuddur",
     "invalid-pagination-value": "Yanlış səhifələmə dəyəri, ən azı %1 və ən çoxu %2 olmalıdır",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "İstifadəçi adı artıq məşğuldur",
     "email-taken": "E-poçt ünvanı artıq götürülüb.",
     "email-nochange": "Daxil edilmiş e-poçt artıq faylda olan e-poçt ilə eynidir.",

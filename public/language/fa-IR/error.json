@@ -32,6 +32,7 @@
     "invalid-path": "مسیر نامعتبر",
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "ارزش گذاری صفحه نامعتبر است، کمترین مقدار <strong>%1</strong> و بیشترین مقدار <strong>%2</strong> باید باشد",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",

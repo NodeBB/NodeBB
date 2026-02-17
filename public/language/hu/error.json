@@ -32,6 +32,7 @@
     "invalid-path": "Érvénytelen útvonal",
     "folder-exists": "Mappa létezik",
     "invalid-pagination-value": "Érvénytelen lapozási érték, legalább %1 kell lennie és legfeljebb %2 -nak/nek",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Foglalt felhasználónév",
     "email-taken": "Ez az email cím már foglalt.",
     "email-nochange": "The email entered is the same as the email already on file.",

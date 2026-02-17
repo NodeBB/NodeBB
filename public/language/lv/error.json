@@ -32,6 +32,7 @@
     "invalid-path": "Invalid path",
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Nederīgs vienību skaits, ir jābūt vismaz %1 un ne vairāk kā %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Lietotājvārds jau izmantots",
     "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",

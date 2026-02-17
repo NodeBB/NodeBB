@@ -32,6 +32,7 @@
     "invalid-path": "Invalid path",
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Nombor halaman tidak sah, mesti tidak kurang dari %1 dan tidak lebih dari %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Nama pengguna telah digunakan",
     "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",

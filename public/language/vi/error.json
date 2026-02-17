@@ -32,6 +32,7 @@
     "invalid-path": "Đường dẫn không hợp lệ",
     "folder-exists": "Thư mục tồn tại",
     "invalid-pagination-value": "Giá trị phân trang không hợp lệ, tối thiểu là %1 và tối đa là %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Tên đăng nhập có rồi",
     "email-taken": "Địa chỉ email đã được sử dụng.",
     "email-nochange": "Email đã nhập giống với email đã có trong tệp.",

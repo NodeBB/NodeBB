@@ -32,6 +32,7 @@
     "invalid-path": "Gabim",
     "folder-exists": "Ky dokument ekziston",
     "invalid-pagination-value": "Vlera e pasaktë e faqes, duhet të jetë së paku %1 dhe maksimumi %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Username është i zënë",
     "email-taken": "Email address is already taken.",
     "email-nochange": "Email-i i futur është i njëjtë me emailin ekzistues në sistem.",

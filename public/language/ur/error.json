@@ -32,6 +32,7 @@
     "invalid-path": "غلط راستہ",
     "folder-exists": "اس نام کا فولڈر پہلے سے موجود ہے",
     "invalid-pagination-value": "غلط صفحہ بندی کی قدر، یہ %1 اور %2 کے درمیان ہونی چاہیے",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "صارف نام پہلے سے لیا جا چکا ہے",
     "email-taken": "ای میل ایڈریس پہلے سے لیا جا چکا ہے۔",
     "email-nochange": "درج کردہ ای میل موجودہ ای میل جیسا ہی ہے۔",
