@@ -32,6 +32,8 @@ define('forum/chats', [
 
 	let chatNavWrapper = null;
 
+	let isAtBottom = true;
+
 	$(window).on('action:ajaxify.start', function () {
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
 		if (ajaxify.data.template.chats) {
@@ -90,7 +92,10 @@ define('forum/chats', [
 		const mainWrapper = $('[component="chat/main-wrapper"]');
 		const chatMessageContent = $('[component="chat/message/content"]');
 		const chatControls = components.get('chat/controls');
-		Chats.addSendHandlers(roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
+		const chatInput = $('[component="chat/input"]');
+
+		Chats.addSendHandlers(roomId, chatInput, $('.expanded-chat button[data-action="send"]'));
+		Chats.addMobileResizeHandler(chatMessageContent);
 		Chats.addPopoutHandler();
 		Chats.addActionHandlers(components.get('chat/message/window'), roomId);
 		Chats.addManageHandler(roomId, chatControls.find('[data-action="manage"]'));
@@ -105,18 +110,16 @@ define('forum/chats', [
 		Chats.addTypingHandler(mainWrapper, roomId);
 		Chats.addIPHandler(mainWrapper);
 		Chats.addCopyTextLinkHandler(mainWrapper);
-		Chats.createAutoComplete(roomId, $('[component="chat/input"]'));
+		Chats.createAutoComplete(roomId, chatInput);
 		Chats.addUploadHandler({
 			dragDropAreaEl: $('.chats-full'),
-			pasteEl: $('[component="chat/input"]'),
+			pasteEl: chatInput,
 			uploadFormEl: $('[component="chat/upload"]'),
 			uploadBtnEl: $('[component="chat/upload/button"]'),
-			inputEl: $('[component="chat/input"]'),
+			inputEl: chatInput,
 		});
 
-		$('[data-action="close"]').on('click', function () {
-			Chats.switchChat();
-		});
+		$('[data-action="close"]').on('click', () => Chats.switchChat());
 		userList.init(roomId, mainWrapper);
 		Chats.addNotificationSettingHandler(roomId, mainWrapper);
 		messageSearch.init(roomId, mainWrapper);
@@ -295,7 +298,12 @@ define('forum/chats', [
 		let loading = false;
 		let previousScrollTop = el.scrollTop();
 		let currentScrollTop = previousScrollTop;
-		el.off('scroll').on('scroll', utils.debounce(async function () {
+
+		el.off('scroll');
+		el.on('scroll', function () {
+			isAtBottom = messages.isAtBottom(el);
+		});
+		el.on('scroll', utils.debounce(async function () {
 			if (parseInt(el.attr('data-ignore-next-scroll'), 10) === 1) {
 				el.removeAttr('data-ignore-next-scroll');
 				previousScrollTop = el.scrollTop();
@@ -544,6 +552,16 @@ define('forum/chats', [
 			inputEl.focus();
 			return false;
 		});
+	};
+
+	Chats.addMobileResizeHandler = function (chatMessageContent) {
+		if (utils.isMobile() && window.visualViewport) {
+			window.visualViewport.addEventListener('resize', function () {
+				if (isAtBottom) {
+					messages.scrollToBottom(chatMessageContent);
+				}
+			});
+		}
 	};
 
 	Chats.createAutoComplete = function (roomId, element, options = {}) {

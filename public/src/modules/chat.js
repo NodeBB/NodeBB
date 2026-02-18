@@ -20,7 +20,7 @@ define('chat', [
 			roomId: roomId,
 			uid: uid,
 		}).then((hookData) => {
-			if (!hookData.modal) {
+			if (!hookData.modal || utils.isMobile()) {
 				return ajaxify.go(`/chats/${roomId}`);
 			}
 			if (Chat.modalExists(roomId)) {
