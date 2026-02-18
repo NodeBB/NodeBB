@@ -177,6 +177,7 @@
     "sso.dissociate": "Frånkoppla",
     "sso.dissociate-confirm-title": "Bekräfta frånkoppling",
     "sso.dissociate-confirm": "Är du säker att du vill koppla bort ditt konto från %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Senaste flaggade",
     "info.profile": "Profile",
     "info.post": "Post",

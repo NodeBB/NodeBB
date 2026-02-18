@@ -177,6 +177,7 @@
     "sso.dissociate": "Odloučit",
     "sso.dissociate-confirm-title": "Potvrdit odloučení",
     "sso.dissociate-confirm": "Jste si jist/a, že chcete odloučit váš účet z %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Poslední označené",
     "info.profile": "Profil",
     "info.post": "Příspěvek",

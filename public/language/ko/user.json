@@ -177,6 +177,7 @@
     "sso.dissociate": "분리",
     "sso.dissociate-confirm-title": "분리 확인",
     "sso.dissociate-confirm": "계정을 %1에서 분리하시겠습니까?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "최신 신고",
     "info.profile": "Profile",
     "info.post": "Post",

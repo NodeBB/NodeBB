@@ -177,6 +177,7 @@
     "sso.dissociate": "แยกตัวออก",
     "sso.dissociate-confirm-title": "ยืนยันการแยกตัวออก",
     "sso.dissociate-confirm": "คุณแน่ใจหรือไม่ว่าต้องการแยกบัญชีออกจาก %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "รายงานล่าสุด",
     "info.profile": "โปรไฟล์",
     "info.post": "โพสต์",

@@ -177,6 +177,7 @@
     "sso.dissociate": "Shkëputeni",
     "sso.dissociate-confirm-title": "Konfirmo shkëputjen",
     "sso.dissociate-confirm": "Jeni i sigurt që dëshironi të shkëputni llogarinë tuaj nga %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Raportimet më të fundit",
     "info.profile": "Profile",
     "info.post": "Post",

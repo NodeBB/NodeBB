@@ -177,6 +177,7 @@
     "sso.dissociate": "Від'єднати",
     "sso.dissociate-confirm-title": "Підтвердьте від'єднання",
     "sso.dissociate-confirm": "Ви впевнені, що хочете від'єднати свій акаунт від %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Останні скарги",
     "info.profile": "Profile",
     "info.post": "Post",

@@ -177,6 +177,7 @@
     "sso.dissociate": "Separer",
     "sso.dissociate-confirm-title": "Bekreft seperasjon",
     "sso.dissociate-confirm": "Er du sikker på at du vil separere kontoen din fra %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Siste rapporteringer",
     "info.profile": "Profil",
     "info.post": "Post",

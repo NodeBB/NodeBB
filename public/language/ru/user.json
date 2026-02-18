@@ -177,6 +177,7 @@
     "sso.dissociate": "Открепить",
     "sso.dissociate-confirm-title": "Подтверждение открепления",
     "sso.dissociate-confirm": "Вы уверены, что хотите открепить свою учётную запись от %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Последние жалобы",
     "info.profile": "Профиль",
     "info.post": "Пост",

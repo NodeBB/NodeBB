@@ -177,6 +177,7 @@
     "sso.dissociate": "فصل",
     "sso.dissociate-confirm-title": "تأكيد الفصل",
     "sso.dissociate-confirm": "هل تريد بالتأكيد فصل حسابك عن %1؟",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "أحدث العلامات",
     "info.profile": "Profile",
     "info.post": "Post",

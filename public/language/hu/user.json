@@ -177,6 +177,7 @@
     "sso.dissociate": "Leválasztás",
     "sso.dissociate-confirm-title": "Leválasztás megerősítése",
     "sso.dissociate-confirm": "Biztos le akarod választani a fiókod (%1) ?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Legutóbbi megjelölések",
     "info.profile": "Profile",
     "info.post": "Post",

@@ -177,6 +177,7 @@
     "sso.dissociate": "Dissociar",
     "sso.dissociate-confirm-title": "Confirmar Dissociação",
     "sso.dissociate-confirm": "Are you sure you wish to dissociate your account from %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Denúncias Recentes",
     "info.profile": "Profile",
     "info.post": "Post",

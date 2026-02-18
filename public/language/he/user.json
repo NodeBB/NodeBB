@@ -177,6 +177,7 @@
     "sso.dissociate": "ביטול שיוך",
     "sso.dissociate-confirm-title": "אישור ביטול שיוך",
     "sso.dissociate-confirm": "האם לבטל שיוך חשבונכם מ%1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "דיווחים אחרונים",
     "info.profile": "פרופיל",
     "info.post": "פוסט",

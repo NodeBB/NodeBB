@@ -177,6 +177,7 @@
     "sso.dissociate": "Atsaistīt",
     "sso.dissociate-confirm-title": "Apstiprināt atsaistīšanu",
     "sso.dissociate-confirm": "Vai tiešām vēlies atsaistīt Tavu kontu no %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Jaunākās atzīmes",
     "info.profile": "Profile",
     "info.post": "Post",

@@ -177,6 +177,7 @@
     "sso.dissociate": "Fjern tilknyting",
     "sso.dissociate-confirm-title": "Stadfest fjerning av tilknyting",
     "sso.dissociate-confirm": "Er du sikker på at du vil fjerne tilknytinga til kontoen din frå %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Siste rapportar",
     "info.profile": "Profil",
     "info.post": "Innlegg",

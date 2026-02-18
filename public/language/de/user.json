@@ -177,6 +177,7 @@
     "sso.dissociate": "Trennen",
     "sso.dissociate-confirm-title": "Trennung bestätigen",
     "sso.dissociate-confirm": "Bist du sicher, dass du dein Konto von %1 trennen willst?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Neuste Meldungen",
     "info.profile": "Profil",
     "info.post": "Beitrag",

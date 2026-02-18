@@ -177,6 +177,7 @@
     "sso.dissociate": "Ontkoppelen",
     "sso.dissociate-confirm-title": "Bevestig ontkoppeling",
     "sso.dissociate-confirm": "Weet u zeker dat u uw account wilt ontkoppelen van %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Laatste markeringen",
     "info.profile": "Profile",
     "info.post": "Post",

@@ -177,6 +177,7 @@
     "sso.dissociate": "لغو اتصال",
     "sso.dissociate-confirm-title": "جدا‌سازی را تایید کنید",
     "sso.dissociate-confirm": "آیا مطمئنی می خواهی  اتصال  %1 به حسابت را لغو کنی؟",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "آخرین نشانه گذاری‌ها",
     "info.profile": "نمایه",
     "info.post": "فرسته",

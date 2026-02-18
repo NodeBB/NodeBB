@@ -177,6 +177,7 @@
     "sso.dissociate": "離脱する",
     "sso.dissociate-confirm-title": "離脱の際に確認する",
     "sso.dissociate-confirm": "アカウントと %1 の関連付けを解除しますか？",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "最近のフラグ",
     "info.profile": "Profile",
     "info.post": "Post",

@@ -177,6 +177,7 @@
     "sso.dissociate": "解除關聯",
     "sso.dissociate-confirm-title": "確認解除關聯",
     "sso.dissociate-confirm": "您確定要將您的帳戶與 %1 解除關聯嗎？",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "最新舉報",
     "info.profile": "個人檔案",
     "info.post": "貼文",

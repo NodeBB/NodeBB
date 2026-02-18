@@ -177,6 +177,7 @@
     "sso.dissociate": "Одвоји",
     "sso.dissociate-confirm-title": "Потврди одвајање",
     "sso.dissociate-confirm": "Да ли сте сигурни да желите да одвојите овај налог од %1?",
+    "info.invited-by": "Invited by",
     "info.latest-flags": "Најновији означени заставицом",
     "info.profile": "Profile",
     "info.post": "Post",
