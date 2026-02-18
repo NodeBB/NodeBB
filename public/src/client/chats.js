@@ -75,6 +75,12 @@ define('forum/chats', [
 			messages.toggleScrollUpAlert(chatContentEl);
 			const scrollToEl = chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`);
 			messages.scrollToMessageAfterImageLoad(chatContentEl, scrollToEl);
+			if (scrollToEl) {
+				scrollToEl.addClass('highlight-pulse');
+				setTimeout(() => {
+					scrollToEl.removeClass('highlight-pulse');
+				}, 5000);
+			}
 		} else {
 			messages.scrollToBottomAfterImageLoad(chatContentEl);
 		}

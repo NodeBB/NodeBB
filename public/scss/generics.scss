@@ -195,3 +195,20 @@ $hidden-elements-for-first-last-child: br, hr;
 img.emoji {
 	height: $font-size-lg;
 }
+
+.highlight-pulse {
+	animation: pulse-grow 1.5s ease-in-out 3;
+	transform-origin: center;
+	z-index: 10;
+}
+
+@keyframes pulse-grow {
+	0%, 100% {
+		transform: scale(1);
+		background-color: transparent;
+	}
+	50% {
+		transform: scale(1.005);
+		background-color: var(--bs-tertiary-bg);
+	}
+}
