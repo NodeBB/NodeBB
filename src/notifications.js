@@ -21,16 +21,21 @@ const ttlCache = require('./cache/ttl');
 
 const Notifications = module.exports;
 
-// ttlcache for email-only chat notifications
-const notificationCache = ttlCache({
-	name: 'notification-email-cache',
-	max: 1000,
-	ttl: (meta.config.notificationSendDelay || 60) * 1000,
-	noDisposeOnSet: true,
-	dispose: sendEmail,
-});
-
-Notifications.delayCache = notificationCache;
+// used to delay email notifications,
+// and cancel them if the notification is already read
+let notificationCache = null;
+function getOrCreateCache() {
+	if (!notificationCache) {
+		notificationCache = ttlCache({
+			name: 'notification-email-cache',
+			max: 1000,
+			ttl: (meta.config.notificationSendDelay || 60) * 1000,
+			noDisposeOnSet: true,
+			dispose: sendEmail,
+		});
+	}
+	return notificationCache;
+}
 
 Notifications.baseTypes = [
 	'notificationType_upvote',
@@ -276,19 +281,20 @@ async function pushToUids(uids, notification) {
 
 	if (results.uidsToEmail.length) {
 		const delayNotificationTypes = ['new-chat', 'new-group-chat', 'new-public-chat'];
+		const delayCache = getOrCreateCache();
 		if (delayNotificationTypes.includes(notification.type)) {
 			const cacheKey = `${notification.mergeId}|${results.uidsToEmail.join(',')}`;
-			const payload = notificationCache.get(cacheKey);
+			const payload = delayCache.get(cacheKey);
 			let { bodyLong } = notification;
 			if (payload !== undefined) {
 				bodyLong = [payload.notification.bodyLong, bodyLong].join('\n');
 			}
-			notificationCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
+			delayCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
 			if (notification.bodyLong.length >= 1000) {
-				notificationCache.delete(cacheKey);
+				delayCache.delete(cacheKey);
 			}
 		} else {
-			notificationCache.set(`delayed:nid:${notification.nid}`, {
+			delayCache.set(`delayed:nid:${notification.nid}`, {
 				uids: results.uidsToEmail,
 				notification,
 			});
