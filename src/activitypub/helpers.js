@@ -66,8 +66,15 @@ Helpers.isUri = (value) => {
 };
 
 Helpers.assertAccept = (accept) => {
-	if (!accept) return false;
-	const normalized = accept.split(',').map(s => s.trim().replace(/\s*;\s*/g, ';')).join(',');
+	if (!accept) {
+		return false;
+	}
+
+	const normalized = accept
+		.split(',')
+		.map(s => s.trim().replace(/\s*;\s*/g, ';')) // spec allows spaces around semi-colon
+		.join(',');
+
 	return activitypub._constants.acceptableTypes.some(type => normalized.includes(type));
 };
 

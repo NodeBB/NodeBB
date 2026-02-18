@@ -19,9 +19,14 @@ middleware.pageview = async (req, res, next) => {
 middleware.assertS2S = async function (req, res, next) {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
 	// Therefore, manual header parsing is used here.
-	const { accept, 'content-type': contentType } = req.headers;
+	let { accept, 'content-type': contentType } = req.headers;
 	if (!(accept || contentType)) {
 		return next('route');
+	}
+
+	// Normalize content-type
+	if (contentType) {
+		contentType = contentType.trim().replace(/\s*;\s*/g, ';'); // spec allows spaces around semi-colon
 	}
 
 	const pass = activitypub.helpers.assertAccept(accept) ||
