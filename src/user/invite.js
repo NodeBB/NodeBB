@@ -78,6 +78,11 @@ module.exports = function (User) {
 		return email && email === enteredEmail;
 	};
 
+	User.getEmailFromToken = async function (token) {
+		if (!token) return null;
+		return await db.getObjectField(`invitation:token:${token}`, 'email');
+	};
+
 	User.confirmIfInviteEmailIsUsed = async function (token, enteredEmail, uid) {
 		if (!enteredEmail) {
 			return;
@@ -100,11 +105,9 @@ module.exports = function (User) {
 			return;
 		}
 
-		if (!groupsToJoin || groupsToJoin.length < 1) {
-			return;
+		if (Array.isArray(groupsToJoin) && groupsToJoin.length) {
+			await groups.join(groupsToJoin, uid);
 		}
-
-		await groups.join(groupsToJoin, uid);
 	};
 
 	User.deleteInvitation = async function (invitedBy, email) {

@@ -32,12 +32,12 @@ async function registerAndLoginUser(req, res, userData) {
 	if (deferRegistration) {
 		userData.register = true;
 		req.session.registration = userData;
-
+		const next = `${nconf.get('relative_path')}/register/complete`;
 		if (req.body?.noscript === 'true') {
-			res.redirect(`${nconf.get('relative_path')}/register/complete`);
+			res.redirect(next);
 			return;
 		}
-		res.json({ next: `${nconf.get('relative_path')}/register/complete` });
+		res.json({ next });
 		return;
 	}
 
@@ -71,6 +71,7 @@ async function registerAndLoginUser(req, res, userData) {
 	return complete;
 }
 
+// POST /register
 authenticationController.register = async function (req, res) {
 	const registrationType = meta.config.registrationType || 'normal';
 
@@ -109,6 +110,7 @@ authenticationController.register = async function (req, res) {
 	}
 };
 
+// POST /register/complete
 authenticationController.registerComplete = async function (req, res) {
 	try {
 		// For the interstitials that respond, execute the callback with the form body
@@ -185,6 +187,7 @@ authenticationController.registerComplete = async function (req, res) {
 	}
 };
 
+// POST /register/abort
 authenticationController.registerAbort = async (req, res) => {
 	if (req.uid && req.session.registration) {
 		// Email is the only cancelable interstitial
@@ -204,6 +207,7 @@ authenticationController.registerAbort = async (req, res) => {
 	});
 };
 
+// POST /login
 authenticationController.login = async (req, res, next) => {
 	let { strategy } = await plugins.hooks.fire('filter:login.override', { req, strategy: 'local' });
 	if (!passport._strategy(strategy)) {

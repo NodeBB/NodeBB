@@ -192,6 +192,7 @@ Controllers.register = async function (req, res, next) {
 	}
 };
 
+// GET /register/complete
 Controllers.registerInterstitial = async function (req, res, next) {
 	if (!req.session.hasOwnProperty('registration')) {
 		return res.redirect(`${nconf.get('relative_path')}/register`);
