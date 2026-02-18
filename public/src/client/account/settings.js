@@ -20,7 +20,7 @@ define('forum/account/settings', [
 		savedSkin = $('#bootswatchSkin').length && $('#bootswatchSkin').val();
 		header.init();
 
-		$('[data-bs-toggle]').tooltip();
+		$('.account [data-bs-toggle="tooltip"]').tooltip();
 
 		$('#submitBtn').on('click', function () {
 			const settings = loadSettings();
