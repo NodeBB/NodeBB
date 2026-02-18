@@ -598,19 +598,19 @@ Mocks.notes.public = async (post) => {
 	let tag = null;
 	let followersUrl;
 
-	let name;
-	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
+	let { titleRaw: name, generatedTitle } = await topics.getTopicFields(post.tid, ['title', 'generatedTitle']);
+	if (generatedTitle) {
+		name = null;
+	}
 
 	if (post.toPid) { // direct reply
 		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
-		name = `Re: ${name}`;
 
 		const parentId = await posts.getPostField(post.toPid, 'uid');
 		followersUrl = await user.getUserField(parentId, 'followersUrl');
 		to.add(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
-		name = `Re: ${name}`;
 
 		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 		followersUrl = await user.getUserField(post.topic.uid, 'followersUrl');
@@ -798,15 +798,15 @@ Mocks.notes.public = async (post) => {
 		type: isArticle ? 'Article' : 'Note',
 		to: Array.from(to),
 		cc: Array.from(cc),
-		inReplyTo,
+		...(inReplyTo && { inReplyTo }),
+		...(name && { name }),
 		published,
-		updated,
+		...(updated && { updated }),
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context,
 		audience,
-		summary,
-		name,
+		...(summary && { summary }),
 		preview,
 		content: post.content,
 		source,
