@@ -577,9 +577,11 @@ define('forum/chats', [
 					'z-index': 20000,
 					flex: 0,
 					top: 'inherit',
+					'max-height': '250px',
+					overflow: 'auto',
 				},
 				placement: 'top',
-				className: `chat-autocomplete-dropdown-${roomId} dropdown-menu textcomplete-dropdown`,
+				className: `chat-autocomplete-dropdown-${roomId} dropdown-menu textcomplete-dropdown ghost-scrollbar`,
 				...options,
 			},
 		};
