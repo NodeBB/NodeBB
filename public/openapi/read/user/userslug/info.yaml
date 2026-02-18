@@ -20,6 +20,23 @@ get:
               - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
               - type: object
                 properties:
+                  invitedBy:
+                    type: object
+                    nullable: true
+                    properties:
+                      username:
+                        type: string
+                      userslug:
+                        type: string
+                      picture:
+                        type: string
+                      uid:
+                        type: number
+                      icon:text:
+                        type: string
+                      icon:bgColor:
+                        type: string
+
                   history:
                     type: object
                     properties:

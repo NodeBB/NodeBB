@@ -83,6 +83,16 @@ module.exports = function (User) {
 		return await db.getObjectField(`invitation:token:${token}`, 'email');
 	};
 
+	User.setInviterUid = async function (uid, token) {
+		if (!token) {
+			return;
+		}
+		const inviterUid = await db.getObjectField(`invitation:token:${token}`, 'inviter');
+		if (inviterUid) {
+			await User.setUserField(uid, 'invitedBy', inviterUid);
+		}
+	};
+
 	User.confirmIfInviteEmailIsUsed = async function (token, enteredEmail, uid) {
 		if (!enteredEmail) {
 			return;

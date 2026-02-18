@@ -59,6 +59,7 @@ async function registerAndLoginUser(req, res, userData) {
 		await Promise.all([
 			user.confirmIfInviteEmailIsUsed(userData.token, userData.email, uid),
 			user.joinGroupsFromInvitation(uid, userData.token),
+			user.setInviterUid(uid, userData.token),
 		]);
 	}
 	await user.deleteInvitationKey(userData.email, userData.token);
