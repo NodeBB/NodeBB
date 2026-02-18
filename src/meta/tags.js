@@ -19,7 +19,8 @@ Tags.parse = async (req, data, meta, link) => {
 	// Meta tags
 	const defaultTags = isAPI ? [] : [{
 		name: 'viewport',
-		content: 'width=device-width, initial-scale=1.0',
+		// https://stackoverflow.com/a/77815388 for resizes-content
+		content: 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content',
 	}, {
 		name: 'content-type',
 		content: 'text/html; charset=UTF-8',
