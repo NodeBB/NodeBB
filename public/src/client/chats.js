@@ -628,7 +628,12 @@ define('forum/chats', [
 				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
 				ajaxify.updateTitle(ajaxify.data.title);
 				$('body').toggleClass('chat-loaded', !!roomId);
-				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
+				if (!utils.isMobile()) {
+					mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip({
+						trigger: 'hover',
+						container: '#content',
+					});
+				}
 				Chats.setActive(roomId);
 				Chats.addEventListeners();
 				hooks.fire('action:chat.loaded', $('.chats-full'));
