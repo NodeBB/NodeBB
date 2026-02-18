@@ -36,7 +36,6 @@ get:
                         type: string
                       icon:bgColor:
                         type: string
-
                   history:
                     type: object
                     properties:
