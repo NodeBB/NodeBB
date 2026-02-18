@@ -157,6 +157,15 @@ define('forum/chats/messages', [
 		}
 	};
 
+	messages.scrollToMessageAfterImageLoad = function (containerEl, msgEl) {
+		if (containerEl.length && msgEl.length) {
+			const msgBodyEls = containerEl[0].querySelectorAll('[component="chat/message/body"]');
+			imagesLoaded(msgBodyEls, () => {
+				msgEl[0].scrollIntoView(true);
+			});
+		}
+	};
+
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl && containerEl.length) {
 			containerEl.attr('data-ignore-next-scroll', 1);
