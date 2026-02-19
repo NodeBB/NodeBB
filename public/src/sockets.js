@@ -58,7 +58,7 @@ app = window.app || {};
 
 		if (showAlert) {
 			$('#reconnect-alert')
-				.removeClass('alert-danger alert-success pointer')
+				.removeClass('alert-danger alert-success pointer hide')
 				.addClass('alert-warning show')
 				.find('p')
 				.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
@@ -78,7 +78,7 @@ app = window.app || {};
 			reconnectEl.html('<i class="fa fa-plug text-danger"></i>');
 
 			$('#reconnect-alert')
-				.removeClass('alert-warning alert-success')
+				.removeClass('alert-warning alert-success hide')
 				.addClass('alert-danger pointer show')
 				.find('p')
 				.translateText('[[error:socket-reconnect-failed]]')
@@ -153,14 +153,14 @@ app = window.app || {};
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
 
 			reconnectAlert
-				.removeClass('alert-warning')
+				.removeClass('alert-warning alert-danger')
 				.addClass('alert-success')
 				.find('p')
 				.translateText(`[[global:reconnected-message, ${config.siteTitle}]]`);
 
 			setTimeout(() => {
 				reconnectEl.removeClass('active').addClass('hide');
-				reconnectAlert.removeClass('show');
+				reconnectAlert.removeClass('show').addClass('hide');
 			}, 3000);
 
 
