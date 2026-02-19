@@ -551,7 +551,7 @@ $(document).ready(function () {
 			if (ev.state.url === null && returnPath !== undefined) {
 				window.history.replaceState({
 					url: returnPath,
-				}, '', returnPath);
+				}, '');
 			} else if (ev.state.url !== undefined) {
 				ajaxify.handleTransientElements();
 				ajaxify.go(ev.state.url, function () {
