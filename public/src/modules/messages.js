@@ -3,7 +3,6 @@
 define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], function (bootbox, translator, storage, alerts, hooks) {
 	const messages = {};
 
-	let showWelcomeMessage;
 	let registerMessage;
 
 	messages.show = function () {
