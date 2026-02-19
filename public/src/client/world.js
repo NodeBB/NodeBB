@@ -71,11 +71,12 @@ define('forum/world', [
 					return;
 				}
 
-				loadTopicsAfter(after, direction, (payload) => {
+				loadTopicsAfter(after, direction, (payload, callback) => {
 					app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
 						const listEl = document.getElementById('world-feed');
 						$(listEl).append(html);
 						html.find('.timeago').timeago();
+						callback();
 					});
 				});
 			});
