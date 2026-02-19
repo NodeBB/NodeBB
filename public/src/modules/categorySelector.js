@@ -29,7 +29,7 @@ define('categorySelector', [
 				return false;
 			}
 			selector.selectCategory(categoryEl.attr('data-cid'));
-			return onSelect(selector.selectedCategory);
+			return onSelect({ ...selector.selectedCategory, categoryEl });
 		});
 
 		let defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
@@ -37,8 +37,8 @@ define('categorySelector', [
 		translator.translate(defaultSelectHtml, (translated) => {
 			defaultSelectHtml = translated;
 		});
-		selector.selectCategory = function (cid) {
-			const categoryEl = selector.el.find('[data-cid="' + cid + '"]');
+		selector.selectCategory = function (cid, selectedEl = null) {
+			const categoryEl = selectedEl || selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
 				cid: cid,
 				name: categoryEl.attr('data-name'),
