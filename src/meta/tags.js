@@ -65,7 +65,7 @@ Tags.parse = async (req, data, meta, link) => {
 	const defaultLinks = isAPI ? [] : [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: `${faviconPath}${cacheBuster}`,
+		href: `${faviconPath}${cacheBuster ? `?${cacheBuster}` : ''}`,
 	}, {
 		rel: 'manifest',
 		href: `${relative_path}/manifest.webmanifest`,
