@@ -51,19 +51,20 @@ app = window.app || {};
 		}
 	});
 
-	window.app.reconnect = () => {
+	window.app.reconnect = (showAlert = false) => {
 		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}
 
-		const reconnectEl = $('#reconnect');
-		$('#reconnect-alert')
-			.removeClass('alert-danger pointer')
-			.addClass('alert-warning')
-			.find('p')
-			.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+		if (showAlert) {
+			$('#reconnect-alert')
+				.removeClass('alert-danger alert-success pointer')
+				.addClass('alert-warning show')
+				.find('p')
+				.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+		}
 
-		reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+		$('#reconnect').html('<i class="fa fa-spinner fa-spin"></i>');
 		socket.connect();
 	};
 
@@ -77,13 +78,13 @@ app = window.app || {};
 			reconnectEl.html('<i class="fa fa-plug text-danger"></i>');
 
 			$('#reconnect-alert')
-				.removeClass('alert-warning')
-				.addClass('alert-danger pointer')
+				.removeClass('alert-warning alert-success')
+				.addClass('alert-danger pointer show')
 				.find('p')
 				.translateText('[[error:socket-reconnect-failed]]')
-				.one('click', app.reconnect);
+				.one('click', () => app.reconnect(true));
 
-			$(window).one('focus', app.reconnect);
+			$(window).one('focus', () => app.reconnect(true));
 		});
 
 		socket.on('checkSession', function (uid) {
@@ -150,8 +151,19 @@ app = window.app || {};
 
 			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
-			reconnectAlert.removeClass('show');
-			setTimeout(() => reconnectAlert.addClass('hide'), 100);
+
+			reconnectAlert
+				.removeClass('alert-warning')
+				.addClass('alert-success')
+				.find('p')
+				.translateText(`[[global:reconnected-message, ${config.siteTitle}]]`);
+
+			setTimeout(() => {
+				reconnectEl.removeClass('active').addClass('hide');
+				reconnectAlert.removeClass('show');
+			}, 3000);
+
+
 			reconnecting = false;
 
 			reJoinCurrentRoom();
@@ -171,10 +183,6 @@ app = window.app || {};
 			}
 
 			hooks.fire('action:reconnected');
-
-			setTimeout(function () {
-				reconnectEl.removeClass('active').addClass('hide');
-			}, 3000);
 		}
 	}
 
@@ -196,12 +204,8 @@ app = window.app || {};
 
 	function onReconnecting() {
 		const reconnectEl = $('#reconnect');
-		const reconnectAlert = $('#reconnect-alert');
-
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-			reconnectAlert.removeClass('hide');
-			setTimeout(() => reconnectAlert.addClass('show'), 100);
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
@@ -216,7 +220,7 @@ app = window.app || {};
 			if (!socket.connected) {
 				onReconnecting();
 			}
-		}, 2000);
+		}, 5000);
 
 		hooks.fire('action:disconnected');
 	}
