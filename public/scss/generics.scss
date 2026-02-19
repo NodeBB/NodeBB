@@ -212,3 +212,17 @@ img.emoji {
 		background-color: var(--bs-tertiary-bg);
 	}
 }
+
+@include media-breakpoint-up(md) {
+	.flex-md-shrink-50 {
+		flex: 1 1 50% !important;
+		min-width: 50% !important;
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.flex-md-shrink-50 {
+		flex: 1 1 100%;
+		min-width: 0;
+	}
+}
