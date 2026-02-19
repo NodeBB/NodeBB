@@ -72,19 +72,8 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 	function showQueryStringMessages() {
 		const params = utils.params({ full: true });
 		const originalQs = params.toString();
-		showWelcomeMessage = params.has('loggedin');
+
 		registerMessage = params.get('register');
-
-		if (showWelcomeMessage) {
-			alerts.alert({
-				type: 'success',
-				title: '[[global:welcome-back]] ' + app.user.username + '!',
-				message: '[[global:you-have-successfully-logged-in]]',
-				timeout: 5000,
-			});
-
-			params.delete('loggedin');
-		}
 
 		if (registerMessage) {
 			bootbox.alert({
