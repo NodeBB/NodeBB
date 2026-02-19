@@ -19,7 +19,7 @@ define('forum/world', [
 		});
 
 		sort.handleSort('categoryTopicSort', 'world');
-
+		handleImages();
 		handleButtons();
 		handleHelp();
 
@@ -29,7 +29,6 @@ define('forum/world', [
 			categoryTools.removeListeners();
 			socket.removeListener('event:new_post', onNewPost);
 		});
-
 
 		// Add label to sort
 		const sortLabelEl = document.getElementById('sort-label');
@@ -76,6 +75,7 @@ define('forum/world', [
 						const listEl = document.getElementById('world-feed');
 						$(listEl).append(html);
 						html.find('.timeago').timeago();
+						handleImages();
 						callback();
 					});
 				});
@@ -204,6 +204,10 @@ define('forum/world', [
 		});
 	}
 
+	function handleImages() {
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
+	}
+
 	function updateDropdowns(modified_cids, state) {
 		modified_cids.forEach(function (cid) {
 			const category = $('[data-cid="' + cid + '"]');
@@ -229,6 +233,7 @@ define('forum/world', [
 		}
 
 		feedEl.prepend(...html);
+		handleImages();
 	}
 
 	return World;
