@@ -31,8 +31,10 @@
 				(function () {
 					const el = document.querySelector('[component="chat/message/content"]');
 					if (el) {
-						el.scrollTop = el.scrollHeight;
-						el.classList.remove('invisible');
+						requestAnimationFrame(() => {
+							el.scrollTop = el.scrollHeight;
+							el.classList.remove('invisible');
+						});
 					}
 				})();
 			</script>
