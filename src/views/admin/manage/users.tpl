@@ -110,8 +110,8 @@
 							<th data-sort="postcount" class="text-end pointer text-nowrap">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th data-sort="reputation" class="text-end pointer text-nowrap">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th data-sort="flags" class="text-end pointer text-nowrap">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-							<th data-sort="joindate" class="pointer text-nowrap">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-							<th data-sort="lastonline" class="pointer text-nowrap">[[admin/manage/users:users.last-online]] {{{if sort_lastonline}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+							<th data-sort="joindate" class="pointer text-nowrap text-center">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+							<th data-sort="lastonline" class="pointer text-nowrap text-center">[[admin/manage/users:users.last-online]] {{{if sort_lastonline}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -162,8 +162,8 @@
 							<td class="text-end text-tabular">{formattedNumber(users.postcount)}</td>
 							<td class="text-end text-tabular" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
 							<td class="text-end text-tabular">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
-							<td class="text-nowrap"><span class="timeago" title="{users.joindateISO}"></span></td>
-							<td class="text-nowrap"><span class="timeago" title="{users.lastonlineISO}"></span></td>
+							<td class="text-center text-nowrap"><span class="timeago" title="{users.joindateISO}"></span></td>
+							<td class="text-center text-nowrap"><span class="timeago" title="{users.lastonlineISO}"></span></td>
 							<td>
 								<div class="dropdown hover-visible">
 									<button class="btn btn-light btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-list text-muted"></i></button>
