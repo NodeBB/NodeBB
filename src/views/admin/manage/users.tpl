@@ -173,6 +173,7 @@
 											<a class="dropdown-item rounded-1" role="menuitem">{./uid}</a>
 											<button data-copy="{./uid}" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
 										</li>
+										{{{ if ./ips.length }}}
 										<li class="dropdown-divider"></li>
 										<li><h6 class="dropdown-header">[[admin/manage/users:users.recent-ips]]</h6></li>
 										{{{ each ./ips }}}
@@ -180,6 +181,7 @@
 											<a class="dropdown-item rounded-1" role="menuitem">{@value}</a>
 											<button data-copy="{@value}" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
 										</li>
+										{{{ end }}}
 										{{{ end }}}
 									</ul>
 								</div>
