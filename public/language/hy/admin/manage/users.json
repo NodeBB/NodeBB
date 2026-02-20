@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 ամիս",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "օգտատիրոջ անուն ",
 	"users.email": "էլ. փոստ",
 	"users.no-email": "էլ. փոստ չկա",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Վավերացումը ընթանում է",
 	"users.validation-expired": "Վավերացման ժամկետը սպառվել է",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "հետհաշվարկ",
 	"users.reputation": "վարկանիշ",
 	"users.flags": "դրոշներ",

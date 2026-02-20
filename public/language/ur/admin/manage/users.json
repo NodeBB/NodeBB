@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 ماہ",
 
 	"users.uid": "صارف آئی ڈی",
+	"users.user-id": "User ID",
 	"users.username": "صارف نام",
 	"users.email": "ای میل",
 	"users.no-email": "(کوئی ای میل نہیں)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "تصدیق زیر التوا",
 	"users.validation-expired": "تصدیق کی میعاد ختم",
 	"users.ip": "آئی پی ایڈریس",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "پوسٹس کی تعداد",
 	"users.reputation": "ساکھ",
 	"users.flags": "رپورٹس",
