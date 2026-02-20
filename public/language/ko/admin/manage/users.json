@@ -55,6 +55,7 @@
 	"inactive.12-months": "12개월",
 
 	"users.uid": "UID",
+	"users.user-id": "User ID",
 	"users.username": "사용자 이름",
 	"users.email": "이메일",
 	"users.no-email": "(이메일 없음)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "유효성 검사 대기 중",
 	"users.validation-expired": "유효성 검사 만료됨",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "게시물 수",
 	"users.reputation": "평판",
 	"users.flags": "신고",

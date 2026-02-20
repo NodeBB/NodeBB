@@ -55,6 +55,7 @@
 	"inactive.12-months": "Inaktiv i 12 månader",
 
 	"users.uid": "Brukar-ID",
+	"users.user-id": "User ID",
 	"users.username": "Brukarnamn",
 	"users.email": "E-post",
 	"users.no-email": "Ingen e-post",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Validering ventar",
 	"users.validation-expired": "Validering utløpt",
 	"users.ip": "IP-adresse",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "Innleggstal",
 	"users.reputation": "Omdømme",
 	"users.flags": "Rapportar",

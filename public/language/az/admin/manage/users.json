@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 ay",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "istifadəçi adı",
 	"users.email": "e-poçt",
 	"users.no-email": "(e-poçt yoxdur)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Təsdiqləmə gözlənir",
 	"users.validation-expired": "Təsdiqləmə müddəti başa çatıb",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "postcount",
 	"users.reputation": "reputasiya",
 	"users.flags": "işarələr",

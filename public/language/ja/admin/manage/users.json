@@ -55,6 +55,7 @@
 	"inactive.12-months": "12ヶ月",
 
 	"users.uid": "ユーザーID",
+	"users.user-id": "User ID",
 	"users.username": "ユーザー名",
 	"users.email": "メール",
 	"users.no-email": "(no email)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Validation Pending",
 	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "投稿カウント",
 	"users.reputation": "評価",
 	"users.flags": "フラグ",

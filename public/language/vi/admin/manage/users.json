@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 tháng",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "tên đăng nhập",
 	"users.email": "thư điện tử",
 	"users.no-email": "(không có email)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Đang Chờ Xác Thực",
 	"users.validation-expired": "Đã Hết Hạn Xác Thực",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "số bài",
 	"users.reputation": "uy tín",
 	"users.flags": "gắn cờ",

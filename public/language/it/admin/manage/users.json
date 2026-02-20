@@ -23,7 +23,7 @@
 	"purge": "Elimina <strong>Utente(i)</strong> e <strong>Contenuto</strong>",
 	"download-csv": "Scarica CSV",
 	"custom-user-fields": "Campi utente personalizzati",
-	"custom-reasons": "Custom Reasons",
+	"custom-reasons": "Motivi personalizzati",
 	"manage-groups": "Gestisci Gruppi",
 	"set-reputation": "Imposta reputazione",
 	"add-group": "Aggiungi Gruppo",
@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 Mesi",
 
 	"users.uid": "id utente",
+	"users.user-id": "User ID",
 	"users.username": "username",
 	"users.email": "email",
 	"users.no-email": "(nessuna email)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Validazione in sospeso",
 	"users.validation-expired": "Convalida scaduta",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "numero di post",
 	"users.reputation": "reputazione",
 	"users.flags": "segnalazioni",
@@ -78,11 +80,11 @@
 
 	"temp-ban.length": "Lunghezza",
 	"temp-ban.reason": "Ragione <span class=\"text-muted\">(Opzionale)</span>",
-	"temp-ban.select-reason": "Select a reason",
+	"temp-ban.select-reason": "Seleziona un motivo",
 	"temp-ban.hours": "Ore",
 	"temp-ban.days": "Giorni",
 	"temp-ban.explanation": "Inserisci la lunghezza del tempo di ban. Nota: quando il tempo è 0 il ban è considerato permanente.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
+	"temp-mute.explanation": "Inserisci la durata del silenziamento. Tieni presente che un tempo pari a 0 sarà considerato un silenziamento permanente.",
 
 	"alerts.confirm-ban": "Vuoi realmente bannare questo utente <strong>permanentemente</strong>?",
 	"alerts.confirm-ban-multi": "Vuoi realmente bannare questi utenti <strong>permanentemente</strong>?",

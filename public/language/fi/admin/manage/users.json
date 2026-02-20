@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 kuukautta",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "käyttäjätunnus",
 	"users.email": "sähköposti",
 	"users.no-email": "(sähköpostiosoitetta ei ole)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Odottaa vahvistusta",
 	"users.validation-expired": "Vahvistus on erääntynyt",
 	"users.ip": "IP-osoite",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "viestimäärä",
 	"users.reputation": "maine",
 	"users.flags": "liputukset",

@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 חודשים",
 
 	"users.uid": "מזהה משתמש (ID)",
+	"users.user-id": "User ID",
 	"users.username": "שם משתמש",
 	"users.email": "דוא\"ל",
 	"users.no-email": "(אין כתובת דוא\"ל)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "ממתין לאימות",
 	"users.validation-expired": "תוקף האימות פג",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "מספר פוסטים",
 	"users.reputation": "מוניטין",
 	"users.flags": "דיווחים",

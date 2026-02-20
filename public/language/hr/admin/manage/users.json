@@ -55,6 +55,7 @@
 	"inactive.12-months": "12 mjeseci",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "korisničko ime",
 	"users.email": "email",
 	"users.no-email": "(no email)",
@@ -63,6 +64,7 @@
 	"users.validation-pending": "Validation Pending",
 	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "postcount",
 	"users.reputation": "reputacija",
 	"users.flags": "flags",
