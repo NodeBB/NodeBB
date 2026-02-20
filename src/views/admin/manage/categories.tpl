@@ -13,9 +13,9 @@
 					[[admin/manage/categories:add-category]]
 					<i class="fa fa-caret-down"></i>
 				</button>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li><button class="btn-link dropdown-item" href="#" data-action="create">[[admin/manage/categories:add-local-category]]</button></li>
-					<li><button class="btn-link dropdown-item" href="#" data-action="add">[[admin/manage/categories:add-remote-category]]</button></li>
+				<ul class="dropdown-menu dropdown-menu-end p-1">
+					<li><a class="dropdown-item rounded-1" href="#" data-action="create">[[admin/manage/categories:add-local-category]]</a></li>
+					<li><a class="dropdown-item rounded-1" href="#" data-action="add">[[admin/manage/categories:add-remote-category]]</a></li>
 				</ul>
 			</div>
 		</div>
