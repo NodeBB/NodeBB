@@ -20,7 +20,7 @@ Thumbs.exists = async function (tid, path) {
 	return thumbs.includes(path);
 };
 
-Thumbs.load = async function (topicData) {
+Thumbs.load = async function (topicData, options = {}) {
 	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
 	const mainPostData = await posts.getPostsFields(mainPids, ['attachments', 'uploads']);
 	const hasUploads = mainPostData.map(p => Array.isArray(p.uploads) && p.uploads.length > 0);
@@ -33,9 +33,10 @@ Thumbs.load = async function (topicData) {
 
 	const topicsWithThumbs = topicData.filter((tid, idx) => hasThumbs[idx]);
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
-	const thumbs = await loadFromTopicData(topicsWithThumbs, {
-		thumbsOnly: meta.config.showPostUploadsAsThumbnails !== 1,
-	});
+	const thumbsOnly = Object.hasOwn(options, 'thumbsOnly') ?
+		options.thumbsOnly :
+		meta.config.showPostUploadsAsThumbnails !== 1;
+	const thumbs = await loadFromTopicData(topicsWithThumbs, { thumbsOnly });
 
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
 	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));
