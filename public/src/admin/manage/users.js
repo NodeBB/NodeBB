@@ -142,10 +142,6 @@ define('admin/manage/users', [
 			unselectAll();
 		}
 
-		$('[component="user/select/all"]').on('click', function () {
-			$('.users-table [component="user/select/single"]').prop('checked', $(this).is(':checked'));
-		});
-
 		$('.manage-groups').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
@@ -494,6 +490,10 @@ define('admin/manage/users', [
 			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
 		});
 
+		$('[component="user/select/all"]').on('click', function () {
+			$('.users-table [component="user/select/single"]').prop('checked', $(this).is(':checked'));
+		});
+
 		const tableEl = document.querySelector('.users-table');
 		const actionBtn = document.getElementById('action-dropdown');
 		tableEl.addEventListener('change', (e) => {
@@ -506,6 +506,57 @@ define('admin/manage/users', [
 					actionBtn.setAttribute('disabled', 'disabled');
 				}
 			}
+		});
+
+		let lastSelectedUser;
+		$(tableEl).on('click', '[component="user/select/single"]', function (ev) {
+			function selectRange(clickedUserRow) {
+				function selectIndexRange(start, end, isChecked) {
+					if (start > end) {
+						const tmp = start;
+						start = end;
+						end = tmp;
+					}
+					const rows = $('.user-row');
+					for (let i = start; i <= end; i += 1) {
+						rows.eq(i).find('.form-check-input').prop('checked', isChecked).trigger('change');
+					}
+				}
+
+				if (!lastSelectedUser) {
+					lastSelectedUser = $('.user-row').first();
+				}
+
+				const isClickedSelected = clickedUserRow.find('[component="user/select/single"]').is(':checked');
+
+				const clickedIndex = clickedUserRow.index();
+				const lastIndex = lastSelectedUser.index();
+				selectIndexRange(clickedIndex, lastIndex, isClickedSelected);
+			}
+
+			const checkBox = $(this);
+			const userRow = checkBox.parents('.user-row');
+			if (ev.shiftKey) {
+				selectRange(userRow);
+				lastSelectedUser = userRow;
+				return true;
+			}
+
+			lastSelectedUser = userRow;
+		});
+
+		$('[data-copy]').on('click', function () {
+			const btn = $(this);
+			navigator.clipboard.writeText(this.getAttribute('data-copy'));
+			btn.find('i')
+				.removeClass('fa-copy')
+				.addClass('fa-check text-success');
+			setTimeout(() => {
+				btn.find('i')
+					.removeClass('fa-check text-success')
+					.addClass('fa-copy');
+			}, 2000);
+			return false;
 		});
 
 		function handleDelete(confirmMsg, path) {

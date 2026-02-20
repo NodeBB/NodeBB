@@ -105,78 +105,85 @@
 				<table class="table users-table text-sm">
 					<thead>
 						<tr>
-							<th><input component="user/select/all" type="checkbox"/></th>
-							<th class="text-end text-muted">[[admin/manage/users:users.uid]]</th>
-							<th class="text-muted">[[admin/manage/users:users.username]]</th>
-							<th class="text-muted">[[admin/manage/users:users.email]]</th>
-							<th class="text-muted">[[admin/manage/users:users.ip]]</th>
+							<th><div><input class="form-check-input border-secondary" component="user/select/all" type="checkbox"/></div></th>
+							<th class="text-muted">[[admin/manage/users:users.username]] / [[admin/manage/users:users.email]]</th>
 							<th data-sort="postcount" class="text-end pointer text-nowrap">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th data-sort="reputation" class="text-end pointer text-nowrap">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th data-sort="flags" class="text-end pointer text-nowrap">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th data-sort="joindate" class="pointer text-nowrap">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 							<th data-sort="lastonline" class="pointer text-nowrap">[[admin/manage/users:users.last-online]] {{{if sort_lastonline}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						{{{ each users }}}
-						<tr class="user-row align-middle">
-							<td><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
-							<td class="text-end text-tabular">{users.uid}</td>
+						<tr class="user-row align-middle hover-parent">
+							<td><div><input class="form-check-input border-secondary" component="user/select/single" data-uid="{users.uid}" type="checkbox"/></div></td>
 							<td>
-								<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger{{{ if !users.banned }}} hidden{{{ end }}}"></i>
-								<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
-								<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
-							</td>
-							<td class="text-nowrap">
 								<div class="d-flex flex-column gap-1">
-									<em class="text-muted no-email {{{ if (./email || ./emailToConfirm) }}}hidden{{{ end }}} ">[[admin/manage/users:users.no-email]]</em>
+									<div>
+										<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger{{{ if !users.banned }}} hidden{{{ end }}}"></i>
+										<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
+										<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
+									</div>
+									<div class="d-flex flex-column gap-1 text-truncate text-muted">
+										<em class="text-muted no-email {{{ if (./email || ./emailToConfirm) }}}hidden{{{ end }}} ">[[admin/manage/users:users.no-email]]</em>
 
-									<span class="validated {{{ if !users.email:confirmed }}} hidden{{{ end }}}">
-										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
-										<span class="email">{{{ if ./email }}}{./email}{{{ end }}}</span>
-									</span>
+										<span class="validated {{{ if !users.email:confirmed }}} hidden{{{ end }}}">
+											<span class="email">{{{ if ./email }}}{./email}{{{ end }}}</span>
+											<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
 
-									<span class="validated-by-admin hidden">
-										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
-										<span class="email">{{{ if ./emailToConfirm }}}{./emailToConfirm}{{{ end }}}</span>
-									</span>
+										</span>
 
-									<span class="pending {{{ if (!./emailToConfirm || !users.email:pending) }}} hidden{{{ end }}}">
-										<i class="fa fa-fw fa-clock-o text-warning" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
-										<span class="email">{./emailToConfirm}</span>
-									</span>
+										<span class="validated-by-admin hidden">
+											<span class="email">{{{ if ./emailToConfirm }}}{./emailToConfirm}{{{ end }}}</span>
+											<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
 
-									<span class="expired {{{ if (!./emailToConfirm || !users.email:expired) }}} hidden{{{ end }}}">
-										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
-										<span class="email">{./emailToConfirm}</span>
-									</span>
+										</span>
 
-									<span class="notvalidated {{{ if (!./emailToConfirm || (users.email:expired || (users.email:pending || users.email:confirmed))) }}} hidden{{{ end }}}">
-										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
-										<span class="email">{./emailToConfirm}</span>
-									</span>
+										<span class="pending {{{ if (!./emailToConfirm || !users.email:pending) }}} hidden{{{ end }}}">
+											<span class="email">{./emailToConfirm}</span>
+											<i class="fa fa-fw fa-clock-o text-warning" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
+										</span>
+
+										<span class="expired {{{ if (!./emailToConfirm || !users.email:expired) }}} hidden{{{ end }}}">
+											<span class="email">{./emailToConfirm}</span>
+											<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+										</span>
+
+										<span class="notvalidated {{{ if (!./emailToConfirm || (users.email:expired || (users.email:pending || users.email:confirmed))) }}} hidden{{{ end }}}">
+											<span class="email">{./emailToConfirm}</span>
+											<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
+										</span>
+									</div>
 								</div>
 							</td>
+
+							<td class="text-end text-tabular">{formattedNumber(users.postcount)}</td>
+							<td class="text-end text-tabular" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
+							<td class="text-end text-tabular">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
+							<td class="text-nowrap"><span class="timeago" title="{users.joindateISO}"></span></td>
+							<td class="text-nowrap"><span class="timeago" title="{users.lastonlineISO}"></span></td>
 							<td>
-								{{{ if ./ips.length }}}
-								<div class="dropdown">
+								<div class="dropdown hover-visible">
 									<button class="btn btn-light btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-list text-muted"></i></button>
 									<ul class="dropdown-menu p-1" role="menu">
+										<li><h6 class="dropdown-header">[[admin/manage/users:users.user-id]]</h6></li>
+										<li class="d-flex gap-1">
+											<a class="dropdown-item rounded-1" role="menuitem">{./uid}</a>
+											<button data-copy="{./uid}" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
+										</li>
+										<li class="dropdown-divider"></li>
+										<li><h6 class="dropdown-header">[[admin/manage/users:users.recent-ips]]</h6></li>
 										{{{ each ./ips }}}
 										<li class="d-flex gap-1 {{{ if !@last }}}mb-1{{{ end }}}">
 											<a class="dropdown-item rounded-1" role="menuitem">{@value}</a>
-											<button data-ip="{@value}" onclick="navigator.clipboard.writeText(this.getAttribute('data-ip'))" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
+											<button data-copy="{@value}" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
 										</li>
 										{{{ end }}}
 									</ul>
 								</div>
-								{{{ end }}}
 							</td>
-							<td class="text-end text-tabular">{formattedNumber(users.postcount)}</td>
-							<td class="text-end text-tabular" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
-							<td class="text-end text-tabular">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
-							<td><span class="timeago" title="{users.joindateISO}"></span></td>
-							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
 						</tr>
 						{{{ end }}}
 					</tbody>
