@@ -49,6 +49,8 @@ define('forum/account/settings', [
 		components.get('user/sessions').find('.timeago').timeago();
 
 		handleChatAllowDenyList();
+
+		handleNotificationToggles();
 	};
 
 	function loadSettings() {
@@ -222,6 +224,25 @@ define('forum/account/settings', [
 			$('[component="chat/allow/list/no-users"]').toggleClass('hidden', !!$('[component="chat/allow/list/user"]').length);
 			$('[component="chat/deny/list/no-users"]').toggleClass('hidden', !!$('[component="chat/deny/list/user"]').length);
 		}
+	}
+
+	function handleNotificationToggles() {
+		$('[component="notification/table"]').on('click', '[data-value]', function () {
+			const $el = $(this);
+			const isTurnedOn = parseInt($el.attr('data-value'), 10) === 0;
+			$el.attr('data-value', isTurnedOn ? 1 : 0);
+			$el.find('i').first().toggleClass('hidden', !isTurnedOn);
+			$el.find('i').last().toggleClass('hidden', isTurnedOn);
+
+			const row = $el.parents('[component="notification/setting"]');
+			const isNotifOn = row.find('[data-type="notification"]').attr('data-value') === '1';
+			const isEmailOn = row.find('[data-type="email"]').attr('data-value') === '1';
+			const newSelectValue = [
+				isNotifOn && 'notification',
+				isEmailOn && 'email',
+			].filter(Boolean).join('') || 'none';
+			row.find('input[data-property]').val(newSelectValue);
+		});
 	}
 
 	return AccountSettings;

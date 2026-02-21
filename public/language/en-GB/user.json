@@ -155,6 +155,8 @@
 	"upvote-notif-freq.threshold": "On 1, 5, 10, 25, 50, 100, 150, 200...",
 	"upvote-notif-freq.logarithmic": "On 10, 100, 1000...",
 	"upvote-notif-freq.disabled": "Disabled",
+	"notification-type-web": "Web",
+	"notification-type-email": "Email",
 
 	"browsing": "Browsing Settings",
 	"unread.cutoff": "Unread cutoff (Maximum %1 days)",

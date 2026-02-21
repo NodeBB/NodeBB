@@ -73,6 +73,8 @@ get:
                           type: string
                         label:
                           type: string
+                        value:
+                          type: string
                         none:
                           type: boolean
                         notification:
