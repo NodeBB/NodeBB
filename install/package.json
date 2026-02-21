@@ -161,8 +161,8 @@
     },
     "devDependencies": {
         "@apidevtools/swagger-parser": "10.1.0",
-        "@commitlint/cli": "20.4.1",
-        "@commitlint/config-angular": "20.4.1",
+        "@commitlint/cli": "20.4.2",
+        "@commitlint/config-angular": "20.4.2",
         "coveralls": "3.1.1",
         "@eslint/js": "10.0.1",
         "@stylistic/eslint-plugin": "5.9.0",
