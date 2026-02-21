@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "Када примите јавну групну поруку за ћаскање",
     "notificationType-group-invite": "Када примите позивницу за групу",
     "notificationType-group-leave": "Када корисник напусти вашу групу",
-    "notificationType-group-request-membership": "Када неко затражи да се придружи групи коју поседујете",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Када је неко додат на чекање за регистрацију",
     "notificationType-post-queue": "Када је нова порука на чекању",
     "notificationType-new-post-flag": "Када је порука означена заставицом",

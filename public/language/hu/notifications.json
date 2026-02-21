@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "Mikor csoportmeghívást kapsz",
     "notificationType-group-leave": "Mikor egy felhasználó elhagyja a csoportot",
-    "notificationType-group-request-membership": "Mikor valaki jelentkezni szeretne a csoportba ami a tiéd",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Mikor valaki a regisztrációs várólistára kerül",
     "notificationType-post-queue": "Mikor egy új hozzászólás várólistára kerül",
     "notificationType-new-post-flag": "Mikor egy hozzászólás megjelölésre kerül",

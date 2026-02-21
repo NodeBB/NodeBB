@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "Kur merrni një ftesë në grup",
     "notificationType-group-leave": "Kur një përdorues largohet nga grupi juaj",
-    "notificationType-group-request-membership": "Kur dikush kërkon t'i bashkohet një grupi që ju zotëroni",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Kur dikush shtohet në radhën e regjistrimit",
     "notificationType-post-queue": "Kur një postim i ri është në radhë",
     "notificationType-new-post-flag": "Kur një postim është raportuar",

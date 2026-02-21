@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "Коли ви отримуєте запрошення до групи",
     "notificationType-group-leave": "When a user leaves your group",
-    "notificationType-group-request-membership": "Коли хтось подає запит на приєднання до групи, якою ви володієте",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Коли когось додано до черги на реєстрацію",
     "notificationType-post-queue": "Коли новий пост знаходиться в черзі",
     "notificationType-new-post-flag": "Коли повідомлення позначено",

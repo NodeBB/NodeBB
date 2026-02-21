@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "Kun vastaanotat julkisen ryhmäviestin",
     "notificationType-group-invite": "Kun sinut kutsutaan ryhmään",
     "notificationType-group-leave": "Kun käyttäjä poistuu ryhmästäsi",
-    "notificationType-group-request-membership": "Kun joku haluaa liittyä omistamaasi ryhmään",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Kun joku lisätään rekisteröintijonoon",
     "notificationType-post-queue": "Kun uusi viesti tulee jonoon",
     "notificationType-new-post-flag": "When a post is flagged",

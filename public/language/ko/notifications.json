@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "공개 그룹 채팅 메시지를 받을 때",
     "notificationType-group-invite": "그룹 초대를 받을 때",
     "notificationType-group-leave": "사용자가 그룹을 나갈 때",
-    "notificationType-group-request-membership": "소유하는 그룹에 가입 요청이 있을 때",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "등록 대기열에 사람이 추가될 때",
     "notificationType-post-queue": "새 게시물이 대기열에 추가될 때",
     "notificationType-new-post-flag": "게시물이 신고될 때",

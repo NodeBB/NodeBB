@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "Khi bạn nhận được tin nhắn trò chuyện nhóm công khai",
     "notificationType-group-invite": "Khi bạn nhận một lời mời nhóm",
     "notificationType-group-leave": "Khi người dùng rời khỏi nhóm của bạn",
-    "notificationType-group-request-membership": "Khi ai đó yêu cầu tham gia một nhóm bạn sở hữu",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Khi ai đó được thêm vào xếp hàng đợi đăng ký",
     "notificationType-post-queue": "Khi một bài đăng mới xếp hàng đợi",
     "notificationType-new-post-flag": "Khi một bài đăng bị gắn cờ",

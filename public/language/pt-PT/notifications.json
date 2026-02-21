@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "Quando recebes um convite para um grupo",
     "notificationType-group-leave": "When a user leaves your group",
-    "notificationType-group-request-membership": "Quando alguém pede para entrar num grupo que é teu",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Quando alguém é adicionado à fila de espera de registo",
     "notificationType-post-queue": "Quando uma nova publicação está à espera de aprovação",
     "notificationType-new-post-flag": "Quando uma publicação é denunciada",

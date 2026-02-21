@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "グループ招待を受けたとき",
     "notificationType-group-leave": "When a user leaves your group",
-    "notificationType-group-request-membership": "誰かがあなたのグループへの参加を要求したとき",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "誰かが登録キューに追加されたとき",
     "notificationType-post-queue": "新しい投稿がキューに入ったとき",
     "notificationType-new-post-flag": "投稿にフラグが立てられたとき",

@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "Als je een uitnodiging voor een groep ontvangt",
     "notificationType-group-leave": "Als een gebruiker je groep verlaat",
-    "notificationType-group-request-membership": "Als iemand vraagt om lid te worden van een groep waarvan je eigenaar bent",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Als iemand wordt toegevoegd aan een registratiewachtrij",
     "notificationType-post-queue": "Als een bericht aan de wachtrij wordt toegevoegd",
     "notificationType-new-post-flag": "Als een bericht wordt gevlagd",

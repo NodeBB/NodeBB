@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "Bir gruba katılım davetiyesi aldığınızda",
     "notificationType-group-leave": "Biri grubunuzu terk ettiğinde",
-    "notificationType-group-request-membership": "Biri size ait bir gruba üye olmak istediğinde",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Biri kayıt kuyruğuna eklendiğinde",
     "notificationType-post-queue": "Yeni bir ileti sıraya alındığında",
     "notificationType-new-post-flag": "Bir ileti şikayet edildiğinde",

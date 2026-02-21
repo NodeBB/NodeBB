@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "כאשר מתקבלת הודעה בקבוצת צ'אט ציבורית",
     "notificationType-group-invite": "כשאתם מקבלים הזמנה מקבוצה",
     "notificationType-group-leave": "כשמשתמש עוזב את הקבוצה שלכם",
-    "notificationType-group-request-membership": "כשמישהו מבקש להירשם לקבוצה שאתם מנהלים",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "כשמישהו מתווסף לתור הרישום",
     "notificationType-post-queue": "כשפוסט חדש נכנס לתור",
     "notificationType-new-post-flag": "כשמדווחים על פוסט",

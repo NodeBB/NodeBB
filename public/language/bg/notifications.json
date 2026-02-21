@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "Когато получите съобщение в публичен групов разговор",
     "notificationType-group-invite": "Когато получите покана за група",
     "notificationType-group-leave": "Когато потребител напусне групата Ви",
-    "notificationType-group-request-membership": "Когато някой поиска да се включи в група, на която Вие сте собственик",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Когато някой бъде добавен в опашката за регистрация",
     "notificationType-post-queue": "Когато бъде добавена нова публикация в опашката",
     "notificationType-new-post-flag": "Когато публикация бъде докладвана",

@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "When you receive a public group chat message",
     "notificationType-group-invite": "當您收到群組邀請時",
     "notificationType-group-leave": "When a user leaves your group",
-    "notificationType-group-request-membership": "當有人請求加入您擁有的群組時",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "當有註冊申請待審核時",
     "notificationType-post-queue": "當有新貼文等待審核時",
     "notificationType-new-post-flag": "當有新的貼文舉報時",

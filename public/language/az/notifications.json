@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "İctimai qrup söhbət mesajı aldığınız zaman",
     "notificationType-group-invite": "Qrup dəvəti aldığınız zaman",
     "notificationType-group-leave": "İstifadəçi qrupunuzu tərk etdikdə",
-    "notificationType-group-request-membership": "Kimsə sizin sahib olduğunuz qrupa qoşulmaq üçün sorğu göndərdikdə",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Kimsə qeydiyyat növbəsinə əlavə edildikdə",
     "notificationType-post-queue": "Yeni yazı növbəyə qoyulduqda",
     "notificationType-new-post-flag": "Yazı işarələndikdə",

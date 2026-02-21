@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "เมื่อคุณได้รับข้อความแชทกลุ่มที่เป็นสาธารณะ",
     "notificationType-group-invite": "เมื่อคุณได้รับเชิญเข้ากลุ่ม",
     "notificationType-group-leave": "เมื่อผู้ใช้งานออกจากกลุ่มของคุณ",
-    "notificationType-group-request-membership": "เมื่อบางคนร้องขอที่จะเข้าร่วมกลุ่มที่คุณเป็นเจ้าของ",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "เมื่อมีคนถูกเพิ่มในคิวลงทะเบียน",
     "notificationType-post-queue": "เมื่อมีโพสต์ใหม่อยู่ในคิว",
     "notificationType-new-post-flag": "เมื่อโพสต์ถูกรายงาน",

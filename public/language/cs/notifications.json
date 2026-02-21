@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "Jakmile obdržíte zprávu ve veřejné konverzaci",
     "notificationType-group-invite": "Obdržíte-li pozvání ke skupině",
     "notificationType-group-leave": "Když uživatel opustí Vaši skupinu",
-    "notificationType-group-request-membership": "Jakmile někdo pošle žádost o připojení se do vaší skupiny",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Jakmile je někdo přidán do registrační fronty",
     "notificationType-post-queue": "Bude-li přidán nový příspěvek do fronty",
     "notificationType-new-post-flag": "Bude-li příspěvek označen",

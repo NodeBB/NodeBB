@@ -93,7 +93,7 @@
     "notificationType-new-public-chat": "Երբ դուք ստանում եք հանրային խմբային զրույցի հաղորդագրություն",
     "notificationType-group-invite": "Երբ դուք ստանում եք խմբի հրավեր",
     "notificationType-group-leave": "Երբ օգտատերը լքում է ձեր խումբը",
-    "notificationType-group-request-membership": "Երբ ինչ-որ մեկը խնդրում է միանալ ձեզ պատկանող խմբին",
+    "notificationType-group-request-membership": "When a user requests to join a group you own",
     "notificationType-new-register": "Երբ ինչ-որ մեկը ավելանում է գրանցման հերթում",
     "notificationType-post-queue": "Երբ նոր գրառումը հերթագրվում է",
     "notificationType-new-post-flag": "Երբ գրառումը դրոշակված է",
