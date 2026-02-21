@@ -83,9 +83,10 @@ module.exports = function (Categories) {
 			match: `*${searchQuery}*`,
 			limit: hardCap || 500,
 		});
+		const searchInDomain = searchQuery.includes('@');
 		return data.reduce((acc, match) => {
 			const [name, ...cidParts] = match.split(':');
-			if (name.includes(searchQuery)) {
+			if (searchInDomain ? name.includes(searchQuery) : name.split('@')[0].includes(searchQuery)) {
 				acc.push(cidParts.join(':'));
 			}
 			return acc;
