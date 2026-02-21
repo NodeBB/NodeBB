@@ -181,15 +181,13 @@ async function fireActionHook(hook, hookList, params) {
 		return;
 	}
 	for (const hookObj of hookList) {
-		if (!isHookValid(hook, hookObj)) {
-			continue;
-		}
-
-		try {
-			// eslint-disable-next-line
-			await hookObj.method(params);
-		} catch (err) {
-			winston.error(`[plugins] Error in hook ${hookObj.id}@${hookObj.hook} \n${err.stack}`);
+		if (isHookValid(hook, hookObj)) {
+			try {
+				// eslint-disable-next-line
+				await hookObj.method(params);
+			} catch (err) {
+				winston.error(`[plugins] Error in hook ${hookObj.id}@${hookObj.hook} \n${err.stack}`);
+			}
 		}
 	}
 }
@@ -255,16 +253,14 @@ async function fireResponseHook(hook, hookList, params) {
 		return;
 	}
 	for (const hookObj of hookList) {
-		if (!isHookValid(hook, hookObj)) {
-			continue;
-		}
+		if (isHookValid(hook, hookObj)) {
+			// Skip remaining hooks if headers have been sent
+			if (params.res.headersSent) {
+				return;
+			}
 
-		// Skip remaining hooks if headers have been sent
-		if (params.res.headersSent) {
-			return;
+			// eslint-disable-next-line no-await-in-loop
+			await hookObj.method(params);
 		}
-
-		// eslint-disable-next-line no-await-in-loop
-		await hookObj.method(params);
 	}
 }
