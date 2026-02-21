@@ -146,6 +146,8 @@
     "upvote-notif-freq.threshold": "Sur 1, 5, 10, 25, 50, 100, 150, 200 ...",
     "upvote-notif-freq.logarithmic": "Les 10, 100, 1000...",
     "upvote-notif-freq.disabled": "Désactivé",
+    "notification-type-web": "Web",
+    "notification-type-email": "Email",
     "browsing": "Paramètres de navigation",
     "unread.cutoff": "Unread cutoff (Maximum %1 days)",
     "unread.cutoff-help": "Topics will be marked read if they have not been updated within this number of days.",

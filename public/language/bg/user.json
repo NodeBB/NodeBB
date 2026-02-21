@@ -146,6 +146,8 @@
     "upvote-notif-freq.threshold": "на 1, 5, 10, 25, 50, 100, 150, 200…",
     "upvote-notif-freq.logarithmic": "На 10, 100, 1000…",
     "upvote-notif-freq.disabled": "Изключено",
+    "notification-type-web": "Web",
+    "notification-type-email": "Email",
     "browsing": "Настройки за страниците",
     "unread.cutoff": "Възраст на публикациите, след която те не се показват в непрочетените (най-много %1 дни)",
     "unread.cutoff-help": "Темите ще се отбелязват като прочетени, ако в тях няма нови неща в рамките на посочения брой дни.",
