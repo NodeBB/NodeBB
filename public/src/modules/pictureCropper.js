@@ -181,6 +181,8 @@ define('pictureCropper', ['alerts'], function (alerts) {
 			if (data.restrictImageDimension) {
 				opts.width = data.imageDimension;
 				opts.height = data.imageDimension;
+				opts.imageSmoothingEnabled = true;
+				opts.imageSmoothingQuality = 'high';
 			}
 			imageData = data.imageType ?
 				cropperTool.getCroppedCanvas(opts).toDataURL(data.imageType) :
