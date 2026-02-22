@@ -40,7 +40,7 @@
 	"default-avatar": "Avatar Personalizado Por Defecto",
 	"upload": "Subir",
 	"profile-image-dimension": "Dimensión de la Imagen de Perfil",
-	"profile-image-dimension-help": "(en píxeles, por defecto: 128 píxeles)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Tamaño Máximo de la Imagen de Perfil",
 	"max-profile-image-size-help": "(en kibibytes, por defecto: 256 KiB)",
 	"max-cover-image-size": "Tamaño Máximo de la Imagen de Portada",

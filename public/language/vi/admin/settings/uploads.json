@@ -40,7 +40,7 @@
 	"default-avatar": "Ảnh Đại Diện Mặc Định",
 	"upload": "Tải lên",
 	"profile-image-dimension": "Kích Thước Ảnh Hồ Sơ",
-	"profile-image-dimension-help": "(tính bằng pixel, mặc định: 128 pixel)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Kích Cỡ Tệp Ảnh Hồ Sơ Tối Đa",
 	"max-profile-image-size-help": "(tính bằng kibibyte, mặc định: 256 KiB)",
 	"max-cover-image-size": "Kích Cỡ Tệp Ảnh Bìa Tối Đa",

@@ -40,7 +40,7 @@
 	"default-avatar": "Fərdi defolt avatar",
 	"upload": "Yüklə",
 	"profile-image-dimension": "Profil şəklinin ölçüsü",
-	"profile-image-dimension-help": "(piksellə, defolt: 128 piksel)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maksimum profil şəkli fayl ölçüsü",
 	"max-profile-image-size-help": "(kibibaytla, defolt: 256 KiB)",
 	"max-cover-image-size": "Maksimum örtük şəklin ölçüsü",

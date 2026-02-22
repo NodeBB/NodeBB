@@ -40,7 +40,7 @@
 	"default-avatar": "طے شدہ حسب ضرورت تصویر",
 	"upload": "اپ لوڈ",
 	"profile-image-dimension": "پروفائل تصویر کا سائز",
-	"profile-image-dimension-help": "(پکسلز میں؛ طے شدہ: 128 پکسلز)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "پروفائل تصویر کا زیادہ سے زیادہ فائل سائز",
 	"max-profile-image-size-help": "(کیبی بائٹس میں؛ طے شدہ: 256 KiB)",
 	"max-cover-image-size": "کور تصویر کا زیادہ سے زیادہ فائل سائز",

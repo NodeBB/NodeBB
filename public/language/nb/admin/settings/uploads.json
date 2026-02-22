@@ -40,7 +40,7 @@
 	"default-avatar": "Egendefinert standardavatar",
 	"upload": "Last opp",
 	"profile-image-dimension": "Dimensjoner på profilbilder",
-	"profile-image-dimension-help": "(i piksler, standard: 128 piksler)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maksimal filstørrelse for profilbilder",
 	"max-profile-image-size-help": "(i kibibytes, standard: 256 KiB)",
 	"max-cover-image-size": "Maksimal filstørrelse for omslagsbilder",

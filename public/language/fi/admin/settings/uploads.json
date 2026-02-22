@@ -40,7 +40,7 @@
 	"default-avatar": "Mukautettu oletusavatar",
 	"upload": "Upload",
 	"profile-image-dimension": "Profile Image Dimension",
-	"profile-image-dimension-help": "(kuvapisteinä, oletus on 128)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Suurin sallittu profiilikuvan tiedostokoko",
 	"max-profile-image-size-help": "(kibitavuina, oletus on 256 KiB)",
 	"max-cover-image-size": "Suurin sallittu kansikuvan tiedostokoko",

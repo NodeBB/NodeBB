@@ -40,7 +40,7 @@
 	"default-avatar": "Аватар за замовчуванням",
 	"upload": "Завантаження",
 	"profile-image-dimension": "Розміри зображення профілю",
-	"profile-image-dimension-help": "(в пікселях, 128 — за замовчуванням)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Максимальний розмір файлу зображення профілю",
 	"max-profile-image-size-help": "(в кібібайтах, по замовчанню: 256 КіБ)",
 	"max-cover-image-size": "Максимальний розмір файлу зображення обкладинки",

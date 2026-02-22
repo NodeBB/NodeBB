@@ -40,7 +40,7 @@
 	"default-avatar": "Стандартная аватарка",
 	"upload": "Загрузить",
 	"profile-image-dimension": "Размер аватарки",
-	"profile-image-dimension-help": "(в пикселях, по умолчанию 128 пикселей)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Макс. размер файла аватарки",
 	"max-profile-image-size-help": "(в кибибайтах, по умолчанию 256 КиБ)",
 	"max-cover-image-size": "Макс. размер файла обложки",

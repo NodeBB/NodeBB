@@ -40,7 +40,7 @@
 	"default-avatar": "Zadani osnovni avatar",
 	"upload": "Učitaj",
 	"profile-image-dimension": "Dimenzije slike profila",
-	"profile-image-dimension-help": "(u pikselima, zadano: 128 piksela)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maksimalna veličina profilne slike",
 	"max-profile-image-size-help": "(in kibibytes, default: 256 KiB)",
 	"max-cover-image-size": "Maksimalna veličina slike za naslovnicu",

@@ -40,7 +40,7 @@
 	"default-avatar": "訪客預設頭像",
 	"upload": "上傳",
 	"profile-image-dimension": "個人頭像尺寸",
-	"profile-image-dimension-help": "(使用 px 作為單位，預設：128px)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "個人頭像最大大小",
 	"max-profile-image-size-help": "(單位 KiB ，預設 256 KiB)",
 	"max-cover-image-size": "最大封面圖片檔案大小",

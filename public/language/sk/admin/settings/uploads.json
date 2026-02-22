@@ -40,7 +40,7 @@
 	"default-avatar": "Predvolený používateľský obrázok",
 	"upload": "Nahrať",
 	"profile-image-dimension": "Rozlíšenie profilového obrázka",
-	"profile-image-dimension-help": "(v pixeloch, predvolené: 128 pixelov)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maximálna veľkosť profilového obrázka",
 	"max-profile-image-size-help": "(v kilobajtoch, predvolené: 256 KiB)",
 	"max-cover-image-size": "Maximálna veľkosť profilového obrázku",

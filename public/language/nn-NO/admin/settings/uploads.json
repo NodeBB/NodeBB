@@ -40,7 +40,7 @@
 	"default-avatar": "Standard avatar",
 	"upload": "Last opp",
 	"profile-image-dimension": "Profilbilete dimensjonar",
-	"profile-image-dimension-help": "Angi maksimale dimensjonar for profilbilete.",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maks storleik på profilbilete",
 	"max-profile-image-size-help": "Angi maksimal filstorleik for profilbilete.",
 	"max-cover-image-size": "Maks storleik på omslagsbilete",

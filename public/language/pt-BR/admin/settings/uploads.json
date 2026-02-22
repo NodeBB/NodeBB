@@ -40,7 +40,7 @@
 	"default-avatar": "Avatar Personalizado Padrão",
 	"upload": "Enviar",
 	"profile-image-dimension": "Dimensão da Imagem de Perfil",
-	"profile-image-dimension-help": "(em pixels, padrão: 128 pixels)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Tamanho Máximo do Arquivo de Imagem de Perfil",
 	"max-profile-image-size-help": "(em kibibytes, padrão: 256 KiB)",
 	"max-cover-image-size": "Tamanho Máximo do Arquivo de Imagem de Capa",

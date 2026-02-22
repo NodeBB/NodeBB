@@ -40,7 +40,7 @@
 	"default-avatar": "Pielāgotais noklusējuma stilizētais portrets",
 	"upload": "Augšupielādēt",
 	"profile-image-dimension": "Profila bildes izmēri",
-	"profile-image-dimension-help": "(pikseļos, pēc noklusējuma: 128 pikseļi)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maksimālais profila bildes faila lielums",
 	"max-profile-image-size-help": "(kibibaitos, pēc noklusējuma: 256 KiB)",
 	"max-cover-image-size": "Maksimālais galvenes bildes faila lielums",

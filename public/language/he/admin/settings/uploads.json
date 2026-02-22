@@ -40,7 +40,7 @@
 	"default-avatar": "סמליל ברירת מחדל מותאמת אישית",
 	"upload": "העלאה",
 	"profile-image-dimension": "מימדי תמונות פרופיל",
-	"profile-image-dimension-help": "(בפיקסלים, ברירת מחדל: 128 פיקסלים)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "גודל קובץ מקסימלי של תמונות פרופיל",
 	"max-profile-image-size-help": "(בקיבי בייטים, ברירת מחדל: 256 KiB)",
 	"max-cover-image-size": "גודל תמונת נושא מקסימלי",

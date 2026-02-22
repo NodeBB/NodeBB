@@ -40,7 +40,7 @@
 	"default-avatar": "Custom Default Avatar",
 	"upload": "Upload",
 	"profile-image-dimension": "Profile Image Dimension",
-	"profile-image-dimension-help": "(in pixels, default: 128 pixels)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "Maximum Profile Image File Size",
 	"max-profile-image-size-help": "(in kibibytes, default: 256 KiB)",
 	"max-cover-image-size": "Maximum Cover Image File Size",

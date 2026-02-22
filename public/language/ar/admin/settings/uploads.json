@@ -40,7 +40,7 @@
 	"default-avatar": "الصورة الرمزية الافتراضية",
 	"upload": "رفع",
 	"profile-image-dimension": "أبعاد الصورة الرمزية",
-	"profile-image-dimension-help": "(بالبكسل، الافتراضي: 128 بكسل)",
+	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
 	"max-profile-image-size": "الحد الأقصى لحجم الصورة الرمزية",
 	"max-profile-image-size-help": "(بالكيبيبايت، الافتراضي: 256)",
 	"max-cover-image-size": "الحد الأقصى لحجم صورة الغلاف",
