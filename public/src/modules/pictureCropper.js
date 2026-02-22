@@ -101,12 +101,11 @@ define('pictureCropper', ['alerts'], function (alerts) {
 					});
 
 					cropperModal.find('.crop-btn').on('click', function () {
-						$(this).addClass('disabled');
 						const imageData = checkCORS(cropperTool, data);
 						if (!imageData) {
 							return;
 						}
-
+						$(this).addClass('disabled');
 						cropperModal.find('#upload-progress-bar').css('width', '0%');
 						cropperModal.find('#upload-progress-box').show().removeClass('hide');
 
@@ -160,7 +159,7 @@ define('pictureCropper', ['alerts'], function (alerts) {
 				params: socketData,
 			}, function (err, result) {
 				if (err) {
-					return alerts.error(err);
+					return callback(err);
 				}
 
 				if (socketData.progress + chunkSize < socketData.size) {
@@ -178,9 +177,14 @@ define('pictureCropper', ['alerts'], function (alerts) {
 	function checkCORS(cropperTool, data) {
 		let imageData;
 		try {
+			const opts = {};
+			if (data.restrictImageDimension) {
+				opts.width = data.imageDimension;
+				opts.height = data.imageDimension;
+			}
 			imageData = data.imageType ?
-				cropperTool.getCroppedCanvas().toDataURL(data.imageType) :
-				cropperTool.getCroppedCanvas().toDataURL();
+				cropperTool.getCroppedCanvas(opts).toDataURL(data.imageType) :
+				cropperTool.getCroppedCanvas(opts).toDataURL();
 		} catch (err) {
 			const corsErrors = [
 				'The operation is insecure.',
@@ -209,7 +213,7 @@ define('pictureCropper', ['alerts'], function (alerts) {
 		}
 
 		const file = fileInput[0].files[0];
-		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
+		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize ? parseInt(data.fileSize, 10) : false;
 		if (fileSize && file.size > fileSize * 1024) {
 			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
 		}

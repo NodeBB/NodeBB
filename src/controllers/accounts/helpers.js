@@ -97,6 +97,8 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
 	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => `.${ext}`).join(', ');
+	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+	userData.profileImageDimension = meta.config.profileImageDimension;
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
 		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));

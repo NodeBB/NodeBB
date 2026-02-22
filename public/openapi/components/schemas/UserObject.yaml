@@ -450,6 +450,10 @@ UserObjectFull:
       type: boolean
     allowProfileImageUploads:
       type: number
+    maximumProfileImageSize:
+      type: number
+    profileImageDimension:
+      type: number
     allowedProfileImageExtensions:
       type: string
     groups:

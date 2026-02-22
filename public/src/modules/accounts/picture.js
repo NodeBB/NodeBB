@@ -169,15 +169,16 @@ define('accounts/picture', [
 			modal.modal('hide');
 
 			pictureCropper.show({
-				socketMethod: 'user.uploadCroppedPicture',
-				route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture',
-				aspectRatio: 1 / 1,
-				paramName: 'uid',
-				paramValue: ajaxify.data.theirid,
-				fileSize: ajaxify.data.maximumProfileImageSize,
-				allowSkippingCrop: false,
 				title: '[[user:upload-picture]]',
 				description: '[[user:upload-a-picture]]',
+				socketMethod: 'user.uploadCroppedPicture',
+				route: `${config.relative_path}/api/user/${ajaxify.data.userslug}/uploadpicture`,
+				aspectRatio: 1 / 1,
+				allowSkippingCrop: false,
+				paramName: 'uid',
+				paramValue: ajaxify.data.theirid,
+				restrictImageDimension: true,
+				imageDimension: ajaxify.data.profileImageDimension,
 				accept: ajaxify.data.allowedProfileImageExtensions,
 			}, function (url) {
 				onUploadComplete(url);
