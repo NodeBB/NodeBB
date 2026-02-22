@@ -14,6 +14,7 @@
 .text-sm { font-size: 0.875rem!important; } // 14px on harmony
 .text-xs { font-size: 0.75rem!important; } // 12px on harmony
 .text-tabular { font-variant-numeric: tabular-nums!important; }
+.text-wrap-pretty { text-wrap: pretty!important; }
 
 .overscroll-behavior-contain {
 	overscroll-behavior: contain;
