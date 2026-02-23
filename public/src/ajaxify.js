@@ -87,15 +87,6 @@ ajaxify.widgets = { render: render };
 		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected && parseInt(app.user.uid, 10) >= 0) {
 			app.reconnect();
-
-			if (ajaxify.reconnectAction) {
-				$(window).off('action:reconnected', ajaxify.reconnectAction);
-			}
-			ajaxify.reconnectAction = function (e) {
-				ajaxify.go(url, callback, quiet);
-				$(window).off(e);
-			};
-			$(window).on('action:reconnected', ajaxify.reconnectAction);
 		}
 
 		// Abort subsequent requests if clicked multiple times within a short window of time
@@ -341,11 +332,6 @@ ajaxify.widgets = { render: render };
 	}
 
 	ajaxify.end = function (url, tpl_url) {
-		// Cancel reconnectAction if there was one pending, since ajaxify was a success
-		if (ajaxify.reconnectAction) {
-			$(window).off('action:reconnected', ajaxify.reconnectAction);
-		}
-
 		// Scroll back to top of page
 		if (!ajaxify.isCold()) {
 			window.scrollTo(0, 0);

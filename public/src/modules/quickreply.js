@@ -13,6 +13,10 @@ define('quickreply', [
 
 	QuickReply.init = function (opts) {
 		const element = components.get('topic/quickreply/text');
+		if (!element.length) {
+			return;
+		}
+
 		const qrDraftId = ajaxify.data.tid ? `qr:draft:tid:${ajaxify.data.tid}` : `qr:draft:cid:${opts?.body?.cid || -1}`;
 		const data = {
 			element: element,
