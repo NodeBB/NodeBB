@@ -359,7 +359,7 @@ define('forum/chats/messages', [
 		$('[component="chat/message/content"]').each(function () {
 			const chatContentEl = $(this);
 			const roomId = chatContentEl.attr('data-roomid');
-			const uid = (ajaxify.template.chats && ajaxify.data.uid) || app.user.uid;
+			const uid = (ajaxify.data?.template?.chats && ajaxify.data?.uid) || app.user.uid;
 			const isAtBottom = messages.isAtBottom(chatContentEl);
 			messages.loadMoreMessages(chatContentEl, uid, roomId, 1)
 				.then(() => {
