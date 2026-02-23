@@ -137,6 +137,7 @@
     "allowed-file-types": "允許的檔案類型有 %1",
     "unsaved-changes": "您有未儲存的更改，您確定您要離開嗎？",
     "reconnecting-message": "與 %1 的連線中斷，我們正在嘗試重連，請耐心等待",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "播放",
     "cookies.message": "此網站使用 Cookies 以確保您在我們網站的最佳體驗。",
     "cookies.accept": "知道了！",

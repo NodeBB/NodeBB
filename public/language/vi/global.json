@@ -137,6 +137,7 @@
     "allowed-file-types": "Loại cho phép là %1",
     "unsaved-changes": "Bạn có những thay đổi chưa lưu. Bạn có chắc muốn điều hướng đi?",
     "reconnecting-message": "Có vẻ như bạn đã mất kết nối tới %1, hãy đợi trong khi chúng tôi cố gắng kết nối lại.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Phát",
     "cookies.message": "Trang web này sử dụng cookie để đảm bảo bạn có được trải nghiệm tốt.",
     "cookies.accept": "Hiểu rồi!",

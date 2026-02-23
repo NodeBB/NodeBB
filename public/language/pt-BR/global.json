@@ -137,6 +137,7 @@
     "allowed-file-types": "Os tipos de arquivo permitidos são %1",
     "unsaved-changes": "Você tem alterações não salvas. Tem certeza de que você deseja sair da página?",
     "reconnecting-message": "Parece que a sua conexão com o %1 caiu. Por favor, aguarde enquanto tentamos reconectar.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Tocar",
     "cookies.message": "Este site usa cookies para garantir que você obtenha a melhor experiência em nosso site.",
     "cookies.accept": "Entendi!",

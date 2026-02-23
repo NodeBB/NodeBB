@@ -137,6 +137,7 @@
     "allowed-file-types": "Erlaubte Dateitypen sind %1",
     "unsaved-changes": "Es gibt ungespeicherte Änderungen. Bist du dir sicher, dass du die Seite verlassen willst?",
     "reconnecting-message": "Es scheint als hättest du die Verbindung zu %1 verloren, bitte warte während wir versuchen sie wieder aufzubauen.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Play",
     "cookies.message": "Diese Website verwendet Cookies, um sicherzustellen, dass du die besten Erfahrungen auf unserer Website machst.",
     "cookies.accept": "Verstanden!",

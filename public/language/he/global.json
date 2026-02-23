@@ -137,6 +137,7 @@
     "allowed-file-types": "פורמטי הקבצים המורשים הם %1",
     "unsaved-changes": "יש שינויים שלא נשמרו. האם אתם בטוחים שברצונכם להמשיך?",
     "reconnecting-message": "החיבור ל-%1 אבד, נא להמתין בזמן שאנו מנסים לחבר אתכם מחדש",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "נגן",
     "cookies.message": "אתר זה משתמש ב cookies על מנת לשפר את חוויות המשתמש.",
     "cookies.accept": "קיבלתי!",

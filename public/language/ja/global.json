@@ -137,6 +137,7 @@
     "allowed-file-types": "有効なファイル形式は %1 です。",
     "unsaved-changes": "変更はまだ保存されていません。本当にこのページから離れますか？",
     "reconnecting-message": "%1への接続が失われたと思われます。再接続されるまでしばらくお待ちください。",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "再生",
     "cookies.message": "このWEBサイトは、心地良くご使用頂くためにクッキーを使用しています。",
     "cookies.accept": "了解!",

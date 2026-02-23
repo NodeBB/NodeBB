@@ -137,6 +137,7 @@
     "allowed-file-types": "Les types de fichiers autorisés sont : %1",
     "unsaved-changes": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir naviguer tout de même ?",
     "reconnecting-message": "Il semble que votre connexion à  %1 ait été perdue, veuillez patienter pendant que nous vous reconnectons.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Lire",
     "cookies.message": "Ce site utilise des cookies pour vous permettre d'avoir la meilleure expérience possible.",
     "cookies.accept": "Compris !",
