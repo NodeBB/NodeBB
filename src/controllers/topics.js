@@ -41,10 +41,12 @@ topicsController.get = async function getTopic(req, res, next) {
 		userPrivileges,
 		settings,
 		rssToken,
+		uids,
 	] = await Promise.all([
 		privileges.topics.get(tid, req.uid),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
+		topics.getUids(tid),
 	]);
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
@@ -53,7 +55,8 @@ topicsController.get = async function getTopic(req, res, next) {
 	if (
 		userPrivileges.disabled ||
 		invalidPagination ||
-		(topicData.scheduled && !userPrivileges.view_scheduled)
+		(topicData.scheduled && !userPrivileges.view_scheduled) ||
+		(!req.uid && (topicData.cid === -1 && !uids.filter(uid => utils.isNumber(uid)).length))
 	) {
 		return next();
 	}
