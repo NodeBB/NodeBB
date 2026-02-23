@@ -41,12 +41,10 @@ topicsController.get = async function getTopic(req, res, next) {
 		userPrivileges,
 		settings,
 		rssToken,
-		uids,
 	] = await Promise.all([
 		privileges.topics.get(tid, req.uid),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
-		topics.getUids(tid),
 	]);
 
 	let currentPage = parseInt(req.query.page, 10) || 1;
@@ -56,8 +54,7 @@ topicsController.get = async function getTopic(req, res, next) {
 		userPrivileges.disabled ||
 		invalidPagination ||
 		(topicData.scheduled && !userPrivileges.view_scheduled) ||
-		(!req.uid && (topicData.cid === -1 && !uids.filter(uid => utils.isNumber(uid)).length))
-	) {
+		await shouldHideTopicFromGuest(req.uid, tid, topicData.cid)) {
 		return next();
 	}
 
@@ -163,6 +160,12 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	res.render('topic', topicData);
 };
+
+async function shouldHideTopicFromGuest(uid, tid, cid) {
+	if (uid > 0 || cid !== -1) return false;
+	const uids = await topics.getUids(tid);
+	return !uids.some(uid => utils.isNumber(uid));
+}
 
 function generateQueryString(query) {
 	const qString = qs.stringify(query);
