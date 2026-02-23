@@ -68,7 +68,7 @@
     "users": "Utilisateurs",
     "topics": "Sujets",
     "posts": "Messages",
-    "crossposts": "Cross-posts",
+    "crossposts": "Publications simultanées",
     "x-posts": "<span class=\"formatted-number\">%1</span> messages",
     "x-topics": "<span class=\"formatted-number\">%1</span> sujets",
     "x-reputation": "<span class=\"formatted-number\">%1</span> réputation",

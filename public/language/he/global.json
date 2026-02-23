@@ -68,7 +68,7 @@
     "users": "משתמשים",
     "topics": "נושאים",
     "posts": "פוסטים",
-    "crossposts": "Cross-posts",
+    "crossposts": "שיוך",
     "x-posts": "<span class=\"formatted-number\">%1</span> פוסטים",
     "x-topics": "<span class=\"formatted-number\">%1</span> נושאים",
     "x-reputation": "<span class=\"formatted-number\">%1</span> מוניטין",
