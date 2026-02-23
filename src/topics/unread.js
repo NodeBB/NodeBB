@@ -326,7 +326,7 @@ module.exports = function (Topics) {
 
 	Topics.markAllRead = async function (uid) {
 		const tids = await Topics.getUnreadTids({ uid });
-		Topics.markTopicNotificationsRead(tids, uid);
+		await Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete(`uid:${uid}:tids_unread`);
 	};
@@ -336,8 +336,10 @@ module.exports = function (Topics) {
 			return;
 		}
 		const nids = await user.notifications.getUnreadByField(uid, 'tid', tids);
-		await notifications.markReadMultiple(nids, uid);
-		user.notifications.pushCount(uid);
+		if (nids.length) {
+			await notifications.markReadMultiple(nids, uid);
+			await user.notifications.pushCount(uid);
+		}
 	};
 
 	Topics.markCategoryUnreadForAll = async function (/* tid */) {
