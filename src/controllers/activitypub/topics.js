@@ -16,10 +16,6 @@ const helpers = require('../helpers');
 const controller = module.exports;
 
 controller.list = async function (req, res) {
-	if (!req.uid) {
-		return helpers.redirect(res, '/recent?cid=-1', false);
-	}
-
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	const page = parseInt(req.query.page, 10) || 1;
 	const start = Math.max(0, (page - 1) * topicsPerPage);

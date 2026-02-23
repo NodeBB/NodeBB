@@ -6,6 +6,7 @@ module.exports = function (app, middleware, controllers) {
 	helpers.setupPageRoute(app, '/world', [
 		middleware.activitypub.enabled,
 		middleware.activitypub.pageview,
+		middleware.ensureLoggedIn,
 	], controllers.activitypub.topics.list);
 	helpers.setupPageRoute(app, '/ap', [
 		middleware.activitypub.enabled,
