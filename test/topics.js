@@ -782,6 +782,45 @@ describe('Topic\'s', () => {
 			assert.strictEqual(false, isMember);
 		});
 
+		it('should update global & category topic/post counters when topic is purged', async () => {
+			const category = await categories.create({
+				name: 'Category for purge count test',
+			});
+			const { topicCount, postCount } = await db.getObject('global');
+
+			const cid = category.cid;
+			const topic1 = await topics.post({
+				uid: adminUid,
+				title: 'topic for purge count test',
+				content: 'topic content',
+				cid,
+			});
+			await topics.post({
+				uid: adminUid,
+				title: 'topic for purge count test',
+				content: 'topic content',
+				cid,
+			});
+			const tid1 = topic1.topicData.tid;
+			await topics.reply({ uid: adminUid, content: 'reply 1', tid: tid1 });
+			await topics.reply({ uid: adminUid, content: 'reply 2', tid: tid1 });
+			await topics.reply({ uid: adminUid, content: 'reply 3', tid: tid1 });
+			let categoryData = await categories.getCategoriesFields([cid], ['topic_count', 'post_count']);
+			assert.strictEqual(categoryData[0].topic_count, 2);
+			assert.strictEqual(categoryData[0].post_count, 5);
+
+			await apiTopics.purge({ uid: adminUid }, { tids: [tid1], cid: categoryObj.cid });
+
+			categoryData = await categories.getCategoriesFields([cid], ['topic_count', 'post_count']);
+			assert.strictEqual(categoryData[0].topic_count, 1);
+			assert.strictEqual(categoryData[0].post_count, 1);
+
+			const afterPurge = await db.getObject('global');
+			assert.strictEqual(parseInt(afterPurge.topicCount, 10), parseInt(topicCount, 10) + 1);
+			assert.strictEqual(parseInt(afterPurge.postCount, 10), parseInt(postCount, 10) + 1);
+			assert(false);
+		});
+
 		it('should not allow user to restore their topic if it was deleted by an admin', async () => {
 			const result = await topics.post({
 				uid: fooUid,

@@ -30,5 +30,7 @@ module.exports = {
 		}, {
 			batch: 500,
 		});
+		const topicCount = await db.sortedSetCard('topics:tid');
+		await db.setObjectField('global', 'topicCount', topicCount);
 	},
 };

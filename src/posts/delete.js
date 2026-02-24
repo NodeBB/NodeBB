@@ -79,7 +79,9 @@ module.exports = function (Posts) {
 			deleteFromGroups(pids),
 			deleteDiffs(pids),
 			deleteFromUploads(pids),
-			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
+			db.sortedSetsRemove([
+				'posts:pid', 'posts:votes', 'posts:flagged', 'postsRemote:pid',
+			], pids),
 			Posts.attachments.empty(pids),
 			activitypub.notes.delete(pids),
 			db.deleteAll(pids.map(pid => `pid:${pid}:editors`)),

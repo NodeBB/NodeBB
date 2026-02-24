@@ -138,15 +138,15 @@ module.exports = function (Topics) {
 
 	async function reduceCounters(tid) {
 		const incr = -1;
+		const { cid, postcount } = await Topics.getTopicFields(tid, ['cid', 'postcount']);
+		const postCountChange = incr * postcount;
+		const categoryKey = `${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`;
+		const bulkIncr = [
+			[categoryKey, { post_count: postCountChange, topic_count: incr }],
+		];
 		if (utils.isNumber(tid)) {
-			await db.incrObjectFieldBy('global', 'topicCount', incr);
+			bulkIncr.push(['global', { postCount: postCountChange, topicCount: incr }]);
 		}
-		const topicData = await Topics.getTopicFields(tid, ['cid', 'postcount']);
-		const postCountChange = incr * topicData.postcount;
-		await Promise.all([
-			db.incrObjectFieldBy('global', 'postCount', postCountChange),
-			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'post_count', postCountChange),
-			db.incrObjectFieldBy(`${utils.isNumber(topicData.cid) ? 'category' : 'categoryRemote'}:${topicData.cid}`, 'topic_count', incr),
-		]);
+		await db.incrObjectFieldByBulk(bulkIncr);
 	}
 };

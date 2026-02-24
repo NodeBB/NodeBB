@@ -130,13 +130,15 @@ async function getStats() {
 		return cachedStats;
 	}
 
-	let results = await Promise.all([
+	let results = (await Promise.all([
 		getStatsFromAnalytics('uniquevisitors', ''),
 		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
 		getStatsForSet('topics:tid', 'topicCount'),
-	]);
+		meta.config.activitypubEnabled ? getStatsForSet('postsRemote:pid', '') : null,
+		meta.config.activitypubEnabled ? getStatsForSet('topicsRemote:tid', '') : null,
+	])).filter(Boolean);
 
 	results[0].name = '[[admin/dashboard:unique-visitors]]';
 
@@ -150,6 +152,13 @@ async function getStats() {
 
 	results[4].name = '[[admin/dashboard:topics]]';
 	results[4].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
+
+	if (results[5]) {
+		results[5].name = '[[admin/dashboard:remote-posts]]';
+	}
+	if (results[6]) {
+		results[6].name = '[[admin/dashboard:remote-topics]]';
+	}
 
 	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
 		results,

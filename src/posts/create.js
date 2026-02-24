@@ -59,10 +59,10 @@ module.exports = function (Posts) {
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
 		postData.cid = topicData.cid;
-
+		const isRemote = !utils.isNumber(pid);
 		await Promise.all([
-			db.sortedSetAdd('posts:pid', timestamp, postData.pid),
-			utils.isNumber(pid) ? db.incrObjectField('global', 'postCount') : null,
+			db.sortedSetAdd(!isRemote ? 'posts:pid' : 'postsRemote:pid', timestamp, postData.pid),
+			!isRemote ? db.incrObjectField('global', 'postCount') : null,
 			user.onNewPostMade(postData),
 			topics.onNewPostMade(postData),
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
