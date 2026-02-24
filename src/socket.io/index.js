@@ -73,7 +73,13 @@ Sockets.init = async function (server) {
 		winston.info(`[socket.io] Restricting access to origin: ${origins}`);
 	}
 
-	io.listen(server, opts);
+	const eio = io.listen(server, opts);
+	if (eio?.engine?.on) {
+		eio.engine.on('connection_error', (err) => {
+			winston.error(`[socket.io] Connection error: [${err.code}]-${err.message}`);
+		});
+	}
+	console.log('wut', eio.engine);
 	Sockets.server = io;
 };
 

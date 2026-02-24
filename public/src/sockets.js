@@ -70,7 +70,9 @@ app = window.app || {};
 
 	function addHandlers() {
 		socket.on('connect', onConnect);
-
+		socket.on('connect_error', function (err) {
+			console.error('[socket.io] Connection error:', err);
+		});
 		socket.on('disconnect', onDisconnect);
 
 		socket.io.on('reconnect_failed', function () {
