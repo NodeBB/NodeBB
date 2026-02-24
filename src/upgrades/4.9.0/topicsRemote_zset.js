@@ -10,10 +10,10 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 		progress.total = await db.sortedSetCard('topics:tid');
-
+		const removeTopics = [];
 		await batch.processSortedSet('topics:tid', async (topicData) => {
 			const apTopics = topicData.filter(topic => !utils.isNumber(topic.value));
-			await db.sortedSetRemove('topics:tid', apTopics.map(topic => topic.value));
+			removeTopics.push(...apTopics.map(topic => topic.value));
 			await db.sortedSetAdd(
 				'topicsRemote:tid',
 				apTopics.map(t => t.score),
@@ -23,6 +23,12 @@ module.exports = {
 		}, {
 			batch: 500,
 			withScores: true,
+		});
+
+		await batch.processArray(removeTopics, async (tids) => {
+			await db.sortedSetRemove('topics:tid', tids);
+		}, {
+			batch: 500,
 		});
 	},
 };
