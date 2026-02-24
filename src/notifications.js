@@ -373,7 +373,7 @@ Notifications.pushGroups = async function (notification, groupNames) {
 
 Notifications.rescind = async function (nids) {
 	nids = Array.isArray(nids) ? nids : [nids];
-	nids = Notifications.filterExists(nids);
+	nids = await Notifications.filterExists(nids);
 	if (!nids.length) {
 		return;
 	}
