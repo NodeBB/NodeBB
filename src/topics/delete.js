@@ -90,7 +90,7 @@ module.exports = function (Topics) {
 				`tid:${tid}:posters`,
 			]),
 			db.sortedSetsRemove([
-				'topics:tid',
+				utils.isNumber(tid) ? 'topics:tid' : 'topicsRemote:tid',
 				'topics:recent',
 				'topics:scheduled',
 			], tid),
