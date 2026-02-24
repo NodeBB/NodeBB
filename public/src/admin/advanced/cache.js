@@ -28,7 +28,7 @@ define('admin/advanced/cache', ['alerts'], function (alerts) {
 			});
 		});
 
-		$(document).on('click', '#cache-table th', function () {
+		$('#cache-table').on('click', 'th', function () {
 			const table = $(this).closest('table');
 			const tbody = table.find('tbody');
 			const columnIndex = $(this).index();
