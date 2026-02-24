@@ -818,7 +818,6 @@ describe('Topic\'s', () => {
 			const afterPurge = await db.getObject('global');
 			assert.strictEqual(parseInt(afterPurge.topicCount, 10), parseInt(topicCount, 10) + 1);
 			assert.strictEqual(parseInt(afterPurge.postCount, 10), parseInt(postCount, 10) + 1);
-			assert(false);
 		});
 
 		it('should not allow user to restore their topic if it was deleted by an admin', async () => {
