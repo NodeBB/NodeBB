@@ -25,8 +25,12 @@ module.exports = {
 			withScores: true,
 		});
 
+		progress.current = 0;
+		progress.counter = 0;
+		progress.total = removeTopics.length;
 		await batch.processArray(removeTopics, async (tids) => {
 			await db.sortedSetRemove('topics:tid', tids);
+			progress.incr(tids.length);
 		}, {
 			batch: 500,
 		});
