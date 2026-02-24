@@ -738,47 +738,74 @@ Notes.delete = async (pids) => {
 
 Notes.prune = async () => {
 	/**
-	 * Prune topics in cid -1 that have received no engagement.
+	 * Prune topics in cid -1 and handle:cid that have received no engagement.
 	 * Engagement is defined as:
 	 *   - Replied to (contains a local reply)
 	 *   - Post within is liked
 	 */
-	winston.info('[notes/prune] Starting scheduled pruning of topics');
-	const start = '-inf';
-	const stop = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
-	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
 
-	winston.info(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);
+	const cids = await db.getObjectValues('handle:cid');
+	winston.info(`[notes/prune] Starting scheduled pruning of topics in ${cids.length} categories`);
 
-	const posters = await db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:posters`));
-	const hasLocalVoter = await Promise.all(tids.map(async (tid) => {
-		const mainPid = await db.getObjectField(`topic:${tid}`, 'mainPid');
-		const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
-		pids.unshift(mainPid);
+	const cuttoff = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
+	const remoteCutoff = Date.now() - (1000 * 60 * 60 * 24 * Math.max(60, meta.config.activitypubContentPruneDays * 2));
+	await pruneCidTids(-1, cuttoff);
+	await batch.processArray(cids, async function (cids) {
+		await Promise.all(cids.map(cid => pruneCidTids(cid, remoteCutoff)));
+	}, {
+		batch: 100,
+	});
+};
 
-		// Check voters of each pid for a local uid
-		const voters = new Set();
-		await Promise.all(pids.map(async (pid) => {
-			const [upvoters, downvoters] = await db.getSetsMembers([`pid:${pid}:upvote`, `pid:${pid}:downvote`]);
-			upvoters.forEach(uid => voters.add(uid));
-			downvoters.forEach(uid => voters.add(uid));
+
+async function pruneCidTids(cid, cuttoff) {
+	if (utils.isNumber(cid) && cid !== -1) {
+		// safety incase a local cid is in handle:cid
+		return;
+	}
+	const tidsWithNoEngagement = [];
+
+	await batch.processSortedSet(`cid:${cid}:tids`, async function (tids) {
+		const [hasLocalVoters, posters] = await Promise.all([
+			hasLocalVoter(tids),
+			db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:posters`)),
+		]);
+
+		tidsWithNoEngagement.push(...tids.filter((_, idx) => {
+			const localPoster = posters[idx].some(uid => utils.isNumber(uid));
+			const localVoter = hasLocalVoters[idx];
+			return !localPoster && !localVoter;
 		}));
-
-		return Array.from(voters).some(uid => utils.isNumber(uid));
-	}));
-
-	tids = tids.filter((_, idx) => {
-		const localPoster = posters[idx].some(uid => utils.isNumber(uid));
-		const localVoter = hasLocalVoter[idx];
-
-		return !localPoster && !localVoter;
+	}, {
+		min: '-inf',
+		max: cuttoff,
+		batch: 500,
 	});
 
-	winston.info(`[notes/prune] ${tids.length} topics eligible for pruning`);
+	winston.info(`[notes/prune] ${tidsWithNoEngagement.length} topics eligible in cid:${cid} for pruning`);
 
-	await batch.processArray(tids, async (tids) => {
+	await batch.processArray(tidsWithNoEngagement, async (tids) => {
 		await Promise.all(tids.map(async tid => await topics.purgePostsAndTopic(tid, 0)));
 	}, { batch: 100 });
 
-	winston.info('[notes/prune] Scheduled pruning of topics complete.');
-};
+	winston.info(`[notes/prune] Scheduled pruning of topics in cid:${cid} complete.`);
+}
+
+async function hasLocalVoter(tids) {
+	const [topicData, topicPids] = await Promise.all([
+		db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['mainPid']),
+		db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:posts`)),
+	]);
+
+	const topicPidsCombined = topicData.map((t, idx) => {
+		return t && t.mainPid ? [t.mainPid, ...topicPids[idx]] : topicPids[idx];
+	});
+
+	return await Promise.all(topicPidsCombined.map(async (topicPids) => {
+		const upvote = topicPids.map(pid => `pid:${pid}:upvote`);
+		const downvote = topicPids.map(pid => `pid:${pid}:downvote`);
+		const voteSets = upvote.concat(downvote);
+		const voters = new Set(await db.getSetsMembers(voteSets).flat());
+		return Array.from(voters).some(uid => utils.isNumber(uid));
+	}));
+}
