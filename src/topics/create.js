@@ -57,7 +57,7 @@ module.exports = function (Topics) {
 		await db.setObject(`topic:${topicData.tid}`, topicData);
 
 		const timestampedSortedSetKeys = [
-			'topics:tid',
+			utils.isNumber(tid) ? 'topics:tid' : 'topicsRemote:tid',
 			`cid:${topicData.cid}:tids`,
 			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
