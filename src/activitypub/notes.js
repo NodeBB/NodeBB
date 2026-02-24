@@ -755,6 +755,7 @@ Notes.prune = async () => {
 	}, {
 		batch: 100,
 	});
+	winston.info(`[notes/prune] Scheduled pruning of topics in ${cids.length} categories complete`);
 };
 
 
@@ -805,7 +806,7 @@ async function hasLocalVoter(tids) {
 		const upvote = topicPids.map(pid => `pid:${pid}:upvote`);
 		const downvote = topicPids.map(pid => `pid:${pid}:downvote`);
 		const voteSets = upvote.concat(downvote);
-		const voters = new Set(await db.getSetsMembers(voteSets).flat());
+		const voters = new Set((await db.getSetsMembers(voteSets)).flat());
 		return Array.from(voters).some(uid => utils.isNumber(uid));
 	}));
 }
