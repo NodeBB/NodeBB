@@ -373,7 +373,10 @@ Notifications.pushGroups = async function (notification, groupNames) {
 
 Notifications.rescind = async function (nids) {
 	nids = Array.isArray(nids) ? nids : [nids];
-
+	nids = Notifications.filterExists(nids);
+	if (!nids.length) {
+		return;
+	}
 	await plugins.hooks.fire('static:notifications.rescind', { nids });
 	await Promise.all([
 		db.sortedSetRemove('notifications', nids),
