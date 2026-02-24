@@ -26,7 +26,7 @@ module.exports = {
 		});
 
 		await batch.processArray(removePosts, async (pids) => {
-			await db.sortedSetsRemove(['posts:pid', 'posts:votes'], pids);
+			await db.sortedSetRemove(['posts:pid', 'posts:votes'], pids);
 		}, {
 			batch: 500,
 		});
