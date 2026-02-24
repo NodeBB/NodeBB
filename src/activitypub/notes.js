@@ -759,7 +759,7 @@ Notes.prune = async () => {
 
 
 async function pruneCidTids(cid, cuttoff) {
-	if (utils.isNumber(cid) && cid !== -1) {
+	if (utils.isNumber(cid) && parseInt(cid, 10) !== -1) {
 		// safety incase a local cid is in handle:cid
 		return;
 	}
