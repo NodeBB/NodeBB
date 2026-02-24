@@ -74,10 +74,12 @@ Sockets.init = async function (server) {
 	}
 
 	const eio = io.listen(server, opts);
-	if (eio?.engine?.on) {
-		eio.engine.on('connection_error', (err) => {
-			winston.error(`[socket.io] Connection error: [${err.code}]-${err.message}`);
-		});
+	if (process.env.NODE_ENV === 'development') {
+		if (eio?.engine?.on) {
+			eio.engine.on('connection_error', (err) => {
+				winston.error(`[socket.io] Connection error: [${err.code}]-${err.message}`);
+			});
+		}
 	}
 	Sockets.server = io;
 };
