@@ -136,7 +136,7 @@ sitemap.getTopicPage = async function (page) {
 	tids = await privileges.topics.filterTids('topics:read', tids, 0);
 	const topicData = await topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime']);
 
-	const data = await plugins.hooks.fire('filter:sitemap.getCategories', {
+	const data = await plugins.hooks.fire('filter:sitemap.getTopics', {
 		page: page,
 		topics: topicData,
 	});
