@@ -122,7 +122,10 @@ module.exports = function (Posts) {
 			if (posts.length && posts[0]) {
 				const topicData = posts[0].topic;
 				const newPostCount = topicData.postcount - posts.length;
-				topicPostCountTasks.push(['topics:posts', newPostCount, tid]);
+				const isRemoteCid = !utils.isNumber(topicData.cid) || topicData.cid === -1;
+				if (!isRemoteCid) {
+					topicPostCountTasks.push(['topics:posts', newPostCount, tid]);
+				}
 				if (!topicData.pinned) {
 					zsetIncrBulk.push([`cid:${topicData.cid}:tids:posts`, -posts.length, tid]);
 				}
