@@ -79,7 +79,6 @@ Sockets.init = async function (server) {
 			winston.error(`[socket.io] Connection error: [${err.code}]-${err.message}`);
 		});
 	}
-	console.log('wut', eio.engine);
 	Sockets.server = io;
 };
 
