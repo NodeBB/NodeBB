@@ -788,8 +788,6 @@ async function pruneCidTids(cid, cuttoff) {
 	await batch.processArray(tidsWithNoEngagement, async (tids) => {
 		await Promise.all(tids.map(async tid => await topics.purgePostsAndTopic(tid, 0)));
 	}, { batch: 100 });
-
-	winston.info(`[notes/prune] Scheduled pruning of topics in cid:${cid} complete.`);
 }
 
 async function hasLocalVoter(tids) {
