@@ -4,6 +4,7 @@ const io = require('socket.io-client');
 const $ = require('jquery');
 
 const { alert } = require('alerts');
+const hooks = require('hooks');
 
 app = window.app || {};
 
@@ -41,15 +42,22 @@ app = window.app || {};
 			}]);
 		});
 	};
+	let hasInteracted = false;
 
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-		if (parseInt(app.user.uid, 10) >= 0) {
+	function onInteraction() {
+		if (!hasInteracted && parseInt(app.user.uid, 10) >= 0) {
+			hasInteracted = true;
 			addHandlers();
 			socket.connect();
+			document.removeEventListener('mousemove', onInteraction);
+			document.removeEventListener('keydown', onInteraction);
+			document.removeEventListener('touchstart', onInteraction);
 		}
-	});
+	}
+	document.addEventListener('mousemove', onInteraction);
+	document.addEventListener('keydown', onInteraction);
+	document.addEventListener('touchstart', onInteraction);
+
 
 	window.app.reconnect = (showAlert = false) => {
 		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
@@ -109,11 +117,7 @@ app = window.app || {};
 				logout();
 			});
 		});
-		socket.on('event:alert', function (params) {
-			require(['alerts'], function (alerts) {
-				alerts.alert(params);
-			});
-		});
+		socket.on('event:alert', params => alert(params));
 		socket.on('event:deprecated_call', (data) => {
 			console.warn('[socket.io]', data.eventName, 'is now deprecated', data.replacement ? `in favour of ${data.replacement}` : 'with no alternative planned.');
 		});
