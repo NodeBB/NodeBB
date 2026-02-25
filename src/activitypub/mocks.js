@@ -743,16 +743,17 @@ Mocks.notes.public = async (post) => {
 
 	attachment = normalizeAttachment(attachment);
 	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
-	let preview;
+	// let preview;
 	let summary = null;
 	if (isArticle) {
-		preview = {
-			type: 'Note',
-			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
-			content: post.content,
-			published,
-			attachment,
-		};
+		// Preview is not adopted by anybody, so is left commented-out for now
+		// preview = {
+		// 	type: 'Note',
+		// 	attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+		// 	content: post.content,
+		// 	published,
+		// 	attachment,
+		// };
 
 		const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
 		// Append sentences to summary until it contains just under 500 characters of content
@@ -807,7 +808,7 @@ Mocks.notes.public = async (post) => {
 		context,
 		audience,
 		...(summary && { summary }),
-		preview,
+		// preview,
 		content: post.content,
 		source,
 		tag,
