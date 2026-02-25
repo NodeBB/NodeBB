@@ -759,7 +759,12 @@ Mocks.notes.public = async (post) => {
 		// Append sentences to summary until it contains just under 500 characters of content
 		const limit = 500;
 		let remaining = limit;
+		let finished = false;
 		summary = sentences.reduce((memo, sentence) => {
+			if (finished) {
+				return memo;
+			}
+
 			const clean = sanitize(sentence, {
 				allowedTags: [],
 				allowedAttributes: {},
@@ -767,6 +772,9 @@ Mocks.notes.public = async (post) => {
 			remaining = remaining - clean.length;
 			if (remaining > 0) {
 				memo += ` ${sentence}`;
+			} else { // There was more but summary generation is complete
+				finished = true;
+				memo += ' [...]';
 			}
 
 			return memo;
