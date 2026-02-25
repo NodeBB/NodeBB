@@ -11,3 +11,21 @@
 .skin-minty .btn {
 	color: initial!important;
 }
+
+.skin-litera {
+	.badge {
+		padding: 0.25rem 0.5rem;
+	}
+}
+
+:root {
+	.skin-slate {
+		--bs-primary-rgb: #{lighten($primary, 10%)};
+	}
+	.skin-darkly, .skin-slate, .skin-cyborg {
+		--bs-border-color: #929292;
+	}
+	.skin-zephyr {
+		--bs-secondary-rgb: var(--bs-secondary-color);
+	}
+}
