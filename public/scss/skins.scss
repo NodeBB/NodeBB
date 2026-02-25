@@ -1,5 +1,16 @@
 // fixes for global skin issues
 
+
+.skin-quartz {
+	.dropdown-header {
+		color: white;
+	}
+	.card:has(.dropdown-menu.show) {
+  		backdrop-filter: none;
+	}
+}
+
+
 // brite text-secondary is white :/
 .skin-brite {
 	.text-secondary {
@@ -27,5 +38,10 @@
 	}
 	.skin-zephyr {
 		--bs-secondary-rgb: var(--bs-secondary-color);
+	}
+	.skin-quartz {
+		.table{
+			--bs-table-bg: transparent!important;
+		}
 	}
 }
