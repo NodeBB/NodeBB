@@ -13,6 +13,13 @@
 			inset -1px -1px rgba(255, 255, 255, 0.1),
 			1px 3px 8px -1px rgba(0, 0, 0, 0.15);
 	}
+	.tag-list .tag:before {
+		// quartz uses gradient for body bg
+		background: linear-gradient(90deg, rgb(51.3, 182.7, 225.9), rgb(93.6, 98.1, 175.5), rgb(220.4, 47.5, 124.45));
+  		background-attachment: fixed;
+		transform: initial;
+		top: 6px;
+	}
 }
 
 
