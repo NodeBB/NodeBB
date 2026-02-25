@@ -755,30 +755,36 @@ Mocks.notes.public = async (post) => {
 		// 	attachment,
 		// };
 
-		const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
-		// Append sentences to summary until it contains just under 500 characters of content
-		const limit = 500;
-		let remaining = limit;
-		let finished = false;
-		summary = sentences.reduce((memo, sentence) => {
-			if (finished) {
+		const breakString = '[...]';
+		if (post.content.includes(breakString)) {
+			const index = post.content.indexOf(breakString);
+			summary = post.content.slice(0, index + breakString.length);
+		} else {
+			const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
+			// Append sentences to summary until it contains just under 500 characters of content
+			const limit = 500;
+			let remaining = limit;
+			let finished = false;
+			summary = sentences.reduce((memo, sentence) => {
+				if (finished) {
+					return memo;
+				}
+
+				const clean = sanitize(sentence, {
+					allowedTags: [],
+					allowedAttributes: {},
+				});
+				remaining = remaining - clean.length;
+				if (remaining > 0) {
+					memo += ` ${sentence}`;
+				} else { // There was more but summary generation is complete
+					finished = true;
+					memo += ' [...]';
+				}
+
 				return memo;
-			}
-
-			const clean = sanitize(sentence, {
-				allowedTags: [],
-				allowedAttributes: {},
-			});
-			remaining = remaining - clean.length;
-			if (remaining > 0) {
-				memo += ` ${sentence}`;
-			} else { // There was more but summary generation is complete
-				finished = true;
-				memo += ' [...]';
-			}
-
-			return memo;
-		}, '');
+			}, '');
+		}
 
 		// Final sanitization to clean up tags
 		summary = posts.sanitize(summary);
