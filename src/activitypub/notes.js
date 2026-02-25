@@ -753,7 +753,7 @@ Notes.prune = async () => {
 	await batch.processArray(cids, async function (cids) {
 		await Promise.all(cids.map(cid => pruneCidTids(cid, remoteCutoff)));
 	}, {
-		batch: 100,
+		batch: 10,
 	});
 	winston.info(`[notes/prune] Scheduled pruning of topics in ${cids.length} categories complete`);
 };
