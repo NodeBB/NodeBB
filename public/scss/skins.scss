@@ -2,8 +2,11 @@
 
 
 .skin-quartz {
-	code {
-		color: #451a25;
+	p > code {
+		color: #ffffff;
+		font-weight: 600;
+		font-size: 1rem;
+		text-shadow: 1px 1px black;
 	}
 	.dropdown-header {
 		color: white;
