@@ -8,6 +8,11 @@
 	.card:has(.dropdown-menu.show) {
   		backdrop-filter: none;
 	}
+	.card {
+		box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2),
+			inset -1px -1px rgba(255, 255, 255, 0.1),
+			1px 3px 8px -1px rgba(0, 0, 0, 0.15);
+	}
 }
 
 
