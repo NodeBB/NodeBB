@@ -104,6 +104,7 @@
 		<div id="collapseFederation" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
 			<div class="accordion-body p-0 d-grid">
 				<a class="btn btn-ghost btn-sm text-start" id="federation-general" href="{relative_path}/admin/federation/general">[[admin/menu:federation/general]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-content" href="{relative_path}/admin/federation/content">[[admin/menu:federation/content]]</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-rules" href="{relative_path}/admin/federation/rules">[[admin/menu:federation/rules]]</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-relays" href="{relative_path}/admin/federation/relays">[[admin/menu:federation/relays]]</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-pruning" href="{relative_path}/admin/federation/pruning">[[admin/menu:federation/pruning]]</a>

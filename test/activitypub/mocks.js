@@ -4,6 +4,7 @@ const assert = require('assert');
 const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
+const meta = require('../../src/meta');
 const user = require('../../src/user');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
@@ -81,6 +82,45 @@ describe('Mocking', () => {
 					const clone = { ...this.withBreakPost };
 					const { content } = await posts.parsePost(clone);
 					assert(!content.includes('[...]'));
+				});
+
+				describe('Altered magic break string', () => {
+					let string;
+					before(() => {
+						string = meta.config.activitypubBreakString;
+						meta.config.activitypubBreakString = 'Mauris';
+					});
+
+					after(() => {
+						meta.config.activitypubBreakString = string;
+					});
+
+					it('should work with a customized break string', async function () {
+						const mocked = await activitypub.mocks.notes.public(this.withBreakPost);
+						assert.strictEqual(mocked.summary, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.\
+							Aliquam vel augue, id luctus nulla. Mauris');
+					});
+				});
+
+				describe('Altered summary limit', () => {
+					let string;
+					let limit;
+					before(() => {
+						string = meta.config.activitypubBreakString;
+						meta.config.activitypubBreakString = 'lkjsdnfkjsdfkjsdhfkd';
+						limit = meta.config.activitypubSummaryLimit;
+						meta.config.activitypubSummaryLimit = 60;
+					});
+
+					after(() => {
+						meta.config.activitypubBreakString = string;
+						meta.config.activitypubSummaryLimit = limit;
+					});
+
+					it('should work with a customized summary limit', async function () {
+						const mocked = await activitypub.mocks.notes.public(this.withBreakPost);
+						assert.strictEqual(mocked.summary, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. [...]');
+					});
 				});
 			});
 		});

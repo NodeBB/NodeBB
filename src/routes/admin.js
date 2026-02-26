@@ -53,6 +53,7 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
 
 	helpers.setupAdminPageRoute(app, `/${name}/federation/general`, middlewares, controllers.admin.federation.general);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/content`, middlewares, controllers.admin.federation.content);
 	helpers.setupAdminPageRoute(app, `/${name}/federation/rules`, middlewares, controllers.admin.federation.rules);
 	helpers.setupAdminPageRoute(app, `/${name}/federation/relays`, middlewares, controllers.admin.federation.relays);
 	helpers.setupAdminPageRoute(app, `/${name}/federation/pruning`, middlewares, controllers.admin.federation.pruning);
