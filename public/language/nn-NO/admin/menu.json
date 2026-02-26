@@ -48,6 +48,13 @@
 
 	"settings.page-title": "%1 Innstillingar",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Content Pruning",
+	"federation/safety": "Trust & Safety",
+
 	"section-appearance": "Utseende",
 	"appearance/themes": "Tema",
 	"appearance/skins": "Utsjånad",

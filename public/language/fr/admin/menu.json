@@ -38,7 +38,7 @@
 	"settings/tags": "Mots-clés",
 	"settings/notifications": "Notifications",
 	"settings/api": "Gestion API",
-	"settings/activitypub": "Federation (ActivityPub)",
+	"settings/activitypub": "Fédération (ActivityPub)",
 	"settings/sounds": "Sons",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",
@@ -47,6 +47,13 @@
 	"settings/advanced": "Avancé",
 
 	"settings.page-title": "Réglages %1",
+
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Content Pruning",
+	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",
