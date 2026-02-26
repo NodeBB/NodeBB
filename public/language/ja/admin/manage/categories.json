@@ -55,7 +55,7 @@
 	"select-category": "カテゴリを選択",
 	"set-parent-category": "親カテゴリとして設定",
 
-	"privileges.description": "このセクションでは、サイトの一部にアクセス制御権限を設定できます。 特権は、ユーザーごとまたはグループごとに付与できます。 下のドロップダウンから有効なドメインを選択してください。",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "権限を設定",
 	"privileges.warning": "<strong>注</ strong>:特権の設定はすぐに有効になります。これらの設定を調整した後は、カテゴリを保存する必要はありません。",
 	"privileges.section-viewing": "特権の表示",
