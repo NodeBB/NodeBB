@@ -430,6 +430,12 @@ async function giveGlobalPrivileges() {
 		'groups:search:users', 'groups:search:tags', 'groups:view:users', 'groups:view:tags', 'groups:view:groups',
 		'groups:local:login',
 	];
+	if(nconf.get('disableLocalLogin') === 'true') {
+		const index = defaultPrivileges.indexOf('groups:local:login');
+		defaultPrivileges.splice(index, 1);
+		winston.info("Local login disabled, removing 'groups:local:login' privilege")
+	}
+
 	await privileges.global.give(defaultPrivileges, 'registered-users');
 	await privileges.global.give(defaultPrivileges.concat([
 		'groups:ban', 'groups:upload:post:file', 'groups:view:users:info',
