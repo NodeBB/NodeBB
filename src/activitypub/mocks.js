@@ -748,11 +748,11 @@ Mocks.notes.public = async (post) => {
 	if (isArticle) {
 		// Preview is not adopted by anybody, so is left commented-out for now
 		// preview = {
-		// 	type: 'Note',
-		// 	attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
-		// 	content: post.content,
-		// 	published,
-		// 	attachment,
+		// type: 'Note',
+		// attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+		// content: post.content,
+		// published,
+		// attachment,
 		// };
 
 		const breakString = '[...]';
