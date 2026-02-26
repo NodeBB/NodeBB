@@ -57,6 +57,9 @@ module.exports = function (Posts) {
 			return postData;
 		}
 
+		if (!type.startsWith('activitypub.')) {
+			postData.content = postData.content.replace('[...]', '');
+		}
 		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
 		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
