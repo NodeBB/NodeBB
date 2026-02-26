@@ -198,13 +198,15 @@ module.exports = function (Categories) {
 
 	Categories.onTopicsMoved = async (cids) => {
 		await Promise.all(cids.map(async (cid) => {
+			const [topicCount, postCount] = await db.sortedSetsCard([
+				`cid:${cid}:tids:lastposttime`,
+				`cid:${cid}:pids`,
+			]);
 			await Promise.all([
-				Categories.setCategoryField(
-					cid, 'topic_count', await db.sortedSetCard(`cid:${cid}:tids:lastposttime`)
-				),
-				Categories.setCategoryField(
-					cid, 'post_count', await db.sortedSetCard(`cid:${cid}:pids`)
-				),
+				Categories.setCategoryFields(cid, {
+					topic_count: topicCount,
+					post_count: postCount,
+				}),
 				Categories.updateRecentTidForCid(cid),
 			]);
 		}));

@@ -1,5 +1,6 @@
 'use strict';
 
+const winston = require('winston');
 const _ = require('lodash');
 const db = require('../database');
 const topics = require('.');
@@ -117,8 +118,10 @@ Crossposts.add = async function (tid, cid, uid) {
 
 Crossposts.remove = async function (tid, cid, uid) {
 	let crossposts = await Crossposts.get(tid);
-	const isPrivileged = await user.isAdminOrGlobalMod(uid);
-	const isMod = await user.isModerator(uid, cid);
+	const [isPrivileged, isMod] = await Promise.all([
+		user.isAdminOrGlobalMod(uid),
+		user.isModerator(uid, cid),
+	]);
 	const crosspostId = crossposts.reduce((id, { id: _id, cid: _cid, uid: _uid }) => {
 		if (String(cid) === String(_cid) && (isPrivileged || isMod || String(uid) === String(_uid))) {
 			id = _id;
@@ -156,18 +159,24 @@ Crossposts.remove = async function (tid, cid, uid) {
 
 	topics.events.find(tid, { uid, toCid: cid, type: 'crosspost' }).then((eventIds) => {
 		topics.events.purge(tid, eventIds);
-	});
+	}).catch(err => winston.error(err));
 
 	crossposts = await Crossposts.get(tid);
 	return crossposts;
 };
 
-Crossposts.removeAll = async function (tid) {
-	const crosspostIds = await db.getSortedSetMembers(`tid:${tid}:crossposts`);
-	const crossposts = await db.getObjects(crosspostIds.map(id => `crosspost:${id}`));
-	await Promise.all(crossposts.map(async ({ tid, cid, uid }) => {
-		return Crossposts.remove(tid, cid, uid);
-	}));
+Crossposts.removeAll = async function (tids) {
+	if (!Array.isArray(tids)) {
+		tids = [tids];
+	}
+	const allCrosspostIds = (await db.getSortedSetsMembers(
+		tids.map(tid => `tid:${tid}:crossposts`)
+	)).flat();
+	const crossposts = (await db.getObjects(
+		allCrosspostIds.map(id => `crosspost:${id}`)
+	)).filter(Boolean);
 
-	return [];
+	await Promise.all(
+		crossposts.map(({ tid, cid, uid }) => Crossposts.remove(tid, cid, uid))
+	);
 };

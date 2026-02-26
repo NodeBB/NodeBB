@@ -13,6 +13,11 @@ Hooks._deprecated = new Map([
 		since: 'v4.0.0',
 		until: 'v5.0.0',
 	}], */
+	['action:topic.purge', {
+		new: 'action:topics.purge',
+		since: 'v4.9.0',
+		until: 'v5.0.0',
+	}],
 ]);
 
 Hooks.internals = {

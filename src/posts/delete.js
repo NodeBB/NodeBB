@@ -108,9 +108,12 @@ module.exports = function (Posts) {
 		const localCount = postData.filter(p => utils.isNumber(p.pid)).length;
 		const incrObjectBulk = [['global', { postCount: -localCount }]];
 
-		const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
+		const postsByCategory = _.groupBy(postData, p => String(p.cid));
 		for (const [cid, posts] of Object.entries(postsByCategory)) {
-			incrObjectBulk.push([`category:${cid}`, { post_count: -posts.length }]);
+			incrObjectBulk.push([
+				utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`,
+				{ post_count: -posts.length },
+			]);
 		}
 
 		const postsByTopic = _.groupBy(postData, p => String(p.tid));
