@@ -48,6 +48,13 @@
 
 	"settings.page-title": "Налаштування %1",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Content Pruning",
+	"federation/safety": "Trust & Safety",
+
 	"section-appearance": "Зовнішній вигляд",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Стилі",

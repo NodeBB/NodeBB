@@ -48,6 +48,13 @@
 
 	"settings.page-title": "%1 设置",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Content Pruning",
+	"federation/safety": "Trust & Safety",
+
 	"section-appearance": "界面",
 	"appearance/themes": "主题",
 	"appearance/skins": "皮肤",

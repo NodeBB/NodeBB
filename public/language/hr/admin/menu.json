@@ -48,6 +48,13 @@
 
 	"settings.page-title": "%1 Postavke",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Content Pruning",
+	"federation/safety": "Trust & Safety",
+
 	"section-appearance": "Izgled",
 	"appearance/themes": "Predlošci",
 	"appearance/skins": "Izgled",
