@@ -42,8 +42,11 @@ federationController.pruning = function (req, res) {
 	});
 };
 
-federationController.safety = function (req, res) {
+federationController.safety = async function (req, res) {
+	const instanceCount = await activitypub.instances.getCount();
+
 	res.render(`admin/federation/safety`, {
 		title: '[[admin/menu:federation/safety]]',
+		instanceCount,
 	});
 };
