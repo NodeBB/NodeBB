@@ -79,9 +79,10 @@ html[data-dir="rtl"] {
 }
 
 blockquote {
-	background-color: $light;
-	font-style: italic;
-	border-left: 4px solid $primary;
+	background-color: rgba(var(--bs-body-color-rgb), 0.03);
+	color: var(--bs-body-color);
+	font-style: normal;
+	border-radius: $border-radius-sm;
 	padding: 1rem;
 	p:last-child {
 		margin-bottom: 0;

@@ -221,7 +221,7 @@ define('forum/topic', [
 			const toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
 			const collapsed = !blockQuote.hasClass('uncollapsed');
-			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
+			toggle.find('i').toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
 		});
 	}
 
