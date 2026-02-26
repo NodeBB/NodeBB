@@ -329,7 +329,7 @@ async function sendEmail({ uids, notification }, cacheKey, reason) {
 	if (['new-reply', 'new-chat'].includes(notification.type)) {
 		notification['cta-type'] = notification.type;
 	}
-	let body = notification.bodyLong || '';
+	let body = notification.bodyEmail || notification.bodyLong || '';
 	if (meta.config.removeEmailNotificationImages) {
 		body = body.replace(/<img[^>]*>/, '');
 	}
