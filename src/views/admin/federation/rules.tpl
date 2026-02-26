@@ -6,7 +6,7 @@
 			<div id="rules" class="mb-4">
 				<p class="lead">[[admin/settings/activitypub:rules-intro]]</p>
 
-				<div class="mb-3">
+				<div class="mb-3 table-responsive-md">
 					<table class="table table-striped" id="rules">
 						<thead>
 							<th></th>

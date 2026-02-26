@@ -6,7 +6,7 @@
 			<div id="relays" class="mb-4">
 				<p class="lead">[[admin/settings/activitypub:relays.intro]]</p>
 				<p class="text-warning">[[admin/settings/activitypub:relays.warning]]</p>
-				<div class="mb-3">
+				<div class="mb-3 table-responsive-md">
 					<table class="table table-striped" id="relays">
 						<thead>
 							<th>[[admin/settings/activitypub:relays.relay]]</th>
