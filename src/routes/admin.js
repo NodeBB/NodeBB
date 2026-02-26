@@ -52,6 +52,12 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/web-crawler`, middlewares, controllers.admin.settings.webCrawler);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
 
+	helpers.setupAdminPageRoute(app, `/${name}/federation/general`, middlewares, controllers.admin.federation.general);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/rules`, middlewares, controllers.admin.federation.rules);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/relays`, middlewares, controllers.admin.federation.relays);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/pruning`, middlewares, controllers.admin.federation.pruning);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/safety`, middlewares, controllers.admin.federation.safety);
+
 	helpers.setupAdminPageRoute(app, `/${name}/appearance/themes`, middlewares, controllers.admin.appearance.themes);
 	helpers.setupAdminPageRoute(app, `/${name}/appearance/skins`, middlewares, controllers.admin.appearance.skins);
 	helpers.setupAdminPageRoute(app, `/${name}/appearance/customise`, middlewares, controllers.admin.appearance.customise);
