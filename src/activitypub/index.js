@@ -135,11 +135,17 @@ ActivityPub.resolveInboxes = async (ids) => {
 	// Filter out blocked instances
 	const blocked = [];
 	inboxArr = inboxArr.filter((inbox) => {
-		const { hostname } = new URL(inbox);
-		const allowed = ActivityPub.instances.isAllowed(hostname);
-		if (!allowed) {
-			blocked.push(inbox);
+		let allowed = false;
+		try {
+			const { hostname } = new URL(inbox);
+			allowed = ActivityPub.instances.isAllowed(hostname);
+			if (!allowed) {
+				blocked.push(inbox);
+			}
+		} catch (e) {
+			winston.warn(`[activitypub/resolveInboxes] Malformed URL encountered while filtering out blocked instances: ${inbox}`);
 		}
+
 		return allowed;
 	});
 	if (blocked.length) {

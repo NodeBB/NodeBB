@@ -206,5 +206,7 @@
     "activitypubProbeTimeout": 2000,
     "activitypubContentPruneDays": 30,
     "activitypubUserPruneDays": 7,
-    "activitypubFilter": 0
+    "activitypubFilter": 0,
+    "activitypubSummaryLimit": 500,
+    "activitypubBreakString": "[...]"
 }

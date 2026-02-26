@@ -47,12 +47,12 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/pagination`, middlewares, controllers.admin.settings.pagination);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/notifications`, middlewares, controllers.admin.settings.notifications);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/api`, middlewares, controllers.admin.settings.api);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/activitypub`, middlewares, controllers.admin.settings.activitypub);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/cookies`, middlewares, controllers.admin.settings.cookies);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/web-crawler`, middlewares, controllers.admin.settings.webCrawler);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
 
 	helpers.setupAdminPageRoute(app, `/${name}/federation/general`, middlewares, controllers.admin.federation.general);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/content`, middlewares, controllers.admin.federation.content);
 	helpers.setupAdminPageRoute(app, `/${name}/federation/rules`, middlewares, controllers.admin.federation.rules);
 	helpers.setupAdminPageRoute(app, `/${name}/federation/relays`, middlewares, controllers.admin.federation.relays);
 	helpers.setupAdminPageRoute(app, `/${name}/federation/pruning`, middlewares, controllers.admin.federation.pruning);

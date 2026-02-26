@@ -10,6 +10,12 @@ federationController.general = function (req, res) {
 	});
 };
 
+federationController.content = function (req, res) {
+	res.render(`admin/federation/content`, {
+		title: '[[admin/menu:federation/content]]',
+	});
+};
+
 federationController.rules = async function (req, res) {
 	const rules = await activitypub.rules.list();
 
@@ -36,8 +42,11 @@ federationController.pruning = function (req, res) {
 	});
 };
 
-federationController.safety = function (req, res) {
+federationController.safety = async function (req, res) {
+	const instanceCount = await activitypub.instances.getCount();
+
 	res.render(`admin/federation/safety`, {
 		title: '[[admin/menu:federation/safety]]',
+		instanceCount,
 	});
 };

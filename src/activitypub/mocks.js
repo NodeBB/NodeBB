@@ -8,6 +8,7 @@ const sanitize = require('sanitize-html');
 const tokenizer = require('sbd');
 
 const db = require('../database');
+const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -710,7 +711,7 @@ Mocks.notes.public = async (post) => {
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
 	const plaintext = posts.sanitizePlaintext(content);
-	const isArticle = post.pid === post.topic.mainPid && plaintext.length > 500;
+	const isArticle = post.pid === post.topic.mainPid && plaintext.length > meta.config.activitypubSummaryLimit;
 
 	if (post.isMainPost) {
 		const thumbs = await topics.thumbs.get(post.tid);
@@ -755,17 +756,16 @@ Mocks.notes.public = async (post) => {
 		// attachment,
 		// };
 
-		const breakString = '[...]';
-		if (post.content.includes(breakString)) {
-			const index = post.content.indexOf(breakString);
-			summary = post.content.slice(0, index + breakString.length);
+		if (post.content.includes(meta.config.activitypubBreakString)) {
+			const index = post.content.indexOf(meta.config.activitypubBreakString);
+			summary = post.content.slice(0, index + meta.config.activitypubBreakString.length);
 		} else {
 			const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
-			// Append sentences to summary until it contains just under 500 characters of content
-			const limit = 500;
+			// Append sentences to summary until until just under configured character limit
+			const limit = meta.config.activitypubSummaryLimit;
 			let remaining = limit;
 			let finished = false;
-			summary = sentences.reduce((memo, sentence) => {
+			summary = sentences.reduce((memo, sentence, index) => {
 				if (finished) {
 					return memo;
 				}
@@ -776,7 +776,7 @@ Mocks.notes.public = async (post) => {
 				});
 				remaining = remaining - clean.length;
 				if (remaining > 0) {
-					memo += ` ${sentence}`;
+					memo += `${index > 0 ? ' ' : ''}${sentence}`;
 				} else { // There was more but summary generation is complete
 					finished = true;
 					memo += ' [...]';

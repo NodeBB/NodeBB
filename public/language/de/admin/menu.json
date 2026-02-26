@@ -50,9 +50,10 @@
 
 	"section-federation": "Federation",
 	"federation/general": "General",
+	"federation/content": "Content",
 	"federation/rules": "Categorization",
 	"federation/relays": "Relays",
-	"federation/pruning": "Content Pruning",
+	"federation/pruning": "Storage",
 	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Aussehen",
