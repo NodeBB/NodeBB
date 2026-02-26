@@ -44,5 +44,11 @@
 	"count": "NodeBB cunoaște acum %1</strong> server(e)",
 	"server.filter-help": "Specificați serverele interzise a se conecta cu NodeBB-ul dvs. Alternativ, puteți opta să <em>permiteți</em> selectiv conectarea cu anumite servere. Ambele opțiuni sunt acceptate, deși se exclud reciproc.",
 	"server.filter-help-hostname": "Introduceți mai jos doar numele instanței (de exemplu, <code>example.org</code>), câte unul pe rând.",
-	"server.filter-allow-list": "Folosește ca Poziții Permise"
+	"server.filter-allow-list": "Folosește ca Poziții Permise",
+
+	"content.outgoing": "Outgoing",
+	"content.summary-limit": "Character count after which a summary is generated",
+	"content.summary-limit-help": "When content is federated out that exceeds this character count, a <code>summary</code> is generated, comprising of all complete sentences prior to this limit. (Default: 500)",
+	"content.break-string": "Note/Article Delimiter",
+	"content.break-string-help": "This delimiter can be manually inserted by power users when composing new topics. It instructs NodeBB to use content up until that point as part of the <code>summary</code>. If this string is not used, then the character count fallback applies. (Default: <code>[...]</code>)"
 }
