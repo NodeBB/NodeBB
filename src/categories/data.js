@@ -87,7 +87,17 @@ module.exports = function (Categories) {
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {
-		await db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
+		await db.setObjectField(
+			`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`,
+			field, value
+		);
+	};
+
+	Categories.setCategoryFields = async function (cid, fields) {
+		await db.setObject(
+			`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`,
+			fields
+		);
 	};
 
 	Categories.incrementCategoryFieldBy = async function (cid, field, value) {

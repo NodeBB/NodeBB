@@ -2342,7 +2342,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should create a scheduled topic as pinned, deleted, included in "topics:scheduled" zset and with a timestamp in future', async () => {
-			topicData = (await topics.post(topic)).topicData;
+			topicData = (await topics.post({ ...topic })).topicData;
 			topicData = await topics.getTopicData(topicData.tid);
 
 			assert(topicData.pinned);
@@ -2499,7 +2499,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should allow to purge a scheduled topic', async () => {
-			topicData = (await topics.post(topic)).topicData;
+			const { topicData } = await topics.post({ ...topic });
 			const { response } = await request.delete(`${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
 			assert.strictEqual(response.statusCode, 200);
 		});

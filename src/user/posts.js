@@ -117,6 +117,18 @@ module.exports = function (User) {
 		}
 	};
 
+	User.updateTopicCount = async (uids) => {
+		uids = Array.isArray(uids) ? uids : [uids];
+		const exists = await User.exists(uids);
+		uids = uids.filter((uid, index) => exists[index]);
+		if (uids.length) {
+			const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:topics`));
+			await db.setObjectBulk(
+				uids.map((uid, index) => ([`user${activitypub.helpers.isUri(uid) ? 'Remote' : ''}:${uid}`, { topiccount: counts[index] }]))
+			);
+		}
+	};
+
 	User.incrementUserPostCountBy = async function (uid, value) {
 		return await incrementUserFieldAndSetBy(uid, 'postcount', 'users:postcount', value);
 	};
