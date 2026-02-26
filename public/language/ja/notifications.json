@@ -65,6 +65,7 @@
     "new-register-multiple": "<strong>%1</strong>の登録リクエストがレビュー待ちです。",
     "flag-assigned-to-you": "<strong>フラグ %1</strong>はあなたに割当てられました",
     "post-awaiting-review": "レビュー待ちの投稿",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

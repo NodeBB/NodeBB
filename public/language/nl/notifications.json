@@ -65,6 +65,7 @@
     "new-register-multiple": "Er is/zijn <strong>%1</strong> registratieverzoek(en) die wacht(en) op goedkeuring.",
     "flag-assigned-to-you": "<strong>Flag %1</strong> is aan u toegewezen",
     "post-awaiting-review": "Bericht wachtend op goedkeuring",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profiel geëxporteerd, klik om te downloaden",
     "posts-exported": "<strong>%1</strong> berichten geëxporteerd, klik om te downloaden",
     "uploads-exported": "<strong>%1</strong> uploads geëxporteerd, klik om te downloaden",

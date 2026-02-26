@@ -65,6 +65,7 @@
     "new-register-multiple": "Nəzərdən keçirilməsini gözləyən <strong>%1</strong> qeydiyyat sorğusu var.",
     "flag-assigned-to-you": "<strong>%1</strong> bayrağı sizə təyin olundu",
     "post-awaiting-review": "Yazı nəzərdən keçirilməsini gözləyir",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profil ixrac edildi, endirmək üçün klikləyin",
     "posts-exported": "<strong>%1</strong> yazı ixrac edildi, endirmək üçün klikləyin",
     "uploads-exported": "<strong>%1</strong> yükləmə ixrac edildi, endirmək üçün klikləyin",

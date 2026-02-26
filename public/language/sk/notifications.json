@@ -65,6 +65,7 @@
     "new-register-multiple": "Nachádzajú sa <strong>%1</strong> registrácie čakajúce na preskúmanie.",
     "flag-assigned-to-you": "<strong>Príznak %1</strong> vám bol priradený",
     "post-awaiting-review": "Príspevok na schválenie",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

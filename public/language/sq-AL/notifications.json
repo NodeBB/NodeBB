@@ -65,6 +65,7 @@
     "new-register-multiple": "Ka <strong>%1</strong> kërkesa regjistrimi në pritje për shqyrtimit.",
     "flag-assigned-to-you": "<strong>Raportimi %1</strong> ju është ngarkuar juve",
     "post-awaiting-review": "Postimi në pritje të rishikimit",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile u eksportuan, kliko për ta shkarkaur",
     "posts-exported": "<strong>%1</strong> postime u eksportuan, kliko per ta shkarkaur",
     "uploads-exported": "<strong>%1</strong> ngarkime u eksportuan, kliko per ta shkarkaur",

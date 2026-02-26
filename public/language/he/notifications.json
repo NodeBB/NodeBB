@@ -65,6 +65,7 @@
     "new-register-multiple": "ישנן <strong>%1</strong> בקשות הרשמה שמחכות לבדיקה.",
     "flag-assigned-to-you": "<strong>דיווח %1</strong> הוקצה עבורך",
     "post-awaiting-review": "הפוסט ממתין לאישור",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> פרופיל יוצא, לחץ כדי להוריד.",
     "posts-exported": "<strong>%1</strong> פוסטים יוצאו, לחץ כדי להוריד.",
     "uploads-exported": "<strong>%1</strong> העלאות יוצאו, לחץ כדי להוריד.",

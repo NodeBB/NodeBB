@@ -65,6 +65,7 @@
     "new-register-multiple": "<strong>%1</strong> запити на реєстрацію очікують розгляду.",
     "flag-assigned-to-you": "На вас була подана <strong>скарга %1</strong>",
     "post-awaiting-review": "Пост очікує на перевірку",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

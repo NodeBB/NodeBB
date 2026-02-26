@@ -65,6 +65,7 @@
     "new-register-multiple": "Det finns <strong>%1</strong> förfrågningar om registrering som inväntar granskning.",
     "flag-assigned-to-you": "<strong>Flaggan %1</strong> har tillskrivits dig",
     "post-awaiting-review": "Inlägg väntar på granskning",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

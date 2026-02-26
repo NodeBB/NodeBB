@@ -65,6 +65,7 @@
     "new-register-multiple": "<strong>%1</strong> żądania rejestracji oczekują na sprawdzenie.",
     "flag-assigned-to-you": "<strong>Flaga %1</strong> została przypisana do ciebie",
     "post-awaiting-review": "Posty oczkujące na sprawdzenie",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong>profil wyeksportowany, kliknij tutaj by pobrać",
     "posts-exported": "<strong>%1</strong>postów wyeksportowanych, kliknij tutaj by pobrać",
     "uploads-exported": "<strong>%1</strong>przesłanych plików wyeksportowane, kliknij tutaj by pobrać",

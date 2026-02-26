@@ -65,6 +65,7 @@
     "new-register-multiple": "검토를 위해 대기 중인 <strong>%1</strong>개의 등록 요청이 있습니다.",
     "flag-assigned-to-you": "<strong>%1 신고</strong>가 나에게 할당되었습니다",
     "post-awaiting-review": "검토 대기 중인 게시물",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> 프로필을 내보냈습니다. 다운로드하려면 클릭하세요.",
     "posts-exported": "<strong>%1</strong> 게시물을 내보냈습니다. 다운로드하려면 클릭하세요.",
     "uploads-exported": "<strong>%1</strong> 업로드를 내보냈습니다. 다운로드하려면 클릭하세요.",

@@ -65,6 +65,7 @@
     "new-register-multiple": "มี<strong>%1</strong>คำขอสมัครสมาชิกที่รอการรีวิว",
     "flag-assigned-to-you": "<strong>%1 รายงาน</strong>ได้ถูกมอบหมายให้คุณ",
     "post-awaiting-review": "โพสกำลังรอการพิจารณา",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "ส่งออกข้อมูลโปรไฟล์ของ <strong>%1</strong> เสร็จแล้ว คลิกเพื่อดาวน์โหลด",
     "posts-exported": "ส่งออกข้อมูลโพสต์ของ <strong>%1</strong> เสร็จแล้ว คลิกเพื่อดาวน์โหลด",
     "uploads-exported": "ส่งออกข้อมูลอัปโหลดของ <strong>%1</strong> เสร็จแล้ว คลิกเพื่อดาวน์โหลด",

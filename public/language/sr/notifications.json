@@ -65,6 +65,7 @@
     "new-register-multiple": "Постоје <strong>%1</strong> захтева за регистрацију који чекају преглед.",
     "flag-assigned-to-you": "<strong>Заставица %1</strong> је додељена вама",
     "post-awaiting-review": "Порука на чекању за преглед",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> профила извезено, кликните за преузимање",
     "posts-exported": "<strong>%1</strong> порука извезено, кликните за преузимање",
     "uploads-exported": "<strong>%1</strong> отпремања извезено, кликните за преузимање",

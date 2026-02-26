@@ -65,6 +65,7 @@
     "new-register-multiple": "有 <strong>%1</strong> 個註冊申請等待批准。",
     "flag-assigned-to-you": "<strong>舉報 %1</strong> 已經被指派給您",
     "post-awaiting-review": "請求查驗貼文",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

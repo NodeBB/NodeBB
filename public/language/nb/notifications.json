@@ -65,6 +65,7 @@
     "new-register-multiple": "Det er <strong>%1</strong> registreringsforespørsler som venter på deg.",
     "flag-assigned-to-you": "<strong>Flag %1</strong> har blitt tildelt deg",
     "post-awaiting-review": "Innlegg avventer anmeldelse",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profil eksportert, klikk for å laste ned",
     "posts-exported": "<strong>%1</strong> innlegg eksportert, klikk for å laste ned",
     "uploads-exported": "<strong>%1</strong> opplastninger eksportert, klikk for å laste ned",

@@ -65,6 +65,7 @@
     "new-register-multiple": "Det er <strong>%1</strong> registreringsførespurnadar som ventar på gjennomgang.",
     "flag-assigned-to-you": "<strong>Rapport %1</strong> er tilordna deg",
     "post-awaiting-review": "Innlegg ventar på gjennomgang",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profil eksportert, klikk for å laste ned",
     "posts-exported": "<strong>%1</strong> innlegg eksportert, klikk for å laste ned",
     "uploads-exported": "<strong>%1</strong> opplastingar eksportert, klikk for å laste ned",

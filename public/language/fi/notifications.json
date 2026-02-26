@@ -65,6 +65,7 @@
     "new-register-multiple": "<strong>%1</strong> rekisteröintipyyntöä odottaa katselmointia",
     "flag-assigned-to-you": "<strong>Flag %1</strong> has been assigned to you",
     "post-awaiting-review": "Viesti odottaa katselmointia",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

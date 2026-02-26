@@ -65,6 +65,7 @@
     "new-register-multiple": "Je zde <strong>%1</strong> registračních požadavků čeká na vyřízení.",
     "flag-assigned-to-you": "<strong>Označení %1</strong>  vám bylo přiřazeno",
     "post-awaiting-review": "Příspěvek na schválení",
+    "topic-awaiting-review": "Topic awaiting review",
     "profile-exported": "<strong>%1</strong> profil byl exportován, klikněte pro jeho stažení",
     "posts-exported": "<strong>%1</strong> příspěvků bylo exportováno, klikněte pro jejich stažení",
     "uploads-exported": "<strong>%1</strong> nahraných souborů bylo exportováno, klikněte pro jejich stažení",
