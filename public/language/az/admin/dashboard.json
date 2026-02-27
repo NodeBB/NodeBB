@@ -11,7 +11,7 @@
 	"page-views-seven": "Son 7 Gün",
 	"page-views-thirty": "Son 30 Gün",
 	"page-views-last-day": "Son 24 saat",
-	"page-views-custom": "Fərdi tarix aralığı",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Aralığın başlanğıcı",
 	"page-views-custom-end": "Aralığın sonu",
 	"page-views-custom-help": "Baxmaq istədiyiniz səhifə baxışlarının tarix diapazonunu daxil edin. Əgər tarix seçici mövcud deyilsə, qəbul edilən format <code>YYYY-AA-GG</code>-dir",

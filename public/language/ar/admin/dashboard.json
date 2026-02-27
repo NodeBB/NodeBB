@@ -11,7 +11,7 @@
 	"page-views-seven": "آخر 7 ايام",
 	"page-views-thirty": "آخر 30 يوماً",
 	"page-views-last-day": "آخر 24 ساعة",
-	"page-views-custom": "مدة زمنية مخصصة",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "بداية المدة",
 	"page-views-custom-end": "نهاية المده",
 	"page-views-custom-help": "أدخل نطاقا زمنيا لمرات مشاهدة الصفحات التي ترغب في عرضها. إذا لم يظهر منتقي التاريخ، فإن التنسيق المقبول هو <code>YYYY-MM-DD</code>",

@@ -11,7 +11,7 @@
 	"page-views-seven": "هفت روز آخر",
 	"page-views-thirty": "۳۰ روز آخر",
 	"page-views-last-day": "۲۴ ساعت آخر",
-	"page-views-custom": "محدوده‌ی تاریخ سفارشی",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "شروع محدوده",
 	"page-views-custom-end": "پایان محدوده",
 	"page-views-custom-help": "محدوده تاریخی از بازدیدهای صفحه را که می خواهید مشاهده کنید وارد کنید. اگر انتخابگر تاریخ در دسترس نباشد، قالب پذیرفته شده <code>YYYY-MM-DD</code> است",

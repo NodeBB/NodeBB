@@ -11,7 +11,7 @@
 	"page-views-seven": "7 วันล่าสุด",
 	"page-views-thirty": "30 วันล่าสุด",
 	"page-views-last-day": "24 ชั่วโมงที่แล้ว",
-	"page-views-custom": "ช่วงเวลาที่กำหนดเอง",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "ช่วงเวลาเริ่มต้น",
 	"page-views-custom-end": "ช่วงเวลาสิ้นสุด",
 	"page-views-custom-help": "ใส่ช่วงวันที่ที่คุณต้องการดูค่า ถ้ากดเลือกวันที่ไม่ได้ ให้กรอกวันที่ในรูปแบบ <code>YYYY-MM-DD</code>",

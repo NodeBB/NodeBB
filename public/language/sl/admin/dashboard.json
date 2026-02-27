@@ -11,7 +11,7 @@
 	"page-views-seven": "Zadnjih 7 dni",
 	"page-views-thirty": "Zadnjih 30 dni",
 	"page-views-last-day": "Zadnjih 24 ur",
-	"page-views-custom": "Časovno obdobje po meri",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Začetek obdobja",
 	"page-views-custom-end": "Konec obdobja",
 	"page-views-custom-help": "Vnesite časovno obdobje ogledov strani, ki bi si jih radi ogledali. Če izbirnik datumov ni na voljo, je sprejeta oblika <code>LLLL-MM-DD</code>",

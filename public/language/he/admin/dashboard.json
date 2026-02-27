@@ -11,7 +11,7 @@
 	"page-views-seven": "ב-7 ימים אחרונים",
 	"page-views-thirty": "ב-30 ימים אחרונים",
 	"page-views-last-day": "ב-24 שעות אחרונות",
-	"page-views-custom": "טווח תאריכים מותאם אישית",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "תחילת טווח",
 	"page-views-custom-end": "סוף טווח",
 	"page-views-custom-help": "הכניסו טווח תאריכים של התקופה בה תרצו לצפות בתעבורת הפורום. הפורמט הנדרש הוא <code>YYYY-MM-DD</code>",

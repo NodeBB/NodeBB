@@ -11,7 +11,7 @@
 	"page-views-seven": "지난 7일",
 	"page-views-thirty": "지난 30일",
 	"page-views-last-day": "지난 24시간",
-	"page-views-custom": "사용자 정의 날짜 범위",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "시작 범위",
 	"page-views-custom-end": "종료 범위",
 	"page-views-custom-help": "보고 싶은 페이지 뷰의 날짜 범위를 입력하세요. 날짜 선택기를 사용할 수 없는 경우 허용되는 형식은 <code>YYYY-MM-DD</code>입니다.",
