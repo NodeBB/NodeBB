@@ -32,6 +32,7 @@ module.exports = {
 		for (let i = 1; i < nextId; i++) {
 			ids.push(i);
 			if (ids.length >= BATCH_SIZE) {
+				// eslint-disable-next-line no-await-in-loop
 				await processBatch(ids);
 				progress.incr(ids.length);
 				ids.length = 0;

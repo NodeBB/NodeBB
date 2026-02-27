@@ -8,7 +8,6 @@ const pretty = require('pretty');
 const db = require('../database');
 const batch = require('../batch');
 const meta = require('../meta');
-const privileges = require('../privileges');
 const categories = require('../categories');
 const messaging = require('../messaging');
 const notifications = require('../notifications');

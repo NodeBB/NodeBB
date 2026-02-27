@@ -9,7 +9,6 @@ const groups = require('../../groups');
 const languages = require('../../languages');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
-const activitypub = require('../../activitypub');
 const api = require('../../api');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
