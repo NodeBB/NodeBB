@@ -78,7 +78,7 @@ export function init({ set, dataset }) {
 							position: 'left',
 							beginAtZero: true,
 							title: {
-								display: true,
+								display: false,
 								text: key,
 							},
 						},
