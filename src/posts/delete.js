@@ -209,7 +209,7 @@ module.exports = function (Posts) {
 		await db.deleteAll(postData.map(p => `pid:${p.pid}:replies`));
 
 		// Remove post(s) from parents' replies zsets
-		const postsWithParents = postData.filter(p => parseInt(p.toPid, 10));
+		const postsWithParents = postData.filter(p => p.toPid);
 		const bulkRemove = postsWithParents.map(p => [`pid:${p.toPid}:replies`, p.pid]);
 		await db.sortedSetRemoveBulk(bulkRemove);
 
