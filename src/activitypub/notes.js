@@ -199,10 +199,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			uid || hasTid ||
 			options.skipChecks || options.cid ||
 			await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
-
-		const privilege = `topics:${tid ? 'reply' : 'create'}`;
-		const allowed = await privileges.categories.can(privilege, options.cid || cid, activitypub._constants.uid);
-		if (!hasRelation || !allowed) {
+		if (!hasRelation) {
 			if (!hasRelation) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
 			}
