@@ -1,7 +1,7 @@
 get:
   tags:
     - admin
-  summary: Get federation (ActivityPub) settings
+  summary: Get federation settings pertaining to auto-categorization rules
   responses:
     "200":
       description: ""
@@ -13,11 +13,9 @@ get:
                 properties:
                   title:
                     type: string
-                  instanceCount:
-                    type: number
-                    description: The number of ActivityPub-enabled instances that this forum knows about.
                   rules:
                     $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray
-                  relays:
-                    $ref: ../../../components/schemas/admin/relays.yaml#/RelaysArray
+                  hideSave:
+                    type: boolean
+                    description: A flag to instruct the template engine to hide the save button
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
