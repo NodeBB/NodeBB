@@ -3,7 +3,7 @@
 		<div class="d-flex justify-content-between align-items-center">
 			{graphTitle}
 
-			<div class="d-flex gap-1">
+			<div class="d-flex gap-1 align-items-center">
 				<select data-action="updateGraph" class="form-select form-select-sm">
 					<option value="1">[[admin/dashboard:page-views-last-day]]</option>
 					<option value="7">[[admin/dashboard:page-views-seven]]</option>
