@@ -32,6 +32,7 @@ dashboardController.get = async function (req, res) {
 	const latestValidVersion = semver.valid(latestVersion);
 
 	res.render('admin/dashboard', {
+		graphTitle: '[[admin/dashboard:forum-traffic]]',
 		version: version,
 		lookupFailed: latestValidVersion === null,
 		latestVersion: latestValidVersion,
@@ -131,6 +132,7 @@ async function getStats() {
 	}
 
 	let results = (await Promise.all([
+		getStatsFromAnalytics('pageviews', ''),
 		getStatsFromAnalytics('uniquevisitors', ''),
 		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
@@ -140,24 +142,25 @@ async function getStats() {
 		meta.config.activitypubEnabled ? getStatsForSet('topicsRemote:tid', '') : null,
 	])).filter(Boolean);
 
-	results[0].name = '[[admin/dashboard:unique-visitors]]';
+	results[0].name = '[[admin/dashboard:graphs.page-views]]';
+	results[1].name = '[[admin/dashboard:unique-visitors]]';
 
-	results[1].name = '[[admin/dashboard:logins]]';
-	results[1].href = `${nconf.get('relative_path')}/admin/dashboard/logins`;
+	results[2].name = '[[admin/dashboard:logins]]';
+	results[2].href = `${nconf.get('relative_path')}/admin/dashboard/logins`;
 
-	results[2].name = '[[admin/dashboard:new-users]]';
-	results[2].href = `${nconf.get('relative_path')}/admin/dashboard/users`;
+	results[3].name = '[[admin/dashboard:new-users]]';
+	results[3].href = `${nconf.get('relative_path')}/admin/dashboard/users`;
 
-	results[3].name = '[[admin/dashboard:posts]]';
+	results[4].name = '[[admin/dashboard:posts]]';
 
-	results[4].name = '[[admin/dashboard:topics]]';
-	results[4].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
+	results[5].name = '[[admin/dashboard:topics]]';
+	results[5].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
 
-	if (results[5]) {
-		results[5].name = '[[admin/dashboard:remote-posts]]';
-	}
 	if (results[6]) {
-		results[6].name = '[[admin/dashboard:remote-topics]]';
+		results[6].name = '[[admin/dashboard:remote-posts]]';
+	}
+	if (results[7]) {
+		results[7].name = '[[admin/dashboard:remote-topics]]';
 	}
 
 	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
@@ -287,6 +290,7 @@ dashboardController.getLogins = async (req, res) => {
 	sessions = _.flatten(sessions).sort((a, b) => b.datetime - a.datetime);
 
 	res.render('admin/dashboard/logins', {
+		graphTitle: '[[admin/dashboard:logins]]',
 		set: 'logins',
 		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
@@ -315,6 +319,7 @@ dashboardController.getUsers = async (req, res) => {
 	const users = await user.getUsersData(uids);
 
 	res.render('admin/dashboard/users', {
+		graphTitle: '[[admin/dashboard:new-users]]',
 		set: 'registrations',
 		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
@@ -342,6 +347,7 @@ dashboardController.getTopics = async (req, res) => {
 	const topicData = await topics.getTopicsByTids(tids);
 
 	res.render('admin/dashboard/topics', {
+		graphTitle: '[[admin/dashboard:topics]]',
 		set: 'topics',
 		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,

@@ -11,6 +11,8 @@ get:
             allOf:
               - type: object
                 properties:
+                  graphTitle:
+                    type: string
                   version:
                     type: string
                   lookupFailed:
