@@ -54,10 +54,14 @@ app = window.app || {};
 			document.removeEventListener('touchstart', onInteraction);
 		}
 	}
-	document.addEventListener('mousemove', onInteraction);
-	document.addEventListener('keydown', onInteraction);
-	document.addEventListener('touchstart', onInteraction);
-
+	if (location.pathname.startsWith(config.relative_path + '/admin')) {
+		addHandlers();
+		socket.connect();
+	} else {
+		document.addEventListener('mousemove', onInteraction);
+		document.addEventListener('keydown', onInteraction);
+		document.addEventListener('touchstart', onInteraction);
+	}
 
 	window.app.reconnect = (showAlert = false) => {
 		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
