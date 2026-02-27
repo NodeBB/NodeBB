@@ -21,14 +21,21 @@ const ttlCache = require('./cache/ttl');
 
 const Notifications = module.exports;
 
-// ttlcache for email-only chat notifications
-const notificationCache = ttlCache({
-	name: 'notification-email-cache',
-	max: 1000,
-	ttl: (meta.config.notificationSendDelay || 60) * 1000,
-	noDisposeOnSet: true,
-	dispose: sendEmail,
-});
+// used to delay email notifications,
+// and cancel them if the notification is already read
+let notificationCache = null;
+function getOrCreateCache() {
+	if (!notificationCache) {
+		notificationCache = ttlCache({
+			name: 'notification-email-cache',
+			max: 1000,
+			ttl: (meta.config.notificationSendDelay || 60) * 1000,
+			noDisposeOnSet: true,
+			dispose: sendEmail,
+		});
+	}
+	return notificationCache;
+}
 
 Notifications.baseTypes = [
 	'notificationType_upvote',
@@ -84,7 +91,7 @@ Notifications.getMultiple = async function (nids) {
 	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjects(keys);
 
-	const userKeys = notifications.map(n => n && n.from);
+	const userKeys = notifications.filter(n => n && n.from).map(n => n.from);
 	let [usersData, categoriesData] = await Promise.all([
 		User.getUsersFields(userKeys, ['username', 'userslug', 'picture']),
 		categories.getCategoriesFields(userKeys, ['cid', 'name', 'slug', 'picture']),
@@ -103,8 +110,10 @@ Notifications.getMultiple = async function (nids) {
 
 		return userData;
 	});
+	// from can be either uid or cid
+	const userMap = new Map(userKeys.map((from, index) => [String(from), usersData[index]]));
 
-	notifications.forEach((notification, index) => {
+	notifications.forEach((notification) => {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
@@ -121,8 +130,10 @@ Notifications.getMultiple = async function (nids) {
 			if (notification.bodyLong) {
 				notification.bodyLong = utils.stripHTMLTags(notification.bodyLong, ['img', 'p', 'a']);
 			}
-
-			notification.user = usersData[index];
+			const fromUser = userMap.get(String(notification.from));
+			if (fromUser !== undefined) {
+				notification.user = fromUser;
+			}
 			if (notification.user && notification.from) {
 				notification.image = notification.user.picture || null;
 				if (notification.user.username === '[[global:guest]]') {
@@ -164,7 +175,7 @@ Notifications.create = async function (data) {
 	const oldNotif = await db.getObject(`notifications:${data.nid}`);
 	if (
 		oldNotif &&
-		parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) &&
+		String(oldNotif.pid, 10) === String(data.pid, 10) &&
 		parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)
 	) {
 		return null;
@@ -270,19 +281,23 @@ async function pushToUids(uids, notification) {
 
 	if (results.uidsToEmail.length) {
 		const delayNotificationTypes = ['new-chat', 'new-group-chat', 'new-public-chat'];
+		const delayCache = getOrCreateCache();
 		if (delayNotificationTypes.includes(notification.type)) {
 			const cacheKey = `${notification.mergeId}|${results.uidsToEmail.join(',')}`;
-			const payload = notificationCache.get(cacheKey);
+			const payload = delayCache.get(cacheKey);
 			let { bodyLong } = notification;
 			if (payload !== undefined) {
 				bodyLong = [payload.notification.bodyLong, bodyLong].join('\n');
 			}
-			notificationCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
+			delayCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
 			if (notification.bodyLong.length >= 1000) {
-				notificationCache.delete(cacheKey);
+				delayCache.delete(cacheKey);
 			}
 		} else {
-			await sendEmail({ uids: results.uidsToEmail, notification });
+			delayCache.set(`delayed:nid:${notification.nid}`, {
+				uids: results.uidsToEmail,
+				notification,
+			});
 		}
 	}
 
@@ -294,8 +309,19 @@ async function pushToUids(uids, notification) {
 	});
 }
 
-async function sendEmail({ uids, notification }, mergeId, reason) {
+async function sendEmail({ uids, notification }, cacheKey, reason) {
 	if ((reason && reason === 'set') || !uids.length) {
+		return;
+	}
+
+	// check if notification already read by users
+	// if so don't send email, https://github.com/NodeBB/NodeBB/issues/5867
+	const hasRead = await db.isMemberOfSortedSets(
+		uids.map(uid => `uid:${uid}:notifications:read`),
+		notification.nid
+	);
+	uids = uids.filter((uid, index) => !hasRead[index]);
+	if (!uids.length) {
 		return;
 	}
 
@@ -303,7 +329,7 @@ async function sendEmail({ uids, notification }, mergeId, reason) {
 	if (['new-reply', 'new-chat'].includes(notification.type)) {
 		notification['cta-type'] = notification.type;
 	}
-	let body = notification.bodyLong || '';
+	let body = notification.bodyEmail || notification.bodyLong || '';
 	if (meta.config.removeEmailNotificationImages) {
 		body = body.replace(/<img[^>]*>/, '');
 	}
@@ -347,7 +373,10 @@ Notifications.pushGroups = async function (notification, groupNames) {
 
 Notifications.rescind = async function (nids) {
 	nids = Array.isArray(nids) ? nids : [nids];
-
+	nids = await Notifications.filterExists(nids);
+	if (!nids.length) {
+		return;
+	}
 	await plugins.hooks.fire('static:notifications.rescind', { nids });
 	await Promise.all([
 		db.sortedSetRemove('notifications', nids),

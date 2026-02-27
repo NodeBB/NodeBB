@@ -1,11 +1,13 @@
 'use strict';
 
+const winston = require('winston');
 const _ = require('lodash');
 const db = require('../database');
 const topics = require('.');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
+const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 
@@ -56,9 +58,15 @@ Crossposts.add = async function (tid, cid, uid) {
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
 	}
-	const exists = await categories.exists(cid);
+	const [exists, allowed] = await Promise.all([
+		categories.exists(cid),
+		uid === 0 || privileges.categories.can('topics:crosspost', cid, uid),
+	]);
 	if (!exists) {
 		throw new Error('[[error:invalid-cid]]');
+	}
+	if (!allowed) {
+		throw new Error('[[error:not-allowed]]');
 	}
 	if (uid < 0) {
 		throw new Error('[[error:invalid-uid]]');
@@ -98,8 +106,9 @@ Crossposts.add = async function (tid, cid, uid) {
 			db.setObject(`crosspost:${crosspostId}`, { uid, tid, cid, timestamp: now }),
 			db.sortedSetAdd(`tid:${tid}:crossposts`, now, crosspostId),
 			uid > 0 ? db.sortedSetAdd(`uid:${uid}:crossposts`, now, crosspostId) : false,
+			topics.events.log(tid, { uid, type: 'crosspost', toCid: cid }),
 		]);
-		await categories.onTopicsMoved([cid]);
+		await categories.onTopicsMoved([cid]); // must be done after
 	} else {
 		throw new Error('[[error:topic-already-crossposted]]');
 	}
@@ -109,8 +118,10 @@ Crossposts.add = async function (tid, cid, uid) {
 
 Crossposts.remove = async function (tid, cid, uid) {
 	let crossposts = await Crossposts.get(tid);
-	const isPrivileged = await user.isAdminOrGlobalMod(uid);
-	const isMod = await user.isModerator(uid, cid);
+	const [isPrivileged, isMod] = await Promise.all([
+		user.isAdminOrGlobalMod(uid),
+		user.isModerator(uid, cid),
+	]);
 	const crosspostId = crossposts.reduce((id, { id: _id, cid: _cid, uid: _uid }) => {
 		if (String(cid) === String(_cid) && (isPrivileged || isMod || String(uid) === String(_uid))) {
 			id = _id;
@@ -146,16 +157,26 @@ Crossposts.remove = async function (tid, cid, uid) {
 	]);
 	await categories.onTopicsMoved([cid]);
 
+	topics.events.find(tid, { uid, toCid: cid, type: 'crosspost' }).then((eventIds) => {
+		topics.events.purge(tid, eventIds);
+	}).catch(err => winston.error(err));
+
 	crossposts = await Crossposts.get(tid);
 	return crossposts;
 };
 
-Crossposts.removeAll = async function (tid) {
-	const crosspostIds = await db.getSortedSetMembers(`tid:${tid}:crossposts`);
-	const crossposts = await db.getObjects(crosspostIds.map(id => `crosspost:${id}`));
-	await Promise.all(crossposts.map(async ({ tid, cid, uid }) => {
-		return Crossposts.remove(tid, cid, uid);
-	}));
+Crossposts.removeAll = async function (tids) {
+	if (!Array.isArray(tids)) {
+		tids = [tids];
+	}
+	const allCrosspostIds = (await db.getSortedSetsMembers(
+		tids.map(tid => `tid:${tid}:crossposts`)
+	)).flat();
+	const crossposts = (await db.getObjects(
+		allCrosspostIds.map(id => `crosspost:${id}`)
+	)).filter(Boolean);
 
-	return [];
+	await Promise.all(
+		crossposts.map(({ tid, cid, uid }) => Crossposts.remove(tid, cid, uid))
+	);
 };

@@ -185,13 +185,10 @@ describe('API', async () => {
 		}
 
 		// Create sample users
-		const adminUid = await user.create({ username: 'admin', password: '123456' });
-		const unprivUid = await user.create({ username: 'unpriv', password: '123456' });
+		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' }, { emailVerification: 'verify' });
+		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' }, { emailVerification: 'verify' });
 		const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
-		await user.setUserField(adminUid, 'email', 'test@example.org');
-		await user.setUserField(unprivUid, 'email', 'unpriv@example.org');
-		await user.email.confirmByUid(adminUid);
-		await user.email.confirmByUid(unprivUid);
+
 		mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
 
 		for (let x = 0; x < 4; x++) {
@@ -535,7 +532,7 @@ describe('API', async () => {
 					assert(
 						responses.hasOwnProperty('418') ||
 						Object.keys(responses).includes(String(result.response.statusCode)),
-						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}`
+						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}, body: ${JSON.stringify(result.body)} status: ${result.response.statusText}`,
 					);
 				});
 

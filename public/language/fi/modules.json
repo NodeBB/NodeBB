@@ -82,7 +82,7 @@
     "composer.hide-preview": "Piilota esikatselu",
     "composer.help": "Help",
     "composer.user-said-in": "%1 kirjoitti aiheeseen %2:",
-    "composer.user-said": "%1 sanoi:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Oletko varma, että haluat hylätä viestin?",
     "composer.submit-and-lock": "Submit and Lock",
     "composer.toggle-dropdown": "Toggle Dropdown",

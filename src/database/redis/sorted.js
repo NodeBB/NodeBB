@@ -300,7 +300,7 @@ module.exports = function (module) {
 		let cursor = '0';
 
 		const returnData = [];
-		let done = false;
+		let done;
 		const seen = Object.create(null);
 		do {
 			/* eslint-disable no-await-in-loop */

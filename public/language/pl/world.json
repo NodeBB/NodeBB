@@ -1,7 +1,12 @@
 {
 	"name": "Świat",
-	"popular": "Popularne tematy",
-	"recent": "Wszystkie tematy",
+	"latest": "Latest",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
 	"help": "Pomoc",
 
 	"help.title": "Co to za strona?",
@@ -16,6 +21,5 @@
 	"onboard.why": "Mnóstwo rzeczy dzieje się poza tym forum ale niekoniecznie zgodnych z Twoimi zainteresowaniami. Dlatego śledzenie konkretnych użytkowników jest dobrą metodą aby uzyskać więcej zawartości przez nich dodawanych.",
 	"onboard.how": "W międzyczasie możesz użyć przycisków skrótów na górze aby przekonać się jak forum jest powiązane a okaże się, że zapewnia wiele dodatkowych treści!",
 
-	"show-categories": "Pokaż kategorie",
-	"hide-categories": "Ukryj kategorie"
+	"category-search": "Find a category..."
 }

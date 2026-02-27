@@ -8,7 +8,7 @@
 	"nodejs": "nodejs",
 	"online": "מקוון",
 	"git": "git",
-	"process-memory": "זיכרון תהליך",
+	"process-memory": "rss/heap used",
 	"system-memory": "זיכרון מערכת",
 	"used-memory-process": "זיכרון בשימוש ע\"י התהליך",
 	"used-memory-os": "זיכרון מערכת בשימוש",

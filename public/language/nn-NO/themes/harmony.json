@@ -1,6 +1,8 @@
 {
 	"theme-name": "Tema-namn",
 	"skins": "Utsjånad",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "Slå saman",
 	"expand": "Utvid",
 	"sidebar-toggle": "Vis/skjul sidefelt",

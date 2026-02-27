@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const url = require('url');
 const path = require('path');
 const prompt = require('prompt');
 const winston = require('winston');
@@ -217,18 +216,16 @@ async function completeConfigSetup(config) {
 	}
 
 	// If port is explicitly passed via install vars, use it. Otherwise, glean from url if set.
-	const urlObj = url.parse(config.url);
+	const urlObj = new URL(config.url);
 	if (urlObj.port && (!install.values || !install.values.hasOwnProperty('port'))) {
 		config.port = urlObj.port;
 	}
 
-	// Remove trailing slash from non-subfolder installs
-	if (urlObj.path === '/') {
-		urlObj.path = '';
-		urlObj.pathname = '';
+	config.url = urlObj.toString();
+	// Remove trailing slash from URL
+	if (config.url.endsWith('/')) {
+		config.url = config.url.slice(0, -1);
 	}
-
-	config.url = url.format(urlObj);
 
 	// ref: https://github.com/indexzero/nconf/issues/300
 	delete config.type;
@@ -366,6 +363,8 @@ async function createAdmin() {
 			username: results.username,
 			password: results.password,
 			email: results.email,
+		}, {
+			emailVerification: 'verify',
 		});
 		await Groups.join('administrators', adminUid);
 		await Groups.show('administrators');

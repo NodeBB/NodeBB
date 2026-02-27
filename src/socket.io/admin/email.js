@@ -1,5 +1,6 @@
 'use strict';
 
+const nconf = require('nconf');
 const winston = require('winston');
 
 const meta = require('../../meta');
@@ -8,6 +9,7 @@ const userEmail = require('../../user/email');
 const notifications = require('../../notifications');
 const emailer = require('../../emailer');
 const utils = require('../../utils');
+const user = require('../../user');
 
 const Email = module.exports;
 
@@ -67,6 +69,28 @@ Email.test = async function (socket, data) {
 				await emailer.send(data.template, socket.uid, payload);
 				break;
 		}
+	} catch (err) {
+		winston.error(err.stack);
+		throw err;
+	}
+};
+
+Email.testSmtp = async (socket, data) => {
+	try {
+		const smtp = emailer.createSmtpTransport(data.smtp);
+		const content = 'This is a test email sent from NodeBB to verify your SMTP settings are correct.';
+		const { hostname } = new URL(nconf.get('url'));
+		const toEmail = await user.getUserField(socket.uid, 'email');
+		await smtp.sendMail({
+			to: toEmail,
+			subject: `[${meta.config.title}] SMTP Settings Test Email`,
+			html: content,
+			text: content,
+			from: {
+				name: meta.config['email:from_name'] || 'NodeBB',
+				address: meta.config['email:from'] || `no-reply@${hostname}`,
+			},
+		});
 	} catch (err) {
 		winston.error(err.stack);
 		throw err;

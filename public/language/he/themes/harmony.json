@@ -1,6 +1,8 @@
 {
 	"theme-name": "ערכת נושא Harmony",
 	"skins": "עיצובים",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "כיווץ",
 	"expand": "הרחבה",
 	"sidebar-toggle": "הצגת סרגל צד",

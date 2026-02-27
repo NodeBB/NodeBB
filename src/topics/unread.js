@@ -11,7 +11,6 @@ const posts = require('../posts');
 const notifications = require('../notifications');
 const categories = require('../categories');
 const privileges = require('../privileges');
-const meta = require('../meta');
 const utils = require('../utils');
 const plugins = require('../plugins');
 
@@ -48,8 +47,9 @@ module.exports = function (Topics) {
 	};
 
 	Topics.unreadCutoff = async function (uid) {
-		const cutoff = Date.now() - (meta.config.unreadCutoff * 86400000);
-		const data = await plugins.hooks.fire('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
+		const { unreadCutoff } = await user.getSettings(uid);
+		const cutoff = Date.now() - (unreadCutoff * 86400000);
+		const data = await plugins.hooks.fire('filter:topics.unreadCutoff', { uid, cutoff });
 		return parseInt(data.cutoff, 10);
 	};
 
@@ -326,7 +326,7 @@ module.exports = function (Topics) {
 
 	Topics.markAllRead = async function (uid) {
 		const tids = await Topics.getUnreadTids({ uid });
-		Topics.markTopicNotificationsRead(tids, uid);
+		await Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete(`uid:${uid}:tids_unread`);
 	};
@@ -336,8 +336,10 @@ module.exports = function (Topics) {
 			return;
 		}
 		const nids = await user.notifications.getUnreadByField(uid, 'tid', tids);
-		await notifications.markReadMultiple(nids, uid);
-		user.notifications.pushCount(uid);
+		if (nids.length) {
+			await notifications.markReadMultiple(nids, uid);
+			await user.notifications.pushCount(uid);
+		}
 	};
 
 	Topics.markCategoryUnreadForAll = async function (/* tid */) {

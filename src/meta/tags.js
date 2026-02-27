@@ -19,7 +19,8 @@ Tags.parse = async (req, data, meta, link) => {
 	// Meta tags
 	const defaultTags = isAPI ? [] : [{
 		name: 'viewport',
-		content: 'width=device-width, initial-scale=1.0',
+		// https://stackoverflow.com/a/77815388 for resizes-content
+		content: 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content',
 	}, {
 		name: 'content-type',
 		content: 'text/html; charset=UTF-8',
@@ -57,14 +58,14 @@ Tags.parse = async (req, data, meta, link) => {
 		});
 	}
 
-	const faviconPath = `${relative_path}/assets/uploads/system/favicon.ico`;
-	const cacheBuster = `${Meta.config['cache-buster'] ? `?${Meta.config['cache-buster']}` : ''}`;
+	const faviconPath = Meta.config['brand:favicon'] || `${relative_path}/assets/uploads/system/favicon.ico`;
+	const cacheBuster = Meta.config['cache-buster'] || '';
 
 	// Link Tags
 	const defaultLinks = isAPI ? [] : [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: `${faviconPath}${cacheBuster}`,
+		href: `${faviconPath}${cacheBuster ? `?${cacheBuster}` : ''}`,
 	}, {
 		rel: 'manifest',
 		href: `${relative_path}/manifest.webmanifest`,

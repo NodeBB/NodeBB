@@ -78,12 +78,12 @@ Plugins.init = async function (nbbApp, nbbMiddleware) {
 		middleware = nbbMiddleware;
 	}
 
-	if (global.env === 'development') {
+	if (process.env.NODE_ENV === 'development') {
 		winston.verbose('[plugins] Initializing plugins system');
 	}
 
 	await Plugins.reload();
-	if (global.env === 'development') {
+	if (process.env.NODE_ENV === 'development') {
 		winston.info('[plugins] Plugins OK');
 	}
 

@@ -15,7 +15,6 @@ const Messaging = require('../src/messaging');
 const api = require('../src/api');
 const helpers = require('./helpers');
 const request = require('../src/request');
-const utils = require('../src/utils');
 const translator = require('../src/translator');
 
 describe('Messaging Library', () => {
@@ -47,18 +46,10 @@ describe('Messaging Library', () => {
 	};
 
 	before(async () => {
-		// Create 3 users: 1 admin, 2 regular
-		({
-			foo: mocks.users.foo.uid,
-			bar: mocks.users.bar.uid,
-			baz: mocks.users.baz.uid,
-			herp: mocks.users.herp.uid,
-		} = await utils.promiseParallel({
-			foo: User.create({ username: 'foo', password: 'barbar' }), // admin
-			bar: User.create({ username: 'bar', password: 'bazbaz' }), // admin
-			baz: User.create({ username: 'baz', password: 'quuxquux' }), // restricted user
-			herp: User.create({ username: 'herp', password: 'derpderp' }), // a regular user
-		}));
+		mocks.users.foo.uid = await User.create({ username: 'foo', password: 'barbar' }); // admin
+		mocks.users.bar.uid = await User.create({ username: 'bar', password: 'bazbaz' }); // admin
+		mocks.users.baz.uid = await User.create({ username: 'baz', password: 'quuxquux' }); // restricted user
+		mocks.users.herp.uid = await User.create({ username: 'herp', password: 'derpderp' }); // a regular user
 
 		await Groups.join('administrators', mocks.users.foo.uid);
 		await User.setSetting(mocks.users.baz.uid, 'disableIncomingChats', '1');
@@ -293,6 +284,16 @@ describe('Messaging Library', () => {
 			message = messages.pop();
 			assert.strictEqual(message.system, 1);
 			assert.strictEqual(message.content, 'user-join');
+		});
+
+		it('should make both users owners on room creation', async () => {
+			const { body } = await callv3API('post', '/chats', {
+				uids: [mocks.users.foo.uid],
+			}, 'herp');
+			const { roomId } = body.response;
+			assert.deepStrictEqual(
+				await Messaging.isRoomOwner([mocks.users.herp.uid, mocks.users.foo.uid], roomId), [true, true]
+			);
 		});
 
 		it('should change owner when owner leaves room', async () => {
@@ -561,6 +562,27 @@ describe('Messaging Library', () => {
 			assert.equal(rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
 		});
 
+		it('should escape chatWithMessage', async () => {
+			const oldValue = meta.config.showFullnameAsDisplayName;
+			meta.config.showFullnameAsDisplayName = true;
+
+			const uid = await User.create({ username: 'escapedsender', fullname: '<svg/onload=alert(document.location);' });
+			await User.setSetting(uid, 'showfullname', 1);
+
+			await callv3API('post', '/chats', { uids: [uid] }, 'foo');
+
+			const { rooms } = await api.chats.list(
+				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
+			);
+
+			assert.strictEqual(
+				rooms[0].chatWithMessage,
+				`Chat with <a href="${nconf.get('relative_path')}/uid/${uid}">&lt;svg&#x2F;onload=alert(document.location);</a>`
+			);
+
+			meta.config.showFullnameAsDisplayName = oldValue;
+		});
+
 		it('should fail to check if user has private chat with invalid data', async () => {
 			await assert.rejects(
 				api.users.getPrivateRoomId({ uid: null }, undefined),
@@ -804,7 +826,7 @@ describe('Messaging Library', () => {
 
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body.rooms));
-			assert.equal(body.rooms.length, 2);
+			assert.equal(body.rooms.length, 3);
 			assert.equal(body.title, '[[pages:chats]]');
 		});
 

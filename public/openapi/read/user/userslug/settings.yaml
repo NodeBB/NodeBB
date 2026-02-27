@@ -73,6 +73,8 @@ get:
                           type: string
                         label:
                           type: string
+                        value:
+                          type: string
                         none:
                           type: boolean
                         notification:
@@ -132,6 +134,8 @@ get:
                   maxTopicsPerPage:
                     type: number
                   maxPostsPerPage:
+                    type: number
+                  maxUnreadCutoff:
                     type: number
                   title:
                     type: string

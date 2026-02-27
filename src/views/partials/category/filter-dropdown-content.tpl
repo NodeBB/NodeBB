@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center ff-secondary d-flex gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center ff-secondary d-flex gap-2 dropdown-toggle h-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     {{{ if selectedCategory }}}
     <span class="category-item d-inline-flex align-items-center gap-1">
         {buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}
@@ -19,7 +19,10 @@
         {{{ if !hideAll }}}
         <li role="presentation" class="category" data-cid="all">
             <a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="{{{ if allCategoriesUrl }}}{config.relative_path}/{allCategoriesUrl}{{{ else }}}#{{{ end }}}">
-                <div class="flex-grow-1">[[unread:all-categories]]</div>
+                <div class="flex-grow-1 d-flex gap-1 align-items-center">
+                    <span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded" style="width:24px; height: 24px; font-size: 12px;"><i class="fa fa-fw fa-list text-secondary"></i></span>
+                    <span>[[unread:all-categories]]</span>
+                </div>
                 <i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{if selectedCategory}}}invisible{{{end}}}"></i>
             </a>
         </li>
@@ -33,7 +36,7 @@
                         {{{ if ./icon }}}
                         {buildCategoryIcon(@value, "24px", "rounded-circle")}
                         {{{ end }}}
-                        {./name}
+                        <span class="category-name">{./name}</span>
                     </div>
                 </span>
                 <i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{ if !./selected }}}invisible{{{ end }}}"></i>

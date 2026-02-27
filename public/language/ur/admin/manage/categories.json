@@ -55,7 +55,7 @@
 	"select-category": "زمرہ منتخب کریں",
 	"set-parent-category": "بنیادی زمرہ سیٹ کریں",
 
-	"privileges.description": "اس سیکشن میں آپ ویب سائٹ کے مختلف حصوں تک رسائی کے اختیارات ترتیب دے سکتے ہیں۔ اختیارات انفرادی صارفین یا پوری گروہوں کو دیے جا سکتے ہیں۔ نیچے دیے گئے ڈراپ ڈاؤن مینو سے درخواست کا دائرہ کار منتخب کریں۔",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "کے لیے اختیارات ترتیب دیں",
 	"privileges.warning": "<strong>نوٹ</strong>: اختیارات کی ترتیبات فوری طور پر اثر انداز ہوتی ہیں۔ ان ترتیبات کو تبدیل کرنے کے بعد زمرہ کو محفوظ کرنے کی ضرورت نہیں ہے۔",
 	"privileges.section-viewing": "دیکھنے کے اختیارات",

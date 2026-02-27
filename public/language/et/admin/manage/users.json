@@ -23,6 +23,7 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "Lae alla CSV",
 	"custom-user-fields": "Custom User Fields",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 kuud",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "Kasutajanimi",
 	"users.email": "email",
 	"users.no-email": "(no email)",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Validation Pending",
 	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "Postituste arv",
 	"users.reputation": "Reputatsioon",
 	"users.flags": "Raporteerimised",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Põhjus <span class=\"text-muted\">(valikuline)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Tunnid",
 	"temp-ban.days": "Päevad",
 	"temp-ban.explanation": "Sisesta keelustuse pikkus. Kui sisestad 0, siis seda loetakse igaveseks keelustuseks.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Kas te tõesti soovite antud kasutajat <strong>igaveseks</strong> keelustada ?",
 	"alerts.confirm-ban-multi": "Kas te tõesti soovite antud kasutajaid <strong>igaveseks</strong> keelustada?",

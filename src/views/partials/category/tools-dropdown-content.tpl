@@ -1,4 +1,4 @@
-<button class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+<button class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle h-100" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
 	<i class="fa fa-fw fa-gear text-primary"></i>
 	<span class="visible-md-inline visible-lg-inline fw-semibold">[[topic:thread-tools.title]]</span>
 	<span component="topic/selected/badge" class="badge rounded-pill bg-secondary"></span>
@@ -75,11 +75,11 @@
 		</a>
 	</li>
 
-	{{{each thread_tools}}}
+	{{{ each thread_tools }}}
 	<li>
-		<a href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {thread_tools.class}" role="menuitem">
-			<i class="fa fa-fw {thread_tools.icon} text-secondary"></i>
-			{thread_tools.title}</a>
+		<a href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {./class}" role="menuitem">
+			<i class="fa fa-fw {./icon} text-secondary"></i> {./title}
+		</a>
 	</li>
-	{{{end}}}
+	{{{ end }}}
 </ul>

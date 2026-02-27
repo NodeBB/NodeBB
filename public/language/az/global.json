@@ -137,6 +137,7 @@
     "allowed-file-types": "İcazə verilən fayl növləri %1-dir",
     "unsaved-changes": "Saxlanmamış dəyişiklikləriniz var. Digər yerə keçid etmək istədiyinizə əminsiniz?",
     "reconnecting-message": "Görünür, %1 ilə əlaqəniz itib, lütfən, yenidən qoşulmağa cəhd edənə qədər gözləyin.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Oynat",
     "cookies.message": "Bu vebsayt ən yaxşı təcrübə əldə etməyinizə əmin olmaq üçün kukilərdən istifadə edir.",
     "cookies.accept": "Anladım!",

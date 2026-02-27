@@ -88,12 +88,14 @@ define('forum/unread', [
 				{
 					cid: 'selected',
 					name: '[[unread:selected]]',
-					icon: '',
+					icon: 'fa-regular fa-square-check',
+					color: 'var(--bs-secondary)',
 				},
 				{
 					cid: 'all',
 					name: '[[unread:all]]',
-					icon: '',
+					icon: 'fa-list',
+					color: 'var(--bs-secondary)',
 				},
 			],
 			defaultCategories,

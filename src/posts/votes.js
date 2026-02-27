@@ -260,7 +260,9 @@ module.exports = function (Posts) {
 		}
 		await Promise.all([
 			updateTopicVoteCount(postData),
-			db.sortedSetAdd('posts:votes', postData.votes, postData.pid),
+			utils.isNumber(postData.pid) ?
+				db.sortedSetAdd('posts:votes', postData.votes, postData.pid) :
+				null,
 			Posts.setPostFields(postData.pid, {
 				upvotes: postData.upvotes,
 				downvotes: postData.downvotes,

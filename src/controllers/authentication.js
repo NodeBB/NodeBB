@@ -32,22 +32,20 @@ async function registerAndLoginUser(req, res, userData) {
 	if (deferRegistration) {
 		userData.register = true;
 		req.session.registration = userData;
-
+		const next = `${nconf.get('relative_path')}/register/complete`;
 		if (req.body?.noscript === 'true') {
-			res.redirect(`${nconf.get('relative_path')}/register/complete`);
+			res.redirect(next);
 			return;
 		}
-		res.json({ next: `${nconf.get('relative_path')}/register/complete` });
+		res.json({ next });
 		return;
 	}
 
-	const queue = await user.shouldQueueUser(req.ip);
-	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, res, userData, queue });
-	if (result.queue) {
-		return await addToApprovalQueue(req, userData);
+	const { queued, uid, message } = await user.createOrQueue(req, userData);
+	if (queued) {
+		return { message };
 	}
 
-	const uid = await user.create(userData);
 	if (res.locals.processLogin) {
 		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
 		if (hasLoginPrivilege) {
@@ -61,6 +59,7 @@ async function registerAndLoginUser(req, res, userData) {
 		await Promise.all([
 			user.confirmIfInviteEmailIsUsed(userData.token, userData.email, uid),
 			user.joinGroupsFromInvitation(uid, userData.token),
+			user.setInviterUid(uid, userData.token),
 		]);
 	}
 	await user.deleteInvitationKey(userData.email, userData.token);
@@ -73,6 +72,7 @@ async function registerAndLoginUser(req, res, userData) {
 	return complete;
 }
 
+// POST /register
 authenticationController.register = async function (req, res) {
 	const registrationType = meta.config.registrationType || 'normal';
 
@@ -86,17 +86,7 @@ authenticationController.register = async function (req, res) {
 			await user.verifyInvitation(userData);
 		}
 
-		if (
-			!userData.username ||
-			userData.username.length < meta.config.minimumUsernameLength ||
-			slugify(userData.username).length < meta.config.minimumUsernameLength
-		) {
-			throw new Error('[[error:username-too-short]]');
-		}
-
-		if (userData.username.length > meta.config.maximumUsernameLength) {
-			throw new Error('[[error:username-too-long]]');
-		}
+		user.checkUsernameLength(userData.username);
 
 		if (userData.password !== userData['password-confirm']) {
 			throw new Error('[[user:change-password-error-match]]');
@@ -121,22 +111,7 @@ authenticationController.register = async function (req, res) {
 	}
 };
 
-async function addToApprovalQueue(req, userData) {
-	userData.ip = req.ip;
-	await user.addToApprovalQueue(userData);
-	let message = '[[register:registration-added-to-queue]]';
-	if (meta.config.showAverageApprovalTime) {
-		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
-		if (average_time > 0) {
-			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
-		}
-	}
-	if (meta.config.autoApproveTime > 0) {
-		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
-	}
-	return { message: message };
-}
-
+// POST /register/complete
 authenticationController.registerComplete = async function (req, res) {
 	try {
 		// For the interstitials that respond, execute the callback with the form body
@@ -213,6 +188,7 @@ authenticationController.registerComplete = async function (req, res) {
 	}
 };
 
+// POST /register/abort
 authenticationController.registerAbort = async (req, res) => {
 	if (req.uid && req.session.registration) {
 		// Email is the only cancelable interstitial
@@ -232,6 +208,7 @@ authenticationController.registerAbort = async (req, res) => {
 	});
 };
 
+// POST /login
 authenticationController.login = async (req, res, next) => {
 	let { strategy } = await plugins.hooks.fire('filter:login.override', { req, strategy: 'local' });
 	if (!passport._strategy(strategy)) {

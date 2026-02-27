@@ -48,6 +48,14 @@
 
 	"settings.page-title": "%1 설정",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+
 	"section-appearance": "외관",
 	"appearance/themes": "테마",
 	"appearance/skins": "스킨",

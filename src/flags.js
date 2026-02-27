@@ -18,6 +18,7 @@ const privileges = require('./privileges');
 const plugins = require('./plugins');
 const utils = require('./utils');
 const batch = require('./batch');
+const translator = require('./translator');
 
 const Flags = module.exports;
 
@@ -747,7 +748,6 @@ Flags.update = async function (flagId, uid, changeset) {
 		const notifObj = await notifications.create({
 			type: 'my-flags',
 			bodyShort: `[[notifications:flag-assigned-to-you, ${flagId}]]`,
-			bodyLong: '',
 			path: `/flags/${flagId}`,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
@@ -755,8 +755,7 @@ Flags.update = async function (flagId, uid, changeset) {
 		await notifications.push(notifObj, [assigneeId]);
 	};
 	const isAssignable = async function (assigneeId) {
-		let allowed = false;
-		allowed = await user.isAdminOrGlobalMod(assigneeId);
+		let allowed = await user.isAdminOrGlobalMod(assigneeId);
 
 		// Mods are also allowed to be assigned, if flag target is post in uid's moderated cid
 		if (!allowed && current.type === 'post') {
@@ -918,7 +917,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		groups.getMembers('Global Moderators', 0, -1),
 	]);
 	let uids = admins.concat(globalMods);
-	let notifObj = null;
+	let notifObj;
 
 	const { displayname } = flagObj.reports[flagObj.reports.length - 1].reporter;
 
@@ -929,12 +928,12 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		]);
 
 		const modUids = await categories.getModeratorUids([cid]);
-		const titleEscaped = utils.decodeHTMLEntities(title).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		const titleEscaped = utils.decodeHTMLEntities(title);
 
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
-			bodyShort: `[[notifications:user-flagged-post-in, ${displayname}, ${titleEscaped}]]`,
-			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
+			bodyShort: translator.compile('notifications:user-flagged-post-in', displayname, titleEscaped),
+			bodyLong: String(flagObj.target?.content || ''),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:post:${flagObj.targetId}:${uid}`,

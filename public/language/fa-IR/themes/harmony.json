@@ -1,6 +1,8 @@
 {
 	"theme-name": "Harmony Theme",
 	"skins": "پوسته‌ها",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "بستن ",
 	"expand": "باز کردن",
 	"sidebar-toggle": "Sidebar Toggle",

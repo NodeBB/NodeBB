@@ -82,7 +82,7 @@
     "composer.hide-preview": "ซ่อนพรีวิว",
     "composer.help": "ความช่วยเหลือ",
     "composer.user-said-in": "%1 พูดใน %2:",
-    "composer.user-said": "%1 พูด:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "คุณแน่ใจแล้วใช่ไหมว่าจะทิ้งโพสต์นี้?",
     "composer.submit-and-lock": "ยืนยันและล็อก",
     "composer.toggle-dropdown": "ท็อกเกิลดร็อปดาวน์",

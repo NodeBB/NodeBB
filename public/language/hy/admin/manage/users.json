@@ -23,6 +23,7 @@
 	"purge": "Ջնջել օգտատերին(ներ) և բովանդակությունը",
 	"download-csv": "Ներբեռնեք CSV",
 	"custom-user-fields": "Custom User Fields",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Կառավարել Խմբերը",
 	"set-reputation": "Սահմանել հեղինակություն",
 	"add-group": "Ավելացնել խումբ ",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 ամիս",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "օգտատիրոջ անուն ",
 	"users.email": "էլ. փոստ",
 	"users.no-email": "էլ. փոստ չկա",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Վավերացումը ընթանում է",
 	"users.validation-expired": "Վավերացման ժամկետը սպառվել է",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "հետհաշվարկ",
 	"users.reputation": "վարկանիշ",
 	"users.flags": "դրոշներ",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Երկարություն",
 	"temp-ban.reason": "Պատճառը (ըստ ցանկության)",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Ժամեր",
 	"temp-ban.days": "Օրեր",
 	"temp-ban.explanation": "Մուտքագրեք արգելքի ժամկետը: Նկատի ունեցեք, որ 0-ի ժամանակը համարվում է մշտական արգելք:",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Իսկապե՞ս ցանկանում եք ընդմիշտ արգելել այս օգտատիրոջը:",
 	"alerts.confirm-ban-multi": "Իսկապե՞ս ցանկանում եք ընդմիշտ արգելել այս օգտատերերին:",

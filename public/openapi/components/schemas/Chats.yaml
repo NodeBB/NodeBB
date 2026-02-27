@@ -108,6 +108,10 @@ MessageObject:
             `icon:text` for the user's
             auto-generated icon
           example: "#f44336"
+        banned_until:
+            type: number
+            description: A UNIX timestamp representing the moment a ban will be lifted
+            example: 0
         banned_until_readable:
           type: string
           description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"

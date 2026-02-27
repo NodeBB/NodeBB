@@ -4,6 +4,7 @@ const io = require('socket.io-client');
 const $ = require('jquery');
 
 const { alert } = require('alerts');
+const hooks = require('hooks');
 
 app = window.app || {};
 
@@ -41,35 +42,49 @@ app = window.app || {};
 			}]);
 		});
 	};
+	let hasInteracted = false;
 
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-		if (parseInt(app.user.uid, 10) >= 0) {
+	function onInteraction() {
+		if (!hasInteracted && parseInt(app.user.uid, 10) >= 0) {
+			hasInteracted = true;
 			addHandlers();
 			socket.connect();
+			document.removeEventListener('mousemove', onInteraction);
+			document.removeEventListener('keydown', onInteraction);
+			document.removeEventListener('touchstart', onInteraction);
 		}
-	});
+	}
+	if (location.pathname.startsWith(config.relative_path + '/admin')) {
+		addHandlers();
+		socket.connect();
+	} else {
+		document.addEventListener('mousemove', onInteraction);
+		document.addEventListener('keydown', onInteraction);
+		document.addEventListener('touchstart', onInteraction);
+	}
 
-	window.app.reconnect = () => {
+	window.app.reconnect = (showAlert = false) => {
 		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}
 
-		const reconnectEl = $('#reconnect');
-		$('#reconnect-alert')
-			.removeClass('alert-danger pointer')
-			.addClass('alert-warning')
-			.find('p')
-			.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+		if (showAlert) {
+			$('#reconnect-alert')
+				.removeClass('alert-danger alert-success pointer hide')
+				.addClass('alert-warning show')
+				.find('p')
+				.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+		}
 
-		reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+		$('#reconnect').html('<i class="fa fa-spinner fa-spin"></i>');
 		socket.connect();
 	};
 
 	function addHandlers() {
 		socket.on('connect', onConnect);
-
+		socket.on('connect_error', function (err) {
+			console.error('[socket.io] Connection error:', err);
+		});
 		socket.on('disconnect', onDisconnect);
 
 		socket.io.on('reconnect_failed', function () {
@@ -77,13 +92,13 @@ app = window.app || {};
 			reconnectEl.html('<i class="fa fa-plug text-danger"></i>');
 
 			$('#reconnect-alert')
-				.removeClass('alert-warning')
-				.addClass('alert-danger pointer')
+				.removeClass('alert-warning alert-success hide')
+				.addClass('alert-danger pointer show')
 				.find('p')
 				.translateText('[[error:socket-reconnect-failed]]')
-				.one('click', app.reconnect);
+				.one('click', () => app.reconnect(true));
 
-			$(window).one('focus', app.reconnect);
+			$(window).one('focus', () => app.reconnect(true));
 		});
 
 		socket.on('checkSession', function (uid) {
@@ -106,11 +121,7 @@ app = window.app || {};
 				logout();
 			});
 		});
-		socket.on('event:alert', function (params) {
-			require(['alerts'], function (alerts) {
-				alerts.alert(params);
-			});
-		});
+		socket.on('event:alert', params => alert(params));
 		socket.on('event:deprecated_call', (data) => {
 			console.warn('[socket.io]', data.eventName, 'is now deprecated', data.replacement ? `in favour of ${data.replacement}` : 'with no alternative planned.');
 		});
@@ -150,8 +161,19 @@ app = window.app || {};
 
 			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
-			reconnectAlert.removeClass('show');
-			setTimeout(() => reconnectAlert.addClass('hide'), 100);
+
+			reconnectAlert
+				.removeClass('alert-warning alert-danger')
+				.addClass('alert-success')
+				.find('p')
+				.translateText(`[[global:reconnected-message, ${config.siteTitle}]]`);
+
+			setTimeout(() => {
+				reconnectEl.removeClass('active').addClass('hide');
+				reconnectAlert.removeClass('show').addClass('hide');
+			}, 3000);
+
+
 			reconnecting = false;
 
 			reJoinCurrentRoom();
@@ -171,10 +193,6 @@ app = window.app || {};
 			}
 
 			hooks.fire('action:reconnected');
-
-			setTimeout(function () {
-				reconnectEl.removeClass('active').addClass('hide');
-			}, 3000);
 		}
 	}
 
@@ -196,12 +214,8 @@ app = window.app || {};
 
 	function onReconnecting() {
 		const reconnectEl = $('#reconnect');
-		const reconnectAlert = $('#reconnect-alert');
-
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-			reconnectAlert.removeClass('hide');
-			setTimeout(() => reconnectAlert.addClass('show'), 100);
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
@@ -216,7 +230,7 @@ app = window.app || {};
 			if (!socket.connected) {
 				onReconnecting();
 			}
-		}, 2000);
+		}, 5000);
 
 		hooks.fire('action:disconnected');
 	}

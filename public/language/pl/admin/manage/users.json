@@ -23,6 +23,7 @@
 	"purge": "Usuń <strong>użytkownika(-ów)</strong> i <strong>treści</strong>",
 	"download-csv": "Pobierz CSV",
 	"custom-user-fields": "Dodatkowe pola profilu",
+	"custom-reasons": "Niestandardowe Powody",
 	"manage-groups": "Zarządzaj grupami",
 	"set-reputation": "Ustaw reputację",
 	"add-group": "Dodaj grupę",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 miesięcy",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "nazwa użytkownika",
 	"users.email": "adres e-mail",
 	"users.no-email": "(brak e-maila)",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Weryfikacja w toku",
 	"users.validation-expired": "Weryfikacja przedawniona",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "liczba postów",
 	"users.reputation": "reputacja",
 	"users.flags": "flagi",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Długość",
 	"temp-ban.reason": "Powód <span class=\"text-muted\">(Opcjonalnie)</span>",
+	"temp-ban.select-reason": "Wybierz powód",
 	"temp-ban.hours": "Godziny",
 	"temp-ban.days": "Dni",
 	"temp-ban.explanation": "Podaj czas trwania bana. Okres równy 0 będzie traktowany jako ban permanentny.",
+	"temp-mute.explanation": "Podaj czas trwania uciszenia. Okres równy 0 będzie traktowany jako trwałe uciszenie.",
 
 	"alerts.confirm-ban": "Czy na pewno chcesz zbanować tego użytkownika <strong>permanentnie</strong>?",
 	"alerts.confirm-ban-multi": "Czy na pewno chcesz zbanować tych użytkowników <strong>permanentnie</strong>?",

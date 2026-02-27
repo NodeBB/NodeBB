@@ -3,5 +3,7 @@
 	"welcome-notification": "Powiadomienie powitalne",
 	"welcome-notification-link": "Odnośnik do komunikatu powitalnego",
 	"welcome-notification-uid": "Powiadomienie powitalne użytkownika (UID)",
-	"post-queue-notification-uid": "Użytkownik kolejki pocztowej (UID)"
+	"post-queue-notification-uid": "Użytkownik kolejki pocztowej (UID)",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
 }

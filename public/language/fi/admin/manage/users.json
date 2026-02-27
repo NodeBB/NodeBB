@@ -23,6 +23,7 @@
 	"purge": "Poista <strong>käyttäjät</strong> ja <strong>sisällöt</strong>",
 	"download-csv": "Lataa CSV",
 	"custom-user-fields": "Custom User Fields",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Hallitse ryhmiä",
 	"set-reputation": "Aseta maine",
 	"add-group": "Lisää ryhmä",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 kuukautta",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "käyttäjätunnus",
 	"users.email": "sähköposti",
 	"users.no-email": "(sähköpostiosoitetta ei ole)",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Odottaa vahvistusta",
 	"users.validation-expired": "Vahvistus on erääntynyt",
 	"users.ip": "IP-osoite",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "viestimäärä",
 	"users.reputation": "maine",
 	"users.flags": "liputukset",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Pituus",
 	"temp-ban.reason": "Syy<span class=\"text-muted\">(valinnainen)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Tuntia",
 	"temp-ban.days": "Päivää",
 	"temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Do you really want to ban this user <strong>permanently</strong>?",
 	"alerts.confirm-ban-multi": "Do you really want to ban these users <strong>permanently</strong>?",

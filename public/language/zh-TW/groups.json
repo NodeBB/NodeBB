@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "全部群組",
     "groups": "群組",
     "members": "成員",
+    "x-members": "%1 member(s)",
     "view-group": "檢視群組",
     "owner": "群組所有者",
     "new-group": "新增群組",

@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">се осврнуо</a> на ову тему %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">је раздвојио</a> ову тему %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">је раздвојио</a> ову тему %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Кликните овде за повратак на последњу прочитану поруку у овој теми.",
     "flag-post": "Означи поруку заставицом",
     "flag-user": "Означи корисника заставицом",
@@ -180,6 +182,7 @@
     "composer.replying-to": "Писање одговора на %1",
     "composer.new-topic": "Нова тема",
     "composer.editing-in": "Уређивање објаве у %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "отпремање...",
     "composer.thumb-url-label": "Налепи адресу сличице теме",
     "composer.thumb-title": "Додај сличицу овој теми",
@@ -222,6 +225,7 @@
     "no-more-next-post": "Немате више порука у овој теми",
     "open-composer": "Open composer",
     "post-quick-reply": "Брзи одговор",
+    "post-quick-create": "Quick post",
     "navigator.index": "Објава %1 од %2",
     "navigator.unread": "%1 непрочитане",
     "upvote-post": "Upvote post",
@@ -230,5 +234,8 @@
     "unread-posts-link": "Unread posts link",
     "thumb-image": "Topic thumbnail image",
     "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers-x": "Shares (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

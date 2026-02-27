@@ -63,8 +63,8 @@
 	</div>
 	{{{ end }}}
 
-	<!-- settings menu -->
 	{{{ if user.privileges.admin:settings }}}
+	<!-- settings menu -->
 	<div class="d-flex flex-column">
 		<button class="btn btn-ghost btn-sm d-flex gap-2 align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings">
 			<i class="fa fa-fw fa-sliders"></i>
@@ -86,10 +86,29 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a>
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/activitypub">[[admin/menu:settings/activitypub]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- federation menu -->
+	<div class="d-flex flex-column">
+		<button class="btn btn-ghost btn-sm d-flex gap-2 align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFederation" aria-expanded="true" aria-controls="collapseFederation">
+			<i class="fa fa-fw fa-circle-nodes"></i>
+			<div class="flex-1 font-serif text-sm fw-semibold text-start">[[admin/menu:section-federation]]</div>
+		</button>
+
+		<div id="collapseFederation" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
+			<div class="accordion-body p-0 d-grid">
+				<a class="btn btn-ghost btn-sm text-start" id="federation-general" href="{relative_path}/admin/federation/general">[[admin/menu:federation/general]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-content" href="{relative_path}/admin/federation/content">[[admin/menu:federation/content]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-rules" href="{relative_path}/admin/federation/rules">[[admin/menu:federation/rules]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-relays" href="{relative_path}/admin/federation/relays">[[admin/menu:federation/relays]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-pruning" href="{relative_path}/admin/federation/pruning">[[admin/menu:federation/pruning]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-safety" href="{relative_path}/admin/federation/safety">[[admin/menu:federation/safety]]</a>
 			</div>
 		</div>
 	</div>

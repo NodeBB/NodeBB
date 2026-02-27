@@ -20,7 +20,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 		membershipBtn,
 		spawnPrivilegeStates,
 		localeToHTML,
-		renderTopicImage,
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
@@ -222,13 +221,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return locale.replace('_', '-');
 	}
 
-	function renderTopicImage(topicObj) {
-		if (topicObj.thumb) {
-			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.displayname + '" />';
-		}
-		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.displayname + '" />';
-	}
-
 	function renderDigestAvatar(block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
@@ -374,11 +366,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function shouldHideReplyContainer(post) {
-		if (post.replies.count <= 0 || post.replies.hasSingleImmediateReply) {
-			return true;
-		}
-
-		return false;
+		return post.replies.count <= 0 || post.replies.hasSingleImmediateReply;
 	}
 
 	function humanReadableNumber(number, toFixed = 1) {

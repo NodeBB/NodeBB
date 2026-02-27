@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "Tắt Nguồn Cấp RSS",
 	"disable-sitemap-xml": "Tắt Sitemap.xml",
 	"sitemap-topics": "Số lượng Chủ đề để hiển thị trong Sơ đồ trang web",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Xóa Bộ Đệm Sơ Đồ Trang Web",
 	"view-sitemap": "Xem Sơ Đồ Trang"
 }

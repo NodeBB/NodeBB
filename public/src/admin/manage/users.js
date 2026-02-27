@@ -142,10 +142,6 @@ define('admin/manage/users', [
 			unselectAll();
 		}
 
-		$('[component="user/select/all"]').on('click', function () {
-			$('.users-table [component="user/select/single"]').prop('checked', $(this).is(':checked'));
-		});
-
 		$('.manage-groups').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
@@ -246,7 +242,7 @@ define('admin/manage/users', [
 			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
 				if (confirm) {
 					Promise.all(uids.map(function (uid) {
-						return api.put('/users/' + uid + '/ban');
+						return api.put('/users/' + encodeURIComponent(uid) + '/ban');
 					})).then(() => {
 						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
 					}).catch(alerts.error);
@@ -254,47 +250,52 @@ define('admin/manage/users', [
 			});
 		});
 
-		$('.ban-user-temporary').on('click', function () {
+		$('.ban-user-temporary').on('click', async function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
+			const reasons = await socket.emit('user.getCustomReasons', { type: 'ban' });
+			const html = await app.parseAndTranslate('modals/temporary-ban', { reasons });
+			const modal = bootbox.dialog({
+				title: '[[user:ban-account]]',
+				message: html,
+				show: true,
+				onEscape: true,
+				buttons: {
+					close: {
+						label: '[[global:close]]',
+						className: 'btn-link',
+					},
+					submit: {
+						label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
+						callback: function () {
+							const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
+								data[cur.name] = cur.value;
+								return data;
+							}, {});
+							const until = formData.length > 0 ? (
+								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
+							) : 0;
 
-			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
-				const modal = bootbox.dialog({
-					title: '[[user:ban-account]]',
-					message: html,
-					show: true,
-					onEscape: true,
-					buttons: {
-						close: {
-							label: '[[global:close]]',
-							className: 'btn-link',
-						},
-						submit: {
-							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
-							callback: function () {
-								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
-									data[cur.name] = cur.value;
-									return data;
-								}, {});
-								const until = formData.length > 0 ? (
-									Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-								) : 0;
-
-								Promise.all(uids.map(function (uid) {
-									return api.put('/users/' + uid + '/ban', {
-										until: until,
-										reason: formData.reason,
-									});
-								})).then(() => {
-									onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-								}).catch(alerts.error);
-							},
+							Promise.all(uids.map(function (uid) {
+								return api.put('/users/' + encodeURIComponent(uid) + '/ban', {
+									until: until,
+									reason: formData.reason,
+								});
+							})).then(() => {
+								onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+							}).catch(alerts.error);
 						},
 					},
-				});
+				},
+			});
+			modal.find('[data-key]').on('click', function () {
+				const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+				if (reason && reason.body) {
+					modal.find('[name="reason"]').val(translator.unescape(reason.body));
+				}
 			});
 		});
 
@@ -326,7 +327,7 @@ define('admin/manage/users', [
 
 
 								Promise.all(uids.map(function (uid) {
-									return api.del('/users/' + uid + '/ban', {
+									return api.del('/users/' + encodeURIComponent(uid) + '/ban', {
 										reason: formData.reason || '',
 									});
 								})).then(() => {
@@ -489,6 +490,10 @@ define('admin/manage/users', [
 			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
 		});
 
+		$('[component="user/select/all"]').on('click', function () {
+			$('.users-table [component="user/select/single"]').prop('checked', $(this).is(':checked'));
+		});
+
 		const tableEl = document.querySelector('.users-table');
 		const actionBtn = document.getElementById('action-dropdown');
 		tableEl.addEventListener('change', (e) => {
@@ -501,6 +506,57 @@ define('admin/manage/users', [
 					actionBtn.setAttribute('disabled', 'disabled');
 				}
 			}
+		});
+
+		let lastSelectedUser;
+		$(tableEl).on('click', '[component="user/select/single"]', function (ev) {
+			function selectRange(clickedUserRow) {
+				function selectIndexRange(start, end, isChecked) {
+					if (start > end) {
+						const tmp = start;
+						start = end;
+						end = tmp;
+					}
+					const rows = $('.user-row');
+					for (let i = start; i <= end; i += 1) {
+						rows.eq(i).find('.form-check-input').prop('checked', isChecked).trigger('change');
+					}
+				}
+
+				if (!lastSelectedUser) {
+					lastSelectedUser = $('.user-row').first();
+				}
+
+				const isClickedSelected = clickedUserRow.find('[component="user/select/single"]').is(':checked');
+
+				const clickedIndex = clickedUserRow.index();
+				const lastIndex = lastSelectedUser.index();
+				selectIndexRange(clickedIndex, lastIndex, isClickedSelected);
+			}
+
+			const checkBox = $(this);
+			const userRow = checkBox.parents('.user-row');
+			if (ev.shiftKey) {
+				selectRange(userRow);
+				lastSelectedUser = userRow;
+				return true;
+			}
+
+			lastSelectedUser = userRow;
+		});
+
+		$('[data-copy]').on('click', function () {
+			const btn = $(this);
+			navigator.clipboard.writeText(this.getAttribute('data-copy'));
+			btn.find('i')
+				.removeClass('fa-copy')
+				.addClass('fa-check text-success');
+			setTimeout(() => {
+				btn.find('i')
+					.removeClass('fa-check text-success')
+					.addClass('fa-copy');
+			}, 2000);
+			return false;
 		});
 
 		function handleDelete(confirmMsg, path) {

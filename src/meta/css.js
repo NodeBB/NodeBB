@@ -53,6 +53,7 @@ function boostrapImport(themeData) {
 	// see https://getbootstrap.com/docs/5.0/customize/sass/#variable-defaults
 	// for an explanation of this order and https://bootswatch.com/help/
 	const { bootswatchSkin, bsVariables, isCustomSkin } = themeData;
+	const skinOverrides = ['quartz'];
 	function bsvariables() {
 		if (bootswatchSkin) {
 			if (isCustomSkin) {
@@ -63,6 +64,7 @@ function boostrapImport(themeData) {
 			}
 			return `
 				${bsVariables}
+				${skinOverrides.includes(bootswatchSkin) ? `@import "skins/${bootswatchSkin}";` : ''}
 				@import "bootswatch/dist/${bootswatchSkin}/variables";
 			`;
 		}

@@ -1,0 +1,18 @@
+get:
+  tags:
+    - admin
+  summary: Get federation settings pertaining to trust and safety
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  instanceCount:
+                    type: number
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

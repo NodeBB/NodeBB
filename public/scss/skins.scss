@@ -1,11 +1,68 @@
 // fixes for global skin issues
 
+
+.skin-quartz {
+	p > code {
+		color: #ffffff;
+		font-weight: 600;
+		font-size: 1rem;
+		text-shadow: 1px 1px black;
+	}
+	.dropdown-header {
+		color: white;
+	}
+	.card:has(.dropdown-menu.show) {
+  		backdrop-filter: none;
+	}
+	.card {
+		box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2),
+			inset -1px -1px rgba(255, 255, 255, 0.1),
+			1px 3px 8px -1px rgba(0, 0, 0, 0.15);
+	}
+	.tag-list .tag:before {
+		// quartz uses gradient for body bg
+		background: linear-gradient(90deg, rgb(51.3, 182.7, 225.9), rgb(93.6, 98.1, 175.5), rgb(220.4, 47.5, 124.45));
+  		background-attachment: fixed;
+		transform: initial;
+		top: 6px;
+	}
+	.composer .resizer {
+		background: transparent;
+	}
+}
+
+
 // brite text-secondary is white :/
-.skin-brite .text-secondary {
-	color: var(--bs-secondary-color) !important;
+.skin-brite {
+	.text-secondary {
+		color: var(--bs-secondary-color) !important;
+	}
 }
 
 // fix minty buttons
 .skin-minty .btn {
 	color: initial!important;
+}
+
+.skin-litera {
+	.badge {
+		padding: 0.25rem 0.5rem;
+	}
+}
+
+:root {
+	.skin-slate {
+		--bs-primary-rgb: #{lighten($primary, 10%)};
+	}
+	.skin-darkly, .skin-slate, .skin-cyborg {
+		--bs-border-color: #929292;
+	}
+	.skin-zephyr {
+		--bs-secondary-rgb: var(--bs-secondary-color);
+	}
+	.skin-quartz {
+		.table{
+			--bs-table-bg: transparent!important;
+		}
+	}
 }

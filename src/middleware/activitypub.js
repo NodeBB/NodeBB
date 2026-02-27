@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../database');
+const user = require('../user');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
 const analytics = require('../analytics');
@@ -18,9 +19,14 @@ middleware.pageview = async (req, res, next) => {
 middleware.assertS2S = async function (req, res, next) {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
 	// Therefore, manual header parsing is used here.
-	const { accept, 'content-type': contentType } = req.headers;
+	let { accept, 'content-type': contentType } = req.headers;
 	if (!(accept || contentType)) {
 		return next('route');
+	}
+
+	// Normalize content-type
+	if (contentType) {
+		contentType = contentType.trim().replace(/\s*;\s*/g, ';'); // spec allows spaces around semi-colon
 	}
 
 	const pass = activitypub.helpers.assertAccept(accept) ||
@@ -63,6 +69,12 @@ middleware.verify = async function (req, res, next) {
 middleware.assertPayload = helpers.try(async function (req, res, next) {
 	// Checks the validity of the incoming payload against the sender and rejects on failure
 	activitypub.helpers.log('[middleware/activitypub] Validating incoming payload...');
+
+	// Reject from banned users
+	const isBanned = await user.bans.isBanned(req.uid);
+	if (isBanned) {
+		return res.sendStatus(403);
+	}
 
 	// Sanity-check payload schema
 	const required = ['id', 'type', 'actor', 'object'];

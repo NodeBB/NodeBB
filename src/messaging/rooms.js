@@ -12,11 +12,11 @@ const privileges = require('../privileges');
 const meta = require('../meta');
 const io = require('../socket.io');
 const cache = require('../cache');
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
 
 const roomUidCache = cacheCreate({
-	name: 'chat:room:uids',
+	name: 'chat-room-uids',
 	max: 500,
 	ttl: 0,
 });
@@ -105,11 +105,15 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
 			db.sortedSetAdd('chat:rooms', now, roomId),
-			db.sortedSetAdd(`chat:room:${roomId}:owners`, now, uid),
-			db.sortedSetsAdd([
-				`chat:room:${roomId}:uids`,
-				`chat:room:${roomId}:uids:online`,
-			], now, uid),
+			db.sortedSetAddBulk([
+				[`chat:room:${roomId}:uids`, now, uid],
+				[`chat:room:${roomId}:uids:online`, now, uid],
+				...(
+					isPublic ?
+						[`chat:room:${roomId}:owners`, now, uid] :
+						[uid].concat(data.uids).map(uid => ([`chat:room:${roomId}:owners`, now, uid]))
+				),
+			]),
 		]);
 
 		await Promise.all([

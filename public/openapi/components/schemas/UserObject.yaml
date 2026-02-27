@@ -450,6 +450,10 @@ UserObjectFull:
       type: boolean
     allowProfileImageUploads:
       type: number
+    maximumProfileImageSize:
+      type: number
+    profileImageDimension:
+      type: number
     allowedProfileImageExtensions:
       type: string
     groups:
@@ -681,6 +685,10 @@ UserObjectACP:
     lastonlineISO:
       type: string
       example: '2020-03-27T20:30:36.590Z'
+    banned_until:
+      type: number
+      description: A UNIX timestamp representing the moment a ban will be lifted
+      example: 0
     banned_until_readable:
       type: string
       description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"

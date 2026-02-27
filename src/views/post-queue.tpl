@@ -19,7 +19,7 @@
 		<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 		</div>
 
-		<div class="btn-group bottom-sheet" component="post-queue/bulk-actions">
+		<div class="dropdown bottom-sheet" component="post-queue/bulk-actions">
 			<button type="button" class="btn btn-ghost btn-sm ff-secondary dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">
 				<i class="fa fa-clone text-primary"></i><span class="fw-semibold"> [[post-queue:bulk-actions]]</span>
 			</button>
@@ -77,7 +77,7 @@
 							<div class="d-flex text-xs fw-semibold align-items-center">
 								[[post-queue:user]]
 								{{{ if ((privileges.ban || privileges.mute) || privileges.admin:users) }}}
-								<div class="ms-auto btn-group bottom-sheet">
+								<div class="ms-auto dropdown bottom-sheet">
 									<button href="#" class="btn btn-ghost btn-sm ff-secondary border text-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[global:actions]]</button>
 									<ul class="dropdown-menu p-1 text-sm" role="menu">
 										{{{ if privileges.view:users:info }}}

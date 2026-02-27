@@ -1,7 +1,12 @@
 {
 	"name": "جهان",
-	"popular": "مقبول موضوعات",
-	"recent": "تمام موضوعات",
+	"latest": "Latest",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
 	"help": "مدد",
 
 	"help.title": "یہ صفحہ کیا ہے؟",
@@ -16,6 +21,5 @@
 	"onboard.why": "اس فورم سے باہر بہت کچھ ہو رہا ہے، اور ہر چیز آپ کے مفادات سے مطابقت نہیں رکھتی۔ اس لیے مخصوص لوگوں کو فالو کرنا یہ ظاہر کرنے کا بہترین طریقہ ہے کہ آپ ان سے مزید دیکھنا چاہتے ہیں۔",
 	"onboard.how": "اس دوران، آپ اس فورم کے قابل رسائی مواد کو دیکھنے کے لیے اوپر کے بٹن استعمال کر سکتے ہیں۔ اس طرح آپ نئے مواد کی دریافت شروع کر سکتے ہیں!",
 
-	"show-categories": "زمرہ جات دکھائیں",
-	"hide-categories": "زمرہ جات چھپائیں"
+	"category-search": "Find a category..."
 }

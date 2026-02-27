@@ -1,8 +1,8 @@
 {
     "category": "Categoria",
     "subcategories": "Sottocategorie",
-    "uncategorized": "Senza categoria",
-    "uncategorized.description": "Discussioni che non rientrano strettamente nelle categorie esistenti.",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Questa categoria può essere seguita dal social web aperto tramite lo pseudonimo %1",
     "new-topic-button": "Nuova Discussione",
     "guest-login-post": "Accedi per postare",

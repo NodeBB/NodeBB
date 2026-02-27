@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">อ้างอิง</a> กระทู้นี้เมื่อ %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">แยก</a> กระทู้นี้เมื่อ %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">แยก</a> กระทู้นี้เมื่อ %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "คลิกที่นี่เพื่อกลับไปยังโพสต์ที่อ่านล่าสุดในหัวข้อนี้",
     "flag-post": "รายงานโพสต์นี้",
     "flag-user": "รายงานผู้ใช้นี้",
@@ -180,6 +182,7 @@
     "composer.replying-to": "ตอบไปยัง  %1",
     "composer.new-topic": "กระทู้ใหม่",
     "composer.editing-in": "แก้ไขโพสต์ใน %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "กำลังอัพโหลด ...",
     "composer.thumb-url-label": "วาง URL ของภาพของกระทู้นี้",
     "composer.thumb-title": "เพิ่มภาพให้กับกระทู้นี้",
@@ -222,6 +225,7 @@
     "no-more-next-post": "คุณได้มีโพสต์อีกในกระทู้นี้",
     "open-composer": "เปิดคอมโพสเซอร์",
     "post-quick-reply": "ตอบกลับอย่างรวดเร็ว",
+    "post-quick-create": "Quick post",
     "navigator.index": "โพสต์ %1 จากทั้งหมด %2",
     "navigator.unread": "ยังไม่ได้อ่าน %1",
     "upvote-post": "โหวดขึ้นโพสต์นี้",
@@ -230,5 +234,8 @@
     "unread-posts-link": "ลิงก์ไปโพสต์ที่ยังไม่ได้อ่าน",
     "thumb-image": "รูปย่อของกระทู้",
     "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers-x": "Shares (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

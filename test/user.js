@@ -72,11 +72,12 @@ describe('User', () => {
 
 	describe('.create(), when created', () => {
 		it('should be created properly', async () => {
-			testUid = await User.create({ username: userData.username, password: userData.password });
+			testUid = await User.create({
+				username: userData.username, password: userData.password, email: userData.email,
+			}, {
+				emailVerification: 'verify',
+			});
 			assert.ok(testUid);
-
-			await User.setUserField(testUid, 'email', userData.email);
-			await User.email.confirmByUid(testUid);
 		});
 
 		it('should be created properly', async () => {
@@ -169,6 +170,23 @@ describe('User', () => {
 				tryCreate({ username: 'notdupe2', email: 'dupe@dupe.com' }),
 			]);
 			assert.strictEqual(err.message, '[[error:email-taken]]');
+		});
+
+		it('should fail to create user with invalid slug', async () => {
+			await assert.rejects(User.create({
+				username: '-.-', // slug becomes .
+				password: '123456',
+			}), { message: '[[error:invalid-username]]' });
+		});
+
+		it('should create user with valid slug (-.-.- => .-.)', async () => {
+			const uid = await User.create({
+				username: '-.-.-', // slug becomes .-.
+				password: '123456',
+			});
+			const data = await User.getUserData(uid);
+			assert.strictEqual(data.username, '-.-.-');
+			assert.strictEqual(data.userslug, '.-.');
 		});
 	});
 
@@ -694,12 +712,12 @@ describe('User', () => {
 		let csrf_token;
 
 		before(async () => {
-			const newUid = await User.create({ username: 'updateprofile', email: 'update@me.com', password: '123456' });
+			const newUid = await User.create({
+				username: 'updateprofile', email: 'update@me.com', password: '123456',
+			}, {
+				emailVerification: 'verify',
+			});
 			uid = newUid;
-
-			await User.setUserField(uid, 'email', 'update@me.com');
-			await User.email.confirmByUid(uid);
-
 			({ jar, csrf_token } = await helpers.loginUser('updateprofile', '123456'));
 		});
 
@@ -734,9 +752,11 @@ describe('User', () => {
 			let uid;
 
 			it('should update a user\'s profile', async () => {
-				uid = await User.create({ username: 'justforupdate', email: 'just@for.updated', password: '123456' });
-				await User.setUserField(uid, 'email', 'just@for.updated');
-				await User.email.confirmByUid(uid);
+				uid = await User.create({
+					username: 'justforupdate', email: 'just@for.updated', password: '123456',
+				}, {
+					emailVerification: 'verify',
+				});
 
 				const data = {
 					uid: uid,
@@ -772,9 +792,9 @@ describe('User', () => {
 			it('should not change the username to escaped version', async () => {
 				const uid = await User.create({
 					username: 'ex\'ample_user', email: '13475@test.com', password: '123456',
+				}, {
+					emailVerification: 'verify',
 				});
-				await User.setUserField(uid, 'email', '13475@test.com');
-				await User.email.confirmByUid(uid);
 
 				const data = {
 					uid: uid,
@@ -1013,6 +1033,11 @@ describe('User', () => {
 			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 			}
+		});
+
+		it('should return picture and uploaded picture as different values', async () => {
+			const userData = await User.getUserFields(uid, ['picture', 'uploadedpicture']);
+			assert.notStrictEqual(userData.picture, userData.uploadedpicture);
 		});
 
 		it('should set user picture to uploaded', async () => {
@@ -1352,6 +1377,16 @@ describe('User', () => {
 			assert(result);
 			assert.strictEqual(result.topicData.title, 'banned topic');
 		});
+
+		it('should unban user properly if only "banned" field is requested', async () => {
+			const testUid = await User.create({ username: 'bannedUser3' });
+			await User.bans.ban(testUid, Date.now() + 2000);
+			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), true);
+			await setTimeout(3000);
+			await User.getUserFields(testUid, ['uid', 'banned']); // loading their data unbans the user
+			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), false);
+		});
+
 	});
 
 	describe('Digest.getSubscribers', () => {
@@ -1418,9 +1453,12 @@ describe('User', () => {
 		it('should send digests', async () => {
 			const oldValue = meta.config.includeUnverifiedEmails;
 			meta.config.includeUnverifiedEmails = true;
-			const uid = await User.create({ username: 'digest' });
-			await User.setUserField(uid, 'email', 'email@test.com');
-			await User.email.confirmByUid(uid);
+			const uid = await User.create({
+				username: 'digest', email: 'email@test.com',
+			}, {
+				emailVerification: 'verify',
+			});
+
 			await User.digest.execute({
 				interval: 'day',
 				subscribers: [uid],
@@ -1893,7 +1931,7 @@ describe('User', () => {
 				privateGroup: groups.create({ name: PRIVATE_GROUP, private: 1 }),
 				hiddenGroup: groups.create({ name: HIDDEN_GROUP, hidden: 1 }),
 				notAnInviter: User.create({ username: 'notAnInviter', password: COMMON_PW }),
-				inviter: User.create({ username: 'inviter', password: COMMON_PW }),
+				inviter: User.create({ username: 'inviter', password: COMMON_PW, email: 'invited@nodebb.org' }, { emailVerification: 'verify' }),
 				admin: User.create({ username: 'adminInvite', password: COMMON_PW }),
 			});
 
@@ -1901,12 +1939,10 @@ describe('User', () => {
 			inviterUid = results.inviter;
 			adminUid = results.admin;
 
-			await User.setUserField(inviterUid, 'email', 'inviter@nodebb.org');
 			await Promise.all([
 				groups.create({ name: OWN_PRIVATE_GROUP, ownerUid: inviterUid, private: 1 }),
 				groups.join('administrators', adminUid),
 				groups.join('cid:0:privileges:invite', inviterUid),
-				User.email.confirmByUid(inviterUid),
 			]);
 		});
 

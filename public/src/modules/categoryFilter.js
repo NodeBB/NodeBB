@@ -82,10 +82,10 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 					return a - b;
 				});
 				icon.toggleClass('invisible');
-				listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
+				listEl.find('[data-cid="all"] [component="category/select/icon"]').toggleClass('invisible', !!selectedCids.length);
 			} else {
 				el.find('[component="category/select/icon"]').addClass('invisible');
-				listEl.find('[data-cid="all"] i').removeClass('invisible');
+				listEl.find('[data-cid="all"] [component="category/select/icon"]').removeClass('invisible');
 				selectedCids = [];
 			}
 

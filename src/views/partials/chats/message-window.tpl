@@ -24,9 +24,20 @@
 	<hr class="my-1"/>
 	<div class="d-flex flex-grow-1 gap-1 overflow-auto" style="min-width: 0px;">
 		<div component="chat/messages" class="expanded-chat d-flex flex-column flex-grow-1" data-roomid="{roomId}" style="min-width: 0px;">
-			<ul component="chat/message/content" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1 ghost-scrollbar">
+			<ul component="chat/message/content" data-roomid="{roomId}" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1 ghost-scrollbar invisible">
 				<!-- IMPORT partials/chats/messages.tpl -->
 			</ul>
+			<script>
+				(function () {
+					const el = document.querySelector('[component="chat/message/content"]');
+					if (el) {
+						requestAnimationFrame(() => {
+							el.scrollTop = el.scrollHeight;
+							el.classList.remove('invisible');
+						});
+					}
+				})();
+			</script>
 			<ul component="chat/message/search/results" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1 hidden">
 				<div component="chat/message/search/no-results" class="text-center p-4 d-flex flex-column">
 					<div class="p-4"><i class="fa-solid fa-wind fs-2 text-muted"></i></div>

@@ -229,20 +229,6 @@ describe('helpers', () => {
 		done();
 	});
 
-	it('should render thumb as topic image', (done) => {
-		const topicObj = { thumb: '/uploads/1.png', user: { username: 'baris', displayname: 'Baris Soner Usakli' } };
-		const html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, `<img src="${topicObj.thumb}" class="img-circle user-img" title="${topicObj.user.displayname}" />`);
-		done();
-	});
-
-	it('should render user picture as topic image', (done) => {
-		const topicObj = { thumb: '', user: { uid: 1, username: 'baris', displayname: 'Baris Soner Usakli', picture: '/uploads/2.png' } };
-		const html = helpers.renderTopicImage(topicObj);
-		assert.equal(html, `<img component="user/picture" data-uid="${topicObj.user.uid}" src="${topicObj.user.picture}" class="user-img" title="${topicObj.user.displayname}" />`);
-		done();
-	});
-
 	it('should render digest avatar', (done) => {
 		const block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
 		const html = helpers.renderDigestAvatar(block);

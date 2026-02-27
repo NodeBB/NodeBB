@@ -47,7 +47,7 @@ inbox.create = async (req) => {
 	}
 
 	// Category sync, remove when cross-posting available
-	const { cids } = await activitypub.actors.getLocalFollowers(actor);
+	const { cids } = await activitypub.actors.getFollowers(actor);
 	let cid = null;
 	if (cids.size > 0) {
 		cid = Array.from(cids)[0];
@@ -202,7 +202,7 @@ inbox.update = async (req) => {
 							return await activitypub.notes.assertPrivate(object);
 						}
 
-						const { cids } = await activitypub.actors.getLocalFollowers(actor);
+						const { cids } = await activitypub.actors.getFollowers(actor);
 						let cid = null;
 						if (cids.size > 0) {
 							cid = Array.from(cids)[0];
@@ -387,7 +387,7 @@ inbox.announce = async (req) => {
 	let pid;
 
 	// Category sync, remove when cross-posting available
-	const { cids } = await activitypub.actors.getLocalFollowers(actor);
+	const { cids } = await activitypub.actors.getFollowers(actor);
 	const syncedCids = Array.from(cids);
 
 	// 1b12 announce
@@ -522,6 +522,7 @@ inbox.follow = async (req) => {
 
 		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
 		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
+		activitypub.actors._followerCache.del(id);
 
 		await user.onFollow(actor, id);
 		activitypub.send('uid', id, actor, {
@@ -613,6 +614,8 @@ inbox.accept = async (req) => {
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, `cid|${id}`), // for notes assertion checking
 			]);
 		}
+
+		activitypub.actors._followerCache.del(actor);
 	}
 };
 
@@ -650,6 +653,7 @@ inbox.undo = async (req) => {
 					const followerRemoteCount = await db.sortedSetCard(`followerRemote:${id}`);
 					await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 					notifications.rescind(`follow:${id}:uid:${actor}`);
+					activitypub.actors._followerCache.del(id);
 					break;
 				}
 

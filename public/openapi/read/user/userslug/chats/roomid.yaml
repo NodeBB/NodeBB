@@ -124,6 +124,8 @@ get:
                                 `icon:text` for the user's auto-generated
                                 icon
                               example: "#f44336"
+                            banned_until:
+                              type: number
                             banned_until_readable:
                               type: string
                             deleted:

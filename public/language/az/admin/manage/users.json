@@ -23,6 +23,7 @@
 	"purge": "<strong>İstifadəçi(lər)i</strong> və <strong>məzmunu</strong> silin",
 	"download-csv": "CSV-ni endir",
 	"custom-user-fields": "Fərdi istifadəçi sahələri",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Qrupları idarə et",
 	"set-reputation": "Reputasiya təyin et",
 	"add-group": "Qrup əlavə et",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 ay",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "istifadəçi adı",
 	"users.email": "e-poçt",
 	"users.no-email": "(e-poçt yoxdur)",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Təsdiqləmə gözlənir",
 	"users.validation-expired": "Təsdiqləmə müddəti başa çatıb",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "postcount",
 	"users.reputation": "reputasiya",
 	"users.flags": "işarələr",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Uzunluq",
 	"temp-ban.reason": "Səbəb <span class=\"text-muted\">(İstəyə görə)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Saat",
 	"temp-ban.days": "Günlər",
 	"temp-ban.explanation": "Qadağanın müddətini daxil edin. Nəzərə alın ki, 0 vaxtı daimi qadağa hesab olunacaq.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Həqiqətən bu istifadəçini <strong>həmişəlik</strong> qadağan etmək istəyirsiniz?",
 	"alerts.confirm-ban-multi": "Bu istifadəçiləri <strong>həmişəlik</strong> qadağan etmək istəyirsiniz?",

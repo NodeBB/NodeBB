@@ -38,7 +38,7 @@
 	"settings/tags": "Štítky",
 	"settings/notifications": "Oznámení",
 	"settings/api": "API Access",
-	"settings/activitypub": "Federation (ActivityPub)",
+	"settings/activitypub": "Federace (AcitivityPub)",
 	"settings/sounds": "Sounds",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",
@@ -47,6 +47,14 @@
 	"settings/advanced": "Pokročilé",
 
 	"settings.page-title": "Nastavení %1",
+
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Vzhled",
 	"appearance/themes": "Motivy",

@@ -21,6 +21,11 @@ const failedWebfingerCache = TTLCache({
 const activitypub = module.parent.exports;
 
 const Actors = module.exports;
+Actors._followerCache = TTLCache({
+	name: 'ap-follower-cache',
+	max: 5000,
+	ttl: 1000 * 60 * 60, // 1 hour
+});
 
 Actors.qualify = async (ids, options = {}) => {
 	/**
@@ -44,6 +49,9 @@ Actors.qualify = async (ids, options = {}) => {
 
 	// Filter out uids if passed in
 	ids = ids.filter(id => !utils.isNumber(id));
+
+	// Filter out constants
+	ids = ids.filter(id => !activitypub._constants.acceptablePublicAddresses.includes(id));
 
 	// Translate webfinger handles to uris
 	ids = (await Promise.all(ids.map(async (id) => {
@@ -417,16 +425,21 @@ Actors.assertGroup = async (ids, options = {}) => {
 	return categoryObjs;
 };
 
-Actors.getLocalFollowers = async (id) => {
-	// Returns local uids and cids that follow a remote actor (by id)
-	const response = {
+Actors.getFollowers = async (id) => {
+	/**
+	 * Returns followers by local or remote id. Pass in a...
+	 *  - Remote id: returns local uids/cids that follow
+	 *  - Local id: returns remote uids that follow
+	 */
+	let response = Actors._followerCache.get(id);
+	if (response) {
+		return response;
+	}
+
+	response = {
 		uids: new Set(),
 		cids: new Set(),
 	};
-
-	if (!activitypub.helpers.isUri(id)) {
-		return response;
-	}
 
 	const [isUser, isCategory] = await Promise.all([
 		user.exists(id),
@@ -437,10 +450,10 @@ Actors.getLocalFollowers = async (id) => {
 		const members = await db.getSortedSetMembers(`followersRemote:${id}`);
 
 		members.forEach((id) => {
-			if (utils.isNumber(id)) {
-				response.uids.add(parseInt(id, 10));
-			} else if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
+			if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
 				response.cids.add(parseInt(id.slice(4), 10));
+			} else {
+				response.uids.add(utils.isNumber(id) ? parseInt(id, 10) : id);
 			}
 		});
 	} else if (isCategory) {
@@ -459,6 +472,7 @@ Actors.getLocalFollowers = async (id) => {
 		});
 	}
 
+	Actors._followerCache.set(id, response);
 	return response;
 };
 

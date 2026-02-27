@@ -1,9 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Objava predmemorija",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
 	"percent-full": "%1% Puno",
 	"post-cache-size": "Veličina predmemorije objave",
 	"items-in-cache": "Artikli u predmemoriji"

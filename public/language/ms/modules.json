@@ -82,7 +82,7 @@
     "composer.hide-preview": "Sorok pra-lihat",
     "composer.help": "Help",
     "composer.user-said-in": "%1 disebut di %2:",
-    "composer.user-said": "%1 berkata:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Anda yakin untuk membuang kiriman ini?",
     "composer.submit-and-lock": "Hantar dan Kunci",
     "composer.toggle-dropdown": "Togol Kebawah",

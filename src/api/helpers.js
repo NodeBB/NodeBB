@@ -1,6 +1,5 @@
 'use strict';
 
-const url = require('url');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -25,11 +24,15 @@ exports.buildReqObject = (req, payload) => {
 	const headers = req.headers || (req.request && req.request.headers) || {};
 	const session = req.session || (req.request && req.request.session) || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
-	let { host } = headers;
+	let host = headers.host || '';
 	const referer = headers.referer || '';
 
-	if (!host) {
-		host = url.parse(referer).host || '';
+	if (!host && referer) {
+		try {
+			host = new URL(referer).host;
+		} catch (err) {
+			// ignore invalid referer
+		}
 	}
 
 	return {

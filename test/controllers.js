@@ -39,9 +39,9 @@ describe('Controllers', () => {
 		});
 		cid = category.cid;
 
-		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true });
-		await user.setUserField(fooUid, 'email', 'foo@test.com');
-		await user.email.confirmByUid(fooUid);
+		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true, email: 'foo@test.com' }, {
+			emailVerification: 'verify',
+		});
 
 		adminUid = await user.create({ username: 'admin', password: 'barbar', gdpr_consent: true });
 		await groups.join('administrators', adminUid);
@@ -395,9 +395,9 @@ describe('Controllers', () => {
 			it('should remove current email (only allowed if email not required)', async () => {
 				meta.config.requireEmailAddress = 0;
 
-				const uid = await user.create({ username: 'interstiuser5' });
-				await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
-				await user.email.confirmByUid(uid);
+				const uid = await user.create({
+					username: 'interstiuser5', email: 'interstiuser5@nodebb.org',
+				}, { emailVerification: 'verify' });
 
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -418,9 +418,11 @@ describe('Controllers', () => {
 			it('should require a password (if one is set) for email change', async () => {
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-					const uid = await user.create({ username, password });
-					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
-					await user.email.confirmByUid(uid);
+					const uid = await user.create({
+						username, password, email: `${username}@nodebb.org`,
+					}, {
+						emailVerification: 'verify',
+					});
 
 					const result = await user.interstitials.email({
 						userData: { uid: uid, updateEmail: true },
@@ -441,9 +443,11 @@ describe('Controllers', () => {
 
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-					const uid = await user.create({ username, password });
-					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
-					await user.email.confirmByUid(uid);
+					const uid = await user.create({
+						username, password, email: `${username}@nodebb.org`,
+					}, {
+						emailVerification: 'verify',
+					});
 
 					const result = await user.interstitials.email({
 						userData: { uid: uid, updateEmail: true },
@@ -463,9 +467,11 @@ describe('Controllers', () => {
 
 			it('should successfully issue validation request if the correct password is passed in', async () => {
 				const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-				const uid = await user.create({ username, password });
-				await user.setUserField(uid, 'email', `${username}@nodebb.org`);
-				await user.email.confirmByUid(uid);
+				const uid = await user.create({
+					username, password, email: `${username}@nodebb.org`,
+				}, {
+					emailVerification: 'verify',
+				});
 
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -1165,7 +1171,7 @@ describe('Controllers', () => {
 			assert.equal(response.statusCode, 200);
 			assert(body);
 			const notif = body.notifications[0];
-			assert.equal(notif.bodyShort, '<strong>test1</strong> has posted a reply to: <strong>test2</strong>');
+			assert.equal(notif.bodyShort, '<strong>test1</strong> posted a reply in <strong>test2</strong>');
 			assert.equal(notif.bodyLong, notifData.bodyLong);
 			assert.equal(notif.pid, notifData.pid);
 			assert.equal(notif.path, nconf.get('relative_path') + notifData.path);

@@ -9,11 +9,9 @@ require('../../require-main');
 
 const path = require('path');
 const nconf = require('nconf');
-const url = require('url');
-const util = require('util');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
+
 if (!process.env.hasOwnProperty('CI')) {
 	process.env.CI = 'true';
 }
@@ -46,13 +44,21 @@ nconf.defaults({
 	relative_path: '',
 });
 
-const urlObject = url.parse(nconf.get('url'));
+const urlObject = new URL(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
 nconf.set('asset_base_url', `${relativePath}/assets`);
 nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
 nconf.set('upload_url', '/assets/uploads');
-nconf.set('url_parsed', urlObject);
+nconf.set('url_parsed', {
+	href: urlObject.href,
+	origin: urlObject.origin,
+	protocol: urlObject.protocol,
+	host: urlObject.host,
+	hostname: urlObject.hostname,
+	port: urlObject.port,
+	pathname: urlObject.pathname,
+});
 nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 nconf.set('secure', urlObject.protocol === 'https:');
 nconf.set('use_port', !!urlObject.port);
@@ -125,7 +131,7 @@ if (testDbConfig.database === productionDbConfig.database &&
 nconf.set(dbType, testDbConfig);
 
 winston.info('database config %s', dbType, testDbConfig);
-winston.info(`environment ${global.env}`);
+winston.info(`environment ${process.env.NODE_ENV}`);
 
 const db = require('../../src/database');
 
@@ -133,9 +139,6 @@ module.exports = db;
 
 before(async function () {
 	this.timeout(30000);
-
-	// Parse out the relative_url and other goodies from the configured URL
-	const urlObject = url.parse(nconf.get('url'));
 
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));

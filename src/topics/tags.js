@@ -29,7 +29,7 @@ module.exports = function (Topics) {
 		);
 		await db.sortedSetsAdd(topicSets, timestamp, tid);
 		await Topics.updateCategoryTagsCount([cid], tags);
-		await Promise.all(tags.map(updateTagCount));
+		await updateTagCount(tags);
 	};
 
 	Topics.filterTags = async function (tags, cid) {
@@ -185,11 +185,21 @@ module.exports = function (Topics) {
 		await Topics.updateCategoryTagsCount(Object.keys(allCids), [newTagName]);
 	}
 
-	async function updateTagCount(tag) {
-		const count = await Topics.getTagTopicCount(tag);
-		await db.sortedSetAdd('tags:topic:count', count || 0, tag);
+	async function updateTagCount(tags) {
+		if (!Array.isArray(tags)) {
+			tags = [tags];
+		}
+		if (!tags.length) return;
+
+		const counts = await Promise.all(tags.map(tag => Topics.getTagTopicCount(tag)));
+		await db.sortedSetAdd(
+			'tags:topic:count',
+			tags.map((tag, index) => counts[index] || 0),
+			tags
+		);
 		cache.del('tags:topic:count');
 	}
+	Topics.updateTagCount = updateTagCount;
 
 	Topics.getTagTids = async function (tag, start, stop) {
 		const tids = await db.getSortedSetRevRange(`tag:${tag}:topics`, start, stop);
@@ -205,7 +215,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTagTopicCount = async function (tag, cids = []) {
-		let count = 0;
+		let count;
 		if (cids.length) {
 			count = await db.sortedSetsCardSum(
 				cids.map(cid => `cid:${cid}:tag:${tag}:topics`)
@@ -381,7 +391,7 @@ module.exports = function (Topics) {
 			db.setObjectBulk(bulkSet),
 		]);
 
-		await Promise.all(tags.map(updateTagCount));
+		await updateTagCount(tags);
 		await Topics.updateCategoryTagsCount(_.uniq(topicData.map(t => t.cid)), tags);
 	};
 
@@ -406,7 +416,7 @@ module.exports = function (Topics) {
 			db.setObjectBulk(bulkSet),
 		]);
 
-		await Promise.all(tags.map(updateTagCount));
+		await updateTagCount(tags);
 		await Topics.updateCategoryTagsCount(_.uniq(topicData.map(t => t.cid)), tags);
 	};
 
@@ -430,7 +440,7 @@ module.exports = function (Topics) {
 		await db.sortedSetsRemove(sets, tid);
 
 		await Topics.updateCategoryTagsCount([cid], tags);
-		await Promise.all(tags.map(updateTagCount));
+		await updateTagCount(tags);
 	};
 
 	Topics.searchTags = async function (data) {
@@ -476,7 +486,7 @@ module.exports = function (Topics) {
 		if (parseInt(data.cid, 10)) {
 			tagWhitelist = await categories.getTagWhitelist([data.cid]);
 		}
-		let tags = [];
+		let tags;
 		if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
 			const scores = await db.sortedSetScores(`cid:${data.cid}:tags`, tagWhitelist[0]);
 			tags = tagWhitelist[0].map((tag, index) => ({ value: tag, score: scores[index] }));

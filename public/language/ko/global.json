@@ -137,6 +137,7 @@
     "allowed-file-types": "허용된 파일 유형은 %1입니다",
     "unsaved-changes": "저장되지 않은 변경 사항이 있습니다. 정말로 이동하시겠습니까?",
     "reconnecting-message": "%1<br/>연결이 끊어졌습니다.<br/>잠시 기다려주세요.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "재생",
     "cookies.message": "이 포럼은 최상의 경험을 제공하기 위해 쿠키를 사용합니다.",
     "cookies.accept": "알겠습니다!",

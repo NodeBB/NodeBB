@@ -23,6 +23,7 @@
 	"purge": "Изтриване на <strong>потребителя/ите</strong> и <strong>съдържанието</strong>",
 	"download-csv": "Сваляне във формат „CSV“",
 	"custom-user-fields": "Персонализирани потребителски полета",
+	"custom-reasons": "Персонализирани причини",
 	"manage-groups": "Управление на групите",
 	"set-reputation": "Задаване на репутация",
 	"add-group": "Добавяне на група",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 месеца",
 
 	"users.uid": "потр. ид.",
+	"users.user-id": "User ID",
 	"users.username": "потребителско име",
 	"users.email": "е-поща",
 	"users.no-email": "(няма е-поща)",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Очаква потвърждение",
 	"users.validation-expired": "Изтекла давност на потвърждението",
 	"users.ip": "IP адрес",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "брой публикации",
 	"users.reputation": "репутация",
 	"users.flags": "доклади",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Продължителност",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(незадължително)</span>",
+	"temp-ban.select-reason": "Изберете причина",
 	"temp-ban.hours": "Часове",
 	"temp-ban.days": "Дни",
 	"temp-ban.explanation": "Въведете продължителността на блокирането. Стойност от 0 ще направи блокирането за постоянно.",
+	"temp-mute.explanation": "Изберете продължителност за заглушаването. Имайте предвид, че дължина 0 означава заглушаване за неопределено време.",
 
 	"alerts.confirm-ban": "Наистина ли искате да блокирате този потребител <strong>за постоянно</strong>?",
 	"alerts.confirm-ban-multi": "Наистина ли искате да блокирате тези потребители <strong>за постоянно</strong>?",

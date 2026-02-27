@@ -137,6 +137,7 @@
     "allowed-file-types": "صيغ الملفات المدعومة هي 1%",
     "unsaved-changes": "لديك تغييرات لم تحفظ. هل أنت متأكد من رغبتك بمغادرة الصفحة؟",
     "reconnecting-message": "يبدو أن اتصالك لـ %1 قد فقد. رجاءًا أنتظر ثم حاول الإتصال مرة اخرى.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "تشغيل",
     "cookies.message": "هذا الموقع يستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا.",
     "cookies.accept": "فهمت الأمر!",

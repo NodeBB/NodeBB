@@ -57,6 +57,7 @@
     "rejectImageWidth": 5000,
     "rejectImageHeight": 5000,
     "resizeImageQuality": 80,
+    "convertPastedImageTo": "image/jpeg",
     "topicThumbSize": 512,
     "minimumTitleLength": 3,
     "maximumTitleLength": 255,
@@ -141,6 +142,7 @@
     "feeds:disableSitemap": 0,
     "feeds:disableRSS": 0,
     "sitemapTopics": 500,
+    "sitemapCacheDurationHours": 24,
     "maintenanceMode": 0,
     "maintenanceModeStatus": 503,
     "upvoteVisibility": "all",
@@ -204,5 +206,7 @@
     "activitypubProbeTimeout": 2000,
     "activitypubContentPruneDays": 30,
     "activitypubUserPruneDays": 7,
-    "activitypubFilter": 0
+    "activitypubFilter": 0,
+    "activitypubSummaryLimit": 500,
+    "activitypubBreakString": "[...]"
 }

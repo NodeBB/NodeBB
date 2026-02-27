@@ -66,7 +66,6 @@ module.exports = function (Groups) {
 		const notificationData = await Promise.all(uids.map(uid => notifications.create({
 			type: 'group-invite',
 			bodyShort: `[[groups:invited.notification-title, ${groupName}]]`,
-			bodyLong: '',
 			nid: `group:${groupName}:uid:${uid}:invite`,
 			path: `/groups/${slugify(groupName)}`,
 			icon: 'fa-users',

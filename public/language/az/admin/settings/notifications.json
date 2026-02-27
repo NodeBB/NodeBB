@@ -3,5 +3,7 @@
 	"welcome-notification": "Xoş gəlmisiniz bildirişi",
 	"welcome-notification-link": "Xoş gəlmisiniz bildiriş linki",
 	"welcome-notification-uid": "Xoş gəlmisiniz bildiriş istifadəçisi (UID)",
-	"post-queue-notification-uid": "Yazı növbəsi istifadəçisi (UID)"
+	"post-queue-notification-uid": "Yazı növbəsi istifadəçisi (UID)",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
 }

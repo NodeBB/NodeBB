@@ -18,7 +18,7 @@
 				<div class="d-flex flex-grow-1 gap-1 overflow-auto" style="min-width: 0px;">
 					<div component="chat/messages" class="expanded-chat d-flex flex-column flex-grow-1" data-roomid="{roomId}" style="min-width: 0px;">
 
-						<ul component="chat/message/content" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1">
+						<ul component="chat/message/content" data-roomid="{roomId}" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1">
 							<!-- IMPORT partials/chats/messages.tpl -->
 						</ul>
 						<ul component="chat/message/search/results" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1 hidden">

@@ -19,15 +19,8 @@ describe('Notifications', () => {
 	let uid;
 	let notification;
 
-	before((done) => {
-		user.create({ username: 'poster' }, (err, _uid) => {
-			if (err) {
-				return done(err);
-			}
-
-			uid = _uid;
-			done();
-		});
+	before(async () => {
+		uid = await user.create({ username: 'poster' });
 	});
 
 	it('should fail to create notification without a nid', (done) => {
@@ -57,6 +50,32 @@ describe('Notifications', () => {
 				});
 			});
 		});
+	});
+
+	it('should create a notification with a custom icon', async () => {
+		const nid = 'custom-icon-notification';
+		await notifications.create({
+			nid: nid,
+			bodyShort: 'Notification with custom icon',
+			icon: 'fa-solid fa-bell',
+		});
+		const notifData = await notifications.get(nid);
+		assert.strictEqual(notifData.user, undefined);
+		assert.strictEqual(notifData.icon, 'fa-solid fa-bell');
+	});
+
+	it('should create a notification with a user icon/bgColor', async () => {
+		const uid = await user.create({ username: 'iconuser' });
+		const nid = 'user-icon-notification';
+		await notifications.create({
+			nid: nid,
+			bodyShort: 'Notification with user icon',
+			from: uid,
+		});
+		const notifData = await notifications.get(nid);
+		assert.strictEqual(notifData.icon, undefined);
+		assert.strictEqual(notifData.user['icon:text'], 'I');
+		assert.strictEqual(notifData.user['icon:bgColor'], '#3f51b5');
 	});
 
 	it('should return null if pid is same and importance is lower', (done) => {

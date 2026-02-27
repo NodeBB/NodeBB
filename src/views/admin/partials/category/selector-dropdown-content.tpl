@@ -1,15 +1,16 @@
-<button type="button" class="btn btn-ghost btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	<span component="category-selector-selected">
-		<span class="category-item d-inline-flex align-items-center gap-1">
+<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	<span component="category-selector-selected" class="d-flex align-items-center gap-1">
 		{{{ if (selectedCategory && !showCategorySelectLabel) }}}
+		<span class="category-item d-inline-flex align-items-center gap-1">
 			{buildCategoryIcon(selectedCategory, "24px", "rounded-circle")}
-			{selectedCategory.name}
+			<span class="fw-semibold">{selectedCategory.name}</span>
+		</span>
 		{{{ else }}}
 		<i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}}"></i>
 		{{{ if selectCategoryLabel }}}{selectCategoryLabel}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}
 		{{{ end }}}
-		</span>
-	</span> <span class="caret"></span>
+	</span>
+	<span class="caret"></span>
 </button>
 
 <div class="dropdown-menu p-1">

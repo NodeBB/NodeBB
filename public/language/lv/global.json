@@ -137,6 +137,7 @@
     "allowed-file-types": "Atļautie faila veidi ir %1",
     "unsaved-changes": "Tev ir nesaglabātas izmaiņas. Vai tiešām vēlies doties projām?",
     "reconnecting-message": "Šķiet, ka Tavs savienojums ar %1 tika pazaudēts, lūdzu, uzgaidi, kamēr mēģinām atkal pievienoties.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Spēlēt",
     "cookies.message": "Šī vietne izmanto sīkfailus, lai nodrošinātu, ka Tu iegūsti vislabāko pieredzi mūsu vietnē.",
     "cookies.accept": "Sapratu!",

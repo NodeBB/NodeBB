@@ -17,8 +17,6 @@ const searchApi = module.exports;
 
 searchApi.categories = async (caller, data) => {
 	// used by categorySearch module
-
-	let cids = [];
 	let matchedCids = [];
 	const privilege = data.privilege || 'topics:read';
 	data.states = (data.states || ['watching', 'tracking', 'notwatching', 'ignoring']).map(
@@ -26,6 +24,7 @@ searchApi.categories = async (caller, data) => {
 	);
 	data.parentCid = parseInt(data.parentCid || 0, 10);
 
+	let cids;
 	if (data.search) {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
 	} else {
@@ -47,7 +46,7 @@ searchApi.categories = async (caller, data) => {
 	}
 
 	let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass'], data.parentCid);
-	categoriesData = categoriesData.slice(0, 200);
+	categoriesData = categoriesData.slice(0, 1000);
 
 	categoriesData.forEach((category) => {
 		category.selected = data.selectedCids ? data.selectedCids.includes(category.cid) : false;

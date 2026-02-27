@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash, createSign, createVerify, getHashes } = require('crypto');
-const { CronJob } = require('cron');
 
 const request = require('../request');
 const db = require('../database');
@@ -69,34 +68,7 @@ ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
 ActivityPub.out = require('./out');
-
-ActivityPub.startJobs = () => {
-	ActivityPub.helpers.log('[activitypub/jobs] Registering jobs.');
-	async function tryCronJob(method) {
-		if (!meta.config.activitypubEnabled) {
-			return;
-		}
-		try {
-			await method();
-		} catch (err) {
-			winston.error(err.stack);
-		}
-	}
-	new CronJob('0 0 * * *', async () => {
-		await tryCronJob(async () => {
-			await ActivityPub.notes.prune();
-			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
-		});
-	}, null, true, null, null, false); // change last argument to true for debugging
-
-	new CronJob('*/30 * * * *', async () => {
-		await tryCronJob(ActivityPub.actors.prune);
-	}, null, true, null, null, false); // change last argument to true for debugging
-
-	new CronJob('0 * * * * *', async () => {
-		await tryCronJob(retryFailedMessages);
-	}, null, true, null, null, false);
-};
+ActivityPub.jobs = require('./jobs');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
@@ -163,11 +135,17 @@ ActivityPub.resolveInboxes = async (ids) => {
 	// Filter out blocked instances
 	const blocked = [];
 	inboxArr = inboxArr.filter((inbox) => {
-		const { hostname } = new URL(inbox);
-		const allowed = ActivityPub.instances.isAllowed(hostname);
-		if (!allowed) {
-			blocked.push(inbox);
+		let allowed = false;
+		try {
+			const { hostname } = new URL(inbox);
+			allowed = ActivityPub.instances.isAllowed(hostname);
+			if (!allowed) {
+				blocked.push(inbox);
+			}
+		} catch (e) {
+			winston.warn(`[activitypub/resolveInboxes] Malformed URL encountered while filtering out blocked instances: ${inbox}`);
 		}
+
 		return allowed;
 	});
 	if (blocked.length) {
@@ -372,18 +350,17 @@ ActivityPub.get = async (type, id, uri, options) => {
 
 		requestCache.set(cacheKey, body);
 		return body;
-	} catch (e) {
-		if (String(e.code).startsWith('ap_get_')) {
-			throw e;
+	} catch (err) {
+		if (String(err.code).startsWith('ap_get_')) {
+			throw err;
 		}
 
 		// Handle things like non-json body, etc.
-		const { cause } = e;
-		throw new Error(`[[error:activitypub.get-failed]]`, { cause });
+		throw new Error(`[[error:activitypub.get-failed]]`, { cause: err });
 	}
 };
 
-async function sendMessage(uri, id, type, payload) {
+ActivityPub._sendMessage = async function (uri, id, type, payload) {
 	try {
 		const keyData = await ActivityPub.getPrivateKey(type, id);
 		const headers = await ActivityPub.sign(keyData, uri, payload);
@@ -409,7 +386,7 @@ async function sendMessage(uri, id, type, payload) {
 		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
 		return false;
 	}
-}
+};
 
 ActivityPub.send = async (type, id, targets, payload) => {
 	if (!meta.config.activitypubEnabled) {
@@ -443,7 +420,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		const retryQueuedSet = [];
 
 		await Promise.all(inboxBatch.map(async (uri) => {
-			const ok = await sendMessage(uri, id, type, payload);
+			const ok = await ActivityPub._sendMessage(uri, id, type, payload);
 			if (!ok) {
 				const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 				const nextTryOn = Date.now() + oneMinute;
@@ -472,57 +449,6 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	}).catch(err => winston.error(err.stack));
 };
 
-async function retryFailedMessages() {
-	const queueIds = await db.getSortedSetRangeByScore('ap:retry:queue', 0, 50, '-inf', Date.now());
-	const queuedData = (await db.getObjects(queueIds.map(id => `ap:retry:queue:${id}`)));
-
-	const retryQueueAdd = [];
-	const retryQueuedSet = [];
-	const queueIdsToRemove = [];
-
-	const oneMinute = 1000 * 60;
-	await Promise.all(queuedData.map(async (data, index) => {
-		const queueId = queueIds[index];
-		if (!data) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-
-		const { uri, id, type, attempts, payload } = data;
-		if (!uri || !id || !type || !payload || attempts > 10) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-		let payloadObj;
-		try {
-			payloadObj = JSON.parse(payload);
-		} catch (err) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-		const ok = await sendMessage(uri, id, type, payloadObj);
-		if (ok) {
-			queueIdsToRemove.push(queueId);
-		} else {
-			const nextAttempt = (parseInt(attempts, 10) || 0) + 1;
-			const timeout = (2 ** nextAttempt) * oneMinute; // exponential backoff
-			const nextTryOn = Date.now() + timeout;
-			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-				attempts: nextAttempt,
-				timestamp: nextTryOn,
-			}]);
-		}
-	}));
-
-	await Promise.all([
-		db.sortedSetAddBulk(retryQueueAdd),
-		db.setObjectBulk(retryQueuedSet),
-		db.sortedSetRemove('ap:retry:queue', queueIdsToRemove),
-		db.deleteAll(queueIdsToRemove.map(id => `ap:retry:queue:${id}`)),
-	]);
-}
-
 ActivityPub.record = async ({ id, type, actor }) => {
 	const now = Date.now();
 	const { hostname } = new URL(actor);
@@ -534,7 +460,7 @@ ActivityPub.record = async ({ id, type, actor }) => {
 	]);
 };
 
-ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
+ActivityPub.buildRecipients = async function (object, options) {
 	/**
 	 * - Builds a list of targets for activitypub.send to consume
 	 * - Extends to and cc since the activity can be addressed more widely
@@ -542,14 +468,18 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 	 *     - `cid`: includes followers of the passed-in cid (local only, can also be an array)
 	 *     - `uid`: includes followers of the passed-in uid (local only)
 	 *     - `pid`: includes post announcers and all topic participants
+	 *     - `targets`: boolean; whether to calculate targets (default: true)
 	 */
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
 
+	let { pid, uid, cid } = options;
+	options.targets = options.targets ?? true;
+
 	let followers = [];
 	if (uid) {
-		followers = await db.getSortedSetMembers(`followersRemote:${uid}`);
+		({ uids: followers } = await ActivityPub.actors.getFollowers(uid));
 		const followersUrl = `${nconf.get('url')}/uid/${uid}/followers`;
 		if (!to.has(followersUrl)) {
 			cc.add(followersUrl);
@@ -568,15 +498,28 @@ ActivityPub.buildRecipients = async function (object, { pid, uid, cid }) {
 		}));
 	}
 
-	const targets = new Set([...followers, ...to, ...cc]);
+	let targets = new Set();
+	if (options.targets) {
+		targets = new Set([...followers, ...to, ...cc]);
 
-	// Remove any ids that aren't asserted actors
-	const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
-	Array.from(targets).forEach((uri, idx) => {
-		if (!exists[idx]) {
-			targets.delete(uri);
+		// Remove local uris, public addresses, and any ids that aren't asserted actors
+		targets.forEach((address) => {
+			if (address.startsWith(nconf.get('url'))) {
+				targets.delete(address);
+			}
+		});
+		ActivityPub._constants.acceptablePublicAddresses.forEach((address) => {
+			targets.delete(address);
+		});
+		if (targets.size) {
+			const exists = await db.isSortedSetMembers('usersRemote:lastCrawled', [...targets]);
+			Array.from(targets).forEach((uri, idx) => {
+				if (!exists[idx]) {
+					targets.delete(uri);
+				}
+			});
 		}
-	});
+	}
 
 	// Topic posters, post announcers and their followers
 	if (pid) {

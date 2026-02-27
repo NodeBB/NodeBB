@@ -247,6 +247,7 @@ describe('Categories', () => {
 			assert.deepStrictEqual(
 				data.topics.map(t => t.title),
 				['[[topic:topic-is-deleted]]', 'Test Topic Title', 'Test Topic Title'],
+				JSON.stringify(data.topics, null, 2),
 			);
 		});
 
@@ -676,6 +677,7 @@ describe('Categories', () => {
 					'topics:reply': false,
 					'topics:read': false,
 					'topics:create': false,
+					'topics:crosspost': false,
 					'topics:tag': false,
 					'topics:delete': false,
 					'topics:schedule': false,
@@ -730,6 +732,7 @@ describe('Categories', () => {
 					'groups:posts:downvote': true,
 					'groups:topics:delete': false,
 					'groups:topics:create': true,
+					'groups:topics:crosspost': true,
 					'groups:topics:reply': true,
 					'groups:topics:tag': true,
 					'groups:topics:schedule': false,

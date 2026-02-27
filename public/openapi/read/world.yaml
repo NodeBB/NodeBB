@@ -24,22 +24,19 @@ get:
                     type: array
                     items:
                       type: string
-                  topicCount:
-                    type: number
-                  topics:
-                    type: array
-                    items:
-                      $ref: ../components/schemas/TopicObject.yaml#/TopicObject
-                  selectedTag:
-                    type: object
-                    properties:
-                      label:
-                        type: string
-                    nullable: true
-                  selectedTags:
-                    type: array
-                    items:
-                      type: string
+                  posts:
+                    allOf:
+                      - $ref: ../components/schemas/PostsObject.yaml#/PostsObject
+                      - type: object
+                        properties:
+                          bookmarks:
+                            type: number
+                  showThumbs:
+                    type: boolean
+                  showTopicTools:
+                    type: boolean
+                  showSelect:
+                    type: boolean
                   isWatched:
                     type: boolean
                   isTracked:
@@ -51,14 +48,6 @@ get:
                   hasFollowers:
                     type: boolean
                     nullable: true
-                  feeds:disableRSS:
-                    type: number
-                  rssFeedUrl:
-                    type: string
-                  reputation:disabled:
-                    type: number
-                  title:
-                    type: string
                   privileges:
                     type: object
                     properties:
@@ -66,9 +55,9 @@ get:
                         type: boolean
                       topics:read:
                         type: boolean
-                      topics:tag:
-                        type: boolean
                       topics:schedule:
+                        type: boolean
+                      topics:tag:
                         type: boolean
                       read:
                         type: boolean
@@ -76,6 +65,7 @@ get:
                         type: boolean
                       cid:
                         type: string
+                        example: '-1'
                       uid:
                         type: number
                         description: A user identifier
@@ -85,6 +75,10 @@ get:
                         type: boolean
                       isAdminOrMod:
                         type: boolean
+                  title:
+                    type: string
+                  topicCount:
+                    type: number
                   categories:
                     type: array
                     items:

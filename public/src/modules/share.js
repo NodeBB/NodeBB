@@ -2,10 +2,10 @@
 
 
 define('share', ['hooks'], function (hooks) {
-	const module = {};
+	const share = {};
 	const baseUrl = window.location.protocol + '//' + window.location.host;
 
-	module.addShareHandlers = function (name) {
+	share.addShareHandlers = function (name) {
 		function openShare(url, urlToPost, width, height) {
 			window.open(url, '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
 			hooks.fire('action:share.open', {
@@ -76,5 +76,5 @@ define('share', ['hooks'], function (hooks) {
 		return baseUrl + config.relative_path + path;
 	}
 
-	return module;
+	return share;
 });

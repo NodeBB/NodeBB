@@ -1,7 +1,12 @@
 {
 	"name": "世界",
-	"popular": "热门主题",
-	"recent": "全部主题",
+	"latest": "最新",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "全部",
 	"help": "帮助",
 
 	"help.title": "这是什么页面？",
@@ -16,6 +21,5 @@
 	"onboard.why": "论坛之外的事情很多，而且并非所有事情都与您的兴趣相关。因此，关注他人是表明您想从某人那里了解更多信息的最佳方式。",
 	"onboard.how": "在此期间，您可以点击顶部的快捷按钮，了解本论坛的其他内容，并开始发现一些新内容！",
 
-	"show-categories": "显示版块",
-	"hide-categories": "隐藏版块"
+	"category-search": "查找版块..."
 }

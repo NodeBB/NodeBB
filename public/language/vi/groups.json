@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "Tất cả các nhóm",
     "groups": "Nhóm",
     "members": "Thành Viên",
+    "x-members": "%1 member(s)",
     "view-group": "Xem Nhóm",
     "owner": "Người Sở Hữu Nhóm",
     "new-group": "Tạo Nhóm Mới",

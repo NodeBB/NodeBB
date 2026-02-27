@@ -727,7 +727,7 @@ define('navigator', [
 				}
 			}
 
-			let scrollTop = 0;
+			let scrollTop;
 			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
 				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
 			} else {

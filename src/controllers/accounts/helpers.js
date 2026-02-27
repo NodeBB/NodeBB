@@ -97,6 +97,8 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
 	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => `.${ext}`).join(', ');
+	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+	userData.profileImageDimension = meta.config.profileImageDimension;
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
 		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
@@ -119,13 +121,6 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
 	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
-
-	if (userData['cover:url']) {
-		userData['cover:url'] = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
-	} else {
-		userData['cover:url'] = require('../../coverPhoto').getDefaultProfileCover(userData.uid);
-	}
-
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];

@@ -17,14 +17,16 @@
 		<div class="col-12">
 			<form role="form" class="category">
 				<div class="">
-					<p>
+					<div class="lead mb-3 d-flex gap-2 align-items-center">
+						[[admin/manage/categories:privileges.category-selector]]
+
+						<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
+					</div>
+					<p class="text-sm text-secondary">
 						[[admin/manage/categories:privileges.description]]
 					</p>
 
-					<div class="lead mb-3">
-						[[admin/manage/categories:privileges.category-selector]]
-						<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
-					</div>
+					<hr/>
 
 					<div class="privilege-table-container">
 						{{{ if cid }}}

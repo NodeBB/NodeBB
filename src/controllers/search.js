@@ -14,7 +14,6 @@ const topics = require('../topics');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const translator = require('../translator');
-const utils = require('../utils');
 const helpers = require('./helpers');
 
 const searchController = module.exports;
@@ -27,16 +26,15 @@ searchController.search = async function (req, res, next) {
 
 	const searchOnly = parseInt(req.query.searchOnly, 10) === 1;
 
-	const userPrivileges = await utils.promiseParallel({
-		'search:users': privileges.global.can('search:users', req.uid),
-		'search:content': privileges.global.can('search:content', req.uid),
-		'search:tags': privileges.global.can('search:tags', req.uid),
-	});
+	const [canSearchUsers, canSearchContent, canSearchTags] = await privileges.global.can([
+		'search:users', 'search:content', 'search:tags',
+	], req.uid);
+
 	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
-	let allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
-					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
+	let allowed = (req.query.in === 'users' && canSearchUsers) ||
+					(req.query.in === 'tags' && canSearchTags) ||
 					(req.query.in === 'categories') ||
-					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(req.query.in) && userPrivileges['search:content']);
+					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(req.query.in) && canSearchContent);
 	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
 		uid: req.uid,
 		query: req.query,
@@ -139,7 +137,11 @@ searchController.search = async function (req, res, next) {
 	searchData.tagFilterSelected = getSelectedTags(data.hasTags);
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
-	searchData.privileges = userPrivileges;
+	searchData.privileges = {
+		'search:users': canSearchUsers,
+		'search:content': canSearchContent,
+		'search:tags': canSearchTags,
+	};
 
 	res.render('search', searchData);
 };

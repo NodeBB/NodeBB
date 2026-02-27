@@ -1,7 +1,6 @@
 
 'use strict';
 
-
 define('forum/chats/events', [
 	'forum/chats/messages',
 	'chat',
@@ -40,22 +39,24 @@ define('forum/chats/events', [
 		if (chatModule.isFromBlockedUser(data.fromUid)) {
 			return;
 		}
-		if (parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
-			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
+		data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
+		data.message.self = data.self;
+		data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
+		data.message.timestampISO = utils.toISOString(data.message.timestamp);
+		const isMessageForCurrentRoom = parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10);
+
+		if (isMessageForCurrentRoom) {
 			if (!Chats.newMessage) {
 				Chats.newMessage = data.self === 0;
 			}
-			data.message.self = data.self;
-			data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-			data.message.timestampISO = utils.toISOString(data.message.timestamp);
-			messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
 
-			Chats.updateTeaser(data.roomId, {
-				content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
-				user: data.message.fromUser,
-				timestampISO: data.message.timestampISO,
-			});
+			messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
 		}
+		Chats.updateTeaser(data.roomId, {
+			content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
+			user: data.message.fromUser,
+			timestampISO: data.message.timestampISO,
+		});
 	}
 
 	function publicChatUnread(data) {

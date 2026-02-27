@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">referenced</a> this topic on %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">forked</a> this topic %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">forked</a> this topic on %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Pro návrat k poslednímu čtenému příspěvku v tématu, klikněte zde.",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -180,6 +182,7 @@
     "composer.replying-to": "Odpovídání na %1",
     "composer.new-topic": "Nové téma",
     "composer.editing-in": "Úprava příspěvku v %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "nahrávání…",
     "composer.thumb-url-label": "Vložit URL náhledu tématu",
     "composer.thumb-title": "Přidat k tématu náhled",
@@ -222,6 +225,7 @@
     "no-more-next-post": "V tomto tématu nemáte další příspěvky",
     "open-composer": "Otevřít editor příspěvku",
     "post-quick-reply": "Rychlá odpověď",
+    "post-quick-create": "Quick post",
     "navigator.index": "Publikovat %1 of %2",
     "navigator.unread": "%1 nepřečteno",
     "upvote-post": "Dát příspěvku kladný hlas",
@@ -230,5 +234,8 @@
     "unread-posts-link": "Odkaz na nepřečtené příspěvky",
     "thumb-image": "Miniatura tématu",
     "announcers": "Sdílení",
-    "announcers-x": "Sdílení (%1)"
+    "announcers-x": "Sdílení (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

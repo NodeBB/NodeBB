@@ -1,8 +1,8 @@
 {
     "category": "Categoría",
     "subcategories": "Subcategorías",
-    "uncategorized": "Sin categoría",
-    "uncategorized.description": "Temas que no encajan estrictamente con alguna categoría",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Esta categoría puede ser seguida desde open social web con el identificador %1",
     "new-topic-button": "Nuevo tema",
     "guest-login-post": "Accede para escribir",

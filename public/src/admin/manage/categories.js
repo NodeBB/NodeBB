@@ -26,8 +26,8 @@ define('admin/manage/categories', [
 		});
 		Categories.render(ajaxify.data.categoriesTree);
 
-		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
-		$('button[data-action="add"]').on('click', Categories.throwAddModal);
+		$('[data-action="create"]').on('click', Categories.throwCreateModal);
+		$('[data-action="add"]').on('click', Categories.throwAddModal);
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {

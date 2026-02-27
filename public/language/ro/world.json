@@ -1,7 +1,12 @@
 {
 	"name": "Lumea",
-	"popular": "Subiecte Populare",
-	"recent": "Toate subiectele",
+	"latest": "Latest",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
 	"help": "Ajutor",
 
 	"help.title": "Ce este în pagina curentă",
@@ -16,6 +21,5 @@
 	"onboard.why": "Se întâmplă multe lucruri în afara acestui forum și nu toate sunt relevante pentru interesele tale. De aceea, urmărirea oamenilor este cea mai bună modalitate de a semnala că vrei să vezi mai multe de la cineva.",
 	"onboard.how": "Între timp, puteți da clic pe butoanele de comandă rapidă din partea de sus pentru a vedea ce mai știe acest forum și pentru a începe să descoperiți conținut nou!",
 
-	"show-categories": "Afișează categoriile",
-	"hide-categories": "Ascunde categoriile"
+	"category-search": "Find a category..."
 }

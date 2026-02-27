@@ -82,7 +82,7 @@
     "composer.hide-preview": "إخفاء المعاينة",
     "composer.help": "Help",
     "composer.user-said-in": "%1 كتب في  %2",
-    "composer.user-said": "%1 كتب:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "هل أنت متأكد أنك تريد التخلي عن التغييرات؟",
     "composer.submit-and-lock": "Submit and Lock",
     "composer.toggle-dropdown": "Toggle Dropdown",

@@ -23,6 +23,7 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "Preuzmi CSV",
 	"custom-user-fields": "Custom User Fields",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Manage Groups",
 	"set-reputation": "Set Reputation",
 	"add-group": "Add Group",
@@ -54,6 +55,7 @@
 	"inactive.12-months": "12 mjeseci",
 
 	"users.uid": "uid",
+	"users.user-id": "User ID",
 	"users.username": "korisničko ime",
 	"users.email": "email",
 	"users.no-email": "(no email)",
@@ -62,6 +64,7 @@
 	"users.validation-pending": "Validation Pending",
 	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "postcount",
 	"users.reputation": "reputacija",
 	"users.flags": "flags",
@@ -77,9 +80,11 @@
 
 	"temp-ban.length": "Length",
 	"temp-ban.reason": "Razlog <span class=\"text-muted\">(Opcionalno)</span>",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Sati",
 	"temp-ban.days": "Dani",
 	"temp-ban.explanation": "Unesite dužinu trajana blokade. Ukoliko je vrijeme 0 smatra se permanentnom blokadom.",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Sigurni ste da želite blokirati ovo korisnika trajno?",
 	"alerts.confirm-ban-multi": "Sigurni ste da želite blokirati korisnika <strong>permanentno</strong>?",

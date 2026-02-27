@@ -201,15 +201,21 @@ module.exports = function (Posts) {
 		await plugins.hooks.fire('action:post-queue.save', payload);
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
-		const bodyLong = await parseBodyLong(cid, type, data);
+		const bodyEmail = await parseBodyEmail(cid, type, data);
 
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
-			mergeId: 'post-queue',
-			bodyShort: '[[notifications:post-awaiting-review]]',
-			bodyLong: bodyLong,
+			mergeId: `post-queue-${type}-uid-${data.uid}`,
+			bodyShort: type === 'reply' ? 
+				'[[notifications:post-awaiting-review]]' :
+				'[[notifications:topic-awaiting-review]]',
+			bodyLong: type === 'reply' ? 
+				await plugins.hooks.fire('filter:parse.raw', data.content) :
+				validator.escape(String(data.title)),
+			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
+			from: data.uid,
 		});
 		await notifications.push(notifObj, uids);
 		return {
@@ -220,7 +226,7 @@ module.exports = function (Posts) {
 		};
 	};
 
-	async function parseBodyLong(cid, type, data) {
+	async function parseBodyEmail(cid, type, data) {
 		const url = nconf.get('url');
 		const [content, category, userData] = await Promise.all([
 			plugins.hooks.fire('filter:parse.raw', data.content),

@@ -3,7 +3,6 @@
 define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], function (bootbox, translator, storage, alerts, hooks) {
 	const messages = {};
 
-	let showWelcomeMessage;
 	let registerMessage;
 
 	messages.show = function () {
@@ -26,20 +25,17 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 				storage.setItem('email-confirm-dismiss', 1);
 			},
 		};
-
+		function hideAlertAndGotoEditEmail() {
+			alerts.remove('email_confirm');
+			ajaxify.go('/me/edit/email');
+		}
 		if (!app.user.email && !app.user.isEmailConfirmSent) {
 			msg.message = '[[error:no-email-to-confirm]]';
-			msg.clickfn = function () {
-				alerts.remove('email_confirm');
-				ajaxify.go('user/' + app.user.userslug + '/edit/email');
-			};
+			msg.clickfn = hideAlertAndGotoEditEmail;
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = message || '[[error:email-not-confirmed]]';
-			msg.clickfn = function () {
-				alerts.remove('email_confirm');
-				ajaxify.go('/me/edit/email');
-			};
+			msg.clickfn = hideAlertAndGotoEditEmail;
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
 			msg.message = '[[error:email-not-confirmed-email-sent]]';
@@ -74,19 +70,9 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 
 	function showQueryStringMessages() {
 		const params = utils.params({ full: true });
-		showWelcomeMessage = params.has('loggedin');
+		const originalQs = params.toString();
+
 		registerMessage = params.get('register');
-
-		if (showWelcomeMessage) {
-			alerts.alert({
-				type: 'success',
-				title: '[[global:welcome-back]] ' + app.user.username + '!',
-				message: '[[global:you-have-successfully-logged-in]]',
-				timeout: 5000,
-			});
-
-			params.delete('loggedin');
-		}
 
 		if (registerMessage) {
 			bootbox.alert({
@@ -102,7 +88,9 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 		}
 
 		const qs = params.toString();
-		ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
+		if (qs !== originalQs) {
+			ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
+		}
 	}
 
 	messages.showInvalidSession = function () {

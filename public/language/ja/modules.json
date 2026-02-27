@@ -82,7 +82,7 @@
     "composer.hide-preview": "プレビュー非表示",
     "composer.help": "Help",
     "composer.user-said-in": "%2で%1が発言 :",
-    "composer.user-said": "%1 の発言:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "本当にこの投稿を破棄しても構いませんか？",
     "composer.submit-and-lock": "送信してロック",
     "composer.toggle-dropdown": "ドロップダウンの表示切り替え",

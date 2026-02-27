@@ -98,8 +98,6 @@ paths:
     $ref: 'read/admin/settings/tags.yaml'
   /api/admin/settings/post:
     $ref: 'read/admin/settings/post.yaml'
-  /api/admin/settings/activitypub:
-    $ref: 'read/admin/settings/activitypub.yaml'
   /api/admin/settings/uploads:
     $ref: 'read/admin/settings/uploads.yaml'
   /api/admin/settings/email:
@@ -134,6 +132,8 @@ paths:
     $ref: 'read/admin/manage/users.yaml'
   /api/admin/manage/users/custom-fields:
     $ref: 'read/admin/manage/users/custom-fields.yaml'
+  /api/admin/manage/users/custom-reasons:
+    $ref: 'read/admin/manage/users/custom-reasons.yaml'
   /api/admin/manage/registration:
     $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:
@@ -146,6 +146,18 @@ paths:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
     $ref: 'read/admin/manage/digest.yaml'
+  /api/admin/federation/general:
+    $ref: 'read/admin/federation/general.yaml'
+  /api/admin/federation/content:
+    $ref: 'read/admin/federation/content.yaml'
+  /api/admin/federation/rules:
+    $ref: 'read/admin/federation/rules.yaml'
+  /api/admin/federation/relays:
+    $ref: 'read/admin/federation/relays.yaml'
+  /api/admin/federation/pruning:
+    $ref: 'read/admin/federation/pruning.yaml'
+  /api/admin/federation/safety:
+    $ref: 'read/admin/federation/safety.yaml'
   "/api/admin/appearance/themes":
     $ref: 'read/admin/appearance/themes.yaml'
   "/api/admin/appearance/skins":

@@ -77,17 +77,20 @@ module.exports = function (Categories) {
 		if (!query || String(query).length < 2) {
 			return [];
 		}
+		const searchQuery = String(query).toLowerCase();
 		const data = await db.getSortedSetScan({
 			key: 'categories:name',
-			match: `*${String(query).toLowerCase()}*`,
+			match: `*${searchQuery}*`,
 			limit: hardCap || 500,
 		});
-		return data.map((data) => {
-			const split = data.split(':');
-			split.shift();
-			const cid = split.join(':');
-			return cid;
-		});
+		const searchInDomain = searchQuery.includes('@');
+		return data.reduce((acc, match) => {
+			const [name, ...cidParts] = match.split(':');
+			if (searchInDomain ? name.includes(searchQuery) : name.split('@')[0].includes(searchQuery)) {
+				acc.push(cidParts.join(':'));
+			}
+			return acc;
+		}, []);
 	}
 
 	async function getChildrenCids(cids, uid) {

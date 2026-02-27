@@ -729,8 +729,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should store post content in cache', (done) => {
-			const oldValue = global.env;
-			global.env = 'production';
+			const oldValue = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'production';
 			const postData = {
 				pid: 9999,
 				content: 'some post content',
@@ -739,7 +739,7 @@ describe('Post\'s', () => {
 				assert.ifError(err);
 				posts.parsePost(postData, (err) => {
 					assert.ifError(err);
-					global.env = oldValue;
+					process.env.NODE_ENV = oldValue;
 					done();
 				});
 			});

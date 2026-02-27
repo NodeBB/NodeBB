@@ -1,6 +1,8 @@
 {
 	"theme-name": "Harmony-tema",
 	"skins": "Utseende",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "Slå sammen",
 	"expand": "Utvid",
 	"sidebar-toggle": "Vis/skjul sidepanelet",

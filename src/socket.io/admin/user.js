@@ -219,3 +219,11 @@ User.saveCustomFields = async function (socket, fields) {
 	await user.reloadCustomFieldWhitelist();
 };
 
+User.saveCustomReasons = async function (socket, reasons) {
+	const keys = await db.getSortedSetRange('custom-reasons', 0, -1);
+	await db.delete('custom-reasons');
+	await db.deleteAll(keys.map(k => `custom-reason:${k}`));
+	const ids = reasons.map((f, i) => i);
+	await db.sortedSetAdd(`custom-reasons`, ids, ids);
+	await db.setObjectBulk(reasons.map((reason, i) => [`custom-reason:${i}`, reason]));
+};

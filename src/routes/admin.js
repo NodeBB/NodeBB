@@ -23,6 +23,7 @@ module.exports = function (app, name, middleware, controllers) {
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/users`, middlewares, controllers.admin.users.index);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/users/custom-fields`, middlewares, controllers.admin.users.customFields);
+	helpers.setupAdminPageRoute(app, `/${name}/manage/users/custom-reasons`, middlewares, controllers.admin.users.banReasons);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/registration`, middlewares, controllers.admin.users.registrationQueue);
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/admins-mods`, middlewares, controllers.admin.adminsMods.get);
@@ -46,10 +47,16 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/pagination`, middlewares, controllers.admin.settings.pagination);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/notifications`, middlewares, controllers.admin.settings.notifications);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/api`, middlewares, controllers.admin.settings.api);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/activitypub`, middlewares, controllers.admin.settings.activitypub);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/cookies`, middlewares, controllers.admin.settings.cookies);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/web-crawler`, middlewares, controllers.admin.settings.webCrawler);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
+
+	helpers.setupAdminPageRoute(app, `/${name}/federation/general`, middlewares, controllers.admin.federation.general);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/content`, middlewares, controllers.admin.federation.content);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/rules`, middlewares, controllers.admin.federation.rules);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/relays`, middlewares, controllers.admin.federation.relays);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/pruning`, middlewares, controllers.admin.federation.pruning);
+	helpers.setupAdminPageRoute(app, `/${name}/federation/safety`, middlewares, controllers.admin.federation.safety);
 
 	helpers.setupAdminPageRoute(app, `/${name}/appearance/themes`, middlewares, controllers.admin.appearance.themes);
 	helpers.setupAdminPageRoute(app, `/${name}/appearance/skins`, middlewares, controllers.admin.appearance.skins);

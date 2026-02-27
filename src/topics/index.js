@@ -101,7 +101,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			loadShowfullnameSettings(),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
-			Topics.thumbs.load(topics),
+			Topics.thumbs.load(topics, options),
 		]);
 
 		users.forEach((userObj, idx) => {

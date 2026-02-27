@@ -55,7 +55,7 @@
 	"select-category": "Kategória kiválasztása",
 	"set-parent-category": "Szülő kategória beállítása",
 
-	"privileges.description": "Itt megadhatod az oldal egyes részeihez tartozó jogosultságokat. Jogosultságok felhasználónként és csoportonként is beállíthatóak. Válaszd ki a legördülőből mit szeretnél beállítani.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Jogosultságok beállítása ennek: ",
 	"privileges.warning": "<strong>Megjegyzés</strong>: A jogosultságok azonnal érvényesülnek. Nem szükséges a kategória mentése, miután beállítottál mindent.",
 	"privileges.section-viewing": "Megtekintési jogosultságok",

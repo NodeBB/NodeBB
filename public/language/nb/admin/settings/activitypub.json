@@ -44,5 +44,11 @@
 	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",
 	"server.filter-help": "Specify servers you would like to bar from federating with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> federation with specific servers, instead. Both options are supported, although they are mutually exclusive.",
 	"server.filter-help-hostname": "Enter just the instance hostname below (e.g. <code>example.org</code>), separated by line breaks.",
-	"server.filter-allow-list": "Use this as an Allow List instead"
+	"server.filter-allow-list": "Use this as an Allow List instead",
+
+	"content.outgoing": "Outgoing",
+	"content.summary-limit": "Character count after which a summary is generated",
+	"content.summary-limit-help": "When content is federated out that exceeds this character count, a <code>summary</code> is generated, comprising of all complete sentences prior to this limit. (Default: 500)",
+	"content.break-string": "Note/Article Delimiter",
+	"content.break-string-help": "This delimiter can be manually inserted by power users when composing new topics. It instructs NodeBB to use content up until that point as part of the <code>summary</code>. If this string is not used, then the character count fallback applies. (Default: <code>[...]</code>)"
 }

@@ -82,7 +82,7 @@
     "composer.hide-preview": "Скрыть предпросмотр",
     "composer.help": "Помощь",
     "composer.user-said-in": "Пользователь %1 написал в %2:",
-    "composer.user-said": "Пользователь %1 написал:",
+    "composer.user-said": "%1 [said](%2):",
     "composer.discard": "Вы уверены, что передумали писать это сообщение?",
     "composer.submit-and-lock": "Отправить и закрыть",
     "composer.toggle-dropdown": "Показать выпадающий список",

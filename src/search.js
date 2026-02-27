@@ -76,7 +76,7 @@ async function searchInContent(data) {
 		}
 		return [];
 	}
-	let pids = [];
+	let pids;
 	let tids = [];
 	const inTopic = String(data.query || '').match(/^in:topic-([\d]+) /);
 	if (inTopic) {

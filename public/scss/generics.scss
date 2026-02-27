@@ -13,6 +13,8 @@
 .text-md { font-size: 1.125rem!important; } // 18px on harmony
 .text-sm { font-size: 0.875rem!important; } // 14px on harmony
 .text-xs { font-size: 0.75rem!important; } // 12px on harmony
+.text-tabular { font-variant-numeric: tabular-nums!important; }
+.text-wrap-pretty { text-wrap: pretty!important; }
 
 .overscroll-behavior-contain {
 	overscroll-behavior: contain;
@@ -77,9 +79,10 @@ html[data-dir="rtl"] {
 }
 
 blockquote {
-	background-color: $light;
-	font-style: italic;
-	border-left: 4px solid $primary;
+	background-color: rgba(var(--bs-body-color-rgb), 0.03);
+	color: var(--bs-body-color);
+	font-style: normal;
+	border-radius: $border-radius-sm;
 	padding: 1rem;
 	p:last-child {
 		margin-bottom: 0;
@@ -135,15 +138,46 @@ blockquote {
 	}
 }
 
-.border-muted {
-	border-color: $text-muted!important;
-}
+.border-muted { border-color: $text-muted!important; }
+.border-body { border-color: var(--bs-body-bg)!important; }
 
 .hidden-empty {
 	&:empty {
 		display: none!important;
 	}
 }
+
+.text-contain {
+	min-width: 0;
+	word-break: break-word;
+	overflow-wrap: anywhere;
+	> * {
+		max-width: 100%;
+		white-space: pre-wrap;
+		word-break: break-word;
+		overflow-wrap: anywhere;
+	}
+}
+
+.hidden-blockquote { blockquote { display: none; } }
+.hidden-pre { pre { display: none; } }
+
+$hidden-elements-for-first-last-child: br, hr;
+
+@each $element in $hidden-elements-for-first-last-child {
+	.hidden-first-child-#{$element} {
+		> #{$element}:first-child {
+			display: none;
+		}
+	}
+	.hidden-last-child-#{$element} {
+		> #{$element}:last-child {
+			display: none;
+		}
+	}
+}
+
+.trim-last-divider > *:last-child hr {	display: none;	}
 
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {
@@ -161,4 +195,35 @@ blockquote {
 
 img.emoji {
 	height: $font-size-lg;
+}
+
+.highlight-pulse {
+	animation: pulse-grow 1.5s ease-in-out 3;
+	transform-origin: center;
+	z-index: 10;
+}
+
+@keyframes pulse-grow {
+	0%, 100% {
+		transform: scale(1);
+		background-color: transparent;
+	}
+	50% {
+		transform: scale(1.005);
+		background-color: var(--bs-tertiary-bg);
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.flex-md-shrink-50 {
+		flex: 1 1 50% !important;
+		min-width: 50% !important;
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.flex-md-shrink-50 {
+		flex: 1 1 100%;
+		min-width: 0;
+	}
 }

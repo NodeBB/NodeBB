@@ -124,7 +124,7 @@ async function parseString(uid, item) {
 	const { type, id } = await activitypub.helpers.resolveLocalId(item);
 	const pid = type === 'post' && id ? id : item;
 	const postData = await posts.getPostData(pid);
-	if (postData) {
+	if (postData && postData.pid) {
 		// Already cached
 		return postData;
 	}
@@ -143,14 +143,6 @@ async function parseString(uid, item) {
 }
 
 async function parseItem(uid, item) {
-	const { type, id } = await activitypub.helpers.resolveLocalId(item.id);
-	const pid = type === 'post' && id ? id : item.id;
-	const postData = await posts.getPostData(pid);
-	if (postData) {
-		// Already cached
-		return postData;
-	}
-
 	// Handle activity wrapper
 	if (item.type === 'Create') {
 		item = item.object;
@@ -160,6 +152,14 @@ async function parseItem(uid, item) {
 	} else if (!activitypub._constants.acceptedPostTypes.includes(item.type)) {
 		// Not a note, silently skip.
 		return null;
+	}
+
+	const { type, id } = await activitypub.helpers.resolveLocalId(item.id);
+	const pid = type === 'post' && id ? id : item.id;
+	const postData = await posts.getPostData(pid);
+	if (postData && postData.pid) {
+		// Already cached
+		return postData;
 	}
 
 	activitypub.helpers.log(`[activitypub/context] Parsing ${pid}`);

@@ -48,6 +48,14 @@
 
 	"settings.page-title": "%1 Ayar",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+
 	"section-appearance": "Görünüm",
 	"appearance/themes": "Temalar",
 	"appearance/skins": "Deriler",

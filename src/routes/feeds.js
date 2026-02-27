@@ -175,7 +175,7 @@ async function generateForTopics(req, res, next) {
 		description: 'A list of topics that have been created recently',
 		feed_url: '/topics.rss',
 		useMainPost: true,
-	}, 'topics:tid', res);
+	}, 'topics:tid', res, 'timestamp');
 }
 
 async function generateForRecent(req, res, next) {
@@ -228,14 +228,15 @@ async function generateSorted(options, req, res, next) {
 		stop: 19,
 		term: term,
 		sort: options.sort,
+		tags: req.query.tag,
 	};
 
-	const { cid } = req.query;
+	let { cid } = req.query;
 	if (cid) {
-		if (!await privileges.categories.can('topics:read', cid, uid)) {
-			return controllerHelpers.notAllowed(req, res);
+		if (!Array.isArray(cid)) {
+			cid = [cid];
 		}
-		params.cids = [cid];
+		params.cids = await privileges.categories.filterCids('topics:read', cid, uid);
 	}
 
 	const result = await topics.getSortedTopics(params);
@@ -399,7 +400,7 @@ async function generateForUserTopics(req, res, next) {
 		description: `A list of topics that are posted by ${userData.username}`,
 		feed_url: `/user/${userslug}/topics.rss`,
 		site_url: `/user/${userslug}/topics`,
-	}, `uid:${userData.uid}:topics`, res);
+	}, `uid:${userData.uid}:topics`, res, 'timestamp');
 }
 
 async function generateForTag(req, res) {
@@ -421,7 +422,7 @@ async function generateForTag(req, res) {
 		site_url: `/tags/${tag}`,
 		start: start,
 		stop: stop,
-	}, set, res);
+	}, set, res, 'timestamp');
 }
 
 async function getUidFromToken(req) {
