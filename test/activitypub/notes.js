@@ -158,8 +158,10 @@ describe('Notes', () => {
 
 					const unread = await topics.getTotalUnread(uid);
 					assert.strictEqual(unread, 1);
-
+	
 					// Notification inbox delivery is async so can't test directly
+					// So we have to manually yield to the event loop to let it complete
+					await new Promise(resolve => setImmediate(resolve));
 					const exists = await db.exists(`notifications:new_topic:tid:${assertion.tid}:uid:${note.attributedTo}`);
 					assert(exists);
 

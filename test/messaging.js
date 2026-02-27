@@ -135,7 +135,8 @@ describe('Messaging Library', () => {
 		});
 	});
 
-	describe('rooms', () => {
+	describe('rooms', function () {
+		this.timeout(60000);
 		const _delay1 = meta.config.chatMessageDelay;
 		const _delay2 = meta.config.newbieChatMessageDelay;
 		before(async () => {

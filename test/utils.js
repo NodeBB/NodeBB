@@ -560,6 +560,11 @@ describe('Utility Methods', () => {
 	});
 
 	describe('debounce/throttle', () => {
+		const mockdate = require('mockdate');
+		beforeEach(() => {
+			mockdate.reset();
+		});
+
 		it('should call function after x milliseconds once', (done) => {
 			let count = 0;
 			const now = Date.now();

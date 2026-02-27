@@ -695,6 +695,15 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 		throw new Error('[[error:already-exporting]]');
 	}
 
+	// Try to commit the WAL before forking the process to minimize the chance of
+	// database locks due to the child process trying to checkpoint while the parent
+	// is still running transactions.
+	// This is mostly relevant when using SQLite with the Kysely database adapter.
+	if (typeof db.checkpoint === 'function') {
+		await db.checkpoint();
+		await new Promise(resolve => setImmediate(resolve));
+	}
+
 	const child = require('child_process').fork(`./src/user/jobs/export-${type}.js`, [], {
 		env: process.env,
 	});
