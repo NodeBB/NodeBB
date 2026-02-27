@@ -53,12 +53,16 @@ topicsController.get = async function getTopic(req, res, next) {
 	if (
 		userPrivileges.disabled ||
 		invalidPagination ||
-		(topicData.scheduled && !userPrivileges.view_scheduled) ||
-		await shouldHideTopicFromGuest(req.uid, tid, topicData.cid)) {
+		(topicData.scheduled && !userPrivileges.view_scheduled)
+	) {
 		return next();
 	}
 
-	if (!userPrivileges['topics:read'] || (!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted)) {
+	if (
+		!userPrivileges['topics:read'] ||
+		(!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted) ||
+		await shouldHideTopicFromGuest(req.uid, tid, topicData.cid)
+	) {
 		return helpers.notAllowed(req, res);
 	}
 
