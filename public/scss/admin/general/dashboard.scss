@@ -1,3 +1,6 @@
+.template-admin-dashboard .graph-container {
+	min-height: 300px;
+}
 .dashboard {
 	.card {
 		max-width: 100% !important;
@@ -12,7 +15,8 @@
 		}
 
 		&.fullscreen {
-			width: 100%;
+			width: 100%!important;
+			height: 100%!important;
 			padding: 40px;
 		}
 	}

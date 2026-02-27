@@ -18,6 +18,8 @@ import * as alerts from '../modules/alerts';
 import * as translator from '../modules/translator';
 import { formattedNumber } from '../modules/helpers';
 
+import { setupFullscreen } from './modules/fullscreen';
+
 Chart.register(
 	LineController,
 	DoughnutController,
@@ -75,7 +77,7 @@ export function init() {
 		socket.emit('admin.rooms.getAll', updateRoomUsage);
 		initiateDashboard();
 	});
-	setupFullscreen();
+	setupFullscreen($('#expand-analytics'), $('#analytics-panel'));
 }
 
 function updateRoomUsage(err, data) {
@@ -579,36 +581,3 @@ function initiateDashboard(realtime) {
 	}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 }
 
-function setupFullscreen() {
-	const container = document.getElementById('analytics-panel');
-	const $container = $(container);
-	const btn = $container.find('#expand-analytics');
-	let fsMethod;
-	let exitMethod;
-
-	if (container.requestFullscreen) {
-		fsMethod = 'requestFullscreen';
-		exitMethod = 'exitFullscreen';
-	} else if (container.mozRequestFullScreen) {
-		fsMethod = 'mozRequestFullScreen';
-		exitMethod = 'mozCancelFullScreen';
-	} else if (container.webkitRequestFullscreen) {
-		fsMethod = 'webkitRequestFullscreen';
-		exitMethod = 'webkitCancelFullScreen';
-	} else if (container.msRequestFullscreen) {
-		fsMethod = 'msRequestFullscreen';
-		exitMethod = 'msCancelFullScreen';
-	}
-
-	if (fsMethod) {
-		btn.on('click', function () {
-			if ($container.hasClass('fullscreen')) {
-				document[exitMethod]();
-				$container.removeClass('fullscreen');
-			} else {
-				container[fsMethod]();
-				$container.addClass('fullscreen');
-			}
-		});
-	}
-}
