@@ -559,6 +559,7 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 	tags = Array.isArray(tags) ? tags : [tags];
 	let result = text;
 
+	const parsed = new Set();
 	tags.forEach((tag) => {
 		const isEmoji = tag.type === 'Emoji';
 		const hasUrl = tag.icon && tag.icon.url;
@@ -566,6 +567,9 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 
 		if (isEmoji && (strip || (hasUrl && isImage))) {
 			let { name } = tag;
+			if (parsed.has(name)) {
+				return;
+			}
 
 			if (!name.startsWith(':')) {
 				name = `:${name}`;
@@ -583,6 +587,7 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 				result = result.substring(0, index) + imgTag + result.substring(index + name.length);
 				index = result.indexOf(name, index + imgTag.length);
 			}
+			parsed.add(name);
 		}
 	});
 
