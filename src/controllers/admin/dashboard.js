@@ -227,7 +227,7 @@ function calculateDeltas(results) {
 
 	function increasePercent(last, now) {
 		const percent = last ? (now - last) / last * 100 : 0;
-		return percent.toFixed(0);
+		return (percent > 0 ? `+` : '') + percent.toFixed(0);
 	}
 	results.yesterday -= results.today;
 	results.dayIncrease = increasePercent(results.yesterday, results.today);
