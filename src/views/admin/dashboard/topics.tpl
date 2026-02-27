@@ -14,7 +14,7 @@
 					<tr>
 						<td><a href="{config.relative_path}/topic/{../slug}">{../title}</a></td>
 						<td>[[topic:posted-by, {../user.username}]]</td>
-						<td><span class="timeago" data-title="{../timestampISO}"></span></td>
+						<td class="text-nowrap"><span class="timeago" data-title="{../timestampISO}"></span></td>
 					</tr>
 					{{{ end }}}
 				</tbody>
