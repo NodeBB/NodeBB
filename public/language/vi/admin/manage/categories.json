@@ -55,7 +55,7 @@
 	"select-category": "Chọn Chuyên Mục",
 	"set-parent-category": "Đặt Chuyên Mục Chính",
 
-	"privileges.description": "Bạn có thể cấu hình kiểm soát truy cập các phần của trang web ở phần này. Cấp quyền dựa trên cơ sở mỗi người dùng hoặc mỗi nhóm. Chọn tên miền ảnh hưởng từ menu thả xuống bên dưới.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Cấu hình đặc quyền cho",
 	"privileges.warning": "<strong>Ghi chú</strong>: Cài đặt đặc quyền có hiệu lực lập tức. Không cần phải lưu danh mục sau khi điều chỉnh cài đặt này.",
 	"privileges.section-viewing": "Đặc Quyền Xem",

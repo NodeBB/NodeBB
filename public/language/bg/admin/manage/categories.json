@@ -55,7 +55,7 @@
 	"select-category": "Изберете категория",
 	"set-parent-category": "Задайте базова категория",
 
-	"privileges.description": "В тази секция можете да настроите правомощията за достъп до различните части на уеб сайта Правомощията могат да бъдат давани на отделни потребители или на цели групи. Изберете обхвата на приложение от падащото меню по-долу.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Настройване на правомощията за ",
 	"privileges.warning": "<strong>Забележка</strong>: Настройките за правомощията влизат в сила моментално. Не е нужно да запазвате категорията след като промените тези настройки.",
 	"privileges.section-viewing": "Правомощия за преглед",

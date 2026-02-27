@@ -55,7 +55,7 @@
 	"select-category": "Указать категорию",
 	"set-parent-category": "Указать родительскую категорию",
 
-	"privileges.description": "Здесь вы можете настроить права доступа к разделам форума. Права могут предоставляться как отдельному пользователю, так и группе. Выберите область действия прав доступа в списке ниже.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Настройка прав доступа для",
 	"privileges.warning": "<strong>Примечание</strong>: Настройки прав доступа применяются сразу же, как вы их выбираете. Сохранять настройки категории для этого не нужно.",
 	"privileges.section-viewing": "Права на просмотр",

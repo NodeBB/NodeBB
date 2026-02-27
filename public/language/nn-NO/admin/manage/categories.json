@@ -55,7 +55,7 @@
 	"select-category": "Vel kategori",
 	"set-parent-category": "Vel overordna kategori",
 
-	"privileges.description": "Konfigurer rettar for denne kategorien.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Kategori-val",
 	"privileges.warning": "Endringar kan påverke underkategoriar.",
 	"privileges.section-viewing": "Vising",
