@@ -11,7 +11,7 @@
 	"page-views-seven": "最近7天",
 	"page-views-thirty": "最近30天",
 	"page-views-last-day": "最近24小時",
-	"page-views-custom": "自定義日期範圍",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "範圍開始",
 	"page-views-custom-end": "範圍結束",
 	"page-views-custom-help": "輸入您要查看的網頁瀏覽日期範圍。 如果沒有日期選擇器可用，則接受的格式是 <code>YYYY-MM-DD</code>",

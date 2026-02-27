@@ -11,7 +11,7 @@
 	"page-views-seven": "Siste 7 dager",
 	"page-views-thirty": "Siste 30 dager",
 	"page-views-last-day": "Siste 24 timer",
-	"page-views-custom": "Egendefinert datoperiode",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Startdato",
 	"page-views-custom-end": "Sluttdato",
 	"page-views-custom-help": "Angi et datointervall for sidevisninger du vil se. Hvis ingen datovelger er tilgjengelig, bruk formatet <code>YYYY-MM-DD</code>",

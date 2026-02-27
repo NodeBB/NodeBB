@@ -11,7 +11,7 @@
 	"page-views-seven": "Sidevisningar siste 7 dagar",
 	"page-views-thirty": "Sidevisningar siste 30 dagar",
 	"page-views-last-day": "Sidevisningar siste dag",
-	"page-views-custom": "Tilpassa sidevisningar",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Startdato",
 	"page-views-custom-end": "Sluttdato",
 	"page-views-custom-help": "Vel eit tidsintervall på datoformat <code>YYYY-MM-DD</code> for å sjå sidevisningar. ",

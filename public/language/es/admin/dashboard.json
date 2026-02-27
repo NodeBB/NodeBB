@@ -11,7 +11,7 @@
 	"page-views-seven": "Últimos 7 Días",
 	"page-views-thirty": "Últimos 30 Días",
 	"page-views-last-day": "Últimas 24 horas",
-	"page-views-custom": "Rango de Fechas Personalizado",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Inicio del rango",
 	"page-views-custom-end": "Fin del rango",
 	"page-views-custom-help": "Introduce un rango de fechas para las vistas de página que deseas ver. Si no hay ningún selector de fechas disponible, el formato aceptado es <code>AAAA-MM-DD</code>",

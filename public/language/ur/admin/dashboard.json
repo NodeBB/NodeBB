@@ -11,7 +11,7 @@
 	"page-views-seven": "آخری 7 دن",
 	"page-views-thirty": "آخری 30 دن",
 	"page-views-last-day": "آخری 24 گھنٹے",
-	"page-views-custom": "مرضی کا وقفہ",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "شروع کی تاریخ",
 	"page-views-custom-end": "ختم کی تاریخ",
 	"page-views-custom-help": "صفحہ مناظر دیکھنے کے لیے تاریخوں کا وقفہ درج کریں۔ اگر کیلنڈر انتخاب کے لیے ظاہر نہ ہو، تو آپ تاریخوں کو فارمیٹ <code>YYYY-MM-DD</code> میں درج کر سکتے ہیں۔",

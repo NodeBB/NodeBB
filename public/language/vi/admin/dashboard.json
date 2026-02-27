@@ -11,7 +11,7 @@
 	"page-views-seven": "7 ngày trước",
 	"page-views-thirty": "30 ngày trước",
 	"page-views-last-day": "24 giờ trước",
-	"page-views-custom": "Tùy Chỉnh Phạm Vi Ngày",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Phạm vi bắt đầu",
 	"page-views-custom-end": "Phạm vi kết thúc",
 	"page-views-custom-help": "Nhập phạm vi ngày mà bạn muốn xem lượt xem trang. Nếu không có bộ chọn ngày, chấp nhận định dạng là <code>YYYY-MM-DD</code>",

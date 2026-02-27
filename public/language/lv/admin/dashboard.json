@@ -11,7 +11,7 @@
 	"page-views-seven": "Pēdējās 7 dienās",
 	"page-views-thirty": "Pēdējās 30 dienās",
 	"page-views-last-day": "Pēdējās 24 stundās",
-	"page-views-custom": "Pielāgotais datumu diapazons",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "No",
 	"page-views-custom-end": "Līdz",
 	"page-views-custom-help": "Ievadīt datumu diapazonu, kā lapu skatījumu skaitu vēlies redzēt. Ja datumu atlasītājs nav pieejams, lietot formātu <code>YYYY-MM-DD</code>",

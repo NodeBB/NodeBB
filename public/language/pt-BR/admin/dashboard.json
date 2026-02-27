@@ -11,7 +11,7 @@
 	"page-views-seven": "Últimos 7 Dias",
 	"page-views-thirty": "Últimos 30 Dias",
 	"page-views-last-day": "Últimas 24 horas",
-	"page-views-custom": "Intervalo de Data Personalizado",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Ínicio do Intervalo",
 	"page-views-custom-end": "Fim do Intervalo",
 	"page-views-custom-help": "Entre com um intervalo de data de visualizações de página que gostaria de ver. Se nenhum selecionador de data estiver disponível, o formato aceito é  <code>AAAA-MM-DD</code>",

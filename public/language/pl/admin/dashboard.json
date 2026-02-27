@@ -11,7 +11,7 @@
 	"page-views-seven": "Ostatnie 7 dni",
 	"page-views-thirty": "Ostatnie 30 dni",
 	"page-views-last-day": "Ostatnie 24 godziny",
-	"page-views-custom": "Własny zakres dat",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Początek zakresu",
 	"page-views-custom-end": "Koniec zakresu",
 	"page-views-custom-help": "Wprowadź zakres dat dla wyświetleń strony, które chcesz zobaczyć. Jeśli nie ma możliwości wyboru daty, obowiązuje format <code>RRRR-MM-DD</code>",

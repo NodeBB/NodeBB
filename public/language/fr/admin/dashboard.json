@@ -11,7 +11,7 @@
 	"page-views-seven": "7 derniers jours",
 	"page-views-thirty": "30 derniers jours",
 	"page-views-last-day": "Dernières 24 heures",
-	"page-views-custom": "Dates personnalisées",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Début",
 	"page-views-custom-end": "Fin",
 	"page-views-custom-help": "Entrer une plage de date pour les vues que vous souhaitez afficher. Si aucun sélecteur de date n'est disponible, le format de date accepté est <code>JJ-MM-AAAA</code>.",

@@ -11,7 +11,7 @@
 	"page-views-seven": "Az utóbbi 7 napban",
 	"page-views-thirty": "Az utóbbi 30 napban",
 	"page-views-last-day": "Az utóbbi 24 órában",
-	"page-views-custom": "Egyéni dátum tartomány",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Tartomény kezdete",
 	"page-views-custom-end": "Tartomány vége",
 	"page-views-custom-help": "Adj meg egy dátum tartományt a kívánt oldal megtekintések megtekintéséhez. Ha nem áll rendelkezésre dátumválasztó, az elfogadott formátum <code>ÉÉÉÉ-HH-NN</code>",

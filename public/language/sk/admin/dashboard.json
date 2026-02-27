@@ -11,7 +11,7 @@
 	"page-views-seven": "Posledných 7 dní",
 	"page-views-thirty": "Posledných 30 dní",
 	"page-views-last-day": "Posledných 24 hodín",
-	"page-views-custom": "Podľa rozsahu dátumu",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Začiatok rozsahu",
 	"page-views-custom-end": "Koniec rozsahu",
 	"page-views-custom-help": "Zadajte rozsah obdobia zobrazenia stránok, ktoré chcete vidieť. Ak nie je obdobie nastavené, predvolený formát je <code>YYYY-MM-DD</code>",
