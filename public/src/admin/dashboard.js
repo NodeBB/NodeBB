@@ -266,32 +266,25 @@ function setupGraphs(callback) {
 		data.datasets[2].yAxisID = 'left-y-axis';
 		data.datasets[3].yAxisID = 'left-y-axis';
 		data.datasets[4].yAxisID = 'left-y-axis';
-		data.datasets[5].yAxisID = 'right-y-axis';
+		data.datasets[5].yAxisID = 'left-y-axis';
 
 		graphs.traffic = new Chart(trafficCtx, {
 			type: 'line',
 			data: data,
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
 				scales: {
 					'left-y-axis': {
 						position: 'left',
 						type: 'linear',
 						title: {
-							display: true,
+							display: false,
 							text: graphLabels['graphs.page-views'],
 						},
 						beginAtZero: true,
 					},
-					'right-y-axis': {
-						position: 'right',
-						type: 'linear',
-						title: {
-							display: true,
-							text: graphLabels['graphs.unique-visitors'],
-						},
-						beginAtZero: true,
-					},
+
 				},
 				plugins: {
 					legend: {

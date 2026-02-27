@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	<div class="card-body">
-		<div class="graph-container position-relative" id="analytics-traffic-container" style="aspect-ratio: 2;">
+		<div class="graph-container position-relative" id="analytics-traffic-container" style="height: 40vh; min-height: 300px; ">
 			<canvas id="analytics-traffic" ></canvas>
 		</div>
 		<hr/>
