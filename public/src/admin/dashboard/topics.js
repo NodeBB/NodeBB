@@ -1,7 +1,7 @@
 'use strict';
 
 define('admin/dashboard/topics', [
-	'admin/modules/dashboard-line-graph', 'hooks', 'admin/modules/fullscreen'
+	'admin/modules/dashboard-line-graph', 'hooks', 'admin/modules/fullscreen',
 ], (graph, hooks, { setupFullscreen }) => {
 	const ACP = {};
 
