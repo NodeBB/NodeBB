@@ -248,8 +248,8 @@ Messaging.generateUsernames = function (room, excludeUid) {
 Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
 	const usernames = users.map(u => (utils.isNumber(u.uid) ?
-		`<a href="${relative_path}/uid/${u.uid}">${u.displayname}</a>` :
-		`<a href="${relative_path}/user/${u.username}">${u.displayname}</a>`));
+		`<a href="${relative_path}/uid/${u.uid}">${validator.escape(String(u.displayname))}</a>` :
+		`<a href="${relative_path}/user/${u.username}">${validator.escape(String(u.displayname))}</a>`));
 	let compiled;
 	if (!users.length) {
 		return '[[modules:chat.no-users-in-room]]';
