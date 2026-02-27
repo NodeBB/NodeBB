@@ -137,7 +137,7 @@ module.exports = function (Posts) {
 			}
 			topicTasks.push(topics.updateTeaser(tid));
 			topicTasks.push(topics.updateLastPostTimeFromLastPid(tid));
-			const postsByUid = _.groupBy(posts, p => parseInt(p.uid, 10));
+			const postsByUid = _.groupBy(posts, p => String(p.uid));
 			for (const [uid, uidPosts] of Object.entries(postsByUid)) {
 				zsetIncrBulk.push([`tid:${tid}:posters`, -uidPosts.length, uid]);
 			}
