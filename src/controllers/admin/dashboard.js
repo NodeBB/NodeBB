@@ -140,7 +140,8 @@ async function getStats() {
 		getStatsForSet('topics:tid', 'topicCount'),
 		meta.config.activitypubEnabled ? getStatsForSet('postsRemote:pid', '') : null,
 		meta.config.activitypubEnabled ? getStatsForSet('topicsRemote:tid', '') : null,
-	])).filter(Boolean);
+		getStatsForSet('messages:mid', 'messageCount'),
+	]));
 
 	results[0].name = '[[admin/dashboard:graphs.page-views]]';
 	results[1].name = '[[admin/dashboard:unique-visitors]]';
@@ -162,6 +163,8 @@ async function getStats() {
 	if (results[7]) {
 		results[7].name = '[[admin/dashboard:remote-topics]]';
 	}
+	results[8].name = '[[admin/dashboard:messages]]';
+	results = results.filter(Boolean);
 
 	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
 		results,
