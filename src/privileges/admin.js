@@ -115,7 +115,6 @@ privsAdmin.socketMap = {
 	'admin.getSearchDict': 'admin:settings',
 	'admin.config.setMultiple': 'admin:settings',
 	'admin.config.remove': 'admin:settings',
-	'admin.themes.getInstalled': 'admin:settings',
 	'admin.themes.set': 'admin:settings',
 	'admin.reloadAllSessions': 'admin:settings',
 	'admin.settings.get': 'admin:settings',
