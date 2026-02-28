@@ -778,7 +778,9 @@ async function pruneCidTids(cid, cuttoff) {
 		max: cuttoff,
 		batch: 500,
 	});
-
+	if (!tidsWithNoEngagement.length) {
+		return;
+	}
 	winston.info(`[notes/prune] ${tidsWithNoEngagement.length} topics eligible in cid:${cid} for pruning`);
 
 	await batch.processArray(tidsWithNoEngagement, async (tids) => {
