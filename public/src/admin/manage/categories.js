@@ -83,15 +83,15 @@ define('admin/manage/categories', [
 
 		$('.categories').on('click', 'a[data-action]', function () {
 			const action = this.getAttribute('data-action');
-
+			const cid = this.getAttribute('data-cid');
 			switch (action) {
 				case 'remove': {
-					Categories.remove.call(this);
+					Categories.remove(cid);
 					break;
 				}
 
 				case 'rename': {
-					Categories.rename.call(this);
+					Categories.rename(cid);
 					break;
 				}
 			}
@@ -195,21 +195,19 @@ define('admin/manage/categories', [
 		});
 	};
 
-	Categories.remove = function () {
+	Categories.remove = function (cid) {
 		bootbox.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
 			if (ok) {
-				const cid = this.getAttribute('data-cid');
 				api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
 			}
 		});
 	};
 
-	Categories.rename = function () {
+	Categories.rename = function (cid) {
 		bootbox.prompt({
 			title: '[[admin/manage/categories:alert.rename]]',
 			message: '<p class="mb-3">[[admin/manage/categories:alert.rename-help]]</p>',
 			callback: (name) => {
-				const cid = this.getAttribute('data-cid');
 				api.post(`/api/admin/manage/categories/${encodeURIComponent(cid)}/name`, { name }).then(ajaxify.refresh);
 			},
 		});
