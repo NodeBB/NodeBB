@@ -20,14 +20,12 @@
 		<tbody class="text-sm text-tabular">
 			{{{ each stats }}}
 			<tr>
-				<td class="fw-bold text-nowrap">
-
-						{{{ if ./href }}}
-							<a href="{./href}">{./name}</a>
-						{{{ else }}}
-							{./name}
-						{{{ end }}}
-
+				<td class="fw-semibold text-nowrap">
+					{{{ if ./href }}}
+						<a href="{./href}">{./name}</a>
+					{{{ else }}}
+						{./name}
+					{{{ end }}}
 				</td>
 				<td class="text-end">{formattedNumber(./yesterday)}</td>
 				<td class="text-end">{formattedNumber(./today)}</td>

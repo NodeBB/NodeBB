@@ -72,13 +72,14 @@ export function init({ set, dataset }) {
 				data: data,
 				options: {
 					responsive: true,
+					maintainAspectRatio: false,
 					scales: {
 						'left-y-axis': {
 							type: 'linear',
 							position: 'left',
 							beginAtZero: true,
 							title: {
-								display: true,
+								display: false,
 								text: key,
 							},
 						},

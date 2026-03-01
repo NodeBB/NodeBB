@@ -65,9 +65,7 @@ define('forum/unread', [
 		// Generate list of default categories based on topic list
 		let defaultCategories = ajaxify.data.topics.reduce((map, topic) => {
 			const { category } = topic;
-			let { cid } = category;
-			cid = utils.isNumber(cid) ? parseInt(cid, 10) : cid;
-			map.set(cid, category);
+			map.set(String(category.cid), category);
 			return map;
 		}, new Map());
 		defaultCategories = Array.from(defaultCategories.values());

@@ -95,11 +95,11 @@ define('topicList', [
 
 		const categories = d.selectedCids &&
 			d.selectedCids.length &&
-			d.selectedCids.indexOf(parseInt(data.cid, 10)) === -1;
+			!d.selectedCids.includes(parseInt(data.cid, 10));
 		const filterWatched = d.selectedFilter &&
 			d.selectedFilter.filter === 'watched';
 		const category = d.template.category &&
-			parseInt(d.cid, 10) !== parseInt(data.cid, 10);
+			String(d.cid) !== String(data.cid);
 
 		const preventAlert = !!(categories || filterWatched || category || scheduledTopics.includes(data.tid));
 		hooks.fire('filter:topicList.onNewTopic', { topic: data, preventAlert }).then((result) => {
@@ -126,14 +126,14 @@ define('topicList', [
 		const isMain = parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10);
 		const categories = d.selectedCids &&
 			d.selectedCids.length &&
-			d.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1;
+			!d.selectedCids.includes(parseInt(post.topic.cid, 10));
 		const filterNew = d.selectedFilter &&
 			d.selectedFilter.filter === 'new';
 		const filterWatched = d.selectedFilter &&
 			d.selectedFilter.filter === 'watched' &&
 			!post.topic.isFollowing;
 		const category = d.template.category &&
-			parseInt(d.cid, 10) !== parseInt(post.topic.cid, 10);
+			String(d.cid) !== String(post.topic.cid);
 
 		const preventAlert = !!(isMain || categories || filterNew || filterWatched || category);
 		hooks.fire('filter:topicList.onNewPost', { post, preventAlert }).then((result) => {

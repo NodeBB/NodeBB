@@ -110,7 +110,7 @@ module.exports = function (Messaging) {
 				[`chat:room:${roomId}:uids:online`, now, uid],
 				...(
 					isPublic ?
-						[`chat:room:${roomId}:owners`, now, uid] :
+						[[`chat:room:${roomId}:owners`, now, uid]] :
 						[uid].concat(data.uids).map(uid => ([`chat:room:${roomId}:owners`, now, uid]))
 				),
 			]),

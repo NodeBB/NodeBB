@@ -412,8 +412,12 @@ async function getChildrenCids(data) {
 	if (!data.searchChildren) {
 		return [];
 	}
-	const childrenCids = await Promise.all(data.categories.map(cid => categories.getChildrenCids(cid)));
-	return await privileges.categories.filterCids('find', _.uniq(_.flatten(childrenCids)), data.uid);
+	const childrenCids = await Promise.all(data.categories.map(categories.getChildrenCids));
+	return await privileges.categories.filterCids(
+		'find',
+		_.uniq(_.flatten(childrenCids)),
+		data.uid
+	);
 }
 
 async function getSearchUids(data) {

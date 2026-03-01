@@ -79,7 +79,11 @@ async function xhr(options) {
 
 	if (!res.ok) {
 		if (response) {
-			throw new Error(isJSON ? response.status.message : response);
+			const jsonError = isJSON && (response.status?.message || response.error || '');
+			throw new Error(isJSON && jsonError ?
+				jsonError :
+				response
+			);
 		}
 		throw new Error(res.statusText);
 	}

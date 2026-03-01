@@ -8,7 +8,6 @@ const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
-const utils = require('../utils');
 
 const categoriesAPI = module.exports;
 
@@ -158,7 +157,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	let targetUid = caller.uid;
 	let cids = Array.isArray(cid) ? cid : [cid];
-	cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
+	cids = cids.map(cid => String(cid));
 
 	if (uid) {
 		targetUid = uid;
@@ -170,9 +169,9 @@ categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	// filter to subcategories of cid
 	let cat;
 	do {
-		cat = categoryData.find(c => !cids.includes(c.cid) && cids.includes(c.parentCid));
+		cat = categoryData.find(c => !cids.includes(String(c.cid)) && cids.includes(String(c.parentCid)));
 		if (cat) {
-			cids.push(cat.cid);
+			cids.push(String(cat.cid));
 		}
 	} while (cat);
 
