@@ -97,7 +97,7 @@
         "multer": "2.1.0",
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "7.6.1",
-        "nodebb-plugin-composer-default": "10.3.22",
+        "nodebb-plugin-composer-default": "10.3.23",
         "nodebb-plugin-dbsearch": "6.4.0",
         "nodebb-plugin-emoji": "6.0.5",
         "nodebb-plugin-emoji-android": "4.1.1",

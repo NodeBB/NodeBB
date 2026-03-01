@@ -101,7 +101,7 @@ module.exports = function (Categories) {
 		await privileges.categories.give(result.guestPrivileges, category.cid, ['guests', 'spiders']);
 
 		cache.del('categories:cid');
-		await clearParentCategoryCache(parentCid);
+		await Categories.clearParentCategoryCache(parentCid);
 
 		if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
 			category = await Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid);
@@ -115,8 +115,8 @@ module.exports = function (Categories) {
 		return category;
 	};
 
-	async function clearParentCategoryCache(parentCid) {
-		while (parseInt(parentCid, 10) >= 0) {
+	Categories.clearParentCategoryCache = async function (parentCid) {
+		while (parentCid || parseInt(parentCid, 10) === 0) {
 			cache.del([
 				`cid:${parentCid}:children`,
 				`cid:${parentCid}:children:all`,
@@ -129,7 +129,7 @@ module.exports = function (Categories) {
 			// eslint-disable-next-line no-await-in-loop
 			parentCid = await Categories.getCategoryField(parentCid, 'parentCid');
 		}
-	}
+	};
 
 	async function duplicateCategoriesChildren(parentCid, cid, uid) {
 		let children = await Categories.getChildren([cid], uid);
@@ -188,17 +188,13 @@ module.exports = function (Categories) {
 			throw new Error('[[error:invalid-cid]]');
 		}
 
-		const oldParent = parseInt(destination.parentCid, 10) || 0;
-		const newParent = parseInt(source.parentCid, 10) || 0;
-		if (copyParent && newParent !== parseInt(toCid, 10)) {
+		const oldParent = String(destination.parentCid || 0);
+		const newParent = String(source.parentCid || 0);
+		if (copyParent && newParent !== String(toCid)) {
 			await db.sortedSetRemove(`cid:${oldParent}:children`, toCid);
 			await db.sortedSetAdd(`cid:${newParent}:children`, source.order, toCid);
-			cache.del([
-				`cid:${oldParent}:children`,
-				`cid:${oldParent}:children:all`,
-				`cid:${newParent}:children`,
-				`cid:${newParent}:children:all`,
-			]);
+			await Categories.clearParentCategoryCache(oldParent);
+			await Categories.clearParentCategoryCache(newParent);
 		}
 
 		destination.description = source.description;

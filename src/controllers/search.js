@@ -201,7 +201,7 @@ async function buildSelectedCategoryLabel(selectedCids) {
 			label = `[[search:categories-x, ${selectedCids.length}]]`;
 		} else if (selectedCids.length === 1 && selectedCids[0] === 'watched') {
 			label = `[[search:categories-watched-categories]]`;
-		} else if (selectedCids.length === 1 && parseInt(selectedCids[0], 10)) {
+		} else if (selectedCids.length === 1 && selectedCids[0]) {
 			const categoryData = await categories.getCategoryData(selectedCids[0]);
 			if (categoryData && categoryData.name) {
 				label = `[[search:categories-x, ${categoryData.name}]]`;

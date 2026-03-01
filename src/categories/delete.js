@@ -79,11 +79,12 @@ module.exports = function (Categories) {
 		cache.del([
 			'categories:cid',
 			'cid:0:children',
-			`cid:${parentCid}:children`,
-			`cid:${parentCid}:children:all`,
-			`cid:${cid}:children`,
-			`cid:${cid}:children:all`,
+			'cid:0:children:all',
 			`cid:${cid}:tag:whitelist`,
+		]);
+		await Promise.all([
+			Categories.clearParentCategoryCache(parentCid),
+			Categories.clearParentCategoryCache(cid),
 		]);
 	}
 
