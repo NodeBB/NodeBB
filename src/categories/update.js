@@ -85,12 +85,9 @@ module.exports = function (Categories) {
 			db.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),
 			db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, 'parentCid', newParent),
 		]);
-
-		cache.del([
-			`cid:${oldParent}:children`,
-			`cid:${newParent}:children`,
-			`cid:${oldParent}:children:all`,
-			`cid:${newParent}:children:all`,
+		await Promise.all([
+			Categories.clearParentCategoryCache(oldParent),
+			Categories.clearParentCategoryCache(newParent),
 		]);
 	}
 
@@ -134,11 +131,9 @@ module.exports = function (Categories) {
 		await db.setObjectBulk(
 			childrenCids.map((cid, index) => [`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, { order: index + 1 }])
 		);
-
+		await Categories.clearParentCategoryCache(parentCid);
 		cache.del([
 			'categories:cid',
-			`cid:${parentCid}:children`,
-			`cid:${parentCid}:children:all`,
 		]);
 	}
 
