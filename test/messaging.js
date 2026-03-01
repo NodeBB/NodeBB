@@ -599,6 +599,20 @@ describe('Messaging Library', () => {
 			const { roomId } = await api.users.getPrivateRoomId({ uid: mocks.users.foo.uid }, { uid: mocks.users.herp.uid });
 			assert(roomId);
 		});
+
+		it('should create a public chat room', async () => {
+			const data = await api.chats.create({
+				uid: mocks.users.foo.uid,
+				session: {},
+			}, {
+				name: 'public room',
+				type: 'public',
+				uids: [],
+				groups: ['registered-users'],
+			});
+			assert(data.roomId);
+			assert.strictEqual(data.public, true);
+		});
 	});
 
 	describe('toMid', () => {
