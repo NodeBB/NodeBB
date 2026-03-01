@@ -8,7 +8,6 @@ const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
-const utils = require('../utils');
 
 const categoriesAPI = module.exports;
 
