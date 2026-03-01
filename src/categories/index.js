@@ -330,7 +330,7 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  * @param parentCid {number} start from 0 to build full tree
  */
 Categories.getTree = function (categories, parentCid) {
-	parentCid = parentCid || 0;
+	parentCid = String(parentCid || 0);
 	const cids = categories.map(category => category && category.cid);
 	const cidToCategory = {};
 	const parents = {};
@@ -351,15 +351,15 @@ Categories.getTree = function (categories, parentCid) {
 				return;
 			}
 			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-				category.parentCid = 0;
+				category.parentCid = '0';
 			}
-			if (category.parentCid === parentCid) {
+			if (String(category.parentCid) === parentCid) {
 				tree.push(category);
 				category.parent = parents[parentCid];
 			} else {
-				const parent = cidToCategory[category.parentCid];
+				const parent = cidToCategory[String(category.parentCid)];
 				if (parent && parent.cid !== category.cid) {
-					category.parent = parents[category.parentCid];
+					category.parent = parents[String(category.parentCid)];
 					parent.children = parent.children || [];
 					parent.children.push(category);
 				}
@@ -413,10 +413,10 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 			category.children.forEach(child => recursive(child, categoriesData, `&nbsp;&nbsp;&nbsp;&nbsp;${level}`, depth + 1));
 		}
 	}
-	parentCid = parentCid || 0;
+	parentCid = String(parentCid || 0);
 	const categoriesData = [];
 
-	const rootCategories = categories.filter(category => category && category.parentCid === parentCid);
+	const rootCategories = categories.filter(category => category && String(category.parentCid) === parentCid);
 
 	rootCategories.sort((a, b) => {
 		if (a.order !== b.order) {
