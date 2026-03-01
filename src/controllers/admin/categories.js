@@ -52,7 +52,7 @@ categoriesController.getAll = async function (req, res) {
 	const rootCid = parseInt(req.query.cid, 10) || 0;
 	const rootChildren = await categories.getAllCidsFromSet(`cid:${rootCid}:children`);
 	async function getRootAndChildren() {
-		const childCids = _.flatten(await Promise.all(rootChildren.map(cid => categories.getChildrenCids(cid))));
+		const childCids = _.flatten(await Promise.all(rootChildren.map(categories.getChildrenCids)));
 		return [rootCid].concat(rootChildren.concat(childCids));
 	}
 

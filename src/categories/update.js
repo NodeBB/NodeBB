@@ -67,8 +67,8 @@ module.exports = function (Categories) {
 	}
 
 	async function updateParent(cid, newParent) {
-		newParent = parseInt(newParent, 10) || 0;
-		if (parseInt(cid, 10) === newParent) {
+		newParent = String(newParent || 0);
+		if (String(cid) === newParent) {
 			throw new Error('[[error:cant-set-self-as-parent]]');
 		}
 		const childrenCids = await Categories.getChildrenCids(cid);
@@ -76,7 +76,7 @@ module.exports = function (Categories) {
 			throw new Error('[[error:cant-set-child-as-parent]]');
 		}
 		const categoryData = await Categories.getCategoryFields(cid, ['parentCid', 'order']);
-		const oldParent = categoryData.parentCid;
+		const oldParent = String(categoryData.parentCid);
 		if (oldParent === newParent) {
 			return;
 		}
