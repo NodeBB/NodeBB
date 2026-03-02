@@ -743,6 +743,28 @@ Mocks.notes.public = async (post) => {
 	}
 
 	attachment = normalizeAttachment(attachment);
+
+	// Retrieve alt text from content (if found)
+	if (source?.content && source?.mediaType === 'text/markdown') {
+		const mdImageRegex = /!\[(.+?)\]\(([^\\)]+)\)/g;
+		const found = new Map();
+		let current = mdImageRegex.exec(source.content);
+		while (current !== null) {
+			const [, alt, src] = current;
+			found.set(src.replace('-resized', ''), alt);
+			current = mdImageRegex.exec(source.content);
+		}
+
+		attachment = attachment.map((attachment) => {
+			if (found.has(attachment.url)) {
+				attachment.name = found.get(attachment.url);
+			}
+
+			return attachment;
+		});
+	}
+
+	// 'image' seems to be used as the preview image in lemmy/piefed, use the first one.
 	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
 	// let preview;
 	let summary = null;
