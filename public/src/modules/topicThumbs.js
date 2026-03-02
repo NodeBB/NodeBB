@@ -59,8 +59,12 @@ define('topicThumbs', [
 								className: 'btn-success',
 								callback: () => {
 									Thumbs.upload().then((thumbUrl) => {
+										const newUrl = thumbUrl
+											.replace(new RegExp(`^${config.relative_path}`), '')
+											.replace(new RegExp(`^${config.upload_url}`), '');
+
 										postData.thumbs.push(
-											thumbUrl.replace(new RegExp(`^${config.upload_url}`), '')
+											newUrl,
 										);
 
 										Thumbs.modal.open({ ...payload, modal });
