@@ -1423,7 +1423,13 @@ describe('Topic\'s', () => {
 			const result = await topics.post({ uid: adminUid, title: 'deleted unread', content: 'not unread', cid: categoryObj.cid });
 			await topics.delete(result.topicData.tid, adminUid);
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
-			assert(!unreadTids.includes(result.topicData.tid), JSON.stringify({ unreadTids, tid: result.topicData.tid }));
+
+			await sleep(2000);
+			const _unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
+			assert(
+				!unreadTids.includes(result.topicData.tid),
+				JSON.stringify({ unreadTids, _unreadTids, tid: result.topicData.tid })
+			);
 		});
 	});
 
