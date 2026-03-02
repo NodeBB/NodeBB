@@ -59,7 +59,7 @@
     "resizeImageQuality": 80,
     "convertPastedImageTo": "image/jpeg",
     "topicThumbSize": 512,
-    "minimumTitleLength": 3,
+    "minimumTitleLength": 0,
     "maximumTitleLength": 255,
     "minimumUsernameLength": 2,
     "maximumUsernameLength": 16,
