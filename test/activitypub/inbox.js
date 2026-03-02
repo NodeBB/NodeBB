@@ -10,6 +10,7 @@ const user = require('../../src/user');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
+const privileges = require('../../src/privileges');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
@@ -108,7 +109,6 @@ describe('Inbox', () => {
 
 		describe('Create', () => {
 			let uid;
-			let cid;
 
 			before(async () => {
 				uid = await user.create({ username: utils.generateUUID() });
@@ -171,38 +171,6 @@ describe('Inbox', () => {
 					assert(await posts.exists(id));
 					const cid = await posts.getCidByPid(id);
 					assert.strictEqual(cid, -1);
-				});
-			});
-
-			describe('(Like)', () => {
-				let pid;
-				let voterUid;
-
-				before(async () => {
-					({ cid } = await categories.create({ name: utils.generateUUID() }));
-					const { postData } = await topics.post({
-						uid,
-						cid,
-						title: utils.generateUUID(),
-						content: utils.generateUUID(),
-					});
-					pid = postData.pid;
-					const object = await activitypub.mocks.notes.public(postData);
-					const { activity } = helpers.mocks.like({ object });
-					voterUid = activity.actor;
-					await activitypub.inbox.like({ body: activity });
-				});
-
-				it('should increment a like for the post', async () => {
-					const voted = await posts.hasVoted(pid, voterUid);
-					const count = await posts.getPostField(pid, 'upvotes');
-					assert(voted);
-					assert.strictEqual(count, 1);
-				});
-
-				it('should not append to the uid upvotes zset', async () => {
-					const exists = await db.exists(`uid:${voterUid}:upvote`);
-					assert(!exists);
 				});
 			});
 		});
@@ -403,6 +371,58 @@ describe('Inbox', () => {
 
 					const content = await posts.getPostField(id, 'content');
 					assert.strictEqual(content, note.content);
+				});
+			});
+		});
+
+		describe('Like', () => {
+			before(async function () {
+				const uid = await user.create({ username: utils.generateUUID() });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				this.cid = cid;
+				const { postData } = await topics.post({
+					uid,
+					cid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.postData = postData;
+				const object = await activitypub.mocks.notes.public(postData);
+				const { activity } = helpers.mocks.like({ object });
+				this.voterUid = activity.actor;
+				await activitypub.inbox.like({ body: activity });
+			});
+
+			it('should increment a like for the post', async function () {
+				const voted = await posts.hasVoted(this.postData.pid, this.voterUid);
+				const count = await posts.getPostField(this.postData.pid, 'upvotes');
+				assert(voted);
+				assert.strictEqual(count, 1);
+			});
+
+			it('should not append to the uid upvotes zset', async function () {
+				const exists = await db.exists(`uid:${this.voterUid}:upvote`);
+				assert(!exists);
+			});
+
+			describe('with privilege revoked (from fediverse pseudo-user)', () => {
+				before(async function () {
+					await privileges.categories.rescind(['groups:posts:upvote'], this.cid, 'fediverse');
+					const object = await activitypub.mocks.notes.public(this.postData);
+					const { activity } = helpers.mocks.like({ object });
+					this.voterUid = activity.actor;
+					await activitypub.inbox.like({ body: activity });
+				});
+
+				after(async function () {
+					await privileges.categories.give(['groups:posts:upvote'], this.cid, 'fediverse');
+				});
+
+				it('should not increment a like for the post', async function () {
+					const { upvoted } = await posts.hasVoted(this.postData.pid, this.voterUid);
+					const count = await posts.getPostField(this.postData.pid, 'upvotes');
+					assert.strictEqual(upvoted, false);
+					assert.strictEqual(count, 1);
 				});
 			});
 		});
