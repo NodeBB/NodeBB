@@ -384,7 +384,7 @@ describe('Post\'s', () => {
 		let pid;
 		let replyPid;
 		let tid;
-		before(function () {
+		before(function (done) {
 			this.minimumTitleLength = meta.config.minimumTitleLength;
 			meta.config.minimumTitleLength = 3;
 
