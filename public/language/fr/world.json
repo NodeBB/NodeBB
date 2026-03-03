@@ -1,11 +1,11 @@
 {
 	"name": "Monde",
 	"latest": "Dernier",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
+	"popular-day": "Populaires (Jour)",
+	"popular-week": "Populaires (Semaine)",
+	"popular-month": "Populaires (Mois)",
+	"popular-year": "Populaires (Année)",
+	"popular-alltime": "Populaires (Tout temps)",
 	"recent": "Tous",
 	"help": "Aide",
 
@@ -21,5 +21,7 @@
 	"onboard.why": "Il se passe beaucoup de choses en dehors de ce forum, et tout n'est pas nécessairement pertinent pour vos intérêts. C'est pourquoi suivre des personnes est le meilleur moyen de signaler que vous souhaitez voir plus de contenu de leur part.",
 	"onboard.how": "En attendant, vous pouvez cliquer sur les boutons de raccourci en haut pour voir ce que ce forum connaît d'autre et commencer à découvrir de nouveaux contenus !",
 
-	"category-search": "Trouver une catégorie..."
+	"category-search": "Trouver une catégorie...",
+	"see-more": "See more",
+	"see-less": "See less"
 }

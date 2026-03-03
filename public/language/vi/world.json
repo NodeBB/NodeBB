@@ -1,11 +1,11 @@
 {
 	"name": "Thế giới",
-	"latest": "Latest",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
+	"latest": "Mới nhất",
+	"popular-day": "Phổ biến (Ngày)",
+	"popular-week": "Phổ biến (Tuần)",
+	"popular-month": "Phổ biến (Tháng)",
+	"popular-year": "Phổ biến (Năm)",
+	"popular-alltime": "Phổ biến (Mọi thời đại)",
 	"recent": "Tất cả",
 	"help": "Trợ giúp",
 
@@ -21,5 +21,7 @@
 	"onboard.why": "Có rất nhiều điều diễn ra bên ngoài diễn đàn này và không phải tất cả đều phù hợp với sở thích của bạn. Đó là lý do tại sao theo dõi mọi người là cách tốt nhất để báo hiệu rằng bạn muốn biết thêm thông tin từ ai đó.",
 	"onboard.how": "Trong thời gian chờ đợi, bạn có thể nhấp vào các nút tắt ở trên cùng để xem diễn đàn này biết thêm những gì và bắt đầu khám phá một số nội dung mới!",
 
-	"category-search": "Find a category..."
+	"category-search": "Tìm danh mục...",
+	"see-more": "See more",
+	"see-less": "See less"
 }

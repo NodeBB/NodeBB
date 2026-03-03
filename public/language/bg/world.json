@@ -1,12 +1,12 @@
 {
 	"name": "Свят",
-	"latest": "Latest",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
-	"recent": "All",
+	"latest": "Най-нови",
+	"popular-day": "Популярни (за деня)",
+	"popular-week": "Популярни (за седмицата)",
+	"popular-month": "Популярни (за месеца)",
+	"popular-year": "Популярни (за годината)",
+	"popular-alltime": "Популярни (за всички времена)",
+	"recent": "Всички",
 	"help": "Помощ",
 
 	"help.title": "Каква е тази страница?",
@@ -21,5 +21,7 @@
 	"onboard.why": "Много неща се случват извън този форум, и не всичко отговаря на Вашите интереси. Затова следването на конкретни хора е най-добрият начин да покажете, че искате да виждате повече от тях.",
 	"onboard.how": "Междувременно можете да използвате бутоните в горната част, за да видите до какво има достъп този форум. Така може да започнете да откривате ново съдържание!",
 
-	"category-search": "Find a category..."
+	"category-search": "Търсене на категория…",
+	"see-more": "See more",
+	"see-less": "See less"
 }
