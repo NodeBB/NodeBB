@@ -511,9 +511,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		returnPayload.response = response;
 
 		if (process.env.NODE_ENV === 'development') {
-			returnPayload.stack = payload.stack;
+			const stack = payload instanceof Error ? payload.stack : new Error(String(payload)).stack;
+			returnPayload.stack = stack;
 			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
-			process.stdout.write(payload.stack);
+			process.stdout.write(stack);
 		}
 		res.status(statusCode).json(returnPayload);
 	} else {
