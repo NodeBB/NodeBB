@@ -22,6 +22,7 @@ define('forum/world', [
 		handleImages();
 		handleButtons();
 		handleHelp();
+		handleShowMoreButtons();
 
 		categoryTools.init($('#world-feed'));
 		socket.on('event:new_post', onNewPost);
@@ -206,6 +207,31 @@ define('forum/world', [
 
 	function handleImages() {
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
+	}
+
+	function handleShowMoreButtons() {
+		const feedEl = document.getElementById('world-feed');
+		if (!feedEl) {
+			return;
+		}
+
+		feedEl.querySelectorAll('[component="post/content"]').forEach((el) => {
+			if (el.clientHeight < el.scrollHeight - 1) {
+				el.parentNode.querySelector('[component="show/more"]').classList.remove('hidden');
+			}
+		});
+
+		feedEl.addEventListener('click', (e) => {
+			const subselector = e.target.closest('[component="show/more"]');
+			if (subselector) {
+				const postContent = subselector.closest('.post-body').querySelector('[component="post/content"]');
+				const isShowingMore = parseInt(subselector.getAttribute('ismore'), 10) === 1;
+				postContent.classList.toggle('line-clamp-6', isShowingMore);
+				postContent.classList.toggle('clamp-fade-6', isShowingMore);
+				$(subselector).translateText(isShowingMore ? '[[world:see-more]]' : '[[world:see-less]]');
+				subselector.setAttribute('ismore', isShowingMore ? 0 : 1);
+			}
+		});
 	}
 
 	function updateDropdowns(modified_cids, state) {
