@@ -20,16 +20,17 @@ module.exports = function (Topics) {
 		]);
 		await Promise.all([
 			db.sortedSetRemove(`cid:${cid}:pids`, pids),
-			resolveTopicPostFlags(pids, uid),
 			Topics.setTopicFields(tid, {
 				deleted: 1,
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
-			activitypub.out.remove.context(uid, tid),
 		]);
-
-		await categories.updateRecentTidForCid(cid);
+		await Promise.all([
+			resolveTopicPostFlags(pids, uid),
+			activitypub.out.remove.context(uid, tid),
+			categories.updateRecentTidForCid(cid),
+		]);
 	};
 
 	async function resolveTopicPostFlags(pids, uid) {
