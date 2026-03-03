@@ -384,7 +384,10 @@ describe('Post\'s', () => {
 		let pid;
 		let replyPid;
 		let tid;
-		before((done) => {
+		before(function () {
+			this.minimumTitleLength = meta.config.minimumTitleLength;
+			meta.config.minimumTitleLength = 3;
+
 			topics.post({
 				uid: voterUid,
 				cid: cid,
@@ -406,6 +409,10 @@ describe('Post\'s', () => {
 					privileges.categories.give(['groups:posts:edit'], cid, 'registered-users', done);
 				});
 			});
+		});
+
+		after(function () {
+			meta.config.minimumTitleLength = this.minimumTitleLength;
 		});
 
 		it('should error if user is not logged in', async () => {
