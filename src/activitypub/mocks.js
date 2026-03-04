@@ -453,7 +453,7 @@ Mocks.actors.user = async (uid) => {
 				attachment.push({
 					type: 'Link',
 					name,
-					href: value,
+					href: validator.unescape(value),
 				});
 			} else {
 				attachment.push({
@@ -467,7 +467,7 @@ Mocks.actors.user = async (uid) => {
 			attachment.push({
 				type: 'PropertyValue',
 				name,
-				value,
+				value: validator.unescape(value),
 			});
 		}
 	});
