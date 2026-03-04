@@ -248,7 +248,16 @@ define('admin/manage/privileges', [
 		applyPrivilegesToColumn(inputSelectorFn, sourceChecked);
 	};
 
-	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'del'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${encodeURIComponent(privilege)}`, { member });
+	Privileges.setPrivilege = (member, privilege, state) => {
+		const method = state ? 'put' : 'del';
+		let url = `/categories/${isNaN(cid) ? 0 : cid}/privileges/${encodeURIComponent(privilege)}`;
+		const payload = { member };
+		if (!state) {
+			url += `/${member}`;
+			delete payload.member;
+		}
+		return api[method](url, payload);
+	};
 
 	Privileges.addUserToPrivilegeTable = function () {
 		const modal = bootbox.dialog({
