@@ -218,6 +218,7 @@ define('forum/world', [
 		feedEl.querySelectorAll('[component="post/content"]').forEach((el) => {
 			if (el.clientHeight < el.scrollHeight - 1) {
 				el.parentNode.querySelector('[component="show/more"]').classList.remove('hidden');
+				el.classList.toggle('clamp-fade-6', true);
 			}
 		});
 

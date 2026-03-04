@@ -54,12 +54,12 @@
 				</div>
 			</div>
 
-			<div component="post/content" class="content text-sm text-break position-relative line-clamp-6 clamp-fade-6">
+			<div component="post/content" class="content text-sm text-break position-relative line-clamp-6">
 				<a href="{config.relative_path}/post/{./pid}" class="stretched-link"></a>
 				{./content}
 			</div>
-			<div class="position-relative hover-visible">
-				<button component="show/more" class="btn btn-light btn-sm rounded-pill position-absolute start-50 translate-middle-x bottom-0 z-1 hidden ff-secondary">[[world:see-more]]</button>
+			<div class="position-relative">
+				<button component="show/more" class="btn btn-link btn-sm fw-semibold position-absolute start-50 translate-middle-x bottom-0 z-1 hidden ff-secondary text-secondary">[[world:see-more]]</button>
 			</div>
 			<hr class="my-2"/>
 			<div class="d-flex justify-content-between">
