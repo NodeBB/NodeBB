@@ -766,17 +766,17 @@ Mocks.notes.public = async (post) => {
 
 	// 'image' seems to be used as the preview image in lemmy/piefed, use the first one.
 	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
-	// let preview;
+	let preview;
 	let summary = null;
 	if (isArticle) {
 		// Preview is not adopted by anybody, so is left commented-out for now
-		// preview = {
-		// type: 'Note',
-		// attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
-		// content: post.content,
-		// published,
-		// attachment,
-		// };
+		preview = {
+			type: 'Note',
+			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+			content: post.content,
+			published,
+			attachment,
+		};
 
 		if (post.content.includes(meta.config.activitypubBreakString)) {
 			const index = post.content.indexOf(meta.config.activitypubBreakString);
@@ -844,7 +844,7 @@ Mocks.notes.public = async (post) => {
 		context,
 		audience,
 		...(summary && { summary }),
-		// preview,
+		preview,
 		content: post.content,
 		source,
 		tag,
