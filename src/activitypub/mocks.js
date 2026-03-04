@@ -815,10 +815,6 @@ Mocks.notes.public = async (post) => {
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
-	/**
-	 * audience is exposed as part of 1b12 but is now ignored by Lemmy.
-	 * Remove this and most references to audience in 2026.
-	 */
 	let audience = utils.isNumber(post.category.cid) ? // default
 		`${nconf.get('url')}/category/${post.category.cid}` : post.category.cid;
 	if (inReplyTo) {
@@ -828,6 +824,17 @@ Mocks.notes.public = async (post) => {
 		});
 	}
 	to.add(audience);
+
+	// Sneak in a mention for the remote category (so Mastodon users address distributor)
+	if (!audience.startsWith(nconf.get('url'))) {
+		const slug = await categories.getCategoryField(audience, 'slug');
+		tag = tag || [];
+		tag.push({
+			type: 'Mention',
+			href: audience,
+			name: `@${slug}`,
+		});
+	}
 
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
