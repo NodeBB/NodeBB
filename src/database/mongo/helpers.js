@@ -1,7 +1,6 @@
 'use strict';
 
 const helpers = module.exports;
-const utils = require('../../utils');
 
 helpers.noop = function () {};
 

@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
 	const dbHelpers = require('../helpers');
 	module.flushdb = async function () {
 		await module.client.dropDatabase();
