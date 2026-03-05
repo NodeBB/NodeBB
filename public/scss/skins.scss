@@ -37,6 +37,10 @@
 	.text-secondary {
 		color: var(--bs-secondary-color) !important;
 	}
+
+	.btn-link {
+		background: $body-bg;
+	}
 }
 
 // fix minty buttons

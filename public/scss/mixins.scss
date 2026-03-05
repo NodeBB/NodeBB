@@ -116,14 +116,15 @@
 	position: relative;
 	cursor: pointer;
 
-	&.line-clamp-#{$lines}::before {
-		content: '';
-		position: absolute;
-		top: calc(1.5em * ($lines - 2));
-		display: block;
-		width: 100%;
-		height: 3em;
-		background: linear-gradient(180deg, transparent 0, $body-bg 100%);
+	&.line-clamp-#{$lines} {
+		// Fallback for older browsers
+		display: -webkit-box;
+		-webkit-line-clamp: $lines;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+
+		mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 	}
 }
 
