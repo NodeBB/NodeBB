@@ -6,7 +6,7 @@ const querystring = require('querystring');
 const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
-const activitypub = require('../activitypub');
+// const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const helpers = require('./helpers');
@@ -21,10 +21,10 @@ postsController.redirectToPost = async function (req, res, next) {
 
 	// Kickstart note assertion if applicable -- might not be needed, if no ill effects, remove 1 Apr 2026
 	// if (!utils.isNumber(pid) && req.uid && meta.config.activitypubEnabled) {
-	// 	const exists = await posts.exists(pid);
-	// 	if (!exists) {
-	// 		await activitypub.notes.assert(req.uid, pid);
-	// 	}
+	// const exists = await posts.exists(pid);
+	// if (!exists) {
+	// await activitypub.notes.assert(req.uid, pid);
+	// }
 	// }
 
 	if (meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(pid)) {
