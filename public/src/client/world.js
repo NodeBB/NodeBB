@@ -77,6 +77,7 @@ define('forum/world', [
 						$(listEl).append(html);
 						html.find('.timeago').timeago();
 						handleImages();
+						handleShowMoreButtons();
 						callback();
 					});
 				});
@@ -216,23 +217,32 @@ define('forum/world', [
 		}
 
 		feedEl.querySelectorAll('[component="post/content"]').forEach((el) => {
+			const initted = el.getAttribute('data-showmore');
+			if (parseInt(initted, 10) === 1) {
+				return;
+			}
+
 			if (el.clientHeight < el.scrollHeight - 1) {
 				el.parentNode.querySelector('[component="show/more"]').classList.remove('hidden');
 				el.classList.toggle('clamp-fade-6', true);
 			}
+			el.setAttribute('data-showmore', '1');
 		});
 
-		feedEl.addEventListener('click', (e) => {
-			const subselector = e.target.closest('[component="show/more"]');
-			if (subselector) {
-				const postContent = subselector.closest('.post-body').querySelector('[component="post/content"]');
-				const isShowingMore = parseInt(subselector.getAttribute('ismore'), 10) === 1;
-				postContent.classList.toggle('line-clamp-6', isShowingMore);
-				postContent.classList.toggle('clamp-fade-6', isShowingMore);
-				$(subselector).translateText(isShowingMore ? '[[world:see-more]]' : '[[world:see-less]]');
-				subselector.setAttribute('ismore', isShowingMore ? 0 : 1);
-			}
-		});
+		if (parseInt(feedEl.getAttribute('data-showmore'), 10) !== 1) {
+			feedEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[component="show/more"]');
+				if (subselector) {
+					const postContent = subselector.closest('.post-body').querySelector('[component="post/content"]');
+					const isShowingMore = parseInt(subselector.getAttribute('ismore'), 10) === 1;
+					postContent.classList.toggle('line-clamp-6', isShowingMore);
+					postContent.classList.toggle('clamp-fade-6', isShowingMore);
+					$(subselector).translateText(isShowingMore ? '[[world:see-more]]' : '[[world:see-less]]');
+					subselector.setAttribute('ismore', isShowingMore ? 0 : 1);
+				}
+			});
+			feedEl.setAttribute('data-showmore', '1');
+		}
 	}
 
 	function updateDropdowns(modified_cids, state) {
@@ -261,6 +271,7 @@ define('forum/world', [
 
 		feedEl.prepend(...html);
 		handleImages();
+		handleShowMoreButtons();
 	}
 
 	return World;
