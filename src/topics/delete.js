@@ -166,7 +166,7 @@ module.exports = function (Topics) {
 	}
 
 	async function deleteFromUserInboxes(tids) {
-		const recipients = await db.getSortedSetsMembers(tids.map(tid => `tid:${tid}:recipients`));
+		const recipients = await db.getSetsMembers(tids.map(tid => `tid:${tid}:recipients`));
 		const bulkRemove = [];
 		tids.forEach((tid, index) => {
 			const tidRecipients = recipients[index];
