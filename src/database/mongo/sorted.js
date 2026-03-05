@@ -543,7 +543,7 @@ module.exports = function (module) {
 			project.score = 1;
 		}
 
-		const match = helpers.buildMatchQuery(params.match);
+		const match = dbHelpers.globToRegex(params.match);
 		let regex;
 		try {
 			regex = new RegExp(match);
