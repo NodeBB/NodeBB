@@ -1,5 +1,6 @@
 {
     "invalid-data": "Geçersiz Veri",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Geçersiz JSON",
     "wrong-parameter-type": "\"%1\" özelliği için %3 türünde bir değer bekleniyordu, ancak bunun yerine %2 alındı",
     "required-parameters-missing": "Bu API çağrısında gerekli parametreler eksikti: %1",

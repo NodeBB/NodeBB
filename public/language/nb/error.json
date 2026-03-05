@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ugyldige data",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Ugyldig JSON",
     "wrong-parameter-type": "En verdi av typen %3 var forventet for egenskapen `%1`, men %2 ble mottatt i stedet",
     "required-parameters-missing": "Nødvendige parametere manglet fra dette API-kallet: %1",

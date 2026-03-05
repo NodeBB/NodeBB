@@ -1,5 +1,6 @@
 {
     "invalid-data": "Të dhëna të pavlefshme",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "JSON i pavlefshëm",
     "wrong-parameter-type": "Pritej një vlerë e tipit %3 për vetinë '%1', por në vend të saj u mor %2",
     "required-parameters-missing": "Parametrat e kërkuar mungonin në këtë API: %1",

@@ -1,5 +1,6 @@
 {
     "invalid-data": "无效数据",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "无效 JSON",
     "wrong-parameter-type": "属性 `%1` 要求是类型 %3 的值，却收到了 %2",
     "required-parameters-missing": "此 API 调用必需参数缺少了：%1",
@@ -32,7 +33,7 @@
     "invalid-path": "无效的路径",
     "folder-exists": "文件夹已存在",
     "invalid-pagination-value": "无效的分页数值，必须介于 %1 和 %2 之间",
-    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
+    "invalid-unread-cutoff": "无效的未读截止值，必须至少为 1 且最多为 %1",
     "username-taken": "此用户名已被占用",
     "email-taken": "邮箱地址已被注册",
     "email-nochange": "输入的邮件地址和已存档的邮件地址相同。",

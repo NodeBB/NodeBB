@@ -1,5 +1,6 @@
 {
     "invalid-data": "Սխալ տվյալ",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Անվավեր JSON",
     "wrong-parameter-type": "«%1» հատկության համար սպասվում էր %3 տիպի արժեք, բայց փոխարենը ստացվեց %2",
     "required-parameters-missing": "Պահանջվող պարամետրերը բացակայում էին այս API զանգից՝ %1",

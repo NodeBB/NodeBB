@@ -1,5 +1,6 @@
 {
     "invalid-data": "ข้อมูลไม่ถูกต้อง",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "รูปแบบ JSON ไม่ถูกต้อง",
     "wrong-parameter-type": "ต้องการข้อมูลประเภท %3 สำหรับค่า `%1` แต่ได้รับค่า %2 แทน",
     "required-parameters-missing": "ขาดพารามิเตอร์ที่จำเป็นต่อการเรียก API นี้: %1",

@@ -1,5 +1,6 @@
 {
     "invalid-data": "נתונים שגויים",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "אובייקט JSON לא תקין",
     "wrong-parameter-type": "ערך מסוג %3 היה צפוי למאפיין `%1`, אבל %2 התקבל במקום זאת",
     "required-parameters-missing": "פרמטרים נדרשים היו חסרים בקריאת API זו: %1",

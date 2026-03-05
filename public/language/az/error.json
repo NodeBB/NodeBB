@@ -1,5 +1,6 @@
 {
     "invalid-data": "Etibarsız məlumat",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Yanlış JSON",
     "wrong-parameter-type": "`%1` mülkiyyəti üçün %3 növünün dəyəri gözlənilən idi, lakin bunun əvəzinə %2 alındı",
     "required-parameters-missing": "Bu API çağırışında tələb olunan parametrlər yoxdur: %1",
