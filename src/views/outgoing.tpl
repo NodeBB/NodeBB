@@ -8,7 +8,7 @@
 			</div>
 
 			<div class="col-10 offset-1 col-md-4 offset-4 d-flex flex-column gap-3">
-				<a href="{outgoing}" rel="nofollow noopener noreferrer" class="btn btn-primary">[[notifications:continue-to, {outgoing}]]</a>
+				<a href="{outgoing}" rel="nofollow noopener noreferrer" class="btn btn-primary text-break">[[notifications:continue-to, {outgoing}]]</a>
 				<a href="#" class="btn btn-link" onclick="history.back(); return false;">[[notifications:return-to, {title}]]</a>
 			</div>
 		</div>

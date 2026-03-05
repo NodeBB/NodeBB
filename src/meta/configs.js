@@ -8,6 +8,7 @@ const winston = require('winston');
 const db = require('../database');
 const pubsub = require('../pubsub');
 const Meta = require('./index');
+const translator = require('../translator');
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults.json');
 
@@ -190,7 +191,9 @@ function ensureInteger(data, field, min) {
 	if (data.hasOwnProperty(field)) {
 		data[field] = parseInt(data[field], 10);
 		if (!(data[field] >= min)) {
-			throw new Error('[[error:invalid-data]]');
+			throw new Error(translator.compile(
+				'error:invalid-config-field-value', field, data[field]
+			));
 		}
 	}
 }
