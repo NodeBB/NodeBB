@@ -27,6 +27,7 @@ module.exports = {
 					}
 				});
 			});
+			await db.sortedSetRemoveBulk(bulkRemove);
 			await db.deleteAll(Array.from(deleteTids).map(tid => `tid:${tid}:recipients`));
 			progress.incr(uids.length);
 		}, {
