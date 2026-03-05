@@ -2,6 +2,7 @@
 
 module.exports = function (module) {
 	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 	module.flushdb = async function () {
 		await module.client.dropDatabase();
 	};
@@ -39,7 +40,7 @@ module.exports = function (module) {
 	};
 
 	module.scan = async function (params) {
-		const match = helpers.buildMatchQuery(params.match);
+		const match = dbHelpers.globToRegex(params.match);
 		return await module.client.collection('objects').distinct(
 			'_key', { _key: { $regex: new RegExp(match) } }
 		);

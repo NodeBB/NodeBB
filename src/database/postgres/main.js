@@ -2,6 +2,7 @@
 
 module.exports = function (module) {
 	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 
 	module.flushdb = async function () {
 		await module.pool.query(`DROP SCHEMA "public" CASCADE`);
@@ -84,20 +85,14 @@ module.exports = function (module) {
 	};
 
 	module.scan = async function (params) {
-		let { match } = params;
-		if (match.startsWith('*')) {
-			match = `%${match.substring(1)}`;
-		}
-		if (match.endsWith('*')) {
-			match = `${match.substring(0, match.length - 1)}%`;
-		}
+		const regex = dbHelpers.globToRegex(params.match);
 
 		const res = await module.pool.query({
 			text: `
 		SELECT o."_key"
 		FROM "legacy_object_live" o
-		WHERE o."_key" LIKE $1`,
-			values: [match],
+		WHERE o."_key" ~ $1`,
+			values: [regex],
 		});
 
 		return res.rows.map(r => r._key);
