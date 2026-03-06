@@ -3,10 +3,10 @@
 define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
 	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
-	'translator', 'quickreply',
+	'translator', 'quickreply', 'handleBack',
 ], function (infinitescroll, search, sort, hooks,
 	alerts, api, bootbox, helpers, categoryTools,
-	translator, quickreply) {
+	translator, quickreply, handleBack) {
 	const World = {};
 
 	World.init = function () {
@@ -47,6 +47,20 @@ define('forum/world', [
 			}
 		}
 
+		handleBack.init((after, handleBackCb) => {
+			loadTopicsAfter(after, 1, (payload, callback) => {
+				app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
+					const listEl = document.getElementById('world-feed');
+					$(listEl).append(html);
+					html.find('.timeago').timeago();
+					handleImages();
+					handleShowMoreButtons();
+					callback();
+					handleBackCb();
+				});
+			});
+		}, { container: '#world-feed' });
+
 		search.enableQuickSearch({
 			searchElements: {
 				inputEl: $('[component="category-search"]'),
@@ -65,6 +79,10 @@ define('forum/world', [
 		if (!config.usePagination) {
 			infinitescroll.init((direction) => {
 				const posts = Array.from(document.querySelectorAll('[component="category/topic"]'));
+				if (!posts.length) {
+					return;
+				}
+
 				const afterEl = direction > 0 ? posts.pop() : posts.shift();
 				const after = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
 				if (after < config.topicsPerPage) {
@@ -74,7 +92,7 @@ define('forum/world', [
 				loadTopicsAfter(after, direction, (payload, callback) => {
 					app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
 						const listEl = document.getElementById('world-feed');
-						$(listEl).append(html);
+						$(listEl)[direction === -1 ? 'prepend' : 'append'](html);
 						html.find('.timeago').timeago();
 						handleImages();
 						handleShowMoreButtons();
