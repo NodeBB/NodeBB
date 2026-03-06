@@ -40,9 +40,19 @@ module.exports = function (module) {
 
 	module.scan = async function (params) {
 		const match = dbHelpers.globToRegex(params.match);
-		return await module.client.collection('objects').distinct(
-			'_key', { _key: { $regex: new RegExp(match) } }
-		);
+		const cursor = await module.client.collection('objects').find({
+			_key: { $regex: new RegExp(match) },
+		}, {
+			projection: { _id: 0, _key: 1 },
+		}).batchSize(params.batch || 1000);
+		const found = new Set();
+		// eslint-disable-next-line no-await-in-loop
+		while (await cursor.hasNext()) {
+			// eslint-disable-next-line no-await-in-loop
+			const item = await cursor.next();
+			found.add(item._key);
+		}
+		return Array.from(found);
 	};
 
 	module.delete = async function (key) {

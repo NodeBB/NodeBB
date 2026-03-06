@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
+	const Cursor = require('pg-cursor');
 	const helpers = require('./helpers');
 	const dbHelpers = require('../helpers');
 
@@ -85,17 +86,43 @@ module.exports = function (module) {
 	};
 
 	module.scan = async function (params) {
-		const regex = dbHelpers.globToRegex(params.match);
+		const match = dbHelpers.globToRegex(params.match);
+		const batchSize = params.batch || 1000;
+		const found = new Set();
 
-		const res = await module.pool.query({
-			text: `
-		SELECT o."_key"
-		FROM "legacy_object_live" o
-		WHERE o."_key" ~ $1`,
-			values: [regex],
-		});
+		const client = await module.pool.connect();
 
-		return res.rows.map(r => r._key);
+		const cursor = client.query(new Cursor(`
+			SELECT "_key"
+			FROM "legacy_object_live"
+			WHERE "_key" ~ $1
+		`, [match]));
+
+		try {
+			const fetchRows = () => {
+				return new Promise((resolve, reject) => {
+					cursor.read(batchSize, (err, rows) => {
+						if (err) return reject(err);
+						resolve(rows);
+					});
+				});
+			};
+
+			let rows;
+			do {
+				// eslint-disable-next-line no-await-in-loop
+				rows = await fetchRows();
+				for (const row of rows) {
+					found.add(row._key);
+				}
+			} while (rows.length > 0);
+		} finally {
+			cursor.close(() => {
+				client.release();
+			});
+		}
+
+		return Array.from(found);
 	};
 
 	module.delete = async function (key) {
