@@ -48,13 +48,13 @@
 
 	"settings.page-title": "%1 הגדרות",
 
-	"section-federation": "Federation",
-	"federation/general": "General",
-	"federation/content": "Content",
-	"federation/rules": "Categorization",
-	"federation/relays": "Relays",
-	"federation/pruning": "Storage",
-	"federation/safety": "Trust & Safety",
+	"section-federation": "פדרציה",
+	"federation/general": "כללי",
+	"federation/content": "תוכן",
+	"federation/rules": "סיווג",
+	"federation/relays": "ממסרים",
+	"federation/pruning": "אחסון",
+	"federation/safety": "אמון ובטיחות",
 
 	"section-appearance": "מראה חיצוני",
 	"appearance/themes": "ערכות נושא",

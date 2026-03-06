@@ -40,7 +40,7 @@
 	"default-avatar": "Benutzerdefinierter Standardavatar",
 	"upload": "Hochladen",
 	"profile-image-dimension": "Profilbild-Abmessungen",
-	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
+	"profile-image-dimension-help": "(in Pixeln, Standard: 2000 Pixel)",
 	"max-profile-image-size": "Maximale Profibild-Dateigröße",
 	"max-profile-image-size-help": "(In Kibibytes, Standardmäßig 256 KiB)",
 	"max-cover-image-size": "Maximale Deckbild-Dateigröße",

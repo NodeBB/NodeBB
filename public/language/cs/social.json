@@ -1,14 +1,14 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook",
-	"sign-in-with-linkedin": "Sign in with LinkedIn",
-	"sign-up-with-linkedin": "Sign up with LinkedIn",
-	"sign-in-with-wordpress": "Sign in with WordPress",
-	"sign-up-with-wordpress": "Sign up with WordPress"
+	"sign-in-with-twitter": "Přihlásit se pomocí Twitteru",
+	"sign-up-with-twitter": "Registrovat se pomocí Twitteru",
+	"sign-in-with-github": "Přihlásit se pomoci Github",
+	"sign-up-with-github": "Registrovat se pomocí Github",
+	"sign-in-with-google": "Přihlásit se pomocí Google",
+	"sign-up-with-google": "Registrovat se pomocí Google",
+	"log-in-with-facebook": "Přihlásit se pomocí Facebooku",
+	"continue-with-facebook": "Pokračovat pomocí Facebooku",
+	"sign-in-with-linkedin": "Přihlásit se pomocí LinkedIn",
+	"sign-up-with-linkedin": "Registrovat se pomocí LinkedIn",
+	"sign-in-with-wordpress": "Přihlásit se pomocí WordPressu",
+	"sign-up-with-wordpress": "Registrovat se pomocí WordPressu"
 }

@@ -55,7 +55,7 @@
 	"inactive.12-months": "12 Mesi",
 
 	"users.uid": "id utente",
-	"users.user-id": "User ID",
+	"users.user-id": "ID utente",
 	"users.username": "username",
 	"users.email": "email",
 	"users.no-email": "(nessuna email)",
@@ -64,7 +64,7 @@
 	"users.validation-pending": "Validazione in sospeso",
 	"users.validation-expired": "Convalida scaduta",
 	"users.ip": "IP",
-	"users.recent-ips": "Recent IPs",
+	"users.recent-ips": "IP recenti",
 	"users.postcount": "numero di post",
 	"users.reputation": "reputazione",
 	"users.flags": "segnalazioni",

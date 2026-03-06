@@ -48,13 +48,13 @@
 
 	"settings.page-title": "Réglages %1",
 
-	"section-federation": "Federation",
-	"federation/general": "General",
-	"federation/content": "Content",
-	"federation/rules": "Categorization",
-	"federation/relays": "Relays",
-	"federation/pruning": "Storage",
-	"federation/safety": "Trust & Safety",
+	"section-federation": "Fédération",
+	"federation/general": "Général",
+	"federation/content": "Contenu",
+	"federation/rules": "Catégorisation",
+	"federation/relays": "Relais",
+	"federation/pruning": "Stockage",
+	"federation/safety": "Fiabilité et sécurité",
 
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",

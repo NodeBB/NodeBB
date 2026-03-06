@@ -1,6 +1,6 @@
 {
     "invalid-data": "Dati non validi",
-    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
+    "invalid-config-field-value": "Valore non valido per il campo di configurazione \"%1\": %2",
     "invalid-json": "JSON non valido",
     "wrong-parameter-type": "Era previsto un valore di tipo %3 per la proprietà '%1', ma invece è stato ricevuto %2",
     "required-parameters-missing": "I parametri richiesti sono mancanti in questa chiamata API: %1",

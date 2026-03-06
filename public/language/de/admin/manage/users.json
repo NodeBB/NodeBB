@@ -55,7 +55,7 @@
 	"inactive.12-months": "12 Monate",
 
 	"users.uid": "UID",
-	"users.user-id": "User ID",
+	"users.user-id": "Benutzer-ID",
 	"users.username": "Nutzername",
 	"users.email": "E-Mail",
 	"users.no-email": "(keine Email)",
@@ -64,7 +64,7 @@
 	"users.validation-pending": "Bestätigung ausstehend",
 	"users.validation-expired": "Bestätigung abgelaufen",
 	"users.ip": "IP",
-	"users.recent-ips": "Recent IPs",
+	"users.recent-ips": "Aktuelle IPs",
 	"users.postcount": "Anzahl der Beiträge",
 	"users.reputation": "Ansehen",
 	"users.flags": "Meldungen",

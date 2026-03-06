@@ -55,7 +55,7 @@
 	"inactive.12-months": "12 месеца",
 
 	"users.uid": "потр. ид.",
-	"users.user-id": "User ID",
+	"users.user-id": "Потребителски ИД",
 	"users.username": "потребителско име",
 	"users.email": "е-поща",
 	"users.no-email": "(няма е-поща)",
@@ -64,7 +64,7 @@
 	"users.validation-pending": "Очаква потвърждение",
 	"users.validation-expired": "Изтекла давност на потвърждението",
 	"users.ip": "IP адрес",
-	"users.recent-ips": "Recent IPs",
+	"users.recent-ips": "Скорошни IP адреси",
 	"users.postcount": "брой публикации",
 	"users.reputation": "репутация",
 	"users.flags": "доклади",

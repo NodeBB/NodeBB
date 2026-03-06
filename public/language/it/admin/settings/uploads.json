@@ -40,7 +40,7 @@
 	"default-avatar": "Personalizzazione Predefinita Avatar",
 	"upload": "Carica",
 	"profile-image-dimension": "Dimensione Immagine del profilo",
-	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
+	"profile-image-dimension-help": "(in pixel, predefinito: 200 pixel)",
 	"max-profile-image-size": "Dimensione Massima Immagine del Profile",
 	"max-profile-image-size-help": "(in kibibytes, predefinito: 256 KiB)",
 	"max-cover-image-size": "Dimensione massima dell'immagine di copertina",

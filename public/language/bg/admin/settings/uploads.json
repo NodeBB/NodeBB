@@ -40,7 +40,7 @@
 	"default-avatar": "Персонализирано изображение по подразбиране",
 	"upload": "Качване",
 	"profile-image-dimension": "Размер на профилното изображение",
-	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
+	"profile-image-dimension-help": "(в пиксели; по подразбиране: 200 пиксела)",
 	"max-profile-image-size": "Максимален файлов размер на профилното изображение",
 	"max-profile-image-size-help": "(в кибибайтове; по подразбиране: 256 КиБ)",
 	"max-cover-image-size": "Максимален файлов размер на изображението на корицата",

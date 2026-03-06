@@ -55,7 +55,7 @@
 	"select-category": "בחרו קטגוריה",
 	"set-parent-category": "הגדרת קטגוריית אב",
 
-	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
+	"privileges.description": "בסעיף זה ניתן להגדיר את הרשאות הגישה עבור חלקים באתר. ניתן להעניק הרשאות על בסיס משתמש או על בסיס קבוצה.",
 	"privileges.category-selector": "הגדרת הרשאות עבור",
 	"privileges.warning": "<strong>הערה</strong>: הגדרות ההרשאות נכנסות לתוקף באופן מיידי. אין צורך לשמור את הקטגוריה לאחר התאמת הגדרות אלה.",
 	"privileges.section-viewing": "הרשאות צפייה",

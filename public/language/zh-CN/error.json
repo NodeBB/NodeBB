@@ -1,6 +1,6 @@
 {
     "invalid-data": "无效数据",
-    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
+    "invalid-config-field-value": "配置字段“%1”的值无效：%2",
     "invalid-json": "无效 JSON",
     "wrong-parameter-type": "属性 `%1` 要求是类型 %3 的值，却收到了 %2",
     "required-parameters-missing": "此 API 调用必需参数缺少了：%1",

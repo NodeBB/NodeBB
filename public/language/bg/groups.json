@@ -1,9 +1,9 @@
 {
-    "group": "Group",
+    "group": "Група",
     "all-groups": "Всички групи",
     "groups": "Групи",
     "members": "Членове",
-    "x-members": "%1 member(s)",
+    "x-members": "%1 член(ове)",
     "view-group": "Преглед на групата",
     "owner": "Собственик на групата",
     "new-group": "Създаване на нова група",

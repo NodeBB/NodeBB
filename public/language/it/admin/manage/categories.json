@@ -55,7 +55,7 @@
 	"select-category": "Seleziona Categoria",
 	"set-parent-category": "Imposta la Categoria Padre",
 
-	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
+	"privileges.description": "In questa sezione è possibile configurare i privilegi di controllo degli accessi per alcune parti del sito. I privilegi possono essere concessi per singolo utente o per gruppo.",
 	"privileges.category-selector": "Configura privilegi per",
 	"privileges.warning": "<strong>Nota</strong>: Le impostazioni dei privilegi hanno effetto immediato. Non è necessario salvare la categoria dopo aver regolato queste impostazioni.",
 	"privileges.section-viewing": "Visualizzazione dei Privilegi",

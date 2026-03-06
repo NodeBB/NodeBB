@@ -46,9 +46,9 @@
 	"server.filter-help-hostname": "请在下面输入实例主机名（如 <code>example.org</code> ），中间用换行符隔开。",
 	"server.filter-allow-list": "将其用作允许列表",
 
-	"content.outgoing": "Outgoing",
-	"content.summary-limit": "Character count after which a summary is generated",
-	"content.summary-limit-help": "When content is federated out that exceeds this character count, a <code>summary</code> is generated, comprising of all complete sentences prior to this limit. (Default: 500)",
-	"content.break-string": "Note/Article Delimiter",
-	"content.break-string-help": "This delimiter can be manually inserted by power users when composing new topics. It instructs NodeBB to use content up until that point as part of the <code>summary</code>. If this string is not used, then the character count fallback applies. (Default: <code>[...]</code>)"
+	"content.outgoing": "外部",
+	"content.summary-limit": "生成摘要后的字符计数",
+	"content.summary-limit-help": "当联合输出内容超过此字符限制时，将生成 <code>摘要</code> ，包含该限制前的所有完整句子。（默认值：500）",
+	"content.break-string": "注释/文章分隔符",
+	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)"
 }

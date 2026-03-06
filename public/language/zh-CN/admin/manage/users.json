@@ -55,7 +55,7 @@
 	"inactive.12-months": "12个月",
 
 	"users.uid": "UID",
-	"users.user-id": "User ID",
+	"users.user-id": "用户 ID",
 	"users.username": "用户名",
 	"users.email": "电子邮件",
 	"users.no-email": "（没有邮箱）",
@@ -64,7 +64,7 @@
 	"users.validation-pending": "等待验证",
 	"users.validation-expired": "验证过期",
 	"users.ip": "IP",
-	"users.recent-ips": "Recent IPs",
+	"users.recent-ips": "最近访问 IP",
 	"users.postcount": "发帖数",
 	"users.reputation": "声望",
 	"users.flags": "举报",
