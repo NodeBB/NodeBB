@@ -8,9 +8,17 @@ define('handleBack', [
 ], function (components, storage, navigator, pagination) {
 	const handleBack = {};
 	let loadTopicsMethod;
+	const elements = new Map();
+	const defaults = new Map([
+		['container', '[component="category"]'],
+	]);
 
-	handleBack.init = function (_loadTopicsMethod) {
+	handleBack.init = function (_loadTopicsMethod, _elements = {}) {
 		loadTopicsMethod = _loadTopicsMethod;
+		['container'].forEach((prop) => {
+			elements.set(prop, _elements[prop] || defaults.get(prop));
+		});
+
 		saveClickedIndex();
 		$(window).off('action:popstate', onBackClicked).on('action:popstate', onBackClicked);
 	};
@@ -18,10 +26,10 @@ define('handleBack', [
 	handleBack.onBackClicked = onBackClicked;
 
 	function saveClickedIndex() {
-		$('[component="category"]').on('click', '[component="topic/header"]', function () {
-			const clickedIndex = $(this).parents('[data-index]').attr('data-index');
+		$(elements.get('container')).on('click', '[data-index]', function () {
+			const clickedIndex = $(this).attr('data-index');
 			const windowScrollTop = $(window).scrollTop();
-			$('[component="category/topic"]').each(function (index, el) {
+			$(elements.get('container')).find('[data-index]').each(function (index, el) {
 				if ($(el).offset().top - windowScrollTop > 0) {
 					storage.setItem('category:bookmark', $(el).attr('data-index'));
 					storage.setItem('category:bookmark:clicked', clickedIndex);
@@ -38,6 +46,7 @@ define('handleBack', [
 			ajaxify.data.template.category ||
 			ajaxify.data.template.recent ||
 			ajaxify.data.template.popular ||
+			ajaxify.data.template.world ||
 			highlightUnread
 		) {
 			let bookmarkIndex = storage.getItem('category:bookmark');
@@ -67,7 +76,7 @@ define('handleBack', [
 					return;
 				}
 
-				$('[component="category"]').empty();
+				$(elements.get('container')).empty();
 				loadTopicsMethod(Math.max(0, bookmarkIndex - 1) + 1, function () {
 					handleBack.scrollToTopic(bookmarkIndex, clickedIndex);
 				});
