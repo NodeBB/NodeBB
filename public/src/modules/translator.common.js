@@ -254,7 +254,7 @@ module.exports = function (utils, load, warn) {
 				}
 
 				const argsToTranslate = args.map(function (arg) {
-					return self.translate(escapeHTML(arg));
+					return self.translate(escapeHTML(`\u2068${arg}\u2069`));
 				});
 
 				return Promise.all(argsToTranslate).then(function (translatedArgs) {
