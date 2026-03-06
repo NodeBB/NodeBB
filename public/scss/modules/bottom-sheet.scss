@@ -9,21 +9,22 @@
 			inset: auto 0 0 0!important;
 
 			margin: 0 -1px -1px -1px;
-			padding: $spacer * 0.25 !important;
-			max-height: clamp(600px, 80dvh, 90dvh);
-
+			max-height: 100dvh!important;
 			box-shadow: 0 2px 6px rgba(0,0,0,0.35);
 			overflow: auto;
 			-webkit-overflow-scrolling: touch;
 			transform: translate3d(0, 100%, 0);
 			transition: transform 0.3s, visibility 0s 0.3s;
 			z-index: $zindex-popover;
-			padding: 5px 0 10px;
+			padding: $spacer * 0.25 !important;
 
 			border-radius: 0;
 			border: 0px;
 			border-top: 1px solid $border-color;
 
+			> ul {
+				max-height: clamp(300px, 60dvh, 100dvh)!important;
+			}
 			> li {
 				> a, .dropdown-item {
 					padding: 10px 20px;
