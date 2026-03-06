@@ -10,7 +10,7 @@
 		<div component="topic/thumb/list" class="position-absolute end-0 bottom-0 p-3 d-flex gap-2  pe-none {{{ if greaterthan(./topic.thumbs.length, "4") }}}thumbs-collapsed{{{ end }}}">
 			{{{ each ./topic.thumbs }}}
 			{{{ if (@index != 0) }}}
-			<img class="rounded-1" style="max-height: 64px; object-fit: contain;" src="{./url}">
+			<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{./url}">
 			{{{ end }}}
 			{{{ end }}}
 			{{{ if greaterthan(./topic.thumbs.length, "4") }}}
