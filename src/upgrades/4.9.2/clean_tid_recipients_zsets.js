@@ -17,19 +17,44 @@ module.exports = {
 			);
 
 			const bulkRemove = [];
-			const deleteTids = new Set();
 			uids.forEach((uid, index) => {
 				const userTids = userInboxes[index];
 				userTids.forEach((tid, tidIndex) => {
 					if (!exists[index][tidIndex]) {
 						bulkRemove.push([`uid:${uid}:inbox`, tid]);
-						deleteTids.add(tid);
 					}
 				});
 			});
 			await db.sortedSetRemoveBulk(bulkRemove);
-			await db.deleteAll(Array.from(deleteTids).map(tid => `tid:${tid}:recipients`));
+
 			progress.incr(uids.length);
+		}, {
+			batch: 500,
+		});
+
+
+		const tidKeys = await db.scan({ match: 'tid:*:recipients' });
+		progress.total = tidKeys.length;
+		progress.current = 0;
+		progress.counter = 0;
+		await batch.processArray(tidKeys, async (keys) => {
+			const tids = [];
+			keys.forEach((key) => {
+				const tid = key.split(':')[1];
+				if (tid) {
+					tids.push(tid);
+				}
+			});
+			const exists = await db.exists(tids.map(tid => `topic:${tid}`));
+			const bulkDelete = [];
+			tids.forEach((tid, index) => {
+				if (!exists[index]) {
+					bulkDelete.push(`tid:${tid}:recipients`);
+				}
+			});
+			await db.deleteAll(bulkDelete);
+
+			progress.incr(keys.length);
 		}, {
 			batch: 500,
 		});
