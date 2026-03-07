@@ -23,7 +23,7 @@
 							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">hit ratio</a></th>
 							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">hits/sec</a></th>
 							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">ttl</a></th>
-							<th></td>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody class="text-xs text-tabular">

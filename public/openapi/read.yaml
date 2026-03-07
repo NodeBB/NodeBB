@@ -186,6 +186,8 @@ paths:
     $ref: 'read/admin/advanced/cache.yaml'
   /api/admin/advanced/cache/dump:
     $ref: 'read/admin/advanced/cache/dump.yaml'
+  /api/admin/advanced/jobs:
+    $ref: 'read/admin/advanced/jobs.yaml'
   /api/admin/development/logger:
     $ref: 'read/admin/development/logger.yaml'
   /api/admin/development/info:

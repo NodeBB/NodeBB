@@ -1,0 +1,33 @@
+get:
+  tags:
+    - admin
+  summary: Get cron job info
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  jobs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        cronTime:
+                          type: string
+                        cronTimeHuman:
+                          type: string
+                        nextRun:
+                          type: integer
+                        nextRunISO:
+                          type: integer
+                        duration:
+                          type: integer
+                        durationReadable:
+                          type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

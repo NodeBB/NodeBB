@@ -3,7 +3,6 @@
 
 const async = require('async');
 const winston = require('winston');
-const cron = require('cron').CronJob;
 const nconf = require('nconf');
 const _ = require('lodash');
 
@@ -18,6 +17,7 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const emailer = require('./emailer');
 const ttlCache = require('./cache/ttl');
+const cron = require('./cron');
 
 const Notifications = module.exports;
 
@@ -73,9 +73,13 @@ Notifications.getAllNotificationTypes = async function () {
 	return results.types.concat(results.privilegedTypes);
 };
 
-Notifications.startJobs = function () {
+Notifications.startJobs = async function () {
 	winston.verbose('[notifications.init] Registering jobs.');
-	new cron('*/30 * * * *', Notifications.prune, null, true);
+	await cron.addJob({
+		name: 'notifications:prune',
+		cronTime: '*/30 * * * *',
+		onTick: Notifications.prune,
+	});
 };
 
 Notifications.get = async function (nid) {
