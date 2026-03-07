@@ -78,6 +78,7 @@
 	"advanced/logs": "Logs",
 	"advanced/errors": "Fouten",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Logger",
 	"development/info": "Informatie",
 

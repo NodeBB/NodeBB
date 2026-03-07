@@ -78,6 +78,7 @@
 	"advanced/logs": "Журнали",
 	"advanced/errors": "Грешки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Журнал",
 	"development/info": "Информация",
 

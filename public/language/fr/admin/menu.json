@@ -78,6 +78,7 @@
 	"advanced/logs": "Journaux",
 	"advanced/errors": "Erreurs",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Réglages journalisation",
 	"development/info": "Info",
 

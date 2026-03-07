@@ -78,6 +78,7 @@
 	"advanced/logs": "로그",
 	"advanced/errors": "오류",
 	"advanced/cache": "캐시",
+	"advanced/jobs": "Jobs",
 	"development/logger": "로거",
 	"development/info": "정보",
 

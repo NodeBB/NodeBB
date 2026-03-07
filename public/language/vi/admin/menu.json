@@ -78,6 +78,7 @@
 	"advanced/logs": "Nhật ký",
 	"advanced/errors": "Lỗi",
 	"advanced/cache": "Bộ nhớ đệm",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Ghi nhật ký",
 	"development/info": "Thông tin",
 

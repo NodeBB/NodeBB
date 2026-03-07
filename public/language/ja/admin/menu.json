@@ -78,6 +78,7 @@
 	"advanced/logs": "ログ",
 	"advanced/errors": "エラー",
 	"advanced/cache": "キャッシュ",
+	"advanced/jobs": "Jobs",
 	"development/logger": "ロガー",
 	"development/info": "情報",
 

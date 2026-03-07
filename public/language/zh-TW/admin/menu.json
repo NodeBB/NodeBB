@@ -78,6 +78,7 @@
 	"advanced/logs": "日誌",
 	"advanced/errors": "錯誤",
 	"advanced/cache": "快取",
+	"advanced/jobs": "Jobs",
 	"development/logger": "記錄器",
 	"development/info": "資訊",
 
