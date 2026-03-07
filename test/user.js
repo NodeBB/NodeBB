@@ -2297,14 +2297,12 @@ describe('User', () => {
 	});
 
 	describe('user jobs', () => {
-		it('should start user jobs', (done) => {
-			User.startJobs();
-			done();
+		it('should start user jobs', async () => {
+			await User.startJobs();
 		});
 
-		it('should stop user jobs', (done) => {
+		it('should stop user jobs', async () => {
 			User.stopJobs();
-			done();
 		});
 
 		it('should send digest', (done) => {

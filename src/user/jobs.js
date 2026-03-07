@@ -42,7 +42,7 @@ module.exports = function (User) {
 	};
 
 	async function startDigestJob(name, cronString, term) {
-		jobs[name] = await cron.addJob({
+		const newJob = await cron.addJob({
 			name,
 			cronTime: cronString,
 			onTick: async () => {
@@ -56,19 +56,25 @@ module.exports = function (User) {
 				await User.digest.execute({ interval: term });
 			},
 		});
+		if (newJob) {
+			jobs[name] = newJob;
+		}
 	}
 
 	User.stopJobs = function () {
 		let terminated = 0;
 		// Terminate any active cron jobs
-		for (const jobId of Object.keys(jobs)) {
-			winston.verbose(`[user/jobs] Terminating job (${jobId})`);
-			jobs[jobId].stop();
-			delete jobs[jobId];
+		for (const [name, job] of Object.entries(jobs)) {
+			winston.info(`[user/jobs] Terminating job (${name})`);
+			if (job) {
+				job.stop();
+				delete jobs[name];
+			}
+
 			terminated += 1;
 		}
 		if (terminated > 0) {
-			winston.verbose(`[user/jobs] ${terminated} jobs terminated`);
+			winston.info(`[user/jobs] ${terminated} jobs terminated`);
 		}
 	};
 };
