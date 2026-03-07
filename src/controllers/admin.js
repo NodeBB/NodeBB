@@ -25,6 +25,7 @@ const adminController = {
 	errors: require('./admin/errors'),
 	database: require('./admin/database'),
 	cache: require('./admin/cache'),
+	jobs: require('./admin/jobs'),
 	plugins: require('./admin/plugins'),
 	settings: require('./admin/settings'),
 	logger: require('./admin/logger'),

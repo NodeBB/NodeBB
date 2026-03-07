@@ -74,6 +74,7 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/advanced/errors`, middlewares, controllers.admin.errors.get);
 	helpers.setupAdminPageRoute(app, `/${name}/advanced/errors/export`, middlewares, controllers.admin.errors.export);
 	helpers.setupAdminPageRoute(app, `/${name}/advanced/cache`, middlewares, controllers.admin.cache.get);
+	helpers.setupAdminPageRoute(app, `/${name}/advanced/jobs`, middlewares, controllers.admin.jobs.get);
 
 	helpers.setupAdminPageRoute(app, `/${name}/development/logger`, middlewares, controllers.admin.logger.get);
 	helpers.setupAdminPageRoute(app, `/${name}/development/info`, middlewares, controllers.admin.info.get);
