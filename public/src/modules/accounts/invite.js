@@ -19,7 +19,7 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox', 'alerts'], function (
 						buttons: {
 							cancel: {
 								label: `[[${isACP() ? 'admin/manage/users:alerts.button-cancel' : 'modules:bootbox.cancel'}]]`,
-								className: 'btn-default',
+								className: 'btn-light',
 							},
 							invite: {
 								label: `[[${isACP() ? 'admin/manage/users:invite' : 'users:invite'}]]`,

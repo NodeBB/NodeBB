@@ -252,7 +252,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				buttons: {
 					noIcon: {
 						label: 'No Icon',
-						className: 'btn-default',
+						className: 'btn-light',
 						callback: function () {
 							el.removeClass(selected.icon);
 							for (const style of selected.styles) {
