@@ -1,5 +1,5 @@
 
-<div class="post-cache settings d-flex flex-column gap-2 px-lg-4">
+<div class="d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/advanced/jobs:jobs]]</h4>

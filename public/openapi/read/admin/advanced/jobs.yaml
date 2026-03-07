@@ -30,4 +30,6 @@ get:
                           type: integer
                         durationReadable:
                           type: string
+                        running:
+                          type: boolean
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
