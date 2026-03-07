@@ -43,20 +43,15 @@ exports.addJob = async function (options) {
 	const job = new CronJob(cronTime, async function () {
 		const start = Date.now();
 		try {
-			await db.setObject(`cronJob:${name}`, {
-				running: true,
-			});
+			await db.setObjectField(`cronJob:${name}`, 'running', 1);
 			await onTick();
 			await db.deleteObjectField(`cronJob:${name}`, 'lastError');
 		} catch (err) {
 			winston.error(`[cron] ${err.stack}`);
-			await db.setObject(`cronJob:${name}`, {
-				lastError: err.stack,
-				running: false,
-			});
+			await db.setObjectField(`cronJob:${name}`, 'lastError', err.stack);
 		} finally {
 			await db.setObject(`cronJob:${name}`, {
-				running: false,
+				running: 0,
 				duration: Date.now() - start,
 				nextRun: job.nextDate().toMillis(),
 			});
@@ -71,6 +66,7 @@ exports.addJob = async function (options) {
 		cronTime,
 		cronTimeHuman: cronstrue.toString(cronTime),
 		nextRun: job.nextDate().toMillis(),
+		running: runOnInit ? 1 : 0,
 	});
 	winston.verbose(`[cron/jobs] Registered job: ${name} (${cronTime})`);
 	return job;
@@ -81,6 +77,7 @@ exports.getJobs = async function () {
 	const jobs = await db.getObjects(jobNames.map(name => `cronJob:${name}`));
 	jobs.forEach((job) => {
 		if (job) {
+			job.running = parseInt(job.running, 10) === 1;
 			job.duration = job.duration || 0;
 			job.durationReadable = formatDuration(job.duration);
 			job.nextRunISO = utils.toISOString(job.nextRun);
