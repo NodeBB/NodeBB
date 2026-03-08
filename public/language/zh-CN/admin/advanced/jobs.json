@@ -1,8 +1,8 @@
 {
-	"jobs": "Jobs",
-	"job-name": "Job Name",
-	"schedule": "Schedule",
-	"next-run": "Next Run",
-	"last-duration": "Last Duration",
-	"running": "Running"
+	"jobs": "任务",
+	"job-name": "任务名",
+	"schedule": "调度",
+	"next-run": "下次执行",
+	"last-duration": "上次持续时间",
+	"running": "执行中"
 }

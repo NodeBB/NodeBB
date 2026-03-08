@@ -1,8 +1,8 @@
 {
-	"jobs": "Jobs",
-	"job-name": "Job Name",
-	"schedule": "Schedule",
-	"next-run": "Next Run",
-	"last-duration": "Last Duration",
-	"running": "Running"
+	"jobs": "משימות",
+	"job-name": "שם משימה",
+	"schedule": "לוח זמנים",
+	"next-run": "ריצה הבאה",
+	"last-duration": "זמן ביצוע אחרון",
+	"running": "בהרצה"
 }
