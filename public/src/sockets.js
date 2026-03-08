@@ -42,25 +42,10 @@ app = window.app || {};
 			}]);
 		});
 	};
-	let hasInteracted = false;
 
-	function onInteraction() {
-		if (!hasInteracted && parseInt(app.user.uid, 10) >= 0) {
-			hasInteracted = true;
-			addHandlers();
-			socket.connect();
-			document.removeEventListener('mousemove', onInteraction);
-			document.removeEventListener('keydown', onInteraction);
-			document.removeEventListener('touchstart', onInteraction);
-		}
-	}
-	if (location.pathname.startsWith(config.relative_path + '/admin')) {
+	if (parseInt(app.user.uid, 10) >= 0) {
 		addHandlers();
 		socket.connect();
-	} else {
-		document.addEventListener('mousemove', onInteraction);
-		document.addEventListener('keydown', onInteraction);
-		document.addEventListener('touchstart', onInteraction);
 	}
 
 	window.app.reconnect = (showAlert = false) => {
