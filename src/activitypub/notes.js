@@ -218,6 +218,15 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				post.toPid = urlMap.get(post.toPid);
 			}
 
+			// Filter image attachments out if they are in content
+			const { attachment } = post._activitypub;
+			if (attachment && attachment.length) {
+				post._activitypub.attachment = attachment.filter((attachment) => {
+					const inContent = attachment.type === 'Image' && (post.sourceContent || post.content).includes(attachment.url);
+					return !inContent;
+				});
+			}
+
 			return post;
 		}).filter((p, idx) => !exists[idx]);
 		const count = unprocessed.length;
