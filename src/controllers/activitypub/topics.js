@@ -86,7 +86,7 @@ controller.list = async function (req, res) {
 		posts.hasBookmarked(mainPids, req.uid),
 	]);
 
-	const thumbs = await topics.thumbs.load(topicData);
+	const thumbs = await topics.thumbs.load(topicData, { thumbsOnly: 1 });
 	const tidToThumbs = _.zipObject(uniqTids, thumbs);
 	const teasers = await topics.getTeasers(postData.map(p => p.topic), { uid: req.uid });
 	postData.forEach((p, index) => {
