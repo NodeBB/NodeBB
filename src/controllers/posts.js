@@ -27,7 +27,7 @@ postsController.redirectToPost = async function (req, res, next) {
 	// }
 	// }
 
-	if (meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(pid)) {
+	if (!req.loggedIn && meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(pid)) {
 		return helpers.redirect(res, `/outgoing?url=${encodeURIComponent(pid)}`);
 	}
 
