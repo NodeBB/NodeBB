@@ -386,7 +386,8 @@ define('forum/topic/postTools', [
 			return slug;
 		}
 		const post = button.parents('[data-pid]');
-		if (post.length && !post.hasClass('self-post')) {
+		const isSelfPost = post.hasClass('self-post');
+		if (post.length) {
 			slug = slugify(post.attr('data-username'), true);
 			if (!slug) {
 				if (post.attr('data-uid') !== '0') {
@@ -396,7 +397,7 @@ define('forum/topic/postTools', [
 				}
 			}
 			if (slug && slug !== '[[global:former-user]]' && slug !== '[[global:guest]]') {
-				slug = '@' + slug;
+				slug = isSelfPost ? slug : `@${slug}`;
 			}
 		}
 
