@@ -63,6 +63,12 @@ define('share', ['hooks'], function (hooks) {
 			return openShare(linkedin_url, postUrl, 626, 436);
 		});
 
+		addHandler('[component="share/mastodon"]', function () {
+			const postUrl = getPostUrl($(this));
+			const mastodon_url = `https://share.joinmastodon.org/#text=${encodeURIComponent(postUrl)}`;
+			return openShare(mastodon_url, postUrl, 626, 760);
+		});
+
 		hooks.fire('action:share.addHandlers', { openShare: openShare });
 	};
 
