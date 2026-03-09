@@ -94,43 +94,30 @@ module.exports = function (module) {
 	};
 
 	module.setRemove = async function (key, value) {
-		if (!Array.isArray(value)) {
-			value = [value];
-		}
-
-		value = value.map(v => helpers.valueToString(v));
-
-		const coll = module.client.collection('objects');
-		await coll.updateMany({
-			_key: Array.isArray(key) ? { $in: key } : key,
-		}, {
-			$pullAll: { members: value },
-		});
-
-		await coll.deleteMany({
-			_key: Array.isArray(key) ? { $in: key } : key,
-			members: { $size: 0 },
-		});
+		await bulkSetRemove(key, value);
 	};
 
 	module.setsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		value = helpers.valueToString(value);
-
-		const coll = module.client.collection('objects');
-		await coll.updateMany({
-			_key: { $in: keys },
-		}, {
-			$pull: { members: value },
-		});
-
-		await coll.deleteMany({
-			_key: { $in: keys },
-			members: { $size: 0 },
-		});
+		await bulkSetRemove(keys, value);
 	};
+
+	async function bulkSetRemove(key, values) {
+		const isKeyArray = Array.isArray(key);
+		if (!key || (isKeyArray && !key.length)) return;
+
+		const filterKey = isKeyArray ? { $in: key } : key;
+		const update = Array.isArray(values) ?
+			{ $pullAll: { members: values.map(helpers.valueToString) } } :
+			{ $pull: { members: helpers.valueToString(values) } };
+
+		await module.client.collection('objects').bulkWrite([
+			{ updateMany: { filter: { _key: filterKey }, update: update } },
+			{ deleteMany: { filter: { _key: filterKey, members: { $size: 0 } } } },
+		], { ordered: true });
+	}
 
 	module.isSetMember = async function (key, value) {
 		if (!key) {
