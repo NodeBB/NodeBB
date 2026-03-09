@@ -95,7 +95,7 @@ define('forum/header/unread', ['hooks'], function (hooks) {
 		// harmony uses BS5 absolute positioned element
 		navLink.find('[component="navigation/count"]')
 			.toggleClass('hidden', count <= 0)
-			.text(count);
+			.text(countText);
 
 		if (navLink.length) {
 			// persona mobile menu uses data-content
