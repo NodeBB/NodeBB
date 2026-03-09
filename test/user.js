@@ -483,24 +483,11 @@ describe('User', () => {
 	});
 
 	describe('.delete()', () => {
-		let uid;
-		before((done) => {
-			User.create({ username: 'usertodelete', password: '123456', email: 'delete@me.com' }, (err, newUid) => {
-				assert.ifError(err);
-				uid = newUid;
-				done();
-			});
-		});
-
-		it('should delete a user account', (done) => {
-			User.delete(1, uid, (err) => {
-				assert.ifError(err);
-				User.existsBySlug('usertodelete', (err, exists) => {
-					assert.ifError(err);
-					assert.equal(exists, false);
-					done();
-				});
-			});
+		it('should delete a user account', async () => {
+			const uid = await User.create({ username: 'usertodelete', password: '123456', email: 'delete@me.com' });
+			await User.delete(1, uid);
+			const exists = await User.existsBySlug('usertodelete');
+			assert.strictEqual(exists, false);
 		});
 
 		it('should not re-add user to users:postcount if post is purged after user account deletion', async () => {
@@ -538,7 +525,6 @@ describe('User', () => {
 		});
 
 		it('should delete user even if they started a chat', async () => {
-			const socketModules = require('../src/socket.io/modules');
 			const uid1 = await User.create({ username: 'chatuserdelete1' });
 			const uid2 = await User.create({ username: 'chatuserdelete2' });
 			const roomId = await messaging.newRoom(uid1, { uids: [uid2] });
