@@ -377,6 +377,10 @@ define('navigator', [
 
 		function toggleAnchor(text) {
 			anchorEl.innerText = text;
+			anchorEl.style.display = text ? 'inline' : 'none';
+			if (text) {
+				translator.translate(text).then(translated => anchorEl.innerText = translated);
+			}
 			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
 			if (text) {
 				anchorEl.removeAttribute('tabindex');
@@ -384,11 +388,11 @@ define('navigator', [
 				anchorEl.setAttribute('tabindex', -1);
 			}
 		}
+		const anchorHeight = anchorEl.getBoundingClientRect().height;
 
-		if (remaining > 0 && (trackHeight - thumbBottom) >= thumbHeight) {
-			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
+		if (remaining > 0 && (trackHeight - thumbBottom) >= Math.min(16, anchorHeight)) {
 			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
-			toggleAnchor(text);
+			toggleAnchor(`[[topic:navigator.unread, ${remaining}]]`);
 		} else {
 			anchorEl.href = ajaxify.data.url;
 			toggleAnchor('');
