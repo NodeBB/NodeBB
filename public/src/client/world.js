@@ -84,12 +84,13 @@ define('forum/world', [
 				}
 
 				const afterEl = direction > 0 ? posts.pop() : posts.shift();
-				const after = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
-				if (after < config.topicsPerPage) {
+				const index = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
+				const after = afterEl.getAttribute('data-tid');
+				if (index < config.topicsPerPage) {
 					return;
 				}
 
-				loadTopicsAfter(after, direction, (payload, callback) => {
+				loadTopicsAfter(index, after, direction, (payload, callback) => {
 					app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
 						const listEl = document.getElementById('world-feed');
 						$(listEl)[direction === -1 ? 'prepend' : 'append'](html);
@@ -114,10 +115,11 @@ define('forum/world', [
 		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
 	}
 
-	function loadTopicsAfter(after, direction, callback) {
+	function loadTopicsAfter(index, after, direction, callback) {
 		callback = callback || function () {};
 		const query = utils.params();
-		query.page = calculateNextPage(after, direction);
+		query.page = calculateNextPage(index, direction);
+		query.after = after;
 		infinitescroll.loadMoreXhr(query, callback);
 	}
 
