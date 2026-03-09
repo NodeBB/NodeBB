@@ -105,7 +105,7 @@ module.exports = function (Groups) {
 	}
 
 	Groups.leaveAllGroups = async function (uid) {
-		const groups = await db.getSortedSetRange('groups:createtime', 0, -1);
+		const groups = await Groups.getAllGroupNames('groups:createtime');
 		await Promise.all([
 			Groups.leave(groups, uid),
 			Groups.rejectMembership(

@@ -158,7 +158,7 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	const [memberSets, allGroupNames] = await Promise.all([
 		groups.getMembersOfGroups(groupPrivileges.map(privilege => `cid:${cid}:privileges:${privilege}`)),
-		groups.getGroups('groups:createtime', 0, -1),
+		groups.getAllGroupNames('groups:createtime'),
 	]);
 
 	const uniqueGroups = _.uniq(_.flatten(memberSets));
