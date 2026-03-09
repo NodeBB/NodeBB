@@ -8,29 +8,29 @@
 
 	<div>
 		<div class="table-responsive">
-				<table id="jobs-table" class="table">
-					<thead>
-						<tr class="text-sm">
-							<th>[[admin/advanced/jobs:job-name]]</th>
-							<th>[[admin/advanced/jobs:schedule]]</th>
-							<th>[[admin/advanced/jobs:next-run]]</th>
-							<th class="text-end">[[admin/advanced/jobs:last-duration]]</th>
-							<th class="text-center">[[admin/advanced/jobs:running]]</th>
-						</tr>
-					</thead>
-					<tbody class="text-xs text-tabular">
-					{{{ each jobs }}}
-					<tr class="align-middle">
-						<td>{./name}</td>
-						<td>{./cronTimeHuman} <span class="text-secondary">({./cronTime})</span></td>
-						<td><span class="timeago" title="{./nextRunISO}"></span></td>
-						<td class="text-end">{./durationReadable}</td>
-						<td class="text-center">{{{ if ./running }}}Yes{{{ else }}}No{{{ end }}}</td>
+			<table id="jobs-table" class="table">
+				<thead>
+					<tr class="text-sm">
+						<th>[[admin/advanced/jobs:job-name]]</th>
+						<th>[[admin/advanced/jobs:schedule]]</th>
+						<th>[[admin/advanced/jobs:next-run]]</th>
+						<th class="text-end">[[admin/advanced/jobs:last-duration]]</th>
+						<th class="text-center">[[admin/advanced/jobs:running]]</th>
 					</tr>
-					{{{ end }}}
-					</tbody>
-				</table>
-			</div>
+				</thead>
+				<tbody class="text-xs text-tabular">
+				{{{ each jobs }}}
+				<tr class="align-middle">
+					<td>{./name}</td>
+					<td>{./cronTimeHuman} <span class="text-secondary">({./cronTime})</span></td>
+					<td><span class="timeago" title="{./nextRunISO}"></span></td>
+					<td class="text-end">{./durationReadable}</td>
+					<td class="text-center">{{{ if ./running }}}Yes{{{ else }}}No{{{ end }}}</td>
+				</tr>
+				{{{ end }}}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 
