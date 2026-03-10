@@ -72,7 +72,10 @@ Errors.log404 = function (route) {
 	route = route.slice(0, 512).replace(/\/$/, ''); // remove trailing slashes
 
 	const segments = route.split('/');
-	const containsUUID = segments.some(segment => validator.isUUID(segment));
+	const containsUUID = segments.some((segment) => {
+		const cleanSegment = segment.split('.')[0];
+		return validator.isUUID(cleanSegment);
+	});
 	if (containsUUID) {
 		return;
 	}
