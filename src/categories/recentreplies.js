@@ -99,7 +99,7 @@ module.exports = function (Categories) {
 		const [topicData, crossposts] = await Promise.all([
 			topics.getTopicsFields(
 				tids,
-				['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
+				['tid', 'uid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
 			),
 			topics.crossposts.get(tids),
 		]);
@@ -137,11 +137,12 @@ module.exports = function (Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach((category) => {
 			if (category) {
+				const categoryCid = String(category.cid);
 				category.posts = topics.filter(t =>
 					t.cid &&
-					(t.cid === category.cid ||
-						(t.parentCids && t.parentCids.includes(category.cid)) ||
-						(t.crossposts.some(({ cid }) => parseInt(cid, 10) === category.cid))
+					(String(t.cid) === categoryCid ||
+						(t.parentCids && t.parentCids.includes(categoryCid)) ||
+						(t.crossposts.some(({ cid }) => String(cid) === categoryCid))
 					))
 					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));

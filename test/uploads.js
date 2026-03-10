@@ -35,41 +35,23 @@ describe('Upload Controllers', () => {
 	let regularUid;
 	let maliciousUid;
 
-	before((done) => {
-		async.series({
-			category: function (next) {
-				categories.create({
-					name: 'Test Category',
-					description: 'Test category created by testing script',
-				}, next);
-			},
-			adminUid: function (next) {
-				user.create({ username: 'admin', password: 'barbar' }, next);
-			},
-			regularUid: function (next) {
-				user.create({ username: 'regular', password: 'zugzug' }, next);
-			},
-			maliciousUid: function (next) {
-				user.create({ username: 'malicioususer', password: 'herpderp' }, next);
-			},
-		}, (err, results) => {
-			if (err) {
-				return done(err);
-			}
-			adminUid = results.adminUid;
-			regularUid = results.regularUid;
-			maliciousUid = results.maliciousUid;
-			cid = results.category.cid;
-
-			topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, (err, result) => {
-				if (err) {
-					return done(err);
-				}
-				tid = result.topicData.tid;
-				pid = result.postData.pid;
-				groups.join('administrators', adminUid, done);
-			});
+	before(async () => {
+		const category = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
 		});
+		cid = category.cid;
+
+		adminUid = await user.create({ username: 'admin', password: 'barbar' });
+		groups.join('administrators', adminUid);
+
+		regularUid = await user.create({ username: 'regular', password: 'zugzug' });
+		maliciousUid = await user.create({ username: 'malicioususer', password: 'herpderp' });
+
+		const result = await topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid });
+
+		tid = result.topicData.tid;
+		pid = result.postData.pid;
 	});
 
 	describe('regular user uploads rate limits', () => {
@@ -119,6 +101,19 @@ describe('Upload Controllers', () => {
 			assert(body && body.status && body.response && body.response.images);
 			assert(Array.isArray(body.response.images));
 			assert(body.response.images[0].url);
+			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
+		});
+
+		it('should upload an svg image to a post', async () => {
+			const oldValue = meta.config.allowedFileExtensions;
+			meta.config.allowedFileExtensions = 'png,jpg,bmp,html,svg';
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/nodebb.svg'), {}, jar, csrf_token);
+			assert.equal(response.statusCode, 200);
+			assert(body && body.status && body.response && body.response.images);
+			assert(Array.isArray(body.response.images));
+			assert(body.response.images[0].url);
+			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
+			meta.config.allowedFileExtensions = oldValue;
 		});
 
 		it('should upload an image to a post and then delete the upload', async () => {
@@ -192,6 +187,7 @@ describe('Upload Controllers', () => {
 			assert(body && body.status && body.response && body.response.images);
 			assert(Array.isArray(body.response.images));
 			assert(body.response.images[0].url);
+			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
 		});
 
 		it('should upload a file with utf8 characters in the name to a post', async () => {
