@@ -219,7 +219,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 
 			// Filter image attachments out if they are in content
-			const { attachment } = post._activitypub;
+			const attachment = post?._activitypub?.attachment;
 			if (attachment && attachment.length) {
 				post._activitypub.attachment = attachment.filter((attachment) => {
 					const inContent = attachment.type === 'Image' && (post.sourceContent || post.content).includes(attachment.url);
