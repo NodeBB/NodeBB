@@ -75,12 +75,12 @@ async function uploadAsImage(req, uploadedFile) {
 	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 	// sharp can't save svgs skip resize for them
 	const isSVG = uploadedFile.type === 'image/svg+xml';
-	if (isSVG || meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
-		return fileObj;
+	const resizeDisabled = meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0;
+	if (!isSVG && !resizeDisabled) {
+		fileObj = await resizeImage({ ...fileObj, type: uploadedFile.type });
 	}
 
-	fileObj = await resizeImage({ ...fileObj, type: uploadedFile.type });
-	return { url: fileObj.url };
+	return { url: fileObj.url, name: fileObj.name };
 }
 
 async function uploadAsFile(req, uploadedFile) {

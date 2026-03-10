@@ -240,8 +240,9 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should succeed with a valid tid', async () => {
-			const { response } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/1/thumbs`, path.join(__dirname, '../files/test.png'), {}, adminJar, adminCSRF);
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/1/thumbs`, path.join(__dirname, '../files/test.png'), {}, adminJar, adminCSRF);
 			assert.strictEqual(response.statusCode, 200);
+			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
 		});
 
 		it('should succeed with uploader plugins', async () => {
