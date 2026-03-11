@@ -18,6 +18,7 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const emailer = require('./emailer');
 const ttlCache = require('./cache/ttl');
+const translator = require('./translator');
 
 const Notifications = module.exports;
 
@@ -563,21 +564,18 @@ Notifications.merge = async function (notifications) {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
 					const numUsers = usernames.length;
 
-					const title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
-					let titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
+					const title = utils.decodeHTMLEntities(notifObj.topicTitle || '');
 
-					if (numUsers === 2 || numUsers === 3) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
-					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
-					}
+					const txKey = `${mergeId}-${typeFromLength(usernames)}`;
+					const displayNames = usernames.slice(0, numUsers <= 3 ? 3 : 2).join(', ');
+					notifObj.bodyShort = translator.compile(txKey, displayNames, title || '');
 
-					notifications[modifyIndex].path = set[set.length - 1].path;
-				} break;
+					notifObj.path = set[set.length - 1].path;
+					break;
+				}
 
 				case 'new-register':
-					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
+					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
 			}
 
