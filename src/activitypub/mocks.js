@@ -986,6 +986,53 @@ Mocks.activities.create = async (pid, uid, post) => {
 	return { activity, targets };
 };
 
+Mocks.activities.like = (pid, uid) => ({
+	id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
+	type: 'Like',
+	actor: `${nconf.get('url')}/uid/${uid}`,
+	object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+});
+
+Mocks.activities.dislike = (pid, uid) => ({
+	id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
+	type: 'Dislike',
+	actor: `${nconf.get('url')}/uid/${uid}`,
+	object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+});
+
+Mocks.activities.announce = async (tid, uid) => {
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+	const authorUid = await posts.getPostField(pid, 'uid'); // author
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		id: pid,
+		to: [activitypub._constants.publicAddress],
+	}, uid ? { uid } : { cid });
+	if (!utils.isNumber(authorUid)) {
+		cc.push(authorUid);
+		targets.add(authorUid);
+	}
+
+	const payload = uid ? {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/uid/${uid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+	} : {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+	};
+
+	return {
+		activity: {
+			...payload,
+			to,
+			cc,
+			object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+		},
+		targets,
+	};
+};
+
 Mocks.tombstone = async properties => ({
 	'@context': 'https://www.w3.org/ns/activitystreams',
 	type: 'Tombstone',
