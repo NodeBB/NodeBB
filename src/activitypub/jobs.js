@@ -13,7 +13,7 @@ const Jobs = module.exports;
 Jobs.start = async () => {
 	activitypub.helpers.log('[activitypub/jobs] Registering jobs.');
 	async function tryCronJob(method) {
-		if (meta.config.activityPubEnabled) {
+		if (meta.config.activitypubEnabled) {
 			await method();
 		}
 	}
