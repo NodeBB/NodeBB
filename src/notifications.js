@@ -566,14 +566,10 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
 					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					const numUsers = usernames.length;
-
-					const title = utils.decodeHTMLEntities(notifObj.topicTitle || '');
-
 					const txKey = `${mergeId}-${typeFromLength(usernames)}`;
-					const displayNames = usernames.slice(0, numUsers <= 3 ? 3 : 2).join(', ');
+					const displayNames = usernames.slice(0, usernames.length <= 3 ? 3 : 2).join(', ');
+					const title = utils.decodeHTMLEntities(notifObj.topicTitle || '');
 					notifObj.bodyShort = translator.compile(txKey, displayNames, title || '');
-
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}
