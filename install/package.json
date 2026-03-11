@@ -98,8 +98,8 @@
         "multer": "2.1.1",
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "7.6.1",
-        "nodebb-plugin-composer-default": "10.3.25",
-        "nodebb-plugin-dbsearch": "6.4.0",
+        "nodebb-plugin-composer-default": "10.3.26",
+        "nodebb-plugin-dbsearch": "6.4.1",
         "nodebb-plugin-emoji": "6.0.6",
         "nodebb-plugin-emoji-android": "4.1.1",
         "nodebb-plugin-link-preview": "2.2.3",
@@ -131,7 +131,7 @@
         "rss": "1.2.2",
         "rtlcss": "4.3.0",
         "sanitize-html": "2.17.1",
-        "sass": "1.97.3",
+        "sass": "1.98.0",
         "satori": "0.25.0",
         "sbd": "^1.0.19",
         "semver": "7.7.4",
@@ -143,7 +143,7 @@
         "@socket.io/redis-adapter": "8.3.0",
         "sortablejs": "1.15.7",
         "spdx-license-list": "6.11.0",
-        "terser-webpack-plugin": "5.3.17",
+        "terser-webpack-plugin": "5.4.0",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
@@ -181,7 +181,7 @@
         "smtp-server": "3.18.1"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.97.3"
+        "sass-embedded": "1.98.0"
     },
     "resolutions": {
         "*/jquery": "3.7.1"
