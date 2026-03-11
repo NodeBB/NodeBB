@@ -483,6 +483,7 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 		paginate = false;
 	}
 
+	page = parseInt(page, 10) || undefined;
 	if (page) {
 		const invalidPagination = page < 1 || page > pageCount;
 		if (invalidPagination) {
