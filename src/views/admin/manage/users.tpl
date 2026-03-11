@@ -6,8 +6,10 @@
 		<div class="d-flex align-items-center gap-3 flex-wrap">
 			<div class="d-flex gap-1 align-items-stretch flex-wrap">
 				<div class="input-group flex-nowrap w-auto">
+					<span class="input-group-text px-2" title="[[admin/manage/users:search.help]]" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-fw fa-solid fa-question"></i></span>
 					<input type="text" class="form-control form-control-sm w-auto" placeholder="[[global:search]]" id="user-search" value="{query}">
-					<span class="input-group-text px-2 search-button"><i class="fa fa-search"></i></span>
+					<span class="input-group-text px-2 search-button"><i class="fa fa-fw fa-search"></i></span>
+
 				</div>
 				<select id="user-search-by" class="form-select form-select-sm w-auto">
 					<option value="username" {{{if searchBy_username}}}selected{{{end}}}>[[admin/manage/users:search.username]]</option>

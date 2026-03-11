@@ -666,7 +666,7 @@ define('admin/manage/users', [
 				page: 1,
 			});
 		}
-		$('#user-search').on('keyup', utils.debounce(doSearch, 250));
+		$('#user-search').on('input', utils.debounce(doSearch, 500));
 		$('#user-search-by').on('change', doSearch);
 	}
 
