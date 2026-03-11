@@ -4,5 +4,6 @@
 	"schedule": "לוח זמנים",
 	"next-run": "ריצה הבאה",
 	"last-duration": "זמן ביצוע אחרון",
-	"running": "בהרצה"
+	"running": "בהרצה",
+	"active": "Active"
 }

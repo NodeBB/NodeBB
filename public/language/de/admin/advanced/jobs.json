@@ -4,5 +4,6 @@
 	"schedule": "Zeitplan",
 	"next-run": "Nächster Lauf",
 	"last-duration": "Letzte Dauer",
-	"running": "Laufend"
+	"running": "Laufend",
+	"active": "Active"
 }

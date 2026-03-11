@@ -4,5 +4,6 @@
 	"schedule": "Programma",
 	"next-run": "Prossima esecuzione",
 	"last-duration": "Ultima durata",
-	"running": "In esecuzione"
+	"running": "In esecuzione",
+	"active": "Active"
 }

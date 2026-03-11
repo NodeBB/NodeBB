@@ -4,5 +4,6 @@
 	"schedule": "Planification",
 	"next-run": "Prochaine exécution",
 	"last-duration": "Durée précédente",
-	"running": "En cours"
+	"running": "En cours",
+	"active": "Active"
 }
