@@ -115,7 +115,7 @@ define('forum/category', [
 	}
 
 	function handleDescription() {
-		const fadeEl = document.querySelector('.description.clamp-fade-4');
+		const fadeEl = document.querySelector(`.description.clamp-fade-sm-4`);
 		if (!fadeEl) {
 			return;
 		}

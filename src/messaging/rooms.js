@@ -361,9 +361,11 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
-		const isInRoom = await Promise.all(roomIds.map(roomId => Messaging.isUserInRoom(uid, roomId)));
+		const isInRoom = await Messaging.isUserInRoom(uid, roomIds);
 		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
-
+		if (!roomIds.length) {
+			return;
+		}
 		const roomKeys = [
 			...roomIds.map(roomId => `chat:room:${roomId}:uids`),
 			...roomIds.map(roomId => `chat:room:${roomId}:owners`),

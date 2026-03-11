@@ -87,10 +87,12 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-image-extension]]');
 		}
 
-		const newPath = await convertToPNG(userPhoto.path);
+		const normalizedPath = await convertToPNG(userPhoto.path);
+		const isNormalized = userPhoto.path !== normalizedPath;
 
 		await image.resizeImage({
-			path: newPath,
+			path: normalizedPath,
+			type: isNormalized ? 'image/png' : userPhoto.type,
 			width: meta.config.profileImageDimension,
 			height: meta.config.profileImageDimension,
 		});
@@ -98,7 +100,7 @@ module.exports = function (User) {
 		const filename = generateProfileImageFilename(data.uid, extension);
 		const uploadedImage = await image.uploadImage(filename, `profile/uid-${data.uid}`, {
 			uid: data.uid,
-			path: newPath,
+			path: normalizedPath,
 			name: 'profileAvatar',
 		});
 
@@ -124,17 +126,19 @@ module.exports = function (User) {
 			}
 
 			validateUpload(data, meta.config.maximumProfileImageSize, User.getAllowedImageTypes());
-
-			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
+			const type = image.mimeFromBase64(data.imageData);
+			const extension = file.typeToExtension(type);
 			if (!extension) {
 				throw new Error('[[error:invalid-image-extension]]');
 			}
 
 			picture.path = await image.writeImageDataToTempFile(data.imageData);
-			picture.path = await convertToPNG(picture.path);
-
+			const normalizedPath = await convertToPNG(picture.path);
+			const isNormalized = picture.path !== normalizedPath;
+			picture.path = normalizedPath;
 			await image.resizeImage({
 				path: picture.path,
+				type: isNormalized ? 'image/png' : type,
 				width: meta.config.profileImageDimension,
 				height: meta.config.profileImageDimension,
 			});

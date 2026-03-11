@@ -1,3 +1,71 @@
+#### v4.9.1 (2026-03-01)
+
+##### Chores
+
+*  up harmony (643991ab)
+*  incrementing version number - v4.9.0 (3fdd1bef)
+*  update changelog for v4.9.0 (a39fa9fc)
+*  incrementing version number - v4.8.1 (713ae0c0)
+*  incrementing version number - v4.8.0 (3fac737a)
+*  incrementing version number - v4.7.2 (cd419d8a)
+*  incrementing version number - v4.7.1 (afb88805)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  allow callers to parse topic teasers (92c0bd8f)
+
+##### Bug Fixes
+
+*  #14032, fix regression in room creation (2d49da78)
+*  parent cid (04477f07)
+*  ordering nested categories (a1b77fa0)
+*  text-nowrap on timestamps (117ae6aa)
+*  fullscreen acp graphs (f1fa8f12)
+*  skip parsing of duplicate emoji tags (6f129167)
+
+##### Other Changes
+
+*  remove unused (08e94e35)
+
+##### Refactors
+
+*  more cid parseInt changes (1b518f0e)
+*  show plus signs (c85e464b)
+
+##### Tests
+
+*  fix spec (12122637)
+
 #### v4.9.0 (2026-02-27)
 
 ##### Chores

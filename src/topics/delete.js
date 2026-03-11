@@ -20,16 +20,17 @@ module.exports = function (Topics) {
 		]);
 		await Promise.all([
 			db.sortedSetRemove(`cid:${cid}:pids`, pids),
-			resolveTopicPostFlags(pids, uid),
 			Topics.setTopicFields(tid, {
 				deleted: 1,
 				deleterUid: uid,
 				deletedTimestamp: Date.now(),
 			}),
-			activitypub.out.remove.context(uid, tid),
 		]);
-
-		await categories.updateRecentTidForCid(cid);
+		await Promise.all([
+			resolveTopicPostFlags(pids, uid),
+			activitypub.out.remove.context(uid, tid),
+			categories.updateRecentTidForCid(cid),
+		]);
 	};
 
 	async function resolveTopicPostFlags(pids, uid) {
@@ -95,8 +96,10 @@ module.exports = function (Topics) {
 			t.tags = t.tags.map(tag => tag.value);
 		});
 
-		await deleteFromFollowersIgnorers(tidsToDelete);
-
+		await Promise.all([
+			deleteFromFollowersIgnorers(tidsToDelete),
+			deleteFromUserInboxes(tidsToDelete),
+		]);
 		const remoteTids = [];
 		const localTids = [];
 
@@ -162,6 +165,18 @@ module.exports = function (Topics) {
 		await db.sortedSetRemoveBulk(bulkRemove);
 	}
 
+	async function deleteFromUserInboxes(tids) {
+		const recipients = await db.getSetsMembers(tids.map(tid => `tid:${tid}:recipients`));
+		const bulkRemove = [];
+		tids.forEach((tid, index) => {
+			const tidRecipients = recipients[index];
+			tidRecipients.forEach((uid) => {
+				bulkRemove.push([`uid:${uid}:inbox`, tid]);
+			});
+		});
+		await db.sortedSetRemoveBulk(bulkRemove);
+	}
+
 	async function deleteKeys(tids) {
 		await db.deleteAll([
 			...tids.map(tid => `tid:${tid}:followers`),
@@ -170,6 +185,7 @@ module.exports = function (Topics) {
 			...tids.map(tid => `tid:${tid}:posts:votes`),
 			...tids.map(tid => `tid:${tid}:bookmarks`),
 			...tids.map(tid => `tid:${tid}:posters`),
+			...tids.map(tid => `tid:${tid}:recipients`),
 		]);
 	}
 

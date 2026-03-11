@@ -343,11 +343,11 @@ module.exports = function (middleware) {
 			return false; // not a category or topic url, no check required
 		}
 
-		const [registeredAllowed, verifiedAllowed] = await Promise.all([
+		const [[registeredAllowed], [verifiedAllowed]] = await Promise.all([
 			privilegeHelpers.isAllowedTo([privilege], 'registered-users', cid),
 			privilegeHelpers.isAllowedTo([privilege], 'verified-users', cid),
 		]);
 
-		return !registeredAllowed.pop() && verifiedAllowed.pop();
+		return !registeredAllowed && verifiedAllowed;
 	}
 };

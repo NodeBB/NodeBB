@@ -278,20 +278,21 @@ describe('Set methods', () => {
 	});
 
 	describe('setsRemove()', () => {
-		before((done) => {
-			db.setsAdd(['set1', 'set2'], 'value', done);
+		it('should remove a element from multiple sets', async () => {
+			await db.setsAdd(['set1', 'set2'], 'value');
+			await db.setRemove(['set1', 'set2'], 'value');
+			const members = await db.isMemberOfSets(['set1', 'set2'], 'value');
+			assert.deepStrictEqual(members, [false, false]);
 		});
 
-		it('should remove a element from multiple sets', (done) => {
-			db.setsRemove(['set1', 'set2'], 'value', function (err) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 1);
-				db.isMemberOfSets(['set1', 'set2'], 'value', (err, members) => {
-					assert.equal(err, null);
-					assert.deepEqual(members, [false, false]);
-					done();
-				});
-			});
+		it('should remove the sets if they are empty', async () => {
+			await db.setAdd('setsRemoveSet3', ['a']);
+			await db.setAdd('setsRemoveSet4', ['a']);
+			await db.setsRemove(['setsRemoveSet3', 'setsRemoveSet4'], 'a');
+			assert.deepStrictEqual(
+				await db.exists(['setsRemoveSet3', 'setsRemoveSet4']),
+				[false, false]
+			);
 		});
 	});
 

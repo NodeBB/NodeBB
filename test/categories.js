@@ -85,21 +85,31 @@ describe('Categories', () => {
 	});
 
 	describe('Categories.getRecentTopicReplies', () => {
-		it('should not throw', (done) => {
-			Categories.getCategoryById({
+		it('should not throw', async () => {
+			const categoryData = await Categories.getCategoryById({
 				cid: categoryObj.cid,
 				set: `cid:${categoryObj.cid}:tids`,
 				reverse: true,
 				start: 0,
 				stop: -1,
 				uid: 0,
-			}, (err, categoryData) => {
-				assert.ifError(err);
-				Categories.getRecentTopicReplies(categoryData, 0, {}, (err) => {
-					assert.ifError(err);
-					done();
-				});
 			});
+
+			await Categories.getRecentTopicReplies([categoryData], 0, {});
+		});
+
+		it('should return posts in child category as teaser on parent category' , async () => {
+			const { cid: parentCid } = await Categories.create({ name: 'theparent' });
+			const { cid: childCid } = await Categories.create({ name: 'thechild', parentCid });
+			await Topics.post({ uid: posterUid, title: 'inparent', content: 'post in parent', cid: parentCid });
+			await Topics.post({ uid: posterUid, title: 'inchild', content: 'post in child', cid: childCid });
+			const categoryData = await Categories.getCategories([parentCid, childCid]);
+			Categories.getTree(categoryData, 0);
+
+			await Categories.getRecentTopicReplies(categoryData, 0, {}),
+			assert.strictEqual(String(categoryData[0].cid), String(parentCid));
+			assert.strictEqual(categoryData[0].posts[0].uid, posterUid);
+			assert.strictEqual(categoryData[0].posts[0].content, 'post in child');
 		});
 	});
 

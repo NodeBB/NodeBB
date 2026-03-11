@@ -33,10 +33,15 @@ module.exports = function (User) {
 			throw new Error('[[error:already-deleting]]');
 		}
 		deletesInProgress[uid] = 'user.delete';
-		await deletePosts(callerUid, uid);
-		await deleteTopics(callerUid, uid);
-		await deleteUploads(callerUid, uid);
-		await deleteQueued(uid);
+		async function deletePostsTopics() {
+			await deletePosts(callerUid, uid);
+			await deleteTopics(callerUid, uid);
+		}
+		await Promise.all([
+			deletePostsTopics(),
+			deleteUploads(callerUid, uid),
+			deleteQueued(uid),
+		]);
 		delete deletesInProgress[uid];
 	};
 
@@ -90,9 +95,9 @@ module.exports = function (User) {
 			throw new Error('[[error:already-deleting]]');
 		}
 		deletesInProgress[uid] = 'user.deleteAccount';
-
+		const isLocal = utils.isNumber(uid);
 		await removeFromSortedSets(uid);
-		const userData = await db.getObject(utils.isNumber(uid) ? `user:${uid}` : `userRemote:${uid}`);
+		const userData = await db.getObject(isLocal ? `user:${uid}` : `userRemote:${uid}`);
 
 		if (!userData || !userData.username) {
 			delete deletesInProgress[uid];
@@ -100,9 +105,11 @@ module.exports = function (User) {
 		}
 
 		await plugins.hooks.fire('static:user.delete', { uid: uid, userData: userData });
-		await deleteVotes(uid);
-		await deleteChats(uid);
-		await User.auth.revokeAllSessions(uid);
+		await Promise.all([
+			deleteVotes(uid),
+			deleteChats(uid),
+			User.auth.revokeAllSessions(uid),
+		]);
 
 		const keys = [
 			`uid:${uid}:notifications:read`,
@@ -143,7 +150,7 @@ module.exports = function (User) {
 
 		await Promise.all([
 			db.sortedSetRemoveBulk(bulkRemove),
-			utils.isNumber(uid) ? db.decrObjectField('global', 'userCount') : null,
+			isLocal ? db.decrObjectField('global', 'userCount') : null,
 			db.deleteAll(keys),
 			db.setRemove('invitation:uids', uid),
 			deleteUserIps(uid),
@@ -156,13 +163,13 @@ module.exports = function (User) {
 			flags.resolveFlag('user', uid, uid),
 			User.reset.cleanByUid(uid),
 			User.email.expireValidation(uid),
-			activitypub.actors.remove(uid),
+			!isLocal ? activitypub.actors.remove(uid) : null,
 		]);
 		await db.deleteAll([
 			`followers:${uid}`, `following:${uid}`,
 			`uid:${uid}:followed_tags`, `uid:${uid}:followed_tids`,
 			`uid:${uid}:ignored_tids`,
-			`${utils.isNumber(uid) ? 'user' : 'userRemote'}:${uid}`,
+			`${isLocal ? 'user' : 'userRemote'}:${uid}`,
 		]);
 		delete deletesInProgress[uid];
 		return userData;
@@ -184,11 +191,10 @@ module.exports = function (User) {
 	}
 
 	async function deleteVotes(uid) {
-		const [upvotedPids, downvotedPids] = await Promise.all([
-			db.getSortedSetRange(`uid:${uid}:upvote`, 0, -1),
-			db.getSortedSetRange(`uid:${uid}:downvote`, 0, -1),
-		]);
-		const pids = _.uniq(upvotedPids.concat(downvotedPids).filter(Boolean));
+		const upvoteDownvotePids = await db.getSortedSetRange([
+			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
+		], 0, -1);
+		const pids = _.uniq(upvoteDownvotePids).filter(Boolean);
 		await async.eachSeries(pids, async (pid) => {
 			await posts.unvote(pid, uid);
 		});
@@ -203,8 +209,10 @@ module.exports = function (User) {
 
 	async function deleteUserIps(uid) {
 		const ips = await db.getSortedSetRange(`uid:${uid}:ip`, 0, -1);
-		await db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid);
-		await db.delete(`uid:${uid}:ip`);
+		await Promise.all([
+			db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid),
+			db.delete(`uid:${uid}:ip`),
+		]);
 	}
 
 	async function deleteUserFromFollowers(uid) {

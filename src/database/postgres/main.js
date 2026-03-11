@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = function (module) {
+	const Cursor = require('pg-cursor');
 	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 
 	module.flushdb = async function () {
 		await module.pool.query(`DROP SCHEMA "public" CASCADE`);
@@ -84,23 +86,43 @@ module.exports = function (module) {
 	};
 
 	module.scan = async function (params) {
-		let { match } = params;
-		if (match.startsWith('*')) {
-			match = `%${match.substring(1)}`;
-		}
-		if (match.endsWith('*')) {
-			match = `${match.substring(0, match.length - 1)}%`;
+		const match = dbHelpers.globToRegex(params.match);
+		const batchSize = params.batch || 1000;
+		const found = new Set();
+
+		const client = await module.pool.connect();
+
+		const cursor = client.query(new Cursor(`
+			SELECT "_key"
+			FROM "legacy_object_live"
+			WHERE "_key" ~ $1
+		`, [match]));
+
+		try {
+			const fetchRows = () => {
+				return new Promise((resolve, reject) => {
+					cursor.read(batchSize, (err, rows) => {
+						if (err) return reject(err);
+						resolve(rows);
+					});
+				});
+			};
+
+			let rows;
+			do {
+				// eslint-disable-next-line no-await-in-loop
+				rows = await fetchRows();
+				for (const row of rows) {
+					found.add(row._key);
+				}
+			} while (rows.length > 0);
+		} finally {
+			cursor.close(() => {
+				client.release();
+			});
 		}
 
-		const res = await module.pool.query({
-			text: `
-		SELECT o."_key"
-		FROM "legacy_object_live" o
-		WHERE o."_key" LIKE $1`,
-			values: [match],
-		});
-
-		return res.rows.map(r => r._key);
+		return Array.from(found);
 	};
 
 	module.delete = async function (key) {

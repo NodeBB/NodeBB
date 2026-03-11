@@ -210,7 +210,7 @@ img.emoji {
 	}
 	50% {
 		transform: scale(1.005);
-		background-color: var(--bs-tertiary-bg);
+		background-color: color-mix(in srgb, var(--bs-body-bg), var(--bs-body-color) 10%);
 	}
 }
 

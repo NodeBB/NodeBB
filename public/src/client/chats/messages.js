@@ -110,7 +110,7 @@ define('forum/chats/messages', [
 
 			messages.scrollToBottomAfterImageLoad(chatContentEl);
 			const $composer = chatContentEl.siblings('[component="chat/composer"]');
-			if ($composer.length) {
+			if ($composer.length && ajaxify.data?.template?.chats) {
 				$composer[0].scrollIntoView(true);
 			}
 		}

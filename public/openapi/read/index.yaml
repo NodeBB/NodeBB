@@ -138,6 +138,8 @@ get:
                                 properties:
                                   pid:
                                     type: number
+                                  uid:
+                                    type: number
                                   tid:
                                     type: number
                                   timestamp:

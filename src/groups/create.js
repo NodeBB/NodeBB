@@ -4,6 +4,7 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const db = require('../database');
+const cache = require('../cache');
 
 module.exports = function (Groups) {
 	Groups.create = async function (data) {
@@ -47,7 +48,7 @@ module.exports = function (Groups) {
 
 		await db.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
 		await db.setObject(`group:${groupData.name}`, groupData);
-
+		cache.del(`zset:groups:createtime`);
 		if (data.hasOwnProperty('ownerUid')) {
 			await db.setAdd(`group:${groupData.name}:owners`, data.ownerUid);
 			await db.sortedSetAdd(`group:${groupData.name}:members`, timestamp, data.ownerUid);

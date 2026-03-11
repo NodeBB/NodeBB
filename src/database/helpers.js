@@ -26,3 +26,19 @@ helpers.mergeBatch = function (batchData, start, stop, sort) {
 	} while (item && (result.length < (stop - start + 1) || stop === -1));
 	return result;
 };
+
+helpers.globToRegex = function (match) {
+	if (!match) {
+		return '^.*$';
+	}
+	let _match = match.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+	_match = _match.replace(/\*/g, '.*').replace(/\?/g, '.');
+
+	if (!match.startsWith('*')) {
+		_match = '^' + _match;
+	}
+	if (!match.endsWith('*')) {
+		_match = _match + '$';
+	}
+	return _match;
+};

@@ -78,6 +78,8 @@ get:
                                           properties:
                                             pid:
                                               type: number
+                                            uid:
+                                              type: number
                                             timestamp:
                                               type: number
                                             content:
@@ -135,6 +137,8 @@ get:
                                 type: object
                                 properties:
                                   pid:
+                                    type: number
+                                  uid:
                                     type: number
                                   tid:
                                     type: number

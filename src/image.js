@@ -40,13 +40,14 @@ image.resizeImage = async function (data) {
 			width: data.width,
 			height: data.height,
 			quality: data.quality,
+			type: data.type,
 		});
 	} else {
 		const sharp = requireSharp();
 		const buffer = await fs.promises.readFile(data.path);
 		const sharpImage = sharp(buffer, {
 			failOnError: true,
-			animated: data.path.endsWith('gif'),
+			animated: data.type === 'image/gif',
 		});
 		const metadata = await sharpImage.metadata();
 
