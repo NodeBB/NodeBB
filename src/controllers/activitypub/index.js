@@ -226,24 +226,26 @@ Controller.getCategoryOutbox = async (req, res) => {
 		perPage: 20,
 		url: `${nconf.get('url')}/category/1/outbox`,
 	});
-	collection.orderedItems = await Promise.all(collection.orderedItems.map(async (pid) => {
-		let object;
-		if (utils.isNumber(pid)) {
-			const { activity } = await activitypub.mocks.activities.create(pid, 0);
-			object = activity;
-		} else {
-			object = pid;
-		}
+	if (collection.orderedItems) {
+		collection.orderedItems = await Promise.all(collection.orderedItems.map(async (pid) => {
+			let object;
+			if (utils.isNumber(pid)) {
+				const { activity } = await activitypub.mocks.activities.create(pid, 0);
+				object = activity;
+			} else {
+				object = pid;
+			}
 
-		return {
-			id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
-			type: 'Announce',
-			actor: `${nconf.get('url')}/category/${cid}`,
-			to: [activitypub._constants.publicAddress],
-			cc: [`${nconf.get('url')}/category/${cid}/followers`],
-			object,
-		};
-	}));
+			return {
+				id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
+				type: 'Announce',
+				actor: `${nconf.get('url')}/category/${cid}`,
+				to: [activitypub._constants.publicAddress],
+				cc: [`${nconf.get('url')}/category/${cid}/followers`],
+				object,
+			};
+		}));
+	}
 
 	res.status(200).json({
 		'@context': 'https://www.w3.org/ns/activitystreams',
