@@ -202,6 +202,7 @@ Controller.getOutbox = async (req, res) => {
 
 	res.status(200).json({
 		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${nconf.get('url')}/uid/${uid}/outbox`,
 		type: paginate ? 'OrderedCollectionPage' : 'OrderedCollection',
 		totalItems,
 		...(prev && { prev }),
