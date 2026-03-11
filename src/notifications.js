@@ -554,7 +554,7 @@ Notifications.merge = async function (notifications) {
 					const isMultiple = type === 'multiple';
 					const txArgs = [
 						`${mergeId}-${type}`,
-						usernames.slice(0, usernames.length <= 3 ? 3 : 2).join(', '),
+						...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
 						...(isMultiple ? [usernames.length - 2] : []),
 						notifObj.roomIcon,
 						notifObj.roomName,
@@ -575,7 +575,7 @@ Notifications.merge = async function (notifications) {
 					const isMultiple = type === 'multiple';
 					const txArgs = [
 						`${mergeId}-${type}`,
-						usernames.slice(0, usernames.length <= 3 ? 3 : 2).join(', '),
+						...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
 						...(isMultiple ? [usernames.length - 2] : []),
 						utils.decodeHTMLEntities(notifObj.topicTitle || ''),
 					];
