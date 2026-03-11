@@ -545,13 +545,18 @@ Notifications.merge = async function (notifications) {
 				}
 
 				case 'notifications:user-posted-in-public-room': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					if (usernames.length === 2 || usernames.length === 3) {
-						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
-					} else if (usernames.length > 3) {
-						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
-					}
+					const usernames = _.uniq(set.map(n => n?.user?.displayname)).filter(Boolean);
+					const type = typeFromLength(usernames);
+					const isMultiple = type === 'multiple';
+					const txArgs = [
+						`${mergeId}-${type}`,
+						usernames.slice(0, usernames.length <= 3 ? 3 : 2).join(', '),
+						...(isMultiple ? [usernames.length - 2] : []),
+						notifObj.roomIcon,
+						notifObj.roomName,
+					];
 
+					notifObj.bodyShort = translator.compile(...txArgs);
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}
@@ -561,11 +566,16 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-flagged-post-in':
 				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					const txKey = `${mergeId}-${typeFromLength(usernames)}`;
-					const displayNames = usernames.slice(0, usernames.length <= 3 ? 3 : 2).join(', ');
-					const title = utils.decodeHTMLEntities(notifObj.topicTitle || '');
-					notifObj.bodyShort = translator.compile(txKey, displayNames, title || '');
+					const usernames = _.uniq(set.map(n => n?.user?.displayname)).filter(Boolean);
+					const type = typeFromLength(usernames);
+					const isMultiple = type === 'multiple';
+					const txArgs = [
+						`${mergeId}-${type}`,
+						usernames.slice(0, usernames.length <= 3 ? 3 : 2).join(', '),
+						...(isMultiple ? [usernames.length - 2] : []),
+						utils.decodeHTMLEntities(notifObj.topicTitle || ''),
+					];
+					notifObj.bodyShort = translator.compile(...txArgs);
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}
