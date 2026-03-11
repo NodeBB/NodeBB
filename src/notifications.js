@@ -539,8 +539,8 @@ Notifications.merge = async function (notifications) {
 					const { roomId, roomName, type, user } = set[0];
 					const isGroupChat = type === 'new-group-chat';
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
-						`[[notifications:new-messages-in, ${set.length}, ${roomName}]]` :
-						`[[notifications:new-messages-from, ${set.length}, ${user.displayname}]]`;
+						translator.compile('notifications:new-messages-in', set.length, roomName) :
+						translator.compile('notifications:new-messages-from', set.length, user.displayname);
 					break;
 				}
 
