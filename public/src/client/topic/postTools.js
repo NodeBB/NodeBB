@@ -287,7 +287,9 @@ define('forum/topic/postTools', [
 
 		showStaleWarning(function () {
 			let username = getUserSlug(button);
-			if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
+			const postUid = getData(button, 'data-uid');
+			const isSelfPost = postUid === String(app.user.uid);
+			if (isSelfPost || postUid === '0' || !getData(button, 'data-userslug')) {
 				username = '';
 			}
 
