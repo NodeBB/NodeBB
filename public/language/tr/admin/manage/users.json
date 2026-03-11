@@ -40,6 +40,7 @@
 	"250-per-page": "Sayfa başına 250",
 	"500-per-page": "Sayfa başına 500",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "Kullanıcı Kimliğiyle",
 	"search.uid-placeholder": "Aramak için bir kullanıcı kimliği girin",
 	"search.username": "Kullanıcı Adına Göre",

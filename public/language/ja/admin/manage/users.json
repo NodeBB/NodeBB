@@ -40,6 +40,7 @@
 	"250-per-page": "1ページあたり250 件",
 	"500-per-page": "1ページあたり500 件",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "ユーザーID別",
 	"search.uid-placeholder": "検索するユーザーIDを入力してください",
 	"search.username": "ユーザー名別",

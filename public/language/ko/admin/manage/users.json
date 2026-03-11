@@ -40,6 +40,7 @@
 	"250-per-page": "페이지당 250개",
 	"500-per-page": "페이지당 500개",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "사용자 ID로 검색",
 	"search.uid-placeholder": "검색할 사용자 ID를 입력",
 	"search.username": "사용자 이름으로 검색",

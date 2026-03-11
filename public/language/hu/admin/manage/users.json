@@ -40,6 +40,7 @@
 	"250-per-page": "250 oldalanként",
 	"500-per-page": "500 oldalanként",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "Azonosító alapján",
 	"search.uid-placeholder": "Írj be egy azonosítót a kereséshez",
 	"search.username": "Felhasználónév szerint",

@@ -40,6 +40,7 @@
 	"250-per-page": "250 per side",
 	"500-per-page": "500 per side",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "Etter bruker-ID",
 	"search.uid-placeholder": "Skriv inn en bruker-ID for å søke",
 	"search.username": "Etter brukernavn",

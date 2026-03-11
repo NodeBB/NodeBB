@@ -40,6 +40,7 @@
 	"250-per-page": "250 pro Seite",
 	"500-per-page": "500 pro Seite",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "Nach Benutzer-ID",
 	"search.uid-placeholder": "Gib eine Benutzer-ID ein um danach zu suchen",
 	"search.username": "Nach Nutzernamen",

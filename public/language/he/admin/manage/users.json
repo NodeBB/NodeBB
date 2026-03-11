@@ -40,6 +40,7 @@
 	"250-per-page": "250 לעמוד",
 	"500-per-page": "500 לעמוד",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "לפי זהות משתמש (ID)",
 	"search.uid-placeholder": "הזינו מזהה משתמש (ID) לחיפוש",
 	"search.username": "לפי שם משתמש",

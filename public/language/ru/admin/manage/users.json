@@ -40,6 +40,7 @@
 	"250-per-page": "250 на страницу",
 	"500-per-page": "500 на страницу",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "По ID пользователя",
 	"search.uid-placeholder": "Введите ID пользователя для поиска",
 	"search.username": "По имени пользователя",
