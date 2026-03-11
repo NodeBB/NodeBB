@@ -10,10 +10,9 @@ const utils = require('./utils');
 
 const jobs = Object.create(null);
 
-exports.deleteJobs = async function () {
+exports.markJobsInactive = async function () {
 	const jobs = await db.getSortedSetRange('cronJobs', 0, -1);
-	await db.deleteAll(jobs.map(name => `cronJob:${name}`));
-	await db.delete('cronJobs');
+	await db.setObject(jobs.map(name => `cronJob:${name}`), { active: 0 });
 };
 
 exports.addJob = async function (options) {
@@ -67,6 +66,7 @@ exports.addJob = async function (options) {
 		cronTimeHuman: cronstrue.toString(cronTime),
 		nextRun: job.nextDate().toMillis(),
 		running: runOnInit ? 1 : 0,
+		active: 1,
 	});
 	winston.verbose(`[cron/jobs] Registered job: ${name} (${cronTime})`);
 	return job;
@@ -77,6 +77,7 @@ exports.getJobs = async function () {
 	const jobs = await db.getObjects(jobNames.map(name => `cronJob:${name}`));
 	jobs.forEach((job) => {
 		if (job) {
+			job.active = parseInt(job.active, 10) === 1;
 			job.running = parseInt(job.running, 10) === 1;
 			job.duration = job.duration || 0;
 			job.durationReadable = formatDuration(job.duration);

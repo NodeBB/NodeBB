@@ -16,6 +16,7 @@
 						<th>[[admin/advanced/jobs:next-run]]</th>
 						<th class="text-end">[[admin/advanced/jobs:last-duration]]</th>
 						<th class="text-center">[[admin/advanced/jobs:running]]</th>
+						<th class="text-center">[[admin/advanced/jobs:active]]</th>
 					</tr>
 				</thead>
 				<tbody class="text-xs text-tabular">
@@ -25,7 +26,8 @@
 					<td>{./cronTimeHuman} <span class="text-secondary">({./cronTime})</span></td>
 					<td><span class="timeago" title="{./nextRunISO}"></span></td>
 					<td class="text-end">{./durationReadable}</td>
-					<td class="text-center">{{{ if ./running }}}Yes{{{ else }}}No{{{ end }}}</td>
+					<td class="text-center">{{{ if ./running }}}<i class="fa-solid fa-circle text-success"></i>{{{ else }}}<i class="fa-solid fa-circle text-danger"></i>{{{ end }}}</td>
+					<td class="text-center text-sm">{{{ if ./active }}}<i class="fa-solid fa-check text-success"></i>{{{ else }}}<i class="fa-solid fa-times"></i>{{{ end }}}</td>
 				</tr>
 				{{{ end }}}
 				</tbody>

@@ -32,4 +32,6 @@ get:
                           type: string
                         running:
                           type: boolean
+                        active:
+                          type: boolean
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

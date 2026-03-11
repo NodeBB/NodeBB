@@ -35,7 +35,7 @@ start.start = async function () {
 		await sockets.init(webserver.server);
 
 		if (nconf.get('runJobs')) {
-			await require('./cron').deleteJobs();
+			await require('./cron').markJobsInactive();
 			await require('./notifications').startJobs();
 			await require('./user').startJobs();
 			await require('./plugins').startJobs();
