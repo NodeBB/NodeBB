@@ -48,7 +48,7 @@ define('forum/world', [
 		}
 
 		handleBack.init((after, handleBackCb) => {
-			loadTopicsAfter(after, 1, (payload, callback) => {
+			loadTopicsAfter(after, undefined, 1, (payload, callback) => {
 				app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
 					const listEl = document.getElementById('world-feed');
 					$(listEl).append(html);
