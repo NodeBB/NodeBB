@@ -1,3 +1,105 @@
+#### v4.9.2 (2026-03-11)
+
+##### Chores
+
+*  up deps (c1e1e4fd)
+*  up deps (bbdf8263)
+*  up harmony (c179a959)
+*  up themes (4173793b)
+*  up themes (a8bb0034)
+*  up themes (829d8230)
+*  up themes (4f8bb728)
+*  up themes (58336941)
+*  up widgets (95fcb392)
+*  up peace (9b22d144)
+*  incrementing version number - v4.9.1 (72e44c86)
+*  update changelog for v4.9.1 (dcc46707)
+*  incrementing version number - v4.9.0 (3fdd1bef)
+*  incrementing version number - v4.8.1 (713ae0c0)
+*  incrementing version number - v4.8.0 (3fac737a)
+*  incrementing version number - v4.7.2 (cd419d8a)
+*  incrementing version number - v4.7.1 (afb88805)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add partial query help in acp manage users (330106e8)
+*  add mastodon share, closes #14069 (02b06492)
+*  clicking on timeago permalink of a nested reply (4bb281ae)
+
+##### Bug Fixes
+
+*  mask-image to use line-heights instead of hardcoded 60% (2e21d214)
+*  closes #14074, only return url & name (92fcdd09)
+*  closes #14073, fix teasers from child categories (a391d01d)
+*  promises in groups.leave (8ec1cccc)
+*  hide unread anchor properly when close to bottom (457f6cf3)
+*  if quoting self, dont add @, but keep the username (304f89c0)
+*  unread count changes from 99+ to 123 (b9b63bf5)
+*  fix bottom sheet max-height so it doesn't push the top out of viewport (009be468)
+*  #14062 recipients is normal set (0be40810)
+*  add missing db call (d35c7455)
+*  closes #14062 (1fc3edf7)
+*  ghostscrollbar colors on dark skins (d6f5420b)
+*  #13239, unescape custom user field values (2f5fccdb)
+*  text-break on outgoing link (4f07b345)
+*  logic in checkRequired (2428602f)
+*  closes #14041, show specific error message (b2681646)
+*  dont crash if payload isnt Error (c98ef396)
+*  closes #14039, only keep chat input in view on the chats page (44434b0d)
+*  thumbs, send type for resize (30893a1a)
+*  #14033, fix gif profile images (06bf2abf)
+* **deps:**
+  *  update dependency multer to v2.1.1 (#14050) (8f960ff4)
+  *  update dependency nodebb-plugin-emoji to v6.0.6 (#14034) (811344b8)
+
+##### Performance Improvements
+
+*  make a single round trip for set(s)Remove (f6f51f83)
+*  cache groups:createtime (c4e9e1cb)
+
+##### Refactors
+
+*  get rid of pop (4af03139)
+*  switch to cursor (4aea3a80)
+*  update upgrade script to scan for missing tid:<tid>:recipients (75f52cad)
+*  move resolve flags and activitypub.out.remove.context (88b91c20)
+*  use includes (0c43e2da)
+
+##### Tests
+
+*  fix spec (bdb91e82)
+*  fix btn tests (c8308718)
+
 #### v4.9.1 (2026-03-01)
 
 ##### Chores
