@@ -139,6 +139,11 @@ usersController.search = async function (req, res) {
 				return [];
 			}
 			query = String(query).toLowerCase();
+
+			if (!query.startsWith('*')) {
+				query = `*${query}`;
+			}
+
 			if (!query.endsWith('*')) {
 				query += '*';
 			}
