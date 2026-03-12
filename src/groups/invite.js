@@ -59,9 +59,9 @@ module.exports = function (Groups) {
 			...groupNames.map(g => `group:${g}:invited`),
 		];
 		const isMembers = await db.isMemberOfSets(sets, uid);
-		const toRemove = groupNames.filter((g, i) => isMembers[i]);
-		if (toRemove.length) {
-			await db.setsRemove(toRemove, uid);
+		const toRemoveSets = sets.filter((set, index) => isMembers[index]);
+		if (toRemoveSets.length) {
+			await db.setsRemove(toRemoveSets, uid);
 		}
 	};
 
