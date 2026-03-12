@@ -54,9 +54,15 @@ module.exports = function (Groups) {
 		if (!Array.isArray(groupNames)) {
 			groupNames = [groupNames];
 		}
-		const sets = [];
-		groupNames.forEach(groupName => sets.push(`group:${groupName}:pending`, `group:${groupName}:invited`));
-		await db.setsRemove(sets, uid);
+		const sets = [
+			...groupNames.map(g => `group:${g}:pending`),
+			...groupNames.map(g => `group:${g}:invited`),
+		];
+		const isMembers = await db.isMemberOfSets(sets, uid);
+		const toRemoveSets = sets.filter((set, index) => isMembers[index]);
+		if (toRemoveSets.length) {
+			await db.setsRemove(toRemoveSets, uid);
+		}
 	};
 
 	Groups.invite = async function (groupName, uids) {
