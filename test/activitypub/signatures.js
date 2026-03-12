@@ -35,7 +35,7 @@ describe('http signature signing and verification', () => {
 
 			assert(signature);
 			assert(dateObj);
-			assert.strictEqual(digest, null);
+			assert.strictEqual(digest, undefined);
 		});
 
 		it('should also return a digest hash if payload is passed in', async () => {
