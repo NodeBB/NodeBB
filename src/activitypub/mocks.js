@@ -986,19 +986,31 @@ Mocks.activities.create = async (pid, uid, post) => {
 	return { activity, targets };
 };
 
-Mocks.activities.like = (pid, uid) => ({
-	id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
-	type: 'Like',
-	actor: `${nconf.get('url')}/uid/${uid}`,
-	object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-});
+Mocks.activities.like = async (pid, uid) => {
+	const authorUid = await posts.getPostField(pid, 'uid');
 
-Mocks.activities.dislike = (pid, uid) => ({
-	id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
-	type: 'Dislike',
-	actor: `${nconf.get('url')}/uid/${uid}`,
-	object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-});
+	return {
+		id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
+		type: 'Like',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to: [activitypub._constants.publicAddress],
+		cc: [authorUid],
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+};
+
+Mocks.activities.dislike = async (pid, uid) => {
+	const authorUid = await posts.getPostField(pid, 'uid');
+
+	return {
+		id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
+		type: 'Dislike',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to: [activitypub._constants.publicAddress],
+		cc: [authorUid],
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+};
 
 Mocks.activities.announce = async (tid, uid) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);

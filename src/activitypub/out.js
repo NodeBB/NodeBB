@@ -254,7 +254,7 @@ Out.delete.note = enabledCheck(async (uid, pid) => {
 Out.like = {};
 
 Out.like.note = enabledCheck(async (uid, pid) => {
-	const payload = activitypub.mocks.activities.like(pid, uid);
+	const payload = await activitypub.mocks.activities.like(pid, uid);
 
 	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
 		await activitypub.feps.announce(pid, payload);
