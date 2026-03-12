@@ -10,6 +10,7 @@ const plugins = require('../plugins');
 const translator = require('../translator');
 const utils = require('../utils');
 const postCache = require('./cache');
+const devMode = process.env.NODE_ENV === 'development';
 
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
@@ -99,7 +100,9 @@ module.exports = function (Posts) {
 						content.slice(current.index + offset + current[1].length);
 					}
 				} catch (err) {
-					winston.verbose(err.messsage);
+					if (devMode) {
+						winston.verbose(err.messsage);
+					}
 				}
 			}
 			current = regex.exec(content);

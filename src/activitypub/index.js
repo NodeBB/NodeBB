@@ -338,9 +338,9 @@ ActivityPub.get = async (type, id, uri, options) => {
 		});
 
 		if (!String(response.statusCode).startsWith('2')) {
-			winston.verbose(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
+			ActivityPub.helpers.log(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
 			if (body.hasOwnProperty('error')) {
-				winston.verbose(`[activitypub/get] Error received: ${body.error}`);
+				ActivityPub.helpers.log(`[activitypub/get] Error received: ${body.error}`);
 			}
 
 			const e = new Error(`[[error:activitypub.get-failed]]`);

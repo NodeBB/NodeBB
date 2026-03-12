@@ -42,11 +42,11 @@ Helpers._test = (method, args) => {
 let _lastLog;
 Helpers.log = (message) => {
 	if (!message) {
-		return _lastLog;
+		return _lastLog || 'run in development mode to see last log';
 	}
 
-	_lastLog = message;
 	if (process.env.NODE_ENV === 'development') {
+		_lastLog = message;
 		winston.verbose(message);
 	}
 };

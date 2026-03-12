@@ -318,7 +318,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
 	} finally {
-		winston.verbose(`[activitypub/notes.assert] Releasing lock (${id})`);
+		activitypub.helpers.log(`[activitypub/notes.assert] Releasing lock (${id})`);
 		await db.deleteObjectField('locks', id);
 	}
 };
@@ -563,7 +563,7 @@ Notes.getParentChain = async (uid, input) => {
 					}
 				}
 			} catch (e) {
-				winston.verbose(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
+				activitypub.helpers.log(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
 			}
 		}
 	};

@@ -449,7 +449,7 @@ inbox.announce = async (req) => {
 				if (!fromRelay && !cid && !syncedCids.length) {
 					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
 					if (!followers) {
-						winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
+						activitypub.helpers.log(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
 						reject('Announce', object, actor);
 						return;
 					}
@@ -635,7 +635,7 @@ inbox.undo = async (req) => {
 
 	let { type: localType, id } = await helpers.resolveLocalId(object.object);
 
-	winston.verbose(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
+	activitypub.helpers.log(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
@@ -680,7 +680,7 @@ inbox.undo = async (req) => {
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 			if (!allowed) {
-				winston.verbose(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+				activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 				reject('Like', object, actor);
 				break;
 			}
