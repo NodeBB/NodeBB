@@ -128,8 +128,10 @@ module.exports = function (module) {
 		const item = await module.client.collection('objects').findOne({
 			_key: key, members: value,
 		}, {
-			projection: { _id: 0, members: 0 },
+			projection: { _id: 0, _key: 1},
+			explain: true,
 		});
+		return item;
 		return item !== null && item !== undefined;
 	};
 
@@ -137,17 +139,34 @@ module.exports = function (module) {
 		if (!key || !Array.isArray(values) || !values.length) {
 			return [];
 		}
-		values = values.map(v => helpers.valueToString(v));
+		const stringValues = values.map(v => helpers.valueToString(v));
 
-		const result = await module.client.collection('objects').findOne({
-			_key: key,
-		}, {
-			projection: { _id: 0, _key: 0 },
-		});
-		const membersSet = new Set(result && Array.isArray(result.members) ? result.members : []);
-		return values.map(v => membersSet.has(v));
+		const pipeline = [
+			{
+				$match: {
+					_key: key,
+					members: { $in: stringValues, $exists: true }, // Trigger the partial index
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					results: {
+						$map: {
+							input: stringValues,
+							as: 'val',
+							in: { $in: ['$$val', '$members'] },
+						},
+					},
+				},
+			},
+		];
+
+		const [doc] = await module.client.collection('objects').aggregate(pipeline).toArray();
+		return doc ? doc.results : values.map(() => false);
 	};
 
+	// COVERED
 	module.isMemberOfSets = async function (sets, value) {
 		if (!Array.isArray(sets) || !sets.length) {
 			return [];
@@ -157,7 +176,7 @@ module.exports = function (module) {
 		const result = await module.client.collection('objects').find({
 			_key: { $in: sets }, members: value,
 		}, {
-			projection: { _id: 0, members: 0 },
+			projection: { _id: 0, _key: 1 },
 		}).toArray();
 
 		const map = {};
