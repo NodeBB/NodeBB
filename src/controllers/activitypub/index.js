@@ -224,7 +224,7 @@ Controller.getCategoryOutbox = async (req, res) => {
 		count,
 		page,
 		perPage: 20,
-		url: `${nconf.get('url')}/category/1/outbox`,
+		url: `${nconf.get('url')}/category/${cid}/outbox`,
 	});
 	if (collection.orderedItems) {
 		collection.orderedItems = await Promise.all(collection.orderedItems.map(async (pid) => {
