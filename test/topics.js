@@ -1640,10 +1640,12 @@ describe('Topic\'s', () => {
 
 		it('should properly remove tags from topic hash when removing all tags of a topic', async () => {
 			const result1 = await topics.post({ uid: adminUid, tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5'], title: 'many tags much wow', content: 'topic 1 content', cid: topic.categoryId });
+			const result2 = await topics.post({ uid: adminUid, tags: ['best1', 'tag2', 'best2', 'tag3', 'best3'], title: 'many tags much wow', content: 'topic 1 content', cid: topic.categoryId });
 			await topics.deleteTags(['tag1', 'tag2', 'tag3', 'tag4', 'tag5']);
-			const topicData = await topics.getTopicData(result1.topicData.tid);
-			const tags = topicData.tags.map(t => t.value);
-			assert.deepStrictEqual(tags, []);
+			const topicData1 = await topics.getTopicData(result1.topicData.tid);
+			const topicData2 = await topics.getTopicData(result2.topicData.tid);
+			assert.deepStrictEqual(topicData1.tags.map(t => t.value), []);
+			assert.deepStrictEqual(topicData2.tags.map(t => t.value), ['best1', 'best2', 'best3']);
 		});
 
 		it('should delete category tag as well', async () => {
