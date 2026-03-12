@@ -504,7 +504,7 @@ ActivityPub.buildRecipients = async function (object, options) {
 
 		// Remove local uris, public addresses, and any ids that aren't asserted actors
 		targets.forEach((address) => {
-			if (address.startsWith(nconf.get('url'))) {
+			if (utils.isNumber(address) || address.startsWith(nconf.get('url'))) {
 				targets.delete(address);
 			}
 		});
