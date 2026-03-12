@@ -602,7 +602,6 @@ Actors.prune = async () => {
 	let deletionCountNonExisting = 0;
 	let notDeletedDueToLocalContent = 0;
 	const preservedIds = [];
-	const cleanupUids = [];
 
 	await batch.processArray(ids, async (ids) => {
 		const exists = await Promise.all([
@@ -652,7 +651,7 @@ Actors.prune = async () => {
 				} catch (err) {
 					winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
 					if (err.message === '[[error:no-user]]') {
-						cleanupUids.push(uid);
+						missing.add(uid);
 					}
 				}
 			} else {
@@ -660,14 +659,6 @@ Actors.prune = async () => {
 				preservedIds.push(uid);
 			}
 		}));
-
-		if (cleanupUids.length) {
-			await Promise.all([
-				db.sortedSetRemove('usersRemote:lastCrawled', cleanupUids),
-				db.deleteAll(cleanupUids.map(uid => `userRemote:${uid}`)),
-			]);
-			winston.info(`[actors/prune] Cleaned up ${cleanupUids.length} remote users that were not found in the database.`);
-		}
 
 		// Remote categories
 		let counts = await categories.getCategoriesFields(cids, ['topic_count']);
@@ -688,7 +679,11 @@ Actors.prune = async () => {
 		}));
 
 		deletionCountNonExisting += missing.size;
-		await db.sortedSetRemove('usersRemote:lastCrawled', Array.from(missing));
+		if (missing.size) {
+			await db.sortedSetRemove('usersRemote:lastCrawled', Array.from(missing));
+			winston.info(`[actors/prune] Cleaned up ${missing.size} remote users that were not found in the database.`);
+		}
+
 		// update timestamp in usersRemote:lastCrawled so we don't try to delete users
 		// with content over and over
 		const now = Date.now();
