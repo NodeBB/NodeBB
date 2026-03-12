@@ -9,7 +9,12 @@ const plugins = require('../plugins');
 const activitypub = require('../activitypub');
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
-const { secureRandom } = require('../utils');
+
+const error404Icons = [
+	'fa-hippo', 'fa-cat', 'fa-otter',
+	'fa-dog', 'fa-cow', 'fa-fish',
+	'fa-dragon', 'fa-horse', 'fa-dove',
+];
 
 exports.handle404 = helpers.try(async (req, res) => {
 	const relativePath = nconf.get('relative_path');
@@ -62,15 +67,12 @@ exports.send404 = helpers.try(async (req, res) => {
 			bodyClass: helpers.buildBodyClass(req, res),
 		});
 	}
-	const icons = [
-		'fa-hippo', 'fa-cat', 'fa-otter',
-		'fa-dog', 'fa-cow', 'fa-fish',
-		'fa-dragon', 'fa-horse', 'fa-dove',
-	];
+
 	await middleware.buildHeaderAsync(req, res);
+	const randomIndex = Math.floor(Math.random() * error404Icons.length);
 	res.render('404', {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
-		icon: icons[secureRandom(0, icons.length - 1)],
+		icon: error404Icons[randomIndex],
 	});
 });
