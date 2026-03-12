@@ -15,7 +15,7 @@ module.exports = {
 
 		await db.client.collection('objects').createIndex(
 			{ members: 1, _key: 1 },
-			{ partialFilterExpression: { members: { $exists: true } } },
+			{  background: true, partialFilterExpression: { members: { $exists: true } } },
 		);
 	},
 };
