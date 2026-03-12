@@ -69,10 +69,9 @@ exports.send404 = helpers.try(async (req, res) => {
 	}
 
 	await middleware.buildHeaderAsync(req, res);
-	const randomIndex = Math.floor(Math.random() * error404Icons.length);
 	res.render('404', {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
-		icon: error404Icons[randomIndex],
+		icon: error404Icons[Math.floor(Math.random() * error404Icons.length)],
 	});
 });
