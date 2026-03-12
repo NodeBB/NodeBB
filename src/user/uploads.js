@@ -2,7 +2,6 @@
 
 const path = require('path');
 const nconf = require('nconf');
-const winston = require('winston');
 const crypto = require('crypto');
 
 const db = require('../database');
@@ -61,12 +60,9 @@ module.exports = function (User) {
 			const fullPaths = uploadNames.map(path => _getFullPath(path));
 
 			await Promise.all(fullPaths.map(async (fullPath, idx) => {
-				winston.verbose(`[user/deleteUpload] Deleting ${uploadNames[idx]}`);
 				await Promise.all([
 					file.delete(fullPath),
 					file.delete(file.appendToFileName(fullPath, '-resized')),
-				]);
-				await Promise.all([
 					db.sortedSetRemove(`uid:${uid}:uploads`, uploadNames[idx]),
 					db.delete(`upload:${md5(uploadNames[idx])}`),
 				]);
