@@ -67,6 +67,7 @@ privsAdmin.routeMap = {
 	uploadfavicon: 'admin:settings',
 	uploadTouchIcon: 'admin:settings',
 	uploadMaskableIcon: 'admin:settings',
+	uploadScreenshot: 'admin:settings',
 	uploadlogo: 'admin:settings',
 	uploadOgImage: 'admin:settings',
 	uploadDefaultAvatar: 'admin:settings',

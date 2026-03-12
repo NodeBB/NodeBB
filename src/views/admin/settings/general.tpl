@@ -153,6 +153,19 @@
 						[[admin/settings/general:maskable-icon.help]]
 					</p>
 				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="screenshotUrl">[[admin/settings/general:screenshot]]</label>
+					<div class="d-flex gap-1">
+						<input id="screenshotUrl" type="text" class="form-control" data-field="brand:screenshot" />
+
+						<input data-action="upload" data-target="screenshotUrl" data-route="{config.relative_path}/api/admin/uploadScreenshot" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
+						<button data-action="removeMaskableIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
+					</div>
+					<p class="form-text">
+						[[admin/settings/general:screenshot.help]]
+					</p>
+				</div>
 			</div>
 
 			<hr/>

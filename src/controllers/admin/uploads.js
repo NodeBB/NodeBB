@@ -198,7 +198,6 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 	}
 };
 
-
 uploadsController.uploadMaskableIcon = async function (req, res, next) {
 	const uploadedFile = req.files[0];
 	const allowedTypes = ['image/png'];
@@ -206,6 +205,21 @@ uploadsController.uploadMaskableIcon = async function (req, res, next) {
 	await validateUpload(uploadedFile, allowedTypes);
 	try {
 		const imageObj = await file.saveFileToLocal('maskableicon-orig.png', 'system', uploadedFile.path);
+		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
+	} catch (err) {
+		next(err);
+	} finally {
+		file.delete(uploadedFile.path);
+	}
+};
+
+uploadsController.uploadScreenshot = async function (req, res, next) {
+	const uploadedFile = req.files[0];
+	const allowedTypes = ['image/png', 'image/jpeg'];
+
+	await validateUpload(uploadedFile, allowedTypes);
+	try {
+		const imageObj = await file.saveFileToLocal('screenshot.png', 'system', uploadedFile.path);
 		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
 	} catch (err) {
 		next(err);
