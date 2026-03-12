@@ -689,7 +689,7 @@ Actors.prune = async () => {
 		const now = Date.now();
 		await db.sortedSetAdd('usersRemote:lastCrawled', preservedIds.map(() => now), preservedIds);
 	}, {
-		batch: 50,
+		batch: 10,
 		interval: 1000,
 	});
 
