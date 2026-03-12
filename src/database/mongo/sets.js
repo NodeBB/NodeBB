@@ -115,7 +115,7 @@ module.exports = function (module) {
 
 		await module.client.collection('objects').bulkWrite([
 			{ updateMany: { filter: { _key: filterKey }, update: update } },
-			{ deleteMany: { filter: { _key: filterKey, members: { $size: 0 } } } },
+			{ deleteMany: { filter: { _key: filterKey, members: [] } } },
 		], { ordered: true });
 	}
 
@@ -129,9 +129,8 @@ module.exports = function (module) {
 			_key: key, members: value,
 		}, {
 			projection: { _id: 0, _key: 1},
-			explain: true,
 		});
-		return item;
+
 		return item !== null && item !== undefined;
 	};
 
@@ -166,7 +165,6 @@ module.exports = function (module) {
 		return doc ? doc.results : values.map(() => false);
 	};
 
-	// COVERED
 	module.isMemberOfSets = async function (sets, value) {
 		if (!Array.isArray(sets) || !sets.length) {
 			return [];
@@ -195,7 +193,7 @@ module.exports = function (module) {
 		const data = await module.client.collection('objects').findOne({
 			_key: key,
 		}, {
-			projection: { _id: 0, _key: 0 },
+			projection: { _id: 0, members: 1 },
 		});
 		return data ? data.members : [];
 	};
