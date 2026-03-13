@@ -218,6 +218,7 @@ module.exports = function (User) {
 		await db.deleteObjectFields(`user:${data.uid}`, ['cover:url', 'cover:position']);
 	};
 
+	// this function expects a path without nconf.get('relative_path) prepended
 	User.isUserUploadedPicture = async (uid, picture) => {
 		return await db.isSortedSetMember(`uid:${uid}:profile:pictures`, picture);
 	};

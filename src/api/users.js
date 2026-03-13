@@ -2,7 +2,7 @@
 
 const path = require('path');
 const fs = require('fs').promises;
-
+const nconf = require('nconf');
 const validator = require('validator');
 const winston = require('winston');
 
@@ -627,10 +627,11 @@ usersAPI.changePicture = async (caller, data) => {
 	if (type === 'default') {
 		picture = '';
 	} else if (type === 'uploaded') {
-		const isUserPicture = await user.isUserUploadedPicture(data.uid, data.picture);
+		const cleanPath = data.picture.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
+		const isUserPicture = await user.isUserUploadedPicture(data.uid, cleanPath);
 		if (isUserPicture) {
-			await user.setUserField(data.uid, 'uploadedpicture', data.picture);
-			picture = data.picture;
+			await user.setUserField(data.uid, 'uploadedpicture', cleanPath);
+			picture = cleanPath;
 		} else {
 			picture = '';
 		}
