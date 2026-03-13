@@ -1028,7 +1028,8 @@ describe('User', () => {
 
 		it('should set user picture to uploaded', async () => {
 			await User.setUserField(uid, 'uploadedpicture', '/test');
-			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid });
+			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/test');
+			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/test', uid: uid });
 			const picture = await User.getUserField(uid, 'picture');
 			assert.equal(picture, `${nconf.get('relative_path')}/test`);
 		});

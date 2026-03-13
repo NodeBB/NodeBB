@@ -134,6 +134,7 @@ module.exports = function (User) {
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`,
 			`uid:${uid}:shares`,
+			`uid:${uid}:profile:images`,
 			`invitation:uid:${uid}`,
 		];
 
