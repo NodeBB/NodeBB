@@ -3,10 +3,10 @@
 define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
 	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
-	'translator', 'quickreply', 'handleBack',
+	'translator', 'quickreply', 'handleBack', 'imagesloaded',
 ], function (infinitescroll, search, sort, hooks,
 	alerts, api, bootbox, helpers, categoryTools,
-	translator, quickreply, handleBack) {
+	translator, quickreply, handleBack, imagesLoaded) {
 	const World = {};
 
 	World.init = function () {
@@ -52,11 +52,13 @@ define('forum/world', [
 				app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
 					const listEl = document.getElementById('world-feed');
 					$(listEl).append(html);
-					html.find('.timeago').timeago();
-					handleImages();
-					handleShowMoreButtons();
-					callback();
-					handleBackCb();
+					imagesLoaded(listEl, () => {
+						html.find('.timeago').timeago();
+						handleImages();
+						handleShowMoreButtons();
+						callback();
+						handleBackCb();
+					});
 				});
 			});
 		}, { container: '#world-feed' });
