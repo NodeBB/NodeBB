@@ -45,7 +45,6 @@ define('forum/world', [
 				}
 
 				default: {
-					console.log('here!');
 					translator.translate(`[[world:latest${params.get('all') === '1' ? '-all' : ''}]]`, function (translated) {
 						sortLabelEl.innerText = translated;
 					});
