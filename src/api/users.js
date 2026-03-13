@@ -627,7 +627,13 @@ usersAPI.changePicture = async (caller, data) => {
 	if (type === 'default') {
 		picture = '';
 	} else if (type === 'uploaded') {
-		picture = await user.getUserField(data.uid, 'uploadedpicture');
+		const isUserPicture = await user.isUserUploadedPicture(data.uid, data.picture);
+		if (isUserPicture) {
+			await user.setUserField(data.uid, 'uploadedpicture', data.picture);
+			picture = data.picture;
+		} else {
+			picture = '';
+		}
 	} else if (type === 'external' && url) {
 		picture = validator.escape(url);
 	} else {

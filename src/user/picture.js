@@ -52,7 +52,10 @@ module.exports = function (User) {
 			const filename = `${data.uid}-profilecover-${Date.now()}${extension}`;
 			const uploadData = await image.uploadImage(filename, `profile/uid-${data.uid}`, picture);
 
-			await deleteCurrentPicture(data.uid, 'cover:url');
+			if (!meta.config['profile:keepAllUserImages']) {
+				await deletePicture(data.uid, 'cover:url');
+			}
+
 			await User.setUserField(data.uid, 'cover:url', uploadData.url);
 
 			if (data.position) {
@@ -87,30 +90,11 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-image-extension]]');
 		}
 
-		const normalizedPath = await convertToPNG(userPhoto.path);
-		const isNormalized = userPhoto.path !== normalizedPath;
-
-		await image.resizeImage({
-			path: normalizedPath,
-			type: isNormalized ? 'image/png' : userPhoto.type,
-			width: meta.config.profileImageDimension,
-			height: meta.config.profileImageDimension,
+		return await storeUserUploadedPicture(data.callerUid, data.uid, {
+			path: userPhoto.path,
+			type: userPhoto.type,
+			extension,
 		});
-
-		const filename = generateProfileImageFilename(data.uid, extension);
-		const uploadedImage = await image.uploadImage(filename, `profile/uid-${data.uid}`, {
-			uid: data.uid,
-			path: normalizedPath,
-			name: 'profileAvatar',
-		});
-
-		await deleteCurrentPicture(data.uid, 'uploadedpicture');
-		await User.updateProfile(data.callerUid, {
-			uid: data.uid,
-			uploadedpicture: uploadedImage.url,
-			picture: uploadedImage.url,
-		}, ['uploadedpicture', 'picture']);
-		return uploadedImage;
 	};
 
 	// uploads image data in base64 as profile picture
@@ -133,40 +117,67 @@ module.exports = function (User) {
 			}
 
 			picture.path = await image.writeImageDataToTempFile(data.imageData);
-			const normalizedPath = await convertToPNG(picture.path);
-			const isNormalized = picture.path !== normalizedPath;
-			picture.path = normalizedPath;
-			await image.resizeImage({
+
+			return await storeUserUploadedPicture(data.callerUid, data.uid, {
 				path: picture.path,
-				type: isNormalized ? 'image/png' : type,
-				width: meta.config.profileImageDimension,
-				height: meta.config.profileImageDimension,
+				type,
+				extension,
 			});
-
-			const filename = generateProfileImageFilename(data.uid, extension);
-			const uploadedImage = await image.uploadImage(filename, `profile/uid-${data.uid}`, picture);
-
-			await deleteCurrentPicture(data.uid, 'uploadedpicture');
-			await User.updateProfile(data.callerUid, {
-				uid: data.uid,
-				uploadedpicture: uploadedImage.url,
-				picture: uploadedImage.url,
-			}, ['uploadedpicture', 'picture']);
-			return uploadedImage;
 		} finally {
 			await file.delete(picture.path);
 		}
 	};
 
-	async function deleteCurrentPicture(uid, field) {
-		if (meta.config['profile:keepAllUserImages']) {
-			return;
+	async function storeUserUploadedPicture(callerUid, updateUid, picture) {
+		const { type, extension } = picture;
+		const normalizedPath = await convertToPNG(picture.path);
+		const isNormalized = picture.path !== normalizedPath;
+
+		await image.resizeImage({
+			path: normalizedPath,
+			type: isNormalized ? 'image/png' : type,
+			width: meta.config.profileImageDimension,
+			height: meta.config.profileImageDimension,
+		});
+
+		const filename = generateProfileImageFilename(updateUid, extension);
+		const uploadedImage = await image.uploadImage(filename, `profile/uid-${updateUid}`, {
+			uid: updateUid,
+			path: picture.path,
+			name: 'profileAvatar',
+		});
+
+		await User.updateProfile(callerUid, {
+			uid: updateUid,
+			uploadedpicture: uploadedImage.url,
+			picture: uploadedImage.url,
+		}, ['uploadedpicture', 'picture']);
+
+		const zsetKey = `uid:${updateUid}:profile:pictures`;
+
+		if (!meta.config['profile:keepAllUserImages']) {
+			// if we are not keeping all images, only keep most recent 3
+			const imagesToKeep = 3;
+			const previousImages = await db.getSortedSetRevRangeWithScores(zsetKey, 0, -1);
+			const toDeleteImages = previousImages.filter((imagePath, index) => index >= imagesToKeep - 1)
+				.map(image => image.value);
+			const toRemove = [
+				...toDeleteImages.map(imagePath => ([zsetKey, imagePath])),
+			];
+
+			await db.sortedSetRemoveBulk(toRemove);
+			toDeleteImages.forEach((imagePath) => {
+				if (imagePath && !imagePath.startsWith('http')) {
+					file.delete(imagePath);
+				}
+			});
 		}
-		await deletePicture(uid, field);
+		await db.sortedSetAdd(zsetKey, Date.now(), uploadedImage.url);
+		return uploadedImage;
 	}
 
 	async function deletePicture(uid, field) {
-		const uploadPath = await getPicturePath(uid, field);
+		const uploadPath = await getPicturePathFromUserField(uid, field);
 		if (uploadPath) {
 			await file.delete(uploadPath);
 		}
@@ -207,31 +218,50 @@ module.exports = function (User) {
 		await db.deleteObjectFields(`user:${data.uid}`, ['cover:url', 'cover:position']);
 	};
 
-	User.removeProfileImage = async function (uid) {
+	User.isUserUploadedPicture = async (uid, picture) => {
+		return await db.isSortedSetMember(`uid:${uid}:profile:pictures`, picture);
+	};
+
+	User.removeProfileImage = async function (uid, picture) {
 		const userData = await User.getUserFields(uid, ['uploadedpicture', 'picture']);
-		await deletePicture(uid, 'uploadedpicture');
-		await User.setUserFields(uid, {
-			uploadedpicture: '',
-			// if current picture is uploaded picture, reset to user icon
-			picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,
-		});
+		const isUserPicture = await User.isUserUploadedPicture(uid, picture);
+		if (isUserPicture) {
+			const path = getPicturePath(uid, picture);
+			await Promise.all([
+				!path.startsWith('http') ? file.delete(path) : null,
+				db.sortedSetRemove(`uid:${uid}:profile:pictures`, picture),
+			]);
+			if (picture === userData.picture) {
+				// if deleting current uploaded picture, reset to user icon
+				await User.setUserFields(uid, {
+					uploadedpicture: '',
+					picture: '',
+				});
+			}
+		}
+
 		return userData;
 	};
 
 	User.getLocalCoverPath = async function (uid) {
-		return getPicturePath(uid, 'cover:url');
+		return getPicturePathFromUserField(uid, 'cover:url');
 	};
 
 	User.getLocalAvatarPath = async function (uid) {
-		return getPicturePath(uid, 'uploadedpicture');
+		return getPicturePathFromUserField(uid, 'uploadedpicture');
 	};
 
-	async function getPicturePath(uid, field) {
+	async function getPicturePathFromUserField(uid, field) {
 		const value = await User.getUserField(uid, field);
+		return getPicturePath(uid, value);
+	}
+
+	function getPicturePath(uid, value) {
 		if (!value || !value.startsWith(`${nconf.get('relative_path')}/assets/uploads/profile/uid-${uid}`)) {
 			return false;
 		}
 		const filename = value.split('/').pop();
 		return path.join(nconf.get('upload_path'), `profile/uid-${uid}`, filename);
 	}
+
 };
