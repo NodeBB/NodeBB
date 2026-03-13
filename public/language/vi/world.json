@@ -1,6 +1,7 @@
 {
 	"name": "Thế giới",
-	"latest": "Mới nhất",
+	"latest": "Latest (Following)",
+	"latest-all": "Latest (All)",
 	"popular-day": "Phổ biến (Ngày)",
 	"popular-week": "Phổ biến (Tuần)",
 	"popular-month": "Phổ biến (Tháng)",

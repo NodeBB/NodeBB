@@ -1,6 +1,7 @@
 {
 	"name": "世界",
-	"latest": "最新",
+	"latest": "Latest (Following)",
+	"latest-all": "Latest (All)",
 	"popular-day": "热门（按天）",
 	"popular-week": "热门（按周）",
 	"popular-month": "热门（按月）",

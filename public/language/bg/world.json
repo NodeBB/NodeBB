@@ -1,6 +1,7 @@
 {
 	"name": "Свят",
-	"latest": "Най-нови",
+	"latest": "Latest (Following)",
+	"latest-all": "Latest (All)",
 	"popular-day": "Популярни (за деня)",
 	"popular-week": "Популярни (за седмицата)",
 	"popular-month": "Популярни (за месеца)",

@@ -1,6 +1,7 @@
 {
 	"name": "Mondo",
-	"latest": "Ultimo",
+	"latest": "Latest (Following)",
+	"latest-all": "Latest (All)",
 	"popular-day": "Popolare (Giorno)",
 	"popular-week": "Popolare (Settimana)",
 	"popular-month": "Popolare (Mese)",

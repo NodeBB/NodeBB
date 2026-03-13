@@ -1,6 +1,7 @@
 {
 	"name": "עולם",
-	"latest": "אחרונים",
+	"latest": "Latest (Following)",
+	"latest-all": "Latest (All)",
 	"popular-day": "פופולרי (יומי)",
 	"popular-week": "פופולרי (שבועי)",
 	"popular-month": "פופולרי (חודשי)",

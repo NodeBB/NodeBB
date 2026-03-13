@@ -1,6 +1,7 @@
 {
 	"name": "Świat",
-	"latest": "Najnowsze",
+	"latest": "Latest (Following)",
+	"latest-all": "Latest (All)",
 	"popular-day": "Popularne (Dziś)",
 	"popular-week": "Popularne (W Tygodniu)",
 	"popular-month": "Popularne (W Miesiącu)",
