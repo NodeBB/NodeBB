@@ -224,6 +224,9 @@ module.exports = function (User) {
 
 	User.removeProfileImage = async function (uid, picture) {
 		const userData = await User.getUserFields(uid, ['uploadedpicture', 'picture']);
+		if (!picture) {
+			picture = userData.uploadedpicture;
+		}
 		const isUserPicture = await User.isUserUploadedPicture(uid, picture);
 		if (isUserPicture) {
 			const path = getPicturePath(uid, picture);
