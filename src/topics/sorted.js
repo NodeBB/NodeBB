@@ -46,8 +46,8 @@ module.exports = function (Topics) {
 		let tids;
 		if (params.term !== 'alltime') {
 			if (params.sort === 'posts') {
-				const { cids, uid, term, includeRemote, followingOnly } = params;
-				tids = await getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote, followingOnly });
+				const { cids, uid, term, includeRemote } = params;
+				tids = await getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote });
 			} else {
 				const cids = await getCids(params.cids, params.uid);
 				tids = await Topics.getLatestTidsFromSet(
@@ -132,26 +132,24 @@ module.exports = function (Topics) {
 		return cids;
 	}
 
-	async function getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote, followingOnly }) {
+	async function getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote }) {
 		cids = await getCids(cids, uid, includeRemote);
-		const sets = cids.map(cid => `cid:${cid}:tids`);
-		if (followingOnly && sets.includes('cid:-1:tids')) {
-			sets.splice(sets.indexOf('cid:-1:tids'), 1, `uid:${uid}:inbox`);
-		}
-		const tids = await db.getSortedSetRevRangeByScore(
+		const sets = cids.map(cid => `cid:${cid}:pids`);
+		const pids = await db.getSortedSetRevRangeByScore(
 			sets,
 			0,
 			1000,
 			'+inf',
 			Date.now() - Topics.getSinceFromTerm(term)
 		);
+		const postObjs = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['tid']);
 		const tidToCount = {};
-		tids.forEach((tid) => {
-			tidToCount[tid] = tidToCount[tid] || 0;
-			tidToCount[tid] += 1;
+		postObjs.forEach((post) => {
+			tidToCount[post.tid] = tidToCount[post.tid] || 0;
+			tidToCount[post.tid] += 1;
 		});
 
-		return _.uniq(tids)
+		return _.uniq(postObjs.map(post => String(post.tid)))
 			.sort((t1, t2) => tidToCount[t2] - tidToCount[t1]);
 	}
 
