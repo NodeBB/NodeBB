@@ -36,14 +36,21 @@ define('forum/world', [
 		const sortOptionsEl = document.getElementById('sort-options');
 		if (sortLabelEl && sortOptionsEl) {
 			const params = new URLSearchParams(window.location.search);
-			if (params.get('sort') === 'popular') {
-				translator.translate(`[[world:popular-${params.get('term')}]]`, function (translated) {
-					sortLabelEl.innerText = translated;
-				});
-			} else {
-				translator.translate('[[world:latest]]', function (translated) {
-					sortLabelEl.innerText = translated;
-				});
+			switch(params.get('sort')) {
+				case 'popular': {
+					translator.translate(`[[world:popular-${params.get('term')}]]`, function (translated) {
+						sortLabelEl.innerText = translated;
+					});
+					break;
+				}
+
+				default: {
+					console.log('here!');
+					translator.translate(`[[world:latest${params.get('all') === '1' ? '-all' : ''}]]`, function (translated) {
+						sortLabelEl.innerText = translated;
+					});
+					break;
+				}
 			}
 		}
 

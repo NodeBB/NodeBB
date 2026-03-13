@@ -16,6 +16,10 @@ const helpers = require('../helpers');
 const controller = module.exports;
 
 controller.list = async function (req, res) {
+	if (!req.uid && !req.query.sort && !req.query.all) {
+		return helpers.redirect(res, '/world?all=1', false);
+	}
+
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	let { page, after } = req.query;
 	page = parseInt(page, 10) || 1;
