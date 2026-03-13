@@ -10,6 +10,9 @@ const activitypub = require('../activitypub');
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
 
+const relativePath = nconf.get('relative_path');
+const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
+
 const error404Icons = [
 	'fa-hippo', 'fa-cat', 'fa-otter',
 	'fa-dog', 'fa-cow', 'fa-fish',
@@ -17,9 +20,6 @@ const error404Icons = [
 ];
 
 exports.handle404 = helpers.try(async (req, res) => {
-	const relativePath = nconf.get('relative_path');
-	const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
-
 	if (plugins.hooks.hasListeners('action:meta.override404')) {
 		return plugins.hooks.fire('action:meta.override404', {
 			req: req,
