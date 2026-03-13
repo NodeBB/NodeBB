@@ -515,7 +515,9 @@ Notifications.merge = async function (notifications) {
 
 		differentiators.forEach((differentiator) => {
 			function typeFromLength(items) {
-				if (items.length === 2) {
+				if (items.length <= 1) {
+					return '';
+				} else if (items.length === 2) {
 					return 'dual';
 				} else if (items.length === 3) {
 					return 'triple';
