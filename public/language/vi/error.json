@@ -1,6 +1,6 @@
 {
     "invalid-data": "Dữ Liệu Không Hợp Lệ",
-    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
+    "invalid-config-field-value": "Giá trị không hợp lệ cho trường cấu hình \"%1\": %2",
     "invalid-json": "JSON không hợp lệ",
     "wrong-parameter-type": "Giá trị của loại %3 được mong đợi cho thuộc tính `%1`, nhưng thay vào đó, %2 đã được nhận",
     "required-parameters-missing": "Các thông số bắt buộc bị thiếu trong lệnh gọi API này: %1",

@@ -49,6 +49,6 @@
 	"content.outgoing": "Ra ngoài",
 	"content.summary-limit": "Số lượng ký tự sau đó bản tóm tắt sẽ được tạo.",
 	"content.summary-limit-help": "Khi nội dung được phân phối vượt quá số lượng ký tự này, <code>tóm tắt</code> được tạo ra, bao gồm tất cả các câu hoàn chỉnh trước giới hạn này. (Mặc định: 500)",
-	"content.break-string": "Note/Article Delimiter",
-	"content.break-string-help": "This delimiter can be manually inserted by power users when composing new topics. It instructs NodeBB to use content up until that point as part of the <code>summary</code>. If this string is not used, then the character count fallback applies. (Default: <code>[...]</code>)"
+	"content.break-string": "Dấu phân cách Ghi chú/Bài đăng",
+	"content.break-string-help": "Dấu phân cách này có thể được người dùng thành thạo chèn thủ công khi soạn thảo chủ đề mới. Nó hướng dẫn NodeBB sử dụng nội dung cho đến thời điểm đó như một phần của <code>tóm tắt</code>. Nếu chuỗi này không được sử dụng, thì phương án dự phòng dựa trên số lượng ký tự sẽ được áp dụng. (Mặc định: <code>[...]</code>)"
 }

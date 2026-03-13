@@ -40,7 +40,7 @@
 	"250-per-page": "每页250",
 	"500-per-page": "每页500",
 
-	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
+	"search.help": "使用 &quot;*&quot; 进行部分搜索，例如 &quot;*query&quot;",
 	"search.uid": "通过用户 ID",
 	"search.uid-placeholder": "输入用户 ID 以搜索",
 	"search.username": "通过用户名",

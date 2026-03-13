@@ -40,7 +40,7 @@
 	"250-per-page": "250 mỗi trang",
 	"500-per-page": "500 mỗi trang",
 
-	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
+	"search.help": "Dùng &quot;*&quot; thực hiện tìm kiếm một phần, ví dụ &quot;*query&quot;",
 	"search.uid": "Bởi ID Người Dùng",
 	"search.uid-placeholder": "Nhập ID người dùng để tìm",
 	"search.username": "Theo Tên Người Dùng",
