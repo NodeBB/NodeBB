@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 
-const db = require('../../database');
 const meta = require('../../meta');
 const user = require('../../user');
 const topics = require('../../topics');
@@ -20,8 +19,8 @@ controller.list = async function (req, res) {
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	let { page, after } = req.query;
 	page = parseInt(page, 10) || 1;
-	let start = Math.max(0, (page - 1) * topicsPerPage);
-	let stop = start + topicsPerPage - 1;
+	const start = Math.max(0, (page - 1) * topicsPerPage);
+	const stop = start + topicsPerPage - 1;
 
 	const [userSettings, userPrivileges] = await Promise.all([
 		user.getSettings(req.uid),
@@ -50,27 +49,24 @@ controller.list = async function (req, res) {
 	if (req.query.sort === 'popular') {
 		cidQuery = {
 			...cidQuery,
-			cids: ['-1'],
 			sort: 'posts',
 			term: req.query.term || 'day',
+			includeRemote: true,
+			followingOnly: !req.query.all || !parseInt(req.query.all, 10),
 		};
 		delete cidQuery.cid;
 		({ tids, topicCount } = await topics.getSortedTopics(cidQuery));
 		tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	} else {
-		if (after) {
-			// Update start/stop with values inferred from `after`
-			const set = await categories.buildTopicsSortedSet(cidQuery);
-			const index = await db.sortedSetRevRank(set, decodeURIComponent(after));
-			if (index && start - index < 1) {
-				const count = stop - start;
-				start = index + 1;
-				stop = start + count;
-			}
-		}
-
-		tids = await categories.getTopicIds({ ...cidQuery, start, stop });
-		topicCount = await categories.getTopicCount(cidQuery);
+		cidQuery = {
+			...cidQuery,
+			term: req.query.term,
+			includeRemote: true,
+			followingOnly: !req.query.all || !parseInt(req.query.all, 10),
+		};
+		delete cidQuery.cid;
+		({ tids, topicCount } = await topics.getSortedTopics(cidQuery));
+		tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	}
 	data.topicCount = topicCount;
 
