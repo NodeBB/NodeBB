@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const nconf = require('nconf');
 
 const db = require('../../database');
 const user = require('../../user');
@@ -38,7 +39,7 @@ module.exports = function (SocketUser) {
 		userPictures.forEach((picture) => {
 			list.pictures.push({
 				type: 'uploaded',
-				url: picture,
+				url: `${nconf.get('relative_path')}${picture}`,
 				text: '[[user:uploaded-picture]]',
 			});
 		});

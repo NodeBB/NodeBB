@@ -173,7 +173,7 @@ module.exports = function (User) {
 			});
 		}
 		await db.sortedSetAdd(zsetKey, Date.now(), uploadedImage.url);
-		return uploadedImage;
+		return { url: uploadedImage.url };
 	}
 
 	async function deletePicture(uid, field) {
@@ -227,12 +227,14 @@ module.exports = function (User) {
 		if (!picture) {
 			picture = userData.uploadedpicture;
 		}
-		const isUserPicture = await User.isUserUploadedPicture(uid, picture);
+		// picture has relative_path prepended, db entries don't have it, so remove it
+		const cleanPath = picture.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
+		const isUserPicture = await User.isUserUploadedPicture(uid, cleanPath);
 		if (isUserPicture) {
 			const path = getPicturePath(uid, picture);
 			await Promise.all([
-				!path.startsWith('http') ? file.delete(path) : null,
-				db.sortedSetRemove(`uid:${uid}:profile:pictures`, picture),
+				path && !path.startsWith('http') ? file.delete(path) : null,
+				db.sortedSetRemove(`uid:${uid}:profile:pictures`, cleanPath),
 			]);
 			if (picture === userData.picture) {
 				// if deleting current uploaded picture, reset to user icon
@@ -247,11 +249,11 @@ module.exports = function (User) {
 	};
 
 	User.getLocalCoverPath = async function (uid) {
-		return getPicturePathFromUserField(uid, 'cover:url');
+		return await getPicturePathFromUserField(uid, 'cover:url');
 	};
 
 	User.getLocalAvatarPath = async function (uid) {
-		return getPicturePathFromUserField(uid, 'uploadedpicture');
+		return await getPicturePathFromUserField(uid, 'uploadedpicture');
 	};
 
 	async function getPicturePathFromUserField(uid, field) {
