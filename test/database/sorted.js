@@ -93,6 +93,22 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			});
 			assert.strictEqual(data.length, 0);
 		});
+
+		it('should handle floating point scores', async () => {
+			await db.sortedSetAdd('scanzset6', [1.5, 2.5, 3.5, 4.5, 5.5, 6.5], ['aaab{', 'bbbb', 'bbcb', 'ddb', 'dddd', 'adb']);
+			const data = await db.getSortedSetScan({
+				key: 'scanzset6',
+				match: '*b',
+				withScores: true,
+			});
+			data.sort((a, b) => b.score - a.score);
+			assert.deepStrictEqual(data, [
+				{ value: 'adb', score: 6.5 },
+				{ value: 'ddb', score: 4.5 },
+				{ value: 'bbcb', score: 3.5 },
+				{ value: 'bbbb', score: 2.5 },
+			]);
+		});
 	});
 
 	describe('sortedSetAdd()', () => {
