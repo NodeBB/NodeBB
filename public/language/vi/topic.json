@@ -168,7 +168,7 @@
     "move-topic-instruction": "Chọn danh mục nhắm đến và sau đó nhấp vào di chuyển",
     "change-owner-instruction": "Bấm vào bài viết bạn muốn chỉ định cho người dùng khác",
     "manage-editors-instruction": "Quản lý những người dùng có thể chỉnh sửa bài đăng này bên dưới.",
-    "crossposts.instructions": "Chọn một hoặc nhiều danh mục để đăng chéo bài viết. Bài viết sẽ được truy cập từ danh mục gốc và tất cả các danh mục được đăng chéo.",
+    "crossposts.instructions": "Chọn một hoặc nhiều danh mục để đăng chéo bài viết. Chủ đề sẽ được truy cập từ danh mục gốc và tất cả các danh mục được đăng chéo.",
     "crossposts.listing": "Chủ đề này đã được đăng tải chéo lên các chuyên mục nội bộ sau:",
     "crossposts.none": "Chủ đề này chưa được đăng tải chéo lên bất kỳ chuyên mục nào khác.",
     "composer.title-placeholder": "Nhập tiêu đề chủ đề của bạn tại đây...",

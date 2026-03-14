@@ -103,8 +103,8 @@
     "search-preferences-saved": "Đã lưu tùy chọn tìm kiếm",
     "search-preferences-cleared": "Đã xóa tùy chọn tìm kiếm",
     "show-results-as": "Hiện thị kết quả theo",
-    "show-results-as-topics": "Hiển thị kết quả dưới dạng chủ đề",
-    "show-results-as-posts": "Hiển thị kết quả dưới dạng bài viết",
+    "show-results-as-topics": "Kết quả dạng chủ đề",
+    "show-results-as-posts": "Kết quả dạng bài đăng",
     "see-more-results": "Xem thêm kết quả (%1)",
     "search-in-category": "Tìm kiếm trong \"%1\""
 }

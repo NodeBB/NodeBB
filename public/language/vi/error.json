@@ -228,7 +228,7 @@
     "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn không còn hoạt động. Vui lòng làm mới trang này.",
     "session-mismatch": "‎Phiên Không Khớp‎",
     "session-mismatch-text": "Có vẻ như phiên đăng nhập của bạn không còn khớp với máy chủ. Vui lòng làm mới trang này.",
-    "no-topics-selected": "Không chọn chủ đề!",
+    "no-topics-selected": "Chưa chọn chủ đề!",
     "cant-move-to-same-topic": "Bạn không thể đưa bài đăng vào cùng chủ đề!",
     "cant-move-topic-to-same-category": "Không thể di chuyển chủ đề đến cùng danh mục!",
     "cant-move-topic-to-from-remote-categories": "Bạn không thể di chuyển chủ đề vào hoặc ra khỏi các danh mục từ xa; hãy cân nhắc đăng chéo bài viết thay thế.",
