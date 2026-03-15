@@ -108,7 +108,9 @@ define('accounts/picture', [
 		const headerIconEl = $(`[component="header/avatar"] [component="avatar/icon"]`);
 
 		if (picture) {
-			if (!headerPictureEl.length && headerIconEl.length) {
+			if (headerPictureEl.length) {
+				headerPictureEl.attr('src', picture);
+			} else if (headerIconEl.length) {
 				const img = $('<img/>');
 				$(headerIconEl[0].attributes).each(function () {
 					img.attr(this.nodeName, this.nodeValue);
