@@ -44,7 +44,7 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="change-group-desc">[[admin/manage/groups:edit.description]]</label>
-					<input type="text" class="form-control" id="change-group-desc" value="{group.description}" maxlength="255" data-property />
+					<textarea type="text" class="form-control" id="change-group-desc" maxlength="255" data-property rows="5">{group.description}</textarea>
 				</div>
 
 
