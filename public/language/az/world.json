@@ -1,6 +1,7 @@
 {
 	"name": "Dünya",
-	"latest": "Latest (Following)",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
 	"latest-all": "Latest (All)",
 	"popular-day": "Popular (Day)",
 	"popular-week": "Popular (Week)",

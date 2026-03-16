@@ -1,6 +1,7 @@
 {
 	"name": "Свят",
-	"latest": "Последни (следвани)",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
 	"latest-all": "Последни (всички)",
 	"popular-day": "Популярни (за деня)",
 	"popular-week": "Популярни (за седмицата)",
