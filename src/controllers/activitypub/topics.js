@@ -16,8 +16,8 @@ const helpers = require('../helpers');
 const controller = module.exports;
 
 controller.list = async function (req, res) {
-	if (!req.uid && !req.query.sort && !req.query.all) {
-		return helpers.redirect(res, '/world?all=1', false);
+	if (!req.uid && !req.query.sort && !req.query.local) {
+		return helpers.redirect(res, '/world?local=1', false);
 	}
 
 	const { topicsPerPage } = await user.getSettings(req.uid);
@@ -50,12 +50,14 @@ controller.list = async function (req, res) {
 
 	let tids;
 	let topicCount;
+	let { local } = req.query;
+	local = parseInt(local, 10) === 1;
 	if (req.query.sort === 'popular') {
 		cidQuery = {
 			...cidQuery,
 			sort: 'posts',
 			term: req.query.term || 'day',
-			includeRemote: true,
+			includeRemote: !local,
 			followingOnly: !req.query.all || !parseInt(req.query.all, 10),
 		};
 		delete cidQuery.cid;
@@ -65,7 +67,7 @@ controller.list = async function (req, res) {
 		cidQuery = {
 			...cidQuery,
 			term: req.query.term,
-			includeRemote: true,
+			includeRemote: !local,
 			followingOnly: !req.query.all || !parseInt(req.query.all, 10),
 		};
 		delete cidQuery.cid;
@@ -110,29 +112,33 @@ controller.list = async function (req, res) {
 	data.showSelect = true;
 
 	// Tracked/watched categories
-	let cids = await user.getCategoriesByStates(req.uid, [
-		categories.watchStates.tracking, categories.watchStates.watching,
-	]);
-	cids = cids.filter(cid => !utils.isNumber(cid));
-	const [categoryData, watchState] = await Promise.all([
-		categories.getCategories(cids),
-		categories.getWatchState(cids, req.uid),
-	]);
-	data.categories = categories.getTree(categoryData, 0);
-	await Promise.all([
-		categories.getRecentTopicReplies(categoryData, req.uid, req.query),
-		categories.setUnread(data.categories, cids, req.uid),
-	]);
-	data.categories.forEach((category, idx) => {
-		if (category) {
-			helpers.trimChildren(category);
-			helpers.setCategoryTeaser(category);
-			category.isWatched = watchState[idx] === categories.watchStates.watching;
-			category.isTracked = watchState[idx] === categories.watchStates.tracking;
-			category.isNotWatched = watchState[idx] === categories.watchStates.notwatching;
-			category.isIgnored = watchState[idx] === categories.watchStates.ignoring;
-		}
-	});
+	if (req.uid) {
+		let cids = await user.getCategoriesByStates(req.uid, [
+			categories.watchStates.tracking, categories.watchStates.watching,
+		]);
+		cids = cids.filter(cid => !utils.isNumber(cid));
+		const [categoryData, watchState] = await Promise.all([
+			categories.getCategories(cids),
+			categories.getWatchState(cids, req.uid),
+		]);
+		data.categories = categories.getTree(categoryData, 0);
+		await Promise.all([
+			categories.getRecentTopicReplies(categoryData, req.uid, req.query),
+			categories.setUnread(data.categories, cids, req.uid),
+		]);
+		data.categories.forEach((category, idx) => {
+			if (category) {
+				helpers.trimChildren(category);
+				helpers.setCategoryTeaser(category);
+				category.isWatched = watchState[idx] === categories.watchStates.watching;
+				category.isTracked = watchState[idx] === categories.watchStates.tracking;
+				category.isNotWatched = watchState[idx] === categories.watchStates.notwatching;
+				category.isIgnored = watchState[idx] === categories.watchStates.ignoring;
+			}
+		});
+	} else {
+		data.categories = [];
+	}
 
 	data.title = translator.escape(data.name);
 	data.breadcrumbs = helpers.buildBreadcrumbs([]);

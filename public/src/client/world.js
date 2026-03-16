@@ -45,7 +45,13 @@ define('forum/world', [
 				}
 
 				default: {
-					translator.translate(`[[world:latest${params.get('all') === '1' ? '-all' : ''}]]`, function (translated) {
+					let suffix = '';
+					if (params.get('all') === '1') {
+						suffix = '-all';
+					} else if (params.get('local') === '1') {
+						suffix = '-local';
+					}
+					translator.translate(`[[world:latest${suffix}]]`, function (translated) {
 						sortLabelEl.innerText = translated;
 					});
 					break;
