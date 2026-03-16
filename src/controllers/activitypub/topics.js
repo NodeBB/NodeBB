@@ -26,9 +26,10 @@ controller.list = async function (req, res) {
 	let start = Math.max(0, (page - 1) * topicsPerPage);
 	let stop = start + topicsPerPage - 1;
 
-	const [userSettings, userPrivileges] = await Promise.all([
+	const [userSettings, userPrivileges, isAdminOrGlobalMod] = await Promise.all([
 		user.getSettings(req.uid),
 		privileges.categories.get('-1', req.uid),
+		user.isAdminOrGlobalMod(req.uid),
 	]);
 	const targetUid = await user.getUidByUserslug(req.query.author);
 	let cidQuery = {
@@ -118,8 +119,8 @@ controller.list = async function (req, res) {
 	});
 	data.showThumbs = req.loggedIn || meta.config.privateUploads !== 1;
 	data.posts = postData;
-	data.showTopicTools = true;
-	data.showSelect = true;
+	data.showTopicTools = isAdminOrGlobalMod;
+	data.showSelect = isAdminOrGlobalMod;
 
 	// Tracked/watched categories
 	if (req.uid) {
