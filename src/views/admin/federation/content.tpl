@@ -20,6 +20,10 @@
 							[[admin/settings/activitypub:content.break-string-help]]
 						</div>
 					</div>
+					<div class="mb-3">
+						<label class="form-label" for="activitypubWorldDefaultCid">[[admin/settings/activitypub:content.world-default-cid]]</label>
+						<input type="text" id="activitypubWorldDefaultCid" name="activitypubWorldDefaultCid" data-field="activitypubWorldDefaultCid" title="[[admin/settings/activitypub:content.world-default-cid]]" class="form-control" />
+					</div>
 				</form>
 			</div>
 		</div>

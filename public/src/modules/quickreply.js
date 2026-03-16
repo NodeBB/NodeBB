@@ -3,9 +3,11 @@
 define('quickreply', [
 	'components', 'autocomplete', 'api',
 	'alerts', 'uploadHelpers', 'mousetrap', 'storage', 'hooks',
+	'categorySelector',
 ], function (
 	components, autocomplete, api,
-	alerts, uploadHelpers, mousetrap, storage, hooks
+	alerts, uploadHelpers, mousetrap, storage, hooks,
+	categorySelector,
 ) {
 	const QuickReply = {
 		_autocomplete: null,
@@ -15,6 +17,17 @@ define('quickreply', [
 		const element = components.get('topic/quickreply/text');
 		if (!element.length) {
 			return;
+		}
+
+		if ($('[component="topic/quickreply/container"] [component="category-selector"]')) {
+			categorySelector.init($('[component="category-selector"]'), {
+				privilege: 'topics:create',
+				selectedCategory: ajaxify.data.selectedCategory,
+				onSelect: function (category) {
+					opts.body = opts.body || {};
+					opts.body.cid = category.cid;
+				},
+			});
 		}
 
 		const qrDraftId = ajaxify.data.tid ? `qr:draft:tid:${ajaxify.data.tid}` : `qr:draft:cid:${opts?.body?.cid || -1}`;

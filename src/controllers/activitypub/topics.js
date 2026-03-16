@@ -26,10 +26,11 @@ controller.list = async function (req, res) {
 	let start = Math.max(0, (page - 1) * topicsPerPage);
 	let stop = start + topicsPerPage - 1;
 
-	const [userSettings, userPrivileges, isAdminOrGlobalMod] = await Promise.all([
+	const [userSettings, userPrivileges, isAdminOrGlobalMod, selectedCategory] = await Promise.all([
 		user.getSettings(req.uid),
 		privileges.categories.get('-1', req.uid),
 		user.isAdminOrGlobalMod(req.uid),
+		categories.getCategoryData(meta.config.activitypubWorldDefaultCid),
 	]);
 	const targetUid = await user.getUidByUserslug(req.query.author);
 	let cidQuery = {
@@ -48,6 +49,7 @@ controller.list = async function (req, res) {
 	delete data.children;
 	data.sort = req.query.sort;
 	data.privileges = userPrivileges;
+	data.selectedCategory = selectedCategory;
 
 	let tids;
 	let topicCount;
