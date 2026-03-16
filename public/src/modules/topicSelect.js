@@ -43,9 +43,6 @@ define('topicSelect', ['components'], function (components) {
 		// Long press
 		let longPressTimeout;
 		const start = function (ev) {
-			if (ev.type === 'touchstart') {
-				ev.preventDefault();
-			}
 			isLongPress = false;
 			longPressTimeout = setTimeout(() => {
 				isLongPress = true;
@@ -68,7 +65,7 @@ define('topicSelect', ['components'], function (components) {
 		topicsContainer.on('mouseleave', '[component="topic/select"]', cancel);
 		topicsContainer.on('touchend', '[component="topic/select"]', cancel);
 		topicsContainer.on('touchcancel', '[component="topic/select"]', cancel);
-		topicsContainer.on('contextmenu', (e) => {
+		topicsContainer.on('contextmenu', '[component="topic/select"]', (e) => {
 			e.preventDefault();
 		});
 	};
