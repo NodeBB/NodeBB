@@ -23,8 +23,8 @@ controller.list = async function (req, res) {
 	const { topicsPerPage } = await user.getSettings(req.uid);
 	let { page, after } = req.query;
 	page = parseInt(page, 10) || 1;
-	const start = Math.max(0, (page - 1) * topicsPerPage);
-	const stop = start + topicsPerPage - 1;
+	let start = Math.max(0, (page - 1) * topicsPerPage);
+	let stop = start + topicsPerPage - 1;
 
 	const [userSettings, userPrivileges] = await Promise.all([
 		user.getSettings(req.uid),
@@ -72,6 +72,16 @@ controller.list = async function (req, res) {
 		};
 		delete cidQuery.cid;
 		({ tids, topicCount } = await topics.getSortedTopics(cidQuery));
+
+		if (after) {
+			// Update start/stop with values inferred from `after`
+			const index = tids.indexOf(utils.isNumber(after) ? parseInt(after, 10) : after);
+			if (index && start - index < 1) {
+				const count = stop - start;
+				start = index + 1;
+				stop = start + count;
+			}
+		}
 		tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	}
 	data.topicCount = topicCount;
