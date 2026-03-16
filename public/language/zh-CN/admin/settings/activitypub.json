@@ -50,5 +50,6 @@
 	"content.summary-limit": "生成摘要后的字符计数",
 	"content.summary-limit-help": "当联合输出内容超过此字符限制时，将生成 <code>摘要</code> ，包含该限制前的所有完整句子。（默认值：500）",
 	"content.break-string": "注释/文章分隔符",
-	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)"
+	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)",
+	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
 }

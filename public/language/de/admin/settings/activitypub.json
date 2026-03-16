@@ -50,5 +50,6 @@
 	"content.summary-limit": "Anzahl der Zeichen, nach der eine Zusammenfassung erstellt wird",
 	"content.summary-limit-help": "Wenn Inhalte rausgeschickt werden, die diese Zeichenanzahl überschreiten, wird eine <code>Zusammenfassung</code> erstellt, die alle vollständigen Sätze vor dieser Grenze enthält. (Standard: 500)",
 	"content.break-string": "Notiz/Artikel-Trennzeichen",
-	"content.break-string-help": "\nDieses Trennzeichen kann von Power-Usern beim Erstellen neuer Themen manuell eingefügt werden. Es sagt NodeBB, dass der Inhalt bis zu dieser Stelle als Teil der <code>Zusammenfassung</code>verwendet werden soll. Wenn diese Zeichenfolge nicht benutzt wird, greift die Standardregel für die Zeichenanzahl. (Standard: <code>[...]</code>)"
+	"content.break-string-help": "\nDieses Trennzeichen kann von Power-Usern beim Erstellen neuer Themen manuell eingefügt werden. Es sagt NodeBB, dass der Inhalt bis zu dieser Stelle als Teil der <code>Zusammenfassung</code>verwendet werden soll. Wenn diese Zeichenfolge nicht benutzt wird, greift die Standardregel für die Zeichenanzahl. (Standard: <code>[...]</code>)",
+	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
 }
