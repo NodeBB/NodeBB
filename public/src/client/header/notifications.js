@@ -5,6 +5,7 @@ define('forum/header/notifications', function () {
 
 	notifications.prepareDOM = function () {
 		const notifTrigger = $('[component="notifications"] [data-bs-toggle="dropdown"]');
+		const listEl = document.querySelector('[component="notifications/list"]');
 
 		notifTrigger.on('show.bs.dropdown', async (ev) => {
 			const notifications = await app.require('notifications');
@@ -15,11 +16,26 @@ define('forum/header/notifications', function () {
 		notifTrigger.each((index, el) => {
 			const triggerEl = $(el);
 			const dropdownEl = triggerEl.parent().find('.dropdown-menu');
+			const listEl = dropdownEl.find('[component="notifications/list"]');
 			if (dropdownEl.hasClass('show')) {
 				app.require('notifications').then((notifications) => {
-					notifications.loadNotifications(triggerEl, dropdownEl.find('[component="notifications/list"]'));
+					notifications.loadNotifications(triggerEl, listEl);
 				});
 			}
+
+			dropdownEl.on('click', '[data-filter]', (e) => {
+				const filter = e.target.getAttribute('data-filter');
+
+				if (filter === 'unread') {
+					listEl.get(0).querySelectorAll('[data-nid]:not(.unread)').forEach((e) => {
+						e.classList.toggle('hidden', true);
+					});
+				} else {
+					listEl.get(0).querySelectorAll('[data-nid]').forEach((e) => {
+						e.classList.toggle('hidden', false);
+					});
+				}
+			});
 		});
 
 		socket.removeListener('event:new_notification', onNewNotification);
