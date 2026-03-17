@@ -19,7 +19,7 @@ define('quickreply', [
 			return;
 		}
 
-		if ($('[component="topic/quickreply/container"] [component="category-selector"]')) {
+		if (opts?.body?.cid && $('[component="topic/quickreply/container"] [component="category-selector"]')) {
 			categorySelector.init($('[component="category-selector"]'), {
 				privilege: 'topics:create',
 				selectedCategory: ajaxify.data.selectedCategory,
@@ -28,6 +28,7 @@ define('quickreply', [
 					opts.body.cid = category.cid;
 				},
 			});
+			$('[component="topic/quickreply/container"] [component="topic/quickreply/category-selector"').removeClass('hidden');
 		}
 
 		const qrDraftId = ajaxify.data.tid ? `qr:draft:tid:${ajaxify.data.tid}` : `qr:draft:cid:${opts?.body?.cid || -1}`;
