@@ -31,6 +31,9 @@ get:
                         properties:
                           bookmarks:
                             type: number
+                  selectedCategory:
+                    $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                    nullable: true
                   showThumbs:
                     type: boolean
                   showTopicTools:
