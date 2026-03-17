@@ -5,7 +5,6 @@ define('forum/header/notifications', function () {
 
 	notifications.prepareDOM = function () {
 		const notifTrigger = $('[component="notifications"] [data-bs-toggle="dropdown"]');
-		const listEl = document.querySelector('[component="notifications/list"]');
 
 		notifTrigger.on('show.bs.dropdown', async (ev) => {
 			const notifications = await app.require('notifications');
