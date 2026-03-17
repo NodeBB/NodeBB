@@ -24,7 +24,8 @@ define('forum/header/notifications', function () {
 
 			dropdownEl.on('click', '[data-filter]', (e) => {
 				const filter = e.target.getAttribute('data-filter');
-
+				dropdownEl.find('[data-filter]').removeClass('active');
+				e.target.classList.add('active');
 				if (filter === 'unread') {
 					listEl.get(0).querySelectorAll('[data-nid]:not(.unread)').forEach((e) => {
 						e.classList.toggle('hidden', true);
@@ -34,6 +35,8 @@ define('forum/header/notifications', function () {
 						e.classList.toggle('hidden', false);
 					});
 				}
+				const visibleNotifCount = dropdownEl.find('[data-nid]:not(.hidden)').length;
+				dropdownEl.find('.no-notifs').toggleClass('hidden', visibleNotifCount !== 0);
 			});
 		});
 
