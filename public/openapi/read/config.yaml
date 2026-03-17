@@ -185,3 +185,5 @@ get:
                 properties:
                   probe:
                     type: number
+                  worldDefaultCid:
+                    type: string
