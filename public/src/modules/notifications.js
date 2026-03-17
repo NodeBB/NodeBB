@@ -43,13 +43,13 @@ define('notifications', [
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
 					notifList.html(html);
 					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
-						const notifEl = $(this);
+						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							if (triggerEl) {
-								triggerEl.dropdown('toggle');
-							}
+						}
+						if (triggerEl) {
+							triggerEl.dropdown('toggle');
 						}
 
 						const unread = notifEl.hasClass('unread');
@@ -61,6 +61,7 @@ define('notifications', [
 					});
 					components.get('notifications').on('click', '.mark-all-read', () => {
 						Notifications.markAllRead();
+						triggerEl.dropdown('toggle');
 					});
 					components.get('notifications').on('click', `[href="${config.relative_path}/notifications"]`, () => {
 						triggerEl.dropdown('toggle');
