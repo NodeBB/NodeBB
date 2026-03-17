@@ -14,7 +14,7 @@ define('forum/world', [
 		quickreply.init({
 			route: '/topics',
 			body: {
-				cid: ajaxify.data.cid,
+				cid: config.activitypub.worldDefaultCid || ajaxify.data.cid,
 			},
 		});
 
