@@ -66,10 +66,8 @@ Controller.fetch = async (req, res, next) => {
 };
 
 Controller.getFollowing = async (req, res) => {
-	const { followingCount, followingRemoteCount } = await user.getUserFields(req.params.uid, ['followingCount', 'followingRemoteCount']);
-	const totalItems = parseInt(followingCount || 0, 10) + parseInt(followingRemoteCount || 0, 10);
-
-	const count = totalItems;
+	const followingCount = await user.getUserField(req.params.uid, 'followingCount');
+	const count = parseInt(followingCount, 10);
 	const collection = await activitypub.helpers.generateCollection({
 		method: user.getFollowing.bind(null, req.params.uid),
 		count,
@@ -92,10 +90,8 @@ Controller.getFollowing = async (req, res) => {
 };
 
 Controller.getFollowers = async (req, res) => {
-	const { followerCount, followerRemoteCount } = await user.getUserFields(req.params.uid, ['followerCount', 'followerRemoteCount']);
-	const totalItems = parseInt(followerCount || 0, 10) + parseInt(followerRemoteCount || 0, 10);
-
-	const count = totalItems;
+	const followerCount = await user.getUserField(req.params.uid, 'followerCount');
+	const count = parseInt(followerCount, 10);
 	const collection = await activitypub.helpers.generateCollection({
 		method: user.getFollowers.bind(null, req.params.uid),
 		count,
