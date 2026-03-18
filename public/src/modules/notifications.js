@@ -48,9 +48,8 @@ define('notifications', [
 							ev.stopPropagation();
 							ev.preventDefault();
 						}
-						if (triggerEl) {
-							triggerEl.dropdown('toggle');
-						}
+
+						triggerEl?.dropdown('toggle');
 
 						const unread = notifEl.hasClass('unread');
 						if (!unread) {
@@ -61,10 +60,10 @@ define('notifications', [
 					});
 					components.get('notifications').on('click', '.mark-all-read', () => {
 						Notifications.markAllRead();
-						triggerEl.dropdown('toggle');
+						triggerEl?.dropdown('toggle');
 					});
 					components.get('notifications').on('click', `[href="${config.relative_path}/notifications"]`, () => {
-						triggerEl.dropdown('toggle');
+						triggerEl?.dropdown('toggle');
 					});
 
 					Notifications.handleUnreadButton(notifList);
