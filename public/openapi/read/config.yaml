@@ -186,4 +186,4 @@ get:
                   probe:
                     type: number
                   worldDefaultCid:
-                    type: string
+                    type: number
