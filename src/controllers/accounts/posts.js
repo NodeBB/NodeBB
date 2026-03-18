@@ -31,8 +31,7 @@ const templateToData = {
 		noItemsFoundKey: '[[user:has-no-posts]]',
 		crumb: '[[global:posts]]',
 		getSets: async function (callerUid, userData) {
-			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
-			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids`);
+			return `uid:${userData.uid}:posts`;
 		},
 	},
 	'account/upvoted': {
@@ -143,8 +142,7 @@ const templateToData = {
 		noItemsFoundKey: '[[user:has-no-topics]]',
 		crumb: '[[global:topics]]',
 		getSets: async function (callerUid, userData) {
-			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
-			return cids.map(c => `cid:${c}:uid:${userData.uid}:tids`);
+			return `uid:${userData.uid}:topics`;
 		},
 	},
 	'account/shares': {
