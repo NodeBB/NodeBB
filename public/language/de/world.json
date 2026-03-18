@@ -1,7 +1,7 @@
 {
 	"name": "Welt",
-	"latest": "Latest",
-	"latest-local": "Latest (Local)",
+	"latest": "Neueste",
+	"latest-local": "Neueste (Lokal)",
 	"latest-all": "Neueste (Alle)",
 	"popular-day": "Beliebt (Tag)",
 	"popular-week": "Beliebt (Woche)",
@@ -18,10 +18,10 @@
 	"help.federating": "Wenn Leute außerhalb dieses Forums anfangen, <em>dir</em>zu folgen, werden deine Beiträge auch in diesen Apps und auf diesen Websites angezeigt.",
 	"help.next-generation": "Das ist die nächste Generation der sozialen Medien, leg noch heute los!",
 
-	"onboard.title": "A world of content at your fingertips&hellip;",
-	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
-	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
-	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+	"onboard.title": "Eine Welt voller Inhalte, immer griffbereit&hellip;",
+	"onboard.what": "Betrachte das als deinen weltweiten Entdeckungs-Feed. Hier findest du interessante Diskussionen aus dem gesamten Internet und anderen Communities – alles an einem Ort.",
+	"onboard.why": "Du kannst sehen, was gerade im Trend liegt, am besten nutzt du diesen Feed, indem du ihn ganz nach deinen Wünschen gestaltest. Wenn du ein Konto erstellst, kannst du bestimmten Creators und Themen folgen, um den Ballast auszusortieren und nur das zu sehen, was dir wichtig ist.",
+	"onboard.how": "Bist du bereit, loszulegen? Erstelle ein Konto, um anderen zu folgen, Benachrichtigungen zu erhalten, wenn dir ein Mensch antwortet, und deine Lieblingsfunde zu speichern.",
 
 	"category-search": "Such eine Kategorie...",
 	"see-more": "Mehr sehen",
