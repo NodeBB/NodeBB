@@ -24,7 +24,7 @@ profileController.get = async function (req, res, next) {
 		return next();
 	}
 
-	if (meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(userData.uid)) {
+	if (!req.loggedIn && meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(userData.uid)) {
 		return helpers.redirect(res, `/outgoing?url=${encodeURIComponent(userData.uid)}`);
 	}
 
