@@ -55,7 +55,7 @@
 	"select-category": "选择版块",
 	"set-parent-category": "设置父版块",
 
-	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
+	"privileges.description": "在此部分中，您可以为网站的各个区域配置访问控制权限。权限可按用户或按用户组授予。",
 	"privileges.category-selector": "为该版块配置权限：",
 	"privileges.warning": "<strong>注意</strong>：权限设置会立即生效。 调整这些设置后，无需保存。",
 	"privileges.section-viewing": "查看权限",

@@ -45,13 +45,22 @@ Thumbs.load = async function (topicData, options = {}) {
 async function loadFromTopicData(topicData, options = {}) {
 	const tids = topicData.map(t => t && t.tid);
 	const thumbs = topicData.map(t => t && Array.isArray(t.thumbs) ? t.thumbs : []);
+	const mainPids = topicData.map(t => t.mainPid);
+
+	const mainPidAttachments = await posts.attachments.get(mainPids);
+	// Add attachments to thumb sets
+	mainPidAttachments.forEach((attachments, idx) => {
+		attachments = attachments.filter(
+			attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
+		);
+
+		if (attachments.length) {
+			thumbs[idx].push(...attachments.map(attachment => attachment.url));
+		}
+	});
 
 	if (!options.thumbsOnly) {
-		const mainPids = topicData.map(t => t.mainPid);
-		const [mainPidUploads, mainPidAttachments] = await Promise.all([
-			posts.uploads.list(mainPids),
-			posts.attachments.get(mainPids),
-		]);
+		const mainPidUploads = await posts.uploads.list(mainPids);
 
 		// Add uploaded media to thumb sets
 		mainPidUploads.forEach((uploads, idx) => {
@@ -62,17 +71,6 @@ async function loadFromTopicData(topicData, options = {}) {
 
 			if (uploads.length) {
 				thumbs[idx].push(...uploads);
-			}
-		});
-
-		// Add attachments to thumb sets
-		mainPidAttachments.forEach((attachments, idx) => {
-			attachments = attachments.filter(
-				attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
-			);
-
-			if (attachments.length) {
-				thumbs[idx].push(...attachments.map(attachment => attachment.url));
 			}
 		});
 	}

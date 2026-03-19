@@ -58,14 +58,31 @@ module.exports = function (User) {
 			]);
 		}
 
-		const [followingCount, followingRemoteCount, followerCount, followerRemoteCount] = await db.sortedSetsCard([
-			`following:${uid}`, `followingRemote:${uid}`, `followers:${theiruid}`, `followersRemote:${theiruid}`,
-		]);
-		await Promise.all([
-			User.setUserField(uid, 'followingCount', followingCount + followingRemoteCount),
-			User.setUserField(theiruid, 'followerCount', followerCount + followerRemoteCount),
-		]);
+		User.syncFollowCounts(uid, true, false);
+		User.syncFollowCounts(theiruid, false, true);
 	}
+
+	User.syncFollowCounts = async function (uid, following, followers) {
+		const sets = [];
+		const property = [];
+		if (following) {
+			property.push('followingCount');
+			sets.push(`following:${uid}`, `followingRemote:${uid}`);
+		}
+		if (followers) {
+			property.push('followerCount');
+			sets.push(`followers:${uid}`, `followersRemote:${uid}`);
+		};
+
+		const values = await db.sortedSetsCard(sets);
+		const payload = property.reduce((payload, cur, idx) => {
+			const sum = values[idx * 2] + values[(idx * 2) + 1];
+			payload[cur] = sum;
+			return payload;
+		}, {});
+
+		await User.setUserFields(uid, payload);
+	};
 
 	User.getFollowing = async function (uid, start, stop) {
 		return await getFollow(uid, 'following', start, stop);

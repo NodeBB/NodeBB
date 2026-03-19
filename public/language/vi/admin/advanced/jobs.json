@@ -1,0 +1,9 @@
+{
+	"jobs": "Công việc",
+	"job-name": "Tên Công Việc",
+	"schedule": "Lên lịch",
+	"next-run": "Next Run",
+	"last-duration": "Last Duration",
+	"running": "Running",
+	"active": "Active"
+}

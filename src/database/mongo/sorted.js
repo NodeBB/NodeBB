@@ -393,13 +393,13 @@ module.exports = function (module) {
 			return [];
 		}
 		const arrayOfKeys = keys.length > 1;
-		const projection = { _id: 0, value: 1 };
+		const projection = arrayOfKeys ?
+			{ _id: 0, _key: 1, value: 1} :
+			{ _id: 0, value: 1 };
 		if (withScores) {
 			projection.score = 1;
 		}
-		if (arrayOfKeys) {
-			projection._key = 1;
-		}
+
 		const data = await module.client.collection('objects').find({
 			_key: arrayOfKeys ? { $in: keys } : keys[0],
 		}, { projection: projection })

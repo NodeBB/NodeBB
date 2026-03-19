@@ -78,6 +78,7 @@
 	"advanced/logs": "Системный журнал",
 	"advanced/errors": "Журнал ошибок",
 	"advanced/cache": "Кэш",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Отладочный журнал",
 	"development/info": "Сведения о системе",
 

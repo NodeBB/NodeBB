@@ -78,6 +78,7 @@
 	"advanced/logs": "Prijave",
 	"advanced/errors": "Napake",
 	"advanced/cache": "Predpomnilnik",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Logger",
 	"development/info": "Info",
 

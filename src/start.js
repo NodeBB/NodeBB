@@ -35,11 +35,13 @@ start.start = async function () {
 		await sockets.init(webserver.server);
 
 		if (nconf.get('runJobs')) {
-			require('./notifications').startJobs();
-			require('./user').startJobs();
-			require('./plugins').startJobs();
-			require('./topics').scheduled.startJobs();
-			require('./activitypub').jobs.start();
+			await require('./cron').markJobsInactive();
+			await require('./notifications').startJobs();
+			await require('./user').startJobs();
+			await require('./plugins').startJobs();
+			await require('./topics').scheduled.startJobs();
+			await require('./posts').uploads.startJobs();
+			await require('./activitypub').jobs.start();
 			await db.delete('locks');
 		}
 

@@ -1,5 +1,6 @@
 {
     "invalid-data": "Неисправни подаци",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Неважећи JSON",
     "wrong-parameter-type": "Очекивана је вредност типа %3 за својство %1, али је уместо тога примљен %2",
     "required-parameters-missing": "Недостајали су обавезни параметри у овом API позиву: %1",

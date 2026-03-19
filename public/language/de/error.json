@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ungültige Daten",
+    "invalid-config-field-value": "Der Wert für das Konfigurationsfeld „%1“ ist nicht okay: %2",
     "invalid-json": "Ungültiges JSON",
     "wrong-parameter-type": "Für die Eigenschaft „%1“ wurde ein Wert vom Typ %3 erwartet, aber stattdessen wurde %2 empfangen",
     "required-parameters-missing": "Bei diesem API-Aufruf fehlten erforderliche Parameter: %1",
@@ -32,7 +33,7 @@
     "invalid-path": "Ungültiger Pfad",
     "folder-exists": "Ordner existiert",
     "invalid-pagination-value": "Ungültige Seitennummerierung, muss mindestens %1 und maximal %2 sein",
-    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
+    "invalid-unread-cutoff": "Ungültiger Wert für ungelesene Nachrichten, muss mindestens 1 und höchstens %1 sein",
     "username-taken": "Der Benutzername ist bereits vergeben",
     "email-taken": "Die E-Mail-Adresse ist bereits vergeben.",
     "email-nochange": "Die eingegebene E-Mail ist die gleiche wie die bereits hinterlegte E-Mail.",

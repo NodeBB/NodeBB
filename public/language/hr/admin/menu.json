@@ -78,6 +78,7 @@
 	"advanced/logs": "Dnevnik",
 	"advanced/errors": "Greške",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Dnevnik",
 	"development/info": "Info",
 

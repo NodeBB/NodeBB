@@ -449,7 +449,7 @@ inbox.announce = async (req) => {
 				if (!fromRelay && !cid && !syncedCids.length) {
 					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
 					if (!followers) {
-						winston.verbose(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
+						activitypub.helpers.log(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
 						reject('Announce', object, actor);
 						return;
 					}
@@ -517,11 +517,12 @@ inbox.follow = async (req) => {
 		}
 
 		const now = Date.now();
-		await db.sortedSetAdd(`followersRemote:${id}`, now, actor);
-		await db.sortedSetAdd(`followingRemote:${actor}`, now, id); // for following backreference (actor pruning)
-
-		const followerRemoteCount = await db.sortedSetCard(`followersRemote:${id}`);
-		await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
+		await Promise.all([
+			db.sortedSetAdd(`followersRemote:${id}`, now, actor),
+			db.sortedSetAdd(`followingRemote:${actor}`, now, id), // for following backreference (actor pruning)
+			user.syncFollowCounts(id, false, true),
+			user.syncFollowCounts(actor, true, false),
+		]);
 		activitypub.actors._followerCache.del(id);
 
 		await user.onFollow(actor, id);
@@ -600,8 +601,8 @@ inbox.accept = async (req) => {
 				db.sortedSetAdd(`followingRemote:${id}`, timestamp, actor),
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, id), // for followers backreference and notes assertion checking
 			]);
-			const followingRemoteCount = await db.sortedSetCard(`followingRemote:${id}`);
-			await user.setUserField(id, 'followingRemoteCount', followingRemoteCount);
+			await user.syncFollowCounts(id, true, false);
+			await user.syncFollowCounts(actor, false, true);
 		} else if (localType === 'category') {
 			if (!await db.isSortedSetMember(`followRequests:cid.${id}`, actor)) {
 				if (await db.isSortedSetMember(`cid:${id}:following`, actor)) return; // already following
@@ -635,7 +636,7 @@ inbox.undo = async (req) => {
 
 	let { type: localType, id } = await helpers.resolveLocalId(object.object);
 
-	winston.verbose(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
+	activitypub.helpers.log(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
@@ -649,9 +650,9 @@ inbox.undo = async (req) => {
 					await Promise.all([
 						db.sortedSetRemove(`followersRemote:${id}`, actor),
 						db.sortedSetRemove(`followingRemote:${actor}`, id),
+						user.syncFollowCounts(id, false, true),
+						user.syncFollowCounts(actor, true, false),
 					]);
-					const followerRemoteCount = await db.sortedSetCard(`followerRemote:${id}`);
-					await user.setUserField(id, 'followerRemoteCount', followerRemoteCount);
 					notifications.rescind(`follow:${id}:uid:${actor}`);
 					activitypub.actors._followerCache.del(id);
 					break;
@@ -680,7 +681,7 @@ inbox.undo = async (req) => {
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 			if (!allowed) {
-				winston.verbose(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
+				activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 				reject('Like', object, actor);
 				break;
 			}

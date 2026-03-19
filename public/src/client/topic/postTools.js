@@ -287,7 +287,9 @@ define('forum/topic/postTools', [
 
 		showStaleWarning(function () {
 			let username = getUserSlug(button);
-			if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
+			const postUid = getData(button, 'data-uid');
+			const isSelfPost = postUid === String(app.user.uid);
+			if (isSelfPost || postUid === '0' || !getData(button, 'data-userslug')) {
 				username = '';
 			}
 
@@ -322,22 +324,17 @@ define('forum/topic/postTools', [
 			const username = getUserSlug(button);
 			const toPid = getData(button, 'data-pid');
 
-			function quote(text) {
-				hooks.fire('action:composer.addQuote', {
-					tid: tid,
-					pid: toPid,
-					username: username,
-					title: ajaxify.data.titleRaw,
-					text: text,
-				});
-			}
+			const body = selectedNode.text && toPid && toPid === selectedNode.pid ?
+				selectedNode.text :
+				(await api.get(`/posts/${encodeURIComponent(toPid)}/raw`)).content;
 
-			if (selectedNode.text && toPid && toPid === selectedNode.pid) {
-				return quote(selectedNode.text);
-			}
-
-			const { content } = await api.get(`/posts/${encodeURIComponent(toPid)}/raw`);
-			quote(content);
+			hooks.fire('action:composer.addQuote', {
+				tid: tid,
+				pid: toPid,
+				username: username,
+				title: ajaxify.data.titleRaw,
+				body: body,
+			});
 		});
 	}
 

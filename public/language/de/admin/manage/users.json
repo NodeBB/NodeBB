@@ -40,6 +40,7 @@
 	"250-per-page": "250 pro Seite",
 	"500-per-page": "500 pro Seite",
 
+	"search.help": "Benutz &quot;*&quot; um nach Teilen von Wörtern zu suchen, zum Beispiel &quot;*anfrage&quot;",
 	"search.uid": "Nach Benutzer-ID",
 	"search.uid-placeholder": "Gib eine Benutzer-ID ein um danach zu suchen",
 	"search.username": "Nach Nutzernamen",
@@ -55,7 +56,7 @@
 	"inactive.12-months": "12 Monate",
 
 	"users.uid": "UID",
-	"users.user-id": "User ID",
+	"users.user-id": "Benutzer-ID",
 	"users.username": "Nutzername",
 	"users.email": "E-Mail",
 	"users.no-email": "(keine Email)",
@@ -64,7 +65,7 @@
 	"users.validation-pending": "Bestätigung ausstehend",
 	"users.validation-expired": "Bestätigung abgelaufen",
 	"users.ip": "IP",
-	"users.recent-ips": "Recent IPs",
+	"users.recent-ips": "Aktuelle IPs",
 	"users.postcount": "Anzahl der Beiträge",
 	"users.reputation": "Ansehen",
 	"users.flags": "Meldungen",

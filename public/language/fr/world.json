@@ -1,11 +1,13 @@
 {
 	"name": "Monde",
-	"latest": "Dernier",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Populaires (Jour)",
+	"popular-week": "Populaires (Semaine)",
+	"popular-month": "Populaires (Mois)",
+	"popular-year": "Populaires (Année)",
+	"popular-alltime": "Populaires (Tout temps)",
 	"recent": "Tous",
 	"help": "Aide",
 
@@ -16,10 +18,12 @@
 	"help.federating": "De même, si des utilisateurs extérieurs à ce forum commencent à <em>vous</em> suivre, vos publications commenceront à apparaître sur ces applications et sites web également.",
 	"help.next-generation": "C'est la prochaine génération des réseaux sociaux, commencez à contribuer dès aujourd'hui !",
 
-	"onboard.title": "Votre fenêtre sur le fediverse...",
-	"onboard.what": "Voici votre catégorie personnalisée, composée uniquement de contenu trouvé en dehors de ce forum. La présence de contenu sur cette page dépend de si vous suivez la personne, ou si ce post a été partagé par quelqu'un que vous suivez.",
-	"onboard.why": "Il se passe beaucoup de choses en dehors de ce forum, et tout n'est pas nécessairement pertinent pour vos intérêts. C'est pourquoi suivre des personnes est le meilleur moyen de signaler que vous souhaitez voir plus de contenu de leur part.",
-	"onboard.how": "En attendant, vous pouvez cliquer sur les boutons de raccourci en haut pour voir ce que ce forum connaît d'autre et commencer à découvrir de nouveaux contenus !",
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
 
-	"category-search": "Trouver une catégorie..."
+	"category-search": "Trouver une catégorie...",
+	"see-more": "Voir plus",
+	"see-less": "Voir moins"
 }

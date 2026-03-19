@@ -55,6 +55,7 @@ Data.loadPluginInfo = async function (pluginPath) {
 		pluginData.description = packageData.description;
 		pluginData.version = packageData.version;
 		pluginData.repository = packageData.repository;
+		pluginData.url = pluginData.url || pluginData?.repository?.url || '';
 		pluginData.nbbpm = packageData.nbbpm;
 		pluginData.path = pluginPath;
 	} catch (err) {

@@ -424,6 +424,10 @@ helpers.getHomePageRoutes = async function (uid) {
 			name: 'Categories',
 		},
 		{
+			route: 'world',
+			name: 'World',
+		},
+		{
 			route: 'unread',
 			name: 'Unread',
 		},

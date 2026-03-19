@@ -4,6 +4,6 @@
 	"welcome-notification-link": "Lien de notification de bienvenue",
 	"welcome-notification-uid": "Notification de bienvenue de l'utilisateur (UID)",
 	"post-queue-notification-uid": "File d'attente utilisateur (UID)",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
+	"notification-delay": "Délai d’envoi des e-mails de notification (secondes)",
+	"notification-delay-help": "Si l’utilisateur a lu la notification pendant ce délai, l’e-mail ne sera pas envoyé.<br/> Valeur par défaut : 60 secondes."
 }

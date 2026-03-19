@@ -42,15 +42,14 @@ define('notifications', [
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
 					notifList.html(html);
-					notifList.off('click').on('click', '[data-nid]', function (ev) {
-						const notifEl = $(this);
+					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
+						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							if (triggerEl) {
-								triggerEl.dropdown('toggle');
-							}
 						}
+
+						triggerEl?.dropdown('toggle');
 
 						const unread = notifEl.hasClass('unread');
 						if (!unread) {
@@ -61,6 +60,10 @@ define('notifications', [
 					});
 					components.get('notifications').on('click', '.mark-all-read', () => {
 						Notifications.markAllRead();
+						triggerEl?.dropdown('toggle');
+					});
+					components.get('notifications').on('click', `[href="${config.relative_path}/notifications"]`, () => {
+						triggerEl?.dropdown('toggle');
 					});
 
 					Notifications.handleUnreadButton(notifList);
@@ -86,7 +89,6 @@ define('notifications', [
 				$this.find('.unread').toggleClass('hidden', unread);
 				$this.find('.read').toggleClass('hidden', !unread);
 			});
-			return false;
 		});
 	};
 

@@ -40,6 +40,7 @@
 	"250-per-page": "每页250",
 	"500-per-page": "每页500",
 
+	"search.help": "使用 &quot;*&quot; 进行部分搜索，例如 &quot;*query&quot;",
 	"search.uid": "通过用户 ID",
 	"search.uid-placeholder": "输入用户 ID 以搜索",
 	"search.username": "通过用户名",
@@ -55,7 +56,7 @@
 	"inactive.12-months": "12个月",
 
 	"users.uid": "UID",
-	"users.user-id": "User ID",
+	"users.user-id": "用户 ID",
 	"users.username": "用户名",
 	"users.email": "电子邮件",
 	"users.no-email": "（没有邮箱）",
@@ -64,7 +65,7 @@
 	"users.validation-pending": "等待验证",
 	"users.validation-expired": "验证过期",
 	"users.ip": "IP",
-	"users.recent-ips": "Recent IPs",
+	"users.recent-ips": "最近访问 IP",
 	"users.postcount": "发帖数",
 	"users.reputation": "声望",
 	"users.flags": "举报",

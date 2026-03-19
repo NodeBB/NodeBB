@@ -78,6 +78,7 @@
 	"advanced/logs": "Eventos",
 	"advanced/errors": "Erros",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Logger",
 	"development/info": "Informação",
 

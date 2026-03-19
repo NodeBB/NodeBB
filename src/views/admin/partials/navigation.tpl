@@ -190,6 +190,7 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/advanced/events">[[admin/menu:advanced/events]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/advanced/hooks">[[admin/menu:advanced/hooks]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/advanced/cache">[[admin/menu:advanced/cache]]</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/advanced/jobs">[[admin/menu:advanced/jobs]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/advanced/errors">[[admin/menu:advanced/errors]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/advanced/logs">[[admin/menu:advanced/logs]]</a>
 				{{{ if env }}}

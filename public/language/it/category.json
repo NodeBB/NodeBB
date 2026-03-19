@@ -1,8 +1,8 @@
 {
     "category": "Categoria",
     "subcategories": "Sottocategorie",
-    "uncategorized": "World",
-    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
+    "uncategorized": "Mondo",
+    "uncategorized.description": "Discussioni esterne a questo forum. Le opinioni e i punti di vista qui espressi potrebbero non riflettere quelli di questo forum e dei suoi membri.",
     "handle.description": "Questa categoria può essere seguita dal social web aperto tramite lo pseudonimo %1",
     "new-topic-button": "Nuova Discussione",
     "guest-login-post": "Accedi per postare",

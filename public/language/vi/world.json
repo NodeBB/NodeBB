@@ -1,11 +1,13 @@
 {
 	"name": "Thế giới",
 	"latest": "Latest",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Mới nhất (Tất cả)",
+	"popular-day": "Phổ biến (Ngày)",
+	"popular-week": "Phổ biến (Tuần)",
+	"popular-month": "Phổ biến (Tháng)",
+	"popular-year": "Phổ biến (Năm)",
+	"popular-alltime": "Phổ biến (Mọi thời đại)",
 	"recent": "Tất cả",
 	"help": "Trợ giúp",
 
@@ -16,10 +18,12 @@
 	"help.federating": "Tương tự như vậy, nếu người dùng bên ngoài diễn đàn này bắt đầu theo dõi <em>bạn</em>, thì bài đăng của bạn cũng sẽ bắt đầu xuất hiện trên các ứng dụng và trang web đó.",
 	"help.next-generation": "Đây là thế hệ mạng xã hội kế tiếp, hãy bắt đầu đóng góp ngay hôm nay!",
 
-	"onboard.title": "Cửa sổ của bạn đến với liên đoàn...",
-	"onboard.what": "Đây là danh mục được cá nhân hóa của bạn chỉ bao gồm nội dung được tìm thấy bên ngoài diễn đàn này. Việc nội dung nào đó có hiển thị trên trang này hay không tùy thuộc vào việc bạn có theo dõi họ hay không hoặc liệu bài đăng đó có được chia sẻ bởi người mà bạn theo dõi hay không.",
-	"onboard.why": "Có rất nhiều điều diễn ra bên ngoài diễn đàn này và không phải tất cả đều phù hợp với sở thích của bạn. Đó là lý do tại sao theo dõi mọi người là cách tốt nhất để báo hiệu rằng bạn muốn biết thêm thông tin từ ai đó.",
-	"onboard.how": "Trong thời gian chờ đợi, bạn có thể nhấp vào các nút tắt ở trên cùng để xem diễn đàn này biết thêm những gì và bắt đầu khám phá một số nội dung mới!",
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
 
-	"category-search": "Find a category..."
+	"category-search": "Tìm danh mục...",
+	"see-more": "Xem nhiều hơn",
+	"see-less": "Xem ít hơn"
 }

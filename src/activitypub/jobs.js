@@ -1,46 +1,55 @@
 'use strict';
 
-const winston = require('winston');
-const { CronJob } = require('cron');
-
 const db = require('../database');
 const meta = require('../meta');
 const topics = require('../topics');
 const utils = require('../utils');
+const cron = require('../cron');
+
 const activitypub = module.parent.exports;
 
 const Jobs = module.exports;
 
-Jobs.start = () => {
+Jobs.start = async () => {
 	activitypub.helpers.log('[activitypub/jobs] Registering jobs.');
 	async function tryCronJob(method) {
-		if (!meta.config.activitypubEnabled) {
-			return;
-		}
-		try {
+		if (meta.config.activitypubEnabled) {
 			await method();
-		} catch (err) {
-			winston.error(err.stack);
 		}
 	}
-	new CronJob('0 0 * * *', async () => {
-		await tryCronJob(async () => {
-			await activitypub.notes.prune();
-			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
-		});
-	}, null, true, null, null, false); // change last argument to true for debugging
 
-	new CronJob('*/30 * * * *', async () => {
-		await tryCronJob(activitypub.actors.prune);
-	}, null, true, null, null, false); // change last argument to true for debugging
+	await cron.addJob({
+		name: 'ap:notes:prune',
+		cronTime: '0 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				await activitypub.notes.prune();
+				await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
+			});
+		},
+	});
 
-	new CronJob('0 * * * * *', async () => {
-		await tryCronJob(retryFailedMessages);
-	}, null, true, null, null, false); // change last argument to true for debugging
+	await cron.addJob({
+		name: 'ap:actors:prune',
+		cronTime: '*/30 * * * *',
+		runOnInit: false,
+		onTick: async () => await tryCronJob(activitypub.actors.prune),
+	});
 
-	new CronJob('15 * * * *', async () => {
-		await tryCronJob(backfill);
-	}, null, true, null, null, false); // change last argument to true for debugging
+	await cron.addJob({
+		name: 'ap:retry:send',
+		cronTime: '0 * * * * *',
+		runOnInit: false,
+		onTick: async () => await tryCronJob(retryFailedMessages),
+	});
+
+	await cron.addJob({
+		name: 'ap:backfill',
+		cronTime: '15 * * * *',
+		runOnInit: false,
+		onTick: async () => await tryCronJob(backfill),
+	});
 };
 
 async function retryFailedMessages() {

@@ -1,0 +1,9 @@
+{
+	"jobs": "Jobs",
+	"job-name": "Job Name",
+	"schedule": "Schedule",
+	"next-run": "Next Run",
+	"last-duration": "Last Duration",
+	"running": "Running",
+	"active": "Active"
+}

@@ -48,13 +48,13 @@
 
 	"settings.page-title": "%1 设置",
 
-	"section-federation": "Federation",
-	"federation/general": "General",
-	"federation/content": "Content",
-	"federation/rules": "Categorization",
-	"federation/relays": "Relays",
-	"federation/pruning": "Storage",
-	"federation/safety": "Trust & Safety",
+	"section-federation": "“联邦”",
+	"federation/general": "通用",
+	"federation/content": "内容",
+	"federation/rules": "分类",
+	"federation/relays": "中继服务",
+	"federation/pruning": "存储",
+	"federation/safety": "信任与安全",
 
 	"section-appearance": "界面",
 	"appearance/themes": "主题",
@@ -78,6 +78,7 @@
 	"advanced/logs": "日志",
 	"advanced/errors": "错误",
 	"advanced/cache": "缓存",
+	"advanced/jobs": "任务",
 	"development/logger": "记录器",
 	"development/info": "信息",
 

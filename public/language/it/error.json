@@ -1,5 +1,6 @@
 {
     "invalid-data": "Dati non validi",
+    "invalid-config-field-value": "Valore non valido per il campo di configurazione \"%1\": %2",
     "invalid-json": "JSON non valido",
     "wrong-parameter-type": "Era previsto un valore di tipo %3 per la proprietà '%1', ma invece è stato ricevuto %2",
     "required-parameters-missing": "I parametri richiesti sono mancanti in questa chiamata API: %1",
@@ -32,7 +33,7 @@
     "invalid-path": "Percorso non valido",
     "folder-exists": "La cartella esiste",
     "invalid-pagination-value": "Valore di impaginazione non valido, deve essere almeno %1 ed al massimo %2",
-    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
+    "invalid-unread-cutoff": "Valore limite non letto non valido, deve essere almeno 1 e al massimo %1",
     "username-taken": "Nome utente già esistente",
     "email-taken": "L'indirizzo email è già stato utilizzato.",
     "email-nochange": "L'email inserita è la stessa dell'email già presente in archivio.",

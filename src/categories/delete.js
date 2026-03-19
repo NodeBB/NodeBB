@@ -52,6 +52,7 @@ module.exports = function (Categories) {
 			`cid:${cid}:uid:watch:state`,
 			`cid:${cid}:children`,
 			`cid:${cid}:tag:whitelist`,
+			`cid:${cid}:privilegeMask`,
 			`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`,
 		]);
 		const privilegeList = await privileges.categories.getPrivilegeList();

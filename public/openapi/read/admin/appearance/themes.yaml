@@ -8,4 +8,34 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
+            allOf:
+              - type: object
+                properties:
+                  themes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        id:
+                          type: string
+                        description:
+                          type: string
+                        screenshot:
+                          type: string
+                        screenshot_url:
+                          type: string
+                        type:
+                          type: string
+                        url:
+                          type: string
+                        baseTheme:
+                          type: string
+                      required:
+                        - name
+                        - id
+                        - description
+                        - type
+                        - url
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

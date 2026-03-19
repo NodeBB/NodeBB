@@ -1423,7 +1423,13 @@ describe('Topic\'s', () => {
 			const result = await topics.post({ uid: adminUid, title: 'deleted unread', content: 'not unread', cid: categoryObj.cid });
 			await topics.delete(result.topicData.tid, adminUid);
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
-			assert(!unreadTids.includes(result.topicData.tid), JSON.stringify({ unreadTids, tid: result.topicData.tid }));
+
+			await sleep(2000);
+			const _unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
+			assert(
+				!unreadTids.includes(result.topicData.tid),
+				JSON.stringify({ unreadTids, _unreadTids, tid: result.topicData.tid })
+			);
 		});
 	});
 
@@ -1632,15 +1638,20 @@ describe('Topic\'s', () => {
 			assert.deepStrictEqual(tags, ['deleteme1', 'deleteme3']);
 		});
 
-		it('should delete tag', (done) => {
-			topics.deleteTag('javascript', (err) => {
-				assert.ifError(err);
-				db.getObject('tag:javascript', (err, data) => {
-					assert.ifError(err);
-					assert(!data);
-					done();
-				});
-			});
+		it('should delete tag', async () => {
+			await topics.deleteTag('javascript');
+			const data = await db.getObject('tag:javascript');
+			assert(!data);
+		});
+
+		it('should properly remove tags from topic hash when removing all tags of a topic', async () => {
+			const result1 = await topics.post({ uid: adminUid, tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5'], title: 'many tags much wow', content: 'topic 1 content', cid: topic.categoryId });
+			const result2 = await topics.post({ uid: adminUid, tags: ['best1', 'tag2', 'best2', 'tag3', 'best3'], title: 'many tags much wow', content: 'topic 1 content', cid: topic.categoryId });
+			await topics.deleteTags(['tag1', 'tag2', 'tag3', 'tag4', 'tag5']);
+			const topicData1 = await topics.getTopicData(result1.topicData.tid);
+			const topicData2 = await topics.getTopicData(result2.topicData.tid);
+			assert.deepStrictEqual(topicData1.tags.map(t => t.value), []);
+			assert.deepStrictEqual(topicData2.tags.map(t => t.value), ['best1', 'best2', 'best3']);
 		});
 
 		it('should delete category tag as well', async () => {

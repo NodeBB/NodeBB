@@ -78,6 +78,7 @@
 	"advanced/logs": "Žurnāls",
 	"advanced/errors": "Kļūdu žurnāls",
 	"advanced/cache": "Kešatmiņa",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Atkļūdošanas žurnāls",
 	"development/info": "Informācija",
 

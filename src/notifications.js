@@ -3,7 +3,6 @@
 
 const async = require('async');
 const winston = require('winston');
-const cron = require('cron').CronJob;
 const nconf = require('nconf');
 const _ = require('lodash');
 
@@ -18,6 +17,8 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const emailer = require('./emailer');
 const ttlCache = require('./cache/ttl');
+const cron = require('./cron');
+const translator = require('./translator');
 
 const Notifications = module.exports;
 
@@ -73,9 +74,13 @@ Notifications.getAllNotificationTypes = async function () {
 	return results.types.concat(results.privilegedTypes);
 };
 
-Notifications.startJobs = function () {
+Notifications.startJobs = async function () {
 	winston.verbose('[notifications.init] Registering jobs.');
-	new cron('*/30 * * * *', Notifications.prune, null, true);
+	await cron.addJob({
+		name: 'notifications:prune',
+		cronTime: '*/30 * * * *',
+		onTick: Notifications.prune,
+	});
 };
 
 Notifications.get = async function (nid) {
@@ -514,7 +519,9 @@ Notifications.merge = async function (notifications) {
 
 		differentiators.forEach((differentiator) => {
 			function typeFromLength(items) {
-				if (items.length === 2) {
+				if (items.length <= 1) {
+					return '';
+				} else if (items.length === 2) {
 					return 'dual';
 				} else if (items.length === 3) {
 					return 'triple';
@@ -538,19 +545,24 @@ Notifications.merge = async function (notifications) {
 					const { roomId, roomName, type, user } = set[0];
 					const isGroupChat = type === 'new-group-chat';
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
-						`[[notifications:new-messages-in, ${set.length}, ${roomName}]]` :
-						`[[notifications:new-messages-from, ${set.length}, ${user.displayname}]]`;
+						translator.compile('notifications:new-messages-in', set.length, roomName) :
+						translator.compile('notifications:new-messages-from', set.length, user.displayname);
 					break;
 				}
 
 				case 'notifications:user-posted-in-public-room': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					if (usernames.length === 2 || usernames.length === 3) {
-						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
-					} else if (usernames.length > 3) {
-						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
-					}
+					const usernames = _.uniq(set.map(n => n?.user?.displayname)).filter(Boolean);
+					const type = typeFromLength(usernames);
+					const isMultiple = type === 'multiple';
+					const txArgs = [
+						`${mergeId}${type ? `-${type}` : ''}`,
+						...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
+						...(isMultiple ? [usernames.length - 2] : []),
+						notifObj.roomIcon,
+						notifObj.roomName,
+					];
 
+					notifObj.bodyShort = translator.compile(...txArgs);
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}
@@ -560,24 +572,22 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-flagged-post-in':
 				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					const numUsers = usernames.length;
-
-					const title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
-					let titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
-
-					if (numUsers === 2 || numUsers === 3) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
-					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
-					}
-
-					notifications[modifyIndex].path = set[set.length - 1].path;
-				} break;
+					const usernames = _.uniq(set.map(n => n?.user?.displayname)).filter(Boolean);
+					const type = typeFromLength(usernames);
+					const isMultiple = type === 'multiple';
+					const txArgs = [
+						`${mergeId}${type ? `-${type}` : ''}`,
+						...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
+						...(isMultiple ? [usernames.length - 2] : []),
+						utils.decodeHTMLEntities(notifObj.topicTitle || ''),
+					];
+					notifObj.bodyShort = translator.compile(...txArgs);
+					notifObj.path = set[set.length - 1].path;
+					break;
+				}
 
 				case 'new-register':
-					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
+					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
 			}
 

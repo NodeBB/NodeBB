@@ -7,13 +7,14 @@ define('topicSelect', ['components'], function (components) {
 
 	let topicsContainer;
 
-	TopicSelect.init = function (onSelect, containerEl) {
+	TopicSelect.init = function (onSelect, onLongPress, containerEl) {
 		topicsContainer = containerEl || $('[component="category"]');
 		topicsContainer.on('selectstart', '[component="topic/select"]', function (ev) {
 			ev.preventDefault();
 		});
 
-		topicsContainer.on('click', '[component="topic/select"]', function (ev) {
+		let isLongPress = false;
+		const click = function (ev) {
 			const select = $(this);
 			const topicEl = select.parents('[component="category/topic"]');
 			if (ev.shiftKey) {
@@ -28,6 +29,44 @@ define('topicSelect', ['components'], function (components) {
 			if (typeof onSelect === 'function') {
 				onSelect();
 			}
+		};
+		topicsContainer.on('click', '[component="topic/select"]', function (ev) {
+			if (isLongPress) {
+				ev.preventDefault();
+				ev.stopImmediatePropagation();
+				return false;
+			}
+
+			click.call(this, ev);
+		});
+
+		// Long press
+		let longPressTimeout;
+		const start = function (ev) {
+			isLongPress = false;
+			longPressTimeout = setTimeout(() => {
+				isLongPress = true;
+				click.call(this, ev);
+				if (navigator.vibrate) {
+					navigator.vibrate(50);
+				}
+				const topicEl = this.closest('[component="category/topic"]');
+				if (topicEl.classList.contains('selected')) {
+					onLongPress();
+				}
+			}, 500);
+		};
+		const cancel = () => {
+			clearTimeout(longPressTimeout);
+		};
+		topicsContainer.on('mousedown', '[component="topic/select"]', start);
+		topicsContainer.on('touchstart', '[component="topic/select"]', start);
+		topicsContainer.on('mouseup', '[component="topic/select"]', cancel);
+		topicsContainer.on('mouseleave', '[component="topic/select"]', cancel);
+		topicsContainer.on('touchend', '[component="topic/select"]', cancel);
+		topicsContainer.on('touchcancel', '[component="topic/select"]', cancel);
+		topicsContainer.on('contextmenu', '[component="topic/select"]', (e) => {
+			e.preventDefault();
 		});
 	};
 

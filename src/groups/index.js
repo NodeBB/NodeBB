@@ -120,7 +120,7 @@ Groups.getAllGroupNames = async function (set) {
 		return [...names];
 	}
 	names = await db.getSortedSetRevRange(set, 0, -1);
-	cache.set(names);
+	cache.set(cacheKey, names);
 	return [...names];
 };
 

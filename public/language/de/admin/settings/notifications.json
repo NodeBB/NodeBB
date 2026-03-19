@@ -4,6 +4,6 @@
 	"welcome-notification-link": "Willkommens-Benachrichtigungslink",
 	"welcome-notification-uid": "Begrüßungsbenachrichtigungsbenutzer (UID)",
 	"post-queue-notification-uid": "Post-Queue-Benutzer (UID)",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
+	"notification-delay": "Verzögerung beim Versenden von Benachrichtigungs-E-Mails (Sekunden)",
+	"notification-delay-help": "Wenn der Benutzer die Benachrichtigung innerhalb dieser Zeit gelesen hat, wird die E-Mail nicht gesendet.<br/>Standard: 60 Sekunden."
 }

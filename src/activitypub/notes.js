@@ -218,6 +218,15 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				post.toPid = urlMap.get(post.toPid);
 			}
 
+			// Filter image attachments out if they are in content
+			const attachment = post?._activitypub?.attachment;
+			if (attachment && attachment.length) {
+				post._activitypub.attachment = attachment.filter((attachment) => {
+					const inContent = attachment.type === 'Image' && (post.sourceContent || post.content).includes(attachment.url);
+					return !inContent;
+				});
+			}
+
 			return post;
 		}).filter((p, idx) => !exists[idx]);
 		const count = unprocessed.length;
@@ -309,7 +318,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
 	} finally {
-		winston.verbose(`[activitypub/notes.assert] Releasing lock (${id})`);
+		activitypub.helpers.log(`[activitypub/notes.assert] Releasing lock (${id})`);
 		await db.deleteObjectField('locks', id);
 	}
 };
@@ -554,7 +563,7 @@ Notes.getParentChain = async (uid, input) => {
 					}
 				}
 			} catch (e) {
-				winston.verbose(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
+				activitypub.helpers.log(`[activitypub/notes/getParentChain] Cannot retrieve ${id}, terminating here.`);
 			}
 		}
 	};
@@ -778,7 +787,9 @@ async function pruneCidTids(cid, cuttoff) {
 		max: cuttoff,
 		batch: 500,
 	});
-
+	if (!tidsWithNoEngagement.length) {
+		return;
+	}
 	winston.info(`[notes/prune] ${tidsWithNoEngagement.length} topics eligible in cid:${cid} for pruning`);
 
 	await batch.processArray(tidsWithNoEngagement, async (tids) => {

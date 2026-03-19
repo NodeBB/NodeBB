@@ -9,11 +9,16 @@ define('forum/category/tools', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (topicSelect, threadTools, components, api, bootbox, alerts) {
+	'bootstrap',
+], function (topicSelect, threadTools, components, api, bootbox, alerts, bootstrap) {
 	const CategoryTools = {};
 
 	CategoryTools.init = function (containerEl) {
-		topicSelect.init(updateDropdownOptions, containerEl);
+		topicSelect.init(updateDropdownOptions, () => {
+			const toggleEl = document.querySelector('.thread-tools button');
+			const dropdown = new bootstrap.Dropdown(toggleEl);
+			dropdown.show();
+		}, containerEl);
 
 		handlePinnedTopicSort();
 

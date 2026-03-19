@@ -256,14 +256,21 @@ module.exports = function (Topics) {
 	};
 
 	async function removeTagsFromTopics(tags) {
-		await async.eachLimit(tags, 50, async (tag) => {
-			const tids = await db.getSortedSetRange(`tag:${tag}:topics`, 0, -1);
-			if (!tids.length) {
-				return;
-			}
+		const uniqTids = new Set();
+		const tagsToRemove = new Set(tags);
+
+		await batch.processArray(tags, async (tags) => {
+			await Promise.all(tags.map(async (tag) => {
+				await batch.processSortedSet(`tag:${tag}:topics`, async (tids) => {
+					tids.forEach(tid => uniqTids.add(tid));
+				}, { batch: 500 });
+			}));
+		}, { batch: 50 });
+
+		await batch.processArray(Array.from(uniqTids), async (tids) => {
 			let topicsTags = await Topics.getTopicsTags(tids);
 			topicsTags = topicsTags.map(
-				topicTags => topicTags.filter(topicTag => topicTag && topicTag !== tag)
+				topicTags => topicTags.filter(tag => tag && !tagsToRemove.has(tag))
 			);
 
 			await db.setObjectBulk(
@@ -271,7 +278,7 @@ module.exports = function (Topics) {
 					`topic:${tid}`, { tags: topicsTags[index].join(',') },
 				]))
 			);
-		});
+		}, { batch: 500 });
 	}
 
 	async function removeTagsFromUsers(tags) {

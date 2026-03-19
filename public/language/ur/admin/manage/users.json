@@ -40,6 +40,7 @@
 	"250-per-page": "250 فی صفحہ",
 	"500-per-page": "500 فی صفحہ",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "صارف شناخت کنندہ کے ذریعے",
 	"search.uid-placeholder": "تلاش کرنے کے لیے صارف شناخت کنندہ درج کریں",
 	"search.username": "صارف نام کے ذریعے",

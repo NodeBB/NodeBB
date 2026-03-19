@@ -75,7 +75,8 @@ describe('Notifications', () => {
 		const notifData = await notifications.get(nid);
 		assert.strictEqual(notifData.icon, undefined);
 		assert.strictEqual(notifData.user['icon:text'], 'I');
-		assert.strictEqual(notifData.user['icon:bgColor'], '#3f51b5');
+		assert(notifData.user['icon:bgColor'].length === 7 &&
+			notifData.user['icon:bgColor'].startsWith('#'));
 	});
 
 	it('should return null if pid is same and importance is lower', (done) => {

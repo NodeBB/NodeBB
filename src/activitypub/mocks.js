@@ -743,18 +743,40 @@ Mocks.notes.public = async (post) => {
 	}
 
 	attachment = normalizeAttachment(attachment);
+
+	// Retrieve alt text from content (if found)
+	if (source?.content && source?.mediaType === 'text/markdown') {
+		const mdImageRegex = /!\[(.+?)\]\(([^\\)]+)\)/g;
+		const found = new Map();
+		let current = mdImageRegex.exec(source.content);
+		while (current !== null) {
+			const [, alt, src] = current;
+			found.set(src.replace('-resized', ''), alt);
+			current = mdImageRegex.exec(source.content);
+		}
+
+		attachment = attachment.map((attachment) => {
+			if (found.has(attachment.url)) {
+				attachment.name = found.get(attachment.url);
+			}
+
+			return attachment;
+		});
+	}
+
+	// 'image' seems to be used as the preview image in lemmy/piefed, use the first one.
 	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
-	// let preview;
+	let preview;
 	let summary = null;
 	if (isArticle) {
 		// Preview is not adopted by anybody, so is left commented-out for now
-		// preview = {
-		// type: 'Note',
-		// attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
-		// content: post.content,
-		// published,
-		// attachment,
-		// };
+		preview = {
+			type: 'Note',
+			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
+			content: post.content,
+			published,
+			attachment,
+		};
 
 		if (post.content.includes(meta.config.activitypubBreakString)) {
 			const index = post.content.indexOf(meta.config.activitypubBreakString);
@@ -793,10 +815,6 @@ Mocks.notes.public = async (post) => {
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
-	/**
-	 * audience is exposed as part of 1b12 but is now ignored by Lemmy.
-	 * Remove this and most references to audience in 2026.
-	 */
 	let audience = utils.isNumber(post.category.cid) ? // default
 		`${nconf.get('url')}/category/${post.category.cid}` : post.category.cid;
 	if (inReplyTo) {
@@ -806,6 +824,17 @@ Mocks.notes.public = async (post) => {
 		});
 	}
 	to.add(audience);
+
+	// Sneak in a mention for the remote category (so Mastodon users address distributor)
+	if (!audience.startsWith(nconf.get('url'))) {
+		const slug = await categories.getCategoryField(audience, 'slug');
+		tag = tag || [];
+		tag.push({
+			type: 'Mention',
+			href: audience,
+			name: `@${slug}`,
+		});
+	}
 
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -822,7 +851,7 @@ Mocks.notes.public = async (post) => {
 		context,
 		audience,
 		...(summary && { summary }),
-		// preview,
+		preview,
 		content: post.content,
 		source,
 		tag,
@@ -955,6 +984,65 @@ Mocks.activities.create = async (pid, uid, post) => {
 	};
 
 	return { activity, targets };
+};
+
+Mocks.activities.like = async (pid, uid) => {
+	const authorUid = await posts.getPostField(pid, 'uid');
+
+	return {
+		id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
+		type: 'Like',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to: [activitypub._constants.publicAddress],
+		cc: [authorUid],
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+};
+
+Mocks.activities.dislike = async (pid, uid) => {
+	const authorUid = await posts.getPostField(pid, 'uid');
+
+	return {
+		id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
+		type: 'Dislike',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to: [activitypub._constants.publicAddress],
+		cc: [authorUid],
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+};
+
+Mocks.activities.announce = async (tid, uid) => {
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+	const authorUid = await posts.getPostField(pid, 'uid'); // author
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		id: pid,
+		to: [activitypub._constants.publicAddress],
+	}, uid ? { uid } : { cid });
+	if (!utils.isNumber(authorUid)) {
+		cc.push(authorUid);
+		targets.add(authorUid);
+	}
+
+	const payload = uid ? {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/uid/${uid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+	} : {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+	};
+
+	return {
+		activity: {
+			...payload,
+			to,
+			cc,
+			object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+		},
+		targets,
+	};
 };
 
 Mocks.tombstone = async properties => ({

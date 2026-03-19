@@ -78,6 +78,7 @@
 	"advanced/logs": "Логи",
 	"advanced/errors": "Помилки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Логування",
 	"development/info": "Інформація",
 

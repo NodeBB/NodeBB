@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const _ = require('lodash');
 const path = require('path');
 const nconf = require('nconf');
@@ -60,8 +59,9 @@ module.exports = function (User) {
 	}
 
 	async function deleteUploads(callerUid, uid) {
-		const uploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
-		await User.deleteUpload(callerUid, uid, uploads);
+		await batch.processSortedSet(`uid:${uid}:uploads`, async (uploads) => {
+			await User.deleteUpload(callerUid, uid, uploads);
+		}, { alwaysStartAt: 0, batch: 500 });
 	}
 
 	async function deleteQueued(uid) {
@@ -71,7 +71,11 @@ module.exports = function (User) {
 			const userQueuedIds = data.filter(d => String(d.uid) === String(uid)).map(d => d.id);
 			deleteIds = deleteIds.concat(userQueuedIds);
 		}, { batch: 500 });
-		await async.eachSeries(deleteIds, posts.removeFromQueue);
+
+		for (const id of deleteIds) {
+			// eslint-disable-next-line no-await-in-loop
+			await posts.removeFromQueue(id);
+		}
 	}
 
 	async function removeFromSortedSets(uid) {
@@ -130,6 +134,7 @@ module.exports = function (User) {
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`,
 			`uid:${uid}:shares`,
+			`uid:${uid}:profile:images`,
 			`invitation:uid:${uid}`,
 		];
 
@@ -195,9 +200,10 @@ module.exports = function (User) {
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 		], 0, -1);
 		const pids = _.uniq(upvoteDownvotePids).filter(Boolean);
-		await async.eachSeries(pids, async (pid) => {
+		for (const pid of pids) {
+			// eslint-disable-next-line no-await-in-loop
 			await posts.unvote(pid, uid);
-		});
+		}
 	}
 
 	async function deleteChats(uid) {

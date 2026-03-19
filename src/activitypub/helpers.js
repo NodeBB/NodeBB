@@ -44,9 +44,9 @@ Helpers.log = (message) => {
 	if (!message) {
 		return _lastLog;
 	}
-
 	_lastLog = message;
 	if (process.env.NODE_ENV === 'development') {
+
 		winston.verbose(message);
 	}
 };
@@ -473,7 +473,7 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 	} else if (set) {
 		method = method.bind(null, set);
 	}
-	count = count || await db.sortedSetCard(set);
+	count = count ?? await db.sortedSetCard(set);
 	const pageCount = Math.max(1, Math.ceil(count / perPage));
 	let items = [];
 	let paginate = true;
@@ -483,6 +483,7 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 		paginate = false;
 	}
 
+	page = parseInt(page, 10) || undefined;
 	if (page) {
 		const invalidPagination = page < 1 || page > pageCount;
 		if (invalidPagination) {

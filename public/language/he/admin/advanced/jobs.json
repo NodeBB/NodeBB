@@ -1,0 +1,9 @@
+{
+	"jobs": "משימות",
+	"job-name": "שם משימה",
+	"schedule": "לוח זמנים",
+	"next-run": "ריצה הבאה",
+	"last-duration": "זמן ביצוע אחרון",
+	"running": "בהרצה",
+	"active": "Active"
+}

@@ -78,6 +78,7 @@
 	"advanced/logs": "Kayıtlar",
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Kaydedici",
 	"development/info": "bilgi",
 

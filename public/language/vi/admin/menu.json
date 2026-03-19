@@ -48,13 +48,13 @@
 
 	"settings.page-title": "Cài đặt %1",
 
-	"section-federation": "Federation",
-	"federation/general": "General",
-	"federation/content": "Content",
-	"federation/rules": "Categorization",
-	"federation/relays": "Relays",
-	"federation/pruning": "Storage",
-	"federation/safety": "Trust & Safety",
+	"section-federation": "Liên đoàn",
+	"federation/general": "Chung",
+	"federation/content": "Nội dung",
+	"federation/rules": "Phân loại",
+	"federation/relays": "Chuyển tiếp",
+	"federation/pruning": "Lưu trữ",
+	"federation/safety": "Tin cậy & An toàn",
 
 	"section-appearance": "Trực quan",
 	"appearance/themes": "Giao diện",
@@ -78,6 +78,7 @@
 	"advanced/logs": "Nhật ký",
 	"advanced/errors": "Lỗi",
 	"advanced/cache": "Bộ nhớ đệm",
+	"advanced/jobs": "Công việc",
 	"development/logger": "Ghi nhật ký",
 	"development/info": "Thông tin",
 

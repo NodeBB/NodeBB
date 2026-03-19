@@ -78,6 +78,7 @@
 	"advanced/logs": "Protokoly",
 	"advanced/errors": "Chyby",
 	"advanced/cache": "Medzipamäť",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Protokolár",
 	"development/info": "Informácie",
 

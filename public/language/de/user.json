@@ -147,7 +147,7 @@
     "upvote-notif-freq.logarithmic": "Bei 10, 100, 1000...",
     "upvote-notif-freq.disabled": "Deaktiviert",
     "notification-type-web": "Web",
-    "notification-type-email": "Email",
+    "notification-type-email": "E-Mail",
     "browsing": "Browsing",
     "unread.cutoff": "Ungelesene Nachrichten (maximal %1 Tage)",
     "unread.cutoff-help": "Themen werden als gelesen markiert, wenn sie innerhalb dieser Anzahl von Tagen nicht aktualisiert wurden.",

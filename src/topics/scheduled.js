@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const winston = require('winston');
-const { CronJob } = require('cron');
 
 const db = require('../database');
 const posts = require('../posts');
@@ -13,18 +12,17 @@ const groups = require('../groups');
 const user = require('../user');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
+const cron = require('../cron');
 
 const Scheduled = module.exports;
 
-Scheduled.startJobs = function () {
+Scheduled.startJobs = async function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', async () => {
-		try {
-			await Scheduled.handleExpired();
-		} catch (err) {
-			winston.error(err.stack);
-		}
-	}, null, true);
+	await cron.addJob({
+		name: 'topics:publish:scheduled',
+		cronTime: '*/1 * * * *',
+		onTick: Scheduled.handleExpired,
+	});
 };
 
 Scheduled.handleExpired = async function () {

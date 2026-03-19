@@ -84,19 +84,6 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should get installed themes', (done) => {
-		const themes = ['nodebb-theme-persona'];
-		io.emit('admin.themes.getInstalled', (err, data) => {
-			assert.ifError(err);
-			assert(data);
-			const installed = data.map(theme => theme.id);
-			themes.forEach((theme) => {
-				assert(installed.includes(theme));
-			});
-			done();
-		});
-	});
-
 	it('should ban a user', async () => {
 		const apiUser = require('../src/api/users');
 		await apiUser.ban({ uid: adminUid }, { uid: regularUid, reason: 'spammer' });

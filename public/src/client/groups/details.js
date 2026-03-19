@@ -209,7 +209,9 @@ define('forum/groups/details', [
 		// Add icon selection interface
 		iconBtn.on('click', function () {
 			iconSelect.init(previewIcon, function () {
-				iconValueEl.val(previewIcon.val());
+				const icon = previewIcon.val();
+				previewIcon.toggleClass('hidden', !icon || icon === 'fa-nbb-none');
+				iconValueEl.val(icon);
 			});
 		});
 

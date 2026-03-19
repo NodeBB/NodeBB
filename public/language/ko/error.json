@@ -1,5 +1,6 @@
 {
     "invalid-data": "잘못된 데이터",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "잘못된 JSON",
     "wrong-parameter-type": "속성 `%1`에 대해 %3 유형의 값이 예상되었지만 대신 %2가 수신되었습니다",
     "required-parameters-missing": "이 API 호출에서 필수 매개변수가 누락되었습니다: %1",

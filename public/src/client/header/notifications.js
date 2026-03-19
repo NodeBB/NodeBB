@@ -15,11 +15,29 @@ define('forum/header/notifications', function () {
 		notifTrigger.each((index, el) => {
 			const triggerEl = $(el);
 			const dropdownEl = triggerEl.parent().find('.dropdown-menu');
+			const listEl = dropdownEl.find('[component="notifications/list"]');
 			if (dropdownEl.hasClass('show')) {
 				app.require('notifications').then((notifications) => {
-					notifications.loadNotifications(triggerEl, dropdownEl.find('[component="notifications/list"]'));
+					notifications.loadNotifications(triggerEl, listEl);
 				});
 			}
+
+			dropdownEl.on('click', '[data-filter]', (e) => {
+				const filter = e.target.getAttribute('data-filter');
+				dropdownEl.find('[data-filter]').removeClass('active');
+				e.target.classList.add('active');
+				if (filter === 'unread') {
+					listEl.get(0).querySelectorAll('[data-nid]:not(.unread)').forEach((e) => {
+						e.classList.toggle('hidden', true);
+					});
+				} else {
+					listEl.get(0).querySelectorAll('[data-nid]').forEach((e) => {
+						e.classList.toggle('hidden', false);
+					});
+				}
+				const visibleNotifCount = dropdownEl.find('[data-nid]:not(.hidden)').length;
+				dropdownEl.find('.no-notifs').toggleClass('hidden', visibleNotifCount !== 0);
+			});
 		});
 
 		socket.removeListener('event:new_notification', onNewNotification);

@@ -3,10 +3,10 @@
 define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
 	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
-	'translator', 'quickreply',
+	'translator', 'quickreply', 'handleBack', 'imagesloaded',
 ], function (infinitescroll, search, sort, hooks,
 	alerts, api, bootbox, helpers, categoryTools,
-	translator, quickreply) {
+	translator, quickreply, handleBack, imagesLoaded) {
 	const World = {};
 
 	World.init = function () {
@@ -14,7 +14,7 @@ define('forum/world', [
 		quickreply.init({
 			route: '/topics',
 			body: {
-				cid: ajaxify.data.cid,
+				cid: config.activitypub.worldDefaultCid || ajaxify.data.cid,
 			},
 		});
 
@@ -22,6 +22,7 @@ define('forum/world', [
 		handleImages();
 		handleButtons();
 		handleHelp();
+		handleShowMoreButtons();
 
 		categoryTools.init($('#world-feed'));
 		socket.on('event:new_post', onNewPost);
@@ -35,16 +36,44 @@ define('forum/world', [
 		const sortOptionsEl = document.getElementById('sort-options');
 		if (sortLabelEl && sortOptionsEl) {
 			const params = new URLSearchParams(window.location.search);
-			if (params.get('sort') === 'popular') {
-				translator.translate(`[[world:popular-${params.get('term')}]]`, function (translated) {
-					sortLabelEl.innerText = translated;
-				});
-			} else {
-				translator.translate('[[world:latest]]', function (translated) {
-					sortLabelEl.innerText = translated;
-				});
+			switch(params.get('sort')) {
+				case 'popular': {
+					translator.translate(`[[world:popular-${params.get('term')}]]`, function (translated) {
+						sortLabelEl.innerText = translated;
+					});
+					break;
+				}
+
+				default: {
+					let suffix = '';
+					if (params.get('all') === '1') {
+						suffix = '-all';
+					} else if (params.get('local') === '1') {
+						suffix = '-local';
+					}
+					translator.translate(`[[world:latest${suffix}]]`, function (translated) {
+						sortLabelEl.innerText = translated;
+					});
+					break;
+				}
 			}
 		}
+
+		handleBack.init((after, handleBackCb) => {
+			loadTopicsAfter(after, undefined, 1, (payload, callback) => {
+				app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
+					const listEl = document.getElementById('world-feed');
+					$(listEl).append(html);
+					imagesLoaded(listEl, () => {
+						html.find('.timeago').timeago();
+						handleImages();
+						handleShowMoreButtons();
+						callback();
+						handleBackCb();
+					});
+				});
+			});
+		}, { container: '#world-feed' });
 
 		search.enableQuickSearch({
 			searchElements: {
@@ -64,18 +93,24 @@ define('forum/world', [
 		if (!config.usePagination) {
 			infinitescroll.init((direction) => {
 				const posts = Array.from(document.querySelectorAll('[component="category/topic"]'));
-				const afterEl = direction > 0 ? posts.pop() : posts.shift();
-				const after = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
-				if (after < config.topicsPerPage) {
+				if (!posts.length) {
 					return;
 				}
 
-				loadTopicsAfter(after, direction, (payload, callback) => {
+				const afterEl = direction > 0 ? posts.pop() : posts.shift();
+				const index = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
+				const after = afterEl.getAttribute('data-tid');
+				if (index < config.topicsPerPage) {
+					return;
+				}
+
+				loadTopicsAfter(index, after, direction, (payload, callback) => {
 					app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
 						const listEl = document.getElementById('world-feed');
-						$(listEl).append(html);
+						$(listEl)[direction === -1 ? 'prepend' : 'append'](html);
 						html.find('.timeago').timeago();
 						handleImages();
+						handleShowMoreButtons();
 						callback();
 					});
 				});
@@ -94,10 +129,11 @@ define('forum/world', [
 		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
 	}
 
-	function loadTopicsAfter(after, direction, callback) {
+	function loadTopicsAfter(index, after, direction, callback) {
 		callback = callback || function () {};
 		const query = utils.params();
-		query.page = calculateNextPage(after, direction);
+		query.page = calculateNextPage(index, direction);
+		query.after = after;
 		infinitescroll.loadMoreXhr(query, callback);
 	}
 
@@ -208,6 +244,41 @@ define('forum/world', [
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 	}
 
+	function handleShowMoreButtons() {
+		const feedEl = document.getElementById('world-feed');
+		if (!feedEl) {
+			return;
+		}
+
+		feedEl.querySelectorAll('[component="post/content"]').forEach((el) => {
+			const initted = el.getAttribute('data-showmore');
+			if (parseInt(initted, 10) === 1) {
+				return;
+			}
+
+			if (el.clientHeight < el.scrollHeight - 1) {
+				el.parentNode.querySelector('[component="show/more"]').classList.remove('hidden');
+				el.classList.toggle('clamp-fade-6', true);
+			}
+			el.setAttribute('data-showmore', '1');
+		});
+
+		if (parseInt(feedEl.getAttribute('data-showmore'), 10) !== 1) {
+			feedEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[component="show/more"]');
+				if (subselector) {
+					const postContent = subselector.closest('.post-body').querySelector('[component="post/content"]');
+					const isShowingMore = parseInt(subselector.getAttribute('ismore'), 10) === 1;
+					postContent.classList.toggle('line-clamp-6', isShowingMore);
+					postContent.classList.toggle('clamp-fade-6', isShowingMore);
+					$(subselector).translateText(isShowingMore ? '[[world:see-more]]' : '[[world:see-less]]');
+					subselector.setAttribute('ismore', isShowingMore ? 0 : 1);
+				}
+			});
+			feedEl.setAttribute('data-showmore', '1');
+		}
+	}
+
 	function updateDropdowns(modified_cids, state) {
 		modified_cids.forEach(function (cid) {
 			const category = $('[data-cid="' + cid + '"]');
@@ -234,6 +305,7 @@ define('forum/world', [
 
 		feedEl.prepend(...html);
 		handleImages();
+		handleShowMoreButtons();
 	}
 
 	return World;

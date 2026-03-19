@@ -1,5 +1,6 @@
 {
     "invalid-data": "غلط ڈیٹا",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "غلط JSON",
     "wrong-parameter-type": "پراپرٹی '%1' کے لیے %3 قسم کی قدر متوقع تھی، لیکن اس کے بجائے %2 موصول ہوا",
     "required-parameters-missing": "اس API کال سے ضروری پیرامیٹرز غائب ہیں: %1",

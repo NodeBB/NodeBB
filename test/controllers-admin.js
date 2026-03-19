@@ -629,6 +629,7 @@ describe('Admin Controllers', () => {
 					'uploadfavicon',
 					'uploadTouchIcon',
 					'uploadMaskableIcon',
+					'uploadScreenshot',
 					'uploadlogo',
 					'uploadOgImage',
 					'uploadDefaultAvatar',
@@ -643,7 +644,7 @@ describe('Admin Controllers', () => {
 
 					await privileges.admin.give([privileges.admin.routeMap[route]], uid);
 					({ response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts));
-					assert.strictEqual(res.statusCode, 200);
+					assert.strictEqual(res.statusCode, 200, `${route} returned ${res.statusCode} instead of 200`);
 
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 				}

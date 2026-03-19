@@ -46,7 +46,8 @@ module.exports = function (Topics) {
 		let tids;
 		if (params.term !== 'alltime') {
 			if (params.sort === 'posts') {
-				tids = await getTidsWithMostPostsInTerm(params.cids, params.uid, params.term);
+				const { cids, uid, term, includeRemote } = params;
+				tids = await getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote });
 			} else {
 				const cids = await getCids(params.cids, params.uid);
 				tids = await Topics.getLatestTidsFromSet(
@@ -74,17 +75,18 @@ module.exports = function (Topics) {
 	}
 
 	async function getInbox(tids, params) {
-		if (!Array.isArray(params.cids) || !params.cids.includes('-1')) {
+		if (!params.includeRemote) {
 			return tids;
 		}
 
 		let inbox;
+		const set = params.followingOnly ? `uid:${params.uid}:inbox` : 'cid:-1:tids';
 		if (params.term !== 'alltime') {
 			const method = params.sort === 'old' ?
 				'getSortedSetRangeByScore' :
 				'getSortedSetRevRangeByScore';
 			inbox = await db[method](
-				`uid:${params.uid}:inbox`,
+				set,
 				0,
 				1000,
 				'+inf',
@@ -94,7 +96,7 @@ module.exports = function (Topics) {
 			const method = params.sort === 'old' ?
 				'getSortedSetRange' :
 				'getSortedSetRevRange';
-			inbox = await db[method](`uid:${params.uid}:inbox`, 0, meta.config.recentMaxTopics - 1);
+			inbox = await db[method](set, 0, meta.config.recentMaxTopics - 1);
 		}
 
 		return _.uniq(tids.concat(inbox));
@@ -115,20 +117,26 @@ module.exports = function (Topics) {
 		return 'topics:recent';
 	}
 
-	async function getCids(cids, uid) {
+	async function getCids(cids, uid, includeRemote) {
 		if (Array.isArray(cids)) {
 			cids = await privileges.categories.filterCids('topics:read', cids, uid);
 		} else {
 			cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
 			cids = cids.filter(cid => cid !== -1);
 		}
+
+		if (includeRemote) {
+			const remoteCids = await db.getObjectValues('handle:cid');
+			cids = [-1, ...cids, ...remoteCids];
+		}
 		return cids;
 	}
 
-	async function getTidsWithMostPostsInTerm(cids, uid, term) {
-		cids = await getCids(cids, uid);
+	async function getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote }) {
+		cids = await getCids(cids, uid, includeRemote);
+		const sets = cids.map(cid => `cid:${cid}:pids`);
 		const pids = await db.getSortedSetRevRangeByScore(
-			cids.map(cid => `cid:${cid}:pids`),
+			sets,
 			0,
 			1000,
 			'+inf',
@@ -200,7 +208,7 @@ module.exports = function (Topics) {
 	}
 
 	async function sortTids(tids, params) {
-		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned) {
+		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned && !params.includeRemote) {
 			return tids;
 		}
 

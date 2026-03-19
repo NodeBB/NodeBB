@@ -1,19 +1,19 @@
 {
-	"lead": "IPブラックリストをこちらで設定します。",
-	"description": "場合によては、ユーザーアカウントを禁止せざるを得ないこともあります。フォーラムを保護するための最善の方法は、特定のIPまたはIPの範囲へのアクセスを制限することです。このような場合は、厄介なIPアドレスまたはCIDRブロック全体をこのブラックリストに追加することができ、新しいアカウントにログインしたり登録することができなくなります。",
+	"lead": "ここでIPブラックリストを設定します。",
+	"description": "ユーザーアカウントのBANでは不十分な場合があります。また、特定のIPまたはIP範囲へのアクセスを制限することがフォーラムを保護する最善の方法である場合もあります。このような状況では、問題のあるIPアドレスまたはCIDRブロック全体をこのブラックリストに追加でき、ログインや新規アカウント登録ができなくなります。",
 	"active-rules": "アクティブルール",
 	"validate": "ブラックリストの検証",
-	"apply": "ブラックリスト",
+	"apply": "ブラックリストを適用",
 	"hints": "構文のヒント",
-	"hint-1": "1行に1つのIPアドレスを定義します。あなたはCIDR形式(例：<code> 192.168.100.0/22 </ code>)に従っている限り、IPブロックを追加できます。",
-	"hint-2": "<code>＃</ code>記号でコメントを追加することができます。",
+	"hint-1": "1行に1つのIPアドレスを定義します。CIDR形式（例：<code>192.168.100.0/22</code>）に従っている限り、IPブロックを追加できます。",
+	"hint-2": "<code>#</code>記号で始まる行でコメントを追加できます。",
 
-	"validate.x-valid": "<strong>％2</ strong>のルールのうち<strong>％1 </ strong>のルール(s) が有効です。",
-	"validate.x-invalid": "次の<strong>％1 </ strong>ルールは無効:",
+	"validate.x-valid": " <strong>%2</strong>件のルールのうち<strong>%1</strong>件が有効です。",
+	"validate.x-invalid": "次の<strong>%1</strong>件のルールは無効です：",
 
-	"alerts.applied-success": "ブラックリストに適用されました",
+	"alerts.applied-success": "ブラックリストを適用しました",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"analytics.blacklist-hourly": "<strong>図1</strong> &ndash; 1時間あたりのブラックリストヒット",
+	"analytics.blacklist-daily": "<strong>図2</strong> &ndash; 1日あたりのブラックリストヒット",
+	"ip-banned": "IP禁止"
 }

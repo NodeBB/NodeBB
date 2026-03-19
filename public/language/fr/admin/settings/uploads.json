@@ -40,7 +40,7 @@
 	"default-avatar": "Modifier l'avatar par défaut",
 	"upload": "Téléverser",
 	"profile-image-dimension": "Dimensions de l'avatar",
-	"profile-image-dimension-help": "(in pixels, default: 200 pixels)",
+	"profile-image-dimension-help": "(en pixels, par défaut : 200 pixels)",
 	"max-profile-image-size": "Taille maximale des avatars",
 	"max-profile-image-size-help": "(en kibioctets, défaut : 256 Kio)",
 	"max-cover-image-size": "Taille maximale des images de couverture",

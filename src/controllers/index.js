@@ -1,11 +1,14 @@
 'use strict';
 
+const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
+const mime = require('mime');
 
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
+const image = require('../image');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
 
@@ -271,6 +274,7 @@ Controllers.manifest = async function (req, res) {
 	const manifest = {
 		name: meta.config.title || 'NodeBB',
 		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
+		...(meta.config.description && { description: meta.config.description }),
 		start_url: nconf.get('url'),
 		display: 'standalone',
 		orientation: 'portrait',
@@ -278,6 +282,33 @@ Controllers.manifest = async function (req, res) {
 		background_color: meta.config.backgroundColor || '#ffffff',
 		icons: [],
 	};
+
+	if (meta.config['brand:screenshot']) {
+		let sizes;
+		try {
+			const { width, height } = await image.size(path.join(nconf.get('base_dir'), meta.config['brand:screenshot'].replace('assets', 'public')));
+			sizes = `${width}x${height}`;
+		} catch (e) {
+			// noop
+		}
+		manifest.screenshots = [
+			{
+				src: `${nconf.get('relative_path')}${meta.config['brand:screenshot']}`,
+				...(sizes && { sizes }),
+				type: mime.getType(meta.config['brand:screenshot']),
+			},
+		];
+	} else {
+		manifest.screenshots = [
+			{
+				src: `${nconf.get('relative_path')}/assets/images/screenshot-default.png`,
+				sizes: '446x778',
+				type: 'image/png',
+				form_factor: 'narrow',
+				label: 'Default home page of a vanilla NodeBB installation.',
+			},
+		];
+	}
 
 	if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
@@ -312,6 +343,43 @@ Controllers.manifest = async function (req, res) {
 			density: 4.0,
 		}, {
 			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-512.png`,
+			sizes: '512x512',
+			type: 'image/png',
+			density: 10.0,
+		});
+	} else {
+		manifest.icons.push({
+			src: `${nconf.get('relative_path')}/assets/images/touch/36.png`,
+			sizes: '36x36',
+			type: 'image/png',
+			density: 0.75,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/48.png`,
+			sizes: '48x48',
+			type: 'image/png',
+			density: 1.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/72.png`,
+			sizes: '72x72',
+			type: 'image/png',
+			density: 1.5,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/96.png`,
+			sizes: '96x96',
+			type: 'image/png',
+			density: 2.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/144.png`,
+			sizes: '144x144',
+			type: 'image/png',
+			density: 3.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/192.png`,
+			sizes: '192x192',
+			type: 'image/png',
+			density: 4.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/512.png`,
 			sizes: '512x512',
 			type: 'image/png',
 			density: 10.0,

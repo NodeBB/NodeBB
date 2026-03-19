@@ -40,6 +40,7 @@
 	"250-per-page": "Səhifə başına 250",
 	"500-per-page": "Səhifə başına 500",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "İstifadəçi ID ilə",
 	"search.uid-placeholder": "Axtarmaq üçün istifadəçi ID-sini daxil edin",
 	"search.username": "İstifadəçi adı ilə",

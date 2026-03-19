@@ -103,6 +103,7 @@ apiController.loadConfig = async function (req) {
 		},
 		activitypub: {
 			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe,
+			worldDefaultCid: meta.config.activitypubWorldDefaultCid,
 		},
 	};
 
