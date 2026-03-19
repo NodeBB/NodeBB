@@ -471,7 +471,8 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 			db.sortedSetRemove(`followingRemote:${id}`, actor),
 			db.sortedSetRemove(`followRequests:uid.${id}`, actor),
 			db.sortedSetRemove(`followersRemote:${actor}`, id),
-			db.decrObjectField(`user:${id}`, 'followingRemoteCount'),
+			user.syncFollowCounts(id, true, false),
+			user.syncFollowCounts(actor, false, true),
 		]);
 	} else if (type === 'cid') {
 		await Promise.all([
