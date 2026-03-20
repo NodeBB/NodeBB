@@ -29,7 +29,7 @@ function setupRules() {
 				case 'rules.delete': {
 					const rid = subselector.closest('tr').getAttribute('data-rid');
 					del(`/admin/activitypub/rules/${rid}`, {}).then(async (data) => {
-						const html = await render('admin/settings/activitypub', { rules: data }, 'rules');
+						const html = await render('admin/federation/rules', { rules: data }, 'rules');
 						const tbodyEl = document.querySelector('#rules tbody');
 						if (tbodyEl) {
 							tbodyEl.innerHTML = html;
@@ -68,15 +68,21 @@ function throwModal() {
 	render('admin/partials/activitypub/rules', {}).then(function (html) {
 		const submit = function () {
 			const formEl = modal.find('form').get(0);
-			const payload = Object.fromEntries(new FormData(formEl));
+			if (!formEl.reportValidity()) {
+				return false;
+			}
 
+			const payload = Object.fromEntries(new FormData(formEl));
 			post('/admin/activitypub/rules', payload).then(async (data) => {
-				const html = await render('admin/settings/activitypub', { rules: data }, 'rules');
+				const html = await render('admin/federation/rules', { rules: data }, 'rules');
 				const tbodyEl = document.querySelector('#rules tbody');
 				if (tbodyEl) {
 					tbodyEl.innerHTML = html;
 				}
+				modal.modal('hide');
 			}).catch(error);
+
+			return false;
 		};
 		const modal = bootbox.dialog({
 			title: '[[admin/settings/activitypub:rules.add]]',

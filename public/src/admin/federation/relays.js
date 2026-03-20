@@ -24,7 +24,7 @@ function setupRelays() {
 					case 'relays.remove': {
 						const url = subselector.closest('tr').getAttribute('data-url');
 						del(`/admin/activitypub/relays/${encodeURIComponent(url)}`, {}).then(async (data) => {
-							const html = await app.parseAndTranslate('admin/settings/activitypub', 'relays', { relays: data });
+							const html = await app.parseAndTranslate('admin/federation/relays', 'relays', { relays: data });
 							const tbodyEl = document.querySelector('#relays tbody');
 							if (tbodyEl) {
 								$(tbodyEl).html(html);
@@ -41,10 +41,13 @@ function throwModal() {
 	render('admin/partials/activitypub/relays', {}).then(function (html) {
 		const submit = function () {
 			const formEl = modal.find('form').get(0);
-			const payload = Object.fromEntries(new FormData(formEl));
+			if (!formEl.reportValidity()) {
+				return false;
+			}
 
+			const payload = Object.fromEntries(new FormData(formEl));
 			post('/admin/activitypub/relays', payload).then(async (data) => {
-				const html = await app.parseAndTranslate('admin/settings/activitypub', 'relays', { relays: data });
+				const html = await app.parseAndTranslate('admin/federation/relays', 'relays', { relays: data });
 				const tbodyEl = document.querySelector('#relays tbody');
 				if (tbodyEl) {
 					$(tbodyEl).html(html);

@@ -14,7 +14,7 @@
 	</div>
 	<div class="mb-3">
 		<label class="form-label" for="value">Value</label>
-		<input type="text" id="value" name="value" title="Value" class="form-control" placeholder="forum">
+		<input type="text" id="value" name="value" title="Value" class="form-control" placeholder="forum" required>
 		<p class="form-text" id="help-text"></p>
 	</div>
 	<div class="mb-3">

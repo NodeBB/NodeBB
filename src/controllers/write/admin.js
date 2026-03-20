@@ -110,8 +110,11 @@ Admin.activitypub.reorderRules = async (req, res) => {
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 
-Admin.activitypub.addRelay = async (req, res) => {
+Admin.activitypub.addRelay = async (req, res, next) => {
 	const { url } = req.body;
+	if (!url) {
+		return next();
+	}
 
 	await activitypub.relays.add(url);
 	helpers.formatApiResponse(200, res, await activitypub.relays.list());
