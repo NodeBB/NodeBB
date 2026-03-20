@@ -44,9 +44,11 @@ federationController.pruning = function (req, res) {
 
 federationController.safety = async function (req, res) {
 	const instanceCount = await activitypub.instances.getCount();
+	const blocklists = await activitypub.blocklists.list();
 
 	res.render(`admin/federation/safety`, {
 		title: '[[admin/menu:federation/safety]]',
+		blocklists,
 		instanceCount,
 	});
 };

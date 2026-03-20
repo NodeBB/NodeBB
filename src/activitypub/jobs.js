@@ -50,6 +50,18 @@ Jobs.start = async () => {
 		runOnInit: false,
 		onTick: async () => await tryCronJob(backfill),
 	});
+
+	await cron.addJob({
+		name: 'ap:blocklist:refresh',
+		cronTime: '15 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			const lists = await activitypub.blocklists.list();
+			await Promise.all(lists.map(({ url }) => {
+				return activitypub.blocklists.refresh(url);
+			}));
+		},
+	});
 };
 
 async function retryFailedMessages() {
