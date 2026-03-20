@@ -17,7 +17,7 @@ define('share', ['hooks'], function (hooks) {
 
 		$('#content').off('shown.bs.dropdown', '.share-dropdown').on('shown.bs.dropdown', '.share-dropdown', function () {
 			const postLink = $(this).find('.post-link');
-			postLink.val(baseUrl + getPostUrl($(this)));
+			postLink.val(getPostUrl($(this)));
 
 			// without the setTimeout can't select the text in the input
 			setTimeout(function () {
@@ -77,9 +77,10 @@ define('share', ['hooks'], function (hooks) {
 	}
 
 	function getPostUrl(clickedElement) {
-		const pid = parseInt(clickedElement.parents('[data-pid]').attr('data-pid'), 10);
-		const path = '/post' + (pid ? '/' + (pid) : '');
-		return baseUrl + config.relative_path + path;
+		const pid = clickedElement.parents('[data-pid]').attr('data-pid');
+		return pid ?
+			`${baseUrl + config.relative_path}/post/${pid}` :
+			window.location.href;
 	}
 
 	return share;
