@@ -169,6 +169,10 @@ module.exports = function (Topics) {
 			db.sortedSetRemove(removeFrom, postData.pid),
 			db.sortedSetAdd(`cid:${topicData[1].cid}:pids`, postData.timestamp, postData.pid),
 			db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids`, postData.timestamp, postData.pid),
+			db.sortedSetIncrByBulk([
+				[`uid:${postData.uid}:cids`, -1, topicData[0].cid],
+				[`uid:${postData.uid}:cids`, 1, topicData[1].cid],
+			]),
 		];
 		if (postData.votes > 0 || postData.votes < 0) {
 			tasks.push(db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid));

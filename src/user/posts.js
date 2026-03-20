@@ -101,6 +101,7 @@ module.exports = function (User) {
 			`uid:${postData.uid}:posts`,
 			`cid:${postData.cid}:uid:${postData.uid}:pids`,
 		], postData.timestamp, postData.pid);
+		await db.sortedSetIncrBy(`uid:${postData.uid}:cids`, 1, postData.cid);
 		await User.updatePostCount(postData.uid);
 	};
 
