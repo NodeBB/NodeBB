@@ -39,6 +39,7 @@
 	"relays.state-0": "Pending",
 	"relays.state-1": "Receiving only",
 	"relays.state-2": "Active",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Filtrer etter",
 	"count": "Denne NodeBB-en er for tida klar over <strong>%1</strong> server(ar)",

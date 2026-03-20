@@ -39,6 +39,7 @@
 	"relays.state-0": "待处理",
 	"relays.state-1": "仅接收",
 	"relays.state-2": "已启用",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",

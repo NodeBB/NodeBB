@@ -39,6 +39,7 @@
 	"relays.state-0": "Oczekujący",
 	"relays.state-1": "Tylko odbiór",
 	"relays.state-2": "Aktywny",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Filtrowanie",
 	"count": "NodeBB obecnie wykrywa <strong>1%</strong> serwerów",

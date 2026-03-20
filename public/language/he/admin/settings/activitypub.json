@@ -39,6 +39,7 @@
 	"relays.state-0": "ממתין",
 	"relays.state-1": "קבלה בלבד",
 	"relays.state-2": "פעיל",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "סינון",
 	"count": "NodeBB זה מודע כרגע ל-<strong>%1</strong> שרתים",

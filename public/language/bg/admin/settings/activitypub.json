@@ -39,6 +39,7 @@
 	"relays.state-0": "В изчакване",
 	"relays.state-1": "Само приемане",
 	"relays.state-2": "Активен",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Филтриране",
 	"count": "Този NodeBB в момента знае за наличието на <strong>%1</strong> сървър(а)",

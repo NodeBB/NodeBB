@@ -39,6 +39,7 @@
 	"relays.state-0": "En attente",
 	"relays.state-1": "Réception uniquement",
 	"relays.state-2": "Actif",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Filtrage",
 	"count": "Ce NodeBB connaît actuellement <strong>%1</strong> serveur(s)",

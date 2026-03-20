@@ -39,6 +39,7 @@
 	"relays.state-0": "Pending",
 	"relays.state-1": "Receiving only",
 	"relays.state-2": "Active",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "فلٹرنگ",
 	"count": "یہ نوڈ بی بی فی الحال <strong>%1</strong> سرور(ز) کے بارے میں جانتا ہے",

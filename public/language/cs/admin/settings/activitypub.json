@@ -39,6 +39,7 @@
 	"relays.state-0": "Čeká na schválení",
 	"relays.state-1": "Pouze příjem",
 	"relays.state-2": "Aktivní",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Filtrování",
 	"count": "Tento NodeBB momentálně vi o <strong>%1</strong> serveru/serverech.",

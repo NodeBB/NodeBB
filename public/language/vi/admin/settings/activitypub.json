@@ -39,6 +39,7 @@
 	"relays.state-0": "Đang đợi",
 	"relays.state-1": "Chỉ nhận",
 	"relays.state-2": "Kích hoạt",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Lọc",
 	"count": "NodeBB này hiện đã biết về <strong>%1</strong> máy chủ",

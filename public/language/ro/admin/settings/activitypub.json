@@ -39,6 +39,7 @@
 	"relays.state-0": "În Așteptare",
 	"relays.state-1": "Doar Primește",
 	"relays.state-2": "Activ",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Filtrează",
 	"count": "NodeBB cunoaște acum %1</strong> server(e)",

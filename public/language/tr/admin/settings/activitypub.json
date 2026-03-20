@@ -39,6 +39,7 @@
 	"relays.state-0": "Beklemede",
 	"relays.state-1": "Sadece al",
 	"relays.state-2": "Etkin",
+	"relays.errors.invalid-url": "Please enter a valid URL",
 
 	"server-filtering": "Filtreleme",
 	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",
