@@ -3,14 +3,14 @@
     "no-unread-topics": "未読のスレッドはありません。",
     "load-more": "もっと見る",
     "mark-as-read": "既読にする",
-    "mark-as-unread": "Mark as Unread",
+    "mark-as-unread": "未読にする",
     "selected": "選択済み",
-    "all": "全て",
-    "all-categories": "全てのカテゴリ",
+    "all": "すべて",
+    "all-categories": "すべてのカテゴリ",
     "topics-marked-as-read.success": "すべてのスレッドを既読にしました。",
     "all-topics": "すべてのスレッド",
     "new-topics": "新しいスレッド",
     "watched-topics": "ウォッチ済みのスレッド",
-    "unreplied-topics": "Unreplied Topics",
-    "multiple-categories-selected": "Multiple Selected"
+    "unreplied-topics": "返信のないスレッド",
+    "multiple-categories-selected": "複数選択中"
 }
