@@ -39,7 +39,7 @@
 	"relays.state-0": "待处理",
 	"relays.state-1": "仅接收",
 	"relays.state-2": "已启用",
-	"relays.errors.invalid-url": "Please enter a valid URL",
+	"relays.errors.invalid-url": "请输入有效的 URL",
 
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
@@ -52,5 +52,5 @@
 	"content.summary-limit-help": "当联合输出内容超过此字符限制时，将生成 <code>摘要</code> ，包含该限制前的所有完整句子。（默认值：500）",
 	"content.break-string": "注释/文章分隔符",
 	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "“世界”页面编辑器的默认版块 ID"
 }
