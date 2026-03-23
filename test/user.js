@@ -1394,6 +1394,17 @@ describe('User', () => {
 			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), false);
 		});
 
+		it('should not return ban reason if login is incorrect', async () => {
+			const testUid = await User.create({ username: 'bannedUser4', password: '654321' });
+			await User.bans.ban(testUid, 0, 'testing bans');
+			let { response, body } = await helpers.loginUser('bannedUser4', '5555555');
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(body, '[[error:invalid-login-credentials]]');
+
+			({ response, body } = await helpers.loginUser('bannedUser4', '654321'));
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(body.reason, 'testing bans');
+		});
 	});
 
 	describe('Digest.getSubscribers', () => {
