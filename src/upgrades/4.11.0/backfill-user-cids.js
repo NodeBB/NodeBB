@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../../database');
+const posts = require('../../posts');
 const batch = require('../../batch');
 
 module.exports = {
@@ -9,7 +10,12 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 		await batch.processSortedSet('posts:pid', async (pids) => {
-			const postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['uid', 'cid']);
+			let postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['uid']);
+			const cids = await posts.getCidsByPids(pids);
+			postData = postData.map((obj, idx) => {
+				obj.cid = cids[idx];
+				return obj;
+			});
 			const bulkIncr = [];
 			postData.forEach((post) => {
 				if (post && post.uid && post.cid) {
