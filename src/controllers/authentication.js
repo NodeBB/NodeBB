@@ -409,20 +409,19 @@ authenticationController.localLogin = async function (req, username, password, n
 
 		userData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
-		if (!canLoginIfBanned) {
-			return next(await getBanError(uid));
-		}
-
-		// Doing this after the ban check, because user's privileges might change after a ban expires
-		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
-		if (parseInt(uid, 10) && !hasLoginPrivilege) {
-			return next(new Error('[[error:local-login-disabled]]'));
-		}
-
 		try {
 			const passwordMatch = await user.isPasswordCorrect(uid, password, req.ip);
 			if (!passwordMatch) {
 				return next(new Error('[[error:invalid-login-credentials]]'));
+			}
+			if (!canLoginIfBanned) {
+				return next(await getBanError(uid));
+			}
+
+			// Doing this after the ban check, because user's privileges might change after a ban expires
+			const hasLoginPrivilege = await privileges.global.can('local:login', uid);
+			if (parseInt(uid, 10) && !hasLoginPrivilege) {
+				return next(new Error('[[error:local-login-disabled]]'));
 			}
 		} catch (e) {
 			if (req.loggedIn) {
