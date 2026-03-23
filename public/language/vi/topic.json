@@ -205,7 +205,7 @@
     "stale.title": "Tạo chủ đề mới thay thế?",
     "stale.warning": "Chủ đề bạn đang trả lời đã khá cũ. Thay vào đó, bạn có muốn tạo một chủ đề mới và tham khảo phần này trong câu trả lời của bạn không?",
     "stale.create": "Tạo một chủ đề mới",
-    "stale.reply-anyway": "Trả lời chủ đề này bằng mọi cách",
+    "stale.reply-anyway": "Vẫn trả lời chủ đề này",
     "link-back": "Trả lời: [%1](%2)",
     "diffs.title": "Lịch Sử Sửa Bài",
     "diffs.description": "Bài này có <strong>%1</strong> sửa đổi. Bấm vào một trong các bản sửa đổi bên dưới để xem nội dung bài tại thời điểm đó.",

@@ -2,8 +2,8 @@
 	"jobs": "Công việc",
 	"job-name": "Tên Công Việc",
 	"schedule": "Lên lịch",
-	"next-run": "Next Run",
-	"last-duration": "Last Duration",
-	"running": "Running",
-	"active": "Active"
+	"next-run": "Chạy Tiếp Theo",
+	"last-duration": "Thời Gian Cuối Cùng",
+	"running": "Đang chạy",
+	"active": "Kích hoạt"
 }
