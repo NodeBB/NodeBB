@@ -46,12 +46,17 @@ Blocklists.refresh = async (url) => {
 	activitypub.helpers.log(`[blocklists/refresh] Processing ${url}`);
 
 	const { body: csv } = await request.get(url);
-	const records = parse(csv, {
-		columns: true,
-		skip_empty_lines: true,
-		trim: true,
-	});
-	if (!records.length) {
+	let records;
+	try {
+		records = parse(csv, {
+			columns: true,
+			skip_empty_lines: true,
+			trim: true,
+		});
+		if (!records.length) {
+			return 0;
+		}
+	} catch (e) {
 		return 0;
 	}
 

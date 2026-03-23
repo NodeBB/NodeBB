@@ -286,6 +286,12 @@ paths:
     $ref: 'write/admin/activitypub/relays.yaml'
   /admin/activitypub/relays/{url}:
     $ref: 'write/admin/activitypub/relays/url.yaml'
+  /admin/activitypub/blocklists:
+    $ref: 'write/admin/activitypub/blocklists.yaml'
+  /admin/activitypub/blocklists/{url}:
+    $ref: 'write/admin/activitypub/blocklists/url.yaml'
+  /admin/activitypub/blocklists/{url}/refresh:
+    $ref: 'write/admin/activitypub/blocklists/url/refresh.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:
