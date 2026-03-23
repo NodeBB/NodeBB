@@ -9,7 +9,7 @@ get:
       required: true
       schema:
         type: string
-      example: https://example.org/blocklist
+      example: https%3A%2F%2Fexample.org%2Fblocklist
   responses:
     '200':
       description: blocklist successfully retrieved
@@ -19,7 +19,7 @@ get:
             type: object
             properties:
               status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties:
@@ -27,6 +27,8 @@ get:
                     type: array
                     items:
                       type: string
+                  count:
+                    type: number
 delete:
   tags:
     - admin
@@ -38,7 +40,7 @@ delete:
       schema:
         type: string
       required: true
-      example: https://example.org/blocklist
+      example: https%3A%2F%2Fexample.org%2Fblocklist
   responses:
     '200':
       description: blocklist successfully deleted
@@ -50,4 +52,4 @@ delete:
               status:
                 $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../../components/schemas/admin/blocklists.yaml#/BlocklistArray
+                $ref: ../../../../components/schemas/admin/blocklists.yaml#/BlocklistArray
