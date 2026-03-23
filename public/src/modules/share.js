@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('share', ['hooks'], function (hooks) {
+define('share', ['hooks', 'translator'], function (hooks, translator) {
 	const share = {};
 	const baseUrl = window.location.protocol + '//' + window.location.host;
 
@@ -67,6 +67,16 @@ define('share', ['hooks'], function (hooks) {
 			const postUrl = getPostUrl($(this));
 			const mastodon_url = `https://share.joinmastodon.org/#text=${encodeURIComponent(postUrl)}`;
 			return openShare(mastodon_url, postUrl, 626, 760);
+		});
+
+		addHandler('[component="share/email"]', async function () {
+			const postUrl = getPostUrl($(this));
+			const [subject, body] = await translator.translateKeys([
+				translator.compile('topic:share-mail-subject', config.siteTitle),
+				translator.compile('topic:share-mail-body', postUrl),
+			]);
+			const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+			window.location.href = mailtoUrl;
 		});
 
 		hooks.fire('action:share.addHandlers', { openShare: openShare });
