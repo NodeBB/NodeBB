@@ -92,6 +92,8 @@
     "watch.title": "ให้แจ้งเตือนเมื่อมีการตอบกลับกระทู้นี้",
     "unwatch.title": "ยกเลิกการเฝ้าดูกระทู้นี้",
     "share-this-post": "แชร์โพสต์นี้",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "กำลังดู",
     "not-watching": "ไม่ดูแล้ว",
     "ignoring": "ความเมินเฉย",

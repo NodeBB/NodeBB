@@ -92,6 +92,8 @@
     "watch.title": "Տեղեկացեք այս թեմայի նոր պատասխանների մասին",
     "unwatch.title": "Դադարեք դիտել այս թեման",
     "share-this-post": "Տարածեք այս գրառումը",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Դիտում",
     "not-watching": "Չեն դիտում",
     "ignoring": "Անտեսել",

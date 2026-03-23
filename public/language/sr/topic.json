@@ -92,6 +92,8 @@
     "watch.title": "Будите обавештени о новим одговорима у овој теми",
     "unwatch.title": "Заустави надгледање ове теме",
     "share-this-post": "Дели ову поруку",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Надгледај",
     "not-watching": "Не надгледај",
     "ignoring": "Игнориши",

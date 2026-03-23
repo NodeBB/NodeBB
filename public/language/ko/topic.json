@@ -92,6 +92,8 @@
     "watch.title": "이 토픽에 대한 새로운 답글 알림",
     "unwatch.title": "이 토픽의 알림 받기 중단",
     "share-this-post": "이 게시물 공유",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "구독 중",
     "not-watching": "구독 안 함",
     "ignoring": "무시 중",

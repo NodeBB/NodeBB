@@ -92,6 +92,8 @@
     "watch.title": "Krijg meldingen van nieuwe reacties op dit onderwerp",
     "unwatch.title": "Dit onderwerp niet langer volgen",
     "share-this-post": "Deel dit bericht",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Gevolgd",
     "not-watching": "Niet gevolgd",
     "ignoring": "Genegeerd",

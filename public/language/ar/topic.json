@@ -92,6 +92,8 @@
     "watch.title": "استلم تنبيها بالردود الجديدة في هذا الموضوع",
     "unwatch.title": "ألغ مراقبة هذا الموضوع",
     "share-this-post": "انشر هذا الموضوع",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "مراقبة",
     "not-watching": "غير مراقب",
     "ignoring": "تجاهل",

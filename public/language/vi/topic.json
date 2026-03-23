@@ -92,6 +92,8 @@
     "watch.title": "Thông báo trả lời mới trong chủ đề này",
     "unwatch.title": "Ngừng xem chủ đề này",
     "share-this-post": "Chia sẻ bài viết này",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Đang xem",
     "not-watching": "Chưa Xem",
     "ignoring": "Bỏ qua",

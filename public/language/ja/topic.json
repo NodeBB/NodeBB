@@ -92,6 +92,8 @@
     "watch.title": "新しい投稿の通知を受ける",
     "unwatch.title": "このスレッドの通知を停止します",
     "share-this-post": "投稿を共有",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "ウォッチ中",
     "not-watching": "未ウォッチ",
     "ignoring": "無視中",

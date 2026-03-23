@@ -92,6 +92,8 @@
     "watch.title": "Budi obaviješten o novim objavama u ovoj temi",
     "unwatch.title": "Prestani pratiti ovu temu",
     "share-this-post": "Podijeli ovu objavu",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Prati",
     "not-watching": "Ne pratiš",
     "ignoring": "Ignoriraš",

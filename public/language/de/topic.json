@@ -92,6 +92,8 @@
     "watch.title": "Bei neuen Antworten benachrichtigen",
     "unwatch.title": "Dieses Thema nicht mehr beobachten",
     "share-this-post": "Diesen Beitrag teilen",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Beobachtet",
     "not-watching": "Nicht beobachtet",
     "ignoring": "Ignoriert",

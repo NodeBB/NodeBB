@@ -92,6 +92,8 @@
     "watch.title": "Gauti pranešimą apie naujus įrašus šioje temoje",
     "unwatch.title": "Baigti šios temos stebėjimą",
     "share-this-post": "Dalintis šiuo įrašu",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Stebima",
     "not-watching": "Not Watching",
     "ignoring": "Ignoruojama",
