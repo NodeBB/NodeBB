@@ -39,7 +39,7 @@
 	"relays.state-0": "保留中",
 	"relays.state-1": "受信のみ",
 	"relays.state-2": "アクティブ",
-	"relays.errors.invalid-url": "Please enter a valid URL",
+	"relays.errors.invalid-url": "有効なURLを入力してください",
 
 	"server-filtering": "フィルタリング",
 	"count": "このNodeBBは現在<strong>%1</strong>台のサーバーを認識しています",
