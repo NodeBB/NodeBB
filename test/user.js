@@ -1144,6 +1144,30 @@ describe('User', () => {
 				});
 			});
 
+			it('should normalize uploaded image to png', async () => {
+				const oldValue = meta.config['profile:convertProfileImageToPNG'];
+				meta.config['profile:convertProfileImageToPNG'] = 1;
+
+				const uid = await User.create({ username: 'pngnormalize', password: '123456' });
+				const { jar, csrf_token } = await helpers.loginUser('pngnormalize', '123456');
+				const pathToJpeg = path.join(__dirname, '../test/files/normalise.jpg');
+
+				const { response } = await helpers.uploadFile(
+					`${nconf.get('url')}/api/user/pngnormalize/uploadpicture`,
+					pathToJpeg, { }, jar, csrf_token
+				);
+				assert.strictEqual(response.statusCode, 200);
+				const picture = await db.getObjectField(`user:${uid}`, 'picture');
+				const uploadedPath = path.join(
+					nconf.get('upload_path'), `${picture.replace(nconf.get('upload_url'), '')}`
+				);
+				const sharp = require('sharp');
+				const metadata = await sharp(uploadedPath).metadata();
+				assert.strictEqual(metadata.format, 'png');
+
+				meta.config['profile:convertProfileImageToPNG'] = oldValue;
+			});
+
 			it('should not allow image data with bad MIME type to be passed in', (done) => {
 				User.uploadCroppedPicture({
 					callerUid: uid,

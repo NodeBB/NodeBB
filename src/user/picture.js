@@ -143,7 +143,7 @@ module.exports = function (User) {
 		const filename = generateProfileImageFilename(updateUid, extension);
 		const uploadedImage = await image.uploadImage(filename, `profile/uid-${updateUid}`, {
 			uid: updateUid,
-			path: picture.path,
+			path: normalizedPath,
 			name: 'profileAvatar',
 		});
 
