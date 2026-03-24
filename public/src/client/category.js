@@ -115,14 +115,9 @@ define('forum/category', [
 	}
 
 	function handleDescription() {
-		const fadeEl = document.querySelector(`.description.clamp-fade-sm-4`);
-		if (!fadeEl) {
-			return;
-		}
-
-		fadeEl.addEventListener('click', () => {
-			const state = fadeEl.classList.contains('line-clamp-4');
-			fadeEl.classList.toggle('line-clamp-4', !state);
+		const fadeEl = $(`.description[class*="clamp-fade-"]`);
+		fadeEl.on('click', function () {
+			fadeEl.toggleClass('line-clamp-4');
 		});
 	}
 
