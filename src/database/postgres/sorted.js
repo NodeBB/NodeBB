@@ -547,7 +547,7 @@ RETURNING "score" s`,
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		if (!data.length) {
+		if (!Array.isArray(data) || !data.length) {
 			return [];
 		}
 

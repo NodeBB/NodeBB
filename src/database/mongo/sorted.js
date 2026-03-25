@@ -459,6 +459,10 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return [];
+		}
+
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach((item) => {
 			bulk.find({ _key: item[0], value: helpers.valueToString(item[2]) })
