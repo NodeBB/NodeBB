@@ -553,7 +553,7 @@ RETURNING "score" s`,
 			return [];
 		}
 
-		const aggregated = dbHelpers.aggregateIncrByBulk(data)
+		const aggregated = dbHelpers.aggregateIncrByBulk(data);
 		return await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectsType(client, aggregated.map(item => item[0]), 'zset');
 

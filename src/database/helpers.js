@@ -46,17 +46,17 @@ helpers.globToRegex = function (match) {
 helpers.aggregateIncrByBulk = function (data) {
 	const buckets = Object.create(null);
 
-	for ( const [key, incr, val] of data) {
+	for (const [key, incr, val] of data) {
 		buckets[key] = buckets[key] || {};
 		buckets[key][val] = (buckets[key][val] || 0) + incr;
 	}
 
 	const result = [];
 	for (const [key, cids] of Object.entries(buckets)) {
-    	for (const [cid, incr] of Object.entries(cids)) {
-	        result.push([key, incr, cid]);
-	    }
+		for (const [cid, incr] of Object.entries(cids)) {
+			result.push([key, incr, cid]);
+		}
 	}
 
 	return result;
-}
+};
