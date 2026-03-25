@@ -1098,9 +1098,12 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 					[zset, 1, 'foo'],
 					[zset, 3, 'foo'],
 					[zset, 4, 'foo'],
+					[zset, 2, 'fizz'],
+					[zset, 1, 'fizz'],
+					[zset, -3, 'fizz'],
 				]);
-				const score = await db.sortedSetScores(zset, ['foo', 'baz']);
-				assert.deepStrictEqual(score, [8, 9]);
+				const score = await db.sortedSetScores(zset, ['foo', 'baz', 'fizz']);
+				assert.deepStrictEqual(score, [8, 9, 0]);
 			});
 		});
 
