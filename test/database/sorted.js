@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const db = require('../mocks/databasemock');
+const utils = require('../../src/utils');
 
 describe('Sorted Set methods', () => {
 	before(async () => {
@@ -1021,6 +1022,113 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 				{ value: 'v2', score: 2 },
 				{ value: 'v3', score: 3 },
 			]);
+		});
+	});
+
+	describe('sortedSetIncrBy', () => {
+		before(function () {
+			this.set = utils.generateUUID();
+		});
+
+		describe('null score', () => {
+			before(function () {
+				this.value = utils.generateUUID();
+			});
+
+			it('should throw', async function () {
+				await assert.rejects(db.sortedSetIncrBy(this.set, null, this.value));
+			});
+
+			it('should throw', async function () {
+				await assert.rejects(db.sortedSetIncrBy(this.set, null, null));
+			});
+
+			it('should throw', async function () {
+				await assert.rejects(db.sortedSetIncrBy(this.set, NaN, this.value));
+			});
+
+			it('should throw', async function () {
+				await assert.rejects(db.sortedSetIncrBy(this.set, undefined, this.value));
+			});
+		});
+
+		describe('increment', () => {
+			before(async function () {
+				this.value = utils.generateUUID();
+				await db.sortedSetIncrBy(this.set, 1, this.value);
+			});
+
+			it('should increment the sorted set value by a set score', async function () {
+				const score = await db.sortedSetScore(this.set, this.value);
+				assert.strictEqual(score, 1);
+			});
+		});
+
+		describe('decrement', () => {
+			before(async function () {
+				this.value = utils.generateUUID();
+				await db.sortedSetIncrBy(this.set, -1, this.value);
+			});
+
+			it('should decrement the sorted set value by a set score', async function () {
+				const score = await db.sortedSetScore(this.set, this.value);
+				assert.strictEqual(score, -1);
+			});
+		});
+	});
+
+	describe('sortedSetIncrByBulk', () => {
+		describe('null test', () => {
+			before(function () {
+				this.set = utils.generateUUID();
+			});
+
+			it('should throw', async function () {
+				await assert.rejects(db.sortedSetIncrByBulk(this.set, []));
+			});
+		});
+
+		describe('increment multiple zsets', () => {
+			before(async function () {
+				this.set1 = utils.generateUUID();
+				this.set2 = utils.generateUUID();
+				this.value1 = utils.generateUUID();
+				this.value2 = utils.generateUUID();
+				await db.sortedSetIncrByBulk([
+					[this.set1, 1, this.value1],
+					[this.set2, 1, this.value2],
+				]);
+			});
+
+			it('should increment both sorted sets', async function () {
+				const scores = await Promise.all([
+					db.sortedSetScore(this.set1, this.value1),
+					db.sortedSetScore(this.set2, this.value2),
+				]);
+
+				assert.deepStrictEqual(scores, [1, 1]);
+			});
+		});
+
+		describe('increment the same zset twice', () => {
+			before(async function () {
+				this.set1 = utils.generateUUID();
+				this.value1 = utils.generateUUID();
+				this.value2 = utils.generateUUID();
+				await db.sortedSetIncrByBulk([
+					[this.set1, 1, this.value1],
+					[this.set1, 1, this.value2],
+				]);
+			});
+
+			it('should increment both sorted sets', async function () {
+				const scores = await Promise.all([
+					db.sortedSetScore(this.set1, this.value1),
+					db.sortedSetScore(this.set1, this.value2),
+				]);
+
+				assert.deepStrictEqual(scores, [1, 1]);
+			});
 		});
 	});
 
