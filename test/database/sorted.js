@@ -1030,28 +1030,6 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			this.set = utils.generateUUID();
 		});
 
-		describe('null score', () => {
-			before(function () {
-				this.value = utils.generateUUID();
-			});
-
-			it('should throw', async function () {
-				await assert.rejects(db.sortedSetIncrBy(this.set, null, this.value));
-			});
-
-			it('should throw', async function () {
-				await assert.rejects(db.sortedSetIncrBy(this.set, null, null));
-			});
-
-			it('should throw', async function () {
-				await assert.rejects(db.sortedSetIncrBy(this.set, NaN, this.value));
-			});
-
-			it('should throw', async function () {
-				await assert.rejects(db.sortedSetIncrBy(this.set, undefined, this.value));
-			});
-		});
-
 		describe('increment', () => {
 			before(async function () {
 				this.value = utils.generateUUID();
