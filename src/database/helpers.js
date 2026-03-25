@@ -52,9 +52,9 @@ helpers.aggregateIncrByBulk = function (data) {
 	}
 
 	const result = [];
-	for (const [key, cids] of Object.entries(buckets)) {
-		for (const [cid, incr] of Object.entries(cids)) {
-			result.push([key, incr, cid]);
+	for (const [key, vals] of Object.entries(buckets)) {
+		for (const [val, incr] of Object.entries(vals)) {
+			result.push([key, incr, val]);
 		}
 	}
 
