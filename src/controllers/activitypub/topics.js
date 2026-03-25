@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-
 const meta = require('../../meta');
 const user = require('../../user');
 const topics = require('../../topics');
