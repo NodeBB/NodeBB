@@ -1089,7 +1089,7 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 				assert.deepStrictEqual(scores, [1, 1]);
 			});
 
-			it('should aggregate increments to the same sorted set', async function () {
+			it('should aggregate increments to the same key/value pair', async function () {
 				const zset = utils.generateUUID();
 				await db.sortedSetIncrByBulk([
 					[zset, 1, 'baz'],
