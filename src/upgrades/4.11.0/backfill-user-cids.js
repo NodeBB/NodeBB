@@ -12,15 +12,17 @@ module.exports = {
 		await batch.processSortedSet('posts:pid', async (pids) => {
 			let postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['uid']);
 			const cids = await posts.getCidsByPids(pids);
-			postData = postData.map((obj, idx) => {
-				obj.cid = cids[idx];
-				return obj;
+			const uidPostCountByCid = Object.create(null);
+			postData.forEach((post, idx) => {
+				const cid = cids[idx];
+				uidPostCountByCid[post.uid] = uidPostCountByCid[post.uid] || {};
+				uidPostCountByCid[post.uid][cid] = (uidPostCountByCid[post.uid][cid] || 0) + 1;
 			});
-			const bulkIncr = [];
-			postData.forEach((post) => {
-				if (post && post.uid && post.cid) {
-					bulkIncr.push([`uid:${post.uid}:cids`, 1, post.cid]);
-				}
+			let bulkIncr = [];
+			Object.keys(uidPostCountByCid).forEach((uid) => {
+				Object.keys(uidPostCountByCid[uid]).forEach((cid) => {
+					bulkIncr.push([`uid:${uid}:cids`, uidPostCountByCid[uid][cid], cid]);
+				});
 			});
 
 			if (bulkIncr.length) {

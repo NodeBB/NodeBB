@@ -462,17 +462,17 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return [];
 		}
-
+		const aggregated = dbHelpers.aggregateIncrByBulk(data);
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		data.forEach((item) => {
+		aggregated.forEach((item) => {
 			bulk.find({ _key: item[0], value: helpers.valueToString(item[2]) })
 				.upsert()
 				.update({ $inc: { score: parseFloat(item[1]) } });
 		});
 		await bulk.execute();
 		const result = await module.client.collection('objects').find({
-			_key: { $in: _.uniq(data.map(i => i[0])) },
-			value: { $in: _.uniq(data.map(i => i[2])) },
+			_key: { $in: _.uniq(aggregated.map(i => i[0])) },
+			value: { $in: _.uniq(aggregated.map(i => i[2])) },
 		}, {
 			projection: { _id: 0, _key: 1, value: 1, score: 1 },
 		}).toArray();

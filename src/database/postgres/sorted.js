@@ -1,8 +1,10 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
 	const util = require('util');
+
+	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 	const Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const sleep = util.promisify(setTimeout);
@@ -551,14 +553,15 @@ RETURNING "score" s`,
 			return [];
 		}
 
+		const aggregated = dbHelpers.aggregateIncrByBulk(data)
 		return await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectsType(client, data.map(item => item[0]), 'zset');
+			await helpers.ensureLegacyObjectsType(client, aggregated.map(item => item[0]), 'zset');
 
 			const values = [];
 			const queryParams = [];
 			let paramIndex = 1;
 
-			data.forEach(([key, increment, value]) => {
+			aggregated.forEach(([key, increment, value]) => {
 				value = helpers.valueToString(value);
 				increment = parseFloat(increment);
 				values.push(key, value, increment);
