@@ -1025,121 +1025,6 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 		});
 	});
 
-	describe('sortedSetIncrBy', () => {
-		before(function () {
-			this.set = utils.generateUUID();
-		});
-
-		describe('increment', () => {
-			before(async function () {
-				this.value = utils.generateUUID();
-				await db.sortedSetIncrBy(this.set, 1, this.value);
-			});
-
-			it('should increment the sorted set value by a set score', async function () {
-				const score = await db.sortedSetScore(this.set, this.value);
-				assert.strictEqual(score, 1);
-			});
-		});
-
-		describe('decrement', () => {
-			before(async function () {
-				this.value = utils.generateUUID();
-				await db.sortedSetIncrBy(this.set, -1, this.value);
-			});
-
-			it('should decrement the sorted set value by a set score', async function () {
-				const score = await db.sortedSetScore(this.set, this.value);
-				assert.strictEqual(score, -1);
-			});
-		});
-	});
-
-	describe('sortedSetIncrByBulk', () => {
-		describe('null test', () => {
-			before(function () {
-				this.set = utils.generateUUID();
-			});
-
-			it('should return empty array', async function () {
-				const response = await db.sortedSetIncrByBulk(this.set, []);
-				assert(Array.isArray(response));
-				assert.strictEqual(response.length, 0);
-			});
-		});
-
-		describe('increment multiple zsets', () => {
-			before(async function () {
-				this.set1 = utils.generateUUID();
-				this.set2 = utils.generateUUID();
-				this.value1 = utils.generateUUID();
-				this.value2 = utils.generateUUID();
-				await db.sortedSetIncrByBulk([
-					[this.set1, 1, this.value1],
-					[this.set2, 1, this.value2],
-				]);
-			});
-
-			it('should increment both sorted sets', async function () {
-				const scores = await Promise.all([
-					db.sortedSetScore(this.set1, this.value1),
-					db.sortedSetScore(this.set2, this.value2),
-				]);
-
-				assert.deepStrictEqual(scores, [1, 1]);
-			});
-
-			it('should aggregate increments to the same key/value pair', async function () {
-				const zset = utils.generateUUID();
-				await db.sortedSetIncrByBulk([
-					[zset, 1, 'baz'],
-					[zset, 1, 'baz'],
-					[zset, 7, 'baz'],
-					[zset, 1, 'foo'],
-					[zset, 3, 'foo'],
-					[zset, 4, 'foo'],
-					[zset, 2, 'fizz'],
-					[zset, 1, 'fizz'],
-					[zset, -3, 'fizz'],
-				]);
-				const score = await db.sortedSetScores(zset, ['foo', 'baz', 'fizz']);
-				assert.deepStrictEqual(score, [8, 9, 0]);
-			});
-
-			it('should handle parallel increments with same key/value pairs', async function () {
-				const zset = utils.generateUUID();
-				await Promise.all([
-					db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
-					db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
-					db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
-				]);
-				const score = await db.sortedSetScore(zset, 'baz');
-				assert.deepStrictEqual(score, 3);
-			});
-		});
-
-		describe('increment the same zset twice', () => {
-			before(async function () {
-				this.set1 = utils.generateUUID();
-				this.value1 = utils.generateUUID();
-				this.value2 = utils.generateUUID();
-				await db.sortedSetIncrByBulk([
-					[this.set1, 1, this.value1],
-					[this.set1, 1, this.value2],
-				]);
-			});
-
-			it('should increment both sorted sets', async function () {
-				const scores = await Promise.all([
-					db.sortedSetScore(this.set1, this.value1),
-					db.sortedSetScore(this.set1, this.value2),
-				]);
-
-				assert.deepStrictEqual(scores, [1, 1]);
-			});
-		});
-	});
-
 	describe('sortedSetUnionCard', () => {
 		it('should return the number of elements in the union', (done) => {
 			db.sortedSetUnionCard(['sortedSetTest2', 'sortedSetTest3'], (err, count) => {
@@ -1186,31 +1071,19 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 		});
 	});
 
-	describe('sortedSetIncrBy()', () => {
-		it('should create a sorted set with a field set to 1', (done) => {
-			db.sortedSetIncrBy('sortedIncr', 1, 'field1', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.strictEqual(newValue, 1);
-				db.sortedSetScore('sortedIncr', 'field1', (err, score) => {
-					assert.equal(err, null);
-					assert.strictEqual(score, 1);
-					done();
-				});
-			});
+	describe('sortedSetIncrBy()/sortedSetIncrByBulk()', () => {
+		it('should create a sorted set with a field set to 1', async () => {
+			const newValue = await db.sortedSetIncrBy('sortedIncr', 1, 'field1');
+			assert.strictEqual(newValue, 1);
+			const score = await db.sortedSetScore('sortedIncr', 'field1');
+			assert.strictEqual(score, 1);
 		});
 
-		it('should increment a field of a sorted set by 5', (done) => {
-			db.sortedSetIncrBy('sortedIncr', 5, 'field1', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.strictEqual(newValue, 6);
-				db.sortedSetScore('sortedIncr', 'field1', (err, score) => {
-					assert.equal(err, null);
-					assert.strictEqual(score, 6);
-					done();
-				});
-			});
+		it('should increment a field of a sorted set by 5', async () => {
+			const newValue = await db.sortedSetIncrBy('sortedIncr', 5, 'field1');
+			assert.strictEqual(newValue, 6);
+			const score = await db.sortedSetScore('sortedIncr', 'field1');
+			assert.strictEqual(score, 6);
 		});
 
 		it('should increment fields of sorted sets with a single call', async () => {
@@ -1238,12 +1111,27 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			);
 		});
 
+		it('should increment the same zset twice', async () => {
+			const zset = utils.generateUUID();
+			const value1 = utils.generateUUID();
+			const value2 = utils.generateUUID();
+			await db.sortedSetIncrByBulk([
+				[zset, 1, value1],
+				[zset, 1, value2],
+			]);
+			const scores = await Promise.all([
+				db.sortedSetScore(zset, value1),
+				db.sortedSetScore(zset, value2),
+			]);
+			assert.deepStrictEqual(scores, [1, 1]);
+		});
+
 		it('should increment the same field', async () => {
-			const data1 = await db.sortedSetIncrByBulk([
+			await db.sortedSetIncrByBulk([
 				['sortedIncrBulk5', 5, 'value5'],
 			]);
 
-			const data2 = await db.sortedSetIncrByBulk([
+			await db.sortedSetIncrByBulk([
 				['sortedIncrBulk5', 5, 'value5'],
 			]);
 			assert.deepStrictEqual(
@@ -1252,6 +1140,41 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 					{ value: 'value5', score: 10 },
 				],
 			);
+		});
+
+		it('should return empty array', async function () {
+			const zset = utils.generateUUID();
+			const response = await db.sortedSetIncrByBulk(zset, []);
+			assert(Array.isArray(response));
+			assert.strictEqual(response.length, 0);
+		});
+
+		it('should aggregate increments to the same key/value pair', async function () {
+			const zset = utils.generateUUID();
+			await db.sortedSetIncrByBulk([
+				[zset, 1, 'baz'],
+				[zset, 1, 'baz'],
+				[zset, 7, 'baz'],
+				[zset, 1, 'foo'],
+				[zset, 3, 'foo'],
+				[zset, 4, 'foo'],
+				[zset, 2, 'fizz'],
+				[zset, 1, 'fizz'],
+				[zset, -3, 'fizz'],
+			]);
+			const score = await db.sortedSetScores(zset, ['foo', 'baz', 'fizz']);
+			assert.deepStrictEqual(score, [8, 9, 0]);
+		});
+
+		it('should handle parallel increments with same key/value pairs', async function () {
+			const zset = utils.generateUUID();
+			await Promise.all([
+				db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+				db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+				db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+			]);
+			const score = await db.sortedSetScore(zset, 'baz');
+			assert.deepStrictEqual(score, 3);
 		});
 	});
 
