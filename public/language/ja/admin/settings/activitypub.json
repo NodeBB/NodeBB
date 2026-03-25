@@ -41,6 +41,17 @@
 	"relays.state-2": "アクティブ",
 	"relays.errors.invalid-url": "有効なURLを入力してください",
 
+	"blocklists": "Third-party Blocklists",
+	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
+	"blocklists-default": "NodeBB ships with two blocklists by default, the <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> and the <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Domains",
+	"blocklists.add": "Add New Blocklist",
+	"blocklists.add-help": "Enter the URL of the blocklist you would like to add. NodeBB understands blocklists that match the format used by <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "Blocklist refreshed — it now contains %1 entries",
+	"blocklists.view.title": "View Blocklist",
+	"blocklists.view.intro": "These are the %1 domain(s) blocked by this blocklist:",
+
 	"server-filtering": "フィルタリング",
 	"count": "このNodeBBは現在<strong>%1</strong>台のサーバーを認識しています",
 	"server.filter-help": "NodeBBとのフェデレーションから除外したいサーバーを指定してください。または、特定のサーバーとのフェデレーションを選択的に<em>許可</em>することもできます。両方のオプションがサポートされていますが、相互に排他的です。",

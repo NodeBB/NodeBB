@@ -41,6 +41,17 @@
 	"relays.state-2": "Kích hoạt",
 	"relays.errors.invalid-url": "Vui lòng nhập URL hợp lệ",
 
+	"blocklists": "Third-party Blocklists",
+	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
+	"blocklists-default": "NodeBB ships with two blocklists by default, the <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> and the <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Domains",
+	"blocklists.add": "Add New Blocklist",
+	"blocklists.add-help": "Enter the URL of the blocklist you would like to add. NodeBB understands blocklists that match the format used by <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "Blocklist refreshed — it now contains %1 entries",
+	"blocklists.view.title": "View Blocklist",
+	"blocklists.view.intro": "These are the %1 domain(s) blocked by this blocklist:",
+
 	"server-filtering": "Lọc",
 	"count": "NodeBB này hiện đã biết về <strong>%1</strong> máy chủ",
 	"server.filter-help": "Chỉ ra các máy chủ mà bạn muốn cấm liên kết với NodeBB của mình. Ngoài ra, bạn có thể chọn tham gia có chọn lọc <em>cho phép</em> liên kết có chọn lọc với các máy chủ cụ thể. Cả hai tùy chọn đều được hỗ trợ, mặc dù chúng loại trừ lẫn nhau.",
