@@ -1061,8 +1061,10 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 				this.set = utils.generateUUID();
 			});
 
-			it('should throw', async function () {
-				await assert.rejects(db.sortedSetIncrByBulk(this.set, []));
+			it('should return empty array', async function () {
+				const response = await db.sortedSetIncrByBulk(this.set, []);
+				assert(Array.isArray(response));
+				assert.strictEqual(response.length, 0);
 			});
 		});
 
