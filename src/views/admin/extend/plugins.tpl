@@ -125,7 +125,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h4 class="modal-title">[[admin/extend/plugins:order-active]]</h4>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
 						</div>
 						<div class="modal-body">
 							<p>
