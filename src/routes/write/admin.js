@@ -30,6 +30,10 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/activitypub/rules/order', [...middlewares, middleware.checkRequired.bind(null, ['rids'])], controllers.write.admin.activitypub.reorderRules);
 	setupApiRoute(router, 'post', '/activitypub/relays', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addRelay);
 	setupApiRoute(router, 'delete', '/activitypub/relays/:url', [...middlewares], controllers.write.admin.activitypub.removeRelay);
+	setupApiRoute(router, 'post', '/activitypub/blocklists', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addBlocklist);
+	setupApiRoute(router, 'get', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.viewBlocklist);
+	setupApiRoute(router, 'delete', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.removeBlocklist);
+	setupApiRoute(router, 'post', '/activitypub/blocklists/:url/refresh', [...middlewares], controllers.write.admin.activitypub.refreshBlocklist);
 
 	return router;
 };

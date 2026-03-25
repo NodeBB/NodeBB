@@ -105,7 +105,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 
 	// Domain check
 	const { hostname } = new URL(actor);
-	const allowed = activitypub.instances.isAllowed(hostname);
+	const allowed = await activitypub.instances.isAllowed(hostname);
 	if (!allowed) {
 		activitypub.helpers.log(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
 		return res.sendStatus(403);

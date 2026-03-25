@@ -244,6 +244,12 @@ async function setupDefaultConfigs() {
 
 	await meta.configs.setOnEmpty(defaults);
 	await meta.configs.init();
+
+	const db = require('./database');
+	await db.sortedSetAdd('blocklists', [Date.now(), Date.now()], [
+		'https://about.iftas.org/wp-content/uploads/2025/10/iftas-dni-latest.csv',
+		'https://about.iftas.org/wp-content/uploads/2025/10/iftas-abandoned-unmanaged-latest.csv',
+	]);
 }
 
 async function enableDefaultTheme() {

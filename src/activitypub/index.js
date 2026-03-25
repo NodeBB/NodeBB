@@ -64,6 +64,7 @@ ActivityPub.notes = require('./notes');
 ActivityPub.contexts = require('./contexts');
 ActivityPub.actors = require('./actors');
 ActivityPub.instances = require('./instances');
+ActivityPub.blocklists = require('./blocklists');
 ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
@@ -134,11 +135,11 @@ ActivityPub.resolveInboxes = async (ids) => {
 
 	// Filter out blocked instances
 	const blocked = [];
-	inboxArr = inboxArr.filter((inbox) => {
+	const allowed = await Promise.all(inboxArr.map(async (inbox) => {
 		let allowed = false;
 		try {
 			const { hostname } = new URL(inbox);
-			allowed = ActivityPub.instances.isAllowed(hostname);
+			allowed = await ActivityPub.instances.isAllowed(hostname);
 			if (!allowed) {
 				blocked.push(inbox);
 			}
@@ -147,7 +148,8 @@ ActivityPub.resolveInboxes = async (ids) => {
 		}
 
 		return allowed;
-	});
+	}));
+	inboxArr = inboxArr.filter((_, idx) => allowed[idx]);
 	if (blocked.length) {
 		ActivityPub.helpers.log(`[activitypub/resolveInboxes] Not delivering to blocked instances: ${blocked.join(', ')}`);
 	}
@@ -306,7 +308,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 
 	const { hostname } = new URL(uri);
-	const allowed = ActivityPub.instances.isAllowed(hostname);
+	const allowed = await ActivityPub.instances.isAllowed(hostname);
 	if (!allowed) {
 		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
 		const e = new Error(`[[error:activitypub.get-failed]]`);

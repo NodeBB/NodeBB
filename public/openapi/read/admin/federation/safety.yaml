@@ -13,6 +13,8 @@ get:
                 properties:
                   title:
                     type: string
+                  blocklists:
+                    $ref: ../../../components/schemas/admin/blocklists.yaml#/BlocklistArray
                   instanceCount:
                     type: number
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

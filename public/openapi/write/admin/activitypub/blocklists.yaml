@@ -1,0 +1,28 @@
+post:
+  tags:
+    - admin
+  summary: add blocklist
+  description: This operation add a new blocklist
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            url:
+              type: string
+              description: The blocklist url
+              example: https://example.org/blocklist
+  responses:
+    '200':
+      description: blocklist successfully added
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/admin/blocklists.yaml#/BlocklistArray
