@@ -469,7 +469,22 @@ module.exports = function (module) {
 				.upsert()
 				.update({ $inc: { score: parseFloat(item[1]) } });
 		});
-		await bulk.execute();
+
+		try {
+			await bulk.execute();
+		} catch (err) {
+			// retry failed e11000 operations
+			if (err.code === 11000 || (err.writeErrors && err.writeErrors.some(e => e.code === 11000))) {
+				const failedIndices = err.writeErrors.map(e => e.index);
+				const retryData = failedIndices.map(idx => aggregated[idx]);
+				await Promise.all(retryData.map(
+					item => module.sortedSetIncrBy(item[0], item[1], item[2])
+				));
+			} else {
+				throw err;
+			}
+		}
+
 		const result = await module.client.collection('objects').find({
 			_key: { $in: _.uniq(aggregated.map(i => i[0])) },
 			value: { $in: _.uniq(aggregated.map(i => i[2])) },

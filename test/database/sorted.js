@@ -1105,6 +1105,17 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 				const score = await db.sortedSetScores(zset, ['foo', 'baz', 'fizz']);
 				assert.deepStrictEqual(score, [8, 9, 0]);
 			});
+
+			it('should handle parallel increments with same key/value pairs', async function () {
+				const zset = utils.generateUUID();
+				await Promise.all([
+					db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+					db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+					db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+				]);
+				const score = await db.sortedSetScore(zset, 'baz');
+				assert.deepStrictEqual(score, 3);
+			});
 		});
 
 		describe('increment the same zset twice', () => {
