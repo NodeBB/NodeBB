@@ -9,6 +9,9 @@ define('forum/header/notifications', function () {
 		notifTrigger.on('show.bs.dropdown', async (ev) => {
 			const notifications = await app.require('notifications');
 			const triggerEl = $(ev.target);
+			const dropdownEl = triggerEl.parent().find('.dropdown-menu');
+			dropdownEl.find('[data-filter="all"]').addClass('active');
+			dropdownEl.find('[data-filter="unread"]').removeClass('active');
 			notifications.loadNotifications(triggerEl, triggerEl.parent().find('[component="notifications/list"]'));
 		});
 

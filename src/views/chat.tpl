@@ -1,8 +1,8 @@
-<div id="chat-modal" class="chat-modal d-flex flex-nowrap modal hide overflow-visible" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true" data-center="false">
+<div id="chat-modal" class="chat-modal d-flex flex-nowrap modal overflow-visible" tabindex="-1" role="dialog" aria-labelledby="chat-room-title-{roomId}" data-center="false">
 	<div class="modal-dialog">
 		<div class="modal-content" component="chat/message/window">
 			<div class="modal-header d-flex gap-4 justify-content-between">
-				<div class="fs-6 flex-grow-1 fw-semibold tracking-tight text-truncate text-nowrap" component="chat/room/name" data-icon="{icon}">{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ else }}}{./chatWithMessage}{{{ end}}}</div>
+				<div id="chat-room-title-{roomId}" class="fs-6 flex-grow-1 fw-semibold tracking-tight text-truncate text-nowrap" component="chat/room/name" data-icon="{icon}">{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ else }}}{./chatWithMessage}{{{ end}}}</div>
 				<div class="d-flex gap-1 align-items-center">
 					<button type="button" class="btn btn-ghost btn-sm d-none d-md-flex align-self-stretch align-items-center" data-action="maximize" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 						<i class="fa fa-fw fa-expand text-muted"></i>
