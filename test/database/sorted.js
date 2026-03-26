@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const db = require('../mocks/databasemock');
+const utils = require('../../src/utils');
 
 describe('Sorted Set methods', () => {
 	before(async () => {
@@ -1070,31 +1071,19 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 		});
 	});
 
-	describe('sortedSetIncrBy()', () => {
-		it('should create a sorted set with a field set to 1', (done) => {
-			db.sortedSetIncrBy('sortedIncr', 1, 'field1', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.strictEqual(newValue, 1);
-				db.sortedSetScore('sortedIncr', 'field1', (err, score) => {
-					assert.equal(err, null);
-					assert.strictEqual(score, 1);
-					done();
-				});
-			});
+	describe('sortedSetIncrBy()/sortedSetIncrByBulk()', () => {
+		it('should create a sorted set with a field set to 1', async () => {
+			const newValue = await db.sortedSetIncrBy('sortedIncr', 1, 'field1');
+			assert.strictEqual(newValue, 1);
+			const score = await db.sortedSetScore('sortedIncr', 'field1');
+			assert.strictEqual(score, 1);
 		});
 
-		it('should increment a field of a sorted set by 5', (done) => {
-			db.sortedSetIncrBy('sortedIncr', 5, 'field1', function (err, newValue) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 2);
-				assert.strictEqual(newValue, 6);
-				db.sortedSetScore('sortedIncr', 'field1', (err, score) => {
-					assert.equal(err, null);
-					assert.strictEqual(score, 6);
-					done();
-				});
-			});
+		it('should increment a field of a sorted set by 5', async () => {
+			const newValue = await db.sortedSetIncrBy('sortedIncr', 5, 'field1');
+			assert.strictEqual(newValue, 6);
+			const score = await db.sortedSetScore('sortedIncr', 'field1');
+			assert.strictEqual(score, 6);
 		});
 
 		it('should increment fields of sorted sets with a single call', async () => {
@@ -1122,12 +1111,27 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 			);
 		});
 
+		it('should increment the same zset twice', async () => {
+			const zset = utils.generateUUID();
+			const value1 = utils.generateUUID();
+			const value2 = utils.generateUUID();
+			await db.sortedSetIncrByBulk([
+				[zset, 1, value1],
+				[zset, 1, value2],
+			]);
+			const scores = await Promise.all([
+				db.sortedSetScore(zset, value1),
+				db.sortedSetScore(zset, value2),
+			]);
+			assert.deepStrictEqual(scores, [1, 1]);
+		});
+
 		it('should increment the same field', async () => {
-			const data1 = await db.sortedSetIncrByBulk([
+			await db.sortedSetIncrByBulk([
 				['sortedIncrBulk5', 5, 'value5'],
 			]);
 
-			const data2 = await db.sortedSetIncrByBulk([
+			await db.sortedSetIncrByBulk([
 				['sortedIncrBulk5', 5, 'value5'],
 			]);
 			assert.deepStrictEqual(
@@ -1136,6 +1140,41 @@ NUMERIC)-- WsPn&query[cid]=-1&parentCid=0&selectedCids[]=-1&privilege=topics:rea
 					{ value: 'value5', score: 10 },
 				],
 			);
+		});
+
+		it('should return empty array', async function () {
+			const zset = utils.generateUUID();
+			const response = await db.sortedSetIncrByBulk(zset, []);
+			assert(Array.isArray(response));
+			assert.strictEqual(response.length, 0);
+		});
+
+		it('should aggregate increments to the same key/value pair', async function () {
+			const zset = utils.generateUUID();
+			await db.sortedSetIncrByBulk([
+				[zset, 1, 'baz'],
+				[zset, 1, 'baz'],
+				[zset, 7, 'baz'],
+				[zset, 1, 'foo'],
+				[zset, 3, 'foo'],
+				[zset, 4, 'foo'],
+				[zset, 2, 'fizz'],
+				[zset, 1, 'fizz'],
+				[zset, -3, 'fizz'],
+			]);
+			const score = await db.sortedSetScores(zset, ['foo', 'baz', 'fizz']);
+			assert.deepStrictEqual(score, [8, 9, 0]);
+		});
+
+		it('should handle parallel increments with same key/value pairs', async function () {
+			const zset = utils.generateUUID();
+			await Promise.all([
+				db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+				db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+				db.sortedSetIncrByBulk([[zset, 1, 'baz']]),
+			]);
+			const score = await db.sortedSetScore(zset, 'baz');
+			assert.deepStrictEqual(score, 3);
 		});
 	});
 

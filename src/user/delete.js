@@ -126,6 +126,7 @@ module.exports = function (User) {
 			`user:${uid}:usernames`,
 			`user:${uid}:emails`,
 			`uid:${uid}:topics`, `uid:${uid}:posts`,
+			`uid:${uid}:cids`,
 			`uid:${uid}:chats`, `uid:${uid}:chats:unread`,
 			`uid:${uid}:chat:rooms`,
 			`uid:${uid}:chat:rooms:unread`,

@@ -1425,10 +1425,13 @@ describe('Topic\'s', () => {
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
 
 			await sleep(2000);
-			const _unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
+			const [_unreadTids, topicData] = await Promise.all([
+				topics.getUnreadTids({ cid: 0, uid: uid }),
+				topics.getTopicData(result.topicData.tid),
+			]);
 			assert(
 				!unreadTids.includes(result.topicData.tid),
-				JSON.stringify({ unreadTids, _unreadTids, tid: result.topicData.tid })
+				JSON.stringify({ unreadTids, _unreadTids, topic: topicData })
 			);
 		});
 	});
