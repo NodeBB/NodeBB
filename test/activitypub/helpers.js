@@ -55,12 +55,13 @@ Helpers.mocks.group = (override = {}) => {
 		type: 'Group',
 		...override,
 	});
+	const { hostname } = new URL(id);
 
 	activitypub._cache.set(`0;${id}`, actor);
-	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@example.org`, {
+	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@${hostname}`, {
 		actorUri: id,
 		username: id,
-		hostname: 'example.org',
+		hostname,
 	});
 
 	return { id, actor };

@@ -121,7 +121,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (options.cid && cid === -1) {
 			// Move topic if currently uncategorized
-			await api.topics.move({ uid: 'system' }, { tid, cid: options.cid });
+			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
 		}
 
 		const exists = await posts.exists(chain.map(p => p.pid));

@@ -183,20 +183,72 @@ describe('Inbox', () => {
 			});
 
 			describe('(Create)', () => {
-				it('should create a new topic in a remote category if addressed', async () => {
-					const { id: remoteCid } = helpers.mocks.group();
-					const { id, note } = helpers.mocks.note({
-						audience: [remoteCid],
+				describe('newly-discovered topic', () => {
+					before(async function () {
+						const { id: remoteCid } = helpers.mocks.group();
+						const { id, note } = helpers.mocks.note({
+							audience: [remoteCid],
+						});
+						this.id = id;
+						this.remoteCid = remoteCid;
+						let { activity } = helpers.mocks.create(note);
+						({ activity } = helpers.mocks.announce({ actor: remoteCid, object: activity }));
+
+						await activitypub.inbox.announce({ body: activity });
 					});
-					let { activity } = helpers.mocks.create(note);
-					({ activity } = helpers.mocks.announce({ actor: remoteCid, object: activity }));
 
-					await activitypub.inbox.announce({ body: activity });
+					it('should create a new topic in a remote category if addressed', async function () {
+						assert(await posts.exists(this.id));
 
-					assert(await posts.exists(id));
+						const cid = await posts.getCidByPid(this.id);
+						assert.strictEqual(cid, this.remoteCid);
+					});
+				});
 
-					const cid = await posts.getCidByPid(id);
-					assert.strictEqual(cid, remoteCid);
+				describe.only('known topic in cid -1 (author domain != announcer domain)', async () => {
+					/**
+					 * This happens if follower receives object from microblog user before the community announces it.
+					 * It's probably more likely to occur because the Create(Note) is a single hop whereas the reflected
+					 * Announce(Create(Note)) takes two hops.
+					 *
+					 * If the author and announcer domain are the same, the object should already be correctly classified.
+					 */
+					before(async function () {
+						const { id: remoteCid } = helpers.mocks.group({
+							id: `https://example.social/${utils.generateUUID()}`,
+						});
+						await activitypub.actors.assertGroup([remoteCid]);
+						const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+
+						this.uid = uid;
+						this.remoteCid = remoteCid;
+					});
+
+					it('should create a topic in cid -1', async function () {
+						const { id, note } = helpers.mocks.note({
+							to: [activitypub._constants.publicAddress, this.remoteCid],
+						});
+
+						const { activity } = helpers.mocks.create(note);
+						await activitypub.inbox.create({ uid: this.uid, body: activity });
+
+						this.id = id;
+						this.note = note;
+						this.activity = activity;
+
+						const cid = await posts.getCidByPid(this.id);
+						assert.strictEqual(cid, -1);
+					});
+
+					it('should handle the Announce(Create) from the remote category', async function () {
+						const { activity } = helpers.mocks.announce({ actor: this.remoteCid, object: this.activity });
+						await activitypub.inbox.announce({ uid: this.uid, body: activity });
+					});
+
+					it('should be categorized in the remote category', async function () {
+						const cid = await posts.getCidByPid(this.id);
+						assert.strictEqual(cid, this.remoteCid);
+					});
 				});
 			});
 
