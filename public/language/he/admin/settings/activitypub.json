@@ -39,18 +39,18 @@
 	"relays.state-0": "ממתין",
 	"relays.state-1": "קבלה בלבד",
 	"relays.state-2": "פעיל",
-	"relays.errors.invalid-url": "Please enter a valid URL",
+	"relays.errors.invalid-url": "אנא הזינו URL תקין.",
 
-	"blocklists": "Third-party Blocklists",
-	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
-	"blocklists-default": "NodeBB ships with two blocklists by default, the <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> and the <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists": "רשימת חסימות של צד שלישי",
+	"blocklists-help": "למען הבטיחות שלכם ושל המשתמשים שלכם, שמירה על רשימת חסימות היא חלק חיוני מכל מאמץ אמון ובטיחות כאשר עובדים עם תוכן מחוץ לתחום הניהול המקומי. NodeBB נשלח עם כמה ברירות מחדל מומלצות, וניתן להתאים אותן כאן.",
+	"blocklists-default": "NodeBB נוצרת עם שתי רשימות חסימה כברירת מחדל, ה <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> וה- <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
 	"blocklists.url": "URL",
-	"blocklists.count": "Domains",
-	"blocklists.add": "Add New Blocklist",
-	"blocklists.add-help": "Enter the URL of the blocklist you would like to add. NodeBB understands blocklists that match the format used by <a href=\"https://iftas.org\">IFTAS</a>.",
-	"blocklists.refreshed": "Blocklist refreshed — it now contains %1 entries",
-	"blocklists.view.title": "View Blocklist",
-	"blocklists.view.intro": "These are the %1 domain(s) blocked by this blocklist:",
+	"blocklists.count": "דומיינים",
+	"blocklists.add": "הוספת רשימת חסימות חדשה",
+	"blocklists.add-help": "הזינו את כתובת האתר של רשימת החסימה שברצונכם להוסיף. NodeBB מבינה רשימת חסימות התואמות את הפורמט שבו משתמשת <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "רשימת החסימות התעדכנה - היא מכילה כעת %1 ערכים",
+	"blocklists.view.title": "הצגת רשימת חסימות",
+	"blocklists.view.intro": "אלו הם %1 הדומיינים שנחסמו על ידי רשימת חסימות זו:",
 
 	"server-filtering": "סינון",
 	"count": "NodeBB זה מודע כרגע ל-<strong>%1</strong> שרתים",
@@ -63,5 +63,5 @@
 	"content.summary-limit-help": "כאשר תוכן המופץ החוצה חורג ממכסת תווים זו, ייווצר <code>תקציר</code>המורכב מכל המשפטים השלמים שלפני המגבלה. (ברירת מחדל: 500)",
 	"content.break-string": "מפריד הערת סיכום/מאמר",
 	"content.break-string-help": "משתמשים מתקדמים יכולים להזין את המפריד הזה ידנית בעת כתיבת נושאים חדשים. הוא מורה ל-NodeBB להשתמש בתוכן שעד לנקודה זו כחלק מה-<code> תקציר </code>. אם לא נעשה שימוש במחרוזת זו, תופעל חלופת ספירת התווים. (ברירת מחדל: <code> [...] </code> )",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "מזהה קטגוריה ברירת מחדל עבור &quot;World&quot; יוצר עמודים"
 }
