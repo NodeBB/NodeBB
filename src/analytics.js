@@ -38,11 +38,7 @@ Analytics.init = async function () {
 		runOnAllNodes: true,
 		onTick: async () => {
 			if (Analytics.pause) return;
-			publishLocalAnalytics();
-			if (runJobs) {
-				await sleep(2000);
-				await Analytics.writeData();
-			}
+			await Analytics.writeLocalData();
 		},
 	});
 
@@ -60,6 +56,14 @@ Analytics.init = async function () {
 		pubsub.on('analytics:publish', (data) => {
 			incrementProperties(total, data.local);
 		});
+	}
+};
+
+Analytics.writeLocalData = async function () {
+	publishLocalAnalytics();
+	if (runJobs) {
+		await sleep(2000);
+		await Analytics.writeData();
 	}
 };
 
