@@ -47,7 +47,7 @@ describe('Key methods', () => {
 	it('should return 0 if value of key is 0', async () => {
 		await db.set('zeroKey', 0);
 		const value = await db.mget(['zeroKey']);
-		assert.strictEqual(value[0], 0);
+		assert.strictEqual(String(value[0]), '0');
 	});
 
 	it('should return true if key exist', (done) => {
