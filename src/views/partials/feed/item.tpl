@@ -58,9 +58,7 @@
 				<a href="{config.relative_path}/post/{./pid}" class="stretched-link"></a>
 				{./content}
 			</div>
-			<div class="position-relative">
-				<button component="show/more" class="btn btn-link btn-sm fw-semibold position-absolute start-50 translate-middle-x bottom-0 z-1 hidden ff-secondary text-secondary">[[world:see-more]]</button>
-			</div>
+			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">[[world:see-more]]</button>
 			<hr class="my-2"/>
 			<div class="d-flex justify-content-between">
 				<a href="{config.relative_path}/post/{{{ if ./topic.teaserPid }}}{encodeURIComponent(./topic.teaserPid)}{{{ else }}}{encodeURIComponent(./pid)){{{ end }}}" class="btn btn-link btn-sm text-body {{{ if !./isMainPost }}}invisible{{{ end }}}"><i class="fa-fw fa-regular fa-message text-muted"></i> {humanReadableNumber(./topic.postcount)}</a>
