@@ -271,7 +271,10 @@ module.exports = function (module) {
 			return null;
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
+		const result = await module.client.collection('objects').findOne(
+			{ _key: key, value: value },
+			{ projection: { _id: 0, _key: 0, value: 0 } }
+		);
 		return result ? result.score : null;
 	};
 
@@ -280,15 +283,15 @@ module.exports = function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
-		const map = {};
+		const result = await module.client.collection('objects').find(
+			{ _key: { $in: keys }, value: value },
+			{ projection: { _id: 0, value: 0 } }
+		).toArray();
+		const scoreMap = Object.create(null);
 		result.forEach((item) => {
-			if (item) {
-				map[item._key] = item;
-			}
+			scoreMap[item._key] = item.score;
 		});
-
-		return keys.map(key => (map[key] ? map[key].score : null));
+		return keys.map(key => (scoreMap[key] !== undefined ? scoreMap[key] : null));
 	};
 
 	module.sortedSetScores = async function (key, values) {
@@ -299,13 +302,14 @@ module.exports = function (module) {
 			return [];
 		}
 		values = values.map(helpers.valueToString);
-		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
+		const result = await module.client.collection('objects').find(
+			{ _key: key, value: { $in: values } },
+			{ projection: { _id: 0, _key: 0 } }
+		).toArray();
 
-		const valueToScore = {};
+		const valueToScore = Object.create(null);
 		result.forEach((item) => {
-			if (item) {
-				valueToScore[item.value] = item.score;
-			}
+			valueToScore[item.value] = item.score;
 		});
 
 		return values.map(v => (utils.isNumber(valueToScore[v]) ? valueToScore[v] : null));
@@ -338,14 +342,8 @@ module.exports = function (module) {
 			projection: { _id: 0, value: 1 },
 		}).toArray();
 
-		const isMember = {};
-		results.forEach((item) => {
-			if (item) {
-				isMember[item.value] = true;
-			}
-		});
-
-		return values.map(value => !!isMember[value]);
+		const foundMembers = new Set(results.map(item => item.value));
+		return values.map(value => foundMembers.has(value));
 	};
 
 	module.isMemberOfSortedSets = async function (keys, value) {
@@ -359,14 +357,8 @@ module.exports = function (module) {
 			projection: { _id: 0, _key: 1, value: 1 },
 		}).toArray();
 
-		const isMember = {};
-		results.forEach((item) => {
-			if (item) {
-				isMember[item._key] = true;
-			}
-		});
-
-		return keys.map(key => !!isMember[key]);
+		const keysWithMember = new Set(results.map(item => item._key));
+		return keys.map(key => keysWithMember.has(key));
 	};
 
 	module.getSortedSetMembers = async function (key) {
@@ -411,7 +403,7 @@ module.exports = function (module) {
 				data.map(item => item.value),
 			];
 		}
-		const sets = {};
+		const sets = Object.create(null);
 		data.forEach((item) => {
 			sets[item._key] = sets[item._key] || [];
 			if (withScores) {
