@@ -155,15 +155,16 @@ describe('Inbox', () => {
 				});
 
 				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async function () {
+					const uid = await user.create({ username: utils.generateUUID() });
 					const { id: remoteCid } = helpers.mocks.group({
 						id: `https://example.com/${utils.generateUUID()}`,
 					});
 					const { note, id } = helpers.mocks.note({
-						audience: [remoteCid],
+						to: [remoteCid, activitypub._constants.publicAddress],
 					});
 					const { activity } = helpers.mocks.create(note);
 					try {
-						await activitypub.inbox.create({ body: activity });
+						await activitypub.inbox.create({ uid, body: activity });
 					} catch (err) {
 						assert(false);
 					}
