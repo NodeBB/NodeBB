@@ -185,6 +185,12 @@ Analytics.writeData = async function () {
 		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
 		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
 		total.apPageViews = 0;
+		if (!metrics.includes('pageviews:ap')) {
+			metrics.push('pageviews:ap');
+		}
+		if (!metrics.includes('pageviews:ap:month')) {
+			metrics.push('pageviews:ap:month');
+		}
 	}
 
 	if (total.uniquevisitors > 0) {
