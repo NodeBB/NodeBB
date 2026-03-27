@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const utils = require('../../utils');
 
 module.exports = function (module) {
@@ -463,11 +462,15 @@ module.exports = function (module) {
 			return [];
 		}
 		const aggregated = dbHelpers.aggregateIncrByBulk(data);
+		const findQuery = { $or: [] };
+
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		aggregated.forEach((item) => {
-			bulk.find({ _key: item[0], value: helpers.valueToString(item[2]) })
+		aggregated.forEach(([key, incr, value]) => {
+			const query = { _key: key, value: value };
+			findQuery.$or.push(query);
+			bulk.find(query)
 				.upsert()
-				.update({ $inc: { score: parseFloat(item[1]) } });
+				.update({ $inc: { score: parseFloat(incr) } });
 		});
 
 		try {
@@ -475,28 +478,29 @@ module.exports = function (module) {
 		} catch (err) {
 			// retry failed e11000 operations
 			if (err.code === 11000 || (err.writeErrors && err.writeErrors.some(e => e.code === 11000))) {
-				const failedIndices = err.writeErrors.map(e => e.index);
+				const failedIndices = err.writeErrors.filter(e => e.code === 11000).map(e => e.index);
 				const retryData = failedIndices.map(idx => aggregated[idx]);
 				await Promise.all(retryData.map(
-					item => module.sortedSetIncrBy(item[0], item[1], item[2])
+					([key, incr, value]) => module.sortedSetIncrBy(key, incr, value)
 				));
 			} else {
 				throw err;
 			}
 		}
 
-		const result = await module.client.collection('objects').find({
-			_key: { $in: _.uniq(aggregated.map(i => i[0])) },
-			value: { $in: _.uniq(aggregated.map(i => i[2])) },
-		}, {
-			projection: { _id: 0, _key: 1, value: 1, score: 1 },
-		}).toArray();
+		const result = await module.client.collection('objects').find(
+			findQuery,
+			{ projection: { _id: 0, _key: 1, value: 1, score: 1 } },
+		).toArray();
 
-		const map = {};
+		const map = Object.create(null);
 		result.forEach((item) => {
-			map[`${item._key}:${item.value}`] = item.score;
+			if (!map[item._key]) {
+				map[item._key] = Object.create(null);
+			}
+			map[item._key][item.value] = item.score;
 		});
-		return data.map(item => map[`${item[0]}:${item[2]}`]);
+		return data.map(([key, , value]) => (map[key] && map[key][value]) || 0);
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
