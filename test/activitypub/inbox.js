@@ -205,7 +205,7 @@ describe('Inbox', () => {
 					});
 				});
 
-				describe.only('known topic in cid -1 (author domain != announcer domain)', async () => {
+				describe('known topic in cid -1 (author domain != announcer domain)', async () => {
 					/**
 					 * This happens if follower receives object from microblog user before the community announces it.
 					 * It's probably more likely to occur because the Create(Note) is a single hop whereas the reflected
