@@ -27,23 +27,15 @@ DELETE FROM "legacy_object"
    AND "expireAt" <= CURRENT_TIMESTAMP`,
 	});
 
-	await db.query({
-		name: 'ensureLegacyObjectType1',
+	const res = await db.query({
+		name: 'ensureLegacyObjectType_upsert',
 		text: `
 INSERT INTO "legacy_object" ("_key", "type")
 VALUES ($1::TEXT, $2::TEXT::LEGACY_OBJECT_TYPE)
-    ON CONFLICT
-    DO NOTHING`,
+    ON CONFLICT ("_key")
+    DO UPDATE SET "type" = "legacy_object"."type"
+    RETURNING "type"`,
 		values: [key, type],
-	});
-
-	const res = await db.query({
-		name: 'ensureLegacyObjectType2',
-		text: `
-SELECT "type"
-  FROM "legacy_object_live"
- WHERE "_key" = $1::TEXT`,
-		values: [key],
 	});
 
 	if (res.rows[0].type !== type) {
@@ -52,6 +44,8 @@ SELECT "type"
 };
 
 helpers.ensureLegacyObjectsType = async function (db, keys, type) {
+	keys = [...new Set(keys)];
+
 	await db.query({
 		name: 'ensureLegacyObjectTypeBefore',
 		text: `
@@ -60,24 +54,16 @@ DELETE FROM "legacy_object"
    AND "expireAt" <= CURRENT_TIMESTAMP`,
 	});
 
-	await db.query({
-		name: 'ensureLegacyObjectsType1',
+	const res = await db.query({
+		name: 'ensureLegacyObjectsType_upsert',
 		text: `
 INSERT INTO "legacy_object" ("_key", "type")
 SELECT k, $2::TEXT::LEGACY_OBJECT_TYPE
   FROM UNNEST($1::TEXT[]) k
-    ON CONFLICT
-    DO NOTHING`,
+    ON CONFLICT ("_key")
+    DO UPDATE SET "type" = "legacy_object"."type"
+    RETURNING "_key", "type"`,
 		values: [keys, type],
-	});
-
-	const res = await db.query({
-		name: 'ensureLegacyObjectsType2',
-		text: `
-SELECT "_key", "type"
-  FROM "legacy_object_live"
- WHERE "_key" = ANY($1::TEXT[])`,
-		values: [keys],
 	});
 
 	const invalid = res.rows.filter(r => r.type !== type);
@@ -85,12 +71,6 @@ SELECT "_key", "type"
 	if (invalid.length) {
 		const parts = invalid.map(r => `${JSON.stringify(r._key)} is ${r.type}`);
 		throw new Error(`database: cannot insert multiple objects as ${type} because they already exist: ${parts.join(', ')}`);
-	}
-
-	const missing = keys.filter(k => !res.rows.some(r => r._key === k));
-
-	if (missing.length) {
-		throw new Error(`database: failed to insert keys for objects: ${JSON.stringify(missing)}`);
 	}
 };
 

@@ -114,8 +114,10 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 			}
 			keys.push(item[0]);
 			scores.push(item[1]);
-			values.push(item[2]);
+			values.push(helpers.valueToString(item[2]));
 		});
+		const compositeKeys = keys.map((k, i) => `${k}\0${values[i]}`);
+		helpers.removeDuplicateValues(compositeKeys, keys, values, scores);
 		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
 			await client.query({

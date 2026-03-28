@@ -149,7 +149,7 @@ async function shutdown(code) {
 	try {
 		await require('./webserver').destroy();
 		winston.info('[app] Web server closed to connections.');
-		await require('./analytics').writeData();
+		await require('./analytics').writeLocalData();
 		winston.info('[app] Live analytics saved.');
 		const db = require('./database');
 		await db.delete('locks');
