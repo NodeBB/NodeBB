@@ -45,7 +45,9 @@ DELETE FROM "legacy_object"
 
 helpers.ensureLegacyObjectsType = async function (db, keys, type) {
 	keys = [...new Set(keys)];
-
+	if (!keys.length) {
+		return;
+	}
 	await db.query({
 		name: 'ensureLegacyObjectTypeBefore',
 		text: `
@@ -76,11 +78,18 @@ FROM UNNEST($1::TEXT[]) k
 
 async function tryUpsert(db, queryConfig) {
 	let res;
+	const savepoint = `upsert_${Math.random().toString(36).substring(7)}`;
 	try {
+		await db.query(`SAVEPOINT ${savepoint}`);
 		res = await db.query(queryConfig);
+		await db.query(`RELEASE SAVEPOINT ${savepoint}`);
 	} catch (err) {
 		if (err.code === '23505') { // retry if failed due to error: unique constraint
+			// Roll back to the savepoint to prevent
+			// error: current transaction is aborted, commands ignored until end of transaction block
+			await db.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
 			res = await db.query(queryConfig);
+			await db.query(`RELEASE SAVEPOINT ${savepoint}`);
 		} else {
 			throw err;
 		}
