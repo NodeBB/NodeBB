@@ -27,14 +27,14 @@ DELETE FROM "legacy_object"
    AND "expireAt" <= CURRENT_TIMESTAMP`,
 	});
 
-	const res = await db.query({
+	const res = await tryUpsert(db, {
 		name: 'ensureLegacyObjectType_upsert',
 		text: `
-INSERT INTO "legacy_object" ("_key", "type")
-VALUES ($1::TEXT, $2::TEXT::LEGACY_OBJECT_TYPE)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "type" = "legacy_object"."type"
-    RETURNING "type"`,
+			INSERT INTO "legacy_object" ("_key", "type")
+			VALUES ($1::TEXT, $2::TEXT::LEGACY_OBJECT_TYPE)
+			ON CONFLICT ("_key")
+			DO UPDATE SET "type" = "legacy_object"."type"
+			RETURNING "type"`,
 		values: [key, type],
 	});
 
@@ -54,15 +54,15 @@ DELETE FROM "legacy_object"
    AND "expireAt" <= CURRENT_TIMESTAMP`,
 	});
 
-	const res = await db.query({
+	const res = await tryUpsert(db, {
 		name: 'ensureLegacyObjectsType_upsert',
 		text: `
 INSERT INTO "legacy_object" ("_key", "type")
 SELECT k, $2::TEXT::LEGACY_OBJECT_TYPE
-  FROM UNNEST($1::TEXT[]) k
-    ON CONFLICT ("_key")
-    DO UPDATE SET "type" = "legacy_object"."type"
-    RETURNING "_key", "type"`,
+FROM UNNEST($1::TEXT[]) k
+	ON CONFLICT ("_key")
+	DO UPDATE SET "type" = "legacy_object"."type"
+	RETURNING "_key", "type"`,
 		values: [keys, type],
 	});
 
@@ -73,5 +73,19 @@ SELECT k, $2::TEXT::LEGACY_OBJECT_TYPE
 		throw new Error(`database: cannot insert multiple objects as ${type} because they already exist: ${parts.join(', ')}`);
 	}
 };
+
+async function tryUpsert(db, queryConfig) {
+	let res;
+	try {
+		res = await db.query(queryConfig);
+	} catch (err) {
+		if (err.code === '23505') { // retry if failed due to error: unique constraint
+			res = await db.query(queryConfig);
+		} else {
+			throw err;
+		}
+	}
+	return res;
+}
 
 helpers.noop = function () {};
