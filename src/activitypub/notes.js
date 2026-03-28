@@ -14,7 +14,6 @@ const notifications = require('../notifications');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
-const api = require('../api');
 const ttlCache = require('../cache/ttl');
 const websockets = require('../socket.io');
 const utils = require('../utils');
