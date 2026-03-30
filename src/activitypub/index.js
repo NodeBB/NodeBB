@@ -197,11 +197,15 @@ ActivityPub.fetchPublicKey = async (uri) => {
 	// Used for retrieving the public key from the passed-in keyId uri
 	const body = await ActivityPub.get('uid', 0, uri);
 
-	if (!body.hasOwnProperty('publicKey')) {
-		throw new Error('[[error:activitypub.pubKey-not-found]]');
+	if (body.hasOwnProperty('publicKeyPem')) {
+		// CryptographicKey returned (correct)
+		return body.publicKeyPem;
+	} else if (body.hasOwnProperty('publicKey') && body?.publicKey?.publicKeyPem) {
+		// Actor object returned (less correct)
+		return body.publicKey.publicKeyPem;
 	}
 
-	return body.publicKey;
+	throw new Error('[[error:activitypub.pubKey-not-found]]');
 };
 
 ActivityPub.sign = async ({ key, keyId }, url, payload) => {
@@ -288,7 +292,7 @@ ActivityPub.verify = async (req) => {
 
 		// Retrieve public key from remote instance
 		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
-		const { publicKeyPem } = await ActivityPub.fetchPublicKey(keyId);
+		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId);
 
 		const verify = createVerify('sha256');
 		verify.update(signed_string);
