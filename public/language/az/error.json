@@ -266,6 +266,5 @@
     "activitypub.get-failed": "Müəyyən edilmiş resursu əldə etmək mümkün deyil.",
     "activitypub.pubKey-not-found": "Açıq açarı həll etmək mümkün deyil, ona görə də faydalı yükün yoxlanılması həyata keçirilə bilməz.",
     "activitypub.origin-mismatch": "Alınan obyektin mənşəyi göndərənin mənşəyi ilə uyğun gəlmir",
-    "activitypub.actor-mismatch": "Alınan fəaliyyət gözlənildiyindən fərqli icraçı tərəfindən həyata keçirilir.",
     "activitypub.not-implemented": "Sorğu rədd edildi, çünki o və ya onun bir aspekti alıcı server tərəfindən icra olunmur"
 }

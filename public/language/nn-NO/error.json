@@ -266,6 +266,5 @@
     "activitypub.get-failed": "Kan ikkje hente den spesifiserte ressursen.",
     "activitypub.pubKey-not-found": " Kan ikkje løyse opp den offentlege nøkkelen, så verifisering av nyttelasta kan ikkje gjennomførast.",
     "activitypub.origin-mismatch": "Den mottatte objektet sin opphavsstad samsvarar ikkje med avsendaren sin opphavsstad.",
-    "activitypub.actor-mismatch": " Den mottatte aktiviteten blir utført av ein aktør som er annleis enn forventa.",
     "activitypub.not-implemented": "Førespurnaden blei avvist fordi han, eller ein del av han, ikkje er implementert av mottakarserveren."
 }

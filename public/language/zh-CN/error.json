@@ -266,6 +266,5 @@
     "activitypub.get-failed": "无法检索指定资源。",
     "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",
     "activitypub.origin-mismatch": "接收对象的原点与发送者的原点不一致",
-    "activitypub.actor-mismatch": "接收活动的行为者与预期的不同。",
     "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面"
 }

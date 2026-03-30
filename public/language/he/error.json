@@ -266,6 +266,5 @@
     "activitypub.get-failed": "לא ניתן לאחזר את המשאב שצוין.",
     "activitypub.pubKey-not-found": "לא ניתן לפתור מפתח ציבורי, ולכן לא ניתן לבצע אימות מטען.",
     "activitypub.origin-mismatch": "מקור האובייקט שהתקבל אינו תואם את מקור השולח",
-    "activitypub.actor-mismatch": "הפעילות המתקבלת מתבצעת על ידי שחקן שונה מהמצופה.",
     "activitypub.not-implemented": "הבקשה נדחתה מכיוון שהיא או היבט שלה אינם מיושמים על ידי שרת הנמען"
 }

@@ -266,6 +266,5 @@
     "activitypub.get-failed": "No se ha podido recuperar el recurso especificado. ",
     "activitypub.pubKey-not-found": "No se pudo resolver la llave pública, la verificación de payload no se ha concluido. ",
     "activitypub.origin-mismatch": "El origen del objeto recibido no coincide con el origen del emisario",
-    "activitypub.actor-mismatch": "La actividad recibida está siendo llevada por un actor que es diferente del esperado.",
     "activitypub.not-implemented": "La petición fue rechazada porque el servidor destinatario no implementa un aspecto esperado"
 }
