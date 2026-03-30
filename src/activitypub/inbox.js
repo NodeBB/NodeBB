@@ -627,10 +627,6 @@ inbox.undo = async (req) => {
 	const { actor, object } = req.body;
 	const { type } = object;
 
-	if (actor !== object.actor) {
-		throw new Error('[[error:activitypub.actor-mismatch]]');
-	}
-
 	const assertion = await activitypub.actors.assert(actor);
 	if (!assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
