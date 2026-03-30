@@ -6,12 +6,14 @@
 	"clone-from": "Clone widgets from",
 	"containers.available": "Available Containers",
 	"containers.explanation": "Drag and drop on top of any widget",
-	"containers.none": "None",
+	"containers.none": "Ei mitään",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.card": "Card",
 	"container.card-header": "Card Header",
 	"container.card-body": "Card Body",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Alert",
 
 	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
@@ -22,14 +24,14 @@
 	"error.select-clone": "Please select a page to clone from",
 
 	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
+	"title.placeholder": "Otsikko (näytä vain joissakin osioissa)",
 	"container": "Container",
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
+	"show-to-groups": "Näytä ryhmille",
+	"hide-from-groups": "Piilota ryhmiltä",
 	"start-date": "Start date",
 	"end-date": "End date",
-	"hide-on-mobile": "Hide on mobile",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-on-mobile": "Piilota mobiilinäkymässä",
+	"hide-drafts": "Piilota luonnokset",
+	"show-drafts": "Näytä luonnokset"
 }

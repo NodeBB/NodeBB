@@ -1,0 +1,13 @@
+{
+    "themes": "Tema",
+    "checking-for-installed": "Sjekkar etter installerte tema",
+    "homepage": "Startside",
+    "select-theme": "Vel tema",
+    "revert-theme": "Tilbakestill tema",
+    "current-theme": "Gjeldande tema",
+    "no-themes": "Ingen tema tilgjengeleg",
+    "revert-confirm": "Er du sikker på at du vil tilbakestille temaet?",
+    "theme-changed": "Tema endra",
+    "revert-success": "Tilbakestilling utført med suksess",
+    "restart-to-activate": "Start på nytt for å aktivere"
+}

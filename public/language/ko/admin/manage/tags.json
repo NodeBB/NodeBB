@@ -1,20 +1,20 @@
 {
-	"manage-tags": "Manage Tags",
-	"none": "현재 포럼에 태그가 달린 화제가 없습니다.",
+	"manage-tags": "태그 관리",
+	"none": "현재 포럼에는 현재 태그가 지정된 토픽이 없습니다.",
 	"bg-color": "배경 색상",
 	"text-color": "텍스트 색상",
-	"description": "클릭이나 드래그로 태그를 선택하고, <code>CTRL</code>로 여러 개의 태그를 선택하세요.",
+	"description": "클릭하거나 드래그하여 태그를 선택하고, 여러 태그를 선택하려면 <code>CTRL</code>을 사용하세요.",
 	"create": "태그 생성",
-	"add-tag": "Add tag",
+	"add-tag": "태그 추가",
 	"modify": "태그 수정",
-	"rename": "태그 이름 바꾸기",
-	"delete": "선택된 태그 삭제",
-	"search": "태그 검색",
+	"rename": "태그 이름 변경",
+	"delete": "선택한 태그 삭제",
+	"search": "태그 검색...",
 	"settings": "태그 설정",
 	"name": "태그 이름",
 
 	"alerts.editing": "태그 수정",
-	"alerts.confirm-delete": "선택된 태그들을 삭제하시겠습니까?",
-	"alerts.update-success": "태그가 업데이트 됐습니다! ",
-	"reset-colors": "색상 초기화"
+	"alerts.confirm-delete": "선택한 태그를 삭제하시겠습니까?",
+	"alerts.update-success": "태그를 업데이트했습니다!",
+	"reset-colors": "색상 재설정"
 }

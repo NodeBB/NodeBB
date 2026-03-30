@@ -9,5 +9,9 @@
 	"filter-type": "Typ zdarzenia",
 	"filter-start": "Data początkowa",
 	"filter-end": "Data końcowa",
+	"filter-user": "Flitruj wg użytkownika",
+	"filter-user.placeholder": "Literuj aby wyszukać nazwę użytkownika...",
+	"filter-group": "Filtruj wg grupy",
+	"filter-group.placeholder": "Wpisz nazwę grupy aby odfiltrować...",
 	"filter-per-page": "Na stronę"
 }

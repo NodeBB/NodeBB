@@ -12,6 +12,8 @@
 	"container.card": "Карта",
 	"container.card-header": "Заглавна част на карта",
 	"container.card-body": "Основна част на карта",
+	"container.title": "Заглавие",
+	"container.body": "Съдържание",
 	"container.alert": "Предупреждение",
 
 	"alert.confirm-delete": "Наистина ли искате да изтриете джаджата?",

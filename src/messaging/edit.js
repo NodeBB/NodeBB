@@ -1,9 +1,12 @@
 'use strict';
 
+const db = require('../database');
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const privileges = require('../privileges');
+const utils = require('../utils');
 
 const sockets = require('../socket.io');
 
@@ -11,6 +14,7 @@ const sockets = require('../socket.io');
 module.exports = function (Messaging) {
 	Messaging.editMessage = async (uid, mid, roomId, content) => {
 		await Messaging.checkContent(content);
+		const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
 		const raw = await Messaging.getMessageField(mid, 'content');
 		if (raw === content) {
 			return;
@@ -33,6 +37,10 @@ module.exports = function (Messaging) {
 			sockets.in(roomName).emit('event:chats.edit', {
 				messages: messages,
 			});
+
+			if (!isPublic && utils.isNumber(messages[0].fromuid)) {
+				activitypub.out.update.privateNote(messages[0].fromuid, messages[0]);
+			}
 		}
 
 		plugins.hooks.fire('action:messaging.edit', {
@@ -81,7 +89,7 @@ module.exports = function (Messaging) {
 			throw new Error(`[[error:chat-${type}-duration-expired, ${meta.config[durationConfig]}]]`);
 		}
 
-		if (messageData.fromuid === parseInt(uid, 10) && !messageData.system) {
+		if (String(messageData.fromuid) === String(uid) && !messageData.system) {
 			return;
 		}
 

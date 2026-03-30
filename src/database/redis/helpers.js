@@ -5,13 +5,8 @@ const helpers = module.exports;
 helpers.noop = function () {};
 
 helpers.execBatch = async function (batch) {
-	const results = await batch.exec();
-	return results.map(([err, res]) => {
-		if (err) {
-			throw err;
-		}
-		return res;
-	});
+	const results = await batch.execAsPipeline();
+	return results;
 };
 
 helpers.resultsToBool = function (results) {
@@ -21,10 +16,29 @@ helpers.resultsToBool = function (results) {
 	return results;
 };
 
-helpers.zsetToObjectArray = function (data) {
-	const objects = new Array(data.length / 2);
-	for (let i = 0, k = 0; i < objects.length; i += 1, k += 2) {
-		objects[i] = { value: data[k], score: parseFloat(data[k + 1]) };
+helpers.objectFieldsToString = function (obj) {
+	const stringified = Object.fromEntries(
+		Object.entries(obj).map(([key, value]) => [key, String(value)])
+	);
+	return stringified;
+};
+
+helpers.normalizeLexRange = function (min, max, reverse) {
+	let minmin;
+	let maxmax;
+	if (reverse) {
+		minmin = '+';
+		maxmax = '-';
+	} else {
+		minmin = '-';
+		maxmax = '+';
 	}
-	return objects;
+
+	if (min !== minmin && !min.match(/^[[(]/)) {
+		min = `[${min}`;
+	}
+	if (max !== maxmax && !max.match(/^[[(]/)) {
+		max = `[${max}`;
+	}
+	return { lmin: min, lmax: max };
 };

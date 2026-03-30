@@ -22,6 +22,8 @@ const _mounts = {
 	api: require('./api'),
 	admin: require('./admin'),
 	feed: require('./feeds'),
+	'well-known': require('./well-known'),
+	activitypub: require('./activitypub'),
 };
 
 _mounts.main = (app, middleware, controllers) => {
@@ -66,8 +68,8 @@ _mounts.post = (app, name, middleware, controllers) => {
 		middleware.registrationComplete,
 		middleware.pluginHooks,
 	];
-	app.get(`/${name}/:pid`, middleware.busyCheck, middlewares, controllers.posts.redirectToPost);
-	app.get(`/api/${name}/:pid`, middlewares, controllers.posts.redirectToPost);
+	app.get(`/${name}/:pid`, middleware.busyCheck, middlewares, helpers.tryRoute(controllers.posts.redirectToPost));
+	app.get(`/api/${name}/:pid`, middlewares, helpers.tryRoute(controllers.posts.redirectToPost));
 };
 
 _mounts.tags = (app, name, middleware, controllers) => {
@@ -154,9 +156,11 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	_mounts.api(router, middleware, controllers);
 	_mounts.feed(router, middleware, controllers);
 
+	_mounts.activitypub(router, middleware, controllers);
 	_mounts.main(router, middleware, controllers);
 	_mounts.mod(router, middleware, controllers);
 	_mounts.globalMod(router, middleware, controllers);
+	_mounts['well-known'](router, middleware, controllers);
 
 	addRemountableRoutes(app, router, middleware, mounts);
 

@@ -11,7 +11,7 @@ define('admin/manage/categories', [
 ], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
 	Sortable = Sortable.default;
 	const Categories = {};
-	let newCategoryId = -1;
+	let newCategoryId = '-1';
 	let sortables;
 
 	Categories.init = function () {
@@ -26,7 +26,8 @@ define('admin/manage/categories', [
 		});
 		Categories.render(ajaxify.data.categoriesTree);
 
-		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
+		$('[data-action="create"]').on('click', Categories.throwCreateModal);
+		$('[data-action="add"]').on('click', Categories.throwAddModal);
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {
@@ -68,7 +69,7 @@ define('admin/manage/categories', [
 							if (val && cid) {
 								const modified = {};
 								modified[cid] = { order: Math.max(1, parseInt(val, 10)) };
-								api.put('/categories/' + cid, modified[cid]).then(function () {
+								api.put('/categories/' + encodeURIComponent(cid), modified[cid]).then(function () {
 									ajaxify.refresh();
 								}).catch(alerts.error);
 							} else {
@@ -78,6 +79,22 @@ define('admin/manage/categories', [
 					},
 				},
 			});
+		});
+
+		$('.categories').on('click', 'a[data-action]', function () {
+			const action = this.getAttribute('data-action');
+			const cid = this.getAttribute('data-cid');
+			switch (action) {
+				case 'remove': {
+					Categories.remove(cid);
+					break;
+				}
+
+				case 'rename': {
+					Categories.rename(cid);
+					break;
+				}
+			}
 		});
 
 		$('#toggle-collapse-all').on('click', function () {
@@ -151,6 +168,51 @@ define('admin/manage/categories', [
 		});
 	};
 
+	Categories.throwAddModal = function () {
+		Benchpress.render('admin/partials/categories/add', {}).then(function (html) {
+			const modal = bootbox.dialog({
+				title: '[[admin/manage/categories:alert.add]]',
+				message: html,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: submit,
+					},
+				},
+			});
+
+			function submit() {
+				const formData = modal.find('form').serializeObject();
+				api.post('/api/admin/manage/categories', formData).then(() => {
+					ajaxify.refresh();
+					modal.modal('hide');
+				}).catch(alerts.error);
+				return false;
+			}
+
+			modal.find('form').on('submit', submit);
+		});
+	};
+
+	Categories.remove = function (cid) {
+		bootbox.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
+			if (ok) {
+				api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
+			}
+		});
+	};
+
+	Categories.rename = function (cid) {
+		bootbox.prompt({
+			title: '[[admin/manage/categories:alert.rename]]',
+			message: '<p class="mb-3">[[admin/manage/categories:alert.rename-help]]</p>',
+			callback: (name) => {
+				api.post(`/api/admin/manage/categories/${encodeURIComponent(cid)}/name`, { name }).then(ajaxify.refresh);
+			},
+		});
+	};
+
 	Categories.create = function (payload) {
 		api.post('/categories', payload, function (err, data) {
 			if (err) {
@@ -187,7 +249,7 @@ define('admin/manage/categories', [
 
 	Categories.toggle = function (cids, disabled) {
 		const listEl = document.querySelector('.categories [data-cid="0"]');
-		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
+		Promise.all(cids.map(cid => api.put('/categories/' + encodeURIComponent(cid), {
 			disabled: disabled ? 1 : 0,
 		}).then(() => {
 			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
@@ -197,15 +259,15 @@ define('admin/manage/categories', [
 	};
 
 	function itemDidAdd(e) {
-		newCategoryId = e.to.dataset.cid;
+		newCategoryId = String(e.to.dataset.cid);
 	}
 
 	function itemDragDidEnd(e) {
-		const isCategoryUpdate = parseInt(newCategoryId, 10) !== -1;
+		const isCategoryUpdate = String(newCategoryId) !== '-1';
 
 		// Update needed?
 		if ((e.newIndex != null && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex, 10)) || isCategoryUpdate) {
-			const cid = e.item.dataset.cid;
+			const cid = String(e.item.dataset.cid);
 			const modified = {};
 			// on page 1 baseIndex is 0, on page n baseIndex is (n - 1) * ajaxify.data.categoriesPerPage
 			// this makes sure order is correct when drag & drop is used on pages > 1
@@ -218,8 +280,8 @@ define('admin/manage/categories', [
 				modified[cid].parentCid = newCategoryId;
 
 				// Show/hide expand buttons after drag completion
-				const oldParentCid = parseInt(e.from.getAttribute('data-cid'), 10);
-				const newParentCid = parseInt(e.to.getAttribute('data-cid'), 10);
+				const oldParentCid = String(e.from.getAttribute('data-cid') || '');
+				const newParentCid = String(e.to.getAttribute('data-cid') || '');
 				if (oldParentCid !== newParentCid) {
 					const toggle = document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`);
 					if (toggle) {
@@ -239,7 +301,7 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			api.put('/categories/' + cid, modified[cid]).catch(alerts.error);
+			api.put('/categories/' + encodeURIComponent(cid), modified[cid]).catch(alerts.error);
 		}
 	}
 

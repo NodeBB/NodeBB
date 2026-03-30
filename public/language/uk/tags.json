@@ -3,7 +3,7 @@
     "no-tag-topics": "Немає теми з цим тегом.",
     "no-tags-found": "No tags found",
     "tags": "Теги",
-    "enter-tags-here": "Введіть тег сюди, між літерами %1 та %2 кожен",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Введіть тег",
     "no-tags": "Ще немає тегів",
     "select-tags": "Select Tags",

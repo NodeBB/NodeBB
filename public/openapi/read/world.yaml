@@ -1,0 +1,91 @@
+get:
+  tags:
+    - topics
+  summary: Get external topics
+  description: Returns a list of external topics known to the local instance
+  parameters:
+    - name: filter
+      in: path
+      required: true
+      schema:
+        type: string
+      example: all
+  responses:
+    "200":
+      description: An array of topic objects sorted by timestamp.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+              - type: object
+                properties:
+                  tagWhitelist:
+                    type: array
+                    items:
+                      type: string
+                  posts:
+                    allOf:
+                      - $ref: ../components/schemas/PostsObject.yaml#/PostsObject
+                      - type: object
+                        properties:
+                          bookmarks:
+                            type: number
+                  selectedCategory:
+                    $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                    nullable: true
+                  showThumbs:
+                    type: boolean
+                  showTopicTools:
+                    type: boolean
+                  showSelect:
+                    type: boolean
+                  isWatched:
+                    type: boolean
+                  isTracked:
+                    type: boolean
+                  isNotWatched:
+                    type: boolean
+                  isIgnored:
+                    type: boolean
+                  hasFollowers:
+                    type: boolean
+                    nullable: true
+                  privileges:
+                    type: object
+                    properties:
+                      topics:create:
+                        type: boolean
+                      topics:read:
+                        type: boolean
+                      topics:schedule:
+                        type: boolean
+                      topics:tag:
+                        type: boolean
+                      read:
+                        type: boolean
+                      posts:view_deleted:
+                        type: boolean
+                      cid:
+                        type: string
+                        example: '-1'
+                      uid:
+                        type: number
+                        description: A user identifier
+                      editable:
+                        type: boolean
+                      view_deleted:
+                        type: boolean
+                      isAdminOrMod:
+                        type: boolean
+                  title:
+                    type: string
+                  topicCount:
+                    type: number
+                  categories:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

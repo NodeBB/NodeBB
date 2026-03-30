@@ -1,0 +1,29 @@
+{
+	"name": "Świat",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Popularne (Dziś)",
+	"popular-week": "Popularne (W Tygodniu)",
+	"popular-month": "Popularne (W Miesiącu)",
+	"popular-year": "Popularne (W Roku)",
+	"popular-alltime": "Popularne (Cały Czas)",
+	"recent": "Wszystkie",
+	"help": "Pomoc",
+
+	"help.title": "Co to za strona?",
+	"help.intro": "Witaj w swoim zakątku fediverse.",
+	"help.fediverse": "Sieć \"fediverse\" jest zbiorem połączonych aplikacji i stron internetowych, których użytkownicy mogą się ze sobą komunikować. To forum umożliwia tego typu interakcje w ramach \"fediverse\". Ta strona jest Twoim zakątkiem fediverse. Zawiera wątki tworzone i współdzielone przez śledzonych przez <strong>Ciebie</strong> użytkowników.",
+	"help.build": "Na początku może być tu trochę pusto; to normalne. Zacznie się robić tłoczno po tym jak zaczniesz śledzić innych użytkowników.",
+	"help.federating": "O ile użytkownicy spoza tego forum zaczną Cię <em>śledzić</em>, to w efekcie Twoje wpisy pojawią się na zewnętrznych stronach i w aplikacjach.",
+	"help.next-generation": "To są media społecznościowe kolejnej generacji, dołącz już dzisiaj!",
+
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+
+	"category-search": "Znajdź kategorię...",
+	"see-more": "See more",
+	"see-less": "See less"
+}

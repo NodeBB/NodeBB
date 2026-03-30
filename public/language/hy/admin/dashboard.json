@@ -6,10 +6,13 @@
 	"new-users": "Նոր օգտատերեր",
 	"posts": "Գրառումներ",
 	"topics": "Թեմաներ",
+	"remote-posts": "Remote Posts",
+	"remote-topics": "Remote Topics",
+	"messages": "Messages",
 	"page-views-seven": "Վերջին 7 օրը",
 	"page-views-thirty": "Վերջին 30 օրը",
 	"page-views-last-day": "Վերջին 24 ժամը",
-	"page-views-custom": "Հատուկ ամսաթվերի միջակայք",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Range Start",
 	"page-views-custom-end": "Միջակայքի վերջ",
 	"page-views-custom-help": "Մուտքագրեք էջի դիտումների ամսաթվերի միջակայքը, որը ցանկանում եք դիտել: Եթե ամսաթվերի ընտրիչ չկա, ապա ընդունված ձևաչափն է՝ ՏՏՏՏ-ԱՄ-ՕՕ",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Գրանցված Էջի դիտումներ ",
 	"graphs.page-views-guest": "Էջի դիտումներ Հյուր",
 	"graphs.page-views-bot": "Էջի դիտումների բոտ",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Եզակի այցելուներ",
 	"graphs.registered-users": "Գրանցված օգտատերեր",
 	"graphs.guest-users": "Հյուր օգտատերեր",
@@ -94,5 +98,8 @@
 	"view-as-json": "Դիտել որպես JSON",
 	"expand-analytics": "Ընդլայնել վերլուծությունը",
 	"clear-search-history": "Մաքրել որոնման պատմությունը",
-	"clear-search-history-confirm": "Վստա՞հ եք, որ ցանկանում եք մաքրել որոնման ողջ պատմությունը:"
+	"clear-search-history-confirm": "Վստա՞հ եք, որ ցանկանում եք մաքրել որոնման ողջ պատմությունը:",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }

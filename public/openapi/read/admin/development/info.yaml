@@ -51,14 +51,17 @@ get:
                                   type: number
                                 arrayBuffers:
                                   type: number
-                                humanReadable:
+                                rssReadable:
+                                  type: number
+                                heapUsedReadable:
                                   type: number
                               required:
                                 - rss
                                 - heapTotal
                                 - heapUsed
                                 - external
-                                - humanReadable
+                                - rssReadable
+                                - heapUsedReadable
                             uptime:
                               type: number
                             uptimeHumanReadable:
@@ -98,6 +101,8 @@ get:
                               type: boolean
                             jobsDisabled:
                               type: boolean
+                            acpPluginInstallDisabled:
+                              type: boolean
                         git:
                           type: object
                           properties:
@@ -115,6 +120,8 @@ get:
                             onlineRegisteredCount:
                               type: number
                             socketCount:
+                              type: number
+                            connectionCount:
                               type: number
                             users:
                               type: object

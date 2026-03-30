@@ -4,8 +4,8 @@
 	"maintenance-mode.status": "קוד מצב תחזוקה",
 	"maintenance-mode.message": "הודעת תחזוקה",
 	"maintenance-mode.groups-exempt-from-maintenance-mode": "בחר קבוצות שיש לפטור ממצב תחזוקה",
-	"headers": "כותרות",
-	"headers.allow-from": "הגדר ALLOW-FROM למקם NodeBB ב- iFrame",
+	"headers": "כותרות-Headers",
+	"headers.allow-from": "הגדרת ALLOW-FROM למקם NodeBB ב- iFrame",
 	"headers.csp-frame-ancestors": "הגדר את מדיניות האבטחה (Content-Security-Policy) עבור ההטמעה (frame-ancestors) של NodeBB בתוך Iframe",
 	"headers.csp-frame-ancestors-help": "בחר מילים שמורות כמו 'none' (ללא) 'self' (רק מהאתר שלי) או כתובת מלאה של אתר חיצוני",
 	"headers.powered-by": "התאם אישית את הכותרת \"מופעל ע\"י\" הברירת מחדל של נודביבי",
@@ -24,7 +24,7 @@
 	"headers.permissions-policy-help": "מאפשר להגדיר את כותרת מדיניות ההרשאות (permissions policy header), לדוגמה \"geolocation=*, camera=()\". ראה <a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">כאן</a> למידע נוסף.",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "הפעל HSTS (מומלץ)",
-	"hsts.maxAge": "גיל כותרת HSTS",
+	"hsts.maxAge": "HSTS Max Age",
 	"hsts.subdomains": "כלול תת-דומיינים בכותרת HSTS",
 	"hsts.preload": "אפשר טעינה מוקדמת של כותרת ה-HSTS",
 	"hsts.help": "אם מופעל, תוגדר כותרת HSTS עבור אתר זה. אתה יכול לבחור לכלול תת-דומיינים ודגלי טעינה מראש בכותרת שלך. אם יש לך ספק, אתה יכול להשאיר את אלה ללא סימון. <a href=\"%1\">מידע נוסף <i class=\"fa fa-external-link\"></i></a>",
@@ -41,10 +41,7 @@
 	"sockets.default-placeholder": "ברירת מחדל: %1",
 	"sockets.delay": "זמן השעייה בן נסיונות חיבור מחדש",
 
-	"analytics.settings": "הגדרות אנליטיקס",
-	"analytics.max-cache": "גודל מקסימלי של מטמון Analytics",
-	"analytics.max-cache-help": "בהתקנות עם תעבורה גבוהה, המטמון עלול להתרוקן ברציפות אם יש יותר משתמשים פעילים במקביל מערך המטמון המקסימלי. (הפעלה מחדש נדרשת)",
 	"compression.settings": "הגדרות דחיסה",
-	"compression.enable": "אפשר דחיסה",
+	"compression.enable": "הפעלת דחיסה",
 	"compression.help": "הגדרה זו מפעילה דחיסת gzip. עבור אתר אינטרנט מרובה תנועה בייצור, הדרך הטובה ביותר להפעיל דחיסה היא ליישם אותו ברמת פרוקסי הפוך. אתה יכול להפעיל אותו כאן למטרות בדיקה."
 }

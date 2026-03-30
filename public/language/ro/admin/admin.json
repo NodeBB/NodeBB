@@ -1,18 +1,18 @@
 {
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
-	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Sigur dorești să reconstruiești și să repornești NodeBB?",
+	"alert.confirm-restart": "Sigur dorești să repornești NodeBB?",
 
-	"acp-title": "%1 | NodeBB Admin Control Panel",
-	"settings-header-contents": "Contents",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
+	"acp-title": "%1 | Panou de control NodeBB",
+	"settings-header-contents": "Conținut",
+	"changes-saved": "Modificări Salvate",
+	"changes-saved-message": "Modificările aduse configurației NodeBB au fost salvate.",
+	"changes-not-saved": "Modificări Nesalvate",
+	"changes-not-saved-message": "NodeBB a întâmpinat o problemă la salvarea modificărilor. (%1)",
+	"save-changes": "Salvați modificările",
 	"min": "Min:",
 	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"view": "Vizualizare",
+	"edit": "Modifică",
+	"add": "Adaugă",
+	"select-icon": "Selectați Icon"
 }

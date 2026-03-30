@@ -13,8 +13,9 @@ const slugify = require('../slugify');
 const groupsAPI = module.exports;
 
 groupsAPI.list = async (caller, data) => {
-	const groupsPerPage = 10;
-	const start = parseInt(data.after || 0, 10);
+	const page = parseInt(data.page, 10) || 1;
+	const groupsPerPage = 15;
+	const start = Math.max(0, page - 1) * groupsPerPage;
 	const stop = start + groupsPerPage - 1;
 	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
 
@@ -85,7 +86,7 @@ groupsAPI.listMembers = async (caller, data) => {
 	const { query } = data;
 	const after = parseInt(data.after || 0, 10);
 	let response;
-	if (query) {
+	if (query && query.length) {
 		response = await groups.searchMembers({
 			uid: caller.uid,
 			query,
@@ -201,10 +202,9 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:cant-remove-self-as-admin]]');
 	}
 
-	const [groupData, isCallerAdmin, isCallerOwner, userExists, isMember] = await Promise.all([
+	const [groupData, isCallerOwner, userExists, isMember] = await Promise.all([
 		groups.getGroupData(groupName),
-		user.isAdministrator(caller.uid),
-		groups.ownership.isOwner(caller.uid, groupName),
+		isOwner(caller, groupName, false),
 		user.exists(data.uid),
 		groups.isMember(data.uid, groupName),
 	]);
@@ -221,7 +221,7 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:group-leave-disabled]]');
 	}
 
-	if (isSelf || isCallerAdmin || isCallerOwner) {
+	if (isSelf || isCallerOwner) {
 		await groups.leave(groupName, data.uid);
 	} else {
 		throw new Error('[[error:no-privileges]]');

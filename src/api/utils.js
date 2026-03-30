@@ -52,6 +52,9 @@ utils.tokens.get = async (tokens) => {
 };
 
 utils.tokens.generate = async ({ uid, description }) => {
+	if (!srcUtils.isNumber(uid)) {
+		throw new Error('[[error:invalid-uid]]');
+	}
 	if (parseInt(uid, 10) !== 0) {
 		const uidExists = await user.exists(uid);
 		if (!uidExists) {
@@ -66,7 +69,7 @@ utils.tokens.generate = async ({ uid, description }) => {
 };
 
 utils.tokens.add = async ({ token, uid, description = '', timestamp = Date.now() }) => {
-	if (!token || uid === undefined) {
+	if (!token || uid === undefined || !srcUtils.isNumber(uid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -80,6 +83,9 @@ utils.tokens.add = async ({ token, uid, description = '', timestamp = Date.now()
 };
 
 utils.tokens.update = async (token, { uid, description }) => {
+	if (!srcUtils.isNumber(uid)) {
+		throw new Error('[[error:invalid-uid]]');
+	}
 	await Promise.all([
 		db.setObject(`token:${token}`, { uid, description }),
 		db.sortedSetAdd(`tokens:uid`, uid, token),

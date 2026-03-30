@@ -1,0 +1,29 @@
+{
+	"name": "Verda",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
+	"help": "Hjelp",
+
+	"help.title": "Kva er denne sida?",
+	"help.intro": "Velkommen til ditt hjørne av fødiverset.",
+	"help.fediverse": "“Fødiverset” er eit nettverk av samanbundne applikasjonar og nettsider som kommuniserer med kvarandre, og der brukarane kan sjå kvarandre. Dette forumet er føderert og kan samhandle med det sosiale nettet (eller “fødiverset”). Denne sida er ditt hjørne av fødiverset. Ho består utelukkande av emne oppretta av – og delt frå – brukarar <strong>du</strong> følger.",
+	"help.build": "Det kan vere at det ikkje er mange emne her til å begynne med; det er heilt normalt. Du vil sjå meir innhald her etter kvart som du begynner å følge andre brukarar.",
+	"help.federating": "På same måte, dersom brukarar frå utsida av dette forumet begynner å følge <em>deg</em>, vil innlegga dine òg begynne å visast på desse appane og nettsidene.",
+	"help.next-generation": "Dette er den neste generasjonen av sosiale medium, begynn å bidra i dag!",
+
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+
+	"category-search": "Find a category...",
+	"see-more": "See more",
+	"see-less": "See less"
+}

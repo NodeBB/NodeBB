@@ -33,7 +33,7 @@ module.exports = function (Posts) {
 		}
 		let post;
 		if (isDelete) {
-			require('./cache').del(pid);
+			Posts.clearCachedPost(pid);
 			post = await Posts.delete(pid, uid);
 		} else {
 			post = await Posts.restore(pid, uid);

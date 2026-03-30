@@ -1,0 +1,26 @@
+{
+	"navigation": "Naviqasiya",
+	"icon": "İkon:",
+	"change-icon": "dəyiş",
+	"route": "Marşrut:",
+	"tooltip": "İpucu:",
+	"text": "Mətn:",
+	"text-class": "Mətn sinfi: <small>istəyə görə</small>",
+	"class": "Sinif: <small>istəyə görə</small>",
+	"id": "ID: <small>istəyə görə</small>",
+
+	"properties": "Xüsusiyyətlər:",
+	"show-to-groups": "Qruplara göstər:",
+	"open-new-window": "Yeni pəncərədə aç",
+	"dropdown": "Açılan siyahı",
+	"dropdown-placeholder": "Aşağı açılan menyu elementlərinizi yerləşdirin, yəni:<br/> &lt;li&gt;&lt;a class=&quot;açılan element&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
+
+	"btn.delete": "Sil",
+	"btn.disable": "Qeyri-aktiv et",
+	"btn.enable": "Aktivləşdir",
+
+	"available-menu-items": "Mövcud menyu elementləri",
+	"custom-route": "Fərdi marşrut",
+	"core": "özək",
+	"plugin": "plagin"
+}

@@ -3,12 +3,12 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1个节点在%2ms内响应！",
 	"host": "主机",
-	"primary": "主/运行任务",
+	"primary": "主节点 / 任务",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "在线",
 	"git": "git",
-	"process-memory": "进程内存",
+	"process-memory": "RSS / 堆已用",
 	"system-memory": "系统内存",
 	"used-memory-process": "进程使用的内存",
 	"used-memory-os": "已使用系统内存",
@@ -19,6 +19,7 @@
 
 	"registered": "已注册",
 	"sockets": "接口",
+	"connection-count": "连接数",
 	"guests": "游客",
 
 	"info": "信息"

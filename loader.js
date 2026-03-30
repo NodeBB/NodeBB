@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const fs = require('fs');
-const url = require('url');
 const path = require('path');
 const { fork } = require('child_process');
 const logrotate = require('logrotate-stream');
@@ -26,7 +25,7 @@ if (!fs.existsSync(logDir)) {
 	mkdirp.sync(path.dirname(outputLogFilePath));
 }
 
-const output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compress: true });
+const output = logrotate({ file: outputLogFilePath, size: '10m', keep: 3, compress: true });
 const silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
 let numProcs;
 const workers = [];
@@ -99,6 +98,13 @@ Loader.start = function () {
 function forkWorker(index, isPrimary) {
 	const ports = getPorts();
 	const args = [];
+	const execArgv = [];
+	if (nconf.get('max-memory')) {
+		execArgv.push(`--max-old-space-size=${nconf.get('max-memory')}`);
+	}
+	if (nconf.get('expose-gc')) {
+		execArgv.push('--expose-gc');
+	}
 
 	if (!ports[index]) {
 		return console.log(`[cluster] invalid port for worker : ${index} ports: ${ports.length}`);
@@ -107,10 +113,10 @@ function forkWorker(index, isPrimary) {
 	process.env.isPrimary = isPrimary;
 	process.env.isCluster = nconf.get('isCluster') || ports.length > 1;
 	process.env.port = ports[index];
-
 	const worker = fork(appPath, args, {
 		silent: silent,
 		env: process.env,
+		execArgv: execArgv,
 	});
 
 	worker.index = index;
@@ -133,7 +139,7 @@ function getPorts() {
 		console.log('[cluster] url is undefined, please check your config.json');
 		process.exit();
 	}
-	const urlObject = url.parse(_url);
+	const urlObject = new URL(_url);
 	let port = nconf.get('PORT') || nconf.get('port') || urlObject.port || 4567;
 	if (!Array.isArray(port)) {
 		port = [port];

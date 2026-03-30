@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-
 'use strict';
 
 import { fire as fireHook } from 'hooks';
@@ -22,9 +20,10 @@ async function call(options, callback) {
 		return result;
 	} catch (err) {
 		if (err.message === 'A valid login session was not found. Please log in and try again.') {
+			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
 			return confirm('[[error:api.reauth-required]]', (ok) => {
 				if (ok) {
-					ajaxify.go('login');
+					ajaxify.go(url);
 				}
 			});
 		}
@@ -61,11 +60,16 @@ async function xhr(options) {
 
 	const res = await fetch(url, options);
 	const { headers } = res;
+
+	if (headers.get('x-redirect')) {
+		return xhr({ url: headers.get('x-redirect'), ...options });
+	}
+
 	const contentType = headers.get('content-type');
 	const isJSON = contentType && contentType.startsWith('application/json');
 
 	let response;
-	if (options.method !== 'head') {
+	if (options.method !== 'HEAD') {
 		if (isJSON) {
 			response = await res.json();
 		} else {
@@ -75,7 +79,11 @@ async function xhr(options) {
 
 	if (!res.ok) {
 		if (response) {
-			throw new Error(isJSON ? response.status.message : response);
+			const jsonError = isJSON && (response.status?.message || response.error || '');
+			throw new Error(isJSON && jsonError ?
+				jsonError :
+				response
+			);
 		}
 		throw new Error(res.statusText);
 	}
@@ -94,14 +102,14 @@ export function get(route, data, onSuccess) {
 export function head(route, data, onSuccess) {
 	return call({
 		url: route + (data && Object.keys(data).length ? ('?' + $.param(data)) : ''),
-		method: 'head',
+		method: 'HEAD',
 	}, onSuccess);
 }
 
 export function post(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'post',
+		method: 'POST',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
@@ -112,7 +120,7 @@ export function post(route, data, onSuccess) {
 export function patch(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'patch',
+		method: 'PATCH',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
@@ -123,7 +131,7 @@ export function patch(route, data, onSuccess) {
 export function put(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'put',
+		method: 'PUT',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
@@ -134,7 +142,7 @@ export function put(route, data, onSuccess) {
 export function del(route, data, onSuccess) {
 	return call({
 		url: route,
-		method: 'delete',
+		method: 'DELETE',
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,

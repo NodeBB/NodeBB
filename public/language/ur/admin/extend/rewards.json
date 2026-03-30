@@ -1,0 +1,17 @@
+{
+	"rewards": "انعامات",
+	"add-reward": "انعام شامل کریں",
+	"condition-if-users": "اگر صارف کا",
+	"condition-is": "ہے:",
+	"condition-then": "تو:",
+	"max-claims": "انعام کتنی بار حاصل کیا جا سکتا ہے",
+	"zero-infinite": "0 = لامحدود بار",
+	"select-reward": "انعام منتخب کریں",
+	"delete": "حذف",
+	"enable": "فعال کریں",
+	"disable": "غیر فعال کریں",
+
+	"alert.delete-success": "انعام کامیابی سے حذف ہو گیا",
+	"alert.no-inputs-found": "غلط انعام — کچھ بھی درج نہیں کیا گیا!",
+	"alert.save-success": "انعامات کامیابی سے محفوظ ہو گئے"
+}

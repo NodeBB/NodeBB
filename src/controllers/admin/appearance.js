@@ -1,9 +1,18 @@
 'use strict';
 
+const meta = require('../../meta');
+
 const appearanceController = module.exports;
 
-appearanceController.get = function (req, res) {
-	const term = req.params.term ? req.params.term : 'themes';
+appearanceController.themes = async function (req, res) {
+	const themes = await meta.themes.get();
+	res.render(`admin/appearance/themes`, { themes });
+};
 
-	res.render(`admin/appearance/${term}`, {});
+appearanceController.skins = function (req, res) {
+	res.render(`admin/appearance/skins`, {});
+};
+
+appearanceController.customise = function (req, res) {
+	res.render(`admin/appearance/customise`, {});
 };

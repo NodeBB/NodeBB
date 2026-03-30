@@ -2,6 +2,8 @@
 
 const async = require('async');
 const winston = require('winston');
+const nconf = require('nconf');
+const pubsub = require('../../pubsub');
 
 const db = require('../../database');
 const groups = require('../../groups');
@@ -70,7 +72,7 @@ User.validateEmail = async function (socket, uids) {
 		if (email) {
 			await user.setUserField(uid, 'email', email);
 		}
-		await user.email.confirmByUid(uid);
+		await user.email.confirmByUid(uid, socket.uid);
 	}
 };
 
@@ -129,8 +131,15 @@ User.forcePasswordReset = async function (socket, uids) {
 	uids.forEach(uid => sockets.in(`uid_${uid}`).emit('event:logout'));
 };
 
+pubsub.on('admin.user.restartJobs', () => {
+	if (nconf.get('runJobs')) {
+		winston.verbose('[user/jobs] Restarting jobs...');
+		user.startJobs();
+	}
+});
+
 User.restartJobs = async function () {
-	user.startJobs();
+	pubsub.publish('admin.user.restartJobs', {});
 };
 
 User.loadGroups = async function (socket, uids) {
@@ -162,7 +171,7 @@ User.setReputation = async function (socket, data) {
 	]);
 };
 
-User.exportUsersCSV = async function (socket) {
+User.exportUsersCSV = async function (socket, data) {
 	await events.log({
 		type: 'exportUsersCSV',
 		uid: socket.uid,
@@ -170,7 +179,7 @@ User.exportUsersCSV = async function (socket) {
 	});
 	setTimeout(async () => {
 		try {
-			await user.exportUsersCSV();
+			await user.exportUsersCSV(data.fields);
 			if (socket.emit) {
 				socket.emit('event:export-users-csv');
 			}
@@ -186,4 +195,35 @@ User.exportUsersCSV = async function (socket) {
 			winston.error(err.stack);
 		}
 	}, 0);
+};
+
+User.saveCustomFields = async function (socket, fields) {
+	const userFields = await user.getUserFieldWhitelist();
+	for (const field of fields) {
+		if (userFields.includes(field.key) || userFields.includes(field.key.toLowerCase())) {
+			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
+		}
+	}
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	await db.delete('user-custom-fields');
+	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
+
+	await db.sortedSetAdd(
+		`user-custom-fields`,
+		fields.map((f, i) => i),
+		fields.map(f => f.key)
+	);
+	await db.setObjectBulk(
+		fields.map(field => [`user-custom-field:${field.key}`, field])
+	);
+	await user.reloadCustomFieldWhitelist();
+};
+
+User.saveCustomReasons = async function (socket, reasons) {
+	const keys = await db.getSortedSetRange('custom-reasons', 0, -1);
+	await db.delete('custom-reasons');
+	await db.deleteAll(keys.map(k => `custom-reason:${k}`));
+	const ids = reasons.map((f, i) => i);
+	await db.sortedSetAdd(`custom-reasons`, ids, ids);
+	await db.setObjectBulk(reasons.map((reason, i) => [`custom-reason:${i}`, reason]));
 };

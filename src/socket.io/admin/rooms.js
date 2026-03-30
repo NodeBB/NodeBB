@@ -2,6 +2,7 @@
 
 const topics = require('../../topics');
 const io = require('..');
+const webserver = require('../../webserver');
 
 const totals = {};
 
@@ -94,6 +95,7 @@ SocketRooms.getLocalStats = function () {
 		onlineGuestCount: 0,
 		onlineRegisteredCount: 0,
 		socketCount: 0,
+		connectionCount: webserver.getConnectionCount(),
 		users: {
 			categories: 0,
 			recent: 0,

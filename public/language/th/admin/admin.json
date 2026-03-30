@@ -1,18 +1,18 @@
 {
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
+	"alert.confirm-rebuild-and-restart": "คุณต้องการสร้างระบบและเริ่มต้นการทำงาน NodeBB ใหม่หรือไม่?",
 	"alert.confirm-restart": "คุณต้องการเริ่มการทำงาน NodeBB ใหม่หรือไม่?",
 
 	"acp-title": "%1 | แผงควบคุมของผู้ดูแลระบบ",
 	"settings-header-contents": "เนื้อหา",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"changes-saved": "บันทึกการเปลี่ยนแปลงแล้ว",
+	"changes-saved-message": "การเปลี่ยนการตั้งค่า NodeBB ของคุณถูกบันทึกแล้ว",
+	"changes-not-saved": "การเปลี่ยนแปลงไม่ถูกบันทึก",
+	"changes-not-saved-message": "NodeBB เจอปัญหาระหว่างการบันทึกการเปลี่ยนแปลงของคุณ (%1)",
+	"save-changes": "บันทึกการเปลี่ยนแปลง",
+	"min": "ต่ำสุด:",
+	"max": "สูงสุด:",
+	"view": "ดู",
+	"edit": "แก้ไข",
+	"add": "เพิ่ม",
+	"select-icon": "เลือกไอคอน"
 }

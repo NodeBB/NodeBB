@@ -7,5 +7,7 @@
     "alltime": "Bármikor",
     "no-recent-topics": "Nincs friss témakör.",
     "no-popular-topics": "Nincs népszerű témakör.",
-    "load-new-posts": "Új bejegyzések betöltése"
+    "load-new-posts": "Új bejegyzések betöltése",
+    "uncategorized.title": "All known topics",
+    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
 }

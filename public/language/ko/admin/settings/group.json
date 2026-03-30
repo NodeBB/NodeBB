@@ -1,13 +1,13 @@
 {
 	"general": "일반",
 	"private-groups": "비공개 그룹",
-	"private-groups.help": " 활성화 되어있다면 그룹에 가입하는 것은 그룹 관리자의 허가를 필요로 합니다. <em>(기본 설정: 활성화)</em>",
-	"private-groups.warning": "<strong>주의</strong> 이 옵션이 비활성화 돼있고 당신에게 비공개 그룹이 있다면 그 그룹들은 모두 공개로 전환될 것입니다.",
-	"allow-multiple-badges": "여러 개의 뱃지 허용",
-	"allow-multiple-badges-help": "사용자가 여러 개의 뱃지를 선택할 수 있지만 해당 기능을 지원하는 테마에서만 사용할 수 있습니다.",
-	"max-name-length": "그룹명 최대 길이",
-	"max-title-length": "그룹 제목 최대 길이",
-	"cover-image": "그룹 커버 사진",
-	"default-cover": "기본 커버 사진",
-	"default-cover-help": "기본 커버 사진 목록을 콤마(,) 로 구분지어 입력해 주세요. "
+	"private-groups.help": "활성화하면, 그룹 가입에는 그룹 소유자의 승인이 필요합니다 <em>(기본값: 활성화됨)</em>",
+	"private-groups.warning": "<strong>주의!</strong> 이 옵션을 비활성화 하고, 비공개 그룹이 있는 경우 해당 그룹은 자동으로 공개 그룹이 됩니다.",
+	"allow-multiple-badges": "여러 배지 허용",
+	"allow-multiple-badges-help": "이 플래그를 사용하여 사용자가 여러 그룹 배지를 선택할 수 있도록 할 수 있습니다. 테마 지원이 필요합니다.",
+	"max-name-length": "최대 그룹 이름 길이",
+	"max-title-length": "최대 그룹 제목 길이",
+	"cover-image": "그룹 커버 이미지",
+	"default-cover": "기본 커버 이미지",
+	"default-cover-help": "쉼표로 구분된 기본 그룹 커버 이미지를 추가하면, 업로드한 커버 이미지가 없는 그룹에 대한 기본 커버 이미지를 지정할 수 있습니다"
 }

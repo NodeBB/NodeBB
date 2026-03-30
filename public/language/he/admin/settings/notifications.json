@@ -3,5 +3,7 @@
 	"welcome-notification": "הודעת ברוכים הבאים",
 	"welcome-notification-link": "קישור הודעת ברוכים הבאים",
 	"welcome-notification-uid": "הודעת ברוכים הבאים למשתמש (UID)",
-	"post-queue-notification-uid": "רשום משתמש בתור (UID)"
+	"post-queue-notification-uid": "רשום משתמש בתור (UID)",
+	"notification-delay": "השהיה לשליחת התראות במייל (שניות)",
+	"notification-delay-help": "אם המשתמש יקרא את ההתראה בתוך פרק זמן זה, המייל לא יישלח. <br/> ברירת מחדל: 60 שניות."
 }

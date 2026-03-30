@@ -5,19 +5,42 @@ define('forum/header/notifications', function () {
 
 	notifications.prepareDOM = function () {
 		const notifTrigger = $('[component="notifications"] [data-bs-toggle="dropdown"]');
-		if (!notifTrigger.length) {
-			return;
-		}
 
-		notifTrigger.on('show.bs.dropdown', (ev) => {
-			requireAndCall('loadNotifications', $(ev.target).parent().find('[component="notifications/list"]'));
+		notifTrigger.on('show.bs.dropdown', async (ev) => {
+			const notifications = await app.require('notifications');
+			const triggerEl = $(ev.target);
+			const dropdownEl = triggerEl.parent().find('.dropdown-menu');
+			dropdownEl.find('[data-filter="all"]').addClass('active');
+			dropdownEl.find('[data-filter="unread"]').removeClass('active');
+			notifications.loadNotifications(triggerEl, triggerEl.parent().find('[component="notifications/list"]'));
 		});
 
 		notifTrigger.each((index, el) => {
-			const dropdownEl = $(el).parent().find('.dropdown-menu');
+			const triggerEl = $(el);
+			const dropdownEl = triggerEl.parent().find('.dropdown-menu');
+			const listEl = dropdownEl.find('[component="notifications/list"]');
 			if (dropdownEl.hasClass('show')) {
-				requireAndCall('loadNotifications', dropdownEl.find('[component="notifications/list"]'));
+				app.require('notifications').then((notifications) => {
+					notifications.loadNotifications(triggerEl, listEl);
+				});
 			}
+
+			dropdownEl.on('click', '[data-filter]', (e) => {
+				const filter = e.target.getAttribute('data-filter');
+				dropdownEl.find('[data-filter]').removeClass('active');
+				e.target.classList.add('active');
+				if (filter === 'unread') {
+					listEl.get(0).querySelectorAll('[data-nid]:not(.unread)').forEach((e) => {
+						e.classList.toggle('hidden', true);
+					});
+				} else {
+					listEl.get(0).querySelectorAll('[data-nid]').forEach((e) => {
+						e.classList.toggle('hidden', false);
+					});
+				}
+				const visibleNotifCount = dropdownEl.find('[data-nid]:not(.hidden)').length;
+				dropdownEl.find('.no-notifs').toggleClass('hidden', visibleNotifCount !== 0);
+			});
 		});
 
 		socket.removeListener('event:new_notification', onNewNotification);
@@ -27,18 +50,14 @@ define('forum/header/notifications', function () {
 		socket.on('event:notifications.updateCount', onUpdateCount);
 	};
 
-	function onNewNotification(data) {
-		requireAndCall('onNewNotification', data);
+	async function onNewNotification(data) {
+		const notifications = await app.require('notifications');
+		notifications.onNewNotification(data);
 	}
 
-	function onUpdateCount(data) {
-		requireAndCall('updateNotifCount', data);
-	}
-
-	function requireAndCall(method, param) {
-		require(['notifications'], function (notifications) {
-			notifications[method](param);
-		});
+	async function onUpdateCount(data) {
+		const notifications = await app.require('notifications');
+		notifications.updateNotifCount(data);
 	}
 
 	return notifications;

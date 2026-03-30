@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "Atspējot RSS plūsmu",
 	"disable-sitemap-xml": "Atspējot sitemap.xml",
 	"sitemap-topics": "Cik tematus rādīt vietnes kartē",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Notīrīt vietnes kartes kešatmiņu",
 	"view-sitemap": "Skatīt vietnes karti"
 }

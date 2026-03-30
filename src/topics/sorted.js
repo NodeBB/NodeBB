@@ -29,6 +29,7 @@ module.exports = function (Topics) {
 			params.tags = [params.tags];
 		}
 		data.tids = await getTids(params);
+		data.tids = await getInbox(data.tids, params);
 		data.tids = await sortTids(data.tids, params);
 		data.tids = await filterTids(data.tids.slice(0, meta.config.recentMaxTopics), params);
 		data.topicCount = data.tids.length;
@@ -42,32 +43,130 @@ module.exports = function (Topics) {
 			const result = await plugins.hooks.fire('filter:topics.getSortedTids', { params: params, tids: [] });
 			return result.tids;
 		}
-		let tids = [];
+		let tids;
 		if (params.term !== 'alltime') {
-			tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
+			if (params.sort === 'posts') {
+				const { cids, uid, term, includeRemote } = params;
+				tids = await getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote });
+			} else {
+				const cids = await getCids(params.cids, params.uid);
+				tids = await Topics.getLatestTidsFromSet(
+					cids.map(cid => `cid:${cid}:tids:create`), 0, -1, params.term
+				);
+			}
+
 			if (params.filter === 'watched') {
 				tids = await Topics.filterWatchedTids(tids, params.uid);
 			}
 		} else if (params.filter === 'watched') {
-			tids = await db.getSortedSetRevRange(`uid:${params.uid}:followed_tids`, 0, -1);
+			tids = await getWatchedTopics(params);
 		} else if (params.cids) {
 			tids = await getCidTids(params);
 		} else if (params.tags.length) {
 			tids = await getTagTids(params);
-		} else if (params.sort === 'old') {
-			tids = await db.getSortedSetRange(`topics:recent`, 0, meta.config.recentMaxTopics - 1);
 		} else {
-			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.config.recentMaxTopics - 1);
+			const method = params.sort === 'old' ?
+				'getSortedSetRange' :
+				'getSortedSetRevRange';
+			tids = await db[method](sortToSet(params.sort), 0, meta.config.recentMaxTopics - 1);
 		}
 
 		return tids;
 	}
 
+	async function getInbox(tids, params) {
+		if (!params.includeRemote) {
+			return tids;
+		}
+
+		let inbox;
+		const set = params.followingOnly ? `uid:${params.uid}:inbox` : 'cid:-1:tids';
+		if (params.term !== 'alltime') {
+			const method = params.sort === 'old' ?
+				'getSortedSetRangeByScore' :
+				'getSortedSetRevRangeByScore';
+			inbox = await db[method](
+				set,
+				0,
+				1000,
+				'+inf',
+				Date.now() - Topics.getSinceFromTerm(params.term)
+			);
+		} else {
+			const method = params.sort === 'old' ?
+				'getSortedSetRange' :
+				'getSortedSetRevRange';
+			inbox = await db[method](set, 0, meta.config.recentMaxTopics - 1);
+		}
+
+		return _.uniq(tids.concat(inbox));
+	}
+
+	function sortToSet(sort) {
+		const map = {
+			recent: 'topics:recent',
+			old: 'topics:recent',
+			create: 'topics:tid',
+			posts: 'topics:posts',
+			votes: 'topics:votes',
+			views: 'topics:views',
+		};
+		if (map.hasOwnProperty(sort)) {
+			return map[sort];
+		}
+		return 'topics:recent';
+	}
+
+	async function getCids(cids, uid, includeRemote) {
+		if (Array.isArray(cids)) {
+			cids = await privileges.categories.filterCids('topics:read', cids, uid);
+		} else {
+			cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
+			cids = cids.filter(cid => cid !== -1);
+		}
+
+		if (includeRemote) {
+			const remoteCids = await db.getObjectValues('handle:cid');
+			cids = [-1, ...cids, ...remoteCids];
+		}
+		return cids;
+	}
+
+	async function getTidsWithMostPostsInTerm({ cids, uid, term, includeRemote }) {
+		cids = await getCids(cids, uid, includeRemote);
+		const sets = cids.map(cid => `cid:${cid}:pids`);
+		const pids = await db.getSortedSetRevRangeByScore(
+			sets,
+			0,
+			1000,
+			'+inf',
+			Date.now() - Topics.getSinceFromTerm(term)
+		);
+		const postObjs = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['tid']);
+		const tidToCount = {};
+		postObjs.forEach((post) => {
+			tidToCount[post.tid] = tidToCount[post.tid] || 0;
+			tidToCount[post.tid] += 1;
+		});
+
+		return _.uniq(postObjs.map(post => String(post.tid)))
+			.sort((t1, t2) => tidToCount[t2] - tidToCount[t1]);
+	}
+
+	async function getWatchedTopics(params) {
+		const sortSet = ['recent', 'old'].includes(params.sort) ? 'topics:recent' : `topics:${params.sort}`;
+		const method = params.sort === 'old' ? 'getSortedSetIntersect' : 'getSortedSetRevIntersect';
+		return await db[method]({
+			sets: [sortSet, `uid:${params.uid}:followed_tids`],
+			weights: [1, 0],
+			start: 0,
+			stop: meta.config.recentMaxTopics - 1,
+		});
+	}
+
 	async function getTagTids(params) {
 		const sets = [
-			params.sort === 'old' ?
-				'topics:recent' :
-				`topics:${params.sort}`,
+			sortToSet(params.sort),
 			...params.tags.map(tag => `tag:${tag}:topics`),
 		];
 		const method = params.sort === 'old' ?
@@ -109,20 +208,32 @@ module.exports = function (Topics) {
 	}
 
 	async function sortTids(tids, params) {
-		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned) {
+		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned && !params.includeRemote) {
 			return tids;
 		}
-		const topicData = await Topics.getTopicsFields(tids, [
-			'tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
-		]);
-		const sortMap = {
-			recent: sortRecent,
-			old: sortOld,
-			posts: sortPopular,
-			votes: sortVotes,
-			views: sortViews,
-		};
-		const sortFn = sortMap[params.sort] || sortRecent;
+
+		if (params.sort === 'posts' && params.term !== 'alltime') {
+			return tids;
+		}
+
+		const { sortMap, fields } = await plugins.hooks.fire('filter:topics.sortOptions', {
+			params,
+			fields: [
+				'tid', 'timestamp', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
+			],
+			sortMap: {
+				recent: sortRecent,
+				old: sortOld,
+				create: sortCreate,
+				posts: sortPopular,
+				votes: sortVotes,
+				views: sortViews,
+			},
+		});
+
+		const topicData = await Topics.getTopicsFields(tids, fields);
+		const sortFn = sortMap.hasOwnProperty(params.sort) && sortMap[params.sort] ?
+			sortMap[params.sort] : sortRecent;
 
 		if (params.floatPinned) {
 			floatPinned(topicData, sortFn);
@@ -145,6 +256,10 @@ module.exports = function (Topics) {
 		return a.lastposttime - b.lastposttime;
 	}
 
+	function sortCreate(a, b) {
+		return b.timestamp - a.timestamp;
+	}
+
 	function sortVotes(a, b) {
 		if (a.votes !== b.votes) {
 			return b.votes - a.votes;
@@ -164,8 +279,11 @@ module.exports = function (Topics) {
 	}
 
 	async function filterTids(tids, params) {
-		const { filter } = params;
-		const { uid } = params;
+		let { filter, uid, cids } = params;
+		cids = cids && cids.map(String);
+		if (cids && cids.length === 1 && cids.includes('-1')) {
+			cids = undefined;
+		}
 
 		if (filter === 'new') {
 			tids = await Topics.filterNewTids(tids, uid);
@@ -193,7 +311,6 @@ module.exports = function (Topics) {
 		const isCidIgnored = _.zipObject(topicCids, ignoredCids);
 		topicData = filtered;
 
-		const cids = params.cids && params.cids.map(String);
 		const { tags } = params;
 		tids = topicData.filter(t => (
 			t &&
@@ -203,7 +320,10 @@ module.exports = function (Topics) {
 			(!tags.length || tags.every(tag => t.tags.find(topicTag => topicTag.value === tag)))
 		)).map(t => t.tid);
 
-		const result = await plugins.hooks.fire('filter:topics.filterSortedTids', { tids: tids, params: params });
+		const result = await plugins.hooks.fire('filter:topics.filterSortedTids', {
+			tids,
+			params,
+		});
 		return result.tids;
 	}
 

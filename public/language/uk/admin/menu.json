@@ -38,6 +38,7 @@
 	"settings/tags": "Теги",
 	"settings/notifications": "Сповіщення",
 	"settings/api": "API Access",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Sounds",
 	"settings/social": "Social",
 	"settings/cookies": "Куки",
@@ -46,6 +47,14 @@
 	"settings/advanced": "Розширені",
 
 	"settings.page-title": "Налаштування %1",
+
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Зовнішній вигляд",
 	"appearance/themes": "Теми",
@@ -69,6 +78,7 @@
 	"advanced/logs": "Логи",
 	"advanced/errors": "Помилки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Логування",
 	"development/info": "Інформація",
 

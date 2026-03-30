@@ -2,7 +2,10 @@
 
 module.exports = function (opts) {
 	const { LRUCache } = require('lru-cache');
+	const os = require('os');
+
 	const pubsub = require('../pubsub');
+	const tracker = require('./tracker');
 
 	// lru-cache@7 deprecations
 	const winston = require('winston');
@@ -29,6 +32,9 @@ module.exports = function (opts) {
 	});
 
 	const lruCache = new LRUCache(opts);
+	if (!opts.name) {
+		winston.warn(`[cache/init] ${chalk.white.bgRed.bold('WARNING')} The cache name is not set. This will be required in the future.\n ${new Error('t').stack} `);
+	}
 
 	const cache = {};
 	cache.name = opts.name;
@@ -57,6 +63,14 @@ module.exports = function (opts) {
 		});
 	});
 
+	cache.has = function (key) {
+		if (!cache.enabled) {
+			return false;
+		}
+
+		return lruCache.has(key);
+	};
+
 	cache.set = function (key, value, ttl) {
 		if (!cache.enabled) {
 			return;
@@ -82,6 +96,9 @@ module.exports = function (opts) {
 	};
 
 	cache.del = function (keys) {
+		if (!cache.enabled) {
+			return;
+		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
@@ -91,7 +108,9 @@ module.exports = function (opts) {
 	cache.delete = cache.del;
 
 	cache.reset = function () {
-		pubsub.publish(`${cache.name}:lruCache:reset`);
+		pubsub.publish(`${cache.name}:lruCache:reset`, {
+			id: `${os.hostname()}:${process.pid}`,
+		});
 		localReset();
 	};
 	cache.clear = cache.reset;
@@ -102,8 +121,10 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:lruCache:reset`, () => {
-		localReset();
+	pubsub.on(`${cache.name}:lruCache:reset`, ({ id }) => {
+		if (id !== `${os.hostname()}:${process.pid}`) {
+			localReset();
+		}
 	});
 
 	pubsub.on(`${cache.name}:lruCache:del`, (keys) => {
@@ -142,5 +163,6 @@ module.exports = function (opts) {
 		return lruCache.peek(key);
 	};
 
+	tracker.addCache(opts.name, cache);
 	return cache;
 };

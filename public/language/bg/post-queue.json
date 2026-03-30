@@ -38,5 +38,6 @@
 	"remove-selected": "Премахване на избраните",
 	"remove-selected-confirm": "Наистина ли искате да премахнете избраните %1 публикации?",
 	"bulk-accept-success": "Одобрени публикации: %1",
-	"bulk-reject-success": "Отхвърлени публикации: %1"
+	"bulk-reject-success": "Отхвърлени публикации: %1",
+	"links-in-this-post": "Връзки в тази публикация"
 }

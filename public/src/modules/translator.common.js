@@ -463,7 +463,9 @@ module.exports = function (utils, load, warn) {
 		 * @returns {string}
 		 */
 		Translator.escape = function escape(text) {
-			return typeof text === 'string' ? text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') : text;
+			return typeof text === 'string' ?
+				text.replace(/\[\[([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;') :
+				text;
 		};
 
 		/**
@@ -473,8 +475,7 @@ module.exports = function (utils, load, warn) {
 		 */
 		Translator.unescape = function unescape(text) {
 			return typeof text === 'string' ?
-				text.replace(/&lsqb;/g, '[').replace(/\\\[/g, '[')
-					.replace(/&rsqb;/g, ']').replace(/\\\]/g, ']') :
+				text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)&rsqb;&rsqb;/g, '[[$1]]') :
 				text;
 		};
 

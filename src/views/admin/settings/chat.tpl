@@ -45,6 +45,12 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="maximumRemoteChatMessageLength">[[admin/settings/chat:max-length-remote]]</label>
+					<input id="maximumRemoteChatMessageLength" type="text" class="form-control" value="5000" data-field="maximumRemoteChatMessageLength">
+					<p class="form-text">[[admin/settings/chat:max-length-remote-help]]</p>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="maximumUsersInChatRoom">[[admin/settings/chat:max-room-size]]</label>
 					<input id="maximumUsersInChatRoom" type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
 				</div>
@@ -52,12 +58,6 @@
 				<div class="mb-3">
 					<label class="form-label" for="chatMessageDelay">[[admin/settings/chat:delay]]</label>
 					<input id="chatMessageDelay" type="text" class="form-control" data-field="chatMessageDelay">
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label" for="notificationSendDelay">[[admin/settings/chat:notification-delay]]</label>
-					<input id="notificationSendDelay" type="text" class="form-control" value="60" data-field="notificationSendDelay">
-					<p class="form-text">[[admin/settings/chat:notification-delay-help]]</p>
 				</div>
 			</div>
 		</div>

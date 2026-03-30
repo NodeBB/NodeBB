@@ -9,11 +9,16 @@ define('forum/category/tools', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (topicSelect, threadTools, components, api, bootbox, alerts) {
+	'bootstrap',
+], function (topicSelect, threadTools, components, api, bootbox, alerts, bootstrap) {
 	const CategoryTools = {};
 
-	CategoryTools.init = function () {
-		topicSelect.init(updateDropdownOptions);
+	CategoryTools.init = function (containerEl) {
+		topicSelect.init(updateDropdownOptions, () => {
+			const toggleEl = document.querySelector('.thread-tools button');
+			const dropdown = new bootstrap.Dropdown(toggleEl);
+			dropdown.show();
+		}, containerEl);
 
 		handlePinnedTopicSort();
 
@@ -84,8 +89,6 @@ define('forum/category/tools', [
 				}
 				move.init(tids, null, onCommandComplete);
 			});
-
-			return false;
 		});
 
 		components.get('topic/move-all').on('click', function () {
@@ -284,8 +287,20 @@ define('forum/category/tools', [
 		topic.find('[component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 	}
 
-	function onTopicMoved(data) {
-		getTopicEl(data.tid).remove();
+	async function onTopicMoved(data) {
+		if (ajaxify.data.template.category || String(data.toCid) === '-1') {
+			getTopicEl(data.tid).remove();
+		} else {
+			const category = await api.get(`/categories/${data.toCid}`);
+			const html = await app.parseAndTranslate('partials/topics_list', {
+				topics: [{
+					...data,
+					category,
+				}],
+			});
+			const categoryLabelSelector = `[component="category/topic"][data-tid="${data.tid}"] [component="topic/category"]`;
+			$(categoryLabelSelector).replaceWith(html.find(categoryLabelSelector));
+		}
 	}
 
 	function onTopicPurged(data) {

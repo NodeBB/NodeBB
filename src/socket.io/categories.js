@@ -111,7 +111,9 @@ SocketCategories.ignore = async function (socket, data) {
 
 async function ignoreOrWatch(fn, socket, data) {
 	let targetUid = socket.uid;
-	const cids = Array.isArray(data.cid) ? data.cid.map(cid => parseInt(cid, 10)) : [parseInt(data.cid, 10)];
+	const cids = Array.isArray(data.cid) ?
+		data.cid.map(cid => String(cid)) :
+		[String(data.cid)];
 	if (data.hasOwnProperty('uid')) {
 		targetUid = data.uid;
 	}
@@ -122,9 +124,9 @@ async function ignoreOrWatch(fn, socket, data) {
 	// filter to subcategories of cid
 	let cat;
 	do {
-		cat = categoryData.find(c => !cids.includes(c.cid) && cids.includes(c.parentCid));
+		cat = categoryData.find(c => !cids.includes(String(c.cid)) && cids.includes(String(c.parentCid)));
 		if (cat) {
-			cids.push(cat.cid);
+			cids.push(String(cat.cid));
 		}
 	} while (cat);
 

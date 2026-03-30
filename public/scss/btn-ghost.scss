@@ -1,0 +1,26 @@
+$btn-ghost-hover-color: mix($body-bg, $body-color, 90%)!default;
+$btn-ghost-active-color: lighten($btn-ghost-hover-color, 5%)!default;
+$btn-ghost-hover-color-dark: mix($body-color, $body-bg, 90%)!default;
+$btn-ghost-active-color-dark: lighten($btn-ghost-hover-color-dark, 5%)!default;
+
+:root {
+	--btn-ghost-hover-color: #{$btn-ghost-hover-color};
+	--btn-ghost-active-color: #{$btn-ghost-active-color};
+}
+[data-bs-theme="dark"] {
+	--btn-ghost-hover-color: #{$btn-ghost-hover-color-dark};
+	--btn-ghost-active-color: #{$btn-ghost-active-color-dark};
+}
+
+// https://getbootstrap.com/docs/5.3/components/buttons/#variables
+.btn-ghost {
+	--bs-btn-color: inherit!important;
+	--bs-btn-bg: transparent;
+	--bs-btn-border-color: transparent;
+	--bs-btn-box-shadow: none;
+	--bs-btn-hover-color: inherit;
+	--bs-btn-hover-bg: #{$btn-ghost-hover-color};
+	--bs-btn-hover-border-color: #{$btn-ghost-hover-color};
+	--bs-btn-active-bg: #{$btn-ghost-hover-color};
+	--bs-btn-active-border-color: transparent;
+}

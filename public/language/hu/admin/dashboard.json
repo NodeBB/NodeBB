@@ -6,10 +6,13 @@
 	"new-users": "Új felhasználók",
 	"posts": "Hozzászólások",
 	"topics": "Témakörök",
+	"remote-posts": "Remote Posts",
+	"remote-topics": "Remote Topics",
+	"messages": "Messages",
 	"page-views-seven": "Az utóbbi 7 napban",
 	"page-views-thirty": "Az utóbbi 30 napban",
 	"page-views-last-day": "Az utóbbi 24 órában",
-	"page-views-custom": "Egyéni dátum tartomány",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Tartomény kezdete",
 	"page-views-custom-end": "Tartomány vége",
 	"page-views-custom-help": "Adj meg egy dátum tartományt a kívánt oldal megtekintések megtekintéséhez. Ha nem áll rendelkezésre dátumválasztó, az elfogadott formátum <code>ÉÉÉÉ-HH-NN</code>",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Regisztrált látogatások",
 	"graphs.page-views-guest": "Vendég látogatások",
 	"graphs.page-views-bot": "Bot látogatások",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Egyedi látogatók",
 	"graphs.registered-users": "Regisztrált felhasználók",
 	"graphs.guest-users": "Vendég Felhasználók",
@@ -94,5 +98,8 @@
 	"view-as-json": "View as JSON",
 	"expand-analytics": "Expand analytics",
 	"clear-search-history": "Clear Search History",
-	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
+	"search-term": "Feltétel",
+	"search-count": "Számláló",
+	"view-all": "Összes mutatása"
 }

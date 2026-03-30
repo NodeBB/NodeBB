@@ -7,10 +7,6 @@ define('forum/header/chat', [
 
 	chat.prepareDOM = function () {
 		const chatsToggleEl = $('[component="chat/dropdown"]');
-		if (!chatsToggleEl.length) {
-			return;
-		}
-
 		chatsToggleEl.on('show.bs.dropdown', (ev) => {
 			requireAndCall('loadChatsDropdown', $(ev.target).parent().find('[component="chat/list"]'));
 		});
@@ -42,6 +38,7 @@ define('forum/header/chat', [
 					return;
 				}
 				chatPage.markChatPageElUnread(data);
+				chatPage.updateTeaser(data.roomId, data.teaser);
 			}
 
 			let { count } = await api.get('/chats/unread');
@@ -51,8 +48,7 @@ define('forum/header/chat', [
 				.toggleClass('fa-comment-o', count <= 0);
 
 			const countText = count > 99 ? '99+' : count;
-			components.get('chat/icon')
-				.toggleClass('unread-count', count > 0)
+			chatIcon.toggleClass('unread-count', count > 0)
 				.attr('data-content', countText);
 			components.get('chat/count').toggleClass('hidden', count <= 0).text(countText);
 			hooks.fire('action:chat.updateCount', { count });

@@ -1,0 +1,39 @@
+post:
+  tags:
+    - posts
+  summary: Change owner of one or more posts
+  description: Change the owner of the posts identified by pids to the user uid.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - pids
+            - uid
+          properties:
+            pids:
+              type: array
+              items:
+                type: integer
+              description: Array of post IDs to change owner for
+              example: [2]
+            uid:
+              type: integer
+              description: Target user id
+              example: 1
+  responses:
+    '200':
+      description: Owner changed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '404':
+      description: Post not found

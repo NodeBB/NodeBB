@@ -1,0 +1,26 @@
+{
+	"navigation": "نیویگیشن",
+	"icon": "آئیکن:",
+	"change-icon": "تبدیل کریں",
+	"route": "راستہ:",
+	"tooltip": "ٹول ٹپ:",
+	"text": "متن:",
+	"text-class": "متن کلاس: <small>اختیاری</small>",
+	"class": "کلاس: <small>اختیاری</small>",
+	"id": "شناختی: <small>اختیاری</small>",
+
+	"properties": "خصوصیات:",
+	"show-to-groups": "گروپس کو دکھائیں:",
+	"open-new-window": "نئی ونڈو میں کھولیں",
+	"dropdown": "ڈراپ ڈاؤن مینو",
+	"dropdown-placeholder": "نیچے ڈراپ ڈاؤن مینو کے عناصر درج کریں۔ مثال: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;لنک 1&lt;/a&gt;&lt;/li&gt;",
+
+	"btn.delete": "حذف",
+	"btn.disable": "غیر فعال کریں",
+	"btn.enable": "فعال کریں",
+
+	"available-menu-items": "دستیاب مینو آئٹمز",
+	"custom-route": "مرضی کا راستہ",
+	"core": "بنیادی",
+	"plugin": "پلگ ان"
+}

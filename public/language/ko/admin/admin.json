@@ -1,18 +1,18 @@
 {
-	"alert.confirm-rebuild-and-restart": "NodeBB를 리빌드 후 재시작하시겠습니까?",
-	"alert.confirm-restart": "NodeBB를 다시 시작하시겠습니까?",
+	"alert.confirm-rebuild-and-restart": "NodeBB를 다시 빌드하고 재시작하시겠습니까?",
+	"alert.confirm-restart": "NodeBB를 재시작하시겠습니까?",
 
 	"acp-title": "%1 | NodeBB 관리자 제어판",
-	"settings-header-contents": "컨텐츠",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"settings-header-contents": "콘텐츠",
+	"changes-saved": "변경 내용 저장함",
+	"changes-saved-message": "NodeBB 구성에 대한 변경 사항을 저장했습니다.",
+	"changes-not-saved": "변경 내용 저장하지 않음",
+	"changes-not-saved-message": "NodeBB가 변경 사항을 저장하는 중에 문제가 발생했습니다. (%1)",
+	"save-changes": "변경 사항 저장",
+	"min": "최소:",
+	"max": "최대:",
+	"view": "보기",
+	"edit": "편집",
+	"add": "추가",
+	"select-icon": "아이콘 선택"
 }

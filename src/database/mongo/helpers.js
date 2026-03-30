@@ -1,7 +1,6 @@
 'use strict';
 
 const helpers = module.exports;
-const utils = require('../../utils');
 
 helpers.noop = function () {};
 
@@ -23,7 +22,9 @@ helpers.fieldToString = function (field) {
 		field = field.toString();
 	}
 	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
-	return field.replace(/\./g, '\uff0E');
+	// replace $ with \uff04 so we can use $ in document fields
+	return field.replace(/\./g, '\uff0E')
+		.replace(/\$/g, '\uFF04');
 };
 
 helpers.serializeData = function (data) {
@@ -48,20 +49,3 @@ helpers.valueToString = function (value) {
 	return String(value);
 };
 
-helpers.buildMatchQuery = function (match) {
-	let _match = match;
-	if (match.startsWith('*')) {
-		_match = _match.substring(1);
-	}
-	if (match.endsWith('*')) {
-		_match = _match.substring(0, _match.length - 1);
-	}
-	_match = utils.escapeRegexChars(_match);
-	if (!match.startsWith('*')) {
-		_match = `^${_match}`;
-	}
-	if (!match.endsWith('*')) {
-		_match += '$';
-	}
-	return _match;
-};

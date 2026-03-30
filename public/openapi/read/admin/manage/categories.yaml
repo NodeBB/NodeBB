@@ -25,8 +25,14 @@ get:
                           description: A category identifier
                         name:
                           type: string
+                        nickname:
+                          type: string
+                          description: A custom name given to a remote category for de-duplication purposes (not available to local categories.)
                         description:
                           type: string
+                        descriptionParsed:
+                          type: string
+                          description: A variable-length description of the category (usually displayed underneath the category name). Unlike `description`, this value here will have been run through any parsers installed on the forum (e.g. Markdown)
                         disabled:
                           type: number
                         icon:
@@ -48,6 +54,8 @@ get:
                           type: string
                         order:
                           type: number
+                        isLocal:
+                          type: boolean
                         subCategoriesPerPage:
                           type: number
                         children:

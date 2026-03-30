@@ -1,0 +1,10 @@
+{
+	"post-sort-option": "게시물 정렬 옵션, %1",
+	"topic-sort-option": "토픽 정렬 옵션, %1",
+	"user-avatar-for": "%1 유저 아바타",
+	"profile-page-for": "Profile page for user %1",
+	"user-watched-tags": "사용자 관심 태그",
+	"delete-upload-button": "업로드 버튼 삭제",
+	"group-page-link-for": "그룹 페이지 링크, %1",
+	"show-crossposts": "Show Cross-posts"
+}

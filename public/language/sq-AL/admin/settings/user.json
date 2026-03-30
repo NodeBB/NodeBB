@@ -64,6 +64,7 @@
 	"show-email": "Show email",
 	"show-fullname": "Show fullname",
 	"restrict-chat": "Only allow chat messages from users I follow",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Open outgoing links in new tab",
 	"topic-search": "Enable In-Topic Searching",
 	"update-url-with-post-index": "Update url with post index while browsing topics",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
 	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
 	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Allow guest handles",
+	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

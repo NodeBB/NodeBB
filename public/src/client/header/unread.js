@@ -95,16 +95,18 @@ define('forum/header/unread', ['hooks'], function (hooks) {
 		// harmony uses BS5 absolute positioned element
 		navLink.find('[component="navigation/count"]')
 			.toggleClass('hidden', count <= 0)
-			.text(count);
-
-		// persona mobile menu uses data-content
-		$('#mobile-menu [data-unread-url="' + url + '"]')
-			.attr('data-content', countText);
-
-		// harmony mobile unread badge, doesn't use data-content
-		$('[component="unread/count"][data-unread-url="' + url + '"]')
-			.toggleClass('hidden', count <= 0)
 			.text(countText);
+
+		if (navLink.length) {
+			// persona mobile menu uses data-content
+			$('#mobile-menu [data-unread-url="' + url + '"]')
+				.attr('data-content', countText);
+
+			// harmony mobile unread badge, doesn't use data-content
+			$('[component="unread/count"][data-unread-url="' + url + '"]')
+				.toggleClass('hidden', count <= 0)
+				.text(countText);
+		}
 
 		hooks.fire('action:unread.updateCount', { url, count });
 	}

@@ -5,13 +5,15 @@
 	"none-installed": "Վիջեթներ չեն գտնվել: Ակտիվացրեք վիջեթի հիմնական հավելվածը plugins կառավարման վահանակում:",
 	"clone-from": "Կլոնավորել վիջեթներ-ից",
 	"containers.available": "Առկա Containers",
-	"containers.explanation": "Drag and drop on top of any widget",
+	"containers.explanation": "Քաշեք և թողեք ցանկացած վիջեթի վերևում",
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.card": "Քարտ",
 	"container.card-header": "Քարտի վերնագիր",
 	"container.card-body": "Քարտի կառուցվածք",
+	"container.title": "Title",
+	"container.body": "Body",
 	"container.alert": "Զգուշացում",
 
 	"alert.confirm-delete": "Վստա՞հ եք, որ ցանկանում եք ջնջել այս վիջեթը:",
@@ -30,6 +32,6 @@
 	"start-date": "Սկիզբ",
 	"end-date": "Ավարտ",
 	"hide-on-mobile": "Թաքցնել բջջայինի վրա",
-	"hide-drafts": "Hide drafts",
-	"show-drafts": "Show drafts"
+	"hide-drafts": "Թաքցնել սևագրերը",
+	"show-drafts": "Ցույց տալ սևագրերը"
 }

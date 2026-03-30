@@ -1,0 +1,39 @@
+put:
+  summary: Change owner of a post
+  description: Change the owner (uid) of a post identified by pid.
+  tags:
+    - posts
+  parameters:
+    - name: pid
+      in: path
+      description: Post id
+      required: true
+      schema:
+        type: integer
+      example: 2
+  requestBody:
+    description: New owner payload
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - uid
+          properties:
+            uid:
+              type: integer
+              description: User id of the new owner
+              example: 2
+  responses:
+    '200':
+      description: Owner changed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

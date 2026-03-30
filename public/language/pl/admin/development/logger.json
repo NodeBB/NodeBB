@@ -1,10 +1,10 @@
 {
-	"logger": "Logger",
+	"logger": "Dziennik",
 	"logger-settings": "Ustawienia dziennika",
-	"description": "Poprzez zaznaczenie tych pól wyboru otrzymasz na twój terminal. Zamiast tego jeśli podasz ścieżkę, logi zostaną tam zapisane. Logowanie HTTP jest przydatne dla zbierania statystyk o tym kto, kiedy i co czytali na twoim forum. W dodatku do logowania żądań HTTP, możemy też zapisywać zdarzenia socket.io. Logowanie Socket.io, w powiązaniu z monitorowaniem redis-cli, może być bardzo przydatne podczas poznawania mechanizmów wewnętrznych NodeBB.",
+	"description": "Poprzez zaznaczenie tych pól wyboru otrzymasz logi na twój terminal. Zamiast tego jeśli podasz ścieżkę, logi zostaną tam zapisane. Logowanie HTTP jest przydatne dla zbierania statystyk o tym kto, kiedy i co czytał na forum. W dodatku do logowania żądań HTTP, możemy też zapisywać zdarzenia socket.io. Logowanie Socket.io, w powiązaniu z monitorowaniem redis-cli, może być bardzo przydatne podczas poznawania mechanizmów wewnętrznych NodeBB.",
 	"explanation": "Zaznacz/odznacz aby właczyc albo wyłączyć dziennik. Restart nie jest wymagany.",
 	"enable-http": "Zapisuj wydarzenia HTTP",
-	"enable-socket": "Zapisuj wydarzenia Socket.io",
+	"enable-socket": "Zapisuj zdarzenia socket.io",
 	"file-path": "Ścieżka dziennika",
 	"file-path-placeholder": "/sciezka/do/pliku.log ::: pozostaw pusty aby zapisywac do terminala",
 

@@ -1,12 +1,12 @@
 {
 	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"enable": "Erota aiheet ja viestit sivuille päättymättömän vierityksen sijaan",
 	"posts": "Post Pagination",
-	"topics": "Topic Pagination",
+	"topics": "Aiheiden sivutus",
 	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
+	"max-posts-per-page": "Viestien sivukohtainen enimmäismäärä",
 	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
+	"topics-per-page": "Aiheita sivulla",
+	"max-topics-per-page": "Aiheiden sivukohtainen enimmäismäärä",
 	"categories-per-page": "Categories per page"
 }

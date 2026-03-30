@@ -1,0 +1,18 @@
+{
+	"skins": "Utsjånad",
+	"bootswatch-skins": "Bootswatch-utsjånad",
+	"custom-skins": "Eige utsjånad",
+	"add-skin": "Legg til utsjånad",
+	"save-custom-skins": "Lagre eige utsjånad",
+	"save-custom-skins-success": "Eige utsjånad lagra med suksess",
+	"custom-skin-name": "Namn på eige utsjånad",
+	"custom-skin-variables": "Variablar for eige utsjånad",
+	"loading": "Laster",
+	"homepage": "Heimside",
+	"select-skin": "Vel utsjånad",
+	"revert-skin": "Tilbakestill utsjånad",
+	"current-skin": "Gjeldande utsjånad",
+	"skin-updated": "Utsjånad oppdatert",
+	"applied-success": "%1 var lagt til med suksess",
+	"revert-success": "Tilbakestilling til standard farger"
+}

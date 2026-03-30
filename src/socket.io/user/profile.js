@@ -41,8 +41,16 @@ module.exports = function (SocketUser) {
 
 	SocketUser.toggleBlock = async function (socket, data) {
 		const isBlocked = await user.blocks.is(data.blockeeUid, data.blockerUid);
-		await user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, isBlocked ? 'unblock' : 'block');
-		await user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid);
+		const { action, blockerUid, blockeeUid } = data;
+		if (action !== 'block' && action !== 'unblock') {
+			throw new Error('[[error:unknow-block-action]]');
+		}
+		await user.blocks.can(socket.uid, blockerUid, blockeeUid, action);
+		if (data.action === 'block') {
+			await user.blocks.add(blockeeUid, blockerUid);
+		} else if (data.action === 'unblock') {
+			await user.blocks.remove(blockeeUid, blockerUid);
+		}
 		return !isBlocked;
 	};
 };

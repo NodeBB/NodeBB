@@ -1,5 +1,3 @@
-/* eslint-disable import/first */
-
 export * from 'ace-builds';
 
 // only import the modes and theme we use
@@ -9,8 +7,7 @@ import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-twilight';
 
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable import/no-unresolved */
+
 import htmlWorkerUrl from 'file-loader!ace-builds/src-noconflict/worker-html';
 import javascriptWorkerUrl from 'file-loader!ace-builds/src-noconflict/worker-javascript';
 import cssWorkerUrl from 'file-loader!ace-builds/src-noconflict/worker-css';

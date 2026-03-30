@@ -41,6 +41,36 @@ describe('Translator shim', () => {
 			assert.strictEqual(t, 'secret');
 		});
 	});
+
+	describe('translateKeys', () => {
+		it('should translate each key in array', async () => {
+			const translated = await shim.translateKeys(['[[global:home]]', '[[global:search]]'], 'en-GB');
+			assert.deepStrictEqual(translated, ['Home', 'Search']);
+		});
+
+		it('should translate each key in array using a callback', (done) => {
+			shim.translateKeys(['[[global:save]]', '[[global:close]]'], 'en-GB', (translated) => {
+				assert.deepStrictEqual(translated, ['Save', 'Close']);
+				done();
+			});
+		});
+	});
+
+	it('should load translations for language', (done) => {
+		shim.load('en-GB', 'global', (translations) => {
+			assert(translations);
+			assert(translations['header.profile']);
+			done();
+		});
+	});
+
+	it('should get translations for language', (done) => {
+		shim.getTranslations('en-GB', 'global', (translations) => {
+			assert(translations);
+			assert(translations['header.profile']);
+			done();
+		});
+	});
 });
 
 describe('new Translator(language)', () => {
@@ -96,7 +126,7 @@ describe('new Translator(language)', () => {
 			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:user-posted-to, [[global:guest]], My Topic]]').then((translated) => {
-				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>My Topic</strong>');
+				assert.strictEqual(translated, '<strong>Guest</strong> posted a reply in <strong>My Topic</strong>');
 			});
 		});
 
@@ -104,7 +134,7 @@ describe('new Translator(language)', () => {
 			const translator = Translator.create('en-GB');
 
 			return translator.translate('[[notifications:user-posted-to, [[global:guest]], [[global:guest]]]]').then((translated) => {
-				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>Guest</strong>');
+				assert.strictEqual(translated, '<strong>Guest</strong> posted a reply in <strong>Guest</strong>');
 			});
 		});
 
@@ -148,7 +178,7 @@ describe('new Translator(language)', () => {
 
 			const key = '[[notifications:upvoted-your-post-in, test1, error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade]]';
 			return translator.translate(key).then((translated) => {
-				assert.strictEqual(translated, '<strong>test1</strong> has upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>.');
+				assert.strictEqual(translated, '<strong>test1</strong> upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>');
 			});
 		});
 
@@ -296,7 +326,7 @@ describe('Translator static methods', () => {
 			done();
 		});
 	});
-	describe('.escape', () => {
+	describe('.escape/.unescape', () => {
 		it('should escape translation patterns within text', (done) => {
 			assert.strictEqual(
 				Translator.escape('some nice text [[global:home]] here'),
@@ -304,17 +334,35 @@ describe('Translator static methods', () => {
 			);
 			done();
 		});
-	});
 
-	describe('.unescape', () => {
-		it('should unescape escaped translation patterns within text', (done) => {
+		it('should escape all translation patterns within text', (done) => {
 			assert.strictEqual(
-				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
-				'some nice text [[global:home]] here'
+				Translator.escape('some nice text [[global:home]] here and [[global:search]] there'),
+				'some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here and &lsqb;&lsqb;global:search&rsqb;&rsqb; there'
 			);
+			done();
+		});
+
+		it('should not escape markdown links', (done) => {
+			assert.strictEqual(
+				Translator.escape('[link text [test]](https://example.org)'),
+				'[link text [test]](https://example.org)'
+			);
+			done();
+		});
+
+		it('should unescape escaped translation patterns within text', (done) => {
 			assert.strictEqual(
 				Translator.unescape('some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'),
 				'some nice text [[global:home]] here'
+			);
+			done();
+		});
+
+		it('should not unescape markdown links', (done) => {
+			assert.strictEqual(
+				Translator.unescape('&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'),
+				'&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'
 			);
 			done();
 		});

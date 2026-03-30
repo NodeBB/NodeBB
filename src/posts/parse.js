@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const url = require('url');
 const winston = require('winston');
 const sanitize = require('sanitize-html');
 const _ = require('lodash');
@@ -10,6 +9,8 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const utils = require('../utils');
+const postCache = require('./cache');
+const devMode = process.env.NODE_ENV === 'development';
 
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
@@ -21,51 +22,57 @@ let sanitizeConfig = {
 		...sanitize.defaults.allowedAttributes,
 		a: ['href', 'name', 'hreflang', 'media', 'rel', 'target', 'type'],
 		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
-		iframe: ['height', 'name', 'src', 'width'],
-		video: ['autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
+		iframe: ['height', 'name', 'src', 'width', 'allow', 'frameborder'],
+		video: ['autoplay', 'playsinline', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
 		audio: ['autoplay', 'controls', 'loop', 'muted', 'preload', 'src'],
 		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
 		embed: ['height', 'src', 'type', 'width'],
 	},
-	globalAttributes: ['accesskey', 'class', 'contenteditable', 'dir',
+	nonBooleanAttributes: ['accesskey', 'class', 'contenteditable', 'dir',
 		'draggable', 'dropzone', 'hidden', 'id', 'lang', 'spellcheck', 'style',
-		'tabindex', 'title', 'translate', 'aria-expanded', 'data-*',
+		'tabindex', 'title', 'translate', 'aria-*', 'data-*',
 	],
-	allowedClasses: {
-		...sanitize.defaults.allowedClasses,
-	},
 };
+const allowedTypes = new Set(['default', 'plaintext', 'activitypub.note', 'activitypub.article', 'markdown']);
 
 module.exports = function (Posts) {
-	Posts.urlRegex = {
-		regex: /href="([^"]+)"/g,
-		length: 6,
-	};
+	Posts.urlRegex = /href="([^"]+)"/g;
+	Posts.imgRegex = /src="([^"]+)"/g;
+	Posts.mdImageUrlRegex = /\[.+?\]\(([^\\)]+)\)/g;
 
-	Posts.imgRegex = {
-		regex: /src="([^"]+)"/g,
-		length: 5,
-	};
-
-	Posts.parsePost = async function (postData) {
+	Posts.parsePost = async function (postData, type) {
 		if (!postData) {
 			return postData;
 		}
-		postData.content = String(postData.content || '');
-		const cache = require('./cache');
-		const pid = String(postData.pid);
-		const cachedContent = cache.get(pid);
+
+		if (!type || !allowedTypes.has(type)) {
+			type = 'default';
+		}
+		postData.content = String(postData.sourceContent || postData.content || '');
+		const cache = postCache.getOrCreate();
+		const cacheKey = `${String(postData.pid)}|${type}`;
+		const cachedContent = cache.get(cacheKey);
+
 		if (postData.pid && cachedContent !== undefined) {
 			postData.content = cachedContent;
 			return postData;
 		}
 
-		const data = await plugins.hooks.fire('filter:parse.post', { postData: postData });
-		data.postData.content = translator.escape(data.postData.content);
-		if (data.postData.pid) {
-			cache.set(pid, data.postData.content);
+		if (!type.startsWith('activitypub.')) {
+			postData.content = postData.content.replace(meta.config.activitypubBreakString, '');
 		}
-		return data.postData;
+		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
+		postData.content = translator.escape(postData.content);
+		if (postData.pid) {
+			cache.set(cacheKey, postData.content);
+		}
+
+		return postData;
+	};
+
+	Posts.clearCachedPost = function (pid) {
+		const cache = require('./cache');
+		cache.del(Array.from(allowedTypes).map(type => `${String(pid)}|${type}`));
 	};
 
 	Posts.parseSignature = async function (userData, uid) {
@@ -79,30 +86,26 @@ module.exports = function (Posts) {
 			return content;
 		}
 		let parsed;
-		let current = regex.regex.exec(content);
+		let current = regex.exec(content);
 		let absolute;
 		while (current !== null) {
 			if (current[1]) {
 				try {
-					parsed = url.parse(current[1]);
-					if (!parsed.protocol) {
-						if (current[1].startsWith('/')) {
-							// Internal link
-							absolute = nconf.get('base_url') + current[1];
-						} else {
-							// External link
-							absolute = `//${current[1]}`;
-						}
-
-						content = content.slice(0, current.index + regex.length) +
+					parsed = new URL(current[1], nconf.get('url'));
+					absolute = parsed.toString();
+					if (absolute !== current[1]) {
+						const offset = current[0].indexOf(current[1]);
+						content = content.slice(0, current.index + offset) +
 						absolute +
-						content.slice(current.index + regex.length + current[1].length);
+						content.slice(current.index + offset + current[1].length);
 					}
 				} catch (err) {
-					winston.verbose(err.messsage);
+					if (devMode) {
+						winston.verbose(err.messsage);
+					}
 				}
 			}
-			current = regex.regex.exec(content);
+			current = regex.exec(content);
 		}
 
 		return content;
@@ -116,12 +119,16 @@ module.exports = function (Posts) {
 		});
 	};
 
+	Posts.sanitizePlaintext = content => sanitize(content, {
+		allowedTags: [],
+	});
+
 	Posts.configureSanitize = async () => {
 		// Each allowed tags should have some common global attributes...
 		sanitizeConfig.allowedTags.forEach((tag) => {
 			sanitizeConfig.allowedAttributes[tag] = _.union(
 				sanitizeConfig.allowedAttributes[tag],
-				sanitizeConfig.globalAttributes
+				sanitizeConfig.nonBooleanAttributes
 			);
 		});
 
@@ -133,7 +140,7 @@ module.exports = function (Posts) {
 		plugins.hooks.register('core', {
 			hook: 'filter:parse.post',
 			method: async (data) => {
-				data.postData.content = Posts.sanitize(data.postData.content);
+				data.postData.content = Posts[data.type !== 'plaintext' ? 'sanitize' : 'sanitizePlaintext'](data.postData.content);
 				return data;
 			},
 		});

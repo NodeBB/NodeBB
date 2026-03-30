@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
@@ -14,6 +13,8 @@ const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 const blacklist = require('../meta/blacklist');
+const als = require('../als');
+const apiHelpers = require('../api/helpers');
 
 const Namespaces = Object.create(null);
 
@@ -71,7 +72,14 @@ Sockets.init = async function (server) {
 		winston.info(`[socket.io] Restricting access to origin: ${origins}`);
 	}
 
-	io.listen(server, opts);
+	const eio = io.listen(server, opts);
+	if (process.env.NODE_ENV === 'development') {
+		if (eio?.engine?.on) {
+			eio.engine.on('connection_error', (err) => {
+				winston.error(`[socket.io] Connection error: [${err.code}]-${err.message}`);
+			});
+		}
+	}
 	Sockets.server = io;
 };
 
@@ -88,8 +96,7 @@ function onConnection(socket) {
 	onConnect(socket);
 	socket.onAny((event, ...args) => {
 		const payload = { event: event, ...deserializePayload(args) };
-		const als = require('../als');
-		const apiHelpers = require('../api/helpers');
+
 		als.run({
 			uid: socket.uid,
 			req: apiHelpers.buildReqObject(socket, payload),
@@ -131,10 +138,10 @@ async function onConnect(socket) {
 		return;
 	}
 
-	if (socket.uid) {
+	if (socket.uid > 0) {
 		socket.join(`uid_${socket.uid}`);
 		socket.join('online_users');
-	} else {
+	} else if (socket.uid === 0) {
 		socket.join('online_guests');
 	}
 
@@ -241,10 +248,6 @@ async function checkMaintenance(socket) {
 	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
 }
 
-const getSessionAsync = util.promisify(
-	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
-);
-
 async function validateSession(socket, errorMsg) {
 	const req = socket.request;
 	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
@@ -256,7 +259,7 @@ async function validateSession(socket, errorMsg) {
 		return;
 	}
 
-	const sessionData = await getSessionAsync(sessionId);
+	const sessionData = await db.sessionStoreGet(sessionId);
 	if (!sessionData) {
 		throw new Error(errorMsg);
 	}
@@ -282,7 +285,7 @@ async function authorize(request, callback) {
 		request: request,
 	});
 
-	const sessionData = await getSessionAsync(sessionId);
+	const sessionData = await db.sessionStoreGet(sessionId);
 	request.session = sessionData;
 	let uid = 0;
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
@@ -314,16 +317,16 @@ Sockets.getUidsInRoom = async function (room) {
 		return [];
 	}
 	const ioRoom = Sockets.server.in(room);
-	const uids = [];
+	const uids = new Set();
 	if (ioRoom) {
 		const sockets = await ioRoom.fetchSockets();
 		for (const s of sockets) {
 			if (s && s.data && s.data.uid > 0) {
-				uids.push(s.data.uid);
+				uids.add(s.data.uid);
 			}
 		}
 	}
-	return _.uniq(uids);
+	return [...uids];
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {

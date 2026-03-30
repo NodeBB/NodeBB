@@ -1,9 +1,9 @@
-<div id="crop-picture-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="crop-picture" aria-hidden="true">
+<div id="crop-picture-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="crop-picture" aria-labelledby="crop-picture">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h3 id="crop-picture">[[user:crop-picture]]</h3>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
 			</div>
 			<div class="modal-body">
 				<div id="upload-progress-box" class="progress hide">
@@ -23,14 +23,14 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary flip" data-option="-1" data-method="scaleX"><i class="fa fa-arrows-h"></i></button>
-					<button class="btn btn-primary flip" data-option="1" data-method="scaleY"><i class="fa fa-arrows-v"></i></button>
+					<button class="btn btn-primary flip" data-option="-1" data-method="scaleY"><i class="fa fa-arrows-v"></i></button>
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary reset"><i class="fa fa-refresh"></i></button>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-hidden="true">Close</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
 				<button class="btn btn-primary upload-btn {{{ if !allowSkippingCrop }}}hidden{{{ end }}}">[[user:upload-picture]]</button>
 				<button class="btn btn-primary crop-btn">[[user:upload-cropped-picture]]</button>
 			</div>

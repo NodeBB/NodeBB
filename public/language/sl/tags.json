@@ -3,7 +3,7 @@
     "no-tag-topics": "Ni novih tem s to oznako.",
     "no-tags-found": "No tags found",
     "tags": "Oznake",
-    "enter-tags-here": "Tu vpišite oznake. Dovoljeno število znakov: najmanj %1 in največ %2.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Vpišite oznake...",
     "no-tags": "Oznak še ni.",
     "select-tags": "Select Tags",

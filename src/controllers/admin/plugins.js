@@ -17,6 +17,7 @@ pluginsController.get = async function (req, res) {
 	const compatiblePkgNames = compatible.map(pkgData => pkgData.name);
 	const installedPlugins = compatible.filter(plugin => plugin && (plugin.installed || (nconf.get('plugins:active') && plugin.active)));
 	const activePlugins = all.filter(plugin => plugin && (plugin.installed || nconf.get('plugins:active')) && plugin.active);
+	const inactivePlugins = all.filter(plugin => plugin && (plugin.installed || nconf.get('plugins:active')) && !plugin.active);
 
 	const trendingScores = trending.reduce((memo, cur) => {
 		memo[cur.label] = cur.value;
@@ -30,23 +31,23 @@ pluginsController.get = async function (req, res) {
 			return plugin;
 		});
 
+	const upgrade = compatible.filter(p => p.installed && p.outdated);
 	res.render('admin/extend/plugins', {
 		installed: installedPlugins,
 		installedCount: installedPlugins.length,
+		active: activePlugins,
 		activeCount: activePlugins.length,
-		inactiveCount: Math.max(0, installedPlugins.length - activePlugins.length),
+		inactive: inactivePlugins,
+		inactiveCount: inactivePlugins.length,
 		canChangeState: !nconf.get('plugins:active'),
-		upgradeCount: compatible.reduce((count, current) => {
-			if (current.installed && current.outdated) {
-				count += 1;
-			}
-			return count;
-		}, 0),
+		upgrade: upgrade,
+		upgradeCount: upgrade.length,
 		download: compatible.filter(plugin => !plugin.installed),
 		incompatible: all.filter(plugin => !compatiblePkgNames.includes(plugin.name)),
 		trending: trendingPlugins,
 		submitPluginUsage: meta.config.submitPluginUsage,
 		version: nconf.get('version'),
+		isStarterPlan: nconf.get('saas_plan') === 'starter',
 	});
 };
 

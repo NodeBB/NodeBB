@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "All groups",
     "groups": "Grupas",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Skatīt grupas",
     "owner": "Grupas īpašnieks",
     "new-group": "Izveidot jaunu grupu",

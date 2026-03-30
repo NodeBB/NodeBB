@@ -26,7 +26,8 @@ define('forum/account/sessions', ['forum/account/header', 'components', 'api', '
 							window.location.href = config.relative_path + '/login?error=' + errorObj.title;
 						}
 						alerts.error(errorObj.title);
-					} catch (e) {
+					} catch (err) {
+						console.error(err);
 						alerts.error('[[error:invalid-data]]');
 					}
 				});

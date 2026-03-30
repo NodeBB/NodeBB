@@ -1,13 +1,13 @@
 {
-    "manage-admins-and-mods": "Manage Admins & Mods",
+    "manage-admins-and-mods": "관리자 & 중재자 관리",
     "administrators": "관리자",
-    "global-moderators": "통합 조정자",
-    "moderators": "Moderators",
-    "no-global-moderators": "통합 조정자 없음",
-    "no-sub-categories": "No subcategories",
-    "view-children": "View children (%1)",
-    "no-moderators": "조정자 없음",
+    "global-moderators": "전역 중재자",
+    "moderators": "중재자",
+    "no-global-moderators": "전역 중재자 없음",
+    "no-sub-categories": "하위 카테고리 없음",
+    "view-children": "하위 항목 보기 (%1)",
+    "no-moderators": "중재자 없음",
     "add-administrator": "관리자 추가",
-    "add-global-moderator": "통합 조정자 추가",
-    "add-moderator": "조정자 추가"
+    "add-global-moderator": "전역 중재자 추가",
+    "add-moderator": "중재자 추가"
 }

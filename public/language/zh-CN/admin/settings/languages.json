@@ -1,6 +1,0 @@
-{
-	"language-settings": "语言设置",
-	"description": "默认语言会决定所有用户的语言设定。 <br />单一用户可以各自在帐户设置中覆盖此项设定。",
-	"default-language": "默认语言",
-	"auto-detect": "自动检测游客的语言设置"
-}

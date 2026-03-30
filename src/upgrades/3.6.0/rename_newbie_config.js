@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 'use strict';
 
 const db = require('../../database');

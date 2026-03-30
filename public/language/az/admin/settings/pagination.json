@@ -1,0 +1,12 @@
+{
+	"pagination": "Səhifələmə parametrləri",
+	"enable": "Sonsuz sürüşdürmə əvəzinə mövzuları və yazıları səhifələşdirin",
+	"posts": "Yazıların səhifələndirilməsi",
+	"topics": "Mövzunun səhifələndirilməsi",
+	"posts-per-page": "Səhifə üzrə yazılar",
+	"max-posts-per-page": "Səhifə başına maksimum yazı",
+	"categories": "Kateqoriya səhifələmə",
+	"topics-per-page": "Səhifə üzrə mövzular",
+	"max-topics-per-page": "Səhifə başına maksimum mövzular",
+	"categories-per-page": "Səhifə başına kateqoriyalar"
+}

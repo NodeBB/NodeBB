@@ -3,7 +3,7 @@
     "no-tag-topics": "Тем с такой меткой сейчас нет.",
     "no-tags-found": "No tags found",
     "tags": "Метки",
-    "enter-tags-here": "Добавьте метки здесь, от %1 до %2 символов каждая.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Введите метки...",
     "no-tags": "Меток пока нет.",
     "select-tags": "Выберите метки",

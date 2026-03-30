@@ -31,11 +31,36 @@ utils.generateUUID = function () {
 	return rnd.join('-');
 };
 
+utils.secureRandom = function (low, high) {
+	if (low > high) {
+		throw new Error("The 'low' parameter must be less than or equal to the 'high' parameter.");
+	}
+	const randomBuffer = crypto.randomBytes(4);
+	const randomInt = randomBuffer.readUInt32BE(0);
+	const range = high - low + 1;
+	return low + (randomInt % range);
+};
+
 utils.getSass = function () {
+	// https://github.com/NodeBB/NodeBB/issues/11606
+	function isMusl() {
+		if (process.platform !== 'linux') {
+			return false;
+		}
+
+		try {
+			return !process.report.getReport().header.glibcVersionRuntime;
+		} catch {
+			return true;
+		}
+	}
+	if (process.platform === 'freebsd' || isMusl()) {
+		return require('sass');
+	}
 	try {
-		const sass = require('sass-embedded');
-		return sass;
-	} catch (_err) {
+		return require('sass-embedded');
+	} catch (err) {
+		console.error(err.message);
 		return require('sass');
 	}
 };

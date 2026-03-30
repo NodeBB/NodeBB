@@ -55,7 +55,7 @@ put:
                     type: array
                     description: A list of cids that have had their watch states modified.
                     items:
-                      type: number
+                      type: string
 delete:
   tags:
     - categories
@@ -99,4 +99,4 @@ delete:
                     type: array
                     description: A list of cids that have had their watch states modified.
                     items:
-                      type: number
+                      type: string

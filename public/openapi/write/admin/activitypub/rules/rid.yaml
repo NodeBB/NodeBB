@@ -1,0 +1,25 @@
+delete:
+  tags:
+    - admin
+  summary: delete auto-categorization rule
+  description: This operation deletes a previously set-up auto-categorization rule
+  parameters:
+    - in: path
+      name: rid
+      schema:
+        type: string
+      required: true
+      description: a valid rule ID
+      example: 4eb506f8-a173-4693-a41b-e23604bc973a
+  responses:
+    '200':
+      description: rule successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/admin/rules.yaml#/RulesArray

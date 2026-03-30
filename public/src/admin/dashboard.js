@@ -18,6 +18,8 @@ import * as alerts from '../modules/alerts';
 import * as translator from '../modules/translator';
 import { formattedNumber } from '../modules/helpers';
 
+import { setupFullscreen } from './modules/fullscreen';
+
 Chart.register(
 	LineController,
 	DoughnutController,
@@ -64,7 +66,6 @@ $(window).on('action:ajaxify.start', function () {
 	usedTopicColors.length = 0;
 });
 
-// eslint-disable-next-line import/prefer-default-export
 export function init() {
 	app.enterRoom('admin');
 
@@ -76,7 +77,7 @@ export function init() {
 		socket.emit('admin.rooms.getAll', updateRoomUsage);
 		initiateDashboard();
 	});
-	setupFullscreen();
+	setupFullscreen($('#expand-analytics'), $('#analytics-panel'));
 }
 
 function updateRoomUsage(err, data) {
@@ -90,28 +91,14 @@ function updateRoomUsage(err, data) {
 
 	graphData.rooms = data;
 
-	const html = '<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.onlineRegisteredCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.users]]</div>' +
-				'</div>' +
-				'<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.onlineGuestCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.guests]]</div>' +
-				'</div>' +
-				'<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.total]]</div>' +
-				'</div>' +
-				'<div class="text-center">' +
-					'<span class="fs-5">' + formattedNumber(data.socketCount) + '</span>' +
-					'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.connections]]</div>' +
-				'</div>';
-
 	updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 	updatePresenceGraph(data.users);
 	updateTopicsGraph(data.topTenTopics);
 
-	$('#active-users').translateHtml(html);
+	$('#active-users-loggedin').text(formattedNumber(data.onlineRegisteredCount));
+	$('#active-users-guests').text(formattedNumber(data.onlineGuestCount));
+	$('#active-users-total').text(formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount));
+	$('#active-users-connections').text(formattedNumber(data.socketCount));
 }
 
 const graphs = {
@@ -174,27 +161,33 @@ function setupGraphs(callback) {
 		Chart.defaults.plugins.tooltip.enabled = false;
 	}
 
-	const t = translator.Translator.create();
-	Promise.all([
-		t.translateKey('admin/dashboard:graphs.page-views', []),
-		t.translateKey('admin/dashboard:graphs.page-views-registered', []),
-		t.translateKey('admin/dashboard:graphs.page-views-guest', []),
-		t.translateKey('admin/dashboard:graphs.page-views-bot', []),
-		t.translateKey('admin/dashboard:graphs.unique-visitors', []),
-		t.translateKey('admin/dashboard:graphs.registered-users', []),
-		t.translateKey('admin/dashboard:graphs.guest-users', []),
-		t.translateKey('admin/dashboard:on-categories', []),
-		t.translateKey('admin/dashboard:reading-posts', []),
-		t.translateKey('admin/dashboard:browsing-topics', []),
-		t.translateKey('admin/dashboard:recent', []),
-		t.translateKey('admin/dashboard:unread', []),
-	]).then(function (translations) {
+	const keys = [
+		'[[admin/dashboard:graphs.page-views]]',
+		'[[admin/dashboard:graphs.page-views-registered]]',
+		'[[admin/dashboard:graphs.page-views-guest]]',
+		'[[admin/dashboard:graphs.page-views-bot]]',
+		'[[admin/dashboard:graphs.page-views-ap]]',
+		'[[admin/dashboard:graphs.unique-visitors]]',
+		'[[admin/dashboard:graphs.registered-users]]',
+		'[[admin/dashboard:graphs.guest-users]]',
+		'[[admin/dashboard:on-categories]]',
+		'[[admin/dashboard:reading-posts]]',
+		'[[admin/dashboard:browsing-topics]]',
+		'[[admin/dashboard:recent]]',
+		'[[admin/dashboard:unread]]',
+	];
+	const graphLabels = {};
+	translator.translateKeys(keys, config.acpLang).then(function (translations) {
+		keys.forEach(function (key, index) {
+			graphLabels[key.split(':')[1].slice(0, -2)] = translations[index];
+		});
+
 		const tension = 0.25;
 		const data = {
 			labels: trafficLabels,
 			datasets: [
 				{
-					label: translations[0],
+					label: graphLabels['graphs.page-views'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: 'rgba(220,220,220,0.2)',
@@ -206,7 +199,7 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[1],
+					label: graphLabels['graphs.page-views-registered'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: '#ab464233',
@@ -218,7 +211,7 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[2],
+					label: graphLabels['graphs.page-views-guest'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: '#ba8baf33',
@@ -230,7 +223,7 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[3],
+					label: graphLabels['graphs.page-views-bot'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: '#f7ca8833',
@@ -242,7 +235,19 @@ function setupGraphs(callback) {
 					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				},
 				{
-					label: translations[4],
+					label: graphLabels['graphs.page-views-ap'],
+					fill: 'origin',
+					tension: tension,
+					backgroundColor: 'rgba(151,187,205,0.2)',
+					borderColor: 'rgba(110, 187, 132, 1)',
+					pointBackgroundColor: 'rgba(110, 187, 132, 1)',
+					pointHoverBackgroundColor: 'rgba(110, 187, 132, 1)',
+					pointBorderColor: '#fff',
+					pointHoverBorderColor: 'rgba(110, 187, 132, 1)',
+					data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+				},
+				{
+					label: graphLabels['graphs.unique-visitors'],
 					fill: 'origin',
 					tension: tension,
 					backgroundColor: 'rgba(151,187,205,0.2)',
@@ -262,32 +267,26 @@ function setupGraphs(callback) {
 		data.datasets[1].yAxisID = 'left-y-axis';
 		data.datasets[2].yAxisID = 'left-y-axis';
 		data.datasets[3].yAxisID = 'left-y-axis';
-		data.datasets[4].yAxisID = 'right-y-axis';
+		data.datasets[4].yAxisID = 'left-y-axis';
+		data.datasets[5].yAxisID = 'left-y-axis';
 
 		graphs.traffic = new Chart(trafficCtx, {
 			type: 'line',
 			data: data,
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
 				scales: {
 					'left-y-axis': {
 						position: 'left',
 						type: 'linear',
 						title: {
-							display: true,
-							text: translations[0],
+							display: false,
+							text: graphLabels['graphs.page-views'],
 						},
 						beginAtZero: true,
 					},
-					'right-y-axis': {
-						position: 'right',
-						type: 'linear',
-						title: {
-							display: true,
-							text: translations[4],
-						},
-						beginAtZero: true,
-					},
+
 				},
 				plugins: {
 					legend: {
@@ -312,7 +311,7 @@ function setupGraphs(callback) {
 		graphs.registered = new Chart(registeredCtx, {
 			type: 'doughnut',
 			data: {
-				labels: translations.slice(5, 7),
+				labels: [graphLabels['graphs.registered-users'], graphLabels['graphs.guest-users']],
 				datasets: [{
 					data: [1, 1],
 					backgroundColor: ['#F7464A', '#46BFBD'],
@@ -325,7 +324,9 @@ function setupGraphs(callback) {
 		graphs.presence = new Chart(presenceCtx, {
 			type: 'doughnut',
 			data: {
-				labels: translations.slice(7, 12),
+				labels: [
+					graphLabels['on-categories'], graphLabels['reading-posts'], graphLabels['browsing-topics'], graphLabels['recent'], graphLabels['unread'],
+				],
 				datasets: [{
 					data: [1, 1, 1, 1, 1],
 					backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#9FB194'],
@@ -350,25 +351,26 @@ function setupGraphs(callback) {
 
 		updateTrafficGraph();
 
-		$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
+		$('[data-action="updateGraph"]').on('change', function () {
+			let amount = $(this).val();
+			if (amount === 'custom') {
+				throwCustomRangeSelector($(this));
+				return;
+			}
+			const units = amount === '1' ? 'hours' : 'days';
 			let until = new Date();
-			const amount = $(this).attr('data-amount');
-			if ($(this).attr('data-units') === 'days') {
+			if (amount !== '1') {
 				until.setHours(0, 0, 0, 0);
 			}
+			if (amount === '1') { // change 1 day to 24 hours
+				amount = '24';
+			}
 			until = until.getTime();
-			updateTrafficGraph($(this).attr('data-units'), until, amount);
-
-			require(['translator'], function (translator) {
-				translator.translate('[[admin/dashboard:page-views-custom]]', function (translated) {
-					$('[data-action="updateGraph"][data-units="custom"]').text(translated);
-				});
-			});
+			updateTrafficGraph(units, until, amount);
+			$('[data-action="updateGraph"] option[value="range"]').addClass('hidden');
 		});
 
-		$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
-			const targetEl = $(this);
-
+		function throwCustomRangeSelector(targetEl) {
 			Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
 				const modal = bootbox.dialog({
 					title: '[[admin/dashboard:page-views-custom]]',
@@ -416,10 +418,11 @@ function setupGraphs(callback) {
 					// Update "custom range" label
 					targetEl.attr('data-startRange', formData.startRange);
 					targetEl.attr('data-endRange', formData.endRange);
-					targetEl.html(formData.startRange + ' &ndash; ' + formData.endRange);
+					targetEl.find('option[value="range"]').text(formData.startRange + ' - ' + formData.endRange);
+					targetEl.val('range');
 				}
 			});
-		});
+		}
 
 		callback();
 	});
@@ -461,7 +464,8 @@ function updateTrafficGraph(units, until, amount) {
 		graphs.traffic.data.datasets[1].data = data.pageviewsRegistered;
 		graphs.traffic.data.datasets[2].data = data.pageviewsGuest;
 		graphs.traffic.data.datasets[3].data = data.pageviewsBot;
-		graphs.traffic.data.datasets[4].data = data.uniqueVisitors;
+		graphs.traffic.data.datasets[4].data = data.appageviews;
+		graphs.traffic.data.datasets[5].data = data.uniqueVisitors;
 		graphs.traffic.data.labels = graphs.traffic.data.xLabels;
 
 		graphs.traffic.update();
@@ -577,36 +581,3 @@ function initiateDashboard(realtime) {
 	}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 }
 
-function setupFullscreen() {
-	const container = document.getElementById('analytics-panel');
-	const $container = $(container);
-	const btn = $container.find('#expand-analytics');
-	let fsMethod;
-	let exitMethod;
-
-	if (container.requestFullscreen) {
-		fsMethod = 'requestFullscreen';
-		exitMethod = 'exitFullscreen';
-	} else if (container.mozRequestFullScreen) {
-		fsMethod = 'mozRequestFullScreen';
-		exitMethod = 'mozCancelFullScreen';
-	} else if (container.webkitRequestFullscreen) {
-		fsMethod = 'webkitRequestFullscreen';
-		exitMethod = 'webkitCancelFullScreen';
-	} else if (container.msRequestFullscreen) {
-		fsMethod = 'msRequestFullscreen';
-		exitMethod = 'msCancelFullScreen';
-	}
-
-	if (fsMethod) {
-		btn.on('click', function () {
-			if ($container.hasClass('fullscreen')) {
-				document[exitMethod]();
-				$container.removeClass('fullscreen');
-			} else {
-				container[fsMethod]();
-				$container.addClass('fullscreen');
-			}
-		});
-	}
-}

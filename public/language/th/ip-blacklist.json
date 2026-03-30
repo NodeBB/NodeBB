@@ -1,19 +1,19 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "ตั้งค่าการขึ้นบัญชีดำ IP ที่นี่",
+	"description": "บางครั้งการแบนผู้ใช้งานยังไม่เพียงพอ การจำกัดการเข้าถึงฟอรั่มจาก IP หรือช่วงของ IP ที่ระบุเป็นวิธีที่ดีที่สุดที่ใช้ป้องกันฟอรั่ม ในสถานการณ์นี้ คุณสามารถเพิ่ม IP หรือบล็อก CIDR ที่เป็นปัญหาลงในบัญชีดำนี้ แล้วพวกเขาจะไม่สามารถสมัครบัญชีใหม่หรือเข้าสู่ระบบได้",
+	"active-rules": "กฎที่กำลังใช้งาน",
+	"validate": "ตรวจสอบความถูกต้อง",
+	"apply": "นำไปใช้งาน",
+	"hints": "คำช่วยเหลือรูปแบบคำสั่ง",
+	"hint-1": "กำหนดที่อยู่ IP 1 ค่าต่อ 1 บรรทัด คุณสามารถเพิ่มที่อยู่ IP หรือ IP บล็อกที่สอดคล้องกับรูปแบบ CIDR (เช่น <code>192.168.100.0/22</code>).",
+	"hint-2": "คุณสามารถใส่คำอธิบายโดยใช้เครื่องหมาย <code>#</code> ที่ต้นบรรทัด",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "กฎ <strong>%1</strong> จากทั้งหมด <strong>%2</strong> กดมีค่าถูกต้อง",
+	"validate.x-invalid": "กฏ <strong>%1</strong> กฎต่อไปนี้ไม่ถูกต้อง",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "บัญชีดำถูกนำไปใช้งานแล้ว",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"analytics.blacklist-hourly": "<strong>รูปที่ 1</strong> &ndash; จำนวนฮิตจากบัญชีดำต่อชั่วโมง",
+	"analytics.blacklist-daily": "<strong>รูปที่ 2</strong> &ndash; จำนวนฮิตจากบัญชีดำต่อวัน",
+	"ip-banned": "IP ถูกขึ้นบัญชีดำ"
 }

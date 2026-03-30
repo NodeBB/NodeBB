@@ -6,10 +6,13 @@
 	"new-users": "Нови потребители",
 	"posts": "Публикации",
 	"topics": "Теми",
+	"remote-posts": "Отдалечени публикации",
+	"remote-topics": "Отдалечени теми",
+	"messages": "Съобщения",
 	"page-views-seven": "Последните 7 дни",
 	"page-views-thirty": "Последните 30 дни",
 	"page-views-last-day": "Последните 24 часа",
-	"page-views-custom": "Интервал по избор",
+	"page-views-custom": "Персонализиран интервал",
 	"page-views-custom-start": "Начална дата",
 	"page-views-custom-end": "Крайна дата",
 	"page-views-custom-help": "Въведете интервал от дати, за които искате да видите преглежданията на страниците. Ако не се появи календар за избор, можете да въведете датите във формат: <code>ГГГГ-ММ-ДД</code>",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Преглеждания на страниците от регистрирани потребители",
 	"graphs.page-views-guest": "Преглеждания на страниците от гости",
 	"graphs.page-views-bot": "Преглеждания на страниците от ботове",
+	"graphs.page-views-ap": "Преглеждания на страницата от ActivityPub",
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
 	"graphs.guest-users": "Гости",
@@ -94,5 +98,8 @@
 	"view-as-json": "Преглед като JSON",
 	"expand-analytics": "Разгъване на данните за анализ",
 	"clear-search-history": "Изчистване на историята на търсенията",
-	"clear-search-history-confirm": "Наистина ли искате да изчистите историята на търсенията?"
+	"clear-search-history-confirm": "Наистина ли искате да изчистите историята на търсенията?",
+	"search-term": "Фраза",
+	"search-count": "Брой",
+	"view-all": "Преглед на всички"
 }

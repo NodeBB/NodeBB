@@ -21,7 +21,6 @@ Chart.register(
 	Filler
 );
 
-// eslint-disable-next-line import/prefer-default-export
 export function init() {
 	categorySelector.init($('[component="category-selector"]'), {
 		onSelect: function (selectedCategory) {

@@ -8,6 +8,7 @@ module.exports = {
 	timestamp: Date.UTC(2019, 9, 7),
 	method: async function () {
 		const { progress } = this;
+		progress.total = await db.sortedSetCard('posts:pid') + await db.sortedSetCard('topics:tid');
 		await cleanPost(progress);
 		await cleanTopic(progress);
 	},
@@ -51,7 +52,6 @@ async function cleanPost(progress) {
 		}));
 	}, {
 		batch: 500,
-		progress: progress,
 	});
 }
 
@@ -90,6 +90,5 @@ async function cleanTopic(progress) {
 		}));
 	}, {
 		batch: 500,
-		progress: progress,
 	});
 }

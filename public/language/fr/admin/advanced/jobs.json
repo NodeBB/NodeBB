@@ -1,0 +1,9 @@
+{
+	"jobs": "Tâches",
+	"job-name": "Nom de la tâche",
+	"schedule": "Planification",
+	"next-run": "Prochaine exécution",
+	"last-duration": "Durée précédente",
+	"running": "En cours",
+	"active": "Active"
+}

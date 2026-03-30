@@ -38,6 +38,7 @@
 	"settings/tags": "Címkék",
 	"settings/notifications": "Értesítések",
 	"settings/api": "API hozzáférés",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Hangok",
 	"settings/social": "Közösség",
 	"settings/cookies": "Süti",
@@ -46,6 +47,14 @@
 	"settings/advanced": "Haladó",
 
 	"settings.page-title": "%1 Beállítások",
+
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Megjelenés",
 	"appearance/themes": "Témák",
@@ -69,6 +78,7 @@
 	"advanced/logs": "Naplók",
 	"advanced/errors": "Hibák",
 	"advanced/cache": "Gyorsítótár",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Naplózó",
 	"development/info": "Információ",
 

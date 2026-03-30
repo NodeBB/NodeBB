@@ -6,10 +6,13 @@
 	"new-users": "Novi uporabniki",
 	"posts": "Objave",
 	"topics": "Teme",
+	"remote-posts": "Remote Posts",
+	"remote-topics": "Remote Topics",
+	"messages": "Messages",
 	"page-views-seven": "Zadnjih 7 dni",
 	"page-views-thirty": "Zadnjih 30 dni",
 	"page-views-last-day": "Zadnjih 24 ur",
-	"page-views-custom": "Časovno obdobje po meri",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Začetek obdobja",
 	"page-views-custom-end": "Konec obdobja",
 	"page-views-custom-help": "Vnesite časovno obdobje ogledov strani, ki bi si jih radi ogledali. Če izbirnik datumov ni na voljo, je sprejeta oblika <code>LLLL-MM-DD</code>",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Ogledov strani-registrirani",
 	"graphs.page-views-guest": "Ogledov strani-gosti",
 	"graphs.page-views-bot": "Ogledov strani-robot",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Edinstveni obiskovalci",
 	"graphs.registered-users": "Registrirani uporabniki",
 	"graphs.guest-users": "Gostujoči uporabniki",
@@ -94,5 +98,8 @@
 	"view-as-json": "View as JSON",
 	"expand-analytics": "Expand analytics",
 	"clear-search-history": "Clear Search History",
-	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }

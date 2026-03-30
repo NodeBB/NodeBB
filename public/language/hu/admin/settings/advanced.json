@@ -41,9 +41,6 @@
 	"sockets.default-placeholder": "Alapértelmezett: %1",
 	"sockets.delay": "Újracsatlakozási késleltetés",
 
-	"analytics.settings": "Analitikai beállítások",
-	"analytics.max-cache": "Analitikai gyorsítótár maximális értéke",
-	"analytics.max-cache-help": "Nagy forgalmú telepítéseknél ez a gyorsítótár hamar megtelik, ha az oldalt egyszerrre használó felhasználók száma nagyobb mint a gyorsítótár maximális értéke. (Újraindítás szükséges)",
 	"compression.settings": "Tömörítési beállítások",
 	"compression.enable": "Tömörítés bekapcsolása",
 	"compression.help": "Ez a beállítás engedélyezi a gzip tömörítést. Magas forgalmú weboldal esetén éles környezetbe a legjobb megoldás, ha a reverse proxy szintjén történik ez meg. Bekapcsolhatod kipróbálási céllal."

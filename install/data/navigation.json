@@ -42,6 +42,14 @@
 		"text": "[[global:header.popular]]"
 	},
 	{
+		"route": "/world",
+		"title": "[[global:header.world]]",
+		"enabled": true,
+		"iconClass": "fa-globe",
+		"textClass": "d-lg-none",
+		"text": "[[global:header.world]]"
+	},
+	{
 		"route": "/users",
 		"title": "[[global:header.users]]",
 		"enabled": true,

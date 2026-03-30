@@ -1,0 +1,10 @@
+{
+	"post-sort-option": "Opcja sortowania postów, %1",
+	"topic-sort-option": "Opcja sortowania tematów, %1",
+	"user-avatar-for": "Awatar dla %1",
+	"profile-page-for": "Profil użytkownika %1",
+	"user-watched-tags": "Tagi obserwowane przez użytkownika",
+	"delete-upload-button": "Przycisk kasowania załącznika",
+	"group-page-link-for": "Odsyłacz dla grupy %1",
+	"show-crossposts": "Show Cross-posts"
+}

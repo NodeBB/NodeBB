@@ -2,45 +2,34 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
-const request = require('request');
 
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
+const request = require('../src/request');
 
 describe('Language detection', () => {
-	it('should detect the language for a guest', (done) => {
-		meta.configs.set('autoDetectLang', 1, (err) => {
-			assert.ifError(err);
-			request(`${nconf.get('url')}/api/config`, {
-				headers: {
-					'Accept-Language': 'de-DE,de;q=0.5',
-				},
-				json: true,
-			}, (err, res, body) => {
-				assert.ifError(err);
-				assert.ok(body);
+	it('should detect the language for a guest', async () => {
+		await meta.configs.set('autoDetectLang', 1);
 
-				assert.strictEqual(body.userLang, 'de');
-				done();
-			});
+		const { body } = await request.get(`${nconf.get('url')}/api/config`, {
+			headers: {
+				'Accept-Language': 'de-DE,de;q=0.5',
+			},
 		});
+		assert.ok(body);
+		assert.strictEqual(body.userLang, 'de');
 	});
 
-	it('should do nothing when disabled', (done) => {
-		meta.configs.set('autoDetectLang', 0, (err) => {
-			assert.ifError(err);
-			request(`${nconf.get('url')}/api/config`, {
-				headers: {
-					'Accept-Language': 'de-DE,de;q=0.5',
-				},
-				json: true,
-			}, (err, res, body) => {
-				assert.ifError(err);
-				assert.ok(body);
+	it('should do nothing when disabled', async () => {
+		await meta.configs.set('autoDetectLang', 0);
 
-				assert.strictEqual(body.userLang, 'en-GB');
-				done();
-			});
+		const { body } = await request.get(`${nconf.get('url')}/api/config`, {
+			headers: {
+				'Accept-Language': 'de-DE,de;q=0.5',
+			},
 		});
+
+		assert.ok(body);
+		assert.strictEqual(body.userLang, 'en-GB');
 	});
 });

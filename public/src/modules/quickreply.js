@@ -1,24 +1,47 @@
 'use strict';
 
 define('quickreply', [
-	'components', 'composer', 'composer/autocomplete', 'api',
-	'alerts', 'uploadHelpers', 'mousetrap', 'storage',
+	'components', 'autocomplete', 'api',
+	'alerts', 'uploadHelpers', 'mousetrap', 'storage', 'hooks',
+	'categorySelector',
 ], function (
-	components, composer, autocomplete, api,
-	alerts, uploadHelpers, mousetrap, storage
+	components, autocomplete, api,
+	alerts, uploadHelpers, mousetrap, storage, hooks,
+	categorySelector,
 ) {
-	const QuickReply = {};
+	const QuickReply = {
+		_autocomplete: null,
+	};
 
-	QuickReply.init = function () {
+	QuickReply.init = function (opts) {
 		const element = components.get('topic/quickreply/text');
-		const qrDraftId = `qr:draft:tid:${ajaxify.data.tid}`;
+		if (!element.length) {
+			return;
+		}
+
+		if (opts?.body?.cid && $('[component="topic/quickreply/container"] [component="category-selector"]')) {
+			categorySelector.init($('[component="category-selector"]'), {
+				privilege: 'topics:create',
+				selectedCategory: ajaxify.data.selectedCategory,
+				onSelect: function (category) {
+					opts.body = opts.body || {};
+					opts.body.cid = category.cid;
+				},
+			});
+			$('[component="topic/quickreply/container"] [component="topic/quickreply/category-selector"').removeClass('hidden');
+		}
+
+		const qrDraftId = ajaxify.data.tid ? `qr:draft:tid:${ajaxify.data.tid}` : `qr:draft:cid:${opts?.body?.cid || -1}`;
 		const data = {
 			element: element,
 			strategies: [],
 			options: {
 				style: {
-					'z-index': 100,
+					'z-index': 20000,
+					'max-height': '250px',
+					overflow: 'auto',
 				},
+				className: 'dropdown-menu textcomplete-dropdown ghost-scrollbar',
 			},
 		};
 
@@ -27,7 +50,7 @@ define('quickreply', [
 			destroyAutoComplete();
 		});
 		$(window).trigger('composer:autocomplete:init', data);
-		autocomplete._active.core_qr = autocomplete.setup(data);
+		QuickReply._autocomplete = autocomplete.setup(data);
 
 		mousetrap.bind('ctrl+return', (e) => {
 			if (e.target === element.get(0)) {
@@ -36,6 +59,7 @@ define('quickreply', [
 		});
 
 		uploadHelpers.init({
+			uploadBtnEl: $('[component="topic/quickreply/upload/button"]'),
 			dragDropAreaEl: $('[component="topic/quickreply/container"] .quickreply-message'),
 			pasteEl: element,
 			uploadFormEl: $('[component="topic/quickreply/upload"]'),
@@ -57,12 +81,14 @@ define('quickreply', [
 				return;
 			}
 
-			const replyMsg = components.get('topic/quickreply/text').val();
+			const replyMsg = element.val();
 			const replyData = {
 				tid: ajaxify.data.tid,
 				handle: undefined,
 				content: replyMsg,
+				...opts.body,
 			};
+
 			const replyLen = replyMsg.length;
 			if (replyLen < parseInt(config.minimumPostLength, 10)) {
 				return alerts.error('[[error:content-too-short, ' + config.minimumPostLength + ']]');
@@ -71,9 +97,11 @@ define('quickreply', [
 			}
 
 			ready = false;
-			api.post(`/topics/${ajaxify.data.tid}`, replyData, function (err, data) {
+			element.val('');
+			api.post(opts.route, replyData, function (err, data) {
 				ready = true;
 				if (err) {
+					element.val(replyMsg);
 					return alerts.error(err);
 				}
 				if (data && data.queued) {
@@ -88,9 +116,10 @@ define('quickreply', [
 					});
 				}
 
-				components.get('topic/quickreply/text').val('');
+				element.val('');
 				storage.removeItem(qrDraftId);
-				autocomplete._active.core_qr.hide();
+				QuickReply._autocomplete.hide();
+				hooks.fire('action:quickreply.success', { data });
 			});
 		});
 
@@ -112,19 +141,19 @@ define('quickreply', [
 			e.preventDefault();
 			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
-			composer.newReply({
-				tid: ajaxify.data.tid,
-				title: ajaxify.data.title,
+			hooks.fire('action:composer.post.new', {
+				title: ajaxify.data.tid ? ajaxify.data.titleRaw : '',
 				body: textEl.val(),
+				...opts.body,
 			});
 			textEl.val('');
 		});
 	};
 
 	function destroyAutoComplete() {
-		if (autocomplete._active.core_qr) {
-			autocomplete._active.core_qr.destroy();
-			autocomplete._active.core_qr = null;
+		if (QuickReply._autocomplete) {
+			QuickReply._autocomplete.destroy();
+			QuickReply._autocomplete = null;
 		}
 	}
 

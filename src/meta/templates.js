@@ -114,13 +114,18 @@ async function compile() {
 	let files = await plugins.getActive();
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
-
+	const minify = process.env.NODE_ENV !== 'development';
 	await Promise.all(Object.keys(files).map(async (name) => {
 		const filePath = files[name];
 		let imported = await fs.promises.readFile(filePath, 'utf8');
 		imported = await processImports(files, name, imported);
 
 		await mkdirp(path.join(viewsPath, path.dirname(name)));
+
+		// remove empty lines and whitespace
+		if (minify) {
+			imported = imported.split('\n').map(line => line.trim()).filter(Boolean).join('\n');
+		}
 
 		await fs.promises.writeFile(path.join(viewsPath, name), imported);
 		const compiled = await Benchpress.precompile(imported, { filename: name });

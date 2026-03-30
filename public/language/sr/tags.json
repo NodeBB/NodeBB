@@ -3,7 +3,7 @@
     "no-tag-topics": "Нема тема са овом ознаком.",
     "no-tags-found": "Нема пронађених ознака",
     "tags": "Ознаке",
-    "enter-tags-here": "Овде унесите ознаке, од %1 до %2 знакова за сваку.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Унесите ознаке...",
     "no-tags": "Још увек нема ознака.",
     "select-tags": "Изабери ознаке",

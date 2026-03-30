@@ -1,0 +1,92 @@
+post:
+  summary: Accept a queued post
+  tags:
+    - QueuedPosts
+  parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: a valid queued post id
+      example: 2
+  responses:
+    '200':
+      description: post successfully accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  pid:
+                    type: number
+                  tid:
+                    type: number
+    '400':
+      description: Bad request, invalid post id
+delete:
+  summary: Remove a queued post
+  tags:
+    - QueuedPosts
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 'topic-12345'
+  responses:
+    '200':
+      description: Post removed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      description: Bad request, invalid post id
+put:
+  summary: Edit a queued post
+  tags:
+    - QueuedPosts
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 'topic-12345'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              example: This is a test reply
+            cid:
+              type: number
+              description: Category ID to which the post belongs
+            title:
+              type: string
+              description: Updated Post Title
+  responses:
+    '200':
+      description: Post edited successfully
+    '400':
+      description: Bad request, invalid post id
+
+

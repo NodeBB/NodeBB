@@ -49,6 +49,9 @@ get:
                             uid:
                               type: number
                               description: A user identifier
+                            isLocal:
+                              type: boolean
+                              description: Whether the user belongs to the local installation or not.
                             icon:text:
                               type: string
                               description: A single-letter representation of a username. This is used in the
@@ -68,6 +71,11 @@ get:
                           type: boolean
                         readClass:
                           type: string
+                  unreadNids:
+                    type: array
+                    description: An array of notification ids that are unread.
+                    items:
+                      type: string
                   filters:
                     $ref: ../components/schemas/NotificationFilters.yaml#/FiltersArray
                   regularFilters:

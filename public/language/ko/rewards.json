@@ -1,10 +1,10 @@
 {
-	"awarded-x-reputation": "You have been awarded <strong>%1</strong> reputation",
-	"awarded-group-membership": "You have been added to the group <strong>%1</strong>",
+	"awarded-x-reputation": "나에게 <strong>%1</strong>의 평판이 수여되었습니다",
+	"awarded-group-membership": "내가 <strong>%1</strong> 그룹에 추가되었습니다",
 
-	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",
-	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Post Count %1 %2)</span>",
-	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Last Online %1 %2)</span>",
-	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Join Date %1 %2)</span>",
-	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Days Registered %1 %2)</span>"
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(평판 %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(게시물 수 %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(최근 접속 %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(가입일 %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(가입한 날짜 %1 %2)</span>"
 }

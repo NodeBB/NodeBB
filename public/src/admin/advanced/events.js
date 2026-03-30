@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/advanced/events', ['bootbox', 'alerts'], function (bootbox, alerts) {
+define('admin/advanced/events', ['bootbox', 'alerts', 'autocomplete'], function (bootbox, alerts, autocomplete) {
 	const Events = {};
 
 	Events.init = function () {
@@ -29,6 +29,21 @@ define('admin/advanced/events', ['bootbox', 'alerts'], function (bootbox, alerts
 				$parentEl.remove();
 			});
 		});
+
+		$('#user-group-select').on('change', function () {
+			const val = $(this).val();
+			$('#username').toggleClass('hidden', val !== 'username');
+			if (val !== 'username') {
+				$('#username').val('');
+			}
+			$('#group').toggleClass('hidden', val !== 'group');
+			if (val !== 'group') {
+				$('#group').val('');
+			}
+		});
+
+		autocomplete.user($('#username'));
+		autocomplete.group($('#group'));
 
 		$('#apply').on('click', Events.refresh);
 	};

@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "All groups",
     "groups": "Amatsinda",
     "members": "Members",
+    "x-members": "%1 member(s)",
     "view-group": "Reba Itsinda",
     "owner": "Nyir'Itsinda",
     "new-group": "Tangiza Itsinda Rishya",

@@ -3,7 +3,7 @@
     "no-tag-topics": "Temų su šią žyma nėra.",
     "no-tags-found": "No tags found",
     "tags": "Žymos",
-    "enter-tags-here": "Įveskite žymas čia, tarp %1 ir %2 simbolių kiekvienam",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Įveskite žymas...",
     "no-tags": "Žymų kolkas nėra.",
     "select-tags": "Select Tags",

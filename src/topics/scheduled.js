@@ -2,20 +2,27 @@
 
 const _ = require('lodash');
 const winston = require('winston');
-const { CronJob } = require('cron');
 
 const db = require('../database');
 const posts = require('../posts');
 const socketHelpers = require('../socket.io/helpers');
 const topics = require('./index');
+const categories = require('../categories');
 const groups = require('../groups');
 const user = require('../user');
+const activitypub = require('../activitypub');
+const plugins = require('../plugins');
+const cron = require('../cron');
 
 const Scheduled = module.exports;
 
-Scheduled.startJobs = function () {
+Scheduled.startJobs = async function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', Scheduled.handleExpired, null, true);
+	await cron.addJob({
+		name: 'topics:publish:scheduled',
+		cronTime: '*/1 * * * *',
+		onTick: Scheduled.handleExpired,
+	});
 };
 
 Scheduled.handleExpired = async function () {
@@ -46,7 +53,8 @@ async function postTids(tids) {
 	await Promise.all([].concat(
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
-		updateGroupPosts(uids, topicsData),
+		updateGroupPosts(topicsData),
+		federatePosts(uids, topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 	));
 }
@@ -58,6 +66,7 @@ Scheduled.pin = async function (tid, topicData) {
 		db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid),
 		db.sortedSetsRemove([
 			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
 			`cid:${topicData.cid}:tids:views`,
@@ -96,6 +105,7 @@ function unpin(tid, topicData) {
 		db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid),
 		db.sortedSetAddBulk([
 			[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
+			[`cid:${topicData.cid}:tids:create`, topicData.timestamp, tid],
 			[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
 			[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 			[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
@@ -107,7 +117,9 @@ async function sendNotifications(uids, topicsData) {
 	const userData = await user.getUsersData(uids);
 	const uidToUserData = Object.fromEntries(uids.map((uid, idx) => [uid, userData[idx]]));
 
-	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
+	let postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
+	topicsData = topicsData.filter((t, i) => t && postsData[i]);
+	postsData = postsData.filter(Boolean);
 	postsData.forEach((postData, idx) => {
 		if (postData) {
 			postData.user = uidToUserData[topicsData[idx].uid];
@@ -115,13 +127,21 @@ async function sendNotifications(uids, topicsData) {
 		}
 	});
 
-	return Promise.all(topicsData.map(
+	await Promise.all(topicsData.map(
 		(t, idx) => user.notifications.sendTopicNotificationToFollowers(t.uid, t, postsData[idx])
+	).concat(
+		postsData.map(p => topics.notifyTagFollowers(p, p.uid))
+	).concat(
+		postsData.map(p => categories.notifyCategoryFollowers(p, p.uid))
 	).concat(
 		topicsData.map(
 			(t, idx) => socketHelpers.notifyNew(t.uid, 'newTopic', { posts: [postsData[idx]], topic: t })
 		)
 	));
+	plugins.hooks.fire('action:topics.scheduled.notify', {
+		posts: postsData,
+		topics: topicsData,
+	});
 }
 
 async function updateUserLastposttimes(uids, topicsData) {
@@ -139,14 +159,22 @@ async function updateUserLastposttimes(uids, topicsData) {
 	return Promise.all(uidsToUpdate.map(uid => user.setUserField(uid, 'lastposttime', tstampByUid[uid])));
 }
 
-async function updateGroupPosts(uids, topicsData) {
+async function updateGroupPosts(topicsData) {
 	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	await Promise.all(postsData.map(async (post, i) => {
-		if (topicsData[i]) {
+		if (post && topicsData[i]) {
 			post.cid = topicsData[i].cid;
 			await groups.onNewPostMade(post);
 		}
 	}));
+}
+
+function federatePosts(uids, topicData) {
+	topicData.forEach(({ mainPid: pid }, idx) => {
+		const uid = uids[idx];
+
+		activitypub.out.create.note(uid, pid);
+	});
 }
 
 async function shiftPostTimes(tid, timestamp) {

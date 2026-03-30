@@ -38,6 +38,7 @@
 	"settings/tags": "标签",
 	"settings/notifications": "通知",
 	"settings/api": "API 访问",
+	"settings/activitypub": "“联邦” (ActivityPub)",
 	"settings/sounds": "铃声",
 	"settings/social": "社交",
 	"settings/cookies": "Cookies",
@@ -46,6 +47,14 @@
 	"settings/advanced": "高级",
 
 	"settings.page-title": "%1 设置",
+
+	"section-federation": "“联邦”",
+	"federation/general": "通用",
+	"federation/content": "内容",
+	"federation/rules": "分类",
+	"federation/relays": "中继服务",
+	"federation/pruning": "存储",
+	"federation/safety": "信任与安全",
 
 	"section-appearance": "界面",
 	"appearance/themes": "主题",
@@ -69,6 +78,7 @@
 	"advanced/logs": "日志",
 	"advanced/errors": "错误",
 	"advanced/cache": "缓存",
+	"advanced/jobs": "任务",
 	"development/logger": "记录器",
 	"development/info": "信息",
 

@@ -1,0 +1,21 @@
+get:
+  tags:
+    - admin
+  summary: Get federation settings pertaining to relays
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  relays:
+                    $ref: ../../../components/schemas/admin/relays.yaml#/RelaysArray
+                  hideSave:
+                    type: boolean
+                    description: A flag to instruct the template engine to hide the save button
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,0 +1,19 @@
+{
+	"lead": "IP-svarteliste",
+	"description": "Administrer IP-reglar for å blokkere tilgang basert på IP-adresser.",
+	"active-rules": "Aktive reglar",
+	"validate": "Valider",
+	"apply": "Bruk",
+	"hints": "Tips",
+	"hint-1": "Definer éi IP-adresse per linje. Du kan leggje til IP-blokker så lenge dei følger CIDR-formatet (t.d. 192.168.100.0/22).",
+	"hint-2": "Pass på å validere reglane før du tek dei i bruk.",
+
+	"validate.x-valid": "<strong>%1</strong> av <strong>%2</strong> reglar er gyldige.",
+	"validate.x-invalid": "Følgjande <strong>%1</strong> reglar er ugyldige. ",
+
+	"alerts.applied-success": "Blacklist brukt",
+
+	"analytics.blacklist-hourly": "Blacklist per time",
+	"analytics.blacklist-daily": "Blacklist  per dag",
+	"ip-banned": "IP-adresse blokkert"
+}

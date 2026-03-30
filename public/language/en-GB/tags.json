@@ -3,7 +3,7 @@
 	"no-tag-topics": "There are no topics with this tag.",
 	"no-tags-found": "No tags found",
 	"tags": "Tags",
-	"enter-tags-here": "Enter tags here, between %1 and %2 characters each.",
+	"enter-tags-here": "Enter tags, %1 - %2 characters.",
 	"enter-tags-here-short": "Enter tags...",
 	"no-tags": "There are no tags yet.",
 	"select-tags": "Select Tags",

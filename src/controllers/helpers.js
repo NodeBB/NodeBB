@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const winston = require('winston');
 const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
@@ -23,8 +24,10 @@ const url = nconf.get('url');
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		if (typeof error === 'string') {
+			winston.error(`${new Error(error).stack}`);
 			return res.status(httpStatus).send(error);
 		}
+		winston.error(`${new Error(JSON.stringify(error)).stack}`);
 		return res.status(httpStatus).json(error);
 	}
 	const middleware = require('../middleware');
@@ -40,6 +43,7 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 };
 
 helpers.terms = {
+	alltime: 'alltime',
 	daily: 'day',
 	weekly: 'week',
 	monthly: 'month',
@@ -101,7 +105,7 @@ helpers.buildFilters = function (url, filter, query) {
 helpers.buildTerms = function (url, term, query) {
 	return [{
 		name: '[[recent:alltime]]',
-		url: url + helpers.buildQueryString(query, 'term', ''),
+		url: url + helpers.buildQueryString(query, 'term', 'alltime'),
 		selected: term === 'alltime',
 		term: 'alltime',
 	}, {
@@ -133,7 +137,7 @@ helpers.notAllowed = async function (req, res, error) {
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
 			if (req.originalUrl.startsWith(`${relative_path}/api/v3`)) {
-				helpers.formatApiResponse(403, res, error);
+				await helpers.formatApiResponse(403, res, error);
 			} else {
 				res.status(403).json({
 					path: req.path.replace(/^\/api/, ''),
@@ -155,7 +159,7 @@ helpers.notAllowed = async function (req, res, error) {
 		}
 	} else if (res.locals.isAPI) {
 		req.session.returnTo = req.url.replace(/^\/api/, '');
-		helpers.formatApiResponse(401, res, error);
+		await helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
 		res.redirect(`${relative_path}/login${req.path.startsWith('/admin') ? '?local=1' : ''}`);
@@ -166,9 +170,9 @@ helpers.redirect = function (res, url, permanent) {
 	// this is used by sso plugins to redirect to the auth route
 	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
 	if (url.hasOwnProperty('external')) {
-		const redirectUrl = encodeURI(prependRelativePath(url.external));
+		const redirectUrl = prependRelativePath(url.external);
 		if (res.locals.isAPI) {
-			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
+			res.set('X-Redirect', encodeURIComponent(redirectUrl)).status(200).json({ external: redirectUrl });
 		} else {
 			res.redirect(permanent ? 308 : 307, redirectUrl);
 		}
@@ -176,10 +180,9 @@ helpers.redirect = function (res, url, permanent) {
 	}
 
 	if (res.locals.isAPI) {
-		url = encodeURI(url);
-		res.set('X-Redirect', url).status(200).json(url);
+		res.set('X-Redirect', encodeURIComponent(url)).status(200).json(url);
 	} else {
-		res.redirect(permanent ? 308 : 307, encodeURI(prependRelativePath(url)));
+		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}
 };
 
@@ -363,11 +366,11 @@ helpers.getSelectedTag = function (tags) {
 		tags = [tags];
 	}
 	tags = tags || [];
-	const tagData = tags.map(t => validator.escape(String(t)));
+	const tagData = tags.map(t => String(t));
 	let selectedTag = null;
 	if (tagData.length) {
 		selectedTag = {
-			label: tagData.join(', '),
+			label: validator.escape(tagData.join(', ')),
 		};
 	}
 	return {
@@ -393,9 +396,10 @@ helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			url: `${nconf.get('relative_path')}/post/${encodeURIComponent(post.pid)}`,
 			timestampISO: post.timestampISO,
 			pid: post.pid,
+			tid: post.tid,
 			index: post.index,
 			topic: post.topic,
 			user: post.user,
@@ -418,6 +422,10 @@ helpers.getHomePageRoutes = async function (uid) {
 		{
 			route: 'categories',
 			name: 'Categories',
+		},
+		{
+			route: 'world',
+			name: 'World',
 		},
 		{
 			route: 'unread',
@@ -506,10 +514,11 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
 
-		if (global.env === 'development') {
-			returnPayload.stack = payload.stack;
+		if (process.env.NODE_ENV === 'development') {
+			const stack = payload instanceof Error ? payload.stack : new Error(String(payload)).stack;
+			returnPayload.stack = stack;
 			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
-			process.stdout.write(payload.stack);
+			process.stdout.write(stack);
 		}
 		res.status(statusCode).json(returnPayload);
 	} else {

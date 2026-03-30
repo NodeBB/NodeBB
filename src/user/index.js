@@ -8,6 +8,7 @@ const db = require('../database');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const meta = require('../meta');
+const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 const User = module.exports;
@@ -42,16 +43,24 @@ require('./blocks')(User);
 require('./uploads')(User);
 
 User.exists = async function (uids) {
-	return await (
-		Array.isArray(uids) ?
-			db.isSortedSetMembers('users:joindate', uids) :
-			db.isSortedSetMember('users:joindate', uids)
-	);
+	const singular = !Array.isArray(uids);
+	uids = singular ? [uids] : uids;
+
+	const [localExists, remoteExists] = await Promise.all([
+		db.isSortedSetMembers('users:joindate', uids),
+		meta.config.activitypubEnabled ? db.exists(uids.map(uid => `userRemote:${uid}`)) : uids.map(() => false),
+	]);
+	const results = localExists.map((local, idx) => local || remoteExists[idx]);
+	return singular ? results.pop() : results;
 };
 
 User.existsBySlug = async function (userslug) {
-	const exists = await User.getUidByUserslug(userslug);
-	return !!exists;
+	if (Array.isArray(userslug)) {
+		const uids = await User.getUidsByUserslugs(userslug);
+		return uids.map(uid => !!uid);
+	}
+	const uid = await User.getUidByUserslug(userslug);
+	return !!uid;
 };
 
 User.getUidsFromSet = async function (set, start, stop) {
@@ -109,7 +118,47 @@ User.getUidByUserslug = async function (userslug) {
 	if (!userslug) {
 		return 0;
 	}
+
+	if (userslug.includes('@')) {
+		await activitypub.actors.assert(userslug);
+		return (await db.getObjectField('handle:uid', String(userslug).toLowerCase())) || null;
+	}
+
 	return await db.sortedSetScore('userslug:uid', userslug);
+};
+
+User.getUidsByUserslugs = async function (userslugs) {
+	const uniqueSlugs = _.uniq(userslugs);
+	const apSlugs = uniqueSlugs.filter(slug => slug.includes('@'));
+	const normalSlugs = uniqueSlugs.filter(slug => !slug.includes('@'));
+	const slugToUid = Object.create(null);
+	async function getApSlugs() {
+		await Promise.all(apSlugs.map(slug => activitypub.actors.assert(slug)));
+		const apUids = await db.getObjectFields(
+			'handle:uid',
+			apSlugs.map(slug => String(slug).toLowerCase()),
+		);
+		return apUids;
+	}
+
+	const [apUids, normalUids] = await Promise.all([
+		apSlugs.length ? getApSlugs() : [],
+		normalSlugs.length ? db.sortedSetScores('userslug:uid', normalSlugs) : [],
+	]);
+
+	apSlugs.forEach((slug) => {
+		if (apUids[slug]) {
+			slugToUid[slug] = apUids[slug];
+		}
+	});
+
+	normalSlugs.forEach((slug, i) => {
+		if (normalUids[i]) {
+			slugToUid[slug] = normalUids[i];
+		}
+	});
+
+	return userslugs.map(slug => slugToUid[slug] || null);
 };
 
 User.getUsernamesByUids = async function (uids) {
@@ -236,7 +285,7 @@ User.addInterstitials = function (callback) {
 	plugins.hooks.register('core', {
 		hook: 'filter:register.interstitial',
 		method: [
-			User.interstitials.email, // Email address (for password reset + digest)
+			User.interstitials.email, // Email address
 			User.interstitials.gdpr, // GDPR information collection/processing consent + email consent
 			User.interstitials.tou, // Forum Terms of Use
 		],

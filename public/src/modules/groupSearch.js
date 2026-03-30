@@ -11,7 +11,7 @@ define('groupSearch', function () {
 		if (!searchEl.length) {
 			return;
 		}
-		const toggleVisibility = searchEl.parent('[component="group-selector"]').length > 0;
+		const toggleVisibility = searchEl.parents('[component="group-selector"]').length > 0;
 
 		const groupEls = el.find('[component="group-list"] [data-name]');
 		el.on('show.bs.dropdown', function () {
@@ -31,11 +31,7 @@ define('groupSearch', function () {
 				el.find('[component="group-list"] [component="group-no-matches"]').toggleClass('hidden', !noMatch);
 			}
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').css({ visibility: 'hidden' });
 				searchEl.removeClass('hidden');
-				searchEl.css({
-					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
-				});
 			}
 
 			searchEl.on('click', function (ev) {
@@ -52,7 +48,6 @@ define('groupSearch', function () {
 
 		el.on('hide.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').css({ visibility: 'inherit' });
 				searchEl.addClass('hidden');
 			}
 			searchEl.off('click').find('input').off('keyup');

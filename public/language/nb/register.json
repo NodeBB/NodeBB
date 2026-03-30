@@ -1,6 +1,6 @@
 {
     "register": "Registrer",
-    "already-have-account": "Already have an account?",
+    "already-have-account": "Har du allerede en bruker?",
     "cancel-registration": "Avbryt registrering",
     "help.email": "Som standard, holdes din e-post skjult for offentligheten.",
     "help.username-restrictions": "Et unikt brukernavn mellom %1 og %2 tegn. Andre kan nevne deg med @<span id='yourUsername'>brukernavn</span>.",

@@ -4,15 +4,15 @@
 
 	"acp-title": "%1| NodeBB管理画面",
 	"settings-header-contents": "コンテンツ",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"changes-saved": "変更を保存しました",
+	"changes-saved-message": "NodeBBの設定変更が保存されました",
+	"changes-not-saved": "変更が保存されませんでした",
+	"changes-not-saved-message": "NodeBBが変更の保存中に問題が発生しました。（%1）",
+	"save-changes": "変更を保存",
+	"min": "最小：",
+	"max": "最大：",
+	"view": "表示",
+	"edit": "編集",
+	"add": "追加",
+	"select-icon": "アイコンを選択"
 }

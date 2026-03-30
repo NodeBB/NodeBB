@@ -36,7 +36,11 @@ async function rateLimitExceeded(caller, field) {
 	return false;
 }
 
-chatsAPI.list = async (caller, { uid, start, stop, page, perPage }) => {
+chatsAPI.list = async (caller, { uid = caller.uid, start, stop, page, perPage } = {}) => {
+	if ((!utils.isNumber(start) || !utils.isNumber(stop)) && !utils.isNumber(page)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	if (!start && !stop && page) {
 		winston.warn('[api/chats] Sending `page` and `perPage` to .list() is deprecated in favour of `start` and `stop`. The deprecated parameters will be removed in v4.');
 		start = Math.max(0, page - 1) * perPage;
@@ -105,9 +109,6 @@ chatsAPI.sortPublicRooms = async (caller, { roomIds, scores }) => {
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
-	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
-		throw new Error('[[error:too-many-messages]]');
-	}
 	if (!data || !data.roomId || !caller.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -118,7 +119,13 @@ chatsAPI.post = async (caller, data) => {
 	}));
 
 	await messaging.canMessageRoom(caller.uid, data.roomId);
-	const message = await messaging.sendMessage({
+	await messaging.checkContent(data.message);
+
+	if (await rateLimitExceeded(caller, 'lastChatMessageTime')) {
+		throw new Error('[[error:too-many-messages]]');
+	}
+
+	const message = await messaging.addMessage({
 		uid: caller.uid,
 		roomId: data.roomId,
 		content: data.message,
@@ -155,9 +162,17 @@ chatsAPI.update = async (caller, data) => {
 			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
 		}
 	}
-	if (data.hasOwnProperty('notificationSetting') && isAdmin) {
-		await db.setObjectField(`chat:room:${data.roomId}`, 'notificationSetting', data.notificationSetting);
+	if (isAdmin) {
+		const updateData = {};
+		if (data.hasOwnProperty('notificationSetting')) {
+			updateData.notificationSetting = data.notificationSetting;
+		}
+		if (data.hasOwnProperty('joinLeaveMessages')) {
+			updateData.joinLeaveMessages = data.joinLeaveMessages;
+		}
+		await db.setObject(`chat:room:${data.roomId}`, updateData);
 	}
+
 	const loadedRoom = await messaging.loadRoom(caller.uid, {
 		roomId: data.roomId,
 	});
@@ -249,7 +264,7 @@ chatsAPI.users = async (caller, data) => {
 	users.forEach((user) => {
 		const isSelf = parseInt(user.uid, 10) === parseInt(caller.uid, 10);
 		user.canKick = isOwner && !isSelf;
-		user.canToggleOwner = (isAdmin || isOwner) && !isSelf;
+		user.canToggleOwner = utils.isNumber(user.uid) && (isAdmin || isOwner) && !isSelf;
 		user.online = parseInt(user.uid, 10) === parseInt(caller.uid, 10) || onlineUids.includes(String(user.uid));
 	});
 	return { users };
@@ -315,7 +330,11 @@ chatsAPI.toggleOwner = async (caller, { roomId, uid, state }) => {
 	return await messaging.toggleOwner(uid, roomId, state);
 };
 
-chatsAPI.listMessages = async (caller, { uid, roomId, start, direction = null }) => {
+chatsAPI.listMessages = async (caller, { uid = caller.uid, roomId, start = 0, direction = null } = {}) => {
+	if (!roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const count = 50;
 	let stop = start + count - 1;
 	if (direction === 1 || direction === -1) {
@@ -353,12 +372,20 @@ chatsAPI.getPinnedMessages = async (caller, { start, roomId }) => {
 	return { messages };
 };
 
-chatsAPI.getMessage = async (caller, { mid, roomId }) => {
+chatsAPI.getMessage = async (caller, { mid, roomId } = {}) => {
+	if (!mid || !roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const messages = await messaging.getMessagesData([mid], caller.uid, roomId, false);
 	return messages.pop();
 };
 
-chatsAPI.getRawMessage = async (caller, { mid, roomId }) => {
+chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
+	if (!mid || !roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
 		user.isAdministrator(caller.uid),
 		messaging.canViewMessage(mid, roomId, caller.uid),

@@ -11,6 +11,8 @@ get:
             allOf:
               - type: object
                 properties:
+                  graphTitle:
+                    type: string
                   version:
                     type: string
                   lookupFailed:
@@ -18,6 +20,8 @@ get:
                   latestVersion:
                     type: string
                     nullable: true
+                  hideAllTime:
+                    type: boolean
                   upgradeAvailable:
                     type: boolean
                     nullable: true

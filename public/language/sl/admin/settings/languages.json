@@ -1,6 +1,0 @@
-{
-	"language-settings": "Nastavitve jezika",
-	"description": "Privzeti jezik določa jezikovne nastavitve za vse uporabnike, ki obiščejo vaš forum. <br /> Posamezni uporabniki lahko na strani z nastavitvami računa preglasijo privzeti jezik.",
-	"default-language": "Privzeti jezik",
-	"auto-detect": "Samodejna zaznava nastavitev jezika za goste"
-}

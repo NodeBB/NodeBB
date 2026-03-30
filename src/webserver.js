@@ -18,12 +18,13 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const useragent = require('express-useragent');
 const favicon = require('serve-favicon');
-const detector = require('spider-detector');
+const detector = require('@nodebb/spider-detector');
 const helmet = require('helmet');
 
 const Benchpress = require('benchpressjs');
 const db = require('./database');
 const analytics = require('./analytics');
+const errors = require('./meta/errors');
 const file = require('./file');
 const emailer = require('./emailer');
 const meta = require('./meta');
@@ -69,11 +70,20 @@ server.on('connection', (conn) => {
 	});
 });
 
-exports.destroy = function (callback) {
-	server.close(callback);
-	for (const connection of Object.values(connections)) {
-		connection.destroy();
-	}
+exports.destroy = function () {
+	return new Promise((resolve, reject) => {
+		server.close((err) => {
+			if (err) reject(err);
+			else resolve();
+		});
+		for (const connection of Object.values(connections)) {
+			connection.destroy();
+		}
+	});
+};
+
+exports.getConnectionCount = function () {
+	return Object.keys(connections).length;
 };
 
 exports.listen = async function () {
@@ -105,6 +115,7 @@ async function initializeNodeBB() {
 	await meta.blacklist.load();
 	await flags.init();
 	await analytics.init();
+	await errors.init();
 	await topicEvents.init();
 	if (nconf.get('runJobs')) {
 		await require('./widgets').moveMissingAreasToDrafts();
@@ -125,12 +136,18 @@ function setupExpressApp(app) {
 	});
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
-	app.set('json spaces', global.env === 'development' ? 4 : 0);
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
+
+	// https://github.com/NodeBB/NodeBB/issues/13918
+	const qs = require('qs');
+	app.set('query parser', str => qs.parse(str, {
+		arrayLimit: Math.min(100, nconf.get('queryParser:arrayLimit') || 50),
+	}));
 	app.use(flash());
 
 	app.enable('view cache');
 
-	if (global.env !== 'development') {
+	if (process.env.NODE_ENV !== 'development') {
 		app.enable('cache');
 		app.enable('minification');
 	}
@@ -182,7 +199,6 @@ function setupExpressApp(app) {
 			req: apiHelpers.buildReqObject(req),
 		}, next);
 	});
-	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
@@ -217,6 +233,9 @@ function setupHelmet(app) {
 function setupFavicon(app) {
 	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
+	if (!faviconPath.startsWith(nconf.get('upload_path'))) {
+		faviconPath = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
+	}
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
@@ -229,7 +248,14 @@ function configureBodyParser(app) {
 	}
 	app.use(bodyParser.urlencoded(urlencodedOpts));
 
-	const jsonOpts = nconf.get('bodyParser:json') || {};
+	const jsonOpts = {
+		type: [
+			'application/json',
+			'application/ld+json',
+			'application/activity+json',
+		],
+		...nconf.get('bodyParser:json'),
+	};
 	app.use(bodyParser.json(jsonOpts));
 }
 
@@ -261,9 +287,14 @@ async function listen() {
 		}
 	}
 	port = parseInt(port, 10);
-	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
-		winston.info('🤝 Enabling \'trust proxy\'');
-		app.enable('trust proxy');
+
+	let trust_proxy = nconf.get('trust_proxy');
+	if (trust_proxy == null && ![80, 443].includes(port)) {
+		trust_proxy = true;
+	}
+	if (trust_proxy) {
+		winston.info(`🤝 Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
+		app.set('trust proxy', trust_proxy);
 	}
 
 	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {

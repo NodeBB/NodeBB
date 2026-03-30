@@ -1,13 +1,13 @@
 {
-    "themes": "Themes",
+    "themes": "Style",
     "checking-for-installed": "Sprawdzanie zainstalowanego stylu...",
     "homepage": "Strona startowa",
-    "select-theme": "Wybierz Styl",
-    "revert-theme": "Revert Theme",
-    "current-theme": "Aktualny Styl",
+    "select-theme": "Wybierz styl",
+    "revert-theme": "Przywróć styl",
+    "current-theme": "Aktualny styl",
     "no-themes": "Brak zainstalowanych stylów",
     "revert-confirm": "Czy na pewno chcesz przywrócić domyślny styl NodeBB?",
-    "theme-changed": "Styl Zmieniony",
+    "theme-changed": "Styl zmieniony",
     "revert-success": "Pomyślnie przywrócono domyślny styl NodeBB.",
-    "restart-to-activate": "Proszę odbudować i zrestartować NodeBB aby w pełni aktywować ten styl."
+    "restart-to-activate": "Proszę przebudować i zrestartować NodeBB aby w pełni aktywować ten styl."
 }

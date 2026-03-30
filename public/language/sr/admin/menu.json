@@ -38,6 +38,7 @@
 	"settings/tags": "Tags",
 	"settings/notifications": "Notifikacije",
 	"settings/api": "API Access",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Sounds",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",
@@ -46,6 +47,14 @@
 	"settings/advanced": "Napredno",
 
 	"settings.page-title": "%1 Podešavanja",
+
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Izgled",
 	"appearance/themes": "Teme",
@@ -69,6 +78,7 @@
 	"advanced/logs": "Izveštaji",
 	"advanced/errors": "Greške",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Loger",
 	"development/info": "Info",
 

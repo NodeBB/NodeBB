@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "Tildelt %1 omdøme",
+	"awarded-group-membership": "Tildelt gruppemedlemskap",
+
+	"essentials/user.reputation-conditional-value": "Omdømeverdi",
+	"essentials/user.postcount-conditional-value": "Innleggstal",
+	"essentials/user.lastonline-conditional-value": "Sist pålogga",
+	"essentials/user.joindate-conditional-value": "Registreringsdato",
+	"essentials/user.daysregistered-conditional-value": "Dagar registrert"
+}

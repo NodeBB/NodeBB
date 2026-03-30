@@ -1,16 +1,16 @@
 {
-	"customise": "Customise",
-	"custom-css": "Custom CSS/SASS",
+	"customise": "Mukauta",
+	"custom-css": "Mukautettu CSS/SASS",
 	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"custom-css.enable": "Käytä mukautettuja CSS/SASS-määrityksiä",
 
-	"custom-js": "Kustomoi Javascriptiä",
+	"custom-js": "Mukautettu JavaScript",
 	"custom-js.description": "Syötä Javascript-sisältö tähän. Se suoritetaan, kun sivu on latautunut valmiiksi.",
-	"custom-js.enable": "Salli Javascript-kustomoinnit",
+	"custom-js.enable": "Käytä JavaScript-mukautusta",
 
-	"custom-header": "Kustomoi ylätunnistetta",
-	"custom-header.description": "Syötä ylätunnisteeseen eli <code>&lt;head&gt;</code>-osioon tulevat HTML-määrittelyt tähän (esim. meta-tagit ym.). Myös script-tagien käyttö on mahdollista, mutta ei suositeltavaa, sillä <a href=\"#custom-js\" data-toggle=\"tab\">Kustomoi Javascriptiä</a>-välilehti on saatavilla.",
-	"custom-header.enable": "Salli ylätunnisteen kustomointi",
+	"custom-header": "Mukauta otsaketta",
+	"custom-header.description": "Syötä otsakkeeseen, eli <code>&lt;head&gt;</code>-osioon sisällytettävät HTML-määritykset tähän (esim. meta-tagit yms.). Myös script-tagien käyttö on mahdollista, mutta ei suositeltavaa, koska <a href=\"#custom-js\" data-toggle=\"tab\">Mukautettu JavaScript</a> -välilehti on käytettävissä.",
+	"custom-header.enable": "Käytä otsakemukautusta",
 
 	"custom-css.livereload": "Salli sivun päivitys livenä",
 	"custom-css.livereload.description": "Salli tämä, jos haluat mahdollistaa kaikkien tililläsi olevien laitteiden istuntojen päivittymisen, kun tallennat tekemäsi muutokset.",

@@ -1,0 +1,85 @@
+put:
+  tags:
+    - categories
+  summary: synchronize category
+  description: |
+    **This operation requires an enabled activitypub integration**
+
+    Establishes a "follow" relationship between another activitypub-enabled actor.
+    Until an "accept" response is received, the synchronization will stay in a pending state.
+    Upon acceptance, a one-way sync is achieved; the other actor will need to follow the same category in order to achieve full two-way synchronization.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            actor:
+              type: string
+              description: A valid actor uri or webfinger handle
+              example: 'https://example.org/foobar'
+  responses:
+    '200':
+      description: successfully sent category synchronization request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - categories
+  summary: unsynchronize category
+  description: |
+    **This operation requires an enabled activitypub integration**
+
+    Removes a "follow" relationship between another activitypub-enabled actor.
+    Unlike the synchronization request, this does not require an acceptance from the remote end.
+
+    N.B. This method only severs the link for incoming content.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            actor:
+              type: string
+              description: A valid actor uri or webfinger handle
+              example: 'https://example.org/foobar'
+  responses:
+    '200':
+      description: successfully unsynchronized category
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

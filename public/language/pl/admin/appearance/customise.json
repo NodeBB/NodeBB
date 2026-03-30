@@ -1,5 +1,5 @@
 {
-	"customise": "Customise",
+	"customise": "Dostosuj",
 	"custom-css": "Niestandardowe CSS/SASS",
 	"custom-css.description": "Wprowadź tutaj własne deklaracje CSS/SASS, które zostaną zastosowane w wszystkich innych stylach.",
 	"custom-css.enable": "Włącz niestandardowe CSS/SASS",
@@ -15,6 +15,6 @@
 	"custom-css.livereload": "Włącz dynamiczne przeładowanie",
 	"custom-css.livereload.description": "Włącz, jeśli chcesz wymusić odświeżenie wszystkich sesji na każdym urządzeniu na Twoim koncie zawsze, gdy klikniesz „zapisz”.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Tutaj przeciąż zmienne bootstrap. Możesz też użyć narzędzia jak <a href=\"https://bootstrap.build/app\">bootstrap.build</a> i wkleić jego wynik tutaj.<br/>Zmiany wymagają przebudowy i restartu.",
+	"bsvariables.enable": "Włącz _variables.scss"
 }

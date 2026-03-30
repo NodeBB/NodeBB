@@ -39,8 +39,8 @@ privsAdmin.init = async () => {
 	}
 };
 
-privsAdmin.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.admin.list', Array.from(_privilegeMap.keys()));
-privsAdmin.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.admin.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
+privsAdmin.getUserPrivilegeList = () => Array.from(_privilegeMap.keys());
+privsAdmin.getGroupPrivilegeList = () => Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`);
 privsAdmin.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
 		privsAdmin.getUserPrivilegeList(),
@@ -67,6 +67,7 @@ privsAdmin.routeMap = {
 	uploadfavicon: 'admin:settings',
 	uploadTouchIcon: 'admin:settings',
 	uploadMaskableIcon: 'admin:settings',
+	uploadScreenshot: 'admin:settings',
 	uploadlogo: 'admin:settings',
 	uploadOgImage: 'admin:settings',
 	uploadDefaultAvatar: 'admin:settings',
@@ -96,6 +97,9 @@ privsAdmin.socketMap = {
 	'admin.user.removeAdmins': 'admin:admins-mods',
 
 	'admin.user.loadGroups': 'admin:users',
+	'admin.user.addCustomField': 'admin:users',
+	'admin.user.editCustomField': 'admin:users',
+	'admin.user.deleteCustomField': 'admin:users',
 	'admin.groups.join': 'admin:users',
 	'admin.groups.leave': 'admin:users',
 	'admin.user.resetLockouts': 'admin:users',
@@ -112,7 +116,6 @@ privsAdmin.socketMap = {
 	'admin.getSearchDict': 'admin:settings',
 	'admin.config.setMultiple': 'admin:settings',
 	'admin.config.remove': 'admin:settings',
-	'admin.themes.getInstalled': 'admin:settings',
 	'admin.themes.set': 'admin:settings',
 	'admin.reloadAllSessions': 'admin:settings',
 	'admin.settings.get': 'admin:settings',
@@ -146,18 +149,12 @@ privsAdmin.list = async function (uid) {
 		groupPrivilegeList.splice(idx, 1);
 	}
 
-	const labels = await utils.promiseParallel({
-		users: plugins.hooks.fire('filter:privileges.admin.list_human', privilegeLabels.slice()),
-		groups: plugins.hooks.fire('filter:privileges.admin.groups.list_human', privilegeLabels.slice()),
-	});
-
 	const keys = {
 		users: userPrivilegeList,
 		groups: groupPrivilegeList,
 	};
 
 	const payload = await utils.promiseParallel({
-		labels,
 		labelData: Array.from(_privilegeMap.values()),
 		users: helpers.getUserPrivileges(0, keys.users),
 		groups: helpers.getGroupPrivileges(0, keys.groups),

@@ -1,19 +1,19 @@
 {
-	"lead": "여기에 IP 차단 목록을 구성하세요.",
-	"description": "가끔 사용자 계정 차단으로는 부족할 때가 있습니다. 그럴 경우에는 특정 IP 또는 IP 범위로 접근을 차단하는 것이 포럼을 보호하는 가장 좋은 방법입니다. 문제가 되는 IP 주소들이나 CIDR 블록 전체를 블랙리스트에 추가하면 로그인하거나 새 계정을 등록할 수 없습니다.",
-	"active-rules": "사용 중인 규칙",
-	"validate": "블랙리스트 확인",
-	"apply": "블랙리스트 적용",
+	"lead": "여기에서 IP 차단목록을 구성하세요.",
+	"description": "가끔은 사용자 계정 차단만으로는 충분하지 않은 경우가 있습니다. 때로는 포럼에 대한 액세스를 특정 IP 또는 IP 범위로 제한하는 것이 포럼을 보호하는 가장 좋은 방법일 수 있습니다. 이러한 시나리오에서는 문제가 되는 IP 주소나 전체 CIDR 블록을 이 차단목록에 추가하면 해당 IP는 로그인하거나 새 계정을 등록할 수 없습니다.",
+	"active-rules": "활성 규칙",
+	"validate": "차단목록 유효성 검사",
+	"apply": "차단목록 적용",
 	"hints": "구문 힌트",
-	"hint-1": "각 줄마다 IP 주소 하나를 정의하십시오. IP 블록을 CIDR 형식 (예: <code>192.168.100.0/22</code>)을 따르는 한 추가 할 수 있습니다. ",
-	"hint-2": "<code>#</code>기호로 행을 시작하여 주석을 추가 할 수 있습니다.",
+	"hint-1": "한 줄에 하나의 IP 주소를 정의하세요. CIDR 형식을 따르는 IP 블록을 추가할 수 있습니다(예: <code>192.168.100.0/22</code>).",
+	"hint-2": "주석을 추가하려면 줄의 시작에 <code>#</code> 기호를 사용하세요.",
 
-	"validate.x-valid": "<strong>%2</strong> 룰(들) 중 <strong>%1</strong> 유효함.",
-	"validate.x-invalid": "다음 <strong>%1</strong> 규칙들은 유효하지 않습니다:",
+	"validate.x-valid": "<strong>%2</strong>개의 규칙 중 <strong>%1</strong>개가 유효합니다.",
+	"validate.x-invalid": "다음 <strong>%1</strong>개의 규칙이 유효하지 않습니다:",
 
-	"alerts.applied-success": "블랙리스트 적용됨",
+	"alerts.applied-success": "차단목록이 적용되었습니다",
 
-	"analytics.blacklist-hourly": "<strong>그래프 1</strong> &ndash; 시간 당 블랙리스트 방문 횟수",
-	"analytics.blacklist-daily": "<strong>그래프 2</strong> &ndash; 일간 블랙리스트 방문 횟수",
+	"analytics.blacklist-hourly": "<strong>그림 1</strong> - 시간당 차단목록 타격 횟수",
+	"analytics.blacklist-daily": "<strong>그림 2</strong> - 일일 차단목록 타격 횟수",
 	"ip-banned": "IP 차단됨"
 }

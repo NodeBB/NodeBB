@@ -4,9 +4,9 @@
     "remember-me": "ログイン情報を記憶",
     "forgot-password": "パスワードを忘れましたか？",
     "alternative-logins": "ほかのログイン方法",
-    "failed-login-attempt": "ログインに成功",
+    "failed-login-attempt": "ログインに失敗",
     "login-successful": "ログインしました！",
     "dont-have-account": "アカウントをもっていませんか?",
     "logged-out-due-to-inactivity": "しばらく操作されていなかったため、管理パネルよりログアウトされました。",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lockが有効です"
 }

@@ -29,7 +29,7 @@ define('notifications', [
 	});
 	hooks.on('filter:notifications.load', _addTimeagoString);
 
-	Notifications.loadNotifications = function (notifList, callback) {
+	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
 		callback = callback || function () {};
 		api.get('/notifications').then((data) => {
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
@@ -39,13 +39,14 @@ define('notifications', [
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
 					notifList.html(html);
-					notifList.off('click').on('click', '[data-nid]', function (ev) {
-						const notifEl = $(this);
+					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
+						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							components.get('notifications/list').dropdown('toggle');
 						}
+
+						triggerEl?.dropdown('toggle');
 
 						const unread = notifEl.hasClass('unread');
 						if (!unread) {
@@ -54,7 +55,13 @@ define('notifications', [
 						const nid = notifEl.attr('data-nid');
 						markNotification(nid, true);
 					});
-					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
+					components.get('notifications').on('click', '.mark-all-read', () => {
+						Notifications.markAllRead();
+						triggerEl?.dropdown('toggle');
+					});
+					components.get('notifications').on('click', `[href="${config.relative_path}/notifications"]`, () => {
+						triggerEl?.dropdown('toggle');
+					});
 
 					Notifications.handleUnreadButton(notifList);
 
@@ -79,7 +86,6 @@ define('notifications', [
 				$this.find('.unread').toggleClass('hidden', unread);
 				$this.find('.read').toggleClass('hidden', !unread);
 			});
-			return false;
 		});
 	};
 
@@ -96,7 +102,7 @@ define('notifications', [
 		}).catch(alerts.error);
 
 		if (!unreadNotifs[notifData.nid]) {
-			unreadNotifs[notifData.nid] = true;
+			unreadNotifs[notifData.nid] = notifData;
 		}
 	};
 
@@ -156,12 +162,21 @@ define('notifications', [
 		}
 	};
 
-	Notifications.markAllRead = function () {
-		socket.emit('notifications.markAllRead', function (err) {
+	Notifications.markAllRead = function (filter = '') {
+		socket.emit('notifications.markAllRead', { filter }, function (err) {
 			if (err) {
 				alerts.error(err);
 			}
-			unreadNotifs = {};
+			if (filter) {
+				Object.keys(unreadNotifs).forEach(nid => {
+					if (unreadNotifs[nid].type === filter) {
+						delete unreadNotifs[nid];
+					}
+				});
+			} else {
+				unreadNotifs = {};
+			}
+
 			const notifEls = $('[component="notifications/list"] [data-nid]');
 			notifEls.removeClass('unread');
 			notifEls.find('.mark-read .unread').addClass('hidden');

@@ -1,6 +1,6 @@
 {
 	"lead": "Wykaz statystyk i czasów podsumowań jest wyświetlony poniżej",
-	"disclaimer": "Proszę mieć na uwadze, że z natury tej technologii, dostarczenie wiadomości email nie jest gwarantowane. Wiele czynników ma wpływ na to, czy wiadomość wysłana na dany serwer ostatecznie trafi do skrzynki użytkownika, takich jak reputacja serwera, czarnej liście adresów IP i temu czy DKIM/SPF/DMARC jest skonfigurowane",
+	"disclaimer": "Proszę mieć na uwadze, że z natury tej technologii, dostarczenie wiadomości e-mail nie jest gwarantowane. Wiele czynników ma wpływ na to, czy wiadomość wysłana na dany serwer ostatecznie trafi do skrzynki użytkownika, takich jak reputacja serwera, czarnej liście adresów IP i temu czy DKIM/SPF/DMARC jest skonfigurowane.",
 	"disclaimer-continued": "Udana wysyłka oznacza, że wiadomość została wysłana przez NodeBB i otrzymane zostało potwierdzenie od serwera docelowego. Nie oznacza to jednak, że email dotarł do skrzynki użytkownika. Dla najlepszych rezultatów polecamy używać zewnętrznych usług dostarczania wiadomości email takich jak <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>",
 
 	"user": "Użytkownik",

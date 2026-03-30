@@ -30,6 +30,11 @@
 					<input id="sitemapTopics" class="form-control" type="text" data-field="sitemapTopics" />
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label" for="sitemapCacheDurationHours">[[admin/settings/web-crawler:sitemap-cache-duration-hours]]</label>
+					<input id="sitemapCacheDurationHours" class="form-control" type="text" data-field="sitemapCacheDurationHours" />
+				</div>
+
 				<p>
 					<button id="clear-sitemap-cache" class="btn btn-sm btn-warning">[[admin/settings/web-crawler:clear-sitemap-cache]]</button>
 					<a href="{config.relative_path}/sitemap.xml" target="_blank" class="btn btn-sm btn-light">[[admin/settings/web-crawler:view-sitemap]]</a>

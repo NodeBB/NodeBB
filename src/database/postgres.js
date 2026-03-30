@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const winston = require('winston');
 const nconf = require('nconf');
 const session = require('express-session');
@@ -13,34 +15,34 @@ postgresModule.questions = [
 	{
 		name: 'postgres:host',
 		description: 'Host IP or address of your PostgreSQL instance',
-		default: nconf.get('postgres:host') || '127.0.0.1',
+		default: nconf.get('postgres:host') || nconf.get('defaults:postgres:host') || '127.0.0.1',
 	},
 	{
 		name: 'postgres:port',
 		description: 'Host port of your PostgreSQL instance',
-		default: nconf.get('postgres:port') || 5432,
+		default: nconf.get('postgres:port') || nconf.get('defaults:postgres:port') || 5432,
 	},
 	{
 		name: 'postgres:username',
 		description: 'PostgreSQL username',
-		default: nconf.get('postgres:username') || '',
+		default: nconf.get('postgres:username') || nconf.get('defaults:postgres:username') || '',
 	},
 	{
 		name: 'postgres:password',
 		description: 'Password of your PostgreSQL database',
 		hidden: true,
-		default: nconf.get('postgres:password') || '',
+		default: nconf.get('postgres:password') || nconf.get('defaults:postgres:password') || '',
 		before: function (value) { value = value || nconf.get('postgres:password') || ''; return value; },
 	},
 	{
 		name: 'postgres:database',
 		description: 'PostgreSQL database name',
-		default: nconf.get('postgres:database') || 'nodebb',
+		default: nconf.get('postgres:database') || nconf.get('defaults:postgres:database') || 'nodebb',
 	},
 	{
 		name: 'postgres:ssl',
 		description: 'Enable SSL for PostgreSQL database access',
-		default: nconf.get('postgres:ssl') || false,
+		default: nconf.get('postgres:ssl') || nconf.get('defaults:postgres:ssl') || false,
 	},
 ];
 
@@ -360,7 +362,7 @@ postgresModule.createIndices = async function () {
 };
 
 postgresModule.checkCompatibility = function (callback) {
-	const postgresPkg = require('pg/package.json');
+	const postgresPkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../../node_modules/pg/package.json'), 'utf8'));
 	postgresModule.checkCompatibilityVersion(postgresPkg.version, callback);
 };
 

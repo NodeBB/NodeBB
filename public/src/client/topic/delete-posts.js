@@ -31,14 +31,16 @@ define('forum/topic/delete-posts', [
 			postSelect.init(function () {
 				checkButtonEnable();
 				showPostsSelected();
+			}, {
+				allowMainPostSelect: true,
 			});
 			showPostsSelected();
 
 			deleteBtn.on('click', function () {
-				deletePosts(deleteBtn, pid => `/posts/${pid}/state`);
+				deletePosts(deleteBtn, pid => `/posts/${encodeURIComponent(pid)}/state`);
 			});
 			purgeBtn.on('click', function () {
-				deletePosts(purgeBtn, pid => `/posts/${pid}`);
+				deletePosts(purgeBtn, pid => `/posts/${encodeURIComponent(pid)}`);
 			});
 		});
 	};

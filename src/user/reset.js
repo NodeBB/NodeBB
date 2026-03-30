@@ -108,7 +108,6 @@ UserReset.commit = async function (code, password) {
 		'password:shaWrapped': 1,
 	};
 
-	// don't verify email if password reset is due to expiry
 	const isPasswordExpired = userData.passwordExpiry && userData.passwordExpiry < Date.now();
 	if (!isPasswordExpired) {
 		data['email:confirmed'] = 1;
@@ -152,9 +151,12 @@ UserReset.clean = async function () {
 };
 
 UserReset.cleanByUid = async function (uid) {
-	const tokensToClean = [];
 	uid = parseInt(uid, 10);
+	if (!uid) {
+		return;
+	}
 
+	const tokensToClean = [];
 	await batch.processSortedSet('reset:issueDate', async (tokens) => {
 		const results = await db.getObjectFields('reset:uid', tokens);
 		for (const [code, result] of Object.entries(results)) {
@@ -165,11 +167,9 @@ UserReset.cleanByUid = async function (uid) {
 	}, { batch: 500 });
 
 	if (!tokensToClean.length) {
-		winston.verbose(`[UserReset.cleanByUid] No tokens found for uid (${uid}).`);
 		return;
 	}
 
-	winston.verbose(`[UserReset.cleanByUid] Found ${tokensToClean.length} token(s), removing...`);
 	await Promise.all([
 		cleanTokens(tokensToClean),
 		db.deleteObjectField('locks', `reset${uid}`),

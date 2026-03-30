@@ -1,0 +1,10 @@
+{
+	"post-sort-option": "ตัวเลือกการจัดเรียงโพสต์ %1",
+	"topic-sort-option": "ตัวเลือกการจัดเรียงกระทู้ %1",
+	"user-avatar-for": "อวาตาร์ผู้ใช้สำหรับ %1",
+	"profile-page-for": "Profile page for user %1",
+	"user-watched-tags": "แท็กที่ผู้ใช้เฝ้าดู",
+	"delete-upload-button": "ลบปุ่มอัพโหลด",
+	"group-page-link-for": "ลิงก์ไปหน้ากลุ่มสำหรับ %1",
+	"show-crossposts": "Show Cross-posts"
+}

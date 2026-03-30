@@ -7,13 +7,14 @@ const nconf = require('nconf');
 const os = require('os');
 const cproc = require('child_process');
 const util = require('util');
-const request = require('request-promise-native');
 
+const request = require('../request');
 const db = require('../database');
 const meta = require('../meta');
 const pubsub = require('../pubsub');
-const { paths } = require('../constants');
+const { paths, pluginNamePattern } = require('../constants');
 const pkgInstall = require('../cli/package-install');
+const cache = require('../cache');
 
 const packageManager = pkgInstall.getPackageManager();
 let packageManagerExecutable = packageManager;
@@ -60,6 +61,9 @@ module.exports = function (Plugins) {
 			winston.error('Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
 			throw new Error('[[error:plugins-set-in-configuration]]');
 		}
+		if (!pluginNamePattern.test(id)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
 		const isActive = await Plugins.isActive(id);
 		if (isActive) {
 			await db.sortedSetRemove('plugins:active', id);
@@ -67,6 +71,7 @@ module.exports = function (Plugins) {
 			const count = await db.sortedSetCard('plugins:active');
 			await db.sortedSetAdd('plugins:active', count, id);
 		}
+		cache.set(`plugin:isActive:${id}`, !isActive);
 		meta.reloadRequired = true;
 		const hook = isActive ? 'deactivate' : 'activate';
 		Plugins.hooks.fire(`action:plugin.${hook}`, { id: id });
@@ -74,12 +79,10 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.checkWhitelist = async function (id, version) {
-		const body = await request({
-			method: 'GET',
-			url: `https://packages.nodebb.org/api/v1/plugins/${encodeURIComponent(id)}`,
-			json: true,
-		});
-
+		const { response, body } = await request.get(`https://packages.nodebb.org/api/v1/plugins/${encodeURIComponent(id)}`);
+		if (!response.ok) {
+			throw new Error(`[[error:cant-connect-to-nbbpm]]`);
+		}
 		if (body && body.code === 'ok' && (version === 'latest' || body.payload.valid.includes(version))) {
 			return;
 		}
@@ -88,11 +91,10 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.suggest = async function (pluginId, nbbVersion) {
-		const body = await request({
-			method: 'GET',
-			url: `https://packages.nodebb.org/api/v1/suggest?package=${encodeURIComponent(pluginId)}&version=${encodeURIComponent(nbbVersion)}`,
-			json: true,
-		});
+		const { response, body } = await request.get(`https://packages.nodebb.org/api/v1/suggest?package=${encodeURIComponent(pluginId)}&version=${encodeURIComponent(nbbVersion)}`);
+		if (!response.ok) {
+			throw new Error(`[[error:cant-connect-to-nbbpm]]`);
+		}
 		return body;
 	};
 
@@ -156,11 +158,27 @@ module.exports = function (Plugins) {
 		}
 	};
 
+	Plugins.isSystemPlugin = async function (id) {
+		const pluginDir = path.join(paths.nodeModules, id, 'plugin.json');
+		try {
+			const pluginData = JSON.parse(await fs.readFile(pluginDir, 'utf8'));
+			return pluginData && pluginData.system === true;
+		} catch (err) {
+			return false;
+		}
+	};
+
 	Plugins.isActive = async function (id) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);
 		}
-		return await db.isSortedSetMember('plugins:active', id);
+		const cached = cache.get(`plugin:isActive:${id}`);
+		if (cached !== undefined) {
+			return cached;
+		}
+		const isActive = await db.isSortedSetMember('plugins:active', id);
+		cache.set(`plugin:isActive:${id}`, isActive);
+		return isActive;
 	};
 
 	Plugins.getActive = async function () {

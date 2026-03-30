@@ -136,6 +136,8 @@ paths:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
   /categories/{cid}/moderator/{uid}:
     $ref: 'write/categories/cid/moderator/uid.yaml'
+  /categories/{cid}/follow:
+    $ref: 'write/categories/cid/follow.yaml'
   /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
@@ -164,12 +166,10 @@ paths:
     $ref: 'write/topics/tid/read.yaml'
   /topics/{tid}/bump:
     $ref: 'write/topics/tid/bump.yaml'
-  /notifications:
-    $ref: 'write/notifications.yaml'
-  /notifications/{nid}:
-    $ref: 'write/notifications/nid.yaml'
-  /notifications/count:
-    $ref: 'write/notifications/count.yaml'
+  /topics/{tid}/move:
+    $ref: 'write/topics/tid/move.yaml'
+  /topics/{tid}/crossposts:
+    $ref: 'write/topics/tid/crossposts.yaml'
   /tags/{tag}/follow:
     $ref: 'write/tags/tag/follow.yaml'
   /posts/{pid}:
@@ -186,6 +186,14 @@ paths:
     $ref: 'write/posts/pid/move.yaml'
   /posts/{pid}/vote:
     $ref: 'write/posts/pid/vote.yaml'
+  /posts/{pid}/voters:
+    $ref: 'write/posts/pid/voters.yaml'
+  /posts/{pid}/upvoters:
+    $ref: 'write/posts/pid/upvoters.yaml'
+  /posts/{pid}/announcers:
+    $ref: 'write/posts/pid/announcers.yaml'
+  /posts/{pid}/announcers/tooltip:
+    $ref: 'write/posts/pid/announcers-tooltip.yaml'
   /posts/{pid}/bookmark:
     $ref: 'write/posts/pid/bookmark.yaml'
   /posts/{pid}/diffs:
@@ -196,6 +204,14 @@ paths:
     $ref: 'write/posts/pid/diffs/timestamp.yaml'
   /posts/{pid}/replies:
     $ref: 'write/posts/pid/replies.yaml'
+  /posts/queue/{id}:
+    $ref: 'write/posts/queue/id.yaml'
+  /posts/queue/{id}/notify:
+    $ref: 'write/posts/queue/notify.yaml'
+  /posts/{pid}/owner:
+    $ref: 'write/posts/pid/owner.yaml'
+  /posts/owner:
+    $ref: 'write/posts/owner.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
   /chats/unread:
@@ -228,6 +244,12 @@ paths:
     $ref: 'write/chats/roomId/messages/mid/raw.yaml'
   /chats/{roomId}/messages/{mid}/ip:
     $ref: 'write/chats/roomId/messages/mid/ip.yaml'
+  /notifications:
+    $ref: 'write/notifications.yaml'
+  /notifications/{nid}:
+    $ref: 'write/notifications/nid.yaml'
+  /notifications/count:
+    $ref: 'write/notifications/count.yaml'
   /flags/:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:
@@ -260,6 +282,22 @@ paths:
     $ref: 'write/admin/chats/roomId.yaml'
   /admin/groups:
     $ref: 'write/admin/groups.yaml'
+  /admin/activitypub/rules:
+    $ref: 'write/admin/activitypub/rules.yaml'
+  /admin/activitypub/rules/{rid}:
+    $ref: 'write/admin/activitypub/rules/rid.yaml'
+  /admin/activitypub/rules/order:
+    $ref: 'write/admin/activitypub/rules/order.yaml'
+  /admin/activitypub/relays:
+    $ref: 'write/admin/activitypub/relays.yaml'
+  /admin/activitypub/relays/{url}:
+    $ref: 'write/admin/activitypub/relays/url.yaml'
+  /admin/activitypub/blocklists:
+    $ref: 'write/admin/activitypub/blocklists.yaml'
+  /admin/activitypub/blocklists/{url}:
+    $ref: 'write/admin/activitypub/blocklists/url.yaml'
+  /admin/activitypub/blocklists/{url}/refresh:
+    $ref: 'write/admin/activitypub/blocklists/url/refresh.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:

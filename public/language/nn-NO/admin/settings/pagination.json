@@ -1,0 +1,12 @@
+{
+	"pagination": "Paginering",
+	"enable": "Aktiver",
+	"posts": "Innlegg",
+	"topics": "Emne",
+	"posts-per-page": "Innlegg per side",
+	"max-posts-per-page": "Maks innlegg per side",
+	"categories": "Kategoriar",
+	"topics-per-page": "Emne per side",
+	"max-topics-per-page": "Maks emne per side",
+	"categories-per-page": "Kategoriar per side"
+}

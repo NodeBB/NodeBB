@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "آپ نے <strong>%1</strong> ساکھ کے پوائنٹس حاصل کیے",
+	"awarded-group-membership": "آپ کو گروپ <strong>%1</strong> میں شامل کیا گیا ہے",
+
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(ساکھ %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(پوسٹس کی تعداد %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(آخری بار آن لائن %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(شامل ہونے کی تاریخ %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(رجسٹریشن کے دنوں کی تعداد %1 %2)</span>"
+}

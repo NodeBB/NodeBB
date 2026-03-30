@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
@@ -13,7 +14,10 @@ const nconf = require('nconf');
 const Benchpress = require('benchpressjs');
 const { mkdirp } = require('mkdirp');
 const { paths } = require('../src/constants');
-const sass = require('../src/utils').getSass();
+const utils = require('../src/utils');
+
+const sass = utils.getSass();
+const { generateToken, csrfSynchronisedProtection } = require('../src/middleware/csrf');
 
 const app = express();
 let server;
@@ -73,6 +77,13 @@ web.install = async function (port) {
 	app.use(bodyParser.urlencoded({
 		extended: true,
 	}));
+
+	app.use(session({
+		secret: utils.generateUUID(),
+		resave: false,
+		saveUninitialized: false,
+	}));
+
 	try {
 		await Promise.all([
 			compileTemplate(),
@@ -103,8 +114,8 @@ function launchExpress(port) {
 }
 
 function setupRoutes() {
-	app.get('/', welcome);
-	app.post('/', install);
+	app.get('/', csrfSynchronisedProtection, welcome);
+	app.post('/', csrfSynchronisedProtection, install);
 	app.get('/testdb', testDatabase);
 	app.get('/ping', ping);
 	app.get('/sping', ping);
@@ -160,6 +171,7 @@ function welcome(req, res) {
 		minimumPasswordStrength: defaults.minimumPasswordStrength,
 		installing: installing,
 		percentInstalled: installing ? ((Date.now() - timeStart) / totalTime * 100).toFixed(2) : 0,
+		csrf_token: generateToken(req),
 	});
 }
 

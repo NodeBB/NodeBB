@@ -1,0 +1,16 @@
+{
+	"title": "Zarządzaj Niestandardowymi Powodami",
+	"create-reason": "Utwórz powód",
+	"edit-reason": "Edytuj powód",
+	"reasons-help": "Powody to predefiniowane wyjaśnienia używane podczas banowania i uciszania użytkowników lub odrzucania postów z kolejki postów.",
+	"reason-title": "Tytuł",
+	"reason-type": "Typ",
+	"reason-body": "Treść",
+	"reason-all": "Wszystkie",
+	"reason-ban": "Ban",
+	"reason-mute": "Ucisz",
+	"reason-post-queue": "Kolejka Postów",
+	"reason-type-help": "Typ akcji do jakiej ten powód się stosuje. Jeśli wybrano 'Wszystkie', to ten powód będzie dostępny dla wszystkich typów akcji.",
+	"custom-reasons-saved": "Niestandardowe powody pomyślnie zapisane",
+	"delete-reason-confirm-x": "Jesteś pewien, że chcesz usunąć niestandardowy powód o tytule <strong>%1</strong>?"
+}

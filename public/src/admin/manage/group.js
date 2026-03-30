@@ -27,10 +27,6 @@ define('admin/manage/group', [
 
 		const groupName = ajaxify.data.group.name;
 
-		$('#group-selector').on('change', function () {
-			ajaxify.go('admin/manage/groups/' + $(this).val() + window.location.hash);
-		});
-
 		memberList.init('admin/manage/group');
 
 		changeGroupUserTitle.on('keyup', function () {
@@ -72,10 +68,14 @@ define('admin/manage/group', [
 
 		const cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
 			onSelect: function (selectedCategory) {
-				let cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
-				cids.push(selectedCategory.cid);
-				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
-				$('#memberPostCids').val(cids.join(','));
+				const cids = new Set(($('#memberPostCids').val() || '').split(',').filter(Boolean));
+				if (cids.has(String(selectedCategory.cid))) {
+					cids.delete(String(selectedCategory.cid));
+				} else {
+					cids.add(String(selectedCategory.cid));
+				}
+
+				$('#memberPostCids').val(Array.from(cids).join(','));
 				cidSelector.selectCategory(0);
 				return false;
 			},
@@ -92,7 +92,7 @@ define('admin/manage/group', [
 			bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 				if (confirm) {
 					api.del(`/groups/${slugify(ajaxify.data.group.name)}`, {}).then(() => {
-						ajaxify.go('/admin/managegroups');
+						ajaxify.go('/admin/manage/groups');
 					}).catch(alerts.error);
 				}
 			});

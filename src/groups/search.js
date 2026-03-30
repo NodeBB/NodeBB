@@ -9,13 +9,16 @@ module.exports = function (Groups) {
 			return [];
 		}
 		query = String(query).toLowerCase();
-		let groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
+		const excludeGroups = Array.isArray(options.excludeGroups) ? options.excludeGroups : [];
+		let groupNames = Object.values(await db.getObject('groupslug:groupname'));
 		if (!options.hideEphemeralGroups) {
 			groupNames = Groups.ephemeralGroups.concat(groupNames);
 		}
-		groupNames = groupNames.filter(name => name.toLowerCase().includes(query) &&
-			name !== Groups.BANNED_USERS && // hide banned-users in searches
-			!Groups.isPrivilegeGroup(name));
+		groupNames = groupNames.filter(
+			name => name.toLowerCase().includes(query) &&
+				name !== Groups.BANNED_USERS && // hide banned-users in searches
+				!excludeGroups.includes(name)
+		);
 		groupNames = groupNames.slice(0, 100);
 
 		let groupsData;

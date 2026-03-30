@@ -9,13 +9,13 @@ const utils = require('../../utils');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.isTagAllowed = async function (socket, data) {
-		if (!data || !utils.isNumber(data.cid) || !data.tag) {
+		if (!data || !data.tag) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
 		const systemTags = (meta.config.systemTags || '').split(',');
 		const [tagWhitelist, isPrivileged] = await Promise.all([
-			categories.getTagWhitelist([data.cid]),
+			utils.isNumber(data.cid) ? categories.getTagWhitelist([data.cid]) : [],
 			user.isPrivileged(socket.uid),
 		]);
 		return isPrivileged ||
@@ -68,19 +68,21 @@ module.exports = function (SocketTopics) {
 			}
 		}
 		data.cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
+		data.cids = data.cids.filter(cid => cid !== -1);
 		return await method(data);
 	}
 
 	// used by tag filter search
 	SocketTopics.tagFilterSearch = async function (socket, data) {
-		let cids = [];
+		let cids;
 		if (Array.isArray(data.cids)) {
 			cids = await privileges.categories.filterCids('topics:read', data.cids, socket.uid);
 		} else { // if no cids passed in get all cids we can read
 			cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+			cids = cids.filter(cid => cid !== -1);
 		}
 
-		let tags = [];
+		let tags;
 		if (data.query) {
 			const allowed = await privileges.global.can('search:tags', socket.uid);
 			if (!allowed) {
@@ -106,7 +108,8 @@ module.exports = function (SocketTopics) {
 
 		const start = parseInt(data.after, 10);
 		const stop = start + 99;
-		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		let cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		cids = cids.filter(cid => cid !== -1);
 		const tags = await topics.getCategoryTagsData(cids, start, stop);
 		return { tags: tags.filter(Boolean), nextStart: stop + 1 };
 	};

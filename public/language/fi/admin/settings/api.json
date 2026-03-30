@@ -14,7 +14,7 @@
 	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
 	"description": "Description",
 	"last-seen": "Last seen",
-	"created": "Created",
+	"created": "Luotu",
 	"create-token": "Create Token",
 	"update-token": "Update Token",
 	"master-token": "Master token",

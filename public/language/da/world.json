@@ -1,0 +1,29 @@
+{
+	"name": "Verden",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
+	"help": "Hjælp",
+
+	"help.title": "Hvad er denne side?",
+	"help.intro": "Velkommen til dit hjørne af fødiverset.",
+	"help.fediverse": "\"Fødiverset\" er et netværk af forbundne programmer og hjemmesider der allesammen taler med hinanden og hvis brugere kan se hinanden. Dette forum er fødereret og kan inteagere med det sociale net (også kaldet \"fødiverset\"). Denne side er dit hjørne af fødiverset. Den indeholder kun tråde skabt af - og delt af - brugere <strong>du</strong> følger.",
+	"help.build": "Der er måske ikke mange tråde her til at starte med; det er helt normalt. Du vil begynde at se mere indhold her med tiden, som du begynder at følge andre brugere.",
+	"help.federating": "Ligeså, hvis brugere udefra dette fourm begynder at følge <em>dig</<em>, så vil dine opslag begynde at dukke op på deres programmer og hjemmesider også.",
+	"help.next-generation": "Dette er den næste generation af sociale medier, bliv en del af det i dag!",
+
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+
+	"category-search": "Find a category...",
+	"see-more": "See more",
+	"see-less": "See less"
+}

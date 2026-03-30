@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const url = require('url');
 const winston = require('winston');
 const path = require('path');
 const chalk = require('chalk');
@@ -15,7 +14,7 @@ function setupWinston() {
 	}
 
 	const formats = [];
-	if (nconf.get('log-colorize') !== 'false') {
+	if (nconf.get('log-colorize') !== 'false' && nconf.get('log-colorize') !== false) {
 		formats.push(winston.format.colorize());
 	}
 
@@ -58,6 +57,7 @@ function loadConfig(configFile) {
 		isCluster: false,
 		isPrimary: true,
 		jobsDisabled: false,
+		acpPluginInstallDisabled: false,
 		fontawesome: {
 			pro: false,
 			styles: '*',
@@ -65,7 +65,7 @@ function loadConfig(configFile) {
 	});
 
 	// Explicitly cast as Bool, loader.js passes in isCluster as string 'true'/'false'
-	const castAsBool = ['isCluster', 'isPrimary', 'jobsDisabled'];
+	const castAsBool = ['isCluster', 'isPrimary', 'jobsDisabled', 'acpPluginInstallDisabled'];
 	nconf.stores.env.readOnly = false;
 	castAsBool.forEach((prop) => {
 		const value = nconf.get(prop);
@@ -88,12 +88,21 @@ function loadConfig(configFile) {
 	if (!nconf.get('sessionKey')) {
 		nconf.set('sessionKey', 'express.sid');
 	}
+	const url = nconf.get('url');
+	if (url) {
+		const urlObject = new URL(url);
 
-	if (nconf.get('url')) {
-		nconf.set('url', nconf.get('url').replace(/\/$/, ''));
-		nconf.set('url_parsed', url.parse(nconf.get('url')));
+		nconf.set('url', url.replace(/\/$/, ''));
+		nconf.set('url_parsed', {
+			href: urlObject.href,
+			origin: urlObject.origin,
+			protocol: urlObject.protocol,
+			host: urlObject.host,
+			hostname: urlObject.hostname,
+			port: urlObject.port,
+			pathname: urlObject.pathname,
+		});
 		// Parse out the relative_url and other goodies from the configured URL
-		const urlObject = url.parse(nconf.get('url'));
 		const relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 		nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 		nconf.set('secure', urlObject.protocol === 'https:');

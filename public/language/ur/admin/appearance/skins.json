@@ -1,0 +1,18 @@
+{
+	"skins": "جلدیں",
+	"bootswatch-skins": "بوٹس واچ جلدیں",
+	"custom-skins": "مرضی کی جلدیں",
+	"add-skin": "جلد شامل کریں",
+	"save-custom-skins": "مرضی کی جلدیں محفوظ کریں",
+	"save-custom-skins-success": "مرضی کی جلدیں کامیابی سے محفوظ ہو گئیں",
+	"custom-skin-name": "مرضی کی جلد کا نام",
+	"custom-skin-variables": "مرضی کی جلد کے متغیرات",
+	"loading": "جلدیں لوڈ ہو رہی ہیں…",
+	"homepage": "ہوم پیج",
+	"select-skin": "جلد منتخب کریں",
+	"revert-skin": "جلد واپس کریں",
+	"current-skin": "موجودہ جلد",
+	"skin-updated": "جلد تبدیل ہو گئی",
+	"applied-success": "جلد '%1' کامیابی سے لگائی گئی",
+	"revert-success": "جلد بنیادی رنگوں کی طرف واپس کر دی گئی۔"
+}

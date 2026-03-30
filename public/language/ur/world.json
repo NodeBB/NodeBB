@@ -1,0 +1,29 @@
+{
+	"name": "جهان",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
+	"help": "مدد",
+
+	"help.title": "یہ صفحہ کیا ہے؟",
+	"help.intro": "فیڈی ورس میں آپ کے اپنے گوشے میں خوش آمدید۔",
+	"help.fediverse": "„فیڈی ورس“ ایک ایسی نیٹ ورک ہے جس میں باہم مربوط ایپلیکیشنز اور ویب سائٹس ایک دوسرے سے بات چیت کرتی ہیں اور جن کے صارفین ایک دوسرے کو دیکھ سکتے ہیں۔ یہ فورم فیڈریٹڈ ہے اور اس سوشل نیٹ ورک (جسے „فیڈی ورس“ کہا جاتا ہے) کے ساتھ تعامل کر سکتا ہے۔ یہ صفحہ فیڈی ورس میں آپ کا اپنا گوشہ ہے۔ اس میں آپ صرف ان موضوعات کو دیکھیں گے جو ان صارفین نے بنائے یا شیئر کیے ہیں جنہیں <strong>آپ</strong> فالو کرتے ہیں۔",
+	"help.build": "شروع میں یہاں زیادہ موضوعات نہیں ہو سکتے۔ یہ معمول کی بات ہے۔ جب آپ دوسرے صارفین کو فالو کرنا شروع کریں گے تو آپ یہاں زیادہ مواد دیکھنا شروع کریں گے۔",
+	"help.federating": "اسی طرح، اگر اس فورم سے باہر کے صارفین <em>آپ</em> کو فالو کرنا شروع کر دیں، تو آپ کی پوسٹس ان کے ایپلیکیشنز اور ویب سائٹس پر ظاہر ہونا شروع ہو جائیں گی۔",
+	"help.next-generation": "یہ سوشل نیٹ ورک کی نئی نسل ہے۔ آج ہی سے حصہ ڈالنا شروع کریں!",
+
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+
+	"category-search": "Find a category...",
+	"see-more": "See more",
+	"see-less": "See less"
+}

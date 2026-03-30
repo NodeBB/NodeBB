@@ -1,0 +1,133 @@
+// chats need a bit of css
+
+.stacked-avatars {
+	width: 32px;
+	height: 32px;
+	span:first-child {
+		top: 0;
+		left: 8px;
+	}
+	span:last-child {
+		left: 0;
+		top: 8px;
+	}
+}
+
+body.page-user-chats {
+	#content {
+		max-width: 100%;
+		margin-bottom: 0!important;
+	}
+	overflow: hidden;
+	[data-widget-area="footer"] {
+		display: none;
+	}
+	height: 100%;
+}
+
+[component="chat/recent"] {
+	.active .chat-room-btn {
+		background-color: var(--btn-ghost-hover-color);
+	}
+}
+
+[component="chat/nav-wrapper"] {
+	width: 300px;
+	[component="chat/public/room"].unread {
+		font-weight: $font-weight-bold;
+	}
+}
+
+[component="chat/user/list"] [data-uid] {
+	[component="chat/user/list/username"] {
+		color: $text-muted;
+	}
+	&.online {
+		[component="chat/user/list/username"] {
+			color: initial;
+			font-weight: $font-weight-semibold;
+		}
+	}
+}
+
+[component="chat/message/parent"] {
+	[component="chat/message/parent/content"] > p:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.expanded-chat {
+	.chat-content {
+		.message-body {
+			@include fix-lists;
+		}
+
+		.chat-message {
+			.message-body-wrapper {
+				.controls {
+					opacity: 0;
+					transition: $transition-fade;
+					&:has([aria-expanded="true"]) { opacity: 1; }
+					[data-action="restore"], [data-action="unpin"] { display: none; }
+				}
+				&:hover {
+					.controls { opacity: 1;	}
+				}
+			}
+			&.deleted {
+				.message-body { opacity: 0.3; }
+				.message-body-wrapper .controls {
+					[data-action] { display: none; }
+					[data-action="restore"] { display: block; }
+				}
+			}
+			&.pinned {
+				.message-body-wrapper .controls {
+					[data-action="pin"] { display: none; }
+					[data-action="unpin"] { display: block;}
+				}
+			}
+		}
+	}
+}
+
+/* Mobile handling of chat page */
+@include media-breakpoint-down(lg) {
+	.page-user-chats.chat-loaded  {
+		padding-bottom: 4.75rem;
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.page-user-chats.chat-loaded  {
+		padding-bottom: initial;
+	}
+	[component="chat/nav-wrapper"] {
+		width: 100%;
+	}
+
+
+	.page-user-chats.chat-loaded .bottombar {
+		display: none!important;
+	}
+
+	[component="chat/nav-wrapper"][data-loaded="1"] {
+		display: none!important;
+	}
+
+	[component="chat/nav-wrapper"][data-loaded="0"] + [component="chat/main-wrapper"] {
+		display: none!important;
+	}
+}
+
+.chat-modal {
+	left: auto;
+	top: auto;
+	bottom: 0px;
+	right: 2rem;
+	width: auto!important;
+	height: auto!important;
+	[component="chat/user/list/btn"], [component="chat/pinned/messages/btn"] {
+		display: none!important;
+	}
+}

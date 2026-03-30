@@ -10,7 +10,7 @@ const privileges = require('../privileges');
 const helpers = require('./helpers');
 
 const controllers = {
-	api: require('../controllers/api'),
+	admin: require('../controllers/admin'),
 	helpers: require('../controllers/helpers'),
 };
 
@@ -22,7 +22,7 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 		await require('./index').applyCSRFasync(req, res);
 	}
 
-	res.locals.config = await controllers.api.loadConfig(req);
+	res.locals.config = await controllers.admin.loadConfig(req);
 	next();
 });
 
@@ -47,7 +47,6 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 		}
 	}
 
-	// If user does not have password
 	const hasPassword = await user.hasPassword(req.uid);
 	if (!hasPassword) {
 		return next();

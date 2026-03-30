@@ -11,27 +11,34 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
-		await batch.processSortedSet('users:joindate', async (uids) => {
-			async function updateHistory(uid, set, fieldName) {
-				const count = await db.sortedSetCard(set);
-				if (count <= 0) {
-					// User has not changed their username/email before, record original username
-					const userData = await user.getUserFields(uid, [fieldName, 'joindate']);
-					if (userData && userData.joindate && userData[fieldName]) {
-						await db.sortedSetAdd(set, userData.joindate, [userData[fieldName], userData.joindate].join(':'));
-					}
-				}
-			}
+		progress.total = await db.sortedSetCard('users:joindate');
 
-			await Promise.all(uids.map(async (uid) => {
-				await Promise.all([
-					updateHistory(uid, `user:${uid}:usernames`, 'username'),
-					updateHistory(uid, `user:${uid}:emails`, 'email'),
-				]);
-				progress.incr();
-			}));
+		await batch.processSortedSet('users:joindate', async (uids) => {
+			const [usernameHistory, emailHistory, userData] = await Promise.all([
+				db.sortedSetsCard(uids.map(uid => `user:${uid}:usernames`)),
+				db.sortedSetsCard(uids.map(uid => `user:${uid}:emails`)),
+				user.getUsersFields(uids, ['uid', 'username', 'email', 'joindate']),
+			]);
+
+			const bulkAdd = [];
+			userData.forEach((data, index) => {
+				const thisUsernameHistory = usernameHistory[index];
+				const thisEmailHistory = emailHistory[index];
+				if (thisUsernameHistory <= 0 && data && data.joindate && data.username) {
+					bulkAdd.push([
+						`user:${data.uid}:usernames`, data.joindate, [data.username, data.joindate].join(':'),
+					]);
+				}
+				if (thisEmailHistory <= 0 && data && data.joindate && data.email) {
+					bulkAdd.push([
+						`user:${data.uid}:emails`, data.joindate, [data.email, data.joindate].join(':'),
+					]);
+				}
+			});
+			await db.sortedSetAddBulk(bulkAdd);
+			progress.incr(uids.length);
 		}, {
-			progress: this.progress,
+			batch: 500,
 		});
 	},
 };

@@ -1,10 +1,10 @@
 {
-	"awarded-x-reputation": "You have been awarded <strong>%1</strong> reputation",
-	"awarded-group-membership": "You have been added to the group <strong>%1</strong>",
+	"awarded-x-reputation": "Դուք արժանացել եք <strong>%1</strong> հեղինակությանը",
+	"awarded-group-membership": "Ձեզ ավելացրել են խմբում <strong>%1</strong>",
 
-	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Reputation %1 %2)</span>",
-	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Post Count %1 %2)</span>",
-	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Last Online %1 %2)</span>",
-	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Join Date %1 %2)</span>",
-	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Days Registered %1 %2)</span>"
+	"essentials/user.reputation-conditional-value": "<span class=\"text-xs\">Հեղինակություն ( %1 %2)</span>",
+	"essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Գրառումների քանակ %1 %2)</span>",
+	"essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Վերջին անգամ առցանց %1 %2)</span>",
+	"essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Միանալու ամսաթիվ %1 %2)</span>",
+	"essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Գրանցված օրեր %1 %2)</span>"
 }

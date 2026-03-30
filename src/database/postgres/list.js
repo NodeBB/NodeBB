@@ -75,9 +75,26 @@ RETURNING A."array"[array_length(A."array", 1)] v`,
 		if (!key) {
 			return;
 		}
-		// TODO: remove all values with one query
+
 		if (Array.isArray(value)) {
-			await Promise.all(value.map(v => module.listRemoveAll(key, v)));
+			await module.pool.query({
+				name: 'listRemoveAllMultiple',
+				text: `
+		UPDATE "legacy_list" l
+		   SET "array" = (
+			   SELECT ARRAY(
+				   SELECT elem
+				   FROM unnest(l."array") WITH ORDINALITY AS u(elem, ord)
+				   WHERE elem NOT IN (SELECT unnest($2::TEXT[]))
+				   ORDER BY ord
+			   )
+		   )
+		  FROM "legacy_object_live" o
+		 WHERE o."_key" = l."_key"
+		   AND o."type" = l."type"
+		   AND o."_key" = $1::TEXT;`,
+				values: [key, value],
+			});
 			return;
 		}
 		await module.pool.query({

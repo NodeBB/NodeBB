@@ -7,5 +7,7 @@
     "alltime": "Siempre",
     "no-recent-topics": "No hay publicaciones recientes.",
     "no-popular-topics": "No hay publicaciones populares",
-    "load-new-posts": "Load new posts"
+    "load-new-posts": "Load new posts",
+    "uncategorized.title": "Todos los temas conocidos",
+    "uncategorized.intro": "Esta página muestra una lista en orden cronológico de cada tema que este foro ha recibido.<br />Las observaciones y opiniones expresadas en los temas no son moderadas y pueden no representar las observaciones y opiniones de este sitio."
 }

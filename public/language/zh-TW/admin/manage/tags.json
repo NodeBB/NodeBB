@@ -1,11 +1,11 @@
 {
-	"manage-tags": "Manage Tags",
+	"manage-tags": "管理標籤",
 	"none": "您的論壇目前沒有帶有標籤的主題。",
 	"bg-color": "背景顏色",
 	"text-color": "文字顏色",
 	"description": "透過點擊或者拖拉方式選擇標籤, 可同時使用 <code>CTRL</code> 來選擇多個標籤。",
 	"create": "建立標籤",
-	"add-tag": "Add tag",
+	"add-tag": "加入標籤",
 	"modify": "修改標籤",
 	"rename": "重命名標籤",
 	"delete": "刪除所選標籤",
@@ -16,5 +16,5 @@
 	"alerts.editing": "編輯(多個)標籤",
 	"alerts.confirm-delete": "是否要刪除所選標籤？",
 	"alerts.update-success": "標籤已更新！",
-	"reset-colors": "Reset colors"
+	"reset-colors": "重置顏色"
 }

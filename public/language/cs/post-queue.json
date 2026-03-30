@@ -3,10 +3,10 @@
 	"post-queue": "Fronta příspěvků",
 	"no-queued-posts": "There are no posts in the post queue.",
 	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
-	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"enabling-help": "Fronta příspěvků je momentálně <strong>zakázána</strong>. Chcete-li tuto funkci povolit, přejděte do <a href=\"%1\">Nastavení &rarr;  Příspěvek &rarr;  Fronta příspěvků</a> a zapněte <strong>Frontu příspěvků</strong>.",
 	"back-to-list": "Back to Post Queue",
-	"public-intro": "If you have any queued posts, they will be shown here.",
-	"public-description": "This forum is configured to automatically queue posts from new accounts, pending moderator approval.<br />If you have queued posts awaiting approval, you will be able to see them here.",
+	"public-intro": "Pokud máte nějaké příspěvky ve frontě, budou zde zobrazeny.",
+	"public-description": "Toto fórum je nastaveno tak, aby automaticky zařazovalo příspěvky od nových účtů do fronty čekající na schválení moderátorem.<br /> Pokud máte příspěvky ve frontě čekající na schválení, uvidíte je zde.",
 	"user": "Uživatel",
 	"when": "When",
 	"category": "Kategorie",
@@ -38,5 +38,6 @@
 	"remove-selected": "Remove Selected",
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"bulk-reject-success": "%1 posts rejected",
+	"links-in-this-post": "Odkazy v tomto příspěvku"
 }

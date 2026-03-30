@@ -8,6 +8,7 @@ const winston = require('winston');
 const db = require('../database');
 const pubsub = require('../pubsub');
 const Meta = require('./index');
+const translator = require('../translator');
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults.json');
 
@@ -132,6 +133,7 @@ Configs.setMultiple = async function (data) {
 	await processConfig(data);
 	data = serialize(data);
 	await db.setObject('config', data);
+	await updateNavItems(data);
 	updateConfig(deserialize(data));
 };
 
@@ -189,7 +191,9 @@ function ensureInteger(data, field, min) {
 	if (data.hasOwnProperty(field)) {
 		data[field] = parseInt(data[field], 10);
 		if (!(data[field] >= min)) {
-			throw new Error('[[error:invalid-data]]');
+			throw new Error(translator.compile(
+				'error:invalid-config-field-value', field, data[field]
+			));
 		}
 	}
 }
@@ -226,6 +230,13 @@ async function getLogoSize(data) {
 	data['brand:emailLogo'] = nconf.get('url') + path.join(nconf.get('upload_url'), 'system', 'site-logo-x50.png');
 	data['brand:emailLogo:height'] = size.height;
 	data['brand:emailLogo:width'] = size.width;
+}
+
+async function updateNavItems(data) {
+	if (data.hasOwnProperty('activitypubEnabled')) {
+		const navAdmin = require('../navigation/admin');
+		await navAdmin.update('/world', { enabled: data.activitypubEnabled ? 'on' : '' });
+	}
 }
 
 function updateConfig(config) {

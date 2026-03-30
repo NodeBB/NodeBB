@@ -64,6 +64,7 @@
 	"show-email": "Zobraziť e-mail",
 	"show-fullname": "Zobraziť celé meno",
 	"restrict-chat": "Povoliť správy konverzácie iba od používateľov, ktorých sledujem",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Otvoriť odchádzajúce odkazy v novom liste",
 	"topic-search": "Povoliť vyhľadávanie v témach",
 	"update-url-with-post-index": "Update url with post index while browsing topics",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
 	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
 	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Povoliť upravovanie zaobchádzania s hosťami",
+	"handles.enabled-help": "Táto možnosť odkryje nové pole, ktoré umožňuje hosťom vybrať meno, ktoré sa pripojí ku každému príspevku, ktorý vytvorí. Ak bude zakázané, budú jednoducho nazývaní 'Hosť'",
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

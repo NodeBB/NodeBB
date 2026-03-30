@@ -256,27 +256,27 @@
 			<hr/>
 
 			<div id="guest-settings" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/guest:guest-settings]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:guest-settings]]</h5>
 
 				<div class="mb-3">
 					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" type="checkbox" id="allowGuestHandles" data-field="allowGuestHandles">
-						<label for="allowGuestHandles" class="form-check-label">[[admin/settings/guest:handles.enabled]]</label>
+						<label for="allowGuestHandles" class="form-check-label">[[admin/settings/user:handles.enabled]]</label>
 					</div>
 					<p class="form-text">
-						[[admin/settings/guest:handles.enabled-help]]
+						[[admin/settings/user:handles.enabled-help]]
 					</p>
 				</div>
 				<div class="mb-3">
 					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" type="checkbox" id="guestsIncrementTopicViews" data-field="guestsIncrementTopicViews">
-						<label for="guestsIncrementTopicViews" class="form-check-label">[[admin/settings/guest:topic-views.enabled]]</label>
+						<label for="guestsIncrementTopicViews" class="form-check-label">[[admin/settings/user:topic-views.enabled]]</label>
 					</div>
 				</div>
 				<div class="mb-3">
 					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" type="checkbox" id="allowGuestReplyNotifications" data-field="allowGuestReplyNotifications">
-						<label for="allowGuestReplyNotifications" class="form-check-label">[[admin/settings/guest:reply-notifications.enabled]]</label>
+						<label for="allowGuestReplyNotifications" class="form-check-label">[[admin/settings/user:reply-notifications.enabled]]</label>
 					</div>
 				</div>
 			</div>
@@ -296,8 +296,8 @@
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" id="restrictChat" data-field="restrictChat">
-					<label for="restrictChat" class="form-check-label">[[admin/settings/user:restrict-chat]]</label>
+					<input class="form-check-input" type="checkbox" id="disableIncomingChats" data-field="disableIncomingChats">
+					<label for="disableIncomingChats" class="form-check-label">[[admin/settings/user:disable-incoming-chats]]</label>
 				</div>
 
 				<div class="form-check form-switch mb-3">

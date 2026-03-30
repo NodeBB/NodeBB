@@ -1,7 +1,5 @@
 'use strict';
 
-
-const async = require('async');
 const assert = require('assert');
 const db = require('../mocks/databasemock');
 
@@ -46,6 +44,12 @@ describe('Key methods', () => {
 		assert.deepStrictEqual(await db.mget(null), []);
 	});
 
+	it('should return 0 if value of key is 0', async () => {
+		await db.set('zeroKey', 0);
+		const value = await db.mget(['zeroKey']);
+		assert.strictEqual(String(value[0]), '0');
+	});
+
 	it('should return true if key exist', (done) => {
 		db.exists('testKey', function (err, exists) {
 			assert.ifError(err);
@@ -64,12 +68,15 @@ describe('Key methods', () => {
 		});
 	});
 
-	it('should work for an array of keys', (done) => {
-		db.exists(['testKey', 'doesnotexist'], (err, exists) => {
-			assert.ifError(err);
-			assert.deepStrictEqual(exists, [true, false]);
-			done();
-		});
+	it('should work for an array of keys', async () => {
+		assert.deepStrictEqual(
+			await db.exists(['testKey', 'doesnotexist']),
+			[true, false]
+		);
+		assert.deepStrictEqual(
+			await db.exists([]),
+			[]
+		);
 	});
 
 	describe('scan', () => {
@@ -84,6 +91,27 @@ describe('Key methods', () => {
 			assert(data.includes('ip:123:uid'));
 			assert(data.includes('ip:124:uid'));
 			assert(data.includes('ip:1:uid'));
+		});
+
+		it('should scan keys for specific glob pattern', async () => {
+			const keys = [
+				'tid:00000b86-a333-45ee-ba88-17e78aa6c814:recipients',
+				'tid:00001fa5-61e1-4ba5-ac22-572ab98eb76f:recipients',
+				'tid:00002ce3-203d-4b14-a201-b3d021f462a5:recipients',
+				'other:123:stuff',
+				'tid:999:sender',
+			];
+			await db.sortedSetAddBulk(keys.map(key => [key, 1, 'a']));
+
+			const data = await db.scan({ match: 'tid:*:recipients' });
+
+			assert.equal(data.length, 3, 'Should have found exactly 3 recipient keys');
+			assert(data.includes('tid:00000b86-a333-45ee-ba88-17e78aa6c814:recipients'));
+			assert(data.includes('tid:00001fa5-61e1-4ba5-ac22-572ab98eb76f:recipients'));
+			assert(data.includes('tid:00002ce3-203d-4b14-a201-b3d021f462a5:recipients'));
+
+			assert(!data.includes('other:123:stuff'), 'Should not include unrelated keys');
+			assert(!data.includes('tid:999:sender'), 'Should not include sender keys');
 		});
 	});
 
@@ -112,67 +140,29 @@ describe('Key methods', () => {
 		});
 	});
 
-	it('should delete all keys passed in', (done) => {
-		async.parallel([
-			function (next) {
-				db.set('key1', 'value1', next);
-			},
-			function (next) {
-				db.set('key2', 'value2', next);
-			},
-		], (err) => {
-			if (err) {
-				return done(err);
-			}
-			db.deleteAll(['key1', 'key2'], function (err) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 1);
-				async.parallel({
-					key1exists: function (next) {
-						db.exists('key1', next);
-					},
-					key2exists: function (next) {
-						db.exists('key2', next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.key1exists, false);
-					assert.equal(results.key2exists, false);
-					done();
-				});
-			});
-		});
+	it('should delete all keys passed in', async () => {
+		await Promise.all([
+			db.set('key1', 'value1'),
+			db.set('key2', 'value2'),
+		]);
+
+		await db.deleteAll(['key1', 'key2']);
+		const [key1Exists, key2Exists] = await db.exists(['key1', 'key2']);
+		assert.strictEqual(key1Exists, false);
+		assert.strictEqual(key2Exists, false);
 	});
 
-	it('should delete all sorted set elements', (done) => {
-		async.parallel([
-			function (next) {
-				db.sortedSetAdd('deletezset', 1, 'value1', next);
-			},
-			function (next) {
-				db.sortedSetAdd('deletezset', 2, 'value2', next);
-			},
-		], (err) => {
-			if (err) {
-				return done(err);
-			}
-			db.delete('deletezset', (err) => {
-				assert.ifError(err);
-				async.parallel({
-					key1exists: function (next) {
-						db.isSortedSetMember('deletezset', 'value1', next);
-					},
-					key2exists: function (next) {
-						db.isSortedSetMember('deletezset', 'value2', next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.key1exists, false);
-					assert.equal(results.key2exists, false);
-					done();
-				});
-			});
-		});
+	it('should delete all sorted set elements', async () => {
+		await db.sortedSetAddBulk([
+			['deletezset', 1, 'value1'],
+			['deletezset', 2, 'value2'],
+		]);
+
+		await db.delete('deletezset');
+		const [key1Exists, key2Exists] = await db.isSortedSetMembers('deletezset', ['value1', 'value2']);
+
+		assert.strictEqual(key1Exists, false);
+		assert.strictEqual(key2Exists, false);
 	});
 
 	describe('increment', () => {

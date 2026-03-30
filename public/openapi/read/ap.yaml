@@ -1,0 +1,31 @@
+get:
+  tags:
+    - activitypub
+  summary: Fetch URL for in-app processing
+  description: |
+    This route accepts a URL in the `resource` query parameter, and runs some quick tests to
+    determine whether that address points to an ActivityPub resource. If so, then it will try
+    to process it locally and redirect the user to the local representation of it.
+
+    If there is no local representation available, then the user is sent off-site as originally
+    expected.
+  parameters:
+    - in: query
+      name: resource
+      schema:
+        type: string
+      description: A URL-encoded address to query for potential ActivityPub resource
+      example: 'https://try.nodebb.org/uid/1'
+  responses:
+    "200":
+      description: Sent if the `/api` prefix is used. The `X-Redirect` header is sent with the redirection target.
+      headers:
+        'X-Redirect':
+          schema:
+            type: string
+    "307":
+      description: Redirect the user to the local representation or /outgoing interstitial page for original URL.
+      headers:
+        Location:
+          schema:
+            type: string

@@ -1,0 +1,13 @@
+{
+	"logger": "Logger",
+	"logger-settings": "Logger ayarları",
+	"description": "Yoxlama qutularını aktivləşdirməklə, siz terminalınıza qeydlər alacaqsınız. Bir yol göstərsəniz, qeydlər bunun əvəzinə faylda saxlanacaq. HTTP girişi, forumunuzda insanların kim, nə vaxt və nəyə daxil olması ilə bağlı statistika toplamaq üçün faydalıdır. HTTP sorğularını qeyd etməklə yanaşı, biz socket.io hadisələrini də qeyd edə bilərik. Socket.io girişi, redis-cli monitoru ilə birlikdə NodeBB-nin daxili hissələrini öyrənmək üçün çox faydalı ola bilər.",
+	"explanation": "Aktivləşdirmək və ya söndürmək üçün sadəcə giriş parametrlərini çek/ançek edin. Yenidən başlatmağa ehtiyac yoxdur.",
+	"enable-http": "HTTP loqunu aktiv edin",
+	"enable-socket": "Socket.io hadisə qeydini aktiv edin",
+	"file-path": "Loq faylına yol",
+	"file-path-placeholder": "/path/to/log/file.log ::: terminalınıza loqlamaq üçün boş saxlayın",
+
+	"control-panel": "Logger idarəetmə paneli",
+	"update-settings": "Logger parametrlərini yenilə"
+}

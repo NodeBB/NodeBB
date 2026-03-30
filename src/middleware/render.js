@@ -45,20 +45,28 @@ module.exports = function (middleware) {
 				options.loggedInUser = await getLoggedInUser(req);
 				options.relative_path = relative_path;
 				options.template = { name: template, [template]: true };
-				options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
+				options.url = options.url || (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
 
 				if (req.loggedIn) {
 					res.set('cache-control', 'private');
 				}
 
-				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, { req: req, res: res, templateData: options });
+				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, {
+					req: req,
+					res: res,
+					templateData: options,
+				});
 				if (res.headersSent) {
 					return;
 				}
 				const templateToRender = buildResult.templateData.templateToRender || template;
 
-				const renderResult = await plugins.hooks.fire('filter:middleware.render', { req: req, res: res, templateData: buildResult.templateData });
+				const renderResult = await plugins.hooks.fire('filter:middleware.render', {
+					req: req,
+					res: res,
+					templateData: buildResult.templateData,
+				});
 				if (res.headersSent) {
 					return;
 				}
@@ -80,7 +88,7 @@ module.exports = function (middleware) {
 					if (req.route && req.route.path === '/api/') {
 						options.title = '[[pages:home]]';
 					}
-					req.app.set('json spaces', global.env === 'development' || req.query.pretty ? 4 : 0);
+					req.app.set('json spaces', process.env.NODE_ENV === 'development' || req.query.pretty ? 4 : 0);
 					return res.json(options);
 				}
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
@@ -108,7 +116,7 @@ module.exports = function (middleware) {
 			}
 
 			try {
-				await renderMethod(template, { ...res.locals.templateValues, ...options }, fn);
+				await renderMethod(template, options, fn);
 			} catch (err) {
 				next(err);
 			}
@@ -122,7 +130,7 @@ module.exports = function (middleware) {
 			return await user.getUserData(req.uid);
 		}
 		return {
-			uid: 0,
+			uid: req.uid === -1 ? -1 : 0,
 			username: '[[global:guest]]',
 			picture: user.getDefaultAvatar(),
 			'icon:text': '?',
@@ -142,6 +150,7 @@ module.exports = function (middleware) {
 	async function loadClientHeaderFooterData(req, res, options) {
 		const registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
+		const userLang = res.locals.config.userLang || meta.config.userLang || 'en-GB';
 		const templateValues = {
 			title: meta.config.title || '',
 			'title:url': meta.config['title:url'] || '',
@@ -172,11 +181,11 @@ module.exports = function (middleware) {
 			blocks: user.blocks.list(req.uid),
 			user: user.getUserData(req.uid),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
-			languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
-			timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
-			browserTitle: translator.translate(controllersHelpers.buildTitle(title)),
+			languageDirection: translator.translate('[[language:dir]]', userLang),
+			timeagoCode: languages.userTimeagoCode(userLang),
+			browserTitle: translator.translate(controllersHelpers.buildTitle(title), userLang),
 			navigation: navigation.get(req.uid),
-			roomIds: db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0),
+			roomIds: req.uid > 0 ? db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0) : [],
 		});
 
 		const unreadData = {
@@ -214,7 +223,7 @@ module.exports = function (middleware) {
 		templateValues.isAdmin = results.user.isAdmin;
 		templateValues.isGlobalMod = results.user.isGlobalMod;
 		templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
-		templateValues.canChat = results.privileges.chat && meta.config.disableChat !== 1;
+		templateValues.canChat = (results.privileges.chat || results.privileges['chat:privileged']) && meta.config.disableChat !== 1;
 		templateValues.user = results.user;
 		templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 		templateValues.useCustomCSS = meta.config.useCustomCSS && meta.config.customCSS;

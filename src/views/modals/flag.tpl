@@ -1,9 +1,9 @@
-<div class="modal" tabindex="-1" role="dialog" aria-labelledby="[[flags:modal-title]]" aria-hidden="true">
+<div class="modal" tabindex="-1" role="dialog" aria-label="[[flags:modal-title]]">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">[[flags:modal-title]]</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
 			</div>
 			<div class="modal-body">
 				<p class="lead">
@@ -31,9 +31,17 @@
 						</label>
 					</div>
 				</div>
-				<div class="mb-3">
+				<div class="mb-2">
 					<textarea class="form-control" id="flag-reason-custom" placeholder="[[flags:modal-reason-custom]]" disabled="disabled"></textarea>
 				</div>
+				{{{ if remote }}}
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" name="flag-notify-remote" checked="checked">
+					<label class="form-check-label text-sm" for="flag-notify-remote">
+						[[flags:modal-notify-remote, {remote}]]
+					</label>
+				</div>
+				{{{ end }}}
 
 				<button type="button" class="btn btn-primary" id="flag-post-commit" disabled>[[flags:modal-submit]]</button>
 			</div>

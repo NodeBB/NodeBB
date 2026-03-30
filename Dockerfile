@@ -1,51 +1,76 @@
-FROM --platform=$BUILDPLATFORM node:lts as npm
+FROM node:lts as build
 
-RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/build
-WORKDIR /usr/src/build
+ENV NODE_ENV=production \
+    DAEMON=false \
+    SILENT=false \
+    USER=nodebb \
+    UID=1001 \
+    GID=1001
 
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
+WORKDIR /usr/src/app/
 
-COPY --chown=node:node install/package.json /usr/src/build/package.json
+COPY . /usr/src/app/
 
-USER node
+# Install corepack to allow usage of other package managers
+RUN corepack enable
 
-RUN npm install --omit=dev
+# Removing unnecessary files for us
+RUN find . -mindepth 1 -maxdepth 1 -name '.*' ! -name '.' ! -name '..' -exec bash -c 'echo "Deleting {}"; rm -rf {}' \;
 
-FROM node:lts as rebuild
+# Prepage package.json
+RUN cp /usr/src/app/install/package.json /usr/src/app/
 
-ARG BUILDPLATFORM
-ARG TARGETPLATFORM
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive \
+    apt-get -y --no-install-recommends install \
+        tini
 
-RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/build
+RUN groupadd --gid ${GID} ${USER} \
+    && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
+    && chown -R ${USER}:${USER} /usr/src/app/
 
-COPY --from=npm /usr/src/build /usr/src/build
+USER ${USER}
 
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
-    npm rebuild && \
-    npm cache clean --force; fi
+RUN npm install --omit=dev \
+    && rm -rf .npm
+    # TODO: generate lockfiles for each package manager
+    ## pnpm import \
 
-FROM node:lts-slim as run
+FROM node:lts-slim AS final
 
-ARG NODE_ENV
-ENV NODE_ENV=$NODE_ENV \
-    daemon=false \
-    silent=false
+ENV NODE_ENV=production \
+    DAEMON=false \
+    SILENT=false \
+    USER=nodebb \
+    UID=1001 \
+    GID=1001
 
-RUN mkdir -p /usr/src/app && \
-    chown -R node:node /usr/src/app
+WORKDIR /usr/src/app/
 
-COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
+RUN corepack enable \
+    && groupadd --gid ${GID} ${USER} \
+    && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
+    && mkdir -p /usr/src/app/logs/ /opt/config/ \
+    && chown -R ${USER}:${USER} /usr/src/app/ /opt/config/
 
+COPY --from=build --chown=${USER}:${USER} /usr/src/app/ /usr/src/app/install/docker/setup.json /usr/src/app/
+COPY --from=build --chown=${USER}:${USER} /usr/bin/tini /usr/src/app/install/docker/entrypoint.sh /usr/local/bin/
 
-WORKDIR /usr/src/app
+RUN chmod +x /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/tini
 
-USER node
+# TODO: Have docker-compose use environment variables to create files like setup.json and config.json.
+# COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/local/bin/gomplate
 
-COPY --chown=node:node . /usr/src/app
+USER ${USER}
 
 EXPOSE 4567
-VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config"]
-ENTRYPOINT ["./install/docker/entrypoint.sh"]
+
+VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config/"]
+
+# Utilising tini as our init system within the Docker container for graceful start-up and termination.
+# Tini serves as an uncomplicated init system, adept at managing the reaping of zombie processes and forwarding signals.
+# This approach is crucial to circumvent issues with unmanaged subprocesses and signal handling in containerised environments.
+# By integrating tini, we enhance the reliability and stability of our Docker containers.
+# Ensures smooth start-up and shutdown processes, and reliable, safe handling of signal processing.
+ENTRYPOINT ["tini", "--", "entrypoint.sh"]

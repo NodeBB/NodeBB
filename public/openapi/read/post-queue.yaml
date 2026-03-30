@@ -1,7 +1,7 @@
 get:
   tags:
     - admin
-  summary: Get flag data
+  summary: Get post queue
   responses:
     "200":
       description: ""
@@ -42,6 +42,8 @@ get:
                               description: A user identifier
                             type:
                               type: string
+                            canEdit:
+                              type: boolean
                             data:
                               type: object
                               properties:

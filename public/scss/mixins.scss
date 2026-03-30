@@ -111,6 +111,33 @@
 	}
 }
 
+// Use on elements with `line-clamp-*` classes
+@mixin clamp-fade($lines, $line-height) {
+	cursor: pointer;
+
+	&.line-clamp-#{$lines} {
+		$solid-threshold: calc(#{$line-height} * (#{$lines} - 1.0));
+		$total-height: calc(#{$line-height} * #{$lines});
+		$gradient: linear-gradient(
+			to bottom,
+			black 0px,
+			black #{$solid-threshold},
+			transparent #{$total-height}
+		);
+		mask-image: $gradient;
+		-webkit-mask-image: $gradient;
+	}
+}
+
+@for $i from 1 through 6 {
+	.clamp-fade-#{$i} {
+		@include clamp-fade($i, #{$line-height-base}em);
+	}
+	.clamp-fade-sm-#{$i} {
+		@include clamp-fade($i, #{$line-height-sm}em);
+	}
+}
+
 @each $color, $value in $grays {
 	.border-gray-#{$color} {
 		border-color: $value !important;

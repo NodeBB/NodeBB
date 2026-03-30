@@ -3,7 +3,7 @@
     "no-tag-topics": "এই ট্যাগ সম্বলিত কোন টপিক নেই",
     "no-tags-found": "No tags found",
     "tags": "ট্যাগসমূহ",
-    "enter-tags-here": "Enter tags here, between %1 and %2 characters each.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "ট্যাগ বসান",
     "no-tags": "এখন পর্যন্ত কোন ট্যাগ নেই",
     "select-tags": "Select Tags",

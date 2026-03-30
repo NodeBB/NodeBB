@@ -64,6 +64,7 @@
 	"show-email": "Показывать адрес электронной почты",
 	"show-fullname": "Показывать полное имя",
 	"restrict-chat": "Разрешить чат только с теми, на кого подписаны",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "Открывать внешние ссылки в новой вкладке",
 	"topic-search": "Включить поиск по сообщениям внутри тем",
 	"update-url-with-post-index": "Обновлять URL-адрес с индексом публикации при просмотре тем",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
 	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
 	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "Разрешить гостям выбирать имена",
+	"handles.enabled-help": "Эта настройка добавляет поле, в котором гость сможет указать имя, под которым он хочет оставить сообщение. Когда она выключена, вместо имени будет написано просто &laquo;Гость&raquo;.",
+	"topic-views.enabled": "Разрешить гостям увеличивать количество просмотров тем",
+	"reply-notifications.enabled": "Разрешить гостям создавать уведомления об ответах"
 }

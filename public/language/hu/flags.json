@@ -1,6 +1,6 @@
 {
 	"state": "Állapot",
-	"report": "Report",
+	"report": "Jelentés",
 	"reports": "Jelentés",
 	"first-reported": "Először jelentve",
 	"no-flags": "Hurrá! Nincs megjelölés.",
@@ -9,8 +9,8 @@
 	"update": "Frissítés",
 	"updated": "Frissítve",
 	"resolved": "Megoldva",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Hozzáadva",
+	"report-rescinded": "Visszavont",
 	"target-purged": "A tartalom amire a jelölő mutat már meg lett tiszítva vagy nem létezik.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 
@@ -84,12 +84,18 @@
 	"modal-reason-offensive": "Támadó jellegű",
 	"modal-reason-other": "Más (fejtsd ki lent)",
 	"modal-reason-custom": "Tartalom jelentésének az indoka...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Jelentés beküldése",
 	"modal-submit-success": "A tartalom meg lett jelölve egy moderátornak.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Tömeges műveletek",
 	"bulk-resolve": "Megoldott jelölés",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 jelölő frissítve",
-	"flagged-timeago-readable": "Megjelölve <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatikus Megjelölés] %1 negatív szavazatot kapott."
 }

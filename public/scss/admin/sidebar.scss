@@ -1,12 +1,12 @@
 #sidebar-left, #offcanvas {
-	.btn-ghost, .btn-ghost-sm {
+	.btn-ghost {
 		i {
 			color: $gray-500;
 		}
 	}
 
 	.accordion-body {
-		.btn-ghost-sm {
+		.btn-ghost.btn-sm {
 			padding-left: 38px!important;
 		}
 	}

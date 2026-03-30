@@ -1,10 +1,18 @@
 'use strict';
 
 module.exports = function (opts) {
-	const TTLCache = require('@isaacs/ttlcache');
+	const { TTLCache } = require('@isaacs/ttlcache');
+	const os = require('os');
+	const winston = require('winston');
+	const chalk = require('chalk');
+
 	const pubsub = require('../pubsub');
+	const tracker = require('./tracker');
 
 	const ttlCache = new TTLCache(opts);
+	if (!opts.name) {
+		winston.warn(`[cache/init] ${chalk.white.bgRed.bold('WARNING')} The cache name is not set. This will be required in the future.\n ${new Error('t').stack} `);
+	}
 
 	const cache = {};
 	cache.name = opts.name;
@@ -30,7 +38,7 @@ module.exports = function (opts) {
 		});
 	});
 
-	cache.has = (key) => {
+	cache.has = function (key) {
 		if (!cache.enabled) {
 			return false;
 		}
@@ -63,6 +71,9 @@ module.exports = function (opts) {
 	};
 
 	cache.del = function (keys) {
+		if (!cache.enabled) {
+			return;
+		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
@@ -72,7 +83,9 @@ module.exports = function (opts) {
 	cache.delete = cache.del;
 
 	cache.reset = function () {
-		pubsub.publish(`${cache.name}:ttlCache:reset`);
+		pubsub.publish(`${cache.name}:ttlCache:reset`, {
+			id: `${os.hostname()}:${process.pid}`,
+		});
 		localReset();
 	};
 	cache.clear = cache.reset;
@@ -83,8 +96,10 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:ttlCache:reset`, () => {
-		localReset();
+	pubsub.on(`${cache.name}:ttlCache:reset`, ({ id }) => {
+		if (id !== `${os.hostname()}:${process.pid}`) {
+			localReset();
+		}
 	});
 
 	pubsub.on(`${cache.name}:ttlCache:del`, (keys) => {
@@ -123,5 +138,6 @@ module.exports = function (opts) {
 		return ttlCache.get(key, { updateAgeOnGet: false });
 	};
 
+	tracker.addCache(opts.name, cache);
 	return cache;
 };

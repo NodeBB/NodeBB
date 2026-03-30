@@ -1,15 +1,15 @@
 {
-	"errors": "Errors",
-	"figure-x": "그래프 %1",
-	"error-events-per-day": "일일 <code>%1</code> 이벤트 발생 횟수",
+	"errors": "오류",
+	"figure-x": "표 %1",
+	"error-events-per-day": "하루당 <code>%1</code> 이력",
 	"error.404": "404 Not Found",
 	"error.503": "503 Service Unavailable",
 	"manage-error-log": "오류 로그 관리",
-	"export-error-log": "오류 로그 저장 (CSV)",
-	"clear-error-log": "오류 로그 초기화",
-	"route": "경로",
-	"count": "횟수",
-	"no-routes-not-found": "만세! 404 오류 없음!",
-	"clear404-confirm": "404 오류 로그를 초기화하시겠습니까?",
-	"clear404-success": "\"404 Not Found\" 오류 로그 초기화 완료"
+	"export-error-log": "Export Error Log (CSV)",
+	"clear-error-log": "Clear Error Log",
+	"route": "Route",
+	"count": "Count",
+	"no-routes-not-found": "만세! 404 오류가 없습니다!",
+	"clear404-confirm": "404 오류 로그를 지우시겠습니까?",
+	"clear404-success": "\"404 Not Found\" 오류를 비웠습니다"
 }

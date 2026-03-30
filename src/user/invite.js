@@ -4,6 +4,7 @@
 const async = require('async');
 const nconf = require('nconf');
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -71,6 +72,27 @@ module.exports = function (User) {
 		}
 	};
 
+	User.isInviteTokenValid = async function (token, enteredEmail) {
+		if (!token) return false;
+		const email = await db.getObjectField(`invitation:token:${token}`, 'email');
+		return email && email === enteredEmail;
+	};
+
+	User.getEmailFromToken = async function (token) {
+		if (!token) return null;
+		return await db.getObjectField(`invitation:token:${token}`, 'email');
+	};
+
+	User.setInviterUid = async function (uid, token) {
+		if (!token) {
+			return;
+		}
+		const inviterUid = await db.getObjectField(`invitation:token:${token}`, 'inviter');
+		if (inviterUid) {
+			await User.setUserField(uid, 'invitedBy', inviterUid);
+		}
+	};
+
 	User.confirmIfInviteEmailIsUsed = async function (token, enteredEmail, uid) {
 		if (!enteredEmail) {
 			return;
@@ -88,15 +110,14 @@ module.exports = function (User) {
 
 		try {
 			groupsToJoin = JSON.parse(groupsToJoin);
-		} catch (e) {
+		} catch (err) {
+			winston.error(`[User.joinGroupsFromInvitation] ${err.stack}`);
 			return;
 		}
 
-		if (!groupsToJoin || groupsToJoin.length < 1) {
-			return;
+		if (Array.isArray(groupsToJoin) && groupsToJoin.length) {
+			await groups.join(groupsToJoin, uid);
 		}
-
-		await groups.join(groupsToJoin, uid);
 	};
 
 	User.deleteInvitation = async function (invitedBy, email) {

@@ -11,12 +11,15 @@ const meta = require('../meta');
 const db = require('../database');
 const groups = require('../groups');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
+const tx = require('../translator');
 
 module.exports = function (User) {
 	User.updateProfile = async function (uid, data, extraFields) {
 		let fields = [
-			'username', 'email', 'fullname', 'website', 'location',
+			'username', 'email', 'fullname',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
+			...await db.getSortedSetRange('user-custom-fields', 0, -1),
 		];
 		if (Array.isArray(extraFields)) {
 			fields = _.uniq(fields.concat(extraFields));
@@ -48,7 +51,7 @@ module.exports = function (User) {
 			if (field === 'email') {
 				return await updateEmail(updateUid, data.email);
 			} else if (field === 'username') {
-				return await updateUsername(updateUid, data.username);
+				return await updateUsername(updateUid, data.username, uid);
 			} else if (field === 'fullname') {
 				return await updateFullname(updateUid, data.fullname);
 			}
@@ -65,6 +68,7 @@ module.exports = function (User) {
 			fields: fields,
 			oldData: oldData,
 		});
+		activitypub.out.update.profile(updateUid, uid);
 
 		return await User.getUserFields(updateUid, [
 			'email', 'username', 'userslug',
@@ -75,13 +79,70 @@ module.exports = function (User) {
 	async function validateData(callerUid, data) {
 		await isEmailValid(data);
 		await isUsernameAvailable(data, data.uid);
-		await isWebsiteValid(callerUid, data);
 		await isAboutMeValid(callerUid, data);
 		await isSignatureValid(callerUid, data);
 		isFullnameValid(data);
-		isLocationValid(data);
 		isBirthdayValid(data);
 		isGroupTitleValid(data);
+		await validateCustomFields(data);
+	}
+
+	async function validateCustomFields(data) {
+		const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+		const reputation = await User.getUserField(data.uid, 'reputation');
+
+		fields.forEach((field) => {
+			const { key, type } = field;
+			if (data.hasOwnProperty(key)) {
+				const value = data[key];
+				const minRep = field['min:rep'] || 0;
+				if (reputation < minRep && !meta.config['reputation:disabled']) {
+					throw new Error(tx.compile(
+						'error:not-enough-reputation-custom-field', minRep, field.name
+					));
+				}
+
+				if (typeof value === 'string' && value.length > 255) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-value-too-long', field.name
+					));
+				}
+
+				if (type === 'input-number' && !utils.isNumber(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-number', field.name
+					));
+				} else if (value && type === 'input-text' && validator.isURL(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-text', field.name
+					));
+				} else if (value && type === 'input-date' && !validator.isDate(value)) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-date', field.name
+					));
+				} else if (value && field.type === 'input-link' && !validator.isURL(String(value))) {
+					throw new Error(tx.compile(
+						'error:custom-user-field-invalid-link', field.name
+					));
+				} else if (field.type === 'select') {
+					const opts = field['select-options'].split('\n').filter(Boolean);
+					if (!opts.includes(value) && value !== '') {
+						throw new Error(tx.compile(
+							'error:custom-user-field-select-value-invalid', field.name
+						));
+					}
+				} else if (field.type === 'select-multi') {
+					const opts = field['select-options'].split('\n').filter(Boolean);
+					const values = JSON.parse(value || '[]');
+					if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
+						throw new Error(tx.compile(
+							'error:custom-user-field-select-value-invalid', field.name
+						));
+					}
+				}
+			}
+		});
 	}
 
 	async function isEmailValid(data) {
@@ -109,16 +170,10 @@ module.exports = function (User) {
 			}
 		}
 
-		if (data.username.length < meta.config.minimumUsernameLength) {
-			throw new Error('[[error:username-too-short]]');
-		}
-
-		if (data.username.length > meta.config.maximumUsernameLength) {
-			throw new Error('[[error:username-too-long]]');
-		}
+		User.checkUsernameLength(data.username);
 
 		const userslug = slugify(data.username);
-		if (!utils.isUserNameValid(data.username) || !userslug) {
+		if (!utils.isUserNameValid(data.username) || !utils.isSlugValid(userslug)) {
 			throw new Error('[[error:invalid-username]]');
 		}
 
@@ -140,15 +195,19 @@ module.exports = function (User) {
 	}
 	User.checkUsername = async username => isUsernameAvailable({ username });
 
-	async function isWebsiteValid(callerUid, data) {
-		if (!data.website) {
-			return;
+	User.checkUsernameLength = function (username) {
+		if (
+			!username ||
+			username.length < meta.config.minimumUsernameLength ||
+			slugify(username).length < meta.config.minimumUsernameLength
+		) {
+			throw new Error('[[error:username-too-short]]');
 		}
-		if (data.website.length > 255) {
-			throw new Error('[[error:invalid-website]]');
+
+		if (username.length > meta.config.maximumUsernameLength) {
+			throw new Error('[[error:username-too-long]]');
 		}
-		await User.checkMinReputation(callerUid, data.uid, 'min:rep:website');
-	}
+	};
 
 	async function isAboutMeValid(callerUid, data) {
 		if (!data.aboutme) {
@@ -178,12 +237,6 @@ module.exports = function (User) {
 		}
 	}
 
-	function isLocationValid(data) {
-		if (data.location && (validator.isURL(data.location) || data.location.length > 255)) {
-			throw new Error('[[error:invalid-location]]');
-		}
-	}
-
 	function isBirthdayValid(data) {
 		if (!data.birthday) {
 			return;
@@ -204,7 +257,7 @@ module.exports = function (User) {
 		if (!data.groupTitle) {
 			return;
 		}
-		let groupTitles = [];
+		let groupTitles;
 		if (validator.isJSON(data.groupTitle)) {
 			groupTitles = JSON.parse(data.groupTitle);
 			if (!Array.isArray(groupTitles)) {
@@ -237,6 +290,9 @@ module.exports = function (User) {
 		if (oldEmail === newEmail) {
 			return;
 		}
+		if (await User.email.isValidationPending(uid, newEmail)) {
+			return;
+		}
 
 		// 👉 Looking for email change logic? src/user/email.js (UserEmail.confirmByUid)
 		if (newEmail) {
@@ -247,7 +303,7 @@ module.exports = function (User) {
 		}
 	}
 
-	async function updateUsername(uid, newUsername) {
+	async function updateUsername(uid, newUsername, callerUid) {
 		if (!newUsername) {
 			return;
 		}
@@ -260,7 +316,7 @@ module.exports = function (User) {
 		await Promise.all([
 			updateUidMapping('username', uid, newUsername, userData.username),
 			updateUidMapping('userslug', uid, newUserslug, userData.userslug),
-			db.sortedSetAdd(`user:${uid}:usernames`, now, `${newUsername}:${now}`),
+			db.sortedSetAdd(`user:${uid}:usernames`, now, `${newUsername}:${now}:${callerUid}`),
 		]);
 		await db.sortedSetRemove('username:sorted', `${userData.username.toLowerCase()}:${uid}`);
 		await db.sortedSetAdd('username:sorted', 0, `${newUsername.toLowerCase()}:${uid}`);
@@ -316,6 +372,9 @@ module.exports = function (User) {
 			const correct = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
 			if (!correct) {
 				throw new Error('[[user:change-password-error-wrong-current]]');
+			}
+			if (data.currentPassword === data.newPassword) {
+				throw new Error('[[user:change-password-error-same-password]]');
 			}
 		}
 

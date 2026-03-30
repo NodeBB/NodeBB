@@ -1,0 +1,16 @@
+{
+	"title": "通知文の管理",
+	"create-reason": "通知文を作成",
+	"edit-reason": "通知文を編集",
+	"reasons-help": "通知文は、ユーザーのBANやミュート、または投稿キューでの投稿却下時に使用する事前設定の文面です。",
+	"reason-title": "タイトル",
+	"reason-type": "種類",
+	"reason-body": "本文",
+	"reason-all": "すべて",
+	"reason-ban": "BAN",
+	"reason-mute": "ミュート",
+	"reason-post-queue": "投稿キュー",
+	"reason-type-help": "この通知文を使用する対応の種類です。「すべて」を選択すると、すべての対応でこの通知文を使用できます。",
+	"custom-reasons-saved": "通知文を保存しました",
+	"delete-reason-confirm-x": "タイトルが <strong>%1</strong> の通知文を削除してもよろしいですか？"
+}

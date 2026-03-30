@@ -41,7 +41,7 @@ module.exports = function (middleware) {
 		async function finishLogin(req, user) {
 			const loginAsync = util.promisify(req.login).bind(req);
 			await loginAsync(user, { keepSessionInfo: true });
-			await controllers.authentication.onSuccessfulLogin(req, user.uid);
+			await controllers.authentication.onSuccessfulLogin(req, user.uid, false);
 			req.uid = parseInt(user.uid, 10);
 			req.loggedIn = req.uid > 0;
 			return true;
@@ -53,6 +53,12 @@ module.exports = function (middleware) {
 		}
 
 		if (req.loggedIn) {
+			const exists = await user.exists(req.uid);
+			if (!exists) {
+				res.locals.logoutRedirect = true;
+				return controllers.authentication.logout(req, res);
+			}
+
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
 			const user = await passportAuthenticateAsync(req, res);
@@ -62,8 +68,9 @@ module.exports = function (middleware) {
 				return await finishLogin(req, user);
 			} else if (user.hasOwnProperty('master') && user.master === true) {
 				// If the token received was a master token, a _uid must also be present for all calls
-				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
-					user.uid = req.body._uid || req.query._uid;
+				const body = req.body || {};
+				if (body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
+					user.uid = body._uid || req.query._uid;
 					delete user.master;
 					return await finishLogin(req, user);
 				}
@@ -191,7 +198,7 @@ module.exports = function (middleware) {
 	});
 
 	middleware.redirectToAccountIfLoggedIn = helpers.try(async (req, res, next) => {
-		if (req.session.forceLogin || req.uid <= 0) {
+		if ((req.path === '/login' && req.session.forceLogin) || req.uid <= 0) {
 			return next();
 		}
 		const userslug = await user.getUserField(req.uid, 'userslug');
@@ -203,8 +210,12 @@ module.exports = function (middleware) {
 		if (uid <= 0) {
 			return next();
 		}
-		const userslug = await user.getUserField(uid, 'userslug');
-		if (!userslug) {
+		const [canView, userslug] = await Promise.all([
+			privileges.global.can('view:users', req.uid),
+			user.getUserField(uid, 'userslug'),
+		]);
+
+		if (!userslug || (!canView && req.uid !== uid)) {
 			return next();
 		}
 		const path = req.url.replace(/^\/api/, '')
@@ -221,6 +232,20 @@ module.exports = function (middleware) {
 		controllers.helpers.redirect(res, path);
 	});
 
+	middleware.redirectToHomeIfBanned = helpers.try(async (req, res, next) => {
+		if (req.loggedIn) {
+			const canLoginIfBanned = await user.bans.canLoginIfBanned(req.uid);
+			if (!canLoginIfBanned) {
+				req.logout(() => {
+					res.redirect('/');
+				});
+				return;
+			}
+		}
+
+		next();
+	});
+
 	middleware.requireUser = function (req, res, next) {
 		if (req.loggedIn) {
 			return next();
@@ -230,7 +255,25 @@ module.exports = function (middleware) {
 	};
 
 	middleware.buildAccountData = async (req, res, next) => {
-		res.locals.templateValues = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		// use lowercase slug on api routes, or direct to the user/<lowercaseslug>
+		const lowercaseSlug = req.params.userslug.toLowerCase();
+		if (req.params.userslug !== lowercaseSlug) {
+			if (res.locals.isAPI) {
+				req.params.userslug = lowercaseSlug;
+			} else {
+				const newPath = req.path.replace(`/${req.params.userslug}`, () => `/${lowercaseSlug}`);
+				return res.redirect(`${nconf.get('relative_path')}${newPath}`);
+			}
+		}
+		try {
+			res.locals.userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		} catch (err) {
+			return next(err);
+		}
+
+		if (!res.locals.userData) {
+			return next('route');
+		}
 		next();
 	};
 
@@ -300,11 +343,11 @@ module.exports = function (middleware) {
 			return false; // not a category or topic url, no check required
 		}
 
-		const [registeredAllowed, verifiedAllowed] = await Promise.all([
+		const [[registeredAllowed], [verifiedAllowed]] = await Promise.all([
 			privilegeHelpers.isAllowedTo([privilege], 'registered-users', cid),
 			privilegeHelpers.isAllowedTo([privilege], 'verified-users', cid),
 		]);
 
-		return !registeredAllowed.pop() && verifiedAllowed.pop();
+		return !registeredAllowed && verifiedAllowed;
 	}
 };

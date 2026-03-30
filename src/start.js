@@ -35,10 +35,13 @@ start.start = async function () {
 		await sockets.init(webserver.server);
 
 		if (nconf.get('runJobs')) {
-			require('./notifications').startJobs();
-			require('./user').startJobs();
-			require('./plugins').startJobs();
-			require('./topics').scheduled.startJobs();
+			await require('./cron').markJobsInactive();
+			await require('./notifications').startJobs();
+			await require('./user').startJobs();
+			await require('./plugins').startJobs();
+			await require('./topics').scheduled.startJobs();
+			await require('./posts').uploads.startJobs();
+			await require('./activitypub').jobs.start();
 			await db.delete('locks');
 		}
 
@@ -106,13 +109,24 @@ function addProcessHandlers() {
 		shutdown(1);
 	});
 	process.on('message', (msg) => {
-		if (msg && Array.isArray(msg.compiling)) {
-			if (msg.compiling.includes('tpl')) {
-				const benchpressjs = require('benchpressjs');
-				benchpressjs.flush();
-			} else if (msg.compiling.includes('lang')) {
-				const translator = require('./translator');
-				translator.flush();
+		if (msg) {
+			if (Array.isArray(msg.compiling)) {
+				if (msg.compiling.includes('tpl')) {
+					const benchpressjs = require('benchpressjs');
+					benchpressjs.flush();
+				} else if (msg.compiling.includes('lang')) {
+					const translator = require('./translator');
+					translator.flush();
+				}
+			}
+
+			if (msg.livereload) {
+				// Send livereload event to all connected clients via Socket.IO
+				const websockets = require('./socket.io');
+				if (websockets.server) {
+					websockets.server.emit('event:livereload');
+					winston.info('[livereload] Sent reload event to all clients');
+				}
 			}
 		}
 	});
@@ -135,7 +149,7 @@ async function shutdown(code) {
 	try {
 		await require('./webserver').destroy();
 		winston.info('[app] Web server closed to connections.');
-		await require('./analytics').writeData();
+		await require('./analytics').writeLocalData();
 		winston.info('[app] Live analytics saved.');
 		const db = require('./database');
 		await db.delete('locks');
@@ -146,6 +160,6 @@ async function shutdown(code) {
 	} catch (err) {
 		winston.error(err.stack);
 
-		return process.exit(code || 0);
+		process.exit(code || 0);
 	}
 }

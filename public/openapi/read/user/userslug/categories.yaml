@@ -42,6 +42,8 @@ get:
                           type: string
                         bgColor:
                           type: string
+                        backgroundImage:
+                          type: string
                         descriptionParsed:
                           type: string
                         depth:

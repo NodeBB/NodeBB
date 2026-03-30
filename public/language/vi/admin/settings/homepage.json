@@ -1,8 +1,0 @@
-{
-	"home-page": "Trang Chủ",
-	"description": "Chọn trang hiển thị khi người dùng được chuyển hướng đến URL gốc diễn đàn của bạn.",
-	"home-page-route": "Liên Kết Trang Chủ",
-	"custom-route": "Tùy Chỉnh Liên Kết",
-	"allow-user-home-pages": "Cho Phép Trang Chủ Người Dùng",
-	"home-page-title": "Tiêu đề của trang chủ (mặc định là \"Trang chủ\")"
-}

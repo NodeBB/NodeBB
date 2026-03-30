@@ -31,40 +31,4 @@ get:
               status:
                 $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                type: object
-                properties:
-                  pid:
-                    type: number
-                  tid:
-                    type: number
-                    description: A topic identifier
-                  content:
-                    type: string
-                  uid:
-                    type: number
-                    description: A user identifier
-                  timestamp:
-                    type: number
-                  deleted:
-                    type: number
-                  upvotes:
-                    type: number
-                  downvotes:
-                    type: number
-                  replies:
-                    type: number
-                  votes:
-                    type: number
-                  timestampISO:
-                    type: string
-                  user:
-                    type: object
-                    additionalProperties: {}
-                  topic:
-                    type: object
-                    additionalProperties: {}
-                  category:
-                    type: object
-                    additionalProperties: {}
-                  isMainPost:
-                    type: boolean
+                $ref: ../../../components/schemas/PostObject.yaml#/PostObject

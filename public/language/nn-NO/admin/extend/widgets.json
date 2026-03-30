@@ -1,0 +1,37 @@
+{
+	"widgets": "Widgetar",
+	"available": "Tilgjengelege",
+	"explanation": "Dra og slepp widgetar for å tilpasse forumet.",
+	"none-installed": "Ingen widgetar funne! Aktiver plugin for widget essentials i <a href=\"%1\">innstikk</a> kontrollpanelet.",
+	"clone-from": "Klon frå",
+	"containers.available": "Tilgjengelege konteinarar",
+	"containers.explanation": "Konteinarar fungerer som behaldarar for widgetar.",
+	"containers.none": "Ingen konteinarar funne",
+	"container.well": "Brønn",
+	"container.jumbotron": "Jumbotron",
+	"container.card": "Kort",
+	"container.card-header": "Kortoverskrift",
+	"container.card-body": "Kortkropp",
+	"container.title": "Tittel",
+	"container.body": "Kropp",
+	"container.alert": "Varsel",
+
+	"alert.confirm-delete": "Er du sikker på at du vil slette denne widgeten?",
+	"alert.updated": "Widget oppdatert",
+	"alert.update-success": "Widget oppdatert med suksess",
+	"alert.clone-success": "Widget klona med suksess",
+
+	"error.select-clone": "Vel ein widget å klone",
+
+	"title": "Tittel",
+	"title.placeholder": "Skriv inn tittelen her",
+	"container": "Konteinar",
+	"container.placeholder": "Vel konteinaren",
+	"show-to-groups": "Vis til grupper",
+	"hide-from-groups": "Skjul frå grupper",
+	"start-date": "Startdato",
+	"end-date": "Sluttdato",
+	"hide-on-mobile": "Skjul på mobil",
+	"hide-drafts": "Skjul utkast",
+	"show-drafts": "Vis utkast"
+}

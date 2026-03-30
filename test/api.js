@@ -5,7 +5,6 @@ const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 const SwaggerParser = require('@apidevtools/swagger-parser');
-const request = require('request-promise-native');
 const nconf = require('nconf');
 const jwt = require('jsonwebtoken');
 const util = require('util');
@@ -13,6 +12,7 @@ const util = require('util');
 const wait = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const user = require('../src/user');
@@ -23,6 +23,7 @@ const posts = require('../src/posts');
 const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
+const activitypub = require('../src/activitypub');
 const utils = require('../src/utils');
 const api = require('../src/api');
 
@@ -175,7 +176,7 @@ describe('API', async () => {
 
 	after(async () => {
 		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
-		plugins.hooks.unregister('emailer-test', 'filter:email.send');
+		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
 	async function setupData() {
@@ -184,13 +185,10 @@ describe('API', async () => {
 		}
 
 		// Create sample users
-		const adminUid = await user.create({ username: 'admin', password: '123456' });
-		const unprivUid = await user.create({ username: 'unpriv', password: '123456' });
+		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' }, { emailVerification: 'verify' });
+		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' }, { emailVerification: 'verify' });
 		const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
-		await user.setUserField(adminUid, 'email', 'test@example.org');
-		await user.setUserField(unprivUid, 'email', 'unpriv@example.org');
-		await user.email.confirmByUid(adminUid);
-		await user.email.confirmByUid(unprivUid);
+
 		mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
 
 		for (let x = 0; x < 4; x++) {
@@ -241,6 +239,7 @@ describe('API', async () => {
 		meta.config.allowTopicsThumbnail = 1;
 		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
 		meta.config.chatMessageDelay = 0;
+		meta.config.activitypubEnabled = 1;
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -280,8 +279,13 @@ describe('API', async () => {
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
-		// Create a new chat room
-		await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		// Create a new chat room & send a message
+		const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
+		await messaging.sendMessage({
+			roomId,
+			uid: adminUid,
+			content: 'this is a chat message',
+		});
 
 		// Create an empty file to test DELETE /files and thumb deletion
 		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
@@ -306,7 +310,7 @@ describe('API', async () => {
 		});
 		// Attach an emailer hook so related requests do not error
 		plugins.hooks.register('emailer-test', {
-			hook: 'filter:email.send',
+			hook: 'static:email.send',
 			method: dummyEmailerHook,
 		});
 
@@ -314,12 +318,18 @@ describe('API', async () => {
 		({ jar } = await helpers.loginUser('admin', '123456'));
 
 		// Retrieve CSRF token using cookie, to test Write API
-		const config = await request({
-			url: `${nconf.get('url')}/api/config`,
-			json: true,
-			jar: jar,
+		csrfToken = await helpers.getCsrfToken(jar);
+
+		// Pre-seed ActivityPub cache so contrived actor assertions pass
+		activitypub._cache.set(`0;https://example.org/foobar`, {
+			id: 'https://example.org/foobar',
+			name: 'foobar',
+			publicKey: {
+				id: `https://example.org/foobar#key`,
+				owner: `https://example.org/foobar`,
+				publicKeyPem: 'secretcat',
+			},
 		});
-		csrfToken = config.csrf_token;
 
 		setup = true;
 	}
@@ -409,7 +419,7 @@ describe('API', async () => {
 		paths.forEach((path) => {
 			const context = api.paths[path];
 			let schema;
-			let response;
+			let result;
 			let url;
 			let method;
 			const headers = {};
@@ -478,7 +488,8 @@ describe('API', async () => {
 					}
 				});
 
-				it('should not error out when called', async () => {
+				it('should not error out when called', async function () {
+					this.timeout(0);
 					await setupData();
 
 					if (csrfToken) {
@@ -498,26 +509,17 @@ describe('API', async () => {
 
 					try {
 						if (type === 'json') {
-							response = await request(url, {
-								method: method,
+							const searchParams = new URLSearchParams(qs);
+							result = await request[method](`${url}?${searchParams}`, {
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
-								json: true,
-								followRedirect: false, // all responses are significant (e.g. 302)
-								simple: false, // don't throw on non-200 (e.g. 302)
-								resolveWithFullResponse: true, // send full request back (to check statusCode)
+								maxRedirect: 0,
+								redirect: 'manual',
 								headers: headers,
-								qs: qs,
 								body: body,
+								timeout: 30000,
 							});
 						} else if (type === 'form') {
-							response = await new Promise((resolve, reject) => {
-								helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken, (err, res) => {
-									if (err) {
-										return reject(err);
-									}
-									resolve(res);
-								});
-							});
+							result = await helpers.uploadFile(url, pathLib.join(__dirname, './files/test.png'), {}, jar, csrfToken);
 						}
 					} catch (e) {
 						assert(!e, `${method.toUpperCase()} ${path} errored with: ${e.message}`);
@@ -526,13 +528,18 @@ describe('API', async () => {
 
 				it('response status code should match one of the schema defined responses', () => {
 					// HACK: allow HTTP 418 I am a teapot, for now   👇
-					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+					const { responses } = context[method];
+					assert(
+						responses.hasOwnProperty('418') ||
+						Object.keys(responses).includes(String(result.response.statusCode)),
+						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}, body: ${JSON.stringify(result.body)} status: ${result.response.statusText}`,
+					);
 				});
 
 				// Recursively iterate through schema properties, comparing type
 				it('response body should match schema definition', () => {
 					const http302 = context[method].responses['302'];
-					if (http302 && response.statusCode === 302) {
+					if (http302 && result.response.statusCode === 302) {
 						// Compare headers instead
 						const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
 							const value = http302.headers[name].schema.example;
@@ -541,13 +548,13 @@ describe('API', async () => {
 						}, {});
 
 						for (const header of Object.keys(expectedHeaders)) {
-							assert(response.headers[header.toLowerCase()]);
-							assert.strictEqual(response.headers[header.toLowerCase()], expectedHeaders[header]);
+							assert(result.response.headers[header.toLowerCase()]);
+							assert.strictEqual(result.response.headers[header.toLowerCase()], expectedHeaders[header]);
 						}
 						return;
 					}
 
-					if (response.statusCode === 400 && context[method].responses['400']) {
+					if (result.response.statusCode === 400 && context[method].responses['400']) {
 						// TODO: check 400 schema to response.body?
 						return;
 					}
@@ -557,12 +564,12 @@ describe('API', async () => {
 						return;
 					}
 
-					assert.strictEqual(response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
+					assert.strictEqual(result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
 
 					const hasJSON = http200.content && http200.content['application/json'];
 					if (hasJSON) {
 						schema = context[method].responses['200'].content['application/json'].schema;
-						compare(schema, response.body, method.toUpperCase(), path, 'root');
+						compare(schema, result.body, method.toUpperCase(), path, 'root');
 					}
 
 					// TODO someday: text/csv, binary file type checking?
@@ -572,16 +579,20 @@ describe('API', async () => {
 					const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
-						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
-						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
+						let sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+						let sessObj = await db.sessionStoreGet(sessionIds[0]);
+						if (!sessObj) {
+							// password changed so login with new pwd
+							({ jar } = await helpers.loginUser('admin', '654321'));
+							sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+							sessObj = await db.sessionStoreGet(sessionIds[0]);
+						}
+
+						const { uuid } = sessObj.meta;
+						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = uuid;
 
 						// Retrieve CSRF token using cookie, to test Write API
-						const config = await request({
-							url: `${nconf.get('url')}/api/config`,
-							json: true,
-							jar: jar,
-						});
-						csrfToken = config.csrf_token;
+						csrfToken = await helpers.getCsrfToken(jar);
 					}
 				});
 			});
@@ -645,10 +656,15 @@ describe('API', async () => {
 					case 'boolean':
 						assert.strictEqual(typeof response[prop], 'boolean', `"${prop}" was expected to be a boolean, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						break;
-					case 'object':
-						assert.strictEqual(typeof response[prop], 'object', `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
+					case 'object': {
+						let valid = ['object'];
+						if (schema[prop].additionalProperties && schema[prop].additionalProperties.oneOf) {
+							valid = schema[prop].additionalProperties.oneOf.map(({ type }) => type);
+						}
+						assert(valid.includes(typeof response[prop]), `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 						compare(schema[prop], response[prop], method, path, context ? [context, prop].join('.') : prop);
 						break;
+					}
 					case 'array':
 						assert.strictEqual(Array.isArray(response[prop]), true, `"${prop}" was expected to be an array, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
 

@@ -2,8 +2,8 @@
 
 
 define('admin/settings', [
-	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap',
-], function (uploader, mousetrap, hooks, alerts, settings, bootstrap) {
+	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap', 'admin/modules/relogin-timer',
+], function (uploader, mousetrap, hooks, alerts, settings, bootstrap, reloginTimer) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
@@ -21,14 +21,17 @@ define('admin/settings', [
 				if (anchor.startsWith('section')) {
 					$this.parent().attr('id', anchor);
 				}
-				tocList.append(`<a class="btn-ghost-sm text-xs justify-content-start text-decoration-none" href="#${anchor}">${header}</a>`);
+				tocList.append(`<a class="btn btn-ghost btn-sm text-xs text-start text-decoration-none" href="#${anchor}">${header}</a>`);
 			});
 			const offset = mainHader.outerHeight(true);
 			// https://stackoverflow.com/a/11814275/583363
-			tocList.find('a').on('click', function (event) {
-				event.preventDefault();
+			tocList.find('a').on('click', function () {
 				const href = $(this).attr('href');
-				$(href)[0].scrollIntoView();
+				const $target = $(href);
+				if (!$target.length) {
+					return;
+				}
+				$target.get(0).scrollIntoView(true);
 				window.location.hash = href;
 				scrollBy(0, -offset);
 				setTimeout(() => {
@@ -101,7 +104,7 @@ define('admin/settings', [
 				if (err) {
 					return alerts.alert({
 						alert_id: 'config_status',
-						timeout: 2500,
+						timeout: 5000,
 						title: '[[admin/admin:changes-not-saved]]',
 						message: `[[admin/admin:changes-not-saved-message, ${err.message}]]`,
 						type: 'danger',
@@ -215,9 +218,10 @@ define('admin/settings', [
 				return callback(err);
 			}
 
-			for (const field in data) {
-				if (data.hasOwnProperty(field)) {
-					app.config[field] = data[field];
+			for (const [field, value] of Object.entries(data)) {
+				app.config[field] = value;
+				if (field === 'adminReloginDuration') {
+					reloginTimer.start(parseInt(value, 10));
 				}
 			}
 

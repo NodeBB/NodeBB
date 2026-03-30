@@ -2,8 +2,8 @@
 
 
 define('forum/users', [
-	'benchpress', 'api', 'alerts', 'accounts/invite',
-], function (Benchpress, api, alerts, AccountInvite) {
+	'api', 'alerts', 'accounts/invite',
+], function (api, alerts, AccountInvite) {
 	const Users = {};
 
 	let searchResultCount = 0;
@@ -29,6 +29,19 @@ define('forum/users', [
 		searchResultCount = params && params.resultCount;
 		$('#search-user').on('keyup', utils.debounce(doSearch, 250));
 		$('.search select, .search input[type="checkbox"]').on('change', doSearch);
+
+		// Populate box with query if present
+		const searchEl = document.getElementById('search-user');
+		if (searchEl) {
+			const search = new URLSearchParams(document.location.search);
+			const query = search.get('query');
+			if (query) {
+				searchEl.value = query;
+			}
+			if (!utils.isMobile()) {
+				searchEl.focus();
+			}
+		}
 	};
 
 	function doSearch() {
@@ -36,20 +49,25 @@ define('forum/users', [
 			return;
 		}
 		$('[component="user/search/icon"]').removeClass('fa-search').addClass('fa-spinner fa-spin');
-		const username = $('#search-user').val();
 		const activeSection = getActiveSection();
 
 		const query = {
-			section: activeSection,
+			section: activeSection || 'users',
 			page: 1,
 		};
 
-		if (!username) {
+		const username = $('#search-user').val();
+		if (username) {
+			query.query = username;
+		} else {
 			return loadPage(query);
 		}
 
-		query.query = username;
-		query.sortBy = getSortBy();
+		const sortBy = getSortBy();
+		if (sortBy) {
+			query.sortBy = sortBy;
+		}
+
 		const filters = [];
 		if ($('.search .online-only').is(':checked') || (activeSection === 'online')) {
 			filters.push('online');
@@ -85,10 +103,16 @@ define('forum/users', [
 		api.get('/api/users', query)
 			.then(renderSearchResults)
 			.catch(alerts.error);
+
+		// Update query string
+		const search = new URLSearchParams(query);
+		ajaxify.updateHistory(`users?${search.toString()}`, true);
 	}
 
 	function renderSearchResults(data) {
-		Benchpress.render('partials/paginator', { pagination: data.pagination }).then(function (html) {
+		app.parseAndTranslate('partials/paginator', {
+			pagination: data.pagination,
+		}).then(function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 

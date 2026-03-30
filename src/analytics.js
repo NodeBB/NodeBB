@@ -1,9 +1,7 @@
 'use strict';
 
-const cronJob = require('cron').CronJob;
 const winston = require('winston');
 const nconf = require('nconf');
-const crypto = require('crypto');
 const util = require('util');
 const _ = require('lodash');
 
@@ -12,13 +10,10 @@ const sleep = util.promisify(setTimeout);
 const db = require('./database');
 const utils = require('./utils');
 const plugins = require('./plugins');
-const meta = require('./meta');
 const pubsub = require('./pubsub');
-const cacheCreate = require('./cache/lru');
+const cron = require('./cron');
 
 const Analytics = module.exports;
-
-const secret = nconf.get('secret');
 
 let local = {
 	counters: {},
@@ -26,34 +21,49 @@ let local = {
 	pageViewsRegistered: 0,
 	pageViewsGuest: 0,
 	pageViewsBot: 0,
-	uniqueIPCount: 0,
+	apPageViews: 0,
 	uniquevisitors: 0,
 };
 const empty = _.cloneDeep(local);
 const total = _.cloneDeep(local);
 
-let ipCache;
-
 const runJobs = nconf.get('runJobs');
 
+Analytics.pause = false;
+
 Analytics.init = async function () {
-	ipCache = cacheCreate({
-		max: parseInt(meta.config['analytics:maxCache'], 10) || 500,
-		ttl: 0,
+	await cron.addJob({
+		name: 'analytics:publish',
+		cronTime: '*/10 * * * * *',
+		runOnAllNodes: true,
+		onTick: async () => {
+			if (Analytics.pause) return;
+			await Analytics.writeLocalData();
+		},
 	});
 
-	new cronJob('*/10 * * * * *', (async () => {
-		publishLocalAnalytics();
-		if (runJobs) {
-			await sleep(2000);
-			await Analytics.writeData();
-		}
-	}), null, true);
+	if (runJobs) {
+		await cron.addJob({
+			name: 'prune:ip:recent',
+			cronTime: '*/30 * * * *',
+			onTick: async () => {
+				await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
+			},
+		});
+	}
 
 	if (runJobs) {
 		pubsub.on('analytics:publish', (data) => {
 			incrementProperties(total, data.local);
 		});
+	}
+};
+
+Analytics.writeLocalData = async function () {
+	publishLocalAnalytics();
+	if (runJobs) {
+		await sleep(2000);
+		await Analytics.writeData();
 	}
 };
 
@@ -90,6 +100,8 @@ Analytics.increment = function (keys, callback) {
 	}
 };
 
+Analytics.peek = () => local;
+
 Analytics.getKeys = async () => db.getSortedSetRange('analyticsKeys', 0, -1);
 
 Analytics.pageView = async function (payload) {
@@ -103,26 +115,30 @@ Analytics.pageView = async function (payload) {
 		local.pageViewsGuest += 1;
 	}
 
-	if (payload.ip) {
-		// Retrieve hash or calculate if not present
-		let hash = ipCache.get(payload.ip + secret);
-		if (!hash) {
-			hash = crypto.createHash('sha1').update(payload.ip + secret).digest('hex');
-			ipCache.set(payload.ip + secret, hash);
+	await incrementUniqueVisitors(payload.ip);
+};
+
+Analytics.apPageView = async function ({ ip }) {
+	local.apPageViews += 1;
+	await incrementUniqueVisitors(ip);
+};
+
+async function incrementUniqueVisitors(ip) {
+	if (ip) {
+		const score = await db.sortedSetScore('ip:recent', ip);
+		let record = !score;
+		if (score) {
+			const today = new Date();
+			today.setHours(today.getHours(), 0, 0, 0);
+			record = score < today.getTime();
 		}
 
-		const score = await db.sortedSetScore('ip:recent', hash);
-		if (!score) {
-			local.uniqueIPCount += 1;
-		}
-		const today = new Date();
-		today.setHours(today.getHours(), 0, 0, 0);
-		if (!score || score < today.getTime()) {
+		if (record) {
 			local.uniquevisitors += 1;
-			await db.sortedSetAdd('ip:recent', Date.now(), hash);
+			await db.sortedSetAdd('ip:recent', Date.now(), ip);
 		}
 	}
-};
+}
 
 Analytics.writeData = async function () {
 	const today = new Date();
@@ -169,14 +185,21 @@ Analytics.writeData = async function () {
 		total.pageViewsBot = 0;
 	}
 
+	if (total.apPageViews > 0) {
+		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
+		total.apPageViews = 0;
+		if (!metrics.includes('pageviews:ap')) {
+			metrics.push('pageviews:ap');
+		}
+		if (!metrics.includes('pageviews:ap:month')) {
+			metrics.push('pageviews:ap:month');
+		}
+	}
+
 	if (total.uniquevisitors > 0) {
 		incrByBulk.push(['analytics:uniquevisitors', total.uniquevisitors, today.getTime()]);
 		total.uniquevisitors = 0;
-	}
-
-	if (total.uniqueIPCount > 0) {
-		dbQueue.push(db.incrObjectFieldBy('global', 'uniqueIPCount', total.uniqueIPCount));
-		total.uniqueIPCount = 0;
 	}
 
 	for (const [key, value] of Object.entries(total.counters)) {

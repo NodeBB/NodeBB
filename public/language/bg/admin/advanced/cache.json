@@ -1,9 +1,5 @@
 {
 	"cache": "Кеш",
-	"post-cache": "Кеш за публикации",
-	"group-cache": "Кеш за групи",
-	"local-cache": "Локален кеш",
-	"object-cache": "Кеш за обекти",
 	"percent-full": "Запълненост: %1%",
 	"post-cache-size": "Размер на кеша за публикации",
 	"items-in-cache": "Елементи в кеша"

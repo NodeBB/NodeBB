@@ -1,0 +1,29 @@
+{
+	"name": "Mondo",
+	"latest": "Ultimo",
+	"latest-local": "Ultimo (Locale)",
+	"latest-all": "Ultimo (Tutti)",
+	"popular-day": "Popolare (Giorno)",
+	"popular-week": "Popolare (Settimana)",
+	"popular-month": "Popolare (Mese)",
+	"popular-year": "Popolare (Anno)",
+	"popular-alltime": "Popolare (Tutto il tempo)",
+	"recent": "Tutto",
+	"help": "Aiuto",
+
+	"help.title": "Cos'è questa pagina?",
+	"help.intro": "Benvenuto nel tuo angolo del fediverso.",
+	"help.fediverse": "Il \"fediverso\" è una rete di applicazioni e siti web interconnessi che comunicano tra loro e i cui utenti possono vedersi. Questo forum è federato e può interagire con quel social web (o \"fediverso\"). Questa pagina è il tuo angolo di fediverso. Si tratta esclusivamente di discussioni create da — e condivisi da — utenti che <strong>tu</strong> segui.",
+	"help.build": "Potrebbero non esserci molte discussioni da cui iniziare, è normale. Inizierai a vedere più contenuti qui col tempo, quando inizierai a seguire altri utenti.",
+	"help.federating": "Allo stesso modo, se gli utenti esterni a questo forum iniziano a <em>seguirti</em>, i tuoi post inizieranno ad apparire anche su quelle app e quei siti web.",
+	"help.next-generation": "Questa è la prossima generazione di social media, inizia a contribuire oggi!",
+
+	"onboard.title": "Un mondo di contenuti a portata di mano&hellip;",
+	"onboard.what": "Consideralo come il tuo feed globale di scoperte. Riunisce in un unico posto discussioni interessanti da tutto il web e da altre comunità.",
+	"onboard.why": "Mentre puoi sfogliare ciò che è di tendenza ora, il modo migliore per usare questo feed è farlo tuo. Creando un account, puoi seguire creatori e discussioni specifiche per filtrare i contenuti superflui e vedere solo ciò che conta per te.",
+	"onboard.how": "Pronto a tuffarti? Crea un account per iniziare a seguire gli altri, ricevere notifiche quando qualcuno ti risponde e salvare i tuoi contenuti preferiti.",
+
+	"category-search": "Trova una categoria...",
+	"see-more": "Vedi di più",
+	"see-less": "Vedi meno"
+}

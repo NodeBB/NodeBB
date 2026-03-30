@@ -160,9 +160,17 @@ Minifier.js.bundle = async function (data, fork) {
 actions.buildCSS = async function buildCSS(data) {
 	let css = '';
 	try {
-		const scssOutput = await sass.compileStringAsync(data.source, {
+		const opts = {
 			loadPaths: data.paths,
-		});
+			importers: [new sass.NodePackageImporter()],
+		};
+		if (data.minify) {
+			opts.silenceDeprecations = [
+				'legacy-js-api', 'color-functions',
+				'global-builtin', 'import', 'if-function',
+			];
+		}
+		const scssOutput = await sass.compileStringAsync(data.source, opts);
 		css = scssOutput.css.toString();
 	} catch (err) {
 		console.error(err.stack);

@@ -41,19 +41,6 @@ put:
               response:
                 type: object
                 properties:
-                  labels:
-                    type: object
-                    properties:
-                      users:
-                        type: array
-                        items:
-                          type: string
-                          description: Language key of the privilege name's user-friendly name
-                      groups:
-                        type: array
-                        items:
-                          type: string
-                          description: Language key of the privilege name's user-friendly name
                   labelData:
                     type: array
                     items:
@@ -106,7 +93,6 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                   groups:
                     type: array
@@ -120,7 +106,6 @@ put:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object
@@ -191,19 +176,6 @@ delete:
               response:
                 type: object
                 properties:
-                  labels:
-                    type: object
-                    properties:
-                      users:
-                        type: array
-                        items:
-                          type: string
-                          description: Language key of the privilege name's user-friendly name
-                      groups:
-                        type: array
-                        items:
-                          type: string
-                          description: Language key of the privilege name's user-friendly name
                   labelData:
                     type: array
                     items:
@@ -256,7 +228,6 @@ delete:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                   groups:
                     type: array
@@ -270,7 +241,6 @@ delete:
                         privileges:
                           type: object
                           additionalProperties:
-                            type: boolean
                             description: A set of privileges with either true or false
                         types:
                           type: object

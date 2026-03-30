@@ -29,6 +29,7 @@
 	"access-topics": "Acceder Temas",
 	"create-topics": "Crear Temas",
 	"reply-to-topics": "Responder a Temas",
+	"crosspost-topics": "Cross-post Topics",
 	"schedule-topics": "Schedule Topics",
 	"tag-topics": "Poner Tags (etiquetas) a Temas",
 	"edit-posts": "Editar Entradas",
@@ -46,7 +47,7 @@
 	"admin-users": "Users",
 	"admin-admins-mods": "Admins &amp; Mods",
 	"admin-groups": "Groups",
-	"admin-tags": "Tags",
+	"admin-tags": "Etiquetas",
 	"admin-settings": "Settings",
 
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",

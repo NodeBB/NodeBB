@@ -5,7 +5,7 @@ define('admin/manage/digest', ['bootbox', 'alerts'], function (bootbox, alerts) 
 	const Digest = {};
 
 	Digest.init = function () {
-		$('table').on('click', '[data-action]', function () {
+		$('.digest').on('click', '[data-action]', function () {
 			const action = this.getAttribute('data-action');
 			const uid = this.getAttribute('data-uid');
 

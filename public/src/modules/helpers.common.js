@@ -17,20 +17,28 @@ module.exports = function (utils, Benchpress, relative_path) {
 		generateCategoryBackground,
 		generateChildrenCategories,
 		generateTopicClass,
+		generateGroupDisplayName,
 		membershipBtn,
 		spawnPrivilegeStates,
 		localeToHTML,
-		renderTopicImage,
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
 		increment,
+		lessthan,
+		greaterthan,
+		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
+		encodeURIComponent: _encodeURIComponent,
 		isoTimeToLocaleString,
 		shouldHideReplyContainer,
 		humanReadableNumber,
 		formattedNumber,
+		isNumber,
+		txEscape,
+		uploadBasename,
+		generatePlaceholderWave,
 		register,
 		__escape: identity,
 	};
@@ -69,10 +77,12 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function buildLinkTag(tag) {
-		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title', 'crossorigin'];
-		const [link, rel, as, type, href, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
+		const attributes = [
+			'link', 'rel', 'as', 'type', 'href', 'hreflang', 'sizes', 'title', 'crossorigin',
+		];
+		const [link, rel, as, type, href, hreflang, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
-		return '<link ' + link + rel + as + type + sizes + title + href + crossorigin + '/>\n\t';
+		return '<link ' + link + rel + as + type + sizes + title + href + hreflang + crossorigin + '/>\n\t';
 	}
 
 	function stringify(obj) {
@@ -103,7 +113,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		const href = tag === 'a' ? `href="${relative_path}/category/${category.slug}"` : '';
-		return `<${tag} ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
+		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
 			${category.icon && category.icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
 			${category.name}
 		</${tag}>`;
@@ -158,46 +168,53 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return fields.filter(field => !!topic[field]).join(' ');
 	}
 
+	function generateGroupDisplayName(group) {
+		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
+	}
+
 	// Groups helpers
 	function membershipBtn(groupObj, btnClass = '') {
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-danger ${btnClass}" data-action="leave" data-group="${groupObj.displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
+			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${groupObj.displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-warning disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
+			return `<button class="btn btn-warning text-nowrap disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
 		} else if (groupObj.isInvited) {
-			return `<button class="btn btn-link" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
+			return `<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-success" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
+			return `<button class="btn btn-success text-nowrap ${btnClass}" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
 		}
 		return '';
 	}
 
-	function spawnPrivilegeStates(member, privileges, types) {
+	function spawnPrivilegeStates(cid, member, privileges, types) {
 		const states = [];
-		for (const priv in privileges) {
-			if (privileges.hasOwnProperty(priv)) {
-				states.push({
-					name: priv,
-					state: privileges[priv],
-					type: types[priv],
-				});
-			}
+		for (const [priv, state] of Object.entries(privileges)) {
+			states.push({
+				name: priv,
+				state: state,
+				type: types[priv],
+			});
 		}
 		return states.map(function (priv) {
 			const guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
 			const spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
 			const globalModDisabled = ['groups:moderate'];
+			let fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete'];
+			if (cid === -1) {
+				fediverseEnabled = fediverseEnabled.slice(3);
+			}
 			const disabled =
 				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
+				(member === 'fediverse' && !fediverseEnabled.includes(priv.name)) ||
 				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
 
 			return `
 				<td data-privilege="${priv.name}" data-value="${priv.state}" data-type="${priv.type}">
 					<div class="form-check text-center">
-						<input class="form-check-input float-none" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled"' : '')} />
+						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
 					</div>
 				</td>
 			`;
@@ -207,13 +224,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function localeToHTML(locale, fallback) {
 		locale = locale || fallback || 'en-GB';
 		return locale.replace('_', '-');
-	}
-
-	function renderTopicImage(topicObj) {
-		if (topicObj.thumb) {
-			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
-		}
-		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	}
 
 	function renderDigestAvatar(block) {
@@ -295,33 +305,24 @@ module.exports = function (utils, Benchpress, relative_path) {
 		if (!userObj) {
 			userObj = this;
 		}
-
+		classNames = classNames || '';
 		const attributes = new Map([
-			['alt', userObj.username],
-			['title', userObj.username],
+			['title', userObj.displayname],
 			['data-uid', userObj.uid],
-			['loading', 'lazy'],
+			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
 		const styles = [`--avatar-size: ${size};`];
 		const attr2String = attributes => Array.from(attributes).reduce((output, [prop, value]) => {
 			output += ` ${prop}="${value}"`;
 			return output;
 		}, '');
-		classNames = classNames || '';
-
-		attributes.set('class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`);
 
 		let output = '';
 
 		if (userObj.picture) {
-			attributes.set('component', component || 'avatar/picture');
-			output += '<img ' + attr2String(attributes) + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" itemprop="image" />';
+			output += `<img${attr2String(attributes)} alt="${userObj.displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
 		}
-
-		attributes.set('component', component || 'avatar/icon');
-		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
-		output += '<span ' + attr2String(attributes) + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
-
+		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${userObj['icon:bgColor']}">${userObj['icon:text']}</span>`;
 		return output;
 	}
 
@@ -329,18 +330,37 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return String(value + parseInt(inc, 10));
 	}
 
+	function lessthan(a, b) {
+		return parseInt(a, 10) < parseInt(b, 10);
+	}
+
+	function greaterthan(a, b) {
+		return parseInt(a, 10) > parseInt(b, 10);
+	}
+
+	function generateWroteReplied(post, timeagoCutoff) {
+		if (post.toPid) {
+			return generateRepliedTo(post, timeagoCutoff);
+		}
+		return generateWrote(post, timeagoCutoff);
+	}
+
 	function generateRepliedTo(post, timeagoCutoff) {
 		const displayname = post.parent && post.parent.displayname ?
 			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${post.toPid}, ${displayname}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${encodeURIComponent(post.toPid)}, ${displayname}, ${relative_path}/post/${encodeURIComponent(post.pid)}, ${post.timestampISO}]]`;
 	}
 
 	function generateWrote(post, timeagoCutoff) {
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${encodeURIComponent(post.pid)}, ${post.timestampISO}]]`;
+	}
+
+	function _encodeURIComponent(value) {
+		return encodeURIComponent(value);
 	}
 
 	function isoTimeToLocaleString(isoTime, locale = 'en-GB') {
@@ -351,11 +371,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function shouldHideReplyContainer(post) {
-		if (post.replies.count <= 0 || post.replies.hasSingleImmediateReply) {
-			return true;
-		}
-
-		return false;
+		return post.replies.count <= 0 || post.replies.hasSingleImmediateReply;
 	}
 
 	function humanReadableNumber(number, toFixed = 1) {
@@ -364,6 +380,35 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function formattedNumber(number) {
 		return utils.addCommas(number);
+	}
+
+	function isNumber(value) {
+		return utils.isNumber(value);
+	}
+
+	function txEscape(text) {
+		return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+	}
+
+	function uploadBasename(str, sep = '/') {
+		const hasTimestampPrefix = /^\d+-/;
+		const name = str.substr(str.lastIndexOf(sep) + 1);
+		return hasTimestampPrefix.test(name) ? name.slice(14) : name;
+	}
+
+	function generatePlaceholderWave(items) {
+		const html = items.map((i) => {
+			if (i === 'divider') {
+				return '<li class="dropdown-divider"></li>';
+			}
+			return `
+			<li class="dropdown-item placeholder-wave">
+				<div class="placeholder" style="width: 20px;"></div>
+				<div class="placeholder col-${i}"></div>
+			</li>`;
+		});
+
+		return html.join('');
 	}
 
 	function register() {

@@ -1,0 +1,13 @@
+{
+	"logger": "Loggførar",
+	"logger-settings": "Innstillingar loggførar ",
+	"description": "Ved å aktivere avkrysningsboksane vil du få loggar til terminalen din. Dersom du spesifiserer ein sti, vil loggane bli lagra i ei fil i staden. HTTP-logging er nyttig for å samle statistikk om kven, når og kva folk har tilgang til på forumet ditt. I tillegg til å logge HTTP-forespurningar, kan vi òg logge socket.io-hendingar. Socket.io-logging, i kombinasjon med redis-cli monitor, kan vere svært nyttig for å forstå NodeBB sitt indre system.",
+	"explanation": "Aktiver loggføring av HTTP- og WebSocket-aktivitet for feilsøking og overvaking.",
+	"enable-http": "Aktiver HTTP-loggføring",
+	"enable-socket": "Aktiver WebSocket-loggføring",
+	"file-path": "Filsti",
+	"file-path-placeholder": "/path/to/log/file.log ::: la stå tom for å logge til terminalen din",
+
+	"control-panel": "Kontrollpanel loggførar",
+	"update-settings": "Oppdater loggførar innstillingar"
+}

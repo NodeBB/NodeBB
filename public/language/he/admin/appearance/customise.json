@@ -1,8 +1,8 @@
 {
 	"customise": "התאמה אישית",
 	"custom-css": "CSS/SASS מותאם אישית",
-	"custom-css.description": "הזן כאן הצהרות CSS/SASS משלך, שיוחלו לאחר כל הסגנונות האחרים.",
-	"custom-css.enable": "הפעל CSS/SASS מותאם אישית",
+	"custom-css.description": "הזינו כאן הצהרות CSS/SASS משלך, שיוחלו לאחר כל הסגנונות האחרים.",
+	"custom-css.enable": "הפעלת CSS/SASS מותאם אישית",
 
 	"custom-js": "Javascript מותאם אישית",
 	"custom-js.description": "הכניסו כאן JavaScript משלכם, שיבוצע לאחר טעינת הדף לחלוטין.",
@@ -15,6 +15,6 @@
 	"custom-css.livereload": "הפעלת טעינה מחדש אוטומטית.",
 	"custom-css.livereload.description": "הפעלה זו נועדה כדי לרענן את כל החיבורים מכל מכשיר, כאשר תשמרו את הדף המותאם אישית.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "ניתן לעקוף משתני Bootstrap כאן. אתה יכול גם להשתמש בכלי כמו <a href=\"https://bootstrap.build/app\">bootstrap.build</a> ולהדביק את הפלט כאן.<br/> שינויים דורשים בנייה מחדש והפעלה מחדש.",
+	"bsvariables.description": "ניתן לעקוף משתני Bootstrap כאן. תוכלו גם להשתמש בכלי כמו <a href=\"https://bootstrap.build/app\">bootstrap.build</a> ולהדביק את הפלט כאן.<br/> שינויים דורשים בנייה מחדש והפעלה מחדש.",
 	"bsvariables.enable": "Enable _variables.scss"
 }

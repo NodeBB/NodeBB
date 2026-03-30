@@ -5,6 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const api = require('../../api');
+const activitypub = require('../../activitypub');
 const user = require('../../user');
 
 const helpers = require('../helpers');
@@ -42,17 +43,17 @@ Users.update = async (req, res) => {
 };
 
 Users.delete = async (req, res) => {
-	await api.users.delete(req, { ...req.params, password: req.body.password });
+	await api.users.delete(req, { ...req.params, password: req.body?.password });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.deleteContent = async (req, res) => {
-	await api.users.deleteContent(req, { ...req.params, password: req.body.password });
+	await api.users.deleteContent(req, { ...req.params, password: req.body?.password });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.deleteAccount = async (req, res) => {
-	await api.users.deleteAccount(req, { ...req.params, password: req.body.password });
+	await api.users.deleteAccount(req, { ...req.params, password: req.body?.password });
 	helpers.formatApiResponse(200, res);
 };
 
@@ -92,12 +93,23 @@ Users.changePassword = async (req, res) => {
 };
 
 Users.follow = async (req, res) => {
-	await api.users.follow(req, req.params);
+	const remote = String(req.params.uid).includes('@');
+	if (remote) {
+		await activitypub.out.follow('uid', req.uid, req.params.uid);
+	} else {
+		await api.users.follow(req, req.params);
+	}
+
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unfollow = async (req, res) => {
-	await api.users.unfollow(req, req.params);
+	const remote = String(req.params.uid).includes('@');
+	if (remote) {
+		await activitypub.out.undo.follow('uid', req.uid, req.params.uid);
+	} else {
+		await api.users.unfollow(req, req.params);
+	}
 	helpers.formatApiResponse(200, res);
 };
 

@@ -7,6 +7,7 @@ const events = require('../events');
 const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const activitypub = require('../activitypub');
 
 const categoriesAPI = module.exports;
 
@@ -49,7 +50,7 @@ categoriesAPI.create = async function (caller, data) {
 	await hasAdminPrivilege(caller.uid);
 
 	const response = await categories.create(data);
-	const categoryObjs = await categories.getCategories([response.cid], caller.uid);
+	const categoryObjs = await categories.getCategories([response.cid]);
 	return categoryObjs[0];
 };
 
@@ -63,6 +64,7 @@ categoriesAPI.update = async function (caller, data) {
 	const payload = {};
 	payload[cid] = values;
 	await categories.update(payload);
+	activitypub.out.update.category(cid); // background
 };
 
 categoriesAPI.delete = async function (caller, { cid }) {
@@ -80,6 +82,10 @@ categoriesAPI.delete = async function (caller, { cid }) {
 };
 
 categoriesAPI.getTopicCount = async (caller, { cid }) => {
+	const allowed = await privileges.categories.can('find', cid, caller.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const count = await categories.getCategoryField(cid, 'topic_count');
 	return { count };
 };
@@ -119,12 +125,12 @@ categoriesAPI.getTopics = async (caller, data) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const infScrollTopicsPerPage = 20;
-	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
+	const infScrollTopicsPerPage = settings.topicsPerPage;
+	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'recently_replied';
 
 	let start = Math.max(0, parseInt(data.after || 0, 10));
 
-	if (data.direction === -1) {
+	if (parseInt(data.direction, 10) === -1) {
 		start -= infScrollTopicsPerPage;
 	}
 
@@ -150,7 +156,9 @@ categoriesAPI.getTopics = async (caller, data) => {
 
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	let targetUid = caller.uid;
-	const cids = Array.isArray(cid) ? cid.map(cid => parseInt(cid, 10)) : [parseInt(cid, 10)];
+	let cids = Array.isArray(cid) ? cid : [cid];
+	cids = cids.map(cid => String(cid));
+
 	if (uid) {
 		targetUid = uid;
 	}
@@ -161,9 +169,9 @@ categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	// filter to subcategories of cid
 	let cat;
 	do {
-		cat = categoryData.find(c => !cids.includes(c.cid) && cids.includes(c.parentCid));
+		cat = categoryData.find(c => !cids.includes(String(c.cid)) && cids.includes(String(c.parentCid)));
 		if (cat) {
-			cids.push(cat.cid);
+			cids.push(String(cat.cid));
 		}
 	} while (cat);
 

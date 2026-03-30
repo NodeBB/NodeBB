@@ -1,9 +1,9 @@
 {
     "uploading-file": "Laster opp filen...",
-    "select-file-to-upload": "Velg en fil å laste opp!",
-    "upload-success": "Filen ble suksessfullt lastet opp!",
-    "maximum-file-size": "Maksimum %1 kb",
+    "select-file-to-upload": "Velg en fil for opplasting!",
+    "upload-success": "Filen ble lastet opp!",
+    "maximum-file-size": "Maksimal filstørrelse: %1 kb",
     "no-uploads-found": "Ingen opplastninger funnet",
-    "public-uploads-info": "Opplastninger er offentlige, alle besøkende kan se dem.",
-    "private-uploads-info": "Opplastninger er private, kun innloggede brukere kan se dem."
+    "public-uploads-info": "Opplastninger er offentlige. Alle besøkende kan se dem.",
+    "private-uploads-info": "Opplastninger er private. Kun innloggede brukere kan se dem."
 }

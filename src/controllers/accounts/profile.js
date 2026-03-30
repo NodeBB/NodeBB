@@ -1,44 +1,42 @@
 'use strict';
 
-const nconf = require('nconf');
 const _ = require('lodash');
+const nconf = require('nconf');
 
 const db = require('../../database');
+const meta = require('../../meta');
 const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
-const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
+const accountHelpers = require('./helpers');
 const utils = require('../../utils');
 
 const profileController = module.exports;
 
+const url = nconf.get('url');
+
 profileController.get = async function (req, res, next) {
-	const lowercaseSlug = req.params.userslug.toLowerCase();
-
-	if (req.params.userslug !== lowercaseSlug) {
-		if (res.locals.isAPI) {
-			req.params.userslug = lowercaseSlug;
-		} else {
-			return res.redirect(`${nconf.get('relative_path')}/user/${lowercaseSlug}`);
-		}
-	}
-
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+	const { userData } = res.locals;
 	if (!userData) {
 		return next();
 	}
 
+	if (!req.loggedIn && meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(userData.uid)) {
+		return helpers.redirect(res, `/outgoing?url=${encodeURIComponent(userData.uid)}`);
+	}
+
 	await incrementProfileViews(req, userData);
 
-	const [latestPosts, bestPosts] = await Promise.all([
+	const [latestPosts, bestPosts, customUserFields] = await Promise.all([
 		getLatestPosts(req.uid, userData),
 		getBestPosts(req.uid, userData),
+		accountHelpers.getCustomUserFields(req.uid, userData),
 		posts.parseSignature(userData, req.uid),
 	]);
-
+	userData.customUserFields = customUserFields;
 	userData.posts = latestPosts; // for backwards compat.
 	userData.latestPosts = latestPosts;
 	userData.bestPosts = bestPosts;
@@ -53,7 +51,17 @@ profileController.get = async function (req, res, next) {
 		userData.profileviews = 1;
 	}
 
-	addMetaTags(res, userData);
+	addTags(res, userData);
+
+	if (meta.config.activitypubEnabled) {
+		// Include link header for richer parsing
+		res.set('Link', `<${nconf.get('url')}/uid/${userData.uid}>; rel="alternate"; type="application/activity+json"`);
+
+		if (!utils.isNumber(userData.uid)) {
+			res.set('Link', `<${userData.url || userData.uid}>; rel="canonical"`);
+			res.set('x-robots-tag', 'noindex');
+		}
+	}
 
 	res.render('account/profile', userData);
 };
@@ -124,7 +132,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 	return postData.slice(0, count);
 }
 
-function addMetaTags(res, userData) {
+function addTags(res, userData) {
 	const plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
 	res.locals.metaTags = [
 		{
@@ -160,5 +168,31 @@ function addMetaTags(res, userData) {
 				noEscape: true,
 			}
 		);
+	}
+
+	res.locals.linkTags = [];
+
+	if (utils.isNumber(userData.uid)) {
+		res.locals.linkTags.push({
+			rel: 'canonical',
+			href: `${url}/user/${userData.userslug}`,
+		});
+	} else {
+		res.locals.linkTags.push({
+			rel: 'canonical',
+			href: userData.url || userData.uid,
+		});
+		res.locals.metaTags.push({
+			name: 'robots',
+			content: 'noindex',
+		});
+	}
+
+	if (meta.config.activitypubEnabled) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/activity+json',
+			href: `${nconf.get('url')}/uid/${userData.uid}`,
+		});
 	}
 }

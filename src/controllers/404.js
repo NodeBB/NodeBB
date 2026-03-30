@@ -6,13 +6,20 @@ const validator = require('validator');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
 
-exports.handle404 = helpers.try(async (req, res) => {
-	const relativePath = nconf.get('relative_path');
-	const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
+const relativePath = nconf.get('relative_path');
+const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
 
+const error404Icons = [
+	'fa-hippo', 'fa-cat', 'fa-otter',
+	'fa-dog', 'fa-cow', 'fa-fish',
+	'fa-dragon', 'fa-horse', 'fa-dove',
+];
+
+exports.handle404 = helpers.try(async (req, res) => {
 	if (plugins.hooks.hasListeners('action:meta.override404')) {
 		return plugins.hooks.fire('action:meta.override404', {
 			req: req,
@@ -23,6 +30,12 @@ exports.handle404 = helpers.try(async (req, res) => {
 
 	if (isClientScript.test(req.url)) {
 		res.type('text/javascript').status(404).send('Not Found');
+	} else if (
+		activitypub.helpers.assertAccept(req.headers.accept) ||
+		(req.headers['Content-Type'] && activitypub._constants.acceptableTypes.includes(req.headers['Content-Type']))
+	) {
+		// todo: separate logging of AP 404s
+		res.sendStatus(404);
 	} else if (
 		!res.locals.isAPI && (
 			req.path.startsWith(`${relativePath}/assets/uploads`) ||
@@ -54,16 +67,11 @@ exports.send404 = helpers.try(async (req, res) => {
 			bodyClass: helpers.buildBodyClass(req, res),
 		});
 	}
-	const icons = [
-		'fa-hippo', 'fa-cat', 'fa-otter',
-		'fa-dog', 'fa-cow', 'fa-fish',
-		'fa-dragon', 'fa-horse', 'fa-dove',
-	];
+
 	await middleware.buildHeaderAsync(req, res);
 	res.render('404', {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
-		bodyClass: helpers.buildBodyClass(req, res),
-		icon: icons[Math.floor(Math.random() * icons.length)],
+		icon: error404Icons[Math.floor(Math.random() * error404Icons.length)],
 	});
 });

@@ -38,10 +38,22 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 				searchOptions: {
 					in: 'titles',
 				},
+				dropdown: {
+					maxWidth: '400px',
+					maxHeight: '350px',
+				},
 			});
 			modal.on('click', '[data-tid]', function () {
-				if ($(this).attr('data-tid')) {
-					Merge.addTopic($(this).attr('data-tid'));
+				const addTid = $(this).attr('data-tid');
+				if (addTid) {
+					Merge.addTopic(addTid);
+				}
+				return false;
+			});
+			modal.on('click', '[data-remove-tid]', function () {
+				const removeTid = $(this).attr('data-remove-tid');
+				if (removeTid) {
+					Merge.removeTopic(removeTid);
 				}
 				return false;
 			});
@@ -54,23 +66,33 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 		callback = callback || function () {};
 		api.get(`/topics/${tid}`, {}).then(function (topicData) {
 			const title = topicData ? topicData.title : 'No title';
-			if (selectedTids[tid]) {
-				delete selectedTids[tid];
-			} else {
-				selectedTids[tid] = title;
-			}
+			selectedTids[tid] = title;
 			checkButtonEnable();
 			showTopicsSelected();
 			callback();
 		}).catch(alerts.error);
 	};
 
+	Merge.removeTopic = function (tid) {
+		if (selectedTids[tid]) {
+			delete selectedTids[tid];
+		}
+		checkButtonEnable();
+		showTopicsSelected();
+	};
+
 	function onTopicClicked(ev) {
 		if (!modal) {
 			return;
 		}
-		const tid = $(this).parents('[component="category/topic"]').attr('data-tid');
-		Merge.addTopic(tid);
+		const topicEl = $(this).parents('[component="category/topic"]');
+		const isSelected = topicEl.hasClass('selected');
+		const tid = topicEl.attr('data-tid');
+		if (isSelected) {
+			Merge.addTopic(tid);
+		} else {
+			Merge.removeTopic(tid);
+		}
 
 		ev.preventDefault();
 		ev.stopPropagation();
@@ -116,10 +138,13 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 				topics: topics,
 			}, function (html) {
 				modal.find('.topics-section').html(html.find('.topics-section').html());
-				modal.find('.merge-main-topic-select').html(html.find('.merge-main-topic-select').html());
+				modal.find('.merge-main-topic-select').html(
+					html.find('.merge-main-topic-select').html()
+				);
 			});
 		} else {
 			modal.find('.topics-section').translateHtml('[[error:no-topics-selected]]');
+			modal.find('.merge-main-topic-select').html('');
 		}
 	}
 

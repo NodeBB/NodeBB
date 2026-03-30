@@ -1,8 +1,10 @@
 'use strict';
 
+const fs = require('fs');
 const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
+const path = require('path');
 const translator = require('../translator');
 const plugins = require('../plugins');
 const middleware = require('../middleware');
@@ -54,6 +56,12 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		controllers['404'].handle404(req, res);
 	};
 
+	const notBuiltHandler = async () => {
+		let file = await fs.promises.readFile(path.join(__dirname, '../../public/500.html'), { encoding: 'utf-8' });
+		file = file.replace('{message}', 'Failed to lookup view! Did you run `./nodebb build`?');
+		return res.type('text/html').send(file);
+	};
+
 	const defaultHandler = async function () {
 		if (res.headersSent) {
 			return;
@@ -61,7 +69,9 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		// Display NodeBB error page
 		const status = parseInt(err.status, 10);
 		if ((status === 302 || status === 308) && err.path) {
-			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
+			return res.locals.isAPI ?
+				res.set('X-Redirect', encodeURIComponent(err.path)).status(200).json(err.path) :
+				res.redirect(nconf.get('relative_path') + err.path);
 		}
 
 		const path = String(req.path || '');
@@ -93,8 +103,10 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 	try {
 		if (data.cases.hasOwnProperty(err.code)) {
 			data.cases[err.code](err, req, res, defaultHandler);
-		} else if (err.message.startsWith('[[error:no-') && err.message !== '[[error:no-privileges]]') {
+		} else if (err.message && err.message.startsWith('[[error:no-') && err.message !== '[[error:no-privileges]]') {
 			notFoundHandler();
+		} else if (err.message && err.message.startsWith('Failed to lookup view')) {
+			notBuiltHandler();
 		} else {
 			await defaultHandler();
 		}

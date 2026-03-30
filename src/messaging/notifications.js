@@ -1,13 +1,16 @@
 'use strict';
 
 const winston = require('winston');
+const validator = require('validator');
 
 const batch = require('../batch');
 const db = require('../database');
 const notifications = require('../notifications');
 const user = require('../user');
 const io = require('../socket.io');
+const activitypub = require('../activitypub');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.setUserNotificationSetting = async (uid, roomId, value) => {
@@ -66,19 +69,28 @@ module.exports = function (Messaging) {
 		// push unread count only for private rooms
 		if (!isPublic) {
 			const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
+			unreadData.teaser = {
+				content: validator.escape(
+					String(utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)))
+				),
+				user: messageObj.fromUser,
+				timestampISO: messageObj.timestampISO,
+			};
 			Messaging.pushUnreadCount(uids, unreadData);
 		}
 
 		try {
-			await sendNotification(fromUid, roomId, messageObj);
+			await Promise.all([
+				sendNotification(fromUid, roomId, messageObj),
+				!isPublic && utils.isNumber(fromUid) ?
+					activitypub.out.create.privateNote(messageObj) : null,
+			]);
 		} catch (err) {
 			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 		}
 	};
 
 	async function sendNotification(fromUid, roomId, messageObj) {
-		fromUid = parseInt(fromUid, 10);
-
 		const [settings, roomData, realtimeUids] = await Promise.all([
 			db.getObject(`chat:room:${roomId}:notification:settings`),
 			Messaging.getRoomData(roomId),
@@ -89,8 +101,9 @@ module.exports = function (Messaging) {
 		const { ALLMESSAGES } = Messaging.notificationSettings;
 		await batch.processSortedSet(`chat:room:${roomId}:uids:online`, async (uids) => {
 			uids = uids.filter(
-				uid => (parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
-					fromUid !== parseInt(uid, 10) &&
+				uid => utils.isNumber(uid) &&
+					(parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
+					String(fromUid) !== String(uid) &&
 					!realtimeUids.includes(parseInt(uid, 10))
 			);
 			const hasRead = await Messaging.hasRead(uids, roomId);

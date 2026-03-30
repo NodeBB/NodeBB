@@ -35,6 +35,8 @@
 			You are just a few steps away from launching your own NodeBB forum!
 		</p>
 		<form id="install" action="/" method="post" autocomplete="off">
+			<input type="hidden" name="csrf_token" value="{csrf_token}" />
+
 			{{{ if !skipGeneralSetup }}}
 			<div class="general">
 				<p>

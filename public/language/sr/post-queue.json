@@ -38,5 +38,6 @@
 	"remove-selected": "Уклони изабрано",
 	"remove-selected-confirm": "Да ли желите да уклоните изабране објаве (%1)?",
 	"bulk-accept-success": "Прихваћених објава: %1",
-	"bulk-reject-success": "Одбачених објава: %1"
+	"bulk-reject-success": "Одбачених објава: %1",
+	"links-in-this-post": "Links in this post"
 }

@@ -1,0 +1,25 @@
+delete:
+  tags:
+    - admin
+  summary: remove relay
+  description: This operation removes a pre-established relay connection
+  parameters:
+    - in: path
+      name: url
+      schema:
+        type: string
+      required: true
+      description: The relay actor endpoint, URL encoded.
+      example: https%3A%2F%2Fexample.org%2Factor
+  responses:
+    '200':
+      description: rule successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/admin/relays.yaml#/RelaysArray

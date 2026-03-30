@@ -7,5 +7,7 @@
     "alltime": "Pořád",
     "no-recent-topics": "Nebyly nalezeny žádné nové téma.",
     "no-popular-topics": "Žádná oblíbená téma.",
-    "load-new-posts": "Load new posts"
+    "load-new-posts": "Load new posts",
+    "uncategorized.title": "Všechny známá témata",
+    "uncategorized.intro": "Tato stránka zobrazuje chronologický seznam všech témat, která toto fórum obdrželo. <br /> Názory a postoje vyjádřené v níže uvedených tématech nejsou moderovány a nemusí odrážet názory tohoto webu."
 }

@@ -3,7 +3,7 @@
 [![Workflow](https://github.com/NodeBB/NodeBB/actions/workflows/test.yaml/badge.svg)](https://github.com/NodeBB/NodeBB/actions/workflows/test.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/NodeBB/NodeBB/badge.svg?branch=master)](https://coveralls.io/github/NodeBB/NodeBB?branch=master)
 [![Code Climate](https://codeclimate.com/github/NodeBB/NodeBB/badges/gpa.svg)](https://codeclimate.com/github/NodeBB/NodeBB)
-[![](https://dcbadge.vercel.app/api/server/p6YKPXu7er?style=flat)](https://discord.gg/p6YKPXu7er)
+[![](https://dcbadge.limes.pink/api/server/S2aAweHwDc?style=flat)](https://discord.gg/S2aAweHwDc)
 
 [**NodeBB Forum Software**](https://nodebb.org) is powered by Node.js and supports either Redis, MongoDB, or a PostgreSQL database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB takes the best of the modern web: real-time streaming discussions, mobile responsiveness, and rich RESTful read/write APIs, while staying true to the original bulletin board/forum format &rarr; categorical hierarchies, local user accounts, and asynchronous messaging.
 
@@ -39,8 +39,8 @@ Our minimalist "Harmony" theme gets you going right away, no coding experience r
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 16 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
-* MongoDB, version 3.6 or greater **or** Redis, version 2.8.9 or greater
+* A version of Node.js at least 20 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
+* MongoDB, version 5 or greater **or** Redis, version 7.2 or greater
 * If you are using [clustering](https://docs.nodebb.org/configuring/scaling/) you need Redis installed and configured.
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 

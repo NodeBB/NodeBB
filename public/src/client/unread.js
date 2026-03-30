@@ -61,6 +61,15 @@ define('forum/unread', [
 				doneRemovingTids(tids);
 			});
 		}
+
+		// Generate list of default categories based on topic list
+		let defaultCategories = ajaxify.data.topics.reduce((map, topic) => {
+			const { category } = topic;
+			map.set(String(category.cid), category);
+			return map;
+		}, new Map());
+		defaultCategories = Array.from(defaultCategories.values());
+
 		const selector = categorySelector.init($('[component="category-selector"]'), {
 			onSelect: function (category) {
 				selector.selectCategory(0);
@@ -68,7 +77,7 @@ define('forum/unread', [
 					markAllRead();
 				} else if (category.cid === 'selected') {
 					markSelectedRead();
-				} else if (parseInt(category.cid, 10) > 0) {
+				} else if (category.cid) {
 					markCategoryRead(category.cid);
 				}
 			},
@@ -77,14 +86,17 @@ define('forum/unread', [
 				{
 					cid: 'selected',
 					name: '[[unread:selected]]',
-					icon: '',
+					icon: 'fa-regular fa-square-check',
+					color: 'var(--bs-secondary)',
 				},
 				{
 					cid: 'all',
 					name: '[[unread:all]]',
-					icon: '',
+					icon: 'fa-list',
+					color: 'var(--bs-secondary)',
 				},
 			],
+			defaultCategories,
 		});
 	}
 

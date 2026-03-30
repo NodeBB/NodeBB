@@ -6,10 +6,13 @@
 	"new-users": "Yeni Kullanıcılar",
 	"posts": "İletiler",
 	"topics": "Başlıklar",
+	"remote-posts": "Remote Posts",
+	"remote-topics": "Remote Topics",
+	"messages": "Messages",
 	"page-views-seven": "Son 7 Gün",
 	"page-views-thirty": "Son 30 Gün",
 	"page-views-last-day": "Son 24 saat",
-	"page-views-custom": "Özel Tarih Aralığı",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Başlangıç Tarihi",
 	"page-views-custom-end": "Bitiş Tarihi",
 	"page-views-custom-help": "İncelemek istediğiniz sayfa gösterim sayıları için bir tarih aralığı girin. Tarih seçeceğiniz panel görünmezse, kabul edilebilir format <code>YYYY-AA-GG</code>'dir.",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Kayıtlı Kullanıcıların Sayfa Gösterimi",
 	"graphs.page-views-guest": "Ziyaretçilerin Sayfa Gösterimi",
 	"graphs.page-views-bot": "Bot Sayfa Gösterimi",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
 	"graphs.guest-users": "Misafir Kullanıcılar",
@@ -94,5 +98,8 @@
 	"view-as-json": "View as JSON",
 	"expand-analytics": "Expand analytics",
 	"clear-search-history": "Clear Search History",
-	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
+	"search-term": "Koşul",
+	"search-count": "Sayı",
+	"view-all": "Hepsini Görüntüle"
 }

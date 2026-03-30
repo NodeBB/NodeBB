@@ -1,0 +1,27 @@
+get:
+  tags:
+    - admin
+  summary: Manage custom fields for users
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        name:
+                          type: string
+                        select-options:
+                          type: string
+                        type:
+                          type: string
+              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,13 +1,13 @@
 {
-	"eu-consent": "EU 법률 관련",
+	"eu-consent": "EU 동의",
 	"consent.enabled": "활성화됨",
-	"consent.message": "알림 메세지",
-	"consent.acceptance": "허가 메세지",
-	"consent.link-text": "약관 조항 링크에 표시할 텍스트",
-	"consent.link-url": "약관 조항 링크",
-	"consent.blank-localised-default": "NodeBB의 번역을 사용하려면 빈칸으로 두세요.",
+	"consent.message": "알림 메시지",
+	"consent.acceptance": "수락 메시지",
+	"consent.link-text": "정책 링크 텍스트",
+	"consent.link-url": "정책 링크 URL",
+	"consent.blank-localised-default": "NodeBB의 현지화된 기본 값을 사용하려면 비워 두세요",
 	"settings": "설정",
 	"cookie-domain": "세션 쿠키 도메인",
-	"max-user-sessions": "사용자 당 최대 활성 세션",
-	"blank-default": "기본값을 사용하려면 빈칸으로 두세요."
+	"max-user-sessions": "사용자 당 최대 활성 세션 수",
+	"blank-default": "기본값을 사용하려면 비워 두세요"
 }

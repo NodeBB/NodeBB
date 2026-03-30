@@ -1,45 +1,46 @@
 <div class="table-responsive mb-3">
-	<table class="table text-sm">
-		<thead>
+	<table class="table">
+		<thead class="text-xs">
 			<tr>
 				<th></th>
-				<th class="text-end">[[admin/dashboard:stats.yesterday]]</th>
-				<th class="text-end">[[admin/dashboard:stats.today]]</th>
+				<th class="text-end text-nowrap">[[admin/dashboard:stats.yesterday]]</th>
+				<th class="text-end text-nowrap">[[admin/dashboard:stats.today]]</th>
 				<th></th>
-				<th class="text-end">[[admin/dashboard:stats.last-week]]</th>
-				<th class="text-end">[[admin/dashboard:stats.this-week]]</th>
+				<th class="text-end text-nowrap">[[admin/dashboard:stats.last-week]]</th>
+				<th class="text-end text-nowrap">[[admin/dashboard:stats.this-week]]</th>
 				<th></th>
-				<th class="text-end">[[admin/dashboard:stats.last-month]]</th>
-				<th class="text-end">[[admin/dashboard:stats.this-month]]</th>
+				<th class="text-end text-nowrap">[[admin/dashboard:stats.last-month]]</th>
+				<th class="text-end text-nowrap">[[admin/dashboard:stats.this-month]]</th>
 				<th></th>
+				{{{ if !hideAllTime}}}
 				<th class="text-end">[[admin/dashboard:stats.all]]</th>
+				{{{ end }}}
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="text-sm text-tabular">
 			{{{ each stats }}}
 			<tr>
-				<td>
-					<strong>
-						{{{ if ./href }}}
-							<a href="{./href}">{./name}</a>
-						{{{ else }}}
-							{./name}
-						{{{ end }}}
-					</strong>
+				<td class="fw-semibold text-nowrap">
+					{{{ if ./href }}}
+						<a href="{./href}">{./name}</a>
+					{{{ else }}}
+						{./name}
+					{{{ end }}}
 				</td>
 				<td class="text-end">{formattedNumber(./yesterday)}</td>
 				<td class="text-end">{formattedNumber(./today)}</td>
-				<td class="{./dayTextClass}"><small>{./dayIncrease}%</small></td>
+				<td class="{./dayTextClass} text-end"><small>{./dayIncrease}%</small></td>
 
 				<td class="text-end">{formattedNumber(./lastweek)}</td>
 				<td class="text-end">{formattedNumber(./thisweek)}</td>
-				<td class="{./weekTextClass}"><small>{./weekIncrease}%</small></td>
+				<td class="{./weekTextClass} text-end"><small>{./weekIncrease}%</small></td>
 
 				<td class="text-end">{formattedNumber(./lastmonth)}</td>
 				<td class="text-end">{formattedNumber(./thismonth)}</td>
-				<td class="{./monthTextClass}"><small>{./monthIncrease}%</small></td>
-
+				<td class="{./monthTextClass} text-end"><small>{./monthIncrease}%</small></td>
+				{{{ if !hideAllTime}}}
 				<td class="text-end">{formattedNumber(./alltime)}</td>
+				{{{ end }}}
 			</tr>
 			{{{ end }}}
 		</tbody>

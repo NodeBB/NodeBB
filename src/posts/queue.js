@@ -24,7 +24,8 @@ module.exports = function (Posts) {
 		if (!postData) {
 			const ids = await db.getSortedSetRange('post:queue', 0, -1);
 			const keys = ids.map(id => `post:queue:${id}`);
-			postData = await db.getObjects(keys);
+			postData = (await db.getObjects(keys)).filter(Boolean);
+
 			postData.forEach((data) => {
 				if (data) {
 					data.data = JSON.parse(data.data);
@@ -50,20 +51,20 @@ module.exports = function (Posts) {
 			cache.set('post-queue', _.cloneDeep(postData));
 		}
 		if (filter.id) {
-			postData = postData.filter(p => p.id === filter.id);
+			postData = postData.filter(p => p && p.id === filter.id);
 		}
 		if (options.metadata) {
 			await Promise.all(postData.map(addMetaData));
 		}
 
 		// Filter by tid if present
-		if (utils.isNumber(filter.tid)) {
-			const tid = parseInt(filter.tid, 10);
-			postData = postData.filter(item => item.data.tid && parseInt(item.data.tid, 10) === tid);
+		if (filter.tid) {
+			const tid = String(filter.tid);
+			postData = postData.filter(item => item && item.data.tid && String(item.data.tid) === tid);
 		} else if (Array.isArray(filter.tid)) {
-			const tids = filter.tid.map(tid => parseInt(tid, 10));
+			const tids = filter.tid.map(String);
 			postData = postData.filter(
-				item => item.data.tid && tids.includes(parseInt(item.data.tid, 10))
+				item => item && item.data.tid && tids.includes(String(item.data.tid))
 			);
 		}
 
@@ -188,24 +189,33 @@ module.exports = function (Posts) {
 			data: data,
 		};
 		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
-		payload.data = JSON.stringify(data);
 
 		await db.sortedSetAdd('post:queue', now, id);
-		await db.setObject(`post:queue:${id}`, payload);
+		await db.setObject(`post:queue:${id}`, {
+			...payload,
+			data: JSON.stringify(payload.data),
+		});
 		await user.setUserField(data.uid, 'lastqueuetime', now);
 		cache.del('post-queue');
 
+		await plugins.hooks.fire('action:post-queue.save', payload);
 		const cid = await getCid(type, data);
 		const uids = await getNotificationUids(cid);
-		const bodyLong = await parseBodyLong(cid, type, data);
+		const bodyEmail = await parseBodyEmail(cid, type, data);
 
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
-			mergeId: 'post-queue',
-			bodyShort: '[[notifications:post-awaiting-review]]',
-			bodyLong: bodyLong,
+			mergeId: `post-queue-${type}-uid-${data.uid}`,
+			bodyShort: type === 'reply' ? 
+				'[[notifications:post-awaiting-review]]' :
+				'[[notifications:topic-awaiting-review]]',
+			bodyLong: type === 'reply' ? 
+				await plugins.hooks.fire('filter:parse.raw', data.content) :
+				validator.escape(String(data.title)),
+			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
+			from: data.uid,
 		});
 		await notifications.push(notifObj, uids);
 		return {
@@ -216,7 +226,7 @@ module.exports = function (Posts) {
 		};
 	};
 
-	async function parseBodyLong(cid, type, data) {
+	async function parseBodyEmail(cid, type, data) {
 		const url = nconf.get('url');
 		const [content, category, userData] = await Promise.all([
 			plugins.hooks.fire('filter:parse.raw', data.content),
@@ -304,9 +314,11 @@ module.exports = function (Posts) {
 		if (data.type === 'topic') {
 			const result = await createTopic(data.data);
 			data.pid = result.postData.pid;
+			data.tid = result.topicData.tid;
 		} else if (data.type === 'reply') {
 			const result = await createReply(data.data);
 			data.pid = result.pid;
+			data.tid = result.tid;
 		}
 		await removeFromQueue(id);
 		plugins.hooks.fire('action:post-queue:submitFromQueue', { data: data });

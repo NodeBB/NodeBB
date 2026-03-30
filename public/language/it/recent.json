@@ -7,5 +7,7 @@
     "alltime": "Sempre",
     "no-recent-topics": "Non ci sono discussioni recenti.",
     "no-popular-topics": "Non ci sono discussioni popolari.",
-    "load-new-posts": "Carica nuovi post"
+    "load-new-posts": "Carica nuovi post",
+    "uncategorized.title": "Tutte le discussioni note",
+    "uncategorized.intro": "Questa pagina mostra un elenco cronologico di tutte le discussioni che questo forum ha ricevuto.<br />I punti di vista e le opinioni espresse nelle seguenti discussioni non sono moderate e potrebbero non rappresentare i punti di vista e le opinioni di questo sito web."
 }

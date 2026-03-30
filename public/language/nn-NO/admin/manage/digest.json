@@ -1,0 +1,22 @@
+{
+	"lead": "Administrer oppsummeringsutsending",
+	"disclaimer": "Her kan du administrere og konfigurere oppsummeringsutsendingar til brukarane.",
+	"disclaimer-continued": "Merk at oppsummeringar berre vert sendt til brukarar som har valt å motta dei.",
+
+	"user": "Brukar",
+	"subscription": "Abonnement",
+	"last-delivery": "Siste utsending",
+	"default": "Standard",
+	"default-help": "Standardoppsett for oppsummeringsutsending til nye brukarar.",
+	"resend": "Send på nytt",
+	"resend-all-confirm": "Er du sikker på at du vil sende oppsummeringa på nytt til alle brukarar?",
+	"resent-single": "Oppsummering sendt på nytt til brukar",
+	"resent-day": "Dagleg oppsummering sendt på nytt",
+	"resent-week": "Vekeoppsummering sendt på nytt",
+	"resent-biweek": "Tovekersoppsummering sendt på nytt",
+	"resent-month": "Månadsoppsummering sendt på nytt",
+	"null": "Ingen data",
+	"manual-run": "Manuell køyretur",
+
+	"no-delivery-data": "Ingen leveringsdata funne"
+}

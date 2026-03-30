@@ -49,7 +49,7 @@ put:
         type: number
       required: true
       description: a valid message id
-      example: 5
+      example: 2
   requestBody:
     required: true
     content:
@@ -92,7 +92,7 @@ delete:
         type: number
       required: true
       description: a valid message id
-      example: 5
+      example: 2
   responses:
     '200':
       description: Message successfully deleted
@@ -125,7 +125,7 @@ post:
         type: number
       required: true
       description: a valid message id
-      example: 5
+      example: 2
   responses:
     '200':
       description: message successfully restored

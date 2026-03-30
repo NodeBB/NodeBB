@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | Panel administracyjny NodeBB",
 	"settings-header-contents": "Zawartość",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-saved": "Zapisano zmiany",
+	"changes-saved-message": "Twoje zmiany do konfiguracji NodeBB zostały zapisane.",
 	"changes-not-saved": "Zmiany nie zostały zapisane",
 	"changes-not-saved-message": "Wystąpił błąd podczas zapisywania zmian. (%1)",
-	"save-changes": "Save changes",
+	"save-changes": "Zapisz zmiany",
 	"min": "Min:",
 	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"view": "Podgląd",
+	"edit": "Zmień",
+	"add": "Dodaj",
+	"select-icon": "Wybierz ikonę"
 }

@@ -40,18 +40,22 @@ image.resizeImage = async function (data) {
 			width: data.width,
 			height: data.height,
 			quality: data.quality,
+			type: data.type,
 		});
 	} else {
 		const sharp = requireSharp();
 		const buffer = await fs.promises.readFile(data.path);
 		const sharpImage = sharp(buffer, {
 			failOnError: true,
-			animated: data.path.endsWith('gif'),
+			animated: data.type === 'image/gif',
 		});
 		const metadata = await sharpImage.metadata();
 
 		sharpImage.rotate(); // auto-orients based on exif data
-		sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
+		// don't resize if width/height not changing or not specificied
+		if ((data.width && metadata.width !== data.width) || (data.height && metadata.height !== data.height)) {
+			sharpImage.resize(data.width || null, data.height || null);
+		}
 
 		if (data.quality) {
 			switch (metadata.format) {
@@ -102,27 +106,27 @@ image.size = async function (path) {
 	return imageData ? { width: imageData.width, height: imageData.height } : undefined;
 };
 
-image.stripEXIF = async function (path) {
-	if (!meta.config.stripEXIFData || path.endsWith('.gif') || path.endsWith('.svg')) {
+image.stripEXIF = async function ({ path, type }) {
+	if (!meta.config.stripEXIFData || type === 'image/gif' || type === 'image/svg+xml') {
 		return;
 	}
 	try {
 		if (plugins.hooks.hasListeners('filter:image.stripEXIF')) {
 			await plugins.hooks.fire('filter:image.stripEXIF', {
 				path: path,
+				type: type,
 			});
 			return;
 		}
 		const buffer = await fs.promises.readFile(path);
 		const sharp = requireSharp();
-		await sharp(buffer, { failOnError: true }).rotate().toFile(path);
+		await sharp(buffer, { failOnError: true, pages: -1 }).rotate().toFile(path);
 	} catch (err) {
 		winston.error(err.stack);
 	}
 };
 
 image.checkDimensions = async function (path) {
-	const meta = require('./meta');
 	const result = await image.size(path);
 
 	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {

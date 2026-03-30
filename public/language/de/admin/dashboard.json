@@ -6,10 +6,13 @@
 	"new-users": "Neue Benutzer",
 	"posts": "Beiträge",
 	"topics": "Themen",
+	"remote-posts": "Remote-Beiträge",
+	"remote-topics": "Remote-Themen",
+	"messages": "Nachrichten",
 	"page-views-seven": "Letzte 7 Tage",
 	"page-views-thirty": "Letzte 30 Tage",
 	"page-views-last-day": "Letzte 24 Stunden",
-	"page-views-custom": "Benutzerdefinierter Zeitraum",
+	"page-views-custom": "Benutzerdefinierter Bereich",
 	"page-views-custom-start": "Anfang Zeitraum",
 	"page-views-custom-end": "Ende Zeitraum",
 	"page-views-custom-help": "Gebe einen Datumsbereich für Seitenaufrufe ein, die du anzeigen möchtest. Wenn keine Datumsauswahl verfügbar ist, ist das akzeptierte Format <code>YYYY-MM-DD</code>",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Registrierte Seitenaufrufe",
 	"graphs.page-views-guest": "Seitenaufrufe von Gästen",
 	"graphs.page-views-bot": "Seitenaufrufe von Bots",
+	"graphs.page-views-ap": "ActivityPub-Seitenaufrufe",
 	"graphs.unique-visitors": "Verschiedene Besucher",
 	"graphs.registered-users": "Registrierte Benutzer",
 	"graphs.guest-users": "Gast-Benutzer",
@@ -94,5 +98,8 @@
 	"view-as-json": "Als JSON anzeigen",
 	"expand-analytics": "Analytik erweitern",
 	"clear-search-history": "Suchverlauf löschen",
-	"clear-search-history-confirm": "Bist du dir sicher, dass du den gesamten Suchverlauf löschen möchten?"
+	"clear-search-history-confirm": "Bist du dir sicher, dass du den gesamten Suchverlauf löschen möchten?",
+	"search-term": "Bezeichnung",
+	"search-count": "Anzahl",
+	"view-all": "Zeige alle"
 }

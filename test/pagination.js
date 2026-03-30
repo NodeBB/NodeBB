@@ -26,6 +26,18 @@ describe('Pagination', () => {
 		done();
 	});
 
+	it('should create pagination for 18 pages and should not turn page 3 into separator', (done) => {
+		const data = pagination.create(6, 18);
+		// [1, 2, 3, 4, 5, (6), 7, 8, seperator, 17, 18]
+		assert.equal(data.pages.length, 11);
+		assert.equal(data.rel.length, 2);
+		assert.strictEqual(data.pages[2].qs, 'page=3');
+		assert.equal(data.pageCount, 18);
+		assert.equal(data.prev.page, 5);
+		assert.equal(data.next.page, 7);
+		done();
+	});
+
 	it('should create pagination for 3 pages with query params', (done) => {
 		const data = pagination.create(1, 3, { key: 'value' });
 		assert.equal(data.pages.length, 3);

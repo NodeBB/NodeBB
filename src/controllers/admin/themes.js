@@ -20,12 +20,18 @@ themesController.get = async function (req, res, next) {
 		themeConfig = JSON.parse(themeConfig);
 	} catch (err) {
 		if (err.code === 'ENOENT') {
-			return next(Error('invalid-data'));
+			return next(Error('[[error:invalid-data]]'));
 		}
 		return next(err);
 	}
 
-	const screenshotPath = themeConfig.screenshot ? path.join(themeDir, themeConfig.screenshot) : defaultScreenshotPath;
-	const exists = await file.exists(screenshotPath);
+	const screenshotPath = themeConfig.screenshot ?
+		path.join(themeDir, themeConfig.screenshot) :
+		'';
+
+	if (screenshotPath && !screenshotPath.startsWith(themeDir)) {
+		throw new Error('[[error:invalid-path]]');
+	}
+	const exists = screenshotPath ? await file.exists(screenshotPath) : false;
 	res.sendFile(exists ? screenshotPath : defaultScreenshotPath);
 };

@@ -3,7 +3,7 @@
     "no-tag-topics": "Teemasid, mis sisaldaksid seda märksõna, ei eksisteeri.",
     "no-tags-found": "No tags found",
     "tags": "Märksõnad",
-    "enter-tags-here": "Sisesta märksõnad siia, %1 kuni %2 tähemärki märksõna kohta.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "Sisesta märksõnu...",
     "no-tags": "Siin ei ole veel ühtegi märksõna.",
     "select-tags": "Select Tags",

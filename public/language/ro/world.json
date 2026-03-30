@@ -1,0 +1,29 @@
+{
+	"name": "Lumea",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
+	"help": "Ajutor",
+
+	"help.title": "Ce este în pagina curentă",
+	"help.intro": "Bine ai venit în colțul tău din universul fediverse",
+	"help.fediverse": "„Fediversul” este o rețea de aplicații și site-uri web interconectate care comunică între ele și ai căror utilizatori se pot vedea reciproc. Acest forum este federat și poate interacționa cu acea rețea socială (sau „fediversul”). Această pagină este colțul tău din fedivers. Constă exclusiv din subiecte create de — și partajate de — utilizatori pe care îi urmărești.",
+	"help.build": "S-ar putea să nu fie multe subiecte de început aici; este normal. Vei începe să vezi mai mult conținut aici în timp, când vei începe să urmărești alți utilizatori.",
+	"help.federating": "De asemenea, dacă utilizatori din afara acestui forum încep să te urmărească, atunci postările tale vor începe să apară și pe acele aplicații și site-uri web.",
+	"help.next-generation": "Aceasta este următoarea generație de social media, începe să contribui chiar azi!",
+
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+
+	"category-search": "Find a category...",
+	"see-more": "See more",
+	"see-less": "See less"
+}

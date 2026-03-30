@@ -71,6 +71,8 @@ get:
                       type: string
                   feeds:disableRSS:
                     type: number
+                  reputation:disabled:
+                    type: number
                   rssFeedUrl:
                     type: string
                   title:

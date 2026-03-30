@@ -1,0 +1,18 @@
+{
+	"alert.confirm-rebuild-and-restart": "NodeBB-ni yenidən qurmaq və yenidən başlatmaq istədiyinizə əminsiniz?",
+	"alert.confirm-restart": "NodeBB-ni yenidən başlatmaq istədiyinizə əminsiniz?",
+
+	"acp-title": "%1 | NodeBB İdarəetmə Paneli",
+	"settings-header-contents": "Məzmun",
+	"changes-saved": "Dəyişikliklər yadda saxlandı",
+	"changes-saved-message": "NodeBB konfiqurasiyasına etdiyiniz dəyişikliklər yadda saxlanıldı.",
+	"changes-not-saved": "Dəyişikliklər saxlanmadı",
+	"changes-not-saved-message": "NodeBB dəyişikliklərinizi yadda saxlayarkən problemlə qarşılaşdı. (% 1)",
+	"save-changes": "Dəyişiklikləri yadda saxlayın",
+	"min": "Min:",
+	"max": "Maks:",
+	"view": "Bax",
+	"edit": "Redaktə et",
+	"add": "Əlavə et",
+	"select-icon": "İkonu seç"
+}

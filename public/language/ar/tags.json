@@ -3,7 +3,7 @@
     "no-tag-topics": "لا يوجد مواضيع بهذه الكلمة الدلالية.",
     "no-tags-found": "No tags found",
     "tags": "الكلمات الدلالية",
-    "enter-tags-here": "Enter tags here, between %1 and %2 characters each.",
+    "enter-tags-here": "Enter tags, %1 - %2 characters.",
     "enter-tags-here-short": "أدخل الكلمات الدلالية...",
     "no-tags": "لا يوجد كلمات دلالية بعد.",
     "select-tags": "Select Tags",

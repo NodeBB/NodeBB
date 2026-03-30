@@ -1,20 +1,24 @@
-@use "@fontsource/inter/scss/mixins" as Inter;
-@use "@fontsource/poppins/scss/mixins" as Poppins;
+@use "pkg:@fontsource-utils/scss" as fontsource;
+@use "pkg:@fontsource/inter/scss" as inter;
+@use "pkg:@fontsource/poppins/scss" as poppins;
 
 $weights: $font-weight-light, $font-weight-normal, $font-weight-semibold, $font-weight-bold;
 $subsets: (latin, latin-ext);
 
-@include Inter.faces(
-	$weights: $weights,
-	$subsets: $subsets,
-	$display: fallback,
-	$directory: "./plugins/core/inter"
+@include fontsource.faces(
+  $metadata: inter.$metadata,
+  $subsets: $subsets,
+  $weights: $weights,
+  $styles: all,
+  $directory: "./plugins/core/inter"
 );
-@include Poppins.faces(
-	$weights: $weights,
-	$subsets: $subsets,
-	$display: fallback,
-	$directory: "./plugins/core/poppins"
+
+@include fontsource.faces(
+  $metadata: poppins.$metadata,
+  $subsets: $subsets,
+  $weights: $weights,
+  $styles: all,
+  $directory: "./plugins/core/poppins"
 );
 
 .ff-base { font-family: $font-family-base !important; }

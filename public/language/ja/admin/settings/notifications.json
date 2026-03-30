@@ -2,6 +2,8 @@
 	"notifications": "通知",
 	"welcome-notification": "ウェルカム通知",
 	"welcome-notification-link": "ウェルカム通知のリンク",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)"
+	"welcome-notification-uid": "ウェルカム通知ユーザー（UID）",
+	"post-queue-notification-uid": "投稿キュー通知ユーザー（UID）",
+	"notification-delay": "通知メール送信の遅延（秒）",
+	"notification-delay-help": "この時間内にユーザーが通知を読んだ場合、メールは送信されません。<br/>デフォルト: 60秒。"
 }

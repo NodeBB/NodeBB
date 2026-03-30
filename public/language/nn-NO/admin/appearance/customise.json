@@ -1,0 +1,20 @@
+{
+	"customise": "Tilpass",
+	"custom-css": "Eigen CSS/SASS",
+	"custom-css.description": "Legg til tilpassa CSS /SASS for å endre utforminga av forumet.",
+	"custom-css.enable": "Aktiver eige CSS/SASS",
+
+	"custom-js": "Eige JavaScript",
+	"custom-js.description": "Legg til tilpassa JavaScript for å utvide funksjonaliteten til forumet. Det vil bli startet etter at siden er lastet. ",
+	"custom-js.enable": "Aktiver eige JavaScript",
+
+	"custom-header": "Eige hovud",
+	"custom-header.description": "Legg til eige HTML innhald i hovudet på sida. For eksempel Meta Tags. For script tags anbefaler vi <a href=\"#custom-js\" data-toggle=\"tab\">Eige Javascript</a> fanen ",
+	"custom-header.enable": "Aktiver eige hovud",
+
+	"custom-css.livereload": "Aktiver direkte CSS oppdatering.  ",
+	"custom-css.livereload.description": "Aktiver denne for å tvinge oppdatering av alle enheter under din konto hver gang du trykker lagre.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Endre Bootstrap-variablar for å tilpasse temaet. Du kan bruke <a href=\"https://bootstrap.build/app\">bootstrap.build</a> og kopiere inn resultatet her. <br/> Endringer  krever bygging og omstart.",
+	"bsvariables.enable": "Aktiver _variables.scss"
+}

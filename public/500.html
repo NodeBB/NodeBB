@@ -1,0 +1,41 @@
+<html>
+<head>
+	<title>Internal Server Error</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="/assets/5xx.css" />
+
+	<script type="text/javascript">
+	window.onload = function() {
+		let count = 0;
+		const bounce = document.getElementById('click-me');
+		bounce.onclick = function() {
+			count++;
+			bounce.className = '';
+			setTimeout(function() {
+				bounce.className = 'animated bounce';
+			}, 50);
+
+			if (count > 5) {
+				document.getElementById('hide').className = '';
+			}
+		};
+	}
+	</script>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="center">
+			<h1 id="click-me" class="animated bounce">500</h1>
+			<p>
+				<strong>Internal server error. </strong>
+			</p>
+			<p>
+				{message}
+			</p>
+			<p>
+				&nbsp;<small id="hide" class="hide">Alright. You can stop clicking... it's not going to make the site come back sooner!</small>
+			</p>
+		</div>
+	</div>
+</body>
+</html>

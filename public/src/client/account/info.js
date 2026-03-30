@@ -11,26 +11,73 @@ define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/s
 	};
 
 	function handleModerationNote() {
+		const noteList = $('[component="account/moderation-note/list"]');
+
+		function adjustTextareaHeight(textarea) {
+			textarea.css({
+				height: textarea.prop('scrollHeight') + 'px',
+			});
+		}
+
 		$('[component="account/save-moderation-note"]').on('click', function () {
-			const note = $('[component="account/moderation-note"]').val();
-			socket.emit('user.setModerationNote', { uid: ajaxify.data.uid, note: note }, function (err) {
+			const noteEl = $('[component="account/moderation-note"]');
+			const note = noteEl.val();
+			socket.emit('user.setModerationNote', {
+				uid: ajaxify.data.uid,
+				note: note,
+			}, function (err, notes) {
 				if (err) {
 					return alerts.error(err);
 				}
-				$('[component="account/moderation-note"]').val('');
-				alerts.success('[[user:info.moderation-note.success]]');
-				const timestamp = Date.now();
-				const data = [{
-					note: utils.escapeHTML(note),
-					user: app.user,
-					timestamp: timestamp,
-					timestampISO: utils.toISOString(timestamp),
-				}];
-				app.parseAndTranslate('account/info', 'moderationNotes', { moderationNotes: data }, function (html) {
-					$('[component="account/moderation-note/list"]').prepend(html);
+				noteEl.val('');
+
+				app.parseAndTranslate('account/info', 'moderationNotes', { moderationNotes: notes }, function (html) {
+					noteList.prepend(html);
 					html.find('.timeago').timeago();
 				});
 			});
+		});
+
+
+		noteList.on('click', '[component="account/moderation-note/edit"]', function () {
+			const parent = $(this).parents('[data-id]');
+			const contentArea = parent.find('[component="account/moderation-note/content-area"]');
+			const editArea = parent.find('[component="account/moderation-note/edit-area"]');
+			contentArea.addClass('hidden');
+			editArea.removeClass('hidden');
+			adjustTextareaHeight(editArea.find('textarea'));
+			editArea.find('textarea').trigger('focus').putCursorAtEnd();
+		});
+
+		noteList.on('click', '[component="account/moderation-note/save-edit"]', function () {
+			const parent = $(this).parents('[data-id]');
+			const contentArea = parent.find('[component="account/moderation-note/content-area"]');
+			const editArea = parent.find('[component="account/moderation-note/edit-area"]');
+			contentArea.removeClass('hidden');
+			const textarea = editArea.find('textarea');
+
+			socket.emit('user.editModerationNote', {
+				uid: ajaxify.data.uid,
+				id: parent.attr('data-id'),
+				note: textarea.val(),
+			}, function (err, notes) {
+				if (err) {
+					return alerts.error(err);
+				}
+				textarea.css({
+					height: textarea.prop('scrollHeight') + 'px',
+				});
+				editArea.addClass('hidden');
+				contentArea.find('.content').html(notes[0].note);
+			});
+		});
+
+		noteList.on('click', '[component="account/moderation-note/cancel-edit"]', function () {
+			const parent = $(this).parents('[data-id]');
+			const contentArea = parent.find('[component="account/moderation-note/content-area"]');
+			const editArea = parent.find('[component="account/moderation-note/edit-area"]');
+			contentArea.removeClass('hidden');
+			editArea.addClass('hidden');
 		});
 	}
 

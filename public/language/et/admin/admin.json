@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | NodeBB Administraatori kontrollpaneel",
 	"settings-header-contents": "Sisu",
-	"changes-saved": "Changes Saved",
+	"changes-saved": "Muudatused salvestatud",
 	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
+	"changes-not-saved-message": "NodeBB-l tekkis probleem su muudatuste salvestamisel. (%1)",
+	"save-changes": "Salvesta muudatused",
 	"min": "Min:",
 	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"view": "Vaata",
+	"edit": "Muuda",
+	"add": "Lisa",
+	"select-icon": "Vali ikoon"
 }

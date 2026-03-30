@@ -84,12 +84,18 @@
 	"modal-reason-offensive": "Choquant",
 	"modal-reason-other": "Autre (précisez ci-dessous)",
 	"modal-reason-custom": "Motif du signalement...",
+	"modal-notify-remote": "Envoyer ce rapport à %1",
 	"modal-submit": "Soumettre",
 	"modal-submit-success": "Le contenu a été soumis pour examen.",
 
+	"modal-confirm-rescind": "Annuler le signalement ?",
+
 	"bulk-actions": "Actions en vrac",
 	"bulk-resolve": "Signalement(s) résolu(s)",
+	"confirm-purge": "Êtes-vous sûr de vouloir supprimer définitivement ces signalements ?",
+	"purge-cancelled": "Suppression des signalements annulée",
+	"bulk-purge": "Supprimer le(s) signalement(s)",
 	"bulk-success": "%1 signalements mis à jour",
-	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Signalé ",
   	"auto-flagged": "[Auto Signalement] A reçu %1 votes négatifs."
 }

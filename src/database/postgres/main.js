@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = function (module) {
+	const Cursor = require('pg-cursor');
 	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 
 	module.flushdb = async function () {
 		await module.pool.query(`DROP SCHEMA "public" CASCADE`);
@@ -16,58 +18,111 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-
-		// Redis/Mongo consider empty zsets as non-existent, match that behaviour
-		const type = await module.type(key);
-		if (type === 'zset') {
-			if (Array.isArray(key)) {
-				const members = await Promise.all(key.map(key => module.getSortedSetRange(key, 0, 0)));
-				return members.map(member => member.length > 0);
-			}
-			const members = await module.getSortedSetRange(key, 0, 0);
-			return members.length > 0;
+		const isArray = Array.isArray(key);
+		if (isArray && !key.length) {
+			return [];
 		}
 
-		if (Array.isArray(key)) {
+		async function checkIfzSetsExist(keys) {
+			const members = await Promise.all(
+				keys.map(key => module.getSortedSetRange(key, 0, 0))
+			);
+			return members.map(member => member.length > 0);
+		}
+
+		async function checkIfSetsExist(keys) {
+			const members = await Promise.all(keys.map(module.getSetMembers));
+			return members.map(member => member.length > 0);
+		}
+
+		async function checkIfKeysExist(keys) {
 			const res = await module.pool.query({
 				name: 'existsArray',
 				text: `
 				SELECT o."_key" k
   				FROM "legacy_object_live" o
  				WHERE o."_key" = ANY($1::TEXT[])`,
-				values: [key],
+				values: [keys],
 			});
-			return key.map(k => res.rows.some(r => r.k === k));
+			return keys.map(k => res.rows.some(r => r.k === k));
+		}
+
+		// Redis/Mongo consider empty zsets as non-existent, match that behaviour
+		if (isArray) {
+			const types = await Promise.all(key.map(module.type));
+			const zsetKeys = key.filter((_key, i) => types[i] === 'zset');
+			const setKeys = key.filter((_key, i) => types[i] === 'set');
+			const otherKeys = key.filter((_key, i) => types[i] !== 'zset' && types[i] !== 'set');
+			const [zsetExits, setExists, otherExists] = await Promise.all([
+				checkIfzSetsExist(zsetKeys),
+				checkIfSetsExist(setKeys),
+				checkIfKeysExist(otherKeys),
+			]);
+			const existsMap = Object.create(null);
+			zsetKeys.forEach((k, i) => { existsMap[k] = zsetExits[i]; });
+			setKeys.forEach((k, i) => { existsMap[k] = setExists[i]; });
+			otherKeys.forEach((k, i) => { existsMap[k] = otherExists[i]; });
+			return key.map(k => existsMap[k]);
+		}
+		const type = await module.type(key);
+		if (type === 'zset') {
+			const members = await module.getSortedSetRange(key, 0, 0);
+			return members.length > 0;
+		} else if (type === 'set') {
+			const members = await module.getSetMembers(key);
+			return members.length > 0;
 		}
 		const res = await module.pool.query({
 			name: 'exists',
 			text: `
 			SELECT EXISTS(SELECT *
 					FROM "legacy_object_live"
-				   WHERE "_key" = $1::TEXT
-				   LIMIT 1) e`,
+					WHERE "_key" = $1::TEXT
+					LIMIT 1) e`,
 			values: [key],
 		});
+
 		return res.rows[0].e;
 	};
 
 	module.scan = async function (params) {
-		let { match } = params;
-		if (match.startsWith('*')) {
-			match = `%${match.substring(1)}`;
-		}
-		if (match.endsWith('*')) {
-			match = `${match.substring(0, match.length - 1)}%`;
+		const match = dbHelpers.globToRegex(params.match);
+		const batchSize = params.batch || 1000;
+		const found = new Set();
+
+		const client = await module.pool.connect();
+
+		const cursor = client.query(new Cursor(`
+			SELECT "_key"
+			FROM "legacy_object_live"
+			WHERE "_key" ~ $1
+		`, [match]));
+
+		try {
+			const fetchRows = () => {
+				return new Promise((resolve, reject) => {
+					cursor.read(batchSize, (err, rows) => {
+						if (err) return reject(err);
+						resolve(rows);
+					});
+				});
+			};
+
+			let rows;
+			do {
+				// eslint-disable-next-line no-await-in-loop
+				rows = await fetchRows();
+				for (const row of rows) {
+					found.add(row._key);
+				}
+			} while (rows.length > 0);
+		} finally {
+			cursor.close(() => {
+				client.release();
+			});
 		}
 
-		const res = await module.pool.query({
-			text: `
-		SELECT o."_key"
-		FROM "legacy_object_live" o
-		WHERE o."_key" LIKE '${match}'`,
-		});
-
-		return res.rows.map(r => r._key);
+		return Array.from(found);
 	};
 
 	module.delete = async function (key) {

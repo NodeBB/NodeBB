@@ -53,7 +53,7 @@ define('topicList', [
 
 		handleBack.init(function (after, handleBackCallback) {
 			loadTopicsCallback(after, 1, function (data, loadCallback) {
-				onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, 1, function () {
+				onTopicsLoaded(templateName, data, ajaxify.data.showSelect, 1, function () {
 					handleBackCallback();
 					loadCallback();
 				});
@@ -95,11 +95,11 @@ define('topicList', [
 
 		const categories = d.selectedCids &&
 			d.selectedCids.length &&
-			d.selectedCids.indexOf(parseInt(data.cid, 10)) === -1;
+			!d.selectedCids.includes(parseInt(data.cid, 10));
 		const filterWatched = d.selectedFilter &&
 			d.selectedFilter.filter === 'watched';
 		const category = d.template.category &&
-			parseInt(d.cid, 10) !== parseInt(data.cid, 10);
+			String(d.cid) !== String(data.cid);
 
 		const preventAlert = !!(categories || filterWatched || category || scheduledTopics.includes(data.tid));
 		hooks.fire('filter:topicList.onNewTopic', { topic: data, preventAlert }).then((result) => {
@@ -126,14 +126,14 @@ define('topicList', [
 		const isMain = parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10);
 		const categories = d.selectedCids &&
 			d.selectedCids.length &&
-			d.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1;
+			!d.selectedCids.includes(parseInt(post.topic.cid, 10));
 		const filterNew = d.selectedFilter &&
 			d.selectedFilter.filter === 'new';
 		const filterWatched = d.selectedFilter &&
 			d.selectedFilter.filter === 'watched' &&
 			!post.topic.isFollowing;
 		const category = d.template.category &&
-			parseInt(d.cid, 10) !== parseInt(post.topic.cid, 10);
+			String(d.cid) !== String(post.topic.cid);
 
 		const preventAlert = !!(isMain || categories || filterNew || filterWatched || category);
 		hooks.fire('filter:topicList.onNewPost', { post, preventAlert }).then((result) => {
@@ -166,7 +166,7 @@ define('topicList', [
 		}
 
 		loadTopicsCallback(after, direction, function (data, done) {
-			onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, direction, done);
+			onTopicsLoaded(templateName, data, ajaxify.data.showSelect, direction, done);
 		});
 	};
 
@@ -187,7 +187,8 @@ define('topicList', [
 		});
 	}
 
-	function onTopicsLoaded(templateName, topics, showSelect, direction, callback) {
+	function onTopicsLoaded(templateName, data, showSelect, direction, callback) {
+		let { topics } = data;
 		if (!topics || !topics.length) {
 			$('#load-more-btn').hide();
 			return callback();
@@ -212,11 +213,15 @@ define('topicList', [
 		const tplData = {
 			topics: topics,
 			showSelect: showSelect,
+			'reputation:disabled': data['reputation:disabled'],
 			template: {
 				name: templateName,
+				[templateName]: true,
 			},
 		};
-		tplData.template[templateName] = true;
+		if (ajaxify.data.cid) {
+			tplData.cid = ajaxify.data.cid;
+		}
 
 		hooks.fire('action:topics.loading', { topics: topics, after: after, before: before });
 

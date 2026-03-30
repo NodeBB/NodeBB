@@ -37,7 +37,7 @@ module.exports = function (theModule, ignoreKeys) {
 	}
 
 	function wrapCallback(origFn, callbackFn) {
-		return async function wrapperCallback(...args) {
+		return function wrapperCallback(...args) {
 			if (args.length && typeof args[args.length - 1] === 'function') {
 				const cb = args.pop();
 				args.push((err, res) => (res !== undefined ? cb(err, res) : cb(err)));

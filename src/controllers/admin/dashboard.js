@@ -15,6 +15,7 @@ const user = require('../../user');
 const topics = require('../../topics');
 const utils = require('../../utils');
 const emailer = require('../../emailer');
+const pagination = require('../../pagination');
 
 const dashboardController = module.exports;
 
@@ -28,12 +29,14 @@ dashboardController.get = async function (req, res) {
 		getPopularSearches(),
 	]);
 	const version = nconf.get('version');
+	const latestValidVersion = semver.valid(latestVersion);
 
 	res.render('admin/dashboard', {
+		graphTitle: '[[admin/dashboard:forum-traffic]]',
 		version: version,
-		lookupFailed: latestVersion === null,
-		latestVersion: latestVersion,
-		upgradeAvailable: latestVersion && semver.gt(latestVersion, version),
+		lookupFailed: latestValidVersion === null,
+		latestVersion: latestValidVersion,
+		upgradeAvailable: latestValidVersion && semver.gt(latestValidVersion, version),
 		currentPrerelease: versions.isPrerelease.test(version),
 		notices: notices,
 		stats: stats,
@@ -41,6 +44,7 @@ dashboardController.get = async function (req, res) {
 		lastrestart: lastrestart,
 		showSystemControls: isAdmin,
 		popularSearches: popularSearches,
+		hideAllTime: true,
 	});
 };
 
@@ -67,7 +71,7 @@ async function getNotices() {
 		});
 	}
 
-	if (global.env !== 'production') {
+	if (process.env.NODE_ENV !== 'production') {
 		notices.push({
 			done: false,
 			notDoneText: '[[admin/dashboard:running-in-development]]',
@@ -89,7 +93,7 @@ async function getLatestVersion() {
 dashboardController.getAnalytics = async (req, res, next) => {
 	// Basic validation
 	const validUnits = ['days', 'hours'];
-	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
+	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest', 'pageviews:ap'];
 	const until = req.query.until ? new Date(parseInt(req.query.until, 10)) : Date.now();
 	const count = req.query.count || (req.query.units === 'hours' ? 24 : 30);
 	if (isNaN(until) || !validUnits.includes(req.query.units)) {
@@ -127,26 +131,40 @@ async function getStats() {
 		return cachedStats;
 	}
 
-	let results = await Promise.all([
-		getStatsFromAnalytics('uniquevisitors', 'uniqueIPCount'),
+	let results = (await Promise.all([
+		getStatsFromAnalytics('pageviews', ''),
+		getStatsFromAnalytics('uniquevisitors', ''),
 		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
 		getStatsForSet('topics:tid', 'topicCount'),
-	]);
+		meta.config.activitypubEnabled ? getStatsForSet('postsRemote:pid', '') : null,
+		meta.config.activitypubEnabled ? getStatsForSet('topicsRemote:tid', '') : null,
+		getStatsForSet('messages:mid', 'messageCount'),
+	]));
 
-	results[0].name = '[[admin/dashboard:unique-visitors]]';
+	results[0].name = '[[admin/dashboard:graphs.page-views]]';
+	results[1].name = '[[admin/dashboard:unique-visitors]]';
 
-	results[1].name = '[[admin/dashboard:logins]]';
-	results[1].href = `${nconf.get('relative_path')}/admin/dashboard/logins`;
+	results[2].name = '[[admin/dashboard:logins]]';
+	results[2].href = `${nconf.get('relative_path')}/admin/dashboard/logins`;
 
-	results[2].name = '[[admin/dashboard:new-users]]';
-	results[2].href = `${nconf.get('relative_path')}/admin/dashboard/users`;
+	results[3].name = '[[admin/dashboard:new-users]]';
+	results[3].href = `${nconf.get('relative_path')}/admin/dashboard/users`;
 
-	results[3].name = '[[admin/dashboard:posts]]';
+	results[4].name = '[[admin/dashboard:posts]]';
 
-	results[4].name = '[[admin/dashboard:topics]]';
-	results[4].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
+	results[5].name = '[[admin/dashboard:topics]]';
+	results[5].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
+
+	if (results[6]) {
+		results[6].name = '[[admin/dashboard:remote-posts]]';
+	}
+	if (results[7]) {
+		results[7].name = '[[admin/dashboard:remote-topics]]';
+	}
+	results[8].name = '[[admin/dashboard:messages]]';
+	results = results.filter(Boolean);
 
 	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
 		results,
@@ -209,7 +227,7 @@ function calculateDeltas(results) {
 
 	function increasePercent(last, now) {
 		const percent = last ? (now - last) / last * 100 : 0;
-		return percent.toFixed(1);
+		return (percent > 0 ? `+` : '') + percent.toFixed(0);
 	}
 	results.yesterday -= results.today;
 	results.dayIncrease = increasePercent(results.yesterday, results.today);
@@ -227,6 +245,7 @@ function calculateDeltas(results) {
 }
 
 async function getGlobalField(field) {
+	if (!field) return 0;
 	const count = await db.getObjectField('global', field);
 	return parseInt(count, 10) || 0;
 }
@@ -274,8 +293,9 @@ dashboardController.getLogins = async (req, res) => {
 	sessions = _.flatten(sessions).sort((a, b) => b.datetime - a.datetime);
 
 	res.render('admin/dashboard/logins', {
+		graphTitle: '[[admin/dashboard:logins]]',
 		set: 'logins',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		sessions,
@@ -302,8 +322,9 @@ dashboardController.getUsers = async (req, res) => {
 	const users = await user.getUsersData(uids);
 
 	res.render('admin/dashboard/users', {
+		graphTitle: '[[admin/dashboard:new-users]]',
 		set: 'registrations',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		users,
@@ -329,8 +350,9 @@ dashboardController.getTopics = async (req, res) => {
 	const topicData = await topics.getTopicsByTids(tids);
 
 	res.render('admin/dashboard/topics', {
+		graphTitle: '[[admin/dashboard:topics]]',
 		set: 'topics',
-		query: req.query,
+		query: _.pick(req.query, ['units', 'until', 'count']),
 		stats,
 		summary,
 		topics: topicData,
@@ -338,24 +360,30 @@ dashboardController.getTopics = async (req, res) => {
 };
 
 dashboardController.getSearches = async (req, res) => {
-	let start = 0;
-	let end = 0;
+	const page = parseInt(req.query.page, 10) || 1;
+	const perPage = 25;
+	const start = Math.max(0, (page - 1) * perPage);
+	const stop = start + perPage - 1;
+
+	let startDate = 0;
+	let endDate = 0;
 	if (req.query.start) {
-		start = new Date(req.query.start);
-		start.setHours(24, 0, 0, 0);
-		end = new Date();
-		end.setHours(24, 0, 0, 0);
+		startDate = new Date(req.query.start);
+		startDate.setHours(24, 0, 0, 0);
+		endDate = new Date();
+		endDate.setHours(24, 0, 0, 0);
 	}
 	if (req.query.end) {
-		end = new Date(req.query.end);
-		end.setHours(24, 0, 0, 0);
+		endDate = new Date(req.query.end);
+		endDate.setHours(24, 0, 0, 0);
 	}
 
 	let searches;
-	if (start && end && start <= end) {
-		const daysArr = [start];
-		const nextDay = new Date(start.getTime());
-		while (nextDay < end) {
+	let itemCount;
+	if (startDate && endDate && startDate <= endDate) {
+		const daysArr = [startDate];
+		const nextDay = new Date(startDate.getTime());
+		while (nextDay < endDate) {
 			nextDay.setDate(nextDay.getDate() + 1);
 			nextDay.setHours(0, 0, 0, 0);
 			daysArr.push(new Date(nextDay.getTime()));
@@ -379,13 +407,21 @@ dashboardController.getSearches = async (req, res) => {
 		searches = Object.keys(map)
 			.map(key => ({ value: key, score: map[key] }))
 			.sort((a, b) => b.score - a.score);
+		itemCount = searches.length;
+		searches = searches.slice(start, stop + 1);
 	} else {
-		searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 99);
+		[itemCount, searches] = await Promise.all([
+			db.sortedSetCard('searches:all'),
+			db.getSortedSetRevRangeWithScores('searches:all', start, stop),
+		]);
 	}
+
+	const pageCount = Math.ceil(itemCount / perPage);
 
 	res.render('admin/dashboard/searches', {
 		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
 		startDate: req.query.start ? validator.escape(String(req.query.start)) : null,
 		endDate: req.query.end ? validator.escape(String(req.query.end)) : null,
+		pagination: pagination.create(page, pageCount, req.query),
 	});
 };

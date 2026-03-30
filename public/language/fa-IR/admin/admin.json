@@ -4,15 +4,15 @@
 
 	"acp-title": "%1 | کنترل پنل مدیر کل نود‌بی‌بی",
 	"settings-header-contents": "محتوا",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-saved": "تغییرات ذخیره شد",
+	"changes-saved-message": "تغییرات شما در پیکربندی NodeBB ذخیره شده است.",
 	"changes-not-saved": "تغییرات ذخیره نشد",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"changes-not-saved-message": "NodeBB در ذخیره تغییرات شما با مشکل مواجه شد. (% 1)",
+	"save-changes": "ذخیره تغییرات",
+	"min": "کمترین:",
+	"max": "بیشترین:",
+	"view": "نمایش",
+	"edit": "ویرایش",
+	"add": "اضافه",
+	"select-icon": "انتخاب نقشک"
 }

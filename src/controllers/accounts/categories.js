@@ -9,17 +9,18 @@ const meta = require('../../meta');
 const categoriesController = module.exports;
 
 categoriesController.get = async function (req, res) {
-	const { username, userslug } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
+	const payload = res.locals.userData;
+	const { username, userslug } = payload;
 	const [states, allCategoriesData] = await Promise.all([
 		user.getCategoryWatchState(res.locals.uid),
 		categories.buildForSelect(res.locals.uid, 'find', ['descriptionParsed', 'depth', 'slug']),
 	]);
-
-	const pageCount = Math.max(1, Math.ceil(allCategoriesData.length / meta.config.categoriesPerPage));
+	const watchCategories = allCategoriesData.filter(c => c && c.cid !== -1);
+	const pageCount = Math.max(1, Math.ceil(watchCategories.length / meta.config.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
 	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
 	const stop = start + meta.config.categoriesPerPage - 1;
-	const categoriesData = allCategoriesData.slice(start, stop + 1);
+	const categoriesData = watchCategories.slice(start, stop + 1);
 
 
 	categoriesData.forEach((category) => {
@@ -31,7 +32,6 @@ categoriesController.get = async function (req, res) {
 		}
 	});
 
-	const payload = {};
 	payload.categories = categoriesData;
 	payload.title = `[[pages:account/watched-categories, ${username}]]`;
 	payload.breadcrumbs = helpers.buildBreadcrumbs([

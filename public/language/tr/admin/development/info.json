@@ -3,12 +3,12 @@
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%2ms içinde %1 düğüm yanıt verdi!",
 	"host": "sunucu",
-	"primary": "ana sunucu / işlemleri gerçekleştir",
+	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "çevrimiçi",
 	"git": "git",
-	"process-memory": "işlem belleği",
+	"process-memory": "rss/heap used",
 	"system-memory": "sistem hafızası",
 	"used-memory-process": "İşleme göre kullanılan bellek",
 	"used-memory-os": "Kullanılan sistem belleği",
@@ -19,6 +19,7 @@
 
 	"registered": "Kayıtlı",
 	"sockets": "Soketler",
+	"connection-count": "Connection Count",
 	"guests": "Ziyaretçiler",
 
 	"info": "Bilgi"

@@ -1,27 +1,25 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
-
 	module.listPrepend = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await module.client.lpush(key, value);
+		await module.client.lPush(key, Array.isArray(value) ? value.map(String) : String(value));
 	};
 
 	module.listAppend = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await module.client.rpush(key, value);
+		await module.client.rPush(key, Array.isArray(value) ? value.map(String) : String(value));
 	};
 
 	module.listRemoveLast = async function (key) {
 		if (!key) {
 			return;
 		}
-		return await module.client.rpop(key);
+		return await module.client.rPop(key);
 	};
 
 	module.listRemoveAll = async function (key, value) {
@@ -29,11 +27,11 @@ module.exports = function (module) {
 			return;
 		}
 		if (Array.isArray(value)) {
-			const batch = module.client.batch();
-			value.forEach(value => batch.lrem(key, 0, value));
-			await helpers.execBatch(batch);
+			const batch = module.client.multi();
+			value.forEach(value => batch.lRem(key, 0, value));
+			await batch.execAsPipeline();
 		} else {
-			await module.client.lrem(key, 0, value);
+			await module.client.lRem(key, 0, value);
 		}
 	};
 
@@ -41,17 +39,17 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		await module.client.ltrim(key, start, stop);
+		await module.client.lTrim(key, start, stop);
 	};
 
 	module.getListRange = async function (key, start, stop) {
 		if (!key) {
 			return;
 		}
-		return await module.client.lrange(key, start, stop);
+		return await module.client.lRange(key, start, stop);
 	};
 
 	module.listLength = async function (key) {
-		return await module.client.llen(key);
+		return await module.client.lLen(key);
 	};
 };

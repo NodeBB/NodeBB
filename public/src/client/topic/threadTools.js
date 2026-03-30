@@ -11,7 +11,8 @@ define('forum/topic/threadTools', [
 	'bootbox',
 	'alerts',
 	'bootstrap',
-], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap) {
+	'helpers',
+], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap, helpers) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -84,12 +85,24 @@ define('forum/topic/threadTools', [
 
 		topicContainer.on('click', '[component="topic/event/delete"]', function () {
 			const eventId = $(this).attr('data-topic-event-id');
-			const eventEl = $(this).parents('[component="topic/event"]');
+			const eventEl = $(this).parents('[data-topic-event-id]');
 			bootbox.confirm('[[topic:delete-event-confirm]]', (ok) => {
 				if (ok) {
 					api.del(`/topics/${tid}/events/${eventId}`, {})
 						.then(function () {
+							const itemsParent = eventEl.parents('[component="topic/event/items"]');
 							eventEl.remove();
+							if (itemsParent.length) {
+								const childrenCount = itemsParent.children().length;
+								const eventParent = itemsParent.parents('[component="topic/event"]');
+								if (!childrenCount) {
+									eventParent.remove();
+								} else {
+									eventParent
+										.find('[data-bs-toggle]')
+										.translateText(`[[topic:announcers-x, ${childrenCount}]]`);
+								}
+							}
 						})
 						.catch(alerts.error);
 				}
@@ -101,6 +114,12 @@ define('forum/topic/threadTools', [
 				move.init([tid], ajaxify.data.cid);
 			});
 			return false;
+		});
+
+		topicContainer.on('click', '[component="topic/crosspost"]', () => {
+			require(['forum/topic/crosspost'], (crosspost) => {
+				crosspost.init(tid, ajaxify.data.cid);
+			});
 		});
 
 		topicContainer.on('click', '[component="topic/delete/posts"]', function () {
@@ -211,7 +230,8 @@ define('forum/topic/threadTools', [
 			if (dropdownMenu.attr('data-loaded')) {
 				return;
 			}
-			const data = await socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid });
+			dropdownMenu.html(helpers.generatePlaceholderWave([8, 8, 8]));
+			const data = await socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }).catch(alerts.error);
 			const html = await app.parseAndTranslate('partials/topic/topic-menu-list', data);
 			$(dropdownMenu).attr('data-loaded', 'true').html(html);
 			hooks.fire('action:topic.tools.load', {
@@ -292,7 +312,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setLockedState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
@@ -320,7 +340,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setDeleteState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
@@ -354,7 +374,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setPinnedState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 

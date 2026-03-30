@@ -38,6 +38,7 @@
 	"settings/tags": "Etiketler",
 	"settings/notifications": "Bildirimler",
 	"settings/api": "API Erişimi",
+	"settings/activitypub": "Federation (ActivityPub)",
 	"settings/sounds": "Sesler",
 	"settings/social": "Sosyal",
 	"settings/cookies": "Çerezler",
@@ -46,6 +47,14 @@
 	"settings/advanced": "Gelişmiş",
 
 	"settings.page-title": "%1 Ayar",
+
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
 
 	"section-appearance": "Görünüm",
 	"appearance/themes": "Temalar",
@@ -69,6 +78,7 @@
 	"advanced/logs": "Kayıtlar",
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Kaydedici",
 	"development/info": "bilgi",
 

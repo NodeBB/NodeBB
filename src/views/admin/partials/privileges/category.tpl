@@ -42,10 +42,10 @@
 						<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<i class="fa fa-copy"></i>
 						</button>
-						<ul class="dropdown-menu">
-							<li data-action="copyToAllGroup"><a class="dropdown-item" href="#">[[admin/manage/categories:privileges.copy-group-privileges-to-all-categories]]</a></li>
-							<li data-action="copyToChildrenGroup"><a class="dropdown-item" href="#">[[admin/manage/categories:privileges.copy-group-privileges-to-children]]</a></li>
-							<li data-action="copyPrivilegesFromGroup"><a class="dropdown-item" href="#">[[admin/manage/categories:privileges.copy-group-privileges-from]]</a></li>
+						<ul class="dropdown-menu" role="menu">
+							<li data-action="copyToAllGroup"><a class="dropdown-item" href="#" role="menuitem">[[admin/manage/categories:privileges.copy-group-privileges-to-all-categories]]</a></li>
+							<li data-action="copyToChildrenGroup"><a class="dropdown-item" href="#" role="menuitem">[[admin/manage/categories:privileges.copy-group-privileges-to-children]]</a></li>
+							<li data-action="copyPrivilegesFromGroup"><a class="dropdown-item" href="#" role="menuitem">[[admin/manage/categories:privileges.copy-group-privileges-from]]</a></li>
 						</ul>
 					</div>
 				</td>
@@ -54,7 +54,7 @@
 						<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
 					</div>
 				</td>
-				{function.spawnPrivilegeStates, privileges.groups.name, ../privileges, ../types}
+				{function.spawnPrivilegeStates, cid, privileges.groups.name, ../privileges, ../types}
 			</tr>
 			{{{ end }}}
 		</tbody>
@@ -133,7 +133,7 @@
 						<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
 					</div>
 				</td>
-				{function.spawnPrivilegeStates, privileges.users.username, ../privileges, ../types}
+				{function.spawnPrivilegeStates, cid, privileges.users.username, ../privileges, ../types}
 			</tr>
 			{{{ end }}}
 		</tbody>

@@ -1,11 +1,13 @@
 {
-    "title": "Nylige",
+    "title": "Siste",
     "day": "Dag",
     "week": "Uke",
     "month": "Måned",
     "year": "År",
     "alltime": "All tid",
-    "no-recent-topics": "Det er ingen nye emner.",
+    "no-recent-topics": "Det er ingen nye innlegg.",
     "no-popular-topics": "Det er ingen populære emner.",
-    "load-new-posts": "Load new posts"
+    "load-new-posts": "Last inn nye innlegg",
+    "uncategorized.title": "Alle kjente emner",
+    "uncategorized.intro": "Denne siden viser en kronologisk liste over alle emner som dette forumet har mottatt. <br />Meningene og synspunktene som uttrykkes i emnene nedenfor, er ikke moderert og representerer kanskje ikke meningene og synspunktene til denne nettsiden."
 }

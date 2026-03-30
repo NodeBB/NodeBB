@@ -3,7 +3,7 @@
     "no-tag-topics": "Nem létezik témakör ezzel a címkével.",
     "no-tags-found": "Nem találhatók címkék",
     "tags": "Címkék",
-    "enter-tags-here": "%1 és %2 karakterek között itt add meg a címkét.",
+    "enter-tags-here": "Adj hozzám címkéket %1 - %2 karakter között.",
     "enter-tags-here-short": "Címke megadása...",
     "no-tags": "Még nincsenek címkék.",
     "select-tags": "Címkék kiválasztása",

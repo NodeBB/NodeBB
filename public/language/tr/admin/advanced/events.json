@@ -9,5 +9,9 @@
 	"filter-type": "Aktivite türü",
 	"filter-start": "Başlangıç zamanı",
 	"filter-end": "Bitiş zamanı",
+	"filter-user": "Kullanıcı ismine göre filtrele",
+	"filter-user.placeholder": "Filtrelemek için kullanıcı adı girin...",
+	"filter-group": "Gruba göre filtrele",
+	"filter-group.placeholder": "Filtrelemek için grup adı girin...",
 	"filter-per-page": "Sayfa Başına"
 }

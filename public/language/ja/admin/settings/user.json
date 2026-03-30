@@ -64,6 +64,7 @@
 	"show-email": "メールを表示",
 	"show-fullname": "フルネームで表示",
 	"restrict-chat": "フォローしたユーザーからのチャットメッセージだけを許可する",
+	"disable-incoming-chats": "Disable incoming chat messages",
 	"outgoing-new-tab": "外部リンクを新しいタブで開く",
 	"topic-search": "スレッド内検索を有効にする",
 	"update-url-with-post-index": "Update url with post index while browsing topics",
@@ -88,5 +89,10 @@
 	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
 	"restrictions.seconds-edit-after-new": "Number of seconds a post remains editable for new users (set to 0 to disable)",
 	"restrictions.milliseconds-between-messages": "Time between chat messages for new users (ms)",
-	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions"
+	"restrictions.groups-exempt-from-new-user-restrictions": "Select groups that should be exempt from the new user restrictions",
+	"guest-settings": "Guest Settings",
+	"handles.enabled": "ゲストハンドルを有効にする",
+	"handles.enabled-help": "このオプションでは新しい投稿が表示される時に、ゲストは自分が投稿する各投稿に関連付ける名前を選択できます。無効にすると、単に「ゲスト」と呼ばれます。",
+	"topic-views.enabled": "Allow guests to increase topic view counts",
+	"reply-notifications.enabled": "Allow guests to generate reply notifications"
 }

@@ -4,7 +4,7 @@ module.exports = function (module) {
 	const helpers = require('./helpers');
 
 	module.flushdb = async function () {
-		await module.client.send_command('flushdb', []);
+		await module.client.sendCommand(['FLUSHDB']);
 	};
 
 	module.emptydb = async function () {
@@ -14,6 +14,9 @@ module.exports = function (module) {
 
 	module.exists = async function (key) {
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return [];
+			}
 			const batch = module.client.batch();
 			key.forEach(key => batch.exists(key));
 			const data = await helpers.execBatch(batch);
@@ -29,9 +32,9 @@ module.exports = function (module) {
 		const seen = Object.create(null);
 		do {
 			/* eslint-disable no-await-in-loop */
-			const res = await module.client.scan(cursor, 'MATCH', params.match, 'COUNT', 10000);
-			cursor = res[0];
-			const values = res[1].filter((value) => {
+			const res = await module.client.scan(cursor, { MATCH: params.match, COUNT: 10000 });
+			cursor = res.cursor;
+			const values = res.keys.filter((value) => {
 				const isSeen = !!seen[value];
 				if (!isSeen) {
 					seen[value] = 1;
@@ -64,7 +67,7 @@ module.exports = function (module) {
 		if (!keys || !Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		return await module.client.mget(keys);
+		return await module.client.mGet(keys);
 	};
 
 	module.set = async function (key, value) {
@@ -93,26 +96,26 @@ module.exports = function (module) {
 	};
 
 	module.expire = async function (key, seconds) {
-		await module.client.expire(key, seconds);
+		await module.client.EXPIRE(key, seconds);
 	};
 
 	module.expireAt = async function (key, timestamp) {
-		await module.client.expireat(key, timestamp);
+		await module.client.EXPIREAT(key, timestamp);
 	};
 
 	module.pexpire = async function (key, ms) {
-		await module.client.pexpire(key, ms);
+		await module.client.PEXPIRE(key, ms);
 	};
 
 	module.pexpireAt = async function (key, timestamp) {
-		await module.client.pexpireat(key, timestamp);
+		await module.client.PEXPIREAT(key, timestamp);
 	};
 
 	module.ttl = async function (key) {
-		return await module.client.ttl(key);
+		return await module.client.TTL(key);
 	};
 
 	module.pttl = async function (key) {
-		return await module.client.pttl(key);
+		return await module.client.PTTL(key);
 	};
 };

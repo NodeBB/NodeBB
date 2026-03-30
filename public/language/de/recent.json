@@ -7,5 +7,7 @@
     "alltime": "Gesamter Zeitraum",
     "no-recent-topics": "Es gibt keine aktuellen Themen.",
     "no-popular-topics": "Es gibt keine beliebten Themen.",
-    "load-new-posts": "Neue Beiträge laden"
+    "load-new-posts": "Neue Beiträge laden",
+    "uncategorized.title": "Alle bekannten Themen",
+    "uncategorized.intro": "Auf dieser Seite findest du eine Liste aller Themen, die in diesem Forum angesprochen wurden, in chronologischer Reihenfolge.<br />Die Ansichten und Meinungen in den unten aufgeführten Themen werden nicht moderiert und geben nicht unbedingt die Ansichten und Meinungen dieser Website wieder."
 }

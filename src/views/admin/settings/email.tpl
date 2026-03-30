@@ -103,7 +103,7 @@
 			<div id="smtp-transport" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:smtp-transport]]</h5>
 
-				<div class="alert alert-warning">
+				<div class="alert alert-warning text-sm p-2">
 					[[admin/settings/email:smtp-transport-help]]
 				</div>
 
@@ -115,6 +115,11 @@
 					<input class="form-check-input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
 					<label for="email:smtpTransport:pool" class="form-check-label">[[admin/settings/email:smtp-transport.pool]]</label>
 					<p class="form-text">[[admin/settings/email:smtp-transport.pool-help]]</p>
+				</div>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="email:smtpTransport:allow-self-signed" data-field="email:smtpTransport:allow-self-signed" name="email:smtpTransport:allow-self-signed" />
+					<label for="email:smtpTransport:allow-self-signed" class="form-check-label">[[admin/settings/email:smtp-transport.allow-self-signed]]</label>
+					<p class="form-text">[[admin/settings/email:smtp-transport.allow-self-signed-help]]</p>
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="email:smtpTransport:service">[[admin/settings/email:smtp-transport.service]]</label>
@@ -162,9 +167,12 @@
 						[[admin/settings/email:smtp-transport.username-help]]
 					</p>
 				</div>
-				<div>
+				<div class="mb-3">
 					<label class="form-label" for="email:smtpTransport:pass">[[admin/settings/email:smtp-transport.password]]</label>
 					<input id="email:smtpTransport:pass" type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" autocomplete="off" />
+				</div>
+				<div>
+					<button class="btn btn-primary text-nowrap" type="button" data-action="email.smtp.test">[[admin/settings/email:test-smtp-settings]]</button>
 				</div>
 			</div>
 
@@ -176,14 +184,23 @@
 					<div class="d-flex justify-content-between gap-1">
 						<select id="test-email" class="form-select">
 							{{{ each sendable }}}
-							<option value="{@value}">{@value}</option>
+							<option value="{@value}" {{{ if (@value == "test")}}} selected{{{ end }}}>{@value}</option>
 							{{{ end }}}
 						</select>
 						<button class="btn btn-primary text-nowrap" type="button" data-action="email.test">[[admin/settings/email:testing.send]]</button>
 					</div>
 				</div>
 				<p class="form-text">
-					[[admin/settings/email:testing.send-help]]
+					[[admin/settings/email:testing.send-help]]<br/>
+					{{{ if emailerPlugin }}}
+					[[admin/settings/email:testing.send-help-plugin, {emailerPlugin}]]
+					{{{ else }}}
+					{{{ if smtpEnabled }}}
+					[[admin/settings/email:testing.send-help-smtp]]
+					{{{ else }}}
+					[[admin/settings/email:testing.send-help-no-plugin]]
+					{{{ end }}}
+					{{{ end }}}
 				</p>
 			</div>
 

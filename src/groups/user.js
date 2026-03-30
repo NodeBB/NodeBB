@@ -4,13 +4,10 @@ const db = require('../database');
 const user = require('../user');
 
 module.exports = function (Groups) {
-	Groups.getUsersFromSet = async function (set, fields) {
+	Groups.getUsersFromSet = async function (set, fields = []) {
 		const uids = await db.getSetMembers(set);
-
-		if (fields) {
-			return await user.getUsersFields(uids, fields);
-		}
-		return await user.getUsersData(uids);
+		const userData = await user.getUsersFields(uids, fields);
+		return userData.filter(u => u && u.uid);
 	};
 
 	Groups.getUserGroups = async function (uids) {

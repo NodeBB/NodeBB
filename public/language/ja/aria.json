@@ -1,0 +1,10 @@
+{
+	"post-sort-option": "投稿の並び替えオプション、%1",
+	"topic-sort-option": "スレッドの並び替えオプション、%1",
+	"user-avatar-for": "%1のユーザーアバター",
+	"profile-page-for": "ユーザー%1のプロフィールページ",
+	"user-watched-tags": "ユーザーのウォッチ中のタグ",
+	"delete-upload-button": "アップロード削除ボタン",
+	"group-page-link-for": "グループ%1のページリンク",
+	"show-crossposts": "クロスポストを表示"
+}

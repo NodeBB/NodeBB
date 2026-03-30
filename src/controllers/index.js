@@ -1,17 +1,22 @@
 'use strict';
 
+const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
+const mime = require('mime');
 
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
-const privileges = require('../privileges');
+const image = require('../image');
+const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
 
 const Controllers = module.exports;
 
 Controllers.ping = require('./ping');
+Controllers['well-known'] = require('./well-known');
+Controllers.activitypub = require('./activitypub');
 Controllers.home = require('./home');
 Controllers.topics = require('./topics');
 Controllers.posts = require('./posts');
@@ -34,6 +39,7 @@ Controllers.globalMods = require('./globalmods');
 Controllers.mods = require('./mods');
 Controllers.sitemap = require('./sitemap');
 Controllers.osd = require('./osd');
+Controllers['service-worker'] = require('./service-worker');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
@@ -123,7 +129,8 @@ Controllers.login = async function (req, res) {
 	data.title = '[[pages:login]]';
 	data.allowPasswordReset = !meta.config['password:disableEdit'];
 
-	const hasLoginPrivilege = await privileges.global.canGroup('local:login', 'registered-users');
+	const loginPrivileges = await privilegesHelpers.getGroupPrivileges(0, ['groups:local:login']);
+	const hasLoginPrivilege = !!loginPrivileges.find(privilege => privilege.privileges['groups:local:login']);
 	data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
@@ -188,6 +195,7 @@ Controllers.register = async function (req, res, next) {
 	}
 };
 
+// GET /register/complete
 Controllers.registerInterstitial = async function (req, res, next) {
 	if (!req.session.hasOwnProperty('registration')) {
 		return res.redirect(`${nconf.get('relative_path')}/register`);
@@ -219,7 +227,17 @@ Controllers.registerInterstitial = async function (req, res, next) {
 	}
 };
 
-Controllers.confirmEmail = async (req, res, next) => {
+Controllers.confirmEmail = async (req, res) => {
+	function renderPage(opts = {}) {
+		res.render('confirm', {
+			title: '[[pages:confirm]]',
+			...opts,
+		});
+	}
+
+	if (req.method === 'HEAD') {
+		return renderPage();
+	}
 	try {
 		await user.email.confirmByCode(req.params.code, req.session.id);
 		if (req.session.registration) {
@@ -227,12 +245,11 @@ Controllers.confirmEmail = async (req, res, next) => {
 			delete req.session.registration.updateEmail;
 		}
 
-		res.render('confirm', {
-			title: '[[pages:confirm]]',
-		});
+		renderPage();
 	} catch (e) {
-		if (e.message === '[[error:invalid-data]]') {
-			return next();
+		if (e.message === '[[error:invalid-data]]' || e.message === '[[error:confirm-email-expired]]') {
+			renderPage({ error: true });
+			return;
 		}
 
 		throw e;
@@ -257,6 +274,7 @@ Controllers.manifest = async function (req, res) {
 	const manifest = {
 		name: meta.config.title || 'NodeBB',
 		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
+		...(meta.config.description && { description: meta.config.description }),
 		start_url: nconf.get('url'),
 		display: 'standalone',
 		orientation: 'portrait',
@@ -264,6 +282,33 @@ Controllers.manifest = async function (req, res) {
 		background_color: meta.config.backgroundColor || '#ffffff',
 		icons: [],
 	};
+
+	if (meta.config['brand:screenshot']) {
+		let sizes;
+		try {
+			const { width, height } = await image.size(path.join(nconf.get('base_dir'), meta.config['brand:screenshot'].replace('assets', 'public')));
+			sizes = `${width}x${height}`;
+		} catch (e) {
+			// noop
+		}
+		manifest.screenshots = [
+			{
+				src: `${nconf.get('relative_path')}${meta.config['brand:screenshot']}`,
+				...(sizes && { sizes }),
+				type: mime.getType(meta.config['brand:screenshot']),
+			},
+		];
+	} else {
+		manifest.screenshots = [
+			{
+				src: `${nconf.get('relative_path')}/assets/images/screenshot-default.png`,
+				sizes: '446x778',
+				type: 'image/png',
+				form_factor: 'narrow',
+				label: 'Default home page of a vanilla NodeBB installation.',
+			},
+		];
+	}
 
 	if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
@@ -302,18 +347,57 @@ Controllers.manifest = async function (req, res) {
 			type: 'image/png',
 			density: 10.0,
 		});
+	} else {
+		manifest.icons.push({
+			src: `${nconf.get('relative_path')}/assets/images/touch/36.png`,
+			sizes: '36x36',
+			type: 'image/png',
+			density: 0.75,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/48.png`,
+			sizes: '48x48',
+			type: 'image/png',
+			density: 1.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/72.png`,
+			sizes: '72x72',
+			type: 'image/png',
+			density: 1.5,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/96.png`,
+			sizes: '96x96',
+			type: 'image/png',
+			density: 2.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/144.png`,
+			sizes: '144x144',
+			type: 'image/png',
+			density: 3.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/192.png`,
+			sizes: '192x192',
+			type: 'image/png',
+			density: 4.0,
+		}, {
+			src: `${nconf.get('relative_path')}/assets/images/touch/512.png`,
+			sizes: '512x512',
+			type: 'image/png',
+			density: 10.0,
+		});
 	}
 
 
 	if (meta.config['brand:maskableIcon']) {
 		manifest.icons.push({
 			src: `${nconf.get('relative_path')}/assets/uploads/system/maskableicon-orig.png`,
+			sizes: '512x512',
 			type: 'image/png',
 			purpose: 'maskable',
 		});
 	} else if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
 			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-orig.png`,
+			sizes: '512x512',
 			type: 'image/png',
 			purpose: 'maskable',
 		});

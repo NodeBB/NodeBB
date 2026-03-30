@@ -1,0 +1,15 @@
+{
+	"errors": "Feil",
+	"figure-x": "Figur %1",
+	"error-events-per-day": "<code>%1</code> hendingar per dag",
+	"error.404": "404 Ikke funnet",
+	"error.503": "503 Tjeneste utilgjengelig",
+	"manage-error-log": "Administrer feillogg",
+	"export-error-log": "Eksporter feillogg",
+	"clear-error-log": "Tøm feillogg",
+	"route": "Rute",
+	"count": "Teljing",
+	"no-routes-not-found": "Ingen 404 feil funnet!",
+	"clear404-confirm": "Er du sikker på at du vil tømme 404-feilloggen?",
+	"clear404-success": "404-feilloggen vart tømt med suksess"
+}

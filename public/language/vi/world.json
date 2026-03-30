@@ -1,0 +1,29 @@
+{
+	"name": "Thế giới",
+	"latest": "Mới nhất",
+	"latest-local": "Mới nhất (Cục bộ)",
+	"latest-all": "Mới nhất (Tất cả)",
+	"popular-day": "Phổ biến (Ngày)",
+	"popular-week": "Phổ biến (Tuần)",
+	"popular-month": "Phổ biến (Tháng)",
+	"popular-year": "Phổ biến (Năm)",
+	"popular-alltime": "Phổ biến (Mọi thời đại)",
+	"recent": "Tất cả",
+	"help": "Trợ giúp",
+
+	"help.title": "Trang này là gì?",
+	"help.intro": "Chào mừng đến với góc của bạn trên fediverse.",
+	"help.fediverse": "\"Fediverse\" là một mạng lưới các ứng dụng và trang web được kết nối với nhau, tất cả đều giao tiếp với nhau và người dùng có thể nhìn thấy nhau. Diễn đàn này được liên kết và có thể tương tác với trang web xã hội đó (hoặc \"fediverse\"). Trang này là góc của bạn trên fediverse. Nó chỉ bao gồm các chủ đề được tạo bởi — và được chia sẻ từ — người dùng <strong>bạn</strong> theo dõi.",
+	"help.build": "Có thể không có nhiều chủ đề ở đây để bắt đầu; điều đó là bình thường. Bạn sẽ bắt đầu thấy nhiều nội dung hơn ở đây theo thời gian khi bạn bắt đầu theo dõi những người dùng khác.",
+	"help.federating": "Tương tự như vậy, nếu người dùng bên ngoài diễn đàn này bắt đầu theo dõi <em>bạn</em>, thì bài đăng của bạn cũng sẽ bắt đầu xuất hiện trên các ứng dụng và trang web đó.",
+	"help.next-generation": "Đây là thế hệ mạng xã hội kế tiếp, hãy bắt đầu đóng góp ngay hôm nay!",
+
+	"onboard.title": "Cả thế giới nội dung nằm trong tầm tay bạn&hellip;",
+	"onboard.what": "Hãy coi đây như một nguồn cấp dữ liệu khám phá toàn cầu. Nó tập hợp các cuộc thảo luận thú vị từ khắp nơi trên web và các cộng đồng khác, tất cả ở cùng một nơi.",
+	"onboard.why": "Mặc dù bạn có thể xem những gì đang thịnh hành hiện nay, nhưng cách tốt nhất để sử dụng nguồn cấp dữ liệu này là tùy chỉnh nó theo ý mình. Bằng cách tạo tài khoản, bạn có thể theo dõi những người sáng tạo nội dung và chủ đề cụ thể để lọc bỏ những thông tin nhiễu và chỉ xem những gì quan trọng đối với bạn.",
+	"onboard.how": "Sẵn sàng khám phá chưa? Hãy tạo tài khoản để bắt đầu theo dõi người khác, nhận thông báo khi ai đó trả lời bạn và lưu lại những nội dung yêu thích.",
+
+	"category-search": "Tìm danh mục...",
+	"see-more": "Xem nhiều hơn",
+	"see-less": "Xem ít hơn"
+}

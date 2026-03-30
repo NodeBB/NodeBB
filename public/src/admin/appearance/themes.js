@@ -72,24 +72,7 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 			});
 		});
 
-		socket.emit('admin.themes.getInstalled', function (err, themes) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			const instListEl = $('#installed_themes');
-
-			if (!themes.length) {
-				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
-			} else {
-				app.parseAndTranslate('admin/partials/theme_list', {
-					themes: themes,
-				}, function (html) {
-					instListEl.html(html);
-					highlightSelectedTheme(config['theme:id']);
-				});
-			}
-		});
+		highlightSelectedTheme(config['theme:id']);
 	};
 
 	function highlightSelectedTheme(themeId) {

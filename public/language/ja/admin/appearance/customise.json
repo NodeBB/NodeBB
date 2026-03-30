@@ -1,20 +1,20 @@
 {
-	"customise": "Customise",
+	"customise": "カスタマイズ",
 	"custom-css": "Custom CSS/SASS",
-	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"custom-css.description": "ここに独自のCSS/SASS宣言を入力すると、他のすべてのスタイルの後に適用されます。",
+	"custom-css.enable": "カスタムCSS/SASSを有効にする",
 
-	"custom-js": "Custom Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js": "カスタムJavaScript",
+	"custom-js.description": "ここに独自のJavaScriptを入力してください。ページが完全に読み込まれた後に実行されます。",
+	"custom-js.enable": "カスタムJavaScriptを有効にする",
 
 	"custom-header": "カスタムヘッダー",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header.description": "ここにカスタムHTML（例: メタタグなど）を入力すると、フォーラムのマークアップの<code>&lt;head&gt;</code>セクションに追加されます。スクリプトタグは許可されていますが、<a href=\\\"#custom-js\\\" data-toggle=\\\"tab\\\">カスタムJavaScript</a>タブが利用可能なため、推奨されません。",
 	"custom-header.enable": "カスタムヘッダーを有効にする",
 
 	"custom-css.livereload": "ライブリロードを有効にする",
 	"custom-css.livereload.description": "これを有効にすると、保存ボタンをクリックするたびにアカウントのすべてのデバイスのすべてのセッションが強制的に更新されます。",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "ここでBootstrap変数を上書きできます。<a href=\\\"https://bootstrap.build/app\\\">bootstrap.build</a>などのツールを使用して出力をここに貼り付けることもできます。<br/>変更には再ビルドと再起動が必要です。",
+	"bsvariables.enable": "_variables.scssを有効にする"
 }

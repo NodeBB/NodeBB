@@ -38,6 +38,7 @@
 	"settings/tags": "Етикети",
 	"settings/notifications": "Известия",
 	"settings/api": "Достъп чрез ППИ",
+	"settings/activitypub": "Федериране (ActivityPub)",
 	"settings/sounds": "Звуци",
 	"settings/social": "Обществени",
 	"settings/cookies": "Бисквитки",
@@ -46,6 +47,14 @@
 	"settings/advanced": "Разширени",
 
 	"settings.page-title": "Настройки на %1",
+
+	"section-federation": "Федериране",
+	"federation/general": "Общи",
+	"federation/content": "Съдържание",
+	"federation/rules": "Категоризиране",
+	"federation/relays": "Препредаватели",
+	"federation/pruning": "Съхранение",
+	"federation/safety": "Доверие и защита",
 
 	"section-appearance": "Външен вид",
 	"appearance/themes": "Теми",
@@ -69,6 +78,7 @@
 	"advanced/logs": "Журнали",
 	"advanced/errors": "Грешки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Задачи",
 	"development/logger": "Журнал",
 	"development/info": "Информация",
 

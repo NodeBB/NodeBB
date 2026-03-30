@@ -6,10 +6,13 @@
 	"new-users": "New Users",
 	"posts": "Príspevky",
 	"topics": "Témy",
+	"remote-posts": "Remote Posts",
+	"remote-topics": "Remote Topics",
+	"messages": "Messages",
 	"page-views-seven": "Posledných 7 dní",
 	"page-views-thirty": "Posledných 30 dní",
 	"page-views-last-day": "Posledných 24 hodín",
-	"page-views-custom": "Podľa rozsahu dátumu",
+	"page-views-custom": "Custom Range",
 	"page-views-custom-start": "Začiatok rozsahu",
 	"page-views-custom-end": "Koniec rozsahu",
 	"page-views-custom-help": "Zadajte rozsah obdobia zobrazenia stránok, ktoré chcete vidieť. Ak nie je obdobie nastavené, predvolený formát je <code>YYYY-MM-DD</code>",
@@ -75,6 +78,7 @@
 	"graphs.page-views-registered": "Page Views Registered",
 	"graphs.page-views-guest": "Page Views Guest",
 	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-ap": "ActivityPub Page Views",
 	"graphs.unique-visitors": "Unikátny navštevníci",
 	"graphs.registered-users": "Zarestrovaný užívatelia",
 	"graphs.guest-users": "Guest Users",
@@ -94,5 +98,8 @@
 	"view-as-json": "View as JSON",
 	"expand-analytics": "Expand analytics",
 	"clear-search-history": "Clear Search History",
-	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
+	"search-term": "Term",
+	"search-count": "Count",
+	"view-all": "View all"
 }

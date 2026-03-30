@@ -37,7 +37,7 @@
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Flagged User",
 	"view-profile": "View Profile",
-	"start-new-chat": "Start New Chat",
+	"start-new-chat": "Aloita uusi keskustelu",
 	"go-to-target": "View Flag Target",
 	"assign-to-me": "Assign To Me",
 	"delete-post": "Delete Post",
@@ -52,8 +52,8 @@
 	"add-note": "Add Note",
 	"edit-note": "Edit Note",
 	"no-notes": "No shared notes.",
-	"delete-note-confirm": "Are you sure you want to delete this flag note?",
-	"delete-flag-confirm": "Are you sure you want to delete this flag?",
+	"delete-note-confirm": "Haluatko varmasti poistaa liputusmerkinnän?",
+	"delete-flag-confirm": "Haluatko varmasti poistaa liputuksen?",
 	"note-added": "Note Added",
 	"note-deleted": "Note Deleted",
 	"flag-deleted": "Flag Deleted",
@@ -68,7 +68,7 @@
 	"state-rejected": "Rejected",
 	"no-assignee": "Not Assigned",
 
-	"sort": "Sort by",
+	"sort": "Järjestysperuste",
 	"sort-newest": "Newest first",
 	"sort-oldest": "Oldest first",
 	"sort-reports": "Most reports",
@@ -84,12 +84,18 @@
 	"modal-reason-offensive": "Offensive",
 	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "Reason for reporting this content...",
+	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Submit Report",
 	"modal-submit-success": "Content has been flagged for moderation.",
 
+	"modal-confirm-rescind": "Rescind Report?",
+
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
+	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"purge-cancelled": "Flag Purge Cancelled",
+	"bulk-purge": "Purge Flag(s)",
 	"bulk-success": "%1 flags updated",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)",
+	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

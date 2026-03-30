@@ -22,7 +22,7 @@
     "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
     "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
     "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
-    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.intro-new": "Željeli bismo neke dodatne informacije prije nego što možemo kreirati vaš račun&hellip;",
     "interstitial.errors-found": "Please review the entered information:",
     "gdpr-agree-data": "I consent to the collection and processing of my personal information on this website.",
     "gdpr-agree-email": "I consent to receive digest and notification emails from this website.",

@@ -46,7 +46,7 @@ Posts.get = async (req, res) => {
 
 Posts.getIndex = async (req, res) => {
 	const { pid } = req.params;
-	const { sort } = req.body;
+	const { sort } = req.body || {};
 
 	const index = await api.posts.getIndex(req, { pid, sort });
 	if (index === null) {
@@ -131,6 +131,26 @@ Posts.unvote = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Posts.getVoters = async (req, res) => {
+	const data = await api.posts.getVoters(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getUpvoters = async (req, res) => {
+	const data = await api.posts.getUpvoters(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getAnnouncers = async (req, res) => {
+	const data = await api.posts.getAnnouncers(req, { pid: req.params.pid, tooltip: 0 });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getAnnouncersTooltip = async (req, res) => {
+	const data = await api.posts.getAnnouncers(req, { pid: req.params.pid, tooltip: 1 });
+	helpers.formatApiResponse(200, res, data);
+};
+
 Posts.bookmark = async (req, res) => {
 	const data = await mock(req);
 	await api.posts.bookmark(req, data);
@@ -168,4 +188,33 @@ Posts.getReplies = async (req, res) => {
 	}
 
 	helpers.formatApiResponse(200, res, { replies });
+};
+
+Posts.acceptQueuedPost = async (req, res) => {
+	const post = await api.posts.acceptQueuedPost(req, { id: req.params.id });
+	helpers.formatApiResponse(200, res, { post });
+};
+
+Posts.removeQueuedPost = async (req, res) => {
+	await api.posts.removeQueuedPost(req, { id: req.params.id, message: req.body.message });
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.editQueuedPost = async (req, res) => {
+	const result = await api.posts.editQueuedPost(req, { id: req.params.id, ...req.body });
+	helpers.formatApiResponse(200, res, result);
+};
+
+Posts.notifyQueuedPostOwner = async (req, res) => {
+	const { id } = req.params;
+	await api.posts.notifyQueuedPostOwner(req, { id, message: req.body.message });
+	helpers.formatApiResponse(200, res);
+};
+
+Posts.changeOwner = async (req, res) => {
+	await api.posts.changeOwner(req, {
+		pids: req.body.pids || (req.params.pid ? [req.params.pid] : []),
+		uid: req.body.uid,
+	});
+	helpers.formatApiResponse(200, res);
 };

@@ -13,10 +13,15 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
+const translator = require('../translator');
 
 const SocketHelpers = module.exports;
 
 SocketHelpers.notifyNew = async function (uid, type, result) {
+	const post = result.posts[0];
+	if (post && post.topic && parseInt(post.topic.cid, 10) === -1) {
+		return;
+	}
 	let uids = await user.getUidsFromSet('users:online', 0, -1);
 	uids = uids.filter(toUid => parseInt(toUid, 10) !== uid);
 	await batch.processArray(uids, async (uids) => {
@@ -28,8 +33,7 @@ SocketHelpers.notifyNew = async function (uid, type, result) {
 
 async function notifyUids(uid, uids, type, result) {
 	const post = result.posts[0];
-	const { tid } = post.topic;
-	const { cid } = post.topic;
+	const { tid, cid } = post.topic;
 	uids = await privileges.topics.filterUids('topics:read', tid, uids);
 	const watchStateUids = uids;
 
@@ -49,14 +53,28 @@ async function notifyUids(uid, uids, type, result) {
 
 	post.ip = undefined;
 
-	data.uidsTo.forEach((toUid) => {
-		post.categoryWatchState = categoryWatchStates[toUid];
-		post.topic.isFollowing = topicFollowState[toUid];
-		websockets.in(`uid_${toUid}`).emit('event:new_post', result);
-		if (result.topic && type === 'newTopic') {
-			websockets.in(`uid_${toUid}`).emit('event:new_topic', result.topic);
+	await Promise.all(data.uidsTo.map(async (toUid) => {
+		const copyResult = _.cloneDeep(result);
+		const postToUid = copyResult.posts[0];
+		postToUid.categoryWatchState = categoryWatchStates[toUid];
+		postToUid.topic.isFollowing = topicFollowState[toUid];
+
+		await plugins.hooks.fire('filter:sockets.sendNewPostToUid', {
+			uid: toUid,
+			uidFrom: uid,
+			post: postToUid,
+		});
+
+		websockets.in(`uid_${toUid}`).emit('event:new_post', copyResult);
+		if (copyResult.topic && type === 'newTopic') {
+			await plugins.hooks.fire('filter:sockets.sendNewTopicToUid', {
+				uid: toUid,
+				uidFrom: uid,
+				topic: copyResult.topic,
+			});
+			websockets.in(`uid_${toUid}`).emit('event:new_topic', copyResult.topic);
 		}
-	});
+	}));
 }
 
 async function getWatchStates(uids, tid, cid) {
@@ -76,8 +94,11 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
-	fromuid = parseInt(fromuid, 10);
-	const postData = await posts.getPostFields(pid, ['tid', 'uid', 'content']);
+	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
+	const [postData, fromCategory] = await Promise.all([
+		posts.getPostFields(pid, ['tid', 'uid', 'content', 'sourceContent']),
+		!utils.isNumber(fromuid) && categories.exists(fromuid),
+	]);
 	const [canRead, isIgnoring] = await Promise.all([
 		privileges.posts.can('topics:read', pid, postData.uid),
 		topics.isIgnoring([postData.tid], postData.uid),
@@ -86,19 +107,17 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	const [userData, topicTitle, postObj] = await Promise.all([
-		user.getUserFields(fromuid, ['username']),
+		fromCategory ? categories.getCategoryFields(fromuid, ['name']) : user.getUserFields(fromuid, ['username']),
 		topics.getTopicField(postData.tid, 'title'),
 		posts.parsePost(postData),
 	]);
 
-	const { displayname } = userData;
-
 	const title = utils.decodeHTMLEntities(topicTitle);
-	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+	const bodyShort = translator.compile(notification, userData.displayname || userData.name, title);
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
+		bodyShort: bodyShort,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
@@ -133,10 +152,9 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 
 	const ownerUid = topicData.uid;
 	const title = utils.decodeHTMLEntities(topicData.title);
-	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
+		bodyShort: translator.compile(notification, displayname, title),
 		path: `/topic/${topicData.slug}`,
 		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,

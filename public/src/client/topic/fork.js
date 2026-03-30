@@ -29,7 +29,10 @@ define('forum/topic/fork', [
 
 			$('body').append(forkModal);
 
-			categorySelector.init(forkModal.find('[component="category-selector"]'), {
+			const dropdownEl = forkModal.find('[component="category-selector"]');
+			dropdownEl.addClass('dropup');
+
+			categorySelector.init(dropdownEl, {
 				onSelect: function (category) {
 					selectedCategory = category;
 				},

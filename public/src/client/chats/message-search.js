@@ -77,7 +77,7 @@ define('forum/chats/message-search', [
 	async function displayResults(data) {
 		removeResults();
 
-		if (!data.length) {
+		if (!data.messages.length) {
 			resultListEl.removeClass('hidden');
 			chatContent.addClass('hidden');
 			return resultListEl.find('[component="chat/message/search/no-results"]').removeClass('hidden');
@@ -85,7 +85,7 @@ define('forum/chats/message-search', [
 		resultListEl.find('[component="chat/message/search/no-results"]').addClass('hidden');
 
 		const html = await app.parseAndTranslate('partials/chats/messages', {
-			messages: data,
+			messages: data.messages,
 			isAdminOrGlobalMod: app.user.isAdmin || app.user.isGlobalMod,
 		});
 

@@ -17,6 +17,8 @@ const posts = require('../posts');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const slugify = require('../slugify');
+const utils = require('../utils');
+const activitypub = require('../activitypub');
 
 const helpers = require('./helpers');
 const controllerHelpers = require('../controllers/helpers');
@@ -24,11 +26,17 @@ const controllerHelpers = require('../controllers/helpers');
 const Assert = module.exports;
 
 Assert.user = helpers.try(async (req, res, next) => {
-	if (!await user.exists(req.params.uid)) {
-		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
+	const uid = req.params.uid || res.locals.uid;
+
+	if (
+		uid !== -2 && // exposeUid middleware was in chain (means route is local user only) and resolved to fediverse user
+		(((utils.isNumber(uid) || activitypub.helpers.isUri(uid)) && await user.exists(uid)) ||
+		(uid.indexOf('@') !== -1 && await user.existsBySlug(uid)))
+	) {
+		return next();
 	}
 
-	next();
+	controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
 });
 
 Assert.group = helpers.try(async (req, res, next) => {
@@ -138,10 +146,14 @@ Assert.room = helpers.try(async (req, res, next) => {
 });
 
 Assert.message = helpers.try(async (req, res, next) => {
+	let roomId;
+	if (!req.params.roomId) {
+		roomId = await messaging.getMessageField(req.params.mid, 'roomId');
+	}
+
 	if (
-		!isFinite(req.params.mid) ||
 		!(await messaging.messageExists(req.params.mid)) ||
-		!(await messaging.canViewMessage(req.params.mid, req.params.roomId, req.uid))
+		!(await messaging.canViewMessage(req.params.mid, roomId || req.params.roomId, req.uid))
 	) {
 		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-mid]]'));
 	}

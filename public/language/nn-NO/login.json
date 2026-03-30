@@ -1,0 +1,12 @@
+{
+    "username-email": "Brukarnamn / E-post",
+    "username": "Brukarnamn",
+    "remember-me": "Hugs meg?",
+    "forgot-password": "Gløymt passord?",
+    "alternative-logins": "Alternative innloggingar",
+    "failed-login-attempt": "Innlogging mislykka",
+    "login-successful": "Du har lykkast logga inn !",
+    "dont-have-account": "Har du ikkje ein konto?",
+    "logged-out-due-to-inactivity": "Du har blitt logga ut av administrasjonspanelet grunna inaktivitet",
+    "caps-lock-enabled": "Caps Lock er på"
+}

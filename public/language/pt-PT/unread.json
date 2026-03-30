@@ -3,13 +3,14 @@
     "no-unread-topics": "Não existem tópicos por ler.",
     "load-more": "Carregar mais",
     "mark-as-read": "Marcar como lido",
+    "mark-as-unread": "Mark as Unread",
     "selected": "Selecionados",
     "all": "Todos",
     "all-categories": "Todas as categorias",
     "topics-marked-as-read.success": "Tópicos marcados como lidos!",
     "all-topics": "Todos os tópicos",
     "new-topics": "Novos tópicos",
-    "watched-topics": "Tópicos vistos",
+    "watched-topics": "Tópicos subscritos",
     "unreplied-topics": "Tópicos sem respostas",
     "multiple-categories-selected": "Vários Selecionados"
 }

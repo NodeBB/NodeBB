@@ -3,7 +3,9 @@
 const db = require('../database');
 const meta = require('../meta');
 const privileges = require('../privileges');
+const plugins = require('../plugins');
 const groups = require('../groups');
+const activitypub = require('../activitypub');
 
 module.exports = function (User) {
 	User.isReadyToPost = async function (uid, cid) {
@@ -29,7 +31,7 @@ module.exports = function (User) {
 	};
 
 	async function isReady(uid, cid, field) {
-		if (parseInt(uid, 10) === 0) {
+		if (activitypub.helpers.isUri(uid) || parseInt(uid, 10) === 0) {
 			return;
 		}
 		const [userData, isAdminOrMod, isMemberOfExempt] = await Promise.all([
@@ -47,6 +49,18 @@ module.exports = function (User) {
 		}
 
 		await User.checkMuted(uid);
+
+		const { shouldIgnoreDelays } = await plugins.hooks.fire('filter:user.posts.isReady', {
+			shouldIgnoreDelays: false,
+			user: userData,
+			cid,
+			field,
+			isAdminOrMod,
+			isMemberOfExempt,
+		});
+		if (shouldIgnoreDelays) {
+			return;
+		}
 
 		const now = Date.now();
 		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
@@ -87,6 +101,7 @@ module.exports = function (User) {
 			`uid:${postData.uid}:posts`,
 			`cid:${postData.cid}:uid:${postData.uid}:pids`,
 		], postData.timestamp, postData.pid);
+		await db.sortedSetIncrBy(`uid:${postData.uid}:cids`, 1, postData.cid);
 		await User.updatePostCount(postData.uid);
 	};
 
@@ -97,9 +112,23 @@ module.exports = function (User) {
 		if (uids.length) {
 			const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
 			await Promise.all([
-				db.setObjectBulk(uids.map((uid, index) => ([`user:${uid}`, { postcount: counts[index] }]))),
+				db.setObjectBulk(
+					uids.map((uid, index) => ([activitypub.helpers.isUri(uid) ? `userRemote:${uid}` : `user:${uid}`, { postcount: counts[index] }]))
+				),
 				db.sortedSetAdd('users:postcount', counts, uids),
 			]);
+		}
+	};
+
+	User.updateTopicCount = async (uids) => {
+		uids = Array.isArray(uids) ? uids : [uids];
+		const exists = await User.exists(uids);
+		uids = uids.filter((uid, index) => exists[index]);
+		if (uids.length) {
+			const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:topics`));
+			await db.setObjectBulk(
+				uids.map((uid, index) => ([activitypub.helpers.isUri(uid) ? `userRemote:${uid}` : `user:${uid}`, { topiccount: counts[index] }]))
+			);
 		}
 	};
 

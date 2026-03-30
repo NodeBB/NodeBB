@@ -1,5 +1,6 @@
 {
     "all-users": "All Users",
+    "followed-users": "Followed Users",
     "latest-users": "Seneste brugere",
     "top-posters": "Top Postere",
     "most-reputation": "Mest Omdømme",
@@ -20,6 +21,6 @@
     "popular-topics": "Populærer Tråde",
     "unread-topics": "Ulæste Tråde",
     "categories": "Kategorier",
-    "tags": "Tags",
+    "tags": "Etiketter",
     "no-users-found": "Ingen brugere fundet!"
 }

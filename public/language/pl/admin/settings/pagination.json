@@ -1,11 +1,11 @@
 {
-	"pagination": "Ustawienia paginacji",
-	"enable": "Paginuj tematy oraz posty zamiast używać nieskończonego przewijania",
-	"posts": "Paginacja postów",
-	"topics": "Paginacja tematów",
+	"pagination": "Ustawienia podziału na strony",
+	"enable": "Dziel tematy i posty na strony, zamiast używać nieskończonego przewijania",
+	"posts": "Dzielenie postów na strony",
+	"topics": "Dzielenie tematów na strony",
 	"posts-per-page": "Postów na stronie",
 	"max-posts-per-page": "Maksymalna liczba postów na stronie",
-	"categories": "Paginacja kategorii",
+	"categories": "Dzielenie kategorii na strony",
 	"topics-per-page": "Tematów na stronę",
 	"max-topics-per-page": "Maksymalna liczba tematów na stronie",
 	"categories-per-page": "Kategorie na stronę"

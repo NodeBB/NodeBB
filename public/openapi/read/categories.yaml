@@ -38,6 +38,9 @@ get:
                               type: array
                               items:
                                 type: string
+                            unread:
+                              type: boolean
+                              description: True if category or it's children have unread topics
                             unread-class:
                               type: string
                             children:
@@ -74,6 +77,8 @@ get:
                                           type: object
                                           properties:
                                             pid:
+                                              type: number
+                                            uid:
                                               type: number
                                             timestamp:
                                               type: number
@@ -133,10 +138,17 @@ get:
                                 properties:
                                   pid:
                                     type: number
+                                  uid:
+                                    type: number
+                                  tid:
+                                    type: number
                                   timestamp:
                                     type: number
                                   content:
                                     type: string
+                                  sourceContent:
+                                    type: string
+                                    nullable: true
                                   timestampISO:
                                     type: string
                                     description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -146,6 +158,9 @@ get:
                                       uid:
                                         type: number
                                         description: A user identifier
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         description: A friendly name for a given user account
@@ -179,56 +194,14 @@ get:
                                   topic:
                                     type: object
                                     properties:
+                                      tid:
+                                        type: number
                                       slug:
                                         type: string
                                       title:
                                         type: string
                             teaser:
-                              type: object
-                              properties:
-                                url:
-                                  type: string
-                                timestampISO:
-                                  type: string
-                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
-                                pid:
-                                  type: number
-                                index:
-                                  type: number
-                                  description: The index of the post
-                                topic:
-                                  type: object
-                                  properties:
-                                    slug:
-                                      type: string
-                                    title:
-                                      type: string
-                                user:
-                                  type: object
-                                  properties:
-                                      uid:
-                                        type: number
-                                        example: 1
-                                      username:
-                                        type: string
-                                        example: Dragon Fruit
-                                      userslug:
-                                        type: string
-                                        example: dragon-fruit
-                                      picture:
-                                        type: string
-                                        example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
-                                        nullable: true
-                                      displayname:
-                                        type: string
-                                        description: This is either username or fullname depending on forum and user settings
-                                        example: Dragon Fruit
-                                      'icon:text':
-                                        type: string
-                                        example: D
-                                      'icon:bgColor':
-                                        type: string
-                                        example: '#9c27b0'
+                              $ref: ../components/schemas/TeaserObject.yaml#/TeaserObject
                             imageClass:
                               type: string
               - $ref: ../components/schemas/Pagination.yaml#/Pagination

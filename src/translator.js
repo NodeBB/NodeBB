@@ -3,7 +3,7 @@
 const winston = require('winston');
 
 function warn(msg) {
-	if (global.env === 'development') {
+	if (process.env.NODE_ENV === 'development') {
 		winston.warn(msg);
 	}
 }

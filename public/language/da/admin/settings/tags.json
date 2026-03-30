@@ -1,13 +1,13 @@
 {
-    "tag": "Tag Settings",
-    "link-to-manage": "Manage Tags",
-    "system-tags": "System Tags",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
-    "tags-per-topic": "Tags per topic",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
+    "tag": "Etiket-indstillinger",
+    "link-to-manage": "Håndtér Etiketter",
+    "system-tags": "System-etiketter",
+    "system-tags-help": "Kun priviligerede brugere kan se disse etiketter.",
+    "tags-per-topic": "Etiketter per tråd",
+    "min-per-topic": "Minimalt Antal Etiketter per Tråd",
+    "max-per-topic": "Maksimalt Antal Etiketter per Tråd",
+    "min-length": "Minimal Etiket-længde",
+    "max-length": "Maksimal Etiket-længde",
     "related-topics": "Related Topics",
     "max-related-topics": "Maximum related topics to display (if supported by theme)"
 }

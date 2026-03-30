@@ -1,0 +1,30 @@
+post:
+  tags:
+    - admin
+  summary: refresh blocklist
+  description: This operation refreshes the blocklist domains
+  parameters:
+    - name: url
+      in: path
+      required: true
+      schema:
+        type: string
+      example: https%3A%2F%2Fexample.org%2Fblocklist
+  responses:
+    '200':
+      description: blocklist successfully refreshed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  blocklists:
+                    $ref: ../../../../../components/schemas/admin/blocklists.yaml#/BlocklistArray
+                  count:
+                    type: number
+                    description: The number of domains managed by this blocklist

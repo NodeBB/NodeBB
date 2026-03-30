@@ -30,4 +30,5 @@ get:
                     type: string
                     description: A UNIX timestamp of the end date
                     nullable: true
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

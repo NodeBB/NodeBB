@@ -21,19 +21,6 @@ get:
                   privileges:
                     type: object
                     properties:
-                      labels:
-                        type: object
-                        properties:
-                          users:
-                            type: array
-                            items:
-                              type: string
-                              description: Language key of the privilege name's user-friendly name
-                          groups:
-                            type: array
-                            items:
-                              type: string
-                              description: Language key of the privilege name's user-friendly name
                       labelData:
                         type: array
                         items:

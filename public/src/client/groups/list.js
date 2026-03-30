@@ -1,22 +1,23 @@
 'use strict';
 
 define('forum/groups/list', [
-	'forum/infinitescroll', 'benchpress', 'api', 'bootbox', 'alerts',
-], function (infinitescroll, Benchpress, api, bootbox, alerts) {
+	'api', 'bootbox', 'alerts',
+], function (api, bootbox, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
-		infinitescroll.init(Groups.loadMoreGroups);
-
 		// Group creation
 		$('button[data-action="new"]').on('click', function () {
-			bootbox.prompt('[[groups:new-group.group-name]]', function (name) {
-				if (name && name.length) {
-					api.post('/groups', {
-						name: name,
-					}).then((res) => {
+			const modal = bootbox.prompt('[[groups:new-group.group-name]]', function (name) {
+				if (name === '') {
+					return false;
+				}
+				if (name && name.trim().length) {
+					api.post('/groups', { name }).then((res) => {
+						modal.modal('hide');
 						ajaxify.go('groups/' + res.slug);
 					}).catch(alerts.error);
+					return false;
 				}
 			});
 		});
@@ -24,67 +25,38 @@ define('forum/groups/list', [
 		$('#search-sort').val(params.sort || 'alpha');
 
 		// Group searching
-		$('#search-text').on('keyup', Groups.search);
+		$('#search-text').on('keyup', utils.debounce(Groups.search, 200));
 		$('#search-button').on('click', Groups.search);
 		$('#search-sort').on('change', function () {
 			ajaxify.go('groups?sort=' + $('#search-sort').val());
 		});
 	};
 
-	Groups.loadMoreGroups = function (direction) {
-		if (direction < 0) {
-			return;
-		}
-
-		infinitescroll.loadMore('/groups', {
-			sort: $('#search-sort').val(),
-			after: $('[component="groups/container"]').attr('data-nextstart'),
-		}, function (data, done) {
-			if (data && data.groups.length) {
-				Benchpress.render('partials/groups/list', {
-					groups: data.groups,
-				}).then(function (html) {
-					$('#groups-list').append(html);
-					done();
-				});
-			} else {
-				done();
-			}
-
-			if (data && data.nextStart) {
-				$('[component="groups/container"]').attr('data-nextstart', data.nextStart);
-			}
-		});
-	};
-
 	Groups.search = function () {
-		const groupsEl = $('#groups-list');
-		const queryEl = $('#search-text');
-		const sortEl = $('#search-sort');
+		api.get('/api/groups', {
+			query: $('#search-text').val(),
+			sort: $('#search-sort').val(),
+			filterHidden: true,
+			showMembers: true,
+			hideEphemeralGroups: true,
+		}).then(renderSearchResults)
+			.catch(alerts.error);
 
-		socket.emit('groups.search', {
-			query: queryEl.val(),
-			options: {
-				sort: sortEl.val(),
-				filterHidden: true,
-				showMembers: true,
-				hideEphemeralGroups: true,
-			},
-		}, function (err, groups) {
-			if (err) {
-				return alerts.error(err);
-			}
-			groups = groups.filter(function (group) {
-				return group.name !== 'registered-users' && group.name !== 'guests';
-			});
-			Benchpress.render('partials/groups/list', {
-				groups: groups,
-			}).then(function (html) {
-				groupsEl.empty().append(html);
-			});
-		});
 		return false;
 	};
+
+	async function renderSearchResults(data) {
+		const [paginationHtml, groupsHtml] = await Promise.all([
+			app.parseAndTranslate('partials/paginator', {
+				pagination: data.pagination,
+			}),
+			app.parseAndTranslate('partials/groups/list', {
+				groups: data.groups,
+			}),
+		]);
+		$('.pagination-container').replaceWith(paginationHtml);
+		$('#groups-list').empty().append(groupsHtml);
+	}
 
 	return Groups;
 });
