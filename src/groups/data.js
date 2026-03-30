@@ -133,9 +133,6 @@ module.exports = function (Groups) {
 			if (hasField('name')) {
 				group.nameEncoded = encodeURIComponent(group.name);
 				group.displayName = validator.escape(String(group.name));
-				if (Groups.systemGroups.includes(group.name)) {
-					group.displayName = group.displayName.replace(/-/g, ' ');
-				}
 			}
 			if (hasField('description')) {
 				group.description = validator.escape(String(group.description || ''));
