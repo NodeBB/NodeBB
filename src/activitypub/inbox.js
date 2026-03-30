@@ -53,7 +53,7 @@ inbox.create = async (req) => {
 		cid = Array.from(cids)[0];
 	}
 
-	const asserted = await activitypub.notes.assert(req.uid || 0, object, { cid });
+	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
 		await activitypub.feps.announce(object.id, req.body);
 		// api.activitypub.add(req, { pid: object.id });
@@ -461,7 +461,7 @@ inbox.announce = async (req) => {
 					return;
 				}
 
-				const assertion = await activitypub.notes.assert(req.uid || 0, pid, { cid, skipChecks: true });
+				const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true });
 				if (!assertion) {
 					return;
 				}
