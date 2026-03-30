@@ -121,7 +121,7 @@ define('notifications', [
 				}
 			}).catch(alerts.error);
 		} else {
-			api.delete(`/notifications/${nid}/read`).then(callback).catch(alerts.error);
+			api.del(`/notifications/${nid}/read`).then(callback).catch(alerts.error);
 		}
 	}
 
