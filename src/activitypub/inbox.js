@@ -529,6 +529,7 @@ inbox.follow = async (req) => {
 		activitypub.send('uid', id, actor, {
 			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
+			to: [actor],
 			object: {
 				id: followId,
 				type: 'Follow',
@@ -556,6 +557,7 @@ inbox.follow = async (req) => {
 		activitypub.send('cid', id, actor, {
 			id: `${nconf.get('url')}/${type}/${id}#activity/accept:follow/${handle}/${Date.now()}`,
 			type: 'Accept',
+			to: [actor],
 			object: {
 				id: followId,
 				type: 'Follow',

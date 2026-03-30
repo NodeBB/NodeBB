@@ -65,6 +65,7 @@ Out.follow = enabledCheck(async (type, id, actor) => {
 		await activitypub.send(type, id, [actor], {
 			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 			type: 'Follow',
+			to: [actor],
 			object: actor,
 		});
 	} catch (e) {
@@ -462,6 +463,7 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 	await activitypub.send(type, id, [actor], {
 		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Undo',
+		to: [actor],
 		actor: object.actor,
 		object,
 	});
