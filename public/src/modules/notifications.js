@@ -118,18 +118,18 @@ define('notifications', [
 	};
 
 	function markNotification(nid, read, callback) {
-		socket.emit('notifications.mark' + (read ? 'Read' : 'Unread'), nid, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			if (read && unreadNotifs[nid]) {
-				delete unreadNotifs[nid];
-			}
-			if (callback) {
-				callback();
-			}
-		});
+		if (read) {
+			api.put(`/notifications/${nid}/read`).then(() => {
+				if (unreadNotifs[nid]) {
+					delete unreadNotifs[nid];
+				}
+				if (callback) {
+					callback();
+				}
+			}).catch(alerts.error);
+		} else {
+			api.delete(`/notifications/${nid}/read`).then(callback).catch(alerts.error);
+		}
 	}
 
 	function scrollToPostIndexIfOnPage(notifEl) {

@@ -25,13 +25,13 @@ SocketNotifs.deleteAll = async function (socket) {
 };
 
 SocketNotifs.markRead = async function (socket, nid) {
-	await notifications.markRead(nid, socket.uid);
-	user.notifications.pushCount(socket.uid);
+	sockets.warnDeprecated(socket, 'PUT /api/v3/notifications/:nid/read');
+	await api.notifications.markRead(socket, { nid });
 };
 
 SocketNotifs.markUnread = async function (socket, nid) {
-	await notifications.markUnread(nid, socket.uid);
-	user.notifications.pushCount(socket.uid);
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/notifications/:nid/read');
+	await api.notifications.markUnread(socket, { nid });
 };
 
 SocketNotifs.markAllRead = async function (socket, data) {

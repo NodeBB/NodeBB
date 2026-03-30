@@ -212,6 +212,14 @@ paths:
     $ref: 'write/posts/pid/owner.yaml'
   /posts/owner:
     $ref: 'write/posts/owner.yaml'
+  /notifications:
+    $ref: 'write/notifications.yaml'
+  /notifications/{nid}:
+    $ref: 'write/notifications/nid.yaml'
+  /notifications/count:
+    $ref: 'write/notifications/count.yaml'
+  /notifications/{nid}/read:
+    $ref: 'write/notifications/nid/read.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
   /chats/unread:
