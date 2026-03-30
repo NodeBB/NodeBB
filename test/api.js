@@ -270,7 +270,7 @@ describe('API', async () => {
 			nid: '1', // match nid in example in notifications/nid/read.yaml
 			path: '/notifications',
 			from: unprivUid,
-			bodyShort: 'testing notification'
+			bodyShort: 'testing notification',
 		});
 		notifications.push(notifObj, adminUid);
 

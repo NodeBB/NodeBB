@@ -32,10 +32,6 @@ define('notifications', [
 	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
 		callback = callback || function () {};
 		api.get('/notifications').then((data) => {
-			if (err) {
-				return alerts.error(err);
-			}
-
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});

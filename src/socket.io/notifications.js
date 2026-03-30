@@ -2,6 +2,9 @@
 
 const user = require('../user');
 const notifications = require('../notifications');
+const api = require('../api');
+
+const sockets = require('.');
 
 const SocketNotifs = module.exports;
 
