@@ -41,7 +41,7 @@
 	"relays.state-2": "Kích hoạt",
 	"relays.errors.invalid-url": "Vui lòng nhập URL hợp lệ",
 
-	"blocklists": "Third-party Blocklists",
+	"blocklists": "Danh Sách Chặn Của Bên Thứ Ba",
 	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
 	"blocklists-default": "NodeBB ships with two blocklists by default, the <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> and the <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
 	"blocklists.url": "URL",
