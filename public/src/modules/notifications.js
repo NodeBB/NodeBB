@@ -112,7 +112,7 @@ define('notifications', [
 
 	function markNotification(nid, read, callback) {
 		if (read) {
-			api.put(`/notifications/${nid}/read`).then(() => {
+			api.put(`/notifications/${encodeURIComponent(nid)}/read`).then(() => {
 				if (unreadNotifs[nid]) {
 					delete unreadNotifs[nid];
 				}
@@ -121,7 +121,7 @@ define('notifications', [
 				}
 			}).catch(alerts.error);
 		} else {
-			api.del(`/notifications/${nid}/read`).then(callback).catch(alerts.error);
+			api.del(`/notifications/${encodeURIComponent(nid)}/read`).then(callback).catch(alerts.error);
 		}
 	}
 
