@@ -56,14 +56,20 @@ federationController.safety = async function (req, res) {
 
 federationController.analytics = async function (req, res) {
 	const instances = await activitypub.instances.list();
-	let { host } = req.query;
+	let { host, term } = req.query;
 	if (!instances.includes(host)) {
 		host = undefined;
 	}
+	let method = 'getHourlyStatsForSet';
+	let count = 24;
+	if (term === 'daily') {
+		method = 'getDailyStatsForSet';
+		count = 30;
+	}
 	const set = host ? `activities:byHost:${host}` : 'activities';
 	const sentSet = host ? `ap.out:byHost:${host}` : 'ap:out';
-	const received = await analytics.getHourlyStatsForSet(set, Date.now(), 24);
-	const sent = await analytics.getHourlyStatsForSet(sentSet, Date.now(), 24);
+	const received = await analytics[method](set, Date.now(), count);
+	const sent = await analytics[method](sentSet, Date.now(), count);
 
 	res.render('admin/federation/analytics', {
 		title: '[[admin/menu:federation/analytics]]',

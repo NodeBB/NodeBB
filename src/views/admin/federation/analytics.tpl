@@ -6,14 +6,23 @@
 			<div class="mb-4">
 				<p class="lead">[[admin/settings/activitypub:analytics.intro]]</p>
 
-				<label class="fs-5 fw-bold tracking-tight settings-header mb-3">[[admin/settings/activitypub:analytics.by-hostname]] ({instances.length})</label>
-				<div class="mb-3">
-					<select class="form-select" autocomplete="off" id="hostFilter">
-						<option value="">All instances</option>
-						{{{ each instances }}}
-						<option value="{@value}">{@value}</option>
-						{{{ end }}}
-					</select>
+				<div class="mb-3 row">
+					<div class="col-6">
+						<label class="form-label" for="hostFilter">[[admin/settings/activitypub:analytics.by-hostname]] ({instances.length})</label>
+						<select class="form-select" autocomplete="off" id="hostFilter">
+							<option value="">All instances</option>
+							{{{ each instances }}}
+							<option value="{@value}">{@value}</option>
+							{{{ end }}}
+						</select>
+					</div>
+					<div class="col-6">
+						<label class="form-label" for="term">[[admin/settings/activitypub:analytics.term]]</label>
+						<select class="form-select" autocomplete="off" id="term">
+							<option value="hourly">[[admin/settings/activitypub:analytics.hourly]]</option>
+							<option value="daily">[[admin/settings/activitypub:analytics.daily]]</option>
+						</select>
+					</div>
 				</div>
 			</div>
 

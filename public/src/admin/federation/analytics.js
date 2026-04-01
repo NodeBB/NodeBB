@@ -21,21 +21,40 @@ Chart.register(
 	Filler
 );
 
+let charts;
+const labels = new Map([
+	['hourly', utils.getHoursArray().map(function (text, idx) {
+		return idx % 3 ? '' : text;
+	})],
+	['daily', utils.getDaysArray().map(function (text, idx) {
+		return idx % 3 ? '' : text;
+	})],
+]);
+
 export function init() {
-	const charts = initializeCharts();
+	charts = initializeCharts();
 
 	const hostFilterEl = document.getElementById('hostFilter');
+	const termEl = document.getElementById('term');
 	if (hostFilterEl) {
-		hostFilterEl.addEventListener('change', async function () {
-			const data = await get(`/api${ajaxify.data.url}?host=${this.value}`);
-
-			['received', 'sent'].forEach((name) => {
-				const chart = charts.get(name);
-				chart.data.datasets[0].data = data[name];
-				chart.update();
-			});
-		});
+		hostFilterEl.addEventListener('change', updateCharts);
 	}
+	if (termEl) {
+		termEl.addEventListener('change', updateCharts);
+	}
+}
+
+async function updateCharts() {
+	const hostFilterEl = document.getElementById('hostFilter');
+	const termEl = document.getElementById('term');
+	const data = await get(`/api${ajaxify.data.url}?host=${hostFilterEl.value}&term=${termEl.value}`);
+
+	['received', 'sent'].forEach((name) => {
+		const chart = charts.get(name);
+		chart.data.labels = labels.get(termEl.value || 'hourly');
+		chart.data.datasets[0].data = data[name];
+		chart.update();
+	});
 }
 
 function initializeCharts() {
@@ -43,12 +62,6 @@ function initializeCharts() {
 	const sentCanvas = document.getElementById('sent');
 	// const topicsCanvas = document.getElementById('topics:daily');
 	// const postsCanvas = document.getElementById('posts:daily');
-	const hourlyLabels = utils.getHoursArray().map(function (text, idx) {
-		return idx % 3 ? '' : text;
-	});
-	// const dailyLabels = utils.getDaysArray().map(function (text, idx) {
-	// 	return idx % 3 ? '' : text;
-	// });
 
 	if (utils.isMobile()) {
 		Chart.defaults.plugins.tooltip.enabled = false;
@@ -64,7 +77,7 @@ function initializeCharts() {
 
 	const data = {
 		'received': {
-			labels: hourlyLabels,
+			labels: labels.get('hourly'),
 			datasets: [
 				{
 					...commonDataSetOpts,
@@ -77,7 +90,7 @@ function initializeCharts() {
 			],
 		},
 		'sent': {
-			labels: hourlyLabels,
+			labels: labels.get('hourly'),
 			datasets: [
 				{
 					...commonDataSetOpts,
