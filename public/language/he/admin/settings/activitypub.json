@@ -66,5 +66,7 @@
 	"content.world-default-cid": "מזהה קטגוריה ברירת מחדל עבור &quot;World&quot; יוצר עמודים",
 
 	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
-	"analytics.activities": "Received Activities"
+	"analytics.by-hostname": "Filter by Hostname",
+	"analytics.received": "Received Activities",
+	"analytics.sent": "Sent Activites"
 }

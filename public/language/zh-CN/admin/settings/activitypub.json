@@ -66,5 +66,7 @@
 	"content.world-default-cid": "“世界”页面编辑器的默认版块 ID",
 
 	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
-	"analytics.activities": "Received Activities"
+	"analytics.by-hostname": "Filter by Hostname",
+	"analytics.received": "Received Activities",
+	"analytics.sent": "Sent Activites"
 }

@@ -66,5 +66,7 @@
 	"content.world-default-cid": "ID predefinito della categoria per &quot;Mondo&quot; editor di pagine",
 
 	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
-	"analytics.activities": "Received Activities"
+	"analytics.by-hostname": "Filter by Hostname",
+	"analytics.received": "Received Activities",
+	"analytics.sent": "Sent Activites"
 }
