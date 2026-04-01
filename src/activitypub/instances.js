@@ -12,6 +12,8 @@ Instances.log = async (domain) => {
 
 Instances.getCount = async () => db.sortedSetCard('instances:lastSeen');
 
+Instances.list = async () => db.getSortedSetMembers('instances:lastSeen');
+
 Instances.isAllowed = async (domain) => {
 	const allowed = await activitypub.blocklists.check(domain);
 	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;

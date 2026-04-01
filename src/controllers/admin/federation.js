@@ -1,6 +1,7 @@
 'use strict';
 
 const activitypub = require('../../activitypub');
+const analytics = require('../../analytics');
 
 const federationController = module.exports;
 
@@ -50,5 +51,21 @@ federationController.safety = async function (req, res) {
 		title: '[[admin/menu:federation/safety]]',
 		blocklists,
 		instanceCount,
+	});
+};
+
+federationController.analytics = async function (req, res) {
+	const instances = await activitypub.instances.list();
+	let { host } = req.query;
+	if (!instances.includes(host)) {
+		host = undefined;
+	}
+	const set = host ? `activities:byHost:${host}` : 'activities';
+	const activities = await analytics.getHourlyStatsForSet(set, Date.now(), 24);
+
+	res.render('admin/federation/analytics', {
+		title: '[[admin/menu:federation/analytics]]',
+		instances,
+		activities,
 	});
 };
