@@ -269,7 +269,7 @@ Controller.postInbox = async (req, res) => {
 
 	try {
 		await activitypub.inbox[method](req);
-		await activitypub.record(req.body);
+		await activitypub.record.receipt(req.body);
 		await helpers.formatApiResponse(202, res);
 	} catch (e) {
 		helpers.formatApiResponse(500, res, e).catch(err => winston.error(err.stack));

@@ -381,6 +381,7 @@ ActivityPub._sendMessage = async function (uri, id, type, payload) {
 		});
 
 		if (String(response.statusCode).startsWith('2')) {
+			ActivityPub.record.send(payload.type, uri);
 			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
 			return true;
 		}
@@ -455,7 +456,9 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	}).catch(err => winston.error(err.stack));
 };
 
-ActivityPub.record = async ({ id, type, actor }) => {
+ActivityPub.record = {};
+
+ActivityPub.record.receipt = async ({ id, type, actor }) => {
 	const now = Date.now();
 	const { hostname } = new URL(actor);
 
@@ -463,6 +466,15 @@ ActivityPub.record = async ({ id, type, actor }) => {
 		db.sortedSetAdd(`activities:datetime`, now, id),
 		ActivityPub.instances.log(hostname),
 		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
+	]);
+};
+
+ActivityPub.record.send = async ({ type, target }) => {
+	const { hostname } = new URL(target);
+
+	await Promise.all([
+		ActivityPub.instances.log(hostname),
+		analytics.increment(['ap.out', `ap.out:byType:${type}`, `ap.out:byHost:${hostname}`]),
 	]);
 };
 

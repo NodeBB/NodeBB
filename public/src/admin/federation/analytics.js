@@ -27,17 +27,20 @@ export function init() {
 	const hostFilterEl = document.getElementById('hostFilter');
 	if (hostFilterEl) {
 		hostFilterEl.addEventListener('change', async function () {
-			const { activities } = await get(`/api${ajaxify.data.url}?host=${this.value}`);
-			const chart = charts.get('activities');
-			chart.data.datasets[0].data = activities;
-			chart.update();
+			const data = await get(`/api${ajaxify.data.url}?host=${this.value}`);
+
+			['activities', 'sent'].forEach((name) => {
+				const chart = charts.get(name);
+				chart.data.datasets[0].data = data[name];
+				chart.update();
+			});
 		});
 	}
 }
 
 function initializeCharts() {
 	const activitiesCanvas = document.getElementById('activities');
-	// const dailyCanvas = document.getElementById('pageviews:daily');
+	const sentCanvas = document.getElementById('sent');
 	// const topicsCanvas = document.getElementById('topics:daily');
 	// const postsCanvas = document.getElementById('posts:daily');
 	const hourlyLabels = utils.getHoursArray().map(function (text, idx) {
@@ -73,19 +76,19 @@ function initializeCharts() {
 				},
 			],
 		},
-		// 'pageviews:daily': {
-		// 	labels: dailyLabels,
-		// 	datasets: [
-		// 		{
-		// 			...commonDataSetOpts,
-		// 			backgroundColor: 'rgba(151,187,205,0.2)',
-		// 			borderColor: 'rgba(151,187,205,1)',
-		// 			pointBackgroundColor: 'rgba(151,187,205,1)',
-		// 			pointHoverBorderColor: 'rgba(151,187,205,1)',
-		// 			data: ajaxify.data.analytics['pageviews:daily'],
-		// 		},
-		// 	],
-		// },
+		'sent': {
+			labels: hourlyLabels,
+			datasets: [
+				{
+					...commonDataSetOpts,
+					backgroundColor: 'rgba(151,187,205,0.2)',
+					borderColor: 'rgba(151,187,205,1)',
+					pointBackgroundColor: 'rgba(151,187,205,1)',
+					pointHoverBorderColor: 'rgba(151,187,205,1)',
+					data: ajaxify.data.sent,
+				},
+			],
+		},
 		// 'topics:daily': {
 		// 	labels: dailyLabels.slice(-7),
 		// 	datasets: [
@@ -115,7 +118,7 @@ function initializeCharts() {
 	};
 
 	activitiesCanvas.width = $(activitiesCanvas).parent().width();
-	// dailyCanvas.width = $(dailyCanvas).parent().width();
+	sentCanvas.width = $(sentCanvas).parent().width();
 	// topicsCanvas.width = $(topicsCanvas).parent().width();
 	// postsCanvas.width = $(postsCanvas).parent().width();
 
@@ -135,13 +138,12 @@ function initializeCharts() {
 			data: data.activities,
 			options: chartOpts,
 		})],
+		['sent', new Chart(sentCanvas.getContext('2d'), {
+			type: 'line',
+			data: data.sent,
+			options: chartOpts,
+		})],
 	]);
-
-	// new Chart(dailyCanvas.getContext('2d'), {
-	// 	type: 'line',
-	// 	data: data['pageviews:daily'],
-	// 	options: chartOpts,
-	// });
 
 	// new Chart(topicsCanvas.getContext('2d'), {
 	// 	type: 'line',
