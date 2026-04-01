@@ -65,7 +65,8 @@
 	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)",
 	"content.world-default-cid": "“世界”页面编辑器的默认版块 ID",
 
-	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
 	"analytics.by-hostname": "Filter by Hostname",
 	"analytics.received": "Received Activities",
 	"analytics.sent": "Sent Activites",

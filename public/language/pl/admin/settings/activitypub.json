@@ -65,7 +65,8 @@
 	"content.break-string-help": "This delimiter can be manually inserted by power users when composing new topics. It instructs NodeBB to use content up until that point as part of the <code>summary</code>. If this string is not used, then the character count fallback applies. (Default: <code>[...]</code>)",
 	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer",
 
-	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
 	"analytics.by-hostname": "Filter by Hostname",
 	"analytics.received": "Received Activities",
 	"analytics.sent": "Sent Activites",

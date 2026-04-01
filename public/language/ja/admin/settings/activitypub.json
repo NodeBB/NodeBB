@@ -65,7 +65,8 @@
 	"content.break-string-help": "この区切り文字は、パワーユーザーが新しいスレッドを作成する際に手動で挿入できます。これにより、NodeBBはその時点までのコンテンツを<code>summary</code>の一部として使用します。この文字列が使用されない場合は、文字数によるフォールバックが適用されます。（デフォルト: <code>[...]</code>）",
 	"content.world-default-cid": "&quot;ワールド&quot;ページコンポーザーのデフォルトカテゴリID",
 
-	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
 	"analytics.by-hostname": "Filter by Hostname",
 	"analytics.received": "Received Activities",
 	"analytics.sent": "Sent Activites",
