@@ -55,6 +55,7 @@
 	"federation/relays": "Relais",
 	"federation/pruning": "Stockage",
 	"federation/safety": "Fiabilité et sécurité",
+	"federation/analytics": "Analytics",
 
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",

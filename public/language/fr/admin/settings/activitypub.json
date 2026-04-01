@@ -63,5 +63,8 @@
 	"content.summary-limit-help": "Lorsque le contenu fédéré dépasse ce nombre de caractères, un <code>résumé</code> est généré à partir de toutes les phrases complètes situées avant cette limite. (Par défaut : 500)",
 	"content.break-string": "Séparateur note/article",
 	"content.break-string-help": "Ce séparateur peut être inséré manuellement par les utilisateurs avancés lors de la création de nouveaux sujets. Il indique à NodeBB d’utiliser le contenu jusqu’à cet emplacement comme <code>résumé</code>. Si cette chaîne n’est pas utilisée, la limite de caractères par défaut s’applique. (Par défaut : <code>[...]</code>)",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer",
+
+	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.activities": "Received Activities"
 }

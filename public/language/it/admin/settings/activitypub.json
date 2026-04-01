@@ -63,5 +63,8 @@
 	"content.summary-limit-help": "Quando il contenuto federato supera questo limite di caratteri, sarà generato un <code>riepilogo</code> che comprende tutte le frasi complete precedenti a tale limite. (Predefinito: 500)\n  ",
 	"content.break-string": "Delimitatore di nota/articolo",
 	"content.break-string-help": "Questo delimitatore può essere inserito manualmente dagli utenti esperti durante la composizione di nuove discussioni. Indica a NodeBB di usare il contenuto fino a quel punto come parte del <code>riepilogo</code>. Se questa stringa non viene usata, si applica il conteggio dei caratteri di riserva. (Predefinito: <code>[...]</code>)",
-	"content.world-default-cid": "ID predefinito della categoria per &quot;Mondo&quot; editor di pagine"
+	"content.world-default-cid": "ID predefinito della categoria per &quot;Mondo&quot; editor di pagine",
+
+	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.activities": "Received Activities"
 }

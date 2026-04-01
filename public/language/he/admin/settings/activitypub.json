@@ -63,5 +63,8 @@
 	"content.summary-limit-help": "כאשר תוכן המופץ החוצה חורג ממכסת תווים זו, ייווצר <code>תקציר</code>המורכב מכל המשפטים השלמים שלפני המגבלה. (ברירת מחדל: 500)",
 	"content.break-string": "מפריד הערת סיכום/מאמר",
 	"content.break-string-help": "משתמשים מתקדמים יכולים להזין את המפריד הזה ידנית בעת כתיבת נושאים חדשים. הוא מורה ל-NodeBB להשתמש בתוכן שעד לנקודה זו כחלק מה-<code> תקציר </code>. אם לא נעשה שימוש במחרוזת זו, תופעל חלופת ספירת התווים. (ברירת מחדל: <code> [...] </code> )",
-	"content.world-default-cid": "מזהה קטגוריה ברירת מחדל עבור &quot;World&quot; יוצר עמודים"
+	"content.world-default-cid": "מזהה קטגוריה ברירת מחדל עבור &quot;World&quot; יוצר עמודים",
+
+	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.activities": "Received Activities"
 }

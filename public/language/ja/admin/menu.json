@@ -55,6 +55,7 @@
 	"federation/relays": "リレー",
 	"federation/pruning": "ストレージ",
 	"federation/safety": "信頼と安全",
+	"federation/analytics": "Analytics",
 
 	"section-appearance": "外観",
 	"appearance/themes": "テーマ",

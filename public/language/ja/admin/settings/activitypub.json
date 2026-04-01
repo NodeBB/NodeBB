@@ -63,5 +63,8 @@
 	"content.summary-limit-help": "この文字数を超えるコンテンツがフェデレーション送信される場合、この制限までの完全な文で構成される<code>summary</code>が生成されます。（デフォルト: 500）",
 	"content.break-string": "注記/記事の区切り文字",
 	"content.break-string-help": "この区切り文字は、パワーユーザーが新しいスレッドを作成する際に手動で挿入できます。これにより、NodeBBはその時点までのコンテンツを<code>summary</code>の一部として使用します。この文字列が使用されない場合は、文字数によるフォールバックが適用されます。（デフォルト: <code>[...]</code>）",
-	"content.world-default-cid": "&quot;ワールド&quot;ページコンポーザーのデフォルトカテゴリID"
+	"content.world-default-cid": "&quot;ワールド&quot;ページコンポーザーのデフォルトカテゴリID",
+
+	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
+	"analytics.activities": "Received Activities"
 }

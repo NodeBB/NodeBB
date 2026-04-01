@@ -55,6 +55,7 @@
 	"federation/relays": "Relè",
 	"federation/pruning": "Archiviazione",
 	"federation/safety": "Fiducia e sicurezza",
+	"federation/analytics": "Analytics",
 
 	"section-appearance": "Stile",
 	"appearance/themes": "Themi",

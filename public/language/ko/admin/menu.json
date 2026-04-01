@@ -55,6 +55,7 @@
 	"federation/relays": "Relays",
 	"federation/pruning": "Storage",
 	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
 
 	"section-appearance": "외관",
 	"appearance/themes": "테마",
