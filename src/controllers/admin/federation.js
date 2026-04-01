@@ -67,7 +67,7 @@ federationController.analytics = async function (req, res) {
 		count = 30;
 	}
 	const set = host ? `activities:byHost:${host}` : 'activities';
-	const sentSet = host ? `ap.out:byHost:${host}` : 'ap:out';
+	const sentSet = host ? `ap.out:byHost:${host}` : 'ap.out';
 	const received = await analytics[method](set, Date.now(), count);
 	const sent = await analytics[method](sentSet, Date.now(), count);
 
