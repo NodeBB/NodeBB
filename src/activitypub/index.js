@@ -481,6 +481,18 @@ ActivityPub.record.send = async ({ type, target }) => {
 	]);
 };
 
+ActivityPub.record.receiptError = async (body) => {
+	const { id, actor } = body;
+	const now = Date.now();
+	const { hostname } = new URL(actor);
+	await Promise.all([
+		db.sortedSetAdd('ap.errors', now, id),
+		db.set(`ap.errors:${id}`, JSON.stringify(body)),
+		analytics.increment(['ap.inErr', `ap.inErr:byHost:${hostname}`]),
+	]);
+	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours
+};
+
 ActivityPub.buildRecipients = async function (object, options) {
 	/**
 	 * - Builds a list of targets for activitypub.send to consume

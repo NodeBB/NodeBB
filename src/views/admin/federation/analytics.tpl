@@ -5,6 +5,7 @@
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<div class="mb-4">
 				<p class="lead">[[admin/settings/activitypub:analytics.intro]]</p>
+				<p>[[admin/settings/activitypub:analytics.details]]</p>
 
 				<div class="mb-3 row">
 					<div class="col-6">
