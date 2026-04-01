@@ -381,7 +381,10 @@ ActivityPub._sendMessage = async function (uri, id, type, payload) {
 		});
 
 		if (String(response.statusCode).startsWith('2')) {
-			ActivityPub.record.send(payload.type, uri);
+			ActivityPub.record.send({
+				type: payload.type,
+				target: uri,
+			});
 			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
 			return true;
 		}
