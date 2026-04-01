@@ -21,10 +21,10 @@
 
 			<div class="mb-4">
 				<div class="card">
-					<div class="card-header">[[admin/settings/activitypub:analytics.activities]]</div>
+					<div class="card-header">[[admin/settings/activitypub:analytics.received]]</div>
 					<div class="card-body">
 						<div class="position-relative" style="aspect-ratio: 2;">
-							<canvas id="activities" height="250"></canvas>
+							<canvas id="received" height="250"></canvas>
 						</div>
 					</div>
 				</div>

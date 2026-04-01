@@ -62,13 +62,13 @@ federationController.analytics = async function (req, res) {
 	}
 	const set = host ? `activities:byHost:${host}` : 'activities';
 	const sentSet = host ? `ap.out:byHost:${host}` : 'ap:out';
-	const activities = await analytics.getHourlyStatsForSet(set, Date.now(), 24);
+	const received = await analytics.getHourlyStatsForSet(set, Date.now(), 24);
 	const sent = await analytics.getHourlyStatsForSet(sentSet, Date.now(), 24);
 
 	res.render('admin/federation/analytics', {
 		title: '[[admin/menu:federation/analytics]]',
 		instances,
-		activities,
+		received,
 		sent,
 	});
 };

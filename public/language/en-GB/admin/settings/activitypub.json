@@ -67,6 +67,6 @@
 
 	"analytics.intro": "From this page you can view the state of your instance's federation with other servers",
 	"analytics.by-hostname": "Filter by Hostname",
-	"analytics.activities": "Received Activities",
+	"analytics.received": "Received Activities",
 	"analytics.sent": "Sent Activites"
 }

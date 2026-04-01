@@ -29,7 +29,7 @@ export function init() {
 		hostFilterEl.addEventListener('change', async function () {
 			const data = await get(`/api${ajaxify.data.url}?host=${this.value}`);
 
-			['activities', 'sent'].forEach((name) => {
+			['received', 'sent'].forEach((name) => {
 				const chart = charts.get(name);
 				chart.data.datasets[0].data = data[name];
 				chart.update();
@@ -39,7 +39,7 @@ export function init() {
 }
 
 function initializeCharts() {
-	const activitiesCanvas = document.getElementById('activities');
+	const receivedCanvas = document.getElementById('received');
 	const sentCanvas = document.getElementById('sent');
 	// const topicsCanvas = document.getElementById('topics:daily');
 	// const postsCanvas = document.getElementById('posts:daily');
@@ -63,7 +63,7 @@ function initializeCharts() {
 	};
 
 	const data = {
-		'activities': {
+		'received': {
 			labels: hourlyLabels,
 			datasets: [
 				{
@@ -72,7 +72,7 @@ function initializeCharts() {
 					borderColor: 'rgba(186,139,175,1)',
 					pointBackgroundColor: 'rgba(186,139,175,1)',
 					pointHoverBorderColor: 'rgba(186,139,175,1)',
-					data: ajaxify.data.activities,
+					data: ajaxify.data.received,
 				},
 			],
 		},
@@ -117,7 +117,7 @@ function initializeCharts() {
 		// },
 	};
 
-	activitiesCanvas.width = $(activitiesCanvas).parent().width();
+	receivedCanvas.width = $(receivedCanvas).parent().width();
 	sentCanvas.width = $(sentCanvas).parent().width();
 	// topicsCanvas.width = $(topicsCanvas).parent().width();
 	// postsCanvas.width = $(postsCanvas).parent().width();
@@ -133,9 +133,9 @@ function initializeCharts() {
 	};
 
 	return new Map([
-		['activities', new Chart(activitiesCanvas.getContext('2d'), {
+		['received', new Chart(receivedCanvas.getContext('2d'), {
 			type: 'line',
-			data: data.activities,
+			data: data.received,
 			options: chartOpts,
 		})],
 		['sent', new Chart(sentCanvas.getContext('2d'), {
