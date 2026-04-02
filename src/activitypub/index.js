@@ -225,20 +225,16 @@ ActivityPub.fetchPublicKey = async (uri) => {
 	throw new Error('[[error:activitypub.pubKey-not-found]]');
 };
 
-ActivityPub.sign = async ({ key, keyId }, url, payload) => {
+ActivityPub.sign = async ({ key, keyId }, url, digest) => {
 	// Returns string for use in 'Signature' header
 	const { host, pathname } = new URL(url);
 	const date = new Date().toUTCString();
-	let digest = null;
 
 	let headers = '(request-target) host date';
-	let signed_string = `(request-target): ${payload ? 'post' : 'get'} ${pathname}\nhost: ${host}\ndate: ${date}`;
+	let signed_string = `(request-target): ${digest ? 'post' : 'get'} ${pathname}\nhost: ${host}\ndate: ${date}`;
 
 	// Calculate payload hash if payload present
-	if (payload) {
-		const payloadHash = createHash('sha256');
-		payloadHash.update(JSON.stringify(payload));
-		digest = `SHA-256=${payloadHash.digest('base64')}`;
+	if (digest) {
 		headers += ' digest';
 		signed_string += `\ndigest: ${digest}`;
 	}
@@ -376,9 +372,9 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub._sendMessage = async function (uri, keyData, payload) {
+ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
 	try {
-		const headers = await ActivityPub.sign(keyData, uri, payload);
+		const headers = await ActivityPub.sign(keyData, uri, digest);
 
 		const { response, body } = await request.post(uri, {
 			headers: {
@@ -432,6 +428,9 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		actor,
 		...payload,
 	};
+	const payloadHash = createHash('sha256');
+	payloadHash.update(JSON.stringify(payload));
+	const digest = `SHA-256=${payloadHash.digest('base64')}`;
 
 	const oneMinute = 1000 * 60;
 	const numCores = cpus().length;
@@ -445,7 +444,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		const retryQueuedSet = [];
 
 		await Promise.all(inboxBatch.map(async (uri) => {
-			const ok = await ActivityPub._sendMessage(uri, keyData, payload);
+			const ok = await ActivityPub._sendMessage(uri, keyData, payload, digest);
 			if (!ok) {
 				const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 				const nextTryOn = Date.now() + oneMinute;
