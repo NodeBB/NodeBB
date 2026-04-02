@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash, createSign, createVerify, getHashes } = require('crypto');
+const { cpus } = require('os');
 
 const request = require('../request');
 const db = require('../database');
@@ -425,6 +426,9 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	};
 
 	const oneMinute = 1000 * 60;
+	const numCores = cpus().length;
+	const batchSize = Math.max(8, numCores * 8);
+	const interval = numCores === 1 ? 500 : 100;
 	batch.processArray(inboxes, async (inboxBatch) => {
 		const retryQueueAdd = [];
 		const retryQueuedSet = [];
@@ -454,8 +458,8 @@ ActivityPub.send = async (type, id, targets, payload) => {
 			]);
 		}
 	}, {
-		batch: 50,
-		interval: 100,
+		batch: batchSize,
+		interval,
 	}).catch(err => winston.error(err.stack));
 };
 
