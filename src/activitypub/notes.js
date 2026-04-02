@@ -84,6 +84,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		} else if (context.context) {
 			chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 			if (chain && chain.length) {
+				// Deduplicate by id (just in case, also a buggy NodeBB impl. sent dupes)
+				const ids = new Set();
+				chain = chain.filter((item) => {
+					const seen = ids.has(item.pid);
+					ids.add(item.pid);
+					return !seen;
+				});
+
 				// Context resolves, use in later topic creation
 				context = context.context;
 			}
