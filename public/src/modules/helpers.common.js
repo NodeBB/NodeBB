@@ -277,6 +277,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 			case 'Safari':
 				icons += '<i class="fa fa-fw fa-safari"></i>';
 				break;
+			case 'Opera':
+				icons += '<i class="fa fa-fw fa-opera"></i>';
+				break;
 			case 'IE':
 				icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
 				break;
