@@ -92,7 +92,8 @@ async function retryFailedMessages() {
 			queueIdsToRemove.push(queueId);
 			return;
 		}
-		const ok = await activitypub._sendMessage(uri, id, type, payloadObj);
+		const keyData = await activitypub.getPrivateKey(type, id); // keyData could be moved higher up (optimization)
+		const ok = await activitypub._sendMessage(uri, keyData, payloadObj);
 		if (ok) {
 			queueIdsToRemove.push(queueId);
 		} else {
