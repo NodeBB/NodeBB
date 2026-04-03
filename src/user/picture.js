@@ -144,7 +144,7 @@ module.exports = function (User) {
 		const uploadedImage = await image.uploadImage(filename, `profile/uid-${updateUid}`, {
 			uid: updateUid,
 			path: normalizedPath,
-			name: 'profileAvatar',
+			name: `profileAvatar${extension}`,
 		});
 
 		await User.updateProfile(callerUid, {
