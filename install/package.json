@@ -88,7 +88,7 @@
         "jsesc": "3.1.0",
         "json2csv": "5.0.7",
         "jsonwebtoken": "9.0.3",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "logrotate-stream": "0.2.9",
         "lru-cache": "11.2.7",
         "mime": "3.0.0",
