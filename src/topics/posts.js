@@ -14,7 +14,7 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const privileges = require('../privileges');
 
-const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/([a-fA-F0-9-]+)(?=\\/|$|\\s)?`, 'g');
+const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/([a-fA-F0-9-]+)(?=\\/|$|\\s)`, 'g');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
