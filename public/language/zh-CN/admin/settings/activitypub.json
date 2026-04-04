@@ -65,12 +65,12 @@
 	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)",
 	"content.world-default-cid": "“世界”页面编辑器的默认版块 ID",
 
-	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
-	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
-	"analytics.by-hostname": "Filter by Hostname",
-	"analytics.received": "Received Activities",
-	"analytics.sent": "Sent Activites",
-	"analytics.term": "Time scale",
-	"analytics.hourly": "Hourly",
-	"analytics.daily": "Daily"
+	"analytics.intro": "本页面概述了您的论坛与其他实例/服务器之间的联合状态",
+	"analytics.details": "NodeBB 会跟踪 ActivityPub 的接收和发送活动，您可以按主机名查看每小时或每日的统计数据。请注意，这些指标仅在接收和发送<em>成功</em>时才会增加。",
+	"analytics.by-hostname": "按主机名筛选",
+	"analytics.received": "已接收的活动",
+	"analytics.sent": "已发送的活动",
+	"analytics.term": "时间尺度",
+	"analytics.hourly": "每时",
+	"analytics.daily": "每日"
 }

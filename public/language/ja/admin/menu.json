@@ -27,7 +27,7 @@
 	"settings/navigation": "ナビゲーション",
 	"settings/reputation": "評価とフラグ",
 	"settings/email": "メール",
-	"settings/user": "メール",
+	"settings/user": "ユーザー",
 	"settings/group": "グループ",
 	"settings/guest": "ゲスト",
 	"settings/uploads": "アップロード",
@@ -55,7 +55,7 @@
 	"federation/relays": "リレー",
 	"federation/pruning": "ストレージ",
 	"federation/safety": "信頼と安全",
-	"federation/analytics": "Analytics",
+	"federation/analytics": "分析",
 
 	"section-appearance": "外観",
 	"appearance/themes": "テーマ",
