@@ -60,7 +60,11 @@ mongoModule.questions = [
 ];
 
 mongoModule.init = async function (opts) {
-	client = await connection.connect(opts || nconf.get('mongo'));
+	const mongoOpts = { ...(opts || nconf.get('mongo')) };
+	if (mongoOpts.uri && mongoOpts.uri.includes('replicaSet=') && !mongoOpts.uri.includes('directConnection=')) {
+		mongoOpts.uri = `${mongoOpts.uri}${mongoOpts.uri.includes('?') ? '&' : '?'}directConnection=false`;
+	}
+	client = await connection.connect(mongoOpts);
 	mongoModule.client = client.db();
 };
 
