@@ -21,6 +21,10 @@ const helpers = require('./helpers');
 
 const inbox = module.exports;
 
+function isVoteDeniedError(err) {
+	return err.message && /\[\[error:(reputation-system-disabled|downvoting-disabled|no-privileges|already-voting-for-this-post|self-vote|not-enough-reputation-to-(up|down)vote|too-many-(up|down)votes-today(-user)?|not-logged-in)/.test(err.message);
+}
+
 function reject(type, object, target, senderType = 'uid', id = 0) {
 	activitypub.send(senderType, id, target, {
 		id: `${helpers.resolveActor(senderType, id)}#/activity/reject/${encodeURIComponent(object.id)}`,
@@ -351,9 +355,11 @@ inbox.like = async (req) => {
 	try {
 		result = await posts.upvote(id, actor);
 	} catch (e) {
-		// Reputation/privilege errors should not bubble up as 500
-		activitypub.helpers.log(`[activitypub/inbox.like] Upvote denied for ${actor} on ${id}: ${e.message}`);
-		return reject('Like', object, actor);
+		if (isVoteDeniedError(e)) {
+			activitypub.helpers.log(`[activitypub/inbox.like] Upvote denied for ${actor} on ${id}: ${e.message}`);
+			return reject('Like', object, actor);
+		}
+		throw e;
 	}
 	await activitypub.feps.announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
@@ -378,9 +384,11 @@ inbox.dislike = async (req) => {
 	try {
 		await posts.downvote(id, actor);
 	} catch (e) {
-		// Reputation/privilege errors should not bubble up as 500
-		activitypub.helpers.log(`[activitypub/inbox.dislike] Downvote denied for ${actor} on ${id}: ${e.message}`);
-		return reject('Dislike', object, actor);
+		if (isVoteDeniedError(e)) {
+			activitypub.helpers.log(`[activitypub/inbox.dislike] Downvote denied for ${actor} on ${id}: ${e.message}`);
+			return reject('Dislike', object, actor);
+		}
+		throw e;
 	}
 	await activitypub.feps.announce(object.id, req.body);
 };
@@ -426,6 +434,9 @@ inbox.announce = async (req) => {
 						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 					}
 				} catch (e) {
+					if (!isVoteDeniedError(e)) {
+						throw e;
+					}
 					// vote denied due to local limitations (frequency, privilege, etc.); noop.
 				}
 			}
