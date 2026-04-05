@@ -152,7 +152,7 @@
         "toobusy-js": "0.5.1",
         "tough-cookie": "6.0.1",
         "undici": "^7.10.0",
-        "validator": "13.15.26",
+        "validator": "13.15.35",
         "webpack": "5.105.4",
         "webpack-merge": "6.0.1",
         "winston": "3.19.0",
