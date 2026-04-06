@@ -102,32 +102,6 @@ function initializeCharts() {
 				},
 			],
 		},
-		// 'topics:daily': {
-		// 	labels: dailyLabels.slice(-7),
-		// 	datasets: [
-		// 		{
-		// 			...commonDataSetOpts,
-		// 			backgroundColor: 'rgba(171,70,66,0.2)',
-		// 			borderColor: 'rgba(171,70,66,1)',
-		// 			pointBackgroundColor: 'rgba(171,70,66,1)',
-		// 			pointHoverBorderColor: 'rgba(171,70,66,1)',
-		// 			data: ajaxify.data.analytics['topics:daily'],
-		// 		},
-		// 	],
-		// },
-		// 'posts:daily': {
-		// 	labels: dailyLabels.slice(-7),
-		// 	datasets: [
-		// 		{
-		// 			...commonDataSetOpts,
-		// 			backgroundColor: 'rgba(161,181,108,0.2)',
-		// 			borderColor: 'rgba(161,181,108,1)',
-		// 			pointBackgroundColor: 'rgba(161,181,108,1)',
-		// 			pointHoverBorderColor: 'rgba(161,181,108,1)',
-		// 			data: ajaxify.data.analytics['posts:daily'],
-		// 		},
-		// 	],
-		// },
 	};
 
 	receivedCanvas.width = $(receivedCanvas).parent().width();
@@ -157,17 +131,5 @@ function initializeCharts() {
 			options: chartOpts,
 		})],
 	]);
-
-	// new Chart(topicsCanvas.getContext('2d'), {
-	// 	type: 'line',
-	// 	data: data['topics:daily'],
-	// 	options: chartOpts,
-	// });
-
-	// new Chart(postsCanvas.getContext('2d'), {
-	// 	type: 'line',
-	// 	data: data['posts:daily'],
-	// 	options: chartOpts,
-	// });
 }
 
