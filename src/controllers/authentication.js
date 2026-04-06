@@ -221,6 +221,7 @@ authenticationController.login = async (req, res, next) => {
 	}
 
 	const loginWith = meta.config.allowLoginWith || 'username-email';
+	req.body = req.body || {};
 	req.body.username = String(req.body.username).trim();
 	const errorHandler = res.locals.noScriptErrors || helpers.noScriptErrors;
 	try {
