@@ -284,6 +284,21 @@ describe('authentication', () => {
 		assert.equal(response.status, 500);
 	});
 
+	it('should fail to login if body is missing', async () => {
+		const jar = request.jar();
+		const csrf_token = await helpers.getCsrfToken(jar);
+
+		const { response, body } = await request.post(`${nconf.get('url')}/login`, {
+			body: null,
+			jar: jar,
+			headers: {
+				'x-csrf-token': csrf_token,
+			},
+		});
+		assert.equal(response.status, 403);
+		assert.strictEqual(body, '[[error:invalid-username-or-password]]');
+	});
+
 	it('should fail to login if user does not exist', async () => {
 		const { response, body } = await helpers.loginUser('doesnotexist', 'nopassword');
 		assert.equal(response.statusCode, 403);
