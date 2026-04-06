@@ -21,7 +21,11 @@ const helpers = require('./helpers');
 
 const inbox = module.exports;
 
-function reject(type, object, target, senderType = 'uid', id = 0) {
+function publiclyAddressed(recipients) {
+	return activitypub._constants.acceptablePublicAddresses.some(address => recipients.includes(address));
+}
+
+inbox._reject = function (type, object, target, senderType = 'uid', id = 0) {
 	activitypub.send(senderType, id, target, {
 		id: `${helpers.resolveActor(senderType, id)}#/activity/reject/${encodeURIComponent(object.id)}`,
 		type: 'Reject',
@@ -31,11 +35,7 @@ function reject(type, object, target, senderType = 'uid', id = 0) {
 			object,
 		},
 	}).catch(err => winston.error(err.stack));
-}
-
-function publiclyAddressed(recipients) {
-	return activitypub._constants.acceptablePublicAddresses.some(address => recipients.includes(address));
-}
+};
 
 inbox.create = async (req) => {
 	const { object, actor } = req.body;
@@ -169,54 +169,50 @@ inbox.update = async (req) => {
 				messaging.messageExists(object.id),
 			]);
 
-			try {
-				switch (true) {
-					case isNote: {
-						const cid = await posts.getCidByPid(object.id);
-						const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
-						if (!allowed) {
-							throw new Error('[[error:no-privileges]]');
-						}
-
-						const postData = await activitypub.mocks.post(object);
-						postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
-						await posts.edit(postData);
-						const isDeleted = await posts.getPostField(object.id, 'deleted');
-						if (isDeleted) {
-							await api.posts.restore({ uid: actor }, { pid: object.id });
-						}
-						break;
+			switch (true) {
+				case isNote: {
+					const cid = await posts.getCidByPid(object.id);
+					const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
+					if (!allowed) {
+						throw new Error('[[error:no-privileges]]');
 					}
 
-					case isMessage: {
-						const { roomId, deleted } = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
-						await messaging.editMessage(actor, object.id, roomId, object.content);
-						if (deleted) {
-							await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
-						}
-						break;
+					const postData = await activitypub.mocks.post(object);
+					postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
+					await posts.edit(postData);
+					const isDeleted = await posts.getPostField(object.id, 'deleted');
+					if (isDeleted) {
+						await api.posts.restore({ uid: actor }, { pid: object.id });
 					}
-
-					default: {
-						if (!isPublic) {
-							return await activitypub.notes.assertPrivate(object);
-						}
-
-						const { cids } = await activitypub.actors.getFollowers(actor);
-						let cid = null;
-						if (cids.size > 0) {
-							cid = Array.from(cids)[0];
-						}
-
-						const asserted = await activitypub.notes.assert(0, object.id, { cid });
-						if (asserted) {
-							activitypub.feps.announce(object.id, req.body);
-						}
-						break;
-					}
+					break;
 				}
-			} catch (e) {
-				reject('Update', object, actor);
+
+				case isMessage: {
+					const { roomId, deleted } = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
+					await messaging.editMessage(actor, object.id, roomId, object.content);
+					if (deleted) {
+						await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
+					}
+					break;
+				}
+
+				default: {
+					if (!isPublic) {
+						return await activitypub.notes.assertPrivate(object);
+					}
+
+					const { cids } = await activitypub.actors.getFollowers(actor);
+					let cid = null;
+					if (cids.size > 0) {
+						cid = Array.from(cids)[0];
+					}
+
+					const asserted = await activitypub.notes.assert(0, object.id, { cid });
+					if (asserted) {
+						activitypub.feps.announce(object.id, req.body);
+					}
+					break;
+				}
 			}
 			break;
 		}
@@ -283,7 +279,7 @@ inbox.delete = async (req) => {
 
 	const objectHostname = new URL(id).hostname;
 	if (actorHostname !== objectHostname) {
-		return reject('Delete', object, actor);
+		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
 	const [isNote, isContext/* , isActor */] = await Promise.all([
@@ -297,7 +293,7 @@ inbox.delete = async (req) => {
 			const cid = await posts.getCidByPid(id);
 			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
 			if (!allowed) {
-				return reject('Delete', object, actor);
+				throw new Error('[[error:no-privileges]]');
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
@@ -336,13 +332,13 @@ inbox.like = async (req) => {
 	const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 
 	if (type !== 'post' || !(await posts.exists(id))) {
-		return reject('Like', object, actor);
+		throw new Error('[[error:invalid-pid]]');
 	}
 
 	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 	if (!allowed) {
 		activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
-		return reject('Like', object, actor);
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	activitypub.helpers.log(`[activitypub/inbox/like] id ${id} via ${actor}`);
@@ -357,13 +353,13 @@ inbox.dislike = async (req) => {
 	const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 
 	if (type !== 'post' || !(await posts.exists(id))) {
-		return reject('Dislike', object, actor);
+		throw new Error('[[error:invalid-pid]]');
 	}
 
 	const allowed = await privileges.posts.can('posts:downvote', id, activitypub._constants.uid);
 	if (!allowed) {
 		activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be downvoted.`);
-		return reject('Dislike', object, actor);
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	activitypub.helpers.log(`[activitypub/inbox/dislike] id ${id} via ${actor}`);
@@ -436,8 +432,7 @@ inbox.announce = async (req) => {
 			if (String(object.id).startsWith(nconf.get('url'))) { // Local object
 				const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 				if (type !== 'post' || !(await posts.exists(id))) {
-					reject('Announce', object, actor);
-					return;
+					throw new Error('[[error:invalid-pid]]');
 				}
 
 				pid = id;
@@ -450,8 +445,7 @@ inbox.announce = async (req) => {
 					const { followers } = await activitypub.actors.getLocalFollowCounts(actor);
 					if (!followers) {
 						activitypub.helpers.log(`[activitypub/inbox.announce] Rejecting ${object.id} via ${actor} due to no followers`);
-						reject('Announce', object, actor);
-						return;
+						throw new Error('[[error:activitypub.orphan]]');
 					}
 				}
 
@@ -546,7 +540,7 @@ inbox.follow = async (req) => {
 			throw new Error('[[error:invalid-cid]]');
 		}
 		if (!allowed) {
-			return reject('Follow', object, actor);
+			throw new Error('[[error:no-privileges]]');
 		}
 
 		const watchState = await categories.getWatchState([id], actor);
@@ -595,7 +589,7 @@ inbox.accept = async (req) => {
 		if (localType === 'user') {
 			if (!await db.isSortedSetMember(`followRequests:uid.${id}`, actor)) {
 				if (await db.isSortedSetMember(`followingRemote:${id}`, actor)) return; // already following
-				return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
+				throw new Error('[[error:invalid-data]]'); // not following, not requested, so reject to hopefully stop retries
 			}
 			const timestamp = await db.sortedSetScore(`followRequests:uid.${id}`, actor);
 			await Promise.all([
@@ -608,7 +602,7 @@ inbox.accept = async (req) => {
 		} else if (localType === 'category') {
 			if (!await db.isSortedSetMember(`followRequests:cid.${id}`, actor)) {
 				if (await db.isSortedSetMember(`cid:${id}:following`, actor)) return; // already following
-				return reject('Accept', req.body, actor); // not following, not requested, so reject to hopefully stop retries
+				throw new Error('[[error:invalid-data]]'); // not following, not requested, so reject to hopefully stop retries
 			}
 			const timestamp = await db.sortedSetScore(`followRequests:cid.${id}`, actor);
 			await Promise.all([
@@ -673,14 +667,14 @@ inbox.undo = async (req) => {
 		case 'Like': {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
-				reject('Like', object, actor);
+				throw new Error('[[error:invalid-pid]]');
 				break;
 			}
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 			if (!allowed) {
 				activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
-				reject('Like', object, actor);
+				throw new Error('[[error:no-privileges]]');
 				break;
 			}
 
@@ -711,7 +705,7 @@ inbox.undo = async (req) => {
 				try {
 					await flags.rescindReport(type, id, actor);
 				} catch (e) {
-					reject('Undo', { type: 'Flag', object: [subject] }, actor);
+					inbox._reject('Undo', { type: 'Flag', object: [subject] }, actor);
 				}
 			}));
 			break;
@@ -724,7 +718,7 @@ inbox.flag = async (req) => {
 
 	// Check if the actor is valid
 	if (!await activitypub.actors.assert(actor)) {
-		return reject('Flag', objects, actor);
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	await Promise.all(objects.map(async (subject, index) => {
@@ -732,7 +726,7 @@ inbox.flag = async (req) => {
 		try {
 			await flags.create(activitypub.helpers.mapToLocalType(type), id, actor, content);
 		} catch (e) {
-			reject('Flag', objects[index], actor);
+			inbox._reject('Flag', objects[index], actor);
 		}
 	}));
 };
