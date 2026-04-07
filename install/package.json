@@ -90,7 +90,7 @@
         "jsonwebtoken": "9.0.3",
         "lodash": "4.18.1",
         "logrotate-stream": "0.2.9",
-        "lru-cache": "11.2.7",
+        "lru-cache": "11.3.2",
         "mime": "3.0.0",
         "mkdirp": "3.0.1",
         "mongodb": "7.1.1",
