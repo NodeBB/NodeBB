@@ -65,12 +65,12 @@
 	"content.break-string-help": "\nDieses Trennzeichen kann von Power-Usern beim Erstellen neuer Themen manuell eingefügt werden. Es sagt NodeBB, dass der Inhalt bis zu dieser Stelle als Teil der <code>Zusammenfassung</code>verwendet werden soll. Wenn diese Zeichenfolge nicht benutzt wird, greift die Standardregel für die Zeichenanzahl. (Standard: <code>[...]</code>)",
 	"content.world-default-cid": "Standard-Kategorie-ID für den &quot;Welt&quot; Seiten-Editor",
 
-	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
-	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
-	"analytics.by-hostname": "Filter by Hostname",
-	"analytics.received": "Received Activities",
-	"analytics.sent": "Sent Activites",
-	"analytics.term": "Time scale",
-	"analytics.hourly": "Hourly",
-	"analytics.daily": "Daily"
+	"analytics.intro": "Diese Seite bietet einen Überblick über den Status der Verbundstruktur deines Forums mit anderen Instanzen/Servern",
+	"analytics.details": "NodeBB erfasst den Empfang und Versand von ActivityPub-Nachrichten, und du kannst dir diese nach Hostnamen sortiert anzeigen lassen – entweder stündlich oder täglich. Beachte, dass die Zählwerte nur bei <em>erfolgreichem</em> Empfang und Versand erhöht werden.",
+	"analytics.by-hostname": "Nach Hostnamen filtern",
+	"analytics.received": "Erhaltene Aktivitäten",
+	"analytics.sent": "Gesendete Aktivitäten",
+	"analytics.term": "Zeitskala",
+	"analytics.hourly": "Stündlich",
+	"analytics.daily": "Täglich"
 }

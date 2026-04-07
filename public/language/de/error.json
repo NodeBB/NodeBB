@@ -267,5 +267,5 @@
     "activitypub.pubKey-not-found": "Der öffentliche Schlüssel kann nicht aufgelöst werden, daher ist eine Überprüfung des Payloads nicht möglich.",
     "activitypub.origin-mismatch": "Der Ursprung des empfangenen Objekts stimmt nicht mit dem Ursprung des Absenders überein",
     "activitypub.not-implemented": "Die Anfrage wurde abgelehnt, weil sie oder ein Teil davon vom empfangenden Server nicht implementiert ist",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "Das empfangene Objekt ist keinem bekannten lokalen Benutzer zugeordnet."
 }

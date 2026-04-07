@@ -267,5 +267,5 @@
     "activitypub.pubKey-not-found": "Публичният ключ не може да бъде разпознат, така че потвърждението на данните не може да бъде извършено.",
     "activitypub.origin-mismatch": "Произходът на получения обект не съвпада с произхода на подателя",
     "activitypub.not-implemented": "Заявката беше отказана, тъй като тя или част от нея не се поддържа от сървъра, към който е насочена",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "Полученият обект не е свързан с нито един познат локален потребител."
 }
