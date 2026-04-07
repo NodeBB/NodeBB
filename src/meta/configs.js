@@ -6,6 +6,7 @@ const path = require('path');
 const winston = require('winston');
 
 const db = require('../database');
+const file = require('../file');
 const pubsub = require('../pubsub');
 const Meta = require('./index');
 const translator = require('../translator');
@@ -212,20 +213,17 @@ async function getLogoSize(data) {
 	if (!data['brand:logo']) {
 		return;
 	}
+	const x50Path = path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png');
 	let size;
-	try {
-		size = await image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'));
-	} catch (err) {
-		if (err.code === 'ENOENT') {
-			// For whatever reason the x50 logo wasn't generated, gracefully error out
-			winston.warn('[logo] The email-safe logo doesn\'t seem to have been created, please re-upload your site logo.');
-			size = {
-				height: 0,
-				width: 0,
-			};
-		} else {
-			throw err;
-		}
+	if (await file.exists(x50Path)) {
+		size = await image.size(x50Path);
+	} else {
+		// For whatever reason the x50 logo wasn't generated, gracefully error out
+		winston.warn('[logo] The email-safe logo doesn\'t seem to have been created, please re-upload your site logo.');
+		size = {
+			height: 0,
+			width: 0,
+		};
 	}
 	data['brand:emailLogo'] = nconf.get('url') + path.join(nconf.get('upload_url'), 'system', 'site-logo-x50.png');
 	data['brand:emailLogo:height'] = size.height;
