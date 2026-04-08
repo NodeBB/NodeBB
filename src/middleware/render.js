@@ -139,9 +139,9 @@ module.exports = function (middleware) {
 	}
 
 	async function loadHeaderFooterData(req, res, options) {
-		if (res.locals.renderHeader) {
+		if (res.locals.renderHeaderType === 'client') {
 			return await loadClientHeaderFooterData(req, res, options);
-		} else if (res.locals.renderAdminHeader) {
+		} else if (res.locals.renderHeaderType === 'admin') {
 			return await loadAdminHeaderFooterData(req, res, options);
 		}
 		return null;
@@ -382,13 +382,13 @@ module.exports = function (middleware) {
 
 	async function renderHeaderFooter(method, req, res, options, headerFooterData) {
 		let str = '';
-		if (res.locals.renderHeader) {
+		if (res.locals.renderHeaderType === 'client') {
 			if (method === 'renderHeader') {
 				str = await renderHeader(req, res, options, headerFooterData);
 			} else if (method === 'renderFooter') {
 				str = await renderFooter(req, res, options, headerFooterData);
 			}
-		} else if (res.locals.renderAdminHeader) {
+		} else if (res.locals.renderHeaderType === 'admin') {
 			if (method === 'renderHeader') {
 				str = await renderAdminHeader(req, res, options, headerFooterData);
 			} else if (method === 'renderFooter') {
@@ -400,7 +400,7 @@ module.exports = function (middleware) {
 
 	function getLang(req, res) {
 		let language = (res.locals.config && res.locals.config.userLang) || 'en-GB';
-		if (res.locals.renderAdminHeader) {
+		if (res.locals.renderHeaderType === 'admin') {
 			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
 		}
 		return req.query.lang ? validator.escape(String(req.query.lang)) : language;
