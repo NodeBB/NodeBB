@@ -87,7 +87,7 @@ federationController.analytics = async function (req, res) {
 };
 
 federationController.errors = async function (req, res) {
-	const ids = await db.getSortedSetRevRangeByScore('ap.errors', 0, -1, '-inf', Date.now());
+	const ids = await db.getSortedSetRevRangeByScore('ap.errors', 0, -1, Date.now(), '-inf');
 	const payloads = await db.mget(ids.map(id => `ap.errors:${id}`));
 	const errors = ids.map((id, idx) => {
 		return { id, payload: payloads[idx] };
