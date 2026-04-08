@@ -17,6 +17,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		generateCategoryBackground,
 		generateChildrenCategories,
 		generateTopicClass,
+		generateGroupDisplayName,
 		membershipBtn,
 		spawnPrivilegeStates,
 		localeToHTML,
@@ -165,6 +166,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function generateTopicClass(topic) {
 		const fields = ['locked', 'pinned', 'deleted', 'unread', 'scheduled'];
 		return fields.filter(field => !!topic[field]).join(' ');
+	}
+
+	function generateGroupDisplayName(group) {
+		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
 	}
 
 	// Groups helpers

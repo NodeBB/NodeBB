@@ -38,11 +38,7 @@ Analytics.init = async function () {
 		runOnAllNodes: true,
 		onTick: async () => {
 			if (Analytics.pause) return;
-			publishLocalAnalytics();
-			if (runJobs) {
-				await sleep(2000);
-				await Analytics.writeData();
-			}
+			await Analytics.writeLocalData();
 		},
 	});
 
@@ -60,6 +56,14 @@ Analytics.init = async function () {
 		pubsub.on('analytics:publish', (data) => {
 			incrementProperties(total, data.local);
 		});
+	}
+};
+
+Analytics.writeLocalData = async function () {
+	publishLocalAnalytics();
+	if (runJobs) {
+		await sleep(2000);
+		await Analytics.writeData();
 	}
 };
 
@@ -185,6 +189,12 @@ Analytics.writeData = async function () {
 		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
 		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
 		total.apPageViews = 0;
+		if (!metrics.includes('pageviews:ap')) {
+			metrics.push('pageviews:ap');
+		}
+		if (!metrics.includes('pageviews:ap:month')) {
+			metrics.push('pageviews:ap:month');
+		}
 	}
 
 	if (total.uniquevisitors > 0) {

@@ -20,6 +20,7 @@ const activitypub = require('../activitypub');
 const topicsController = module.exports;
 
 const url = nconf.get('url');
+const base_url = nconf.get('base_url');
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 const validSorts = ['oldest_to_newest', 'newest_to_oldest', 'most_votes'];
@@ -356,8 +357,13 @@ function addOGImageTag(res, image) {
 	}
 
 	if (!imageUrl.startsWith('http')) {
-		// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
-		imageUrl = url + path.posix.join(upload_url, imageUrl);
+		if (imageUrl.startsWith(`${relative_path}${upload_url}`)) {
+			// (https://domain.com) + imageUrl (which starts with /relative_path/upload_url)
+			imageUrl = base_url + imageUrl;
+		} else {
+			// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
+			imageUrl = url + path.posix.join(upload_url, imageUrl);
+		}
 	}
 
 	res.locals.metaTags.push({

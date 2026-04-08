@@ -83,7 +83,9 @@ module.exports = function (module) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
-			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
+			bulk.find({ _key: item[0], value: String(item[2]) })
+				.upsert()
+				.updateOne({ $set: { score: parseFloat(item[1]) } });
 		});
 		await bulk.execute();
 	};

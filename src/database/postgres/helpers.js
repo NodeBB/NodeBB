@@ -27,23 +27,15 @@ DELETE FROM "legacy_object"
    AND "expireAt" <= CURRENT_TIMESTAMP`,
 	});
 
-	await db.query({
-		name: 'ensureLegacyObjectType1',
+	const res = await tryUpsert(db, {
+		name: 'ensureLegacyObjectType_upsert',
 		text: `
-INSERT INTO "legacy_object" ("_key", "type")
-VALUES ($1::TEXT, $2::TEXT::LEGACY_OBJECT_TYPE)
-    ON CONFLICT
-    DO NOTHING`,
+			INSERT INTO "legacy_object" ("_key", "type")
+			VALUES ($1::TEXT, $2::TEXT::LEGACY_OBJECT_TYPE)
+			ON CONFLICT ("_key")
+			DO UPDATE SET "type" = "legacy_object"."type"
+			RETURNING "type"`,
 		values: [key, type],
-	});
-
-	const res = await db.query({
-		name: 'ensureLegacyObjectType2',
-		text: `
-SELECT "type"
-  FROM "legacy_object_live"
- WHERE "_key" = $1::TEXT`,
-		values: [key],
 	});
 
 	if (res.rows[0].type !== type) {
@@ -52,6 +44,10 @@ SELECT "type"
 };
 
 helpers.ensureLegacyObjectsType = async function (db, keys, type) {
+	keys = [...new Set(keys)];
+	if (!keys.length) {
+		return;
+	}
 	await db.query({
 		name: 'ensureLegacyObjectTypeBefore',
 		text: `
@@ -60,24 +56,16 @@ DELETE FROM "legacy_object"
    AND "expireAt" <= CURRENT_TIMESTAMP`,
 	});
 
-	await db.query({
-		name: 'ensureLegacyObjectsType1',
+	const res = await tryUpsert(db, {
+		name: 'ensureLegacyObjectsType_upsert',
 		text: `
 INSERT INTO "legacy_object" ("_key", "type")
 SELECT k, $2::TEXT::LEGACY_OBJECT_TYPE
-  FROM UNNEST($1::TEXT[]) k
-    ON CONFLICT
-    DO NOTHING`,
+FROM UNNEST($1::TEXT[]) k
+	ON CONFLICT ("_key")
+	DO UPDATE SET "type" = "legacy_object"."type"
+	RETURNING "_key", "type"`,
 		values: [keys, type],
-	});
-
-	const res = await db.query({
-		name: 'ensureLegacyObjectsType2',
-		text: `
-SELECT "_key", "type"
-  FROM "legacy_object_live"
- WHERE "_key" = ANY($1::TEXT[])`,
-		values: [keys],
 	});
 
 	const invalid = res.rows.filter(r => r.type !== type);
@@ -86,12 +74,27 @@ SELECT "_key", "type"
 		const parts = invalid.map(r => `${JSON.stringify(r._key)} is ${r.type}`);
 		throw new Error(`database: cannot insert multiple objects as ${type} because they already exist: ${parts.join(', ')}`);
 	}
-
-	const missing = keys.filter(k => !res.rows.some(r => r._key === k));
-
-	if (missing.length) {
-		throw new Error(`database: failed to insert keys for objects: ${JSON.stringify(missing)}`);
-	}
 };
+
+async function tryUpsert(db, queryConfig) {
+	let res;
+	const savepoint = `upsert_${Math.random().toString(36).substring(7)}`;
+	try {
+		await db.query(`SAVEPOINT ${savepoint}`);
+		res = await db.query(queryConfig);
+		await db.query(`RELEASE SAVEPOINT ${savepoint}`);
+	} catch (err) {
+		if (err.code === '23505') { // retry if failed due to error: unique constraint
+			// Roll back to the savepoint to prevent
+			// error: current transaction is aborted, commands ignored until end of transaction block
+			await db.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+			res = await db.query(queryConfig);
+			await db.query(`RELEASE SAVEPOINT ${savepoint}`);
+		} else {
+			throw err;
+		}
+	}
+	return res;
+}
 
 helpers.noop = function () {};

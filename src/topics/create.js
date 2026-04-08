@@ -259,14 +259,14 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost({ pid, tid, uid: postOwner }, { uid, handle }) {
+	async function onNewPost({ pid, tid, content, uid: postOwner }, { uid, handle }) {
 		const [[postData], [userInfo]] = await Promise.all([
 			posts.getPostSummaryByPids([pid], uid, { extraFields: ['attachments'] }),
 			posts.getUserInfoForPosts([postOwner], uid),
 		]);
 		await Promise.all([
 			Topics.addParentPosts([postData], uid),
-			Topics.syncBacklinks(postData),
+			Topics.syncBacklinks({ ...postData, content }),
 			Topics.markAsRead([tid], uid),
 		]);
 		if (utils.isNumber(postOwner) && postData.category.cid === -1) {

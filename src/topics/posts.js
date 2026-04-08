@@ -14,7 +14,7 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const privileges = require('../privileges');
 
-const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
+const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/([a-fA-F0-9-]+)(?=\\/|$|\\s)`, 'g');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
@@ -447,29 +447,27 @@ module.exports = function (Topics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-
-		let { content } = postData;
+		let { pid, uid, content } = postData;
 		// ignore lines that start with `>`
 		content = (content || '').split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
 		const matches = [...content.matchAll(backlinkRegex)];
-		if (!matches) {
-			return 0;
-		}
 
-		const { pid, uid, tid } = postData;
-		let add = _.uniq(matches.map(match => match[1]).map(tid => parseInt(tid, 10)));
+		let add = _.uniq(matches.map(match => match[1]));
 
-		const now = Date.now();
-		const topicsExist = await Topics.exists(add);
-		const current = (await db.getSortedSetMembers(`pid:${pid}:backlinks`)).map(tid => parseInt(tid, 10));
+		const [topicsExist, current] = await Promise.all([
+			Topics.exists(add),
+			db.getSortedSetMembers(`pid:${pid}:backlinks`),
+		]);
 		const remove = current.filter(tid => !add.includes(tid));
-		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== _tid);
+		const postTid = String(postData.tid);
+		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && postTid !== _tid);
 
 		// Remove old backlinks
 		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
 
 		// Add new backlinks
+		const now = Date.now();
 		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(() => now), add);
 		await Promise.all(add.map(async (tid) => {
 			await Topics.events.log(tid, {
@@ -479,6 +477,6 @@ module.exports = function (Topics) {
 			});
 		}));
 
-		return add.length + (current - remove);
+		return add.length + (current.length - remove.length);
 	};
 };
