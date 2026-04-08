@@ -34,8 +34,8 @@ const labels = new Map([
 	})],
 ]);
 
-export function init() {
-	charts = initializeCharts();
+export async function init() {
+	charts = await initializeCharts();
 
 	const hostFilterEl = document.getElementById('hostFilter');
 	const termEl = document.getElementById('term');
