@@ -77,5 +77,6 @@
 	"analytics.hourly": "Hourly",
 	"analytics.daily": "Daily",
 
-	"errors.intro": "The following errors were recorded by this instance within the last 24 hours."
+	"errors.intro": "The following errors were recorded by this instance within the last 24 hours.",
+	"errors.payload-gone": "The payload for this error no longer exists."
 }
