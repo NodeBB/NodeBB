@@ -56,6 +56,8 @@ federationController.safety = async function (req, res) {
 
 federationController.analytics = async function (req, res) {
 	const instances = await activitypub.instances.list();
+	instances.sort();
+
 	let { host, term } = req.query;
 	if (!instances.includes(host)) {
 		host = undefined;
