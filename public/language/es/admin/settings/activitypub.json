@@ -75,5 +75,7 @@
 	"analytics.errors": "Errors",
 	"analytics.term": "Time scale",
 	"analytics.hourly": "Hourly",
-	"analytics.daily": "Daily"
+	"analytics.daily": "Daily",
+
+	"errors.intro": "The following errors were recorded by this instance within the last 24 hours."
 }

@@ -56,6 +56,7 @@
 	"federation/pruning": "存储",
 	"federation/safety": "信任与安全",
 	"federation/analytics": "分析",
+	"federation/errors": "Errors",
 
 	"section-appearance": "界面",
 	"appearance/themes": "主题",

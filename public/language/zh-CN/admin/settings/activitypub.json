@@ -75,5 +75,7 @@
 	"analytics.errors": "Errors",
 	"analytics.term": "时间尺度",
 	"analytics.hourly": "每时",
-	"analytics.daily": "每日"
+	"analytics.daily": "每日",
+
+	"errors.intro": "The following errors were recorded by this instance within the last 24 hours."
 }

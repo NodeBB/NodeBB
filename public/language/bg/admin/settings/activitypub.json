@@ -75,5 +75,7 @@
 	"analytics.errors": "Errors",
 	"analytics.term": "Времева скала",
 	"analytics.hourly": "По часове",
-	"analytics.daily": "По дни"
+	"analytics.daily": "По дни",
+
+	"errors.intro": "The following errors were recorded by this instance within the last 24 hours."
 }
