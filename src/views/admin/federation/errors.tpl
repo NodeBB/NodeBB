@@ -8,7 +8,11 @@
 				{{{ each errors }}}
 				<details>
 					<summary>{./id}</summary>
+					{{{ if ./payload }}}
 					<pre class="m-2 border p-2"><code>{./payload}</code></pre>
+					{{{ else }}}
+					<em>[[admin/settings/activitypub:errors.payload-gone]]</em>
+					{{{ end }}}
 				</details>
 				{{{ end }}}
 			</div>
