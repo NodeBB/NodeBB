@@ -60,8 +60,6 @@ async function updateCharts() {
 function initializeCharts() {
 	const receivedCanvas = document.getElementById('received');
 	const sentCanvas = document.getElementById('sent');
-	// const topicsCanvas = document.getElementById('topics:daily');
-	// const postsCanvas = document.getElementById('posts:daily');
 
 	if (utils.isMobile()) {
 		Chart.defaults.plugins.tooltip.enabled = false;
@@ -106,8 +104,6 @@ function initializeCharts() {
 
 	receivedCanvas.width = $(receivedCanvas).parent().width();
 	sentCanvas.width = $(sentCanvas).parent().width();
-	// topicsCanvas.width = $(topicsCanvas).parent().width();
-	// postsCanvas.width = $(postsCanvas).parent().width();
 
 	const chartOpts = {
 		responsive: true,
