@@ -494,13 +494,16 @@ ActivityPub.record.send = async ({ type, target }) => {
 	]);
 };
 
-ActivityPub.record.receiptError = async (body) => {
+ActivityPub.record.receiptError = async (body, error) => {
 	const { id, actor } = body;
 	const now = Date.now();
 	const { hostname } = new URL(actor);
 	await Promise.all([
 		db.sortedSetAdd('ap.errors', now, id),
-		db.set(`ap.errors:${id}`, JSON.stringify(body)),
+		db.setObject(`ap.errors:${id}`, {
+			body: JSON.stringify(body),
+			stack: error.stack,
+		}),
 		analytics.increment(['ap.inErr', `ap.inErr:byHost:${hostname}`]),
 	]);
 	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours

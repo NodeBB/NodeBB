@@ -272,7 +272,7 @@ Controller.postInbox = async (req, res) => {
 		await activitypub.record.receipt(req.body);
 		await helpers.formatApiResponse(202, res);
 	} catch (e) {
-		activitypub.record.receiptError(req.body);
+		activitypub.record.receiptError(req.body, e);
 		if (req.body?.type && req.body?.object && req.body?.actor) {
 			activitypub.inbox._reject(req.body.type, req.body.object, req.body.actor);
 		} else {
