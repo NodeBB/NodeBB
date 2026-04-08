@@ -7,9 +7,11 @@ import {
 	PointElement,
 	Tooltip,
 	Filler,
+	Legend,
 } from 'chart.js';
 
 import { get } from 'api';
+import { translate } from 'translator';
 
 Chart.register(
 	LineController,
@@ -18,7 +20,8 @@ Chart.register(
 	LineElement,
 	PointElement,
 	Tooltip,
-	Filler
+	Filler,
+	Legend
 );
 
 let charts;
@@ -57,7 +60,7 @@ async function updateCharts() {
 	});
 }
 
-function initializeCharts() {
+async function initializeCharts() {
 	const receivedCanvas = document.getElementById('received');
 	const sentCanvas = document.getElementById('sent');
 
@@ -79,11 +82,21 @@ function initializeCharts() {
 			datasets: [
 				{
 					...commonDataSetOpts,
-					backgroundColor: 'rgba(186,139,175,0.2)',
-					borderColor: 'rgba(186,139,175,1)',
-					pointBackgroundColor: 'rgba(186,139,175,1)',
-					pointHoverBorderColor: 'rgba(186,139,175,1)',
+					label: await translate('[[admin/settings/activitypub:analytics.received]]'),
+					backgroundColor: 'rgba(161,181,108,0.2)',
+					borderColor: 'rgba(161,181,108,1)',
+					pointBackgroundColor: 'rgba(161,181,108,1)',
+					pointHoverBorderColor: 'rgba(161,181,108,1)',
 					data: ajaxify.data.received,
+				},
+				{
+					...commonDataSetOpts,
+					label: await translate('[[admin/settings/activitypub:analytics.errors]]'),
+					backgroundColor: 'rgba(171,70,66,0.2)',
+					borderColor: 'rgba(171,70,66,1)',
+					pointBackgroundColor: 'rgba(171,70,66,1)',
+					pointHoverBorderColor: 'rgba(171,70,66,1)',
+					data: ajaxify.data.receivedErr,
 				},
 			],
 		},
@@ -92,6 +105,7 @@ function initializeCharts() {
 			datasets: [
 				{
 					...commonDataSetOpts,
+					label: await translate('[[admin/settings/activitypub:analytics.sent]]'),
 					backgroundColor: 'rgba(151,187,205,0.2)',
 					borderColor: 'rgba(151,187,205,1)',
 					pointBackgroundColor: 'rgba(151,187,205,1)',
@@ -111,6 +125,11 @@ function initializeCharts() {
 		scales: {
 			y: {
 				beginAtZero: true,
+			},
+		},
+		plugins: {
+			legend: {
+				position: 'bottom',
 			},
 		},
 	};

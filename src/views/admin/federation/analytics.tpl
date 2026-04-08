@@ -31,7 +31,7 @@
 
 			<div class="mb-4">
 				<div class="card">
-					<div class="card-header">[[admin/settings/activitypub:analytics.received]]</div>
+					<div class="card-header">[[admin/settings/activitypub:analytics.in]]</div>
 					<div class="card-body">
 						<div class="position-relative" style="aspect-ratio: 2;">
 							<canvas id="received" height="250"></canvas>
@@ -42,7 +42,7 @@
 
 			<div class="mb-4">
 				<div class="card">
-					<div class="card-header">[[admin/settings/activitypub:analytics.sent]]</div>
+					<div class="card-header">[[admin/settings/activitypub:analytics.out]]</div>
 					<div class="card-body">
 						<div class="position-relative" style="aspect-ratio: 2;">
 							<canvas id="sent" height="250"></canvas>

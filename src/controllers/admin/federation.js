@@ -68,15 +68,18 @@ federationController.analytics = async function (req, res) {
 		method = 'getDailyStatsForSet';
 		count = 30;
 	}
-	const set = host ? `activities:byHost:${host}` : 'activities';
+	const receivedSet = host ? `activities:byHost:${host}` : 'activities';
+	const receivedErrSet = host ? `ap.inErr:byHost:${host}` : 'ap.inErr';
 	const sentSet = host ? `ap.out:byHost:${host}` : 'ap.out';
-	const received = await analytics[method](set, Date.now(), count);
+	const received = await analytics[method](receivedSet, Date.now(), count);
+	const receivedErr = await analytics[method](receivedErrSet, Date.now(), count);
 	const sent = await analytics[method](sentSet, Date.now(), count);
 
 	res.render('admin/federation/analytics', {
 		title: '[[admin/menu:federation/analytics]]',
 		instances,
 		received,
+		receivedErr,
 		sent,
 	});
 };
