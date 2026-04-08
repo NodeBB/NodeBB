@@ -68,8 +68,11 @@
 	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
 	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
 	"analytics.by-hostname": "Filter by Hostname",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
 	"analytics.received": "Received Activities",
 	"analytics.sent": "Sent Activites",
+	"analytics.errors": "Errors",
 	"analytics.term": "Time scale",
 	"analytics.hourly": "Hourly",
 	"analytics.daily": "Daily"

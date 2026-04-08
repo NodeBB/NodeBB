@@ -68,8 +68,11 @@
 	"analytics.intro": "Diese Seite bietet einen Überblick über den Status der Verbundstruktur deines Forums mit anderen Instanzen/Servern",
 	"analytics.details": "NodeBB erfasst den Empfang und Versand von ActivityPub-Nachrichten, und du kannst dir diese nach Hostnamen sortiert anzeigen lassen – entweder stündlich oder täglich. Beachte, dass die Zählwerte nur bei <em>erfolgreichem</em> Empfang und Versand erhöht werden.",
 	"analytics.by-hostname": "Nach Hostnamen filtern",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
 	"analytics.received": "Erhaltene Aktivitäten",
 	"analytics.sent": "Gesendete Aktivitäten",
+	"analytics.errors": "Errors",
 	"analytics.term": "Zeitskala",
 	"analytics.hourly": "Stündlich",
 	"analytics.daily": "Täglich"

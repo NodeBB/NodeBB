@@ -68,8 +68,11 @@
 	"analytics.intro": "Questa pagina offre una panoramica dello stato della federazione del tuo forum con altre istanze/server",
 	"analytics.details": "NodeBB tiene traccia delle attività di ricezione e invio di ActivityPub, e puoi visualizzarle per hostname, con cadenza oraria o giornaliera. Tieni presente che le metriche sono incrementate solo in caso di ricezione e invio andati a <em>buon fine</em>.\n",
 	"analytics.by-hostname": "Filtra per nome host",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
 	"analytics.received": "Attività ricevute",
 	"analytics.sent": "Attività inviate",
+	"analytics.errors": "Errors",
 	"analytics.term": "Scala temporale",
 	"analytics.hourly": "Orario",
 	"analytics.daily": "Giornaliero"

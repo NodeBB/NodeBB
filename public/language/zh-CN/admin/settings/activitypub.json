@@ -68,8 +68,11 @@
 	"analytics.intro": "本页面概述了您的论坛与其他实例/服务器之间的联合状态",
 	"analytics.details": "NodeBB 会跟踪 ActivityPub 的接收和发送活动，您可以按主机名查看每小时或每日的统计数据。请注意，这些指标仅在接收和发送<em>成功</em>时才会增加。",
 	"analytics.by-hostname": "按主机名筛选",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
 	"analytics.received": "已接收的活动",
 	"analytics.sent": "已发送的活动",
+	"analytics.errors": "Errors",
 	"analytics.term": "时间尺度",
 	"analytics.hourly": "每时",
 	"analytics.daily": "每日"

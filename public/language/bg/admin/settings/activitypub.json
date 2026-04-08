@@ -68,8 +68,11 @@
 	"analytics.intro": "Тази страница показва състоянието на федериране на Вашия форум с други инстанции/сървъри",
 	"analytics.details": "NodeBB следи операциите по изпращане и получаване на данни чрез ActivityPub. Вие също може да ги прегледате за всеки сървър – почасово или по дни. Имайте предвид, че броячите се увеличават само при <em>успешни</em> пращания и получавания.",
 	"analytics.by-hostname": "Филтриране по име на сървър",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
 	"analytics.received": "Получени",
 	"analytics.sent": "Изпратени",
+	"analytics.errors": "Errors",
 	"analytics.term": "Времева скала",
 	"analytics.hourly": "По часове",
 	"analytics.daily": "По дни"
