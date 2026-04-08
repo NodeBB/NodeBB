@@ -56,10 +56,24 @@ Jobs.start = async () => {
 		cronTime: '15 0 * * *',
 		runOnInit: false,
 		onTick: async () => {
-			const lists = await activitypub.blocklists.list();
-			await Promise.all(lists.map(({ url }) => {
-				return activitypub.blocklists.refresh(url);
-			}));
+			await tryCronJob(async () => {
+				const lists = await activitypub.blocklists.list();
+				await Promise.all(lists.map(({ url }) => {
+					return activitypub.blocklists.refresh(url);
+				}));
+			});
+		},
+	});
+
+	await cron.addJob({
+		name: 'ap:analytics',
+		cronTime: '30 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				// Delete entries older than 24h
+				await db.sortedSetsRemoveRangeByScore(['ap:errors', 0, Date.now() - (1000 * 60 * 60 * 24)]);
+			});
 		},
 	});
 };
