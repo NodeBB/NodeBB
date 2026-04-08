@@ -110,6 +110,7 @@
 				<a class="btn btn-ghost btn-sm text-start" id="federation-pruning" href="{relative_path}/admin/federation/pruning">[[admin/menu:federation/pruning]]</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-safety" href="{relative_path}/admin/federation/safety">[[admin/menu:federation/safety]]</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-analytics" href="{relative_path}/admin/federation/analytics">[[admin/menu:federation/analytics]]</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-errors" href="{relative_path}/admin/federation/errors">[[admin/menu:federation/errors]]</a>
 			</div>
 		</div>
 	</div>

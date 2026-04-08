@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../../database');
 const activitypub = require('../../activitypub');
 const analytics = require('../../analytics');
 
@@ -81,5 +82,20 @@ federationController.analytics = async function (req, res) {
 		received,
 		receivedErr,
 		sent,
+		hideSave: 1,
+	});
+};
+
+federationController.errors = async function (req, res) {
+	const ids = await db.getSortedSetRangeByScore('ap:errors', 0, -1, '-inf', Date.now());
+	const payloads = await db.mget(ids.map(id => `ap:errors:${id}`));
+	const errors = ids.map((id, idx) => {
+		return { id, payload: payloads[idx] };
+	});
+
+	res.render('admin/federation/errors', {
+		title: '[[admin/menu:federation/errors]]',
+		hideSave: 1,
+		errors,
 	});
 };
