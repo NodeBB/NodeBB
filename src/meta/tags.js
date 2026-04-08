@@ -21,6 +21,7 @@ Tags.parse = async (req, data, meta, link) => {
 		name: 'viewport',
 		// https://stackoverflow.com/a/77815388 for resizes-content
 		content: 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content',
+		noEscape: true,
 	}, {
 		name: 'content-type',
 		content: 'text/html; charset=UTF-8',
