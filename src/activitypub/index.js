@@ -2,7 +2,7 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const { createHash, createVerify, getHashes, sign, verify } = require('crypto');
+const { createHash, getHashes, sign, verify } = require('crypto');
 const { cpus } = require('os');
 const { promisify } = require('util');
 const signAsync = promisify(sign);

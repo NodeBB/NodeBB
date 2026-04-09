@@ -668,14 +668,12 @@ inbox.undo = async (req) => {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
 				throw new Error('[[error:invalid-pid]]');
-				break;
 			}
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 			if (!allowed) {
 				activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 				throw new Error('[[error:no-privileges]]');
-				break;
 			}
 
 			await posts.unvote(id, actor);
