@@ -13,11 +13,17 @@ get:
                 properties:
                   title:
                     type: string
-                  hideSave:
-                    type: boolean
-                    description: A flag to instruct the template engine to hide the save button
                   errors:
                     type: array
                     items:
-                      $ref: ../../../components/schemas/admin/error.yaml#/ErrorObject
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        body:
+                          type: string
+                        stack:
+                          type: string
+                        hostname:
+                          type: string
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
