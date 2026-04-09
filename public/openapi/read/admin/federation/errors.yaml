@@ -1,0 +1,23 @@
+get:
+  tags:
+    - admin
+  summary: Get federation error data
+  responses:
+    "200":
+      description: Error data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  hideSave:
+                    type: boolean
+                    description: A flag to instruct the template engine to hide the save button
+                  errors:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/admin/error.yaml#/ErrorObject
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

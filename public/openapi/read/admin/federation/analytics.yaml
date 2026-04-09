@@ -1,0 +1,45 @@
+get:
+  tags:
+    - admin
+  summary: Get federation analytics data
+  parameters:
+    - name: host
+      in: query
+      description: The hostname to filter analytics for
+      required: false
+      schema:
+        type: string
+    - name: term
+      in: query
+      description: The time period to retrieve analytics for (daily or hourly)
+      required: false
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Analytics data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  instances:
+                    type: array
+                    items:
+                      type: string
+                  received:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/admin/stats.yaml#/StatsArray
+                  receivedErr:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/admin/stats.yaml#/StatsArray
+                  sent:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/admin/stats.yaml#/StatsArray
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
