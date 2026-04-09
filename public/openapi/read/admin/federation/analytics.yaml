@@ -9,12 +9,14 @@ get:
       required: false
       schema:
         type: string
+      example: example.org
     - name: term
       in: query
       description: The time period to retrieve analytics for (daily or hourly)
       required: false
       schema:
         type: string
+      example: hourly
   responses:
     "200":
       description: Analytics data
@@ -33,13 +35,16 @@ get:
                   received:
                     type: array
                     items:
-                      $ref: ../../../components/schemas/admin/stats.yaml#/StatsArray
+                      type: number
                   receivedErr:
                     type: array
                     items:
-                      $ref: ../../../components/schemas/admin/stats.yaml#/StatsArray
+                      type: number
                   sent:
                     type: array
                     items:
-                      $ref: ../../../components/schemas/admin/stats.yaml#/StatsArray
+                      type: number
+                  hideSave:
+                    type: number
+                    description: A flag to instruct the template engine to hide the save button
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

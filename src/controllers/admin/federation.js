@@ -104,7 +104,6 @@ federationController.errors = async function (req, res) {
 
 	res.render('admin/federation/errors', {
 		title: '[[admin/menu:federation/errors]]',
-		hideSave: 1,
 		errors,
 	});
 };
