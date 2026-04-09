@@ -158,6 +158,10 @@ paths:
     $ref: 'read/admin/federation/pruning.yaml'
   /api/admin/federation/safety:
     $ref: 'read/admin/federation/safety.yaml'
+  /api/admin/federation/analytics:
+    $ref: 'read/admin/federation/analytics.yaml'
+  /api/admin/federation/errors:
+    $ref: 'read/admin/federation/errors.yaml'
   "/api/admin/appearance/themes":
     $ref: 'read/admin/appearance/themes.yaml'
   "/api/admin/appearance/skins":
@@ -382,7 +386,3 @@ paths:
     $ref: 'read/ap.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'
-  /api/admin/federation/analytics:
-    $ref: 'read/admin/federation/analytics.yaml'
-  /api/admin/federation/errors:
-    $ref: 'read/admin/federation/errors.yaml'
