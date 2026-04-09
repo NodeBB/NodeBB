@@ -4,9 +4,9 @@ const assert = require('assert');
 const nconf = require('nconf');
 const { createHash } = require('crypto');
 
+const db = require('../mocks/databasemock');
 const user = require('../../src/user');
 const utils = require('../../src/utils');
-const db = require('../../src/database');
 const activitypub = require('../../src/activitypub');
 
 describe('http signature signing and verification', () => {
@@ -42,13 +42,13 @@ describe('http signature signing and verification', () => {
 			const endpoint = `${nconf.get('url')}/uid/${uid}/inbox`;
 			const payload = { foo: 'bar' };
 			const keyData = await activitypub.getPrivateKey('uid', uid);
-			const { digest } = await activitypub.sign(keyData, endpoint, payload);
 			const hash = createHash('sha256');
 			hash.update(JSON.stringify(payload));
-			const checksum = hash.digest('base64');
+			const checksum = `SHA-256=${hash.digest('base64')}`;
+			const { digest } = await activitypub.sign(keyData, endpoint, checksum);
 
 			assert(digest);
-			assert.strictEqual(digest, `SHA-256=${checksum}`);
+			assert.strictEqual(digest, checksum);
 		});
 
 		it('should create a key for NodeBB itself if a uid of 0 is passed in', async () => {
