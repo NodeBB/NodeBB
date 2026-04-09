@@ -382,3 +382,7 @@ paths:
     $ref: 'read/ap.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'
+  /api/admin/federation/analytics:
+    $ref: 'read/admin/federation/analytics.yaml'
+  /api/admin/federation/errors:
+    $ref: 'read/admin/federation/errors.yaml'
