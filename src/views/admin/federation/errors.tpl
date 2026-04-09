@@ -1,28 +1,30 @@
-<div class="acp-page-container">
-	<!-- IMPORT admin/partials/settings/header.tpl -->
+<div component="settings/main/header" class="row border-bottom py-2 m-0 mb-3 sticky-top acp-page-main-header align-items-center">
+	<div class="col-12 col-md-8 px-0 mb-1 mb-md-0">
+		<h4 class="fw-bold tracking-tight mb-0">{title}</h4>
+	</div>
+</div>
 
-	<div class="row m-0">
-		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
-				<p class="lead">[[admin/settings/activitypub:errors.intro]]</p>
-				{{{ each errors }}}
-				<details class="mb-3">
-					<summary>{./id}</summary>
+<p class="lead">[[admin/settings/activitypub:errors.intro, {errors.length}]]</p>
 
-					{{{ if ./stack }}}
-					<pre class="m-2 border p-2"><code>{./stack}</code></pre>
-					{{{ end }}}
+<div class="row flex-column-reverse flex-md-row">
+	<div class="col-12 col-md-4" id="errors">
+		{{{ each errors }}}
+		<details class="mb-3" data-index="{@index}">
+			<summary>{./id}</summary>
 
-					{{{ if ./body }}}
-					<pre class="m-2 border p-2"><code>{./body}</code></pre>
-					{{{ else }}}
-					<em>[[admin/settings/activitypub:errors.payload-gone]]</em>
-					{{{ end }}}
-				</details>
-				{{{ end }}}
-			</div>
-		</div>
+			{{{ if ./stack }}}
+			<pre class="m-2 border p-2"><code>{./stack}</code></pre>
+			{{{ end }}}
 
-		<!-- IMPORT admin/partials/settings/toc.tpl -->
+			{{{ if ./body }}}
+			<!-- <pre class="m-2 border p-2"><code>{./body}</code></pre> -->
+			{{{ else }}}
+			<em>[[admin/settings/activitypub:errors.payload-gone]]</em>
+			{{{ end }}}
+		</details>
+		{{{ end }}}
+	</div>
+	<div class="col-12 col-md-8">
+		<pre class="m-2 p-2 border"><code id="payload"></code></pre>
 	</div>
 </div>

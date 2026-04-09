@@ -91,13 +91,15 @@ federationController.errors = async function (req, res) {
 	const errorObj = await db.getObjects(ids.map(id => `ap.errors:${id}`));
 	const errors = ids.map((id, idx) => {
 		let { body, stack } = errorObj[idx];
+		let hostname = 'Invalid hostname';
 		try {
 			body = JSON.stringify(JSON.parse(body), null, 4);
+			({ hostname } = new URL(id));
 		} catch (e) {
 			// noop
 		}
 
-		return { id, body, stack };
+		return { id, body, stack, hostname };
 	});
 
 	res.render('admin/federation/errors', {
