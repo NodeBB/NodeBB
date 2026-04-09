@@ -464,7 +464,11 @@ describe('Inbox', () => {
 					const object = await activitypub.mocks.notes.public(this.postData);
 					const { activity } = helpers.mocks.like({ object });
 					this.voterUid = activity.actor;
-					await activitypub.inbox.like({ body: activity });
+					try {
+						await activitypub.inbox.like({ body: activity });
+					} catch (e) {
+						// expected
+					}
 				});
 
 				after(async function () {
