@@ -267,5 +267,5 @@
     "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",
     "activitypub.origin-mismatch": "接收对象的原点与发送者的原点不一致",
     "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "收到的对象未与任何已知的本地用户相关联。"
 }

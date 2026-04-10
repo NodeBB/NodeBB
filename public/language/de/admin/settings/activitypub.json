@@ -77,6 +77,6 @@
 	"analytics.hourly": "Stündlich",
 	"analytics.daily": "Täglich",
 
-	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
+	"errors.intro": "Die folgenden %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
 	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden."
 }

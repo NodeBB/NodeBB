@@ -1,0 +1,50 @@
+get:
+  tags:
+    - admin
+  summary: Get federation analytics data
+  parameters:
+    - name: host
+      in: query
+      description: The hostname to filter analytics for
+      required: false
+      schema:
+        type: string
+      example: example.org
+    - name: term
+      in: query
+      description: The time period to retrieve analytics for (daily or hourly)
+      required: false
+      schema:
+        type: string
+      example: hourly
+  responses:
+    "200":
+      description: Analytics data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  instances:
+                    type: array
+                    items:
+                      type: string
+                  received:
+                    type: array
+                    items:
+                      type: number
+                  receivedErr:
+                    type: array
+                    items:
+                      type: number
+                  sent:
+                    type: array
+                    items:
+                      type: number
+                  hideSave:
+                    type: number
+                    description: A flag to instruct the template engine to hide the save button
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
