@@ -1,8 +1,7 @@
 'use strict';
 
 const dns = require('dns').promises;
-// require('undici'); // keep this here, needed for SSRF (see `lookup()`)
-const { Agent } = require('undici');
+const { Agent, setGlobalDispatcher } = require('undici');
 const nconf = require('nconf');
 const ipaddr = require('ipaddr.js');
 const { CookieJar } = require('tough-cookie');
@@ -57,6 +56,9 @@ function lookup(hostname, options, callback) {
 		// trusted, do regular lookup
 		dns.lookup(hostname, options).then((addresses) => {
 			callback(null, addresses);
+		}).catch((err) => {
+			console.log('lookup error', err);
+			callback(err);
 		});
 		return;
 	}
@@ -72,32 +74,20 @@ function lookup(hostname, options, callback) {
 	});
 }
 
-const dispatcher = new Agent({
+class NodeBBAgent extends Agent {
+	dispatch(opts, handler) {
+		if (opts.headers) {
+			delete opts.headers['sec-fetch-mode'];
+		}
+		return super.dispatch(opts, handler);
+	}
+}
+
+const dispatcher = new NodeBBAgent({
 	connect: { lookup },
-	interceptors: [
-		(dispatch) => {
-			return (opts, handler) => {
-				// opts.headers can be an object or an array of strings
-				if (opts.headers) {
-					if (Array.isArray(opts.headers)) {
-						// Handle header arrays (less common with fetch, but possible)
-						for (let i = 0; i < opts.headers.length; i += 2) {
-							if (opts.headers[i].toLowerCase() === 'sec-fetch-mode') {
-								opts.headers.splice(i, 2);
-								break;
-							}
-						}
-					} else {
-						// Handle standard object headers
-						delete opts.headers['sec-fetch-mode'];
-						delete opts.headers['Sec-Fetch-Mode'];
-					}
-				}
-				return dispatch(opts, handler);
-			};
-		},
-	],
 });
+
+setGlobalDispatcher(dispatcher);
 
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	const { ok } = await check(url);
@@ -118,7 +108,6 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			'user-agent': userAgent,
 			...config.headers,
 		},
-		dispatcher,
 	};
 	if (timeout > 0) {
 		opts.signal = AbortSignal.timeout(timeout);
@@ -131,21 +120,8 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			opts.body = body;
 		}
 	}
-	// Workaround for https://github.com/nodejs/undici/issues/1305
-	// if (global[Symbol.for('undici.globalDispatcher.1')] !== undefined) {
-	// 	class FetchAgent extends global[Symbol.for('undici.globalDispatcher.1')].constructor {
-	// 		dispatch(opts, handler) {
-	// 			delete opts.headers['sec-fetch-mode'];
-	// 			return super.dispatch(opts, handler);
-	// 		}
-	// 	}
-	// 	opts.dispatcher = new FetchAgent({
-	// 		connect: { lookup },
-	// 	});
-	// }
 
 	const response = await fetchImpl(url, opts);
-
 	const { headers } = response;
 	const contentType = headers.get('content-type');
 	const isJSON = contentType && jsonTest.test(contentType);

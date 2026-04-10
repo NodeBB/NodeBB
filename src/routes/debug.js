@@ -10,7 +10,14 @@ module.exports = function (app) {
 	const router = express.Router();
 
 	router.get('/test', async (req, res) => {
-		res.redirect(404);
+		// res.redirect(404);
+		const request = require('../request');
+		try {
+			const { body: csv } = await request.get('https://example.org/blocklist');
+			res.json({ csv });
+		} catch (err) {
+			res.status(500).json({ error: err.message });
+		}
 	});
 
 	// Redoc
