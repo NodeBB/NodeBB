@@ -151,7 +151,7 @@
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
         "tough-cookie": "6.0.1",
-        "undici": "^7.10.0",
+        "undici": "8.0.2",
         "validator": "13.15.35",
         "webpack": "5.106.1",
         "webpack-merge": "6.0.1",
