@@ -68,15 +68,15 @@
 	"analytics.intro": "Тази страница показва състоянието на федериране на Вашия форум с други инстанции/сървъри",
 	"analytics.details": "NodeBB следи операциите по изпращане и получаване на данни чрез ActivityPub. Вие също може да ги прегледате за всеки сървър – почасово или по дни. Имайте предвид, че броячите се увеличават само при <em>успешни</em> пращания и получавания.",
 	"analytics.by-hostname": "Филтриране по име на сървър",
-	"analytics.in": "Incoming",
-	"analytics.out": "Outgoing",
+	"analytics.in": "Входящи",
+	"analytics.out": "Изходящи",
 	"analytics.received": "Получени",
 	"analytics.sent": "Изпратени",
-	"analytics.errors": "Errors",
+	"analytics.errors": "Грешки",
 	"analytics.term": "Времева скала",
 	"analytics.hourly": "По часове",
 	"analytics.daily": "По дни",
 
-	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
-	"errors.payload-gone": "The payload for this error no longer exists."
+	"errors.intro": "Следните грешки (%1) бяха записани от тази инсталация в рамките на последните 24 часа.",
+	"errors.payload-gone": "Данните за тази грешка вече не съществуват."
 }

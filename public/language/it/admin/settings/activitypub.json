@@ -77,6 +77,6 @@
 	"analytics.hourly": "Orario",
 	"analytics.daily": "Giornaliero",
 
-	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
+	"errors.intro": "Nelle ultime 24 ore, questa istanza ha registrato il seguente %1 errore(i).",
 	"errors.payload-gone": "Il payload per questo errore non esiste più."
 }
