@@ -32,54 +32,9 @@ Categories.update = async (req, res) => {
 	helpers.formatApiResponse(200, res, categoryObjs[0]);
 };
 
-Categories.deleteWatch = async (req, res) => {
-	const { cid } = req.params;
-	let { uid, state } = req.query;
-
-	if (!uid || !state) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	if (Object.keys(categories.watchStates).includes(state)) {
-		state = categories.watchStates[state]; // convert to integer for backend processing
-	} else {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	const { cids: modified } = await api.categories.setWatchState(req, { cid, state, uid });
-
-	helpers.formatApiResponse(200, res, { modified });
-};
-
-Categories.deletePrivilege = async (req, res) => {
-	const { cid, privilege } = req.params;
-	let { member } = req.query;
-
-	if (!member) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	await api.categories.setPrivilege(req, {
-		cid,
-		privilege,
-		member,
-		set: false,
-	});
-
-	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
-	helpers.formatApiResponse(200, res, privilegeSet);
-};
-
-Categories.unfollow = async (req, res) => {
-	const { actor } = req.query;
-	const id = parseInt(req.params.cid, 10);
-
-	if (!id || !actor) { // disallow cid 0
-		return next();
-	}
-
-	await activitypub.out.undo.follow('cid', id, actor);
-	helpers.formatApiResponse(200, res, {});
+Categories.delete = async (req, res) => {
+	await api.categories.delete(req, { cid: req.params.cid });
+	helpers.formatApiResponse(200, res);
 };
 
 Categories.getTopicCount = async (req, res) => {
@@ -118,7 +73,14 @@ Categories.setWatchState = async (req, res) => {
 	}
 
 	const { cids: modified } = await api.categories.setWatchState(req, { cid, state, uid });
+	helpers.formatApiResponse(200, res, { modified });
+};
 
+Categories.removeWatchState = async (req, res) => {
+	const { cid, uid } = req.params;
+	const state = categories.watchStates[meta.config.categoryWatchState];
+
+	const { cids: modified } = await api.categories.setWatchState(req, { cid, state, uid });
 	helpers.formatApiResponse(200, res, { modified });
 };
 
@@ -135,6 +97,20 @@ Categories.setPrivilege = async (req, res) => {
 		privilege,
 		member: req.body.member,
 		set: req.method === 'PUT',
+	});
+
+	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
+	helpers.formatApiResponse(200, res, privilegeSet);
+};
+
+Categories.removePrivilege = async (req, res) => {
+	const { cid, privilege, member } = req.params;
+
+	await api.categories.setPrivilege(req, {
+		cid,
+		privilege,
+		member,
+		set: false,
 	});
 
 	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
@@ -167,7 +143,11 @@ Categories.follow = async (req, res, next) => {
 };
 
 Categories.unfollow = async (req, res, next) => {
-	const { actor } = req.body;
+	let { actor } = req.body;
+	if (req.params?.actor) {
+		({ actor } = req.params);
+	}
+
 	const id = parseInt(req.params.cid, 10);
 
 	if (!id) { // disallow cid 0
