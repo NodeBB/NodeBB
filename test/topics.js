@@ -1420,8 +1420,14 @@ describe('Topic\'s', () => {
 
 		it('should not return topic as unread if topic is deleted', async () => {
 			const uid = await User.create({ username: 'regularJoe' });
-			const result = await topics.post({ uid: adminUid, title: 'deleted unread', content: 'not unread', cid: categoryObj.cid });
-			await topics.delete(result.topicData.tid, adminUid);
+			const result = await topics.post({
+				uid: adminUid,
+				title: 'deleted unread',
+				content: 'not unread',
+				cid: categoryObj.cid,
+				deleted: 1,
+			});
+
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
 
 			await sleep(2000);
