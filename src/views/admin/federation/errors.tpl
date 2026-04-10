@@ -10,7 +10,10 @@
 	<div class="col-12 col-md-4" id="errors">
 		{{{ each errors }}}
 		<details class="mb-3" data-index="{@index}">
-			<summary>{./id}</summary>
+			<summary>
+				<span title="{./timestampISO}" class="timeago text-secondary text-sm"></span><br/ >
+				<code>{./id}</code>
+			</summary>
 
 			{{{ if ./stack }}}
 			<pre class="m-2 border p-2"><code>{./stack}</code></pre>

@@ -87,11 +87,12 @@ federationController.analytics = async function (req, res) {
 };
 
 federationController.errors = async function (req, res) {
-	const ids = await db.getSortedSetRevRangeByScore('ap.errors', 0, -1, Date.now(), '-inf');
-	const errorObj = await db.getObjects(ids.map(id => `ap.errors:${id}`));
-	const errors = ids.map((id, idx) => {
+	let errors = await db.getSortedSetRevRangeByScoreWithScores('ap.errors', 0, -1, Date.now(), '-inf');
+	const errorObj = await db.getObjects(errors.map(({ value: id }) => `ap.errors:${id}`));
+	errors = errors.map(({ value: id, score: timestamp }, idx) => {
 		let { body, stack } = errorObj[idx];
 		let hostname = 'Invalid hostname';
+		const timestampISO = new Date(timestamp).toISOString();
 		try {
 			body = JSON.stringify(JSON.parse(body), null, 4);
 			({ hostname } = new URL(id));
@@ -99,7 +100,7 @@ federationController.errors = async function (req, res) {
 			// noop
 		}
 
-		return { id, body, stack, hostname };
+		return { id, body, stack, hostname, timestamp, timestampISO };
 	});
 
 	res.render('admin/federation/errors', {
