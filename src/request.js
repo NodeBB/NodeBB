@@ -82,9 +82,12 @@ class NodeBBAgent extends Agent {
 		return super.dispatch(opts, handler);
 	}
 }
-
+const isDevOrTest = process.env.NODE_ENV === 'development' || process.env.CI === 'true';
 const dispatcher = new NodeBBAgent({
-	connect: { lookup },
+	connect: {
+		lookup,
+		rejectUnauthorized: !isDevOrTest,
+	},
 });
 
 setGlobalDispatcher(dispatcher);
