@@ -32,9 +32,54 @@ Categories.update = async (req, res) => {
 	helpers.formatApiResponse(200, res, categoryObjs[0]);
 };
 
-Categories.delete = async (req, res) => {
-	await api.categories.delete(req, { cid: req.params.cid });
-	helpers.formatApiResponse(200, res);
+Categories.deleteWatch = async (req, res) => {
+	const { cid } = req.params;
+	let { uid, state } = req.query;
+
+	if (!uid || !state) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	if (Object.keys(categories.watchStates).includes(state)) {
+		state = categories.watchStates[state]; // convert to integer for backend processing
+	} else {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const { cids: modified } = await api.categories.setWatchState(req, { cid, state, uid });
+
+	helpers.formatApiResponse(200, res, { modified });
+};
+
+Categories.deletePrivilege = async (req, res) => {
+	const { cid, privilege } = req.params;
+	let { member } = req.query;
+
+	if (!member) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	await api.categories.setPrivilege(req, {
+		cid,
+		privilege,
+		member,
+		set: false,
+	});
+
+	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
+	helpers.formatApiResponse(200, res, privilegeSet);
+};
+
+Categories.unfollow = async (req, res) => {
+	const { actor } = req.query;
+	const id = parseInt(req.params.cid, 10);
+
+	if (!id || !actor) { // disallow cid 0
+		return next();
+	}
+
+	await activitypub.out.undo.follow('cid', id, actor);
+	helpers.formatApiResponse(200, res, {});
 };
 
 Categories.getTopicCount = async (req, res) => {
