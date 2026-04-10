@@ -64,15 +64,11 @@ describe('Topic thumbs', () => {
 			cid: categoryObj.cid,
 			title: 'Test Topic Title',
 			content: 'The content of test topic',
+			thumbs: [relativeThumbPaths[0]],
 		});
 
 		// Touch a couple files and associate it to a topic
 		createFiles();
-
-		await topics.setTopicFields(topicObj.topicData.tid, {
-			numThumbs: 1,
-			thumbs: JSON.stringify([relativeThumbPaths[0]]),
-		});
 	});
 
 	it('should return bool for whether a thumb exists', async () => {

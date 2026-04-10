@@ -43,11 +43,48 @@ NodeBB requires the following software to be installed:
 * MongoDB, version 5 or greater **or** Redis, version 7.2 or greater
 * If you are using [clustering](https://docs.nodebb.org/configuring/scaling/) you need Redis installed and configured.
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
+*  (Optional) [Docker](https://docs.docker.com/get-docker/) for container-based setup
 
+> Installation steps vary by operating system. Please follow the official documentation links above.
+  
 ## Installation
 
 [Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os).
 If installing via the cloud (or using Docker), [please see cloud-based installation documentation](https://docs.nodebb.org/installing/cloud/).
+
+## Development Setup Overview
+
+>  NodeBB uses a CLI-based setup and does not run via standard `npm start`.
+
+You can run NodeBB locally in two ways:
+
+### Option 1: Native Setup (Recommended for Beginners & Contributors)
+
+This approach helps you understand how NodeBB works internally.
+
+**Basic flow:**
+1. Clone the repository ```` https://github.com/NodeBB/NodeBB.git ````
+2. Run the setup script ```` cd NodeBB ```` ```` ./nodebb setup ````
+3. Start the application  ```` ./nodebb start ````
+
+**During setup, you will configure:**
+   - Database (MongoDB / Redis)  
+   - Admin account  
+   - Port (default: 4567)  
+
+###  Option 2: Docker Setup (Quick & Isolated)
+
+> Requires Docker to be installed: https://docs.docker.com/get-docker/
+
+Run:
+
+```bash
+docker-compose up
+````
+
+This will start NodeBB along with required services at: ```` http://localhost:4567 ````
+
+**For more details, see: https://docs.nodebb.org**
 
 ## Securing NodeBB
 
