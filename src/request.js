@@ -74,12 +74,29 @@ function lookup(hostname, options, callback) {
 
 const dispatcher = new Agent({
 	connect: { lookup },
-	interceptors: {
-		request: (opts) => {
-			delete opts.headers['sec-fetch-mode'];
-			return opts;
+	interceptors: [
+		(dispatch) => {
+			return (opts, handler) => {
+				// opts.headers can be an object or an array of strings
+				if (opts.headers) {
+					if (Array.isArray(opts.headers)) {
+						// Handle header arrays (less common with fetch, but possible)
+						for (let i = 0; i < opts.headers.length; i += 2) {
+							if (opts.headers[i].toLowerCase() === 'sec-fetch-mode') {
+								opts.headers.splice(i, 2);
+								break;
+							}
+						}
+					} else {
+						// Handle standard object headers
+						delete opts.headers['sec-fetch-mode'];
+						delete opts.headers['Sec-Fetch-Mode'];
+					}
+				}
+				return dispatch(opts, handler);
+			};
 		},
-	},
+	],
 });
 
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
