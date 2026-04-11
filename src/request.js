@@ -1,7 +1,7 @@
 'use strict';
 
 const dns = require('dns').promises;
-const { Agent } = require('undici');
+const { Agent, setGlobalDispatcher } = require('undici');
 const nconf = require('nconf');
 const ipaddr = require('ipaddr.js');
 const { CookieJar } = require('tough-cookie');
@@ -90,6 +90,8 @@ const dispatcher = new NodeBBAgent({
 	},
 });
 
+setGlobalDispatcher(dispatcher);
+
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	const { ok } = await check(url);
 	if (!ok) {
@@ -109,7 +111,6 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			'user-agent': userAgent,
 			...config.headers,
 		},
-		dispatcher,
 	};
 	if (timeout > 0) {
 		opts.signal = AbortSignal.timeout(timeout);
