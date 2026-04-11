@@ -1,8 +1,7 @@
 'use strict';
 
 const dns = require('dns').promises;
-require('undici'); // keep this here, needed for SSRF (see `lookup()`)
-
+const { Agent, setGlobalDispatcher } = require('undici');
 const nconf = require('nconf');
 const ipaddr = require('ipaddr.js');
 const { CookieJar } = require('tough-cookie');
@@ -57,6 +56,9 @@ function lookup(hostname, options, callback) {
 		// trusted, do regular lookup
 		dns.lookup(hostname, options).then((addresses) => {
 			callback(null, addresses);
+		}).catch((err) => {
+			console.log('lookup error', err);
+			callback(err);
 		});
 		return;
 	}
@@ -72,7 +74,24 @@ function lookup(hostname, options, callback) {
 	});
 }
 
-// Initialize fetch - somewhat hacky, but it's required for globalDispatcher to be available
+class NodeBBAgent extends Agent {
+	dispatch(opts, handler) {
+		if (opts.headers) {
+			delete opts.headers['sec-fetch-mode'];
+		}
+		return super.dispatch(opts, handler);
+	}
+}
+const isDevOrTest = process.env.NODE_ENV === 'development' || process.env.CI === 'true';
+const dispatcher = new NodeBBAgent({
+	connect: {
+		lookup,
+		rejectUnauthorized: !isDevOrTest,
+	},
+});
+
+setGlobalDispatcher(dispatcher);
+
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	const { ok } = await check(url);
 	if (!ok) {
@@ -104,21 +123,8 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			opts.body = body;
 		}
 	}
-	// Workaround for https://github.com/nodejs/undici/issues/1305
-	if (global[Symbol.for('undici.globalDispatcher.1')] !== undefined) {
-		class FetchAgent extends global[Symbol.for('undici.globalDispatcher.1')].constructor {
-			dispatch(opts, handler) {
-				delete opts.headers['sec-fetch-mode'];
-				return super.dispatch(opts, handler);
-			}
-		}
-		opts.dispatcher = new FetchAgent({
-			connect: { lookup },
-		});
-	}
 
 	const response = await fetchImpl(url, opts);
-
 	const { headers } = response;
 	const contentType = headers.get('content-type');
 	const isJSON = contentType && jsonTest.test(contentType);
