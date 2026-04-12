@@ -267,5 +267,5 @@
     "activitypub.pubKey-not-found": "公開鍵を解決できないため、ペイロードの検証ができません。",
     "activitypub.origin-mismatch": "受信したオブジェクトのオリジンが送信者のオリジンと一致しません",
     "activitypub.not-implemented": "リクエストまたはその一部が受信サーバーで実装されていないため、拒否されました",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "受信したオブジェクトは、既知のローカルユーザーのいずれにも関連付けられていません。"
 }
