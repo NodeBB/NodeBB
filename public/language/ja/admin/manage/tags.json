@@ -1,20 +1,20 @@
 {
-	"manage-tags": "Manage Tags",
-	"none": "あなたのフォーラムにはまだタグが付いていません。",
-	"bg-color": "背景カラー",
-	"text-color": "テキストカラー",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"manage-tags": "タグを管理",
+	"none": "フォーラムにはまだタグ付きのスレッドがありません。",
+	"bg-color": "背景色",
+	"text-color": "文字色",
+	"description": "クリックまたはドラッグでタグを選択し、<code>CTRL</code> キーで複数選択できます。",
 	"create": "タグを作成",
-	"add-tag": "Add tag",
+	"add-tag": "タグを追加",
 	"modify": "タグを変更",
-	"rename": "Rename Tags",
-	"delete": "指定されたタグを削除",
-	"search": "タグを検索します...",
-	"settings": "Tags Settings",
+	"rename": "タグ名を変更",
+	"delete": "選択したタグを削除",
+	"search": "タグを検索...",
+	"settings": "タグ設定",
 	"name": "タグ名",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "タグを編集中",
 	"alerts.confirm-delete": "選択したタグを削除しますか？",
-	"alerts.update-success": "タグが更新されました!",
-	"reset-colors": "Reset colors"
+	"alerts.update-success": "タグを更新しました！",
+	"reset-colors": "色をリセット"
 }
