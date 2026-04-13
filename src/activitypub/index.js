@@ -399,6 +399,11 @@ ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
 		throw new Error(String(body));
 	} catch (e) {
 		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
+		ActivityPub.record.sendError({
+			payload,
+			uri,
+			error: e,
+		});
 		return false;
 	}
 };
@@ -494,6 +499,22 @@ ActivityPub.record.send = async ({ type, target }) => {
 	]);
 };
 
+ActivityPub.record.sendError = async ({ payload, target, error }) => {
+	const { id } = payload;
+	const now = Date.now();
+	const { hostname } = new URL(target);
+	await Promise.all([
+		db.sortedSetAdd('ap.errors', now, id),
+		db.setObject(`ap.errors:${id}`, {
+			type: 'out',
+			body: JSON.stringify(payload),
+			stack: error.message,
+		}),
+		analytics.increment(['ap.out', `ap.out:byType:${payload.type}`, `ap.out:byHost:${hostname}`]),
+	]);
+	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours
+};
+
 ActivityPub.record.receiptError = async (body, error) => {
 	const { id, actor } = body;
 	const now = Date.now();
@@ -501,6 +522,7 @@ ActivityPub.record.receiptError = async (body, error) => {
 	await Promise.all([
 		db.sortedSetAdd('ap.errors', now, id),
 		db.setObject(`ap.errors:${id}`, {
+			type: 'in',
 			body: JSON.stringify(body),
 			stack: error.stack,
 		}),
