@@ -6,9 +6,9 @@ const db = require('../database');
 const request = require('../request');
 const activitypub = module.parent.exports;
 
-const Blocklists = module.exports;
+const blocklists = module.exports;
 
-Blocklists.list = async () => {
+blocklists.list = async () => {
 	const blocklists = await db.getSortedSetMembers('blocklists');
 	const counts = await db.sortedSetsCard(blocklists.map(blocklist => `blocklist:${blocklist}`));
 
@@ -17,7 +17,7 @@ Blocklists.list = async () => {
 	});
 };
 
-Blocklists.get = async (url) => {
+blocklists.get = async (url) => {
 	const domains = await db.getSortedSetMembers(`blocklist:${url}`);
 
 	return {
@@ -26,23 +26,23 @@ Blocklists.get = async (url) => {
 	};
 };
 
-Blocklists.add = async (url) => {
+blocklists.add = async (url) => {
 	const now = Date.now();
 
 	await Promise.all([
 		db.sortedSetAdd('blocklists', now, url),
-		Blocklists.refresh(url),
+		blocklists.refresh(url),
 	]);
 };
 
-Blocklists.remove = async (url) => {
+blocklists.remove = async (url) => {
 	await Promise.all([
 		db.sortedSetRemove('blocklists', url),
 		db.delete(`blocklist:${url}`),
 	]);
 };
 
-Blocklists.refresh = async (url) => {
+blocklists.refresh = async (url) => {
 	activitypub.helpers.log(`[blocklists/refresh] Processing ${url}`);
 
 	const { body: csv } = await request.get(url);
@@ -69,8 +69,8 @@ Blocklists.refresh = async (url) => {
 	return records.length;
 };
 
-Blocklists.check = async (domain) => {
-	const blocklists = await Blocklists.list();
+blocklists.check = async (domain) => {
+	const blocklists = await blocklists.list();
 	let present = await db.isMemberOfSortedSets(blocklists.map(({ url }) => `blocklist:${url}`), domain);
 	present = present.reduce((memo, present) => memo || present, false);
 
