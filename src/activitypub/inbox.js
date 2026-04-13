@@ -488,7 +488,7 @@ inbox.follow = async (req) => {
 	const { actor, object, id: followId } = req.body;
 
 	// Sanity checks
-	const { type, id } = await helpers.resolveLocalId(object.id);
+	const { type, id } = await helpers.resolveLocalId(object.id || object);
 	if (type === 'application') {
 		return activitypub.relays.handshake(req.body);
 	} else if (!['category', 'user'].includes(type)) {
