@@ -6,6 +6,8 @@ const path = require('path');
 
 const db = require('../mocks/databasemock');
 const request = require('../../src/request');
+const meta = require('../../src/meta');
+const install = require('../../src/install');
 const activitypub = require('../../src/activitypub');
 
 describe('ActivityPub blocklists', () => {
@@ -106,7 +108,7 @@ describe('ActivityPub blocklists', () => {
 
 			// Verify the blocklist was added and refreshed
 			const result = await activitypub.blocklists.get(url);
-			assert.strictEqual(result.count, 0); // Empty initially
+			assert.strictEqual(result.count, 2);
 		});
 	});
 
@@ -134,66 +136,78 @@ describe('ActivityPub blocklists', () => {
 	});
 
 	describe('blocklists.refresh()', () => {
-		it('should process a valid CSV', async () => {
-			const url = 'https://example.com/blocklist.csv';
-			await activitypub.blocklists.add(url);
+		before(function () {
+			this.url = 'https://example.com/blocklist.csv';
+		});
+
+		afterEach(async function () {
+			await activitypub.blocklists.remove(this.url);
+		});
+
+		it('should process a valid CSV', async function () {
+			await activitypub.blocklists.add(this.url);
 
 			const csvData = '#domain,#severity\nexample.com,1\nexample.org,2\nsilence.example.com,2';
 			const mockResponse = { body: csvData };
 			request.get = () => mockResponse;
 
-			const result = await activitypub.blocklists.refresh(url);
+			const result = await activitypub.blocklists.refresh(this.url);
 
 			assert.strictEqual(result, 3);
 		});
 
-		it('should return 0 for empty CSV', async () => {
-			const url = 'https://example.com/blocklist.csv';
-			await activitypub.blocklists.add(url);
+		it('should return 0 for empty CSV', async function () {
+			await activitypub.blocklists.add(this.url);
 
 			const csvData = '';
 			const mockResponse = { body: csvData };
 			request.get = () => mockResponse;
 
-			const result = await activitypub.blocklists.refresh(url);
+			const result = await activitypub.blocklists.refresh(this.url);
 
 			assert.strictEqual(result, 0);
 		});
 
-		it('should return 0 on parse error', async () => {
-			const url = 'https://example.com/blocklist.csv';
-			await activitypub.blocklists.add(url);
+		it('should return 0 on parse error', async function () {
+			await activitypub.blocklists.add(this.url);
 
 			const csvData = 'invalid,csv,data';
 			const mockResponse = { body: csvData };
 			request.get = () => mockResponse;
 
-			const result = await activitypub.blocklists.refresh(url);
+			const result = await activitypub.blocklists.refresh(this.url);
 
 			assert.strictEqual(result, 0);
 		});
 
-		it('should handle severity levels correctly', async () => {
-			const url = 'https://example.com/blocklist.csv';
-			await activitypub.blocklists.add(url);
+		it('should handle severity levels correctly', async function () {
+			await activitypub.blocklists.add(this.url);
 
 			const csvData = '#domain,#severity\nexample.com,1\nsilence.example.com,2';
 			const mockResponse = { body: csvData };
 			request.get = () => mockResponse;
 
-			await activitypub.blocklists.refresh(url);
+			await activitypub.blocklists.refresh(this.url);
 
-			const result = await activitypub.blocklists.get(url);
+			const result = await activitypub.blocklists.get(this.url);
 
 			assert.strictEqual(result.count, 2);
 		});
 	});
 
 	describe('blocklists.check()', () => {
-		it('should return true when domain is not blocked', async () => {
-			const url = 'https://example.com/blocklist.csv';
-			await activitypub.blocklists.add(url);
+		async function clear () {
+			const url1 = 'https://example.com/blocklist1.csv';
+			const url2 = 'https://example.com/blocklist2.csv';
+			const url3 = 'https://example.com/blocklist.csv';
+			await Promise.all([url1, url2, url3].map(async (url) => {
+				await activitypub.blocklists.remove(url);
+			}));
+		}
+		before(clear);
+		afterEach(clear);
 
+		it('should return true when domain is not blocked', async () => {
 			const result = await activitypub.blocklists.check('example.com');
 
 			assert.strictEqual(result, true);
@@ -218,8 +232,6 @@ describe('ActivityPub blocklists', () => {
 			const url1 = 'https://example.com/blocklist1.csv';
 			const url2 = 'https://example.com/blocklist2.csv';
 
-			await activitypub.blocklists.add(url1);
-			await activitypub.blocklists.add(url2);
 
 			const csvData1 = '#domain,#severity\nblocked.com,1';
 			const csvData2 = '#domain,#severity\nblocked.org,1';
@@ -227,11 +239,10 @@ describe('ActivityPub blocklists', () => {
 			const mockResponse1 = { body: csvData1 };
 			const mockResponse2 = { body: csvData2 };
 			request.get = () => mockResponse1;
-
-			await activitypub.blocklists.refresh(url1);
+			await activitypub.blocklists.add(url1);
 
 			request.get = () => mockResponse2;
-			await activitypub.blocklists.refresh(url2);
+			await activitypub.blocklists.add(url2);
 
 			const result = await activitypub.blocklists.check('example.com');
 
@@ -242,20 +253,17 @@ describe('ActivityPub blocklists', () => {
 			const url1 = 'https://example.com/blocklist1.csv';
 			const url2 = 'https://example.com/blocklist2.csv';
 
-			await activitypub.blocklists.add(url1);
-			await activitypub.blocklists.add(url2);
-
 			const csvData1 = '#domain,#severity\nexample.com,1';
 			const csvData2 = '#domain,#severity\nblocked.org,1';
 
 			const mockResponse1 = { body: csvData1 };
 			const mockResponse2 = { body: csvData2 };
-			request.get = () => mockResponse1;
 
-			await activitypub.blocklists.refresh(url1);
+			request.get = () => mockResponse1;
+			await activitypub.blocklists.add(url1);
 
 			request.get = () => mockResponse2;
-			await activitypub.blocklists.refresh(url2);
+			await activitypub.blocklists.add(url2);
 
 			const result = await activitypub.blocklists.check('example.com');
 
