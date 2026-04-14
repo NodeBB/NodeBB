@@ -499,10 +499,10 @@ ActivityPub.record.send = async ({ type, target }) => {
 	]);
 };
 
-ActivityPub.record.sendError = async ({ payload, target, error }) => {
+ActivityPub.record.sendError = async ({ payload, uri, error }) => {
 	const { id } = payload;
 	const now = Date.now();
-	const { hostname } = new URL(target);
+	const { hostname } = new URL(uri);
 	await Promise.all([
 		db.sortedSetAdd('ap.errors', now, id),
 		db.setObject(`ap.errors:${id}`, {
