@@ -71,7 +71,6 @@ Blocklists.refresh = async (url) => {
 
 Blocklists.check = async (domain) => {
 	const blocklists = await Blocklists.list();
-	console.log(blocklists);
 	let present = await db.isMemberOfSortedSets(blocklists.map(({ url }) => `blocklist:${url}`), domain);
 	present = present.reduce((memo, present) => memo || present, false);
 
