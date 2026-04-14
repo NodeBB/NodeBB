@@ -78,7 +78,7 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
 
 	// Group handling
-	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
+	if (!utils.isNumber(uidOrGroupName) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
