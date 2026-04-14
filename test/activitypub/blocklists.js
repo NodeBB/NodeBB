@@ -11,14 +11,16 @@ const install = require('../../src/install');
 const activitypub = require('../../src/activitypub');
 
 describe('ActivityPub blocklists', () => {
-	before(async () => {
+	before(async function () {
 		meta.config.activitypubEnabled = 1;
 		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
+		this.getHandler = request.get;
 	});
 
-	after(() => {
+	after(function () {
 		delete meta.config.activitypubEnabled;
+		request.get = this.getHandler;
 	});
 
 	describe('blocklists.list()', () => {
