@@ -510,7 +510,7 @@ ActivityPub.record.sendError = async ({ payload, uri, error }) => {
 			body: JSON.stringify(payload),
 			stack: error.message,
 		}),
-		analytics.increment(['ap.out', `ap.out:byType:${payload.type}`, `ap.out:byHost:${hostname}`]),
+		analytics.increment(['ap.outErr', `ap.outErr:byType:${payload.type}`, `ap.outErr:byHost:${hostname}`]),
 	]);
 	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours
 };
