@@ -90,6 +90,9 @@ federationController.errors = async function (req, res) {
 	let errors = await db.getSortedSetRevRangeByScoreWithScores('ap.errors', 0, -1, Date.now(), '-inf');
 	const errorObj = await db.getObjects(errors.map(({ value: id }) => `ap.errors:${id}`));
 	errors = errors.map(({ value: id, score: timestamp }, idx) => {
+		if (!errorObj[idx]) {
+			return null;
+		}
 		let { body, stack } = errorObj[idx];
 		let hostname = 'Invalid hostname';
 		const timestampISO = new Date(timestamp).toISOString();
@@ -101,7 +104,7 @@ federationController.errors = async function (req, res) {
 		}
 
 		return { id, body, stack, hostname, timestamp, timestampISO };
-	});
+	}).filter(Boolean);
 
 	res.render('admin/federation/errors', {
 		title: '[[admin/menu:federation/errors]]',
