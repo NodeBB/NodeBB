@@ -153,7 +153,7 @@
         "tough-cookie": "6.0.1",
         "undici": "8.1.0",
         "validator": "13.15.35",
-        "webpack": "5.106.1",
+        "webpack": "5.106.2",
         "webpack-merge": "6.0.1",
         "winston": "3.19.0",
         "workerpool": "10.0.1",
