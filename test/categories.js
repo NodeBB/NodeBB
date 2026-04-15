@@ -197,13 +197,13 @@ describe('Categories', () => {
 				content: 'The content of test topic',
 				tags: ['nodebb'],
 			});
-			const data = await Topics.post({
+			await Topics.post({
 				uid: posterUid,
 				cid: categoryObj.cid,
 				title: 'will delete',
 				content: 'The content of deleted topic',
+				deleted: 1,
 			});
-			await Topics.delete(data.topicData.tid, adminUid);
 		});
 
 		it('should get recent replies in category', (done) => {

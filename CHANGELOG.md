@@ -1,3 +1,75 @@
+#### v4.10.2 (2026-04-08)
+
+##### Chores
+
+*  incrementing version number - v4.10.1 (0c9bbcea)
+*  update changelog for v4.10.1 (afe8683e)
+*  incrementing version number - v4.10.0 (5b703104)
+*  incrementing version number - v4.9.2 (e6846052)
+*  incrementing version number - v4.9.1 (72e44c86)
+*  incrementing version number - v4.9.0 (3fdd1bef)
+*  incrementing version number - v4.8.1 (713ae0c0)
+*  incrementing version number - v4.8.0 (3fac737a)
+*  incrementing version number - v4.7.2 (cd419d8a)
+*  incrementing version number - v4.7.1 (afb88805)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add unreadNids to /api/notifications (83572348)
+
+##### Bug Fixes
+
+*  use file.exists instead of try/catch to detect missing email logo (#14154) (4366bdd0)
+*  closes #14151, handle null req.body (62b65e69)
+*  remove optional (20e751f0)
+*  #14147, dont create wrong backlinks (0568ef43)
+*  user image og:image (fb48ab34)
+*  closes #14133, don't modify displayName for system groups (af0e3d96)
+*  try a save point in retry (203f4cc7)
+*  try upsert type if it fails (991e9778)
+*  on exit, dont write analytics data on all nodes (6c4e9284)
+*  align-center user and name on post queue (1a0c2a21)
+*  ./nodebb upgrade on windows (82d380a3)
+
+##### Refactors
+
+*  use renderHeaderType instead of two variables (55290da0)
+*  break long line (4b503db4)
+
+##### Tests
+
+*  dont create users parallel (b04976ed)
+
 #### v4.10.1 (2026-03-25)
 
 ##### Chores

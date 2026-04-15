@@ -7,6 +7,7 @@ const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
+const Categories = require('../src/categories');
 const Groups = require('../src/groups');
 const User = require('../src/user');
 const plugins = require('../src/plugins');
@@ -565,6 +566,20 @@ describe('Groups', () => {
 					done();
 				});
 			});
+		});
+
+		it('should properly set memberPostCids', async () => {
+			const c1 = await Categories.create({ name: 'Test Category' });
+			const c2 = await Categories.create({ name: 'Test Category' });
+			const c3 = await Categories.create({ name: 'Test Category' });
+			await Groups.create({
+				name: '3rd party devs',
+			});
+			await Groups.update('3rd party devs', {
+				memberPostCids: `${c1.cid},${c2.cid},${c3.cid}`,
+			});
+			const groupData = await Groups.get('3rd party devs', {});
+			assert.strictEqual(groupData.memberPostCids, '1,2,3');
 		});
 	});
 

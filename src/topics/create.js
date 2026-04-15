@@ -167,14 +167,15 @@ module.exports = function (Topics) {
 		topicData.index = 0;
 		postData.index = 0;
 
-		if (topicData.scheduled) {
-			await Topics.delete(tid);
+		if (data.deleted || topicData.scheduled) {
+			await Topics.delete(tid, uid);
+			topicData.deleted = true;
 		}
 
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (!topicData.scheduled) {
+		if (!topicData.scheduled && !topicData.deleted) {
 			setImmediate(async () => {
 				try {
 					if (utils.isNumber(uid)) {
