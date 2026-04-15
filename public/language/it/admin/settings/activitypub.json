@@ -66,7 +66,7 @@
 	"content.world-default-cid": "ID predefinito della categoria per &quot;Mondo&quot; editor di pagine",
 
 	"analytics.intro": "Questa pagina offre una panoramica dello stato della federazione del tuo forum con altre istanze/server",
-	"analytics.details": "NodeBB tiene traccia delle attività di ricezione e invio di ActivityPub, e puoi visualizzarle per hostname, con cadenza oraria o giornaliera. Tieni presente che le metriche sono incrementate solo in caso di ricezione e invio andati a <em>buon fine</em>.\n",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
 	"analytics.by-hostname": "Filtra per nome host",
 	"analytics.in": "In arrivo",
 	"analytics.out": "In uscita",

@@ -66,7 +66,7 @@
 	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer",
 
 	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
-	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that the metrics are only incremented on <em>successful</em> receipts and sends.",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
 	"analytics.by-hostname": "Filter by Hostname",
 	"analytics.in": "Incoming",
 	"analytics.out": "Outgoing",

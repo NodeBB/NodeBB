@@ -66,7 +66,7 @@
 	"content.world-default-cid": "Идентификатор на категория по подразбиране при съставяне на страница в „Света“",
 
 	"analytics.intro": "Тази страница показва състоянието на федериране на Вашия форум с други инстанции/сървъри",
-	"analytics.details": "NodeBB следи операциите по изпращане и получаване на данни чрез ActivityPub. Вие също може да ги прегледате за всеки сървър – почасово или по дни. Имайте предвид, че броячите се увеличават само при <em>успешни</em> пращания и получавания.",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
 	"analytics.by-hostname": "Филтриране по име на сървър",
 	"analytics.in": "Входящи",
 	"analytics.out": "Изходящи",
