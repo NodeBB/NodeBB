@@ -20,12 +20,6 @@
 			{{{ if ./stack }}}
 			<pre class="m-2 border p-2"><code>{./stack}</code></pre>
 			{{{ end }}}
-
-			{{{ if ./body }}}
-			<!-- <pre class="m-2 border p-2"><code>{./body}</code></pre> -->
-			{{{ else }}}
-			<em>[[admin/settings/activitypub:errors.payload-gone]]</em>
-			{{{ end }}}
 		</details>
 		{{{ end }}}
 	</div>
