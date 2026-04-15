@@ -32,18 +32,25 @@ get:
                     type: array
                     items:
                       type: string
-                  received:
-                    type: array
-                    items:
-                      type: number
-                  receivedErr:
-                    type: array
-                    items:
-                      type: number
-                  sent:
-                    type: array
-                    items:
-                      type: number
+                  data:
+                    type: object
+                    properties:
+                      received:
+                        type: array
+                        items:
+                          type: number
+                      receivedErr:
+                        type: array
+                        items:
+                          type: number
+                      sent:
+                        type: array
+                        items:
+                          type: number
+                      sentErr:
+                        type: array
+                        items:
+                          type: number
                   hideSave:
                     type: number
                     description: A flag to instruct the template engine to hide the save button

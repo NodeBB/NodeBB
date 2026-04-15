@@ -55,7 +55,8 @@ async function updateCharts() {
 	['received', 'sent'].forEach((name) => {
 		const chart = charts.get(name);
 		chart.data.labels = labels.get(termEl.value || 'hourly');
-		chart.data.datasets[0].data = data[name];
+		chart.data.datasets[0].data = data.data[name];
+		chart.data.datasets[1].data = data.data[`${name}Err`];
 		chart.update();
 	});
 }
@@ -87,7 +88,7 @@ async function initializeCharts() {
 					borderColor: 'rgba(161,181,108,1)',
 					pointBackgroundColor: 'rgba(161,181,108,1)',
 					pointHoverBorderColor: 'rgba(161,181,108,1)',
-					data: ajaxify.data.received,
+					data: ajaxify.data.data.received,
 				},
 				{
 					...commonDataSetOpts,
@@ -96,7 +97,7 @@ async function initializeCharts() {
 					borderColor: 'rgba(171,70,66,1)',
 					pointBackgroundColor: 'rgba(171,70,66,1)',
 					pointHoverBorderColor: 'rgba(171,70,66,1)',
-					data: ajaxify.data.receivedErr,
+					data: ajaxify.data.data.receivedErr,
 				},
 			],
 		},
@@ -106,11 +107,20 @@ async function initializeCharts() {
 				{
 					...commonDataSetOpts,
 					label: await translate('[[admin/settings/activitypub:analytics.sent]]'),
-					backgroundColor: 'rgba(151,187,205,0.2)',
-					borderColor: 'rgba(151,187,205,1)',
-					pointBackgroundColor: 'rgba(151,187,205,1)',
-					pointHoverBorderColor: 'rgba(151,187,205,1)',
-					data: ajaxify.data.sent,
+					backgroundColor: 'rgba(161,181,108,0.2)',
+					borderColor: 'rgba(161,181,108,1)',
+					pointBackgroundColor: 'rgba(161,181,108,1)',
+					pointHoverBorderColor: 'rgba(161,181,108,1)',
+					data: ajaxify.data.data.sent,
+				},
+				{
+					...commonDataSetOpts,
+					label: await translate('[[admin/settings/activitypub:analytics.errors]]'),
+					backgroundColor: 'rgba(171,70,66,0.2)',
+					borderColor: 'rgba(171,70,66,1)',
+					pointBackgroundColor: 'rgba(171,70,66,1)',
+					pointHoverBorderColor: 'rgba(171,70,66,1)',
+					data: ajaxify.data.data.sentErr,
 				},
 			],
 		},
