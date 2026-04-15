@@ -12,7 +12,7 @@
 		<details class="mb-3" data-index="{@index}">
 			<summary>
 				<span title="{./timestampISO}" class="timeago text-secondary text-sm"></span>
-				<span class="badge text-bg-primary">{{{ if (type == "in") }}}IN{{{ else }}}OUT{{{ end }}}</span>
+				<span class="badge text-bg-primary">{{{ if (./type == "in") }}}IN{{{ else }}}OUT{{{ end }}}</span>
 				<br/ >
 				<code>{./id}</code>
 			</summary>
