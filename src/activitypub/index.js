@@ -386,7 +386,7 @@ ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
 		});
 
 		if (String(response.statusCode).startsWith('2')) {
-			ActivityPub.record.send({
+			ActivityPub.analytics.send({
 				type: payload.type,
 				target: uri,
 			});
@@ -399,7 +399,7 @@ ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
 		throw new Error(String(body));
 	} catch (e) {
 		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
-		ActivityPub.record.sendError({
+		ActivityPub.analytics.sendError({
 			payload,
 			uri,
 			error: e,
@@ -475,60 +475,6 @@ ActivityPub.send = async (type, id, targets, payload) => {
 			}
 		}, batchSettings).catch(err => winston.error(err.stack));
 	});
-};
-
-ActivityPub.record = {};
-
-ActivityPub.record.receipt = async ({ id, type, actor }) => {
-	const now = Date.now();
-	const { hostname } = new URL(actor);
-
-	await Promise.all([
-		db.sortedSetAdd(`activities:datetime`, now, id),
-		ActivityPub.instances.log(hostname),
-		analytics.increment(['activities', `activities:byType:${type}`, `activities:byHost:${hostname}`]),
-	]);
-};
-
-ActivityPub.record.send = async ({ type, target }) => {
-	const { hostname } = new URL(target);
-
-	await Promise.all([
-		ActivityPub.instances.log(hostname),
-		analytics.increment(['ap.out', `ap.out:byType:${type}`, `ap.out:byHost:${hostname}`]),
-	]);
-};
-
-ActivityPub.record.sendError = async ({ payload, uri, error }) => {
-	const { id } = payload;
-	const now = Date.now();
-	const { hostname } = new URL(uri);
-	await Promise.all([
-		db.sortedSetAdd('ap.errors', now, id),
-		db.setObject(`ap.errors:${id}`, {
-			type: 'out',
-			body: JSON.stringify(payload),
-			stack: error.message,
-		}),
-		analytics.increment(['ap.outErr', `ap.outErr:byType:${payload.type}`, `ap.outErr:byHost:${hostname}`]),
-	]);
-	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours
-};
-
-ActivityPub.record.receiptError = async (body, error) => {
-	const { id, actor } = body;
-	const now = Date.now();
-	const { hostname } = new URL(actor);
-	await Promise.all([
-		db.sortedSetAdd('ap.errors', now, id),
-		db.setObject(`ap.errors:${id}`, {
-			type: 'in',
-			body: JSON.stringify(body),
-			stack: error.stack,
-		}),
-		analytics.increment(['ap.inErr', `ap.inErr:byHost:${hostname}`]),
-	]);
-	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours
 };
 
 ActivityPub.buildRecipients = async function (object, options) {
