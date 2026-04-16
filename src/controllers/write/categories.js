@@ -61,7 +61,8 @@ Categories.getTopics = async (req, res) => {
 
 Categories.setWatchState = async (req, res) => {
 	const { cid } = req.params;
-	let { uid, state } = req.body;
+	const uid = req.params.uid || req.body.uid; // Extract member from params if available
+	let {state} = req.body;
 
 	if (req.method === 'DELETE') {
 		// DELETE is always setting state to system default in acp
