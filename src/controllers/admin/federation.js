@@ -32,11 +32,27 @@ federationController.rules = async function (req, res) {
 
 federationController.relays = async function (req, res) {
 	const relays = await activitypub.relays.list();
+	const urls = relays.map(({ url }) => url);
+
+	let { host, term } = req.query;
+	if (!urls.includes(host)) {
+		host = undefined;
+	}
+	let method = 'getHourlyStatsForSet';
+	let count = 24;
+	if (term === 'daily') {
+		method = 'getDailyStatsForSet';
+		count = 30;
+	}
+	const inSet = host ? `ap.relayIn:byHost:${host}` : 'ap.relayIn';
+	const outSet = host ? `ap.relayOut:byHost:${host}` : 'ap.relayOut';
+	const incoming = await analytics[method](inSet, Date.now(), count);
+	const out = await analytics[method](outSet, Date.now(), count);
 
 	res.render(`admin/federation/relays`, {
 		title: '[[admin/menu:federation/relays]]',
 		relays,
-		hideSave: true,
+		data: { in: incoming, out },
 	});
 };
 
