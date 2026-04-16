@@ -33,7 +33,11 @@ Helpers._webfingerCache = webfingerCache; // exported for tests
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
 	setTimeout(async () => {
-		console.log(await method.apply(method, args));
+		try {
+			console.log(await method.apply(method, args));
+		} catch (e) {
+			console.log('Exception thrown', e);
+		}
 	}, 2500);
 };
 // process.nextTick(() => {
