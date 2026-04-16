@@ -55,8 +55,8 @@
 	"federation/relays": "Chuyển tiếp",
 	"federation/pruning": "Lưu trữ",
 	"federation/safety": "Tin cậy & An toàn",
-	"federation/analytics": "Analytics",
-	"federation/errors": "Errors",
+	"federation/analytics": "Phân tích",
+	"federation/errors": "Lỗi",
 
 	"section-appearance": "Trực quan",
 	"appearance/themes": "Giao diện",

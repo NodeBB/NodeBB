@@ -66,7 +66,7 @@
 	"content.world-default-cid": "“世界”页面编辑器的默认版块 ID",
 
 	"analytics.intro": "本页面概述了您的论坛与其他实例/服务器之间的联合状态",
-	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
+	"analytics.details": "NodeBB 会跟踪 ActivityPub 的活动确认和发送情况，您可以按主机名查看每小时或每日的统计数据。请注意，由于部分服务器可能离线或配置不当，因此很难实现零错误率。",
 	"analytics.by-hostname": "按主机名筛选",
 	"analytics.in": "入站",
 	"analytics.out": "出站",

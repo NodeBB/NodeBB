@@ -267,5 +267,5 @@
     "activitypub.pubKey-not-found": "Không thể giải quyết khóa công khai, do đó việc xác minh payload không thể diễn ra.",
     "activitypub.origin-mismatch": "Nguồn gốc của đối tượng nhận được không khớp với nguồn gốc của người gửi",
     "activitypub.not-implemented": "Yêu cầu bị từ chối vì nó hoặc một khía cạnh của nó không được máy chủ người nhận triển khai",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "Đối tượng nhận được không liên kết với bất kỳ người dùng cục bộ nào đã biết."
 }
