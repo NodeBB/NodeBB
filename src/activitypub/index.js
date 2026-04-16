@@ -19,7 +19,6 @@ const utils = require('../utils');
 const ttl = require('../cache/ttl');
 const lru = require('../cache/lru');
 const batch = require('../batch');
-const analytics = require('../analytics');
 const crypto = require('crypto');
 
 const requestCache = ttl({
@@ -80,6 +79,7 @@ ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
 ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
+ActivityPub.analytics = require('./analytics');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
