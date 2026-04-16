@@ -120,7 +120,7 @@ async function updateCharts() {
 	const hostFilterEl = document.getElementById('hostFilter');
 	const termEl = document.getElementById('term');
 	console.log(hostFilterEl.value, termEl.value);
-	const data = await get(`/api${ajaxify.data.url}?host=${hostFilterEl.value}&term=${termEl.value}`);
+	const data = await get(`/api${ajaxify.data.url}?relay=${hostFilterEl.value}&term=${termEl.value}`);
 
 	chart.data.labels = labels.get(termEl.value || 'hourly');
 	chart.data.datasets[0].data = data.data.in;

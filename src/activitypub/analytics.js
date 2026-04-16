@@ -62,11 +62,9 @@ Analytics.receiptError = async (body, error) => {
 Analytics.relays = {};
 
 Analytics.relays.in = (relay) => {
-	const { hostname } = new URL(relay);
-	analytics.increment(['ap.relayIn', `ap.relayIn:byHost:${hostname}`]);
+	analytics.increment(['ap.relayIn', `ap.relayIn:byRelay:${relay}`]);
 };
 
 Analytics.relays.out = (relay) => {
-	const { hostname } = new URL(relay);
-	analytics.increment(['ap.relayOut', `ap.relayOut:byHost:${hostname}`]);
+	analytics.increment(['ap.relayOut', `ap.relayOut:byRelay:${relay}`]);
 };

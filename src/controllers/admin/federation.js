@@ -34,9 +34,9 @@ federationController.relays = async function (req, res) {
 	const relays = await activitypub.relays.list();
 	const urls = relays.map(({ url }) => url);
 
-	let { host, term } = req.query;
-	if (!urls.includes(host)) {
-		host = undefined;
+	let { relay, term } = req.query;
+	if (!urls.includes(relay)) {
+		relay = undefined;
 	}
 	let method = 'getHourlyStatsForSet';
 	let count = 24;
@@ -44,8 +44,8 @@ federationController.relays = async function (req, res) {
 		method = 'getDailyStatsForSet';
 		count = 30;
 	}
-	const inSet = host ? `ap.relayIn:byHost:${host}` : 'ap.relayIn';
-	const outSet = host ? `ap.relayOut:byHost:${host}` : 'ap.relayOut';
+	const inSet = relay ? `ap.relayIn:byRelay:${relay}` : 'ap.relayIn';
+	const outSet = relay ? `ap.relayOut:byRelay:${relay}` : 'ap.relayOut';
 	const incoming = await analytics[method](inSet, Date.now(), count);
 	const out = await analytics[method](outSet, Date.now(), count);
 
