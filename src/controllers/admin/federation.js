@@ -117,17 +117,20 @@ federationController.errors = async function (req, res) {
 			return null;
 		}
 		let { type, body, stack } = errorObj[idx];
+		let activityType;
 		let hostname = 'Invalid hostname';
 		const timestampISO = new Date(timestamp).toISOString();
 		try {
-			body = JSON.stringify(JSON.parse(body), null, 4);
+			const parsed = JSON.parse(body);
+			({ type: activityType } = parsed);
+			body = JSON.stringify(parsed, null, 4);
 			stack = validator.escape(stack.replace(/\s+$/gm, ''));
 			({ hostname } = new URL(id));
 		} catch (e) {
 			// noop
 		}
 
-		return { id, type, body, stack, hostname, timestamp, timestampISO };
+		return { id, type, activityType, body, stack, hostname, timestamp, timestampISO };
 	}).filter(Boolean);
 
 	res.render('admin/federation/errors', {
