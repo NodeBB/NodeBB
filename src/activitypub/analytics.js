@@ -58,3 +58,15 @@ Analytics.receiptError = async (body, error) => {
 	]);
 	await db.expire(`ap.errors:${id}`, 60 * 60 * 24); // 24 hours
 };
+
+Analytics.relays = {};
+
+Analytics.relays.in = (relay) => {
+	const { hostname } = new URL(relay);
+	analytics.increment(['ap.relayIn', `ap.relayIn:byHost:${hostname}`]);
+};
+
+Analytics.relays.out = (relay) => {
+	const { hostname } = new URL(relay);
+	analytics.increment(['ap.relayOut', `ap.relayOut:byHost:${hostname}`]);
+};

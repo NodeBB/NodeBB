@@ -469,6 +469,10 @@ inbox.announce = async (req) => {
 						await topics.crossposts.add(tid, cid, 0);
 					}));
 				}
+
+				if (fromRelay) {
+					activitypub.analytics.relays.in(actor);
+				}
 			}
 
 			if (!cid) { // Topic events from actors followed by users only
