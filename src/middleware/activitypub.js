@@ -76,6 +76,14 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 		return res.sendStatus(403);
 	}
 
+	// Domain check against blocklists
+	const { hostname } = new URL(req.body.actor);
+	const isAllowed = await activitypub.blocklists.check(hostname);
+	if (!isAllowed) {
+		activitypub.helpers.log(`[middleware/activitypub] Blocked incoming activity from ${hostname} due to blocklist.`);
+		return res.sendStatus(403);
+	}
+
 	// Sanity-check payload schema
 	const required = ['id', 'type', 'actor', 'object'];
 	if (!required.every(prop => req.body.hasOwnProperty(prop))) {
