@@ -61,7 +61,7 @@ Categories.getTopics = async (req, res) => {
 
 Categories.setWatchState = async (req, res) => {
 	const { cid } = req.params;
-	const uid = req.params.uid || req.body.uid; // Extract member from params if available
+	const uid = req.params.member || req.body.uid;
 	let {state} = req.body;
 
 	if (req.method === 'DELETE') {
@@ -74,7 +74,6 @@ Categories.setWatchState = async (req, res) => {
 	}
 
 	const { cids: modified } = await api.categories.setWatchState(req, { cid, state, uid });
-
 	helpers.formatApiResponse(200, res, { modified });
 };
 
@@ -85,11 +84,12 @@ Categories.getPrivileges = async (req, res) => {
 
 Categories.setPrivilege = async (req, res) => {
 	const { cid, privilege } = req.params;
+	const member = req.params.member || req.body.member;
 
 	await api.categories.setPrivilege(req, {
 		cid,
 		privilege,
-		member: req.body.member,
+		member,
 		set: req.method === 'PUT',
 	});
 
@@ -118,7 +118,6 @@ Categories.follow = async (req, res, next) => {
 	}
 
 	await activitypub.out.follow('cid', id, actor);
-
 	helpers.formatApiResponse(200, res, {});
 };
 

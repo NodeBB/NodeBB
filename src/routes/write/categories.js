@@ -23,11 +23,12 @@ module.exports = function () {
 
 	setupApiRoute(router, 'put', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
 	setupApiRoute(router, 'delete', '/:cid/watch', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
-	setupApiRoute(router, 'delete', '/:cid/watch/:uid', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
+	setupApiRoute(router, 'delete', '/:cid/watch/:member', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
 
 	setupApiRoute(router, 'get', '/:cid/privileges', [...middlewares], controllers.write.categories.getPrivileges);
 	setupApiRoute(router, 'put', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
-	setupApiRoute(router, 'delete', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
+	setupApiRoute(router, 'delete', '/:cid/privileges/:privilege', [...middlewares], controllers.write.categories.setPrivilege);
+	setupApiRoute(router, 'delete', '/:cid/privilege/:privilege/:member', [...middlewares], controllers.write.categories.setPrivilege);
 
 	setupApiRoute(router, 'put', '/:cid/moderator/:uid', [...middlewares, middleware.assert.category], controllers.write.categories.setModerator);
 	setupApiRoute(router, 'delete', '/:cid/moderator/:uid', [...middlewares, middleware.assert.category], controllers.write.categories.setModerator);
