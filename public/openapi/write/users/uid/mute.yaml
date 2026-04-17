@@ -68,6 +68,16 @@ delete:
         type: string
         nullable: true
       description: Reason for the unmute
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            reason:
+              type: string
+              nullable: true
+              description: Reason for the unmute
   responses:
     '200':
       description: successfully unmuted user
