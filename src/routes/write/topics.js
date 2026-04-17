@@ -42,7 +42,7 @@ module.exports = function () {
 	], controllers.write.topics.addThumb);
 
 
-	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares, middleware.checkRequired.bind(null, ['path'])], controllers.write.topics.deleteThumb);
+	setupApiRoute(router, 'delete', '/:tid/thumbs', [...middlewares], controllers.write.topics.deleteThumb);
 	setupApiRoute(router, 'put', '/:tid/thumbs/order', [...middlewares, middleware.checkRequired.bind(null, ['path', 'order'])], controllers.write.topics.reorderThumbs);
 
 	setupApiRoute(router, 'get', '/:tid/events', [middleware.assert.topic], controllers.write.topics.getEvents);
