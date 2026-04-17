@@ -338,9 +338,16 @@ inbox.like = async (req) => {
 			exists = await posts.exists(_id);
 			id = _id;
 		}
-
 	} else {
 		exists = await posts.exists(object.id);
+		if (!exists) {
+			// Proactively pull in the note
+			const asserted = await activitypub.notes.assert(0, object.id, { skipChecks: 1 });
+			if (!asserted) {
+				throw new Error('[[error:invalid-pid]]');
+			}
+			exists = true;
+		}
 		id = object.id;
 	}
 	if (!id || !exists) {
