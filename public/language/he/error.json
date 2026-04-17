@@ -267,5 +267,5 @@
     "activitypub.pubKey-not-found": "לא ניתן לפתור מפתח ציבורי, ולכן לא ניתן לבצע אימות מטען.",
     "activitypub.origin-mismatch": "מקור האובייקט שהתקבל אינו תואם את מקור השולח",
     "activitypub.not-implemented": "הבקשה נדחתה מכיוון שהיא או היבט שלה אינם מיושמים על ידי שרת הנמען",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "האובייקט שהתקבל אינו משויך לאף משתמש מקומי ידוע."
 }

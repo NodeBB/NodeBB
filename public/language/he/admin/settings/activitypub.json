@@ -65,18 +65,18 @@
 	"content.break-string-help": "משתמשים מתקדמים יכולים להזין את המפריד הזה ידנית בעת כתיבת נושאים חדשים. הוא מורה ל-NodeBB להשתמש בתוכן שעד לנקודה זו כחלק מה-<code> תקציר </code>. אם לא נעשה שימוש במחרוזת זו, תופעל חלופת ספירת התווים. (ברירת מחדל: <code> [...] </code> )",
 	"content.world-default-cid": "מזהה קטגוריה ברירת מחדל עבור &quot;World&quot; יוצר עמודים",
 
-	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
-	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
-	"analytics.by-hostname": "Filter by Hostname",
-	"analytics.in": "Incoming",
-	"analytics.out": "Outgoing",
-	"analytics.received": "Received Activities",
-	"analytics.sent": "Sent Activites",
-	"analytics.errors": "Errors",
-	"analytics.term": "Time scale",
-	"analytics.hourly": "Hourly",
-	"analytics.daily": "Daily",
+	"analytics.intro": "דף זה מספק סקירה כללית של מצב הפדרציה של הפורום שלכם עם מופעים/שרתים אחרים",
+	"analytics.details": "NodeBB עוקב אחר קבלות ושליחות של פעילות ActivityPub, ואתם יכולים לצפות בהן לפי שם מארח, מדי שעה או יומי. שים לב שקשה להשיג שיעור שגיאות אפס בהתחשב בעובדה ששרתים מסוימים אינם מקוונים או מוגדרים בצורה לא נכונה.",
+	"analytics.by-hostname": "סינון לפי שם מארח",
+	"analytics.in": "נכנס",
+	"analytics.out": "יוצא",
+	"analytics.received": "פעילויות שהתקבלו",
+	"analytics.sent": "פעילויות שנשלחו",
+	"analytics.errors": "שגיאות",
+	"analytics.term": "סולם זמן",
+	"analytics.hourly": "שעתי",
+	"analytics.daily": "יומי",
 
-	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
-	"errors.payload-gone": "The payload for this error no longer exists."
+	"errors.intro": "השגיאות הבאות %1 נרשמו במקרה זה במהלך 24 השעות האחרונות.",
+	"errors.payload-gone": "ה-payload עבור שגיאה זו אינו קיים עוד."
 }
