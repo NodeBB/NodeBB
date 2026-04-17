@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const categories = require('../../categories');
 const meta = require('../../meta');
 const activitypub = require('../../activitypub');
@@ -60,6 +62,11 @@ Categories.getTopics = async (req, res) => {
 };
 
 Categories.setWatchState = async (req, res) => {
+	// Deprecation warning for old watch state route
+	if (!req.params.member && req.body.uid) {
+		winston.warn('Deprecation warning: The old watch state route without member parameter is deprecated. Use /:cid/watch/:member instead.');
+	}
+
 	const { cid } = req.params;
 	const uid = req.params.member || req.body.uid;
 	let { state } = req.body;
@@ -78,11 +85,15 @@ Categories.setWatchState = async (req, res) => {
 };
 
 Categories.getPrivileges = async (req, res) => {
-	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
-	helpers.formatApiResponse(200, res, privilegeSet);
+	helpers.formatApiResponse(200, res, await api.categories.getPrivileges(req, { cid: req.params.cid }));
 };
 
 Categories.setPrivilege = async (req, res) => {
+	// Deprecation warning for old privilege route without member
+	if (!req.params.member && req.body.member) {
+		winston.warn('Deprecation warning: The old privilege route without member parameter is deprecated. Use /:cid/privilege/:privilege/:member instead.');
+	}
+
 	const { cid, privilege } = req.params;
 	const member = req.params.member || req.body.member;
 
@@ -122,6 +133,11 @@ Categories.follow = async (req, res, next) => {
 };
 
 Categories.unfollow = async (req, res, next) => {
+	// Deprecation warning for old unfollow route without actor
+	if (!req.params.actor && req.body.actor) {
+		winston.warn('Deprecation warning: The old unfollow route without actor parameter is deprecated. Use /:cid/follow/:actor instead.');
+	}
+
 	const id = parseInt(req.params.cid, 10);
 	const actor = req.params.actor || req.body.actor;
 
