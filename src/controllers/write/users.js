@@ -119,7 +119,11 @@ Users.ban = async (req, res) => {
 };
 
 Users.unban = async (req, res) => {
-	await api.users.unban(req, { ...req.body, uid: req.params.uid });
+	const params = {
+		uid: req.params.uid,
+		reason: req.query.reason || req.body.reason,
+	};
+	await api.users.unban(req, params);
 	helpers.formatApiResponse(200, res);
 };
 
