@@ -130,14 +130,20 @@ paths:
     $ref: 'write/categories/cid/topics.yaml'
   /categories/{cid}/watch:
     $ref: 'write/categories/cid/watch.yaml'
+  /categories/{cid}/watch/{member}:
+    $ref: 'write/categories/cid/watch/member.yaml'
   /categories/{cid}/privileges:
     $ref: 'write/categories/cid/privileges.yaml'
   /categories/{cid}/privileges/{privilege}:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
+  /categories/{cid}/privileges/{privilege}/{member}:
+    $ref: 'write/categories/cid/privileges/privilege/member.yaml'
   /categories/{cid}/moderator/{uid}:
     $ref: 'write/categories/cid/moderator/uid.yaml'
   /categories/{cid}/follow:
     $ref: 'write/categories/cid/follow.yaml'
+  /categories/{cid}/follow/{actor}:
+    $ref: 'write/categories/cid/follow/actor.yaml'
   /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:

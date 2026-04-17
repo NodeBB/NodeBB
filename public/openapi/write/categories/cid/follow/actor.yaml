@@ -23,7 +23,7 @@ delete:
         type: string
       required: true
       description: A valid actor uri or webfinger handle
-      example: 'https://example.org/foobar'
+      example: https%3A%2F%2Fexample.org%2Ffoobar
   responses:
     '200':
       description: successfully unsynchronized category
