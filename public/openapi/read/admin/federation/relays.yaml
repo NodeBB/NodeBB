@@ -15,7 +15,15 @@ get:
                     type: string
                   relays:
                     $ref: ../../../components/schemas/admin/relays.yaml#/RelaysArray
-                  hideSave:
-                    type: boolean
-                    description: A flag to instruct the template engine to hide the save button
+                  data:
+                    type: object
+                    properties:
+                      in:
+                        type: array
+                        items:
+                          type: number
+                      out:
+                        type: array
+                        items:
+                          type: number
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
