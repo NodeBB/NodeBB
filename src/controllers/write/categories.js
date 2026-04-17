@@ -62,7 +62,7 @@ Categories.getTopics = async (req, res) => {
 Categories.setWatchState = async (req, res) => {
 	const { cid } = req.params;
 	const uid = req.params.member || req.body.uid;
-	let {state} = req.body;
+	let { state } = req.body;
 
 	if (req.method === 'DELETE') {
 		// DELETE is always setting state to system default in acp
@@ -122,8 +122,8 @@ Categories.follow = async (req, res, next) => {
 };
 
 Categories.unfollow = async (req, res, next) => {
-	const { actor } = req.body;
 	const id = parseInt(req.params.cid, 10);
+	const actor = req.params.actor || req.body.actor;
 
 	if (!id) { // disallow cid 0
 		return next();
