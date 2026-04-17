@@ -13,10 +13,9 @@ put:
     - name: until
       in: query
       schema:
-        type: string
-        format: date-time
+        type: number
         nullable: true
-      description: Mute expiration timestamp (ISO 8601)
+      description: UNIX timestamp of the mute expiration
     - name: reason
       in: query
       schema:
@@ -30,10 +29,9 @@ put:
           type: object
           properties:
             until:
-              type: string
-              format: date-time
+              type: number
               nullable: true
-              description: Mute expiration timestamp (ISO 8601)
+              description: UNIX timestamp of the mute expiration
             reason:
               type: string
               nullable: true
