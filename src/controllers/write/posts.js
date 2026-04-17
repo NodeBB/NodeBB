@@ -198,7 +198,7 @@ Posts.acceptQueuedPost = async (req, res) => {
 Posts.removeQueuedPost = async (req, res) => {
 	await api.posts.removeQueuedPost(req, {
 		id: req.params.id,
-		message: req.query.message || req.body.message
+		message: req.query.message || req.body.message,
 	});
 	helpers.formatApiResponse(200, res);
 };
