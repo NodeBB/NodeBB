@@ -136,8 +136,11 @@ put:
 delete:
   tags:
     - categories
-  summary: Rescinds category privilege for user/group
-  description: This operation rescinds a category privilege for a specific user or group
+  summary: Rescinds category privilege for user/group (Deprecated)
+  description: |
+    This method is **deprecated**, please use `DELETE /categories/:cid/:privilege/:member` instead when removing privileges via the API.
+
+    This operation rescinds a category privilege for a specific user or group
   parameters:
     - in: path
       name: cid
