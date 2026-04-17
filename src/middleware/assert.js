@@ -88,10 +88,6 @@ Assert.path = helpers.try(async (req, res, next) => {
 		_path = req.query.path;
 	}
 
-	if (!_path) {
-		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
-	}
-
 	// file: URL support
 	if (_path.startsWith('file:///')) {
 		_path = new URL(_path).pathname;
