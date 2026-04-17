@@ -329,20 +329,33 @@ inbox.delete = async (req) => {
 
 inbox.like = async (req) => {
 	const { actor, object } = req.body;
-	const exists = await posts.exists(object.id);
-	if (!exists) {
+
+	let exists;
+	let id;
+	if (object.id.startsWith(nconf.get('url'))) {
+		const { type, id: _id } = await activitypub.helpers.resolveLocalId(object.id);
+		if (type === 'post') {
+			exists = await posts.exists(_id);
+			id = _id;
+		}
+
+	} else {
+		exists = await posts.exists(object.id);
+		id = object.id;
+	}
+	if (!id || !exists) {
 		throw new Error('[[error:invalid-pid]]');
 	}
-	const { id: pid } = object;
-	const allowed = await privileges.posts.can('posts:upvote', pid, activitypub._constants.uid);
+
+	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
 	if (!allowed) {
-		activitypub.helpers.log(`[activitypub/inbox.like] ${pid} not allowed to be upvoted.`);
+		activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be upvoted.`);
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	activitypub.helpers.log(`[activitypub/inbox/like] id ${pid} via ${actor}`);
+	activitypub.helpers.log(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
-	const result = await posts.upvote(pid, actor);
+	const result = await posts.upvote(id, actor);
 	await activitypub.feps.announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
