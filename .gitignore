@@ -1,6 +1,7 @@
 dist/
 yarn.lock
 npm-debug.log
+node_modules
 node_modules/
 sftp-config.json
 config.json
