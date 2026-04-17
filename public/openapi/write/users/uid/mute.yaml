@@ -10,6 +10,19 @@ put:
       required: true
       description: uid of the user to mute
       example: 2
+    - name: until
+      in: query
+      schema:
+        type: string
+        format: date-time
+        nullable: true
+      description: Mute expiration timestamp (ISO 8601)
+    - name: reason
+      in: query
+      schema:
+        type: string
+        nullable: true
+      description: Reason for the mute
   requestBody:
     content:
       application/json:
@@ -17,12 +30,14 @@ put:
           type: object
           properties:
             until:
-              type: number
-              description: UNIX timestamp of the mute expiry
-              example: 1585775608076
+              type: string
+              format: date-time
+              nullable: true
+              description: Mute expiration timestamp (ISO 8601)
             reason:
               type: string
-              example: the reason for the mute
+              nullable: true
+              description: Reason for the mute
   responses:
     '200':
       description: successfully muted user
