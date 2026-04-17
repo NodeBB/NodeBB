@@ -298,7 +298,14 @@ inbox.delete = async (req) => {
 
 			const uid = await posts.getPostField(id, 'uid');
 			await activitypub.feps.announce(id, req.body);
-			await api.posts[method]({ uid }, { pid: id });
+			try {
+				await api.posts[method]({ uid }, { pid: id });
+			} catch (e) {
+				// Can ignore deletion if already deleted
+				if (e.message !== '[[error:post-already-deleted]]') {
+					throw e;
+				}
+			}
 			break;
 		}
 
