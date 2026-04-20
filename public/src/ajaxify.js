@@ -371,10 +371,12 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.removeRelativePath = function (url) {
-		if (config.relative_path && url.startsWith(config.relative_path.slice(1))) {
-			url = url.slice(config.relative_path.length - 1);
-			if (url.startsWith('/')) {
-				url = url.slice(1);
+		if (config.relative_path && url) {
+			const prefix = config.relative_path.slice(1);
+			if (url === prefix) {
+				return '';
+			} else if (url.startsWith(`${prefix}/`)) {
+				url = url.slice(prefix.length + 1);
 			}
 		}
 		return url;
