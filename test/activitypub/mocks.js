@@ -121,6 +121,62 @@ describe('Mocking', () => {
 						assert.strictEqual(mocked.summary, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. [...]');
 					});
 				});
+
+				describe('Type Determination', () => {
+					let postDataWithGeneratedTitle;
+					let postDataWithoutGeneratedTitle;
+
+					before(async function () {
+						const { cid } = await categories.create({ name: utils.generateUUID() });
+						this.cid = cid;
+						this.uid = await user.create({ username: utils.generateUUID() });
+
+						// Create post with generated title (should be Note type)
+						({ postData: postDataWithGeneratedTitle } = await topics.post({
+							cid,
+							uid: this.uid,
+							content: 'Short content',
+						}));
+
+						// Create post without generated title (should be Article type)
+						({ postData: postDataWithoutGeneratedTitle } = await topics.post({
+							cid,
+							uid: this.uid,
+							title: utils.generateUUID(),
+							content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
+									'Aliquam vel augue, id luctus nulla. Mauris efficitur blandit neque et mattis. ' +
+									'Etiam sodales et ipsum et ultricies. Nam non velit id arcu vestibulum suscipit. ' +
+									'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. ' +
+									'Integer dui elit, placerat vitae porta in, euismod eu mi. Curabitur eget lorem dapibus, ' +
+									'accumsan leo in, gravida magna. Donec fringilla rhoncus eros, eget auctor lectus imperdiet vitae. ' +
+									'Nullam vitae urna leo. Curabitur eu viverra libero, vel malesuada lorem. Praesent condimentum eu felis nec tincidunt. ' +
+									'Morbi nisl lorem, facilisis sed lorem at, venenatis.',
+						}));
+					});
+
+					it('should return type "Note" when generatedTitle is true', async function () {
+						const result = await activitypub.mocks.notes.public(postDataWithGeneratedTitle);
+						assert.strictEqual(result.type, 'Note');
+					});
+
+					it('should return type "Article" when generatedTitle is false', async function () {
+						const result = await activitypub.mocks.notes.public(postDataWithoutGeneratedTitle);
+						assert.strictEqual(result.type, 'Article');
+					});
+
+					it('should return type "Article" for short content even when generatedTitle is false (averting legacy behavior)', async function () {
+						// Old behaviour classified short posts < 500 chars (later configurable) as Notes even if titled.
+						const shortPostData = await topics.post({
+							cid: this.cid,
+							uid: this.uid,
+							title: utils.generateUUID(),
+							content: 'Short content',
+						});
+
+						const result = await activitypub.mocks.notes.public(shortPostData.postData);
+						assert.strictEqual(result.type, 'Article');
+					});
+				});
 			});
 		});
 	});
