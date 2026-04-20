@@ -710,8 +710,7 @@ Mocks.notes.public = async (post) => {
 	});
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
-	const plaintext = posts.sanitizePlaintext(content);
-	const isArticle = post.pid === post.topic.mainPid && plaintext.length > meta.config.activitypubSummaryLimit;
+	const isArticle = post.pid === post.topic.mainPid && !generatedTitle;
 
 	if (post.isMainPost) {
 		const thumbs = await topics.thumbs.get(post.tid);
