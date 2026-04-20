@@ -135,7 +135,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 		const response = await fetchImpl(currentUrl, opts);
 
 		// Handle redirects
-		if ([301, 302, 307, 308].includes(response.status)) {
+		if (config.redirect !== 'manual' && [301, 302, 307, 308].includes(response.status)) {
 			const location = response.headers.get('location');
 			if (!location) break;
 			// Handle relative URLs
