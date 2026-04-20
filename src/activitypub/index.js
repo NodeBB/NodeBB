@@ -545,11 +545,13 @@ ActivityPub.buildRecipients = async function (object, options) {
 
 	// Topic posters, post announcers and their followers
 	if (pid) {
-		const tid = await posts.getPostField(pid, 'tid');
+		const { tid, mainPid } = await posts.getPostFields(pid, ['tid', 'mainPid']);
 		const participants = (await db.getSortedSetMembers(`tid:${tid}:posters`))
 			.filter(uid => !utils.isNumber(uid)); // remote users only
 		const announcers = (await ActivityPub.notes.announce.list({ pid })).map(({ actor }) => actor);
-		const auxiliaries = Array.from(new Set([...participants, ...announcers]));
+		const mainAnnouncers = (await ActivityPub.notes.announce.list({ pid: mainPid })).map(({ actor }) => actor);
+		const auxiliaries = Array.from(new Set([...participants, ...announcers, ...mainAnnouncers]));
+
 		const auxiliaryFollowers = (await user.getUsersFields(auxiliaries, ['followersUrl']))
 			.filter(o => o.hasOwnProperty('followersUrl'))
 			.map(({ followersUrl }) => followersUrl);
