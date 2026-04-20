@@ -495,6 +495,7 @@ define('admin/manage/users', [
 		});
 
 		const tableEl = document.querySelector('.users-table');
+		const $tableEl = $(tableEl);
 		const actionBtn = document.getElementById('action-dropdown');
 		tableEl.addEventListener('change', (e) => {
 			const subselector = e.target.closest('[component="user/select/single"]') || e.target.closest('[component="user/select/all"]');
@@ -509,7 +510,7 @@ define('admin/manage/users', [
 		});
 
 		let lastSelectedUser;
-		$(tableEl).on('click', '[component="user/select/single"]', function (ev) {
+		$tableEl.on('click', '[component="user/select/single"]', function (ev) {
 			function selectRange(clickedUserRow) {
 				function selectIndexRange(start, end, isChecked) {
 					if (start > end) {
@@ -545,7 +546,7 @@ define('admin/manage/users', [
 			lastSelectedUser = userRow;
 		});
 
-		$('[data-copy]').on('click', function () {
+		$tableEl.on('click', '[data-copy]', function () {
 			const btn = $(this);
 			navigator.clipboard.writeText(this.getAttribute('data-copy'));
 			btn.find('i')

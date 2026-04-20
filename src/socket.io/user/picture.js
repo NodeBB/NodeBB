@@ -39,7 +39,7 @@ module.exports = function (SocketUser) {
 		userPictures.forEach((picture) => {
 			list.pictures.push({
 				type: 'uploaded',
-				url: `${nconf.get('relative_path')}${picture}`,
+				url: picture.startsWith('http') ? picture : `${nconf.get('relative_path')}${picture}`,
 				text: '[[user:uploaded-picture]]',
 			});
 		});
