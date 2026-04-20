@@ -487,6 +487,11 @@ ActivityPub.buildRecipients = async function (object, options) {
 	 *     - `pid`: includes post announcers and all topic participants
 	 *     - `targets`: boolean; whether to calculate targets (default: true)
 	 */
+
+	const getMainPid = async (pid) => {
+		const { tid } = await posts.getPostField(pid, 'tid');
+		return db.getSortedSetMember('tid:' + tid + ':posts', 0);
+	};
 	let { to, cc } = object;
 	to = new Set(to);
 	cc = new Set(cc);
