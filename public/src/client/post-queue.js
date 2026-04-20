@@ -272,7 +272,7 @@ define('forum/post-queue', [
 	async function doAction(action, id, message = '') {
 		const actionsMap = {
 			accept: () => api.post(`/posts/queue/${id}`, {}),
-			reject: () => api.del(`/posts/queue/${id}`, { message }),
+			reject: () => api.del(`/posts/queue/${id}?message=${encodeURIComponent(message)}`, {}),
 			notify: () => api.post(`/posts/queue/${id}/notify`, { message }),
 		};
 		if (actionsMap[action]) {

@@ -96,8 +96,15 @@ delete:
       required: true
       description: a valid topic id
       example: 1
+    - in: query
+      name: path
+      schema:
+        type: string
+      required: false
+      description: Relative path to the topic thumbnail (alternative to request body)
+      example: files/test.png
   requestBody:
-    required: true
+    required: false
     content:
       application/json:
         schema:
