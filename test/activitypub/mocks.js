@@ -24,7 +24,6 @@ describe('Mocking', () => {
 					let { postData } = await topics.post({
 						cid,
 						uid: this.uid,
-						title: utils.generateUUID(),
 						content: utils.generateUUID(),
 					});
 					this.note = await activitypub.mocks.notes.public(postData);

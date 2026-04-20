@@ -70,13 +70,13 @@ describe('FEPs', () => {
 						[, activity] = activity;
 						return activity.payload.type === 'Announce' &&
 							activity.payload.object && activity.payload.object.type === 'Create' &&
-							activity.payload.object.object && activity.payload.object.object.type === 'Note';
+							activity.payload.object.object && activity.payload.object.object.type === 'Article';
 					});
 
 					const test2 = activities.some((activity) => {
 						[, activity] = activity;
 						return activity.payload.type === 'Announce' &&
-							activity.payload.object && activity.payload.object.type === 'Note';
+							activity.payload.object && activity.payload.object.type === 'Article';
 					});
 
 					assert(test1 && test2);
