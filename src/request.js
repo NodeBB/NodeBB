@@ -93,60 +93,82 @@ const dispatcher = new NodeBBAgent({
 setGlobalDispatcher(dispatcher);
 
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
-	const { ok } = await check(url);
-	if (!ok) {
-		throw new Error('[[error:reserved-ip-address]]');
-	}
+	const originalUrl = url;
+	let currentUrl = url;
 
-	let fetchImpl = fetch;
-	if (jar) {
-		fetchImpl = fetchCookie(fetch, jar);
-	}
-	const jsonTest = /application\/([a-z]+\+)?json/;
-	const opts = {
-		...config,
-		method,
-		headers: {
-			'content-type': 'application/json',
-			'user-agent': userAgent,
-			...config.headers,
-		},
-	};
-	if (timeout > 0) {
-		opts.signal = AbortSignal.timeout(timeout);
-	}
-
-	if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
-		if (opts.headers['content-type'] && jsonTest.test(opts.headers['content-type'])) {
-			opts.body = JSON.stringify(body);
-		} else {
-			opts.body = body;
+	// Process redirects manually
+	while (true) {
+		// Check the current URL
+		// eslint-disable-next-line no-await-in-loop
+		const { ok } = await check(currentUrl);
+		if (!ok) {
+			throw new Error('[[error:reserved-ip-address]]');
 		}
-	}
 
-	const response = await fetchImpl(url, opts);
-	const { headers } = response;
-	const contentType = headers.get('content-type');
-	const isJSON = contentType && jsonTest.test(contentType);
-	let respBody = await response.text();
-	if (isJSON && respBody) {
-		try {
-			respBody = JSON.parse(respBody);
-		} catch (err) {
-			throw new Error('invalid json in response body', url);
+		let fetchImpl = fetch;
+		if (jar) {
+			fetchImpl = fetchCookie(fetch, jar);
 		}
-	}
 
-	return {
-		body: respBody,
-		response: {
-			ok: response.ok,
-			status: response.status,
-			statusCode: response.status,
-			statusText: response.statusText,
-			headers: Object.fromEntries(response.headers.entries()),
-		},
-	};
+		const jsonTest = /application\/([a-z]+\+)?json/;
+		const opts = {
+			...config,
+			method,
+			redirect: 'manual',
+			headers: {
+				'content-type': 'application/json',
+				'user-agent': userAgent,
+				...config.headers,
+			},
+			signal: timeout > 0 ? AbortSignal.timeout(timeout) : undefined,
+		};
+
+		if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
+			if (opts.headers['content-type'] && jsonTest.test(opts.headers['content-type'])) {
+				opts.body = JSON.stringify(body);
+			} else {
+				opts.body = body;
+			}
+		}
+
+		// eslint-disable-next-line no-await-in-loop
+		const response = await fetchImpl(currentUrl, opts);
+
+		// Handle redirects
+		if ([301, 302, 307, 308].includes(response.status)) {
+			const location = response.headers.get('location');
+			if (!location) break;
+			// Handle relative URLs
+			currentUrl = new URL(location, currentUrl).href;
+			continue;
+		}
+
+		// Process final response
+		const { headers } = response;
+		const contentType = headers.get('content-type');
+		const isJSON = contentType && jsonTest.test(contentType);
+		// eslint-disable-next-line no-await-in-loop
+		let respBody = await response.text();
+
+		if (isJSON && respBody) {
+			try {
+				respBody = JSON.parse(respBody);
+			} catch (err) {
+				throw new Error('invalid json in response body', originalUrl);
+			}
+		}
+
+		return {
+			body: respBody,
+			response: {
+				ok: response.ok,
+				status: response.status,
+				statusCode: response.status,
+				statusText: response.statusText,
+				headers: Object.fromEntries(response.headers.entries()),
+			},
+		};
+	}
 }
 
 // Checks url to ensure it is not in reserved IP range (private, etc.)
