@@ -197,6 +197,9 @@ Helpers.resolveLocalId = async (input) => {
 				case 'post':
 					return { type: 'post', id: value, ...activityData };
 
+				case 'topic':
+					return { type: 'topic', id: value, ...activityData };
+
 				case 'cid':
 				case 'category':
 					return { type: 'category', id: value, ...activityData };
