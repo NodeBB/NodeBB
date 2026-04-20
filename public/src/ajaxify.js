@@ -160,11 +160,13 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
-		const isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') !== 0;
-		const isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') === 0;
+		const urlStartsWithAdmin = url.startsWith('admin');
+		const currentPathStartsWithAdmin = window.location.pathname.indexOf(`${config.relative_path}/admin`) === 0;
+		const isClientToAdmin = urlStartsWithAdmin && !currentPathStartsWithAdmin;
+		const isAdminToClient = !urlStartsWithAdmin && currentPathStartsWithAdmin;
 
 		if (isClientToAdmin || isAdminToClient) {
-			window.open(config.relative_path + '/' + url, '_top');
+			window.open(`${config.relative_path}/${url}`, '_top');
 			return true;
 		}
 		return false;
