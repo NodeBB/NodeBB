@@ -83,7 +83,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			return { tid, count: 0 };
 		} else if (context.context) {
 			const { type, id: tid } = await activitypub.helpers.resolveLocalId(context.context);
-			if (!type === 'topic') {
+			if (type !== 'topic') {
 				chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 				if (chain && chain.length) {
 					// Deduplicate by id (just in case, also a buggy NodeBB impl. sent dupes)
