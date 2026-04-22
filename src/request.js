@@ -95,14 +95,15 @@ setGlobalDispatcher(dispatcher);
 async function call(url, method, { body, timeout, jar, ...config } = {}) {
 	const originalUrl = url;
 	let currentUrl = url;
+	let redirectCount = 0; // Add redirect counter
+	const maxRedirects = 10; // Reasonable limit
 
-	// Process redirects manually
-	while (true) {
+	while (redirectCount <= maxRedirects) {
 		// Check the current URL
 		// eslint-disable-next-line no-await-in-loop
 		const { ok } = await check(currentUrl);
 		if (!ok) {
-			throw new Error('[[error:reserved-ip-address]]');
+			throw new Error(`[[error:reserved-ip-address]] (URL: ${currentUrl})`);
 		}
 
 		let fetchImpl = fetch;
@@ -136,11 +137,16 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 		// Handle redirects
 		if (config.redirect !== 'manual' && [301, 302, 307, 308].includes(response.status)) {
+			redirectCount++;
 			const location = response.headers.get('location');
 			if (!location) break;
-			// Handle relative URLs
-			currentUrl = new URL(location, currentUrl).href;
-			continue;
+
+			try {
+				currentUrl = new URL(location, currentUrl).href;
+				continue;
+			} catch (err) {
+				throw new Error(`Invalid redirect URL: ${location}`);
+			}
 		}
 
 		// Process final response
@@ -154,7 +160,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			try {
 				respBody = JSON.parse(respBody);
 			} catch (err) {
-				throw new Error('invalid json in response body', originalUrl);
+				throw new Error(`invalid json in response body from ${originalUrl}`);
 			}
 		}
 
@@ -169,6 +175,8 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			},
 		};
 	}
+
+	throw new Error(`Maximum redirects (${maxRedirects}) exceeded`);
 }
 
 // Checks url to ensure it is not in reserved IP range (private, etc.)
