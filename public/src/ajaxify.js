@@ -144,10 +144,8 @@ ajaxify.widgets = { render: render };
 
 			// Refocus skip link after template rendering
 			setTimeout(() => {
-				const skipLink = document.querySelector('a[href="#content"].visually-hidden-focusable');
-				if (skipLink) {
-					skipLink.focus();
-				}
+				// For now, just blur any focused element to prevent visual flash
+				document.activeElement.blur();
 			}, 0);
 		});
 
