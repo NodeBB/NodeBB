@@ -141,6 +141,14 @@ ajaxify.widgets = { render: render };
 			retry = true;
 
 			renderTemplate(url, data.templateToRender || data.template.name, data, callback);
+
+			// Refocus skip link after template rendering
+			setTimeout(() => {
+				const skipLink = document.querySelector('a[href="#content"].visually-hidden-focusable');
+				if (skipLink) {
+					skipLink.focus();
+				}
+			}, 0);
 		});
 
 		return true;
