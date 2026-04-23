@@ -58,7 +58,7 @@ Digest.getUsersInterval = async (uids) => {
 };
 
 Digest.getSubscribers = async function (interval) {
-	let subscribers = [];
+	const subscribers = [];
 
 	await batch.processSortedSet('users:joindate', async (uids) => {
 		const settings = await user.getMultipleUserSettings(uids);
@@ -69,7 +69,7 @@ Digest.getSubscribers = async function (interval) {
 			}
 		});
 		subUids = await user.bans.filterBanned(subUids);
-		subscribers = subscribers.concat(subUids);
+		subscribers.push(...subUids);
 	}, {
 		interval: 1000,
 		batch: 500,

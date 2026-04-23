@@ -204,7 +204,9 @@ module.exports = function (User) {
 	}
 
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {
-		await db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);
+		await db.sortedSetsRemove([
+			'digest:day:uids', 'digest:week:uids', 'digest:biweek:uids', 'digest:month:uids',
+		], uid);
 		if (['day', 'week', 'biweek', 'month'].includes(dailyDigestFreq)) {
 			await db.sortedSetAdd(`digest:${dailyDigestFreq}:uids`, Date.now(), uid);
 		}
