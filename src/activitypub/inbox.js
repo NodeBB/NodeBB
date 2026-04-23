@@ -448,23 +448,10 @@ inbox.announce = async (req) => {
 			break;
 		}
 
-		case object.type === 'Create': {
-			object = object.object;
-			// falls through
-		}
-
 		case object.type === 'Delete': {
-			const id = object.id || object.object;
-			let type = object.type || undefined;
-
-			// Deletes don't have their objects resolved automatically
-			try {
-				if (!type) {
-					({ type } = await activitypub.get('uid', 0, id));
-				}
-			} catch (e) {
-				// probably 410/404
-			}
+			let id = object.object.id || object.object; // expecting object reference
+			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
+			id = localId || id;
 
 			const exists = await posts.exists(id);
 			if (!exists) {
@@ -473,13 +460,18 @@ inbox.announce = async (req) => {
 			}
 
 			const _cid = await posts.getCidByPid(id);
-			if (_cid !== cid) {
+			if (!utils.isNumber(cid) && _cid !== cid) { // matching & remote categories only
 				throw new Error('[[error:invalid-cid]]');
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
 			await posts.delete(id, uid);
 			break;
+		}
+
+		case object.type === 'Create': {
+			object = object.object;
+			// falls through
 		}
 
 		// Announce(Object)

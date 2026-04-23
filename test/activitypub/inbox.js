@@ -426,6 +426,77 @@ describe('Inbox', () => {
 					assert.strictEqual(content, note.content);
 				});
 			});
+
+			describe('(Delete)', () => {
+				it('should delete a local post when announced', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { postData } = await topics.post({
+						uid,
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					// Create a delete activity for the local post
+					const object = await activitypub.mocks.notes.public(postData);
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: `${nconf.get('url')}/uid/${postData.uid}`,
+						object,
+					});
+
+					// Wrap it in an announce
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Verify post exists before deletion
+					assert(await posts.exists(postData.pid));
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const isDeleted = await posts.getPostField(postData.pid, 'deleted');
+					const exists = await posts.exists(postData.pid);
+					assert.strictEqual(isDeleted, 1);
+				});
+
+				it('should delete a remote post when announced', async () => {
+					const { id: cid } = helpers.mocks.group();
+
+					// Create a remote note first
+					const { id } = helpers.mocks.note({
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, id, { skipChecks: true });
+
+					// Verify it exists before deletion
+					assert(await posts.exists(id));
+
+					// Create a delete activity for the remote post
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: cid,
+						object: id,
+					});
+
+					// Wrap it in an announce
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const exists = await posts.exists(id);
+					const isDeleted = await posts.getPostField(id, 'deleted');
+					assert.strictEqual(isDeleted, 1);
+				});
+			});
 		});
 
 		describe('Like', () => {
