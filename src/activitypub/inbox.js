@@ -453,6 +453,35 @@ inbox.announce = async (req) => {
 			// falls through
 		}
 
+		case object.type === 'Delete': {
+			const id = object.id || object.object;
+			let type = object.type || undefined;
+
+			// Deletes don't have their objects resolved automatically
+			try {
+				if (!type) {
+					({ type } = await activitypub.get('uid', 0, id));
+				}
+			} catch (e) {
+				// probably 410/404
+			}
+
+			const exists = await posts.exists(id);
+			if (!exists) {
+				activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
+				break;
+			}
+
+			const _cid = await posts.getCidByPid(id);
+			if (_cid !== cid) {
+				throw new Error('[[error:invalid-cid]]');
+			}
+
+			const uid = await posts.getPostField(id, 'uid');
+			await posts.delete(id, uid);
+			break;
+		}
+
 		// Announce(Object)
 		case activitypub._constants.acceptedPostTypes.includes(object.type): {
 			if (String(object.id).startsWith(nconf.get('url'))) { // Local object
