@@ -144,7 +144,7 @@
         "@socket.io/redis-adapter": "8.3.0",
         "sortablejs": "1.15.7",
         "spdx-license-list": "6.11.0",
-        "terser-webpack-plugin": "5.4.0",
+        "terser-webpack-plugin": "5.5.0",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
