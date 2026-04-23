@@ -137,7 +137,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 		// Handle redirects
 		if (config.redirect !== 'manual' && [301, 302, 307, 308].includes(response.status)) {
-			redirectCount++;
+			redirectCount += 1;
 			const location = response.headers.get('location');
 			if (!location) break;
 
