@@ -4,6 +4,10 @@
 	"welcome-notification-link": "קישור הודעת ברוכים הבאים",
 	"welcome-notification-uid": "הודעת ברוכים הבאים למשתמש (UID)",
 	"post-queue-notification-uid": "רשום משתמש בתור (UID)",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
 	"notification-delay": "השהיה לשליחת התראות במייל (שניות)",
-	"notification-delay-help": "אם המשתמש יקרא את ההתראה בתוך פרק זמן זה, המייל לא יישלח. <br/> ברירת מחדל: 60 שניות."
+	"notification-delay-help": "אם המשתמש יקרא את ההתראה בתוך פרק זמן זה, המייל לא יישלח. <br/> ברירת מחדל: 60 שניות.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }
