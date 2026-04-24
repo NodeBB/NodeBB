@@ -189,3 +189,10 @@ get:
                     type: number
                   worldDefaultCid:
                     type: number
+              tinycon:
+                type: object
+                properties:
+                  color:
+                    type: string
+                  background:
+                    type: string
