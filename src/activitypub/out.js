@@ -276,7 +276,7 @@ Out.like.note = enabledCheck(async (uid, pid) => {
 Out.dislike = {};
 
 Out.dislike.note = enabledCheck(async (uid, pid) => {
-	const payload = activitypub.mocks.activities.dislike(pid, uid);
+	const payload = await activitypub.mocks.activities.dislike(pid, uid);
 
 	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
 		await activitypub.feps.announce(pid, payload);
