@@ -166,7 +166,8 @@ async function executeCommand(caller, command, eventName, notification, data) {
 
 			case 'unvote': {
 				socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
-				await activitypub.out.undo.like(caller.uid, data.pid);
+				const verb = result.was.upvoted ? 'like' : 'dislike';
+				await activitypub.out.undo[verb](caller.uid, data.pid);
 				break;
 			}
 

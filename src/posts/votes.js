@@ -206,6 +206,7 @@ module.exports = function (Posts) {
 			post: postData,
 			upvote: type === 'upvote' && !unvote,
 			downvote: type === 'downvote' && !unvote,
+			was: voteStatus,
 		};
 	}
 
