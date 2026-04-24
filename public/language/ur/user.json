@@ -146,6 +146,7 @@
     "upvote-notif-freq.threshold": "1, 5, 10, 25, 50, 100, 150, 200… پر",
     "upvote-notif-freq.logarithmic": "10, 100, 1000… پر",
     "upvote-notif-freq.disabled": "غیر فعال",
+    "hide-read-notifications": "Hide Read Notifications",
     "notification-type-web": "Web",
     "notification-type-email": "Email",
     "browsing": "صفحات کی ترتیبات",

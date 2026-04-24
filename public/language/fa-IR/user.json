@@ -146,6 +146,7 @@
     "upvote-notif-freq.threshold": "On 1, 5, 10, 25, 50, 100, 150, 200...",
     "upvote-notif-freq.logarithmic": "هر 10، 10، 1000 ...",
     "upvote-notif-freq.disabled": "غیر فعال شده",
+    "hide-read-notifications": "Hide Read Notifications",
     "notification-type-web": "Web",
     "notification-type-email": "Email",
     "browsing": "تنظیمات مرور",

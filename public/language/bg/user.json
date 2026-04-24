@@ -146,6 +146,7 @@
     "upvote-notif-freq.threshold": "на 1, 5, 10, 25, 50, 100, 150, 200…",
     "upvote-notif-freq.logarithmic": "На 10, 100, 1000…",
     "upvote-notif-freq.disabled": "Изключено",
+    "hide-read-notifications": "Hide Read Notifications",
     "notification-type-web": "Уеб",
     "notification-type-email": "Е-поща",
     "browsing": "Настройки за страниците",
