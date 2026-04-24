@@ -384,7 +384,7 @@ inbox.dislike = async (req) => {
 
 	const allowed = await privileges.posts.can('posts:downvote', id, activitypub._constants.uid);
 	if (!allowed) {
-		activitypub.helpers.log(`[activitypub/inbox.like] ${id} not allowed to be downvoted.`);
+		activitypub.helpers.log(`[activitypub/inbox.dislike] ${id} not allowed to be downvoted.`);
 		throw new Error('[[error:no-privileges]]');
 	}
 
