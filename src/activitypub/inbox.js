@@ -715,6 +715,7 @@ inbox.undo = async (req) => {
 			break;
 		}
 
+		case 'Dislike': // falls through
 		case 'Like': {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
