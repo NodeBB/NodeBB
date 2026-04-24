@@ -150,6 +150,8 @@ get:
                     type: number
               acpLang:
                 type: string
+              hideReadNotifications:
+                type: boolean
               openOutgoingLinksInNewTab:
                 type: boolean
               topicSearchEnabled:

@@ -126,6 +126,9 @@ Settings:
     acpLang:
       type: string
       description: Language localisation for the admin control panel
+    hideReadNotifications:
+      type: boolean
+      description: Hide notifications that have been marked as read in the notifications list
     notificationType_new-register:
       type: string
       description: Notification type for new registration in queue
