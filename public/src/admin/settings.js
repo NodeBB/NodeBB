@@ -73,7 +73,7 @@ define('admin/settings', [
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
 		});
-		const defaultInputs = ['text', 'hidden', 'password', 'textarea', 'number'];
+		const defaultInputs = ['text', 'hidden', 'password', 'textarea', 'number', 'color'];
 		for (x = 0; x < numFields; x += 1) {
 			field = fields.eq(x);
 			key = field.attr('data-field');
@@ -199,6 +199,7 @@ define('admin/settings', [
 					case 'hidden':
 					case 'textarea':
 					case 'number':
+					case 'color':
 						value = field.val();
 						break;
 

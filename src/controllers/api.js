@@ -105,6 +105,10 @@ apiController.loadConfig = async function (req) {
 			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe,
 			worldDefaultCid: meta.config.activitypubWorldDefaultCid,
 		},
+		tinycon: {
+			color: meta.config.tinyconColor,
+			background: meta.config.tinyconBackground,
+		},
 	};
 
 	let settings = config;

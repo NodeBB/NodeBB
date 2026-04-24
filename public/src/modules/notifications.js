@@ -137,6 +137,7 @@ define('notifications', [
 		return false;
 	}
 
+	let tinyconSetup = false;
 	Notifications.updateNotifCount = function (count) {
 		const notifIcon = components.get('notifications/icon');
 		count = Math.max(0, count);
@@ -154,6 +155,13 @@ define('notifications', [
 		hooks.fire('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
+			if (!tinyconSetup) {
+				Tinycon.setOptions({
+					color: config.tinycon.color,
+					background: config.tinycon.background,
+				});
+				tinyconSetup = true;
+			}
 			Tinycon.setBubble(countText);
 		}
 
