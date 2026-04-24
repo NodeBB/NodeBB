@@ -140,6 +140,7 @@ apiController.loadConfig = async function (req) {
 			config.bootswatchSkin = settings.bootswatchSkin;
 		}
 	}
+	config.hideReadNotifications = settings.hideReadNotifications;
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;

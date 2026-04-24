@@ -16,6 +16,8 @@ const user = require('./index');
 const UserNotifications = module.exports;
 
 UserNotifications.get = async function (uid) {
+	const { hideReadNotifications } = await user.getSettings(uid);
+
 	if (parseInt(uid, 10) <= 0) {
 		return { read: [], unread: [] };
 	}
@@ -23,7 +25,7 @@ UserNotifications.get = async function (uid) {
 	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 49);
 	unread = unread.filter(Boolean);
 	let read = [];
-	if (unread.length < 50) {
+	if (!hideReadNotifications && unread.length < 50) {
 		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 49 - unread.length);
 	}
 
