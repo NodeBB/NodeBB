@@ -146,7 +146,7 @@
     "upvote-notif-freq.threshold": "Bei 1, 5, 10, 25, 50, 100, 150, 200...",
     "upvote-notif-freq.logarithmic": "Bei 10, 100, 1000...",
     "upvote-notif-freq.disabled": "Deaktiviert",
-    "hide-read-notifications": "Hide Read Notifications",
+    "hide-read-notifications": "Benachrichtigungen über gelesene Nachrichten ausblenden",
     "notification-type-web": "Web",
     "notification-type-email": "E-Mail",
     "browsing": "Browsing",

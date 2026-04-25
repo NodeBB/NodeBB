@@ -146,7 +146,7 @@
     "upvote-notif-freq.threshold": "当被顶的数目为1, 5, 10, 25, 50, 100, 150, 200...时通知我",
     "upvote-notif-freq.logarithmic": "当被顶的数目为10, 100, 1000...时通知我",
     "upvote-notif-freq.disabled": "任何时候都不要通知我",
-    "hide-read-notifications": "Hide Read Notifications",
+    "hide-read-notifications": "隐藏已读通知",
     "notification-type-web": "网站",
     "notification-type-email": "邮件",
     "browsing": "浏览设置",
