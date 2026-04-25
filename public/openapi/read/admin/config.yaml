@@ -189,3 +189,10 @@ get:
                       type: string
                   version:
                     type: string
+              tinycon:
+                type: object
+                properties:
+                  color:
+                    type: string
+                  background:
+                    type: string
