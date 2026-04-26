@@ -4,10 +4,10 @@
 	"welcome-notification-link": "Връзка за приветственото известие",
 	"welcome-notification-uid": "Потр. ид. за приветственото известие",
 	"post-queue-notification-uid": "Потр. ид. за опашката с публикации",
-	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
+	"notification-uid-help": "Ако е зададено, изпратеното известие идва от този потребител. Иначе, ще бъде системно известие.",
 	"notification-delay": "Забавяне преди изпращането на е-писма с известия (секунди)",
 	"notification-delay-help": "Ако потребителят е прочел известието в рамките на това време, няма да се изпрати е-писмо.<br/>По подразбиране: 60 секунди.",
 	"tinycon.settings": "Tinycon",
-	"tinycon.notification-color": "Notification Colour",
-	"tinycon.notification-background": "Notification Background"
+	"tinycon.notification-color": "Цвят на известието",
+	"tinycon.notification-background": "Фон на известието"
 }
