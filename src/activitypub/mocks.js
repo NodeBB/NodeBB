@@ -391,10 +391,13 @@ Mocks.post = async (objects) => {
 Mocks.message = async (object) => {
 	object = await Mocks._normalize(object);
 
+	let content = object.sourceContent || object.content;
+	content = activitypub.helpers.renderEmoji(content, object.tag);
+
 	const message = {
 		mid: object.id,
 		uid: object.attributedTo,
-		content: object.sourceContent || object.content,
+		content,
 
 		_activitypub: {
 			attachment: object.attachment,
