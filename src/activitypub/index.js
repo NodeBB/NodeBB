@@ -214,7 +214,7 @@ ActivityPub.fetchPublicKey = async (uri) => {
 	}
 
 	// Validate URI format
-	if (!uri || typeof uri !== 'string') {
+	if (!uri || typeof uri !== 'string' || !uri.startsWith('https://')) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
