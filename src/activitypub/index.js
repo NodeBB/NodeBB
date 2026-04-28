@@ -205,7 +205,11 @@ ActivityPub.getPrivateKey = async (type, id) => {
 
 ActivityPub.fetchPublicKey = async (uri) => {
 	const cached = publicKeyCache.get(uri);
-	if (cached) {
+	if (cached !== undefined) {
+		if (cached === null) {
+			// Failed request was cached
+			throw new Error('[[error:activitypub.pubKey-not-found]]');
+		}
 		return cached;
 	}
 
@@ -230,14 +234,19 @@ ActivityPub.fetchPublicKey = async (uri) => {
 			// CryptographicKey returned (correct)
 			publicKeyCache.set(uri, body.publicKeyPem);
 			return body.publicKeyPem;
-		} else if (body.hasOwnProperty('publicKey') && body?.publicKey?.publicKeyPem) {
+		} else if (body?.publicKey?.publicKeyPem) {
 			// Actor object returned (less correct)
 			publicKeyCache.set(uri, body.publicKey.publicKeyPem);
 			return body.publicKey.publicKeyPem;
 		}
 
+		// Response didn't contain expected public key
+		publicKeyCache.set(uri, null);
 		throw new Error('[[error:activitypub.pubKey-not-found]]');
 	} catch (err) {
+		// Cache the failed request
+		publicKeyCache.set(uri, null);
+
 		// Re-throw with context if needed
 		if (err.message.includes('reserved-ip-address')) {
 			throw new Error('[[error:activitypub.invalid-id]]');
