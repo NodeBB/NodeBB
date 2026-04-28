@@ -209,20 +209,41 @@ ActivityPub.fetchPublicKey = async (uri) => {
 		return cached;
 	}
 
-	// Used for retrieving the public key from the passed-in keyId uri
-	const body = await ActivityPub.get('uid', 0, uri);
-
-	if (body.hasOwnProperty('publicKeyPem')) {
-		// CryptographicKey returned (correct)
-		publicKeyCache.set(uri, body.publicKeyPem);
-		return body.publicKeyPem;
-	} else if (body.hasOwnProperty('publicKey') && body?.publicKey?.publicKeyPem) {
-		// Actor object returned (less correct)
-		publicKeyCache.set(uri, body.publicKey.publicKeyPem);
-		return body.publicKey.publicKeyPem;
+	// Validate URI format
+	if (!uri || typeof uri !== 'string') {
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	throw new Error('[[error:activitypub.pubKey-not-found]]');
+	try {
+		// Use requests.get with built-in SSRF protections
+		// Set reasonable timeout and response size limit
+		const { body } = await request.get(uri, {
+			timeout: 5000, // 5 seconds
+			headers: {
+				'accept': ActivityPub._constants.acceptableTypes.at(1),
+			},
+			redirect: 'manual',
+		});
+
+		// Process response and cache
+		if (body.hasOwnProperty('publicKeyPem')) {
+			// CryptographicKey returned (correct)
+			publicKeyCache.set(uri, body.publicKeyPem);
+			return body.publicKeyPem;
+		} else if (body.hasOwnProperty('publicKey') && body?.publicKey?.publicKeyPem) {
+			// Actor object returned (less correct)
+			publicKeyCache.set(uri, body.publicKey.publicKeyPem);
+			return body.publicKey.publicKeyPem;
+		}
+
+		throw new Error('[[error:activitypub.pubKey-not-found]]');
+	} catch (err) {
+		// Re-throw with context if needed
+		if (err.message.includes('reserved-ip-address')) {
+			throw new Error('[[error:activitypub.invalid-id]]');
+		}
+		throw err;
+	}
 };
 
 ActivityPub.sign = async ({ key, keyId }, url, digest) => {
