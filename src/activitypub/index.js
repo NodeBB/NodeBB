@@ -203,7 +203,7 @@ ActivityPub.getPrivateKey = async (type, id) => {
 	return { key: privateKey, keyId };
 };
 
-ActivityPub.fetchPublicKey = async (uri) => {
+ActivityPub.fetchPublicKey = async (uri, ip) => {
 	const cached = publicKeyCache.get(uri);
 	if (cached !== undefined) {
 		if (cached === null) {
@@ -221,6 +221,15 @@ ActivityPub.fetchPublicKey = async (uri) => {
 		);
 	if (!isValidHttpUri) {
 		throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
+	// Rate limiting check - only if not cached
+	const lockId = `pubkey:${ip}`;
+	let lockStatus = await db.incrObjectField('locks', lockId);
+	lockStatus = lockStatus <= 1;
+	if (!lockStatus) {
+		winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
+		throw new Error('[[error:activitypub.rate-limited]]');
 	}
 
 	try {
@@ -257,6 +266,8 @@ ActivityPub.fetchPublicKey = async (uri) => {
 			throw new Error('[[error:activitypub.invalid-id]]');
 		}
 		throw err;
+	} finally {
+		await db.deleteObjectField('locks', lockId);
 	}
 };
 
@@ -338,7 +349,7 @@ ActivityPub.verify = async (req) => {
 
 		// Retrieve public key from remote instance
 		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
-		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId);
+		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId, req.ip);
 
 		return await verifyAsync('sha256', Buffer.from(signed_string), publicKeyPem, Buffer.from(signature, 'base64'));
 	} catch (e) {
