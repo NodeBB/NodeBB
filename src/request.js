@@ -29,7 +29,7 @@ async function init() {
 		return;
 	}
 
-	allowList.add(nconf.get('url_parsed').host);
+	allowList.add(nconf.get('url_parsed').hostname);
 	const { allowed } = await plugins.hooks.fire('filter:request.init', { allowed: allowList });
 	if (allowed instanceof Set) {
 		allowList = allowed;
@@ -45,8 +45,12 @@ async function init() {
  *     instead of doing another lookup (which is where DNS rebinding comes into play.)
  *  - For whatever reason `undici` needs to be required so that lookup can be overwritten properly.
  */
-function lookup(hostname, options, callback) {
-	let { ok, lookup } = checkCache.get(hostname);
+async function lookup(hostname, options, callback) {
+	let lookupResult = checkCache.get(hostname);
+	if (!lookupResult) {
+		lookupResult = await checkHostname(hostname);
+	}
+	let { ok, lookup } = lookupResult;
 	lookup = lookup && [...lookup];
 	if (!ok) {
 		throw new Error('lookup-failed');
@@ -181,25 +185,29 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 // Checks url to ensure it is not in reserved IP range (private, etc.)
 async function check(url) {
-	await init();
+	const { hostname } = new URL(url);
+	return await checkHostname(hostname);
+}
 
-	const { host } = new URL(url);
-	const cached = checkCache.get(url);
+async function checkHostname(hostname) {
+	await init();
+	const cached = checkCache.get(hostname);
 	if (cached !== undefined) {
 		return cached;
 	}
-	if (allowList.has(host)) {
+
+	if (allowList.has(hostname)) {
 		const payload = { ok: true };
-		checkCache.set(host, payload);
+		checkCache.set(hostname, payload);
 		return payload;
 	}
 
 	const addresses = new Set();
 	let lookup;
-	if (ipaddr.isValid(url)) {
-		addresses.add(url);
+	if (ipaddr.isValid(hostname)) {
+		addresses.add({ address: hostname });
 	} else {
-		lookup = await dns.lookup(host, { all: true });
+		lookup = await dns.lookup(hostname, { all: true });
 		lookup.forEach(({ address, family }) => {
 			addresses.add({ address, family });
 		});
@@ -216,7 +224,7 @@ async function check(url) {
 	});
 
 	const payload = { ok, lookup };
-	checkCache.set(host, payload);
+	checkCache.set(hostname, payload);
 	return payload;
 }
 
