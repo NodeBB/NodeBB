@@ -364,7 +364,7 @@ const utils = {
 		}
 		// Basic PEM validation
 		return pem.startsWith('-----BEGIN PUBLIC KEY-----') &&
-			pem.endsWith('-----END PUBLIC KEY-----') &&
+			pem.trim().endsWith('-----END PUBLIC KEY-----') &&
 			pem.includes('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA');
 	},
 

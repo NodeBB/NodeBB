@@ -239,7 +239,7 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 	const lockId = `pubkey:${ip}`;
 	const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
 	const lockStatus = await db.incrObjectField('locks', lockId);
-	if (lockStatus >= 1 || currentCount >= 60) {
+	if (lockStatus > 1 || currentCount >= 60) {
 		winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
 		throw new Error('[[error:activitypub.rate-limited]]');
 	}
@@ -247,7 +247,7 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 	try {
 		// Use requests.get with built-in SSRF protections
 		// Set reasonable timeout and response size limit
-		const { body, headers } = await request.get(uri, {
+		const { body } = await request.get(uri, {
 			timeout: 5000, // 5 seconds
 			headers: {
 				'accept': ActivityPub._constants.acceptableTypes.at(1),
@@ -255,14 +255,6 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 			redirect: 'manual',
 			maxBodyLength: 1024 * 1024, // 1MB limit
 		});
-
-		// Validate Content-Type header
-		if (
-			!headers['content-type'] ||
-			ActivityPub._constants.acceptableTypes.includes(headers['content-type'])
-		) {
-			throw new Error('[[error:activitypub.invalid-content-type]]');
-		}
 
 		// Process response and cache
 		if (body.hasOwnProperty('publicKeyPem')) {
