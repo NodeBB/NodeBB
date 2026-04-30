@@ -35,6 +35,11 @@ const probeRateLimit = ttl({
 	name: 'ap-probe-rate-limit-cache',
 	ttl: 1000 * 3, // 3 seconds
 });
+const publicKeyFetchRateLimit = ttl({
+	name: 'ap-public-key-fetch-rate-limit-cache',
+	ttl: 60 * 1000, // 60 seconds
+	max: 1000,
+});
 const publicKeyCache = lru({
 	name: 'ap-public-key-cache',
 	ttl: 1000 * 60 * 60 * 6, // 6 hours
@@ -230,11 +235,11 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	// Rate limiting check - only if not cached
+	// Check rate limit for this IP
 	const lockId = `pubkey:${ip}`;
-	let lockStatus = await db.incrObjectField('locks', lockId);
-	lockStatus = lockStatus <= 1;
-	if (!lockStatus) {
+	const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
+	const lockStatus = await db.incrObjectField('locks', lockId);
+	if (lockStatus >= 1 || currentCount >= 60) {
 		winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
 		throw new Error('[[error:activitypub.rate-limited]]');
 	}
@@ -292,6 +297,7 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 		throw err;
 	} finally {
 		await db.deleteObjectField('locks', lockId);
+		publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
 	}
 };
 
