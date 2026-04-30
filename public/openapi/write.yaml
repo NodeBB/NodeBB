@@ -228,6 +228,8 @@ paths:
     $ref: 'write/notifications/nid/read.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
+  /chats/search:
+    $ref: 'write/chats/search.yaml'
   /chats/unread:
     $ref: 'write/chats/unread.yaml'
   /chats/sort:
