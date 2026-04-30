@@ -358,6 +358,16 @@ const utils = {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	},
 
+	isPEM: function (pem) {
+		if (!pem || typeof pem !== 'string') {
+			return false;
+		}
+		// Basic PEM validation
+		return pem.startsWith('-----BEGIN PUBLIC KEY-----') &&
+			pem.endsWith('-----END PUBLIC KEY-----') &&
+			pem.includes('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA');
+	},
+
 	languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 	hasLanguageKey: function (input) {
 		return utils.languageKeyRegex.test(input);
