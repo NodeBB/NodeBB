@@ -92,6 +92,8 @@
     "watch.title": "Saa teateid uutest postitustest siin teemas",
     "unwatch.title": "Ära järgi enam seda teemat",
     "share-this-post": "Jaga seda postitust",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Vaatan",
     "not-watching": "Ei vaata",
     "ignoring": "Ignoreerin",

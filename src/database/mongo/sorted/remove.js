@@ -56,8 +56,8 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).delete());
-		await bulk.execute();
+		await module.client.collection('objects').deleteMany({
+			$or: data.map(([key, value]) => ({ _key: key, value: String(value) })),
+		});
 	};
 };

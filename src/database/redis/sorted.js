@@ -261,8 +261,12 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return [];
+		}
+		const aggregated = dbHelpers.aggregateIncrByBulk(data);
 		const multi = module.client.multi();
-		data.forEach((item) => {
+		aggregated.forEach((item) => {
 			multi.zIncrBy(item[0], item[1], String(item[2]));
 		});
 		const result = await multi.exec();

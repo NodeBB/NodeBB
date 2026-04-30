@@ -150,6 +150,7 @@ module.exports = function (Posts) {
 
 		const bulkRemove = [];
 		const bulkAdd = [];
+		const bulkIncr = [];
 		let repChange = 0;
 		const postsByUser = {};
 		postData.forEach((post, i) => {
@@ -164,6 +165,11 @@ module.exports = function (Posts) {
 			if (post.votes > 0 || post.votes < 0) {
 				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votes`, post.votes, post.pid]);
 			}
+
+			bulkIncr.push(
+				[`uid:${post.uid}:cids`, -1, post.cid],
+				[`uid:${toUid}:cids`, 1, post.cid],
+			);
 			postsByUser[post.uid] = postsByUser[post.uid] || [];
 			postsByUser[post.uid].push(post);
 		});
@@ -172,6 +178,7 @@ module.exports = function (Posts) {
 			db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
+			db.sortedSetIncrByBulk(bulkIncr),
 			user.incrementUserReputationBy(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
 			updateTopicPosters(postData, toUid),

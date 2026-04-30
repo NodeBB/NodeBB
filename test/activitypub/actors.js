@@ -690,7 +690,7 @@ describe('Controllers', () => {
 			});
 
 			it('should return a Note type object', () => {
-				assert.strictEqual(body.type, 'Note');
+				assert.strictEqual(body.type, 'Article');
 			});
 		});
 

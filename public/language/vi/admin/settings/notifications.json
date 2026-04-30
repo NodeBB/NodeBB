@@ -4,6 +4,10 @@
 	"welcome-notification-link": "Liên Kết Thông Báo Chào Mừng",
 	"welcome-notification-uid": "Thông Báo Chào Mừng Người Dùng (UID)",
 	"post-queue-notification-uid": "Người Dùng Đợi Đăng (UID)",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
 	"notification-delay": "Thời gian trễ khi gửi email thông báo (giây)",
-	"notification-delay-help": "Nếu người dùng đã đọc thông báo trong khoảng thời gian này, email sẽ không được gửi.<br/>Mặc định: 60 giây."
+	"notification-delay-help": "Nếu người dùng đã đọc thông báo trong khoảng thời gian này, email sẽ không được gửi.<br/>Mặc định: 60 giây.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }

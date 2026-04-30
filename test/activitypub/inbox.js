@@ -155,15 +155,16 @@ describe('Inbox', () => {
 				});
 
 				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async function () {
+					const uid = await user.create({ username: utils.generateUUID() });
 					const { id: remoteCid } = helpers.mocks.group({
 						id: `https://example.com/${utils.generateUUID()}`,
 					});
 					const { note, id } = helpers.mocks.note({
-						audience: [remoteCid],
+						to: [remoteCid, activitypub._constants.publicAddress],
 					});
 					const { activity } = helpers.mocks.create(note);
 					try {
-						await activitypub.inbox.create({ body: activity });
+						await activitypub.inbox.create({ uid, body: activity });
 					} catch (err) {
 						assert(false);
 					}
@@ -183,20 +184,72 @@ describe('Inbox', () => {
 			});
 
 			describe('(Create)', () => {
-				it('should create a new topic in a remote category if addressed', async () => {
-					const { id: remoteCid } = helpers.mocks.group();
-					const { id, note } = helpers.mocks.note({
-						audience: [remoteCid],
+				describe('newly-discovered topic', () => {
+					before(async function () {
+						const { id: remoteCid } = helpers.mocks.group();
+						const { id, note } = helpers.mocks.note({
+							audience: [remoteCid],
+						});
+						this.id = id;
+						this.remoteCid = remoteCid;
+						let { activity } = helpers.mocks.create(note);
+						({ activity } = helpers.mocks.announce({ actor: remoteCid, object: activity }));
+
+						await activitypub.inbox.announce({ body: activity });
 					});
-					let { activity } = helpers.mocks.create(note);
-					({ activity } = helpers.mocks.announce({ actor: remoteCid, object: activity }));
 
-					await activitypub.inbox.announce({ body: activity });
+					it('should create a new topic in a remote category if addressed', async function () {
+						assert(await posts.exists(this.id));
 
-					assert(await posts.exists(id));
+						const cid = await posts.getCidByPid(this.id);
+						assert.strictEqual(cid, this.remoteCid);
+					});
+				});
 
-					const cid = await posts.getCidByPid(id);
-					assert.strictEqual(cid, remoteCid);
+				describe('known topic in cid -1 (author domain != announcer domain)', async () => {
+					/**
+					 * This happens if follower receives object from microblog user before the community announces it.
+					 * It's probably more likely to occur because the Create(Note) is a single hop whereas the reflected
+					 * Announce(Create(Note)) takes two hops.
+					 *
+					 * If the author and announcer domain are the same, the object should already be correctly classified.
+					 */
+					before(async function () {
+						const { id: remoteCid } = helpers.mocks.group({
+							id: `https://example.social/${utils.generateUUID()}`,
+						});
+						await activitypub.actors.assertGroup([remoteCid]);
+						const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+
+						this.uid = uid;
+						this.remoteCid = remoteCid;
+					});
+
+					it('should create a topic in cid -1', async function () {
+						const { id, note } = helpers.mocks.note({
+							to: [activitypub._constants.publicAddress, this.remoteCid],
+						});
+
+						const { activity } = helpers.mocks.create(note);
+						await activitypub.inbox.create({ uid: this.uid, body: activity });
+
+						this.id = id;
+						this.note = note;
+						this.activity = activity;
+
+						const cid = await posts.getCidByPid(this.id);
+						assert.strictEqual(cid, -1);
+					});
+
+					it('should handle the Announce(Create) from the remote category', async function () {
+						const { activity } = helpers.mocks.announce({ actor: this.remoteCid, object: this.activity });
+						await activitypub.inbox.announce({ uid: this.uid, body: activity });
+					});
+
+					it('should be categorized in the remote category', async function () {
+						const cid = await posts.getCidByPid(this.id);
+						assert.strictEqual(cid, this.remoteCid);
+					});
 				});
 			});
 
@@ -373,6 +426,77 @@ describe('Inbox', () => {
 					assert.strictEqual(content, note.content);
 				});
 			});
+
+			describe('(Delete)', () => {
+				it('should delete a local post when announced', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { postData } = await topics.post({
+						uid,
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					// Create a delete activity for the local post
+					const object = await activitypub.mocks.notes.public(postData);
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: `${nconf.get('url')}/uid/${postData.uid}`,
+						object,
+					});
+
+					// Wrap it in an announce
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Verify post exists before deletion
+					assert(await posts.exists(postData.pid));
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const isDeleted = await posts.getPostField(postData.pid, 'deleted');
+					const exists = await posts.exists(postData.pid);
+					assert.strictEqual(isDeleted, 1);
+				});
+
+				it('should delete a remote post when announced', async () => {
+					const { id: cid } = helpers.mocks.group();
+
+					// Create a remote note first
+					const { id } = helpers.mocks.note({
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, id, { skipChecks: true });
+
+					// Verify it exists before deletion
+					assert(await posts.exists(id));
+
+					// Create a delete activity for the remote post
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: cid,
+						object: id,
+					});
+
+					// Wrap it in an announce
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const exists = await posts.exists(id);
+					const isDeleted = await posts.getPostField(id, 'deleted');
+					assert.strictEqual(isDeleted, 1);
+				});
+			});
 		});
 
 		describe('Like', () => {
@@ -411,7 +535,11 @@ describe('Inbox', () => {
 					const object = await activitypub.mocks.notes.public(this.postData);
 					const { activity } = helpers.mocks.like({ object });
 					this.voterUid = activity.actor;
-					await activitypub.inbox.like({ body: activity });
+					try {
+						await activitypub.inbox.like({ body: activity });
+					} catch (e) {
+						// expected
+					}
 				});
 
 				after(async function () {

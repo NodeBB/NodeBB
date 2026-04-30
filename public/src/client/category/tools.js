@@ -89,8 +89,6 @@ define('forum/category/tools', [
 				}
 				move.init(tids, null, onCommandComplete);
 			});
-
-			return false;
 		});
 
 		components.get('topic/move-all').on('click', function () {

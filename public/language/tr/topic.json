@@ -92,6 +92,8 @@
     "watch.title": "Bu konuya gelen yeni iletilerden haberdar ol",
     "unwatch.title": "Bu başlığı izleme",
     "share-this-post": "Bu iletiyi paylaş",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Takip ediliyor",
     "not-watching": "Takip edilmiyor",
     "ignoring": "Susturulmuş",

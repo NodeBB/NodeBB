@@ -42,3 +42,21 @@ helpers.globToRegex = function (match) {
 	}
 	return _match;
 };
+
+helpers.aggregateIncrByBulk = function (data) {
+	const buckets = Object.create(null);
+
+	for (const [key, incr, val] of data) {
+		buckets[key] = buckets[key] || {};
+		buckets[key][val] = (buckets[key][val] || 0) + incr;
+	}
+
+	const result = [];
+	for (const [key, vals] of Object.entries(buckets)) {
+		for (const [val, incr] of Object.entries(vals)) {
+			result.push([key, incr, val]);
+		}
+	}
+
+	return result;
+};

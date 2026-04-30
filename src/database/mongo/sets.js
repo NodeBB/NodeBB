@@ -128,7 +128,7 @@ module.exports = function (module) {
 		const item = await module.client.collection('objects').findOne({
 			_key: key, members: value,
 		}, {
-			projection: { _id: 0, _key: 1},
+			projection: { _id: 0, _key: 1 },
 		});
 
 		return item !== null && item !== undefined;
@@ -177,12 +177,8 @@ module.exports = function (module) {
 			projection: { _id: 0, _key: 1 },
 		}).toArray();
 
-		const map = {};
-		result.forEach((item) => {
-			map[item._key] = true;
-		});
-
-		return sets.map(set => !!map[set]);
+		const foundMembers = new Set(result.map(item => item._key));
+		return sets.map(set => foundMembers.has(set));
 	};
 
 	module.getSetMembers = async function (key) {
@@ -208,7 +204,7 @@ module.exports = function (module) {
 			projection: { _id: 0 },
 		}).toArray();
 
-		const sets = {};
+		const sets = Object.create(null);
 		data.forEach((set) => {
 			sets[set._key] = set.members || [];
 		});

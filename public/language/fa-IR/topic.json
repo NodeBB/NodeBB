@@ -92,6 +92,8 @@
     "watch.title": "از پاسخ‌های تازه به این موضوع آگاه شوید.",
     "unwatch.title": "توقف پیگیری این موضوع",
     "share-this-post": "به اشتراک‌گذاری این موضوع",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "درحال پیگیری",
     "not-watching": "درحال پیگیری نیستید",
     "ignoring": "نادیده گرفتن",

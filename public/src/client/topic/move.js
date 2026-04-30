@@ -2,8 +2,8 @@
 
 
 define('forum/topic/move', [
-	'categorySelector', 'alerts', 'hooks', 'api',
-], function (categorySelector, alerts, hooks, api) {
+	'categorySelector', 'alerts', 'hooks', 'api', 'bootstrap',
+], function (categorySelector, alerts, hooks, api, bootstrap) {
 	const Move = {};
 	let modal;
 	let selectedCategory;
@@ -36,6 +36,9 @@ define('forum/topic/move', [
 				privilege: 'moderate',
 				localOnly: true,
 			});
+
+			const dropdown = new bootstrap.Dropdown(dropdownEl.find('button'));
+			dropdown.show();
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);
 			modal.find('#move_topic_cancel').on('click', closeMoveModal);

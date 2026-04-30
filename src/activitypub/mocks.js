@@ -391,10 +391,13 @@ Mocks.post = async (objects) => {
 Mocks.message = async (object) => {
 	object = await Mocks._normalize(object);
 
+	let content = object.sourceContent || object.content;
+	content = activitypub.helpers.renderEmoji(content, object.tag);
+
 	const message = {
 		mid: object.id,
 		uid: object.attributedTo,
-		content: object.sourceContent || object.content,
+		content,
 
 		_activitypub: {
 			attachment: object.attachment,
@@ -710,8 +713,7 @@ Mocks.notes.public = async (post) => {
 	});
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
-	const plaintext = posts.sanitizePlaintext(content);
-	const isArticle = post.pid === post.topic.mainPid && plaintext.length > meta.config.activitypubSummaryLimit;
+	const isArticle = post.pid === post.topic.mainPid && !generatedTitle;
 
 	if (post.isMainPost) {
 		const thumbs = await topics.thumbs.get(post.tid);

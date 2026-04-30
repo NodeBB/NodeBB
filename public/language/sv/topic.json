@@ -92,6 +92,8 @@
     "watch.title": "Få notis om nya svar till det här ämnet",
     "unwatch.title": "Sluta bevaka detta ämne",
     "share-this-post": "Dela detta inlägg",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Bevakar",
     "not-watching": "Bevakar inte",
     "ignoring": "Ignorerar",

@@ -6,15 +6,15 @@
 	"list.email": "メール",
 	"list.ip": "IP",
 	"list.time": "時間",
-	"list.username-spam": "周波数：%1 出現: %2 信頼度: %3",
-	"list.email-spam": "周波数：%1 出現: %2",
-	"list.ip-spam": "周波数：%1 出現: %2",
+	"list.username-spam": "頻度: %1 出現回数: %2 信頼度: %3",
+	"list.email-spam": "頻度: %1 出現回数: %2",
+	"list.ip-spam": "頻度: %1 出現回数: %2",
 
-	"invitations": "招待状",
-	"invitations.description": "以下は送信された招待状の完全なリストです。Ctrl-Fを使用して、電子メールまたはユーザー名でリストを検索します。<br><br>ユーザー名は、招待状を引き換えたユーザーのメールの右側に表示されます。",
+	"invitations": "招待",
+	"invitations.description": "以下は送信された招待の一覧です。Ctrl-F を使って、メールアドレスまたはユーザー名で一覧を検索できます。<br><br>招待を利用して登録したユーザーがいる場合は、そのユーザー名がメールアドレスの右側に表示されます。",
 	"invitations.inviter-username": "招待者のユーザー名",
-	"invitations.invitee-email": "招待メール",
-	"invitations.invitee-username": "招待されたユーザー名(登録されている場合)",
+	"invitations.invitee-email": "招待された人のメールアドレス",
+	"invitations.invitee-username": "招待されたユーザー名（登録済みの場合）",
 
-	"invitations.confirm-delete": "この招待状を削除してもよろしいですか？"
+	"invitations.confirm-delete": "この招待を削除してもよろしいですか？"
 } 

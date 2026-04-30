@@ -55,6 +55,8 @@
 	"federation/relays": "Relays",
 	"federation/pruning": "Speicher",
 	"federation/safety": "Vertrauen & Sicherheit",
+	"federation/analytics": "Analytik",
+	"federation/errors": "Fehler",
 
 	"section-appearance": "Aussehen",
 	"appearance/themes": "Themes",

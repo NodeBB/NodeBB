@@ -55,6 +55,8 @@
 	"federation/relays": "中继服务",
 	"federation/pruning": "存储",
 	"federation/safety": "信任与安全",
+	"federation/analytics": "分析",
+	"federation/errors": "错误",
 
 	"section-appearance": "界面",
 	"appearance/themes": "主题",

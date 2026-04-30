@@ -1,12 +1,12 @@
 {
-    "manage-uploads": "Manage Uploads",
-    "upload-file": "Upload File",
-    "filename": "Filename",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files",
-    "new-folder": "New Folder",
-    "name-new-folder": "Enter a name for new the folder"
+    "manage-uploads": "アップロードを管理",
+    "upload-file": "ファイルをアップロード",
+    "filename": "ファイル名",
+    "usage": "投稿での使用",
+    "orphaned": "孤立",
+    "size/filecount": "サイズ / ファイル数",
+    "confirm-delete": "このファイルを本当に削除しますか？",
+    "filecount": "%1 個のファイル",
+    "new-folder": "新しいフォルダ",
+    "name-new-folder": "新しいフォルダの名前を入力"
 }

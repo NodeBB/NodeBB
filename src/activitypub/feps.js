@@ -77,4 +77,8 @@ Feps.announce = async function announce(id, activity) {
 		cc,
 		object: activity,
 	});
+
+	relays.forEach((relay) => {
+		activitypub.analytics.relays.out(relay);
+	});
 };

@@ -92,6 +92,8 @@
     "watch.title": "এই টপিকে নতুন উত্তর এলে বিজ্ঞাপণের মাধ্যমে জানুন।",
     "unwatch.title": "এই টপিক দেখা বন্ধ করুন",
     "share-this-post": "এই পোষ্টটি শেয়ার করুন",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Watching",
     "not-watching": "Not Watching",
     "ignoring": "Ignoring",

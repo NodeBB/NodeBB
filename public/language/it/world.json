@@ -1,8 +1,8 @@
 {
 	"name": "Mondo",
-	"latest": "Latest",
-	"latest-local": "Latest (Local)",
-	"latest-all": "Latest (All)",
+	"latest": "Ultimo",
+	"latest-local": "Ultimo (Locale)",
+	"latest-all": "Ultimo (Tutti)",
 	"popular-day": "Popolare (Giorno)",
 	"popular-week": "Popolare (Settimana)",
 	"popular-month": "Popolare (Mese)",
@@ -18,10 +18,10 @@
 	"help.federating": "Allo stesso modo, se gli utenti esterni a questo forum iniziano a <em>seguirti</em>, i tuoi post inizieranno ad apparire anche su quelle app e quei siti web.",
 	"help.next-generation": "Questa è la prossima generazione di social media, inizia a contribuire oggi!",
 
-	"onboard.title": "A world of content at your fingertips&hellip;",
-	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
-	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
-	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+	"onboard.title": "Un mondo di contenuti a portata di mano&hellip;",
+	"onboard.what": "Consideralo come il tuo feed globale di scoperte. Riunisce in un unico posto discussioni interessanti da tutto il web e da altre comunità.",
+	"onboard.why": "Mentre puoi sfogliare ciò che è di tendenza ora, il modo migliore per usare questo feed è farlo tuo. Creando un account, puoi seguire creatori e discussioni specifiche per filtrare i contenuti superflui e vedere solo ciò che conta per te.",
+	"onboard.how": "Pronto a tuffarti? Crea un account per iniziare a seguire gli altri, ricevere notifiche quando qualcuno ti risponde e salvare i tuoi contenuti preferiti.",
 
 	"category-search": "Trova una categoria...",
 	"see-more": "Vedi di più",

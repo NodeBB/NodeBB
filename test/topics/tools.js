@@ -6,6 +6,7 @@ const db = require('../mocks/databasemock');
 
 const user = require('../../src/user');
 const categories = require('../../src/categories');
+const groups = require('../../src/groups');
 const topics = require('../../src/topics');
 const utils = require('../../src/utils');
 
@@ -68,7 +69,7 @@ describe('Topic tools', () => {
 		let tid1;
 		let tid2;
 
-		before(async () => {
+		before(async function () {
 			const helpers = require('../activitypub/helpers');
 			({ id: remoteCid } = helpers.mocks.group());
 			({ cid: localCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
@@ -84,23 +85,26 @@ describe('Topic tools', () => {
 				content: utils.generateUUID(),
 			});
 			tid2 = topicData.tid;
+
+			this.adminUid = await user.create({ username: utils.generateUUID() });
+			await groups.join('administrators', this.adminUid);
 		});
 
-		it('should throw when attempting to move a topic from a remote category', async () => {
+		it('should throw when attempting to move a topic from a remote category', async function () {
 			await assert.rejects(
 				topics.tools.move(tid1, {
 					cid: localCid,
-					uid: 'system',
+					uid: this.adminUid,
 				}),
 				{ message: '[[error:no-topic]]' }
 			);
 		});
 
-		it('should throw when attempting to move a topic to a remote category', async () => {
+		it('should throw when attempting to move a topic to a remote category', async function () {
 			await assert.rejects(
 				topics.tools.move(tid2, {
 					cid: remoteCid,
-					uid: 'system',
+					uid: this.adminUid,
 				}),
 				{ message: '[[error:cant-move-topic-to-from-remote-categories]]' }
 			);

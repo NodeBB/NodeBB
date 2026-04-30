@@ -1,8 +1,10 @@
 'use strict';
 
 module.exports = function (module) {
-	const helpers = require('./helpers');
 	const util = require('util');
+
+	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 	const Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const sleep = util.promisify(setTimeout);
@@ -547,33 +549,21 @@ RETURNING "score" s`,
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		if (!data.length) {
+		if (!Array.isArray(data) || !data.length) {
 			return [];
 		}
 
-		// Deduplicate by (key, value) pair, summing increments for duplicates
-		const seen = new Map();
-		const deduped = [];
-		data.forEach(([key, increment, value]) => {
-			value = helpers.valueToString(value);
-			increment = parseFloat(increment);
-			const mapKey = `${key}\0${value}`;
-			if (seen.has(mapKey)) {
-				deduped[seen.get(mapKey)][1] += increment;
-			} else {
-				seen.set(mapKey, deduped.length);
-				deduped.push([key, increment, value]);
-			}
-		});
-
+		const aggregated = dbHelpers.aggregateIncrByBulk(data);
 		return await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectsType(client, deduped.map(item => item[0]), 'zset');
+			await helpers.ensureLegacyObjectsType(client, aggregated.map(item => item[0]), 'zset');
 
 			const values = [];
 			const queryParams = [];
 			let paramIndex = 1;
 
-			deduped.forEach(([key, increment, value]) => {
+			aggregated.forEach(([key, increment, value]) => {
+				value = helpers.valueToString(value);
+				increment = parseFloat(increment);
 				values.push(key, value, increment);
 				queryParams.push(`($${paramIndex}::TEXT, $${paramIndex + 1}::TEXT, $${paramIndex + 2}::NUMERIC)`);
 				paramIndex += 3;

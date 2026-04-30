@@ -92,6 +92,8 @@
     "watch.title": "当此主题有新回复时，通知我",
     "unwatch.title": "取消关注此主题",
     "share-this-post": "分享此帖子",
+    "share-mail-subject": "查看这篇关于“%1”的帖子",
+    "share-mail-body": "我想您可能会对这篇帖子感兴趣：%1",
     "watching": "关注中",
     "not-watching": "未关注",
     "ignoring": "忽略中",

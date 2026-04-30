@@ -266,6 +266,6 @@
     "activitypub.get-failed": "Nelze získat zadaný zdroj.",
     "activitypub.pubKey-not-found": "Nelze ověřit veřejný klíč, proto není možné provést ověření obsahu.",
     "activitypub.origin-mismatch": "Původ přijatého objektu neodpovídá původu odesílatele",
-    "activitypub.actor-mismatch": "Přijatou aktivitu provedl někdo jiný, než bylo očekáváno.",
-    "activitypub.not-implemented": "Požadavek byl zamítnut, protože cílový server tuto funkci nepodporuje"
+    "activitypub.not-implemented": "Požadavek byl zamítnut, protože cílový server tuto funkci nepodporuje",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

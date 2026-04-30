@@ -141,6 +141,12 @@ ajaxify.widgets = { render: render };
 			retry = true;
 
 			renderTemplate(url, data.templateToRender || data.template.name, data, callback);
+
+			// Refocus skip link after template rendering
+			setTimeout(() => {
+				// For now, just blur any focused element to prevent visual flash
+				document.activeElement.blur();
+			}, 0);
 		});
 
 		return true;
@@ -160,11 +166,13 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
-		const isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') !== 0;
-		const isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') === 0;
+		const urlStartsWithAdmin = url.startsWith('admin');
+		const currentPathStartsWithAdmin = window.location.pathname.indexOf(`${config.relative_path}/admin`) === 0;
+		const isClientToAdmin = urlStartsWithAdmin && !currentPathStartsWithAdmin;
+		const isAdminToClient = !urlStartsWithAdmin && currentPathStartsWithAdmin;
 
 		if (isClientToAdmin || isAdminToClient) {
-			window.open(config.relative_path + '/' + url, '_top');
+			window.open(`${config.relative_path}/${url}`, '_top');
 			return true;
 		}
 		return false;
@@ -369,10 +377,12 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.removeRelativePath = function (url) {
-		if (config.relative_path && url.startsWith(config.relative_path.slice(1))) {
-			url = url.slice(config.relative_path.length - 1);
-			if (url.startsWith('/')) {
-				url = url.slice(1);
+		if (config.relative_path && url) {
+			const prefix = config.relative_path.slice(1);
+			if (url === prefix) {
+				return '';
+			} else if (url.startsWith(`${prefix}/`)) {
+				url = url.slice(prefix.length + 1);
 			}
 		}
 		return url;

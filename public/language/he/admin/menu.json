@@ -55,6 +55,8 @@
 	"federation/relays": "ממסרים",
 	"federation/pruning": "אחסון",
 	"federation/safety": "אמון ובטיחות",
+	"federation/analytics": "ניתוח",
+	"federation/errors": "שגיאות",
 
 	"section-appearance": "מראה חיצוני",
 	"appearance/themes": "ערכות נושא",

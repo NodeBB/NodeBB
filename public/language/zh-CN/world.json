@@ -1,7 +1,7 @@
 {
 	"name": "世界",
-	"latest": "Latest",
-	"latest-local": "Latest (Local)",
+	"latest": "最新",
+	"latest-local": "最新（本地）",
 	"latest-all": "最新（全部）",
 	"popular-day": "热门（按天）",
 	"popular-week": "热门（按周）",
@@ -18,10 +18,10 @@
 	"help.federating": "同样，如果本论坛以外的用户开始关注 <em>你</em> ，那么您的帖子也会开始出现在这些应用程序和网站上。",
 	"help.next-generation": "这是新一代的社交媒体，从今天开始，贡献力量吧！",
 
-	"onboard.title": "A world of content at your fingertips&hellip;",
-	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
-	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
-	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+	"onboard.title": "海量内容尽在指尖 &hellip;",
+	"onboard.what": "不妨将此视为您专属的全球发现信息流。它汇集了来自互联网各处及其他社区的有趣讨论，一应俱全。",
+	"onboard.why": "虽然您可以浏览当前的热门内容，但使用该信息流的最佳方式是将其个性化。通过注册账号，您可以关注特定的创作者和主题，从而过滤掉无关信息，只查看对您真正重要的内容。",
+	"onboard.how": "准备好开始了吗？注册一个账号，即可关注他人、在收到回复时获得通知，并收藏您喜欢的内容。",
 
 	"category-search": "查找版块...",
 	"see-more": "显示更多",

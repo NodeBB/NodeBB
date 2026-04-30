@@ -269,9 +269,14 @@ Controller.postInbox = async (req, res) => {
 
 	try {
 		await activitypub.inbox[method](req);
-		await activitypub.record(req.body);
+		await activitypub.analytics.receipt(req.body);
 		await helpers.formatApiResponse(202, res);
 	} catch (e) {
-		helpers.formatApiResponse(500, res, e).catch(err => winston.error(err.stack));
+		activitypub.analytics.receiptError(req.body, e);
+		if (req.body?.type && req.body?.object && req.body?.actor) {
+			activitypub.inbox._reject(req.body.type, req.body.object, req.body.actor);
+		} else {
+			helpers.formatApiResponse(500, res, e).catch(err => winston.error(err.stack));
+		}
 	}
 };

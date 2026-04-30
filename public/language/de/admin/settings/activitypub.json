@@ -39,6 +39,18 @@
 	"relays.state-0": "Ausstehend",
 	"relays.state-1": "Nur Empfang",
 	"relays.state-2": "Aktiv",
+	"relays.errors.invalid-url": "Bitte gib eine gültige URL ein",
+
+	"blocklists": "Blocklisten von Drittanbietern",
+	"blocklists-help": "Zu deiner eigenen Sicherheit und der deiner Nutzer ist die Pflege einer Sperrliste ein wesentlicher Bestandteil aller Maßnahmen zur Vertrauens &amp; sicherung, wenn du mit Inhalten arbeitest, die außerhalb des lokalen Moderationsbereichs liegen. NodeBB enthält einige empfohlene Standardeinstellungen, die du hier anpassen kannst.",
+	"blocklists-default": "NodeBB wird standardmäßig mit zwei Sperrlisten ausgeliefert: der <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS-Sperrliste „Nicht interagieren“</a> und der <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS-Sperrliste für verlassene und verwahrloste Domains</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Domains",
+	"blocklists.add": "Neue Sperrliste hinzufügen",
+	"blocklists.add-help": "Gib die URL der Sperrliste ein, die du hinzufügen möchtest. NodeBB erkennt Sperrlisten, die dem von <a href=\"https://iftas.org\">IFTAS</a>.verwendeten Format entsprechen.",
+	"blocklists.refreshed": "Die Sperrliste wurde aktualisiert – sie enthält nun %1 Einträge",
+	"blocklists.view.title": "Sperrliste anzeigen",
+	"blocklists.view.intro": "Dies sind die %1 Domains, die von dieser Blockliste gesperrt wurden:",
 
 	"server-filtering": "Filterung",
 	"count": "Dieses NodeBB kennt derzeit <strong>%1</strong> Server",
@@ -51,5 +63,20 @@
 	"content.summary-limit-help": "Wenn Inhalte rausgeschickt werden, die diese Zeichenanzahl überschreiten, wird eine <code>Zusammenfassung</code> erstellt, die alle vollständigen Sätze vor dieser Grenze enthält. (Standard: 500)",
 	"content.break-string": "Notiz/Artikel-Trennzeichen",
 	"content.break-string-help": "\nDieses Trennzeichen kann von Power-Usern beim Erstellen neuer Themen manuell eingefügt werden. Es sagt NodeBB, dass der Inhalt bis zu dieser Stelle als Teil der <code>Zusammenfassung</code>verwendet werden soll. Wenn diese Zeichenfolge nicht benutzt wird, greift die Standardregel für die Zeichenanzahl. (Standard: <code>[...]</code>)",
-	"content.world-default-cid": "Standard-Kategorie-ID für den &quot;Welt&quot; Seiten-Editor"
+	"content.world-default-cid": "Standard-Kategorie-ID für den &quot;Welt&quot; Seiten-Editor",
+
+	"analytics.intro": "Diese Seite bietet einen Überblick über den Status der Verbundstruktur deines Forums mit anderen Instanzen/Servern",
+	"analytics.details": "NodeBB erfasst den Empfang und Versand von ActivityPub-Nachrichten, und du kannst diese nach Hostnamen sortiert entweder stündlich oder täglich einsehen. Beachte, dass eine Fehlerquote von null schwer zu erreichen ist, da manche Server offline gehen oder falsch konfiguriert sind.",
+	"analytics.by-hostname": "Nach Hostnamen filtern",
+	"analytics.in": "Eingehend",
+	"analytics.out": "Ausgehend",
+	"analytics.received": "Erhaltene Aktivitäten",
+	"analytics.sent": "Gesendete Aktivitäten",
+	"analytics.errors": "Fehler",
+	"analytics.term": "Zeitskala",
+	"analytics.hourly": "Stündlich",
+	"analytics.daily": "Täglich",
+
+	"errors.intro": "Die folgenden %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
+	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden."
 }

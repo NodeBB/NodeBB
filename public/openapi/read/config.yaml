@@ -150,6 +150,8 @@ get:
                     type: number
               acpLang:
                 type: string
+              hideReadNotifications:
+                type: boolean
               openOutgoingLinksInNewTab:
                 type: boolean
               topicSearchEnabled:
@@ -187,3 +189,10 @@ get:
                     type: number
                   worldDefaultCid:
                     type: number
+              tinycon:
+                type: object
+                properties:
+                  color:
+                    type: string
+                  background:
+                    type: string

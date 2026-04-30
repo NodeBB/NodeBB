@@ -92,6 +92,8 @@
     "watch.title": "קבלת התראה כאשר יש תגובות חדשות בנושא זה",
     "unwatch.title": "הפסקת מעקב אחר נושא זה",
     "share-this-post": "שיתוף פוסט זה",
+    "share-mail-subject": "בדקו את הפוסט הזה ב\"% 1\"",
+    "share-mail-body": "חשבתי שאולי תתעניין בפוסט הזה:% 1",
     "watching": "במעקב",
     "not-watching": "לא במעקב",
     "ignoring": "התעלמות",

@@ -91,6 +91,7 @@ module.exports = function (User) {
 		settings.homePageRoute = validator.escape(String(settings.homePageRoute || '')).replace(/&#x2F;/g, '/');
 		settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 		settings.categoryWatchState = getSetting(settings, 'categoryWatchState', 'notwatching');
+		settings.hideReadNotifications = parseInt(getSetting(settings, 'hideReadNotifications', 0), 10) === 1;
 
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
@@ -147,6 +148,7 @@ module.exports = function (User) {
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			upvoteNotifFreq: data.upvoteNotifFreq,
+			hideReadNotifications: data.hideReadNotifications,
 			bootswatchSkin: data.bootswatchSkin,
 			categoryWatchState: data.categoryWatchState,
 			categoryTopicSort: data.categoryTopicSort,
@@ -204,7 +206,9 @@ module.exports = function (User) {
 	}
 
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {
-		await db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);
+		await db.sortedSetsRemove([
+			'digest:day:uids', 'digest:week:uids', 'digest:biweek:uids', 'digest:month:uids',
+		], uid);
 		if (['day', 'week', 'biweek', 'month'].includes(dailyDigestFreq)) {
 			await db.sortedSetAdd(`digest:${dailyDigestFreq}:uids`, Date.now(), uid);
 		}

@@ -14,7 +14,6 @@ const notifications = require('../notifications');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
-const api = require('../api');
 const ttlCache = require('../cache/ttl');
 const websockets = require('../socket.io');
 const utils = require('../utils');
@@ -83,10 +82,33 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			const { tid } = context;
 			return { tid, count: 0 };
 		} else if (context.context) {
-			chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
-			if (chain && chain.length) {
-				// Context resolves, use in later topic creation
-				context = context.context;
+			const { type, id: tid } = await activitypub.helpers.resolveLocalId(context.context);
+			if (type !== 'topic') {
+				chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
+				if (chain && chain.length) {
+					// Deduplicate by id (just in case, also a buggy NodeBB impl. sent dupes)
+					const ids = new Set();
+					chain = chain.filter((item) => {
+						const seen = ids.has(item.pid);
+						ids.add(item.pid);
+						return !seen;
+					});
+
+					// Context resolves, use in later topic creation
+					context = context.context;
+				}
+			} else {
+				// Local context, get local posts
+				const mainPid = await topics.getTopicField(tid, 'mainPid');
+				const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
+				pids.unshift(mainPid);
+				chain = await posts.getPostsData(pids);
+
+				// Add received object to chain if not present already
+				if (!pids.includes(input.id)) {
+					const mocked = await activitypub.mocks.post(input);
+					chain.push(mocked);
+				}
 			}
 		} else {
 			context = undefined;
@@ -121,7 +143,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 		if (options.cid && cid === -1) {
 			// Move topic if currently uncategorized
-			await api.topics.move({ uid: 'system' }, { tid, cid: options.cid });
+			await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
 		}
 
 		const exists = await posts.exists(chain.map(p => p.pid));

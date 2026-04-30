@@ -92,6 +92,8 @@
     "watch.title": "Buďte informovaní o nových odpovediach k tejto téme",
     "unwatch.title": "Prestať sledovať túto tému",
     "share-this-post": "Zdielať tento príspevok",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Sledované",
     "not-watching": "Nesledované",
     "ignoring": "Ignorované",

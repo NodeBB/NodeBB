@@ -157,6 +157,8 @@ get:
                     type: number
               acpLang:
                 type: string
+              hideReadNotifications:
+                type: boolean
               openOutgoingLinksInNewTab:
                 type: boolean
               topicSearchEnabled:
@@ -186,4 +188,11 @@ get:
                     items:
                       type: string
                   version:
+                    type: string
+              tinycon:
+                type: object
+                properties:
+                  color:
+                    type: string
+                  background:
                     type: string

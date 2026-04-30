@@ -39,6 +39,18 @@
 	"relays.state-0": "In sospeso",
 	"relays.state-1": "Solo ricezione",
 	"relays.state-2": "Attivo",
+	"relays.errors.invalid-url": "Inserisci un URL valido",
+
+	"blocklists": "Liste di blocchi di terze parti",
+	"blocklists-help": "Per la sicurezza tua e dei tuoi utenti, la gestione di una lista di blocchi è una componente fondamentale di qualsiasi strategia volta a garantire la fiducia e la sicurezza quando si lavora con contenuti che esulano dall'ambito della moderazione locale. NodeBB include alcune impostazioni predefinite consigliate, che possono essere personalizzate qui.",
+	"blocklists-default": "NodeBB include di default due liste di blocco, la <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> e la <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Domini",
+	"blocklists.add": "Aggiungi nuova lista di blocchi",
+	"blocklists.add-help": "Inserisci l'URL della lista di blocco che desideri aggiungere. NodeBB supporta le liste di blocco che corrispondono al formato usato da <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "Lista di blocco aggiornata — ora contiene %1 voci",
+	"blocklists.view.title": "Visualizza lista dei blocchi",
+	"blocklists.view.intro": "Questi sono i %1 dominio(i) bloccati da questa lista di blocco:",
 
 	"server-filtering": "Filtraggio",
 	"count": "Questo NodeBB è attualmente a conoscenza di <strong>%1</strong> server",
@@ -51,5 +63,20 @@
 	"content.summary-limit-help": "Quando il contenuto federato supera questo limite di caratteri, sarà generato un <code>riepilogo</code> che comprende tutte le frasi complete precedenti a tale limite. (Predefinito: 500)\n  ",
 	"content.break-string": "Delimitatore di nota/articolo",
 	"content.break-string-help": "Questo delimitatore può essere inserito manualmente dagli utenti esperti durante la composizione di nuove discussioni. Indica a NodeBB di usare il contenuto fino a quel punto come parte del <code>riepilogo</code>. Se questa stringa non viene usata, si applica il conteggio dei caratteri di riserva. (Predefinito: <code>[...]</code>)",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "ID predefinito della categoria per &quot;Mondo&quot; editor di pagine",
+
+	"analytics.intro": "Questa pagina offre una panoramica dello stato della federazione del tuo forum con altre istanze/server",
+	"analytics.details": "NodeBB tiene traccia delle attività ricevute e inviate da ActivityPub, e puoi visualizzarle per nome host, con cadenza oraria o giornaliera. Tieni presente che è difficile ottenere un tasso di errore pari a zero, dato che alcuni server vanno offline o sono configurati in modo errato.",
+	"analytics.by-hostname": "Filtra per nome host",
+	"analytics.in": "In arrivo",
+	"analytics.out": "In uscita",
+	"analytics.received": "Attività ricevute",
+	"analytics.sent": "Attività inviate",
+	"analytics.errors": "Errori",
+	"analytics.term": "Scala temporale",
+	"analytics.hourly": "Orario",
+	"analytics.daily": "Giornaliero",
+
+	"errors.intro": "Nelle ultime 24 ore, questa istanza ha registrato il seguente %1 errore(i).",
+	"errors.payload-gone": "Il payload per questo errore non esiste più."
 }

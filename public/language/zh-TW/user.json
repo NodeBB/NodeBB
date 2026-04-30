@@ -146,6 +146,7 @@
     "upvote-notif-freq.threshold": "當被點贊的數目為1, 5, 10, 25, 50, 100, 150, 200...時通知我",
     "upvote-notif-freq.logarithmic": "當被點讚的數目為10, 100, 1000...時通知我",
     "upvote-notif-freq.disabled": "任何時候都不要通知我",
+    "hide-read-notifications": "Hide Read Notifications",
     "notification-type-web": "Web",
     "notification-type-email": "Email",
     "browsing": "瀏覽設定",

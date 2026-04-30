@@ -27,9 +27,20 @@
 					<p class="form-text">[[admin/settings/notifications:notification-delay-help]]</p>
 				</div>
 			</div>
+
+			<div id="tinycon-settings" class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/notifications:tinycon.settings]]</h5>
+				<div class="mb-3">
+					<label class="form-label">[[admin/settings/notifications:tinycon.notification-color]]</label>
+					<input type="color" class="form-control form-control-color" data-field="tinyconColor" />
+				</div>
+				<div class="mb-3">
+					<label class="form-label">[[admin/settings/notifications:tinycon.notification-background]]</label>
+					<input type="color" class="form-control form-control-color" data-field="tinyconBackground" />
+				</div>
+			</div>
 		</div>
 
 		<!-- IMPORT admin/partials/settings/toc.tpl -->
 	</div>
 </div>
-

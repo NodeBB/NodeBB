@@ -266,6 +266,6 @@
     "activitypub.get-failed": "Impossible de récupérer la ressource spécifiée",
     "activitypub.pubKey-not-found": "La clé publique est introuvable, la vérification de la charge utile est impossible.",
     "activitypub.origin-mismatch": "L’origine de l’objet reçu est différente de celle de l’expéditeur",
-    "activitypub.actor-mismatch": "L’activité reçue est effectuée par un acteur différent de celui attendu",
-    "activitypub.not-implemented": "La requête a été rejetée : elle n’est pas prise en charge par le serveur destinataire."
+    "activitypub.not-implemented": "La requête a été rejetée : elle n’est pas prise en charge par le serveur destinataire.",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

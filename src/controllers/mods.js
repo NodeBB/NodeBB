@@ -157,7 +157,7 @@ modsController.flags.detail = async function (req, res, next) {
 	}
 
 
-	async function getAssignees(flagData) {
+	async function getAssignees(flagData, uid) {
 		let uids = [];
 		const [admins, globalMods] = await Promise.all([
 			groups.getMembers('administrators', 0, -1),
@@ -175,10 +175,10 @@ modsController.flags.detail = async function (req, res, next) {
 			}
 		}
 		const userData = await user.getUsersData(uids);
-		return userData.filter(u => u && u.userslug);
+		return await user.hidePrivateData(userData.filter(u => u && u.userslug), uid);
 	}
 
-	const assignees = await getAssignees(results.flagData);
+	const assignees = await getAssignees(results.flagData, req.uid);
 	results.flagData.history = await flags.getHistory(req.params.flagId);
 
 	if (results.flagData.type === 'user') {

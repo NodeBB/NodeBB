@@ -92,6 +92,8 @@
     "watch.title": "Njoftohuni për njoftimet e reja në këtë temë",
     "unwatch.title": "Ndaloni së ndjekuri këtë temë",
     "share-this-post": "Shpërnda këtë postim",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Duke e ndjekur",
     "not-watching": "Nuk jam duke ndjekur",
     "ignoring": "Duke injoruar",

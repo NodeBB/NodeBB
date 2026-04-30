@@ -200,6 +200,8 @@
     "maxReconnectionAttempts": 5,
     "reconnectionDelay": 1500,
     "disableCustomUserSkins": 0,
+    "tinyconColor": "#ffffff",
+    "tinyconBackground": "#ff0000",
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
     "activitypubProbe": 1,

@@ -150,10 +150,10 @@ Actors.topic = async function (req, res, next) {
 		} catch (e) {
 			return next(); // invalid page; 404
 		}
-		pids.push(mainPid);
-		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 
 		// Generate digest for ETag
+		pids.push(mainPid);
+		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		const digest = activitypub.helpers.generateDigest(new Set(pids));
 		const ifNoneMatch = (req.get('If-None-Match') || '').split(',').map((tag) => {
 			tag = tag.trim();
@@ -169,11 +169,11 @@ Actors.topic = async function (req, res, next) {
 		res.set('ETag', digest);
 
 		// Add OP to collection on first (or only) page
+		collection.totalItems += 1; // account for mainPid
 		if (page || collection.totalItems < perPage) {
 			collection.orderedItems = collection.orderedItems || [];
 			if (!page || page === 1) {
 				collection.orderedItems.unshift(mainPid);
-				collection.totalItems += 1;
 			}
 		}
 

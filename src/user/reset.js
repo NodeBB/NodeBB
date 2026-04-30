@@ -61,7 +61,7 @@ UserReset.send = async function (email) {
 
 		return code;
 	} finally {
-		db.deleteObjectField('locks', `reset${uid}`);
+		await db.deleteObjectField('locks', `reset${uid}`);
 	}
 };
 

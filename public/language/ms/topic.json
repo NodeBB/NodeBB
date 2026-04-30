@@ -92,6 +92,8 @@
     "watch.title": "Akan dimaklumkan sekiranya ada balasan dalam topik ini",
     "unwatch.title": "Berhenti melihat topik ini",
     "share-this-post": "Kongsi kiriman ini",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Watching",
     "not-watching": "Not Watching",
     "ignoring": "Ignoring",

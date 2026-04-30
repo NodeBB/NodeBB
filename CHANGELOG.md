@@ -1,3 +1,66 @@
+#### v4.10.3 (2026-04-15)
+
+##### Chores
+
+*  up persona (71c6132f)
+*  incrementing version number - v4.10.2 (c270bb91)
+*  update changelog for v4.10.2 (64c6417c)
+*  incrementing version number - v4.10.1 (0c9bbcea)
+*  incrementing version number - v4.10.0 (5b703104)
+*  incrementing version number - v4.9.2 (e6846052)
+*  incrementing version number - v4.9.1 (72e44c86)
+*  incrementing version number - v4.9.0 (3fdd1bef)
+*  incrementing version number - v4.8.1 (713ae0c0)
+*  incrementing version number - v4.8.0 (3fac737a)
+*  incrementing version number - v4.7.2 (cd419d8a)
+*  incrementing version number - v4.7.1 (afb88805)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Documentation Changes
+
+*  add development setup overview for contributors (#14132) (648344a2)
+
+##### Bug Fixes
+
+*  copy ip, closes #14177 (d99e46ab)
+*  don't prepend relative_path to absolute URLs in getProfilePictures (#14176) (37f23190)
+*  memberPostCids saving, closes #14170 (c40708f4)
+
+##### Tests
+
+*  set thumbs during topic.post (ac8bad8b)
+*  another delete after create (ab6d462b)
+*  fix unread deleted topic test (#14164) (15d65943)
+
 #### v4.10.2 (2026-04-08)
 
 ##### Chores

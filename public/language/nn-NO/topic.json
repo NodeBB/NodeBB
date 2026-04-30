@@ -92,6 +92,8 @@
     "watch.title": "Varsle meg om nye svar på dette innlegget",
     "unwatch.title": "Slutt å følge dette innlegget",
     "share-this-post": "Del dette innlegget",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Følger",
     "not-watching": "Følger ikkje",
     "ignoring": "Ignorerer",

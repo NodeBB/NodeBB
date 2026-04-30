@@ -1,13 +1,13 @@
 {
-    "themes": "Themes",
+    "themes": "テーマ",
     "checking-for-installed": "インストール済みテーマをチェックしています...",
     "homepage": "ホームページ",
     "select-theme": "テーマを選択",
-    "revert-theme": "Revert Theme",
+    "revert-theme": "テーマを元に戻す",
     "current-theme": "現在のテーマ",
     "no-themes": "インストールされたテーマが見つかりませんでした",
     "revert-confirm": "本当にNodeBBのテーマをデフォルトに復元してもよろしいですか？",
     "theme-changed": "テーマが変更されました",
     "revert-success": "NodeBBは正常にデフォルトテーマに戻りました。",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "restart-to-activate": "このテーマを完全に有効にするには、NodeBBを再構築して再起動してください。"
 }

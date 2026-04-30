@@ -22,7 +22,7 @@
 	"mongo.bytes-out": "バイトアウト",
 	"mongo.num-requests": "リクエスト数",
 	"mongo.raw-info": "MongoDBのRaw情報",
-	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
+	"mongo.unauthorized": "NodeBBはMongoDBデータベースから関連する統計をクエリできませんでした。NodeBBが使用するユーザーに「admin」データベースの「clusterMonitor」ロールが含まれていることを確認してください。",
 
 	"redis": "Redis",
 	"redis.version": "Redisのバージョン",
@@ -47,6 +47,6 @@
 	"redis.raw-info": "RedisのRaw情報",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
+	"postgres.version": "PostgreSQLバージョン",
 	"postgres.raw-info": "Postgres のRaw情報"
 }

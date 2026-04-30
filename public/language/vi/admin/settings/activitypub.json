@@ -39,6 +39,18 @@
 	"relays.state-0": "Đang đợi",
 	"relays.state-1": "Chỉ nhận",
 	"relays.state-2": "Kích hoạt",
+	"relays.errors.invalid-url": "Vui lòng nhập URL hợp lệ",
+
+	"blocklists": "Danh Sách Chặn Của Bên Thứ Ba",
+	"blocklists-help": "Để đảm bảo an toàn cho bạn và người dùng của bạn, việc duy trì danh sách chặn là một phần thiết yếu của bất kỳ nỗ lực đảm bảo an toàn nào khi làm việc với nội dung nằm ngoài phạm vi kiểm duyệt cục bộ. NodeBB đi kèm với một số cài đặt mặc định được đề xuất và bạn có thể tùy chỉnh chúng tại đây.",
+	"blocklists-default": "NodeBB được trang bị sẵn hai danh sách chặn theo mặc định, <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Danh sách từ chối không tương tác</a> và <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">Danh sách từ chối tên miền bị bỏ rơi và không được quản lý của IFTAS</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Tên miền",
+	"blocklists.add": "Thêm Mới Danh Sách Chặn",
+	"blocklists.add-help": "Nhập URL của danh sách chặn mà bạn muốn thêm. NodeBB hiểu các danh sách chặn có định dạng phù hợp với định dạng được sử dụng bởi <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "Danh sách chặn đã được làm mới — hiện chứa %1 mục",
+	"blocklists.view.title": "Xem Danh Sách Chặn",
+	"blocklists.view.intro": "Đây là (các) tên miền %1 bị chặn bởi danh sách chặn này:",
 
 	"server-filtering": "Lọc",
 	"count": "NodeBB này hiện đã biết về <strong>%1</strong> máy chủ",
@@ -51,5 +63,20 @@
 	"content.summary-limit-help": "Khi nội dung được phân phối vượt quá số lượng ký tự này, <code>tóm tắt</code> được tạo ra, bao gồm tất cả các câu hoàn chỉnh trước giới hạn này. (Mặc định: 500)",
 	"content.break-string": "Dấu phân cách Ghi chú/Bài đăng",
 	"content.break-string-help": "Dấu phân cách này có thể được người dùng thành thạo chèn thủ công khi soạn thảo chủ đề mới. Nó hướng dẫn NodeBB sử dụng nội dung cho đến thời điểm đó như một phần của <code>tóm tắt</code>. Nếu chuỗi này không được sử dụng, thì phương án dự phòng dựa trên số lượng ký tự sẽ được áp dụng. (Mặc định: <code>[...]</code>)",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "ID danh mục mặc định cho trình soạn thảo trang &quot;Thế giới&quot;",
+
+	"analytics.intro": "Trang này cung cấp tổng quan về trạng thái liên đoàn diễn đàn của bạn với các máy chủ/phiên bản khác.",
+	"analytics.details": "NodeBB theo dõi các hoạt động nhận và gửi dữ liệu từ ActivityPub, và bạn có thể xem chúng theo tên máy chủ, theo giờ hoặc theo ngày. Lưu ý rằng việc đạt được tỷ lệ lỗi bằng không là rất khó vì một số máy chủ có thể ngoại tuyến hoặc được cấu hình không đúng cách.",
+	"analytics.by-hostname": "Lọc theo Tên máy chủ",
+	"analytics.in": "Đi đến",
+	"analytics.out": "Đi ra",
+	"analytics.received": "Hoạt Động Đã Nhận",
+	"analytics.sent": "Hoạt Động Đã Gửi",
+	"analytics.errors": "Lỗi",
+	"analytics.term": "Thang thời gian",
+	"analytics.hourly": "Từng giờ",
+	"analytics.daily": "Hằng ngày",
+
+	"errors.intro": "Trong vòng 24 giờ qua, hệ thống này đã ghi nhận %1 lỗi sau đây.",
+	"errors.payload-gone": "Thông tin gây ra lỗi này không còn tồn tại nữa."
 }

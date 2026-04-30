@@ -4,6 +4,10 @@
 	"welcome-notification-link": "Willkommens-Benachrichtigungslink",
 	"welcome-notification-uid": "Begrüßungsbenachrichtigungsbenutzer (UID)",
 	"post-queue-notification-uid": "Post-Queue-Benutzer (UID)",
+	"notification-uid-help": "Wenn diese Option aktiviert ist, stammt die gesendete Benachrichtigung von diesem Benutzer. Andernfalls handelt es sich um eine Systembenachrichtigung.",
 	"notification-delay": "Verzögerung beim Versenden von Benachrichtigungs-E-Mails (Sekunden)",
-	"notification-delay-help": "Wenn der Benutzer die Benachrichtigung innerhalb dieser Zeit gelesen hat, wird die E-Mail nicht gesendet.<br/>Standard: 60 Sekunden."
+	"notification-delay-help": "Wenn der Benutzer die Benachrichtigung innerhalb dieser Zeit gelesen hat, wird die E-Mail nicht gesendet.<br/>Standard: 60 Sekunden.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Benachrichtigungsfarbe",
+	"tinycon.notification-background": "Hintergrund der Benachrichtigung"
 }

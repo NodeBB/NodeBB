@@ -39,6 +39,18 @@
 	"relays.state-0": "ממתין",
 	"relays.state-1": "קבלה בלבד",
 	"relays.state-2": "פעיל",
+	"relays.errors.invalid-url": "אנא הזינו URL תקין.",
+
+	"blocklists": "רשימת חסימות של צד שלישי",
+	"blocklists-help": "למען הבטיחות שלכם ושל המשתמשים שלכם, שמירה על רשימת חסימות היא חלק חיוני מכל מאמץ אמון ובטיחות כאשר עובדים עם תוכן מחוץ לתחום הניהול המקומי. NodeBB נשלח עם כמה ברירות מחדל מומלצות, וניתן להתאים אותן כאן.",
+	"blocklists-default": "NodeBB נוצרת עם שתי רשימות חסימה כברירת מחדל, ה <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> וה- <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "דומיינים",
+	"blocklists.add": "הוספת רשימת חסימות חדשה",
+	"blocklists.add-help": "הזינו את כתובת האתר של רשימת החסימה שברצונכם להוסיף. NodeBB מבינה רשימת חסימות התואמות את הפורמט שבו משתמשת <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "רשימת החסימות התעדכנה - היא מכילה כעת %1 ערכים",
+	"blocklists.view.title": "הצגת רשימת חסימות",
+	"blocklists.view.intro": "אלו הם %1 הדומיינים שנחסמו על ידי רשימת חסימות זו:",
 
 	"server-filtering": "סינון",
 	"count": "NodeBB זה מודע כרגע ל-<strong>%1</strong> שרתים",
@@ -51,5 +63,20 @@
 	"content.summary-limit-help": "כאשר תוכן המופץ החוצה חורג ממכסת תווים זו, ייווצר <code>תקציר</code>המורכב מכל המשפטים השלמים שלפני המגבלה. (ברירת מחדל: 500)",
 	"content.break-string": "מפריד הערת סיכום/מאמר",
 	"content.break-string-help": "משתמשים מתקדמים יכולים להזין את המפריד הזה ידנית בעת כתיבת נושאים חדשים. הוא מורה ל-NodeBB להשתמש בתוכן שעד לנקודה זו כחלק מה-<code> תקציר </code>. אם לא נעשה שימוש במחרוזת זו, תופעל חלופת ספירת התווים. (ברירת מחדל: <code> [...] </code> )",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "מזהה קטגוריה ברירת מחדל עבור &quot;World&quot; יוצר עמודים",
+
+	"analytics.intro": "דף זה מספק סקירה כללית של מצב הפדרציה של הפורום שלכם עם מופעים/שרתים אחרים",
+	"analytics.details": "NodeBB עוקב אחר קבלות ושליחות של פעילות ActivityPub, ואתם יכולים לצפות בהן לפי שם מארח, מדי שעה או יומי. שים לב שקשה להשיג שיעור שגיאות אפס בהתחשב בעובדה ששרתים מסוימים אינם מקוונים או מוגדרים בצורה לא נכונה.",
+	"analytics.by-hostname": "סינון לפי שם מארח",
+	"analytics.in": "נכנס",
+	"analytics.out": "יוצא",
+	"analytics.received": "פעילויות שהתקבלו",
+	"analytics.sent": "פעילויות שנשלחו",
+	"analytics.errors": "שגיאות",
+	"analytics.term": "סולם זמן",
+	"analytics.hourly": "שעתי",
+	"analytics.daily": "יומי",
+
+	"errors.intro": "השגיאות הבאות %1 נרשמו במקרה זה במהלך 24 השעות האחרונות.",
+	"errors.payload-gone": "ה-payload עבור שגיאה זו אינו קיים עוד."
 }

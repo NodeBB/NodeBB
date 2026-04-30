@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const utils = require('../../utils');
 
 module.exports = function (module) {
@@ -272,7 +271,10 @@ module.exports = function (module) {
 			return null;
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
+		const result = await module.client.collection('objects').findOne(
+			{ _key: key, value: value },
+			{ projection: { _id: 0, _key: 0, value: 0 } }
+		);
 		return result ? result.score : null;
 	};
 
@@ -281,15 +283,15 @@ module.exports = function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
-		const map = {};
+		const result = await module.client.collection('objects').find(
+			{ _key: { $in: keys }, value: value },
+			{ projection: { _id: 0, value: 0 } }
+		).toArray();
+		const scoreMap = Object.create(null);
 		result.forEach((item) => {
-			if (item) {
-				map[item._key] = item;
-			}
+			scoreMap[item._key] = item.score;
 		});
-
-		return keys.map(key => (map[key] ? map[key].score : null));
+		return keys.map(key => (scoreMap[key] !== undefined ? scoreMap[key] : null));
 	};
 
 	module.sortedSetScores = async function (key, values) {
@@ -300,13 +302,14 @@ module.exports = function (module) {
 			return [];
 		}
 		values = values.map(helpers.valueToString);
-		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
+		const result = await module.client.collection('objects').find(
+			{ _key: key, value: { $in: values } },
+			{ projection: { _id: 0, _key: 0 } }
+		).toArray();
 
-		const valueToScore = {};
+		const valueToScore = Object.create(null);
 		result.forEach((item) => {
-			if (item) {
-				valueToScore[item.value] = item.score;
-			}
+			valueToScore[item.value] = item.score;
 		});
 
 		return values.map(v => (utils.isNumber(valueToScore[v]) ? valueToScore[v] : null));
@@ -339,14 +342,8 @@ module.exports = function (module) {
 			projection: { _id: 0, value: 1 },
 		}).toArray();
 
-		const isMember = {};
-		results.forEach((item) => {
-			if (item) {
-				isMember[item.value] = true;
-			}
-		});
-
-		return values.map(value => !!isMember[value]);
+		const foundMembers = new Set(results.map(item => item.value));
+		return values.map(value => foundMembers.has(value));
 	};
 
 	module.isMemberOfSortedSets = async function (keys, value) {
@@ -360,14 +357,8 @@ module.exports = function (module) {
 			projection: { _id: 0, _key: 1, value: 1 },
 		}).toArray();
 
-		const isMember = {};
-		results.forEach((item) => {
-			if (item) {
-				isMember[item._key] = true;
-			}
-		});
-
-		return keys.map(key => !!isMember[key]);
+		const keysWithMember = new Set(results.map(item => item._key));
+		return keys.map(key => keysWithMember.has(key));
 	};
 
 	module.getSortedSetMembers = async function (key) {
@@ -412,7 +403,7 @@ module.exports = function (module) {
 				data.map(item => item.value),
 			];
 		}
-		const sets = {};
+		const sets = Object.create(null);
 		data.forEach((item) => {
 			sets[item._key] = sets[item._key] || [];
 			if (withScores) {
@@ -459,25 +450,49 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		data.forEach((item) => {
-			bulk.find({ _key: item[0], value: helpers.valueToString(item[2]) })
-				.upsert()
-				.update({ $inc: { score: parseFloat(item[1]) } });
-		});
-		await bulk.execute();
-		const result = await module.client.collection('objects').find({
-			_key: { $in: _.uniq(data.map(i => i[0])) },
-			value: { $in: _.uniq(data.map(i => i[2])) },
-		}, {
-			projection: { _id: 0, _key: 1, value: 1, score: 1 },
-		}).toArray();
+		if (!Array.isArray(data) || !data.length) {
+			return [];
+		}
+		const aggregated = dbHelpers.aggregateIncrByBulk(data);
+		const findQuery = { $or: [] };
 
-		const map = {};
-		result.forEach((item) => {
-			map[`${item._key}:${item.value}`] = item.score;
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		aggregated.forEach(([key, incr, value]) => {
+			const query = { _key: key, value: value };
+			findQuery.$or.push(query);
+			bulk.find(query)
+				.upsert()
+				.update({ $inc: { score: parseFloat(incr) } });
 		});
-		return data.map(item => map[`${item[0]}:${item[2]}`]);
+
+		try {
+			await bulk.execute();
+		} catch (err) {
+			// retry failed e11000 operations
+			if (err.code === 11000 || (err.writeErrors && err.writeErrors.some(e => e.code === 11000))) {
+				const failedIndices = err.writeErrors.filter(e => e.code === 11000).map(e => e.index);
+				const retryData = failedIndices.map(idx => aggregated[idx]);
+				await Promise.all(retryData.map(
+					([key, incr, value]) => module.sortedSetIncrBy(key, incr, value)
+				));
+			} else {
+				throw err;
+			}
+		}
+
+		const result = await module.client.collection('objects').find(
+			findQuery,
+			{ projection: { _id: 0, _key: 1, value: 1, score: 1 } },
+		).toArray();
+
+		const map = Object.create(null);
+		result.forEach((item) => {
+			if (!map[item._key]) {
+				map[item._key] = Object.create(null);
+			}
+			map[item._key][item.value] = item.score;
+		});
+		return data.map(([key, , value]) => (map[key] && map[key][value]) || 0);
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {

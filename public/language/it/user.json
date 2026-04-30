@@ -146,6 +146,7 @@
     "upvote-notif-freq.threshold": "In 1, 5, 10, 25, 50, 100, 150, 200...",
     "upvote-notif-freq.logarithmic": "Ogni 10, 100, 1000...",
     "upvote-notif-freq.disabled": "Disabilitate",
+    "hide-read-notifications": "Nascondi le notifiche di lettura",
     "notification-type-web": "Web",
     "notification-type-email": "Email",
     "browsing": "Impostazioni di Navigazione",

@@ -266,6 +266,6 @@
     "activitypub.get-failed": "Nie udało się pobrać zadanego zasobu.",
     "activitypub.pubKey-not-found": "Nie udało się uzyskać klucza publicznego, więc nie może zajść weryfikacja zawartości.",
     "activitypub.origin-mismatch": "Odebrany obiekt nie zgadza się z tym co nadano.",
-    "activitypub.actor-mismatch": "Odebrana aktywność różni się od tego czego się spodziewano.",
-    "activitypub.not-implemented": "Zapytanie napotkało odmowę z racji braku obsługi po stronie serwera odbiorczego."
+    "activitypub.not-implemented": "Zapytanie napotkało odmowę z racji braku obsługi po stronie serwera odbiorczego.",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

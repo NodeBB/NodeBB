@@ -96,14 +96,19 @@ module.exports = function (Posts) {
 
 	async function deleteFromTopicUserNotification(postData) {
 		const bulkRemove = [];
+		const bulkIncr = [];
 		postData.forEach((p) => {
 			bulkRemove.push([`tid:${p.tid}:posts`, p.pid]);
 			bulkRemove.push([`tid:${p.tid}:posts:votes`, p.pid]);
 			bulkRemove.push([`uid:${p.uid}:posts`, p.pid]);
 			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids`, p.pid]);
 			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids:votes`, p.pid]);
+			bulkIncr.push([`uid:${p.uid}:cids`, -1, p.cid]);
 		});
-		await db.sortedSetRemoveBulk(bulkRemove);
+		await Promise.all([
+			db.sortedSetRemoveBulk(bulkRemove),
+			db.sortedSetIncrByBulk(bulkIncr),
+		]);
 
 		const localCount = postData.filter(p => utils.isNumber(p.pid)).length;
 		const incrObjectBulk = [['global', { postCount: -localCount }]];

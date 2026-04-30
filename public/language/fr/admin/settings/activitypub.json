@@ -39,6 +39,18 @@
 	"relays.state-0": "En attente",
 	"relays.state-1": "Réception uniquement",
 	"relays.state-2": "Actif",
+	"relays.errors.invalid-url": "Please enter a valid URL",
+
+	"blocklists": "Third-party Blocklists",
+	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
+	"blocklists-default": "NodeBB ships with two blocklists by default, the <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> and the <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Domains",
+	"blocklists.add": "Add New Blocklist",
+	"blocklists.add-help": "Enter the URL of the blocklist you would like to add. NodeBB understands blocklists that match the format used by <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "Blocklist refreshed — it now contains %1 entries",
+	"blocklists.view.title": "View Blocklist",
+	"blocklists.view.intro": "These are the %1 domain(s) blocked by this blocklist:",
 
 	"server-filtering": "Filtrage",
 	"count": "Ce NodeBB connaît actuellement <strong>%1</strong> serveur(s)",
@@ -51,5 +63,20 @@
 	"content.summary-limit-help": "Lorsque le contenu fédéré dépasse ce nombre de caractères, un <code>résumé</code> est généré à partir de toutes les phrases complètes situées avant cette limite. (Par défaut : 500)",
 	"content.break-string": "Séparateur note/article",
 	"content.break-string-help": "Ce séparateur peut être inséré manuellement par les utilisateurs avancés lors de la création de nouveaux sujets. Il indique à NodeBB d’utiliser le contenu jusqu’à cet emplacement comme <code>résumé</code>. Si cette chaîne n’est pas utilisée, la limite de caractères par défaut s’applique. (Par défaut : <code>[...]</code>)",
-	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer"
+	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer",
+
+	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
+	"analytics.by-hostname": "Filter by Hostname",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
+	"analytics.received": "Received Activities",
+	"analytics.sent": "Sent Activites",
+	"analytics.errors": "Errors",
+	"analytics.term": "Time scale",
+	"analytics.hourly": "Hourly",
+	"analytics.daily": "Daily",
+
+	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
+	"errors.payload-gone": "The payload for this error no longer exists."
 }

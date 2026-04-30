@@ -50,6 +50,32 @@ Jobs.start = async () => {
 		runOnInit: false,
 		onTick: async () => await tryCronJob(backfill),
 	});
+
+	await cron.addJob({
+		name: 'ap:blocklist:refresh',
+		cronTime: '15 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				const lists = await activitypub.blocklists.list();
+				await Promise.all(lists.map(({ url }) => {
+					return activitypub.blocklists.refresh(url);
+				}));
+			});
+		},
+	});
+
+	await cron.addJob({
+		name: 'ap:analytics',
+		cronTime: '30 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				// Delete entries older than 24h
+				await db.sortedSetsRemoveRangeByScore(['ap:errors'], '-inf', Date.now() - (1000 * 60 * 60 * 24));
+			});
+		},
+	});
 };
 
 async function retryFailedMessages() {
@@ -80,7 +106,8 @@ async function retryFailedMessages() {
 			queueIdsToRemove.push(queueId);
 			return;
 		}
-		const ok = await activitypub._sendMessage(uri, id, type, payloadObj);
+		const keyData = await activitypub.getPrivateKey(type, id); // keyData could be moved higher up (optimization)
+		const ok = await activitypub._sendMessage(uri, keyData, payloadObj);
 		if (ok) {
 			queueIdsToRemove.push(queueId);
 		} else {

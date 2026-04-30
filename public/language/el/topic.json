@@ -92,6 +92,8 @@
     "watch.title": "Να ειδοποιούμαι για νέες απαντήσεις σε αυτό το θέμα",
     "unwatch.title": "Να μην παρακολουθώ αυτό το θέμα",
     "share-this-post": "Μοιράσου αυτή την Δημοσίευση",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Watching",
     "not-watching": "Not Watching",
     "ignoring": "Ignoring",

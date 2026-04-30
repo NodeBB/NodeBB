@@ -2,8 +2,12 @@
 	"notifications": "通知",
 	"welcome-notification": "ウェルカム通知",
 	"welcome-notification-link": "ウェルカム通知のリンク",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds."
+	"welcome-notification-uid": "ウェルカム通知ユーザー（UID）",
+	"post-queue-notification-uid": "投稿キュー通知ユーザー（UID）",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
+	"notification-delay": "通知メール送信の遅延（秒）",
+	"notification-delay-help": "この時間内にユーザーが通知を読んだ場合、メールは送信されません。<br/>デフォルト: 60秒。",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }

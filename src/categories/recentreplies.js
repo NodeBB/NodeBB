@@ -191,10 +191,15 @@ module.exports = function (Categories) {
 
 			const bulkRemove = [];
 			const bulkAdd = [];
+			const bulkIncr = [];
 			postData.forEach((post) => {
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids`, post.pid]);
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids:votes`, post.pid]);
 				bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids`, post.timestamp, post.pid]);
+				bulkIncr.push(
+					[`uid:${post.uid}:cids`, -1, oldCid],
+					[`uid:${post.uid}:cids`, 1, cid],
+				);
 				if (post.votes > 0 || post.votes < 0) {
 					bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids:votes`, post.votes, post.pid]);
 				}
@@ -207,6 +212,7 @@ module.exports = function (Categories) {
 				db.sortedSetAdd(`cid:${cid}:pids`, timestamps, postsToReAdd.map(p => p.pid)),
 				db.sortedSetRemoveBulk(bulkRemove),
 				db.sortedSetAddBulk(bulkAdd),
+				db.sortedSetIncrByBulk(bulkIncr),
 			]);
 		}, { batch: 500 });
 	};

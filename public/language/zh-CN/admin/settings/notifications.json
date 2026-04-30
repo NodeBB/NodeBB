@@ -4,6 +4,10 @@
 	"welcome-notification-link": "欢迎通知链接",
 	"welcome-notification-uid": "用户欢迎通知 (UID)",
 	"post-queue-notification-uid": "发布队列用户（UID）",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
 	"notification-delay": "发送通知邮件的延迟时间（秒）",
-	"notification-delay-help": "如果用户在此时间内已阅读通知，则不会发送电子邮件。<br/>默认值：60秒。"
+	"notification-delay-help": "如果用户在此时间内已阅读通知，则不会发送电子邮件。<br/>默认值：60秒。",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }

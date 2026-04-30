@@ -266,6 +266,6 @@
     "activitypub.get-failed": "Kan ikke hente den angitte ressursen.",
     "activitypub.pubKey-not-found": "Kan ikke løse opp offentlig nøkkel, så verifisering av nyttelasten kan ikke gjennomføres.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

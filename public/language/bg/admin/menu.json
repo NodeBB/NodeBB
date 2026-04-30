@@ -55,6 +55,8 @@
 	"federation/relays": "Препредаватели",
 	"federation/pruning": "Съхранение",
 	"federation/safety": "Доверие и защита",
+	"federation/analytics": "Анализи",
+	"federation/errors": "Грешки",
 
 	"section-appearance": "Външен вид",
 	"appearance/themes": "Теми",

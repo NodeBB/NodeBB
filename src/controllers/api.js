@@ -105,6 +105,10 @@ apiController.loadConfig = async function (req) {
 			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe,
 			worldDefaultCid: meta.config.activitypubWorldDefaultCid,
 		},
+		tinycon: {
+			color: meta.config.tinyconColor,
+			background: meta.config.tinyconBackground,
+		},
 	};
 
 	let settings = config;
@@ -140,6 +144,7 @@ apiController.loadConfig = async function (req) {
 			config.bootswatchSkin = settings.bootswatchSkin;
 		}
 	}
+	config.hideReadNotifications = settings.hideReadNotifications;
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;

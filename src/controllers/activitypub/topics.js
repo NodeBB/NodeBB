@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-
 const meta = require('../../meta');
 const user = require('../../user');
 const topics = require('../../topics');
@@ -44,6 +42,8 @@ controller.list = async function (req, res) {
 		query: req.query,
 		tag: req.query.tag,
 		targetUid: targetUid,
+		teaserPost: 'last-reply',
+		thumbsOnly: 1,
 	};
 	const data = await categories.getCategoryById(cidQuery);
 	delete data.children;
@@ -53,6 +53,7 @@ controller.list = async function (req, res) {
 
 	let tids;
 	let topicCount;
+	let topicData;
 	let { local } = req.query;
 	local = parseInt(local, 10) === 1;
 	if (req.query.sort === 'popular') {
@@ -64,7 +65,7 @@ controller.list = async function (req, res) {
 			followingOnly: !req.query.all || !parseInt(req.query.all, 10),
 		};
 		delete cidQuery.cid;
-		({ tids, topicCount } = await topics.getSortedTopics(cidQuery));
+		({ tids, topicCount, topics: topicData } = await topics.getSortedTopics(cidQuery));
 		tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	} else {
 		cidQuery = {
@@ -74,10 +75,14 @@ controller.list = async function (req, res) {
 			followingOnly: !req.query.all || !parseInt(req.query.all, 10),
 		};
 		delete cidQuery.cid;
-		({ tids, topicCount } = await topics.getSortedTopics(cidQuery));
+		({ tids, topicCount, topics: topicData } = await topics.getSortedTopics(cidQuery));
 
+		/**
+		 * Use `after` if passed in (only on IS) to update `start`/`stop`, this is useful
+		 * to prevent loading duplicate posts if the sorted topics have received new topics
+		 * since the set was last loaded.
+		 */
 		if (after) {
-			// Update start/stop with values inferred from `after`
 			const index = tids.indexOf(utils.isNumber(after) ? parseInt(after, 10) : after);
 			if (index && start - index < 1) {
 				const count = stop - start;
@@ -94,23 +99,18 @@ controller.list = async function (req, res) {
 		stripTags: false,
 		extraFields: ['bookmarks'],
 	});
-	const uniqTids = _.uniq(postData.map(p => p.tid));
-	const [topicData, { upvotes }, bookmarkStatus] = await Promise.all([
-		topics.getTopicsFields(uniqTids, ['tid', 'numThumbs', 'thumbs', 'mainPid']),
+	const [{ upvotes }, bookmarkStatus] = await Promise.all([
 		posts.getVoteStatusByPostIDs(mainPids, req.uid),
 		posts.hasBookmarked(mainPids, req.uid),
 	]);
 
-	const thumbs = await topics.thumbs.load(topicData, { thumbsOnly: 1 });
-	const tidToThumbs = _.zipObject(uniqTids, thumbs);
-	const teasers = await topics.getTeasers(postData.map(p => p.topic), { uid: req.uid });
 	postData.forEach((p, index) => {
 		p.pid = encodeURIComponent(p.pid);
 		if (p.topic) {
 			p.topic = { ...p.topic };
-			p.topic.thumbs = tidToThumbs[p.tid];
+			p.topic.thumbs = topicData[index].thumbs;
 			p.topic.postcount = Math.max(0, p.topic.postcount - 1);
-			p.topic.teaser = teasers[index];
+			p.topic.teaser = topicData[index].teaser;
 		}
 		p.upvoted = upvotes[index];
 		p.bookmarked = bookmarkStatus[index];

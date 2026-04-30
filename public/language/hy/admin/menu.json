@@ -55,6 +55,8 @@
 	"federation/relays": "Relays",
 	"federation/pruning": "Storage",
 	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
 
 	"section-appearance": "Արտաքին տեսք",
 	"appearance/themes": "Թեմաներ",

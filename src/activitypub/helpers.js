@@ -33,7 +33,11 @@ Helpers._webfingerCache = webfingerCache; // exported for tests
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
 	setTimeout(async () => {
-		console.log(await method.apply(method, args));
+		try {
+			console.log(await method.apply(method, args));
+		} catch (e) {
+			console.log('Exception thrown', e);
+		}
 	}, 2500);
 };
 // process.nextTick(() => {
@@ -192,6 +196,9 @@ Helpers.resolveLocalId = async (input) => {
 
 				case 'post':
 					return { type: 'post', id: value, ...activityData };
+
+				case 'topic':
+					return { type: 'topic', id: value, ...activityData };
 
 				case 'cid':
 				case 'category':
@@ -483,14 +490,15 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 		paginate = false;
 	}
 
-	page = parseInt(page, 10) || undefined;
+	page = parseInt(page, 10) || 1;
+	page = Math.max(1, Math.min(page, pageCount));
 	if (page) {
 		const invalidPagination = page < 1 || page > pageCount;
 		if (invalidPagination) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const start = Math.max(0, ((page - 1) * perPage) - 1);
+		const start = Math.max(0, (page - 1) * perPage);
 		const stop = Math.max(0, start + perPage - 1);
 		items = await method.call(null, start, stop);
 	}

@@ -7,6 +7,7 @@ const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
+const categories = require('../categories');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 const coverPhoto = require('../coverPhoto');
@@ -85,6 +86,7 @@ module.exports = function (User) {
 
 		const uniqueUids = _.uniq(uids).filter(uid => isFinite(uid) && uid > 0);
 		const remoteIds = _.uniq(uids).filter(uid => !isFinite(uid));
+
 		if (!customFieldWhiteList) {
 			await User.reloadCustomFieldWhitelist();
 		}
@@ -99,10 +101,40 @@ module.exports = function (User) {
 			fields = fields.filter(value => value !== 'password');
 		}
 
-		const users = await db.getObjectsFields(
+		let users = await db.getObjectsFields(
 			uniqueUids.map(uid => `user:${uid}`).concat(remoteIds.map(id => `userRemote:${id}`)),
 			fields
 		);
+
+		// Handle when some remoteIds are group actors
+		let remoteCids = await categories.exists(remoteIds);
+		remoteCids = remoteCids
+			.map((exists, idx) => exists ? remoteIds[idx] : null)
+			.filter(Boolean);
+		if (remoteCids.length) {
+			let categoryData = await categories.getCategoriesFields(remoteCids, ['cid', 'slug', 'name', 'backgroundImage']);
+			categoryData = categoryData.reduce((map, categoryObj) => {
+				map.set(categoryObj.cid, categoryObj);
+				return map;
+			}, new Map());
+			users = users.map((userObj, idx) => {
+				const cid = uids[idx];
+				if (remoteCids.includes(cid)) {
+					const categoryObj = categoryData.get(cid);
+					userObj = {
+						...userObj,
+						...(userObj.hasOwnProperty('uid') && { uid: categoryObj.cid }),
+						...(userObj.hasOwnProperty('username') && { username: categoryObj.name }),
+						...(userObj.hasOwnProperty('userslug') && { userslug: `../category/${categoryObj.slug}` }),
+						...(userObj.hasOwnProperty('displayname') && { displayname: categoryObj.name }),
+						...(userObj.hasOwnProperty('picture') && { picture: categoryObj.backgroundImage }),
+					};
+				}
+
+				return userObj;
+			});
+		}
+
 		const result = await plugins.hooks.fire('filter:user.getFields', {
 			uids: uniqueUids,
 			users: users,
