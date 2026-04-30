@@ -171,6 +171,22 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 	return roomData;
 };
 
+async function getUsers(roomIds, exceptUid) {
+	const arrayOfUids = await Promise.all(
+		roomIds.map(roomId => Messaging.getUidsInRoom(roomId, 0, 9))
+	);
+	const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
+		_uid => _uid && parseInt(_uid, 10) !== parseInt(exceptUid, 10)
+	);
+	const uidToUser = _.zipObject(
+		uniqUids,
+		await user.getUsersFields(uniqUids, [
+			'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+		])
+	);
+	return arrayOfUids.map(uids => uids.map(uid => uidToUser[uid]));
+}
+
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
 	if (!ok) {
@@ -179,30 +195,68 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
 
-	async function getUsers(roomIds) {
-		const arrayOfUids = await Promise.all(
-			roomIds.map(roomId => Messaging.getUidsInRoom(roomId, 0, 9))
-		);
-		const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
-			_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10)
-		);
-		const uidToUser = _.zipObject(
-			uniqUids,
-			await user.getUsersFields(uniqUids, [
-				'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
-			])
-		);
-		return arrayOfUids.map(uids => uids.map(uid => uidToUser[uid]));
-	}
-
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
-		users: getUsers(roomIds),
+		users: getUsers(roomIds, uid),
 		teasers: Messaging.getTeasers(uid, roomIds),
 		settings: user.getSettings(uid),
 	});
 
+	results.roomData = await modifyChatRooms(uid, results);
+
+	const ref = { rooms: results.roomData, nextStart: stop + 1 };
+	return await plugins.hooks.fire('filter:messaging.getRecentChats', {
+		rooms: ref.rooms,
+		nextStart: ref.nextStart,
+		uid: uid,
+		callerUid: callerUid,
+	});
+};
+
+Messaging.searchRecentChats = async (callerUid, uid, query) => {
+	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
+	if (!ok) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1);
+	const results = await utils.promiseParallel({
+		roomData: Messaging.getRoomsData(roomIds),
+		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
+		users: getUsers(roomIds, uid),
+		teasers: Messaging.getTeasers(uid, roomIds),
+		settings: user.getSettings(uid),
+	});
+
+	// Filter rooms based on query
+	results.roomData = results.roomData
+		.filter((room, idx) => {
+			if (!room) return false;
+
+			// Search in room title
+			const titleMatch = room.roomName && room.roomName.toLowerCase().includes(query.toLowerCase());
+
+			// Search in usernames
+			const users = results.users[idx] || [];
+			const usernameMatch = users.some(user => user && (
+				(user.displayname && user.displayname.toLowerCase().includes(query.toLowerCase())) ||
+				(user.username && user.username.toLowerCase().includes(query.toLowerCase()))
+			));
+
+			return titleMatch || usernameMatch;
+		});
+
+	results.roomData = await modifyChatRooms(uid, results);
+
+	return await plugins.hooks.fire('filter:messaging.searchRecentChats', {
+		rooms: results.roomData,
+		uid: uid,
+		callerUid: callerUid,
+	});
+};
+
+async function modifyChatRooms(uid, results) {
 	await Promise.all(results.roomData.map(async (room, index) => {
 		if (room) {
 			room.users = results.users[index];
@@ -222,15 +276,8 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		}
 	}));
 
-	results.roomData = results.roomData.filter(Boolean);
-	const ref = { rooms: results.roomData, nextStart: stop + 1 };
-	return await plugins.hooks.fire('filter:messaging.getRecentChats', {
-		rooms: ref.rooms,
-		nextStart: ref.nextStart,
-		uid: uid,
-		callerUid: callerUid,
-	});
-};
+	return results.roomData.filter(Boolean);
+}
 
 Messaging.generateUsernames = function (room, excludeUid) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);

@@ -12,6 +12,7 @@ define('forum/chats', [
 	'forum/chats/message-search',
 	'forum/chats/pinned-messages',
 	'forum/chats/events',
+	'forum/chats/search',
 	'autocomplete',
 	'hooks',
 	'bootbox',
@@ -22,8 +23,8 @@ define('forum/chats', [
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
-	events, autocomplete, hooks, bootbox, alerts, chatModule,
-	api, uploadHelpers
+	events, search, autocomplete, hooks, bootbox, alerts,
+	chatModule, api, uploadHelpers
 ) {
 	const Chats = {
 		activeAutocomplete: {},
@@ -85,6 +86,7 @@ define('forum/chats', [
 			messages.scrollToBottomAfterImageLoad(chatContentEl);
 		}
 		create.init();
+		search.init(document.getElementById('search-chats'), document.getElementById('private-rooms'));
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
 	};
