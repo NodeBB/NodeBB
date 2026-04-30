@@ -223,6 +223,13 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
+	try {
+		// Validate URI is well-formed
+		new URL(uri);
+	} catch (err) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
 	// Rate limiting check - only if not cached
 	const lockId = `pubkey:${ip}`;
 	let lockStatus = await db.incrObjectField('locks', lockId);
@@ -235,20 +242,37 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 	try {
 		// Use requests.get with built-in SSRF protections
 		// Set reasonable timeout and response size limit
-		const { body } = await request.get(uri, {
+		const { body, headers } = await request.get(uri, {
 			timeout: 5000, // 5 seconds
 			headers: {
 				'accept': ActivityPub._constants.acceptableTypes.at(1),
 			},
 			redirect: 'manual',
+			maxBodyLength: 1024 * 1024, // 1MB limit
 		});
+
+		// Validate Content-Type header
+		if (
+			!headers['content-type'] ||
+			ActivityPub._constants.acceptableTypes.includes(headers['content-type'])
+		) {
+			throw new Error('[[error:activitypub.invalid-content-type]]');
+		}
 
 		// Process response and cache
 		if (body.hasOwnProperty('publicKeyPem')) {
+			// Validate public key
+			if (!utils.isPEM(body.publicKeyPem)) {
+				throw new Error('[[error:invalid-data]]');
+			}
 			// CryptographicKey returned (correct)
 			publicKeyCache.set(uri, body.publicKeyPem);
 			return body.publicKeyPem;
 		} else if (body?.publicKey?.publicKeyPem) {
+			// Validate public key
+			if (!utils.isPEM(body.publicKey.publicKeyPem)) {
+				throw new Error('[[error:invalid-data]]');
+			}
 			// Actor object returned (less correct)
 			publicKeyCache.set(uri, body.publicKey.publicKeyPem);
 			return body.publicKey.publicKeyPem;
