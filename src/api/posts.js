@@ -259,7 +259,7 @@ postsAPI.purge = async function (caller, data) {
 		posts.purge(data.pid, caller.uid),
 	]);
 	setImmediate(() => {
-		activitypub.out.delete.note(caller.uid, data.pid),
+		activitypub.out.delete.note(caller.uid, data.pid);
 	});
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
