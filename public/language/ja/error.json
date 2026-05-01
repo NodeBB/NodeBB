@@ -1,6 +1,6 @@
 {
     "invalid-data": "無効なデータ",
-    "invalid-config-field-value": "設定フィールド \\\"%1\\\" の値が無効です: %2",
+    "invalid-config-field-value": "設定フィールド \"%1\" の値が無効です: %2",
     "invalid-json": "無効なJSON",
     "wrong-parameter-type": "プロパティ `%1` には型 %3 の値が期待されますが、%2 が渡されました",
     "required-parameters-missing": "このAPI呼び出しに必要なパラメータが不足しています: %1",

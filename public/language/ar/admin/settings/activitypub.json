@@ -12,7 +12,7 @@
 	"allowLoopback": "Allow loopback processing",
 	"allowLoopback-help": "Useful for debugging purposes only. You should probably leave this disabled.",
 
-	"probe": "Open in App",
+	"probe": "افتح في التطبيق",
 	"probe-enabled": "Try to open ActivityPub-enabled resources in NodeBB",
 	"probe-enabled-help": "If enabled, NodeBB will check every external link for an ActivityPub equivalent, and load it in NodeBB instead.",
 	"probe-timeout": "Lookup Timeout (milliseconds)",
@@ -36,10 +36,10 @@
 	"relays.add": "Add New Relay",
 	"relays.relay": "Relay",
 	"relays.state": "State",
-	"relays.state-0": "Pending",
+	"relays.state-0": "قيد الانتظار",
 	"relays.state-1": "Receiving only",
 	"relays.state-2": "Active",
-	"relays.errors.invalid-url": "Please enter a valid URL",
+	"relays.errors.invalid-url": "الرجاء إدخال عنوان URL صحيح",
 
 	"blocklists": "Third-party Blocklists",
 	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
@@ -72,9 +72,9 @@
 	"analytics.out": "Outgoing",
 	"analytics.received": "Received Activities",
 	"analytics.sent": "Sent Activites",
-	"analytics.errors": "Errors",
+	"analytics.errors": "أخطاء",
 	"analytics.term": "Time scale",
-	"analytics.hourly": "Hourly",
+	"analytics.hourly": "كل ساعة",
 	"analytics.daily": "Daily",
 
 	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",

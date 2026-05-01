@@ -40,7 +40,7 @@
     "account/edit": "編集中 \"%1\"",
     "account/edit/password": "\"%1\"のパスワードを編集中",
     "account/edit/username": "\"%1\"のユーザー名を編集中",
-    "account/edit/email": "\\\"%1\\\"のメールアドレスを編集中",
+    "account/edit/email": "\"%1\"のメールアドレスを編集中",
     "account/info": "アカウント情報",
     "account/following": "%1がフォロー中",
     "account/followers": "%1のフォロワー",
