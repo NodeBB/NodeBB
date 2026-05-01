@@ -41,6 +41,7 @@
     "chat.public-rooms": "Phòng Công Cộng (%1)",
     "chat.private-rooms": "Phòng Riêng (%1)",
     "chat.create-room": "Tạo Phòng Trò Chuyện",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "Riêng tư (Chỉ hiển thị với người dùng được thêm vào phòng)",
     "chat.public.option": "Công khai (Hiển thị với mọi người dùng trong các nhóm đã chọn)",
     "chat.public.groups-help": "Để tạo phòng trò chuyện hiển thị cho tất cả người dùng, hãy chọn người dùng đã đăng ký từ danh sách nhóm.",

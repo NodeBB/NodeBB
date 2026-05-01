@@ -41,6 +41,7 @@
     "chat.public-rooms": "Genel Odalar (%1)",
     "chat.private-rooms": "Özel Odalar (%1)",
     "chat.create-room": "Sohbet Odası Oluştur",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "Private (Only visible to users added to room)",
     "chat.public.option": "Public (Visible to every user in selected groups)",
     "chat.public.groups-help": "To create a chat room that is visible to all users select registered-users from the group list.",

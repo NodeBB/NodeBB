@@ -41,6 +41,7 @@
     "chat.public-rooms": "חדרים ציבוריים (%1)",
     "chat.private-rooms": "חדרים פרטיים (%1)",
     "chat.create-room": "יצירת חדר צ'אט",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "פרטי (גלוי רק למשתמשים שנוספו לחדר)",
     "chat.public.option": "ציבורי (גלוי לכל משתמש בקבוצות שנבחרו)",
     "chat.public.groups-help": "כדי ליצור חדר צ'אט הגלוי לכל המשתמשים בחרו ב\"משתמשים רשומים\" מרשימת הקבוצות.",

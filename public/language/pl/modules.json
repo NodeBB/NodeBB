@@ -41,6 +41,7 @@
     "chat.public-rooms": "Pokoje publiczne (%1)",
     "chat.private-rooms": "Prywatne pokoje (%1)",
     "chat.create-room": "Nowy pokój",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "Prywatny (widzialny tylko dla osób dodanych do pokoju)",
     "chat.public.option": "Publiczny (widzialny dla wszystkich użytkowników w wybranych grupach)",
     "chat.public.groups-help": "Aby założyć pokój czatu, który jest widzialny dla wszystkich użytkowników, wybierz zarejestrowanych użytkowników z listy grupy.",

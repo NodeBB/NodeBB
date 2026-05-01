@@ -41,6 +41,7 @@
     "chat.public-rooms": "公开房间（%1）",
     "chat.private-rooms": "私有房间（%1）",
     "chat.create-room": "创建聊天室",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "私有（仅已加入房间用户可见）",
     "chat.public.option": "公开（对选中组里的所有用户可见）",
     "chat.public.groups-help": "要创建对所有用户可见的聊天房间，在用户组中选择 registered-users。",

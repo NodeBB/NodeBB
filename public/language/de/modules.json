@@ -41,6 +41,7 @@
     "chat.public-rooms": "Öffentliche Räume (%1)",
     "chat.private-rooms": "Private Räume (%1)",
     "chat.create-room": "Chat-Raum erstellen",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "Privat (Nur sichtbar für Benutzer, die dem Raum hinzugefügt wurden)",
     "chat.public.option": "Öffentlich (Sichtbar für alle Benutzer in ausgewählten Gruppen)",
     "chat.public.groups-help": "Um einen Chat-Raum zu erstellen, der für alle Benutzer sichtbar ist, wähle registered-users in der Gruppenliste.",
