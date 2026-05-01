@@ -1,380 +1,351 @@
 'use strict';
 
-const _ = require('lodash');
 const assert = require('assert');
 const path = require('path');
-const fs = require('fs');
-const SwaggerParser = require('@apidevtools/swagger-parser');
 const nconf = require('nconf');
+const fs = require('fs');
+const _ = require('lodash');
+const SwaggerParser = require('@apidevtools/swagger-parser');
 const jwt = require('jsonwebtoken');
 const util = require('util');
 
+const db = require('../mocks/databasemock');
+const request = require('../../src/request');
+const utils = require('../../src/utils');
+const user = require('../../src/user');
+const groups = require('../../src/groups');
+const meta = require('../../src/meta');
+const categories = require('../../src/categories');
+const topics = require('../../src/topics');
+const posts = require('../../src/posts');
+const notifications = require('../../src/notifications');
+const flags = require('../../src/flags');
+const messaging = require('../../src/messaging');
+const plugins = require('../../src/plugins');
+const api = require('../../src/api');
+const helpers = require('../helpers');
+
 const wait = util.promisify(setTimeout);
+let readApi;
+let writeApi;
+let setup = false;
+let jar;
+let csrfToken;
+const unauthenticatedRoutes = ['/api/login', '/api/register']; // Everything else will be called with the admin user
 
-const db = require('./mocks/databasemock');
-const request = require('../src/request');
-const helpers = require('./helpers');
-const meta = require('../src/meta');
-const file = require('../src/file');
-const user = require('../src/user');
-const groups = require('../src/groups');
-const categories = require('../src/categories');
-const topics = require('../src/topics');
-const posts = require('../src/posts');
-const plugins = require('../src/plugins');
-const flags = require('../src/flags');
-const messaging = require('../src/messaging');
-const activitypub = require('../src/activitypub');
-const notifications = require('../src/notifications');
-const utils = require('../src/utils');
-const api = require('../src/api');
+async function dummySearchHook(data) {
+	return [1];
+}
+async function dummyEmailerHook(data) {
+	// pretend to handle sending emails
+}
+const mocks = {
+	head: {},
+	get: {
+		'/api/email/unsubscribe/{token}': [
+			{
+				in: 'path',
+				name: 'token',
+				example: (() => jwt.sign({
+					template: 'digest',
+					uid: 1,
+				}, nconf.get('secret')))(),
+			},
+		],
+		'/api/confirm/{code}': [
+			{
+				in: 'path',
+				name: 'code',
+				example: '', // to be defined later...
+			},
+		],
+		'/admin/tokens/{token}': [
+			{
+				in: 'path',
+				name: 'token',
+				example: '', // to be defined later...
+			},
+		],
+	},
+	post: {
+		'/admin/tokens/{token}/roll': [
+			{
+				in: 'path',
+				name: 'token',
+				example: '', // to be defined later...
+			},
+		],
+	},
+	put: {
+		'/groups/{slug}/pending/{uid}': [
+			{
+				in: 'path',
+				name: 'slug',
+				example: 'private-group',
+			},
+			{
+				in: 'path',
+				name: 'uid',
+				example: '', // to be defined later...
+			},
+		],
+		'/admin/tokens/{token}': [
+			{
+				in: 'path',
+				name: 'token',
+				example: '', // to be defined later...
+			},
+		],
+	},
+	patch: {},
+	delete: {
+		'/users/{uid}/tokens/{token}': [
+			{
+				in: 'path',
+				name: 'uid',
+				example: 1,
+			},
+			{
+				in: 'path',
+				name: 'token',
+				example: utils.generateUUID(),
+			},
+		],
+		'/users/{uid}/sessions/{uuid}': [
+			{
+				in: 'path',
+				name: 'uid',
+				example: 1,
+			},
+			{
+				in: 'path',
+				name: 'uuid',
+				example: '', // to be defined below...
+			},
+		],
+		'/posts/{pid}/diffs/{timestamp}': [
+			{
+				in: 'path',
+				name: 'pid',
+				example: '', // to be defined below...
+			},
+			{
+				in: 'path',
+				name: 'timestamp',
+				example: '', // to be defined below...
+			},
+		],
+		'/groups/{slug}/pending/{uid}': [
+			{
+				in: 'path',
+				name: 'slug',
+				example: 'private-group',
+			},
+			{
+				in: 'path',
+				name: 'uid',
+				example: '', // to be defined later...
+			},
+		],
+		'/groups/{slug}/invites/{uid}': [
+			{
+				in: 'path',
+				name: 'slug',
+				example: 'invitations-only',
+			},
+			{
+				in: 'path',
+				name: 'uid',
+				example: '', // to be defined later...
+			},
+		],
+		'/admin/tokens/{token}': [
+			{
+				in: 'path',
+				name: 'token',
+				example: '', // to be defined later...
+			},
+		],
+	},
+};
 
-describe('API', async () => {
-	let readApi = false;
-	let writeApi = false;
-	const readApiPath = path.resolve(__dirname, '../public/openapi/read.yaml');
-	const writeApiPath = path.resolve(__dirname, '../public/openapi/write.yaml');
-	let jar;
-	let csrfToken;
-	let setup = false;
-	const unauthenticatedRoutes = ['/api/login', '/api/register']; // Everything else will be called with the admin user
-
-	const mocks = {
-		head: {},
-		get: {
-			'/api/email/unsubscribe/{token}': [
-				{
-					in: 'path',
-					name: 'token',
-					example: (() => jwt.sign({
-						template: 'digest',
-						uid: 1,
-					}, nconf.get('secret')))(),
-				},
-			],
-			'/api/confirm/{code}': [
-				{
-					in: 'path',
-					name: 'code',
-					example: '', // to be defined later...
-				},
-			],
-			'/admin/tokens/{token}': [
-				{
-					in: 'path',
-					name: 'token',
-					example: '', // to be defined later...
-				},
-			],
-		},
-		post: {
-			'/admin/tokens/{token}/roll': [
-				{
-					in: 'path',
-					name: 'token',
-					example: '', // to be defined later...
-				},
-			],
-		},
-		put: {
-			'/groups/{slug}/pending/{uid}': [
-				{
-					in: 'path',
-					name: 'slug',
-					example: 'private-group',
-				},
-				{
-					in: 'path',
-					name: 'uid',
-					example: '', // to be defined later...
-				},
-			],
-			'/admin/tokens/{token}': [
-				{
-					in: 'path',
-					name: 'token',
-					example: '', // to be defined later...
-				},
-			],
-		},
-		patch: {},
-		delete: {
-			'/users/{uid}/tokens/{token}': [
-				{
-					in: 'path',
-					name: 'uid',
-					example: 1,
-				},
-				{
-					in: 'path',
-					name: 'token',
-					example: utils.generateUUID(),
-				},
-			],
-			'/users/{uid}/sessions/{uuid}': [
-				{
-					in: 'path',
-					name: 'uid',
-					example: 1,
-				},
-				{
-					in: 'path',
-					name: 'uuid',
-					example: '', // to be defined below...
-				},
-			],
-			'/posts/{pid}/diffs/{timestamp}': [
-				{
-					in: 'path',
-					name: 'pid',
-					example: '', // to be defined below...
-				},
-				{
-					in: 'path',
-					name: 'timestamp',
-					example: '', // to be defined below...
-				},
-			],
-			'/groups/{slug}/pending/{uid}': [
-				{
-					in: 'path',
-					name: 'slug',
-					example: 'private-group',
-				},
-				{
-					in: 'path',
-					name: 'uid',
-					example: '', // to be defined later...
-				},
-			],
-			'/groups/{slug}/invites/{uid}': [
-				{
-					in: 'path',
-					name: 'slug',
-					example: 'invitations-only',
-				},
-				{
-					in: 'path',
-					name: 'uid',
-					example: '', // to be defined later...
-				},
-			],
-			'/admin/tokens/{token}': [
-				{
-					in: 'path',
-					name: 'token',
-					example: '', // to be defined later...
-				},
-			],
-		},
-	};
-
-	async function dummySearchHook(data) {
-		return [1];
-	}
-	async function dummyEmailerHook(data) {
-		// pretend to handle sending emails
+async function setupData() {
+	if (setup) {
+		return;
 	}
 
+	// Create sample users
+	const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' }, { emailVerification: 'verify' });
+	const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' }, { emailVerification: 'verify' });
+	const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
+
+	mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
+
+	for (let x = 0; x < 4; x++) {
+		// eslint-disable-next-line no-await-in-loop
+		await user.create({ username: 'deleteme', password: '123456' }); // for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
+	}
+	await groups.join('administrators', adminUid);
+
+	// Create api token for testing read/updating/deletion
+	const token = await api.utils.tokens.generate({ uid: adminUid });
+	mocks.get['/admin/tokens/{token}'][0].example = token;
+	mocks.put['/admin/tokens/{token}'][0].example = token;
+	mocks.delete['/admin/tokens/{token}'][0].example = token;
+
+	// Create another token for testing rolling
+	const token2 = await api.utils.tokens.generate({ uid: adminUid });
+	mocks.post['/admin/tokens/{token}/roll'][0].example = token2;
+
+	// Create sample group
+	await groups.create({
+		name: 'Test Group',
+	});
+
+	// Create private groups for pending/invitations
+	const [pending1, pending2, inviteUid] = await Promise.all([
+		await user.create({ username: utils.generateUUID().slice(0, 8) }),
+		await user.create({ username: utils.generateUUID().slice(0, 8) }),
+		await user.create({ username: utils.generateUUID().slice(0, 8) }),
+	]);
+	mocks.put['/groups/{slug}/pending/{uid}'][1].example = pending1;
+	mocks.delete['/groups/{slug}/pending/{uid}'][1].example = pending2;
+	mocks.delete['/groups/{slug}/invites/{uid}'][1].example = inviteUid;
+	await Promise.all(['private-group', 'invitations-only'].map(async (name) => {
+		await groups.create({ name, private: true });
+	}));
+	await groups.requestMembership('private-group', pending1);
+	await groups.requestMembership('private-group', pending2);
+	await groups.invite('invitations-only', inviteUid);
+
+	await meta.settings.set('core.api', {
+		tokens: [{
+			token: mocks.delete['/users/{uid}/tokens/{token}'][1].example,
+			uid: 1,
+			description: 'for testing of token deletion route',
+			timestamp: Date.now(),
+		}],
+	});
+	meta.config.allowTopicsThumbnail = 1;
+	meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
+	meta.config.chatMessageDelay = 0;
+	meta.config.activitypubEnabled = 1;
+
+	// Create a category
+	const testCategory = await categories.create({ name: 'test' });
+
+	// Post a new topic
+	await topics.post({
+		uid: adminUid,
+		cid: testCategory.cid,
+		title: 'Test Topic',
+		content: 'Test topic content',
+	});
+	const unprivTopic = await topics.post({
+		uid: unprivUid,
+		cid: testCategory.cid,
+		title: 'Test Topic 2',
+		content: 'Test topic 2 content',
+	});
+	await topics.post({
+		uid: unprivUid,
+		cid: testCategory.cid,
+		title: 'Test Topic 3',
+		content: 'Test topic 3 content',
+	});
+
+	// create a notification
+	const notifObj = await notifications.create({
+		nid: '1', // match nid in example in notifications/nid/read.yaml
+		path: '/notifications',
+		from: unprivUid,
+		bodyShort: 'testing notification',
+	});
+	notifications.push(notifObj, adminUid);
+
+
+	// Create a post diff
+	await posts.edit({
+		uid: adminUid,
+		pid: unprivTopic.postData.pid,
+		content: 'Test topic 2 edited content',
+		req: {},
+	});
+	mocks.delete['/posts/{pid}/diffs/{timestamp}'][0].example = unprivTopic.postData.pid;
+	mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (await posts.diffs.list(unprivTopic.postData.pid))[0];
+
+	// Create a sample flag
+	const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now()); // deleted in DELETE /api/v3/flags/1
+	await flags.appendNote(flagId, 1, 'test note', 1626446956652);
+	await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
+
+	// Create a new chat room & send a message
+	const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
+	await messaging.sendMessage({
+		roomId,
+		uid: adminUid,
+		content: 'this is a chat message',
+	});
+
+	// Create an empty file to test DELETE /files and thumb deletion
+	fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
+	fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.png'), 'w'));
+
+	// Associate thumb with topic to test thumb reordering
+	await topics.thumbs.associate({
+		id: 2,
+		path: 'files/test.png',
+	});
+
+	const socketAdmin = require('../src/socket.io/admin');
+	await Promise.all(['profile', 'posts', 'uploads'].map(async type => api.users.generateExport({ uid: adminUid }, { uid: adminUid, type })));
+	await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
+	// wait for export child processes to complete
+	await wait(5000);
+
+	// Attach a search hook so /api/search is enabled
+	plugins.hooks.register('core', {
+		hook: 'filter:search.query',
+		method: dummySearchHook,
+	});
+	// Attach an emailer hook so related requests do not error
+	plugins.hooks.register('emailer-test', {
+		hook: 'static:email.send',
+		method: dummyEmailerHook,
+	});
+
+	// All tests run as admin user
+	({ jar } = await helpers.loginUser('admin', '123456'));
+
+	// Retrieve CSRF token using cookie, to test Write API
+	csrfToken = await helpers.getCsrfToken(jar);
+
+	// Pre-seed ActivityPub cache so contrived actor assertions pass
+	activitypub._cache.set(`0;https://example.org/foobar`, {
+		id: 'https://example.org/foobar',
+		name: 'foobar',
+		publicKey: {
+			id: `https://example.org/foobar#key`,
+			owner: `https://example.org/foobar`,
+			publicKeyPem: 'secretcat',
+		},
+	});
+
+	setup = true;
+}
+
+describe('schema', async function () {
 	after(async () => {
 		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
 		plugins.hooks.unregister('emailer-test', 'static:email.send');
 	});
 
-	async function setupData() {
-		if (setup) {
-			return;
-		}
-
-		// Create sample users
-		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' }, { emailVerification: 'verify' });
-		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' }, { emailVerification: 'verify' });
-		const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
-
-		mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
-
-		for (let x = 0; x < 4; x++) {
-			// eslint-disable-next-line no-await-in-loop
-			await user.create({ username: 'deleteme', password: '123456' }); // for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
-		}
-		await groups.join('administrators', adminUid);
-
-		// Create api token for testing read/updating/deletion
-		const token = await api.utils.tokens.generate({ uid: adminUid });
-		mocks.get['/admin/tokens/{token}'][0].example = token;
-		mocks.put['/admin/tokens/{token}'][0].example = token;
-		mocks.delete['/admin/tokens/{token}'][0].example = token;
-
-		// Create another token for testing rolling
-		const token2 = await api.utils.tokens.generate({ uid: adminUid });
-		mocks.post['/admin/tokens/{token}/roll'][0].example = token2;
-
-		// Create sample group
-		await groups.create({
-			name: 'Test Group',
-		});
-
-		// Create private groups for pending/invitations
-		const [pending1, pending2, inviteUid] = await Promise.all([
-			await user.create({ username: utils.generateUUID().slice(0, 8) }),
-			await user.create({ username: utils.generateUUID().slice(0, 8) }),
-			await user.create({ username: utils.generateUUID().slice(0, 8) }),
-		]);
-		mocks.put['/groups/{slug}/pending/{uid}'][1].example = pending1;
-		mocks.delete['/groups/{slug}/pending/{uid}'][1].example = pending2;
-		mocks.delete['/groups/{slug}/invites/{uid}'][1].example = inviteUid;
-		await Promise.all(['private-group', 'invitations-only'].map(async (name) => {
-			await groups.create({ name, private: true });
-		}));
-		await groups.requestMembership('private-group', pending1);
-		await groups.requestMembership('private-group', pending2);
-		await groups.invite('invitations-only', inviteUid);
-
-		await meta.settings.set('core.api', {
-			tokens: [{
-				token: mocks.delete['/users/{uid}/tokens/{token}'][1].example,
-				uid: 1,
-				description: 'for testing of token deletion route',
-				timestamp: Date.now(),
-			}],
-		});
-		meta.config.allowTopicsThumbnail = 1;
-		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
-		meta.config.chatMessageDelay = 0;
-		meta.config.activitypubEnabled = 1;
-
-		// Create a category
-		const testCategory = await categories.create({ name: 'test' });
-
-		// Post a new topic
-		await topics.post({
-			uid: adminUid,
-			cid: testCategory.cid,
-			title: 'Test Topic',
-			content: 'Test topic content',
-		});
-		const unprivTopic = await topics.post({
-			uid: unprivUid,
-			cid: testCategory.cid,
-			title: 'Test Topic 2',
-			content: 'Test topic 2 content',
-		});
-		await topics.post({
-			uid: unprivUid,
-			cid: testCategory.cid,
-			title: 'Test Topic 3',
-			content: 'Test topic 3 content',
-		});
-
-		// create a notification
-		const notifObj = await notifications.create({
-			nid: '1', // match nid in example in notifications/nid/read.yaml
-			path: '/notifications',
-			from: unprivUid,
-			bodyShort: 'testing notification',
-		});
-		notifications.push(notifObj, adminUid);
-
-
-		// Create a post diff
-		await posts.edit({
-			uid: adminUid,
-			pid: unprivTopic.postData.pid,
-			content: 'Test topic 2 edited content',
-			req: {},
-		});
-		mocks.delete['/posts/{pid}/diffs/{timestamp}'][0].example = unprivTopic.postData.pid;
-		mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (await posts.diffs.list(unprivTopic.postData.pid))[0];
-
-		// Create a sample flag
-		const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now()); // deleted in DELETE /api/v3/flags/1
-		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
-		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
-
-		// Create a new chat room & send a message
-		const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
-		await messaging.sendMessage({
-			roomId,
-			uid: adminUid,
-			content: 'this is a chat message',
-		});
-
-		// Create an empty file to test DELETE /files and thumb deletion
-		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));
-		fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.png'), 'w'));
-
-		// Associate thumb with topic to test thumb reordering
-		await topics.thumbs.associate({
-			id: 2,
-			path: 'files/test.png',
-		});
-
-		const socketAdmin = require('../src/socket.io/admin');
-		await Promise.all(['profile', 'posts', 'uploads'].map(async type => api.users.generateExport({ uid: adminUid }, { uid: adminUid, type })));
-		await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
-		// wait for export child processes to complete
-		await wait(5000);
-
-		// Attach a search hook so /api/search is enabled
-		plugins.hooks.register('core', {
-			hook: 'filter:search.query',
-			method: dummySearchHook,
-		});
-		// Attach an emailer hook so related requests do not error
-		plugins.hooks.register('emailer-test', {
-			hook: 'static:email.send',
-			method: dummyEmailerHook,
-		});
-
-		// All tests run as admin user
-		({ jar } = await helpers.loginUser('admin', '123456'));
-
-		// Retrieve CSRF token using cookie, to test Write API
-		csrfToken = await helpers.getCsrfToken(jar);
-
-		// Pre-seed ActivityPub cache so contrived actor assertions pass
-		activitypub._cache.set(`0;https://example.org/foobar`, {
-			id: 'https://example.org/foobar',
-			name: 'foobar',
-			publicKey: {
-				id: `https://example.org/foobar#key`,
-				owner: `https://example.org/foobar`,
-				publicKeyPem: 'secretcat',
-			},
-		});
-
-		setup = true;
-	}
-
-	it('should pass OpenAPI v3 validation', async () => {
-		console.log('validation test');
-		try {
-			await SwaggerParser.validate(readApiPath);
-			await SwaggerParser.validate(writeApiPath);
-		} catch (e) {
-			assert.ifError(e);
-		}
-	});
-
-	describe('API', async () => {
-		let files;
-
-		before(async () => {
-			files = await file.walk(path.resolve(__dirname, './api'));
-		});
-
-		it('subfolder tests', () => {
-			files.forEach((filePath) => {
-				require(filePath);
-			});
-		});
-	});
-
+	const readApiPath = path.resolve(__dirname, '../../public/openapi/read.yaml');
+	const writeApiPath = path.resolve(__dirname, '../../public/openapi/write.yaml');
 	readApi = await SwaggerParser.dereference(readApiPath);
 	writeApi = await SwaggerParser.dereference(writeApiPath);
-
-	// generateTests(readApi, Object.keys(readApi.paths));
-	// generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
+	generateTests(readApi, Object.keys(readApi.paths));
+	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
 		// Iterate through all documented paths, make a call to it,
