@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
+const util = require('util');
 
 const db = require('../mocks/databasemock');
 const meta = require('../../src/meta');
@@ -15,6 +16,7 @@ const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
 const helpers = require('./helpers');
+const wait = util.promisify(setTimeout);
 
 describe('Notes', () => {
 	before(async () => {
@@ -247,6 +249,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: 'Guaranteed to be more than 500 characters.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. In vel convallis felis. Phasellus porta erat a elit dignissim efficitur. Sed at sollicitudin erat, finibus sodales ante. Nunc ullamcorper, urna a pulvinar tempor, nunc risus venenatis nunc, id aliquam purus dui ut ante. Nulla sit amet risus sem. Praesent sit amet justo finibus, laoreet odio nec, varius diam. Nullam congue rhoncus lorem, eu accumsan leo aliquam sit amet. Suspendisse fringilla nec libero a tincidunt. Phasellus sapien justo, lacinia ac enim sit amet, pellentesque fermentum neque. Proin sit amet felis vitae libero aliquam pharetra at id nisi. Donec vitae mauris est. Sed hendrerit nisi et nibh auctor hendrerit. Praesent feugiat tortor a dignissim sagittis. Cras sit amet ante justo. Cras consectetur magna vitae volutpat placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae',
 					});
+					await wait(50);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
@@ -293,14 +296,15 @@ describe('Notes', () => {
 						tid,
 						content: utils.generateUUID(),
 					});
+					await wait(50);
 
 					const key = Array.from(activitypub._sent.keys())[0];
 					activity = activitypub._sent.get(key);
 				});
 
-				it('should federate out an activity with object of type "Note"', () => {
+				it('should federate out an activity with object of type "Article"', () => {
 					assert(activity.payload && activity.payload.object && activity.payload.object.type);
-					assert.strictEqual(activity.payload.object.type, 'Note');
+					assert.strictEqual(activity.payload.object.type, 'Article');
 				});
 			});
 		});
@@ -324,6 +328,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
 					});
+					await wait(50);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);

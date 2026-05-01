@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
+const util = require('util');
 
 const db = require('../mocks/databasemock');
 const user = require('../../src/user');
@@ -14,17 +15,20 @@ const utils = require('../../src/utils');
 const activitypub = require('../../src/activitypub');
 
 const helpers = require('./helpers');
+const wait = util.promisify(setTimeout);
 
 describe('Outbound activities module', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
+		activitypub._sent.clear();
 	});
 
 	describe('.announce', () => {
 		function commonTests() {
 			it('should not error when called', async function () {
 				await activitypub.out.announce.topic(this.tid, this.uid);
+				await wait(50);
 				const { payload, targets } = Array.from(activitypub._sent).pop()[1];
 				this.payload = payload;
 				this.targets = targets;
