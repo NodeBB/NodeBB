@@ -80,9 +80,11 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 			case 'delete': // falls through
 			case 'purge': {
 				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
-					activitypub.out.remove.context(caller.uid, tid); // 7888-style
-					activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
-					activitypub.out.undo.announce('cid', cid, tid); // microblogs
+					setImmediate(() => {
+						activitypub.out.remove.context(caller.uid, tid); // 7888-style
+						activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
+						activitypub.out.undo.announce('cid', cid, tid); // microblogs
+					});
 				}
 			}
 		}
@@ -155,19 +157,25 @@ async function executeCommand(caller, command, eventName, notification, data) {
 		switch (command) {
 			case 'upvote': {
 				socketHelpers.upvote(result, notification);
-				await activitypub.out.like.note(caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.like.note(caller.uid, data.pid);
+				});
 				break;
 			}
 
 			case 'downvote': {
-				await activitypub.out.dislike.note(caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.dislike.note(caller.uid, data.pid);
+				});
 				break;
 			}
 
 			case 'unvote': {
 				socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
 				const verb = result.was.upvoted ? 'like' : 'dislike';
-				await activitypub.out.undo[verb](caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.undo[verb](caller.uid, data.pid);
+				});
 				break;
 			}
 

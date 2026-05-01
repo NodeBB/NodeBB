@@ -150,9 +150,9 @@ postsAPI.edit = async function (caller, data) {
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
-		setTimeout(() => {
+		setImmediate(() => {
 			activitypub.out.update.note(caller.uid, postObj[0]);
-		}, 5000);
+		});
 
 		return returnData;
 	}
@@ -193,8 +193,13 @@ async function deleteOrRestore(caller, data, params) {
 	const [postData, { isMain, isLast }] = await Promise.all([
 		posts.tools[params.command](caller.uid, data.pid),
 		isMainAndLastPost(data.pid),
-		activitypub.out.delete.note(caller.uid, data.pid),
 	]);
+	setImmediate(() => {
+		// todo: need undo(delete)
+		if (params.command === 'delete') {
+			activitypub.out.delete.note(caller.uid, data.pid),
+		}
+	});
 	if (isMain && isLast) {
 		await deleteOrRestoreTopicOf(params.command, data.pid, caller);
 	}
@@ -252,8 +257,10 @@ postsAPI.purge = async function (caller, data) {
 	posts.clearCachedPost(data.pid);
 	await Promise.all([
 		posts.purge(data.pid, caller.uid),
-		activitypub.out.delete.note(caller.uid, data.pid),
 	]);
+	setImmediate(() => {
+		activitypub.out.delete.note(caller.uid, data.pid),
+	});
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
 	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
