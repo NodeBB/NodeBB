@@ -197,7 +197,7 @@ async function deleteOrRestore(caller, data, params) {
 	setImmediate(() => {
 		// todo: need undo(delete)
 		if (params.command === 'delete') {
-			activitypub.out.delete.note(caller.uid, data.pid),
+			activitypub.out.delete.note(caller.uid, data.pid);
 		}
 	});
 	if (isMain && isLast) {
