@@ -3,9 +3,9 @@
 		<div class="chats-full d-flex gap-1 h-100 mt-3 mt-md-0 py-md-3">
 			<div component="chat/nav-wrapper" class="flex-shrink-0 d-flex flex-column h-100 gap-1" data-loaded="{{{ if roomId }}}1{{{ else }}}0{{{ end }}}">
 
-				<div class="d-flex flex-column">
+				<div class="d-flex flex-column gap-2">
 					<button component="chat/create" class="btn btn-primary btn-sm w-100">[[modules:chat.create-room]]</button>
-					<input id="search-chats" class="form-control mt-2" type="text" placeholder="Search chats..." />
+					<input id="search-chats" class="form-control form-control-sm" type="text" placeholder="[[modules:chat.search-chats-placeholder]]" />
 				</div>
 
 				{{{ if publicRooms.length }}}

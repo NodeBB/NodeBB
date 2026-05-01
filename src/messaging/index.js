@@ -229,6 +229,8 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 		settings: user.getSettings(uid),
 	});
 
+	results.roomData = await modifyChatRooms(uid, results);
+
 	// Filter rooms based on query
 	results.roomData = results.roomData
 		.filter((room, idx) => {
@@ -246,8 +248,6 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 
 			return titleMatch || usernameMatch;
 		});
-
-	results.roomData = await modifyChatRooms(uid, results);
 
 	return await plugins.hooks.fire('filter:messaging.searchRecentChats', {
 		rooms: results.roomData,
