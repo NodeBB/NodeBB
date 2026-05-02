@@ -16,6 +16,9 @@ get:
                     items:
                       type: object
                       properties:
+                        id:
+                          type: string
+                          description: Unique ID that will be added to the navigation element's `id` property in the DOM
                         route:
                           type: string
                           description: Relative URL to the page the navigation item goes to
@@ -36,6 +39,9 @@ get:
                         order:
                           type: integer
                           description: Ordinality of this item, lower value appears earlier
+                        core:
+                          type: boolean
+                          description: Whether the navigation item is provided by core or not (a plugin)
                         groups:
                           type: array
                           items:
@@ -50,6 +56,15 @@ get:
                           description: Seemingly identical to order, but an integer instead of a string
                         selected:
                           type: boolean
+                      required:
+                        - id
+                        - route
+                        - title
+                        - enabled
+                        - iconClass
+                        - textClass
+                        - text
+                        - groups
                   available:
                     type: array
                     items:
