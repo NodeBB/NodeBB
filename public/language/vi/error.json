@@ -263,9 +263,11 @@
     "api.reauth-required": "Tài nguyên bạn đang cố truy cập yêu cầu xác thực (lại).",
     "activitypub.not-enabled": "Liên đoàn không được bật trên máy chủ này",
     "activitypub.invalid-id": "Không thể giải quyết id đầu vào, có thể vì nó không đúng định dạng.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Không thể truy xuất tài nguyên được chỉ định.",
     "activitypub.pubKey-not-found": "Không thể giải quyết khóa công khai, do đó việc xác minh payload không thể diễn ra.",
     "activitypub.origin-mismatch": "Nguồn gốc của đối tượng nhận được không khớp với nguồn gốc của người gửi",
     "activitypub.not-implemented": "Yêu cầu bị từ chối vì nó hoặc một khía cạnh của nó không được máy chủ người nhận triển khai",
-    "activitypub.orphan": "Đối tượng nhận được không liên kết với bất kỳ người dùng cục bộ nào đã biết."
+    "activitypub.orphan": "Đối tượng nhận được không liên kết với bất kỳ người dùng cục bộ nào đã biết.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

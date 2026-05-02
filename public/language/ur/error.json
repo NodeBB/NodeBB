@@ -263,9 +263,11 @@
     "api.reauth-required": "جس وسائل تک آپ رسائی حاصل کرنے کی کوشش کر رہے ہیں اس کے لیے (دوبارہ) تصدیق درکار ہے۔",
     "activitypub.not-enabled": "اس سرور پر فیڈریشن فعال نہیں ہے",
     "activitypub.invalid-id": "داخل کردہ شناخت کنندہ کو تسلیم نہیں کیا جا سکتا – یہ غلط ہو سکتا ہے۔",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "مخصوص مواد حاصل نہیں کیا جا سکا۔",
     "activitypub.pubKey-not-found": "عوامی کلید کو تسلیم نہیں کیا جا سکا، اس لیے ڈیٹا کی تصدیق نہیں کی جا سکی۔",
     "activitypub.origin-mismatch": "موصول شدہ آبجیکٹ کا اصل بھیجنے والے کے اصل سے مطابقت نہیں رکھتا",
     "activitypub.not-implemented": "درخواست کو مسترد کر دیا گیا کیونکہ اس کا یا اس کے کسی حصے کو اس سرور کے ذریعے سپورٹ نہیں کیا جاتا جس کی طرف یہ ہدایت کی گئی ہے",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

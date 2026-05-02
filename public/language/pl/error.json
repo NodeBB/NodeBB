@@ -263,9 +263,11 @@
     "api.reauth-required": "Zasób, do którego próbujesz uzyskać dostęp, wymaga (być może ponownego) uwierzytelnienia.",
     "activitypub.not-enabled": "Fediverse nie jest włączone na tym serwerze",
     "activitypub.invalid-id": "Nie można przetworzyć id na wejściu, czyli pewnie jest zdeformowane.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Nie udało się pobrać zadanego zasobu.",
     "activitypub.pubKey-not-found": "Nie udało się uzyskać klucza publicznego, więc nie może zajść weryfikacja zawartości.",
     "activitypub.origin-mismatch": "Odebrany obiekt nie zgadza się z tym co nadano.",
     "activitypub.not-implemented": "Zapytanie napotkało odmowę z racji braku obsługi po stronie serwera odbiorczego.",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

@@ -263,9 +263,11 @@
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
     "activitypub.not-enabled": "La Federación no está habilitada en este servidor",
     "activitypub.invalid-id": "No se ha podido resolver el id del input, probablemente está mal formado.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "No se ha podido recuperar el recurso especificado. ",
     "activitypub.pubKey-not-found": "No se pudo resolver la llave pública, la verificación de payload no se ha concluido. ",
     "activitypub.origin-mismatch": "El origen del objeto recibido no coincide con el origen del emisario",
     "activitypub.not-implemented": "La petición fue rechazada porque el servidor destinatario no implementa un aspecto esperado",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

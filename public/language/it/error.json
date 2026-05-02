@@ -263,9 +263,11 @@
     "api.reauth-required": "La risorsa a cui stai cercando di accedere richiede una (ri)autenticazione.",
     "activitypub.not-enabled": "La federazione non è abilitata su questo server",
     "activitypub.invalid-id": "Impossibile risolvere l'ID di input, probabilmente perché non è valido.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Impossibile recuperare la risorsa specificata.",
     "activitypub.pubKey-not-found": "Impossibile risolvere la chiave pubblica, quindi la verifica del payload non può avvenire.",
     "activitypub.origin-mismatch": "L'origine dell'oggetto ricevuto non corrisponde all'origine del mittente.",
     "activitypub.not-implemented": "La richiesta è stata rifiutata perché la richiesta o un suo aspetto non è implementato dal server del destinatario.",
-    "activitypub.orphan": "L'oggetto ricevuto non è associato ad alcun utente locale conosciuto."
+    "activitypub.orphan": "L'oggetto ricevuto non è associato ad alcun utente locale conosciuto.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

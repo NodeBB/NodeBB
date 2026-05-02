@@ -263,9 +263,11 @@
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
     "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
     "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

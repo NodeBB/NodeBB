@@ -263,9 +263,11 @@
     "api.reauth-required": "Die angeforderte Ressource erfordert eine (Re-)Authentifizierung.",
     "activitypub.not-enabled": "Die Föderation ist auf diesem Server nicht aktiviert",
     "activitypub.invalid-id": "Die Eingabe-ID kann nicht aufgelöst werden, wahrscheinlich weil sie fehlerhaft ist.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Die angegebene Ressource kann nicht abgerufen werden.",
     "activitypub.pubKey-not-found": "Der öffentliche Schlüssel kann nicht aufgelöst werden, daher ist eine Überprüfung des Payloads nicht möglich.",
     "activitypub.origin-mismatch": "Der Ursprung des empfangenen Objekts stimmt nicht mit dem Ursprung des Absenders überein",
     "activitypub.not-implemented": "Die Anfrage wurde abgelehnt, weil sie oder ein Teil davon vom empfangenden Server nicht implementiert ist",
-    "activitypub.orphan": "Das empfangene Objekt ist keinem bekannten lokalen Benutzer zugeordnet."
+    "activitypub.orphan": "Das empfangene Objekt ist keinem bekannten lokalen Benutzer zugeordnet.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

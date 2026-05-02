@@ -263,9 +263,11 @@
     "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。",
     "activitypub.not-enabled": "此服务器未启用“联邦”",
     "activitypub.invalid-id": "无法解析输入 id，可能是畸形输入。",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "无法检索指定资源。",
     "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",
     "activitypub.origin-mismatch": "接收对象的原点与发送者的原点不一致",
     "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面",
-    "activitypub.orphan": "收到的对象未与任何已知的本地用户相关联。"
+    "activitypub.orphan": "收到的对象未与任何已知的本地用户相关联。",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

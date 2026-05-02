@@ -263,9 +263,11 @@
     "api.reauth-required": "Ресурсът, който се опитвате да достъпите, изисква (повторно) удостоверяване.",
     "activitypub.not-enabled": "Федерирането не е включено на този сървър",
     "activitypub.invalid-id": "Входният идентификатор не може да бъде разпознат – може да е неправилен.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Посоченият материал не може да бъде получен.",
     "activitypub.pubKey-not-found": "Публичният ключ не може да бъде разпознат, така че потвърждението на данните не може да бъде извършено.",
     "activitypub.origin-mismatch": "Произходът на получения обект не съвпада с произхода на подателя",
     "activitypub.not-implemented": "Заявката беше отказана, тъй като тя или част от нея не се поддържа от сървъра, към който е насочена",
-    "activitypub.orphan": "Полученият обект не е свързан с нито един познат локален потребител."
+    "activitypub.orphan": "Полученият обект не е свързан с нито един познат локален потребител.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

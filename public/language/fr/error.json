@@ -263,9 +263,11 @@
     "api.reauth-required": "La ressource à laquelle vous tentez d'accéder nécessite une (ré-)authentification.",
     "activitypub.not-enabled": "La fédération n'est pas activée sur ce serveur.",
     "activitypub.invalid-id": "Impossible de traiter l’ID saisi, il semble incorrect.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Impossible de récupérer la ressource spécifiée",
     "activitypub.pubKey-not-found": "La clé publique est introuvable, la vérification de la charge utile est impossible.",
     "activitypub.origin-mismatch": "L’origine de l’objet reçu est différente de celle de l’expéditeur",
     "activitypub.not-implemented": "La requête a été rejetée : elle n’est pas prise en charge par le serveur destinataire.",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }
