@@ -35,7 +35,7 @@
 	"flags.limit-user-flags-per-day-help": "Imposta a 0 per disabilitare, (predefinito: 10)",
   	"flags.auto-flag-on-downvote-threshold": "Numero di voti negativi per segnalare automaticamente i post",
 	"flags.auto-flag-on-downvote-threshold-help": "Imposta a 0 per disabilitare, (predefinito: 0)",
-	"flags.auto-resolve-on-ban": "Risolvi automaticamente tutti i ticket di un utente quando vengono bannati",
+	"flags.auto-resolve-on-ban": "Risolvi automaticamente tutti i ticket di un utente quando viene bannato",
 	"flags.action-on-resolve": "Esegui le seguenti operazioni quando una segnalazione viene risolta",
 	"flags.action-on-reject": "Esegui le seguenti operazioni quando una segnalazione viene rifiutata",
 	"flags.action.nothing": "Non fare nulla",

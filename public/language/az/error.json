@@ -1,5 +1,6 @@
 {
     "invalid-data": "Etibarsız məlumat",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Yanlış JSON",
     "wrong-parameter-type": "`%1` mülkiyyəti üçün %3 növünün dəyəri gözlənilən idi, lakin bunun əvəzinə %2 alındı",
     "required-parameters-missing": "Bu API çağırışında tələb olunan parametrlər yoxdur: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Yanlış yol",
     "folder-exists": "Qovluq mövcuddur",
     "invalid-pagination-value": "Yanlış səhifələmə dəyəri, ən azı %1 və ən çoxu %2 olmalıdır",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "İstifadəçi adı artıq məşğuldur",
     "email-taken": "E-poçt ünvanı artıq götürülüb.",
     "email-nochange": "Daxil edilmiş e-poçt artıq faylda olan e-poçt ilə eynidir.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Müəyyən edilmiş resursu əldə etmək mümkün deyil.",
     "activitypub.pubKey-not-found": "Açıq açarı həll etmək mümkün deyil, ona görə də faydalı yükün yoxlanılması həyata keçirilə bilməz.",
     "activitypub.origin-mismatch": "Alınan obyektin mənşəyi göndərənin mənşəyi ilə uyğun gəlmir",
-    "activitypub.actor-mismatch": "Alınan fəaliyyət gözlənildiyindən fərqli icraçı tərəfindən həyata keçirilir.",
-    "activitypub.not-implemented": "Sorğu rədd edildi, çünki o və ya onun bir aspekti alıcı server tərəfindən icra olunmur"
+    "activitypub.not-implemented": "Sorğu rədd edildi, çünki o və ya onun bir aspekti alıcı server tərəfindən icra olunmur",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

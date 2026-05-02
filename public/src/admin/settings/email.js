@@ -2,10 +2,10 @@
 
 
 define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function (ace, alerts) {
-	const module = {};
+	const Email = {};
 	let emailEditor;
 
-	module.init = function () {
+	Email.init = function () {
 		configureSmtpTester();
 		configureEmailTester();
 		configureEmailEditor();
@@ -159,5 +159,5 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		});
 	}
 
-	return module;
+	return Email;
 });

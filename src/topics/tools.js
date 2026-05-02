@@ -233,7 +233,7 @@ module.exports = function (Topics) {
 	};
 
 	topicTools.move = async function (tid, data) {
-		const cid = parseInt(data.cid, 10);
+		const cid = utils.isNumber(data.cid) ? parseInt(data.cid, 10) : data.cid;
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
@@ -241,7 +241,7 @@ module.exports = function (Topics) {
 		if (cid === topicData.cid) {
 			throw new Error('[[error:cant-move-topic-to-same-category]]');
 		}
-		if (!utils.isNumber(cid) || !utils.isNumber(topicData.cid)) {
+		if (data.uid !== 'system' && (!utils.isNumber(cid) || !utils.isNumber(topicData.cid))) {
 			throw new Error('[[error:cant-move-topic-to-from-remote-categories]]');
 		}
 

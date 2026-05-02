@@ -7,7 +7,6 @@ const path = require('path');
 const winston = require('winston');
 const mime = require('mime');
 const validator = require('validator');
-const cronJob = require('cron').CronJob;
 const chalk = require('chalk');
 
 const db = require('../database');
@@ -16,6 +15,7 @@ const user = require('../user');
 const topics = require('../topics');
 const file = require('../file');
 const meta = require('../meta');
+const cron = require('../cron');
 
 module.exports = function (Posts) {
 	Posts.uploads = {};
@@ -30,18 +30,26 @@ module.exports = function (Posts) {
 		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
 	}))).filter(Boolean);
 
-	const runJobs = nconf.get('runJobs');
-	if (runJobs) {
-		new cronJob('0 2 * * 0', async () => {
-			const orphans = await Posts.uploads.cleanOrphans();
-			if (orphans.length) {
-				winston.info(`[posts/uploads] Deleting ${orphans.length} orphaned uploads...`);
-				orphans.forEach((relPath) => {
-					process.stdout.write(`${chalk.red('  - ')} ${relPath}`);
-				});
-			}
-		}, null, true);
-	}
+	Posts.uploads.startJobs = async function () {
+		const runJobs = nconf.get('runJobs');
+		if (!runJobs) {
+			return;
+		}
+
+		await cron.addJob({
+			name: 'posts:uploads:cleanupOrphans',
+			cronTime: '0 2 * * 0',
+			onTick: async () => {
+				const orphans = await Posts.uploads.cleanOrphans();
+				if (orphans.length) {
+					winston.info(`[posts/uploads] Deleting ${orphans.length} orphaned uploads...`);
+					orphans.forEach((relPath) => {
+						process.stdout.write(`${chalk.red('  - ')} ${relPath}`);
+					});
+				}
+			},
+		});
+	};
 
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads

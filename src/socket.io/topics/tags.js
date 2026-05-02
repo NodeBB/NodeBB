@@ -74,7 +74,7 @@ module.exports = function (SocketTopics) {
 
 	// used by tag filter search
 	SocketTopics.tagFilterSearch = async function (socket, data) {
-		let cids = [];
+		let cids;
 		if (Array.isArray(data.cids)) {
 			cids = await privileges.categories.filterCids('topics:read', data.cids, socket.uid);
 		} else { // if no cids passed in get all cids we can read
@@ -82,7 +82,7 @@ module.exports = function (SocketTopics) {
 			cids = cids.filter(cid => cid !== -1);
 		}
 
-		let tags = [];
+		let tags;
 		if (data.query) {
 			const allowed = await privileges.global.can('search:tags', socket.uid);
 			if (!allowed) {

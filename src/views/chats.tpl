@@ -3,8 +3,9 @@
 		<div class="chats-full d-flex gap-1 h-100 mt-3 mt-md-0 py-md-3">
 			<div component="chat/nav-wrapper" class="flex-shrink-0 d-flex flex-column h-100 gap-1" data-loaded="{{{ if roomId }}}1{{{ else }}}0{{{ end }}}">
 
-				<div>
+				<div class="d-flex flex-column gap-2">
 					<button component="chat/create" class="btn btn-primary btn-sm w-100">[[modules:chat.create-room]]</button>
+					<input id="search-chats" class="form-control form-control-sm" type="text" placeholder="[[modules:chat.search-chats-placeholder]]" />
 				</div>
 
 				{{{ if publicRooms.length }}}
@@ -20,7 +21,10 @@
 						<div class="d-flex gap-1 flex-column">
 							{{{ each publicRooms }}}
 							<div component="chat/public/room" class="btn btn-ghost btn-sm ff-sans d-flex justify-content-between hover-parent {{{ if ./unread}}}unread{{{ end }}}" data-roomid="{./roomId}">
-								<div class="d-flex gap-1 align-items-center"><i class="fa {./icon} text-muted"></i> {./roomName} <div component="chat/public/room/unread/count" data-count="{./unreadCount}" class="badge border bg-light text-primary {{{ if !./unreadCount }}}hidden{{{ end }}}">{./unreadCountText}</div></div>
+								<div class="d-flex gap-1 align-items-baseline">
+									<i class="fa {./icon} text-muted"></i> {./roomName}
+									<div component="chat/public/room/unread/count" data-count="{./unreadCount}" class="badge border bg-light text-primary {{{ if !./unreadCount }}}hidden{{{ end }}}">{./unreadCountText}</div>
+								</div>
 								<div>
 									<div component="chat/public/room/sort/handle" class="text-muted {{{ if isAdmin }}}hover-d-block{{{ else }}}d-none{{{ end }}}" style="cursor:grab;"><i class="fa fa-bars"></i></div>
 								</div>

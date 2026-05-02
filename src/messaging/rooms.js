@@ -12,11 +12,11 @@ const privileges = require('../privileges');
 const meta = require('../meta');
 const io = require('../socket.io');
 const cache = require('../cache');
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
 
 const roomUidCache = cacheCreate({
-	name: 'chat:room:uids',
+	name: 'chat-room-uids',
 	max: 500,
 	ttl: 0,
 });
@@ -110,7 +110,7 @@ module.exports = function (Messaging) {
 				[`chat:room:${roomId}:uids:online`, now, uid],
 				...(
 					isPublic ?
-						[`chat:room:${roomId}:owners`, now, uid] :
+						[[`chat:room:${roomId}:owners`, now, uid]] :
 						[uid].concat(data.uids).map(uid => ([`chat:room:${roomId}:owners`, now, uid]))
 				),
 			]),
@@ -361,9 +361,11 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
-		const isInRoom = await Promise.all(roomIds.map(roomId => Messaging.isUserInRoom(uid, roomId)));
+		const isInRoom = await Messaging.isUserInRoom(uid, roomIds);
 		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
-
+		if (!roomIds.length) {
+			return;
+		}
 		const roomKeys = [
 			...roomIds.map(roomId => `chat:room:${roomId}:uids`),
 			...roomIds.map(roomId => `chat:room:${roomId}:owners`),

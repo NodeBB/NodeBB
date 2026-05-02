@@ -64,15 +64,11 @@ describe('Topic thumbs', () => {
 			cid: categoryObj.cid,
 			title: 'Test Topic Title',
 			content: 'The content of test topic',
+			thumbs: [relativeThumbPaths[0]],
 		});
 
 		// Touch a couple files and associate it to a topic
 		createFiles();
-
-		await topics.setTopicFields(topicObj.topicData.tid, {
-			numThumbs: 1,
-			thumbs: JSON.stringify([relativeThumbPaths[0]]),
-		});
 	});
 
 	it('should return bool for whether a thumb exists', async () => {
@@ -240,8 +236,9 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should succeed with a valid tid', async () => {
-			const { response } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/1/thumbs`, path.join(__dirname, '../files/test.png'), {}, adminJar, adminCSRF);
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/1/thumbs`, path.join(__dirname, '../files/test.png'), {}, adminJar, adminCSRF);
 			assert.strictEqual(response.statusCode, 200);
+			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
 		});
 
 		it('should succeed with uploader plugins', async () => {

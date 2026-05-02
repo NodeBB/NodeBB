@@ -48,6 +48,16 @@
 
 	"settings.page-title": "%1 Settings",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Appearance",
 	"appearance/themes": "تم‌ها",
 	"appearance/skins": "پوسته‌ها",
@@ -70,6 +80,7 @@
 	"advanced/logs": "سیاهه ها",
 	"advanced/errors": "Errors",
 	"advanced/cache": "کش ",
+	"advanced/jobs": "Jobs",
 	"development/logger": "سیاهه ساز",
 	"development/info": "Info",
 

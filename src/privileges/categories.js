@@ -23,6 +23,7 @@ const _privilegeMap = new Map([
 	['topics:read', { label: '[[admin/manage/privileges:access-topics]]', type: 'viewing' }],
 	['topics:create', { label: '[[admin/manage/privileges:create-topics]]', type: 'posting' }],
 	['topics:reply', { label: '[[admin/manage/privileges:reply-to-topics]]', type: 'posting' }],
+	['topics:crosspost', { label: '[[admin/manage/privileges:crosspost-topics]]', type: 'posting' }],
 	['topics:schedule', { label: '[[admin/manage/privileges:schedule-topics]]', type: 'posting' }],
 	['topics:tag', { label: '[[admin/manage/privileges:tag-topics]]', type: 'posting' }],
 	['posts:edit', { label: '[[admin/manage/privileges:edit-posts]]', type: 'posting' }],

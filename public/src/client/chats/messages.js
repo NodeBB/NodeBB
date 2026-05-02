@@ -100,13 +100,18 @@ define('forum/chats/messages', [
 		newMessage.appendTo(chatContentEl);
 		messages.onMessagesAddedToDom(newMessage);
 		if (isAtBottom || msgData.self) {
-			messages.scrollToBottomAfterImageLoad(chatContentEl);
 			// remove some message elements if there are too many
 			const chatMsgEls = chatContentEl.find('[data-mid]');
 			if (chatMsgEls.length > 150) {
 				const removeCount = chatMsgEls.length - 150;
 				chatMsgEls.slice(0, removeCount).remove();
 				chatContentEl.find('[data-mid].new').removeClass('new');
+			}
+
+			messages.scrollToBottomAfterImageLoad(chatContentEl);
+			const $composer = chatContentEl.siblings('[component="chat/composer"]');
+			if ($composer.length && ajaxify.data?.template?.chats) {
+				$composer[0].scrollIntoView(true);
 			}
 		}
 
@@ -148,6 +153,15 @@ define('forum/chats/messages', [
 			const msgBodyEls = containerEl[0].querySelectorAll('[component="chat/message/body"]');
 			imagesLoaded(msgBodyEls, () => {
 				messages.scrollToBottom(containerEl);
+			});
+		}
+	};
+
+	messages.scrollToMessageAfterImageLoad = function (containerEl, msgEl) {
+		if (containerEl.length && msgEl.length) {
+			const msgBodyEls = containerEl[0].querySelectorAll('[component="chat/message/body"]');
+			imagesLoaded(msgBodyEls, () => {
+				msgEl[0].scrollIntoView(true);
 			});
 		}
 	};
@@ -345,7 +359,7 @@ define('forum/chats/messages', [
 		$('[component="chat/message/content"]').each(function () {
 			const chatContentEl = $(this);
 			const roomId = chatContentEl.attr('data-roomid');
-			const uid = (ajaxify.template.chats && ajaxify.data.uid) || app.user.uid;
+			const uid = (ajaxify.data?.template?.chats && ajaxify.data?.uid) || app.user.uid;
 			const isAtBottom = messages.isAtBottom(chatContentEl);
 			messages.loadMoreMessages(chatContentEl, uid, roomId, 1)
 				.then(() => {

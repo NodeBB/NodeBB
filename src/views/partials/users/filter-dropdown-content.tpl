@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center gap-2 ff-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center gap-2 ff-secondary dropdown-toggle h-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	{{{ if selectedUser }}}
 	<span class="fw-semibold">{buildAvatar(selectedUser, "20px", true, "not-responsive")} {selectedUser.username}</span>
 	{{{ else }}}

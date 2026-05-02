@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "모든 그룹",
     "groups": "그룹",
     "members": "멤버",
+    "x-members": "%1 member(s)",
     "view-group": "그룹 보기",
     "owner": "그룹 소유자",
     "new-group": "새 그룹 만들기",

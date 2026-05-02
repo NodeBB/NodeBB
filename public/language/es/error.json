@@ -1,5 +1,6 @@
 {
     "invalid-data": "Datos no válidos",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "JSON no válido",
     "wrong-parameter-type": "A value of type %3 was expected for property `%1`, but %2 was received instead",
     "required-parameters-missing": "Required parameters were missing from this API call: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Invalid path",
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Número de página inválido, debe estar entre %1 y %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Nombre de usuario ocupado",
     "email-taken": "Este email ya está uso",
     "email-nochange": "The email entered is the same as the email already on file.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "No se ha podido recuperar el recurso especificado. ",
     "activitypub.pubKey-not-found": "No se pudo resolver la llave pública, la verificación de payload no se ha concluido. ",
     "activitypub.origin-mismatch": "El origen del objeto recibido no coincide con el origen del emisario",
-    "activitypub.actor-mismatch": "La actividad recibida está siendo llevada por un actor que es diferente del esperado.",
-    "activitypub.not-implemented": "La petición fue rechazada porque el servidor destinatario no implementa un aspecto esperado"
+    "activitypub.not-implemented": "La petición fue rechazada porque el servidor destinatario no implementa un aspecto esperado",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

@@ -7,6 +7,7 @@ const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
+const Categories = require('../src/categories');
 const Groups = require('../src/groups');
 const User = require('../src/user');
 const plugins = require('../src/plugins');
@@ -131,6 +132,18 @@ describe('Groups', () => {
 				done();
 			});
 		});
+
+		it('should return only requested fields', async () => {
+			await Groups.create({
+				name: 'groupfields',
+				description: 'desc',
+				userTitle: 'utitle',
+			});
+			const data = await Groups.getGroupFields('groupfields', ['description', 'icon']);
+			assert.strictEqual(Object.keys(data).length, 2);
+			assert.strictEqual(data.description, 'desc');
+			assert.strictEqual(data.icon, '');
+		});
 	});
 
 	describe('.search()', () => {
@@ -139,7 +152,7 @@ describe('Groups', () => {
 		it('should return empty array if query is falsy', (done) => {
 			Groups.search(null, {}, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(0, groups.length);
+				assert.equal(groups.length, 0);
 				done();
 			});
 		});
@@ -147,7 +160,7 @@ describe('Groups', () => {
 		it('should return the groups when search query is empty', (done) => {
 			socketGroups.search({ uid: adminUid }, { query: '' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(5, groups.length);
+				assert.equal(groups.length, 6);
 				done();
 			});
 		});
@@ -155,8 +168,8 @@ describe('Groups', () => {
 		it('should return the "Test" group when searched for', (done) => {
 			socketGroups.search({ uid: adminUid }, { query: 'test' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(2, groups.length);
-				assert.strictEqual('Test', groups[0].name);
+				assert.equal(groups.length, 2);
+				assert.strictEqual(groups[0].name, 'Test');
 				done();
 			});
 		});
@@ -164,8 +177,8 @@ describe('Groups', () => {
 		it('should return the "Test" group when searched for and sort by member count', (done) => {
 			Groups.search('test', { filterHidden: true, sort: 'count' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(2, groups.length);
-				assert.strictEqual('Test', groups[0].name);
+				assert.equal(groups.length, 2);
+				assert.strictEqual(groups[0].name, 'Test');
 				done();
 			});
 		});
@@ -173,8 +186,8 @@ describe('Groups', () => {
 		it('should return the "Test" group when searched for and sort by creation time', (done) => {
 			Groups.search('test', { filterHidden: true, sort: 'date' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(2, groups.length);
-				assert.strictEqual('Test', groups[1].name);
+				assert.equal(groups.length, 2);
+				assert.strictEqual(groups[1].name, 'Test');
 				done();
 			});
 		});
@@ -553,6 +566,20 @@ describe('Groups', () => {
 					done();
 				});
 			});
+		});
+
+		it('should properly set memberPostCids', async () => {
+			const c1 = await Categories.create({ name: 'Test Category' });
+			const c2 = await Categories.create({ name: 'Test Category' });
+			const c3 = await Categories.create({ name: 'Test Category' });
+			await Groups.create({
+				name: '3rd party devs',
+			});
+			await Groups.update('3rd party devs', {
+				memberPostCids: `${c1.cid},${c2.cid},${c3.cid}`,
+			});
+			const groupData = await Groups.get('3rd party devs', {});
+			assert.strictEqual(groupData.memberPostCids, '1,2,3');
 		});
 	});
 

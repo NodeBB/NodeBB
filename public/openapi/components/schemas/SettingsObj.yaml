@@ -4,6 +4,9 @@ Settings:
     showemail:
       type: boolean
       description: Show user email in profile page
+    unreadCutoff:
+      type: number
+      description: Number of days after which a topic is no longer considered unread
     usePagination:
       type: boolean
       description: Toggles between pagination (when enabled), or infinite scrolling (when disabled)
@@ -123,6 +126,9 @@ Settings:
     acpLang:
       type: string
       description: Language localisation for the admin control panel
+    hideReadNotifications:
+      type: boolean
+      description: Hide notifications that have been marked as read in the notifications list
     notificationType_new-register:
       type: string
       description: Notification type for new registration in queue

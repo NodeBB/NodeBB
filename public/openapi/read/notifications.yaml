@@ -71,6 +71,11 @@ get:
                           type: boolean
                         readClass:
                           type: string
+                  unreadNids:
+                    type: array
+                    description: An array of notification ids that are unread.
+                    items:
+                      type: string
                   filters:
                     $ref: ../components/schemas/NotificationFilters.yaml#/FiltersArray
                   regularFilters:

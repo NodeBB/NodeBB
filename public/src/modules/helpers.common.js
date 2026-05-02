@@ -17,10 +17,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 		generateCategoryBackground,
 		generateChildrenCategories,
 		generateTopicClass,
+		generateGroupDisplayName,
 		membershipBtn,
 		spawnPrivilegeStates,
 		localeToHTML,
-		renderTopicImage,
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
@@ -168,18 +168,22 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return fields.filter(field => !!topic[field]).join(' ');
 	}
 
+	function generateGroupDisplayName(group) {
+		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
+	}
+
 	// Groups helpers
 	function membershipBtn(groupObj, btnClass = '') {
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-danger ${btnClass}" data-action="leave" data-group="${groupObj.displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
+			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${groupObj.displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-warning disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
+			return `<button class="btn btn-warning text-nowrap disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
 		} else if (groupObj.isInvited) {
-			return `<button class="btn btn-warning" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
+			return `<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-success ${btnClass}" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
+			return `<button class="btn btn-success text-nowrap ${btnClass}" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
 		}
 		return '';
 	}
@@ -220,13 +224,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function localeToHTML(locale, fallback) {
 		locale = locale || fallback || 'en-GB';
 		return locale.replace('_', '-');
-	}
-
-	function renderTopicImage(topicObj) {
-		if (topicObj.thumb) {
-			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.displayname + '" />';
-		}
-		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.displayname + '" />';
 	}
 
 	function renderDigestAvatar(block) {
@@ -279,6 +276,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 				break;
 			case 'Safari':
 				icons += '<i class="fa fa-fw fa-safari"></i>';
+				break;
+			case 'Opera':
+				icons += '<i class="fa fa-fw fa-opera"></i>';
 				break;
 			case 'IE':
 				icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
@@ -374,11 +374,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function shouldHideReplyContainer(post) {
-		if (post.replies.count <= 0 || post.replies.hasSingleImmediateReply) {
-			return true;
-		}
-
-		return false;
+		return post.replies.count <= 0 || post.replies.hasSingleImmediateReply;
 	}
 
 	function humanReadableNumber(number, toFixed = 1) {

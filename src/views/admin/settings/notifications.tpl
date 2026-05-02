@@ -21,11 +21,26 @@
 					<label class="form-label">[[admin/settings/notifications:post-queue-notification-uid]]</label>
 					<input type="text" class="form-control" data-field="postQueueNotificationUid">
 				</div>
+				<div class="mb-3">
+					<label class="form-label" for="notificationSendDelay">[[admin/settings/notifications:notification-delay]]</label>
+					<input id="notificationSendDelay" type="text" class="form-control" value="60" data-field="notificationSendDelay">
+					<p class="form-text">[[admin/settings/notifications:notification-delay-help]]</p>
+				</div>
+			</div>
 
+			<div id="tinycon-settings" class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/notifications:tinycon.settings]]</h5>
+				<div class="mb-3">
+					<label class="form-label">[[admin/settings/notifications:tinycon.notification-color]]</label>
+					<input type="color" class="form-control form-control-color" data-field="tinyconColor" />
+				</div>
+				<div class="mb-3">
+					<label class="form-label">[[admin/settings/notifications:tinycon.notification-background]]</label>
+					<input type="color" class="form-control form-control-color" data-field="tinyconBackground" />
+				</div>
 			</div>
 		</div>
 
 		<!-- IMPORT admin/partials/settings/toc.tpl -->
 	</div>
 </div>
-

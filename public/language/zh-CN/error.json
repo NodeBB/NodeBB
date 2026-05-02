@@ -1,5 +1,6 @@
 {
     "invalid-data": "无效数据",
+    "invalid-config-field-value": "配置字段“%1”的值无效：%2",
     "invalid-json": "无效 JSON",
     "wrong-parameter-type": "属性 `%1` 要求是类型 %3 的值，却收到了 %2",
     "required-parameters-missing": "此 API 调用必需参数缺少了：%1",
@@ -32,6 +33,7 @@
     "invalid-path": "无效的路径",
     "folder-exists": "文件夹已存在",
     "invalid-pagination-value": "无效的分页数值，必须介于 %1 和 %2 之间",
+    "invalid-unread-cutoff": "无效的未读截止值，必须至少为 1 且最多为 %1",
     "username-taken": "此用户名已被占用",
     "email-taken": "邮箱地址已被注册",
     "email-nochange": "输入的邮件地址和已存档的邮件地址相同。",
@@ -74,12 +76,12 @@
     "post-edit-duration-expired-minutes": "您只能在发表后 %1 分钟内修改内容",
     "post-edit-duration-expired-minutes-seconds": "您只能在发表后 %1 分 %2 秒内修改内容",
     "post-edit-duration-expired-hours": "您只能在发表后 %1 小时后内修改内容",
-    "post-edit-duration-expired-hours-minutes": "您只能在发表后 %1 小时 ％2 分钟内修改内容",
+    "post-edit-duration-expired-hours-minutes": "您只能在发表后 %1 小时 %2 分钟内修改内容",
     "post-edit-duration-expired-days": "您只能在发表后 %1 天内修改内容",
     "post-edit-duration-expired-days-hours": "您只能在发表后 %1 天 %2 小时内修改内容",
     "post-delete-duration-expired": "您只能在发表后 %1 秒内删除帖子",
     "post-delete-duration-expired-minutes": "您只能在发表后 %1 分钟内删除帖子",
-    "post-delete-duration-expired-minutes-seconds": "您只能在发表发 %1 分 %2 秒内删除帖子",
+    "post-delete-duration-expired-minutes-seconds": "您只能在发表后 %1 分 %2 秒内删除帖子",
     "post-delete-duration-expired-hours": "您只能在发表后 %1 小时内删除帖子",
     "post-delete-duration-expired-hours-minutes": "您只能在发表后 %1 小时 %2 分钟内删除帖子",
     "post-delete-duration-expired-days": "您只能在发表后 %1 天内删除帖子",
@@ -252,7 +254,7 @@
     "api.401": "未找到有效的登录会话。请登录后重试。",
     "api.403": "您没有权限使用此调用",
     "api.404": "无效 API 调用",
-    "api.413": "The request payload is too large",
+    "api.413": "请求负载过大",
     "api.426": "Write API 的请求需要 HTTPS，请用 HTTPS 重新发送您的请求",
     "api.429": "您在短时间内发出了过多的请求，请稍后再试",
     "api.500": "在试图为您的请求提供服务时出现了一个意外的错误。",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "无法检索指定资源。",
     "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",
     "activitypub.origin-mismatch": "接收对象的原点与发送者的原点不一致",
-    "activitypub.actor-mismatch": "接收活动的行为者与预期的不同。",
-    "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面"
+    "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面",
+    "activitypub.orphan": "收到的对象未与任何已知的本地用户相关联。"
 }

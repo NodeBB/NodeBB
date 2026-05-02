@@ -14,15 +14,15 @@ module.exports = {
 		progress.total = await db.sortedSetCard('topics:tid');
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			progress.incr(tids.length);
-			const topicData = await db.getObjectFields(
+			const topicData = await db.getObjectsFields(
 				tids.map(tid => `topic:${tid}`),
 				['tid', 'cid', 'pinned', 'postcount'],
 			);
 			const bulkAdd = [];
 			topicData.forEach((topic) => {
 				if (topic && parseInt(topic.pinned, 10) !== 1) {
-					topicData.postcount = parseInt(topicData.postcount, 10) || 0;
-					bulkAdd.push([`cid:${topicData.cid}:tids:posts`, topicData.postcount, topicData.tid]);
+					topic.postcount = parseInt(topic.postcount, 10) || 0;
+					bulkAdd.push([`cid:${topic.cid}:tids:posts`, topic.postcount, topic.tid]);
 				}
 			});
 			await db.sortedSetAddBulk(bulkAdd);

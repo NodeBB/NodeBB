@@ -137,6 +137,7 @@
     "allowed-file-types": "Sallitut tiedostotyypit ovat %1",
     "unsaved-changes": "Olet tehnyt tallentamattomia muutoksia. Haluatko varmasti poistua sivulta?",
     "reconnecting-message": "Näyttää siltä, että yhteys %1 palveluun katosi. Odotas hetki kun yritän yhdistää.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Toista",
     "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
     "cookies.accept": "Got it!",

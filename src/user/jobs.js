@@ -1,14 +1,14 @@
 'use strict';
 
 const winston = require('winston');
-const cronJob = require('cron').CronJob;
 const db = require('../database');
 const meta = require('../meta');
+const cron = require('../cron');
 
 const jobs = {};
 
 module.exports = function (User) {
-	User.startJobs = function () {
+	User.startJobs = async function () {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
 		let { digestHour } = meta.config;
@@ -22,20 +22,31 @@ module.exports = function (User) {
 
 		User.stopJobs();
 
-		startDigestJob('digest.daily', `0 ${digestHour} * * *`, 'day');
-		startDigestJob('digest.weekly', `0 ${digestHour} * * 0`, 'week');
-		startDigestJob('digest.monthly', `0 ${digestHour} 1 * *`, 'month');
+		await startDigestJob('digest.daily', `0 ${digestHour} * * *`, 'day');
+		await startDigestJob('digest.weekly', `0 ${digestHour} * * 0`, 'week');
+		await startDigestJob('digest.monthly', `0 ${digestHour} 1 * *`, 'month');
 
-		jobs['reset.clean'] = new cronJob('0 0 * * *', User.reset.clean, null, true);
-		winston.verbose('[user/jobs] Starting job (reset.clean)');
+		jobs['reset.clean'] = await cron.addJob({
+			name: 'user:reset:clean',
+			cronTime: '0 0 * * *',
+			onTick: User.reset.clean,
+		});
+
+		await cron.addJob({
+			name: 'user:autoApprove',
+			cronTime: '0 * * * *',
+			onTick: User.autoApprove,
+		});
 
 		winston.verbose(`[user/jobs] jobs started`);
 	};
 
-	function startDigestJob(name, cronString, term) {
-		jobs[name] = new cronJob(cronString, (async () => {
-			winston.verbose(`[user/jobs] Digest job (${name}) started.`);
-			try {
+	async function startDigestJob(name, cronString, term) {
+		const newJob = await cron.addJob({
+			name,
+			cronTime: cronString,
+			onTick: async () => {
+				winston.verbose(`[user/jobs] Digest job (${name}) started.`);
 				if (name === 'digest.weekly') {
 					const counter = await db.increment('biweeklydigestcounter');
 					if (counter % 2) {
@@ -43,24 +54,27 @@ module.exports = function (User) {
 					}
 				}
 				await User.digest.execute({ interval: term });
-			} catch (err) {
-				winston.error(err.stack);
-			}
-		}), null, true);
-		winston.verbose(`[user/jobs] Starting job (${name})`);
+			},
+		});
+		if (newJob) {
+			jobs[name] = newJob;
+		}
 	}
 
 	User.stopJobs = function () {
 		let terminated = 0;
 		// Terminate any active cron jobs
-		for (const jobId of Object.keys(jobs)) {
-			winston.verbose(`[user/jobs] Terminating job (${jobId})`);
-			jobs[jobId].stop();
-			delete jobs[jobId];
+		for (const [name, job] of Object.entries(jobs)) {
+			winston.info(`[user/jobs] Terminating job (${name})`);
+			if (job) {
+				job.stop();
+				delete jobs[name];
+			}
+
 			terminated += 1;
 		}
 		if (terminated > 0) {
-			winston.verbose(`[user/jobs] ${terminated} jobs terminated`);
+			winston.info(`[user/jobs] ${terminated} jobs terminated`);
 		}
 	};
 };

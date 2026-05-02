@@ -48,6 +48,16 @@
 
 	"settings.page-title": "%1 کی ترتیبات",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "ظاہری شکل",
 	"appearance/themes": "تھیمز",
 	"appearance/skins": "جلدیں",
@@ -70,6 +80,7 @@
 	"advanced/logs": "لاگس",
 	"advanced/errors": "غلطیاں",
 	"advanced/cache": "کیش",
+	"advanced/jobs": "Jobs",
 	"development/logger": "لاگ",
 	"development/info": "معلومات",
 

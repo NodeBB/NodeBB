@@ -1,7 +1,14 @@
 {
 	"name": "Mondo",
-	"popular": "Discussioni popolari",
-	"recent": "Tutte le discussioni",
+	"latest": "Ultimo",
+	"latest-local": "Ultimo (Locale)",
+	"latest-all": "Ultimo (Tutti)",
+	"popular-day": "Popolare (Giorno)",
+	"popular-week": "Popolare (Settimana)",
+	"popular-month": "Popolare (Mese)",
+	"popular-year": "Popolare (Anno)",
+	"popular-alltime": "Popolare (Tutto il tempo)",
+	"recent": "Tutto",
 	"help": "Aiuto",
 
 	"help.title": "Cos'è questa pagina?",
@@ -11,11 +18,12 @@
 	"help.federating": "Allo stesso modo, se gli utenti esterni a questo forum iniziano a <em>seguirti</em>, i tuoi post inizieranno ad apparire anche su quelle app e quei siti web.",
 	"help.next-generation": "Questa è la prossima generazione di social media, inizia a contribuire oggi!",
 
-	"onboard.title": "La tua finestra sul fediverso...",
-	"onboard.what": "Questa è la tua categoria personalizzata composta solo da contenuti trovati al di fuori di questo forum. La presenza di qualcosa in questa pagina dipende dal fatto che tu la segua o che il post sia stato condiviso da qualcuno che segui.",
-	"onboard.why": "Ci sono molte cose che accadono al di fuori di questo forum e non tutte sono rilevanti per i tuoi interessi. Ecco perché seguire le persone è il modo migliore per segnalare che vuoi vedere di più da qualcuno.",
-	"onboard.how": "Nel frattempo, puoi cliccare sui pulsanti di scelta rapida in alto per vedere cos'altro conosce questo forum e iniziare a scoprire nuovi contenuti!",
+	"onboard.title": "Un mondo di contenuti a portata di mano&hellip;",
+	"onboard.what": "Consideralo come il tuo feed globale di scoperte. Riunisce in un unico posto discussioni interessanti da tutto il web e da altre comunità.",
+	"onboard.why": "Mentre puoi sfogliare ciò che è di tendenza ora, il modo migliore per usare questo feed è farlo tuo. Creando un account, puoi seguire creatori e discussioni specifiche per filtrare i contenuti superflui e vedere solo ciò che conta per te.",
+	"onboard.how": "Pronto a tuffarti? Crea un account per iniziare a seguire gli altri, ricevere notifiche quando qualcuno ti risponde e salvare i tuoi contenuti preferiti.",
 
-	"show-categories": "Mostra categorie",
-	"hide-categories": "Nascondi categorie"
+	"category-search": "Trova una categoria...",
+	"see-more": "Vedi di più",
+	"see-less": "Vedi meno"
 }

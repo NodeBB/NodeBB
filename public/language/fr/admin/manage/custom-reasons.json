@@ -1,0 +1,16 @@
+{
+	"title": "Gérer les raisons personnalisées",
+	"create-reason": "Créer une raison",
+	"edit-reason": "Modifier la raison",
+	"reasons-help": "Les raisons sont des explications prédéfinies utilisées lors du bannissement ou de la mise en sourdine d’utilisateurs, ou lors du rejet de messages dans la file d’attente de modération.",
+	"reason-title": "Titre",
+	"reason-type": "Type",
+	"reason-body": "Corps",
+	"reason-all": "Tout",
+	"reason-ban": "Bannir",
+	"reason-mute": "Mettre en sourdine",
+	"reason-post-queue": "File d'attente des messages",
+	"reason-type-help": "Le type d’action auquel cette raison s’applique. Si « Tous » est sélectionné, cette raison sera disponible pour tous les types d’actions.",
+	"custom-reasons-saved": "Raisons personnalisées enregistrées avec succès.",
+	"delete-reason-confirm-x": "Êtes-vous sûr de vouloir supprimer la raison personnalisée intitulée <strong>%1</strong> ?"
+}

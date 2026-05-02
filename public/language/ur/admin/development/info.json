@@ -8,7 +8,7 @@
 	"nodejs": "نوڈ جے ایس",
 	"online": "آن لائن",
 	"git": "گٹ",
-	"process-memory": "پروسیس میموری",
+	"process-memory": "rss/heap used",
 	"system-memory": "سسٹم میموری",
 	"used-memory-process": "پروسیس کی استعمال شدہ میموری",
 	"used-memory-os": "سسٹم کی استعمال شدہ میموری",

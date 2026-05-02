@@ -1,6 +1,5 @@
 'use strict';
 
-const cronJob = require('cron').CronJob;
 const winston = require('winston');
 const nconf = require('nconf');
 const util = require('util');
@@ -12,6 +11,7 @@ const db = require('./database');
 const utils = require('./utils');
 const plugins = require('./plugins');
 const pubsub = require('./pubsub');
+const cron = require('./cron');
 
 const Analytics = module.exports;
 
@@ -32,25 +32,38 @@ const runJobs = nconf.get('runJobs');
 Analytics.pause = false;
 
 Analytics.init = async function () {
-	new cronJob('*/10 * * * * *', (async () => {
-		if (Analytics.pause) return;
-		publishLocalAnalytics();
-		if (runJobs) {
-			await sleep(2000);
-			await Analytics.writeData();
-		}
-	}), null, true);
+	await cron.addJob({
+		name: 'analytics:publish',
+		cronTime: '*/10 * * * * *',
+		runOnAllNodes: true,
+		onTick: async () => {
+			if (Analytics.pause) return;
+			await Analytics.writeLocalData();
+		},
+	});
 
 	if (runJobs) {
-		new cronJob('*/30 * * * *', (async () => {
-			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
-		}), null, true);
+		await cron.addJob({
+			name: 'prune:ip:recent',
+			cronTime: '*/30 * * * *',
+			onTick: async () => {
+				await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
+			},
+		});
 	}
 
 	if (runJobs) {
 		pubsub.on('analytics:publish', (data) => {
 			incrementProperties(total, data.local);
 		});
+	}
+};
+
+Analytics.writeLocalData = async function () {
+	publishLocalAnalytics();
+	if (runJobs) {
+		await sleep(2000);
+		await Analytics.writeData();
 	}
 };
 
@@ -176,6 +189,12 @@ Analytics.writeData = async function () {
 		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
 		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
 		total.apPageViews = 0;
+		if (!metrics.includes('pageviews:ap')) {
+			metrics.push('pageviews:ap');
+		}
+		if (!metrics.includes('pageviews:ap:month')) {
+			metrics.push('pageviews:ap:month');
+		}
 	}
 
 	if (total.uniquevisitors > 0) {

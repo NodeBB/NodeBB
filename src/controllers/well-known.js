@@ -38,6 +38,7 @@ Controller.webfinger = async (req, res) => {
 			return res.sendStatus(404);
 		}
 
+		res.set('Access-Control-Allow-Origin', '*');
 		res.status(200).json(response);
 	} catch (e) {
 		res.sendStatus(404);

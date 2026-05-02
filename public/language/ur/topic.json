@@ -92,6 +92,8 @@
     "watch.title": "اس موضوع میں نئے جوابات کے لیے نوٹیفکیشنز حاصل کریں",
     "unwatch.title": "اس موضوع کا مشاہدہ بند کریں",
     "share-this-post": "اس پوسٹ کو شیئر کریں",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "مشاہدہ کر رہے ہیں",
     "not-watching": "مشاہدہ نہیں کر رہے",
     "ignoring": "نظر انداز کر رہے ہیں",
@@ -182,6 +184,7 @@
     "composer.replying-to": "%1 کو جواب",
     "composer.new-topic": "نیا موضوع",
     "composer.editing-in": "%1 میں پوسٹ کی ترمیم",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "اپ لوڈ ہو رہا ہے...",
     "composer.thumb-url-label": "موضوع کے لیے آئیکن کا ایڈریس پیسٹ کریں",
     "composer.thumb-title": "اس موضوع میں آئیکن شامل کریں",
@@ -224,6 +227,7 @@
     "no-more-next-post": "اس موضوع میں آپ کی مزید پوسٹس نہیں ہیں",
     "open-composer": "ایڈیٹر کھولیں",
     "post-quick-reply": "فوری جواب",
+    "post-quick-create": "Quick post",
     "navigator.index": "پوسٹ %1 از %2",
     "navigator.unread": "%1 غیر پڑھے ہوئے",
     "upvote-post": "پوسٹ کے لیے مثبت ووٹ",
@@ -232,5 +236,8 @@
     "unread-posts-link": "غیر پڑھے ہوئے پوسٹس کا لنک",
     "thumb-image": "موضوع کی آئیکن",
     "announcers": "شیئرز",
-    "announcers-x": "شیئرز (%1)"
+    "announcers-x": "شیئرز (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

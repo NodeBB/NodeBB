@@ -1,8 +1,8 @@
 {
     "category": "Категория",
     "subcategories": "Подкатегории",
-    "uncategorized": "Без рубрики",
-    "uncategorized.description": "Темы, которые не вписываются строго ни в одну из существующих категорий",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "За этой категорией можно следить из открытой социальной сети, используя идентификатор %1",
     "new-topic-button": "Создать тему",
     "guest-login-post": "Авторизуйтесь, чтобы написать сообщение",

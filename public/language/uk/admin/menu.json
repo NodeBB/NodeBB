@@ -48,6 +48,16 @@
 
 	"settings.page-title": "Налаштування %1",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Зовнішній вигляд",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Стилі",
@@ -70,6 +80,7 @@
 	"advanced/logs": "Логи",
 	"advanced/errors": "Помилки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Логування",
 	"development/info": "Інформація",
 

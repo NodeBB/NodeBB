@@ -1,15 +1,15 @@
 {
-	"errors": "Errors",
-	"figure-x": "%1を見つける",
-	"error-events-per-day": "<code>%1</code> 日あたりのイベント",
+	"errors": "エラー",
+	"figure-x": "図 %1",
+	"error-events-per-day": "1日あたり <code>%1</code> 件",
 	"error.404": "404 Not Found",
-	"error.503": "503 サービスは利用できません",
+	"error.503": "503 サービス利用不可",
 	"manage-error-log": "エラーログの管理",
-	"export-error-log": "エラーログのエクスポート (CSV)",
-	"clear-error-log": "エラーログの消去",
+	"export-error-log": "エラーログをエクスポート (CSV)",
+	"clear-error-log": "エラーログを消去",
 	"route": "ルート",
-	"count": "カウント",
-	"no-routes-not-found": "ストップ!No 404 エラーです!",
-	"clear404-confirm": "本当に404エラーログを消去してもよろしいですか？",
-	"clear404-success": "\"404 Not Found\"エラーは消去されました"
+	"count": "件数",
+	"no-routes-not-found": "404 エラーはありません。",
+	"clear404-confirm": "404 エラーログを消去してもよろしいですか？",
+	"clear404-success": "\"404 Not Found\" エラーを消去しました"
 }

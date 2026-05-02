@@ -11,7 +11,7 @@ define('admin/manage/categories', [
 ], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
 	Sortable = Sortable.default;
 	const Categories = {};
-	let newCategoryId = -1;
+	let newCategoryId = '-1';
 	let sortables;
 
 	Categories.init = function () {
@@ -26,8 +26,8 @@ define('admin/manage/categories', [
 		});
 		Categories.render(ajaxify.data.categoriesTree);
 
-		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
-		$('button[data-action="add"]').on('click', Categories.throwAddModal);
+		$('[data-action="create"]').on('click', Categories.throwCreateModal);
+		$('[data-action="add"]').on('click', Categories.throwAddModal);
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {
@@ -83,15 +83,15 @@ define('admin/manage/categories', [
 
 		$('.categories').on('click', 'a[data-action]', function () {
 			const action = this.getAttribute('data-action');
-
+			const cid = this.getAttribute('data-cid');
 			switch (action) {
 				case 'remove': {
-					Categories.remove.call(this);
+					Categories.remove(cid);
 					break;
 				}
 
 				case 'rename': {
-					Categories.rename.call(this);
+					Categories.rename(cid);
 					break;
 				}
 			}
@@ -195,21 +195,19 @@ define('admin/manage/categories', [
 		});
 	};
 
-	Categories.remove = function () {
+	Categories.remove = function (cid) {
 		bootbox.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
 			if (ok) {
-				const cid = this.getAttribute('data-cid');
 				api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
 			}
 		});
 	};
 
-	Categories.rename = function () {
+	Categories.rename = function (cid) {
 		bootbox.prompt({
 			title: '[[admin/manage/categories:alert.rename]]',
 			message: '<p class="mb-3">[[admin/manage/categories:alert.rename-help]]</p>',
 			callback: (name) => {
-				const cid = this.getAttribute('data-cid');
 				api.post(`/api/admin/manage/categories/${encodeURIComponent(cid)}/name`, { name }).then(ajaxify.refresh);
 			},
 		});
@@ -261,15 +259,15 @@ define('admin/manage/categories', [
 	};
 
 	function itemDidAdd(e) {
-		newCategoryId = e.to.dataset.cid;
+		newCategoryId = String(e.to.dataset.cid);
 	}
 
 	function itemDragDidEnd(e) {
-		const isCategoryUpdate = parseInt(newCategoryId, 10) !== -1;
+		const isCategoryUpdate = String(newCategoryId) !== '-1';
 
 		// Update needed?
 		if ((e.newIndex != null && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex, 10)) || isCategoryUpdate) {
-			const cid = e.item.dataset.cid;
+			const cid = String(e.item.dataset.cid);
 			const modified = {};
 			// on page 1 baseIndex is 0, on page n baseIndex is (n - 1) * ajaxify.data.categoriesPerPage
 			// this makes sure order is correct when drag & drop is used on pages > 1
@@ -282,8 +280,8 @@ define('admin/manage/categories', [
 				modified[cid].parentCid = newCategoryId;
 
 				// Show/hide expand buttons after drag completion
-				const oldParentCid = parseInt(e.from.getAttribute('data-cid'), 10);
-				const newParentCid = parseInt(e.to.getAttribute('data-cid'), 10);
+				const oldParentCid = String(e.from.getAttribute('data-cid') || '');
+				const newParentCid = String(e.to.getAttribute('data-cid') || '');
 				if (oldParentCid !== newParentCid) {
 					const toggle = document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`);
 					if (toggle) {

@@ -72,15 +72,22 @@ export function init({ set, dataset }) {
 				data: data,
 				options: {
 					responsive: true,
+					maintainAspectRatio: false,
 					scales: {
 						'left-y-axis': {
 							type: 'linear',
 							position: 'left',
 							beginAtZero: true,
 							title: {
-								display: true,
+								display: false,
 								text: key,
 							},
+						},
+					},
+					plugins: {
+						legend: {
+							display: false,
+							position: 'bottom',
 						},
 					},
 					interaction: {
@@ -100,25 +107,26 @@ export function init({ set, dataset }) {
 }
 
 function handleUpdateControls({ set }) {
-	$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
+	$('[data-action="updateGraph"]').on('change', function () {
+		let amount = $(this).val();
+		if (amount === 'custom') {
+			throwCustomRangeSelector($(this));
+			return;
+		}
+		const units = amount === '1' ? 'hours' : 'days';
 		let until = new Date();
-		const amount = $(this).attr('data-amount');
-		if ($(this).attr('data-units') === 'days') {
+		if (amount !== '1') {
 			until.setHours(0, 0, 0, 0);
 		}
+		if (amount === '1') { // change 1 day to 24 hours
+			amount = '24';
+		}
 		until = until.getTime();
-		update(set, $(this).attr('data-units'), until, amount);
-
-		require(['translator'], function (translator) {
-			translator.translate('[[admin/dashboard:page-views-custom]]', function (translated) {
-				$('[data-action="updateGraph"][data-units="custom"]').text(translated);
-			});
-		});
+		update(set, units, until, amount);
+		$('[data-action="updateGraph"] option[value="range"]').addClass('hidden');
 	});
 
-	$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
-		const targetEl = $(this);
-
+	function throwCustomRangeSelector(targetEl) {
 		Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
 			const modal = bootbox.dialog({
 				title: '[[admin/dashboard:page-views-custom]]',
@@ -166,10 +174,11 @@ function handleUpdateControls({ set }) {
 				// Update "custom range" label
 				targetEl.attr('data-startRange', formData.startRange);
 				targetEl.attr('data-endRange', formData.endRange);
-				targetEl.html(formData.startRange + ' &ndash; ' + formData.endRange);
+				targetEl.find('option[value="range"]').text(formData.startRange + ' - ' + formData.endRange);
+				targetEl.val('range');
 			}
 		});
-	});
+	}
 }
 
 function update(

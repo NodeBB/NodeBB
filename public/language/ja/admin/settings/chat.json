@@ -1,17 +1,15 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "この制限を無効にするには0を入力",
 	"chat-settings": "チャット設定",
 	"disable": "チャットは無効です",
 	"disable-editing": "チャットメッセージの編集/削除を無効にする",
 	"disable-editing-help": "管理者およびグローバルモデレーターはこの制限を免除されます",
 	"max-length": "チャットメッセージの最大の長さ",
-	"max-length-remote": "Maximum length of remote chat messages",
-	"max-length-remote-help": "This value is usually set higher than the chat message maximum for local users as remote messages tend to be longer (with @ mentions, etc.)",
-	"max-chat-room-name-length": "Maximum length of chat room names",
+	"max-length-remote": "リモートチャットメッセージの最大長",
+	"max-length-remote-help": "リモートメッセージは通常長いため（@メンションなど）、この値はローカルユーザー用のチャットメッセージ最大値より高く設定されることが多いです。",
+	"max-chat-room-name-length": "チャットルーム名の最大長",
 	"max-room-size": "チャットルームの最大ユーザー数",
-	"delay": "Time between chat messages (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
+	"delay": "チャットメッセージ間の時間（ミリ秒）",
+	"restrictions.seconds-edit-after": "投稿が編集可能な秒数",
+	"restrictions.seconds-delete-after": "投稿が削除可能な秒数"
 }

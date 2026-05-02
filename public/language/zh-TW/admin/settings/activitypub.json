@@ -39,10 +39,44 @@
 	"relays.state-0": "Pending",
 	"relays.state-1": "Receiving only",
 	"relays.state-2": "Active",
+	"relays.errors.invalid-url": "Please enter a valid URL",
+
+	"blocklists": "Third-party Blocklists",
+	"blocklists-help": "For the safety of you and your users, maintaining a blocklist is an essential part of any trust &amp; safety effort when working with content from outside the local moderation scope. NodeBB ships with some recommended defaults, and these can be customized here.",
+	"blocklists-default": "NodeBB ships with two blocklists by default, the <a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS Do Not Interact Denylist</a> and the <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS Abandoned and Unmanaged Domain Denylist</a>.",
+	"blocklists.url": "URL",
+	"blocklists.count": "Domains",
+	"blocklists.add": "Add New Blocklist",
+	"blocklists.add-help": "Enter the URL of the blocklist you would like to add. NodeBB understands blocklists that match the format used by <a href=\"https://iftas.org\">IFTAS</a>.",
+	"blocklists.refreshed": "Blocklist refreshed — it now contains %1 entries",
+	"blocklists.view.title": "View Blocklist",
+	"blocklists.view.intro": "These are the %1 domain(s) blocked by this blocklist:",
 
 	"server-filtering": "過濾...",
 	"count": "本 NodeBB 已發現 <strong>%1</strong> 台伺服器。",
 	"server.filter-help": "Specify servers you would like to bar from federating with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> federation with specific servers, instead. Both options are supported, although they are mutually exclusive.",
 	"server.filter-help-hostname": "Enter just the instance hostname below (e.g. <code>example.org</code>), separated by line breaks.",
-	"server.filter-allow-list": "Use this as an Allow List instead"
+	"server.filter-allow-list": "Use this as an Allow List instead",
+
+	"content.outgoing": "Outgoing",
+	"content.summary-limit": "Character count after which a summary is generated",
+	"content.summary-limit-help": "When content is federated out that exceeds this character count, a <code>summary</code> is generated, comprising of all complete sentences prior to this limit. (Default: 500)",
+	"content.break-string": "Note/Article Delimiter",
+	"content.break-string-help": "This delimiter can be manually inserted by power users when composing new topics. It instructs NodeBB to use content up until that point as part of the <code>summary</code>. If this string is not used, then the character count fallback applies. (Default: <code>[...]</code>)",
+	"content.world-default-cid": "Default category ID for &quot;World&quot; page composer",
+
+	"analytics.intro": "This page provides an overview of the state of your forum's federation with other instances/servers",
+	"analytics.details": "NodeBB tracks ActivityPub activity receipts and sends, and you are able to view them by hostname, either hourly or daily. Note that a zero error rate is difficult to achieve given that some servers go offline or are configured improperly.",
+	"analytics.by-hostname": "Filter by Hostname",
+	"analytics.in": "Incoming",
+	"analytics.out": "Outgoing",
+	"analytics.received": "Received Activities",
+	"analytics.sent": "Sent Activites",
+	"analytics.errors": "Errors",
+	"analytics.term": "Time scale",
+	"analytics.hourly": "Hourly",
+	"analytics.daily": "Daily",
+
+	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
+	"errors.payload-gone": "The payload for this error no longer exists."
 }

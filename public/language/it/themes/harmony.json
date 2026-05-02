@@ -1,8 +1,8 @@
 {
 	"theme-name": "Tema Armonia",
 	"skins": "Skin",
-	"light": "Light",
-	"dark": "Dark",
+	"light": "Chiaro",
+	"dark": "Scuro",
 	"collapse": "Collassa",
 	"expand": "Espandi",
 	"sidebar-toggle": "Attiva/disattiva barra laterale",

@@ -10,8 +10,6 @@
 	"max-chat-room-name-length": "Maksymalna długość nazw pokojów czatu",
 	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
 	"delay": "Czas pomiędzy wiadomościami czatu (ms)",
-	"notification-delay": "Opóźnienie powiadomień dla wiadomości czatu",
-	"notification-delay-help": "Kolejne wiadomości wysłane między tym czasem są szeregowane, a użytkownik jest powiadamiany raz na czas opóźnienia. Ustaw 0, aby wyłączyć opóźnienie.",
 	"restrictions.seconds-edit-after": "Liczba sekund, przez którą wiadomość czatu pozostanie edytowalna.",
 	"restrictions.seconds-delete-after": "Liczba sekund, przez którą wiadomość czatu pozostanie usuwalna."
 }

@@ -137,6 +137,7 @@
     "allowed-file-types": "Os tipos de ficheiro permitidos são %1",
     "unsaved-changes": "Tens alterações por guardar. Tens a certeza que pretendes mudar de página?",
     "reconnecting-message": "Parece que a tua conexão com %1 foi perdida. Por favor, espera enquanto tentamos reconectar-te.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Reproduzir",
     "cookies.message": "Este website utiliza cookies para assegurar que tens a melhor experiência no nosso website.",
     "cookies.accept": "Apontado!",

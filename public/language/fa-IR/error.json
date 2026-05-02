@@ -1,5 +1,6 @@
 {
     "invalid-data": "داده(های) نامعتبر",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "JSON نامعتبر",
     "wrong-parameter-type": "A value of type %3 was expected for property `%1`, but %2 was received instead",
     "required-parameters-missing": "Required parameters were missing from this API call: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "مسیر نامعتبر",
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "ارزش گذاری صفحه نامعتبر است، کمترین مقدار <strong>%1</strong> و بیشترین مقدار <strong>%2</strong> باید باشد",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "Email address is already taken.",
     "email-nochange": "The email entered is the same as the email already on file.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

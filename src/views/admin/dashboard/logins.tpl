@@ -23,7 +23,7 @@
 							<a href="{config.relative_path}/uid/{./user.uid}">{./user.username}</a>
 							{function.userAgentIcons} {../browser} {../version} on {../platform}
 						</td>
-						<td><span class="timeago" title="{./datetimeISO}"></span></td>
+						<td class="text-nowrap"><span class="timeago" title="{./datetimeISO}"></span></td>
 					</tr>
 					{{{ end }}}
 				</tbody>

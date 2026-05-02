@@ -74,7 +74,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 		return null;
 	}
 
-	const postData = await posts.getPostFields(pid, ['content', 'deleted']);
+	const postData = await posts.getPostFields(pid, ['content', 'sourceContent', 'deleted']);
 	const selfPost = caller.uid && caller.uid === parseInt(postData.uid, 10);
 
 	if (postData.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
@@ -82,7 +82,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 	}
 	postData.pid = pid;
 	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: caller.uid, postData: postData });
-	return result.postData.content;
+	return result.postData.sourceContent || result.postData.content;
 };
 
 postsAPI.edit = async function (caller, data) {
@@ -150,9 +150,9 @@ postsAPI.edit = async function (caller, data) {
 
 	if (!editResult.post.deleted) {
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
-		setTimeout(() => {
+		setImmediate(() => {
 			activitypub.out.update.note(caller.uid, postObj[0]);
-		}, 5000);
+		});
 
 		return returnData;
 	}
@@ -193,8 +193,13 @@ async function deleteOrRestore(caller, data, params) {
 	const [postData, { isMain, isLast }] = await Promise.all([
 		posts.tools[params.command](caller.uid, data.pid),
 		isMainAndLastPost(data.pid),
-		activitypub.out.delete.note(caller.uid, data.pid),
 	]);
+	setImmediate(() => {
+		// todo: need undo(delete)
+		if (params.command === 'delete') {
+			activitypub.out.delete.note(caller.uid, data.pid);
+		}
+	});
 	if (isMain && isLast) {
 		await deleteOrRestoreTopicOf(params.command, data.pid, caller);
 	}
@@ -252,8 +257,10 @@ postsAPI.purge = async function (caller, data) {
 	posts.clearCachedPost(data.pid);
 	await Promise.all([
 		posts.purge(data.pid, caller.uid),
-		activitypub.out.delete.note(caller.uid, data.pid),
 	]);
+	setImmediate(() => {
+		activitypub.out.delete.note(caller.uid, data.pid);
+	});
 
 	websockets.in(`topic_${postData.tid}`).emit('event:post_purged', postData);
 	const topicData = await topics.getTopicFields(postData.tid, ['title', 'cid']);
@@ -592,7 +599,10 @@ postsAPI.removeQueuedPost = async (caller, data) => {
 	await canEditQueue(caller.uid, data, 'reject');
 	const result = await posts.removeFromQueue(data.id);
 	if (result && caller.uid !== parseInt(result.uid, 10)) {
-		await sendQueueNotification('post-queue-rejected', result.uid, '/');
+		const msg = validator.escape(String(data.message ? data.message : ''));
+		await sendQueueNotification(
+			msg ? 'post-queue-rejected-for-reason' : 'post-queue-rejected', result.uid, '/', msg
+		);
 	}
 	await logQueueEvent(caller, result, 'reject');
 };
@@ -612,7 +622,7 @@ postsAPI.notifyQueuedPostOwner = async (caller, data) => {
 	await canEditQueue(caller.uid, data, 'notify');
 	const result = await posts.getFromQueue(data.id);
 	if (result) {
-		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message)));
+		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message || '')));
 	}
 };
 

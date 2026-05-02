@@ -1,5 +1,6 @@
 {
     "invalid-data": "Neplatná data",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Neplatný JSON",
     "wrong-parameter-type": "A value of type %3 was expected for property `%1`, but %2 was received instead",
     "required-parameters-missing": "Required parameters were missing from this API call: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Invalid path",
     "folder-exists": "Folder exists",
     "invalid-pagination-value": "Neplatná hodnota stránkování, musí být alespoň %1 a nejvýše %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Uživatelské jméno je již použito",
     "email-taken": "E-mailová adresa je již použita.",
     "email-nochange": "The email entered is the same as the email already on file.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Nelze získat zadaný zdroj.",
     "activitypub.pubKey-not-found": "Nelze ověřit veřejný klíč, proto není možné provést ověření obsahu.",
     "activitypub.origin-mismatch": "Původ přijatého objektu neodpovídá původu odesílatele",
-    "activitypub.actor-mismatch": "Přijatou aktivitu provedl někdo jiný, než bylo očekáváno.",
-    "activitypub.not-implemented": "Požadavek byl zamítnut, protože cílový server tuto funkci nepodporuje"
+    "activitypub.not-implemented": "Požadavek byl zamítnut, protože cílový server tuto funkci nepodporuje",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

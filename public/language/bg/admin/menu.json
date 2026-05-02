@@ -48,6 +48,16 @@
 
 	"settings.page-title": "Настройки на %1",
 
+	"section-federation": "Федериране",
+	"federation/general": "Общи",
+	"federation/content": "Съдържание",
+	"federation/rules": "Категоризиране",
+	"federation/relays": "Препредаватели",
+	"federation/pruning": "Съхранение",
+	"federation/safety": "Доверие и защита",
+	"federation/analytics": "Анализи",
+	"federation/errors": "Грешки",
+
 	"section-appearance": "Външен вид",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Облици",
@@ -70,6 +80,7 @@
 	"advanced/logs": "Журнали",
 	"advanced/errors": "Грешки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Задачи",
 	"development/logger": "Журнал",
 	"development/info": "Информация",
 

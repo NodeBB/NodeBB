@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
+const util = require('util');
 
 const db = require('../mocks/databasemock');
 const activitypub = require('../../src/activitypub');
@@ -16,6 +17,7 @@ const posts = require('../../src/posts');
 const api = require('../../src/api');
 
 const helpers = require('./helpers');
+const wait = util.promisify(setTimeout);
 
 describe('FEPs', () => {
 	before(async () => {
@@ -63,20 +65,22 @@ describe('FEPs', () => {
 					activitypub._sent.clear();
 				});
 
-				it('should have federated out both Announce(Create(Note)) and Announce(Note)', () => {
+				it('should have federated out both Announce(Create(Note)) and Announce(Note)', async () => {
+					await wait(50);
+
 					const activities = Array.from(activitypub._sent);
 
 					const test1 = activities.some((activity) => {
 						[, activity] = activity;
 						return activity.payload.type === 'Announce' &&
 							activity.payload.object && activity.payload.object.type === 'Create' &&
-							activity.payload.object.object && activity.payload.object.object.type === 'Note';
+							activity.payload.object.object && activity.payload.object.object.type === 'Article';
 					});
 
 					const test2 = activities.some((activity) => {
 						[, activity] = activity;
 						return activity.payload.type === 'Announce' &&
-							activity.payload.object && activity.payload.object.type === 'Note';
+							activity.payload.object && activity.payload.object.type === 'Article';
 					});
 
 					assert(test1 && test2);
@@ -87,6 +91,7 @@ describe('FEPs', () => {
 						tid: topicData.tid,
 						content: utils.generateUUID(),
 					});
+					await wait(50);
 
 					const activities = Array.from(activitypub._sent);
 
@@ -119,6 +124,7 @@ describe('FEPs', () => {
 				it('should federate out Announce(Like) on local vote', async () => {
 					activitypub._sent.clear();
 					await api.posts.upvote({ uid: adminUid }, { pid: topicData.mainPid, room_id: `topic_${topicData.tid}` });
+					await wait(50);
 					const activities = Array.from(activitypub._sent);
 
 					assert(activities.some((activity) => {

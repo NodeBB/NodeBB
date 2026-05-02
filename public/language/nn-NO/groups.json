@@ -1,7 +1,9 @@
 {
+    "group": "Group",
     "all-groups": "Alle grupper",
     "groups": "Grupper",
     "members": "Medlemmar",
+    "x-members": "%1 member(s)",
     "view-group": "Sjå gruppe",
     "owner": "Gruppeeigar",
     "new-group": "Opprett ny gruppe",

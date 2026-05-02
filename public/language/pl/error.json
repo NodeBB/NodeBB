@@ -1,5 +1,6 @@
 {
     "invalid-data": "Nieprawidłowe dane",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Niewłaściwy JSON",
     "wrong-parameter-type": "Wartość typu %3 była oczekiwania dla właściwości `%1`, ale %2 został dostarczony",
     "required-parameters-missing": "Brakowało wymaganych parametrów w tym żądaniu API: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Nieprawidłowa ścieżka",
     "folder-exists": "Folder istnieje",
     "invalid-pagination-value": "Błędna wartość strony, zakres od %1 do %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Login zajęty",
     "email-taken": "Ten adres e-mail już jest zajęty.",
     "email-nochange": "Podany e-mail jest taki sam jak ten już zapisany.",
@@ -252,7 +254,7 @@
     "api.401": "Poprawna sesja logowanie nie została znaleziona. Proszę zaloguj się i spróbuj ponownie.",
     "api.403": "Nie masz uprawnień do wykonania tego żądania",
     "api.404": "Niepoprawne żądanie API",
-    "api.413": "The request payload is too large",
+    "api.413": "Zbyt duża treść żądania",
     "api.426": "HTTPS jest wymagany dla żądań do API zapisu, wyślij ponownie żądanie przez HTTPS",
     "api.429": "Został przekroczony limit żądań, proszę spróbuj ponownie później",
     "api.500": "Wystąpił nieoczekiwany błąd podczas próby obsługi Twojego żądania.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Nie udało się pobrać zadanego zasobu.",
     "activitypub.pubKey-not-found": "Nie udało się uzyskać klucza publicznego, więc nie może zajść weryfikacja zawartości.",
     "activitypub.origin-mismatch": "Odebrany obiekt nie zgadza się z tym co nadano.",
-    "activitypub.actor-mismatch": "Odebrana aktywność różni się od tego czego się spodziewano.",
-    "activitypub.not-implemented": "Zapytanie napotkało odmowę z racji braku obsługi po stronie serwera odbiorczego."
+    "activitypub.not-implemented": "Zapytanie napotkało odmowę z racji braku obsługi po stronie serwera odbiorczego.",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

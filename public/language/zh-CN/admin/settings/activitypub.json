@@ -39,10 +39,44 @@
 	"relays.state-0": "待处理",
 	"relays.state-1": "仅接收",
 	"relays.state-2": "已启用",
+	"relays.errors.invalid-url": "请输入有效的 URL",
+
+	"blocklists": "第三方黑名单",
+	"blocklists-help": "为了您和用户的安全，在处理本地审核范围之外的内容时，维护黑名单是任何信任与安全措施的重要组成部分。NodeBB 默认提供了一些推荐设置，您可以在这里进行自定义。",
+	"blocklists-default": "NodeBB 默认附带两个黑名单：<a href=\"https://about.iftas.org/library/iftas-dni-list/\">IFTAS “禁止交互”黑名单</a> 和 <a href=\"https://about.iftas.org/library/iftas-abandoned-and-unmanaged-domain-list/\">IFTAS “废弃及无人管理域名”</a>。",
+	"blocklists.url": "URL",
+	"blocklists.count": "域名",
+	"blocklists.add": "添加新黑名单",
+	"blocklists.add-help": "请输入您要添加的封禁列表的 URL。NodeBB 支持符合 <a href=\"https://iftas.org\">IFTAS</a> 所用格式的封禁列表。",
+	"blocklists.refreshed": "黑名单已更新——现在包含 %1 条记录",
+	"blocklists.view.title": "查看黑名单",
+	"blocklists.view.intro": "以下是该屏蔽列表所屏蔽的 %1 个域名：",
 
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
 	"server.filter-help": "指定您希望禁止与 NodeBB 联邦化的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器联邦化。两者只能选其一。",
 	"server.filter-help-hostname": "请在下面输入实例主机名（如 <code>example.org</code> ），中间用换行符隔开。",
-	"server.filter-allow-list": "将其用作允许列表"
+	"server.filter-allow-list": "将其用作允许列表",
+
+	"content.outgoing": "外部",
+	"content.summary-limit": "生成摘要后的字符计数",
+	"content.summary-limit-help": "当联合输出内容超过此字符限制时，将生成 <code>摘要</code> ，包含该限制前的所有完整句子。（默认值：500）",
+	"content.break-string": "注释/文章分隔符",
+	"content.break-string-help": "此分隔符可由高级用户在撰写新主题时手动插入。它指示 NodeBB 将该分隔符之前的内容作为<code>摘要</code>的一部分。若未使用此字符串，则采用字符计数备用方案。（默认值：<code>[...]</code>)",
+	"content.world-default-cid": "“世界”页面编辑器的默认版块 ID",
+
+	"analytics.intro": "本页面概述了您的论坛与其他实例/服务器之间的联合状态",
+	"analytics.details": "NodeBB 会跟踪 ActivityPub 的活动确认和发送情况，您可以按主机名查看每小时或每日的统计数据。请注意，由于部分服务器可能离线或配置不当，因此很难实现零错误率。",
+	"analytics.by-hostname": "按主机名筛选",
+	"analytics.in": "入站",
+	"analytics.out": "出站",
+	"analytics.received": "已接收的活动",
+	"analytics.sent": "已发送的活动",
+	"analytics.errors": "错误",
+	"analytics.term": "时间尺度",
+	"analytics.hourly": "每时",
+	"analytics.daily": "每日",
+
+	"errors.intro": "该实例在过去 24 小时内记录了以下 %1 个错误。",
+	"errors.payload-gone": "此错误的负载已不存在。"
 }

@@ -5,6 +5,7 @@ const db = require('../database');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const slugify = require('../slugify');
+const cache = require('../cache');
 
 const Groups = module.exports;
 
@@ -99,8 +100,10 @@ Groups.getNonPrivilegeGroups = async function (set, start, stop, flags) {
 			ephemeral: true,
 		};
 	}
-
-	let groupNames = await db.getSortedSetRevRange(set, start, stop);
+	const useCache = set === 'groups:createtime' && parseInt(start, 10) === 0 && parseInt(stop, 10) === -1;
+	let groupNames = useCache ?
+		await Groups.getAllGroupNames('groups:createtime') :
+		await db.getSortedSetRevRange(set, start, stop);
 	groupNames = groupNames.filter(groupName => !Groups.isPrivilegeGroup(groupName));
 	if (flags.ephemeral) {
 		groupNames = groupNames.concat(Groups.ephemeralGroups);
@@ -108,6 +111,17 @@ Groups.getNonPrivilegeGroups = async function (set, start, stop, flags) {
 
 	const groupsData = await Groups.getGroupsData(groupNames);
 	return groupsData.filter(Boolean);
+};
+
+Groups.getAllGroupNames = async function (set) {
+	const cacheKey = `zset:${set}`;
+	let names = cache.get(cacheKey);
+	if (names !== undefined) {
+		return [...names];
+	}
+	names = await db.getSortedSetRevRange(set, 0, -1);
+	cache.set(cacheKey, names);
+	return [...names];
 };
 
 Groups.getGroups = async function (set, start, stop) {

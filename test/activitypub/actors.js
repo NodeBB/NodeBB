@@ -690,7 +690,7 @@ describe('Controllers', () => {
 			});
 
 			it('should return a Note type object', () => {
-				assert.strictEqual(body.type, 'Note');
+				assert.strictEqual(body.type, 'Article');
 			});
 		});
 
@@ -737,6 +737,10 @@ describe('Pruning', () => {
 	});
 
 	describe('Users', () => {
+		before(async function () {
+			this.current = await activitypub.actors.prune();
+		});
+
 		it('should do nothing if the user is newer than the prune cutoff', async () => {
 			const { id: uid } = helpers.mocks.person();
 			await activitypub.actors.assert([uid]);
@@ -762,7 +766,7 @@ describe('Pruning', () => {
 			assert(result.counts.deleted >= 1);
 		});
 
-		it('should do nothing if the user has some content (e.g. a topic)', async () => {
+		it('should do nothing if the user has some content (e.g. a topic)', async function () {
 			const { cid } = await categories.create({ name: utils.generateUUID() });
 			const { id: uid } = helpers.mocks.person();
 			const { id, note } = helpers.mocks.note({
@@ -776,7 +780,7 @@ describe('Pruning', () => {
 			const result = await activitypub.actors.prune();
 
 			assert.strictEqual(result.counts.deleted, 0);
-			assert.strictEqual(result.counts.preserved, 1);
+			assert.strictEqual(result.counts.preserved, this.current.counts.preserved + 1);
 			assert.strictEqual(result.counts.missing, 0);
 		});
 	});

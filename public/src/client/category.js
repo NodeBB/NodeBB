@@ -115,14 +115,20 @@ define('forum/category', [
 	}
 
 	function handleDescription() {
-		const fadeEl = document.querySelector('.description.clamp-fade-4');
-		if (!fadeEl) {
-			return;
-		}
-
-		fadeEl.addEventListener('click', () => {
-			const state = fadeEl.classList.contains('line-clamp-4');
-			fadeEl.classList.toggle('line-clamp-4', !state);
+		const fadeEl = $(`.description[class*="clamp-fade-"]`);
+		fadeEl.on('click', function () {
+			const $this = $(this);
+			let clampClass = $this.data('clampClass');
+			if (!clampClass) {
+				const match = $this.attr('class').match(/line-clamp-(\S+)/);
+				if (match && match[1]) {
+					clampClass = `line-clamp-${match[1]}`;
+					fadeEl.data('clampClass', clampClass);
+				}
+			}
+			if (clampClass) {
+				fadeEl.toggleClass(clampClass);
+			}
 		});
 	}
 

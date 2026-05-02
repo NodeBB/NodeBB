@@ -563,6 +563,27 @@ describe('Messaging Library', () => {
 			assert.equal(rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
 		});
 
+		it('should escape chatWithMessage', async () => {
+			const oldValue = meta.config.showFullnameAsDisplayName;
+			meta.config.showFullnameAsDisplayName = true;
+
+			const uid = await User.create({ username: 'escapedsender', fullname: '<svg/onload=alert(document.location);' });
+			await User.setSetting(uid, 'showfullname', 1);
+
+			await callv3API('post', '/chats', { uids: [uid] }, 'foo');
+
+			const { rooms } = await api.chats.list(
+				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
+			);
+
+			assert.strictEqual(
+				rooms[0].chatWithMessage,
+				`Chat with <a href="${nconf.get('relative_path')}/uid/${uid}">&lt;svg&#x2F;onload=alert(document.location);</a>`
+			);
+
+			meta.config.showFullnameAsDisplayName = oldValue;
+		});
+
 		it('should fail to check if user has private chat with invalid data', async () => {
 			await assert.rejects(
 				api.users.getPrivateRoomId({ uid: null }, undefined),
@@ -578,6 +599,20 @@ describe('Messaging Library', () => {
 		it('should check if user has private chat with another uid', async () => {
 			const { roomId } = await api.users.getPrivateRoomId({ uid: mocks.users.foo.uid }, { uid: mocks.users.herp.uid });
 			assert(roomId);
+		});
+
+		it('should create a public chat room', async () => {
+			const data = await api.chats.create({
+				uid: mocks.users.foo.uid,
+				session: {},
+			}, {
+				name: 'public room',
+				type: 'public',
+				uids: [],
+				groups: ['registered-users'],
+			});
+			assert(data.roomId);
+			assert.strictEqual(data.public, true);
 		});
 	});
 

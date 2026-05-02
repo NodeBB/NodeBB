@@ -8,7 +8,8 @@ define('notifications', [
 	'tinycon',
 	'hooks',
 	'alerts',
-], function (translator, components, navigator, Tinycon, hooks, alerts) {
+	'api',
+], function (translator, components, navigator, Tinycon, hooks, alerts, api) {
 	const Notifications = {};
 
 	let unreadNotifs = {};
@@ -30,11 +31,7 @@ define('notifications', [
 
 	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
 		callback = callback || function () {};
-		socket.emit('notifications.get', null, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
-
+		api.get('/notifications').then((data) => {
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
@@ -42,15 +39,14 @@ define('notifications', [
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
 					notifList.html(html);
-					notifList.off('click').on('click', '[data-nid]', function (ev) {
-						const notifEl = $(this);
+					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
+						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							if (triggerEl) {
-								triggerEl.dropdown('toggle');
-							}
 						}
+
+						triggerEl?.dropdown('toggle');
 
 						const unread = notifEl.hasClass('unread');
 						if (!unread) {
@@ -61,6 +57,10 @@ define('notifications', [
 					});
 					components.get('notifications').on('click', '.mark-all-read', () => {
 						Notifications.markAllRead();
+						triggerEl?.dropdown('toggle');
+					});
+					components.get('notifications').on('click', `[href="${config.relative_path}/notifications"]`, () => {
+						triggerEl?.dropdown('toggle');
 					});
 
 					Notifications.handleUnreadButton(notifList);
@@ -72,7 +72,7 @@ define('notifications', [
 					callback();
 				});
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	Notifications.handleUnreadButton = function (notifList) {
@@ -86,7 +86,6 @@ define('notifications', [
 				$this.find('.unread').toggleClass('hidden', unread);
 				$this.find('.read').toggleClass('hidden', !unread);
 			});
-			return false;
 		});
 	};
 
@@ -98,13 +97,9 @@ define('notifications', [
 			return;
 		}
 
-		socket.emit('notifications.getCount', function (err, count) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			Notifications.updateNotifCount(count);
-		});
+		api.get('/notifications/count').then(({ unread }) => {
+			Notifications.updateNotifCount(unread);
+		}).catch(alerts.error);
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;
@@ -116,18 +111,18 @@ define('notifications', [
 	};
 
 	function markNotification(nid, read, callback) {
-		socket.emit('notifications.mark' + (read ? 'Read' : 'Unread'), nid, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			if (read && unreadNotifs[nid]) {
-				delete unreadNotifs[nid];
-			}
-			if (callback) {
-				callback();
-			}
-		});
+		if (read) {
+			api.put(`/notifications/${encodeURIComponent(nid)}/read`).then(() => {
+				if (unreadNotifs[nid]) {
+					delete unreadNotifs[nid];
+				}
+				if (callback) {
+					callback();
+				}
+			}).catch(alerts.error);
+		} else {
+			api.del(`/notifications/${encodeURIComponent(nid)}/read`).then(callback).catch(alerts.error);
+		}
 	}
 
 	function scrollToPostIndexIfOnPage(notifEl) {
@@ -142,6 +137,7 @@ define('notifications', [
 		return false;
 	}
 
+	let tinyconSetup = false;
 	Notifications.updateNotifCount = function (count) {
 		const notifIcon = components.get('notifications/icon');
 		count = Math.max(0, count);
@@ -159,6 +155,13 @@ define('notifications', [
 		hooks.fire('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
+			if (!tinyconSetup) {
+				Tinycon.setOptions({
+					color: config.tinycon.color,
+					background: config.tinycon.background,
+				});
+				tinyconSetup = true;
+			}
 			Tinycon.setBubble(countText);
 		}
 

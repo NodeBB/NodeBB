@@ -137,6 +137,7 @@
     "allowed-file-types": "Llojet e lejuara të skedarëve janë %1",
     "unsaved-changes": "Ju keni ndryshime të paruajtura. Jeni i sigurt që dëshironi të largoheni?",
     "reconnecting-message": "Me sa duket lidhja jote me %1 ka humbur, ju lutemi prisni derisa të përpiqemi të rilidhemi.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Luaj",
     "cookies.message": "Kjo faqe interneti përdor cookie për tu siguruar që ju të keni përvojën më të mirë në VIAL.",
     "cookies.accept": "E kuptova!",

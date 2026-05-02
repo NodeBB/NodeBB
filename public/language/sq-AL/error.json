@@ -1,5 +1,6 @@
 {
     "invalid-data": "Të dhëna të pavlefshme",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "JSON i pavlefshëm",
     "wrong-parameter-type": "Pritej një vlerë e tipit %3 për vetinë '%1', por në vend të saj u mor %2",
     "required-parameters-missing": "Parametrat e kërkuar mungonin në këtë API: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Gabim",
     "folder-exists": "Ky dokument ekziston",
     "invalid-pagination-value": "Vlera e pasaktë e faqes, duhet të jetë së paku %1 dhe maksimumi %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Username është i zënë",
     "email-taken": "Email address is already taken.",
     "email-nochange": "Email-i i futur është i njëjtë me emailin ekzistues në sistem.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

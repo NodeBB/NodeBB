@@ -1,5 +1,6 @@
 {
     "invalid-data": "잘못된 데이터",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "잘못된 JSON",
     "wrong-parameter-type": "속성 `%1`에 대해 %3 유형의 값이 예상되었지만 대신 %2가 수신되었습니다",
     "required-parameters-missing": "이 API 호출에서 필수 매개변수가 누락되었습니다: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "잘못된 경로",
     "folder-exists": "폴더가 이미 존재합니다",
     "invalid-pagination-value": "잘못된 페이지네이션 값입니다. 최소 %1에서 최대 %2까지 여야 합니다",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "사용자 이름이 이미 사용 중입니다",
     "email-taken": "이메일 주소가 이미 사용 중입니다.",
     "email-nochange": "입력한 이메일이 이미 파일에 있는 이메일과 같습니다.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

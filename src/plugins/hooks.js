@@ -13,6 +13,11 @@ Hooks._deprecated = new Map([
 		since: 'v4.0.0',
 		until: 'v5.0.0',
 	}], */
+	['action:topic.purge', {
+		new: 'action:topics.purge',
+		since: 'v4.9.0',
+		until: 'v5.0.0',
+	}],
 ]);
 
 Hooks.internals = {
@@ -159,10 +164,7 @@ async function fireFilterHook(hook, hookList, params) {
 	}
 
 	async function fireMethod(hookObj, params) {
-		if (typeof hookObj.method !== 'function') {
-			if (process.env.NODE_ENV === 'development') {
-				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
-			}
+		if (!isHookValid(hook, hookObj)) {
 			return params;
 		}
 
@@ -184,11 +186,7 @@ async function fireActionHook(hook, hookList, params) {
 		return;
 	}
 	for (const hookObj of hookList) {
-		if (typeof hookObj.method !== 'function') {
-			if (process.env.NODE_ENV === 'development') {
-				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
-			}
-		} else {
+		if (isHookValid(hook, hookObj)) {
 			try {
 				// eslint-disable-next-line
 				await hookObj.method(params);
@@ -197,6 +195,14 @@ async function fireActionHook(hook, hookList, params) {
 			}
 		}
 	}
+}
+
+function isHookValid(hook, hookObj) {
+	const isValid = typeof hookObj.method === 'function';
+	if (!isValid && process.env.NODE_ENV === 'development') {
+		winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
+	}
+	return isValid;
 }
 
 // https://advancedweb.hu/how-to-add-timeout-to-a-promise-in-javascript/
@@ -218,10 +224,7 @@ async function fireStaticHook(hook, hookList, params) {
 	const noErrorHooks = ['static:app.load', 'static:assets.prepare', 'static:app.preload'];
 
 	async function fireMethod(hookObj, params) {
-		if (typeof hookObj.method !== 'function') {
-			if (process.env.NODE_ENV === 'development') {
-				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
-			}
+		if (!isHookValid(hook, hookObj)) {
 			return params;
 		}
 
@@ -255,16 +258,13 @@ async function fireResponseHook(hook, hookList, params) {
 		return;
 	}
 	for (const hookObj of hookList) {
-		if (typeof hookObj.method !== 'function') {
-			if (process.env.NODE_ENV === 'development') {
-				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
-			}
-		} else {
+		if (isHookValid(hook, hookObj)) {
 			// Skip remaining hooks if headers have been sent
 			if (params.res.headersSent) {
 				return;
 			}
-			// eslint-disable-next-line
+
+			// eslint-disable-next-line no-await-in-loop
 			await hookObj.method(params);
 		}
 	}

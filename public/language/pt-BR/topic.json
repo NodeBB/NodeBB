@@ -92,6 +92,8 @@
     "watch.title": "Seja notificado sobre novas respostas neste tópico",
     "unwatch.title": "Parar de acompanhar este tópico",
     "share-this-post": "Compartilhar este Post",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Acompanhar",
     "not-watching": "Não Acompanhar",
     "ignoring": "Ignorando",
@@ -182,6 +184,7 @@
     "composer.replying-to": "Respondendo para %1",
     "composer.new-topic": "Novo Tópico",
     "composer.editing-in": "Editando post em %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "enviando...",
     "composer.thumb-url-label": "Cole o endereço de um thumbnail para o tópico",
     "composer.thumb-title": "Adicionar um thumbnail para este tópico",
@@ -224,6 +227,7 @@
     "no-more-next-post": "Você não tem mais posts nesse tópico",
     "open-composer": "Open composer",
     "post-quick-reply": "Resposta rápida",
+    "post-quick-create": "Quick post",
     "navigator.index": "Post %1 de %2",
     "navigator.unread": "%1 não lida",
     "upvote-post": "Upvote post",
@@ -232,5 +236,8 @@
     "unread-posts-link": "Unread posts link",
     "thumb-image": "Topic thumbnail image",
     "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers-x": "Shares (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

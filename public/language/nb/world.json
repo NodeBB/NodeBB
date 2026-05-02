@@ -1,7 +1,14 @@
 {
 	"name": "Verden",
-	"popular": "Populære tema",
-	"recent": "Alle tema",
+	"latest": "Latest",
+	"latest-local": "Latest (Local)",
+	"latest-all": "Latest (All)",
+	"popular-day": "Popular (Day)",
+	"popular-week": "Popular (Week)",
+	"popular-month": "Popular (Month)",
+	"popular-year": "Popular (Year)",
+	"popular-alltime": "Popular (All Time)",
+	"recent": "All",
 	"help": "Hjelp",
 
 	"help.title": "Hva er denne siden?",
@@ -11,11 +18,12 @@
 	"help.federating": "Likewise, if users from outside of this forum start following <em>you</em>, then your posts will start appearing on those apps and websites as well.",
 	"help.next-generation": "Dette er neste generasjon sosiale medier, begynn å bidra i dag!",
 
-	"onboard.title": "Ditt vindu til fødiverset...",
-	"onboard.what": "Dette er din personlige kategori, som kun består av innhold funnet utenfor dette forumet. Om noe vises på denne siden, avhenger av om du følger dem, eller om innlegget ble delt av noen du følger.",
-	"onboard.why": "Det skjer mye utenfor dette forumet, og ikke alt er relevant for dine interesser. Derfor er det å følge folk den beste måten å vise at du vil se mer fra noen.",
-	"onboard.how": "I mellomtiden kan du klikke på snarveisknappene øverst for å se hva annet dette forumet inneholder, og begynne å oppdage nytt innhold!",
+	"onboard.title": "A world of content at your fingertips&hellip;",
+	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
+	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
+	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
 
-	"show-categories": "Vis kategorier",
-	"hide-categories": "Skjul kategorier"
+	"category-search": "Find a category...",
+	"see-more": "See more",
+	"see-less": "See less"
 }

@@ -1,5 +1,5 @@
 <div component="flags/filters" class="d-flex flex-wrap gap-2 pb-3 border-bottom">
-	<div class="btn-group bottom-sheet">
+	<div class="dropdown bottom-sheet">
 		<a class="filter-btn btn btn-light btn-sm border {{{ if filters.quick }}}active-filter{{{ end }}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
 			<span class="filter-label">{{{ if filters.quick }}}[[flags:filter-quick-{./filters.quick}]]{{{ else }}}[[flags:quick-filters]]{{{ end }}}</span>
 			<span class="caret text-primary opacity-75"></span>
@@ -11,7 +11,7 @@
 		</ul>
 	</div>
 
-	<div component="category/dropdown" class="btn-group category-dropdown-container bottom-sheet">
+	<div component="category/dropdown" class="dropdown category-dropdown-container bottom-sheet">
 		<button type="button" class="filter-btn btn btn-light btn-sm border dropdown-toggle {{{ if filters.cid }}}active-filter{{{ end }}}" data-bs-toggle="dropdown">
 			{{{ if selectedCategory }}}
 			<span class="category-item d-inline-flex align-items-center gap-1">
@@ -50,7 +50,7 @@
 		</div>
 	</div>
 
-	<div class="btn-group bottom-sheet">
+	<div class="dropdown bottom-sheet">
 		<a class="filter-btn btn btn-light btn-sm border {{{ if (sort != "newest") }}}active-filter{{{ end }}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
 			<span class="filter-label">{{{ if (sort != "newest") }}}[[flags:sort-{./sort}]]{{{ else }}}[[flags:sort]]{{{ end }}}</span>
 			<span class="caret text-primary opacity-75"></span>
@@ -67,7 +67,7 @@
 		</ul>
 	</div>
 
-	<div class="btn-group bottom-sheet">
+	<div class="dropdown bottom-sheet">
 		<a class="filter-btn btn btn-light btn-sm border {{{ if filters.state }}}active-filter{{{ end }}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
 			<span class="filter-label">{{{ if filters.state }}}[[flags:state-{./filters.state}]]{{{ else }}}[[flags:filter-state]]{{{ end }}}</span>
 			<span class="caret text-primary opacity-75"></span>
@@ -80,7 +80,7 @@
 		</ul>
 	</div>
 
-	<div class="btn-group bottom-sheet">
+	<div class="dropdown bottom-sheet">
 		<a class="filter-btn btn btn-light btn-sm border {{{ if filters.type }}}active-filter{{{ end }}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
 			<span class="filter-label">{{{ if filters.type }}}[[flags:filter-type-{./filters.type}]]{{{ else }}}[[flags:filter-type]]{{{ end }}}</span>
 			<span class="caret text-primary opacity-75"></span>

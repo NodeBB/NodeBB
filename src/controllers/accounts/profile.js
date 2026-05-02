@@ -24,6 +24,10 @@ profileController.get = async function (req, res, next) {
 		return next();
 	}
 
+	if (!req.loggedIn && meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(userData.uid)) {
+		return helpers.redirect(res, `/outgoing?url=${encodeURIComponent(userData.uid)}`);
+	}
+
 	await incrementProfileViews(req, userData);
 
 	const [latestPosts, bestPosts, customUserFields] = await Promise.all([

@@ -173,7 +173,7 @@ module.exports = function (User) {
 		User.checkUsernameLength(data.username);
 
 		const userslug = slugify(data.username);
-		if (!utils.isUserNameValid(data.username) || !userslug) {
+		if (!utils.isUserNameValid(data.username) || !utils.isSlugValid(userslug)) {
 			throw new Error('[[error:invalid-username]]');
 		}
 
@@ -257,7 +257,7 @@ module.exports = function (User) {
 		if (!data.groupTitle) {
 			return;
 		}
-		let groupTitles = [];
+		let groupTitles;
 		if (validator.isJSON(data.groupTitle)) {
 			groupTitles = JSON.parse(data.groupTitle);
 			if (!Array.isArray(groupTitles)) {

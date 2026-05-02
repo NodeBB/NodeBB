@@ -72,7 +72,7 @@ module.exports = function (Categories) {
 			return;
 		}
 		const categoriesToLoad = categoryData.filter(c => c && c.numRecentReplies && parseInt(c.numRecentReplies, 10) > 0);
-		let keys = [];
+		let keys;
 		if (plugins.hooks.hasListeners('filter:categories.getRecentTopicReplies')) {
 			const result = await plugins.hooks.fire('filter:categories.getRecentTopicReplies', {
 				categories: categoriesToLoad,
@@ -99,7 +99,7 @@ module.exports = function (Categories) {
 		const [topicData, crossposts] = await Promise.all([
 			topics.getTopicsFields(
 				tids,
-				['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
+				['tid', 'uid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
 			),
 			topics.crossposts.get(tids),
 		]);
@@ -137,11 +137,12 @@ module.exports = function (Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach((category) => {
 			if (category) {
+				const categoryCid = String(category.cid);
 				category.posts = topics.filter(t =>
 					t.cid &&
-					(t.cid === category.cid ||
-						(t.parentCids && t.parentCids.includes(category.cid)) ||
-						(t.crossposts.some(({ cid }) => parseInt(cid, 10) === category.cid))
+					(String(t.cid) === categoryCid ||
+						(t.parentCids && t.parentCids.includes(categoryCid)) ||
+						(t.crossposts.some(({ cid }) => String(cid) === categoryCid))
 					))
 					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));
@@ -190,10 +191,15 @@ module.exports = function (Categories) {
 
 			const bulkRemove = [];
 			const bulkAdd = [];
+			const bulkIncr = [];
 			postData.forEach((post) => {
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids`, post.pid]);
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids:votes`, post.pid]);
 				bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids`, post.timestamp, post.pid]);
+				bulkIncr.push(
+					[`uid:${post.uid}:cids`, -1, oldCid],
+					[`uid:${post.uid}:cids`, 1, cid],
+				);
 				if (post.votes > 0 || post.votes < 0) {
 					bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids:votes`, post.votes, post.pid]);
 				}
@@ -206,6 +212,7 @@ module.exports = function (Categories) {
 				db.sortedSetAdd(`cid:${cid}:pids`, timestamps, postsToReAdd.map(p => p.pid)),
 				db.sortedSetRemoveBulk(bulkRemove),
 				db.sortedSetAddBulk(bulkAdd),
+				db.sortedSetIncrByBulk(bulkIncr),
 			]);
 		}, { batch: 500 });
 	};

@@ -27,19 +27,19 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [20, 22]
+        node: [22, 24]
         database: [mongo-dev, mongo, redis, postgres, sqlite]
         include:
           # only run coverage once
           - os: ubuntu-latest
-            node: 22
+            node: 24
             coverage: true
           # test under development once
           - database: mongo-dev
             test_env: development
           # only run eslint once
           - os: ubuntu-latest
-            node: 22
+            node: 24
             database: mongo-dev
             lint: true
     runs-on: ${{ matrix.os }}
@@ -63,7 +63,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:8.4.0'
+        image: 'redis:8.6.2'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -222,6 +222,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: ${{ matrix.os }}-node-${{ matrix.node }}-db-${{ matrix.database }}
           parallel: true
+          fail-on-error: false
 
   finish:
     permissions:
@@ -234,3 +235,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
+          fail-on-error: false

@@ -48,6 +48,16 @@
 
 	"settings.page-title": "%1 Beállítások",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Megjelenés",
 	"appearance/themes": "Témák",
 	"appearance/skins": "Téma variációk",
@@ -70,6 +80,7 @@
 	"advanced/logs": "Naplók",
 	"advanced/errors": "Hibák",
 	"advanced/cache": "Gyorsítótár",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Naplózó",
 	"development/info": "Információ",
 

@@ -3,24 +3,45 @@
 define('quickreply', [
 	'components', 'autocomplete', 'api',
 	'alerts', 'uploadHelpers', 'mousetrap', 'storage', 'hooks',
+	'categorySelector',
 ], function (
 	components, autocomplete, api,
-	alerts, uploadHelpers, mousetrap, storage, hooks
+	alerts, uploadHelpers, mousetrap, storage, hooks,
+	categorySelector,
 ) {
 	const QuickReply = {
 		_autocomplete: null,
 	};
 
-	QuickReply.init = function () {
+	QuickReply.init = function (opts) {
 		const element = components.get('topic/quickreply/text');
-		const qrDraftId = `qr:draft:tid:${ajaxify.data.tid}`;
+		if (!element.length) {
+			return;
+		}
+
+		if (opts?.body?.cid && $('[component="topic/quickreply/container"] [component="category-selector"]')) {
+			categorySelector.init($('[component="category-selector"]'), {
+				privilege: 'topics:create',
+				selectedCategory: ajaxify.data.selectedCategory,
+				onSelect: function (category) {
+					opts.body = opts.body || {};
+					opts.body.cid = category.cid;
+				},
+			});
+			$('[component="topic/quickreply/container"] [component="topic/quickreply/category-selector"').removeClass('hidden');
+		}
+
+		const qrDraftId = ajaxify.data.tid ? `qr:draft:tid:${ajaxify.data.tid}` : `qr:draft:cid:${opts?.body?.cid || -1}`;
 		const data = {
 			element: element,
 			strategies: [],
 			options: {
 				style: {
-					'z-index': 100,
+					'z-index': 20000,
+					'max-height': '250px',
+					overflow: 'auto',
 				},
+				className: 'dropdown-menu textcomplete-dropdown ghost-scrollbar',
 			},
 		};
 
@@ -65,7 +86,9 @@ define('quickreply', [
 				tid: ajaxify.data.tid,
 				handle: undefined,
 				content: replyMsg,
+				...opts.body,
 			};
+
 			const replyLen = replyMsg.length;
 			if (replyLen < parseInt(config.minimumPostLength, 10)) {
 				return alerts.error('[[error:content-too-short, ' + config.minimumPostLength + ']]');
@@ -75,7 +98,7 @@ define('quickreply', [
 
 			ready = false;
 			element.val('');
-			api.post(`/topics/${ajaxify.data.tid}`, replyData, function (err, data) {
+			api.post(opts.route, replyData, function (err, data) {
 				ready = true;
 				if (err) {
 					element.val(replyMsg);
@@ -119,9 +142,9 @@ define('quickreply', [
 			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
 			hooks.fire('action:composer.post.new', {
-				tid: ajaxify.data.tid,
-				title: ajaxify.data.titleRaw,
+				title: ajaxify.data.tid ? ajaxify.data.titleRaw : '',
 				body: textEl.val(),
+				...opts.body,
 			});
 			textEl.val('');
 		});

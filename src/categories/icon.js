@@ -3,7 +3,6 @@
 const path = require('path');
 const fs = require('fs/promises');
 const nconf = require('nconf');
-const winston = require('winston');
 const { default: satori } = require('satori');
 const sharp = require('sharp');
 
@@ -33,14 +32,12 @@ Icons.get = async (cid) => {
 };
 
 Icons.flush = async (cid) => {
-	winston.verbose(`[categories/icons] Flushing ${cid}.`);
 	const paths = Icons._constants.extensions.map(extension => path.resolve(nconf.get('upload_path'), 'category', `category-${cid}-icon.${extension}`));
 
 	await Promise.all(paths.map((async path => await fs.rm(path, { force: true }))));
 };
 
 Icons.regenerate = async (cid) => {
-	winston.verbose(`[categories/icons] Regenerating ${cid}.`);
 	const { icon, color, bgColor } = await categories.getCategoryData(cid);
 
 	const fontPaths = new Map(Object.entries({

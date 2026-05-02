@@ -86,7 +86,14 @@ mongoModule.createIndices = async function () {
 	const collection = mongoModule.client.collection('objects');
 	await collection.createIndex({ _key: 1, score: -1 }, { background: true });
 	await collection.createIndex({ _key: 1, value: -1 }, { background: true, unique: true, sparse: true });
-	await collection.createIndex({ expireAt: 1 }, { expireAfterSeconds: 0, background: true });
+	await collection.createIndex(
+		{ members: 1, _key: 1},
+		{ background: true, partialFilterExpression: { members: { $exists: true } } }
+	);
+	await collection.createIndex(
+		{ expireAt: 1 },
+		{ expireAfterSeconds: 0, background: true, partialFilterExpression: { expireAt: { $exists: true } } },
+	);
 	winston.info('[database] Checking database indices done!');
 };
 

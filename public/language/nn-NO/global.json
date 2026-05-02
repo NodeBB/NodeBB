@@ -137,6 +137,7 @@
     "allowed-file-types": "Tillatne filtypar er %1",
     "unsaved-changes": "Du har ulagrede endringar. Er du sikker på at du vil forlate sida?",
     "reconnecting-message": "Det ser ut som tilkoplinga til %1 vart avbroten, ver venleg å vente medan vi prøver å kople til igjen.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Spel",
     "cookies.message": "Denne nettstaden brukar informasjonskapslar for å sikre at du får best mogleg oppleving.",
     "cookies.accept": "OK!",

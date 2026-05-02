@@ -209,7 +209,9 @@ define('forum/groups/details', [
 		// Add icon selection interface
 		iconBtn.on('click', function () {
 			iconSelect.init(previewIcon, function () {
-				iconValueEl.val(previewIcon.val());
+				const icon = previewIcon.val();
+				previewIcon.toggleClass('hidden', !icon || icon === 'fa-nbb-none');
+				iconValueEl.val(icon);
 			});
 		});
 
@@ -233,11 +235,16 @@ define('forum/groups/details', [
 
 		const cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
 			onSelect: function (selectedCategory) {
-				let cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
-				cids.push(selectedCategory.cid);
-				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
-				$('#memberPostCids').val(cids.join(','));
+				const cids = new Set(($('#memberPostCids').val() || '').split(',').filter(Boolean));
+				if (cids.has(String(selectedCategory.cid))) {
+					cids.delete(String(selectedCategory.cid));
+				} else {
+					cids.add(String(selectedCategory.cid));
+				}
+
+				$('#memberPostCids').val(Array.from(cids).join(','));
 				cidSelector.selectCategory(0);
+				return false;
 			},
 		});
 	};

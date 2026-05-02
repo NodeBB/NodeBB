@@ -8,6 +8,9 @@ CategoryObject:
         name:
           type: string
           description: The category's name/title
+        nickname:
+          type: string
+          description: A nickname for the category.
         handle:
           type: string
           description: |

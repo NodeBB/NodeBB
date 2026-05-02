@@ -3,18 +3,20 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const crypto = require('crypto');
-const cronJob = require('cron').CronJob;
 
 const request = require('../request');
+const cron = require('../cron');
 const pkg = require('../../package.json');
 
 const meta = require('../meta');
 
 module.exports = function (Plugins) {
-	Plugins.startJobs = function () {
-		new cronJob('0 0 0 * * *', (async () => {
-			await Plugins.submitUsageData();
-		}), null, true);
+	Plugins.startJobs = async function () {
+		await cron.addJob({
+			name: 'plugins:submitUsageData',
+			cronTime: '0 0 0 * * *',
+			onTick: Plugins.submitUsageData,
+		});
 	};
 
 	Plugins.submitUsageData = async function () {

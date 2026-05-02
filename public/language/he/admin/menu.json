@@ -48,6 +48,16 @@
 
 	"settings.page-title": "%1 הגדרות",
 
+	"section-federation": "פדרציה",
+	"federation/general": "כללי",
+	"federation/content": "תוכן",
+	"federation/rules": "סיווג",
+	"federation/relays": "ממסרים",
+	"federation/pruning": "אחסון",
+	"federation/safety": "אמון ובטיחות",
+	"federation/analytics": "ניתוח",
+	"federation/errors": "שגיאות",
+
 	"section-appearance": "מראה חיצוני",
 	"appearance/themes": "ערכות נושא",
 	"appearance/skins": "עיצובים",
@@ -70,6 +80,7 @@
 	"advanced/logs": "לוג",
 	"advanced/errors": "שגיאות",
 	"advanced/cache": "עוגיות",
+	"advanced/jobs": "משימות",
 	"development/logger": "ניהול לוג",
 	"development/info": "מידע",
 

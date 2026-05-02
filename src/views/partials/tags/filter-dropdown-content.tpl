@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center ff-secondary d-flex gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<button type="button" class="btn btn-ghost btn-sm d-flex align-items-center ff-secondary gap-2 dropdown-toggle h-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     {{{ if selectedTag }}}
     <span class="d-inline-flex align-items-center gap-1">
         <i class="fa fa-fw fa-tags text-primary"></i>

@@ -1,5 +1,6 @@
 {
     "invalid-data": "ข้อมูลไม่ถูกต้อง",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "รูปแบบ JSON ไม่ถูกต้อง",
     "wrong-parameter-type": "ต้องการข้อมูลประเภท %3 สำหรับค่า `%1` แต่ได้รับค่า %2 แทน",
     "required-parameters-missing": "ขาดพารามิเตอร์ที่จำเป็นต่อการเรียก API นี้: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "พาทไม่ถูกต้อง",
     "folder-exists": "มีโฟลเดอร์อยู่แล้ว",
     "invalid-pagination-value": "ค่าสำหรับการแบ่งหน้าไม่ถูกต้อง จำเป็นต้องเป็นตัวเลขอย่างน้อย  %1  และอย่างมาก %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว",
     "email-taken": "ที่อยู่อีเมลถูกใช้ไปแล้ว",
     "email-nochange": "อีเมลที่ป้อนเข้ามาซ้ำกับอีเมลที่จัดเก็บไว้อยู่แล้ว",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

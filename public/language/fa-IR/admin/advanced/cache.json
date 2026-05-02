@@ -1,9 +1,5 @@
 {
 	"cache": "نهانگاه",
-	"post-cache": "نهانگاه دیدگاه ",
-	"group-cache": "نهانگاه گروه",
-	"local-cache": "نهانگاه محلی",
-	"object-cache": "شئ نهانگاه",
 	"percent-full": "%1% تمام شده",
 	"post-cache-size": "اندازه نهانگاه فرسته",
 	"items-in-cache": "موارد موجود در نهانگاه"

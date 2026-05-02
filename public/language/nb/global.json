@@ -137,6 +137,7 @@
     "allowed-file-types": "Tillatte filtyper er %1",
     "unsaved-changes": "Du har endringer som ikke er lagret. Er du sikker på at du ønsker å navigere bort?",
     "reconnecting-message": "Ser ut til at forbindelsen med %1 forsvant, vær vennlig å vent mens vi forsøker å gjenopprette forbindelsen.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Start",
     "cookies.message": "Dette nettstedet bruker informasjonskapsler for å sikre at du får den beste opplevelsen på nettstedet vårt.",
     "cookies.accept": "Forstått!",

@@ -64,6 +64,7 @@ apiController.loadConfig = async function (req) {
 		topicsPerPage: meta.config.topicsPerPage || 20,
 		postsPerPage: meta.config.postsPerPage || 20,
 		maximumFileSize: meta.config.maximumFileSize,
+		convertPastedImageTo: meta.config.convertPastedImageTo,
 		'theme:id': meta.config['theme:id'],
 		'theme:src': meta.config['theme:src'],
 		defaultLang: meta.config.defaultLang || 'en-GB',
@@ -102,6 +103,11 @@ apiController.loadConfig = async function (req) {
 		},
 		activitypub: {
 			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe,
+			worldDefaultCid: meta.config.activitypubWorldDefaultCid,
+		},
+		tinycon: {
+			color: meta.config.tinyconColor,
+			background: meta.config.tinyconBackground,
 		},
 	};
 
@@ -138,6 +144,7 @@ apiController.loadConfig = async function (req) {
 			config.bootswatchSkin = settings.bootswatchSkin;
 		}
 	}
+	config.hideReadNotifications = settings.hideReadNotifications;
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;

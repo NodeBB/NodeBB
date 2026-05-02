@@ -134,10 +134,10 @@ Events.get = async (tid, uid, reverse = false) => {
 		return [];
 	}
 
-	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+	const eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
 	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
 	const timestamps = eventIds.map(obj => obj.score);
-	eventIds = eventIds.map(obj => obj.value);
+
 	let events = await db.getObjects(keys);
 	events.forEach((e, idx) => {
 		e.timestamp = timestamps[idx];
@@ -272,7 +272,11 @@ Events.log = async (tid, payload) => {
 };
 
 Events.purge = async (tid, eventIds = []) => {
-	if (eventIds.length) {
+	const isArray = Array.isArray(tid);
+	if (isArray && !tid.length) {
+		return;
+	}
+	if (eventIds.length && !isArray) {
 		const isTopicEvent = await db.isSortedSetMembers(`topic:${tid}:events`, eventIds);
 		eventIds = eventIds.filter((id, index) => isTopicEvent[index]);
 		await Promise.all([
@@ -280,8 +284,11 @@ Events.purge = async (tid, eventIds = []) => {
 			db.deleteAll(eventIds.map(id => `topicEvent:${id}`)),
 		]);
 	} else {
-		const keys = [`topic:${tid}:events`];
-		const eventIds = await db.getSortedSetRange(keys[0], 0, -1);
+		if (!isArray) {
+			tid = [tid];
+		}
+		const keys = tid.map(tid => `topic:${tid}:events`);
+		const eventIds = await db.getSortedSetRange(keys, 0, -1);
 		keys.push(...eventIds.map(id => `topicEvent:${id}`));
 
 		await db.deleteAll(keys);

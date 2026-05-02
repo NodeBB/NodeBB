@@ -70,7 +70,7 @@ copy_or_link_files() {
   ln -fs "$dest_dir/$lock_file" "$src_dir/$lock_file"
 }
 
-# Function to install dependencies using pnpm
+# Function to install dependencies using npm/yarn/pnpm
 install_dependencies() {
   case "$PACKAGE_MANAGER" in
     yarn) yarn install || {
@@ -174,20 +174,30 @@ debug_log() {
 }
 
 install_additional_plugins() {
-  if [[ ! -z ${NODEBB_ADDITIONAL_PLUGINS} ]]; then
+  if [[ -n ${NODEBB_ADDITIONAL_PLUGINS} ]]; then
+    # Create a local array to work with
+    local plugins_to_install=()
+
+    # check if NODEBB_ADDITIONAL_PLUGINS is an array or a space-separated string
+    if [[ "$(declare -p NODEBB_ADDITIONAL_PLUGINS 2>/dev/null)" == "declare -a"* ]]; then
+      plugins_to_install=("${NODEBB_ADDITIONAL_PLUGINS[@]}")
+    else
+      plugins_to_install=(${NODEBB_ADDITIONAL_PLUGINS})
+    fi
+
     export START_BUILD="true"
-    for plugin in "${NODEBB_ADDITIONAL_PLUGINS[@]}"; do
+    for plugin in "${plugins_to_install[@]}"; do
       echo "Installing additional plugin ${plugin}..."
       case "$PACKAGE_MANAGER" in
-        yarn) yarn install || {
+        yarn) yarn add "${plugin}" || {
           echo "Failed to install plugin ${plugin} with yarn"
           exit 1
         } ;;
-        npm) npm install || {
+        npm) npm install "${plugin}" || {
           echo "Failed to install plugin ${plugin} with npm"
           exit 1
         } ;;
-        pnpm) pnpm install || {
+        pnpm) pnpm add "${plugin}" || {
           echo "Failed to install plugin ${plugin} with pnpm"
           exit 1
         } ;;

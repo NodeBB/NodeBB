@@ -5,9 +5,9 @@
 		<div class="category-row d-flex justify-content-between mb-1">
 			<div class="flex-grow-1 align-items-start d-flex gap-2">
 				<div class="d-flex gap-2">
-					<div class="toggle text-center text-sm">
-						<i class="fa fa-chevron-down"></i>
-					</div>
+					<button class="btn btn-ghost btn-sm toggle align-self-start">
+						<i class="fa fa-fw fa-chevron-down"></i>
+					</button>
 					<div class="information flex-1 align-items-start d-flex gap-2">
 						<div>
 						{buildCategoryIcon(@value, "28px", "rounded-1")}

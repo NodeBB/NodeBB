@@ -5,7 +5,7 @@
 		<div class="col-12 col-md-8 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/groups:edit-group]]</h4>
 
-			<div component="group-selector" class="btn-group">
+			<div component="group-selector" class="dropdown">
 				<button type="button" class="btn btn-ghost btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
 				</button>
@@ -44,7 +44,7 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="change-group-desc">[[admin/manage/groups:edit.description]]</label>
-					<input type="text" class="form-control" id="change-group-desc" value="{group.description}" maxlength="255" data-property />
+					<textarea type="text" class="form-control" id="change-group-desc" maxlength="255" data-property rows="5">{group.description}</textarea>
 				</div>
 
 
@@ -157,7 +157,7 @@
 				<hr class="my-1"/>
 
 				<div class="edit-privileges-selector w-100">
-					<div component="category-selector" class="btn-group w-100">
+					<div component="category-selector" class="dropdown w-100">
 						<button type="button" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center flex-fill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="fa fa-fw fa-lock text-primary"></i> <span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
 						</button>

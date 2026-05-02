@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "Onemogući RSS",
 	"disable-sitemap-xml": "Onemogući Sitemap.xml",
 	"sitemap-topics": "Broj tema za prikaz u mapi foruma",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Očisti mapu foruma iz predmemorije",
 	"view-sitemap": "Pogledaj mapu foruma"
 }

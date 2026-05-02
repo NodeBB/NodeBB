@@ -3,5 +3,11 @@
 	"welcome-notification": "การยินดีต้อนรับแจ้งเตือน",
 	"welcome-notification-link": "ลิงค์การยินดีต้อนรับแจ้งเตือน",
 	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)"
+	"post-queue-notification-uid": "Post Queue User (UID)",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }

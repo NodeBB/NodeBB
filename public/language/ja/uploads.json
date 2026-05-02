@@ -3,7 +3,7 @@
     "select-file-to-upload": "アップロードするファイルを選択してください!",
     "upload-success": "ファイルのアップロードに成功しました！",
     "maximum-file-size": "最大 %1 kb",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "no-uploads-found": "アップロードが見つかりません",
+    "public-uploads-info": "アップロードは公開されています。すべての訪問者が閲覧できます。",
+    "private-uploads-info": "アップロードは非公開です。ログインしたユーザーのみが閲覧できます。"
 }

@@ -67,8 +67,8 @@ module.exports = function (Categories) {
 	}
 
 	async function updateParent(cid, newParent) {
-		newParent = parseInt(newParent, 10) || 0;
-		if (parseInt(cid, 10) === newParent) {
+		newParent = String(newParent || 0);
+		if (String(cid) === newParent) {
 			throw new Error('[[error:cant-set-self-as-parent]]');
 		}
 		const childrenCids = await Categories.getChildrenCids(cid);
@@ -76,7 +76,7 @@ module.exports = function (Categories) {
 			throw new Error('[[error:cant-set-child-as-parent]]');
 		}
 		const categoryData = await Categories.getCategoryFields(cid, ['parentCid', 'order']);
-		const oldParent = categoryData.parentCid;
+		const oldParent = String(categoryData.parentCid);
 		if (oldParent === newParent) {
 			return;
 		}
@@ -85,12 +85,9 @@ module.exports = function (Categories) {
 			db.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),
 			db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, 'parentCid', newParent),
 		]);
-
-		cache.del([
-			`cid:${oldParent}:children`,
-			`cid:${newParent}:children`,
-			`cid:${oldParent}:children:all`,
-			`cid:${newParent}:children:all`,
+		await Promise.all([
+			Categories.clearParentCategoryCache(oldParent),
+			Categories.clearParentCategoryCache(newParent),
 		]);
 	}
 
@@ -134,11 +131,9 @@ module.exports = function (Categories) {
 		await db.setObjectBulk(
 			childrenCids.map((cid, index) => [`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, { order: index + 1 }])
 		);
-
+		await Categories.clearParentCategoryCache(parentCid);
 		cache.del([
 			'categories:cid',
-			`cid:${parentCid}:children`,
-			`cid:${parentCid}:children:all`,
 		]);
 	}
 

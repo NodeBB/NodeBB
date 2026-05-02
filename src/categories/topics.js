@@ -83,7 +83,7 @@ module.exports = function (Categories) {
 		const set = await Categories.buildTopicsSortedSet(data);
 		if (Array.isArray(set)) {
 			return await db.sortedSetIntersectCard(set);
-		} else if (data.targetUid && set) {
+		} else if (parseInt(data.cid, 10) === -1 || (data.targetUid && set)) {
 			return await db.sortedSetCard(set);
 		}
 		return data.category.topic_count;
@@ -198,13 +198,15 @@ module.exports = function (Categories) {
 
 	Categories.onTopicsMoved = async (cids) => {
 		await Promise.all(cids.map(async (cid) => {
+			const [topicCount, postCount] = await db.sortedSetsCard([
+				`cid:${cid}:tids:lastposttime`,
+				`cid:${cid}:pids`,
+			]);
 			await Promise.all([
-				Categories.setCategoryField(
-					cid, 'topic_count', await db.sortedSetCard(`cid:${cid}:tids:lastposttime`)
-				),
-				Categories.setCategoryField(
-					cid, 'post_count', await db.sortedSetCard(`cid:${cid}:pids`)
-				),
+				Categories.setCategoryFields(cid, {
+					topic_count: topicCount,
+					post_count: postCount,
+				}),
 				Categories.updateRecentTidForCid(cid),
 			]);
 		}));
@@ -237,10 +239,14 @@ module.exports = function (Categories) {
 		}
 
 		const { displayname } = postData.user;
-		const categoryName = await Categories.getCategoryField(cid, 'name');
+		const [categoryName, title] = await Promise.all([
+			Categories.getCategoryField(cid, 'name'),
+			topics.getTopicField(postData.topic.tid, 'title'),
+		]);
+
 		const notifBase = 'notifications:user-posted-topic-in-category';
 
-		const bodyShort = translator.compile(notifBase, displayname, categoryName);
+		const bodyShort = translator.compile(notifBase, displayname, title, categoryName);
 
 		const notification = await notifications.create({
 			type: 'new-topic-in-category',

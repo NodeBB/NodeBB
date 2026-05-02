@@ -384,7 +384,10 @@ describe('Post\'s', () => {
 		let pid;
 		let replyPid;
 		let tid;
-		before((done) => {
+		before(function (done) {
+			this.minimumTitleLength = meta.config.minimumTitleLength;
+			meta.config.minimumTitleLength = 3;
+
 			topics.post({
 				uid: voterUid,
 				cid: cid,
@@ -406,6 +409,10 @@ describe('Post\'s', () => {
 					privileges.categories.give(['groups:posts:edit'], cid, 'registered-users', done);
 				});
 			});
+		});
+
+		after(function () {
+			meta.config.minimumTitleLength = this.minimumTitleLength;
 		});
 
 		it('should error if user is not logged in', async () => {
@@ -1145,12 +1152,10 @@ describe('Post\'s', () => {
 
 		describe('.syncBacklinks()', () => {
 			it('should error on invalid data', async () => {
-				try {
-					await topics.syncBacklinks();
-				} catch (e) {
-					assert(e);
-					assert.strictEqual(e.message, '[[error:invalid-data]]');
-				}
+				await assert.rejects(
+					topics.syncBacklinks(),
+					{ message: '[[error:invalid-data]]' },
+				);
 			});
 
 			it('should do nothing if the post does not contain a link to a topic', async () => {
@@ -1185,9 +1190,7 @@ describe('Post\'s', () => {
 				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
 
 				assert.strictEqual(count, 0);
-				assert(events);
 				assert.strictEqual(events.length, 1);
-				assert(backlinks);
 				assert.strictEqual(backlinks.length, 0);
 			});
 
@@ -1210,6 +1213,17 @@ describe('Post\'s', () => {
 
 				assert.strictEqual(count, 0);
 				assert(backlinks);
+				assert.strictEqual(backlinks.length, 0);
+			});
+
+			it('should not create a wrong backlink to topic/1 with AP topic url', async () => {
+				const { postData } = await topics.post({
+					uid: 1,
+					cid,
+					title: 'Topic backlink testing - topic 2',
+					content: `testing ${nconf.get('url')}/topic/1aef954c-d0dc-45cf-acf2-e3a59f6cc134/foo`,
+				});
+				const backlinks = await db.getSortedSetMembers(`pid:${postData.pid}:backlinks`);
 				assert.strictEqual(backlinks.length, 0);
 			});
 		});

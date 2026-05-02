@@ -92,6 +92,8 @@
     "watch.title": "Abonează-te la notificări legate de acest subiect",
     "unwatch.title": "Oprește urmărirea acestui subiect",
     "share-this-post": "Distribuie acest mesaj",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Watching",
     "not-watching": "Not Watching",
     "ignoring": "Ignoring",
@@ -182,6 +184,7 @@
     "composer.replying-to": "Îi raspunde lui %1",
     "composer.new-topic": "Subiect Nou",
     "composer.editing-in": "Editing post in %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "se uploadează ...",
     "composer.thumb-url-label": "Lipește un link pentru pictogramă subiect",
     "composer.thumb-title": "Adaugă o pictogramă la acest subiect",
@@ -224,6 +227,7 @@
     "no-more-next-post": "You don't have more posts in this topic",
     "open-composer": "Deschide composer-ul",
     "post-quick-reply": "Quick reply",
+    "post-quick-create": "Quick post",
     "navigator.index": "Post %1 of %2",
     "navigator.unread": "%1 unread",
     "upvote-post": "Votează pentru postare",
@@ -232,5 +236,8 @@
     "unread-posts-link": "Link pentru postări necitite",
     "thumb-image": "Imagine miniatură subiect",
     "announcers": "Partajări",
-    "announcers-x": "Partajări (%1)"
+    "announcers-x": "Partajări (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

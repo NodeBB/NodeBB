@@ -92,6 +92,8 @@
     "watch.title": "Értesítsen a témakör új válaszairól",
     "unwatch.title": "Témakör figyelésének leállítása.",
     "share-this-post": "Hozzászólás megosztása",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Figyelés",
     "not-watching": "Nincs figyelés",
     "ignoring": "Mellőzés",
@@ -182,6 +184,7 @@
     "composer.replying-to": "Válasz erre: %1",
     "composer.new-topic": "Új témakör",
     "composer.editing-in": "Editing post in %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "feltöltés...",
     "composer.thumb-url-label": "Bélyegkép URL beszúrása",
     "composer.thumb-title": "Bélyegkép hozzáadása a témakörhöz",
@@ -224,6 +227,7 @@
     "no-more-next-post": "Neked nincs több bejegyzésed ebben a témakörben",
     "open-composer": "Composer megnyitása",
     "post-quick-reply": "Gyors válasz",
+    "post-quick-create": "Quick post",
     "navigator.index": "Bejegyzés %1 / %2",
     "navigator.unread": "%1 olvasatlan",
     "upvote-post": "Bejegyzés kedvelése",
@@ -232,5 +236,8 @@
     "unread-posts-link": "Olvasatlan bejegyzés link",
     "thumb-image": "Téma bélyegkép",
     "announcers": "Shares",
-    "announcers-x": "Shares (%1)"
+    "announcers-x": "Shares (%1)",
+    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
+    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
+    "guest-cta.closing": "With your input, this post could be even better 💗"
 }

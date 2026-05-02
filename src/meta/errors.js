@@ -3,13 +3,13 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const validator = require('validator');
-const cronJob = require('cron').CronJob;
 const { setTimeout } = require('timers/promises');
 
 const db = require('../database');
 const analytics = require('../analytics');
 const pubsub = require('../pubsub');
 const utils = require('../utils');
+const cron = require('../cron');
 
 const Errors = module.exports;
 
@@ -19,13 +19,18 @@ let counters = {};
 let total = {};
 
 Errors.init = async function () {
-	new cronJob('0 * * * * *', async () => {
-		publishLocalErrors();
-		if (runJobs) {
-			await setTimeout(2000);
-			await Errors.writeData();
-		}
-	}, null, true);
+	await cron.addJob({
+		name: 'errors:publish',
+		cronTime: '0 * * * * *',
+		runOnAllNodes: true,
+		onTick: async () => {
+			publishLocalErrors();
+			if (runJobs) {
+				await setTimeout(2000);
+				await Errors.writeData();
+			}
+		},
+	});
 
 	if (runJobs) {
 		pubsub.on('errors:publish', (data) => {
@@ -69,8 +74,19 @@ Errors.log404 = function (route) {
 	if (!route) {
 		return;
 	}
-	route = route.slice(0, 512).replace(/\/$/, ''); // remove trailing slashes
+
 	analytics.increment('errors:404');
+
+	route = route.slice(0, 512).replace(/\/$/, ''); // remove trailing slashes
+	const segments = route.split('/');
+	const containsUUID = segments.some((segment) => {
+		const cleanSegment = segment.split('.')[0];
+		return validator.isUUID(cleanSegment);
+	});
+	if (containsUUID) {
+		return;
+	}
+
 	counters[route] = counters[route] || 0;
 	counters[route] += 1;
 };

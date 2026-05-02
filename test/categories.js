@@ -85,21 +85,31 @@ describe('Categories', () => {
 	});
 
 	describe('Categories.getRecentTopicReplies', () => {
-		it('should not throw', (done) => {
-			Categories.getCategoryById({
+		it('should not throw', async () => {
+			const categoryData = await Categories.getCategoryById({
 				cid: categoryObj.cid,
 				set: `cid:${categoryObj.cid}:tids`,
 				reverse: true,
 				start: 0,
 				stop: -1,
 				uid: 0,
-			}, (err, categoryData) => {
-				assert.ifError(err);
-				Categories.getRecentTopicReplies(categoryData, 0, {}, (err) => {
-					assert.ifError(err);
-					done();
-				});
 			});
+
+			await Categories.getRecentTopicReplies([categoryData], 0, {});
+		});
+
+		it('should return posts in child category as teaser on parent category' , async () => {
+			const { cid: parentCid } = await Categories.create({ name: 'theparent' });
+			const { cid: childCid } = await Categories.create({ name: 'thechild', parentCid });
+			await Topics.post({ uid: posterUid, title: 'inparent', content: 'post in parent', cid: parentCid });
+			await Topics.post({ uid: posterUid, title: 'inchild', content: 'post in child', cid: childCid });
+			const categoryData = await Categories.getCategories([parentCid, childCid]);
+			Categories.getTree(categoryData, 0);
+
+			await Categories.getRecentTopicReplies(categoryData, 0, {}),
+			assert.strictEqual(String(categoryData[0].cid), String(parentCid));
+			assert.strictEqual(categoryData[0].posts[0].uid, posterUid);
+			assert.strictEqual(categoryData[0].posts[0].content, 'post in child');
 		});
 	});
 
@@ -187,13 +197,13 @@ describe('Categories', () => {
 				content: 'The content of test topic',
 				tags: ['nodebb'],
 			});
-			const data = await Topics.post({
+			await Topics.post({
 				uid: posterUid,
 				cid: categoryObj.cid,
 				title: 'will delete',
 				content: 'The content of deleted topic',
+				deleted: 1,
 			});
-			await Topics.delete(data.topicData.tid, adminUid);
 		});
 
 		it('should get recent replies in category', (done) => {
@@ -247,6 +257,7 @@ describe('Categories', () => {
 			assert.deepStrictEqual(
 				data.topics.map(t => t.title),
 				['[[topic:topic-is-deleted]]', 'Test Topic Title', 'Test Topic Title'],
+				JSON.stringify(data.topics, null, 2),
 			);
 		});
 
@@ -676,6 +687,7 @@ describe('Categories', () => {
 					'topics:reply': false,
 					'topics:read': false,
 					'topics:create': false,
+					'topics:crosspost': false,
 					'topics:tag': false,
 					'topics:delete': false,
 					'topics:schedule': false,
@@ -730,6 +742,7 @@ describe('Categories', () => {
 					'groups:posts:downvote': true,
 					'groups:topics:delete': false,
 					'groups:topics:create': true,
+					'groups:topics:crosspost': true,
 					'groups:topics:reply': true,
 					'groups:topics:tag': true,
 					'groups:topics:schedule': false,

@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const _ = require('lodash');
 const path = require('path');
 const nconf = require('nconf');
@@ -33,10 +32,15 @@ module.exports = function (User) {
 			throw new Error('[[error:already-deleting]]');
 		}
 		deletesInProgress[uid] = 'user.delete';
-		await deletePosts(callerUid, uid);
-		await deleteTopics(callerUid, uid);
-		await deleteUploads(callerUid, uid);
-		await deleteQueued(uid);
+		async function deletePostsTopics() {
+			await deletePosts(callerUid, uid);
+			await deleteTopics(callerUid, uid);
+		}
+		await Promise.all([
+			deletePostsTopics(),
+			deleteUploads(callerUid, uid),
+			deleteQueued(uid),
+		]);
 		delete deletesInProgress[uid];
 	};
 
@@ -49,16 +53,15 @@ module.exports = function (User) {
 
 	async function deleteTopics(callerUid, uid) {
 		await batch.processSortedSet(`uid:${uid}:topics`, async (tids) => {
-			await async.eachSeries(tids, async (tid) => {
-				await topics.purge(tid, callerUid);
-			});
+			await topics.purge(tids, callerUid);
 			await db.sortedSetRemove(`uid:${uid}:topics`, tids);
 		}, { alwaysStartAt: 0, batch: 100 });
 	}
 
 	async function deleteUploads(callerUid, uid) {
-		const uploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
-		await User.deleteUpload(callerUid, uid, uploads);
+		await batch.processSortedSet(`uid:${uid}:uploads`, async (uploads) => {
+			await User.deleteUpload(callerUid, uid, uploads);
+		}, { alwaysStartAt: 0, batch: 500 });
 	}
 
 	async function deleteQueued(uid) {
@@ -68,7 +71,11 @@ module.exports = function (User) {
 			const userQueuedIds = data.filter(d => String(d.uid) === String(uid)).map(d => d.id);
 			deleteIds = deleteIds.concat(userQueuedIds);
 		}, { batch: 500 });
-		await async.eachSeries(deleteIds, posts.removeFromQueue);
+
+		for (const id of deleteIds) {
+			// eslint-disable-next-line no-await-in-loop
+			await posts.removeFromQueue(id);
+		}
 	}
 
 	async function removeFromSortedSets(uid) {
@@ -92,9 +99,9 @@ module.exports = function (User) {
 			throw new Error('[[error:already-deleting]]');
 		}
 		deletesInProgress[uid] = 'user.deleteAccount';
-
+		const isLocal = utils.isNumber(uid);
 		await removeFromSortedSets(uid);
-		const userData = await db.getObject(utils.isNumber(uid) ? `user:${uid}` : `userRemote:${uid}`);
+		const userData = await db.getObject(isLocal ? `user:${uid}` : `userRemote:${uid}`);
 
 		if (!userData || !userData.username) {
 			delete deletesInProgress[uid];
@@ -102,9 +109,11 @@ module.exports = function (User) {
 		}
 
 		await plugins.hooks.fire('static:user.delete', { uid: uid, userData: userData });
-		await deleteVotes(uid);
-		await deleteChats(uid);
-		await User.auth.revokeAllSessions(uid);
+		await Promise.all([
+			deleteVotes(uid),
+			deleteChats(uid),
+			User.auth.revokeAllSessions(uid),
+		]);
 
 		const keys = [
 			`uid:${uid}:notifications:read`,
@@ -117,6 +126,7 @@ module.exports = function (User) {
 			`user:${uid}:usernames`,
 			`user:${uid}:emails`,
 			`uid:${uid}:topics`, `uid:${uid}:posts`,
+			`uid:${uid}:cids`,
 			`uid:${uid}:chats`, `uid:${uid}:chats:unread`,
 			`uid:${uid}:chat:rooms`,
 			`uid:${uid}:chat:rooms:unread`,
@@ -125,6 +135,7 @@ module.exports = function (User) {
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`,
 			`uid:${uid}:shares`,
+			`uid:${uid}:profile:pictures`,
 			`invitation:uid:${uid}`,
 		];
 
@@ -145,7 +156,7 @@ module.exports = function (User) {
 
 		await Promise.all([
 			db.sortedSetRemoveBulk(bulkRemove),
-			utils.isNumber(uid) ? db.decrObjectField('global', 'userCount') : null,
+			isLocal ? db.decrObjectField('global', 'userCount') : null,
 			db.deleteAll(keys),
 			db.setRemove('invitation:uids', uid),
 			deleteUserIps(uid),
@@ -158,13 +169,13 @@ module.exports = function (User) {
 			flags.resolveFlag('user', uid, uid),
 			User.reset.cleanByUid(uid),
 			User.email.expireValidation(uid),
-			activitypub.actors.remove(uid),
+			!isLocal ? activitypub.actors.remove(uid) : null,
 		]);
 		await db.deleteAll([
 			`followers:${uid}`, `following:${uid}`,
 			`uid:${uid}:followed_tags`, `uid:${uid}:followed_tids`,
 			`uid:${uid}:ignored_tids`,
-			`${utils.isNumber(uid) ? 'user' : 'userRemote'}:${uid}`,
+			`${isLocal ? 'user' : 'userRemote'}:${uid}`,
 		]);
 		delete deletesInProgress[uid];
 		return userData;
@@ -186,14 +197,14 @@ module.exports = function (User) {
 	}
 
 	async function deleteVotes(uid) {
-		const [upvotedPids, downvotedPids] = await Promise.all([
-			db.getSortedSetRange(`uid:${uid}:upvote`, 0, -1),
-			db.getSortedSetRange(`uid:${uid}:downvote`, 0, -1),
-		]);
-		const pids = _.uniq(upvotedPids.concat(downvotedPids).filter(Boolean));
-		await async.eachSeries(pids, async (pid) => {
+		const upvoteDownvotePids = await db.getSortedSetRange([
+			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
+		], 0, -1);
+		const pids = _.uniq(upvoteDownvotePids).filter(Boolean);
+		for (const pid of pids) {
+			// eslint-disable-next-line no-await-in-loop
 			await posts.unvote(pid, uid);
-		});
+		}
 	}
 
 	async function deleteChats(uid) {
@@ -205,8 +216,10 @@ module.exports = function (User) {
 
 	async function deleteUserIps(uid) {
 		const ips = await db.getSortedSetRange(`uid:${uid}:ip`, 0, -1);
-		await db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid);
-		await db.delete(`uid:${uid}:ip`);
+		await Promise.all([
+			db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid),
+			db.delete(`uid:${uid}:ip`),
+		]);
 	}
 
 	async function deleteUserFromFollowers(uid) {

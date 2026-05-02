@@ -396,7 +396,7 @@ helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			url: `${nconf.get('relative_path')}/post/${encodeURIComponent(post.pid)}`,
 			timestampISO: post.timestampISO,
 			pid: post.pid,
 			tid: post.tid,
@@ -422,6 +422,10 @@ helpers.getHomePageRoutes = async function (uid) {
 		{
 			route: 'categories',
 			name: 'Categories',
+		},
+		{
+			route: 'world',
+			name: 'World',
 		},
 		{
 			route: 'unread',
@@ -511,9 +515,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		returnPayload.response = response;
 
 		if (process.env.NODE_ENV === 'development') {
-			returnPayload.stack = payload.stack;
+			const stack = payload instanceof Error ? payload.stack : new Error(String(payload)).stack;
+			returnPayload.stack = stack;
 			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
-			process.stdout.write(payload.stack);
+			process.stdout.write(stack);
 		}
 		res.status(statusCode).json(returnPayload);
 	} else {

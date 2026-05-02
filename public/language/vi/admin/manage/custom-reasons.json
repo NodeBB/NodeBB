@@ -1,0 +1,16 @@
+{
+	"title": "Quản Lý Lý Do Tùy Chỉnh",
+	"create-reason": "Tạo Lý Do",
+	"edit-reason": "Sửa Lý Do",
+	"reasons-help": "Lý do là những lời giải thích được định sẵn, được sử dụng khi cấm hoặc tắt tiếng người dùng, hoặc khi từ chối bài đăng trong hàng đợi bài đăng.",
+	"reason-title": "Tiêu đề",
+	"reason-type": "Loại",
+	"reason-body": "Thân",
+	"reason-all": "Tất cả",
+	"reason-ban": "Cấm",
+	"reason-mute": "Im lặng",
+	"reason-post-queue": "Xếp Hàng Bài Đăng",
+	"reason-type-help": "Loại hành động mà lý do này áp dụng. Nếu chọn 'Tất cả', lý do này sẽ áp dụng cho tất cả các loại hành động.",
+	"custom-reasons-saved": "Lý do tùy chỉnh đã được lưu thành công.",
+	"delete-reason-confirm-x": "Bạn có chắc chắn muốn xóa lý do tùy chỉnh với tiêu đề <strong>%1</strong>?"
+}

@@ -65,6 +65,7 @@ Out.follow = enabledCheck(async (type, id, actor) => {
 		await activitypub.send(type, id, [actor], {
 			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 			type: 'Follow',
+			to: [actor],
 			object: actor,
 		});
 	} catch (e) {
@@ -254,12 +255,7 @@ Out.delete.note = enabledCheck(async (uid, pid) => {
 Out.like = {};
 
 Out.like.note = enabledCheck(async (uid, pid) => {
-	const payload = {
-		id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
-		type: 'Like',
-		actor: `${nconf.get('url')}/uid/${uid}`,
-		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-	};
+	const payload = await activitypub.mocks.activities.like(pid, uid);
 
 	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
 		await activitypub.feps.announce(pid, payload);
@@ -280,12 +276,7 @@ Out.like.note = enabledCheck(async (uid, pid) => {
 Out.dislike = {};
 
 Out.dislike.note = enabledCheck(async (uid, pid) => {
-	const payload = {
-		id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
-		type: 'Dislike',
-		actor: `${nconf.get('url')}/uid/${uid}`,
-		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-	};
+	const payload = await activitypub.mocks.activities.dislike(pid, uid);
 
 	if (!activitypub.helpers.isUri(pid)) { // only 1b12 announce for local likes
 		await activitypub.feps.announce(pid, payload);
@@ -320,37 +311,14 @@ Out.announce.topic = enabledCheck(async (tid, uid) => {
 		}
 	}
 
-	const authorUid = await posts.getPostField(pid, 'uid'); // author
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
 	if (!allowed) {
 		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
 
-	const { to, cc, targets } = await activitypub.buildRecipients({
-		id: pid,
-		to: [activitypub._constants.publicAddress],
-	}, uid ? { uid } : { cid });
-	if (!utils.isNumber(authorUid)) {
-		cc.push(authorUid);
-		targets.add(authorUid);
-	}
-
-	const payload = uid ? {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/uid/${uid}`,
-		type: 'Announce',
-		actor: `${nconf.get('url')}/uid/${uid}`,
-	} : {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
-		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
-	};
-	await activitypub.send(uid ? 'uid' : 'cid', uid || cid, Array.from(targets), {
-		...payload,
-		to,
-		cc,
-		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
-	});
+	const { activity, targets } = await activitypub.mocks.activities.announce(tid, uid);
+	await activitypub.send(uid ? 'uid' : 'cid', uid || cid, Array.from(targets), activity);
 });
 
 Out.flag = enabledCheck(async (uid, flag) => {
@@ -495,6 +463,7 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 	await activitypub.send(type, id, [actor], {
 		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Undo',
+		to: [actor],
 		actor: object.actor,
 		object,
 	});
@@ -504,7 +473,8 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 			db.sortedSetRemove(`followingRemote:${id}`, actor),
 			db.sortedSetRemove(`followRequests:uid.${id}`, actor),
 			db.sortedSetRemove(`followersRemote:${actor}`, id),
-			db.decrObjectField(`user:${id}`, 'followingRemoteCount'),
+			user.syncFollowCounts(id, true, false),
+			user.syncFollowCounts(actor, false, true),
 		]);
 	} else if (type === 'cid') {
 		await Promise.all([
@@ -516,7 +486,7 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 	activitypub.actors._followerCache.del(actor);
 });
 
-Out.undo.like = enabledCheck(async (uid, pid) => {
+async function unvote(type, uid, pid) {
 	if (!activitypub.helpers.isUri(pid)) {
 		return;
 	}
@@ -527,13 +497,13 @@ Out.undo.like = enabledCheck(async (uid, pid) => {
 	}
 
 	const payload = {
-		id: `${nconf.get('url')}/uid/${uid}#activity/undo:like/${encodeURIComponent(pid)}/${Date.now()}`,
+		id: `${nconf.get('url')}/uid/${uid}#activity/undo:${type.toLowerCase()}/${encodeURIComponent(pid)}/${Date.now()}`,
 		type: 'Undo',
 		actor: `${nconf.get('url')}/uid/${uid}`,
 		object: {
 			actor: `${nconf.get('url')}/uid/${uid}`,
-			id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
-			type: 'Like',
+			id: `${nconf.get('url')}/uid/${uid}#activity/${type.toLowerCase()}/${encodeURIComponent(pid)}`,
+			type,
 			object: pid,
 		},
 	};
@@ -542,6 +512,14 @@ Out.undo.like = enabledCheck(async (uid, pid) => {
 		activitypub.send('uid', uid, [author], payload),
 		activitypub.feps.announce(pid, payload),
 	]);
+};
+
+Out.undo.like = enabledCheck(async (uid, pid) => {
+	return await unvote('Like', uid, pid);
+});
+
+Out.undo.dislike = enabledCheck(async (uid, pid) => {
+	return await unvote('Dislike', uid, pid);
 });
 
 Out.undo.flag = enabledCheck(async (uid, flag) => {

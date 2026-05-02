@@ -78,7 +78,7 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
 
 	// Group handling
-	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
+	if (!utils.isNumber(uidOrGroupName) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
@@ -158,7 +158,7 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	const [memberSets, allGroupNames] = await Promise.all([
 		groups.getMembersOfGroups(groupPrivileges.map(privilege => `cid:${cid}:privileges:${privilege}`)),
-		groups.getGroups('groups:createtime', 0, -1),
+		groups.getAllGroupNames('groups:createtime'),
 	]);
 
 	const uniqueGroups = _.uniq(_.flatten(memberSets));

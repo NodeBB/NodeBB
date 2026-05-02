@@ -4,10 +4,10 @@
 	"consent.message": "通知メッセージ",
 	"consent.acceptance": "メッセージを受け取る",
 	"consent.link-text": "ポリシーリンクテキスト",
-	"consent.link-url": "Policy Link URL",
+	"consent.link-url": "ポリシーリンクURL",
 	"consent.blank-localised-default": "空白のままにして、NodeBBのローカライズされたデフォルトを使用する",
 	"settings": "設定",
 	"cookie-domain": "セッションCookieドメイン",
-	"max-user-sessions": "Max active sessions per user",
+	"max-user-sessions": "1ユーザーあたりの最大アクティブセッション数",
 	"blank-default": "デフォルトの場合は空白のまま"
 }

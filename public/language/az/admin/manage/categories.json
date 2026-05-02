@@ -55,7 +55,7 @@
 	"select-category": "Kateqoriya seç",
 	"set-parent-category": "Ana kateqoriya seç",
 
-	"privileges.description": "Siz bu bölmədə saytın hissələri üçün girişə nəzarət imtiyazlarını konfiqurasiya edə bilərsiniz. İmtiyazlar hər istifadəçi və ya qrup üzrə verilə bilər. Aşağıdakı açılan menyudan təsir sahəsini seçin.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "İmtiyazların konfiqurasiyası",
 	"privileges.warning": "<strong>Qeyd</strong>: İmtiyaz parametrləri dərhal qüvvəyə minir. Bu parametrləri tənzimlədikdən sonra kateqoriyanı saxlamaq lazım deyil.",
 	"privileges.section-viewing": "Baxış imtiyazları",

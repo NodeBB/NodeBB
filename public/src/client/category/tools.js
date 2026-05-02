@@ -9,11 +9,16 @@ define('forum/category/tools', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (topicSelect, threadTools, components, api, bootbox, alerts) {
+	'bootstrap',
+], function (topicSelect, threadTools, components, api, bootbox, alerts, bootstrap) {
 	const CategoryTools = {};
 
-	CategoryTools.init = function () {
-		topicSelect.init(updateDropdownOptions);
+	CategoryTools.init = function (containerEl) {
+		topicSelect.init(updateDropdownOptions, () => {
+			const toggleEl = document.querySelector('.thread-tools button');
+			const dropdown = new bootstrap.Dropdown(toggleEl);
+			dropdown.show();
+		}, containerEl);
 
 		handlePinnedTopicSort();
 
@@ -84,8 +89,6 @@ define('forum/category/tools', [
 				}
 				move.init(tids, null, onCommandComplete);
 			});
-
-			return false;
 		});
 
 		components.get('topic/move-all').on('click', function () {

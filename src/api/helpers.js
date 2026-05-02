@@ -1,6 +1,5 @@
 'use strict';
 
-const url = require('url');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -25,11 +24,15 @@ exports.buildReqObject = (req, payload) => {
 	const headers = req.headers || (req.request && req.request.headers) || {};
 	const session = req.session || (req.request && req.request.session) || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
-	let { host } = headers;
+	let host = headers.host || '';
 	const referer = headers.referer || '';
 
-	if (!host) {
-		host = url.parse(referer).host || '';
+	if (!host && referer) {
+		try {
+			host = new URL(referer).host;
+		} catch (err) {
+			// ignore invalid referer
+		}
 	}
 
 	return {
@@ -77,9 +80,11 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 			case 'delete': // falls through
 			case 'purge': {
 				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
-					activitypub.out.remove.context(caller.uid, tid); // 7888-style
-					activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
-					activitypub.out.undo.announce('cid', cid, tid); // microblogs
+					setImmediate(() => {
+						activitypub.out.remove.context(caller.uid, tid); // 7888-style
+						activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
+						activitypub.out.undo.announce('cid', cid, tid); // microblogs
+					});
 				}
 			}
 		}
@@ -152,18 +157,25 @@ async function executeCommand(caller, command, eventName, notification, data) {
 		switch (command) {
 			case 'upvote': {
 				socketHelpers.upvote(result, notification);
-				await activitypub.out.like.note(caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.like.note(caller.uid, data.pid);
+				});
 				break;
 			}
 
 			case 'downvote': {
-				await activitypub.out.dislike.note(caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.dislike.note(caller.uid, data.pid);
+				});
 				break;
 			}
 
 			case 'unvote': {
 				socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
-				await activitypub.out.undo.like(caller.uid, data.pid);
+				const verb = result.was.upvoted ? 'like' : 'dislike';
+				setImmediate(() => {
+					activitypub.out.undo[verb](caller.uid, data.pid);
+				});
 				break;
 			}
 

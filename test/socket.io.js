@@ -30,20 +30,14 @@ describe('socket.io', () => {
 	let regularUid;
 
 	before(async () => {
-		const data = await Promise.all([
-			user.create({ username: 'admin', password: 'adminpwd' }),
-			user.create({ username: 'regular', password: 'regularpwd', email: 'regular@test.com' }, { emailVerification: 'verify' }),
-			categories.create({
-				name: 'Test Category',
-				description: 'Test category created by testing script',
-			}),
-		]);
-		adminUid = data[0];
+		adminUid = await user.create({ username: 'admin', password: 'adminpwd' });
 		await groups.join('administrators', adminUid);
+		regularUid = await user.create({ username: 'regular', password: 'regularpwd', email: 'regular@test.com' }, { emailVerification: 'verify' });
+		({ cid } = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
+		}));
 
-		regularUid = data[1];
-
-		cid = data[2].cid;
 		await topics.post({
 			uid: adminUid,
 			cid: cid,
@@ -80,19 +74,6 @@ describe('socket.io', () => {
 		io.emit('constructor.toString', (err) => {
 			assert(err);
 			assert.equal(err.message, '[[error:invalid-event, constructor.toString]]');
-			done();
-		});
-	});
-
-	it('should get installed themes', (done) => {
-		const themes = ['nodebb-theme-persona'];
-		io.emit('admin.themes.getInstalled', (err, data) => {
-			assert.ifError(err);
-			assert(data);
-			const installed = data.map(theme => theme.id);
-			themes.forEach((theme) => {
-				assert(installed.includes(theme));
-			});
 			done();
 		});
 	});

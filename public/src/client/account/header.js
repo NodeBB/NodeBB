@@ -20,8 +20,6 @@ define('forum/account/header', [
 	AccountHeader.init = function () {
 		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
 
-		selectActivePill();
-
 		handleImageChange();
 
 		if (isAdminOrSelfOrGlobalMod) {
@@ -60,17 +58,6 @@ define('forum/account/header', [
 		components.get('account/block').on('click', () => toggleBlockAccount('block'));
 		components.get('account/unblock').on('click', () => toggleBlockAccount('unblock'));
 	};
-
-	function selectActivePill() {
-		$('.account-sub-links li a').removeClass('active').each(function () {
-			const href = $(this).attr('href');
-
-			if (decodeURIComponent(href) === decodeURIComponent(window.location.pathname)) {
-				$(this).addClass('active');
-				return false;
-			}
-		});
-	}
 
 	function handleImageChange() {
 		$('[component="profile/change/picture"]').on('click', function () {

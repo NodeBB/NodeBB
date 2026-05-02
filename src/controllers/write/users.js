@@ -43,17 +43,17 @@ Users.update = async (req, res) => {
 };
 
 Users.delete = async (req, res) => {
-	await api.users.delete(req, { ...req.params, password: req.body.password });
+	await api.users.delete(req, { ...req.params, password: req.body?.password });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.deleteContent = async (req, res) => {
-	await api.users.deleteContent(req, { ...req.params, password: req.body.password });
+	await api.users.deleteContent(req, { ...req.params, password: req.body?.password });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.deleteAccount = async (req, res) => {
-	await api.users.deleteAccount(req, { ...req.params, password: req.body.password });
+	await api.users.deleteAccount(req, { ...req.params, password: req.body?.password });
 	helpers.formatApiResponse(200, res);
 };
 
@@ -119,7 +119,11 @@ Users.ban = async (req, res) => {
 };
 
 Users.unban = async (req, res) => {
-	await api.users.unban(req, { ...req.body, uid: req.params.uid });
+	const params = {
+		uid: req.params.uid,
+		reason: req.query.reason || req.body.reason,
+	};
+	await api.users.unban(req, params);
 	helpers.formatApiResponse(200, res);
 };
 
@@ -129,7 +133,11 @@ Users.mute = async (req, res) => {
 };
 
 Users.unmute = async (req, res) => {
-	await api.users.unmute(req, { ...req.body, uid: req.params.uid });
+	const params = {
+		uid: req.params.uid,
+		reason: req.query.reason || req.body.reason,
+	};
+	await api.users.unmute(req, params);
 	helpers.formatApiResponse(200, res);
 };
 

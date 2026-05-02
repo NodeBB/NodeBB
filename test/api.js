@@ -24,6 +24,7 @@ const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
 const activitypub = require('../src/activitypub');
+const notifications = require('../src/notifications');
 const utils = require('../src/utils');
 const api = require('../src/api');
 
@@ -263,6 +264,16 @@ describe('API', async () => {
 			title: 'Test Topic 3',
 			content: 'Test topic 3 content',
 		});
+
+		// create a notification
+		const notifObj = await notifications.create({
+			nid: '1', // match nid in example in notifications/nid/read.yaml
+			path: '/notifications',
+			from: unprivUid,
+			bodyShort: 'testing notification',
+		});
+		notifications.push(notifObj, adminUid);
+
 
 		// Create a post diff
 		await posts.edit({
@@ -532,7 +543,7 @@ describe('API', async () => {
 					assert(
 						responses.hasOwnProperty('418') ||
 						Object.keys(responses).includes(String(result.response.statusCode)),
-						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}`
+						`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}, body: ${JSON.stringify(result.body)} status: ${result.response.statusText}`,
 					);
 				});
 

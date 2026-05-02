@@ -6,9 +6,9 @@ define('forum/header', [
 	'forum/header/chat',
 	'alerts',
 ], function (unread, notifications, chat, alerts) {
-	const module = {};
+	const header = {};
 
-	module.prepareDOM = function () {
+	header.prepareDOM = function () {
 		if (app.user.uid > 0) {
 			unread.initUnreadTopics();
 		}
@@ -74,5 +74,5 @@ define('forum/header', [
 		});
 	}
 
-	return module;
+	return header;
 });

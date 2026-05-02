@@ -17,9 +17,11 @@ module.exports = function (Topics) {
 		}
 		let uid = options;
 		let { teaserPost } = meta.config;
+		let teaserParseType = 'plaintext';
 		if (typeof options === 'object') {
 			uid = options.uid;
 			teaserPost = options.teaserPost || meta.config.teaserPost;
+			teaserParseType = options.teaserParseType || 'plaintext';
 		}
 
 		const counts = [];
@@ -68,7 +70,7 @@ module.exports = function (Topics) {
 			post.timestampISO = utils.toISOString(post.timestamp);
 			tidToPost[post.tid] = post;
 		});
-		await Promise.all(postData.map(p => posts.parsePost(p, 'plaintext')));
+		await Promise.all(postData.map(p => posts.parsePost(p, teaserParseType)));
 
 		const teasers = topics.map((topic, index) => {
 			if (!topic) {
@@ -80,7 +82,7 @@ module.exports = function (Topics) {
 			return tidToPost[topic.tid];
 		});
 
-		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.hooks.fire('filter:teasers.get', { teasers, uid });
 		return result.teasers;
 	};
 
@@ -110,7 +112,7 @@ module.exports = function (Topics) {
 	}
 
 	async function getPreviousNonBlockedPost(postData, blockedUids) {
-		let isBlocked = false;
+		let isBlocked;
 		let prevPost = postData;
 		const postsPerIteration = 5;
 		let start = 0;

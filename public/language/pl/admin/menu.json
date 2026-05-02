@@ -48,6 +48,16 @@
 
 	"settings.page-title": "Ustawienia %1",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Wygląd",
 	"appearance/themes": "Style",
 	"appearance/skins": "Skórki",
@@ -70,6 +80,7 @@
 	"advanced/logs": "Logi",
 	"advanced/errors": "Błędy",
 	"advanced/cache": "Pamięć",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Loger",
 	"development/info": "Informacja",
 

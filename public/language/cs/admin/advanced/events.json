@@ -9,9 +9,9 @@
 	"filter-type": "Typ události",
 	"filter-start": "Datum začátku",
 	"filter-end": "Datum konce",
-	"filter-user": "Filter by User",
-	"filter-user.placeholder": "Type user name to filter...",
-	"filter-group": "Filter by Group",
-	"filter-group.placeholder": "Type group name to filter...",
+	"filter-user": "Filtrovat podle uživatele",
+	"filter-user.placeholder": "Zadejte uživatelské jméno pro filtrování…",
+	"filter-group": "Filtrovat podle skupiny",
+	"filter-group.placeholder": "Zadejte název skupiny pro filtrování...",
 	"filter-per-page": "Na stránku"
 }

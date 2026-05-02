@@ -1,8 +1,8 @@
 {
     "category": "Kategória",
     "subcategories": "Alkategóriák",
-    "uncategorized": "Uncategorized",
-    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Új témakör",
     "guest-login-post": "Lépj be a hozzászóláshoz",

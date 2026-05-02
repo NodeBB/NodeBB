@@ -96,7 +96,7 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	}
 	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
 	const [postData, fromCategory] = await Promise.all([
-		posts.getPostFields(pid, ['tid', 'uid', 'content']),
+		posts.getPostFields(pid, ['tid', 'uid', 'content', 'sourceContent']),
 		!utils.isNumber(fromuid) && categories.exists(fromuid),
 	]);
 	const [canRead, isIgnoring] = await Promise.all([
@@ -113,8 +113,7 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	]);
 
 	const title = utils.decodeHTMLEntities(topicTitle);
-	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-	const bodyShort = translator.compile(notification, userData.displayname || userData.name, titleEscaped);
+	const bodyShort = translator.compile(notification, userData.displayname || userData.name, title);
 
 	const notifObj = await notifications.create({
 		type: command,
@@ -153,10 +152,9 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 
 	const ownerUid = topicData.uid;
 	const title = utils.decodeHTMLEntities(topicData.title);
-	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
+		bodyShort: translator.compile(notification, displayname, title),
 		path: `/topic/${topicData.slug}`,
 		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,

@@ -221,7 +221,7 @@ define('forum/topic', [
 			const toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
 			const collapsed = !blockQuote.hasClass('uncollapsed');
-			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
+			toggle.find('i').toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
 		});
 	}
 
@@ -270,15 +270,16 @@ define('forum/topic', [
 		hooks.registerPage('action:posts.edited', addCopyCodeButton);
 	}
 
-	function addParentHandler() {
-		function gotoPost(event, toPid) {
-			const toPost = $('[component="topic"]>[component="post"][data-pid="' + toPid + '"]');
-			if (toPost.length) {
-				event.preventDefault();
-				navigator.scrollToIndex(toPost.attr('data-index'), true);
-				return false;
-			}
+	function gotoPost(event, toPid) {
+		const toPost = $(`[component="topic"]>[component="post"][data-pid="${toPid}"]`);
+		if (toPost.length) {
+			event.preventDefault();
+			navigator.scrollToIndex(toPost.attr('data-index'), true);
+			return false;
 		}
+	}
+
+	function addParentHandler() {
 		components.get('topic').on('click', '[component="post/parent"]', function (e) {
 			const parentEl = $(this);
 			const contentEl = parentEl.find('[component="post/parent/content"]');
@@ -307,6 +308,10 @@ define('forum/topic', [
 			require(['forum/topic/replies'], function (replies) {
 				replies.init(btn);
 			});
+		});
+
+		$('[component="topic"]').on('click', '[component="post/replies"] .post-header a.timeago', function (e) {
+			return gotoPost(e, $(this).parents('[data-pid]').attr('data-pid'));
 		});
 	}
 
@@ -425,7 +430,12 @@ define('forum/topic', [
 
 	function setupQuickReply() {
 		if (config.enableQuickReply || (config.theme && config.theme.enableQuickReply)) {
-			quickreply.init();
+			quickreply.init({
+				route: `/topics/${ajaxify.data.tid}`,
+				body: {
+					tid: ajaxify.data.tid,
+				},
+			});
 		}
 	}
 

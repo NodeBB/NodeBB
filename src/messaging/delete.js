@@ -30,6 +30,8 @@ module.exports = function (Messaging) {
 			plugins.hooks.fire('action:messaging.restore', { message: msgData });
 		}
 
-		activitypub.out.update.privateNote(uid, msgData);
+		setImmediate(() => {
+			activitypub.out.update.privateNote(uid, msgData);
+		});
 	}
 };

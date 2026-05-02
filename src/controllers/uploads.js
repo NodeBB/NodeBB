@@ -75,12 +75,12 @@ async function uploadAsImage(req, uploadedFile) {
 	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 	// sharp can't save svgs skip resize for them
 	const isSVG = uploadedFile.type === 'image/svg+xml';
-	if (isSVG || meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
-		return fileObj;
+	const resizeDisabled = meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0;
+	if (!isSVG && !resizeDisabled) {
+		fileObj = await resizeImage({ ...fileObj, type: uploadedFile.type });
 	}
 
-	fileObj = await resizeImage(fileObj);
-	return { url: fileObj.url };
+	return { url: fileObj.url, name: fileObj.name };
 }
 
 async function uploadAsFile(req, uploadedFile) {
@@ -107,6 +107,7 @@ async function resizeImage(fileObj) {
 
 	await image.resizeImage({
 		path: fileObj.path,
+		type: fileObj.type,
 		target: meta.config.resizeImageKeepOriginal ?
 			file.appendToFileName(fileObj.path, '-resized') :
 			fileObj.path,
@@ -137,6 +138,7 @@ uploadsController.uploadThumb = async function (req, res) {
 		if (dimensions.width > parseInt(meta.config.topicThumbSize, 10)) {
 			await image.resizeImage({
 				path: uploadedFile.path,
+				type: uploadedFile.type,
 				width: meta.config.topicThumbSize,
 			});
 		}
@@ -148,7 +150,11 @@ uploadsController.uploadThumb = async function (req, res) {
 			});
 		}
 
-		return await uploadsController.uploadFile(req.uid, uploadedFile);
+		const storedFile = await uploadsController.uploadFile(req.uid, uploadedFile);
+		return {
+			url: storedFile.url,
+			name: storedFile.name,
+		};
 	});
 };
 
@@ -193,7 +199,11 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	};
 
 	await user.associateUpload(uid, upload.url.replace(`${nconf.get('upload_url')}`, ''));
-	const data = await plugins.hooks.fire('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
+	const data = await plugins.hooks.fire('filter:uploadStored', {
+		uid,
+		uploadedFile,
+		storedFile,
+	});
 	return data.storedFile;
 }
 

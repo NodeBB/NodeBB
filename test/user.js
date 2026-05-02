@@ -171,6 +171,23 @@ describe('User', () => {
 			]);
 			assert.strictEqual(err.message, '[[error:email-taken]]');
 		});
+
+		it('should fail to create user with invalid slug', async () => {
+			await assert.rejects(User.create({
+				username: '-.-', // slug becomes .
+				password: '123456',
+			}), { message: '[[error:invalid-username]]' });
+		});
+
+		it('should create user with valid slug (-.-.- => .-.)', async () => {
+			const uid = await User.create({
+				username: '-.-.-', // slug becomes .-.
+				password: '123456',
+			});
+			const data = await User.getUserData(uid);
+			assert.strictEqual(data.username, '-.-.-');
+			assert.strictEqual(data.userslug, '.-.');
+		});
 	});
 
 	describe('.uniqueUsername()', () => {
@@ -466,24 +483,11 @@ describe('User', () => {
 	});
 
 	describe('.delete()', () => {
-		let uid;
-		before((done) => {
-			User.create({ username: 'usertodelete', password: '123456', email: 'delete@me.com' }, (err, newUid) => {
-				assert.ifError(err);
-				uid = newUid;
-				done();
-			});
-		});
-
-		it('should delete a user account', (done) => {
-			User.delete(1, uid, (err) => {
-				assert.ifError(err);
-				User.existsBySlug('usertodelete', (err, exists) => {
-					assert.ifError(err);
-					assert.equal(exists, false);
-					done();
-				});
-			});
+		it('should delete a user account', async () => {
+			const uid = await User.create({ username: 'usertodelete', password: '123456', email: 'delete@me.com' });
+			await User.delete(1, uid);
+			const exists = await User.existsBySlug('usertodelete');
+			assert.strictEqual(exists, false);
 		});
 
 		it('should not re-add user to users:postcount if post is purged after user account deletion', async () => {
@@ -521,7 +525,6 @@ describe('User', () => {
 		});
 
 		it('should delete user even if they started a chat', async () => {
-			const socketModules = require('../src/socket.io/modules');
 			const uid1 = await User.create({ username: 'chatuserdelete1' });
 			const uid2 = await User.create({ username: 'chatuserdelete2' });
 			const roomId = await messaging.newRoom(uid1, { uids: [uid2] });
@@ -1019,9 +1022,15 @@ describe('User', () => {
 			}
 		});
 
+		it('should return picture and uploaded picture as different values', async () => {
+			const userData = await User.getUserFields(uid, ['picture', 'uploadedpicture']);
+			assert.notStrictEqual(userData.picture, userData.uploadedpicture);
+		});
+
 		it('should set user picture to uploaded', async () => {
 			await User.setUserField(uid, 'uploadedpicture', '/test');
-			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid });
+			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/test');
+			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/test', uid: uid });
 			const picture = await User.getUserField(uid, 'picture');
 			assert.equal(picture, `${nconf.get('relative_path')}/test`);
 		});
@@ -1054,6 +1063,26 @@ describe('User', () => {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
+		});
+
+		it('should upload a gif file as profile image', async () => {
+			const uid = await User.create({ username: 'giflover', password: '123456' });
+			const { jar, csrf_token } = await helpers.loginUser('giflover', '123456');
+			const pathToGif = path.join(__dirname, '../test/files/animated.gif');
+
+			const { response } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/user/giflover/uploadpicture`,
+				pathToGif, { }, jar, csrf_token
+			);
+			assert.strictEqual(response.statusCode, 200);
+			const picture = await db.getObjectField(`user:${uid}`, 'picture');
+			const uploadedPath = path.join(
+				nconf.get('upload_path'), `${picture.replace(nconf.get('upload_url'), '')}`
+			);
+			const sharp = require('sharp');
+			const metadata = await sharp(uploadedPath).metadata();
+			assert.strictEqual(metadata.format, 'gif');
+			assert.ok(metadata.pages > 1);
 		});
 
 		describe('user.uploadCroppedPicture', () => {
@@ -1114,6 +1143,30 @@ describe('User', () => {
 					meta.config.maximumProfileImageSize = temp;
 					done();
 				});
+			});
+
+			it('should normalize uploaded image to png', async () => {
+				const oldValue = meta.config['profile:convertProfileImageToPNG'];
+				meta.config['profile:convertProfileImageToPNG'] = 1;
+
+				const uid = await User.create({ username: 'pngnormalize', password: '123456' });
+				const { jar, csrf_token } = await helpers.loginUser('pngnormalize', '123456');
+				const pathToJpeg = path.join(__dirname, '../test/files/normalise.jpg');
+
+				const { response } = await helpers.uploadFile(
+					`${nconf.get('url')}/api/user/pngnormalize/uploadpicture`,
+					pathToJpeg, { }, jar, csrf_token
+				);
+				assert.strictEqual(response.statusCode, 200);
+				const picture = await db.getObjectField(`user:${uid}`, 'picture');
+				const uploadedPath = path.join(
+					nconf.get('upload_path'), `${picture.replace(nconf.get('upload_url'), '')}`
+				);
+				const sharp = require('sharp');
+				const metadata = await sharp(uploadedPath).metadata();
+				assert.strictEqual(metadata.format, 'png');
+
+				meta.config['profile:convertProfileImageToPNG'] = oldValue;
 			});
 
 			it('should not allow image data with bad MIME type to be passed in', (done) => {
@@ -1355,6 +1408,27 @@ describe('User', () => {
 			const result = await Topics.post({ title: 'banned topic', content: 'tttttttttttt', cid: cid, uid: testUid });
 			assert(result);
 			assert.strictEqual(result.topicData.title, 'banned topic');
+		});
+
+		it('should unban user properly if only "banned" field is requested', async () => {
+			const testUid = await User.create({ username: 'bannedUser3' });
+			await User.bans.ban(testUid, Date.now() + 2000);
+			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), true);
+			await setTimeout(3000);
+			await User.getUserFields(testUid, ['uid', 'banned']); // loading their data unbans the user
+			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), false);
+		});
+
+		it('should not return ban reason if login is incorrect', async () => {
+			const testUid = await User.create({ username: 'bannedUser4', password: '654321' });
+			await User.bans.ban(testUid, 0, 'testing bans');
+			let { response, body } = await helpers.loginUser('bannedUser4', '5555555');
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(body, '[[error:invalid-login-credentials]]');
+
+			({ response, body } = await helpers.loginUser('bannedUser4', '654321'));
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(body.reason, 'testing bans');
 		});
 	});
 
@@ -2247,14 +2321,12 @@ describe('User', () => {
 	});
 
 	describe('user jobs', () => {
-		it('should start user jobs', (done) => {
-			User.startJobs();
-			done();
+		it('should start user jobs', async () => {
+			await User.startJobs();
 		});
 
-		it('should stop user jobs', (done) => {
+		it('should stop user jobs', async () => {
 			User.stopJobs();
-			done();
 		});
 
 		it('should send digest', (done) => {

@@ -119,7 +119,7 @@ events.getEvents = async function (options) {
 	const from = options.hasOwnProperty('from') ? options.from : '-inf';
 	const to = options.hasOwnProperty('to') ? options.to : '+inf';
 	const { filter, start, stop, uids } = options;
-	let eids = [];
+	let eids;
 
 	if (Array.isArray(uids)) {
 		if (filter === '') {

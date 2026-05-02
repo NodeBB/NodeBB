@@ -1,5 +1,6 @@
 {
     "invalid-data": "Geçersiz Veri",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Geçersiz JSON",
     "wrong-parameter-type": "\"%1\" özelliği için %3 türünde bir değer bekleniyordu, ancak bunun yerine %2 alındı",
     "required-parameters-missing": "Bu API çağrısında gerekli parametreler eksikti: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Geçersiz yol",
     "folder-exists": "Dosya mevcut",
     "invalid-pagination-value": "Geçersiz sayfa numarası girdiniz, en az %1 ve en fazla %2 olabilir",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "Bu e-posta adresi halihazırda  başka biri tarafından kullanılıyor. ",
     "email-nochange": "Girdiğiniz e-posta var olan e-posta ile aynı",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

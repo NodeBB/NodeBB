@@ -60,15 +60,18 @@ module.exports = function (User) {
 
 			if (!uids.length) {
 				const searchMethod = data.findUids || findUids;
-				uids = await searchMethod(query, searchBy, data.hardCap);
+				const promises = [
+					searchMethod(query, searchBy, data.hardCap),
+				];
 
 				const mapping = {
 					username: 'ap.preferredUsername',
 					fullname: 'ap.name',
 				};
-				if (meta.config.activitypubEnabled && mapping.hasOwnProperty(searchBy)) {
-					uids = uids.concat(await searchMethod(query, mapping[searchBy], data.hardCap));
+				if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
+					promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
 				}
+				uids = (await Promise.all(promises)).flat();
 			}
 		}
 
@@ -77,7 +80,7 @@ module.exports = function (User) {
 			uids.length = data.hardCap;
 		}
 
-		const result = await plugins.hooks.fire('filter:users.search', { uids: uids, uid: uid });
+		const result = await plugins.hooks.fire('filter:users.search', { uids, uid });
 		uids = result.uids;
 
 		const searchResult = {
@@ -106,8 +109,9 @@ module.exports = function (User) {
 		}
 
 		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
-		searchResult.users = userData.filter(user => (user &&
-			utils.isNumber(user.uid) ? user.uid > 0 : activitypub.helpers.isUri(user.uid)));
+		searchResult.users = userData.filter(
+			user => user && (utils.isNumber(user.uid) ? user.uid > 0 : activitypub.helpers.isUri(user.uid))
+		);
 		return searchResult;
 	};
 
@@ -122,7 +126,6 @@ module.exports = function (User) {
 		hardCap = hardCap || 500;
 
 		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
-		// const uids = data.map(data => data.split(':').pop());
 		const uids = data.map((data) => {
 			if (data.includes(':https:')) {
 				return data.substring(data.indexOf(':https:') + 1);

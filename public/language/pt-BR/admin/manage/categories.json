@@ -55,7 +55,7 @@
 	"select-category": "Selecionar Categoria",
 	"set-parent-category": "Definir Categoria-Mãe",
 
-	"privileges.description": "Você pode configurar os privilégios de controle de acesso para partes do site nesta seção. Privilégios podem ser concedidos por usuário ou por grupo. Selecione o que você quer alterar no menu dropdown abaixo.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Configurando privilégios para",
 	"privileges.warning": "<strong>Atenção</strong>: as alterações nas configurações de privilégios têm efeito imediato. Não é necessário salvar a categoria após ajustar estas configurações.",
 	"privileges.section-viewing": "Privilégios de Visualização",

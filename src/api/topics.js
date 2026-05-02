@@ -56,6 +56,7 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	delete payload.tid;
+	delete payload.generatedTitle;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
@@ -80,7 +81,9 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
 	if (!isScheduling) {
-		await activitypub.out.create.note(caller.uid, result.postData.pid);
+		setImmediate(() => {
+			activitypub.out.create.note(caller.uid, result.postData.pid);
+		});
 	}
 
 	return result.topicData;
@@ -116,7 +119,9 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	await activitypub.out.create.note(caller.uid, postData);
+	setImmediate(() => {
+		activitypub.out.create.note(caller.uid, postData);
+	});
 
 	return postData;
 };
@@ -323,14 +328,16 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
-				if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
-					activitypub.out.remove.context(caller.uid, tid); // 7888-style
-					activitypub.out.delete.note(caller.uid, topicData.mainPid); // 1b12-style
-				} else {
-					activitypub.out.move.context(caller.uid, tid);
-					activitypub.out.announce.topic(tid);
-				}
-				activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+				setImmediate(() => {
+					if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
+						activitypub.out.remove.context(caller.uid, tid); // 7888-style
+						activitypub.out.delete.note(caller.uid, topicData.mainPid); // 1b12-style
+					} else {
+						activitypub.out.move.context(caller.uid, tid);
+						activitypub.out.announce.topic(tid);
+					}
+					activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+				});
 			}
 
 			await events.log({

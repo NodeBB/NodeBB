@@ -48,6 +48,16 @@
 
 	"settings.page-title": "%1 Parametrlər",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Görünüş",
 	"appearance/themes": "Mövzular",
 	"appearance/skins": "Örtüklər",
@@ -70,6 +80,7 @@
 	"advanced/logs": "Loqlar",
 	"advanced/errors": "Xətalar",
 	"advanced/cache": "Keş",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Logger",
 	"development/info": "Məlumat",
 

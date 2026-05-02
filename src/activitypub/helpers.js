@@ -33,7 +33,11 @@ Helpers._webfingerCache = webfingerCache; // exported for tests
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
 	setTimeout(async () => {
-		console.log(await method.apply(method, args));
+		try {
+			console.log(await method.apply(method, args));
+		} catch (e) {
+			console.log('Exception thrown', e);
+		}
 	}, 2500);
 };
 // process.nextTick(() => {
@@ -44,9 +48,9 @@ Helpers.log = (message) => {
 	if (!message) {
 		return _lastLog;
 	}
-
 	_lastLog = message;
 	if (process.env.NODE_ENV === 'development') {
+
 		winston.verbose(message);
 	}
 };
@@ -66,8 +70,15 @@ Helpers.isUri = (value) => {
 };
 
 Helpers.assertAccept = (accept) => {
-	if (!accept) return false;
-	const normalized = accept.split(',').map(s => s.trim().replace(/\s*;\s*/g, ';')).join(',');
+	if (!accept) {
+		return false;
+	}
+
+	const normalized = accept
+		.split(',')
+		.map(s => s.trim().replace(/\s*;\s*/g, ';')) // spec allows spaces around semi-colon
+		.join(',');
+
 	return activitypub._constants.acceptableTypes.some(type => normalized.includes(type));
 };
 
@@ -185,6 +196,9 @@ Helpers.resolveLocalId = async (input) => {
 
 				case 'post':
 					return { type: 'post', id: value, ...activityData };
+
+				case 'topic':
+					return { type: 'topic', id: value, ...activityData };
 
 				case 'cid':
 				case 'category':
@@ -466,7 +480,7 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 	} else if (set) {
 		method = method.bind(null, set);
 	}
-	count = count || await db.sortedSetCard(set);
+	count = count ?? await db.sortedSetCard(set);
 	const pageCount = Math.max(1, Math.ceil(count / perPage));
 	let items = [];
 	let paginate = true;
@@ -476,13 +490,15 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 		paginate = false;
 	}
 
+	page = parseInt(page, 10) || 1;
+	page = Math.max(1, Math.min(page, pageCount));
 	if (page) {
 		const invalidPagination = page < 1 || page > pageCount;
 		if (invalidPagination) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const start = Math.max(0, ((page - 1) * perPage) - 1);
+		const start = Math.max(0, (page - 1) * perPage);
 		const stop = Math.max(0, start + perPage - 1);
 		items = await method.call(null, start, stop);
 	}
@@ -542,4 +558,47 @@ Helpers.addressed = (id, activity) => {
 	]);
 
 	return combined.has(id);
+};
+
+Helpers.renderEmoji = (text, tags, strip = false) => {
+	if (!text || !tags) {
+		return text;
+	}
+
+	tags = Array.isArray(tags) ? tags : [tags];
+	let result = text;
+
+	const parsed = new Set();
+	tags.forEach((tag) => {
+		const isEmoji = tag.type === 'Emoji';
+		const hasUrl = tag.icon && tag.icon.url;
+		const isImage = !tag.icon?.mediaType || tag.icon.mediaType.startsWith('image/');
+
+		if (isEmoji && (strip || (hasUrl && isImage))) {
+			let { name } = tag;
+			if (parsed.has(name)) {
+				return;
+			}
+
+			if (!name.startsWith(':')) {
+				name = `:${name}`;
+			}
+			if (!name.endsWith(':')) {
+				name = `${name}:`;
+			}
+
+			const imgTag = strip ?
+				'' :
+				`<img class="not-responsive emoji" src="${tag.icon.url}" title="${name}" />`;
+
+			let index = result.indexOf(name);
+			while (index !== -1) {
+				result = result.substring(0, index) + imgTag + result.substring(index + name.length);
+				index = result.indexOf(name, index + imgTag.length);
+			}
+			parsed.add(name);
+		}
+	});
+
+	return result;
 };

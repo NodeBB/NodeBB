@@ -38,7 +38,7 @@
 	"settings/tags": "Mots-clés",
 	"settings/notifications": "Notifications",
 	"settings/api": "Gestion API",
-	"settings/activitypub": "Federation (ActivityPub)",
+	"settings/activitypub": "Fédération (ActivityPub)",
 	"settings/sounds": "Sons",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",
@@ -47,6 +47,16 @@
 	"settings/advanced": "Avancé",
 
 	"settings.page-title": "Réglages %1",
+
+	"section-federation": "Fédération",
+	"federation/general": "Général",
+	"federation/content": "Contenu",
+	"federation/rules": "Catégorisation",
+	"federation/relays": "Relais",
+	"federation/pruning": "Stockage",
+	"federation/safety": "Fiabilité et sécurité",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
 
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",
@@ -70,6 +80,7 @@
 	"advanced/logs": "Journaux",
 	"advanced/errors": "Erreurs",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Tâches",
 	"development/logger": "Réglages journalisation",
 	"development/info": "Info",
 

@@ -160,7 +160,7 @@ define('admin/manage/category', [
 							label: '[[modules:bootbox.confirm]]',
 							className: 'btn-primary',
 							callback: function () {
-								if (!selectedCid || parseInt(selectedCid, 10) === parseInt(ajaxify.data.category.cid, 10)) {
+								if (!selectedCid || String(selectedCid) === String(ajaxify.data.category.cid)) {
 									return;
 								}
 

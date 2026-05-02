@@ -150,7 +150,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 		return res.redirect(brandTouchIcon);
 	}
 
-	let iconPath = '';
+	let iconPath;
 	if (brandTouchIcon) {
 		const uploadPath = nconf.get('upload_path');
 		iconPath = path.join(uploadPath, brandTouchIcon.replace(/assets\/uploads/, ''));
@@ -242,11 +242,11 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
 	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
-	let timesSeen = delayCache.get(req.ip) || 0;
+	const timesSeen = delayCache.get(req.ip) || 0;
 	if (timesSeen > 10) {
 		return res.sendStatus(429);
 	}
-	delayCache.set(req.ip, timesSeen += 1);
+	delayCache.set(req.ip, timesSeen + 1);
 
 	setTimeout(next, 1000);
 };
@@ -308,14 +308,20 @@ middleware.validateAuth = helpers.try(async (req, res, next) => {
 });
 
 middleware.checkRequired = function (fields, req, res, next) {
+	const body = req.body || {};
+	const query = req.query || {};
 	// Used in API calls to ensure that necessary parameters/data values are present
 	const missing = fields.filter(
-		field => req.body && !req.body.hasOwnProperty(field) && !req.query.hasOwnProperty(field)
+		field => !body.hasOwnProperty(field) && !query.hasOwnProperty(field)
 	);
 
 	if (!missing.length) {
 		return next();
 	}
 
-	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
+	controllers.helpers.formatApiResponse(
+		400,
+		res,
+		new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`)
+	);
 };

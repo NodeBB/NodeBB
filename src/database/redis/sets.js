@@ -57,6 +57,9 @@ module.exports = function (module) {
 	};
 
 	module.setsRemove = async function (keys, value) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return;
+		}
 		const batch = module.client.batch();
 		keys.forEach(k => batch.sRem(String(k), String(value)));
 		await helpers.execBatch(batch);

@@ -1,46 +1,81 @@
 'use strict';
 
-const winston = require('winston');
-const { CronJob } = require('cron');
-
 const db = require('../database');
 const meta = require('../meta');
 const topics = require('../topics');
 const utils = require('../utils');
+const cron = require('../cron');
+
 const activitypub = module.parent.exports;
 
 const Jobs = module.exports;
 
-Jobs.start = () => {
+Jobs.start = async () => {
 	activitypub.helpers.log('[activitypub/jobs] Registering jobs.');
 	async function tryCronJob(method) {
-		if (!meta.config.activitypubEnabled) {
-			return;
-		}
-		try {
+		if (meta.config.activitypubEnabled) {
 			await method();
-		} catch (err) {
-			winston.error(err.stack);
 		}
 	}
-	new CronJob('0 0 * * *', async () => {
-		await tryCronJob(async () => {
-			await activitypub.notes.prune();
-			await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
-		});
-	}, null, true, null, null, false); // change last argument to true for debugging
 
-	new CronJob('*/30 * * * *', async () => {
-		await tryCronJob(activitypub.actors.prune);
-	}, null, true, null, null, false); // change last argument to true for debugging
+	await cron.addJob({
+		name: 'ap:notes:prune',
+		cronTime: '0 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				await activitypub.notes.prune();
+				await db.sortedSetsRemoveRangeByScore(['activities:datetime'], '-inf', Date.now() - 604800000);
+			});
+		},
+	});
 
-	new CronJob('0 * * * * *', async () => {
-		await tryCronJob(retryFailedMessages);
-	}, null, true, null, null, false); // change last argument to true for debugging
+	await cron.addJob({
+		name: 'ap:actors:prune',
+		cronTime: '*/30 * * * *',
+		runOnInit: false,
+		onTick: async () => await tryCronJob(activitypub.actors.prune),
+	});
 
-	new CronJob('15 * * * *', async () => {
-		await tryCronJob(backfill);
-	}, null, true, null, null, false); // change last argument to true for debugging
+	await cron.addJob({
+		name: 'ap:retry:send',
+		cronTime: '0 * * * * *',
+		runOnInit: false,
+		onTick: async () => await tryCronJob(retryFailedMessages),
+	});
+
+	await cron.addJob({
+		name: 'ap:backfill',
+		cronTime: '15 * * * *',
+		runOnInit: false,
+		onTick: async () => await tryCronJob(backfill),
+	});
+
+	await cron.addJob({
+		name: 'ap:blocklist:refresh',
+		cronTime: '15 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				const lists = await activitypub.blocklists.list();
+				await Promise.all(lists.map(({ url }) => {
+					return activitypub.blocklists.refresh(url);
+				}));
+			});
+		},
+	});
+
+	await cron.addJob({
+		name: 'ap:analytics',
+		cronTime: '30 0 * * *',
+		runOnInit: false,
+		onTick: async () => {
+			await tryCronJob(async () => {
+				// Delete entries older than 24h
+				await db.sortedSetsRemoveRangeByScore(['ap:errors'], '-inf', Date.now() - (1000 * 60 * 60 * 24));
+			});
+		},
+	});
 };
 
 async function retryFailedMessages() {
@@ -71,7 +106,8 @@ async function retryFailedMessages() {
 			queueIdsToRemove.push(queueId);
 			return;
 		}
-		const ok = await activitypub._sendMessage(uri, id, type, payloadObj);
+		const keyData = await activitypub.getPrivateKey(type, id); // keyData could be moved higher up (optimization)
+		const ok = await activitypub._sendMessage(uri, keyData, payloadObj);
 		if (ok) {
 			queueIdsToRemove.push(queueId);
 		} else {

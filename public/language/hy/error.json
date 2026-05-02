@@ -1,5 +1,6 @@
 {
     "invalid-data": "Սխալ տվյալ",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Անվավեր JSON",
     "wrong-parameter-type": "«%1» հատկության համար սպասվում էր %3 տիպի արժեք, բայց փոխարենը ստացվեց %2",
     "required-parameters-missing": "Պահանջվող պարամետրերը բացակայում էին այս API զանգից՝ %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Անվավեր ուղի",
     "folder-exists": "Թղթապանակ գոյություն ունի",
     "invalid-pagination-value": "Էջավորման անվավեր արժեքը, պետք է լինի առնվազն %1 և առավելագույնը %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Օգտագործողի անունը վերցված է",
     "email-taken": "Email address is already taken.",
     "email-nochange": "Մուտքագրված էլփոստը նույնն է, ինչ ֆայլում արդեն առկա էլ.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

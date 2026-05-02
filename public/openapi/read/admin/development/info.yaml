@@ -51,14 +51,17 @@ get:
                                   type: number
                                 arrayBuffers:
                                   type: number
-                                humanReadable:
+                                rssReadable:
+                                  type: number
+                                heapUsedReadable:
                                   type: number
                               required:
                                 - rss
                                 - heapTotal
                                 - heapUsed
                                 - external
-                                - humanReadable
+                                - rssReadable
+                                - heapUsedReadable
                             uptime:
                               type: number
                             uptimeHumanReadable:

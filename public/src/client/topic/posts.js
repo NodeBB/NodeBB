@@ -441,7 +441,7 @@ define('forum/topic/posts', [
 		nestedBlockQuote.each(function () {
 			const $this = $(this);
 			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
-				$this.append('<i class="d-inline-block fa fa-angle-down pointer toggle py-1 px-3 border text-bg-light"></i>');
+				$this.append('<button class="toggle btn btn-ghost btn-sm d-inline-block py-1 px-3"><i class="fa fa-angle-down"></i>');
 			}
 		});
 	};

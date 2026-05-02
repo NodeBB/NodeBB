@@ -55,7 +55,7 @@
 	"select-category": "Velg kategori",
 	"set-parent-category": "Angi overkategori",
 
-	"privileges.description": "Her kan du konfigurere tilgangskontrollrettigheter for deler av nettstedet. Rettigheter kan gis per bruker eller per gruppe. Velg området for effekten fra rullegardinmenyen nedenfor.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Konfigurerer rettigheter for",
 	"privileges.warning": "<strong>Merk</strong>: Rettighetsinnstillinger trer i kraft umiddelbart. Det er ikke nødvendig å lagre kategorien etter å ha justert disse innstillingene.",
 	"privileges.section-viewing": "Visningsrettigheter",

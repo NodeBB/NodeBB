@@ -130,14 +130,20 @@ paths:
     $ref: 'write/categories/cid/topics.yaml'
   /categories/{cid}/watch:
     $ref: 'write/categories/cid/watch.yaml'
+  /categories/{cid}/watch/{member}:
+    $ref: 'write/categories/cid/watch/member.yaml'
   /categories/{cid}/privileges:
     $ref: 'write/categories/cid/privileges.yaml'
   /categories/{cid}/privileges/{privilege}:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
+  /categories/{cid}/privileges/{privilege}/{member}:
+    $ref: 'write/categories/cid/privileges/privilege/member.yaml'
   /categories/{cid}/moderator/{uid}:
     $ref: 'write/categories/cid/moderator/uid.yaml'
   /categories/{cid}/follow:
     $ref: 'write/categories/cid/follow.yaml'
+  /categories/{cid}/follow/{actor}:
+    $ref: 'write/categories/cid/follow/actor.yaml'
   /topics/:
     $ref: 'write/topics.yaml'
   /topics/{tid}:
@@ -212,8 +218,18 @@ paths:
     $ref: 'write/posts/pid/owner.yaml'
   /posts/owner:
     $ref: 'write/posts/owner.yaml'
+  /notifications:
+    $ref: 'write/notifications.yaml'
+  /notifications/{nid}:
+    $ref: 'write/notifications/nid.yaml'
+  /notifications/count:
+    $ref: 'write/notifications/count.yaml'
+  /notifications/{nid}/read:
+    $ref: 'write/notifications/nid/read.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
+  /chats/search:
+    $ref: 'write/chats/search.yaml'
   /chats/unread:
     $ref: 'write/chats/unread.yaml'
   /chats/sort:
@@ -280,10 +296,18 @@ paths:
     $ref: 'write/admin/activitypub/rules.yaml'
   /admin/activitypub/rules/{rid}:
     $ref: 'write/admin/activitypub/rules/rid.yaml'
+  /admin/activitypub/rules/order:
+    $ref: 'write/admin/activitypub/rules/order.yaml'
   /admin/activitypub/relays:
     $ref: 'write/admin/activitypub/relays.yaml'
   /admin/activitypub/relays/{url}:
     $ref: 'write/admin/activitypub/relays/url.yaml'
+  /admin/activitypub/blocklists:
+    $ref: 'write/admin/activitypub/blocklists.yaml'
+  /admin/activitypub/blocklists/{url}:
+    $ref: 'write/admin/activitypub/blocklists/url.yaml'
+  /admin/activitypub/blocklists/{url}/refresh:
+    $ref: 'write/admin/activitypub/blocklists/url/refresh.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:

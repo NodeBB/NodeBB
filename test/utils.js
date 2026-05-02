@@ -4,7 +4,6 @@
 const assert = require('assert');
 const validator = require('validator');
 const { JSDOM } = require('jsdom');
-const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
 describe('Utility Methods', () => {
@@ -70,16 +69,6 @@ describe('Utility Methods', () => {
 		});
 	});
 
-	it('should preserve case if requested', (done) => {
-		assert.strictEqual(slugify('UPPER CASE', true), 'UPPER-CASE');
-		done();
-	});
-
-	it('should work if a number is passed in', (done) => {
-		assert.strictEqual(slugify(12345), '12345');
-		done();
-	});
-
 	describe('username validation', () => {
 		it('accepts latin-1 characters', () => {
 			const username = "John\"'-. Doeäâèéë1234";
@@ -88,6 +77,17 @@ describe('Utility Methods', () => {
 
 		it('rejects empty string', () => {
 			const username = '';
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
+		it('rejects string with only spaces', () => {
+			const username = '    ';
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
+		it('rejects string with tabs', () => {
+			// eslint-disable-next-line @stylistic/js/no-tabs
+			const username = '		';
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 
@@ -101,6 +101,11 @@ describe('Utility Methods', () => {
 
 		it('should reject tabs', () => {
 			assert.equal(utils.isUserNameValid('myusername\t'), false);
+		});
+
+		it('should reject hangul filler U+3164', () => {
+			assert.equal(utils.isUserNameValid('myusernameㅤ'), false);
+			assert.equal(utils.isUserNameValid('ㅤㅤㅤ'), false);
 		});
 
 		it('accepts square brackets', () => {

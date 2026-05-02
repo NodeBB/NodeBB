@@ -3,5 +3,11 @@
 	"welcome-notification": "Notification de bienvenue",
 	"welcome-notification-link": "Lien de notification de bienvenue",
 	"welcome-notification-uid": "Notification de bienvenue de l'utilisateur (UID)",
-	"post-queue-notification-uid": "File d'attente utilisateur (UID)"
+	"post-queue-notification-uid": "File d'attente utilisateur (UID)",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
+	"notification-delay": "Délai d’envoi des e-mails de notification (secondes)",
+	"notification-delay-help": "Si l’utilisateur a lu la notification pendant ce délai, l’e-mail ne sera pas envoyé.<br/> Valeur par défaut : 60 secondes.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }

@@ -92,7 +92,8 @@ async function getNodeInfo() {
 		},
 	};
 
-	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024 * 1024)).toFixed(3);
+	data.process.memoryUsage.rssReadable = (data.process.memoryUsage.rss / (1024 * 1024 * 1024)).toFixed(2);
+	data.process.memoryUsage.heapUsedReadable = (data.process.memoryUsage.heapUsed / (1024 * 1024 * 1024)).toFixed(2);
 	data.process.uptimeHumanReadable = humanReadableUptime(data.process.uptime);
 	data.os.freemem = (data.os.freemem / (1024 * 1024 * 1024)).toFixed(2);
 	data.os.totalmem = (data.os.totalmem / (1024 * 1024 * 1024)).toFixed(2);

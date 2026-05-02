@@ -137,6 +137,7 @@
     "allowed-file-types": "İzin verilen dosya tipleri %1",
     "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?",
     "reconnecting-message": "%1 ile bağlantınız koptu, yeniden bağlanmak için lütfen bekleyiniz.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Oynat",
     "cookies.message": "Bu web sitesi en iyi deneyimi elde etmeniz amacıyla çerezlerden yararlanır.",
     "cookies.accept": "Anladım!",

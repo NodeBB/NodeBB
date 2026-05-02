@@ -1,0 +1,51 @@
+delete:
+  tags:
+    - categories
+  summary: update watch state for specific user
+  description: |
+    This operation changes the watch state for a specific user in the category.
+    Unlike the general watch state update, this route takes the user ID directly in the path.
+
+    Note that a category can be watched, not watched, or ignored:
+
+      * A category that is watched will have topics that show up in both `/unread` and `/recent`
+      * A category that is *not* watched will have topics that show up in `/recent` but not `/unread`
+      * A category that is ignored will not have topics that show up in either route.
+
+    This API call does not pertain to notifications for new topics in categories.
+    That behaviour is handled by a third-party plugin — nodebb-plugin-category-notifications
+
+    Additionally, when a category's watch state is updated, all of that category's children also have their watch states updated.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+    - in: path
+      name: member
+      schema:
+        type: string
+      required: true
+      description: a valid user id
+      example: 1
+  responses:
+    '200':
+      description: categories watch state successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  modified:
+                    type: array
+                    description: A list of cids that have had their watch states modified.
+                    items:
+                      type: string

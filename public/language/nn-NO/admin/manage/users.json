@@ -23,6 +23,7 @@
 	"purge": "Rensk",
 	"download-csv": "Last ned CSV",
 	"custom-user-fields": "Tilpassa brukerfelt",
+	"custom-reasons": "Custom Reasons",
 	"manage-groups": "Administrer grupper",
 	"set-reputation": "Sett omdømme",
 	"add-group": "Legg til gruppe",
@@ -39,6 +40,7 @@
 	"250-per-page": "250 per side",
 	"500-per-page": "500 per side",
 
+	"search.help": "Use &quot;*&quot; to make partial searches, for example &quot;*query&quot;",
 	"search.uid": "Søk etter brukar-ID",
 	"search.uid-placeholder": "Brukar-ID",
 	"search.username": "Søk etter brukarnamn",
@@ -54,6 +56,7 @@
 	"inactive.12-months": "Inaktiv i 12 månader",
 
 	"users.uid": "Brukar-ID",
+	"users.user-id": "User ID",
 	"users.username": "Brukarnamn",
 	"users.email": "E-post",
 	"users.no-email": "Ingen e-post",
@@ -62,6 +65,7 @@
 	"users.validation-pending": "Validering ventar",
 	"users.validation-expired": "Validering utløpt",
 	"users.ip": "IP-adresse",
+	"users.recent-ips": "Recent IPs",
 	"users.postcount": "Innleggstal",
 	"users.reputation": "Omdømme",
 	"users.flags": "Rapportar",
@@ -77,9 +81,11 @@
 
 	"temp-ban.length": "Lengd på utestenging",
 	"temp-ban.reason": "Årsak til utestenging",
+	"temp-ban.select-reason": "Select a reason",
 	"temp-ban.hours": "Timar",
 	"temp-ban.days": "Dagar",
 	"temp-ban.explanation": "Forklaring på utestenging",
+	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Er du sikker på at du vil utestenge denne brukaren?",
 	"alerts.confirm-ban-multi": "Er du sikker på at du vil utestenge dei valde brukarane?",

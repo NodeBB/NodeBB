@@ -174,6 +174,14 @@ SocketUser.editModerationNote = async function (socket, data) {
 	return await user.getModerationNotesByIds(data.uid, [data.id]);
 };
 
+SocketUser.getCustomReasons = async function (socket, { type }) {
+	const canBan = await privileges.users.hasBanPrivilege(socket.uid);
+	if (!canBan) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	return await user.bans.getCustomReasons({ type });
+};
+
 SocketUser.deleteUpload = async function (socket, data) {
 	if (!data || !data.name || !data.uid) {
 		throw new Error('[[error:invalid-data]]');

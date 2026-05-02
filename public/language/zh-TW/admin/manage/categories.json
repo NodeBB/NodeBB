@@ -55,7 +55,7 @@
 	"select-category": "選擇版面",
 	"set-parent-category": "設置上層版面",
 
-	"privileges.description": "您可以在此面板中為網站的某些部分設定訪問控制權。可以分別為每個使用者或每個使用者群組授予權限。從下方的下拉列表中選擇作用的網域。",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "為該版面設定權限：",
 	"privileges.warning": "<strong>注意</strong>：權限設定會立即生效。 調整這些設定後，無需保存。",
 	"privileges.section-viewing": "查看權限",

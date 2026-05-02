@@ -55,7 +55,7 @@
 	"select-category": "Ընտրել կատեգորիա ",
 	"set-parent-category": "Սահմանել ծնողների կատեգորիա",
 
-	"privileges.description": "Դուք կարող եք կարգավորել մուտքի վերահսկման արտոնությունները կայքի մասերի համար այս բաժնում: Արտոնությունները կարող են տրվել յուրաքանչյուր օգտատիրոջ կամ խմբի համար: Ընտրեք ազդեցության տիրույթը ներքևի բացվող ցանկից:",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Արտոնությունների կարգավորում",
 	"privileges.warning": "Նշում. արտոնությունների կարգավորումներն ուժի մեջ են մտնում անմիջապես: Այս կարգավորումները կարգավորելուց հետո անհրաժեշտ չէ պահպանել կատեգորիան:",
 	"privileges.section-viewing": "Դիտման արտոնություններ",

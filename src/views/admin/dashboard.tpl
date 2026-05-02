@@ -114,7 +114,7 @@
 			<div class="card-body">
 				<div id="active-users" class="stats">
 					<table class="table table-sm text-sm">
-						<tbody>
+						<tbody class="text-tabular">
 							<tr>
 								<td>[[admin/dashboard:active-users.users]]</td>
 								<td id="active-users-loggedin" class="text-end" style="width: 1px;"></td>
@@ -140,7 +140,7 @@
 		<div class="card">
 			<div class="card-header d-flex justify-content-between">[[admin/dashboard:popular-searches]] <a href="{config.relative_path}/admin/dashboard/searches" class="text-xs">[[admin/dashboard:view-all]]</a></div>
 			<div class="card-body">
-				<table class="table table-sm text-sm search-list w-100">
+				<table class="table table-sm text-sm text-tabular search-list w-100">
 					<tbody>
 						{{{ each popularSearches }}}
 						<tr>

@@ -25,7 +25,7 @@ Contexts.get = async (uid, id) => {
 	}
 
 	try {
-		({ id, type, context } = await activitypub.get('uid', uid, id, { headers }));
+		({ id, type, context } = await activitypub.get('uid', uid, id, { headers, cache: false }));
 		if (activitypub._constants.acceptable.contextTypes.has(type)) { // is context
 			activitypub.helpers.log(`[activitypub/context] ${id} is the context.`);
 			return { context: id };
@@ -35,7 +35,7 @@ Contexts.get = async (uid, id) => {
 		}
 
 		// context provided; try to resolve it.
-		({ type } = await activitypub.get('uid', uid, context));
+		({ type } = await activitypub.get('uid', uid, context, { cache: false }));
 	} catch (e) {
 		if (e.code === 'ap_get_304') {
 			activitypub.helpers.log(`[activitypub/context] ${id} context unchanged.`);
@@ -65,7 +65,7 @@ Contexts.getItems = async (uid, id, options) => {
 	} else {
 		activitypub.helpers.log(`[activitypub/context] Retrieving context/page ${id}`);
 		try {
-			object = await activitypub.get('uid', uid, id);
+			object = await activitypub.get('uid', uid, id, { cache: false });
 		} catch (e) {
 			return false;
 		}
@@ -124,7 +124,7 @@ async function parseString(uid, item) {
 	const { type, id } = await activitypub.helpers.resolveLocalId(item);
 	const pid = type === 'post' && id ? id : item;
 	const postData = await posts.getPostData(pid);
-	if (postData) {
+	if (postData && postData.pid) {
 		// Already cached
 		return postData;
 	}
@@ -157,7 +157,7 @@ async function parseItem(uid, item) {
 	const { type, id } = await activitypub.helpers.resolveLocalId(item.id);
 	const pid = type === 'post' && id ? id : item.id;
 	const postData = await posts.getPostData(pid);
-	if (postData) {
+	if (postData && postData.pid) {
 		// Already cached
 		return postData;
 	}

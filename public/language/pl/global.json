@@ -137,6 +137,7 @@
     "allowed-file-types": "Dozwolone typy plików %1",
     "unsaved-changes": "Twoje zmiany nie zostały zapisane. Czy na pewno chcesz opuścić stronę?",
     "reconnecting-message": "Zdaje się, że Twoje połączenie z %1 zostało przerwane. Zaczekaj na ponowne nawiązanie połączenia.",
+    "reconnected-message": "Reconnected to %1 successfully.",
     "play": "Odtwórz",
     "cookies.message": "Ta strona używa plików cookies, by zapewnić Ci wygodę użytkowania.",
     "cookies.accept": "Rozumiem!",

@@ -140,11 +140,11 @@ describe('authentication', () => {
 
 	it('should regenerate the session identifier on successful login', async () => {
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
-		const { hostname, path } = url.parse(nconf.get('url'));
-		const sid = String(jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
+		const { hostname, pathname } = new URL(nconf.get('url'));
+		const sid = String(jar.store.idx[hostname][pathname]['express.sid']).match(matchRegexp)[1];
 		await helpers.logoutUser(jar);
 		const newJar = (await helpers.loginUser('regular', 'regularpwd')).jar;
-		const newSid = String(newJar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
+		const newSid = String(newJar.store.idx[hostname][pathname]['express.sid']).match(matchRegexp)[1];
 
 		assert.notStrictEqual(newSid, sid);
 	});
@@ -282,6 +282,21 @@ describe('authentication', () => {
 			},
 		});
 		assert.equal(response.status, 500);
+	});
+
+	it('should fail to login if body is missing', async () => {
+		const jar = request.jar();
+		const csrf_token = await helpers.getCsrfToken(jar);
+
+		const { response, body } = await request.post(`${nconf.get('url')}/login`, {
+			body: null,
+			jar: jar,
+			headers: {
+				'x-csrf-token': csrf_token,
+			},
+		});
+		assert.equal(response.status, 403);
+		assert.strictEqual(body, '[[error:invalid-username-or-password]]');
 	});
 
 	it('should fail to login if user does not exist', async () => {

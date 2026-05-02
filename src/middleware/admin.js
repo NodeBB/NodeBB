@@ -17,14 +17,22 @@ const controllers = {
 const middleware = module.exports;
 
 middleware.buildHeader = helpers.try(async (req, res, next) => {
-	res.locals.renderAdminHeader = true;
+	await doBuildHeader(req, res);
+	next();
+});
+
+middleware.buildHeaderAsync = async (req, res) => {
+	await doBuildHeader(req, res);
+};
+
+async function doBuildHeader(req, res) {
+	res.locals.renderHeaderType = 'admin';
 	if (req.method === 'GET') {
 		await require('./index').applyCSRFasync(req, res);
 	}
-
+	await plugins.hooks.fire('filter:middleware.buildAdminHeader', { req: req, locals: res.locals });
 	res.locals.config = await controllers.admin.loadConfig(req);
-	next();
-});
+}
 
 middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	// Kick out guests, obviously

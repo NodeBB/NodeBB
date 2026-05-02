@@ -2,7 +2,6 @@
 
 const validator = require('validator');
 const winston = require('winston');
-const cronJob = require('cron').CronJob;
 
 const db = require('../database');
 const meta = require('../meta');
@@ -14,14 +13,6 @@ const slugify = require('../slugify');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
-	new cronJob('0 * * * *', (async () => {
-		try {
-			await User.autoApprove();
-		} catch (err) {
-			winston.error(err.stack);
-		}
-	}), null, true);
-
 	User.createOrQueue = async function (req, userData, opts = {}) {
 		User.checkUsernameLength(userData.username);
 		const queue = await User.shouldQueueUser(req.ip);
@@ -110,9 +101,8 @@ module.exports = function (User) {
 	};
 
 	function parseCreateOptions(userData) {
-		let opts = {};
 		try {
-			opts = JSON.parse(userData._opts || '{}');
+			const opts = JSON.parse(userData._opts || '{}');
 			delete userData._opts;
 			return opts;
 		} catch (err) {

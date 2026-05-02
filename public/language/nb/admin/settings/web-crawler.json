@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "Deaktiver RSS-feeder",
 	"disable-sitemap-xml": "Deaktiver Sitemap.xml",
 	"sitemap-topics": "Antall emner som vises i nettstedskartet",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Tøm hurtigbuffer for nettstedskart",
 	"view-sitemap": "Vis nettstedskart"
 }

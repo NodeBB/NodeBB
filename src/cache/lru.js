@@ -5,6 +5,7 @@ module.exports = function (opts) {
 	const os = require('os');
 
 	const pubsub = require('../pubsub');
+	const tracker = require('./tracker');
 
 	// lru-cache@7 deprecations
 	const winston = require('winston');
@@ -162,5 +163,6 @@ module.exports = function (opts) {
 		return lruCache.peek(key);
 	};
 
+	tracker.addCache(opts.name, cache);
 	return cache;
 };

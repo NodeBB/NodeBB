@@ -117,23 +117,17 @@ app.onDomReady();
 				fallback = $(this).text();
 			});
 
-			let mainTitle;
 			let pageTitle;
 			if (/admin\/plugins\//.test(url)) {
-				mainTitle = fallback;
-				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
+				pageTitle = '[[admin/menu:section-plugins]] > ' + fallback;
 			} else {
 				const matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				if (matches) {
-					mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
+					const mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
 					pageTitle = '[[admin/menu:section-' +
 						(matches[1] === 'development' ? 'advanced' : matches[1]) +
 						']]' + (matches[2] ? (' > ' + mainTitle) : '');
-					if (matches[2] === 'settings') {
-						mainTitle = translator.compile('admin/menu:settings.page-title', mainTitle);
-					}
 				} else {
-					mainTitle = '[[admin/menu:section-dashboard]]';
 					pageTitle = '[[admin/menu:section-dashboard]]';
 				}
 			}

@@ -1,5 +1,6 @@
 {
     "invalid-data": "Неисправни подаци",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Неважећи JSON",
     "wrong-parameter-type": "Очекивана је вредност типа %3 за својство %1, али је уместо тога примљен %2",
     "required-parameters-missing": "Недостајали су обавезни параметри у овом API позиву: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Неважећа путања",
     "folder-exists": "Фасцикла постоји",
     "invalid-pagination-value": "Неважећа вредност приликом нумерисања страница, мора бити најмање %1 а највише %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Корисничко име је заузето",
     "email-taken": "Email address is already taken.",
     "email-nochange": "Унета е-пошта је иста као е-пошта која је већ у евиденцији.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
-    "activitypub.actor-mismatch": "The received activity is being carried out by an actor that is different from expected.",
-    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server"
+    "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

@@ -1,5 +1,6 @@
 {
     "invalid-data": "غلط ڈیٹا",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "غلط JSON",
     "wrong-parameter-type": "پراپرٹی '%1' کے لیے %3 قسم کی قدر متوقع تھی، لیکن اس کے بجائے %2 موصول ہوا",
     "required-parameters-missing": "اس API کال سے ضروری پیرامیٹرز غائب ہیں: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "غلط راستہ",
     "folder-exists": "اس نام کا فولڈر پہلے سے موجود ہے",
     "invalid-pagination-value": "غلط صفحہ بندی کی قدر، یہ %1 اور %2 کے درمیان ہونی چاہیے",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "صارف نام پہلے سے لیا جا چکا ہے",
     "email-taken": "ای میل ایڈریس پہلے سے لیا جا چکا ہے۔",
     "email-nochange": "درج کردہ ای میل موجودہ ای میل جیسا ہی ہے۔",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "مخصوص مواد حاصل نہیں کیا جا سکا۔",
     "activitypub.pubKey-not-found": "عوامی کلید کو تسلیم نہیں کیا جا سکا، اس لیے ڈیٹا کی تصدیق نہیں کی جا سکی۔",
     "activitypub.origin-mismatch": "موصول شدہ آبجیکٹ کا اصل بھیجنے والے کے اصل سے مطابقت نہیں رکھتا",
-    "activitypub.actor-mismatch": "موصول شدہ عمل کو متوقع سے مختلف ذریعہ سے انجام دیا جا رہا ہے۔",
-    "activitypub.not-implemented": "درخواست کو مسترد کر دیا گیا کیونکہ اس کا یا اس کے کسی حصے کو اس سرور کے ذریعے سپورٹ نہیں کیا جاتا جس کی طرف یہ ہدایت کی گئی ہے"
+    "activitypub.not-implemented": "درخواست کو مسترد کر دیا گیا کیونکہ اس کا یا اس کے کسی حصے کو اس سرور کے ذریعے سپورٹ نہیں کیا جاتا جس کی طرف یہ ہدایت کی گئی ہے",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

@@ -198,7 +198,7 @@ module.exports = function (middleware) {
 	});
 
 	middleware.redirectToAccountIfLoggedIn = helpers.try(async (req, res, next) => {
-		if (req.session.forceLogin || req.uid <= 0) {
+		if ((req.path === '/login' && req.session.forceLogin) || req.uid <= 0) {
 			return next();
 		}
 		const userslug = await user.getUserField(req.uid, 'userslug');
@@ -343,11 +343,11 @@ module.exports = function (middleware) {
 			return false; // not a category or topic url, no check required
 		}
 
-		const [registeredAllowed, verifiedAllowed] = await Promise.all([
+		const [[registeredAllowed], [verifiedAllowed]] = await Promise.all([
 			privilegeHelpers.isAllowedTo([privilege], 'registered-users', cid),
 			privilegeHelpers.isAllowedTo([privilege], 'verified-users', cid),
 		]);
 
-		return !registeredAllowed.pop() && verifiedAllowed.pop();
+		return !registeredAllowed && verifiedAllowed;
 	}
 };

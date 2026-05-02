@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ugyldige data",
+    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
     "invalid-json": "Ugyldig JSON",
     "wrong-parameter-type": "Ein verdi av typen %3 var venta for eigenskapen `%1`, men %2 vart mottatt i staden",
     "required-parameters-missing": "Naudsynt parameter mangla i denne API-kallinga: %1",
@@ -32,6 +33,7 @@
     "invalid-path": "Ugyldig sti",
     "folder-exists": "Mappa eksisterer",
     "invalid-pagination-value": "Ugyldig pagineringsverdi, må vere minst %1 og høgst %2",
+    "invalid-unread-cutoff": "Invalid unread cutoff value, must be at least 1 and at most %1",
     "username-taken": "Brukarnamn er allereie tatt",
     "email-taken": "E-postadressa er allereie i bruk.",
     "email-nochange": "Den oppgitte e-posten er den same som e-posten som allereie er registrert.",
@@ -264,6 +266,6 @@
     "activitypub.get-failed": "Kan ikkje hente den spesifiserte ressursen.",
     "activitypub.pubKey-not-found": " Kan ikkje løyse opp den offentlege nøkkelen, så verifisering av nyttelasta kan ikkje gjennomførast.",
     "activitypub.origin-mismatch": "Den mottatte objektet sin opphavsstad samsvarar ikkje med avsendaren sin opphavsstad.",
-    "activitypub.actor-mismatch": " Den mottatte aktiviteten blir utført av ein aktør som er annleis enn forventa.",
-    "activitypub.not-implemented": "Førespurnaden blei avvist fordi han, eller ein del av han, ikkje er implementert av mottakarserveren."
+    "activitypub.not-implemented": "Førespurnaden blei avvist fordi han, eller ein del av han, ikkje er implementert av mottakarserveren.",
+    "activitypub.orphan": "The received object is not associated with any known local user."
 }

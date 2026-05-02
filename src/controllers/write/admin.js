@@ -104,8 +104,17 @@ Admin.activitypub.deleteRule = async (req, res) => {
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 
-Admin.activitypub.addRelay = async (req, res) => {
+Admin.activitypub.reorderRules = async (req, res) => {
+	const { rids } = req.body;
+	await activitypub.rules.reorder(rids);
+	helpers.formatApiResponse(200, res, await activitypub.rules.list());
+};
+
+Admin.activitypub.addRelay = async (req, res, next) => {
 	const { url } = req.body;
+	if (!url) {
+		return next();
+	}
 
 	await activitypub.relays.add(url);
 	helpers.formatApiResponse(200, res, await activitypub.relays.list());
@@ -116,4 +125,37 @@ Admin.activitypub.removeRelay = async (req, res) => {
 
 	await activitypub.relays.remove(url);
 	helpers.formatApiResponse(200, res, await activitypub.relays.list());
+};
+
+
+Admin.activitypub.addBlocklist = async (req, res, next) => {
+	const { url } = req.body;
+	if (!url) {
+		return next();
+	}
+
+	await activitypub.blocklists.add(url);
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.list());
+};
+
+Admin.activitypub.viewBlocklist = async (req, res) => {
+	const { url } = req.params;
+
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.get(url));
+};
+
+Admin.activitypub.removeBlocklist = async (req, res) => {
+	const { url } = req.params;
+
+	await activitypub.blocklists.remove(url);
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.list());
+};
+
+Admin.activitypub.refreshBlocklist = async (req, res) => {
+	const { url } = req.params;
+
+	const count = await activitypub.blocklists.refresh(url);
+	const blocklists = await activitypub.blocklists.list();
+
+	helpers.formatApiResponse(200, res, { blocklists, count });
 };

@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "RSS فیڈز کو غیر فعال کریں",
 	"disable-sitemap-xml": "ویب سائٹ کا نقشہ ('Sitemap.xml') غیر فعال کریں",
 	"sitemap-topics": "ویب سائٹ کے نقشے میں دکھائے جانے والے موضوعات کی تعداد",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "ویب سائٹ کے نقشے کا کیش صاف کریں",
 	"view-sitemap": "ویب سائٹ کا نقشہ دیکھیں"
 }
