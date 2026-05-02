@@ -559,6 +559,7 @@ Mocks.actors.category = async (cid) => {
 		type: 'Group',
 		name: utils.decodeHTMLEntities(name),
 		preferredUsername,
+		attributedTo: `${nconf.get('url')}/category/${cid}/moderators`,
 		summary: utils.decodeHTMLEntities(summary),
 		// image, // todo once categories have cover photos
 		icon,

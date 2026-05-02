@@ -7,6 +7,7 @@ const db = require('../../database');
 const meta = require('../../meta');
 const posts = require('../../posts');
 const user = require('../../user');
+const groups = require('../../groups');
 const activitypub = require('../../activitypub');
 const utils = require('../../utils');
 const helpers = require('../helpers');
@@ -242,6 +243,30 @@ Controller.getCategoryOutbox = async (req, res) => {
 			};
 		}));
 	}
+
+	res.status(200).json({
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		...collection,
+	});
+};
+
+Controller.getCategoryModerators = async (req, res) => {
+	const { cid } = req.params;
+	const moderatorUids = await user.getModeratorUids([cid]);
+	const adminsAndGlobalMods = await groups.getMembersOfGroups(['administrators', 'Global Moderators']);
+	const allModerators = [...new Set([...moderatorUids, ...adminsAndGlobalMods.flat()])];
+
+	const actors = await Promise.all(allModerators.map(async (uid) => {
+		return await activitypub.mocks.actors.user(uid);
+	}));
+
+	const collection = await activitypub.helpers.generateCollectionFromItems({
+		items: actors,
+		count: actors.length,
+		page: 1,
+		perPage: actors.length,
+		url: `${nconf.get('url')}/category/${cid}/moderators`,
+	});
 
 	res.status(200).json({
 		'@context': 'https://www.w3.org/ns/activitystreams',
