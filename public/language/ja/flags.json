@@ -96,6 +96,6 @@
 	"purge-cancelled": "フラグの完全削除をキャンセルしました",
 	"bulk-purge": "フラグを完全削除",
 	"bulk-success": "%1件のフラグを更新しました",
-	"flagged-timeago": "フラグ付け <span class=\\\"timeago\\\" title=\\\"%1\\\"></span>",
+	"flagged-timeago": "フラグ付け <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[自動フラグ] %1件の低評価を受けました。"
 }

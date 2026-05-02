@@ -1,6 +1,6 @@
 {
     "type-to-search": "検索するには入力",
-    "results-matching": "%1 件の結果(s) キーワード \\\"%2\\\", (検索時間 %3 秒)",
+    "results-matching": "%1 件の結果 キーワード \"%2\", (検索時間 %3 秒)",
     "no-matches": "一致なし",
     "advanced-search": "高度な検索",
     "in": "検索範囲",

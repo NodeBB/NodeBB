@@ -41,7 +41,7 @@
     "chat.public-rooms": "Публични стаи (%1)",
     "chat.private-rooms": "Частни стаи (%1)",
     "chat.create-room": "Създаване на стая за разговор",
-    "chat.search-chats-placeholder": "Search chats...",
+    "chat.search-chats-placeholder": "Търсене на разговори…",
     "chat.private.option": "Частна (видима само за потребителите добавени в стаята)",
     "chat.public.option": "Публична (видима за всички в избраните групи)",
     "chat.public.groups-help": "За да създадете стая за разговор видима за всички потребители изберете групата с регистрирани потребители от списъка.",
