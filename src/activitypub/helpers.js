@@ -493,16 +493,23 @@ Helpers.generateCollection = async ({ set, method, count, page, perPage, url }) 
 	page = parseInt(page, 10) || 1;
 	page = Math.max(1, Math.min(page, pageCount));
 	if (page) {
-		const invalidPagination = page < 1 || page > pageCount;
-		if (invalidPagination) {
-			throw new Error('[[error:invalid-data]]');
-		}
-
 		const start = Math.max(0, (page - 1) * perPage);
 		const stop = Math.max(0, start + perPage - 1);
 		items = await method.call(null, start, stop);
 	}
 
+	return Helpers.generateCollectionFromItems({
+		items,
+		count,
+		page,
+		perPage,
+		url,
+		paginate,
+	});
+};
+
+Helpers.generateCollectionFromItems = async ({ items, count, page, perPage, url, paginate }) => {
+	const pageCount = Math.max(1, Math.ceil(count / perPage));
 	const object = {
 		type: paginate && items.length ? 'OrderedCollectionPage' : 'OrderedCollection',
 		totalItems: count,
