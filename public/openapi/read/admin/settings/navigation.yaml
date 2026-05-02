@@ -36,6 +36,8 @@ get:
                         text:
                           type: string
                           description: Label text for this navigation item
+                        dropdownContent:
+                          type: string
                         order:
                           type: integer
                           description: Ordinality of this item, lower value appears earlier
