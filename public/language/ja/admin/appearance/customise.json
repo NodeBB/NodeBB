@@ -15,6 +15,6 @@
 	"custom-css.livereload": "ライブリロードを有効にする",
 	"custom-css.livereload.description": "これを有効にすると、保存ボタンをクリックするたびにアカウントのすべてのデバイスのすべてのセッションが強制的に更新されます。",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "ここでBootstrap変数を上書きできます。<a href=\\\"https://bootstrap.build/app\\\">bootstrap.build</a>などのツールを使用して出力をここに貼り付けることもできます。<br/>変更には再ビルドと再起動が必要です。",
+	"bsvariables.description": "ここでBootstrap変数を上書きできます。<a href=\"https://bootstrap.build/app\">bootstrap.build</a>などのツールを使用して出力をここに貼り付けることもできます。<br/>変更には再ビルドと再起動が必要です。",
 	"bsvariables.enable": "_variables.scssを有効にする"
 }

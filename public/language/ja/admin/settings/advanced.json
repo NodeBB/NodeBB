@@ -21,7 +21,7 @@
 	"headers.coop": "Cross-Origin-Opener-Policy",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"headers.permissions-policy": "Permissions-Policy",
-	"headers.permissions-policy-help": "Permissions-Policyヘッダーの設定を許可します。例: \\\"geolocation=*, camera=()\\\"、<a href=\\\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\\\">詳細</a>をご覧ください。",
+	"headers.permissions-policy-help": "Permissions-Policyヘッダーの設定を許可します。例: \"geolocation=*, camera=()\"、<a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">詳細</a>をご覧ください。",
 	"hsts": "厳格なトランスポートセキュリティ",
 	"hsts.enabled": "HSTSを有効にする（推奨）",
 	"hsts.maxAge": "HSTS最大経過時間",

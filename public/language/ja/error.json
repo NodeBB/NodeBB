@@ -263,11 +263,11 @@
     "api.reauth-required": "アクセスしようとしているリソースには（再）認証が必要です。",
     "activitypub.not-enabled": "このサーバーではフェデレーションは有効になっていません",
     "activitypub.invalid-id": "入力IDを解決できません。形式が正しくない可能性があります。",
-    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
+    "activitypub.invalid-content-type": "返されたコンテンツに想定外の content-type が指定されていました",
     "activitypub.get-failed": "指定されたリソースを取得できません。",
     "activitypub.pubKey-not-found": "公開鍵を解決できないため、ペイロードの検証ができません。",
     "activitypub.origin-mismatch": "受信したオブジェクトのオリジンが送信者のオリジンと一致しません",
     "activitypub.not-implemented": "リクエストまたはその一部が受信サーバーで実装されていないため、拒否されました",
     "activitypub.orphan": "受信したオブジェクトは、既知のローカルユーザーのいずれにも関連付けられていません。",
-    "activitypub.rate-limited": "Your IP address has been rate-limited."
+    "activitypub.rate-limited": "あなたのIPアドレスはレート制限されています。"
 }

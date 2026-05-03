@@ -7,7 +7,7 @@
 	"allow-login-with.username": "ユーザー名のみ",
 	"account-settings": "アカウント設定",
 	"gdpr-enabled": "GDPR同意収集を有効にする",
-	"gdpr-enabled-help": "有効にすると、すべての新規登録者は<a href=\\\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\\\">一般データ保護規則（GDPR）</a>に基づくデータ収集と使用への明示的な同意が求められます。<strong>注意</strong>: GDPRを有効にしても、既存ユーザーに同意を求めることはありません。そのためには、GDPRプラグインをインストールする必要があります。",
+	"gdpr-enabled-help": "有効にすると、すべての新規登録者は<a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">一般データ保護規則（GDPR）</a>に基づくデータ収集と使用への明示的な同意が求められます。<strong>注意</strong>: GDPRを有効にしても、既存ユーザーに同意を求めることはありません。そのためには、GDPRプラグインをインストールする必要があります。",
 	"disable-username-changes": "ユーザー名の変更を無効にする",
 	"disable-email-changes": "Eメールの変更を無効にする",
 	"disable-password-changes": "パスワードの変更を無効にする",
