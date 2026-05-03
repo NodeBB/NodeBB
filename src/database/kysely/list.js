@@ -148,9 +148,11 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-
 		const values = Array.isArray(value) ? value.map(v => String(v)) : [String(value)];
-
+		if (!values.length) {
+			// MySQL rejects empty `IN ()`; other dialects accept it.
+			return;
+		}
 		// Simple delete without reindexing - gaps are fine
 		await module.db.deleteFrom('legacy_list')
 			.where('_key', '=', key)

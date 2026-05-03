@@ -81,17 +81,15 @@ module.exports = function (module) {
 	};
 
 	module.setRemove = async function (key, value) {
-		if (!key) {
+		if (!key || (Array.isArray(key) && !key.length)) {
 			return;
 		}
-
 		const values = Array.isArray(value) ? value.map(String) : [String(value)];
 		if (!values.length) {
+			// MySQL rejects empty `IN ()`; other dialects accept it.
 			return;
 		}
-
 		const keys = Array.isArray(key) ? key : [key];
-
 		await module.db.deleteFrom('legacy_set')
 			.where('_key', 'in', keys)
 			.where('member', 'in', values)

@@ -171,11 +171,16 @@ features.guessDialect = function (detected) {
  * Get the appropriate timestamp type for a dialect.
  */
 features.getTimestampType = function (dialect) {
+	// MySQL: use DATETIME (not TIMESTAMP). MySQL 5.6/5.7 with default
+	// `explicit_defaults_for_timestamp=OFF` injects an implicit DEFAULT
+	// CURRENT_TIMESTAMP into the first nullable TIMESTAMP column, which
+	// would silently mark every legacy_object row as already-expired.
+	// DATETIME has no implicit default and no 2038 limit.
 	const typeMap = {
 		sqlite: 'text',
 		postgres: 'timestamptz',
 		pglite: 'timestamptz',
-		mysql: 'timestamp',
+		mysql: 'datetime',
 	};
 	return typeMap[dialect] || 'text';
 };

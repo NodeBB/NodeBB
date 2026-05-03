@@ -2,7 +2,7 @@
 
 module.exports = function (module) {
 	module.sortedSetRemove = async function (key, value) {
-		if (!key) {
+		if (!key || (Array.isArray(key) && !key.length)) {
 			return;
 		}
 		const isValueArray = Array.isArray(value);

@@ -97,6 +97,7 @@
         "mkdirp": "3.0.1",
         "mongodb": "7.2.0",
         "morgan": "1.10.1",
+        "mysql2": "3.22.3",
         "mousetrap": "1.6.5",
         "multer": "2.1.1",
         "nconf": "0.13.0",

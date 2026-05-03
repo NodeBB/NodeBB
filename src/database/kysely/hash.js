@@ -337,25 +337,12 @@ module.exports = function (module) {
 			);
 		}
 
+		// Atomic add via UPSERT-with-arithmetic — no SELECT-then-UPDATE race.
+		// Dialect dispatch (ON DUPLICATE KEY vs ON CONFLICT, VALUES() vs
+		// excluded., per-dialect cast types) lives in helpers.upsertAddTyped.
 		return await helpers.withTransaction(key, 'hash', async (client) => {
-			const current = await client
-				.selectFrom('legacy_hash')
-				.select(['value', 'value_type'])
-				.where('_key', '=', key)
-				.where('field', '=', field)
-				.executeTakeFirst();
-
-			const currentValue = current ? Number(decode(current.value, current.value_type)) || 0 : 0;
-			const newValue = currentValue + value;
-
-			await helpers.upsert(
-				client, 'legacy_hash',
-				{ _key: key, field, value: String(newValue), value_type: 'n' },
-				['_key', 'field'],
-				{ value: String(newValue), value_type: 'n' }
-			);
-
-			return newValue;
+			const row = { _key: key, field, value: String(value), value_type: 'n' };
+			return await helpers.upsertAddTyped(client, 'legacy_hash', row, ['_key', 'field']);
 		});
 	};
 
@@ -370,51 +357,28 @@ module.exports = function (module) {
 			];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash');
 
-			// Get all key-field pairs using flatMap
-			const keyFieldPairs = data
-				.filter(([key, fieldValueObj]) => key && fieldValueObj)
-				.flatMap(([key, fieldValueObj]) =>
-					Object.keys(fieldValueObj).map(field => ({ key, field })));
-
-			// Query all existing values at once
-			const existingValues = keyFieldPairs.length ?
-				Object.fromEntries(
-					(
-						await client
-							.selectFrom('legacy_hash')
-							.select(['_key', 'field', 'value', 'value_type'])
-							.where(eb =>
-								eb.or(
-									keyFieldPairs.map(({ key, field }) =>
-										eb.and([eb('_key', '=', key), eb('field', '=', field)]))
-								))
-							.execute()
-					).map(({ _key, field, value, value_type }) => [`${_key}:${field}`, decode(value, value_type)])
-				) :
-				{};
-
-			// Build all rows for upsert
-			const rows = data
-				.filter(([key, fieldValueObj]) => key && fieldValueObj)
-				.flatMap(([key, fieldValueObj]) =>
-					Object.entries(fieldValueObj).map(([field, incValue]) => {
-						const increment = parseInt(incValue, 10) || 0;
-						const existingKey = `${key}:${field}`;
-						const currentValue = existingValues[existingKey] != null ?
-							Number(existingValues[existingKey]) || 0 :
-							0;
-						return {
-							_key: key, field,
-							value: String(currentValue + increment),
-							value_type: 'n',
-						};
-					}));
-
-			if (rows.length) {
-				await helpers.upsertMultiple(
-					client, 'legacy_hash', rows, ['_key', 'field'], VALUE_COLS
-				);
+			// Pre-fold deltas — same key+field appearing twice in `data`
+			// must collapse to a single insert row (ON CONFLICT can only
+			// update each conflict target once per statement). Nested Map
+			// keeps composite lookups O(1) without a delimiter.
+			const folded = new Map();
+			for (const [key, fieldValueObj] of data) {
+				if (!key || !fieldValueObj) continue;
+				let inner = folded.get(key);
+				if (!inner) { inner = new Map(); folded.set(key, inner); }
+				for (const [field, incValue] of Object.entries(fieldValueObj)) {
+					const delta = parseInt(incValue, 10) || 0;
+					inner.set(field, (inner.get(field) || 0) + delta);
+				}
 			}
+			const rows = [];
+			for (const [key, inner] of folded) {
+				for (const [field, delta] of inner) {
+					rows.push({ _key: key, field, value: String(delta), value_type: 'n' });
+				}
+			}
+
+			await helpers.upsertAddTypedMultiple(client, 'legacy_hash', rows, ['_key', 'field']);
 		});
 	};
 };

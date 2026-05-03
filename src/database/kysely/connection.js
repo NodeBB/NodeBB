@@ -81,8 +81,17 @@ const MAKE = {
 			host: co.host, port: co.port, user: co.user, password: co.password,
 			database: co.database, connectionLimit: co.connectionLimit,
 			connectTimeout: co.connectTimeout, ssl: co.ssl,
+			// Force UTC for DATETIME serialization. mysql2 defaults to the
+			// process-local timezone, which silently warps `legacy_object.expireAt`
+			// across a UTC-MySQL ↔ non-UTC client boundary (every TTL call
+			// drifts by the offset). 'Z' makes the driver send/parse DATETIME
+			// values verbatim in UTC.
+			timezone: 'Z',
 		});
-		return new MysqlDialect({ pool: pool.promise() });
+		// kysely's MysqlDialect uses the callback-style `pool.getConnection(cb)`
+		// API; pass the raw mysql2 pool, NOT `pool.promise()` (which would
+		// return a Promise from getConnection and silently hang the driver).
+		return new MysqlDialect({ pool });
 	},
 	async postgres(co) {
 		const { PostgresDialect } = require('kysely');

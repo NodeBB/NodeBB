@@ -28,7 +28,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [22, 24]
-        database: [mongo-dev, mongo, redis, postgres, sqlite]
+        database: [mongo-dev, mongo, redis, postgres, sqlite, mysql]
         include:
           # only run coverage once
           - os: ubuntu-latest
@@ -45,6 +45,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       TEST_ENV: ${{ matrix.test_env || 'production' }}
+      # Bail by default; opt out for the kysely-backed matrix entries so the
+      # full failure surface is visible while we drive parity. Native
+      # backends keep upstream's bail-on-first-failure behaviour.
+      BAIL: ${{ (matrix.database == 'sqlite' || matrix.database == 'mysql') && 'false' || 'true' }}
 
     services:
       postgres:
@@ -79,6 +83,29 @@ jobs:
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
+
+      mysql:
+        # MySQL 5.6 — explicitly chosen as the oldest supported version, to
+        # exercise dialect-portability paths (no row-alias UPSERT, no VALUES
+        # table source, no window functions). Tuned for utf8mb4 + Barracuda
+        # so VARCHAR(255) PKs fit under the 3072-byte index limit.
+        image: 'mysql:5.6'
+        env:
+          MYSQL_ROOT_PASSWORD: rootpw
+          MYSQL_DATABASE: nodebb
+          MYSQL_USER: nodebb
+          MYSQL_PASSWORD: nodebb
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_unicode_ci
+          --innodb_large_prefix=ON
+          --innodb_file_format=Barracuda
+        ports:
+          - 3306:3306
 
     steps:
       - uses: actions/checkout@v6
@@ -179,6 +206,39 @@ jobs:
               "port": 6379
             }
         run: |
+          node app --setup="${SETUP}" --ci="${CI}"
+
+      - name: Setup on MySQL
+        if: startsWith(matrix.database, 'mysql')
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
+
+              "database": "kysely",
+              "kysely:dialect": "mysql",
+              "kysely:host": "127.0.0.1",
+              "kysely:port": 3306,
+              "kysely:username": "root",
+              "kysely:password": "rootpw",
+              "kysely:database": "nodebb"
+            }
+          CI: >-
+            {
+              "dialect": "mysql",
+              "host": "127.0.0.1",
+              "port": 3306,
+              "username": "root",
+              "password": "rootpw",
+              "database": "ci_test"
+            }
+        run: |
+          node -e "const m=require('mysql2/promise');(async()=>{const c=await m.createConnection({host:'127.0.0.1',port:3306,user:'root',password:'rootpw'});await c.query('CREATE DATABASE IF NOT EXISTS nodebb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');await c.query('CREATE DATABASE IF NOT EXISTS ci_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');await c.end();})()"
           node app --setup="${SETUP}" --ci="${CI}"
 
       - name: Setup on SQLite

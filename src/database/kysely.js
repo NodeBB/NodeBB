@@ -80,6 +80,21 @@ const SCORE_TYPE = { sqlite: 'real', mysql: 'decimal(20, 4)', postgres: 'decimal
 const tryIdx = q => q.execute().catch(() => {}); // CREATE INDEX is best-effort; ignore "already exists" races.
 const fkObjectKey = c => c.notNull().references('legacy_object._key').onDelete('cascade');
 
+// MySQL table options:
+//   ROW_FORMAT=DYNAMIC   — required for VARCHAR(191) composite PKs under
+//                          utf8mb4 (lifts COMPACT's 767-byte index limit
+//                          to 3072 bytes when paired with Barracuda).
+//   COLLATE=utf8mb4_bin  — case-sensitive, codepoint-ordered comparisons,
+//                          matching the Postgres/SQLite/Redis default
+//                          NodeBB tests assume. utf8mb4_unicode_ci treats
+//                          punctuation (`:`, ` `) as equal at the primary
+//                          collation level, breaking lex range queries on
+//                          `legacy_zset.value`.
+// No-op on non-MySQL dialects.
+const mysqlOpts = (dialect, builder) => (
+	dialect === 'mysql' ? builder.modifyEnd(sql`ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin`) : builder
+);
+
 const applyIndices = async (db) => {
 	await tryIdx(db.schema.createIndex('idx_legacy_object_expireAt').ifNotExists().on('legacy_object').column('expireAt'));
 	await tryIdx(db.schema.createIndex('idx_legacy_zset_key_score').ifNotExists().on('legacy_zset').columns(['_key', 'score']));
@@ -92,11 +107,10 @@ const applySchema = async (db, dialect) => {
 	const ts = features.getTimestampType(dialect);
 	const score = SCORE_TYPE[dialect] || 'real';
 
-	await db.schema.createTable('legacy_object').ifNotExists()
-		.addColumn('_key', 'varchar(255)', c => c.primaryKey().notNull())
+	await mysqlOpts(dialect, db.schema.createTable('legacy_object').ifNotExists()
+		.addColumn('_key', 'varchar(191)', c => c.primaryKey().notNull())
 		.addColumn('type', 'varchar(10)', c => c.notNull())
-		.addColumn('expireAt', ts)
-		.execute();
+		.addColumn('expireAt', ts)).execute();
 
 	// Hash storage: stringly-typed `value` column with a tiny `value_type`
 	// tag that lets us recover the original JS type on read.
@@ -104,38 +118,33 @@ const applySchema = async (db, dialect) => {
 	// `value` is always TEXT so plain SQL inspection still works; the tag is
 	// what makes round-tripping accurate. Legacy rows with NULL type fall
 	// through to string semantics — fully back-compat with the prior schema.
-	await db.schema.createTable('legacy_hash').ifNotExists()
-		.addColumn('_key', 'varchar(255)', fkObjectKey)
-		.addColumn('field', 'varchar(255)', c => c.notNull())
+	await mysqlOpts(dialect, db.schema.createTable('legacy_hash').ifNotExists()
+		.addColumn('_key', 'varchar(191)', fkObjectKey)
+		.addColumn('field', 'varchar(191)', c => c.notNull())
 		.addColumn('value', 'text')
 		.addColumn('value_type', 'char(1)')
-		.addPrimaryKeyConstraint('pk_legacy_hash', ['_key', 'field'])
-		.execute();
+		.addPrimaryKeyConstraint('pk_legacy_hash', ['_key', 'field'])).execute();
 
-	await db.schema.createTable('legacy_zset').ifNotExists()
-		.addColumn('_key', 'varchar(255)', fkObjectKey)
-		.addColumn('value', 'varchar(255)', c => c.notNull())
+	await mysqlOpts(dialect, db.schema.createTable('legacy_zset').ifNotExists()
+		.addColumn('_key', 'varchar(191)', fkObjectKey)
+		.addColumn('value', 'varchar(191)', c => c.notNull())
 		.addColumn('score', score, c => c.notNull())
-		.addPrimaryKeyConstraint('pk_legacy_zset', ['_key', 'value'])
-		.execute();
+		.addPrimaryKeyConstraint('pk_legacy_zset', ['_key', 'value'])).execute();
 
-	await db.schema.createTable('legacy_set').ifNotExists()
-		.addColumn('_key', 'varchar(255)', fkObjectKey)
-		.addColumn('member', 'varchar(255)', c => c.notNull())
-		.addPrimaryKeyConstraint('pk_legacy_set', ['_key', 'member'])
-		.execute();
+	await mysqlOpts(dialect, db.schema.createTable('legacy_set').ifNotExists()
+		.addColumn('_key', 'varchar(191)', fkObjectKey)
+		.addColumn('member', 'varchar(191)', c => c.notNull())
+		.addPrimaryKeyConstraint('pk_legacy_set', ['_key', 'member'])).execute();
 
-	await db.schema.createTable('legacy_list').ifNotExists()
-		.addColumn('_key', 'varchar(255)', fkObjectKey)
-		.addColumn('idx', 'integer', c => c.notNull())
+	await mysqlOpts(dialect, db.schema.createTable('legacy_list').ifNotExists()
+		.addColumn('_key', 'varchar(191)', fkObjectKey)
+		.addColumn('idx', 'bigint', c => c.notNull())
 		.addColumn('value', 'text', c => c.notNull())
-		.addPrimaryKeyConstraint('pk_legacy_list', ['_key', 'idx'])
-		.execute();
+		.addPrimaryKeyConstraint('pk_legacy_list', ['_key', 'idx'])).execute();
 
-	await db.schema.createTable('legacy_string').ifNotExists()
-		.addColumn('_key', 'varchar(255)', c => c.primaryKey().notNull().references('legacy_object._key').onDelete('cascade'))
-		.addColumn('data', 'text', c => c.notNull())
-		.execute();
+	await mysqlOpts(dialect, db.schema.createTable('legacy_string').ifNotExists()
+		.addColumn('_key', 'varchar(191)', c => c.primaryKey().notNull().references('legacy_object._key').onDelete('cascade'))
+		.addColumn('data', 'text', c => c.notNull())).execute();
 
 	await applyIndices(db);
 };
@@ -189,7 +198,7 @@ kyselyModule.createSessionStore = async (options) => {
 	const meta = require('../meta');
 	const db = kyselyModule.db || await connection.createKyselyInstance(options);
 	await db.schema.createTable('sessions').ifNotExists()
-		.addColumn('sid', 'varchar(255)', c => c.primaryKey().notNull())
+		.addColumn('sid', 'varchar(191)', c => c.primaryKey().notNull())
 		.addColumn('sess', 'text', c => c.notNull())
 		.addColumn('expireAt', features.getTimestampType(kyselyModule.dialect), c => c.notNull())
 		.execute();

@@ -91,10 +91,13 @@ async function initMysql() {
 	// portable IF-NOT-EXISTS form for CREATE FULLTEXT INDEX, so the whole
 	// table block stays raw.
 	const handle = getHandle();
+	// VARCHAR(191) keeps a single utf8mb4 column under MySQL 5.6's
+	// 767-byte index limit; ROW_FORMAT=DYNAMIC + Barracuda lifts the
+	// composite limit to 3072 bytes for safety on multi-column secondaries.
 	const tables = [
-		sql`CREATE TABLE IF NOT EXISTS searchtopic (id VARCHAR(255) PRIMARY KEY, content TEXT, uid VARCHAR(64), cid VARCHAR(64), FULLTEXT KEY ft_searchtopic_content (content), KEY idx_st_uid (uid), KEY idx_st_cid (cid)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
-		sql`CREATE TABLE IF NOT EXISTS searchpost (id VARCHAR(255) PRIMARY KEY, content TEXT, uid VARCHAR(64), cid VARCHAR(64), FULLTEXT KEY ft_searchpost_content (content), KEY idx_sp_uid (uid), KEY idx_sp_cid (cid)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
-		sql`CREATE TABLE IF NOT EXISTS searchchat (id VARCHAR(255) PRIMARY KEY, content TEXT, rid BIGINT, uid VARCHAR(64), FULLTEXT KEY ft_searchchat_content (content), KEY idx_sc_rid (rid), KEY idx_sc_uid (uid)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+		sql`CREATE TABLE IF NOT EXISTS searchtopic (id VARCHAR(191) PRIMARY KEY, content TEXT, uid VARCHAR(64), cid VARCHAR(64), FULLTEXT KEY ft_searchtopic_content (content), KEY idx_st_uid (uid), KEY idx_st_cid (cid)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC`,
+		sql`CREATE TABLE IF NOT EXISTS searchpost (id VARCHAR(191) PRIMARY KEY, content TEXT, uid VARCHAR(64), cid VARCHAR(64), FULLTEXT KEY ft_searchpost_content (content), KEY idx_sp_uid (uid), KEY idx_sp_cid (cid)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC`,
+		sql`CREATE TABLE IF NOT EXISTS searchchat (id VARCHAR(191) PRIMARY KEY, content TEXT, rid BIGINT, uid VARCHAR(64), FULLTEXT KEY ft_searchchat_content (content), KEY idx_sc_rid (rid), KEY idx_sc_uid (uid)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC`,
 	];
 	for (const t of tables) await t.execute(handle);
 }
