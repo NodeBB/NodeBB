@@ -567,22 +567,25 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-
-		let selectQuery = helpers.createZsetQuery()
-			.select('z.value')
-			.where('o._key', '=', key);
-
-		selectQuery = helpers.applyLexConditions(selectQuery, min, max);
-
-		const toDelete = await selectQuery.execute();
-		const values = toDelete.map(r => r.value);
-
-		if (values.length) {
-			await module.db.deleteFrom('legacy_zset')
-				.where('_key', '=', key)
-				.where('value', 'in', values)
-				.execute();
-		}
+		// Single DELETE — no SELECT-then-DELETE race. The EXISTS subquery
+		// preserves the original create*Query semantics (type='zset' and
+		// not-expired); without it expired or mistyped rows would be deleted
+		// even though the API contract treats those keys as nonexistent.
+		const now = new Date().toISOString();
+		let query = module.db.deleteFrom('legacy_zset')
+			.where('_key', '=', key)
+			.where(eb => eb.exists(
+				eb.selectFrom('legacy_object as o')
+					.select(eb2 => eb2.lit(1).as('x'))
+					.where('o._key', '=', key)
+					.where('o.type', '=', 'zset')
+					.where(eb2 => eb2.or([
+						eb2('o.expireAt', 'is', null),
+						eb2('o.expireAt', '>', now),
+					])),
+			));
+		query = helpers.applyLexConditions(query, min, max, 'value');
+		await query.execute();
 	};
 
 	module.getSortedSetScan = async function (params) {

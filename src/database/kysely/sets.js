@@ -211,7 +211,7 @@ module.exports = function (module) {
 			const now = new Date().toISOString();
 
 			// Build query for a random member
-			let query = client.selectFrom('legacy_object as o')
+			const query = client.selectFrom('legacy_object as o')
 				.innerJoin('legacy_set as s', 's._key', 'o._key')
 				.select('s.member')
 				.where('o._key', '=', key)
@@ -221,11 +221,6 @@ module.exports = function (module) {
 					eb('o.expireAt', '>', now),
 				]))
 				.limit(1);
-
-			// Add locking if supported (prevents race condition)
-			if (module.supportsLocking) {
-				query = query.forUpdate();
-			}
 
 			const randomMember = await query.executeTakeFirst();
 

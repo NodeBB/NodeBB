@@ -212,10 +212,10 @@ module.exports = function (module) {
 	// On conflict, casts existing value to numeric (or 0 if non-numeric) and adds the
 	// incoming numeric, then re-casts to text. Cast type names are the only `sql.raw`
 	// bits since Kysely's typed `cast` doesn't normalise them across dialects.
-	const buildTypedAddExpr = table => {
+	const buildTypedAddExpr = (table) => {
 		const onDup = useOnDup();
-		const numType = onDup ? sql.raw('DECIMAL(20,4)') : sql.raw('REAL');
-		const txtType = onDup ? sql.raw('CHAR') : sql.raw('TEXT');
+		const numType = onDup ? sql.raw('DECIMAL(20,4)') : 'real';
+		const txtType = onDup ? sql.raw('CHAR') : 'text';
 		const incoming = insertedRef('value');
 		return eb => eb.cast(
 			eb(

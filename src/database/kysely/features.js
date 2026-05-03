@@ -31,9 +31,6 @@ features.detect = async function (db, dialect) {
 		cte: false, // WITH clause (Common Table Expressions)
 		selectNoFrom: false, // SELECT 1 without FROM
 
-		// Locking
-		locking: false, // FOR UPDATE support
-
 		// Dialect-specific functions
 		sqliteVersion: false, // sqlite_version() function
 		mysqlVersion: false, // VERSION() function
@@ -63,9 +60,6 @@ features.detect = async function (db, dialect) {
 
 			// Detect CTE with test table
 			result.cte = await testCTE(db);
-
-			// Detect locking with test table
-			result.locking = await testLocking(db);
 		} finally {
 			// Clean up test table
 			await dropTestTable(db);
@@ -138,12 +132,12 @@ async function dropTestTable(db) {
  * Uses multiple signals for more accurate detection.
  */
 features.guessDialect = function (detected) {
-	// SQLite: sqlite_version works, no locking
+	// SQLite: sqlite_version works
 	if (detected.sqliteVersion) {
 		return 'sqlite';
 	}
 
-	// PostgreSQL: version() works, has locking, ON CONFLICT works
+	// PostgreSQL: version() works, ON CONFLICT works
 	if (detected.pgVersion) {
 		return 'postgres';
 	}
@@ -154,10 +148,9 @@ features.guessDialect = function (detected) {
 	}
 
 	// Fallback heuristics using upsert detection
-	if (detected.onConflict && detected.locking) {
-		return 'postgres';
-	}
-	if (detected.onConflict && !detected.locking) {
+	if (detected.onConflict) {
+		// Cannot distinguish postgres vs sqlite without version probes; prefer
+		// sqlite as the safer default (matches the embedded test setup).
 		return 'sqlite';
 	}
 	if (detected.onDuplicateKey) {
@@ -284,21 +277,6 @@ async function testCTE(db) {
 			.selectFrom('cte')
 			.select('id')
 			.execute();
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-async function testLocking(db) {
-	try {
-		await db.transaction().execute(async (trx) => {
-			await trx.selectFrom(TEST_TABLE)
-				.select('id')
-				.limit(1)
-				.forUpdate()
-				.execute();
-		});
 		return true;
 	} catch {
 		return false;

@@ -188,7 +188,6 @@ kyselyModule.init = async (opts) => {
 		throw err;
 	}
 	kyselyModule.features = await features.detect(db, kyselyModule.dialect);
-	kyselyModule.supportsLocking = kyselyModule.features.locking;
 	if (kyselyModule.features.detectedDialect) kyselyModule.dialect = kyselyModule.features.detectedDialect;
 	kyselyModule.context = { dialect: kyselyModule.dialect, features: kyselyModule.features };
 	winston.info(`[database/kysely] Detected features: ${JSON.stringify(kyselyModule.features)}`);

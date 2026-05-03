@@ -107,7 +107,7 @@ module.exports = function (module) {
 			const now = new Date().toISOString();
 
 			// Build query for last element
-			let query = client.selectFrom('legacy_object as o')
+			const query = client.selectFrom('legacy_object as o')
 				.innerJoin('legacy_list as l', 'l._key', 'o._key')
 				.select(['l.idx', 'l.value'])
 				.where('o._key', '=', key)
@@ -118,11 +118,6 @@ module.exports = function (module) {
 				]))
 				.orderBy('l.idx', 'desc')
 				.limit(1);
-
-			// Add locking if supported (checked during module.init)
-			if (module.supportsLocking) {
-				query = query.forUpdate();
-			}
 
 			const last = await query.executeTakeFirst();
 

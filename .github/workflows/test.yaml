@@ -205,15 +205,20 @@ jobs:
             --collation-server=utf8mb4_bin \
             --innodb_large_prefix=ON \
             --innodb_file_format=Barracuda
-          # Wait until mysqld accepts connections (5.6 boot is ~30s).
-          for i in $(seq 1 60); do
-            if docker exec mysql56 mysqladmin ping -prootpw --silent >/dev/null 2>&1; then
+          # MySQL 5.6 boot has TWO phases: mysqld up (~5s) and the bootstrap
+          # SQL that creates MYSQL_DATABASE/MYSQL_USER (another ~10-20s,
+          # during which external connections can be force-closed mid-handshake
+          # with `PROTOCOL_CONNECTION_LOST`). Polling `mysqladmin ping` only
+          # covers phase 1. We must actually open a TCP connection from the
+          # host and run a query to confirm phase 2 is done.
+          for i in $(seq 1 90); do
+            if mysql -h 127.0.0.1 -P 3306 -uroot -prootpw -e 'SELECT 1' >/dev/null 2>&1; then
               echo "MySQL is ready after ${i}s."
               exit 0
             fi
             sleep 1
           done
-          echo "::error::MySQL 5.6 failed to become ready within 60s"
+          echo "::error::MySQL 5.6 failed to become ready within 90s"
           docker logs mysql56
           exit 1
 

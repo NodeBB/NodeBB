@@ -42,7 +42,7 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(key.map(k => module.setObject(k, data)));
+			return await module.setObjectBulk(key.map(k => [k, data]));
 		}
 
 		await helpers.withTransaction(key, 'hash', async (client) => {
@@ -90,9 +90,14 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(
-				key.map(k => module.setObjectField(k, field, value))
-			);
+			return await helpers.withTransaction(null, null, async (client) => {
+				const uniqueKeys = [...new Set(key.filter(Boolean))];
+				await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash');
+				const rows = uniqueKeys.map(k => toRow(k, field, value));
+				await helpers.upsertMultiple(
+					client, 'legacy_hash', rows, ['_key', 'field'], VALUE_COLS
+				);
+			});
 		}
 
 		const row = toRow(key, field, value);
@@ -279,14 +284,17 @@ module.exports = function (module) {
 			return;
 		}
 
-		if (Array.isArray(key)) {
-			return await Promise.all(
-				key.map(k => module.deleteObjectField(k, field))
-			);
-		}
-
 		if (Array.isArray(field)) {
 			return await module.deleteObjectFields(key, field);
+		}
+
+		if (Array.isArray(key)) {
+			await module.db
+				.deleteFrom('legacy_hash')
+				.where('_key', 'in', key)
+				.where('field', '=', field)
+				.execute();
+			return;
 		}
 
 		await module.db
@@ -302,9 +310,13 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(
-				key.map(k => module.deleteObjectFields(k, fields))
-			);
+			if (!key.length) return;
+			await module.db
+				.deleteFrom('legacy_hash')
+				.where('_key', 'in', key)
+				.where('field', 'in', fields)
+				.execute();
+			return;
 		}
 
 		await module.db
@@ -332,9 +344,18 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
-			return await Promise.all(
-				key.map(k => module.incrObjectFieldBy(k, field, value))
-			);
+			return await helpers.withTransaction(null, null, async (client) => {
+				const uniqueKeys = [...new Set(key.filter(Boolean))];
+				await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash');
+				const rows = uniqueKeys.map(k => ({ _key: k, field, value: String(value), value_type: 'n' }));
+				await helpers.upsertAddTypedMultiple(client, 'legacy_hash', rows, ['_key', 'field']);
+				const fetched = await helpers.fetchOrderedRows(
+					client, 'legacy_hash',
+					key.map(k => ({ _key: k, field })),
+					['_key', 'field'], ['value'],
+				);
+				return fetched.map(r => Number(r.value));
+			});
 		}
 
 		// Atomic add via UPSERT-with-arithmetic — no SELECT-then-UPDATE race.
