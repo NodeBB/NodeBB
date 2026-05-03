@@ -1,5 +1,25 @@
 'use strict';
 
+// Round-trip-safe numeric coercion for `legacy_hash.value` reads.
+//
+// `legacy_hash` is stringly-typed by design (any user-supplied scalar is
+// stored as TEXT). NodeBB callers, however, expect numeric fields like
+// `timestamp` and `joindate` to come back as JS numbers — the way the
+// existing pg/mongo adapters return them. SQLite + better-sqlite3 returns
+// raw strings, which causes downstream type drift (string concat instead of
+// addition, lex-vs-numeric ordering, etc.).
+//
+// This coerces digit-strings to numbers ONLY when the conversion is fully
+// reversible: `Number.isSafeInteger(n)` (no precision loss) AND
+// `String(n) === v` (no leading-zero / sign-prefix / whitespace mangling).
+// Anything else stays a string. Equivalent to what node-postgres does for
+// `int8` via its parser map, but content-driven instead of type-driven.
+function maybeNumber(v) {
+	if (typeof v !== 'string' || v.length === 0) return v;
+	const n = Number(v);
+	return Number.isSafeInteger(n) && String(n) === v ? n : v;
+}
+
 module.exports = function (module) {
 	const { helpers } = module;
 
@@ -128,9 +148,10 @@ module.exports = function (module) {
 			return null;
 		}
 
-		// Build result object
+		// Build result object — apply round-trip-safe numeric coercion so
+		// numeric fields surface as numbers (matches pg/mongo adapter shape).
 		const obj = Object.fromEntries(
-			result.map(({ field, value }) => [field, value])
+			result.map(({ field, value }) => [field, maybeNumber(value)])
 		);
 
 		// If fields were specified, ensure all requested fields are present
@@ -165,11 +186,12 @@ module.exports = function (module) {
 
 		const result = await query.execute();
 
-		// Build a map of key -> {field: value}
+		// Build a map of key -> {field: value} with round-trip-safe numeric
+		// coercion so numeric fields are exposed to callers as numbers.
 		const map = result.reduce(
 			(acc, { _key, field, value }) => ({
 				...acc,
-				[_key]: { ...(acc[_key] || {}), [field]: value },
+				[_key]: { ...(acc[_key] || {}), [field]: maybeNumber(value) },
 			}),
 			{}
 		);
@@ -211,7 +233,7 @@ module.exports = function (module) {
 			module.db, 'legacy_hash', lookup, ['_key', 'field'], ['value'],
 			{ notExpired: true },
 		);
-		return Object.fromEntries(fields.map((f, i) => [f, rows[i].value ?? null]));
+		return Object.fromEntries(fields.map((f, i) => [f, rows[i].value == null ? null : maybeNumber(rows[i].value)]));
 	};
 
 	module.getObjectsFields = async function (keys, fields) {

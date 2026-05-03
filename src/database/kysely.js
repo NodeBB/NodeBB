@@ -74,60 +74,63 @@ kyselyModule.questions = [
 ];
 
 // -- Schema --------------------------------------------------------------------
-// Kysely's data-type-parser only knows the standard SQL keyword whitelist
-// below. Everything else must be `sql.raw()` to bypass tokenisation.
-const PARSER_KNOWN = /^(text|varchar|char|integer|int|bigint|smallint|tinyint|real|double|float|numeric|decimal|boolean|bool|date|datetime|time|timestamp|timestamptz)(\s*\(\d+(,\s*\d+)?\))?$/i;
-const T = type => (PARSER_KNOWN.test(type) ? type : sql.raw(type));
+// Score column: SQLite stores floats as IEEE-754 (REAL); networked dialects
+// use DECIMAL for predictable arithmetic and stable indexed comparison.
+const SCORE_TYPE = { sqlite: 'real', mysql: 'decimal(20, 4)', postgres: 'decimal(20, 4)', pglite: 'decimal(20, 4)' };
+const tryIdx = q => q.execute().catch(() => {}); // CREATE INDEX is best-effort; ignore "already exists" races.
+const fkObjectKey = c => c.notNull().references('legacy_object._key').onDelete('cascade');
 
-const schemaFor = (dialect) => {
-	const ts = T(features.getTimestampType(dialect));
-	const fk = c => c.notNull().references('legacy_object._key').onDelete('cascade');
-	const score = T(dialect === 'sqlite' ? 'real' : 'decimal(20, 4)');
-	return {
-		tables: {
-			legacy_object: q => q
-				.addColumn('_key', T('varchar(255)'), c => c.primaryKey().notNull())
-				.addColumn('type', T('varchar(10)'), c => c.notNull())
-				.addColumn('expireAt', ts),
-			legacy_hash: q => q
-				.addColumn('_key', T('varchar(255)'), fk)
-				.addColumn('field', T('varchar(255)'), c => c.notNull())
-				.addColumn('value', T('text'))
-				.addPrimaryKeyConstraint('pk_legacy_hash', ['_key', 'field']),
-			legacy_zset: q => q
-				.addColumn('_key', T('varchar(255)'), fk)
-				.addColumn('value', T('varchar(255)'), c => c.notNull())
-				.addColumn('score', score, c => c.notNull())
-				.addPrimaryKeyConstraint('pk_legacy_zset', ['_key', 'value']),
-			legacy_set: q => q
-				.addColumn('_key', T('varchar(255)'), fk)
-				.addColumn('member', T('varchar(255)'), c => c.notNull())
-				.addPrimaryKeyConstraint('pk_legacy_set', ['_key', 'member']),
-			legacy_list: q => q
-				.addColumn('_key', T('varchar(255)'), fk)
-				.addColumn('idx', T('integer'), c => c.notNull())
-				.addColumn('value', T('text'), c => c.notNull())
-				.addPrimaryKeyConstraint('pk_legacy_list', ['_key', 'idx']),
-			legacy_string: q => q
-				.addColumn('_key', T('varchar(255)'), c => c.primaryKey().notNull().references('legacy_object._key').onDelete('cascade'))
-				.addColumn('data', T('text'), c => c.notNull()),
-		},
-		indices: {
-			idx_legacy_object_expireAt: q => q.on('legacy_object').column('expireAt'),
-			idx_legacy_zset_key_score: q => q.on('legacy_zset').columns(['_key', 'score']),
-			idx_legacy_list_key_idx: q => q.on('legacy_list').columns(['_key', 'idx']),
-			idx_legacy_hash_key: q => q.on('legacy_hash').column('_key'),
-		},
-	};
+const applyIndices = async (db) => {
+	await tryIdx(db.schema.createIndex('idx_legacy_object_expireAt').ifNotExists().on('legacy_object').column('expireAt'));
+	await tryIdx(db.schema.createIndex('idx_legacy_zset_key_score').ifNotExists().on('legacy_zset').columns(['_key', 'score']));
+	await tryIdx(db.schema.createIndex('idx_legacy_list_key_idx').ifNotExists().on('legacy_list').columns(['_key', 'idx']));
+	await tryIdx(db.schema.createIndex('idx_legacy_hash_key').ifNotExists().on('legacy_hash').column('_key'));
 };
 
-const safeTable = (db, name, build) => build(db.schema.createTable(name).ifNotExists()).execute();
-const safeIndex = (db, name, build) => build(db.schema.createIndex(name).ifNotExists()).execute().catch(() => {});
-
+// Schema DDL is sequential — every child table FK-references `legacy_object`.
 const applySchema = async (db, dialect) => {
-	const s = schemaFor(dialect);
-	for (const [n, b] of Object.entries(s.tables)) await safeTable(db, n, b);
-	for (const [n, b] of Object.entries(s.indices)) await safeIndex(db, n, b);
+	const ts = features.getTimestampType(dialect);
+	const score = SCORE_TYPE[dialect] || 'real';
+
+	await db.schema.createTable('legacy_object').ifNotExists()
+		.addColumn('_key', 'varchar(255)', c => c.primaryKey().notNull())
+		.addColumn('type', 'varchar(10)', c => c.notNull())
+		.addColumn('expireAt', ts)
+		.execute();
+
+	await db.schema.createTable('legacy_hash').ifNotExists()
+		.addColumn('_key', 'varchar(255)', fkObjectKey)
+		.addColumn('field', 'varchar(255)', c => c.notNull())
+		.addColumn('value', 'text')
+		.addPrimaryKeyConstraint('pk_legacy_hash', ['_key', 'field'])
+		.execute();
+
+	await db.schema.createTable('legacy_zset').ifNotExists()
+		.addColumn('_key', 'varchar(255)', fkObjectKey)
+		.addColumn('value', 'varchar(255)', c => c.notNull())
+		.addColumn('score', score, c => c.notNull())
+		.addPrimaryKeyConstraint('pk_legacy_zset', ['_key', 'value'])
+		.execute();
+
+	await db.schema.createTable('legacy_set').ifNotExists()
+		.addColumn('_key', 'varchar(255)', fkObjectKey)
+		.addColumn('member', 'varchar(255)', c => c.notNull())
+		.addPrimaryKeyConstraint('pk_legacy_set', ['_key', 'member'])
+		.execute();
+
+	await db.schema.createTable('legacy_list').ifNotExists()
+		.addColumn('_key', 'varchar(255)', fkObjectKey)
+		.addColumn('idx', 'integer', c => c.notNull())
+		.addColumn('value', 'text', c => c.notNull())
+		.addPrimaryKeyConstraint('pk_legacy_list', ['_key', 'idx'])
+		.execute();
+
+	await db.schema.createTable('legacy_string').ifNotExists()
+		.addColumn('_key', 'varchar(255)', c => c.primaryKey().notNull().references('legacy_object._key').onDelete('cascade'))
+		.addColumn('data', 'text', c => c.notNull())
+		.execute();
+
+	await applyIndices(db);
 };
 
 // -- Per-dialect lookup queries ------------------------------------------------
@@ -178,11 +181,12 @@ kyselyModule.init = async (opts) => {
 kyselyModule.createSessionStore = async (options) => {
 	const meta = require('../meta');
 	const db = kyselyModule.db || await connection.createKyselyInstance(options);
-	await safeTable(db, 'sessions', q => q
-		.addColumn('sid', T('varchar(255)'), c => c.primaryKey().notNull())
-		.addColumn('sess', T('text'), c => c.notNull())
-		.addColumn('expireAt', T(features.getTimestampType(kyselyModule.dialect)), c => c.notNull()));
-	await safeIndex(db, 'idx_sessions_expireAt', q => q.on('sessions').column('expireAt'));
+	await db.schema.createTable('sessions').ifNotExists()
+		.addColumn('sid', 'varchar(255)', c => c.primaryKey().notNull())
+		.addColumn('sess', 'text', c => c.notNull())
+		.addColumn('expireAt', features.getTimestampType(kyselyModule.dialect), c => c.notNull())
+		.execute();
+	await tryIdx(db.schema.createIndex('idx_sessions_expireAt').ifNotExists().on('sessions').column('expireAt'));
 	const Store = require('./kysely/session-store');
 	return new Store({
 		db, dialect: kyselyModule.dialect, helpers: kyselyModule.helpers,
@@ -198,8 +202,7 @@ kyselyModule.createIndices = async () => {
 	}
 	winston.info('[database] Checking database indices.');
 	try {
-		const { indices } = schemaFor(kyselyModule.dialect);
-		for (const [n, b] of Object.entries(indices)) await safeIndex(kyselyModule.db, n, b);
+		await applyIndices(kyselyModule.db);
 		winston.info('[database] Checking database indices done!');
 	} catch (err) {
 		winston.error(`Error creating index ${err.message}`);
@@ -230,12 +233,6 @@ kyselyModule.info = async (db) => {
 };
 
 kyselyModule.close = async () => kyselyModule.db && kyselyModule.db.destroy();
-
-kyselyModule.checkpoint = async () => {
-	if (kyselyModule.db && kyselyModule.dialect === 'sqlite') {
-		await sql`PRAGMA wal_checkpoint(TRUNCATE)`.execute(kyselyModule.db);
-	}
-};
 
 // Sub-modules — order matters: helpers must load first.
 for (const mod of ['helpers', 'main', 'hash', 'sets', 'sorted', 'list', 'transaction']) {
