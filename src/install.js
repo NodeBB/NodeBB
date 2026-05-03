@@ -57,7 +57,6 @@ function checkSetupFlagEnv() {
 		NODEBB_ADMIN_USERNAME: 'admin:username',
 		NODEBB_ADMIN_PASSWORD: 'admin:password',
 		NODEBB_ADMIN_EMAIL: 'admin:email',
-		NODEBB_SECRET: 'secret',
 		NODEBB_DB: 'database',
 		NODEBB_DB_DIALECT: 'dialect',
 		NODEBB_DB_HOST: 'host',
