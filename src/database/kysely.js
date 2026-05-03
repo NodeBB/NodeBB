@@ -225,15 +225,14 @@ kyselyModule.createIndices = async () => {
 	}
 };
 
-kyselyModule.checkCompatibility = (cb) => {
+kyselyModule.checkCompatibility = async function () {
 	const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../../node_modules/kysely/package.json'), 'utf8'));
-	kyselyModule.checkCompatibilityVersion(pkg.version, cb);
+	await kyselyModule.checkCompatibilityVersion(pkg.version);
 };
-kyselyModule.checkCompatibilityVersion = (version, cb) => {
+kyselyModule.checkCompatibilityVersion = async function (version) {
 	if (semver.lt(version, '0.27.0')) {
-		return cb(new Error('The `kysely` package is out-of-date, please run `./nodebb setup` again.'));
+		throw new Error('The `kysely` package is out-of-date, please run `./nodebb setup` again.');
 	}
-	cb();
 };
 
 kyselyModule.info = async (db) => {
