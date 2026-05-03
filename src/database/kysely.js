@@ -98,10 +98,17 @@ const applySchema = async (db, dialect) => {
 		.addColumn('expireAt', ts)
 		.execute();
 
+	// Hash storage: stringly-typed `value` column with a tiny `value_type`
+	// tag that lets us recover the original JS type on read.
+	//   value_type = 'n' → number, 'b' → boolean, NULL → string (default).
+	// `value` is always TEXT so plain SQL inspection still works; the tag is
+	// what makes round-tripping accurate. Legacy rows with NULL type fall
+	// through to string semantics — fully back-compat with the prior schema.
 	await db.schema.createTable('legacy_hash').ifNotExists()
 		.addColumn('_key', 'varchar(255)', fkObjectKey)
 		.addColumn('field', 'varchar(255)', c => c.notNull())
 		.addColumn('value', 'text')
+		.addColumn('value_type', 'char(1)')
 		.addPrimaryKeyConstraint('pk_legacy_hash', ['_key', 'field'])
 		.execute();
 

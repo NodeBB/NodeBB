@@ -1,24 +1,37 @@
 'use strict';
 
-// Round-trip-safe numeric coercion for `legacy_hash.value` reads.
+// Type-preserving storage for `legacy_hash`.
 //
-// `legacy_hash` is stringly-typed by design (any user-supplied scalar is
-// stored as TEXT). NodeBB callers, however, expect numeric fields like
-// `timestamp` and `joindate` to come back as JS numbers — the way the
-// existing pg/mongo adapters return them. SQLite + better-sqlite3 returns
-// raw strings, which causes downstream type drift (string concat instead of
-// addition, lex-vs-numeric ordering, etc.).
+// `value` is always TEXT (so plain SQL inspection still works), and
+// `value_type` is a one-character tag we use to recover the original JS
+// scalar type on read:
+//   'n'   → number
+//   'b'   → boolean
+//   NULL  → string (also the legacy default for any pre-existing row)
 //
-// This coerces digit-strings to numbers ONLY when the conversion is fully
-// reversible: `Number.isSafeInteger(n)` (no precision loss) AND
-// `String(n) === v` (no leading-zero / sign-prefix / whitespace mangling).
-// Anything else stays a string. Equivalent to what node-postgres does for
-// `int8` via its parser map, but content-driven instead of type-driven.
-function maybeNumber(v) {
-	if (typeof v !== 'string' || v.length === 0) return v;
-	const n = Number(v);
-	return Number.isSafeInteger(n) && String(n) === v ? n : v;
+// Mirrors NodeBB's pg-adapter type round-trip without needing a per-field
+// allowlist or a JSON codec.
+function toRow(_key, field, value) {
+	if (value === null || value === undefined) {
+		return { _key, field, value: null, value_type: null };
+	}
+	if (typeof value === 'number') {
+		return { _key, field, value: String(value), value_type: 'n' };
+	}
+	if (typeof value === 'boolean') {
+		return { _key, field, value: value ? '1' : '0', value_type: 'b' };
+	}
+	return { _key, field, value: String(value), value_type: null };
 }
+
+function decode(value, valueType) {
+	if (value === null || value === undefined) return null;
+	if (valueType === 'n') return Number(value);
+	if (valueType === 'b') return value === '1' || value === 'true';
+	return value;
+}
+
+const VALUE_COLS = ['value', 'value_type'];
 
 module.exports = function (module) {
 	const { helpers } = module;
@@ -33,17 +46,9 @@ module.exports = function (module) {
 		}
 
 		await helpers.withTransaction(key, 'hash', async (client) => {
-			const rows = Object.entries(data).map(([field, value]) => ({
-				_key: key,
-				field,
-				value: value !== null && value !== undefined ? String(value) : null,
-			}));
+			const rows = Object.entries(data).map(([field, value]) => toRow(key, field, value));
 			await helpers.upsertMultiple(
-				client,
-				'legacy_hash',
-				rows,
-				['_key', 'field'],
-				['value']
+				client, 'legacy_hash', rows, ['_key', 'field'], VALUE_COLS
 			);
 		});
 	};
@@ -61,29 +66,19 @@ module.exports = function (module) {
 		}
 
 		await helpers.withTransaction(null, null, async (client) => {
-			// Collect all unique keys and ensure types
 			const uniqueKeys = [
 				...new Set(pairs.filter(([key]) => key).map(([key]) => key)),
 			];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'hash');
 
-			// Collect all rows across all pairs using flatMap
 			const allRows = pairs
 				.filter(([key, data]) => key && data)
 				.flatMap(([key, data]) =>
-					Object.entries(data).map(([field, value]) => ({
-						_key: key,
-						field,
-						value: value !== null && value !== undefined ? String(value) : null,
-					})));
+					Object.entries(data).map(([field, value]) => toRow(key, field, value)));
 
 			if (allRows.length) {
 				await helpers.upsertMultiple(
-					client,
-					'legacy_hash',
-					allRows,
-					['_key', 'field'],
-					['value']
+					client, 'legacy_hash', allRows, ['_key', 'field'], VALUE_COLS
 				);
 			}
 		});
@@ -100,20 +95,12 @@ module.exports = function (module) {
 			);
 		}
 
-		const strValue =
-			value !== null && value !== undefined ? String(value) : null;
+		const row = toRow(key, field, value);
 
 		await helpers.withTransaction(key, 'hash', async (client) => {
 			await helpers.upsert(
-				client,
-				'legacy_hash',
-				{
-					_key: key,
-					field: field,
-					value: strValue,
-				},
-				['_key', 'field'],
-				{ value: strValue }
+				client, 'legacy_hash', row, ['_key', 'field'],
+				{ value: row.value, value_type: row.value_type }
 			);
 		});
 	};
@@ -131,7 +118,7 @@ module.exports = function (module) {
 
 		let query = helpers
 			.createHashQuery()
-			.select(['h.field', 'h.value'])
+			.select(['h.field', 'h.value', 'h.value_type'])
 			.where('o._key', '=', key);
 
 		if (normalizedFields && normalizedFields.length) {
@@ -148,10 +135,8 @@ module.exports = function (module) {
 			return null;
 		}
 
-		// Build result object — apply round-trip-safe numeric coercion so
-		// numeric fields surface as numbers (matches pg/mongo adapter shape).
 		const obj = Object.fromEntries(
-			result.map(({ field, value }) => [field, maybeNumber(value)])
+			result.map(({ field, value, value_type }) => [field, decode(value, value_type)])
 		);
 
 		// If fields were specified, ensure all requested fields are present
@@ -177,7 +162,7 @@ module.exports = function (module) {
 
 		let query = helpers
 			.createHashQuery()
-			.select(['h._key', 'h.field', 'h.value'])
+			.select(['h._key', 'h.field', 'h.value', 'h.value_type'])
 			.where('o._key', 'in', keys);
 
 		if (normalizedFields && normalizedFields.length) {
@@ -186,18 +171,15 @@ module.exports = function (module) {
 
 		const result = await query.execute();
 
-		// Build a map of key -> {field: value} with round-trip-safe numeric
-		// coercion so numeric fields are exposed to callers as numbers.
-		const map = result.reduce(
-			(acc, { _key, field, value }) => ({
-				...acc,
-				[_key]: { ...(acc[_key] || {}), [field]: maybeNumber(value) },
-			}),
-			{}
-		);
+		// Bucket rows by `_key` in O(N) — the previous spread-based reduce was
+		// O(N²) (entire accumulator copied per row).
+		const map = {};
+		for (const { _key, field, value, value_type } of result) {
+			if (!map[_key]) map[_key] = {};
+			map[_key][field] = decode(value, value_type);
+		}
 
 		// If specific fields were requested, return object with all fields (null for missing)
-		// This matches postgres behavior where missing keys return {field1: null, field2: null, ...}
 		if (normalizedFields?.length) {
 			return keys.map(k =>
 				Object.fromEntries(
@@ -205,7 +187,6 @@ module.exports = function (module) {
 				));
 		}
 
-		// Without fields, return the full object or null for missing keys
 		return keys.map(k => map[k] || null);
 	};
 
@@ -226,14 +207,13 @@ module.exports = function (module) {
 			// Match postgres behavior: return full object when no fields specified
 			return await module.getObject(key);
 		}
-		// Single SQL: LEFT JOIN the requested fields against legacy_hash;
-		// missing fields naturally come back as null. No JS-side fill.
+		// Single SQL: LEFT JOIN the requested fields against legacy_hash.
 		const lookup = fields.map(f => ({ _key: key, field: String(f) }));
 		const rows = await helpers.fetchOrderedRows(
-			module.db, 'legacy_hash', lookup, ['_key', 'field'], ['value'],
+			module.db, 'legacy_hash', lookup, ['_key', 'field'], VALUE_COLS,
 			{ notExpired: true },
 		);
-		return Object.fromEntries(fields.map((f, i) => [f, rows[i].value == null ? null : maybeNumber(rows[i].value)]));
+		return Object.fromEntries(fields.map((f, i) => [f, decode(rows[i].value, rows[i].value_type)]));
 	};
 
 	module.getObjectsFields = async function (keys, fields) {
@@ -270,7 +250,7 @@ module.exports = function (module) {
 
 		const result = await helpers
 			.createHashQuery()
-			.select('h.value')
+			.select('h.field')
 			.where('o._key', '=', key)
 			.where('h.field', '=', field)
 			.limit(1)
@@ -283,16 +263,15 @@ module.exports = function (module) {
 		if (!key || !Array.isArray(fields) || !fields.length) {
 			return fields ? fields.map(() => false) : [];
 		}
-
-		const result = await helpers
-			.createHashQuery()
-			.select('h.field')
-			.where('o._key', '=', key)
-			.where('h.field', 'in', fields)
-			.execute();
-
-		const existingFields = new Set(result.map(r => r.field));
-		return fields.map(f => existingFields.has(f));
+		// LEFT JOIN each requested field against legacy_hash; SQL returns one
+		// row per input in order, with `field` non-null on a match. No JS Set,
+		// no input-order remap.
+		const lookup = fields.map(f => ({ _key: key, field: String(f) }));
+		const rows = await helpers.fetchOrderedRows(
+			module.db, 'legacy_hash', lookup, ['_key', 'field'], ['field'],
+			{ notExpired: true },
+		);
+		return rows.map(r => r.field != null);
 	};
 
 	module.deleteObjectField = async function (key, field) {
@@ -361,25 +340,19 @@ module.exports = function (module) {
 		return await helpers.withTransaction(key, 'hash', async (client) => {
 			const current = await client
 				.selectFrom('legacy_hash')
-				.select('value')
+				.select(['value', 'value_type'])
 				.where('_key', '=', key)
 				.where('field', '=', field)
 				.executeTakeFirst();
 
-			const currentValue = current ? parseFloat(current.value) || 0 : 0;
+			const currentValue = current ? Number(decode(current.value, current.value_type)) || 0 : 0;
 			const newValue = currentValue + value;
-			const strValue = String(newValue);
 
 			await helpers.upsert(
-				client,
-				'legacy_hash',
-				{
-					_key: key,
-					field: field,
-					value: strValue,
-				},
+				client, 'legacy_hash',
+				{ _key: key, field, value: String(newValue), value_type: 'n' },
 				['_key', 'field'],
-				{ value: strValue }
+				{ value: String(newValue), value_type: 'n' }
 			);
 
 			return newValue;
@@ -391,7 +364,6 @@ module.exports = function (module) {
 			return;
 		}
 
-		// Note: This requires fetching current values first, then calculating new values
 		await helpers.withTransaction(null, null, async (client) => {
 			const uniqueKeys = [
 				...new Set(data.filter(([key]) => key).map(([key]) => key)),
@@ -410,41 +382,37 @@ module.exports = function (module) {
 					(
 						await client
 							.selectFrom('legacy_hash')
-							.select(['_key', 'field', 'value'])
+							.select(['_key', 'field', 'value', 'value_type'])
 							.where(eb =>
 								eb.or(
 									keyFieldPairs.map(({ key, field }) =>
 										eb.and([eb('_key', '=', key), eb('field', '=', field)]))
 								))
 							.execute()
-					).map(({ _key, field, value }) => [`${_key}:${field}`, value])
+					).map(({ _key, field, value, value_type }) => [`${_key}:${field}`, decode(value, value_type)])
 				) :
 				{};
 
-			// Build all rows for upsert using flatMap
+			// Build all rows for upsert
 			const rows = data
 				.filter(([key, fieldValueObj]) => key && fieldValueObj)
 				.flatMap(([key, fieldValueObj]) =>
 					Object.entries(fieldValueObj).map(([field, incValue]) => {
 						const increment = parseInt(incValue, 10) || 0;
 						const existingKey = `${key}:${field}`;
-						const currentValue = existingValues[existingKey] ?
-							parseFloat(existingValues[existingKey]) || 0 :
+						const currentValue = existingValues[existingKey] != null ?
+							Number(existingValues[existingKey]) || 0 :
 							0;
 						return {
-							_key: key,
-							field,
+							_key: key, field,
 							value: String(currentValue + increment),
+							value_type: 'n',
 						};
 					}));
 
 			if (rows.length) {
 				await helpers.upsertMultiple(
-					client,
-					'legacy_hash',
-					rows,
-					['_key', 'field'],
-					['value']
+					client, 'legacy_hash', rows, ['_key', 'field'], VALUE_COLS
 				);
 			}
 		});
