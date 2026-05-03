@@ -10,150 +10,70 @@ module.exports = function (module) {
 	require('./sorted/union')(module);
 	require('./sorted/intersect')(module);
 
-	module.getSortedSetRange = async function (key, start, stop) {
-		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', false);
-	};
-
-	module.getSortedSetRevRange = async function (key, start, stop) {
-		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', false);
-	};
-
-	module.getSortedSetRangeWithScores = async function (key, start, stop) {
-		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', true);
-	};
-
-	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
-		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', true);
-	};
-
-	async function sortedSetRange(method, key, start, stop, min, max, withScores) {
-		if (!key) {
-			return;
-		}
-
+	// Unified zset range query. The four `getSortedSetRange*` and four
+	// `getSortedSetRangeByScore*` exports differ only on three axes:
+	//   - sort direction (asc / desc)
+	//   - withScores (return strings or {value, score})
+	//   - pagination: 'index' = start/stop with negative-index slice support,
+	//                 'offset' = start/count where count=-1 means no limit
+	// Score range parsing (`-inf`/`+inf`/NaN → no bound) is shared via
+	// `helpers.applyScoreConditions`.
+	async function zsetRange({ key, isReverse, withScores, mode, start, stop, count, min = '-inf', max = '+inf' }) {
+		if (!key) return;
 		const keys = Array.isArray(key) ? key : [key];
-		if (!keys.length) {
-			return [];
-		}
-
-		const isReverse = method === 'zrevrange' || method === 'zrevrangebyscore';
-
-		if (start < 0 && start > stop) {
-			return [];
-		}
+		if (!keys.length) return [];
 
 		let query = helpers.createZsetQuery()
 			.select(['z.value', 'z.score'])
 			.where('o._key', 'in', keys);
-
 		query = helpers.applyScoreConditions(query, min, max);
 		query = query.orderBy('z.score', isReverse ? 'desc' : 'asc');
 
-		// Handle negative indices
-		if (start < 0 || stop < 0) {
-			const allResults = await query.execute();
-			const sliced = helpers.sliceWithNegativeIndices(allResults, start, stop);
-			if (withScores) {
-				return sliced.map(r => ({ value: r.value, score: parseFloat(r.score) }));
+		const decode = rows => (withScores ?
+			rows.map(r => ({ value: r.value, score: parseFloat(r.score) })) :
+			rows.map(r => r.value));
+
+		if (mode === 'index') {
+			if (start < 0 && start > stop) return [];
+			if (start < 0 || stop < 0) {
+				return decode(helpers.sliceWithNegativeIndices(await query.execute(), start, stop));
 			}
-			return sliced.map(r => r.value);
+			const limit = stop - start + 1;
+			if (limit > 0) query = helpers.applyPagination(query, start, limit);
+		} else { // 'offset': count === -1 means "no limit"; applyPagination
+			// treats count <= 0 as "no limit" too (using MAX_SAFE_INTEGER for
+			// SQLite, which requires LIMIT when paired with OFFSET).
+			if (count === 0) return [];
+			query = helpers.applyPagination(query, start, parseInt(count, 10) === -1 ? 0 : count);
 		}
-
-		// Positive indices - use offset/limit
-		const limit = stop - start + 1;
-		if (limit > 0) {
-			query = query.offset(start).limit(limit);
-		}
-
-		const result = await query.execute();
-		if (withScores) {
-			return result.map(r => ({ value: r.value, score: parseFloat(r.score) }));
-		}
-		return result.map(r => r.value);
+		return decode(await query.execute());
 	}
+
+	module.getSortedSetRange = async function (key, start, stop) {
+		return await zsetRange({ key, isReverse: false, withScores: false, mode: 'index', start, stop });
+	};
+	module.getSortedSetRevRange = async function (key, start, stop) {
+		return await zsetRange({ key, isReverse: true, withScores: false, mode: 'index', start, stop });
+	};
+	module.getSortedSetRangeWithScores = async function (key, start, stop) {
+		return await zsetRange({ key, isReverse: false, withScores: true, mode: 'index', start, stop });
+	};
+	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
+		return await zsetRange({ key, isReverse: true, withScores: true, mode: 'index', start, stop });
+	};
 
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScore(key, start, count, min, max, 1, false);
+		return await zsetRange({ key, isReverse: false, withScores: false, mode: 'offset', start, count, min, max });
 	};
-
 	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScore(key, start, count, min, max, -1, false);
+		return await zsetRange({ key, isReverse: true, withScores: false, mode: 'offset', start, count, min, max });
 	};
-
 	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScore(key, start, count, min, max, 1, true);
+		return await zsetRange({ key, isReverse: false, withScores: true, mode: 'offset', start, count, min, max });
 	};
-
 	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScore(key, start, count, min, max, -1, true);
+		return await zsetRange({ key, isReverse: true, withScores: true, mode: 'offset', start, count, min, max });
 	};
-
-	async function sortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
-		if (!key) {
-			return;
-		}
-
-		// Handle both single key and array of keys
-		const keys = Array.isArray(key) ? key : [key];
-		if (!keys.length) {
-			return [];
-		}
-
-		if (count === 0) {
-			return [];
-		}
-
-		// Handle count = -1 (no limit)
-		if (parseInt(count, 10) === -1) {
-			count = null;
-		}
-
-		// Convert -inf/+inf to null for comparison
-		// Also handle NaN (which can occur if unreadCutoff config is not set)
-		let minScore = (min === '-inf') ? null : parseFloat(min);
-		let maxScore = (max === '+inf') ? null : parseFloat(max);
-		
-		// NaN should be treated as no filter
-		if (minScore !== null && Number.isNaN(minScore)) {
-			minScore = null;
-		}
-		if (maxScore !== null && Number.isNaN(maxScore)) {
-			maxScore = null;
-		}
-
-		const isReverse = sort < 0;
-
-		let query = helpers.createZsetQuery()
-			.select(['z.value', 'z.score'])
-			.where('o._key', 'in', keys);
-
-		// Apply score conditions (like postgres: NULL means no limit)
-		if (minScore !== null) {
-			query = query.where('z.score', '>=', minScore);
-		}
-		if (maxScore !== null) {
-			query = query.where('z.score', '<=', maxScore);
-		}
-
-		query = query.orderBy('z.score', isReverse ? 'desc' : 'asc');
-
-		// Apply pagination - SQLite requires LIMIT when using OFFSET
-		if (count !== null && count > 0) {
-			query = query.limit(count);
-			if (start > 0) {
-				query = query.offset(start);
-			}
-		} else if (start > 0) {
-			// Use a very large limit when only offset is specified (SQLite doesn't support OFFSET without LIMIT)
-			query = query.limit(Number.MAX_SAFE_INTEGER).offset(start);
-		}
-
-		const result = await query.execute();
-		if (withScores) {
-			return result.map(r => ({ value: r.value, score: parseFloat(r.score) }));
-		}
-		return result.map(r => r.value);
-	}
 
 	module.sortedSetCount = async function (key, min, max) {
 		if (!key) {
@@ -277,36 +197,26 @@ module.exports = function (module) {
 		return result ? parseInt(result.count, 10) : 0;
 	}
 
+	// Bulk rank lookup. The four exports differ only on (a) where the keys
+	// come from (per-value vs single-key replicated) and (b) the rank
+	// direction. Shared body is one helper.computeRanks call.
+	const ranksFor = (lookup, isReverse) => helpers.computeRanks(module.db, lookup, isReverse);
+	const lookupParallel = (keys, values) =>
+		keys.map((key, i) => ({ _key: key, value: String(values[i]) }));
+	const lookupReplicated = (key, values) =>
+		values.map(v => ({ _key: key, value: String(v) }));
+
 	module.sortedSetsRanks = async function (keys, values) {
-		if (!Array.isArray(keys) || !keys.length) {
-			return [];
-		}
-		const lookup = keys.map((key, i) => ({ _key: key, value: String(values[i]) }));
-		return await helpers.computeRanks(module.db, lookup, false);
+		return Array.isArray(keys) && keys.length ? await ranksFor(lookupParallel(keys, values), false) : [];
 	};
-
 	module.sortedSetsRevRanks = async function (keys, values) {
-		if (!Array.isArray(keys) || !keys.length) {
-			return [];
-		}
-		const lookup = keys.map((key, i) => ({ _key: key, value: String(values[i]) }));
-		return await helpers.computeRanks(module.db, lookup, true);
+		return Array.isArray(keys) && keys.length ? await ranksFor(lookupParallel(keys, values), true) : [];
 	};
-
 	module.sortedSetRanks = async function (key, values) {
-		if (!Array.isArray(values) || !values.length) {
-			return [];
-		}
-		const lookup = values.map(v => ({ _key: key, value: String(v) }));
-		return await helpers.computeRanks(module.db, lookup, false);
+		return Array.isArray(values) && values.length ? await ranksFor(lookupReplicated(key, values), false) : [];
 	};
-
 	module.sortedSetRevRanks = async function (key, values) {
-		if (!Array.isArray(values) || !values.length) {
-			return [];
-		}
-		const lookup = values.map(v => ({ _key: key, value: String(v) }));
-		return await helpers.computeRanks(module.db, lookup, true);
+		return Array.isArray(values) && values.length ? await ranksFor(lookupReplicated(key, values), true) : [];
 	};
 
 	module.sortedSetScore = async function (key, value) {
@@ -407,51 +317,29 @@ module.exports = function (module) {
 		return rows.map(r => r.value != null);
 	};
 
+	// Bulk members. The four exports collapse to "fetch (_key, value [, score])
+	// per key, group, decode" with two axes: bulk-vs-singular and withScores.
+	async function sortedSetsMembers(keys, withScores) {
+		if (!Array.isArray(keys) || !keys.length) return [];
+		const cols = withScores ? ['o._key', 'z.value', 'z.score'] : ['o._key', 'z.value'];
+		const result = await helpers.createZsetQuery()
+			.select(cols)
+			.where('o._key', 'in', keys)
+			.orderBy('z.score', 'asc')
+			.execute();
+		const decode = withScores ?
+			r => ({ value: r.value, score: parseFloat(r.score) }) :
+			r => r.value;
+		return helpers.mapResultsToKeysArray(keys, result, '_key', decode);
+	}
+
+	module.getSortedSetsMembers = async keys => await sortedSetsMembers(keys, false);
+	module.getSortedSetsMembersWithScores = async keys => await sortedSetsMembers(keys, true);
 	module.getSortedSetMembers = async function (key) {
-		if (!key) {
-			return [];
-		}
-		const result = await module.getSortedSetsMembers([key]);
-		return result[0] || [];
+		return key ? (await sortedSetsMembers([key], false))[0] || [] : [];
 	};
-
 	module.getSortedSetMembersWithScores = async function (key) {
-		if (!key) {
-			return [];
-		}
-		const result = await module.getSortedSetsMembersWithScores([key]);
-		return result[0] || [];
-	};
-
-	module.getSortedSetsMembers = async function (keys) {
-		if (!Array.isArray(keys) || !keys.length) {
-			return [];
-		}
-
-		const result = await helpers.createZsetQuery()
-			.select(['o._key', 'z.value'])
-			.where('o._key', 'in', keys)
-			.orderBy('z.score', 'asc')
-			.execute();
-
-		return helpers.mapResultsToKeysArray(keys, result, '_key', r => r.value);
-	};
-
-	module.getSortedSetsMembersWithScores = async function (keys) {
-		if (!Array.isArray(keys) || !keys.length) {
-			return [];
-		}
-
-		const result = await helpers.createZsetQuery()
-			.select(['o._key', 'z.value', 'z.score'])
-			.where('o._key', 'in', keys)
-			.orderBy('z.score', 'asc')
-			.execute();
-
-		return helpers.mapResultsToKeysArray(keys, result, '_key', r => ({
-			value: r.value,
-			score: parseFloat(r.score),
-		}));
+		return key ? (await sortedSetsMembers([key], true))[0] || [] : [];
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {

@@ -72,8 +72,13 @@ module.exports = function (module) {
 	};
 
 	const applyScoreConditions = (query, min, max, scoreCol = 'z.score') => {
-		if (min !== '-inf') query = query.where(scoreCol, '>=', parseFloat(min));
-		if (max !== '+inf') query = query.where(scoreCol, '<=', parseFloat(max));
+		// `-inf`/`+inf` and NaN (e.g. parseFloat of an unset config value) both
+		// mean "no bound" — match the postgres adapter's behaviour rather than
+		// emitting `WHERE score >= NaN`, which always filters out every row.
+		const lo = min === '-inf' ? NaN : parseFloat(min);
+		const hi = max === '+inf' ? NaN : parseFloat(max);
+		if (!Number.isNaN(lo)) query = query.where(scoreCol, '>=', lo);
+		if (!Number.isNaN(hi)) query = query.where(scoreCol, '<=', hi);
 		return query;
 	};
 
@@ -341,6 +346,51 @@ module.exports = function (module) {
 		return rows.map(r => (r.__anchor_score == null ? null : parseInt(r.rank_count, 10) || 0));
 	}
 
+	// Single-pass weighted aggregation of one-or-more zsets. Used by both
+	// ZUNION and ZINTER paths; pass `intersect: true` to add the
+	// HAVING COUNT(DISTINCT _key)=N clause.
+	//   SELECT value, AGG(score * CASE _key WHEN k1 THEN w1 ... END) AS score
+	//   FROM legacy_zset z JOIN legacy_object o ON o._key = z._key
+	//   WHERE z._key IN (sets) AND o.type = 'zset' AND not-expired
+	//   GROUP BY value [HAVING COUNT(DISTINCT z._key) = N]
+	//   ORDER BY score
+	async function aggregateZsets({
+		sets, weights = [], aggregate = 'SUM', sort, withScores,
+		start = 0, stop = -1, min = '-inf', max = '+inf', intersect,
+	}) {
+		if (!sets?.length) return [];
+		const aggFn = aggregate === 'MIN' ? 'min' : aggregate === 'MAX' ? 'max' : 'sum';
+		const weightMap = createWeightMap(sets, weights);
+		const weighted = eb => sets.slice(1).reduce(
+			(c, k) => c.when('z._key', '=', k).then(getWeight(weightMap, k)),
+			eb.case().when('z._key', '=', sets[0]).then(getWeight(weightMap, sets[0])),
+		).end();
+
+		let query = createObjectQuery('legacy_zset', 'z', 'zset')
+			.select(['z.value'])
+			.select(eb => eb.fn[aggFn](eb(eb.ref('z.score'), '*', weighted(eb))).as('score'))
+			.where('o._key', 'in', sets)
+			.groupBy('z.value')
+			.orderBy('score', sort > 0 ? 'asc' : 'desc');
+
+		if (intersect) {
+			query = query.having(eb => eb(eb.fn.count(eb.fn('distinct', ['z._key'])), '=', sets.length));
+		} else {
+			query = applyScoreConditions(query, min, max);
+		}
+
+		const decode = rows => (withScores ?
+			rows.map(r => ({ value: r.value, score: parseFloat(r.score) })) :
+			rows.map(r => r.value));
+
+		if (start < 0 || stop < 0) {
+			return decode(sliceWithNegativeIndices(await query.execute(), start, stop));
+		}
+		const limit = stop - start + 1;
+		if (limit > 0) query = applyPagination(query, start, limit);
+		return decode(await query.execute());
+	}
+
 	// =============================================================================
 	// LEGACY OBJECT / DELETE / TRANSACTION
 	// =============================================================================
@@ -434,6 +484,7 @@ module.exports = function (module) {
 		insertMultiple,
 		fetchOrderedRows,
 		computeRanks,
+		aggregateZsets,
 
 		ensureLegacyObjectType,
 		ensureLegacyObjectsType,
