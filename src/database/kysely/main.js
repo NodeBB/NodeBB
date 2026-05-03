@@ -30,45 +30,52 @@ module.exports = function (module) {
 
 		const now = new Date().toISOString();
 
-		async function checkIfzSetsExist(keys) {
-			const members = await Promise.all(
-				keys.map(k => module.getSortedSetRange(k, 0, 0))
-			);
-			return members.map(member => member.length > 0);
+		// One round-trip: existence-by-membership for each key. Returns the
+		// set of keys whose backing table has at least one row (already
+		// expiry-filtered via `create*Query`).
+		async function tableHasKey(createQuery, keys) {
+			if (!keys.length) return new Set();
+			const rows = await createQuery()
+				.select('o._key')
+				.where('o._key', 'in', keys)
+				.groupBy('o._key')
+				.execute();
+			return new Set(rows.map(r => r._key));
 		}
 
-		async function checkIfSetsExist(keys) {
-			const members = await Promise.all(keys.map(module.getSetMembers));
-			return members.map(member => member.length > 0);
-		}
-
-		async function checkIfKeysExist(keys) {
-			let query = module.db.selectFrom('legacy_object')
-				.select('_key')
-				.where('_key', 'in', keys);
-			query = helpers.whereNotExpired(query, null, now);
-			const result = await query.execute();
-
-			return keys.map(k => result.some(r => r._key === k));
-		}
-
-		// Redis/Mongo consider empty zsets as non-existent, match that behaviour
+		// Redis/Mongo consider empty zsets/sets as non-existent — match that.
+		// Implementation strategy: 3 SQL round-trips total regardless of key
+		// count, replacing the previous fan-out of 3N round-trips
+		// (one `module.type` per key + one membership probe per key).
 		if (isArray) {
-			const types = await Promise.all(key.map(module.type));
-			const zsetKeys = key.filter((_key, i) => types[i] === 'zset');
-			const setKeys = key.filter((_key, i) => types[i] === 'set');
-			const otherKeys = key.filter((_key, i) => types[i] !== 'zset' && types[i] !== 'set');
-			const [zsetExits, setExists, otherExists] = await Promise.all([
-				checkIfzSetsExist(zsetKeys),
-				checkIfSetsExist(setKeys),
-				checkIfKeysExist(otherKeys),
+			// (a) Bulk type lookup for all keys.
+			const typeRows = await module.db.selectFrom('legacy_object')
+				.select(['_key', 'type'])
+				.where('_key', 'in', key)
+				.where(eb => eb.or([
+					eb('expireAt', 'is', null),
+					eb('expireAt', '>', now),
+				]))
+				.execute();
+			const typeByKey = Object.fromEntries(typeRows.map(r => [r._key, r.type]));
+
+			const zsetKeys = key.filter(k => typeByKey[k] === 'zset');
+			const setKeys = key.filter(k => typeByKey[k] === 'set');
+
+			// (b, c) Bulk existence for zset and set membership in parallel;
+			// non-zset/non-set keys are present iff `legacy_object` matched
+			// (already checked above via typeByKey).
+			const [presentZsets, presentSets] = await Promise.all([
+				tableHasKey(helpers.createZsetQuery, zsetKeys),
+				tableHasKey(helpers.createSetQuery, setKeys),
 			]);
-			const existsMap = {
-				...Object.fromEntries(zsetKeys.map((k, i) => [k, zsetExits[i]])),
-				...Object.fromEntries(setKeys.map((k, i) => [k, setExists[i]])),
-				...Object.fromEntries(otherKeys.map((k, i) => [k, otherExists[i]])),
-			};
-			return key.map(k => existsMap[k]);
+
+			return key.map((k) => {
+				const t = typeByKey[k];
+				if (t === 'zset') return presentZsets.has(k);
+				if (t === 'set') return presentSets.has(k);
+				return t != null;
+			});
 		}
 
 		const type = await module.type(key);

@@ -305,7 +305,8 @@ module.exports = function (module) {
 		if (!Array.isArray(values) || !values.length) {
 			return [];
 		}
-		return await Promise.all(values.map(value => module.sortedSetRevRank(key, value)));
+		const lookup = values.map(v => ({ _key: key, value: String(v) }));
+		return await helpers.computeRanks(module.db, lookup, true);
 	};
 
 	module.sortedSetScore = async function (key, value) {

@@ -128,17 +128,13 @@ module.exports = function (module) {
 		if (!key || !Array.isArray(values) || !values.length) {
 			return values.map(() => false);
 		}
-
-		const stringValues = values.map(String);
-
-		const result = await helpers.createSetQuery()
-			.select('s.member')
-			.where('o._key', '=', key)
-			.where('s.member', 'in', stringValues)
-			.execute();
-
-		const memberSet = new Set(result.map(r => r.member));
-		return stringValues.map(v => memberSet.has(v));
+		// SQL-side existence check, in input order. No JS Set / membership map.
+		const lookup = values.map(v => ({ _key: key, member: String(v) }));
+		const rows = await helpers.fetchOrderedRows(
+			module.db, 'legacy_set', lookup, ['_key', 'member'], ['member'],
+			{ notExpired: true },
+		);
+		return rows.map(r => r.member != null);
 	};
 
 	module.isMemberOfSets = async function (sets, value) {
