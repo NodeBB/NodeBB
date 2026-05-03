@@ -106,15 +106,6 @@ describe('Analytics', () => {
 	it('should increment the last seen time of that domain', async () => {
 		const id = `https://example.org/activity/${utils.generateUUID()}`;
 		const before = await db.sortedSetScore('instances:lastSeen', 'example.org');
-		
-		const mockRes = {
-			req: { method: 'POST', loggedIn: false },
-			sendStatus: () => {},
-			status: () => mockRes,
-			json: () => {},
-			set: () => {},
-		};
-		
 		await controllers.activitypub.postInbox({
 			body: {
 				id,
@@ -125,17 +116,12 @@ describe('Analytics', () => {
 					id: `${nconf.get('url')}/post/${postData.pid}`,
 				},
 			},
-		}, mockRes);
+		}, { sendStatus: () => {} });
 
 		const after = await db.sortedSetScore('instances:lastSeen', 'example.org');
 
-		assert(before !== null && after !== null, `Expected both scores to exist. before=${before}, after=${after}`);
-		assert(before <= after, `Expected before (${before}) <= after (${after})`);
-		
-		if (before === after) {
-			const activityRecorded = await db.isSortedSetMember('activities:datetime', id);
-			assert(activityRecorded, 'Activity should be recorded even if timestamp unchanged');
-		}
+		assert(before && after);
+		assert(before < after);
 	});
 
 	it('should increment various metrics', async () => {

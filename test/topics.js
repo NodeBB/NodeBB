@@ -2494,18 +2494,14 @@ describe('Topic\'s', () => {
 			const topicTimestamp = await topics.getTopicField(topicData.tid, 'timestamp');
 
 			mockdate.set(topicTimestamp);
-			try {
-				await topics.scheduled.handleExpired();
+			await topics.scheduled.handleExpired();
 
-				topicData = await topics.getTopicData(topicData.tid);
-				assert(!topicData.pinned);
-				assert(!topicData.deleted);
-				// Should remove from topics:scheduled upon publishing
-				const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
-				assert(!score);
-			} finally {
-				mockdate.reset();
-			}
+			topicData = await topics.getTopicData(topicData.tid);
+			assert(!topicData.pinned);
+			assert(!topicData.deleted);
+			// Should remove from topics:scheduled upon publishing
+			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
+			assert(!score);
 		});
 
 		it('should update poster\'s lastposttime after a ST published', async () => {
@@ -2514,21 +2510,12 @@ describe('Topic\'s', () => {
 			assert.strictEqual(data[0].lastposttime, topicData.lastposttime);
 		});
 
-		it('should not be able to schedule a "published" topic', async function () {
-			// After handleExpired(), topic is published but timestamp is still in the future
-			// Update timestamp to current time to simulate a "normally published" topic
-			const currentTime = Date.now();
-			await topics.setTopicField(topicData.tid, 'timestamp', currentTime);
-			await posts.setPostField(topicData.mainPid, 'timestamp', currentTime);
-			topicData = await topics.getTopicData(topicData.tid);
-
+		it('should not be able to schedule a "published" topic', async () => {
 			const newDate = new Date(Date.now() + 86400000).getTime();
 			const editData = { ...adminApiOpts, body: { ...topic, pid: topicData.mainPid, timestamp: newDate } };
 			const { body } = await request.put(`${nconf.get('url')}/api/v3/posts/${topicData.mainPid}`, editData);
-			assert(body.response, `Expected body.response but got: ${JSON.stringify(body)}`);
-			// The returned timestamp should be the original post timestamp (currentTime),
-			// NOT the future timestamp (newDate), because published topics cannot be rescheduled
-			assert.strictEqual(body.response.timestamp, currentTime);
+			assert.strictEqual(body.response.timestamp, Date.now());
+			mockdate.reset();
 		});
 
 		it('should allow to purge a scheduled topic', async () => {
