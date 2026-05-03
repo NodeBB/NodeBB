@@ -1,239 +1,164 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const nconf = require('nconf');
 const winston = require('winston');
 
-const connection = module.exports;
+// PRAGMAs applied to every better-sqlite3 handle (writer + reader).
+const SQLITE_PRAGMAS = [
+	'busy_timeout = 30000', 'journal_mode = WAL', 'synchronous = NORMAL',
+	'foreign_keys = ON', 'cache_size = -64000', 'mmap_size = 268435456',
+	'temp_store = MEMORY', 'wal_autocheckpoint = 1000',
+];
 
-/**
- * EventLoopYieldPlugin - Yields to the event loop after each SQLite query.
- *
- * better-sqlite3 is synchronous and blocks the Node.js event loop.
- * This causes issues with tests that rely on setTimeout/setInterval timing,
- * as Date.now() doesn't progress during synchronous operations.
- *
- * By yielding after each query via setImmediate, we allow:
- * - Timers to fire
- * - Date.now() to reflect actual elapsed time
- * - Other async operations to proceed
- */
-class EventLoopYieldPlugin {
-	transformQuery(args) {
-		return args.node;
-	}
+const conn = module.exports;
 
-	async transformResult(args) {
-		// Yield to the event loop after each query execution
-		// This allows timers/callbacks to run between queries
-		await new Promise(resolve => setImmediate(resolve));
-		return args.result;
-	}
-}
-
-connection.getDialect = function (options) {
-	options = options || nconf.get('kysely') || {};
-	return options.dialect || 'sqlite';
+// Per-dialect: option defaults, kysely-dialect factory, post-connect ping.
+const DEFAULTS = {
+	mysql: { host: '127.0.0.1', port: 3306, user: '', password: '', database: 'nodebb', connectionLimit: 20, connectTimeout: 90000 },
+	postgres: { host: '127.0.0.1', port: 5432, user: '', password: '', database: 'nodebb', max: 20, connectionTimeoutMillis: 90000 },
+	sqlite: { filename: 'nodebb.db' },
+	pglite: { dataDir: 'memory://' },
 };
 
-connection.getConnectionOptions = function (options) {
+// PGlite is wire-compatible with PostgreSQL — same probe works.
+const pgPing = db => db.selectFrom('pg_catalog.pg_tables').select('tablename').limit(1).execute();
+const PING = {
+	mysql: db => db.selectFrom('information_schema.tables').select('table_name').limit(1).execute(),
+	postgres: pgPing,
+	pglite: pgPing,
+	sqlite: db => db.selectFrom('sqlite_master').select('name').limit(1).execute(),
+};
+
+conn.getDialect = options => (options || nconf.get('kysely') || {}).dialect || 'sqlite';
+
+conn.getConnectionOptions = (options) => {
 	options = options || nconf.get('kysely') || {};
-	const dialect = connection.getDialect(options);
-
-	const connOptions = {
-		dialect: dialect,
-	};
-
-	if (dialect === 'mysql') {
-		// MySQL connection options
-		connOptions.host = options.host || '127.0.0.1';
-		connOptions.port = parseInt(options.port, 10) || 3306;
-		connOptions.user = options.username || options.user || '';
-		connOptions.password = options.password || '';
-		connOptions.database = options.database || 'nodebb';
-		connOptions.connectionLimit = options.connectionLimit || 20;
-		connOptions.connectTimeout = options.connectTimeout || 90000;
-
-		if (options.ssl) {
-			connOptions.ssl = typeof options.ssl === 'object' ? options.ssl : { rejectUnauthorized: false };
+	const dialect = conn.getDialect(options);
+	const co = { dialect, ...DEFAULTS[dialect] };
+	if (dialect === 'mysql' || dialect === 'postgres') {
+		co.host = options.host || co.host;
+		co.port = parseInt(options.port, 10) || co.port;
+		co.user = options.username || options.user || co.user;
+		co.password = options.password || co.password;
+		co.database = options.database || co.database;
+		if (dialect === 'mysql') {
+			co.connectionLimit = options.connectionLimit || co.connectionLimit;
+			co.connectTimeout = options.connectTimeout || co.connectTimeout;
+		} else {
+			co.max = options.max || co.max;
+			co.connectionTimeoutMillis = options.connectionTimeoutMillis || co.connectionTimeoutMillis;
 		}
-	} else if (dialect === 'postgres') {
-		// PostgreSQL connection options
-		connOptions.host = options.host || '127.0.0.1';
-		connOptions.port = parseInt(options.port, 10) || 5432;
-		connOptions.user = options.username || options.user || '';
-		connOptions.password = options.password || '';
-		connOptions.database = options.database || 'nodebb';
-		connOptions.max = options.max || 20;
-		connOptions.connectionTimeoutMillis = options.connectionTimeoutMillis || 90000;
-
 		if (options.ssl) {
-			const fs = require('fs');
-			if (typeof options.ssl === 'object') {
-				connOptions.ssl = {
-					rejectUnauthorized: options.ssl.rejectUnauthorized,
-					...Object.fromEntries(
-						['ca', 'key', 'cert']
-							.filter(prop => options.ssl[prop])
-							.map(prop => [prop, fs.readFileSync(options.ssl[prop]).toString()])
-					),
-				};
+			if (dialect === 'mysql' || typeof options.ssl !== 'object') {
+				co.ssl = typeof options.ssl === 'object' ? options.ssl : { rejectUnauthorized: false };
 			} else {
-				connOptions.ssl = { rejectUnauthorized: false };
+				co.ssl = {
+					rejectUnauthorized: options.ssl.rejectUnauthorized,
+					...Object.fromEntries(['ca', 'key', 'cert']
+						.filter(p => options.ssl[p])
+						.map(p => [p, fs.readFileSync(options.ssl[p]).toString()])),
+				};
 			}
 		}
 	} else if (dialect === 'sqlite') {
-		// SQLite connection options
-		connOptions.filename = options.filename || options.database || 'nodebb.db';
+		co.filename = options.filename || options.database || co.filename;
 	} else if (dialect === 'pglite') {
-		// PGlite connection options (embedded PostgreSQL)
-		// Use :memory: for in-memory database or a path for persistent storage
-		connOptions.dataDir = options.dataDir || options.database || 'memory://';
+		// `memory://` (in-memory) or a filesystem path for persistent storage.
+		co.dataDir = options.dataDir || options.database || co.dataDir;
 	} else {
-		// Unknown dialect - pass through all options for custom dialects
-		Object.assign(connOptions, options);
+		Object.assign(co, options);
 	}
-
-	return connOptions;
+	return co;
 };
 
-connection.createKyselyInstance = async function (options) {
-	const { Kysely, MysqlDialect, PostgresDialect, SqliteDialect } = require('kysely');
-
-	const connOptions = connection.getConnectionOptions(options);
-	const { dialect } = connOptions;
-
-	let kyselyDialect;
-
-	if (dialect === 'mysql') {
+const MAKE = {
+	async mysql(co) {
+		const { MysqlDialect } = require('kysely');
 		const mysql2 = require('mysql2');
 		const pool = mysql2.createPool({
-			host: connOptions.host,
-			port: connOptions.port,
-			user: connOptions.user,
-			password: connOptions.password,
-			database: connOptions.database,
-			connectionLimit: connOptions.connectionLimit,
-			connectTimeout: connOptions.connectTimeout,
-			ssl: connOptions.ssl,
+			host: co.host, port: co.port, user: co.user, password: co.password,
+			database: co.database, connectionLimit: co.connectionLimit,
+			connectTimeout: co.connectTimeout, ssl: co.ssl,
 		});
-
-		kyselyDialect = new MysqlDialect({
-			pool: pool.promise(),
-		});
-	} else if (dialect === 'postgres') {
+		return new MysqlDialect({ pool: pool.promise() });
+	},
+	async postgres(co) {
+		const { PostgresDialect } = require('kysely');
 		const { Pool } = require('pg');
-		const pool = new Pool({
-			host: connOptions.host,
-			port: connOptions.port,
-			user: connOptions.user,
-			password: connOptions.password,
-			database: connOptions.database,
-			max: connOptions.max,
-			connectionTimeoutMillis: connOptions.connectionTimeoutMillis,
-			ssl: connOptions.ssl,
+		return new PostgresDialect({
+			pool: new Pool({
+				host: co.host, port: co.port, user: co.user, password: co.password,
+				database: co.database, max: co.max,
+				connectionTimeoutMillis: co.connectionTimeoutMillis, ssl: co.ssl,
+			}),
 		});
-
-		kyselyDialect = new PostgresDialect({
-			pool: pool,
-		});
-	} else if (dialect === 'sqlite') {
-		const Database = require('better-sqlite3');
-		const path = require('path');
-		const fs = require('fs');
-
-		// Auto-create directory if it doesn't exist (for file-based databases)
-		if (connOptions.filename !== ':memory:') {
-			const dir = path.dirname(connOptions.filename);
-			if (dir && dir !== '.') {
-				fs.mkdirSync(dir, { recursive: true });
-			}
+	},
+	async sqlite(co) {
+		if (co.filename !== ':memory:') {
+			const dir = path.dirname(co.filename);
+			if (dir && dir !== '.') fs.mkdirSync(dir, { recursive: true });
 		}
-
-		const database = new Database(connOptions.filename);
-		database.pragma('busy_timeout = 30000');
-		database.pragma('journal_mode = WAL');
-		database.pragma('synchronous = NORMAL');
-		database.pragma('foreign_keys = ON');
-		database.pragma('cache_size = -64000');
-
-		kyselyDialect = new SqliteDialect({
-			database: database,
-		});
-	} else if (dialect === 'pglite') {
+		// Worker-thread dialect: synchronous better-sqlite3 I/O runs off-main,
+		// so SQLite behaves like the network-async dialects (pg/mysql) from
+		// the main event loop's perspective.
+		const { WorkerSqliteDialect } = require('./dialect-better-sqlite-worker');
+		return new WorkerSqliteDialect({ filename: co.filename, pragmas: SQLITE_PRAGMAS });
+	},
+	async pglite(co) {
+		// PGlite — embedded WASM PostgreSQL. Wire-compatible with pg, but
+		// runs in-process (or in a worker via the `worker:` data-dir prefix).
+		// Useful as a Postgres-syntax alternative to SQLite without standing
+		// up a network database.
 		const { PGlite } = require('@electric-sql/pglite');
 		const { PGliteDialect } = require('kysely-pglite-dialect');
+		if (co.dataDir && co.dataDir !== 'memory://' && !co.dataDir.includes('://')) {
+			fs.mkdirSync(co.dataDir, { recursive: true });
+		}
+		return new PGliteDialect(new PGlite(co.dataDir));
+	},
+};
 
-		const pglite = new PGlite(connOptions.dataDir);
+const sqlLog = (event) => {
+	if (process.env.LOG_SQL !== 'true') return;
+	const out = event.level === 'error' ? console.error : console.log;
+	const tag = event.level === 'error' ? 'Query failed: ' : 'Query executed: ';
+	const payload = {
+		durationMs: event.queryDurationMillis,
+		sql: event.query.sql,
+		params: event.query.parameters,
+	};
+	if (event.error) payload.error = event.error;
+	out(tag, payload);
+};
 
-		kyselyDialect = new PGliteDialect(pglite);
+conn.createKyselyInstance = async (options) => {
+	const { Kysely } = require('kysely');
+	const co = conn.getConnectionOptions(options);
+	const make = MAKE[co.dialect];
+	let kyselyDialect;
+	if (make) {
+		kyselyDialect = await make(co);
+	} else if (co.kyselyDialect) {
+		winston.warn(`[database/kysely] Dialect "${co.dialect}" is not officially supported.`);
+		kyselyDialect = typeof co.kyselyDialect === 'function' ?
+			co.kyselyDialect(co) :
+			new (require(co.kyselyDialect))(co);
 	} else {
-		// Unsupported dialect - warn and attempt to use custom dialect from options
-		winston.warn(`[database/kysely] Dialect "${dialect}" is not officially supported.`);
-		winston.warn('[database/kysely] Attempting to use custom dialect configuration from options.');
-
-		if (connOptions.kyselyDialect) {
-			if (typeof connOptions.kyselyDialect === 'function') {
-				// User provided a factory function
-				kyselyDialect = connOptions.kyselyDialect(connOptions);
-			} else {
-				// User provided a package name to require
-				const CustomDialect = require(connOptions.kyselyDialect);
-				kyselyDialect = new CustomDialect(connOptions);
-			}
-		} else {
-			throw new Error(
-				`Unsupported database dialect: ${dialect}. ` +
-				'Provide a "kyselyDialect" in your config (function or package name) to use a custom dialect.'
-			);
-		}
+		throw new Error(`Unsupported database dialect: ${co.dialect}. Provide a "kyselyDialect" in your config (function or package name) to use a custom dialect.`);
 	}
-
-	const plugins = [];
-	if (dialect === 'sqlite') {
-		plugins.push(new EventLoopYieldPlugin());
-	}
-
-	const db = new Kysely({
-		dialect: kyselyDialect,
-		plugins,
-		log(event) {
-			if (process.env.LOG_SQL !== 'true') return;
-			if (event.level === 'error') {
-				console.error('Query failed : ', {
-					durationMs: event.queryDurationMillis,
-					error: event.error,
-					sql: event.query.sql,
-					params: event.query.parameters,
-				});
-			} else { // `'query'`
-				console.log('Query executed : ', {
-					durationMs: event.queryDurationMillis,
-					sql: event.query.sql,
-					params: event.query.parameters,
-				});
-			}
-		},
-	});
-
-	// Test the connection
+	const db = new Kysely({ dialect: kyselyDialect, log: sqlLog });
 	try {
-		if (dialect === 'mysql') {
-			await db.selectFrom('information_schema.tables').select('table_name').limit(1).execute();
-		} else if (dialect === 'postgres' || dialect === 'pglite') {
-			await db.selectFrom('pg_catalog.pg_tables').select('tablename').limit(1).execute();
-		} else if (dialect === 'sqlite') {
-			await db.selectFrom('sqlite_master').select('name').limit(1).execute();
-		}
+		const ping = PING[co.dialect];
+		if (ping) await ping(db);
 	} catch (err) {
 		winston.error(`Failed to connect to database: ${err.message}`);
 		throw err;
 	}
-
 	return db;
 };
 
-connection.connect = async function (options) {
-	return await connection.createKyselyInstance(options);
-};
+conn.connect = options => conn.createKyselyInstance(options);
 
-require('../../promisify')(connection);
+require('../../promisify')(conn);

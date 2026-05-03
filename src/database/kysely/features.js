@@ -23,16 +23,13 @@ features.detect = async function (db, dialect) {
 		// Upsert strategies
 		onConflict: false, // PostgreSQL, SQLite: ON CONFLICT ... DO UPDATE
 		onDuplicateKey: false, // MySQL: ON DUPLICATE KEY UPDATE
-		merge: false, // MSSQL, Oracle: MERGE statement
 
 		// Pagination strategies
 		limitOffset: false, // MySQL, PostgreSQL, SQLite: LIMIT x OFFSET y
-		offsetFetch: false, // MSSQL 2012+, Oracle 12c+: OFFSET x ROWS FETCH NEXT y ROWS ONLY
 
 		// Query features
 		cte: false, // WITH clause (Common Table Expressions)
 		selectNoFrom: false, // SELECT 1 without FROM
-		dual: false, // DUAL table (Oracle, MySQL)
 
 		// Locking
 		locking: false, // FOR UPDATE support
@@ -60,11 +57,9 @@ features.detect = async function (db, dialect) {
 			// Detect upsert support using test table
 			result.onConflict = await testOnConflict(db);
 			result.onDuplicateKey = await testOnDuplicateKey(db);
-			result.merge = await testMerge(db);
 
 			// Detect pagination with test table
 			result.limitOffset = await testLimitOffset(db);
-			result.offsetFetch = await testOffsetFetch(db);
 
 			// Detect CTE with test table
 			result.cte = await testCTE(db);
@@ -92,11 +87,8 @@ features.detect = async function (db, dialect) {
  * These help identify the database before creating test tables.
  */
 async function detectDialectHints(db, result) {
-	// Test SELECT without FROM (works in most DBs except Oracle)
+	// Test SELECT without FROM (works in MySQL/PostgreSQL/SQLite).
 	result.selectNoFrom = await testSelectNoFrom(db);
-
-	// Test DUAL table (Oracle, MySQL support it)
-	result.dual = await testDual(db);
 
 	// Test dialect-specific version functions
 	result.sqliteVersion = await testSqliteVersion(db);
@@ -110,9 +102,6 @@ async function detectDialectHints(db, result) {
 		result.detectedDialect = 'postgres';
 	} else if (result.mysqlVersion) {
 		result.detectedDialect = 'mysql';
-	} else if (result.dual && !result.selectNoFrom) {
-		// Oracle requires DUAL for SELECT without table
-		result.detectedDialect = 'oracle';
 	}
 }
 
@@ -164,16 +153,6 @@ features.guessDialect = function (detected) {
 		return 'mysql';
 	}
 
-	// Oracle: DUAL required (no SELECT without FROM), MERGE works
-	if (detected.dual && !detected.selectNoFrom && detected.merge) {
-		return 'oracle';
-	}
-
-	// MSSQL: MERGE + OFFSET FETCH, SELECT without FROM works
-	if (detected.merge && detected.offsetFetch && detected.selectNoFrom) {
-		return 'mssql';
-	}
-
 	// Fallback heuristics using upsert detection
 	if (detected.onConflict && detected.locking) {
 		return 'postgres';
@@ -183,9 +162,6 @@ features.guessDialect = function (detected) {
 	}
 	if (detected.onDuplicateKey) {
 		return 'mysql';
-	}
-	if (detected.merge) {
-		return detected.offsetFetch ? 'mssql' : 'oracle';
 	}
 
 	return null;
@@ -198,9 +174,8 @@ features.getTimestampType = function (dialect) {
 	const typeMap = {
 		sqlite: 'text',
 		postgres: 'timestamptz',
+		pglite: 'timestamptz',
 		mysql: 'timestamp',
-		mssql: 'datetime2',
-		oracle: 'timestamp with time zone',
 	};
 	return typeMap[dialect] || 'text';
 };
@@ -211,19 +186,7 @@ features.getTimestampType = function (dialect) {
 
 async function testSelectNoFrom(db) {
 	try {
-		// SELECT 1 without FROM - works in MySQL, PostgreSQL, SQLite, MSSQL
-		// Oracle requires "FROM DUAL"
 		await sql`SELECT 1`.execute(db);
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-async function testDual(db) {
-	try {
-		// SELECT FROM DUAL - works in Oracle, MySQL
-		await sql`SELECT 1 FROM DUAL`.execute(db);
 		return true;
 	} catch {
 		return false;
@@ -296,32 +259,6 @@ async function testOnDuplicateKey(db) {
 	}
 }
 
-async function testMerge(db) {
-	try {
-		// Try MERGE statement using Kysely's mergeInto() (MSSQL, Oracle)
-		await db.mergeInto(`${TEST_TABLE} as target`)
-			.using(
-				db.selectNoFrom(eb => [
-					eb.val('__test__').as('id'),
-					eb.val('test').as('val'),
-				]).as('source'),
-				join => join.onRef('target.id', '=', 'source.id')
-			)
-			.whenMatched()
-			.thenUpdateSet({ val: eb => eb.ref('source.val') })
-			.whenNotMatched()
-			.thenInsertValues({
-				id: eb => eb.ref('source.id'),
-				val: eb => eb.ref('source.val'),
-			})
-			.execute();
-		await db.deleteFrom(TEST_TABLE).where('id', '=', '__test__').execute();
-		return true;
-	} catch {
-		return false;
-	}
-}
-
 async function testLimitOffset(db) {
 	try {
 		await db.selectFrom(TEST_TABLE)
@@ -329,20 +266,6 @@ async function testLimitOffset(db) {
 			.limit(1)
 			.offset(0)
 			.execute();
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-async function testOffsetFetch(db) {
-	try {
-		// Try OFFSET FETCH syntax (MSSQL 2012+, Oracle 12c+)
-		await sql`
-			SELECT id FROM ${sql.table(TEST_TABLE)}
-			ORDER BY id
-			OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
-		`.execute(db);
 		return true;
 	} catch {
 		return false;

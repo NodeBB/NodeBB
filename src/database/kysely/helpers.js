@@ -403,6 +403,150 @@ module.exports = function (module) {
 		await db.insertInto(table).values(rows).execute();
 	}
 
+	// ---------------------------------------------------------------------------
+	// Atomic ADD-on-conflict (DB-side increment).
+	// ---------------------------------------------------------------------------
+	// `upsertAddMultiple` inserts `rows` and, on conflict, ADDS the supplied
+	// numeric value to the existing one — all evaluated by the database, so
+	// there is no SELECT-then-UPDATE race window. Caller must pre-fold rows
+	// with the same conflict target (a single statement may not update the
+	// same row twice).
+	//
+	//   - MySQL 5.6+   `ON DUPLICATE KEY UPDATE c = c + VALUES(c)`
+	//                  (`AS new_v` row-alias is 8.0.20+ only — `VALUES()` is
+	//                  the portable form, supported on every version)
+	//   - Postgres / SQLite  `ON CONFLICT (…) DO UPDATE SET c = t.c + excluded.c`
+	async function upsertAddMultipleMySQL(db, table, rows, sumColumn) {
+		await db.insertInto(table).values(rows).onDuplicateKeyUpdate(eb => ({
+			[sumColumn]: eb(`${table}.${sumColumn}`, '+', eb.fn('VALUES', [eb.ref(sumColumn)])),
+		})).execute();
+	}
+
+	async function upsertAddMultipleOnConflict(db, table, rows, conflictColumns, sumColumn) {
+		await db.insertInto(table).values(rows)
+			.onConflict(oc => oc.columns(conflictColumns).doUpdateSet({
+				[sumColumn]: eb => eb(`${table}.${sumColumn}`, '+', eb.ref(`excluded.${sumColumn}`)),
+			}))
+			.execute();
+	}
+
+	async function upsertAddMultiple(db, table, rows, conflictColumns, sumColumn) {
+		if (!rows?.length) return;
+		const { dialect, features } = getCtx();
+		const useMysql = features?.onDuplicateKey || (!features?.onConflict && dialect === 'mysql');
+		return useMysql ?
+			upsertAddMultipleMySQL(db, table, rows, sumColumn) :
+			upsertAddMultipleOnConflict(db, table, rows, conflictColumns, sumColumn);
+	}
+
+	// ---------------------------------------------------------------------------
+	// Ordered batch lookup.
+	// ---------------------------------------------------------------------------
+	// `fetchOrderedRows` returns one row per `lookup` entry, in lookup order,
+	// joining each lookup tuple against `table` on `joinColumns`. Missing
+	// matches yield rows whose selected columns are all `null`. The input
+	// table is synthesised inline as a UNION-ALL of single-row SELECTs so
+	// the technique works on MySQL 5.6 too (which has no VALUES table-source).
+	// Pure Kysely, no raw SQL, no dialect-specific aggregates.
+	//
+	// Options:
+	//   notExpired: if true, additionally LEFT JOIN `legacy_object` on the
+	//   matched row's `_key` and filter out rows whose key has expired.
+	//   This matches the semantics of `helpers.whereNotExpired` used by the
+	//   `create*Query` builders.
+	async function fetchOrderedRows(db, table, lookup, joinColumns, selectColumns, options = {}) {
+		if (!lookup?.length) return [];
+		const inputRows = lookup.map((row, ord) =>
+			db.selectNoFrom(eb => [
+				eb.val(ord).as('__ord'),
+				...joinColumns.map(col => eb.val(row[col]).as(col)),
+			]));
+		const inputQB = inputRows.reduce((acc, q) => acc.unionAll(q));
+		let query = db
+			.selectFrom(inputQB.as('__in'))
+			.leftJoin(`${table} as __t`, join => joinColumns.reduce(
+				(j, col) => j.onRef(`__t.${col}`, '=', `__in.${col}`),
+				join,
+			));
+		if (options.notExpired) {
+			const now = new Date().toISOString();
+			query = query
+				.leftJoin('legacy_object as __o', '__o._key', '__t._key')
+				.where(eb => eb.or([
+					eb('__t._key', 'is', null),
+					eb('__o.expireAt', 'is', null),
+					eb('__o.expireAt', '>', now),
+				]));
+		}
+		return await query
+			.select(selectColumns.map(col => `__t.${col}`))
+			.orderBy('__in.__ord')
+			.execute();
+	}
+
+	// ---------------------------------------------------------------------------
+	// Sorted-set rank in one round-trip.
+	// ---------------------------------------------------------------------------
+	// `computeRanks` returns a per-input rank (or null if the value isn't in
+	// the named zset) — one row per lookup entry, in lookup order, in a
+	// single SQL statement. Replaces the `Promise.all(keys.map(rank))` fan-
+	// out which costs 2N round-trips.
+	//
+	// Standard SQL only:
+	//   - synthesise input table via UNION-ALL of selectNoFrom (MySQL 5.6 OK)
+	//   - LEFT JOIN to find the anchor row (its score)
+	//   - scalar correlated COUNT subquery for "how many smaller ranked"
+	//   - tie-break on value lexicographically (matches Redis ZRANK semantics)
+	// `isReverse` flips the comparison direction for ZREVRANK.
+	async function computeRanks(db, lookup, isReverse) {
+		if (!lookup?.length) return [];
+		const inputRows = lookup.map((row, ord) =>
+			db.selectNoFrom(eb => [
+				eb.val(ord).as('__ord'),
+				eb.val(row._key).as('__key'),
+				eb.val(row.value).as('__value'),
+			]));
+		const inputQB = inputRows.reduce((acc, q) => acc.unionAll(q));
+		const cmp = isReverse ? '>' : '<';
+		const now = new Date().toISOString();
+
+		const result = await db
+			.selectFrom(inputQB.as('__in'))
+			.leftJoin('legacy_zset as __a', join => join
+				.onRef('__a._key', '=', '__in.__key')
+				.onRef('__a.value', '=', '__in.__value'))
+			.leftJoin('legacy_object as __ao', '__ao._key', '__a._key')
+			.where(eb => eb.or([
+				eb('__a._key', 'is', null),
+				eb('__ao.expireAt', 'is', null),
+				eb('__ao.expireAt', '>', now),
+			]))
+			.select([
+				'__in.__ord',
+				'__a.score as __anchor_score',
+				eb => eb.selectFrom('legacy_zset as __b')
+					.innerJoin('legacy_object as __bo', '__bo._key', '__b._key')
+					.select(eb2 => eb2.fn.countAll().as('c'))
+					.whereRef('__b._key', '=', '__in.__key')
+					.where(eb2 => eb2.or([
+						eb2('__bo.expireAt', 'is', null),
+						eb2('__bo.expireAt', '>', now),
+					]))
+					.where(eb2 => eb2.or([
+						eb2('__b.score', cmp, eb2.ref('__a.score')),
+						eb2.and([
+							eb2('__b.score', '=', eb2.ref('__a.score')),
+							eb2('__b.value', cmp, eb2.ref('__in.__value')),
+						]),
+					]))
+					.as('rank_count'),
+			])
+			.orderBy('__in.__ord')
+			.execute();
+
+		return result.map(r => (r.__anchor_score == null ? null : parseInt(r.rank_count, 10) || 0));
+	}
+
 	// =============================================================================
 	// LEGACY OBJECT TYPE HELPERS
 	// =============================================================================
@@ -556,7 +700,10 @@ module.exports = function (module) {
 		// Upsert methods (automatic context)
 		upsert,
 		upsertMultiple,
+		upsertAddMultiple,
 		insertMultiple,
+		fetchOrderedRows,
+		computeRanks,
 
 		// Legacy object type helpers
 		ensureLegacyObjectType,

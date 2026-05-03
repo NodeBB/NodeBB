@@ -204,11 +204,14 @@ module.exports = function (module) {
 			// Match postgres behavior: return full object when no fields specified
 			return await module.getObject(key);
 		}
-
-		const data = await module.getObject(key, fields);
-
-		// Ensure all requested fields are present (set to null if missing)
-		return Object.fromEntries(fields.map(f => [f, data?.[f] ?? null]));
+		// Single SQL: LEFT JOIN the requested fields against legacy_hash;
+		// missing fields naturally come back as null. No JS-side fill.
+		const lookup = fields.map(f => ({ _key: key, field: String(f) }));
+		const rows = await helpers.fetchOrderedRows(
+			module.db, 'legacy_hash', lookup, ['_key', 'field'], ['value'],
+			{ notExpired: true },
+		);
+		return Object.fromEntries(fields.map((f, i) => [f, rows[i].value ?? null]));
 	};
 
 	module.getObjectsFields = async function (keys, fields) {

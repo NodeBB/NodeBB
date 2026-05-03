@@ -281,21 +281,24 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		return await Promise.all(keys.map((key, i) => module.sortedSetRank(key, values[i])));
+		const lookup = keys.map((key, i) => ({ _key: key, value: String(values[i]) }));
+		return await helpers.computeRanks(module.db, lookup, false);
 	};
 
 	module.sortedSetsRevRanks = async function (keys, values) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		return await Promise.all(keys.map((key, i) => module.sortedSetRevRank(key, values[i])));
+		const lookup = keys.map((key, i) => ({ _key: key, value: String(values[i]) }));
+		return await helpers.computeRanks(module.db, lookup, true);
 	};
 
 	module.sortedSetRanks = async function (key, values) {
 		if (!Array.isArray(values) || !values.length) {
 			return [];
 		}
-		return await Promise.all(values.map(value => module.sortedSetRank(key, value)));
+		const lookup = values.map(v => ({ _key: key, value: String(v) }));
+		return await helpers.computeRanks(module.db, lookup, false);
 	};
 
 	module.sortedSetRevRanks = async function (key, values) {
@@ -382,34 +385,25 @@ module.exports = function (module) {
 		if (!Array.isArray(values) || !values.length) {
 			return [];
 		}
-
-		values = values.map(v => String(v));
-
-		const result = await helpers.createZsetQuery()
-			.select('z.value')
-			.where('o._key', '=', key)
-			.where('z.value', 'in', values)
-			.execute();
-
-		const memberSet = new Set(result.map(r => r.value));
-		return values.map(v => memberSet.has(v));
+		const lookup = values.map(v => ({ _key: key, value: String(v) }));
+		const rows = await helpers.fetchOrderedRows(
+			module.db, 'legacy_zset', lookup, ['_key', 'value'], ['value'],
+			{ notExpired: true },
+		);
+		return rows.map(r => r.value != null);
 	};
 
 	module.isMemberOfSortedSets = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-
-		value = String(value);
-
-		const result = await helpers.createZsetQuery()
-			.select('o._key')
-			.where('o._key', 'in', keys)
-			.where('z.value', '=', value)
-			.execute();
-
-		const memberSet = new Set(result.map(r => r._key));
-		return keys.map(k => memberSet.has(k));
+		const v = String(value);
+		const lookup = keys.map(k => ({ _key: k, value: v }));
+		const rows = await helpers.fetchOrderedRows(
+			module.db, 'legacy_zset', lookup, ['_key', 'value'], ['value'],
+			{ notExpired: true },
+		);
+		return rows.map(r => r.value != null);
 	};
 
 	module.getSortedSetMembers = async function (key) {
@@ -487,63 +481,41 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		if (!data || !Array.isArray(data) || !data.length) {
-			return;
+		if (!Array.isArray(data) || !data.length) {
+			return [];
 		}
 
 		return await helpers.withTransaction(null, null, async (client) => {
-			// Ensure all keys have the right type
-			const uniqueKeys = [...new Set(data.map(item => item[0]))];
+			const uniqueKeys = [...new Set(data.map(([key]) => key))];
 			await helpers.ensureLegacyObjectsType(client, uniqueKeys, 'zset');
 
-			// Build key-value pairs for querying existing scores
-			const keyValuePairs = data.map(item => ({
-				key: item[0],
-				value: String(item[2]),
-			}));
-
-			// Query all existing scores at once
-			const existingScores = {};
-			if (keyValuePairs.length) {
-				const results = await client.selectFrom('legacy_zset')
-					.select(['_key', 'value', 'score'])
-					.where(eb => eb.or(
-						keyValuePairs.map(p => eb.and([
-							eb('_key', '=', p.key),
-							eb('value', '=', p.value),
-						]))
-					))
-					.execute();
-
-				for (const { _key, value, score } of results) {
-					existingScores[`${_key}:${value}`] = parseFloat(score);
+			// Fold per-pair deltas — required because ON CONFLICT / ON
+			// DUPLICATE KEY can only update the same row once per statement.
+			// Nested Map keeps composite lookups O(1) without delimiters.
+			const folded = new Map();
+			for (const [key, increment, rawValue] of data) {
+				const value = String(rawValue);
+				let inner = folded.get(key);
+				if (!inner) { inner = new Map(); folded.set(key, inner); }
+				inner.set(value, (inner.get(value) || 0) + parseFloat(increment));
+			}
+			const rows = [];
+			for (const [key, inner] of folded) {
+				for (const [value, score] of inner) {
+					rows.push({ _key: key, value, score });
 				}
 			}
 
-			// Calculate new scores and build upsert rows
-			const rows = [];
-			const returnResults = [];
-			for (const item of data) {
-				const [key, increment, value] = item;
-				const strValue = String(value);
-				const existKey = `${key}:${strValue}`;
-				const currentScore = existingScores[existKey] || 0;
-				const newScore = currentScore + parseFloat(increment);
+			// DB-side atomic add: each row's score is incremented by the
+			// folded delta inside the UPSERT — no SELECT-then-UPDATE race.
+			await helpers.upsertAddMultiple(client, 'legacy_zset', rows, ['_key', 'value'], 'score');
 
-				rows.push({
-					_key: key,
-					value: strValue,
-					score: newScore,
-				});
-				returnResults.push(newScore);
-			}
-
-			// Batch upsert all rows
-			if (rows.length) {
-				await helpers.upsertMultiple(client, 'legacy_zset', rows, ['_key', 'value'], ['score']);
-			}
-
-			return returnResults;
+			// Read back per-input scores in input order via a single
+			// SQL round-trip; the helper preserves order with no JS-side
+			// reconstruction.
+			const lookup = data.map(([key, , rawValue]) => ({ _key: key, value: String(rawValue) }));
+			const result = await helpers.fetchOrderedRows(client, 'legacy_zset', lookup, ['_key', 'value'], ['score']);
+			return result.map(r => (r.score == null ? undefined : parseFloat(r.score)));
 		});
 	};
 

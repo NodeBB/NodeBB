@@ -145,17 +145,13 @@ module.exports = function (module) {
 		if (!Array.isArray(sets) || !sets.length) {
 			return [];
 		}
-
 		const member = String(value);
-
-		const result = await helpers.createSetQuery()
-			.select('s._key')
-			.where('o._key', 'in', sets)
-			.where('s.member', '=', member)
-			.execute();
-
-		const keySet = new Set(result.map(r => r._key));
-		return sets.map(s => keySet.has(s));
+		const lookup = sets.map(s => ({ _key: s, member }));
+		const rows = await helpers.fetchOrderedRows(
+			module.db, 'legacy_set', lookup, ['_key', 'member'], ['member'],
+			{ notExpired: true },
+		);
+		return rows.map(r => r.member != null);
 	};
 
 	module.getSetMembers = async function (key) {
