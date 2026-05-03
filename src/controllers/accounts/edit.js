@@ -19,8 +19,6 @@ editController.get = async function (req, res, next) {
 	const {
 		username,
 		userslug,
-		isSelf,
-		reputation,
 		groups: _groups,
 		groupTitleArray,
 		allowMultipleBadges,
@@ -37,8 +35,8 @@ editController.get = async function (req, res, next) {
 	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
 	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
-	userData.allowAboutMe = !isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:aboutme'];
-	userData.allowSignature = canUseSignature && (!isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:signature']);
+	userData.allowAboutMe = accountHelpers.meetsMinReputation(userData, 'min:rep:aboutme');
+	userData.allowSignature = canUseSignature && accountHelpers.meetsMinReputation(userData, 'min:rep:signature');
 	userData.defaultAvatar = user.getDefaultAvatar();
 
 	userData.groups = _groups.filter(g => g && g.userTitleEnabled && !groups.isPrivilegeGroup(g.name) && g.name !== 'registered-users');
