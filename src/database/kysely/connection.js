@@ -64,9 +64,24 @@ conn.getConnectionOptions = (options) => {
 		}
 	} else if (dialect === 'sqlite') {
 		co.filename = options.filename || options.database || co.filename;
+		// Resolve relative paths against the config dir so the DB lives next to
+		// config.json (persistent volume) rather than process.cwd() — which is
+		// the NodeBB root and ephemeral inside container deployments.
+		if (co.filename && co.filename !== ':memory:' && !path.isAbsolute(co.filename)) {
+			const configFile = nconf.get('config') || '';
+			const configDir = configFile ? path.dirname(path.resolve(configFile)) : process.cwd();
+			co.filename = path.join(configDir, co.filename);
+		}
 	} else if (dialect === 'pglite') {
 		// `memory://` (in-memory) or a filesystem path for persistent storage.
 		co.dataDir = options.dataDir || options.database || co.dataDir;
+		// Same relative-path anchor as sqlite — except for `memory://` and
+		// other URI-prefixed forms (e.g., `worker:`).
+		if (co.dataDir && !co.dataDir.includes('://') && !path.isAbsolute(co.dataDir)) {
+			const configFile = nconf.get('config') || '';
+			const configDir = configFile ? path.dirname(path.resolve(configFile)) : process.cwd();
+			co.dataDir = path.join(configDir, co.dataDir);
+		}
 	} else {
 		Object.assign(co, options);
 	}

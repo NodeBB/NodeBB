@@ -37,7 +37,13 @@ async function getDatabaseConfig(config) {
 		}
 		return await prompt.get(questions.postgres);
 	} else if (config.database === 'kysely') {
-		if (config['kysely:dialect']) {
+		// Headless gate per dialect: dialect alone isn't enough for mysql/postgres,
+		// where the host can't be inferred. sqlite/pglite only need a filename/path.
+		const dialect = config['kysely:dialect'];
+		const ready = dialect === 'sqlite' || dialect === 'pglite' ?
+			Boolean(dialect) :
+			Boolean(dialect && config['kysely:host'] && config['kysely:database']);
+		if (ready) {
 			return config;
 		}
 		return await prompt.get(questions.kysely);
@@ -81,14 +87,18 @@ function saveDatabaseConfig(config, databaseConfig) {
 			ssl: databaseConfig['postgres:ssl'],
 		};
 	} else if (config.database === 'kysely') {
-		config.kysely = {
-			dialect: databaseConfig['kysely:dialect'],
-			host: databaseConfig['kysely:host'],
-			port: databaseConfig['kysely:port'],
-			username: databaseConfig['kysely:username'],
-			password: databaseConfig['kysely:password'],
-			database: databaseConfig['kysely:database'],
-		};
+		// Persist only fields that apply to the chosen dialect — sqlite/pglite
+		// have no host/port/username/password, so don't pollute saved config
+		// with stale prompt defaults like 127.0.0.1:3306.
+		const dialect = databaseConfig['kysely:dialect'];
+		const ky = { dialect, database: databaseConfig['kysely:database'] };
+		if (dialect !== 'sqlite' && dialect !== 'pglite') {
+			ky.host = databaseConfig['kysely:host'];
+			ky.port = databaseConfig['kysely:port'];
+			ky.username = databaseConfig['kysely:username'];
+			ky.password = databaseConfig['kysely:password'];
+		}
+		config.kysely = ky;
 	} else {
 		throw new Error(`unknown database : ${config.database}`);
 	}

@@ -173,6 +173,12 @@ async function setupConfig() {
 	let config = {};
 
 	if (install.values) {
+		// Diagnostic: log which install.values keys are visible to the
+		// question-answering loop. Non-obvious bugs in the headless setup
+		// path (e.g., positional --setup JSON not propagating specific keys)
+		// surface as silently-defaulted config fields. This log makes the
+		// gap visible at install time.
+		winston.verbose(`[install/setupConfig] install.values keys: [${Object.keys(install.values).sort().join(', ')}]`);
 		// Use provided values, fall back to defaults
 		const redisQuestions = require('./database/redis').questions;
 		const mongoQuestions = require('./database/mongo').questions;

@@ -1,6 +1,7 @@
 'use strict';
 
 const { sql } = require('kysely');
+const winston = require('winston');
 
 const features = module.exports;
 
@@ -101,6 +102,10 @@ async function detectDialectHints(db, result) {
 
 /**
  * Create temporary test table for feature detection.
+ * Logs a loud warning on failure: if probes can't run, every feature falls
+ * back to `false` and NodeBB ends up emitting SQL the database can't execute.
+ * The most common cause is a read-only database file (wrong file permissions
+ * on a bind-mounted SQLite path).
  */
 async function createTestTable(db) {
 	try {
@@ -111,7 +116,14 @@ async function createTestTable(db) {
 			.addColumn('val', 'varchar(100)')
 			.execute();
 		return true;
-	} catch {
+	} catch (err) {
+		winston.error(
+			`[database/kysely] Feature detection probe failed — could not create ` +
+			`test table "${TEST_TABLE}": ${err && err.message ? err.message : err}. ` +
+			`All upsert/CTE/pagination capabilities will report as unsupported and ` +
+			`NodeBB will emit invalid SQL. Common causes: read-only database file, ` +
+			`missing CREATE TABLE privileges, or driver misconfiguration.`
+		);
 		return false;
 	}
 }
