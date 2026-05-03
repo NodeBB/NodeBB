@@ -84,28 +84,11 @@ jobs:
           # Maps port 27017 on service container to the host
           - 27017:27017
 
-      mysql:
-        # MySQL 5.6 — explicitly chosen as the oldest supported version, to
-        # exercise dialect-portability paths (no row-alias UPSERT, no VALUES
-        # table source, no window functions). Tuned for utf8mb4 + Barracuda
-        # so VARCHAR(255) PKs fit under the 3072-byte index limit.
-        image: 'mysql:5.6'
-        env:
-          MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: nodebb
-          MYSQL_USER: nodebb
-          MYSQL_PASSWORD: nodebb
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-          --character-set-server=utf8mb4
-          --collation-server=utf8mb4_unicode_ci
-          --innodb_large_prefix=ON
-          --innodb_file_format=Barracuda
-        ports:
-          - 3306:3306
+      # MySQL is started manually below — GHA service-container `options:` only
+      # accepts `docker create` flags, but we need to pass mysqld server flags
+      # (utf8mb4_bin collation, innodb_large_prefix=ON, Barracuda) which become
+      # the container CMD. Service containers have no `command:` field, so we
+      # use a `docker run` step gated on matrix.database == 'mysql' instead.
 
     steps:
       - uses: actions/checkout@v6
@@ -208,6 +191,32 @@ jobs:
         run: |
           node app --setup="${SETUP}" --ci="${CI}"
 
+      - name: Start MySQL 5.6
+        if: startsWith(matrix.database, 'mysql')
+        run: |
+          docker run -d --name mysql56 \
+            -p 3306:3306 \
+            -e MYSQL_ROOT_PASSWORD=rootpw \
+            -e MYSQL_DATABASE=nodebb \
+            -e MYSQL_USER=nodebb \
+            -e MYSQL_PASSWORD=nodebb \
+            mysql:5.6 \
+            --character-set-server=utf8mb4 \
+            --collation-server=utf8mb4_bin \
+            --innodb_large_prefix=ON \
+            --innodb_file_format=Barracuda
+          # Wait until mysqld accepts connections (5.6 boot is ~30s).
+          for i in $(seq 1 60); do
+            if docker exec mysql56 mysqladmin ping -prootpw --silent >/dev/null 2>&1; then
+              echo "MySQL is ready after ${i}s."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::MySQL 5.6 failed to become ready within 60s"
+          docker logs mysql56
+          exit 1
+
       - name: Setup on MySQL
         if: startsWith(matrix.database, 'mysql')
         env:
@@ -238,7 +247,7 @@ jobs:
               "database": "ci_test"
             }
         run: |
-          node -e "const m=require('mysql2/promise');(async()=>{const c=await m.createConnection({host:'127.0.0.1',port:3306,user:'root',password:'rootpw'});await c.query('CREATE DATABASE IF NOT EXISTS nodebb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');await c.query('CREATE DATABASE IF NOT EXISTS ci_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');await c.end();})()"
+          node -e "const m=require('mysql2/promise');(async()=>{const c=await m.createConnection({host:'127.0.0.1',port:3306,user:'root',password:'rootpw'});await c.query('CREATE DATABASE IF NOT EXISTS nodebb CHARACTER SET utf8mb4 COLLATE utf8mb4_bin');await c.query('CREATE DATABASE IF NOT EXISTS ci_test CHARACTER SET utf8mb4 COLLATE utf8mb4_bin');await c.end();})()"
           node app --setup="${SETUP}" --ci="${CI}"
 
       - name: Setup on SQLite
