@@ -22,6 +22,13 @@ const relative_path = nconf.get('relative_path');
 
 const helpers = module.exports;
 
+helpers.meetsMinReputation = function (userData, setting) {
+	return !userData.isSelf ||
+		userData.isAdminOrGlobalModerator ||
+		!!meta.config['reputation:disabled'] ||
+		userData.reputation >= meta.config[setting];
+};
+
 helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {}) {
 	const uid = await user.getUidByUserslug(userslug);
 	if (!uid) {
@@ -93,8 +100,8 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.iconBackgrounds = results.iconBackgrounds;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
-	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
-	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
+	userData.allowProfilePicture = helpers.meetsMinReputation(userData, 'min:rep:profile-picture');
+	userData.allowCoverPicture = helpers.meetsMinReputation(userData, 'min:rep:cover-picture');
 	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
 	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => `.${ext}`).join(', ');
 	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
