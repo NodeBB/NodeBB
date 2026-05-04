@@ -26,6 +26,7 @@ const api = require('../../src/api');
 const activitypub = require('../../src/activitypub');
 const helpers = require('../helpers');
 
+const { baseDir } = require('../../src/constants').paths;
 const wait = util.promisify(setTimeout);
 let readApi;
 let writeApi;
@@ -294,8 +295,24 @@ async function setupData() {
 	const socketAdmin = require('../../src/socket.io/admin');
 	await Promise.all(['profile', 'posts', 'uploads'].map(async type => api.users.generateExport({ uid: adminUid }, { uid: adminUid, type })));
 	await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
+
 	// wait for export child processes to complete
-	await wait(5000);
+	const uploadPath = nconf.get('upload_path');
+	const checkFiles = async (retries = 50) => {
+		for (let i = 0; i < retries; i++) {
+			// eslint-disable-next-line no-await-in-loop
+			const files = await Promise.all([
+				fs.promises.access(path.resolve(baseDir, 'build/export/users.csv')).then(() => true).catch(() => false),
+				fs.promises.access(path.resolve(baseDir, `build/export/${adminUid}_profile.json`)).then(() => true).catch(() => false),
+				fs.promises.access(path.resolve(baseDir, `build/export/${adminUid}_posts.csv`)).then(() => true).catch(() => false),
+				fs.promises.access(path.resolve(baseDir, `build/export/${adminUid}_uploads.zip`)).then(() => true).catch(() => false),
+			]);
+			if (files.every(Boolean)) return;
+			await wait(100);
+		}
+		throw new Error('Export files were not created in time');
+	};
+	await checkFiles();
 
 	// Attach a search hook so /api/search is enabled
 	plugins.hooks.register('core', {
