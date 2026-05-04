@@ -200,16 +200,14 @@ async function setupData() {
 
 	// Create private groups for pending/invitations
 	const [pending1, pending2, inviteUid] = await Promise.all([
-		await user.create({ username: utils.generateUUID().slice(0, 8) }),
-		await user.create({ username: utils.generateUUID().slice(0, 8) }),
-		await user.create({ username: utils.generateUUID().slice(0, 8) }),
+		user.create({ username: utils.generateUUID().slice(0, 8) }),
+		user.create({ username: utils.generateUUID().slice(0, 8) }),
+		user.create({ username: utils.generateUUID().slice(0, 8) }),
 	]);
 	mocks.put['/groups/{slug}/pending/{uid}'][1].example = pending1;
 	mocks.delete['/groups/{slug}/pending/{uid}'][1].example = pending2;
 	mocks.delete['/groups/{slug}/invites/{uid}'][1].example = inviteUid;
-	await Promise.all(['private-group', 'invitations-only'].map(async (name) => {
-		await groups.create({ name, private: true });
-	}));
+	await Promise.all(['private-group', 'invitations-only'].map(async (name) => groups.create({ name, private: true })));
 	await groups.requestMembership('private-group', pending1);
 	await groups.requestMembership('private-group', pending2);
 	await groups.invite('invitations-only', inviteUid);
