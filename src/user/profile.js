@@ -278,6 +278,9 @@ module.exports = function (User) {
 		if (!isSelf || meta.config['reputation:disabled']) {
 			return;
 		}
+		if (await User.isAdminOrGlobalMod(callerUid)) {
+			return;
+		}
 		const reputation = await User.getUserField(uid, 'reputation');
 		if (reputation < meta.config[setting]) {
 			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}, ${meta.config[setting]}]]`);
