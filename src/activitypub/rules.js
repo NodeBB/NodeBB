@@ -12,6 +12,7 @@ Rules.list = async () => {
 	let rules = await db.getObjects(rids.map(rid => `rid:${rid}`));
 	rules = rules.map((rule, idx) => {
 		rule.rid = rids[idx];
+		rule.cid = parseInt(rule.cid, 10);
 		return rule;
 	});
 

@@ -63,9 +63,9 @@ get:
                         lastonline:
                           type: number
                         flags:
-                          nullable: true
-                        banned:
                           type: number
+                        banned:
+                          type: boolean
                         banned:expire:
                           type: number
                         joindate:

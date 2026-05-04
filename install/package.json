@@ -168,6 +168,7 @@
         "coveralls": "3.1.1",
         "@eslint/js": "10.0.1",
         "@stylistic/eslint-plugin": "5.10.0",
+        "ajv": "^8.20.0",
         "eslint-config-nodebb": "2.0.1",
         "globals": "17.6.0",
         "grunt": "1.6.2",

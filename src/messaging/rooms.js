@@ -22,7 +22,8 @@ const roomUidCache = cacheCreate({
 });
 
 const intFields = [
-	'roomId', 'timestamp', 'userCount', 'messageCount', 'joinLeaveMessages',
+	'roomId', 'timestamp', 'userCount', 'messageCount',
+	'joinLeaveMessages', 'notificationSetting',
 ];
 
 module.exports = function (Messaging) {

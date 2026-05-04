@@ -1,6 +1,7 @@
 CategoryObject:
   allOf:
     - type: object
+      nullable: true
       properties:
         cid:
           type: number
@@ -87,6 +88,7 @@ CategoryObject:
           type: number
           description: The number of subcategories to display on the categories and category page
     - type: object
+      nullable: true
       description: Optional properties that may or may not be present (except for `cid`, which is always present, and is only here as a hack to pass validation)
       properties:
         cid:

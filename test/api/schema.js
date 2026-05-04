@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 'use strict';
 
 const assert = require('assert');
@@ -8,6 +9,7 @@ const _ = require('lodash');
 const SwaggerParser = require('@apidevtools/swagger-parser');
 const jwt = require('jsonwebtoken');
 const util = require('util');
+const Ajv = require('ajv');
 
 const db = require('../mocks/databasemock');
 const request = require('../../src/request');
@@ -26,6 +28,7 @@ const api = require('../../src/api');
 const activitypub = require('../../src/activitypub');
 const helpers = require('../helpers');
 
+const ajv = new Ajv({ allErrors: true, strict: false });
 const { baseDir } = require('../../src/constants').paths;
 const wait = util.promisify(setTimeout);
 let readApi;
@@ -179,7 +182,6 @@ async function setupData() {
 	mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
 
 	for (let x = 0; x < 4; x++) {
-		// eslint-disable-next-line no-await-in-loop
 		await user.create({ username: 'deleteme', password: '123456' }); // for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
 	}
 	await groups.join('administrators', adminUid);
@@ -299,18 +301,38 @@ async function setupData() {
 	// wait for export child processes to complete
 	const uploadPath = nconf.get('upload_path');
 	const checkFiles = async (retries = 50) => {
+		const getFileStats = async () => {
+			const paths = [
+				path.resolve(baseDir, 'build/export/users.csv'),
+				path.resolve(baseDir, `build/export/${adminUid}_profile.json`),
+				path.resolve(baseDir, `build/export/${adminUid}_posts.csv`),
+				path.resolve(baseDir, `build/export/${adminUid}_uploads.zip`),
+			];
+
+			const results = await Promise.all(paths.map(async (p) => {
+				try {
+					const stats = await fs.promises.stat(p);
+					return { exists: true, size: stats.size };
+				} catch (e) {
+					return { exists: false, size: 0 };
+				}
+			}));
+
+			return results;
+		};
+
 		for (let i = 0; i < retries; i++) {
-			// eslint-disable-next-line no-await-in-loop
-			const files = await Promise.all([
-				fs.promises.access(path.resolve(baseDir, 'build/export/users.csv')).then(() => true).catch(() => false),
-				fs.promises.access(path.resolve(baseDir, `build/export/${adminUid}_profile.json`)).then(() => true).catch(() => false),
-				fs.promises.access(path.resolve(baseDir, `build/export/${adminUid}_posts.csv`)).then(() => true).catch(() => false),
-				fs.promises.access(path.resolve(baseDir, `build/export/${adminUid}_uploads.zip`)).then(() => true).catch(() => false),
-			]);
-			if (files.every(Boolean)) return;
+			const firstCheck = await getFileStats();
+			if (firstCheck.every((f) => f.exists)) {
+				await wait(500); // Wait a bit to see if size changes
+				const secondCheck = await getFileStats();
+				if (secondCheck.every((f, idx) => f.size === firstCheck[idx].size)) {
+					return;
+				}
+			}
 			await wait(100);
 		}
-		throw new Error('Export files were not created in time');
+		throw new Error('Export files were not created or finished writing in time');
 	};
 	await checkFiles();
 
@@ -366,7 +388,6 @@ describe('schema', () => {
 		const paths = Object.keys(this.readApi.paths);
 		const pathLib = path; // for calling path module from inside this forEach
 		for(const p of paths) {
-			// eslint-disable-next-line no-await-in-loop
 			await executeTests(p, this.readApi, paths, pathLib);
 		}
 	});
@@ -378,7 +399,6 @@ describe('schema', () => {
 		const paths = Object.keys(this.writeApi.paths);
 		const pathLib = path; // for calling path module from inside this forEach
 		for(const p of paths) {
-			// eslint-disable-next-line no-await-in-loop
 			await executeTests(p, this.writeApi, paths, pathLib, this.writeApi.servers[0].url);
 		};
 	});
@@ -560,7 +580,7 @@ describe('schema', () => {
 			const hasJSON = http200.content && http200.content['application/json'];
 			if (hasJSON) {
 				schema = context[method].responses['200'].content['application/json'].schema;
-				compare(schema, result.body, method.toUpperCase(), path, 'root');
+				validateSchema(schema, result.body, method.toUpperCase(), path);
 			}
 
 			// TODO someday: text/csv, binary file type checking?
@@ -597,95 +617,21 @@ describe('schema', () => {
 		}, {});
 	}
 
-	function compare(schema, response, method, path, context) {
-		let required = [];
-		const additionalProperties = schema.hasOwnProperty('additionalProperties');
-
-		function flattenAllOf(obj) {
-			return obj.reduce((memo, obj) => {
-				if (obj.allOf) {
-					obj = { properties: flattenAllOf(obj.allOf) };
-				} else {
-					try {
-						required = required.concat(obj.required ? obj.required : Object.keys(obj.properties));
-					} catch (e) {
-						assert.fail(`Syntax error re: allOf, perhaps you allOf'd an array? (path: ${method} ${path}, context: ${context})`);
-					}
-				}
-
-				return { ...memo, ...obj.properties };
-			}, {});
+	function validateSchema(schema, data, method, path) {
+		let validate;
+		try {
+			validate = ajv.compile(schema);
+		} catch (err) {
+			assert.fail(`Schema is invalid (path: ${method} ${path}): ${err.message}`);
 		}
 
-		if (schema.allOf) {
-			schema = flattenAllOf(schema.allOf);
-		} else if (schema.properties) {
-			required = schema.required || Object.keys(schema.properties);
-			schema = schema.properties;
-		} else {
-			// If schema contains no properties, check passes
-			return;
+		if (!validate(data)) {
+			const errorMessages = validate.errors.map(err => {
+				const instancePath = err.instancePath || 'root';
+				return `"${instancePath}" ${err.message} (path: ${method} ${path})`;
+			}).join('\n');
+			console.log(path, JSON.stringify(data, null, 2));
+			assert.fail(`Schema validation failed (path: ${method} ${path}):\n${errorMessages}`);
 		}
-
-		// Compare the schema to the response
-		required.forEach((prop) => {
-			if (schema.hasOwnProperty(prop)) {
-				assert(response.hasOwnProperty(prop), `"${prop}" is a required property (path: ${method} ${path}, context: ${context})`);
-
-				// Don't proceed with type-check if the value could possibly be unset (nullable: true, in spec)
-				if (response[prop] === null && schema[prop].nullable === true) {
-					return;
-				}
-
-				// Therefore, if the value is actually null, that's a problem (nullable is probably missing)
-				assert(response[prop] !== null, `"${prop}" was null, but schema does not specify it to be a nullable property (path: ${method} ${path}, context: ${context})`);
-
-				switch (schema[prop].type) {
-					case 'string':
-						assert.strictEqual(typeof response[prop], 'string', `"${prop}" was expected to be a string, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
-						break;
-					case 'boolean':
-						assert.strictEqual(typeof response[prop], 'boolean', `"${prop}" was expected to be a boolean, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
-						break;
-					case 'object': {
-						let valid = ['object'];
-						if (schema[prop].additionalProperties && schema[prop].additionalProperties.oneOf) {
-							valid = schema[prop].additionalProperties.oneOf.map(({ type }) => type);
-						}
-						assert(valid.includes(typeof response[prop]), `"${prop}" was expected to be an object, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
-						compare(schema[prop], response[prop], method, path, context ? [context, prop].join('.') : prop);
-						break;
-					}
-					case 'array':
-						assert.strictEqual(Array.isArray(response[prop]), true, `"${prop}" was expected to be an array, but was ${typeof response[prop]} instead (path: ${method} ${path}, context: ${context})`);
-
-						if (schema[prop].items) {
-							// Ensure the array items have a schema defined
-							assert(schema[prop].items.type || schema[prop].items.allOf || schema[prop].items.anyOf || schema[prop].items.oneOf, `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`);
-
-							// Compare types
-							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf || schema[prop].items.anyOf || schema[prop].items.oneOf)) {
-								response[prop].forEach((res) => {
-									compare(schema[prop].items, res, method, path, context ? [context, prop].join('.') : prop);
-								});
-							} else if (response[prop].length) { // for now
-								response[prop].forEach((item) => {
-									assert.strictEqual(typeof item, schema[prop].items.type, `"${prop}" should have ${schema[prop].items.type} items, but found ${typeof items} instead (path: ${method} ${path}, context: ${context})`);
-								});
-							}
-						}
-						break;
-				}
-			}
-		});
-
-		// Compare the response to the schema
-		Object.keys(response).forEach((prop) => {
-			if (additionalProperties) { // All bets are off
-				return;
-			}
-
-			assert(schema[prop], `"${prop}" was found in response, but is not defined in schema (path: ${method} ${path}, context: ${context})`);
-		});
 	}
 });

@@ -106,7 +106,6 @@ async function getAvailable() {
 		item.id = item.id || '';
 		return item;
 	});
-	console.log('this is core', core);
 
 	const navItems = await plugins.hooks.fire('filter:navigation.available', core);
 	navItems.forEach((item) => {

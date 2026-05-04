@@ -13,11 +13,10 @@ get:
       example: 'post'
   responses:
     "200":
-      description: ""
       content:
         application/json:
           schema:
-            type: object
+            type: array
+            description: The type of response is dependent on the database used. Please examine the output.
             properties: {}
-            additionalProperties:
-              description: The type of response is dependent on the database used. Please examine the output.
+            additionalProperties: true

@@ -61,7 +61,6 @@ settingsController.navigation = async function (req, res) {
 
 	admin.navigation = admin.enabled.slice();
 	admin.title = '[[admin/menu:settings/navigation]]';
-	console.log('returned', admin);
 	res.render('admin/settings/navigation', admin);
 };
 

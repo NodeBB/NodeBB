@@ -3,12 +3,12 @@ PaginationProps:
     - type: object
       description: Optional properties that may or may not be present (except for `page`, which is always present, and is only here as a hack to pass validation)
       properties:
-        page:
+        currentPage:
           type: number
         qs:
           type: string
       required:
-        - cid
+        - currentPage
 Pagination:
   type: object
   properties:
