@@ -46,8 +46,12 @@ Minifier.killAll = function () {
 };
 
 function getChild() {
-	if (free.length) {
-		return free.shift();
+	while (free.length) {
+		const proc = free.shift();
+		if (proc.connected && !proc.killed) {
+			return proc;
+		}
+		removeChild(proc);
 	}
 
 	const proc = fork(__filename, [], {
@@ -56,14 +60,20 @@ function getChild() {
 			minifier_child: true,
 		},
 	});
+	proc.once('exit', () => removeChild(proc));
 	pool.push(proc);
 
 	return proc;
 }
 
 function freeChild(proc) {
-	proc.removeAllListeners();
-	free.push(proc);
+	proc.removeAllListeners('message');
+	proc.removeAllListeners('error');
+	if (proc.connected && !proc.killed) {
+		free.push(proc);
+	} else {
+		removeChild(proc);
+	}
 }
 
 function removeChild(proc) {
@@ -71,32 +81,59 @@ function removeChild(proc) {
 	if (i !== -1) {
 		pool.splice(i, 1);
 	}
+	const j = free.indexOf(proc);
+	if (j !== -1) {
+		free.splice(j, 1);
+	}
+
+	if (proc.connected) {
+		proc.disconnect();
+	}
+	proc.kill();
 }
 
 function forkAction(action) {
 	return new Promise((resolve, reject) => {
 		const proc = getChild();
-		proc.on('message', (message) => {
+
+		if (!proc.connected || proc.killed) {
+			return reject(new Error('Child process is not connected or has been killed'));
+		}
+		const onMessage = (message) => {
+			cleanup();
 			freeChild(proc);
 
 			if (message.type === 'error') {
 				return reject(new Error(message.message));
 			}
-
 			if (message.type === 'end') {
-				resolve(message.result);
+				return resolve(message.result);
 			}
-		});
-		proc.on('error', (err) => {
-			proc.kill();
+		};
+
+		const onError = (err) => {
+			cleanup();
+			freeChild(proc);
+			reject(err);
+		};
+
+		function cleanup() {
+			proc.removeListener('message', onMessage);
+			proc.removeListener('error', onError);
+		}
+
+		proc.on('message', onMessage);
+		proc.on('error', onError);
+		try {
+			proc.send({
+				type: 'action',
+				action: action,
+			});
+		} catch (err) {
+			cleanup();
 			removeChild(proc);
 			reject(err);
-		});
-
-		proc.send({
-			type: 'action',
-			action: action,
-		});
+		}
 	});
 }
 
