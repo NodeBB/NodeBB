@@ -80,6 +80,28 @@ file.allowedExtensions = function () {
 	return allowedExtensions;
 };
 
+file.blockedExtensions = function () {
+	const meta = require('./meta');
+	let blockedExtensions = (meta.config.blockedFileExtensions || '').trim();
+	if (!blockedExtensions) {
+		return [];
+	}
+	blockedExtensions = blockedExtensions.split(',');
+	blockedExtensions = blockedExtensions.filter(Boolean).map((extension) => {
+		extension = extension.trim();
+		if (!extension.startsWith('.')) {
+			extension = `.${extension}`;
+		}
+		return extension.toLowerCase();
+	});
+
+	if (blockedExtensions.includes('.jpg') && !blockedExtensions.includes('.jpeg')) {
+		blockedExtensions.push('.jpeg');
+	}
+
+	return blockedExtensions;
+};
+
 file.exists = async function (path) {
 	try {
 		await fs.promises.stat(path);

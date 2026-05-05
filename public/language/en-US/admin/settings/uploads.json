@@ -31,6 +31,8 @@
 	"topic-thumb-size": "Topic Thumb Size",
 	"allowed-file-extensions": "Allowed File Extensions",
 	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>). An empty list means all extensions are allowed.",
+	"blocked-file-extensions": "Blocked File Extensions",
+	"blocked-file-extensions-help": "Enter comma-separated list of file extensions to block (e.g. <code>html,svg,php</code>). Blocked extensions are rejected even if they appear in the allowed list.",
 	"upload-limit-threshold": "Rate limit user uploads to:",
 	"upload-limit-threshold-per-minute": "Per %1 Minute",
 	"upload-limit-threshold-per-minutes": "Per %1 Minutes",

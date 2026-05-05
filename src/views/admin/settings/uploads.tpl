@@ -117,6 +117,14 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="blockedFileExtensions">[[admin/settings/uploads:blocked-file-extensions]]</label>
+					<input id="blockedFileExtensions" type="text" class="form-control" value="" data-field="blockedFileExtensions" data-field-type="tagsinput" />
+					<p class="form-text">
+						[[admin/settings/uploads:blocked-file-extensions-help]]
+					</p>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="uploadRateLimitThreshold">[[admin/settings/uploads:upload-limit-threshold]]</label>
 					<div id="uploadRateLimitThreshold" class="row">
 						<div class="col-2">

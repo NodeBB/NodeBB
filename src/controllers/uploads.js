@@ -176,10 +176,14 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 	}
 
 	const allowed = file.allowedExtensions();
+	const blocked = file.blockedExtensions();
 
 	const extension = path.extname(uploadedFile.name).toLowerCase();
 	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
 		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
+	}
+	if (blocked.length > 0 && (!extension || extension === '.' || blocked.includes(extension))) {
+		throw new Error(`[[error:invalid-file-type, ${blocked.join('&#44; ')}]]`);
 	}
 
 	return await saveFileToLocal(uid, 'files', uploadedFile);
