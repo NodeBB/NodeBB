@@ -263,11 +263,11 @@
     "api.reauth-required": "המשאב שאליו אתה מנסה לגשת דורש אימות (מחודש).",
     "activitypub.not-enabled": "הפדרציה אינה מופעלת בשרת זה",
     "activitypub.invalid-id": "לא ניתן לפתור את מזהה הקלט, ככל הנראה מכיוון שהוא פגום.",
-    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
+    "activitypub.invalid-content-type": "סוג תוכן לא צפוי היה משויך לתוכן שהוחזר",
     "activitypub.get-failed": "לא ניתן לאחזר את המשאב שצוין.",
     "activitypub.pubKey-not-found": "לא ניתן לפתור מפתח ציבורי, ולכן לא ניתן לבצע אימות מטען.",
     "activitypub.origin-mismatch": "מקור האובייקט שהתקבל אינו תואם את מקור השולח",
     "activitypub.not-implemented": "הבקשה נדחתה מכיוון שהיא או היבט שלה אינם מיושמים על ידי שרת הנמען",
     "activitypub.orphan": "האובייקט שהתקבל אינו משויך לאף משתמש מקומי ידוע.",
-    "activitypub.rate-limited": "Your IP address has been rate-limited."
+    "activitypub.rate-limited": "כתובת ה-IP שלך עברה את מגבלת ה-rate-limite."
 }

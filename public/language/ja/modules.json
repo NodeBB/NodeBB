@@ -41,7 +41,7 @@
     "chat.public-rooms": "公開ルーム（%1）",
     "chat.private-rooms": "非公開ルーム（%1）",
     "chat.create-room": "チャットルームを作成",
-    "chat.search-chats-placeholder": "Search chats...",
+    "chat.search-chats-placeholder": "チャットを検索...",
     "chat.private.option": "非公開（ルームに追加されたユーザーのみ表示）",
     "chat.public.option": "公開（選択したグループの全ユーザーに表示）",
     "chat.public.groups-help": "全ユーザーに表示されるチャットルームを作成するには、グループ一覧からregistered-usersを選択してください。",

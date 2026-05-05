@@ -1,6 +1,6 @@
 {
 	"customise": "カスタマイズ",
-	"custom-css": "Custom CSS/SASS",
+	"custom-css": "カスタム CSS/SASS",
 	"custom-css.description": "ここに独自のCSS/SASS宣言を入力すると、他のすべてのスタイルの後に適用されます。",
 	"custom-css.enable": "カスタムCSS/SASSを有効にする",
 
@@ -9,7 +9,7 @@
 	"custom-js.enable": "カスタムJavaScriptを有効にする",
 
 	"custom-header": "カスタムヘッダー",
-	"custom-header.description": "ここにカスタムHTML（例: メタタグなど）を入力すると、フォーラムのマークアップの<code>&lt;head&gt;</code>セクションに追加されます。スクリプトタグは許可されていますが、<a href=\\\"#custom-js\\\" data-toggle=\\\"tab\\\">カスタムJavaScript</a>タブが利用可能なため、推奨されません。",
+	"custom-header.description": "ここにカスタムHTML（例: メタタグなど）を入力すると、フォーラムのマークアップの<code>&lt;head&gt;</code>セクションに追加されます。スクリプトタグは許可されていますが、<a href=\"#custom-js\" data-toggle=\"tab\">カスタムJavaScript</a>タブが利用可能なため、推奨されません。",
 	"custom-header.enable": "カスタムヘッダーを有効にする",
 
 	"custom-css.livereload": "ライブリロードを有効にする",

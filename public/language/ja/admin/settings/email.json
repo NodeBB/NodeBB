@@ -47,7 +47,7 @@
 	"subscriptions": "メールダイジェスト",
 	"subscriptions.disable": "メールダイジェストを無効にする",
 	"subscriptions.hour": "ダイジェストアワー",
-	"subscriptions.hour-help": "スケジュールされたメールダイジェストを送信する時間を表す数字を入力してください（例：深夜は<code>0</code>、午後5時は<code>17</code>）。サーバー自体の時刻に基づくため、システムの時計と正確に一致しない場合があります。<br /> おおよそのサーバー時刻：<span id=\\\"serverTime\\\"></span><br /> 次の日次ダイジェストの送信予定：<span id=\\\"nextDigestTime\\\"></span>",
+	"subscriptions.hour-help": "スケジュールされたメールダイジェストを送信する時間を表す数字を入力してください（例：深夜は<code>0</code>、午後5時は<code>17</code>）。サーバー自体の時刻に基づくため、システムの時計と正確に一致しない場合があります。<br /> おおよそのサーバー時刻：<span id=\"serverTime\"></span><br /> 次の日次ダイジェストの送信予定：<span id=\"nextDigestTime\"></span>",
 	"notifications.remove-images": "メール通知から画像を削除",
 	"require-email-address": "新規ユーザーにメールアドレスの入力を必須にする",
 	"require-email-address-warning": "デフォルトでは、ユーザーはフィールドを空白のままにしてメールアドレスの入力をスキップできます。このオプションを有効にすると、新規ユーザーは登録を進め、フォーラムにアクセスするためにメールアドレスを<strong>入力し確認</strong>する必要があります。<strong>ユーザーが実際のメールアドレス、または所有するアドレスを入力することを保証するものではありません。</strong>",
