@@ -372,7 +372,6 @@ describe('schema', () => {
 		this.readApi = await SwaggerParser.dereference(readApiPath);
 		this.writeApi = await SwaggerParser.dereference(writeApiPath);
 
-		await db.flushdb();
 		await setupData();
 	});
 
