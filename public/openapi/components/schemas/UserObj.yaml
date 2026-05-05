@@ -23,9 +23,11 @@ UserObj:
       example: 1585337827953
     picture:
       type: string
+      nullable: true
       example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
     fullname:
       type: string
+      nullable: true
       example: Mr. Dragon Fruit Jr.
     displayname:
       type: string
@@ -37,23 +39,27 @@ UserObj:
     birthday:
       type: string
       description: A birthdate given in an ISO format parseable by the Date object
+      nullable: true
       example: 03/27/2020
     website:
       type: string
       example: 'https://example.org'
     aboutme:
       type: string
+      nullable: true
       example: |
         This is a paragraph all about how my life got twist-turned upside-down
         and I'd like to take a minute and sit right here,
         to tell you all about how I because the administrator of NodeBB
     signature:
       type: string
+      nullable: true
       example: |
         This is an example signature
         It can span multiple lines.
     uploadedpicture:
       type: string
+      nullable: true
       example: /assets/profile/1-profileimg.png
       description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
     profileviews:
@@ -72,7 +78,7 @@ UserObj:
       type: number
       example: 1585337827953
     banned:
-      type: number
+      type: boolean
       example: 0
     'banned:expire':
       type: number
@@ -94,9 +100,11 @@ UserObj:
       example: /assets/profile/1-cover.png
     'cover:position':
       type: string
+      nullable: true
       example: 50.0301% 19.2464%
     groupTitle:
       type: string
+      nullable: true
       example: '["administrators","Staff"]'
     groupTitleArray:
       type: array

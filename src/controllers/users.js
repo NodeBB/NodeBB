@@ -140,7 +140,7 @@ usersController.getUsers = async function (set, uid, query) {
 	return {
 		users: usersData.users,
 		pagination: pagination.create(page, pageCount, query),
-		userCount: usersData.count,
+		userCount: parseInt(usersData.count, 10),
 		title: setToData[set].title || '[[pages:users/latest]]',
 		breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
 		isAdminOrGlobalMod: isAdmin || isGlobalMod,

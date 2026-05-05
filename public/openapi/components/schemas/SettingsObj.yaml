@@ -90,8 +90,10 @@ Settings:
       type: string
       description: Notification type for post edits
     sendChatNotifications:
+      type: boolean
       nullable: true
     sendPostNotifications:
+      type: boolean
       nullable: true
     notificationType_upvote:
       type: string
@@ -161,7 +163,6 @@ Settings:
     - showfullname
     - followTopicsOnCreate
     - followTopicsOnReply
-    - restrictChat
     - topicSearchEnabled
     - categoryTopicSort
     - userLang

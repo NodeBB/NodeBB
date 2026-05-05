@@ -152,7 +152,7 @@
     "email:disableEdit": 0,
     "email:smtpTransport:pool": 0,
     "email:smtpTransport:allow-self-signed": 0,
-    "hideFullname": 0,
+    "hideFullname": 1,
     "hideEmail": 0,
     "showFullnameAsDisplayName": 0,
     "allowGuestHandles": 0,

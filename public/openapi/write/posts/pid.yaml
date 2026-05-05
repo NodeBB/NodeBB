@@ -127,7 +127,7 @@ put:
                   - type: object
                     properties:
                       edited:
-                        type: boolean
+                        type: number
                       deleterUid:
                         type: number
 delete:

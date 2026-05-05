@@ -78,6 +78,8 @@ admin.get = async function () {
 		if (item.groups && !Array.isArray(item.groups)) {
 			item.groups = [item.groups];
 		}
+
+		item.enabled = String(item.enabled) === 'true';
 		return item;
 	});
 	admin.escapeFields(cache);

@@ -29,8 +29,6 @@ get:
                             subCategoryCount:
                               type: number
                   selectedCategory:
-                    nullable: true
-                    anyOf:
-                      - $ref: ../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                    $ref: ../../../components/schemas/CategoryObject.yaml#/CategoryObject
               - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -27,7 +27,7 @@ get:
                   uid:
                     type: number
                   pid:
-                    type: number
+                    type: [number, string]
                   timestamps:
                     type: array
                     items:
@@ -42,7 +42,7 @@ get:
                         username:
                           type: string
                         uid:
-                          type: number
+                          type: [number, string]
                   editable:
                     type: boolean
                   deletable:
