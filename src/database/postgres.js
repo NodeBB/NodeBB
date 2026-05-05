@@ -83,9 +83,13 @@ SELECT EXISTS(SELECT *
 		EXISTS(SELECT *
 				FROM "information_schema"."routines"
 			   WHERE "routine_schema" = 'public'
-				 AND "routine_name" = 'nodebb_get_sorted_set_members_withscores') d`);
+				 AND "routine_name" = 'nodebb_get_sorted_set_members_withscores') d,
+       EXISTS(SELECT *
+                FROM "information_schema"."views"
+               WHERE "table_schema" = 'public'
+                 AND "table_name" = 'legacy_object_live') e`);
 
-	if (res.rows[0].a && res.rows[0].b && res.rows[0].c && res.rows[0].d) {
+	if (res.rows[0].a && res.rows[0].b && res.rows[0].c && res.rows[0].d && res.rows[0].e) {
 		return;
 	}
 
@@ -265,6 +269,14 @@ SELECT "data"->>'_key',
 				await client.query(`DROP TABLE "objects" CASCADE`);
 				await client.query(`DROP FUNCTION "fun__objects__expireAt"() CASCADE`);
 			}
+			await client.query(`
+CREATE VIEW "legacy_object_live" AS
+SELECT "_key", "type"
+  FROM "legacy_object"
+ WHERE "expireAt" IS NULL
+    OR "expireAt" > CURRENT_TIMESTAMP`);
+		} else if (!res.rows[0].e) {
+			// If the tables exist but the view is missing, create only the view
 			await client.query(`
 CREATE VIEW "legacy_object_live" AS
 SELECT "_key", "type"
