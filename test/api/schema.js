@@ -301,6 +301,7 @@ async function setupData() {
 	// wait for export child processes to complete
 	const uploadPath = nconf.get('upload_path');
 	const checkFiles = async (retries = 50) => {
+		process.stdout.write('checkfiles called');
 		const getFileStats = async () => {
 			const paths = [
 				path.resolve(baseDir, 'build/export/users.csv'),
@@ -372,6 +373,7 @@ describe('schema', () => {
 		this.readApi = await SwaggerParser.dereference(readApiPath);
 		this.writeApi = await SwaggerParser.dereference(writeApiPath);
 
+		await db.setupMockDefaults();
 		await setupData();
 	});
 
