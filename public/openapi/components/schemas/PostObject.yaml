@@ -405,6 +405,7 @@ PostDataObject:
           description: A post identifier
         sourceContent:
           type: string
+          nullable: true
           description: The markdown equivalent of a remote post content, as received (or fetched) from the remote site.
       required:
         - pid

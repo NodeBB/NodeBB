@@ -80,6 +80,7 @@ admin.get = async function () {
 		}
 
 		item.enabled = String(item.enabled) === 'true';
+		item.order = parseInt(item.order, 10);
 		return item;
 	});
 	admin.escapeFields(cache);
