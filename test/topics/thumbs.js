@@ -200,10 +200,12 @@ describe('Topic thumbs', () => {
 
 			await topics.thumbs.delete(1, [relativeThumbPaths[0]]);
 			let numThumbs = parseInt(await db.getObjectField('topic:1', 'numThumbs'), 10);
+			console.log(numThumbs);
 			assert.strictEqual(numThumbs, 1);
 
 			await topics.thumbs.delete(1, [relativeThumbPaths[1]]);
 			numThumbs = parseInt(await db.getObjectField('topic:1', 'numThumbs'), 10);
+			console.log(numThumbs);
 			assert.strictEqual(numThumbs, 0);
 		});
 	});
