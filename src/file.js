@@ -59,35 +59,20 @@ file.appendToFileName = function (filename, string) {
 };
 
 file.allowedExtensions = function () {
-	const meta = require('./meta');
-	let allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
-	if (!allowedExtensions) {
-		return [];
-	}
-	allowedExtensions = allowedExtensions.split(',');
-	allowedExtensions = allowedExtensions.filter(Boolean).map((extension) => {
-		extension = extension.trim();
-		if (!extension.startsWith('.')) {
-			extension = `.${extension}`;
-		}
-		return extension.toLowerCase();
-	});
-
-	if (allowedExtensions.includes('.jpg') && !allowedExtensions.includes('.jpeg')) {
-		allowedExtensions.push('.jpeg');
-	}
-
-	return allowedExtensions;
+	return parseExtensions(require('./meta').config.allowedFileExtensions);
 };
 
 file.blockedExtensions = function () {
-	const meta = require('./meta');
-	let blockedExtensions = (meta.config.blockedFileExtensions || '').trim();
-	if (!blockedExtensions) {
+	return parseExtensions(require('./meta').config.blockedFileExtensions);
+};
+
+function parseExtensions(input) {
+	let extensions = (meta.config.allowedFileExtensions || '').trim();
+	if (!extensions) {
 		return [];
 	}
-	blockedExtensions = blockedExtensions.split(',');
-	blockedExtensions = blockedExtensions.filter(Boolean).map((extension) => {
+	extensions = extensions.split(',');
+	extensions = extensions.filter(Boolean).map((extension) => {
 		extension = extension.trim();
 		if (!extension.startsWith('.')) {
 			extension = `.${extension}`;
@@ -95,12 +80,12 @@ file.blockedExtensions = function () {
 		return extension.toLowerCase();
 	});
 
-	if (blockedExtensions.includes('.jpg') && !blockedExtensions.includes('.jpeg')) {
-		blockedExtensions.push('.jpeg');
+	if (extensions.includes('.jpg') && !extensions.includes('.jpeg')) {
+		extensions.push('.jpeg');
 	}
 
-	return blockedExtensions;
-};
+	return extensions;
+}									  
 
 file.exists = async function (path) {
 	try {
