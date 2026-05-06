@@ -85,7 +85,7 @@ function parseExtensions(input) {
 	}
 
 	return extensions;
-}									  
+}
 
 file.exists = async function (path) {
 	try {
