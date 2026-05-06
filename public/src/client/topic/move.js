@@ -31,9 +31,11 @@ define('forum/topic/move', [
 			const dropdownEl = modal.find('[component="category-selector"]');
 			dropdownEl.addClass('dropup');
 
+			const privs = ajaxify.data && ajaxify.data.privileges;
+			const isAdminOrMod = !!(privs && privs.isAdminOrMod);
 			categorySelector.init(dropdownEl, {
 				onSelect: onCategorySelected,
-				privilege: 'moderate',
+				privilege: isAdminOrMod ? 'moderate' : 'topics:create',
 				localOnly: true,
 			});
 

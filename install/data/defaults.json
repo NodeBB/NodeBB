@@ -14,6 +14,7 @@
     "postEditDuration": 0,
     "newbiePostEditDuration": 3600,
     "postDeleteDuration": 0,
+    "movingTopicsMaxPosts": 5,
     "enablePostHistory": 1,
     "topicBacklinks": 1,
     "postCacheSize": 20971520,
