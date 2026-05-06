@@ -3,7 +3,7 @@
 
 define('share', ['hooks', 'translator'], function (hooks, translator) {
 	const share = {};
-	const baseUrl = window.location.protocol + '//' + window.location.host;
+	const baseUrl = config.url || (window.location.protocol + '//' + window.location.host + config.relative_path);
 
 	share.addShareHandlers = function (name) {
 		function openShare(url, urlToPost, width, height) {
@@ -89,7 +89,7 @@ define('share', ['hooks', 'translator'], function (hooks, translator) {
 	function getPostUrl(clickedElement) {
 		const pid = clickedElement.parents('[data-pid]').attr('data-pid');
 		return pid ?
-			`${baseUrl + config.relative_path}/post/${pid}` :
+			`${baseUrl}/post/${pid}` :
 			window.location.href;
 	}
 

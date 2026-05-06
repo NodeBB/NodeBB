@@ -26,6 +26,7 @@ const fontawesome_version = utils.getFontawesomeVersion();
 
 apiController.loadConfig = async function (req) {
 	const config = {
+		url: nconf.get('url'),
 		relative_path,
 		upload_url,
 		asset_base_url,
