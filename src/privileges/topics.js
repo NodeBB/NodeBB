@@ -23,7 +23,7 @@ privsTopics.get = async function (tid, uid) {
 		'posts:upvote', 'posts:downvote',
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
 	];
-	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled']);
+	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled', 'postcount']);
 	const [userPrivileges, isAdministrator, isModerator, disabled, topicTools] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, topicData.cid),
 		user.isAdministrator(uid),
@@ -43,6 +43,19 @@ privsTopics.get = async function (tid, uid) {
 	const mayReply = privsTopics.canViewDeletedScheduled(topicData, {}, false, privData['topics:schedule']);
 	const hasTools = topicTools.tools.length > 0;
 
+	let maxOwnerPosts = parseInt(meta.config.movingTopicsMaxPosts, 10);
+	if (Number.isNaN(maxOwnerPosts)) {
+		maxOwnerPosts = 5;
+	}
+	const exceedsOwnerMoveLimit = maxOwnerPosts > 0 && topicData.postcount > maxOwnerPosts;
+	const canMoveOwnTopic = !!(
+		isOwner &&
+		!isAdminOrMod &&
+		!topicData.locked &&
+		!topicData.deleted &&
+		!exceedsOwnerMoveLimit
+	);
+
 	return await plugins.hooks.fire('filter:privileges.topics.get', {
 		'topics:reply': (privData['topics:reply'] && ((!topicData.locked && mayReply) || isModerator)) || isAdministrator,
 		'topics:read': privData['topics:read'] || isAdministrator,
@@ -58,9 +71,10 @@ privsTopics.get = async function (tid, uid) {
 		read: privData.read || isAdministrator,
 		purge: (privData.purge && (isOwner || isModerator)) || isAdministrator,
 
-		view_thread_tools: editable || deletable || hasTools,
+		view_thread_tools: editable || deletable || hasTools || canMoveOwnTopic,
 		editable: editable,
 		deletable: deletable,
+		canMoveOwnTopic: canMoveOwnTopic,
 		view_deleted: isAdminOrMod || isOwner || privData['posts:view_deleted'],
 		view_scheduled: privData['topics:schedule'] || isAdministrator,
 		isAdminOrMod: isAdminOrMod,

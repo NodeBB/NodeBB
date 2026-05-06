@@ -46,6 +46,12 @@
 <li class="dropdown-divider"></li>
 {{{ end }}}
 
+{{{ if (privileges.canMoveOwnTopic && isNumber(cid)) }}}
+<li>
+	<a component="topic/move" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-arrows text-secondary"></i> [[topic:thread-tools.move]]</a>
+</li>
+{{{ end }}}
+
 {{{ if privileges.deletable }}}
 <li {{{ if deleted }}}hidden{{{ end }}}>
 	<a component="topic/delete" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {{{ if deleted }}}hidden{{{ end }}}" role="menuitem"><i class="fa fa-fw fa-trash-o text-secondary"></i> [[topic:thread-tools.delete]]</a>
