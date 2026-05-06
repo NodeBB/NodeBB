@@ -41,10 +41,6 @@ get:
                         order:
                           type: integer
                           description: Ordinality of this item, lower value appears earlier
-                        core:
-                          type: boolean
-                          nullable: true
-                          description: Whether the navigation item is provided by core or not (a plugin)
                         groups:
                           type: array
                           items:
