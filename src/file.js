@@ -67,7 +67,7 @@ file.blockedExtensions = function () {
 };
 
 function parseExtensions(input) {
-	let extensions = (meta.config.allowedFileExtensions || '').trim();
+	let extensions = (input || '').trim();
 	if (!extensions) {
 		return [];
 	}
