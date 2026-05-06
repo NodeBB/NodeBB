@@ -131,6 +131,7 @@
     "invalid-image-type": "Lloji i imazhit nuk është i duhuri. Llojet e lejuara janë: %1",
     "invalid-image-extension": "Shtesa e pasakte e imazhit",
     "invalid-file-type": "Lloj i pavlefshëm i skedarit. Llojet e lejuara janë: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Dimensionet e imazhit janë shumë të mëdha",
     "group-name-too-short": "Emri i grupit është shumë i shkurtër",
     "group-name-too-long": "Emri i grupit është shumë i gjatë",

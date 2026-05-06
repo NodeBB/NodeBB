@@ -131,6 +131,7 @@
     "invalid-image-type": "無效的圖檔類型。允許的類型有：%1",
     "invalid-image-extension": "無效的圖檔副檔名",
     "invalid-file-type": "無效檔案格式，允許的格式有：%1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "圖片尺寸太大",
     "group-name-too-short": "群組名太短",
     "group-name-too-long": "群組名太長",

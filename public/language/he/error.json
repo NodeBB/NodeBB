@@ -131,6 +131,7 @@
     "invalid-image-type": "פורמט תמונה לא תקין. הפורמטים המורשים הם: %1",
     "invalid-image-extension": "פורמט תמונה לא תקין",
     "invalid-file-type": "פורמט קובץ לא תקין. הפורמטים המורשים הם: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "ממדי התמונה גדולים מדי",
     "group-name-too-short": "שם קבוצה קצר מדי",
     "group-name-too-long": "שם קבוצה ארוך מידי",

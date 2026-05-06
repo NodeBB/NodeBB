@@ -131,6 +131,7 @@
     "invalid-image-type": "Type d'image invalide. Les types autorisés sont: %1",
     "invalid-image-extension": "Extension d'image invalide",
     "invalid-file-type": "Type de fichier non valide. Les types autorisés sont : %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Les dimensions des images sont trop grandes",
     "group-name-too-short": "Nom de groupe trop court",
     "group-name-too-long": "Nom du groupe trop long",
@@ -263,11 +264,11 @@
     "api.reauth-required": "La ressource à laquelle vous tentez d'accéder nécessite une (ré-)authentification.",
     "activitypub.not-enabled": "La fédération n'est pas activée sur ce serveur.",
     "activitypub.invalid-id": "Impossible de traiter l’ID saisi, il semble incorrect.",
-    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
+    "activitypub.invalid-content-type": "Un type de contenu inattendu a été associé au contenu retourné",
     "activitypub.get-failed": "Impossible de récupérer la ressource spécifiée",
     "activitypub.pubKey-not-found": "La clé publique est introuvable, la vérification de la charge utile est impossible.",
     "activitypub.origin-mismatch": "L’origine de l’objet reçu est différente de celle de l’expéditeur",
     "activitypub.not-implemented": "La requête a été rejetée : elle n’est pas prise en charge par le serveur destinataire.",
-    "activitypub.orphan": "The received object is not associated with any known local user.",
-    "activitypub.rate-limited": "Your IP address has been rate-limited."
+    "activitypub.orphan": "L’objet reçu n’est associé à aucun utilisateur local connu.",
+    "activitypub.rate-limited": "Votre adresse IP a été soumise à une limitation de débit."
 }

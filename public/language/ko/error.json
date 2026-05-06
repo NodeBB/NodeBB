@@ -131,6 +131,7 @@
     "invalid-image-type": "잘못된 이미지 유형입니다. 허용되는 유형은: %1",
     "invalid-image-extension": "잘못된 이미지 확장자",
     "invalid-file-type": "잘못된 파일 유형입니다. 허용되는 유형은: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "이미지 크기가 너무 큽니다",
     "group-name-too-short": "그룹 이름이 너무 짧습니다",
     "group-name-too-long": "그룹 이름이 너무 깁니다",

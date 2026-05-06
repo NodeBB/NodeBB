@@ -131,6 +131,7 @@
     "invalid-image-type": "Tipo de imagem inválida. Os tipos válidos são: %1",
     "invalid-image-extension": "Extensão de imagem inválida",
     "invalid-file-type": "Tipo de ficheiro inválido. Os tipos válidos são: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Dimensões da imagem demasiado grandes",
     "group-name-too-short": "Nome de grupo muito curto",
     "group-name-too-long": "Nome de grupo muito longo",

@@ -131,6 +131,7 @@
     "invalid-image-type": "Ugyldig bildetype. Tilatte typer er: %1",
     "invalid-image-extension": "Ugyldig bildefiltype",
     "invalid-file-type": "Ugyldig filtype. Tillatte typer er: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Bildedimensjoner er for store",
     "group-name-too-short": "Gruppenavnet er for kort",
     "group-name-too-long": "Gruppenavnet er for kort",

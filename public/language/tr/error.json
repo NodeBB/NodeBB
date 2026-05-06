@@ -131,6 +131,7 @@
     "invalid-image-type": "Geçersiz görsel uzantısı. Izin verilen uzantılar: %1",
     "invalid-image-extension": "Geçersiz görsel uzantısı",
     "invalid-file-type": "Geçersiz dosya türü. İzin verilen uzantılar: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Görsel boyutları çok büyük",
     "group-name-too-short": "Grup ismi çok kısa",
     "group-name-too-long": "Grup adı çok uzun",

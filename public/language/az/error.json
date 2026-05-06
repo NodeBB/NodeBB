@@ -131,6 +131,7 @@
     "invalid-image-type": "Yanlış şəkil növü. İcazə verilən növlər bunlardır: %1",
     "invalid-image-extension": "Yanlış şəkil genişləndirilməsi",
     "invalid-file-type": "Yanlış fayl növü. İcazə verilən növlər bunlardır: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Şəkil ölçüləri çox böyükdür",
     "group-name-too-short": "Qrup adı çox qısadır",
     "group-name-too-long": "Qrup adı çox uzundur",

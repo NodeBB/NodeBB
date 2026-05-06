@@ -131,6 +131,7 @@
     "invalid-image-type": "Érvénytelen a kép típusa. Engedett kiterjesztések: %1",
     "invalid-image-extension": "Érvénytelen a kép kiterjesztése",
     "invalid-file-type": "Érvénytelen a fájl típusa. Engedélyezett kiterjesztések: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "A képméret túl nagy",
     "group-name-too-short": "A csoport név túl rövid",
     "group-name-too-long": "A csoport név túl hosszú",

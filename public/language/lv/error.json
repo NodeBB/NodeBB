@@ -131,6 +131,7 @@
     "invalid-image-type": "Nederīgs attēla veids. Atļautie veidi ir: %1",
     "invalid-image-extension": "Nederīgs attēla paplašinājums",
     "invalid-file-type": "Nederīgs faila veids. Atļautie veidi ir: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Bildes izmēri ir pārāk lieli",
     "group-name-too-short": "Grupas nosaukums ir pārāk īss",
     "group-name-too-long": "Grupas nosaukums ir pārāk garš",

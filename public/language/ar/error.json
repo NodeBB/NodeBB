@@ -131,6 +131,7 @@
     "invalid-image-type": "نوع الصورة غير مدعوم. الأنواع المدعومة هي :  %1",
     "invalid-image-extension": "امتداد الصورة غير مدعوم.",
     "invalid-file-type": "صيغة الملف غير مدعومة. الأنواع المدعومة هي: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "اسم المجموعة قصير",
     "group-name-too-long": "اسم المجموعة طويل.",

@@ -131,6 +131,7 @@
     "invalid-image-type": "Neplatný typ obrázku. Povolené typy jsou: %1",
     "invalid-image-extension": "Neplatná přípona obrázku",
     "invalid-file-type": "Neplatný typ souboru. Povolené typy jsou: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Rozlišení obrázku je moc velké.",
     "group-name-too-short": "Název skupiny je moc krátký",
     "group-name-too-long": "Název skupiny je moc dlouhý",

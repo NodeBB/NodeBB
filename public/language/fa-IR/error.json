@@ -131,6 +131,7 @@
     "invalid-image-type": "نوع تصویر نامعتبر است. نوعهای قابل قبول اینها هستند: %1",
     "invalid-image-extension": "پسوند عکس نامعتبر است",
     "invalid-file-type": "نوع پرونده نامعتبر است. نوعهای قابل قبول اینها هستند: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "ابعاد عکس خیلی بزرگ است",
     "group-name-too-short": "نام گروه خیلی کوتاه است.",
     "group-name-too-long": "نام گروه بسیار طولانی است.",

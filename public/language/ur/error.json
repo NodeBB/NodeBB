@@ -131,6 +131,7 @@
     "invalid-image-type": "غلط تصویر کی قسم۔ اجازت شدہ اقسام ہیں: %1",
     "invalid-image-extension": "غلط تصویر ایکسٹینشن",
     "invalid-file-type": "غلط فائل کی قسم۔ اجازت شدہ اقسام ہیں: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "تصویر کے طول و عرض بہت بڑے ہیں",
     "group-name-too-short": "گروپ کا نام بہت چھوٹا ہے",
     "group-name-too-long": "گروپ کا نام بہت لمبا ہے",

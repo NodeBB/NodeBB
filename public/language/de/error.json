@@ -131,6 +131,7 @@
     "invalid-image-type": "Falsche Bildart. Erlaubte Arten sind: %1",
     "invalid-image-extension": "Ungültige Dateinamenerweiterung",
     "invalid-file-type": "Ungültiger Dateityp. Erlaubte Typen sind: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Die Bildabmessungen sind zu groß.",
     "group-name-too-short": "Gruppenname zu kurz",
     "group-name-too-long": "Gruppenname zu lang",

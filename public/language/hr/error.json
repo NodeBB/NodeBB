@@ -131,6 +131,7 @@
     "invalid-image-type": "Pogrešan format slike. Dozvoljeni formati: %1",
     "invalid-image-extension": "Kriva ekstezija slike",
     "invalid-file-type": "Netočan tip datoteke. Dozvoljeni formati su: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Prekratko ime grupe",
     "group-name-too-long": "Predugo ime Grupe",

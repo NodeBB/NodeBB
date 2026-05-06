@@ -131,6 +131,7 @@
     "invalid-image-type": "無効なイメージタイプです。許可された種類は: %1",
     "invalid-image-extension": "無効なイメージのエクステンション",
     "invalid-file-type": "無効なファイルタイプです。許可された種類は: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "画像が大きすぎます",
     "group-name-too-short": "グループ名は短すぎます。",
     "group-name-too-long": "グループ名が長すぎます",

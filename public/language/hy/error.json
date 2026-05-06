@@ -131,6 +131,7 @@
     "invalid-image-type": "Անվավեր տեսակի պատկեր: Թույլատրված տեսակներն են՝ %1",
     "invalid-image-extension": "Պատկերի անվավեր ընդլայնում",
     "invalid-file-type": "Ֆայլի անվավեր տեսակ: Թույլատրված տեսակներն են՝ %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Նկարի չափսերը չափազանց մեծ են",
     "group-name-too-short": "Խմբի անունը շատ կարճ է:",
     "group-name-too-long": "Խմբի անունը չափազանց երկար է",

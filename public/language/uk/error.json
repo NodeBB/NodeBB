@@ -131,6 +131,7 @@
     "invalid-image-type": "Невірний тип зображення. Дозволені типи: %1",
     "invalid-image-extension": "Невірне розширення зображення",
     "invalid-file-type": "Невірний тип файлу. Дозволені типи: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Зображення занадто велике",
     "group-name-too-short": "Ім'я групи занадто коротке",
     "group-name-too-long": "Ім'я групи занадто довге",

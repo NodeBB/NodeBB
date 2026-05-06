@@ -131,6 +131,7 @@
     "invalid-image-type": "Neteisingas vaizdo tipas. Leidžiami tipai :%1",
     "invalid-image-extension": "Neteisingas vaizdo plėtinys",
     "invalid-file-type": "Neteisingas failo tipas. Leidžiami tipai: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Grupės pavadinimas per trumpas",
     "group-name-too-long": "Grupės pavadinimas per ilgas",
