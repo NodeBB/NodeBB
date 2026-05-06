@@ -88,6 +88,10 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 
 		function renderList(categories) {
 			const selectedCids = options.selectedCids.map(String);
+			if (Array.isArray(options.excludeCids) && options.excludeCids.length) {
+				const excludeCids = options.excludeCids.map(String);
+				categories = categories.filter(c => !excludeCids.includes(String(c.cid)));
+			}
 			categories.forEach(function (c) {
 				c.selected = selectedCids.includes(String(c.cid));
 			});

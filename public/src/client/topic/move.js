@@ -35,6 +35,7 @@ define('forum/topic/move', [
 				onSelect: onCategorySelected,
 				privilege: 'moderate',
 				localOnly: true,
+				excludeCids: Move.currentCid ? [Move.currentCid] : [],
 			});
 
 			const dropdown = new bootstrap.Dropdown(dropdownEl.find('button'));
