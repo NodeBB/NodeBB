@@ -44,7 +44,7 @@ const sanitizeConfig = {
 
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { type, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
+	let { id, type, uuid, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -113,26 +113,16 @@ Mocks._normalize = async (object) => {
 	if (url) { // Handle url array
 		if (Array.isArray(url)) {
 			// Special handling for Video type (from PeerTube specifically)
-			if (type === 'Video') {
-				const stream = url.reduce((memo, { type, mediaType, tag }) => {
-					if (!memo) {
-						if (type === 'Link' && mediaType === 'application/x-mpegURL') {
-							memo = tag.reduce((memo, { type, mediaType, href, width, height }) => {
-								if (!memo && (type === 'Link' && mediaType === 'video/mp4')) {
-									memo = { mediaType, href, width, height };
-								}
-
-								return memo;
-							}, null);
-						}
-					}
-
-					return memo;
-				}, null);
-
-				if (stream) {
+			if (type === 'Video' && !!uuid) {
+				try {
+					const { protocol, hostname } = new URL(id);
 					attachment = attachment || [];
-					attachment.push(stream);
+					attachment.push({
+						mediaType: 'text/plain',
+						href: `${protocol}//${hostname}/videos/embed/${uuid}`,
+					});
+				} catch (e) {
+					// noop
 				}
 			}
 
