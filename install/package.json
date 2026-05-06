@@ -63,7 +63,7 @@
         "cookie-parser": "1.4.7",
         "cron": "4.4.0",
         "cronstrue": "3.14.0",
-        "cropperjs": "1.6.2",
+        "cropperjs": "2.1.1",
         "csrf-sync": "4.2.1",
         "csv-parse": "6.2.1",
         "daemon": "1.1.0",
