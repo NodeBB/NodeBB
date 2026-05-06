@@ -81,6 +81,7 @@ exports.getJobs = async function () {
 			job.running = parseInt(job.running, 10) === 1;
 			job.duration = job.duration || 0;
 			job.durationReadable = formatDuration(job.duration);
+			job.nextRun = parseInt(job.nextRun, 10);
 			job.nextRunISO = utils.toISOString(job.nextRun);
 		}
 	});

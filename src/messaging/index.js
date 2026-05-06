@@ -351,7 +351,7 @@ Messaging.getTeasers = async (uid, roomIds) => {
 		teaser.content = validator.escape(
 			String(utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content)))
 		);
-		teaser.roomId = roomId;
+		teaser.roomId = parseInt(roomId, 10);
 		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
 		return payload.teaser;
 	}));

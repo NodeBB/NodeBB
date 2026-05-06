@@ -52,10 +52,11 @@ get:
                                 icon:
                                   type: string
                                 backgroundImage:
+                                  type: string
                                   nullable: true
                                 imageClass:
-                                  nullable: true
                                   type: string
+                                  nullable: true
                                 bgColor:
                                   type: string
                                 color:
@@ -94,7 +95,7 @@ get:
                                   nullable: true
                                   type: string
                                 banned:
-                                  type: number
+                                  type: boolean
                                 status:
                                   type: string
                                 icon:text:
@@ -141,6 +142,7 @@ get:
                             unread:
                               type: boolean
                             bookmark:
+                              type: boolean
                               nullable: true
                             unreplied:
                               type: boolean

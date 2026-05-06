@@ -25,15 +25,9 @@ get:
                     items:
                       type: string
                   posts:
-                    allOf:
-                      - $ref: ../components/schemas/PostsObject.yaml#/PostsObject
-                      - type: object
-                        properties:
-                          bookmarks:
-                            type: number
+                    $ref: ../components/schemas/PostsObject.yaml#/PostsObject
                   selectedCategory:
                     $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
-                    nullable: true
                   showThumbs:
                     type: boolean
                   showTopicTools:

@@ -173,37 +173,53 @@ describe('Topic thumbs', () => {
 	});
 
 	describe(`.delete()`, () => {
-		it('should remove a file from sorted set', async () => {
-			await topics.thumbs.associate({
-				id: 1,
-				path: `/files/test.png`,
+		let tid;
+		let mainPid;
+
+		before(async () => {
+			topicObj = await topics.post({
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic',
 			});
-			await topics.thumbs.delete(1, `/files/test.png`);
-			const thumbs = await topics.getTopicField(1, 'thumbs');
-			assert.strictEqual(thumbs.includes(`/files/test.png`), false);
+			tid = topicObj.topicData.tid;
+			mainPid = topicObj.postData.pid;
+
+			await topics.thumbs.associate({
+				id: tid,
+				path: relativeThumbPaths[0],
+			});
+		});
+
+		it('should remove a file from sorted set', async () => {
+			await topics.thumbs.delete(tid, relativeThumbPaths[0]);
+			const thumbs = await topics.getTopicField(tid, 'thumbs');
+			assert.strictEqual(thumbs.includes(relativeThumbPaths[0]), false);
 		});
 
 		it('should no longer be associated with that topic\'s main pid\'s uploads', async () => {
-			const mainPid = (await topics.getMainPids([1]))[0];
 			const uploads = await posts.uploads.list(mainPid);
 			assert(!uploads.includes(path.basename(relativeThumbPaths[0])));
 		});
 
 		it('should have no more thumbs left', async () => {
-			const thumbs = await topics.getTopicField(1, 'thumbs');
+			const thumbs = await topics.getTopicField(tid, 'thumbs');
 			assert.strictEqual(thumbs.length, 0);
 		});
 
 		it('should decrement numThumbs if dissociated one by one', async () => {
-			await topics.thumbs.associate({ id: 1, path: `${nconf.get('relative_path')}${nconf.get('upload_url')}/files/test.png` });
-			await topics.thumbs.associate({ id: 1, path: `${nconf.get('relative_path')}${nconf.get('upload_url')}/files/test2.png` });
+			const winston = require('winston');
+			await topics.thumbs.associate({ id: tid, path: relativeThumbPaths[0] });
+			await topics.thumbs.associate({ id: tid, path: relativeThumbPaths[1] });
 
-			await topics.thumbs.delete(1, [relativeThumbPaths[0]]);
-			let numThumbs = parseInt(await db.getObjectField('topic:1', 'numThumbs'), 10);
+			await topics.thumbs.delete(tid, [relativeThumbPaths[0]]);
+			let numThumbs = parseInt(await db.getObjectField(`topic:${tid}`, 'numThumbs'), 10);
 			assert.strictEqual(numThumbs, 1);
 
-			await topics.thumbs.delete(1, [relativeThumbPaths[1]]);
-			numThumbs = parseInt(await db.getObjectField('topic:1', 'numThumbs'), 10);
+			await topics.thumbs.delete(tid, [relativeThumbPaths[1]]);
+			numThumbs = parseInt(await db.getObjectField(`topic:${tid}`, 'numThumbs'), 10);
+
 			assert.strictEqual(numThumbs, 0);
 		});
 	});

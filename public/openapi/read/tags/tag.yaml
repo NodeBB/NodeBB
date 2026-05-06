@@ -96,10 +96,11 @@ get:
                             icon:
                               type: string
                             image:
+                              type: string
                               nullable: true
                             imageClass:
-                              nullable: true
                               type: string
+                              nullable: true
                             bgColor:
                               type: string
                             color:
@@ -162,6 +163,7 @@ get:
                         unread:
                           type: boolean
                         bookmark:
+                          type: boolean
                           nullable: true
                         unreplied:
                           type: boolean
@@ -209,12 +211,11 @@ get:
                   rssFeedUrl:
                     type: string
                   feeds:disableRSS:
-                    type: boolean
+                    type: number
                 required:
                   - topics
                   - tag
                   - title
-                  - categories
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

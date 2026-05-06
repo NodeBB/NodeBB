@@ -2,7 +2,7 @@ RoomObject:
   type: object
   properties:
     roomId:
-      type: number
+      type: [number, string]
       description: unique identifier for the chat room
     roomName:
       type: string
@@ -42,7 +42,7 @@ MessageObject:
     fromuid:
       type: number
     roomId:
-      type: number
+      type: [number, string]
     deleted:
       type: number
     system:
