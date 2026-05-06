@@ -263,7 +263,7 @@ define('forum/chats', [
 				const copyEl = $(this);
 				const mid = copyEl.attr('data-mid');
 				if (mid) {
-					doCopy(copyEl, `${window.location.origin}/message/${mid}`);
+					doCopy(copyEl, `${config.url}/message/${mid}`);
 				}
 			});
 
