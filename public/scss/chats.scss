@@ -131,3 +131,42 @@ body.page-user-chats {
 		display: none!important;
 	}
 }
+/* --- Minimalist Message Differentiation --- */
+
+[component="chat/message"] {
+    position: relative;
+    margin-bottom: 1rem !important;
+    padding: 8px 14px;
+    width: fit-content;
+    max-width: 85%;
+    clear: both;
+}
+
+/* Others' messages */
+[data-self="0"][component="chat/message"] {
+    background-color: #f1f1f1;
+    border-radius: 4px 14px 14px 14px;
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+
+/* My messages */
+[data-self="1"][component="chat/message"] {
+    background-color: #ffffff;
+    border: 1px solid #e2e2e2;
+    border-radius: 14px 4px 14px 14px;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+[component="chat/message"][data-break="false"] {
+    margin-top: -0.75rem;
+    margin-bottom: 0.25rem !important;
+}
+
+[component="chat/message"] .controls {
+    transition: opacity 0.15s ease-in-out;
+}
+
+[data-self="0"][component="chat/message"] .controls { left: -45px; right: auto !important; }
+[data-self="1"][component="chat/message"] .controls { right: -45px; left: auto !important; }
