@@ -18,6 +18,10 @@
             "database": "nodebb",
             "username": "nodebb",
             "password": "nodebb"
+        },
+        "kysely": {
+            "dialect": "sqlite",
+            "database": "nodebb.db"
         }
     }
 }
