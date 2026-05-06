@@ -112,6 +112,11 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="movingTopicsMaxPosts">[[admin/settings/post:restrictions.move-own-topic-max-posts]]</label>
+					<input id="movingTopicsMaxPosts" type="text" class="form-control" value="5" data-field="movingTopicsMaxPosts">
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="topicStaleDays">[[admin/settings/post:restrictions.days-until-stale]]</label>
 					<input id="topicStaleDays" type="text" class="form-control" value="60" data-field="topicStaleDays">
 					<p class="form-text">

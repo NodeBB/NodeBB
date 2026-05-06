@@ -144,6 +144,8 @@ get:
                         type: boolean
                       deletable:
                         type: boolean
+                      canMoveOwnTopic:
+                        type: boolean
                       view_deleted:
                         type: boolean
                       view_scheduled:

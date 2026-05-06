@@ -267,6 +267,7 @@
 	"cant-move-to-same-topic": "Can't move post to same topic!",
 	"cant-move-topic-to-same-category": "Can't move topic to the same category!",
 	"cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+	"cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
 
 	"cannot-block-self": "You cannot block yourself!",
 	"cannot-block-privileged": "You cannot block administrators or global moderators",
