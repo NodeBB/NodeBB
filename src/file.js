@@ -59,13 +59,20 @@ file.appendToFileName = function (filename, string) {
 };
 
 file.allowedExtensions = function () {
-	const meta = require('./meta');
-	let allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
-	if (!allowedExtensions) {
+	return parseExtensions(require('./meta').config.allowedFileExtensions);
+};
+
+file.blockedExtensions = function () {
+	return parseExtensions(require('./meta').config.blockedFileExtensions);
+};
+
+function parseExtensions(input) {
+	let extensions = (input || '').trim();
+	if (!extensions) {
 		return [];
 	}
-	allowedExtensions = allowedExtensions.split(',');
-	allowedExtensions = allowedExtensions.filter(Boolean).map((extension) => {
+	extensions = extensions.split(',');
+	extensions = extensions.filter(Boolean).map((extension) => {
 		extension = extension.trim();
 		if (!extension.startsWith('.')) {
 			extension = `.${extension}`;
@@ -73,12 +80,12 @@ file.allowedExtensions = function () {
 		return extension.toLowerCase();
 	});
 
-	if (allowedExtensions.includes('.jpg') && !allowedExtensions.includes('.jpeg')) {
-		allowedExtensions.push('.jpeg');
+	if (extensions.includes('.jpg') && !extensions.includes('.jpeg')) {
+		extensions.push('.jpeg');
 	}
 
-	return allowedExtensions;
-};
+	return extensions;
+}
 
 file.exists = async function (path) {
 	try {
