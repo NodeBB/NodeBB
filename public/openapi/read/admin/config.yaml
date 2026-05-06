@@ -11,6 +11,8 @@ get:
           schema:
             type: object
             properties:
+              url:
+                type: string
               relative_path:
                 type: string
               upload_url:
