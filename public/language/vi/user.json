@@ -146,7 +146,7 @@
     "upvote-notif-freq.threshold": "Trên 1, 5, 10, 25, 50, 100, 150, 200...",
     "upvote-notif-freq.logarithmic": "Cứ mỗi 10, 100, 1000...",
     "upvote-notif-freq.disabled": "Đã tắt",
-    "hide-read-notifications": "Hide Read Notifications",
+    "hide-read-notifications": "Ẩn Thông Báo Đã Đọc",
     "notification-type-web": "Web",
     "notification-type-email": "Email",
     "browsing": "Cài Đặt Lướt Xem",
