@@ -32,7 +32,7 @@ define('forum/topic/move', [
 			dropdownEl.addClass('dropup');
 
 			const privs = ajaxify.data && ajaxify.data.privileges;
-			const isAdminOrMod = !!(privs && privs.isAdminOrMod);
+			const isAdminOrMod = !!(privs && privs.isAdminOrMod) || app.user.isAdmin || app.user.isGlobalMod;
 			categorySelector.init(dropdownEl, {
 				onSelect: onCategorySelected,
 				privilege: isAdminOrMod ? 'moderate' : 'topics:create',
