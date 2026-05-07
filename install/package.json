@@ -172,7 +172,7 @@
         "globals": "17.6.0",
         "grunt": "1.6.2",
         "grunt-contrib-watch": "1.1.0",
-        "husky": "8.0.3",
+        "husky": "9.1.7",
         "jsdom": "29.1.1",
         "lint-staged": "17.0.2",
         "mocha": "11.7.5",
