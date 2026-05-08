@@ -117,18 +117,24 @@ describe('Messaging Library', () => {
 			const twoHoursFromNow = Date.now() + (2 * 60 * 60 * 1000);
 			const roomId = 0;
 
-			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoMinutesFromNow);
+			await User.setUserFields(mocks.users.herp.uid, {
+				mutedUntil: twoMinutesFromNow,
+				mutedReason: 'no reason',
+			});
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
 				assert(err.message.startsWith('[[error:user-muted-for-minutes,'));
 				return true;
 			});
 
-			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoHoursFromNow);
+			await User.setUserFields(mocks.users.herp.uid, {
+				mutedUntil: twoHoursFromNow,
+				mutedReason: 'no reason',
+			});
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
 				assert(err.message.startsWith('[[error:user-muted-for-hours,'));
 				return true;
 			});
-			await db.deleteObjectField(`user:${mocks.users.herp.uid}`, 'mutedUntil');
+			await db.deleteObjectFields(`user:${mocks.users.herp.uid}`, ['mutedUntil', 'mutedReason']);
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), {
 				message: '[[error:no-room]]',
 			});
