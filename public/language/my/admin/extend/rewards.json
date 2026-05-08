@@ -1,0 +1,17 @@
+{
+	"rewards": "ဆုလာဘ်များ",
+	"add-reward": "ဆုလာဘ် ထည့်ရန်",
+	"condition-if-users": "အသုံးပြုသူများဆိုလျှင်",
+	"condition-is": "ဖြစ်သည်",
+	"condition-then": "ထို့နောက်",
+	"max-claims": "အများဆုံး တောင်းခံနိုင်မှု",
+	"zero-infinite": "သုညသည် အကန့်အသတ်မရှိကို ဆိုလိုသည်",
+	"select-reward": "ဆုလာဘ် ရွေးရန်",
+	"delete": "ဖျက်ရန်",
+	"enable": "ဖွင့်ရန်",
+	"disable": "ပိတ်ရန်",
+
+	"alert.delete-success": "ဖျက်ပြီးပါပြီ",
+	"alert.no-inputs-found": "ထည့်သွင်းမှုများ မတွေ့ပါ",
+	"alert.save-success": "သိမ်းဆည်းပြီးပါပြီ"
+}

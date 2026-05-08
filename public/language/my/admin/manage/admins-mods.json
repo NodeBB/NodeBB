@@ -1,0 +1,13 @@
+{
+    "manage-admins-and-mods": "စီမံခန့်ခွဲသူများနှင့် စောင့်ကြည့်သူများကို စီမံရန်",
+    "administrators": "စီမံခန့်ခွဲသူများ",
+    "global-moderators": "အထွေထွေ စောင့်ကြည့်သူများ",
+    "moderators": "စောင့်ကြည့်သူများ",
+    "no-global-moderators": "အထွေထွေ စောင့်ကြည့်သူ မရှိပါ",
+    "no-sub-categories": "ကဏ္ဍခွဲ မရှိပါ",
+    "view-children": "ကဏ္ဍခွဲများကို ကြည့်ရန်",
+    "no-moderators": "စောင့်ကြည့်သူ မရှိပါ",
+    "add-administrator": "စီမံခန့်ခွဲသူ ထည့်ရန်",
+    "add-global-moderator": "အထွေထွေ စောင့်ကြည့်သူ ထည့်ရန်",
+    "add-moderator": "စောင့်ကြည့်သူ ထည့်ရန်"
+}

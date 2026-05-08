@@ -1,0 +1,19 @@
+{
+	"lead": "အဓိကအချက်",
+	"description": "ဖော်ပြချက်",
+	"active-rules": "အသုံးပြုနေသော စည်းမျဉ်းများ",
+	"validate": "အတည်ပြုရန်",
+	"apply": "အသုံးပြုရန်",
+	"hints": "အရိပ်အမြွက်များ",
+	"hint-1": "အရိပ်အမြွက် 1",
+	"hint-2": "အရိပ်အမြွက် 2",
+
+	"validate.x-valid": "မှန်ကန်သည်",
+	"validate.x-invalid": "မမှန်ကန်ပါ",
+
+	"alerts.applied-success": "အောင်မြင်စွာ အသုံးပြုပြီးပါပြီ",
+
+	"analytics.blacklist-hourly": "နာရီအလိုက် ပိတ်ပင်စာရင်း",
+	"analytics.blacklist-daily": "နေ့စဉ် ပိတ်ပင်စာရင်း",
+	"ip-banned": "IP ပိတ်ပင်ထားသည်"
+}

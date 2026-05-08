@@ -1,0 +1,15 @@
+{
+	"zero-is-disabled": "၀ = ပိတ်",
+	"chat-settings": "စကားပြော ဆက်တင်များ",
+	"disable": "ပိတ်ပါ",
+	"disable-editing": "တည်းဖြတ်မှု ပိတ်ပါ",
+	"disable-editing-help": "တည်းဖြတ်မှုပိတ်ခြင်း အကူအညီ",
+	"max-length": "အများဆုံးအလျား",
+	"max-length-remote": "ပြင်ပမက်ဆေ့ချ် အများဆုံးအလျား",
+	"max-length-remote-help": "ပြင်ပမက်ဆေ့ချ် အများဆုံးအလျား အကူအညီ",
+	"max-chat-room-name-length": "အခန်းအမည် အများဆုံးအလျား",
+	"max-room-size": "အခန်း အများဆုံး လူဦးရေ",
+	"delay": "နှောင့်နှေးချိန်",
+	"restrictions.seconds-edit-after": "တည်းဖြတ်နိုင်သည့် စက္ကန့်",
+	"restrictions.seconds-delete-after": "ဖျက်နိုင်သည့် စက္ကန့်"
+}

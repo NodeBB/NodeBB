@@ -1,0 +1,12 @@
+{
+    "username-email": "အကောင့်အမည် / အီးမေးလ်",
+    "username": "အကောင့်အမည်",
+    "remember-me": "ကျွန်ုပ်ကို မှတ်သားထားပါ",
+    "forgot-password": "စကားဝှက် မေ့နေပါသလား?",
+    "alternative-logins": "အခြား ဝင်ရောက်မှု နည်းလမ်းများ",
+    "failed-login-attempt": "ဝင်ရောက်မှု မအောင်မြင်ပါ",
+    "login-successful": "သင် အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ!",
+    "dont-have-account": "အကောင့် မရှိသေးဘူးလား?",
+    "logged-out-due-to-inactivity": "လှုပ်ရှားမှုမရှိသောကြောင့် သင့်ကို Admin Control Panel မှ ထွက်စေပြီးပါပြီ",
+    "caps-lock-enabled": "Caps Lock ဖွင့်ထားသည်"
+}
