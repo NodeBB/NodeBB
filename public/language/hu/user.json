@@ -199,6 +199,7 @@
     "info.no-mute-history": "Ez a felhasználó soha nem lett némítva",
     "info.muted-until": "Némítva %1",
     "info.muted-expiry": "Lejárat",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Az oka nincs megadva.",
     "info.username-history": "Felhasználónév előzmény",
     "info.email-history": "E-mail előzmény",

@@ -199,6 +199,7 @@
     "info.no-mute-history": "Questo utente non è mai stato silenziato",
     "info.muted-until": "Silenziato fino a %1",
     "info.muted-expiry": "Scadenza",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Nessuna motivazione fornita.",
     "info.username-history": "Storico del nome utente",
     "info.email-history": "Storico dell'Email",

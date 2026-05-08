@@ -199,6 +199,7 @@
     "info.no-mute-history": "Ten użytkownik nigdy nie był wyciszony",
     "info.muted-until": "Wyciszony do %1",
     "info.muted-expiry": "Wygaśnięcie",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Nie podano powodu.",
     "info.username-history": "Historia nazwy użytkownika",
     "info.email-history": "Historia adresu e-mail",

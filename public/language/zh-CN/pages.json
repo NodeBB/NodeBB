@@ -20,6 +20,7 @@
     "users/sort-posts": "发帖最多的用户",
     "users/sort-reputation": "声望最多的用户",
     "users/banned": "被封禁的用户",
+    "users/muted": "Muted Users",
     "users/most-flags": "被举报次数最多的用户",
     "users/search": "用户搜索",
     "notifications": "提醒",

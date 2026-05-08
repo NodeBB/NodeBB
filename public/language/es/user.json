@@ -199,6 +199,7 @@
     "info.no-mute-history": "This user has never been muted",
     "info.muted-until": "Muted until %1",
     "info.muted-expiry": "Expiry",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Histórico de nombre de usuario",
     "info.email-history": "HIstórico de Email",

@@ -199,6 +199,7 @@
     "info.no-mute-history": "このユーザーはミュートされたことがありません",
     "info.muted-until": "%1までミュート",
     "info.muted-expiry": "有効期限",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "理由なし。",
     "info.username-history": "ユーザー名の履歴",
     "info.email-history": "メール履歴",

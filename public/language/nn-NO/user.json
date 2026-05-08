@@ -199,6 +199,7 @@
     "info.no-mute-history": "Denne brukaren har aldri blitt dempa",
     "info.muted-until": "Dempa til %1",
     "info.muted-expiry": "Utløp",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Ingen årsak oppgitt.",
     "info.username-history": "Brukarnamn-historikk",
     "info.email-history": "E-posthistorikk",

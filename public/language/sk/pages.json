@@ -20,6 +20,7 @@
     "users/sort-posts": "Užívatelia s najväčším počtom príspevkov",
     "users/sort-reputation": "Používatelia s najväčšou reputáciou",
     "users/banned": "Zablokovaný používatelia",
+    "users/muted": "Muted Users",
     "users/most-flags": "Najviac používateľov s označením",
     "users/search": "Hľadanie užívateľov",
     "notifications": "Oznámenia",

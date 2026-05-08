@@ -20,6 +20,7 @@
     "users/sort-posts": "發文最多的使用者",
     "users/sort-reputation": "聲望最高的使用者",
     "users/banned": "被停權的使用者",
+    "users/muted": "Muted Users",
     "users/most-flags": "被舉報次數最多的使用者",
     "users/search": "使用者搜尋",
     "notifications": "通知",
