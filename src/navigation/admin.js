@@ -79,7 +79,7 @@ admin.get = async function () {
 			item.groups = [item.groups];
 		}
 
-		item.enabled = String(item.enabled) === 'true';
+		item.enabled = String(item.enabled) === 'on';
 		item.order = parseInt(item.order, 10);
 		return item;
 	});
