@@ -158,7 +158,7 @@ categoriesController.getAnalytics = async function (req, res) {
 };
 
 categoriesController.getFederation = async function (req, res) {
-	const cid = req.params.category_id;
+	const cid = parseInt(req.params.category_id, 10);
 	let [_following, pending, followers, name, { selectedCategory }] = await Promise.all([
 		db.getSortedSetMembers(`cid:${cid}:following`),
 		db.getSortedSetMembers(`followRequests:cid.${cid}`),

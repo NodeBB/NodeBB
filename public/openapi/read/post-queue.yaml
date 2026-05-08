@@ -125,6 +125,7 @@ get:
                                   type: number
                                   description: A topic identifier
                                 toPid:
+                                  type: [number, string]
                                   nullable: true
                             user:
                               type: object

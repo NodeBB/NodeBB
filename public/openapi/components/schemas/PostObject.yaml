@@ -3,7 +3,7 @@ PostObject:
   type: object
   properties:
     pid:
-      type: number
+      type: [number, string]
     tid:
       type: number
       description: A topic identifier
@@ -94,7 +94,7 @@ PostObject:
         deleted:
           type: number
         scheduled:
-          type: number
+          type: boolean
         timestamp:
           type: number
         timestampISO:
@@ -107,7 +107,7 @@ PostObject:
           description: The post id of the first post in this topic (also called the
             "original post")
         teaserPid:
-          type: number
+          type: [number, string]
           description: The post id of the teaser (the most recent post, depending on settings)
           nullable: true
         titleRaw:
@@ -128,7 +128,7 @@ PostObject:
             type: object
             properties:
               id:
-                type: number
+                type: string
                 description: The topic id
               name:
                 type: string
@@ -168,6 +168,7 @@ PostObject:
         color:
           type: string
         backgroundImage:
+          type: string
           nullable: true
         imageClass:
           nullable: true
@@ -247,7 +248,7 @@ PostDataObject:
             signature:
               type: string
             banned:
-              type: number
+              type: boolean
             banned:expire:
               type: number
             status:
@@ -312,6 +313,7 @@ PostDataObject:
                     type: string
                     description: HTML that is injected into `topic.tpl` of themes that support custom profile info
         editor:
+          type: number
           nullable: true
         bookmarked:
           type: boolean
@@ -403,6 +405,7 @@ PostDataObject:
           description: A post identifier
         sourceContent:
           type: string
+          nullable: true
           description: The markdown equivalent of a remote post content, as received (or fetched) from the remote site.
       required:
         - pid

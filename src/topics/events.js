@@ -140,6 +140,7 @@ Events.get = async (tid, uid, reverse = false) => {
 
 	let events = await db.getObjects(keys);
 	events.forEach((e, idx) => {
+		e.id = parseInt(e.id, 10);
 		e.timestamp = timestamps[idx];
 	});
 	await addEventsFromPostQueue(tid, uid, events);

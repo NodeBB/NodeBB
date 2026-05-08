@@ -25,7 +25,7 @@ get:
                         nextRun:
                           type: integer
                         nextRunISO:
-                          type: integer
+                          type: string
                         duration:
                           type: integer
                         durationReadable:

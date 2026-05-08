@@ -78,6 +78,7 @@ get:
                   isIgnoring:
                     type: boolean
                   bookmark:
+                    type: boolean
                     nullable: true
                   postSharing:
                     type: array
@@ -93,10 +94,13 @@ get:
                         activated:
                           type: boolean
                   deleter:
+                    type: number
                     nullable: true
                   merger:
+                    type: number
                     nullable: true
                   forker:
+                    type: number
                     nullable: true
                   related:
                     type: array
