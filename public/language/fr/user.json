@@ -199,6 +199,7 @@
     "info.no-mute-history": "Cet utilisateur n'a jamais été mis en sourdine",
     "info.muted-until": "Mis en sourdine jusqu'à %1",
     "info.muted-expiry": "Date d'expiration",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Aucune raison donnée.",
     "info.username-history": "Historique des noms d'utilisateur",
     "info.email-history": "Historique des adresses email",

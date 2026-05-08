@@ -199,6 +199,7 @@
     "info.no-mute-history": "이 사용자는 현재까지 차단된 적이 없습니다",
     "info.muted-until": "%1까지 음소거됨",
     "info.muted-expiry": "만료",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "사유를 제공하지 않았습니다.",
     "info.username-history": "사용자 이름 기록",
     "info.email-history": "이메일 기록",

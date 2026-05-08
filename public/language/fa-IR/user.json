@@ -199,6 +199,7 @@
     "info.no-mute-history": "این کاربر تا حالا بی‌صدا نشده است.",
     "info.muted-until": "ساکت شده تا ۱٪",
     "info.muted-expiry": "انقضا",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "دلیلی ارائه نشده است.",
     "info.username-history": "تاریخچه تعویض نام کاربری",
     "info.email-history": "تاریخچه تعویض رایانامه",

@@ -199,6 +199,7 @@
     "info.no-mute-history": "Bu kullanıcı daha önce hiç susturulmadı",
     "info.muted-until": "Susturulma süresi %1",
     "info.muted-expiry": "Bitiş",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Herhangi bir gerekçe belirtilmedi.",
     "info.username-history": "Kullanıcı Adı Geçmişi",
     "info.email-history": "E-posta Geçmişi",

@@ -199,6 +199,7 @@
     "info.no-mute-history": "ผู้ใช้รายนี้ไม่เคยถูกจำกัดการโพสต์",
     "info.muted-until": "ถูกจำกัดการโพสต์จนถึง %1",
     "info.muted-expiry": "หมดอายุ",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "ไม่ได้ให้เหตุผลไว้",
     "info.username-history": "ประวัติผู้ใช้",
     "info.email-history": "ประวัติอีเมล์",

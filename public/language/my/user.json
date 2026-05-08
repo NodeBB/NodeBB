@@ -199,6 +199,7 @@
     "info.no-mute-history": "ဤအသုံးပြုသူသည် မည်သည့်အခါမျှ အသံပိတ်ခံရခြင်း မရှိပါ",
     "info.muted-until": "%1 အထိ အသံပိတ်ထားသည်",
     "info.muted-expiry": "သက်တမ်းကုန်ဆုံးချိန်",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "အကြောင်းရင်း ဖော်ပြမထားပါ။",
     "info.username-history": "အသုံးပြုသူအမည် မှတ်တမ်း",
     "info.email-history": "အီးမေးလ် မှတ်တမ်း",
