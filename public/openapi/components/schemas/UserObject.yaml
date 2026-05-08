@@ -672,6 +672,9 @@ UserObjectACP:
       type: boolean
       description: A Boolean representing whether a user is banned or not
       example: 0
+    muted:
+      type: boolean
+      description: Whether or not the user has been muted.
     reputation:
       type: number
       description: The user's reputation score on the forum. Out-of-the-box, users gain/lose reputation points based on upvotes/downvotes, though plugins can alter the logic and criterion for awarding reputation points

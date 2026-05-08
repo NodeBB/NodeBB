@@ -37,6 +37,9 @@
 						<li data-filter-by="banned" role="presentation">
 							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
 						</li>
+						<li data-filter-by="muted" role="presentation">
+							<a class="dropdown-item rounded-1" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_muted }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.muted]]</a>
+						</li>
 					</ul>
 				</div>
 				<div class="dropdown d-flex">
@@ -64,10 +67,12 @@
 
 						<li><hr class="dropdown-divider"></li>
 
-						<li><h6 class="dropdown-header">[[admin/manage/users:ban]]</h6></li>
+						<li><h6 class="dropdown-header">[[admin/manage/users:ban]] & [[admin/manage/users:mute]]</h6></li>
 						<li><a href="#" class="dropdown-item rounded-1 ban-user" role="menuitem"><i class="text-secondary fa fa-fw fa-gavel"></i> [[admin/manage/users:ban-users]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary" role="menuitem"><i class="text-secondary fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 unban-user" role="menuitem"><i class="text-secondary fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
+
+						<li><a href="#" class="dropdown-item rounded-1 mute-user" role="menuitem"><i class="text-secondary fa fa-fw fa-comment-slash"></i> [[admin/manage/users:mute-users]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 unmute-user" role="menuitem"><i class="text-secondary fa fa-fw fa-comment-o"></i> [[admin/manage/users:unmute-users]]</a></li>
 
 						<li><hr class="dropdown-divider"></li>
 
@@ -125,6 +130,7 @@
 								<div class="d-flex flex-column gap-1">
 									<div>
 										<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger{{{ if !users.banned }}} hidden{{{ end }}}"></i>
+										<i title="[[admin/manage/users:users.muted]]" class="mute fa-solid fa-comment-slash text-danger{{{ if !users.muted }}} hidden{{{ end }}}"></i>
 										<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
 										<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 									</div>

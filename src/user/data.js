@@ -160,6 +160,7 @@ module.exports = function (User) {
 			banned: 'banned:expire',
 			'banned:expire': 'banned',
 			username: 'fullname',
+			mutedUntil: 'mutedReason',
 		};
 		for (const [key, field] of Object.entries(requiredFields)) {
 			if (fields.includes(key) && !fields.includes(field)) {
@@ -249,6 +250,7 @@ module.exports = function (User) {
 		}
 
 		const unbanUids = [];
+		const unmuteUids = [];
 		users.forEach((user) => {
 			if (!user) {
 				return;
@@ -312,7 +314,17 @@ module.exports = function (User) {
 			}
 
 			if (user.hasOwnProperty('mutedUntil')) {
-				user.muted = user.mutedUntil > Date.now();
+				user.muted = Boolean(user.mutedReason && (user.mutedUntil > Date.now() || user.mutedUntil === 0));
+				const unmute = !user.muted && user.mutedReason && user.mutedUntil && user.mutedUntil <= Date.now();
+				if (unmute) {
+					unmuteUids.push(user.uid);
+				}
+				user.mutedUntil = !user.muted ? 0 : user.mutedUntil;
+				if (user.muted) {
+					user.muted_until_readable = user.mutedUntil === 0 ?
+						'[[user:info.muted-permanently]]' :
+						utils.toISOString(user.mutedUntil);
+				}
 			}
 
 			user.isLocal = utils.isNumber(user.uid);
@@ -331,7 +343,7 @@ module.exports = function (User) {
 				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
-				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
+				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : '[[user:info.banned-permanently]]';
 				if (unban) {
 					unbanUids.push(user.uid);
 					user.banned = false;
@@ -348,9 +360,10 @@ module.exports = function (User) {
 			});
 		});
 
-		if (unbanUids.length) {
-			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
-		}
+		await Promise.all([
+			unbanUids.length ? User.bans.unban(unbanUids, '[[user:info.ban-expired]]') : null,
+			unmuteUids.length ? db.sortedSetRemove('users:muted', unmuteUids) : null,
+		]);
 
 		return await plugins.hooks.fire('filter:users.get', users);
 	}

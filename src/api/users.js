@@ -278,8 +278,11 @@ usersAPI.mute = async function (caller, data) {
 	if (data.reason) {
 		muteData.reason = reason;
 	}
-	await db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey);
-	await db.setObject(muteKey, muteData);
+	await Promise.all([
+		db.sortedSetAdd(`users:muted`, now, data.uid),
+		db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey),
+		db.setObject(muteKey, muteData),
+	]);
 	await events.log({
 		type: 'user-mute',
 		uid: caller.uid,
@@ -313,8 +316,11 @@ usersAPI.unmute = async function (caller, data) {
 	if (data.reason) {
 		unmuteData.reason = data.reason;
 	}
-	await db.sortedSetAdd(`uid:${data.uid}:unmutes:timestamp`, now, unmuteKey);
-	await db.setObject(unmuteKey, unmuteData);
+	await Promise.all([
+		db.sortedSetRemove(`users:muted`, data.uid),
+		db.sortedSetAdd(`uid:${data.uid}:unmutes:timestamp`, now, unmuteKey),
+		db.setObject(unmuteKey, unmuteData),
+	]);
 	await events.log({
 		type: 'user-unmute',
 		uid: caller.uid,
@@ -596,6 +602,7 @@ usersAPI.search = async function (caller, data) {
 			data.searchBy === 'ip' ||
 			data.searchBy === 'email' ||
 			filters.includes('banned') ||
+			filters.includes('muted') ||
 			filters.includes('flagged')
 		) && !isPrivileged)
 	) {

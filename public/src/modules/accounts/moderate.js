@@ -16,11 +16,8 @@ define('forum/account/moderate', [
 			title: '[[user:ban-account]]',
 			type: 'ban',
 			onSubmit: function (formData) {
-				const until = formData.length > 0 ? (
-					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-				) : 0;
 				api.put('/users/' + encodeURIComponent(theirid) + '/ban', {
-					until: until,
+					until: formData.until,
 					reason: formData.reason || '',
 				}).then(() => {
 					if (typeof onSuccess === 'function') {
@@ -55,12 +52,8 @@ define('forum/account/moderate', [
 			title: '[[user:mute-account]]',
 			type: 'mute',
 			onSubmit: function (formData) {
-				const until = formData.length > 0 ? (
-					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-				) : 0;
-
 				api.put('/users/' + theirid + '/mute', {
-					until: until,
+					until: formData.until,
 					reason: formData.reason || '',
 				}).then(() => {
 					if (typeof onSuccess === 'function') {
@@ -107,6 +100,16 @@ define('forum/account/moderate', [
 							return data;
 						}, {});
 
+						if (Object.hasOwn(formData, 'length')) {
+							const onHourInMilliseconds = 1000 * 60 * 60;
+							const numHours = parseInt(formData.unit, 10) ? 24 : 1; // unit of 1 is days, 0 is hours
+							formData.until = formData.length > 0 ? (
+								Date.now() + (formData.length * onHourInMilliseconds * numHours)
+							) : 0;
+						} else {
+							formData.until = 0;
+						}
+
 						options.onSubmit(formData);
 					},
 				},
@@ -119,6 +122,8 @@ define('forum/account/moderate', [
 			}
 		});
 	}
+
+	AccountModerate.throwModal = throwModal;
 
 	return AccountModerate;
 });

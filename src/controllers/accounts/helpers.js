@@ -123,7 +123,6 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	});
 
 	userData.banned = Boolean(userData.banned);
-	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
 	userData.fullname = escape(userData.fullname);
 	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
