@@ -31,11 +31,20 @@ const helpers = require('../helpers');
 const ajv = new Ajv({ allErrors: true, strict: false });
 const { baseDir } = require('../../src/constants').paths;
 const wait = util.promisify(setTimeout);
-let readApi;
-let writeApi;
 let jar;
 let csrfToken;
 const unauthenticatedRoutes = ['/api/login', '/api/register']; // Everything else will be called with the admin user
+
+let readApi;
+let writeApi;
+const readApiPath = path.resolve(__dirname, '../files/readApi.json');
+const writeApiPath = path.resolve(__dirname, '../files/writeApi.json');
+try {
+	readApi = JSON.parse(fs.readFileSync(readApiPath, 'utf8'));
+	writeApi = JSON.parse(fs.readFileSync(writeApiPath, 'utf8'));
+} catch (e) {
+	throw new Error('Run test/api/schema-bootstrap.mjs first.');
+}
 
 async function dummySearchHook(data) {
 	return [1];
@@ -368,11 +377,6 @@ async function setupData() {
 
 describe('schema', () => {
 	before(async function () {
-		const readApiPath = path.resolve(__dirname, '../../public/openapi/read.yaml');
-		const writeApiPath = path.resolve(__dirname, '../../public/openapi/write.yaml');
-		this.readApi = await SwaggerParser.dereference(readApiPath);
-		this.writeApi = await SwaggerParser.dereference(writeApiPath);
-
 		await db.setupMockDefaults();
 		await setupData();
 	});
@@ -380,16 +384,19 @@ describe('schema', () => {
 	after(async () => {
 		plugins.hooks.unregister('core', 'filter:search.query', dummySearchHook);
 		plugins.hooks.unregister('emailer-test', 'static:email.send');
+
+		await fs.promises.unlink(readApiPath);
+		await fs.promises.unlink(writeApiPath);
 	});
 
 	it('read api', async function () {
 		// Iterate through all documented paths, make a call to it,
 		// and compare the result body with what is defined in the spec
 		this.timeout(0);
-		const paths = Object.keys(this.readApi.paths);
+		const paths = Object.keys(readApi.paths);
 		const pathLib = path; // for calling path module from inside this forEach
 		for(const p of paths) {
-			await executeTests(p, this.readApi, paths, pathLib);
+			await executeTests(p, readApi, paths, pathLib);
 		}
 	});
 
@@ -397,10 +404,10 @@ describe('schema', () => {
 		// Iterate through all documented paths, make a call to it,
 		// and compare the result body with what is defined in the spec
 		this.timeout(0);
-		const paths = Object.keys(this.writeApi.paths);
+		const paths = Object.keys(writeApi.paths);
 		const pathLib = path; // for calling path module from inside this forEach
 		for(const p of paths) {
-			await executeTests(p, this.writeApi, paths, pathLib, this.writeApi.servers[0].url);
+			await executeTests(p, writeApi, paths, pathLib, writeApi.servers[0].url);
 		};
 	});
 
