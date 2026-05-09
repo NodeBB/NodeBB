@@ -263,6 +263,7 @@ usersAPI.mute = async function (caller, data) {
 	}
 	const reason = data.reason || '[[user:info.muted-no-reason]]';
 	await db.setObject(`user:${data.uid}`, {
+		muted: 1,
 		mutedUntil: data.until,
 		mutedReason: reason,
 	});
@@ -304,7 +305,7 @@ usersAPI.unmute = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	await db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
+	await db.deleteObjectFields(`user:${data.uid}`, ['muted', 'mutedUntil', 'mutedReason']);
 	const now = Date.now();
 	const unmuteKey = `uid:${data.uid}:unmute:${now}`;
 	const unmuteData = {

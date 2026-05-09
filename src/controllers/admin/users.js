@@ -15,7 +15,7 @@ const usersController = module.exports;
 
 const userFields = [
 	'uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
-	'mutedUntil', 'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed',
+	'muted', 'mutedUntil', 'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed',
 ];
 
 usersController.index = async function (req, res) {

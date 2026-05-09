@@ -20,7 +20,7 @@ const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
 	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline',
 	'lastqueuetime', 'lastposttime', 'followingCount', 'followerCount',
-	'blocksCount', 'passwordExpiry', 'mutedUntil', 'flags',
+	'blocksCount', 'passwordExpiry', 'muted', 'mutedUntil', 'flags',
 ];
 
 module.exports = function (User) {
@@ -30,7 +30,7 @@ module.exports = function (User) {
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
-		'cover:position', 'groupTitle', 'mutedUntil', 'mutedReason',
+		'cover:position', 'groupTitle', 'muted', 'mutedUntil', 'mutedReason',
 	];
 
 	let customFieldWhiteList = null;
@@ -160,7 +160,8 @@ module.exports = function (User) {
 			banned: 'banned:expire',
 			'banned:expire': 'banned',
 			username: 'fullname',
-			mutedUntil: 'mutedReason',
+			muted: 'mutedUntil',
+			mutedUntil: 'muted',
 		};
 		for (const [key, field] of Object.entries(requiredFields)) {
 			if (fields.includes(key) && !fields.includes(field)) {
@@ -313,9 +314,10 @@ module.exports = function (User) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 
-			if (user.hasOwnProperty('mutedUntil')) {
-				user.muted = Boolean(user.mutedReason && (user.mutedUntil > Date.now() || user.mutedUntil === 0));
-				const unmute = !user.muted && user.mutedReason && user.mutedUntil && user.mutedUntil <= Date.now();
+			if (user.hasOwnProperty('muted') && user.hasOwnProperty('mutedUntil')) {
+				const isMuted = Boolean(user.muted);
+				user.muted = Boolean(user.muted && (user.mutedUntil > Date.now() || user.mutedUntil === 0));
+				const unmute = !user.muted && isMuted && user.mutedUntil && user.mutedUntil <= Date.now();
 				if (unmute) {
 					unmuteUids.push(user.uid);
 				}
