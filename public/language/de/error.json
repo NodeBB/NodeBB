@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Du kannst keine anderen Admins stummschalten!",
     "user-muted-for-hours": "Du wurdest stumgeschlatet, du kannst wieder in %1 Stunde(n) posten",
     "user-muted-for-minutes": "Du wurdest stumgeschlatet, du kannst wieder in %1 Minute(n) posten",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Sie können gesperrte Benutzer nicht zum Administrator machen.",
     "cant-remove-last-admin": "Du bist der einzige Administrator. Füge zuerst einen anderen Administrator hinzu, bevor du dich selbst als Administrator entfernst",
     "account-deletion-disabled": "Kontolöschung ist deaktiviert",

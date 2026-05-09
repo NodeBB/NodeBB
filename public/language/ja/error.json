@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "他の管理者をミュートすることはできません！",
     "user-muted-for-hours": "ミュートされました。%1時間後に投稿できるようになります。",
     "user-muted-for-minutes": "ミュートされました。%1分後に投稿できるようになります。",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "利用停止中のユーザーを管理者にすることはできません。",
     "cant-remove-last-admin": "あなたが唯一の管理者です。自分の管理者権限を外す前に、別のユーザーを管理者に追加してください。",
     "account-deletion-disabled": "アカウント削除は無効になっています",

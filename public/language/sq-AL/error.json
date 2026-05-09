@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Ju nuk mund të bëni mute administratorët e tjerë",
     "user-muted-for-hours": "Ju jeni bërë mute, dhe do të mundeni të postoni në %1 orë()",
     "user-muted-for-minutes": "Ju jeni bërë mute, dhe do të mundeni të postoni në %1 minut(a)",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Ju nuk mund t'i bëni përdoruesit e ndaluar administrator.",
     "cant-remove-last-admin": "Ju jeni i vetmi administrator. Shtoni një përdorues tjetër si administrator përpara se të hiqni veten si administrator",
     "account-deletion-disabled": "Fshirja e llogarisë është çaktivizuar",

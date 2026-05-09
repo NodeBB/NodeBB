@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Du kan ikke kneble andre administratorer.",
     "user-muted-for-hours": "Du har blitt kneblet, du vil være i stand til å skrive innlegg om %1 time(r).",
     "user-muted-for-minutes": "Du har blitt kneblet, du vil være i stand til å skrive innlegg om %1 minutt(er).",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Du kan ikke gjøre utestengte brukere til administrator.",
     "cant-remove-last-admin": "Du er den eneste administratoren. Legg til en annen bruker som administrator før du fjerner deg selv.",
     "account-deletion-disabled": "Kontosletting er deaktivert",

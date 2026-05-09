@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Դուք չեք կարող անջատել այլ ադմինիստրատորների ձայնը",
     "user-muted-for-hours": "Ձեր ձայնը անջատել են, դուք կկարողանաք փակցնել %1 ժամից",
     "user-muted-for-minutes": "Ձեր ձայնը անջատել են, դուք կկարողանաք փակցնել %1 րոպեից",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Դուք չեք կարող արգելված օգտատերերին դարձնել ադմինիստրատոր:",
     "cant-remove-last-admin": "Դուք միակ ադմինն եք: Ավելացրեք մեկ այլ օգտատեր որպես ադմինիստրատոր՝ նախքան ձեզ որպես ադմինիստրատոր հեռացնելը",
     "account-deletion-disabled": "Հաշվի ջնջումն անջատված է",

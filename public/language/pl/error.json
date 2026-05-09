@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Nie możesz wyciszyć innych adminów!",
     "user-muted-for-hours": "Zostałeś wyciszony, będziesz mógł pisać po upływie %1 godziny(godzin)",
     "user-muted-for-minutes": "Zostałeś wyciszony, będziesz mógł pisać po upływie %1 minut",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Nie da się uczynić zbanowanego użytkownika adminem.",
     "cant-remove-last-admin": "Jesteś jedynym administratorem. Dodaj innego użytkownika jako administratora przed usunięciem siebie z tej grupy",
     "account-deletion-disabled": "Usuwanie konta jest wyłączone",

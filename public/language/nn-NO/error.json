@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Du kan ikkje dempe andre administratorar!",
     "user-muted-for-hours": "Du har blitt dempa, du kan poste igjen om %1 time(r)",
     "user-muted-for-minutes": "Du har blitt dempa, du kan poste igjen om %1 minutt",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Du kan ikkje gjere utestengde brukarar til administratorar.",
     "cant-remove-last-admin": "Du er den einaste administratoren. Legg til ein annan brukar som administrator før du fjernar deg sjølv som administrator",
     "account-deletion-disabled": "Kontosletting er deaktivert",

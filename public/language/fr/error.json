@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Vous ne pouvez pas mettre en sourdine les autres administrateurs !",
     "user-muted-for-hours": "Vous avez été mis en sourdine, vous pourrez publier dans %1 heure(s)",
     "user-muted-for-minutes": "Vous avez été mis en sourdine, vous pourrez publier dans %1 minute(s)",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Vous ne pouvez pas mettre des utilisateurs bannis en administrateur.",
     "cant-remove-last-admin": "Vous êtes le seul administrateur. Ajoutez un autre utilisateur en tant qu'administrateur avant de vous retirer.",
     "account-deletion-disabled": "La suppression du compte est désactivée",
