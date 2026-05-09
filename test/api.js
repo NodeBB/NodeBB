@@ -29,6 +29,10 @@ const notifications = require('../src/notifications');
 const utils = require('../src/utils');
 const api = require('../src/api');
 
+// Bootstrap schema test data
+const { execSync } = require('child_process');
+execSync('node ./test/api/schema-bootstrap.mjs');
+
 describe('API', async () => {
 	before(async function () {
 		this.readApiPath = path.resolve(__dirname, '../public/openapi/read.yaml');
@@ -55,7 +59,9 @@ describe('API', async () => {
 
 		it('subfolder tests', () => {
 			files.forEach((filePath) => {
-				require(filePath);
+				if (filePath.endsWith('.js')) {
+					require(filePath);
+				}
 			});
 		});
 	});
