@@ -122,7 +122,7 @@
     "cant-mute-other-admins": "您不能禁言其他管理员！",
     "user-muted-for-hours": "您已被禁言，您在 %1 小时后才能发布内容",
     "user-muted-for-minutes": "您已被禁言，您在 %1 分钟后才能发布内容",
-    "user-muted-indefinitely": "You have been muted indefinitely",
+    "user-muted-indefinitely": "您已被永久禁言",
     "cant-make-banned-users-admin": "您无法将被封禁的用户设为管理员。",
     "cant-remove-last-admin": "您是唯一的管理员。在删除您的管理员权限前，请添加另一个管理员。",
     "account-deletion-disabled": "账号删除功能已禁用",
