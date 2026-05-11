@@ -146,7 +146,7 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 
 		if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
 			if (opts.headers['content-type'] && jsonTest.test(opts.headers['content-type'])) {
-				opts.body = JSON.stringify(body);
+				opts.body = typeof body === 'string' ? body : JSON.stringify(body);
 			} else {
 				opts.body = body;
 			}

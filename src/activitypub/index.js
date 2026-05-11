@@ -440,7 +440,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
+ActivityPub._sendMessage = async function (uri, keyData, payloadString, digest) {
 	try {
 		const headers = await ActivityPub.sign(keyData, uri, digest);
 
@@ -449,16 +449,16 @@ ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
 				...headers,
 				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
 			},
-			body: payload,
+			body: payloadString,
 			timeout: 10000, // configurable?
 		});
 
 		if (String(response.statusCode).startsWith('2')) {
 			ActivityPub.analytics.send({
-				type: payload.type,
+				type: JSON.parse(payloadString).type,
 				target: uri,
 			});
-			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
+			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${JSON.parse(payloadString).type} to ${uri}`);
 			return true;
 		}
 		if (typeof body === 'object') {
@@ -466,12 +466,22 @@ ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
 		}
 		throw new Error(String(body));
 	} catch (e) {
-		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
-		ActivityPub.analytics.sendError({
-			payload,
-			uri,
-			error: e,
-		});
+		try {
+			const payload = JSON.parse(payloadString);
+			ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
+			ActivityPub.analytics.sendError({
+				payload,
+				uri,
+				error: e,
+			});
+		} catch (err) {
+			ActivityPub.helpers.log(`[activitypub/send] Could not send payload to ${uri}; error: ${e.message}`);
+			ActivityPub.analytics.sendError({
+				payload: payloadString,
+				uri,
+				error: e,
+			});
+		}
 		return false;
 	}
 };
@@ -501,8 +511,9 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		actor,
 		...payload,
 	};
+	const payloadString = JSON.stringify(payload);
 	const payloadHash = createHash('sha256');
-	payloadHash.update(JSON.stringify(payload));
+	payloadHash.update(payloadString);
 	const digest = `SHA-256=${payloadHash.digest('base64')}`;
 
 	const oneMinute = 1000 * 60;
@@ -518,7 +529,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 			const retryQueuedSet = [];
 
 			await Promise.all(inboxBatch.map(async (uri) => {
-				const ok = await ActivityPub._sendMessage(uri, keyData, payload, digest);
+				const ok = await ActivityPub._sendMessage(uri, keyData, payloadString, digest);
 				if (!ok) {
 					const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 					const nextTryOn = Date.now() + oneMinute;
@@ -530,7 +541,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 						type,
 						attempts: 1,
 						timestamp: nextTryOn,
-						payload: JSON.stringify(payload),
+						payload: payloadString,
 					}]);
 				}
 			}));
