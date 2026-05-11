@@ -492,7 +492,7 @@ describe('Categories', () => {
 		});
 
 		it('should error if both cid and privilege are arrays', async () => {
-			assert.rejects(
+			await assert.rejects(
 				privileges.categories.can(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
 				{ message: '[[error:invalid-data]]' },
 			);
