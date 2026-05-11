@@ -87,7 +87,7 @@ module.exports = function (Messaging) {
 				});
 			}
 		} catch (err) {
-			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
+			winston.error(`[messaging/notifications] Unable to send notification\n${err.stack}`);
 		}
 	};
 
