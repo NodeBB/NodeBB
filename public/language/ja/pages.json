@@ -20,7 +20,7 @@
     "users/sort-posts": "投稿数が最も多いユーザー",
     "users/sort-reputation": "一番評価の高いユーザー",
     "users/banned": "利用停止中のユーザー",
-    "users/muted": "Muted Users",
+    "users/muted": "ミュート済みユーザー",
     "users/most-flags": "最もフラグのついたユーザー",
     "users/search": "ユーザーを検索",
     "notifications": "通知",
