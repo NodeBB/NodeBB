@@ -107,6 +107,7 @@ module.exports = function (User) {
 		);
 
 		// Handle when some remoteIds are group actors
+		const combinedUids = uniqueUids.concat(remoteIds);
 		let remoteCids = await categories.exists(remoteIds);
 		remoteCids = remoteCids
 			.map((exists, idx) => exists ? remoteIds[idx] : null)
@@ -118,7 +119,7 @@ module.exports = function (User) {
 				return map;
 			}, new Map());
 			users = users.map((userObj, idx) => {
-				const cid = uids[idx];
+				const cid = combinedUids[idx];
 				if (remoteCids.includes(cid)) {
 					const categoryObj = categoryData.get(cid);
 					userObj = {
