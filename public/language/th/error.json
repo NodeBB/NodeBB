@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "คุณไม่สามารถจำกัดการโพสต์แอดมินคนอื่น!",
     "user-muted-for-hours": "คุณถูกจำกัดการโพสต์แล้ว คุณสามารถโพสต์ได้ในอีก %1 ชั่วโมง",
     "user-muted-for-minutes": "คุณถูกจำกัดการโพสต์แล้ว คุณสามารถโพสต์ได้ในอีก %1 นาที",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "คุณไม่สามารถตั้งผู้ใช้ที่โดนแบนให้เป็นแอดมิน",
     "cant-remove-last-admin": "คุณเป็นแอดมินเพียงคนเดียว กรุณาเพิ่มผู้ใช้คนอื่นเป็นแอดมิน ก่อนการลบตัวเองออกจากแอดมิน",
     "account-deletion-disabled": "ไม่เปิดให้สามารถลบบัญชี",

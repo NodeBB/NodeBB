@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Diğer yöneticileri susturamazsınız!",
     "user-muted-for-hours": "Susturuldunuz, %1 saat sonra yeniden ileti gönderebileceksiniz.",
     "user-muted-for-minutes": "Susturuldunuz, %1 dakika sonra yeniden ileti gönderebileceksiniz.",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Yasaklanmış üyeleri yönetici yapamazsınız.",
     "cant-remove-last-admin": "Tek yönetici sizsiniz. Kendinizi adminlikten çıkarmadan önce başka bir kullanıcıyı admin olarak ekleyiniz",
     "account-deletion-disabled": "Hesap silme devre dışı bırakılmış",

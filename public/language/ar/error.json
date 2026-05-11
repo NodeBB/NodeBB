@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "You can't mute other admins!",
     "user-muted-for-hours": "You have been muted, you will be able to post in %1 hour(s)",
     "user-muted-for-minutes": "You have been muted, you will be able to post in %1 minute(s)",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "You can't make banned users admin.",
     "cant-remove-last-admin": "رجاءًا ، أضف مدير أخر قبل حذف صلاحيات الإدارة من حسابك.",
     "account-deletion-disabled": "Account deletion is disabled",

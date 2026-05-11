@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "다른 관리자를 음소거할 수 없습니다!",
     "user-muted-for-hours": "음소거되었습니다. %1시간 후에 게시할 수 있습니다",
     "user-muted-for-minutes": "음소거되었습니다. %1분 후에 게시할 수 있습니다",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "차단된 사용자를 관리자로 만들 수 없습니다.",
     "cant-remove-last-admin": "내가 유일한 관리자입니다. 관리자 자격을 제거하기 전에 다른 사용자를 관리자로 추가하세요.",
     "account-deletion-disabled": "계정 삭제가 비활성화되었습니다",

@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Bạn không thể buộc quản trị viên khác im lặng!",
     "user-muted-for-hours": "Bạn bị buộc giữ im lặng, bạn sẽ có thể đăng sau %1 giờ",
     "user-muted-for-minutes": "Bạn bị buộc giữ im lặng, bạn sẽ có thể đăng sau %1 phút",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Bạn không thể cho người bị cấm làm quản trị viên.",
     "cant-remove-last-admin": "Bạn là quản trị viên duy nhất. Thêm người dùng khác làm quản trị viên trước khi xóa chính bạn với tư cách quản trị viên",
     "account-deletion-disabled": "Tính năng xóa tài khoản đã bị tắt",

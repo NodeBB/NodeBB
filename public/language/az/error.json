@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Digər adminlərin səsini kəsə bilməzsiniz!",
     "user-muted-for-hours": "Səssizləşdirildiniz, %1 saata yazı yaza biləcəksiniz",
     "user-muted-for-minutes": "Səsiniz susduruldu, %1 dəqiqədən sonra yaza biləcəksiniz",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Siz qadağan edilmiş istifadəçiləri admin edə bilməzsiniz.",
     "cant-remove-last-admin": "Siz yeganə administratorsunuz. Özünüzü administrator kimi silməzdən əvvəl başqa bir istifadəçini administrator kimi əlavə edin",
     "account-deletion-disabled": "Hesabın silinməsi deaktiv edilib",

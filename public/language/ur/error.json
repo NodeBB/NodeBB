@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "آپ دوسرے ایڈمنسٹریٹرز کو خاموش نہیں کر سکتے!",
     "user-muted-for-hours": "آپ کو خاموش کر دیا گیا ہے۔ آپ %1 گھنٹوں کے بعد دوبارہ پوسٹ کر سکیں گے",
     "user-muted-for-minutes": "آپ کو خاموش کر دیا گیا ہے۔ آپ %1 منٹوں کے بعد دوبارہ پوسٹ کر سکیں گے",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "آپ پابندی والے صارفین کو ایڈمنسٹریٹر کے حقوق نہیں دے سکتے۔",
     "cant-remove-last-admin": "آپ واحد ایڈمنسٹریٹر ہیں۔ اپنے آپ کو ایڈمنسٹریٹر سے ہٹانے سے پہلے دوسرے صارف کو ایڈمنسٹریٹر بنائیں",
     "account-deletion-disabled": "اکاؤنٹ حذف کرنا ممنوع ہے",
