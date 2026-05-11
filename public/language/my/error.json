@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "ပို့စ်ကို တူညီသော အကြောင်းအရာသို့ ရွှေ့၍မရပါ!",
     "cant-move-topic-to-same-category": "အကြောင်းအရာကို တူညီသော ကဏ္ဍသို့ ရွှေ့၍မရပါ!",
     "cant-move-topic-to-from-remote-categories": "အဝေးရောက် ကဏ္ဍများအတွင်း သို့မဟုတ် အပြင်သို့ အကြောင်းအရာများကို ရွှေ့၍မရပါ၊ ၎င်းအစား ချိတ်ဆက်ပို့စ်တင်ခြင်းကို စဉ်းစားပါ။",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "သင့်ကိုယ်သင် ပိတ်ပင်၍မရပါ!",
     "cannot-block-privileged": "စီမံခန့်ခွဲသူများ သို့မဟုတ် အထွေထွေ စောင့်ကြည့်သူများကို ပိတ်ပင်၍မရပါ",
     "cannot-block-guest": "ဧည့်သည်များသည် အခြားအသုံးပြုသူများကို ပိတ်ပင်နိုင်စွမ်း မရှိပါ",

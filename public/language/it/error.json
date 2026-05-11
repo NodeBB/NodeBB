@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "Non puoi spostare il post nella stessa discussione!",
     "cant-move-topic-to-same-category": "Non si può spostare la discussione nella stessa categoria!",
     "cant-move-topic-to-from-remote-categories": "Non puoi spostare discussioni dentro o fuori alle categorie remote; valuta invece la possibilità di pubblicarle in più sezioni.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Non puoi auto bloccarti!",
     "cannot-block-privileged": "Impossibile bloccare amministratori o moderatori globali",
     "cannot-block-guest": "Gli Ospiti non sono in grado di bloccare altri utenti",

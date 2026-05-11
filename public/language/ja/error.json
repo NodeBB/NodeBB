@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "同じスレッドに投稿を移動することはできません!",
     "cant-move-topic-to-same-category": "同じカテゴリにスレッドを移動できません！",
     "cant-move-topic-to-from-remote-categories": "リモートカテゴリとの間でスレッドを移動できません。代わりにクロスポストをご検討ください。",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "自分をブロックすることは出来ません!",
     "cannot-block-privileged": "管理者またはグローバルモデレーターはブロックできません",
     "cannot-block-guest": "ゲストは他のユーザーをブロックできません",

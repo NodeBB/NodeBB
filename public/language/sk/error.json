@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "Nie je možné presunúť príspevok do rovnakej témy!",
     "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Nemôžete zablokovať seba samého!",
     "cannot-block-privileged": "Nemôžete zablokovať správcov alebo hlavných moderátorov",
     "cannot-block-guest": "Guest are not able to block other users",

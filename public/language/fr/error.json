@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "Impossible de déplacer le message dans le même sujet !",
     "cant-move-topic-to-same-category": "Impossible de déplacer le sujet dans la même catégorie !",
     "cant-move-topic-to-from-remote-categories": "Vous ne pouvez pas déplacer de sujets vers ou depuis des catégories distantes ; envisagez plutôt de les publier en croisé.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Vous ne pouvez pas vous bloquer !",
     "cannot-block-privileged": "Vous ne pouvez pas bloquer les administrateurs ou les modérateurs globaux",
     "cannot-block-guest": "Les Invités ne peuvent pas bloquer d'autres utilisateurs",

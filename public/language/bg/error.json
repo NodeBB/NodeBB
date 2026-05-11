@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "Публикацията не може да бъде преместена в същата тема!",
     "cant-move-topic-to-same-category": "Темата не може да бъде преместена в същата категория!",
     "cant-move-topic-to-from-remote-categories": "Не можете да премествате теми в или извън отдалечени категории. Вместо това може да направите допълнителни публикуване",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Не можете да блокирате себе си!",
     "cannot-block-privileged": "Не можете да блокирате администратори и глобални модератори",
     "cannot-block-guest": "Гостите не могат да блокират други потребители",

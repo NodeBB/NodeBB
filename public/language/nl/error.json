@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "Een bericht kan niet naar hetzelfde onderwerp worden verplaatst!",
     "cant-move-topic-to-same-category": "Kan onderwerp niet verplaatsen naar dezelfde categorie",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Je kan jezelf niet blokkeren!",
     "cannot-block-privileged": "Je kan geen administrators of global moderators blokkeren",
     "cannot-block-guest": "Gasten kunnen geen andere gebruikers blokkeren",

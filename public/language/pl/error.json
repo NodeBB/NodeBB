@@ -234,6 +234,7 @@
     "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
     "cant-move-topic-to-same-category": "Nie można przenieść tematu do tej samej kategorii!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Nie możesz zablokować samego siebie!",
     "cannot-block-privileged": "Nie możesz blokować administratorów ani globalnych moderatorów",
     "cannot-block-guest": "Goście nie mogą blokować innych użytkowników",

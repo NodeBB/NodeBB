@@ -27,6 +27,7 @@
 	"restrictions.post-length": "ပို့စ်အလျား",
 	"restrictions.days-until-stale": "ခေတ်မမီတော့သည့်ရက်",
 	"restrictions.stale-help": "ခေတ်မမီတော့ခြင်း အကူအညီ",
+	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
 	"timestamp": "အချိန်တံဆိပ်",
 	"timestamp.cut-off": "ဖြတ်တောက်ချိန်",
 	"timestamp.cut-off-help": "ဖြတ်တောက်ချိန် အကူအညီ",
