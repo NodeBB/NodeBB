@@ -303,10 +303,7 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 
 	let maxOwnerPosts = 0;
 	if (!isAdminOrMod) {
-		const [canCreate, canRead] = await Promise.all([
-			privileges.categories.can('topics:create', cid, caller.uid),
-			privileges.categories.can('topics:read', cid, caller.uid),
-		]);
+		const [canCreate, canRead] = await privileges.categories.can(['topics:create', 'topics:read'], cid, caller.uid);
 		if (!canCreate || !canRead) {
 			throw new Error('[[error:no-privileges]]');
 		}
