@@ -231,10 +231,9 @@ describe('Topic thumbs', () => {
 				cid: categoryObj.cid,
 				title: 'Test Topic Title',
 				content: 'The content of test topic',
+				thumbs: ['/files/test.png', '/files/test2.png'],
 			});
 			this.tid = topicObj.topicData.tid;
-			await topics.thumbs.associate({ id: this.tid, path: '/files/test.png' });
-			await topics.thumbs.associate({ id: this.tid, path: '/files/test2.png' });
 			createFiles();
 		});
 
