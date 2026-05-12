@@ -310,7 +310,6 @@ async function setupData() {
 	// wait for export child processes to complete
 	const uploadPath = nconf.get('upload_path');
 	const checkFiles = async (retries = 50) => {
-		process.stdout.write('checkfiles called');
 		const getFileStats = async () => {
 			const paths = [
 				path.resolve(baseDir, 'build/export/users.csv'),
@@ -389,232 +388,224 @@ describe('schema', () => {
 		await fs.promises.unlink(writeApiPath);
 	});
 
-	it('read api', async function () {
-		// Iterate through all documented paths, make a call to it,
-		// and compare the result body with what is defined in the spec
-		this.timeout(0);
-		const paths = Object.keys(readApi.paths);
-		const pathLib = path; // for calling path module from inside this forEach
-		for(const p of paths) {
-			await executeTests(p, readApi, paths, pathLib);
+	// todo: path filtering to run one/multiple routes, gh#14206
+	generateTests(readApi);
+	generateTests(writeApi, writeApi.servers[0].url);
+
+	async function generateTests(api, prefix) {
+		const paths = Object.keys(api.paths);
+		paths.forEach((path) => {
+			const context = api.paths[path];
+			let schema;
+			const headers = {};
+			const qs = {};
+
+			Object.keys(context).forEach((method) => {
+				// Only test GET routes in the Read API
+				if (api.info.title === 'NodeBB Read API' && method !== 'get') {
+					return;
+				}
+
+				it('should have each path parameter defined in its context', () => {
+					checkPathParameters(method, path, context);
+				});
+
+				it('should have examples when parameters are present', function () {
+					const { headers, url, qs } = prepareRequest(method, path, context, prefix);
+					this.headers = headers;
+					this.url = url;
+					this.qs = qs;
+				});
+
+				it('should contain a valid request body (if present) with application/json or multipart/form-data type if POST/PUT/DELETE', () => {
+					validateRequestBody(method, path, context);
+				});
+
+				it('should not error out when called', async function () {
+					this.result = await executeRequest.call(this, method, path, context);
+				});
+
+				it('response status code should match one of the schema defined responses', function () {
+					checkResponseStatusCode.call(this, method, path, context);
+				});
+
+				it('response body should match schema definition', function () {
+					checkResponseBody.call(this, method, path, context);
+				});
+
+				it('should successfully re-login if needed', async function () {
+					await handleRelogin(method, path, context);
+				});
+			});
+		});
+	}
+
+	function checkPathParameters(method, path, context) {
+		if (context[method].parameters) {
+			const pathParams = (path.match(/{[\w\-_*]+}?/g) || []).map(match => match.slice(1, -1));
+			const schemaParams = context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean);
+			assert(pathParams.every(param => schemaParams.includes(param)), `${method.toUpperCase()} ${path} has path parameters specified but not defined`);
 		}
-	});
+	}
 
-	it('write api', async function () {
-		// Iterate through all documented paths, make a call to it,
-		// and compare the result body with what is defined in the spec
-		this.timeout(0);
-		const paths = Object.keys(writeApi.paths);
-		const pathLib = path; // for calling path module from inside this forEach
-		for(const p of paths) {
-			await executeTests(p, writeApi, paths, pathLib, writeApi.servers[0].url);
-		};
-	});
-
-	async function executeTests(path, api, paths, pathLib, prefix) {
-		const context = api.paths[path];
-		let schema;
-		let result;
-		let url;
+	function prepareRequest(method, path, context, prefix) {
+		let { parameters } = context[method];
+		let testPath = path;
 		const headers = {};
 		const qs = {};
 
-		await Object.keys(context).reduce(async (promise, _method) => {
-			await promise;
-			const method = _method;
+		if (parameters) {
+			// Use mock data if provided
+			parameters = mocks[method][path] || parameters;
 
-			// Only test GET routes in the Read API
-			if (api.info.title === 'NodeBB Read API' && _method !== 'get') {
-				return;
-			}
+			parameters.forEach((param) => {
+				assert(param.example !== null && param.example !== undefined, `${method.toUpperCase()} ${path} has parameters without examples`);
 
-			// should have each path parameter defined in its context
-			checkPathParameters(method, path, context);
-
-			// should have examples when parameters are present
-			prepareRequest(method, path, context);
-
-			// should contain a valid request body (if present) with application/json or
-			// multipart/form-data type if POST/PUT/DELETE
-			validateRequestBody(method, path, context);
-
-			// should not error out when called
-			await executeRequest(method, path, context);
-
-			// response status code should match one of the schema defined responses
-			checkResponseStatusCode(method, path, context, result);
-
-			// response body should match schema definition
-			checkResponseBody(method, path, context, result);
-
-			// should successfully re-login if needed
-			await handleRelogin(method, path, context);
-		}, Promise.resolve());
-
-		function checkPathParameters(method, path, context) {
-			if (context[method].parameters) {
-				const pathParams = (path.match(/{[\w\-_*]+}?/g) || []).map(match => match.slice(1, -1));
-				const schemaParams = context[method].parameters.map(param => (param.in === 'path' ? param.name : null)).filter(Boolean);
-				assert(pathParams.every(param => schemaParams.includes(param)), `${method.toUpperCase()} ${path} has path parameters specified but not defined`);
-				process.stdout.write('.');
-			}
+				switch (param.in) {
+					case 'path':
+						testPath = testPath.replace(`{${param.name}}`, param.example);
+						break;
+					case 'header':
+						headers[param.name] = param.example;
+						break;
+					case 'query':
+						qs[param.name] = param.example;
+						break;
+				}
+			});
 		}
 
-		function prepareRequest(method, path, context) {
-			let { parameters } = context[method];
-			let testPath = path;
+		return {
+			url: nconf.get('url') + (prefix || '') + testPath,
+			headers,
+			qs,
+		};
+	}
 
-			if (parameters) {
-				// Use mock data if provided
-				parameters = mocks[method][path] || parameters;
+	function validateRequestBody(method, path, context) {
+		if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
+			const failMessage = `${method.toUpperCase()} ${path} has a malformed request body`;
+			assert(context[method].requestBody, failMessage);
+			assert(context[method].requestBody.content, failMessage);
 
-				parameters.forEach((param) => {
-					assert(param.example !== null && param.example !== undefined, `${method.toUpperCase()} ${path} has parameters without examples`);
+			if (context[method].requestBody.content.hasOwnProperty('application/json')) {
+				assert(context[method].requestBody.content['application/json'], failMessage);
+				assert(context[method].requestBody.content['application/json'].schema, failMessage);
+				assert(context[method].requestBody.content['application/json'].schema.properties, failMessage);
+			} else if (context[method].requestBody.content.hasOwnProperty('multipart/form-data')) {
+				assert(context[method].requestBody.content['multipart/form-data'], failMessage);
+				assert(context[method].requestBody.content['multipart/form-data'].schema, failMessage);
+				assert(context[method].requestBody.content['multipart/form-data'].schema.properties, failMessage);
+			}
+		}
+	}
 
-					switch (param.in) {
-						case 'path':
-							testPath = testPath.replace(`{${param.name}}`, param.example);
-							break;
-						case 'header':
-							headers[param.name] = param.example;
-							break;
-						case 'query':
-							qs[param.name] = param.example;
-							break;
-					}
+	async function executeRequest(method, _path, context) {
+		if (csrfToken) {
+			this.headers['x-csrf-token'] = csrfToken;
+		}
+
+		let body = {};
+		let type = 'json';
+		if (
+			context[method].hasOwnProperty('requestBody') &&
+			context[method].requestBody.required !== false &&
+			context[method].requestBody.content['application/json']) {
+			body = buildBody(context[method].requestBody.content['application/json'].schema.properties);
+		} else if (context[method].hasOwnProperty('requestBody') && context[method].requestBody.content['multipart/form-data']) {
+			type = 'form';
+		}
+
+		try {
+			let result;
+
+			if (type === 'json') {
+				const searchParams = new URLSearchParams(this.qs);
+				result = await request[method](`${this.url}?${searchParams}`, {
+					jar: !unauthenticatedRoutes.includes(_path) ? jar : undefined,
+					maxRedirect: 0,
+					redirect: 'manual',
+					headers: this.headers,
+					body: body,
+					timeout: 30000,
 				});
+			} else if (type === 'form') {
+				result = await helpers.uploadFile(this.url, path.join(__dirname, '../files/test.png'), {}, jar, csrfToken);
 			}
 
-			url = nconf.get('url') + (prefix || '') + testPath;
-			process.stdout.write('.');
+			return result;
+		} catch (e) {
+			assert(!e, `${method.toUpperCase()} ${_path} errored with: ${e.message}`);
+		}
+	}
+
+	function checkResponseStatusCode(method, path, context) {
+		// HACK: allow HTTP 418 I am a teapot, for now   👇
+		const { responses } = context[method];
+		assert(
+			responses.hasOwnProperty('418') ||
+			Object.keys(responses).includes(String(this.result.response.statusCode)),
+			`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${this.result.response.statusCode}, body: ${JSON.stringify(this.result.body)} status: ${this.result.response.statusText}`,
+		);
+	}
+
+	function checkResponseBody(method, path, context) {
+		// Recursively iterate through schema properties, comparing type
+		const http302 = context[method].responses['302'];
+		if (http302 && this.result.response.statusCode === 302) {
+			// Compare headers instead
+			const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
+				const value = http302.headers[name].schema.example;
+				memo[name] = value.startsWith(nconf.get('relative_path')) ? value : nconf.get('relative_path') + value;
+				return memo;
+			}, {});
+
+			for (const header of Object.keys(expectedHeaders)) {
+				assert(this.result.response.headers[header.toLowerCase()]);
+				assert.strictEqual(this.result.response.headers[header.toLowerCase()], expectedHeaders[header]);
+			}
+			return;
 		}
 
-		function validateRequestBody(method, path, context) {
-			if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
-				const failMessage = `${method.toUpperCase()} ${path} has a malformed request body`;
-				assert(context[method].requestBody, failMessage);
-				assert(context[method].requestBody.content, failMessage);
-
-				if (context[method].requestBody.content.hasOwnProperty('application/json')) {
-					assert(context[method].requestBody.content['application/json'], failMessage);
-					assert(context[method].requestBody.content['application/json'].schema, failMessage);
-					assert(context[method].requestBody.content['application/json'].schema.properties, failMessage);
-				} else if (context[method].requestBody.content.hasOwnProperty('multipart/form-data')) {
-					assert(context[method].requestBody.content['multipart/form-data'], failMessage);
-					assert(context[method].requestBody.content['multipart/form-data'].schema, failMessage);
-					assert(context[method].requestBody.content['multipart/form-data'].schema.properties, failMessage);
-				}
-			}
-			process.stdout.write('.');
+		if (this.result.response.statusCode === 400 && context[method].responses['400']) {
+			// TODO: check 400 schema to response.body?
+			return;
 		}
 
-		async function executeRequest(method, path, context) {
-			if (csrfToken) {
-				headers['x-csrf-token'] = csrfToken;
-			}
-
-			let body = {};
-			let type = 'json';
-			if (
-				context[method].hasOwnProperty('requestBody') &&
-				context[method].requestBody.required !== false &&
-				context[method].requestBody.content['application/json']) {
-				body = buildBody(context[method].requestBody.content['application/json'].schema.properties);
-			} else if (context[method].hasOwnProperty('requestBody') && context[method].requestBody.content['multipart/form-data']) {
-				type = 'form';
-			}
-
-			try {
-				if (type === 'json') {
-					const searchParams = new URLSearchParams(qs);
-					result = await request[method](`${url}?${searchParams}`, {
-						jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
-						maxRedirect: 0,
-						redirect: 'manual',
-						headers: headers,
-						body: body,
-						timeout: 30000,
-					});
-				} else if (type === 'form') {
-					result = await helpers.uploadFile(url, pathLib.join(__dirname, '../files/test.png'), {}, jar, csrfToken);
-				}
-			} catch (e) {
-				assert(!e, `${method.toUpperCase()} ${path} errored with: ${e.message}`);
-			}
-			process.stdout.write('.');
+		const http200 = context[method].responses['200'];
+		if (!http200) {
+			return;
 		}
 
-		function checkResponseStatusCode(method, path, context, result) {
-			// HACK: allow HTTP 418 I am a teapot, for now   👇
-			const { responses } = context[method];
-			assert(
-				responses.hasOwnProperty('418') ||
-				Object.keys(responses).includes(String(result.response.statusCode)),
-				`${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${result.response.statusCode}, body: ${JSON.stringify(result.body)} status: ${result.response.statusText}`,
-			);
-			process.stdout.write('.');
+		assert.strictEqual(this.result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
+
+		const hasJSON = http200.content && http200.content['application/json'];
+		if (hasJSON) {
+			this.schema = context[method].responses['200'].content['application/json'].schema;
+			validateSchema(this.schema, this.result.body, method.toUpperCase(), path);
 		}
 
-		function checkResponseBody(method, path, context, result) {
-			// Recursively iterate through schema properties, comparing type
-			const http302 = context[method].responses['302'];
-			if (http302 && result.response.statusCode === 302) {
-				// Compare headers instead
-				const expectedHeaders = Object.keys(http302.headers).reduce((memo, name) => {
-					const value = http302.headers[name].schema.example;
-					memo[name] = value.startsWith(nconf.get('relative_path')) ? value : nconf.get('relative_path') + value;
-					return memo;
-				}, {});
+		// TODO someday: text/csv, binary file type checking?
+	}
 
-				for (const header of Object.keys(expectedHeaders)) {
-					assert(result.response.headers[header.toLowerCase()]);
-					assert.strictEqual(result.response.headers[header.toLowerCase()], expectedHeaders[header]);
-				}
-				return;
+	async function handleRelogin(method, path, context) {
+		const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
+		if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
+			({ jar } = await helpers.loginUser('admin', '123456'));
+			let sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+			let sessObj = await db.sessionStoreGet(sessionIds[0]);
+			if (!sessObj) {
+				// password changed so login with new pwd
+				({ jar } = await helpers.loginUser('admin', '654321'));
+				sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
+				sessObj = await db.sessionStoreGet(sessionIds[0]);
 			}
 
-			if (result.response.statusCode === 400 && context[method].responses['400']) {
-				// TODO: check 400 schema to response.body?
-				return;
-			}
+			const { uuid } = sessObj.meta;
+			mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = uuid;
 
-			const http200 = context[method].responses['200'];
-			if (!http200) {
-				return;
-			}
-
-			assert.strictEqual(result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
-
-			const hasJSON = http200.content && http200.content['application/json'];
-			if (hasJSON) {
-				schema = context[method].responses['200'].content['application/json'].schema;
-				validateSchema(schema, result.body, method.toUpperCase(), path);
-			}
-
-			// TODO someday: text/csv, binary file type checking?
-			process.stdout.write('.');
-		}
-
-		async function handleRelogin(method, path, context) {
-			const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
-			if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
-				({ jar } = await helpers.loginUser('admin', '123456'));
-				let sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
-				let sessObj = await db.sessionStoreGet(sessionIds[0]);
-				if (!sessObj) {
-					// password changed so login with new pwd
-					({ jar } = await helpers.loginUser('admin', '654321'));
-					sessionIds = await db.getSortedSetRange('uid:1:sessions', 0, -1);
-					sessObj = await db.sessionStoreGet(sessionIds[0]);
-				}
-
-				const { uuid } = sessObj.meta;
-				mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = uuid;
-
-				// Retrieve CSRF token using cookie, to test Write API
-				csrfToken = await helpers.getCsrfToken(jar);
-			}
-			process.stdout.write('.');
+			// Retrieve CSRF token using cookie, to test Write API
+			csrfToken = await helpers.getCsrfToken(jar);
 		}
 	}
 
