@@ -5,6 +5,7 @@ node_modules
 node_modules/
 sftp-config.json
 config.json
+config.json*
 jsconfig.json
 public/src/nodebb.min.js
 !src/views/config.json
