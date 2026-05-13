@@ -170,6 +170,9 @@ module.exports = function (User) {
 				fieldsToRemove.push(field);
 			}
 		}
+		if (fields.includes('picture') && !fields.includes('icon:bgColor')) {
+			fields.push('icon:bgColor');
+		}
 	}
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
