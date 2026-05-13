@@ -10,6 +10,7 @@
 	"user": "Użytkownik",
 	"when": "Kiedy",
 	"category": "Kategoria",
+	"tags": "Tags",
 	"title": "Tytuł",
 	"content": "Zawartość",
 	"posted": "Napisano",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Czy chcesz usunąć %1 wybranych postów?",
 	"bulk-accept-success": "%1 postów zaakceptowanych",
 	"bulk-reject-success": "%1 postów odrzuconych",
-	"links-in-this-post": "Odnośniki w tym wpisie"
+	"links-in-this-post": "Odnośniki w tym wpisie",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

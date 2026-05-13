@@ -10,6 +10,7 @@
 	"user": "Kullanıcı",
 	"when": "Zaman",
 	"category": "Kategori",
+	"tags": "Tags",
 	"title": "Başlık",
 	"content": "İçerik",
 	"posted": "Gönderildi",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Seçili %1 iletiyi kaldırmak istiyor musunuz? ",
 	"bulk-accept-success": "%1 ileti onaylandı",
 	"bulk-reject-success": "%1 ileti reddedildi",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

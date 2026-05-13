@@ -10,6 +10,7 @@
 	"user": "Корисник",
 	"when": "Када",
 	"category": "Категорија",
+	"tags": "Tags",
 	"title": "Наслов",
 	"content": "Садржај",
 	"posted": "Објављено",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Да ли желите да уклоните изабране објаве (%1)?",
 	"bulk-accept-success": "Прихваћених објава: %1",
 	"bulk-reject-success": "Одбачених објава: %1",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

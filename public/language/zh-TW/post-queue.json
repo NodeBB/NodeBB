@@ -10,6 +10,7 @@
 	"user": "使用者",
 	"when": "When",
 	"category": "版面",
+	"tags": "Tags",
 	"title": "標題",
 	"content": "內容",
 	"posted": "發佈",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "貼文裏的鏈結"
+	"links-in-this-post": "貼文裏的鏈結",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

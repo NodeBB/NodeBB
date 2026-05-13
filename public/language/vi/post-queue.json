@@ -10,6 +10,7 @@
 	"user": "Người dùng",
 	"when": "Khi",
 	"category": "Danh mục",
+	"tags": "Tags",
 	"title": "Tiêu đề",
 	"content": "Nội dung",
 	"posted": "Đã đăng",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Bạn có muốn xóa %1 bài đăng đã chọn không?",
 	"bulk-accept-success": "%1 bài đăng được chấp nhận",
 	"bulk-reject-success": "%1 bài đăng bị từ chối",
-	"links-in-this-post": "Liên kết trong bài này"
+	"links-in-this-post": "Liên kết trong bài này",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

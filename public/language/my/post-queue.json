@@ -10,6 +10,7 @@
 	"user": "အသုံးပြုသူ",
 	"when": "အချိန်",
 	"category": "ကဏ္ဍ",
+	"tags": "Tags",
 	"title": "ခေါင်းစဉ်",
 	"content": "အကြောင်းအရာ",
 	"posted": "တင်ခဲ့သည်",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "ရွေးချယ်ထားသည်ကို ဖယ်ရှားရန် အတည်ပြုပါ",
 	"bulk-accept-success": "အစုလိုက် လက်ခံမှု အောင်မြင်သည်",
 	"bulk-reject-success": "အစုလိုက် ငြင်းပယ်မှု အောင်မြင်သည်",
-	"links-in-this-post": "ဤပို့စ်ရှိ လင့်ခ်များ"
+	"links-in-this-post": "ဤပို့စ်ရှိ လင့်ခ်များ",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }
