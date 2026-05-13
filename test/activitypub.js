@@ -82,6 +82,16 @@ describe('ActivityPub integration', () => {
 			assert(!body.links.some(obj => obj.type && obj.type === 'application/activity+json'));
 		});
 
+		it('actors.assert should skip webfinger for a remote @-handle', async () => {
+			const result = await activitypub.actors.assert(`nobody@${utils.generateUUID()}.invalid`);
+			assert.strictEqual(result, false);
+		});
+
+		it('user.getUidByUserslug should resolve to null for an @-handle', async () => {
+			const uid = await user.getUidByUserslug(`nobody@${utils.generateUUID()}.invalid`);
+			assert.strictEqual(uid, null);
+		});
+
 		after(() => {
 			meta.config.activitypubEnabled = 1;
 		});
