@@ -35,6 +35,10 @@ Actors.qualify = async (ids, options = {}) => {
 	 * This method is only called by assert/assertGroup (at least in core.)
 	 */
 
+	if (!meta.config.activitypubEnabled) {
+		return false;
+	}
+
 	// Handle single values
 	if (!Array.isArray(ids)) {
 		ids = [ids];

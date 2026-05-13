@@ -77,14 +77,14 @@ define('accounts/picture', [
 					const activeBtn = modal.find('[component="profile/picture/button"].active');
 					const type = activeBtn.attr('data-type');
 					const picture = activeBtn.find('img').attr('src');
-					const iconBgColor = modal.find('[data-bg-color].selected').attr('data-bg-color') || 'transparent';
+					const bgColor = modal.find('[data-bg-color].selected').attr('data-bg-color') || 'transparent';
 
 					api.put(`/users/${ajaxify.data.theirid}/picture`, {
-						type, picture, iconBgColor,
+						type, picture, bgColor,
 					}).then(() => {
 						Picture.updateHeader(
 							type === 'default' ? '' : picture,
-							iconBgColor
+							bgColor
 						);
 						ajaxify.refresh();
 					}).catch(alerts.error);

@@ -130,7 +130,16 @@ federationController.errors = async function (req, res) {
 			// noop
 		}
 
-		return { id, type, activityType, body, stack, hostname, timestamp, timestampISO };
+		return {
+			id: validator.escape(String(id || '')),
+			type: validator.escape(String(type || '')),
+			activityType: validator.escape(String(activityType || '')),
+			body: validator.escape(String(body || '')),
+			stack,
+			hostname,
+			timestamp,
+			timestampISO,
+		};
 	}).filter(Boolean);
 
 	res.render('admin/federation/errors', {

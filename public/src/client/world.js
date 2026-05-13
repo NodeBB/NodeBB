@@ -129,11 +129,11 @@ define('forum/world', [
 		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
 	}
 
-	function loadTopicsAfter(index, after, direction, callback) {
+	function loadTopicsAfter(index, referenceTid, direction, callback) {
 		callback = callback || function () {};
 		const query = utils.params();
 		query.page = calculateNextPage(index, direction);
-		query.after = after;
+		query[direction > 0 ? 'after' : 'before'] = referenceTid;
 		infinitescroll.loadMoreXhr(query, callback);
 	}
 

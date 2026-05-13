@@ -36,10 +36,6 @@ Tags.parse = async (req, data, meta, link) => {
 		property: 'og:site_name',
 		content: Meta.config.title || 'NodeBB',
 	}, {
-		name: 'msapplication-badge',
-		content: `frequency=30; polling-uri=${url}/sitemap.xml`,
-		noEscape: true,
-	}, {
 		name: 'theme-color',
 		content: Meta.config.themeColor || '#ffffff',
 	}];
