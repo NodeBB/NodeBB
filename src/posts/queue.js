@@ -34,7 +34,7 @@ module.exports = function (Posts) {
 			});
 			const uids = postData.map(data => data && data.uid);
 			const userData = await user.getUsersFields(uids, [
-				'username', 'userslug', 'picture', 'joindate', 'postcount', 'reputation',
+				'username', 'userslug', 'picture', 'icon:bgColor', 'joindate', 'postcount', 'reputation',
 			]);
 			postData.forEach((postData, index) => {
 				if (postData) {
@@ -207,10 +207,10 @@ module.exports = function (Posts) {
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
-			bodyShort: type === 'reply' ? 
+			bodyShort: type === 'reply' ?
 				'[[notifications:post-awaiting-review]]' :
 				'[[notifications:topic-awaiting-review]]',
-			bodyLong: type === 'reply' ? 
+			bodyLong: type === 'reply' ?
 				await plugins.hooks.fire('filter:parse.raw', data.content) :
 				validator.escape(String(data.title)),
 			bodyEmail: bodyEmail,
