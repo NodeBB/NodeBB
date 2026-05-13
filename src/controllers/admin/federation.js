@@ -131,10 +131,10 @@ federationController.errors = async function (req, res) {
 		}
 
 		return {
-			id: validator.escape(String(id)),
-			type: validator.escape(String(type)),
-			activityType: validator.escape(String(activityType)),
-			body,
+			id: validator.escape(String(id || '')),
+			type: validator.escape(String(type || '')),
+			activityType: validator.escape(String(activityType || '')),
+			body: validator.escape(String(body || '')),
 			stack,
 			hostname,
 			timestamp,
