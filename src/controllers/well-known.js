@@ -81,11 +81,19 @@ async function profile(uid, response) {
 	];
 
 	if (meta.config.activitypubEnabled) {
-		response.links.push({
-			rel: 'self',
-			type: 'application/activity+json',
-			href: `${nconf.get('url')}/uid/${uid}`, // actor
-		});
+		response.links.push(
+			{
+				rel: 'self',
+				type: 'application/activity+json',
+				href: `${nconf.get('url')}/uid/${uid}`, // actor
+			},
+
+			// Activity Intents
+			{
+				'rel': 'https://w3id.org/fep/3b86/Object',
+				'template': `${nconf.get('url')}/ap?resource={object}`,
+			},
+		);
 	}
 
 	return response;
