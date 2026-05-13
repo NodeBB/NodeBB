@@ -51,8 +51,10 @@ Controller.fetch = async (req, res, next) => {
 			}
 		}
 
-		// Force outgoing links page on direct access
-		if (!res.locals.isAPI) {
+		if (!req.uid) { // Challenge guests with login
+			req.session.returnTo = `/ap?resource=${req.query.resource}`;
+			url = new URL(`login`, nconf.get('url'));
+		} else if (!res.locals.isAPI) { // Force outgoing links page on direct access
 			url = new URL(`outgoing?url=${encodeURIComponent(url.href)}`, nconf.get('url'));
 		}
 
