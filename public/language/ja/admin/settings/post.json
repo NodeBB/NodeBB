@@ -27,7 +27,7 @@
 	"restrictions.post-length": "投稿の長さ",
 	"restrictions.days-until-stale": "スレッドが古いと見なされるまでの日数",
 	"restrictions.stale-help": "スレッドが「古い」と見なされると、そのスレッドに返信しようとするユーザーに警告が表示されます。（0で無効）",
-	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "スレッド内の投稿数がこの数を超えると、ユーザーは自分のスレッドを移動できなくなります（0で無効）",
 	"timestamp": "タイムスタンプ",
 	"timestamp.cut-off": "日付のカットオフ(日数)",
 	"timestamp.cut-off-help": "日付と時刻は相対形式（例: 「3時間前」/「5日前」）で表示され、各言語にローカライズされます。\n\t\t\t\t\t一定期間を過ぎると、この表示はローカライズされた実際の日付表示に切り替えられます。\n\t\t\t\t\t（例: 2016年11月5日 15:30）<br /><em>（既定値: <code>30</code>、つまり1か月）日付を常に表示するには 0 を設定し、常に相対時間を表示するには空欄のままにしてください。</em>",

@@ -27,7 +27,7 @@
 	"restrictions.post-length": "Lunghezza post",
 	"restrictions.days-until-stale": "Giorni prima che l'argomento sia considerato vecchio",
 	"restrictions.stale-help": "Se una discussione è considerata \"obsoleta\", verrà mostrato un avviso agli utenti che tentano di rispondere a quella discussione. (impostare a 0 per disabilitare)",
-	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "Numero massimo di post in una discussione oltre il quale agli utenti non è consentito spostare la propria discussione (impostare su 0 per disabilitare)",
 	"timestamp": "Data e Ora",
 	"timestamp.cut-off": "Data limite (in giorni)",
 	"timestamp.cut-off-help": "I tempi delle date verranno visualizzati in modo relativo (ad es. \"3 ore fa\" / \"5 giorni fa\") e localizzati in varie\n\t\t\t\t\tlingue. Dopo un certo punto, questo testo può essere cambiato per visualizzare la data localizzata\n\t\t\t\t\t(es. 5 Nov 2016 15:30).<br /><em>(Predefinito: <code>30</code>, o un mese).Impostare su 0 per visualizzare sempre le date, lasciare vuoto per visualizzare sempre i tempi relativi.</em>",

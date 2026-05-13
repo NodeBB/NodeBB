@@ -10,7 +10,7 @@
 	"user": "Потребител",
 	"when": "Кога",
 	"category": "Категория",
-	"tags": "Tags",
+	"tags": "Етикети",
 	"title": "Заглавие",
 	"content": "Съдържание",
 	"posted": "Публикувано",
@@ -41,5 +41,5 @@
 	"bulk-accept-success": "Одобрени публикации: %1",
 	"bulk-reject-success": "Отхвърлени публикации: %1",
 	"links-in-this-post": "Връзки в тази публикация",
-	"thumbs-in-this-post": "Thumbnails in this post"
+	"thumbs-in-this-post": "Иконки в тази публикация"
 }
