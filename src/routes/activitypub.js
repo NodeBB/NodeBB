@@ -35,8 +35,8 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/actor', middlewares, helpers.tryRoute(controllers.activitypub.actors.application));
 	app.post('/inbox', [...middlewares, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 
-	app.get('/uid/:uid', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.actors.user));
-	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
+	app.get('/uid/:uid', [...middlewares, middleware.assert.user, middleware.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.user));
+	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user, middleware.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
 	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getInbox));
 	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getOutbox));

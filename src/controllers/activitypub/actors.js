@@ -42,13 +42,14 @@ Actors.application = async function (req, res) {
 };
 
 Actors.user = async function (req, res) {
-	// todo: view:users priv gate
+	// Privilege-gated at the router-level
 	const payload = await activitypub.mocks.actors.user(req.params.uid);
 
 	res.status(200).json(payload);
 };
 
 Actors.userBySlug = async function (req, res) {
+	// Privilege-gated at the router-level
 	const { uid } = res.locals;
 	req.params.uid = uid;
 	delete req.params.userslug;
