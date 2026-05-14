@@ -85,6 +85,7 @@ module.exports = function (User) {
 			'users:reputation',
 			'users:banned',
 			'users:banned:expire',
+			'users:muted',
 			'users:flags',
 			'users:online',
 			'digest:day:uids',
