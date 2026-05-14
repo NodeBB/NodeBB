@@ -2,6 +2,7 @@
 
 import { dialog } from 'bootbox';
 import { get } from 'api';
+import * as alerts from './alerts';
 
 const STORAGE_KEY = 'ap:intents:handles';
 
@@ -65,9 +66,10 @@ export async function refresh(handle) {
 
 	try {
 		const result = await get(`/api/v3/intents/query/${handle}`);
-		if (result && Array.isArray(result.intents)) {
-			save(handle, result.intents);
-			return { intents: result.intents };
+		if (result && result.intents && typeof result.intents === 'object') {
+			const intents = Object.keys(result.intents);
+			save(handle, intents);
+			return { intents };
 		}
 	} catch (e) {
 		// Network or server error — handle may not support intents
@@ -76,6 +78,73 @@ export async function refresh(handle) {
 }
 
 export function register() {
-	// Throws a modal asking user to enter their Open Social Web handle
-	// Use dialog(), template is at src/view/modals/intents/register.tpl
+	const map = list();
+	const handles = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
+
+	app.parseAndTranslate('modals/intents/register', {
+		description: '[[intents:description]]',
+		handles,
+	}, (html) => {
+		const modal = bootbox.dialog({
+			title: '[[intents:title]]',
+			message: html,
+		});
+
+		// html.on('hidden.bs.modal', function () {
+		// 	html.remove();
+		// });
+
+		const handleInput = modal.find('#intents-handle-input');
+		const submitBtn = modal.find('#intents-register-btn');
+
+		const validateHandle = () => {
+			const val = handleInput.val().trim();
+			// Validate: must be in format @username@domain or username@domain
+			const valid = /^@?[\w.-]+@[\w.-]+\.[\w]{2,}$/.test(val);
+			submitBtn.prop('disabled', !valid);
+		};
+
+		handleInput.on('input', validateHandle);
+		validateHandle();
+
+		modal.find('#intents-register-form').on('submit', async (ev) => {
+			ev.preventDefault();
+			const handle = handleInput.val().trim();
+
+			submitBtn.prop('disabled', true).text('[[global:loading]]');
+
+			try {
+				const result = await refresh(handle);
+				if (result) {
+					modal.modal('hide');
+					alerts.success('[[intents:register-success]]');
+					require(['hooks'], (hooks) => {
+						hooks.fire('action:intents.registered', { handle, intents: result.intents });
+					});
+				}
+			} catch (e) {
+				alerts.error('[[intents:register-error]]');
+			} finally {
+				submitBtn.prop('disabled', false).text('[[intents:register-button]]');
+			}
+		});
+
+		modal.on('click', '[data-action="remove"]', function () {
+			const handleToRemove = $(this).attr('data-handle');
+			const map = list();
+			map.delete(handleToRemove);
+			const entries = Array.from(map.entries()).map(([h, i]) => ({ handle: h, intents: i }));
+			try {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+			} catch (e) {
+				// silently fail
+			}
+			$(this).closest('li').remove();
+
+			if (!map.size) {
+				modal.find('#intents-registered-list').closest('hr').next('h6, p').remove();
+				modal.find('#intents-registered-list').closest('hr').prev('p').after('<p class="text-muted mt-3">[[intents:no-handles]]</p>');
+			}
+		});
+	});
 }
