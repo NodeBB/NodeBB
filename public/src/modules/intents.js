@@ -181,11 +181,21 @@ export function trigger(intent, parameters) {
 		modal.on('click', '[data-action="execute-intent"]', function () {
 			const handle = $(this).attr('data-handle');
 			const intents = map.get(handle);
-			const template = intents && intents[requiredIntent];
+			let url = intents && intents[requiredIntent];
 
-			// todo: replace placeholders in the template with data from parameters. The properties and placeholders are identically named.
-			if (template) {
-				window.location.href = template;
+			// Replace template placeholders with URL-encoded parameter values
+			if (url && parameters && typeof parameters === 'object') {
+				Object.keys(parameters).forEach((prop) => {
+					const value = parameters[prop];
+					const match = `{${prop}}`;
+					if (url.includes(match)) {
+						url = url.replaceAll(match, encodeURIComponent(value));
+					}
+				});
+			}
+
+			if (url) {
+				window.location.href = url;
 			}
 		});
 
