@@ -100,14 +100,10 @@ export function register() {
 		description: '[[intents:description]]',
 		handles,
 	}, (html) => {
-		const modal = bootbox.dialog({
+		const modal = dialog({
 			title: '[[intents:title]]',
 			message: html,
 		});
-
-		// html.on('hidden.bs.modal', function () {
-		// 	html.remove();
-		// });
 
 		const handleInput = modal.find('#intents-handle-input');
 		const submitBtn = modal.find('#intents-register-btn');
