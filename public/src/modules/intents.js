@@ -3,8 +3,25 @@
 import { dialog } from 'bootbox';
 import { get } from 'api';
 import * as alerts from './alerts';
+import storage from 'storage';
 
 const STORAGE_KEY = 'ap:intents:handles';
+
+function getStoredData() {
+	try {
+		return storage.getItem(STORAGE_KEY);
+	} catch (e) {
+		return null;
+	}
+}
+
+function setStoredData(data) {
+	try {
+		storage.setItem(STORAGE_KEY, data);
+	} catch (e) {
+		// Storage full or unavailable — silently fail
+	}
+}
 
 const INTENT_DISPLAY_MAP = {
 	create: 'Create & Reply',
@@ -19,14 +36,7 @@ function mapIntentNames(intents) {
 }
 
 export function list() {
-	let raw;
-	try {
-		raw = localStorage.getItem(STORAGE_KEY);
-	} catch (e) {
-		// localStorage unavailable (e.g. private browsing)
-		return new Map();
-	}
-
+	const raw = getStoredData();
 	if (!raw) {
 		return new Map();
 	}
@@ -63,11 +73,7 @@ export function save(handle, intents) {
 	map.set(handle, intents);
 
 	const entries = Array.from(map.entries()).map(([h, i]) => ({ handle: h, intents: i }));
-	try {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-	} catch (e) {
-		// Storage full or unavailable — silently fail
-	}
+	setStoredData(JSON.stringify(entries));
 }
 
 export async function refresh(handle) {
@@ -144,11 +150,7 @@ export function register() {
 			const map = list();
 			map.delete(handleToRemove);
 			const entries = Array.from(map.entries()).map(([h, i]) => ({ handle: h, intents: i }));
-			try {
-				localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-			} catch (e) {
-				// silently fail
-			}
+			setStoredData(JSON.stringify(entries));
 			$(this).closest('li').remove();
 
 			if (!map.size) {
