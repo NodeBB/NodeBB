@@ -146,7 +146,7 @@ Helpers.query = async (id) => {
 	if (!subject.startsWith('acct:') && !subject.startsWith('did:')) {
 		subject = `acct:${subject}`;
 	}
-	const payload = { subject, username, hostname, actorUri, publicKey };
+	const payload = { subject, username, hostname, actorUri, publicKey, _raw: body };
 	const claimedId = new URL(subject).pathname;
 	webfingerCache.set(claimedId, payload);
 	if (claimedId !== id) {
