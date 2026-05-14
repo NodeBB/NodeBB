@@ -15,7 +15,7 @@ const INTENT_DISPLAY_MAP = {
 };
 
 function mapIntentNames(intents) {
-	return intents.map(intent => INTENT_DISPLAY_MAP[intent.toLowerCase()] || intent);
+	return Object.keys(intents).map(intent => INTENT_DISPLAY_MAP[intent.toLowerCase()] || intent);
 }
 
 export function list() {
@@ -42,7 +42,7 @@ export function list() {
 	const map = new Map();
 	if (Array.isArray(handles)) {
 		handles.forEach(entry => {
-			if (entry && entry.handle && Array.isArray(entry.intents)) {
+			if (entry && entry.handle && typeof entry.intents === 'object' && !Array.isArray(entry.intents)) {
 				map.set(entry.handle, entry.intents);
 			}
 		});
@@ -55,7 +55,7 @@ export function save(handle, intents) {
 		return;
 	}
 	handle = handle.trim();
-	if (!Array.isArray(intents)) {
+	if (!intents || typeof intents !== 'object' || Array.isArray(intents)) {
 		return;
 	}
 
@@ -79,9 +79,8 @@ export async function refresh(handle) {
 	try {
 		const result = await get(`/api/v3/intents/query/${handle}`);
 		if (result && result.intents && typeof result.intents === 'object') {
-			const intents = Object.keys(result.intents);
-			save(handle, intents);
-			return { intents };
+			save(handle, result.intents);
+			return { intents: Object.keys(result.intents) };
 		}
 	} catch (e) {
 		// Network or server error — handle may not support intents
@@ -121,8 +120,7 @@ export function register() {
 		modal.find('#intents-register-form').on('submit', async (ev) => {
 			ev.preventDefault();
 			const handle = handleInput.val().trim();
-
-			submitBtn.prop('disabled', true).text('[[global:loading]]');
+			submitBtn.prop('disabled', true);
 
 			try {
 				await refresh(handle);
@@ -136,6 +134,7 @@ export function register() {
 			} catch (e) {
 				alerts.error('[[intents:register-error]]');
 			} finally {
+				handleInput.val('');
 				submitBtn.prop('disabled', false);
 			}
 		});
@@ -160,14 +159,14 @@ export function register() {
 	});
 }
 
-export function trigger(intent) {
+export function trigger(intent, parameters) {
 	const map = list();
 	const requiredIntent = intent.toLowerCase();
 	const displayIntent = INTENT_DISPLAY_MAP[requiredIntent] || intent;
 
 	const entries = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
 	const matchingHandles = entries
-		.filter(entry => Array.isArray(entry.intents) && entry.intents.some(i => i.toLowerCase() === requiredIntent))
+		.filter(entry => entry.intents && typeof entry.intents === 'object' && requiredIntent in entry.intents)
 		.map(entry => ({ handle: entry.handle, intents: mapIntentNames(entry.intents).join(', ') }));
 
 	app.parseAndTranslate('modals/intents/trigger', {
@@ -183,8 +182,11 @@ export function trigger(intent) {
 		// Handle intent execution from a registered handle
 		modal.on('click', '[data-action="execute-intent"]', function () {
 			const handle = $(this).attr('data-handle');
-			modal.modal('hide');
-			console.log('Intent triggered:', intent, 'Handle:', handle);
+			const intents = map.get(handle);
+			const template = intents && intents[requiredIntent];
+			if (template) {
+				window.location.href = template;
+			}
 		});
 
 		// Open handle registration modal
