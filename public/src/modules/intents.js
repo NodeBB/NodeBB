@@ -1,20 +1,78 @@
 'use strict';
 
 import { dialog } from 'bootbox';
+import { get } from 'api';
 
-export function get() {
-	// Checks localStorage for whether an existing handle has been saved, and what intents they support
-	// Multiple handles can be saved, so it should return a Map
+const STORAGE_KEY = 'ap:intents:handles';
+
+export function list() {
+	let raw;
+	try {
+		raw = localStorage.getItem(STORAGE_KEY);
+	} catch (e) {
+		// localStorage unavailable (e.g. private browsing)
+		return new Map();
+	}
+
+	if (!raw) {
+		return new Map();
+	}
+
+	let handles;
+	try {
+		handles = JSON.parse(raw);
+	} catch (e) {
+		// Corrupt data — reset
+		return new Map();
+	}
+
+	const map = new Map();
+	if (Array.isArray(handles)) {
+		handles.forEach(entry => {
+			if (entry && entry.handle && Array.isArray(entry.intents)) {
+				map.set(entry.handle, entry.intents);
+			}
+		});
+	}
+	return map;
 }
 
 export function save(handle, intents) {
-	// Called by refresh, saves a handle into localStorage. Multiple handles can be active at any one time,
-	// so possibly call get() and append the handle (or replace as necessary)
+	if (typeof handle !== 'string' || !handle.trim()) {
+		return;
+	}
+	handle = handle.trim();
+	if (!Array.isArray(intents)) {
+		return;
+	}
+
+	const map = list();
+	map.set(handle, intents);
+
+	const entries = Array.from(map.entries()).map(([h, i]) => ({ handle: h, intents: i }));
+	try {
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+	} catch (e) {
+		// Storage full or unavailable — silently fail
+	}
 }
 
-export function refresh(handle) {
-	// Fires off a network request to backend to check whether the handle passed-in supports Activity Intents
-	// should return { intents: Array }, where the array contains something like ['object', 'create'].
+export async function refresh(handle) {
+	if (typeof handle !== 'string' || !handle.trim()) {
+		return null;
+	}
+	handle = handle.trim().replace(/^@/, '');
+
+	try {
+		const result = await get(`/api/v3/intents/query/${handle}`);
+		if (result && Array.isArray(result.intents)) {
+			save(handle, result.intents);
+			return { intents: result.intents };
+		}
+	} catch (e) {
+		// Network or server error — handle may not support intents
+	}
+	return null;
 }
 
 export function register() {
