@@ -78,8 +78,8 @@ export async function refresh(handle) {
 }
 
 export function register() {
-	const map = list();
-	const handles = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
+	let map = list();
+	let handles = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
 
 	app.parseAndTranslate('modals/intents/register', {
 		description: '[[intents:description]]',
@@ -114,18 +114,15 @@ export function register() {
 			submitBtn.prop('disabled', true).text('[[global:loading]]');
 
 			try {
-				const result = await refresh(handle);
-				if (result) {
-					modal.modal('hide');
-					alerts.success('[[intents:register-success]]');
-					require(['hooks'], (hooks) => {
-						hooks.fire('action:intents.registered', { handle, intents: result.intents });
-					});
-				}
+				await refresh(handle);
+				map = list();
+				handles = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
+				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
+				modal.find('#intents-registered-list').html(html);
 			} catch (e) {
 				alerts.error('[[intents:register-error]]');
 			} finally {
-				submitBtn.prop('disabled', false).text('[[intents:register-button]]');
+				submitBtn.prop('disabled', false);
 			}
 		});
 

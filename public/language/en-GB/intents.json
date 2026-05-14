@@ -7,7 +7,6 @@
 	"registered-handles": "Registered Handles",
 	"no-handles": "No handles registered yet.",
 	"intents-label": "Supported Intents",
-	"register-success": "Handle registered successfully!",
 	"register-error": "Failed to register handle. Please check the handle format and try again.",
 	"invalid-handle": "Please enter a valid handle in the format @username@domain.com"
 }
