@@ -82,14 +82,10 @@ export async function refresh(handle) {
 	}
 	handle = handle.trim().replace(/^@/, '');
 
-	try {
-		const result = await get(`/api/v3/intents/query/${handle}`);
-		if (result && result.intents && typeof result.intents === 'object') {
-			save(handle, result.intents);
-			return { intents: Object.keys(result.intents) };
-		}
-	} catch (e) {
-		// Network or server error — handle may not support intents
+	const result = await get(`/api/v3/intents/query/${handle}`);
+	if (result && result.intents && typeof result.intents === 'object') {
+		save(handle, result.intents);
+		return { intents: Object.keys(result.intents) };
 	}
 	return null;
 }
@@ -138,7 +134,7 @@ export function register() {
 				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
 				modal.find('#intents-registered-list').html(html);
 			} catch (e) {
-				alerts.error('[[intents:register-error]]');
+				alerts.error(e.message);
 			} finally {
 				handleInput.val('');
 				submitBtn.prop('disabled', false);
@@ -186,6 +182,8 @@ export function trigger(intent, parameters) {
 			const handle = $(this).attr('data-handle');
 			const intents = map.get(handle);
 			const template = intents && intents[requiredIntent];
+
+			// todo: replace placeholders in the template with data from parameters. The properties and placeholders are identically named.
 			if (template) {
 				window.location.href = template;
 			}
