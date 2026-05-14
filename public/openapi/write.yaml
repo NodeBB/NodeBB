@@ -276,6 +276,8 @@ paths:
     $ref: 'write/search/chats/roomId/users.yaml'
   /search/chats/{roomId}/messages:
     $ref: 'write/search/chats/roomId/messages.yaml'
+  /intents/query/{handle}:
+    $ref: 'write/intents/query/handle.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
   /admin/analytics:

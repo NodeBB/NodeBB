@@ -362,7 +362,7 @@ async function setupData() {
 	// Retrieve CSRF token using cookie, to test Write API
 	csrfToken = await helpers.getCsrfToken(jar);
 
-	// Pre-seed ActivityPub cache so contrived actor assertions pass
+	// Pre-seed ActivityPub & webfinger cache so contrived actor assertions pass
 	activitypub._cache.set(`0;https://example.org/foobar`, {
 		id: 'https://example.org/foobar',
 		name: 'foobar',
@@ -372,6 +372,7 @@ async function setupData() {
 			publicKeyPem: 'secretcat',
 		},
 	});
+	activitypub.helpers._webfingerCache.set('foobar@example.org', { actorUri: 'https://example.org/foobar' });
 }
 
 describe('schema', () => {
@@ -577,7 +578,7 @@ describe('schema', () => {
 			return;
 		}
 
-		assert.strictEqual(this.result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
+		assert.strictEqual(this.result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path})`);
 
 		const hasJSON = http200.content && http200.content['application/json'];
 		if (hasJSON) {
