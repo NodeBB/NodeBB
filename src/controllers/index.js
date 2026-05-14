@@ -119,6 +119,7 @@ Controllers.login = async function (req, res) {
 	req.session.returnTo = req.session.returnTo && req.session.returnTo.replace(nconf.get('base_url'), '').replace(nconf.get('relative_path'), '');
 
 	data.alternate_logins = loginStrategies.length > 0;
+	data.osw_logins = !!meta.config.activitypubEnabled;
 	data.authentication = loginStrategies;
 	data.allowRegistration = registrationType === 'normal';
 	data.allowLoginWith = `[[login:${allowLoginWith}]]`;
@@ -177,6 +178,7 @@ Controllers.register = async function (req, res, next) {
 		res.render('register', {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
 			alternate_logins: !!loginStrategies.length,
+			osw_logins: !!meta.config.activitypubEnabled,
 			authentication: loginStrategies,
 
 			minimumUsernameLength: meta.config.minimumUsernameLength,

@@ -94,6 +94,12 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 			$('#content #username').focus();
 		}
 		$('#content #noscript').val('false');
+
+		$('#ap-register-handle-btn').on('click', function () {
+			require(['modules/intents'], (intents) => {
+				intents.register();
+			});
+		});
 	};
 
 	Login.capsLockCheck = (inputEl, warningEl) => {

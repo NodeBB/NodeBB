@@ -55,9 +55,15 @@
 
 						<hr/>
 
+						{{{ if (allowRegistration || osw_logins) }}}<span class="text-sm">[[login:dont-have-account]]</span>{{{ end }}}
 						{{{ if allowRegistration }}}
-						<span class="text-sm">[[login:dont-have-account]]</span>
 						<a class="btn btn-outline-light text-body" href="{config.relative_path}/register">[[register:register]]</a>
+						{{{ end }}}
+
+						{{{ if osw_logins }}}
+						<button class="btn btn-outline-light text-body" id="ap-register-handle-btn" type="button">
+							<i class="fa fa-share-alt"></i> [[login:manage-social-web-handles]]
+						</button>
 						{{{ end }}}
 					</form>
 				</div>

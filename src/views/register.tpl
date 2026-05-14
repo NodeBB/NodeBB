@@ -59,6 +59,12 @@
 						<span class="text-sm">[[register:already-have-account]]</span>
 						<a class="btn btn-outline-light text-body" href="{config.relative_path}/login">[[global:login]]</a>
 
+						{{{ if osw_logins }}}
+						<button class="btn btn-outline-light text-body" id="ap-register-handle-btn" type="button">
+							<i class="fa fa-share-alt"></i> [[login:manage-social-web-handles]]
+						</button>
+						{{{ end }}}
+
 						<input id="token" type="hidden" name="token" value="" />
 						<input id="noscript" type="hidden" name="noscript" value="true" />
 						<input type="hidden" name="_csrf" value="{config.csrf_token}" />
