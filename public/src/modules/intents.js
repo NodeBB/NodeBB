@@ -159,3 +159,44 @@ export function register() {
 		});
 	});
 }
+
+export function trigger(intent) {
+	const map = list();
+	const requiredIntent = intent.toLowerCase();
+	const displayIntent = INTENT_DISPLAY_MAP[requiredIntent] || intent;
+
+	const entries = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
+	const matchingHandles = entries
+		.filter(entry => Array.isArray(entry.intents) && entry.intents.some(i => i.toLowerCase() === requiredIntent))
+		.map(entry => ({ handle: entry.handle, intents: mapIntentNames(entry.intents).join(', ') }));
+
+	app.parseAndTranslate('modals/intents/trigger', {
+		displayIntent,
+		matchingHandles,
+		hasAnyHandles: map.size > 0,
+	}, (html) => {
+		const modal = dialog({
+			title: `[[intents:trigger-title, ${displayIntent}]]`,
+			message: html,
+		});
+
+		// Handle intent execution from a registered handle
+		modal.on('click', '[data-action="execute-intent"]', function () {
+			const handle = $(this).attr('data-handle');
+			modal.modal('hide');
+			console.log('Intent triggered:', intent, 'Handle:', handle);
+		});
+
+		// Open handle registration modal
+		modal.on('click', '[data-action="open-register"]', function () {
+			modal.modal('hide');
+			setTimeout(() => register(), 300);
+		});
+
+		// Redirect to login
+		modal.on('click', '[data-action="go-login"]', function () {
+			modal.modal('hide');
+			ajaxify.go('login');
+		});
+	});
+}
