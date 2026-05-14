@@ -6,6 +6,18 @@ import * as alerts from './alerts';
 
 const STORAGE_KEY = 'ap:intents:handles';
 
+const INTENT_DISPLAY_MAP = {
+	create: 'Create & Reply',
+	like: 'Upvote',
+	dislike: 'Downvote',
+	follow: 'Follow',
+	object: 'View',
+};
+
+function mapIntentNames(intents) {
+	return intents.map(intent => INTENT_DISPLAY_MAP[intent.toLowerCase()] || intent);
+}
+
 export function list() {
 	let raw;
 	try {
@@ -79,7 +91,10 @@ export async function refresh(handle) {
 
 export function register() {
 	let map = list();
-	let handles = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
+	let handles = Array.from(map.entries()).map(([handle, intents]) => ({
+		handle,
+		intents: mapIntentNames(intents).join(', '),
+	}));
 
 	app.parseAndTranslate('modals/intents/register', {
 		description: '[[intents:description]]',
@@ -116,7 +131,10 @@ export function register() {
 			try {
 				await refresh(handle);
 				map = list();
-				handles = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
+				handles = Array.from(map.entries()).map(([handle, intents]) => ({
+					handle,
+					intents: mapIntentNames(intents).join(', '),
+				}));
 				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
 				modal.find('#intents-registered-list').html(html);
 			} catch (e) {

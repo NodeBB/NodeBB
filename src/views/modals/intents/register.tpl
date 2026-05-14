@@ -24,7 +24,10 @@
 	<ul class="list-group list-group-flush" id="intents-registered-list">
 		{{{ each handles }}}
 		<li class="list-group-item d-flex justify-content-between align-items-center">
-			<span>{./handle}</span>
+			<div>
+				<strong>{./handle}</strong>
+				{{{ if ./intents }}}<small class="text-muted ms-2">({./intents})</small>{{{ end }}}
+			</div>
 			<button type="button" class="btn btn-sm btn-outline-danger" data-action="remove" data-handle="{./handle}">
 				<i class="fa fa-times"></i>
 			</button>
