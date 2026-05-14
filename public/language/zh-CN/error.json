@@ -234,7 +234,7 @@
     "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
     "cant-move-topic-to-same-category": "无法将主题移动到相同的版块！",
     "cant-move-topic-to-from-remote-categories": "您无法将主题移入或移出远程版块；请考虑采用交叉发布的方式。",
-    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
+    "cant-move-topic-too-many-posts": "包含超过 %1 条帖子的主题无法移动。",
     "cannot-block-self": "您不能把自己屏蔽！",
     "cannot-block-privileged": "您不能屏蔽管理员或者全局版主",
     "cannot-block-guest": "游客无法屏蔽其他用户",

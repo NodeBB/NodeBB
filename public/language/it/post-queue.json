@@ -10,7 +10,7 @@
 	"user": "Utente",
 	"when": "Quando",
 	"category": "Categoria",
-	"tags": "Tags",
+	"tags": "Tag",
 	"title": "Titolo",
 	"content": "Contenuto",
 	"posted": "Postato",
@@ -41,5 +41,5 @@
 	"bulk-accept-success": "%1 post accettati",
 	"bulk-reject-success": "%1 post rifiutati",
 	"links-in-this-post": "Link in questo post",
-	"thumbs-in-this-post": "Thumbnails in this post"
+	"thumbs-in-this-post": "Miniature in questo post"
 }
