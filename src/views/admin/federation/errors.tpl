@@ -4,7 +4,25 @@
 	</div>
 </div>
 
-<p class="lead">[[admin/settings/activitypub:errors.intro, {errors.length}]]</p>
+<div class="row border-bottom py-2 m-0 mb-3">
+	<div class="col-12">
+		<p class="lead">[[admin/settings/activitypub:errors.intro, {errors.length}]]</p>
+		<div class="mb-3 row">
+			<div class="col-6">
+				<label class="form-label" for="hostnameFilter">[[admin/settings/activitypub:errors.hostname]]</label>
+				<input class="form-control" id="hostnameFilter" placeholder="[[admin/settings/activitypub:errors.hostname]]" />
+			</div>
+			<div class="col-6">
+				<label class="form-label" for="typeFilter">[[admin/settings/activitypub:errors.type]]</label>
+				<select class="form-select" id="typeFilter">
+					<option value="">All types</option>
+					<option value="in">IN</option>
+					<option value="out">OUT</option>
+				</select>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="row flex-column-reverse flex-md-row">
 	<div class="col-12 col-md-4" id="errors">
