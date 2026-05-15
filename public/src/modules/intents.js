@@ -215,6 +215,9 @@ export function trigger(intent, parameters) {
 				});
 			}
 
+			// Remove any unmatched placeholders
+			url = url?.replaceAll(/\{[^}]+\}/g, '');
+
 			if (url) {
 				window.location.href = url;
 			}
