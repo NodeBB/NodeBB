@@ -34,6 +34,7 @@ Intents.create = async (req, res, next) => {
 			if (exists) {
 				const tid = await posts.getPostField(toPid, 'tid');
 				if (tid) {
+					payload.toPid = utils.isNumber(toPid) ? parseInt(toPid, 10) : toPid;
 					payload.tid = tid;
 				}
 			}
@@ -41,6 +42,7 @@ Intents.create = async (req, res, next) => {
 			// Not a valid local post — assert as ActivityPub note
 			const result = await activitypub.notes.assert(0, toPid);
 			if (result && result.tid) {
+				payload.toPid = toPid;
 				payload.tid = result.tid;
 			}
 		}
@@ -63,7 +65,7 @@ Intents.create = async (req, res, next) => {
 		payload.cid = cid;
 	}
 
-	if (!['tid', 'cid'].some(prop => payload.hasOwnProperty(prop))) {
+	if (!['toPid', 'tid', 'cid'].some(prop => payload.hasOwnProperty(prop))) {
 		return next();
 	}
 
