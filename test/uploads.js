@@ -196,6 +196,72 @@ describe('Upload Controllers', () => {
 			assert(body.response.images[0].url.endsWith('测试.jpg'));
 		});
 
+		it('should block encoded private upload paths for unauthenticated users', async () => {
+			const oldPrivateUploads = meta.config.privateUploads;
+			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
+			const oldAllowedFileExtensions = meta.config.allowedFileExtensions;
+			meta.config.privateUploads = 1;
+			meta.config.privateUploadsExtensions = '';
+			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
+
+			try {
+				const { response: uploadResponse, body: uploadBody } = await helpers.uploadFile(
+					`${nconf.get('url')}/api/post/upload`,
+					path.join(__dirname, '../test/files/503.html'),
+					{},
+					jar,
+					csrf_token
+				);
+
+				assert.strictEqual(uploadResponse.statusCode, 200);
+				assert(uploadBody?.response?.images?.[0]?.url);
+
+				const fileUrl = uploadBody.response.images[0].url;
+				const directUrl = new URL(fileUrl, nconf.get('base_url')).href;
+				const encodedUrl = new URL(fileUrl.replace('/files/', '/%66iles/'), nconf.get('base_url')).href;
+
+				const { response: directResponse } = await request.get(directUrl);
+				assert.strictEqual(directResponse.statusCode, 403);
+
+				const { response: encodedResponse } = await request.get(encodedUrl);
+				assert.strictEqual(encodedResponse.statusCode, 403);
+			} finally {
+				meta.config.privateUploads = oldPrivateUploads;
+				meta.config.privateUploadsExtensions = oldPrivateUploadsExtensions;
+				meta.config.allowedFileExtensions = oldAllowedFileExtensions;
+			}
+		});
+
+		it('should block percent-encoded private extensions for unauthenticated users', async () => {
+			const oldPrivateUploads = meta.config.privateUploads;
+			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
+			const uploadPath = nconf.get('upload_path');
+			const filename = `private-ext-${Date.now()}.pdf`;
+			const filePath = path.join(uploadPath, 'files', filename);
+
+			meta.config.privateUploads = 1;
+			meta.config.privateUploadsExtensions = 'pdf';
+
+			try {
+				await fs.writeFile(filePath, 'PDFSECRET', 'utf8');
+
+				const relativePath = nconf.get('relative_path') || '';
+				const publicPath = `${relativePath}/assets/uploads/files/${filename}`;
+				const directUrl = new URL(publicPath, nconf.get('base_url')).href;
+				const encodedExtensionUrl = new URL(publicPath.replace(/\.pdf$/, '.%70df'), nconf.get('base_url')).href;
+
+				const { response: directResponse } = await request.get(directUrl);
+				assert.strictEqual(directResponse.statusCode, 403);
+
+				const { response: encodedResponse } = await request.get(encodedExtensionUrl);
+				assert.strictEqual(encodedResponse.statusCode, 403);
+			} finally {
+				await file.delete(filePath);
+				meta.config.privateUploads = oldPrivateUploads;
+				meta.config.privateUploadsExtensions = oldPrivateUploadsExtensions;
+			}
+		});
+
 		it('should fail to upload image to post if image dimensions are too big', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);

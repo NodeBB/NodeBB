@@ -209,10 +209,21 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 		return next();
 	}
 
-	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
-		const extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
-		let ext = path.extname(req.path);
-		ext = ext ? ext.replace(/^\./, '') : ext;
+	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`;
+	let requestPath = req.path;
+	try {
+		requestPath = decodeURIComponent(requestPath);
+	} catch (err) {
+		return res.status(403).json('not-allowed');
+	}
+
+	if (requestPath.startsWith(uploadPrefix)) {
+		const extensions = (meta.config.privateUploadsExtensions || '')
+			.split(',')
+			.map(ext => ext.trim().toLowerCase())
+			.filter(Boolean);
+		let ext = path.extname(requestPath);
+		ext = ext ? ext.replace(/^\./, '').toLowerCase() : ext;
 		if (!extensions.length || extensions.includes(ext)) {
 			return res.status(403).json('not-allowed');
 		}
