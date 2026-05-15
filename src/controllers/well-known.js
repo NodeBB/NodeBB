@@ -93,6 +93,10 @@ async function profile(uid, response) {
 				'rel': 'https://w3id.org/fep/3b86/Object',
 				'template': `${nconf.get('url')}/ap?resource={object}`,
 			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Create',
+				'template': `${nconf.get('url')}/intents/create?toPid={inReplyTo}&cid={audience}`,
+			},
 		);
 	}
 
