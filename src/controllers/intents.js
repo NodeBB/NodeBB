@@ -28,7 +28,6 @@ Intents.create = async (req, res, next) => {
 		}
 
 		if (utils.isNumber(toPid)) {
-			console.log(toPid);
 			// Local post ID — verify it exists
 			const exists = await posts.exists(toPid);
 			if (exists) {
