@@ -10,7 +10,7 @@
 	"user": "ユーザー",
 	"when": "投稿日時",
 	"category": "カテゴリ",
-	"tags": "Tags",
+	"tags": "タグ",
 	"title": "タイトル",
 	"content": "内容",
 	"posted": "投稿済み",
@@ -41,5 +41,5 @@
 	"bulk-accept-success": "%1件の投稿を承認しました",
 	"bulk-reject-success": "%1件の投稿を拒否しました",
 	"links-in-this-post": "この投稿のリンク",
-	"thumbs-in-this-post": "Thumbnails in this post"
+	"thumbs-in-this-post": "この投稿のサムネイル"
 }
