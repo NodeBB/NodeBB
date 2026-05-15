@@ -94,20 +94,19 @@ async function retryFailedMessages() {
 			return;
 		}
 
-		const { uri, id, type, attempts, payload } = data;
+		const { uri, id, type, attempts, payload, digest } = data;
 		if (!uri || !id || !type || !payload || attempts > 10) {
 			queueIdsToRemove.push(queueId);
 			return;
 		}
-		let payloadObj;
 		try {
-			payloadObj = JSON.parse(payload);
+			JSON.parse(payload);
 		} catch (err) {
 			queueIdsToRemove.push(queueId);
 			return;
 		}
 		const keyData = await activitypub.getPrivateKey(type, id); // keyData could be moved higher up (optimization)
-		const ok = await activitypub._sendMessage(uri, keyData, payloadObj);
+		const ok = await activitypub._sendMessage(uri, keyData, payload, digest);
 		if (ok) {
 			queueIdsToRemove.push(queueId);
 		} else {
