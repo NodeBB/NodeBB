@@ -18,8 +18,8 @@
 		</button>
 	</form>
 
-	{{{ if (handles && handles.length) }}}
 	<hr />
+
 	<h6 class="mt-3">[[intents:registered-handles]]</h6>
 	<ul class="list-group list-group-flush" id="intents-registered-list">
 		{{{ each handles }}}
@@ -34,7 +34,6 @@
 		</li>
 		{{{ end }}}
 	</ul>
-	{{{ end }}}
 
 	{{{ if (!handles || !handles.length) }}}
 	<p class="text-muted mt-3">[[intents:no-handles]]</p>
