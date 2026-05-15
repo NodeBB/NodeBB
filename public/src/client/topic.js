@@ -17,11 +17,12 @@ define('forum/topic', [
 	'alerts',
 	'bootbox',
 	'clipboard',
+	'modules/intents',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard
+	bootbox, clipboard, intents
 ) {
 	const Topic = {};
 	let tid = '0';
@@ -74,6 +75,8 @@ define('forum/topic', [
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
 		handleTopicSearch();
+
+		intents.addHandlers();
 
 		hooks.fire('action:topic.loaded', ajaxify.data);
 	};

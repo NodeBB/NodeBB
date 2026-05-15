@@ -157,6 +157,22 @@ export function register() {
 	});
 }
 
+const INTENTS_GUEST_SELECTORS = '[component="topic/reply/guest"], [component="category/post/guest"]';
+
+export function addHandlers() {
+	document.removeEventListener('click', _intentsHandler);
+	document.addEventListener('click', _intentsHandler, true); // capture phase
+}
+
+function _intentsHandler(e) {
+	const target = e.target.closest(INTENTS_GUEST_SELECTORS);
+	if (target) {
+		e.preventDefault();
+		e.stopPropagation();
+		trigger('create', {});
+	}
+}
+
 export function trigger(intent, parameters) {
 	const map = list();
 	const requiredIntent = intent.toLowerCase();
