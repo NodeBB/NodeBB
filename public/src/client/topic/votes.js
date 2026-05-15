@@ -103,7 +103,7 @@ define('forum/topic/votes', [
 		if (!app.user.uid) {
 			let objectId;
 			if (utils.isNumber(pid)) {
-				objectId = document.location.origin + config.relative_path + '/post/' + pid;
+				objectId = config.url + '/post/' + pid;
 			} else {
 				objectId = pid;
 			}

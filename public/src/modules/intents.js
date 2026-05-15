@@ -174,7 +174,19 @@ function _intentsHandler(e) {
 	if (target) {
 		e.preventDefault();
 		e.stopPropagation();
-		trigger('create', {});
+
+		const tid = ajaxify.data.tid;
+		const cid = ajaxify.data.cid;
+		const payload = {};
+
+		if (tid) {
+			payload.inReplyTo = utils.isNumber(ajaxify.data.mainPid) ? `${config.url}/post/${ajaxify.data.mainPid}` : ajaxify.data.mainPid;
+			payload.content = `@${ajaxify.data.author.userslug}`;
+		} else if (cid) {
+			payload.content = `@${ajaxify.data.handleFull}`;
+		}
+
+		trigger('create', payload);
 	}
 }
 
