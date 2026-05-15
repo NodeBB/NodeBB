@@ -126,12 +126,16 @@ export function register() {
 
 			try {
 				await refresh(handle);
+				console.log('refresh done');
 				map = list();
+				console.log('map is now', map);
 				handles = Array.from(map.entries()).map(([handle, intents]) => ({
 					handle,
 					intents: mapIntentNames(intents).join(', '),
 				}));
+				console.log('handles', handles);
 				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
+				console.log('target el', modal.find('#intents-registered-list'));
 				modal.find('#intents-registered-list').html(html);
 			} catch (e) {
 				alerts.error(e.message);
@@ -159,6 +163,7 @@ export function register() {
 
 const INTENTS_GUEST_SELECTORS = '[component="topic/reply/guest"], [component="category/post/guest"]';
 
+// called by various init scripts in different pages' js to add handlers for "Log in to post" buttons, et al.
 export function addHandlers() {
 	document.removeEventListener('click', _intentsHandler);
 	document.addEventListener('click', _intentsHandler, true); // capture phase
