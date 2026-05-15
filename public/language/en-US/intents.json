@@ -1,0 +1,17 @@
+{
+	"title": "Register Open Social Web Handle",
+	"description": "Enter your Open Social Web handle to register for Activity Intents. This will allow you to share content from this forum to your social profile.",
+	"handle-label": "Open Social Web Handle",
+	"handle-placeholder": "username@example.com",
+	"register-button": "Register Handle",
+	"registered-handles": "Registered Handles",
+	"no-handles": "No handles registered yet.",
+	"intents-label": "Supported Intents",
+	"register-error": "Failed to register handle. Please check the handle format and try again.",
+	"invalid-handle": "Please enter a valid handle in the format @username@domain.com",
+	"trigger-title": "%1 via Open Social Web",
+	"trigger-description": "Please log in to your forum account, or choose an Open Social Web handle to complete this action",
+	"trigger-your-handles": "Your Registered Handles",
+	"trigger-yes": "Yes, use this",
+	"trigger-no-matching": "No registered handles support this intent. Register a new handle or log in."
+}
