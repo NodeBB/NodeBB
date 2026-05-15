@@ -5,11 +5,11 @@ export function init() {
 		ajaxify.go(`category/${ajaxify.data.cid}`);
 		app.newTopic(ajaxify.data.cid);
 	} else if (ajaxify.data?.tid) {
-		ajaxify.go(`topic/${ajaxify.data.tid}`);
 		if (ajaxify.data?.toPid) {
-			app.newReply({ tid: ajaxify.data.tid, toPid: ajaxify.data.toPid });
+			ajaxify.go(`/post/${ajaxify.data.toPid}`);
 		} else {
-			app.newReply({ tid: ajaxify.data.tid });
+			ajaxify.go(`topic/${ajaxify.data.tid}`);
 		}
+		app.newReply({ tid: ajaxify.data.tid, toPid: ajaxify.data.toPid });
 	}
 }
