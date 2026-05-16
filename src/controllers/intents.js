@@ -1,16 +1,11 @@
 'use strict';
 
-const nconf = require('nconf');
 const posts = require('../posts');
 const categories = require('../categories');
 const user = require('../user');
 const helpers = require('./helpers');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
-
-const config = {
-	url: nconf.get('url'),
-};
 
 const Intents = module.exports;
 
@@ -95,7 +90,12 @@ Intents.create = async (req, res, next) => {
 			if (exists) {
 				payload.pid = pid;
 			} else {
-				// todo: assert the post and then set payload.pid
+				const assertion = await activitypub.notes.assert(req.uid, pid);
+				if (!assertion) {
+					return next();
+				}
+
+				payload.pid = pid;
 			}
 			break;
 		}
