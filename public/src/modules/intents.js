@@ -220,34 +220,6 @@ export function trigger(intent, parameters) {
 			const intents = map.get(handle);
 			let url = intents && intents[requiredIntent];
 
-			// For local intents (like, dislike, follow) — route through /intents/{intent}
-			if (['like', 'dislike', 'follow'].includes(requiredIntent)) {
-				const params = new URLSearchParams();
-				if (parameters) {
-					// Extract pid/uid from object parameter if present
-					const obj = parameters.object || parameters.pid || parameters.uid;
-					if (obj) {
-						if (requiredIntent === 'like' || requiredIntent === 'dislike') {
-							// Extract pid from URL if it's a full URL
-							if (typeof obj === 'string' && obj.includes('/post/')) {
-								params.set('pid', obj.split('/post/')[1]);
-							} else {
-								params.set('pid', obj);
-							}
-						} else {
-							// Extract uid from URL if it's a full URL
-							if (typeof obj === 'string' && obj.includes('/user/')) {
-								params.set('uid', obj.split('/user/')[1]);
-							} else {
-								params.set('uid', obj);
-							}
-						}
-					}
-				}
-				ajaxify.go(`/intents/${requiredIntent}${params.toString() ? `?${params.toString()}` : ''}`);
-				return;
-			}
-
 			// Replace template placeholders with URL-encoded parameter values
 			if (url && parameters && typeof parameters === 'object') {
 				Object.keys(parameters).forEach((prop) => {
