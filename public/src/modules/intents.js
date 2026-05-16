@@ -2,8 +2,10 @@
 
 import { dialog } from 'bootbox';
 import { get } from 'api';
-import * as alerts from './alerts';
 import storage from 'storage';
+import { translateKeys } from 'translator';
+
+import * as alerts from './alerts';
 
 const STORAGE_KEY = 'ap:intents:handles';
 
@@ -31,11 +33,8 @@ const INTENT_DISPLAY_MAP = {
 	object: 'intents:display.object',
 };
 
-function mapIntentNames(intents) {
-	return Object.keys(intents).map(intent => {
-		const key = INTENT_DISPLAY_MAP[intent.toLowerCase()];
-		return app.parseAndTranslate(key || intent);
-	});
+async function mapIntentNames(intents) {
+	return await translateKeys(Object.keys(intents).map(intent => `[[${INTENT_DISPLAY_MAP[intent.toLowerCase()]}]]`));
 }
 
 export function list() {
