@@ -97,6 +97,18 @@ async function profile(uid, response) {
 				'rel': 'https://w3id.org/fep/3b86/Create',
 				'template': `${nconf.get('url')}/intents/create?toPid={inReplyTo}&cid={audience}`,
 			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Like',
+				'template': `${nconf.get('url')}/intents/like?pid={object}`,
+			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Dislike',
+				'template': `${nconf.get('url')}/intents/dislike?pid={object}`,
+			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Follow',
+				'template': `${nconf.get('url')}/intents/follow?uid={object}`,
+			},
 		);
 	}
 
