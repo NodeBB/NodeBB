@@ -1,4 +1,9 @@
 {
+	"display.create": "Create & Reply",
+	"display.like": "Upvote",
+	"display.dislike": "Downvote",
+	"display.follow": "Follow",
+	"display.object": "View",
 	"title": "Register Open Social Web Handle",
 	"description": "Enter your Open Social Web handle to register for Activity Intents. This will allow you to share content from this forum to your social profile.",
 	"handle-label": "Open Social Web Handle",
