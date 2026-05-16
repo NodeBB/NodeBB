@@ -3,7 +3,7 @@
 import { dialog } from 'bootbox';
 import { get } from 'api';
 import storage from 'storage';
-import { translateKeys } from 'translator';
+import { translate, translateKeys } from 'translator';
 
 import * as alerts from './alerts';
 
@@ -93,8 +93,8 @@ export async function refresh(handle) {
 }
 
 export async function register() {
-	const map = list();
-	const handles = await Promise.all(Array.from(map.entries()).map(async ([handle, intents]) => ({
+	let map = list();
+	let handles = await Promise.all(Array.from(map.entries()).map(async ([handle, intents]) => ({
 		handle,
 		intents: (await mapIntentNames(intents)).join(', '),
 	})));
@@ -128,16 +128,12 @@ export async function register() {
 
 			try {
 				await refresh(handle);
-				console.log('refresh done');
 				map = list();
-				console.log('map is now', map);
 				handles = await Promise.all(Array.from(map.entries()).map(async ([handle, intents]) => ({
 					handle,
 					intents: (await mapIntentNames(intents)).join(', '),
 				})));
-				console.log('handles', handles);
 				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
-				console.log('target el', modal.find('#intents-registered-list'));
 				modal.find('#intents-registered-list').html(html);
 			} catch (e) {
 				alerts.error(e.message);
@@ -197,11 +193,11 @@ export async function trigger(intent, parameters) {
 	const requiredIntent = intent.toLowerCase();
 	const displayKey = INTENT_DISPLAY_MAP[requiredIntent];
 
-	const displayIntent = (await translateKeys([`[[${displayKey || intent}]]`]))[0];
+	const displayIntent = (await translate([`[[${displayKey || intent}]]`]));
 
 	const entries = Array.from(map.entries())
-		.filter(entry => entry.intents && typeof entry.intents === 'object' && requiredIntent in entry.intents)
-		.map(entry => ({ handle: entry.handle, intents: entry.intents }));
+		.filter(([, intents]) => intents && typeof intents === 'object' && requiredIntent in intents)
+		.map(([handle, intents]) => ({ handle, intents }));
 
 	const matchingHandles = await Promise.all(entries.map(async ({ handle, intents }) => ({
 		handle,
