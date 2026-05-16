@@ -92,12 +92,12 @@ export async function refresh(handle) {
 	return null;
 }
 
-export function register() {
-	let map = list();
-	let handles = Array.from(map.entries()).map(([handle, intents]) => ({
+export async function register() {
+	const map = list();
+	const handles = await Promise.all(Array.from(map.entries()).map(async ([handle, intents]) => ({
 		handle,
-		intents: mapIntentNames(intents).join(', '),
-	}));
+		intents: (await mapIntentNames(intents)).join(', '),
+	})));
 
 	app.parseAndTranslate('modals/intents/register', {
 		description: '[[intents:description]]',
@@ -131,10 +131,10 @@ export function register() {
 				console.log('refresh done');
 				map = list();
 				console.log('map is now', map);
-				handles = Array.from(map.entries()).map(([handle, intents]) => ({
+				handles = await Promise.all(Array.from(map.entries()).map(async ([handle, intents]) => ({
 					handle,
-					intents: mapIntentNames(intents).join(', '),
-				}));
+					intents: (await mapIntentNames(intents)).join(', '),
+				})));
 				console.log('handles', handles);
 				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
 				console.log('target el', modal.find('#intents-registered-list'));
@@ -192,16 +192,21 @@ function _intentsHandler(e) {
 	}
 }
 
-export function trigger(intent, parameters) {
+export async function trigger(intent, parameters) {
 	const map = list();
 	const requiredIntent = intent.toLowerCase();
 	const displayKey = INTENT_DISPLAY_MAP[requiredIntent];
-	const displayIntent = app.parseAndTranslate(displayKey || intent);
 
-	const entries = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
-	const matchingHandles = entries
+	const displayIntent = (await translateKeys([`[[${displayKey || intent}]]`]))[0];
+
+	const entries = Array.from(map.entries())
 		.filter(entry => entry.intents && typeof entry.intents === 'object' && requiredIntent in entry.intents)
-		.map(entry => ({ handle: entry.handle, intents: mapIntentNames(entry.intents).join(', ') }));
+		.map(entry => ({ handle: entry.handle, intents: entry.intents }));
+
+	const matchingHandles = await Promise.all(entries.map(async ({ handle, intents }) => ({
+		handle,
+		intents: (await mapIntentNames(intents)).join(', '),
+	})));
 
 	app.parseAndTranslate('modals/intents/trigger', {
 		displayIntent,
