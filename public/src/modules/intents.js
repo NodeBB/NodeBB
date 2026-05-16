@@ -26,15 +26,15 @@ function setStoredData(data) {
 }
 
 const INTENT_DISPLAY_MAP = {
-	create: 'intents:display.create',
-	like: 'intents:display.like',
-	dislike: 'intents:display.dislike',
-	follow: 'intents:display.follow',
-	object: 'intents:display.object',
+	create: '[[intents:display.create]]',
+	like: '[[intents:display.like]]',
+	dislike: '[[intents:display.dislike]]',
+	follow: '[[intents:display.follow]]',
+	object: '[[intents:display.object]]',
 };
 
 async function mapIntentNames(intents) {
-	return await translateKeys(Object.keys(intents).map(intent => `[[${INTENT_DISPLAY_MAP[intent.toLowerCase()]}]]`));
+	return await translateKeys(Object.keys(intents).map(intent => `${INTENT_DISPLAY_MAP[intent.toLowerCase()]}`));
 }
 
 export function list() {
@@ -193,7 +193,7 @@ export async function trigger(intent, parameters) {
 	const requiredIntent = intent.toLowerCase();
 	const displayKey = INTENT_DISPLAY_MAP[requiredIntent];
 
-	const displayIntent = (await translate([`[[${displayKey || intent}]]`]));
+	const displayIntent = (await translate(`${displayKey || intent}`));
 
 	const entries = Array.from(map.entries())
 		.filter(([, intents]) => intents && typeof intents === 'object' && requiredIntent in intents)
