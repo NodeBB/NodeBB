@@ -24,15 +24,18 @@ function setStoredData(data) {
 }
 
 const INTENT_DISPLAY_MAP = {
-	create: 'Create & Reply',
-	like: 'Upvote',
-	dislike: 'Downvote',
-	follow: 'Follow',
-	object: 'View',
+	create: 'intents:display.create',
+	like: 'intents:display.like',
+	dislike: 'intents:display.dislike',
+	follow: 'intents:display.follow',
+	object: 'intents:display.object',
 };
 
 function mapIntentNames(intents) {
-	return Object.keys(intents).map(intent => INTENT_DISPLAY_MAP[intent.toLowerCase()] || intent);
+	return Object.keys(intents).map(intent => {
+		const key = INTENT_DISPLAY_MAP[intent.toLowerCase()];
+		return app.parseAndTranslate(key || intent);
+	});
 }
 
 export function list() {
@@ -193,7 +196,8 @@ function _intentsHandler(e) {
 export function trigger(intent, parameters) {
 	const map = list();
 	const requiredIntent = intent.toLowerCase();
-	const displayIntent = INTENT_DISPLAY_MAP[requiredIntent] || intent;
+	const displayKey = INTENT_DISPLAY_MAP[requiredIntent];
+	const displayIntent = app.parseAndTranslate(displayKey || intent);
 
 	const entries = Array.from(map.entries()).map(([handle, intents]) => ({ handle, intents }));
 	const matchingHandles = entries
