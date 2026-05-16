@@ -89,13 +89,15 @@ Intents.create = async (req, res, next) => {
 			const exists = await posts.exists(pid);
 			if (exists) {
 				payload.pid = pid;
-			} else {
+			} else if (!utils.isNumber(pid)) {
 				const assertion = await activitypub.notes.assert(req.uid, pid);
 				if (!assertion) {
 					return next();
 				}
 
 				payload.pid = pid;
+			} else {
+				throw new Error('[[error:invalid-pid]]');
 			}
 			break;
 		}
@@ -114,8 +116,14 @@ Intents.create = async (req, res, next) => {
 			const exists = await user.exists(uid);
 			if (exists) {
 				payload.uid = uid;
+			} else if (!utils.isNumber(uid)) {
+				const assertion = await activitypub.actors.assert([uid]);
+				if (!assertion) {
+					return next();
+				}
+				payload.uid = uid;
 			} else {
-				// todo: activitypub.actors.assert then set payload.uid
+				throw new Error('[[error:invalid-uid]]');
 			}
 			break;
 		}
