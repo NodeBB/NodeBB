@@ -13,6 +13,7 @@ const topics = require('../topics');
 const privileges = require('../privileges');
 const privilegeHelpers = require('../privileges/helpers');
 const plugins = require('../plugins');
+const utils = require('../utils');
 const helpers = require('./helpers');
 const auth = require('../routes/authentication');
 const writeRouter = require('../routes/write');
@@ -206,8 +207,8 @@ module.exports = function (middleware) {
 	});
 
 	middleware.redirectUidToUserslug = helpers.try(async (req, res, next) => {
-		const uid = parseInt(req.params.uid, 10);
-		if (uid <= 0) {
+		const uid = utils.isNumber(req.params.uid) ? parseInt(req.params.uid, 10) : req.params.uid;
+		if (utils.isNumber(uid) && uid <= 0) {
 			return next();
 		}
 		const [canView, userslug] = await Promise.all([
@@ -219,7 +220,7 @@ module.exports = function (middleware) {
 			return next();
 		}
 		const path = req.url.replace(/^\/api/, '')
-			.replace(`/uid/${uid}`, () => `/user/${userslug}`);
+			.replace(`/uid/${encodeURIComponent(uid)}`, () => `/user/${userslug}`);
 		controllers.helpers.redirect(res, path, true);
 	});
 
