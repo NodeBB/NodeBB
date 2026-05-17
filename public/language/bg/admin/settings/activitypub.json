@@ -79,6 +79,6 @@
 
 	"errors.intro": "Следните грешки (%1) бяха записани от тази инсталация в рамките на последните 24 часа.",
 	"errors.payload-gone": "Данните за тази грешка вече не съществуват.",
-	"errors.hostname": "Hostname",
-	"errors.type": "Type"
+	"errors.hostname": "Име на сървъра",
+	"errors.type": "Тип"
 }
