@@ -386,3 +386,5 @@ paths:
     $ref: 'read/ap.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'
+  /api/intents/{intent}:
+    $ref: 'read/intents/intent.yaml'
