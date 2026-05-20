@@ -28,24 +28,6 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 		await install.giveWorldPrivileges();
 	});
 
-	/**
-	 * Helper: manually construct a Create activity.
-	 * helpers.mocks.create() hardcodes actor to 'https://example.org/user/foobar',
-	 * so we can't use it when we need a custom actor.
-	 */
-	function makeCreateActivity(note) {
-		const uuid = utils.generateUUID();
-		const id = `${helpers.mocks._baseUrl}/activity/${uuid}`;
-		return {
-			'@context': 'https://www.w3.org/ns/activitystreams',
-			id,
-			type: 'Create',
-			to: ['https://www.w3.org/ns/activitystreams#Public'],
-			cc: [`${note.attributedTo}/followers`],
-			actor: note.attributedTo,
-			object: note,
-		};
-	}
 
 	describe('Create (Note) – remote user posting to local cid -1', () => {
 		let remoteActor;
@@ -61,7 +43,7 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 			const { note, id } = helpers.mocks.note({
 				attributedTo: remoteActor,
 			});
-			const activity = makeCreateActivity(note);
+			const { activity } = helpers.mocks.create({ actor: remoteActor, object: note });
 
 			await activitypub.inbox.create({ body: activity });
 
@@ -104,7 +86,7 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 				attributedTo: remoteActor,
 				cc: [`${nconf.get('url')}/category/${cid}`],
 			});
-			const activity = makeCreateActivity(note);
+			const { activity } = helpers.mocks.create({ actor: remoteActor, object: note });
 
 			await activitypub.inbox.create({ body: activity });
 
@@ -149,7 +131,7 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 				attributedTo: remoteActor,
 				audience: [remoteCid],
 			});
-			const activity = makeCreateActivity(note);
+			const { activity } = helpers.mocks.create({ actor: remoteActor, object: note });
 
 			await activitypub.inbox.create({ body: activity });
 
@@ -194,7 +176,7 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 				attributedTo: remoteActor,
 				cc: [`${nconf.get('url')}/category/${cid1}`],
 			});
-			const activity1 = makeCreateActivity(note1);
+			const { activity: activity1 } = helpers.mocks.create({ actor: remoteActor, object: note1 });
 			await activitypub.inbox.create({ body: activity1 });
 
 			// Then post to cid2
@@ -202,7 +184,7 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 				attributedTo: remoteActor,
 				cc: [`${nconf.get('url')}/category/${cid2}`],
 			});
-			const activity2 = makeCreateActivity(note2);
+			const { activity: activity2 } = helpers.mocks.create({ actor: remoteActor, object: note2 });
 			await activitypub.inbox.create({ body: activity2 });
 		});
 
@@ -243,7 +225,7 @@ describe('Inbox – uid:<uid>:cids sorted set', () => {
 				attributedTo: remoteActor,
 				cc: [`${nconf.get('url')}/category/${cid}`],
 			});
-			const createActivity = makeCreateActivity(note);
+			const { activity: createActivity } = helpers.mocks.create({ actor: remoteActor, object: note });
 			await activitypub.inbox.create({ body: createActivity });
 
 			remoteTid = id;
