@@ -1,6 +1,14 @@
 /* eslint-disable no-await-in-loop */
 'use strict';
 
+/**
+ * Filtered execution: pass a keyword as the first positional argument after the test file path
+ * to only run routes whose paths contain that keyword (case-insensitive).
+ *   Example: npx mocha test/api/schema.js intents
+ *   Runs only /api/intents/{intent} and /intents/query/{handle} (14 tests instead of ~2,450).
+ *   Omit the argument to run all tests.
+ */
+
 const assert = require('assert');
 const path = require('path');
 const nconf = require('nconf');
@@ -395,7 +403,13 @@ describe('schema', () => {
 
 	async function generateTests(api, prefix) {
 		const paths = Object.keys(api.paths);
+		const filterPattern = process.argv[3];
+
 		paths.forEach((path) => {
+			if (filterPattern && !path.toLowerCase().includes(filterPattern.toLowerCase())) {
+				return;
+			}
+
 			const context = api.paths[path];
 			let schema;
 			const headers = {};
