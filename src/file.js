@@ -212,7 +212,6 @@ async function sanitizeXml(filePath) {
 	if (dirty.includes('<!DOCTYPE') || dirty.includes('<!ENTITY')) {
 		throw new Error('DTD not allowed');
 	}
-	console.log('dirty', dirty);
 	const doc = new DOMParser().parseFromString(dirty, 'text/xml');
 
 	function walk(node) {
@@ -245,7 +244,6 @@ async function sanitizeXml(filePath) {
 	walk(doc.documentElement);
 
 	const clean = new XMLSerializer().serializeToString(doc);
-	console.log('clean', clean);
 	await fs.promises.writeFile(filePath, clean);
 }
 
