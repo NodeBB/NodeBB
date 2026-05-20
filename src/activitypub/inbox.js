@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const api = require('../api');
+const apiHelpers = require('../api/helpers');
 const utils = require('../utils');
 const activitypub = require('.');
 
@@ -465,7 +466,16 @@ inbox.announce = async (req) => {
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
-			await posts.delete(id, uid);
+			const isMain = await posts.isMain(id);
+			const postCount = await topics.getTopicField(await posts.getPostField(id, 'tid'), 'postcount');
+			const isLast = postCount === 1;
+
+			await posts.tools.delete(uid, id);
+
+			if (isMain && isLast) {
+				const tid = await posts.getPostField(id, 'tid');
+				await apiHelpers.doTopicAction('delete', 'event:topic_deleted', { uid }, { tids: [tid] });
+			}
 			break;
 		}
 

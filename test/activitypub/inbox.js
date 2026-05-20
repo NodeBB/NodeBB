@@ -496,6 +496,93 @@ describe('Inbox', () => {
 					const isDeleted = await posts.getPostField(id, 'deleted');
 					assert.strictEqual(isDeleted, 1);
 				});
+
+				it('should delete the topic if the post is the only post in the topic', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { postData, topicData } = await topics.post({
+						uid,
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					// Verify topic exists before deletion
+					const topicExistsBefore = await topics.exists(topicData.tid);
+					assert.strictEqual(topicExistsBefore, true);
+
+					// Create a delete activity for the local post
+					const object = await activitypub.mocks.notes.public(postData);
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: `${nconf.get('url')}/uid/${postData.uid}`,
+						object,
+					});
+
+					// Wrap it in an announce
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const isDeleted = await posts.getPostField(postData.pid, 'deleted');
+					assert.strictEqual(isDeleted, 1);
+
+					// Verify topic is also deleted
+					const topicDeleted = await topics.getTopicField(topicData.tid, 'deleted');
+					assert.strictEqual(topicDeleted, 1);
+				});
+
+				it('should NOT delete the topic if there are replies', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { postData, topicData } = await topics.post({
+						uid,
+						cid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					// Add a reply to the topic
+					await topics.reply({
+						tid: topicData.tid,
+						uid,
+						content: utils.generateUUID(),
+					});
+
+					// Verify topic exists before deletion
+					const topicExistsBefore = await topics.exists(topicData.tid);
+					assert.strictEqual(topicExistsBefore, true);
+
+					// Create a delete activity for the local post (main post)
+					const object = await activitypub.mocks.notes.public(postData);
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: `${nconf.get('url')}/uid/${postData.uid}`,
+						object,
+					});
+
+					// Wrap it in an announce
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const isDeleted = await posts.getPostField(postData.pid, 'deleted');
+					assert.strictEqual(isDeleted, 1);
+
+					// Verify topic still exists (not deleted because there are replies)
+					const topicExistsAfter = await topics.exists(topicData.tid);
+					assert.strictEqual(topicExistsAfter, true);
+				});
 			});
 		});
 
