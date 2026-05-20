@@ -15,7 +15,7 @@
         "test": "nyc --reporter=html --reporter=text-summary mocha",
         "coverage": "nyc report --reporter=text-lcov > ./coverage/lcov.info",
         "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage",
-        "postinstall": "ln -fs /home/julian/Projects/nodebb/plugins/* /home/julian/Projects/nodebb/forum/node_modules/; npx husky install"
+        "postinstall": "npx husky install"
     },
     "nyc": {
         "exclude": [
