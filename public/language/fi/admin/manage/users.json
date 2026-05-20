@@ -142,7 +142,7 @@
 	"export-field-uid": "UID",
 	"export-field-ip": "IP",
 	"export-field-joindate": "Join date",
-	"export-field-lastonline": "Last Online",
+	"export-field-lastonline": "Viimeksi paikalla",
 	"export-field-lastposttime": "Last Post Time",
 	"export-field-reputation": "Reputation",
 	"export-field-postcount": "Post Count",

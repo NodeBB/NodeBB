@@ -79,6 +79,6 @@
 
 	"errors.intro": "このインスタンスでは、過去 24 時間以内に次の %1 件のエラーが記録されました。",
 	"errors.payload-gone": "このエラーのペイロードは既に存在しません。",
-	"errors.hostname": "Hostname",
-	"errors.type": "Type"
+	"errors.hostname": "ホスト名",
+	"errors.type": "タイプ"
 }

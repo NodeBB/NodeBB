@@ -86,7 +86,7 @@
 	"modal-reason-custom": "Reason for reporting this content...",
 	"modal-notify-remote": "Forward this report to %1",
 	"modal-submit": "Submit Report",
-	"modal-submit-success": "Content has been flagged for moderation.",
+	"modal-submit-success": "Sisältö on ilmiannettu moderoitavaksi",
 
 	"modal-confirm-rescind": "Rescind Report?",
 
