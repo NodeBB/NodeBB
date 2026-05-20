@@ -8,6 +8,7 @@ const { mkdirp } = require('mkdirp');
 const mime = require('mime');
 const graceful = require('graceful-fs');
 const sanitizeHtml = require('sanitize-html');
+const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const slugify = require('./slugify');
 
@@ -28,8 +29,11 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 
 	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
-	if (filename.endsWith('.svg')) {
+	const extension = path.extname(filename).toLowerCase();
+	if (extension === '.svg') {
 		await sanitizeSvg(tempPath);
+	} else if (extension === '.xml') {
+		await sanitizeXml(tempPath);
 	}
 
 	await fs.promises.copyFile(tempPath, uploadPath);
@@ -199,6 +203,54 @@ async function sanitizeSvg(filePath) {
 			lowerCaseAttributeNames: false,
 		},
 	});
+	await fs.promises.writeFile(filePath, clean);
+}
+
+const FORBIDDEN = new Set([
+	'script',
+	'iframe',
+	'object',
+	'embed',
+	'svg',
+]);
+
+async function sanitizeXml(filePath) {
+	const dirty = await fs.promises.readFile(filePath, 'utf8');
+	if (dirty.includes('<!DOCTYPE') || dirty.includes('<!ENTITY')) {
+		throw new Error('DTD not allowed');
+	}
+	const doc = new DOMParser().parseFromString(dirty, 'text/xml');
+
+	function walk(node) {
+		if (node.nodeType === 1) {
+			const tag = node.tagName.toLowerCase();
+
+			if (FORBIDDEN.has(tag)) {
+				node.parentNode.removeChild(node);
+				return;
+			}
+
+			for (const attr of [...node.attributes]) {
+				const name = attr.name.toLowerCase();
+				const value = attr.value.toLowerCase();
+
+				if (
+					name.startsWith('on') ||
+					value.startsWith('javascript:')
+				) {
+					node.removeAttribute(attr.name);
+				}
+			}
+		}
+
+		for (const child of [...node.childNodes]) {
+			walk(child);
+		}
+	}
+
+	walk(doc.documentElement);
+
+	const clean = new XMLSerializer().serializeToString(doc);
 	await fs.promises.writeFile(filePath, clean);
 }
 

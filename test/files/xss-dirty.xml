@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a xmlns:a="http://www.w3.org/1999/xhtml">
+  <a:body onload="alert('XSS')">
+	<a:entry>
+	  <a:title>Test Entry</a:title>
+	  <a:content>This is a test entry.</a:content>
+	  <script>alert('XSS');</script>
+  	</a:entry>
+  </a:body>
+</a>
