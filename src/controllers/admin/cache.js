@@ -20,7 +20,7 @@ cacheController.dump = async function (req, res, next) {
 	}
 
 	const data = JSON.stringify(foundCache.dump(), null, 4);
-	res.setHeader('Content-disposition', `attachment; filename= ${req.query.name}-cache.json`);
+	res.setHeader('Content-disposition', `attachment; filename="${req.query.name}-cache.json"`);
 	res.setHeader('Content-type', 'application/json');
 	res.write(data, (err) => {
 		if (err) {

@@ -181,7 +181,8 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,
 		setHeaders: (res, filePath) => {
 			if (path.extname(filePath).toLowerCase() === '.xml') {
-				res.setHeader('Content-Disposition', `attachment; filename=${path.basename(filePath)}`);
+				res.setHeader('X-Content-Type-Options', 'nosniff');
+				res.setHeader('Content-Disposition', `attachment; filename="${path.basename(filePath)}"`);
 			}
 		},
 	};
