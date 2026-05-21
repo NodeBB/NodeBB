@@ -31,7 +31,11 @@ module.exports = function (Messaging) {
 		}
 
 		setImmediate(() => {
-			activitypub.out.update.privateNote(uid, msgData);
+			if (state === 1) {
+				activitypub.out.delete.privateNote(uid, msgData);
+			} else {
+				activitypub.out.update.privateNote(uid, msgData);
+			}
 		});
 	}
 };
