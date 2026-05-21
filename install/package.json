@@ -42,7 +42,7 @@
         "@textcomplete/core": "0.1.13",
         "@textcomplete/textarea": "0.1.13",
         "@xmldom/xmldom": "^0.9.10",
-        "ace-builds": "1.43.6",
+        "ace-builds": "1.44.0",
         "archiver": "7.0.1",
         "async": "3.2.6",
         "autoprefixer": "10.5.0",
