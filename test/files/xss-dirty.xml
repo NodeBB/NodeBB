@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<a xmlns:a="http://www.w3.org/1999/xhtml">
-  <a:body onload="alert('XSS')">
-	<a:entry>
-	  <a:title>Test Entry</a:title>
-	  <a:content>This is a test entry.</a:content>
-	  <script>alert('XSS');</script>
-  	</a:entry>
-  </a:body>
+<a xmlns:a="http://www.w3.org/1999/xhtml"
+	xmlns:x="http://example.com/x"
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+	<a:body onload="alert('XSS')">
+		<a:entry>
+			<a:title>Test Entry</a:title>
+			<a:content>This is a test entry.</a:content>
+			<script>alert('XSS');</script>
+			<a:script>alert('xxs');</a:script>
+			<x:a xlink:href="   JAVASCRIPT:alert(1)">click</x:a>
+		</a:entry>
+	</a:body>
 </a>

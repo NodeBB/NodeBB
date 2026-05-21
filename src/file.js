@@ -214,7 +214,7 @@ async function sanitizeXml(filePath) {
 
 	function walk(node) {
 		if (node.nodeType === 1) {
-			const tag = node.tagName.toLowerCase();
+			const tag = (node.localName || node.tagName).toLowerCase();
 
 			if (FORBIDDEN.has(tag)) {
 				node.parentNode.removeChild(node);
@@ -222,15 +222,26 @@ async function sanitizeXml(filePath) {
 			}
 
 			for (const attr of [...node.attributes]) {
-				const name = attr.name.toLowerCase();
-				const value = attr.value.toLowerCase();
-				// eslint-disable-next-line no-control-regex
-				const normalized = value.trim().replace(/[\u0000-\u001F\u007F\s]+/g, '');
-				if (
-					name.startsWith('on') ||
-					normalized.startsWith('javascript:')
-				) {
-					node.removeAttribute(attr.name);
+				const name = (attr.localName || attr.name).toLowerCase();
+				const value = attr.value
+					.trim()
+					// eslint-disable-next-line no-control-regex
+					.replace(/[\u0000-\u001F\u007F\s]+/g, '')
+					.toLowerCase();
+				const fullName = attr.name.toLowerCase();
+
+				if (name.startsWith('on')) {
+					node.removeAttribute(fullName);
+					continue;
+				}
+
+				if (name === 'href' || name === 'src' || name === 'data' || name.endsWith(':href')) {
+					if (
+						value.startsWith('javascript:') ||
+						value.startsWith('data:text/html')
+					) {
+						node.removeAttribute(fullName);
+					}
 				}
 			}
 		}
