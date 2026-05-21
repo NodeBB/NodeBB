@@ -484,6 +484,8 @@ describe('Upload Controllers', () => {
 			assert.equal(fileResponse.statusCode, 200);
 			assert.strictEqual(uploadedBody.includes('<script>'), false);
 			assert.strictEqual(uploadedBody.includes('onload="alert(\'XSS\')"'), false);
+			assert.strictEqual(uploadedBody.includes('<a:script>'), false);
+			assert.strictEqual(uploadedBody.includes('JAVASCRIPT:alert(1)'), false);
 		});
 
 		it('should keep valid xml file unchanged', async () => {

@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
 const validator = require('validator');
-const json2csvAsync = require('json2csv').parseAsync;
+const { AsyncParser } = require('@json2csv/node');
 
 const { baseDir } = require('../constants').paths;
 const db = require('../database');
@@ -85,7 +85,8 @@ module.exports = function (User) {
 			});
 
 			const opts = { fields, header: false };
-			const csv = await json2csvAsync(usersData, opts);
+			const json2csvAsync = new AsyncParser(opts);
+			const csv = await json2csvAsync.parse(usersData).promise();
 			await fs.promises.appendFile(fd, csv);
 		}, {
 			batch: 5000,
