@@ -175,6 +175,51 @@ describe('Inbox', () => {
 					assert.strictEqual(cid, -1);
 				});
 			});
+
+			describe('(Question)', () => {
+				before(async () => {
+					const { id, note } = helpers.mocks.note();
+					const question = {
+						...note,
+						type: 'Question',
+						content: '<p>What is your favorite color?</p>',
+						endTime: '2024-07-17T18:18:17Z',
+						updated: '2024-07-16T20:53:05Z',
+						oneOf: [
+							{
+								type: 'Note',
+								name: 'Red',
+								replies: {
+									type: 'Collection',
+									totalItems: 596,
+								},
+							},
+							{
+								type: 'Note',
+								name: 'Blue',
+								replies: {
+									type: 'Collection',
+									totalItems: 379,
+								},
+							},
+						],
+					};
+					const { activity } = helpers.mocks.create({
+						actor: question.attributedTo,
+						object: question,
+					});
+					this.activity = activity;
+					this.pid = id;
+
+					await db.sortedSetAdd(`followersRemote:${question.attributedTo}`, Date.now(), uid);
+				});
+
+				it('should create a post from the Question object', async () => {
+					await activitypub.inbox.create({ body: this.activity });
+
+					assert(await posts.exists(this.pid));
+				});
+			});
 		});
 
 		describe('Announce', () => {
