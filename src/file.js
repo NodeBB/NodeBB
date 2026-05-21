@@ -200,11 +200,9 @@ async function sanitizeSvg(filePath) {
 }
 
 const FORBIDDEN = new Set([
-	'script',
-	'iframe',
-	'object',
-	'embed',
-	'svg',
+	'script', 'iframe', 'object', 'embed',
+	'svg', 'animate', 'foreignObject',
+	'set', 'use', 'feImage',
 ]);
 
 async function sanitizeXml(filePath) {
@@ -226,10 +224,11 @@ async function sanitizeXml(filePath) {
 			for (const attr of [...node.attributes]) {
 				const name = attr.name.toLowerCase();
 				const value = attr.value.toLowerCase();
-
+				// eslint-disable-next-line no-control-regex
+				const normalized = value.trim().replace(/[\u0000-\u001F\u007F\s]+/g, '');
 				if (
 					name.startsWith('on') ||
-					value.startsWith('javascript:')
+					normalized.startsWith('javascript:')
 				) {
 					node.removeAttribute(attr.name);
 				}
