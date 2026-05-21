@@ -179,6 +179,11 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	];
 	const staticOptions = {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,
+		setHeaders: (res, filePath) => {
+			if (path.extname(filePath).toLowerCase() === '.xml') {
+				res.setHeader('Content-Disposition', `attachment; filename=${path.basename(filePath)}`);
+			}
+		},
 	};
 
 	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
