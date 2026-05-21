@@ -8,5 +8,6 @@
     "login-successful": "شما با موفقیت وارد شده‌اید!",
     "dont-have-account": "حساب کاربری ندارید؟",
     "logged-out-due-to-inactivity": "شما به علت عدم فعالیت از کنترل پنل مدیر کل خارج شده اید",
-    "caps-lock-enabled": "کلید Caps Lock فعال است"
+    "caps-lock-enabled": "کلید Caps Lock فعال است",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

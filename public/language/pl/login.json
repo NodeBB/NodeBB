@@ -8,5 +8,6 @@
     "login-successful": "Logowanie powiodło się.",
     "dont-have-account": "Nie masz konta?",
     "logged-out-due-to-inactivity": "Zostałeś wylogowany z Panelu Administratora z powodu braku aktywności.",
-    "caps-lock-enabled": "Caps Lock jest włączony"
+    "caps-lock-enabled": "Caps Lock jest włączony",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

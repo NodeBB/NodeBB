@@ -8,5 +8,6 @@
     "login-successful": "您已成功登入！",
     "dont-have-account": "沒有帳戶？",
     "logged-out-due-to-inactivity": "由於長時間沒有活動，您的帳戶已被管理員從後台登出",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

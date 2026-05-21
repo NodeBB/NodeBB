@@ -8,5 +8,6 @@
     "login-successful": "Du er innlogget!",
     "dont-have-account": "Har du ikke en konto?",
     "logged-out-due-to-inactivity": "Du har blitt logget ut av administratorsidene fordi du har vært inaktiv for lenge",
-    "caps-lock-enabled": "Caps Lock er skrudd på"
+    "caps-lock-enabled": "Caps Lock er skrudd på",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

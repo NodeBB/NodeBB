@@ -8,5 +8,6 @@
     "login-successful": "Winjiyemo nta ngorane!",
     "dont-have-account": "Nta konte ufite?",
     "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

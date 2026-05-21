@@ -8,5 +8,6 @@
     "login-successful": "您已成功登录！",
     "dont-have-account": "没有帐号？",
     "logged-out-due-to-inactivity": "由于长时间不活动，您的账号已被管理员从控制面板中注销",
-    "caps-lock-enabled": "大写锁定已启用"
+    "caps-lock-enabled": "大写锁定已启用",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

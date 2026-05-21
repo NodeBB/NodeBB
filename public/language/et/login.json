@@ -8,5 +8,6 @@
     "login-successful": "Edukalt sisse logitud!",
     "dont-have-account": "Pole veel kasutajat?",
     "logged-out-due-to-inactivity": "Sind on Administraatori Juhtpaneelist ebaaktiivsuse tõttu välja logitud",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

@@ -8,5 +8,6 @@
     "login-successful": "Bạn đã đăng nhập thành công!",
     "dont-have-account": "Chưa có tài khoản?",
     "logged-out-due-to-inactivity": "Bạn đã đăng xuất khỏi Bảng Điều Khiển Quản Trị Viên do không hoạt động quá lâu",
-    "caps-lock-enabled": "Caps Lock được bật"
+    "caps-lock-enabled": "Caps Lock được bật",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

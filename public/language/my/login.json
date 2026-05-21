@@ -8,5 +8,6 @@
     "login-successful": "သင် အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ!",
     "dont-have-account": "အကောင့် မရှိသေးဘူးလား?",
     "logged-out-due-to-inactivity": "လှုပ်ရှားမှုမရှိသောကြောင့် သင့်ကို Admin Control Panel မှ ထွက်စေပြီးပါပြီ",
-    "caps-lock-enabled": "Caps Lock ဖွင့်ထားသည်"
+    "caps-lock-enabled": "Caps Lock ဖွင့်ထားသည်",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }
