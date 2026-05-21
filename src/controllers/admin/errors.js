@@ -1,6 +1,6 @@
 'use strict';
 
-const json2csvAsync = require('json2csv').parseAsync;
+const { AsyncParser } = require('@json2csv/node');
 
 const meta = require('../../meta');
 const analytics = require('../../analytics');
@@ -20,6 +20,7 @@ errorsController.export = async function (req, res) {
 	const data = await meta.errors.get(false);
 	const fields = data.length ? Object.keys(data[0]) : [];
 	const opts = { fields };
-	const csv = await json2csvAsync(data, opts);
+	const json2csvAsync = new AsyncParser(opts);
+	const csv = await json2csvAsync.parse(data).promise();
 	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="404.csv"').send(csv);
 };
