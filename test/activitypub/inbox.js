@@ -11,6 +11,7 @@ const categories = require('../../src/categories');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const privileges = require('../../src/privileges');
+const messaging = require('../../src/messaging');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
@@ -582,6 +583,64 @@ describe('Inbox', () => {
 					// Verify topic still exists (not deleted because there are replies)
 					const topicExistsAfter = await topics.exists(topicData.tid);
 					assert.strictEqual(topicExistsAfter, true);
+				});
+			});
+
+			describe('(Delete) with non-public notes (aka chat messages)', () => {
+				before(async function () {
+					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const remote = helpers.mocks.person();
+					this.remoteId = remote.id;
+					const result = await activitypub.actors.assert([remote.id]);
+
+					// Create a private chat room between the users
+					const { note } = helpers.mocks.note({
+						attributedTo: remote.id,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					this.mid = note.id;
+					const { roomId } = await activitypub.notes.assertPrivate(note);
+					this.roomId = roomId;
+				});
+
+				it('should soft-delete a chat message via inbox.delete', async function () {
+					// Verify message exists before deletion
+					const existsBefore = await messaging.messageExists(this.mid);
+					assert.strictEqual(existsBefore, true);
+					const deletedBefore = await messaging.getMessageField(this.mid, 'deleted');
+					assert.strictEqual(deletedBefore, 0);
+
+					// Create a Delete activity for the chat message
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: this.remoteId,
+						object: this.mid,
+					});
+
+					// Process the delete directly
+					await activitypub.inbox.delete({ body: deleteActivity });
+
+					// Verify message is soft-deleted
+					const existsAfter = await messaging.messageExists(this.mid);
+					assert.strictEqual(existsAfter, true);
+					const deletedAfter = await messaging.getMessageField(this.mid, 'deleted');
+					assert.strictEqual(deletedAfter, 1);
+				});
+
+				it('should do nothing when deleting a non-existent message', async function () {
+					const { hostname } = new URL(this.remoteId);
+					const fakeMid = `https://${hostname}/note/9999999999`;
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: this.remoteId,
+						object: fakeMid,
+					});
+
+					// This should not throw – it should hit the default case
+					await activitypub.inbox.delete({ body: deleteActivity });
+
+					// Verify message still doesn't exist
+					const exists = await messaging.messageExists(fakeMid);
+					assert.strictEqual(exists, false);
 				});
 			});
 		});

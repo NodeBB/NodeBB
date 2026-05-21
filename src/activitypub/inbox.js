@@ -277,15 +277,15 @@ inbox.delete = async (req) => {
 
 	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
-
 	const objectHostname = new URL(id).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
-	const [isNote, isContext/* , isActor */] = await Promise.all([
+	const [isNote, isContext, isMessage/* , isActor */] = await Promise.all([
 		posts.exists(id),
 		activitypub.contexts.getItems(0, id, { returnRootId: true }), // ⚠️ unreliable, needs better logic (Contexts.is?)
+		messaging.messageExists(id),
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
@@ -320,6 +320,11 @@ inbox.delete = async (req) => {
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
 			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
 			await api.topics[method]({ uid }, { tids: [tid] });
+			break;
+		}
+
+		case isMessage: {
+			await api.chats.deleteMessage({ uid: actor }, { mid: id });
 			break;
 		}
 
