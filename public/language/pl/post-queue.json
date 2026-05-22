@@ -10,7 +10,7 @@
 	"user": "Użytkownik",
 	"when": "Kiedy",
 	"category": "Kategoria",
-	"tags": "Tags",
+	"tags": "Tagi",
 	"title": "Tytuł",
 	"content": "Zawartość",
 	"posted": "Napisano",
@@ -41,5 +41,5 @@
 	"bulk-accept-success": "%1 postów zaakceptowanych",
 	"bulk-reject-success": "%1 postów odrzuconych",
 	"links-in-this-post": "Odnośniki w tym wpisie",
-	"thumbs-in-this-post": "Thumbnails in this post"
+	"thumbs-in-this-post": "Miniaturki w tym poście"
 }

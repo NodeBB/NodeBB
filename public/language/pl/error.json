@@ -1,6 +1,6 @@
 {
     "invalid-data": "Nieprawidłowe dane",
-    "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
+    "invalid-config-field-value": "Niepoprawna wartość dla pola \"%1\": %2",
     "invalid-json": "Niewłaściwy JSON",
     "wrong-parameter-type": "Wartość typu %3 była oczekiwania dla właściwości `%1`, ale %2 został dostarczony",
     "required-parameters-missing": "Brakowało wymaganych parametrów w tym żądaniu API: %1",
@@ -122,7 +122,7 @@
     "cant-mute-other-admins": "Nie możesz wyciszyć innych adminów!",
     "user-muted-for-hours": "Zostałeś wyciszony, będziesz mógł pisać po upływie %1 godziny(godzin)",
     "user-muted-for-minutes": "Zostałeś wyciszony, będziesz mógł pisać po upływie %1 minut",
-    "user-muted-indefinitely": "You have been muted indefinitely",
+    "user-muted-indefinitely": "Zostałeś trwale wyciszony",
     "cant-make-banned-users-admin": "Nie da się uczynić zbanowanego użytkownika adminem.",
     "cant-remove-last-admin": "Jesteś jedynym administratorem. Dodaj innego użytkownika jako administratora przed usunięciem siebie z tej grupy",
     "account-deletion-disabled": "Usuwanie konta jest wyłączone",
@@ -132,7 +132,7 @@
     "invalid-image-type": "Błędny typ obrazka. Dozwolone typy to: %1",
     "invalid-image-extension": "Błędne rozszerzenie pliku",
     "invalid-file-type": "Błędny typ pliku. Dozwolone typy to: %1",
-    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
+    "blocked-file-type": "Ten typ plików nie jest dozwolony. Zakończenie %1 zostało zablokowane przez administratora.",
     "invalid-image-dimensions": "Rozmiary obrazu są zbyt duże",
     "group-name-too-short": "Nazwa grupy jest za krótka",
     "group-name-too-long": "Nazwa grupy jest za długa",
@@ -234,7 +234,7 @@
     "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
     "cant-move-topic-to-same-category": "Nie można przenieść tematu do tej samej kategorii!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
-    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
+    "cant-move-topic-too-many-posts": "Nie można przenieść tematu mającego więcej niż %1 post(-ów).",
     "cannot-block-self": "Nie możesz zablokować samego siebie!",
     "cannot-block-privileged": "Nie możesz blokować administratorów ani globalnych moderatorów",
     "cannot-block-guest": "Goście nie mogą blokować innych użytkowników",
@@ -266,11 +266,11 @@
     "api.reauth-required": "Zasób, do którego próbujesz uzyskać dostęp, wymaga (być może ponownego) uwierzytelnienia.",
     "activitypub.not-enabled": "Fediverse nie jest włączone na tym serwerze",
     "activitypub.invalid-id": "Nie można przetworzyć id na wejściu, czyli pewnie jest zdeformowane.",
-    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
+    "activitypub.invalid-content-type": "Zwracana odpowiedź miała nieoczekiwany content-type",
     "activitypub.get-failed": "Nie udało się pobrać zadanego zasobu.",
     "activitypub.pubKey-not-found": "Nie udało się uzyskać klucza publicznego, więc nie może zajść weryfikacja zawartości.",
     "activitypub.origin-mismatch": "Odebrany obiekt nie zgadza się z tym co nadano.",
     "activitypub.not-implemented": "Zapytanie napotkało odmowę z racji braku obsługi po stronie serwera odbiorczego.",
     "activitypub.orphan": "The received object is not associated with any known local user.",
-    "activitypub.rate-limited": "Your IP address has been rate-limited."
+    "activitypub.rate-limited": "Twój adres IP został ograniczony pod względem szybkości komunikacji."
 }
