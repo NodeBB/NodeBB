@@ -27,7 +27,7 @@
 	"restrictions.post-length": "Độ dài bài đăng",
 	"restrictions.days-until-stale": "Số ngày đến khi chủ đề bị coi là cũ",
 	"restrictions.stale-help": "Nếu một chủ đề được coi là \"cũ\" thì cảnh báo sẽ được hiển thị cho những người dùng cố gắng trả lời chủ đề đó. (đặt thành 0 để tắt)",
-	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "Số lượng bài đăng tối đa trong một chủ đề mà sau đó người dùng không được phép di chuyển chủ đề của mình (đặt thành 0 để tắt)",
 	"timestamp": "Mốc thời gian",
 	"timestamp.cut-off": "Giới hạn ngày (tính theo ngày)",
 	"timestamp.cut-off-help": "Ngày &amp; giờ sẽ được hiển thị tương đối (VD: \"3 giờ trước\" / \"5 ngày trước\"), và địa phương hóa thành nhiều\n\t\t\t\t\tngôn ngữ. Sau một thời gian, dòng chữ này có thể tự chuyển sang hiển thị ngày giờ địa phương\n\t\t\t\t\t(VD: 5 Tháng 11, 2016 15:30).<br /><em>(Mặc định: <code>30</code>, hoặc một tháng). Đặt là 0 để luôn hiển thị ngày tháng, để trống để luôn hiển thị thời gian tương đối.</em>",

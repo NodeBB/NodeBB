@@ -10,7 +10,7 @@
 	"user": "Người dùng",
 	"when": "Khi",
 	"category": "Danh mục",
-	"tags": "Tags",
+	"tags": "Thẻ",
 	"title": "Tiêu đề",
 	"content": "Nội dung",
 	"posted": "Đã đăng",
@@ -41,5 +41,5 @@
 	"bulk-accept-success": "%1 bài đăng được chấp nhận",
 	"bulk-reject-success": "%1 bài đăng bị từ chối",
 	"links-in-this-post": "Liên kết trong bài này",
-	"thumbs-in-this-post": "Thumbnails in this post"
+	"thumbs-in-this-post": "Hình thu nhỏ trong bài viết này"
 }

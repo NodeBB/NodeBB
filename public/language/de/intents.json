@@ -9,7 +9,7 @@
 	"handle-label": "Open Social Web Handle",
 	"handle-placeholder": "username@example.com",
 	"register-button": "Register Handle",
-	"registered-handles": "Registered Handles",
+	"registered-handles": "Registrierte Nutzernamen",
 	"no-handles": "Es sind noch keine Nutzernamen registriert.",
 	"intents-label": "Unterstützte Intents",
 	"register-error": "Die Registrierung des Nutzernamens ist fehlgeschlagen. Bitte überprüfe das Format des Nutzernamens und versuche es erneut.",
