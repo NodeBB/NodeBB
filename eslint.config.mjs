@@ -65,6 +65,12 @@ export default defineConfig([
 		rules: {
 			'preserve-caught-error': 'off'
 		}
+	},
+	{
+		files: ['src/test1.js'],
+		languageOptions: {
+			sourceType: 'module',
+		}
 	}
 ]);
 
