@@ -1282,7 +1282,7 @@ describe('Controllers', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
 			assert.equal(body.aboutme, 'hi i am a bot');
-			assert.equal(body.picture, '/path/to/picture');
+			assert.equal(body.picture, '&#x2F;path&#x2F;to&#x2F;picture');
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {
