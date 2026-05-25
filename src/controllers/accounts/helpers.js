@@ -128,6 +128,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
 	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
+	userData['cover:url'] = validator.escape(String(userData['cover:url'] || ''));
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];

@@ -159,12 +159,12 @@ function addTags(res, userData) {
 		res.locals.metaTags.push(
 			{
 				property: 'og:image',
-				content: userData.picture,
+				content: `${url}${userData.picture}`,
 				noEscape: true,
 			},
 			{
 				property: 'og:image:url',
-				content: userData.picture,
+				content: `${url}${userData.picture}`,
 				noEscape: true,
 			}
 		);

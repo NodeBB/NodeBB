@@ -346,6 +346,18 @@ describe('Upload Controllers', () => {
 			});
 		});
 
+		it('should escape cover:url when user profile is loaded', async () => {
+			await user.setUserField(1, 'cover:url', 'http://example.com/"><script>alert(1)</script>');
+			const { body: userData } = await helpers.request('get', '/api/user/admin');
+			assert.strictEqual(userData['cover:url'], 'http:&#x2F;&#x2F;example.com&#x2F;&quot;&gt;&lt;script&gt;alert(1)&lt;&#x2F;script&gt;');
+		});
+
+		it('should escape picture when user profile is loaded', async () => {
+			await user.setUserField(1, 'picture', 'http://example.com/"><script>alert(1)</script>');
+			const { body: userData } = await helpers.request('get', '/api/user/admin');
+			assert.strictEqual(userData['picture'], 'http:&#x2F;&#x2F;example.com&#x2F;&quot;&gt;&lt;script&gt;alert(1)&lt;&#x2F;script&gt;');
+		});
+
 		it('should delete users uploads if account is deleted', async () => {
 			const uid = await user.create({ username: 'uploader', password: 'barbar' });
 			const file = require('../src/file');
