@@ -465,9 +465,21 @@ inbox.announce = async (req) => {
 				break;
 			}
 
+			// Deletions must be made by an actor of the same origin
+			const actorHostname = new URL(actor).hostname;
+			const objectHostname = new URL(id).hostname;
+			if (actorHostname !== objectHostname) {
+				throw new Error('[[error:activitypub.origin-mismatch]]');
+			}
+
 			const _cid = await posts.getCidByPid(id);
 			if (!utils.isNumber(cid) && _cid !== cid) { // matching & remote categories only
 				throw new Error('[[error:invalid-cid]]');
+			}
+
+			const allowed = await privileges.categories.can('posts:edit', _cid, activitypub._constants.uid);
+			if (!allowed) {
+				throw new Error('[[error:no-privileges]]');
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
@@ -475,7 +487,13 @@ inbox.announce = async (req) => {
 			const postCount = await topics.getTopicField(await posts.getPostField(id, 'tid'), 'postcount');
 			const isLast = postCount === 1;
 
-			await posts.tools.delete(uid, id);
+			try {
+				await posts.tools.delete(uid, id);
+			} catch (e) {
+				if (e.message !== '[[error:post-already-deleted]]') {
+					throw e;
+				}
+			}
 
 			if (isMain && isLast) {
 				const tid = await posts.getPostField(id, 'tid');
