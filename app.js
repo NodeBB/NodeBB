@@ -20,7 +20,7 @@
 'use strict';
 
 require('./require-main');
-require('./nbb-require');
+require('./nodebb-global');
 
 const nconf = require('nconf');
 

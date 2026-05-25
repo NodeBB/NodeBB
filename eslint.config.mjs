@@ -67,7 +67,10 @@ export default defineConfig([
 		}
 	},
 	{
-		files: ['src/test1.js'],
+		files: [
+			'nodebb-global.js',
+			'src/test1.js'
+		],
 		languageOptions: {
 			sourceType: 'module',
 		}
