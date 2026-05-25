@@ -62,7 +62,17 @@ define('forum/topic/crosspost', [
 
 			modal.find('#crosspost_thread_commit').on('click', onCommitClicked);
 			modal.find('#crosspost_topic_cancel').on('click', closeCrosspostModal);
+
+			$(window).off('action:ajaxify.end', onAjaxifyEnd)
+				.on('action:ajaxify.end', onAjaxifyEnd);
 		});
+	}
+
+	function onAjaxifyEnd() {
+		if (ajaxify.data.template.name !== 'topic' || ajaxify.data.tid !== Crosspost.tid) {
+			closeCrosspostModal();
+			$(window).off('action:ajaxify.end', onAjaxifyEnd);
+		}
 	}
 
 	function onCategoriesSelected(data) {
@@ -146,6 +156,7 @@ define('forum/topic/crosspost', [
 		if (modal) {
 			modal.remove();
 			modal = null;
+			$(window).off('action:ajaxify.end', onAjaxifyEnd);
 		}
 	}
 
