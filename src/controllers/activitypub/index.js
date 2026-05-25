@@ -276,6 +276,27 @@ Controller.getCategoryModerators = async (req, res) => {
 	});
 };
 
+Controller.getAdmins = async (req, res) => {
+	const adminUids = await user.getAdminsandGlobalMods();
+
+	const actors = await Promise.all(adminUids.map(async (uid) => {
+		return await activitypub.mocks.actors.user(uid);
+	}));
+
+	const collection = await activitypub.helpers.generateCollectionFromItems({
+		items: actors,
+		count: actors.length,
+		page: 1,
+		perPage: actors.length,
+		url: `${nconf.get('url')}/actor/admins`,
+	});
+
+	res.status(200).json({
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		...collection,
+	});
+};
+
 Controller.postOutbox = async (req, res) => {
 	// This is a client-to-server feature so it is deliberately not implemented at this time.
 	res.sendStatus(405);

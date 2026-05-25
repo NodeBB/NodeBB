@@ -28,10 +28,18 @@ Actors.application = async function (req, res) {
 		url: `${nconf.get('url')}/actor`,
 		inbox: `${nconf.get('url')}/inbox`,
 		outbox: `${nconf.get('url')}/outbox`,
+		attributedTo: `${nconf.get('url')}/actor/admins`,
 
 		type: 'Application',
 		name,
 		preferredUsername: nconf.get('url_parsed').hostname,
+
+		implements: [
+			{
+				href: 'https://w3id.org/fep/baf5',
+				name: 'FEP-baf5: Administrator Collection',
+			},
+		],
 
 		publicKey: {
 			id: `${nconf.get('url')}/actor#key`,
