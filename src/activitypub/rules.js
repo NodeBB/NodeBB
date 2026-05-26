@@ -2,6 +2,7 @@
 
 const db = require('../database');
 const utils = require('../utils');
+const validator = require('../../src/validator');
 
 const activitypub = require('.');
 
@@ -13,6 +14,7 @@ Rules.list = async () => {
 	rules = rules.map((rule, idx) => {
 		rule.rid = rids[idx];
 		rule.cid = parseInt(rule.cid, 10);
+		rule.value = validator.escape(rule.value);
 		return rule;
 	});
 
