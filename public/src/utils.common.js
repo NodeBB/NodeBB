@@ -10,13 +10,11 @@ const escapeCharMap = Object.freeze({
 	"'": '&#x27;',
 	'`': '&#x60;',
 	'=': '&#x3D;',
-	'[': '&#x5B;',
-	']': '&#x5D;',
 });
 function replaceChar(c) {
 	return escapeCharMap[c];
 }
-const escapeChars = /[&<>"'`=[\]]/g;
+const escapeChars = /[&<>"'`=]/g;
 
 const invisibleChars = /[\u200B-\u200F\u202A-\u202E\u2066-\u2069\u3164\uFEFF]/;
 
