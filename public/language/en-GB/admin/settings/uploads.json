@@ -31,6 +31,7 @@
 	"topic-thumb-size": "Topic Thumb Size",
 	"allowed-file-extensions": "Allowed File Extensions",
 	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>). An empty list means all extensions are allowed.",
+	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
 	"upload-limit-threshold": "Rate limit user uploads to:",
 	"upload-limit-threshold-per-minute": "Per %1 Minute",
 	"upload-limit-threshold-per-minutes": "Per %1 Minutes",
