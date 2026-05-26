@@ -8,6 +8,7 @@ const meta = require('../../meta');
 const posts = require('../../posts');
 const user = require('../../user');
 const groups = require('../../groups');
+const privileges = require('../../privileges');
 const activitypub = require('../../activitypub');
 const utils = require('../../utils');
 const helpers = require('../helpers');
@@ -216,6 +217,12 @@ Controller.getOutbox = async (req, res) => {
 Controller.getCategoryOutbox = async (req, res) => {
 	const { cid } = req.params;
 	const { page } = req.query;
+
+	const allowed = await privileges.categories.can('topics:read', cid, req.uid);
+	if (!allowed) {
+		res.sendStatus(403);
+	}
+
 	const set = `cid:${cid}:pids`;
 	const count = await db.sortedSetCard(set);
 	const collection = await activitypub.helpers.generateCollection({
