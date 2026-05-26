@@ -79,6 +79,6 @@
 
 	"errors.intro": "השגיאות הבאות %1 נרשמו במקרה זה במהלך 24 השעות האחרונות.",
 	"errors.payload-gone": "ה-payload עבור שגיאה זו אינו קיים עוד.",
-	"errors.hostname": "Hostname",
-	"errors.type": "Type"
+	"errors.hostname": "שם מארח",
+	"errors.type": "סוג"
 }

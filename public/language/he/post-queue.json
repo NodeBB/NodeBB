@@ -10,7 +10,7 @@
 	"user": "משתמש",
 	"when": "כאשר",
 	"category": "קטגוריה",
-	"tags": "Tags",
+	"tags": "תגיות",
 	"title": "כותרת",
 	"content": "תוכן",
 	"posted": "נשלח",
@@ -41,5 +41,5 @@
 	"bulk-accept-success": "%1 פוסטים אושרו",
 	"bulk-reject-success": "%1 פוסטים נדחו",
 	"links-in-this-post": "קישורים בפוסט הזה",
-	"thumbs-in-this-post": "Thumbnails in this post"
+	"thumbs-in-this-post": "תמונות ממוזערות בפוסט זה"
 }

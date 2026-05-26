@@ -1,13 +1,13 @@
 {
-    "username-email": "שם משתמש/אימייל",
+    "username-email": "שם משתמש / אימייל",
     "username": "שם משתמש",
     "remember-me": "זכור אותי?",
     "forgot-password": "שכחת סיסמתך?",
-    "alternative-logins": "התחבר באמצעות...",
+    "alternative-logins": "התחברות באמצעות...",
     "failed-login-attempt": "ההתחברות נכשלה",
     "login-successful": "התחברת בהצלחה!",
     "dont-have-account": "אין לך חשבון עדיין?",
-    "logged-out-due-to-inactivity": "התנתקתם מפאנל הניהול בעקבות חוסר פעילות",
+    "logged-out-due-to-inactivity": "התנתקת מפאנל הניהול בעקבות חוסר פעילות",
     "caps-lock-enabled": "Caps Lock מופעל",
-    "manage-social-web-handles": "Manage Open Social Web Handles"
+    "manage-social-web-handles": "ניהול ידיות ברשת חברתית הפתוחה"
 }
