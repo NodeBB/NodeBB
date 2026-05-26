@@ -436,6 +436,10 @@ inbox.announce = async (req) => {
 			}
 
 			req.body = object;
+			if (typeof req.body.object === 'string') {
+				req.body.object = await activitypub.helpers.resolveObjects(req.body.object);
+			}
+
 			await inbox.like(req);
 
 			break;
