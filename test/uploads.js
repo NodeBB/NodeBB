@@ -398,6 +398,56 @@ describe('Upload Controllers', () => {
 			assert(file.existsSync(path.join(nconf.get('upload_path'), 'system', 'test.png')));
 		});
 
+		it('should sanitize xss payload in uploaded xml files', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/xss-dirty.xml'), {
+				params: JSON.stringify({
+					folder: 'files',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 200);
+			assert(Array.isArray(body));
+			assert.equal(body[0].url, '/assets/uploads/files/xss-dirty.xml');
+
+			const { response: fileResponse, body: uploadedBody } = await request.get(`${nconf.get('url')}${body[0].url}`);
+			assert.equal(fileResponse.statusCode, 200);
+			assert.strictEqual(uploadedBody.includes('<script>'), false);
+			assert.strictEqual(uploadedBody.includes('onload="alert(\'XSS\')"'), false);
+			assert.strictEqual(uploadedBody.includes('<a:script>'), false);
+			assert.strictEqual(uploadedBody.includes('JAVASCRIPT:alert(1)'), false);
+		});
+
+		it('should set content-disposition header to attachment for xml', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/xss-dirty.xml'), {
+				params: JSON.stringify({
+					folder: '',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(body[0].url, '/assets/uploads/xss-dirty.xml');
+			const { response: fileResponse, body: uploadedBody } = await request.get(`${nconf.get('url')}${body[0].url}`);
+			assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
+			assert.equal(fileResponse.statusCode, 200);
+		});
+
+		it('should keep valid xml file unchanged', async () => {
+			const validXmlPath = path.join(__dirname, '../test/files/xss-valid.xml');
+			const validXmlContent = await fs.readFile(validXmlPath, 'utf-8');
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, validXmlPath, {
+				params: JSON.stringify({
+					folder: 'files',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 200);
+			assert(Array.isArray(body));
+			assert.equal(body[0].url, '/assets/uploads/files/xss-valid.xml');
+
+			const { response: fileResponse, body: uploadedBody } = await request.get(`${nconf.get('url')}${body[0].url}`);
+			assert.equal(fileResponse.statusCode, 200);
+			assert.strictEqual(uploadedBody, validXmlContent);
+		});
+
 		it('should fail to upload regular file in wrong directory', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
 				params: JSON.stringify({

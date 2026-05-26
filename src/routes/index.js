@@ -180,7 +180,7 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	};
 
 	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
-		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
+		statics.unshift({ route: '/assets', path: path.join(nconf.get('upload_path'), '..') });
 	}
 
 	statics.forEach((obj) => {

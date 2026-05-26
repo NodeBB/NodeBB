@@ -99,6 +99,9 @@
 					<p class="form-text">
 						[[admin/settings/uploads:allowed-file-extensions-help]]
 					</p>
+					<div class="alert alert-warning text-sm alert-dismissible fade show mb-0" role="alert">
+						[[admin/settings/uploads:allowed-file-extension-warning]]
+					</div>
 				</div>
 
 				<div class="mb-3">
