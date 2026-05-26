@@ -31,6 +31,7 @@
 	"topic-thumb-size": "スレッドのサムネイルの大きさ",
 	"allowed-file-extensions": "許可するファイル拡張子（許可リスト）",
 	"allowed-file-extensions-help": "アップロードを許可する拡張子のカンマ区切りリストです（例: <code>pdf,xls,doc</code>）。空欄のままにすると、すべての拡張子を許可します。注意: 下記のブロックリストが優先されるため、両方のリストに含まれる拡張子は拒否されます。",
+	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
 	"blocked-file-extensions": "ブロックするファイル拡張子（拒否リスト）",
 	"blocked-file-extensions-help": "常に拒否される拡張子のカンマ区切りリストです（例: <code>html,svg,php</code>）。ブロックリストは許可リストより優先されるため、両方に含まれる拡張子は拒否されます。",
 	"upload-limit-threshold": "ユーザーアップロードのレート制限:",

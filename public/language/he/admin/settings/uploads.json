@@ -31,6 +31,7 @@
 	"topic-thumb-size": "גודל תמונה ממוזערת לנושא",
 	"allowed-file-extensions": "הרחבות קבצים מותרות (רשימה הלבנה)",
 	"allowed-file-extensions-help": "רשימה מופרדת בפסיקים של תוספים המותרים להעלאה (למשל.<code>pdf,xls,doc</code>). השאירו ריק כדי לאפשר את כל ההרחבות. הערה: הרשימה החסומה למטה מקבלת עדיפות - הרחבה שקיימת בשתי הרשימות תידחה.",
+	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
 	"blocked-file-extensions": "הרחבות קבצים חסומות (רשימה שחורה)",
 	"blocked-file-extensions-help": "רשימה מופרדת בפסיקים של הרחבות שיידחו תמיד (למשל <code>html,svg,php</code>). הרשימה החסומה תקבל עדיפות על פני הרשימה המותרת - אם הרחבה מופיעה בשתיהן, היא תידחה.",
 	"upload-limit-threshold": "הגבלת שיעור העלאות מהמשתמשים ל:",

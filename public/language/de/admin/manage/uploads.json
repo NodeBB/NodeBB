@@ -8,5 +8,6 @@
     "confirm-delete": "Bist du sicher, dass du diese Datei löschen willst?",
     "filecount": "%1 Dateien",
     "new-folder": "Neuer Ordner",
-    "name-new-folder": "Gib den Namen für den neuen Ordner ein"
+    "name-new-folder": "Gib den Namen für den neuen Ordner ein",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

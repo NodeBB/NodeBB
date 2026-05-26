@@ -31,6 +31,7 @@
 	"topic-thumb-size": "Размер на миниатюрите за темите",
 	"allowed-file-extensions": "Разрешени файлови разширения",
 	"allowed-file-extensions-help": "Списък от разделени със запетая разширения, които са разрешени за качване (например: <code>pdf,xls,doc</code>). Оставете празно, за да разрешите всички разширения. Забележка: списъкът със забранени разширения по-долу има по-голяма сила – ако дадено разширение присъства и в двата списъка, то ще бъде забранено.",
+	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
 	"blocked-file-extensions": "Забранени файлови разширения (черен списък)",
 	"blocked-file-extensions-help": "Списък от разделени със запетая разширения, които са забранени (например: <code>html,svg,php</code>). Този списък има по-голяма сила от списъка с разрешените  – ако дадено разширение присъства и в двата списъка, то ще бъде забранено.",
 	"upload-limit-threshold": "Ограничаване на качванията на потребителите до:",
