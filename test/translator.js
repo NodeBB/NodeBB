@@ -351,22 +351,21 @@ describe('Translator static methods', () => {
 			done();
 		});
 
-		// TODO: fixing this causes other issues with escaping tx strings
-		// it('should not escape markdown links', (done) => {
-		// 	assert.strictEqual(
-		// 		Translator.escape('[link text [test]](https://example.org)'),
-		// 		'[link text [test]](https://example.org)'
-		// 	);
-		// 	done();
-		// });
+		it('should not escape markdown links', (done) => {
+			assert.strictEqual(
+				Translator.escape('[link text [test]](https://example.org)'),
+				'[link text [test]](https://example.org)'
+			);
+			done();
+		});
 
 		// TODO: fixing this causes other issues with escaping tx strings
 		// it('should not unescape markdown links', (done) => {
-		// 	assert.strictEqual(
-		// 		Translator.unescape('&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'),
-		// 		'&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'
-		// 	);
-		// 	done();
+		//  assert.strictEqual(
+		//      Translator.unescape('&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'),
+		//      '&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'
+		//  );
+		//  done();
 		// });
 	});
 

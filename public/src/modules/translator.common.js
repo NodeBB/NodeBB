@@ -463,9 +463,58 @@ module.exports = function (utils, load, warn) {
 		 * @returns {string}
 		 */
 		Translator.escape = function escape(text) {
-			return typeof text === 'string' ?
-				text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') :
-				text;
+			if (typeof text !== 'string') {
+				return text;
+			}
+
+			const len = text.length;
+			let cursor = 0;
+			let lastBreak = 0;
+			let out = '';
+
+			while (cursor < len) {
+				if (text.slice(cursor, cursor + 2) !== '[[') {
+					cursor += 1;
+					continue;
+				}
+
+				const tokenStart = cursor;
+				let tokenEnd = -1;
+				let level = 1;
+				cursor += 2;
+
+				while (cursor < len && tokenEnd === -1) {
+					const sub = text.slice(cursor, cursor + 2);
+					if (sub === '[[') {
+						level += 1;
+						cursor += 2;
+					} else if (sub === ']]') {
+						level -= 1;
+						cursor += 2;
+						if (level === 0) {
+							tokenEnd = cursor;
+						}
+					} else {
+						cursor += 1;
+					}
+				}
+
+				out += text.slice(lastBreak, tokenStart);
+
+				if (tokenEnd === -1) {
+					out += '&lsqb;&lsqb;';
+					lastBreak = tokenStart + 2;
+					cursor = lastBreak;
+				} else {
+					out += text.slice(tokenStart, tokenEnd)
+						.replace(/\[\[/g, '&lsqb;&lsqb;')
+						.replace(/\]\]/g, '&rsqb;&rsqb;');
+					lastBreak = tokenEnd;
+				}
+			}
+
+			out += text.slice(lastBreak);
+			return out;
 		};
 
 		/**
