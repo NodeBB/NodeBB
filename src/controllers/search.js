@@ -111,7 +111,7 @@ searchController.search = async function (req, res, next) {
 		},
 		sort: {
 			active: !!(data.sortBy && data.sortBy !== 'relevance'),
-			label: await tx.translate(`search:sort-by-${data.sortBy}-${data.sortDirection}`, userLang)
+			label: await tx.translate(`search:sort-by-${data.sortBy}-${data.sortDirection}`, userLang),
 		},
 		users: {
 			active: !!(data.postedBy),
