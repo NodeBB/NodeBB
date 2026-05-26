@@ -15,6 +15,7 @@ const flags = require('../flags');
 const api = require('../api');
 const apiHelpers = require('../api/helpers');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -181,6 +182,13 @@ inbox.update = async (req) => {
 					const postData = await activitypub.mocks.post(object);
 					postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 					await posts.edit(postData);
+					const tid = await posts.getPostField(object.id, 'tid');
+					const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
+					if (generatedTitle && (!postData.title || !postData.title.trim())) {
+						const newTitle = activitypub.helpers.generateTitle(postData.content);
+						await topics.setTopicField(tid, 'title', newTitle);
+						await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+					}
 					const isDeleted = await posts.getPostField(object.id, 'deleted');
 					if (isDeleted) {
 						await api.posts.restore({ uid: actor }, { pid: object.id });
