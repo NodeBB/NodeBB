@@ -15,6 +15,7 @@ const pagination = require('../pagination');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const helpers = require('./helpers');
+const translator = require('../translator');
 
 const modsController = module.exports;
 modsController.flags = {};
@@ -44,9 +45,9 @@ modsController.flags.list = async function (req, res) {
 	filters = filters.reduce((memo, cur) => {
 		if (req.query.hasOwnProperty(cur)) {
 			if (typeof req.query[cur] === 'string' && req.query[cur].trim() !== '') {
-				memo[cur] = validator.escape(String(req.query[cur].trim()));
+				memo[cur] = translator.escape(validator.escape(String(req.query[cur].trim())));
 			} else if (Array.isArray(req.query[cur]) && req.query[cur].length) {
-				memo[cur] = req.query[cur].map(item => validator.escape(String(item).trim()));
+				memo[cur] = req.query[cur].map(item => translator.escape(validator.escape(String(item).trim())));
 			}
 		}
 

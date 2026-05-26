@@ -13,7 +13,7 @@ const user = require('../user');
 const topics = require('../topics');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
-const translator = require('../translator');
+const tx = require('../translator');
 const helpers = require('./helpers');
 
 const searchController = module.exports;
@@ -96,40 +96,47 @@ searchController.search = async function (req, res, next) {
 			searchData.selectedCategory = { cid: 0 };
 		}
 	}
+	const { userLang } = await user.getSettings(req.uid);
 
 	searchData.filters = {
 		replies: {
 			active: !!data.repliesFilter,
-			label: `[[search:replies-${data.repliesFilter}-count, ${data.replies}]]`,
+			label: await tx.translate(
+				tx.compile(`search:replies-${data.repliesFilter}-count`, data.replies), userLang
+			),
 		},
 		time: {
 			active: !!(data.timeFilter && data.timeRange),
-			label: `[[search:time-${data.timeFilter}-than-${data.timeRange}]]`,
+			label: await tx.translate(`search:time-${data.timeFilter}-than-${data.timeRange}`, userLang),
 		},
 		sort: {
 			active: !!(data.sortBy && data.sortBy !== 'relevance'),
-			label: `[[search:sort-by-${data.sortBy}-${data.sortDirection}]]`,
+			label: await tx.translate(`search:sort-by-${data.sortBy}-${data.sortDirection}`, userLang)
 		},
 		users: {
 			active: !!(data.postedBy),
-			label: translator.compile(
-				'search:posted-by-usernames',
-				(Array.isArray(data.postedBy) ? data.postedBy : [])
-					.map(u => validator.escape(String(u))).join(', ')
+			label: await tx.translate(
+				tx.compile(
+					'search:posted-by-usernames',
+					(Array.isArray(data.postedBy) ? data.postedBy : [])
+						.map(u => validator.escape(String(u))).join(', ')
+				), userLang
 			),
 		},
 		tags: {
 			active: !!(Array.isArray(data.hasTags) && data.hasTags.length),
-			label: translator.compile(
-				'search:tags-x',
-				(Array.isArray(data.hasTags) ? data.hasTags : [])
-					.map(u => validator.escape(String(u))).join(', ')
+			label: await tx.translate(
+				tx.compile(
+					'search:tags-x',
+					(Array.isArray(data.hasTags) ? data.hasTags : [])
+						.map(u => validator.escape(String(u))).join(', ')
+				), userLang
 			),
 		},
 		categories: {
 			active: !!(Array.isArray(data.categories) && data.categories.length &&
 				(data.categories.length > 1 || data.categories[0] !== 'all')),
-			label: await buildSelectedCategoryLabel(searchData.selectedCids),
+			label: await buildSelectedCategoryLabel(searchData.selectedCids, userLang),
 		},
 	};
 
@@ -194,7 +201,7 @@ function getSelectedTags(hasTags) {
 	return topics.getTagData(tags);
 }
 
-async function buildSelectedCategoryLabel(selectedCids) {
+async function buildSelectedCategoryLabel(selectedCids, userLang) {
 	let label = '[[search:categories]]';
 	if (Array.isArray(selectedCids)) {
 		if (selectedCids.length > 1) {
@@ -204,9 +211,9 @@ async function buildSelectedCategoryLabel(selectedCids) {
 		} else if (selectedCids.length === 1 && selectedCids[0]) {
 			const categoryData = await categories.getCategoryData(selectedCids[0]);
 			if (categoryData && categoryData.name) {
-				label = `[[search:categories-x, ${categoryData.name}]]`;
+				label = tx.compile('search:categories-x', categoryData.name);
 			}
 		}
 	}
-	return label;
+	return await tx.translate(label, userLang);
 }
