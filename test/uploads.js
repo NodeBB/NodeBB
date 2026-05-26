@@ -346,6 +346,18 @@ describe('Upload Controllers', () => {
 			});
 		});
 
+		it('should escape cover:url when user profile is loaded', async () => {
+			await user.setUserField(1, 'cover:url', 'http://example.com/"><script>alert(1)</script>');
+			const { body: userData } = await helpers.request('get', '/api/user/admin');
+			assert.strictEqual(userData['cover:url'], 'http:&#x2F;&#x2F;example.com&#x2F;&quot;&gt;&lt;script&gt;alert(1)&lt;&#x2F;script&gt;');
+		});
+
+		it('should escape picture when user profile is loaded', async () => {
+			await user.setUserField(1, 'picture', 'http://example.com/"><script>alert(1)</script>');
+			const { body: userData } = await helpers.request('get', '/api/user/admin');
+			assert.strictEqual(userData['picture'], 'http:&#x2F;&#x2F;example.com&#x2F;&quot;&gt;&lt;script&gt;alert(1)&lt;&#x2F;script&gt;');
+		});
+
 		it('should delete users uploads if account is deleted', async () => {
 			const uid = await user.create({ username: 'uploader', password: 'barbar' });
 			const file = require('../src/file');
@@ -486,6 +498,19 @@ describe('Upload Controllers', () => {
 			assert.strictEqual(uploadedBody.includes('onload="alert(\'XSS\')"'), false);
 			assert.strictEqual(uploadedBody.includes('<a:script>'), false);
 			assert.strictEqual(uploadedBody.includes('JAVASCRIPT:alert(1)'), false);
+		});
+
+		it('should set content-disposition header to attachment for xml', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/xss-dirty.xml'), {
+				params: JSON.stringify({
+					folder: '',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(body[0].url, '/assets/uploads/xss-dirty.xml');
+			const { response: fileResponse, body: uploadedBody } = await request.get(`${nconf.get('url')}${body[0].url}`);
+			assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
+			assert.equal(fileResponse.statusCode, 200);
 		});
 
 		it('should keep valid xml file unchanged', async () => {

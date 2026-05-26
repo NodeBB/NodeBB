@@ -296,6 +296,10 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
+			if (user.picture) {
+				user.picture = validator.escape(String(user.picture || ''));
+			}
+
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :

@@ -282,20 +282,24 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 });
 
 middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
-	// Trim uploaded files' timestamps when downloading + force download if html
+	// Trim uploaded files' timestamps when downloading + force download if unsafe
 	let basename = path.basename(req.path);
 	const extname = path.extname(req.path).toLowerCase();
 	const unsafeExtensions = [
 		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
 		'.svg', '.svgz',
 		'.xml', '.xsl', '.xslt',
+		'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
+		'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
+		'.xsd', '.mathml', '.xht',
 	];
 	const isInlineSafe = !unsafeExtensions.includes(extname);
 	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
-	if (req.path.startsWith('/uploads/files/')) {
+	if (req.path.startsWith('/uploads/')) {
 		if (middleware.regexes.timestampedUpload.test(basename)) {
 			basename = basename.slice(14);
 		}
+		res.setHeader('X-Content-Type-Options', 'nosniff');
 		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
 	}
 

@@ -644,7 +644,15 @@ usersAPI.changePicture = async (caller, data) => {
 			picture = '';
 		}
 	} else if (type === 'external' && url) {
-		picture = validator.escape(url);
+		const isUrl = validator.isURL(String(url).trim(), {
+			require_protocol: true,
+			require_valid_protocol: true,
+			require_tld: true,
+		});
+		if (!isUrl) {
+			throw new Error('[[error:invalid-url]]');
+		}
+		picture = String(url || '').trim();
 	} else {
 		const returnData = await plugins.hooks.fire('filter:user.getPicture', {
 			uid: caller.uid,

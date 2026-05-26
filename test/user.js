@@ -1031,7 +1031,7 @@ describe('User', () => {
 			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/test');
 			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/test', uid: uid });
 			const picture = await User.getUserField(uid, 'picture');
-			assert.equal(picture, `${nconf.get('relative_path')}/test`);
+			assert.equal(picture, validator.escape(`${nconf.get('relative_path')}/test`));
 		});
 
 		it('should return error if profile image uploads disabled', (done) => {
