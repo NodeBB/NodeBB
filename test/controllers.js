@@ -153,6 +153,20 @@ describe('Controllers', () => {
 			assert(body);
 		});
 
+		it('should 403 if route requires privileges', async () => {
+			const uid = await user.create({ username: 'testuser1', password: 'password' });
+			const { jar } = await helpers.loginUser('testuser1', 'password');
+			await api.users.updateSettings({ uid }, {
+				uid,
+				settings: {
+					homePageRoute: 'custom',
+					homePageCustom: 'api/admin/advanced/database',
+				},
+			});
+			const { response, body } = await request.get(nconf.get('url'), { jar });
+			assert.equal(response.statusCode, 403);
+		});
+
 		it('api should work with hook', async () => {
 			await meta.configs.set('homePageRoute', 'mycustompage');
 			const { response, body } = await request.get(`${nconf.get('url')}/api`);
