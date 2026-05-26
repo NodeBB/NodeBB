@@ -430,20 +430,13 @@ inbox.announce = async (req) => {
 
 	switch(true) {
 		case object.type === 'Like': {
-			const id = object.object.id || object.object;
-			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
-			const exists = await posts.exists(localId || id);
-			if (exists) {
-				try {
-					await activitypub.actors.assert(object.actor);
-					const result = await posts.upvote(localId || id, object.actor);
-					if (localId) {
-						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
-					}
-				} catch (e) {
-					// vote denied due to local limitations (frequency, privilege, etc.); noop.
-				}
+			const assertion = await activitypub.actors.assert(object.actor);
+			if (!assertion) {
+				throw new Error('[[error:activitypub.invalid-id]]');
 			}
+
+			req.body = object;
+			await inbox.like(req);
 
 			break;
 		}
