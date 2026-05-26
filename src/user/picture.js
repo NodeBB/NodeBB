@@ -1,7 +1,7 @@
 'use strict';
 
 const winston = require('winston');
-const mime = require('mime');
+const mime = require('mime').default;
 const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');

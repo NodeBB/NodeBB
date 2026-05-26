@@ -1,7 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
-const mime = require('mime');
+const mime = require('mime').default;
 const path = require('path');
 const validator = require('validator');
 const sanitize = require('sanitize-html');

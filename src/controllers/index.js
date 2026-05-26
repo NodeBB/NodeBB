@@ -3,7 +3,7 @@
 const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
-const mime = require('mime');
+const mime = require('mime').default;
 
 const meta = require('../meta');
 const user = require('../user');

@@ -5,7 +5,7 @@ const fs = require('fs').promises;
 const crypto = require('crypto');
 const path = require('path');
 const winston = require('winston');
-const mime = require('mime');
+const mime = require('mime').default;
 const validator = require('validator');
 const chalk = require('chalk');
 
