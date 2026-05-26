@@ -56,6 +56,7 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	delete payload.tid;
+	delete payload.pid;
 	delete payload.generatedTitle;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
