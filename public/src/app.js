@@ -12,6 +12,13 @@ require('timeago');
 const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
+Benchpress.setGlobal('_i18n', {
+	'en-GB': {
+		topic: {
+			'moved-from': 'Moved from %1'
+		}
+	}
+});
 
 require('./sockets');
 require('./overrides');

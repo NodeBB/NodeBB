@@ -36,6 +36,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		humanReadableNumber,
 		formattedNumber,
 		isNumber,
+		tx,
 		txEscape,
 		uploadBasename,
 		generatePlaceholderWave,
@@ -387,6 +388,25 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function isNumber(value) {
 		return utils.isNumber(value);
+	}
+
+	function tx(token, ...args) {
+		console.log('userlang', this.config.userLang);
+		console.log(this._i18n);
+		console.log(token, args);
+		const [namespace, key] = token.split(':');
+		const language = this.config.userLang || 'en-GB';
+		const translation = this._i18n?.[language]?.[namespace]?.[key] || key;
+
+		let result = String(translation);
+
+		args.forEach((arg, index) => {
+			const placeholder = `%${index + 1}`;
+			// TODO: htmlEscape arg
+			result = result.split(placeholder).join(String(arg));
+		});
+
+		return result;
 	}
 
 	function txEscape(text) {

@@ -82,6 +82,15 @@ module.exports = function (middleware) {
 					res: res,
 				});
 				res.locals.template = template;
+				// TODO: based on userLang, load the correct namespace into _i18n
+				// then it will be accessible in tx helper in helpers.common.js via this._i18n
+				res.locals._i18n = {
+					'en-GB': {
+						topic: {
+							'moved-from': 'Moved from %1'
+						}
+					}
+				};
 				options._locals = undefined;
 
 				if (res.locals.isAPI) {
