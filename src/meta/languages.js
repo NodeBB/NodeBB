@@ -14,6 +14,8 @@ const { paths } = require('../constants');
 const buildLanguagesPath = path.join(paths.baseDir, 'build/public/language');
 const coreLanguagesPath = path.join(paths.baseDir, 'public/language');
 
+let allLanguages = {};
+
 async function getTranslationMetadata() {
 	const paths = await file.walk(coreLanguagesPath);
 	let languages = [];
@@ -90,6 +92,8 @@ async function buildNamespaceLanguage(lang, namespace, plugins) {
 
 	if (Object.keys(translations).length) {
 		await writeLanguageFile(lang, namespace, translations);
+		allLanguages[lang] = allLanguages[lang] || {};
+		allLanguages[lang][namespace] = translations;
 	}
 }
 
@@ -132,7 +136,14 @@ async function assignFileToTranslations(translations, path) {
 }
 
 exports.build = async function buildLanguages() {
+	allLanguages = {};
 	await fs.promises.rm(buildLanguagesPath, { recursive: true, force: true });
 	const data = await getTranslationMetadata();
 	await buildTranslations(data);
+	// console.log(allLanguages);
+	for (const lang of Object.keys(allLanguages)) {
+		const filePath = path.join(buildLanguagesPath, lang, `full.json`);
+		await mkdirp(path.dirname(filePath));
+		await fs.promises.writeFile(filePath, JSON.stringify(allLanguages[lang]));
+	}
 };
