@@ -1,8 +1,9 @@
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../database');
 const utils = require('../utils');
-const validator = require('../../src/validator');
 
 const activitypub = require('.');
 
