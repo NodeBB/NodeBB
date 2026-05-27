@@ -30,11 +30,11 @@ searchController.search = async function (req, res, next) {
 		'search:users', 'search:content', 'search:tags',
 	], req.uid);
 
-	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
-	let allowed = (req.query.in === 'users' && canSearchUsers) ||
-					(req.query.in === 'tags' && canSearchTags) ||
-					(req.query.in === 'categories') ||
-					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(req.query.in) && canSearchContent);
+	const searchIn = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
+	let allowed = (searchIn === 'users' && canSearchUsers) ||
+					(searchIn === 'tags' && canSearchTags) ||
+					(searchIn === 'categories') ||
+					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(searchIn) && canSearchContent);
 	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
 		uid: req.uid,
 		query: req.query,
@@ -51,20 +51,31 @@ searchController.search = async function (req, res, next) {
 		req.query.hasTags = [req.query.hasTags];
 	}
 
+	const validation = {
+		in: ['titles', 'titlesposts', 'posts', 'users', 'categories', 'tags', 'bookmarks'],
+		matchWords: ['all', 'any'],
+		repliesFilter: ['atmost', 'atleast'],
+		replies: 'number',
+		timeFilter: ['newer', 'older'],
+		timeRange: 'number',
+		sortBy: ['relevance', 'timestamp', 'votes', 'topic.lastposttime', 'topic.title', 'topic.postcount', 'topic.viewcount', 'topic.votes', 'topic.timestamp', 'user.username', 'category.name'],
+		sortDirection: ['asc', 'desc'],
+	};
+	const validParams = helpers.validateParameters(req.query, Object.keys(validation), validation);
 	const data = {
 		query: req.query.term,
-		searchIn: req.query.in,
-		matchWords: req.query.matchWords || 'all',
+		searchIn: validParams.in || 'titlesposts',
+		matchWords: validParams.matchWords || 'all',
 		postedBy: req.query.by,
 		categories: req.query.categories,
-		searchChildren: req.query.searchChildren,
+		searchChildren: req.query.searchChildren === 'true',
 		hasTags: req.query.hasTags,
-		replies: validator.escape(String(req.query.replies || '')),
-		repliesFilter: validator.escape(String(req.query.repliesFilter || '')),
-		timeRange: validator.escape(String(req.query.timeRange || '')),
-		timeFilter: validator.escape(String(req.query.timeFilter || '')),
-		sortBy: validator.escape(String(req.query.sortBy || '')) || meta.config.searchDefaultSortBy || '',
-		sortDirection: validator.escape(String(req.query.sortDirection || '')),
+		replies: validParams.replies || '',
+		repliesFilter: validParams.repliesFilter || 'atleast',
+		timeRange: validParams.timeRange || '',
+		timeFilter: validParams.timeFilter || 'newer',
+		sortBy: validParams.sortBy || meta.config.searchDefaultSortBy || '',
+		sortDirection: validParams.sortDirection || 'desc',
 		page: page,
 		itemsPerPage: req.query.itemsPerPage,
 		uid: req.uid,
@@ -85,7 +96,6 @@ searchController.search = async function (req, res, next) {
 		return res.json(searchData);
 	}
 
-
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 	searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 	searchData.showAsTopics = req.query.showAs === 'topics';
@@ -96,47 +106,40 @@ searchController.search = async function (req, res, next) {
 			searchData.selectedCategory = { cid: 0 };
 		}
 	}
-	const { userLang } = await user.getSettings(req.uid);
 
 	searchData.filters = {
 		replies: {
-			active: !!data.repliesFilter,
-			label: await tx.translate(
-				tx.compile(`search:replies-${data.repliesFilter}-count`, data.replies), userLang
-			),
+			active: !!(data.repliesFilter && data.replies),
+			label: tx.compile(`search:replies-${data.repliesFilter || 'atleast'}-count`, data.replies),
 		},
 		time: {
 			active: !!(data.timeFilter && data.timeRange),
-			label: await tx.translate(`search:time-${data.timeFilter}-than-${data.timeRange}`, userLang),
+			label: `search:time-${data.timeFilter}-than-${data.timeRange}`,
 		},
 		sort: {
 			active: !!(data.sortBy && data.sortBy !== 'relevance'),
-			label: await tx.translate(`search:sort-by-${data.sortBy}-${data.sortDirection}`, userLang),
+			label: `search:sort-by-${data.sortBy}-${data.sortDirection}`,
 		},
 		users: {
-			active: !!(data.postedBy),
-			label: await tx.translate(
-				tx.compile(
-					'search:posted-by-usernames',
-					(Array.isArray(data.postedBy) ? data.postedBy : [])
-						.map(u => validator.escape(String(u))).join(', ')
-				), userLang
+			active: !!data.postedBy,
+			label: tx.compile(
+				'search:posted-by-usernames',
+				(Array.isArray(data.postedBy) ? data.postedBy : [])
+					.map(u => validator.escape(String(u))).join(', ')
 			),
 		},
 		tags: {
 			active: !!(Array.isArray(data.hasTags) && data.hasTags.length),
-			label: await tx.translate(
-				tx.compile(
-					'search:tags-x',
-					(Array.isArray(data.hasTags) ? data.hasTags : [])
-						.map(u => validator.escape(String(u))).join(', ')
-				), userLang
+			label: tx.compile(
+				'search:tags-x',
+				(Array.isArray(data.hasTags) ? data.hasTags : [])
+					.map(u => validator.escape(String(u))).join(', ')
 			),
 		},
 		categories: {
 			active: !!(Array.isArray(data.categories) && data.categories.length &&
 				(data.categories.length > 1 || data.categories[0] !== 'all')),
-			label: await buildSelectedCategoryLabel(searchData.selectedCids, userLang),
+			label: await buildSelectedCategoryLabel(searchData.selectedCids),
 		},
 	};
 
@@ -201,7 +204,7 @@ function getSelectedTags(hasTags) {
 	return topics.getTagData(tags);
 }
 
-async function buildSelectedCategoryLabel(selectedCids, userLang) {
+async function buildSelectedCategoryLabel(selectedCids) {
 	let label = '[[search:categories]]';
 	if (Array.isArray(selectedCids)) {
 		if (selectedCids.length > 1) {
@@ -215,5 +218,5 @@ async function buildSelectedCategoryLabel(selectedCids, userLang) {
 			}
 		}
 	}
-	return await tx.translate(label, userLang);
+	return label;
 }
