@@ -71,7 +71,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? 'name="' + tag.name + '" ' : '';
 		const property = tag.property ? 'property="' + tag.property + '" ' : '';
-		const content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
+		const content = tag.content ? 'content="' + helpers.txEscape(tag.content).replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
