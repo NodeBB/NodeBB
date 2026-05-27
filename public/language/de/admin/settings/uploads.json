@@ -31,7 +31,7 @@
 	"topic-thumb-size": "Thema Thumbnailgröße",
 	"allowed-file-extensions": "Zulässige Dateiendungen (Whitelist)",
 	"allowed-file-extensions-help": "Durch Kommas getrennte Liste der zum Hochladen zulässigen Dateiendungen (z. B. <code>pdf,xls,doc</code>). Lass das Feld leer, um alle Dateiendungen zuzulassen. Hinweis: Die unten stehende Sperrliste hat Vorrang – eine Dateiendung, die in beiden Listen vorkommt, wird abgelehnt.",
-	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
+	"allowed-file-extension-warning": "Warnung: Das Zulassen aller Dateiendungen kann gefährlich sein. NodeBB versucht, Risiken zu minimieren, indem es Dateien mit bestimmten Endungen als Anhänge bereitstellt. Wenn du einen Reverse-Proxy verwendest, solltest du ebenfalls sicherstellen, dass dieser Dateien mit gefährlichen Endungen als Anhänge bereitstellt.",
 	"blocked-file-extensions": "Blockierte Dateiendungen (Blacklist)",
 	"blocked-file-extensions-help": "Durch Kommas getrennte Liste von Dateiendungen, die immer abgelehnt werden (z. B. <code>html,svg,php</code>). Die Sperrliste hat Vorrang vor der Zulassungsliste – wenn eine Dateiendung in beiden Listen vorkommt, wird sie abgelehnt.",
 	"upload-limit-threshold": "Benutzer-Uploads begrenzen auf:",

@@ -31,7 +31,7 @@
 	"topic-thumb-size": "Dimensione miniatura Argomento",
 	"allowed-file-extensions": "Estensioni di file consentite (Whitelist)",
 	"allowed-file-extensions-help": "Elenco separato da virgole delle estensioni consentite per il caricamento (ad es. <code>pdf,xls,doc</code>). Lascia vuoto per consentire tutte le estensioni. Nota: l'elenco dei blocchi riportato di seguito ha la priorità — un'estensione presente in entrambi gli elenchi sarà rifiutata.",
-	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
+	"allowed-file-extension-warning": "Attenzione: consentire tutte le estensioni di file può essere pericoloso. NodeBB cercherà di ridurre i rischi inviando i file con determinate estensioni come allegati. Se usi un proxy inverso, assicurati che inoltri come allegati i file con estensioni potenzialmente pericolose.",
 	"blocked-file-extensions": "Estensioni di file bloccate (Blacklist)",
 	"blocked-file-extensions-help": "Elenco separato da virgole delle estensioni che sono sempre rifiutate (ad es. <code>html,svg,php</code>). L'elenco dei blocchi ha la precedenza sull'elenco dei permessi — se un'estensione compare in entrambi sarà rifiutata.",
 	"upload-limit-threshold": "Limita i caricamenti degli utenti a:",
