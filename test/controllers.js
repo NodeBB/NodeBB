@@ -153,6 +153,20 @@ describe('Controllers', () => {
 			assert(body);
 		});
 
+		it('should 403 if route requires privileges', async () => {
+			const uid = await user.create({ username: 'testuser1', password: 'password' });
+			const { jar } = await helpers.loginUser('testuser1', 'password');
+			await api.users.updateSettings({ uid }, {
+				uid,
+				settings: {
+					homePageRoute: 'custom',
+					homePageCustom: 'api/admin/advanced/database',
+				},
+			});
+			const { response, body } = await request.get(nconf.get('url'), { jar });
+			assert.equal(response.statusCode, 403);
+		});
+
 		it('api should work with hook', async () => {
 			await meta.configs.set('homePageRoute', 'mycustompage');
 			const { response, body } = await request.get(`${nconf.get('url')}/api`);
@@ -1282,7 +1296,7 @@ describe('Controllers', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
 			assert.equal(body.aboutme, 'hi i am a bot');
-			assert.equal(body.picture, '/path/to/picture');
+			assert.equal(body.picture, '&#x2F;path&#x2F;to&#x2F;picture');
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {
@@ -1428,9 +1442,8 @@ describe('Controllers', () => {
 
 	describe('handle errors', () => {
 		const plugins = require('../src/plugins');
-		after((done) => {
-			plugins.loadedHooks['filter:router.page'] = undefined;
-			done();
+		after(() => {
+			delete plugins.loadedHooks['response:router.page'];
 		});
 
 		it('should handle topic malformed uri', async () => {

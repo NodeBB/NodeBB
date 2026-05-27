@@ -263,6 +263,7 @@ usersAPI.mute = async function (caller, data) {
 	}
 	const reason = data.reason || '[[user:info.muted-no-reason]]';
 	await db.setObject(`user:${data.uid}`, {
+		muted: 1,
 		mutedUntil: data.until,
 		mutedReason: reason,
 	});
@@ -278,8 +279,11 @@ usersAPI.mute = async function (caller, data) {
 	if (data.reason) {
 		muteData.reason = reason;
 	}
-	await db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey);
-	await db.setObject(muteKey, muteData);
+	await Promise.all([
+		db.sortedSetAdd(`users:muted`, now, data.uid),
+		db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey),
+		db.setObject(muteKey, muteData),
+	]);
 	await events.log({
 		type: 'user-mute',
 		uid: caller.uid,
@@ -301,7 +305,7 @@ usersAPI.unmute = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	await db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
+	await db.deleteObjectFields(`user:${data.uid}`, ['muted', 'mutedUntil', 'mutedReason']);
 	const now = Date.now();
 	const unmuteKey = `uid:${data.uid}:unmute:${now}`;
 	const unmuteData = {
@@ -313,8 +317,11 @@ usersAPI.unmute = async function (caller, data) {
 	if (data.reason) {
 		unmuteData.reason = data.reason;
 	}
-	await db.sortedSetAdd(`uid:${data.uid}:unmutes:timestamp`, now, unmuteKey);
-	await db.setObject(unmuteKey, unmuteData);
+	await Promise.all([
+		db.sortedSetRemove(`users:muted`, data.uid),
+		db.sortedSetAdd(`uid:${data.uid}:unmutes:timestamp`, now, unmuteKey),
+		db.setObject(unmuteKey, unmuteData),
+	]);
 	await events.log({
 		type: 'user-unmute',
 		uid: caller.uid,
@@ -596,6 +603,7 @@ usersAPI.search = async function (caller, data) {
 			data.searchBy === 'ip' ||
 			data.searchBy === 'email' ||
 			filters.includes('banned') ||
+			filters.includes('muted') ||
 			filters.includes('flagged')
 		) && !isPrivileged)
 	) {
@@ -636,7 +644,15 @@ usersAPI.changePicture = async (caller, data) => {
 			picture = '';
 		}
 	} else if (type === 'external' && url) {
-		picture = validator.escape(url);
+		const isUrl = validator.isURL(String(url).trim(), {
+			require_protocol: true,
+			require_valid_protocol: true,
+			require_tld: true,
+		});
+		if (!isUrl) {
+			throw new Error('[[error:invalid-url]]');
+		}
+		picture = String(url || '').trim();
 	} else {
 		const returnData = await plugins.hooks.fire('filter:user.getPicture', {
 			uid: caller.uid,

@@ -78,5 +78,7 @@
 	"analytics.daily": "每日",
 
 	"errors.intro": "该实例在过去 24 小时内记录了以下 %1 个错误。",
-	"errors.payload-gone": "此错误的负载已不存在。"
+	"errors.payload-gone": "此错误的负载已不存在。",
+	"errors.hostname": "主机名",
+	"errors.type": "类型"
 }

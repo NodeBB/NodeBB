@@ -78,5 +78,7 @@
 	"analytics.daily": "Hằng ngày",
 
 	"errors.intro": "Trong vòng 24 giờ qua, hệ thống này đã ghi nhận %1 lỗi sau đây.",
-	"errors.payload-gone": "Thông tin gây ra lỗi này không còn tồn tại nữa."
+	"errors.payload-gone": "Thông tin gây ra lỗi này không còn tồn tại nữa.",
+	"errors.hostname": "Tên máy chủ",
+	"errors.type": "Loại"
 }

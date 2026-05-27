@@ -17,11 +17,12 @@ define('forum/topic', [
 	'alerts',
 	'bootbox',
 	'clipboard',
+	'modules/intents',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard
+	bootbox, clipboard, intents
 ) {
 	const Topic = {};
 	let tid = '0';
@@ -74,6 +75,8 @@ define('forum/topic', [
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
 		handleTopicSearch();
+
+		intents.addHandlers();
 
 		hooks.fire('action:topic.loaded', ajaxify.data);
 	};
@@ -199,11 +202,42 @@ define('forum/topic', [
 					backdrop: true,
 					message: html,
 				});
+				function selectThumbByIndex(index) {
+					const thumbEls = modal.find('[component="topic/thumb/select"]');
+					if (thumbEls.length) {
+						const normalizedIndex = (((index % thumbEls.length) + thumbEls.length) % thumbEls.length);
+						const selectedThumb = thumbEls.eq(normalizedIndex);
+						thumbEls.removeClass('border-primary');
+						selectedThumb.addClass('border-primary');
+						const newSrc = selectedThumb.find('img').attr('src');
+						modal.find('[component="topic/thumb/current"]')
+							.attr('src', newSrc)
+							.parent().attr('href', newSrc);
+					}
+				}
+
 				modal.on('click', '[component="topic/thumb/select"]', function () {
-					$('[component="topic/thumb/select"]').removeClass('border-primary');
-					$(this).addClass('border-primary');
-					$('[component="topic/thumb/current"]')
-						.attr('src', $(this).find('img').attr('src'));
+					const thumbEls = modal.find('[component="topic/thumb/select"]');
+					selectThumbByIndex(thumbEls.index(this));
+				});
+
+				const keydownEventName = `keydown.topic-thumbs-${Date.now()}`;
+				const onThumbKeydown = function (ev) {
+					if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') {
+						return;
+					}
+
+					ev.preventDefault();
+					const thumbEls = modal.find('[component="topic/thumb/select"]');
+					const selectedIndex = thumbEls.index(thumbEls.filter('.border-primary').first());
+					const currentIndex = selectedIndex >= 0 ? selectedIndex : 0;
+					const direction = ev.key === 'ArrowRight' ? 1 : -1;
+					selectThumbByIndex(currentIndex + direction);
+				};
+
+				$(document).on(keydownEventName, onThumbKeydown);
+				modal.on('hidden.bs.modal', function () {
+					$(document).off(keydownEventName, onThumbKeydown);
 				});
 			}
 		});

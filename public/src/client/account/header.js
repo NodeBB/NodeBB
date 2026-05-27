@@ -96,6 +96,19 @@ define('forum/account/header', [
 	}
 
 	function toggleFollow(type) {
+		if (!app.user.uid) {
+			let objectId;
+			if (utils.isNumber(ajaxify.data.uid)) {
+				objectId = config.url + '/user/' + ajaxify.data.uid;
+			} else {
+				objectId = ajaxify.data.userslug;
+			}
+			import('modules/intents').then(({ trigger }) => {
+				trigger('follow', { object: objectId });
+			});
+			return false;
+		}
+
 		const target = isFinite(ajaxify.data.uid) ? ajaxify.data.uid : encodeURIComponent(ajaxify.data.userslug);
 		api[type === 'follow' ? 'put' : 'del']('/users/' + target + '/follow', undefined, function (err) {
 			if (err) {

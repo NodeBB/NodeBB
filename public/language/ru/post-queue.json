@@ -10,6 +10,7 @@
 	"user": "Пользователь",
 	"when": "Когда",
 	"category": "Категория",
+	"tags": "Tags",
 	"title": "Название",
 	"content": "Содержимое",
 	"posted": "Время",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Вы хотите удалить %1 выбранные записи?",
 	"bulk-accept-success": "%1 записи одобрены",
 	"bulk-reject-success": "%1 записи отклонены",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

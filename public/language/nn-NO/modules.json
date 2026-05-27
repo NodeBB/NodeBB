@@ -41,6 +41,7 @@
     "chat.public-rooms": "Offentlege rom (%1)",
     "chat.private-rooms": "Private rom (%1)",
     "chat.create-room": "Opprett melding",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "Privat (berre synleg for brukarar lagt til i rommet)",
     "chat.public.option": "Offentleg (synleg for alle brukarar i valde grupper)",
     "chat.public.groups-help": "For å opprette ein chat synleg for alle brukarar, vel registered-users frå gruppelista.",

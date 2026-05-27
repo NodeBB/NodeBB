@@ -199,6 +199,7 @@
     "info.no-mute-history": "Dieser Benutzer wurde noch nie stummgeschaltet",
     "info.muted-until": "Bis %1 stummgeschaltet",
     "info.muted-expiry": "Ablauf",
+    "info.muted-permanently": "permanent Stummschalten",
     "info.muted-no-reason": "Kein Grund angegeben",
     "info.username-history": "Benutzernamen Verlauf",
     "info.email-history": "E-Mail Verlauf",

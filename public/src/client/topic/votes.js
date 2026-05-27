@@ -99,14 +99,24 @@ define('forum/topic/votes', [
 
 		const method = currentState ? 'del' : 'put';
 		const pid = post.attr('data-pid');
+
+		if (!app.user.uid) {
+			let objectId;
+			if (utils.isNumber(pid)) {
+				objectId = config.url + '/post/' + pid;
+			} else {
+				objectId = pid;
+			}
+			import('modules/intents').then(({ trigger }) => {
+				trigger('like', { object: objectId });
+			});
+			return false;
+		}
+
 		api[method](`/posts/${encodeURIComponent(pid)}/vote`, {
 			delta: delta,
 		}, function (err) {
 			if (err) {
-				if (!app.user.uid) {
-					ajaxify.go('login');
-					return;
-				}
 				return alerts.error(err);
 			}
 			hooks.fire('action:post.toggleVote', {

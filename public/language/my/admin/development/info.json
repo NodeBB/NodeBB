@@ -1,0 +1,26 @@
+{
+	"you-are-on": "သင်ရောက်ရှိနေသည်မှာ",
+	"ip": "IP",
+	"nodes-responded": "တုံ့ပြန်သော Nodes",
+	"host": "Host",
+	"primary": "အဓိက",
+	"pid": "PID",
+	"nodejs": "Node.js",
+	"online": "အွန်လိုင်း",
+	"git": "Git",
+	"process-memory": "Process မှတ်ဉာဏ်",
+	"system-memory": "System မှတ်ဉာဏ်",
+	"used-memory-process": "အသုံးပြုထားသော မှတ်ဉာဏ် (Process)",
+	"used-memory-os": "အသုံးပြုထားသော မှတ်ဉာဏ် (OS)",
+	"total-memory-os": "စုစုပေါင်း မှတ်ဉာဏ် (OS)",
+	"load": "Load",
+	"cpu-usage": "CPU အသုံးပြုမှု",
+	"uptime": "အလုပ်လုပ်နေသော အချိန်",
+
+	"registered": "မှတ်ပုံတင်ထားသည်",
+	"sockets": "Sockets",
+	"connection-count": "ချိတ်ဆက်မှု အရေအတွက်",
+	"guests": "ဧည့်သည်များ",
+
+	"info": "အချက်အလက်"
+}

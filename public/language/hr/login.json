@@ -8,5 +8,6 @@
     "login-successful": "Uspješno ste prijavljeni!",
     "dont-have-account": "Nemate korisnički račun?",
     "logged-out-due-to-inactivity": "Odjavljeni ste iz administratorske kontrolne ploče zbog neaktivnosti.",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

@@ -19,6 +19,16 @@ html[data-dir="rtl"] {
 		text-align: left;
 	}
 }
+
+// rtl fixes for cropper.js rtl mode
+.cropper-container,
+.cropper-wrap-box,
+.cropper-canvas,
+.cropper-drag-box,
+.cropper-crop-box,
+.cropper-modal {
+    direction: ltr !important;
+}
 /*rtl:end:ignore*/
 
 [component="post/content"],

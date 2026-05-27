@@ -219,6 +219,30 @@ Out.update.privateNote = enabledCheck(async (uid, messageObj) => {
 
 Out.delete = {};
 
+Out.delete.privateNote = enabledCheck(async (uid, messageObj) => {
+	if (!utils.isNumber(messageObj.mid)) {
+		return;
+	}
+
+	const id = `${nconf.get('url')}/message/${messageObj.mid}`;
+
+	let uids = await messaging.getUidsInRoom(messageObj.roomId, 0, -1);
+	uids = uids.filter(uid => !utils.isNumber(uid)); // remote uids only
+
+	const object = await activitypub.mocks.notes.private({ messageObj });
+
+	const payload = {
+		id: `${id}#activity/delete/${Date.now()}`,
+		type: 'Delete',
+		actor: object.attributedTo,
+		to: object.to,
+		cc: [],
+		object: id,
+	};
+
+	await activitypub.send('uid', uid, uids, payload);
+});
+
 Out.delete.note = enabledCheck(async (uid, pid) => {
 	// Only applies to local posts
 	if (!utils.isNumber(pid)) {

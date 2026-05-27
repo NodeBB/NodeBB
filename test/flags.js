@@ -930,9 +930,9 @@ describe('Flags', () => {
 				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
 			});
 
-			it('should escape filters', async () => {
+			it('should return undefined for invalid filters', async () => {
 				const { body } = await request.get(`${nconf.get('url')}/api/flags?quick="<script>alert('foo');</script>`, { jar });
-				assert.strictEqual(body.filters.quick, '&quot;&lt;script&gt;alert(&#x27;foo&#x27;);&lt;&#x2F;script&gt;');
+				assert.strictEqual(body.filters.quick, undefined);
 			});
 
 			it('should not allow flagging post in private category', async () => {

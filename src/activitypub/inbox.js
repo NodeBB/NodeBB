@@ -13,7 +13,9 @@ const notifications = require('../notifications');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const api = require('../api');
+const apiHelpers = require('../api/helpers');
 const utils = require('../utils');
+const slugify = require('../slugify');
 const activitypub = require('.');
 
 const socketHelpers = require('../socket.io/helpers');
@@ -180,6 +182,13 @@ inbox.update = async (req) => {
 					const postData = await activitypub.mocks.post(object);
 					postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 					await posts.edit(postData);
+					const tid = await posts.getPostField(object.id, 'tid');
+					const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
+					if (generatedTitle && (!postData.title || !postData.title.trim())) {
+						const newTitle = activitypub.helpers.generateTitle(postData.content);
+						await topics.setTopicField(tid, 'title', newTitle);
+						await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+					}
 					const isDeleted = await posts.getPostField(object.id, 'deleted');
 					if (isDeleted) {
 						await api.posts.restore({ uid: actor }, { pid: object.id });
@@ -276,15 +285,15 @@ inbox.delete = async (req) => {
 
 	// Deletions must be made by an actor of the same origin
 	const actorHostname = new URL(actor).hostname;
-
 	const objectHostname = new URL(id).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
-	const [isNote, isContext/* , isActor */] = await Promise.all([
+	const [isNote, isContext, isMessage/* , isActor */] = await Promise.all([
 		posts.exists(id),
 		activitypub.contexts.getItems(0, id, { returnRootId: true }), // ⚠️ unreliable, needs better logic (Contexts.is?)
+		messaging.messageExists(id),
 		// db.isSortedSetMember('usersRemote:lastCrawled', object.id),
 	]);
 
@@ -319,6 +328,11 @@ inbox.delete = async (req) => {
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
 			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
 			await api.topics[method]({ uid }, { tids: [tid] });
+			break;
+		}
+
+		case isMessage: {
+			await api.chats.deleteMessage({ uid: actor }, { mid: id });
 			break;
 		}
 
@@ -424,20 +438,17 @@ inbox.announce = async (req) => {
 
 	switch(true) {
 		case object.type === 'Like': {
-			const id = object.object.id || object.object;
-			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
-			const exists = await posts.exists(localId || id);
-			if (exists) {
-				try {
-					await activitypub.actors.assert(object.actor);
-					const result = await posts.upvote(localId || id, object.actor);
-					if (localId) {
-						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
-					}
-				} catch (e) {
-					// vote denied due to local limitations (frequency, privilege, etc.); noop.
-				}
+			const assertion = await activitypub.actors.assert(object.actor);
+			if (!assertion) {
+				throw new Error('[[error:activitypub.invalid-id]]');
 			}
+
+			req.body = object;
+			if (typeof req.body.object === 'string') {
+				req.body.object = await activitypub.helpers.resolveObjects(req.body.object);
+			}
+
+			await inbox.like(req);
 
 			break;
 		}
@@ -459,13 +470,40 @@ inbox.announce = async (req) => {
 				break;
 			}
 
+			// Deletions must be made by an actor of the same origin
+			const actorHostname = new URL(actor).hostname;
+			const objectHostname = new URL(id).hostname;
+			if (actorHostname !== objectHostname) {
+				throw new Error('[[error:activitypub.origin-mismatch]]');
+			}
+
 			const _cid = await posts.getCidByPid(id);
 			if (!utils.isNumber(cid) && _cid !== cid) { // matching & remote categories only
 				throw new Error('[[error:invalid-cid]]');
 			}
 
+			const allowed = await privileges.categories.can('posts:edit', _cid, activitypub._constants.uid);
+			if (!allowed) {
+				throw new Error('[[error:no-privileges]]');
+			}
+
 			const uid = await posts.getPostField(id, 'uid');
-			await posts.delete(id, uid);
+			const isMain = await posts.isMain(id);
+			const postCount = await topics.getTopicField(await posts.getPostField(id, 'tid'), 'postcount');
+			const isLast = postCount === 1;
+
+			try {
+				await posts.tools.delete(uid, id);
+			} catch (e) {
+				if (e.message !== '[[error:post-already-deleted]]') {
+					throw e;
+				}
+			}
+
+			if (isMain && isLast) {
+				const tid = await posts.getPostField(id, 'tid');
+				await apiHelpers.doTopicAction('delete', 'event:topic_deleted', { uid }, { tids: [tid] });
+			}
 			break;
 		}
 

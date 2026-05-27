@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Non puoi silenziare gli altri amministratori!",
     "user-muted-for-hours": "Sei stato silenziato, potrai postare tra %1 ora(e)",
     "user-muted-for-minutes": "Sei stato silenziato, potrai postare tra %1 minuto(i)",
+    "user-muted-indefinitely": "Sei stato silenziato a tempo indeterminato",
     "cant-make-banned-users-admin": "Non puoi rendere amministratori gli utenti bannati.",
     "cant-remove-last-admin": "Sei l'unico Amministratore. Aggiungi un altro amministratore prima di rimuovere il tuo ruolo",
     "account-deletion-disabled": "L'eliminazione dell'account è disabilitata",
@@ -131,6 +132,7 @@
     "invalid-image-type": "Tipo dell'immagine non valido. I tipi permessi sono: %1",
     "invalid-image-extension": "Estensione immagine non valida",
     "invalid-file-type": "Tipo di file non valido. I formati consentiti sono: %1",
+    "blocked-file-type": "Tipo di file non consentito. L'estensione %1 è esplicitamente bloccata dall'amministratore.",
     "invalid-image-dimensions": "Dimensione immagine troppo grande",
     "group-name-too-short": "Nome del Gruppo troppo corto",
     "group-name-too-long": "Il nome del gruppo è troppo lungo",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "Non puoi spostare il post nella stessa discussione!",
     "cant-move-topic-to-same-category": "Non si può spostare la discussione nella stessa categoria!",
     "cant-move-topic-to-from-remote-categories": "Non puoi spostare discussioni dentro o fuori alle categorie remote; valuta invece la possibilità di pubblicarle in più sezioni.",
+    "cant-move-topic-too-many-posts": "Non è possibile spostare una discussione con più di %1 post.",
     "cannot-block-self": "Non puoi auto bloccarti!",
     "cannot-block-privileged": "Impossibile bloccare amministratori o moderatori globali",
     "cannot-block-guest": "Gli Ospiti non sono in grado di bloccare altri utenti",
@@ -263,9 +266,11 @@
     "api.reauth-required": "La risorsa a cui stai cercando di accedere richiede una (ri)autenticazione.",
     "activitypub.not-enabled": "La federazione non è abilitata su questo server",
     "activitypub.invalid-id": "Impossibile risolvere l'ID di input, probabilmente perché non è valido.",
+    "activitypub.invalid-content-type": "Al contenuto restituito è stato associato un tipo di contenuto inatteso.",
     "activitypub.get-failed": "Impossibile recuperare la risorsa specificata.",
     "activitypub.pubKey-not-found": "Impossibile risolvere la chiave pubblica, quindi la verifica del payload non può avvenire.",
     "activitypub.origin-mismatch": "L'origine dell'oggetto ricevuto non corrisponde all'origine del mittente.",
     "activitypub.not-implemented": "La richiesta è stata rifiutata perché la richiesta o un suo aspetto non è implementato dal server del destinatario.",
-    "activitypub.orphan": "L'oggetto ricevuto non è associato ad alcun utente locale conosciuto."
+    "activitypub.orphan": "L'oggetto ricevuto non è associato ad alcun utente locale conosciuto.",
+    "activitypub.rate-limited": "Il tuo indirizzo IP è stato sottoposto a limitazione di velocità."
 }

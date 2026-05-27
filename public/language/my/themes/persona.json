@@ -1,0 +1,10 @@
+{
+    "settings.title": "ဆက်တင်များ",
+    "settings.intro": "နိဒါန်း",
+    "settings.mobile-menu-side": "ဖုန်း မီနူး ဘေးဘက်",
+    "settings.autoHidingNavbar": "အလိုအလျောက် ပုန်းနေသော Navbar",
+    "settings.autoHidingNavbar-xs": "အလိုအလျောက် ပုန်းနေသော Navbar (xs)",
+    "settings.autoHidingNavbar-sm": "အလိုအလျောက် ပုန်းနေသော Navbar (sm)",
+    "settings.autoHidingNavbar-md": "အလိုအလျောက် ပုန်းနေသော Navbar (md)",
+    "settings.autoHidingNavbar-lg": "အလိုအလျောက် ပုန်းနေသော Navbar (lg)"
+}

@@ -80,6 +80,10 @@
 								<div class="ms-auto dropdown bottom-sheet">
 									<button href="#" class="btn btn-ghost btn-sm ff-secondary border text-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[global:actions]]</button>
 									<ul class="dropdown-menu p-1 text-sm" role="menu">
+										{{{ if ./canAccept }}}
+										<li><a class="dropdown-item rounded-1" data-action="notify"> [[post-queue:notify]]</a></li>
+										<li class="dropdown-divider"></li>
+										{{{ end }}}
 										{{{ if privileges.view:users:info }}}
 										<li><a class="dropdown-item rounded-1" href="{config.relative_path}/user/{./user.userslug}/info" role="menuitem">[[user:account-info]]</a></li>
 										{{{ end }}}
@@ -127,8 +131,13 @@
 							<span class="small timeago" title={posts.data.timestampISO}></span>
 						</li>
 						<li class="card-body border-bottom">
-							<div class="text-xs fw-semibold mb-1">
+							<div class="d-flex align-items-center justify-content-between mb-1">
+								<span class="text-xs fw-semibold">
 								{{{ if posts.data.tid }}}[[post-queue:topic]]{{{ else }}}[[post-queue:title]]{{{ end }}}
+								</span>
+								{{{ if !posts.data.tid }}}
+								<button data-action="editTitle" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+								{{{ end }}}
 							</div>
 							<span class="small topic-title text-break">
 								{{{ if posts.data.tid }}}
@@ -144,23 +153,51 @@
 							</span>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
-								<input class="form-control" type="text" value="{posts.data.title}"/>
+								<input class="form-control form-control-sm" type="text" value="{posts.data.title}"/>
 							</div>
 							{{{end}}}
 						</li>
+
 						<li class="card-body border-bottom">
-							<div class="text-xs fw-semibold mb-1">
-								[[post-queue:category]]
+							<div class="d-flex align-items-center justify-content-between mb-1">
+								<div class="text-xs fw-semibold">
+									[[post-queue:category]]
+								</div>
+								{{{ if posts.data.cid }}}
+								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+								{{{ end }}}
 							</div>
-							<div class="topic-category small">
+
+							<div class="topic-category">
 								<a href="{config.relative_path}/category/{posts.category.slug}">
 									<div class="category-item d-inline-block">
 										{buildCategoryIcon(./category, "24px", "rounded-circle")}
-										{posts.category.name}
+										<span class="text-sm">{posts.category.name}</span>
 									</div>
 								</a>
 							</div>
 						</li>
+
+						{{{ if (posts.type == "topic") }}}
+						<li class="card-body border-bottom">
+							<div class="d-flex align-items-center justify-content-between mb-1">
+								<div class="text-xs fw-semibold">
+									[[post-queue:tags]]
+								</div>
+
+								<button data-action="editTags" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+							</div>
+							<div class="tag-list">
+								{{{ each posts.data.tags }}}
+								<a href="{config.relative_path}/tags/{encodeURIComponent(@value)}"><span class="badge border border-gray-300 fw-normal tag">{escape(@value)}</span></a>
+								{{{ end }}}
+							</div>
+							<div class="topic-tags-editable hidden">
+								<input class="form-control form-control-sm tags" type="text" value=""/>
+							</div>
+						</li>
+						{{{ end }}}
+
 						<li class="card-body">
 							<div class="row row-cols-2 g-1">
 								{{{ if ./canAccept }}}
@@ -169,26 +206,6 @@
 								</div>
 								<div class="col d-grid">
 									<button class="btn btn-danger btn-sm" data-action="reject"><i class="fa fa-fw fa-times"></i> [[post-queue:reject]]</button>
-								</div>
-								{{{ end }}}
-								{{{ if ./canEdit}}}
-								{{{ if !posts.data.tid }}}
-								<div class="col d-grid">
-									<button class="btn btn-light btn-sm" data-action="editTitle"><i class="fa fa-fw fa-edit"></i> [[post-queue:title]]</button>
-								</div>
-								{{{ end }}}
-								<div class="col d-grid">
-									<button class="btn btn-light btn-sm" data-action="editContent"><i class="fa fa-fw fa-edit"></i> [[post-queue:content]]</button>
-								</div>
-								{{{if posts.data.cid}}}
-								<div class="col d-grid">
-									<button class="btn btn-light btn-sm" data-action="editCategory"><i class="fa fa-fw fa-edit"></i> [[post-queue:category]]</button>
-								</div>
-								{{{ end }}}
-								{{{ end }}}
-								{{{ if ./canAccept }}}
-								<div class="col d-grid">
-									<button class="btn btn-light btn-sm" data-action="notify"><i class="fa fa-fw fa-bell-o"></i> [[post-queue:notify]]</button>
 								</div>
 								{{{ else }}}
 								<div class="col d-grid">
@@ -200,7 +217,15 @@
 					</ul>
 				</div>
 				<div class="col-lg-9 d-flex flex-column">
-					<div class="post-content mb-auto text-break p-3 pb-0 h-100">{posts.data.content}</div>
+					<div class="d-flex align-items-center justify-content-between mb-1 px-3 pt-3 pb-1">
+						<div class="text-xs fw-semibold">
+							[[post-queue:content]]
+						</div>
+						{{{ if ./canEdit }}}
+						<button data-action="editContent" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+						{{{ end }}}
+					</div>
+					<div class="post-content mb-auto text-break px-3 py-0 h-100">{posts.data.content}</div>
 					<div class="post-content-editable flex-grow-1 hidden">
 						<textarea class="form-control w-100 h-100 p-3">{posts.data.rawContent}</textarea>
 					</div>
@@ -208,6 +233,26 @@
 						<label class="text-secondary form-text mb-2">[[post-queue:links-in-this-post]]</label>
 						<ul component="post-queue/link-container/list" class="text-sm"></ul>
 					</div>
+					{{{ if (posts.type == "topic") }}}
+					<div class="border-top mx-3 py-3">
+						<label class="text-secondary form-text mb-2">[[post-queue:thumbs-in-this-post]]</label>
+						<div class="thumb-list d-flex gap-3 flex-wrap">
+							{{{ each posts.data.thumbs }}}
+							<div class="position-relative">
+								<a class="d-inline-block" href="#">
+									<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{escape(@value)}" />
+								</a>
+								<a href="#" data-action="removeThumb" class="link-danger position-absolute btn top-0 start-100 translate-middle p-1"><i class="fa-solid fa-circle-xmark"></i></button>
+							</div>
+							{{{ end }}}
+							<a class="btn btn-ghost d-inline-block p-0" href="#" data-action="uploadThumb">
+								<div class="d-flex align-items-center justify-content-center" style="width: 3.33rem; max-width: 5.33rem; height: 3.33rem;">
+									<i class="fa-solid fa-upload"></i>
+								</div>
+							</a>
+						</div>
+					</div>
+					{{{ end }}}
 				</div>
 			</div>
 		</div>

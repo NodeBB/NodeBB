@@ -10,6 +10,7 @@
 	"user": "Përdorues",
 	"when": "When",
 	"category": "Kategoria",
+	"tags": "Tags",
 	"title": "Titulli",
 	"content": "Përmbajtja",
 	"posted": "U postua",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 postime u pranuan",
 	"bulk-reject-success": "%1 postime u refuzuan",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

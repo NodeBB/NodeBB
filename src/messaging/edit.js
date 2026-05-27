@@ -39,7 +39,9 @@ module.exports = function (Messaging) {
 			});
 
 			if (!isPublic && utils.isNumber(messages[0].fromuid)) {
-				activitypub.out.update.privateNote(messages[0].fromuid, messages[0]);
+				setImmediate(() => {
+					activitypub.out.update.privateNote(messages[0].fromuid, messages[0]);
+				});
 			}
 		}
 

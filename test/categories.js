@@ -483,7 +483,19 @@ describe('Categories', () => {
 		it('should remove privilege', async () => {
 			await apiCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' });
 			const canDeleteTopics = await privileges.categories.can('topics:delete', categoryObj.cid, posterUid);
-			assert(!canDeleteTopics);
+			assert.strictEqual(canDeleteTopics, false);
+		});
+
+		it('should get an array of privileges for a category', async () => {
+			const privilegesArray = await privileges.categories.can(['topics:create', 'topics:delete'], categoryObj.cid, posterUid);
+			assert.deepStrictEqual(privilegesArray, [true, false]);
+		});
+
+		it('should error if both cid and privilege are arrays', async () => {
+			await assert.rejects(
+				privileges.categories.can(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
+				{ message: '[[error:invalid-data]]' },
+			);
 		});
 
 		it('should get privilege settings', async () => {

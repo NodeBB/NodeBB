@@ -1,0 +1,10 @@
+{
+	"awarded-x-reputation": "ဂုဏ်သတင်း %1 ဆု ရရှိသည်",
+	"awarded-group-membership": "အုပ်စုဝင်အဖြစ် ဆု ရရှိသည်",
+
+	"essentials/user.reputation-conditional-value": "ဂုဏ်သတင်း အခြေအနေတန်ဖိုး",
+	"essentials/user.postcount-conditional-value": "ပို့စ်အရေအတွက် အခြေအနေတန်ဖိုး",
+	"essentials/user.lastonline-conditional-value": "နောက်ဆုံးအွန်လိုင်း အခြေအနေတန်ဖိုး",
+	"essentials/user.joindate-conditional-value": "ဝင်ရောက်သည့်နေ့ အခြေအနေတန်ဖိုး",
+	"essentials/user.daysregistered-conditional-value": "မှတ်ပုံတင်ထားသောရက်များ အခြေအနေတန်ဖိုး"
+}

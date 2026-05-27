@@ -41,9 +41,11 @@ utils.tokens.get = async (tokens) => {
 		}
 
 		tokenObj.token = tokens[idx];
+		tokenObj.uid = parseInt(tokenObj.uid, 10);
+		tokenObj.timestamp = parseInt(tokenObj.timestamp, 10);
 		tokenObj.lastSeen = lastSeen[idx];
 		tokenObj.lastSeenISO = lastSeen[idx] ? new Date(lastSeen[idx]).toISOString() : null;
-		tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
+		tokenObj.timestampISO = new Date(tokenObj.timestamp).toISOString();
 
 		return tokenObj;
 	});

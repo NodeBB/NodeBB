@@ -80,13 +80,14 @@ module.exports = function (Messaging) {
 		}
 
 		try {
-			await Promise.all([
-				sendNotification(fromUid, roomId, messageObj),
-				!isPublic && utils.isNumber(fromUid) ?
-					activitypub.out.create.privateNote(messageObj) : null,
-			]);
+			await sendNotification(fromUid, roomId, messageObj);
+			if (!isPublic && utils.isNumber(fromUid)) {
+				setImmediate(() => {
+					activitypub.out.create.privateNote(messageObj);
+				});
+			}
 		} catch (err) {
-			winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
+			winston.error(`[messaging/notifications] Unable to send notification\n${err.stack}`);
 		}
 	};
 

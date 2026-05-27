@@ -143,8 +143,10 @@ function modifyTopic(topic, fields) {
 
 	if (hasField('thumbs')) {
 		try {
+			topic.numThumbs = topic.thumbs.length;
 			topic.thumbs = topic.thumbs ? JSON.parse(String(topic.thumbs || '[]')) : [];
 		} catch (e) {
+			topic.numThumbs = 0;
 			topic.thumbs = [];
 		}
 	}

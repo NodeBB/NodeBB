@@ -320,7 +320,6 @@ if (document.readyState === 'loading') {
 		require([
 			'jquery-ui/widgets/autocomplete',
 			'jquery-ui/widgets/sortable',
-			'jquery-ui/widgets/resizable',
 			'jquery-ui/widgets/draggable',
 		], function () {
 			callback();

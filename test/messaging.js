@@ -112,23 +112,43 @@ describe('Messaging Library', () => {
 			);
 		});
 
-		it('should not allow messaging room if user is muted', async () => {
+		it('should not allow messaging room if user is muted temporarily or permanently', async () => {
 			const twoMinutesFromNow = Date.now() + (2 * 60 * 1000);
 			const twoHoursFromNow = Date.now() + (2 * 60 * 60 * 1000);
 			const roomId = 0;
 
-			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoMinutesFromNow);
+			await User.setUserFields(mocks.users.herp.uid, {
+				muted: 1,
+				mutedUntil: twoMinutesFromNow,
+				mutedReason: 'no reason',
+			});
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
 				assert(err.message.startsWith('[[error:user-muted-for-minutes,'));
 				return true;
 			});
 
-			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoHoursFromNow);
+			await User.setUserFields(mocks.users.herp.uid, {
+				muted: 1,
+				mutedUntil: twoHoursFromNow,
+				mutedReason: 'no reason',
+			});
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
 				assert(err.message.startsWith('[[error:user-muted-for-hours,'));
 				return true;
 			});
-			await db.deleteObjectField(`user:${mocks.users.herp.uid}`, 'mutedUntil');
+
+			await User.setUserFields(mocks.users.herp.uid, {
+				muted: 1,
+				mutedUntil: 0,
+				mutedReason: 'no reason',
+			});
+			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), {
+				message: '[[error:user-muted-indefinitely]]',
+			});
+
+			await db.deleteObjectFields(`user:${mocks.users.herp.uid}`, [
+				'muted', 'mutedUntil', 'mutedReason',
+			]);
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), {
 				message: '[[error:no-room]]',
 			});

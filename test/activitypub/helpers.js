@@ -96,20 +96,40 @@ Helpers.mocks.note = (override = {}) => {
 	return { id, note };
 };
 
-Helpers.mocks.create = (object) => {
-	// object is optional, will generate a public note if undefined
+Helpers.mocks.create = (input = {}) => {
+	let object;
+	let actor = 'https://example.org/user/foobar';
+	let override = {};
+
+	// Support both old API (positional note object) and new API (override object with actor/object keys)
+	if (input && typeof input === 'object' && input.type === 'Note') {
+		// Old API: first argument is the note object
+		object = input;
+	} else {
+		// New API: override object
+		override = input;
+		object = override.object;
+		actor = override.actor || actor;
+		delete override.actor;
+		delete override.object;
+	}
+
+	if (!object) {
+		object = Helpers.mocks.note().note;
+	}
+
 	const uuid = utils.generateUUID();
 	const id = `${Helpers.mocks._baseUrl}/activity/${uuid}`;
 
-	object = object || Helpers.mocks.note().note;
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: 'Create',
 		to: ['https://www.w3.org/ns/activitystreams#Public'],
-		cc: ['https://example.org/user/foobar/followers'],
-		actor: 'https://example.org/user/foobar',
+		cc: [`${actor}/followers`],
+		actor,
 		object,
+		...override,
 	};
 
 	activitypub._cache.set(`0;${id}`, activity);

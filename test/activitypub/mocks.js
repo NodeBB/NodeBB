@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
+const path = require('path');
 
 const db = require('../mocks/databasemock');
 const meta = require('../../src/meta');
@@ -11,6 +12,7 @@ const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
+const plugins = require('../../src/plugins');
 
 describe('Mocking', () => {
 	describe('Outbound (local content to AP object)', () => {
@@ -175,6 +177,139 @@ describe('Mocking', () => {
 
 						const result = await activitypub.mocks.notes.public(shortPostData.postData);
 						assert.strictEqual(result.type, 'Article');
+					});
+				});
+
+				describe('Mentions', () => {
+					let mentionUid;
+					let mentionPlugin;
+					let originalIsActive;
+
+					before(async function () {
+						const { cid } = await categories.create({ name: utils.generateUUID() });
+						this.cid = cid;
+
+						// Create a user to mention
+						mentionUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+
+						// Mock the mentions plugin as active
+						originalIsActive = plugins.isActive;
+						plugins.isActive = (name, callback) => {
+							if (name === 'nodebb-plugin-mentions') {
+								if (typeof callback === 'function') {
+									callback(null, true);
+								} else {
+									return Promise.resolve(true);
+								}
+							} else {
+								return originalIsActive(name, callback);
+							}
+						};
+						plugins.isActive.toString = () => originalIsActive.toString();
+
+						// Mock the mentions plugin's getMatches
+						const mentionPath = path.join(__dirname, '../../node_modules/nodebb-plugin-mentions');
+						mentionPlugin = require.main.require(mentionPath);
+						mentionPlugin.getMatches = async (content) => {
+							const matches = new Set();
+							// Simple regex to find @username mentions
+							const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+							let match;
+							while ((match = mentionRegex.exec(content)) !== null) {
+								const username = match[1].toLowerCase();
+								if (username === mentionPlugin.targetUsername) {
+									matches.add({
+										type: 'uid',
+										id: mentionPlugin.targetUid,
+										slug: `@${username}`,
+									});
+								}
+							}
+							return matches;
+						};
+					});
+
+					after(() => {
+						plugins.isActive = originalIsActive;
+					});
+
+					beforeEach(() => {
+						mentionPlugin.targetUsername = null;
+						mentionPlugin.targetUid = null;
+					});
+
+					it('should generate correct /uid/{uid} href for local user mentions', async function () {
+						// Set the target username/uid for the mock
+						const userData = await user.getUserData(mentionUid);
+						mentionPlugin.targetUsername = userData.username;
+						mentionPlugin.targetUid = mentionUid;
+
+						const { cid, uid } = this;
+						const mentionContent = `Hello @${userData.username}, this is a test post.`;
+
+						const { postData } = await topics.post({
+							cid,
+							uid,
+							content: mentionContent,
+						});
+
+						const result = await activitypub.mocks.notes.public(postData);
+
+						assert(Array.isArray(result.tag), 'result.tag should be an array');
+
+						const mentionTag = result.tag.find(
+							(tag) => tag.type === 'Mention' && tag.href.includes('/uid/')
+						);
+						assert(mentionTag, 'Should have a mention tag with /uid/ href');
+						assert.strictEqual(
+							mentionTag.href,
+							`${nconf.get('url')}/uid/${mentionUid}`,
+							'Mention href should use /uid/{uid} format'
+						);
+					});
+
+					it('should generate correct /category/{cid} href for local category mentions', async function () {
+						// Create a category to mention
+						const { cid: mentionCid } = await categories.create({ name: utils.generateUUID() });
+
+						// Set up the mock for a category mention
+						mentionPlugin.getMatches = async (content) => {
+							const matches = new Set();
+							const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+							let match;
+							while ((match = mentionRegex.exec(content)) !== null) {
+								const slug = match[1].toLowerCase();
+								matches.add({
+									type: 'cid',
+									id: mentionCid,
+									slug: `@${slug}`,
+								});
+							}
+							return matches;
+						};
+
+						const { cid, uid } = this;
+						const mentionContent = `Hello @testcategory, this is a test post.`;
+
+						const { postData } = await topics.post({
+							cid,
+							uid,
+							content: mentionContent,
+						});
+
+						const result = await activitypub.mocks.notes.public(postData);
+
+						assert(Array.isArray(result.tag), 'result.tag should be an array');
+
+						const categoryMentionTag = result.tag.find(
+							(tag) => tag.type === 'Mention' && tag.href.includes('/category/')
+						);
+						assert(categoryMentionTag, 'Should have a category mention tag with /category/ href');
+						assert.strictEqual(
+							categoryMentionTag.href,
+							`${nconf.get('url')}/category/${mentionCid}`,
+							'Category mention href should use /category/{cid} format'
+						);
 					});
 				});
 			});

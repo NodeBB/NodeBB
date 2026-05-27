@@ -199,6 +199,7 @@
     "info.no-mute-history": "Bu istifadəçi heç vaxt səssizləşdirilməyib",
     "info.muted-until": "% 1-ə qədər səssizləşdirilib",
     "info.muted-expiry": "İstifadə müddəti",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Səbəb göstərilməyib.",
     "info.username-history": "İstifadəçi adı tarixçəsi",
     "info.email-history": "E-poçt tarixçəsi",

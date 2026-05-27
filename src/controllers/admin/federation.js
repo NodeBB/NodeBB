@@ -110,6 +110,7 @@ federationController.analytics = async function (req, res) {
 };
 
 federationController.errors = async function (req, res) {
+	const { hostname: filterHostname, type: filterType } = req.query;
 	let errors = await db.getSortedSetRevRangeByScoreWithScores('ap.errors', 0, -1, Date.now(), '-inf');
 	const errorObj = await db.getObjects(errors.map(({ value: id }) => `ap.errors:${id}`));
 	errors = errors.map(({ value: id, score: timestamp }, idx) => {
@@ -128,6 +129,13 @@ federationController.errors = async function (req, res) {
 			({ hostname } = new URL(id));
 		} catch (e) {
 			// noop
+		}
+
+		if (filterHostname && hostname !== filterHostname) {
+			return null;
+		}
+		if (filterType && type !== filterType) {
+			return null;
 		}
 
 		return {

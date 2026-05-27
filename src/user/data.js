@@ -20,7 +20,7 @@ const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
 	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline',
 	'lastqueuetime', 'lastposttime', 'followingCount', 'followerCount',
-	'blocksCount', 'passwordExpiry', 'mutedUntil',
+	'blocksCount', 'passwordExpiry', 'muted', 'mutedUntil', 'flags',
 ];
 
 module.exports = function (User) {
@@ -30,7 +30,7 @@ module.exports = function (User) {
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
-		'cover:position', 'groupTitle', 'mutedUntil', 'mutedReason',
+		'cover:position', 'groupTitle', 'muted', 'mutedUntil', 'mutedReason',
 	];
 
 	let customFieldWhiteList = null;
@@ -161,6 +161,8 @@ module.exports = function (User) {
 			banned: 'banned:expire',
 			'banned:expire': 'banned',
 			username: 'fullname',
+			muted: 'mutedUntil',
+			mutedUntil: 'muted',
 		};
 		for (const [key, field] of Object.entries(requiredFields)) {
 			if (fields.includes(key) && !fields.includes(field)) {
@@ -253,6 +255,7 @@ module.exports = function (User) {
 		}
 
 		const unbanUids = [];
+		const unmuteUids = [];
 		users.forEach((user) => {
 			if (!user) {
 				return;
@@ -293,6 +296,10 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
+			if (user.picture) {
+				user.picture = validator.escape(String(user.picture || ''));
+			}
+
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :
@@ -315,8 +322,19 @@ module.exports = function (User) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 
-			if (user.hasOwnProperty('mutedUntil')) {
-				user.muted = user.mutedUntil > Date.now();
+			if (user.hasOwnProperty('muted') && user.hasOwnProperty('mutedUntil')) {
+				const isMuted = Boolean(user.muted);
+				user.muted = Boolean(user.muted && (user.mutedUntil > Date.now() || user.mutedUntil === 0));
+				const unmute = !user.muted && isMuted && user.mutedUntil && user.mutedUntil <= Date.now();
+				if (unmute) {
+					unmuteUids.push(user.uid);
+				}
+				user.mutedUntil = !user.muted ? 0 : user.mutedUntil;
+				if (user.muted) {
+					user.muted_until_readable = user.mutedUntil === 0 ?
+						'[[user:info.muted-permanently]]' :
+						utils.toISOString(user.mutedUntil);
+				}
 			}
 
 			user.isLocal = utils.isNumber(user.uid);
@@ -335,7 +353,7 @@ module.exports = function (User) {
 				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
-				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
+				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : '[[user:info.banned-permanently]]';
 				if (unban) {
 					unbanUids.push(user.uid);
 					user.banned = false;
@@ -352,9 +370,10 @@ module.exports = function (User) {
 			});
 		});
 
-		if (unbanUids.length) {
-			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
-		}
+		await Promise.all([
+			unbanUids.length ? User.bans.unban(unbanUids, '[[user:info.ban-expired]]') : null,
+			unmuteUids.length ? db.sortedSetRemove('users:muted', unmuteUids) : null,
+		]);
 
 		return await plugins.hooks.fire('filter:users.get', users);
 	}

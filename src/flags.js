@@ -122,6 +122,11 @@ Flags.get = async function (flagId) {
 		notes,
 		reports,
 	};
+	['flagId', 'targetUid', 'datetime', 'targetId'].forEach((prop) => {
+		if (flagObj?.[prop]) {
+			flagObj[prop] = parseInt(flagObj[prop], 10);
+		}
+	});
 
 	const data = await plugins.hooks.fire('filter:flags.get', {
 		flag: flagObj,
@@ -210,6 +215,11 @@ Flags.list = async function (data) {
 			...flagObj,
 		};
 		flagObj.labelClass = Flags._states.get(flagObj.state).class;
+		['flagId', 'targetUid', 'datetime'].forEach((prop) => {
+			if (flagObj?.[prop]) {
+				flagObj[prop] = parseInt(flagObj[prop], 10);
+			}
+		});
 
 		return Object.assign(flagObj, {
 			target_readable: `${flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1)} ${flagObj.targetId}`,
@@ -855,7 +865,7 @@ Flags.getHistory = async function (flagId) {
 		}
 
 		return {
-			uid: entry.value[0],
+			uid: utils.isNumber(entry.value[0]) ? parseInt(entry.value[0], 10) : entry.value[0],
 			fields: changeset,
 			datetime: entry.score,
 			datetimeISO: utils.toISOString(entry.score),

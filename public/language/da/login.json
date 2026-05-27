@@ -8,5 +8,6 @@
     "login-successful": "Du har successfuldt logged in!",
     "dont-have-account": "Har du ikke en konto?",
     "logged-out-due-to-inactivity": "Du er blevet logged af Admin Kontrol Panelet, på grund af din inaktiviet.",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

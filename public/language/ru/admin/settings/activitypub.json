@@ -78,5 +78,7 @@
 	"analytics.daily": "Daily",
 
 	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
-	"errors.payload-gone": "The payload for this error no longer exists."
+	"errors.payload-gone": "The payload for this error no longer exists.",
+	"errors.hostname": "Hostname",
+	"errors.type": "Type"
 }

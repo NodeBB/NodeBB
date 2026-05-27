@@ -33,10 +33,11 @@ module.exports = function (app, middleware, controllers) {
 	];
 
 	app.get('/actor', middlewares, helpers.tryRoute(controllers.activitypub.actors.application));
+	app.get('/actor/admins', middlewares, helpers.tryRoute(controllers.activitypub.getAdmins));
 	app.post('/inbox', [...middlewares, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 
-	app.get('/uid/:uid', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.actors.user));
-	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
+	app.get('/uid/:uid', [...middlewares, middleware.assert.user, middleware.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.user));
+	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user, middleware.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
 	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getInbox));
 	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getOutbox));
@@ -52,6 +53,7 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getInbox));
 	app.post('/category/:cid/inbox', [...inboxMiddlewares, middleware.assert.category, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getCategoryOutbox));
+	app.get('/category/:cid/moderators', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getCategoryModerators));
 	app.post('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.postOutbox));
 	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.category));
 

@@ -1,7 +1,7 @@
 {
 	"you-are-on": "あなたは<strong>%1:%2</strong>にいます",
 	"ip": "IP <strong>%1</strong>",
-	"nodes-responded": "％1ノードは％2ms以内に応答しました！",
+	"nodes-responded": "%1ノードは%2ms以内に応答しました！",
 	"host": "ホスト",
 	"primary": "プライマリ / ジョブ",
 	"pid": "pid",

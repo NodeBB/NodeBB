@@ -1,6 +1,6 @@
 {
     "invalid-data": "無効なデータ",
-    "invalid-config-field-value": "設定フィールド \\\"%1\\\" の値が無効です: %2",
+    "invalid-config-field-value": "設定フィールド \"%1\" の値が無効です: %2",
     "invalid-json": "無効なJSON",
     "wrong-parameter-type": "プロパティ `%1` には型 %3 の値が期待されますが、%2 が渡されました",
     "required-parameters-missing": "このAPI呼び出しに必要なパラメータが不足しています: %1",
@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "他の管理者をミュートすることはできません！",
     "user-muted-for-hours": "ミュートされました。%1時間後に投稿できるようになります。",
     "user-muted-for-minutes": "ミュートされました。%1分後に投稿できるようになります。",
+    "user-muted-indefinitely": "あなたは無期限でミュートされています",
     "cant-make-banned-users-admin": "利用停止中のユーザーを管理者にすることはできません。",
     "cant-remove-last-admin": "あなたが唯一の管理者です。自分の管理者権限を外す前に、別のユーザーを管理者に追加してください。",
     "account-deletion-disabled": "アカウント削除は無効になっています",
@@ -131,6 +132,7 @@
     "invalid-image-type": "無効なイメージタイプです。許可された種類は: %1",
     "invalid-image-extension": "無効なイメージのエクステンション",
     "invalid-file-type": "無効なファイルタイプです。許可された種類は: %1",
+    "blocked-file-type": "ファイル形式は許可されていません。拡張子 %1 は管理者によって明示的にブロックされています。",
     "invalid-image-dimensions": "画像が大きすぎます",
     "group-name-too-short": "グループ名は短すぎます。",
     "group-name-too-long": "グループ名が長すぎます",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "同じスレッドに投稿を移動することはできません!",
     "cant-move-topic-to-same-category": "同じカテゴリにスレッドを移動できません！",
     "cant-move-topic-to-from-remote-categories": "リモートカテゴリとの間でスレッドを移動できません。代わりにクロスポストをご検討ください。",
+    "cant-move-topic-too-many-posts": "投稿数が%1件を超えるスレッドは移動できません。",
     "cannot-block-self": "自分をブロックすることは出来ません!",
     "cannot-block-privileged": "管理者またはグローバルモデレーターはブロックできません",
     "cannot-block-guest": "ゲストは他のユーザーをブロックできません",
@@ -263,9 +266,11 @@
     "api.reauth-required": "アクセスしようとしているリソースには（再）認証が必要です。",
     "activitypub.not-enabled": "このサーバーではフェデレーションは有効になっていません",
     "activitypub.invalid-id": "入力IDを解決できません。形式が正しくない可能性があります。",
+    "activitypub.invalid-content-type": "返されたコンテンツに想定外の content-type が指定されていました",
     "activitypub.get-failed": "指定されたリソースを取得できません。",
     "activitypub.pubKey-not-found": "公開鍵を解決できないため、ペイロードの検証ができません。",
     "activitypub.origin-mismatch": "受信したオブジェクトのオリジンが送信者のオリジンと一致しません",
     "activitypub.not-implemented": "リクエストまたはその一部が受信サーバーで実装されていないため、拒否されました",
-    "activitypub.orphan": "受信したオブジェクトは、既知のローカルユーザーのいずれにも関連付けられていません。"
+    "activitypub.orphan": "受信したオブジェクトは、既知のローカルユーザーのいずれにも関連付けられていません。",
+    "activitypub.rate-limited": "あなたのIPアドレスはレート制限されています。"
 }

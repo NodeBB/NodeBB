@@ -27,6 +27,8 @@ get:
                           description: Custom identifier (value is added to `input[id]` and `label[for]`)
                   alternate_logins:
                     type: boolean
+                  osw_logins:
+                    type: boolean
                   authentication:
                     type: array
                     items:

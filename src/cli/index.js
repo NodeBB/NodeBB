@@ -49,6 +49,7 @@ try {
 	checkVersion('chalk');
 	checkVersion('lodash');
 	checkVersion('lru-cache');
+	checkVersion('@xmldom/xmldom');
 } catch (e) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn(`Dependencies outdated or not yet installed. Error Code: ${e.code}\n${e.stack}`);

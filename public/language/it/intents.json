@@ -1,0 +1,22 @@
+{
+	"display.create": "Crea e rispondi",
+	"display.like": "Vota positivamente",
+	"display.dislike": "Vota negativamente",
+	"display.follow": "Segui",
+	"display.object": "Visualizzazioni",
+	"title": "Registra pseudonimo Open Social Web",
+	"description": "Inserisci il tuo pseudonimo Open Social Web per registrarti ad Activity Intents. In questo modo potrai condividere i contenuti di questo forum sul tuo profilo social.",
+	"handle-label": "Apri pseudonimo Open Social Web",
+	"handle-placeholder": "username@example.com",
+	"register-button": "Registra pseudonimo",
+	"registered-handles": "Pseudonimo registrato",
+	"no-handles": "Ancora nessuno pseudonimo registrato.",
+	"intents-label": "Intenti supportati",
+	"register-error": "Impossibile registrare lo pseudonimo. Verificare il formato dello pseudonimo e riprova.",
+	"invalid-handle": "Inserisci uno pseudonimo valido nel formato @username@domain.com",
+	"trigger-title": "%1 tramite Open Social Web",
+	"trigger-description": "Accedi al tuo account del forum oppure scegli uno pseudonimo Open Social Web per completare questa operazione",
+	"trigger-your-handles": "I tuoi pseudonimi registrati",
+	"trigger-yes": "Sì, usa questo",
+	"trigger-no-matching": "Nessun pseudonimo registrato supporta questa funzione. Registra un nuovo pseudonimo o accedi."
+}

@@ -1,0 +1,12 @@
+{
+	"pagination": "Pagination Settings",
+	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"posts": "Post Pagination",
+	"topics": "Topic Pagination",
+	"posts-per-page": "Posts per Page",
+	"max-posts-per-page": "Maximum posts per page",
+	"categories": "Category Pagination",
+	"topics-per-page": "Topics per Page",
+	"max-topics-per-page": "Maximum topics per page",
+	"categories-per-page": "Categories per page"
+}

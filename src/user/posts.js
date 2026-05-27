@@ -18,14 +18,19 @@ module.exports = function (User) {
 
 	User.checkMuted = async function (uid) {
 		const now = Date.now();
-		const mutedUntil = await User.getUserField(uid, 'mutedUntil');
-		if (mutedUntil > now) {
-			let muteLeft = ((mutedUntil - now) / (1000 * 60));
-			if (muteLeft > 60) {
-				muteLeft = (muteLeft / 60).toFixed(0);
-				throw new Error(`[[error:user-muted-for-hours, ${muteLeft}]]`);
-			} else {
-				throw new Error(`[[error:user-muted-for-minutes, ${muteLeft.toFixed(0)}]]`);
+		const { muted, mutedUntil } = await User.getUserFields(uid, ['muted', 'mutedUntil']);
+		if (muted) {
+			if (mutedUntil === 0) {
+				throw new Error('[[error:user-muted-indefinitely]]');
+			}
+			if (mutedUntil > now) {
+				let muteLeft = ((mutedUntil - now) / (1000 * 60));
+				if (muteLeft > 60) {
+					muteLeft = (muteLeft / 60).toFixed(0);
+					throw new Error(`[[error:user-muted-for-hours, ${muteLeft}]]`);
+				} else {
+					throw new Error(`[[error:user-muted-for-minutes, ${muteLeft.toFixed(0)}]]`);
+				}
 			}
 		}
 	};

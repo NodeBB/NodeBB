@@ -1,9 +1,10 @@
 'use strict';
 
 const winston = require('winston');
-const mime = require('mime');
+const mime = require('mime').default;
 const path = require('path');
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const file = require('../file');
@@ -225,6 +226,7 @@ module.exports = function (User) {
 
 	User.removeProfileImage = async function (uid, picture) {
 		const userData = await User.getUserFields(uid, ['uploadedpicture', 'picture']);
+		userData.picture = validator.unescape(String(userData.picture || ''));
 		if (!picture) {
 			picture = userData.uploadedpicture;
 		}

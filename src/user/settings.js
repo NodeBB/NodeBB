@@ -28,7 +28,7 @@ module.exports = function (User) {
 		}
 		let settings = await db.getObject(`user:${uid}:settings`);
 		settings = settings || {};
-		settings.uid = uid;
+		settings.uid = parseInt(uid, 10);
 		return await onSettingsLoaded(uid, settings);
 	};
 

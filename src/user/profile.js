@@ -109,11 +109,17 @@ module.exports = function (User) {
 					));
 				}
 
+				const isUrl = value && validator.isURL(String(value).trim(), {
+					require_protocol: true,
+					require_valid_protocol: true,
+					require_tld: true,
+				});
+
 				if (type === 'input-number' && !utils.isNumber(value)) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-number', field.name
 					));
-				} else if (value && type === 'input-text' && validator.isURL(value)) {
+				} else if (value && type === 'input-text' && isUrl) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-text', field.name
 					));
@@ -121,7 +127,7 @@ module.exports = function (User) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-date', field.name
 					));
-				} else if (value && field.type === 'input-link' && !validator.isURL(String(value))) {
+				} else if (value && field.type === 'input-link' && !isUrl) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-link', field.name
 					));

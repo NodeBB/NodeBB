@@ -41,6 +41,7 @@
     "chat.public-rooms": "Јавне собе (%1)",
     "chat.private-rooms": "Приватне собе (%1)",
     "chat.create-room": "Креирај собу за ћаскање",
+    "chat.search-chats-placeholder": "Search chats...",
     "chat.private.option": "Приватно (видљиво само корисницима додатим у собу)",
     "chat.public.option": "Јавно (видљиво сваком кориснику у изабраним групама)",
     "chat.public.groups-help": "За креирање собе за ћаскање која је видљива свим корисницима, изаберите регистроване кориснике са листе група.",

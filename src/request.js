@@ -87,7 +87,23 @@ class NodeBBAgent extends Agent {
 	}
 }
 const isDevOrTest = process.env.NODE_ENV === 'development' || process.env.CI === 'true';
+
+// Connection pool sizing — prevents the event loop from being flooded when
+// ActivityPub or other code fires many concurrent outbound requests.
+// These values are kept conservative because the bottleneck is I/O callback
+// processing in the single-threaded event loop, not CPU throughput.
+// ActivityPub batches scale with CPU count independently, so maxSockets
+// acts as a hard cap that forces queuing rather than thundering herd.
+const maxSockets = 64; // total sockets across all hosts
+const maxConnections = 256; // allow connection reuse above maxSockets
+const connectionsPerHost = 10; // per-server connection limit
+
 const dispatcher = new NodeBBAgent({
+	maxSockets,
+	maxConnections,
+	connections: connectionsPerHost,
+	allowH2: true,
+	pipelining: 1,
 	connect: {
 		lookup,
 		rejectUnauthorized: !isDevOrTest,

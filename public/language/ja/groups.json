@@ -15,7 +15,7 @@
     "pending.none": "保留中のメンバーは現在いません",
     "invited.none": "招待中のメンバーは現在いません",
     "invited.uninvite": "招待を取り消す",
-    "invited.search": "このグループに招待しているユーザーを検索",
+    "invited.search": "このグループに招待するユーザーを検索",
     "invited.notification-title": "グループ<strong>%1</strong>に招待されました",
     "request.notification-title": "<strong>%1</strong>からのグループ参加リクエスト",
     "request.notification-text": "<strong>%1</strong>が<strong>%2</strong>への参加をリクエストしています。",

@@ -1,9 +1,9 @@
 {
-	"jobs": "Jobs",
-	"job-name": "Job Name",
-	"schedule": "Schedule",
-	"next-run": "Next Run",
-	"last-duration": "Last Duration",
-	"running": "Running",
-	"active": "Active"
+	"jobs": "Zadania",
+	"job-name": "Nazwa Zadania",
+	"schedule": "Harmonogram",
+	"next-run": "Następne Uruchomienie",
+	"last-duration": "Ostatni Czas Trwania",
+	"running": "Uruchomione",
+	"active": "Aktywne"
 }

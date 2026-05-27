@@ -8,5 +8,6 @@
     "login-successful": "Успешно сте се пријавили!",
     "dont-have-account": "Немате налог?",
     "logged-out-due-to-inactivity": "Одјављени сте са администраторске контролне табле због неактивности",
-    "caps-lock-enabled": "Тастер Caps Lock је укључен"
+    "caps-lock-enabled": "Тастер Caps Lock је укључен",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

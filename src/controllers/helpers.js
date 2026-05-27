@@ -608,4 +608,26 @@ helpers.generateError = async (statusCode, message, res) => {
 	return payload;
 };
 
+helpers.validateParameters = function (query, fields, validation) {
+	// Parse query string params for filters, eliminate non-valid filters
+	const valid = fields.reduce((memo, field) => {
+		if (query.hasOwnProperty(field) && Object.hasOwn(validation, field)) {
+			const val = query[field];
+			const validationRule = validation[field];
+			if (Array.isArray(validationRule) && validationRule.includes(val)) {
+				memo[field] = val;
+			} else if (validationRule === 'number') {
+				if (Array.isArray(val)) {
+					memo[field] = val.filter(utils.isNumber);
+				} else if (utils.isNumber(val)) {
+					memo[field] = val;
+				}
+			}
+		}
+
+		return memo;
+	}, {});
+	return valid;
+};
+
 require('../promisify')(helpers);

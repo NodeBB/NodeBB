@@ -199,6 +199,7 @@
     "info.no-mute-history": "Այս օգտատիրոջ ձայնը երբեք չի անջատվել",
     "info.muted-until": "Ձայնը անջատված է մինչև %1",
     "info.muted-expiry": "Ժամկետը",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Ոչ մի պատճառ չի նշվում:",
     "info.username-history": "Օգտատիրոջ անունի պատմություն",
     "info.email-history": "էլ.փոստի պատմություն",

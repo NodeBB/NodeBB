@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "אין אפשרות להשתיק מנהלים אחרים!",
     "user-muted-for-hours": "הושתקתם, תוכלו לפרסם פוסט בעוד %1 שעות",
     "user-muted-for-minutes": "הושתקתם, תוכלו לפרסם פוסט בעוד %1 דקות",
+    "user-muted-indefinitely": "הושתק ללא הגבלת זמן",
     "cant-make-banned-users-admin": "אין אפשרות להפוך משתמשים מורחקים למנהלים.",
     "cant-remove-last-admin": "אתם המנהלים היחידים. הוסיפו משתמש אחר לניהול לפני שאתם מוריד את עצמכם מניהול",
     "account-deletion-disabled": "מחיקת החשבון מושבת",
@@ -131,6 +132,7 @@
     "invalid-image-type": "פורמט תמונה לא תקין. הפורמטים המורשים הם: %1",
     "invalid-image-extension": "פורמט תמונה לא תקין",
     "invalid-file-type": "פורמט קובץ לא תקין. הפורמטים המורשים הם: %1",
+    "blocked-file-type": "סוג קובץ אינו מותר. התוסף %1 חסום במפורש על ידי מנהל המערכת.",
     "invalid-image-dimensions": "ממדי התמונה גדולים מדי",
     "group-name-too-short": "שם קבוצה קצר מדי",
     "group-name-too-long": "שם קבוצה ארוך מידי",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "לא ניתן להעביר פוסט לאותו נושא!",
     "cant-move-topic-to-same-category": "לא ניתן להעביר נושא לאותה קטגוריה!",
     "cant-move-topic-to-from-remote-categories": "לא ניתן להעביר נושאים אל או מחוץ לקטגוריות מרוחקות; נסו שיוך קטגוריה במקום זאת.",
+    "cant-move-topic-too-many-posts": "לא ניתן להעביר נושא עם יותר מ-%1 פוסטים.",
     "cannot-block-self": "לא ניתן לחסום את עצמך!",
     "cannot-block-privileged": "לא ניתן לחסום מנהלים או מנחים גלובליים",
     "cannot-block-guest": "אורחים אינם יכולים לחסום משתמשים אחרים",
@@ -263,9 +266,11 @@
     "api.reauth-required": "המשאב שאליו אתה מנסה לגשת דורש אימות (מחודש).",
     "activitypub.not-enabled": "הפדרציה אינה מופעלת בשרת זה",
     "activitypub.invalid-id": "לא ניתן לפתור את מזהה הקלט, ככל הנראה מכיוון שהוא פגום.",
+    "activitypub.invalid-content-type": "סוג תוכן לא צפוי היה משויך לתוכן שהוחזר",
     "activitypub.get-failed": "לא ניתן לאחזר את המשאב שצוין.",
     "activitypub.pubKey-not-found": "לא ניתן לפתור מפתח ציבורי, ולכן לא ניתן לבצע אימות מטען.",
     "activitypub.origin-mismatch": "מקור האובייקט שהתקבל אינו תואם את מקור השולח",
     "activitypub.not-implemented": "הבקשה נדחתה מכיוון שהיא או היבט שלה אינם מיושמים על ידי שרת הנמען",
-    "activitypub.orphan": "האובייקט שהתקבל אינו משויך לאף משתמש מקומי ידוע."
+    "activitypub.orphan": "האובייקט שהתקבל אינו משויך לאף משתמש מקומי ידוע.",
+    "activitypub.rate-limited": "כתובת ה-IP שלך עברה את מגבלת ה-rate-limite."
 }

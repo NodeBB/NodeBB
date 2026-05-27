@@ -8,5 +8,6 @@
     "confirm-delete": "このファイルを本当に削除しますか？",
     "filecount": "%1 個のファイル",
     "new-folder": "新しいフォルダ",
-    "name-new-folder": "新しいフォルダの名前を入力"
+    "name-new-folder": "新しいフォルダの名前を入力",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

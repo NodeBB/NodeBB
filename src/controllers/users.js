@@ -24,6 +24,7 @@ usersController.index = async function (req, res, next) {
 		'sort-posts': usersController.getUsersSortedByPosts,
 		'sort-reputation': usersController.getUsersSortedByReputation,
 		banned: usersController.getBannedUsers,
+		muted: usersController.getMutedUsers,
 		flagged: usersController.getFlaggedUsers,
 	};
 
@@ -48,13 +49,14 @@ usersController.search = async function (req, res) {
 };
 
 usersController.getOnlineUsers = async function (req, res) {
-	const [userData, guests] = await Promise.all([
+	const [isAdminOrGlobalMod, userData, guests] = await Promise.all([
+		user.isAdminOrGlobalMod(req.uid),
 		usersController.getUsers('users:online', req.uid, req.query),
 		require('../socket.io/admin/rooms').getTotalGuestCount(),
 	]);
 
 	let hiddenCount = 0;
-	if (!userData.isAdminOrGlobalMod) {
+	if (!isAdminOrGlobalMod) {
 		userData.users = userData.users.filter((user) => {
 			const showUser = user && (user.uid === req.uid || user.userStatus !== 'offline');
 			if (!showUser) {
@@ -88,6 +90,10 @@ usersController.getBannedUsers = async function (req, res) {
 	await renderIfAdminOrGlobalMod('users:banned', req, res);
 };
 
+usersController.getMutedUsers = async function (req, res) {
+	await renderIfAdminOrGlobalMod('users:muted', req, res);
+};
+
 usersController.getFlaggedUsers = async function (req, res) {
 	await renderIfAdminOrGlobalMod('users:flags', req, res);
 };
@@ -112,6 +118,7 @@ usersController.getUsers = async function (set, uid, query) {
 		'users:joindate': { title: '[[pages:users/latest]]', crumb: '[[global:users]]' },
 		'users:online': { title: '[[pages:users/online]]', crumb: '[[global:online]]' },
 		'users:banned': { title: '[[pages:users/banned]]', crumb: '[[user:banned]]' },
+		'users:muted': { title: '[[pages:users/muted]]', crumb: '[[user:muted]]' },
 		'users:flags': { title: '[[pages:users/most-flags]]', crumb: '[[users:most-flags]]' },
 	};
 
@@ -130,9 +137,7 @@ usersController.getUsers = async function (set, uid, query) {
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
-	const [isAdmin, isGlobalMod, canSearch, usersData] = await Promise.all([
-		user.isAdministrator(uid),
-		user.isGlobalModerator(uid),
+	const [canSearch, usersData] = await Promise.all([
 		privileges.global.can('search:users', uid),
 		usersController.getUsersAndCount(set, uid, start, stop),
 	]);
@@ -140,12 +145,9 @@ usersController.getUsers = async function (set, uid, query) {
 	return {
 		users: usersData.users,
 		pagination: pagination.create(page, pageCount, query),
-		userCount: usersData.count,
+		userCount: parseInt(usersData.count, 10),
 		title: setToData[set].title || '[[pages:users/latest]]',
 		breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
-		isAdminOrGlobalMod: isAdmin || isGlobalMod,
-		isAdmin: isAdmin,
-		isGlobalMod: isGlobalMod,
 		displayUserSearch: canSearch,
 		[`section_${query.section || 'joindate'}`]: true,
 	};
@@ -155,7 +157,7 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 	async function getCount() {
 		if (set === 'users:online') {
 			return await db.sortedSetCount('users:online', Date.now() - 86400000, '+inf');
-		} else if (set === 'users:banned' || set === 'users:flags') {
+		} else if (set === 'users:banned' || set === 'users:flags' || set === 'users:muted') {
 			return await db.sortedSetCard(set);
 		}
 		return await db.getObjectField('global', 'userCount');
@@ -195,10 +197,19 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 async function render(req, res, data) {
 	const { registrationType } = meta.config;
 
+	const [isAdmin, isGlobalMod, invites] = await Promise.all([
+		user.isAdministrator(req.uid),
+		user.isGlobalModerator(req.uid),
+		user.getInvitesNumber(req.uid),
+	]);
+	data.isAdminOrGlobalMod = isAdmin || isGlobalMod;
+	data.isAdmin = isAdmin;
+	data.isGlobalMod = isGlobalMod;
+
 	data.maximumInvites = meta.config.maximumInvites;
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
-	data.invites = await user.getInvitesNumber(req.uid);
+	data.invites = invites;
 
 	data.showInviteButton = false;
 	if (data.adminInviteOnly) {

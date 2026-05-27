@@ -11,5 +11,5 @@
 	"count": "件数",
 	"no-routes-not-found": "404 エラーはありません。",
 	"clear404-confirm": "404 エラーログを消去してもよろしいですか？",
-	"clear404-success": "\\\"404 Not Found\\\" エラーを消去しました"
+	"clear404-success": "\"404 Not Found\" エラーを消去しました"
 }

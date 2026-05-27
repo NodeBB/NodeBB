@@ -77,6 +77,8 @@
 	"analytics.hourly": "Stündlich",
 	"analytics.daily": "Täglich",
 
-	"errors.intro": "Die folgenden %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
-	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden."
+	"errors.intro": "Folgende(r) %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
+	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden.",
+	"errors.hostname": "Hostname",
+	"errors.type": "Typ"
 }

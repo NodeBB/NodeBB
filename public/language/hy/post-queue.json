@@ -10,6 +10,7 @@
 	"user": "Օգտատեր",
 	"when": "Երբ",
 	"category": "Կատեգորիա",
+	"tags": "Tags",
 	"title": "Կոչում",
 	"content": "Կոնտենտ",
 	"posted": "Հրապարակված",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Ցանկանու՞մ եք հեռացնել %1 ընտրված գրառումները:",
 	"bulk-accept-success": "Ընդունված է %1 գրառում",
 	"bulk-reject-success": "%1 գրառում մերժվել է",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

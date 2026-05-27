@@ -8,5 +8,6 @@
     "login-successful": "Başarıyla giriş yaptınız!",
     "dont-have-account": "Hesabınız yok mu?",
     "logged-out-due-to-inactivity": "Hareketsizlik nedeniyle yönetici panelinden çıkış yapıldı",
-    "caps-lock-enabled": "Caps Lock aktif"
+    "caps-lock-enabled": "Caps Lock aktif",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }
