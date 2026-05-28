@@ -117,16 +117,3 @@ Blocklists.check = async (domain) => {
 		listUrl: bestListUrl,
 	};
 };
-
-Blocklists.getSeverityInfo = async (domain) => {
-	const result = await Blocklists.check(domain);
-	if (result.severity === null) {
-		return null;
-	}
-	return { severity: result.severity, listUrl: result.listUrl };
-};
-
-Blocklists.getSeverity = async (domain) => {
-	const result = await Blocklists.check(domain);
-	return result.severity;
-};

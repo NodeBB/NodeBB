@@ -15,20 +15,18 @@ Instances.getCount = async () => db.sortedSetCard('instances:lastSeen');
 Instances.list = async () => db.getSortedSetMembers('instances:lastSeen');
 
 Instances.isAllowed = async (domain) => {
-	const { allowed, severity } = await activitypub.blocklists.check(domain);
-	const blocklistInfo = await activitypub.blocklists.getSeverityInfo(domain);
-
+	const result = await activitypub.blocklists.check(domain);
 	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;
 
-	if (!allowed && !type) {
-		return { allowed: false, severity, ...blocklistInfo };
+	if (!result.allowed && !type) {
+		return result;
 	}
 
 	list = new Set(String(list).split('\n'));
 
-	if (allowed) {
-		return { allowed: type ? list.has(domain) : true, severity, ...blocklistInfo };
+	if (result.allowed) {
+		return { ...result, allowed: type ? list.has(domain) : true };
 	}
 
-	return { allowed: type ? !list.has(domain) : false, severity, ...blocklistInfo };
+	return { ...result, allowed: type ? !list.has(domain) : false };
 };

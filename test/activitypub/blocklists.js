@@ -11,6 +11,11 @@ const install = require('../../src/install');
 const activitypub = require('../../src/activitypub');
 
 describe('ActivityPub blocklists', () => {
+	const getSeverity = async (domain) => {
+		const result = await activitypub.blocklists.check(domain);
+		return result.severity;
+	};
+
 	before(async function () {
 		meta.config.activitypubEnabled = 1;
 		meta.config.activitypubAllowLoopback = 1;
@@ -247,9 +252,9 @@ describe('ActivityPub blocklists', () => {
 
 			await activitypub.blocklists.refresh(u);
 
-			assert.strictEqual(await activitypub.blocklists.getSeverity('suspend.com'), 1);
-			assert.strictEqual(await activitypub.blocklists.getSeverity('silence.com'), 2);
-			assert.strictEqual(await activitypub.blocklists.getSeverity('filter.com'), 3);
+			assert.strictEqual(await getSeverity('suspend.com'), 1);
+			assert.strictEqual(await getSeverity('silence.com'), 2);
+			assert.strictEqual(await getSeverity('filter.com'), 3);
 		});
 
 		it('should default unknown severity values to suspend (score 1)', async () => {
@@ -257,16 +262,16 @@ describe('ActivityPub blocklists', () => {
 
 			await activitypub.blocklists.refresh(u);
 
-			assert.strictEqual(await activitypub.blocklists.getSeverity('unknown.com'), 1);
-			assert.strictEqual(await activitypub.blocklists.getSeverity('missing.com'), 1);
-			assert.strictEqual(await activitypub.blocklists.getSeverity('empty.com'), 1);
+			assert.strictEqual(await getSeverity('unknown.com'), 1);
+			assert.strictEqual(await getSeverity('missing.com'), 1);
+			assert.strictEqual(await getSeverity('empty.com'), 1);
 		});
 
 		it('should overwrite previous domains and severities', async () => {
 			mockCsv('#domain,#severity\nold.com,silence');
 			await activitypub.blocklists.refresh(u);
 
-			const sev1 = await activitypub.blocklists.getSeverity('old.com');
+			const sev1 = await getSeverity('old.com');
 			assert.strictEqual(sev1, 2, `expected old.com severity to be 2, got ${sev1}`);
 
 			mockCsv('#domain,#severity\nnew.com,filter');
@@ -277,10 +282,10 @@ describe('ActivityPub blocklists', () => {
 			assert(result.domains.includes('new.com'));
 			assert(!result.domains.includes('old.com'));
 
-			const sevNew = await activitypub.blocklists.getSeverity('new.com');
+			const sevNew = await getSeverity('new.com');
 			assert.strictEqual(sevNew, 3, `expected new.com severity to be 3, got ${sevNew}`);
 
-			const sevOld = await activitypub.blocklists.getSeverity('old.com');
+			const sevOld = await getSeverity('old.com');
 			assert.strictEqual(sevOld, null, `expected old.com severity to be null, got ${sevOld}`);
 		});
 	});
@@ -375,7 +380,7 @@ describe('ActivityPub blocklists', () => {
 		});
 
 		it('should return null for a domain not in any blocklist', async () => {
-			const result = await activitypub.blocklists.getSeverity('nowhere.com');
+			const result = await getSeverity('nowhere.com');
 			assert.strictEqual(result, null);
 		});
 
@@ -384,9 +389,9 @@ describe('ActivityPub blocklists', () => {
 			mockCsv('#domain,#severity\nsuspend.com,suspend\nsilence.com,silence\nfilter.com,filter');
 			await activitypub.blocklists.add(u);
 
-			assert.strictEqual(await activitypub.blocklists.getSeverity('suspend.com'), 1);
-			assert.strictEqual(await activitypub.blocklists.getSeverity('silence.com'), 2);
-			assert.strictEqual(await activitypub.blocklists.getSeverity('filter.com'), 3);
+			assert.strictEqual(await getSeverity('suspend.com'), 1);
+			assert.strictEqual(await getSeverity('silence.com'), 2);
+			assert.strictEqual(await getSeverity('filter.com'), 3);
 		});
 
 		it('should return null after blocklist is removed', async () => {
@@ -394,11 +399,11 @@ describe('ActivityPub blocklists', () => {
 			mockCsv('#domain,#severity\nemp.com,silence');
 			await activitypub.blocklists.add(u);
 
-			assert.strictEqual(await activitypub.blocklists.getSeverity('emp.com'), 2);
+			assert.strictEqual(await getSeverity('emp.com'), 2);
 
 			await activitypub.blocklists.remove(u);
 
-			assert.strictEqual(await activitypub.blocklists.getSeverity('emp.com'), null);
+			assert.strictEqual(await getSeverity('emp.com'), null);
 		});
 	});
 
