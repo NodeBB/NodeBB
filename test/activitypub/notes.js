@@ -435,16 +435,45 @@ describe('Notes', () => {
 			await db.delete('post:queue');
 		}
 
+		/**
+		 * Mock instances.isAllowed to return a specific severity for a domain.
+		 */
+		function mockBlockedDomain(domain, severity) {
+			activitypub.instances.isAllowed = async (hostname) => {
+				if (hostname === domain) {
+					return {
+						allowed: false,
+						severity,
+						listUrl: 'https://example.org/blocklist.csv',
+					};
+				}
+				return activitypub.instances._originalIsAllowed(hostname);
+			};
+		}
+
+		before(async () => {
+			activitypub.instances._originalIsAllowed = activitypub.instances.isAllowed;
+		});
+
+		after(async () => {
+			if (activitypub.instances._originalIsAllowed) {
+				activitypub.instances.isAllowed = activitypub.instances._originalIsAllowed;
+			}
+		});
+
 		beforeEach(async () => {
 			await clearQueue();
 		});
 
 		describe('!hasTid — new topic', () => {
+			beforeEach(() => {
+				mockBlockedDomain('blocked.example.org', 3);
+			});
+
 			it('should queue the main post instead of creating it', async () => {
-				const { id } = helpers.mocks.note();
-				const assertion = await activitypub.notes.assert(0, id, {
+				const noteId = `https://blocked.example.org/object/${utils.generateUUID()}`;
+				const assertion = await activitypub.notes.assert(0, noteId, {
 					skipChecks: true,
-					blocklist: { severity: 3 },
 				});
 
 				assert(assertion);
@@ -457,15 +486,12 @@ describe('Notes', () => {
 			});
 
 			it('should queue parent and also queue replies when hasTid is false', async () => {
-				const { id: parentId } = helpers.mocks.note();
-				const { id: replyId } = helpers.mocks.note({
-					inReplyTo: parentId,
-				});
+				const parentId = `https://blocked.example.org/object/${utils.generateUUID()}`;
+				const replyId = `https://blocked.example.org/object/${utils.generateUUID()}`;
 
 				// Assert the parent with severity 3 — should queue and return tid: null
 				const parentAssertion = await activitypub.notes.assert(0, parentId, {
 					skipChecks: true,
-					blocklist: { severity: 3 },
 				});
 
 				assert(parentAssertion);
@@ -475,7 +501,6 @@ describe('Notes', () => {
 				// Assert the reply with severity 3 — parent has no tid, so hasTid is false
 				const replyAssertion = await activitypub.notes.assert(0, replyId, {
 					skipChecks: true,
-					blocklist: { severity: 3 },
 				});
 
 				assert(replyAssertion);
@@ -509,13 +534,14 @@ describe('Notes', () => {
 				mainPid = postData.pid;
 			});
 
+			beforeEach(() => {
+				mockBlockedDomain('blocked.example.org', 3);
+			});
+
 			it('should queue replies when severity is 3', async () => {
-				const { id } = helpers.mocks.note({
-					inReplyTo: `${nconf.get('url')}/post/${mainPid}`,
-				});
-				const assertion = await activitypub.notes.assert(0, id, {
+				const replyId = `https://blocked.example.org/object/${utils.generateUUID()}`;
+				const assertion = await activitypub.notes.assert(0, replyId, {
 					skipChecks: true,
-					blocklist: { severity: 3 },
 				});
 
 				assert(assertion);
@@ -527,20 +553,14 @@ describe('Notes', () => {
 			});
 
 			it('should queue multiple replies', async () => {
-				const { id: id1 } = helpers.mocks.note({
-					inReplyTo: `${nconf.get('url')}/post/${mainPid}`,
-				});
-				const { id: id2 } = helpers.mocks.note({
-					inReplyTo: `${nconf.get('url')}/post/${mainPid}`,
-				});
+				const id1 = `https://blocked.example.org/object/${utils.generateUUID()}`;
+				const id2 = `https://blocked.example.org/object/${utils.generateUUID()}`;
 
 				const assertion1 = await activitypub.notes.assert(0, id1, {
 					skipChecks: true,
-					blocklist: { severity: 3 },
 				});
 				const assertion2 = await activitypub.notes.assert(0, id2, {
 					skipChecks: true,
-					blocklist: { severity: 3 },
 				});
 
 				assert(assertion1);
@@ -556,9 +576,9 @@ describe('Notes', () => {
 		});
 
 		describe('null case', () => {
-			it('should NOT queue posts when blocklist is undefined', async () => {
-				const { id } = helpers.mocks.note();
-				const assertion = await activitypub.notes.assert(0, id, {
+			it('should NOT queue posts when domain is not blocked', async () => {
+				const noteId = `https://allowed.example.org/object/${utils.generateUUID()}`;
+				const assertion = await activitypub.notes.assert(0, noteId, {
 					skipChecks: true,
 				});
 
@@ -573,10 +593,10 @@ describe('Notes', () => {
 
 		describe('Severity 1 and 2', () => {
 			it('should NOT queue posts with severity 1 (suspend)', async () => {
-				const { id } = helpers.mocks.note();
-				const assertion = await activitypub.notes.assert(0, id, {
+				mockBlockedDomain('blocked.example.org', 1);
+				const noteId = `https://blocked.example.org/object/${utils.generateUUID()}`;
+				const assertion = await activitypub.notes.assert(0, noteId, {
 					skipChecks: true,
-					blocklist: { severity: 1 },
 				});
 
 				assert(assertion);
@@ -588,10 +608,10 @@ describe('Notes', () => {
 			});
 
 			it('should NOT queue posts with severity 2 (silence)', async () => {
-				const { id } = helpers.mocks.note();
-				const assertion = await activitypub.notes.assert(0, id, {
+				mockBlockedDomain('blocked.example.org', 2);
+				const noteId = `https://blocked.example.org/object/${utils.generateUUID()}`;
+				const assertion = await activitypub.notes.assert(0, noteId, {
 					skipChecks: true,
-					blocklist: { severity: 2 },
 				});
 
 				assert(assertion);

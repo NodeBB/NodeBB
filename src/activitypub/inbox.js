@@ -55,7 +55,7 @@ inbox.create = async (req) => {
 		cid = Array.from(cids)[0];
 	}
 
-	const asserted = await activitypub.notes.assert(0, object, { cid, blocklist: req?.res?.locals?.['ap:blocklist'] });
+	const asserted = await activitypub.notes.assert(0, object, { cid });
 	if (asserted) {
 		await activitypub.feps.announce(object.id, req.body);
 		// api.activitypub.add(req, { pid: object.id });
@@ -216,7 +216,7 @@ inbox.update = async (req) => {
 						cid = Array.from(cids)[0];
 					}
 
-					const asserted = await activitypub.notes.assert(0, object.id, { cid, blocklist: req?.res?.locals?.['ap:blocklist'] });
+					const asserted = await activitypub.notes.assert(0, object.id, { cid });
 					if (asserted) {
 						activitypub.feps.announce(object.id, req.body);
 					}
@@ -363,7 +363,7 @@ inbox.like = async (req) => {
 		exists = await posts.exists(object.id);
 		if (!exists) {
 			// Proactively pull in the note
-			const asserted = await activitypub.notes.assert(0, object.id, { skipChecks: 1, blocklist: req?.res?.locals?.['ap:blocklist'] });
+			const asserted = await activitypub.notes.assert(0, object.id, { skipChecks: 1 });
 			if (!asserted) {
 				throw new Error('[[error:invalid-pid]]');
 			}
@@ -540,7 +540,7 @@ inbox.announce = async (req) => {
 					return;
 				}
 
-				const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true, blocklist: req?.res?.locals?.['ap:blocklist'] });
+				const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true });
 				if (!assertion) {
 					return;
 				}
