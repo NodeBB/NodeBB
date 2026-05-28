@@ -90,21 +90,43 @@ Blocklists.check = async (domain) => {
 	let present = await db.isMemberOfSortedSets(blocklists.map(({ url }) => `blocklist:${url}`), domain);
 	present = present.reduce((memo, present) => memo || present, false);
 
-	return {
-		allowed: !present,
-		severity: present ? await Blocklists.getSeverity(domain) : null,
-	};
-};
+	if (!present) {
+		return { allowed: true, severity: null, listUrl: null };
+	}
 
-Blocklists.getSeverity = async (domain) => {
-	const blocklists = await Blocklists.list();
 	const keys = blocklists.map(({ url }) => `blocklist:${url}:severity`);
 	const severityMaps = await db.getObjects(keys);
 
-	for (const severityMap of severityMaps) {
+	let bestSeverity = null;
+	let bestListUrl = null;
+
+	blocklists.forEach(({ url }, idx) => {
+		const severityMap = severityMaps[idx];
 		if (severityMap && severityMap[domain]) {
-			return severityScore[severityMap[domain]] ?? 1;
+			const score = severityScore[severityMap[domain]] ?? 1;
+			if (bestSeverity === null || score < bestSeverity) {
+				bestSeverity = score;
+				bestListUrl = url;
+			}
 		}
+	});
+
+	return {
+		allowed: false,
+		severity: bestSeverity,
+		listUrl: bestListUrl,
+	};
+};
+
+Blocklists.getSeverityInfo = async (domain) => {
+	const result = await Blocklists.check(domain);
+	if (result.severity === null) {
+		return null;
 	}
-	return null;
+	return { severity: result.severity, listUrl: result.listUrl };
+};
+
+Blocklists.getSeverity = async (domain) => {
+	const result = await Blocklists.check(domain);
+	return result.severity;
 };

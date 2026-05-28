@@ -154,7 +154,8 @@ ActivityPub.resolveInboxes = async (ids) => {
 		let allowed = false;
 		try {
 			const { hostname } = new URL(inbox);
-			allowed = await ActivityPub.instances.isAllowed(hostname);
+			const result = await ActivityPub.instances.isAllowed(hostname);
+			allowed = result.allowed;
 			if (!allowed) {
 				blocked.push(inbox);
 			}
@@ -386,8 +387,8 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 
 	const { hostname } = new URL(uri);
-	const allowed = await ActivityPub.instances.isAllowed(hostname);
-	if (!allowed) {
+	const result = await ActivityPub.instances.isAllowed(hostname);
+	if (!result.allowed) {
 		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
 		const e = new Error(`[[error:activitypub.get-failed]]`);
 		e.code = `ap_get_domain_blocked`;
