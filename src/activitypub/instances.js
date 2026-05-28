@@ -15,14 +15,19 @@ Instances.getCount = async () => db.sortedSetCard('instances:lastSeen');
 Instances.list = async () => db.getSortedSetMembers('instances:lastSeen');
 
 Instances.isAllowed = async (domain) => {
-	const allowed = await activitypub.blocklists.check(domain);
+	/* eslint-disable-next-line no-unused-vars */
+	const { allowed, severity } = await activitypub.blocklists.check(domain);
 	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;
 
 	if (!allowed && !type) {
-		return allowed;
+		return false;
 	}
 
 	list = new Set(String(list).split('\n'));
-	// eslint-disable-next-line no-bitwise
-	return allowed || (list.has(domain) ^ !type);
+
+	if (allowed) {
+		return type ? list.has(domain) : true;
+	}
+
+	return type ? !list.has(domain) : false;
 };
