@@ -105,12 +105,21 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 
 	// Domain check
 	const { hostname } = new URL(actor);
-	const allowed = await activitypub.instances.isAllowed(hostname);
-	if (!allowed) {
+	const result = await activitypub.instances.isAllowed(hostname);
+	activitypub.instances.log(hostname);
+
+	if (!result.allowed) {
 		activitypub.helpers.log(`[middleware/activitypub] Blocked incoming activity from ${hostname}.`);
 		return res.sendStatus(403);
 	}
-	activitypub.instances.log(hostname);
+
+	// Store blocklist info for severity-based handling (silence, filter)
+	if (result.severity !== null && result.severity >= 2) {
+		req.locals['ap:blocklist'] = {
+			severity: result.severity,
+			listUrl: result.listUrl,
+		};
+	}
 
 	// Origin checking
 	if (typeof object !== 'string' && object.hasOwnProperty('id')) {

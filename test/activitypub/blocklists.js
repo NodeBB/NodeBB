@@ -198,8 +198,8 @@ describe('ActivityPub blocklists', () => {
 
 			await activitypub.blocklists.remove(u);
 
-			const severity = await activitypub.blocklists.getSeverity('severed.com');
-			assert.strictEqual(severity, null);
+			const result = await activitypub.blocklists.check('severed.com');
+			assert.strictEqual(result.severity, null);
 		});
 	});
 
@@ -302,7 +302,7 @@ describe('ActivityPub blocklists', () => {
 		it('should return { allowed: true, severity: null } when no blocklists exist', async () => {
 			const result = await activitypub.blocklists.check('any.example.com');
 
-			assert.deepStrictEqual(result, { allowed: true, severity: null });
+			assert.deepStrictEqual(result, { allowed: true, severity: null, listUrl: null });
 		});
 
 		it('should return { allowed: false, severity: N } when domain is blocked', async () => {
