@@ -8,6 +8,12 @@ const activitypub = module.parent.exports;
 
 const Blocklists = module.exports;
 
+const severityScore = {
+	suspend: 1,
+	silence: 2,
+	filter: 3,
+};
+
 Blocklists.list = async () => {
 	const blocklists = await db.getSortedSetMembers('blocklists');
 	const counts = await db.sortedSetsCard(blocklists.map(blocklist => `blocklist:${blocklist}`));
@@ -39,6 +45,7 @@ Blocklists.remove = async (url) => {
 	await Promise.all([
 		db.sortedSetRemove('blocklists', url),
 		db.delete(`blocklist:${url}`),
+		db.delete(`blocklist:${url}:severity`),
 	]);
 };
 
@@ -60,11 +67,20 @@ Blocklists.refresh = async (url) => {
 		return 0;
 	}
 
+	const severityMap = {};
+	records.forEach((entry) => {
+		severityMap[entry['#domain']] = entry['#severity'] || 'suspend';
+	});
+
+	await db.delete(`blocklist:${url}`);
 	await db.sortedSetAdd(
 		`blocklist:${url}`,
-		records.map(entry => entry['#severity'] === 'silence' ? 2 : 1),
+		records.map(entry => severityScore[severityMap[entry['#domain']]] ?? 1),
 		records.map(entry => entry['#domain'])
 	);
+
+	await db.delete(`blocklist:${url}:severity`);
+	await db.setObject(`blocklist:${url}:severity`, severityMap);
 
 	return records.length;
 };
@@ -74,5 +90,21 @@ Blocklists.check = async (domain) => {
 	let present = await db.isMemberOfSortedSets(blocklists.map(({ url }) => `blocklist:${url}`), domain);
 	present = present.reduce((memo, present) => memo || present, false);
 
-	return !present;
+	return {
+		allowed: !present,
+		severity: present ? await Blocklists.getSeverity(domain) : null,
+	};
+};
+
+Blocklists.getSeverity = async (domain) => {
+	const blocklists = await Blocklists.list();
+	const keys = blocklists.map(({ url }) => `blocklist:${url}:severity`);
+	const severityMaps = await db.getObjects(keys);
+
+	for (const severityMap of severityMaps) {
+		if (severityMap && severityMap[domain]) {
+			return severityScore[severityMap[domain]] ?? 1;
+		}
+	}
+	return null;
 };
