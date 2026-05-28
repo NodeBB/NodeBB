@@ -254,24 +254,33 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const count = unprocessed.length;
 		activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
-		const shouldQueue = options.blocklist?.severity === 3;
-
 		if (!hasTid) {
-			if (shouldQueue) {
-				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3`);
-				await posts.addToQueue({
-					uid: authorId,
-					cid: options.cid || cid,
-					pid: mainPid,
-					title,
-					timestamp,
-					content: mainPost.content,
-					sourceContent: mainPost.sourceContent,
-					generatedTitle,
-					_activitypub: mainPost._activitypub,
-				});
-				// Drop the rest of the chain — replies without OP don't make sense
-				return { tid: null, queued: 1 };
+			activitypub.helpers.log(`[activitypub/notes.assert] hasTid=${hasTid}, skipChecks=${options.skipChecks}, mainPid=${mainPid}`);
+			if (!options.skipChecks) {
+				const { hostname: mainHostname } = new URL(mainPid);
+				const mainResult = await activitypub.instances.isAllowed(mainHostname);
+
+				if (!mainResult.allowed) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${mainPid}, domain is blocked.`);
+					return null;
+				}
+
+				if (mainResult.severity === 3) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3`);
+					await posts.addToQueue({
+						uid: authorId,
+						cid: options.cid || cid,
+						pid: mainPid,
+						title,
+						timestamp,
+						content: mainPost.content,
+						sourceContent: mainPost.sourceContent,
+						generatedTitle,
+						_activitypub: mainPost._activitypub,
+					});
+					// Drop the rest of the chain — replies without OP don't make sense
+					return { tid: null, queued: 1 };
+				}
 			}
 
 			const { to, cc } = mainPost._activitypub;
@@ -326,19 +335,29 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			const { to, cc } = post._activitypub;
 
 			try {
-				if (shouldQueue) {
-					activitypub.helpers.log(`[activitypub/notes.assert] Queuing reply (${post.pid}) due to blocklist severity 3`);
-					await posts.addToQueue({
-						uid: post.uid,
-						tid,
-						pid: post.pid,
-						content: post.content,
-						sourceContent: post.sourceContent,
-						timestamp: post.timestamp,
-						_activitypub: post._activitypub,
-					});
-					queued += 1;
-					return;
+				if (!options.skipChecks) {
+					const { hostname: postHostname } = new URL(post.pid);
+					const postResult = await activitypub.instances.isAllowed(postHostname);
+
+					if (!postResult.allowed) {
+						activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${post.pid}, domain is blocked.`);
+						return;
+					}
+
+					if (postResult.severity === 3) {
+						activitypub.helpers.log(`[activitypub/notes.assert] Queuing reply (${post.pid}) due to blocklist severity 3`);
+						await posts.addToQueue({
+							uid: post.uid,
+							tid,
+							pid: post.pid,
+							content: post.content,
+							sourceContent: post.sourceContent,
+							timestamp: post.timestamp,
+							_activitypub: post._activitypub,
+						});
+						queued += 1;
+						return;
+					}
 				}
 
 				const postData = await topics.reply(post);
