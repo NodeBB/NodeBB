@@ -359,14 +359,16 @@ CSS.buildBundle = async function (target, fork) {
 		await Promise.all(files.map(f => fs.promises.unlink(path.join(__dirname, '../../build/public', f))));
 	}
 
-	const data = await getBundleMetadata(target);
+	const [data] = await Promise.all([
+		getBundleMetadata(target),
+		copyFontAwesomeFiles(),
+	]);
 	const minify = process.env.NODE_ENV !== 'development';
 	const { ltr, rtl } = await minifier.css.bundle(data.imports, data.paths, minify, fork);
 
 	await Promise.all([
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}.css`), ltr.code),
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}-rtl.css`), rtl.code),
-		copyFontAwesomeFiles(),
 	]);
 	return [ltr.code, rtl.code];
 };
