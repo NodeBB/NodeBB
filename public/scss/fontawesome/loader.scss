@@ -1,4 +1,7 @@
-$fa-font-path: "./fontawesome/webfonts";
-@import "fontawesome";
-@import "v4-shims";
+@use "fontawesome/scss/variables" with (
+	$font-path: "./fontawesome/webfonts"
+);
+
+@use "fontawesome/scss/fontawesome";
+@use "fontawesome/scss/v4-shims";
 @import "nodebb-shims";

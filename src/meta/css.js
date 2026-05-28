@@ -150,12 +150,28 @@ function getFontawesomeStyle() {
 
 async function copyFontAwesomeFiles() {
 	await mkdirp(path.join(__dirname, '../../build/public/fontawesome/webfonts'));
+	await mkdirp(path.join(__dirname, '../../build/public/fontawesome/scss'));
+
 	const fonts = await fs.promises.opendir(path.join(utils.getFontawesomePath(), '/webfonts'));
 	const copyOperations = [];
 	for await (const file of fonts) {
 		if (file.isFile() && file.name.match(/\.(woff2|ttf|eot)?$/)) { // there shouldn't be any legacy eot files, but just in case we'll allow it
 			copyOperations.push(
-				fs.promises.copyFile(path.join(fonts.path, file.name), path.join(__dirname, '../../build/public/fontawesome/webfonts/', file.name))
+				fs.promises.copyFile(
+					path.join(fonts.path, file.name),
+					path.join(__dirname, '../../build/public/fontawesome/webfonts/', file.name)
+				)
+			);
+		}
+	}
+	const scssFiles = await fs.promises.opendir(path.join(utils.getFontawesomePath(), '/scss'));
+	for await (const file of scssFiles) {
+		if (file.isFile()) {
+			copyOperations.push(
+				fs.promises.copyFile(
+					path.join(scssFiles.path, file.name),
+					path.join(__dirname, '../../build/public/fontawesome/scss/', file.name)
+				)
 			);
 		}
 	}
@@ -209,8 +225,7 @@ async function getBundleMetadata(target) {
 	const paths = [
 		path.join(__dirname, '../../node_modules'),
 		path.join(__dirname, '../../public/scss'),
-		path.join(__dirname, '../../public/fontawesome/scss'),
-		path.join(utils.getFontawesomePath(), 'scss'),
+		path.join(__dirname, '../../build/public'),
 	];
 
 	// Skin support
