@@ -38,6 +38,7 @@
 					{privileges.groups.name}
 				</td>
 				<td>
+					{{{ if (cid == "all") }}}{{{ else }}}
 					<div class="dropdown">
 						<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<i class="fa fa-copy"></i>
@@ -48,6 +49,7 @@
 							<li data-action="copyPrivilegesFromGroup"><a class="dropdown-item" href="#" role="menuitem">[[admin/manage/categories:privileges.copy-group-privileges-from]]</a></li>
 						</ul>
 					</div>
+					{{{ end }}}
 				</td>
 				<td class="">
 					<div class="form-check text-center">
@@ -67,6 +69,7 @@
 							<i class="fa fa-users"></i>
 							[[admin/manage/categories:privileges.search-group]]
 						</button>
+						{{{ if (cid == "all") }}}{{{ else }}}
 						<button type="button" class="btn btn-sm btn-outline-secondary text-nowrap" data-ajaxify="false" data-action="copyPrivilegesFrom">
 							<i class="fa fa-copy"></i>
 							[[admin/manage/categories:privileges.copy-from-category]]
@@ -79,6 +82,7 @@
 							<i class="fa fa-copy"></i>
 							[[admin/manage/categories:privileges.copy-privileges-to-all-categories]]
 						</button>
+						{{{ end }}}
 					</div>
 				</td>
 			</tr>

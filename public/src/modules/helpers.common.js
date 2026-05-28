@@ -214,7 +214,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			return `
 				<td data-privilege="${priv.name}" data-value="${priv.state}" data-type="${priv.type}">
 					<div class="form-check text-center">
-						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
+						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state === true ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
 					</div>
 				</td>
 			`;
