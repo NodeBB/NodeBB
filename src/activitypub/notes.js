@@ -254,7 +254,26 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		const count = unprocessed.length;
 		activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
+		const shouldQueue = options.blocklist?.severity === 3;
+
 		if (!hasTid) {
+			if (shouldQueue) {
+				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3`);
+				await posts.addToQueue({
+					uid: authorId,
+					cid: options.cid || cid,
+					pid: mainPid,
+					title,
+					timestamp,
+					content: mainPost.content,
+					sourceContent: mainPost.sourceContent,
+					generatedTitle,
+					_activitypub: mainPost._activitypub,
+				});
+				// Drop the rest of the chain — replies without OP don't make sense
+				return { tid: null, queued: 1 };
+			}
+
 			const { to, cc } = mainPost._activitypub;
 			const tags = await Notes._normalizeTags(mainPost._activitypub.tag || []);
 
@@ -302,10 +321,26 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		unprocessed = unprocessed.filter(post => !banned.includes(post.uid));
 
 		let added = [];
+		let queued = 0;
 		await Promise.all(unprocessed.map(async (post) => {
 			const { to, cc } = post._activitypub;
 
 			try {
+				if (shouldQueue) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Queuing reply (${post.pid}) due to blocklist severity 3`);
+					await posts.addToQueue({
+						uid: post.uid,
+						tid,
+						pid: post.pid,
+						content: post.content,
+						sourceContent: post.sourceContent,
+						timestamp: post.timestamp,
+						_activitypub: post._activitypub,
+					});
+					queued += 1;
+					return;
+				}
+
 				const postData = await topics.reply(post);
 				added.push(postData);
 				await Notes.updateLocalRecipients(post.pid, { to, cc });
@@ -335,7 +370,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			await activitypub.out.announce.topic(tid);
 		}
 
-		return { tid, count };
+		return { tid, count, queued };
 	} catch (e) {
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
