@@ -422,4 +422,185 @@ describe('Notes', () => {
 			assert(!inboxed);
 		});
 	});
+
+	describe('Blocklist severity 3 (filter)', () => {
+		/**
+		 * Clear the post queue between tests.
+		 */
+		async function clearQueue() {
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		}
+
+		beforeEach(async () => {
+			await clearQueue();
+		});
+
+		describe('!hasTid — new topic', () => {
+			it('should queue the main post instead of creating it', async () => {
+				const { id } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, id, {
+					skipChecks: true,
+					blocklist: { severity: 3 },
+				});
+
+				assert(assertion);
+				assert.strictEqual(assertion.tid, null);
+				assert.strictEqual(assertion.queued, 1);
+				assert.strictEqual(assertion.count, undefined);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+
+			it('should queue parent and also queue replies when hasTid is false', async () => {
+				const { id: parentId } = helpers.mocks.note();
+				const { id: replyId } = helpers.mocks.note({
+					inReplyTo: parentId,
+				});
+
+				// Assert the parent with severity 3 — should queue and return tid: null
+				const parentAssertion = await activitypub.notes.assert(0, parentId, {
+					skipChecks: true,
+					blocklist: { severity: 3 },
+				});
+
+				assert(parentAssertion);
+				assert.strictEqual(parentAssertion.tid, null);
+				assert.strictEqual(parentAssertion.queued, 1);
+
+				// Assert the reply with severity 3 — parent has no tid, so hasTid is false
+				const replyAssertion = await activitypub.notes.assert(0, replyId, {
+					skipChecks: true,
+					blocklist: { severity: 3 },
+				});
+
+				assert(replyAssertion);
+				assert.strictEqual(replyAssertion.tid, null);
+				assert.strictEqual(replyAssertion.queued, 1);
+
+				// Verify neither post was created as a real topic/reply
+				assert.strictEqual(await posts.exists(parentId), false);
+				assert.strictEqual(await posts.exists(replyId), false);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 2);
+			});
+		});
+
+		describe('hasTid — existing topic', () => {
+			let tid;
+			let mainPid;
+			let cid;
+
+			before(async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				const { topicData, postData } = await topics.post({
+					cid,
+					uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				tid = topicData.tid;
+				mainPid = postData.pid;
+			});
+
+			it('should queue replies when severity is 3', async () => {
+				const { id } = helpers.mocks.note({
+					inReplyTo: `${nconf.get('url')}/post/${mainPid}`,
+				});
+				const assertion = await activitypub.notes.assert(0, id, {
+					skipChecks: true,
+					blocklist: { severity: 3 },
+				});
+
+				assert(assertion);
+				assert.strictEqual(assertion.tid, tid);
+				assert.strictEqual(assertion.queued, 1);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+
+			it('should queue multiple replies', async () => {
+				const { id: id1 } = helpers.mocks.note({
+					inReplyTo: `${nconf.get('url')}/post/${mainPid}`,
+				});
+				const { id: id2 } = helpers.mocks.note({
+					inReplyTo: `${nconf.get('url')}/post/${mainPid}`,
+				});
+
+				const assertion1 = await activitypub.notes.assert(0, id1, {
+					skipChecks: true,
+					blocklist: { severity: 3 },
+				});
+				const assertion2 = await activitypub.notes.assert(0, id2, {
+					skipChecks: true,
+					blocklist: { severity: 3 },
+				});
+
+				assert(assertion1);
+				assert(assertion2);
+				assert.strictEqual(assertion1.tid, tid);
+				assert.strictEqual(assertion1.queued, 1);
+				assert.strictEqual(assertion2.tid, tid);
+				assert.strictEqual(assertion2.queued, 1);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 2);
+			});
+		});
+
+		describe('null case', () => {
+			it('should NOT queue posts when blocklist is undefined', async () => {
+				const { id } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, id, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid);
+				assert.strictEqual(assertion.queued, 0);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+		});
+
+		describe('Severity 1 and 2', () => {
+			it('should NOT queue posts with severity 1 (suspend)', async () => {
+				const { id } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, id, {
+					skipChecks: true,
+					blocklist: { severity: 1 },
+				});
+
+				assert(assertion);
+				assert(assertion.tid);
+				assert.strictEqual(assertion.queued, 0);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+
+			it('should NOT queue posts with severity 2 (silence)', async () => {
+				const { id } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, id, {
+					skipChecks: true,
+					blocklist: { severity: 2 },
+				});
+
+				assert(assertion);
+				assert(assertion.tid);
+				assert.strictEqual(assertion.queued, 0);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+		});
+	});
 });

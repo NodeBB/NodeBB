@@ -115,7 +115,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 
 	// Store blocklist info for severity-based handling (silence, filter)
 	if (result.severity !== null && result.severity >= 2) {
-		req.locals['ap:blocklist'] = {
+		res.locals['ap:blocklist'] = {
 			severity: result.severity,
 			listUrl: result.listUrl,
 		};
