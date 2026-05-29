@@ -58,7 +58,6 @@
 	"server-filtering": "Filtering",
 	"count": "This NodeBB is currently aware of <strong>%1</strong> server(s)",
 	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.\n\n<strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
-	"server.filter-help-hostname": "Enter just the instance hostname below (e.g. <code>example.org</code>), separated by line breaks.",
 	"server.filter-allow-list": "Use this as an Allow List instead",
 	"server.filter-allow-list-help": "When enabled, only domains in the core list are allowed to federate. Severity settings are ignored in allow list mode.",
 
