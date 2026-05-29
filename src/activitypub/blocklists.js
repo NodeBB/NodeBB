@@ -112,7 +112,7 @@ Blocklists.check = async (domain) => {
 	});
 
 	return {
-		allowed: false,
+		allowed: bestSeverity > severityScore.silence,
 		severity: bestSeverity,
 		listUrl: bestListUrl,
 	};
