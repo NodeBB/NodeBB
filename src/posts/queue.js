@@ -348,15 +348,12 @@ module.exports = function (Posts) {
 	}
 
 	async function createTopic(data) {
-		delete data.tid;
-		delete data.pid;
 		const result = await topics.post(data);
 		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 		return result;
 	}
 
 	async function createReply(data) {
-		delete data.pid;
 		const postData = await topics.reply(data);
 		const result = {
 			posts: [postData],
