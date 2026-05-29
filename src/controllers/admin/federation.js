@@ -3,6 +3,7 @@
 const validator = require('validator');
 
 const db = require('../../database');
+const meta = require('../../meta');
 const activitypub = require('../../activitypub');
 const analytics = require('../../analytics');
 
@@ -22,10 +23,14 @@ federationController.content = function (req, res) {
 
 federationController.rules = async function (req, res) {
 	const rules = await activitypub.rules.list();
+	const postQueueEnabled = !!(await meta.configs.get('postQueue'));
+	const hasFilterRules = rules.some(rule => rule.filter === 'true');
 
 	res.render(`admin/federation/rules`, {
 		title: '[[admin/menu:federation/rules]]',
 		rules,
+		postQueueEnabled,
+		hasFilterRules,
 		hideSave: true,
 	});
 };

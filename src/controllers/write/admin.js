@@ -88,13 +88,13 @@ Admin.listGroups = async (req, res) => {
 Admin.activitypub = {};
 
 Admin.activitypub.addRule = async (req, res) => {
-	const { type, value, cid } = req.body;
+	const { type, value, cid, filter } = req.body;
 	const exists = await categories.exists(cid);
 	if (!value || !exists) {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await activitypub.rules.upsert(type, value, cid);
+	await activitypub.rules.upsert(type, value, cid, filter === 'true');
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 

@@ -24,4 +24,9 @@
 		</div>
 		<input type="hidden" name="cid" />
 	</div>
+	<div class="mb-3 form-check">
+		<input type="checkbox" class="form-check-input" name="filter" id="filter" value="true" />
+		<label class="form-check-label" for="filter">[[admin/settings/activitypub:rules.filter]]</label>
+		<p class="form-text">[[admin/settings/activitypub:rules.filter.help]]</p>
+	</div>
 </form>
