@@ -20,7 +20,7 @@ describe('Translator shim', () => {
 				},
 			},
 		};
-		it('should return translated string with interpolation when context has config and _i18n', (done) => {
+		it('should return translated string with interpolation when has _i18n', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', 'general discussion');
 			assert.strictEqual(str, 'Moved from general discussion');
 			done();
