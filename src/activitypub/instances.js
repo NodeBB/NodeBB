@@ -18,15 +18,17 @@ Instances.isAllowed = async (domain) => {
 	const result = await activitypub.blocklists.check(domain);
 	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;
 
-	if (!result.allowed && !type) {
+	list = new Set(String(list).split('\n'));
+
+	if (!type) {
+		// type = 0: blocklist mode — deny if domain is on the list
+		if (result.allowed) {
+			return { ...result, allowed: !list.has(domain) };
+		}
+
 		return result;
 	}
 
-	list = new Set(String(list).split('\n'));
-
-	if (result.allowed) {
-		return { ...result, allowed: type ? list.has(domain) : true };
-	}
-
-	return { ...result, allowed: type ? !list.has(domain) : false };
+	// type = 1: allowlist mode — allow only if domain is on the list
+	return { ...result, allowed: list.has(domain) };
 };
