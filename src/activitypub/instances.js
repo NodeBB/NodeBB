@@ -21,9 +21,12 @@ Instances.isAllowed = async (domain) => {
 	const { activitypubFilter: type } = meta.config;
 
 	if (!type) {
-		// type = 0: blocklist mode — deny if domain is on the core list
+		// type = 0: blocklist mode — deny if domain is on the core list with severity <= silence
 		if (result.allowed) {
-			return { ...result, allowed: !core.domains.some(d => d.domain === domain) };
+			const coreDomain = core.domains.find(d => d.domain === domain);
+			const coreSeverity = coreDomain ? coreDomain.severity : null;
+			const coreBlocked = coreSeverity && coreSeverity !== 'filter';
+			return { ...result, allowed: !coreBlocked };
 		}
 
 		return result;
