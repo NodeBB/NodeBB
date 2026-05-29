@@ -41,7 +41,7 @@
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Et voi lähettää pikaviestejä ennen kuin sähköpostiosoitteesi on vahvistettu. Vahvista se painamalla tästä.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You may not be able to post in some categories or chat until your email is confirmed.",
-    "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery, and may be necessary for chatting and posting in some categories. Please click here to enter an email.",
+    "no-email-to-confirm": "Tilillesi ei ole asetettu sähköpostiosoitetta. Sähköpostiosoite vaaditaan tilin palauttamista varten, ja sitä voidaan tarvita myös keskusteluun ja viestien julkaisemiseen joissakin kategorioissa. Napsauta tästä lisätäksesi sähköpostiosoitteen.",
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
