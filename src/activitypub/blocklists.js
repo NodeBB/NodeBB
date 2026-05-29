@@ -26,8 +26,14 @@ Blocklists.list = async () => {
 Blocklists.get = async (url) => {
 	const domains = await db.getSortedSetMembers(`blocklist:${url}`);
 
+	const severityKey = `blocklist:${url}:severity`;
+	const severityMap = await db.getObject(severityKey) || {};
+
 	return {
-		domains,
+		domains: domains.map(d => ({
+			domain: d,
+			severity: severityMap[d] || 'suspend',
+		})),
 		count: domains.length,
 	};
 };
@@ -47,6 +53,23 @@ Blocklists.remove = async (url) => {
 		db.delete(`blocklist:${url}`),
 		db.delete(`blocklist:${url}:severity`),
 	]);
+};
+
+Blocklists.core = {};
+
+Blocklists.core.add = async (domain, severity = 'suspend') => {
+	const now = Date.now();
+	const score = severityScore[severity] ?? severityScore.suspend;
+
+	await Promise.all([
+		db.sortedSetAdd('blocklists', now, 'core'),
+		db.sortedSetAdd('blocklist:core', score, domain),
+		db.setObjectField('blocklist:core:severity', domain, severity),
+	]);
+};
+
+Blocklists.core.remove = async (domain) => {
+	await db.sortedSetRemove('blocklist:core', domain);
 };
 
 Blocklists.refresh = async (url) => {
@@ -83,6 +106,13 @@ Blocklists.refresh = async (url) => {
 	await db.setObject(`blocklist:${url}:severity`, severityMap);
 
 	return records.length;
+};
+
+Blocklists.core.ensure = async () => {
+	const exists = await db.isSortedSetMember('blocklists', 'core');
+	if (!exists) {
+		await db.sortedSetAdd('blocklists', Date.now(), 'core');
+	}
 };
 
 Blocklists.check = async (domain) => {

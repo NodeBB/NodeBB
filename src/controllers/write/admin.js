@@ -141,7 +141,8 @@ Admin.activitypub.addBlocklist = async (req, res, next) => {
 Admin.activitypub.viewBlocklist = async (req, res) => {
 	const { url } = req.params;
 
-	helpers.formatApiResponse(200, res, await activitypub.blocklists.get(url));
+	const { domains, count } = await activitypub.blocklists.get(url);
+	helpers.formatApiResponse(200, res, { domains: domains.map(d => d.domain), count });
 };
 
 Admin.activitypub.removeBlocklist = async (req, res) => {
@@ -158,4 +159,33 @@ Admin.activitypub.refreshBlocklist = async (req, res) => {
 	const blocklists = await activitypub.blocklists.list();
 
 	helpers.formatApiResponse(200, res, { blocklists, count });
+};
+
+Admin.activitypub.addCoreDomain = async (req, res) => {
+	const { domain, severity } = req.body;
+	if (!domain) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	try {
+		const parsed = new URL(`https://${domain}`);
+		if (parsed.hostname.split('.').length < 2) {
+			return helpers.formatApiResponse(400, res);
+		}
+	} catch (e) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	await activitypub.blocklists.core.add(domain, severity);
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
+};
+
+Admin.activitypub.removeCoreDomain = async (req, res) => {
+	const { domain } = req.query;
+	if (!domain) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	await activitypub.blocklists.core.remove(domain);
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
 };

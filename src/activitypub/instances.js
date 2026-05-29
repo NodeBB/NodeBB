@@ -16,19 +16,19 @@ Instances.list = async () => db.getSortedSetMembers('instances:lastSeen');
 
 Instances.isAllowed = async (domain) => {
 	const result = await activitypub.blocklists.check(domain);
-	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;
-
-	list = new Set(String(list).split('\n'));
+	await activitypub.blocklists.core.ensure();
+	const core = await activitypub.blocklists.get('core');
+	const { activitypubFilter: type } = meta.config;
 
 	if (!type) {
-		// type = 0: blocklist mode — deny if domain is on the list
+		// type = 0: blocklist mode — deny if domain is on the core list
 		if (result.allowed) {
-			return { ...result, allowed: !list.has(domain) };
+			return { ...result, allowed: !core.domains.some(d => d.domain === domain) };
 		}
 
 		return result;
 	}
 
-	// type = 1: allowlist mode — allow only if domain is on the list
-	return { ...result, allowed: list.has(domain) };
+	// type = 1: allowlist mode — allow only if domain is on the core list
+	return { ...result, allowed: core.domains.some(d => d.domain === domain) };
 };
