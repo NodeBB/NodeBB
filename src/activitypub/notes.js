@@ -266,6 +266,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 			if (mainResult.severity === 3) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3`);
+				if (utils.isNumber(mainPid) || (await posts.exists([mainPid]))[0]) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued main post (${mainPid}): pid is local or already exists`);
+					return null;
+				}
+
 				await posts.addToQueue({
 					uid: authorId,
 					cid: options.cid || cid,
@@ -277,6 +282,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				});
+
 				// Drop the rest of the chain — replies without OP don't make sense
 				return { tid: null, queued: 1 };
 			}
@@ -343,6 +349,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 
 				if (postResult.severity === 3) {
 					activitypub.helpers.log(`[activitypub/notes.assert] Queuing reply (${post.pid}) due to blocklist severity 3`);
+					if (utils.isNumber(post.pid) || await posts.exists(post.pid)) {
+						activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued reply (${post.pid}): pid or tid is local or already exists`);
+						return;
+					}
+
 					await posts.addToQueue({
 						uid: post.uid,
 						tid,
