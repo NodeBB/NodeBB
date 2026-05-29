@@ -31,6 +31,8 @@ module.exports = function () {
 	setupApiRoute(router, 'post', '/activitypub/relays', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addRelay);
 	setupApiRoute(router, 'delete', '/activitypub/relays/:url', [...middlewares], controllers.write.admin.activitypub.removeRelay);
 	setupApiRoute(router, 'post', '/activitypub/blocklists', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addBlocklist);
+	setupApiRoute(router, 'post', '/activitypub/blocklists/core', [...middlewares], controllers.write.admin.activitypub.addCoreDomain);
+	setupApiRoute(router, 'delete', '/activitypub/blocklists/core', [...middlewares], controllers.write.admin.activitypub.removeCoreDomain);
 	setupApiRoute(router, 'get', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.viewBlocklist);
 	setupApiRoute(router, 'delete', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.removeBlocklist);
 	setupApiRoute(router, 'post', '/activitypub/blocklists/:url/refresh', [...middlewares], controllers.write.admin.activitypub.refreshBlocklist);
