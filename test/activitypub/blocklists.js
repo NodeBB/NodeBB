@@ -21,6 +21,10 @@ describe('ActivityPub blocklists', () => {
 		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
 		this._originalGet = request.get;
+
+		// Clear all blocklists to ensure clean state
+		const all = await activitypub.blocklists.list();
+		await Promise.all(all.map(({ url }) => activitypub.blocklists.remove(url)));
 	});
 
 	after(function () {
