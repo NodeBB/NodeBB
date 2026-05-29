@@ -52,7 +52,7 @@ Notes._normalizeTags = async (tag, cid) => {
 	return tags;
 };
 
-Notes.assert = async (uid, input, options = { skipChecks: false }) => {
+Notes.assert = async (uid, input, options = { skipChecks: false, queue: false }) => {
 	/**
 	 * Given the id or object of any as:Note, either retrieves the full context (if resolvable),
 	 * or traverses up the reply chain to build a context.
@@ -139,7 +139,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		}
 
 		const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
-		let crosspostCid = false;
+		const crosspostCid = false;
 
 		if (options.cid && cid === -1) {
 			// Move topic if currently uncategorized
@@ -192,9 +192,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 
 			// Auto-categorization (takes place only if all other categorization efforts fail)
-			crosspostCid = await assignCategory(mainPost);
+			let { cid: crosspostCid, filter } = await assignCategory(mainPost);
 			if (!options.cid) {
 				options.cid = crosspostCid;
+				options.queue = filter;
 				crosspostCid = false;
 			}
 
@@ -264,8 +265,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 				return null;
 			}
 
-			if (mainResult.severity === 3) {
-				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3`);
+			if ((mainResult.severity === 3 || options.queue) && meta.config.postQueue) {
+				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3${options.queue ? ' or categorization rule' : ''}`);
 				if (utils.isNumber(mainPid) || (await posts.exists([mainPid]))[0]) {
 					activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued main post (${mainPid}): pid is local or already exists`);
 					return null;
@@ -347,7 +348,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 					return;
 				}
 
-				if (postResult.severity === 3) {
+				if (postResult.severity === 3 && meta.config.postQueue) {
 					activitypub.helpers.log(`[activitypub/notes.assert] Queuing reply (${post.pid}) due to blocklist severity 3`);
 					if (utils.isNumber(post.pid) || await posts.exists(post.pid)) {
 						activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued reply (${post.pid}): pid or tid is local or already exists`);
@@ -548,18 +549,17 @@ async function assertRelation(post) {
 
 async function assignCategory(post) {
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
-	let cid = undefined;
 	const rules = await activitypub.rules.list();
 	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
 	tags = tags.map(tag => tag.toLowerCase());
 
-	cid = rules.reduce((cid, { type, value, cid: target }) => {
-		if (!cid) {
+	const matched = rules.reduce((matched, { type, value, cid: target, filter: ruleFilter }) => {
+		if (!matched.cid) {
 			switch (type) {
 				case 'hashtag': {
 					if (tags.includes(value.toLowerCase())) {
 						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}`);
-						return target;
+						return { cid: target, filter: ruleFilter };
 					}
 					break;
 				}
@@ -567,16 +567,16 @@ async function assignCategory(post) {
 				case 'user': {
 					if (post.uid === value) {
 						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}`);
-						return target;
+						return { cid: target, filter: ruleFilter };
 					}
 				}
 			}
 		}
 
-		return cid;
-	}, cid);
+		return matched;
+	}, { cid: undefined, filter: false });
 
-	return cid;
+	return matched;
 }
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {

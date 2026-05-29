@@ -97,7 +97,7 @@ function throwModal() {
 		});
 
 		modal.on('shown.bs.modal', function () {
-			modal.find('input').focus();
+			modal.find('#value').focus();
 		});
 
 
