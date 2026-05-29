@@ -453,9 +453,11 @@ describe('Notes', () => {
 
 		before(async () => {
 			activitypub.instances._originalIsAllowed = activitypub.instances.isAllowed;
+			meta.config.postQueue = 1;
 		});
 
 		after(async () => {
+			delete meta.config.postQueue;
 			if (activitypub.instances._originalIsAllowed) {
 				activitypub.instances.isAllowed = activitypub.instances._originalIsAllowed;
 			}
