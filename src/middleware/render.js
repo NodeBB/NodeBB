@@ -408,7 +408,7 @@ module.exports = function (middleware) {
 		return req.query.lang ? validator.escape(String(req.query.lang)) : language;
 	}
 
-	async function translate(str, language) {
+	async function translate(str /* language */) {
 		// disable server side translation
 		return str;
 		// const translated = await translator.translate(str, language);
