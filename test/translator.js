@@ -3,6 +3,8 @@
 // For tests relating to Transifex configuration, check i18n.js
 
 const assert = require('assert');
+const benchpress = require('benchpressjs');
+
 const shim = require('../src/translator');
 
 const { Translator } = shim;
@@ -49,6 +51,18 @@ describe('Translator shim', () => {
 
 			assert.strictEqual(str, '');
 			done();
+		});
+
+		it('should work with benchpress.compileRender to parse and translate a custom string', async () => {
+			const compiled = await benchpress.compileRender('some {foo} with translation {tx("topic:moved-from", "general discussion")}', {
+				foo: 'bar',
+				_i18n: {
+					topic: {
+						'moved-from': 'Moved from %1',
+					},
+				},
+			});
+			assert.strictEqual(compiled, 'some bar with translation Moved from general discussion');
 		});
 	});
 

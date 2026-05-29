@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (utils, Benchpress, relative_path) {
+module.exports = function (utils, Benchpress, translator, relative_path) {
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
 	const oneDayInMs = 24 * 60 * 60 * 1000;
@@ -391,7 +391,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function tx(token, ...args) {
-		// console.log(token, args);
+		if (!token) {
+			return '';
+		}
+
+		// handle old tx syntax where tokens were wrapped in double square brackets, e.g. [[namespace:key]]
+		if (token.startsWith('[[') && token.endsWith(']]')) {
+			token = token.slice(2, -2);
+		}
 		const [namespace, key] = token.split(':', 2);
 		if (!namespace || !key) {
 			return '';
