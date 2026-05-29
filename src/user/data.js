@@ -11,6 +11,7 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 const coverPhoto = require('../coverPhoto');
+const translator = require('../translator');
 
 const relative_path = nconf.get('relative_path');
 
@@ -366,6 +367,15 @@ module.exports = function (User) {
 			users.forEach((user) => {
 				if (user) {
 					user[field] = undefined;
+				}
+			});
+		});
+
+		users.forEach((user) => {
+			const fields = Object.keys(user);
+			fields.forEach((field) => {
+				if (user[field] && typeof user[field] === 'string') {
+					user[field] = translator.escape(user[field]);
 				}
 			});
 		});

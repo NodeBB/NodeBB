@@ -68,10 +68,9 @@ define('topicThumbs', [
 										);
 
 										Thumbs.modal.open({ ...payload, modal });
-										require(['composer'], (composer) => {
-											composer.updateThumbCount(id, $(`[component="composer"][data-uuid="${id}"]`));
-											resolve();
-										});
+
+										$(window).trigger('action:composer.thumbs.updateCount', { uuid: id });
+										resolve();
 									});
 									return false;
 								},
@@ -103,9 +102,7 @@ define('topicThumbs', [
 					if (postData && postData.thumbs && postData.thumbs.includes(path)) {
 						postData.thumbs = postData.thumbs.filter(thumb => thumb !== path);
 						Thumbs.modal.open(payload);
-						require(['composer'], (composer) => {
-							composer.updateThumbCount(uuid, $(`[component="composer"][data-uuid="${uuid}"]`));
-						});
+						$(window).trigger('action:composer.thumbs.updateCount', { uuid });
 					}
 				});
 			}

@@ -31,7 +31,7 @@
 	"topic-thumb-size": "Kích Cỡ Ảnh Thumbnails Chủ Đề",
 	"allowed-file-extensions": "Phần Mở Rộng Tệp Được Phép (Danh Sách Trắng)",
 	"allowed-file-extensions-help": "Danh sách các tiện ích mở rộng được phân tách bằng dấu phẩy được phép tải lên (ví dụ: pdf,xls,doc). Để trống để cho phép tất cả các tiện ích mở rộng. Lưu ý: danh sách bị chặn bên dưới được ưu tiên — tiện ích mở rộng có trong cả hai danh sách sẽ bị từ chối.",
-	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
+	"allowed-file-extension-warning": "Cảnh báo: Việc cho phép tất cả các phần mở rộng tệp có thể nguy hiểm. NodeBB sẽ cố gắng giảm thiểu rủi ro bằng cách cung cấp các tệp có phần mở rộng nhất định dưới dạng tệp đính kèm. Nếu bạn đang sử dụng proxy ngược, bạn cũng nên đảm bảo rằng nó phục vụ các tệp có phần mở rộng nguy hiểm dưới dạng tệp đính kèm.",
 	"blocked-file-extensions": "Phần Mở Rộng Tệp Bị Chặn (Danh Sách Đen)",
 	"blocked-file-extensions-help": "Danh sách tiện ích mở rộng được phân tách bằng dấu phẩy luôn bị từ chối (e.g. <code>html,svg,php</code>). Danh sách bị chặn được ưu tiên hơn danh sách được phép — nếu tiện ích mở rộng xuất hiện trong cả hai, nó sẽ bị từ chối.",
 	"upload-limit-threshold": "‎Giới hạn tỉ lệ tải‎‎ lên người dùng:‎",

@@ -124,6 +124,18 @@ describe('i18n', () => {
 						assert(sourceFiles.includes(relativePath), `${relativePath.slice(1)} was found in language "${language}" but there is no source file for it (likely removed from en-GB)`);
 					});
 				});
+
+				it('language.json code should match the folder name', () => {
+					const langFile = path.resolve(__dirname, `../public/language/${language}/language.json`);
+					const langData = require(langFile);
+					assert.strictEqual(langData.code, language, `language.code "${langData.code}" does not match folder name "${language}"`);
+				});
+
+				it('language.json dir should be either "ltr" or "rtl"', () => {
+					const langFile = path.resolve(__dirname, `../public/language/${language}/language.json`);
+					const langData = require(langFile);
+					assert(['ltr', 'rtl'].includes(langData.dir), `language.dir "${langData.dir}" is not "ltr" or "rtl"`);
+				});
 			});
 
 			describe(`"${language}" file contents`, () => {

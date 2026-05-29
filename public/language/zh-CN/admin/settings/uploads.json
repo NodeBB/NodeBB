@@ -31,7 +31,7 @@
 	"topic-thumb-size": "主题缩略图大小",
 	"allowed-file-extensions": "允许的文件扩展名（白名单）",
 	"allowed-file-extensions-help": "允许上传的文件扩展名列表（以逗号分隔，例如: <code>pdf,xls,doc</code>）。留空表示允许所有扩展名。注意：下方的禁止列表具有优先级——若某个扩展名同时出现在两个列表中，则会被拒绝。",
-	"allowed-file-extension-warning": "Warning: Allowing all file extensions can be dangerous. NodeBB will attempt to mitigate risks by serving files with certain extensions as attachments. If you are using a reverse proxy, you should also ensure it serves files with dangerous extensions as attachments.",
+	"allowed-file-extension-warning": "警告：允许所有文件扩展名可能存在风险。NodeBB 会通过将某些扩展名的文件作为附件提供来降低风险。如果您正在使用反向代理，您也应确保其将具有危险扩展名的文件作为附件提供。",
 	"blocked-file-extensions": "被阻止的文件扩展名（黑名单）",
 	"blocked-file-extensions-help": "以逗号分隔的始终被拒绝的文件扩展名列表（例如: <code>html,svg,php</code>）。阻止列表的优先级高于允许列表——如果某个扩展名同时出现在这两个列表中，则会被拒绝。",
 	"upload-limit-threshold": "限制用户上传次数为：",

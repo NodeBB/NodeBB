@@ -9,5 +9,5 @@
     "filecount": "%1 файла",
     "new-folder": "Нова папка",
     "name-new-folder": "Въведете име за новата папка",
-    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
+    "unsafe-file-warning": "Внимание: не качвайте файлове, на които нямате доверие. Файловете с някои разширения ще бъдат свалени като прикачени файлове, за да се избегне възможността от атаки от вида XSS. Въпреки това, все пак има вероятност зловредните файлове да причинят щети, ако ги отворите на компютъра си."
 }

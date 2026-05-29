@@ -60,9 +60,9 @@ middleware.verify = async function (req, res, next) {
 		}
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
+	} else {
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification skipped.');
 	}
-
-	activitypub.helpers.log('[middleware/activitypub] HTTP signature verification skipped.');
 	next();
 };
 

@@ -53,7 +53,7 @@
     "user-unlocked-topic-on": "%1が%2にこのスレッドのロックを解除しました",
     "user-pinned-topic-ago": "%1がこのスレッドを固定しました %2",
     "user-pinned-topic-on": "%1が%2にこのスレッドを固定しました",
-    "user-unpinned-topic-ago": "\"%1がこのスレッドの固定を解除しました %2",
+    "user-unpinned-topic-ago": "%1がこのスレッドの固定を解除しました %2",
     "user-unpinned-topic-on": "%1が%2にこのスレッドの固定を解除しました",
     "user-deleted-topic-ago": "%1がこのスレッドを削除しました %2",
     "user-deleted-topic-on": "%1が%2にこのスレッドを削除しました",

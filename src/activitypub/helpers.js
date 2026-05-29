@@ -51,7 +51,6 @@ Helpers.log = (message) => {
 	}
 	_lastLog = message;
 	if (process.env.NODE_ENV === 'development') {
-
 		winston.verbose(message);
 	}
 };

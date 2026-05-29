@@ -220,7 +220,7 @@ Controller.getCategoryOutbox = async (req, res) => {
 
 	const allowed = await privileges.categories.can('topics:read', cid, req.uid);
 	if (!allowed) {
-		res.sendStatus(403);
+		return res.sendStatus(403);
 	}
 
 	const set = `cid:${cid}:pids`;
