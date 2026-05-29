@@ -277,7 +277,7 @@ module.exports = function (Posts) {
 			reply: 'topics:reply',
 		};
 
-		topics.checkContent(data.content);
+		topics.checkContent(data.sourceContent || data.content);
 		if (type === 'topic') {
 			topics.checkTitle(data.title);
 			if (data.tags) {
