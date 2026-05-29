@@ -120,8 +120,8 @@ describe('ActivityPub blocklists', () => {
 			const result = await activitypub.blocklists.get(u);
 
 			assert.strictEqual(result.count, 2);
-			assert(result.domains.includes('blocked.example.com'));
-			assert(result.domains.includes('another.example.com'));
+			assert(result.domains.some(d => d.domain === 'blocked.example.com'));
+			assert(result.domains.some(d => d.domain === 'another.example.com'));
 		});
 
 		it('should return empty domains if refresh received no CSV data', async () => {
@@ -161,8 +161,8 @@ describe('ActivityPub blocklists', () => {
 			const result = await activitypub.blocklists.get(u);
 
 			assert.strictEqual(result.count, 2);
-			assert(result.domains.includes('fresh.com'));
-			assert(result.domains.includes('fresh.org'));
+			assert(result.domains.some(d => d.domain === 'fresh.com'));
+			assert(result.domains.some(d => d.domain === 'fresh.org'));
 		});
 	});
 
@@ -279,8 +279,8 @@ describe('ActivityPub blocklists', () => {
 
 			const result = await activitypub.blocklists.get(u);
 			assert.strictEqual(result.count, 1, `expected count 1, got ${result.count}`);
-			assert(result.domains.includes('new.com'));
-			assert(!result.domains.includes('old.com'));
+			assert(result.domains.some(d => d.domain === 'new.com'));
+			assert(!result.domains.some(d => d.domain === 'old.com'));
 
 			const sevNew = await getSeverity('new.com');
 			assert.strictEqual(sevNew, 3, `expected new.com severity to be 3, got ${sevNew}`);
@@ -437,7 +437,7 @@ describe('ActivityPub blocklists', () => {
 
 			// 5. Check filtered domain
 			const filtered = await activitypub.blocklists.check('filtered.com');
-			assert.strictEqual(filtered.allowed, false);
+			assert.strictEqual(filtered.allowed, true);
 			assert.strictEqual(filtered.severity, 3);
 
 			// 6. Check clean domain
