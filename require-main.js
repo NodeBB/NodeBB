@@ -9,7 +9,7 @@ if (require.main !== module) {
 			const e = (new Error().stack).split('\n')[2].trim();
 			if (e.includes('nodebb-')) { // only warn nodebb-plugin/theme etc.
 				const warningText = require('chalk').red(`Warning`);
-				// console.warn(`${warningText}: require.main.require is going to be deprecated. Please use nodebb.require("${path}") instead.\n${e}\n`);
+				console.warn(`${warningText}: require.main.require is going to be deprecated. Please use nodebb.require("${path}") instead.\n${e}\n`);
 			}
 		}
 		return require(path);
