@@ -143,7 +143,7 @@ exports.build = async function buildLanguages() {
 	// console.log(allLanguages);
 	for (const lang of Object.keys(allLanguages)) {
 		const jsonfilePath = path.join(buildLanguagesPath, lang, `full.json`);
-		const jsFilePath = path.join(buildLanguagesPath, lang, `full.js`);
+		const jsFilePath = path.join(buildLanguagesPath, lang, `full.min.js`);
 		await mkdirp(path.dirname(jsonfilePath));
 		const jsonStr = JSON.stringify(allLanguages[lang]);
 		await Promise.all([

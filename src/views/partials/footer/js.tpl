@@ -1,4 +1,4 @@
-<script defer src="{relative_path}/assets/language/{config.userLang}/full.js"></script>
+<script defer src="{relative_path}/assets/language/{config.userLang}/full.min.js?{config.cache-buster}"></script>
 <script defer src="{relative_path}/assets/nodebb.min.js?{config.cache-buster}"></script>
 
 {{{each scripts}}}
