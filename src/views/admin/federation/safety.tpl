@@ -47,7 +47,6 @@
 				<form>
 					<div class="mb-3">
 						<p>[[admin/settings/activitypub:server.filter-help]]</p>
-						<p>[[admin/settings/activitypub:server.filter-help-hostname]]</p>
 						<p>[[admin/settings/activitypub:count, {instanceCount}]]</p>
 						<div class="mb-3">
 							<h6 class="fw-bold">[[admin/settings/activitypub:core-domains.title]]</h6>
