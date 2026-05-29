@@ -391,19 +391,16 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function tx(token, ...args) {
-		console.log('userlang', this.config.userLang);
-		console.log(this._i18n);
-		console.log(token, args);
-		const [namespace, key] = token.split(':');
-		const language = this.config.userLang || 'en-GB';
-		const translation = this._i18n?.[language]?.[namespace]?.[key] || key;
+		// console.log(token, args);
+		const [namespace, key] = token.split(':', 2);
+		if (!namespace || !key) {
+			return '';
+		}
 
-		let result = String(translation);
-
+		let result = String(this._i18n?.[namespace]?.[key] || key);
 		args.forEach((arg, index) => {
 			const placeholder = `%${index + 1}`;
-			// TODO: htmlEscape arg
-			result = result.split(placeholder).join(String(arg));
+			result = result.split(placeholder).join(utils.escapeHTML(String(arg)));
 		});
 
 		return result;

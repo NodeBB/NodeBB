@@ -12,13 +12,7 @@ require('timeago');
 const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
-Benchpress.setGlobal('_i18n', {
-	'en-GB': {
-		topic: {
-			'moved-from': 'Moved from %1'
-		}
-	}
-});
+Benchpress.setGlobal('_i18n', window._i18n);
 
 require('./sockets');
 require('./overrides');
@@ -343,8 +337,8 @@ if (document.readyState === 'loading') {
 		return new Promise((resolve, reject) => {
 			require(['translator', 'benchpress'], function (translator, Benchpress) {
 				Benchpress.render(template, data, blockName)
-					.then(rendered => translator.translate(rendered))
-					.then(translated => translator.unescape(translated))
+					// .then(rendered => translator.translate(rendered))
+					// .then(translated => translator.unescape(translated))
 					.then(resolve, reject);
 			});
 		}).then((html) => {

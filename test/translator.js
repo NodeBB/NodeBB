@@ -7,8 +7,52 @@ const shim = require('../src/translator');
 
 const { Translator } = shim;
 const db = require('./mocks/databasemock');
+const helpers = require('../src/helpers');
 
 describe('Translator shim', () => {
+
+	describe('tx helper', () => {
+		const context = {
+			_i18n: {
+				topic: {
+					'moved-from': 'Moved from %1',
+					'merged-message': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
+				},
+			},
+		};
+		it('should return translated string with interpolation when context has config and _i18n', (done) => {
+			const str = helpers.tx.call(context, 'topic:moved-from', 'general discussion');
+			assert.strictEqual(str, 'Moved from general discussion');
+			done();
+		});
+
+		it('should fallback to key when translation is missing', (done) => {
+			const str = helpers.tx.call(context, 'topic:missing-key', 'general discussion');
+			assert.strictEqual(str, 'missing-key');
+			done();
+		});
+
+		it('should escape html escape arguments', (done) => {
+			const str = helpers.tx.call(context, 'topic:moved-from', '<script>alert("xss")</script>');
+			assert.strictEqual(str, 'Moved from &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+			done();
+		});
+
+		it('should escape html escape arguments but keep it if it\'s coming from tx file', (done) => {
+			const str = helpers.tx.call(context, 'topic:merged-message', '/forum', '<script>alert("xss")</script>', 'topic name');
+			assert.strictEqual(str, 'This topic has been merged into <a href="/forum/topic/&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;">topic name</a>');
+			done();
+		});
+
+		it('should return empty string for invalid token format', (done) => {
+			const str = helpers.tx.call({}, 'moved-from', 'general discussion');
+
+			assert.strictEqual(str, '');
+			done();
+		});
+	});
+
+
 	describe('.translate()', () => {
 		it('should translate correctly', (done) => {
 			shim.translate('[[global:pagination.out-of, (foobar), [[global:home]]]]', (translated) => {

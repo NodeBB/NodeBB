@@ -142,8 +142,13 @@ exports.build = async function buildLanguages() {
 	await buildTranslations(data);
 	// console.log(allLanguages);
 	for (const lang of Object.keys(allLanguages)) {
-		const filePath = path.join(buildLanguagesPath, lang, `full.json`);
-		await mkdirp(path.dirname(filePath));
-		await fs.promises.writeFile(filePath, JSON.stringify(allLanguages[lang]));
+		const jsonfilePath = path.join(buildLanguagesPath, lang, `full.json`);
+		const jsFilePath = path.join(buildLanguagesPath, lang, `full.js`);
+		await mkdirp(path.dirname(jsonfilePath));
+		const jsonStr = JSON.stringify(allLanguages[lang]);
+		await Promise.all([
+			fs.promises.writeFile(jsonfilePath, jsonStr),
+			fs.promises.writeFile(jsFilePath, `window._i18n = ${jsonStr}`),
+		]);
 	}
 };

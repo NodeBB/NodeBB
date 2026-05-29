@@ -84,4 +84,8 @@ Languages.userTimeagoCode = async function (userLang) {
 	return '';
 };
 
+Languages.getFull = async function (language) {
+	return require(path.join(languagesPath, language, 'full.json'));
+};
+
 require('./promisify')(Languages);

@@ -82,15 +82,6 @@ module.exports = function (middleware) {
 					res: res,
 				});
 				res.locals.template = template;
-				// TODO: based on userLang, load the correct namespace into _i18n
-				// then it will be accessible in tx helper in helpers.common.js via this._i18n
-				res.locals._i18n = {
-					'en-GB': {
-						topic: {
-							'moved-from': 'Moved from %1'
-						}
-					}
-				};
 				options._locals = undefined;
 
 				if (res.locals.isAPI) {
@@ -100,6 +91,8 @@ module.exports = function (middleware) {
 					req.app.set('json spaces', process.env.NODE_ENV === 'development' || req.query.pretty ? 4 : 0);
 					return res.json(options);
 				}
+
+				res.locals._i18n = await languages.getFull(getLang(req, res));
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
 				const headerFooterData = await loadHeaderFooterData(req, res, options);
 				const results = await utils.promiseParallel({
@@ -416,8 +409,10 @@ module.exports = function (middleware) {
 	}
 
 	async function translate(str, language) {
-		const translated = await translator.translate(str, language);
-		return translator.unescape(translated);
+		// disable server side translation
+		return str;
+		// const translated = await translator.translate(str, language);
+		// return translator.unescape(translated);
 	}
 
 	async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
