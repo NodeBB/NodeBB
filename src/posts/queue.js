@@ -46,6 +46,7 @@ module.exports = function (Posts) {
 						postData.user.displayname = postData.user.username;
 						postData.user.fullname = postData.user.username;
 					}
+					postData.data.content = postData.data.sourceContent || postData.data.content;
 					postData.data.rawContent = validator.escape(String(postData.data.content));
 					postData.data.title = validator.escape(String(postData.data.title || ''));
 				}
@@ -219,7 +220,7 @@ module.exports = function (Posts) {
 				'[[notifications:post-awaiting-review]]' :
 				'[[notifications:topic-awaiting-review]]',
 			bodyLong: type === 'reply' ?
-				await plugins.hooks.fire('filter:parse.raw', data.content) :
+				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content) :
 				validator.escape(String(data.title)),
 			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
@@ -237,7 +238,7 @@ module.exports = function (Posts) {
 	async function parseBodyEmail(cid, type, data) {
 		const url = nconf.get('url');
 		const [content, category, userData] = await Promise.all([
-			plugins.hooks.fire('filter:parse.raw', data.content),
+			plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content),
 			categories.getCategoryFields(cid, ['name', 'slug']),
 			user.getUserFields(data.uid, ['uid', 'username']),
 		]);
