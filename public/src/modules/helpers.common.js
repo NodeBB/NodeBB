@@ -404,13 +404,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			return '';
 		}
 
-		let result = String(this._i18n?.[namespace]?.[key] || key);
-		args.forEach((arg, index) => {
-			const placeholder = `%${index + 1}`;
-			result = result.split(placeholder).join(utils.escapeHTML(String(arg)));
-		});
-
-		return result;
+		let translation = String(this._i18n?.[namespace]?.[key] || key);
+		translation = translator.replaceArguments(translation, args);
+		return translation;
 	}
 
 	function txEscape(text) {

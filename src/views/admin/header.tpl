@@ -21,6 +21,7 @@
 			}
 		</script>
 
+		<script defer src="{relative_path}/assets/language/{config.userLang}/full.min.js?{config.cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>
 
 		{{{ each scripts }}}

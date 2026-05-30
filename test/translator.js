@@ -100,7 +100,17 @@ describe('Translator shim', () => {
 		});
 	});
 
-	describe('translateKeys', () => {
+	describe('translateKey / translateKeys', () => {
+		it('should translate a single key with no arguments', async () => {
+			const translated = await shim.translateKey('global', 'search', [], 'en-GB');
+			assert.deepStrictEqual(translated, 'Search');
+		});
+
+		it('should translate a single key with arguments', async () => {
+			const translated = await shim.translateKey('topic', 'moved-from', ['general discussion']);
+			assert.deepStrictEqual(translated, 'Moved from general discussion');
+		});
+
 		it('should translate each key in array', async () => {
 			const translated = await shim.translateKeys(['[[global:home]]', '[[global:search]]'], 'en-GB');
 			assert.deepStrictEqual(translated, ['Home', 'Search']);
@@ -111,6 +121,17 @@ describe('Translator shim', () => {
 				assert.deepStrictEqual(translated, ['Save', 'Close']);
 				done();
 			});
+		});
+
+		it('should translate all the elements in array in new format', async () => {
+			const translated = await shim.translateKeys([
+				['topic', 'share-mail-subject', ['nodebb']],
+				['topic', 'share-mail-body', ['http://example.com/post/123'], 'de'],
+			]);
+			assert.deepStrictEqual(translated, [
+				'Check out this post on "nodebb"',
+				'Ich dachte, dieser Beitrag könnte dich interessieren: http://example.com/post/123',
+			]);
 		});
 	});
 

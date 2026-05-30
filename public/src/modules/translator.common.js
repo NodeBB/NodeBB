@@ -559,18 +559,63 @@ module.exports = function (utils, load, warn) {
 				warn('Translation failed: ' + err.stack);
 			});
 		},
-		translateKeys: async function (keys, language, callback) {
+
+		translateKeys: async function (data, language, callback) {
+			if (!Array.isArray(data)) {
+				throw new Error('[[error:invalid-data]]');
+			}
 			let cb = callback;
 			let lang = language;
 			if (typeof language === 'function') {
+				console.warn('deprecated: use an array of [namespace, key, args, language] instead of the old format [[namespace:key, arg1, arg2], language, callback]');
 				cb = language;
 				lang = null;
 			}
-			const translations = await Promise.all(keys.map(key => adaptor.translate(key, lang)));
+			if (typeof language === 'string') {
+				console.warn('deprecated: use an array of [namespace, key, args, language] instead of the old format [[namespace:key, arg1, arg2], language, callback]');
+			}
+
+			// convert old format([[topic:moved-from]]) to new format [namespace, key, args, language]
+			data = data.map(key => {
+				if (typeof key === 'string') {
+					// key was '[[topic:moved-from]]'
+					if (key.startsWith('[[') && key.endsWith(']]')) {
+						key = key.slice(2, -2);
+					}
+					const [namespace, keyPart] = key.split(':', 2);
+					return [namespace, keyPart, [], lang];
+				}
+				return key;
+			});
+			const translations = await Promise.all(data.map((item) => {
+				const [namespace, key, args, language] = item;
+				return Translator.create(language).getTranslation(namespace, key).then(function (translation) {
+					return adaptor.replaceArguments(translation, args);
+				});
+			}));
 			if (typeof cb === 'function') {
 				return setTimeout(cb, 0, translations);
 			}
 			return translations;
+		},
+		// single tx token '[[topic:moved-from]]',
+		// TODO: replace translator.translate('[[topic:moved-from]]') with translator.translateKey('[[topic:moved-from]]')
+		translateKey: async function (namespace, key, args, language) {
+			language = language || utils.getLanguage();
+			return Translator.create(language).getTranslation(namespace, key).then(function (translation) {
+				return adaptor.replaceArguments(translation, args);
+			});
+		},
+
+		replaceArguments: (translation, args) => {
+			if (!Array.isArray(args) || args.length === 0) {
+				return translation;
+			}
+			args.forEach((arg, index) => {
+				const placeholder = `%${index + 1}`;
+				translation = translation.split(placeholder).join(utils.escapeHTML(String(arg)));
+			});
+			return translation;
 		},
 
 		/**
