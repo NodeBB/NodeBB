@@ -143,31 +143,43 @@ Controller.getOutbox = async (req, res) => {
 	const last = paginate && !after && !before && `${nconf.get('url')}/uid/${uid}/outbox?before=0`;
 	let activities;
 
-	if (!paginate || after || before) {
-		const limit = after ? parseInt(after, 10) - 1 : parseInt(before, 10) + 1;
-		const method = after ? 'getSortedSetRevRangeByScoreWithScores' : 'getSortedSetRangeByScoreWithScores';
+	if (!paginate || after || before || !activities) {
+		let post, upvote, downvote, share;
 
-		const [post, upvote, downvote, share] = await Promise.all([
-			db[method](`uid:${uid}:posts`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-			db[method](`uid:${uid}:upvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-			db[method](`uid:${uid}:downvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-			db[method](`uid:${uid}:shares`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-		]);
+		if (!paginate) {
+			// Simple range query for first page (no pagination params)
+			[post, upvote, downvote, share] = await Promise.all([
+				db.getSortedSetRangeWithScores(`uid:${uid}:posts`, 0, 19),
+				db.getSortedSetRangeWithScores(`uid:${uid}:upvote`, 0, 19),
+				db.getSortedSetRangeWithScores(`uid:${uid}:downvote`, 0, 19),
+				db.getSortedSetRangeWithScores(`uid:${uid}:shares`, 0, 19),
+			]);
+		} else {
+			const limit = after ? parseInt(after, 10) - 1 : parseInt(before, 10) + 1;
+			const method = after ? 'getSortedSetRevRangeByScoreWithScores' : 'getSortedSetRangeByScoreWithScores';
+
+			[post, upvote, downvote, share] = await Promise.all([
+				db[method](`uid:${uid}:posts`, 0, 20, limit, `${after ? '-' : '+'}inf`),
+				db[method](`uid:${uid}:upvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
+				db[method](`uid:${uid}:downvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
+				db[method](`uid:${uid}:shares`, 0, 20, limit, `${after ? '-' : '+'}inf`),
+			]);
+		}
 		activities = [
 			post.map(post => ({ ...post, type: 'post' })),
 			upvote.map(upvote => ({ ...upvote, type: 'upvote' })),
 			downvote.map(downvote => ({ ...downvote, type: 'downvote' })),
 			share.map(share => ({ ...share, type: 'share' })),
 		].flat().sort((a, b) => b.score - a.score);
-		if (after) {
-			activities = activities.slice(0, 20);
-		} else {
+		if (!paginate || before) {
 			activities = activities.slice(-20);
+		} else {
+			activities = activities.slice(0, 20);
 		}
 
 		if (activities.length) {
 			prev = `${nconf.get('url')}/uid/${uid}/outbox?before=${activities[0].score}`;
-			next = `${nconf.get('url')}/uid/${uid}/outbox?after=${activities[19].score}`;
+			next = `${nconf.get('url')}/uid/${uid}/outbox?after=${activities[activities.length - 1].score}`;
 
 			let postsData = activities.filter((({ type }) => type === 'post'));
 			postsData = await posts.getPostSummaryByPids(postsData.map(({ value }) => value), 0, { stripTags: false });

@@ -120,11 +120,19 @@ describe('Outbox', () => {
 		});
 
 		it('should include upvote and downvote activities when present', async () => {
-			// Upvote the post
-			await posts.upvote(pid, uid);
-			// Downvote another post (create a second post to downvote)
+			// Create another user's post to upvote (can't upvote own post)
+			const otherUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { postData: otherPost } = await topics.post({
+				uid: otherUid,
+				cid,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			// Upvote the other user's post
+			await posts.upvote(otherPost.pid, uid);
+			// Downvote another post
 			const { postData: secondPost } = await topics.post({
-				uid,
+				uid: otherUid,
 				cid,
 				title: utils.generateUUID(),
 				content: utils.generateUUID(),
@@ -142,12 +150,12 @@ describe('Outbox', () => {
 			assert(types.includes('Create'));
 
 			const upvoteActivities = resBody.orderedItems.filter(
-				(a) => a.type === 'Like' && a.object.type === 'Note'
+				(a) => a.type === 'Like' && typeof a.object === 'string'
 			);
 			assert(upvoteActivities.length >= 1);
 
 			const dislikeActivities = resBody.orderedItems.filter(
-				(a) => a.type === 'Dislike' && a.object.type === 'Note'
+				(a) => a.type === 'Dislike' && typeof a.object === 'string'
 			);
 			assert(dislikeActivities.length >= 1);
 		});
@@ -155,6 +163,7 @@ describe('Outbox', () => {
 		it('should paginate when there are more than 20 items', async () => {
 			// Create 25 posts
 			for (let i = 0; i < 25; i++) {
+				// eslint-disable-next-line no-await-in-loop
 				await topics.post({
 					uid,
 					cid,
