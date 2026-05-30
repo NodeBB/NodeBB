@@ -544,7 +544,7 @@ describe('Notes', () => {
 				mainPid = postData.pid;
 			});
 
-			beforeEach(() => {
+			beforeEach(function () {
 				mockBlockedDomain('blocked.example.org', 3);
 				this._baseUrl = helpers.mocks._baseUrl;
 				helpers.mocks._baseUrl = 'https://blocked.example.org';
@@ -598,7 +598,7 @@ describe('Notes', () => {
 		});
 
 		describe('null case', () => {
-			beforeEach(() => {
+			beforeEach(function () {
 				this._baseUrl = helpers.mocks._baseUrl;
 				helpers.mocks._baseUrl = 'https://allowed.example.org';
 			});
@@ -623,13 +623,14 @@ describe('Notes', () => {
 		});
 
 		describe('Severity 1 and 2', () => {
-			beforeEach(() => {
+			beforeEach(function () {
 				this._baseUrl = helpers.mocks._baseUrl;
 				helpers.mocks._baseUrl = 'https://blocked.example.org';
 			});
 
 			afterEach(function () {
 				helpers.mocks._baseUrl = this._baseUrl;
+				console.log('setting back to ', this._baseUrl);
 			});
 
 			it('should NOT queue posts with severity 1 (suspend)', async () => {

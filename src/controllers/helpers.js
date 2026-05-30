@@ -485,6 +485,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		return res.sendStatus(statusCode);
 	}
 
+	console.log(statusCode, payload);
 	if (String(statusCode).startsWith('2')) {
 		if (res.req.loggedIn) {
 			res.set('cache-control', 'private');
@@ -538,7 +539,6 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
-
 		if (process.env.NODE_ENV === 'development') {
 			const stack = payload instanceof Error ? payload.stack : new Error(String(payload)).stack;
 			returnPayload.stack = stack;
@@ -576,8 +576,8 @@ async function generateBannedResponse(res) {
 helpers.generateError = async (statusCode, message, res) => {
 	async function translateMessage(message) {
 		const { req } = res;
-		const settings = req.query.lang ? null : await user.getSettings(req.uid);
-		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
+		const settings = req?.query?.lang ? null : await user.getSettings(req.uid);
+		const language = String(req?.query?.lang || settings.userLang || meta.config.defaultLang);
 		return await translator.translate(message, language);
 	}
 	if (message && message.startsWith('[[')) {
