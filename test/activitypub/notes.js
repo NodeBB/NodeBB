@@ -630,7 +630,6 @@ describe('Notes', () => {
 
 			afterEach(function () {
 				helpers.mocks._baseUrl = this._baseUrl;
-				console.log('setting back to ', this._baseUrl);
 			});
 
 			it('should NOT queue posts with severity 1 (suspend)', async () => {

@@ -56,7 +56,6 @@ describe('Outbound activities module', () => {
 		describe('.topic() (remote topic; by cid)', () => {
 			before(async function () {
 				const { id: pid, note } = helpers.mocks.note();
-				console.log(pid, note);
 				const { cid } = await categories.create({ name: utils.generateUUID() });
 				await activitypub.notes.assert(0, pid, { skipChecks: 1, cid });
 

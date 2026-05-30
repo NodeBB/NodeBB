@@ -485,7 +485,6 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		return res.sendStatus(statusCode);
 	}
 
-	console.log(statusCode, payload);
 	if (String(statusCode).startsWith('2')) {
 		if (res.req.loggedIn) {
 			res.set('cache-control', 'private');
