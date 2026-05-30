@@ -403,7 +403,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
 			return token;
 		}
-		const translation = String(this._i18n[namespace][key]);
+		const translation = this._i18n[namespace][key];
 		return translator.replaceArguments(translation, args);
 	}
 

@@ -108,13 +108,40 @@ describe('Translator shim', () => {
 
 	describe('translateKey / translateKeys', () => {
 		it('should translate a single key with no arguments', async () => {
-			const translated = await shim.translateKey('global', 'search', [], 'en-GB');
+			const translated = await shim.translateKey('global:search', [], 'en-GB');
 			assert.deepStrictEqual(translated, 'Search');
 		});
 
 		it('should translate a single key with arguments', async () => {
-			const translated = await shim.translateKey('topic', 'moved-from', ['general discussion']);
+			const translated = await shim.translateKey('topic:moved-from', ['general discussion']);
 			assert.deepStrictEqual(translated, 'Moved from general discussion');
+		});
+
+		it('should translate a single key with brackets arguments', async () => {
+			const translated = await shim.translateKey('[[topic:moved-from]]', ['general discussion']);
+			assert.deepStrictEqual(translated, 'Moved from general discussion');
+		});
+
+		it('should not translate nested keys', async () => {
+			const translated = await shim.translateKey('[[topic:moved-from, [[topic:merged-message]]]]');
+			assert.deepStrictEqual(translated, '[[topic:moved-from, [[topic:merged-message]]]]');
+		});
+
+		it('should return string untouched if it\'s not a tx string', async () => {
+			assert.deepStrictEqual(
+				await shim.translateKey('nodebb forum', [], 'en-GB'),
+				'nodebb forum',
+			);
+
+			assert.deepStrictEqual(
+				await shim.translateKey('this is a [[foo:baz]] regular string %1 test', [], 'en-GB'),
+				'this is a [[foo:baz]] regular string %1 test',
+			);
+
+			assert.deepStrictEqual(
+				await shim.translateKey('[[this is a [[foo:baz, "foo"]], regular string %1 test]]', [], 'en-GB'),
+				'[[this is a [[foo:baz, "foo"]], regular string %1 test]]'
+			);
 		});
 
 		it('should translate each key in array', async () => {
@@ -131,8 +158,8 @@ describe('Translator shim', () => {
 
 		it('should translate all the elements in array in new format', async () => {
 			const translated = await shim.translateKeys([
-				['topic', 'share-mail-subject', ['nodebb']],
-				['topic', 'share-mail-body', ['http://example.com/post/123'], 'de'],
+				['topic:share-mail-subject', ['nodebb']],
+				['topic:share-mail-body', ['http://example.com/post/123'], 'de'],
 			]);
 			assert.deepStrictEqual(translated, [
 				'Check out this post on "nodebb"',

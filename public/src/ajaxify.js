@@ -275,22 +275,23 @@ ajaxify.widgets = { render: render };
 			});
 	}
 
-	function updateTitle(title) {
+	async function updateTitle(title) {
 		if (!title) {
 			return;
 		}
-
-		title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-			.replace('{pageTitle}', function () { return title; })
-			.replace('{browserTitle}', function () { return config.browserTitle; });
-
-		// Allow translation strings in title on ajaxify (#5927)
 		title = translator.unescape(title);
-		const data = { title: title };
+		const data = { title: title, browserTitle: config.browserTitle };
 		hooks.fire('action:ajaxify.updateTitle', data);
-		translator.translate(data.title, function (translated) {
-			window.document.title = $('<div></div>').html(translated).text();
-		});
+
+		const [titleTranslated, browserTitleTranslated] = await translator.translateKeys([
+			data.title, data.browserTitle,
+		]);
+
+		const documentTitle = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
+			.replace('{pageTitle}', () => titleTranslated)
+			.replace('{browserTitle}', () => browserTitleTranslated);
+
+		window.document.title = $('<div></div>').html(documentTitle).text();
 	}
 	ajaxify.updateTitle = updateTitle;
 

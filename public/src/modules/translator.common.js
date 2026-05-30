@@ -570,22 +570,26 @@ module.exports = function (utils, load, warn) {
 				cb = language;
 				lang = null;
 			}
-
-			// convert old format([[topic:moved-from]]) to new format [namespace, key, args, language]
-			data = data.map(key => {
-				if (typeof key === 'string') {
-					// key was '[[topic:moved-from]]'
-					if (key.startsWith('[[') && key.endsWith(']]')) {
-						key = key.slice(2, -2);
-					}
-					const [namespace, keyPart] = key.split(':', 2);
-					return [namespace, keyPart, [], lang];
+			function normalizeToken(token) {
+				if (typeof token === 'string' && token.startsWith('[[') && token.endsWith(']]')) {
+					token = token.slice(2, -2);
 				}
-				return key;
-			});
+				return token;
+			}
+			// convert old format([[topic:moved-from]]) to new format [token, args, language]
+			data = data.map(key => (typeof key === 'string' ? [key, [], lang] : key));
+
 			const translations = await Promise.all(data.map((item) => {
-				const [namespace, key, args, language] = item;
+				const [token, args, language] = item;
+				const [namespace, key] = normalizeToken(token).split(':', 2);
+				if (!key) {
+					return token;
+				}
 				return Translator.create(language).getTranslation(namespace, key).then(function (translation) {
+					if (!translation) {
+						// if translation is missing/or not a translation, return the token as is
+						return token;
+					}
 					return adaptor.replaceArguments(translation, args);
 				});
 			}));
@@ -595,12 +599,11 @@ module.exports = function (utils, load, warn) {
 			return translations;
 		},
 		// single tx token '[[topic:moved-from]]',
-		// TODO: replace translator.translate('[[topic:moved-from]]') with translator.translateKey('[[topic:moved-from]]')
-		translateKey: async function (namespace, key, args, language) {
-			language = language || utils.getLanguage();
-			return Translator.create(language).getTranslation(namespace, key).then(function (translation) {
-				return adaptor.replaceArguments(translation, args);
-			});
+		// TODO: replace translator.translate('[[topic:moved-from]]') with
+		// translator.translateKey('topic:moved-from', [arg1, arg2], language)
+		translateKey: async function (token, args, language) {
+			const [translation] = await adaptor.translateKeys([[token, args, language]]);
+			return translation;
 		},
 
 		replaceArguments: (translation, args) => {
