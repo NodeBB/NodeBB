@@ -567,12 +567,8 @@ module.exports = function (utils, load, warn) {
 			let cb = callback;
 			let lang = language;
 			if (typeof language === 'function') {
-				console.warn('deprecated: use an array of [namespace, key, args, language] instead of the old format [[namespace:key, arg1, arg2], language, callback]');
 				cb = language;
 				lang = null;
-			}
-			if (typeof language === 'string') {
-				console.warn('deprecated: use an array of [namespace, key, args, language] instead of the old format [[namespace:key, arg1, arg2], language, callback]');
 			}
 
 			// convert old format([[topic:moved-from]]) to new format [namespace, key, args, language]

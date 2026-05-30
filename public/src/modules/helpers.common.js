@@ -394,19 +394,17 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		if (!token) {
 			return '';
 		}
-
+		let txToken = token;
 		// handle old tx syntax where tokens were wrapped in double square brackets, e.g. [[namespace:key]]
 		if (token.startsWith('[[') && token.endsWith(']]')) {
-			token = token.slice(2, -2);
+			txToken = token.slice(2, -2);
 		}
-		const [namespace, key] = token.split(':', 2);
-		if (!namespace || !key) {
-			return '';
+		const [namespace, key] = txToken.split(':', 2);
+		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
+			return token;
 		}
-
-		let translation = String(this._i18n?.[namespace]?.[key] || key);
-		translation = translator.replaceArguments(translation, args);
-		return translation;
+		const translation = String(this._i18n[namespace][key]);
+		return translator.replaceArguments(translation, args);
 	}
 
 	function txEscape(text) {
