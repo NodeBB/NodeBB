@@ -257,9 +257,7 @@ ajaxify.widgets = { render: render };
 	function renderTemplate(url, tpl_url, data, callback) {
 		hooks.fire('action:ajaxify.loadingTemplates', {});
 		benchpress.render(tpl_url, data)
-			// .then(rendered => translator.translate(rendered))
 			.then(function (translated) {
-				// translated = translator.unescape(translated);
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
 				$('#content').html(translated);
 

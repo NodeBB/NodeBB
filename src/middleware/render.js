@@ -321,7 +321,7 @@ module.exports = function (middleware) {
 		return new Promise((resolve, reject) => {
 			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
-				else resolve(await translate(str, getLang(req, res)));
+				else resolve(str);
 			});
 		});
 	}
@@ -421,7 +421,7 @@ module.exports = function (middleware) {
 				str = await renderAdminFooter(render, req, res, options, headerFooterData);
 			}
 		}
-		return await translate(str, getLang(req, res));
+		return str;
 	}
 
 	function getLang(req, res) {
@@ -430,13 +430,6 @@ module.exports = function (middleware) {
 			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
 		}
 		return req.query.lang ? validator.escape(String(req.query.lang)) : language;
-	}
-
-	async function translate(str /* language */) {
-		// disable server side translation
-		return str;
-		// const translated = await translator.translate(str, language);
-		// return translator.unescape(translated);
 	}
 
 	async function appendUnreadCounts({ uid, navigation, unreadData, query }) {

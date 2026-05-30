@@ -337,8 +337,6 @@ if (document.readyState === 'loading') {
 		return new Promise((resolve, reject) => {
 			require(['translator', 'benchpress'], function (translator, Benchpress) {
 				Benchpress.render(template, data, blockName)
-					// .then(rendered => translator.translate(rendered))
-					// .then(translated => translator.unescape(translated))
 					.then(resolve, reject);
 			});
 		}).then((html) => {

@@ -28,9 +28,15 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should fallback to key when translation is missing', (done) => {
+		it('should fallback to passed in string when translation is missing', (done) => {
 			const str = helpers.tx.call(context, 'topic:missing-key', 'general discussion');
-			assert.strictEqual(str, 'missing-key');
+			assert.strictEqual(str, 'topic:missing-key');
+			done();
+		});
+
+		it('should work with [[topic:moved-from]] syntax', (done) => {
+			const str = helpers.tx.call(context, '[[topic:moved-from]]', 'general discussion');
+			assert.strictEqual(str, 'Moved from general discussion');
 			done();
 		});
 
@@ -46,10 +52,10 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should return empty string for invalid token format', (done) => {
-			const str = helpers.tx.call({}, 'moved-from', 'general discussion');
+		it('should return passed in string if it\'s not found in _i18n and not replace arguments', (done) => {
+			const str = helpers.tx.call({}, 'this is a regular % 1 string', 'general discussion');
 
-			assert.strictEqual(str, '');
+			assert.strictEqual(str, 'this is a regular % 1 string');
 			done();
 		});
 
