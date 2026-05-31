@@ -123,7 +123,12 @@ define('forum/chats', [
 			inputEl: chatInput,
 		});
 
-		$('[data-action="close"]').on('click', () => Chats.switchChat());
+		$('[data-action="close"]').on('click', async function () {
+			if (ajaxify.data.roomId) {
+				await api.del(`/chats/${ajaxify.data.roomId}/state`, {});
+			}
+			Chats.switchChat();
+		});
 		userList.init(roomId, mainWrapper);
 		Chats.addNotificationSettingHandler(roomId, mainWrapper);
 		messageSearch.init(roomId, mainWrapper);
