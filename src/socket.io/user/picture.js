@@ -49,7 +49,7 @@ module.exports = function (SocketUser) {
 			type,
 			username: text,
 			picture: validator.escape(String(url)),
-			selected: url === userObj.picture,
+			selected: url === validator.unescape(String(userObj.picture)),
 		}));
 
 		list.pictures.unshift({

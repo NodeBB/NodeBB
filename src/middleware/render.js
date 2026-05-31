@@ -179,7 +179,7 @@ module.exports = function (middleware) {
 			isModerator: user.isModeratorOfAnyCategory(req.uid),
 			privileges: privileges.global.get(req.uid),
 			blocks: user.blocks.list(req.uid),
-			user: user.getUserData(req.uid),
+			user: user.getUserFields(req.uid, ['uid', 'username', 'fullname', 'userslug', 'email', 'email:confirmed', 'picture', 'status', 'reputation']),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', userLang),
 			timeagoCode: languages.userTimeagoCode(userLang),

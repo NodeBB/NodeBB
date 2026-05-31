@@ -1027,11 +1027,11 @@ describe('User', () => {
 		});
 
 		it('should set user picture to uploaded', async () => {
-			await User.setUserField(uid, 'uploadedpicture', '/test');
-			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/test');
-			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/test', uid: uid });
+			await User.setUserField(uid, 'uploadedpicture', '/assets/uploads/test');
+			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/assets/uploads/test');
+			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/assets/uploads/test', uid: uid });
 			const picture = await User.getUserField(uid, 'picture');
-			assert.equal(picture, validator.escape(`${nconf.get('relative_path')}/test`));
+			assert.equal(picture, validator.escape(`${nconf.get('relative_path')}/assets/uploads/test`));
 		});
 
 		it('should return error if profile image uploads disabled', (done) => {
