@@ -659,4 +659,63 @@ describe('Notes', () => {
 			});
 		});
 	});
+
+	describe('auto-categorization with queue rule', () => {
+		let remoteCid;
+		let targetCid;
+		let rid;
+		const tagName = utils.generateUUID().slice(0, 8);
+
+		before(async () => {
+			// Create a remote group actor
+			({ id: remoteCid } = helpers.mocks.group());
+			// Create a local target category
+			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			// Add a hashtag-type auto-categorization rule with filter (queue) enabled
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, true);
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			if (rid) {
+				await activitypub.rules.delete(rid);
+			}
+		});
+
+		beforeEach(async () => {
+			// Clear the queue
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		});
+
+		it('should queue as crosspost when auto-categorization rule matches with filter=true', async () => {
+			const { id: noteId } = helpers.mocks.note({
+				audience: [remoteCid],
+				tag: [
+					{ type: 'Hashtag', name: `#${tagName}` },
+				],
+			});
+			const assertion = await activitypub.notes.assert(0, noteId, {
+				skipChecks: true,
+			});
+
+			assert(assertion);
+			assert.strictEqual(assertion.queued, 1);
+			assert.strictEqual(assertion.tid, null);
+
+			// Verify queue entry has crosspostCid
+			const queueIds = await db.getSortedSetMembers('post:queue');
+			assert.strictEqual(queueIds.length, 1);
+
+			const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+			assert.strictEqual(queueData.type, 'crosspost');
+			const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+			assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			assert.strictEqual(parsedData.pid, noteId);
+		});
+	});
 });
