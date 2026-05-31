@@ -196,8 +196,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
-				options.queue = filter;
-				crosspostCid = false;
+			}
+			// Always respect the filter flag for queuing crossposts
+			if (crosspostCid) {
+				options.queue = options.queue || filter;
 			}
 
 			// mainPid ok to leave as-is
@@ -273,7 +275,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					return null;
 				}
 
-				await posts.addToQueue({
+				const queueData = {
 					uid: authorId,
 					cid: options.cid || cid,
 					pid: mainPid,
@@ -283,7 +285,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					sourceContent: mainPost.sourceContent,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
-				});
+				};
+				if (options.queue && crosspostCid) {
+					queueData.crosspostCid = crosspostCid;
+				}
+
+				await posts.addToQueue(queueData);
 
 				// Drop the rest of the chain — replies without OP don't make sense
 				return { tid: null, queued: 1 };
