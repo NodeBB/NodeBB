@@ -123,12 +123,9 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	});
 
 	userData.banned = Boolean(userData.banned);
-	userData.fullname = escape(userData.fullname);
-	userData.signature = escape(userData.signature);
-	userData.birthday = validator.escape(String(userData.birthday || ''));
-	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
-	userData['cover:url'] = validator.escape(String(userData['cover:url'] || ''));
-	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
+	userData.fullname = userData.fullname || '';
+	userData.signature = userData.signature || '';
+	userData.birthday = userData.birthday || '';
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
 
@@ -149,7 +146,11 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		const fields = Array
 			.from(new URLSearchParams(customFields))
 			.reduce((memo, [name, value]) => {
-				const isUrl = validator.isURL(value);
+				const isUrl = validator.isURL(value, {
+					require_protocol: true,
+					require_valid_protocol: true,
+					require_tld: true,
+				});
 				memo.push({
 					key: slugify(name),
 					name,
@@ -212,15 +213,11 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			if (Array.isArray(userValue)) {
 				userValue = userValue.join(', ');
 			}
-			f.value = validator.escape(String(userValue));
+			f.value = translator.escape(validator.escape(String(userValue)));
 		}
 	});
 	return fields;
 };
-
-function escape(value) {
-	return translator.escape(validator.escape(String(value || '')));
-}
 
 async function getAllData(uid, callerUID) {
 	// loading these before caches them, so the big promiseParallel doesn't make extra db calls
@@ -359,9 +356,7 @@ async function parseAboutMe(userData) {
 		userData.aboutmeParsed = userData.aboutme;
 		return;
 	}
-
-	userData.aboutme = validator.escape(String(userData.aboutme || ''));
-	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
+	const parsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));
 	userData.aboutme = translator.escape(userData.aboutme);
 	userData.aboutmeParsed = translator.escape(parsed);
 }

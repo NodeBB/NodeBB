@@ -33,6 +33,7 @@ Intents.query = async (req, res) => {
 	const prefix = 'https://w3id.org/fep/3b86/';
 	if (!webfinger || !webfinger?._raw?.links) {
 		helpers.formatApiResponse(200, res, { intents });
+		return;
 	}
 	intents = webfinger._raw.links.reduce((memo, link) => {
 		if (link.rel.startsWith(prefix)) {

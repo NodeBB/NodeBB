@@ -109,7 +109,7 @@ define('accounts/picture', [
 
 		if (picture) {
 			if (headerPictureEl.length) {
-				headerPictureEl.attr('src', picture);
+				headerPictureEl.attr('src', utils.decodeHTMLEntities(picture));
 			} else if (headerIconEl.length) {
 				const img = $('<img/>');
 				$(headerIconEl[0].attributes).each(function () {

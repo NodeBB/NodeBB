@@ -437,6 +437,7 @@ describe('schema', () => {
 				});
 
 				it('should not error out when called', async function () {
+					// Uncomment if there is a failing test console.log(this.url, method, path);
 					this.result = await executeRequest.call(this, method, path, context);
 				});
 
