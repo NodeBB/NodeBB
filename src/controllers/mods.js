@@ -248,7 +248,7 @@ modsController.postQueue = async function (req, res, next) {
 	postData = postData.slice(start, stop + 1);
 	const crumbs = [{ text: '[[pages:post-queue]]', url: id ? '/post-queue' : undefined }];
 	if (id && postData.length) {
-		const text = postData[0].data.tid ? '[[post-queue:reply]]' : '[[post-queue:topic]]';
+		const text = postData[0].data.tid ? '[[post-queue:reply]]' : (postData[0].data.crosspostCid ? '[[post-queue:crosspost]]' : '[[post-queue:topic]]');
 		crumbs.push({ text: text });
 	}
 	res.render('post-queue', {

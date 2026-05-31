@@ -70,7 +70,7 @@
 							<input id="{./id}" type="checkbox" class="form-check-input" autocomplete="off" />
 							{{{ end }}}
 							<label for="{./id}" class="small stretched-link">
-								{{{ if posts.data.tid }}}[[post-queue:reply]]{{{ else }}}[[post-queue:topic]]{{{ end }}}
+								{{{ if posts.data.tid }}}[[post-queue:reply]]{{{ else if posts.data.crosspostCid }}}[[post-queue:crosspost]]{{{ else }}}[[post-queue:topic]]{{{ end }}}
 							</label>
 						</li>
 						<li class="card-body d-flex flex-column gap-1 border-bottom">

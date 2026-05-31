@@ -79,7 +79,9 @@ module.exports = function (Posts) {
 			return;
 		}
 		postData.topic = { cid: 0 };
-		if (postData.data.cid) {
+		if (postData.data.crosspostCid) {
+			postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
+		} else if (postData.data.cid) {
 			postData.topic = { cid: parseInt(postData.data.cid, 10) };
 		} else if (postData.data.tid) {
 			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid', 'lastposttime']);
@@ -160,6 +162,8 @@ module.exports = function (Posts) {
 	function getType(data) {
 		if (data.hasOwnProperty('tid')) {
 			return 'reply';
+		} else if (data.hasOwnProperty('crosspostCid')) {
+			return 'crosspost';
 		} else if (data.hasOwnProperty('cid')) {
 			return 'topic';
 		}
@@ -267,6 +271,8 @@ module.exports = function (Posts) {
 			return data.cid;
 		} else if (type === 'reply') {
 			return await topics.getTopicField(data.tid, 'cid');
+		} else if (type === 'crosspost') {
+			return data.crosspostCid;
 		}
 		return null;
 	}
@@ -276,9 +282,12 @@ module.exports = function (Posts) {
 		const typeToPrivilege = {
 			topic: 'topics:create',
 			reply: 'topics:reply',
+			crosspost: 'topics:crosspost',
 		};
 
-		topics.checkContent(data.sourceContent || data.content);
+		if (type !== 'crosspost') {
+			topics.checkContent(data.sourceContent || data.content);
+		}
 		if (type === 'topic') {
 			topics.checkTitle(data.title);
 			if (data.tags) {
@@ -328,6 +337,9 @@ module.exports = function (Posts) {
 			const result = await createReply(data.data);
 			data.pid = result.pid;
 			data.tid = result.tid;
+		} else if (data.type === 'crosspost') {
+			const result = await createCrosspost(data.data);
+			data.tid = result.tid;
 		}
 		await removeFromQueue(id);
 		plugins.hooks.fire('action:post-queue:submitFromQueue', { data: data });
@@ -352,6 +364,11 @@ module.exports = function (Posts) {
 		const result = await topics.post(data);
 		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 		return result;
+	}
+
+	async function createCrosspost(data) {
+		const result = await topics.crossposts.add(data.tid, data.crosspostCid, data.uid || 0);
+		return { tid: data.tid };
 	}
 
 	async function createReply(data) {
