@@ -191,15 +191,17 @@ function prependRelativePath(url) {
 		url : relative_path + url;
 }
 
-helpers.buildCategoryBreadcrumbs = async function (cid) {
+helpers.buildCategoryBreadcrumbs = async function (cid, userLang) {
 	const breadcrumbs = [];
 
 	while (parseInt(cid, 10)) {
 		/* eslint-disable no-await-in-loop */
 		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
+
+		const translatedName = await translateRawValue(data.name, userLang);
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
-				text: String(data.name),
+				text: translatedName,
 				url: `${url}/category/${data.slug}`,
 				cid: cid,
 			});
@@ -247,8 +249,29 @@ helpers.buildTitle = function (pageTitle) {
 
 	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 
-	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
+	const title = titleLayout
+		.replace('{pageTitle}', () => pageTitle)
+		.replace('{browserTitle}', () => browserTitle);
 	return title;
+};
+
+// categoy names and descriptions can be tx keys, translate them safely here
+// used on category list, category page and users watched categories
+async function translateRawValue(value, lang) {
+	const rawValue = validator.unescape(translator.unescape(String(value || '')));
+	return validator.escape(await translator.translate(rawValue, lang));
+}
+
+helpers.translateCategoryData = async function (categoryData, userLang) {
+	await Promise.all(categoryData.map(async (category) => {
+		if (category) {
+			category.name = await translateRawValue(category.name, userLang);
+			category.descriptionParsed = await plugins.hooks.fire(
+				'filter:parse.raw', await translateRawValue(category.description, userLang)
+			);
+			category.description = await translateRawValue(category.description, userLang);
+		}
+	}));
 };
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {

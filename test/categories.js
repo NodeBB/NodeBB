@@ -890,4 +890,30 @@ describe('Categories', () => {
 		assert.strictEqual(child1.cid, data.children[0].cid);
 		assert.strictEqual(child2.cid, data.children[0].children[0].cid);
 	});
+
+	it.only('should translate category name and description and escape them properly', async () => {
+		const category = await Categories.create({
+			name: '[[topic:merged-message, javascript:alert(origin), foobar]]',
+			description: '[[topic:forked-message, javascript:alert(origin), foobar]]',
+		});
+
+		const data = await Categories.getCategoryData(category.cid);
+		assert.strictEqual(data.name, '&lsqb;&lsqb;topic:merged-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
+		assert.strictEqual(data.description, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
+		assert.strictEqual(data.descriptionParsed, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
+		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${category.cid}/test-category`);
+		console.log(body);
+		// title comes from category.name so should be escaped as well
+		assert.strictEqual(body.title, 'This topic has been merged into &lt;a href=&quot;javascript:alert(origin)&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		// breadcrumbs should be translated & escaped too
+		assert.strictEqual(body.breadcrumbs[1].text, 'This topic has been merged into &lt;a href=&quot;javascript:alert(origin)&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		assert.strictEqual(body.name, 'This topic has been merged into &lt;a href=&quot;javascript:alert(origin)&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		assert.strictEqual(body.description, 'This topic was forked from &lt;a href=&quot;javascript:alert(origin)&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		assert.strictEqual(body.descriptionParsed, 'This topic was forked from &lt;a href="javascript:alert(origin)"&gt;foobar&lt;/a&gt;');
+	});
 });
+

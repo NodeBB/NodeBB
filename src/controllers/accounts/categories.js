@@ -11,7 +11,8 @@ const categoriesController = module.exports;
 categoriesController.get = async function (req, res) {
 	const payload = res.locals.userData;
 	const { username, userslug } = payload;
-	const [states, allCategoriesData] = await Promise.all([
+	const [userSettings, states, allCategoriesData] = await Promise.all([
+		user.getSettings(req.uid),
 		user.getCategoryWatchState(res.locals.uid),
 		categories.buildForSelect(res.locals.uid, 'find', ['descriptionParsed', 'depth', 'slug']),
 	]);
@@ -22,6 +23,7 @@ categoriesController.get = async function (req, res) {
 	const stop = start + meta.config.categoriesPerPage - 1;
 	const categoriesData = watchCategories.slice(start, stop + 1);
 
+	await helpers.translateCategoryData(categoriesData, userSettings.userLang);
 
 	categoriesData.forEach((category) => {
 		if (category) {

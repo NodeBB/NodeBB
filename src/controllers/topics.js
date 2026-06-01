@@ -134,7 +134,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	const [author, crossposts] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
 		topics.crossposts.get(topicData.tid),
-		buildBreadcrumbs(topicData),
+		buildBreadcrumbs(topicData, settings.userLang),
 		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res, currentPage, postAtIndex),
 		topics.increaseViewCount(req, tid),
@@ -208,7 +208,8 @@ async function markAsRead(req, tid) {
 	}
 }
 
-async function buildBreadcrumbs(topicData) {
+async function buildBreadcrumbs(topicData, userLang) {
+	await helpers.translateCategoryData([topicData.category], userLang);
 	const breadcrumbs = [
 		{
 			text: topicData.category.name,
@@ -219,7 +220,7 @@ async function buildBreadcrumbs(topicData) {
 			text: topicData.title,
 		},
 	];
-	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid);
+	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, userLang);
 	topicData.breadcrumbs = parentCrumbs.concat(breadcrumbs);
 }
 
