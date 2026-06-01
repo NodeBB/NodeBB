@@ -172,7 +172,10 @@ module.exports = function (middleware) {
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
-		const title = translator.unescape(utils.stripHTMLTags(options.title || ''));
+		const title = options.template.topic ?
+			utils.stripHTMLTags(options.title || '') : // don't translate topic titles
+			translator.unescape(utils.stripHTMLTags(options.title || ''));
+
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
 			isGlobalMod: user.isGlobalModerator(req.uid),

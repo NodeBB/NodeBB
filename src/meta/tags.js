@@ -6,6 +6,7 @@ const winston = require('winston');
 const plugins = require('../plugins');
 const Meta = require('./index');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const Tags = module.exports;
 
@@ -82,12 +83,12 @@ Tags.parse = async (req, data, meta, link) => {
 		addTouchIcons(defaultLinks);
 	}
 
-	const results = await utils.promiseParallel({
-		tags: plugins.hooks.fire('filter:meta.getMetaTags', { req: req, data: data, tags: defaultTags }),
-		links: plugins.hooks.fire('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }),
-	});
+	const [{ tags }, { links }] = await Promise.all([
+		plugins.hooks.fire('filter:meta.getMetaTags', { req, data, tags: defaultTags }),
+		plugins.hooks.fire('filter:meta.getLinkTags', { req, data, links: defaultLinks }),
+	]);
 
-	meta = results.tags.tags.concat(meta || []).map((tag) => {
+	meta = tags.concat(meta || []).map((tag) => {
 		if (!tag || typeof tag.content !== 'string') {
 			winston.warn('Invalid meta tag. ', tag);
 			return tag;
@@ -96,7 +97,7 @@ Tags.parse = async (req, data, meta, link) => {
 		if (!tag.noEscape) {
 			const attributes = Object.keys(tag);
 			attributes.forEach((attr) => {
-				tag[attr] = utils.escapeHTML(String(tag[attr]));
+				tag[attr] = translator.escape(utils.escapeHTML(String(tag[attr])));
 			});
 		}
 
@@ -111,7 +112,7 @@ Tags.parse = async (req, data, meta, link) => {
 	addIfNotExists(meta, 'name', 'description', Meta.config.description);
 	addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
 
-	link = results.links.links.concat(link || []);
+	link = links.concat(link || []);
 	if (isAPI) {
 		const whitelist = ['canonical', 'alternate', 'up'];
 		link = link.filter(link => whitelist.some(val => val === link.rel));
@@ -201,7 +202,7 @@ function addIfNotExists(meta, keyName, tagName, value) {
 
 	if (!exists && value) {
 		meta.push({
-			content: utils.escapeHTML(String(value)),
+			content: translator.escape(utils.escapeHTML(String(value))),
 			[keyName]: tagName,
 		});
 	}

@@ -287,7 +287,9 @@ ajaxify.widgets = { render: render };
 			.replace('{browserTitle}', function () { return config.browserTitle; });
 
 		// Allow translation strings in title on ajaxify (#5927)
-		title = translator.unescape(title);
+		if (!ajaxify.data.template.topic && !ajaxify.data.template.category) {
+			title = translator.unescape(title);
+		}
 		const data = { title: title };
 		hooks.fire('action:ajaxify.updateTitle', data);
 		translator.translate(data.title, function (translated) {
