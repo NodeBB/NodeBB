@@ -195,6 +195,10 @@ module.exports = function (Posts) {
 		const id = `${type}-${now}`;
 		await canPost(type, data);
 
+		if (data.pid) {
+			await removeFromQueueByPid(data.pid);
+		}
+
 		let payload = {
 			id: id,
 			uid: data.uid,
@@ -322,6 +326,23 @@ module.exports = function (Posts) {
 		cache.del('post-queue');
 	}
 
+	async function removeFromQueueByPid(pid) {
+		const ids = await db.getSortedSetRange('post:queue', 0, -1);
+		if (!ids.length) {
+			return;
+		}
+		const keys = ids.map(id => `post:queue:${id}`);
+		const items = await db.getObjects(keys);
+		const toRemove = [];
+		items.forEach((item, idx) => {
+			const data = JSON.parse(item.data);
+			if (data.pid === pid) {
+				toRemove.push(ids[idx]);
+			}
+		});
+		await Promise.all(toRemove.map(removeFromQueue));
+	}
+
 	Posts.submitFromQueue = async function (id) {
 		let data = await getParsedObject(id);
 		if (!data) {
@@ -367,7 +388,7 @@ module.exports = function (Posts) {
 	}
 
 	async function createCrosspost(data) {
-		const result = await topics.crossposts.add(data.tid, data.crosspostCid, data.uid || 0);
+		await topics.crossposts.add(data.tid, data.crosspostCid, data.uid || 0);
 		return { tid: data.tid };
 	}
 
