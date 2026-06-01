@@ -891,7 +891,7 @@ describe('Categories', () => {
 		assert.strictEqual(child2.cid, data.children[0].children[0].cid);
 	});
 
-	it.only('should translate category name and description and escape them properly', async () => {
+	it('should translate category name and description and escape them properly', async () => {
 		const category = await Categories.create({
 			name: '[[topic:merged-message, javascript:alert(origin), foobar]]',
 			description: '[[topic:forked-message, javascript:alert(origin), foobar]]',
