@@ -119,7 +119,7 @@ categoryController.get = async function (req, res, next) {
 
 	const allCategories = [];
 	categories.flattenCategories(allCategories, categoryData.children);
-
+	await helpers.translateCategoryData([categoryData].concat(categoryData.children), userSettings.userLang),
 	await Promise.all([
 		buildBreadcrumbs(req, categoryData),
 		categories.setUnread([categoryData], allCategories.map(c => c.cid).concat(cid), req.uid),

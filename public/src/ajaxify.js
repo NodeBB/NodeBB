@@ -283,13 +283,9 @@ ajaxify.widgets = { render: render };
 		}
 
 		title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-			.replace('{pageTitle}', function () { return title; })
-			.replace('{browserTitle}', function () { return config.browserTitle; });
+			.replace('{pageTitle}', () => title)
+			.replace('{browserTitle}', () => config.browserTitle);
 
-		// Allow translation strings in title on ajaxify (#5927)
-		if (!ajaxify.data.template.topic && !ajaxify.data.template.category) {
-			title = translator.unescape(title);
-		}
 		const data = { title: title };
 		hooks.fire('action:ajaxify.updateTitle', data);
 		translator.translate(data.title, function (translated) {

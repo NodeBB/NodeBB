@@ -160,8 +160,8 @@ function modifyCategory(category, fields) {
 	}
 
 	if (hasField('description')) {
-		category.description = translator.escape(category.description);
 		category.descriptionParsed = translator.escape(category.descriptionParsed || category.description);
+		category.description = translator.escape(category.description);
 	}
 
 	if (category.nickname) {
