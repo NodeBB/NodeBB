@@ -16,7 +16,7 @@ Rules.list = async () => {
 		rule.rid = rids[idx];
 		rule.cid = parseInt(rule.cid, 10);
 		rule.value = validator.escape(rule.value);
-		rule.filter = rule.filter === 'true';
+		rule.filter = typeof rule.filter === 'string' ? rule.filter === 'true' : rule.filter;
 		return rule;
 	});
 
