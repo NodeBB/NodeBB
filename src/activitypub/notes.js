@@ -140,6 +140,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 		const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
 		let crosspostCid = false;
+		let filter = false;
 
 		if (options.cid && cid === -1) {
 			// Move topic if currently uncategorized
@@ -192,15 +193,13 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			}
 
 			// Auto-categorization (takes place only if all other categorization efforts fail)
-			const { cid, filter } = await assignCategory(mainPost);
+			const { cid, filter: ruleFilter } = await assignCategory(mainPost);
+			filter = ruleFilter;
 			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
 			}
-			// Always respect the filter flag for queuing crossposts
-			if (crosspostCid) {
-				options.queue = options.queue || filter;
-			}
+			// filter is used below to decide whether to queue or add the crosspost
 
 			// mainPid ok to leave as-is
 			if (!title) {
@@ -269,7 +268,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			}
 
 			if ((mainResult.severity === 3 || options.queue) && meta.config.postQueue) {
-				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3${options.queue ? ' or categorization rule' : ''}`);
+				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3${options.queue ? ' or explicit queue option' : ''}`);
 				if (utils.isNumber(mainPid) || (await posts.exists([mainPid]))[0]) {
 					activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued main post (${mainPid}): pid is local or already exists`);
 					return null;
@@ -397,7 +396,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 		await Notes.syncUserInboxes(tid, uid);
 
 		if (crosspostCid) {
-			await topics.crossposts.add(tid, crosspostCid, 0);
+			if (filter) {
+				await topics.crossposts.queue(tid, crosspostCid, 0);
+			} else {
+				await topics.crossposts.add(tid, crosspostCid, 0);
+			}
 		}
 
 		if (!hasTid && uid && options.cid) {
