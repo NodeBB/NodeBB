@@ -493,7 +493,7 @@ describe('Notes', () => {
 				assert.strictEqual(queueCount, 1);
 			});
 
-			it('should queue parent and also queue replies when hasTid is false', async () => {
+			it('should queue parent and drop replies when hasTid is false', async () => {
 				const { id: parentId } = helpers.mocks.note();
 				const { id: replyId } = helpers.mocks.note({
 					inReplyTo: parentId,
@@ -522,7 +522,7 @@ describe('Notes', () => {
 				assert.strictEqual(await posts.exists(replyId), false);
 
 				const queueCount = await db.sortedSetCard('post:queue');
-				assert.strictEqual(queueCount, 2);
+				assert.strictEqual(queueCount, 1);
 			});
 		});
 
@@ -704,8 +704,8 @@ describe('Notes', () => {
 			});
 
 			assert(assertion);
-			assert.strictEqual(assertion.queued, 1);
-			assert.strictEqual(assertion.tid, null);
+			assert.strictEqual(assertion.queued, 0); // topic in remote category parsed normally
+			assert(assertion.tid);
 
 			// Verify queue entry has crosspostCid
 			const queueIds = await db.getSortedSetMembers('post:queue');
@@ -715,7 +715,7 @@ describe('Notes', () => {
 			assert.strictEqual(queueData.type, 'crosspost');
 			const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
 			assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
-			assert.strictEqual(parsedData.pid, noteId);
+			assert.strictEqual(parsedData.tid, assertion.tid);
 		});
 	});
 });

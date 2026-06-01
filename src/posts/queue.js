@@ -160,10 +160,10 @@ module.exports = function (Posts) {
 	}
 
 	function getType(data) {
-		if (data.hasOwnProperty('tid')) {
-			return 'reply';
-		} else if (data.hasOwnProperty('crosspostCid')) {
+		if (data.hasOwnProperty('crosspostCid')) {
 			return 'crosspost';
+		} else if (data.hasOwnProperty('tid')) {
+			return 'reply';
 		} else if (data.hasOwnProperty('cid')) {
 			return 'topic';
 		}
@@ -300,7 +300,7 @@ module.exports = function (Posts) {
 		}
 
 		const [canPost] = await Promise.all([
-			privileges.categories.can(typeToPrivilege[type], cid, data.uid),
+			(type === 'crosspost' && data.uid === 0) || privileges.categories.can(typeToPrivilege[type], cid, data.uid),
 			user.isReadyToQueue(data.uid, cid),
 		]);
 		if (!canPost) {
