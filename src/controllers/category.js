@@ -14,7 +14,6 @@ const activitypub = require('../activitypub');
 const pagination = require('../pagination');
 const helpers = require('./helpers');
 const utils = require('../utils');
-const translator = require('../translator');
 const analytics = require('../analytics');
 
 const categoryController = module.exports;
@@ -140,9 +139,8 @@ categoryController.get = async function (req, res, next) {
 		});
 	}
 
-	categoryData.title = translator.escape(categoryData.name);
+	categoryData.title = categoryData.name;
 	categoryData.selectCategoryLabel = '[[category:subcategories]]';
-	categoryData.description = translator.escape(categoryData.description);
 	categoryData.privileges = userPrivileges;
 	categoryData.showSelect = userPrivileges.editable;
 	categoryData.showTopicTools = userPrivileges.editable;

@@ -6,6 +6,7 @@ const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
@@ -154,11 +155,16 @@ function modifyCategory(category, fields) {
 		category.totalTopicCount = category.topic_count;
 	}
 
+	if (hasField('name')) {
+		category.name = translator.escape(category.name);
+	}
+
 	if (hasField('description')) {
-		category.descriptionParsed = category.descriptionParsed || category.description;
+		category.description = translator.escape(category.description);
+		category.descriptionParsed = translator.escape(category.descriptionParsed || category.description);
 	}
 
 	if (category.nickname) {
-		category.name = category.nickname;
+		category.name = translator.escape(category.nickname);
 	}
 }
