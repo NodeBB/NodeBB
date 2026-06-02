@@ -113,14 +113,6 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 		return res.sendStatus(403);
 	}
 
-	// Store blocklist info for severity-based handling (silence, filter)
-	if (result.severity !== null && result.severity >= 2) {
-		res.locals['ap:blocklist'] = {
-			severity: result.severity,
-			listUrl: result.listUrl,
-		};
-	}
-
 	// Origin checking
 	if (typeof object !== 'string' && object.hasOwnProperty('id')) {
 		const actorHostnames = Array.isArray(actor) ? actor.map(a => new URL(a).hostname) : [new URL(actor).hostname];
