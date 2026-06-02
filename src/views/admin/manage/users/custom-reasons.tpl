@@ -33,7 +33,7 @@
 								<a href="#" component="sort/handle" class="btn btn-light btn-sm d-none d-md-block ui-sortable-handle" style="cursor:grab;"><i class="fa fa-arrows-up-down text-muted"></i></a>
 							</td>
 							<td class="text-nowrap">{./title}</td>
-							<td class="text-nowrap">{{{ if ./type }}}[[admin/manage/custom-reasons:reason-{{./type}}]]{{{ else }}}[[admin/manage/custom-reasons:reason-all]]{{{ end }}}</td>
+							<td class="text-nowrap">{{{ if ./type }}}{./translatedType}{{{ else }}}[[admin/manage/custom-reasons:reason-all]]{{{ end }}}</td>
 							<td class="">{./parsedBody}</td>
 							<td class="">
 								<div class="d-flex justify-content-end gap-1">

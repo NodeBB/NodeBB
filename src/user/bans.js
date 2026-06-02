@@ -169,10 +169,16 @@ module.exports = function (User) {
 		const keys = await db.getSortedSetRange('custom-reasons', 0, -1);
 		type = type || '';
 		const reasons = (await db.getObjects(keys.map(k => `custom-reason:${k}`))).filter(Boolean);
+		const translations = new Map([
+			['ban', '[[admin/manage/custom-reasons:reason-ban]]'],
+			['mute', '[[admin/manage/custom-reasons:reason-mute]]'],
+			['post-queue', '[[admin/manage/custom-reasons:reason-post-queue]]'],
+		]);
 		await Promise.all(reasons.map(async (reason, i) => {
 			reason.key = i;
 			reason.parsedBody = translator.escape(await plugins.hooks.fire('filter:parse.raw', reason.body || ''));
 			reason.body = translator.escape(reason.body);
+			reason.translatedType = translations.get(reason.type) || '';
 		}));
 		if (type !== '') {
 			return reasons.filter(reason => reason.type === type || reason.type === '');
