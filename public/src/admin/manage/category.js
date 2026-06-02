@@ -7,9 +7,10 @@ define('admin/manage/category', [
 	'benchpress',
 	'api',
 	'bootbox',
+	'translator',
 	'alerts',
 	'admin/settings',
-], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, alerts, settings) {
+], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, translator, alerts, settings) {
 	const Category = {};
 	let updateHash = {};
 
@@ -91,11 +92,12 @@ define('admin/manage/category', [
 			return false;
 		});
 
-		$('.purge').on('click', function (e) {
+		$('.purge').on('click', async function (e) {
 			e.preventDefault();
-
+			let name = ajaxify.data.category.name;
+			name = utils.escapeHTML(await translator.translate(translator.unescape(name)));
 			Benchpress.render('admin/partials/categories/purge', {
-				name: ajaxify.data.category.name,
+				name: name,
 				topic_count: ajaxify.data.category.topic_count,
 			}).then(function (html) {
 				const modal = bootbox.dialog({
