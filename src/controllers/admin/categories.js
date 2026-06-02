@@ -21,7 +21,7 @@ categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, selectedData] = await Promise.all([
 		categories.getCategories([req.params.category_id]),
 		categories.getParents([req.params.category_id]),
-		helpers.getSelectedCategory(req.params.category_id),
+		helpers.getSelectedCategory(req.params.category_id, req.uid),
 	]);
 
 	const category = categoryData[0];
@@ -145,26 +145,25 @@ async function buildBreadcrumbs(categoryData, url) {
 categoriesController.buildBreadCrumbs = buildBreadcrumbs;
 
 categoriesController.getAnalytics = async function (req, res) {
-	const [name, analyticsData, selectedData] = await Promise.all([
-		categories.getCategoryField(req.params.category_id, 'name'),
+	const [analyticsData, { selectedCategory }] = await Promise.all([
 		analytics.getCategoryAnalytics(req.params.category_id),
-		helpers.getSelectedCategory(req.params.category_id),
+		helpers.getSelectedCategory(req.params.category_id, req.uid),
 	]);
+
 	res.render('admin/manage/category-analytics', {
-		name: name,
+		name: selectedCategory?.name || '',
 		analytics: analyticsData,
-		selectedCategory: selectedData.selectedCategory,
+		selectedCategory: selectedCategory,
 	});
 };
 
 categoriesController.getFederation = async function (req, res) {
 	const cid = parseInt(req.params.category_id, 10);
-	let [_following, pending, followers, name, { selectedCategory }] = await Promise.all([
+	let [_following, pending, followers, { selectedCategory }] = await Promise.all([
 		db.getSortedSetMembers(`cid:${cid}:following`),
 		db.getSortedSetMembers(`followRequests:cid.${cid}`),
 		activitypub.notes.getCategoryFollowers(cid),
-		categories.getCategoryField(cid, 'name'),
-		helpers.getSelectedCategory(cid),
+		helpers.getSelectedCategory(cid, req.uid),
 	]);
 
 	const following = [..._following, ...pending].map(entry => ({
@@ -178,7 +177,7 @@ categoriesController.getFederation = async function (req, res) {
 	res.render('admin/manage/category-federation', {
 		cid: cid,
 		enabled: meta.config.activitypubEnabled,
-		name,
+		name: selectedCategory?.name || '',
 		selectedCategory,
 		following,
 		followers,

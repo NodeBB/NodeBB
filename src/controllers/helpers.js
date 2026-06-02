@@ -198,7 +198,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid, userLang) {
 		/* eslint-disable no-await-in-loop */
 		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
 
-		const translatedName = await translateRawValue(data.name, userLang);
+		const translatedName = await helpers.translateEscapedValue(data.name, userLang);
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
 				text: translatedName,
@@ -255,21 +255,21 @@ helpers.buildTitle = function (pageTitle) {
 	return title;
 };
 
-// categoy names and descriptions can be tx keys, translate them safely here
-// used on category list, category page and users watched categories
-async function translateRawValue(value, lang) {
+helpers.translateEscapedValue = async function translateEscapedValue(value, lang) {
 	const rawValue = validator.unescape(translator.unescape(String(value || '')));
 	return validator.escape(await translator.translate(rawValue, lang));
-}
+};
 
+// categoy names and descriptions can be tx keys, translate them safely here
+// used on category list, category page and users watched categories
 helpers.translateCategoryData = async function (categoryData, userLang) {
 	await Promise.all(categoryData.map(async (category) => {
 		if (category) {
-			category.name = await translateRawValue(category.name, userLang);
+			category.name = await helpers.translateEscapedValue(category.name, userLang);
 			category.descriptionParsed = await plugins.hooks.fire(
-				'filter:parse.raw', await translateRawValue(category.description, userLang)
+				'filter:parse.raw', await helpers.translateEscapedValue(category.description, userLang)
 			);
-			category.description = await translateRawValue(category.description, userLang);
+			category.description = await helpers.translateEscapedValue(category.description, userLang);
 		}
 	}));
 };
@@ -289,7 +289,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		helpers.getVisibleCategories({
 			cids, uid, states, privilege, showLinks: false,
 		}),
-		helpers.getSelectedCategory(selectedCid),
+		helpers.getSelectedCategory(selectedCid, uid),
 	]);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
@@ -360,28 +360,30 @@ helpers.getVisibleCategories = async function (params) {
 	});
 };
 
-helpers.getSelectedCategory = async function (cids) {
+helpers.getSelectedCategory = async function (cids, uid) {
 	if (cids && !Array.isArray(cids)) {
 		cids = [cids];
 	}
 	cids = cids && cids.map(cid => parseInt(cid, 10));
-	let selectedCategories = await categories.getCategoriesData(cids);
+	const [selectedCategories, { userLang }] = await Promise.all([
+		categories.getCategoriesData(cids),
+		user.getSettings(uid),
+	]);
+	let selectedCategory = null;
 	const selectedCids = selectedCategories.map(c => c && c.cid).filter(Boolean);
 	if (selectedCategories.length > 1) {
-		selectedCategories = {
+		selectedCategory = {
 			icon: 'fa-plus',
 			name: '[[unread:multiple-categories-selected]]',
 			bgColor: '#ddd',
 		};
 	} else if (selectedCategories.length === 1 && selectedCategories[0]) {
-		selectedCategories = selectedCategories[0];
-	} else {
-		selectedCategories = null;
+		selectedCategory = selectedCategories[0];
 	}
-	return {
-		selectedCids: selectedCids,
-		selectedCategory: selectedCategories,
-	};
+	if (selectedCategory) {
+		selectedCategory.name = await helpers.translateEscapedValue(selectedCategory.name, userLang);
+	}
+	return { selectedCids, selectedCategory };
 };
 
 helpers.getSelectedTag = function (tags) {
