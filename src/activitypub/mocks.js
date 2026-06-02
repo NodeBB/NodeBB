@@ -765,6 +765,7 @@ Mocks.notes.public = async (post) => {
 	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
 	let preview;
 	let summary = null;
+	let sensitive = null;
 	if (isArticle) {
 		// Preview is not adopted by anybody, so is left commented-out for now
 		preview = {
@@ -803,6 +804,7 @@ Mocks.notes.public = async (post) => {
 
 				return memo;
 			}, '');
+			sensitive = false;
 		}
 
 		// Final sanitization to clean up tags
@@ -848,6 +850,7 @@ Mocks.notes.public = async (post) => {
 		context,
 		audience,
 		...(summary && { summary }),
+		...(sensitive && { sensitive }),
 		preview,
 		content: post.content,
 		source,
