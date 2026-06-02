@@ -44,6 +44,8 @@ module.exports = function (User) {
 		'picture', 'cover:url',
 	];
 
+	User.allowedStatus = ['online', 'offline', 'dnd', 'away'];
+
 	User.guestData = {
 		uid: 0,
 		username: '[[global:guest]]',
@@ -318,6 +320,9 @@ module.exports = function (User) {
 
 			if (user.hasOwnProperty('status') && user.hasOwnProperty('lastonline')) {
 				user.status = User.getStatus(user);
+				if (!User.allowedStatus.includes(user.status)) {
+					user.status = 'offline';
+				}
 			}
 
 			if (user.hasOwnProperty('joindate')) {

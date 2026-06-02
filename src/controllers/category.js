@@ -89,7 +89,8 @@ categoryController.get = async function (req, res, next) {
 	const start = ((currentPage - 1) * userSettings.topicsPerPage) + topicIndex;
 	const stop = start + userSettings.topicsPerPage - 1;
 
-	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
+	const selectedSort = String(req.query.sort || userSettings.categoryTopicSort);
+	const sort = validSorts.includes(selectedSort) ? selectedSort : meta.config.categoryTopicSort;
 
 	const categoryData = await categories.getCategoryById({
 		uid: req.uid,
@@ -148,7 +149,8 @@ categoryController.get = async function (req, res, next) {
 	categoryData.topicIndex = topicIndex;
 	categoryData.selectedTag = tagData.selectedTag;
 	categoryData.selectedTags = tagData.selectedTags;
-	categoryData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
+	categoryData.sortOption = sort;
+	categoryData.sortOptionLabel = `[[topic:${sort.replace(/_/g, '-')}]]`;
 
 	if (utils.isNumber(categoryData.cid) && !meta.config['feeds:disableRSS']) {
 		categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;
