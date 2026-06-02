@@ -16,6 +16,7 @@ const pagination = require('../pagination');
 const utils = require('../utils');
 const analytics = require('../analytics');
 const activitypub = require('../activitypub');
+const translator = require('../translator');
 
 const topicsController = module.exports;
 
@@ -133,7 +134,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	const [author, crossposts] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
 		topics.crossposts.get(topicData.tid),
-		buildBreadcrumbs(topicData),
+		buildBreadcrumbs(topicData, settings.userLang),
 		addOldCategory(topicData, userPrivileges),
 		addTags(topicData, req, res, currentPage, postAtIndex),
 		topics.increaseViewCount(req, tid),
@@ -207,7 +208,8 @@ async function markAsRead(req, tid) {
 	}
 }
 
-async function buildBreadcrumbs(topicData) {
+async function buildBreadcrumbs(topicData, userLang) {
+	await helpers.translateCategoryData([topicData.category], userLang);
 	const breadcrumbs = [
 		{
 			text: topicData.category.name,
@@ -218,7 +220,7 @@ async function buildBreadcrumbs(topicData) {
 			text: topicData.title,
 		},
 	];
-	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid);
+	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, userLang);
 	topicData.breadcrumbs = parentCrumbs.concat(breadcrumbs);
 }
 
@@ -231,29 +233,22 @@ async function addOldCategory(topicData, userPrivileges) {
 }
 
 async function addTags(topicData, req, res, currentPage, postAtIndex) {
-	let description = '';
-	if (postAtIndex && postAtIndex.content) {
-		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content)).trim();
-	}
-
-	if (description.length > 160) {
-		description = `${description.slice(0, 157)}...`;
-	}
-	description = description.replace(/\n/g, ' ').trim();
-
 	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
 	if (!mainPost) {
 		mainPost = await posts.getPostData(topicData.mainPid);
 	}
 
+	const title = getTitleFromTopic(topicData);
 	res.locals.metaTags = [
 		{
 			name: 'title',
-			content: topicData.titleRaw,
+			content: title,
+			noEscape: true,
 		},
 		{
 			property: 'og:title',
-			content: topicData.titleRaw,
+			content: title,
+			noEscape: true,
 		},
 		{
 			property: 'og:type',
@@ -273,15 +268,18 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		},
 	];
 
-	if (description && description.length) {
+	const description = getDescriptionFromPost(postAtIndex);
+	if (description) {
 		res.locals.metaTags.push(
 			{
 				name: 'description',
 				content: description,
+				noEscape: true,
 			},
 			{
 				property: 'og:description',
 				content: description,
+				noEscape: true,
 			},
 		);
 	}
@@ -329,6 +327,27 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	}
 }
 
+function getTitleFromTopic(topic) {
+	// titleRaw is trasnslator.escape'd
+	const title = translator.unescape(String(topic.titleRaw));
+	return translator.escape(utils.escapeHTML(title));
+}
+
+function getDescriptionFromPost(post) {
+	let description = '';
+	if (post && post.content) {
+		// posts/parse.js calls translator.escape on post.content, unescape first then re-escape after stripping html tags
+		const content = translator.unescape(String(post.content));
+		description = utils.stripHTMLTags(utils.decodeHTMLEntities(content)).trim();
+		if (description.length > 160) {
+			description = `${description.slice(0, 157)}...`;
+		}
+		description = translator.escape(utils.escapeHTML(description));
+		description = description.replace(/\n/g, ' ').trim();
+	}
+	return description;
+}
+
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.filter(Boolean);
@@ -344,7 +363,7 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 		images.push(topicData.category.backgroundImage);
 	}
 	if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-		images.push(postAtIndex.user.picture);
+		images.push(validator.unescape(postAtIndex.user.picture));
 	}
 	images.forEach(path => addOGImageTag(res, path));
 }
@@ -369,11 +388,9 @@ function addOGImageTag(res, image) {
 	res.locals.metaTags.push({
 		property: 'og:image',
 		content: imageUrl,
-		noEscape: true,
 	}, {
 		property: 'og:image:url',
 		content: imageUrl,
-		noEscape: true,
 	});
 
 	if (isObject && image.width && image.height) {

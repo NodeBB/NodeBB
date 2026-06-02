@@ -174,14 +174,15 @@ module.exports = function (middleware) {
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
-		const title = translator.unescape(utils.stripHTMLTags(options.title || ''));
+		const title = utils.stripHTMLTags(String(options.title || ''));
+
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
 			isGlobalMod: user.isGlobalModerator(req.uid),
 			isModerator: user.isModeratorOfAnyCategory(req.uid),
 			privileges: privileges.global.get(req.uid),
 			blocks: user.blocks.list(req.uid),
-			user: user.getUserData(req.uid),
+			user: user.getUserFields(req.uid, ['uid', 'username', 'fullname', 'userslug', 'email', 'email:confirmed', 'picture', 'status', 'reputation']),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', userLang),
 			timeagoCode: languages.userTimeagoCode(userLang),

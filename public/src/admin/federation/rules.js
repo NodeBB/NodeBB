@@ -123,6 +123,7 @@ function throwModal() {
 			cacheList: false,
 			showLinks: true,
 			template: 'admin/partials/category/selector-dropdown-right',
+			localOnly: true,
 		});
 	});
 }

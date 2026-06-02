@@ -14,7 +14,6 @@ const activitypub = require('../activitypub');
 const pagination = require('../pagination');
 const helpers = require('./helpers');
 const utils = require('../utils');
-const translator = require('../translator');
 const analytics = require('../analytics');
 
 const categoryController = module.exports;
@@ -120,9 +119,10 @@ categoryController.get = async function (req, res, next) {
 
 	const allCategories = [];
 	categories.flattenCategories(allCategories, categoryData.children);
-
+	await helpers.translateCategoryData([categoryData].concat(categoryData.children), userSettings.userLang),
 	await Promise.all([
-		buildBreadcrumbs(req, categoryData),
+		// needs to be after translateCategoryData to ensure category names are translated for breadcrumbs
+		buildBreadcrumbs(req, categoryData, userSettings.userLang),
 		categories.setUnread([categoryData], allCategories.map(c => c.cid).concat(cid), req.uid),
 	]);
 
@@ -140,9 +140,8 @@ categoryController.get = async function (req, res, next) {
 		});
 	}
 
-	categoryData.title = translator.escape(categoryData.name);
+	categoryData.title = categoryData.name;
 	categoryData.selectCategoryLabel = '[[category:subcategories]]';
-	categoryData.description = translator.escape(categoryData.description);
 	categoryData.privileges = userPrivileges;
 	categoryData.showSelect = userPrivileges.editable;
 	categoryData.showTopicTools = userPrivileges.editable;
@@ -189,7 +188,7 @@ categoryController.get = async function (req, res, next) {
 	res.render('category', categoryData);
 };
 
-async function buildBreadcrumbs(req, categoryData) {
+async function buildBreadcrumbs(req, categoryData, userLang) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
@@ -197,7 +196,7 @@ async function buildBreadcrumbs(req, categoryData) {
 			cid: categoryData.cid,
 		},
 	];
-	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
+	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid, userLang);
 	if (req.originalUrl.startsWith(`${relative_path}/api/category`) || req.originalUrl.startsWith(`${relative_path}/category`)) {
 		categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 	}

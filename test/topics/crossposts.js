@@ -443,7 +443,7 @@ describe('Crossposting (& related logic)', () => {
 				],
 			}));
 
-			await activitypub.rules.add('hashtag', preferredUsername, cid);
+			await activitypub.rules.upsert('hashtag', preferredUsername, cid);
 		});
 
 		it('note assertion should automatically cross-post', async () => {

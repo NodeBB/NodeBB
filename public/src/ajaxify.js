@@ -279,8 +279,12 @@ ajaxify.widgets = { render: render };
 		if (!title) {
 			return;
 		}
-		title = translator.unescape(title);
-		const data = { title: title, browserTitle: config.browserTitle };
+
+		title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
+			.replace('{pageTitle}', () => title)
+			.replace('{browserTitle}', () => config.browserTitle);
+
+		const data = { title: title };
 		hooks.fire('action:ajaxify.updateTitle', data);
 
 		const [titleTranslated, browserTitleTranslated] = await translator.translateKeys([

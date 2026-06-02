@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const _ = require('lodash');
 
 const categories = require('../categories');
+const user = require('../user');
 const meta = require('../meta');
 const pagination = require('../pagination');
 const helpers = require('./helpers');
@@ -20,7 +21,10 @@ categoriesController.list = async function (req, res) {
 		content: 'website',
 	}];
 
-	const allRootCids = await categories.getAllCidsFromSet('cid:0:children');
+	const [allRootCids, userSettings] = await Promise.all([
+		categories.getAllCidsFromSet('cid:0:children'),
+		user.getSettings(req.uid),
+	]);
 	const rootCids = await privileges.categories.filterCids('find', allRootCids, req.uid);
 	const pageCount = Math.max(1, Math.ceil(rootCids.length / meta.config.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
@@ -35,6 +39,7 @@ categoriesController.list = async function (req, res) {
 	await Promise.all([
 		categories.getRecentTopicReplies(categoryData, req.uid, req.query),
 		categories.setUnread(tree, pageCids.concat(childCids), req.uid),
+		helpers.translateCategoryData(categoryData, userSettings.userLang),
 	]);
 
 	const data = {

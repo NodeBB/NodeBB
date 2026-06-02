@@ -413,6 +413,7 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	if (picture) {
+		picture = utils.decodeHTMLEntities(picture);
 		const imagePath = await user.getLocalAvatarPath(uid);
 		picture = {
 			type: 'Image',
@@ -422,6 +423,7 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	if (cover) {
+		cover = utils.decodeHTMLEntities(cover);
 		const imagePath = await user.getLocalCoverPath(uid);
 		cover = {
 			type: 'Image',

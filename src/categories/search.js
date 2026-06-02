@@ -7,6 +7,8 @@ const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const db = require('../database');
 const utils = require('../utils');
+const user = require('../user');
+const controllersHelpers = require('../controllers/helpers');
 
 module.exports = function (Categories) {
 	Categories.search = async function (data) {
@@ -50,6 +52,9 @@ module.exports = function (Categories) {
 		const uniqCids = _.uniq(cids.concat(childrenCids));
 		let categoryData = await Categories.getCategories(uniqCids);
 		categoryData = categoryData.filter(Boolean);
+
+		const userSettings = await user.getSettings(uid);
+		await controllersHelpers.translateCategoryData(categoryData, userSettings.userLang);
 
 		Categories.getTree(categoryData, 0);
 		await Categories.getRecentTopicReplies(categoryData, uid, data.qs);

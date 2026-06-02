@@ -266,6 +266,8 @@ module.exports = function (utils, load, warn) {
 							.replace(/&amp;rsqb;/g, '&rsqb;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
+					// only allow http/https URLs and relative paths (starting with /) in href attributes
+					out = out.replace(/href=(['"])((?!https?:\/\/|\/)[^'"]*)\1/gi, 'href=$1$1');
 					return out;
 				});
 			});
@@ -465,8 +467,18 @@ module.exports = function (utils, load, warn) {
 		Translator.escape = function escape(text) {
 			return typeof text === 'string' ?
 				text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') :
-				// text.replace(/\[\[([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;') :
 				text;
+			/*
+				if (typeof text !== 'string') return text;
+
+    			let previous;
+    			// Keep matching the innermost unescaped brackets and converting them
+    			while (text !== previous) {
+	        		previous = text;
+        			text = text.replace(/\[\[([a-zA-Z0-9_.-]+:[^\[\]]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;');
+    			}
+    			return text;
+			*/
 		};
 
 		/**
@@ -477,8 +489,18 @@ module.exports = function (utils, load, warn) {
 		Translator.unescape = function unescape(text) {
 			return typeof text === 'string' ?
 				text.replace(/&rsqb;&rsqb;/g, ']]').replace(/&lsqb;&lsqb;/g, '[[') :
-				// text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)&rsqb;&rsqb;/g, '[[$1]]') :
 				text;
+			/*
+				if (typeof text !== 'string') return text;
+
+				let previous;
+				// Keep matching the innermost escaped brackets and converting them back
+				while (text !== previous) {
+					previous = text;
+					text = text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:(?:(?!&lsqb;|&rsqb;).)+)&rsqb;&rsqb;/g, '[[$1]]');
+				}
+				return text;
+			*/
 		};
 
 		/**
