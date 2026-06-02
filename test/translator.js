@@ -157,9 +157,9 @@ describe('new Translator(language)', () => {
 		it('should escape language key parameters with HTML in them', () => {
 			const translator = Translator.create('en-GB');
 
-			const key = '[[global:403.login, <strong>test</strong>]]';
+			const key = '[[topic:share-mail-body, <strong>test</strong>]]';
 			return translator.translate(key).then((translated) => {
-				assert.strictEqual(translated, 'Perhaps you should <a class="alert-link" href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
+				assert.strictEqual(translated, 'I thought you might be interested in this post: &lt;strong&gt;test&lt;/strong&gt;');
 			});
 		});
 
@@ -180,6 +180,52 @@ describe('new Translator(language)', () => {
 			return translator.translate(key).then((translated) => {
 				assert.strictEqual(translated, '<strong>test1</strong> upvoted your post in <strong>error: Error: &lsqb;&lsqb;error:group-name-too-long&rsqb;&rsqb; on NodeBB Upgrade</strong>');
 			});
+		});
+
+		it('should strip href argument if it contains a javascript: URL', async function () {
+			const translator = Translator.create('en-GB');
+
+			assert.strictEqual(
+				await translator.translate('[[topic:merged-message,    javascript:alert(origin), foo]]'),
+				'This topic has been merged into <a href="">foo</a>'
+			);
+
+			assert.strictEqual(
+				await translator.translate('[[topic:merged-message, %20%20%20javascript:alert(origin), foo]]'),
+				'This topic has been merged into <a href="">foo</a>'
+			);
+		});
+
+		it('should not strip javascript from arguments if it\'s not a href attribute', async function () {
+			const translator = Translator.create('en-GB');
+
+			assert.strictEqual(
+				await translator.translate('[[topic:share-mail-body,    javascript:alert(origin)]]'),
+				'I thought you might be interested in this post: javascript:alert(origin)'
+			);
+		});
+
+		it('should set href to empty string if argument is not a URL', async function () {
+			const translator = Translator.create('en-GB');
+
+			assert.strictEqual(
+				await translator.translate('[[topic:merged-message,    javascript is a nice language, foo]]'),
+				'This topic has been merged into <a href="">foo</a>'
+			);
+		});
+
+		it('should let valid urls through', async function () {
+			const translator = Translator.create('en-GB');
+
+			assert.strictEqual(
+				await translator.translate('[[topic:merged-message, https://example.com, foo]]'),
+				'This topic has been merged into <a href="https://example.com">foo</a>'
+			);
+
+			assert.strictEqual(
+				await translator.translate('[[topic:merged-message, /topic/123, foo]]'),
+				'This topic has been merged into <a href="/topic/123">foo</a>'
+			);
 		});
 
 		it('should properly escape and ignore % and \\, in arguments', () => {
@@ -220,6 +266,13 @@ describe('new Translator(language)', () => {
 			const translator = Translator.create('en-GB');
 			return translator.translate('[[derp:xyz] some text').then((translated) => {
 				assert.strictEqual('[[derp:xyz] some text', translated);
+			});
+		});
+
+		it('should not translate [[topic:merged-message some text', () => {
+			const translator = Translator.create('en-GB');
+			return translator.translate('[[topic:merged-message some text').then((translated) => {
+				assert.strictEqual('[[topic:merged-message some text', translated);
 			});
 		});
 
@@ -351,8 +404,39 @@ describe('Translator static methods', () => {
 			done();
 		});
 
+		it('should escape translation pattern that have arguments', () => {
+			assert.strictEqual(
+				Translator.escape('[[topic:merged-message, https://example.com, foo]]'),
+				'&lsqb;&lsqb;topic:merged-message, https://example.com, foo&rsqb;&rsqb;'
+			);
+
+			assert.strictEqual(
+				Translator.escape('[[topic:merged-message, [[https://example.com]], foo]]'),
+				'&lsqb;&lsqb;topic:merged-message, &lsqb;&lsqb;https://example.com&rsqb;&rsqb;, foo&rsqb;&rsqb;'
+			);
+		});
+
+		it('should unescape translation pattern that have arguments', () => {
+			assert.strictEqual(
+				Translator.unescape('&lsqb;&lsqb;topic:merged-message, https://example.com, foo&rsqb;&rsqb;'),
+				'[[topic:merged-message, https://example.com, foo]]'
+			);
+
+			assert.strictEqual(
+				Translator.unescape('&lsqb;&lsqb;topic:merged-message, &lsqb;&lsqb;https://example.com&rsqb;&rsqb;, foo&rsqb;&rsqb;'),
+				'[[topic:merged-message, [[https://example.com]], foo]]'
+			);
+		});
+
 		// TODO: fixing this causes other issues with escaping tx strings
 		/*
+		translator escape works by escaping [[ and ]] separately, if its changed to be more strict to
+		fix markdown links like [link text [test]](https://example.org)
+		then it doesnt escape unclosed tx string like `[[topic:merged-message, javascript:alert('ok'), foo more text`
+		this causes the html to break because translator goes on until it finds a closing `]]`
+		and translates the entire thing using everything between as an argument.
+		to test it out set your fullname to `[[topic:merged-message, javascript:alert('ok'), foo more text`
+
 		it('should not escape markdown links', (done) => {
 			assert.strictEqual(
 				Translator.escape('[link text [test]](https://example.org)'),
@@ -368,8 +452,7 @@ describe('Translator static methods', () => {
 				'&lsqblink text &lsqbtest&rsqb;&rsqb;(https://example.org)'
 			);
 			done();
-		});
-		*/
+		});*/
 	});
 
 	describe('.compile', () => {

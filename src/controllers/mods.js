@@ -90,7 +90,7 @@ modsController.flags.list = async function (req, res) {
 			query: req.query,
 		}),
 		analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30),
-		helpers.getSelectedCategory(validFilters.cid),
+		helpers.getSelectedCategory(validFilters.cid, req.uid),
 	]);
 
 	// Send back information for userFilter module
@@ -221,7 +221,7 @@ modsController.postQueue = async function (req, res, next) {
 		user.isAdministrator(req.uid),
 		user.isGlobalModerator(req.uid),
 		user.getModeratedCids(req.uid),
-		helpers.getSelectedCategory(cid),
+		helpers.getSelectedCategory(cid, req.uid),
 		Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	]);
 	_privileges = { ..._privileges[0], ..._privileges[1] };
