@@ -14,6 +14,7 @@ const io = require('../socket.io');
 const cache = require('../cache');
 const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const roomUidCache = cacheCreate({
 	name: 'chat-room-uids',
@@ -48,7 +49,7 @@ module.exports = function (Messaging) {
 		rooms.forEach((data) => {
 			if (data) {
 				db.parseIntFields(data, intFields, fields);
-				data.roomName = validator.escape(String(data.roomName || ''));
+				data.roomName = translator.escape(validator.escape(String(data.roomName || '')));
 				data.public = parseInt(data.public, 10) === 1;
 				data.groupChat = data.userCount > 2;
 
@@ -457,7 +458,11 @@ module.exports = function (Messaging) {
 		}
 
 		await db.setObjectField(`chat:room:${payload.roomId}`, 'roomName', payload.newName);
-		await Messaging.addSystemMessage(`room-rename, ${payload.newName.replace(',', '&#44;')}`, payload.uid, payload.roomId);
+		await Messaging.addSystemMessage(
+			`room-rename, ${payload.newName.replace(/,/g, '&#44;')}`,
+			payload.uid,
+			payload.roomId
+		);
 
 		plugins.hooks.fire('action:chat.renameRoom', {
 			roomId: payload.roomId,
