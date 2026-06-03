@@ -38,7 +38,7 @@
 					{privileges.groups.name}
 				</td>
 				<td>
-					{{{ if (cid == "all") }}}{{{ else }}}
+					{{{ if (cid != "all") }}}
 					<div class="dropdown">
 						<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<i class="fa fa-copy"></i>
@@ -69,7 +69,7 @@
 							<i class="fa fa-users"></i>
 							[[admin/manage/categories:privileges.search-group]]
 						</button>
-						{{{ if (cid == "all") }}}{{{ else }}}
+						{{{ if (cid != "all") }}}
 						<button type="button" class="btn btn-sm btn-outline-secondary text-nowrap" data-ajaxify="false" data-action="copyPrivilegesFrom">
 							<i class="fa fa-copy"></i>
 							[[admin/manage/categories:privileges.copy-from-category]]
