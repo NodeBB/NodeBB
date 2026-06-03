@@ -121,6 +121,9 @@ async function loadCids(uid, parentCid) {
 }
 
 searchApi.roomUsers = async (caller, { query, roomId }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
 		user.isAdministrator(caller.uid),
 		messaging.isUserInRoom(caller.uid, roomId),
@@ -131,14 +134,13 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const results = await user.search({
+	const { users } = await user.search({
 		query,
 		paginate: false,
 		hardCap: -1,
 		uid: caller.uid,
 	});
 
-	const { users } = results;
 	const foundUids = users.map(user => user && user.uid);
 	const isUidInRoom = _.zipObject(
 		foundUids,
@@ -168,6 +170,9 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 };
 
 searchApi.roomMessages = async (caller, { query, roomId, uid }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [roomData, inRoom] = await Promise.all([
 		messaging.getRoomData(roomId),
 		messaging.isUserInRoom(caller.uid, roomId),

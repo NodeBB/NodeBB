@@ -106,10 +106,15 @@ chatsAPI.sortPublicRooms = async (caller, { roomIds, scores }) => {
 	require('../cache').del(`chat:rooms:public:order:all`);
 };
 
-chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
+chatsAPI.get = async function (caller, { uid, roomId }) {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	return await messaging.loadRoom(caller.uid, { uid, roomId });
+};
 
 chatsAPI.post = async (caller, data) => {
-	if (!data || !data.roomId || !caller.uid) {
+	if (!data || !utils.isNumber(data.roomId) || !caller.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -140,7 +145,7 @@ chatsAPI.post = async (caller, data) => {
 };
 
 chatsAPI.update = async (caller, data) => {
-	if (!data || !data.roomId) {
+	if (!data || !utils.isNumber(data.roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -190,14 +195,14 @@ chatsAPI.update = async (caller, data) => {
 };
 
 chatsAPI.rename = async (caller, data) => {
-	if (!data || !data.roomId || !data.name) {
+	if (!data || !utils.isNumber(data.roomId) || !data.name) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	return await chatsAPI.update(caller, data);
 };
 
 chatsAPI.mark = async (caller, data) => {
-	if (!caller.uid || !data || !data.roomId) {
+	if (!caller.uid || !data || !utils.isNumber(data.roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { roomId, state } = data;
@@ -216,6 +221,9 @@ chatsAPI.mark = async (caller, data) => {
 };
 
 chatsAPI.watch = async (caller, { roomId, state }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const inRoom = await messaging.isUserInRoom(caller.uid, roomId);
 	if (!inRoom) {
 		throw new Error('[[error:no-privileges]]');
@@ -246,6 +254,9 @@ chatsAPI.toggleTyping = async (caller, { roomId, typing }) => {
 };
 
 chatsAPI.users = async (caller, data) => {
+	if (!utils.isNumber(data.roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const start = data.hasOwnProperty('start') ? data.start : 0;
 	const stop = start + 39;
 	const io = require('../socket.io');
@@ -271,7 +282,7 @@ chatsAPI.users = async (caller, data) => {
 };
 
 chatsAPI.invite = async (caller, data) => {
-	if (!data || !data.roomId || !Array.isArray(data.uids)) {
+	if (!data || !utils.isNumber(data.roomId) || !Array.isArray(data.uids)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const roomData = await messaging.getRoomData(data.roomId);
@@ -296,7 +307,7 @@ chatsAPI.invite = async (caller, data) => {
 };
 
 chatsAPI.kick = async (caller, data) => {
-	if (!data || !data.roomId) {
+	if (!data || !utils.isNumber(data.roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const uidsExist = await user.exists(data.uids);
@@ -317,6 +328,9 @@ chatsAPI.kick = async (caller, data) => {
 };
 
 chatsAPI.toggleOwner = async (caller, { roomId, uid, state }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
 		user.isAdministrator(caller.uid),
 		messaging.isUserInRoom(caller.uid, roomId),
@@ -331,7 +345,7 @@ chatsAPI.toggleOwner = async (caller, { roomId, uid, state }) => {
 };
 
 chatsAPI.listMessages = async (caller, { uid = caller.uid, roomId, start = 0, direction = null } = {}) => {
-	if (!roomId) {
+	if (!utils.isNumber(roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -363,6 +377,9 @@ chatsAPI.listMessages = async (caller, { uid = caller.uid, roomId, start = 0, di
 };
 
 chatsAPI.getPinnedMessages = async (caller, { start, roomId }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	start = parseInt(start, 10) || 0;
 	const isInRoom = await messaging.isUserInRoom(caller.uid, roomId);
 	if (!isInRoom) {
@@ -373,7 +390,7 @@ chatsAPI.getPinnedMessages = async (caller, { start, roomId }) => {
 };
 
 chatsAPI.getMessage = async (caller, { mid, roomId } = {}) => {
-	if (!mid || !roomId) {
+	if (!mid || !utils.isNumber(roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -382,7 +399,7 @@ chatsAPI.getMessage = async (caller, { mid, roomId } = {}) => {
 };
 
 chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
-	if (!mid || !roomId) {
+	if (!mid || !utils.isNumber(roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -410,6 +427,9 @@ chatsAPI.getIpAddress = async (caller, { mid }) => {
 };
 
 chatsAPI.editMessage = async (caller, { mid, roomId, message }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await messaging.canEdit(mid, caller.uid);
 	await messaging.editMessage(caller.uid, mid, roomId, message);
 };
@@ -425,11 +445,17 @@ chatsAPI.restoreMessage = async (caller, { mid }) => {
 };
 
 chatsAPI.pinMessage = async (caller, { roomId, mid }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await messaging.canPin(roomId, caller.uid);
 	await messaging.pinMessage(mid, roomId);
 };
 
 chatsAPI.unpinMessage = async (caller, { roomId, mid }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await messaging.canPin(roomId, caller.uid);
 	await messaging.unpinMessage(mid, roomId);
 };
