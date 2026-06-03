@@ -20,9 +20,11 @@ privilegesController.get = async function (req, res) {
 		privilegesData = await privileges.categories.list(cid);
 	}
 
-	// `categories` is prepended to the selector dropdown; `appendCategories` is shown
-	// *after* the real category list, so the "All Categories" aggregate sits at the bottom.
 	const categoriesData = [{
+		cid: 'all',
+		name: '[[admin/manage/privileges:all-categories]]',
+		icon: 'fa-list',
+	}, {
 		cid: 0,
 		name: '[[admin/manage/privileges:global]]',
 		icon: 'fa-list',
@@ -30,11 +32,6 @@ privilegesController.get = async function (req, res) {
 		cid: 'admin',
 		name: '[[admin/manage/privileges:admin]]',
 		icon: 'fa-lock',
-	}];
-	const appendCategories = [{
-		cid: 'all',
-		name: '[[admin/manage/privileges:all-categories]]',
-		icon: 'fa-list',
 	}];
 
 	let selectedCid = cid;
@@ -45,7 +42,7 @@ privilegesController.get = async function (req, res) {
 	}
 
 	let selectedCategory;
-	[...categoriesData, ...appendCategories].forEach((category) => {
+	categoriesData.forEach((category) => {
 		if (category) {
 			category.selected = category.cid === selectedCid;
 
@@ -62,7 +59,6 @@ privilegesController.get = async function (req, res) {
 	res.render('admin/manage/privileges', {
 		privileges: privilegesData,
 		categories: categoriesData,
-		appendCategories,
 		selectedCategory,
 		cid: isAllCategories ? 'all' : cid,
 		group,

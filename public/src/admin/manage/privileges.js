@@ -49,7 +49,6 @@ define('admin/manage/privileges', [
 			},
 			localOnly: true,
 			localCategories: ajaxify.data.categories,
-			appendCategories: ajaxify.data.appendCategories,
 			privilege: 'find',
 			showLinks: true,
 		});
