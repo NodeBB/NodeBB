@@ -17,13 +17,6 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				categoriesList = [...localCategories, ...categoriesList];
 			}
 		}
-		// Optional list appended *after* the API/search results, for entries that should
-		// appear at the bottom of the dropdown (e.g. the "All Categories" pseudo-entry).
-		const appendCategories = Array.isArray(options.appendCategories) ?
-			options.appendCategories.map(c => ({ ...c })) : [];
-		if (appendCategories.length && categoriesList) {
-			categoriesList = [...categoriesList, ...appendCategories];
-		}
 		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 
 		const searchEl = el.find('[component="category-selector-search"]');
@@ -89,7 +82,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 				if (err) {
 					return alerts.error(err);
 				}
-				callback(localCategories.concat(categories).concat(appendCategories));
+				callback(localCategories.concat(categories));
 			});
 		}
 
