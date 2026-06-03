@@ -266,12 +266,24 @@ module.exports = function (utils, load, warn) {
 							.replace(/&amp;rsqb;/g, '&rsqb;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
-					// only allow http/https URLs and relative paths (starting with /) in href attributes
-					out = out.replace(/href=(['"])((?!https?:\/\/|\/)[^'"]*)\1/gi, 'href=$1$1');
+					out = validateHrefAttributes(out);
 					return out;
 				});
 			});
 		};
+
+		function validateHrefAttributes(translated) {
+			return translated.replace(/href="([^"]*)"/gi, (match, href) => {
+				return isSafeHref(href) ? match : 'href=""';
+			});
+		}
+
+		function isSafeHref(href) {
+			const normalizedHref = String(href).trim().toLowerCase();
+			const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
+			const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
+			return isHttpUrl || isRelativeUrl;
+		}
 
 		/**
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
