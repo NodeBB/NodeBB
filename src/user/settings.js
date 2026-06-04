@@ -98,14 +98,14 @@ module.exports = function (User) {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
 		});
 
-		settings.chatAllowList = parseJSONSetting(settings.chatAllowList || '[]', []).map(String);
-		settings.chatDenyList = parseJSONSetting(settings.chatDenyList || '[]', []).map(String);
+		settings.chatAllowList = parseJSONArray(settings.chatAllowList || '[]', []);
+		settings.chatDenyList = parseJSONArray(settings.chatDenyList || '[]', []);
 		return settings;
 	}
 
-	function parseJSONSetting(value, defaultValue) {
+	function parseJSONArray(value, defaultValue) {
 		try {
-			return JSON.parse(value);
+			return JSON.parse(value).map(String);
 		} catch (err) {
 			return defaultValue;
 		}
@@ -156,6 +156,7 @@ module.exports = function (User) {
 			chatAllowList: data.chatAllowList,
 			chatDenyList: data.chatDenyList,
 		};
+
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
 			if (data[notificationType]) {
@@ -202,6 +203,13 @@ module.exports = function (User) {
 		}
 		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
 			throw new Error('[[error:invalid-language]]');
+		}
+
+		if (Object.hasOwn(data, 'chatAllowList') && !Array.isArray(data.chatAllowList)) {
+			throw new Error('[[error:invalid-chat-allow-list]]');
+		}
+		if (Object.hasOwn(data, 'chatDenyList') && !Array.isArray(data.chatDenyList)) {
+			throw new Error('[[error:invalid-chat-deny-list]]');
 		}
 	}
 
