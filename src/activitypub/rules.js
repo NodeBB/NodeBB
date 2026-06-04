@@ -37,7 +37,11 @@ Rules.upsert = async (type, value, cid, filter) => {
 	}
 
 	if (existing) {
-		await db.setObjectField(`rid:${existing.rid}`, 'cid', cid);
+		await db.setObject(`rid:${existing.rid}`, {
+			cid,
+			filter: !!filter,
+		});
+
 		return existing.rid;
 	}
 
