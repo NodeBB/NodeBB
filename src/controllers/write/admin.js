@@ -6,6 +6,7 @@ const helpers = require('../helpers');
 const messaging = require('../../messaging');
 const events = require('../../events');
 const activitypub = require('../../activitypub');
+const utils = require('../../utils');
 
 const Admin = module.exports;
 
@@ -88,8 +89,17 @@ Admin.listGroups = async (req, res) => {
 Admin.activitypub = {};
 
 Admin.activitypub.addRule = async (req, res) => {
-	const { type, value, cid, filter } = req.body;
-	const exists = await categories.exists(cid);
+	let { type, value, cid, filter } = req.body;
+
+	let exists = true;
+	const parsedCid = parseInt(cid, 10);
+	if (utils.isNumber(parsedCid) && parsedCid > 0) {
+		exists = await categories.exists(parsedCid);
+		cid = parsedCid;
+	} else {
+		cid = -1;
+	}
+
 	if (!value || !exists) {
 		return helpers.formatApiResponse(400, res);
 	}
