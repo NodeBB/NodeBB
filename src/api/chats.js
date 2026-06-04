@@ -450,9 +450,6 @@ chatsAPI.pinMessage = async (caller, { roomId, mid }) => {
 };
 
 chatsAPI.unpinMessage = async (caller, { roomId, mid }) => {
-	if (!utils.isNumber(roomId)) {
-		throw new Error('[[error:invalid-data]]');
-	}
 	await messaging.canPin(roomId, caller.uid);
 	await messaging.unpinMessage(mid, roomId);
 };
