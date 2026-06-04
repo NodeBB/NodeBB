@@ -445,9 +445,6 @@ chatsAPI.restoreMessage = async (caller, { mid }) => {
 };
 
 chatsAPI.pinMessage = async (caller, { roomId, mid }) => {
-	if (!utils.isNumber(roomId)) {
-		throw new Error('[[error:invalid-data]]');
-	}
 	await messaging.canPin(roomId, caller.uid);
 	await messaging.pinMessage(mid, roomId);
 };
